@@ -1,16 +1,16 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
 
-import CollectionItemBody from 'shared/components/collectionItem/CollectionItemBody';
+import CardBody from 'shared/components/card/CardBody';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
-import CollectionItemContainer from 'shared/components/collectionItem/CollectionItemContainer';
-import CollectionItemContent from 'shared/components/collectionItem/CollectionItemContent';
-import CollectionItemMetaContainer from 'shared/components/collectionItem/CollectionItemMetaContainer';
+import CardContainer from 'shared/components/card/CardContainer';
+import CardContent from 'shared/components/card/CardContent';
+import CardMetaContainer from 'shared/components/card/CardMetaContainer';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
 import { dragEventIsBlacklisted } from 'lib/dnd/Level';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
 
-const SublinkCollectionItemBody = styled(CollectionItemBody)<{
+const SublinkCardBody = styled(CardBody)<{
   dragHoverActive: boolean;
 }>`
   display: flex;
@@ -18,7 +18,7 @@ const SublinkCollectionItemBody = styled(CollectionItemBody)<{
   border-top: 1px solid ${theme.shared.colors.greyLightPinkish};
   background-color: ${({ dragHoverActive }) =>
     dragHoverActive
-      ? theme.shared.collectionItem.backgroundHover
+      ? theme.shared.card.backgroundHover
       : theme.shared.colors.white};
   flex-direction: row;
   span {
@@ -26,11 +26,11 @@ const SublinkCollectionItemBody = styled(CollectionItemBody)<{
     font-weight: normal;
   }
   :hover {
-    background-color: ${theme.shared.collectionItem.backgroundHover};
+    background-color: ${theme.shared.card.backgroundHover};
   }
 `;
 
-const SublinkCollectionItemContent = styled(CollectionItemContent)<{
+const SublinkCardContent = styled(CardContent)<{
   showMeta: boolean;
 }>`
   width: ${({ showMeta: showMeta }) =>
@@ -76,15 +76,15 @@ class Sublinks extends React.Component<SublinkProps> {
               toggleShowArticleSublinks();
             }}
           >
-            <CollectionItemContainer
+            <CardContainer
               draggable={false}
               onClick={toggleShowArticleSublinks}
             >
-              <SublinkCollectionItemBody
+              <SublinkCardBody
                 dragHoverActive={this.state.dragHoverActive}
               >
-                {!isClipboard && <CollectionItemMetaContainer />}
-                <SublinkCollectionItemContent
+                {!isClipboard && <CardMetaContainer />}
+                <SublinkCardContent
                   displaySize="small"
                   showMeta={isClipboard}
                 >
@@ -96,9 +96,9 @@ class Sublinks extends React.Component<SublinkProps> {
                       clear={true}
                     />
                   </span>
-                </SublinkCollectionItemContent>
-              </SublinkCollectionItemBody>
-            </CollectionItemContainer>
+                </SublinkCardContent>
+              </SublinkCardBody>
+            </CardContainer>
           </DragIntentContainer>
         )}
       </>

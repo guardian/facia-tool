@@ -10,7 +10,7 @@ import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
 import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/userDataApi';
-import { NestedArticleFragment } from 'shared/types/Collection';
+import { NestedCard } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
 import { selectFront } from 'selectors/frontsSelectors';
 import {
@@ -142,7 +142,7 @@ const persistCollectionOnEdit = (
           return acc.concat(id);
         }
 
-        const collectionId = selectors.selectParentCollectionOfArticleFragment(
+        const collectionId = selectors.selectParentCollectionOfCard(
           selectSharedState(store.getState()),
           id
         );
@@ -212,7 +212,7 @@ const persistClipboardOnEdit = (
   const result = next(action);
   const state = store.getState();
   const denormalisedClipboard: {
-    articles: NestedArticleFragment[];
+    articles: NestedCard[];
   } = denormaliseClipboard(state);
   store.dispatch(updateClipboardAction(denormalisedClipboard));
   return result;

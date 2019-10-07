@@ -4,24 +4,24 @@ import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 
 import {
-  createSelectArticleFromArticleFragment,
+  createSelectArticleFromCard,
   selectSharedState,
-  selectArticleFragment
+  selectCard
 } from '../../selectors/shared';
 import { selectors } from 'shared/bundles/externalArticlesBundle';
 import { State } from '../../types/State';
 import { DerivedArticle } from '../../types/Article';
-import CollectionItemBody from '../collectionItem/CollectionItemBody';
-import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
-import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
+import CardBody from '../card/CardBody';
+import CardContainer from '../card/CardContainer';
+import CardMetaHeading from '../card/CardMetaHeading';
 import ArticleBody from './ArticleBody';
-import { CollectionItemSizes } from 'shared/types/Collection';
+import { CardSizes } from 'shared/types/Collection';
 import DragIntentContainer from '../DragIntentContainer';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 import { theme } from 'constants/theme';
 import { getPillarColor } from 'shared/util/getPillarColor';
 
-const ArticleBodyContainer = styled(CollectionItemBody)<{
+const ArticleBodyContainer = styled(CardBody)<{
   pillarId: string | undefined;
   isLive: boolean;
 }>`
@@ -33,7 +33,7 @@ const ArticleBodyContainer = styled(CollectionItemBody)<{
       : theme.shared.base.colors.borderColor};
 
   :hover {
-    ${CollectionItemMetaHeading} {
+    ${CardMetaHeading} {
       color: ${theme.shared.base.colors.textMuted};
     }
   }
@@ -66,8 +66,8 @@ interface ContainerProps extends ArticleComponentProps {
 interface ComponentProps extends ContainerProps {
   article?: DerivedArticle;
   isLoading?: boolean;
-  size?: CollectionItemSizes;
-  textSize?: CollectionItemSizes;
+  size?: CardSizes;
+  textSize?: CardSizes;
   children: React.ReactNode;
   imageDropTypes?: string[];
   onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
@@ -133,7 +133,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
         onDragIntentStart={() => this.setIsArticleHovering(true)}
         onDragIntentEnd={() => this.setIsArticleHovering(false)}
       >
-        <CollectionItemContainer
+        <CardContainer
           draggable={draggable}
           isDraggingArticleOver={this.state.isDraggingArticleOver}
           onDragStart={onDragStart}
@@ -184,14 +184,14 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
             </ArticleBodyContainer>
           </DragIntentContainer>
           {children}
-        </CollectionItemContainer>
+        </CardContainer>
       </DragIntentContainer>
     );
   }
 }
 
 const createMapStateToProps = () => {
-  const selectArticle = createSelectArticleFromArticleFragment();
+  const selectArticle = createSelectArticleFromCard();
   return (
     state: State,
     props: ContainerProps
@@ -204,13 +204,13 @@ const createMapStateToProps = () => {
       ? props.selectSharedState(state)
       : selectSharedState(state);
     const article = selectArticle(sharedState, props.id);
-    const articleFragment = selectArticleFragment(sharedState, props.id);
+    const card = selectCard(sharedState, props.id);
 
     return {
       article,
       isLoading: selectors.selectIsLoadingInitialDataById(
         sharedState,
-        articleFragment.id
+        card.id
       ),
       featureFlagPageViewData: selectFeatureValue(
         selectSharedState(state),

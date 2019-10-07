@@ -3,23 +3,23 @@ import { actions as externalArticleActions } from 'shared/bundles/externalArticl
 import { getContent, transformExternalArticle } from 'services/faciaApi';
 import { ThunkResult } from 'types/Store';
 import {
-  ArticleFragmentsReceived,
-  InsertGroupArticleFragment,
-  InsertSupportingArticleFragment,
-  RemoveGroupArticleFragment,
-  RemoveSupportingArticleFragment,
-  UpdateArticleFragmentMeta,
-  ClearArticleFragments,
+  CardsReceived,
+  InsertGroupCard,
+  InsertSupportingCard,
+  RemoveGroupCard,
+  RemoveSupportingCard,
+  UpdateCardMeta,
+  ClearCards,
   MaybeAddFrontPublicationDate
 } from 'shared/types/Action';
-import { createFragment } from 'shared/util/articleFragment';
+import { createFragment } from 'shared/util/card';
 import { createSnap, createLatestSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { isValidURL, isGuardianUrl } from 'shared/util/url';
 import { MappableDropType } from 'util/collectionUtils';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
-import { ArticleFragment, ArticleFragmentMeta } from '../types/Collection';
+import { Card, CardMeta } from '../types/Collection';
 
 export const UPDATE_ARTICLE_FRAGMENT_META =
   'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
@@ -36,11 +36,11 @@ export const INSERT_SUPPORTING_ARTICLE_FRAGMENT =
 export const COPY_ARTICLE_FRAGMENT_IMAGE_META =
   'SHARED/COPY_ARTICLE_FRAGMENT_IMAGE_META';
 
-function updateArticleFragmentMeta(
+function updateCardMeta(
   id: string,
-  meta: ArticleFragmentMeta,
+  meta: CardMeta,
   { merge }: { merge: boolean } = { merge: false }
-): UpdateArticleFragmentMeta {
+): UpdateCardMeta {
   return {
     type: UPDATE_ARTICLE_FRAGMENT_META,
     payload: {
@@ -53,30 +53,30 @@ function updateArticleFragmentMeta(
 
 // This can accept either a map of article fragments or an array (from which a
 // map will be generated)
-function articleFragmentsReceived(
-  articleFragments:
+function cardsReceived(
+  cards:
     | {
-        [uuid: string]: ArticleFragment;
+        [uuid: string]: Card;
       }
-    | ArticleFragment[]
-): ArticleFragmentsReceived {
-  const payload = Array.isArray(articleFragments)
-    ? keyBy(articleFragments, ({ uuid }) => uuid)
-    : articleFragments;
+    | Card[]
+): CardsReceived {
+  const payload = Array.isArray(cards)
+    ? keyBy(cards, ({ uuid }) => uuid)
+    : cards;
   return {
     type: ARTICLE_FRAGMENTS_RECEIVED,
     payload
   };
 }
 
-function copyArticleFragmentImageMeta(from: string, to: string) {
+function copyCardImageMeta(from: string, to: string) {
   return {
     type: COPY_ARTICLE_FRAGMENT_IMAGE_META as typeof COPY_ARTICLE_FRAGMENT_IMAGE_META,
     payload: { from, to }
   };
 }
 
-function clearArticleFragments(ids: string[]): ClearArticleFragments {
+function clearCards(ids: string[]): ClearCards {
   return {
     type: 'SHARED/CLEAR_ARTICLE_FRAGMENTS',
     payload: {
@@ -85,59 +85,59 @@ function clearArticleFragments(ids: string[]): ClearArticleFragments {
   };
 }
 
-function removeGroupArticleFragment(
+function removeGroupCard(
   id: string,
-  articleFragmentId: string
-): RemoveGroupArticleFragment {
+  cardId: string
+): RemoveGroupCard {
   return {
     type: REMOVE_GROUP_ARTICLE_FRAGMENT,
     payload: {
       id,
-      articleFragmentId
+      cardId
     }
   };
 }
 
-function removeSupportingArticleFragment(
+function removeSupportingCard(
   id: string,
-  articleFragmentId: string
-): RemoveSupportingArticleFragment {
+  cardId: string
+): RemoveSupportingCard {
   return {
     type: REMOVE_SUPPORTING_ARTICLE_FRAGMENT,
     payload: {
       id,
-      articleFragmentId
+      cardId
     }
   };
 }
 
-const insertGroupArticleFragment = (
+const insertGroupCard = (
   id: string,
   index: number,
-  articleFragmentId: string
-): InsertGroupArticleFragment => ({
+  cardId: string
+): InsertGroupCard => ({
   type: INSERT_GROUP_ARTICLE_FRAGMENT,
   payload: {
     id,
     index,
-    articleFragmentId
+    cardId
   }
 });
 
-const insertSupportingArticleFragment = (
+const insertSupportingCard = (
   id: string,
   index: number,
-  articleFragmentId: string
-): InsertSupportingArticleFragment => ({
+  cardId: string
+): InsertSupportingCard => ({
   type: INSERT_SUPPORTING_ARTICLE_FRAGMENT,
   payload: {
     id,
     index,
-    articleFragmentId
+    cardId
   }
 });
 
-type TArticleEntities = [ArticleFragment?, ExternalArticle?];
+type TArticleEntities = [Card?, ExternalArticle?];
 
 /**
  * Create the appropriate article entities from a MappableDropType,
@@ -145,24 +145,24 @@ type TArticleEntities = [ArticleFragment?, ExternalArticle?];
  */
 const createArticleEntitiesFromDrop = (
   drop: MappableDropType
-): ThunkResult<Promise<ArticleFragment | undefined>> => {
+): ThunkResult<Promise<Card | undefined>> => {
   return async dispatch => {
     const [
-      maybeArticleFragment,
+      maybeCard,
       maybeExternalArticle
     ] = await getArticleEntitiesFromDrop(drop);
     if (maybeExternalArticle) {
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
     }
-    if (maybeArticleFragment) {
-      dispatch(articleFragmentsReceived([maybeArticleFragment]));
+    if (maybeCard) {
+      dispatch(cardsReceived([maybeCard]));
     }
-    return maybeArticleFragment;
+    return maybeCard;
   };
 };
 
 /**
- * Given a resource id, extract the appropriate entities -- an ArticleFragment
+ * Given a resource id, extract the appropriate entities -- an Card
  * and possibly an ExternalArticle. The resource id can be a few different things:
  *  - a article, tag or section (either the full URL or the ID)
  *  - an external link.
@@ -177,7 +177,7 @@ const getArticleEntitiesFromDrop = async (
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
   const guMeta = isGuardianUrl(resourceIdOrUrl)
-    ? getArticleFragmentMetaFromUrlParams(resourceIdOrUrl)
+    ? getCardMetaFromUrlParams(resourceIdOrUrl)
     : false;
   const isPlainUrl = isURL && !id && !guMeta;
   if (isPlainUrl) {
@@ -246,9 +246,9 @@ const guPrefix = 'gu-';
 /**
  * Given a URL, produce an object with the appropriate meta values.
  */
-const getArticleFragmentMetaFromUrlParams = (
+const getCardMetaFromUrlParams = (
   url: string
-): ArticleFragmentMeta | undefined => {
+): CardMeta | undefined => {
   let urlObj: URL | undefined;
   try {
     urlObj = new URL(url);
@@ -294,14 +294,14 @@ const maybeAddFrontPublicationDate = (
 });
 
 export {
-  updateArticleFragmentMeta,
-  articleFragmentsReceived,
-  insertGroupArticleFragment,
-  insertSupportingArticleFragment,
-  removeGroupArticleFragment,
-  removeSupportingArticleFragment,
+  updateCardMeta,
+  cardsReceived,
+  insertGroupCard,
+  insertSupportingCard,
+  removeGroupCard,
+  removeSupportingCard,
   createArticleEntitiesFromDrop,
-  clearArticleFragments,
+  clearCards,
   maybeAddFrontPublicationDate,
-  copyArticleFragmentImageMeta
+  copyCardImageMeta
 };

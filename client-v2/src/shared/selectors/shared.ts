@@ -10,15 +10,15 @@ import { selectors as externalArticleSelectors } from '../bundles/externalArticl
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import { ExternalArticle } from '../types/ExternalArticle';
 import {
-  ArticleFragment,
+  Card,
   Collection,
   Group,
-  CollectionItemSets,
-  ArticleFragmentDenormalised,
+  CardSets,
+  CardDenormalised,
   ArticleTag
 } from '../types/Collection';
 import { State } from '../types/State';
-import { collectionItemSets } from 'constants/fronts';
+import { cardSets } from 'constants/fronts';
 import { createShallowEqualResultSelector } from 'shared/util/selectorUtils';
 import { DerivedArticle } from 'shared/types/Article';
 import { hasMainVideo } from 'shared/util/externalArticle';
@@ -27,11 +27,11 @@ import { hasMainVideo } from 'shared/util/externalArticle';
 const selectSharedState = (rootState: any): State => rootState.shared;
 
 const selectGroups = (state: State): { [id: string]: Group } => state.groups;
-const selectArticleFragments = (state: State) => state.articleFragments;
+const selectCards = (state: State) => state.cards;
 
-const selectArticleFragmentsFromRootState = createSelector(
+const selectCardsFromRootState = createSelector(
   [selectSharedState],
-  (state: State) => selectArticleFragments(state)
+  (state: State) => selectCards(state)
 );
 
 const selectGroupsFromRootState = createSelector(
@@ -39,23 +39,23 @@ const selectGroupsFromRootState = createSelector(
   (state: State) => selectGroups(state)
 );
 
-const selectArticleFragment = (state: State, id: string): ArticleFragment =>
-  state.articleFragments[id];
+const selectCard = (state: State, id: string): Card =>
+  state.cards[id];
 
-const selectExternalArticleFromArticleFragment = (
+const selectExternalArticleFromCard = (
   state: State,
   id: string
 ): ExternalArticle | undefined => {
-  const articleFragment = selectArticleFragment(state, id);
+  const card = selectCard(state, id);
   const externalArticles = externalArticleSelectors.selectAll(state);
-  if (!articleFragment) {
+  if (!card) {
     return undefined;
   }
-  return externalArticles[articleFragment.id];
+  return externalArticles[card.id];
 };
 
 const selectSupportingArticleCount = (state: State, uuid: string) => {
-  const maybeArticle = selectArticleFragment(state, uuid);
+  const maybeArticle = selectCard(state, uuid);
   if (maybeArticle && maybeArticle && maybeArticle.meta.supporting) {
     return maybeArticle.meta.supporting.length;
   }
@@ -63,7 +63,7 @@ const selectSupportingArticleCount = (state: State, uuid: string) => {
 };
 
 const selectArticleTag = (state: State, id: string): ArticleTag => {
-  const externalArticle = selectExternalArticleFromArticleFragment(state, id);
+  const externalArticle = selectExternalArticleFromCard(state, id);
   const emptyTag = {
     webTitle: undefined,
     sectionName: undefined
@@ -85,16 +85,16 @@ const selectArticleTag = (state: State, id: string): ArticleTag => {
 };
 
 const selectArticleKicker = (state: State, id: string): string | undefined => {
-  const articleFragment = selectArticleFragment(state, id);
+  const card = selectCard(state, id);
 
-  if (!articleFragment) {
+  if (!card) {
     return undefined;
   }
 
   const kickerOptions = selectArticleTag(state, id);
-  const meta = articleFragment.meta;
+  const meta = card.meta;
 
-  if (!articleFragment) {
+  if (!card) {
     return undefined;
   }
   if (meta.showKickerTag) {
@@ -112,8 +112,8 @@ const selectArticleKicker = (state: State, id: string): string | undefined => {
   return undefined;
 };
 
-const selectCollectionItemHasMediaOverrides = (state: State, id: string) => {
-  const article = selectArticleFragment(state, id);
+const selectCardHasMediaOverrides = (state: State, id: string) => {
+  const article = selectCard(state, id);
   return (
     !!article &&
     !!article.meta &&
@@ -123,39 +123,39 @@ const selectCollectionItemHasMediaOverrides = (state: State, id: string) => {
   );
 };
 
-const createSelectIsArticleFragmentLive = () =>
+const createSelectIsCardLive = () =>
   createSelector(
-    selectExternalArticleFromArticleFragment,
+    selectExternalArticleFromCard,
     externalArticle => !!externalArticle && isLive(externalArticle)
   );
 
-const createSelectArticleFromArticleFragment = () =>
+const createSelectArticleFromCard = () =>
   createSelector(
-    selectExternalArticleFromArticleFragment,
-    selectArticleFragment,
+    selectExternalArticleFromCard,
+    selectCard,
     selectArticleKicker,
-    (externalArticle, articleFragment, kicker): DerivedArticle | undefined => {
-      if (!articleFragment) {
+    (externalArticle, card, kicker): DerivedArticle | undefined => {
+      if (!card) {
         return undefined;
       }
 
       const articleMeta = externalArticle
-        ? { ...externalArticle.frontsMeta.defaults, ...articleFragment.meta }
-        : articleFragment.meta;
+        ? { ...externalArticle.frontsMeta.defaults, ...card.meta }
+        : card.meta;
 
       return {
         ...omit(externalArticle || {}, 'fields', 'frontsMeta'),
         ...(externalArticle ? externalArticle.fields : {}),
-        ...omit(articleFragment, 'meta'),
+        ...omit(card, 'meta'),
         ...articleMeta,
         headline:
-          articleFragment.meta.headline ||
+          card.meta.headline ||
           (externalArticle ? externalArticle.fields.headline : undefined),
         trailText:
-          articleFragment.meta.trailText ||
+          card.meta.trailText ||
           (externalArticle ? externalArticle.fields.trailText : undefined),
         byline:
-          articleFragment.meta.byline ||
+          card.meta.byline ||
           (externalArticle ? externalArticle.fields.byline : undefined),
         kicker,
         pickedKicker: externalArticle
@@ -170,7 +170,7 @@ const createSelectArticleFromArticleFragment = () =>
         firstPublicationDate: externalArticle
           ? externalArticle.fields.firstPublicationDate
           : undefined,
-        frontPublicationDate: articleFragment.frontPublicationDate,
+        frontPublicationDate: card.frontPublicationDate,
         tone: externalArticle ? externalArticle.frontsMeta.tone : undefined,
         hasMainVideo: !!externalArticle && hasMainVideo(externalArticle),
         showMainVideo: !!articleMeta.showMainVideo,
@@ -193,8 +193,8 @@ const createSelectCollection = () =>
 
 const selectStage = (
   _: unknown,
-  { collectionSet }: { collectionSet: CollectionItemSets; collectionId: string }
-): CollectionItemSets => collectionSet;
+  { collectionSet }: { collectionSet: CardSets; collectionId: string }
+): CardSets => collectionSet;
 
 const createSelectCollectionStageGroups = () => {
   const selectCollection = createSelectCollection();
@@ -205,7 +205,7 @@ const createSelectCollectionStageGroups = () => {
     (
       collection: Collection | void,
       groups: { [id: string]: Group },
-      stage: CollectionItemSets
+      stage: CardSets
     ): Group[] => {
       const grps = ((collection && collection[stage]) || []).map(
         id => groups[id]
@@ -219,19 +219,19 @@ const createSelectCollectionStageGroups = () => {
       // groups and display them in the top group.
       const orphanedFragments: string[] = grps
         .filter(grp => !grp.name && grp.id)
-        .reduce((frags: string[], g) => frags.concat(g.articleFragments), []);
+        .reduce((frags: string[], g) => frags.concat(g.cards), []);
 
       // The final array of groups consist of groups where all groups without names but with ids
       // are filtered out as these groups no longer exist in the config of the collection.
       const finalGroups = grps.filter(grp => grp.name || !grp.id);
       if (finalGroups.length > 0) {
-        const originalFirstGroupFragments = finalGroups[0].articleFragments;
+        const originalFirstGroupFragments = finalGroups[0].cards;
         const firstGroupFragments = orphanedFragments.concat(
           originalFirstGroupFragments
         );
         const firstGroup = {
           ...finalGroups[0],
-          ...{ articleFragments: firstGroupFragments }
+          ...{ cards: firstGroupFragments }
         };
         finalGroups[0] = firstGroup;
       }
@@ -252,8 +252,8 @@ const createSelectPreviouslyLiveArticlesInCollection = () => {
       id: null,
       name: null,
       uuid: 'previously',
-      articleFragments: (
-        (collection && collection.previouslyArticleFragmentIds) ||
+      cards: (
+        (collection && collection.previouslyCardIds) ||
         []
       ).slice(0, 5)
     })
@@ -280,7 +280,7 @@ const selectGroupName = (
   }: {
     groupName?: string;
     includeSupportingArticles?: boolean;
-    collectionSet: CollectionItemSets;
+    collectionSet: CardSets;
     collectionId: string;
   }
 ) => groupName;
@@ -292,7 +292,7 @@ const selectIncludeSupportingArticles = (
   }: {
     groupName?: string;
     includeSupportingArticles?: boolean;
-    collectionSet: CollectionItemSets;
+    collectionSet: CardSets;
     collectionId: string;
   }
 ) => includeSupportingArticles;
@@ -300,12 +300,12 @@ const selectIncludeSupportingArticles = (
 const createSelectArticlesInCollectionGroup = () => {
   const selectCollectionStageGroups = createSelectCollectionStageGroups();
   return createShallowEqualResultSelector(
-    selectArticleFragments,
+    selectCards,
     selectCollectionStageGroups,
     selectGroupName,
     selectIncludeSupportingArticles,
     (
-      articleFragments,
+      cards,
       collectionGroups,
       groupName,
       includeSupportingArticles = true
@@ -313,29 +313,29 @@ const createSelectArticlesInCollectionGroup = () => {
       const groups = groupName
         ? [
             collectionGroups.find(({ id }) => id === groupName) || {
-              articleFragments: []
+              cards: []
             }
           ]
         : collectionGroups;
-      const groupArticleFragmentIds = groups.reduce(
-        (acc, group) => acc.concat(group.articleFragments || []),
+      const groupCardIds = groups.reduce(
+        (acc, group) => acc.concat(group.cards || []),
         [] as string[]
       );
       if (!includeSupportingArticles) {
-        return groupArticleFragmentIds;
+        return groupCardIds;
       }
-      return groupArticleFragmentIds.reduce(
+      return groupCardIds.reduce(
         (acc, id) => {
-          const articleFragment = articleFragments[id];
+          const card = cards[id];
           if (
-            !articleFragment ||
-            !articleFragment.meta ||
-            !articleFragment.meta.supporting ||
-            !articleFragment.meta.supporting.length
+            !card ||
+            !card.meta ||
+            !card.meta.supporting ||
+            !card.meta.supporting.length
           ) {
             return acc.concat(id);
           }
-          return acc.concat(id, articleFragment.meta.supporting);
+          return acc.concat(id, card.meta.supporting);
         },
         [] as string[]
       );
@@ -353,7 +353,7 @@ const createSelectArticlesInCollection = () => {
       includeSupportingArticles = true
     }: {
       collectionId: string;
-      collectionSet: CollectionItemSets;
+      collectionSet: CardSets;
       includeSupportingArticles?: boolean;
     }
   ) =>
@@ -371,7 +371,7 @@ const createSelectAllArticlesInCollection = () => {
     collectionIds.reduce(
       (acc, id) => [
         ...acc,
-        ...Object.values(collectionItemSets).reduce(
+        ...Object.values(cardSets).reduce(
           (acc1, collectionSet) => [
             ...acc1,
             ...articlesInCollection(state, {
@@ -386,61 +386,61 @@ const createSelectAllArticlesInCollection = () => {
     );
 };
 
-const selectArticleFragmentId = (
+const selectCardId = (
   _: unknown,
-  { articleFragmentId }: { articleFragmentId: string }
-) => articleFragmentId;
+  { cardId }: { cardId: string }
+) => cardId;
 
 const createSelectSupportingArticles = () =>
   createShallowEqualResultSelector(
-    selectArticleFragmentsFromRootState,
-    selectArticleFragmentId,
-    (articleFragments, id) =>
-      (articleFragments[id].meta.supporting
-        ? articleFragments[id].meta.supporting!
+    selectCardsFromRootState,
+    selectCardId,
+    (cards, id) =>
+      (cards[id].meta.supporting
+        ? cards[id].meta.supporting!
         : []
-      ).map((sId: string) => articleFragments[sId])
+      ).map((sId: string) => cards[sId])
   );
 
 const createSelectGroupArticles = () =>
   createShallowEqualResultSelector(
     selectGroupsFromRootState,
-    selectArticleFragmentsFromRootState,
+    selectCardsFromRootState,
     (_: any, { groupId }: { groupId: string }) => groupId,
-    (groups, articleFragments, groupId) =>
-      (groups[groupId].articleFragments || []).map(
-        afId => articleFragments[afId]
+    (groups, cards, groupId) =>
+      (groups[groupId].cards || []).map(
+        afId => cards[afId]
       )
   );
 
 const createSelectArticlesFromIds = () =>
   createShallowEqualResultSelector(
-    selectArticleFragmentsFromRootState,
-    (_: any, { articleFragmentIds }: { articleFragmentIds: string[] }) =>
-      articleFragmentIds,
-    (articleFragments, articleFragmentIds) =>
-      (articleFragmentIds || []).map((afId: string) => articleFragments[afId])
+    selectCardsFromRootState,
+    (_: any, { cardIds }: { cardIds: string[] }) =>
+      cardIds,
+    (cards, cardIds) =>
+      (cardIds || []).map((afId: string) => cards[afId])
   );
 
-const createDemornalisedArticleFragment = (
-  articleFragmentId: string,
-  articleFragments: { [id: string]: ArticleFragment }
-): ArticleFragmentDenormalised =>
-  articleFragments[articleFragmentId].meta &&
-  articleFragments[articleFragmentId].meta.supporting
+const createDemornalisedCard = (
+  cardId: string,
+  cards: { [id: string]: Card }
+): CardDenormalised =>
+  cards[cardId].meta &&
+  cards[cardId].meta.supporting
     ? {
-        ...articleFragments[articleFragmentId],
+        ...cards[cardId],
         meta: {
-          ...articleFragments[articleFragmentId].meta,
+          ...cards[cardId].meta,
           supporting:
-            articleFragments[articleFragmentId].meta.supporting &&
-            articleFragments[articleFragmentId].meta.supporting!.map(
+            cards[cardId].meta.supporting &&
+            cards[cardId].meta.supporting!.map(
               (supportingFragmentId: string) =>
-                articleFragments[supportingFragmentId]
+                cards[supportingFragmentId]
             )
         }
       }
-    : { ...articleFragments[articleFragmentId] };
+    : { ...cards[cardId] };
 
 // this creates a map between a group id and it's parent collection id
 // { [groupId: string]: string /* collectionId */ }
@@ -450,14 +450,14 @@ const selectGroupCollectionMap = createSelector(
     [id: string]: Collection;
   }): {
     [id: string]: {
-      collectionItemSet: CollectionItemSets;
+      cardSet: CardSets;
       collectionId: string;
     };
   } =>
     Object.values(collections).reduce(
       (mapAcc, collection) => ({
         ...mapAcc,
-        ...(['live', 'draft', 'previously'] as CollectionItemSets[]).reduce(
+        ...(['live', 'draft', 'previously'] as CardSets[]).reduce(
           (stageAcc, stage) => ({
             ...stageAcc,
             ...(collection[stage] || []).reduce(
@@ -465,7 +465,7 @@ const selectGroupCollectionMap = createSelector(
                 ...groupsAcc,
                 [groupId]: {
                   collectionId: collection.id,
-                  collectionItemSet: stage
+                  cardSet: stage
                 }
               }),
               {}
@@ -479,22 +479,22 @@ const selectGroupCollectionMap = createSelector(
 );
 
 const selectGroupCollection = (state: State, groupId: string) => {
-  const { collectionId, collectionItemSet } = selectGroupCollectionMap(state)[
+  const { collectionId, cardSet } = selectGroupCollectionMap(state)[
     groupId
   ];
   const collection = collectionSelectors.selectById(state, collectionId);
-  return { collection, collectionItemSet };
+  return { collection, cardSet };
 };
 
 const selectGroupSiblings = (state: State, groupId: string) => {
-  const { collection, collectionItemSet } = selectGroupCollection(
+  const { collection, cardSet } = selectGroupCollection(
     state,
     groupId
   );
   if (!collection) {
     return [];
   }
-  return (collection[collectionItemSet] || []).map(
+  return (collection[cardSet] || []).map(
     id => selectGroups(state)[id]
   );
 };
@@ -506,31 +506,31 @@ const selectArticleGroup = (
 ) => {
   const groups = selectGroups(state);
   const groupInAction = groups[groupIdFromAction];
-  if (groupInAction && groupInAction.articleFragments.includes(fragmentId)) {
+  if (groupInAction && groupInAction.cards.includes(fragmentId)) {
     return groupIdFromAction;
   }
 
   const actualFragmentGroup = Object.values(groups).find(
-    group => group && group.articleFragments.includes(fragmentId)
+    group => group && group.cards.includes(fragmentId)
   );
 
   return actualFragmentGroup && actualFragmentGroup.uuid;
 };
 
 const groupsArticleCount = (groups: Group[]) =>
-  groups.reduce((acc, group) => acc + group.articleFragments.length, 0);
+  groups.reduce((acc, group) => acc + group.cards.length, 0);
 
 const selectGroupSiblingsArticleCount = (state: State, groupId: string) =>
   groupsArticleCount(selectGroupSiblings(state, groupId));
 
 const selectIndexInGroup = (state: State, groupId: string, articleId: string) =>
-  selectGroups(state)[groupId].articleFragments.indexOf(articleId);
+  selectGroups(state)[groupId].cards.indexOf(articleId);
 
-const selectExternalArticleIdFromArticleFragment = (
+const selectExternalArticleIdFromCard = (
   state: State,
   id: string
 ): string | undefined => {
-  const externalArticle = selectExternalArticleFromArticleFragment(state, id);
+  const externalArticle = selectExternalArticleFromCard(state, id);
 
   if (!externalArticle) {
     return undefined;
@@ -540,9 +540,9 @@ const selectExternalArticleIdFromArticleFragment = (
 };
 
 export {
-  selectExternalArticleFromArticleFragment,
-  createSelectArticleFromArticleFragment,
-  selectArticleFragmentsFromRootState,
+  selectExternalArticleFromCard,
+  createSelectArticleFromCard,
+  selectCardsFromRootState,
   createSelectArticlesInCollectionGroup,
   createSelectArticlesInCollection,
   createSelectAllArticlesInCollection,
@@ -551,11 +551,11 @@ export {
   createSelectCollection,
   createSelectCollectionStageGroups,
   createSelectPreviouslyLiveArticlesInCollection,
-  createDemornalisedArticleFragment,
+  createDemornalisedCard,
   selectSharedState,
-  selectArticleFragment,
+  selectCard,
   createSelectCollectionEditWarning,
-  selectArticleFragments,
+  selectCards,
   selectGroupCollection,
   selectGroupSiblings,
   selectGroupSiblingsArticleCount,
@@ -564,9 +564,9 @@ export {
   selectGroups,
   selectArticleGroup,
   groupsArticleCount,
-  selectExternalArticleIdFromArticleFragment,
-  selectCollectionItemHasMediaOverrides,
+  selectExternalArticleIdFromCard,
+  selectCardHasMediaOverrides,
   createSelectArticlesFromIds,
-  createSelectIsArticleFragmentLive,
+  createSelectIsCardLive,
   selectSupportingArticleCount
 };

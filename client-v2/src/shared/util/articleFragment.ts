@@ -1,5 +1,5 @@
 import v4 from 'uuid/v4';
-import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
+import { Card, CardMeta } from 'shared/types/Collection';
 import pick from 'lodash/pick';
 import cloneDeep from 'lodash/cloneDeep';
 
@@ -26,9 +26,9 @@ const createFragment = (
 
 // only go one deep
 const cloneFragment = (
-  fragment: ArticleFragment,
-  fragments: { [id: string]: ArticleFragment } // all the article fragments to enable nested rebuilds
-): { parent: ArticleFragment; supporting: ArticleFragment[] } => {
+  fragment: Card,
+  fragments: { [id: string]: Card } // all the article fragments to enable nested rebuilds
+): { parent: Card; supporting: Card[] } => {
   const sup = (fragment.meta.supporting || [])
     .map(id => {
       const supportingFragment = fragments[id];
@@ -41,7 +41,7 @@ const cloneFragment = (
         fragments
       ).parent;
     })
-    .filter((s: ArticleFragment): s is ArticleFragment => !!s);
+    .filter((s: Card): s is Card => !!s);
 
   return {
     parent: {
@@ -58,8 +58,8 @@ const cloneFragment = (
 
 const cloneActiveImageMeta = ({
   meta
-}: ArticleFragment): ArticleFragmentMeta => {
-  const newMeta: ArticleFragmentMeta = {
+}: Card): CardMeta => {
+  const newMeta: CardMeta = {
     imageCutoutReplace: false,
     imageSlideshowReplace: false,
     imageReplace: false

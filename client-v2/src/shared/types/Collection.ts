@@ -5,31 +5,31 @@ interface Group {
   id: string | null;
   name: string | null;
   uuid: string;
-  articleFragments: string[];
+  cards: string[];
 }
 
-// CollectionItemSets represent all of the lists of collectionItems available in a collection.
-type CollectionItemSets = 'draft' | 'live' | 'previously';
+// CardSets represent all of the lists of cards available in a collection.
+type CardSets = 'draft' | 'live' | 'previously';
 // Stages represent only those lists which are curated by the user.
 type Stages = 'draft' | 'live';
 
-type CollectionItemTypes = 'SNAP_LINK' | 'ARTICLE';
-type CollectionItemSizes = 'wide' | 'default' | 'medium' | 'small';
+type CardTypes = 'SNAP_LINK' | 'ARTICLE';
+type CardSizes = 'wide' | 'default' | 'medium' | 'small';
 
-interface NestedArticleFragmentRootFields {
+interface NestedCardRootFields {
   id: string;
   frontPublicationDate: number;
   publishedBy?: string;
 }
 
-type NestedArticleFragment = NestedArticleFragmentRootFields & {
+type NestedCard = NestedCardRootFields & {
   meta: {
-    supporting?: Array<Diff<NestedArticleFragment, { supporting: unknown }>>;
+    supporting?: Array<Diff<NestedCard, { supporting: unknown }>>;
     group?: string | null;
   };
 };
 
-interface ArticleFragmentRootMeta {
+interface CardRootMeta {
   group?: string;
   headline?: string;
   trailText?: string;
@@ -76,30 +76,30 @@ interface ArticleFragmentRootMeta {
   coverCardTabletImage?: ImageData;
 }
 
-type ArticleFragmentRootFields = NestedArticleFragmentRootFields & {
+type CardRootFields = NestedCardRootFields & {
   uuid: string;
 };
 
-type ArticleFragmentMeta = ArticleFragmentRootMeta & {
+type CardMeta = CardRootMeta & {
   supporting?: string[];
 };
 
-interface ArticleFragment extends ArticleFragmentRootFields {
-  meta: ArticleFragmentMeta;
+interface Card extends CardRootFields {
+  meta: CardMeta;
 }
 
-interface ArticleFragmentMetaDenormalised extends ArticleFragmentRootMeta {
-  supporting?: ArticleFragmentDenormalised[];
+interface CardMetaDenormalised extends CardRootMeta {
+  supporting?: CardDenormalised[];
 }
 
-interface ArticleFragmentDenormalised extends ArticleFragmentRootFields {
-  meta: ArticleFragmentMetaDenormalised;
+interface CardDenormalised extends CardRootFields {
+  meta: CardMetaDenormalised;
 }
 
 interface CollectionFromResponse {
-  live: NestedArticleFragment[];
-  previously?: NestedArticleFragment[];
-  draft?: NestedArticleFragment[];
+  live: NestedCard[];
+  previously?: NestedCard[];
+  draft?: NestedCard[];
   isHidden?: boolean;
   lastUpdated?: number;
   updatedBy?: string;
@@ -115,11 +115,11 @@ type CollectionWithNestedArticles = CollectionFromResponse & {
   id: string;
 };
 
-// previouslyArticleFragmentIds is stored in a separate key to avoid losing ordering information during normalisation.
+// previouslyCardIds is stored in a separate key to avoid losing ordering information during normalisation.
 interface Collection {
   live?: string[];
   previously?: string[];
-  previouslyArticleFragmentIds?: string[]; // this contains ids for deleted articles on a collection
+  previouslyCardIds?: string[]; // this contains ids for deleted articles on a collection
   draft?: string[];
   id: string;
   lastUpdated?: number;
@@ -141,18 +141,18 @@ interface ArticleTag {
 }
 
 export {
-  NestedArticleFragment,
-  ArticleFragment,
-  ArticleFragmentDenormalised,
-  ArticleFragmentRootFields,
-  ArticleFragmentMeta,
+  NestedCard,
+  Card,
+  CardDenormalised,
+  CardRootFields,
+  CardMeta,
   CollectionWithNestedArticles,
   CollectionFromResponse,
   Collection,
-  CollectionItemTypes,
-  CollectionItemSizes,
+  CardTypes,
+  CardSizes,
   Group,
   Stages,
-  CollectionItemSets,
+  CardSets,
   ArticleTag
 };

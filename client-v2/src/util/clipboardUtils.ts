@@ -1,6 +1,6 @@
 import {
-  ArticleFragment,
-  NestedArticleFragment
+  Card,
+  NestedCard
 } from 'shared/types/Collection';
 import { selectClipboard } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
@@ -8,26 +8,26 @@ import { normalize, denormalize } from './clipboardSchema';
 import { notLiveLabels } from 'constants/fronts';
 
 function normaliseClipboard(clipboard: {
-  articles: NestedArticleFragment[];
+  articles: NestedCard[];
 }): {
   clipboard: { articles: string[] };
-  articleFragments: { [id: string]: ArticleFragment };
+  cards: { [id: string]: Card };
 } {
   const normalisedClipboard = normalize(clipboard);
   return {
     clipboard: normalisedClipboard.result,
-    articleFragments: normalisedClipboard.entities.articleFragments || {}
+    cards: normalisedClipboard.entities.cards || {}
   };
 }
 
 function denormaliseClipboard(
   state: State
-): { articles: NestedArticleFragment[] } {
+): { articles: NestedCard[] } {
   const clipboard = selectClipboard(state);
 
   return denormalize(
     { articles: clipboard },
-    { articleFragments: state.shared.articleFragments }
+    { cards: state.shared.cards }
   );
 }
 

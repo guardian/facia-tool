@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { PosSpec } from 'lib/dnd';
-import { insertArticleFragment } from 'actions/ArticleFragments';
+import { insertCard } from 'actions/Cards';
 import { CapiArticle } from 'types/Capi';
 
 export interface RefDrop {
@@ -34,7 +34,7 @@ const dropToArticle = (e: React.DragEvent): MappableDropType | null => {
   return null;
 };
 
-const insertArticleFragmentFromDropEvent = (
+const insertCardFromDropEvent = (
   e: React.DragEvent,
   to: PosSpec,
   persistTo: 'collection' | 'clipboard'
@@ -44,8 +44,8 @@ const insertArticleFragmentFromDropEvent = (
     if (!dropType) {
       return;
     }
-    dispatch(insertArticleFragment(to, dropType, persistTo));
+    dispatch(insertCard(to, dropType, persistTo));
   };
 };
 
-export { insertArticleFragmentFromDropEvent };
+export { insertCardFromDropEvent };

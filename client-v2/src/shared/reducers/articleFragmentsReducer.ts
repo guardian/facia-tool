@@ -1,7 +1,7 @@
 import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import { State } from './sharedReducer';
-import { selectArticleFragments } from 'shared/selectors/shared';
+import { selectCards } from 'shared/selectors/shared';
 import {
   UPDATE_ARTICLE_FRAGMENT_META,
   ARTICLE_FRAGMENTS_RECEIVED,
@@ -9,11 +9,11 @@ import {
   REMOVE_SUPPORTING_ARTICLE_FRAGMENT,
   INSERT_SUPPORTING_ARTICLE_FRAGMENT,
   COPY_ARTICLE_FRAGMENT_IMAGE_META
-} from 'shared/actions/ArticleFragments';
-import { cloneActiveImageMeta } from 'shared/util/articleFragment';
+} from 'shared/actions/Cards';
+import { cloneActiveImageMeta } from 'shared/util/card';
 
-const articleFragments = (
-  state: State['articleFragments'] = {},
+const cards = (
+  state: State['cards'] = {},
   action: Action,
   prevSharedState: State
 ) => {
@@ -41,54 +41,54 @@ const articleFragments = (
       return Object.assign({}, state, payload);
     }
     case REMOVE_SUPPORTING_ARTICLE_FRAGMENT: {
-      const articleFragment = state[action.payload.id];
+      const card = state[action.payload.id];
       return {
         ...state,
         [action.payload.id]: {
-          ...articleFragment,
+          ...card,
           meta: {
-            ...articleFragment.meta,
-            supporting: (articleFragment.meta.supporting || []).filter(
-              sid => sid !== action.payload.articleFragmentId
+            ...card.meta,
+            supporting: (card.meta.supporting || []).filter(
+              sid => sid !== action.payload.cardId
             )
           }
         }
       };
     }
     case INSERT_SUPPORTING_ARTICLE_FRAGMENT: {
-      const { id, articleFragmentId, index } = action.payload;
-      const targetArticleFragment = state[id];
-      const insertedArticleFragment = state[articleFragmentId];
+      const { id, cardId, index } = action.payload;
+      const targetCard = state[id];
+      const insertedCard = state[cardId];
 
-      if (!insertedArticleFragment) {
+      if (!insertedCard) {
         // this may have happened if we've purged after a poll
         return state;
       }
 
       const supporting = insertAndDedupeSiblings(
-        targetArticleFragment.meta.supporting || [],
+        targetCard.meta.supporting || [],
         [
-          insertedArticleFragment.uuid,
-          ...(insertedArticleFragment.meta.supporting || [])
+          insertedCard.uuid,
+          ...(insertedCard.meta.supporting || [])
         ],
         index,
-        selectArticleFragments(prevSharedState)
+        selectCards(prevSharedState)
       );
 
       return {
         ...state,
         [id]: {
-          ...targetArticleFragment,
+          ...targetCard,
           meta: {
-            ...targetArticleFragment.meta,
+            ...targetCard.meta,
             supporting
           }
         },
         //
-        [articleFragmentId]: {
-          ...insertedArticleFragment,
+        [cardId]: {
+          ...insertedCard,
           meta: {
-            ...insertedArticleFragment.meta,
+            ...insertedCard.meta,
             // ...ensuer that after flattening we remove the supporting from
             // the inserted article fragment
             supporting: []
@@ -136,4 +136,4 @@ const articleFragments = (
   }
 };
 
-export default articleFragments;
+export default cards;

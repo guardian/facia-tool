@@ -67,7 +67,7 @@ export const clipboardItemDeleteButton = maybeGetNth(
 // Collections //
 export const collection = maybeGetNth(select(COLLECTION_SELECTOR));
 
-export const allCollectionItems = collectionIndex => {
+export const allCards = collectionIndex => {
   const collectionSelected = collection(collectionIndex);
   return collectionSelected.find(`[data-testid="${COLLECTION_ITEM_SELECTOR}"]`);
 };
@@ -77,24 +77,24 @@ export const allCollectionDropZones = collectionIndex => {
   return collectionSelected.find(`[data-testid="${DROP_ZONE_SELECTOR}"]`);
 };
 
-export const collectionItem = (collectionIndex, itemIndex = 0) =>
-  allCollectionItems(collectionIndex).nth(itemIndex);
+export const card = (collectionIndex, itemIndex = 0) =>
+  allCards(collectionIndex).nth(itemIndex);
 
 export const collectionDropZone = (collectionIndex, dropZoneIndex = 0) =>
   allCollectionDropZones(collectionIndex).nth(dropZoneIndex);
 
-export const collectionItemHeadline = (collectionIndex, itemIndex = 0) =>
-  collectionItem(collectionIndex, itemIndex).find(
+export const cardHeadline = (collectionIndex, itemIndex = 0) =>
+  card(collectionIndex, itemIndex).find(
     `[data-testid="${HEADLINE_SELECTOR}"]`
   );
 
-export const collectionItemKicker = (collectionIndex, itemIndex = 0) =>
-  collectionItem(collectionIndex, itemIndex).find(
+export const cardKicker = (collectionIndex, itemIndex = 0) =>
+  card(collectionIndex, itemIndex).find(
     `[data-testid="${KICKER_SELECTOR}"]`
   );
 
-export const collectionItemBreakingNews = (collectionIndex, itemIndex = 0) =>
-  collectionItem(collectionIndex, itemIndex).find(
+export const cardBreakingNews = (collectionIndex, itemIndex = 0) =>
+  card(collectionIndex, itemIndex).find(
     `[data-testid="${BREAKING_NEWS_SELECTOR}"]`
   );
 
@@ -103,16 +103,16 @@ export const collectionDiscardButton = collectionIndex =>
     `[data-testid="${COLLECTION_DISCARD_BUTTON}"]`
   );
 
-export const collectionItemDeleteButton = (collectionIndex, itemIndex = 0) =>
-  collectionItem(collectionIndex, itemIndex).find(
+export const cardDeleteButton = (collectionIndex, itemIndex = 0) =>
+  card(collectionIndex, itemIndex).find(
     `[data-testid="${DELETE_BUTTON}"]`
   );
 
-export const collectionItemAddToClipboardButton = (
+export const cardAddToClipboardButton = (
   collectionIndex,
   itemIndex = 0
 ) =>
-  collectionItem(collectionIndex, itemIndex).find(
+  card(collectionIndex, itemIndex).find(
     `[data-testid="${ADD_TO_CLIPBOARD_BUTTON}"]`
   );
 

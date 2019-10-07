@@ -3,43 +3,43 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Article from 'shared/components/article/Article';
 import { State } from 'types/State';
-import { createSelectCollectionItemType } from 'shared/selectors/collectionItem';
+import { createSelectCardType } from 'shared/selectors/card';
 import {
   selectSharedState,
-  selectExternalArticleFromArticleFragment,
+  selectExternalArticleFromCard,
   selectSupportingArticleCount
 } from 'shared/selectors/shared';
-import collectionItemTypes from 'shared/constants/collectionItemTypes';
+import cardTypes from 'shared/constants/cardTypes';
 import {
-  CollectionItemTypes,
-  CollectionItemSizes,
-  ArticleFragmentMeta
+  CardTypes,
+  CardSizes,
+  CardMeta
 } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import {
-  copyArticleFragmentImageMetaWithPersist,
-  addImageToArticleFragment,
-  addArticleFragmentToClipboard
-} from 'actions/ArticleFragments';
+  copyCardImageMetaWithPersist,
+  addImageToCard,
+  addCardToClipboard
+} from 'actions/Cards';
 import {
   validateImageEvent,
   ValidationResponse
 } from 'shared/util/validateImageSrc';
 import {
-  articleFragmentImageCriteria,
-  editionsArticleFragmentImageCriteria,
+  cardImageCriteria,
+  editionsCardImageCriteria,
   DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
 } from 'constants/image';
 import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
 import {
-  selectIsArticleFragmentFormOpen,
-  editorClearArticleFragmentSelection
+  selectIsCardFormOpen,
+  editorClearCardSelection
 } from 'bundles/frontsUIBundle';
 import { bindActionCreators } from 'redux';
-import ArticleFragmentFormInline from '../ArticleFragmentFormInline';
-import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'actions/ArticleFragments';
+import CardFormInline from '../CardFormInline';
+import { updateCardMeta as updateCardMetaAction } from 'actions/Cards';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { events } from 'services/GA';
@@ -54,10 +54,10 @@ const imageDropTypes = [
   DRAG_DATA_GRID_IMAGE_URL
 ];
 
-const CollectionItemContainer = styled('div')<{
+const CardContainer = styled('div')<{
   pillarId: string | undefined;
   isLive?: boolean;
-  size?: CollectionItemSizes;
+  size?: CardSizes;
 }>`
   border-top-width: 1px;
   border-top-style: solid;
@@ -76,8 +76,8 @@ interface ContainerProps {
   onSelect: (uuid: string) => void;
   onDelete: () => void;
   parentId: string;
-  size?: CollectionItemSizes;
-  textSize?: CollectionItemSizes;
+  size?: CardSizes;
+  textSize?: CardSizes;
   isUneditable?: boolean;
   showMeta?: boolean;
   isSupporting?: boolean;
@@ -87,11 +87,11 @@ interface ContainerProps {
 
 type ArticleContainerProps = ContainerProps & {
   onAddToClipboard: (uuid: string) => void;
-  copyCollectionItemImageMeta: (from: string, to: string) => void;
-  addImageToArticleFragment: (id: string, response: ValidationResponse) => void;
-  updateArticleFragmentMeta: (id: string, meta: ArticleFragmentMeta) => void;
-  clearArticleFragmentSelection: (id: string) => void;
-  type: CollectionItemTypes;
+  copyCardImageMeta: (from: string, to: string) => void;
+  addImageToCard: (id: string, response: ValidationResponse) => void;
+  updateCardMeta: (id: string, meta: CardMeta) => void;
+  clearCardSelection: (id: string) => void;
+  type: CardTypes;
   isSelected: boolean;
   numSupportingArticles: number;
   editMode: EditMode;
@@ -99,7 +99,7 @@ type ArticleContainerProps = ContainerProps & {
   pillarId?: string;
 };
 
-class CollectionItem extends React.Component<ArticleContainerProps> {
+class Card extends React.Component<ArticleContainerProps> {
   public state = {
     showArticleSublinks: false
   };
@@ -125,8 +125,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
       textSize,
       isUneditable,
       numSupportingArticles,
-      updateArticleFragmentMeta,
-      clearArticleFragmentSelection,
+      updateCardMeta,
+      clearCardSelection,
       parentId,
       showMeta,
       frontId,
@@ -148,7 +148,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
 
     const getCard = () => {
       switch (type) {
-        case collectionItemTypes.ARTICLE:
+        case cardTypes.ARTICLE:
           return (
             <Article
               frontId={frontId}
@@ -176,7 +176,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
               </EditModeVisibility>
             </Article>
           );
-        case collectionItemTypes.SNAP_LINK:
+        case cardTypes.SNAP_LINK:
           return (
             <>
               <SnapLink
@@ -209,20 +209,20 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     };
 
     return (
-      <CollectionItemContainer size={size} isLive={isLive} pillarId={pillarId}>
+      <CardContainer size={size} isLive={isLive} pillarId={pillarId}>
         {isSelected ? (
           <>
-            <ArticleFragmentFormInline
-              articleFragmentId={uuid}
+            <CardFormInline
+              cardId={uuid}
               isSupporting={isSupporting}
               key={uuid}
               form={uuid}
               frontId={frontId}
               onSave={meta => {
-                updateArticleFragmentMeta(uuid, meta);
-                clearArticleFragmentSelection(uuid);
+                updateCardMeta(uuid, meta);
+                clearCardSelection(uuid);
               }}
-              onCancel={() => clearArticleFragmentSelection(uuid)}
+              onCancel={() => clearCardSelection(uuid)}
               size={size}
             />
             {getSublinks}
@@ -233,7 +233,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
         ) : (
           getCard()
         )}
-      </CollectionItemContainer>
+      </CardContainer>
     );
   }
 
@@ -250,39 +250,39 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
     e.preventDefault();
     e.persist();
 
-    // Our drag is a copy event, from another CollectionItem
+    // Our drag is a copy event, from another Card
     const articleUuid = e.dataTransfer.getData(
       DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE
     );
     if (articleUuid) {
-      this.props.copyCollectionItemImageMeta(articleUuid, this.props.uuid);
+      this.props.copyCardImageMeta(articleUuid, this.props.uuid);
       return;
     }
 
     const isEditionsMode = this.props.editMode === 'editions';
     const imageCriteria = isEditionsMode
-      ? editionsArticleFragmentImageCriteria
-      : articleFragmentImageCriteria;
+      ? editionsCardImageCriteria
+      : cardImageCriteria;
 
     // Our drag contains Grid data
     validateImageEvent(e, this.props.frontId, imageCriteria)
       .then(imageData =>
-        this.props.addImageToArticleFragment(this.props.uuid, imageData)
+        this.props.addImageToCard(this.props.uuid, imageData)
       )
       .catch(alert);
   };
 }
 
 const createMapStateToProps = () => {
-  const selectType = createSelectCollectionItemType();
+  const selectType = createSelectCardType();
   return (state: State, { uuid, frontId }: ContainerProps) => {
-    const maybeExternalArticle = selectExternalArticleFromArticleFragment(
+    const maybeExternalArticle = selectExternalArticleFromCard(
       selectSharedState(state),
       uuid
     );
     return {
       type: selectType(selectSharedState(state), uuid),
-      isSelected: selectIsArticleFragmentFormOpen(state, uuid, frontId),
+      isSelected: selectIsCardFormOpen(state, uuid, frontId),
       isLive: maybeExternalArticle && isArticleLive(maybeExternalArticle),
       pillarId: maybeExternalArticle && maybeExternalArticle.pillarId,
       numSupportingArticles: selectSupportingArticleCount(
@@ -297,11 +297,11 @@ const createMapStateToProps = () => {
 const mapDispatchToProps = (dispatch: Dispatch) => {
   return bindActionCreators(
     {
-      onAddToClipboard: addArticleFragmentToClipboard,
-      copyCollectionItemImageMeta: copyArticleFragmentImageMetaWithPersist,
-      addImageToArticleFragment,
-      updateArticleFragmentMeta: updateArticleFragmentMetaAction,
-      clearArticleFragmentSelection: editorClearArticleFragmentSelection
+      onAddToClipboard: addCardToClipboard,
+      copyCardImageMeta: copyCardImageMetaWithPersist,
+      addImageToCard,
+      updateCardMeta: updateCardMetaAction,
+      clearCardSelection: editorClearCardSelection
     },
     dispatch
   );
@@ -310,4 +310,4 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 export default connect(
   createMapStateToProps,
   mapDispatchToProps
-)(CollectionItem);
+)(Card);

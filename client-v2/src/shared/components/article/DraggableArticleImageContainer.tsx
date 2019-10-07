@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import {
   selectSharedState,
-  selectCollectionItemHasMediaOverrides,
-  createSelectArticleFromArticleFragment
+  selectCardHasMediaOverrides,
+  createSelectArticleFromCard
 } from 'shared/selectors/shared';
 import {
   DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
@@ -93,7 +93,7 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
 }
 
 const mapStateToProps = () => {
-  const selectArticle = createSelectArticleFromArticleFragment();
+  const selectArticle = createSelectArticleFromCard();
 
   return (state: State, { id, canDrag = true }: ContainerProps) => {
     const article = selectArticle(selectSharedState(state), id);
@@ -101,7 +101,7 @@ const mapStateToProps = () => {
     return {
       currentImageUrl: article && article.thumbnail,
       canDrag: article ? !!article.thumbnail && canDrag : false,
-      hasImageOverrides: selectCollectionItemHasMediaOverrides(
+      hasImageOverrides: selectCardHasMediaOverrides(
         selectSharedState(state),
         id
       )

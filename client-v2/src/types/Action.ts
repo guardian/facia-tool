@@ -3,13 +3,13 @@
  * for typing to work nicely in reducers
  */
 import {
-  InsertGroupArticleFragment as SharedInsertGroupArticleFragment,
-  InsertSupportingArticleFragment as SharedInsertSupportingArticleFragment,
-  RemoveGroupArticleFragment as SharedRemoveGroupArticleFragment,
-  RemoveSupportingArticleFragment as SharedRemoveSupportingArticleFragment,
+  InsertGroupCard as SharedInsertGroupCard,
+  InsertSupportingCard as SharedInsertSupportingCard,
+  RemoveGroupCard as SharedRemoveGroupCard,
+  RemoveSupportingCard as SharedRemoveSupportingCard,
   Action as SharedActions,
-  InsertArticleFragmentPayload,
-  RemoveArticleFragmentPayload
+  InsertCardPayload,
+  RemoveCardPayload
 } from 'shared/types/Action';
 import { PersistMeta } from 'util/storeMiddleware';
 import { Config } from './Config';
@@ -117,20 +117,20 @@ interface EditorSetOpenFronts {
   payload: { frontIdsByPriority: { [id: string]: string[] } };
 }
 
-interface EditorSelectArticleFragment {
+interface EditorSelectCard {
   type: typeof EDITOR_SELECT_ARTICLE_FRAGMENT;
   payload: {
-    articleFragmentId: string;
+    cardId: string;
     frontId: string;
     collectionId: string;
     isSupporting: boolean;
   };
 }
 
-interface EditorClearArticleFragmentSelection {
+interface EditorClearCardSelection {
   type: typeof EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION;
   payload: {
-    articleFragmentId: string;
+    cardId: string;
   };
 }
 
@@ -167,21 +167,21 @@ interface ActionPersistMeta {
   meta: PersistMeta;
 }
 
-type InsertGroupArticleFragment = SharedInsertGroupArticleFragment &
+type InsertGroupCard = SharedInsertGroupCard &
   ActionPersistMeta;
-type InsertSupportingArticleFragment = SharedInsertSupportingArticleFragment &
+type InsertSupportingCard = SharedInsertSupportingCard &
   ActionPersistMeta;
-type InsertClipboardArticleFragment = {
+type InsertClipboardCard = {
   type: 'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
-} & { payload: InsertArticleFragmentPayload };
+} & { payload: InsertCardPayload };
 
-type RemoveGroupArticleFragment = SharedRemoveGroupArticleFragment &
+type RemoveGroupCard = SharedRemoveGroupCard &
   ActionPersistMeta;
-type RemoveSupportingArticleFragment = SharedRemoveSupportingArticleFragment &
+type RemoveSupportingCard = SharedRemoveSupportingCard &
   ActionPersistMeta;
-type RemoveClipboardArticleFragment = {
+type RemoveClipboardCard = {
   type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
-} & RemoveArticleFragmentPayload;
+} & RemoveCardPayload;
 
 type ActionError =
   | 'Could not fetch fronts config'
@@ -318,12 +318,12 @@ type Action =
   | FrontsUpdateLastPressedAction
   | SharedActions
   | RecordUnpublishedChanges
-  | InsertGroupArticleFragment
-  | InsertSupportingArticleFragment
-  | InsertClipboardArticleFragment
-  | RemoveGroupArticleFragment
-  | RemoveSupportingArticleFragment
-  | RemoveClipboardArticleFragment
+  | InsertGroupCard
+  | InsertSupportingCard
+  | InsertClipboardCard
+  | RemoveGroupCard
+  | RemoveSupportingCard
+  | RemoveClipboardCard
   | UpdateClipboardContent
   | ClearClipboard
   | EditorOpenCurrentFrontsMenu
@@ -336,8 +336,8 @@ type Action =
   | EditorFavouriteFront
   | EditorUnfavouriteFront
   | EditorSetFavouriteFronts
-  | EditorSelectArticleFragment
-  | EditorClearArticleFragmentSelection
+  | EditorSelectCard
+  | EditorClearCardSelection
   | EditorOpenClipboard
   | EditorCloseClipboard
   | EditorOpenOverview
@@ -375,12 +375,12 @@ export {
   FrontsUpdateLastPressedAction,
   SharedActions,
   RecordUnpublishedChanges,
-  InsertGroupArticleFragment,
-  InsertSupportingArticleFragment,
-  InsertClipboardArticleFragment,
-  RemoveGroupArticleFragment,
-  RemoveSupportingArticleFragment,
-  RemoveClipboardArticleFragment,
+  InsertGroupCard,
+  InsertSupportingCard,
+  InsertClipboardCard,
+  RemoveGroupCard,
+  RemoveSupportingCard,
+  RemoveClipboardCard,
   UpdateClipboardContent,
   ClearClipboard,
   EditorOpenCurrentFrontsMenu,
@@ -395,8 +395,8 @@ export {
   EditorSetFavouriteFronts,
   EditorOpenCollection,
   EditorCloseCollection,
-  EditorSelectArticleFragment,
-  EditorClearArticleFragmentSelection,
+  EditorSelectCard,
+  EditorClearCardSelection,
   EditorOpenClipboard,
   EditorCloseClipboard,
   EditorOpenOverview,

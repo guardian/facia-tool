@@ -1,10 +1,10 @@
-export const articleFragmentImageCriteria = {
+export const cardImageCriteria = {
   minWidth: 400,
   widthAspectRatio: 5,
   heightAspectRatio: 3
 };
 
-export const editionsArticleFragmentImageCriteria = {
+export const editionsCardImageCriteria = {
   minWidth: 400
 };
 

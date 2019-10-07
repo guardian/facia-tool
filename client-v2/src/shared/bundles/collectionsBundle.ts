@@ -21,9 +21,9 @@ const {
 
 const collectionSelectors = {
   ...selectors,
-  selectParentCollectionOfArticleFragment: (
+  selectParentCollectionOfCard: (
     state: SharedState,
-    articleFragmentId: string
+    cardId: string
   ): string | null => {
     let collectionId: null | string = null;
     Object.keys(state.collections.data).some(id =>
@@ -31,19 +31,19 @@ const collectionSelectors = {
         const groups = state.collections.data[id][stage] || [];
 
         return groups.some((gId: string) => {
-          const articleFragments = state.groups[gId].articleFragments || [];
-          if (articleFragments.indexOf(articleFragmentId) !== -1) {
+          const cards = state.groups[gId].cards || [];
+          if (cards.indexOf(cardId) !== -1) {
             collectionId = id;
             return true;
           }
 
-          return articleFragments.some((afId: string) => {
+          return cards.some((afId: string) => {
             if (
-              state.articleFragments[afId] &&
-              state.articleFragments[afId].meta &&
-              state.articleFragments[afId].meta.supporting &&
-              state.articleFragments[afId].meta.supporting!.indexOf(
-                articleFragmentId
+              state.cards[afId] &&
+              state.cards[afId].meta &&
+              state.cards[afId].meta.supporting &&
+              state.cards[afId].meta.supporting!.indexOf(
+                cardId
               ) !== -1
             ) {
               collectionId = id;

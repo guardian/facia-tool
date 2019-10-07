@@ -11,11 +11,11 @@ import { getPageViewDataForCollection } from '../redux/modules/pageViewData/acti
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 import {
   selectSharedState,
-  selectExternalArticleIdFromArticleFragment
+  selectExternalArticleIdFromCard
 } from 'shared/selectors/shared';
 import {
   selectOpenFrontsCollectionsAndArticles,
-  selectOpenArticleFragmentIds
+  selectOpenCardIds
 } from 'bundles/frontsUIBundle';
 import { createSelectCollectionsInOpenFronts } from 'bundles/frontsUIBundle';
 
@@ -57,10 +57,10 @@ const createRefreshStaleCollections = (store: Store) => () => {
 
 const createRefreshOpenArticles = (store: Store) => () => {
   const state = store.getState();
-  const openArticleFragmentIds = selectOpenArticleFragmentIds(state);
-  const externalArticleIds = openArticleFragmentIds
+  const openCardIds = selectOpenCardIds(state);
+  const externalArticleIds = openCardIds
     .map(_ =>
-      selectExternalArticleIdFromArticleFragment(selectSharedState(state), _)
+      selectExternalArticleIdFromCard(selectSharedState(state), _)
     )
     .filter(_ => _) as string[];
   (store.dispatch as Dispatch)(fetchArticles(externalArticleIds));

@@ -48,7 +48,7 @@ const selectWillCollectionHitCollectionCap = (
   state: State,
   groupId: string,
   index: number,
-  articleFragmentId: string,
+  cardId: string,
   collectionCap: number
 ) => {
   const shared = selectSharedState(state);
@@ -57,7 +57,7 @@ const selectWillCollectionHitCollectionCap = (
     shared.groups,
     groupId,
     index,
-    articleFragmentId
+    cardId
   );
   const articleCount = groupsArticleCount(Object.values(patch));
   return collectionCap && articleCount > collectionCap;

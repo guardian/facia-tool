@@ -3,23 +3,23 @@ import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
 import { State } from 'types/State';
-import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
+import { insertCardFromDropEvent } from 'util/collectionUtils';
 import {
-  moveArticleFragment,
-  removeArticleFragment,
-  updateArticleFragmentMeta
-} from 'actions/ArticleFragments';
+  moveCard,
+  removeCard,
+  updateCardMeta
+} from 'actions/Cards';
 import {
-  editorSelectArticleFragment,
-  editorClearArticleFragmentSelection,
+  editorSelectCard,
+  editorClearCardSelection,
   selectIsClipboardOpen,
   createSelectCollectionIdsWithOpenForms
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
-import { ArticleFragment as TArticleFragment } from 'shared/types/Collection';
+import { Card as TCard } from 'shared/types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
-import ArticleFragmentLevel from './clipboard/ArticleFragmentLevel';
-import CollectionItem from './FrontsEdit/CollectionComponents/CollectionItem';
+import CardLevel from './clipboard/CardLevel';
+import Card from './FrontsEdit/CollectionComponents/Card';
 import { styled, theme } from 'constants/theme';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
 import {
@@ -77,13 +77,13 @@ const ClearClipboardButton = styled(ButtonRoundedWithLabel)`
 `;
 
 interface ClipboardProps {
-  selectArticleFragment: (id: string, isSupporting?: boolean) => void;
-  clearArticleFragmentSelection: () => void;
-  removeCollectionItem: (id: string) => void;
-  removeSupportingCollectionItem: (parentId: string, id: string) => void;
+  selectCard: (id: string, isSupporting?: boolean) => void;
+  clearCardSelection: () => void;
+  removeCard: (id: string) => void;
+  removeSupportingCard: (parentId: string, id: string) => void;
   clearClipboard: () => void;
   handleFocus: () => void;
-  handleArticleFocus: (articleFragment: TArticleFragment) => void;
+  handleArticleFocus: (card: TCard) => void;
   handleBlur: () => void;
   dispatch: Dispatch;
   isClipboardOpen: boolean;
@@ -124,14 +124,14 @@ class Clipboard extends React.Component<ClipboardProps> {
   // TODO: this code is repeated in src/components/FrontsEdit/Front.js
   // refactor
 
-  public handleMove = (move: Move<TArticleFragment>) => {
+  public handleMove = (move: Move<TCard>) => {
     this.props.dispatch(
-      moveArticleFragment(move.to, move.data, move.from || null, 'clipboard')
+      moveCard(move.to, move.data, move.from || null, 'clipboard')
     );
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-    this.props.dispatch(insertArticleFragmentFromDropEvent(e, to, 'clipboard'));
+    this.props.dispatch(insertCardFromDropEvent(e, to, 'clipboard'));
   };
 
   public render() {
@@ -139,9 +139,9 @@ class Clipboard extends React.Component<ClipboardProps> {
       isClipboardOpen,
       clipboardHasOpenForms,
       clipboardHasContent,
-      selectArticleFragment,
-      removeCollectionItem,
-      removeSupportingCollectionItem
+      selectCard,
+      removeCard,
+      removeSupportingCard
     } = this.props;
     return (
       <React.Fragment>
@@ -177,19 +177,19 @@ class Clipboard extends React.Component<ClipboardProps> {
                     onMove={this.handleMove}
                     onDrop={this.handleInsert}
                   >
-                    {(articleFragment, getAfProps) => (
+                    {(card, getAfProps) => (
                       <>
                         <FocusWrapper
                           tabIndex={0}
                           onFocus={e =>
-                            this.handleArticleFocus(e, articleFragment)
+                            this.handleArticleFocus(e, card)
                           }
                           area="clipboard"
                           onBlur={this.handleBlur}
-                          uuid={articleFragment.uuid}
+                          uuid={card.uuid}
                         >
-                          <CollectionItem
-                            uuid={articleFragment.uuid}
+                          <Card
+                            uuid={card.uuid}
                             parentId={clipboardId}
                             frontId={clipboardId}
                             getNodeProps={getAfProps}
@@ -197,38 +197,38 @@ class Clipboard extends React.Component<ClipboardProps> {
                             canDragImage={false}
                             canShowPageViewData={false}
                             textSize="small"
-                            onSelect={selectArticleFragment}
+                            onSelect={selectCard}
                             onDelete={() =>
-                              removeCollectionItem(articleFragment.uuid)
+                              removeCard(card.uuid)
                             }
                           >
-                            <ArticleFragmentLevel
-                              articleFragmentId={articleFragment.uuid}
+                            <CardLevel
+                              cardId={card.uuid}
                               onMove={this.handleMove}
                               onDrop={this.handleInsert}
                             >
                               {(supporting, getSProps, i, arr) => (
-                                <CollectionItem
+                                <Card
                                   uuid={supporting.uuid}
                                   frontId={clipboardId}
-                                  parentId={articleFragment.uuid}
+                                  parentId={card.uuid}
                                   canShowPageViewData={false}
                                   getNodeProps={getSProps}
                                   size="small"
                                   showMeta={false}
                                   onSelect={id =>
-                                    selectArticleFragment(id, true)
+                                    selectCard(id, true)
                                   }
                                   onDelete={() =>
-                                    removeSupportingCollectionItem(
-                                      articleFragment.uuid,
+                                    removeSupportingCard(
+                                      card.uuid,
                                       supporting.uuid
                                     )
                                   }
                                 />
                               )}
-                            </ArticleFragmentLevel>
-                          </CollectionItem>
+                            </CardLevel>
+                          </Card>
                         </FocusWrapper>
                       </>
                     )}
@@ -248,9 +248,9 @@ class Clipboard extends React.Component<ClipboardProps> {
 
   private handleArticleFocus = (
     e: React.FocusEvent<HTMLDivElement>,
-    articleFragment: TArticleFragment
+    card: TCard
   ) => {
-    this.props.handleArticleFocus(articleFragment);
+    this.props.handleArticleFocus(card);
     e.stopPropagation();
   };
 }
@@ -269,16 +269,16 @@ const mapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  clearArticleFragmentSelection: () =>
-    dispatch(editorClearArticleFragmentSelection(clipboardId)),
-  removeCollectionItem: (uuid: string) => {
+  clearCardSelection: () =>
+    dispatch(editorClearCardSelection(clipboardId)),
+  removeCard: (uuid: string) => {
     dispatch(
-      removeArticleFragment('clipboard', 'clipboard', uuid, 'clipboard')
+      removeCard('clipboard', 'clipboard', uuid, 'clipboard')
     );
   },
-  removeSupportingCollectionItem: (parentId: string, uuid: string) => {
+  removeSupportingCard: (parentId: string, uuid: string) => {
     dispatch(
-      removeArticleFragment('articleFragment', parentId, uuid, 'clipboard')
+      removeCard('card', parentId, uuid, 'clipboard')
     );
   },
   clearClipboard: () => {
@@ -290,18 +290,18 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         type: 'clipboard'
       })
     ),
-  handleArticleFocus: (articleFragment: TArticleFragment) => {
+  handleArticleFocus: (card: TCard) => {
     dispatch(
       setFocusState({
         type: 'clipboardArticle',
-        articleFragment
+        card
       })
     );
   },
   ...bindActionCreators(
     {
-      selectArticleFragment: editorSelectArticleFragment,
-      updateArticleFragmentMeta,
+      selectCard: editorSelectCard,
+      updateCardMeta,
       handleBlur: resetFocusState
     },
     dispatch
@@ -318,8 +318,8 @@ const mergeProps = (
 ) => ({
   ...stateProps,
   ...dispatchProps,
-  selectArticleFragment: (articleId: string, isSupporting = false) =>
-    dispatchProps.selectArticleFragment(
+  selectCard: (articleId: string, isSupporting = false) =>
+    dispatchProps.selectCard(
       articleId,
       clipboardId, // clipboardId is passed twice here as both the collection ID...
       clipboardId, // and the front ID

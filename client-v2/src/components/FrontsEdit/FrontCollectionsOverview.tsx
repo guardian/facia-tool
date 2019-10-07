@@ -5,11 +5,11 @@ import { State } from 'types/State';
 import { selectFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import CollectionOverview from './CollectionOverview';
-import { CollectionItemSets } from 'shared/types/Collection';
+import { CardSets } from 'shared/types/Collection';
 import ContainerHeadingPinline from 'shared/components/typography/ContainerHeadingPinline';
 import ContentContainer from 'shared/components/layout/ContentContainer';
-import { updateArticleFragmentMeta as updateArticleFragmentMetaAction } from 'actions/ArticleFragments';
-import { editorClearArticleFragmentSelection } from 'bundles/frontsUIBundle';
+import { updateCardMeta as updateCardMetaAction } from 'actions/Cards';
+import { editorClearCardSelection } from 'bundles/frontsUIBundle';
 import { bindActionCreators } from 'redux';
 import { Dispatch } from 'types/Store';
 
@@ -19,7 +19,7 @@ interface FrontContainerProps {
 
 type FrontCollectionOverviewProps = FrontContainerProps & {
   front: FrontConfig;
-  browsingStage: CollectionItemSets;
+  browsingStage: CardSets;
   currentCollection: string | undefined;
 };
 
@@ -77,8 +77,8 @@ const mapStateToProps = (state: State, props: FrontContainerProps) => ({
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
-      updateArticleFragmentMeta: updateArticleFragmentMetaAction,
-      clearArticleFragmentSelection: editorClearArticleFragmentSelection
+      updateCardMeta: updateCardMetaAction,
+      clearCardSelection: editorClearCardSelection
     },
     dispatch
   );

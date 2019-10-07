@@ -1,19 +1,19 @@
 import { ExternalArticle } from './ExternalArticle';
 import {
   Collection,
-  ArticleFragment,
+  Card,
   Group,
-  ArticleFragmentMeta
+  CardMeta
 } from './Collection';
 import { Actions } from 'lib/createAsyncResourceBundle';
-import { copyArticleFragmentImageMeta } from 'shared/actions/ArticleFragments';
+import { copyCardImageMeta } from 'shared/actions/Cards';
 import { PageViewStory } from './PageViewData';
 
-interface ArticleFragmentsReceived {
+interface CardsReceived {
   type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';
-  payload: { [id: string]: ArticleFragment };
+  payload: { [id: string]: Card };
 }
-interface ClearArticleFragments {
+interface ClearCards {
   type: 'SHARED/CLEAR_ARTICLE_FRAGMENTS';
   payload: { ids: string[] };
 }
@@ -21,47 +21,47 @@ interface GroupsReceived {
   type: 'SHARED/GROUPS_RECEIVED';
   payload: { [id: string]: Group };
 }
-interface UpdateArticleFragmentMeta {
+interface UpdateCardMeta {
   type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
   payload: {
     id: string;
-    meta: ArticleFragmentMeta;
+    meta: CardMeta;
     merge: boolean;
   };
 }
 
-interface InsertArticleFragmentPayload {
+interface InsertCardPayload {
   id: string;
   index: number;
-  articleFragmentId: string;
+  cardId: string;
 }
 
-type InsertGroupArticleFragment = {
+type InsertGroupCard = {
   type: 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT';
 } & {
-  payload: InsertArticleFragmentPayload;
+  payload: InsertCardPayload;
 };
 
-type InsertSupportingArticleFragment = {
+type InsertSupportingCard = {
   type: 'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT';
 } & {
-  payload: InsertArticleFragmentPayload;
+  payload: InsertCardPayload;
 };
 
-interface RemoveArticleFragmentPayload {
+interface RemoveCardPayload {
   payload: {
     id: string;
-    articleFragmentId: string;
+    cardId: string;
   };
 }
 
-type RemoveGroupArticleFragment = {
+type RemoveGroupCard = {
   type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT';
-} & RemoveArticleFragmentPayload;
+} & RemoveCardPayload;
 
-type RemoveSupportingArticleFragment = {
+type RemoveSupportingCard = {
   type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT';
-} & RemoveArticleFragmentPayload;
+} & RemoveCardPayload;
 
 interface CapGroupSiblings {
   type: 'SHARED/CAP_GROUP_SIBLINGS';
@@ -79,8 +79,8 @@ interface MaybeAddFrontPublicationDate {
   };
 }
 
-type CopyArticleFragmentImageMeta = ReturnType<
-  typeof copyArticleFragmentImageMeta
+type CopyCardImageMeta = ReturnType<
+  typeof copyCardImageMeta
 >;
 
 interface PageViewDataRequested {
@@ -102,32 +102,32 @@ interface PageViewDataReceived {
 
 type Action =
   | GroupsReceived
-  | InsertGroupArticleFragment
-  | InsertSupportingArticleFragment
-  | RemoveGroupArticleFragment
-  | RemoveSupportingArticleFragment
+  | InsertGroupCard
+  | InsertSupportingCard
+  | RemoveGroupCard
+  | RemoveSupportingCard
   | Actions<ExternalArticle>
   | Actions<Collection>
-  | ArticleFragmentsReceived
-  | ClearArticleFragments
-  | UpdateArticleFragmentMeta
+  | CardsReceived
+  | ClearCards
+  | UpdateCardMeta
   | MaybeAddFrontPublicationDate
   | CapGroupSiblings
-  | CopyArticleFragmentImageMeta
+  | CopyCardImageMeta
   | PageViewDataRequested
   | PageViewDataReceived;
 
 export {
   Action,
-  InsertGroupArticleFragment,
-  InsertSupportingArticleFragment,
-  RemoveGroupArticleFragment,
-  RemoveSupportingArticleFragment,
-  ArticleFragmentsReceived,
-  ClearArticleFragments,
-  UpdateArticleFragmentMeta,
-  InsertArticleFragmentPayload,
-  RemoveArticleFragmentPayload,
+  InsertGroupCard,
+  InsertSupportingCard,
+  RemoveGroupCard,
+  RemoveSupportingCard,
+  CardsReceived,
+  ClearCards,
+  UpdateCardMeta,
+  InsertCardPayload,
+  RemoveCardPayload,
   CapGroupSiblings,
   MaybeAddFrontPublicationDate,
   PageViewDataRequested,

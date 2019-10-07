@@ -11,14 +11,14 @@ import WithDimensions from 'components/util/WithDimensions';
 import { selectFront } from 'selectors/frontsSelectors';
 import { Dispatch } from 'types/Store';
 import {
-  ArticleFragment as TArticleFragment,
-  CollectionItemSets
+  Card as TCard,
+  CardSets
 } from 'shared/types/Collection';
 import { FrontConfig } from 'types/FaciaApi';
-import { moveArticleFragment } from 'actions/ArticleFragments';
-import { insertArticleFragmentFromDropEvent } from 'util/collectionUtils';
+import { moveCard } from 'actions/Cards';
+import { insertCardFromDropEvent } from 'util/collectionUtils';
 import { bindActionCreators } from 'redux';
-import { editorSelectArticleFragment } from 'bundles/frontsUIBundle';
+import { editorSelectCard } from 'bundles/frontsUIBundle';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { createSelectAlsoOnFronts } from 'selectors/frontsSelectors';
 import { AlsoOnDetail } from 'types/Collection';
@@ -43,11 +43,11 @@ const isDropFromCAPIFeed = (e: React.DragEvent) =>
 
 interface FrontPropsBeforeState {
   id: string;
-  browsingStage: CollectionItemSets;
+  browsingStage: CardSets;
   handleArticleFocus: (
     e: React.FocusEvent<HTMLDivElement>,
     groupId: string,
-    articleFragment: TArticleFragment,
+    card: TCard,
     frontId: string
   ) => void;
   onChangeCurrentCollectionId: (id: string) => void;
@@ -56,15 +56,15 @@ interface FrontPropsBeforeState {
 type FrontProps = FrontPropsBeforeState & {
   front: FrontConfig;
   alsoOn: { [id: string]: AlsoOnDetail };
-  initialiseCollectionsForFront: (id: string, set: CollectionItemSets) => void;
-  selectArticleFragment: (
-    articleFragmentId: string,
+  initialiseCollectionsForFront: (id: string, set: CardSets) => void;
+  selectCard: (
+    cardId: string,
     collectionId: string,
     frontId: string,
     isSupporting: boolean
   ) => void;
-  moveArticleFragment: typeof moveArticleFragment;
-  insertArticleFragmentFromDropEvent: typeof insertArticleFragmentFromDropEvent;
+  moveCard: typeof moveCard;
+  insertCardFromDropEvent: typeof insertCardFromDropEvent;
 };
 
 interface FrontState {
@@ -134,9 +134,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
     );
   }
 
-  public handleMove = (move: Move<TArticleFragment>) => {
+  public handleMove = (move: Move<TCard>) => {
     events.dropArticle(this.props.id, 'collection');
-    this.props.moveArticleFragment(
+    this.props.moveCard(
       move.to,
       move.data,
       move.from || null,
@@ -146,7 +146,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
     events.dropArticle(this.props.id, isDropFromCAPIFeed(e) ? 'feed' : 'url');
-    this.props.insertArticleFragmentFromDropEvent(e, to, 'collection');
+    this.props.insertCardFromDropEvent(e, to, 'collection');
   };
 
   public render() {
@@ -179,9 +179,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
                         ? 'default'
                         : 'medium'
                     }
-                    selectArticleFragment={(articleFragmentId, isSupporting) =>
-                      this.props.selectArticleFragment(
-                        articleFragmentId,
+                    selectCard={(cardId, isSupporting) =>
+                      this.props.selectCard(
+                        cardId,
                         collectionId,
                         this.props.id,
                         isSupporting
@@ -212,10 +212,10 @@ const mapStateToProps = () => {
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
-      selectArticleFragment: editorSelectArticleFragment,
+      selectCard: editorSelectCard,
       initialiseCollectionsForFront,
-      moveArticleFragment,
-      insertArticleFragmentFromDropEvent
+      moveCard,
+      insertCardFromDropEvent
     },
     dispatch
   );

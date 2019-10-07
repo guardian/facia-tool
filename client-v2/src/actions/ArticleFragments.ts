@@ -1,24 +1,24 @@
 import {
-  insertGroupArticleFragment,
-  insertSupportingArticleFragment,
-  removeGroupArticleFragment,
-  removeSupportingArticleFragment,
-  updateArticleFragmentMeta,
+  insertGroupCard,
+  insertSupportingCard,
+  removeGroupCard,
+  removeSupportingCard,
+  updateCardMeta,
   createArticleEntitiesFromDrop,
-  articleFragmentsReceived,
+  cardsReceived,
   maybeAddFrontPublicationDate,
-  copyArticleFragmentImageMeta
-} from 'shared/actions/ArticleFragments';
-import { ArticleFragment } from 'shared/types/Collection';
+  copyCardImageMeta
+} from 'shared/actions/Cards';
+import { Card } from 'shared/types/Collection';
 import {
   selectSharedState,
-  selectArticleFragments,
-  selectArticleFragment,
+  selectCards,
+  selectCard,
   selectArticleGroup
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/action';
-import { cloneFragment } from 'shared/util/articleFragment';
+import { cloneFragment } from 'shared/util/card';
 import {
   getFromGroupIndicesWithRespectToState,
   getToGroupIndicesWithRespectToState
@@ -26,8 +26,8 @@ import {
 import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
 import {
-  insertClipboardArticleFragment,
-  removeClipboardArticleFragment
+  insertClipboardCard,
+  removeClipboardCard
 } from './Clipboard';
 import { State } from 'types/State';
 import { startConfirmModal } from './ConfirmModal';
@@ -39,13 +39,13 @@ import { MappableDropType } from 'util/collectionUtils';
 import { selectWillCollectionHitCollectionCap } from 'selectors/collectionSelectors';
 import { batchActions } from 'redux-batched-actions';
 import noop from 'lodash/noop';
-import { selectOpenParentFrontOfArticleFragment } from 'bundles/frontsUIBundle';
+import { selectOpenParentFrontOfCard } from 'bundles/frontsUIBundle';
 import { getPageViewData } from 'redux/modules/pageViewData';
 
 type InsertActionCreator = (
   id: string,
   index: number,
-  articleFragmentId: string
+  cardId: string
 ) => Action;
 
 type InsertThunkActionCreator = (
@@ -53,7 +53,7 @@ type InsertThunkActionCreator = (
 ) => (
   id: string,
   index: number,
-  articleFragmentId: string,
+  cardId: string,
   removeAction?: Action
 ) => ThunkResult<void>;
 
@@ -65,12 +65,12 @@ type InsertThunkActionCreator = (
 // the persistence stuff needs to be dynamic as we sometimes need to insert an
 // article fragment and save to clipboard and sometimes save to collection
 // depending on the location of that articlefragment
-const createInsertArticleFragmentThunk = (action: InsertActionCreator) => (
+const createInsertCardThunk = (action: InsertActionCreator) => (
   persistTo: 'collection' | 'clipboard'
 ) => (
   id: string,
   index: number,
-  articleFragmentId: string,
+  cardId: string,
   removeAction?: Action
 ) => (dispatch: Dispatch) => {
   if (removeAction) {
@@ -79,13 +79,13 @@ const createInsertArticleFragmentThunk = (action: InsertActionCreator) => (
   dispatch(
     addPersistMetaToAction(action, {
       persistTo,
-      key: 'articleFragmentId'
-    })(id, index, articleFragmentId)
+      key: 'cardId'
+    })(id, index, cardId)
   );
 };
 
-const copyArticleFragmentImageMetaWithPersist = addPersistMetaToAction(
-  copyArticleFragmentImageMeta,
+const copyCardImageMetaWithPersist = addPersistMetaToAction(
+  copyCardImageMeta,
   {
     persistTo: 'collection',
     key: 'to'
@@ -95,12 +95,12 @@ const copyArticleFragmentImageMetaWithPersist = addPersistMetaToAction(
 // Creates a thunk with persistence that will launch a confirm modal if required
 // when adding to a group, otherwise will just run the action
 // the confirm modal links to the collection caps
-const maybeInsertGroupArticleFragment = (
+const maybeInsertGroupCard = (
   persistTo: 'collection' | 'clipboard'
 ) => (
   id: string,
   index: number,
-  articleFragmentId: string,
+  cardId: string,
   removeAction?: Action
 ) => {
   return (dispatch: Dispatch, getState: () => State) => {
@@ -113,7 +113,7 @@ const maybeInsertGroupArticleFragment = (
       state,
       id,
       index,
-      articleFragmentId,
+      cardId,
       collectionCap
     );
 
@@ -138,10 +138,10 @@ const maybeInsertGroupArticleFragment = (
 
             actions
               .concat([
-                insertGroupArticleFragment(id, index, articleFragmentId),
-                maybeAddFrontPublicationDate(articleFragmentId),
+                insertGroupCard(id, index, cardId),
+                maybeAddFrontPublicationDate(cardId),
                 addPersistMetaToAction(capGroupSiblings, {
-                  id: articleFragmentId,
+                  id: cardId,
                   persistTo,
                   applyBeforeReducer: true
                 })(id, collectionCap)
@@ -158,11 +158,11 @@ const maybeInsertGroupArticleFragment = (
       dispatch(
         batchActions(
           (removeAction ? [removeAction] : []).concat([
-            maybeAddFrontPublicationDate(articleFragmentId),
-            addPersistMetaToAction(insertGroupArticleFragment, {
-              key: 'articleFragmentId',
+            maybeAddFrontPublicationDate(cardId),
+            addPersistMetaToAction(insertGroupCard, {
+              key: 'cardId',
               persistTo
-            })(id, index, articleFragmentId)
+            })(id, index, cardId)
           ])
         )
       );
@@ -179,11 +179,11 @@ const getInsertionActionCreatorFromType = (
   persistTo: 'collection' | 'clipboard'
 ) => {
   const actionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
-    articleFragment: createInsertArticleFragmentThunk(
-      insertSupportingArticleFragment
+    card: createInsertCardThunk(
+      insertSupportingCard
     ),
-    group: maybeInsertGroupArticleFragment,
-    clipboard: createInsertArticleFragmentThunk(insertClipboardArticleFragment)
+    group: maybeInsertGroupCard,
+    clipboard: createInsertCardThunk(insertClipboardCard)
   };
 
   const actionCreator = actionMap[type] || null;
@@ -192,7 +192,7 @@ const getInsertionActionCreatorFromType = (
   return actionCreator && actionCreator(persistTo);
 };
 
-type RemoveActionCreator = (id: string, articleFragmentId: string) => Action;
+type RemoveActionCreator = (id: string, cardId: string) => Action;
 
 // this maps a type string such as `group` to a remove action creator and if
 // persistTo is passed then add persist meta
@@ -201,9 +201,9 @@ const getRemoveActionCreatorFromType = (
   persistTo?: 'collection' | 'clipboard'
 ) => {
   const actionMap: { [type: string]: RemoveActionCreator | undefined } = {
-    articleFragment: removeSupportingArticleFragment,
-    group: removeGroupArticleFragment,
-    clipboard: removeClipboardArticleFragment
+    card: removeSupportingCard,
+    group: removeGroupCard,
+    clipboard: removeClipboardCard
   };
 
   const actionCreator = actionMap[type] || null;
@@ -211,32 +211,32 @@ const getRemoveActionCreatorFromType = (
   return actionCreator && persistTo
     ? addPersistMetaToAction(actionCreator, {
         persistTo,
-        key: 'articleFragmentId',
+        key: 'cardId',
         applyBeforeReducer: true
       })
     : actionCreator;
 };
 
-const updateArticleFragmentMetaWithPersist = addPersistMetaToAction(
-  updateArticleFragmentMeta,
+const updateCardMetaWithPersist = addPersistMetaToAction(
+  updateCardMeta,
   {
     persistTo: 'collection'
   }
 );
 
-const updateClipboardArticleFragmentMetaWithPersist = addPersistMetaToAction(
-  updateArticleFragmentMeta,
+const updateClipboardCardMetaWithPersist = addPersistMetaToAction(
+  updateCardMeta,
   {
     persistTo: 'clipboard'
   }
 );
 
-const insertArticleFragmentWithCreate = (
+const insertCardWithCreate = (
   to: PosSpec,
   drop: MappableDropType,
   persistTo: 'collection' | 'clipboard',
   // allow the factory to be injected for testing
-  articleFragmentFactory = createArticleEntitiesFromDrop
+  cardFactory = createArticleEntitiesFromDrop
 ): ThunkResult<void> => async (dispatch: Dispatch, getState) => {
   const insertActionCreator = getInsertionActionCreatorFromType(
     to.type,
@@ -253,7 +253,7 @@ const insertArticleFragmentWithCreate = (
   );
   if (toWithRespectToState) {
     try {
-      const fragment = await dispatch(articleFragmentFactory(drop));
+      const fragment = await dispatch(cardFactory(drop));
       if (!fragment) {
         return;
       }
@@ -266,7 +266,7 @@ const insertArticleFragmentWithCreate = (
       );
 
       // Fetch ophan data
-      const [frontId, collectionId] = selectOpenParentFrontOfArticleFragment(
+      const [frontId, collectionId] = selectOpenParentFrontOfCard(
         getState(),
         fragment.uuid
       );
@@ -279,10 +279,10 @@ const insertArticleFragmentWithCreate = (
   }
 };
 
-const removeArticleFragment = (
+const removeCard = (
   type: string,
   collectionId: string,
-  articleFragmentId: string,
+  cardId: string,
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
@@ -295,7 +295,7 @@ const removeArticleFragment = (
       const idFromState = selectArticleGroup(
         selectSharedState(getState()),
         collectionId,
-        articleFragmentId
+        cardId
       );
       if (idFromState) {
         return idFromState;
@@ -309,13 +309,13 @@ const removeArticleFragment = (
     if (!removeActionCreator) {
       return;
     }
-    dispatch(removeActionCreator(groupIdFromState, articleFragmentId));
+    dispatch(removeActionCreator(groupIdFromState, cardId));
   };
 };
 
-const moveArticleFragment = (
+const moveCard = (
   to: PosSpec,
-  fragment: ArticleFragment,
+  fragment: Card,
   from: PosSpec | null,
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
@@ -352,12 +352,12 @@ const moveArticleFragment = (
       // if from is not null then assume we're copying a moved article fragment
       // into this new position
       const { parent, supporting } = !fromWithRespectToState
-        ? cloneFragment(fragment, selectArticleFragments(sharedState))
+        ? cloneFragment(fragment, selectCards(sharedState))
         : { parent: fragment, supporting: [] };
 
       if (toWithRespectToState) {
         if (!fromWithRespectToState) {
-          dispatch(articleFragmentsReceived([parent, ...supporting]));
+          dispatch(cardsReceived([parent, ...supporting]));
         }
 
         dispatch(
@@ -375,26 +375,26 @@ const moveArticleFragment = (
   };
 };
 
-const cloneArticleFragmentToTarget = (
+const cloneCardToTarget = (
   uuid: string,
   toType: 'clipboard' | 'collection'
 ): ThunkResult<void> => {
   return (dispatch, getState) => {
     const to = { id: toType, type: toType, index: 0 };
-    const fragment = selectArticleFragment(selectSharedState(getState()), uuid);
+    const fragment = selectCard(selectSharedState(getState()), uuid);
     const from = null;
-    dispatch(moveArticleFragment(to, fragment, from, toType));
+    dispatch(moveCard(to, fragment, from, toType));
   };
 };
 
-const addArticleFragmentToClipboard = (uuid: string) =>
-  cloneArticleFragmentToTarget(uuid, 'clipboard');
+const addCardToClipboard = (uuid: string) =>
+  cloneCardToTarget(uuid, 'clipboard');
 
-const addImageToArticleFragment = (
+const addImageToCard = (
   uuid: string,
   imageData: ValidationResponse
 ) =>
-  updateArticleFragmentMetaWithPersist(
+  updateCardMetaWithPersist(
     uuid,
     {
       ...getImageMetaFromValidationResponse(imageData),
@@ -406,13 +406,13 @@ const addImageToArticleFragment = (
   );
 
 export {
-  insertArticleFragmentWithCreate as insertArticleFragment,
-  moveArticleFragment,
-  updateArticleFragmentMetaWithPersist as updateArticleFragmentMeta,
-  updateClipboardArticleFragmentMetaWithPersist as updateClipboardArticleFragmentMeta,
-  removeArticleFragment,
-  addImageToArticleFragment,
-  copyArticleFragmentImageMetaWithPersist,
-  cloneArticleFragmentToTarget,
-  addArticleFragmentToClipboard
+  insertCardWithCreate as insertCard,
+  moveCard,
+  updateCardMetaWithPersist as updateCardMeta,
+  updateClipboardCardMetaWithPersist as updateClipboardCardMeta,
+  removeCard,
+  addImageToCard,
+  copyCardImageMetaWithPersist,
+  cloneCardToTarget,
+  addCardToClipboard
 };

@@ -1,7 +1,7 @@
 import { selectors } from 'shared/bundles/collectionsBundle';
 import {
   selectSharedState,
-  createSelectArticleFromArticleFragment
+  createSelectArticleFromCard
 } from 'shared/selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'shared/util/externalArticle';
@@ -52,17 +52,17 @@ const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
 
 const selectParentCollectionConfig = (
   state: State,
-  articleFragmentId: string
+  cardId: string
 ) => {
-  const collectionId = selectors.selectParentCollectionOfArticleFragment(
+  const collectionId = selectors.selectParentCollectionOfCard(
     selectSharedState(state),
-    articleFragmentId
+    cardId
   );
   return collectionId ? selectCollectionConfig(state, collectionId) : undefined;
 };
 
-export const createSelectFormFieldsForCollectionItem = () => {
-  const selectDerivedArticle = createSelectArticleFromArticleFragment();
+export const createSelectFormFieldsForCard = () => {
+  const selectDerivedArticle = createSelectArticleFromCard();
   const selectDerivedArticleFromRootState = (state: State, id: string) =>
     selectDerivedArticle(selectSharedState(state), id);
   return createSelector(

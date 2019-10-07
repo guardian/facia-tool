@@ -1,6 +1,6 @@
 import { getAbsolutePath, isGuardianUrl } from './url';
 import fetchOpenGraphData from './openGraph';
-import { ArticleFragment, ArticleFragmentMeta } from '../types/Collection';
+import { Card, CardMeta } from '../types/Collection';
 import v4 from 'uuid/v4';
 import set from 'lodash/fp/set';
 import { PartialBy } from 'types/Util';
@@ -19,7 +19,7 @@ function validateId(id: string) {
 function convertToSnap({
   id,
   ...rest
-}: PartialBy<ArticleFragment, 'id'>): ArticleFragment {
+}: PartialBy<Card, 'id'>): Card {
   const fragment = {
     id: generateId(),
     ...rest,
@@ -36,8 +36,8 @@ function convertToSnap({
 
 async function createSnap(
   url?: string,
-  meta?: ArticleFragmentMeta
-): Promise<ArticleFragment> {
+  meta?: CardMeta
+): Promise<Card> {
   const uuid = v4();
   try {
     const { title, description, siteName } =

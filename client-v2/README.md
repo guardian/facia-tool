@@ -25,7 +25,7 @@ Fronts Client V2 looks to rebuild the Fronts tool with modern technologies, deve
 
 ## Dev Start
 
-1. To run the application: 
+1. To run the application:
    - From the project root, run `./scripts/start-dev.sh`
    - From the project root, run without debug `./scripts/start-dev.sh --no-debug`
 2. Open `https://fronts.local.dev-gutools.co.uk/v2`.
@@ -145,7 +145,7 @@ There are a few areas that we'd like to address in the medium to long term for t
 
 There are plenty of inconsistencies with the way we name things. This is a little manifesto for cleaning some of them up.
 
-- The types `ArticleFragment` and `CollectionItem` refer to the same thing. The latter is preferred as this type refers to either an article or a snap link, and in other curation context this list could grow. We should rename instances of `ArticleFragment` in favor of `CollectionItem`.
+- The types `Card` and `Card` refer to the same thing. The latter is preferred as this type refers to either an article or a snap link, and in other curation context this list could grow. We should rename instances of `Card` in favor of `Card`.
 - We confuse terminology for actions, selectors and API calls -- terms like `get`, `select` and `fetch` are easily confused, and prefixes and suffixes are used interchangably, when they're used at all. For precision's sake, we should rely on the following -
  - Actions should be prefixed with `action`.
  - Selectors be prefixed with `select`. Selector factories should use `createSelect`

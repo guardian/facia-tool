@@ -262,7 +262,7 @@ const config = {
 
 const shared = {
   featureSwitches: {},
-  articleFragments: {
+  cards: {
     '56a3b407-741c-439f-a678-175abea44a9f': {
       id: 'internal-code/page/5592826',
       frontPublicationDate: 1547204861924,
@@ -281,7 +281,7 @@ const shared = {
       id: 'gobbleygook',
       name: 'groupname',
       uuid: 'group123',
-      articleFragments: ['56a3b407-741c-439f-a678-175abea44a9f']
+      cards: ['56a3b407-741c-439f-a678-175abea44a9f']
     }
   },
   collections: {
@@ -691,7 +691,7 @@ const state = {
     frontIdsByPriority: {},
     favouriteFrontIdsByPriority: {},
     collectionIds: [],
-    selectedArticleFragments: {},
+    selectedCards: {},
     closedOverviews: [],
     clipboardOpen: true,
     frontIdsByBrowsingStage: {}

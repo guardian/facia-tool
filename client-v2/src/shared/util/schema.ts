@@ -1,20 +1,20 @@
 import { createType, build, createFieldType } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
-import { ArticleFragment } from 'shared/types/Collection';
+import { Card } from 'shared/types/Collection';
 
-const preProcessArticleFragment = (
-  articleFragment: ArticleFragment
+const preProcessCard = (
+  card: Card
 ): object => ({
-  ...articleFragment,
+  ...card,
   // guard against missing meta from the server
-  meta: articleFragment.meta || {},
+  meta: card.meta || {},
   uuid: v4()
 });
 
-const postProcessArticleFragment = (
-  articleFragment: ArticleFragment
+const postProcessCard = (
+  card: Card
 ): object => {
-  const { uuid, ...af } = articleFragment;
+  const { uuid, ...af } = card;
 
   let meta = { ...af.meta };
 
@@ -36,9 +36,9 @@ const postProcessArticleFragment = (
   };
 };
 
-const articleFragments = createType('articleFragments', {
-  preProcess: preProcessArticleFragment,
-  postProcess: postProcessArticleFragment,
+const cards = createType('cards', {
+  preProcess: preProcessCard,
+  postProcess: postProcessCard,
   idKey: 'uuid',
   field: createFieldType('groups', {
     key: 'meta.group',
@@ -46,22 +46,22 @@ const articleFragments = createType('articleFragments', {
     uuid: v4
   })
 });
-const supportingArticles = createType('articleFragments', {
-  preProcess: preProcessArticleFragment,
-  postProcess: postProcessArticleFragment,
+const supportingArticles = createType('cards', {
+  preProcess: preProcessCard,
+  postProcess: postProcessCard,
   idKey: 'uuid'
 });
 
 export const { normalize, denormalize } = build({
-  live: articleFragments({
+  live: cards({
     'meta.supporting': supportingArticles()
   }),
-  previously: articleFragments({
+  previously: cards({
     'meta.supporting': supportingArticles()
   }),
-  draft: articleFragments({
+  draft: cards({
     'meta.supporting': supportingArticles()
   })
 });
 
-export { postProcessArticleFragment, supportingArticles };
+export { postProcessCard, supportingArticles };

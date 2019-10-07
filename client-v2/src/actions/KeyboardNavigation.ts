@@ -1,19 +1,19 @@
-import { moveArticleFragment } from 'actions/ArticleFragments';
+import { moveCard } from 'actions/Cards';
 import {
   selectNextIndexAndGroup,
   selectNextClipboardIndexSelector
 } from '../selectors/keyboardNavigationSelectors';
 import { selectSharedState, selectIndexInGroup } from 'shared/selectors/shared';
-import { ArticleFragment } from 'shared/types/Collection';
+import { Card } from 'shared/types/Collection';
 import { PosSpec } from 'lib/dnd';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { setFocusState } from 'bundles/focusBundle';
 import { editorOpenCollections } from 'bundles/frontsUIBundle';
 
-const keyboardArticleFragmentMove = (
+const keyboardCardMove = (
   action: 'up' | 'down',
   persistTo: 'collection' | 'clipboard',
-  fragment?: ArticleFragment,
+  fragment?: Card,
   groupId?: string,
   frontId?: string
 ): ThunkResult<void> => {
@@ -51,12 +51,12 @@ const keyboardArticleFragmentMove = (
         }
 
         const to: PosSpec = { type, index: toIndex, id: nextGroupId };
-        dispatch(moveArticleFragment(to, fragment, from, persistTo));
+        dispatch(moveCard(to, fragment, from, persistTo));
         dispatch(
           setFocusState({
             type: 'collectionArticle',
             groupId: nextGroupId,
-            articleFragment: fragment,
+            card: fragment,
             frontId
           })
         );
@@ -72,10 +72,10 @@ const keyboardArticleFragmentMove = (
         const type = 'clipboard';
         const from = { type, index: fromIndex, id: 'clipboard' };
         const to = { type, index: toIndex, id: 'clipboard' };
-        dispatch(moveArticleFragment(to, fragment, from, persistTo));
+        dispatch(moveCard(to, fragment, from, persistTo));
       }
     }
   };
 };
 
-export { keyboardArticleFragmentMove };
+export { keyboardCardMove };

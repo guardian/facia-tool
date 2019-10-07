@@ -13,7 +13,7 @@ import {
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import {
   CollectionWithNestedArticles,
-  NestedArticleFragment
+  NestedCard
 } from 'shared/types/Collection';
 import pandaFetch from './pandaFetch';
 import { CapiArticle } from 'types/Capi';
@@ -209,13 +209,13 @@ const updateEditionsCollection = (collectionId: string) =>
     'put'
   )(collectionId);
 
-const saveClipboard = (content: NestedArticleFragment[]) =>
+const saveClipboard = (content: NestedCard[]) =>
   createSaveClipboard(content, '/clipboard');
-const saveEditionsClipboard = (content: NestedArticleFragment[]) =>
+const saveEditionsClipboard = (content: NestedCard[]) =>
   createSaveClipboard(content, '/editionsClipboard');
 
 async function createSaveClipboard(
-  clipboardContent: NestedArticleFragment[],
+  clipboardContent: NestedCard[],
   pathSuffix: string
 ): Promise<void> {
   // The server does not respond with JSON

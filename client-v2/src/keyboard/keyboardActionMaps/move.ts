@@ -1,7 +1,7 @@
 import Raven from 'raven-js';
 import { KeyboardActionMap, ApplicationFocusStates } from 'keyboard';
 import { Dispatch } from 'types/Store';
-import { keyboardArticleFragmentMove } from 'actions/KeyboardNavigation';
+import { keyboardCardMove } from 'actions/KeyboardNavigation';
 
 const moveUp: KeyboardActionMap = {
   clipboardArticle: (focusData: ApplicationFocusStates) => async (
@@ -9,10 +9,10 @@ const moveUp: KeyboardActionMap = {
   ) => {
     try {
       dispatch(
-        keyboardArticleFragmentMove(
+        keyboardCardMove(
           'up',
           'clipboard',
-          focusData.articleFragment
+          focusData.card
         )
       );
     } catch (e) {
@@ -24,10 +24,10 @@ const moveUp: KeyboardActionMap = {
   ) => {
     try {
       dispatch(
-        keyboardArticleFragmentMove(
+        keyboardCardMove(
           'up',
           'collection',
-          focusData.articleFragment,
+          focusData.card,
           focusData.groupId,
           focusData.frontId
         )
@@ -44,10 +44,10 @@ const moveDown: KeyboardActionMap = {
   ) => {
     try {
       dispatch(
-        keyboardArticleFragmentMove(
+        keyboardCardMove(
           'down',
           'clipboard',
-          focusData.articleFragment
+          focusData.card
         )
       );
     } catch (e) {
@@ -61,10 +61,10 @@ const moveDown: KeyboardActionMap = {
   ) => {
     try {
       dispatch(
-        keyboardArticleFragmentMove(
+        keyboardCardMove(
           'down',
           'collection',
-          focusData.articleFragment,
+          focusData.card,
           focusData.groupId,
           focusData.frontId
         )

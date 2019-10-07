@@ -18,7 +18,7 @@ import { selectFront } from 'selectors/frontsSelectors';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
 import {
-  CollectionItemSets,
+  CardSets,
   Collection,
   Stages
 } from 'shared/types/Collection';
@@ -126,7 +126,7 @@ type FrontsComponentProps = FrontsContainerProps & {
 };
 
 interface ComponentState {
-  collectionSet: CollectionItemSets;
+  collectionSet: CardSets;
   frontNameValue: string;
   editingFrontName: boolean;
 }

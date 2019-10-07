@@ -1,7 +1,7 @@
 import { Action } from 'types/Action';
 import { insertAndDedupeSiblings } from 'shared/util/insertAndDedupeSiblings';
 import { State as SharedState } from '../shared/types/State';
-import { selectArticleFragments } from 'shared/selectors/shared';
+import { selectCards } from 'shared/selectors/shared';
 import {
   INSERT_CLIPBOARD_ARTICLE_FRAGMENT,
   REMOVE_CLIPBOARD_ARTICLE_FRAGMENT,
@@ -22,14 +22,14 @@ const clipboard = (
       return payload;
     }
     case REMOVE_CLIPBOARD_ARTICLE_FRAGMENT: {
-      return state.filter(id => id !== action.payload.articleFragmentId);
+      return state.filter(id => id !== action.payload.cardId);
     }
     case INSERT_CLIPBOARD_ARTICLE_FRAGMENT: {
       return insertAndDedupeSiblings(
         state,
-        [action.payload.articleFragmentId],
+        [action.payload.cardId],
         action.payload.index,
-        selectArticleFragments(prevSharedState)
+        selectCards(prevSharedState)
       );
     }
     case CLEAR_CLIPBOARD: {

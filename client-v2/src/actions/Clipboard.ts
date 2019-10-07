@@ -2,16 +2,16 @@ import { Dispatch, ThunkResult } from 'types/Store';
 import { saveClipboardStrategy } from 'strategies/save-clipboard';
 import { fetchArticles } from 'actions/Collections';
 import { batchActions } from 'redux-batched-actions';
-import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
+import { cardsReceived } from 'shared/actions/Cards';
 import {
-  ArticleFragment,
-  NestedArticleFragment
+  Card,
+  NestedCard
 } from 'shared/types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
 import {
   UpdateClipboardContent,
-  InsertClipboardArticleFragment,
-  RemoveClipboardArticleFragment,
+  InsertClipboardCard,
+  RemoveClipboardCard,
   ClearClipboard
 } from 'types/Action';
 import { State } from 'types/State';
@@ -33,25 +33,25 @@ function updateClipboardContent(
   };
 }
 
-function storeClipboardContent(clipboardContent: NestedArticleFragment[]) {
+function storeClipboardContent(clipboardContent: NestedCard[]) {
   return (dispatch: Dispatch) => {
     const normalisedClipboard: {
       clipboard: { articles: string[] };
-      articleFragments: { [id: string]: ArticleFragment };
+      cards: { [id: string]: Card };
     } = normaliseClipboard({
       articles: clipboardContent
     });
     const clipboardArticles = normalisedClipboard.clipboard.articles;
-    const { articleFragments } = normalisedClipboard;
+    const { cards } = normalisedClipboard;
 
     dispatch(
       batchActions([
         updateClipboardContent(clipboardArticles),
-        articleFragmentsReceived(articleFragments)
+        cardsReceived(cards)
       ])
     );
 
-    const fragmentIds = Object.values(articleFragments).map(
+    const fragmentIds = Object.values(cards).map(
       fragment => fragment.id
     );
     return dispatch(fetchArticles(fragmentIds));
@@ -59,8 +59,8 @@ function storeClipboardContent(clipboardContent: NestedArticleFragment[]) {
 }
 
 function updateClipboard(clipboardContent: {
-  articles: NestedArticleFragment[];
-}): ThunkResult<Promise<NestedArticleFragment[]>> {
+  articles: NestedCard[];
+}): ThunkResult<Promise<NestedCard[]>> {
   return async (_, getState: () => State) => {
     const saveClipboardResponse = await saveClipboardStrategy(
       getState(),
@@ -74,35 +74,35 @@ function updateClipboard(clipboardContent: {
   };
 }
 
-const insertClipboardArticleFragment = (
+const insertClipboardCard = (
   id: string,
   index: number,
-  articleFragmentId: string
-): InsertClipboardArticleFragment => ({
+  cardId: string
+): InsertClipboardCard => ({
   type: INSERT_CLIPBOARD_ARTICLE_FRAGMENT,
   payload: {
     id,
     index,
-    articleFragmentId
+    cardId
   }
 });
 
-const insertClipboardArticleFragmentWithPersist = addPersistMetaToAction(
-  insertClipboardArticleFragment,
+const insertClipboardCardWithPersist = addPersistMetaToAction(
+  insertClipboardCard,
   {
     persistTo: 'clipboard',
-    key: 'articleFragmentId'
+    key: 'cardId'
   }
 );
 
-const removeClipboardArticleFragment = (
+const removeClipboardCard = (
   id: string,
-  articleFragmentId: string
-): RemoveClipboardArticleFragment => ({
+  cardId: string
+): RemoveClipboardCard => ({
   type: REMOVE_CLIPBOARD_ARTICLE_FRAGMENT,
   payload: {
     id,
-    articleFragmentId
+    cardId
   }
 });
 
@@ -121,9 +121,9 @@ export {
   storeClipboardContent,
   updateClipboard,
   updateClipboardContent,
-  insertClipboardArticleFragment,
-  insertClipboardArticleFragmentWithPersist,
-  removeClipboardArticleFragment,
+  insertClipboardCard,
+  insertClipboardCardWithPersist,
+  removeClipboardCard,
   clearClipboard,
   clearClipboardWithPersist
 };

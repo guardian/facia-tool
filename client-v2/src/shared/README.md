@@ -62,7 +62,7 @@ overriden. These overrides are stored in the `Meta` object.
 These article fragments take the following shape:
 
 ```
-type ArticleFragment = {
+type Card = {
   uuid: string, // Refers to the article ids inside a collection
   id: string, // Article id in the external store e.g. capi id
   frontPublicationDate: number,
@@ -100,14 +100,14 @@ these override the external article data.
 
 ### Fetching data
 
-To use the library, you have to dispatch three actions: `articleFragmentsReceived`, `externalArticlesReceived` and `collectionReceived` actions.
+To use the library, you have to dispatch three actions: `cardsReceived`, `externalArticlesReceived` and `collectionReceived` actions.
 
 `externalArticlesReceived` expects a payload that is an object, which has external article ids as keys and external articles as values.
 
 
-Note that the articles in the Collection are stored as an array of ids. The articles that these ids refer to should be passed to the `articleFragmentsReceived` action.
+Note that the articles in the Collection are stored as an array of ids. The articles that these ids refer to should be passed to the `cardsReceived` action.
 
-`articleFragmentsReceived` expects in it's payload on object where keys are Article Fragment uuids and values are the article fragments themselves.
+`cardsReceived` expects in it's payload on object where keys are Article Fragment uuids and values are the article fragments themselves.
 
 `collectionReceived` action expects a collection in its payload.
 

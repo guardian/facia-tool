@@ -1,14 +1,14 @@
-import articleFragments from './articleFragmentsReducer';
+import cards from './cardsReducer';
 import groups from './groupsReducer';
 import { reducer as collections } from '../bundles/collectionsBundle';
 import { reducer as externalArticles } from '../bundles/externalArticlesBundle';
 import { reducer as featureSwitches } from '../redux/modules/featureSwitches';
 import { reducer as pageViewData } from '../../redux/modules/pageViewData';
-import { ArticleFragment, Group } from 'shared/types/Collection';
+import { Card, Group } from 'shared/types/Collection';
 
 interface State {
-  articleFragments: {
-    [uuid: string]: ArticleFragment;
+  cards: {
+    [uuid: string]: Card;
   };
   groups: {
     [id: string]: Group;
@@ -20,7 +20,7 @@ interface State {
 }
 
 const rootReducer = (state: any = {}, action: any): State => ({
-  articleFragments: articleFragments(state.articleFragments, action, state),
+  cards: cards(state.cards, action, state),
   groups: groups(state.groups, action, state),
   collections: collections(state.collections, action),
   externalArticles: externalArticles(state.externalArticles, action),

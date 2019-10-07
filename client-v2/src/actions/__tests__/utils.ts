@@ -1,6 +1,6 @@
-import { ArticleFragmentMeta } from 'shared/types/Collection';
+import { CardMeta } from 'shared/types/Collection';
 
-export interface ArticleFragmentMap {
+export interface CardMap {
   [uuid: string]: {
     uuid: string;
     id: string;
@@ -8,11 +8,11 @@ export interface ArticleFragmentMap {
   };
 }
 
-export type ArticleFragmentSpec = [
+export type CardSpec = [
   string, // uuid
   string, // id
   Array<[string, string]> | undefined, // all of supporting articles,
-  ArticleFragmentMeta? // metadata changes
+  CardMeta? // metadata changes
 ];
 
 export const specToFragment = ([
@@ -20,7 +20,7 @@ export const specToFragment = ([
   id,
   supporting,
   meta
-]: ArticleFragmentSpec) => ({
+]: CardSpec) => ({
   uuid,
   id,
   frontPublicationDate: 0,
@@ -30,8 +30,8 @@ export const specToFragment = ([
   }
 });
 
-export const createArticleFragmentStateFromSpec = (
-  specs: ArticleFragmentSpec[]
+export const createCardStateFromSpec = (
+  specs: CardSpec[]
 ) =>
   specs.reduce(
     (acc, [uuid, id, supporting, meta]) => ({
@@ -47,9 +47,9 @@ export const createArticleFragmentStateFromSpec = (
                 meta: { ...meta }
               }
             }),
-            {} as ArticleFragmentMap
+            {} as CardMap
           )
         : {})
     }),
-    {} as ArticleFragmentMap
+    {} as CardMap
   );

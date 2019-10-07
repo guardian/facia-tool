@@ -1,28 +1,28 @@
 import { createSelector } from 'reselect';
 import {
-  selectArticleFragment,
-  selectExternalArticleFromArticleFragment
+  selectCard,
+  selectExternalArticleFromCard
 } from './shared';
 import { validateId } from 'shared/util/snap';
-import CollectionItemTypes from 'shared/constants/collectionItemTypes';
+import CardTypes from 'shared/constants/cardTypes';
 import { getContributorImage } from 'util/CAPIUtils';
 
-const createSelectCollectionItemType = () =>
+const createSelectCardType = () =>
   createSelector(
-    selectArticleFragment,
-    articleFragment => {
-      return articleFragment && validateId(articleFragment.id)
-        ? CollectionItemTypes.SNAP_LINK
-        : CollectionItemTypes.ARTICLE;
+    selectCard,
+    card => {
+      return card && validateId(card.id)
+        ? CardTypes.SNAP_LINK
+        : CardTypes.ARTICLE;
     }
   );
 
 const createSelectCutoutUrl = () =>
   createSelector(
-    selectExternalArticleFromArticleFragment,
+    selectExternalArticleFromCard,
     externalArticle => {
       return externalArticle && getContributorImage(externalArticle);
     }
   );
 
-export { createSelectCollectionItemType, createSelectCutoutUrl };
+export { createSelectCardType, createSelectCutoutUrl };
