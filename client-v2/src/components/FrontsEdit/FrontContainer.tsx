@@ -39,7 +39,7 @@ const SectionContentMetaContainer = styled.div`
   margin-right: 5px;
 `;
 
-const OverviewToggleContainer = styled.div`
+const OverviewToggleContainer = styled.div<{ active: boolean }>`
   font-size: 13px;
   font-weight: bold;
   padding-left: 10px;
@@ -49,7 +49,7 @@ const OverviewToggleContainer = styled.div`
   padding-top: 13px;
   padding-bottom: 10px;
   text-align: right;
-  margin-left: -1px;
+  margin-left: ${props => (props.active ? '0' : '-1px')};
   cursor: pointer;
 `;
 
@@ -189,6 +189,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
       <>
         <OverviewToggleContainer
           onClick={() => this.props.toggleOverview(!this.props.overviewIsOpen)}
+          active={this.props.overviewIsOpen}
         >
           <OverviewHeading htmlFor={overviewToggleId}>
             {overviewIsOpen ? 'Hide overview' : 'Overview'}
