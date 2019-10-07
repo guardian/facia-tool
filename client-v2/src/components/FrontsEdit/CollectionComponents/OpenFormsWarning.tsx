@@ -23,7 +23,7 @@ const OpenArticleLi = styled.li`
 
 const OpenFormsWarning = ({ openArticleTitles }: ComponentProps) => (
   <div>
-    <strong>Launching will discard changes in these unsaved forms:</strong>
+    <strong>There are open forms in this collection:</strong>
     <FlatUl>
       {openArticleTitles.map(({ uuid, title }) => (
         <OpenArticleLi key={title}>
