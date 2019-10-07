@@ -14,11 +14,11 @@ import {
 import { State } from 'types/State';
 import { addPersistMetaToAction } from 'util/action';
 
-export const REMOVE_CLIPBOARD_ARTICLE_FRAGMENT =
-  'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
+export const REMOVE_CLIPBOARD_CARD =
+  'REMOVE_CLIPBOARD_CARD';
 export const UPDATE_CLIPBOARD_CONTENT = 'UPDATE_CLIPBOARD_CONTENT';
-export const INSERT_CLIPBOARD_ARTICLE_FRAGMENT =
-  'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
+export const INSERT_CLIPBOARD_CARD =
+  'INSERT_CLIPBOARD_CARD';
 export const CLEAR_CLIPBOARD = 'CLEAR_CLIPBOARD';
 
 function updateClipboardContent(
@@ -74,7 +74,7 @@ const insertClipboardCard = (
   index: number,
   cardId: string
 ): InsertClipboardCard => ({
-  type: INSERT_CLIPBOARD_ARTICLE_FRAGMENT,
+  type: INSERT_CLIPBOARD_CARD,
   payload: {
     id,
     index,
@@ -94,7 +94,7 @@ const removeClipboardCard = (
   id: string,
   cardId: string
 ): RemoveClipboardCard => ({
-  type: REMOVE_CLIPBOARD_ARTICLE_FRAGMENT,
+  type: REMOVE_CLIPBOARD_CARD,
   payload: {
     id,
     cardId

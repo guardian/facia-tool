@@ -38,8 +38,8 @@ import {
   selectFront
 } from 'selectors/frontsSelectors';
 import {
-  REMOVE_GROUP_ARTICLE_FRAGMENT,
-  REMOVE_SUPPORTING_ARTICLE_FRAGMENT
+  REMOVE_GROUP_CARD,
+  REMOVE_SUPPORTING_CARD
 } from 'shared/actions/Cards';
 import { Stages, CardSets } from 'shared/types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
@@ -66,9 +66,9 @@ export const EDITOR_CLEAR_OPEN_FRONTS = 'EDITOR_CLEAR_OPEN_FRONTS';
 export const EDITOR_SET_OPEN_FRONTS = 'EDITOR_SET_OPEN_FRONTS';
 export const EDITOR_OPEN_COLLECTION = 'EDITOR_OPEN_COLLECTION';
 export const EDITOR_CLOSE_COLLECTION = 'EDITOR_CLOSE_COLLECTION';
-export const EDITOR_SELECT_ARTICLE_FRAGMENT = 'EDITOR_SELECT_ARTICLE_FRAGMENT';
-export const EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION =
-  'EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION';
+export const EDITOR_SELECT_CARD = 'EDITOR_SELECT_CARD';
+export const EDITOR_CLEAR_CARD_SELECTION =
+  'EDITOR_CLEAR_CARD_SELECTION';
 export const EDITOR_OPEN_CLIPBOARD = 'EDITOR_OPEN_CLIPBOARD';
 export const EDITOR_CLOSE_CLIPBOARD = 'EDITOR_CLOSE_CLIPBOARD';
 export const EDITOR_OPEN_OVERVIEW = 'EDITOR_OPEN_OVERVIEW';
@@ -231,14 +231,14 @@ const editorSelectCard = (
   frontId: string,
   isSupporting = false
 ): EditorSelectCard => ({
-  type: EDITOR_SELECT_ARTICLE_FRAGMENT,
+  type: EDITOR_SELECT_CARD,
   payload: { cardId, frontId, collectionId, isSupporting }
 });
 
 const editorClearCardSelection = (
   cardId: string
 ): EditorClearCardSelection => ({
-  type: EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
+  type: EDITOR_CLEAR_CARD_SELECTION,
   payload: { cardId }
 });
 
@@ -781,7 +781,7 @@ const reducer = (
         )
       };
     }
-    case EDITOR_SELECT_ARTICLE_FRAGMENT: {
+    case EDITOR_SELECT_CARD: {
       const currentlyOpenCards =
         state.selectedCards[action.payload.frontId] || [];
       const {
@@ -805,7 +805,7 @@ const reducer = (
         }
       };
     }
-    case EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION: {
+    case EDITOR_CLEAR_CARD_SELECTION: {
       return clearCardSelection(state, action.payload.cardId);
     }
     case EDITOR_CLOSE_FORMS_FOR_COLLECTION: {
@@ -823,9 +823,9 @@ const reducer = (
         state
       );
     }
-    case REMOVE_SUPPORTING_ARTICLE_FRAGMENT:
-    case REMOVE_GROUP_ARTICLE_FRAGMENT:
-    case 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT': {
+    case REMOVE_SUPPORTING_CARD:
+    case REMOVE_GROUP_CARD:
+    case 'REMOVE_CLIPBOARD_CARD': {
       const cardId = action.payload.cardId;
       return clearCardSelection(state, cardId);
     }

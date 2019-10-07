@@ -51,7 +51,7 @@ const groups = (
         ...payload
       };
     }
-    case 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT': {
+    case 'SHARED/REMOVE_GROUP_CARD': {
       const { id, cardId } = action.payload;
       const group = state[id];
       return {
@@ -62,7 +62,7 @@ const groups = (
         }
       };
     }
-    case 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT': {
+    case 'SHARED/INSERT_GROUP_CARD': {
       const { id, index, cardId } = action.payload;
       return {
         ...state,

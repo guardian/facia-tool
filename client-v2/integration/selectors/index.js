@@ -12,7 +12,7 @@ const HOVER_OVERLAY_SELECTOR = 'hover-overlay';
 const ADD_TO_CLIPBOARD_BUTTON = 'add-to-clipboard-hover-button';
 const SNAP_SELECTOR = 'snap';
 const COLLECTION_SELECTOR = 'collection';
-const COLLECTION_ITEM_SELECTOR = 'article-body';
+const CARD_SELECTOR = 'article-body';
 const COLLECTION_DISCARD_BUTTON = 'collection-discard-button';
 const DELETE_BUTTON = 'delete-hover-button';
 const EDIT_FORM = 'edit-form';
@@ -52,16 +52,16 @@ export const clipboardDropZone = maybeGetNth(
   select(CLIPBOARD_SELECTOR, DROP_ZONE_SELECTOR)
 );
 export const clipboardItem = maybeGetNth(
-  select(CLIPBOARD_SELECTOR, COLLECTION_ITEM_SELECTOR)
+  select(CLIPBOARD_SELECTOR, CARD_SELECTOR)
 );
 export const feedItemAddToClipboardHoverButton = maybeGetNth(
   select(FEED_ITEM_SELECTOR, ADD_TO_CLIPBOARD_BUTTON)
 );
 export const clipboardItemHeadline = maybeGetNth(
-  select(CLIPBOARD_SELECTOR, COLLECTION_ITEM_SELECTOR, HEADLINE_SELECTOR)
+  select(CLIPBOARD_SELECTOR, CARD_SELECTOR, HEADLINE_SELECTOR)
 );
 export const clipboardItemDeleteButton = maybeGetNth(
-  select(CLIPBOARD_SELECTOR, COLLECTION_ITEM_SELECTOR, DELETE_BUTTON)
+  select(CLIPBOARD_SELECTOR, CARD_SELECTOR, DELETE_BUTTON)
 );
 
 // Collections //
@@ -69,7 +69,7 @@ export const collection = maybeGetNth(select(COLLECTION_SELECTOR));
 
 export const allCards = collectionIndex => {
   const collectionSelected = collection(collectionIndex);
-  return collectionSelected.find(`[data-testid="${COLLECTION_ITEM_SELECTOR}"]`);
+  return collectionSelected.find(`[data-testid="${CARD_SELECTOR}"]`);
 };
 
 export const allCollectionDropZones = collectionIndex => {
@@ -161,7 +161,7 @@ export const frontSnapLink = maybeGetNth(select(SNAP_SELECTOR));
 // Previously //
 export const previouslyToggle = () => select(PREVIOUSLY_SELECTOR);
 export const previouslyItem = maybeGetNth(
-  select(PREVIOUSLY_SELECTOR, COLLECTION_ITEM_SELECTOR)
+  select(PREVIOUSLY_SELECTOR, CARD_SELECTOR)
 );
 // there should be none of these ever!
 export const previouslyDropZone = maybeGetNth(

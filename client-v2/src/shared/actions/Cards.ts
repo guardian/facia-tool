@@ -21,20 +21,20 @@ import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
 import { Card, CardMeta } from '../types/Collection';
 
-export const UPDATE_ARTICLE_FRAGMENT_META =
-  'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
-export const ARTICLE_FRAGMENTS_RECEIVED = 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';
-export const CLEAR_ARTICLE_FRAGMENTS = 'SHARED/CLEAR_ARTICLE_FRAGMENTS';
-export const REMOVE_GROUP_ARTICLE_FRAGMENT =
-  'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT';
-export const REMOVE_SUPPORTING_ARTICLE_FRAGMENT =
-  'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT';
-export const INSERT_GROUP_ARTICLE_FRAGMENT =
-  'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT';
-export const INSERT_SUPPORTING_ARTICLE_FRAGMENT =
-  'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT';
-export const COPY_ARTICLE_FRAGMENT_IMAGE_META =
-  'SHARED/COPY_ARTICLE_FRAGMENT_IMAGE_META';
+export const UPDATE_CARD_META =
+  'SHARED/UPDATE_CARD_META';
+export const CARDS_RECEIVED = 'SHARED/CARDS_RECEIVED';
+export const CLEAR_CARDS = 'SHARED/CLEAR_CARDS';
+export const REMOVE_GROUP_CARD =
+  'SHARED/REMOVE_GROUP_CARD';
+export const REMOVE_SUPPORTING_CARD =
+  'SHARED/REMOVE_SUPPORTING_CARD';
+export const INSERT_GROUP_CARD =
+  'SHARED/INSERT_GROUP_CARD';
+export const INSERT_SUPPORTING_CARD =
+  'SHARED/INSERT_SUPPORTING_CARD';
+export const COPY_CARD_IMAGE_META =
+  'SHARED/COPY_CARD_IMAGE_META';
 
 function updateCardMeta(
   id: string,
@@ -42,7 +42,7 @@ function updateCardMeta(
   { merge }: { merge: boolean } = { merge: false }
 ): UpdateCardMeta {
   return {
-    type: UPDATE_ARTICLE_FRAGMENT_META,
+    type: UPDATE_CARD_META,
     payload: {
       id,
       meta,
@@ -64,21 +64,21 @@ function cardsReceived(
     ? keyBy(cards, ({ uuid }) => uuid)
     : cards;
   return {
-    type: ARTICLE_FRAGMENTS_RECEIVED,
+    type: CARDS_RECEIVED,
     payload
   };
 }
 
 function copyCardImageMeta(from: string, to: string) {
   return {
-    type: COPY_ARTICLE_FRAGMENT_IMAGE_META as typeof COPY_ARTICLE_FRAGMENT_IMAGE_META,
+    type: COPY_CARD_IMAGE_META as typeof COPY_CARD_IMAGE_META,
     payload: { from, to }
   };
 }
 
 function clearCards(ids: string[]): ClearCards {
   return {
-    type: 'SHARED/CLEAR_ARTICLE_FRAGMENTS',
+    type: 'SHARED/CLEAR_CARDS',
     payload: {
       ids
     }
@@ -87,7 +87,7 @@ function clearCards(ids: string[]): ClearCards {
 
 function removeGroupCard(id: string, cardId: string): RemoveGroupCard {
   return {
-    type: REMOVE_GROUP_ARTICLE_FRAGMENT,
+    type: REMOVE_GROUP_CARD,
     payload: {
       id,
       cardId
@@ -100,7 +100,7 @@ function removeSupportingCard(
   cardId: string
 ): RemoveSupportingCard {
   return {
-    type: REMOVE_SUPPORTING_ARTICLE_FRAGMENT,
+    type: REMOVE_SUPPORTING_CARD,
     payload: {
       id,
       cardId
@@ -113,7 +113,7 @@ const insertGroupCard = (
   index: number,
   cardId: string
 ): InsertGroupCard => ({
-  type: INSERT_GROUP_ARTICLE_FRAGMENT,
+  type: INSERT_GROUP_CARD,
   payload: {
     id,
     index,
@@ -126,7 +126,7 @@ const insertSupportingCard = (
   index: number,
   cardId: string
 ): InsertSupportingCard => ({
-  type: INSERT_SUPPORTING_ARTICLE_FRAGMENT,
+  type: INSERT_SUPPORTING_CARD,
   payload: {
     id,
     index,

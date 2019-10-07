@@ -33,8 +33,8 @@ import {
   EDITOR_OPEN_COLLECTION,
   EDITOR_CLOSE_COLLECTION,
   EDITOR_CLEAR_OPEN_FRONTS,
-  EDITOR_SELECT_ARTICLE_FRAGMENT,
-  EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
+  EDITOR_SELECT_CARD,
+  EDITOR_CLEAR_CARD_SELECTION,
   EDITOR_OPEN_CLIPBOARD,
   EDITOR_CLOSE_CLIPBOARD,
   EDITOR_OPEN_OVERVIEW,
@@ -118,7 +118,7 @@ interface EditorSetOpenFronts {
 }
 
 interface EditorSelectCard {
-  type: typeof EDITOR_SELECT_ARTICLE_FRAGMENT;
+  type: typeof EDITOR_SELECT_CARD;
   payload: {
     cardId: string;
     frontId: string;
@@ -128,7 +128,7 @@ interface EditorSelectCard {
 }
 
 interface EditorClearCardSelection {
-  type: typeof EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION;
+  type: typeof EDITOR_CLEAR_CARD_SELECTION;
   payload: {
     cardId: string;
   };
@@ -170,13 +170,13 @@ interface ActionPersistMeta {
 type InsertGroupCard = SharedInsertGroupCard & ActionPersistMeta;
 type InsertSupportingCard = SharedInsertSupportingCard & ActionPersistMeta;
 type InsertClipboardCard = {
-  type: 'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
+  type: 'INSERT_CLIPBOARD_CARD';
 } & { payload: InsertCardPayload };
 
 type RemoveGroupCard = SharedRemoveGroupCard & ActionPersistMeta;
 type RemoveSupportingCard = SharedRemoveSupportingCard & ActionPersistMeta;
 type RemoveClipboardCard = {
-  type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
+  type: 'REMOVE_CLIPBOARD_CARD';
 } & RemoveCardPayload;
 
 type ActionError =

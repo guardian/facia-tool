@@ -8,7 +8,7 @@ import {
   createSelectArticleFromCard
 } from 'shared/selectors/shared';
 import {
-  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_CARD_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
 } from 'constants/image';
 import { theme } from 'constants/theme';
@@ -74,7 +74,7 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
     e.stopPropagation();
     if (this.props.hasImageOverrides) {
       e.dataTransfer.setData(
-        DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+        DRAG_DATA_CARD_IMAGE_OVERRIDE,
         this.props.id
       );
     }

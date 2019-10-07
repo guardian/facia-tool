@@ -5,11 +5,11 @@ import { copyCardImageMeta } from 'shared/actions/Cards';
 import { PageViewStory } from './PageViewData';
 
 interface CardsReceived {
-  type: 'SHARED/ARTICLE_FRAGMENTS_RECEIVED';
+  type: 'SHARED/CARDS_RECEIVED';
   payload: { [id: string]: Card };
 }
 interface ClearCards {
-  type: 'SHARED/CLEAR_ARTICLE_FRAGMENTS';
+  type: 'SHARED/CLEAR_CARDS';
   payload: { ids: string[] };
 }
 interface GroupsReceived {
@@ -17,7 +17,7 @@ interface GroupsReceived {
   payload: { [id: string]: Group };
 }
 interface UpdateCardMeta {
-  type: 'SHARED/UPDATE_ARTICLE_FRAGMENT_META';
+  type: 'SHARED/UPDATE_CARD_META';
   payload: {
     id: string;
     meta: CardMeta;
@@ -32,13 +32,13 @@ interface InsertCardPayload {
 }
 
 type InsertGroupCard = {
-  type: 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT';
+  type: 'SHARED/INSERT_GROUP_CARD';
 } & {
   payload: InsertCardPayload;
 };
 
 type InsertSupportingCard = {
-  type: 'SHARED/INSERT_SUPPORTING_ARTICLE_FRAGMENT';
+  type: 'SHARED/INSERT_SUPPORTING_CARD';
 } & {
   payload: InsertCardPayload;
 };
@@ -51,11 +51,11 @@ interface RemoveCardPayload {
 }
 
 type RemoveGroupCard = {
-  type: 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT';
+  type: 'SHARED/REMOVE_GROUP_CARD';
 } & RemoveCardPayload;
 
 type RemoveSupportingCard = {
-  type: 'SHARED/REMOVE_SUPPORTING_ARTICLE_FRAGMENT';
+  type: 'SHARED/REMOVE_SUPPORTING_CARD';
 } & RemoveCardPayload;
 
 interface CapGroupSiblings {

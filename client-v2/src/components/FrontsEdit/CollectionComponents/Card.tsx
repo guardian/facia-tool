@@ -24,7 +24,7 @@ import {
 import {
   cardImageCriteria,
   editionsCardImageCriteria,
-  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_CARD_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
 } from 'constants/image';
 import Sublinks from './Sublinks';
@@ -44,11 +44,11 @@ import { styled } from 'constants/theme';
 import { getPillarColor } from 'shared/util/getPillarColor';
 import { isLive as isArticleLive } from 'util/CAPIUtils';
 
-export const createCollectionItemId = (id: string) => `collection-item-${id}`;
+export const createCardId = (id: string) => `collection-item-${id}`;
 
 const imageDropTypes = [
   ...gridDropTypes,
-  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_CARD_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
 ];
 
@@ -208,7 +208,7 @@ class Card extends React.Component<ArticleContainerProps> {
 
     return (
       <CardContainer
-        id={createCollectionItemId(uuid)}
+        id={createCardId(uuid)}
         size={size}
         isLive={isLive}
         pillarId={pillarId}
@@ -254,9 +254,7 @@ class Card extends React.Component<ArticleContainerProps> {
     e.persist();
 
     // Our drag is a copy event, from another Card
-    const articleUuid = e.dataTransfer.getData(
-      DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE
-    );
+    const articleUuid = e.dataTransfer.getData(DRAG_DATA_CARD_IMAGE_OVERRIDE);
     if (articleUuid) {
       this.props.copyCardImageMeta(articleUuid, this.props.uuid);
       return;

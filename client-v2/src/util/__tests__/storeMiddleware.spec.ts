@@ -42,7 +42,7 @@ describe('Store middleware', () => {
     it('should issue updates for the relevant collection', () => {
       const store = mockStore(state);
       store.dispatch({
-        type: 'DO_SOMETHING_TO_AN_ARTICLE_FRAGMENT',
+        type: 'DO_SOMETHING_TO_AN_CARD',
         payload: {
           id: 'exampleCollection',
           cardId: '95e2bfc0-8999-4e6e-a359-19960967c1e0',

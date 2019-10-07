@@ -3,12 +3,12 @@ import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import { State } from './sharedReducer';
 import { selectCards } from 'shared/selectors/shared';
 import {
-  UPDATE_ARTICLE_FRAGMENT_META,
-  ARTICLE_FRAGMENTS_RECEIVED,
-  CLEAR_ARTICLE_FRAGMENTS,
-  REMOVE_SUPPORTING_ARTICLE_FRAGMENT,
-  INSERT_SUPPORTING_ARTICLE_FRAGMENT,
-  COPY_ARTICLE_FRAGMENT_IMAGE_META
+  UPDATE_CARD_META,
+  CARDS_RECEIVED,
+  CLEAR_CARDS,
+  REMOVE_SUPPORTING_CARD,
+  INSERT_SUPPORTING_CARD,
+  COPY_CARD_IMAGE_META
 } from 'shared/actions/Cards';
 import { cloneActiveImageMeta } from 'shared/util/card';
 
@@ -18,7 +18,7 @@ const cards = (
   prevSharedState: State
 ) => {
   switch (action.type) {
-    case UPDATE_ARTICLE_FRAGMENT_META: {
+    case UPDATE_CARD_META: {
       const { id } = action.payload;
       return {
         ...state,
@@ -30,17 +30,17 @@ const cards = (
         }
       };
     }
-    case CLEAR_ARTICLE_FRAGMENTS: {
+    case CLEAR_CARDS: {
       return action.payload.ids.reduce((newState, id) => {
         const { [id]: omit, ...rest } = newState;
         return rest;
       }, state);
     }
-    case ARTICLE_FRAGMENTS_RECEIVED: {
+    case CARDS_RECEIVED: {
       const { payload } = action;
       return Object.assign({}, state, payload);
     }
-    case REMOVE_SUPPORTING_ARTICLE_FRAGMENT: {
+    case REMOVE_SUPPORTING_CARD: {
       const card = state[action.payload.id];
       return {
         ...state,
@@ -55,7 +55,7 @@ const cards = (
         }
       };
     }
-    case INSERT_SUPPORTING_ARTICLE_FRAGMENT: {
+    case INSERT_SUPPORTING_CARD: {
       const { id, cardId, index } = action.payload;
       const targetCard = state[id];
       const insertedCard = state[cardId];
@@ -109,7 +109,7 @@ const cards = (
         [id]: newFragment
       };
     }
-    case COPY_ARTICLE_FRAGMENT_IMAGE_META: {
+    case COPY_CARD_IMAGE_META: {
       const to = action.payload.to;
       const fromArticle = state[action.payload.from];
       const toArticle = state[to];
