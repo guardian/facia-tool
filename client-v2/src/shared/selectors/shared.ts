@@ -158,6 +158,9 @@ const createSelectArticleFromArticleFragment = () =>
           articleFragment.meta.byline ||
           (externalArticle ? externalArticle.fields.byline : undefined),
         kicker,
+        pickedKicker: externalArticle
+          ? externalArticle.frontsMeta.pickedKicker
+          : undefined,
         pillarId: externalArticle ? externalArticle.pillarId : undefined,
         thumbnail: getThumbnail(articleMeta, externalArticle),
         cutoutThumbnail: externalArticle

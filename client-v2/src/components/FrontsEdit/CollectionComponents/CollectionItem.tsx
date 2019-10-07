@@ -180,6 +180,8 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
           return (
             <>
               <SnapLink
+                frontId={frontId}
+                collectionId={collectionId}
                 id={uuid}
                 isUneditable={isUneditable}
                 {...getNodeProps()}
@@ -189,6 +191,7 @@ class CollectionItem extends React.Component<ArticleContainerProps> {
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
+                canShowPageViewData={canShowPageViewData}
               />
               {getSublinks}
               {numSupportingArticles === 0

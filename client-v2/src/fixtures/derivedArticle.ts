@@ -32,5 +32,6 @@ export default {
   supporting: [],
   kicker: 'News',
   tone: undefined,
-  hasMainVideo: false
+  hasMainVideo: false,
+  pickedKicker: 'kick'
 } as DerivedArticle;

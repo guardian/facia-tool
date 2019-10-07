@@ -4,6 +4,7 @@ import java.time.{LocalDate, LocalTime, ZonedDateTime}
 
 import logging.Logging
 import model.editions._
+import play.api.mvc.{Result, Results}
 import services.{Capi, Prefill}
 
 import scala.concurrent.Await
@@ -11,13 +12,12 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.control.NonFatal
 
-class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) extends Logging {
-  def generateEditionTemplate(name: String, localDate: LocalDate): Option[EditionsIssueSkeleton] = {
-   templates
-      .get(name)
-      .flatMap { template =>
+class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], capi: Capi) extends Logging {
+  def generateEditionTemplate(edition: Edition, localDate: LocalDate): Either[Result, EditionsIssueSkeleton] = {
+    templates.lift(edition) match {
+      case Some(template) =>
         if (template.availability.isValid(localDate)) {
-          Some(EditionsIssueSkeleton(
+          Right(EditionsIssueSkeleton(
             localDate,
             template.zoneId,
             template.fronts
@@ -40,11 +40,12 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
                   frontTemplate.hidden,
                   frontTemplate.isSpecial
                 )
-            }))
+              }))
         } else {
-          None
+          Left(Results.UnprocessableEntity(s"$localDate is not a valid date to create an issue of $edition"))
         }
-      }
+      case None => Left(Results.NotFound(s"No template registered for $edition"))
+    }
   }
 
   // this function fetches articles from CAPI with enough data to resolve the defaults
@@ -58,12 +59,13 @@ class EditionsTemplating(templates: Map[String, EditionTemplate], capi: Capi) ex
         logger.warn(s"Failed to successfully execute CAPI prefill query $prefillQuery", t)
         Nil
     }
-    items.map { case Prefill(pageCode, metaData, cutoutImage, tone, mediaType, customKicker) =>
+    items.map { case Prefill(pageCode, metaData, cutoutImage, _, mediaType, pickedKicker) =>
       val articleMetadata = ArticleMetadata.default.copy(
         showByline = if (metaData.showByline) Some(true) else None,
         showQuotedHeadline = if (metaData.showQuotedHeadline) Some(true) else None,
         mediaType = mediaType,
-        cutoutImage = cutoutImage
+        cutoutImage = cutoutImage,
+        customKicker = pickedKicker
       )
       EditionsArticleSkeleton(pageCode.toString, articleMetadata)
     }

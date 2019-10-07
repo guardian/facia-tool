@@ -7,17 +7,29 @@ import model.editions.PublishedIssue
 import play.api.libs.json.Json
 import PublishedIssueFormatters._
 
-class EditionsBucket(s3Client: AmazonS3, bucketName: String) {
-  def createIssuePrefix(issue: PublishedIssue): String = s"${issue.name}/${issue.issueDate.toString}"
+object EditionsBucket {
+  def createIssuePrefix(issue: PublishedIssue): String = s"${issue.name.entryName}/${issue.issueDate.toString}"
 
   def createIssueFilename(issue: PublishedIssue): String = s"${issue.version}.json"
 
-  def putIssue(issue: PublishedIssue) = {
-    val issueJson = Json.stringify(Json.toJson(issue))
+  def createKey(issue: PublishedIssue): String = s"${createIssuePrefix(issue)}/${createIssueFilename(issue)}"
+
+  val objectMetadata: ObjectMetadata = {
     val metadata = new ObjectMetadata()
     metadata.setContentType("application/json")
-    val key = s"${createIssuePrefix(issue)}/${createIssueFilename(issue)}"
-    val request = new PutObjectRequest(bucketName, key, new StringInputStream(issueJson), metadata)
+    metadata
+  }
+
+  def createPutObjectRequest(bucketName: String, issue: PublishedIssue): PutObjectRequest = {
+    val key = EditionsBucket.createKey(issue)
+    val issueJson = Json.stringify(Json.toJson(issue))
+    new PutObjectRequest(bucketName, key, new StringInputStream(issueJson), EditionsBucket.objectMetadata)
+  }
+}
+
+class EditionsBucket(s3Client: AmazonS3, bucketName: String) {
+  def putIssue(issue: PublishedIssue) = {
+    val request = EditionsBucket.createPutObjectRequest(bucketName, issue)
     s3Client.putObject(request)
   }
 }

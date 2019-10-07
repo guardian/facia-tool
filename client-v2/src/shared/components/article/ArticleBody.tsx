@@ -32,6 +32,8 @@ import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSetti
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 import EditModeVisibility from 'components/util/EditModeVisibility';
+import PageViewDataWrapper from '../PageViewDataWrapper';
+import ImageAndGraphWrapper from '../image/ImageAndGraphWrapper';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -66,28 +68,8 @@ const FirstPublicationDate = styled(CollectionItemMetaContent)`
   color: ${theme.shared.colors.green};
 `;
 
-const PageViewDataWrapper = styled.div`
-  width: 45px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  padding-right: 5px;
-  font-size: 12px;
-  height: 35px;
-  padding-bottom: 3px;
-`;
-
 const Tone = styled.span`
   font-weight: normal;
-`;
-
-const ImageAndGraphWrapper = styled.div<{ size: CollectionItemSizes }>`
-  display: flex;
-  flex-direction: row;
-  ${props =>
-    props.size === 'medium' &&
-    `flex-wrap: wrap-reverse;
-    justify-content: flex-end;`}
 `;
 
 const VideoIconContainer = styled(CircularIconContainer)`
