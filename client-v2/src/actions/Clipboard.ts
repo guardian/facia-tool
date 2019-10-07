@@ -3,10 +3,7 @@ import { saveClipboardStrategy } from 'strategies/save-clipboard';
 import { fetchArticles } from 'actions/Collections';
 import { batchActions } from 'redux-batched-actions';
 import { cardsReceived } from 'shared/actions/Cards';
-import {
-  Card,
-  NestedCard
-} from 'shared/types/Collection';
+import { Card, NestedCard } from 'shared/types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
 import {
   UpdateClipboardContent,
@@ -51,9 +48,7 @@ function storeClipboardContent(clipboardContent: NestedCard[]) {
       ])
     );
 
-    const fragmentIds = Object.values(cards).map(
-      fragment => fragment.id
-    );
+    const fragmentIds = Object.values(cards).map(fragment => fragment.id);
     return dispatch(fetchArticles(fragmentIds));
   };
 }

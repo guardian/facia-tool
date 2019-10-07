@@ -31,10 +31,7 @@ const getUUID = <T extends { uuid: string }>({ uuid }: T) => uuid;
 const getGroupIndex = (id: string | null): number => parseInt(id || '0', 10);
 
 const getAllCards = (groups: Group[]) =>
-  groups.reduce(
-    (acc, { cards }) => [...acc, ...cards],
-    [] as string[]
-  );
+  groups.reduce((acc, { cards }) => [...acc, ...cards], [] as string[]);
 
 const configGroupIndexExistsInGroups = (
   groupsToSearch: Group[],
@@ -78,9 +75,7 @@ const addGroupsForStage = (
   // If we have no cards and no groups in a collection we still need to create
   // and empty group for articles.
   if (groupsWithNames.length === 0) {
-    groupsWithNames.push(
-      createGroup(null, null, getAllCards(groups))
-    );
+    groupsWithNames.push(createGroup(null, null, getAllCards(groups)));
   }
 
   // Finally we need to sort the groups according to their ids.
@@ -132,8 +127,7 @@ const createPreviouslyCardIds = (
   normalisedCollection: any
 ) =>
   compact(collection.previously || []).map(nestedCard => {
-    const maybeCard = Object.entries(normalisedCollection.entities
-      .cards as {
+    const maybeCard = Object.entries(normalisedCollection.entities.cards as {
       [uuid: string]: Card;
     }).find(([_, article]) => article.id === nestedCard.id);
     return maybeCard ? maybeCard[0] : undefined;

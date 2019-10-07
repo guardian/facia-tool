@@ -6,7 +6,7 @@ import { State } from 'types/State';
 import { insertCardFromDropEvent } from 'util/collectionUtils';
 import {
   moveCard,
-  removeCard,
+  removeCard as removeCardAction,
   updateCardMeta
 } from 'actions/Cards';
 import {
@@ -181,9 +181,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                       <>
                         <FocusWrapper
                           tabIndex={0}
-                          onFocus={e =>
-                            this.handleArticleFocus(e, card)
-                          }
+                          onFocus={e => this.handleArticleFocus(e, card)}
                           area="clipboard"
                           onBlur={this.handleBlur}
                           uuid={card.uuid}
@@ -198,9 +196,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                             canShowPageViewData={false}
                             textSize="small"
                             onSelect={selectCard}
-                            onDelete={() =>
-                              removeCard(card.uuid)
-                            }
+                            onDelete={() => removeCard(card.uuid)}
                           >
                             <CardLevel
                               cardId={card.uuid}
@@ -216,9 +212,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                                   getNodeProps={getSProps}
                                   size="small"
                                   showMeta={false}
-                                  onSelect={id =>
-                                    selectCard(id, true)
-                                  }
+                                  onSelect={id => selectCard(id, true)}
                                   onDelete={() =>
                                     removeSupportingCard(
                                       card.uuid,
@@ -269,17 +263,12 @@ const mapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  clearCardSelection: () =>
-    dispatch(editorClearCardSelection(clipboardId)),
+  clearCardSelection: () => dispatch(editorClearCardSelection(clipboardId)),
   removeCard: (uuid: string) => {
-    dispatch(
-      removeCard('clipboard', 'clipboard', uuid, 'clipboard')
-    );
+    dispatch(removeCardAction('clipboard', 'clipboard', uuid, 'clipboard'));
   },
   removeSupportingCard: (parentId: string, uuid: string) => {
-    dispatch(
-      removeCard('card', parentId, uuid, 'clipboard')
-    );
+    dispatch(removeCardAction('card', parentId, uuid, 'clipboard'));
   },
   clearClipboard: () => {
     dispatch(clearClipboardWithPersist(clipboardId));

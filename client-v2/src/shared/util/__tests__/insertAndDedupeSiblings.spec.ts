@@ -35,37 +35,45 @@ const cardMap = {
 
 describe('insertAndDedupeSiblings', () => {
   it('inserts a fragments', () => {
-    expect(
-      insertAndDedupeSiblings(['a', 'b'], ['c'], 0, cardMap)
-    ).toEqual(['c', 'a', 'b']);
+    expect(insertAndDedupeSiblings(['a', 'b'], ['c'], 0, cardMap)).toEqual([
+      'c',
+      'a',
+      'b'
+    ]);
 
-    expect(
-      insertAndDedupeSiblings(['a', 'b'], ['c'], 2, cardMap)
-    ).toEqual(['a', 'b', 'c']);
+    expect(insertAndDedupeSiblings(['a', 'b'], ['c'], 2, cardMap)).toEqual([
+      'a',
+      'b',
+      'c'
+    ]);
   });
 
   it('keeps the latest insertion if the items are the same', () => {
-    expect(
-      insertAndDedupeSiblings(['a', 'c'], ['a'], 2, cardMap)
-    ).toEqual(['c', 'a']);
+    expect(insertAndDedupeSiblings(['a', 'c'], ['a'], 2, cardMap)).toEqual([
+      'c',
+      'a'
+    ]);
   });
 
   it('keeps the first occurence of existing duplicates and removes the rest', () => {
-    expect(
-      insertAndDedupeSiblings(['c', 'd'], ['a'], 0, cardMap)
-    ).toEqual(['a', 'c']);
+    expect(insertAndDedupeSiblings(['c', 'd'], ['a'], 0, cardMap)).toEqual([
+      'a',
+      'c'
+    ]);
   });
 
   it('removes duplicates for new insertions', () => {
-    expect(
-      insertAndDedupeSiblings(['a', 'd'], ['c'], 2, cardMap)
-    ).toEqual(['a', 'c']);
+    expect(insertAndDedupeSiblings(['a', 'd'], ['c'], 2, cardMap)).toEqual([
+      'a',
+      'c'
+    ]);
   });
 
   it('always keeps the recently added duplicate', () => {
-    expect(
-      insertAndDedupeSiblings(['a', 'c'], ['d'], 2, cardMap)
-    ).toEqual(['a', 'd']);
+    expect(insertAndDedupeSiblings(['a', 'c'], ['d'], 2, cardMap)).toEqual([
+      'a',
+      'd'
+    ]);
   });
 
   it('skips inserts when this dedupe is running as part of an insert elsewhere', () => {
@@ -87,18 +95,13 @@ describe('insertAndDedupeSiblings', () => {
 
   it('takes multiple insertions and only dedupes existing', () => {
     expect(
-      insertAndDedupeSiblings(
-        ['a', 'b', 'c'],
-        ['d', 'e'],
-        1,
-        cardMap
-      )
+      insertAndDedupeSiblings(['a', 'b', 'c'], ['d', 'e'], 1, cardMap)
     ).toEqual(['a', 'd', 'e']);
   });
 
   it('takes multiple insertions with duplicates and keeps the first', () => {
-    expect(
-      insertAndDedupeSiblings(['a', 'c'], ['b', 'e'], 1, cardMap)
-    ).toEqual(['a', 'b', 'c']);
+    expect(insertAndDedupeSiblings(['a', 'c'], ['b', 'e'], 1, cardMap)).toEqual(
+      ['a', 'b', 'c']
+    );
   });
 });

@@ -167,18 +167,14 @@ interface ActionPersistMeta {
   meta: PersistMeta;
 }
 
-type InsertGroupCard = SharedInsertGroupCard &
-  ActionPersistMeta;
-type InsertSupportingCard = SharedInsertSupportingCard &
-  ActionPersistMeta;
+type InsertGroupCard = SharedInsertGroupCard & ActionPersistMeta;
+type InsertSupportingCard = SharedInsertSupportingCard & ActionPersistMeta;
 type InsertClipboardCard = {
   type: 'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
 } & { payload: InsertCardPayload };
 
-type RemoveGroupCard = SharedRemoveGroupCard &
-  ActionPersistMeta;
-type RemoveSupportingCard = SharedRemoveSupportingCard &
-  ActionPersistMeta;
+type RemoveGroupCard = SharedRemoveGroupCard & ActionPersistMeta;
+type RemoveSupportingCard = SharedRemoveSupportingCard & ActionPersistMeta;
 type RemoveClipboardCard = {
   type: 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
 } & RemoveCardPayload;

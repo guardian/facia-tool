@@ -258,9 +258,9 @@ describe('Shared selectors', () => {
       expect(selectExternalArticleFromCard(state, 'af1')).toEqual(
         state.externalArticles.data.ea1
       );
-      expect(
-        selectExternalArticleFromCard(state, 'invalid')
-      ).toEqual(undefined);
+      expect(selectExternalArticleFromCard(state, 'invalid')).toEqual(
+        undefined
+      );
     });
   });
 

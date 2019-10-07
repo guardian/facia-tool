@@ -12,10 +12,7 @@ import {
   editorOpenAllCollectionsForFront,
   editorCloseAllCollectionsForFront
 } from 'bundles/frontsUIBundle';
-import {
-  CardSets,
-  Card as TCard
-} from 'shared/types/Collection';
+import { CardSets, Card as TCard } from 'shared/types/Collection';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
 import { theme as sharedTheme } from 'shared/constants/theme';
@@ -97,11 +94,7 @@ type FrontProps = FrontPropsBeforeState & {
     frontId: string,
     isSupporting: boolean
   ) => void;
-  handleArticleFocus: (
-    groupId: string,
-    card: TCard,
-    frontId: string
-  ) => void;
+  handleArticleFocus: (groupId: string, card: TCard, frontId: string) => void;
   toggleOverview: (open: boolean) => void;
   overviewIsOpen: boolean;
   editorOpenAllCollectionsForFront: typeof editorOpenAllCollectionsForFront;
@@ -236,11 +229,7 @@ const mapDispatchToProps = (
   return {
     initialiseFront: () =>
       dispatch(initialiseCollectionsForFront(id, browsingStage)),
-    handleArticleFocus: (
-      groupId: string,
-      card: TCard,
-      frontId: string
-    ) =>
+    handleArticleFocus: (groupId: string, card: TCard, frontId: string) =>
       dispatch(
         setFocusState({
           type: 'collectionArticle',

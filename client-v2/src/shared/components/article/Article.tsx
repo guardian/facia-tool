@@ -208,10 +208,7 @@ const createMapStateToProps = () => {
 
     return {
       article,
-      isLoading: selectors.selectIsLoadingInitialDataById(
-        sharedState,
-        card.id
-      ),
+      isLoading: selectors.selectIsLoadingInitialDataById(sharedState, card.id),
       featureFlagPageViewData: selectFeatureValue(
         selectSharedState(state),
         'page-view-data-visualisation'

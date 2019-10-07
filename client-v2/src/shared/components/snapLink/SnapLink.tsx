@@ -97,9 +97,7 @@ const SnapLink = ({
 }: SnapLinkProps) => {
   const headline =
     card.meta.headline ||
-    (card.meta.customKicker
-      ? `{ ${card.meta.customKicker} }`
-      : 'No headline');
+    (card.meta.customKicker ? `{ ${card.meta.customKicker} }` : 'No headline');
 
   const normaliseSnapUrl = (href: string) => {
     if (href && !/^https?:\/\//.test(href)) {
@@ -108,8 +106,7 @@ const SnapLink = ({
     return href;
   };
 
-  const urlPath =
-    card.meta.href && normaliseSnapUrl(card.meta.href);
+  const urlPath = card.meta.href && normaliseSnapUrl(card.meta.href);
 
   const now = Date.now();
 
@@ -120,9 +117,7 @@ const SnapLink = ({
           <CardMetaContainer size={size}>
             <CardMetaHeading>Snap link</CardMetaHeading>
             <CardMetaContent>
-              {upperFirst(
-                card.meta.snapCss || card.meta.snapType
-              )}
+              {upperFirst(card.meta.snapCss || card.meta.snapType)}
             </CardMetaContent>
             {!!card.frontPublicationDate && (
               <CardMetaContent title="The time elapsed since this card was created in the tool.">
@@ -143,9 +138,7 @@ const SnapLink = ({
             isBoosted={card.meta.isBoosted}
           />
           <CardHeadingContainer size={size}>
-            {!showMeta && (
-              <CardMetaHeading>Snap link </CardMetaHeading>
-            )}
+            {!showMeta && <CardMetaHeading>Snap link </CardMetaHeading>}
             <CardHeading html>{headline}</CardHeading>
             <SnapLinkURL>
               {card.meta.snapUri && (

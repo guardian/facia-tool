@@ -17,9 +17,7 @@ export const insertAndDedupeSiblings = (
       ]
     : existingSiblingUUIDs;
   const insertionIDs = insertionUUIDs.map(id => cardMap[id].id);
-  const newSiblingCards = newSiblingUUIDs.map(
-    id => cardMap[id]
-  );
+  const newSiblingCards = newSiblingUUIDs.map(id => cardMap[id]);
 
   const isAnInsertedItem = (i: number) =>
     i >= index && i < index + insertionUUIDs.length;

@@ -10,10 +10,7 @@ import { State } from 'types/State';
 import WithDimensions from 'components/util/WithDimensions';
 import { selectFront } from 'selectors/frontsSelectors';
 import { Dispatch } from 'types/Store';
-import {
-  Card as TCard,
-  CardSets
-} from 'shared/types/Collection';
+import { Card as TCard, CardSets } from 'shared/types/Collection';
 import { FrontConfig } from 'types/FaciaApi';
 import { moveCard } from 'actions/Cards';
 import { insertCardFromDropEvent } from 'util/collectionUtils';
@@ -136,12 +133,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
   public handleMove = (move: Move<TCard>) => {
     events.dropArticle(this.props.id, 'collection');
-    this.props.moveCard(
-      move.to,
-      move.data,
-      move.from || null,
-      'collection'
-    );
+    this.props.moveCard(move.to, move.data, move.from || null, 'collection');
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {

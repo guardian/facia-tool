@@ -1,10 +1,5 @@
 import { ExternalArticle } from './ExternalArticle';
-import {
-  Collection,
-  Card,
-  Group,
-  CardMeta
-} from './Collection';
+import { Collection, Card, Group, CardMeta } from './Collection';
 import { Actions } from 'lib/createAsyncResourceBundle';
 import { copyCardImageMeta } from 'shared/actions/Cards';
 import { PageViewStory } from './PageViewData';
@@ -79,9 +74,7 @@ interface MaybeAddFrontPublicationDate {
   };
 }
 
-type CopyCardImageMeta = ReturnType<
-  typeof copyCardImageMeta
->;
+type CopyCardImageMeta = ReturnType<typeof copyCardImageMeta>;
 
 interface PageViewDataRequested {
   type: 'PAGE_VIEW_DATA_REQUESTED';

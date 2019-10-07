@@ -12,10 +12,7 @@ const selectArticleIdsInCollection = createSelectArticlesInCollection();
 export const selectArticlesInCollections = createSelector(
   (
     state: State,
-    {
-      collectionIds,
-      itemSet
-    }: { collectionIds: string[]; itemSet: CardSets }
+    { collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets }
   ) =>
     collectionIds.map(_ =>
       selectArticleIdsInCollection(state, {
@@ -32,10 +29,7 @@ export const createSelectIsArticleInCollection = () => {
   const selectArticlesInCollection = createSelectArticlesInCollection();
   return createSelector(
     selectArticlesInCollection,
-    (
-      _: State,
-      { cardId: articleId }: { cardId: string }
-    ) => articleId,
+    (_: State, { cardId: articleId }: { cardId: string }) => articleId,
     (articleIds, articleId) => articleIds.indexOf(articleId) !== -1
   );
 };

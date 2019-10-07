@@ -52,12 +52,8 @@ describe('Shared utilities', () => {
       expect(g2Articles).toHaveLength(1);
       expect(g3Articles).toHaveLength(2);
       const liveArticles = [...g1Articles, ...g2Articles, ...g3Articles];
-      expect(result.cards[liveArticles[0]].id).toBe(
-        'article/live/0'
-      );
-      expect(result.cards[liveArticles[1]].id).toBe(
-        'article/draft/1'
-      );
+      expect(result.cards[liveArticles[0]].id).toBe('article/live/0');
+      expect(result.cards[liveArticles[1]].id).toBe('article/draft/1');
       expect(result.cards[liveArticles[2]].id).toBe('a/long/path/2');
     });
     it('should handle draft and previously keys', () => {
@@ -108,15 +104,9 @@ describe('Shared utilities', () => {
       const draftGroup3 = result.groups[result.normalisedCollection.draft![2]];
       const prevGroup3 =
         result.groups[result.normalisedCollection.previously![2]];
-      expect(result.cards[liveGroup2.cards[0]].id).toBe(
-        'article/live/0'
-      );
-      expect(result.cards[draftGroup3.cards[0]].id).toBe(
-        'article/live/2'
-      );
-      expect(result.cards[prevGroup3.cards[0]].id).toBe(
-        'article/live/3'
-      );
+      expect(result.cards[liveGroup2.cards[0]].id).toBe('article/live/0');
+      expect(result.cards[draftGroup3.cards[0]].id).toBe('article/live/2');
+      expect(result.cards[prevGroup3.cards[0]].id).toBe('article/live/3');
     });
     it('should insert a default group for empty collections', () => {
       const { groups, ...collectionConfigWithoutGroups } = collectionConfig;

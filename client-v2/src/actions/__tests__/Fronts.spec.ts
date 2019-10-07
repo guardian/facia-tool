@@ -5,10 +5,7 @@ import { scJohnsonPartnerZoneCollection } from 'fixtures/collectionsEndpointResp
 import { articlesForScJohnsonPartnerZone } from 'actions/__tests__/capiEndpointResponse';
 import { selectIsCollectionOpen } from 'bundles/frontsUIBundle';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
-import {
-  selectCard,
-  selectSharedState
-} from 'shared/selectors/shared';
+import { selectCard, selectSharedState } from 'shared/selectors/shared';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 
 describe('Fronts actions', () => {

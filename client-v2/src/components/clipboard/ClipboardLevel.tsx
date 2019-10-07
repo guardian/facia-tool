@@ -41,12 +41,7 @@ const ClipboardDropContainer = styled(DefaultDropContainer)<{
   flex-grow: ${({ index, length }) => (index === length ? 1 : 0)};
 `;
 
-const ClipboardLevel = ({
-  children,
-  cards,
-  onMove,
-  onDrop
-}: Props) => (
+const ClipboardLevel = ({ children, cards, onMove, onDrop }: Props) => (
   <Level
     containerElement={ClipboardItemContainer}
     blacklistedDataTransferTypes={collectionDropTypeBlacklist}

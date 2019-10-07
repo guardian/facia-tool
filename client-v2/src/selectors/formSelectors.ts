@@ -50,10 +50,7 @@ export const emailFieldsToExclude = [
 const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
   isSupporting;
 
-const selectParentCollectionConfig = (
-  state: State,
-  cardId: string
-) => {
+const selectParentCollectionConfig = (state: State, cardId: string) => {
   const collectionId = selectors.selectParentCollectionOfCard(
     selectSharedState(state),
     cardId

@@ -59,9 +59,7 @@ const createRefreshOpenArticles = (store: Store) => () => {
   const state = store.getState();
   const openCardIds = selectOpenCardIds(state);
   const externalArticleIds = openCardIds
-    .map(_ =>
-      selectExternalArticleIdFromCard(selectSharedState(state), _)
-    )
+    .map(_ => selectExternalArticleIdFromCard(selectSharedState(state), _))
     .filter(_ => _) as string[];
   (store.dispatch as Dispatch)(fetchArticles(externalArticleIds));
 };

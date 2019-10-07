@@ -1,10 +1,7 @@
 import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import { State } from './sharedReducer';
-import {
-  selectCards,
-  selectGroupSiblings
-} from 'shared/selectors/shared';
+import { selectCards, selectGroupSiblings } from 'shared/selectors/shared';
 import { capGroupCards } from 'shared/util/capGroupCards';
 import keyBy from 'lodash/keyBy';
 
@@ -61,9 +58,7 @@ const groups = (
         ...state,
         [id]: {
           ...group,
-          cards: (group.cards || []).filter(
-            afId => afId !== cardId
-          )
+          cards: (group.cards || []).filter(afId => afId !== cardId)
         }
       };
     }

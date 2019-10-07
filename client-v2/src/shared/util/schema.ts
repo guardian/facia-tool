@@ -2,18 +2,14 @@ import { createType, build, createFieldType } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
 import { Card } from 'shared/types/Collection';
 
-const preProcessCard = (
-  card: Card
-): object => ({
+const preProcessCard = (card: Card): object => ({
   ...card,
   // guard against missing meta from the server
   meta: card.meta || {},
   uuid: v4()
 });
 
-const postProcessCard = (
-  card: Card
-): object => {
+const postProcessCard = (card: Card): object => {
   const { uuid, ...af } = card;
 
   let meta = { ...af.meta };

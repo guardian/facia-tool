@@ -2,17 +2,14 @@ import React from 'react';
 import { styled, Theme } from 'constants/theme';
 import Collection from './CollectionComponents/Collection';
 import { AlsoOnDetail } from 'types/Collection';
-import {
-  CardSets,
-  Card as TCard
-} from 'shared/types/Collection';
+import { CardSets, Card as TCard } from 'shared/types/Collection';
 import GroupDisplayComponent from 'shared/components/GroupDisplay';
 import GroupLevel from 'components/clipboard/GroupLevel';
 import Card from './CollectionComponents/Card';
 import CardLevel from 'components/clipboard/CardLevel';
 import { PosSpec, Move } from 'lib/dnd';
 import { Dispatch } from 'types/Store';
-import { removeCard } from 'actions/Cards';
+import { removeCard as removeCardAction } from 'actions/Cards';
 import { resetFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
@@ -164,12 +161,7 @@ class CollectionContext extends React.Component<
                       area="collection"
                       onBlur={() => handleBlur()}
                       onFocus={e =>
-                        handleArticleFocus(
-                          e,
-                          group.uuid,
-                          card,
-                          frontId
-                        )
+                        handleArticleFocus(e, group.uuid, card, frontId)
                       }
                       uuid={card.uuid}
                     >
@@ -182,12 +174,8 @@ class CollectionContext extends React.Component<
                         size={size}
                         canShowPageViewData={true}
                         getNodeProps={() => getAfNodeProps(isUneditable)}
-                        onSelect={() =>
-                          selectCard(card.uuid, false)
-                        }
-                        onDelete={() =>
-                          removeCard(group.uuid, card.uuid)
-                        }
+                        onSelect={() => selectCard(card.uuid, false)}
+                        onDelete={() => removeCard(group.uuid, card.uuid)}
                       >
                         <CardLevel
                           isUneditable={isUneditable}
@@ -201,18 +189,13 @@ class CollectionContext extends React.Component<
                               uuid={supporting.uuid}
                               parentId={card.uuid}
                               canShowPageViewData={false}
-                              onSelect={() =>
-                                selectCard(supporting.uuid, true)
-                              }
+                              onSelect={() => selectCard(supporting.uuid, true)}
                               isUneditable={isUneditable}
                               getNodeProps={() =>
                                 getSupportingProps(isUneditable)
                               }
                               onDelete={() =>
-                                removeSupportingCard(
-                                  card.uuid,
-                                  supporting.uuid
-                                )
+                                removeSupportingCard(card.uuid, supporting.uuid)
                               }
                               size="small"
                             />
@@ -255,12 +238,10 @@ const createMapStateToProps = () => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   removeCard: (parentId: string, uuid: string) => {
-    dispatch(removeCard('group', parentId, uuid, 'collection'));
+    dispatch(removeCardAction('group', parentId, uuid, 'collection'));
   },
   removeSupportingCard: (parentId: string, uuid: string) => {
-    dispatch(
-      removeCard('card', parentId, uuid, 'collection')
-    );
+    dispatch(removeCardAction('card', parentId, uuid, 'collection'));
   },
   handleBlur: () => dispatch(resetFocusState())
 });

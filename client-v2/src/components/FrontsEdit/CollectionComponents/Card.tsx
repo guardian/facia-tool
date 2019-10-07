@@ -10,11 +10,7 @@ import {
   selectSupportingArticleCount
 } from 'shared/selectors/shared';
 import cardTypes from 'shared/constants/cardTypes';
-import {
-  CardTypes,
-  CardSizes,
-  CardMeta
-} from 'shared/types/Collection';
+import { CardTypes, CardSizes, CardMeta } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import {
   copyCardImageMetaWithPersist,
@@ -266,9 +262,7 @@ class Card extends React.Component<ArticleContainerProps> {
 
     // Our drag contains Grid data
     validateImageEvent(e, this.props.frontId, imageCriteria)
-      .then(imageData =>
-        this.props.addImageToCard(this.props.uuid, imageData)
-      )
+      .then(imageData => this.props.addImageToCard(this.props.uuid, imageData))
       .catch(alert);
   };
 }

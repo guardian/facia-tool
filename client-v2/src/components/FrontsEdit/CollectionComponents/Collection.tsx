@@ -170,8 +170,7 @@ class Collection extends React.Component<CollectionProps> {
 
     const { isPreviouslyOpen, isLaunching } = this.state;
 
-    const isUneditable =
-      isCollectionLocked || browsingStage !== cardSets.draft;
+    const isUneditable = isCollectionLocked || browsingStage !== cardSets.draft;
 
     return (
       <CollectionDisplay

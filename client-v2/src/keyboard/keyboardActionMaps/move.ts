@@ -8,13 +8,7 @@ const moveUp: KeyboardActionMap = {
     dispatch: Dispatch
   ) => {
     try {
-      dispatch(
-        keyboardCardMove(
-          'up',
-          'clipboard',
-          focusData.card
-        )
-      );
+      dispatch(keyboardCardMove('up', 'clipboard', focusData.card));
     } catch (e) {
       Raven.captureMessage(`Moving item up in clipboard failed: ${e.message}`);
     }
@@ -43,13 +37,7 @@ const moveDown: KeyboardActionMap = {
     dispatch: Dispatch
   ) => {
     try {
-      dispatch(
-        keyboardCardMove(
-          'down',
-          'clipboard',
-          focusData.card
-        )
-      );
+      dispatch(keyboardCardMove('down', 'clipboard', focusData.card));
     } catch (e) {
       Raven.captureMessage(
         `Moving item down in clipboard failed: ${e.message}`

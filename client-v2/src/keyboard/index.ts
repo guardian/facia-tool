@@ -78,19 +78,11 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
           return;
         }
         const contentData: RefDrop = { type: 'REF', data: content };
-        const card = await dispatch(
-          createArticleEntitiesFromDrop(contentData)
-        );
+        const card = await dispatch(createArticleEntitiesFromDrop(contentData));
         if (!card) {
           return;
         }
-        dispatch(
-          insertClipboardCardWithPersist(
-            'clipboard',
-            0,
-            card.uuid
-          )
-        );
+        dispatch(insertClipboardCardWithPersist('clipboard', 0, card.uuid));
       } catch (e) {
         Raven.captureMessage(`Paste to clipboard failed: ${e.message}`);
       }

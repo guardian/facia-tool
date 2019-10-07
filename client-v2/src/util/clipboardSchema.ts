@@ -1,9 +1,6 @@
 import { createType, build } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
-import {
-  postProcessCard,
-  supportingArticles
-} from 'shared/util/schema';
+import { postProcessCard, supportingArticles } from 'shared/util/schema';
 import { Card } from 'shared/types/Collection';
 
 const cards = createType('cards', {

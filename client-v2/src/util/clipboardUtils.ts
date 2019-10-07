@@ -1,7 +1,4 @@
-import {
-  Card,
-  NestedCard
-} from 'shared/types/Collection';
+import { Card, NestedCard } from 'shared/types/Collection';
 import { selectClipboard } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
@@ -20,15 +17,10 @@ function normaliseClipboard(clipboard: {
   };
 }
 
-function denormaliseClipboard(
-  state: State
-): { articles: NestedCard[] } {
+function denormaliseClipboard(state: State): { articles: NestedCard[] } {
   const clipboard = selectClipboard(state);
 
-  return denormalize(
-    { articles: clipboard },
-    { cards: state.shared.cards }
-  );
+  return denormalize({ articles: clipboard }, { cards: state.shared.cards });
 }
 
 const getArticleLabel = (

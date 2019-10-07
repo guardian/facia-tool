@@ -10,8 +10,7 @@ describe('Clipboard utilities', () => {
       });
       const { cards } = result;
       const clipboardArticles = result.clipboard.articles;
-      const supportingArticle = cards[clipboardArticles[1]].meta
-        .supporting![0];
+      const supportingArticle = cards[clipboardArticles[1]].meta.supporting![0];
       expect(clipboardArticles.length).toEqual(2);
       expect(Object.keys(cards).length).toEqual(4);
       expect(cards[clipboardArticles[0]].id).toBe('article/live/0');

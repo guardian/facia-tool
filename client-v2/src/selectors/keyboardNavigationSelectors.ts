@@ -68,10 +68,7 @@ const selectNextIndexAndGroup = (
   }
 
   // Checking if moving between groups but inside the collection
-  const { collection, cardSet } = selectGroupCollection(
-    sharedState,
-    groupId
-  );
+  const { collection, cardSet } = selectGroupCollection(sharedState, groupId);
   if (collection) {
     const collectionGroups = collection[cardSet];
 
@@ -125,8 +122,7 @@ const selectNextIndexAndGroup = (
         const nextIndex = coll.draft.length;
         const nextGroupId = coll.draft[nextIndex - 1];
 
-        const nextGroupArticles = selectGroups(sharedState)[nextGroupId]
-          .cards;
+        const nextGroupArticles = selectGroups(sharedState)[nextGroupId].cards;
 
         return {
           toIndex: nextGroupArticles.length,

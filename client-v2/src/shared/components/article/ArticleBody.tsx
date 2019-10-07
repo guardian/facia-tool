@@ -192,9 +192,7 @@ const articleBodyDefault = React.memo(
                 <Tone> / {startCase(tone)}</Tone>
               </CardMetaHeading>
             )}
-            {type === 'liveblog' && (
-              <CardMetaContent>Liveblog</CardMetaContent>
-            )}
+            {type === 'liveblog' && <CardMetaContent>Liveblog</CardMetaContent>}
             {!isLive && !displayPlaceholders && (
               <NotLiveContainer>
                 {firstPublicationDate
@@ -250,11 +248,7 @@ const articleBodyDefault = React.memo(
                 {`${kicker} `}
               </KickerHeading>
             )}
-            <CardHeading
-              html
-              data-testid="headline"
-              displaySize={size}
-            >
+            <CardHeading html data-testid="headline" displaySize={size}>
               {headline}
             </CardHeading>
             {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}

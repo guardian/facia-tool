@@ -43,11 +43,7 @@ const state = {
         uuid: 'group1',
         id: 'group1',
         name: 'Group 1',
-        cards: [
-          'card1',
-          'card2',
-          'card3'
-        ]
+        cards: ['card1', 'card2', 'card3']
       }
     },
     cards: {

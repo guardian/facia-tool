@@ -39,8 +39,7 @@ const selectGroupsFromRootState = createSelector(
   (state: State) => selectGroups(state)
 );
 
-const selectCard = (state: State, id: string): Card =>
-  state.cards[id];
+const selectCard = (state: State, id: string): Card => state.cards[id];
 
 const selectExternalArticleFromCard = (
   state: State,
@@ -252,10 +251,7 @@ const createSelectPreviouslyLiveArticlesInCollection = () => {
       id: null,
       name: null,
       uuid: 'previously',
-      cards: (
-        (collection && collection.previouslyCardIds) ||
-        []
-      ).slice(0, 5)
+      cards: ((collection && collection.previouslyCardIds) || []).slice(0, 5)
     })
   );
 };
@@ -304,12 +300,7 @@ const createSelectArticlesInCollectionGroup = () => {
     selectCollectionStageGroups,
     selectGroupName,
     selectIncludeSupportingArticles,
-    (
-      cards,
-      collectionGroups,
-      groupName,
-      includeSupportingArticles = true
-    ) => {
+    (cards, collectionGroups, groupName, includeSupportingArticles = true) => {
       const groups = groupName
         ? [
             collectionGroups.find(({ id }) => id === groupName) || {
@@ -386,20 +377,16 @@ const createSelectAllArticlesInCollection = () => {
     );
 };
 
-const selectCardId = (
-  _: unknown,
-  { cardId }: { cardId: string }
-) => cardId;
+const selectCardId = (_: unknown, { cardId }: { cardId: string }) => cardId;
 
 const createSelectSupportingArticles = () =>
   createShallowEqualResultSelector(
     selectCardsFromRootState,
     selectCardId,
     (cards, id) =>
-      (cards[id].meta.supporting
-        ? cards[id].meta.supporting!
-        : []
-      ).map((sId: string) => cards[sId])
+      (cards[id].meta.supporting ? cards[id].meta.supporting! : []).map(
+        (sId: string) => cards[sId]
+      )
   );
 
 const createSelectGroupArticles = () =>
@@ -408,26 +395,21 @@ const createSelectGroupArticles = () =>
     selectCardsFromRootState,
     (_: any, { groupId }: { groupId: string }) => groupId,
     (groups, cards, groupId) =>
-      (groups[groupId].cards || []).map(
-        afId => cards[afId]
-      )
+      (groups[groupId].cards || []).map(afId => cards[afId])
   );
 
 const createSelectArticlesFromIds = () =>
   createShallowEqualResultSelector(
     selectCardsFromRootState,
-    (_: any, { cardIds }: { cardIds: string[] }) =>
-      cardIds,
-    (cards, cardIds) =>
-      (cardIds || []).map((afId: string) => cards[afId])
+    (_: any, { cardIds }: { cardIds: string[] }) => cardIds,
+    (cards, cardIds) => (cardIds || []).map((afId: string) => cards[afId])
   );
 
 const createDemornalisedCard = (
   cardId: string,
   cards: { [id: string]: Card }
 ): CardDenormalised =>
-  cards[cardId].meta &&
-  cards[cardId].meta.supporting
+  cards[cardId].meta && cards[cardId].meta.supporting
     ? {
         ...cards[cardId],
         meta: {
@@ -435,8 +417,7 @@ const createDemornalisedCard = (
           supporting:
             cards[cardId].meta.supporting &&
             cards[cardId].meta.supporting!.map(
-              (supportingFragmentId: string) =>
-                cards[supportingFragmentId]
+              (supportingFragmentId: string) => cards[supportingFragmentId]
             )
         }
       }
@@ -479,24 +460,17 @@ const selectGroupCollectionMap = createSelector(
 );
 
 const selectGroupCollection = (state: State, groupId: string) => {
-  const { collectionId, cardSet } = selectGroupCollectionMap(state)[
-    groupId
-  ];
+  const { collectionId, cardSet } = selectGroupCollectionMap(state)[groupId];
   const collection = collectionSelectors.selectById(state, collectionId);
   return { collection, cardSet };
 };
 
 const selectGroupSiblings = (state: State, groupId: string) => {
-  const { collection, cardSet } = selectGroupCollection(
-    state,
-    groupId
-  );
+  const { collection, cardSet } = selectGroupCollection(state, groupId);
   if (!collection) {
     return [];
   }
-  return (collection[cardSet] || []).map(
-    id => selectGroups(state)[id]
-  );
+  return (collection[cardSet] || []).map(id => selectGroups(state)[id]);
 };
 
 const selectArticleGroup = (

@@ -72,9 +72,7 @@ const createStateWithChangedFormFields = (
 describe('CardForm transform functions', () => {
   describe('Derive form values from a derived article', () => {
     it('should derive values', () => {
-      expect(getInitialValuesForCardForm(derivedArticle)).toEqual(
-        formValues
-      );
+      expect(getInitialValuesForCardForm(derivedArticle)).toEqual(formValues);
     });
     it('should handle existing slideshows of any length', () => {
       const exampleImage = {
@@ -170,9 +168,9 @@ describe('CardForm transform functions', () => {
         'exampleId',
         {}
       );
-      expect(
-        getCardMetaFromFormValues(state, 'exampleId', formValues)
-      ).toEqual({ headline: 'Bill Shorten' });
+      expect(getCardMetaFromFormValues(state, 'exampleId', formValues)).toEqual(
+        { headline: 'Bill Shorten' }
+      );
     });
     it('should derive values, removing the slideshow array if empty', () => {
       const byline = 'Caroline Davies edited';

@@ -56,9 +56,7 @@ const cloneFragment = (
   };
 };
 
-const cloneActiveImageMeta = ({
-  meta
-}: Card): CardMeta => {
+const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
   const newMeta: CardMeta = {
     imageCutoutReplace: false,
     imageSlideshowReplace: false,

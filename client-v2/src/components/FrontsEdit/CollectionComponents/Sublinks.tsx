@@ -80,14 +80,9 @@ class Sublinks extends React.Component<SublinkProps> {
               draggable={false}
               onClick={toggleShowArticleSublinks}
             >
-              <SublinkCardBody
-                dragHoverActive={this.state.dragHoverActive}
-              >
+              <SublinkCardBody dragHoverActive={this.state.dragHoverActive}>
                 {!isClipboard && <CardMetaContainer />}
-                <SublinkCardContent
-                  displaySize="small"
-                  showMeta={isClipboard}
-                >
+                <SublinkCardContent displaySize="small" showMeta={isClipboard}>
                   <span>
                     {numSupportingArticles} sublink
                     {numSupportingArticles > 1 && 's'}

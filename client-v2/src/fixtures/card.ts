@@ -36,9 +36,4 @@ const cardWithSlideshowThumbnailMeta = {
   ]
 };
 
-export {
-  card,
-  cardMeta,
-  cardWithSlideshowThumbnailMeta,
-  boostedCard
-};
+export { card, cardMeta, cardWithSlideshowThumbnailMeta, boostedCard };

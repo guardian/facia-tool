@@ -42,9 +42,7 @@ const collectionSelectors = {
               state.cards[afId] &&
               state.cards[afId].meta &&
               state.cards[afId].meta.supporting &&
-              state.cards[afId].meta.supporting!.indexOf(
-                cardId
-              ) !== -1
+              state.cards[afId].meta.supporting!.indexOf(cardId) !== -1
             ) {
               collectionId = id;
               return true;

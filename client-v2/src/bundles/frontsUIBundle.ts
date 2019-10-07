@@ -475,9 +475,7 @@ const selectIsCardFormOpen = (
   cardId: string,
   frontId: string
 ) => {
-  return (selectOpenCardForms(state, frontId) || []).some(
-    _ => _.id === cardId
-  );
+  return (selectOpenCardForms(state, frontId) || []).some(_ => _.id === cardId);
 };
 
 const createSelectCollectionIdsWithOpenForms = () =>
@@ -544,10 +542,7 @@ const defaultState = {
   frontIdsByBrowsingStage: {}
 };
 
-const clearCardSelection = (
-  state: State,
-  cardId: string
-): State => {
+const clearCardSelection = (state: State, cardId: string): State => {
   let frontId: string | null = null;
   for (const entry of Object.entries(state.selectedCards)) {
     const [currentFrontId, fragmentDatas] = entry;
@@ -568,9 +563,7 @@ const clearCardSelection = (
     ...state,
     selectedCards: {
       ...state.selectedCards,
-      [frontId]: state.selectedCards[frontId].filter(
-        _ => _.id !== cardId
-      )
+      [frontId]: state.selectedCards[frontId].filter(_ => _.id !== cardId)
     }
   };
 };
@@ -767,10 +760,7 @@ const reducer = (
       };
     }
     case EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION: {
-      return clearCardSelection(
-        state,
-        action.payload.cardId
-      );
+      return clearCardSelection(state, action.payload.cardId);
     }
     case EDITOR_CLOSE_FORMS_FOR_COLLECTION: {
       const maybeOpenFormsForFront =

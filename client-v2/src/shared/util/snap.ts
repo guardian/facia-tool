@@ -16,10 +16,7 @@ function validateId(id: string) {
   );
 }
 
-function convertToSnap({
-  id,
-  ...rest
-}: PartialBy<Card, 'id'>): Card {
+function convertToSnap({ id, ...rest }: PartialBy<Card, 'id'>): Card {
   const fragment = {
     id: generateId(),
     ...rest,
@@ -34,10 +31,7 @@ function convertToSnap({
   return set(['meta', 'href'], href, fragment);
 }
 
-async function createSnap(
-  url?: string,
-  meta?: CardMeta
-): Promise<Card> {
+async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
   const uuid = v4();
   try {
     const { title, description, siteName } =
