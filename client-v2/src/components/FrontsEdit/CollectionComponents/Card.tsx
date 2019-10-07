@@ -202,7 +202,7 @@ class Card extends React.Component<ArticleContainerProps> {
         default:
           return (
             <p>
-              Item with id {uuid} has unknown collection item type {type}
+              Item with id {uuid} has unknown card type {type}
             </p>
           );
       }

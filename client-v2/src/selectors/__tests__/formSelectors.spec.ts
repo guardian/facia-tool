@@ -1,6 +1,6 @@
 import cloneDeep from 'lodash/cloneDeep';
 import {
-  createSelectFormFieldsForCollectionItem,
+  createSelectFormFieldsForCard,
   defaultFields,
   supportingFields,
   emailFieldsToExclude
@@ -11,17 +11,17 @@ import without from 'lodash/without';
 describe('Form utils', () => {
   describe('selectFormFieldsForCollectionItem', () => {
     it("should handle articles that don't exist in the state", () => {
-      const selectFormFields = createSelectFormFieldsForCollectionItem();
+      const selectFormFields = createSelectFormFieldsForCard();
       expect(selectFormFields(state, 'who-are-you')).toEqual([]);
     });
     it('should give default fields for articles', () => {
-      const selectFormFields = createSelectFormFieldsForCollectionItem();
+      const selectFormFields = createSelectFormFieldsForCard();
       expect(
         selectFormFields(state, '95e2bfc0-8999-4e6e-a359-19960967c1e0')
       ).toEqual(defaultFields);
     });
     it('should give supporting fields for articles in supporting positions', () => {
-      const selectFormFields = createSelectFormFieldsForCollectionItem();
+      const selectFormFields = createSelectFormFieldsForCard();
       expect(
         selectFormFields(state, '95e2bfc0-8999-4e6e-a359-19960967c1e0', true)
       ).toEqual(supportingFields);
@@ -30,7 +30,7 @@ describe('Form utils', () => {
       const localState = cloneDeep(state);
       localState.fronts.frontsConfig.data.collections.exampleCollection.type =
         'dynamic/example';
-      const selectFormFields = createSelectFormFieldsForCollectionItem();
+      const selectFormFields = createSelectFormFieldsForCard();
       expect(
         selectFormFields(localState, '95e2bfc0-8999-4e6e-a359-19960967c1e0')
       ).toEqual([...defaultFields, 'isBoosted']);
@@ -40,13 +40,13 @@ describe('Form utils', () => {
       localState.shared.externalArticles.data[
         'article/live/0'
       ].fields.liveBloggingNow = 'true';
-      const selectFormFields = createSelectFormFieldsForCollectionItem();
+      const selectFormFields = createSelectFormFieldsForCard();
       expect(
         selectFormFields(localState, '95e2bfc0-8999-4e6e-a359-19960967c1e0')
       ).toEqual([...defaultFields, 'showLivePlayable']);
     });
     it('should add showMainVideo for articles with video as the main media', () => {
-      const selectFormFields = createSelectFormFieldsForCollectionItem();
+      const selectFormFields = createSelectFormFieldsForCard();
       expect(
         selectFormFields(
           stateWithVideoArticle,
@@ -55,7 +55,7 @@ describe('Form utils', () => {
       ).toEqual([...defaultFields, 'showMainVideo']);
     });
     it("should remove breaking news, large headline and slideshows when we're in priority 'email'", () => {
-      const selectFormFields = createSelectFormFieldsForCollectionItem();
+      const selectFormFields = createSelectFormFieldsForCard();
       expect(
         selectFormFields(
           { ...state, path: '/v2/email' },

@@ -3,10 +3,10 @@ import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
 import { persistCollectionOnEdit } from 'util/storeMiddleware';
 import { enableBatching } from 'redux-batched-actions';
-import { moveArticleFragment } from 'actions/ArticleFragments';
+import { moveCard } from 'actions/Cards';
 import { Dispatch } from 'types/Store';
 import rootReducer from 'reducers/rootReducer';
-import { NestedArticleFragment } from 'shared/types/Collection';
+import { NestedCard } from 'shared/types/Collection';
 import { updateCollection } from 'actions/Collections';
 
 const A1 = {
@@ -63,17 +63,17 @@ const init = () => {
         g1: {
           uuid: 'g1',
           id: 'g1',
-          articleFragments: ['a1', 'a2'],
+          cards: ['a1', 'a2'],
           name: 'g1'
         },
         g2: {
           uuid: 'g2',
           id: 'g2',
-          articleFragments: ['a3', 'a4'],
+          cards: ['a3', 'a4'],
           name: 'g2'
         }
       },
-      articleFragments: {
+      cards: {
         a1: A1,
         a2: A2,
         a3: A3,
@@ -96,7 +96,7 @@ const init = () => {
   return createStore(reducer, initState as any, middleware);
 };
 
-const groupedArticleFragmentIds = (afs: NestedArticleFragment[]) =>
+const groupedCardIds = (afs: NestedCard[]) =>
   afs.reduce(
     (acc, af) => ({
       ...acc,
@@ -121,7 +121,7 @@ describe('Collection persistence', () => {
         }
       );
       dispatch(
-        moveArticleFragment(
+        moveCard(
           { id: 'g1', type: 'group', index: 1 },
           A1,
           { id: 'g1', type: 'group', index: 0 },
@@ -134,10 +134,10 @@ describe('Collection persistence', () => {
       // fetch mock typings error
       const calls: any = fetchMock.calls('edits');
       expect(calls).toHaveLength(1);
-      const articleFragments = groupedArticleFragmentIds(
+      const cards = groupedCardIds(
         JSON.parse(calls[0][1].body).collection.live
       );
-      expect(articleFragments).toEqual({ g1: ['b', 'a'] });
+      expect(cards).toEqual({ g1: ['b', 'a'] });
     });
 
     it('moves between two collections DOWNWARDS make two persistence requests', () => {
@@ -151,7 +151,7 @@ describe('Collection persistence', () => {
         }
       );
       dispatch(
-        moveArticleFragment(
+        moveCard(
           { id: 'g2', type: 'group', index: 0 },
           A1,
           { id: 'g1', type: 'group', index: 0 },
@@ -164,13 +164,13 @@ describe('Collection persistence', () => {
       // fetch mock typings error
       const calls: any = fetchMock.calls('edits');
       expect(calls).toHaveLength(2);
-      const c1afs = groupedArticleFragmentIds(
+      const c1afs = groupedCardIds(
         JSON.parse(calls[0][1].body).collection.live
       );
       expect(c1afs).toEqual({
         g1: ['b']
       });
-      const c2afs = groupedArticleFragmentIds(
+      const c2afs = groupedCardIds(
         JSON.parse(calls[1][1].body).collection.live
       );
       expect(c2afs).toEqual({
@@ -190,7 +190,7 @@ describe('Collection persistence', () => {
         }
       );
       dispatch(
-        moveArticleFragment(
+        moveCard(
           { id: 'g1', type: 'group', index: 0 },
           A3,
           { id: 'g2', type: 'group', index: 0 },
@@ -203,13 +203,13 @@ describe('Collection persistence', () => {
       // fetch mock typings error
       const calls: any = fetchMock.calls('edits');
       expect(calls).toHaveLength(2);
-      const c1afs = groupedArticleFragmentIds(
+      const c1afs = groupedCardIds(
         JSON.parse(calls[0][1].body).collection.live
       );
       expect(c1afs).toEqual({
         g2: ['d']
       });
-      const c2afs = groupedArticleFragmentIds(
+      const c2afs = groupedCardIds(
         JSON.parse(calls[1][1].body).collection.live
       );
       expect(c2afs).toEqual({

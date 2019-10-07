@@ -1,8 +1,5 @@
 import { createSelector } from 'reselect';
-import {
-  selectCard,
-  selectExternalArticleFromCard
-} from './shared';
+import { selectCard, selectExternalArticleFromCard } from './shared';
 import { validateId } from 'shared/util/snap';
 import CardTypes from 'shared/constants/cardTypes';
 import { getContributorImage } from 'util/CAPIUtils';

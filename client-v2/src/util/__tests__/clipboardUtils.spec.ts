@@ -8,15 +8,15 @@ describe('Clipboard utilities', () => {
       const result = normaliseClipboard({
         articles: [liveArticle, articleWithSupporting]
       });
-      const { articleFragments } = result;
+      const { cards } = result;
       const clipboardArticles = result.clipboard.articles;
-      const supportingArticle = articleFragments[clipboardArticles[1]].meta
+      const supportingArticle = cards[clipboardArticles[1]].meta
         .supporting![0];
       expect(clipboardArticles.length).toEqual(2);
-      expect(Object.keys(articleFragments).length).toEqual(4);
-      expect(articleFragments[clipboardArticles[0]].id).toBe('article/live/0');
-      expect(articleFragments[clipboardArticles[1]].id).toBe('a/long/path/1');
-      expect(articleFragments[supportingArticle].id).toBe('article/draft/2');
+      expect(Object.keys(cards).length).toEqual(4);
+      expect(cards[clipboardArticles[0]].id).toBe('article/live/0');
+      expect(cards[clipboardArticles[1]].id).toBe('a/long/path/1');
+      expect(cards[supportingArticle].id).toBe('article/draft/2');
     });
   });
 

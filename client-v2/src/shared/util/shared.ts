@@ -75,7 +75,7 @@ const addGroupsForStage = (
     });
   }
 
-  // If we have no article fragments and no groups in a collection we still need to create
+  // If we have no cards and no groups in a collection we still need to create
   // and empty group for articles.
   if (groupsWithNames.length === 0) {
     groupsWithNames.push(
@@ -124,7 +124,7 @@ const addGroups = (
     { live: [], draft: [], previously: [], addedGroups: {} } as ReduceResult
   );
 
-// To determine the UUIDs of article fragments recently removed from a collection in a way that
+// To determine the UUIDs of cards recently removed from a collection in a way that
 // preserves the overall ordering lost during normalisation (when fragments are assigned to a Group)
 // we need to compare both the pre-normalised and normalised versions of the same collection.
 const createPreviouslyCardIds = (

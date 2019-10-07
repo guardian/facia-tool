@@ -1,11 +1,8 @@
 import { Group } from 'shared/types/Collection';
 
 // runs through an array of groups, assumed to be ordered, and removes all
-// article fragments beyond maxCards
-export const capGroupCards = (
-  groups: Group[],
-  maxCards: number
-) =>
+// cards beyond maxCards
+export const capGroupCards = (groups: Group[], maxCards: number) =>
   groups.reduce(
     ({ arr, remaining }, sibling) => ({
       arr: [

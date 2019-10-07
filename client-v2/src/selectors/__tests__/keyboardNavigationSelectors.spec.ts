@@ -43,24 +43,24 @@ describe('nextClipboardIndexSelector', () => {
 });
 
 describe('nextIndexAndGroupSelector', () => {
-  const groupsWithArticleFragments = {
+  const groupsWithCards = {
     group1: {
       id: 'group1',
       name: 'groupname',
       uuid: 'group1',
-      articleFragments: ['fragment-1', 'fragment-2', 'fragment-3']
+      cards: ['fragment-1', 'fragment-2', 'fragment-3']
     },
     group2: {
       id: 'group2',
       name: 'groupname',
       uuid: 'group2',
-      articleFragments: ['fragment-4', 'fragment-5', 'fragment-6']
+      cards: ['fragment-4', 'fragment-5', 'fragment-6']
     },
     group3: {
       id: 'group3',
       name: 'groupname',
       uuid: 'group3',
-      articleFragments: ['fragment-7', 'fragment-8']
+      cards: ['fragment-7', 'fragment-8']
     }
   };
   const artFragments = {
@@ -149,8 +149,8 @@ describe('nextIndexAndGroupSelector', () => {
     ...state,
     shared: {
       ...state.shared,
-      groups: groupsWithArticleFragments,
-      articleFragments: artFragments,
+      groups: groupsWithCards,
+      cards: artFragments,
       collections
     }
   };
@@ -161,7 +161,7 @@ describe('nextIndexAndGroupSelector', () => {
         id: 'gobbleygook',
         name: 'groupname',
         uuid: 'group123',
-        articleFragments: []
+        cards: []
       }
     };
     const stateWithEmptyGroup = {

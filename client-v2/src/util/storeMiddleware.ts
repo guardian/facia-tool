@@ -119,7 +119,7 @@ const persistCollectionOnEdit = (
   };
   /**
    * Get the relevant collection ids for the given actions.
-   * @todo At the moment this just cares about updates to article fragments,
+   * @todo At the moment this just cares about updates to cards,
    *   but it should also listen for edits to collections.
    */
   const getCollectionIdsForActions = (actions: Action[]) => {

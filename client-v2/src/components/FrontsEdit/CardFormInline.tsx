@@ -73,11 +73,7 @@ interface ComponentProps extends ContainerProps {
 
 type Props = ComponentProps &
   InterfaceProps &
-  InjectedFormProps<
-    CardFormData,
-    ComponentProps & InterfaceProps,
-    {}
-  >;
+  InjectedFormProps<CardFormData, ComponentProps & InterfaceProps, {}>;
 
 type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   frontId: string;
@@ -244,8 +240,7 @@ const KickerSuggestionButton = styled(InputButton)`
   }
 `;
 
-const getInputId = (cardId: string, label: string) =>
-  `${cardId}-${label}`;
+const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
 interface FormComponentState {
   lastKnownCollectionId: string | null;
@@ -553,10 +548,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     <ConditionalField
                       permittedFields={editableFields}
                       name="coverCardImageReplace"
-                      id={getInputId(
-                        cardId,
-                        'coverCardImageReplace'
-                      )}
+                      id={getInputId(cardId, 'coverCardImageReplace')}
                       component={InputCheckboxToggleInline}
                       label="Replace Cover Card Image"
                       type="checkbox"
@@ -724,11 +716,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
   };
 }
 
-const CardForm = reduxForm<
-  CardFormData,
-  ComponentProps & InterfaceProps,
-  {}
->({
+const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
   destroyOnUnmount: true,
   onSubmit: (
     values: CardFormData,
@@ -787,10 +775,7 @@ const formContainer: React.SFC<ContainerProps & InterfaceProps> = props => (
 const createMapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
   const selectFormFields = createSelectFormFieldsForCard();
-  return (
-    state: State,
-    { cardId, isSupporting = false }: InterfaceProps
-  ) => {
+  return (state: State, { cardId, isSupporting = false }: InterfaceProps) => {
     const externalArticle = selectExternalArticleFromCard(
       selectSharedState(state),
       cardId
@@ -853,10 +838,7 @@ const createMapStateToProps = () => {
   };
 };
 
-export {
-  getCardMetaFromFormValues,
-  getInitialValuesForCardForm
-};
+export { getCardMetaFromFormValues, getInitialValuesForCardForm };
 
 export default connect<ContainerProps, {}, InterfaceProps, State>(
   createMapStateToProps

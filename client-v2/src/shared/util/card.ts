@@ -27,7 +27,7 @@ const createFragment = (
 // only go one deep
 const cloneFragment = (
   fragment: Card,
-  fragments: { [id: string]: Card } // all the article fragments to enable nested rebuilds
+  fragments: { [id: string]: Card } // all the cards to enable nested rebuilds
 ): { parent: Card; supporting: Card[] } => {
   const sup = (fragment.meta.supporting || [])
     .map(id => {

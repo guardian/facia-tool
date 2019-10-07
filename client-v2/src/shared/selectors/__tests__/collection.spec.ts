@@ -42,7 +42,7 @@ describe('Collection selectors', () => {
         selectIsArticleInCollection(stateWithCollection.shared, {
           collectionId: 'exampleCollection',
           collectionSet: 'live',
-          articleFragmentId: '95e2bfc0-8999-4e6e-a359-19960967c1e0'
+          cardId: '95e2bfc0-8999-4e6e-a359-19960967c1e0'
         })
       ).toEqual(true);
     });
@@ -51,7 +51,7 @@ describe('Collection selectors', () => {
         selectIsArticleInCollection(stateWithCollection.shared, {
           collectionId: 'exampleCollection',
           collectionSet: 'live',
-          articleFragmentId: 'not-a-thing'
+          cardId: 'not-a-thing'
         })
       ).toEqual(false);
     });

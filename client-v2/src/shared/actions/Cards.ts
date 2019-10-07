@@ -51,7 +51,7 @@ function updateCardMeta(
   };
 }
 
-// This can accept either a map of article fragments or an array (from which a
+// This can accept either a map of cards or an array (from which a
 // map will be generated)
 function cardsReceived(
   cards:
@@ -85,10 +85,7 @@ function clearCards(ids: string[]): ClearCards {
   };
 }
 
-function removeGroupCard(
-  id: string,
-  cardId: string
-): RemoveGroupCard {
+function removeGroupCard(id: string, cardId: string): RemoveGroupCard {
   return {
     type: REMOVE_GROUP_ARTICLE_FRAGMENT,
     payload: {
@@ -147,10 +144,9 @@ const createArticleEntitiesFromDrop = (
   drop: MappableDropType
 ): ThunkResult<Promise<Card | undefined>> => {
   return async dispatch => {
-    const [
-      maybeCard,
-      maybeExternalArticle
-    ] = await getArticleEntitiesFromDrop(drop);
+    const [maybeCard, maybeExternalArticle] = await getArticleEntitiesFromDrop(
+      drop
+    );
     if (maybeExternalArticle) {
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
     }
@@ -246,9 +242,7 @@ const guPrefix = 'gu-';
 /**
  * Given a URL, produce an object with the appropriate meta values.
  */
-const getCardMetaFromUrlParams = (
-  url: string
-): CardMeta | undefined => {
+const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
   let urlObj: URL | undefined;
   try {
     urlObj = new URL(url);

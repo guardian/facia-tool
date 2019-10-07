@@ -6,7 +6,7 @@ import { articlesForScJohnsonPartnerZone } from 'actions/__tests__/capiEndpointR
 import { selectIsCollectionOpen } from 'bundles/frontsUIBundle';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 import {
-  selectArticleFragment,
+  selectCard,
   selectSharedState
 } from 'shared/selectors/shared';
 import { initialiseCollectionsForFront } from 'actions/Collections';
@@ -53,13 +53,13 @@ describe('Fronts actions', () => {
       );
       // The collections and articles should be fetched
 
-      // TODO this selectArticalsInCollections returns internal code pages which means we cannot use it with articleFragmentSelector
+      // TODO this selectArticalsInCollections returns internal code pages which means we cannot use it with cardSelector
       //  This worked previously because selectArticles in Collection was returning an empty array which was erroneous - TODO
       expect(
         selectArticlesInCollections(sharedState, {
           collectionIds,
           itemSet: 'draft'
-        }).every(_ => !!selectArticleFragment(sharedState, _))
+        }).every(_ => !!selectCard(sharedState, _))
       ).toBe(true);
     });
   });

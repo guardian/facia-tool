@@ -215,7 +215,7 @@ const createSelectCollectionStageGroups = () => {
       }
 
       // Groups without names and ids are groups which no longer exist in the config because
-      // the collection layout has changed. We need to collect the article fragments in these
+      // the collection layout has changed. We need to collect the cards in these
       // groups and display them in the top group.
       const orphanedFragments: string[] = grps
         .filter(grp => !grp.name && grp.id)

@@ -45,12 +45,12 @@ describe('Store middleware', () => {
         type: 'DO_SOMETHING_TO_AN_ARTICLE_FRAGMENT',
         payload: {
           id: 'exampleCollection',
-          articleFragmentId: '95e2bfc0-8999-4e6e-a359-19960967c1e0',
+          cardId: '95e2bfc0-8999-4e6e-a359-19960967c1e0',
           browsingStage: 'live'
         },
         meta: {
           persistTo: 'collection',
-          key: 'articleFragmentId'
+          key: 'cardId'
         }
       });
       jest.runAllTimers();

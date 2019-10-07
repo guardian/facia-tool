@@ -25,10 +25,7 @@ import {
 } from 'util/moveUtils';
 import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
-import {
-  insertClipboardCard,
-  removeClipboardCard
-} from './Clipboard';
+import { insertClipboardCard, removeClipboardCard } from './Clipboard';
 import { State } from 'types/State';
 import { startConfirmModal } from './ConfirmModal';
 import { capGroupSiblings } from 'shared/actions/Groups';
@@ -63,16 +60,13 @@ type InsertThunkActionCreator = (
 // an Action or a ThunkAction in some cases. The redux-thunk types don't support
 // this so we can make a thunk instead
 // the persistence stuff needs to be dynamic as we sometimes need to insert an
-// article fragment and save to clipboard and sometimes save to collection
+// card and save to clipboard and sometimes save to collection
 // depending on the location of that articlefragment
 const createInsertCardThunk = (action: InsertActionCreator) => (
   persistTo: 'collection' | 'clipboard'
-) => (
-  id: string,
-  index: number,
-  cardId: string,
-  removeAction?: Action
-) => (dispatch: Dispatch) => {
+) => (id: string, index: number, cardId: string, removeAction?: Action) => (
+  dispatch: Dispatch
+) => {
   if (removeAction) {
     dispatch(removeAction);
   }
@@ -84,20 +78,15 @@ const createInsertCardThunk = (action: InsertActionCreator) => (
   );
 };
 
-const copyCardImageMetaWithPersist = addPersistMetaToAction(
-  copyCardImageMeta,
-  {
-    persistTo: 'collection',
-    key: 'to'
-  }
-);
+const copyCardImageMetaWithPersist = addPersistMetaToAction(copyCardImageMeta, {
+  persistTo: 'collection',
+  key: 'to'
+});
 
 // Creates a thunk with persistence that will launch a confirm modal if required
 // when adding to a group, otherwise will just run the action
 // the confirm modal links to the collection caps
-const maybeInsertGroupCard = (
-  persistTo: 'collection' | 'clipboard'
-) => (
+const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
   id: string,
   index: number,
   cardId: string,
@@ -128,7 +117,7 @@ const maybeInsertGroupCard = (
           removed automatically, or you can cancel and remove articles from the
           collection yourself.`,
           // if the user accepts, then remove the moved item (if there was one),
-          // remove article fragments past the cap count and finally persist
+          // remove cards past the cap count and finally persist
           () => {
             const actions = [];
 
@@ -179,9 +168,7 @@ const getInsertionActionCreatorFromType = (
   persistTo: 'collection' | 'clipboard'
 ) => {
   const actionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
-    card: createInsertCardThunk(
-      insertSupportingCard
-    ),
+    card: createInsertCardThunk(insertSupportingCard),
     group: maybeInsertGroupCard,
     clipboard: createInsertCardThunk(insertClipboardCard)
   };
@@ -217,12 +204,9 @@ const getRemoveActionCreatorFromType = (
     : actionCreator;
 };
 
-const updateCardMetaWithPersist = addPersistMetaToAction(
-  updateCardMeta,
-  {
-    persistTo: 'collection'
-  }
-);
+const updateCardMetaWithPersist = addPersistMetaToAction(updateCardMeta, {
+  persistTo: 'collection'
+});
 
 const updateClipboardCardMetaWithPersist = addPersistMetaToAction(
   updateCardMeta,
@@ -290,8 +274,8 @@ const removeCard = (
       if (collectionId === 'clipboard') {
         return collectionId;
       }
-      // The article fragment may belong to an orphaned group -
-      // we need to find the actual group the article fragment belongs to
+      // The card may belong to an orphaned group -
+      // we need to find the actual group the card belongs to
       const idFromState = selectArticleGroup(
         selectSharedState(getState()),
         collectionId,
@@ -300,7 +284,7 @@ const removeCard = (
       if (idFromState) {
         return idFromState;
       }
-      // If we could not find a group id the article fragment belongs to
+      // If we could not find a group id the card belongs to
       // then this article is a sublink and we don't have to adjust the id
       return collectionId;
     };
@@ -333,7 +317,7 @@ const moveCard = (
 
     const sharedState = selectSharedState(getState());
 
-    // If move actions are happening to/from groups which have article fragments displayed
+    // If move actions are happening to/from groups which have cards displayed
     // in them which don't belong to these groups we need to adjust the indices of the move
     // actions in these groups.
     const fromDetails: {
@@ -349,7 +333,7 @@ const moveCard = (
     if (toWithRespectToState) {
       const { fromWithRespectToState } = fromDetails;
 
-      // if from is not null then assume we're copying a moved article fragment
+      // if from is not null then assume we're copying a moved card
       // into this new position
       const { parent, supporting } = !fromWithRespectToState
         ? cloneFragment(fragment, selectCards(sharedState))
@@ -390,10 +374,7 @@ const cloneCardToTarget = (
 const addCardToClipboard = (uuid: string) =>
   cloneCardToTarget(uuid, 'clipboard');
 
-const addImageToCard = (
-  uuid: string,
-  imageData: ValidationResponse
-) =>
+const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
   updateCardMetaWithPersist(
     uuid,
     {

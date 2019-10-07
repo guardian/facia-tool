@@ -1,8 +1,5 @@
 import { capiArticleWithElementsThumbnail } from 'fixtures/capiArticle';
-import {
-  articleFragmentMeta,
-  articleFragmentWithSlideshowThumbnailMeta
-} from 'fixtures/articleFragment';
+import { cardMeta, cardWithSlideshowThumbnailMeta } from 'fixtures/card';
 import {
   getIdFromURL,
   getContributorImage,
@@ -54,23 +51,21 @@ describe('CAPIUtils', () => {
 
   describe('getThumbnail', () => {
     it('should get a thumbnail from article elements', () => {
-      expect(
-        getThumbnail(articleFragmentMeta, capiArticleWithElementsThumbnail)
-      ).toEqual(
+      expect(getThumbnail(cardMeta, capiArticleWithElementsThumbnail)).toEqual(
         'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/500.jpg'
       );
     });
-    it('should get a thumbnail from articleFragmentMeta slideshows if imageSlideshowReplace is true', () => {
+    it('should get a thumbnail from cardMeta slideshows if imageSlideshowReplace is true', () => {
       expect(
         getThumbnail(
-          articleFragmentWithSlideshowThumbnailMeta,
+          cardWithSlideshowThumbnailMeta,
           capiArticleWithElementsThumbnail
         )
       ).toEqual('exampleSrc1');
       expect(
         getThumbnail(
           {
-            ...articleFragmentWithSlideshowThumbnailMeta,
+            ...cardWithSlideshowThumbnailMeta,
             imageSlideshowReplace: false
           },
           capiArticleWithElementsThumbnail
@@ -83,7 +78,7 @@ describe('CAPIUtils', () => {
       expect(
         getThumbnail(
           {
-            ...articleFragmentWithSlideshowThumbnailMeta,
+            ...cardWithSlideshowThumbnailMeta,
             imageCutoutReplace: true
           },
           {
@@ -98,7 +93,7 @@ describe('CAPIUtils', () => {
       expect(
         getThumbnail(
           {
-            ...articleFragmentWithSlideshowThumbnailMeta,
+            ...cardWithSlideshowThumbnailMeta,
             imageCutoutReplace: true
           },
           {
@@ -116,7 +111,7 @@ describe('CAPIUtils', () => {
       expect(
         getThumbnail(
           {
-            ...articleFragmentWithSlideshowThumbnailMeta,
+            ...cardWithSlideshowThumbnailMeta,
             imageCutoutReplace: true
           },
           {
@@ -135,7 +130,7 @@ describe('CAPIUtils', () => {
       expect(
         getThumbnail(
           {
-            ...articleFragmentWithSlideshowThumbnailMeta,
+            ...cardWithSlideshowThumbnailMeta,
             imageCutoutReplace: true,
             imageCutoutSrc: 'imageCutoutSrc'
           },
@@ -160,7 +155,7 @@ describe('CAPIUtils', () => {
       expect(
         getThumbnail(
           {
-            ...articleFragmentWithSlideshowThumbnailMeta,
+            ...cardWithSlideshowThumbnailMeta,
             imageReplace: true,
             imageCutoutReplace: true,
             imageCutoutSrc: 'imageCutoutSrc',
@@ -187,7 +182,7 @@ describe('CAPIUtils', () => {
       expect(
         getThumbnail(
           {
-            ...articleFragmentWithSlideshowThumbnailMeta,
+            ...cardWithSlideshowThumbnailMeta,
             imageReplace: true,
             imageCutoutReplace: true,
             imageCutoutSrc: 'imageCutoutSrc',

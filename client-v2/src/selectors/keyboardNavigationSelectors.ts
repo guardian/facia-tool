@@ -54,7 +54,7 @@ const selectNextIndexAndGroup = (
 
   // Checking if moving inside the group
   if (action === 'down') {
-    // If the article fragment is not the last in the group, the article stays in the group
+    // If the card is not the last in the group, the article stays in the group
     if (currentArticleIndex < groupCards.length - 1) {
       return { toIndex: currentArticleIndex + 1, nextGroupId: groupId };
     }

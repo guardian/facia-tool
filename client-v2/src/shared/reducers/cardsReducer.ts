@@ -67,10 +67,7 @@ const cards = (
 
       const supporting = insertAndDedupeSiblings(
         targetCard.meta.supporting || [],
-        [
-          insertedCard.uuid,
-          ...(insertedCard.meta.supporting || [])
-        ],
+        [insertedCard.uuid, ...(insertedCard.meta.supporting || [])],
         index,
         selectCards(prevSharedState)
       );
@@ -90,7 +87,7 @@ const cards = (
           meta: {
             ...insertedCard.meta,
             // ...ensuer that after flattening we remove the supporting from
-            // the inserted article fragment
+            // the inserted card
             supporting: []
           }
         }

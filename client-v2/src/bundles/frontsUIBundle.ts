@@ -381,7 +381,7 @@ const createSelectCurrentlyOpenCollectionsByFront = () => {
 };
 
 /**
- * Select the parent front of an article fragment.
+ * Select the parent front of an card.
  * For performance reasons, only considers open fronts and collections.
  */
 const selectOpenParentFrontOfCard = (

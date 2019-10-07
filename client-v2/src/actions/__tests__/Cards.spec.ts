@@ -2,26 +2,22 @@ import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import clipboardReducer from '../../reducers/clipboardReducer';
 import groupsReducer from '../../shared/reducers/groupsReducer';
-import articleFragmentsReducer from '../../shared/reducers/articleFragmentsReducer';
+import cardsReducer from '../../shared/reducers/cardsReducer';
 import {
   createSelectGroupArticles,
   createSelectSupportingArticles,
-  selectArticleFragment,
+  selectCard,
   selectSharedState
 } from '../../shared/selectors/shared';
 import { selectClipboard as innerClipboardSelector } from '../../selectors/frontsSelectors';
+import { createCardStateFromSpec, CardSpec, specToFragment } from './utils';
 import {
-  createArticleFragmentStateFromSpec,
-  ArticleFragmentSpec,
-  specToFragment
-} from './utils';
-import {
-  moveArticleFragment,
-  removeArticleFragment,
-  insertArticleFragment,
-  addImageToArticleFragment,
-  cloneArticleFragmentToTarget
-} from 'actions/ArticleFragments';
+  moveCard,
+  removeCard,
+  insertCard,
+  addImageToCard,
+  cloneCardToTarget
+} from 'actions/Cards';
 import {
   reducer as collectionsReducer,
   initialState as collectionsState
@@ -38,29 +34,25 @@ const root = (state: any = {}, action: any) => ({
   clipboard: clipboardReducer(state.clipboard, action, state.shared),
   path: '',
   shared: {
-    articleFragments: articleFragmentsReducer(
-      state.shared.articleFragments,
-      action,
-      state.shared
-    ),
+    cards: cardsReducer(state.shared.cards, action, state.shared),
     collections: collectionsReducer(state.shared.collections, action),
     groups: groupsReducer(state.shared.groups, action, state.shared)
   },
   config: config(state.config, action)
 });
 
-const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
-  const groupA: ArticleFragmentSpec[] = [
+const buildStore = (added: CardSpec, collectionCap = Infinity) => {
+  const groupA: CardSpec[] = [
     ['a', '1', [['g', '7']]],
     ['b', '2', undefined],
     ['c', '3', undefined]
   ];
-  const groupB: ArticleFragmentSpec[] = [
+  const groupB: CardSpec[] = [
     ['i', '9', [['g', '7']]],
     ['j', '10', undefined],
     ['k', '11', undefined]
   ];
-  const clipboard: ArticleFragmentSpec[] = [
+  const clipboard: CardSpec[] = [
     ['d', '4', [['g', '7']]],
     ['e', '5', undefined],
     ['f', '6', undefined]
@@ -82,10 +74,10 @@ const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
           }
         }
       },
-      articleFragments: createArticleFragmentStateFromSpec(all),
+      cards: createCardStateFromSpec(all),
       groups: {
-        a: { articleFragments: groupA.map(([uuid]) => uuid), uuid: 'a' },
-        b: { articleFragments: groupB.map(([uuid]) => uuid), uuid: 'b' }
+        a: { cards: groupA.map(([uuid]) => uuid), uuid: 'a' },
+        b: { cards: groupB.map(([uuid]) => uuid), uuid: 'b' }
       }
     },
     clipboard: clipboard.map(([uuid]) => uuid)
@@ -102,7 +94,7 @@ const buildStore = (added: ArticleFragmentSpec, collectionCap = Infinity) => {
 };
 
 const insert = async (
-  insertedArticleFragmentSpec: [string, string],
+  insertedCardSpec: [string, string],
   index: number,
   parentType: string,
   parentId: string,
@@ -113,19 +105,17 @@ const insert = async (
     accept: boolean | null;
   }
 ) => {
-  const [uuid, id] = insertedArticleFragmentSpec;
+  const [uuid, id] = insertedCardSpec;
   const { dispatch, getState } = buildStore(
     [uuid, id, undefined],
     collectionCapInfo ? collectionCapInfo.cap : Infinity
   );
-  await dispatch(insertArticleFragment(
+  await dispatch(insertCard(
     { type: parentType, id: parentId, index },
     { type: 'REF', data: parentId },
     'collection',
     afId => () =>
-      Promise.resolve(
-        selectArticleFragment(selectSharedState(getState()), uuid)
-      )
+      Promise.resolve(selectCard(selectSharedState(getState()), uuid))
   ) as any);
 
   if (collectionCapInfo && collectionCapInfo.accept !== null) {
@@ -136,7 +126,7 @@ const insert = async (
 };
 
 const move = (
-  movedArticleFragmentSpec: [string, string],
+  movedCardSpec: [string, string],
   index: number,
   toType: string,
   toId: string,
@@ -149,12 +139,12 @@ const move = (
     accept: boolean | null;
   }
 ) => {
-  const [uuid, id] = movedArticleFragmentSpec;
+  const [uuid, id] = movedCardSpec;
   const { dispatch, getState } = buildStore(
     [uuid, id, undefined],
     collectionCapInfo ? collectionCapInfo.cap : Infinity
   );
-  dispatch(moveArticleFragment(
+  dispatch(moveCard(
     {
       type: toType,
       id: toId,
@@ -181,13 +171,13 @@ const move = (
 const remove = (
   id: string,
   parentId: string,
-  type: 'collection' | 'clipboard' | 'articleFragment'
+  type: 'collection' | 'clipboard' | 'card'
 ) => {
   const { dispatch, getState } = buildStore(
     ['uuid', 'id', undefined],
     Infinity
   );
-  dispatch(removeArticleFragment(
+  dispatch(removeCard(
     type,
     parentId,
     id,
@@ -204,14 +194,12 @@ const selectGroupArticles = (state: any, groupId: string) =>
   selectGroupArticlesInner(state, { groupId }).map(({ uuid }) => uuid);
 
 const selectSupportingArticlesInner = createSelectSupportingArticles();
-const selectSupportingArticles = (state: any, articleFragmentId: string) =>
-  selectSupportingArticlesInner(state, { articleFragmentId }).map(
-    ({ uuid }) => uuid
-  );
+const selectSupportingArticles = (state: any, cardId: string) =>
+  selectSupportingArticlesInner(state, { cardId }).map(({ uuid }) => uuid);
 
-describe('ArticleFragments actions', () => {
+describe('Cards actions', () => {
   describe('insert', () => {
-    it('adds article fragments that exist in the state', async () => {
+    it('adds cards that exist in the state', async () => {
       expect(
         selectClipboard(await insert(['h', '8'], 2, 'clipboard', 'clipboard'))
       ).toEqual(['d', 'e', 'h', 'f']);
@@ -221,10 +209,7 @@ describe('ArticleFragments actions', () => {
       ).toEqual(['a', 'b', 'h', 'c']);
 
       expect(
-        selectSupportingArticles(
-          await insert(['h', '8'], 2, 'articleFragment', 'a'),
-          'a'
-        )
+        selectSupportingArticles(await insert(['h', '8'], 2, 'card', 'a'), 'a')
       ).toEqual(['g', 'h']);
     });
 
@@ -238,10 +223,7 @@ describe('ArticleFragments actions', () => {
       ).toEqual(['h', 'a', 'b']);
 
       expect(
-        selectSupportingArticles(
-          await insert(['h', '7'], 0, 'articleFragment', 'a'),
-          'a'
-        )
+        selectSupportingArticles(await insert(['h', '7'], 0, 'card', 'a'), 'a')
       ).toEqual(['h']);
     });
 
@@ -262,7 +244,7 @@ describe('ArticleFragments actions', () => {
 
       expect(
         selectSupportingArticles(
-          await insert(['h', '8'], 100, 'articleFragment', 'a'),
+          await insert(['h', '8'], 100, 'card', 'a'),
           'a'
         )
       ).toEqual(['g', 'h']);
@@ -328,27 +310,27 @@ describe('ArticleFragments actions', () => {
   });
 
   describe('remove', () => {
-    it('removes article fragments that exist in the state', async () => {
+    it('removes cards that exist in the state', async () => {
       expect(
         selectClipboard(await remove('d', 'clipboard', 'clipboard'))
       ).toEqual(['e', 'f']);
     });
-    it('removes article fragments from supporting positions', async () => {
+    it('removes cards from supporting positions', async () => {
       expect(
-        selectSupportingArticles(await remove('g', 'd', 'articleFragment'), 'd')
+        selectSupportingArticles(await remove('g', 'd', 'card'), 'd')
       ).toEqual([]);
     });
   });
 
   describe('cloneToTarget', () => {
-    it('clones an article fragment into a new collection preserving its metadata', () => {
+    it('clones an card into a new collection preserving its metadata', () => {
       const store = buildStore([
         '123',
         '456',
         undefined,
         { headline: 'Headline was overwritten with this' }
       ]);
-      store.dispatch(cloneArticleFragmentToTarget('123', 'clipboard'));
+      store.dispatch(cloneCardToTarget('123', 'clipboard'));
       const state = store.getState();
       expect(selectClipboardArticles(state as any)[0].id).toEqual('456');
       expect(selectClipboardArticles(state as any)[0].meta).toEqual({
@@ -360,10 +342,7 @@ describe('ArticleFragments actions', () => {
 
   describe('insert image', () => {
     it('adds the correct image data', () => {
-      const s1 = root(
-        { shared: { articleFragments: { a: {} } } },
-        { type: '@@INIT' }
-      );
+      const s1 = root({ shared: { cards: { a: {} } } }, { type: '@@INIT' });
 
       const src = 'http://www.images.com/image/1/master';
       const thumb = 'http://www.images.com/image/1/thumb';
@@ -373,7 +352,7 @@ describe('ArticleFragments actions', () => {
 
       const s2 = root(
         s1,
-        addImageToArticleFragment('a', {
+        addImageToCard('a', {
           src,
           thumb,
           origin,
@@ -382,7 +361,7 @@ describe('ArticleFragments actions', () => {
         })
       );
 
-      expect(s2.shared.articleFragments.a.meta).toMatchObject({
+      expect(s2.shared.cards.a.meta).toMatchObject({
         imageSrc: src,
         imageSrcThumb: thumb,
         imageSrcOrigin: origin,

@@ -1,11 +1,11 @@
-import { createSelectCollectionItemType } from '../collectionItem';
+import { createSelectCardType } from '../card';
 import { stateWithSnaplinksAndArticles } from 'shared/fixtures/shared';
-import collectionItemTypes from 'shared/constants/collectionItemTypes';
+import collectionItemTypes from 'shared/constants/cardTypes';
 
 describe('CollectionItem selectors', () => {
   describe('createCollectionItemTypeSelector', () => {
     it('should identify snap links', () => {
-      const selectCollectionItemType = createSelectCollectionItemType();
+      const selectCollectionItemType = createSelectCardType();
       expect(
         selectCollectionItemType(
           stateWithSnaplinksAndArticles.shared,
@@ -14,7 +14,7 @@ describe('CollectionItem selectors', () => {
       ).toEqual(collectionItemTypes.SNAP_LINK);
     });
     it('should identify articles', () => {
-      const selectCollectionItemType = createSelectCollectionItemType();
+      const selectCollectionItemType = createSelectCardType();
       expect(
         selectCollectionItemType(
           stateWithSnaplinksAndArticles.shared,
