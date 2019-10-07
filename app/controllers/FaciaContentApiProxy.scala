@@ -32,7 +32,7 @@ class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(
     else
       config.contentApi.contentApiLiveHost
 
-    val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
+    val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("&api-key=fronts-tool")}"
 
     wsClient.url(url).withHttpHeaders(capi.getPreviewHeaders(Map.empty, url): _*).get().map { response =>
 
@@ -54,9 +54,9 @@ class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(
     val contentApiHost = config.contentApi.contentApiLiveHost
 
     // In the CODE and PROD environments, an api key is not required because we are using an AWS private link endpoint to connect to CAPI.
-    // Private Link endpoints are inside the AWS account and allow other services in the account access to the API.
-    // In DEV environments - we use a standard external API for which a key is required, and is passed in via the config.
-    val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("")}"
+    // However, we're adding a descriptive one "fronts-tool" so CAPI can track traffic from different consumers.
+    // In DEV environments - we use a standard external API for which a key is required, this key is passed in via the config.
+    val url = s"$contentApiHost/$path?$queryString${config.contentApi.key.map(key => s"&api-key=$key").getOrElse("&api-key=fronts-tool")}"
 
     wsClient.url(url).get().map { response =>
 
