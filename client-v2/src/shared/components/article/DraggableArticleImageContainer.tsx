@@ -73,10 +73,7 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
   private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
     if (this.props.hasImageOverrides) {
-      e.dataTransfer.setData(
-        DRAG_DATA_CARD_IMAGE_OVERRIDE,
-        this.props.id
-      );
+      e.dataTransfer.setData(DRAG_DATA_CARD_IMAGE_OVERRIDE, this.props.id);
     }
     if (this.props.currentImageUrl) {
       e.dataTransfer.setData(
