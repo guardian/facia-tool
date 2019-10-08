@@ -24,7 +24,7 @@ const createCard = (
     ...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : {}),
     ...(showByline ? { showByline } : {}),
     ...(showQuotedHeadline ? { showQuotedHeadline } : {}),
-    ...(isEdition || showKickerCustom ? { "showKickerCustom": true } : {}),
+    ...(isEdition || showKickerCustom ? { showKickerCustom: true } : {}),
     ...(isEdition || showKickerCustom ? { customKicker } : {})
   }
 });
