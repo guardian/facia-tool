@@ -218,9 +218,6 @@ const getArticleEntitiesFromFeedDrop = (
   isEdition: boolean
 ): TArticleEntities => {
   const article = transformExternalArticle(capiArticle);
-  console.log(isEdition)
-  console.log(article.frontsMeta.defaults.showKickerCustom)
-  console.log(article.frontsMeta.pickedKicker)
   const card = createCard(
     article.id,
     isEdition,
