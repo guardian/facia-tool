@@ -3,7 +3,7 @@ import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import { State } from 'types/State';
 import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 import { connect } from 'react-redux';
-import { ArticleFragment } from 'shared/types/Collection';
+import { Card } from 'shared/types/Collection';
 import ArticleDrag, {
   dragOffsetX,
   dragOffsetY
@@ -13,13 +13,13 @@ import { collectionDropTypeBlacklist } from 'constants/fronts';
 import { styled, theme } from 'constants/theme';
 
 interface OuterProps {
-  children: LevelChild<ArticleFragment>;
-  onMove: MoveHandler<ArticleFragment>;
+  children: LevelChild<Card>;
+  onMove: MoveHandler<Card>;
   onDrop: DropHandler;
 }
 
 interface InnerProps {
-  articleFragments: ArticleFragment[];
+  cards: Card[];
 }
 
 type Props = OuterProps & InnerProps;
@@ -41,19 +41,14 @@ const ClipboardDropContainer = styled(DefaultDropContainer)<{
   flex-grow: ${({ index, length }) => (index === length ? 1 : 0)};
 `;
 
-const ClipboardLevel = ({
-  children,
-  articleFragments,
-  onMove,
-  onDrop
-}: Props) => (
+const ClipboardLevel = ({ children, cards, onMove, onDrop }: Props) => (
   <Level
     containerElement={ClipboardItemContainer}
     blacklistedDataTransferTypes={collectionDropTypeBlacklist}
-    arr={articleFragments}
+    arr={cards}
     parentType="clipboard"
     parentId="clipboard"
-    type="articleFragment"
+    type="card"
     dragImageOffsetX={dragOffsetX}
     dragImageOffsetY={dragOffsetY}
     getId={({ uuid }) => uuid}
@@ -73,7 +68,7 @@ const ClipboardLevel = ({
 );
 
 const mapStateToProps = (state: State) => ({
-  articleFragments: selectClipboardArticles(state)
+  cards: selectClipboardArticles(state)
 });
 
 export default connect(mapStateToProps)(ClipboardLevel);

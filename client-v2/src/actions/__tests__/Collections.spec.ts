@@ -121,7 +121,7 @@ describe('Collection actions', () => {
           metadata: undefined,
           platform: undefined,
           previously: ['uuid'],
-          previouslyArticleFragmentIds: [],
+          previouslyCardIds: [],
           type: 'type'
         },
         testCollection2: {
@@ -135,7 +135,7 @@ describe('Collection actions', () => {
           metadata: undefined,
           platform: undefined,
           previously: ['uuid'],
-          previouslyArticleFragmentIds: [],
+          previouslyCardIds: [],
           type: 'type'
         }
       });
@@ -170,7 +170,7 @@ describe('Collection actions', () => {
           metadata: undefined,
           platform: undefined,
           previously: ['uuid'],
-          previouslyArticleFragmentIds: [],
+          previouslyCardIds: [],
           groups: undefined,
           frontsToolSettings: undefined
         },
@@ -185,7 +185,7 @@ describe('Collection actions', () => {
           metadata: undefined,
           platform: undefined,
           previously: ['uuid'],
-          previouslyArticleFragmentIds: [],
+          previouslyCardIds: [],
           type: 'type'
         },
         testCollection2: {
@@ -199,7 +199,7 @@ describe('Collection actions', () => {
           metadata: undefined,
           platform: undefined,
           previously: ['uuid'],
-          previouslyArticleFragmentIds: [],
+          previouslyCardIds: [],
           type: 'type'
         }
       });

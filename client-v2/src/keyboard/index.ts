@@ -11,10 +11,10 @@ import { ThunkResult } from 'types/Store';
 import Mousetrap from 'mousetrap';
 import { selectFocusState, setFocusState } from 'bundles/focusBundle';
 import { RefDrop } from 'util/collectionUtils';
-import { createArticleEntitiesFromDrop } from 'shared/actions/ArticleFragments';
+import { createArticleEntitiesFromDrop } from 'shared/actions/Cards';
 import { moveUp, moveDown } from './keyboardActionMaps/move';
-import { ArticleFragment } from '../shared/types/Collection';
-import { insertClipboardArticleFragmentWithPersist } from 'actions/Clipboard';
+import { Card } from '../shared/types/Collection';
+import { insertClipboardCardWithPersist } from 'actions/Clipboard';
 
 type FocusableTypes =
   | 'clipboard'
@@ -24,7 +24,7 @@ type FocusableTypes =
 
 interface BaseFocusState {
   type: FocusableTypes;
-  articleFragment?: ArticleFragment;
+  card?: Card;
   groupId?: string;
   collectionId?: string;
   frontId?: string;
@@ -78,19 +78,11 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
           return;
         }
         const contentData: RefDrop = { type: 'REF', data: content };
-        const articleFragment = await dispatch(
-          createArticleEntitiesFromDrop(contentData)
-        );
-        if (!articleFragment) {
+        const card = await dispatch(createArticleEntitiesFromDrop(contentData));
+        if (!card) {
           return;
         }
-        dispatch(
-          insertClipboardArticleFragmentWithPersist(
-            'clipboard',
-            0,
-            articleFragment.uuid
-          )
-        );
+        dispatch(insertClipboardCardWithPersist('clipboard', 0, card.uuid));
       } catch (e) {
         Raven.captureMessage(`Paste to clipboard failed: ${e.message}`);
       }

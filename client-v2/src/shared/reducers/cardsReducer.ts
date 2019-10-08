@@ -1,24 +1,24 @@
 import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import { State } from './sharedReducer';
-import { selectArticleFragments } from 'shared/selectors/shared';
+import { selectCards } from 'shared/selectors/shared';
 import {
-  UPDATE_ARTICLE_FRAGMENT_META,
-  ARTICLE_FRAGMENTS_RECEIVED,
-  CLEAR_ARTICLE_FRAGMENTS,
-  REMOVE_SUPPORTING_ARTICLE_FRAGMENT,
-  INSERT_SUPPORTING_ARTICLE_FRAGMENT,
-  COPY_ARTICLE_FRAGMENT_IMAGE_META
-} from 'shared/actions/ArticleFragments';
-import { cloneActiveImageMeta } from 'shared/util/articleFragment';
+  UPDATE_CARD_META,
+  CARDS_RECEIVED,
+  CLEAR_CARDS,
+  REMOVE_SUPPORTING_CARD,
+  INSERT_SUPPORTING_CARD,
+  COPY_CARD_IMAGE_META
+} from 'shared/actions/Cards';
+import { cloneActiveImageMeta } from 'shared/util/card';
 
-const articleFragments = (
-  state: State['articleFragments'] = {},
+const cards = (
+  state: State['cards'] = {},
   action: Action,
   prevSharedState: State
 ) => {
   switch (action.type) {
-    case UPDATE_ARTICLE_FRAGMENT_META: {
+    case UPDATE_CARD_META: {
       const { id } = action.payload;
       return {
         ...state,
@@ -30,67 +30,64 @@ const articleFragments = (
         }
       };
     }
-    case CLEAR_ARTICLE_FRAGMENTS: {
+    case CLEAR_CARDS: {
       return action.payload.ids.reduce((newState, id) => {
         const { [id]: omit, ...rest } = newState;
         return rest;
       }, state);
     }
-    case ARTICLE_FRAGMENTS_RECEIVED: {
+    case CARDS_RECEIVED: {
       const { payload } = action;
       return Object.assign({}, state, payload);
     }
-    case REMOVE_SUPPORTING_ARTICLE_FRAGMENT: {
-      const articleFragment = state[action.payload.id];
+    case REMOVE_SUPPORTING_CARD: {
+      const card = state[action.payload.id];
       return {
         ...state,
         [action.payload.id]: {
-          ...articleFragment,
+          ...card,
           meta: {
-            ...articleFragment.meta,
-            supporting: (articleFragment.meta.supporting || []).filter(
-              sid => sid !== action.payload.articleFragmentId
+            ...card.meta,
+            supporting: (card.meta.supporting || []).filter(
+              sid => sid !== action.payload.cardId
             )
           }
         }
       };
     }
-    case INSERT_SUPPORTING_ARTICLE_FRAGMENT: {
-      const { id, articleFragmentId, index } = action.payload;
-      const targetArticleFragment = state[id];
-      const insertedArticleFragment = state[articleFragmentId];
+    case INSERT_SUPPORTING_CARD: {
+      const { id, cardId, index } = action.payload;
+      const targetCard = state[id];
+      const insertedCard = state[cardId];
 
-      if (!insertedArticleFragment) {
+      if (!insertedCard) {
         // this may have happened if we've purged after a poll
         return state;
       }
 
       const supporting = insertAndDedupeSiblings(
-        targetArticleFragment.meta.supporting || [],
-        [
-          insertedArticleFragment.uuid,
-          ...(insertedArticleFragment.meta.supporting || [])
-        ],
+        targetCard.meta.supporting || [],
+        [insertedCard.uuid, ...(insertedCard.meta.supporting || [])],
         index,
-        selectArticleFragments(prevSharedState)
+        selectCards(prevSharedState)
       );
 
       return {
         ...state,
         [id]: {
-          ...targetArticleFragment,
+          ...targetCard,
           meta: {
-            ...targetArticleFragment.meta,
+            ...targetCard.meta,
             supporting
           }
         },
         //
-        [articleFragmentId]: {
-          ...insertedArticleFragment,
+        [cardId]: {
+          ...insertedCard,
           meta: {
-            ...insertedArticleFragment.meta,
+            ...insertedCard.meta,
             // ...ensuer that after flattening we remove the supporting from
-            // the inserted article fragment
+            // the inserted card
             supporting: []
           }
         }
@@ -100,19 +97,19 @@ const articleFragments = (
     // dates. The new fronts tool adds these to sublinks always.
     case 'SHARED/MAYBE_ADD_FRONT_PUBLICATION': {
       const { id, date } = action.payload;
-      const fragment = state[id];
+      const card = state[id];
 
-      if (fragment.frontPublicationDate) {
+      if (card.frontPublicationDate) {
         return state;
       }
 
-      const newFragment = { ...fragment, frontPublicationDate: date };
+      const newCard = { ...card, frontPublicationDate: date };
       return {
         ...state,
-        [id]: newFragment
+        [id]: newCard
       };
     }
-    case COPY_ARTICLE_FRAGMENT_IMAGE_META: {
+    case COPY_CARD_IMAGE_META: {
       const to = action.payload.to;
       const fromArticle = state[action.payload.from];
       const toArticle = state[to];
@@ -136,4 +133,4 @@ const articleFragments = (
   }
 };
 
-export default articleFragments;
+export default cards;

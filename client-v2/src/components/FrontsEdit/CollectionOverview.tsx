@@ -8,7 +8,7 @@ import { Dispatch } from 'types/Store';
 import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
-import { Collection, CollectionItemSets } from 'shared/types/Collection';
+import { Collection, CardSets } from 'shared/types/Collection';
 import { createCollectionId } from 'shared/components/Collection';
 import ButtonDefault from 'shared/components/input/ButtonCircular';
 import {
@@ -22,7 +22,7 @@ import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUIBundle';
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
   collectionId: string;
-  browsingStage: CollectionItemSets;
+  browsingStage: CardSets;
   isSelected: boolean;
 }
 

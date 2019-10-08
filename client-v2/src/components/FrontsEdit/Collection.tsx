@@ -2,17 +2,14 @@ import React from 'react';
 import { styled, Theme } from 'constants/theme';
 import Collection from './CollectionComponents/Collection';
 import { AlsoOnDetail } from 'types/Collection';
-import {
-  CollectionItemSets,
-  ArticleFragment as TArticleFragment
-} from 'shared/types/Collection';
+import { CardSets, Card as TCard } from 'shared/types/Collection';
 import GroupDisplayComponent from 'shared/components/GroupDisplay';
 import GroupLevel from 'components/clipboard/GroupLevel';
-import CollectionItem from './CollectionComponents/CollectionItem';
-import ArticleFragmentLevel from 'components/clipboard/ArticleFragmentLevel';
+import Card from './CollectionComponents/Card';
+import CardLevel from 'components/clipboard/CardLevel';
 import { PosSpec, Move } from 'lib/dnd';
 import { Dispatch } from 'types/Store';
-import { removeArticleFragment } from 'actions/ArticleFragments';
+import { removeCard as removeCardAction } from 'actions/Cards';
 import { resetFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
@@ -90,22 +87,22 @@ interface CollectionContextProps {
   alsoOn: {
     [id: string]: AlsoOnDetail;
   };
-  browsingStage: CollectionItemSets;
+  browsingStage: CardSets;
   size?: 'medium' | 'default' | 'wide';
-  handleMove: (move: Move<TArticleFragment>) => void;
+  handleMove: (move: Move<TCard>) => void;
   handleInsert: (e: React.DragEvent, to: PosSpec) => void;
-  selectArticleFragment: (id: string, isSupporting: boolean) => void;
+  selectCard: (id: string, isSupporting: boolean) => void;
 }
 
 interface ConnectedCollectionContextProps extends CollectionContextProps {
   handleArticleFocus: (
     e: React.FocusEvent<HTMLDivElement>,
     groupId: string,
-    articleFragment: TArticleFragment,
+    card: TCard,
     frontId: string
   ) => void;
-  removeCollectionItem: (parentId: string, id: string) => void;
-  removeSupportingCollectionItem: (parentId: string, id: string) => void;
+  removeCard: (parentId: string, id: string) => void;
+  removeSupportingCard: (parentId: string, id: string) => void;
   handleBlur: () => void;
   lastDesktopArticle?: string;
   lastMobileArticle?: string;
@@ -126,9 +123,9 @@ class CollectionContext extends React.Component<
       handleMove,
       handleInsert,
       handleArticleFocus,
-      selectArticleFragment,
-      removeCollectionItem,
-      removeSupportingCollectionItem,
+      selectCard,
+      removeCard,
+      removeSupportingCard,
       lastDesktopArticle,
       lastMobileArticle
     } = this.props;
@@ -155,74 +152,60 @@ class CollectionContext extends React.Component<
                 groupId={group.uuid}
                 onMove={handleMove}
                 onDrop={handleInsert}
-                articleFragmentIds={group.articleFragments}
+                cardIds={group.cards}
               >
-                {(articleFragment, getAfNodeProps) => (
+                {(card, getAfNodeProps) => (
                   <>
                     <FocusWrapper
                       tabIndex={0}
                       area="collection"
                       onBlur={() => handleBlur()}
                       onFocus={e =>
-                        handleArticleFocus(
-                          e,
-                          group.uuid,
-                          articleFragment,
-                          frontId
-                        )
+                        handleArticleFocus(e, group.uuid, card, frontId)
                       }
-                      uuid={articleFragment.uuid}
+                      uuid={card.uuid}
                     >
-                      <CollectionItem
+                      <Card
                         frontId={frontId}
                         collectionId={id}
-                        uuid={articleFragment.uuid}
+                        uuid={card.uuid}
                         parentId={group.uuid}
                         isUneditable={isUneditable}
                         size={size}
                         canShowPageViewData={true}
                         getNodeProps={() => getAfNodeProps(isUneditable)}
-                        onSelect={() =>
-                          selectArticleFragment(articleFragment.uuid, false)
-                        }
-                        onDelete={() =>
-                          removeCollectionItem(group.uuid, articleFragment.uuid)
-                        }
+                        onSelect={() => selectCard(card.uuid, false)}
+                        onDelete={() => removeCard(group.uuid, card.uuid)}
                       >
-                        <ArticleFragmentLevel
+                        <CardLevel
                           isUneditable={isUneditable}
-                          articleFragmentId={articleFragment.uuid}
+                          cardId={card.uuid}
                           onMove={handleMove}
                           onDrop={handleInsert}
                         >
                           {(supporting, getSupportingProps) => (
-                            <CollectionItem
+                            <Card
                               frontId={frontId}
                               uuid={supporting.uuid}
-                              parentId={articleFragment.uuid}
+                              parentId={card.uuid}
                               canShowPageViewData={false}
-                              onSelect={() =>
-                                selectArticleFragment(supporting.uuid, true)
-                              }
+                              onSelect={() => selectCard(supporting.uuid, true)}
                               isUneditable={isUneditable}
                               getNodeProps={() =>
                                 getSupportingProps(isUneditable)
                               }
                               onDelete={() =>
-                                removeSupportingCollectionItem(
-                                  articleFragment.uuid,
-                                  supporting.uuid
-                                )
+                                removeSupportingCard(card.uuid, supporting.uuid)
                               }
                               size="small"
                             />
                           )}
-                        </ArticleFragmentLevel>
-                      </CollectionItem>
+                        </CardLevel>
+                      </Card>
                     </FocusWrapper>
                     <VisibilityDivider
                       notifications={getArticleNotifications(
-                        articleFragment.uuid,
+                        card.uuid,
                         lastDesktopArticle,
                         lastMobileArticle
                       )}
@@ -254,13 +237,11 @@ const createMapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  removeCollectionItem: (parentId: string, uuid: string) => {
-    dispatch(removeArticleFragment('group', parentId, uuid, 'collection'));
+  removeCard: (parentId: string, uuid: string) => {
+    dispatch(removeCardAction('group', parentId, uuid, 'collection'));
   },
-  removeSupportingCollectionItem: (parentId: string, uuid: string) => {
-    dispatch(
-      removeArticleFragment('articleFragment', parentId, uuid, 'collection')
-    );
+  removeSupportingCard: (parentId: string, uuid: string) => {
+    dispatch(removeCardAction('card', parentId, uuid, 'collection'));
   },
   handleBlur: () => dispatch(resetFocusState())
 });

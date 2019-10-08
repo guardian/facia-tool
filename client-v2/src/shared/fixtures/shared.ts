@@ -575,7 +575,7 @@ const normalisedCollectonWithPreviously = {
   displayName: 'testCollection',
   draft: ['uuid'],
   entities: {
-    articleFragments: {
+    cards: {
       uuid1: {
         id: 'internal-code/page/qrt',
         uuid: 'uuid1'
@@ -594,7 +594,7 @@ const normalisedCollectonWithPreviously = {
   metadata: undefined,
   platform: undefined,
   previously: ['uuid'],
-  previouslyArticleFragmentIds: [],
+  previouslyCardIds: [],
   type: 'type'
 };
 
@@ -689,20 +689,20 @@ const stateWithCollection: any = {
       abc: {
         id: '1',
         uuid: 'abc',
-        articleFragments: ['95e2bfc0-8999-4e6e-a359-19960967c1e0'],
+        cards: ['95e2bfc0-8999-4e6e-a359-19960967c1e0'],
         name: 'group1'
       },
       def: {
         id: null,
         uuid: 'def',
         name: 'group2',
-        articleFragments: [
+        cards: [
           '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
           '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
         ]
       }
     },
-    articleFragments: {
+    cards: {
       '95e2bfc0-8999-4e6e-a359-19960967c1e0': {
         id: 'article/live/0',
         frontPublicationDate: 1,
@@ -756,13 +756,13 @@ const stateWithCollectionAndSupporting: any = {
       abc: {
         id: '0',
         uuid: 'abc',
-        articleFragments: [
+        cards: [
           '1269c42e-a341-4464-b206-a5731b92fa46',
           '322f0527-cf14-43c1-8520-e6732ab01297'
         ]
       }
     },
-    articleFragments: {
+    cards: {
       '1269c42e-a341-4464-b206-a5731b92fa46': {
         id: 'article/live/0',
         frontPublicationDate: 1,
@@ -812,7 +812,7 @@ const stateWithCollectionAndSupporting: any = {
 const stateWithSnaplinksAndArticles: any = {
   path: '/v2/editorial',
   shared: {
-    articleFragments: {
+    cards: {
       '1269c42e-a341-4464-b206-a5731b92fa46': {
         id: 'article/live/0',
         frontPublicationDate: 1,
@@ -870,7 +870,7 @@ const initialState = {
     error: null
   },
   groups: {},
-  articleFragments: {},
+  cards: {},
   featureSwitches: {},
   pageViewData: {}
 } as State;

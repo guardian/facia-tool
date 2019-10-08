@@ -1,9 +1,9 @@
 import v4 from 'uuid/v4';
-import { ArticleFragment, ArticleFragmentMeta } from 'shared/types/Collection';
+import { Card, CardMeta } from 'shared/types/Collection';
 import pick from 'lodash/pick';
 import cloneDeep from 'lodash/cloneDeep';
 
-const createFragment = (
+const createCard = (
   id: string,
   imageHide: boolean = false,
   imageReplace: boolean = false,
@@ -25,30 +25,30 @@ const createFragment = (
 });
 
 // only go one deep
-const cloneFragment = (
-  fragment: ArticleFragment,
-  fragments: { [id: string]: ArticleFragment } // all the article fragments to enable nested rebuilds
-): { parent: ArticleFragment; supporting: ArticleFragment[] } => {
-  const sup = (fragment.meta.supporting || [])
+const cloneCard = (
+  card: Card,
+  cards: { [id: string]: Card } // all the cards to enable nested rebuilds
+): { parent: Card; supporting: Card[] } => {
+  const sup = (card.meta.supporting || [])
     .map(id => {
-      const supportingFragment = fragments[id];
-      const { supporting, ...meta } = supportingFragment.meta;
-      return cloneFragment(
+      const supportingCard = cards[id];
+      const { supporting, ...meta } = supportingCard.meta;
+      return cloneCard(
         {
-          ...supportingFragment,
+          ...supportingCard,
           meta
         },
-        fragments
+        cards
       ).parent;
     })
-    .filter((s: ArticleFragment): s is ArticleFragment => !!s);
+    .filter((s: Card): s is Card => !!s);
 
   return {
     parent: {
-      ...fragment,
+      ...card,
       uuid: v4(),
       meta: {
-        ...fragment.meta,
+        ...card.meta,
         supporting: sup.map(({ uuid }) => uuid)
       }
     },
@@ -56,10 +56,8 @@ const cloneFragment = (
   };
 };
 
-const cloneActiveImageMeta = ({
-  meta
-}: ArticleFragment): ArticleFragmentMeta => {
-  const newMeta: ArticleFragmentMeta = {
+const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
+  const newMeta: CardMeta = {
     imageCutoutReplace: false,
     imageSlideshowReplace: false,
     imageReplace: false
@@ -99,4 +97,4 @@ const cloneActiveImageMeta = ({
   return {};
 };
 
-export { createFragment, cloneFragment, cloneActiveImageMeta };
+export { createCard, cloneCard, cloneActiveImageMeta };

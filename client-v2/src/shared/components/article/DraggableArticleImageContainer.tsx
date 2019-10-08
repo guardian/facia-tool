@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import {
   selectSharedState,
-  selectCollectionItemHasMediaOverrides,
-  createSelectArticleFromArticleFragment
+  selectCardHasMediaOverrides,
+  createSelectArticleFromCard
 } from 'shared/selectors/shared';
 import {
-  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_CARD_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
 } from 'constants/image';
 import { theme } from 'constants/theme';
@@ -73,10 +73,7 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
   private handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     e.stopPropagation();
     if (this.props.hasImageOverrides) {
-      e.dataTransfer.setData(
-        DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
-        this.props.id
-      );
+      e.dataTransfer.setData(DRAG_DATA_CARD_IMAGE_OVERRIDE, this.props.id);
     }
     if (this.props.currentImageUrl) {
       e.dataTransfer.setData(
@@ -93,7 +90,7 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
 }
 
 const mapStateToProps = () => {
-  const selectArticle = createSelectArticleFromArticleFragment();
+  const selectArticle = createSelectArticleFromCard();
 
   return (state: State, { id, canDrag = true }: ContainerProps) => {
     const article = selectArticle(selectSharedState(state), id);
@@ -101,7 +98,7 @@ const mapStateToProps = () => {
     return {
       currentImageUrl: article && article.thumbnail,
       canDrag: article ? !!article.thumbnail && canDrag : false,
-      hasImageOverrides: selectCollectionItemHasMediaOverrides(
+      hasImageOverrides: selectCardHasMediaOverrides(
         selectSharedState(state),
         id
       )

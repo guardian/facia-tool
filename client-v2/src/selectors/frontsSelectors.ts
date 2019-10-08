@@ -10,7 +10,7 @@ import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 
-import { CollectionItemSets, Stages } from 'shared/types/Collection';
+import { CardSets, Stages } from 'shared/types/Collection';
 import {
   createSelectArticlesInCollection,
   createSelectCollection,
@@ -76,7 +76,7 @@ const selectPriority = (state: State, { priority }: { priority: string }) =>
 
 const selectCollectionSet = (
   state: State,
-  { collectionSet }: { collectionSet: CollectionItemSets }
+  { collectionSet }: { collectionSet: CardSets }
 ) => collectionSet;
 
 const selectCollectionIdAndStage = (
@@ -328,7 +328,7 @@ const createSelectArticleVisibilityDetails = () => {
     state: State,
     extra: {
       collectionId: string;
-      collectionSet: CollectionItemSets;
+      collectionSet: CardSets;
     }
   ) =>
     selectArticlesInCollection(selectSharedState(state), {

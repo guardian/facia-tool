@@ -4,16 +4,13 @@ import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
-import { ArticleFragmentMeta } from 'shared/types/Collection';
+import { CardMeta } from 'shared/types/Collection';
 import { DerivedArticle } from 'shared/types/Article';
 import { CapiArticle } from 'types/Capi';
 import { State } from 'types/State';
-import {
-  selectArticleFragment,
-  selectSharedState
-} from 'shared/selectors/shared';
+import { selectCard, selectSharedState } from 'shared/selectors/shared';
 
-export interface ArticleFragmentFormData {
+export interface CardFormData {
   headline: string;
   isBoosted: boolean;
   showQuotedHeadline: boolean;
@@ -43,7 +40,7 @@ export interface ArticleFragmentFormData {
   coverCardTabletImage: ImageData;
 }
 
-export type FormFields = keyof ArticleFragmentFormData;
+export type FormFields = keyof CardFormData;
 
 export interface ImageData {
   src?: string;
@@ -82,9 +79,9 @@ export const getCapiValuesForArticleFields = (
   };
 };
 
-export const getInitialValuesForArticleFragmentForm = (
+export const getInitialValuesForCardForm = (
   article: DerivedArticle | void
-): ArticleFragmentFormData | void => {
+): CardFormData | void => {
   if (!article) {
     return undefined;
   }
@@ -170,11 +167,11 @@ export const getImageMetaFromValidationResponse = (image: ImageData) => ({
   imageSrcOrigin: image.origin
 });
 
-export const getArticleFragmentMetaFromFormValues = (
+export const getCardMetaFromFormValues = (
   state: State,
   id: string,
-  values: ArticleFragmentFormData
-): ArticleFragmentMeta => {
+  values: CardFormData
+): CardMeta => {
   const primaryImage = values.primaryImage || {};
   const cutoutImage = values.cutoutImage || {};
   const slideshow = compact(values.slideshow as ImageData[]).map(
@@ -215,25 +212,20 @@ export const getArticleFragmentMetaFromFormValues = (
     return selectIsDirty(state, formToMetaFieldMap[key] || key);
   });
 
-  const existingArticleFragment = selectArticleFragment(
-    selectSharedState(state),
-    id
-  );
+  const existingCard = selectCard(selectSharedState(state), id);
 
-  const existingArticleFragmentMeta = existingArticleFragment
-    ? existingArticleFragment.meta || {}
-    : {};
+  const existingCardMeta = existingCard ? existingCard.meta || {} : {};
 
-  let newArticleFragmentMeta = {
-    ...existingArticleFragmentMeta,
+  let newCardMeta = {
+    ...existingCardMeta,
     ...dirtiedFields
   };
 
   if (!values.customKicker) {
-    newArticleFragmentMeta = omit(newArticleFragmentMeta, 'showKickerCustom');
+    newCardMeta = omit(newCardMeta, 'showKickerCustom');
   }
 
-  return omitBy(newArticleFragmentMeta, (value: string | boolean | any[]) => {
+  return omitBy(newCardMeta, (value: string | boolean | any[]) => {
     if (Array.isArray(value)) {
       return value.length === 0;
     }

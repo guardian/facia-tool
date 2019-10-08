@@ -1,22 +1,19 @@
 import { createType, build } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
-import {
-  postProcessArticleFragment,
-  supportingArticles
-} from 'shared/util/schema';
-import { ArticleFragment } from 'shared/types/Collection';
+import { postProcessCard, supportingArticles } from 'shared/util/schema';
+import { Card } from 'shared/types/Collection';
 
-const articleFragments = createType('articleFragments', {
-  preProcess: (af: ArticleFragment) => ({
+const cards = createType('cards', {
+  preProcess: (af: Card) => ({
     ...af,
     uuid: v4()
   }),
-  postProcess: postProcessArticleFragment,
+  postProcess: postProcessCard,
   idKey: 'uuid'
 });
 
 export const { normalize, denormalize } = build({
-  articles: articleFragments({
+  articles: cards({
     'meta.supporting': supportingArticles()
   })
 });

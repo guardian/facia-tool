@@ -1,20 +1,20 @@
 import React from 'react';
 import { render, cleanup } from 'react-testing-library';
-import CollectionItemHeading from '../CollectionItemHeading';
+import CardHeading from '../CardHeading';
 
 afterEach(cleanup);
 
-describe('CollectionItemHeading', () => {
+describe('CardHeading', () => {
   it('does not render html by default', () => {
     const { getByTestId } = render(
-      <CollectionItemHeading children="<strong data-testid='test'>Test</strong>" />
+      <CardHeading children="<strong data-testid='test'>Test</strong>" />
     );
     expect(() => getByTestId('test')).toThrow();
   });
 
   it('renders sanitized html when asked', () => {
     const { getByTestId } = render(
-      <CollectionItemHeading
+      <CardHeading
         html
         children="<span data-testid='test'><strong>Test</strong><iframe></iframe></span>"
       />

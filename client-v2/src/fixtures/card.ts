@@ -1,13 +1,13 @@
-const articleFragmentMeta = {};
+const cardMeta = {};
 
-const articleFragment = {
+const card = {
   id: 'internal-code/page/5158391',
   frontPublicationDate: 1539180309305,
-  meta: articleFragmentMeta,
+  meta: cardMeta,
   uuid: '36a2fa8e-0e77-4f53-98d2-271282b5db70'
 };
 
-const boostedArticleFragment = {
+const boostedCard = {
   id: 'internal-code/page/5158392',
   frontPublicationDate: 1539180309305,
   meta: {
@@ -16,7 +16,7 @@ const boostedArticleFragment = {
   uuid: '36a2fa8e-0e77-4f53-98d2-271282b5db71'
 };
 
-const articleFragmentWithSlideshowThumbnailMeta = {
+const cardWithSlideshowThumbnailMeta = {
   imageSlideshowReplace: true,
   slideshow: [
     {
@@ -36,9 +36,4 @@ const articleFragmentWithSlideshowThumbnailMeta = {
   ]
 };
 
-export {
-  articleFragment,
-  articleFragmentMeta,
-  articleFragmentWithSlideshowThumbnailMeta,
-  boostedArticleFragment
-};
+export { card, cardMeta, cardWithSlideshowThumbnailMeta, boostedCard };

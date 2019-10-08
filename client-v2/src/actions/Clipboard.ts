@@ -2,26 +2,21 @@ import { Dispatch, ThunkResult } from 'types/Store';
 import { saveClipboardStrategy } from 'strategies/save-clipboard';
 import { fetchArticles } from 'actions/Collections';
 import { batchActions } from 'redux-batched-actions';
-import { articleFragmentsReceived } from 'shared/actions/ArticleFragments';
-import {
-  ArticleFragment,
-  NestedArticleFragment
-} from 'shared/types/Collection';
+import { cardsReceived } from 'shared/actions/Cards';
+import { Card, NestedCard } from 'shared/types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
 import {
   UpdateClipboardContent,
-  InsertClipboardArticleFragment,
-  RemoveClipboardArticleFragment,
+  InsertClipboardCard,
+  RemoveClipboardCard,
   ClearClipboard
 } from 'types/Action';
 import { State } from 'types/State';
 import { addPersistMetaToAction } from 'util/action';
 
-export const REMOVE_CLIPBOARD_ARTICLE_FRAGMENT =
-  'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT';
+export const REMOVE_CLIPBOARD_CARD = 'REMOVE_CLIPBOARD_CARD';
 export const UPDATE_CLIPBOARD_CONTENT = 'UPDATE_CLIPBOARD_CONTENT';
-export const INSERT_CLIPBOARD_ARTICLE_FRAGMENT =
-  'INSERT_CLIPBOARD_ARTICLE_FRAGMENT';
+export const INSERT_CLIPBOARD_CARD = 'INSERT_CLIPBOARD_CARD';
 export const CLEAR_CLIPBOARD = 'CLEAR_CLIPBOARD';
 
 function updateClipboardContent(
@@ -33,34 +28,32 @@ function updateClipboardContent(
   };
 }
 
-function storeClipboardContent(clipboardContent: NestedArticleFragment[]) {
+function storeClipboardContent(clipboardContent: NestedCard[]) {
   return (dispatch: Dispatch) => {
     const normalisedClipboard: {
       clipboard: { articles: string[] };
-      articleFragments: { [id: string]: ArticleFragment };
+      cards: { [id: string]: Card };
     } = normaliseClipboard({
       articles: clipboardContent
     });
     const clipboardArticles = normalisedClipboard.clipboard.articles;
-    const { articleFragments } = normalisedClipboard;
+    const { cards } = normalisedClipboard;
 
     dispatch(
       batchActions([
         updateClipboardContent(clipboardArticles),
-        articleFragmentsReceived(articleFragments)
+        cardsReceived(cards)
       ])
     );
 
-    const fragmentIds = Object.values(articleFragments).map(
-      fragment => fragment.id
-    );
-    return dispatch(fetchArticles(fragmentIds));
+    const cardIds = Object.values(cards).map(card => card.id);
+    return dispatch(fetchArticles(cardIds));
   };
 }
 
 function updateClipboard(clipboardContent: {
-  articles: NestedArticleFragment[];
-}): ThunkResult<Promise<NestedArticleFragment[]>> {
+  articles: NestedCard[];
+}): ThunkResult<Promise<NestedCard[]>> {
   return async (_, getState: () => State) => {
     const saveClipboardResponse = await saveClipboardStrategy(
       getState(),
@@ -74,35 +67,35 @@ function updateClipboard(clipboardContent: {
   };
 }
 
-const insertClipboardArticleFragment = (
+const insertClipboardCard = (
   id: string,
   index: number,
-  articleFragmentId: string
-): InsertClipboardArticleFragment => ({
-  type: INSERT_CLIPBOARD_ARTICLE_FRAGMENT,
+  cardId: string
+): InsertClipboardCard => ({
+  type: INSERT_CLIPBOARD_CARD,
   payload: {
     id,
     index,
-    articleFragmentId
+    cardId
   }
 });
 
-const insertClipboardArticleFragmentWithPersist = addPersistMetaToAction(
-  insertClipboardArticleFragment,
+const insertClipboardCardWithPersist = addPersistMetaToAction(
+  insertClipboardCard,
   {
     persistTo: 'clipboard',
-    key: 'articleFragmentId'
+    key: 'cardId'
   }
 );
 
-const removeClipboardArticleFragment = (
+const removeClipboardCard = (
   id: string,
-  articleFragmentId: string
-): RemoveClipboardArticleFragment => ({
-  type: REMOVE_CLIPBOARD_ARTICLE_FRAGMENT,
+  cardId: string
+): RemoveClipboardCard => ({
+  type: REMOVE_CLIPBOARD_CARD,
   payload: {
     id,
-    articleFragmentId
+    cardId
   }
 });
 
@@ -121,9 +114,9 @@ export {
   storeClipboardContent,
   updateClipboard,
   updateClipboardContent,
-  insertClipboardArticleFragment,
-  insertClipboardArticleFragmentWithPersist,
-  removeClipboardArticleFragment,
+  insertClipboardCard,
+  insertClipboardCardWithPersist,
+  removeClipboardCard,
   clearClipboard,
   clearClipboardWithPersist
 };

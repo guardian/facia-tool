@@ -7,7 +7,7 @@ import { oc } from 'ts-optchain';
 
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
-import { Collection, CollectionItemSets } from '../types/Collection';
+import { Collection, CardSets } from '../types/Collection';
 import DragIntentContainer from './DragIntentContainer';
 import ButtonCircularCaret, {
   ButtonCircularWithTransition
@@ -36,7 +36,7 @@ export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 interface ContainerProps {
   id: string;
   selectSharedState?: (state: any) => SharedState;
-  browsingStage: CollectionItemSets;
+  browsingStage: CardSets;
   frontId: string;
 }
 

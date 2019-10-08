@@ -1,22 +1,22 @@
-import { cloneActiveImageMeta } from '../articleFragment';
-import { ArticleFragmentMeta } from 'shared/types/Collection';
+import { cloneActiveImageMeta } from '../card';
+import { CardMeta } from 'shared/types/Collection';
 
-const createArticleFragment = (meta: ArticleFragmentMeta = {}) => ({
+const createCard = (meta: CardMeta = {}) => ({
   id: 'id',
   uuid: 'uuid',
   frontPublicationDate: 123,
   meta
 });
 
-describe('articleFragment utils', () => {
+describe('card utils', () => {
   describe('cloneActiveImageMeta', () => {
     it('should do nothing if the article has no meta', () => {
-      expect(cloneActiveImageMeta(createArticleFragment())).toEqual({});
+      expect(cloneActiveImageMeta(createCard())).toEqual({});
     });
     it('should replace images and enable them', () => {
       expect(
         cloneActiveImageMeta(
-          createArticleFragment({
+          createCard({
             imageReplace: true,
             imageSrc: 'image',
             imageSrcThumb: 'image',
@@ -39,7 +39,7 @@ describe('articleFragment utils', () => {
     it('should replace cutouts and enable them', () => {
       expect(
         cloneActiveImageMeta(
-          createArticleFragment({
+          createCard({
             imageCutoutReplace: true,
             imageCutoutSrc: 'image',
             imageCutoutSrcWidth: 'image',
@@ -60,7 +60,7 @@ describe('articleFragment utils', () => {
     it('should replace slideshows and enable them', () => {
       expect(
         cloneActiveImageMeta(
-          createArticleFragment({
+          createCard({
             imageSlideshowReplace: true,
             slideshow: [
               {
@@ -91,8 +91,8 @@ describe('articleFragment utils', () => {
     it('should not replace both images and slideshows', () => {
       expect(
         cloneActiveImageMeta(
-          createArticleFragment({
-            // This article fragment has both the image and the slideshow enabled,
+          createCard({
+            // This card has both the image and the slideshow enabled,
             // which is invalid
             imageReplace: true,
             imageSrc: 'image',

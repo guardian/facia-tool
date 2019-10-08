@@ -1,7 +1,7 @@
 import { reducer, initialize, change } from 'redux-form';
 import {
-  getArticleFragmentMetaFromFormValues,
-  getInitialValuesForArticleFragmentForm
+  getCardMetaFromFormValues,
+  getInitialValuesForCardForm
 } from 'util/form';
 import derivedArticle from 'fixtures/derivedArticle';
 import initialState from 'fixtures/initialState';
@@ -69,12 +69,10 @@ const createStateWithChangedFormFields = (
   };
 };
 
-describe('ArticleFragmentForm transform functions', () => {
+describe('CardForm transform functions', () => {
   describe('Derive form values from a derived article', () => {
     it('should derive values', () => {
-      expect(getInitialValuesForArticleFragmentForm(derivedArticle)).toEqual(
-        formValues
-      );
+      expect(getInitialValuesForCardForm(derivedArticle)).toEqual(formValues);
     });
     it('should handle existing slideshows of any length', () => {
       const exampleImage = {
@@ -89,14 +87,14 @@ describe('ArticleFragmentForm transform functions', () => {
         ...derivedArticle,
         slideshow
       };
-      expect(getInitialValuesForArticleFragmentForm(slideshowArticle)).toEqual({
+      expect(getInitialValuesForCardForm(slideshowArticle)).toEqual({
         ...formValues,
         slideshow
       });
     });
     it('should get number values for all image widths and heights', () => {
       expect(
-        getInitialValuesForArticleFragmentForm({
+        getInitialValuesForCardForm({
           ...derivedArticle,
           imageSrc: 'exampleSrc1',
           imageSrcHeight: '100',
@@ -163,16 +161,16 @@ describe('ArticleFragmentForm transform functions', () => {
       });
     });
   });
-  describe('Derive articleFragment meta from form values', () => {
+  describe('Derive card meta from form values', () => {
     it('should return existing meta if no form values were dirtied', () => {
       const state = createStateWithChangedFormFields(
         initialState,
         'exampleId',
         {}
       );
-      expect(
-        getArticleFragmentMetaFromFormValues(state, 'exampleId', formValues)
-      ).toEqual({ headline: 'Bill Shorten' });
+      expect(getCardMetaFromFormValues(state, 'exampleId', formValues)).toEqual(
+        { headline: 'Bill Shorten' }
+      );
     });
     it('should derive values, removing the slideshow array if empty', () => {
       const byline = 'Caroline Davies edited';
@@ -192,7 +190,7 @@ describe('ArticleFragmentForm transform functions', () => {
         }
       );
       expect(
-        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+        getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
           byline,
           headline,
@@ -223,7 +221,7 @@ describe('ArticleFragmentForm transform functions', () => {
         values
       );
       expect(
-        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+        getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
           ...values
         })
@@ -247,7 +245,7 @@ describe('ArticleFragmentForm transform functions', () => {
         values
       );
       expect(
-        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+        getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
           ...values
         })
@@ -285,7 +283,7 @@ describe('ArticleFragmentForm transform functions', () => {
         values
       );
       expect(
-        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+        getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
           ...values
         })
@@ -324,7 +322,7 @@ describe('ArticleFragmentForm transform functions', () => {
         values
       );
       expect(
-        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+        getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
           ...values
         } as any)
@@ -341,7 +339,7 @@ describe('ArticleFragmentForm transform functions', () => {
         { showQuotedHeadline: true }
       );
       expect(
-        getArticleFragmentMetaFromFormValues(state, 'exampleId', {
+        getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
           ...values
         })

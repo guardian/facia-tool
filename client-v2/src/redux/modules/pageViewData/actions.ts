@@ -11,9 +11,9 @@ import { DerivedArticle } from 'shared/types/Article';
 import {
   createSelectArticlesInCollection,
   selectSharedState,
-  createSelectArticleFromArticleFragment
+  createSelectArticleFromCard
 } from 'shared/selectors/shared';
-import { CollectionItemSets } from 'shared/types/Collection';
+import { CardSets } from 'shared/types/Collection';
 import pandaFetch from 'services/pandaFetch';
 import { isValidURL } from 'shared/util/url';
 
@@ -24,12 +24,12 @@ export const PAGE_VIEW_DATA_RECEIVED = 'PAGE_VIEW_DATA_RECEIVED';
 export const PAGE_VIEW_DATA_REQUESTED = 'PAGE_VIEW_DATA_REQUESTED';
 
 const selectArticlesInCollection = createSelectArticlesInCollection();
-const selectArticleFromArticleFragment = createSelectArticleFromArticleFragment();
+const selectArticleFromCard = createSelectArticleFromCard();
 
 const getPageViewDataForCollection = (
   frontId: string,
   collectionId: string,
-  collectionSet: CollectionItemSets
+  collectionSet: CardSets
 ): ThunkResult<void> => {
   return async (dispatch, getState) => {
     dispatch(pageViewDataRequestedAction(frontId));
@@ -53,7 +53,7 @@ const getPageViewData = (
 ): ThunkResult<void> => async (dispatch, getState) => {
   const state = selectSharedState(getState());
   const articles = articleIds
-    .map(_ => selectArticleFromArticleFragment(state, _))
+    .map(_ => selectArticleFromCard(state, _))
     .filter(_ => _) as DerivedArticle[];
   const urlPaths: string[] = articles
     .map(

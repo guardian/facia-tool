@@ -8,7 +8,7 @@ const stateWithClipboard = {
     featureSwitches: {},
     externalArticles: externalArticlesState,
     collections: collectionsState,
-    articleFragments: {
+    cards: {
       article: {
         id: 'article/live/0',
         frontPublicationDate: 1,

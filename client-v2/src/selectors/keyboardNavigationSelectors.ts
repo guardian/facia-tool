@@ -44,7 +44,7 @@ const selectNextIndexAndGroup = (
     return null;
   }
 
-  const groupArticleFragments = group.articleFragments;
+  const groupCards = group.cards;
 
   const currentArticleIndex = selectIndexInGroup(
     sharedState,
@@ -54,8 +54,8 @@ const selectNextIndexAndGroup = (
 
   // Checking if moving inside the group
   if (action === 'down') {
-    // If the article fragment is not the last in the group, the article stays in the group
-    if (currentArticleIndex < groupArticleFragments.length - 1) {
+    // If the card is not the last in the group, the article stays in the group
+    if (currentArticleIndex < groupCards.length - 1) {
       return { toIndex: currentArticleIndex + 1, nextGroupId: groupId };
     }
   }
@@ -68,12 +68,9 @@ const selectNextIndexAndGroup = (
   }
 
   // Checking if moving between groups but inside the collection
-  const { collection, collectionItemSet } = selectGroupCollection(
-    sharedState,
-    groupId
-  );
+  const { collection, cardSet } = selectGroupCollection(sharedState, groupId);
   if (collection) {
-    const collectionGroups = collection[collectionItemSet];
+    const collectionGroups = collection[cardSet];
 
     if (collectionGroups) {
       const groupIndex = collectionGroups.indexOf(groupId);
@@ -88,7 +85,7 @@ const selectNextIndexAndGroup = (
         if (groupIndex !== 0) {
           const nextGroupId = collectionGroups[groupIndex - 1];
           const nextGroupArticles = selectGroups(sharedState)[nextGroupId]
-            .articleFragments;
+            .cards;
           return { toIndex: nextGroupArticles.length, nextGroupId };
         }
       }
@@ -125,8 +122,7 @@ const selectNextIndexAndGroup = (
         const nextIndex = coll.draft.length;
         const nextGroupId = coll.draft[nextIndex - 1];
 
-        const nextGroupArticles = selectGroups(sharedState)[nextGroupId]
-          .articleFragments;
+        const nextGroupArticles = selectGroups(sharedState)[nextGroupId].cards;
 
         return {
           toIndex: nextGroupArticles.length,

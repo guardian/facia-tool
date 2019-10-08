@@ -186,13 +186,13 @@ const visibilityState = {
     },
     groups: {
       g1: {
-        articleFragments: ['a1', 'a2', 'a3']
+        cards: ['a1', 'a2', 'a3']
       },
       g2: {
-        articleFragments: ['a4', 'a5']
+        cards: ['a4', 'a5']
       }
     },
-    articleFragments: {
+    cards: {
       a1: {
         uuid: 'a1',
         meta: {
@@ -220,7 +220,7 @@ const visibilityState = {
 };
 
 describe('Article visibility selector', () => {
-  it('returns the id of the articleFragment at the last visible position for mobile and desktop, ignoring supporting articleFragments', () => {
+  it('returns the id of the card at the last visible position for mobile and desktop, ignoring supporting cards', () => {
     const selectArticleVisibilityDetails = createSelectArticleVisibilityDetails();
     expect(
       selectArticleVisibilityDetails(visibilityState as any, {

@@ -1,6 +1,6 @@
 import {
-  selectExternalArticleFromArticleFragment,
-  createSelectArticleFromArticleFragment,
+  selectExternalArticleFromCard,
+  createSelectArticleFromCard,
   createSelectArticlesInCollectionGroup,
   createSelectArticlesInCollection,
   createSelectCollection,
@@ -44,34 +44,34 @@ const state: any = {
     g1: {
       uuid: 'g1',
       id: 'group1',
-      articleFragments: ['af2'],
+      cards: ['af2'],
       name: 'g1'
     },
     g2: {
       uuid: 'g2',
       id: 'group2',
-      articleFragments: ['af1'],
+      cards: ['af1'],
       name: 'g2'
     },
     g3: {
       uuid: 'g3',
       id: 'group1',
-      articleFragments: ['af3', 'af4']
+      cards: ['af3', 'af4']
     },
     g4: {
       uuid: 'g4',
       id: 'group1',
-      articleFragments: ['af5']
+      cards: ['af5']
     },
     g5: {
       uuid: 'g5',
       id: 'group1',
-      articleFragments: ['af5']
+      cards: ['af5']
     },
     g6: {
       uuid: 'g6',
       id: 'group6',
-      articleFragments: ['afWithSupporting']
+      cards: ['afWithSupporting']
     }
   },
   externalArticles: {
@@ -158,7 +158,7 @@ const state: any = {
       }
     }
   },
-  articleFragments: {
+  cards: {
     af1: {
       uuid: 'af1',
       id: 'ea1',
@@ -172,10 +172,10 @@ const state: any = {
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
       meta: {
-        headline: 'fragment-headline',
-        trailText: 'fragment-trailText',
-        byline: 'fragment-byline',
-        customKicker: 'fragment-kicker',
+        headline: 'card-headline',
+        trailText: 'card-trailText',
+        byline: 'card-byline',
+        customKicker: 'card-kicker',
         showKickerCustom: true
       }
     },
@@ -211,9 +211,9 @@ const state: any = {
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
       meta: {
-        headline: 'fragment-headline',
-        trailText: 'fragment-trailText',
-        byline: 'fragment-byline',
+        headline: 'card-headline',
+        trailText: 'card-trailText',
+        byline: 'card-byline',
         showKickerTag: true
       }
     },
@@ -223,9 +223,9 @@ const state: any = {
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
       meta: {
-        headline: 'fragment-headline',
-        trailText: 'fragment-trailText',
-        byline: 'fragment-byline',
+        headline: 'card-headline',
+        trailText: 'card-trailText',
+        byline: 'card-byline',
         showKickerSection: true
       }
     },
@@ -253,20 +253,20 @@ describe('Shared selectors', () => {
     });
   });
 
-  describe('externalArticleFromArticleFragmentSelector', () => {
-    it('should create a selector that returns an external article referenced by the given article fragment', () => {
-      expect(selectExternalArticleFromArticleFragment(state, 'af1')).toEqual(
+  describe('externalArticleFromCardSelector', () => {
+    it('should create a selector that returns an external article referenced by the given card', () => {
+      expect(selectExternalArticleFromCard(state, 'af1')).toEqual(
         state.externalArticles.data.ea1
       );
-      expect(
-        selectExternalArticleFromArticleFragment(state, 'invalid')
-      ).toEqual(undefined);
+      expect(selectExternalArticleFromCard(state, 'invalid')).toEqual(
+        undefined
+      );
     });
   });
 
-  describe('createArticleFromArticleFragmentSelector', () => {
-    it('should create a selector that returns an article (externalArticle + articleFragment) referenced by the given article fragment', () => {
-      const selector = createSelectArticleFromArticleFragment();
+  describe('createArticleFromCardSelector', () => {
+    it('should create a selector that returns an article (externalArticle + card) referenced by the given card', () => {
+      const selector = createSelectArticleFromCard();
       expect(selector(state, 'af1')).toMatchObject({
         id: 'ea1',
         pillarName: 'external-pillar',
@@ -283,16 +283,16 @@ describe('Shared selectors', () => {
 
       expect(selector(state, 'af1WithOverrides')).toMatchObject({
         id: 'ea1',
-        customKicker: 'fragment-kicker',
+        customKicker: 'card-kicker',
         pillarName: 'external-pillar',
         frontPublicationDate: 1,
         publishedBy: 'A. N. Author',
         uuid: 'af1',
-        headline: 'fragment-headline',
+        headline: 'card-headline',
         thumbnail: undefined,
-        trailText: 'fragment-trailText',
-        kicker: 'fragment-kicker',
-        byline: 'fragment-byline',
+        trailText: 'card-trailText',
+        kicker: 'card-kicker',
+        byline: 'card-byline',
         isLive: true,
         firstPublicationDate: '2018-10-19T10:30:39Z',
         pillarId: undefined,
@@ -301,19 +301,19 @@ describe('Shared selectors', () => {
       expect(selector(state, 'invalid')).toEqual(undefined);
     });
     it('should set isLive property to false if article is not live', () => {
-      const selector = createSelectArticleFromArticleFragment();
+      const selector = createSelectArticleFromCard();
       expect(selector(state, 'af2')).toMatchObject({
         isLive: false
       });
     });
     it('should set isLive to true if property is missing', () => {
-      const selector = createSelectArticleFromArticleFragment();
+      const selector = createSelectArticleFromCard();
       expect(selector(state, 'af3')).toMatchObject({
         isLive: true
       });
     });
     it('should populate default metadata correctly', () => {
-      const selector = createSelectArticleFromArticleFragment();
+      const selector = createSelectArticleFromCard();
       expect(selector(state, 'af4')).toEqual({
         id: 'ea4',
         pillarName: 'external-pillar',
@@ -409,7 +409,7 @@ describe('Shared selectors', () => {
       const currentGroups = state.groups;
       const newGroups = {
         ...currentGroups,
-        ...{ g7: { uuid: 'g7', id: 'group7', articleFragments: ['af6'] } }
+        ...{ g7: { uuid: 'g7', id: 'group7', cards: ['af6'] } }
       };
       expect(
         selector(
@@ -424,9 +424,9 @@ describe('Shared selectors', () => {
     it('should put articles which are in groups that don`t exis in the config in the first group even when none of the groups have names', () => {
       const selector = createSelectArticlesInCollectionGroup();
       const newGroups = {
-        ...{ g1: { uuid: 'g1', articleFragments: ['af4'] } },
-        ...{ g2: { uuid: 'g2', id: 'group6', articleFragments: ['af5'] } },
-        ...{ g7: { uuid: 'g7', id: 'group7', articleFragments: ['af6'] } }
+        ...{ g1: { uuid: 'g1', cards: ['af4'] } },
+        ...{ g2: { uuid: 'g2', id: 'group6', cards: ['af5'] } },
+        ...{ g7: { uuid: 'g7', id: 'group7', cards: ['af6'] } }
       };
       expect(
         selector(
@@ -500,14 +500,14 @@ describe('Shared selectors', () => {
       ).toEqual(['af5']);
     });
     it('should set the correct kicker when tag kicker is set ', () => {
-      const selector = createSelectArticleFromArticleFragment();
+      const selector = createSelectArticleFromCard();
 
       expect(selector(state, 'afWithTagKicker')).toMatchObject({
         kicker: 'tag'
       });
     });
     it('should set the correct kicker when section kicker is set ', () => {
-      const selector = createSelectArticleFromArticleFragment();
+      const selector = createSelectArticleFromCard();
 
       expect(selector(state, 'afWithSectionKicker')).toMatchObject({
         kicker: 'section'

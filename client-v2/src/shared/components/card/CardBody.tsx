@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import Thumbnail from '../image/Thumbnail';
-import { CollectionItemSizes } from 'shared/types/Collection';
+import { CardSizes } from 'shared/types/Collection';
 import { theme } from 'constants/theme';
 
 export default styled.div<{
   fade?: boolean;
-  size?: CollectionItemSizes;
+  size?: CardSizes;
   tone?: string | void;
 }>`
   position: relative;
