@@ -1,26 +1,26 @@
 import { createSelectCardType } from '../card';
 import { stateWithSnaplinksAndArticles } from 'shared/fixtures/shared';
-import collectionItemTypes from 'shared/constants/cardTypes';
+import cardTypes from 'shared/constants/cardTypes';
 
-describe('CollectionItem selectors', () => {
-  describe('createCollectionItemTypeSelector', () => {
+describe('Card selectors', () => {
+  describe('createCardTypeSelector', () => {
     it('should identify snap links', () => {
-      const selectCollectionItemType = createSelectCardType();
+      const selectCardType = createSelectCardType();
       expect(
-        selectCollectionItemType(
+        selectCardType(
           stateWithSnaplinksAndArticles.shared,
           '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
         )
-      ).toEqual(collectionItemTypes.SNAP_LINK);
+      ).toEqual(cardTypes.SNAP_LINK);
     });
     it('should identify articles', () => {
-      const selectCollectionItemType = createSelectCardType();
+      const selectCardType = createSelectCardType();
       expect(
-        selectCollectionItemType(
+        selectCardType(
           stateWithSnaplinksAndArticles.shared,
           '134c9d4f-b05c-43f4-be41-a605b6dccab9'
         )
-      ).toEqual(collectionItemTypes.ARTICLE);
+      ).toEqual(cardTypes.ARTICLE);
     });
   });
 });

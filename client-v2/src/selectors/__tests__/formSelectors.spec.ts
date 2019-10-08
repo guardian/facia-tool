@@ -9,7 +9,7 @@ import { state, stateWithVideoArticle } from 'fixtures/form';
 import without from 'lodash/without';
 
 describe('Form utils', () => {
-  describe('selectFormFieldsForCollectionItem', () => {
+  describe('selectFormFieldsForCard', () => {
     it("should handle articles that don't exist in the state", () => {
       const selectFormFields = createSelectFormFieldsForCard();
       expect(selectFormFields(state, 'who-are-you')).toEqual([]);
