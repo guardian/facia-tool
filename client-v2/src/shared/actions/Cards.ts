@@ -20,7 +20,7 @@ import { MappableDropType } from 'util/collectionUtils';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
 import { Card, CardMeta } from '../types/Collection';
-import {selectEditMode} from "../../selectors/pathSelectors";
+import { selectEditMode } from "../../selectors/pathSelectors";
 
 export const UPDATE_CARD_META = 'SHARED/UPDATE_CARD_META';
 export const CARDS_RECEIVED = 'SHARED/CARDS_RECEIVED';
@@ -141,7 +141,8 @@ const createArticleEntitiesFromDrop = (
   return async (dispatch, getState) => {
     let isEdition = selectEditMode(getState()) === 'editions';
     const [maybeCard, maybeExternalArticle] = await getArticleEntitiesFromDrop(
-      drop, isEdition
+      drop,
+      isEdition
     );
     if (maybeExternalArticle) {
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
@@ -196,7 +197,6 @@ const getArticleEntitiesFromDrop = async (
       return await getArticleEntitiesFromGuardianPath(resourceIdOrUrl, title);
     }
     if (article) {
-      console.log(article)
       // We have a single article from CAPI - create an item as usual.
       return [createCard(article.id, isEdition), article];
     }
