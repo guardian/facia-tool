@@ -139,7 +139,7 @@ const createArticleEntitiesFromDrop = (
   drop: MappableDropType
 ): ThunkResult<Promise<Card | undefined>> => {
   return async (dispatch, getState) => {
-    let isEdition = selectEditMode(getState()) === 'editions';
+    const isEdition = selectEditMode(getState()) === 'editions';
     const [maybeCard, maybeExternalArticle] = await getArticleEntitiesFromDrop(
       drop,
       isEdition
