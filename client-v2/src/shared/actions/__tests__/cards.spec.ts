@@ -18,6 +18,7 @@ const idDrop = (id: string): RefDrop => ({ type: 'REF', data: id });
 
 describe('cards actions', () => {
   const { confirm } = window;
+  const isEdition = false;
   const localNow = Date.now;
   const localGetTime = Date.prototype.getTime;
   const mockNow = jest.fn(() => 1487076708000);
@@ -46,7 +47,7 @@ describe('cards actions', () => {
       expect(actions[0].type).toEqual(externalArticleActionNames.fetchSuccess);
       expect(actions[1]).toEqual(
         cardsReceived({
-          card1: createCard('internal-code/page/5029528')
+          card1: createCard('internal-code/page/5029528', isEdition)
         })
       );
     });
