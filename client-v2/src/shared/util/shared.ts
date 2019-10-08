@@ -2,7 +2,7 @@ import {
   CollectionWithNestedArticles,
   Group,
   Collection,
-  ArticleFragment
+  Card
 } from 'shared/types/Collection';
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
 import { selectSharedState } from 'shared/selectors/shared';
@@ -18,23 +18,20 @@ import compact from 'lodash/compact';
 const createGroup = (
   id: string | null,
   name: string | null,
-  articleFragments: string[] = []
+  cards: string[] = []
 ): Group => ({
   id,
   name,
   uuid: v4(),
-  articleFragments
+  cards
 });
 
 const getUUID = <T extends { uuid: string }>({ uuid }: T) => uuid;
 
 const getGroupIndex = (id: string | null): number => parseInt(id || '0', 10);
 
-const getAllArticleFragments = (groups: Group[]) =>
-  groups.reduce(
-    (acc, { articleFragments }) => [...acc, ...articleFragments],
-    [] as string[]
-  );
+const getAllCards = (groups: Group[]) =>
+  groups.reduce((acc, { cards }) => [...acc, ...cards], [] as string[]);
 
 const configGroupIndexExistsInGroups = (
   groupsToSearch: Group[],
@@ -75,12 +72,10 @@ const addGroupsForStage = (
     });
   }
 
-  // If we have no article fragments and no groups in a collection we still need to create
+  // If we have no cards and no groups in a collection we still need to create
   // and empty group for articles.
   if (groupsWithNames.length === 0) {
-    groupsWithNames.push(
-      createGroup(null, null, getAllArticleFragments(groups))
-    );
+    groupsWithNames.push(createGroup(null, null, getAllCards(groups)));
   }
 
   // Finally we need to sort the groups according to their ids.
@@ -124,19 +119,18 @@ const addGroups = (
     { live: [], draft: [], previously: [], addedGroups: {} } as ReduceResult
   );
 
-// To determine the UUIDs of article fragments recently removed from a collection in a way that
-// preserves the overall ordering lost during normalisation (when fragments are assigned to a Group)
+// To determine the UUIDs of cards recently removed from a collection in a way that
+// preserves the overall ordering lost during normalisation (when cards are assigned to a Group)
 // we need to compare both the pre-normalised and normalised versions of the same collection.
-const createPreviouslyArticleFragmentIds = (
+const createPreviouslyCardIds = (
   collection: CollectionWithNestedArticles,
   normalisedCollection: any
 ) =>
-  compact(collection.previously || []).map(nestedArticleFragment => {
-    const maybeArticleFragment = Object.entries(normalisedCollection.entities
-      .articleFragments as {
-      [uuid: string]: ArticleFragment;
-    }).find(([_, article]) => article.id === nestedArticleFragment.id);
-    return maybeArticleFragment ? maybeArticleFragment[0] : undefined;
+  compact(collection.previously || []).map(nestedCard => {
+    const maybeCard = Object.entries(normalisedCollection.entities.cards as {
+      [uuid: string]: Card;
+    }).find(([_, article]) => article.id === nestedCard.id);
+    return maybeCard ? maybeCard[0] : undefined;
   });
 
 const normaliseCollectionWithNestedArticles = (
@@ -145,14 +139,14 @@ const normaliseCollectionWithNestedArticles = (
 ): {
   normalisedCollection: Collection;
   groups: { [key: string]: Group };
-  articleFragments: { [key: string]: ArticleFragment };
+  cards: { [key: string]: Card };
 } => {
   const normalisedCollection = normalize(collection);
   const { addedGroups, live, draft, previously } = addGroups(
     normalisedCollection,
     collectionConfig
   );
-  const previouslyArticleFragmentIds = createPreviouslyArticleFragmentIds(
+  const previouslyCardIds = createPreviouslyCardIds(
     collection,
     normalisedCollection
   );
@@ -162,10 +156,10 @@ const normaliseCollectionWithNestedArticles = (
       live,
       draft,
       previously,
-      previouslyArticleFragmentIds
+      previouslyCardIds
     },
     groups: addedGroups,
-    articleFragments: normalisedCollection.entities.articleFragments || {}
+    cards: normalisedCollection.entities.cards || {}
   };
 };
 
@@ -184,7 +178,7 @@ function denormaliseCollection(
   }
 
   return denormalize(collection, {
-    articleFragments: state.shared.articleFragments,
+    cards: state.shared.cards,
     groups: state.shared.groups
   });
 }
@@ -192,5 +186,5 @@ function denormaliseCollection(
 export {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection,
-  createPreviouslyArticleFragmentIds
+  createPreviouslyCardIds
 };

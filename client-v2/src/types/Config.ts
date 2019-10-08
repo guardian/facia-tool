@@ -1,4 +1,4 @@
-import { NestedArticleFragment } from 'shared/types/Collection';
+import { NestedCard } from 'shared/types/Collection';
 import { FeatureSwitch } from './Features';
 
 interface Permission {
@@ -43,7 +43,7 @@ interface Config {
     favouriteFrontIdsByPriority: {
       [id: string]: string[];
     };
-    clipboardArticles: NestedArticleFragment[];
+    clipboardArticles: NestedCard[];
     featureSwitches: FeatureSwitch[];
   };
 }

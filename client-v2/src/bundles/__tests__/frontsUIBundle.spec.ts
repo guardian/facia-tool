@@ -26,24 +26,21 @@ import {
   selectEditorFrontIdsByPriority,
   selectEditorFavouriteFrontIds,
   selectEditorFavouriteFrontIdsByPriority,
-  editorSelectArticleFragment,
-  selectOpenArticleFragmentForms,
+  editorSelectCard,
+  selectOpenCardForms,
   defaultState,
   editorCloseFormsForCollection,
   createSelectCollectionsInOpenFronts,
   selectOpenFrontsCollectionsAndArticles,
-  selectOpenParentFrontOfArticleFragment,
+  selectOpenParentFrontOfCard,
   createSelectDoesCollectionHaveOpenForms
 } from '../frontsUIBundle';
 import initialState from 'fixtures/initialState';
 import initialStateForOpenFronts from '../../fixtures/initialStateForOpenFronts';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { Action } from 'types/Action';
-import {
-  removeSupportingArticleFragment,
-  removeGroupArticleFragment
-} from 'shared/actions/ArticleFragments';
-import { removeClipboardArticleFragment } from 'actions/Clipboard';
+import { removeSupportingCard, removeGroupCard } from 'shared/actions/Cards';
+import { removeClipboardCard } from 'actions/Clipboard';
 import { State as GlobalState } from 'types/State';
 import { State as GlobalSharedState } from 'shared/types/State';
 import { initialState as initialSharedState } from 'shared/fixtures/shared';
@@ -63,24 +60,18 @@ const reducer = (
 
 describe('frontsUIBundle', () => {
   describe('selectors', () => {
-    describe('selectOpenParentFrontOfArticleFragment', () => {
+    describe('selectOpenParentFrontOfCard', () => {
       const state = set(
         ['editor', 'collectionIds'],
         ['collection1', 'collection6'],
         initialStateForOpenFronts
       );
-      it('should select the parent front of an article fragment', () => {
-        const result = selectOpenParentFrontOfArticleFragment(
-          state,
-          'articleFragment1'
-        );
+      it('should select the parent front of an card', () => {
+        const result = selectOpenParentFrontOfCard(state, 'card1');
         expect(result).toEqual(['editorialFront', 'collection1']);
       });
       it("should return undefined if it does't find anything", () => {
-        const result = selectOpenParentFrontOfArticleFragment(
-          state,
-          'not-a-thing'
-        );
+        const result = selectOpenParentFrontOfCard(state, 'not-a-thing');
         expect(result).toEqual([]);
       });
       it('should not select from fronts that are not open', () => {
@@ -89,9 +80,9 @@ describe('frontsUIBundle', () => {
           [],
           state
         );
-        const result = selectOpenParentFrontOfArticleFragment(
+        const result = selectOpenParentFrontOfCard(
           stateWithClosedFronts,
-          'articleFragment1'
+          'card1'
         );
         expect(result).toEqual([]);
       });
@@ -101,9 +92,9 @@ describe('frontsUIBundle', () => {
           [],
           state
         );
-        const result = selectOpenParentFrontOfArticleFragment(
+        const result = selectOpenParentFrontOfCard(
           stateWithClosedCollections,
-          'articleFragment1'
+          'card1'
         );
         expect(result).toEqual([]);
       });
@@ -309,9 +300,9 @@ describe('frontsUIBundle', () => {
         expect(openEntities.length).toEqual(2); // Two fronts
         expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
         expect(openEntities[0].collections[0].articleIds).toEqual([
-          'articleFragment1',
-          'articleFragment2',
-          'articleFragment3'
+          'card1',
+          'card2',
+          'card3'
         ]); // First collection has three articles
         expect(openEntities[1].collections.length).toEqual(0); // Second front has no collections
       });
@@ -400,7 +391,7 @@ describe('frontsUIBundle', () => {
       it('should return true when the collection has a form open', () => {
         const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
         const state = set(
-          ['editor', 'selectedArticleFragments', 'exampleFront'],
+          ['editor', 'selectedCards', 'exampleFront'],
           [{ id: 'id', collectionId: 'collection-id', isSupporting: false }],
           initialState
         );
@@ -499,16 +490,16 @@ describe('frontsUIBundle', () => {
         training: ['front1', 'front2']
       });
     });
-    it('should clear the article fragment selection when selected article fragments are removed from a front', () => {
+    it('should clear the card selection when selected cards are removed from a front', () => {
       const state = reducer(
         {
-          selectedArticleFragments: {
-            frontId: [{ id: 'articleFragmentId', isSupporting: false }]
+          selectedCards: {
+            frontId: [{ id: 'cardId', isSupporting: false }]
           }
         } as any,
-        removeGroupArticleFragment('collectionId', 'articleFragmentId')
+        removeGroupCard('collectionId', 'cardId')
       );
-      expect(state.editor.selectedArticleFragments.frontId).toEqual([]);
+      expect(state.editor.selectedCards.frontId).toEqual([]);
     });
     describe('Editor close forms for collection', () => {
       it('should do nothing when there is no form for the front', () => {
@@ -517,14 +508,12 @@ describe('frontsUIBundle', () => {
           editorCloseFormsForCollection('collectionId', 'frontId'),
           initialSharedState
         );
-        expect(state.selectedArticleFragments).toEqual(
-          defaultState.selectedArticleFragments
-        );
+        expect(state.selectedCards).toEqual(defaultState.selectedCards);
       });
       it('should clear form data for the given collection id', () => {
         const initial = {
           ...defaultState,
-          selectedArticleFragments: {
+          selectedCards: {
             frontId: [
               {
                 id: 'articleId1',
@@ -549,7 +538,7 @@ describe('frontsUIBundle', () => {
           editorCloseFormsForCollection('collectionId', 'frontId'),
           initialSharedState
         );
-        expect(state.selectedArticleFragments).toEqual({
+        expect(state.selectedCards).toEqual({
           frontId: [
             {
               id: 'articleId2',
@@ -561,51 +550,45 @@ describe('frontsUIBundle', () => {
       });
     });
     describe('Clearing article selection in response to persistence events', () => {
-      const stateWithSelectedArticleFragments = {
-        selectedArticleFragments: {
-          frontId: [{ id: 'articleFragmentId', isSupporting: false }]
+      const stateWithSelectedCards = {
+        selectedCards: {
+          frontId: [{ id: 'cardId', isSupporting: false }]
         }
       } as any;
-      it("should not clear the article fragment selection when selected article fragments aren't in the front", () => {
+      it("should not clear the card selection when selected cards aren't in the front", () => {
         const state = reducer(
-          stateWithSelectedArticleFragments,
-          removeGroupArticleFragment('collectionId', 'anotherArticleFragmentId')
+          stateWithSelectedCards,
+          removeGroupCard('collectionId', 'anotherCardId')
         );
-        expect(state.editor).toBe(stateWithSelectedArticleFragments);
+        expect(state.editor).toBe(stateWithSelectedCards);
       });
-      it('should clear the article fragment selection when selected supporting article fragments are removed from a front', () => {
+      it('should clear the card selection when selected supporting cards are removed from a front', () => {
         const state = reducer(
-          stateWithSelectedArticleFragments,
-          removeSupportingArticleFragment('collectionId', 'articleFragmentId')
+          stateWithSelectedCards,
+          removeSupportingCard('collectionId', 'cardId')
         );
-        expect(state.editor.selectedArticleFragments.frontId).toEqual([]);
+        expect(state.editor.selectedCards.frontId).toEqual([]);
       });
-      it("should not clear the article fragment selection when selected supporting article fragments aren't in the front", () => {
+      it("should not clear the card selection when selected supporting cards aren't in the front", () => {
         const state = reducer(
-          stateWithSelectedArticleFragments,
-          removeSupportingArticleFragment(
-            'collectionId',
-            'anotherArticleFragmentId'
-          )
+          stateWithSelectedCards,
+          removeSupportingCard('collectionId', 'anotherCardId')
         );
-        expect(state.editor).toBe(stateWithSelectedArticleFragments);
+        expect(state.editor).toBe(stateWithSelectedCards);
       });
-      it('should clear the article fragment selection when selected clipboard article fragments are removed from a front', () => {
+      it('should clear the card selection when selected clipboard cards are removed from a front', () => {
         const state = reducer(
-          stateWithSelectedArticleFragments,
-          removeClipboardArticleFragment('collectionId', 'articleFragmentId')
+          stateWithSelectedCards,
+          removeClipboardCard('collectionId', 'cardId')
         );
-        expect(state.editor.selectedArticleFragments.frontId).toEqual([]);
+        expect(state.editor.selectedCards.frontId).toEqual([]);
       });
-      it("should not clear the article fragment selection when selected clipboard article fragments aren't in the front", () => {
+      it("should not clear the card selection when selected clipboard cards aren't in the front", () => {
         const state = reducer(
-          stateWithSelectedArticleFragments,
-          removeClipboardArticleFragment(
-            'collectionId',
-            'anotherArticleFragmentId'
-          )
+          stateWithSelectedCards,
+          removeClipboardCard('collectionId', 'anotherCardId')
         );
-        expect(state.editor).toBe(stateWithSelectedArticleFragments);
+        expect(state.editor).toBe(stateWithSelectedCards);
       });
     });
     it('should set the fronts to the open editor fronts', () => {
@@ -665,21 +648,15 @@ describe('frontsUIBundle', () => {
         expect(selectIsFrontOverviewOpen(state, 'front2')).toBe(true);
       });
     });
-    describe('Collection item form display', () => {
-      it('should open a collection item form', () => {
+    describe('Card form display', () => {
+      it('should open a card form', () => {
         const state = reducer(
           undefined,
-          editorSelectArticleFragment(
-            'exampleArticleFragment',
-            'exampleCollection',
-            'front1'
-          )
+          editorSelectCard('exampleCard', 'exampleCollection', 'front1')
         );
-        expect(
-          selectOpenArticleFragmentForms(state, { frontId: 'front1' })
-        ).toEqual([
+        expect(selectOpenCardForms(state, { frontId: 'front1' })).toEqual([
           {
-            id: 'exampleArticleFragment',
+            id: 'exampleCard',
             isSupporting: false,
             collectionId: 'exampleCollection'
           }
@@ -705,6 +682,103 @@ describe('frontsUIBundle', () => {
       expect(selectIsClipboardOpen(state)).toBe(false);
       const state2 = reducer(state.editor, editorOpenClipboard());
       expect(selectIsClipboardOpen(state2)).toBe(true);
+    });
+  });
+  describe('Selecting collections on all open Fronts', () => {
+    const selectCollectionsInOpenFronts = createSelectCollectionsInOpenFronts();
+    it('return correct collections for one open Front', () => {
+      expect(
+        selectCollectionsInOpenFronts({
+          fronts: {
+            frontsConfig
+          },
+          editor: {
+            frontIdsByPriority: { editorial: ['editorialFront'] }
+          },
+          path: '/v2/editorial'
+        } as any)
+      ).toEqual(['collection1']);
+    });
+    it('return correct collections for multiple open Fronts', () => {
+      expect(
+        selectCollectionsInOpenFronts({
+          fronts: {
+            frontsConfig
+          },
+          editor: {
+            frontIdsByPriority: {
+              editorial: ['editorialFront', 'editorialFront2']
+            }
+          },
+          path: '/v2/editorial'
+        } as any)
+      ).toEqual(['collection1', 'collection6']);
+    });
+    it('return enpty array for no open Fronts', () => {
+      expect(
+        selectCollectionsInOpenFronts({
+          fronts: {
+            frontsConfig
+          },
+          editor: {
+            frontIdsByPriority: {}
+          },
+          path: '/v2/editorial'
+        } as any)
+      ).toEqual([]);
+    });
+  });
+  describe('selectOpenFrontsCollectionsAndArticles', () => {
+    it('should return just fronts if no collections are open', () => {
+      const openEntities = selectOpenFrontsCollectionsAndArticles(
+        initialStateForOpenFronts
+      );
+      expect(openEntities).toEqual([
+        { collections: [], frontId: 'editorialFront' },
+        { collections: [], frontId: 'editorialFront2' }
+      ]);
+    });
+    it('should give an array of fronts, with nested collections and articles, when those fronts and collections are open -- single collection', () => {
+      const state = set(
+        ['editor', 'collectionIds'],
+        ['collection1'],
+        initialStateForOpenFronts
+      );
+      const openEntities = selectOpenFrontsCollectionsAndArticles(state);
+      expect(openEntities.length).toEqual(2); // Two fronts
+      expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
+      expect(openEntities[0].collections[0].articleIds).toEqual([
+        'card1',
+        'card2',
+        'card3'
+      ]); // First collection has three articles
+      expect(openEntities[1].collections.length).toEqual(0); // Second front has no collections
+    });
+    it('should give an array of fronts, with nested collections and articles, when those fronts and collections are open -- multiple collections', () => {
+      const state = set(
+        ['editor', 'collectionIds'],
+        ['collection1', 'collection6'],
+        initialStateForOpenFronts
+      );
+      const openEntities = selectOpenFrontsCollectionsAndArticles(state);
+      expect(openEntities.length).toEqual(2); // Two fronts
+      expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
+      expect(openEntities[1].collections.length).toEqual(1); // Second front has one collection
+    });
+    it('should respect the current browsing stage', () => {
+      let state = set(
+        ['editor', 'collectionIds'],
+        ['collection1'],
+        initialStateForOpenFronts
+      );
+      state = set(
+        ['editor', 'frontIdsByBrowsingStage', 'editorialFront'],
+        'live',
+        state
+      );
+      const openEntities = selectOpenFrontsCollectionsAndArticles(state);
+      expect(openEntities[0].collections.length).toEqual(1); // First front has one collection
+      expect(openEntities[0].collections[0].articleIds.length).toEqual(0); // First collection has no live articles
     });
   });
 });

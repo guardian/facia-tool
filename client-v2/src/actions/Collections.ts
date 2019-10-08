@@ -32,10 +32,7 @@ import {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection
 } from 'shared/util/shared';
-import {
-  articleFragmentsReceived,
-  clearArticleFragments
-} from 'shared/actions/ArticleFragments';
+import { cardsReceived, clearCards } from 'shared/actions/Cards';
 import { groupsReceived } from 'shared/actions/Groups';
 import {
   recordVisibleArticles,
@@ -46,15 +43,8 @@ import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
 import { selectCollectionConfig, selectFront } from 'selectors/frontsSelectors';
 import { Dispatch, ThunkResult } from 'types/Store';
 import { Action } from 'types/Action';
-import {
-  collectionItemSets,
-  noOfOpenCollectionsOnFirstLoad
-} from 'constants/fronts';
-import {
-  Stages,
-  Collection,
-  CollectionItemSets
-} from 'shared/types/Collection';
+import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
+import { Stages, Collection, CardSets } from 'shared/types/Collection';
 import difference from 'lodash/difference';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 import {
@@ -94,13 +84,13 @@ function fetchStaleCollections(
       getArticlesForCollections(
         fetchedCollectionIds,
         // get article for *all* collecitonItemSets as it reduces complexity of
-        // this code (finding which collectionItemSets we need), and the overlap
+        // this code (finding which cardSets we need), and the overlap
         // should be pretty large between all of the sets
-        Object.values(collectionItemSets)
+        Object.values(cardSets)
       )
     );
 
-    dispatch(clearArticleFragments(prevArticleIds));
+    dispatch(clearCards(prevArticleIds));
   };
 }
 
@@ -156,7 +146,7 @@ function getCollectionActions(
   };
   const {
     normalisedCollection,
-    articleFragments,
+    cards,
     groups
   } = normaliseCollectionWithNestedArticles(
     collectionWithDraftArticles,
@@ -165,7 +155,7 @@ function getCollectionActions(
 
   const actions = [
     collectionActions.fetchSuccess(normalisedCollection),
-    articleFragmentsReceived(articleFragments),
+    cardsReceived(cards),
     recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
     groupsReceived(groups)
   ];
@@ -341,7 +331,7 @@ const fetchArticles = (
 
 const getArticlesForCollections = (
   collectionIds: string[],
-  itemSetCandidate: CollectionItemSets | CollectionItemSets[]
+  itemSetCandidate: CardSets | CardSets[]
 ): ThunkResult<Promise<void>> => async (dispatch, getState) => {
   const itemSets = Array.isArray(itemSetCandidate)
     ? itemSetCandidate
@@ -362,7 +352,7 @@ const getArticlesForCollections = (
 const getOphanDataForCollections = (
   collectionIds: string[],
   frontId: string,
-  itemSet: CollectionItemSets
+  itemSet: CardSets
 ): ThunkResult<Promise<void[]>> => async dispatch => {
   const ophanRequests = collectionIds.map(collectionId => {
     return dispatch(
@@ -375,7 +365,7 @@ const getOphanDataForCollections = (
 const openCollectionsAndFetchTheirArticles = (
   collectionIds: string[],
   frontId: string,
-  itemSet: CollectionItemSets
+  itemSet: CardSets
 ): ThunkResult<Promise<void>> => async dispatch => {
   dispatch(editorOpenCollections(collectionIds));
   await dispatch(getArticlesForCollections(collectionIds, itemSet));
@@ -411,7 +401,7 @@ function getVisibleArticles(
  */
 function initialiseCollectionsForFront(
   frontId: string,
-  browsingStage: CollectionItemSets
+  browsingStage: CardSets
 ): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     const front = selectFront(getState(), { frontId });

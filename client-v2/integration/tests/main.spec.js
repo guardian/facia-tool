@@ -15,14 +15,14 @@ import {
   clipboardItem,
   hoverOverlay,
   collection,
-  collectionItem,
+  card,
   collectionDropZone,
-  collectionItemHoverZone,
-  allCollectionItems,
+  cardHoverZone,
+  allCards,
   allCollectionDropZones,
-  collectionItemDeleteButton,
+  cardDeleteButton,
   collectionDiscardButton,
-  collectionItemAddToClipboardButton,
+  cardAddToClipboardButton,
   clipboardItemDeleteButton
 } from '../selectors';
 
@@ -65,22 +65,22 @@ test('Drag and drop', async t => {
 });
 
 test('Drag between two collections', async t => {
-  const firstCollectionStory = collectionItem(0, 0);
+  const firstCollectionStory = card(0, 0);
   const secondCollectionDropZone = collectionDropZone(1, 0);
   await t
     .dragToElement(firstCollectionStory, secondCollectionDropZone)
-    .expect(allCollectionItems(0).count)
+    .expect(allCards(0).count)
     .eql(0)
-    .expect(allCollectionItems(1).count)
+    .expect(allCards(1).count)
     .eql(1);
 });
 
 test('Drag from clipboard to collection', async t => {
-  const firstCollectionStoryCount = await allCollectionItems(0).count;
+  const firstCollectionStoryCount = await allCards(0).count;
   const clipboardStoryCount = await clipboardItem().count;
   await t
     .dragToElement(clipboardItem(), collection(0))
-    .expect(allCollectionItems(0).count)
+    .expect(allCards(0).count)
     .eql(firstCollectionStoryCount + 1)
     .expect(clipboardItem().count)
     .eql(clipboardStoryCount);
@@ -89,7 +89,7 @@ test('Drag from clipboard to collection', async t => {
 test('Discarding changes to a collection works', async t => {
   await t
     .click(collectionDiscardButton(1))
-    .expect(allCollectionItems(1).count) // discarding overwrites a collection's draft content with its live content
+    .expect(allCards(1).count) // discarding overwrites a collection's draft content with its live content
     .eql(0);
 });
 

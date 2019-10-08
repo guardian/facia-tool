@@ -3,15 +3,15 @@ import { styled, theme as globalTheme, theme } from 'constants/theme';
 import { theme as styleTheme } from 'constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
-import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
+import CardHeading from '../card/CardHeading';
 import BasePlaceholder from '../BasePlaceholder';
 import { getPillarColor } from 'shared/util/getPillarColor';
-import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
-import CollectionItemContent from '../collectionItem/CollectionItemContent';
+import CardMetaContainer from '../card/CardMetaContainer';
+import CardContent from '../card/CardContent';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import TextPlaceholder from 'shared/components/TextPlaceholder';
 import { ThumbnailSmall, ThumbnailCutout } from '../image/Thumbnail';
-import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
+import CardMetaHeading from '../card/CardMetaHeading';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
   HoverViewButton,
@@ -20,15 +20,15 @@ import {
   HoverAddToClipboardButton
 } from '../input/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
-import { CollectionItemSizes } from 'shared/types/Collection';
-import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
-import CollectionItemDraftMetaContent from '../collectionItem/CollectionItemDraftMetaContent';
+import { CardSizes } from 'shared/types/Collection';
+import CardMetaContent from '../card/CardMetaContent';
+import CardDraftMetaContent from '../card/CardDraftMetaContent';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'shared/util/mediaQueries';
 import ArticleGraph from './ArticleGraph';
 import { VideoIcon } from '../icons/Icons';
-import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
-import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSettingsDisplay';
+import CardHeadingContainer from '../card/CardHeadingContainer';
+import CardSettingsDisplay from '../card/CardSettingsDisplay';
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 import EditModeVisibility from 'components/util/EditModeVisibility';
@@ -41,17 +41,17 @@ const ThumbnailPlaceholder = styled(BasePlaceholder)`
   height: 50px;
 `;
 
-const NotLiveContainer = styled(CollectionItemMetaHeading)`
+const NotLiveContainer = styled(CardMetaHeading)`
   color: ${theme.shared.base.colors.highlightColor};
 `;
 
-const KickerHeading = styled(CollectionItemHeading)<{ pillarId?: string }>`
+const KickerHeading = styled(CardHeading)<{ pillarId?: string }>`
   font-family: TS3TextSans;
   font-weight: bold;
   font-size: ${({ displaySize }) =>
     displaySize === 'small'
-      ? globalTheme.shared.collectionItem.fontSizeSmall
-      : globalTheme.shared.collectionItem.fontSizeDefault};
+      ? globalTheme.shared.card.fontSizeSmall
+      : globalTheme.shared.card.fontSizeDefault};
   ${media.large`font-size: 13px;`}
   color: ${({ pillarId }) => getPillarColor(pillarId, true)};
 `;
@@ -59,12 +59,12 @@ const KickerHeading = styled(CollectionItemHeading)<{ pillarId?: string }>`
 const ArticleBodyByline = styled.div`
   font-family: TS3TextSans;
   font-weight: bold;
-  font-size: ${styleTheme.shared.collectionItem.fontSizeDefault};
+  font-size: ${styleTheme.shared.card.fontSizeDefault};
   font-style: italic;
   padding-top: 5px;
 `;
 
-const FirstPublicationDate = styled(CollectionItemMetaContent)`
+const FirstPublicationDate = styled(CardMetaContent)`
   color: ${theme.shared.colors.green};
 `;
 
@@ -86,8 +86,8 @@ interface ArticleBodyProps {
   scheduledPublicationDate?: string;
   pillarId?: string;
   kicker?: string;
-  size?: CollectionItemSizes;
-  textSize?: CollectionItemSizes;
+  size?: CardSizes;
+  textSize?: CardSizes;
   headline?: string;
   thumbnail?: string | void;
   cutoutThumbnail?: string | void;
@@ -171,7 +171,7 @@ const articleBodyDefault = React.memo(
     return (
       <>
         {showMeta && (
-          <CollectionItemMetaContainer size={size}>
+          <CardMetaContainer size={size}>
             {displayPlaceholders && (
               <>
                 <TextPlaceholder data-testid="loading-placeholder" />
@@ -179,7 +179,7 @@ const articleBodyDefault = React.memo(
               </>
             )}
             {!displayPlaceholders && size !== 'small' && isLive && (
-              <CollectionItemMetaHeading
+              <CardMetaHeading
                 style={{
                   color: getPillarColor(
                     pillarId,
@@ -190,11 +190,9 @@ const articleBodyDefault = React.memo(
               >
                 {startCase(sectionName)}
                 <Tone> / {startCase(tone)}</Tone>
-              </CollectionItemMetaHeading>
+              </CardMetaHeading>
             )}
-            {type === 'liveblog' && (
-              <CollectionItemMetaContent>Liveblog</CollectionItemMetaContent>
-            )}
+            {type === 'liveblog' && <CardMetaContent>Liveblog</CardMetaContent>}
             {!isLive && !displayPlaceholders && (
               <NotLiveContainer>
                 {firstPublicationDate
@@ -203,38 +201,38 @@ const articleBodyDefault = React.memo(
               </NotLiveContainer>
             )}
             {!!scheduledPublicationDate && !firstPublicationDate && (
-              <CollectionItemDraftMetaContent title="The time until this article is scheduled to be published.">
+              <CardDraftMetaContent title="The time until this article is scheduled to be published.">
                 {distanceInWordsStrict(new Date(scheduledPublicationDate), now)}
-              </CollectionItemDraftMetaContent>
+              </CardDraftMetaContent>
             )}
             <EditModeVisibility visibleMode="editions">
               {!!newspaperPageNumber && (
-                <CollectionItemMetaContent title="The newspaper page number of this article">
+                <CardMetaContent title="The newspaper page number of this article">
                   Page {newspaperPageNumber}
-                </CollectionItemMetaContent>
+                </CardMetaContent>
               )}
             </EditModeVisibility>
             {!!frontPublicationDate && (
-              <CollectionItemMetaContent title="The time elapsed since this card was created in the tool.">
+              <CardMetaContent title="The time elapsed since this card was created in the tool.">
                 {distanceInWordsStrict(now, new Date(frontPublicationDate))}
-              </CollectionItemMetaContent>
+              </CardMetaContent>
             )}
             {!!firstPublicationDate && (
               <FirstPublicationDate title="The time elapsed since this article was first published.">
                 {distanceInWordsStrict(new Date(firstPublicationDate), now)}
               </FirstPublicationDate>
             )}
-          </CollectionItemMetaContainer>
+          </CardMetaContainer>
         )}
-        <CollectionItemContent displaySize={size} textSize={textSize}>
-          <CollectionItemSettingsDisplay
+        <CardContent displaySize={size} textSize={textSize}>
+          <CardSettingsDisplay
             isBreaking={isBreaking}
             showByline={showByline}
             showQuotedHeadline={showQuotedHeadline}
             showLargeHeadline={showLargeHeadline}
             isBoosted={isBoosted}
           />
-          <CollectionItemHeadingContainer size={size}>
+          <CardHeadingContainer size={size}>
             {displayPlaceholders && (
               <>
                 <TextPlaceholder />
@@ -250,16 +248,12 @@ const articleBodyDefault = React.memo(
                 {`${kicker} `}
               </KickerHeading>
             )}
-            <CollectionItemHeading
-              html
-              data-testid="headline"
-              displaySize={size}
-            >
+            <CardHeading html data-testid="headline" displaySize={size}>
               {headline}
-            </CollectionItemHeading>
+            </CardHeading>
             {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
-          </CollectionItemHeadingContainer>
-        </CollectionItemContent>
+          </CardHeadingContainer>
+        </CardContent>
         <ImageAndGraphWrapper size={size}>
           {featureFlagPageViewData && canShowPageViewData && collectionId && (
             <PageViewDataWrapper data-testid="page-view-graph">

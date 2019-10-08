@@ -1,11 +1,8 @@
 import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import { State } from './sharedReducer';
-import {
-  selectArticleFragments,
-  selectGroupSiblings
-} from 'shared/selectors/shared';
-import { capGroupArticleFragments } from 'shared/util/capGroupArticleFragments';
+import { selectCards, selectGroupSiblings } from 'shared/selectors/shared';
+import { capGroupCards } from 'shared/util/capGroupCards';
 import keyBy from 'lodash/keyBy';
 
 const getUpdatedSiblingGroupsForInsertion = (
@@ -13,12 +10,12 @@ const getUpdatedSiblingGroupsForInsertion = (
   groupsState: State['groups'],
   insertionGroupId: string,
   insertionIndex: number,
-  articleFragmentId: string
+  cardId: string
 ) => {
-  const articleFragmentsMap = selectArticleFragments(sharedState);
+  const cardsMap = selectCards(sharedState);
   const groupSiblings = selectGroupSiblings(sharedState, insertionGroupId);
 
-  if (!articleFragmentsMap[articleFragmentId]) {
+  if (!cardsMap[cardId]) {
     // this may have happened if we've purged after a poll
     return groupsState;
   }
@@ -28,11 +25,11 @@ const getUpdatedSiblingGroupsForInsertion = (
       ...acc,
       [sibling.uuid]: {
         ...sibling,
-        articleFragments: insertAndDedupeSiblings(
-          sibling.articleFragments || [],
-          [articleFragmentId],
+        cards: insertAndDedupeSiblings(
+          sibling.cards || [],
+          [cardId],
           insertionIndex,
-          articleFragmentsMap,
+          cardsMap,
           sibling.uuid === insertionGroupId // this means no insertions happen here if it's not this group
         )
       }
@@ -54,21 +51,19 @@ const groups = (
         ...payload
       };
     }
-    case 'SHARED/REMOVE_GROUP_ARTICLE_FRAGMENT': {
-      const { id, articleFragmentId } = action.payload;
+    case 'SHARED/REMOVE_GROUP_CARD': {
+      const { id, cardId } = action.payload;
       const group = state[id];
       return {
         ...state,
         [id]: {
           ...group,
-          articleFragments: (group.articleFragments || []).filter(
-            afId => afId !== articleFragmentId
-          )
+          cards: (group.cards || []).filter(afId => afId !== cardId)
         }
       };
     }
-    case 'SHARED/INSERT_GROUP_ARTICLE_FRAGMENT': {
-      const { id, index, articleFragmentId } = action.payload;
+    case 'SHARED/INSERT_GROUP_CARD': {
+      const { id, index, cardId } = action.payload;
       return {
         ...state,
         ...getUpdatedSiblingGroupsForInsertion(
@@ -76,7 +71,7 @@ const groups = (
           state,
           id,
           index,
-          articleFragmentId
+          cardId
         )
       };
     }
@@ -84,7 +79,7 @@ const groups = (
       const { id, collectionCap } = action.payload;
       const groupSiblings = selectGroupSiblings(prevSharedState, id);
       const cappedSiblings = keyBy(
-        capGroupArticleFragments(groupSiblings, collectionCap),
+        capGroupCards(groupSiblings, collectionCap),
         ({ uuid }) => uuid
       );
 

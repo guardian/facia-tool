@@ -3,9 +3,9 @@ import { styled } from 'shared/constants/theme';
 import { connect } from 'react-redux';
 import upperFirst from 'lodash/upperFirst';
 
-import CollectionItemContainer from '../collectionItem/CollectionItemContainer';
-import CollectionItemMetaContainer from '../collectionItem/CollectionItemMetaContainer';
-import CollectionItemMetaHeading from '../collectionItem/CollectionItemMetaHeading';
+import CardContainer from '../card/CardContainer';
+import CardMetaContainer from '../card/CardMetaContainer';
+import CardMetaHeading from '../card/CardMetaHeading';
 import { ThumbnailSmall } from '../image/Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
@@ -15,20 +15,20 @@ import {
   HoverOphanButton
 } from '../input/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
-import { ArticleFragment, CollectionItemSizes } from 'shared/types/Collection';
+import { Card, CardSizes } from 'shared/types/Collection';
 import {
   selectSharedState,
-  selectArticleFragment,
-  createSelectArticleFromArticleFragment
+  selectCard,
+  createSelectArticleFromCard
 } from '../../selectors/shared';
 import { State } from '../../types/State';
-import CollectionItemHeading from '../collectionItem/CollectionItemHeading';
-import CollectionItemContent from '../collectionItem/CollectionItemContent';
-import CollectionItemBody from '../collectionItem/CollectionItemBody';
-import CollectionItemMetaContent from '../collectionItem/CollectionItemMetaContent';
+import CardHeading from '../card/CardHeading';
+import CardContent from '../card/CardContent';
+import CardBody from '../card/CardBody';
+import CardMetaContent from '../card/CardMetaContent';
 import urls from 'shared/constants/url';
-import CollectionItemHeadingContainer from '../collectionItem/CollectionItemHeadingContainer';
-import CollectionItemSettingsDisplay from '../collectionItem/CollectionItemSettingsDisplay';
+import CardHeadingContainer from '../card/CardHeadingContainer';
+import CardSettingsDisplay from '../card/CardSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
 import { DerivedArticle } from 'shared/types/Article';
 import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
@@ -38,7 +38,7 @@ import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selecto
 import PageViewDataWrapper from '../PageViewDataWrapper';
 import ImageAndGraphWrapper from '../image/ImageAndGraphWrapper';
 
-const SnapLinkBodyContainer = styled(CollectionItemBody)`
+const SnapLinkBodyContainer = styled(CardBody)`
   justify-content: space-between;
   border-top-color: ${theme.shared.base.colors.borderColor};
 `;
@@ -62,8 +62,8 @@ interface ContainerProps {
   collectionId?: string;
   frontId: string;
   draggable?: boolean;
-  size?: CollectionItemSizes;
-  textSize?: CollectionItemSizes;
+  size?: CardSizes;
+  textSize?: CardSizes;
   showMeta?: boolean;
   fade?: boolean;
   children?: React.ReactNode;
@@ -72,7 +72,7 @@ interface ContainerProps {
 }
 
 interface SnapLinkProps extends ContainerProps {
-  articleFragment: ArticleFragment;
+  card: Card;
   article: DerivedArticle | undefined;
   featureFlagPageViewData: boolean;
 }
@@ -86,7 +86,7 @@ const SnapLink = ({
   onDelete,
   onAddToClipboard,
   children,
-  articleFragment,
+  card,
   isUneditable,
   article,
   collectionId,
@@ -96,10 +96,8 @@ const SnapLink = ({
   ...rest
 }: SnapLinkProps) => {
   const headline =
-    articleFragment.meta.headline ||
-    (articleFragment.meta.customKicker
-      ? `{ ${articleFragment.meta.customKicker} }`
-      : 'No headline');
+    card.meta.headline ||
+    (card.meta.customKicker ? `{ ${card.meta.customKicker} }` : 'No headline');
 
   const normaliseSnapUrl = (href: string) => {
     if (href && !/^https?:\/\//.test(href)) {
@@ -108,60 +106,55 @@ const SnapLink = ({
     return href;
   };
 
-  const urlPath =
-    articleFragment.meta.href && normaliseSnapUrl(articleFragment.meta.href);
+  const urlPath = card.meta.href && normaliseSnapUrl(card.meta.href);
 
   const now = Date.now();
 
   return (
-    <CollectionItemContainer {...rest}>
+    <CardContainer {...rest}>
       <SnapLinkBodyContainer data-testid="snap" size={size} fade={fade}>
         {showMeta && (
-          <CollectionItemMetaContainer size={size}>
-            <CollectionItemMetaHeading>Snap link</CollectionItemMetaHeading>
-            <CollectionItemMetaContent>
-              {upperFirst(
-                articleFragment.meta.snapCss || articleFragment.meta.snapType
-              )}
-            </CollectionItemMetaContent>
-            {!!articleFragment.frontPublicationDate && (
-              <CollectionItemMetaContent title="The time elapsed since this card was created in the tool.">
+          <CardMetaContainer size={size}>
+            <CardMetaHeading>Snap link</CardMetaHeading>
+            <CardMetaContent>
+              {upperFirst(card.meta.snapCss || card.meta.snapType)}
+            </CardMetaContent>
+            {!!card.frontPublicationDate && (
+              <CardMetaContent title="The time elapsed since this card was created in the tool.">
                 {distanceInWordsStrict(
                   now,
-                  new Date(articleFragment.frontPublicationDate)
+                  new Date(card.frontPublicationDate)
                 )}
-              </CollectionItemMetaContent>
+              </CardMetaContent>
             )}
-          </CollectionItemMetaContainer>
+          </CardMetaContainer>
         )}
-        <CollectionItemContent textSize={textSize}>
-          <CollectionItemSettingsDisplay
-            isBreaking={articleFragment.meta.isBreaking}
-            showByline={articleFragment.meta.showByline}
-            showQuotedHeadline={articleFragment.meta.showQuotedHeadline}
-            showLargeHeadline={articleFragment.meta.showLargeHeadline}
-            isBoosted={articleFragment.meta.isBoosted}
+        <CardContent textSize={textSize}>
+          <CardSettingsDisplay
+            isBreaking={card.meta.isBreaking}
+            showByline={card.meta.showByline}
+            showQuotedHeadline={card.meta.showQuotedHeadline}
+            showLargeHeadline={card.meta.showLargeHeadline}
+            isBoosted={card.meta.isBoosted}
           />
-          <CollectionItemHeadingContainer size={size}>
-            {!showMeta && (
-              <CollectionItemMetaHeading>Snap link </CollectionItemMetaHeading>
-            )}
-            <CollectionItemHeading html>{headline}</CollectionItemHeading>
+          <CardHeadingContainer size={size}>
+            {!showMeta && <CardMetaHeading>Snap link </CardMetaHeading>}
+            <CardHeading html>{headline}</CardHeading>
             <SnapLinkURL>
-              {articleFragment.meta.snapUri && (
+              {card.meta.snapUri && (
                 <>
                   <strong>snap uri:&nbsp;</strong>
-                  {articleFragment.meta.snapUri}
+                  {card.meta.snapUri}
                   &nbsp;
                 </>
               )}
               <strong>url:&nbsp;</strong>
               <a href={urlPath} target="_blank">
-                {articleFragment.meta.href}
+                {card.meta.href}
               </a>
             </SnapLinkURL>
-          </CollectionItemHeadingContainer>
-        </CollectionItemContent>
+          </CardHeadingContainer>
+        </CardContent>
         <ImageAndGraphWrapper size={size}>
           {featureFlagPageViewData && canShowPageViewData && collectionId && (
             <PageViewDataWrapper data-testid="page-view-graph">
@@ -207,19 +200,19 @@ const SnapLink = ({
         </HoverActionsAreaOverlay>
       </SnapLinkBodyContainer>
       {children}
-    </CollectionItemContainer>
+    </CardContainer>
   );
 };
 
 const mapStateToProps = () => {
-  const selectArticle = createSelectArticleFromArticleFragment();
+  const selectArticle = createSelectArticleFromCard();
   return (state: State, props: ContainerProps) => {
     const sharedState = props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state);
     const article = selectArticle(sharedState, props.id);
     return {
-      articleFragment: selectArticleFragment(sharedState, props.id),
+      card: selectCard(sharedState, props.id),
       article,
       featureFlagPageViewData: selectFeatureValue(
         selectSharedState(state),

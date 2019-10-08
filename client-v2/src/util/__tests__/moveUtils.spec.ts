@@ -27,30 +27,30 @@ describe('Move utilities', () => {
       g2: {
         uuid: 'g2',
         id: 'group2',
-        articleFragments: ['af1'],
+        cards: ['af1'],
         name: 'g2'
       },
       g3: {
         uuid: 'g3',
         id: 'group3',
         name: 'group3',
-        articleFragments: ['af3', 'af4']
+        cards: ['af3', 'af4']
       },
       g4: {
         uuid: 'g4',
         id: 'group4',
-        articleFragments: ['af5']
+        cards: ['af5']
       },
       g5: {
         uuid: 'g5',
         id: 'group5',
-        articleFragments: ['af6']
+        cards: ['af6']
       },
       g6: {
         uuid: 'g6',
         id: 'group6',
         name: 'group6',
-        articleFragments: ['af7', 'af8']
+        cards: ['af7', 'af8']
       }
     }
   };

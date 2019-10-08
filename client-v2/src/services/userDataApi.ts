@@ -1,5 +1,5 @@
 import { FeatureSwitch } from 'types/Features';
-import { NestedArticleFragment } from 'shared/types/Collection';
+import { NestedCard } from 'shared/types/Collection';
 import pandaFetch from './pandaFetch';
 
 const saveFeatureSwitch = async (featureSwitch: FeatureSwitch) => {
@@ -64,8 +64,8 @@ async function saveFavouriteFrontIds(favouriteFrontsByPriority?: {
 }
 
 async function saveClipboard(
-  clipboardContent: NestedArticleFragment[]
-): Promise<NestedArticleFragment[]> {
+  clipboardContent: NestedCard[]
+): Promise<NestedCard[]> {
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/userdata/clipboard`, {

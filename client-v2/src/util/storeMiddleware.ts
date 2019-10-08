@@ -10,7 +10,7 @@ import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';
 import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/userDataApi';
-import { NestedArticleFragment } from 'shared/types/Collection';
+import { NestedCard } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
 import { selectFront } from 'selectors/frontsSelectors';
 import {
@@ -119,7 +119,7 @@ const persistCollectionOnEdit = (
   };
   /**
    * Get the relevant collection ids for the given actions.
-   * @todo At the moment this just cares about updates to article fragments,
+   * @todo At the moment this just cares about updates to cards,
    *   but it should also listen for edits to collections.
    */
   const getCollectionIdsForActions = (actions: Action[]) => {
@@ -142,7 +142,7 @@ const persistCollectionOnEdit = (
           return acc.concat(id);
         }
 
-        const collectionId = selectors.selectParentCollectionOfArticleFragment(
+        const collectionId = selectors.selectParentCollectionOfCard(
           selectSharedState(store.getState()),
           id
         );
@@ -212,7 +212,7 @@ const persistClipboardOnEdit = (
   const result = next(action);
   const state = store.getState();
   const denormalisedClipboard: {
-    articles: NestedArticleFragment[];
+    articles: NestedCard[];
   } = denormaliseClipboard(state);
   store.dispatch(updateClipboardAction(denormalisedClipboard));
   return result;
