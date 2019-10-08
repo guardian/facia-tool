@@ -36,7 +36,7 @@ const SectionContentMetaContainer = styled.div`
   margin-right: 5px;
 `;
 
-const OverviewToggleContainer = styled.div`
+const OverviewToggleContainer = styled.div<{ active: boolean }>`
   font-size: 13px;
   font-weight: bold;
   padding-left: 10px;
@@ -44,6 +44,10 @@ const OverviewToggleContainer = styled.div`
   border-left: ${({ theme }) =>
     `solid 1px  ${theme.shared.colors.greyVeryLight}`};
   padding-top: 13px;
+  padding-bottom: 10px;
+  text-align: right;
+  margin-left: ${props => (props.active ? '0' : '-1px')};
+  cursor: pointer;
 `;
 
 const OverviewHeading = styled.label`
@@ -120,7 +124,6 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 
   public render() {
     const { overviewIsOpen, id, browsingStage } = this.props;
-    const overviewToggleId = `btn-overview-toggle-${this.props.id}`;
     return (
       <React.Fragment>
         <div
@@ -148,24 +151,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
                   fill={sharedTheme.base.colors.text}
                 />
               </OverviewHeadingButton>
-              <OverviewToggleContainer>
-                <OverviewHeading htmlFor={overviewToggleId}>
-                  {this.props.overviewIsOpen ? 'Hide overview' : 'Overview'}
-                </OverviewHeading>
-                <ButtonCircularCaret
-                  id={overviewToggleId}
-                  style={{
-                    margin: '0'
-                  }}
-                  openDir="right"
-                  active={this.props.overviewIsOpen}
-                  preActive={false}
-                  onClick={() =>
-                    this.props.toggleOverview(!this.props.overviewIsOpen)
-                  }
-                  small={true}
-                />
-              </OverviewToggleContainer>
+              {!overviewIsOpen && this.overviewToggle(overviewIsOpen)}
             </SectionContentMetaContainer>
             <FrontContent
               id={id}
@@ -176,6 +162,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
           </FrontContentContainer>
           {overviewIsOpen && (
             <FrontDetailContainer>
+              {this.overviewToggle(overviewIsOpen)}
               <FrontCollectionsOverview
                 id={this.props.id}
                 browsingStage={this.props.browsingStage}
@@ -187,6 +174,33 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
       </React.Fragment>
     );
   }
+
+  private overviewToggle = (overviewIsOpen: boolean) => {
+    const overviewToggleId = `btn-overview-toggle-${this.props.id}`;
+
+    return (
+      <>
+        <OverviewToggleContainer
+          onClick={() => this.props.toggleOverview(!this.props.overviewIsOpen)}
+          active={this.props.overviewIsOpen}
+        >
+          <OverviewHeading htmlFor={overviewToggleId}>
+            {overviewIsOpen ? 'Hide overview' : 'Overview'}
+          </OverviewHeading>
+          <ButtonCircularCaret
+            id={overviewToggleId}
+            style={{
+              margin: '0'
+            }}
+            openDir="right"
+            active={this.props.overviewIsOpen}
+            preActive={false}
+            small={true}
+          />
+        </OverviewToggleContainer>
+      </>
+    );
+  };
 
   private handleOpenCollections = (e: React.MouseEvent) => {
     e.preventDefault();
