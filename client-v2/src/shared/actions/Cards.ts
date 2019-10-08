@@ -198,11 +198,7 @@ const getArticleEntitiesFromDrop = async (
     if (article) {
       console.log(article)
       // We have a single article from CAPI - create an item as usual.
-<<<<<<< HEAD:client-v2/src/shared/actions/Cards.ts
       return [createCard(article.id, isEdition), article];
-=======
-      return [createCard(article.id), article];
->>>>>>> master:client-v2/src/shared/actions/Cards.ts
     }
   } catch (e) {
     if (isURL) {
