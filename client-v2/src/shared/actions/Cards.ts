@@ -138,25 +138,15 @@ type TArticleEntities = [Card?, ExternalArticle?];
 const createArticleEntitiesFromDrop = (
   drop: MappableDropType
 ): ThunkResult<Promise<Card | undefined>> => {
-<<<<<<< HEAD:client-v2/src/shared/actions/Cards.ts
   return async (dispatch, getState) => {
     let isEdition = selectEditMode(getState()) === 'editions';
     const [maybeCard, maybeExternalArticle] = await getArticleEntitiesFromDrop(
       drop, isEdition
-=======
-  return async dispatch => {
-    const [maybeCard, maybeExternalArticle] = await getArticleEntitiesFromDrop(
-      drop
->>>>>>> master:client-v2/src/shared/actions/Cards.ts
     );
     if (maybeExternalArticle) {
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
     }
     if (maybeCard) {
-<<<<<<< HEAD:client-v2/src/shared/actions/Cards.ts
-      console.log(maybeCard)
-=======
->>>>>>> master:client-v2/src/shared/actions/Cards.ts
       dispatch(cardsReceived([maybeCard]));
     }
     return maybeCard;
