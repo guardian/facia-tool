@@ -5,12 +5,15 @@ import cloneDeep from 'lodash/cloneDeep';
 
 const createCard = (
   id: string,
+  isEdition: boolean,
   imageHide: boolean = false,
   imageReplace: boolean = false,
   imageCutoutReplace: boolean = false,
   imageCutoutSrc?: string,
   showByline: boolean = false,
-  showQuotedHeadline: boolean = false
+  showQuotedHeadline: boolean = false,
+  showKickerCustom: boolean = false,
+  customKicker: string = ''
 ) => ({
   uuid: v4(),
   id,
@@ -20,7 +23,9 @@ const createCard = (
     ...(imageReplace ? { imageReplace } : {}),
     ...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : {}),
     ...(showByline ? { showByline } : {}),
-    ...(showQuotedHeadline ? { showQuotedHeadline } : {})
+    ...(showQuotedHeadline ? { showQuotedHeadline } : {}),
+    ...(isEdition || showKickerCustom ? { "showKickerCustom": true } : {}),
+    ...(isEdition || showKickerCustom ? { customKicker } : {})
   }
 });
 

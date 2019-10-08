@@ -103,10 +103,7 @@ export const getInitialValuesForCardForm = (
         showLargeHeadline: article.showLargeHeadline || false,
         showKickerTag: article.showKickerTag || false,
         showKickerSection: article.showKickerSection || false,
-        customKicker:
-          article.customKicker === ''
-            ? ''
-            : article.customKicker || article.pickedKicker || '',
+        customKicker: article.customKicker || '',
         pickedKicker: article.pickedKicker || '',
         isBreaking: article.isBreaking || false,
         showLivePlayable: article.showLivePlayable || false,

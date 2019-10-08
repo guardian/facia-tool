@@ -10,7 +10,7 @@ import { State } from 'types/State';
 const formValues = {
   overrideArticleMainMedia: false,
   byline: 'Caroline Davies',
-  customKicker: 'kick',
+  customKicker: '',
   cutoutImage: {
     height: undefined,
     origin: undefined,
