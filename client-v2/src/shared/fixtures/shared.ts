@@ -87,7 +87,8 @@ const capiArticle = {
     media: []
   },
   frontsMeta: {
-    defaults: {}
+    defaults: {},
+    pickedKicker: 'kick me'
   },
   isHosted: false,
   pillarId: 'pillar/news',

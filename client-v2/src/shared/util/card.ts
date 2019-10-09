@@ -3,14 +3,19 @@ import { Card, CardMeta } from 'shared/types/Collection';
 import pick from 'lodash/pick';
 import cloneDeep from 'lodash/cloneDeep';
 
+// Ideally we will convert this to a type. See
+// https://trello.com/c/wIMDut8V/138-add-a-type-to-the-createcard-function-in-src-shared-util-cardts
 const createCard = (
   id: string,
+  isEdition: boolean,
   imageHide: boolean = false,
   imageReplace: boolean = false,
   imageCutoutReplace: boolean = false,
   imageCutoutSrc?: string,
   showByline: boolean = false,
-  showQuotedHeadline: boolean = false
+  showQuotedHeadline: boolean = false,
+  showKickerCustom: boolean = false,
+  customKicker: string = ''
 ) => ({
   uuid: v4(),
   id,
@@ -20,7 +25,9 @@ const createCard = (
     ...(imageReplace ? { imageReplace } : {}),
     ...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : {}),
     ...(showByline ? { showByline } : {}),
-    ...(showQuotedHeadline ? { showQuotedHeadline } : {})
+    ...(showQuotedHeadline ? { showQuotedHeadline } : {}),
+    ...(isEdition || showKickerCustom ? { showKickerCustom: true } : {}),
+    ...(isEdition || showKickerCustom ? { customKicker } : {})
   }
 });
 

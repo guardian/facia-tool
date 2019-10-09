@@ -20,6 +20,7 @@ import { MappableDropType } from 'util/collectionUtils';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
 import { Card, CardMeta } from '../types/Collection';
+import { selectEditMode } from '../../selectors/pathSelectors';
 
 export const UPDATE_CARD_META = 'SHARED/UPDATE_CARD_META';
 export const CARDS_RECEIVED = 'SHARED/CARDS_RECEIVED';
@@ -137,9 +138,11 @@ type TArticleEntities = [Card?, ExternalArticle?];
 const createArticleEntitiesFromDrop = (
   drop: MappableDropType
 ): ThunkResult<Promise<Card | undefined>> => {
-  return async dispatch => {
+  return async (dispatch, getState) => {
+    const isEdition = selectEditMode(getState()) === 'editions';
     const [maybeCard, maybeExternalArticle] = await getArticleEntitiesFromDrop(
-      drop
+      drop,
+      isEdition
     );
     if (maybeExternalArticle) {
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
@@ -158,10 +161,11 @@ const createArticleEntitiesFromDrop = (
  *  - an external link.
  */
 const getArticleEntitiesFromDrop = async (
-  drop: MappableDropType
+  drop: MappableDropType,
+  isEdition: boolean
 ): Promise<TArticleEntities> => {
   if (drop.type === 'CAPI') {
-    return getArticleEntitiesFromFeedDrop(drop.data);
+    return getArticleEntitiesFromFeedDrop(drop.data, isEdition);
   }
   const resourceIdOrUrl = drop.data.trim();
   const isURL = isValidURL(resourceIdOrUrl);
@@ -194,7 +198,7 @@ const getArticleEntitiesFromDrop = async (
     }
     if (article) {
       // We have a single article from CAPI - create an item as usual.
-      return [createCard(article.id), article];
+      return [createCard(article.id, isEdition), article];
     }
   } catch (e) {
     if (isURL) {
@@ -209,17 +213,21 @@ const getArticleEntitiesFromDrop = async (
 };
 
 const getArticleEntitiesFromFeedDrop = (
-  capiArticle: CapiArticle
+  capiArticle: CapiArticle,
+  isEdition: boolean
 ): TArticleEntities => {
   const article = transformExternalArticle(capiArticle);
   const card = createCard(
     article.id,
+    isEdition,
     article.frontsMeta.defaults.imageHide,
     article.frontsMeta.defaults.imageReplace,
     article.frontsMeta.defaults.imageCutoutReplace,
     article.frontsMeta.cutout,
     article.frontsMeta.defaults.showByline,
-    article.frontsMeta.defaults.showQuotedHeadline
+    article.frontsMeta.defaults.showQuotedHeadline,
+    article.frontsMeta.defaults.showKickerCustom,
+    article.frontsMeta.pickedKicker
   );
   return [card, article];
 };
