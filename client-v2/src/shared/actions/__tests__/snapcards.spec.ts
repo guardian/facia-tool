@@ -4,8 +4,6 @@ import thunk from 'redux-thunk';
 import { createArticleEntitiesFromDrop, cardsReceived } from '../Cards';
 import initialState from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
-import { actionNames as externalArticleActionNames } from 'shared/bundles/externalArticlesBundle';
-import { createCard } from 'shared/util/card';
 import { createSnap, createLatestSnap } from 'shared/util/snap';
 import guardianTagPage from 'shared/fixtures/guardianTagPage';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
@@ -16,9 +14,8 @@ const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 const idDrop = (id: string): RefDrop => ({ type: 'REF', data: id });
 
-describe('cards actions', () => {
+describe('Snap cards actions', () => {
   const { confirm } = window;
-  const isEdition = false;
   const localNow = Date.now;
   const localGetTime = Date.prototype.getTime;
   const mockNow = jest.fn(() => 1487076708000);
@@ -33,24 +30,6 @@ describe('cards actions', () => {
   });
   afterEach(() => fetchMock.restore());
   describe('addCard', () => {
-    it('should fetch an article and create a corresponding card representing an article', async () => {
-      fetchMock.once('begin:/api/preview', {
-        response: {
-          results: [capiArticle]
-        }
-      });
-      const store = mockStore(initialState);
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop('internal-code/page/5029528')
-      ) as any);
-      const actions = store.getActions();
-      expect(actions[0].type).toEqual(externalArticleActionNames.fetchSuccess);
-      expect(actions[1]).toEqual(
-        cardsReceived({
-          card1: createCard('internal-code/page/5029528', isEdition)
-        })
-      );
-    });
     it('should fetch a link and create a corresponding card representing a snap link', async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
