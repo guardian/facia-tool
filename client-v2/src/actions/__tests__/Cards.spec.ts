@@ -22,7 +22,7 @@ import {
   reducer as collectionsReducer,
   initialState as collectionsState
 } from 'shared/bundles/collectionsBundle';
-import confirmModal from 'reducers/confirmModalReducer';
+import { confirmModal, optionsModal } from 'reducers/modalsReducer';
 import { endConfirmModal } from 'actions/ConfirmModal';
 import config from 'reducers/configReducer';
 import { enableBatching } from 'redux-batched-actions';
@@ -31,6 +31,7 @@ import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 
 const root = (state: any = {}, action: any) => ({
   confirmModal: confirmModal(state.confirmModal, action),
+  optionsModal: optionsModal(state.optionsModal, action),
   clipboard: clipboardReducer(state.clipboard, action, state.shared),
   path: '',
   shared: {

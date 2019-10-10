@@ -48,6 +48,7 @@ import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
 import { ReactNode } from 'react';
 import { SetHidden } from '../shared/bundles/collectionsBundle';
+import { OptionsModalChoices } from './Modals';
 
 interface EditorOpenCurrentFrontsMenu {
   type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
@@ -277,6 +278,21 @@ interface EndConfirm {
   type: 'MODAL/END_CONFIRM';
 }
 
+interface StartOptionsModal {
+  type: 'MODAL/START_OPTIONS_MODAL';
+  payload: {
+    title: string;
+    description: string | ReactNode;
+    options: OptionsModalChoices[];
+    onCancel: () => void;
+    showCancelButton: boolean;
+  };
+}
+
+interface EndOptionsModal {
+  type: 'MODAL/END_OPTIONS_MODAL';
+}
+
 interface IsPrefillMode {
   type: 'FEED_STATE_IS_PREFILL_MODE';
   payload: {
@@ -355,7 +371,9 @@ type Action =
   | IsPrefillMode
   | SetHidden
   | ChangedBrowsingStage
-  | EditorCloseFormsForCollection;
+  | EditorCloseFormsForCollection
+  | StartOptionsModal
+  | EndOptionsModal;
 
 export {
   ActionError,
@@ -403,5 +421,7 @@ export {
   StartConfirm,
   EndConfirm,
   IsPrefillMode,
-  ChangedBrowsingStage
+  ChangedBrowsingStage,
+  StartOptionsModal,
+  EndOptionsModal
 };

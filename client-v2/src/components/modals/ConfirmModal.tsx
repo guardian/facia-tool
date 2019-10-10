@@ -1,51 +1,17 @@
-import React, { ReactNode } from 'react';
-import Modal from 'react-modal';
+import React from 'react';
 import { State } from 'types/State';
 import {
   selectConfirmModalIsOpen,
   selectConfirmModalTitle,
   selectConfirmModalDescription,
   selectConfirmModalShowCancelButton
-} from 'selectors/confirmModalSelectors';
+} from 'selectors/modalSelectors';
 import { Dispatch } from 'types/Store';
 import { endConfirmModal } from 'actions/ConfirmModal';
 import { connect } from 'react-redux';
-import { styled, theme } from 'constants/theme';
 import ButtonDefault from 'shared/components/input/ButtonDefault';
-
-type StyledModalProps = Modal.Props & {
-  width?: number;
-};
-
-const StyledModal = styled(Modal)`
-  position: absolute;
-  top: 40px;
-  font-size: 14px;
-  left: 50%;
-  background: ${theme.shared.base.colors.backgroundColorLight};
-  overflow: auto;
-  outline: none;
-  padding: 20px;
-  margin-left: -${({ width = 400 }: StyledModalProps) => width / 2}px;
-  min-height: 200px;
-  width: ${({ width = 400 }: StyledModalProps) => width}px;
-`;
-
-const Actions = styled.div`
-  border-top: solid 1px ${theme.shared.base.colors.borderColor};
-  margin-top: 1.5em;
-  padding-top: 1.5em;
-  text-align: right;
-`;
-
-interface ConfirmModalProps {
-  title: string;
-  description: string | ReactNode;
-  isOpen: boolean;
-  onAccept: () => void;
-  onReject: () => void;
-  showCancelButton: boolean;
-}
+import { StyledModal, Actions } from './StyledModal';
+import { ConfirmModalProps } from 'types/Modals';
 
 const ConfirmModal = ({
   title,

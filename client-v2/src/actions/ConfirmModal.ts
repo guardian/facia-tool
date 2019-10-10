@@ -1,7 +1,7 @@
 import { StartConfirm } from 'types/Action';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
-import { selectConfirmModalCallback } from 'selectors/confirmModalSelectors';
+import { selectConfirmModalCallback } from 'selectors/modalSelectors';
 import { ReactNode } from 'react';
 
 const startConfirmModal = (

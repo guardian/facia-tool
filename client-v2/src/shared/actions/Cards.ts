@@ -1,7 +1,7 @@
 import keyBy from 'lodash/keyBy';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
 import { getContent, transformExternalArticle } from 'services/faciaApi';
-import { ThunkResult } from 'types/Store';
+import { ThunkResult, Dispatch } from 'types/Store';
 import {
   CardsReceived,
   InsertGroupCard,
@@ -21,6 +21,7 @@ import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
 import { Card, CardMeta } from '../types/Collection';
 import { selectEditMode } from '../../selectors/pathSelectors';
+import { startOptionsModal } from 'actions/OptionsModal';
 
 export const UPDATE_CARD_META = 'SHARED/UPDATE_CARD_META';
 export const CARDS_RECEIVED = 'SHARED/CARDS_RECEIVED';
@@ -142,7 +143,8 @@ const createArticleEntitiesFromDrop = (
     const isEdition = selectEditMode(getState()) === 'editions';
     const [maybeCard, maybeExternalArticle] = await getArticleEntitiesFromDrop(
       drop,
-      isEdition
+      isEdition,
+      dispatch
     );
     if (maybeExternalArticle) {
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
@@ -162,7 +164,8 @@ const createArticleEntitiesFromDrop = (
  */
 const getArticleEntitiesFromDrop = async (
   drop: MappableDropType,
-  isEdition: boolean
+  isEdition: boolean,
+  dispatch: Dispatch
 ): Promise<TArticleEntities> => {
   if (drop.type === 'CAPI') {
     return getArticleEntitiesFromFeedDrop(drop.data, isEdition);
@@ -194,7 +197,12 @@ const getArticleEntitiesFromDrop = async (
     if (rest.length) {
       // If we have multiple articles returned from a single resource, we're
       // dealing with a tag or section page.
-      return await getArticleEntitiesFromGuardianPath(resourceIdOrUrl, title);
+      const card = await getArticleEntitiesFromGuardianPath(
+        resourceIdOrUrl,
+        dispatch,
+        title
+      );
+      return [card];
     }
     if (article) {
       // We have a single article from CAPI - create an item as usual.
@@ -268,16 +276,38 @@ const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
 
 const getArticleEntitiesFromGuardianPath = async (
   resourceId: string,
+  dispatch: Dispatch,
   title?: string
-): Promise<TArticleEntities> => {
-  const createLatest = window.confirm(
-    "Should this snap be a 'Latest' snap? \n \n Click OK to confirm or cancel to create a 'Link' snap by default."
-  );
-  const card = await (createLatest
-    ? createLatestSnap(resourceId, title || 'Unknown title')
-    : createSnap(resourceId));
-  return [card];
-};
+): Promise<Card> =>
+  new Promise((resolve, reject) => {
+    dispatch(
+      startOptionsModal(
+        'Link type',
+        `Click on "Latest from" to create: { Latest from ${title} } or "Link" to just create a Link`,
+        [
+          {
+            buttonText: 'Latest from',
+            callback: () => {
+              const card = createLatestSnap(
+                resourceId,
+                title || 'Unknown title'
+              );
+              resolve(card);
+            }
+          },
+          {
+            buttonText: 'Link',
+            callback: async () => {
+              const snap = await createSnap(resourceId);
+              resolve(snap);
+            }
+          }
+        ],
+        reject,
+        true
+      )
+    );
+  });
 
 const maybeAddFrontPublicationDate = (
   cardId: string
