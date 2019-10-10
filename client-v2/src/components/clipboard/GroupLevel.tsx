@@ -35,11 +35,27 @@ export const CollectionDropContainer = styled(DefaultDropContainer)`
   margin: 0 -10px;
 `;
 
-const OffsetDropContainer = styled(CollectionDropContainer)`
+const OffsetDropContainerTop = styled(CollectionDropContainer)`
   height: 32px;
   margin-top: -22px;
   padding-top: 24px;
 `;
+
+const OffsetDropContainerBottom = styled(CollectionDropContainer)`
+  height: 32px;
+  margin-bottom: -28px;
+  padding-bottom: 24px;
+`;
+
+const getDropContainer = (itemIndex: number, numItems: number) => {
+  if (itemIndex === 0) {
+    return OffsetDropContainerTop;
+  } else if (itemIndex === numItems) {
+    return OffsetDropContainerBottom;
+  } else {
+    return CollectionDropContainer;
+  }
+};
 
 const GroupLevel = ({
   children,
@@ -70,11 +86,7 @@ const GroupLevel = ({
               {...props}
               dropColor={theme.base.colors.dropZoneActiveStory}
               doubleHeight={!cards.length || props.index === 0}
-              dropContainer={
-                props.index === 0
-                  ? OffsetDropContainer
-                  : CollectionDropContainer
-              }
+              dropContainer={getDropContainer(props.index, cards.length)}
             />
           )
     }
