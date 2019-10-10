@@ -43,7 +43,7 @@ const OffsetDropContainerTop = styled(CollectionDropContainer)`
 
 const OffsetDropContainerBottom = styled(CollectionDropContainer)`
   height: 32px;
-  margin-bottom: -22px;
+  margin-bottom: -28px;
   padding-bottom: 24px;
 `;
 
