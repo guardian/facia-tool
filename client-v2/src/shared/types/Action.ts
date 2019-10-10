@@ -29,6 +29,7 @@ interface InsertCardPayload {
   id: string;
   index: number;
   cardId: string;
+  currentCards: { [uuid: string]: Card };
 }
 
 type InsertGroupCard = {
