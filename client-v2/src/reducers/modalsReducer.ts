@@ -15,7 +15,7 @@ type OptionsModalState = null | {
   title: string;
   description: string;
   options: OptionsModalChoices[];
-  onReject: () => void;
+  onCancel: () => void;
   showCancelButton: boolean;
 };
 
