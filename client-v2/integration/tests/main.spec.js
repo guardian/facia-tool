@@ -23,7 +23,8 @@ import {
   cardDeleteButton,
   collectionDiscardButton,
   cardAddToClipboardButton,
-  clipboardItemDeleteButton
+  clipboardItemDeleteButton,
+  optionsModalChoice
 } from '../selectors';
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
@@ -97,8 +98,8 @@ test('Snap Links - Guardian', async t => {
   const frontDropsCount = await frontDropZone().count;
   const tagSnap = await guardianSnapLink();
   await t
-    .setNativeDialogHandler(() => false)
     .dragToElement(tagSnap, frontDropZone(1)) //drag tag into parent position (not a sublink)
+    .click(optionsModalChoice('Link'))
     .expect(frontDropZone().count)
     .eql(frontDropsCount + 2) // adding a sublink adds 1 dropzone, adding a normal article adds 2
     .expect(frontSnapLink(0).textContent)
@@ -111,8 +112,8 @@ test('Snap Links - Guardian Latest', async t => {
   const frontDropsCount = await frontDropZone().count;
   const tagSnap = await guardianSnapLink();
   await t
-    .setNativeDialogHandler(() => true)
     .dragToElement(tagSnap, frontDropZone(1))
+    .click(optionsModalChoice('Latest from'))
     .expect(frontDropZone().count)
     .eql(frontDropsCount + 2)
     .expect(frontSnapLink(0).textContent)
