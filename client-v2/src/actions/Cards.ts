@@ -25,7 +25,7 @@ import {
 } from 'util/moveUtils';
 import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
-import { insertClipboardCard, removeClipboardCard } from './Clipboard';
+import { removeClipboardCard, thunkInsertClipboardCard } from './Clipboard';
 import { State } from 'types/State';
 import { capGroupSiblings } from 'shared/actions/Groups';
 import { selectCollectionCap } from 'selectors/configSelectors';
@@ -70,12 +70,7 @@ const createInsertCardThunk = (action: InsertActionCreator) => (
   if (removeAction) {
     dispatch(removeAction);
   }
-  dispatch(
-    addPersistMetaToAction(action, {
-      persistTo,
-      key: 'cardId'
-    })(id, index, cardId)
-  );
+  dispatch(action(id, index, cardId));
 };
 
 const copyCardImageMetaWithPersist = addPersistMetaToAction(copyCardImageMeta, {
@@ -178,7 +173,7 @@ const getInsertionActionCreatorFromType = (
   const actionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
     card: createInsertCardThunk(insertSupportingCard),
     group: maybeInsertGroupCard,
-    clipboard: createInsertCardThunk(insertClipboardCard)
+    clipboard: () => thunkInsertClipboardCard
   };
 
   const actionCreator = actionMap[type] || null;
