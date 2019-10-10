@@ -11,7 +11,7 @@ import scala.collection.JavaConverters._
 import scala.util.{Failure, Success, Try}
 
 private[events] trait PublishEventsQueueFacade {
-  def getPublishEventsFromQueue: List[PublishEventMessage]
+  def getPublishEventFromQueue: Option[PublishEventMessage]
 
   def delete(receiptHandle: String)
 }
@@ -31,7 +31,7 @@ private[events] class PublishEventsSQSFacade(val config: ApplicationConfiguratio
     .withCredentials(config.aws.cmsFrontsAccountCredentials)
     .withRegion(Regions.EU_WEST_1).build()
 
-  def getPublishEventsFromQueue: List[PublishEventMessage] = receiveMessages.flatMap(parseToEvent)
+  def getPublishEventFromQueue: Option[PublishEventMessage] = receiveMessage.flatMap(parseToEvent)
 
   def delete(receiptHandle: String): Unit = {
     Try {
@@ -45,7 +45,7 @@ private[events] class PublishEventsSQSFacade(val config: ApplicationConfiguratio
     }
   }
 
-  private def receiveMessages: List[Message] = {
+  private def receiveMessage: Option[Message] = {
     Try {
       val receiveRequest = new ReceiveMessageRequest()
         .withQueueUrl(queueURL)
@@ -53,14 +53,14 @@ private[events] class PublishEventsSQSFacade(val config: ApplicationConfiguratio
         .withWaitTimeSeconds(sqsClientLongPoolingWaitTimeSec)
 
       SQS.receiveMessage(receiveRequest)
-        .getMessages.asScala.toList
+        .getMessages.asScala.toList.headOption
     } match {
-      case Success(messages) =>
-        logger.info(s"messages received from $queueURL SQS successfully")
-        messages
+      case Success(message) =>
+        logger.info(s"message received from $queueURL SQS successfully")
+        message
       case Failure(e) =>
         logger.error(s"There was an exception while receiving messages from $queueURL SQS: ${e.getMessage} from SQS", e)
-        Nil
+        None
     }
   }
 
