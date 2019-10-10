@@ -19,6 +19,7 @@ import router.Routes
 import services._
 import services.editions.EditionsTemplating
 import services.editions.db.EditionsDB
+import services.editions.publishing.events.PublishEventsListener
 import services.editions.publishing.{EditionsBucket, EditionsPublishing}
 import slices.{Containers, FixedContainers}
 import thumbnails.ContainerThumbnails
@@ -49,6 +50,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val publishingBucket = new EditionsBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
   val previewBucket = new EditionsBucket(s3Client, config.aws.previewEditionsIssuesBucket)
   val editionsPublishing = new EditionsPublishing(publishingBucket, previewBucket, editionsDb)
+  PublishEventsListener.apply(config, editionsDb).start
 
   // Controllers
   val frontsApi = new FrontsApi(config, awsEndpoints)

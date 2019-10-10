@@ -4,17 +4,18 @@ import java.util.concurrent.Executors
 
 import conf.ApplicationConfiguration
 import logging.Logging
+import services.editions.db.EditionsDB
 
 import scala.concurrent._
 import scala.concurrent.duration._
 import scala.util.{Failure, Success, Try}
 
 object PublishEventsListener {
-  def apply(config: ApplicationConfiguration): PublishEventsListener =
-    new PublishEventsListener(config)
+  def apply(config: ApplicationConfiguration, db: EditionsDB): PublishEventsListener =
+    new PublishEventsListener(config, db: EditionsDB)
 }
 
-private[events] class PublishEventsListener(val config: ApplicationConfiguration) extends Logging {
+private[events] class PublishEventsListener(val config: ApplicationConfiguration, db: EditionsDB) extends Logging {
 
   private val sqsFacade = PublishEventsSQSFacade(config)
 
@@ -22,19 +23,13 @@ private[events] class PublishEventsListener(val config: ApplicationConfiguration
 
   private implicit val context: ExecutionContextExecutor = ExecutionContext.fromExecutor(Executors.newSingleThreadExecutor())
 
-  // will be implemented in next PR
-  def stub(event: PublishEvent): Boolean = {
-    logger.info("update events in DB")
-    false
-  }
-
   def start: Unit = {
     val delayStart = 5.seconds.fromNow
     val results = Future {
       val tName = Thread.currentThread().getName
       delay(delayStart)
       logger.info(s"Starting to listen publish events on SQS in thread: $tName")
-      processPublishEventsInLongPooling(stub)
+      processPublishEventsInLongPooling(db.insertIssueVersionEvent)
     }
     results.onComplete {
       case Success(x) => {
