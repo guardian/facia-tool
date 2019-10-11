@@ -26,6 +26,10 @@ Fronts Client V2 is in Active Development. You'll find it over at [client-v2](/c
   - `grunt test --no-single-run` runs the tests in the browser, starts `karma` in debug mode. You can connect your browser at [http://localhost:9876?debug.html](http://localhost:9876?debug.html)
   - You can run a single test going to [http://localhost:9876/debug.html?test=collections](http://localhost:9876/debug.html?test=collections), spec files are inside `facia-tool/test/public/spec`.
 
+### IT tests with Database
+
+`sbt test database-int:test`
+
 ### Pressing fronts
 - Before fronts can appear on site, they have to be pressed by Facia-Press which lives on the frontend account.
 - The fronts tool sends events to an sqs queue which Facia-Press listens. You can read more about Facia-Press [here](https://github.com/guardian/frontend/blob/ad74a1da567f047b7b824650e6e1be0f0262952b/docs/02-architecture/01-applications-architecture.md).
