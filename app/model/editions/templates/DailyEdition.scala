@@ -264,6 +264,7 @@ object DailyEdition {
     collection("Sport").printSentAnyTag("theguardian/sport/news"),
     collection("Sport 1"),
     collection("Sport 2"),
+    collection("Sport 3"),
     collection("Sport Special").special,
   )
   .swatch(Sport)
@@ -273,6 +274,7 @@ object DailyEdition {
     collection("Sport").printSentAnyTag("theobserver/sport/news"),
     collection("Sport 1"),
     collection("Sport 2"),
+    collection("Sport 3"),
     collection("Sport Special").special,
   )
   .swatch(Sport)
