@@ -51,7 +51,7 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
   }
 
   // this function fetches articles from CAPI with enough data to resolve the defaults
-  def getPrefillArticles(prefillParams: PrefillParamsAdapter): List[EditionsArticleSkeleton] = {
+  private def getPrefillArticles(prefillParams: PrefillParamsAdapter): List[EditionsArticleSkeleton] = {
     // TODO: This being a try will hide a litany of failures, some of which we might want to surface
     val items = try {
       Await.result(capi.getPrefillArticleItems(prefillParams), 10 seconds)

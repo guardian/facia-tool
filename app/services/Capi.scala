@@ -81,6 +81,8 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       .showBlocks("main")
       .showAtoms("media")
 
+    logger.info(s"getPrefillArticles, Prefill Query: $query")
+
     this.getResponse(query).map { response =>
       val filteredResults = response.results.filter { result =>
         (for {
@@ -113,6 +115,8 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
     val query = prefillHelper.geneneratePrefillQuery(prefillParams, fields)
       .showTags("all")
+
+    logger.info(s"getPrefillArticleItems, Prefill Query: $query")
 
     this.getResponse(query) map { response =>
       response.results
