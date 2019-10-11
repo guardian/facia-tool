@@ -20,7 +20,7 @@ interface State {
 }
 
 const rootReducer = (state: any = {}, action: any): State => ({
-  cards: cards(state.cards, action, state),
+  cards: cards(state.cards, action),
   groups: groups(state.groups, action, state),
   collections: collections(state.collections, action),
   externalArticles: externalArticles(state.externalArticles, action),
