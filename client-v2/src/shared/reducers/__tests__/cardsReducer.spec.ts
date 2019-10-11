@@ -1,13 +1,13 @@
-import reducer from '../articleFragmentsReducer';
-import { updateArticleFragmentMeta } from '../../actions/ArticleFragments';
+import reducer from '../cardsReducer';
+import { updateCardMeta } from '../../actions/Cards';
 import { stateWithClipboard } from 'fixtures/clipboard';
 
-describe('articleFragmentsReducer', () => {
-  it('should update the article fragment meta', () => {
+describe('cardsReducer', () => {
+  it('should update the card meta', () => {
     expect(
       reducer(
-        stateWithClipboard.shared.articleFragments as any,
-        updateArticleFragmentMeta('article', {
+        stateWithClipboard.shared.cards as any,
+        updateCardMeta('article', {
           headline: 'headline'
         }),
         stateWithClipboard.shared
@@ -19,8 +19,8 @@ describe('articleFragmentsReducer', () => {
   it('should overwrite properties', () => {
     expect(
       reducer(
-        stateWithClipboard.shared.articleFragments as any,
-        updateArticleFragmentMeta('article2', {
+        stateWithClipboard.shared.cards as any,
+        updateCardMeta('article2', {
           headline: 'headline'
         }),
         stateWithClipboard.shared
@@ -32,8 +32,8 @@ describe('articleFragmentsReducer', () => {
   it('should merge properties if the merge flag is set', () => {
     expect(
       reducer(
-        stateWithClipboard.shared.articleFragments as any,
-        updateArticleFragmentMeta(
+        stateWithClipboard.shared.cards as any,
+        updateCardMeta(
           'article2',
           {
             headline: 'headline'

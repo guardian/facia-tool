@@ -5,7 +5,7 @@ interface IconProps {
   size?: number;
 }
 
-// Article Fragment Hover Action Icons //
+// Card Hover Action Icons //
 
 const AddToClipboardHoverIcon = ({
   fill = theme.colors.white,

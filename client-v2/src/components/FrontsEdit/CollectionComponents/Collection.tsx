@@ -18,7 +18,7 @@ import {
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
-import { CollectionItemSets, Group } from 'shared/types/Collection';
+import { CardSets, Group } from 'shared/types/Collection';
 import {
   createSelectCollectionStageGroups,
   createSelectCollectionEditWarning,
@@ -32,7 +32,7 @@ import {
   createSelectDoesCollectionHaveOpenForms
 } from 'bundles/frontsUIBundle';
 import { getArticlesForCollections } from 'actions/Collections';
-import { collectionItemSets } from 'constants/fronts';
+import { cardSets } from 'constants/fronts';
 import CollectionMetaContainer from 'shared/components/collection/CollectionMetaContainer';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import { theme, styled } from 'constants/theme';
@@ -50,7 +50,7 @@ interface CollectionPropsBeforeState {
   ) => React.ReactNode;
   alsoOn: { [id: string]: AlsoOnDetail };
   frontId: string;
-  browsingStage: CollectionItemSets;
+  browsingStage: CardSets;
   priority: string;
 }
 
@@ -198,8 +198,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 
     const { isPreviouslyOpen, isLaunching } = this.state;
 
-    const isUneditable =
-      isCollectionLocked || browsingStage !== collectionItemSets.draft;
+    const isUneditable = isCollectionLocked || browsingStage !== cardSets.draft;
 
     return (
       <CollectionDisplay
@@ -377,7 +376,7 @@ const mapDispatchToProps = (
     }
   },
   fetchPreviousCollectionArticles: (id: string) => {
-    dispatch(getArticlesForCollections([id], collectionItemSets.previously));
+    dispatch(getArticlesForCollections([id], cardSets.previously));
   }
 });
 

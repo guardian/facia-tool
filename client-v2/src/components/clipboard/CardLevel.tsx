@@ -2,7 +2,7 @@ import React from 'react';
 import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import { State } from 'types/State';
 import { connect } from 'react-redux';
-import { ArticleFragment } from 'shared/types/Collection';
+import { Card } from 'shared/types/Collection';
 import ArticleDrag, {
   dragOffsetX,
   dragOffsetY
@@ -16,34 +16,34 @@ import { collectionDropTypeBlacklist } from 'constants/fronts';
 import { theme, styled } from 'constants/theme';
 
 interface OuterProps {
-  articleFragmentId: string;
-  children: LevelChild<ArticleFragment>;
-  onMove: MoveHandler<ArticleFragment>;
+  cardId: string;
+  children: LevelChild<Card>;
+  onMove: MoveHandler<Card>;
   onDrop: DropHandler;
   isUneditable?: boolean;
 }
 
 interface InnerProps {
-  supporting: ArticleFragment[];
+  supporting: Card[];
 }
 
 type Props = OuterProps & InnerProps;
 
-const ArticleFragmentDropContainer = styled(DefaultDropContainer)`
+const CardDropContainer = styled(DefaultDropContainer)`
   margin-top: -30px;
   margin-left: 80px;
   height: 30px;
 `;
 
-const ArticleFragmentDropIndicator = styled(DefaultDropIndicator)`
+const CardDropIndicator = styled(DefaultDropIndicator)`
   position: absolute;
   width: 100%;
   bottom: 0px;
 `;
 
-const ArticleFragmentLevel = ({
+const CardLevel = ({
   children,
-  articleFragmentId,
+  cardId,
   supporting,
   onMove,
   onDrop,
@@ -52,9 +52,9 @@ const ArticleFragmentLevel = ({
   <Level
     arr={supporting || []}
     blacklistedDataTransferTypes={collectionDropTypeBlacklist}
-    parentType="articleFragment"
-    parentId={articleFragmentId}
-    type="articleFragment"
+    parentType="card"
+    parentId={cardId}
+    type="card"
     getId={({ uuid }) => uuid}
     onMove={onMove}
     onDrop={onDrop}
@@ -70,8 +70,8 @@ const ArticleFragmentLevel = ({
               {...props}
               dropColor={theme.base.colors.dropZoneActiveSublink}
               dropMessage={'Sublink'}
-              dropContainer={ArticleFragmentDropContainer}
-              dropIndicator={ArticleFragmentDropIndicator}
+              dropContainer={CardDropContainer}
+              dropIndicator={CardDropIndicator}
             />
           )
     }
@@ -82,9 +82,9 @@ const ArticleFragmentLevel = ({
 
 const createMapStateToProps = () => {
   const selectSupportingArticles = createSelectSupportingArticles();
-  return (state: State, { articleFragmentId }: OuterProps) => ({
-    supporting: selectSupportingArticles(state, { articleFragmentId })
+  return (state: State, { cardId }: OuterProps) => ({
+    supporting: selectSupportingArticles(state, { cardId })
   });
 };
 
-export default connect(createMapStateToProps)(ArticleFragmentLevel);
+export default connect(createMapStateToProps)(CardLevel);

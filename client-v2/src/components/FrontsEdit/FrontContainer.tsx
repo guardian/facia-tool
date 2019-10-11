@@ -5,17 +5,14 @@ import { bindActionCreators } from 'redux';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
-  editorSelectArticleFragment,
+  editorSelectCard,
   editorOpenOverview,
   editorCloseOverview,
   selectIsFrontOverviewOpen,
   editorOpenAllCollectionsForFront,
   editorCloseAllCollectionsForFront
 } from 'bundles/frontsUIBundle';
-import {
-  CollectionItemSets,
-  ArticleFragment as TArticleFragment
-} from 'shared/types/Collection';
+import { CardSets, Card as TCard } from 'shared/types/Collection';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
 import { theme as sharedTheme } from 'shared/constants/theme';
@@ -91,21 +88,17 @@ const FrontDetailContainer = styled(BaseFrontContentContainer)`
 
 interface FrontPropsBeforeState {
   id: string;
-  browsingStage: CollectionItemSets;
+  browsingStage: CardSets;
 }
 
 type FrontProps = FrontPropsBeforeState & {
-  selectArticleFragment: (
-    articleFragmentId: string,
+  selectCard: (
+    cardId: string,
     collectionId: string,
     frontId: string,
     isSupporting: boolean
   ) => void;
-  handleArticleFocus: (
-    groupId: string,
-    articleFragment: TArticleFragment,
-    frontId: string
-  ) => void;
+  handleArticleFocus: (groupId: string, card: TCard, frontId: string) => void;
   toggleOverview: (open: boolean) => void;
   overviewIsOpen: boolean;
   editorOpenAllCollectionsForFront: typeof editorOpenAllCollectionsForFront;
@@ -229,10 +222,10 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
   private handleArticleFocus = (
     e: React.FocusEvent<HTMLDivElement>,
     groupId: string,
-    articleFragment: TArticleFragment,
+    card: TCard,
     frontId: string
   ) => {
-    this.props.handleArticleFocus(groupId, articleFragment, frontId);
+    this.props.handleArticleFocus(groupId, card, frontId);
     e.stopPropagation();
   };
 }
@@ -250,16 +243,12 @@ const mapDispatchToProps = (
   return {
     initialiseFront: () =>
       dispatch(initialiseCollectionsForFront(id, browsingStage)),
-    handleArticleFocus: (
-      groupId: string,
-      articleFragment: TArticleFragment,
-      frontId: string
-    ) =>
+    handleArticleFocus: (groupId: string, card: TCard, frontId: string) =>
       dispatch(
         setFocusState({
           type: 'collectionArticle',
           groupId,
-          articleFragment,
+          card,
           frontId
         })
       ),
@@ -267,7 +256,7 @@ const mapDispatchToProps = (
       dispatch(open ? editorOpenOverview(id) : editorCloseOverview(id)),
     ...bindActionCreators(
       {
-        selectArticleFragment: editorSelectArticleFragment,
+        selectCard: editorSelectCard,
         editorOpenAllCollectionsForFront,
         editorCloseAllCollectionsForFront
       },

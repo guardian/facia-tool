@@ -28,11 +28,11 @@ function getFromGroupIndicesWithRespectToState(
       remainingGroupSiblings: Group[]
     ): { groupId: string; index: number } => {
       const currentGroup = remainingGroupSiblings[0];
-      if (siblingIndex < currentGroup.articleFragments.length) {
+      if (siblingIndex < currentGroup.cards.length) {
         return { index: siblingIndex, groupId: currentGroup.uuid };
       }
       return getGroupSiblingAndIndex(
-        siblingIndex - currentGroup.articleFragments.length,
+        siblingIndex - currentGroup.cards.length,
         remainingGroupSiblings.slice(1)
       );
     };
@@ -97,7 +97,7 @@ function getGroupIndicesWithRespectToState(
   const articleCount = groupSiblings.reduce(
     (orphanedArticleCount: number, group) => {
       if (isOrphanedGroup(group)) {
-        orphanedArticleCount += group.articleFragments.length;
+        orphanedArticleCount += group.cards.length;
       }
       return orphanedArticleCount;
     },

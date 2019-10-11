@@ -2,7 +2,7 @@ import React from 'react';
 import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import { State } from 'types/State';
 import { connect } from 'react-redux';
-import { ArticleFragment } from 'shared/types/Collection';
+import { Card } from 'shared/types/Collection';
 import ArticleDrag, {
   dragOffsetX,
   dragOffsetY
@@ -14,15 +14,15 @@ import { theme, styled } from 'constants/theme';
 
 interface OuterProps {
   groupId: string;
-  articleFragmentIds: string[];
-  children: LevelChild<ArticleFragment>;
-  onMove: MoveHandler<ArticleFragment>;
+  cardIds: string[];
+  children: LevelChild<Card>;
+  onMove: MoveHandler<Card>;
   onDrop: DropHandler;
   isUneditable?: boolean;
 }
 
 interface InnerProps {
-  articleFragments: ArticleFragment[];
+  cards: Card[];
 }
 
 type Props = OuterProps & InnerProps;
@@ -35,26 +35,42 @@ export const CollectionDropContainer = styled(DefaultDropContainer)`
   margin: 0 -10px;
 `;
 
-const OffsetDropContainer = styled(CollectionDropContainer)`
+const OffsetDropContainerTop = styled(CollectionDropContainer)`
   height: 32px;
   margin-top: -22px;
   padding-top: 24px;
 `;
 
+const OffsetDropContainerBottom = styled(CollectionDropContainer)`
+  height: 32px;
+  margin-bottom: -28px;
+  padding-bottom: 24px;
+`;
+
+const getDropContainer = (itemIndex: number, numItems: number) => {
+  if (itemIndex === 0) {
+    return OffsetDropContainerTop;
+  } else if (itemIndex === numItems) {
+    return OffsetDropContainerBottom;
+  } else {
+    return CollectionDropContainer;
+  }
+};
+
 const GroupLevel = ({
   children,
   groupId,
-  articleFragments,
+  cards,
   onMove,
   onDrop,
   isUneditable
 }: Props) => (
   <Level
-    arr={articleFragments}
+    arr={cards}
     blacklistedDataTransferTypes={collectionDropTypeBlacklist}
     parentType="group"
     parentId={groupId}
-    type="articleFragment"
+    type="card"
     dragImageOffsetX={dragOffsetX}
     dragImageOffsetY={dragOffsetY}
     getId={({ uuid }) => uuid}
@@ -69,12 +85,8 @@ const GroupLevel = ({
             <DropZone
               {...props}
               dropColor={theme.base.colors.dropZoneActiveStory}
-              doubleHeight={!articleFragments.length || props.index === 0}
-              dropContainer={
-                props.index === 0
-                  ? OffsetDropContainer
-                  : CollectionDropContainer
-              }
+              doubleHeight={!cards.length || props.index === 0}
+              dropContainer={getDropContainer(props.index, cards.length)}
             />
           )
     }
@@ -85,9 +97,9 @@ const GroupLevel = ({
 
 const createMapStateToProps = () => {
   const selectArticlesFromIds = createSelectArticlesFromIds();
-  return (state: State, { articleFragmentIds }: OuterProps) => ({
-    articleFragments: selectArticlesFromIds(state, {
-      articleFragmentIds
+  return (state: State, { cardIds }: OuterProps) => ({
+    cards: selectArticlesFromIds(state, {
+      cardIds
     })
   });
 };

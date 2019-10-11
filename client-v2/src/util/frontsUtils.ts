@@ -1,8 +1,5 @@
 import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
-import {
-  CollectionWithNestedArticles,
-  ArticleFragment
-} from 'shared/types/Collection';
+import { CollectionWithNestedArticles, Card } from 'shared/types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';
 import { ArticleDetails } from 'types/FaciaApi';
 import { Stages, Collection } from 'shared/types/Collection';
@@ -54,7 +51,7 @@ const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
   return false;
 };
 
-const getVisibilityArticleDetails = (groupsWithArticles: ArticleFragment[][]) =>
+const getVisibilityArticleDetails = (groupsWithArticles: Card[][]) =>
   groupsWithArticles.reduce(
     (articles, articlesInGroup, index) => {
       const numberOfGroups = groupsWithArticles.length;

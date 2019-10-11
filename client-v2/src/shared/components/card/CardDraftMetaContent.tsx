@@ -1,7 +1,7 @@
 import { styled } from 'shared/constants/theme';
-import CollectionItemMetaContent from './CollectionItemMetaContent';
+import CardMetaContent from './CardMetaContent';
 import { notLiveColour } from 'shared/util/getPillarColor';
 
-export default styled(CollectionItemMetaContent)`
+export default styled(CardMetaContent)`
   color: ${notLiveColour};
 `;

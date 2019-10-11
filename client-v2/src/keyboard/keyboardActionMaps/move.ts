@@ -1,20 +1,14 @@
 import Raven from 'raven-js';
 import { KeyboardActionMap, ApplicationFocusStates } from 'keyboard';
 import { Dispatch } from 'types/Store';
-import { keyboardArticleFragmentMove } from 'actions/KeyboardNavigation';
+import { keyboardCardMove } from 'actions/KeyboardNavigation';
 
 const moveUp: KeyboardActionMap = {
   clipboardArticle: (focusData: ApplicationFocusStates) => async (
     dispatch: Dispatch
   ) => {
     try {
-      dispatch(
-        keyboardArticleFragmentMove(
-          'up',
-          'clipboard',
-          focusData.articleFragment
-        )
-      );
+      dispatch(keyboardCardMove('up', 'clipboard', focusData.card));
     } catch (e) {
       Raven.captureMessage(`Moving item up in clipboard failed: ${e.message}`);
     }
@@ -24,10 +18,10 @@ const moveUp: KeyboardActionMap = {
   ) => {
     try {
       dispatch(
-        keyboardArticleFragmentMove(
+        keyboardCardMove(
           'up',
           'collection',
-          focusData.articleFragment,
+          focusData.card,
           focusData.groupId,
           focusData.frontId
         )
@@ -43,13 +37,7 @@ const moveDown: KeyboardActionMap = {
     dispatch: Dispatch
   ) => {
     try {
-      dispatch(
-        keyboardArticleFragmentMove(
-          'down',
-          'clipboard',
-          focusData.articleFragment
-        )
-      );
+      dispatch(keyboardCardMove('down', 'clipboard', focusData.card));
     } catch (e) {
       Raven.captureMessage(
         `Moving item down in clipboard failed: ${e.message}`
@@ -61,10 +49,10 @@ const moveDown: KeyboardActionMap = {
   ) => {
     try {
       dispatch(
-        keyboardArticleFragmentMove(
+        keyboardCardMove(
           'down',
           'collection',
-          focusData.articleFragment,
+          focusData.card,
           focusData.groupId,
           focusData.frontId
         )

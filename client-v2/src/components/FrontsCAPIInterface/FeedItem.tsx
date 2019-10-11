@@ -16,7 +16,7 @@ import {
   HoverAddToClipboardButton
 } from 'shared/components/input/HoverActionButtons';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
-import { insertArticleFragment } from 'actions/ArticleFragments';
+import { insertCard } from 'actions/Cards';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
 import { ThumbnailSmall } from 'shared/components/image/Thumbnail';
@@ -62,7 +62,7 @@ const Title = styled.h2`
   margin: 2px 0 0;
   vertical-align: top;
   font-family: TS3TextSans;
-  font-size: ${styleTheme.shared.collectionItem.fontSizeDefault};
+  font-size: ${styleTheme.shared.card.fontSizeDefault};
   ${media.large`font-size: 13px;`}
   font-weight: normal;
 `;
@@ -274,7 +274,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onAddToClipboard: (article: CapiArticle) =>
       dispatch(
-        insertArticleFragment(
+        insertCard(
           { type: 'clipboard', id: 'clipboard', index: 0 },
           { type: 'CAPI', data: article },
           'clipboard'

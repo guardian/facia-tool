@@ -13,13 +13,13 @@ import { styled, theme } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import ContentContainer from 'shared/components/layout/ContentContainer';
 import {
-  createSelectArticleFromArticleFragment,
+  createSelectArticleFromCard,
   selectSharedState,
-  selectExternalArticleFromArticleFragment,
+  selectExternalArticleFromCard,
   selectArticleTag
 } from 'shared/selectors/shared';
-import { createSelectFormFieldsForCollectionItem } from 'selectors/formSelectors';
-import { ArticleFragmentMeta, ArticleTag } from 'shared/types/Collection';
+import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
+import { CardMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import InputCheckboxToggleInline from 'shared/components/input/InputCheckboxToggleInline';
@@ -32,18 +32,18 @@ import { State } from 'types/State';
 import ConditionalField from 'components/inputs/ConditionalField';
 import ConditionalComponent from 'components/layout/ConditionalComponent';
 import {
-  ArticleFragmentFormData,
+  CardFormData,
   ImageData,
-  getArticleFragmentMetaFromFormValues,
-  getInitialValuesForArticleFragmentForm,
+  getCardMetaFromFormValues,
+  getInitialValuesForCardForm,
   getCapiValuesForArticleFields,
   shouldRenderField
 } from 'util/form';
 import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import {
-  articleFragmentImageCriteria,
-  editionsArticleFragmentImageCriteria,
+  cardImageCriteria,
+  editionsCardImageCriteria,
   editionsMobileCardImageCriteria,
   editionsTabletCardImageCriteria
 } from 'constants/image';
@@ -58,7 +58,7 @@ interface ComponentProps extends ContainerProps {
   articleExists: boolean;
   collectionId: string | null;
   getLastUpdatedBy: (id: string) => string | null;
-  articleFragmentId: string;
+  cardId: string;
   showKickerTag: boolean;
   showKickerSection: boolean;
   pickedKicker: string | undefined;
@@ -73,11 +73,7 @@ interface ComponentProps extends ContainerProps {
 
 type Props = ComponentProps &
   InterfaceProps &
-  InjectedFormProps<
-    ArticleFragmentFormData,
-    ComponentProps & InterfaceProps,
-    {}
-  >;
+  InjectedFormProps<CardFormData, ComponentProps & InterfaceProps, {}>;
 
 type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   frontId: string;
@@ -182,7 +178,7 @@ const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
           name={name}
           component={InputImage}
           small
-          criteria={articleFragmentImageCriteria}
+          criteria={cardImageCriteria}
           frontId={frontId}
         />
       </SlideshowCol>
@@ -244,8 +240,7 @@ const KickerSuggestionButton = styled(InputButton)`
   }
 `;
 
-const getInputId = (articleFragmentId: string, label: string) =>
-  `${articleFragmentId}-${label}`;
+const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
 interface FormComponentState {
   lastKnownCollectionId: string | null;
@@ -264,7 +259,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
   public render() {
     const {
-      articleFragmentId,
+      cardId,
       change,
       kickerOptions,
       pickedKicker,
@@ -423,28 +418,28 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 name="isBoosted"
                 component={InputCheckboxToggleInline}
                 label="Boost"
-                id={getInputId(articleFragmentId, 'boost')}
+                id={getInputId(cardId, 'boost')}
                 type="checkbox"
               />
               <Field
                 name="showLargeHeadline"
                 component={InputCheckboxToggleInline}
                 label="Large headline"
-                id={getInputId(articleFragmentId, 'large-headline')}
+                id={getInputId(cardId, 'large-headline')}
                 type="checkbox"
               />
               <Field
                 name="showQuotedHeadline"
                 component={InputCheckboxToggleInline}
                 label="Quote headline"
-                id={getInputId(articleFragmentId, 'quote-headline')}
+                id={getInputId(cardId, 'quote-headline')}
                 type="checkbox"
               />
               <Field
                 name="isBreaking"
                 component={InputCheckboxToggleInline}
                 label="Breaking News"
-                id={getInputId(articleFragmentId, 'breaking-news')}
+                id={getInputId(cardId, 'breaking-news')}
                 type="checkbox"
                 dataTestId="edit-form-breaking-news-toggle"
               />
@@ -452,14 +447,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 name="showByline"
                 component={InputCheckboxToggleInline}
                 label="Show Byline"
-                id={getInputId(articleFragmentId, 'show-byline')}
+                id={getInputId(cardId, 'show-byline')}
                 type="checkbox"
               />
               <Field
                 name="showLivePlayable"
                 component={InputCheckboxToggleInline}
                 label="Show updates"
-                id={getInputId(articleFragmentId, 'show-updates')}
+                id={getInputId(cardId, 'show-updates')}
                 type="checkbox"
               />
             </CheckboxFieldsContainer>
@@ -505,8 +500,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     disabled={imageHide || coverCardImageReplace}
                     criteria={
                       isEditionsMode
-                        ? editionsArticleFragmentImageCriteria
-                        : articleFragmentImageCriteria
+                        ? editionsCardImageCriteria
+                        : cardImageCriteria
                     }
                     frontId={frontId}
                     defaultImageUrl={
@@ -529,7 +524,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       name="imageHide"
                       component={InputCheckboxToggleInline}
                       label="Hide media"
-                      id={getInputId(articleFragmentId, 'hide-media')}
+                      id={getInputId(cardId, 'hide-media')}
                       type="checkbox"
                       default={false}
                       onChange={_ => this.changeImageField('imageHide')}
@@ -541,7 +536,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       name="imageCutoutReplace"
                       component={InputCheckboxToggleInline}
                       label="Use cutout"
-                      id={getInputId(articleFragmentId, 'use-cutout')}
+                      id={getInputId(cardId, 'use-cutout')}
                       type="checkbox"
                       default={false}
                       onChange={_ =>
@@ -553,10 +548,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     <ConditionalField
                       permittedFields={editableFields}
                       name="coverCardImageReplace"
-                      id={getInputId(
-                        articleFragmentId,
-                        'coverCardImageReplace'
-                      )}
+                      id={getInputId(cardId, 'coverCardImageReplace')}
                       component={InputCheckboxToggleInline}
                       label="Replace Cover Card Image"
                       type="checkbox"
@@ -572,7 +564,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       name="showMainVideo"
                       component={InputCheckboxToggleInline}
                       label="Show video"
-                      id={getInputId(articleFragmentId, 'show-video')}
+                      id={getInputId(cardId, 'show-video')}
                       type="checkbox"
                       onChange={_ => this.changeImageField('showMainVideo')}
                     />
@@ -583,7 +575,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       name="imageSlideshowReplace"
                       component={InputCheckboxToggleInline}
                       label="Slideshow"
-                      id={getInputId(articleFragmentId, 'slideshow')}
+                      id={getInputId(cardId, 'slideshow')}
                       type="checkbox"
                       onChange={_ =>
                         this.changeImageField('imageSlideshowReplace')
@@ -597,7 +589,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                         name="imageReplace"
                         component={InputCheckboxToggleInline}
                         label="Use replacement image"
-                        id={getInputId(articleFragmentId, 'image-replace')}
+                        id={getInputId(cardId, 'image-replace')}
                         type="checkbox"
                         default={false}
                         onChange={_ => this.changeImageField('imageReplace')}
@@ -724,14 +716,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
   };
 }
 
-const ArticleFragmentForm = reduxForm<
-  ArticleFragmentFormData,
-  ComponentProps & InterfaceProps,
-  {}
->({
+const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
   destroyOnUnmount: true,
   onSubmit: (
-    values: ArticleFragmentFormData,
+    values: CardFormData,
     dispatch: Dispatch,
     props: ComponentProps & InterfaceProps
   ) => {
@@ -739,9 +727,9 @@ const ArticleFragmentForm = reduxForm<
     // mergeProps, or thread state through the component, to achieve the same
     // result -- this seemed to be the most concise way.
     dispatch((_, getState) => {
-      const meta: ArticleFragmentMeta = getArticleFragmentMetaFromFormValues(
+      const meta: CardMeta = getCardMetaFromFormValues(
         getState(),
-        props.articleFragmentId,
+        props.cardId,
         values
       );
       props.onSave(meta);
@@ -772,35 +760,32 @@ interface ContainerProps {
 
 interface InterfaceProps {
   form: string;
-  articleFragmentId: string;
+  cardId: string;
   isSupporting?: boolean;
   onCancel: () => void;
-  onSave: (meta: ArticleFragmentMeta) => void;
+  onSave: (meta: CardMeta) => void;
   frontId: string;
   size?: string;
 }
 
 const formContainer: React.SFC<ContainerProps & InterfaceProps> = props => (
-  <ArticleFragmentForm {...props} />
+  <CardForm {...props} />
 );
 
 const createMapStateToProps = () => {
-  const selectArticle = createSelectArticleFromArticleFragment();
-  const selectFormFields = createSelectFormFieldsForCollectionItem();
-  return (
-    state: State,
-    { articleFragmentId, isSupporting = false }: InterfaceProps
-  ) => {
-    const externalArticle = selectExternalArticleFromArticleFragment(
+  const selectArticle = createSelectArticleFromCard();
+  const selectFormFields = createSelectFormFieldsForCard();
+  return (state: State, { cardId, isSupporting = false }: InterfaceProps) => {
+    const externalArticle = selectExternalArticleFromCard(
       selectSharedState(state),
-      articleFragmentId
+      cardId
     );
-    const valueSelector = formValueSelector(articleFragmentId);
-    const article = selectArticle(selectSharedState(state), articleFragmentId);
+    const valueSelector = formValueSelector(cardId);
+    const article = selectArticle(selectSharedState(state), cardId);
     const parentCollectionId =
-      collectionSelectors.selectParentCollectionOfArticleFragment(
+      collectionSelectors.selectParentCollectionOfCard(
         selectSharedState(state),
-        articleFragmentId
+        cardId
       ) || null;
     const parentCollection = parentCollectionId
       ? collectionSelectors.selectById(
@@ -825,12 +810,12 @@ const createMapStateToProps = () => {
       hasMainVideo: !!article && !!article.hasMainVideo,
       collectionId: (parentCollection && parentCollection.id) || null,
       getLastUpdatedBy,
-      initialValues: getInitialValuesForArticleFragmentForm(article),
+      initialValues: getInitialValuesForCardForm(article),
       articleCapiFieldValues: getCapiValuesForArticleFields(externalArticle),
       editableFields:
         article && selectFormFields(state, article.uuid, isSupporting),
       kickerOptions: article
-        ? selectArticleTag(selectSharedState(state), articleFragmentId)
+        ? selectArticleTag(selectSharedState(state), cardId)
         : {},
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
       imageHide: valueSelector(state, 'imageHide'),
@@ -853,10 +838,7 @@ const createMapStateToProps = () => {
   };
 };
 
-export {
-  getArticleFragmentMetaFromFormValues,
-  getInitialValuesForArticleFragmentForm
-};
+export { getCardMetaFromFormValues, getInitialValuesForCardForm };
 
 export default connect<ContainerProps, {}, InterfaceProps, State>(
   createMapStateToProps

@@ -43,29 +43,25 @@ const state = {
         uuid: 'group1',
         id: 'group1',
         name: 'Group 1',
-        articleFragments: [
-          'articleFragment1',
-          'articleFragment2',
-          'articleFragment3'
-        ]
+        cards: ['card1', 'card2', 'card3']
       }
     },
-    articleFragments: {
-      ...initialState.shared.articleFragments,
-      articleFragment1: {
-        uuid: 'articleFragment1',
+    cards: {
+      ...initialState.shared.cards,
+      card1: {
+        uuid: 'card1',
         id: 'capiArticle1',
         frontPublicationDate: 0,
         meta: {}
       },
-      articleFragment2: {
-        uuid: 'articleFragment2',
+      card2: {
+        uuid: 'card2',
         id: 'capiArticle2',
         frontPublicationDate: 0,
         meta: {}
       },
-      articleFragment3: {
-        uuid: 'articleFragment3',
+      card3: {
+        uuid: 'card3',
         frontPublicationDate: 0,
         id: 'capiArticle3',
         meta: {}

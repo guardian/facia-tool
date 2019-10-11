@@ -14,8 +14,8 @@ import {
   EditorFavouriteFront,
   EditorUnfavouriteFront,
   EditorSetFavouriteFronts,
-  EditorSelectArticleFragment,
-  EditorClearArticleFragmentSelection,
+  EditorSelectCard,
+  EditorClearCardSelection,
   EditorOpenCollection,
   EditorCloseCollection,
   EditorOpenClipboard,
@@ -38,16 +38,16 @@ import {
   selectFront
 } from 'selectors/frontsSelectors';
 import {
-  REMOVE_GROUP_ARTICLE_FRAGMENT,
-  REMOVE_SUPPORTING_ARTICLE_FRAGMENT
-} from 'shared/actions/ArticleFragments';
-import { Stages, CollectionItemSets } from 'shared/types/Collection';
+  REMOVE_GROUP_CARD,
+  REMOVE_SUPPORTING_CARD
+} from 'shared/actions/Cards';
+import { Stages, CardSets } from 'shared/types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
 import { CollectionWithArticles } from 'shared/types/PageViewData';
 import {
   createSelectArticlesInCollection,
   selectSharedState,
-  createSelectArticleFromArticleFragment
+  createSelectArticleFromCard
 } from 'shared/selectors/shared';
 import { ThunkResult } from 'types/Store';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
@@ -66,9 +66,8 @@ export const EDITOR_CLEAR_OPEN_FRONTS = 'EDITOR_CLEAR_OPEN_FRONTS';
 export const EDITOR_SET_OPEN_FRONTS = 'EDITOR_SET_OPEN_FRONTS';
 export const EDITOR_OPEN_COLLECTION = 'EDITOR_OPEN_COLLECTION';
 export const EDITOR_CLOSE_COLLECTION = 'EDITOR_CLOSE_COLLECTION';
-export const EDITOR_SELECT_ARTICLE_FRAGMENT = 'EDITOR_SELECT_ARTICLE_FRAGMENT';
-export const EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION =
-  'EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION';
+export const EDITOR_SELECT_CARD = 'EDITOR_SELECT_CARD';
+export const EDITOR_CLEAR_CARD_SELECTION = 'EDITOR_CLEAR_CARD_SELECTION';
 export const EDITOR_OPEN_CLIPBOARD = 'EDITOR_OPEN_CLIPBOARD';
 export const EDITOR_CLOSE_CLIPBOARD = 'EDITOR_CLOSE_CLIPBOARD';
 export const EDITOR_OPEN_OVERVIEW = 'EDITOR_OPEN_OVERVIEW';
@@ -94,7 +93,7 @@ const editorCloseCollections = (
 
 const editorOpenAllCollectionsForFront = (
   frontId: string,
-  browsingStage: CollectionItemSets
+  browsingStage: CardSets
 ): ThunkResult<void> => (dispatch, getState) => {
   const front = selectFront(getState(), { frontId });
   dispatch(
@@ -225,21 +224,21 @@ const editorSetFavouriteFronts = (favouriteFrontIdsByPriority: {
   }
 });
 
-const editorSelectArticleFragment = (
-  articleFragmentId: string,
+const editorSelectCard = (
+  cardId: string,
   collectionId: string,
   frontId: string,
   isSupporting = false
-): EditorSelectArticleFragment => ({
-  type: EDITOR_SELECT_ARTICLE_FRAGMENT,
-  payload: { articleFragmentId, frontId, collectionId, isSupporting }
+): EditorSelectCard => ({
+  type: EDITOR_SELECT_CARD,
+  payload: { cardId, frontId, collectionId, isSupporting }
 });
 
-const editorClearArticleFragmentSelection = (
-  articleFragmentId: string
-): EditorClearArticleFragmentSelection => ({
-  type: EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION,
-  payload: { articleFragmentId }
+const editorClearCardSelection = (
+  cardId: string
+): EditorClearCardSelection => ({
+  type: EDITOR_CLEAR_CARD_SELECTION,
+  payload: { cardId }
 });
 
 const editorCloseFormsForCollection = (
@@ -284,7 +283,7 @@ const editorCloseAllOverviews = (): EditorCloseAllOverviews => ({
   type: EDITOR_CLOSE_ALL_OVERVIEWS
 });
 
-interface OpenArticleFragmentData {
+interface OpenCardData {
   id: string;
   isSupporting: boolean;
   collectionId: string;
@@ -302,8 +301,8 @@ interface State {
   collectionIds: string[];
   closedOverviews: string[];
   clipboardOpen: boolean;
-  selectedArticleFragments: {
-    [frontId: string]: OpenArticleFragmentData[];
+  selectedCards: {
+    [frontId: string]: OpenCardData[];
   };
   frontIdsByBrowsingStage: {
     [frontId: string]: Stages;
@@ -382,12 +381,12 @@ const createSelectCurrentlyOpenCollectionsByFront = () => {
 };
 
 /**
- * Select the parent front of an article fragment.
+ * Select the parent front of an card.
  * For performance reasons, only considers open fronts and collections.
  */
-const selectOpenParentFrontOfArticleFragment = (
+const selectOpenParentFrontOfCard = (
   state: GlobalState,
-  articleFragmentId: string
+  cardId: string
 ): [string, string] | [] => {
   const openFrontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
     state
@@ -398,7 +397,7 @@ const selectOpenParentFrontOfArticleFragment = (
   // I've used an imperative loop for efficiency's sake here, as it lets us break.
   for (const front of openFrontsCollectionsAndArticles) {
     for (const collection of front.collections) {
-      if (collection.articleIds.includes(articleFragmentId)) {
+      if (collection.articleIds.includes(cardId)) {
         frontId = front.frontId;
         collectionId = collection.id;
         break;
@@ -411,7 +410,7 @@ const selectOpenParentFrontOfArticleFragment = (
   return frontId && collectionId ? [frontId, collectionId] : [];
 };
 
-const selectOpenArticleFragmentIds = (state: GlobalState): string[] => {
+const selectOpenCardIds = (state: GlobalState): string[] => {
   const frontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
     state
   );
@@ -468,30 +467,30 @@ const selectHasMultipleFrontsOpen = createSelector(
 
 const defaultOpenForms = [] as [];
 
-const selectOpenArticleFragmentForms = (
+const selectOpenCardForms = (
   state: GlobalState,
   { frontId }: { frontId: string }
-) => state.editor.selectedArticleFragments[frontId] || defaultOpenForms;
+) => state.editor.selectedCards[frontId] || defaultOpenForms;
 
-const selectIsArticleFragmentFormOpen = (
+const selectIsCardFormOpen = (
   state: GlobalState,
-  articleFragmentId: string,
+  cardId: string,
   frontId: string
 ) => {
-  return (selectOpenArticleFragmentForms(state, { frontId }) || []).some(
-    _ => _.id === articleFragmentId
+  return (selectOpenCardForms(state, { frontId }) || []).some(
+    _ => _.id === cardId
   );
 };
 
 const createSelectCollectionIdsWithOpenForms = () =>
   createSelector(
-    selectOpenArticleFragmentForms,
+    selectOpenCardForms,
     forms => uniq(forms.map(_ => _.collectionId))
   );
 
 const createSelectDoesCollectionHaveOpenForms = () =>
   createSelector(
-    selectOpenArticleFragmentForms,
+    selectOpenCardForms,
     (
       _: unknown,
       { frontId, collectionId }: { frontId: string; collectionId: string }
@@ -505,31 +504,29 @@ const selectCollectionId = (
   { collectionId }: { collectionId: string }
 ) => collectionId;
 
-const createSelectOpenArticleFragmentIdsForCollection = () =>
+const createSelectOpenCardIdsForCollection = () =>
   createSelector(
-    selectOpenArticleFragmentForms,
+    selectOpenCardForms,
     selectCollectionId,
     (forms, collectionId) =>
       forms.filter(_ => _.collectionId === collectionId).map(_ => _.id)
   );
 
 // NB: This selector is not memoized.
-const createSelectOpenCollectionItemTitlesForCollection = () => {
-  const selectOpenArticleFragmentIdsForCollection = createSelectOpenArticleFragmentIdsForCollection();
-  const selectArticleFromArticleFragment = createSelectArticleFromArticleFragment();
+const createSelectOpenCardTitlesForCollection = () => {
+  const selectOpenCardIdsForCollection = createSelectOpenCardIdsForCollection();
+  const selectArticleFromCard = createSelectArticleFromCard();
   return (
     state: GlobalState,
     { frontId, collectionId }: { frontId: string; collectionId: string }
   ): Array<{ uuid: string; title: string | undefined }> => {
-    const articleFragmentIds = selectOpenArticleFragmentIdsForCollection(
-      state,
-      { collectionId, frontId }
-    );
+    const cardIds = selectOpenCardIdsForCollection(state, {
+      collectionId,
+      frontId
+    });
     return compact(
-      articleFragmentIds
-        .map(id =>
-          selectArticleFromArticleFragment(selectSharedState(state), id)
-        )
+      cardIds
+        .map(id => selectArticleFromCard(selectSharedState(state), id))
         .filter(_ => _)
         .map(
           derivedArticle =>
@@ -586,21 +583,16 @@ const defaultState = {
   collectionIds: [],
   clipboardOpen: true,
   closedOverviews: [],
-  selectedArticleFragments: {},
+  selectedCards: {},
   frontIdsByBrowsingStage: {}
 };
 
-const clearArticleFragmentSelection = (
-  state: State,
-  articleFragmentId: string
-): State => {
+const clearCardSelection = (state: State, cardId: string): State => {
   let frontId: string | null = null;
-  for (const entry of Object.entries(state.selectedArticleFragments)) {
-    const [currentFrontId, fragmentDatas] = entry;
-    const currentFragmentDataIndex = fragmentDatas.findIndex(
-      _ => _.id === articleFragmentId
-    );
-    if (currentFragmentDataIndex !== -1) {
+  for (const entry of Object.entries(state.selectedCards)) {
+    const [currentFrontId, cardDatas] = entry;
+    const currentCardDataIndex = cardDatas.findIndex(_ => _.id === cardId);
+    if (currentCardDataIndex !== -1) {
       frontId = currentFrontId;
       break;
     }
@@ -612,11 +604,9 @@ const clearArticleFragmentSelection = (
 
   return {
     ...state,
-    selectedArticleFragments: {
-      ...state.selectedArticleFragments,
-      [frontId]: state.selectedArticleFragments[frontId].filter(
-        _ => _.id !== articleFragmentId
-      )
+    selectedCards: {
+      ...state.selectedCards,
+      [frontId]: state.selectedCards[frontId].filter(_ => _.id !== cardId)
     }
   };
 };
@@ -788,16 +778,16 @@ const reducer = (
         )
       };
     }
-    case EDITOR_SELECT_ARTICLE_FRAGMENT: {
-      const currentlyOpenArticleFragments =
-        state.selectedArticleFragments[action.payload.frontId] || [];
+    case EDITOR_SELECT_CARD: {
+      const currentlyOpenCards =
+        state.selectedCards[action.payload.frontId] || [];
       const {
         frontId,
         collectionId,
         isSupporting,
-        articleFragmentId: id
+        cardId: id
       } = action.payload;
-      const openArticleFragments = currentlyOpenArticleFragments.concat([
+      const openCards = currentlyOpenCards.concat([
         {
           id,
           isSupporting,
@@ -806,21 +796,18 @@ const reducer = (
       ]);
       return {
         ...state,
-        selectedArticleFragments: {
-          ...state.selectedArticleFragments,
-          [frontId]: openArticleFragments
+        selectedCards: {
+          ...state.selectedCards,
+          [frontId]: openCards
         }
       };
     }
-    case EDITOR_CLEAR_ARTICLE_FRAGMENT_SELECTION: {
-      return clearArticleFragmentSelection(
-        state,
-        action.payload.articleFragmentId
-      );
+    case EDITOR_CLEAR_CARD_SELECTION: {
+      return clearCardSelection(state, action.payload.cardId);
     }
     case EDITOR_CLOSE_FORMS_FOR_COLLECTION: {
       const maybeOpenFormsForFront =
-        state.selectedArticleFragments[action.payload.frontId];
+        state.selectedCards[action.payload.frontId];
 
       if (!maybeOpenFormsForFront) {
         return state;
@@ -828,16 +815,16 @@ const reducer = (
       return maybeOpenFormsForFront.reduce(
         (acc, formData) =>
           formData.collectionId === action.payload.collectionId
-            ? clearArticleFragmentSelection(acc, formData.id)
+            ? clearCardSelection(acc, formData.id)
             : acc,
         state
       );
     }
-    case REMOVE_SUPPORTING_ARTICLE_FRAGMENT:
-    case REMOVE_GROUP_ARTICLE_FRAGMENT:
-    case 'REMOVE_CLIPBOARD_ARTICLE_FRAGMENT': {
-      const articleFragmentId = action.payload.articleFragmentId;
-      return clearArticleFragmentSelection(state, articleFragmentId);
+    case REMOVE_SUPPORTING_CARD:
+    case REMOVE_GROUP_CARD:
+    case 'REMOVE_CLIPBOARD_CARD': {
+      const cardId = action.payload.cardId;
+      return clearCardSelection(state, cardId);
     }
     case EDITOR_OPEN_CLIPBOARD: {
       return {
@@ -896,14 +883,14 @@ export {
   editorSetOpenFronts,
   editorOpenCollections,
   editorCloseCollections,
-  editorSelectArticleFragment,
-  editorClearArticleFragmentSelection,
+  editorSelectCard,
+  editorClearCardSelection,
   selectIsCurrentFrontsMenuOpen,
-  selectIsArticleFragmentFormOpen,
-  selectOpenArticleFragmentForms,
-  selectOpenParentFrontOfArticleFragment,
+  selectIsCardFormOpen,
+  selectOpenCardForms,
+  selectOpenParentFrontOfCard,
   createSelectDoesCollectionHaveOpenForms,
-  createSelectOpenCollectionItemTitlesForCollection,
+  createSelectOpenCardTitlesForCollection,
   createSelectEditorFrontsByPriority,
   createSelectFrontIdWithOpenAndStarredStatesByPriority,
   selectEditorFrontIds,
@@ -912,7 +899,7 @@ export {
   selectEditorFavouriteFrontIdsByPriority,
   selectOpenFrontsCollectionsAndArticles,
   createSelectCollectionsInOpenFronts,
-  selectOpenArticleFragmentIds,
+  selectOpenCardIds,
   selectIsCollectionOpen,
   editorOpenClipboard,
   editorCloseClipboard,
@@ -926,8 +913,8 @@ export {
   selectIsFrontOverviewOpen,
   selectHasMultipleFrontsOpen,
   createSelectCollectionIdsWithOpenForms,
-  createSelectOpenArticleFragmentIdsForCollection,
-  OpenArticleFragmentData,
+  createSelectOpenCardIdsForCollection,
+  OpenCardData,
   changedBrowsingStage,
   EditorCloseFormsForCollection,
   editorCloseFormsForCollection,

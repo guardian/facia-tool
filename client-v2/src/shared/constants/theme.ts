@@ -97,7 +97,7 @@ const label = {
   lineHeight: '24px'
 };
 
-const collectionItem = {
+const card = {
   fontSizeDefault: '14px',
   fontSizeSmall: '13px',
   dropZone: '#D6D6D6',
@@ -116,7 +116,7 @@ export const theme = {
   button,
   input,
   label,
-  collectionItem,
+  card,
   collection,
   thumbnailImage
 };

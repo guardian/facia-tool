@@ -1,6 +1,6 @@
 import { Element, Tag, CapiArticle } from 'types/Capi';
 import { ExternalArticle } from '../shared/types/ExternalArticle';
-import { ArticleFragmentMeta } from '../shared/types/Collection';
+import { CardMeta } from '../shared/types/Collection';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import startCase from 'lodash/startCase';
 
@@ -54,7 +54,7 @@ function getContributorImage(externalArticle: ExternalArticle) {
 }
 
 function getThumbnail(
-  meta: ArticleFragmentMeta,
+  meta: CardMeta,
   externalArticle?: ExternalArticle
 ): string | undefined {
   const isReplacingImage = meta.imageReplace;

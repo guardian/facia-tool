@@ -1,7 +1,7 @@
-import { Stages, CollectionItemSets } from 'shared/types/Collection';
+import { Stages, CardSets } from 'shared/types/Collection';
 import {
   gridDataTransferTypes,
-  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_CARD_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
 } from './image';
 
@@ -14,7 +14,7 @@ export const frontStages: { [key: string]: Stages } = {
   live: 'live'
 };
 
-export const collectionItemSets: { [key: string]: CollectionItemSets } = {
+export const cardSets: { [key: string]: CardSets } = {
   ...frontStages,
   previously: 'previously'
 };
@@ -36,7 +36,7 @@ export const gridDropTypes = Object.values(gridDataTransferTypes);
 
 export const collectionDropTypeBlacklist = [
   ...gridDropTypes,
-  DRAG_DATA_COLLECTION_ITEM_IMAGE_OVERRIDE,
+  DRAG_DATA_CARD_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL
 ];
 

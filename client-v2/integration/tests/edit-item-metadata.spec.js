@@ -4,10 +4,10 @@ import {
   clipboardItem,
   clipboardItemHeadline,
   collection,
-  collectionItem,
-  collectionItemHeadline,
-  collectionItemKicker,
-  collectionItemBreakingNews,
+  card,
+  cardHeadline,
+  cardKicker,
+  cardBreakingNews,
   editFormHeadlineInput,
   editFormSaveButton,
   editFormBreakingNewsToggle,
@@ -19,7 +19,7 @@ fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
   .after(teardown);
 
 test('Metadata edits are persisted in collections- headline', async t => {
-  const firstCollectionStory = collectionItem(0, 0);
+  const firstCollectionStory = card(0, 0);
   const headlineInput = editFormHeadlineInput();
   await t
     .click(firstCollectionStory)
@@ -27,7 +27,7 @@ test('Metadata edits are persisted in collections- headline', async t => {
     .selectText(headlineInput)
     .typeText(headlineInput, 'A better headline')
     .click(editFormSaveButton())
-    .expect(collectionItemHeadline(0, 0).textContent)
+    .expect(cardHeadline(0, 0).textContent)
     .eql('A better headline');
 });
 
@@ -45,13 +45,13 @@ test('Metadata edits are persisted in clipboard - headline', async t => {
 });
 
 test('Metadata edits are persisted in collections- "breaking news" toggle button', async t => {
-  const firstCollectionStory = collectionItem(0, 0);
+  const firstCollectionStory = card(0, 0);
   const breakingNewsToggle = editFormBreakingNewsToggle();
   await t
     .click(firstCollectionStory)
     .click(breakingNewsToggle)
     .click(editFormSaveButton())
-    .expect(collectionItemBreakingNews(0, 0).textContent)
+    .expect(cardBreakingNews(0, 0).textContent)
     .contains(`Breaking news`);
 });
 
@@ -64,6 +64,6 @@ test('Metadata edits are persisted in clipboard- "breaking news" toggle button',
     .click(breakingNewsToggle)
     .click(editFormSaveButton())
     .dragToElement(clipboardItem(0), firstCollectionFirstDropZone) // Kickers are not visible in clipboard, drag to collection to view
-    .expect(collectionItemBreakingNews(0, 0).textContent)
+    .expect(cardBreakingNews(0, 0).textContent)
     .contains(`Breaking news`);
 });

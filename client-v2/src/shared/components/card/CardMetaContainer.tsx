@@ -3,15 +3,15 @@ import { styled } from 'shared/constants/theme';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { media } from 'shared/util/mediaQueries';
-import { CollectionItemSizes } from 'shared/types/Collection';
+import { CardSizes } from 'shared/types/Collection';
 
 const metaContainerSizeWidthMap = {
   default: 100,
   medium: 80,
   small: 60
-} as { [Sizes in CollectionItemSizes]: number };
+} as { [Sizes in CardSizes]: number };
 
-const MetaContainer = styled.div<{ size?: CollectionItemSizes }>`
+const MetaContainer = styled.div<{ size?: CardSizes }>`
   position: relative;
   flex-shrink: 0;
   /* If we have a size property, use that. */
@@ -31,7 +31,7 @@ export default ({
   size = 'default'
 }: {
   children?: React.ReactNode;
-  size?: CollectionItemSizes;
+  size?: CardSizes;
 }) => (
   <MetaContainer size={size}>
     {children}

@@ -52,17 +52,17 @@ They are different from `Collections` because they have not yet been normalised.
 not have to store collections in the form of the `CollectionResponse` as long as they provide a way of transforming
 the stored collections in the type `Collection` which the shared curation library can understand.
 
-### Article Fragments
+### Cards
 
-Article fragments contain information about the article created by
+Cards contain information about the article created by
 the collections tool: when was it added to a live collection, who did this,
 are any of the fields (e.g. headline, trail)  present in the external article
 overriden. These overrides are stored in the `Meta` object.
 
-These article fragments take the following shape:
+These cards take the following shape:
 
 ```
-type ArticleFragment = {
+type Card = {
   uuid: string, // Refers to the article ids inside a collection
   id: string, // Article id in the external store e.g. capi id
   frontPublicationDate: number,
@@ -71,10 +71,10 @@ type ArticleFragment = {
 };
 ```
 
-### Nested Article Fragments
+### Nested Cards
 
-Nested article fragments represent article fragments are they appear in collections prior to
-normalisation. They look like article fragments but are missing a uuid.
+Nested cards represent cards are they appear in collections prior to
+normalisation. They look like cards but are missing a uuid.
 
 ### External Articles
 External articles represent the articles as they exist in external to your application e.g. in the content api.
@@ -92,26 +92,26 @@ type ExternalArticle = {
 
 Articles represent the articles which are being rendered by
 the components. They hold all the information needed to render an article.
-They are selected from the state by combining article fragments with
-external articles. If the article fragment metadata contains any overrides,
+They are selected from the state by combining cards with
+external articles. If the card metadata contains any overrides,
 these override the external article data.
 
 ## Using the library
 
 ### Fetching data
 
-To use the library, you have to dispatch three actions: `articleFragmentsReceived`, `externalArticlesReceived` and `collectionReceived` actions.
+To use the library, you have to dispatch three actions: `cardsReceived`, `externalArticlesReceived` and `collectionReceived` actions.
 
 `externalArticlesReceived` expects a payload that is an object, which has external article ids as keys and external articles as values.
 
 
-Note that the articles in the Collection are stored as an array of ids. The articles that these ids refer to should be passed to the `articleFragmentsReceived` action.
+Note that the articles in the Collection are stored as an array of ids. The articles that these ids refer to should be passed to the `cardsReceived` action.
 
-`articleFragmentsReceived` expects in it's payload on object where keys are Article Fragment uuids and values are the article fragments themselves.
+`cardsReceived` expects in it's payload on object where keys are Card uuids and values are the cards themselves.
 
 `collectionReceived` action expects a collection in its payload.
 
-We provide an utility function `normaliseCollectionWithNestedArticles` to generate collections and article fragments from collections which have a shape similar to the collections as they appear in the fronts tool.
+We provide an utility function `normaliseCollectionWithNestedArticles` to generate collections and cards from collections which have a shape similar to the collections as they appear in the fronts tool.
 
 ### Usign the collections component
 

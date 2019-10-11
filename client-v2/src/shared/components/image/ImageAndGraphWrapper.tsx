@@ -1,7 +1,7 @@
 import { styled } from '../../constants/theme';
-import { CollectionItemSizes } from '../../types/Collection';
+import { CardSizes } from '../../types/Collection';
 
-export default styled.div<{ size: CollectionItemSizes }>`
+export default styled.div<{ size: CardSizes }>`
   display: flex;
   flex-direction: row;
   ${props =>

@@ -25,7 +25,7 @@ Fronts Client V2 looks to rebuild the Fronts tool with modern technologies, deve
 
 ## Dev Start
 
-1. To run the application: 
+1. To run the application:
    - From the project root, run `./scripts/start-dev.sh`
    - From the project root, run without debug `./scripts/start-dev.sh --no-debug`
 2. Open `https://fronts.local.dev-gutools.co.uk/v2`.
@@ -135,7 +135,7 @@ We are using Typescript for typing in Fronts V2.
 
 ### Collections
 
-We use the term `Collection` to refer to the data structure that holds lists of collection items in groups and their layout. Other parts of the organisation -- editorial, dotcom -- call this a `Container`. The abstraction `Collection` is used because a `Container` refers to a particular representation of a collection of curated content. `Collection` is more generic, and we can use it to refer to other kinds of collections of curated content in future.
+We use the term `Collection` to refer to the data structure that holds lists of cards in groups and their layout. Other parts of the organisation -- editorial, dotcom -- call this a `Container`. The abstraction `Collection` is used because a `Container` refers to a particular representation of a collection of curated content. `Collection` is more generic, and we can use it to refer to other kinds of collections of curated content in future.
 
 ## Tech Debt
 
@@ -145,7 +145,6 @@ There are a few areas that we'd like to address in the medium to long term for t
 
 There are plenty of inconsistencies with the way we name things. This is a little manifesto for cleaning some of them up.
 
-- The types `ArticleFragment` and `CollectionItem` refer to the same thing. The latter is preferred as this type refers to either an article or a snap link, and in other curation context this list could grow. We should rename instances of `ArticleFragment` in favor of `CollectionItem`.
 - We confuse terminology for actions, selectors and API calls -- terms like `get`, `select` and `fetch` are easily confused, and prefixes and suffixes are used interchangably, when they're used at all. For precision's sake, we should rely on the following -
  - Actions should be prefixed with `action`.
  - Selectors be prefixed with `select`. Selector factories should use `createSelect`
@@ -153,9 +152,9 @@ There are plenty of inconsistencies with the way we name things. This is a littl
 
 ### Persistent UUIDs
 
-At the moment, we create UUIDs for groups and article fragments at any level within a collection at the moment it's ingested by the client. This lets us reference them with confidence -- until the next reingestion! As soon as an update from the server is applied, we need create new UUIDs for the new data, and any client-side state that referred to the updated data loses its reference.
+At the moment, we create UUIDs for groups and cards at any level within a collection at the moment it's ingested by the client. This lets us reference them with confidence -- until the next reingestion! As soon as an update from the server is applied, we need create new UUIDs for the new data, and any client-side state that referred to the updated data loses its reference.
 
-For example, the article meta form references an article by its UUID. At the moment, if anything in the article's parent collection changes, our polling logic replaces the entire collection, along with a new set of UUIDs for its child articles. As a result, the form is now pointing to an article fragment that no longer exists, and becomes read only, limiting the ability of users to concurrently edit different articles in the same collection.
+For example, the article meta form references an article by its UUID. At the moment, if anything in the article's parent collection changes, our polling logic replaces the entire collection, along with a new set of UUIDs for its child articles. As a result, the form is now pointing to an card that no longer exists, and becomes read only, limiting the ability of users to concurrently edit different articles in the same collection.
 
 One strategy to add UUIDS: add UUIDs to the server model where necessary as optional fields, and alter the client to ensure that UUIDs aren't added if they already exist. Then, run a script to add UUIDs across all collections where they don't exist, updating last edit times to ensure client polling picks up the change. It's possible that users might be holding on to old models in open instances of the client application, so we could consider running this script at a time when it's unlikely many users are using the tool.
 

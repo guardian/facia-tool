@@ -1,7 +1,7 @@
 import { CapiArticleFields } from 'types/Capi';
 import { ExternalArticle } from './ExternalArticle';
 import { $Diff } from 'utility-types';
-import { ArticleFragmentRootFields, ArticleFragmentMeta } from './Collection';
+import { CardRootFields, CardMeta } from './Collection';
 
 type DerivedArticle = Partial<
   $Diff<
@@ -10,8 +10,8 @@ type DerivedArticle = Partial<
   >
 > &
   Partial<$Diff<CapiArticleFields, { isLive?: unknown }>> &
-  ArticleFragmentRootFields &
-  ArticleFragmentMeta & {
+  CardRootFields &
+  CardMeta & {
     thumbnail?: string | undefined;
     cutoutThumbnail?: string | undefined;
     kicker?: string;

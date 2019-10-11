@@ -1,6 +1,8 @@
 package services.editions.publishing.events
 
-import model.editions.IssueVersionStatus
+import java.time.{LocalDate, LocalDateTime}
+
+import model.editions.{Edition, IssueVersionStatus}
 import org.scalatest.{FunSuite, Matchers}
 
 class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
@@ -14,7 +16,7 @@ class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
           |  "Type" : "Notification",
           |  "MessageId" : "123",
           |  "TopicArn" : "topic-arn",
-          |  "Message" : "{\"event\":{\"status\":\"Published\",\"message\":\"123\"}}",
+          |  "Message" : "{\"event\":{\"edition\":\"daily-edition\",\"version\":\"2019-10-04T14:57:48.163Z\",\"issueDate\":\"2019-10-04\",\"status\":\"Published\",\"message\":\"Publication processing complete\",\"timestamp\":\"2019-10-04T14:59:53+00:00\"}}",
           |  "Timestamp" : "2019-09-13T11:41:29.543Z",
           |  "SignatureVersion" : "1",
           |  "Signature" : "r3nbjep",
@@ -28,8 +30,19 @@ class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
         .withReceiptHandle("ReceiptHandle1")
     }
 
-    PublishEventSNSMessageParser.parseToEvent(correctSQSMessagefromSNS) shouldEqual Some(
-      PublishEventMessage("ReceiptHandle1", PublishEvent(IssueVersionStatus.Published, "123")))
+    val expected = PublishEventMessage(
+      "ReceiptHandle1",
+      PublishEvent(
+        edition = Edition.DailyEdition,
+        version = "2019-10-04T14:57:48.163Z",
+        issueDate = LocalDate.of(2019, 10, 4),
+        status = IssueVersionStatus.Published,
+        message = "Publication processing complete",
+        timestamp = LocalDateTime.of(2019, 10, 4, 14, 59, 53)
+      )
+    )
+
+    PublishEventSNSMessageParser.parseToEvent(correctSQSMessagefromSNS) shouldEqual Some(expected)
   }
 
   test("indicate if message format was incorrect") {

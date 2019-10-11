@@ -1,8 +1,5 @@
 import { $Diff } from 'utility-types';
-import {
-  CollectionFromResponse,
-  NestedArticleFragment
-} from 'shared/types/Collection';
+import { CollectionFromResponse, NestedCard } from 'shared/types/Collection';
 import { EditionsPrefill } from './Edition';
 
 interface FrontConfigResponse {
@@ -104,7 +101,7 @@ interface CollectionResponse {
 }
 
 interface EditionCollectionFromResponse {
-  items: NestedArticleFragment[];
+  items: NestedCard[];
   lastUpdated?: number;
   updatedBy?: string;
   updatedEmail?: string;

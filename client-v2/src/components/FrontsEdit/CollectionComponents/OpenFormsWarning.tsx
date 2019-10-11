@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
 import FlatUl from 'components/layout/FlatUl';
-import { createSelectOpenCollectionItemTitlesForCollection } from 'bundles/frontsUIBundle';
-import { createCollectionItemId } from './CollectionItem';
+import { createSelectOpenCardTitlesForCollection } from 'bundles/frontsUIBundle';
+import { createCardId } from './Card';
 import styled from 'styled-components';
 
 interface ContainerProps {
@@ -30,7 +30,7 @@ const OpenFormsWarning = ({ openArticleTitles }: ComponentProps) => (
           <a
             href={`#${uuid}`}
             onClick={() => {
-              const id = createCollectionItemId(uuid);
+              const id = createCardId(uuid);
               const element = document.getElementById(id);
               if (element) {
                 element.scrollIntoView({
@@ -50,9 +50,9 @@ const OpenFormsWarning = ({ openArticleTitles }: ComponentProps) => (
 );
 
 const mapStateToProps = () => {
-  const selectOpenCollectionItemTitlesForCollection = createSelectOpenCollectionItemTitlesForCollection();
+  const selectOpenCardTitlesForCollection = createSelectOpenCardTitlesForCollection();
   return (state: State, { collectionId, frontId }: ContainerProps) => ({
-    openArticleTitles: selectOpenCollectionItemTitlesForCollection(state, {
+    openArticleTitles: selectOpenCardTitlesForCollection(state, {
       collectionId,
       frontId
     })

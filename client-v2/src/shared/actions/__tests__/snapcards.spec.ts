@@ -1,25 +1,20 @@
 import configureMockStore from 'redux-mock-store';
 import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
-import {
-  createArticleEntitiesFromDrop,
-  articleFragmentsReceived
-} from '../ArticleFragments';
+import { createArticleEntitiesFromDrop, cardsReceived } from '../Cards';
 import initialState from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
-import { actionNames as externalArticleActionNames } from 'shared/bundles/externalArticlesBundle';
-import { createFragment } from 'shared/util/articleFragment';
 import { createSnap, createLatestSnap } from 'shared/util/snap';
 import guardianTagPage from 'shared/fixtures/guardianTagPage';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
 import { RefDrop } from 'util/collectionUtils';
 
-jest.mock('uuid/v4', () => () => 'articleFragment1');
+jest.mock('uuid/v4', () => () => 'card1');
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
 const idDrop = (id: string): RefDrop => ({ type: 'REF', data: id });
 
-describe('articleFragments actions', () => {
+describe('Snap cards actions', () => {
   const { confirm } = window;
   const localNow = Date.now;
   const localGetTime = Date.prototype.getTime;
@@ -34,26 +29,8 @@ describe('articleFragments actions', () => {
     Date.now = localNow;
   });
   afterEach(() => fetchMock.restore());
-  describe('addArticleFragment', () => {
-    it('should fetch an article and create a corresponding collection item representing an article', async () => {
-      fetchMock.once('begin:/api/preview', {
-        response: {
-          results: [capiArticle]
-        }
-      });
-      const store = mockStore(initialState);
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop('internal-code/page/5029528')
-      ) as any);
-      const actions = store.getActions();
-      expect(actions[0].type).toEqual(externalArticleActionNames.fetchSuccess);
-      expect(actions[1]).toEqual(
-        articleFragmentsReceived({
-          articleFragment1: createFragment('internal-code/page/5029528')
-        })
-      );
-    });
-    it('should fetch a link and create a corresponding collection item representing a snap link', async () => {
+  describe('addCard', () => {
+    it('should fetch a link and create a corresponding card representing a snap link', async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
           results: []
@@ -66,12 +43,12 @@ describe('articleFragments actions', () => {
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
-        articleFragmentsReceived({
-          articleFragment1: await createSnap('https://bbc.co.uk/some/page')
+        cardsReceived({
+          card1: await createSnap('https://bbc.co.uk/some/page')
         })
       );
     });
-    it('should fetch a link and create a corresponding collection item representing a snap link - query params in external urls should be preserved', async () => {
+    it('should fetch a link and create a corresponding card representing a snap link - query params in external urls should be preserved', async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
           results: []
@@ -87,14 +64,12 @@ describe('articleFragments actions', () => {
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
-        articleFragmentsReceived({
-          articleFragment1: await createSnap(
-            'https://bbc.co.uk/some/page?great=true'
-          )
+        cardsReceived({
+          card1: await createSnap('https://bbc.co.uk/some/page?great=true')
         })
       );
     });
-    it("should fetch tag articles and create a corresponding collection item representing a snap of type 'latest' given user input", async () => {
+    it("should fetch tag articles and create a corresponding card representing a snap of type 'latest' given user input", async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
           results: [capiArticle, capiArticle],
@@ -112,15 +87,15 @@ describe('articleFragments actions', () => {
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
-        articleFragmentsReceived({
-          articleFragment1: await createLatestSnap(
+        cardsReceived({
+          card1: await createLatestSnap(
             'https://www.theguardian.com/example/tag/page',
             'Example title'
           )
         })
       );
     });
-    it("should fetch tag articles and create a corresponding collection item representing a snap of type 'link' given user input", async () => {
+    it("should fetch tag articles and create a corresponding card representing a snap of type 'link' given user input", async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
           results: [capiArticle, capiArticle],
@@ -138,8 +113,8 @@ describe('articleFragments actions', () => {
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
-        articleFragmentsReceived({
-          articleFragment1: await createSnap(
+        cardsReceived({
+          card1: await createSnap(
             'https://www.theguardian.com/example/tag/page'
           )
         })
@@ -162,8 +137,8 @@ describe('articleFragments actions', () => {
       ) as any);
       const actions = store.getActions();
       expect(actions[0]).toEqual(
-        articleFragmentsReceived({
-          articleFragment1: await createSnap(
+        cardsReceived({
+          card1: await createSnap(
             'https://www.theguardian.com/example/non/tag/page'
           )
         })
@@ -180,8 +155,8 @@ describe('articleFragments actions', () => {
         ) as any);
         const actions = store.getActions();
         expect(actions[0]).toEqual(
-          articleFragmentsReceived({
-            articleFragment1: {
+          cardsReceived({
+            card1: {
               frontPublicationDate: 1487076708000,
               id: 'snap/1487076708000',
               meta: {
@@ -195,7 +170,7 @@ describe('articleFragments actions', () => {
                   'https://api.nextgen.guardianapps.co.uk/football/live.json',
                 trailText: "Today's matches"
               },
-              uuid: 'articleFragment1'
+              uuid: 'card1'
             }
           })
         );
@@ -210,8 +185,8 @@ describe('articleFragments actions', () => {
         ) as any);
         const actions = store.getActions();
         expect(actions[0]).toEqual(
-          articleFragmentsReceived({
-            articleFragment1: {
+          cardsReceived({
+            card1: {
               frontPublicationDate: 1487076708000,
               id: 'snap/1487076708000',
               meta: {
@@ -222,7 +197,7 @@ describe('articleFragments actions', () => {
                 snapUri:
                   'https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json'
               },
-              uuid: 'articleFragment1'
+              uuid: 'card1'
             }
           })
         );
