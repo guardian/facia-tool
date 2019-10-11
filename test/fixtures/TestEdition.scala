@@ -15,10 +15,15 @@ object TestEdition {
       FrontSpecialSpecial2.front -> Daily(),
     ),
     zoneId = ZoneId.of("Europe/London"),
-    availability = Daily()
+    availability = Daily(),
+    capiQueryPrefillParams = CapiQueryPrefillParams(
+      timeWindowConfig = TimeWindowConfigInDays(
+        startDiff = -1,
+        endDiff= 2)
+    )
   )
 
-  val templates: Map[Edition, EditionTemplate] = Map(Edition.TrainingEdition -> template)
+  lazy val templates: Map[Edition, EditionTemplate] = Map(Edition.TrainingEdition -> template)
 }
 
 object FrontTopStories {

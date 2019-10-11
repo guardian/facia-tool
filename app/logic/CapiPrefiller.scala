@@ -4,7 +4,7 @@ import com.gu.contentapi.client.model.v1.{Content, TagType}
 import com.gu.facia.api.utils.{CardStyle, ResolvedMetaData}
 import com.gu.facia.client.models.TrailMetaData
 import model.editions.{Image, MediaType}
-import services.Prefill
+import services.editions.prefills.Prefill
 
 object CapiPrefiller {
 

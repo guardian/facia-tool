@@ -3,7 +3,7 @@ package services.editions.db
 import java.time._
 
 import model.editions.internal.PrefillUpdate
-import model.editions.{CapiPrefillQuery, EditionsCollection, PathType}
+import model.editions.{CapiPrefillQuery, Edition, EditionsCollection, PathType}
 import model.forms.GetCollectionsFilter
 import play.api.libs.json.Json
 import scalikejdbc._
@@ -41,6 +41,7 @@ trait CollectionsQueries {
           SELECT collections.prefill,
                  collections.path_type,
                  articles.page_code,
+                 edition_issues.name,
                  edition_issues.issue_date,
                  edition_issues.timezone_id
           FROM collections
@@ -50,15 +51,17 @@ trait CollectionsQueries {
           WHERE collections.id = $id
        """.map { rs =>
         val date = rs.localDate("issue_date")
+        val editionStr = rs.string("name")
+        val edition = Edition.withName(editionStr)
         val zone = ZoneId.of(rs.string("timezone_id"))
         val pathTypeStr = rs.string("path_type")
         val pathType = PathType.withName(pathTypeStr)
 
-        (date, zone, CapiPrefillQuery(rs.string("prefill"), pathType), rs.string("page_code"))
+        (date, edition, zone, CapiPrefillQuery(rs.string("prefill"), pathType), rs.string("page_code"))
       }.list().apply()
 
-    rows.headOption.map { case (issueDate, zone, prefill, _) =>
-      PrefillUpdate(issueDate, zone, prefill, rows.map(_._4))
+    rows.headOption.map { case (issueDate, edition, zone, prefill, _) =>
+      PrefillUpdate(issueDate, edition, zone, prefill, rows.map(_._5))
     }
   }
 

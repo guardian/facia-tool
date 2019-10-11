@@ -1,13 +1,14 @@
 package services.editions
 
-import java.time.{LocalDate, ZonedDateTime}
+import java.time.LocalDate
 
 import com.gu.contentapi.client.model.v1.SearchResponse
 import com.gu.facia.api.utils.ResolvedMetaData
 import fixtures.TestEdition
-import model.editions.{ArticleMetadata, CapiPrefillQuery, Edition, Image, MediaType}
+import model.editions.{ArticleMetadata, Edition, Image, MediaType}
 import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
-import services.{Capi, Prefill}
+import services.Capi
+import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 
 import scala.concurrent.Future
 
@@ -18,7 +19,11 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
 
   val fakeCapi = new Capi {
     def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)] = ???
-    def getPrefillArticleItems(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery): Future[List[Prefill]] = {
+
+    def getPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
+
+      import prefillParams._
+
       capiPrefillQuery.queryString match {
         case "?tag=theguardian/mainsection/topstories" => Future.successful(List(
           Prefill(
@@ -59,13 +64,15 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
         ))
       }
     }
-    def getPrefillArticles(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, currentPageCodes: List[String]): Future[SearchResponse] = ???
+
+    def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = ???
   }
 
   "Creating a template" - {
     "Sets the prefill metadata from CAPI for Culture 1" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi)
       val issue = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+
       issue.fronts.size shouldBe 4
       val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
       arts.items.size shouldBe 2

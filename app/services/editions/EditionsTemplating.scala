@@ -1,11 +1,12 @@
 package services.editions
 
-import java.time.{LocalDate, LocalTime, ZonedDateTime}
+import java.time.LocalDate
 
 import logging.Logging
 import model.editions._
 import play.api.mvc.{Result, Results}
-import services.{Capi, Prefill}
+import services.Capi
+import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -13,15 +14,15 @@ import scala.language.postfixOps
 import scala.util.control.NonFatal
 
 class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], capi: Capi) extends Logging {
-  def generateEditionTemplate(edition: Edition, localDate: LocalDate): Either[Result, EditionsIssueSkeleton] = {
+  def generateEditionTemplate(edition: Edition, issueDate: LocalDate): Either[Result, EditionsIssueSkeleton] = {
     templates.lift(edition) match {
       case Some(template) =>
-        if (template.availability.isValid(localDate)) {
+        if (template.availability.isValid(issueDate)) {
           Right(EditionsIssueSkeleton(
-            localDate,
+            issueDate,
             template.zoneId,
             template.fronts
-              .filter(_._2.isValid(localDate))
+              .filter(_._2.isValid(issueDate))
               .map { case (frontTemplate, _) =>
                 EditionsFrontSkeleton(
                   frontTemplate.name,
@@ -29,7 +30,8 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
                     EditionsCollectionSkeleton(
                       collection.name,
                       collection.prefill.map { prefill =>
-                        getPrefillArticles(localDate, prefill)
+                        val prefillParams = PrefillParamsAdapter(issueDate, prefill, edition)
+                        getPrefillArticles(prefillParams)
                       }.getOrElse(Nil),
                       collection.prefill,
                       collection.presentation,
@@ -42,21 +44,21 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
                 )
               }))
         } else {
-          Left(Results.UnprocessableEntity(s"$localDate is not a valid date to create an issue of $edition"))
+          Left(Results.UnprocessableEntity(s"$issueDate is not a valid date to create an issue of $edition"))
         }
       case None => Left(Results.NotFound(s"No template registered for $edition"))
     }
   }
 
   // this function fetches articles from CAPI with enough data to resolve the defaults
-  def getPrefillArticles(date: LocalDate, prefillQuery: CapiPrefillQuery): List[EditionsArticleSkeleton] = {
+  def getPrefillArticles(prefillParams: PrefillParamsAdapter): List[EditionsArticleSkeleton] = {
     // TODO: This being a try will hide a litany of failures, some of which we might want to surface
     val items = try {
-      Await.result(capi.getPrefillArticleItems(date, prefillQuery), 10 seconds)
+      Await.result(capi.getPrefillArticleItems(prefillParams), 10 seconds)
     } catch {
       case NonFatal(t) =>
         // At least log this as a warning so we can trace frequency
-        logger.warn(s"Failed to successfully execute CAPI prefill query $prefillQuery", t)
+        logger.warn(s"Failed to successfully execute CAPI prefill query $prefillParams", t)
         Nil
     }
     items.map { case Prefill(pageCode, metaData, cutoutImage, _, mediaType, pickedKicker) =>
