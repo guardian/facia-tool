@@ -146,6 +146,8 @@ object DailyEdition {
   def FrontComment = front(
     "Journal",
     collection("Comment").printSentAnyTag("theobserver/news/comment"),
+    collection("Comment 1"),
+    collection("Comment 2"),
     collection("Comment Special").special,
   )
   .swatch(Opinion)
@@ -260,6 +262,9 @@ object DailyEdition {
   def FrontSportGuardian = front(
     "Sport",
     collection("Sport").printSentAnyTag("theguardian/sport/news"),
+    collection("Sport 1"),
+    collection("Sport 2"),
+    collection("Sport 3"),
     collection("Sport Special").special,
   )
   .swatch(Sport)
@@ -267,6 +272,9 @@ object DailyEdition {
   def FrontSportObserver = front(
     "Sport",
     collection("Sport").printSentAnyTag("theobserver/sport/news"),
+    collection("Sport 1"),
+    collection("Sport 2"),
+    collection("Sport 3"),
     collection("Sport Special").special,
   )
   .swatch(Sport)
