@@ -9,7 +9,7 @@ import {
   renameFrontButton,
   renameFrontInput,
   publishEditionButton,
-  confirmModal
+  optionsModal
 } from '../selectors';
 
 fixture`Fronts edit`
@@ -51,6 +51,6 @@ test('Check renaming a front works', async t => {
 test('Check publish edition button opens modal', async t => {
   await t
     .click(publishEditionButton())
-    .expect(confirmModal().exists)
+    .expect(optionsModal.exists)
     .ok();
 });

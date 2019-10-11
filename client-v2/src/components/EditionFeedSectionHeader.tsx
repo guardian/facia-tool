@@ -11,8 +11,8 @@ import EditModeVisibility from './util/EditModeVisibility';
 import Button from '../shared/components/input/ButtonDefault';
 import { Link } from 'react-router-dom';
 import urls from 'constants/urls';
-import { startConfirmModal } from 'actions/ConfirmModal';
 import noop from 'lodash/noop';
+import { startOptionsModal } from 'actions/OptionsModal';
 
 interface ComponentProps {
   editionsIssue: EditionsIssue;
@@ -109,7 +109,15 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     title: string,
     description: string,
     onAccept: () => void
-  ) => dispatch(startConfirmModal(title, description, onAccept, noop)),
+  ) =>
+    dispatch(
+      startOptionsModal(
+        title,
+        description,
+        [{ buttonText: 'Confirm', callback: onAccept }],
+        noop
+      )
+    ),
   publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id))
 });
 

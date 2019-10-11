@@ -27,7 +27,6 @@ import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
 import { insertClipboardCard, removeClipboardCard } from './Clipboard';
 import { State } from 'types/State';
-import { startConfirmModal } from './ConfirmModal';
 import { capGroupSiblings } from 'shared/actions/Groups';
 import { selectCollectionCap } from 'selectors/configSelectors';
 import { getImageMetaFromValidationResponse } from 'util/form';
@@ -38,6 +37,7 @@ import { batchActions } from 'redux-batched-actions';
 import noop from 'lodash/noop';
 import { selectOpenParentFrontOfCard } from 'bundles/frontsUIBundle';
 import { getPageViewData } from 'redux/modules/pageViewData';
+import { startOptionsModal } from './OptionsModal';
 
 type InsertActionCreator = (
   id: string,
@@ -106,11 +106,31 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
       collectionCap
     );
 
+    const confirmRemoval = () => {
+      const actions = [];
+
+      if (removeAction) {
+        actions.push(removeAction);
+      }
+
+      actions
+        .concat([
+          insertGroupCard(id, index, cardId),
+          maybeAddFrontPublicationDate(cardId),
+          addPersistMetaToAction(capGroupSiblings, {
+            id: cardId,
+            persistTo,
+            applyBeforeReducer: true
+          })(id, collectionCap)
+        ])
+        .forEach(action => dispatch(action));
+    };
+
     if (willCollectionHitCollectionCap) {
       // if there are too many cards now then launch a modal to ask the user
       // what action to take
       dispatch(
-        startConfirmModal(
+        startOptionsModal(
           'Collection limit',
           `You can have a maximum of ${collectionCap} articles in a collection.
           You can proceed, and the last article in the collection will be
@@ -118,27 +138,15 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
           collection yourself.`,
           // if the user accepts, then remove the moved item (if there was one),
           // remove cards past the cap count and finally persist
-          () => {
-            const actions = [];
-
-            if (removeAction) {
-              actions.push(removeAction);
+          [
+            {
+              buttonText: 'Confirm',
+              callback: () => confirmRemoval()
             }
-
-            actions
-              .concat([
-                insertGroupCard(id, index, cardId),
-                maybeAddFrontPublicationDate(cardId),
-                addPersistMetaToAction(capGroupSiblings, {
-                  id: cardId,
-                  persistTo,
-                  applyBeforeReducer: true
-                })(id, collectionCap)
-              ])
-              .forEach(action => dispatch(action));
-          },
+          ],
           // otherwise do nothing
-          noop
+          noop,
+          true
         )
       );
     } else {

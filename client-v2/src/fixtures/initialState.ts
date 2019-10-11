@@ -677,7 +677,6 @@ const emptyFeedBundle = {
 };
 
 const state = {
-  confirmModal: null,
   optionsModal: null,
   fronts,
   config,

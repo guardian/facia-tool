@@ -7,7 +7,7 @@ import error from './errorReducer';
 import path from './pathReducer';
 import unpublishedChanges from './unpublishedChangesReducer';
 import clipboard from './clipboardReducer';
-import { confirmModal, optionsModal } from './modalsReducer';
+import { optionsModal } from './modalsReducer';
 import editor from '../bundles/frontsUIBundle';
 import editionsIssue from '../bundles/editionsIssueBundle';
 import {
@@ -32,7 +32,6 @@ const rootReducer = (state: any = { feed: {} }, action: any) => ({
   editor: editor(state.editor, action, state.shared),
   staleFronts: staleFronts(state.staleFronts, action),
   form: form(state.form, action),
-  confirmModal: confirmModal(state.confirmModal, action),
   optionsModal: optionsModal(state.optionsModal, action),
   feed: {
     feedState: feedState(state.feed.feedState, action),

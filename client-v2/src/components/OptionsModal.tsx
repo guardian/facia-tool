@@ -60,14 +60,19 @@ const OptionsModal = ({
       (typeof description === 'string' ? <p>{description}</p> : description)}
     <Actions>
       {showCancelButton && (
-        <ButtonDefault size="l" inline onClick={onCancel}>
+        <ButtonDefault
+          data-testid="options-modal-cancel"
+          size="l"
+          inline
+          onClick={onCancel}
+        >
           Cancel
         </ButtonDefault>
       )}
       {options &&
         options.map(option => (
           <ButtonDefault
-            data-testid={option.buttonText}
+            data-testid={`options-modal-${option.buttonText}`}
             size="l"
             inline
             priority="primary"

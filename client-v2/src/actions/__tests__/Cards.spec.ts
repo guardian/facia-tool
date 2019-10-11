@@ -22,15 +22,13 @@ import {
   reducer as collectionsReducer,
   initialState as collectionsState
 } from 'shared/bundles/collectionsBundle';
-import { confirmModal, optionsModal } from 'reducers/modalsReducer';
-import { endConfirmModal } from 'actions/ConfirmModal';
+import { optionsModal } from 'reducers/modalsReducer';
 import config from 'reducers/configReducer';
 import { enableBatching } from 'redux-batched-actions';
 import { Dispatch } from 'types/Store';
 import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 
 const root = (state: any = {}, action: any) => ({
-  confirmModal: confirmModal(state.confirmModal, action),
   optionsModal: optionsModal(state.optionsModal, action),
   clipboard: clipboardReducer(state.clipboard, action, state.shared),
   path: '',
@@ -60,7 +58,6 @@ const buildStore = (added: CardSpec, collectionCap = Infinity) => {
   ];
   const all = [...groupA, ...groupB, ...clipboard, added];
   const state = {
-    confirmModal: null,
     path: '',
     config: {
       collectionCap
@@ -98,19 +95,10 @@ const insert = async (
   insertedCardSpec: [string, string],
   index: number,
   parentType: string,
-  parentId: string,
-  // sets the collection cap and allows a way to accept, reject, ignore the
-  // modal immediately
-  collectionCapInfo?: {
-    cap: number;
-    accept: boolean | null;
-  }
+  parentId: string
 ) => {
   const [uuid, id] = insertedCardSpec;
-  const { dispatch, getState } = buildStore(
-    [uuid, id, undefined],
-    collectionCapInfo ? collectionCapInfo.cap : Infinity
-  );
+  const { dispatch, getState } = buildStore([uuid, id, undefined]);
   await dispatch(insertCard(
     { type: parentType, id: parentId, index },
     { type: 'REF', data: parentId },
@@ -118,10 +106,6 @@ const insert = async (
     afId => () =>
       Promise.resolve(selectCard(selectSharedState(getState()), uuid))
   ) as any);
-
-  if (collectionCapInfo && collectionCapInfo.accept !== null) {
-    dispatch(endConfirmModal(collectionCapInfo.accept));
-  }
 
   return getState();
 };
@@ -132,19 +116,10 @@ const move = (
   toType: string,
   toId: string,
   fromType: string,
-  fromId: string,
-  // sets the collection cap and allows a way to accept, reject, ignore the
-  // modal immediately
-  collectionCapInfo?: {
-    cap: number;
-    accept: boolean | null;
-  }
+  fromId: string
 ) => {
   const [uuid, id] = movedCardSpec;
-  const { dispatch, getState } = buildStore(
-    [uuid, id, undefined],
-    collectionCapInfo ? collectionCapInfo.cap : Infinity
-  );
+  const { dispatch, getState } = buildStore([uuid, id, undefined]);
   dispatch(moveCard(
     {
       type: toType,
@@ -159,12 +134,6 @@ const move = (
     },
     'clipboard' // doesn't matter where we persist
   ) as any);
-
-  // setting accept to null will enuse the modal is still "open" during the test
-  // assertions
-  if (collectionCapInfo && collectionCapInfo.accept !== null) {
-    dispatch(endConfirmModal(collectionCapInfo.accept));
-  }
 
   return getState();
 };
@@ -252,28 +221,6 @@ describe('Cards actions', () => {
     });
   });
 
-  it('enforces collection caps on insert through a modal', async () => {
-    expect(
-      selectGroupArticles(
-        await insert(['h', '8'], 2, 'group', 'a', {
-          cap: 3,
-          accept: true
-        }),
-        'a'
-      )
-    ).toEqual(['a', 'b', 'h']);
-
-    expect(
-      selectGroupArticles(
-        await insert(['h', '8'], 2, 'group', 'a', {
-          cap: 3,
-          accept: false
-        }),
-        'a'
-      )
-    ).toEqual(['a', 'b', 'c']);
-  });
-
   describe('move', () => {
     it('removes articles from their previous position', () => {
       const s1 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard');
@@ -283,30 +230,6 @@ describe('Cards actions', () => {
       const s2 = move(['a', '1'], 0, 'clipboard', 'clipboard', 'group', 'a');
       expect(selectGroupArticles(s2, 'a')).toEqual(['b', 'c']);
       expect(selectClipboard(s2)).toEqual(['a', 'd', 'e', 'f']);
-    });
-
-    it('enforces collection caps on move through a modal', () => {
-      const s1 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard', {
-        cap: 3,
-        accept: true
-      });
-      expect(selectGroupArticles(s1, 'a')).toEqual(['d', 'a', 'b']);
-      expect(selectClipboard(s1)).toEqual(['e', 'f']);
-
-      const s2 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard', {
-        cap: 3,
-        accept: false
-      });
-      expect(selectGroupArticles(s2, 'a')).toEqual(['a', 'b', 'c']);
-      expect(selectClipboard(s2)).toEqual(['d', 'e', 'f']);
-    });
-
-    it('collection caps allow moves within collections without a modal', () => {
-      const s1 = move(['a', '1'], 2, 'group', 'a', 'group', 'a', {
-        cap: 6,
-        accept: null
-      });
-      expect(selectGroupArticles(s1, 'a')).toEqual(['b', 'c', 'a']);
     });
   });
 

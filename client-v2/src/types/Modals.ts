@@ -5,15 +5,6 @@ type StyledModalProps = Modal.Props & {
   width?: number;
 };
 
-interface ConfirmModalProps {
-  title: string;
-  description: string | ReactNode;
-  isOpen: boolean;
-  onAccept: () => void;
-  onReject: () => void;
-  showCancelButton: boolean;
-}
-
 interface OptionsModalChoices {
   buttonText: string;
   callback: () => void;
@@ -28,9 +19,4 @@ interface OptionsModalProps {
   showCancelButton: boolean;
 }
 
-export {
-  StyledModalProps,
-  OptionsModalProps,
-  OptionsModalChoices,
-  ConfirmModalProps
-};
+export { StyledModalProps, OptionsModalProps, OptionsModalChoices };

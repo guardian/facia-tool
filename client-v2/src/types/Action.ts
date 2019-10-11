@@ -263,21 +263,6 @@ interface FetchVisibleArticlesSuccess {
   };
 }
 
-interface StartConfirm {
-  type: 'MODAL/START_CONFIRM';
-  payload: {
-    title: string;
-    description: string | ReactNode;
-    onAccept: () => void;
-    onReject: () => void;
-    showCancelButton: boolean;
-  };
-}
-
-interface EndConfirm {
-  type: 'MODAL/END_CONFIRM';
-}
-
 interface StartOptionsModal {
   type: 'MODAL/START_OPTIONS_MODAL';
   payload: {
@@ -359,8 +344,6 @@ type Action =
   | RecordStaleFronts
   | BatchAction
   | FetchVisibleArticlesSuccess
-  | StartConfirm
-  | EndConfirm
   | EditorOpenCollection
   | EditorCloseCollection
   | SetFocusState
@@ -418,8 +401,6 @@ export {
   EditorOpenAllOverviews,
   EditorCloseAllOverviews,
   RecordStaleFronts,
-  StartConfirm,
-  EndConfirm,
   IsPrefillMode,
   ChangedBrowsingStage,
   StartOptionsModal,

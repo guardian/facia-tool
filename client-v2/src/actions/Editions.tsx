@@ -8,9 +8,9 @@ import {
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
 import { actions } from 'bundles/editionsIssueBundle';
-import { startConfirmModal } from './ConfirmModal';
 import { EditionsFrontMetadata } from 'types/FaciaApi';
 import noop from 'lodash/noop';
+import { startOptionsModal } from './OptionsModal';
 
 export const getEditionIssue = (
   id: string
@@ -30,7 +30,7 @@ export const publishEditionIssue = (
   try {
     await publishIssue(id);
     dispatch(
-      startConfirmModal(
+      startOptionsModal(
         'Publish Succeeded',
         <>
           <p>
@@ -42,22 +42,22 @@ export const publishEditionIssue = (
             of the suport team.
           </p>
         </>,
-        noop,
+        [],
         noop,
         false
       )
     );
   } catch (error) {
     dispatch(
-      startConfirmModal(
+      startOptionsModal(
         'Published Failed',
         <>
           <p>Failed to publish issue!</p>
           <p>If this problem persists, contact the support team.</p>
         </>,
+        [],
         noop,
-        noop,
-        false
+        true
       )
     );
   }
