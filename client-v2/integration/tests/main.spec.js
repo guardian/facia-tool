@@ -99,7 +99,7 @@ test('Snap Links - Guardian', async t => {
   const tagSnap = await guardianSnapLink();
   await t
     .dragToElement(tagSnap, frontDropZone(1)) //drag tag into parent position (not a sublink)
-    .click(optionsModalChoice('options-modal-Link'))
+    .click(optionsModalChoice('options-modal-link'))
     .expect(frontDropZone().count)
     .eql(frontDropsCount + 2) // adding a sublink adds 1 dropzone, adding a normal article adds 2
     .expect(frontSnapLink(0).textContent)
@@ -113,7 +113,7 @@ test('Snap Links - Guardian Latest', async t => {
   const tagSnap = await guardianSnapLink();
   await t
     .dragToElement(tagSnap, frontDropZone(1))
-    .click(optionsModalChoice('options-modal-Latest from'))
+    .click(optionsModalChoice('options-modal-latest-from'))
     .expect(frontDropZone().count)
     .eql(frontDropsCount + 2)
     .expect(frontSnapLink(0).textContent)
@@ -176,7 +176,7 @@ test('Drag from clipboard to full collection - accept modal', async t => {
 
   await t
     .dragToElement(externalSnap, collectionDropZone(2, 2))
-    .click(optionsModalChoice('options-modal-Confirm'))
+    .click(optionsModalChoice('options-modal-confirm'))
     .expect(allCards(2).count)
     .eql(fullCollectionCount - 1); // there are now 19 articles and 1 snap
 });

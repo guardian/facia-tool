@@ -95,10 +95,19 @@ const insert = async (
   insertedCardSpec: [string, string],
   index: number,
   parentType: string,
-  parentId: string
+  parentId: string,
+  // sets the collection cap and allows a way to accept, reject, ignore the
+  // modal immediately
+  collectionCapInfo?: {
+    cap: number;
+    accept: boolean | null;
+  }
 ) => {
   const [uuid, id] = insertedCardSpec;
-  const { dispatch, getState } = buildStore([uuid, id, undefined]);
+  const { dispatch, getState } = buildStore(
+    [uuid, id, undefined],
+    collectionCapInfo ? collectionCapInfo.cap : Infinity
+  );
   await dispatch(insertCard(
     { type: parentType, id: parentId, index },
     { type: 'REF', data: parentId },
@@ -106,6 +115,11 @@ const insert = async (
     afId => () =>
       Promise.resolve(selectCard(selectSharedState(getState()), uuid))
   ) as any);
+
+  // TODO: use modal service to mock return from modal
+  // if (collectionCapInfo && collectionCapInfo.accept !== null) {
+  //   dispatch(endConfirmModal(collectionCapInfo.accept));
+  // }
 
   return getState();
 };
@@ -116,10 +130,19 @@ const move = (
   toType: string,
   toId: string,
   fromType: string,
-  fromId: string
+  fromId: string,
+  // sets the collection cap and allows a way to accept, reject, ignore the
+  // modal immediately
+  collectionCapInfo?: {
+    cap: number;
+    accept: boolean | null;
+  }
 ) => {
   const [uuid, id] = movedCardSpec;
-  const { dispatch, getState } = buildStore([uuid, id, undefined]);
+  const { dispatch, getState } = buildStore(
+    [uuid, id, undefined],
+    collectionCapInfo ? collectionCapInfo.cap : Infinity
+  );
   dispatch(moveCard(
     {
       type: toType,
@@ -134,6 +157,11 @@ const move = (
     },
     'clipboard' // doesn't matter where we persist
   ) as any);
+
+  // TODO: use modal service to mock return from modal
+  // if (collectionCapInfo && collectionCapInfo.accept !== null) {
+  //   dispatch(endConfirmModal(collectionCapInfo.accept));
+  // }
 
   return getState();
 };
@@ -219,6 +247,29 @@ describe('Cards actions', () => {
         )
       ).toEqual(['g', 'h']);
     });
+
+    // TODO: Remove skip when mock modal service is implemented
+    it.skip('enforces collection caps on insert through a modal', async () => {
+      expect(
+        selectGroupArticles(
+          await insert(['h', '8'], 2, 'group', 'a', {
+            cap: 3,
+            accept: true
+          }),
+          'a'
+        )
+      ).toEqual(['a', 'b', 'h']);
+
+      expect(
+        selectGroupArticles(
+          await insert(['h', '8'], 2, 'group', 'a', {
+            cap: 3,
+            accept: false
+          }),
+          'a'
+        )
+      ).toEqual(['a', 'b', 'c']);
+    });
   });
 
   describe('move', () => {
@@ -230,6 +281,32 @@ describe('Cards actions', () => {
       const s2 = move(['a', '1'], 0, 'clipboard', 'clipboard', 'group', 'a');
       expect(selectGroupArticles(s2, 'a')).toEqual(['b', 'c']);
       expect(selectClipboard(s2)).toEqual(['a', 'd', 'e', 'f']);
+    });
+
+    // TODO: Remove skip when mock modal service is implemented
+    it.skip('enforces collection caps on move through a modal', () => {
+      const s1 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard', {
+        cap: 3,
+        accept: true
+      });
+      expect(selectGroupArticles(s1, 'a')).toEqual(['d', 'a', 'b']);
+      expect(selectClipboard(s1)).toEqual(['e', 'f']);
+
+      const s2 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard', {
+        cap: 3,
+        accept: false
+      });
+      expect(selectGroupArticles(s2, 'a')).toEqual(['a', 'b', 'c']);
+      expect(selectClipboard(s2)).toEqual(['d', 'e', 'f']);
+    });
+
+    // TODO: Remove skip when mock modal service is implemented
+    it.skip('collection caps allow moves within collections without a modal', () => {
+      const s1 = move(['a', '1'], 2, 'group', 'a', 'group', 'a', {
+        cap: 6,
+        accept: null
+      });
+      expect(selectGroupArticles(s1, 'a')).toEqual(['b', 'c', 'a']);
     });
   });
 

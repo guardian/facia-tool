@@ -72,7 +72,9 @@ const OptionsModal = ({
       {options &&
         options.map(option => (
           <ButtonDefault
-            data-testid={`options-modal-${option.buttonText}`}
+            data-testid={`options-modal-${option.buttonText
+              .toLocaleLowerCase()
+              .replace(' ', '-')}`}
             size="l"
             inline
             priority="primary"

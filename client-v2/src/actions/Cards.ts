@@ -141,7 +141,7 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
           [
             {
               buttonText: 'Confirm',
-              callback: () => confirmRemoval()
+              callback: confirmRemoval
             }
           ],
           // otherwise do nothing
