@@ -44,7 +44,7 @@ export const publishEditionIssue = (
         </>,
         [],
         noop,
-        false
+        true
       )
     );
   } catch (error) {
