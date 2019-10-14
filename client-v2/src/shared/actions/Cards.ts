@@ -282,8 +282,8 @@ const getArticleEntitiesFromGuardianPath = async (
   new Promise((resolve, reject) => {
     dispatch(
       startOptionsModal(
-        'Link type',
-        `Click on "Latest from" to create: { Latest from ${title} } or "Link" to just create a Link`,
+        'Choose snaplink type',
+        `Click "Latest from" to always display most recent content with '${title}' tag or click "Link" to just create a link to this tag page`,
         [
           {
             buttonText: 'Latest from',
