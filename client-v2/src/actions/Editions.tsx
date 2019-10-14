@@ -42,9 +42,9 @@ export const publishEditionIssue = (
             of the suport team.
           </p>
         </>,
-        [],
+        [{ buttonText: 'Dismiss', callback: noop }],
         noop,
-        true
+        false
       )
     );
   } catch (error) {
