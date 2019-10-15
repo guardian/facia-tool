@@ -1,6 +1,6 @@
 package controllers
 
-import com.gu.facia.client.models.{Metadata, Trail}
+import com.gu.facia.client.models.{Metadata, TargetedTerritory, Trail}
 import model.{Cached, FeatureSwitch, UserDataForDefaults}
 import permissions.Permissions
 import play.api.libs.json.{JsValue, Json}
@@ -12,25 +12,26 @@ object Defaults {
 }
 
 case class Defaults(
-  dev: Boolean,
-  env: String,
-  editions: Seq[String],
-  email: String,
-  avatarUrl: Option[String],
-  firstName: String,
-  lastName: String,
-  sentryPublicDSN: String,
-  mediaBaseUrl: String,
-  apiBaseUrl: String,
-  switches: JsValue,
-  acl: AclJson,
-  collectionCap: Int,
-  navListCap: Int,
-  navListType: String,
-  collectionMetadata: Iterable[Metadata],
-  userData: Option[UserDataForDefaults],
-  capiLiveUrl: String = "",
-  capiPreviewUrl: String = ""
+                     dev: Boolean,
+                     env: String,
+                     editions: Seq[String],
+                     email: String,
+                     avatarUrl: Option[String],
+                     firstName: String,
+                     lastName: String,
+                     sentryPublicDSN: String,
+                     mediaBaseUrl: String,
+                     apiBaseUrl: String,
+                     switches: JsValue,
+                     acl: AclJson,
+                     collectionCap: Int,
+                     navListCap: Int,
+                     navListType: String,
+                     collectionMetadata: Iterable[Metadata],
+                     userData: Option[UserDataForDefaults],
+                     capiLiveUrl: String = "",
+                     capiPreviewUrl: String = "",
+                     availableTerritories: Iterable[TargetedTerritory] = Nil
 )
 
 class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
@@ -63,7 +64,8 @@ class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaCo
         Metadata.tags.map{
           case (_, meta) => meta
         },
-        None
+        None,
+        availableTerritories = TargetedTerritory.allTerritories
       )))
     }
   }
