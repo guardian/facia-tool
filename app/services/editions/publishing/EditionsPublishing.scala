@@ -24,7 +24,7 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
     val markers = Markers.appendEntries(
       Map (
         "issue-id" -> issue.id,
-        "issue-date" -> issue.issueDate,
+        "issue-date" -> issue.issueDate.toString,
         "version" -> versionId,
         "user" -> user.email
       ).asJava
