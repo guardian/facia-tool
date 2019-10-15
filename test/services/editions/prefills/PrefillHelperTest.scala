@@ -13,7 +13,7 @@ class PrefillHelperTest extends FunSuite with Matchers {
   private def prefillHelper = PrefillHelper(TestEdition.templates)
 
   test("defineTimeWindow should return expected time window") {
-    val timeWindowCfg = TimeWindowConfigInDays(startDiff = -1, endDiff = 2)
+    val timeWindowCfg = TimeWindowConfigInDays(startOffset = -1, endOffset = 2)
     PrefillHelper.defineTimeWindow(issueDate, timeWindowCfg) shouldEqual CapiQueryTimeWindow(
       LocalDate.of(2019, 10, 4).atStartOfDay().toInstant(ZoneOffset.UTC),
       LocalDate.of(2019, 10, 7).atStartOfDay().toInstant(ZoneOffset.UTC)

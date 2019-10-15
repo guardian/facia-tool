@@ -18,8 +18,8 @@ object TestEdition {
     availability = Daily(),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
-        startDiff = -1,
-        endDiff= 2)
+        startOffset = -1,
+        endOffset= 2)
     )
   )
 

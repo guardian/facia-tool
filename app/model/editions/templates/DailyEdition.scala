@@ -60,8 +60,8 @@ object DailyEdition {
     availability = Daily(),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
-        startDiff = 0,
-        endDiff = 0)
+        startOffset = 0,
+        endOffset = 0)
     )
   )
 

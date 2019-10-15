@@ -59,8 +59,8 @@ object PrefillHelper {
   private[prefills] def defineTimeWindow(issueDate: LocalDate, timeWindowConfig: TimeWindowConfigInDays): CapiQueryTimeWindow = {
     val issueDateStart = issueDate.atStartOfDay()
     // Regarding UTC Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
-    val fromDateUTC = issueDateStart.plusDays(timeWindowConfig.startDiff).toInstant(ZoneOffset.UTC)
-    val toDateAsUTC = issueDateStart.plusDays(timeWindowConfig.endDiff).toInstant(ZoneOffset.UTC)
+    val fromDateUTC = issueDateStart.plusDays(timeWindowConfig.startOffset).toInstant(ZoneOffset.UTC)
+    val toDateAsUTC = issueDateStart.plusDays(timeWindowConfig.endOffset).toInstant(ZoneOffset.UTC)
     CapiQueryTimeWindow(fromDateUTC, toDateAsUTC)
   }
 
