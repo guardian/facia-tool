@@ -58,9 +58,32 @@ interface CAPITagQueryReponse {
   };
 }
 
+interface CAPIAtomResponse {
+  response: {
+    status: CAPIStatus;
+    userTier: string;
+    total: number,
+    interactive: CAPIAtomInteractive
+  }
+}
+
+interface CAPIAtomInteractive {
+  id: string;
+  atomType: string;
+  labels: [];
+  defaultHtml: string;
+  data: {
+    interactive: {
+      title: string
+    }
+  };
+  contentChangeDetails: object;
+  commissioningDesks: [];
+};
+
 const getErrorMessageFromResponse = (response: Response) =>
   `Error making a request to CAPI: the server returned ${response.status}, ${
-    response.statusText
+  response.statusText
   }`;
 
 /**
@@ -110,8 +133,8 @@ const capiQuery = (baseURL: string) => {
     return options && options.isResource
       ? `${baseURL}/${q}${qs({ ...rest })}`
       : `${baseURL}/${path}${qs({
-          ...params
-        })}`;
+        ...params
+      })}`;
   };
 
   return {
@@ -164,6 +187,7 @@ export {
   checkIsContent,
   CAPISearchQueryResultsResponse,
   checkIsResults,
-  CAPITagQueryReponse
+  CAPITagQueryReponse,
+  CAPIAtomResponse
 };
 export default capiQuery;
