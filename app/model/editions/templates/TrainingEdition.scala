@@ -8,7 +8,7 @@ import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
 object TrainingEdition {
-  val template = EditionTemplate(
+  lazy val template = EditionTemplate(
     List(
       FrontNewsSpecial -> Daily(),
       FrontWorldSpecial -> Daily(),
@@ -16,7 +16,12 @@ object TrainingEdition {
       FrontCrosswords -> Daily(),
     ),
     zoneId = ZoneId.of("Europe/London"),
-    availability = Daily()
+    availability = Daily(),
+    capiQueryPrefillParams = CapiQueryPrefillParams(
+      timeWindowConfig = TimeWindowConfigInDays(
+        startOffset = 0,
+        endOffset = 0)
+    )
   )
 
   def FrontNewsSpecial = specialFront("News Special", News)

@@ -146,8 +146,12 @@ case class FrontTemplate(
   def swatch(swatch: Swatch) = copy(presentation = FrontPresentation(swatch))
 }
 
+case class TimeWindowConfigInDays(startOffset: Int, endOffset: Int)
+case class CapiQueryPrefillParams(timeWindowConfig: TimeWindowConfigInDays)
+
 case class EditionTemplate(
   fronts: List[(FrontTemplate, Periodicity)],
+  capiQueryPrefillParams: CapiQueryPrefillParams,
   zoneId: ZoneId,
   availability: Periodicity,
 )

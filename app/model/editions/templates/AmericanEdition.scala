@@ -8,7 +8,7 @@ import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
 object AmericanEdition {
-  val template = EditionTemplate(
+  lazy val template = EditionTemplate(
     List(
       // Top Stories and Nuclear specials
       FrontSpecial1 -> Daily(),
@@ -57,7 +57,12 @@ object AmericanEdition {
       FrontCrosswords -> Daily(),
     ),
     zoneId = ZoneId.of("Europe/London"),
-    availability = Daily()
+    availability = Daily(),
+    capiQueryPrefillParams = CapiQueryPrefillParams(
+      timeWindowConfig = TimeWindowConfigInDays(
+        startOffset = 0,
+        endOffset = 0)
+    )
   )
 
   def FrontSpecial1 = specialFront("Top Special 1", Neutral)
@@ -76,7 +81,7 @@ object AmericanEdition {
     collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
     collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
   )
-  .swatch(News)
+    .swatch(News)
 
   def FrontNewsUkGuardianSaturday = front(
     "National",
@@ -86,7 +91,7 @@ object AmericanEdition {
     collection("Week in Review").printSentAnyTag("theguardian/mainsection/week-in-review"),
     collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
   )
-  .swatch(News)
+    .swatch(News)
 
   def FrontNewsSpecial = specialFront("News Special", News)
 
@@ -95,7 +100,7 @@ object AmericanEdition {
     collection("World News").printSentAnyTag("theguardian/mainsection/international"),
     collection("World Special").special
   )
-  .swatch(News)
+    .swatch(News)
 
   def FrontNewsUkObserver = front(
     "National",
@@ -104,32 +109,32 @@ object AmericanEdition {
     collection("Focus").printSentAnyTag("theobserver/news/focus").special,
     collection("News Special").special,
   )
-  .swatch(News)
+    .swatch(News)
 
   def FrontNewsWorldObserver = front(
     "World",
     collection("World News").printSentAnyTag("theobserver/news/worldnews"),
     collection("World Special").special,
   )
-  .swatch(News)
+    .swatch(News)
 
   def FrontWorldSpecial = specialFront("World Special", News)
 
   // Financial fronts then special
 
-  def FrontFinancialGuardian = front (
+  def FrontFinancialGuardian = front(
     "Financial",
-    collection("Financial").printSentAnyTag("theguardian/mainsection/financial3","theguardian/mainsection/money"),
+    collection("Financial").printSentAnyTag("theguardian/mainsection/financial3", "theguardian/mainsection/money"),
     collection("Financial Special").special,
-    )
-  .swatch(News)
+  )
+    .swatch(News)
 
-  def FrontFinancialObserver = front (
+  def FrontFinancialObserver = front(
     "Financial",
     collection("Financial").printSentAnyTag("theobserver/news/business", "theobserver/news/cash"),
     collection("Financial Special").special,
-    )
-  .swatch(News)
+  )
+    .swatch(News)
 
   def FrontFinancialSpecial = specialFront("Financial Special", News)
 
@@ -141,14 +146,14 @@ object AmericanEdition {
     collection("Obituaries").printSentAnyTag("theguardian/journal/obituaries"),
     collection("Journal Special").special,
   )
-  .swatch(Opinion)
+    .swatch(Opinion)
 
   def FrontComment = front(
     "Journal",
     collection("Comment").printSentAnyTag("theobserver/news/comment"),
     collection("Comment Special").special,
   )
-  .swatch(Opinion)
+    .swatch(Opinion)
 
   def FrontOpinionSpecial = specialFront("Journal Special", Opinion)
 
@@ -158,7 +163,7 @@ object AmericanEdition {
     collection("TV & Radio").printSentAnyTag("theguardian/g2/tvandradio"),
     collection("Culture Special").special,
   )
-  .swatch(Culture)
+    .swatch(Culture)
 
   def FrontCultureFilmMusic = front(
     "Culture",
@@ -168,7 +173,7 @@ object AmericanEdition {
     collection("TV & Radio").printSentAnyTag("theguardian/g2/tvandradio"),
     collection("Culture Special"),
   )
-  .swatch(Culture)
+    .swatch(Culture)
 
   def FrontCultureGuide = front(
     "Culture",
@@ -177,7 +182,7 @@ object AmericanEdition {
     collection("TV and Radio").printSentAnyTag("theguardian/theguide/tv-radio"),
     collection("Culture Special"),
   )
-  .swatch(Culture)
+    .swatch(Culture)
 
   def FrontCultureNewReview = front(
     "Culture",
@@ -187,14 +192,14 @@ object AmericanEdition {
     collection("Critics").printSentAnyTag("theobserver/new-review/critics"),
     collection("Culture Special").special,
   )
-  .swatch(Culture)
+    .swatch(Culture)
 
   def FrontBooks = front(
     "Books",
     collection("Books").printSentAnyTag("theguardian/guardianreview/saturdayreviewsfeatres", "theobserver/new-review/books"),
     collection("Books Special").special,
   )
-  .swatch(Culture)
+    .swatch(Culture)
 
   def FrontCultureSpecial = specialFront("Culture Special", Culture)
 
@@ -203,7 +208,7 @@ object AmericanEdition {
     collection("Features").printSentAnyTag("theguardian/g2/features"),
     collection("Life Special").special,
   )
-  .swatch(Lifestyle)
+    .swatch(Lifestyle)
 
   def FrontLifeFashion = front(
     "The Fashion",
@@ -211,7 +216,7 @@ object AmericanEdition {
     collection("Fashion 2").special,
     collection("Fashion 3").special,
   )
-  .swatch(Lifestyle)
+    .swatch(Lifestyle)
 
   def FrontLifeWeekend = front(
     "Life",
@@ -222,14 +227,14 @@ object AmericanEdition {
     collection("Body & Mind").printSentAnyTag("theguardian/weekend/body-and-mind"),
     collection("Life Special").special,
   )
-  .swatch(Lifestyle)
+    .swatch(Lifestyle)
 
   def FrontTravelGuardian = front(
     "Travel",
     collection("Travel").printSentAnyTag("theguardian/travel/travel"),
     collection("Travel Special").special,
-    )
-  .swatch(Lifestyle);
+  )
+    .swatch(Lifestyle);
 
   def FrontLifeMagazineObserver = front(
     "Life",
@@ -237,14 +242,14 @@ object AmericanEdition {
     collection("Life & Style").printSentAllTags("theobserver/magazine/life-and-style", "-food/food"),
     collection("Life Special").printSentAnyTag("theobserver/design/design").special,
   )
-  .swatch(Lifestyle)
+    .swatch(Lifestyle)
 
   def FrontFood = front(
     "Food",
     collection("Food").printSentAnyTag("theguardian/feast/feast"),
     collection("Food Special").special,
   )
-  .swatch(Lifestyle)
+    .swatch(Lifestyle)
 
   def FrontFoodObserver = front(
     "Food",
@@ -252,7 +257,7 @@ object AmericanEdition {
     collection("OFM").printSentAnyTag("theobserver/foodmonthly/features", "theobserver/foodmonthly").special,
     collection("Food Special").special,
   )
-  .swatch(Lifestyle)
+    .swatch(Lifestyle)
 
   def FrontLifeSpecial = specialFront("Life Special", Lifestyle)
 
@@ -261,14 +266,14 @@ object AmericanEdition {
     collection("Sport").printSentAnyTag("theguardian/sport/news"),
     collection("Sport Special").special,
   )
-  .swatch(Sport)
+    .swatch(Sport)
 
   def FrontSportObserver = front(
     "Sport",
     collection("Sport").printSentAnyTag("theobserver/sport/news"),
     collection("Sport Special").special,
   )
-  .swatch(Sport)
+    .swatch(Sport)
 
   def FrontSportSpecial = specialFront("Sport Special", Sport)
 

@@ -7,7 +7,6 @@ import services.editions.EditionsTemplating
 import java.time.{LocalDate, OffsetDateTime}
 
 import model.editions.{Edition, EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
-import services.Capi
 import services.editions.db.EditionsDB
 import services.editions.publishing.EditionsPublishing
 import services.editions.publishing.PublishedIssueFormatters._
@@ -22,6 +21,8 @@ import scala.util.Try
 import scala.collection.JavaConverters._
 import cats.syntax.either._
 import play.api.mvc.Result
+import services.Capi
+import services.editions.prefills.PrefillParamsAdapter
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
@@ -130,7 +131,9 @@ class EditionsController(db: EditionsDB,
 
   def getPrefillForCollection(id: String) = EditEditionsAuthAction.async { req =>
     db.getCollectionPrefillQueryString(id).map { prefillUpdate =>
-      capi.getPrefillArticles(prefillUpdate.issueDate, prefillUpdate.prefill, prefillUpdate.currentPageCodes).map { body =>
+      import prefillUpdate._
+      val prefillParams = PrefillParamsAdapter(issueDate, prefill, edition)
+      capi.getPrefillArticles(prefillParams, prefillUpdate.currentPageCodes).map { body =>
         // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON
         val json = "{\"response\":" + body.asJson.noSpaces + "}"
         val decorated = rewriteBody(json)
