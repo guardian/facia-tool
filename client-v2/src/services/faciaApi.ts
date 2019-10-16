@@ -348,8 +348,7 @@ const getAtomFromCapi = async (path: string) => {
     method: 'get',
     credentials: 'same-origin'
   });
-  const parsedResponse: CAPIInteractiveAtomResponse = await response.json();
-  return parsedResponse;
+  return await response.json();
 };
 
 const getTagOrSectionTitle = (queryResponse: CAPISearchQueryResponse) => {
