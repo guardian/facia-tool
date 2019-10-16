@@ -4,7 +4,6 @@ import play.api.ApplicationLoader.Context
 import play.api.{Application, ApplicationLoader, Configuration, LoggerConfigurator, Mode}
 import switchboard.{SwitchboardConfiguration, Lifecycle => SwitchboardLifecycle}
 import conf.ApplicationConfiguration
-import services.editions.publishing.events.PublishEventsListener
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -49,8 +48,6 @@ class Loader extends ApplicationLoader {
       components.isDev
     )
     new LogStashConfig(components.config)
-
-    PublishEventsListener.apply(config).start
 
     components.application
   }
