@@ -240,7 +240,6 @@ describe('Snap cards actions', () => {
             meta: {
               headline: 'General Election 2017',
               byline: 'Guardian Visuals',
-              trailText: '',
               showByline: false,
               snapType: 'interactive',
               snapUri:

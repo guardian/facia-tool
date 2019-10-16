@@ -78,7 +78,6 @@ async function createAtomSnap(url: string, meta?: CardMeta): Promise<Card> {
       frontPublicationDate: Date.now(),
       meta: {
         headline: title,
-        trailText: '',
         byline: 'Guardian Visuals',
         showByline: false,
         snapType: 'interactive',
