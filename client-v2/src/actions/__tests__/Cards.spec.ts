@@ -30,7 +30,7 @@ import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 
 const root = (state: any = {}, action: any) => ({
   optionsModal: optionsModal(state.optionsModal, action),
-  clipboard: clipboardReducer(state.clipboard, action, state.shared),
+  clipboard: clipboardReducer(state.clipboard, action),
   path: '',
   shared: {
     cards: cardsReducer(state.shared.cards, action, state.shared),

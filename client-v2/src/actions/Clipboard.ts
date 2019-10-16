@@ -13,6 +13,7 @@ import {
 } from 'types/Action';
 import { State } from 'types/State';
 import { addPersistMetaToAction } from 'util/action';
+import { selectCards, selectSharedState } from 'shared/selectors/shared';
 
 export const REMOVE_CLIPBOARD_CARD = 'REMOVE_CLIPBOARD_CARD';
 export const UPDATE_CLIPBOARD_CONTENT = 'UPDATE_CLIPBOARD_CONTENT';
@@ -67,26 +68,39 @@ function updateClipboard(clipboardContent: {
   };
 }
 
-const insertClipboardCard = (
+const actionInsertClipboardCard = (
   id: string,
   index: number,
-  cardId: string
+  cardId: string,
+  currentCards: { [uuid: string]: Card }
 ): InsertClipboardCard => ({
   type: INSERT_CLIPBOARD_CARD,
   payload: {
     id,
     index,
-    cardId
+    cardId,
+    currentCards
   }
 });
 
-const insertClipboardCardWithPersist = addPersistMetaToAction(
-  insertClipboardCard,
+const actionInsertClipboardCardWithPersist = addPersistMetaToAction(
+  actionInsertClipboardCard,
   {
     persistTo: 'clipboard',
     key: 'cardId'
   }
 );
+
+const thunkInsertClipboardCard = (
+  id: string,
+  index: number,
+  cardId: string
+): ThunkResult<void> => (dispatch, getState) => {
+  const currentCards = selectCards(selectSharedState(getState()));
+  dispatch(
+    actionInsertClipboardCardWithPersist(id, index, cardId, currentCards)
+  );
+};
 
 const removeClipboardCard = (
   id: string,
@@ -114,8 +128,7 @@ export {
   storeClipboardContent,
   updateClipboard,
   updateClipboardContent,
-  insertClipboardCard,
-  insertClipboardCardWithPersist,
+  thunkInsertClipboardCard,
   removeClipboardCard,
   clearClipboard,
   clearClipboardWithPersist
