@@ -18,11 +18,7 @@ import {
 import pandaFetch from './pandaFetch';
 import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
-import {
-  CAPISearchQueryResponse,
-  checkIsResults,
-  CAPIInteractiveAtomResponse
-} from './capiQuery';
+import { CAPISearchQueryResponse, checkIsResults } from './capiQuery';
 import flatMap from 'lodash/flatMap';
 import { EditionsIssue, EditionsCollection } from 'types/Edition';
 import { EditionsRoutes } from 'routes/routes';
