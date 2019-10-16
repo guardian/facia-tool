@@ -354,9 +354,6 @@ const getAtomFromCapi = async (path: string) => {
 
 const getTagOrSectionTitle = (queryResponse: CAPISearchQueryResponse) => {
   const { response } = queryResponse;
-
-  //  getAtomFromCapi('/atom/interactive/interactives/2017/06/general-election');
-
   return response
     ? (response.tag && response.tag.webTitle) ||
         (response.section && response.section.webTitle)

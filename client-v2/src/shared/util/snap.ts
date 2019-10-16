@@ -82,7 +82,7 @@ async function createAtomSnap(url: string, meta?: CardMeta): Promise<Card> {
         byline: 'Guardian Visuals',
         showByline: false,
         snapType: 'interactive',
-        ...meta
+        snapUri: url
       }
     });
   } catch (e) {
