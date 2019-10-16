@@ -56,14 +56,15 @@ object AustralianEdition {
       // Crosswords
       FrontCrosswords -> Daily(),
     ),
-    zoneId = ZoneId.of("Europe/London"),
-    availability = Daily(),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = 0,
         endOffset = 0
       )
-    )
+    ),
+    zoneId = ZoneId.of("Europe/London"),
+    availability = Daily(),
+    7
   )
 
   def FrontSpecial1 = specialFront("Top Special 1", Neutral)

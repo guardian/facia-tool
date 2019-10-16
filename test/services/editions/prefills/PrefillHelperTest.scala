@@ -24,7 +24,7 @@ class PrefillHelperTest extends FunSuite with Matchers {
 
     val prefillQuery = CapiPrefillQuery("?tag=theguardian/mainsection/topstories", PathType.PrintSent)
 
-    val prefillParams = PrefillParamsAdapter(issueDate, prefillQuery, Edition.TrainingEdition)
+    val prefillParams = PrefillParamsAdapter(issueDate, prefillQuery, None, 0l, Edition.TrainingEdition)
 
     val fields = List(
       "newspaperEditionDate",

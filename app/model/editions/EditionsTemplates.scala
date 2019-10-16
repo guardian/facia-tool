@@ -139,6 +139,7 @@ case class FrontTemplate(
   name: String,
   collections: List[CollectionTemplate],
   presentation: FrontPresentation,
+  ophanUrl: Option[String],
   isSpecial: Boolean = false,
   hidden: Boolean = false
 ) {
@@ -154,6 +155,7 @@ case class EditionTemplate(
   capiQueryPrefillParams: CapiQueryPrefillParams,
   zoneId: ZoneId,
   availability: Periodicity,
+  ophanRangeSearchDays: Long
 )
 
 // Issue skeletons are what is generated when you create a new issue for a given date

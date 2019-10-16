@@ -105,8 +105,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
    * @param prefillParams
    * @return
    */
-  def getPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
-
+  def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
     val fields = List(
       "newspaperEditionDate",
       "newspaperPageNumber",
@@ -119,22 +118,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     logger.info(s"getPrefillArticleItems, Prefill Query: $query")
 
     this.getResponse(query) map { response =>
-      response.results
-        .map { content =>
-          val newspaperPageNumber = content.fields.flatMap(_.newspaperPageNumber)
-          val prefill = prefillMetadata(content)
-          (newspaperPageNumber, prefill)
-        }
-        .collect {
-          case (Some(newspaperPageNumber), Some(metadata)) => (newspaperPageNumber, metadata)
-        }
-        .sortBy {
-          case (newspaperPageNumber, _) => newspaperPageNumber
-        }
-        .map {
-          case (_, metaData) => metaData
-        }
-        .toList
+      response.results.flatMap( content => prefillMetadata(content) ).toList
     }
   }
 
@@ -154,7 +138,7 @@ case class CapiQueryGenerator(pathType: PathType, parameterHolder: Map[String, P
 trait Capi {
   def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)]
 
-  def getPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]]
+  def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]]
 
   def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse]
 }

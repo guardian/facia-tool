@@ -11,15 +11,20 @@ object TemplateHelpers {
   def collection(name: String): CollectionTemplate =
     CollectionTemplate(name, None, Defaults.defaultCollectionPresentation, hidden = false)
 
-  def front(name: String, collections: CollectionTemplate*): FrontTemplate =
-    FrontTemplate(name, collections.toList, Defaults.defaultFrontPresentation)
+  def front(name: String, ophanUrl: Option[String], collections: CollectionTemplate*): FrontTemplate =
+    FrontTemplate(name, collections.toList, Defaults.defaultFrontPresentation, ophanUrl)
 
-  def specialFront(name: String, swatch: Swatch, prefill: Option[CapiPrefillQuery] = None) = front(
+  def front(name: String, collections: CollectionTemplate*): FrontTemplate =
+    FrontTemplate(name, collections.toList, Defaults.defaultFrontPresentation, None)
+
+  def specialFront(name: String, swatch: Swatch, ophanUrl: Option[String] = None, prefill: Option[CapiPrefillQuery] = None) = front(
     name,
+    ophanUrl,
     collection("Special Container 1").special.copy(prefill = prefill),
     collection("Special Container 2").special,
     collection("Special Container 3").special
   ).special
-   .swatch(swatch)
+    .swatch(swatch)
+
 }
 

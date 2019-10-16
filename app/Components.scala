@@ -38,6 +38,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   // Services
   val awsEndpoints = new AwsEndpoints(config)
   val capi = new GuardianCapi(config)
+  val ophan = new GuardianOphan(config)
   val awsCredentials: AWSCredentialsProvider = config.aws.cmsFrontsAccountCredentials
   val dynamo: AmazonDynamoDB = Dynamo.client(awsCredentials, config.aws.region)
   val s3Client = S3.client(awsCredentials, config.aws.region)
@@ -45,7 +46,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
 
   // Editions services
   val editionsDb = new EditionsDB(config.postgres.url, config.postgres.user, config.postgres.password)
-  val templating = new EditionsTemplating(EditionsTemplates.templates, capi)
+  val templating = new EditionsTemplating(EditionsTemplates.templates, capi, ophan)
   val publishingBucket = new EditionsBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
   val previewBucket = new EditionsBucket(s3Client, config.aws.previewEditionsIssuesBucket)
   val editionsPublishing = new EditionsPublishing(publishingBucket, previewBucket, editionsDb)

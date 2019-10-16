@@ -9,6 +9,8 @@ package object prefills {
 
   case class Prefill(
                       internalPageCode: Int,
+                      newspaperPageNumber: Option[Int],
+                      webUrl: String,
                       metaData: ResolvedMetaData,
                       cutout: Option[Image],
                       tone: String,
@@ -18,6 +20,12 @@ package object prefills {
 
   case class CapiQueryTimeWindow(fromDate: Instant, toDate: Instant)
 
-  case class PrefillParamsAdapter(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, edition: Edition)
+  case class PrefillParamsAdapter(
+                                  issueDate: LocalDate,
+                                  capiPrefillQuery: CapiPrefillQuery,
+                                  maybeOphanUrl: Option[String],
+                                  range: Long,
+                                  edition: Edition
+                                 )
 
 }

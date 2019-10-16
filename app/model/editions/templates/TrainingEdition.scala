@@ -15,13 +15,14 @@ object TrainingEdition {
       FrontOpinionSpecial -> Daily(),
       FrontCrosswords -> Daily(),
     ),
-    zoneId = ZoneId.of("Europe/London"),
-    availability = Daily(),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = 0,
         endOffset = 0)
-    )
+    ),
+    zoneId = ZoneId.of("Europe/London"),
+    availability = Daily(),
+    3
   )
 
   def FrontNewsSpecial = specialFront("News Special", News)
