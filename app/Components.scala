@@ -6,15 +6,14 @@ import controllers._
 import filters._
 import frontsapi.model.UpdateActions
 import metrics.CloudWatch
+import model.editions.EditionsTemplates
 import play.api.ApplicationLoader.Context
 import play.api.Mode
-import play.api.db.{DBComponents, HikariCPComponents}
 import play.api.db.evolutions.EvolutionsComponents
+import play.api.db.{DBComponents, HikariCPComponents}
 import play.api.routing.Router
 import play.filters.cors.CORSConfig
 import play.filters.cors.CORSConfig.Origins
-import filters._
-import model.editions.EditionsTemplates
 import router.Routes
 import services._
 import services.editions.EditionsTemplating
@@ -72,7 +71,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val encryption = new Encryption(config)
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
-//  Controllers
+  //  Controllers
   val editions = new EditionsController(editionsDb, templating, editionsPublishing, capi, this)
   val collection = new CollectionController(acl, structuredLogger, updateManager, press, this)
   val defaults = new DefaultsController(acl, isDev, this)
@@ -100,10 +99,23 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     allowedOrigins = Origins.Matching(Set(config.environment.applicationUrl))
   )
 
+  def showBasicConfigForDownstream: Map[String, String] = {
+    Map(
+      "capiHost" -> capi.targetUrl,
+      "publishingBucket" -> config.aws.publishedEditionsIssuesBucket,
+      "previewBucket" -> config.aws.previewEditionsIssuesBucket,
+      "ophanApiHost" -> config.ophanApi.host.getOrElse(""),
+      "cdnBasePath" -> config.cdn.basePath,
+      "gridApi" -> config.media.apiUrl
+    )
+  }
+
+  val selfDocs = new ConfigSelfDocsApi(showBasicConfigForDownstream, deps = this)
+
   override lazy val assets: Assets = new controllers.Assets(httpErrorHandler, assetsMetadata)
 
   val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
-    pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy, editions)
+    pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy, editions, selfDocs)
 
 
   override lazy val httpFilters = Seq(
@@ -111,4 +123,5 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     corsFilter,
     loggingFilter
   )
+
 }
