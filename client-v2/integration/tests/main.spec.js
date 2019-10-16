@@ -23,7 +23,8 @@ import {
   cardDeleteButton,
   collectionDiscardButton,
   cardAddToClipboardButton,
-  clipboardItemDeleteButton
+  clipboardItemDeleteButton,
+  optionsModalChoice
 } from '../selectors';
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
@@ -53,7 +54,7 @@ test('Drag and drop', async t => {
     .expect(frontHeadline().textContent)
     .eql(topFeedHeadline)
     // drag top to bottom in front
-    .dragToElement(frontHeadline(), frontDropZone(-1))
+    .dragToElement(frontHeadline(), frontDropZone(3))
     // wait for collection to update
     .wait(1000)
     .expect(frontDropZone().count)
@@ -97,8 +98,8 @@ test('Snap Links - Guardian', async t => {
   const frontDropsCount = await frontDropZone().count;
   const tagSnap = await guardianSnapLink();
   await t
-    .setNativeDialogHandler(() => false)
     .dragToElement(tagSnap, frontDropZone(1)) //drag tag into parent position (not a sublink)
+    .click(optionsModalChoice('options-modal-link'))
     .expect(frontDropZone().count)
     .eql(frontDropsCount + 2) // adding a sublink adds 1 dropzone, adding a normal article adds 2
     .expect(frontSnapLink(0).textContent)
@@ -111,8 +112,8 @@ test('Snap Links - Guardian Latest', async t => {
   const frontDropsCount = await frontDropZone().count;
   const tagSnap = await guardianSnapLink();
   await t
-    .setNativeDialogHandler(() => true)
     .dragToElement(tagSnap, frontDropZone(1))
+    .click(optionsModalChoice('options-modal-latest-from'))
     .expect(frontDropZone().count)
     .eql(frontDropsCount + 2)
     .expect(frontSnapLink(0).textContent)
@@ -167,4 +168,26 @@ test('Clipboard - drop depth', async t => {
     .wait(1000)
     .expect(prevCount + 1)
     .eql(2);
+});
+
+test('Drag from clipboard to full collection - accept modal', async t => {
+  const externalSnap = await externalSnapLink();
+  const fullCollectionCount = await allCards(2).count;
+
+  await t
+    .dragToElement(externalSnap, collectionDropZone(2, 2))
+    .click(optionsModalChoice('options-modal-confirm'))
+    .expect(allCards(2).count)
+    .eql(fullCollectionCount - 1); // there are now 19 articles and 1 snap
+});
+
+test('Drag from clipboard to full collection - cancel modal', async t => {
+  const externalSnap = await externalSnapLink();
+  const fullCollectionCount = await allCards(2).count;
+
+  await t
+    .dragToElement(externalSnap, collectionDropZone(2, 2))
+    .click(optionsModalChoice('options-modal-cancel'))
+    .expect(allCards(2).count)
+    .eql(fullCollectionCount); // there are still 20 cards
 });

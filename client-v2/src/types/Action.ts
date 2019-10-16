@@ -48,6 +48,7 @@ import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
 import { ReactNode } from 'react';
 import { SetHidden } from '../shared/bundles/collectionsBundle';
+import { OptionsModalChoices } from './Modals';
 
 interface EditorOpenCurrentFrontsMenu {
   type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
@@ -262,19 +263,19 @@ interface FetchVisibleArticlesSuccess {
   };
 }
 
-interface StartConfirm {
-  type: 'MODAL/START_CONFIRM';
+interface StartOptionsModal {
+  type: 'MODAL/START_OPTIONS_MODAL';
   payload: {
     title: string;
     description: string | ReactNode;
-    onAccept: () => void;
-    onReject: () => void;
+    options: OptionsModalChoices[];
+    onCancel: () => void;
     showCancelButton: boolean;
   };
 }
 
-interface EndConfirm {
-  type: 'MODAL/END_CONFIRM';
+interface EndOptionsModal {
+  type: 'MODAL/END_OPTIONS_MODAL';
 }
 
 interface IsPrefillMode {
@@ -343,8 +344,6 @@ type Action =
   | RecordStaleFronts
   | BatchAction
   | FetchVisibleArticlesSuccess
-  | StartConfirm
-  | EndConfirm
   | EditorOpenCollection
   | EditorCloseCollection
   | SetFocusState
@@ -355,7 +354,9 @@ type Action =
   | IsPrefillMode
   | SetHidden
   | ChangedBrowsingStage
-  | EditorCloseFormsForCollection;
+  | EditorCloseFormsForCollection
+  | StartOptionsModal
+  | EndOptionsModal;
 
 export {
   ActionError,
@@ -400,8 +401,8 @@ export {
   EditorOpenAllOverviews,
   EditorCloseAllOverviews,
   RecordStaleFronts,
-  StartConfirm,
-  EndConfirm,
   IsPrefillMode,
-  ChangedBrowsingStage
+  ChangedBrowsingStage,
+  StartOptionsModal,
+  EndOptionsModal
 };

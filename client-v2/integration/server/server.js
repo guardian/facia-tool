@@ -8,6 +8,7 @@ const edition = require('../fixtures/edition');
 const collection = require('../fixtures/collection');
 const collectionTwo = require('../fixtures/collection2');
 const collectionThree = require('../fixtures/collection3');
+const collectionFour = require('../fixtures/collection4');
 const capiCollection = require('../fixtures/capi-collection');
 const capiSearch = require('../fixtures/capi-search');
 const prefill = require('../fixtures/capi-prefill');
@@ -132,6 +133,14 @@ module.exports = async () =>
         {
           id: req.body[1].id,
           collection: collectionTwo,
+          storiesVisibleByStage: {
+            live: { desktop: 4, mobile: 4 },
+            draft: { desktop: 4, mobile: 4 }
+          }
+        },
+        {
+          id: req.body[2].id,
+          collection: collectionFour,
           storiesVisibleByStage: {
             live: { desktop: 4, mobile: 4 },
             draft: { desktop: 4, mobile: 4 }

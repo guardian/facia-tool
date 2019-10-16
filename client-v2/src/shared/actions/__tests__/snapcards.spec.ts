@@ -8,6 +8,9 @@ import { createSnap, createLatestSnap } from 'shared/util/snap';
 import guardianTagPage from 'shared/fixtures/guardianTagPage';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
 import { RefDrop } from 'util/collectionUtils';
+import configureStore from 'util/configureStore';
+import { selectOptionsModalOptions } from 'selectors/modalSelectors';
+import { selectCard, selectSharedState } from 'shared/selectors/shared';
 
 jest.mock('uuid/v4', () => () => 'card1');
 const middlewares = [thunk];
@@ -80,19 +83,27 @@ describe('Snap cards actions', () => {
         '/http/proxy/https://www.theguardian.com/example/tag/page?view=mobile',
         guardianTagPage
       );
-      (window as any).confirm = jest.fn(() => true);
-      const store = mockStore(initialState);
-      await store.dispatch(createArticleEntitiesFromDrop(
+      const store = configureStore(initialState);
+      const promise = store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://www.theguardian.com/example/tag/page')
       ) as any);
-      const actions = store.getActions();
-      expect(actions[0]).toEqual(
-        cardsReceived({
-          card1: await createLatestSnap(
-            'https://www.theguardian.com/example/tag/page',
-            'Example title'
-          )
-        })
+      // We can't wait for the entire promise to be done here -- we need to call the modal
+      // callbacks in order for the thunk to proceed. However, the modal callbacks are only
+      // available on the next event loop tick, so a setTimeout is necessary to ensure they
+      // are present.
+      setTimeout(() => {
+        const options = selectOptionsModalOptions(store.getState());
+        // This is effectively simulating clicking a modal option.
+        options
+          .filter(option => option.buttonText === 'Latest from')
+          .forEach(option => option.callback());
+      });
+      await promise;
+      expect(selectCard(selectSharedState(store.getState()), 'card1')).toEqual(
+        createLatestSnap(
+          'https://www.theguardian.com/example/tag/page',
+          'Example title'
+        )
       );
     });
     it("should fetch tag articles and create a corresponding card representing a snap of type 'link' given user input", async () => {
@@ -106,18 +117,20 @@ describe('Snap cards actions', () => {
         '/http/proxy/https://www.theguardian.com/example/tag/page?view=mobile',
         guardianTagPage
       );
-      (window as any).confirm = jest.fn(() => false);
-      const store = mockStore(initialState);
-      await store.dispatch(createArticleEntitiesFromDrop(
+      const store = configureStore(initialState);
+      const promise = store.dispatch(createArticleEntitiesFromDrop(
         idDrop('https://www.theguardian.com/example/tag/page')
       ) as any);
-      const actions = store.getActions();
-      expect(actions[0]).toEqual(
-        cardsReceived({
-          card1: await createSnap(
-            'https://www.theguardian.com/example/tag/page'
-          )
-        })
+      setTimeout(() => {
+        const options = selectOptionsModalOptions(store.getState());
+        options
+          .filter(option => option.buttonText === 'Link')
+          .forEach(option => option.callback());
+      });
+
+      await promise;
+      expect(selectCard(selectSharedState(store.getState()), 'card1')).toEqual(
+        await createSnap('https://www.theguardian.com/example/tag/page')
       );
     });
     it('should create a snap link if a Guardian URL is provided and no content is returned from CAPI', async () => {

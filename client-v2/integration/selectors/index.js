@@ -29,7 +29,7 @@ const FRONTS_MENU_ITEM = 'fronts-menu-item';
 const PREFILL_BUTTON = 'prefill-button';
 
 const PUBLISH_EDITION_BUTTON = 'publish-edition-button';
-const CONFIRM_MODAL = 'confirm-modal';
+const OPTIONS_MODAL = 'options-modal';
 
 // Html Mocks //
 const GUARDIAN_TAG_ANCHOR = 'guardian-tag';
@@ -84,14 +84,10 @@ export const collectionDropZone = (collectionIndex, dropZoneIndex = 0) =>
   allCollectionDropZones(collectionIndex).nth(dropZoneIndex);
 
 export const cardHeadline = (collectionIndex, itemIndex = 0) =>
-  card(collectionIndex, itemIndex).find(
-    `[data-testid="${HEADLINE_SELECTOR}"]`
-  );
+  card(collectionIndex, itemIndex).find(`[data-testid="${HEADLINE_SELECTOR}"]`);
 
 export const cardKicker = (collectionIndex, itemIndex = 0) =>
-  card(collectionIndex, itemIndex).find(
-    `[data-testid="${KICKER_SELECTOR}"]`
-  );
+  card(collectionIndex, itemIndex).find(`[data-testid="${KICKER_SELECTOR}"]`);
 
 export const cardBreakingNews = (collectionIndex, itemIndex = 0) =>
   card(collectionIndex, itemIndex).find(
@@ -104,14 +100,9 @@ export const collectionDiscardButton = collectionIndex =>
   );
 
 export const cardDeleteButton = (collectionIndex, itemIndex = 0) =>
-  card(collectionIndex, itemIndex).find(
-    `[data-testid="${DELETE_BUTTON}"]`
-  );
+  card(collectionIndex, itemIndex).find(`[data-testid="${DELETE_BUTTON}"]`);
 
-export const cardAddToClipboardButton = (
-  collectionIndex,
-  itemIndex = 0
-) =>
+export const cardAddToClipboardButton = (collectionIndex, itemIndex = 0) =>
   card(collectionIndex, itemIndex).find(
     `[data-testid="${ADD_TO_CLIPBOARD_BUTTON}"]`
   );
@@ -144,7 +135,8 @@ export const renameFrontButton = maybeGetNth(select(RENAME_FRONT_BUTTON));
 export const renameFrontInput = select(RENAME_FRONT_INPUT);
 export const frontName = maybeGetNth(select(FRONT_NAME));
 export const publishEditionButton = select(PUBLISH_EDITION_BUTTON);
-export const confirmModal = select(CONFIRM_MODAL);
+export const optionsModal = select(OPTIONS_MODAL);
+export const optionsModalChoice = choice => select(choice);
 
 // Front Menu //
 export const frontsMenuButton = () => select(FRONTS_MENU_BUTTON);

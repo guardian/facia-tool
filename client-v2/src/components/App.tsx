@@ -29,7 +29,6 @@ import GuardianTextSansBoldItalicWoff2 from '../fonts/text/GuardianTextSans-Bold
 import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
-import ConfirmModal from './ConfirmModal';
 import {
   manageEditions,
   frontsEditPathProps,
@@ -39,6 +38,7 @@ import {
 import ManageView from './Editions/ManageView';
 import FeaturesView from './Features/FeaturesView';
 import { PlaceholderAnimation } from 'shared/components/BasePlaceholder';
+import OptionsModal from './OptionsModal';
 
 // tslint:disable:no-unused-expression
 // NB the properties described in font-face work as matchers, assigning text to the font imported by the source.
@@ -156,7 +156,7 @@ const App = () => (
       </AppContainer>
       <PlaceholderAnimation />
       <AppFonts />
-      <ConfirmModal />
+      <OptionsModal />
     </DropDisabler>
   </ThemeProvider>
 );
