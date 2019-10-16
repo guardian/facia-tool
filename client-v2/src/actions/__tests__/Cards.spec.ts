@@ -33,7 +33,7 @@ const root = (state: any = {}, action: any) => ({
   clipboard: clipboardReducer(state.clipboard, action),
   path: '',
   shared: {
-    cards: cardsReducer(state.shared.cards, action, state.shared),
+    cards: cardsReducer(state.shared.cards, action),
     collections: collectionsReducer(state.shared.collections, action),
     groups: groupsReducer(state.shared.groups, action, state.shared)
   },
