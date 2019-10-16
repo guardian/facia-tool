@@ -5,7 +5,7 @@ import v4 from 'uuid/v4';
 import set from 'lodash/fp/set';
 import { PartialBy } from 'types/Util';
 import { getAtomFromCapi } from 'services/faciaApi';
-import { CAPIAtomResponse as CAPIInteractiveAtomResponse } from 'services/capiQuery';
+import { CAPIInteractiveAtomResponse } from 'services/capiQuery';
 
 function generateId() {
   return 'snap/' + new Date().getTime();
