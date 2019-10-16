@@ -18,7 +18,11 @@ import {
 import pandaFetch from './pandaFetch';
 import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
-import { CAPISearchQueryResponse, checkIsResults, CAPIAtomResponse } from './capiQuery';
+import {
+  CAPISearchQueryResponse,
+  checkIsResults,
+  CAPIInteractiveAtomResponse
+} from './capiQuery';
 import flatMap from 'lodash/flatMap';
 import { EditionsIssue, EditionsCollection } from 'types/Edition';
 import { EditionsRoutes } from 'routes/routes';
@@ -338,16 +342,14 @@ const getCapiUriForContentIds = (contentIds: string[]) => {
     .join('&')}`;
 };
 
-
-// getting interactive atoms from CAPI 
+// getting interactive atoms from CAPI
 const getAtomFromCapi = async (path: string) => {
-  const response = await pandaFetch(`/api/live${path}`, {
+  const response = await pandaFetch(`/api/live/${path}`, {
     method: 'get',
     credentials: 'same-origin'
   });
-  const parsedResponse: CAPIAtomResponse = await response.json();
-  console.log(parsedResponse)
-  return parsedResponse
+  const parsedResponse: CAPIInteractiveAtomResponse = await response.json();
+  return parsedResponse;
 };
 
 const getTagOrSectionTitle = (queryResponse: CAPISearchQueryResponse) => {

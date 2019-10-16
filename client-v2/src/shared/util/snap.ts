@@ -1,11 +1,11 @@
-import { getAbsolutePath, isGuardianUrl, isCapiUrl } from './url';
+import { getAbsolutePath, isGuardianUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import { Card, CardMeta } from '../types/Collection';
 import v4 from 'uuid/v4';
 import set from 'lodash/fp/set';
 import { PartialBy } from 'types/Util';
 import { getAtomFromCapi } from 'services/faciaApi';
-import { CAPIAtomResponse } from 'services/capiQuery';
+import { CAPIAtomResponse as CAPIInteractiveAtomResponse } from 'services/capiQuery';
 
 function generateId() {
   return 'snap/' + new Date().getTime();
@@ -67,8 +67,9 @@ async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
 async function createAtomSnap(url: string, meta?: CardMeta): Promise<Card> {
   const uuid = v4();
   try {
-
-    const atom: CAPIAtomResponse = await getAtomFromCapi(url);
+    const atom: CAPIInteractiveAtomResponse = await getAtomFromCapi(
+      getAbsolutePath(url, false)
+    );
     const { title } = atom.response.interactive.data.interactive;
 
     return convertToSnap({
@@ -96,7 +97,6 @@ async function createAtomSnap(url: string, meta?: CardMeta): Promise<Card> {
     });
   }
 }
-
 
 function createLatestSnap(url: string, kicker: string) {
   return convertToSnap({
