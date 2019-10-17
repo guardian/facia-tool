@@ -8,6 +8,7 @@ import logging.Logging
 import java.util.concurrent.TimeUnit
 
 import com.gu.contentapi.client.model.HttpResponse
+import model.editions.TimeWindowConfigInDays
 import okhttp3.{Call, Callback, ConnectionPool, OkHttpClient, Request, Response}
 import okhttp3.Request.Builder
 import play.api.libs.json.Json
@@ -23,9 +24,11 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
   // NEEDS CACHING!
 
   implicit val ophanScoreReads = Json.format[OphanScore]
-  def getOphanScores(maybeUrl: Option[String], startDate: LocalDate, endDate: LocalDate): Future[Option[Array[OphanScore]]] = {
-    maybeUrl match {
-      case Some(url) => get(url, startDate, endDate).map(response => Json.parse(new String(response.body)).validate[Array[OphanScore]].asOpt)
+  def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, timeWindow: Option[TimeWindowConfigInDays]): Future[Option[Array[OphanScore]]] = {
+    val maybeFromDate = timeWindow.map(window => baseDate.plusDays(window.startOffset))
+    val maybeToDate = timeWindow.map(window => baseDate.plusDays(window.endOffset))
+    (maybeUrl, maybeFromDate, maybeToDate) match {
+      case (Some(url), Some(fromDate), Some(toDate)) => get(url, fromDate, toDate).map(response => Json.parse(new String(response.body)).validate[Array[OphanScore]].asOpt)
       case _ => Future.successful(None)
     }
   }
@@ -59,5 +62,5 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
 }
 
 trait Ophan {
-  def getOphanScores(maybeUrl: Option[String], startDate: LocalDate, toDate: LocalDate): Future[Option[Array[OphanScore]]]
+  def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, timeWindow: Option[TimeWindowConfigInDays]): Future[Option[Array[OphanScore]]]
 }

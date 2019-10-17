@@ -3,7 +3,7 @@ package services.editions
 import java.time.{Instant, LocalDate}
 
 import com.gu.facia.api.utils.ResolvedMetaData
-import model.editions.{CapiPrefillQuery, Edition, Image, MediaType}
+import model.editions.{CapiPrefillQuery, Edition, Image, MediaType, OphanQueryPrefillParams}
 
 package object prefills {
 
@@ -24,7 +24,7 @@ package object prefills {
                                   issueDate: LocalDate,
                                   capiPrefillQuery: CapiPrefillQuery,
                                   maybeOphanUrl: Option[String],
-                                  range: Long,
+                                  maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams],
                                   edition: Edition
                                  )
 

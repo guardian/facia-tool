@@ -30,7 +30,7 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
                     EditionsCollectionSkeleton(
                       collection.name,
                       collection.prefill.map { prefill =>
-                        val prefillParams = PrefillParamsAdapter(issueDate, prefill, frontTemplate.ophanUrl, template.ophanRangeSearchDays, edition)
+                        val prefillParams = PrefillParamsAdapter(issueDate, prefill, frontTemplate.ophanUrl, template.ophanQueryPrefillParams, edition)
                         getPrefillArticles(prefillParams)
                       }.getOrElse(Nil),
                       collection.prefill,
@@ -53,8 +53,12 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
   // this function fetches articles from CAPI with enough data to resolve the defaults
   private def getPrefillArticles(prefillParams: PrefillParamsAdapter): List[EditionsArticleSkeleton] = {
     val maybeOphanScores = try {
-      val fromDate = prefillParams.issueDate.minusDays(prefillParams.range)
-      Await.result(ophan.getOphanScores(prefillParams.maybeOphanUrl, fromDate, prefillParams.issueDate), 10 seconds)
+      Await.result(
+        ophan.getOphanScores(
+          prefillParams.maybeOphanUrl,
+          prefillParams.issueDate,
+          prefillParams.maybeOphanQueryPrefillParams.map(p => p.timeWindowConfig)),
+        10 seconds)
     } catch {
       case NonFatal(t) =>
         // At least log this as a warning so we can trace frequency
@@ -77,6 +81,13 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
       case Some(scoresMap) => items.sortBy(prefill => scoresMap.getOrElse(prefill.webUrl, 0d))(Ordering[Double].reverse)
       case _ => items.sortBy(prefill => prefill.newspaperPageNumber)
     }
+    println("============================================================")
+    println(items)
+    println("============================================================")
+    println(sortedItems)
+    println("============================================================")
+    println(maybeOphanScoresMap)
+    println("============================================================")
     sortedItems
       .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker) =>
       val articleMetadata = ArticleMetadata.default.copy(

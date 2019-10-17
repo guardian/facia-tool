@@ -22,7 +22,13 @@ object TrainingEdition {
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
-    3
+    ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
+      apiKey = s"fronts-editions-${this.getClass.toString}",
+      timeWindowConfig = TimeWindowConfigInDays(
+        startOffset = 0,
+        endOffset = -3
+      ))
+    )
   )
 
   def FrontNewsSpecial = specialFront("News Special", News)

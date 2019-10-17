@@ -63,7 +63,13 @@ object DailyEdition {
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
-    1
+    ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
+      apiKey = s"fronts-editions-${this.getClass.toString}",
+      timeWindowConfig = TimeWindowConfigInDays(
+        startOffset = 0,
+        endOffset = -1
+      ))
+    )
   )
 
   def FrontSpecial1 = specialFront("Top Special 1", Neutral, None)

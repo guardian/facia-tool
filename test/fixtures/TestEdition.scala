@@ -21,7 +21,7 @@ object TestEdition {
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
-    2
+    None
   )
 
   lazy val templates: Map[Edition, EditionTemplate] = Map(Edition.TrainingEdition -> template)
