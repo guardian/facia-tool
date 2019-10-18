@@ -7,28 +7,43 @@ import conf.ApplicationConfiguration
 import logging.Logging
 import java.util.concurrent.TimeUnit
 
+import com.github.blemale.scaffeine.{Cache, Scaffeine}
 import com.gu.contentapi.client.model.HttpResponse
-import model.editions.TimeWindowConfigInDays
+import model.editions.{OphanQueryPrefillParams}
 import okhttp3.{Call, Callback, ConnectionPool, OkHttpClient, Request, Response}
 import okhttp3.Request.Builder
 import play.api.libs.json.Json
 
+import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
 case class OphanScore(val webUrl: String, val promotionScore: Double)
 
 class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends Ophan with Logging {
 
-  private val ophanApiKey = "fronts-editions"
-
-  // NEEDS CACHING!
-
+  val DEFAULT_OPHAN_ADDRESS = "https://api.ophan.co.uk/api"
+  val promotionPath = "/promotion/front/"
   implicit val ophanScoreReads = Json.format[OphanScore]
-  def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, timeWindow: Option[TimeWindowConfigInDays]): Future[Option[Array[OphanScore]]] = {
-    val maybeFromDate = timeWindow.map(window => baseDate.plusDays(window.startOffset))
-    val maybeToDate = timeWindow.map(window => baseDate.plusDays(window.endOffset))
-    (maybeUrl, maybeFromDate, maybeToDate) match {
-      case (Some(url), Some(fromDate), Some(toDate)) => get(url, fromDate, toDate).map(response => Json.parse(new String(response.body)).validate[Array[OphanScore]].asOpt)
+
+  def getOphanScores(maybePath: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = {
+    val maybeDates = maybeOphanQueryPrefillParams.map(ophanQueryPrefillParams => (
+      baseDate.plusDays(ophanQueryPrefillParams.timeWindowConfig.startOffset),
+      baseDate.plusDays(ophanQueryPrefillParams.timeWindowConfig.endOffset)
+    ))
+    println(maybeDates)
+    val apiKey = maybeOphanQueryPrefillParams match {
+      case Some(params) => params.apiKey  // template specific key
+      case None => config.ophanApi.key match {
+        case Some(key) => key             // application specific key
+        case None => "fronts"             // fallback, hopefully mostly for dev purposes
+      }
+    }
+    println(apiKey)
+    println(maybePath)
+
+    val host = config.ophanApi.host.getOrElse(DEFAULT_OPHAN_ADDRESS)
+    (maybePath, maybeDates) match {
+      case (Some(path), Some((fromDate, toDate))) => get(host, path, fromDate, toDate, apiKey).map(response => Json.parse(new String(response.body)).validate[Array[OphanScore]].asOpt)
       case _ => Future.successful(None)
     }
   }
@@ -41,13 +56,26 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
 
   protected val http = httpClientBuilder.build
 
-  def get(url: String, startDate: LocalDate, endDate: LocalDate)(implicit context: ExecutionContext): Future[HttpResponse] = {
+  private val cache: Cache[String, Future[HttpResponse]] =
+    Scaffeine()
+      .recordStats()
+      .expireAfterWrite(10.minute)
+      .maximumSize(50)
+      .build((url: String) => getRequest(url))
 
-    val promise = Promise[HttpResponse]()
-
+  def get(host: String, path: String, startDate: LocalDate, endDate: LocalDate, ophanApiKey: String)(implicit context: ExecutionContext): Future[HttpResponse] = {
     val fromParam = startDate.toString // iso 8601
     val toParam = endDate.toString // iso 8601
-    val request = new Builder().url(s"$url?from=${fromParam}&to=${toParam}&api-key=${ophanApiKey}" ).build()
+    val url = s"$host$promotionPath$path?from=${fromParam}&to=${toParam}&api-key=${ophanApiKey}"
+    println(url)
+    cache.get(url, getRequest)
+  }
+
+
+  private def getRequest(url: String) = {
+    println(url)
+    val request = new Builder().url(url).build()
+    val promise = Promise[HttpResponse]()
     http.newCall(request).enqueue(new Callback() {
       override def onFailure(call: Call, e: IOException): Unit = promise.failure(e)
 
@@ -57,10 +85,8 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
     })
     promise.future
   }
-
-
 }
 
 trait Ophan {
-  def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, timeWindow: Option[TimeWindowConfigInDays]): Future[Option[Array[OphanScore]]]
+  def getOphanScores(maybePath: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]]
 }
