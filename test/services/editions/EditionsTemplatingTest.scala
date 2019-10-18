@@ -5,7 +5,7 @@ import java.time.LocalDate
 import com.gu.contentapi.client.model.v1.SearchResponse
 import com.gu.facia.api.utils.ResolvedMetaData
 import fixtures.TestEdition
-import model.editions.{ArticleMetadata, Edition, Image, MediaType, TimeWindowConfigInDays}
+import model.editions.{ArticleMetadata, Edition, Image, MediaType, OphanQueryPrefillParams, TimeWindowConfigInDays}
 import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
 import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 import services.{Capi, Ophan, OphanScore}
@@ -17,12 +17,12 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
   val allFalseMetadata = ResolvedMetaData(false, false, false, false, false, false, false, false, false, false, false, false, false, false)
   val imageUrl = "https://media.giphy.com/media/K3PYNk8oh3HGM/source.gif"
 
-  val nullOphan = new Ophan {
-    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, timeWindow: Option[TimeWindowConfigInDays]): Future[Option[Array[OphanScore]]] = Future.successful(None)
+  private val nullOphan = new Ophan {
+    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = Future.successful(None)
   }
 
-  val forwardOphan = new Ophan {
-    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, timeWindow: Option[TimeWindowConfigInDays]): Future[Option[Array[OphanScore]]] = Future.successful(Some(
+  private val forwardOphan = new Ophan {
+    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = Future.successful(Some(
       Array(
         OphanScore("webUrl123456", 3d),
         OphanScore("webUrl345678", 2d),
@@ -32,7 +32,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
   }
 
   val reverseOphan = new Ophan {
-    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, timeWindow: Option[TimeWindowConfigInDays]): Future[Option[Array[OphanScore]]] = Future.successful(Some(
+    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = Future.successful(Some(
       Array(
         OphanScore("webUrl123456", 1d),
         OphanScore("webUrl345678", 2d),

@@ -7,7 +7,7 @@ import services.editions.EditionsTemplating
 import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 import java.time.LocalDate
 
-import model.editions.TimeWindowConfigInDays
+import model.editions.{OphanQueryPrefillParams, TimeWindowConfigInDays}
 
 import scala.concurrent.Future
 
@@ -22,7 +22,7 @@ class EditionTemplateTest extends FreeSpec with Matchers {
     override def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = Future.successful(Nil)
   }
   object TestOphan extends Ophan {
-    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, timeWindow: Option[TimeWindowConfigInDays]): Future[Option[Array[OphanScore]]] = ???
+    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = ???
   }
 
   val templating = new EditionsTemplating(TestEdition.templates, TestCapi, TestOphan)
