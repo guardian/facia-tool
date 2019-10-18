@@ -21,11 +21,11 @@ package object prefills {
   case class CapiQueryTimeWindow(fromDate: Instant, toDate: Instant)
 
   case class PrefillParamsAdapter(
-                                  issueDate: LocalDate,
-                                  capiPrefillQuery: CapiPrefillQuery,
-                                  maybeOphanUrl: Option[String],
-                                  maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams],
-                                  edition: Edition
+                                   issueDate: LocalDate,
+                                   capiPrefillQuery: CapiPrefillQuery,
+                                   maybeOphanPath: Option[String],
+                                   maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams],
+                                   edition: Edition
                                  )
 
 }

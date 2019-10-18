@@ -6,7 +6,7 @@ import logging.Logging
 import model.editions._
 import play.api.mvc.{Result, Results}
 import services.editions.prefills.{Prefill, PrefillParamsAdapter}
-import services.{Capi, Ophan, OphanScore}
+import services.{Capi, Ophan}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -30,7 +30,8 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
                     EditionsCollectionSkeleton(
                       collection.name,
                       collection.prefill.map { prefill =>
-                        val prefillParams = PrefillParamsAdapter(issueDate, prefill, frontTemplate.ophanUrl, template.ophanQueryPrefillParams, edition)
+                        val prefillParams = PrefillParamsAdapter(issueDate, prefill, frontTemplate.maybeOphanPath, template.ophanQueryPrefillParams, edition)
+                        println(prefillParams)
                         getPrefillArticles(prefillParams)
                       }.getOrElse(Nil),
                       collection.prefill,
@@ -55,14 +56,14 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
     val maybeOphanScores = try {
       Await.result(
         ophan.getOphanScores(
-          prefillParams.maybeOphanUrl,
+          prefillParams.maybeOphanPath,
           prefillParams.issueDate,
-          prefillParams.maybeOphanQueryPrefillParams.map(p => p.timeWindowConfig)),
+          prefillParams.maybeOphanQueryPrefillParams),
         10 seconds)
     } catch {
       case NonFatal(t) =>
         // At least log this as a warning so we can trace frequency
-        logger.warn(s"Failed to successfully fetch Ophan scores from ${prefillParams.maybeOphanUrl}", t)
+        logger.warn(s"Failed to successfully fetch Ophan scores from ${prefillParams.maybeOphanPath}", t)
         None
     }
     val maybeOphanScoresMap = maybeOphanScores.map( os => os.toList.map(o => o.webUrl -> o.promotionScore).toMap)
@@ -75,19 +76,13 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
         logger.warn(s"Failed to successfully execute CAPI prefill query $prefillParams", t)
         Nil
     }
+    println(maybeOphanScores)
     // Sort by ophan score, descending, default zero, if and only if we got some scores
     // If there is no ophan url OR the request failed, fall back to ordering by newspaperPageNumber
     val sortedItems = maybeOphanScoresMap match {
       case Some(scoresMap) => items.sortBy(prefill => scoresMap.getOrElse(prefill.webUrl, 0d))(Ordering[Double].reverse)
       case _ => items.sortBy(prefill => prefill.newspaperPageNumber)
     }
-    println("============================================================")
-    println(items)
-    println("============================================================")
-    println(sortedItems)
-    println("============================================================")
-    println(maybeOphanScoresMap)
-    println("============================================================")
     sortedItems
       .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker) =>
       val articleMetadata = ArticleMetadata.default.copy(
