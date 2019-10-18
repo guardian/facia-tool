@@ -173,6 +173,8 @@ const getArticleEntitiesFromDrop = async (
   const resourceIdOrUrl = drop.data.trim();
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
+  const isGuardianURLWithGuMetaData =
+    isGuardianUrl(resourceIdOrUrl) && hasGuMetaData(resourceIdOrUrl);
   const guMeta = isGuardianUrl(resourceIdOrUrl)
     ? getCardMetaFromUrlParams(resourceIdOrUrl)
     : false;
@@ -182,9 +184,10 @@ const getArticleEntitiesFromDrop = async (
     return [card];
   }
   try {
-    if (guMeta) {
-      // If we have gu params in the url, create a snap with the meta we extract.
-      const card = await createSnap(id, guMeta);
+    // If we have gu params in the url, create a snap with the meta we extract.
+    if (isGuardianURLWithGuMetaData) {
+      const meta = getCardMetaFromUrlParams(resourceIdOrUrl);
+      const card = await createSnap(id, meta);
       return [card];
     }
     if (!id) {
@@ -249,10 +252,14 @@ const snapMetaWhitelist = [
 ];
 const guPrefix = 'gu-';
 
-/**
- * Given a URL, produce an object with the appropriate meta values.
- */
-const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
+// Does the URL contain query params from the snap link metadata whitelist?
+const hasGuMetaData = (url: string) => {
+  const meta = extractPossibleGuMetaData(url);
+  return meta && meta.length > 0;
+};
+
+// Extract gu-prefixed metadata for snaplinkzs
+const extractPossibleGuMetaData = (url: string) => {
   let urlObj: URL | undefined;
   try {
     urlObj = new URL(url);
@@ -260,18 +267,27 @@ const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
     // This wasn't a valid URL -- we won't be able to extract values.
     return undefined;
   }
-  const guParams = Array.from(urlObj.searchParams).filter(
+  const allParams = Array.from(urlObj.searchParams);
+  const guParams = allParams.filter(
     ([key]) =>
-      true ||
-      (key.indexOf(guPrefix) !== -1 &&
-        snapMetaWhitelist.indexOf(key.replace(guPrefix, '')) !== -1)
+      key.includes(guPrefix) &&
+      snapMetaWhitelist.includes(key.replace(guPrefix, ''))
   );
-  return guParams.length
-    ? guParams.reduce(
-        (acc, [key, value]) => ({ ...acc, [key.replace('gu-', '')]: value }),
-        {}
-      )
-    : undefined;
+  return guParams;
+};
+
+/**
+ * Given a URL, produce an object with the appropriate meta values.
+ */
+const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
+  const guParams = extractPossibleGuMetaData(url);
+  return (
+    guParams &&
+    guParams.reduce(
+      (acc, [key, value]) => ({ ...acc, [key.replace('gu-', '')]: value }),
+      {}
+    )
+  );
 };
 
 const getArticleEntitiesFromGuardianPath = async (
@@ -329,5 +345,6 @@ export {
   createArticleEntitiesFromDrop,
   clearCards,
   maybeAddFrontPublicationDate,
-  copyCardImageMeta
+  copyCardImageMeta,
+  hasGuMetaData
 };

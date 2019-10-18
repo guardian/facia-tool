@@ -1,7 +1,11 @@
 import configureMockStore from 'redux-mock-store';
 import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
-import { createArticleEntitiesFromDrop, cardsReceived } from '../Cards';
+import {
+  createArticleEntitiesFromDrop,
+  cardsReceived,
+  hasGuMetaData
+} from '../Cards';
 import initialState from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
 import { createSnap, createLatestSnap } from 'shared/util/snap';
@@ -215,6 +219,19 @@ describe('Snap cards actions', () => {
           })
         );
       });
+    });
+    describe('should be able to identify when query params match expect gu meta data', () =>
+      it('should return true if there are query params matching the whitelist', () => {
+        const url =
+          'https://www.theguardian.com?gu-snapType=json.html&gu-snapUri=https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json';
+        const result = hasGuMetaData(url);
+        expect(result).toEqual(true);
+      }));
+    it('should return false if there are query params not matching the whitelist', () => {
+      const url =
+        'https://www.theguardian.com/environment/ng-interactive/2019/oct/16/the-guardians-climate-pledge-2019?acquisitionData=%7B"source"%3A"EMAIL"%2C"campaignCode"%3A"climate_pledge_2019"%2C"componentId"%3A"climate_pledge_2019_acq_GTodayUK"%7D&INTCMP=climate_pledge_2019&';
+      const result = hasGuMetaData(url);
+      expect(result).toEqual(false);
     });
   });
 });
