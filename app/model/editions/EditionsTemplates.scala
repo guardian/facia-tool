@@ -136,12 +136,12 @@ case class CollectionTemplate(
 }
 
 case class FrontTemplate(
-  name: String,
-  collections: List[CollectionTemplate],
-  presentation: FrontPresentation,
-  ophanUrl: Option[String],
-  isSpecial: Boolean = false,
-  hidden: Boolean = false
+                          name: String,
+                          collections: List[CollectionTemplate],
+                          presentation: FrontPresentation,
+                          maybeOphanPath: Option[String],
+                          isSpecial: Boolean = false,
+                          hidden: Boolean = false
 ) {
   def special = copy(isSpecial = true, hidden = true)
   def swatch(swatch: Swatch) = copy(presentation = FrontPresentation(swatch))

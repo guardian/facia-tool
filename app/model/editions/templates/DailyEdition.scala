@@ -63,13 +63,7 @@ object DailyEdition {
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
-    ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
-      apiKey = s"fronts-editions-${this.getClass.toString}",
-      timeWindowConfig = TimeWindowConfigInDays(
-        startOffset = 0,
-        endOffset = -1
-      ))
-    )
+    ophanQueryPrefillParams = None
   )
 
   def FrontSpecial1 = specialFront("Top Special 1", Neutral, None)
@@ -83,7 +77,7 @@ object DailyEdition {
 
   def FrontNewsUkGuardian = front(
     "National",
-    Some("https://api.ophan.co.uk/api/promotion/front/uk"),
+    Some("uk"),
     collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
     collection("News Special").special,
     collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
@@ -93,7 +87,7 @@ object DailyEdition {
 
   def FrontNewsUkGuardianSaturday = front(
     "National",
-    Some("https://api.ophan.co.uk/api/promotion/front/uk"),
+    Some("uk"),
     collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
     collection("News Special").special,
     collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
@@ -113,7 +107,7 @@ object DailyEdition {
 
   def FrontNewsUkObserver = front(
     "National",
-    Some("https://api.ophan.co.uk/api/promotion/front/uk"),
+    Some("uk"),
     collection("Front Page"),
     collection("UK News").printSentAnyTag("theobserver/news/uknews"),
     collection("Focus").printSentAnyTag("theobserver/news/focus").special,
