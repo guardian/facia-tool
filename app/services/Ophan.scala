@@ -64,13 +64,11 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
     val fromParam = startDate.toString // iso 8601
     val toParam = endDate.toString // iso 8601
     val url = s"$host$promotionPath$path?from=${fromParam}&to=${toParam}&api-key=${ophanApiKey}"
-    println(url)
     cache.get(url, getRequest)
   }
 
 
   private def getRequest(url: String) = {
-    println(url)
     val request = new Builder().url(url).build()
     val promise = Promise[HttpResponse]()
     http.newCall(request).enqueue(new Callback() {

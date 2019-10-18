@@ -31,7 +31,6 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
                       collection.name,
                       collection.prefill.map { prefill =>
                         val prefillParams = PrefillParamsAdapter(issueDate, prefill, frontTemplate.maybeOphanPath, template.ophanQueryPrefillParams, edition)
-                        println(prefillParams)
                         getPrefillArticles(prefillParams)
                       }.getOrElse(Nil),
                       collection.prefill,
@@ -76,7 +75,6 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
         logger.warn(s"Failed to successfully execute CAPI prefill query $prefillParams", t)
         Nil
     }
-    println(maybeOphanScores)
     // Sort by ophan score, descending, default zero, if and only if we got some scores
     // If there is no ophan url OR the request failed, fall back to ordering by newspaperPageNumber
     val sortedItems = maybeOphanScoresMap match {

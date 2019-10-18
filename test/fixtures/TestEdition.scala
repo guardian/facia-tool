@@ -17,7 +17,7 @@ object TestEdition {
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = -1,
-        endOffset= -2)
+        endOffset= 2)
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),

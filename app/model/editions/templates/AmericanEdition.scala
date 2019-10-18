@@ -64,7 +64,7 @@ object AmericanEdition {
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
     ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
-      apiKey = s"fronts-editions-${this.getClass.toString}",
+      apiKey = s"fronts-editions-us",
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = 0,
         endOffset = -7

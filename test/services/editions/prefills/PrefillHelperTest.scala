@@ -34,7 +34,15 @@ class PrefillHelperTest extends FunSuite with Matchers {
 
     val actual = prefillHelper.geneneratePrefillQuery(prefillParams, fields).getUrl("")
 
-    val expected = "/content/print-sent?order-by=newest&page-size=200&tag=theguardian%2Fmainsection%2Ftopstories&to-date=2019-10-07T00%3A00%3A00Z&page=1&use-date=newspaper-edition&show-fields=newspaperEditionDate%2CnewspaperPageNumber%2CinternalPageCode&from-date=2019-10-04T00%3A00%3A00Z"
+    val expected = "/content/print-sent" +
+      "?order-by=newest" +
+      "&page-size=200" +
+      "&tag=theguardian%2Fmainsection%2Ftopstories" +
+      "&to-date=2019-10-07T00%3A00%3A00Z" +
+      "&page=1" +
+      "&use-date=newspaper-edition" +
+      "&show-fields=newspaperEditionDate%2CnewspaperPageNumber%2CinternalPageCode" +
+      "&from-date=2019-10-04T00%3A00%3A00Z"
 
     actual shouldEqual expected
   }
