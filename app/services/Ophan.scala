@@ -30,7 +30,6 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
       baseDate.plusDays(ophanQueryPrefillParams.timeWindowConfig.startOffset),
       baseDate.plusDays(ophanQueryPrefillParams.timeWindowConfig.endOffset)
     ))
-    println(maybeDates)
     val apiKey = maybeOphanQueryPrefillParams match {
       case Some(params) => params.apiKey  // template specific key
       case None => config.ophanApi.key match {
@@ -38,8 +37,6 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
         case None => "fronts"             // fallback, hopefully mostly for dev purposes
       }
     }
-    println(apiKey)
-    println(maybePath)
 
     val host = config.ophanApi.host.getOrElse(DEFAULT_OPHAN_ADDRESS)
     (maybePath, maybeDates) match {
