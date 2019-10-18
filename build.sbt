@@ -102,6 +102,8 @@ libraryDependencies ++= Seq(
 
     "com.gu" %% "scanamo" % "1.0.0-M7",
 
+    "com.github.blemale" %% "scaffeine" % "3.1.0" % "compile",
+
     "com.gu" %% "thrift-serializer" % "4.0.0",
     "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
     "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
