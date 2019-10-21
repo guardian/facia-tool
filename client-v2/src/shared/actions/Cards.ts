@@ -52,8 +52,8 @@ function updateCardMeta(
 function cardsReceived(
   cards:
     | {
-        [uuid: string]: Card;
-      }
+      [uuid: string]: Card;
+    }
     | Card[]
 ): CardsReceived {
   const payload = Array.isArray(cards)
@@ -174,7 +174,8 @@ const getArticleEntitiesFromDrop = async (
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
   const isGuardianURLWithGuMetaData =
-    isGuardianUrl(resourceIdOrUrl) && hasGuMetaData(resourceIdOrUrl);
+    isGuardianUrl(resourceIdOrUrl) && hasWhitelistedParams(resourceIdOrUrl, snapMetaWhitelist);
+  const isGuardianUrlWithMarketingParams = isGuardianUrl(resourceIdOrUrl) && hasWhitelistedParams(resourceIdOrUrl, marketingParamsWhiteList)
   const guMeta = isGuardianUrl(resourceIdOrUrl)
     ? getCardMetaFromUrlParams(resourceIdOrUrl)
     : false;
@@ -190,9 +191,18 @@ const getArticleEntitiesFromDrop = async (
       const card = await createSnap(id, meta);
       return [card];
     }
+    // TODO: explain this. And its position
     if (!id) {
       return [];
     }
+
+    // If we have marketing params on a gu url
+    if (isGuardianUrlWithMarketingParams) {
+      // Should return whole url with all params
+      const card = await createSnap(resourceIdOrUrl);
+      return [card];
+    }
+
     const {
       articles: [article, ...rest],
       title
@@ -244,22 +254,26 @@ const getArticleEntitiesFromFeedDrop = (
 };
 
 const snapMetaWhitelist = [
-  'snapCss',
-  'snapUri',
-  'snapType',
-  'headline',
-  'trailText'
+  'gu-snapCss',
+  'gu-snapUri',
+  'gu-snapType',
+  'gu-headline',
+  'gu-trailText'
 ];
 const guPrefix = 'gu-';
 
-// Does the URL contain query params from the snap link metadata whitelist?
-const hasGuMetaData = (url: string) => {
-  const meta = extractPossibleGuMetaData(url);
-  return meta && meta.length > 0;
-};
+const marketingParamsWhiteList = [
+  'acquisitionData',
+  'INTCMP'
+]
 
-// Extract gu-prefixed metadata for snaplinkzs
-const extractPossibleGuMetaData = (url: string) => {
+const hasWhitelistedParams = (url: string, whiteList: string[]) => {
+  const validParams = extractPossibleMetaData(url, whiteList)
+  return validParams && validParams.length > 0;
+}
+
+// Extract metadata for snaplinks
+const extractPossibleMetaData = (url: string, whiteList: string[]) => {
   let urlObj: URL | undefined;
   try {
     urlObj = new URL(url);
@@ -268,23 +282,23 @@ const extractPossibleGuMetaData = (url: string) => {
     return undefined;
   }
   const allParams = Array.from(urlObj.searchParams);
-  const guParams = allParams.filter(
+  const checkedParams = allParams.filter(
     ([key]) =>
-      key.includes(guPrefix) &&
-      snapMetaWhitelist.includes(key.replace(guPrefix, ''))
+      whiteList.includes(key)
   );
-  return guParams;
+  return checkedParams;
 };
+
 
 /**
  * Given a URL, produce an object with the appropriate meta values.
  */
 const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
-  const guParams = extractPossibleGuMetaData(url);
+  const guParams = extractPossibleMetaData(url, snapMetaWhitelist);
   return (
     guParams &&
     guParams.reduce(
-      (acc, [key, value]) => ({ ...acc, [key.replace('gu-', '')]: value }),
+      (acc, [key, value]) => ({ ...acc, [key.replace(guPrefix, '')]: value }),
       {}
     )
   );
@@ -346,5 +360,7 @@ export {
   clearCards,
   maybeAddFrontPublicationDate,
   copyCardImageMeta,
-  hasGuMetaData
+  hasWhitelistedParams,
+  snapMetaWhitelist,
+  marketingParamsWhiteList
 };
