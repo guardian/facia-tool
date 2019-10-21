@@ -15,6 +15,7 @@ import { RefDrop } from 'util/collectionUtils';
 import configureStore from 'util/configureStore';
 import { selectOptionsModalOptions } from 'selectors/modalSelectors';
 import { selectCard, selectSharedState } from 'shared/selectors/shared';
+import capiInteractiveAtomResponse from 'fixtures/capiInteractiveAtomResponse';
 
 jest.mock('uuid/v4', () => () => 'card1');
 const middlewares = [thunk];
@@ -232,6 +233,75 @@ describe('Snap cards actions', () => {
         'https://www.theguardian.com/environment/ng-interactive/2019/oct/16/the-guardians-climate-pledge-2019?acquisitionData=%7B"source"%3A"EMAIL"%2C"campaignCode"%3A"climate_pledge_2019"%2C"componentId"%3A"climate_pledge_2019_acq_GTodayUK"%7D&INTCMP=climate_pledge_2019&';
       const result = hasGuMetaData(url);
       expect(result).toEqual(false);
+    });
+  });
+  describe('snaps can be created based on interactive atoms stored in CAPI', () => {
+    it('takes a content.guardianapis.com URL and retrieves an interactive atom', async () => {
+      const store = mockStore(initialState);
+      const snapUrl =
+        'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election';
+      const CapiResponse = capiInteractiveAtomResponse;
+      fetchMock.mock(
+        '/api/live/atom/interactive/interactives/2017/06/general-election',
+        CapiResponse
+      );
+      await store.dispatch(createArticleEntitiesFromDrop(
+        idDrop(snapUrl)
+      ) as any);
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(
+        cardsReceived({
+          card1: {
+            frontPublicationDate: 1487076708000,
+            id: 'snap/1487076708000',
+            meta: {
+              headline: 'General Election 2017',
+              byline: 'Guardian Visuals',
+              showByline: false,
+              snapType: 'interactive',
+              snapUri:
+                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
+              href:
+                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election'
+            },
+            uuid: 'card1'
+          }
+        })
+      );
+    });
+    it('takes a content.guardianapis.com URL and returns an invalid atom card if there is no atom', async () => {
+      const store = mockStore(initialState);
+      const snapUrl =
+        'https://content.guardianapis.com/atom/interactive/interactives/2017/06/not-an-atom';
+      const CapiErrorResponse = {
+        response: {
+          status: 'error',
+          message: 'atom id not found: interactives/2017/06/not-an-atom'
+        }
+      };
+      fetchMock.mock(
+        '/api/live/atom/interactive/interactives/2017/06/not-an-atom',
+        CapiErrorResponse
+      );
+      await store.dispatch(createArticleEntitiesFromDrop(
+        idDrop(snapUrl)
+      ) as any);
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(
+        cardsReceived({
+          card1: {
+            frontPublicationDate: 1487076708000,
+            id: 'snap/1487076708000',
+            meta: {
+              headline: 'Invalid atom',
+              snapType: 'interactive',
+              href:
+                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/not-an-atom'
+            },
+            uuid: 'card1'
+          }
+        })
+      );
     });
   });
 });

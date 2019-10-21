@@ -4,6 +4,8 @@ import { Card, CardMeta } from '../types/Collection';
 import v4 from 'uuid/v4';
 import set from 'lodash/fp/set';
 import { PartialBy } from 'types/Util';
+import { getAtomFromCapi } from 'services/faciaApi';
+import { CAPIInteractiveAtomResponse } from 'services/capiQuery';
 
 function generateId() {
   return 'snap/' + new Date().getTime();
@@ -62,6 +64,39 @@ async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
   }
 }
 
+async function createAtomSnap(url: string, meta?: CardMeta): Promise<Card> {
+  const uuid = v4();
+  try {
+    const atom: CAPIInteractiveAtomResponse = await getAtomFromCapi(
+      getAbsolutePath(url, false)
+    );
+    const { title } = atom.response.interactive.data.interactive;
+
+    return convertToSnap({
+      uuid,
+      id: url,
+      frontPublicationDate: Date.now(),
+      meta: {
+        headline: title,
+        byline: 'Guardian Visuals',
+        showByline: false,
+        snapType: 'interactive',
+        snapUri: url
+      }
+    });
+  } catch (e) {
+    return convertToSnap({
+      uuid,
+      id: url,
+      frontPublicationDate: Date.now(),
+      meta: {
+        headline: 'Invalid atom',
+        snapType: 'interactive'
+      }
+    });
+  }
+}
+
 function createLatestSnap(url: string, kicker: string) {
   return convertToSnap({
     id: url,
@@ -76,4 +111,4 @@ function createLatestSnap(url: string, kicker: string) {
   });
 }
 
-export { generateId, validateId, createLatestSnap, createSnap };
+export { generateId, validateId, createLatestSnap, createSnap, createAtomSnap };
