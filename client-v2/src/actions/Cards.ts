@@ -25,7 +25,7 @@ import {
 } from 'util/moveUtils';
 import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
-import { removeClipboardCard, thunkInsertClipboardCard } from './Clipboard';
+import { insertClipboardCard, removeClipboardCard } from './Clipboard';
 import { State } from 'types/State';
 import { capGroupSiblings } from 'shared/actions/Groups';
 import { selectCollectionCap } from 'selectors/configSelectors';
@@ -43,7 +43,7 @@ type InsertActionCreator = (
   id: string,
   index: number,
   cardId: string
-) => ThunkResult<void> | Action;
+) => Action;
 
 type InsertThunkActionCreator = (
   persistTo: 'collection' | 'clipboard'
@@ -62,19 +62,20 @@ type InsertThunkActionCreator = (
 // the persistence stuff needs to be dynamic as we sometimes need to insert an
 // card and save to clipboard and sometimes save to collection
 // depending on the location of that card
-const createInsertCardThunk = (action: InsertActionCreator) => () => (
-  id: string,
-  index: number,
-  cardId: string,
-  removeAction?: Action
-) => (dispatch: Dispatch) => {
+const createInsertCardThunk = (action: InsertActionCreator) => (
+  persistTo: 'collection' | 'clipboard'
+) => (id: string, index: number, cardId: string, removeAction?: Action) => (
+  dispatch: Dispatch
+) => {
   if (removeAction) {
     dispatch(removeAction);
   }
-  // This cast seems to be necessary to disambiguate the type fed to Dispatch,
-  // whose call signature accepts either an Action or a ThunkResult. I'm not really
-  // sure why.
-  dispatch(action(id, index, cardId) as Action);
+  dispatch(
+    addPersistMetaToAction(action, {
+      persistTo,
+      key: 'cardId'
+    })(id, index, cardId)
+  );
 };
 
 const copyCardImageMetaWithPersist = addPersistMetaToAction(copyCardImageMeta, {
@@ -177,7 +178,7 @@ const getInsertionActionCreatorFromType = (
   const actionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
     card: createInsertCardThunk(insertSupportingCard),
     group: maybeInsertGroupCard,
-    clipboard: createInsertCardThunk(thunkInsertClipboardCard)
+    clipboard: createInsertCardThunk(insertClipboardCard)
   };
 
   const actionCreator = actionMap[type] || null;
