@@ -13,9 +13,9 @@ import {
   MaybeAddFrontPublicationDate
 } from 'shared/types/Action';
 import { createCard } from 'shared/util/card';
-import { createSnap, createLatestSnap } from 'shared/util/snap';
+import { createSnap, createLatestSnap, createAtomSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
-import { isValidURL, isGuardianUrl } from 'shared/util/url';
+import { isValidURL, isGuardianUrl, isCapiUrl } from 'shared/util/url';
 import { MappableDropType } from 'util/collectionUtils';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
@@ -183,6 +183,11 @@ const getArticleEntitiesFromDrop = async (
     ? getCardMetaFromUrlParams(resourceIdOrUrl)
     : false;
   const isPlainUrl = isURL && !id && !guMeta;
+  const isCAPIUrl = isCapiUrl(resourceIdOrUrl);
+  if (isCAPIUrl) {
+    const card = await createAtomSnap(resourceIdOrUrl);
+    return [card];
+  }
   if (isPlainUrl) {
     const card = await createSnap(resourceIdOrUrl);
     return [card];

@@ -28,7 +28,7 @@ const rootReducer = (state: any = { feed: {} }, action: any) => ({
   path: path(state.path, action),
   shared: shared(state.shared, action),
   unpublishedChanges: unpublishedChanges(state.unpublishedChanges, action),
-  clipboard: clipboard(state.clipboard, action),
+  clipboard: clipboard(state.clipboard, action, state.shared),
   editor: editor(state.editor, action, state.shared),
   staleFronts: staleFronts(state.staleFronts, action),
   form: form(state.form, action),

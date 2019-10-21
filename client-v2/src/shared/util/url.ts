@@ -49,10 +49,16 @@ function isGuardianUrl(url: string) {
   ]);
 }
 
+// eg: hits a capi endpoint https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election
+function isCapiUrl(url: string) {
+  return matchHostname(url, [urlConstants.base.capi]);
+}
+
 export {
   getAbsolutePath,
   getHostname,
   isGuardianWebsiteUrl,
   isGuardianUrl,
-  isValidURL
+  isValidURL,
+  isCapiUrl
 };
