@@ -174,7 +174,11 @@ const getArticleEntitiesFromDrop = async (
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
   const isGuardianURLWithGuMetaData =
-    isGuardianUrl(resourceIdOrUrl) && hasGuMetaData(resourceIdOrUrl);
+    isGuardianUrl(resourceIdOrUrl) &&
+    hasWhitelistedParams(resourceIdOrUrl, snapMetaWhitelist);
+  const isGuardianUrlWithMarketingParams =
+    isGuardianUrl(resourceIdOrUrl) &&
+    hasWhitelistedParams(resourceIdOrUrl, marketingParamsWhiteList);
   const guMeta = isGuardianUrl(resourceIdOrUrl)
     ? getCardMetaFromUrlParams(resourceIdOrUrl)
     : false;
@@ -195,6 +199,13 @@ const getArticleEntitiesFromDrop = async (
       const card = await createSnap(id, meta);
       return [card];
     }
+    // If it has valid marketing params, should return whole url complete with query params
+    if (isGuardianUrlWithMarketingParams) {
+      const card = await createSnap(resourceIdOrUrl);
+      return [card];
+    }
+
+    // id check confirms id is present (meaning this is in capi), keeping code below typesafe
     if (!id) {
       return [];
     }
@@ -249,22 +260,22 @@ const getArticleEntitiesFromFeedDrop = (
 };
 
 const snapMetaWhitelist = [
-  'snapCss',
-  'snapUri',
-  'snapType',
-  'headline',
-  'trailText'
+  'gu-snapCss',
+  'gu-snapUri',
+  'gu-snapType',
+  'gu-headline',
+  'gu-trailText'
 ];
 const guPrefix = 'gu-';
 
-// Does the URL contain query params from the snap link metadata whitelist?
-const hasGuMetaData = (url: string) => {
-  const meta = extractPossibleGuMetaData(url);
-  return meta && meta.length > 0;
+const marketingParamsWhiteList = ['acquisitionData', 'INTCMP'];
+
+const hasWhitelistedParams = (url: string, whiteList: string[]) => {
+  const validParams = checkQueryParams(url, whiteList);
+  return validParams && validParams.length > 0;
 };
 
-// Extract gu-prefixed metadata for snaplinkzs
-const extractPossibleGuMetaData = (url: string) => {
+const checkQueryParams = (url: string, whiteList: string[]) => {
   let urlObj: URL | undefined;
   try {
     urlObj = new URL(url);
@@ -273,23 +284,18 @@ const extractPossibleGuMetaData = (url: string) => {
     return undefined;
   }
   const allParams = Array.from(urlObj.searchParams);
-  const guParams = allParams.filter(
-    ([key]) =>
-      key.includes(guPrefix) &&
-      snapMetaWhitelist.includes(key.replace(guPrefix, ''))
-  );
-  return guParams;
+  return allParams.filter(([key]) => whiteList.includes(key));
 };
 
 /**
  * Given a URL, produce an object with the appropriate meta values.
  */
 const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
-  const guParams = extractPossibleGuMetaData(url);
+  const guParams = checkQueryParams(url, snapMetaWhitelist);
   return (
     guParams &&
     guParams.reduce(
-      (acc, [key, value]) => ({ ...acc, [key.replace('gu-', '')]: value }),
+      (acc, [key, value]) => ({ ...acc, [key.replace(guPrefix, '')]: value }),
       {}
     )
   );
@@ -351,5 +357,7 @@ export {
   clearCards,
   maybeAddFrontPublicationDate,
   copyCardImageMeta,
-  hasGuMetaData
+  hasWhitelistedParams,
+  snapMetaWhitelist,
+  marketingParamsWhiteList
 };
