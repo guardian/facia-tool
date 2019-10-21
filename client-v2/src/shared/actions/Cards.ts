@@ -52,8 +52,8 @@ function updateCardMeta(
 function cardsReceived(
   cards:
     | {
-      [uuid: string]: Card;
-    }
+        [uuid: string]: Card;
+      }
     | Card[]
 ): CardsReceived {
   const payload = Array.isArray(cards)
@@ -174,8 +174,11 @@ const getArticleEntitiesFromDrop = async (
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
   const isGuardianURLWithGuMetaData =
-    isGuardianUrl(resourceIdOrUrl) && hasWhitelistedParams(resourceIdOrUrl, snapMetaWhitelist);
-  const isGuardianUrlWithMarketingParams = isGuardianUrl(resourceIdOrUrl) && hasWhitelistedParams(resourceIdOrUrl, marketingParamsWhiteList)
+    isGuardianUrl(resourceIdOrUrl) &&
+    hasWhitelistedParams(resourceIdOrUrl, snapMetaWhitelist);
+  const isGuardianUrlWithMarketingParams =
+    isGuardianUrl(resourceIdOrUrl) &&
+    hasWhitelistedParams(resourceIdOrUrl, marketingParamsWhiteList);
   const guMeta = isGuardianUrl(resourceIdOrUrl)
     ? getCardMetaFromUrlParams(resourceIdOrUrl)
     : false;
@@ -191,18 +194,16 @@ const getArticleEntitiesFromDrop = async (
       const card = await createSnap(id, meta);
       return [card];
     }
-    // TODO: explain this. And its position
-    if (!id) {
-      return [];
-    }
-
-    // If we have marketing params on a gu url
+    // If it has valid marketing params, should return whole url complete with query params
     if (isGuardianUrlWithMarketingParams) {
-      // Should return whole url with all params
       const card = await createSnap(resourceIdOrUrl);
       return [card];
     }
 
+    // id check confirms id is present (meaning this is in capi), keeping code below typesafe
+    if (!id) {
+      return [];
+    }
     const {
       articles: [article, ...rest],
       title
@@ -262,18 +263,14 @@ const snapMetaWhitelist = [
 ];
 const guPrefix = 'gu-';
 
-const marketingParamsWhiteList = [
-  'acquisitionData',
-  'INTCMP'
-]
+const marketingParamsWhiteList = ['acquisitionData', 'INTCMP'];
 
 const hasWhitelistedParams = (url: string, whiteList: string[]) => {
-  const validParams = extractPossibleMetaData(url, whiteList)
+  const validParams = checkQueryParams(url, whiteList);
   return validParams && validParams.length > 0;
-}
+};
 
-// Extract metadata for snaplinks
-const extractPossibleMetaData = (url: string, whiteList: string[]) => {
+const checkQueryParams = (url: string, whiteList: string[]) => {
   let urlObj: URL | undefined;
   try {
     urlObj = new URL(url);
@@ -282,19 +279,14 @@ const extractPossibleMetaData = (url: string, whiteList: string[]) => {
     return undefined;
   }
   const allParams = Array.from(urlObj.searchParams);
-  const checkedParams = allParams.filter(
-    ([key]) =>
-      whiteList.includes(key)
-  );
-  return checkedParams;
+  return allParams.filter(([key]) => whiteList.includes(key));
 };
-
 
 /**
  * Given a URL, produce an object with the appropriate meta values.
  */
 const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
-  const guParams = extractPossibleMetaData(url, snapMetaWhitelist);
+  const guParams = checkQueryParams(url, snapMetaWhitelist);
   return (
     guParams &&
     guParams.reduce(

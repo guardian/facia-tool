@@ -235,15 +235,20 @@ describe('Snap cards actions', () => {
       const result = hasWhitelistedParams(url, snapMetaWhitelist);
       expect(result).toEqual(false);
     });
+
+    describe('should be able to identify when a guardian url has marketing params', () => {
+      it('should return true for gu urls with markting params that match a whitelist', () => {
+        const url =
+          'https://www.theguardian.com/environment/ng-interactive/2019/oct/16/the-guardians-climate-pledge-2019?acquisitionData=%7B"source"%3A"EMAIL"%2C"campaignCode"%3A"climate_pledge_2019"%2C"componentId"%3A"climate_pledge_2019_acq_GTodayUK"%7D&INTCMP=climate_pledge_2019&';
+        const result = hasWhitelistedParams(url, marketingParamsWhiteList);
+        expect(result).toEqual(true);
+      });
+      it('should return false for gu urls with markting params that do not match a whitelist', () => {
+        const url =
+          'https://www.theguardian.com/environment/ng-interactive/2019/oct/16/the-guardians-climate-pledge-2019?mygreatparam=hellllooo';
+        const result = hasWhitelistedParams(url, marketingParamsWhiteList);
+        expect(result).toEqual(false);
+      });
+    });
   });
-  describe('should be able to identify when a guardian url has marketing params', () =>
-    it('should just pass through gu urls with markting params that match a whitelist', () => {
-      const url =
-        'https://www.theguardian.com/environment/ng-interactive/2019/oct/16/the-guardians-climate-pledge-2019?acquisitionData=%7B"source"%3A"EMAIL"%2C"campaignCode"%3A"climate_pledge_2019"%2C"componentId"%3A"climate_pledge_2019_acq_GTodayUK"%7D&INTCMP=climate_pledge_2019&';
-      const result = hasWhitelistedParams(url, snapMetaWhitelist);
-      expect(result).toEqual(false);
-    })
-  )
-
-
 });
