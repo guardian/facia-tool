@@ -9,7 +9,8 @@ describe('cardsReducer', () => {
         stateWithClipboard.shared.cards as any,
         updateCardMeta('article', {
           headline: 'headline'
-        })
+        }),
+        stateWithClipboard.shared
       ).article.meta
     ).toEqual({
       headline: 'headline'
@@ -21,7 +22,8 @@ describe('cardsReducer', () => {
         stateWithClipboard.shared.cards as any,
         updateCardMeta('article2', {
           headline: 'headline'
-        })
+        }),
+        stateWithClipboard.shared
       ).article2.meta
     ).toEqual({
       headline: 'headline'
@@ -37,7 +39,8 @@ describe('cardsReducer', () => {
             headline: 'headline'
           },
           { merge: true }
-        )
+        ),
+        stateWithClipboard.shared
       ).article2.meta
     ).toEqual({
       headline: 'headline',

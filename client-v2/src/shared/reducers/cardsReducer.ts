@@ -1,6 +1,7 @@
 import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import { State } from './sharedReducer';
+import { selectCards } from 'shared/selectors/shared';
 import {
   UPDATE_CARD_META,
   CARDS_RECEIVED,
@@ -11,7 +12,11 @@ import {
 } from 'shared/actions/Cards';
 import { cloneActiveImageMeta } from 'shared/util/card';
 
-const cards = (state: State['cards'] = {}, action: Action) => {
+const cards = (
+  state: State['cards'] = {},
+  action: Action,
+  prevSharedState: State
+) => {
   switch (action.type) {
     case UPDATE_CARD_META: {
       const { id } = action.payload;
@@ -64,7 +69,7 @@ const cards = (state: State['cards'] = {}, action: Action) => {
         targetCard.meta.supporting || [],
         [insertedCard.uuid, ...(insertedCard.meta.supporting || [])],
         index,
-        state
+        selectCards(prevSharedState)
       );
 
       return {
