@@ -115,7 +115,7 @@ async function fetchVisibleArticles(
   collectionType: string,
   articles: ArticleDetails[]
 ): Promise<VisibleArticlesResponse> {
-  if (!collectionType || collectionType == ''){
+  if (!collectionType || collectionType === '') {
     throw new Error(`collectionType='${collectionType}' is undefined or empty`);
   }
   // The server does not respond with JSON
