@@ -115,6 +115,9 @@ async function fetchVisibleArticles(
   collectionType: string,
   articles: ArticleDetails[]
 ): Promise<VisibleArticlesResponse> {
+  if (!collectionType || collectionType == ''){
+    throw new Error(`collectionType='${collectionType}' is undefined or empty`);
+  }
   // The server does not respond with JSON
   try {
     const response = await pandaFetch(`/stories-visible/${collectionType}`, {
@@ -128,7 +131,7 @@ async function fetchVisibleArticles(
     return await response.json();
   } catch (response) {
     throw new Error(
-      `Tried to fetch visible stories for collection type ${collectionType}, but the server responded with ${
+      `Tried to fetch visible stories for collection type '${collectionType}', but the server responded with ${
         response.status
       }: ${response.body}`
     );

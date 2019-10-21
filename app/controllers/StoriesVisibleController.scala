@@ -20,7 +20,7 @@ class StoriesVisibleController(val containerService: ContainerService, val deps:
     logger.info(s"got stories-visible=$storiesVisible for containerType=$containerType")
 
     storiesVisible.map { storiesVisibleResponse => Ok(Json.toJson(storiesVisibleResponse)) } getOrElse {
-      val errorMSG = s"$containerType is not a valid container id"
+      val errorMSG = s"'$containerType' is not a valid container id"
       logger.error(errorMSG)
       BadRequest(errorMSG)
     }
