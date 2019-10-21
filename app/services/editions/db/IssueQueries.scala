@@ -5,12 +5,15 @@ import java.time.{LocalDate, OffsetDateTime}
 
 import com.gu.pandomainauth.model.User
 import model.editions._
+import org.postgresql.util.PSQLException
+import play.api.Logger
 import play.api.libs.json.Json
 import scalikejdbc._
-import services.editions.{DbEditionsArticle, DbEditionsCollection, DbEditionsFront}
 import services.editions.CollectionsHelpers._
+import services.editions.publishing.events.PublishEvent
+import services.editions.{DbEditionsArticle, DbEditionsCollection, DbEditionsFront}
 
-import scala.collection.immutable
+import scala.util.{Failure, Success, Try}
 
 trait IssueQueries {
 
@@ -303,5 +306,34 @@ trait IssueQueries {
     (rows.groupBy(_.version) map {
       case (version, rows) => version.copy(events = rows.map(_.event))
     }).toList
+  }
+
+  def insertIssueVersionEvent(event: PublishEvent) = DB localTx { implicit session =>
+    Try{
+      Logger.info(s"saving issue version event message:${event.message}")(event.toLogMarker)
+      sql"""
+        INSERT INTO issue_versions_events (
+          version_id
+          , event_time
+          , status
+          , message
+        )
+        VALUES (
+          ${event.version}
+          , ${event.timestamp}
+          , ${event.status.toString}
+          , ${event.message}
+        );
+      """.execute().apply()
+    } match {
+      case Success(_) => {
+        Logger.info("successfully inserted issue version event message:${event.message}")(event.toLogMarker)
+        true
+      }
+      case Failure(exception: PSQLException) if exception.getSQLState == ForeignKeyViolationSQLState => {
+        Logger.warn("constraint violation encountered when inserting issue version event")(event.toLogMarker)
+        true
+      }
+    }
   }
 }
