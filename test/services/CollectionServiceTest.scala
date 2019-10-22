@@ -68,6 +68,7 @@ class CollectionServiceTest extends FreeSpec with Matchers {
     hideShowMore = None,
     displayHints = None,
     userVisibility = None,
+    targetedTerritory = None,
     platform = None,
     frontsToolSettings = None)
   }

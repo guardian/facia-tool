@@ -238,12 +238,18 @@
                 <span class="cnf-form__value" data-bind="text: meta.groups"></span>
             <!-- /ko -->
             <label for="userVisibility">User visibility</label>
-            <select data-bind="
+            <select id="userVisibility" data-bind="
                 optionsCaption: 'Select user visibility',
                 options: userVisibilities,
                 value: meta.userVisibility,
                 valueAllowUnset: true"></select>
 
+            <label for="targetedTerritory">Target territory</label>
+            <select id="targetedTerritory" data-bind="
+                optionsCaption: 'Select territory',
+                options: availableTerritories,
+                value: meta.targetedTerritory,
+                valueAllowUnset: true"></select>
 
             <label for="showTags" >Show tag kickers</label>
             <input id="showTags" type="checkbox" data-bind="checked: meta.showTags" />
