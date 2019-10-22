@@ -1,34 +1,34 @@
 package controllers
 
-import logging.Logging
-import model.forms._
-import play.api.libs.json.{JsObject, Json}
-import services.editions.EditionsTemplating
 import java.time.{LocalDate, OffsetDateTime}
 
+import cats.syntax.either._
+import com.gu.contentapi.json.CirceEncoders._
+import io.circe.syntax._
+import logging.Logging
 import model.editions.{Edition, EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
+import model.forms._
+import net.logstash.logback.marker.Markers
+import play.api.Logger
+import play.api.libs.json.{JsObject, Json}
+import play.api.mvc.Result
+import services.Capi
+import services.editions.EditionsTemplating
 import services.editions.db.EditionsDB
+import services.editions.prefills.PrefillParamsAdapter
 import services.editions.publishing.EditionsPublishing
 import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
-import com.gu.contentapi.json.CirceEncoders._
-import io.circe.syntax._
-import net.logstash.logback.marker.Markers
-import play.api.Logger
 
+import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
-import scala.collection.JavaConverters._
-import cats.syntax.either._
-import play.api.mvc.Result
-import services.Capi
-import services.editions.prefills.PrefillParamsAdapter
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
                          publishing: EditionsPublishing,
                          capi: Capi,
-                         val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps)  with Logging {
+                         val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
 
   def createIssue(name: String) = EditEditionsAuthAction(parse.json[CreateIssue]) { req =>
     val form = req.body
@@ -36,14 +36,15 @@ class EditionsController(db: EditionsDB,
     val result = for {
       edition <- Either.fromOption[Result, Edition](Edition.withNameOption(name), NotFound(s"Edition $name not found"))
       skeleton <- templating.generateEditionTemplate(edition, form.issueDate)
-      issueId = db.insertIssue(edition, skeleton, req.user, OffsetDateTime.now())
+      // TODO PUT time-window into DB here
+      issueId = db.insertIssue(edition, skeleton.issueSkeleton, req.user, OffsetDateTime.now())
       issue <- Either.fromOption(db.getIssue(issueId), NotFound("Issue created but could not retrieve it from the database"))
     } yield issue
 
     result.fold(identity, issue => Created(Json.toJson(issue)))
   }
 
-  def getIssue(id: String)= EditEditionsAuthAction { _ =>
+  def getIssue(id: String) = EditEditionsAuthAction { _ =>
     db.getIssue(id).map { issue =>
       Ok(Json.toJson(issue))
     }.getOrElse(NotFound(s"Issue $id not found"))
@@ -51,7 +52,7 @@ class EditionsController(db: EditionsDB,
 
   def deleteIssue(id: String) = EditEditionsAuthAction { req => {
     db.getIssue(id).map { issue => {
-      val markers = Markers.appendEntries(Map (
+      val markers = Markers.appendEntries(Map(
         "id" -> id,
         "issueDate" -> issue.issueDate.toString,
         "user" -> req.user.email
@@ -60,10 +61,12 @@ class EditionsController(db: EditionsDB,
       Logger.info(s"Deleting issue ${id}")(markers)
       db.deleteIssue(id)
       Accepted
-    }}.getOrElse(NotFound(s"Issue $id not found"))
-  }}
+    }
+    }.getOrElse(NotFound(s"Issue $id not found"))
+  }
+  }
 
-  def getIssueSummary(id: String)= EditEditionsAuthAction { _ =>
+  def getIssueSummary(id: String) = EditEditionsAuthAction { _ =>
     db.getIssueSummary(id).map { issue =>
       Ok(Json.toJson(issue).as[JsObject] - "fronts")
     }.getOrElse(NotFound(s"Issue $id not found"))
@@ -132,8 +135,15 @@ class EditionsController(db: EditionsDB,
   def getPrefillForCollection(id: String) = EditEditionsAuthAction.async { req =>
     db.getCollectionPrefillQueryString(id).map { prefillUpdate =>
       import prefillUpdate._
-      val prefillParams = PrefillParamsAdapter(issueDate, prefill, None, None, edition)
-      capi.getPrefillArticles(prefillParams, prefillUpdate.currentPageCodes).map { body =>
+      val getPrefillParams = PrefillParamsAdapter(
+        issueDate,
+        contentPrefillQueryUrlSegments,
+        contentPrefillTimeWindow,
+        maybeOphanPath = None,
+        maybeOphanQueryPrefillParams = None,
+        edition
+      )
+      capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes).map { body =>
         // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON
         val json = "{\"response\":" + body.asJson.noSpaces + "}"
         val decorated = rewriteBody(json)

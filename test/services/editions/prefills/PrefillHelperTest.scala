@@ -10,11 +10,9 @@ class PrefillHelperTest extends FunSuite with Matchers {
 
   private val issueDate = LocalDate.of(2019, 10, 5)
 
-  private def prefillHelper = PrefillHelper(TestEdition.templates)
-
   test("defineTimeWindow should return expected time window") {
     val timeWindowCfg = TimeWindowConfigInDays(startOffset = -1, endOffset = 2)
-    PrefillHelper.defineTimeWindow(issueDate, timeWindowCfg) shouldEqual CapiQueryTimeWindow(
+    PrefillHelper.defineContentQueryTimeWindow(issueDate, timeWindowCfg) shouldEqual CapiQueryTimeWindow(
       LocalDate.of(2019, 10, 4).atStartOfDay().toInstant(ZoneOffset.UTC),
       LocalDate.of(2019, 10, 7).atStartOfDay().toInstant(ZoneOffset.UTC)
     )
@@ -22,9 +20,13 @@ class PrefillHelperTest extends FunSuite with Matchers {
 
   test("geneneratePrefillQuery") {
 
-    val prefillQuery = CapiPrefillQuery("?tag=theguardian/mainsection/topstories", PathType.PrintSent)
+    val contentPrefillQuery = CapiPrefillQuery("?tag=theguardian/mainsection/topstories", PathType.PrintSent)
 
-    val prefillParams = PrefillParamsAdapter(issueDate, prefillQuery, None, None, Edition.TrainingEdition)
+    val timeWindowCfg = TestEdition.templates(Edition.TrainingEdition).capiQueryPrefillParams.timeWindowConfig
+
+    val contentPrefillTimeWindow: CapiQueryTimeWindow = PrefillHelper.defineContentQueryTimeWindow(issueDate, timeWindowCfg)
+
+    val getPrefillParams = PrefillParamsAdapter(issueDate, contentPrefillQuery, contentPrefillTimeWindow, None, None, Edition.TrainingEdition)
 
     val fields = List(
       "newspaperEditionDate",
@@ -32,7 +34,7 @@ class PrefillHelperTest extends FunSuite with Matchers {
       "internalPageCode"
     )
 
-    val actual = prefillHelper.geneneratePrefillQuery(prefillParams, fields).getUrl("")
+    val actual = PrefillHelper.geneneratePrefillQuery(getPrefillParams, fields).getUrl("")
 
     val expected = "/content/print-sent" +
       "?order-by=newest" +

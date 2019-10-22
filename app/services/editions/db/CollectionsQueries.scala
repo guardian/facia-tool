@@ -8,6 +8,7 @@ import model.forms.GetCollectionsFilter
 import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.DbEditionsArticle
+import services.editions.prefills.CapiQueryTimeWindow
 
 trait CollectionsQueries {
 
@@ -60,8 +61,10 @@ trait CollectionsQueries {
         (date, edition, zone, CapiPrefillQuery(rs.string("prefill"), pathType), rs.string("page_code"))
       }.list().apply()
 
-    rows.headOption.map { case (issueDate, edition, zone, prefill, _) =>
-      PrefillUpdate(issueDate, edition, zone, prefill, rows.map(_._5))
+    rows.headOption.map { case (issueDate, edition, zone, prefillQueryUrlSegments, _) =>
+      // TODO temporary time window for issue should be persisted in DB
+      val contentPrefillQueryTimeWindow = CapiQueryTimeWindow(issueDate.atStartOfDay().toInstant(ZoneOffset.UTC), issueDate.atStartOfDay().toInstant(ZoneOffset.UTC))
+      PrefillUpdate(issueDate, edition, zone, prefillQueryUrlSegments, contentPrefillQueryTimeWindow, rows.map(_._5))
     }
   }
 

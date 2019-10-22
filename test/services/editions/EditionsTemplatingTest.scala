@@ -5,7 +5,7 @@ import java.time.LocalDate
 import com.gu.contentapi.client.model.v1.SearchResponse
 import com.gu.facia.api.utils.ResolvedMetaData
 import fixtures.TestEdition
-import model.editions.{ArticleMetadata, Edition, Image, MediaType, OphanQueryPrefillParams, TimeWindowConfigInDays}
+import model.editions._
 import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
 import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 import services.{Capi, Ophan, OphanScore}
@@ -46,7 +46,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
 
     def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
       import prefillParams._
-      capiPrefillQuery.queryString match {
+      contentPrefillUrlSegments.queryString match {
         case "?tag=theguardian/mainsection/topstories" => Future.successful(List(
           Prefill(
             123456,
@@ -99,7 +99,8 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
   "Creating a template" - {
     "Sets the prefill metadata from CAPI for Culture 1, with no ordering" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
-      val issue = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+      val issue = genTemplateResult.issueSkeleton
 
       issue.fronts.size shouldBe 4
       val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
@@ -126,7 +127,8 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
 
     "Sets the prefill metadata from CAPI for Culture 1, with reverse ordering" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, reverseOphan)
-      val issue = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+      val issue = genTemplateResult.issueSkeleton
       issue.fronts.size shouldBe 4
       val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
       arts.items.size shouldBe 2
@@ -139,7 +141,8 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
 
     "Sets the prefill metadata from CAPI for Culture 1, with forward ordering" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, forwardOphan)
-      val issue = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+      val issue = genTemplateResult.issueSkeleton
       issue.fronts.size shouldBe 4
       val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
       arts.items.size shouldBe 2
@@ -152,7 +155,8 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
 
     "Sets the prefill metadata from CAPI for Culture 2" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
-      val issue = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+      val issue = genTemplateResult.issueSkeleton
       issue.fronts.size shouldBe 4
       val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
       arts.items.size shouldBe 2
@@ -175,7 +179,8 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
 
     "Sets the prefill metadata from CAPI for UK News" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
-      val issue = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2019, 9, 30)).right.value
+      val issue = genTemplateResult.issueSkeleton
       issue.fronts.size shouldBe 4
       val frontPage = issue.fronts.find(_.name == "UK News").value.collections.find(_.name == "Front Page").value
       frontPage.items.size shouldBe 1

@@ -20,8 +20,6 @@ import scala.concurrent.{ExecutionContext, Future, Promise}
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext)
   extends GuardianContentClient(apiKey = config.contentApi.editionsKey) with Capi with Logging {
 
-  private def prefillHelper = PrefillHelper(EditionsTemplates.templates)
-
   override def targetUrl: String = config.contentApi.contentApiDraftHost
 
   override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
@@ -75,7 +73,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       "shortUrl"
     )
 
-    val query = prefillHelper.geneneratePrefillQuery(getPrefill, fields)
+    val query = PrefillHelper.geneneratePrefillQuery(getPrefill, fields)
       .showElements("images")
       .showTags("all")
       .showBlocks("main")
@@ -102,23 +100,23 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   /**
    * Get a list of article items in the order they exist according to the newspaper page number
    *
-   * @param prefillParams
+   * @param getPrefillParams
    * @return
    */
-  def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
+  def getUnsortedPrefillArticleItems(getPrefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
     val fields = List(
       "newspaperEditionDate",
       "newspaperPageNumber",
       "internalPageCode"
     )
 
-    val query = prefillHelper.geneneratePrefillQuery(prefillParams, fields)
+    val query = PrefillHelper.geneneratePrefillQuery(getPrefillParams, fields)
       .showTags("all")
 
     logger.info(s"getPrefillArticleItems, Prefill Query: $query")
 
     this.getResponse(query) map { response =>
-      response.results.flatMap( content => prefillMetadata(content) ).toList
+      response.results.flatMap(content => prefillMetadata(content)).toList
     }
   }
 

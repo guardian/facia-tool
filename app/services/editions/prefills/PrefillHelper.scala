@@ -4,36 +4,40 @@ import java.net.URI
 import java.nio.charset.Charset
 import java.time.{LocalDate, ZoneOffset}
 
-import model.editions.{Edition, EditionTemplate, TimeWindowConfigInDays}
+import model.editions.TimeWindowConfigInDays
 import org.apache.http.client.utils.URLEncodedUtils
 import services.CapiQueryGenerator
 
 import scala.collection.JavaConverters._
 
-class PrefillHelper(val templates: Map[Edition, EditionTemplate]) {
+object PrefillHelper {
 
-  import PrefillHelper._
+  def defineContentQueryTimeWindow(issueDate: LocalDate, timeWindowConfig: TimeWindowConfigInDays): CapiQueryTimeWindow = {
+    val issueDateStart = issueDate.atStartOfDay()
+    // Regarding UTC Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
+    val fromDateUTC = issueDateStart.plusDays(timeWindowConfig.startOffset).toInstant(ZoneOffset.UTC)
+    val toDateAsUTC = issueDateStart.plusDays(timeWindowConfig.endOffset).toInstant(ZoneOffset.UTC)
+    CapiQueryTimeWindow(fromDateUTC, toDateAsUTC)
+  }
 
-  def geneneratePrefillQuery(prefillParams: PrefillParamsAdapter, fields: List[String]): CapiQueryGenerator = {
+  def geneneratePrefillQuery(getPrefillParams: PrefillParamsAdapter, fields: List[String]): CapiQueryGenerator = {
 
-    import prefillParams._
+    import getPrefillParams._
 
     val params = URLEncodedUtils
-      .parse(new URI(capiPrefillQuery.escapedQueryString()), Charset.forName("UTF-8"))
+      .parse(new URI(contentPrefillUrlSegments.escapedQueryString()), Charset.forName("UTF-8"))
       .asScala
 
-    val timeWindowCfg = templates(edition).capiQueryPrefillParams.timeWindowConfig
+    import contentPrefillTimeWindow.{fromDate, toDate}
 
-    val timeWindow = defineTimeWindow(issueDate, timeWindowCfg)
-
-    var query = CapiQueryGenerator(capiPrefillQuery.pathType)
+    var query = CapiQueryGenerator(contentPrefillUrlSegments.pathType)
       .page(1)
       .pageSize(200)
       .showFields(fields.mkString(","))
       .useDate("newspaper-edition") // deliberately-kebab-case
       .orderBy("newest")
-      .fromDate(timeWindow.fromDate)
-      .toDate(timeWindow.toDate)
+      .fromDate(fromDate)
+      .toDate(toDate)
 
     params.filter(pair => pair.getName == "section").foreach { sectionPair =>
       query = query.section(sectionPair.getValue)
@@ -50,18 +54,5 @@ class PrefillHelper(val templates: Map[Edition, EditionTemplate]) {
     query
   }
 
-}
-
-object PrefillHelper {
-
-  def apply(templates: Map[Edition, EditionTemplate]): PrefillHelper = new PrefillHelper(templates)
-
-  private[prefills] def defineTimeWindow(issueDate: LocalDate, timeWindowConfig: TimeWindowConfigInDays): CapiQueryTimeWindow = {
-    val issueDateStart = issueDate.atStartOfDay()
-    // Regarding UTC Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
-    val fromDateUTC = issueDateStart.plusDays(timeWindowConfig.startOffset).toInstant(ZoneOffset.UTC)
-    val toDateAsUTC = issueDateStart.plusDays(timeWindowConfig.endOffset).toInstant(ZoneOffset.UTC)
-    CapiQueryTimeWindow(fromDateUTC, toDateAsUTC)
-  }
 
 }

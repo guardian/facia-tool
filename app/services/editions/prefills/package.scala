@@ -22,7 +22,8 @@ package object prefills {
 
   case class PrefillParamsAdapter(
                                    issueDate: LocalDate,
-                                   capiPrefillQuery: CapiPrefillQuery,
+                                   contentPrefillUrlSegments: CapiPrefillQuery,
+                                   contentPrefillTimeWindow: CapiQueryTimeWindow,
                                    maybeOphanPath: Option[String],
                                    maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams],
                                    edition: Edition
