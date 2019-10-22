@@ -5,7 +5,8 @@ export default {
     mainDomainShort: 'theguardian.com',
     frontendDomain: 'frontend.gutools.co.uk',
     previewDomain: 'preview.gutools.co.uk',
-    shortDomain: 'gu.com'
+    shortDomain: 'gu.com',
+    capi: 'content.guardianapis.com'
   },
   media: {
     apiBaseUrl: pageConfig.apiBaseUrl,

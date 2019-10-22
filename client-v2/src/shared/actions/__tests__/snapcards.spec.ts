@@ -1,7 +1,13 @@
 import configureMockStore from 'redux-mock-store';
 import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
-import { createArticleEntitiesFromDrop, cardsReceived } from '../Cards';
+import {
+  createArticleEntitiesFromDrop,
+  cardsReceived,
+  hasWhitelistedParams,
+  snapMetaWhitelist,
+  marketingParamsWhiteList
+} from '../Cards';
 import initialState from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
 import { createSnap, createLatestSnap } from 'shared/util/snap';
@@ -11,6 +17,7 @@ import { RefDrop } from 'util/collectionUtils';
 import configureStore from 'util/configureStore';
 import { selectOptionsModalOptions } from 'selectors/modalSelectors';
 import { selectCard, selectSharedState } from 'shared/selectors/shared';
+import capiInteractiveAtomResponse from 'fixtures/capiInteractiveAtomResponse';
 
 jest.mock('uuid/v4', () => () => 'card1');
 const middlewares = [thunk];
@@ -215,6 +222,103 @@ describe('Snap cards actions', () => {
           })
         );
       });
+    });
+    describe('should be able to identify when query params match expect gu meta data', () =>
+      it('should return true if there are query params matching the whitelist', () => {
+        const url =
+          'https://www.theguardian.com?gu-snapType=json.html&gu-snapUri=https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json';
+        const result = hasWhitelistedParams(url, snapMetaWhitelist);
+        expect(result).toEqual(true);
+      }));
+    it('should return false if there are query params not matching the whitelist', () => {
+      const url =
+        'https://www.theguardian.com/environment/ng-interactive/2019/oct/16/the-guardians-climate-pledge-2019?acquisitionData=%7B"source"%3A"EMAIL"%2C"campaignCode"%3A"climate_pledge_2019"%2C"componentId"%3A"climate_pledge_2019_acq_GTodayUK"%7D&INTCMP=climate_pledge_2019&';
+      const result = hasWhitelistedParams(url, snapMetaWhitelist);
+      expect(result).toEqual(false);
+    });
+
+    describe('should be able to identify when a guardian url has marketing params', () => {
+      it('should return true for gu urls with markting params that match a whitelist', () => {
+        const url =
+          'https://www.theguardian.com/environment/ng-interactive/2019/oct/16/the-guardians-climate-pledge-2019?acquisitionData=%7B"source"%3A"EMAIL"%2C"campaignCode"%3A"climate_pledge_2019"%2C"componentId"%3A"climate_pledge_2019_acq_GTodayUK"%7D&INTCMP=climate_pledge_2019&';
+        const result = hasWhitelistedParams(url, marketingParamsWhiteList);
+        expect(result).toEqual(true);
+      });
+      it('should return false for gu urls with markting params that do not match a whitelist', () => {
+        const url =
+          'https://www.theguardian.com/environment/ng-interactive/2019/oct/16/the-guardians-climate-pledge-2019?mygreatparam=hellllooo';
+        const result = hasWhitelistedParams(url, marketingParamsWhiteList);
+        expect(result).toEqual(false);
+      });
+    });
+  });
+  describe('snaps can be created based on interactive atoms stored in CAPI', () => {
+    it('takes a content.guardianapis.com URL and retrieves an interactive atom', async () => {
+      const store = mockStore(initialState);
+      const snapUrl =
+        'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election';
+      const CapiResponse = capiInteractiveAtomResponse;
+      fetchMock.mock(
+        '/api/live/atom/interactive/interactives/2017/06/general-election',
+        CapiResponse
+      );
+      await store.dispatch(createArticleEntitiesFromDrop(
+        idDrop(snapUrl)
+      ) as any);
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(
+        cardsReceived({
+          card1: {
+            frontPublicationDate: 1487076708000,
+            id: 'snap/1487076708000',
+            meta: {
+              headline: 'General Election 2017',
+              byline: 'Guardian Visuals',
+              showByline: false,
+              snapType: 'interactive',
+              snapUri:
+                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
+              href:
+                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election'
+            },
+            uuid: 'card1'
+          }
+        })
+      );
+    });
+    it('takes a content.guardianapis.com URL and returns an invalid atom card if there is no atom', async () => {
+      const store = mockStore(initialState);
+      const snapUrl =
+        'https://content.guardianapis.com/atom/interactive/interactives/2017/06/not-an-atom';
+      const CapiErrorResponse = {
+        response: {
+          status: 'error',
+          message: 'atom id not found: interactives/2017/06/not-an-atom'
+        }
+      };
+      fetchMock.mock(
+        '/api/live/atom/interactive/interactives/2017/06/not-an-atom',
+        CapiErrorResponse
+      );
+      await store.dispatch(createArticleEntitiesFromDrop(
+        idDrop(snapUrl)
+      ) as any);
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(
+        cardsReceived({
+          card1: {
+            frontPublicationDate: 1487076708000,
+            id: 'snap/1487076708000',
+            meta: {
+              headline: 'Invalid atom',
+              snapType: 'interactive',
+              href:
+                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/not-an-atom'
+            },
+            uuid: 'card1'
+          }
+        })
+      );
     });
   });
 });

@@ -12,7 +12,7 @@ private[events] class PublishEventsProcessor(sqsFacade: PublishEventsQueueFacade
   def processPublishEvent(updateEventInDB: PublishEvent => Boolean): Unit = {
     sqsFacade.getPublishEventFromQueue.foreach{sqsEvent => {
       val publishEvent = sqsEvent.event
-      logger.info(s"received publish event from SQS: $publishEvent")
+      logger.info(s"received publish event from SQS")(publishEvent.toLogMarker)
       if (updateEventInDB(publishEvent)) {
         sqsFacade.delete(sqsEvent.receiptHandle)
       }

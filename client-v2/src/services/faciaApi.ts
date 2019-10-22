@@ -338,9 +338,17 @@ const getCapiUriForContentIds = (contentIds: string[]) => {
     .join('&')}`;
 };
 
+// getting interactive atoms from CAPI
+const getAtomFromCapi = async (path: string) => {
+  const response = await pandaFetch(`/api/live/${path}`, {
+    method: 'get',
+    credentials: 'same-origin'
+  });
+  return await response.json();
+};
+
 const getTagOrSectionTitle = (queryResponse: CAPISearchQueryResponse) => {
   const { response } = queryResponse;
-
   return response
     ? (response.tag && response.tag.webTitle) ||
         (response.section && response.section.webTitle)
@@ -445,5 +453,6 @@ export {
   fetchVisibleArticles,
   discardDraftChangesToCollection,
   transformExternalArticle,
+  getAtomFromCapi,
   DEFAULT_PARAMS
 };

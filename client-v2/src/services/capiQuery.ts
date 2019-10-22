@@ -58,6 +58,29 @@ interface CAPITagQueryReponse {
   };
 }
 
+interface CAPIInteractiveAtomResponse {
+  response: {
+    status: CAPIStatus;
+    userTier: string;
+    total: number;
+    interactive: CAPIAtomInteractive;
+  };
+}
+
+interface CAPIAtomInteractive {
+  id: string;
+  atomType: string;
+  labels: [];
+  defaultHtml: string;
+  data: {
+    interactive: {
+      title: string;
+    };
+  };
+  contentChangeDetails: object;
+  commissioningDesks: [];
+}
+
 const getErrorMessageFromResponse = (response: Response) =>
   `Error making a request to CAPI: the server returned ${response.status}, ${
     response.statusText
@@ -164,6 +187,7 @@ export {
   checkIsContent,
   CAPISearchQueryResultsResponse,
   checkIsResults,
-  CAPITagQueryReponse
+  CAPITagQueryReponse,
+  CAPIInteractiveAtomResponse
 };
 export default capiQuery;

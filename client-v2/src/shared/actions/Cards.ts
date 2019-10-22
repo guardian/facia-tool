@@ -13,9 +13,9 @@ import {
   MaybeAddFrontPublicationDate
 } from 'shared/types/Action';
 import { createCard } from 'shared/util/card';
-import { createSnap, createLatestSnap } from 'shared/util/snap';
+import { createSnap, createLatestSnap, createAtomSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
-import { isValidURL, isGuardianUrl } from 'shared/util/url';
+import { isValidURL, isGuardianUrl, isCapiUrl } from 'shared/util/url';
 import { MappableDropType } from 'util/collectionUtils';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
@@ -173,20 +173,39 @@ const getArticleEntitiesFromDrop = async (
   const resourceIdOrUrl = drop.data.trim();
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
+  const isGuardianURLWithGuMetaData =
+    isGuardianUrl(resourceIdOrUrl) &&
+    hasWhitelistedParams(resourceIdOrUrl, snapMetaWhitelist);
+  const isGuardianUrlWithMarketingParams =
+    isGuardianUrl(resourceIdOrUrl) &&
+    hasWhitelistedParams(resourceIdOrUrl, marketingParamsWhiteList);
   const guMeta = isGuardianUrl(resourceIdOrUrl)
     ? getCardMetaFromUrlParams(resourceIdOrUrl)
     : false;
   const isPlainUrl = isURL && !id && !guMeta;
+  const isCAPIUrl = isCapiUrl(resourceIdOrUrl);
+  if (isCAPIUrl) {
+    const card = await createAtomSnap(resourceIdOrUrl);
+    return [card];
+  }
   if (isPlainUrl) {
     const card = await createSnap(resourceIdOrUrl);
     return [card];
   }
   try {
-    if (guMeta) {
-      // If we have gu params in the url, create a snap with the meta we extract.
-      const card = await createSnap(id, guMeta);
+    // If we have gu params in the url, create a snap with the meta we extract.
+    if (isGuardianURLWithGuMetaData) {
+      const meta = getCardMetaFromUrlParams(resourceIdOrUrl);
+      const card = await createSnap(id, meta);
       return [card];
     }
+    // If it has valid marketing params, should return whole url complete with query params
+    if (isGuardianUrlWithMarketingParams) {
+      const card = await createSnap(resourceIdOrUrl);
+      return [card];
+    }
+
+    // id check confirms id is present (meaning this is in capi), keeping code below typesafe
     if (!id) {
       return [];
     }
@@ -241,18 +260,22 @@ const getArticleEntitiesFromFeedDrop = (
 };
 
 const snapMetaWhitelist = [
-  'snapCss',
-  'snapUri',
-  'snapType',
-  'headline',
-  'trailText'
+  'gu-snapCss',
+  'gu-snapUri',
+  'gu-snapType',
+  'gu-headline',
+  'gu-trailText'
 ];
 const guPrefix = 'gu-';
 
-/**
- * Given a URL, produce an object with the appropriate meta values.
- */
-const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
+const marketingParamsWhiteList = ['acquisitionData', 'INTCMP'];
+
+const hasWhitelistedParams = (url: string, whiteList: string[]) => {
+  const validParams = checkQueryParams(url, whiteList);
+  return validParams && validParams.length > 0;
+};
+
+const checkQueryParams = (url: string, whiteList: string[]) => {
   let urlObj: URL | undefined;
   try {
     urlObj = new URL(url);
@@ -260,18 +283,22 @@ const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
     // This wasn't a valid URL -- we won't be able to extract values.
     return undefined;
   }
-  const guParams = Array.from(urlObj.searchParams).filter(
-    ([key]) =>
-      true ||
-      (key.indexOf(guPrefix) !== -1 &&
-        snapMetaWhitelist.indexOf(key.replace(guPrefix, '')) !== -1)
+  const allParams = Array.from(urlObj.searchParams);
+  return allParams.filter(([key]) => whiteList.includes(key));
+};
+
+/**
+ * Given a URL, produce an object with the appropriate meta values.
+ */
+const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
+  const guParams = checkQueryParams(url, snapMetaWhitelist);
+  return (
+    guParams &&
+    guParams.reduce(
+      (acc, [key, value]) => ({ ...acc, [key.replace(guPrefix, '')]: value }),
+      {}
+    )
   );
-  return guParams.length
-    ? guParams.reduce(
-        (acc, [key, value]) => ({ ...acc, [key.replace('gu-', '')]: value }),
-        {}
-      )
-    : undefined;
 };
 
 const getArticleEntitiesFromGuardianPath = async (
@@ -329,5 +356,8 @@ export {
   createArticleEntitiesFromDrop,
   clearCards,
   maybeAddFrontPublicationDate,
-  copyCardImageMeta
+  copyCardImageMeta,
+  hasWhitelistedParams,
+  snapMetaWhitelist,
+  marketingParamsWhiteList
 };
