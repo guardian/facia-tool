@@ -15,12 +15,19 @@ object TrainingEdition {
       FrontOpinionSpecial -> Daily(),
       FrontCrosswords -> Daily(),
     ),
-    zoneId = ZoneId.of("Europe/London"),
-    availability = Daily(),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = 0,
         endOffset = 0)
+    ),
+    zoneId = ZoneId.of("Europe/London"),
+    availability = Daily(),
+    ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
+      apiKey = s"fronts-editions-${this.getClass.toString}",
+      timeWindowConfig = TimeWindowConfigInDays(
+        startOffset = 0,
+        endOffset = -3
+      ))
     )
   )
 

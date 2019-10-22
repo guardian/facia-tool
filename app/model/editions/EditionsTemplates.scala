@@ -136,11 +136,12 @@ case class CollectionTemplate(
 }
 
 case class FrontTemplate(
-  name: String,
-  collections: List[CollectionTemplate],
-  presentation: FrontPresentation,
-  isSpecial: Boolean = false,
-  hidden: Boolean = false
+                          name: String,
+                          collections: List[CollectionTemplate],
+                          presentation: FrontPresentation,
+                          maybeOphanPath: Option[String],
+                          isSpecial: Boolean = false,
+                          hidden: Boolean = false
 ) {
   def special = copy(isSpecial = true, hidden = true)
   def swatch(swatch: Swatch) = copy(presentation = FrontPresentation(swatch))
@@ -148,12 +149,14 @@ case class FrontTemplate(
 
 case class TimeWindowConfigInDays(startOffset: Int, endOffset: Int)
 case class CapiQueryPrefillParams(timeWindowConfig: TimeWindowConfigInDays)
+case class OphanQueryPrefillParams(apiKey: String, timeWindowConfig: TimeWindowConfigInDays)
 
 case class EditionTemplate(
   fronts: List[(FrontTemplate, Periodicity)],
   capiQueryPrefillParams: CapiQueryPrefillParams,
   zoneId: ZoneId,
   availability: Periodicity,
+  ophanQueryPrefillParams: Option[OphanQueryPrefillParams]
 )
 
 // Issue skeletons are what is generated when you create a new issue for a given date

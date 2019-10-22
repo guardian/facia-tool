@@ -5,10 +5,13 @@ import fixtures.TestEdition
 import org.scalatest.{FreeSpec, Matchers}
 import services.editions.EditionsTemplating
 import services.editions.prefills.{Prefill, PrefillParamsAdapter}
+import java.time.LocalDate
+
+import model.editions.{OphanQueryPrefillParams, TimeWindowConfigInDays}
 
 import scala.concurrent.Future
 
-class editionTemplateTest extends FreeSpec with Matchers {
+class EditionTemplateTest extends FreeSpec with Matchers {
 
   // Currently not testing prefills!
   object TestCapi extends Capi {
@@ -16,10 +19,13 @@ class editionTemplateTest extends FreeSpec with Matchers {
 
     override def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = Future.successful(null)
 
-    override def getPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = Future.successful(Nil)
+    override def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = Future.successful(Nil)
+  }
+  object TestOphan extends Ophan {
+    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = ???
   }
 
-  val templating = new EditionsTemplating(TestEdition.templates, TestCapi)
+  val templating = new EditionsTemplating(TestEdition.templates, TestCapi, TestOphan)
 
   //  "createEdition" - {
   //    "should return Monday's content for Monday" in {

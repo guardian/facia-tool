@@ -3,12 +3,14 @@ package services.editions
 import java.time.{Instant, LocalDate}
 
 import com.gu.facia.api.utils.ResolvedMetaData
-import model.editions.{CapiPrefillQuery, Edition, Image, MediaType}
+import model.editions.{CapiPrefillQuery, Edition, Image, MediaType, OphanQueryPrefillParams}
 
 package object prefills {
 
   case class Prefill(
                       internalPageCode: Int,
+                      newspaperPageNumber: Option[Int],
+                      webUrl: String,
                       metaData: ResolvedMetaData,
                       cutout: Option[Image],
                       tone: String,
@@ -18,6 +20,12 @@ package object prefills {
 
   case class CapiQueryTimeWindow(fromDate: Instant, toDate: Instant)
 
-  case class PrefillParamsAdapter(issueDate: LocalDate, capiPrefillQuery: CapiPrefillQuery, edition: Edition)
+  case class PrefillParamsAdapter(
+                                   issueDate: LocalDate,
+                                   capiPrefillQuery: CapiPrefillQuery,
+                                   maybeOphanPath: Option[String],
+                                   maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams],
+                                   edition: Edition
+                                 )
 
 }

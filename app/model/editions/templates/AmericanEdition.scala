@@ -56,12 +56,19 @@ object AmericanEdition {
       // Crosswords
       FrontCrosswords -> Daily(),
     ),
-    zoneId = ZoneId.of("Europe/London"),
-    availability = Daily(),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = 0,
         endOffset = 0)
+    ),
+    zoneId = ZoneId.of("Europe/London"),
+    availability = Daily(),
+    ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
+      apiKey = s"fronts-editions-us",
+      timeWindowConfig = TimeWindowConfigInDays(
+        startOffset = 0,
+        endOffset = -7
+      ))
     )
   )
 

@@ -25,6 +25,9 @@ object CapiPrefiller {
 
   def prefill(content: Content): Prefill = {
     val internalPageCode = content.fields.flatMap(_.internalPageCode).getOrElse(-1)
+    val newspaperPageNumber = content.fields.flatMap(_.newspaperPageNumber)
+    val webUrl = content.webUrl
+
     val cardStyle = CardStyle(content, TrailMetaData.empty)
     val metadata = ResolvedMetaData.fromContent(content, cardStyle)
 
@@ -48,6 +51,8 @@ object CapiPrefiller {
 
     Prefill(
       internalPageCode,
+      newspaperPageNumber,
+      webUrl,
       newMetadata,
       cutoutImage,
       cardStyle.toneString,

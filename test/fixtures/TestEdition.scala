@@ -14,13 +14,14 @@ object TestEdition {
       FrontCulture.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontSpecialSpecial2.front -> Daily(),
     ),
-    zoneId = ZoneId.of("Europe/London"),
-    availability = Daily(),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = -1,
         endOffset= 2)
-    )
+    ),
+    zoneId = ZoneId.of("Europe/London"),
+    availability = Daily(),
+    None
   )
 
   lazy val templates: Map[Edition, EditionTemplate] = Map(Edition.TrainingEdition -> template)
@@ -36,7 +37,8 @@ object FrontTopStories {
   val front = FrontTemplate(
     name = "Top Stories",
     collections = List(collectionTopStories),
-    presentation = defaultFrontPresentation
+    presentation = defaultFrontPresentation,
+    None
   )
 }
 
@@ -59,7 +61,8 @@ object FrontNewsUkGuardian {
   val front = FrontTemplate(
     name = "UK News",
     collections = List(collectionNewsFrontPage, collectionNewsUkNewsGuardian, collectionNewsWeather),
-    presentation = defaultFrontPresentation
+    presentation = defaultFrontPresentation,
+    None
   )
 }
 
@@ -83,7 +86,8 @@ object FrontNewsUkGuardianSaturday {
   val front = FrontTemplate(
     name = "UK News",
     collections = List(collectionNewsFrontPage, collectionNewsSpecial1, collectionNewsWeather),
-    presentation = defaultFrontPresentation
+    presentation = defaultFrontPresentation,
+    None
   )
 }
 
@@ -101,7 +105,8 @@ object FrontCulture {
   val front = FrontTemplate(
     name = "Culture",
     collections = List(collectionCultureArts, collectionCultureTVandRadio),
-    presentation = defaultFrontPresentation
+    presentation = defaultFrontPresentation,
+    None
   )
 }
 
@@ -116,6 +121,7 @@ object FrontSpecialSpecial2 {
     name = "Special 2",
     collections = List(collectionSpecialSpecial2),
     presentation = defaultFrontPresentation,
+    None,
     hidden = true
   )
 }
