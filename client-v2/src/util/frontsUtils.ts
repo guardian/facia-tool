@@ -37,7 +37,8 @@ const combineCollectionWithConfig = (
     type: collectionConfig.type,
     frontsToolSettings: collectionConfig.frontsToolSettings,
     platform: collectionConfig.platform,
-    metadata: collectionConfig.metadata
+    metadata: collectionConfig.metadata,
+    targetedTerritory: collectionConfig.targetedTerritory
   });
 };
 

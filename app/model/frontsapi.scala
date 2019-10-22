@@ -220,9 +220,9 @@ trait UpdateActionsTrait {
   def createCollectionJson(identity: User, update: UpdateList): CollectionJson = {
     val userName = getUserName(identity)
     if (update.live)
-      CollectionJson(List(Trail(update.item, DateTime.now.getMillis, Some(userName), update.itemMeta)), None, None, DateTime.now, userName, identity.email, None, None, None)
+      CollectionJson(List(Trail(update.item, DateTime.now.getMillis, Some(userName), update.itemMeta)), None, None, DateTime.now, userName, identity.email, None, None, None, None)
     else
-      CollectionJson(Nil, Some(List(Trail(update.item, DateTime.now.getMillis, Some(userName), update.itemMeta))), None, DateTime.now, userName, identity.email, None, None, None)
+      CollectionJson(Nil, Some(List(Trail(update.item, DateTime.now.getMillis, Some(userName), update.itemMeta))), None, DateTime.now, userName, identity.email, None, None, None, None)
   }
 
   def capCollection(collectionJson: CollectionJson, collectionType: String): CollectionJson = {
@@ -276,7 +276,8 @@ trait UpdateActionsTrait {
       updatedEmail  = identity.email,
       displayName   = None,
       href          = None,
-      previously    = None)}
+      previously    = None,
+      targetedTerritory = None)}
 
   def updateTreats(collectionId: String, update: UpdateList, identity: User): Future[Option[CollectionJson]] = {
     lazy val updateJson = Json.toJson(update)
