@@ -26,7 +26,8 @@ class V2GetCollectionsCommandTest extends FreeSpec with Matchers {
       updatedEmail = "",
       displayName = None,
       href = None,
-      previously = None
+      previously = None,
+      targetedTerritory = None
     )
   }
 
