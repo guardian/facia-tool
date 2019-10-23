@@ -1,9 +1,10 @@
 package services
 
+import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.SendMessageResult
-import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob}
+import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob, PressType}
 import conf.ApplicationConfiguration
 import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import logging.Logging
@@ -27,29 +28,39 @@ object PressCommand {
   def forOneId(id: String): PressCommand = PressCommand(Set(id))
 }
 
-class FaciaPressQueue(val config: ApplicationConfiguration) {
-  val maybeQueue = config.faciatool.frontPressToolQueue map { queueUrl =>
-    val credentials = config.aws.frontendAccountCredentials
+trait PressQueue {
+  val queueUrl: Option[String]
+  val credentials: AWSCredentialsProvider
+  val maybeQueue = queueUrl.map { url =>
     JsonMessageQueue[PressJob](
       AmazonSQSAsyncClientBuilder.standard()
         .withCredentials(credentials)
         .withRegion(Regions.EU_WEST_1).build(),
-      queueUrl
+      url
     )
   }
-
   def enqueue(job: PressJob): Future[SendMessageResult] = {
     maybeQueue match {
       case Some(queue) =>
         queue.send(job)
 
       case None =>
-        Future.failed(new RuntimeException("`facia.press.queue_url` property not in config, could not enqueue job."))
+        Future.failed(new RuntimeException("Queue property not in config, could not enqueue job."))
     }
   }
 }
 
-class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAgent) extends Logging {
+class FaciaPressQueue(val config: ApplicationConfiguration) extends PressQueue {
+  override val queueUrl: Option[String] = config.faciatool.frontPressToolQueue
+  override val credentials: AWSCredentialsProvider = config.aws.frontendAccountCredentials
+}
+
+class MapiFrontEventQueue(val config: ApplicationConfiguration) extends PressQueue {
+  override val queueUrl: Option[String] = config.faciatool.mapiFrontEventQueue
+  override val credentials: AWSCredentialsProvider = config.aws.mapiAccountCredentials
+}
+
+class FaciaPress(val frontendQueue: PressQueue, val mapiQueue: PressQueue, val configAgent: ConfigAgent) extends Logging {
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
@@ -57,38 +68,24 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
         path <- configAgent.getConfigsUsingCollectionId(id)
       } yield path
 
-      lazy val livePress =
-        if (pressCommand.live) {
-          val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = pressCommand.forceConfigUpdate)))
-          fut.onComplete {
-            case Failure(error) =>
-              EnqueuePressFailure.increment()
-              logger.error("Error manually pressing live collection through update from tool", error)
-            case Success(_) =>
-              EnqueuePressSuccess.increment()
-          }
-          fut
-        } else {
-          Future.successful(Set.empty)
-        }
+      val pressType = if (pressCommand.live) {
+        Live
+      } else {
+        Draft
+      }
 
-      lazy val draftPress =
-        if (pressCommand.draft) {
-          val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
-          fut.onComplete {
-            case Failure(error) =>
-              EnqueuePressFailure.increment()
-              logger.error("Error manually pressing draft collection through update from tool", error)
-            case Success(_) =>
-              EnqueuePressSuccess.increment()
-          }
-          fut
-        } else Future.successful(Set.empty)
-
-      for {
-        live <- livePress
-        draft <-  draftPress
-      } yield (live ++ draft).toList
+      val pressJobs = paths.map { path =>
+        PressJob(FrontPath(path), pressType, forceConfigUpdate = pressCommand.forceConfigUpdate)
+      }
+      val fut = Future.traverse(pressJobs)(frontendQueue.enqueue)
+      fut.onComplete {
+        case Failure(error) =>
+          EnqueuePressFailure.increment()
+          logger.error("Error manually pressing live collection through update from tool", error)
+        case Success(_) =>
+          EnqueuePressSuccess.increment()
+      }
+      fut
     }
   }
 }
