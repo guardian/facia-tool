@@ -128,6 +128,29 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           None
       }
     }
+
+    def mapiAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account Frontend"))
+    var crossAccount: Option[AWSCredentialsProvider] = {
+      val provider = new AWSCredentialsProviderChain(
+        new ProfileCredentialsProvider("mobile"),
+        new STSAssumeRoleSessionCredentialsProvider.Builder(faciatool.stsRoleToAssume, "mobile").build()
+      )
+
+      // this is a bit of a convoluted way to check whether we actually have credentials.
+      // I guess in an ideal world there would be some sort of isConfigued() method...
+      try {
+        val creds = provider.getCredentials
+        Some(provider)
+      } catch {
+        case ex: AmazonClientException =>
+          logger.error("amazon client cross account exception")
+
+          // We really, really want to ensure that PROD is configured before saying a box is OK
+          if (isProd) throw ex
+          // this means that on dev machines you only need to configure keys if you are actually going to use them
+          None
+      }
+    }
     val rdsClient = AmazonRDSClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
     val ssmClient = AWSSimpleSystemsManagementClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
   }
@@ -229,6 +252,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   object faciatool {
     lazy val breakingNewsFront = "breaking-news"
     lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
+    lazy val mapiFrontEventQueue = getString("mapi.sqs.front.event_queue_url")
     lazy val publishEventsQueue = getMandatoryString("publish_events.queue_url")
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
