@@ -74,6 +74,20 @@ object AustralianEdition {
   )
   .swatch(News)
   
+  def FrontCultureAu = front(
+    "Culture",
+    Some("au"),
+    collection("Culture").searchPrefill("?tag=tone/features|tone/interviews,-tone/reviews+(music/music|books/books|stage/stage|music/classical-music-and-opera|artanddesign/artanddesign|games/games|tv-and-radio/tv-and-radio|film/film|culture/culture)")
+  )
+  .swatch(Culture)
+  
+  def FrontLifeAu = front(
+    "Life",
+    Some("au"),
+    collection("Life").searchPrefill("?tag=tone/features|tone/recipes+(lifeandstyle/lifeandstyle|lifeandstyle/love-and-sex|lifeandstyle/celebrity|food/food|/travel/travel|lifeandstyle/health-and-wellbeing|lifeandstyle/women|lifeandstyle/home-and-garden|money/money|technology/motoring|fashion/fashion)")
+  )
+  .swatch(Life)
+  
   def FrontSportAu = front(
     "Sport",
     Some("au"),
@@ -81,6 +95,7 @@ object AustralianEdition {
     collection("Sport 2"),
     collection("Sport 3")
   )
+  .swatch(Sport)
   
   def FrontCrosswordsAu = front(
     "Crosswords",
