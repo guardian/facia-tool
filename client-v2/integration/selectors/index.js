@@ -21,6 +21,12 @@ const EDIT_FORM_HEADLINE_FIELD = 'edit-form-headline-field';
 const EDIT_FORM_SAVE_BUTTON = 'edit-form-save-button';
 const EDIT_FORM_BREAKING_NEWS_TOGGLE = 'edit-form-breaking-news-toggle';
 const BREAKING_NEWS_SELECTOR = 'breaking-news';
+const EDIT_FORM_RICH_TEXT = 'edit-form-rich-text';
+const EDIT_FORM_BOLD_BUTTON = 'bold';
+const EDIT_FORM_ADD_LINK_BUTTON = 'add-link';
+const EDIT_FORM_REMOVE_LINK_BUTTON = 'remove-link';
+const EDIT_FORM_PROSEMIRROR_CLASS = '.ProseMirror';
+
 const RENAME_FRONT_BUTTON = 'rename-front-button';
 const RENAME_FRONT_INPUT = 'rename-front-input';
 const FRONT_NAME = 'front-name';
@@ -131,6 +137,22 @@ export const editFormSaveButton = maybeGetNth(select(EDIT_FORM_SAVE_BUTTON));
 
 export const editFormBreakingNewsToggle = maybeGetNth(
   select(EDIT_FORM_BREAKING_NEWS_TOGGLE)
+);
+
+export const editFormRichText = maybeGetNth(
+  select(EDIT_FORM_RICH_TEXT).find(EDIT_FORM_PROSEMIRROR_CLASS)
+);
+
+export const editFormBoldButton = maybeGetNth(
+  select(EDIT_FORM, EDIT_FORM_BOLD_BUTTON)
+);
+
+export const editFormAddLinkButton = maybeGetNth(
+  select(EDIT_FORM, EDIT_FORM_ADD_LINK_BUTTON)
+);
+
+export const editFormRemoveLinkButton = maybeGetNth(
+  select(EDIT_FORM, EDIT_FORM_REMOVE_LINK_BUTTON)
 );
 
 // Fronts //
