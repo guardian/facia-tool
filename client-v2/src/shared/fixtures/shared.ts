@@ -646,6 +646,11 @@ const stateWithCollection: any = {
           testCollection5: {
             displayName: 'testCollection5',
             type: 'type'
+          },
+          geoLocatedCollection: {
+            displayName: 'New Zealand News',
+            type: 'type',
+            targetedTerritory: 'NZ'
           }
         }
       },
