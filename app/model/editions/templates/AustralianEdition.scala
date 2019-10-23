@@ -14,6 +14,8 @@ object AustralianEdition {
       FrontNewsAu -> WeekDays(List(WeekDay.Sat)),
       FrontJournalAu -> WeekDays(List(WeekDay.Sat)),
       FrontNewsFeaturesAu -> WeekDays(List(WeekDay.Sat)),
+      FrontCultureAu -> WeekDays(List(WeekDay.Sat)),
+      FrontLifeAu -> WeekDays(List(WeekDay.Sat)),
       FrontSportAu -> WeekDays(List(WeekDay.Sat)),
       FrontCrosswordsAu -> WeekDays(List(WeekDay.Sat))
     ),
