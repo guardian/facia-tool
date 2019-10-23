@@ -26,7 +26,7 @@ object AustralianEdition {
       )
     ),
     zoneId = ZoneId.of("Europe/London"),
-    availability = Weekly(),
+    availability = WeekDays(List(WeekDay.Sat)),
     ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
       apiKey = "fronts-editions-au",
       timeWindowConfig = TimeWindowConfigInDays(
@@ -36,18 +36,18 @@ object AustralianEdition {
     )
   )
 
-  
+
   // Manually curated top stories section
-  
+
   def FrontTopStoriesAu = front(
     "Top stories",
     collection("Top Stories")
     )
   .swatch(News)
-  
+
   // News container driven from the tone tag, this is going to be too long as is
   // Need to limit prefill duration by container as well as front?
-  
+
   def FrontNewsAu = front(
     "News",
     Some("au"),
@@ -55,9 +55,9 @@ object AustralianEdition {
     collection("World News").searchPrefill("?tag=(tone/news-australia-news/australia-news)-tone/comment")
   )
   .swatch(News)
-  
+
   //Opinion
-  
+
   def FrontJournalAu = front(
     "Journal",
     Some("au"),
@@ -65,9 +65,9 @@ object AustralianEdition {
     collection("World Opinion").searchPrefill("?tag=(tone/comment-australia-news/australia-news)")
   )
   .swatch(Opinion)
-  
+
   //News Features and Long reads
-  
+
   def FrontNewsFeaturesAu = front(
     "News Features",
     Some("au"),
@@ -75,26 +75,26 @@ object AustralianEdition {
     collection("News Features").searchPrefill("?tag=(tone/news,tone/features)")
   )
   .swatch(News)
-  
+
   // Culture and Life
   // We're going to need more collections
-  
+
   def FrontCultureAu = front(
     "Culture",
     Some("au"),
     collection("Culture").searchPrefill("?tag=tone/features|tone/interviews,-tone/reviews+(music/music|books/books|stage/stage|music/classical-music-and-opera|artanddesign/artanddesign|games/games|tv-and-radio/tv-and-radio|film/film|culture/culture)")
   )
   .swatch(Culture)
-  
+
   def FrontLifeAu = front(
     "Life",
     Some("au"),
     collection("Life").searchPrefill("?tag=tone/features|tone/recipes+(lifeandstyle/lifeandstyle|lifeandstyle/love-and-sex|lifeandstyle/celebrity|food/food|/travel/travel|lifeandstyle/health-and-wellbeing|lifeandstyle/women|lifeandstyle/home-and-garden|money/money|technology/motoring|fashion/fashion)")
   )
   .swatch(Life)
-  
+
   // Sport
-  
+
   def FrontSportAu = front(
     "Sport",
     Some("au"),
@@ -103,9 +103,9 @@ object AustralianEdition {
     collection("Sport 3")
   )
   .swatch(Sport)
-  
+
   // Crosswords
-  
+
   def FrontCrosswordsAu = front(
     "Crosswords",
     collection("Crosswords").searchPrefill("?tag=type/crossword")
