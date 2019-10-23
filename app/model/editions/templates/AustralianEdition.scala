@@ -91,7 +91,7 @@ object AustralianEdition {
     Some("au"),
     collection("Life").searchPrefill("?tag=tone/features|tone/recipes+(lifeandstyle/lifeandstyle|lifeandstyle/love-and-sex|lifeandstyle/celebrity|food/food|/travel/travel|lifeandstyle/health-and-wellbeing|lifeandstyle/women|lifeandstyle/home-and-garden|money/money|technology/motoring|fashion/fashion)")
   )
-  .swatch(Life)
+  .swatch(Lifestyle)
 
   // Sport
 
