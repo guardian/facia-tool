@@ -56,7 +56,7 @@ class FaciaApiTest extends FreeSpec with Matchers {
     val identity = User("John", "Duffell", "email@email.com", None)
     val live = List(Trail("existingId", 0, Some(""), None))
     val draft = Trail("newId", 0, Some(""), None) :: live
-    val collectionJson = CollectionJson(live, Some(draft), None, new DateTime(0), "oldUpdatedBy", "oldUpdatedEmail", None, None, None)
+    val collectionJson = CollectionJson(live, Some(draft), None, new DateTime(0), "oldUpdatedBy", "oldUpdatedEmail", None, None, None, None)
     (identity, collectionJson)
   }
 }

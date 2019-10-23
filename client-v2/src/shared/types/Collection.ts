@@ -109,6 +109,7 @@ interface CollectionFromResponse {
   groups?: string[];
   metadata?: Array<{ type: string }>;
   uneditable?: boolean;
+  targetedTerritory?: string;
 }
 
 type CollectionWithNestedArticles = CollectionFromResponse & {
@@ -133,6 +134,7 @@ interface Collection {
   type: string;
   frontsToolSettings?: FrontsToolSettings;
   isHidden?: boolean;
+  targetedTerritory?: string;
 }
 
 interface ArticleTag {

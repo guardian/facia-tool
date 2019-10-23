@@ -179,6 +179,17 @@ const CollectionShortVerticalPinline = styled(ShortVerticalPinline)`
   left: 0;
 `;
 
+const TargetedTerritoryBox = styled.div`
+  background-color: black;
+  color: white;
+  font-size: 15px;
+  padding: 0 5px;
+  span {
+    font-size: 7px;
+    vertical-align: middle;
+  }
+`;
+
 class CollectionDisplay extends React.Component<Props, CollectionState> {
   public static defaultProps = {
     isUneditable: false,
@@ -212,6 +223,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
     const displayName = collection ? collection.displayName : 'Loading';
+    const targetedTerritory = collection ? collection.targetedTerritory : null;
     return (
       <CollectionContainer
         id={collection && createCollectionId(collection)}
@@ -243,6 +255,12 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
                       {`${collection.platform} Only`}
                     </CollectionConfigText>
                   ) : null}
+                  {targetedTerritory && (
+                    <TargetedTerritoryBox>
+                      {targetedTerritory}
+                      <span> &nbsp;ONLY</span>
+                    </TargetedTerritoryBox>
+                  )}
                 </CollectionConfigContainer>
               </CollectionHeadingText>
             </CollectionHeadlineWithConfigContainer>

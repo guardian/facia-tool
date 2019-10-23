@@ -90,7 +90,11 @@ describe('Collection actions', () => {
     );
 
     it('should add fetched Collections to the store', async () => {
-      const collectionIds = ['testCollection1', 'testCollection2'];
+      const collectionIds = [
+        'testCollection1',
+        'testCollection2',
+        'geoLocatedCollection'
+      ];
       fetchMock.post('/collections', getCollectionsApiResponse);
       await store.dispatch(getCollections(collectionIds) as any);
       expect(store.getState().shared.collections.data).toEqual({
@@ -137,6 +141,21 @@ describe('Collection actions', () => {
           previously: ['uuid'],
           previouslyCardIds: [],
           type: 'type'
+        },
+        geoLocatedCollection: {
+          displayName: 'New Zealand News',
+          draft: ['uuid'],
+          frontsToolSettings: undefined,
+          groups: undefined,
+          id: 'geoLocatedCollection',
+          lastUpdated: 1547479667115,
+          live: ['uuid'],
+          metadata: undefined,
+          platform: undefined,
+          previously: ['uuid'],
+          previouslyCardIds: [],
+          type: 'type',
+          targetedTerritory: 'NZ'
         }
       });
     });
@@ -201,6 +220,21 @@ describe('Collection actions', () => {
           previously: ['uuid'],
           previouslyCardIds: [],
           type: 'type'
+        },
+        geoLocatedCollection: {
+          displayName: 'New Zealand News',
+          draft: ['uuid'],
+          frontsToolSettings: undefined,
+          groups: undefined,
+          id: 'geoLocatedCollection',
+          lastUpdated: 1547479667115,
+          live: ['uuid'],
+          metadata: undefined,
+          platform: undefined,
+          previously: ['uuid'],
+          previouslyCardIds: [],
+          type: 'type',
+          targetedTerritory: 'NZ'
         }
       });
     });

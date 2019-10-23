@@ -41,7 +41,7 @@ class CollectionServiceTest extends FreeSpec with Matchers {
   private def collectionJson: CollectionJson = {
     val live = List(Trail("existingId", 0, Some(""), None))
     val draft = Trail("newId", 0, Some(""), None) :: live
-    CollectionJson(live, Some(draft), None, new DateTime(0), "oldUpdatedBy", "oldUpdatedEmail", None, None, None)
+    CollectionJson(live, Some(draft), None, new DateTime(0), "oldUpdatedBy", "oldUpdatedEmail", None, None, None, None)
   }
 
   private def configJson: ConfigJson = {

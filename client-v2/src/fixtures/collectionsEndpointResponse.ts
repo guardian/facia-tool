@@ -78,6 +78,22 @@ export const getCollectionsApiResponse = [
       live: { desktop: 4, mobile: 4 },
       draft: { desktop: 4, mobile: 4 }
     }
+  },
+  {
+    id: 'geoLocatedCollection',
+    collection: {
+      displayName: 'geoLocatedCollection',
+      live: ['abc'],
+      draft: ['def'],
+      lastUpdated: 1547479667115,
+      previously: undefined,
+      type: 'type',
+      targetedTerritory: 'NZ'
+    },
+    storiesVisibleByStage: {
+      live: { desktop: 4, mobile: 4 },
+      draft: { desktop: 4, mobile: 4 }
+    }
   }
 ];
 

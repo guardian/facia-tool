@@ -53,6 +53,7 @@ interface CollectionConfigResponse {
   platform?: Platform;
   frontsToolSettings?: FrontsToolSettings;
   prefill?: EditionsPrefill;
+  targetedTerritory?: string;
 }
 
 interface FrontsConfigResponse {
