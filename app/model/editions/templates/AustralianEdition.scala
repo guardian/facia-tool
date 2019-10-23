@@ -28,7 +28,7 @@ object AustralianEdition {
     zoneId = ZoneId.of("Europe/London"),
     availability = Weekly(),
     ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
-      apiKey = s"fronts-editions-au",
+      apiKey = "fronts-editions-au",
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = -6,
         endOffset = 0
