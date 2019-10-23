@@ -64,7 +64,7 @@ object AustralianEdition {
     collection("Opinion").searchPrefill("?tag=(australia-news/australia-news,tone/comment)"),
     collection("World Opinion").searchPrefill("?tag=(tone/comment-australia-news/australia-news)")
   )
-  .swatch(News)
+  .swatch(Opinion)
   
   //News Features and Long reads
   
@@ -75,6 +75,9 @@ object AustralianEdition {
     collection("News Features").searchPrefill("?tag=(tone/news,tone/features)")
   )
   .swatch(News)
+  
+  // Culture and Life
+  // We're going to need more collections
   
   def FrontCultureAu = front(
     "Culture",
@@ -90,6 +93,8 @@ object AustralianEdition {
   )
   .swatch(Life)
   
+  // Sport
+  
   def FrontSportAu = front(
     "Sport",
     Some("au"),
@@ -98,6 +103,8 @@ object AustralianEdition {
     collection("Sport 3")
   )
   .swatch(Sport)
+  
+  // Crosswords
   
   def FrontCrosswordsAu = front(
     "Crosswords",
