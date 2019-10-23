@@ -14,6 +14,9 @@ const CardContent = styled.div<{
   flex-basis: 100%;
   hyphens: auto;
   word-break: break-word;
+  p {
+    margin: 0;
+  }
 `;
 
 export default CardContent;

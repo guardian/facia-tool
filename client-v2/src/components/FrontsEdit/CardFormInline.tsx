@@ -51,10 +51,11 @@ import {
 import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
-import { selectEditMode } from 'selectors/pathSelectors';
+import { selectEditMode, selectV2SubPath } from 'selectors/pathSelectors';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import InputLabel from 'shared/components/input/InputLabel';
 import urls from 'constants/urls';
+import { RichTextInput } from 'components/inputs/RichTextInput';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -71,6 +72,7 @@ interface ComponentProps extends ContainerProps {
   coverCardMobileImage?: ImageData;
   coverCardTabletImage?: ImageData;
   size?: string;
+  isEmailFronts?: boolean;
 }
 
 type Props = ComponentProps &
@@ -410,7 +412,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 label={this.getHeadlineLabel()}
                 rows="2"
                 placeholder={articleCapiFieldValues.headline}
-                component={InputTextArea}
+                component={
+                  this.props.snapType === 'html' ? RichTextInput : InputTextArea
+                }
                 originalValue={articleCapiFieldValues.headline}
                 data-testid="edit-form-headline-field"
               />
@@ -841,6 +845,8 @@ const createMapStateToProps = () => {
       return collection.updatedBy || null;
     }
 
+    const isEmailFronts = selectV2SubPath(state) === '/email';
+
     return {
       articleExists: !!article,
       hasMainVideo: !!article && !!article.hasMainVideo,
@@ -870,7 +876,8 @@ const createMapStateToProps = () => {
       coverCardImageReplace: valueSelector(state, 'coverCardImageReplace'),
       coverCardMobileImage: valueSelector(state, 'coverCardMobileImage'),
       coverCardTabletImage: valueSelector(state, 'coverCardTabletImage'),
-      pickedKicker: !!article ? article.pickedKicker : undefined
+      pickedKicker: !!article ? article.pickedKicker : undefined,
+      isEmailFronts
     };
   };
 };
