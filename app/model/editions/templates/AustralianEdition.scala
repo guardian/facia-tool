@@ -14,6 +14,8 @@ object AustralianEdition {
       FrontNewsAu -> WeekDays(List(WeekDay.Sat)),
       FrontJournalAu -> WeekDays(List(WeekDay.Sat)),
       FrontNewsFeaturesAu -> WeekDays(List(WeekDay.Sat)),
+      FrontSportAu -> WeekDays(List(WeekDay.Sat)),
+      FrontCrosswordsAu -> WeekDays(List(WeekDay.Sat))
     ),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
@@ -47,16 +49,18 @@ object AustralianEdition {
   def FrontNewsAu = front(
     "News",
     Some("au"),
-    collection("News").searchPrefill("?tag=tone/news")
+    collection("News").searchPrefill("?tag=(tone/news,australia-news/australia-news)-tone/comment"),
+    collection("World News").searchPrefill("?tag=(tone/news-australia-news/australia-news)-tone/comment")
   )
   .swatch(News)
   
   //Opinion
   
   def FrontJournalAu = front(
-    "Opinion",
+    "Journal",
     Some("au"),
-    collection("Journal").searchPrefill("?tag=tone/comment")
+    collection("Opinion").searchPrefill("?tag=(australia-news/australia-news,tone/comment)"),
+    collection("World Opinion").searchPrefill("?tag=(tone/comment-australia-news/australia-news)")
   )
   .swatch(News)
   
@@ -69,4 +73,17 @@ object AustralianEdition {
     collection("News Features").searchPrefill("?tag=(tone/news,tone/features)")
   )
   .swatch(News)
+  
+  def FrontSportAu = front(
+    "Sport",
+    Some("au"),
+    collection("Sport 1").searchPrefill("?tag=sport/sport|football/football|football/w-league|sport/horse-racing|sport/rugbyleague|sport/boxing|sport/golf|sport/formulaone|sport/cycling|sport/tennis|sport/cricket|sport/rugby-union|sport/australian-rules-football"),
+    collection("Sport 2"),
+    collection("Sport 3")
+  )
+  
+  def FrontCrosswordsAu = front(
+    "Crosswords",
+    collection("Crosswords").searchPrefill("?tag=type/crossword")
+  )
 }
