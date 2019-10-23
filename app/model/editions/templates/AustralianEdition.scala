@@ -10,11 +10,10 @@ import model.editions.templates.TemplateHelpers._
 object AustralianEdition {
   lazy val template = EditionTemplate(
     List(
-      // Top Stories and Nuclear specials
-      // News fronts then special
-      FrontNewsAuGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri)),
-      FrontNewsAuGuardianSaturday -> WeekDays(List(WeekDay.Sat)),
-      FrontNewsAuObserver -> WeekDays(List(WeekDay.Sun)),
+      FrontTopStoriesAu -> WeekDays(List(WeekDay.Sat)),
+      FrontNewsAu -> WeekDays(List(WeekDay.Sat)),
+      FrontJournalAu -> WeekDays(List(WeekDay.Sat)),
+      FrontNewsFeaturesAu -> WeekDays(List(WeekDay.Sat)),
     ),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
@@ -23,7 +22,7 @@ object AustralianEdition {
       )
     ),
     zoneId = ZoneId.of("Europe/London"),
-    availability = Daily(),
+    availability = Weekly(),
     ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
       apiKey = s"fronts-editions-au",
       timeWindowConfig = TimeWindowConfigInDays(
@@ -33,33 +32,41 @@ object AustralianEdition {
     )
   )
 
-  def FrontNewsAuGuardian = front(
-    "National",
+  
+  // Manually curated top stories section
+  
+  def FrontTopStoriesAu = front(
+    "Top stories",
+    collection("Top Stories")
+    )
+  .swatch(News)
+  
+  // News container driven from the tone tag, this is going to be too long as is
+  // Need to limit prefill duration by container as well as front?
+  
+  def FrontNewsAu = front(
+    "News",
     Some("au"),
-    collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
-    collection("News Special").special,
-    collection("Australian News").printSentAnyTag("theguardian/mainsection/au", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
-    collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
-
+    collection("News").searchPrefill("?tag=tone/news")
   )
   .swatch(News)
-
-  def FrontNewsAuGuardianSaturday = front(
-    "National",
-    collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
-    collection("News Special").special,
-    collection("Au News").printSentAnyTag("theguardian/mainsection/au", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
-    collection("Week in Review").printSentAnyTag("theguardian/mainsection/week-in-review"),
-    collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
+  
+  //Opinion
+  
+  def FrontJournalAu = front(
+    "Opinion",
+    Some("au"),
+    collection("Journal").searchPrefill("?tag=tone/comment")
   )
   .swatch(News)
-
-  def FrontNewsAuObserver = front(
-    "National",
-    collection("Front Page"),
-    collection("Au News").printSentAnyTag("theobserver/news/au"),
-    collection("Focus").printSentAnyTag("theobserver/news/focus").special,
-    collection("News Special").special,
+  
+  //News Features and Long reads
+  
+  def FrontNewsFeaturesAu = front(
+    "News Features",
+    Some("au"),
+    collection("Long Read").searchPrefill("?tag=news/series/the-long-read"),
+    collection("News Features").searchPrefill("?tag=(tone/news,tone/features)")
   )
   .swatch(News)
 }
