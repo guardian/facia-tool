@@ -22,7 +22,7 @@ object AustralianEdition {
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = 0,
-        endOffset = 0
+        endOffset = 6
       )
     ),
     zoneId = ZoneId.of("Europe/London"),
