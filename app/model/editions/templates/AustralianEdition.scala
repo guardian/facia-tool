@@ -5,6 +5,7 @@ import java.time.ZoneId
 import model.editions.Swatch._
 import model.editions._
 import model.editions.templates.TemplateHelpers._
+import model.editions.CapiPrefillQuery._
 
 //noinspection TypeAnnotation
 object AustralianEdition {
@@ -28,7 +29,7 @@ object AustralianEdition {
     zoneId = ZoneId.of("Europe/London"),
     availability = WeekDays(List(WeekDay.Sat)),
     ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
-      apiKey = "fronts-editions-au",
+      apiKey = "fronts" + not + "editions" + not + "au",
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = -6,
         endOffset = 0
@@ -51,8 +52,8 @@ object AustralianEdition {
   def FrontNewsAu = front(
     "News",
     Some("au"),
-    collection("News").searchPrefill("?tag=(tone/news,australia-news/australia-news)-tone/comment"),
-    collection("World News").searchPrefill("?tag=(tone/news-australia-news/australia-news)-tone/comment")
+    collection("News")      .searchPrefill(allNewsTag + and + australiaNews),
+    collection("World News").searchPrefill(allNewsTag + or + comments + and + not + australiaNews)
   )
   .swatch(News)
 
@@ -61,53 +62,109 @@ object AustralianEdition {
   def FrontJournalAu = front(
     "Journal",
     Some("au"),
-    collection("Opinion").searchPrefill("?tag=(australia-news/australia-news,tone/comment)"),
-    collection("World Opinion").searchPrefill("?tag=(tone/comment-australia-news/australia-news)")
+    collection("Opinion").searchPrefill(australiaNews + and + comments),
+    collection("World Opinion").searchPrefill(comments + and + not + australiaNews)
   )
   .swatch(Opinion)
 
   //News Features and Long reads
 
-  def FrontNewsFeaturesAu = front(
-    "News Features",
-    Some("au"),
-    collection("Long Read").searchPrefill("?tag=news/series/the-long-read"),
-    collection("News Features").searchPrefill("?tag=(tone/news,tone/features)")
-  )
-  .swatch(News)
+  def FrontNewsFeaturesAu = {
+
+    front(
+      "News Features",
+      Some("au"),
+      collection("Long Read").searchPrefill(longReadTag),
+      collection("News Features").searchPrefill("(" + allNewsTag + and + features + ")")
+    )
+      .swatch(News)
+  }
 
   // Culture and Life
   // We're going to need more collections
 
-  def FrontCultureAu = front(
-    "Culture",
-    Some("au"),
-    collection("Culture").searchPrefill("?tag=tone/features|tone/interviews,-tone/reviews+(music/music|books/books|stage/stage|music/classical-music-and-opera|artanddesign/artanddesign|games/games|tv-and-radio/tv-and-radio|film/film|culture/culture)")
-  )
-  .swatch(Culture)
+  def FrontCultureAu = {
+    front(
+      "Culture",
+      Some("au"),
+      collection("Culture").searchPrefill(
+        "(" + features +
+          or + interviews +
+          and + not + reviews +
+          ")" + and +
+          "(" +
+          music +
+          or + books +
+          or + stage +
+          or + classicalMusicAndOpera +
+          or + artAndDesign +
+          or + games +
+          or + tvAndRadio +
+          or + film +
+          or + culture
+      + ")")
+    )
+      .swatch(Culture)
+  }
 
-  def FrontLifeAu = front(
-    "Life",
-    Some("au"),
-    collection("Life").searchPrefill("?tag=tone/features|tone/recipes+(lifeandstyle/lifeandstyle|lifeandstyle/love-and-sex|lifeandstyle/celebrity|food/food|/travel/travel|lifeandstyle/health-and-wellbeing|lifeandstyle/women|lifeandstyle/home-and-garden|money/money|technology/motoring|fashion/fashion)")
-  )
-  .swatch(Lifestyle)
+  def FrontLifeAu = {
+    front(
+      "Life",
+      Some("au"),
+      collection("Life").searchPrefill(
+        "(" + features +
+          or + recipes +
+          ")" + and +
+          "(" +
+          lifeAndStyle +
+          or + loveAndSex +
+          or + celebrity +
+          or + food +
+          or + travel +
+          or + healthAndWellbeing +
+          or + women +
+          or + homeAndGarden +
+          or + money +
+          or + technologyMotoring +
+          or + fashion + ")"
+      )
+    )
+      .swatch(Lifestyle)
+  }
 
   // Sport
 
-  def FrontSportAu = front(
-    "Sport",
-    Some("au"),
-    collection("Sport 1").searchPrefill("?tag=sport/sport|football/football|football/w-league|sport/horse-racing|sport/rugbyleague|sport/boxing|sport/golf|sport/formulaone|sport/cycling|sport/tennis|sport/cricket|sport/rugby-union|sport/australian-rules-football"),
-    collection("Sport 2"),
-    collection("Sport 3")
-  )
-  .swatch(Sport)
+  def FrontSportAu = {
+
+    front(
+      "Sport",
+      Some("au"),
+      collection("Sport 1").searchPrefill(
+        sport +
+          or + football +
+          or + womensLeagueFootball +
+          or + horseracing +
+          or + rugbyLeague +
+          or + boxing +
+          or + golf +
+          or + formulaOne +
+          or + cycling +
+          or + tennis +
+          or + cricket +
+          or + rugbyUnion +
+          or + australianRulesFootball),
+      collection("Sport 2"),
+      collection("Sport 3")
+    )
+      .swatch(Sport)
+  }
 
   // Crosswords
 
-  def FrontCrosswordsAu = front(
-    "Crosswords",
-    collection("Crosswords").searchPrefill("?tag=type/crossword")
-  )
+  def FrontCrosswordsAu = {
+    front(
+      "Crosswords",
+      collection("Crosswords").searchPrefill(crossword)
+    )
+  }
 }

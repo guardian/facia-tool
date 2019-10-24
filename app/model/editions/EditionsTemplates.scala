@@ -73,6 +73,64 @@ object FrontPresentation {
 
 case class CollectionPresentation()
 
+object CapiPrefillQuery {
+
+  implicit def format = Json.format[CapiPrefillQuery]
+
+  val start = "?tag="
+
+  val and = ","
+  val or = "|"
+  val not = "-"
+
+
+  val allNewsTag = "tone/news"
+  val reviews = "tone/reviews"
+  val comments = "tone/comment"
+  val features = "tone/features"
+  val longReadTag = "news/series/the-long-read"
+  val interviews = "tone/interviews"
+  val recipes = "tone/recipes"
+
+  val crossword = "type/crossword"
+
+  val sport = "sport/sport"
+  val football = "football/football"
+  val womensLeagueFootball = "football/w-league"
+  val horseracing = "sport/horse-racing"
+  val rugbyLeague = "sport/rugbyleague"
+  val boxing = "sport/boxing"
+  val golf = "sport/golf"
+  val tennis = "sport/tennis"
+  val cycling = "sport/cycling"
+  val formulaOne = "sport/formulaone"
+  val cricket = "sport/cricket"
+  val rugbyUnion = "sport/rugby-union"
+  val australianRulesFootball = "sport/australian-rules-football"
+
+  val fashion = "fashion/fashion"
+  val australiaNews = "australia-news/australia-news"
+  val lifeAndStyle = "lifeandstyle/lifeandstyle"
+  val loveAndSex = "lifeandstyle/love-and-sex"
+  val celebrity = "lifeandstyle/celebrity"
+  val food = "food/food"
+  val travel = "travel/travel"
+  val healthAndWellbeing = "lifeandstyle/health-and-wellbeing"
+  val women = "lifeandstyle/women"
+  val homeAndGarden = "lifeandstyle/home-and-garden"
+  val money = "money/money"
+  val technologyMotoring = "technology/motoring"
+  val music = "music/music"
+  val books = "books/books"
+  val stage = "stage/stage"
+  val classicalMusicAndOpera = "music/classical-music-and-opera"
+  val artAndDesign = "artanddesign/artanddesign"
+  val games = "games/games"
+  val tvAndRadio = "tv-and-radio/tv-and-radio"
+  val film = "film/film"
+  val culture = "culture/culture"
+
+}
 case class CapiPrefillQuery(queryString: String, pathType: PathType) {
   def escapedQueryString(): String =
     queryString
@@ -80,10 +138,6 @@ case class CapiPrefillQuery(queryString: String, pathType: PathType) {
       .replace("|", "%7C")
       .replace("(", "%28")
       .replace(")", "%29")
-}
-
-object CapiPrefillQuery {
-  implicit def format = Json.format[CapiPrefillQuery]
 }
 
 import model.editions.WeekDay._
@@ -132,7 +186,11 @@ case class CollectionTemplate(
   def printSentPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, PrintSent)))
   def printSentAnyTag(tags: String*) = printSentPrefill(s"?tag=${tags.mkString("|")}")
   def printSentAllTags(tags: String*) = printSentPrefill(s"?tag=${tags.mkString(",")}")
-  def searchPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, Search)))
+
+  def searchPrefill(prefillQuery: String) = {
+    import model.editions.CapiPrefillQuery.start
+    copy(prefill = Some(CapiPrefillQuery(start + prefillQuery, Search)))
+  }
 }
 
 case class FrontTemplate(

@@ -5,6 +5,7 @@ import java.time.ZoneId
 import model.editions.Swatch._
 import model.editions._
 import model.editions.templates.TemplateHelpers._
+import model.editions.CapiPrefillQuery._
 
 //noinspection TypeAnnotation
 object AmericanEdition {
@@ -294,6 +295,6 @@ object AmericanEdition {
 
   def FrontCrosswords = front(
     "Crosswords",
-    collection("Crosswords").searchPrefill("?tag=type/crossword"),
+    collection("Crosswords").searchPrefill(crossword),
   )
 }
