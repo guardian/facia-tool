@@ -251,8 +251,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   object faciatool {
     lazy val breakingNewsFront = "breaking-news"
-    lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
-    lazy val mapiFrontEventQueue = getString("mapi.sqs.front.event_queue_url")
+    lazy val frontPressToolQueue = getMandatoryString("frontpress.sqs.tool_queue_url")
+    lazy val mapiFrontEventQueue = getMandatoryString("mapi.sqs.front.event_queue_url")
     lazy val publishEventsQueue = getMandatoryString("publish_events.queue_url")
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)

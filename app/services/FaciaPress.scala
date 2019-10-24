@@ -28,39 +28,29 @@ object PressCommand {
   def forOneId(id: String): PressCommand = PressCommand(Set(id))
 }
 
-trait PressQueue {
-  val queueUrl: Option[String]
-  val credentials: AWSCredentialsProvider
-  val maybeQueue = queueUrl.map { url =>
+case class PressQueue(queueUrl: String, credentials: AWSCredentialsProvider) {
+  private val queue = {
     JsonMessageQueue[PressJob](
-      AmazonSQSAsyncClientBuilder.standard()
+      client = AmazonSQSAsyncClientBuilder.standard()
         .withCredentials(credentials)
         .withRegion(Regions.EU_WEST_1).build(),
-      url
+      queueUrl = queueUrl
     )
   }
   def enqueue(job: PressJob): Future[SendMessageResult] = {
-    maybeQueue match {
-      case Some(queue) =>
-        queue.send(job)
-
-      case None =>
-        Future.failed(new RuntimeException("Queue property not in config, could not enqueue job."))
-    }
+    queue.send(job)
   }
 }
 
-class FaciaPressQueue(val config: ApplicationConfiguration) extends PressQueue {
-  override val queueUrl: Option[String] = config.faciatool.frontPressToolQueue
-  override val credentials: AWSCredentialsProvider = config.aws.frontendAccountCredentials
-}
-
-class MapiFrontEventQueue(val config: ApplicationConfiguration) extends PressQueue {
-  override val queueUrl: Option[String] = config.faciatool.mapiFrontEventQueue
-  override val credentials: AWSCredentialsProvider = config.aws.mapiAccountCredentials
-}
-
 class FaciaPress(val frontendQueue: PressQueue, val mapiQueue: PressQueue, val configAgent: ConfigAgent) extends Logging {
+  private def enqueueAll(job: PressJob): Future[List[SendMessageResult]] = {
+    for {
+      frontendResult <- frontendQueue.enqueue(job)
+      mapiResult <- mapiQueue.enqueue(job)
+
+    } yield List(frontendResult, mapiResult)
+  }
+
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
@@ -74,18 +64,18 @@ class FaciaPress(val frontendQueue: PressQueue, val mapiQueue: PressQueue, val c
         Draft
       }
 
-      val pressJobs = paths.map { path =>
+      val pressJobs = paths.toList.map { path =>
         PressJob(FrontPath(path), pressType, forceConfigUpdate = pressCommand.forceConfigUpdate)
       }
-      val fut = Future.traverse(pressJobs)(frontendQueue.enqueue)
-      fut.onComplete {
+      val result = Future.traverse(pressJobs)(enqueueAll).map(_.flatten)
+      result.onComplete {
         case Failure(error) =>
           EnqueuePressFailure.increment()
           logger.error("Error manually pressing live collection through update from tool", error)
         case Success(_) =>
           EnqueuePressSuccess.increment()
       }
-      fut
+      result
     }
   }
 }
