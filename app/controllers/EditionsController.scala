@@ -15,7 +15,7 @@ import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
 import services.editions.db.EditionsDB
-import services.editions.prefills.PrefillParamsAdapter
+import services.editions.prefills.{MetadataForLogging, PrefillParamsAdapter}
 import services.editions.publishing.EditionsPublishing
 import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
@@ -35,9 +35,8 @@ class EditionsController(db: EditionsDB,
 
     val result = for {
       edition <- Either.fromOption[Result, Edition](Edition.withNameOption(name), NotFound(s"Edition $name not found"))
-      skeleton <- templating.generateEditionTemplate(edition, form.issueDate)
-      // TODO PUT time-window into DB here
-      issueId = db.insertIssue(edition, skeleton.issueSkeleton, req.user, OffsetDateTime.now())
+      genEditionTemplateResult <- templating.generateEditionTemplate(edition, form.issueDate)
+      issueId = db.insertIssue(edition, genEditionTemplateResult, req.user, OffsetDateTime.now())
       issue <- Either.fromOption(db.getIssue(issueId), NotFound("Issue created but could not retrieve it from the database"))
     } yield issue
 
@@ -133,7 +132,8 @@ class EditionsController(db: EditionsDB,
   }
 
   def getPrefillForCollection(id: String) = EditEditionsAuthAction.async { req =>
-    db.getCollectionPrefillQueryString(id).map { prefillUpdate =>
+    db.getCollectionPrefill(id).map { prefillUpdate =>
+      logger.info(s"getPrefillForCollection id=$id, prefillUpdate")
       import prefillUpdate._
       val getPrefillParams = PrefillParamsAdapter(
         issueDate,
@@ -141,7 +141,8 @@ class EditionsController(db: EditionsDB,
         contentPrefillTimeWindow,
         maybeOphanPath = None,
         maybeOphanQueryPrefillParams = None,
-        edition
+        edition,
+        metadataForLogging = MetadataForLogging(issueDate, collectionId = Some(id), collectionName = None)
       )
       capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes).map { body =>
         // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON

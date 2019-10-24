@@ -1,12 +1,11 @@
 package services.editions
 
-import java.time.LocalDate
+import java.time.{LocalDate, ZoneOffset}
 
 import logging.Logging
 import model.editions._
 import play.api.mvc.{Result, Results}
-import services.editions.prefills.PrefillHelper.defineContentQueryTimeWindow
-import services.editions.prefills.{CapiQueryTimeWindow, Prefill, PrefillParamsAdapter}
+import services.editions.prefills.{CapiQueryTimeWindow, MetadataForLogging, Prefill, PrefillParamsAdapter}
 import services.{Capi, Ophan}
 
 import scala.concurrent.Await
@@ -14,19 +13,20 @@ import scala.concurrent.duration._
 import scala.language.postfixOps
 import scala.util.control.NonFatal
 
-case class GenEditionTemplateResult(issueSkeleton: EditionsIssueSkeleton, contentPrefillTimeWindow: CapiQueryTimeWindow)
+case class GenerateEditionTemplateResult(issueSkeleton: EditionsIssueSkeleton, contentPrefillTimeWindow: CapiQueryTimeWindow)
 
 class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], capi: Capi, ophan: Ophan) extends Logging {
 
   private val collectionsTemplating = CollectionTemplatingHelper(capi, ophan)
 
-  def generateEditionTemplate(edition: Edition, issueDate: LocalDate): Either[Result, GenEditionTemplateResult] = {
+  def generateEditionTemplate(edition: Edition, issueDate: LocalDate): Either[Result, GenerateEditionTemplateResult] = {
     templates.lift(edition) match {
       case Some(editionTemplate) =>
         if (editionTemplate.availability.isValid(issueDate)) {
           import editionTemplate.{capiQueryPrefillParams, ophanQueryPrefillParams}
 
-          val contentPrefillTimeWindow: CapiQueryTimeWindow = defineContentQueryTimeWindow(issueDate, capiQueryPrefillParams.timeWindowConfig)
+          val contentPrefillTimeWindow: CapiQueryTimeWindow = EditionsTemplating
+            .defineContentQueryTimeWindow(issueDate, capiQueryPrefillParams.timeWindowConfig)
 
           val frontsSkeleton = editionTemplate.fronts
             .filter(_._2.isValid(issueDate))
@@ -56,7 +56,7 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
             frontsSkeleton
           )
 
-          Right(GenEditionTemplateResult(issueSkeleton, contentPrefillTimeWindow))
+          Right(GenerateEditionTemplateResult(issueSkeleton, contentPrefillTimeWindow))
         } else {
           Left(Results.UnprocessableEntity(s"$issueDate is not a valid date to create an issue of $edition"))
         }
@@ -64,7 +64,16 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
     }
   }
 
+}
 
+object EditionsTemplating {
+  def defineContentQueryTimeWindow(issueDate: LocalDate, timeWindowConfig: TimeWindowConfigInDays): CapiQueryTimeWindow = {
+    val issueDateStart = issueDate.atStartOfDay()
+    // Regarding UTC Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
+    val fromDateUTC = issueDateStart.plusDays(timeWindowConfig.startOffset).toInstant(ZoneOffset.UTC)
+    val toDateAsUTC = issueDateStart.plusDays(timeWindowConfig.endOffset).toInstant(ZoneOffset.UTC)
+    CapiQueryTimeWindow(fromDateUTC, toDateAsUTC)
+  }
 }
 
 object CollectionTemplatingHelper {
@@ -92,7 +101,8 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
             contentPrefillTimeWindow,
             maybeOphanPath,
             ophanQueryPrefillParams,
-            edition
+            edition,
+            MetadataForLogging(issueDate, collectionId = None, collectionName = Some(name))
           )
           getPrefillArticles(getPrefillParams)
         }.getOrElse(Nil),

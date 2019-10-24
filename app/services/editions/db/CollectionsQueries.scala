@@ -36,11 +36,13 @@ trait CollectionsQueries {
     convertRowsToCollections(rows)
   }
 
-  def getCollectionPrefillQueryString(id: String) = DB readOnly { implicit session =>
+  def getCollectionPrefill(id: String) = DB readOnly { implicit session =>
     val rows =
       sql"""
           SELECT collections.prefill,
                  collections.path_type,
+                 collections.content_prefill_window_start,
+                 collections.content_prefill_window_end,
                  articles.page_code,
                  edition_issues.name,
                  edition_issues.issue_date,
@@ -57,14 +59,16 @@ trait CollectionsQueries {
         val zone = ZoneId.of(rs.string("timezone_id"))
         val pathTypeStr = rs.string("path_type")
         val pathType = PathType.withName(pathTypeStr)
+        val timeWinStart = rs.zonedDateTime("content_prefill_window_start").toInstant
+        val timeWinEnd = rs.zonedDateTime("content_prefill_window_end").toInstant
 
-        (date, edition, zone, CapiPrefillQuery(rs.string("prefill"), pathType), rs.string("page_code"))
+        val contentPrefillQueryTimeWindow = CapiQueryTimeWindow(timeWinStart, timeWinEnd)
+
+        (date, edition, zone, CapiPrefillQuery(rs.string("prefill"), pathType), contentPrefillQueryTimeWindow, rs.string("page_code"))
       }.list().apply()
 
-    rows.headOption.map { case (issueDate, edition, zone, prefillQueryUrlSegments, _) =>
-      // TODO temporary time window for issue should be persisted in DB
-      val contentPrefillQueryTimeWindow = CapiQueryTimeWindow(issueDate.atStartOfDay().toInstant(ZoneOffset.UTC), issueDate.atStartOfDay().toInstant(ZoneOffset.UTC))
-      PrefillUpdate(issueDate, edition, zone, prefillQueryUrlSegments, contentPrefillQueryTimeWindow, rows.map(_._5))
+    rows.headOption.map { case (issueDate, edition, zone, prefillQueryUrlSegments, contentPrefillQueryTimeWindow, _) =>
+      PrefillUpdate(issueDate, edition, zone, prefillQueryUrlSegments, contentPrefillQueryTimeWindow, rows.map(_._6))
     }
   }
 
@@ -122,6 +126,8 @@ trait CollectionsQueries {
         collections.updated_email,
         collections.prefill,
         collections.path_type,
+        collections.content_prefill_window_start,
+        collections.content_prefill_window_end,
 
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
