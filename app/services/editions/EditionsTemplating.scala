@@ -75,20 +75,25 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
         logger.warn(s"Failed to successfully execute CAPI prefill query $prefillParams", t)
         Nil
     }
-    // Sort by ophan score, descending, default zero, if and only if we got some scores
     // If there is no ophan url OR the request failed, fall back to ordering by newspaperPageNumber
-    val sortedItems = maybeOphanScoresMap match {
-      case Some(scoresMap) => items.sortBy(prefill => scoresMap.getOrElse(prefill.webUrl, 0d))(Ordering[Double].reverse)
-      case _ => items.sortBy(prefill => prefill.newspaperPageNumber)
+    val sortableItems: List[(Option[Double], Prefill)] = maybeOphanScoresMap match {
+      case Some(scoresMap) => items.map(item => (scoresMap.get(item.webUrl), item))
+      case _ => items.map(item => (item.newspaperPageNumber.map(_.toDouble), item))
+    }
+    // Sort by ophan score, descending, default zero, if and only if we got some scores
+    val sortedItems: List[(Option[Double], Prefill)] = maybeOphanScoresMap match {
+      case Some(_) => sortableItems.sortBy(_._1.getOrElse(0d))(Ordering[Double].reverse)
+      case _ => sortableItems.sortBy(_._1.getOrElse(999d))
     }
     sortedItems
-      .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker) =>
+      .map { case (maybePromotionMetric, Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker)) =>
       val articleMetadata = ArticleMetadata.default.copy(
         showByline = if (metaData.showByline) Some(true) else None,
         showQuotedHeadline = if (metaData.showQuotedHeadline) Some(true) else None,
         mediaType = mediaType,
         cutoutImage = cutoutImage,
-        customKicker = pickedKicker
+        customKicker = pickedKicker,
+        maybePromotionMetric = maybePromotionMetric
       )
       EditionsArticleSkeleton(pageCode.toString, articleMetadata)
     }

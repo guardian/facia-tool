@@ -40,13 +40,14 @@ case class ArticleMetadata (
 
   replaceImage: Option[Image],
   overrideArticleMainMedia: Option[Boolean],
-  coverCardImages: Option[CoverCardImages]
+  coverCardImages: Option[CoverCardImages],
+  maybePromotionMetric: Option[Double]
 )
 
 object ArticleMetadata {
   implicit val format = Json.format[ArticleMetadata]
 
-  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None)
+  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) extends Logging {

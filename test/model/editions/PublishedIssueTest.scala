@@ -80,7 +80,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     }
 
     "furniture defaults should be populated correctly" in {
-      val furniture = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None)
+      val furniture = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
       val article = EditionsArticle("123456", 0, Some(furniture))
       val published = article.toPublishedArticle
 
@@ -103,7 +103,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       Some(CoverCardImages(
         mobile = cardImage,
         tablet = cardImage
-      ))
+      )),
+      None
     )
 
     "furniture should be populated when specified, cover cards should be ignored if the media type isn't set to cover card" in {

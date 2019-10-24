@@ -74,7 +74,8 @@ case class ClientArticleMetadata (
       cutoutImage,
       replaceImage,
       overrideArticleMainMedia,
-      coverCardImages
+      coverCardImages,
+      None
     )
   }
 }
