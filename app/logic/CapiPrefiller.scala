@@ -57,7 +57,8 @@ object CapiPrefiller {
       cutoutImage,
       cardStyle.toneString,
       mediaType,
-      pickedKicker)
+      pickedKicker,
+      None)
   }
 
   def getFirstContributorWithCutoutOption(content: Content): Option[String] =

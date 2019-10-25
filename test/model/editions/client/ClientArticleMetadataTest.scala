@@ -153,7 +153,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
   "ClientArticleMetadata to ArticleMetadata" - {
 
     def getEmptyClientArticleMetadata = ClientArticleMetadata(
-      None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
+      None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
     )
 
     "should convert into ArticleMetadata with multiple image overrides" in {

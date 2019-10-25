@@ -34,7 +34,8 @@ case class ClientArticleMetadata (
 
   coverCardImageReplace: Option[Boolean],
   coverCardMobileImage: Option[Image],
-  coverCardTabletImage: Option[Image]
+  coverCardTabletImage: Option[Image],
+  promotionMetric: Option[Double]
 ) {
   def toArticleMetadata: ArticleMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
@@ -116,6 +117,7 @@ object ClientArticleMetadata {
       articleMetadata.mediaType.map {_ => mediaType == MediaType.CoverCard},
       articleMetadata.coverCardImages.flatMap(_.mobile),
       articleMetadata.coverCardImages.flatMap(_.tablet),
+      articleMetadata.promotionMetric
     )
   }
 }

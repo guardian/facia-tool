@@ -63,6 +63,7 @@ object DailyEdition {
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
+    maybeOphanPath = None,
     ophanQueryPrefillParams = None
   )
 
@@ -77,7 +78,6 @@ object DailyEdition {
 
   def FrontNewsUkGuardian = front(
     "National",
-    Some("uk"),
     collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
     collection("News Special").special,
     collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
@@ -87,7 +87,6 @@ object DailyEdition {
 
   def FrontNewsUkGuardianSaturday = front(
     "National",
-    Some("uk"),
     collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
     collection("News Special").special,
     collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
@@ -107,7 +106,6 @@ object DailyEdition {
 
   def FrontNewsUkObserver = front(
     "National",
-    Some("uk"),
     collection("Front Page"),
     collection("UK News").printSentAnyTag("theobserver/news/uknews"),
     collection("Focus").printSentAnyTag("theobserver/news/focus").special,

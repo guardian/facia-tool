@@ -123,6 +123,7 @@ object PathType extends PlayEnum[PathType] {
 
 case class CollectionTemplate(
   name: String,
+  maybeOphanPath: Option[String] = None,
   prefill: Option[CapiPrefillQuery],
   presentation: CollectionPresentation,
   hidden: Boolean = false
@@ -139,7 +140,7 @@ case class FrontTemplate(
                           name: String,
                           collections: List[CollectionTemplate],
                           presentation: FrontPresentation,
-                          maybeOphanPath: Option[String],
+                          maybeOphanPath: Option[String] = None,
                           isSpecial: Boolean = false,
                           hidden: Boolean = false
 ) {
@@ -156,6 +157,7 @@ case class EditionTemplate(
   capiQueryPrefillParams: CapiQueryPrefillParams,
   zoneId: ZoneId,
   availability: Periodicity,
+  maybeOphanPath: Option[String] = None,
   ophanQueryPrefillParams: Option[OphanQueryPrefillParams]
 )
 

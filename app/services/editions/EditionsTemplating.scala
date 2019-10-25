@@ -14,6 +14,9 @@ import scala.language.postfixOps
 import scala.util.control.NonFatal
 
 class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], capi: Capi, ophan: Ophan) extends Logging {
+
+  val x:Option[String] = List(Some("a"), Some("b")).collectFirst{case Some(a) => a}
+
   def generateEditionTemplate(edition: Edition, issueDate: LocalDate): Either[Result, EditionsIssueSkeleton] = {
     templates.lift(edition) match {
       case Some(template) =>
@@ -30,7 +33,16 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
                     EditionsCollectionSkeleton(
                       collection.name,
                       collection.prefill.map { prefill =>
-                        val prefillParams = PrefillParamsAdapter(issueDate, prefill, frontTemplate.maybeOphanPath, template.ophanQueryPrefillParams, edition)
+                        val prefillParams = PrefillParamsAdapter(
+                          issueDate,
+                          prefill,
+                          List(
+                            template.maybeOphanPath,
+                            frontTemplate.maybeOphanPath,
+                            collection.maybeOphanPath
+                          ).collectFirst{case Some(path) => path},  // Get first non-None match
+                          template.ophanQueryPrefillParams,
+                          edition)
                         getPrefillArticles(prefillParams)
                       }.getOrElse(Nil),
                       collection.prefill,
@@ -76,24 +88,24 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
         Nil
     }
     // If there is no ophan url OR the request failed, fall back to ordering by newspaperPageNumber
-    val sortableItems: List[(Option[Double], Prefill)] = maybeOphanScoresMap match {
-      case Some(scoresMap) => items.map(item => (scoresMap.get(item.webUrl), item))
-      case _ => items.map(item => (item.newspaperPageNumber.map(_.toDouble), item))
-    }
-    // Sort by ophan score, descending, default zero, if and only if we got some scores
-    val sortedItems: List[(Option[Double], Prefill)] = maybeOphanScoresMap match {
-      case Some(_) => sortableItems.sortBy(_._1.getOrElse(0d))(Ordering[Double].reverse)
-      case _ => sortableItems.sortBy(_._1.getOrElse(999d))
+    // Otherwise, copy on the ophan score, then sort by it, descending, default zero
+    val sortedItems: List[Prefill] = maybeOphanScoresMap match {
+      case Some(scoresMap) => {
+        items
+          .map(item => item.copy(promotionMetric = scoresMap.get(item.webUrl)))
+          .sortBy(item => item.promotionMetric.getOrElse(0d))(Ordering[Double].reverse)
+      }
+      case _ => items.sortBy(item => item.newspaperPageNumber)
     }
     sortedItems
-      .map { case (maybePromotionMetric, Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker)) =>
+      .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker, promotionMetric) =>
       val articleMetadata = ArticleMetadata.default.copy(
         showByline = if (metaData.showByline) Some(true) else None,
         showQuotedHeadline = if (metaData.showQuotedHeadline) Some(true) else None,
         mediaType = mediaType,
         cutoutImage = cutoutImage,
         customKicker = pickedKicker,
-        maybePromotionMetric = maybePromotionMetric
+        promotionMetric = promotionMetric
       )
       EditionsArticleSkeleton(pageCode.toString, articleMetadata)
     }

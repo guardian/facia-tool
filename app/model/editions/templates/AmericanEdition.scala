@@ -63,6 +63,7 @@ object AmericanEdition {
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
+    maybeOphanPath = None,
     ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
       apiKey = s"fronts-editions-us",
       timeWindowConfig = TimeWindowConfigInDays(

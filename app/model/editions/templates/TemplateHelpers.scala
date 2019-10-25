@@ -9,7 +9,7 @@ object TemplateHelpers {
   }
 
   def collection(name: String): CollectionTemplate =
-    CollectionTemplate(name, None, Defaults.defaultCollectionPresentation, hidden = false)
+    CollectionTemplate(name, None, None, Defaults.defaultCollectionPresentation, hidden = false)
 
   def front(name: String, ophanPath: Option[String], collections: CollectionTemplate*): FrontTemplate =
     FrontTemplate(name, collections.toList, Defaults.defaultFrontPresentation, ophanPath)

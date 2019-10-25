@@ -22,6 +22,7 @@ object TrainingEdition {
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
+    maybeOphanPath = None,
     ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
       apiKey = s"fronts-editions-${this.getClass.toString}",
       timeWindowConfig = TimeWindowConfigInDays(

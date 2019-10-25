@@ -32,7 +32,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     overrideArticleMainMedia = None,
     sportScore = None,
     coverCardImages = None,
-    maybePromotionMetric = None
+    promotionMetric = None
   )
 
   private def insertSkeletonIssue(year: Int, month: Int, dom: Int, fronts: EditionsFrontSkeleton*): String = {
