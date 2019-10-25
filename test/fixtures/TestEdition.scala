@@ -27,6 +27,7 @@ object TestEdition {
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
+    None,
     None
   )
 

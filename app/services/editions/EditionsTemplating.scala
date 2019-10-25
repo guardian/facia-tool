@@ -103,7 +103,11 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
             issueDate,
             contentPrefillUrlSegments,
             contentPrefillTimeParams,
-            maybeOphanPath,
+            List(
+              template.maybeOphanPath,
+              maybeOphanPath,
+              collection.maybeOphanPath
+            ).collectFirst{case Some(path) => path},  // Get first non-None match,
             ophanQueryPrefillParams,
             edition,
             MetadataForLogging(issueDate, collectionId = None, collectionName = Some(name))
@@ -143,20 +147,25 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
         logger.warn(s"Failed to successfully execute CAPI prefill query $prefillParams", t)
         Nil
     }
-    // Sort by ophan score, descending, default zero, if and only if we got some scores
     // If there is no ophan url OR the request failed, fall back to ordering by newspaperPageNumber
-    val sortedItems = maybeOphanScoresMap match {
-      case Some(scoresMap) => items.sortBy(prefill => scoresMap.getOrElse(prefill.webUrl, 0d))(Ordering[Double].reverse)
-      case _ => items.sortBy(prefill => prefill.newspaperPageNumber)
+    // Otherwise, copy on the ophan score, then sort by it, descending, default zero
+    val sortedItems: List[Prefill] = maybeOphanScoresMap match {
+      case Some(scoresMap) => {
+        items
+          .map(item => item.copy(promotionMetric = scoresMap.get(item.webUrl)))
+          .sortBy(item => item.promotionMetric.getOrElse(0d))(Ordering[Double].reverse)
+      }
+      case _ => items.sortBy(item => item.newspaperPageNumber)
     }
     sortedItems
-      .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker) =>
+      .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker, promotionMetric) =>
         val articleMetadata = ArticleMetadata.default.copy(
           showByline = if (metaData.showByline) Some(true) else None,
           showQuotedHeadline = if (metaData.showQuotedHeadline) Some(true) else None,
           mediaType = mediaType,
           cutoutImage = cutoutImage,
-          customKicker = pickedKicker
+          customKicker = pickedKicker,
+          promotionMetric = promotionMetric
         )
         EditionsArticleSkeleton(pageCode.toString, articleMetadata)
       }

@@ -1,7 +1,7 @@
 package model.editions
 
 import logging.Logging
-import play.api.libs.json.Json
+import play.api.libs.json.{JsResult, Json}
 import scalikejdbc.WrappedResultSet
 
 case class Image (
@@ -40,13 +40,14 @@ case class ArticleMetadata (
 
   replaceImage: Option[Image],
   overrideArticleMainMedia: Option[Boolean],
-  coverCardImages: Option[CoverCardImages]
+  coverCardImages: Option[CoverCardImages],
+  promotionMetric: Option[Double]
 )
 
 object ArticleMetadata {
   implicit val format = Json.format[ArticleMetadata]
 
-  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None)
+  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
 case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) extends Logging {
@@ -97,7 +98,7 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
   }
 }
 
-object EditionsArticle {
+object EditionsArticle extends Logging {
   implicit val writes = Json.format[EditionsArticle]
 
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsArticle = {
@@ -116,7 +117,15 @@ object EditionsArticle {
       EditionsArticle(
         pageCode,
         addedOn,
-        rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[ArticleMetadata].get)
+        rs.stringOpt(prefix + "metadata").map(
+          s => Json.parse(s).validate[ArticleMetadata] match {
+            case result if (result.isError) => {
+              logger.error(s"Unable to parse article from database: \n${s}")
+              ArticleMetadata.default
+            }
+            case result@_ => result.get
+          }
+        )
       )
   }
 }

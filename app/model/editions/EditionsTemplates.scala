@@ -126,11 +126,12 @@ object PathType extends PlayEnum[PathType] {
 }
 
 case class CollectionTemplate(
-                               name: String,
-                               prefill: Option[CapiPrefillQuery],
-                               presentation: CollectionPresentation,
-                               hidden: Boolean = false
-                             ) {
+  name: String,
+  maybeOphanPath: Option[String] = None,
+  prefill: Option[CapiPrefillQuery],
+  presentation: CollectionPresentation,
+  hidden: Boolean = false
+) {
   def special = copy(hidden = true)
 
   def withPresentation(presentation: CollectionPresentation) = copy(presentation = presentation)
@@ -148,7 +149,7 @@ case class FrontTemplate(
                           name: String,
                           collections: List[CollectionTemplate],
                           presentation: FrontPresentation,
-                          maybeOphanPath: Option[String],
+                          maybeOphanPath: Option[String] = None,
                           isSpecial: Boolean = false,
                           hidden: Boolean = false
                         ) {
@@ -183,12 +184,13 @@ case class CapiQueryPrefillParams(timeWindowConfig: CapiTimeWindowConfigInDays)
 case class OphanQueryPrefillParams(apiKey: String, timeWindowConfig: TimeWindowConfigInDays)
 
 case class EditionTemplate(
-                            fronts: List[(FrontTemplate, Periodicity)],
-                            capiQueryPrefillParams: CapiQueryPrefillParams,
-                            zoneId: ZoneId,
-                            availability: Periodicity,
-                            ophanQueryPrefillParams: Option[OphanQueryPrefillParams]
-                          )
+  fronts: List[(FrontTemplate, Periodicity)],
+  capiQueryPrefillParams: CapiQueryPrefillParams,
+  zoneId: ZoneId,
+  availability: Periodicity,
+  maybeOphanPath: Option[String] = None,
+  ophanQueryPrefillParams: Option[OphanQueryPrefillParams]
+)
 
 // Issue skeletons are what is generated when you create a new issue for a given date
 // (Date + Template) => Skeleton

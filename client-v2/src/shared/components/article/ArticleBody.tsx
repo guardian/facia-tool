@@ -80,6 +80,9 @@ const VideoIconContainer = styled(CircularIconContainer)`
 
 interface ArticleBodyProps {
   newspaperPageNumber?: string;
+
+  promotionMetric?: number;
+
   newspaperEditionDate?: string;
   firstPublicationDate?: string;
   frontPublicationDate?: number;
@@ -163,7 +166,8 @@ const articleBodyDefault = React.memo(
     showMainVideo,
     frontId,
     collectionId,
-    newspaperPageNumber
+    newspaperPageNumber,
+    promotionMetric
   }: ArticleBodyProps) => {
     const displayByline = size === 'default' && showByline && byline;
     const now = Date.now();
@@ -206,9 +210,16 @@ const articleBodyDefault = React.memo(
               </CardDraftMetaContent>
             )}
             <EditModeVisibility visibleMode="editions">
-              {!!newspaperPageNumber && (
+              {!promotionMetric && !!newspaperPageNumber && (
                 <CardMetaContent title="The newspaper page number of this article">
                   Page {newspaperPageNumber}
+                </CardMetaContent>
+              )}
+            </EditModeVisibility>
+            <EditModeVisibility visibleMode="editions">
+              {!!promotionMetric && (
+                <CardMetaContent title="The newspaper page number of this article">
+                  Promotion {Math.floor(promotionMetric)}
                 </CardMetaContent>
               )}
             </EditModeVisibility>

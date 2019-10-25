@@ -60,6 +60,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
             None,
             "tone1",
             None,
+            None,
             None)
         ))
         case "?tag=theguardian/g2/arts" => Future.successful(List(
@@ -75,6 +76,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
             Some(Image(None, None, imageUrl, imageUrl)),
             "tone1",
             Some(MediaType.Cutout),
+            None,
             None),
           Prefill(
             574893,
@@ -88,6 +90,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
             None,
             "tone2",
             Some(MediaType.UseArticleTrail),
+            None,
             None)
         ))
       }

@@ -29,6 +29,7 @@ class ArticleMetadataTest extends FreeSpec with Matchers {
       Some("thumb2")
     )),
     Some(true),
+    None,
     None
   )
 

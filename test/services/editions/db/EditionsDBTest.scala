@@ -34,7 +34,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     replaceImage = None,
     overrideArticleMainMedia = None,
     sportScore = None,
-    coverCardImages = None
+    coverCardImages = None,
+    promotionMetric = None
   )
 
   private val TestContentPrefillTimeWindowCfg = TimeWindowConfigInDays(-1, 2)

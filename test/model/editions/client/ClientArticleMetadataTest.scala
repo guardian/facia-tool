@@ -19,6 +19,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
+        None,
         None
       )
 
@@ -50,6 +51,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         Some(MediaType.Hide),
         Some(Image(Some(100), Some(100), "file://origin-new-pokemon.gif", "file://new-pokemon.gif")),
+        None,
         None,
         None,
         None
@@ -85,6 +87,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         Some(Image(Some(100), Some(100), "file://elephant.jpg", "file://elephant.png")),
         None,
+        None,
         None
       )
 
@@ -115,6 +118,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
+        None,
         None
       )
 
@@ -136,6 +140,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
+        None,
         None
       )
 
@@ -148,7 +153,7 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
   "ClientArticleMetadata to ArticleMetadata" - {
 
     def getEmptyClientArticleMetadata = ClientArticleMetadata(
-      None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
+      None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
     )
 
     "should convert into ArticleMetadata with multiple image overrides" in {
