@@ -60,7 +60,7 @@ object AmericanEdition {
       timeWindowConfig = CapiTimeWindowConfigInDays(
         startOffset = 0,
         endOffset = 0,
-        useDate =UseDateQueryParamValue.NewspaperEdition
+        useDate = UseDateQueryParamValue.NewspaperEdition
       )
     ),
     zoneId = ZoneId.of("Europe/London"),
