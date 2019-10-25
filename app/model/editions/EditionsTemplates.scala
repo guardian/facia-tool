@@ -54,9 +54,13 @@ object Swatch extends PlayEnum[Swatch] {
 sealed abstract class Edition extends EnumEntry with Hyphencase
 
 object Edition extends PlayEnum[Edition] {
+
   case object DailyEdition extends Edition
+
   case object AmericanEdition extends Edition
+
   case object AustralianEdition extends Edition
+
   case object TrainingEdition extends Edition
 
   override def values = findValues
@@ -122,16 +126,21 @@ object PathType extends PlayEnum[PathType] {
 }
 
 case class CollectionTemplate(
-  name: String,
-  prefill: Option[CapiPrefillQuery],
-  presentation: CollectionPresentation,
-  hidden: Boolean = false
-) {
+                               name: String,
+                               prefill: Option[CapiPrefillQuery],
+                               presentation: CollectionPresentation,
+                               hidden: Boolean = false
+                             ) {
   def special = copy(hidden = true)
+
   def withPresentation(presentation: CollectionPresentation) = copy(presentation = presentation)
+
   def printSentPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, PrintSent)))
+
   def printSentAnyTag(tags: String*) = printSentPrefill(s"?tag=${tags.mkString("|")}")
+
   def printSentAllTags(tags: String*) = printSentPrefill(s"?tag=${tags.mkString(",")}")
+
   def searchPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, Search)))
 }
 
@@ -142,38 +151,60 @@ case class FrontTemplate(
                           maybeOphanPath: Option[String],
                           isSpecial: Boolean = false,
                           hidden: Boolean = false
-) {
+                        ) {
   def special = copy(isSpecial = true, hidden = true)
+
   def swatch(swatch: Swatch) = copy(presentation = FrontPresentation(swatch))
 }
 
-case class TimeWindowConfigInDays(startOffset: Int, endOffset: Int)
-case class CapiQueryPrefillParams(timeWindowConfig: TimeWindowConfigInDays)
+sealed abstract class UseDateQueryParamValue extends EnumEntry with Hyphencase with Uncapitalised
+
+object UseDateQueryParamValue extends PlayEnum[UseDateQueryParamValue] {
+
+  case object NewspaperEdition extends UseDateQueryParamValue
+
+  case object Published extends UseDateQueryParamValue
+
+  override def values = findValues
+}
+
+trait BaseTimeWindowConfig {
+  def startOffset: Int
+
+  def endOffset: Int
+}
+
+case class TimeWindowConfigInDays(startOffset: Int, endOffset: Int) extends BaseTimeWindowConfig
+
+case class CapiTimeWindowConfigInDays(startOffset: Int, endOffset: Int, useDate: UseDateQueryParamValue) extends BaseTimeWindowConfig
+
+case class CapiQueryPrefillParams(timeWindowConfig: CapiTimeWindowConfigInDays)
+
 case class OphanQueryPrefillParams(apiKey: String, timeWindowConfig: TimeWindowConfigInDays)
 
 case class EditionTemplate(
-  fronts: List[(FrontTemplate, Periodicity)],
-  capiQueryPrefillParams: CapiQueryPrefillParams,
-  zoneId: ZoneId,
-  availability: Periodicity,
-  ophanQueryPrefillParams: Option[OphanQueryPrefillParams]
-)
+                            fronts: List[(FrontTemplate, Periodicity)],
+                            capiQueryPrefillParams: CapiQueryPrefillParams,
+                            zoneId: ZoneId,
+                            availability: Periodicity,
+                            ophanQueryPrefillParams: Option[OphanQueryPrefillParams]
+                          )
 
 // Issue skeletons are what is generated when you create a new issue for a given date
 // (Date + Template) => Skeleton
 case class EditionsIssueSkeleton(
-  issueDate: LocalDate,
-  zoneId: ZoneId,
-  fronts: List[EditionsFrontSkeleton]
-)
+                                  issueDate: LocalDate,
+                                  zoneId: ZoneId,
+                                  fronts: List[EditionsFrontSkeleton]
+                                )
 
 case class EditionsFrontSkeleton(
-  name: String,
-  collections: List[EditionsCollectionSkeleton],
-  presentation: FrontPresentation,
-  hidden: Boolean,
-  isSpecial: Boolean
-) {
+                                  name: String,
+                                  collections: List[EditionsCollectionSkeleton],
+                                  presentation: FrontPresentation,
+                                  hidden: Boolean,
+                                  isSpecial: Boolean
+                                ) {
   def metadata() = {
     val metadataParam = new PGobject()
     metadataParam.setType("jsonb")
@@ -184,14 +215,14 @@ case class EditionsFrontSkeleton(
 
 
 case class EditionsCollectionSkeleton(
-  name: String,
-  items: List[EditionsArticleSkeleton],
-  prefill: Option[CapiPrefillQuery],
-  presentation: CollectionPresentation,
-  hidden: Boolean
-)
+                                       name: String,
+                                       items: List[EditionsArticleSkeleton],
+                                       prefill: Option[CapiPrefillQuery],
+                                       presentation: CollectionPresentation,
+                                       hidden: Boolean
+                                     )
 
 case class EditionsArticleSkeleton(
-  pageCode: String,
-  metadata: ArticleMetadata
-)
+                                    pageCode: String,
+                                    metadata: ArticleMetadata
+                                  )

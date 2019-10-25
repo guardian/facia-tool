@@ -8,6 +8,7 @@ import model.editions._
 object TestEdition {
   val ContentQueryStartOffsetInDays = -1
   val ContentQueryEndOffsetInDays = 2
+  val UseDate = UseDateQueryParamValue.Published
 
   val template = EditionTemplate(
     List(
@@ -18,9 +19,11 @@ object TestEdition {
       FrontSpecialSpecial2.front -> Daily(),
     ),
     capiQueryPrefillParams = CapiQueryPrefillParams(
-      timeWindowConfig = TimeWindowConfigInDays(
+      timeWindowConfig = CapiTimeWindowConfigInDays(
         startOffset = ContentQueryStartOffsetInDays,
-        endOffset= ContentQueryEndOffsetInDays)
+        endOffset = ContentQueryEndOffsetInDays,
+        useDate = UseDate,
+      )
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),

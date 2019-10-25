@@ -3,7 +3,7 @@ package services.editions.db
 import java.time._
 
 import model.editions.internal.PrefillUpdate
-import model.editions.{CapiPrefillQuery, Edition, EditionsCollection, PathType}
+import model.editions.{CapiPrefillQuery, Edition, EditionsCollection, EditionsTemplates, PathType}
 import model.forms.GetCollectionsFilter
 import play.api.libs.json.Json
 import scalikejdbc._
