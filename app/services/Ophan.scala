@@ -70,6 +70,7 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
 
   private def getRequest(url: String) = {
     val request = new Builder().url(url).build()
+    logger.info(s"Getting promotion data from ophan (${request.url()}")
     val promise = Promise[HttpResponse]()
     http.newCall(request).enqueue(new Callback() {
       override def onFailure(call: Call, e: IOException): Unit = promise.failure(e)
