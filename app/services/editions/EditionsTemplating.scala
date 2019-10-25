@@ -153,9 +153,10 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
       case Some(scoresMap) => {
         items
           .map(item => item.copy(promotionMetric = scoresMap.get(item.webUrl)))
+          .sortBy(item => item.newspaperPageNumber.getOrElse(999))
           .sortBy(item => item.promotionMetric.getOrElse(0d))(Ordering[Double].reverse)
       }
-      case _ => items.sortBy(item => item.newspaperPageNumber)
+      case _ => items.sortBy(item => item.newspaperPageNumber.getOrElse(999))
     }
     sortedItems
       .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker, promotionMetric) =>
