@@ -16,9 +16,11 @@ object TrainingEdition {
       FrontCrosswords -> Daily(),
     ),
     capiQueryPrefillParams = CapiQueryPrefillParams(
-      timeWindowConfig = TimeWindowConfigInDays(
+      timeWindowConfig = CapiTimeWindowConfigInDays(
         startOffset = 0,
-        endOffset = 0)
+        endOffset = 0,
+        useDate = UseDateQueryParamValue.NewspaperEdition
+      )
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),

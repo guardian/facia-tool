@@ -3,10 +3,10 @@ package services
 import java.time.LocalDate
 
 import fixtures.TestEdition
-import model.editions.{CapiPrefillQuery, Edition, PathType}
+import model.editions.{CapiPrefillQuery, Edition, PathType, UseDateQueryParamValue}
 import org.scalatest.{FunSuite, Matchers}
 import services.editions.EditionsTemplating
-import services.editions.prefills.{CapiQueryTimeWindow, MetadataForLogging, PrefillParamsAdapter}
+import services.editions.prefills.{CapiQueryTimeWindow, ContentPrefillTimeParams, MetadataForLogging, PrefillParamsAdapter}
 
 class GuardianCapiTest extends FunSuite with Matchers {
 
@@ -18,15 +18,16 @@ class GuardianCapiTest extends FunSuite with Matchers {
 
   private val contentPrefillTimeWindow: CapiQueryTimeWindow = EditionsTemplating.defineContentQueryTimeWindow(issueDate, timeWindowCfg)
 
-  private val getPrefillParams = PrefillParamsAdapter(issueDate, contentPrefillQuery, contentPrefillTimeWindow, None, None, Edition.TrainingEdition,
-    MetadataForLogging(LocalDate.now(), collectionId = None, collectionName = None))
-
   test("geneneratePrefillQuery") {
 
-    val fields = List(
-      "newspaperEditionDate",
-      "newspaperPageNumber",
-      "internalPageCode"
+    val getPrefillParams = PrefillParamsAdapter(
+      issueDate,
+      contentPrefillQuery,
+      ContentPrefillTimeParams(contentPrefillTimeWindow, UseDateQueryParamValue.Published),
+      None, None,
+      Edition.TrainingEdition,
+      MetadataForLogging(LocalDate.now(),
+        collectionId = None, collectionName = None)
     )
 
     val actual = GuardianCapi.prepareGetUnsortedPrefillArticleItemsQuery(getPrefillParams).getUrl("")
@@ -37,7 +38,7 @@ class GuardianCapiTest extends FunSuite with Matchers {
       "&tag=theguardian%2Fmainsection%2Ftopstories" +
       "&to-date=2019-10-07T00%3A00%3A00Z" +
       "&page=1" +
-      "&use-date=newspaper-edition" +
+      "&use-date=published" +
       "&show-fields=newspaperEditionDate%2CnewspaperPageNumber%2CinternalPageCode" +
       "&show-tags=all" +
       "&from-date=2019-10-04T00%3A00%3A00Z"
@@ -48,6 +49,16 @@ class GuardianCapiTest extends FunSuite with Matchers {
   test("prepareGetPrefillArticlesQuery") {
 
     val currentPageCodes = List("123", "456")
+
+    val getPrefillParams = PrefillParamsAdapter(
+      issueDate,
+      contentPrefillQuery,
+      ContentPrefillTimeParams(contentPrefillTimeWindow, UseDateQueryParamValue.NewspaperEdition),
+      None, None,
+      Edition.TrainingEdition,
+      MetadataForLogging(LocalDate.now(),
+        collectionId = None, collectionName = None)
+    )
 
     val actual = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefillParams, currentPageCodes).getUrl("")
 

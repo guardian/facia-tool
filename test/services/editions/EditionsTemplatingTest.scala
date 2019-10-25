@@ -98,7 +98,8 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
 
   "defineTimeWindow for contentPrefill" - {
     "should return expected time window" in {
-      val timeWindowCfg = TimeWindowConfigInDays(startOffset = -1, endOffset = 2)
+      val useDate =  UseDateQueryParamValue.Published
+      val timeWindowCfg = CapiTimeWindowConfigInDays(startOffset = -1, endOffset = 2, useDate)
       EditionsTemplating.defineContentQueryTimeWindow(LocalDate.of(2019, 10, 5), timeWindowCfg) shouldEqual CapiQueryTimeWindow(
         LocalDate.of(2019, 10, 4).atStartOfDay().toInstant(ZoneOffset.UTC),
         LocalDate.of(2019, 10, 7).atStartOfDay().toInstant(ZoneOffset.UTC)

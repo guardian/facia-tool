@@ -20,9 +20,10 @@ object AustralianEdition {
       FrontCrosswordsAu -> WeekDays(List(WeekDay.Sat))
     ),
     capiQueryPrefillParams = CapiQueryPrefillParams(
-      timeWindowConfig = TimeWindowConfigInDays(
+      timeWindowConfig = CapiTimeWindowConfigInDays(
         startOffset = -6,
-        endOffset = 0
+        endOffset = 0,
+        useDate = UseDateQueryParamValue.Published
       )
     ),
     zoneId = ZoneId.of("Europe/London"),
@@ -31,7 +32,7 @@ object AustralianEdition {
       apiKey = "fronts-editions-au",
       timeWindowConfig = TimeWindowConfigInDays(
         startOffset = -6,
-        endOffset = 0
+        endOffset = 0,
       ))
     )
   )
