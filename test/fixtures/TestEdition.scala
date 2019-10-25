@@ -6,6 +6,9 @@ import model.editions.templates.TemplateHelpers.Defaults._
 import model.editions._
 
 object TestEdition {
+  val ContentQueryStartOffsetInDays = -1
+  val ContentQueryEndOffsetInDays = 2
+
   val template = EditionTemplate(
     List(
       FrontTopStories.front -> Daily(),
@@ -16,8 +19,8 @@ object TestEdition {
     ),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = TimeWindowConfigInDays(
-        startOffset = -1,
-        endOffset= 2)
+        startOffset = ContentQueryStartOffsetInDays,
+        endOffset= ContentQueryEndOffsetInDays)
     ),
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),

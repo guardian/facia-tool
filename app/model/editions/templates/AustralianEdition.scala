@@ -51,8 +51,8 @@ object AustralianEdition {
 
   def FrontNewsAu = front(
     "News",
-    collection("News").searchPrefill("?tag=(tone/news,australia-news/australia-news)-tone/comment"),
-    collection("World News").searchPrefill("?tag=(tone/news-australia-news/australia-news)-tone/comment")
+    collection("News").searchPrefill("?tag=tone/news,australia-news/australia-news,-tone/comment"),
+    collection("World News").searchPrefill("?tag=tone/news,-australia-news/australia-news,-tone/comment")
   )
   .swatch(News)
 
@@ -60,8 +60,8 @@ object AustralianEdition {
 
   def FrontJournalAu = front(
     "Journal",
-    collection("Opinion").searchPrefill("?tag=(australia-news/australia-news,tone/comment)"),
-    collection("World Opinion").searchPrefill("?tag=(tone/comment-australia-news/australia-news)")
+    collection("Opinion").searchPrefill("?tag=(australia-news/australia-news,tone/comment)|tracking/commissioningdesk/australia-opinion"),
+    collection("World Opinion").searchPrefill("?tag=(tone/comment,-australia-news/australia-news)|(tone/comment,-tracking/commissioningdesk/australia-opinion)")
   )
   .swatch(Opinion)
 
@@ -70,7 +70,7 @@ object AustralianEdition {
   def FrontNewsFeaturesAu = front(
     "News Features",
     collection("Long Read").searchPrefill("?tag=news/series/the-long-read"),
-    collection("News Features").searchPrefill("?tag=(tone/news,tone/features)")
+    collection("News Features").searchPrefill("?tag=tone/news,tone/features,-news/series/the-long-read")
   )
   .swatch(News)
 
@@ -79,13 +79,13 @@ object AustralianEdition {
 
   def FrontCultureAu = front(
     "Culture",
-    collection("Culture").searchPrefill("?tag=tone/features|tone/interviews,-tone/reviews+(music/music|books/books|stage/stage|music/classical-music-and-opera|artanddesign/artanddesign|games/games|tv-and-radio/tv-and-radio|film/film|culture/culture)")
+    collection("Culture").searchPrefill("?tag=((tone/features|tone/interviews),-tone/reviews),(music/music|books/books|stage/stage|music/classical-music-and-opera|artanddesign/artanddesign|games/games|tv-and-radio/tv-and-radio|film/film|culture/culture)")
   )
   .swatch(Culture)
 
   def FrontLifeAu = front(
     "Life",
-    collection("Life").searchPrefill("?tag=tone/features|tone/recipes+(lifeandstyle/lifeandstyle|lifeandstyle/love-and-sex|lifeandstyle/celebrity|food/food|/travel/travel|lifeandstyle/health-and-wellbeing|lifeandstyle/women|lifeandstyle/home-and-garden|money/money|technology/motoring|fashion/fashion)")
+    collection("Life").searchPrefill("?tag=(tone/features|tone/recipes),(lifeandstyle/lifeandstyle|lifeandstyle/love-and-sex|lifeandstyle/celebrity|food/food|/travel/travel|lifeandstyle/health-and-wellbeing|lifeandstyle/women|lifeandstyle/home-and-garden|money/money|technology/motoring|fashion/fashion)")
   )
   .swatch(Lifestyle)
 

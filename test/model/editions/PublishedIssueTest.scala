@@ -56,6 +56,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       None,
       None,
       prefill,
+      None,
       articles.toList
     )
 
@@ -262,6 +263,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         "id",
         "Display Name",
         isHidden = false,
+        None,
         None,
         None,
         None,
