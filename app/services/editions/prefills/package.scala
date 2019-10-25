@@ -5,7 +5,6 @@ import java.time.{Instant, LocalDate}
 import com.gu.facia.api.utils.ResolvedMetaData
 import model.editions._
 import play.api.libs.json.Json
-import services.editions.prefills.MetadataForLogging
 
 package object prefills {
 
@@ -36,10 +35,12 @@ package object prefills {
     }
   }
 
+  case class ContentPrefillTimeParams(contentPrefillTimeWindow: CapiQueryTimeWindow, useDate: UseDateQueryParamValue)
+
   case class PrefillParamsAdapter(
                                    issueDate: LocalDate,
                                    contentPrefillUrlSegments: CapiPrefillQuery,
-                                   contentPrefillTimeWindow: CapiQueryTimeWindow,
+                                   contentPrefillTimeParams: ContentPrefillTimeParams,
                                    maybeOphanPath: Option[String],
                                    maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams],
                                    edition: Edition,

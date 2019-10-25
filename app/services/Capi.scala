@@ -148,13 +148,14 @@ object GuardianCapi extends Logging {
       .parse(new URI(contentPrefillUrlSegments.escapedQueryString()), Charset.forName("UTF-8"))
       .asScala
 
+    import contentPrefillTimeParams.{contentPrefillTimeWindow, useDate}
     import contentPrefillTimeWindow.{fromDate, toDate}
 
     var query = CapiQueryGenerator(contentPrefillUrlSegments.pathType)
       .page(1)
       .pageSize(200)
       .showFields(fields.mkString(","))
-      .useDate("newspaper-edition") // deliberately-kebab-case
+      .useDate(useDate.entryName)
       .orderBy("newest")
       .fromDate(fromDate)
       .toDate(toDate)

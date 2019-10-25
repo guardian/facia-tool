@@ -5,7 +5,7 @@ import java.time.{LocalDate, ZoneOffset}
 import logging.Logging
 import model.editions._
 import play.api.mvc.{Result, Results}
-import services.editions.prefills.{CapiQueryTimeWindow, MetadataForLogging, Prefill, PrefillParamsAdapter}
+import services.editions.prefills.{CapiQueryTimeWindow, ContentPrefillTimeParams, MetadataForLogging, Prefill, PrefillParamsAdapter}
 import services.{Capi, Ophan}
 
 import scala.concurrent.Await
@@ -28,9 +28,13 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
           val contentPrefillTimeWindow: CapiQueryTimeWindow = EditionsTemplating
             .defineContentQueryTimeWindow(issueDate, capiQueryPrefillParams.timeWindowConfig)
 
+          val useDate = editionTemplate.capiQueryPrefillParams.timeWindowConfig.useDate
+
           val frontsSkeleton = editionTemplate.fronts
             .filter(_._2.isValid(issueDate))
             .map { case (frontTemplate, _) =>
+
+              val contentPrefillTimeWindowParams = ContentPrefillTimeParams(contentPrefillTimeWindow, useDate)
 
               val editionsCollectionSkeletons = collectionsTemplating.generateCollectionTemplates(
                 frontTemplate.collections,
@@ -38,7 +42,7 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
                 issueDate,
                 editionTemplate,
                 frontTemplate.maybeOphanPath,
-                contentPrefillTimeWindow,
+                contentPrefillTimeWindowParams,
                 ophanQueryPrefillParams)
 
               EditionsFrontSkeleton(
@@ -67,7 +71,7 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
 }
 
 object EditionsTemplating {
-  def defineContentQueryTimeWindow(issueDate: LocalDate, timeWindowConfig: TimeWindowConfigInDays): CapiQueryTimeWindow = {
+  def defineContentQueryTimeWindow(issueDate: LocalDate, timeWindowConfig: CapiTimeWindowConfigInDays): CapiQueryTimeWindow = {
     val issueDateStart = issueDate.atStartOfDay()
     // Regarding UTC Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
     val fromDateUTC = issueDateStart.plusDays(timeWindowConfig.startOffset).toInstant(ZoneOffset.UTC)
@@ -88,7 +92,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
                                   issueDate: LocalDate,
                                   template: EditionTemplate,
                                   maybeOphanPath: Option[String],
-                                  contentPrefillTimeWindow: CapiQueryTimeWindow,
+                                  contentPrefillTimeParams: ContentPrefillTimeParams,
                                   ophanQueryPrefillParams: Option[OphanQueryPrefillParams]): List[EditionsCollectionSkeleton] = {
     collections.map { collection =>
       import collection.{hidden, name, prefill, presentation}
@@ -98,7 +102,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
           val getPrefillParams = PrefillParamsAdapter(
             issueDate,
             contentPrefillUrlSegments,
-            contentPrefillTimeWindow,
+            contentPrefillTimeParams,
             List(
               template.maybeOphanPath,
               maybeOphanPath,
