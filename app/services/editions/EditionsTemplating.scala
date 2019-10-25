@@ -130,7 +130,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
           prefillParams.maybeOphanPath,
           prefillParams.issueDate,
           prefillParams.maybeOphanQueryPrefillParams),
-        10 seconds)
+        30 seconds)
     } catch {
       case NonFatal(t) =>
         // At least log this as a warning so we can trace frequency
