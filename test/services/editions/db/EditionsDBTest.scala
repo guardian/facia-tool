@@ -4,10 +4,13 @@ import java.time._
 
 import com.gu.pandomainauth.model.User
 import fixtures.{EditionsDBEvolutions, EditionsDBService, UsesDatabase}
-import model.editions._
+import model.editions.internal.PrefillUpdate
+import model.editions.{TimeWindowConfigInDays, _}
 import model.forms.GetCollectionsFilter
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
 import scalikejdbc._
+import services.editions.GenerateEditionTemplateResult
+import services.editions.prefills.CapiQueryTimeWindow
 
 class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with EditionsDBEvolutions with OptionValues {
 
@@ -34,14 +37,22 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     coverCardImages = None
   )
 
+  private val TestContentPrefillTimeWindowCfg = TimeWindowConfigInDays(-1, 2)
+
   private def insertSkeletonIssue(year: Int, month: Int, dom: Int, fronts: EditionsFrontSkeleton*): String = {
+    val issueDate = LocalDate.of(year, month, dom)
     val skeleton = EditionsIssueSkeleton(
-      LocalDate.of(year, month, dom),
+      issueDate,
       ZoneId.of("Europe/London"),
       fronts.toList
     )
+    import TestContentPrefillTimeWindowCfg._
+    val start = issueDate.plusDays(startOffset).atStartOfDay().toInstant(ZoneOffset.UTC)
+    val end = issueDate.plusDays(endOffset).atStartOfDay().toInstant(ZoneOffset.UTC)
+    val timeWindow = CapiQueryTimeWindow(start, end)
+    val genTemplateRes = GenerateEditionTemplateResult(skeleton, timeWindow)
     editionsDB.insertIssue(Edition.DailyEdition,
-      skeleton,
+      genTemplateRes,
       user,
       now
     )
@@ -73,6 +84,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       retrievedIssue.launchedBy.isDefined shouldBe false
       retrievedIssue.launchedEmail.isDefined shouldBe false
       retrievedIssue.fronts shouldBe Nil
+
     }
 
     "should list issues" taggedAs UsesDatabase in {
@@ -229,7 +241,6 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       collections.size shouldBe 5
 
       collections.map(_.id).toSet shouldBe collectionIds.toSet
-
     }
 
     "should allow collections to be filtered by timestamp" taggedAs UsesDatabase in {
@@ -485,6 +496,35 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     collectionFromInternationalIssue.prefill should be
     collectionFromInternationalIssue.prefill.get shouldEqual prefillFromSearch
+
   }
+
+  "should insert content prefill time-window correctly" taggedAs UsesDatabase in {
+
+    val issueId = insertSkeletonIssue(2019, 9, 30,
+      front("news/uk",
+        collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
+          article("12345"),
+          article("23456")
+        )
+      )
+    )
+
+    val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+    val issueDate = issue.issueDate
+    val collectionFromIssue = issue.fronts.head.collections.head
+
+    val maybePrefillUpdate: Option[PrefillUpdate] = editionsDB.getCollectionPrefill(collectionFromIssue.id)
+
+    maybePrefillUpdate.isDefined shouldBe true
+    val prefillFromDB = maybePrefillUpdate.value
+    prefillFromDB.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
+      issueDateToUTCStartOfDay(issueDate.plusDays(TestContentPrefillTimeWindowCfg.startOffset)),
+      issueDateToUTCStartOfDay(issueDate.plusDays(TestContentPrefillTimeWindowCfg.endOffset))
+    )
+  }
+
+  private def issueDateToUTCStartOfDay(issueDate: LocalDate) = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
+
 
 }

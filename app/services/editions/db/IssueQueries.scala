@@ -11,7 +11,7 @@ import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.CollectionsHelpers._
 import services.editions.publishing.events.PublishEvent
-import services.editions.{DbEditionsArticle, DbEditionsCollection, DbEditionsFront}
+import services.editions.{DbEditionsArticle, DbEditionsCollection, DbEditionsFront, GenerateEditionTemplateResult}
 
 import scala.util.{Failure, Success, Try}
 
@@ -19,14 +19,17 @@ trait IssueQueries {
 
   def insertIssue(
                    edition: Edition,
-                   skeleton: EditionsIssueSkeleton,
+                   genEditionTemplateResult: GenerateEditionTemplateResult,
                    user: User,
                    now: OffsetDateTime
-  ): String  = DB localTx { implicit session =>
+                 ): String = DB localTx { implicit session =>
     val userName = user.firstName + " " + user.lastName
     val truncatedNow = EditionsDB.truncateDateTime(now)
 
-    val issueId = sql"""
+    import genEditionTemplateResult.{issueSkeleton, contentPrefillTimeWindow}
+
+    val issueId =
+      sql"""
           INSERT INTO edition_issues (
             name,
             issue_date,
@@ -34,12 +37,13 @@ trait IssueQueries {
             created_on,
             created_by,
             created_email
-          ) VALUES (${edition.entryName}, ${skeleton.issueDate}, ${skeleton.zoneId.toString}, $truncatedNow, $userName, ${user.email})
+          ) VALUES (${edition.entryName}, ${issueSkeleton.issueDate}, ${issueSkeleton.zoneId.toString}, $truncatedNow, $userName, ${user.email})
           RETURNING id;
        """.map(_.string("id")).single().apply().get
 
-    skeleton.fronts.zipWithIndex.foreach { case (front, fIndex) =>
-        val frontId = sql"""
+    issueSkeleton.fronts.zipWithIndex.foreach { case (front, fIndex) =>
+      val frontId =
+        sql"""
         INSERT INTO fronts (
           issue_id,
           index,
@@ -51,8 +55,11 @@ trait IssueQueries {
         RETURNING id;
       """.map(_.string("id")).single().apply().get
 
-        front.collections.zipWithIndex.foreach { case (collection, cIndex) =>
-          val collectionId = sql"""
+      import contentPrefillTimeWindow.{fromDate, toDate}
+
+      front.collections.zipWithIndex.foreach { case (collection, cIndex) =>
+        val collectionId =
+          sql"""
           INSERT INTO collections (
             front_id,
             index,
@@ -61,15 +68,30 @@ trait IssueQueries {
             metadata,
             prefill,
             path_type,
+            content_prefill_window_start,
+            content_prefill_window_end,
             updated_on,
             updated_by,
             updated_email
-          ) VALUES ($frontId, $cIndex, ${collection.name}, ${collection.hidden}, NULL, ${collection.prefill.map(_.queryString)}, ${collection.prefill.map(_.pathType.entryName)}, $truncatedNow, $userName, ${user.email})
+          ) VALUES (
+            $frontId
+            , $cIndex
+            , ${collection.name}
+            , ${collection.hidden}
+            , NULL
+            , ${collection.prefill.map(_.queryString)}
+            , ${collection.prefill.map(_.pathType.entryName)}
+            , $fromDate
+            , $toDate
+            , $truncatedNow
+            , $userName
+            , ${user.email}
+            )
           RETURNING id;
           """.map(_.string("id")).single().apply().get
 
-          collection.items.zipWithIndex.foreach { case (article, tIndex) =>
-              sql"""
+        collection.items.zipWithIndex.foreach { case (article, tIndex) =>
+          sql"""
                     INSERT INTO articles (
                     collection_id,
                     page_code,
@@ -78,8 +100,8 @@ trait IssueQueries {
                     metadata
                     ) VALUES ($collectionId, ${article.pageCode}, $tIndex, $truncatedNow, ${Json.toJson(article.metadata).toString}::JSONB)
                  """.execute().apply()
-          }
         }
+      }
     }
 
     issueId
@@ -116,14 +138,15 @@ trait IssueQueries {
   }
 
   def getIssue(id: String): Option[EditionsIssue] = DB readOnly { implicit session =>
-      case class GetIssueRow(
-          issue: EditionsIssue,
-          front: Option[DbEditionsFront],
-          collection: Option[DbEditionsCollection],
-          article: Option[DbEditionsArticle]
-      )
+    case class GetIssueRow(
+                            issue: EditionsIssue,
+                            front: Option[DbEditionsFront],
+                            collection: Option[DbEditionsCollection],
+                            article: Option[DbEditionsArticle]
+                          )
 
-      val rows: List[GetIssueRow] = sql"""
+    val rows: List[GetIssueRow] =
+      sql"""
       SELECT
         edition_issues.id,
         edition_issues.name,
@@ -158,6 +181,8 @@ trait IssueQueries {
         collections.updated_email AS collections_updated_email,
         collections.prefill       AS collections_prefill,
         collections.path_type     AS collections_path_type,
+        collections.content_prefill_window_start       AS collections_content_prefill_window_start,
+        collections.content_prefill_window_end         AS collections_content_prefill_window_end,
 
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
@@ -171,39 +196,39 @@ trait IssueQueries {
       LEFT JOIN articles ON (articles.collection_id = collections.id)
       WHERE edition_issues.id = $id
       """.map { rs =>
-            GetIssueRow(
-              EditionsIssue.fromRow(rs),
-              DbEditionsFront.fromRowOpt(rs, "fronts_"),
-              DbEditionsCollection.fromRowOpt(rs, "collections_"),
-              DbEditionsArticle.fromRowOpt(rs, "articles_"))
-        }
+        GetIssueRow(
+          EditionsIssue.fromRow(rs),
+          DbEditionsFront.fromRowOpt(rs, "fronts_"),
+          DbEditionsCollection.fromRowOpt(rs, "collections_"),
+          DbEditionsArticle.fromRowOpt(rs, "articles_"))
+      }
         .list()
         .apply()
 
     val fronts: List[EditionsFront] = rows
-        .flatMap(row => row.front)
-        .sortBy(_.index)
-        .map(_.front)
-        .distinctBy(_.id)
-        .map { front  =>
-          val collectionsForFront = rows
-            .flatMap(row => row.collection.filter(_.frontId == front.id))
-            .sortBy(_.index)
-            .map(_.collection)
-            .foldLeft(List.empty[EditionsCollection]) {(acc, cur) => if(acc.exists(c => c.id == cur.id)) acc else acc :+ cur}
-            .map { collection =>
-              val articles = rows
-                .flatMap(row => row.article.filter(_.collectionId == collection.id))
-                .sortBy(_.index)
-                .map(_.article)
+      .flatMap(row => row.front)
+      .sortBy(_.index)
+      .map(_.front)
+      .distinctBy(_.id)
+      .map { front =>
+        val collectionsForFront = rows
+          .flatMap(row => row.collection.filter(_.frontId == front.id))
+          .sortBy(_.index)
+          .map(_.collection)
+          .foldLeft(List.empty[EditionsCollection]) { (acc, cur) => if (acc.exists(c => c.id == cur.id)) acc else acc :+ cur }
+          .map { collection =>
+            val articles = rows
+              .flatMap(row => row.article.filter(_.collectionId == collection.id))
+              .sortBy(_.index)
+              .map(_.article)
 
-              collection.copy(
-                items = articles
-              )
-            }
+            collection.copy(
+              items = articles
+            )
+          }
 
-          front.copy(collections = collectionsForFront)
-        }
+        front.copy(collections = collectionsForFront)
+      }
 
     rows.headOption.map(_.issue.copy(fronts = fronts))
   }
@@ -285,7 +310,8 @@ trait IssueQueries {
   def getIssueVersions(issueId: String): List[IssueVersion] = DB localTx { implicit session =>
     case class Row(version: IssueVersion, event: IssueVersionEvent)
 
-    val rows: List[Row] = sql"""
+    val rows: List[Row] =
+      sql"""
       SELECT
         v.id                AS version_id
         , v.launched_on     AS version_launched_on
@@ -300,8 +326,8 @@ trait IssueQueries {
       WHERE v.issue_id = $issueId
       ORDER BY launched_on DESC
     """.map(rs => Row(IssueVersion.fromRow(rs), IssueVersionEvent.fromRow(rs)))
-      .list()
-      .apply()
+        .list()
+        .apply()
 
     (rows.groupBy(_.version) map {
       case (version, rows) => version.copy(events = rows.map(_.event))
@@ -309,7 +335,7 @@ trait IssueQueries {
   }
 
   def insertIssueVersionEvent(event: PublishEvent) = DB localTx { implicit session =>
-    Try{
+    Try {
       Logger.info(s"saving issue version event message:${event.message}")(event.toLogMarker)
       sql"""
         INSERT INTO issue_versions_events (

@@ -6,7 +6,7 @@ import java.time.{LocalDate, ZoneId}
 import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
-import model.editions.templates.{DailyEdition, AmericanEdition, AustralianEdition, TrainingEdition}
+import model.editions.templates.{AmericanEdition, AustralianEdition, DailyEdition, TrainingEdition}
 import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 

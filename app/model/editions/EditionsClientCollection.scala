@@ -2,6 +2,7 @@ package model.editions
 
 import model.editions.client.ClientArticleMetadata
 import play.api.libs.json.Json
+import services.editions.prefills.CapiQueryTimeWindow
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
 
@@ -32,6 +33,7 @@ case class EditionsClientCollection(
   updatedBy: Option[String],
   updatedEmail: Option[String],
   prefill: Option[CapiPrefillQuery],
+  contentPrefillTimeWindow: Option[CapiQueryTimeWindow],
   items: List[EditionsClientArticle]
 )
 case class EditionsFrontendCollectionWrapper(id: String, collection: EditionsClientCollection)
@@ -52,6 +54,7 @@ object EditionsFrontendCollectionWrapper {
         collection.updatedBy,
         collection.updatedEmail,
         collection.prefill,
+        collection.contentPrefillTimeWindow,
         collection.items.map(EditionsClientArticle.fromArticle)
       )
     )
@@ -66,6 +69,7 @@ object EditionsFrontendCollectionWrapper {
       frontendCollection.collection.updatedBy,
       frontendCollection.collection.updatedEmail,
       frontendCollection.collection.prefill,
+      frontendCollection.collection.contentPrefillTimeWindow,
       frontendCollection.collection.items.map(EditionsClientArticle.toArticle)
     )
   }
