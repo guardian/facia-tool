@@ -51,7 +51,10 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
     .followRedirects(true)
     .connectionPool(new ConnectionPool(10, 60, TimeUnit.SECONDS))
 
-  protected val http = httpClientBuilder.build
+  protected val http = httpClientBuilder
+    .connectTimeout(30, TimeUnit.SECONDS)
+    .readTimeout(30, TimeUnit.SECONDS)
+    .build
 
   private val cache: Cache[String, Future[HttpResponse]] =
     Scaffeine()
