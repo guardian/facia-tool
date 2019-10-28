@@ -19,7 +19,7 @@ import {
   EditionsFrontMetadata
 } from './FaciaApi';
 import { BatchAction } from 'redux-batched-actions';
-import { Stages } from 'shared/types/Collection';
+import { Stages, Card } from 'shared/types/Collection';
 import {
   EDITOR_OPEN_CURRENT_FRONTS_MENU,
   EDITOR_CLOSE_CURRENT_FRONTS_MENU,
@@ -172,7 +172,7 @@ type InsertGroupCard = SharedInsertGroupCard & ActionPersistMeta;
 type InsertSupportingCard = SharedInsertSupportingCard & ActionPersistMeta;
 type InsertClipboardCard = {
   type: 'INSERT_CLIPBOARD_CARD';
-} & { payload: InsertCardPayload };
+} & { payload: InsertCardPayload & { currentCards: { [uuid: string]: Card } } };
 
 type RemoveGroupCard = SharedRemoveGroupCard & ActionPersistMeta;
 type RemoveSupportingCard = SharedRemoveSupportingCard & ActionPersistMeta;

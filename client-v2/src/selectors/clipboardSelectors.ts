@@ -7,7 +7,7 @@ const selectClipboardContent = (state: State) => state.clipboard || [];
 const selectClipboardArticles = createShallowEqualResultSelector(
   selectClipboardContent,
   selectCardsFromRootState,
-  (clipboard, cards) => clipboard.map(afId => cards[afId])
+  (clipboard, cards) => clipboard.map((afId: string) => cards[afId])
 );
 
 export { selectClipboardArticles, selectClipboardContent };
