@@ -76,6 +76,16 @@ test('Drag from feed to group position', async t => {
     .eql(true);
 });
 
+test('Drag from feed to group position', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  await t
+    .dragToElement(feedItem(0), frontDropZone(2))
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 2)
+    .expect(collectionLaunchButton(1).exists)
+    .eql(true);
+});
+
 test('Drag from feed to supporting position', async t => {
   const frontDropsCount = await frontDropZone().count;
   await t
