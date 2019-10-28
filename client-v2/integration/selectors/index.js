@@ -14,6 +14,7 @@ const SNAP_SELECTOR = 'snap';
 const COLLECTION_SELECTOR = 'collection';
 const CARD_SELECTOR = 'article-body';
 const COLLECTION_DISCARD_BUTTON = 'collection-discard-button';
+const COLLECTION_LAUNCH_BUTTON = 'collection-launch-button';
 const DELETE_BUTTON = 'delete-hover-button';
 const EDIT_FORM = 'edit-form';
 const EDIT_FORM_HEADLINE_FIELD = 'edit-form-headline-field';
@@ -97,6 +98,11 @@ export const cardBreakingNews = (collectionIndex, itemIndex = 0) =>
 export const collectionDiscardButton = collectionIndex =>
   collection(collectionIndex).find(
     `[data-testid="${COLLECTION_DISCARD_BUTTON}"]`
+  );
+
+export const collectionLaunchButton = collectionIndex =>
+  collection(collectionIndex).find(
+    `[data-testid="${COLLECTION_LAUNCH_BUTTON}"]`
   );
 
 export const cardDeleteButton = (collectionIndex, itemIndex = 0) =>

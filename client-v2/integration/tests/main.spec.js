@@ -22,6 +22,7 @@ import {
   allCollectionDropZones,
   cardDeleteButton,
   collectionDiscardButton,
+  collectionLaunchButton,
   cardAddToClipboardButton,
   clipboardItemDeleteButton,
   optionsModalChoice
@@ -65,6 +66,44 @@ test('Drag and drop', async t => {
     .eql(topFrontHeadline);
 });
 
+test('Drag and drop', async t => {
+  const topFrontHeadline = await frontHeadline(0).textContent;
+  const topFeedHeadline = await feedItemHeadline(0).textContent;
+  const frontDropsCount = await frontDropZone().count;
+  await t
+    // drag from feed to front
+    .dragToElement(feedItem(0), frontDropZone(0))
+    .wait(1000)
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 2)
+    .expect(frontHeadline().textContent)
+    .notEql(topFrontHeadline)
+    .expect(frontHeadline().textContent)
+    .eql(topFeedHeadline)
+    // drag top to bottom in front
+    .dragToElement(frontHeadline(), frontDropZone(3))
+    // wait for collection to update
+    .wait(1000)
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 2)
+    .expect(frontHeadline().textContent)
+    .notEql(topFeedHeadline)
+    .expect(frontHeadline().textContent)
+    .eql(topFrontHeadline);
+});
+
+test('Drag from feed to supporting position', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  await t
+    .dragToElement(feedItem(0), frontDropZone(3))
+    .expect(frontDropZone().count)
+    // Adding an initial sublink removes a dropzone, as the '<n> sublinks'
+    // dropdown menu replaces the dropzone we dropped into.
+    .eql(frontDropsCount - 1)
+    .expect(collectionLaunchButton(1).exists)
+    .eql(true);
+});
+
 test('Drag between two collections', async t => {
   const firstCollectionStory = card(0, 0);
   const secondCollectionDropZone = collectionDropZone(1, 0);
@@ -89,8 +128,8 @@ test('Drag from clipboard to collection', async t => {
 
 test('Discarding changes to a collection works', async t => {
   await t
-    .click(collectionDiscardButton(1))
-    .expect(allCards(1).count) // discarding overwrites a collection's draft content with its live content
+    .click(collectionDiscardButton(0))
+    .expect(allCards(0).count) // discarding overwrites a collection's draft content with its live content
     .eql(0);
 });
 
