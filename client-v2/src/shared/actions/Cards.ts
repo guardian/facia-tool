@@ -107,26 +107,36 @@ function removeSupportingCard(
 const insertGroupCard = (
   id: string,
   index: number,
-  cardId: string
+  cardId: string,
+  persistTo: 'collection' | 'clipboard'
 ): InsertGroupCard => ({
   type: INSERT_GROUP_CARD,
   payload: {
     id,
     index,
     cardId
+  },
+  meta: {
+    persistTo,
+    key: 'cardId'
   }
 });
 
 const insertSupportingCard = (
   id: string,
   index: number,
-  cardId: string
+  cardId: string,
+  persistTo: 'collection' | 'clipboard'
 ): InsertSupportingCard => ({
   type: INSERT_SUPPORTING_CARD,
   payload: {
     id,
     index,
     cardId
+  },
+  meta: {
+    persistTo,
+    key: 'cardId'
   }
 });
 
