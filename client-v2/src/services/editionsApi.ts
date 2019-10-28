@@ -1,4 +1,4 @@
-import { EditionsIssue } from 'types/Edition';
+import { EditionsIssue, IssueVersion } from 'types/Edition';
 import { Moment } from 'moment';
 import pandaFetch from './pandaFetch';
 import { CAPISearchQueryResponse } from './capiQuery';
@@ -107,3 +107,11 @@ export const putFrontHiddenState = (id: string, hidden: boolean) => {
     method: 'PUT'
   }).then(response => response.json());
 };
+
+export async function getIssueVersions(
+  issueId: string
+): Promise<Array<IssueVersion>> {
+  return await pandaFetch(`/editions-api/issues/${issueId}/versions`, {
+    method: 'get'
+  }).then(response => response.json());
+}
