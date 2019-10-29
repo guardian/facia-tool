@@ -260,6 +260,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                     onClick={() => this.startPublish(id, frontId)}
                     tabIndex={-1}
                     disabled={isLaunching}
+                    data-testid="collection-launch-button"
                   >
                     {isLaunching ? (
                       <LoadingImageBox>

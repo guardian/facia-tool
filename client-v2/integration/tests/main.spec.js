@@ -22,6 +22,7 @@ import {
   allCollectionDropZones,
   cardDeleteButton,
   collectionDiscardButton,
+  collectionLaunchButton,
   cardAddToClipboardButton,
   clipboardItemDeleteButton,
   optionsModalChoice
@@ -65,6 +66,28 @@ test('Drag and drop', async t => {
     .eql(topFrontHeadline);
 });
 
+test('Drag from feed to group position', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  await t
+    .dragToElement(feedItem(0), frontDropZone(2))
+    .expect(frontDropZone().count)
+    .eql(frontDropsCount + 2)
+    .expect(collectionLaunchButton(1).exists)
+    .eql(true);
+});
+
+test('Drag from feed to supporting position', async t => {
+  const frontDropsCount = await frontDropZone().count;
+  await t
+    .dragToElement(feedItem(0), frontDropZone(3))
+    .expect(frontDropZone().count)
+    // Adding an initial sublink removes a dropzone, as the '<n> sublinks'
+    // dropdown menu replaces the dropzone we dropped into.
+    .eql(frontDropsCount - 1)
+    .expect(collectionLaunchButton(1).exists)
+    .eql(true);
+});
+
 test('Drag between two collections', async t => {
   const firstCollectionStory = card(0, 0);
   const secondCollectionDropZone = collectionDropZone(1, 0);
@@ -89,8 +112,8 @@ test('Drag from clipboard to collection', async t => {
 
 test('Discarding changes to a collection works', async t => {
   await t
-    .click(collectionDiscardButton(1))
-    .expect(allCards(1).count) // discarding overwrites a collection's draft content with its live content
+    .click(collectionDiscardButton(0))
+    .expect(allCards(0).count) // discarding overwrites a collection's draft content with its live content
     .eql(0);
 });
 

@@ -1,6 +1,5 @@
 module.exports = {
-  live: [],
-  draft: [
+  live: [
     {
       id: 'internal-code/page/2309422',
       frontPublicationDate: 1540379258808,
@@ -24,7 +23,7 @@ module.exports = {
       }
     }
   ],
-  lastUpdated: 1540558153650,
+  lastUpdated: 1540379258808,
   updatedBy: 'Richard Beddington',
   updatedEmail: 'richard.beddington@guardian.co.uk',
   displayName: 'Second Collection 2'

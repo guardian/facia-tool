@@ -181,19 +181,17 @@ module.exports = async () =>
     });
 
     // catch requests to discard collection endpoint
-    app.post(
-      '/collection/v2Discard/e59785e9-ba82-48d8-b79a-0a80b2f9f808',
-      (req, res) => {
-        return res.json({
-          id: req.body.collectionId,
-          collection: collectionThree,
-          storiesVisibleByStage: {
-            live: { desktop: 4, mobile: 4 },
-            draft: { desktop: 4, mobile: 4 }
-          }
-        });
-      }
-    );
+    app.post('/collection/v2Discard/*', (req, res) => {
+      return res.json({
+        id: req.body.collectionId,
+        // Collection three is empty, simulating a discard event
+        collection: collectionThree,
+        storiesVisibleByStage: {
+          live: { desktop: 4, mobile: 4 },
+          draft: { desktop: 4, mobile: 4 }
+        }
+      });
+    });
 
     // Ophan requests
     app.get('/ophan*', (req, res) => {
