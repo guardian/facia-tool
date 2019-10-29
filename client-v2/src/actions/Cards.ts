@@ -25,7 +25,7 @@ import {
 } from 'util/moveUtils';
 import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
-import { insertClipboardCard, removeClipboardCard } from './Clipboard';
+import { removeClipboardCard, thunkInsertClipboardCard } from './Clipboard';
 import { State } from 'types/State';
 import { capGroupSiblings } from 'shared/actions/Groups';
 import { selectCollectionCap } from 'selectors/configSelectors';
@@ -42,8 +42,9 @@ import { startOptionsModal } from './OptionsModal';
 type InsertActionCreator = (
   id: string,
   index: number,
-  cardId: string
-) => Action;
+  cardId: string,
+  persistTo: 'collection' | 'clipboard'
+) => ThunkResult<void> | Action;
 
 type InsertThunkActionCreator = (
   persistTo: 'collection' | 'clipboard'
@@ -70,12 +71,10 @@ const createInsertCardThunk = (action: InsertActionCreator) => (
   if (removeAction) {
     dispatch(removeAction);
   }
-  dispatch(
-    addPersistMetaToAction(action, {
-      persistTo,
-      key: 'cardId'
-    })(id, index, cardId)
-  );
+  // This cast seems to be necessary to disambiguate the type fed to Dispatch,
+  // whose call signature accepts either an Action or a ThunkResult. I'm not really
+  // sure why.
+  dispatch(action(id, index, cardId, persistTo) as Action);
 };
 
 const copyCardImageMetaWithPersist = addPersistMetaToAction(copyCardImageMeta, {
@@ -115,7 +114,7 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
 
       actions
         .concat([
-          insertGroupCard(id, index, cardId),
+          insertGroupCard(id, index, cardId, persistTo),
           maybeAddFrontPublicationDate(cardId),
           addPersistMetaToAction(capGroupSiblings, {
             id: cardId,
@@ -156,15 +155,18 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
         batchActions(
           (removeAction ? [removeAction] : []).concat([
             maybeAddFrontPublicationDate(cardId),
-            addPersistMetaToAction(insertGroupCard, {
-              key: 'cardId',
-              persistTo
-            })(id, index, cardId)
+            insertGroupCard(id, index, cardId, persistTo)
           ])
         )
       );
     }
   };
+};
+
+const addActionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
+  card: createInsertCardThunk(insertSupportingCard),
+  group: maybeInsertGroupCard,
+  clipboard: createInsertCardThunk(thunkInsertClipboardCard)
 };
 
 // This maps a type string such as `clipboard` to an insert action creator and
@@ -175,13 +177,7 @@ const getInsertionActionCreatorFromType = (
   type: string,
   persistTo: 'collection' | 'clipboard'
 ) => {
-  const actionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
-    card: createInsertCardThunk(insertSupportingCard),
-    group: maybeInsertGroupCard,
-    clipboard: createInsertCardThunk(insertClipboardCard)
-  };
-
-  const actionCreator = actionMap[type] || null;
+  const actionCreator = addActionMap[type] || null;
 
   // partially apply the action creator with it's persist logic
   return actionCreator && actionCreator(persistTo);
@@ -189,19 +185,19 @@ const getInsertionActionCreatorFromType = (
 
 type RemoveActionCreator = (id: string, cardId: string) => Action;
 
+const removeActionMap: { [type: string]: RemoveActionCreator | undefined } = {
+  card: removeSupportingCard,
+  group: removeGroupCard,
+  clipboard: removeClipboardCard
+};
+
 // this maps a type string such as `group` to a remove action creator and if
 // persistTo is passed then add persist meta
 const getRemoveActionCreatorFromType = (
   type: string,
   persistTo?: 'collection' | 'clipboard'
 ) => {
-  const actionMap: { [type: string]: RemoveActionCreator | undefined } = {
-    card: removeSupportingCard,
-    group: removeGroupCard,
-    clipboard: removeClipboardCard
-  };
-
-  const actionCreator = actionMap[type] || null;
+  const actionCreator = removeActionMap[type] || null;
 
   return actionCreator && persistTo
     ? addPersistMetaToAction(actionCreator, {

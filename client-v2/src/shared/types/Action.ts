@@ -3,6 +3,7 @@ import { Collection, Card, Group, CardMeta } from './Collection';
 import { Actions } from 'lib/createAsyncResourceBundle';
 import { copyCardImageMeta } from 'shared/actions/Cards';
 import { PageViewStory } from './PageViewData';
+import { PersistMeta } from 'util/storeMiddleware';
 
 interface CardsReceived {
   type: 'SHARED/CARDS_RECEIVED';
@@ -35,12 +36,14 @@ type InsertGroupCard = {
   type: 'SHARED/INSERT_GROUP_CARD';
 } & {
   payload: InsertCardPayload;
+  meta: PersistMeta;
 };
 
 type InsertSupportingCard = {
   type: 'SHARED/INSERT_SUPPORTING_CARD';
 } & {
   payload: InsertCardPayload;
+  meta: PersistMeta;
 };
 
 interface RemoveCardPayload {
