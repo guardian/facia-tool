@@ -7,6 +7,8 @@ import VersionPublicationTable from './VersionPublicationTable';
 import { getIssueVersions } from 'services/editionsApi';
 
 const IssueVersionList = styled.ul`
+  max-height: 500px;
+  overflow: scroll;
   padding: 0;
   margin: 0;
   list-style: none;
