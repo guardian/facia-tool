@@ -66,32 +66,6 @@ test('Drag and drop', async t => {
     .eql(topFrontHeadline);
 });
 
-test('Drag and drop', async t => {
-  const topFrontHeadline = await frontHeadline(0).textContent;
-  const topFeedHeadline = await feedItemHeadline(0).textContent;
-  const frontDropsCount = await frontDropZone().count;
-  await t
-    // drag from feed to front
-    .dragToElement(feedItem(0), frontDropZone(0))
-    .wait(1000)
-    .expect(frontDropZone().count)
-    .eql(frontDropsCount + 2)
-    .expect(frontHeadline().textContent)
-    .notEql(topFrontHeadline)
-    .expect(frontHeadline().textContent)
-    .eql(topFeedHeadline)
-    // drag top to bottom in front
-    .dragToElement(frontHeadline(), frontDropZone(3))
-    // wait for collection to update
-    .wait(1000)
-    .expect(frontDropZone().count)
-    .eql(frontDropsCount + 2)
-    .expect(frontHeadline().textContent)
-    .notEql(topFeedHeadline)
-    .expect(frontHeadline().textContent)
-    .eql(topFrontHeadline);
-});
-
 test('Drag from feed to group position', async t => {
   const frontDropsCount = await frontDropZone().count;
   await t
