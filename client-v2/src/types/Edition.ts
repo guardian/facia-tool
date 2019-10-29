@@ -58,7 +58,7 @@ interface IssueVersion {
   launchedOn: number;
   launchedBy: string;
   launchedEmail: string;
-  events: Array<IssueVersionEvent>;
+  events: IssueVersionEvent[];
 }
 
 export {

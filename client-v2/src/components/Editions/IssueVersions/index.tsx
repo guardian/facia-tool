@@ -21,7 +21,7 @@ interface ComponentProps {
 }
 
 interface ComponentState {
-  data: Array<IssueVersion>;
+  data: IssueVersion[];
   polling: any;
 }
 
@@ -35,19 +35,11 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
     };
   }
 
-  componentWillUnmount() {
+  public componentWillUnmount() {
     clearInterval(this.state.polling);
   }
 
-  private update = async () => {
-    const { issueId } = this.props;
-
-    const data = await getIssueVersions(issueId);
-
-    this.setState({ data });
-  };
-
-  render() {
+  public render() {
     const { data } = this.state;
 
     return (
@@ -70,6 +62,14 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
       </>
     );
   }
+
+  private update = async () => {
+    const { issueId } = this.props;
+
+    const data = await getIssueVersions(issueId);
+
+    this.setState({ data });
+  };
 }
 
 export default IssueVersions;

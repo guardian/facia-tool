@@ -20,7 +20,7 @@ const PublicationHistoryTable = styled.table`
 `;
 
 interface Props {
-  events: Array<IssueVersionEvent>;
+  events: IssueVersionEvent[];
 }
 
 export default (props: Props) => {

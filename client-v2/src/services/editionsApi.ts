@@ -110,7 +110,7 @@ export const putFrontHiddenState = (id: string, hidden: boolean) => {
 
 export async function getIssueVersions(
   issueId: string
-): Promise<Array<IssueVersion>> {
+): Promise<IssueVersion[]> {
   return await pandaFetch(`/editions-api/issues/${issueId}/versions`, {
     method: 'get'
   }).then(response => response.json());
