@@ -330,8 +330,10 @@ trait IssueQueries {
         .apply()
 
     (rows.groupBy(_.version) map {
-      case (version, rows) => version.copy(events = rows.map(_.event))
+      case (version, rows) => version.copy(events = rows.map(_.event).sortBy(_.eventTime))
     }).toList
+      .sortBy(_.launchedOn)
+      .reverse
   }
 
   def insertIssueVersionEvent(event: PublishEvent) = DB localTx { implicit session =>

@@ -27,6 +27,7 @@ const StyledModal = styled(Modal)`
   padding: 20px;
   margin-left: -${({ width = 400 }: StyledModalProps) => width / 2}px;
   min-height: 200px;
+  max-height: calc(100vh - 80px);
   min-width: ${({ width = 400 }: StyledModalProps) => width}px;
 `;
 

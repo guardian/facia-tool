@@ -1,6 +1,7 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import moment from 'moment';
 
+import { styled } from 'constants/theme';
 import { IssueVersionEvent } from 'types/Edition';
 
 const PublicationHistoryTable = styled.table`
@@ -36,7 +37,7 @@ export default (props: Props) => {
         {props.events.map(event => {
           return (
             <tr key={event.eventTime}>
-              <td>{event.eventTime}</td>
+              <td>{moment(event.eventTime).format('YYYY-MM-DD HH:mm:ss')}</td>
               <td>{event.status}</td>
               <td>{event.message}</td>
             </tr>

@@ -93,7 +93,11 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
 
     startConfirmPublishModal(
       'Confirm publish',
-      <IssueVersions issueId={editionsIssue.id} />,
+      <>
+        <p>Confirm the publication of a new version of this issue.</p>
+        <p>Publishing a new version will not halt in-progress versions.</p>
+        <IssueVersions issueId={editionsIssue.id} />
+      </>,
       () => publishEditionsIssue(editionsIssue.id)
     );
   };
