@@ -42,6 +42,10 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
   public render() {
     const { data } = this.state;
 
+    if (data.length === 0) {
+      return <p>This issue has not been published yet.</p>;
+    }
+
     return (
       <>
         <p>Previously published versions of this issue:</p>
