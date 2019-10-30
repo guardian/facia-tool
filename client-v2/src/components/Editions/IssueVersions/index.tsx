@@ -49,23 +49,20 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
     }
 
     return (
-      <>
-        <p>Previously published versions of this issue:</p>
-        <IssueVersionList>
-          {data.map(issueVersion => (
-            <li key={issueVersion.id}>
-              <strong>
-                {moment(issueVersion.launchedOn).format('YYYY-MM-DD HH:mm:ss')}
-              </strong>
-              &nbsp;launched by&nbsp;
-              <span title={issueVersion.launchedEmail}>
-                {issueVersion.launchedBy}
-              </span>
-              <VersionPublicationTable events={issueVersion.events} />
-            </li>
-          ))}
-        </IssueVersionList>
-      </>
+      <IssueVersionList>
+        {data.map(issueVersion => (
+          <li key={issueVersion.id}>
+            <strong>
+              {moment(issueVersion.launchedOn).format('YYYY-MM-DD HH:mm:ss')}
+            </strong>
+            &nbsp;launched by&nbsp;
+            <span title={issueVersion.launchedEmail}>
+              {issueVersion.launchedBy}
+            </span>
+            <VersionPublicationTable events={issueVersion.events} />
+          </li>
+        ))}
+      </IssueVersionList>
     );
   }
 

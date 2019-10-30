@@ -5,6 +5,7 @@ import { styled } from 'constants/theme';
 import { IssueVersionEvent } from 'types/Edition';
 
 const PublicationHistoryTable = styled.table`
+  width: 100%;
   border-collapse: collapse;
   border: 1px solid #eee;
 
@@ -28,8 +29,8 @@ export default (props: Props) => {
     <PublicationHistoryTable>
       <thead>
         <tr>
-          <th>Time</th>
-          <th>Status</th>
+          <th style={{ width: '200px' }}>Time</th>
+          <th style={{ width: '200px' }}>Status</th>
           <th>Message</th>
         </tr>
       </thead>
