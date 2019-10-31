@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import { EditionsIssue } from '../types/Edition';
 import { connect } from 'react-redux';
 import { State } from '../types/State';
@@ -13,12 +13,13 @@ import { Link } from 'react-router-dom';
 import urls from 'constants/urls';
 import noop from 'lodash/noop';
 import { startOptionsModal } from 'actions/OptionsModal';
+import IssueVersions from './Editions/IssueVersions/index';
 
 interface ComponentProps {
   editionsIssue: EditionsIssue;
   startConfirmPublishModal: (
     title: string,
-    description: string,
+    description: ReactNode,
     onAccept: () => void
   ) => void;
   publishEditionsIssue: (id: string) => Promise<void>;
@@ -92,7 +93,11 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
 
     startConfirmPublishModal(
       'Confirm publish',
-      'Are you sure you want to publish?',
+      <>
+        <p>Confirm the publication of a new version of this issue.</p>
+        <p>Publishing a new version will not halt in-progress versions.</p>
+        <IssueVersions issueId={editionsIssue.id} />
+      </>,
       () => publishEditionsIssue(editionsIssue.id)
     );
   };
@@ -107,14 +112,14 @@ const mapStateToProps = () => {
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   startConfirmPublishModal: (
     title: string,
-    description: string,
+    description: ReactNode,
     onAccept: () => void
   ) =>
     dispatch(
       startOptionsModal(
         title,
         description,
-        [{ buttonText: 'Confirm', callback: onAccept }],
+        [{ buttonText: 'Publish', callback: onAccept }],
         noop
       )
     ),

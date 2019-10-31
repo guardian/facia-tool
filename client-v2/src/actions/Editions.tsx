@@ -11,6 +11,7 @@ import { actions } from 'bundles/editionsIssueBundle';
 import { EditionsFrontMetadata } from 'types/FaciaApi';
 import noop from 'lodash/noop';
 import { startOptionsModal } from './OptionsModal';
+import IssueVersions from 'components/Editions/IssueVersions';
 
 export const getEditionIssue = (
   id: string
@@ -41,6 +42,8 @@ export const publishEditionIssue = (
             If you do not see the issue within 5 minutes please contact a member
             of the suport team.
           </p>
+
+          <IssueVersions issueId={id} />
         </>,
         [{ buttonText: 'Dismiss', callback: noop }],
         noop,

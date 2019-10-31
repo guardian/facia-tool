@@ -38,10 +38,36 @@ interface EditionsIssue {
   fronts: EditionsFront[];
 }
 
+const issueVersionStatus = [
+  'Started',
+  'Processing',
+  'Published',
+  'Failed'
+] as const;
+
+type IssueVersionStatus = typeof issueVersionStatus[number];
+
+interface IssueVersionEvent {
+  eventTime: number;
+  status: IssueVersionStatus;
+  message?: string;
+}
+
+interface IssueVersion {
+  id: string;
+  launchedOn: number;
+  launchedBy: string;
+  launchedEmail: string;
+  events: IssueVersionEvent[];
+}
+
 export {
   EditionsIssue,
   EditionsFront,
   EditionsCollection,
   EditionsArticle,
-  EditionsPrefill
+  EditionsPrefill,
+  IssueVersionStatus,
+  IssueVersionEvent,
+  IssueVersion
 };
