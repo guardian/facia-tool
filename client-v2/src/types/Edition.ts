@@ -27,7 +27,7 @@ interface EditionsFront {
 
 interface EditionsIssue {
   id: string;
-  displayName: string;
+  edition: string;
   issueDate: string; // YYYY-MM-dd
   createdOn: number;
   createdBy: string;

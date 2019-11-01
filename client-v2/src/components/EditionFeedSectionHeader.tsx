@@ -60,7 +60,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       <>
         <ManageLink to={urls.manageEditions}>
           <EditionIssueInfo>
-            <EditionTitle>{startCase(editionsIssue.displayName)}</EditionTitle>
+            <EditionTitle>{startCase(editionsIssue.edition)}</EditionTitle>
             <EditionDate>
               {new Date(editionsIssue.issueDate).toDateString()}
             </EditionDate>

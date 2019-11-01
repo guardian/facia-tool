@@ -29,7 +29,7 @@ const Issue = (props: IssueProps) => {
         <tbody>
           <tr>
             <td>Issue name: </td>
-            <td>{props.issue.displayName}</td>
+            <td>{props.issue.edition}</td>
           </tr>
           <tr>
             <td>Issue date:</td>
