@@ -6,6 +6,64 @@ import org.scalatest.{FreeSpec, Matchers}
 class ClientArticleMetadataTest extends FreeSpec with Matchers {
 
   "ClientArticleMetadata from ArticleMetadata" - {
+
+    "should recover promotion metric from a simple ArticleMetadata" in {
+      val articleMetadata = ArticleMetadata(
+        Some("Britain has summer!"),
+        Some("Breaking News"),
+        Some("Goneth the rain, cometh the sun"),
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        Some(1)
+      )
+      val clientArticleMetadata = ClientArticleMetadata.fromArticleMetadata(articleMetadata)
+      clientArticleMetadata.promotionMetric should be (Some(1))
+    }
+
+    "should send promotion metric to a simple ArticleMetadata" in {
+      val clientArticleMetadata = ClientArticleMetadata(
+        Some("Britain has summer!"),
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+
+        None,
+
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+
+        None,
+        None,
+        None,
+        None,
+        None,
+
+        None,
+
+        None,
+        None,
+        None,
+        Some(1)
+      )
+      val articleMetadata = clientArticleMetadata.toArticleMetadata
+      articleMetadata.promotionMetric should be (Some(1))
+    }
+
     "should serialise from a simple ArticleMetadata" in {
       val articleMetadata = ArticleMetadata(
         Some("Britain has summer!"),
@@ -233,4 +291,5 @@ class ClientArticleMetadataTest extends FreeSpec with Matchers {
       ))
     }
   }
+
 }
