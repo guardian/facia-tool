@@ -89,7 +89,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
 
   private def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     BreakingNewsPayload(
-      message = StringEscapeUtils.unescapeHtml4(trail.headline),
+      message = Some(StringEscapeUtils.unescapeHtml4(trail.headline)),
       thumbnailUrl = trail.thumb.map{new URI(_)},
       sender = email,
       link = createLinkDetails(trail),
@@ -136,6 +136,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       case Some("uk") => List(BreakingNewsUk)
       case Some("us") => List(BreakingNewsUs)
       case Some("sport") => List(BreakingNewsSport)
+      case Some("election") => List(BreakingNewsElection)
       case Some("") => throw new InvalidParameterException(s"Invalid empty string topic")
       case Some(notYetImplementedTopic) => List(Topic(Breaking, notYetImplementedTopic))
       case None => throw new InvalidParameterException(s"Invalid empty topic")
