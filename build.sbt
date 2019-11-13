@@ -97,7 +97,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "editorial-permissions-client" % "2.0",
     "com.gu" %% "fapi-client-play26" % "3.0.11",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
-    "com.gu" %% "mobile-notifications-api-models" % "1.0.4-SNAPSHOT",
+    "com.gu" %% "mobile-notifications-api-models" % "1.0.4",
     "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.2",
 
     "com.gu" %% "scanamo" % "1.0.0-M7",
