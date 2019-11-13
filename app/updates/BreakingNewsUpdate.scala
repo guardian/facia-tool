@@ -136,7 +136,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       case Some("uk") => List(BreakingNewsUk)
       case Some("us") => List(BreakingNewsUs)
       case Some("sport") => List(BreakingNewsSport)
-      case Some("election") => List(BreakingNewsElection)
+      case Some("uk-general-election") => List(BreakingNewsElection)
       case Some("") => throw new InvalidParameterException(s"Invalid empty string topic")
       case Some(notYetImplementedTopic) => List(Topic(Breaking, notYetImplementedTopic))
       case None => throw new InvalidParameterException(s"Invalid empty topic")
