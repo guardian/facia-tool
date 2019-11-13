@@ -142,7 +142,6 @@ class CollectionContext extends React.Component<
           alsoOn={alsoOn}
           canPublish={browsingStage !== 'live'}
           browsingStage={browsingStage}
-          canRename={canRename}
         >
           {(group, isUneditable, showGroupName) => (
             <div key={group.uuid}>

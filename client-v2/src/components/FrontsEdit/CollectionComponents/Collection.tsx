@@ -14,7 +14,8 @@ import { actions, selectors } from 'shared/bundles/collectionsBundle';
 import {
   selectHasUnpublishedChanges,
   selectCollectionHasPrefill,
-  selectCollectionIsHidden
+  selectCollectionIsHidden,
+  selectCollectionCanRename
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
@@ -348,6 +349,7 @@ const createMapStateToProps = () => {
     }: CollectionPropsBeforeState
   ) => ({
     isHidden: selectCollectionIsHidden(state, collectionId),
+    canRename: selectCollectionCanRename(state, collectionId),
     hasPrefill: selectCollectionHasPrefill(state, collectionId),
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
       collectionId

@@ -144,6 +144,16 @@ const selectCollectionIsHidden = (
   return !!collection && !!collection.isHidden;
 };
 
+const selectCollectionCanRename = (
+  state: State,
+  collectionId: string
+): boolean => {
+  const collection = selectCollection(selectSharedState(state), {
+    collectionId
+  });
+  return !!collection && !!collection.canRename;
+};
+
 const selectFrontsIds = createSelector(
   [selectFronts],
   (fronts): string[] => {
@@ -365,6 +375,7 @@ export {
   selectCollectionConfig,
   selectCollectionHasPrefill,
   selectCollectionIsHidden,
+  selectCollectionCanRename,
   selectFrontsConfig,
   selectCollectionConfigs,
   selectFrontsIds,

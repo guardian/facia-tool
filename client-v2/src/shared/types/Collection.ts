@@ -135,6 +135,7 @@ interface Collection {
   frontsToolSettings?: FrontsToolSettings;
   isHidden?: boolean;
   targetedTerritory?: string;
+  canRename?: boolean;
 }
 
 interface ArticleTag {
