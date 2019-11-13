@@ -41,6 +41,7 @@ import { fetchPrefill } from 'bundles/capiFeedBundle';
 import LoadingGif from 'images/icons/loading.gif';
 import OpenFormsWarning from './OpenFormsWarning';
 
+
 interface CollectionPropsBeforeState {
   id: string;
   children: (
@@ -75,6 +76,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasPrefill: boolean;
   setHidden: (id: string, isHidden: boolean) => void;
   isHidden: boolean;
+  canRename: boolean;
 };
 
 interface CollectionState {
@@ -174,6 +176,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
   };
 
   public render() {
+
     const {
       id,
       frontId,
@@ -193,7 +196,8 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
       hasPrefill,
       isHidden,
       hasContent,
-      hasOpenForms
+      hasOpenForms,
+      canRename
     } = this.props;
 
     const { isPreviouslyOpen, isLaunching } = this.state;
@@ -223,6 +227,15 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                 >
                   {isHidden ? 'Unhide Container' : 'Hide Container'}
                 </Button>
+                <p>here {canRename ? 'true' : 'false'} there</p>
+                {canRename &&
+                  <Button
+                      size="l"
+                      priority="default"
+                      // onClick={() => this.props.setHidden(id, !isHidden)}
+                      title="Rename this container in this issue."
+                  >Rename</Button>
+                }
                 {hasPrefill && (
                   <Button
                     data-testid="prefill-button"

@@ -92,6 +92,7 @@ interface CollectionContextProps {
   handleMove: (move: Move<TCard>) => void;
   handleInsert: (e: React.DragEvent, to: PosSpec) => void;
   selectCard: (id: string, isSupporting: boolean) => void;
+  canRename: boolean;
 }
 
 interface ConnectedCollectionContextProps extends CollectionContextProps {
@@ -124,6 +125,7 @@ class CollectionContext extends React.Component<
       handleInsert,
       handleArticleFocus,
       selectCard,
+      canRename,
       removeCard,
       removeSupportingCard,
       lastDesktopArticle,
@@ -140,6 +142,7 @@ class CollectionContext extends React.Component<
           alsoOn={alsoOn}
           canPublish={browsingStage !== 'live'}
           browsingStage={browsingStage}
+          canRename={canRename}
         >
           {(group, isUneditable, showGroupName) => (
             <div key={group.uuid}>
