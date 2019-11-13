@@ -76,7 +76,7 @@ case class ClientArticleMetadata (
       replaceImage,
       overrideArticleMainMedia,
       coverCardImages,
-      None
+      promotionMetric
     )
   }
 }
