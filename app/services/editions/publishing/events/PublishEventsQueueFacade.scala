@@ -52,12 +52,16 @@ private[events] class PublishEventsSQSFacade(val config: ApplicationConfiguratio
         .withMaxNumberOfMessages(maxNumberOfSQSMessagesPerReceiveReq)
         .withWaitTimeSeconds(sqsClientLongPoolingWaitTimeSec)
 
-      SQS.receiveMessage(receiveRequest)
-        .getMessages.asScala.toList.headOption
+      SQS.receiveMessage(receiveRequest).getMessages.asScala.toList
     } match {
-      case Success(message) =>
-        logger.info(s"message received from $queueURL SQS successfully")
-        message
+      case Success(messageList) =>
+        if (messageList.isEmpty) {
+          logger.info(s"no messages available on $queueURL")
+          None
+        } else {
+          logger.info(s"message received from $queueURL SQS successfully")
+          Some(messageList.head)
+        }
       case Failure(e) =>
         logger.error(s"There was an exception while receiving messages from $queueURL SQS: ${e.getMessage} from SQS", e)
         None
