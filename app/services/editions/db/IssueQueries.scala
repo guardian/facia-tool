@@ -222,9 +222,11 @@ trait IssueQueries {
               .sortBy(_.index)
               .map(_.article)
 
-            collection.copy(
-              items = articles
-            )
+            collection
+              .copy(items = articles)
+              // Note for the unwary; 'special' fronts can be renamed to create 'special' sections.
+              // Similarly, we permit collections inside special fronts _only_ to be renamed.
+              .copy(canRename = front.isSpecial)
           }
 
         front.copy(collections = collectionsForFront)

@@ -130,9 +130,10 @@ case class CollectionTemplate(
   maybeOphanPath: Option[String] = None,
   prefill: Option[CapiPrefillQuery],
   presentation: CollectionPresentation,
-  hidden: Boolean = false
+  hidden: Boolean = false,
+  canRename: Boolean = false
 ) {
-  def special = copy(hidden = true)
+  def special = copy(hidden = true).copy(canRename = true)
 
   def withPresentation(presentation: CollectionPresentation) = copy(presentation = presentation)
 
