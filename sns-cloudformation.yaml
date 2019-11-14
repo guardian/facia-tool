@@ -1,0 +1,191 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "AWS CloudFormation Sample Template SNSToSQS",
+    "Parameters": {
+        "FrontendArn": {
+            "Type": "String",
+            "Description": "The Frontend ARN of the SQS queues"
+        },
+        "MAPIArn": {
+            "Type": "String",
+            "Description": "The MAPI ARN of the SQS queues"
+        },
+    },
+    "Resources": {
+        "FaciaSNSTopic": {
+            "Type": "AWS::SNS::Topic",
+            "Properties": {
+                "Subscription": [
+                {
+                    "Endpoint": {
+                        "Fn::GetAtt": [
+                            "FrontendQueue",
+                            "Arn"
+                        ]
+                    },
+                    "Protocol": "sqs"
+                },
+                {
+                    "Endpoint": {
+                        "Fn::GetAtt": [
+                            "MAPIQueue",
+                            "Arn"
+                        ]
+                    },
+                    "Protocol": "sqs"
+                }
+                ]
+            }
+        },
+        "FrontendQueue": {
+            "Type": "AWS::SQS::Queue"
+        },
+        "MAPIQueue": {
+            "Type": "AWS::SQS::Queue"
+        },
+        "FaciaToolTopicGroup": {
+            "Type": "AWS::IAM::Group",
+            "Properties": {
+                "Policies": [
+                {
+                    "PolicyName": "FaciaToolTopicGroupPolicy",
+                    "PolicyDocument": {
+                        "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "sns:Publish"
+                            ],
+                            "Resource": {
+                                "Ref": "FaciaSNSTopic"
+                            }
+                        }
+                        ]
+                    }
+                }
+                ]
+            }
+        },
+    "RDFaciaToolQueueGroup": {
+            "Type": "AWS::IAM::Group",
+            "Properties": {
+                "Policies": [
+                {
+                "PolicyName": "FaciaToolQueueGroupPolicy",
+                    "PolicyDocument": {
+                        "Statement": [
+                        {
+                            "Effect": "Allow",
+                            "Action": [
+                                "sqs:DeleteMessage",
+                                "sqs:ReceiveMessage"
+                            ],
+                            "Resource": [
+                            {
+                                "Fn::GetAtt": [
+                                    "FrontendQueue",
+                                    "Arn"
+                                ]
+                            },
+                            {
+                                "Fn::GetAtt": [
+                                    "MAPIQueue",
+                                    "Arn"
+                                ]
+                            }
+                            ]
+                        }
+                        ]
+                    }
+                }
+                ]
+            }
+        },
+        "FaciaQueuePolicy": {
+            "Type": "AWS::SQS::QueuePolicy",
+            "Properties": {
+                "PolicyDocument": {
+                    "Id": "FaciaQueuePolicy",
+                    "Statement": [
+                    {
+                        "Sid": "Allow-SendMessage-To-Both-Queues-From-SNS-Topic",
+                        "Effect": "Allow",
+                        "Principal": {
+                            "AWS": "*"
+                        },
+                        "Action": [
+                            "sqs:SendMessage"
+                        ],
+                        "Resource": "*",
+                        "Condition": {
+                            "ArnEquals": {
+                                "aws:SourceArn": {
+                                    "Ref": "FaciaSNSTopic"
+                                }
+                            }
+                        }
+                    }
+                    ]
+                },
+                "Queues": [
+                {
+                    "Ref": "FrontendQueue"
+                },
+                {
+                    "Ref": "MAPIQueue"
+                }
+                ]
+            }
+        }
+    },
+    "Outputs": {
+        "FaciaSNSTopicArn": {
+            "Value": {
+                "Ref": "FaciaSNSTopic"
+            },
+            "Description": "Topic ARN of newly created SNS topic"
+        },
+        "FrontendInfo": {
+            "Value": {
+                "Fn::Join": [
+                    " ",
+                    [
+                        "ARN:",
+                        {
+                            "Fn::GetAtt": [
+                                "FrontendQueue",
+                                "Arn"
+                            ]
+                        },
+                        "URL:",
+                        {
+                            "Ref": "FrontendQueue"
+                        }
+                    ]
+                ]
+            },
+            "Description": "Frontend details"
+        },
+        "MAPIInfo": {
+            "Value": {
+                "Fn::Join": [
+                    " ",
+                    [
+                        "ARN:",
+                        {
+                            "Fn::GetAtt": [
+                                "MAPIQueue",
+                                "Arn"
+                            ]
+                        },
+                        "URL:",
+                        {
+                            "Ref": "MAPIQueue"
+                        }
+                    ]
+                ]
+            },
+            "Description": "MAPI details"
+        }
+    }
+}
