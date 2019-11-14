@@ -22,7 +22,7 @@ object TrainingEdition {
       FrontSpecial10 -> Daily(),
       FrontSpecial11 -> Daily(),
       FrontSpecial12 -> Daily(),
-      FrontSpecial13 -> Daily(),
+      FrontSpecial13 -> Daily()
     ),
     capiQueryPrefillParams = CapiQueryPrefillParams(
       timeWindowConfig = CapiTimeWindowConfigInDays(
