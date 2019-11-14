@@ -58,6 +58,7 @@ const DragToAddTextSnap = () => {
         <DraggingArticleComponent headline="Free text snaplink" />
       </RenderOffscreen>
       <DragToAddSnapContainer
+        data-testid="drag-to-add-snap"
         onDragStart={e => handleDragStart(e, ref.current)}
         draggable={true}
       >

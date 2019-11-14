@@ -25,7 +25,9 @@ import {
   collectionLaunchButton,
   cardAddToClipboardButton,
   clipboardItemDeleteButton,
-  optionsModalChoice
+  optionsModalChoice,
+  dragToAddSnapItem,
+  allSnaps
 } from '../selectors';
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
@@ -118,6 +120,14 @@ test('Drag from clipboard to collection', async t => {
     .eql(firstCollectionStoryCount + 1)
     .expect(clipboardItem().count)
     .eql(clipboardStoryCount);
+});
+
+test.only("Drag from 'drag to add text snap' item to create text snap", async t => {
+  const firstCollectionSnapCount = await allSnaps(0).count;
+  await t
+    .dragToElement(dragToAddSnapItem(), collection(0))
+    .expect(allSnaps(0).count)
+    .eql(firstCollectionSnapCount + 1);
 });
 
 test('Discarding changes to a collection works', async t => {
