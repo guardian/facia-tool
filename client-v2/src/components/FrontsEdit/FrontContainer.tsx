@@ -23,6 +23,7 @@ import ButtonRoundedWithLabel, {
 import { DownCaretIcon } from 'shared/components/icons/Icons';
 import FrontCollectionsOverview from './FrontCollectionsOverview';
 import FrontContent from './FrontContent';
+import DragToAddSnap from './CollectionComponents/DragToAddSnap';
 
 const FrontWrapper = styled.div`
   height: 100%;
@@ -48,6 +49,12 @@ const OverviewToggleContainer = styled.div<{ active: boolean }>`
   text-align: right;
   margin-left: ${props => (props.active ? '0' : '-1px')};
   cursor: pointer;
+`;
+
+const DragToAddSnapContainer = styled.div`
+  margin-right: auto;
+  margin-bottom: 10px;
+  margin-top: 10px;
 `;
 
 const OverviewHeading = styled.label`
@@ -140,6 +147,9 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
         <FrontWrapper>
           <FrontContentContainer>
             <SectionContentMetaContainer>
+              <DragToAddSnapContainer>
+                <DragToAddSnap />
+              </DragToAddSnapContainer>
               <OverviewHeadingButton onClick={this.handleOpenCollections}>
                 <ButtonLabel>Expand all&nbsp;</ButtonLabel>
                 <DownCaretIcon fill={sharedTheme.base.colors.text} />

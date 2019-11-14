@@ -24,13 +24,13 @@ export const dragOffsetY = 50;
 const DragContainer = styled.div`
   position: relative;
   padding: 0 0 10px 10px;
-  display: flex;
-  flex-direction: column;
   width: 330px;
 `;
 
 const DragContent = styled.div`
   background: ${theme.shared.colors.yellow};
+  position: absolute;
+  display: inline-block;
   border-radius: 4px;
   overflow: hidden;
   padding: 8px;
@@ -39,21 +39,21 @@ const DragContent = styled.div`
   font-weight: 600;
   font-size: 12px;
   font: TS3TextSans;
-  flex: 4;
-  align-self: flex-end;
-  width: 300px;
+  bottom: 25px;
+  left: 25px;
+  max-width: 300px;
 `;
 
 const DragContentIcon = styled.div`
+  position: absolute;
+  top: -30px;
   width: 28px;
   height: 28px;
   border-radius: 14px;
   background: ${theme.shared.colors.yellow};
-  flex: 1;
-  align-self: flex-start;
   padding: 6px 8px;
-  margin-top: -15px;
-  box-shadow: 1px -1px 20px black;
+
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 `;
 
 export const DraggingArticleComponent = ({ headline }: ComponentProps) =>
