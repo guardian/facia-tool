@@ -125,7 +125,6 @@ class CollectionContext extends React.Component<
       handleInsert,
       handleArticleFocus,
       selectCard,
-      canRename,
       removeCard,
       removeSupportingCard,
       lastDesktopArticle,

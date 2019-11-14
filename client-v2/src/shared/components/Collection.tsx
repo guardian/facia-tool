@@ -47,15 +47,19 @@ type Props = ContainerProps & {
   metaContent: React.ReactNode;
   children: React.ReactNode;
   isUneditable?: boolean;
+  canRename?: boolean;
+  underlyingCollection?: Collection,
   isLocked?: boolean;
   isOpen?: boolean;
   hasMultipleFrontsOpen?: boolean;
   onChangeOpenState?: (isOpen: boolean) => void;
   handleFocus: (id: string) => void;
   handleBlur: () => void;
+  handleStopRenamingContainer: (displayName: string) => void;
 };
 
 interface CollectionState {
+  displayName: string;
   hasDragOpenIntent: boolean;
 }
 
@@ -190,6 +194,14 @@ const TargetedTerritoryBox = styled.div`
   }
 `;
 
+const CollectionHeaderInput = styled.input`
+  font-size: 22px;
+  font-family: GHGuardianHeadline;
+  font-weight: bold;
+  width: 20em;
+`;
+
+
 class CollectionDisplay extends React.Component<Props, CollectionState> {
   public static defaultProps = {
     isUneditable: false,
@@ -197,6 +209,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
   };
 
   public state = {
+    displayName: 'Loading...',
     hasDragOpenIntent: false
   };
 
@@ -215,14 +228,16 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       headlineContent,
       metaContent,
       isUneditable,
+      canRename,
       isLocked,
       hasMultipleFrontsOpen,
       children,
       handleFocus,
-      handleBlur
+      handleBlur,
+      handleStopRenamingContainer
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
-    const displayName = collection ? collection.displayName : 'Loading';
+    // const displayName = collection ? collection.displayName : 'Loading...'
     const targetedTerritory = collection ? collection.targetedTerritory : null;
     return (
       <CollectionContainer
@@ -235,11 +250,28 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
         <CollectionHeadingSticky tabIndex={-1}>
           <CollectionHeadingInner>
             <CollectionHeadlineWithConfigContainer>
+              {canRename ? (
+                <CollectionHeaderInput
+                  data-testid="rename-front-input"
+                  value={collection!.displayName}
+                  autoFocus
+                  onChange={e => {collection!.displayName = e.target.value; this.setState({}) }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      handleStopRenamingContainer(collection!.displayName)
+                    }
+                  }}
+                  onBlur={ () =>
+                    handleStopRenamingContainer(collection!.displayName)
+                  }
+                />
+              ) : (
+
               <CollectionHeadingText
                 isLoading={!collection}
-                title={displayName}
+                title={!!collection ? collection!.displayName : 'Loading....'}
               >
-                {displayName}
+                {!!collection ? collection!.displayName : 'Loading....'}
                 <CollectionConfigContainer>
                   {oc(collection).metadata[0].type() ? (
                     <CollectionConfigText>
@@ -263,6 +295,8 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
                   )}
                 </CollectionConfigContainer>
               </CollectionHeadingText>
+              )}
+
             </CollectionHeadlineWithConfigContainer>
             {isLocked ? (
               <LockedCollectionFlag>Locked</LockedCollectionFlag>

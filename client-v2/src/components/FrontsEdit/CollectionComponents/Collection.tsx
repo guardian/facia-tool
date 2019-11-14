@@ -15,7 +15,8 @@ import {
   selectHasUnpublishedChanges,
   selectCollectionHasPrefill,
   selectCollectionIsHidden,
-  selectCollectionCanRename
+  selectCollectionCanRename,
+  selectCollectionDisplayName
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
@@ -78,12 +79,15 @@ type CollectionProps = CollectionPropsBeforeState & {
   setHidden: (id: string, isHidden: boolean) => void;
   isHidden: boolean;
   canRename: boolean;
+  displayName: string;
 };
 
 interface CollectionState {
   showOpenFormsWarning: boolean;
   isPreviouslyOpen: boolean;
   isLaunching: boolean;
+  containerNameValue: string;
+  editingContainerName: boolean;
 }
 
 const PreviouslyCollectionContainer = styled.div``;
@@ -145,8 +149,25 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
   public state = {
     isPreviouslyOpen: false,
     isLaunching: false,
-    showOpenFormsWarning: false
+    showOpenFormsWarning: false,
+    containerNameValue: '',
+    editingContainerName: false
+
   };
+
+  private stopRenamingContainer = (displayName: string) => {
+    this.setState({
+      containerNameValue: displayName,
+      editingContainerName: false
+    });
+  };
+
+  private renameContainer = () => {
+    this.setState({
+      editingContainerName: true
+    });
+  };
+
 
   // added to prevent setState call on unmounted component
   public isComponentMounted = false;
@@ -211,10 +232,12 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
         id={id}
         browsingStage={browsingStage}
         isUneditable={isUneditable}
+        canRename={this.state.editingContainerName}
         isLocked={isCollectionLocked}
         isOpen={isOpen}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
         onChangeOpenState={() => onChangeOpenState(id, isOpen)}
+        handleStopRenamingContainer={this.stopRenamingContainer}
         headlineContent={
           hasUnpublishedChanges &&
           canPublish && (
@@ -228,12 +251,11 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                 >
                   {isHidden ? 'Unhide Container' : 'Hide Container'}
                 </Button>
-                <p>here {canRename ? 'true' : 'false'} there</p>
                 {canRename &&
                   <Button
                       size="l"
                       priority="default"
-                      // onClick={() => this.props.setHidden(id, !isHidden)}
+                      onClick={this.renameContainer}
                       title="Rename this container in this issue."
                   >Rename</Button>
                 }
@@ -350,6 +372,7 @@ const createMapStateToProps = () => {
   ) => ({
     isHidden: selectCollectionIsHidden(state, collectionId),
     canRename: selectCollectionCanRename(state, collectionId),
+    displayName: selectCollectionDisplayName(state, collectionId),
     hasPrefill: selectCollectionHasPrefill(state, collectionId),
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
       collectionId
