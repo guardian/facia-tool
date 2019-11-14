@@ -1,16 +1,6 @@
 {
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "AWS CloudFormation Sample Template SNSToSQS",
-    "Parameters": {
-        "FrontendArn": {
-            "Type": "String",
-            "Description": "The Frontend ARN of the SQS queues"
-        },
-        "MAPIArn": {
-            "Type": "String",
-            "Description": "The MAPI ARN of the SQS queues"
-        },
-    },
     "Resources": {
         "FaciaSNSTopic": {
             "Type": "AWS::SNS::Topic",
