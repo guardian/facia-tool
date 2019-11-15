@@ -31,7 +31,7 @@ import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
-import {updateCollection2 as updateCollectionAction } from "../../actions/Collections";
+import {updateCollection as updateCollectionAction } from "../../actions/Collections";
 
 export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 

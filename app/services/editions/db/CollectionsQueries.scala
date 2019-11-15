@@ -77,6 +77,7 @@ trait CollectionsQueries {
     sql"""
       UPDATE collections
       SET is_hidden = ${collection.isHidden},
+          "name" = ${collection.displayName},
           updated_on = $lastUpdated,
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}
