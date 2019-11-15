@@ -36,6 +36,8 @@ const OPTIONS_MODAL = 'options-modal';
 const GUARDIAN_TAG_ANCHOR = 'guardian-tag';
 const EXTERNAL_LINK_ANCHOR = 'external-link';
 
+const DRAG_TO_ADD_SNAP = 'drag-to-add-snap';
+
 const maybeGetNth = selector => (n = null) =>
   n === null ? selector : selector.nth(n);
 
@@ -71,6 +73,11 @@ export const collection = maybeGetNth(select(COLLECTION_SELECTOR));
 export const allCards = collectionIndex => {
   const collectionSelected = collection(collectionIndex);
   return collectionSelected.find(`[data-testid="${CARD_SELECTOR}"]`);
+};
+
+export const allSnaps = collectionIndex => {
+  const collectionSelected = collection(collectionIndex);
+  return collectionSelected.find(`[data-testid="${SNAP_SELECTOR}"]`);
 };
 
 export const allCollectionDropZones = collectionIndex => {
@@ -166,3 +173,5 @@ export const previouslyDropZone = maybeGetNth(
   select(PREVIOUSLY_SELECTOR, DROP_ZONE_SELECTOR)
 );
 export const clipboardWrapper = () => select(CLIPBOARD_WRAPPER_SELECTOR);
+
+export const dragToAddSnapItem = () => select(DRAG_TO_ADD_SNAP);
