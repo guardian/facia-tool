@@ -520,7 +520,6 @@ export {
   fetchStaleCollections,
   fetchArticles,
   updateCollection,
-  updateCollection2,
   initialiseCollectionsForFront,
   publishCollection,
   discardDraftChangesToCollection
