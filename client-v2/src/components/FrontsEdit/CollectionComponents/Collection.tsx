@@ -155,14 +155,16 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 
   };
 
-  private stopRenamingContainer = (displayName: string) => {
+  private renameContainer = (displayName: string, finished: boolean) => {
+    console.log("renaming to...")
+    console.log(displayName)
     this.setState({
       containerNameValue: displayName,
-      editingContainerName: false
+      editingContainerName: !finished
     });
   };
 
-  private renameContainer = () => {
+  private startRenameContainer = () => {
     this.setState({
       editingContainerName: true
     });
@@ -237,7 +239,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
         isOpen={isOpen}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
         onChangeOpenState={() => onChangeOpenState(id, isOpen)}
-        handleStopRenamingContainer={this.stopRenamingContainer}
+        handleRenameContainer={this.renameContainer}
         headlineContent={
           hasUnpublishedChanges &&
           canPublish && (
@@ -255,7 +257,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                   <Button
                       size="l"
                       priority="default"
-                      onClick={this.renameContainer}
+                      onClick={this.startRenameContainer}
                       title="Rename this container in this issue."
                   >Rename</Button>
                 }
@@ -403,6 +405,7 @@ const mapDispatchToProps = (
   setHidden: (id: string, isHidden: boolean) =>
     dispatch(actions.setHiddenAndPersist(id, isHidden)),
   publishCollection: (id: string) => dispatch(publishCollection(id, frontId)),
+
   discardDraftChangesToCollection: (id: string) =>
     dispatch(discardDraftChangesToCollection(id)),
   onChangeOpenState: (id: string, isOpen: boolean) => {

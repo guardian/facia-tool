@@ -55,7 +55,7 @@ type Props = ContainerProps & {
   onChangeOpenState?: (isOpen: boolean) => void;
   handleFocus: (id: string) => void;
   handleBlur: () => void;
-  handleStopRenamingContainer: (displayName: string) => void;
+  handleRenameContainer: (displayName: string, finish: boolean) => void;
 };
 
 interface CollectionState {
@@ -234,7 +234,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       children,
       handleFocus,
       handleBlur,
-      handleStopRenamingContainer
+      handleRenameContainer
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
     // const displayName = collection ? collection.displayName : 'Loading...'
@@ -255,14 +255,14 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
                   data-testid="rename-front-input"
                   value={collection!.displayName}
                   autoFocus
-                  onChange={e => {collection!.displayName = e.target.value; this.setState({}) }}
+                  onChange={e => {handleRenameContainer(e.target.value, false)}}
                   onKeyDown={e => {
                     if (e.key === 'Enter') {
-                      handleStopRenamingContainer(collection!.displayName)
+                      handleRenameContainer(collection!.displayName, true)
                     }
                   }}
                   onBlur={ () =>
-                    handleStopRenamingContainer(collection!.displayName)
+                    handleRenameContainer(collection!.displayName, true)
                   }
                 />
               ) : (
