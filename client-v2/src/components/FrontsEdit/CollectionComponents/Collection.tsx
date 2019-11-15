@@ -1,7 +1,7 @@
 import { Dispatch } from 'types/Store';
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import CollectionDisplay from 'shared/components/Collection';
+import CollectionDisplay from 'shared/components/CollectionDisplay';
 import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
@@ -86,8 +86,6 @@ interface CollectionState {
   showOpenFormsWarning: boolean;
   isPreviouslyOpen: boolean;
   isLaunching: boolean;
-  containerNameValue: string;
-  editingContainerName: boolean;
 }
 
 const PreviouslyCollectionContainer = styled.div``;
@@ -149,27 +147,8 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
   public state = {
     isPreviouslyOpen: false,
     isLaunching: false,
-    showOpenFormsWarning: false,
-    containerNameValue: '',
-    editingContainerName: false
-
+    showOpenFormsWarning: false
   };
-
-  private renameContainer = (displayName: string, finished: boolean) => {
-    console.log("renaming to...")
-    console.log(displayName)
-    this.setState({
-      containerNameValue: displayName,
-      editingContainerName: !finished
-    });
-  };
-
-  private startRenameContainer = () => {
-    this.setState({
-      editingContainerName: true
-    });
-  };
-
 
   // added to prevent setState call on unmounted component
   public isComponentMounted = false;
@@ -234,12 +213,11 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
         id={id}
         browsingStage={browsingStage}
         isUneditable={isUneditable}
-        canRename={this.state.editingContainerName}
+        canRename={canRename}
         isLocked={isCollectionLocked}
         isOpen={isOpen}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
         onChangeOpenState={() => onChangeOpenState(id, isOpen)}
-        handleRenameContainer={this.renameContainer}
         headlineContent={
           hasUnpublishedChanges &&
           canPublish && (
@@ -253,14 +231,6 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                 >
                   {isHidden ? 'Unhide Container' : 'Hide Container'}
                 </Button>
-                {canRename &&
-                  <Button
-                      size="l"
-                      priority="default"
-                      onClick={this.startRenameContainer}
-                      title="Rename this container in this issue."
-                  >Rename</Button>
-                }
                 {hasPrefill && (
                   <Button
                     data-testid="prefill-button"

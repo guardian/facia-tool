@@ -30,6 +30,7 @@ import CollectionMetaContainer from './collection/CollectionMetaContainer';
 import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
+import Button from 'shared/components/input/ButtonDefault';
 
 export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 
@@ -55,12 +56,12 @@ type Props = ContainerProps & {
   onChangeOpenState?: (isOpen: boolean) => void;
   handleFocus: (id: string) => void;
   handleBlur: () => void;
-  handleRenameContainer: (displayName: string, finish: boolean) => void;
 };
 
 interface CollectionState {
   displayName: string;
   hasDragOpenIntent: boolean;
+  editingContainerName: boolean;
 }
 
 const CollectionContainer = styled(ContentContainer)<{
@@ -201,7 +202,6 @@ const CollectionHeaderInput = styled.input`
   width: 20em;
 `;
 
-
 class CollectionDisplay extends React.Component<Props, CollectionState> {
   public static defaultProps = {
     isUneditable: false,
@@ -210,8 +210,31 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 
   public state = {
     displayName: 'Loading...',
-    hasDragOpenIntent: false
+    hasDragOpenIntent: false,
+    editingContainerName: false
   };
+
+  private getDisplayName = () => {
+    const { collection } = this.props;
+    return !!collection ? collection!.displayName : 'Loading...'
+  };
+
+  private startRenameContainer = () => {
+    this.setState({
+      displayName: this.getDisplayName(),
+      editingContainerName: true
+    });
+  };
+
+  private setName = () => {
+    const { collection } = this.props;
+    collection!.displayName = this.state.displayName
+    // do something magical with the name so that redux knows it needs to do it.
+    this.setState({
+      editingContainerName: false
+    });
+  };
+
 
   public toggleVisibility = () => {
     events.collectionToggleClicked(this.props.frontId);
@@ -233,12 +256,11 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       hasMultipleFrontsOpen,
       children,
       handleFocus,
-      handleBlur,
-      handleRenameContainer
+      handleBlur
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
-    // const displayName = collection ? collection.displayName : 'Loading...'
     const targetedTerritory = collection ? collection.targetedTerritory : null;
+    const { displayName } = this.state;
     return (
       <CollectionContainer
         id={collection && createCollectionId(collection)}
@@ -250,19 +272,19 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
         <CollectionHeadingSticky tabIndex={-1}>
           <CollectionHeadingInner>
             <CollectionHeadlineWithConfigContainer>
-              {canRename ? (
+              {this.state.editingContainerName ? (
                 <CollectionHeaderInput
                   data-testid="rename-front-input"
-                  value={collection!.displayName}
+                  value={displayName}
                   autoFocus
-                  onChange={e => {handleRenameContainer(e.target.value, false)}}
+                  onChange={e => {this.setState({displayName: e.target.value})}}
                   onKeyDown={e => {
                     if (e.key === 'Enter') {
-                      handleRenameContainer(collection!.displayName, true)
+                      this.setName()
                     }
                   }}
                   onBlur={ () =>
-                    handleRenameContainer(collection!.displayName, true)
+                    this.setName()
                   }
                 />
               ) : (
@@ -271,7 +293,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
                 isLoading={!collection}
                 title={!!collection ? collection!.displayName : 'Loading....'}
               >
-                {!!collection ? collection!.displayName : 'Loading....'}
+                {!!collection ? collection!.displayName : 'Loading......'}
                 <CollectionConfigContainer>
                   {oc(collection).metadata[0].type() ? (
                     <CollectionConfigText>
@@ -303,6 +325,14 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
             ) : headlineContent ? (
               <HeadlineContentContainer>
                 {headlineContent}
+                {canRename &&
+                  <Button
+                      size="l"
+                      priority="default"
+                      onClick={this.startRenameContainer}
+                      title="Rename this container in this issue."
+                  >Rename</Button>
+                }
               </HeadlineContentContainer>
             ) : null}
           </CollectionHeadingInner>
