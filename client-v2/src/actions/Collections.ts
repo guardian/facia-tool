@@ -244,9 +244,27 @@ function getCollections(
   };
 }
 
+function updateCollection2(collection: Collection): ThunkResult<Promise<void>> {
+  console.log(collection);
+  return async (dispatch: Dispatch, getState: () => State) => {
+    const state = getState()
+    dispatch(
+      batchActions([
+        collectionActions.updateStart({
+          ...collection,
+          updatedEmail: selectUserEmail(getState()) || '',
+          updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
+          lastUpdated: Date.now()
+        }),
+        recordUnpublishedChanges(collection.id, true)
+      ])
+    );
+  }
+}
+
 function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
-    const state = getState();
+    const state = getState()
     dispatch(
       batchActions([
         collectionActions.updateStart({
@@ -520,6 +538,7 @@ export {
   fetchStaleCollections,
   fetchArticles,
   updateCollection,
+  updateCollection2,
   initialiseCollectionsForFront,
   publishCollection,
   discardDraftChangesToCollection

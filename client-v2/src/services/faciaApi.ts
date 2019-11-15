@@ -439,6 +439,7 @@ export {
   fetchFrontsConfig,
   fetchEditionsIssueAsConfig,
   getCollections,
+  createUpdateCollection,
   getEditionsCollections,
   getCollection,
   getContent,

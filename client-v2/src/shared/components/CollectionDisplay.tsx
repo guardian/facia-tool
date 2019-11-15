@@ -7,7 +7,7 @@ import { oc } from 'ts-optchain';
 
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
-import { Collection, CardSets } from '../types/Collection';
+import {Collection, CardSets, Collection as CollectionType} from '../types/Collection';
 import DragIntentContainer from './DragIntentContainer';
 import ButtonCircularCaret, {
   ButtonCircularWithTransition
@@ -31,6 +31,7 @@ import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
+import {updateCollection2 as updateCollectionAction } from "../../actions/Collections";
 
 export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 
@@ -56,6 +57,7 @@ type Props = ContainerProps & {
   onChangeOpenState?: (isOpen: boolean) => void;
   handleFocus: (id: string) => void;
   handleBlur: () => void;
+  updateCollection: (collection: Collection) => void;
 };
 
 interface CollectionState {
@@ -229,12 +231,11 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
   private setName = () => {
     const { collection } = this.props;
     collection!.displayName = this.state.displayName
-    // do something magical with the name so that redux knows it needs to do it.
     this.setState({
       editingContainerName: false
     });
+    this.props.updateCollection(collection!)
   };
-
 
   public toggleVisibility = () => {
     events.collectionToggleClicked(this.props.frontId);
@@ -415,7 +416,10 @@ const createMapStateToProps = () => {
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   handleBlur: () => dispatch(resetFocusState()),
   handleFocus: (collectionId: string) =>
-    dispatch(setFocusState({ type: 'collection', collectionId }))
+    dispatch(setFocusState({ type: 'collection', collectionId })),
+  updateCollection: (collection: CollectionType) => {
+    dispatch(updateCollectionAction(collection));
+  }
 });
 
 export default connect(
