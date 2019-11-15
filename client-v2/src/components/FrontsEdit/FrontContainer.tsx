@@ -24,6 +24,8 @@ import { DownCaretIcon } from 'shared/components/icons/Icons';
 import FrontCollectionsOverview from './FrontCollectionsOverview';
 import FrontContent from './FrontContent';
 import DragToAddSnap from './CollectionComponents/DragToAddSnap';
+import { selectPriority } from 'selectors/pathSelectors';
+import { Priorities } from 'types/Priority';
 
 const FrontWrapper = styled.div`
   height: 100%;
@@ -96,6 +98,7 @@ const FrontDetailContainer = styled(BaseFrontContentContainer)`
 interface FrontPropsBeforeState {
   id: string;
   browsingStage: CardSets;
+  priority?: keyof Priorities;
 }
 
 type FrontProps = FrontPropsBeforeState & {
@@ -130,7 +133,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
-    const { overviewIsOpen, id, browsingStage } = this.props;
+    const { overviewIsOpen, id, browsingStage, priority } = this.props;
     return (
       <React.Fragment>
         <div
@@ -147,9 +150,11 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
         <FrontWrapper>
           <FrontContentContainer>
             <SectionContentMetaContainer>
-              <DragToAddSnapContainer>
-                <DragToAddSnap />
-              </DragToAddSnapContainer>
+              {priority === 'email' && (
+                <DragToAddSnapContainer>
+                  <DragToAddSnap />
+                </DragToAddSnapContainer>
+              )}
               <OverviewHeadingButton onClick={this.handleOpenCollections}>
                 <ButtonLabel>Expand all&nbsp;</ButtonLabel>
                 <DownCaretIcon fill={sharedTheme.base.colors.text} />
@@ -242,7 +247,8 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 
 const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
   return {
-    overviewIsOpen: selectIsFrontOverviewOpen(state, id)
+    overviewIsOpen: selectIsFrontOverviewOpen(state, id),
+    priority: selectPriority(state)
   };
 };
 
