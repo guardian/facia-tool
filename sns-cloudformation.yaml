@@ -1,0 +1,31 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: AWS CloudFormation Sample Template SNSToSQS
+
+Parameters:
+    FrontendArn:
+        Description: The ARN of the Frontend Account
+        Type: String
+    MapiArn:
+        Description: The ARN of the MAPI Account
+        Type: String
+
+Resources:
+    FaciaSNSTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+           Subscription:
+               - Endpoint: [!Ref FrontendQueue, FrontendArn]
+                 Protocol: sqs
+               - Endpoint: [!Ref MapiQueue, MapiArn]
+                 Protocol: sqs
+
+    FaciaToolTopicGroup:
+        Type: AWS::IAM::Role
+        Properties:
+            Policies:
+                Version: 2012-10-17
+                Statement:
+                    - Effect: Allow
+                      Action: sns:Publish
+                    - Resource: !Ref FaciaSNSTopic
+
