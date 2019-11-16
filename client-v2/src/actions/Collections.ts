@@ -246,7 +246,7 @@ function getCollections(
 
 function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
-    const state = getState()
+    const state = getState();
     dispatch(
       batchActions([
         collectionActions.updateStart({

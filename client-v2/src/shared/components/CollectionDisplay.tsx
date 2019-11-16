@@ -7,7 +7,11 @@ import { oc } from 'ts-optchain';
 
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
-import {Collection, CardSets, Collection as CollectionType} from '../types/Collection';
+import {
+  Collection,
+  CardSets,
+  Collection as CollectionType
+} from '../types/Collection';
 import DragIntentContainer from './DragIntentContainer';
 import ButtonCircularCaret, {
   ButtonCircularWithTransition
@@ -31,7 +35,7 @@ import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
-import {updateCollection as updateCollectionAction } from "../../actions/Collections";
+import { updateCollection as updateCollectionAction } from '../../actions/Collections';
 
 export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 
@@ -50,7 +54,7 @@ type Props = ContainerProps & {
   children: React.ReactNode;
   isUneditable?: boolean;
   canRename?: boolean;
-  underlyingCollection?: Collection,
+  underlyingCollection?: Collection;
   isLocked?: boolean;
   isOpen?: boolean;
   hasMultipleFrontsOpen?: boolean;
@@ -216,27 +220,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
     editingContainerName: false
   };
 
-  private getDisplayName = () => {
-    const { collection } = this.props;
-    return !!collection ? collection!.displayName : 'Loading...'
-  };
-
-  private startRenameContainer = () => {
-    this.setState({
-      displayName: this.getDisplayName(),
-      editingContainerName: true
-    });
-  };
-
-  private setName = () => {
-    const { collection } = this.props;
-    collection!.displayName = this.state.displayName
-    this.setState({
-      editingContainerName: false
-    });
-    this.props.updateCollection(collection!)
-  };
-
   public toggleVisibility = () => {
     events.collectionToggleClicked(this.props.frontId);
     if (this.props.onChangeOpenState) {
@@ -278,62 +261,62 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
                   data-testid="rename-front-input"
                   value={displayName}
                   autoFocus
-                  onChange={e => {this.setState({displayName: e.target.value})}}
+                  onChange={e => {
+                    this.setState({ displayName: e.target.value });
+                  }}
                   onKeyDown={e => {
                     if (e.key === 'Enter') {
-                      this.setName()
+                      this.setName();
                     }
                   }}
-                  onBlur={ () =>
-                    this.setName()
-                  }
+                  onBlur={() => this.setName()}
                 />
               ) : (
-
-              <CollectionHeadingText
-                isLoading={!collection}
-                title={!!collection ? collection!.displayName : 'Loading....'}
-              >
-                {!!collection ? collection!.displayName : 'Loading......'}
-                <CollectionConfigContainer>
-                  {oc(collection).metadata[0].type() ? (
-                    <CollectionConfigText>
-                      <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                      {oc(collection).metadata[0].type()}
-                    </CollectionConfigText>
-                  ) : null}
-                  {collection &&
-                  collection.platform &&
-                  collection.platform !== 'Any' ? (
-                    <CollectionConfigText>
-                      <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                      {`${collection.platform} Only`}
-                    </CollectionConfigText>
-                  ) : null}
-                  {targetedTerritory && (
-                    <TargetedTerritoryBox>
-                      {targetedTerritory}
-                      <span> &nbsp;ONLY</span>
-                    </TargetedTerritoryBox>
-                  )}
-                </CollectionConfigContainer>
-              </CollectionHeadingText>
+                <CollectionHeadingText
+                  isLoading={!collection}
+                  title={!!collection ? collection!.displayName : 'Loading....'}
+                >
+                  {!!collection ? collection!.displayName : 'Loading......'}
+                  <CollectionConfigContainer>
+                    {oc(collection).metadata[0].type() ? (
+                      <CollectionConfigText>
+                        <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                        {oc(collection).metadata[0].type()}
+                      </CollectionConfigText>
+                    ) : null}
+                    {collection &&
+                    collection.platform &&
+                    collection.platform !== 'Any' ? (
+                      <CollectionConfigText>
+                        <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                        {`${collection.platform} Only`}
+                      </CollectionConfigText>
+                    ) : null}
+                    {targetedTerritory && (
+                      <TargetedTerritoryBox>
+                        {targetedTerritory}
+                        <span> &nbsp;ONLY</span>
+                      </TargetedTerritoryBox>
+                    )}
+                  </CollectionConfigContainer>
+                </CollectionHeadingText>
               )}
-
             </CollectionHeadlineWithConfigContainer>
             {isLocked ? (
               <LockedCollectionFlag>Locked</LockedCollectionFlag>
             ) : headlineContent ? (
               <HeadlineContentContainer>
                 {headlineContent}
-                {canRename &&
+                {canRename && (
                   <Button
-                      size="l"
-                      priority="default"
-                      onClick={this.startRenameContainer}
-                      title="Rename this container in this issue."
-                  >Rename</Button>
-                }
+                    size="l"
+                    priority="default"
+                    onClick={this.startRenameContainer}
+                    title="Rename this container in this issue."
+                  >
+                    Rename
+                  </Button>
+                )}
               </HeadlineContentContainer>
             ) : null}
           </CollectionHeadingInner>
@@ -394,6 +377,27 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       </CollectionContainer>
     );
   }
+
+  private getDisplayName = () => {
+    const { collection } = this.props;
+    return !!collection ? collection!.displayName : 'Loading...';
+  };
+
+  private startRenameContainer = () => {
+    this.setState({
+      displayName: this.getDisplayName(),
+      editingContainerName: true
+    });
+  };
+
+  private setName = () => {
+    const { collection } = this.props;
+    collection!.displayName = this.state.displayName;
+    this.setState({
+      editingContainerName: false
+    });
+    this.props.updateCollection(collection!);
+  };
 }
 
 const createMapStateToProps = () => {

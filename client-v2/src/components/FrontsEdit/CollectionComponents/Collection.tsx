@@ -43,7 +43,6 @@ import { fetchPrefill } from 'bundles/capiFeedBundle';
 import LoadingGif from 'images/icons/loading.gif';
 import OpenFormsWarning from './OpenFormsWarning';
 
-
 interface CollectionPropsBeforeState {
   id: string;
   children: (
@@ -179,7 +178,6 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
   };
 
   public render() {
-
     const {
       id,
       frontId,
