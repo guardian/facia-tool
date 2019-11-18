@@ -19,6 +19,7 @@ import {
   selectArticleTag
 } from 'shared/selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
+import { defaultObject } from 'shared/util/selectorUtils';
 import { CardMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
@@ -194,6 +195,9 @@ const CheckboxFieldsContainer: React.SFC<{
   const childrenToRender = children.filter(child =>
     shouldRenderField(child.props.name, editableFields)
   );
+  if (!childrenToRender.length) {
+    return null;
+  }
   return (
     <FieldsContainerWrap>
       {childrenToRender.map(child => {
@@ -370,6 +374,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             <ConditionalField
               name="customKicker"
               label="Kicker"
+              permittedFields={editableFields}
               component={InputText}
               disabled={isBreaking}
               title={
@@ -400,12 +405,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             />
             {shouldRenderField('headline', editableFields) && (
               <Field
-                permittedFields={editableFields}
                 name="headline"
-                label="Headline"
+                label={this.getHeadlineLabel()}
+                rows={this.getHeadlineRows()}
                 placeholder={articleCapiFieldValues.headline}
                 component={InputTextArea}
-                rows="2"
                 originalValue={articleCapiFieldValues.headline}
                 data-testid="edit-form-headline-field"
               />
@@ -714,6 +718,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       }
     });
   };
+
+  private getHeadlineLabel = () => this.props.snapType === 'html' ? 'HTML content' : 'Headline';
+  private getHeadlineRows = () => this.props.snapType === 'html' ? '8' : '2';
+
 }
 
 const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
@@ -740,6 +748,7 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 interface ContainerProps {
   articleExists: boolean;
   collectionId: string | null;
+  snapType: string | undefined;
   getLastUpdatedBy: (collectionId: string) => string | null;
   imageSlideshowReplace: boolean;
   imageCutoutReplace: boolean;
@@ -810,13 +819,14 @@ const createMapStateToProps = () => {
       hasMainVideo: !!article && !!article.hasMainVideo,
       collectionId: (parentCollection && parentCollection.id) || null,
       getLastUpdatedBy,
+      snapType: article && article.snapType,
       initialValues: getInitialValuesForCardForm(article),
       articleCapiFieldValues: getCapiValuesForArticleFields(externalArticle),
       editableFields:
         article && selectFormFields(state, article.uuid, isSupporting),
       kickerOptions: article
         ? selectArticleTag(selectSharedState(state), cardId)
-        : {},
+        : defaultObject,
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
       imageHide: valueSelector(state, 'imageHide'),
       imageReplace: valueSelector(state, 'imageReplace'),
