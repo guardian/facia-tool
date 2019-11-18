@@ -23,7 +23,7 @@ interface ComponentProps {
     onAccept: () => void
   ) => void;
   publishEditionsIssue: (id: string) => Promise<void>;
-  check: (id: string) => Promise<void>;
+  checkIssue: (id: string) => Promise<void>;
 }
 
 const ManageLink = styled(Link)`
@@ -97,12 +97,9 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
   }
 
   private check = () => {
-    const {
-      editionsIssue,
-      check
-    } = this.props;
-    check(editionsIssue.id)
-  }
+    const { editionsIssue, checkIssue } = this.props;
+    checkIssue(editionsIssue.id);
+  };
 
   private confirmPublish = () => {
     const {
@@ -144,7 +141,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       )
     ),
   publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id)),
-  check: (id: string) => dispatch(check(id))
+  checkIssue: (id: string) => dispatch(check(id))
 });
 
 export default connect(

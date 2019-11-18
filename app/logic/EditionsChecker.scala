@@ -8,21 +8,10 @@ object EditionsChecker {
     if (issue.fronts.isEmpty)
       List(s"Issue is empty")
     else
-      check(issue.fronts).sortBy(a => a.toString)
+      check(issue.fronts)
 
   def check(fronts: List[EditionsFront]): List[String] = {
     (
-      fronts.flatMap(front => {
-        if (front.collections.isEmpty)
-          Set(s"Front '${front.displayName}' is visible and empty")
-        else {
-          if (!front.isHidden)
-            check(front, front.collections)
-          else
-            List()
-        }
-      })
-      :::
       fronts
         .filter(front => !front.isHidden)
         .map(front =>
@@ -32,6 +21,17 @@ object EditionsChecker {
             .getOrElse(front.displayName))
         .filter(s => s.matches("^Top Special.*"))
         .map(s => {println(s); s"Front '${s}' is visible and has default name"})
+      :::
+      fronts.flatMap(front => {
+        if (!front.isHidden && front.collections.isEmpty)
+          Set(s"Front '${front.displayName}' is visible and empty")
+        else {
+          if (!front.isHidden)
+            check(front, front.collections)
+          else
+            List()
+        }
+      })
     )
   }
 

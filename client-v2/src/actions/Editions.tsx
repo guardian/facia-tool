@@ -26,14 +26,14 @@ export const getEditionIssue = (
   }
 };
 
-export const check = (
-  id: string
-): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
-  const errors = await checkIssue(id)
-  if (errors.length == 0) {
-    alert("No failed checks");
+export const check = (id: string): ThunkResult<Promise<void>> => async (
+  dispatch: Dispatch
+) => {
+  const errors = await checkIssue(id);
+  if (errors.length === 0) {
+    alert('No failed checks');
   } else {
-    alert("Check failure 1 of " + errors.length +  ": " + errors[0]);
+    alert('Check failure 1 of ' + errors.length + ': ' + errors[0]);
   }
 };
 
