@@ -719,6 +719,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     });
   };
 
+  /**
+   * You may be thinking -- why on earth would we use the `headline` field to contain
+   * HTML, renaming it in the process so our users are none the wiser? It's because the e-mail
+   * frontend, which currently consumes snaps of this type, knows what to do with headlines
+   * (it renders them as HTML). At some point in the future, it will be refactored, at which
+   * point we'll be able to use another, saner field to do the same job, but in the meantime,
+   * for snaps of type `html`, the field `headline` is where the html lives.
+   */
   private getHeadlineLabel = () => this.props.snapType === 'html' ? 'HTML content' : 'Headline';
   private getHeadlineRows = () => this.props.snapType === 'html' ? '8' : '2';
 
