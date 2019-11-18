@@ -1,6 +1,9 @@
 import { createSelectorCreator } from 'reselect';
 import shallowequal from 'shallowequal';
 
+export const defaultObject = {};
+export const defaultArray = [];
+
 const defaultEqualityCheck = (a: any, b: any) => a === b;
 
 function resultCheckMemoize<A extends any[], R>(func: (...args: A) => R) {
