@@ -42,8 +42,8 @@ export const htmlSnapFields = [
   'headline',
   'imageHide',
   'imageReplace',
-  'primaryImage',
-]
+  'primaryImage'
+];
 
 export const emailFieldsToExclude = [
   'isBreaking',
