@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { State } from '../types/State';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
 import { Dispatch } from '../types/Store';
-import { publishEditionIssue } from '../actions/Editions';
+import { publishEditionIssue, check } from '../actions/Editions';
 import { styled } from '../constants/theme';
 import startCase from 'lodash/startCase';
 import EditModeVisibility from './util/EditModeVisibility';
@@ -23,6 +23,7 @@ interface ComponentProps {
     onAccept: () => void
   ) => void;
   publishEditionsIssue: (id: string) => Promise<void>;
+  check: (id: string) => Promise<void>;
 }
 
 const ManageLink = styled(Link)`
@@ -66,6 +67,17 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
             </EditionDate>
           </EditionIssueInfo>
         </ManageLink>
+        &nbsp;
+        <Button
+          data-testid="check-edition-button"
+          size="s"
+          priority="primary"
+          onClick={() => this.check()}
+          tabIndex={-1}
+          title="Check Edition"
+        >
+          Check
+        </Button>
         <EditionPublish>
           <EditModeVisibility visibleMode="editions">
             <Button
@@ -82,6 +94,14 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
         </EditionPublish>
       </>
     );
+  }
+
+  private check = () => {
+    const {
+      editionsIssue,
+      check
+    } = this.props;
+    check(editionsIssue.id)
   }
 
   private confirmPublish = () => {
@@ -123,7 +143,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
         noop
       )
     ),
-  publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id))
+  publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id)),
+  check: (id: string) => dispatch(check(id))
 });
 
 export default connect(

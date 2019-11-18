@@ -2,6 +2,7 @@ import React from 'react';
 import {
   getIssueSummary,
   publishIssue,
+  checkIssue,
   putFrontHiddenState,
   putFrontMetadata
 } from 'services/editionsApi';
@@ -22,6 +23,17 @@ export const getEditionIssue = (
     dispatch(actions.fetchSuccess(issue));
   } catch (error) {
     dispatch(actions.fetchError('Failed to get issue'));
+  }
+};
+
+export const check = (
+  id: string
+): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
+  const errors = await checkIssue(id)
+  if (errors.length == 0) {
+    alert("No failed checks");
+  } else {
+    alert("Check failure 1 of " + errors.length +  ": " + errors[0]);
   }
 };
 
