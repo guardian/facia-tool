@@ -40,7 +40,7 @@ const testCapiArticleWithPageNumber: CapiArticle = {
     liveBloggingNow: 'false',
     shortUrl: 'test/test',
     thumbnail: 'test',
-    newspaperPageNumber: '5'
+    newspaperPageNumber: 5
   },
   blocks: {},
   isHosted: false,
