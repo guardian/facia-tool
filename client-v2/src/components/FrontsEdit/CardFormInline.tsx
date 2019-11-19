@@ -53,6 +53,7 @@ import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import InputLabel from 'shared/components/input/InputLabel';
+import urls from 'constants/urls';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -620,6 +621,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             <RowContainer>
               <Row>
                 <ImageCol faded={!coverCardImageReplace}>
+                  <InputLabel htmlFor={this.getImageFieldName()}>
+                    Mobile Cover Card
+                  </InputLabel>
                   <Field
                     name="coverCardMobileImage"
                     component={InputImage}
@@ -629,6 +633,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   />
                 </ImageCol>
                 <ImageCol faded={!coverCardImageReplace}>
+                  <InputLabel htmlFor={this.getImageFieldName()}>
+                    Tablet Cover Card
+                  </InputLabel>
                   <Field
                     name="coverCardTabletImage"
                     component={InputImage}
@@ -637,6 +644,19 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     disabled={!coverCardImageReplace}
                   />
                 </ImageCol>
+              </Row>
+              <Row>
+                <Col>
+                  <a
+                    href={urls.editionsCardBuilder}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                  >
+                    Open Cover Card Builder
+                  </a>
+                </Col>
+              </Row>
+              <Row>
                 <Col flex={2}>
                   {invalidCardReplacement && (
                     <CardReplacementWarning>
