@@ -37,6 +37,7 @@ import CircularIconContainer from 'shared/components/icons/CircularIconContainer
 import RefreshPeriodically from '../util/RefreshPeriodically';
 import { collectionArticlesPollInterval } from 'constants/polling';
 import RenderOffscreen from 'components/util/RenderOffscreen';
+import ArticlePageNumberSection from '../util/ArticlePageNumberSection';
 
 const Container = styled.div`
   display: flex;
@@ -181,6 +182,7 @@ class FeedItem extends React.Component<ComponentProps> {
                 <Tone> / {startCase(article.frontsMeta.tone)}</Tone>
               )}
             </TagInfo>
+            <ArticlePageNumberSection article={article} />
             <RefreshPeriodically rateMs={collectionArticlesPollInterval}>
               {() => (
                 <>
@@ -203,7 +205,6 @@ class FeedItem extends React.Component<ComponentProps> {
                 </>
               )}
             </RefreshPeriodically>
-
             <ShortVerticalPinline />
           </MetaContainer>
           <Body>
