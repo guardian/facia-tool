@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -e
+
 NO_DEBUG=false
 for arg in "$@"
 do
