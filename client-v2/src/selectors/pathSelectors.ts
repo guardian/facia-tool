@@ -1,6 +1,7 @@
 import { matchIssuePath, matchFrontsEditPath } from 'routes/routes';
 import urls from 'constants/urls';
 import { EditMode } from 'types/EditMode';
+import { Priorities } from 'types/Priority';
 
 const matchRootPath = new RegExp(`^\/${urls.appRoot}`);
 const maybeRemoveV2Prefix = (path: string) => path.replace(matchRootPath, '');
@@ -16,13 +17,15 @@ const selectEditMode = <T>(state: { path: string } & T): EditMode => {
   }
 };
 
-const selectPriority = <T>(state: { path: string } & T) => {
+const selectPriority = <T>(
+  state: { path: string } & T
+): keyof Priorities | undefined => {
   const path = selectV2SubPath(state);
   const match = matchFrontsEditPath(path) || matchIssuePath(path);
   if (!match || !match.params.priority) {
     return;
   }
-  return match.params.priority;
+  return match.params.priority as keyof Priorities;
 };
 
 export { selectFullPath, selectV2SubPath, selectEditMode, selectPriority };
