@@ -79,7 +79,7 @@ const VideoIconContainer = styled(CircularIconContainer)`
 `;
 
 interface ArticleBodyProps {
-  newspaperPageNumber?: string;
+  newspaperPageNumber?: number;
 
   promotionMetric?: number;
 
