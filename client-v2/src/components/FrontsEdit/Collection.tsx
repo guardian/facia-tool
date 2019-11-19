@@ -92,6 +92,7 @@ interface CollectionContextProps {
   handleMove: (move: Move<TCard>) => void;
   handleInsert: (e: React.DragEvent, to: PosSpec) => void;
   selectCard: (id: string, isSupporting: boolean) => void;
+  canRename: boolean;
 }
 
 interface ConnectedCollectionContextProps extends CollectionContextProps {

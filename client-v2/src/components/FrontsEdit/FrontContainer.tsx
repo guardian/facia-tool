@@ -173,6 +173,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
               browsingStage={browsingStage}
               handleArticleFocus={this.handleArticleFocus}
               onChangeCurrentCollectionId={this.handleChangeCurrentCollectionId}
+              canRename={false}
             />
           </FrontContentContainer>
           {overviewIsOpen && (

@@ -1,7 +1,7 @@
 import { Dispatch } from 'types/Store';
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import CollectionDisplay from 'shared/components/Collection';
+import CollectionDisplay from 'shared/components/CollectionDisplay';
 import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
@@ -14,7 +14,9 @@ import { actions, selectors } from 'shared/bundles/collectionsBundle';
 import {
   selectHasUnpublishedChanges,
   selectCollectionHasPrefill,
-  selectCollectionIsHidden
+  selectCollectionIsHidden,
+  selectCollectionCanRename,
+  selectCollectionDisplayName
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
@@ -75,6 +77,8 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasPrefill: boolean;
   setHidden: (id: string, isHidden: boolean) => void;
   isHidden: boolean;
+  canRename: boolean;
+  displayName: string;
 };
 
 interface CollectionState {
@@ -193,7 +197,8 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
       hasPrefill,
       isHidden,
       hasContent,
-      hasOpenForms
+      hasOpenForms,
+      canRename
     } = this.props;
 
     const { isPreviouslyOpen, isLaunching } = this.state;
@@ -206,6 +211,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
         id={id}
         browsingStage={browsingStage}
         isUneditable={isUneditable}
+        canRename={canRename}
         isLocked={isCollectionLocked}
         isOpen={isOpen}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
@@ -336,6 +342,8 @@ const createMapStateToProps = () => {
     }: CollectionPropsBeforeState
   ) => ({
     isHidden: selectCollectionIsHidden(state, collectionId),
+    canRename: selectCollectionCanRename(state, collectionId),
+    displayName: selectCollectionDisplayName(state, collectionId),
     hasPrefill: selectCollectionHasPrefill(state, collectionId),
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
       collectionId
@@ -366,6 +374,7 @@ const mapDispatchToProps = (
   setHidden: (id: string, isHidden: boolean) =>
     dispatch(actions.setHiddenAndPersist(id, isHidden)),
   publishCollection: (id: string) => dispatch(publishCollection(id, frontId)),
+
   discardDraftChangesToCollection: (id: string) =>
     dispatch(discardDraftChangesToCollection(id)),
   onChangeOpenState: (id: string, isOpen: boolean) => {
