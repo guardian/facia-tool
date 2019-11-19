@@ -236,6 +236,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                     priority="default"
                     onClick={() => this.props.fetchPrefill(id)}
                     title="Get suggested articles for this collection"
+                    style={{ marginLeft: '10px' }}
                   >
                     Suggest Articles
                   </Button>
