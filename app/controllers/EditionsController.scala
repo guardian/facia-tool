@@ -85,7 +85,7 @@ class EditionsController(db: EditionsDB,
   def checkIssue(id: String) = EditEditionsAuthAction { _ =>
     val maybeIssue = db.getIssue(id)
     maybeIssue match {
-      case Some(issue) => Ok(Json.toJson(EditionsChecker.check(issue)))
+      case Some(issue) => Ok(Json.toJson(EditionsChecker.checkIssue(issue)))
       case _ => BadRequest("Unknown issue")
     }
   }

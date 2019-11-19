@@ -11,7 +11,7 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
   "preflight checks for issue" - {
     "empty issue" in {
       val issue = getIssue()
-      EditionsChecker.check(issue)(0) shouldEqual "Issue is empty"
+      EditionsChecker.checkIssue(issue)(0) shouldEqual "Issue is empty"
     }
   }
 
@@ -20,19 +20,19 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
       val front = getFront()
         .copy(isHidden = true)
       val issue = getIssue(front)
-      EditionsChecker.check(issue).isEmpty shouldEqual true
+      EditionsChecker.checkIssue(issue).isEmpty shouldEqual true
     }
     "empty front" in {
       val front = getFront()
       val issue = getIssue(front)
-      EditionsChecker.check(issue).head shouldEqual "Front 'displayName' is visible and empty"
+      EditionsChecker.checkIssue(issue).head shouldEqual "Front 'displayName' is visible and empty"
     }
     "non-empty special front" in {
       val c = getCollection()
       val front = getFront(c)
         .copy(displayName = "Top Special Front")
       val issue = getIssue(front)
-      EditionsChecker.check(issue).head shouldEqual "Front 'Top Special Front' is visible and has default name"
+      EditionsChecker.checkIssue(issue).head shouldEqual "Front 'Top Special Front' is visible and has default name"
     }
   }
 
@@ -42,20 +42,20 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
         .copy(isHidden = true)
       val front = getFront(c)
       val issue = getIssue(front)
-      EditionsChecker.check(issue).isEmpty shouldEqual true
+      EditionsChecker.checkIssue(issue).isEmpty shouldEqual true
     }
     "empty collection" in {
       val c = getCollection()
       val front = getFront(c)
       val issue = getIssue(front)
-      EditionsChecker.check(issue).head shouldEqual "Collection 'displayName' in 'displayName' is visible and empty"
+      EditionsChecker.checkIssue(issue).head shouldEqual "Collection 'displayName' in 'displayName' is visible and empty"
     }
     "non-empty special collection" in {
       val c = getCollection()
         .copy(displayName = "Special Collection, oh yes")
       val front = getFront(c)
       val issue = getIssue(front)
-      EditionsChecker.check(issue).head shouldEqual "Collection 'Special Collection, oh yes' in 'displayName' is visible and empty"
+      EditionsChecker.checkIssue(issue).head shouldEqual "Collection 'Special Collection, oh yes' in 'displayName' is visible and empty"
     }
   }
 

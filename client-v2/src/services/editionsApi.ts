@@ -81,7 +81,7 @@ export const publishIssue = async (id: string): Promise<void> => {
 };
 
 export const checkIssue = async (id: string): Promise<string[]> => {
-  return pandaFetch(`/editions-api/issues/${id}/preflightchecks`, {
+  return pandaFetch(`/editions-api/issues/${id}/preflight-checks`, {
     method: 'GET'
   }).then(response => {
     return response.json();

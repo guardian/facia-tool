@@ -107,7 +107,7 @@ GET         /editions-api/issues/:id/summary                     controllers.Edi
 GET         /editions-api/issues/:id/versions                    controllers.EditionsController.getVersions(id)
 POST        /editions-api/issues/:id/publish                     controllers.EditionsController.publishIssue(id)
 GET         /editions-api/issues/:id/preview                     controllers.EditionsController.getPreviewEdition(id)
-GET         /editions-api/issues/:id/preflightchecks             controllers.EditionsController.checkIssue(id: String)
+GET         /editions-api/issues/:id/preflight-checks            controllers.EditionsController.checkIssue(id: String)
 
 PUT         /editions-api/fronts/:frontId/metadata               controllers.EditionsController.putFrontMetadata(frontId)
 PUT         /editions-api/fronts/:frontId/is-hidden/:state       controllers.EditionsController.putFrontHiddenState(frontId, state: Boolean)
