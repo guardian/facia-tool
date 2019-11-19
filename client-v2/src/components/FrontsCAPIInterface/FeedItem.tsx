@@ -36,6 +36,7 @@ import { VideoIcon } from 'shared/components/icons/Icons';
 import CircularIconContainer from 'shared/components/icons/CircularIconContainer';
 import RefreshPeriodically from '../util/RefreshPeriodically';
 import { collectionArticlesPollInterval } from 'constants/polling';
+import RenderOffscreen from 'components/util/RenderOffscreen';
 
 const Container = styled.div`
   display: flex;
@@ -117,13 +118,6 @@ const Body = styled.div`
   padding-left: 8px;
 `;
 
-// The visual representation of an article as it is being dragged.
-// This needs to be rendered by the DOM before it can be used by the Drag&Drop API, so we pushed it off to the side.
-const DraggingArticleContainer = styled.div`
-  position: absolute;
-  transform: translateX(-9999px);
-`;
-
 const VideoIconContainer = styled(CircularIconContainer)`
   position: absolute;
   bottom: 2px;
@@ -162,9 +156,9 @@ class FeedItem extends React.Component<ComponentProps> {
         draggable={true}
         onDragStart={this.handleDragStart}
       >
-        <DraggingArticleContainer ref={this.dragNode}>
+        <RenderOffscreen ref={this.dragNode}>
           <DraggingArticleComponent headline={article.webTitle} />
-        </DraggingArticleContainer>
+        </RenderOffscreen>
         <FeedItemContainer
           href={getPaths(article.id).live}
           onClick={e => e.preventDefault()}

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+set -e
+
 yellow='\033[1;33m'
 nocolour='\033[0m'
 

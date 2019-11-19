@@ -46,7 +46,8 @@ const OptionsModal = ({
     style={{
       overlay: {
         backgroundColor: 'rgba(0, 0, 0, 0.75)',
-        zIndex: 1000
+        zIndex: 1000,
+        backdropFilter: 'blur(10px)'
       }
     }}
     isOpen={isOpen}

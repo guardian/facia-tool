@@ -268,6 +268,20 @@ const VideoIcon = ({}) => (
   </svg>
 );
 
+const DragHandleIcon = ({ fill = theme.colors.greyDark }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="13"
+    height="10"
+    viewBox="0 0 20 20"
+  >
+    <path
+      fill={fill}
+      d="M7 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 2m0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 8m0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 7 14m6-8a2 2 0 1 0-.001-4.001A2 2 0 0 0 13 6m0 2a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 8m0 6a2 2 0 1 0 .001 4.001A2 2 0 0 0 13 14"
+    />
+  </svg>
+);
+
 export {
   DownCaretIcon,
   RubbishBinIcon,
@@ -280,5 +294,6 @@ export {
   AddImageIcon,
   StarIcon,
   PreviewEyeIcon,
-  VideoIcon
+  VideoIcon,
+  DragHandleIcon as DragIcon
 };
