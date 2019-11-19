@@ -42,13 +42,13 @@ object EditionsChecker {
 
   private def visibleEmptyFronts(fronts: List[EditionsFront]) =
     fronts.collect {
-      case front if (!front.isHidden && front.collections.isEmpty) =>
+      case front if (!front.isHidden && front.collections.flatMap(c => c.items).isEmpty) =>
         s"Front '${front.displayName}' is visible and empty"
     }
 
   private def invisibleNonEmptyFronts(fronts: List[EditionsFront]) =
     fronts.collect {
-      case front if (front.isHidden && !front.collections.isEmpty) =>
+      case front if (front.isHidden && !front.collections.flatMap(c => c.items).isEmpty) =>
         s"Front '${front.displayName}' is hidden but has content"
     }
 

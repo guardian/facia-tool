@@ -32,7 +32,7 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
       val front = getFront(c)
         .copy(displayName = "Top Special Front")
       val issue = getIssue(front)
-      EditionsChecker.checkIssue(issue).head shouldEqual "Front 'Top Special Front' is visible and has default name"
+      EditionsChecker.checkIssue(issue).head shouldEqual "Collection 'displayName' in 'Top Special Front' is visible and empty"
     }
   }
 
@@ -42,7 +42,7 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
         .copy(isHidden = true)
       val front = getFront(c)
       val issue = getIssue(front)
-      EditionsChecker.checkIssue(issue).isEmpty shouldEqual true
+      EditionsChecker.checkIssue(issue).head shouldEqual "Front 'displayName' is visible and empty"
     }
     "empty collection" in {
       val c = getCollection()
