@@ -33,7 +33,7 @@ export const check = (id: string): ThunkResult<Promise<void>> => async (
   if (errors.length === 0) {
     alert('No failed checks');
   } else {
-    alert('Check failure 1 of ' + errors.length + ': ' + errors[0]);
+    alert(`Check failure 1 of ${errors.length}: ${errors[0]}`);
   }
 };
 
@@ -52,7 +52,7 @@ export const publishEditionIssue = (
           </p>
           <p>
             If you do not see the issue within 5 minutes please contact a member
-            of the suport team.
+            of the support team.
           </p>
 
           <IssueVersions issueId={id} />

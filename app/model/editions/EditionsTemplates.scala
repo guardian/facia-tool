@@ -132,7 +132,7 @@ case class CollectionTemplate(
   presentation: CollectionPresentation,
   hidden: Boolean = false
 ) {
-  def special = copy(hidden = true)
+  def hide = copy(hidden = true)
 
   def withPresentation(presentation: CollectionPresentation) = copy(presentation = presentation)
 
