@@ -7,7 +7,11 @@ import { oc } from 'ts-optchain';
 
 import ShortVerticalPinline from './layout/ShortVerticalPinline';
 import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
-import { Collection, CardSets } from '../types/Collection';
+import {
+  Collection,
+  CardSets,
+  Collection as CollectionType
+} from '../types/Collection';
 import DragIntentContainer from './DragIntentContainer';
 import ButtonCircularCaret, {
   ButtonCircularWithTransition
@@ -30,6 +34,8 @@ import CollectionMetaContainer from './collection/CollectionMetaContainer';
 import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
+import Button from 'shared/components/input/ButtonDefault';
+import { updateCollection as updateCollectionAction } from '../../actions/Collections';
 
 export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
 
@@ -47,16 +53,21 @@ type Props = ContainerProps & {
   metaContent: React.ReactNode;
   children: React.ReactNode;
   isUneditable?: boolean;
+  canRename?: boolean;
+  underlyingCollection?: Collection;
   isLocked?: boolean;
   isOpen?: boolean;
   hasMultipleFrontsOpen?: boolean;
   onChangeOpenState?: (isOpen: boolean) => void;
   handleFocus: (id: string) => void;
   handleBlur: () => void;
+  updateCollection: (collection: Collection) => void;
 };
 
 interface CollectionState {
+  displayName: string;
   hasDragOpenIntent: boolean;
+  editingContainerName: boolean;
 }
 
 const CollectionContainer = styled(ContentContainer)<{
@@ -190,6 +201,13 @@ const TargetedTerritoryBox = styled.div`
   }
 `;
 
+const CollectionHeaderInput = styled.input`
+  font-size: 22px;
+  font-family: GHGuardianHeadline;
+  font-weight: bold;
+  width: 20em;
+`;
+
 class CollectionDisplay extends React.Component<Props, CollectionState> {
   public static defaultProps = {
     isUneditable: false,
@@ -197,7 +215,9 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
   };
 
   public state = {
-    hasDragOpenIntent: false
+    displayName: 'Loading...',
+    hasDragOpenIntent: false,
+    editingContainerName: false
   };
 
   public toggleVisibility = () => {
@@ -215,6 +235,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       headlineContent,
       metaContent,
       isUneditable,
+      canRename,
       isLocked,
       hasMultipleFrontsOpen,
       children,
@@ -222,8 +243,8 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       handleBlur
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
-    const displayName = collection ? collection.displayName : 'Loading';
     const targetedTerritory = collection ? collection.targetedTerritory : null;
+    const { displayName } = this.state;
     return (
       <CollectionContainer
         id={collection && createCollectionId(collection)}
@@ -235,40 +256,67 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
         <CollectionHeadingSticky tabIndex={-1}>
           <CollectionHeadingInner>
             <CollectionHeadlineWithConfigContainer>
-              <CollectionHeadingText
-                isLoading={!collection}
-                title={displayName}
-              >
-                {displayName}
-                <CollectionConfigContainer>
-                  {oc(collection).metadata[0].type() ? (
-                    <CollectionConfigText>
-                      <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                      {oc(collection).metadata[0].type()}
-                    </CollectionConfigText>
-                  ) : null}
-                  {collection &&
-                  collection.platform &&
-                  collection.platform !== 'Any' ? (
-                    <CollectionConfigText>
-                      <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-                      {`${collection.platform} Only`}
-                    </CollectionConfigText>
-                  ) : null}
-                  {targetedTerritory && (
-                    <TargetedTerritoryBox>
-                      {targetedTerritory}
-                      <span> &nbsp;ONLY</span>
-                    </TargetedTerritoryBox>
-                  )}
-                </CollectionConfigContainer>
-              </CollectionHeadingText>
+              {this.state.editingContainerName ? (
+                <CollectionHeaderInput
+                  data-testid="rename-front-input"
+                  value={displayName}
+                  autoFocus
+                  onChange={e => {
+                    this.setState({ displayName: e.target.value });
+                  }}
+                  onKeyDown={e => {
+                    if (e.key === 'Enter') {
+                      this.setName();
+                    }
+                  }}
+                  onBlur={() => this.setName()}
+                />
+              ) : (
+                <CollectionHeadingText
+                  isLoading={!collection}
+                  title={!!collection ? collection!.displayName : 'Loading....'}
+                >
+                  {!!collection ? collection!.displayName : 'Loading......'}
+                  <CollectionConfigContainer>
+                    {oc(collection).metadata[0].type() ? (
+                      <CollectionConfigText>
+                        <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                        {oc(collection).metadata[0].type()}
+                      </CollectionConfigText>
+                    ) : null}
+                    {collection &&
+                    collection.platform &&
+                    collection.platform !== 'Any' ? (
+                      <CollectionConfigText>
+                        <CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+                        {`${collection.platform} Only`}
+                      </CollectionConfigText>
+                    ) : null}
+                    {targetedTerritory && (
+                      <TargetedTerritoryBox>
+                        {targetedTerritory}
+                        <span> &nbsp;ONLY</span>
+                      </TargetedTerritoryBox>
+                    )}
+                  </CollectionConfigContainer>
+                </CollectionHeadingText>
+              )}
             </CollectionHeadlineWithConfigContainer>
             {isLocked ? (
               <LockedCollectionFlag>Locked</LockedCollectionFlag>
             ) : headlineContent ? (
               <HeadlineContentContainer>
                 {headlineContent}
+                {canRename && (
+                  <Button
+                    size="l"
+                    priority="default"
+                    onClick={this.startRenameContainer}
+                    title="Rename this container in this issue."
+                  >
+                    Rename
+                  </Button>
+                )}
               </HeadlineContentContainer>
             ) : null}
           </CollectionHeadingInner>
@@ -329,6 +377,27 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       </CollectionContainer>
     );
   }
+
+  private getDisplayName = () => {
+    const { collection } = this.props;
+    return !!collection ? collection!.displayName : 'Loading...';
+  };
+
+  private startRenameContainer = () => {
+    this.setState({
+      displayName: this.getDisplayName(),
+      editingContainerName: true
+    });
+  };
+
+  private setName = () => {
+    const { collection } = this.props;
+    collection!.displayName = this.state.displayName;
+    this.setState({
+      editingContainerName: false
+    });
+    this.props.updateCollection(collection!);
+  };
 }
 
 const createMapStateToProps = () => {
@@ -351,7 +420,10 @@ const createMapStateToProps = () => {
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   handleBlur: () => dispatch(resetFocusState()),
   handleFocus: (collectionId: string) =>
-    dispatch(setFocusState({ type: 'collection', collectionId }))
+    dispatch(setFocusState({ type: 'collection', collectionId })),
+  updateCollection: (collection: CollectionType) => {
+    dispatch(updateCollectionAction(collection));
+  }
 });
 
 export default connect(
