@@ -2,6 +2,7 @@ import React from 'react';
 import {
   getIssueSummary,
   publishIssue,
+  checkIssue,
   putFrontHiddenState,
   putFrontMetadata
 } from 'services/editionsApi';
@@ -25,6 +26,17 @@ export const getEditionIssue = (
   }
 };
 
+export const check = (id: string): ThunkResult<Promise<void>> => async (
+  dispatch: Dispatch
+) => {
+  const errors = await checkIssue(id);
+  if (errors.length === 0) {
+    alert('No failed checks');
+  } else {
+    alert(`Check failure 1 of ${errors.length}: ${errors[0]}`);
+  }
+};
+
 export const publishEditionIssue = (
   id: string
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
@@ -40,7 +52,7 @@ export const publishEditionIssue = (
           </p>
           <p>
             If you do not see the issue within 5 minutes please contact a member
-            of the suport team.
+            of the support team.
           </p>
 
           <IssueVersions issueId={id} />

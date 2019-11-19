@@ -80,6 +80,14 @@ export const publishIssue = async (id: string): Promise<void> => {
   }).then(() => {});
 };
 
+export const checkIssue = async (id: string): Promise<string[]> => {
+  return pandaFetch(`/editions-api/issues/${id}/preflight-checks`, {
+    method: 'GET'
+  }).then(response => {
+    return response.json();
+  });
+};
+
 export const getPrefills = async (
   id: string
 ): Promise<CAPISearchQueryResponse> => {

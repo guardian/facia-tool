@@ -20,9 +20,9 @@ object TemplateHelpers {
   def specialFront(name: String, swatch: Swatch, ophanPath: Option[String] = None, prefill: Option[CapiPrefillQuery] = None) = front(
     name,
     ophanPath,
-    collection("Special Container 1").copy(prefill = prefill).special,
-    collection("Special Container 2").special,
-    collection("Special Container 3").special
+    collection("Special Container 1").hide.copy(prefill = prefill),
+    collection("Special Container 2").hide,
+    collection("Special Container 3").hide
   ).special
     .swatch(swatch)
 
