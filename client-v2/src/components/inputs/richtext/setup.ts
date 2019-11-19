@@ -1,4 +1,4 @@
-import { buildKeymap } from './keymap';
+import { buildKeymap } from './utils/keymap';
 import { keymap } from 'prosemirror-keymap';
 import { baseKeymap } from 'prosemirror-commands';
 import { Schema, DOMSerializer, DOMParser, NodeSpec } from 'prosemirror-model';

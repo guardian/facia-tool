@@ -8,7 +8,7 @@ import {
   linkItemCommand,
   removeAllMarksFromSelection,
   unlinkItemCommand
-} from './command-helpers';
+} from './utils/command-helpers';
 import { EditorState, Transaction } from 'prosemirror-state';
 import { undo, redo } from 'prosemirror-history';
 
