@@ -146,13 +146,13 @@ case class CollectionTemplate(
 }
 
 case class FrontTemplate(
-                          name: String,
-                          collections: List[CollectionTemplate],
-                          presentation: FrontPresentation,
-                          maybeOphanPath: Option[String] = None,
-                          isSpecial: Boolean = false,
-                          hidden: Boolean = false
-                        ) {
+  name: String,
+  collections: List[CollectionTemplate],
+  presentation: FrontPresentation,
+  maybeOphanPath: Option[String] = None,
+  isSpecial: Boolean = false,
+  hidden: Boolean = false
+) {
   def special = copy(isSpecial = true, hidden = true)
 
   def swatch(swatch: Swatch) = copy(presentation = FrontPresentation(swatch))
@@ -195,18 +195,18 @@ case class EditionTemplate(
 // Issue skeletons are what is generated when you create a new issue for a given date
 // (Date + Template) => Skeleton
 case class EditionsIssueSkeleton(
-                                  issueDate: LocalDate,
-                                  zoneId: ZoneId,
-                                  fronts: List[EditionsFrontSkeleton]
-                                )
+  issueDate: LocalDate,
+  zoneId: ZoneId,
+  fronts: List[EditionsFrontSkeleton]
+)
 
 case class EditionsFrontSkeleton(
-                                  name: String,
-                                  collections: List[EditionsCollectionSkeleton],
-                                  presentation: FrontPresentation,
-                                  hidden: Boolean,
-                                  isSpecial: Boolean
-                                ) {
+  name: String,
+  collections: List[EditionsCollectionSkeleton],
+  presentation: FrontPresentation,
+  hidden: Boolean,
+  isSpecial: Boolean
+) {
   def metadata() = {
     val metadataParam = new PGobject()
     metadataParam.setType("jsonb")
@@ -215,16 +215,15 @@ case class EditionsFrontSkeleton(
   }
 }
 
-
 case class EditionsCollectionSkeleton(
-                                       name: String,
-                                       items: List[EditionsArticleSkeleton],
-                                       prefill: Option[CapiPrefillQuery],
-                                       presentation: CollectionPresentation,
-                                       hidden: Boolean
-                                     )
+  name: String,
+  items: List[EditionsArticleSkeleton],
+  prefill: Option[CapiPrefillQuery],
+  presentation: CollectionPresentation,
+  hidden: Boolean
+)
 
 case class EditionsArticleSkeleton(
-                                    pageCode: String,
-                                    metadata: ArticleMetadata
-                                  )
+  pageCode: String,
+  metadata: ArticleMetadata
+)
