@@ -119,7 +119,7 @@ object GuardianCapi extends Logging {
 
     val fields = List(
       "newspaperEditionDate",
-      "newspaperPapeNumber",
+      "newspaperPageNumber",
       "internalPageCode",
       "isLive",
       "firstPublicationDate",

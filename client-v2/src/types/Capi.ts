@@ -85,6 +85,7 @@ interface Tag {
 type CapiBool = 'true' | 'false' | boolean;
 
 interface CapiArticleFields {
+  newspaperPageNumber?: number;
   headline?: string;
   standfirst?: string;
   trailText?: string;
