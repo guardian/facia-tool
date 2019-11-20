@@ -65,13 +65,14 @@ function getThumbnail(
     return metaImageSrcThumb;
   } else if (imageSrc) {
     return imageSrc;
-  } else if (meta.imageCutoutReplace && externalArticle) {
+  } else if (meta.imageCutoutReplace) {
     return (
       meta.imageCutoutSrc ||
-      getContributorImage(externalArticle) ||
-      externalArticle.fields.secureThumbnail ||
-      externalArticle.fields.thumbnail ||
-      undefined
+      (externalArticle &&
+        (getContributorImage(externalArticle) ||
+          externalArticle.fields.secureThumbnail ||
+          externalArticle.fields.thumbnail ||
+          undefined))
     );
   } else if (
     meta.imageSlideshowReplace &&

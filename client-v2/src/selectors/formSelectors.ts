@@ -42,7 +42,9 @@ export const htmlSnapFields = [
   'headline',
   'imageHide',
   'imageReplace',
-  'primaryImage'
+  'primaryImage',
+  'imageCutoutReplace',
+  'cutoutImage',
 ];
 
 export const emailFieldsToExclude = [
