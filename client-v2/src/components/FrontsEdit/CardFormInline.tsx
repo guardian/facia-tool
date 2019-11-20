@@ -410,7 +410,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <Field
                 name="headline"
                 label={this.getHeadlineLabel()}
-                rows={this.getHeadlineRows()}
+                rows="2"
                 placeholder={articleCapiFieldValues.headline}
                 component={
                   this.props.isEmailFronts ? RichTextInput : InputTextArea
@@ -753,7 +753,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
    */
   private getHeadlineLabel = () =>
     this.props.snapType === 'html' ? 'HTML content' : 'Headline';
-  private getHeadlineRows = () => (this.props.snapType === 'html' ? '8' : '2');
 }
 
 const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
