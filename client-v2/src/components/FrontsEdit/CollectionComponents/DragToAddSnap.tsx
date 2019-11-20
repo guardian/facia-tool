@@ -64,7 +64,7 @@ const DragToAddTextSnap = () => {
         onDragStart={e => handleDragStart(e, ref.current)}
         draggable={true}
       >
-        <DragIcon /> Drag to add a text snap
+        <DragIcon /> Drag to add a text card
       </DragToAddSnapContainer>
     </>
   );

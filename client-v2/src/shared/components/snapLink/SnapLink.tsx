@@ -37,6 +37,7 @@ import ArticleGraph from '../article/ArticleGraph';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
 import PageViewDataWrapper from '../PageViewDataWrapper';
 import ImageAndGraphWrapper from '../image/ImageAndGraphWrapper';
+import { ThumbnailCutout } from '../image/Thumbnail';
 
 const SnapLinkBodyContainer = styled(CardBody)`
   justify-content: space-between;
@@ -141,7 +142,7 @@ const SnapLink = ({
             {!showMeta && <CardMetaHeading>Snap link </CardMetaHeading>}
             <CardHeading html>{headline}</CardHeading>
             <SnapLinkURL>
-              {card.meta.href && (
+              {card.meta.snapType !== 'html' && card.meta.href && (
                 <>
                   <strong>url:&nbsp;</strong>
                   <a href={urlPath} target="_blank">
@@ -169,15 +170,22 @@ const SnapLink = ({
               />
             </PageViewDataWrapper>
           )}
-          <ThumbnailSmall
-            imageHide={article && article.imageHide}
-            url={article && article.imageReplace ? article.thumbnail : ''}
-          />
-          <ImageMetadataContainer
-            imageSlideshowReplace={article && article.imageSlideshowReplace}
-            imageReplace={article && article.imageReplace}
-            imageCutoutReplace={article && article.imageCutoutReplace}
-          />
+          {article && (
+            <div>
+              <ThumbnailSmall
+                imageHide={article.imageHide}
+                url={article.thumbnail}
+              />
+              {article.cutoutThumbnail ? (
+                <ThumbnailCutout src={article.cutoutThumbnail} />
+              ) : null}
+              <ImageMetadataContainer
+                imageSlideshowReplace={article && article.imageSlideshowReplace}
+                imageReplace={article && article.imageReplace}
+                imageCutoutReplace={article && article.imageCutoutReplace}
+              />
+            </div>
+          )}
         </ImageAndGraphWrapper>
         <HoverActionsAreaOverlay
           disabled={isUneditable}

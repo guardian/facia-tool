@@ -19,6 +19,7 @@ import {
   selectArticleTag
 } from 'shared/selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
+import { defaultObject } from 'shared/util/selectorUtils';
 import { CardMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
@@ -195,6 +196,9 @@ const CheckboxFieldsContainer: React.SFC<{
   const childrenToRender = children.filter(child =>
     shouldRenderField(child.props.name, editableFields)
   );
+  if (!childrenToRender.length) {
+    return null;
+  }
   return (
     <FieldsContainerWrap>
       {childrenToRender.map(child => {
@@ -371,6 +375,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             <ConditionalField
               name="customKicker"
               label="Kicker"
+              permittedFields={editableFields}
               component={InputText}
               disabled={isBreaking}
               title={
@@ -401,12 +406,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             />
             {shouldRenderField('headline', editableFields) && (
               <Field
-                permittedFields={editableFields}
                 name="headline"
-                label="Headline"
+                label={this.getHeadlineLabel()}
+                rows="2"
                 placeholder={articleCapiFieldValues.headline}
                 component={InputTextArea}
-                rows="2"
                 originalValue={articleCapiFieldValues.headline}
                 data-testid="edit-form-headline-field"
               />
@@ -734,6 +738,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       }
     });
   };
+
+  /**
+   * You may be thinking -- why on earth would we use the `headline` field to contain
+   * HTML, renaming it in the process so our users are none the wiser? It's because the e-mail
+   * frontend, which currently consumes snaps of this type, knows what to do with headlines
+   * (it renders them as HTML). At some point in the future, it will be refactored, at which
+   * point we'll be able to use another, saner field to do the same job, but in the meantime,
+   * for snaps of type `html`, the field `headline` is where the html lives.
+   */
+  private getHeadlineLabel = () =>
+    this.props.snapType === 'html' ? 'Content' : 'Headline';
 }
 
 const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
@@ -760,6 +775,7 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 interface ContainerProps {
   articleExists: boolean;
   collectionId: string | null;
+  snapType: string | undefined;
   getLastUpdatedBy: (collectionId: string) => string | null;
   imageSlideshowReplace: boolean;
   imageCutoutReplace: boolean;
@@ -830,13 +846,14 @@ const createMapStateToProps = () => {
       hasMainVideo: !!article && !!article.hasMainVideo,
       collectionId: (parentCollection && parentCollection.id) || null,
       getLastUpdatedBy,
+      snapType: article && article.snapType,
       initialValues: getInitialValuesForCardForm(article),
       articleCapiFieldValues: getCapiValuesForArticleFields(externalArticle),
       editableFields:
         article && selectFormFields(state, article.uuid, isSupporting),
       kickerOptions: article
         ? selectArticleTag(selectSharedState(state), cardId)
-        : {},
+        : defaultObject,
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
       imageHide: valueSelector(state, 'imageHide'),
       imageReplace: valueSelector(state, 'imageReplace'),
