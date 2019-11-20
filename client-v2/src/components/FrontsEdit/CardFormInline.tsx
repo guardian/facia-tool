@@ -748,7 +748,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
    * for snaps of type `html`, the field `headline` is where the html lives.
    */
   private getHeadlineLabel = () =>
-    this.props.snapType === 'html' ? 'HTML content' : 'Headline';
+    this.props.snapType === 'html' ? 'Content' : 'Headline';
 }
 
 const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
