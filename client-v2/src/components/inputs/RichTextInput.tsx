@@ -1,4 +1,3 @@
-import { createGlobalStyle } from 'styled-components';
 import React, { useRef, useEffect, useState } from 'react';
 import { styled, theme } from 'constants/theme';
 import { EditorView } from 'prosemirror-view';
@@ -20,6 +19,7 @@ const InputWrapper = styled.div`
   outline: none;
   .ProseMirror {
     outline: none;
+    min-height: 90px;
   }
   p {
     margin: 7px 0;
@@ -29,12 +29,6 @@ const InputWrapper = styled.div`
 const TextInputLabel = styled(InputLabel)`
   display: ${props => (props.hidden ? 'none' : 'flex')};
   align-items: flex-end;
-`;
-
-const ProseMirrorStyling = createGlobalStyle`
-  .ProseMirror {
-    min-height: 90px;
-  }
 `;
 
 interface RichTextInputProps
@@ -70,7 +64,6 @@ const RichTextInput = ({ ...props }: RichTextInputProps) => {
         </TextInputLabel>
       )}
       <InputWrapper>
-        <ProseMirrorStyling />
         {editorView && <MenuView edView={editorView} />}
         <div
           id="editor"
