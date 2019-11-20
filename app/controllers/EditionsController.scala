@@ -6,6 +6,7 @@ import cats.syntax.either._
 import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
 import logging.Logging
+import logic.EditionsChecker
 import model.editions.{CapiQueryPrefillParams, Edition, EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
 import model.forms._
 import net.logstash.logback.marker.Markers
@@ -79,6 +80,14 @@ class EditionsController(db: EditionsDB,
 
   def getAvailableEditions = EditEditionsAuthAction { _ =>
     Ok(Json.toJson(EditionsTemplates.getAvailableEditions))
+  }
+
+  def checkIssue(id: String) = EditEditionsAuthAction { _ =>
+    val maybeIssue = db.getIssue(id)
+    maybeIssue match {
+      case Some(issue) => Ok(Json.toJson(EditionsChecker.checkIssue(issue)))
+      case _ => BadRequest("Unknown issue")
+    }
   }
 
   def listIssues(edition: Edition) = EditEditionsAuthAction { req =>

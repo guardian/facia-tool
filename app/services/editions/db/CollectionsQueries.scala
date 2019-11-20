@@ -77,6 +77,7 @@ trait CollectionsQueries {
     sql"""
       UPDATE collections
       SET is_hidden = ${collection.isHidden},
+          "name" = ${collection.displayName},
           updated_on = $lastUpdated,
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}
@@ -128,6 +129,7 @@ trait CollectionsQueries {
         collections.path_type,
         collections.content_prefill_window_start,
         collections.content_prefill_window_end,
+        fronts.is_special,
 
         articles.collection_id AS articles_collection_id,
         articles.page_code     AS articles_page_code,
@@ -137,6 +139,7 @@ trait CollectionsQueries {
 
       FROM collections
       LEFT JOIN articles ON (articles.collection_id = collections.id)
+      LEFT JOIN fronts ON (collections.front_id = fronts.id)
       WHERE ${where}
       """
     sql.map { rs =>
