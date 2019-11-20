@@ -44,7 +44,7 @@ export const htmlSnapFields = [
   'imageReplace',
   'primaryImage',
   'imageCutoutReplace',
-  'cutoutImage',
+  'cutoutImage'
 ];
 
 export const emailFieldsToExclude = [
