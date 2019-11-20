@@ -51,9 +51,7 @@ export const emailFieldsToExclude = [
   'isBreaking',
   'showLargeHeadline',
   'slideshow',
-  'cutoutImage',
   'imageSlideshowReplace',
-  'imageCutoutReplace'
 ] as FormFields[];
 
 const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
