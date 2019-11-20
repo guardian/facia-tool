@@ -142,7 +142,7 @@ const SnapLink = ({
             {!showMeta && <CardMetaHeading>Snap link </CardMetaHeading>}
             <CardHeading html>{headline}</CardHeading>
             <SnapLinkURL>
-              {card.meta.href && (
+              {card.meta.snapType !== 'html' && card.meta.href && (
                 <>
                   <strong>url:&nbsp;</strong>
                   <a href={urlPath} target="_blank">
