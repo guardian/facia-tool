@@ -44,14 +44,14 @@ export const htmlSnapFields = [
   'imageReplace',
   'primaryImage',
   'imageCutoutReplace',
-  'cutoutImage',
+  'cutoutImage'
 ];
 
 export const emailFieldsToExclude = [
   'isBreaking',
   'showLargeHeadline',
   'slideshow',
-  'imageSlideshowReplace',
+  'imageSlideshowReplace'
 ] as FormFields[];
 
 const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
