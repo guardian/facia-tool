@@ -140,7 +140,9 @@ const SnapLink = ({
           />
           <CardHeadingContainer size={size}>
             {!showMeta && <CardMetaHeading>Snap link </CardMetaHeading>}
-            <CardHeading html>{headline}</CardHeading>
+            <CardHeading data-testid="headline" html>
+              {headline}
+            </CardHeading>
             <SnapLinkURL>
               {card.meta.snapType !== 'html' && card.meta.href && (
                 <>

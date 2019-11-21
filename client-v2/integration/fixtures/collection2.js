@@ -6,7 +6,8 @@ module.exports = {
       meta: {
         trailText:
           'Social media gives people a megaphone. But if companies keep giving that megaphone to trolls intending to hurt people, they start to look complicit',
-        headline: 'Test3',
+        headline:
+          '<p><strong><a href="https://bbc.co.uk/">Bold with a link Test3</a></strong></p>',
         isBreaking: false,
         isBoosted: false,
         imageHide: false,
