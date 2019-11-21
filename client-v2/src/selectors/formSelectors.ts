@@ -39,12 +39,7 @@ export const supportingFields = [
 ] as FormFields[];
 
 export const htmlSnapFields = [
-  'headline',
-  'imageHide',
-  'imageReplace',
-  'primaryImage',
-  'imageCutoutReplace',
-  'cutoutImage'
+  'headline'
 ];
 
 export const emailFieldsToExclude = [
