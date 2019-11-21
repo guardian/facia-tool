@@ -499,7 +499,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             <ImageRowContainer size={this.props.size}>
               <Row>
                 <ImageCol faded={imageHide || !!coverCardImageReplace}>
-                  {shouldRenderField(this.getImageFieldName(), editableFields) && (
+                  {shouldRenderField(
+                    this.getImageFieldName(),
+                    editableFields
+                  ) && (
                     <InputLabel htmlFor={this.getImageFieldName()}>
                       Trail image
                     </InputLabel>
