@@ -20,9 +20,9 @@ fixture`Fronts edit`.page`http://localhost:3456/v2/email`
   .after(teardown);
 
 test('Rich text editor bolds text', async t => {
-  const htmlSnapCard = snap(1, 0);
+  const htmlSnapCard = snap(2, 0);
   const richTextInput = editFormRichText();
-  const snapHeadlineRT = await snapHeadline(1, 0);
+  const snapHeadlineRT = await snapHeadline(2, 0);
 
   const getSnapHeadlineHtml = ClientFunction(() => snapHeadlineRT().innerHTML, {
     dependencies: { snapHeadlineRT }
@@ -41,9 +41,9 @@ test('Rich text editor bolds text', async t => {
 
 // changing this headline: '<p><strong><a href="https://bbc.co.uk/">Bold with a link Test3</a></strong></p>',
 test('Rich text editor removes bold from bold text', async t => {
-  const secondCollectionStory1 = snap(1, 1);
+  const secondCollectionStory1 = snap(2, 1);
   const richTextInput = editFormRichText();
-  const snapHeadlineRT = await snapHeadline(1, 1);
+  const snapHeadlineRT = await snapHeadline(2, 1);
 
   const getSnapHeadlineHtml = ClientFunction(() => snapHeadlineRT().innerHTML, {
     dependencies: { snapHeadlineRT }
@@ -61,9 +61,9 @@ test('Rich text editor removes bold from bold text', async t => {
 });
 
 test('Rich text editor adds a link to text', async t => {
-  const secondCollectionStory1 = snap(1, 0);
+  const secondCollectionStory1 = snap(2, 0);
   const richTextInput = editFormRichText();
-  const snapHeadlineRT = await snapHeadline(1, 0);
+  const snapHeadlineRT = await snapHeadline(2, 0);
 
   const getSnapHeadlineHtml = ClientFunction(() => snapHeadlineRT().innerHTML, {
     dependencies: { snapHeadlineRT }
@@ -83,9 +83,9 @@ test('Rich text editor adds a link to text', async t => {
 
 // changing this headline: '<p><strong><a href="https://bbc.co.uk/">Bold with a link Test3</a></strong></p>',
 test('Rich text editor removes a link from text', async t => {
-  const secondCollectionStory1 = snap(1, 1);
+  const secondCollectionStory1 = snap(2, 1);
   const richTextInput = editFormRichText();
-  const snapHeadlineRT = await snapHeadline(1, 1);
+  const snapHeadlineRT = await snapHeadline(2, 1);
 
   const getSnapHeadlineHtml = ClientFunction(() => snapHeadlineRT().innerHTML, {
     dependencies: { snapHeadlineRT }
