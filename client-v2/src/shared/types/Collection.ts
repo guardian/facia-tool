@@ -62,6 +62,7 @@ interface CardRootMeta {
   snapUri?: string;
   snapType?: string;
   snapCss?: string;
+  atomId?: string;
   imageSlideshowReplace?: boolean;
   slideshow?: Array<{
     src?: string;

@@ -196,6 +196,8 @@ const getArticleEntitiesFromDrop = async (
   const isCAPIUrl = isCapiUrl(resourceIdOrUrl);
   if (isCAPIUrl) {
     const card = await createAtomSnap(resourceIdOrUrl);
+
+    console.log("==========>", card);
     return [card];
   }
   if (isPlainUrl) {
