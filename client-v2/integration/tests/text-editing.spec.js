@@ -4,7 +4,9 @@ import teardown from '../server/teardown';
 import {
   collection,
   card,
+  snap,
   cardHeadline,
+  snapHeadline,
   editFormHeadlineInput,
   editFormSaveButton,
   editFormRichText,
@@ -18,33 +20,33 @@ fixture`Fronts edit`.page`http://localhost:3456/v2/email`
   .after(teardown);
 
 test('Rich text editor bolds text', async t => {
-  const firstCollectionStory1 = card(0, 0);
+  const htmlSnapCard = snap(1, 0);
   const richTextInput = editFormRichText();
-  const cardHeadlineRT = await cardHeadline(0, 0);
+  const snapHeadlineRT = await snapHeadline(1, 0);
 
-  const getCardHeadlineHtml = ClientFunction(() => cardHeadlineRT().innerHTML, {
-    dependencies: { cardHeadlineRT }
+  const getSnapHeadlineHtml = ClientFunction(() => snapHeadlineRT().innerHTML, {
+    dependencies: { snapHeadlineRT }
   });
 
   await t
-    .click(firstCollectionStory1)
+    .click(htmlSnapCard)
     .click(richTextInput)
     .selectText(richTextInput)
     .click(editFormBoldButton())
     .wait(300)
     .click(editFormSaveButton())
-    .expect(getCardHeadlineHtml())
+    .expect(getSnapHeadlineHtml())
     .eql('<p><strong>Test2</strong></p>');
 });
 
 // changing this headline: '<p><strong><a href="https://bbc.co.uk/">Bold with a link Test3</a></strong></p>',
 test('Rich text editor removes bold from bold text', async t => {
-  const secondCollectionStory1 = card(1, 0);
+  const secondCollectionStory1 = snap(1, 1);
   const richTextInput = editFormRichText();
-  const cardHeadlineRT = await cardHeadline(1, 0);
+  const snapHeadlineRT = await snapHeadline(1, 1);
 
-  const getCardHeadlineHtml = ClientFunction(() => cardHeadlineRT().innerHTML, {
-    dependencies: { cardHeadlineRT }
+  const getSnapHeadlineHtml = ClientFunction(() => snapHeadlineRT().innerHTML, {
+    dependencies: { snapHeadlineRT }
   });
 
   await t
@@ -54,17 +56,17 @@ test('Rich text editor removes bold from bold text', async t => {
     .click(editFormBoldButton())
     .wait(300)
     .click(editFormSaveButton())
-    .expect(getCardHeadlineHtml())
+    .expect(getSnapHeadlineHtml())
     .eql('<p><a href="https://bbc.co.uk/">Bold with a link Test3</a></p>');
 });
 
 test('Rich text editor adds a link to text', async t => {
-  const secondCollectionStory1 = card(0, 0);
+  const secondCollectionStory1 = snap(1, 0);
   const richTextInput = editFormRichText();
-  const cardHeadlineRT = await cardHeadline(0, 0);
+  const snapHeadlineRT = await snapHeadline(1, 0);
 
-  const getCardHeadlineHtml = ClientFunction(() => cardHeadlineRT().innerHTML, {
-    dependencies: { cardHeadlineRT }
+  const getSnapHeadlineHtml = ClientFunction(() => snapHeadlineRT().innerHTML, {
+    dependencies: { snapHeadlineRT }
   });
 
   await t
@@ -75,18 +77,18 @@ test('Rich text editor adds a link to text', async t => {
     .click(editFormAddLinkButton())
     .wait(300)
     .click(editFormSaveButton())
-    .expect(getCardHeadlineHtml())
+    .expect(getSnapHeadlineHtml())
     .eql('<p><a href="https://bbc.co.uk/">Test2</a></p>');
 });
 
 // changing this headline: '<p><strong><a href="https://bbc.co.uk/">Bold with a link Test3</a></strong></p>',
 test('Rich text editor removes a link from text', async t => {
-  const secondCollectionStory1 = card(1, 0);
+  const secondCollectionStory1 = snap(1, 1);
   const richTextInput = editFormRichText();
-  const cardHeadlineRT = await cardHeadline(1, 0);
+  const snapHeadlineRT = await snapHeadline(1, 1);
 
-  const getCardHeadlineHtml = ClientFunction(() => cardHeadlineRT().innerHTML, {
-    dependencies: { cardHeadlineRT }
+  const getSnapHeadlineHtml = ClientFunction(() => snapHeadlineRT().innerHTML, {
+    dependencies: { snapHeadlineRT }
   });
 
   await t
@@ -96,6 +98,6 @@ test('Rich text editor removes a link from text', async t => {
     .click(editFormRemoveLinkButton())
     .wait(300)
     .click(editFormSaveButton())
-    .expect(getCardHeadlineHtml())
+    .expect(getSnapHeadlineHtml())
     .eql('<p><strong>Bold with a link Test3</strong></p>');
 });

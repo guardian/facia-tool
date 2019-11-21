@@ -94,11 +94,17 @@ export const allCollectionDropZones = collectionIndex => {
 export const card = (collectionIndex, itemIndex = 0) =>
   allCards(collectionIndex).nth(itemIndex);
 
+export const snap = (collectionIndex, itemIndex = 0) =>
+  allSnaps(collectionIndex).nth(itemIndex);
+
 export const collectionDropZone = (collectionIndex, dropZoneIndex = 0) =>
   allCollectionDropZones(collectionIndex).nth(dropZoneIndex);
 
 export const cardHeadline = (collectionIndex, itemIndex = 0) =>
   card(collectionIndex, itemIndex).find(`[data-testid="${HEADLINE_SELECTOR}"]`);
+
+export const snapHeadline = (collectionIndex, itemIndex = 0) =>
+  snap(collectionIndex, itemIndex).find(`[data-testid="${HEADLINE_SELECTOR}"]`);
 
 export const cardKicker = (collectionIndex, itemIndex = 0) =>
   card(collectionIndex, itemIndex).find(`[data-testid="${KICKER_SELECTOR}"]`);
