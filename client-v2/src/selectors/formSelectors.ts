@@ -38,14 +38,7 @@ export const supportingFields = [
   'showKickerCustom'
 ] as FormFields[];
 
-export const htmlSnapFields = [
-  'headline',
-  'imageHide',
-  'imageReplace',
-  'primaryImage',
-  'imageCutoutReplace',
-  'cutoutImage'
-];
+export const htmlSnapFields = ['headline'];
 
 export const emailFieldsToExclude = [
   'isBreaking',
