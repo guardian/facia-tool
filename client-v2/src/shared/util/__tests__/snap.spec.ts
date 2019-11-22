@@ -1,8 +1,14 @@
-import { validateId, generateId, createLatestSnap, createSnap, createAtomSnap } from '../snap';
+import {
+  validateId,
+  generateId,
+  createLatestSnap,
+  createSnap,
+  createAtomSnap
+} from '../snap';
 import tagPageHtml from '../../fixtures/guardianTagPage';
 import fetchMock from 'fetch-mock';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
-import {capiAtom} from 'shared/fixtures/capiAtom.js'
+import { capiAtom } from 'shared/fixtures/capiAtom.js';
 
 jest.mock('uuid/v4', () => () => 'uuid');
 
@@ -89,28 +95,28 @@ describe('utils/snap', () => {
     });
   });
 
-  describe("convert to Atom snap", async () => {
+  describe('convert to Atom snap', async () => {
     it("should create a snap of 'interactive', given a link to an atom in the public content api", async () => {
       fetchMock.once('begin:/api/live', capiAtom);
-      const atomLinkSnap = await createAtomSnap('https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter');
-      expect(atomLinkSnap).toEqual(
-        {
-          uuid: 'uuid',
-          frontPublicationDate: 1487076708000,
-          id: 'snap/1487076708000',
-          meta: {
-            headline: 'General Election 2017',
-            byline: 'Guardian Visuals',
-            showByline: false,
-            snapType: 'interactive',
-            snapUri: 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter',
-            atomId: '/atom/interactive/interactives/2017/06/general-election',
-            href: 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter'
-          }
+      const atomLinkSnap = await createAtomSnap(
+        'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter'
+      );
+      expect(atomLinkSnap).toEqual({
+        uuid: 'uuid',
+        frontPublicationDate: 1487076708000,
+        id: 'snap/1487076708000',
+        meta: {
+          headline: 'General Election 2017',
+          byline: 'Guardian Visuals',
+          showByline: false,
+          snapType: 'interactive',
+          snapUri:
+            'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter',
+          atomId: '/atom/interactive/interactives/2017/06/general-election',
+          href:
+            'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter'
         }
-      )
+      });
     });
-  })
-
+  });
 });
-
