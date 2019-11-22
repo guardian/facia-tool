@@ -63,6 +63,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     LocalDate.of(2019,12,31).atStartOfDay.toInstant(ZoneOffset.UTC),
     LocalDate.of(2020,1,3).atStartOfDay.toInstant(ZoneOffset.UTC)
   )
+  private val TestContentPrefillTimeWindowCfg2 = TimeWindowConfigInDays(-1, 2)
 
   private def front(name: String, collections: EditionsCollectionSkeleton*): EditionsFrontSkeleton =
     EditionsFrontSkeleton(name, collections.toList, FrontPresentation(Swatch.Culture), hidden = false, isSpecial = false)
@@ -507,7 +508,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   "should insert content prefill time-window correctly" taggedAs UsesDatabase in {
 
-    val issueId = insertSkeletonIssue(2019, 9, 30,
+    val issueId = insertSkeletonIssue(2020, 1, 1,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
           article("12345"),
