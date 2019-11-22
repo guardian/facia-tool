@@ -61,8 +61,8 @@ TwirlKeys.templateImports ++= Seq(
 routesImport += "model.editions._"
 
 val awsVersion = "1.11.293"
-val capiModelsVersion = "14.1"
-val capiClientVersion = "14.3"
+val capiModelsVersion = "15.4"
+val capiClientVersion = "15.4"
 val json4sVersion = "3.6.0-M2"
 val enumeratumPlayVersion = "1.5.13"
 val circeVersion = "0.11.1"
@@ -90,14 +90,14 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-ssm" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
-    "com.gu" %% "content-api-models" % capiModelsVersion,
+    "com.gu" %% "content-api-models-scala" % capiModelsVersion,
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.5",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "2.0",
-    "com.gu" %% "fapi-client-play26" % "3.0.11",
+    "com.gu" %% "fapi-client-play26" % "3.0.14",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
-    "com.gu" %% "mobile-notifications-api-models" % "1.0.4",
+    "com.gu" %% "mobile-notifications-api-models" % "1.0.5",
     "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.2",
 
     "com.gu" %% "scanamo" % "1.0.0-M7",

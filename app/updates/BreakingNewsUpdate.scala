@@ -88,7 +88,12 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
   }
 
   private def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
+    val title = trail.topic match {
+      case Some("uk-general-election") => Some("General Election 2019")
+      case _ => None
+    }
     BreakingNewsPayload(
+      title = title,
       message = Some(StringEscapeUtils.unescapeHtml4(trail.headline)),
       thumbnailUrl = trail.thumb.map{new URI(_)},
       sender = email,
