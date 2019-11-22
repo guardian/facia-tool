@@ -10,7 +10,7 @@ case class PrefillUpdate(
                           issueDate: LocalDate,
                           edition: Edition,
                           zone: ZoneId,
-                          contentPrefillQueryUrlSegments: CapiPrefillQuery,
-                          contentPrefillTimeWindow: CapiQueryTimeWindow,
+                          capiPrefillQuery: CapiPrefillQuery,
+                          capiQueryTimeWindow: CapiQueryTimeWindow,
                           currentPageCodes: List[String])
 
