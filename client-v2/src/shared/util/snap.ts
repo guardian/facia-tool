@@ -83,7 +83,8 @@ async function createAtomSnap(url: string, meta?: CardMeta): Promise<Card> {
         showByline: false,
         snapType: 'interactive',
         snapUri: url,
-        atomId
+        atomId,
+        ...meta
       }
     });
   } catch (e) {
