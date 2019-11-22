@@ -67,7 +67,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
-    EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), hidden = false)
+    EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), ???, hidden = false)
 
   private def article(pageCode: String): EditionsArticleSkeleton = EditionsArticleSkeleton(pageCode, ArticleMetadata.default)
 
@@ -519,7 +519,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     maybePrefillUpdate.isDefined shouldBe true
     val prefillFromDB = maybePrefillUpdate.value
-    prefillFromDB.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
+    prefillFromDB.capiQueryTimeWindow shouldEqual CapiQueryTimeWindow(
       issueDateToUTCStartOfDay(issueDate.plusDays(TestContentPrefillTimeWindowCfg.startOffset)),
       issueDateToUTCStartOfDay(issueDate.plusDays(TestContentPrefillTimeWindowCfg.endOffset))
     )
