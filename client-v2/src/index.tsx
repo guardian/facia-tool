@@ -80,5 +80,4 @@ if (reactMount) {
     reactMount
   );
 }
-(window as any).deleteIssue = deleteIssue
-
+(window as any).deleteIssue = deleteIssue;
