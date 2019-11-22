@@ -59,6 +59,11 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     )
   }
 
+  private val capiQueryTimeWindow = CapiQueryTimeWindow(
+    LocalDate.of(2019,12,31).atStartOfDay.toInstant(ZoneOffset.UTC),
+    LocalDate.of(2020,1,3).atStartOfDay.toInstant(ZoneOffset.UTC)
+  )
+
   private def front(name: String, collections: EditionsCollectionSkeleton*): EditionsFrontSkeleton =
     EditionsFrontSkeleton(name, collections.toList, FrontPresentation(Swatch.Culture), hidden = false, isSpecial = false)
 
@@ -67,7 +72,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
-    EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), ???, hidden = false)
+    EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), capiQueryTimeWindow, hidden = false)
 
   private def article(pageCode: String): EditionsArticleSkeleton = EditionsArticleSkeleton(pageCode, ArticleMetadata.default)
 
