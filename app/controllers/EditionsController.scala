@@ -144,8 +144,12 @@ class EditionsController(db: EditionsDB,
     db.getCollectionPrefill(id).map { prefillUpdate =>
       logger.info(s"getPrefillForCollection id=$id, prefillUpdate")
       import prefillUpdate._
-      val capiDateQueryParam = EditionsTemplates.templates(edition).capiDateQueryParam
-      val capiPrefillTimeParams = CapiPrefillTimeParams(capiQueryTimeWindow, capiDateQueryParam)
+
+      val templateCfg = EditionsTemplates.templates(edition)
+      val useDate = templateCfg.capiDateQueryParam
+      val capiPrefillTimeParams = CapiPrefillTimeParams(capiQueryTimeWindow, useDate)
+      // when we click (suggest articles) for collection we are not using ophan metrics and we are not sorting on them
+      // we should converge that
       val getPrefillParams = PrefillParamsAdapter(
         issueDate,
         capiPrefillQuery,
@@ -153,6 +157,7 @@ class EditionsController(db: EditionsDB,
         maybeOphanPath = None,
         maybeOphanQueryPrefillParams = None,
         edition,
+        maybePrefillItemsCap = None,
         metadataForLogging = MetadataForLogging(issueDate, collectionId = Some(id), collectionName = None)
       )
       capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes).map { body =>

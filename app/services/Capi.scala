@@ -57,6 +57,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
 
   // Sadly there's no easy way of converting a CAPI client response into JSON so we'll just proxy - similar to controllers.FaciaContentApiProxy
+  // this function is used for (suggest articles) for collection functionality
   def getPrefillArticles(getPrefill: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = {
 
     val query = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefill, currentPageCodes)
@@ -151,9 +152,10 @@ object GuardianCapi extends Logging {
     import capiPrefillTimeParams.{capiQueryTimeWindow, capiDateQueryParam}
     import capiQueryTimeWindow.{fromDate, toDate}
 
+    // it is paginated
+    // TODO we want to get all data, sort by ophan metric or page number then cap the result
     var query = CapiQueryGenerator(capiPrefillQuery.pathType)
       .page(1)
-      .pageSize(200)
       .showFields(fields.mkString(","))
       .useDate(capiDateQueryParam.entryName)
       .orderBy("newest")

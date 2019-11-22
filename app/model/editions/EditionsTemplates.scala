@@ -136,7 +136,8 @@ case class CollectionTemplate(
   presentation: CollectionPresentation,
   maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
   hidden: Boolean = false,
-  canRename: Boolean = false
+  canRename: Boolean = false,
+  articleItemsCap: Int = 200
 ) {
 
   def hide = copy(hidden = true).copy(canRename = true)

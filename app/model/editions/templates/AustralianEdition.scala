@@ -50,7 +50,8 @@ object AustralianEdition {
 
   def FrontNewsAu = front(
     "News",
-    collection("News").searchPrefill("?tag=tone/news,australia-news/australia-news,-tone/comment"),
+    // example on setting cap on collection article items
+    collection("News", articleItemsCap = 201).searchPrefill("?tag=tone/news,australia-news/australia-news,-tone/comment"),
     collection("World News").searchPrefill("?tag=tone/news,-australia-news/australia-news,-tone/comment")
   )
   .swatch(News)
