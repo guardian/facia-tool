@@ -71,6 +71,7 @@ async function createAtomSnap(url: string, meta?: CardMeta): Promise<Card> {
       getAbsolutePath(url, false)
     );
     const { title } = atom.response.interactive.data.interactive;
+    const atomId = new URL(url).pathname;
 
     return convertToSnap({
       uuid,
@@ -81,7 +82,9 @@ async function createAtomSnap(url: string, meta?: CardMeta): Promise<Card> {
         byline: 'Guardian Visuals',
         showByline: false,
         snapType: 'interactive',
-        snapUri: url
+        snapUri: url,
+        atomId,
+        ...meta
       }
     });
   } catch (e) {
