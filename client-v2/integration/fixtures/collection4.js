@@ -440,6 +440,25 @@ module.exports = {
         showLargeHeadline: false,
         customKicker: ''
       }
+    },
+    {
+      frontPublicationDate: 1574268324019,
+      id: 'snap/1574268232716',
+      meta: {
+        headline: '<p>Test2</p>',
+        showByline: false,
+        snapType: 'html'
+      }
+    },
+    {
+      frontPublicationDate: 1574268324019,
+      id: 'snap/1574268232717',
+      meta: {
+        headline:
+          '<p><strong><a href="https://bbc.co.uk/">Bold with a link Test3</a><strong></p>',
+        showByline: false,
+        snapType: 'html'
+      }
     }
   ],
   lastUpdated: 1540558153650,

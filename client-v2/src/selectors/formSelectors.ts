@@ -38,13 +38,13 @@ export const supportingFields = [
   'showKickerCustom'
 ] as FormFields[];
 
+export const htmlSnapFields = ['headline'];
+
 export const emailFieldsToExclude = [
   'isBreaking',
   'showLargeHeadline',
   'slideshow',
-  'cutoutImage',
-  'imageSlideshowReplace',
-  'imageCutoutReplace'
+  'imageSlideshowReplace'
 ] as FormFields[];
 
 const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
@@ -77,6 +77,9 @@ export const createSelectFormFieldsForCard = () => {
     ) => {
       if (!derivedArticle) {
         return [];
+      }
+      if (derivedArticle.snapType === 'html') {
+        return htmlSnapFields;
       }
       if (isSupporting) {
         return supportingFields;
