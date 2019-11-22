@@ -3,10 +3,10 @@ package services
 import java.time.LocalDate
 
 import fixtures.TestEdition
-import model.editions.{CapiPrefillQuery, Edition, PathType, UseDateQueryParamValue}
+import model.editions.{CapiDateQueryParam, CapiPrefillQuery, Edition, PathType}
 import org.scalatest.{FunSuite, Matchers}
-import services.editions.EditionsTemplating
-import services.editions.prefills.{CapiQueryTimeWindow, ContentPrefillTimeParams, MetadataForLogging, PrefillParamsAdapter}
+import services.editions.{CollectionTemplatingHelper, EditionsTemplating}
+import services.editions.prefills.{CapiPrefillTimeParams, CapiQueryTimeWindow, MetadataForLogging, PrefillParamsAdapter}
 
 class GuardianCapiTest extends FunSuite with Matchers {
 
@@ -14,16 +14,16 @@ class GuardianCapiTest extends FunSuite with Matchers {
 
   private val contentPrefillQuery = CapiPrefillQuery("?tag=theguardian/mainsection/topstories", PathType.PrintSent)
 
-  private val timeWindowCfg = TestEdition.templates(Edition.TrainingEdition).capiQueryPrefillParams.timeWindowConfig
+  private val timeWindowCfg = TestEdition.templates(Edition.TrainingEdition).timeWindowConfig
 
-  private val contentPrefillTimeWindow: CapiQueryTimeWindow = EditionsTemplating.defineContentQueryTimeWindow(issueDate, timeWindowCfg)
+  private val contentPrefillTimeWindow: CapiQueryTimeWindow = timeWindowCfg.toCapiQueryTimeWindow(issueDate)
 
   test("geneneratePrefillQuery") {
 
     val getPrefillParams = PrefillParamsAdapter(
       issueDate,
       contentPrefillQuery,
-      ContentPrefillTimeParams(contentPrefillTimeWindow, UseDateQueryParamValue.Published),
+      CapiPrefillTimeParams(contentPrefillTimeWindow, CapiDateQueryParam.Published),
       None, None,
       Edition.TrainingEdition,
       MetadataForLogging(LocalDate.now(),
@@ -53,7 +53,7 @@ class GuardianCapiTest extends FunSuite with Matchers {
     val getPrefillParams = PrefillParamsAdapter(
       issueDate,
       contentPrefillQuery,
-      ContentPrefillTimeParams(contentPrefillTimeWindow, UseDateQueryParamValue.NewspaperEdition),
+      CapiPrefillTimeParams(contentPrefillTimeWindow, CapiDateQueryParam.NewspaperEdition),
       None, None,
       Edition.TrainingEdition,
       MetadataForLogging(LocalDate.now(),
