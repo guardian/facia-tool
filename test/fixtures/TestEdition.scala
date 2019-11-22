@@ -8,7 +8,7 @@ import model.editions._
 object TestEdition {
   val ContentQueryStartOffsetInDays = -1
   val ContentQueryEndOffsetInDays = 2
-  val UseDate = UseDateQueryParamValue.Published
+  val UseDate = CapiDateQueryParam.Published
 
   val template = EditionTemplate(
     List(
@@ -18,13 +18,11 @@ object TestEdition {
       FrontCulture.front -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontSpecialSpecial2.front -> Daily(),
     ),
-    capiQueryPrefillParams = CapiQueryPrefillParams(
-      timeWindowConfig = CapiTimeWindowConfigInDays(
-        startOffset = ContentQueryStartOffsetInDays,
-        endOffset = ContentQueryEndOffsetInDays,
-        useDate = UseDate,
-      )
+    timeWindowConfig = CapiTimeWindowConfigInDays(
+      startOffset = ContentQueryStartOffsetInDays,
+      endOffset = ContentQueryEndOffsetInDays,
     ),
+    capiDateQueryParam = UseDate,
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
     None,
@@ -41,9 +39,16 @@ object FrontTopStories {
     presentation = defaultCollectionPresentation
   )
 
+  val collectionTopStories2 = CollectionTemplate(
+    name = "Top Stories 2",
+    prefill = None,
+    presentation = defaultCollectionPresentation,
+    maybeTimeWindowConfig = Some(CapiTimeWindowConfigInDays(-3, 2))
+  )
+
   val front = FrontTemplate(
     name = "Top Stories",
-    collections = List(collectionTopStories),
+    collections = List(collectionTopStories, collectionTopStories2),
     presentation = defaultFrontPresentation,
     None
   )
