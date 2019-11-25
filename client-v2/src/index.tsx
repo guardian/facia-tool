@@ -21,6 +21,7 @@ import { listenForKeyboardEvents } from 'keyboard';
 import pollingConfig from 'util/pollingConfig';
 import { base } from 'routes/routes';
 import { actionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
+import { deleteIssue } from 'util/delete';
 
 initGA();
 
@@ -80,3 +81,4 @@ if (reactMount) {
     reactMount
   );
 }
+(window as any).deleteIssue = deleteIssue;
