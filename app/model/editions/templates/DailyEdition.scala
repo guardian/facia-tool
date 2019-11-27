@@ -56,13 +56,11 @@ object DailyEdition {
       // Crosswords
       FrontCrosswords -> Daily(),
     ),
-    capiQueryPrefillParams = CapiQueryPrefillParams(
-      timeWindowConfig = CapiTimeWindowConfigInDays(
-        startOffset = 0,
-        endOffset = 0,
-        useDate = UseDateQueryParamValue.NewspaperEdition
-      )
+    timeWindowConfig = CapiTimeWindowConfigInDays(
+      startOffset = 0,
+      endOffset = 0,
     ),
+    capiDateQueryParam = CapiDateQueryParam.NewspaperEdition,
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
     maybeOphanPath = None,

@@ -1,6 +1,6 @@
 package services.editions
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.{LocalDate, ZoneId, ZoneOffset}
 
 import com.gu.contentapi.client.model.v1.SearchResponse
 import com.gu.facia.api.utils.ResolvedMetaData
@@ -9,6 +9,7 @@ import model.editions._
 import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
 import services.editions.prefills.{CapiQueryTimeWindow, Prefill, PrefillParamsAdapter}
 import services.{Capi, Ophan, OphanScore}
+import java.time.temporal.ChronoField
 
 import scala.concurrent.Future
 
@@ -41,12 +42,17 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
     ))
   }
 
+  val fakeOphan = new Ophan() {
+    override def getOphanScores(maybePath: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] =
+      Future.successful(Some(Array(OphanScore("banana", 33d))))
+  }
+
   val fakeCapi = new Capi {
     def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)] = ???
 
     def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
       import prefillParams._
-      contentPrefillUrlSegments.queryString match {
+      capiPrefillQuery.queryString match {
         case "?tag=theguardian/mainsection/topstories" => Future.successful(List(
           Prefill(
             123456,
@@ -101,9 +107,8 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
 
   "defineTimeWindow for contentPrefill" - {
     "should return expected time window" in {
-      val useDate =  UseDateQueryParamValue.Published
-      val timeWindowCfg = CapiTimeWindowConfigInDays(startOffset = -1, endOffset = 2, useDate)
-      EditionsTemplating.defineContentQueryTimeWindow(LocalDate.of(2019, 10, 5), timeWindowCfg) shouldEqual CapiQueryTimeWindow(
+      val timeWindowCfg = CapiTimeWindowConfigInDays(startOffset = -1, endOffset = 2)
+      timeWindowCfg.toCapiQueryTimeWindow(LocalDate.of(2019, 10, 5)) shouldEqual CapiQueryTimeWindow(
         LocalDate.of(2019, 10, 4).atStartOfDay().toInstant(ZoneOffset.UTC),
         LocalDate.of(2019, 10, 7).atStartOfDay().toInstant(ZoneOffset.UTC)
       )
@@ -238,6 +243,68 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       frontPage.items.size shouldBe 1
       frontPage.items.head.pageCode shouldBe "123456"
       frontPage.items.head.metadata shouldBe ArticleMetadata.default
+    }
+  }
+
+  "Build issue skeleton" - {
+    "Issue date range is correct" in {
+      val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
+        .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
+      editionSkeleton.isRight shouldBe (true)
+      editionSkeleton.right.get.contentPrefillTimeWindow shouldBe (
+        CapiQueryTimeWindow(
+          LocalDate.of(2019,12,31).atStartOfDay.toInstant(ZoneOffset.UTC),
+          LocalDate.of(2020,1,3).atStartOfDay.toInstant(ZoneOffset.UTC))
+        )
+    }
+
+    "Issue date is correct" in {
+      val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
+        .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
+      editionSkeleton.isRight shouldBe (true)
+      editionSkeleton.right.get.issueSkeleton.issueDate shouldBe (LocalDate.of(2020,1,1))
+    }
+
+    "Issue zone is correct" in {
+      val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
+        .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
+      editionSkeleton.isRight shouldBe (true)
+      editionSkeleton.right.get.issueSkeleton.zoneId shouldBe (ZoneId.of("Europe/London"))
+    }
+
+    "Issue fronts list is correct" in {
+      val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
+        .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
+      editionSkeleton.isRight shouldBe (true)
+      editionSkeleton.right.get.issueSkeleton.fronts.size shouldBe (4) // No Saturday section on a Wednesday.
+    }
+
+    "Issue first front content with no time window override is correct" in {
+      val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
+        .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
+      editionSkeleton.isRight shouldBe (true)
+      val front = editionSkeleton.right.get.issueSkeleton.fronts(0)
+      front.collections(0).capiQueryTimeWindow shouldBe (
+        // This collection has a different time window than that of the main edition template
+        CapiQueryTimeWindow(
+          LocalDate.of(2019,12,31).atStartOfDay.toInstant(ZoneOffset.UTC),
+          LocalDate.of(2020,1,3).atStartOfDay.toInstant(ZoneOffset.UTC)
+        )
+      )
+    }
+
+    "Issue first front content with different time window is correct" in {
+      val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
+        .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
+      editionSkeleton.isRight shouldBe (true)
+      val front = editionSkeleton.right.get.issueSkeleton.fronts(0)
+      front.collections(1).capiQueryTimeWindow shouldBe (
+        // This collection has a different time window than that of the main edition template
+        CapiQueryTimeWindow(
+          LocalDate.of(2019,12,29).atStartOfDay.toInstant(ZoneOffset.UTC),
+          LocalDate.of(2020,1,3).atStartOfDay.toInstant(ZoneOffset.UTC)
+        )
+      )
     }
   }
 }

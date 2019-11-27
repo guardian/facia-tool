@@ -7,7 +7,7 @@ import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
-import model.editions.{CapiQueryPrefillParams, Edition, EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
+import model.editions.{CapiTimeWindowConfigInDays, Edition, EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
 import model.forms._
 import net.logstash.logback.marker.Markers
 import play.api.Logger
@@ -16,7 +16,7 @@ import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
 import services.editions.db.EditionsDB
-import services.editions.prefills.{ContentPrefillTimeParams, MetadataForLogging, PrefillParamsAdapter}
+import services.editions.prefills.{CapiPrefillTimeParams, MetadataForLogging, PrefillParamsAdapter}
 import services.editions.publishing.EditionsPublishing
 import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
@@ -144,12 +144,12 @@ class EditionsController(db: EditionsDB,
     db.getCollectionPrefill(id).map { prefillUpdate =>
       logger.info(s"getPrefillForCollection id=$id, prefillUpdate")
       import prefillUpdate._
-      val useDate = EditionsTemplates.templates(edition).capiQueryPrefillParams.timeWindowConfig.useDate
-      val contentPrefillTimeParams = ContentPrefillTimeParams(contentPrefillTimeWindow, useDate)
+      val capiDateQueryParam = EditionsTemplates.templates(edition).capiDateQueryParam
+      val capiPrefillTimeParams = CapiPrefillTimeParams(capiQueryTimeWindow, capiDateQueryParam)
       val getPrefillParams = PrefillParamsAdapter(
         issueDate,
-        contentPrefillQueryUrlSegments,
-        contentPrefillTimeParams,
+        capiPrefillQuery,
+        capiPrefillTimeParams,
         maybeOphanPath = None,
         maybeOphanQueryPrefillParams = None,
         edition,

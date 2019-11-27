@@ -1,21 +1,23 @@
 package model.editions
 
 import java.time.temporal.ChronoField
-import java.time.{LocalDate, ZoneId}
+import java.time.{LocalDate, ZoneId, ZoneOffset}
 
 import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
-import model.editions.templates.{AmericanEdition, AustralianEdition, DailyEdition, TrainingEdition}
+import model.editions.templates.{AmericanEdition, AustralianEdition, DailyEdition, TheDummyEdition, TrainingEdition}
 import org.postgresql.util.PGobject
 import play.api.libs.json.Json
+import services.editions.prefills.CapiQueryTimeWindow
 
 object EditionsTemplates {
   val templates: Map[Edition, EditionTemplate] = Map(
     Edition.DailyEdition -> DailyEdition.template,
     Edition.AmericanEdition -> AmericanEdition.template,
     Edition.AustralianEdition -> AustralianEdition.template,
-    Edition.TrainingEdition -> TrainingEdition.template
+    Edition.TrainingEdition -> TrainingEdition.template,
+    Edition.TheDummyEdition -> TheDummyEdition.template
   )
 
   val getAvailableEditions: List[Edition] = templates.keys.toList
@@ -62,6 +64,8 @@ object Edition extends PlayEnum[Edition] {
   case object AustralianEdition extends Edition
 
   case object TrainingEdition extends Edition
+
+  case object TheDummyEdition extends Edition
 
   override def values = findValues
 }
@@ -130,6 +134,7 @@ case class CollectionTemplate(
   maybeOphanPath: Option[String] = None,
   prefill: Option[CapiPrefillQuery],
   presentation: CollectionPresentation,
+  maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
   hidden: Boolean = false,
   canRename: Boolean = false
 ) {
@@ -152,6 +157,7 @@ case class FrontTemplate(
   collections: List[CollectionTemplate],
   presentation: FrontPresentation,
   maybeOphanPath: Option[String] = None,
+  maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
   isSpecial: Boolean = false,
   hidden: Boolean = false
 ) {
@@ -160,13 +166,13 @@ case class FrontTemplate(
   def swatch(swatch: Swatch) = copy(presentation = FrontPresentation(swatch))
 }
 
-sealed abstract class UseDateQueryParamValue extends EnumEntry with Hyphencase with Uncapitalised
+sealed abstract class CapiDateQueryParam extends EnumEntry with Hyphencase with Uncapitalised
 
-object UseDateQueryParamValue extends PlayEnum[UseDateQueryParamValue] {
+object CapiDateQueryParam extends PlayEnum[CapiDateQueryParam] {
 
-  case object NewspaperEdition extends UseDateQueryParamValue
+  case object NewspaperEdition extends CapiDateQueryParam
 
-  case object Published extends UseDateQueryParamValue
+  case object Published extends CapiDateQueryParam
 
   override def values = findValues
 }
@@ -179,15 +185,22 @@ trait BaseTimeWindowConfig {
 
 case class TimeWindowConfigInDays(startOffset: Int, endOffset: Int) extends BaseTimeWindowConfig
 
-case class CapiTimeWindowConfigInDays(startOffset: Int, endOffset: Int, useDate: UseDateQueryParamValue) extends BaseTimeWindowConfig
-
-case class CapiQueryPrefillParams(timeWindowConfig: CapiTimeWindowConfigInDays)
+case class CapiTimeWindowConfigInDays(startOffset: Int, endOffset: Int) extends BaseTimeWindowConfig {
+  def toCapiQueryTimeWindow(issueDate: LocalDate): CapiQueryTimeWindow = {
+    val issueDateStart = issueDate.atStartOfDay()
+    // Regarding UTC Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
+    val fromDateUTC = issueDateStart.plusDays(startOffset).toInstant(ZoneOffset.UTC)
+    val toDateAsUTC = issueDateStart.plusDays(endOffset).toInstant(ZoneOffset.UTC)
+    CapiQueryTimeWindow(fromDateUTC, toDateAsUTC)
+  }
+}
 
 case class OphanQueryPrefillParams(apiKey: String, timeWindowConfig: TimeWindowConfigInDays)
 
 case class EditionTemplate(
   fronts: List[(FrontTemplate, Periodicity)],
-  capiQueryPrefillParams: CapiQueryPrefillParams,
+  timeWindowConfig: CapiTimeWindowConfigInDays,
+  capiDateQueryParam: CapiDateQueryParam,
   zoneId: ZoneId,
   availability: Periodicity,
   maybeOphanPath: Option[String] = None,
@@ -222,6 +235,7 @@ case class EditionsCollectionSkeleton(
   items: List[EditionsArticleSkeleton],
   prefill: Option[CapiPrefillQuery],
   presentation: CollectionPresentation,
+  capiQueryTimeWindow: CapiQueryTimeWindow,
   hidden: Boolean
 )
 
