@@ -322,4 +322,74 @@ describe('Snap cards actions', () => {
       );
     });
   });
+  describe('should drop the Google redirect URL when present', () => {
+    it('drops the redirect from Content API URLs', async () => {
+      const store = mockStore(initialState);
+      const snapUrl =
+        'https://www.google.com/url?q=https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election&amp;source=gmail&amp;ust=someId&amp;usg=anotherId';
+      const CapiResponse = capiInteractiveAtomResponse;
+      fetchMock.mock(
+        '/api/live/atom/interactive/interactives/2017/06/general-election',
+        CapiResponse
+      );
+      await store.dispatch(createArticleEntitiesFromDrop(
+        idDrop(snapUrl)
+      ) as any);
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(
+        cardsReceived({
+          card1: {
+            frontPublicationDate: 1487076708000,
+            id: 'snap/1487076708000',
+            meta: {
+              atomId: 'atom/interactive/interactives/2017/06/general-election',
+              headline: 'General Election 2017',
+              byline: 'Guardian Visuals',
+              showByline: false,
+              snapType: 'interactive',
+              snapUri:
+                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
+              href:
+                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election'
+            },
+            uuid: 'card1'
+          }
+        })
+      );
+    });
+    it('drops the redirect from snap link URLs with query params', async () => {
+      const store = mockStore(initialState);
+      const snapUrl =
+        'https://www.google.ca/url?q=https://www.theguardian.com/football/live?gu-snapType%3Djson.html%26gu-snapCss%3Dfootball%26gu-snapUri%3Dhttps%253A%252F%252Fapi.nextgen.guardianapps.co.uk%252Ffootball%252Flive.json%26gu-headline%3DLive%2Bmatches%26gu-trailText%3DToday%2527s%2Bmatches&sa=D&source=hangouts&ust=someId&usg=anotherId';
+      const CapiResponse = capiInteractiveAtomResponse;
+      fetchMock.mock(
+        '/api/live/atom/interactive/interactives/2017/06/general-election',
+        CapiResponse
+      );
+      await store.dispatch(createArticleEntitiesFromDrop(
+        idDrop(snapUrl)
+      ) as any);
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(
+        cardsReceived({
+          card1: {
+            frontPublicationDate: 1487076708000,
+            id: 'snap/1487076708000',
+            meta: {
+              byline: undefined,
+              headline: 'Live matches',
+              href: 'football/live',
+              showByline: false,
+              snapCss: 'football',
+              snapType: 'json.html',
+              snapUri:
+                'https://api.nextgen.guardianapps.co.uk/football/live.json',
+              trailText: "Today's matches"
+            },
+            uuid: 'card1'
+          }
+        })
+      );
+    });
+  });
 });

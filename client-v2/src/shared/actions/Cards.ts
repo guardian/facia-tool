@@ -180,7 +180,10 @@ const getArticleEntitiesFromDrop = async (
   if (drop.type === 'CAPI') {
     return getArticleEntitiesFromFeedDrop(drop.data, isEdition);
   }
-  const resourceIdOrUrl = drop.data.trim();
+  const droppedDataURL = drop.data.trim();
+  const resourceIdOrUrl = isGoogleRedirectUrl(droppedDataURL)
+    ? getRelevantURLFromGoogleRedirectURL(droppedDataURL)
+    : droppedDataURL;
   const isURL = isValidURL(resourceIdOrUrl);
   const id = isURL ? getIdFromURL(resourceIdOrUrl) : resourceIdOrUrl;
   const isGuardianURLWithGuMetaData =
@@ -309,6 +312,22 @@ const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
       {}
     )
   );
+};
+
+/**
+ * Given a URL, identify whether it has been provided as Google redirect URL,
+ * e.g. https://www.google.com/url?q=https://example.com/foobar&sa=D&source=hangouts&ust=someId&usg=anotherId
+ * This can happen as a result of a URL being copied from Google Hangouts
+ */
+const isGoogleRedirectUrl = (url: string) => {
+  const a = document.createElement('a');
+  a.href = url;
+  return a.hostname.includes('google') && hasWhitelistedParams(url, ['q']);
+};
+
+const getRelevantURLFromGoogleRedirectURL = (url: string) => {
+  const params = checkQueryParams(url, ['q']);
+  return params ? params[0][1] : url;
 };
 
 const getArticleEntitiesFromGuardianPath = async (
