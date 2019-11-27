@@ -20,6 +20,7 @@ import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
 object GuardianCapiQuery {
+  // need to be large so that we will be able to cap the results after sorting them by ophan promotion metrics
   val MaxPageSize: Int = 500
 }
 
@@ -156,14 +157,12 @@ object GuardianCapi extends Logging {
     import capiPrefillTimeParams.{capiQueryTimeWindow, capiDateQueryParam}
     import capiQueryTimeWindow.{fromDate, toDate}
 
-    // need to be large so that we will be able to cap the results after sorting them by ophan promotion metrics
-    val pageSize = GuardianCapiQuery.MaxPageSize
-
     // it is paginated
+    // depends on pageSize param if pageSize will be very large then we will not need to iterate over API response pages
     // TODO we want to get all data, sort by ophan metric or page number then cap the result
     var query = CapiQueryGenerator(capiPrefillQuery.pathType)
       .page(1)
-      .pageSize(pageSize)
+      .pageSize(GuardianCapiQuery.MaxPageSize)
       .showFields(fields.mkString(","))
       .useDate(capiDateQueryParam.entryName)
       .orderBy("newest")
