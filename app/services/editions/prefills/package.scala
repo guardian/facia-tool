@@ -44,7 +44,7 @@ package object prefills {
                                    maybeOphanPath: Option[String],
                                    maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams],
                                    edition: Edition,
-                                   maybePrefillItemsCap: Option[Int],
+                                   maybePrefillItemsCap: Option[Int] = None,
                                    metadataForLogging: MetadataForLogging
                                  )
 

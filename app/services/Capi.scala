@@ -19,6 +19,10 @@ import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
+object GuardianCapiQuery {
+  val MaxPageSize: Int = 500
+}
+
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext)
   extends GuardianContentClient(apiKey = config.contentApi.editionsKey) with Capi with Logging {
 
@@ -152,10 +156,8 @@ object GuardianCapi extends Logging {
     import capiPrefillTimeParams.{capiQueryTimeWindow, capiDateQueryParam}
     import capiQueryTimeWindow.{fromDate, toDate}
 
-    val pageSize = maybePrefillItemsCap match {
-      case Some(value) => value
-      case _ => 200
-    }
+    // need to be large so that we will be able to cap the results after sorting them by ophan promotion metrics
+    val pageSize = GuardianCapiQuery.MaxPageSize
 
     // it is paginated
     // TODO we want to get all data, sort by ophan metric or page number then cap the result
