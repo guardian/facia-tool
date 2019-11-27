@@ -71,7 +71,7 @@ async function createAtomSnap(url: string, meta?: CardMeta): Promise<Card> {
       getAbsolutePath(url, false)
     );
     const { title } = atom.response.interactive.data.interactive;
-    const atomId = new URL(url).pathname;
+    const atomId = new URL(url).pathname.substr(1);
 
     return convertToSnap({
       uuid,
