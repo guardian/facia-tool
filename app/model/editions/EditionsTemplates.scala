@@ -130,7 +130,7 @@ object PathType extends PlayEnum[PathType] {
   override def values = findValues
 }
 
-case class CollectionTemplate(
+private[editions] case class CollectionTemplate(
   name: String,
   maybeOphanPath: Option[String] = None,
   prefill: Option[CapiPrefillQuery],

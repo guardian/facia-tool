@@ -4,7 +4,7 @@ import java.time.ZoneId
 
 import model.editions.Swatch._
 import model.editions._
-import model.editions.templates.TemplateHelpers.{collection, _}
+import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
 object TrainingEdition {

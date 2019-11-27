@@ -4,6 +4,7 @@ import java.time.ZoneId
 
 import model.editions.templates.TemplateHelpers.Defaults._
 import model.editions._
+import model.editions.templates.TemplateHelpers.collection
 
 object TestEdition {
 
@@ -34,20 +35,12 @@ object TestEdition {
 }
 
 object FrontTopStories {
-  val collectionTopStories = CollectionTemplate(
-    name = "Top Stories",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/topstories", PathType.PrintSent)),
-    presentation = defaultCollectionPresentation,
-    articleItemsCap = 1
-  )
+  val collectionTopStories = collection("Top Stories")
+    .printSentPrefill("?tag=theguardian/mainsection/topstories")
+    .withArticleItemsCap(1)
 
-  val collectionTopStories2 = CollectionTemplate(
-    name = "Top Stories 2",
-    prefill = None,
-    presentation = defaultCollectionPresentation,
-    maybeTimeWindowConfig = Some(CapiTimeWindowConfigInDays(-3, 2)),
-    articleItemsCap = 1
-  )
+  val collectionTopStories2 = collection("Top Stories 2")
+    .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 2)))
 
   val front = FrontTemplate(
     name = "Top Stories",
@@ -58,24 +51,18 @@ object FrontTopStories {
 }
 
 object FrontNewsUkGuardian {
-  val collectionNewsFrontPage = CollectionTemplate(
-    name = "Front Page",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/topstories", PathType.PrintSent)),
-    presentation = defaultCollectionPresentation,
-    articleItemsCap = 1
-  )
-  val collectionNewsUkNewsGuardian = CollectionTemplate(
-    name = "UK News",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/uknews|theguardian/mainsection/education|theguardian/mainsection/society|theguardian/mainsection/media|theguardian/guardian-members/guardian-members", PathType.PrintSent)),
-    presentation = defaultCollectionPresentation,
-    articleItemsCap = 1
-  )
-  val collectionNewsWeather = CollectionTemplate(
-    name = "Weather",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/weather2", PathType.PrintSent)),
-    presentation = defaultCollectionPresentation,
-    articleItemsCap = 1
-  )
+  val collectionNewsFrontPage = collection("Front Page")
+    .printSentPrefill("?tag=theguardian/mainsection/topstories")
+    .withArticleItemsCap(1)
+
+  val collectionNewsUkNewsGuardian = collection("UK News")
+    .printSentPrefill("?tag=theguardian/mainsection/uknews|theguardian/mainsection/education|theguardian/mainsection/society|theguardian/mainsection/media|theguardian/guardian-members/guardian-members")
+    .withArticleItemsCap(1)
+
+  val collectionNewsWeather = collection("Weather")
+    .printSentPrefill("?tag=theguardian/mainsection/weather2")
+    .withArticleItemsCap(1)
+
   val front = FrontTemplate(
     name = "UK News",
     collections = List(collectionNewsFrontPage, collectionNewsUkNewsGuardian, collectionNewsWeather),
@@ -85,25 +72,14 @@ object FrontNewsUkGuardian {
 }
 
 object FrontNewsUkGuardianSaturday {
-  val collectionNewsFrontPage = CollectionTemplate(
-    name = "Front Page",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/topstories", PathType.PrintSent)),
-    presentation = defaultCollectionPresentation,
-    articleItemsCap = 1
-  )
-  val collectionNewsSpecial1 = CollectionTemplate(
-    name = "News Special",
-    prefill = None,
-    presentation = defaultCollectionPresentation,
-    hidden = true,
-    articleItemsCap = 1
-  )
-  val collectionNewsWeather = CollectionTemplate(
-    name = "Weather",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/mainsection/weather2", PathType.PrintSent)),
-    presentation = defaultCollectionPresentation,
-    articleItemsCap = 1
-  )
+  val collectionNewsFrontPage = collection("Front Page")
+    .printSentPrefill("?tag=theguardian/mainsection/topstories")
+    .withArticleItemsCap(1)
+
+  val collectionNewsSpecial1 = collection("News Special").hide
+
+  val collectionNewsWeather = collection("Weather").printSentPrefill("?tag=theguardian/mainsection/weather2").withArticleItemsCap(1)
+
   val front = FrontTemplate(
     name = "UK News",
     collections = List(collectionNewsFrontPage, collectionNewsSpecial1, collectionNewsWeather),
@@ -113,18 +89,12 @@ object FrontNewsUkGuardianSaturday {
 }
 
 object FrontCulture {
-  val collectionCultureArts = CollectionTemplate(
-    name = "Arts",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/arts", PathType.PrintSent)),
-    presentation = defaultCollectionPresentation,
-    articleItemsCap = 2
-  )
-  val collectionCultureTVandRadio = CollectionTemplate(
-    name = "TV & Radio",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/g2/tvandradio", PathType.PrintSent)),
-    presentation = defaultCollectionPresentation,
-    articleItemsCap = 1
-  )
+  val collectionCultureArts = collection("Arts")
+    .printSentPrefill("?tag=theguardian/g2/arts").withArticleItemsCap(2)
+
+  val collectionCultureTVandRadio = collection("TV & Radio")
+  .printSentPrefill("?tag=theguardian/g2/tvandradio")
+
   val front = FrontTemplate(
     name = "Culture",
     collections = List(collectionCultureArts, collectionCultureTVandRadio),
@@ -134,12 +104,9 @@ object FrontCulture {
 }
 
 object FrontSpecialSpecial2 {
-  val collectionSpecialSpecial2 = CollectionTemplate(
-    name = "Special",
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent)),
-    presentation = defaultCollectionPresentation,
-    articleItemsCap = 4
-  )
+  val collectionSpecialSpecial2 = collection("Special")
+    .printSentPrefill("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement")
+      .withArticleItemsCap(4)
 
   val front = FrontTemplate(
     name = "Special 2",
