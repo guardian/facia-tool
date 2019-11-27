@@ -15,6 +15,8 @@ import scala.concurrent.Future
 
 class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues with EitherValues {
 
+  // TODO add tests here
+
   val allFalseMetadata = ResolvedMetaData(false, false, false, false, false, false, false, false, false, false, false, false, false, false)
   val imageUrl = "https://media.giphy.com/media/K3PYNk8oh3HGM/source.gif"
 

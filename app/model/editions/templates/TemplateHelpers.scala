@@ -8,8 +8,8 @@ object TemplateHelpers {
     val defaultCollectionPresentation = CollectionPresentation()
   }
 
-  def collection(name: String): CollectionTemplate =
-    CollectionTemplate(name, None, None, Defaults.defaultCollectionPresentation, hidden = false)
+  def collection(name: String, articleItemsCap: Int = 200): CollectionTemplate =
+    CollectionTemplate(name, None, None, Defaults.defaultCollectionPresentation, hidden = false, articleItemsCap = articleItemsCap)
 
   def front(name: String, ophanPath: Option[String], collections: CollectionTemplate*): FrontTemplate =
     FrontTemplate(name, collections.toList, Defaults.defaultFrontPresentation, ophanPath)

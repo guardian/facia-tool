@@ -129,6 +129,10 @@ object PathType extends PlayEnum[PathType] {
   override def values = findValues
 }
 
+object CollectionTemplate {
+  val DefaultItemsCap: Int = 200
+}
+
 case class CollectionTemplate(
   name: String,
   maybeOphanPath: Option[String] = None,
@@ -136,7 +140,8 @@ case class CollectionTemplate(
   presentation: CollectionPresentation,
   maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
   hidden: Boolean = false,
-  canRename: Boolean = false
+  canRename: Boolean = false,
+  articleItemsCap: Int = CollectionTemplate.DefaultItemsCap
 ) {
 
   def hide = copy(hidden = true).copy(canRename = true)
