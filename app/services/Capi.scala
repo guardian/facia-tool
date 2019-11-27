@@ -20,7 +20,8 @@ import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
 object GuardianCapiQuery {
-  // need to be large so that we will be able to cap the results after sorting them by ophan promotion metrics
+  // it needs to be large so that we will be able to cap the results after sorting them by ophan promotion metrics
+  // and not deal with CAPI response pagination
   val MaxPageSize: Int = 500
 }
 
