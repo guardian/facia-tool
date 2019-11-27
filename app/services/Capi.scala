@@ -62,7 +62,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
 
   // Sadly there's no easy way of converting a CAPI client response into JSON so we'll just proxy - similar to controllers.FaciaContentApiProxy
-  // this function is used for (suggest articles) for collection functionality
+  // this function is used for (suggest articles for collection) functionality
   def getPrefillArticles(getPrefill: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = {
 
     val query = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefill, currentPageCodes)
