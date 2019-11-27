@@ -6,6 +6,7 @@ import java.time.{LocalDate, ZoneId, ZoneOffset}
 import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
+import model.editions.templates.TemplateHelpers.Defaults
 import model.editions.templates.{AmericanEdition, AustralianEdition, DailyEdition, TheDummyEdition, TrainingEdition}
 import org.postgresql.util.PGobject
 import play.api.libs.json.Json
@@ -129,10 +130,6 @@ object PathType extends PlayEnum[PathType] {
   override def values = findValues
 }
 
-object CollectionTemplate {
-  val DefaultItemsCap: Int = 200
-}
-
 case class CollectionTemplate(
   name: String,
   maybeOphanPath: Option[String] = None,
@@ -141,7 +138,7 @@ case class CollectionTemplate(
   maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
   hidden: Boolean = false,
   canRename: Boolean = false,
-  articleItemsCap: Int = CollectionTemplate.DefaultItemsCap
+  articleItemsCap: Int = Defaults.defaultCollectionArticleItemsCap
 ) {
 
   def hide = copy(hidden = true).copy(canRename = true)
@@ -155,6 +152,10 @@ case class CollectionTemplate(
   def printSentAllTags(tags: String*) = printSentPrefill(s"?tag=${tags.mkString(",")}")
 
   def searchPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, Search)))
+
+  def withArticleItemsCap(articleItemsCap: Int) = copy(articleItemsCap = articleItemsCap)
+
+  def withTimeWindowConfig(maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays]) = copy(maybeTimeWindowConfig = maybeTimeWindowConfig)
 }
 
 case class FrontTemplate(
