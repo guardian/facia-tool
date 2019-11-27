@@ -327,7 +327,10 @@ const isGoogleRedirectUrl = (url: string) => {
 
 const getRelevantURLFromGoogleRedirectURL = (url: string) => {
   const params = checkQueryParams(url, ['q']);
-  return params ? params[0][1] : url;
+  if (params && isValidURL(params[0][1])) {
+    return params[0][1];
+  }
+  return url;
 };
 
 const getArticleEntitiesFromGuardianPath = async (
