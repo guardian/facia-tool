@@ -152,10 +152,16 @@ object GuardianCapi extends Logging {
     import capiPrefillTimeParams.{capiQueryTimeWindow, capiDateQueryParam}
     import capiQueryTimeWindow.{fromDate, toDate}
 
+    val pageSize = maybePrefillItemsCap match {
+      case Some(value) => value
+      case _ => 200
+    }
+
     // it is paginated
     // TODO we want to get all data, sort by ophan metric or page number then cap the result
     var query = CapiQueryGenerator(capiPrefillQuery.pathType)
       .page(1)
+      .pageSize(pageSize)
       .showFields(fields.mkString(","))
       .useDate(capiDateQueryParam.entryName)
       .orderBy("newest")
