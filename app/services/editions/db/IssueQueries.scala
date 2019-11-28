@@ -81,8 +81,8 @@ trait IssueQueries {
             , NULL
             , ${collection.prefill.map(_.queryString)}
             , ${collection.prefill.map(_.pathType.entryName)}
-            , $fromDate
-            , $toDate
+            , ${collection.capiQueryTimeWindow.fromDate}
+            , ${collection.capiQueryTimeWindow.toDate}
             , $truncatedNow
             , $userName
             , ${user.email}

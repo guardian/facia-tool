@@ -1,11 +1,11 @@
 package services.editions
 
-import java.time.{LocalDate, ZoneOffset}
+import java.time.LocalDate
 
 import logging.Logging
 import model.editions._
 import play.api.mvc.{Result, Results}
-import services.editions.prefills.{CapiQueryTimeWindow, ContentPrefillTimeParams, MetadataForLogging, Prefill, PrefillParamsAdapter}
+import services.editions.prefills.{CapiQueryTimeWindow, CapiPrefillTimeParams, MetadataForLogging, Prefill, PrefillParamsAdapter}
 import services.{Capi, Ophan}
 
 import scala.concurrent.Await
@@ -23,60 +23,49 @@ class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], c
     templates.lift(edition) match {
       case Some(editionTemplate) =>
         if (editionTemplate.availability.isValid(issueDate)) {
-          import editionTemplate.{capiQueryPrefillParams, ophanQueryPrefillParams}
 
-          val contentPrefillTimeWindow: CapiQueryTimeWindow = EditionsTemplating
-            .defineContentQueryTimeWindow(issueDate, capiQueryPrefillParams.timeWindowConfig)
-
-          val useDate = editionTemplate.capiQueryPrefillParams.timeWindowConfig.useDate
-
-          val frontsSkeleton = editionTemplate.fronts
-            .filter(_._2.isValid(issueDate))
-            .map { case (frontTemplate, _) =>
-
-              val contentPrefillTimeWindowParams = ContentPrefillTimeParams(contentPrefillTimeWindow, useDate)
-
-              val editionsCollectionSkeletons = collectionsTemplating.generateCollectionTemplates(
-                frontTemplate.collections,
-                edition,
-                issueDate,
-                editionTemplate,
-                frontTemplate.maybeOphanPath,
-                contentPrefillTimeWindowParams,
-                ophanQueryPrefillParams)
-
-              EditionsFrontSkeleton(
-                frontTemplate.name,
-                collections = editionsCollectionSkeletons,
-                frontTemplate.presentation,
-                frontTemplate.hidden,
-                frontTemplate.isSpecial
-              )
-            }
-
-          val issueSkeleton = EditionsIssueSkeleton(
-            issueDate,
-            editionTemplate.zoneId,
-            frontsSkeleton
-          )
-
+          val issueSkeleton: EditionsIssueSkeleton = getIssueSkeleton(issueDate, editionTemplate, edition, editionTemplate.ophanQueryPrefillParams)
+          val contentPrefillTimeWindow = editionTemplate.timeWindowConfig.toCapiQueryTimeWindow(issueDate)
           Right(GenerateEditionTemplateResult(issueSkeleton, contentPrefillTimeWindow))
+
         } else {
+
           Left(Results.UnprocessableEntity(s"$issueDate is not a valid date to create an issue of $edition"))
+
         }
       case None => Left(Results.NotFound(s"No editionTemplate registered for $edition"))
     }
   }
 
-}
+  private def getIssueSkeleton(issueDate: LocalDate, editionTemplate: EditionTemplate, edition: Edition, ophanQueryPrefillParams: Option[OphanQueryPrefillParams]) = {
+    val frontsSkeleton = editionTemplate.fronts
+      .filter{ case (_, period) => period.isValid(issueDate) }
+      .map { case (frontTemplate, _) =>
+        getFrontsSkeleton(issueDate, editionTemplate, edition, ophanQueryPrefillParams, frontTemplate)
+      }
 
-object EditionsTemplating {
-  def defineContentQueryTimeWindow(issueDate: LocalDate, timeWindowConfig: CapiTimeWindowConfigInDays): CapiQueryTimeWindow = {
-    val issueDateStart = issueDate.atStartOfDay()
-    // Regarding UTC Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
-    val fromDateUTC = issueDateStart.plusDays(timeWindowConfig.startOffset).toInstant(ZoneOffset.UTC)
-    val toDateAsUTC = issueDateStart.plusDays(timeWindowConfig.endOffset).toInstant(ZoneOffset.UTC)
-    CapiQueryTimeWindow(fromDateUTC, toDateAsUTC)
+    EditionsIssueSkeleton(
+      issueDate,
+      editionTemplate.zoneId,
+      frontsSkeleton
+    )
+  }
+
+  private def getFrontsSkeleton(issueDate: LocalDate, editionTemplate: EditionTemplate, edition: Edition, ophanQueryPrefillParams: Option[OphanQueryPrefillParams], frontTemplate: FrontTemplate) = {
+    val editionsCollectionSkeletons = collectionsTemplating.generateCollectionTemplates(
+      frontTemplate,
+      edition,
+      issueDate,
+      editionTemplate,
+      ophanQueryPrefillParams)
+
+    EditionsFrontSkeleton(
+      frontTemplate.name,
+      collections = editionsCollectionSkeletons,
+      frontTemplate.presentation,
+      frontTemplate.hidden,
+      frontTemplate.isSpecial
+    )
   }
 }
 
@@ -87,35 +76,48 @@ object CollectionTemplatingHelper {
 
 class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
 
-  def generateCollectionTemplates(collections: List[CollectionTemplate],
+  def generateCollectionTemplates(frontTemplate: FrontTemplate,
                                   edition: Edition,
                                   issueDate: LocalDate,
-                                  template: EditionTemplate,
-                                  maybeOphanPath: Option[String],
-                                  contentPrefillTimeParams: ContentPrefillTimeParams,
+                                  editionTemplate: EditionTemplate,
                                   ophanQueryPrefillParams: Option[OphanQueryPrefillParams]): List[EditionsCollectionSkeleton] = {
-    collections.map { collection =>
-      import collection.{hidden, name, prefill, presentation}
+    val collections = frontTemplate.collections
+    val maybeOphanPath = frontTemplate.maybeOphanPath
+    collections.map { collectionTemplate =>
+      import collectionTemplate.{hidden, name, prefill, presentation}
+
+      val timeWindowConfig = List(
+        collectionTemplate.maybeTimeWindowConfig,
+        frontTemplate.maybeTimeWindowConfig
+      )
+        .collectFirst{case Some(timeWindowConfig) => timeWindowConfig}
+        .getOrElse(editionTemplate.timeWindowConfig)
+
+      val capiQueryTimeWindow: CapiQueryTimeWindow = timeWindowConfig.toCapiQueryTimeWindow(issueDate)
+
+      val capiPrefillTimeParams = CapiPrefillTimeParams(capiQueryTimeWindow, editionTemplate.capiDateQueryParam)
+
       EditionsCollectionSkeleton(
         name,
-        items = prefill.map { contentPrefillUrlSegments =>
-          val getPrefillParams = PrefillParamsAdapter(
+        prefill.map { contentPrefillUrlSegments =>
+          val prefillParams = PrefillParamsAdapter(
             issueDate,
             contentPrefillUrlSegments,
-            contentPrefillTimeParams,
+            capiPrefillTimeParams,
             List(
-              template.maybeOphanPath,
+              collectionTemplate.maybeOphanPath,
               maybeOphanPath,
-              collection.maybeOphanPath
+              editionTemplate.maybeOphanPath
             ).collectFirst{case Some(path) => path},  // Get first non-None match,
             ophanQueryPrefillParams,
             edition,
             MetadataForLogging(issueDate, collectionId = None, collectionName = Some(name))
           )
-          getPrefillArticles(getPrefillParams)
+          getPrefillArticles(prefillParams)
         }.getOrElse(Nil),
         prefill,
         presentation,
+        capiQueryTimeWindow,
         hidden
       )
     }
