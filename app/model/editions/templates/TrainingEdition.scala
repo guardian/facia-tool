@@ -2,7 +2,6 @@ package model.editions.templates
 
 import java.time.ZoneId
 
-import model.editions.PathType.Search
 import model.editions.Swatch._
 import model.editions._
 import model.editions.templates.TemplateHelpers._
@@ -35,29 +34,25 @@ object TrainingEdition {
     )
   )
 
+  private val query = "?tag=theguardian/mainsection/education"
+
   def FrontNewsYesterday = front("News (Yesterday)", None,
-    CollectionTemplate("Yesterday's Education news",
-      None,
-      Some(CapiPrefillQuery("?tag=theguardian/mainsection/education", Search)),
-      Defaults.defaultCollectionPresentation,
-      Some(CapiTimeWindowConfigInDays(-1, 0)),
-      false)).swatch(News)
+    collection("Yesterday's Education news")
+      .searchPrefill(query)
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-1, 0)))
+  ).swatch(News)
 
   def FrontNewsLastWeek = front("News (Last Week)", None,
-    CollectionTemplate("Last Week's Education news",
-      None,
-      Some(CapiPrefillQuery("?tag=theguardian/mainsection/education", Search)),
-      Defaults.defaultCollectionPresentation,
-      Some(CapiTimeWindowConfigInDays(-7, 0)),
-      false)).swatch(News)
+    collection("Last Week's Education news")
+      .searchPrefill(query)
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-7, 0)))
+  ).swatch(News)
 
   def FrontNewsLastMonth = front("News (Last Month)", None,
-    CollectionTemplate("Last Month's Education news",
-      None,
-      Some(CapiPrefillQuery("?tag=theguardian/mainsection/education", Search)),
-      Defaults.defaultCollectionPresentation,
-      Some(CapiTimeWindowConfigInDays(-31, 0)),
-      false)).swatch(News)
+    collection("Last Month's Education news")
+      .searchPrefill(query)
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-31, 0))))
+    .swatch(News)
 
   def FrontWorldSpecial = specialFront("World Special", News)
 

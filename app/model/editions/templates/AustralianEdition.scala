@@ -51,13 +51,16 @@ object AustralianEdition {
   def FrontWeekendAu = front(
     "Weekend",
     collection("Features").searchPrefill("?tag=type/article,tone/features,(tracking/commissioningdesk/australia-news|tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-investigations|tracking/commissioningdesk/australia-business|tracking/commissioningdesk/australia-technology)"),
-    collection("Culture").searchPrefill("?tag=type/article,culture/culture,tracking/commissioningdesk/australia-culture,(tone/features|tone/interview|tone/reviews)"),
+    collection("Culture")
+      .searchPrefill("?tag=type/article,culture/culture,tracking/commissioningdesk/australia-culture,(tone/features|tone/interview|tone/reviews)")
+      // example on setting cap on collection article items
+      .withArticleItemsCap(201),
     collection("Lifestyle").searchPrefill("?tag=type/article,lifeandstyle/australian-lifestyle,tracking/commissioningdesk/australia-lifestyle,(tone/news|tone/features)"),
     collection("Comment").searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
   )
   .swatch(Lifestyle)
 
-  //National - News two containers, maybe split out politics into second container? 
+  //National - News two containers, maybe split out politics into second container?
 
   def FrontNationalAu = front(
     "National",
@@ -81,7 +84,7 @@ object AustralianEdition {
     collection("Opinion").searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
   )
   .swatch(Culture)
-  
+
   // Culture / Life - confused by the connection between this and weekend front above
 
   def FrontCultureLifeAu = front(
@@ -98,9 +101,9 @@ object AustralianEdition {
     collection("Long Reads").searchPrefill("?tag=type/article,news/series/the-long-read,tracking/commissioningdesk/long-read")
   )
   .swatch(Sport)
-  
-  // Sports - commissioned 
-  
+
+  // Sports - commissioned
+
   def FrontSportAu = front(
     "Sport",
     collection("Sports").searchPrefill("?tag=type/article,tracking/commissioningdesk/australia-sport,sport/australia-sport")

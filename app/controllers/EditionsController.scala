@@ -146,6 +146,9 @@ class EditionsController(db: EditionsDB,
       import prefillUpdate._
       val capiDateQueryParam = EditionsTemplates.templates(edition).capiDateQueryParam
       val capiPrefillTimeParams = CapiPrefillTimeParams(capiQueryTimeWindow, capiDateQueryParam)
+      // TODO
+      // when we click (suggest articles) for collection we are not using ophan metrics and we are not sorting on them
+      // we should converge that
       val getPrefillParams = PrefillParamsAdapter(
         issueDate,
         capiPrefillQuery,

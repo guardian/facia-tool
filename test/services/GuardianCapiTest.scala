@@ -24,8 +24,10 @@ class GuardianCapiTest extends FunSuite with Matchers {
       issueDate,
       contentPrefillQuery,
       CapiPrefillTimeParams(contentPrefillTimeWindow, CapiDateQueryParam.Published),
-      None, None,
+      maybeOphanPath = None,
+      maybeOphanQueryPrefillParams = None,
       Edition.TrainingEdition,
+      maybePrefillItemsCap = Some(100),
       MetadataForLogging(LocalDate.now(),
         collectionId = None, collectionName = None)
     )
@@ -34,7 +36,7 @@ class GuardianCapiTest extends FunSuite with Matchers {
 
     val expected = "/content/print-sent" +
       "?order-by=newest" +
-      "&page-size=200" +
+      "&page-size=" + GuardianCapiDefaults.MaxPageSize +
       "&tag=theguardian%2Fmainsection%2Ftopstories" +
       "&to-date=2019-10-07T00%3A00%3A00Z" +
       "&page=1" +
@@ -56,6 +58,7 @@ class GuardianCapiTest extends FunSuite with Matchers {
       CapiPrefillTimeParams(contentPrefillTimeWindow, CapiDateQueryParam.NewspaperEdition),
       None, None,
       Edition.TrainingEdition,
+      maybePrefillItemsCap = None,
       MetadataForLogging(LocalDate.now(),
         collectionId = None, collectionName = None)
     )
@@ -65,7 +68,7 @@ class GuardianCapiTest extends FunSuite with Matchers {
     actual shouldEqual "/content/print-sent" + "" +
       "?order-by=newest" +
       "&show-elements=images" +
-      "&page-size=200" +
+      "&page-size=" + GuardianCapiDefaults.MaxPageSize +
       "&tag=theguardian%2Fmainsection%2Ftopstories" +
       "&to-date=2019-10-07T00%3A00%3A00Z&page=1" +
       "&show-atoms=media" +
