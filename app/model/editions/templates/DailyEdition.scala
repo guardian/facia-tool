@@ -81,7 +81,8 @@ object DailyEdition {
     collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
     collection("News Special").hide,
     collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
-    collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
+    collection("Weather").printSentAnyTag("theguardian/mainsection/weather2"),
+    collection("News Special 2").hide
   )
     .swatch(News)
 
@@ -91,7 +92,8 @@ object DailyEdition {
     collection("News Special").hide,
     collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
     collection("Week in Review").printSentAnyTag("theguardian/mainsection/week-in-review"),
-    collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
+    collection("Weather").printSentAnyTag("theguardian/mainsection/weather2"),
+    collection("News Special 2").hide
   )
     .swatch(News)
 
@@ -110,6 +112,7 @@ object DailyEdition {
     collection("UK News").printSentAnyTag("theobserver/news/uknews"),
     collection("Focus").printSentAnyTag("theobserver/news/focus").hide,
     collection("News Special").hide,
+    collection("News Special 2").hide
   )
     .swatch(News)
 
