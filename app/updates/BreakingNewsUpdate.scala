@@ -89,7 +89,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
 
   private def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     val title = trail.topic match {
-      case Some("uk-general-election") => Some("General Election 2019")
+      case Some("uk-general-election") => Some("General election 2019")
       case _ => None
     }
     BreakingNewsPayload(
