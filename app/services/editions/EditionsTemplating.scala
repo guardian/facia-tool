@@ -81,7 +81,6 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
                                   issueDate: LocalDate,
                                   editionTemplate: EditionTemplate,
                                   ophanQueryPrefillParams: Option[OphanQueryPrefillParams]): List[EditionsCollectionSkeleton] = {
-
     val collections = frontTemplate.collections
     val maybeOphanPath = frontTemplate.maybeOphanPath
     collections.map { collectionTemplate =>
@@ -126,10 +125,6 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
   }
 
   // this function fetches articles from CAPI with enough data to resolve the defaults
-
-  // TODO
-  // that function should be extracted out and unit tested for the CAP items logic
-  // and used while issue creation and on maybe on suggest articles
   private def getPrefillArticles(prefillParams: PrefillParamsAdapter): List[EditionsArticleSkeleton] = {
 
     val maybeOphanScoresMap: Option[Map[String, Double]] = getOphanMetrcisMap(prefillParams)

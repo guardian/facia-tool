@@ -36,7 +36,7 @@ class GuardianCapiTest extends FunSuite with Matchers {
 
     val expected = "/content/print-sent" +
       "?order-by=newest" +
-      "&page-size=" + GuardianCapiQuery.MaxPageSize +
+      "&page-size=" + GuardianCapiDefaults.MaxPageSize +
       "&tag=theguardian%2Fmainsection%2Ftopstories" +
       "&to-date=2019-10-07T00%3A00%3A00Z" +
       "&page=1" +
@@ -68,7 +68,7 @@ class GuardianCapiTest extends FunSuite with Matchers {
     actual shouldEqual "/content/print-sent" + "" +
       "?order-by=newest" +
       "&show-elements=images" +
-      "&page-size=" + GuardianCapiQuery.MaxPageSize +
+      "&page-size=" + GuardianCapiDefaults.MaxPageSize +
       "&tag=theguardian%2Fmainsection%2Ftopstories" +
       "&to-date=2019-10-07T00%3A00%3A00Z&page=1" +
       "&show-atoms=media" +
