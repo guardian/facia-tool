@@ -112,7 +112,7 @@ describe('utils/snap', () => {
           snapType: 'interactive',
           snapUri:
             'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter',
-          atomId: '/atom/interactive/interactives/2017/06/general-election',
+          atomId: 'atom/interactive/interactives/2017/06/general-election',
           href:
             'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter'
         }

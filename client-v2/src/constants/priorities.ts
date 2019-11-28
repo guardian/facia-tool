@@ -23,5 +23,9 @@ export const editionPriorities: { [index: string]: EditionPriority } = {
   trainingEdition: {
     description: 'Training Edition',
     address: 'training-edition'
+  },
+  theDummyEdition: {
+    description: 'The Dummy Edition',
+    address: 'the-dummy-edition'
   }
 };

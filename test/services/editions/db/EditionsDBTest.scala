@@ -59,6 +59,12 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     )
   }
 
+  private val capiQueryTimeWindow = CapiQueryTimeWindow(
+    LocalDate.of(2019,12,31).atStartOfDay.toInstant(ZoneOffset.UTC),
+    LocalDate.of(2020,1,3).atStartOfDay.toInstant(ZoneOffset.UTC)
+  )
+  private val TestContentPrefillTimeWindowCfg2 = TimeWindowConfigInDays(-1, 2)
+
   private def front(name: String, collections: EditionsCollectionSkeleton*): EditionsFrontSkeleton =
     EditionsFrontSkeleton(name, collections.toList, FrontPresentation(Swatch.Culture), hidden = false, isSpecial = false)
 
@@ -67,7 +73,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
-    EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), hidden = false)
+    EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), capiQueryTimeWindow, hidden = false)
 
   private def article(pageCode: String): EditionsArticleSkeleton = EditionsArticleSkeleton(pageCode, ArticleMetadata.default)
 
@@ -502,7 +508,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   "should insert content prefill time-window correctly" taggedAs UsesDatabase in {
 
-    val issueId = insertSkeletonIssue(2019, 9, 30,
+    val issueId = insertSkeletonIssue(2020, 1, 1,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
           article("12345"),
@@ -519,7 +525,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     maybePrefillUpdate.isDefined shouldBe true
     val prefillFromDB = maybePrefillUpdate.value
-    prefillFromDB.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
+    prefillFromDB.capiQueryTimeWindow shouldEqual CapiQueryTimeWindow(
       issueDateToUTCStartOfDay(issueDate.plusDays(TestContentPrefillTimeWindowCfg.startOffset)),
       issueDateToUTCStartOfDay(issueDate.plusDays(TestContentPrefillTimeWindowCfg.endOffset))
     )

@@ -145,17 +145,17 @@ object GuardianCapi extends Logging {
     import getPrefillParams._
 
     val params = URLEncodedUtils
-      .parse(new URI(contentPrefillUrlSegments.escapedQueryString()), Charset.forName("UTF-8"))
+      .parse(new URI(capiPrefillQuery.escapedQueryString()), Charset.forName("UTF-8"))
       .asScala
 
-    import contentPrefillTimeParams.{contentPrefillTimeWindow, useDate}
-    import contentPrefillTimeWindow.{fromDate, toDate}
+    import capiPrefillTimeParams.{capiQueryTimeWindow, capiDateQueryParam}
+    import capiQueryTimeWindow.{fromDate, toDate}
 
-    var query = CapiQueryGenerator(contentPrefillUrlSegments.pathType)
+    var query = CapiQueryGenerator(capiPrefillQuery.pathType)
       .page(1)
       .pageSize(200)
       .showFields(fields.mkString(","))
-      .useDate(useDate.entryName)
+      .useDate(capiDateQueryParam.entryName)
       .orderBy("newest")
       .fromDate(fromDate)
       .toDate(toDate)

@@ -20,13 +20,11 @@ object AustralianEdition {
       FrontSportAu -> WeekDays(List(WeekDay.Sat)),
       FrontCrosswordsAu -> WeekDays(List(WeekDay.Sat))
     ),
-    capiQueryPrefillParams = CapiQueryPrefillParams(
-      timeWindowConfig = CapiTimeWindowConfigInDays(
-        startOffset = -6,
-        endOffset = 0,
-        useDate = UseDateQueryParamValue.Published
-      )
+    timeWindowConfig = CapiTimeWindowConfigInDays(
+      startOffset = -6,
+      endOffset = 0,
     ),
+    capiDateQueryParam = CapiDateQueryParam.Published,
     zoneId = ZoneId.of("Europe/London"),
     availability = WeekDays(List(WeekDay.Sat)),
     maybeOphanPath = Some("au"),

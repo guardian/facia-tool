@@ -35,12 +35,12 @@ package object prefills {
     }
   }
 
-  case class ContentPrefillTimeParams(contentPrefillTimeWindow: CapiQueryTimeWindow, useDate: UseDateQueryParamValue)
+  case class CapiPrefillTimeParams(capiQueryTimeWindow: CapiQueryTimeWindow, capiDateQueryParam: CapiDateQueryParam)
 
   case class PrefillParamsAdapter(
                                    issueDate: LocalDate,
-                                   contentPrefillUrlSegments: CapiPrefillQuery,
-                                   contentPrefillTimeParams: ContentPrefillTimeParams,
+                                   capiPrefillQuery: CapiPrefillQuery,
+                                   capiPrefillTimeParams: CapiPrefillTimeParams,
                                    maybeOphanPath: Option[String],
                                    maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams],
                                    edition: Edition,

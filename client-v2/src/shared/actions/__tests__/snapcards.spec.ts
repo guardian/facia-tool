@@ -272,7 +272,7 @@ describe('Snap cards actions', () => {
             frontPublicationDate: 1487076708000,
             id: 'snap/1487076708000',
             meta: {
-              atomId: '/atom/interactive/interactives/2017/06/general-election',
+              atomId: 'atom/interactive/interactives/2017/06/general-election',
               headline: 'General Election 2017',
               byline: 'Guardian Visuals',
               showByline: false,
