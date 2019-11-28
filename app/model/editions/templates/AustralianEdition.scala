@@ -11,11 +11,12 @@ object AustralianEdition {
   lazy val template = EditionTemplate(
     List(
       FrontTopStoriesAu -> WeekDays(List(WeekDay.Sat)),
-      FrontNewsAu -> WeekDays(List(WeekDay.Sat)),
-      FrontJournalAu -> WeekDays(List(WeekDay.Sat)),
-      FrontNewsFeaturesAu -> WeekDays(List(WeekDay.Sat)),
-      FrontCultureAu -> WeekDays(List(WeekDay.Sat)),
-      FrontLifeAu -> WeekDays(List(WeekDay.Sat)),
+      FrontWeekendAu -> WeekDays(List(WeekDay.Sat)),
+      FrontNationalAu -> WeekDays(List(WeekDay.Sat)),
+      FrontWorldAu -> WeekDays(List(WeekDay.Sat)),
+      FrontOpinionAu -> WeekDays(List(WeekDay.Sat)),
+      FrontCultureLifeAu -> WeekDays(List(WeekDay.Sat)),
+      FrontRecommendedAu -> WeekDays(List(WeekDay.Sat)),
       FrontSportAu -> WeekDays(List(WeekDay.Sat)),
       FrontCrosswordsAu -> WeekDays(List(WeekDay.Sat))
     ),
@@ -45,63 +46,72 @@ object AustralianEdition {
     )
   .swatch(News)
 
-  // News container driven from the tone tag, this is going to be too long as is
-  // Need to limit prefill duration by container as well as front?
+  // Weekend - Features, Culture, Lifestyle, Comment
 
-  def FrontNewsAu = front(
-    "News",
-    collection("News").searchPrefill("?tag=tone/news,australia-news/australia-news,-tone/comment"),
-    collection("World News").searchPrefill("?tag=tone/news,-australia-news/australia-news,-tone/comment")
-  )
-  .swatch(News)
-
-  //Opinion
-
-  def FrontJournalAu = front(
-    "Journal",
-    collection("Opinion").searchPrefill("?tag=(australia-news/australia-news,tone/comment)|tracking/commissioningdesk/australia-opinion"),
-    collection("World Opinion").searchPrefill("?tag=(tone/comment,-australia-news/australia-news)|(tone/comment,-tracking/commissioningdesk/australia-opinion)")
-  )
-  .swatch(Opinion)
-
-  //News Features and Long reads
-
-  def FrontNewsFeaturesAu = front(
-    "News Features",
-    collection("Long Read").searchPrefill("?tag=news/series/the-long-read"),
-    collection("News Features").searchPrefill("?tag=tone/news,tone/features,-news/series/the-long-read")
-  )
-  .swatch(News)
-
-  // Culture and Life
-  // We're going to need more collections
-
-  def FrontCultureAu = front(
-    "Culture",
-    collection("Culture").searchPrefill("?tag=((tone/features|tone/interviews),-tone/reviews),(music/music|books/books|stage/stage|music/classical-music-and-opera|artanddesign/artanddesign|games/games|tv-and-radio/tv-and-radio|film/film|culture/culture)")
-  )
-  .swatch(Culture)
-
-  def FrontLifeAu = front(
-    "Life",
-    collection("Life").searchPrefill("?tag=(tone/features|tone/recipes),(lifeandstyle/lifeandstyle|lifeandstyle/love-and-sex|lifeandstyle/celebrity|food/food|/travel/travel|lifeandstyle/health-and-wellbeing|lifeandstyle/women|lifeandstyle/home-and-garden|money/money|technology/motoring|fashion/fashion)")
+  def FrontWeekendAu = front(
+    "Weekend",
+    collection("Features").searchPrefill("?tag=type/article,tone/features,(tracking/commissioningdesk/australia-news|tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-investigations|tracking/commissioningdesk/australia-business|tracking/commissioningdesk/australia-technology)"),
+    collection("Culture").searchPrefill("?tag=type/article,culture/culture,tracking/commissioningdesk/australia-culture,(tone/features|tone/interview|tone/reviews)"),
+    collection("Lifestyle").searchPrefill("?tag=type/article,lifeandstyle/australian-lifestyle,tracking/commissioningdesk/australia-lifestyle,(tone/news|tone/features)"),
+    collection("Comment").searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
   )
   .swatch(Lifestyle)
 
-  // Sport
+  //National - News two containers, maybe split out politics into second container? 
 
+  def FrontNationalAu = front(
+    "National",
+    collection("News").searchPrefill("?tag=type/article,australia-news/australia-news,tone/news,(tracking/commissioningdesk/australia-politics|tracking/commissioningdesk/australia-politics)"),
+    collection("Politics")
+  )
+  .swatch(News)
+
+  //World - International news content
+
+  def FrontWorldAu = front(
+    "World",
+    collection("World").searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),tone/news,(tracking/commissioningdesk/us-news|tracking/commissioningdesk/us-foreign|tracking/commissioningdesk/uk-home-news|tracking/commissioningdesk/uk-foreign)")
+  )
+  .swatch(News)
+
+  // Opinion
+
+  def FrontOpinionAu = front(
+    "Opinion",
+    collection("Opinion").searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
+  )
+  .swatch(Culture)
+  
+  // Culture / Life - confused by the connection between this and weekend front above
+
+  def FrontCultureLifeAu = front(
+    "Culture & Lifestyle",
+    collection("Culture").searchPrefill("?tag=type/article,culture/culture,lifeandstyle/australian-lifestyle,(tone/features|tone/reviews|tone/news),(tracking/commissioningdesk/australia-lifestyle|tracking/commissioningdesk/australia-culture)"),
+    collection("Lifestyle")
+  )
+  .swatch(Lifestyle)
+
+  // Recommended Reads (aka Long Reads)
+
+  def FrontRecommendedAu = front(
+    "Recommended Reads",
+    collection("Long Reads").searchPrefill("?tag=type/article,news/series/the-long-read,tracking/commissioningdesk/long-read")
+  )
+  .swatch(Sport)
+  
+  // Sports - commissioned 
+  
   def FrontSportAu = front(
     "Sport",
-    collection("Sport 1").searchPrefill("?tag=sport/sport|football/football|football/w-league|sport/horse-racing|sport/rugbyleague|sport/boxing|sport/golf|sport/formulaone|sport/cycling|sport/tennis|sport/cricket|sport/rugby-union|sport/australian-rules-football"),
-    collection("Sport 2"),
-    collection("Sport 3")
+    collection("Sports").searchPrefill("?tag=type/article,tracking/commissioningdesk/australia-sport,sport/australia-sport")
   )
   .swatch(Sport)
 
-  // Crosswords
+  // Crosswords - also Quizzes, not sure if this will work. Split to a separate container.
 
   def FrontCrosswordsAu = front(
-    "Crosswords",
-    collection("Crosswords").searchPrefill("?tag=type/crossword")
+    "Puzzles",
+    collection("Crosswords").searchPrefill("?tag=type/crossword"),
+    collection("Quizzes").searchPrefill("?tag=tone/quizzes")
   )
 }
