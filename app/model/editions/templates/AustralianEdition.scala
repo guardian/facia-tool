@@ -52,9 +52,7 @@ object AustralianEdition {
     "Weekend",
     collection("Features").searchPrefill("?tag=type/article,tone/features,(tracking/commissioningdesk/australia-news|tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-investigations|tracking/commissioningdesk/australia-business|tracking/commissioningdesk/australia-technology)"),
     collection("Culture")
-      .searchPrefill("?tag=type/article,culture/culture,tracking/commissioningdesk/australia-culture,(tone/features|tone/interview|tone/reviews)")
-      // example on setting cap on collection article items
-      .withArticleItemsCap(201),
+      .searchPrefill("?tag=type/article,culture/culture,tracking/commissioningdesk/australia-culture,(tone/features|tone/interview|tone/reviews)"),
     collection("Lifestyle").searchPrefill("?tag=type/article,lifeandstyle/australian-lifestyle,tracking/commissioningdesk/australia-lifestyle,(tone/news|tone/features)"),
     collection("Comment").searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
   )
@@ -64,7 +62,9 @@ object AustralianEdition {
 
   def FrontNationalAu = front(
     "National",
-    collection("News").searchPrefill("?tag=type/article,australia-news/australia-news,tone/news,(tracking/commissioningdesk/australia-politics|tracking/commissioningdesk/australia-politics)"),
+    collection("News")
+      .searchPrefill("?tag=type/article,australia-news/australia-news,tone/news,(tracking/commissioningdesk/australia-politics|tracking/commissioningdesk/australia-politics)")
+      .withArticleItemsCap(40),
     collection("Politics")
   )
   .swatch(News)
@@ -73,7 +73,9 @@ object AustralianEdition {
 
   def FrontWorldAu = front(
     "World",
-    collection("World").searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),tone/news,(tracking/commissioningdesk/us-news|tracking/commissioningdesk/us-foreign|tracking/commissioningdesk/uk-home-news|tracking/commissioningdesk/uk-foreign)")
+    collection("World")
+      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),tone/news,(tracking/commissioningdesk/us-news|tracking/commissioningdesk/us-foreign|tracking/commissioningdesk/uk-home-news|tracking/commissioningdesk/uk-foreign)")
+      .withArticleItemsCap(40)
   )
   .swatch(News)
 
@@ -81,7 +83,8 @@ object AustralianEdition {
 
   def FrontOpinionAu = front(
     "Opinion",
-    collection("Opinion").searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
+    collection("Opinion")
+      .searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
   )
   .swatch(Culture)
 
@@ -89,7 +92,8 @@ object AustralianEdition {
 
   def FrontCultureLifeAu = front(
     "Culture & Lifestyle",
-    collection("Culture").searchPrefill("?tag=type/article,culture/culture,lifeandstyle/australian-lifestyle,(tone/features|tone/reviews|tone/news),(tracking/commissioningdesk/australia-lifestyle|tracking/commissioningdesk/australia-culture)"),
+    collection("Culture")
+      .searchPrefill("?tag=type/article,culture/culture,lifeandstyle/australian-lifestyle,(tone/features|tone/reviews|tone/news),(tracking/commissioningdesk/australia-lifestyle|tracking/commissioningdesk/australia-culture)"),
     collection("Lifestyle")
   )
   .swatch(Lifestyle)
@@ -98,7 +102,8 @@ object AustralianEdition {
 
   def FrontRecommendedAu = front(
     "Recommended Reads",
-    collection("Long Reads").searchPrefill("?tag=type/article,news/series/the-long-read,tracking/commissioningdesk/long-read")
+    collection("Long Reads")
+      .searchPrefill("?tag=type/article,news/series/the-long-read,tracking/commissioningdesk/long-read")
   )
   .swatch(Sport)
 
@@ -107,6 +112,7 @@ object AustralianEdition {
   def FrontSportAu = front(
     "Sport",
     collection("Sports").searchPrefill("?tag=type/article,tracking/commissioningdesk/australia-sport,sport/australia-sport")
+      .withArticleItemsCap(40)
   )
   .swatch(Sport)
 
