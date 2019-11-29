@@ -170,6 +170,8 @@ case class FrontTemplate(
   def special = copy(isSpecial = true, hidden = true)
 
   def swatch(swatch: Swatch) = copy(presentation = FrontPresentation(swatch))
+
+  def withTimeWindowConfig(maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays]) = copy(maybeTimeWindowConfig = maybeTimeWindowConfig)
 }
 
 sealed abstract class CapiDateQueryParam extends EnumEntry with Hyphencase with Uncapitalised

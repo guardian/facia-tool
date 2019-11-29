@@ -43,20 +43,23 @@ object AustralianEdition {
   def FrontTopStoriesAu = front(
     "Top stories",
     collection("Top Stories")
-    )
-  .swatch(News)
+  )
+    .swatch(News)
 
   // Weekend - Features, Culture, Lifestyle, Comment
 
   def FrontWeekendAu = front(
     "Weekend",
-    collection("Features").searchPrefill("?tag=type/article,tone/features,(tracking/commissioningdesk/australia-news|tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-investigations|tracking/commissioningdesk/australia-business|tracking/commissioningdesk/australia-technology)"),
+    collection("Features")
+      .searchPrefill("?tag=type/article,tone/features,(tracking/commissioningdesk/australia-news|tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-investigations|tracking/commissioningdesk/australia-business|tracking/commissioningdesk/australia-technology)"),
     collection("Culture")
       .searchPrefill("?tag=type/article,culture/culture,tracking/commissioningdesk/australia-culture,(tone/features|tone/interview|tone/reviews)"),
-    collection("Lifestyle").searchPrefill("?tag=type/article,lifeandstyle/australian-lifestyle,tracking/commissioningdesk/australia-lifestyle,(tone/news|tone/features)"),
-    collection("Comment").searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
+    collection("Lifestyle")
+      .searchPrefill("?tag=type/article,lifeandstyle/australian-lifestyle,tracking/commissioningdesk/australia-lifestyle,(tone/news|tone/features)"),
+    collection("Comment")
+      .searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
   )
-  .swatch(Lifestyle)
+    .swatch(Lifestyle)
 
   //National - News two containers, maybe split out politics into second container?
 
@@ -67,7 +70,8 @@ object AustralianEdition {
       .withArticleItemsCap(40),
     collection("Politics")
   )
-  .swatch(News)
+    .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-1, 0)))
+    .swatch(News)
 
   //World - International news content
 
@@ -77,7 +81,7 @@ object AustralianEdition {
       .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),tone/news,(tracking/commissioningdesk/us-news|tracking/commissioningdesk/us-foreign|tracking/commissioningdesk/uk-home-news|tracking/commissioningdesk/uk-foreign)")
       .withArticleItemsCap(40)
   )
-  .swatch(News)
+    .swatch(News)
 
   // Opinion
 
@@ -86,7 +90,7 @@ object AustralianEdition {
     collection("Opinion")
       .searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
   )
-  .swatch(Culture)
+    .swatch(Culture)
 
   // Culture / Life - confused by the connection between this and weekend front above
 
@@ -96,7 +100,7 @@ object AustralianEdition {
       .searchPrefill("?tag=type/article,culture/culture,lifeandstyle/australian-lifestyle,(tone/features|tone/reviews|tone/news),(tracking/commissioningdesk/australia-lifestyle|tracking/commissioningdesk/australia-culture)"),
     collection("Lifestyle")
   )
-  .swatch(Lifestyle)
+    .swatch(Lifestyle)
 
   // Recommended Reads (aka Long Reads)
 
@@ -105,7 +109,7 @@ object AustralianEdition {
     collection("Long Reads")
       .searchPrefill("?tag=type/article,news/series/the-long-read,tracking/commissioningdesk/long-read")
   )
-  .swatch(Sport)
+    .swatch(Sport)
 
   // Sports - commissioned
 
@@ -114,7 +118,8 @@ object AustralianEdition {
     collection("Sports").searchPrefill("?tag=type/article,tracking/commissioningdesk/australia-sport,sport/australia-sport")
       .withArticleItemsCap(40)
   )
-  .swatch(Sport)
+    .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-1, 0)))
+    .swatch(Sport)
 
   // Crosswords - also Quizzes, not sure if this will work. Split to a separate container.
 
