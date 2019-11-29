@@ -19,6 +19,11 @@ import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
+object GuardianCapiDefaults {
+  // 200 is max value in CAPI
+  val MaxPageSize: Int = 200
+}
+
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext)
   extends GuardianContentClient(apiKey = config.contentApi.editionsKey) with Capi with Logging {
 
@@ -57,6 +62,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
 
   // Sadly there's no easy way of converting a CAPI client response into JSON so we'll just proxy - similar to controllers.FaciaContentApiProxy
+  // this function is used for (suggest articles for collection) functionality
   def getPrefillArticles(getPrefill: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = {
 
     val query = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefill, currentPageCodes)
@@ -151,9 +157,12 @@ object GuardianCapi extends Logging {
     import capiPrefillTimeParams.{capiQueryTimeWindow, capiDateQueryParam}
     import capiQueryTimeWindow.{fromDate, toDate}
 
+    // it is paginated
+    // depends on pageSize param if pageSize will be very large then we will not need to iterate over API response pages
+    // TODO we want to get all data, sort by ophan metric or page number then cap the result
     var query = CapiQueryGenerator(capiPrefillQuery.pathType)
       .page(1)
-      .pageSize(200)
+      .pageSize(GuardianCapiDefaults.MaxPageSize)
       .showFields(fields.mkString(","))
       .useDate(capiDateQueryParam.entryName)
       .orderBy("newest")

@@ -2,108 +2,12 @@ package services.editions
 
 import java.time.{LocalDate, ZoneId, ZoneOffset}
 
-import com.gu.contentapi.client.model.v1.SearchResponse
-import com.gu.facia.api.utils.ResolvedMetaData
-import fixtures.TestEdition
+import fixtures.{FakeCapiAndOphan, TestEdition}
 import model.editions._
 import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
-import services.editions.prefills.{CapiQueryTimeWindow, Prefill, PrefillParamsAdapter}
-import services.{Capi, Ophan, OphanScore}
-import java.time.temporal.ChronoField
+import services.editions.prefills.CapiQueryTimeWindow
 
-import scala.concurrent.Future
-
-class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues with EitherValues {
-
-  val allFalseMetadata = ResolvedMetaData(false, false, false, false, false, false, false, false, false, false, false, false, false, false)
-  val imageUrl = "https://media.giphy.com/media/K3PYNk8oh3HGM/source.gif"
-
-  private val nullOphan = new Ophan {
-    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = Future.successful(None)
-  }
-
-  private val forwardOphan = new Ophan {
-    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = Future.successful(Some(
-      Array(
-        OphanScore("webUrl123456", 3d),
-        OphanScore("webUrl345678", 2d),
-        OphanScore("webUrl574893", 1d)
-      )
-    ))
-  }
-
-  val reverseOphan = new Ophan {
-    override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = Future.successful(Some(
-      Array(
-        OphanScore("webUrl123456", 1d),
-        OphanScore("webUrl345678", 2d),
-        OphanScore("webUrl574893", 3d)
-      )
-    ))
-  }
-
-  val fakeOphan = new Ophan() {
-    override def getOphanScores(maybePath: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] =
-      Future.successful(Some(Array(OphanScore("banana", 33d))))
-  }
-
-  val fakeCapi = new Capi {
-    def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)] = ???
-
-    def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
-      import prefillParams._
-      capiPrefillQuery.queryString match {
-        case "?tag=theguardian/mainsection/topstories" => Future.successful(List(
-          Prefill(
-            123456,
-            None,
-            "webUrl123456",
-            allFalseMetadata.copy(
-              showByline = false,
-              showQuotedHeadline = false,
-              imageCutoutReplace = false
-            ),
-            None,
-            "tone1",
-            None,
-            None,
-            None)
-        ))
-        case "?tag=theguardian/g2/arts" => Future.successful(List(
-          Prefill(
-            345678,
-            None,
-            "webUrl345678",
-            allFalseMetadata.copy(
-              showByline = true,
-              showQuotedHeadline = true,
-              imageCutoutReplace = true
-            ),
-            Some(Image(None, None, imageUrl, imageUrl)),
-            "tone1",
-            Some(MediaType.Cutout),
-            None,
-            None),
-          Prefill(
-            574893,
-            None,
-            "webUrl574893",
-            allFalseMetadata.copy(
-              showByline = true,
-              showQuotedHeadline = true,
-              imageCutoutReplace = true
-            ),
-            None,
-            "tone2",
-            Some(MediaType.UseArticleTrail),
-            None,
-            None)
-        ))
-      }
-    }
-
-    def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = ???
-  }
+class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues with EitherValues with FakeCapiAndOphan {
 
   "defineTimeWindow for contentPrefill" - {
     "should return expected time window" in {
@@ -115,27 +19,64 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
     }
   }
 
-  private def issueDateToUTCStartOfDay(issueDate: LocalDate) = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
-
-  import TestEdition.{ContentQueryEndOffsetInDays, ContentQueryStartOffsetInDays}
+  import TestEdition.{CapiQueryEndOffsetInDays, CapiQueryStartOffsetInDays}
 
   "Creating a template" - {
-    "Sets the prefill metadata from CAPI for Culture 1, with no ordering" in {
+    "Sets the prefill from CAPI with collections cap" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
       val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
-        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(ContentQueryStartOffsetInDays)),
-        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(ContentQueryEndOffsetInDays))
+        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryStartOffsetInDays)),
+        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryEndOffsetInDays))
       )
 
       issue.fronts.size shouldBe 4
-      val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
-      arts.items.size shouldBe 2
 
-      val arts1 = arts.items.head
+      val cultureFronts = issue.fronts.find(_.name == "Culture").value
+      val ukNewsFronts = issue.fronts.find(_.name == "UK News").value
+      val topStoriesFronts = issue.fronts.find(_.name == "Top Stories").value
+      val special2Fronts = issue.fronts.find(_.name == "Special 2").value
+
+      val cultureFrontsCollectionsArticlesCountByName = toArticleItemsCountByCollectionName(cultureFronts.collections)
+      val ukNewsFrontsCollectionsArticlesCountByName = toArticleItemsCountByCollectionName(ukNewsFronts.collections)
+      val topStoriesFrontsCollectionsArticlesCountByName = toArticleItemsCountByCollectionName(topStoriesFronts.collections)
+      val special2FrontsCollectionsArticlesCountByName = toArticleItemsCountByCollectionName(special2Fronts.collections)
+
+      cultureFrontsCollectionsArticlesCountByName shouldBe Map("Arts" -> 2, "TV & Radio" -> 0)
+
+      ukNewsFrontsCollectionsArticlesCountByName shouldBe Map("Weather" -> 0, "Front Page" -> 1, "UK News" -> 0)
+
+      topStoriesFrontsCollectionsArticlesCountByName shouldBe Map("Top Stories" -> 1, "Top Stories 2" -> 0)
+
+      special2FrontsCollectionsArticlesCountByName shouldBe Map("Special" -> 4)
+    }
+
+    def toArticleItemsCountByCollectionName(collections: List[EditionsCollectionSkeleton]): Map[String, Int] = {
+      collections.groupBy(_.name).map{
+        case (k, v) =>
+          k -> v.flatMap(_.items).size
+      }
+    }
+
+    "Sets the prefill metadata from CAPI for Culture Front, with no ordering" in {
+      val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
+      val issueDate = LocalDate.of(2019, 9, 30)
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
+      val issue = genTemplateResult.issueSkeleton
+
+      genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
+        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryStartOffsetInDays)),
+        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryEndOffsetInDays))
+      )
+
+      issue.fronts.size shouldBe 4
+      val artsCollection = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
+      artsCollection.items.size shouldBe 2
+
+      val arts1 = artsCollection.items.head
       arts1.pageCode shouldBe "345678"
 
       arts1.metadata.showByline.isDefined shouldBe true
@@ -154,64 +95,64 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
     }
 
 
-    "Sets the prefill metadata from CAPI for Culture 1, with reverse ordering" in {
+    "Sets the prefill metadata from CAPI for Culture Front, with reverse ordering" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, reverseOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
       val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
-        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(ContentQueryStartOffsetInDays)),
-        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(ContentQueryEndOffsetInDays))
+        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryStartOffsetInDays)),
+        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryEndOffsetInDays))
       )
 
       issue.fronts.size shouldBe 4
-      val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
-      arts.items.size shouldBe 2
+      val artsCollection = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
+      artsCollection.items.size shouldBe 2
 
-      val arts1 = arts.items.head
+      val arts1 = artsCollection.items.head
       arts1.pageCode shouldBe "574893"
 
     }
 
 
-    "Sets the prefill metadata from CAPI for Culture 1, with forward ordering" in {
+    "Sets the prefill metadata from CAPI for Culture Front, with forward ordering" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, forwardOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
       val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
-        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(ContentQueryStartOffsetInDays)),
-        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(ContentQueryEndOffsetInDays))
+        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryStartOffsetInDays)),
+        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryEndOffsetInDays))
       )
 
       issue.fronts.size shouldBe 4
-      val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
-      arts.items.size shouldBe 2
+      val artsCollection = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
+      artsCollection.items.size shouldBe 2
 
-      val arts1 = arts.items.head
+      val arts1 = artsCollection.items.head
       arts1.pageCode shouldBe "345678"
 
     }
 
 
-    "Sets the prefill metadata from CAPI for Culture 2" in {
+    "Sets the prefill metadata from CAPI for Culture Front" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
       val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
-        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(ContentQueryStartOffsetInDays)),
-        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(ContentQueryEndOffsetInDays))
+        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryStartOffsetInDays)),
+        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryEndOffsetInDays))
       )
 
       issue.fronts.size shouldBe 4
-      val arts = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
-      arts.items.size shouldBe 2
+      val artsCollection = issue.fronts.find(_.name == "Culture").value.collections.find(_.name == "Arts").value
+      artsCollection.items.size shouldBe 2
 
-      val arts2 = arts.items.tail.head
+      val arts2 = artsCollection.items.tail.head
       arts2.pageCode shouldBe "574893"
 
       arts2.metadata.showByline.isDefined shouldBe true
@@ -227,22 +168,22 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
 
     }
 
-    "Sets the prefill metadata from CAPI for UK News" in {
+    "Sets the prefill metadata from CAPI for UK News Front" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
       val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
-        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(ContentQueryStartOffsetInDays)),
-        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(ContentQueryEndOffsetInDays))
+        fromDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryStartOffsetInDays)),
+        toDate = issueDateToUTCStartOfDay(issueDate.plusDays(CapiQueryEndOffsetInDays))
       )
 
       issue.fronts.size shouldBe 4
-      val frontPage = issue.fronts.find(_.name == "UK News").value.collections.find(_.name == "Front Page").value
-      frontPage.items.size shouldBe 1
-      frontPage.items.head.pageCode shouldBe "123456"
-      frontPage.items.head.metadata shouldBe ArticleMetadata.default
+      val frontPageCollection = issue.fronts.find(_.name == "UK News").value.collections.find(_.name == "Front Page").value
+      frontPageCollection.items.size shouldBe 1
+      frontPageCollection.items.head.pageCode shouldBe "123456"
+      frontPageCollection.items.head.metadata shouldBe ArticleMetadata.default
     }
   }
 
@@ -253,8 +194,8 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       editionSkeleton.isRight shouldBe (true)
       editionSkeleton.right.get.contentPrefillTimeWindow shouldBe (
         CapiQueryTimeWindow(
-          LocalDate.of(2019,12,31).atStartOfDay.toInstant(ZoneOffset.UTC),
-          LocalDate.of(2020,1,3).atStartOfDay.toInstant(ZoneOffset.UTC))
+          LocalDate.of(2019, 12, 31).atStartOfDay.toInstant(ZoneOffset.UTC),
+          LocalDate.of(2020, 1, 3).atStartOfDay.toInstant(ZoneOffset.UTC))
         )
     }
 
@@ -262,7 +203,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
         .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
       editionSkeleton.isRight shouldBe (true)
-      editionSkeleton.right.get.issueSkeleton.issueDate shouldBe (LocalDate.of(2020,1,1))
+      editionSkeleton.right.get.issueSkeleton.issueDate shouldBe (LocalDate.of(2020, 1, 1))
     }
 
     "Issue zone is correct" in {
@@ -287,10 +228,10 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       front.collections(0).capiQueryTimeWindow shouldBe (
         // This collection has a different time window than that of the main edition template
         CapiQueryTimeWindow(
-          LocalDate.of(2019,12,31).atStartOfDay.toInstant(ZoneOffset.UTC),
-          LocalDate.of(2020,1,3).atStartOfDay.toInstant(ZoneOffset.UTC)
+          LocalDate.of(2019, 12, 31).atStartOfDay.toInstant(ZoneOffset.UTC),
+          LocalDate.of(2020, 1, 3).atStartOfDay.toInstant(ZoneOffset.UTC)
         )
-      )
+        )
     }
 
     "Issue first front content with different time window is correct" in {
@@ -301,10 +242,13 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       front.collections(1).capiQueryTimeWindow shouldBe (
         // This collection has a different time window than that of the main edition template
         CapiQueryTimeWindow(
-          LocalDate.of(2019,12,29).atStartOfDay.toInstant(ZoneOffset.UTC),
-          LocalDate.of(2020,1,3).atStartOfDay.toInstant(ZoneOffset.UTC)
+          LocalDate.of(2019, 12, 29).atStartOfDay.toInstant(ZoneOffset.UTC),
+          LocalDate.of(2020, 1, 3).atStartOfDay.toInstant(ZoneOffset.UTC)
         )
-      )
+        )
     }
   }
+
+  private def issueDateToUTCStartOfDay(issueDate: LocalDate) = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
+
 }
