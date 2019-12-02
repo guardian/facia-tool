@@ -19,10 +19,10 @@ trait FakeCapiAndOphan {
   val fakeCapi = new Capi {
     def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)] = ???
 
-    def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
+    def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): List[Prefill] = {
       import prefillParams._
       capiPrefillQuery.queryString match {
-        case "?tag=theguardian/mainsection/topstories" => Future.successful(List(
+        case "?tag=theguardian/mainsection/topstories" => List(
           Prefill(
             123456,
             None,
@@ -65,8 +65,8 @@ trait FakeCapiAndOphan {
             None,
             None,
             None)
-        ))
-        case "?tag=theguardian/g2/arts" => Future.successful(List(
+        )
+        case "?tag=theguardian/g2/arts" => List(
           Prefill(
             345678,
             None,
@@ -109,8 +109,8 @@ trait FakeCapiAndOphan {
             Some(MediaType.UseArticleTrail),
             None,
             None)
-        ))
-        case "?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement" => Future.successful(List(
+        )
+        case "?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement" => List(
           Prefill(
             112211,
             None,
@@ -181,7 +181,7 @@ trait FakeCapiAndOphan {
             Some(MediaType.Cutout),
             None,
             None)
-        ))
+        )
       }
     }
 

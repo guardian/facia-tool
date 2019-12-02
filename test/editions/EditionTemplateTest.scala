@@ -19,7 +19,7 @@ class EditionTemplateTest extends FreeSpec with Matchers {
 
     override def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = Future.successful(null)
 
-    override def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]] = Future.successful(Nil)
+    override def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): List[Prefill] = Nil
   }
   object TestOphan extends Ophan {
     override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = ???

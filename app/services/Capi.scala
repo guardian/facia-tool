@@ -27,6 +27,8 @@ object GuardianCapiDefaults {
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext)
   extends GuardianContentClient(apiKey = config.contentApi.editionsKey) with Capi with Logging {
 
+  private val capiClientHelper = CapiClientHelper(this)
+
   override def targetUrl: String = config.contentApi.contentApiDraftHost
 
   override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
@@ -91,20 +93,22 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
    * @param getPrefillParams
    * @return
    */
-  def getUnsortedPrefillArticleItems(getPrefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
+  def getUnsortedPrefillArticleItems(getPrefillParams: PrefillParamsAdapter): List[Prefill] = {
 
-    val query = GuardianCapi.prepareGetUnsortedPrefillArticleItemsQuery(getPrefillParams)
+    val query: CapiQueryGenerator = GuardianCapi.prepareGetUnsortedPrefillArticleItemsQuery(getPrefillParams)
 
     logger.info(s"getUnsortedPrefillArticleItems, Prefill Query: $query for ${getPrefillParams.metadataForLogging}")
 
-    this.getResponse(query) map { response =>
-      response.results.flatMap(content => prefillMetadata(content)).toList
-    }
+    capiClientHelper.readAllSearchResponsePages(query).flatMap(mapToPrefill)
   }
 
-  private def prefillMetadata(content: Content): Option[Prefill] = {
-    content.fields.flatMap(_.internalPageCode).map { internalPageCode => CapiPrefiller.prefill(content) }
-  }
+  private def mapToPrefill(response: SearchResponse): List[Prefill] =
+    response.results.flatMap(content => prefillMetadata(content)).toList
+
+
+  private def prefillMetadata(content: Content): Option[Prefill] =
+    content.fields.flatMap(_.internalPageCode).map { internalPageCode => CapiPrefiller.prefill(content)
+    }
 }
 
 object GuardianCapi extends Logging {
@@ -154,14 +158,14 @@ object GuardianCapi extends Logging {
       .parse(new URI(capiPrefillQuery.escapedQueryString()), Charset.forName("UTF-8"))
       .asScala
 
-    import capiPrefillTimeParams.{capiQueryTimeWindow, capiDateQueryParam}
+    import capiPrefillTimeParams.{capiDateQueryParam, capiQueryTimeWindow}
     import capiQueryTimeWindow.{fromDate, toDate}
 
     // it is paginated
     // depends on pageSize param if pageSize will be very large then we will not need to iterate over API response pages
     // TODO we want to get all data, sort by ophan metric or page number then cap the result
     var query = CapiQueryGenerator(capiPrefillQuery.pathType)
-      .page(1)
+      //      .page(1)
       .pageSize(GuardianCapiDefaults.MaxPageSize)
       .showFields(fields.mkString(","))
       .useDate(capiDateQueryParam.entryName)
@@ -196,7 +200,7 @@ case class CapiQueryGenerator(pathType: PathType, parameterHolder: Map[String, P
 trait Capi {
   def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)]
 
-  def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]]
+  def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): List[Prefill]
 
   def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse]
 }
