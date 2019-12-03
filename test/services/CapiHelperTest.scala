@@ -8,7 +8,7 @@ import org.scalatest.{BeforeAndAfterEach, FlatSpec, FunSuite, Matchers}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class CapiClientHelperTest extends FlatSpec with BeforeAndAfterEach with Matchers {
+class CapiHelperTest extends FlatSpec with BeforeAndAfterEach with Matchers {
 
   implicit val ctx: ExecutionContext = ExecutionContext.global
 
@@ -50,7 +50,7 @@ class CapiClientHelperTest extends FlatSpec with BeforeAndAfterEach with Matcher
 
   it should "read all pages of paginated response" in {
     val getResponse = genFakeGetResponseFunction(searchResponseWith3TotalPages)
-    val actual = CapiClientHelper.readAllSearchResponsePages(query, getResponse)
+    val actual = CapiHelper.readAllSearchResponsePages(query, getResponse)
     actual.map(_.currentPage) shouldEqual List(1, 2, 3)
     actual.map(_.total) shouldEqual List(3, 3, 3)
     getResponseCallsCounter shouldEqual 3
@@ -58,7 +58,7 @@ class CapiClientHelperTest extends FlatSpec with BeforeAndAfterEach with Matcher
 
   it should "get response for 1 page search result" in {
     val getResponse = genFakeGetResponseFunction(searchResponseWith1Page)
-    val actual = CapiClientHelper.readAllSearchResponsePages(query, getResponse)
+    val actual = CapiHelper.readAllSearchResponsePages(query, getResponse)
     actual.map(_.currentPage) shouldEqual List(1)
     actual.map(_.total) shouldEqual List(1)
     getResponseCallsCounter shouldEqual 1
@@ -66,7 +66,7 @@ class CapiClientHelperTest extends FlatSpec with BeforeAndAfterEach with Matcher
 
   it should "handle situation if search result pages is 0" in {
     val getResponse = genFakeGetResponseFunction(searchResponseWith0Pages)
-    val actual = CapiClientHelper.readAllSearchResponsePages(query, getResponse)
+    val actual = CapiHelper.readAllSearchResponsePages(query, getResponse)
     actual.map(_.currentPage) shouldEqual List(1)
     actual.map(_.total) shouldEqual List(0)
     getResponseCallsCounter shouldEqual 1

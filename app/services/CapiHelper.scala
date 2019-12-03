@@ -7,7 +7,7 @@ import com.gu.contentapi.client.model.v1.SearchResponse
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-object CapiClientHelper {
+object CapiHelper {
 
   // Capi Scala client have functions that reads paginated responses
   // but they give inaccurate results (most of the time it gives only the first page)
