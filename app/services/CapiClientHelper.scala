@@ -25,8 +25,8 @@ class CapiClientHelper(apiClient: GuardianContentClient)(implicit ex: ExecutionC
 
 
   def readAllSearchResponsePages(query: CapiQueryGenerator): List[SearchResponse] = {
-    val FirstPageReqTimeout = Duration(5, TimeUnit.SECONDS)
-    val RemainingPagesReqTimeout = Duration(10, TimeUnit.SECONDS)
+    val FirstPageReqTimeout = Duration(3, TimeUnit.SECONDS)
+    val RemainingPagesReqTimeout = Duration(5, TimeUnit.SECONDS)
     val firstPageResponse = Await.result(apiClient.getResponse(query.page(1)), FirstPageReqTimeout)
     val totalPages = firstPageResponse.pages
     val remainingPages = (1 to totalPages).tail
@@ -34,7 +34,6 @@ class CapiClientHelper(apiClient: GuardianContentClient)(implicit ex: ExecutionC
     if (remainingPages.isEmpty) return List(firstPageResponse)
 
     val restFutures: List[Future[SearchResponse]] = (for (nextPageNum <- remainingPages) yield {
-      println(query.page(nextPageNum))
       apiClient.getResponse(query.page(nextPageNum))
     }).toList
 
