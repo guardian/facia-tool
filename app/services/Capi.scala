@@ -100,7 +100,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     val getResponseFunction = (query: CapiQueryGenerator) => this.getResponse(query)
     logger.info(s"query => ${query.getUrl(targetUrl)}")
 
-    val searchResponsePages = CapiClientHelper.readAllSearchResponsePages(query, getResponseFunction)
+    val searchResponsePages = CapiHelper.readAllSearchResponsePages(query, getResponseFunction)
 
     logger.info(s"getUnsortedPrefillArticleItems, fetched CAPI search Response pages count ${searchResponsePages.size}")
 
