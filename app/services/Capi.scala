@@ -98,7 +98,13 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     logger.info(s"getUnsortedPrefillArticleItems, Prefill Query: $query for ${getPrefillParams.metadataForLogging}")
 
     val getResponseFunction = (query: CapiQueryGenerator) => this.getResponse(query)
-    CapiClientHelper.readAllSearchResponsePages(query, getResponseFunction).flatMap(mapToPrefill)
+    logger.info(s"query => ${query.getUrl(targetUrl)}")
+
+    val searchResponsePages = CapiClientHelper.readAllSearchResponsePages(query, getResponseFunction)
+
+    logger.info(s"getUnsortedPrefillArticleItems, fetched CAPI search Response pages count ${searchResponsePages.size}")
+
+    searchResponsePages.flatMap(mapToPrefill)
   }
 
   private def mapToPrefill(response: SearchResponse): List[Prefill] =
