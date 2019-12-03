@@ -27,7 +27,7 @@ object CapiClientHelper {
     val firstPageResponse = Await.result(getResponse(query.page(1)), FirstPageReqTimeout)
     val totalPages = firstPageResponse.pages
 
-    if (totalPages == 0) return Nil
+    if (totalPages == 0) return List(firstPageResponse)
 
     val remainingPages = (1 to totalPages).tail
 
