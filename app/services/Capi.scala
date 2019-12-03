@@ -27,8 +27,6 @@ object GuardianCapiDefaults {
 class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionContext)
   extends GuardianContentClient(apiKey = config.contentApi.editionsKey) with Capi with Logging {
 
-  private val capiClientHelper = CapiClientHelper(this)
-
   override def targetUrl: String = config.contentApi.contentApiDraftHost
 
   override def get(url: String, headers: Map[String, String])(implicit context: ExecutionContext): Future[HttpResponse] = {
@@ -99,7 +97,8 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
     logger.info(s"getUnsortedPrefillArticleItems, Prefill Query: $query for ${getPrefillParams.metadataForLogging}")
 
-    capiClientHelper.readAllSearchResponsePages(query).flatMap(mapToPrefill)
+    val getResponseFunction = (query: CapiQueryGenerator) => this.getResponse(query)
+    CapiClientHelper.readAllSearchResponsePages(query, getResponseFunction).flatMap(mapToPrefill)
   }
 
   private def mapToPrefill(response: SearchResponse): List[Prefill] =
@@ -161,11 +160,7 @@ object GuardianCapi extends Logging {
     import capiPrefillTimeParams.{capiDateQueryParam, capiQueryTimeWindow}
     import capiQueryTimeWindow.{fromDate, toDate}
 
-    // it is paginated
-    // depends on pageSize param if pageSize will be very large then we will not need to iterate over API response pages
-    // TODO we want to get all data, sort by ophan metric or page number then cap the result
     var query = CapiQueryGenerator(capiPrefillQuery.pathType)
-      //      .page(1)
       .pageSize(GuardianCapiDefaults.MaxPageSize)
       .showFields(fields.mkString(","))
       .useDate(capiDateQueryParam.entryName)

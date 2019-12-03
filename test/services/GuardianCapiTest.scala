@@ -39,7 +39,6 @@ class GuardianCapiTest extends FunSuite with Matchers {
       "&page-size=" + GuardianCapiDefaults.MaxPageSize +
       "&tag=theguardian%2Fmainsection%2Ftopstories" +
       "&to-date=2019-10-07T00%3A00%3A00Z" +
-      //      "&page=1" +
       "&use-date=published" +
       "&show-fields=newspaperEditionDate%2CnewspaperPageNumber%2CinternalPageCode" +
       "&show-tags=all" +
@@ -71,7 +70,6 @@ class GuardianCapiTest extends FunSuite with Matchers {
       "&page-size=" + GuardianCapiDefaults.MaxPageSize +
       "&tag=theguardian%2Fmainsection%2Ftopstories" +
       "&to-date=2019-10-07T00%3A00%3A00Z" +
-      //      "&page=1" +
       "&show-atoms=media" +
       "&use-date=newspaper-edition" +
       "&show-fields=newspaperEditionDate%2CnewspaperPageNumber%2CinternalPageCode%2CisLive%2CfirstPublicationDate%2Cheadline%2CtrailText%2Cbyline%2Cthumbnail%2CsecureThumbnail%2CliveBloggingNow%2CmembershipAccess%2CshortUrl" +
