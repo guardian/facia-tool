@@ -1,15 +1,9 @@
-import {
-  chainCommands,
-  toggleMark,
-  liftEmptyBlock,
-  createParagraphNear,
-  newlineInCode,
-  splitBlockKeepMarks
-} from 'prosemirror-commands';
+import { toggleMark } from 'prosemirror-commands';
 import { linkItemCommand, unlinkItemCommand } from './command-helpers';
 import { Schema } from 'prosemirror-model';
 import { undo, redo } from 'prosemirror-history';
 import { undoInputRule } from 'prosemirror-inputrules';
+import { EditorState, Transaction } from 'prosemirror-state';
 
 // These prosemirror-helper functions are a simplified version of what we use in Composer, and have been lifted and shifted from that repo
 
@@ -18,6 +12,20 @@ interface MapObject {
 }
 const mac =
   typeof navigator !== undefined ? /Mac/.test(navigator.platform) : false;
+
+const createAddHardBreak = (schema: Schema) => (
+  state: EditorState,
+  dispatch?: (tr: Transaction) => void
+) => {
+  if (dispatch) {
+    dispatch(
+      state.tr
+        .replaceSelectionWith(schema.nodes.hard_break.create())
+        .scrollIntoView()
+    );
+  }
+  return true;
+};
 
 export const buildKeymap = (schema: Schema, init = {}, mapKeys: MapObject) => {
   const keys: MapObject = init;
@@ -42,15 +50,7 @@ export const buildKeymap = (schema: Schema, init = {}, mapKeys: MapObject) => {
     bind('Mod-y', redo);
   }
 
-  bind(
-    'Enter',
-    chainCommands(
-      newlineInCode,
-      createParagraphNear,
-      liftEmptyBlock,
-      splitBlockKeepMarks
-    )
-  );
+  bind('Enter', createAddHardBreak(schema));
 
   if (schema.marks.strong) {
     bind('Mod-b', toggleMark(schema.marks.strong));
