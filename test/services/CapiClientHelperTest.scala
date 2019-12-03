@@ -67,8 +67,8 @@ class CapiClientHelperTest extends FlatSpec with BeforeAndAfterEach with Matcher
   it should "handle situation if search result pages is 0" in {
     val getResponse = genFakeGetResponseFunction(searchResponseWith0Pages)
     val actual = CapiClientHelper.readAllSearchResponsePages(query, getResponse)
-    actual.map(_.currentPage) shouldEqual Nil
-    actual.map(_.total) shouldEqual Nil
+    actual.map(_.currentPage) shouldEqual List(1)
+    actual.map(_.total) shouldEqual List(0)
     getResponseCallsCounter shouldEqual 1
   }
 
