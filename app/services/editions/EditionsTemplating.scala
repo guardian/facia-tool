@@ -160,7 +160,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
     } catch {
       case NonFatal(t) =>
         // At least log this as a warning so we can trace frequency
-        logger.info(s"Failed to successfully execute CAPI prefill query $prefillParams", t)
+        logger.warn(s"Failed to successfully execute CAPI prefill query $prefillParams", t)
         Nil
     }
   }
