@@ -36,10 +36,10 @@ test('Rich text editor bolds text', async t => {
     .wait(300)
     .click(editFormSaveButton())
     .expect(getSnapHeadlineHtml())
-    .eql('<p><strong>Test2</strong></p>');
+    .eql('<strong>Test2</strong>');
 });
 
-// changing this headline: '<p><strong><a href="https://bbc.co.uk/">Bold with a link Test3</a></strong></p>',
+// changing this headline: '<strong><a href="https://bbc.co.uk/">Bold with a link Test3</a></strong>',
 test('Rich text editor removes bold from bold text', async t => {
   const secondCollectionStory1 = snap(2, 1);
   const richTextInput = editFormRichText();
@@ -57,7 +57,7 @@ test('Rich text editor removes bold from bold text', async t => {
     .wait(300)
     .click(editFormSaveButton())
     .expect(getSnapHeadlineHtml())
-    .eql('<p><a href="https://bbc.co.uk/">Bold with a link Test3</a></p>');
+    .eql('<a href="https://bbc.co.uk/">Bold with a link Test3</a>');
 });
 
 test('Rich text editor adds a link to text', async t => {
@@ -78,10 +78,10 @@ test('Rich text editor adds a link to text', async t => {
     .wait(300)
     .click(editFormSaveButton())
     .expect(getSnapHeadlineHtml())
-    .eql('<p><a href="https://bbc.co.uk/">Test2</a></p>');
+    .eql('<a href="https://bbc.co.uk/">Test2</a>');
 });
 
-// changing this headline: '<p><strong><a href="https://bbc.co.uk/">Bold with a link Test3</a></strong></p>',
+// changing this headline: '<strong><a href="https://bbc.co.uk/">Bold with a link Test3</a></strong>',
 test('Rich text editor removes a link from text', async t => {
   const secondCollectionStory1 = snap(2, 1);
   const richTextInput = editFormRichText();
@@ -99,5 +99,5 @@ test('Rich text editor removes a link from text', async t => {
     .wait(300)
     .click(editFormSaveButton())
     .expect(getSnapHeadlineHtml())
-    .eql('<p><strong>Bold with a link Test3</strong></p>');
+    .eql('<strong>Bold with a link Test3</strong>');
 });
