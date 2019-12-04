@@ -66,23 +66,24 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   // Sadly there's no easy way of converting a CAPI client response into JSON so we'll just proxy - similar to controllers.FaciaContentApiProxy
   // this function is used for (suggest articles for collection) functionality
   def getPrefillArticles(getPrefill: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = {
-    Future {
-      val query = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefill, currentPageCodes)
+    val query = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefill, currentPageCodes)
 
-      logger.info(s"getPrefillArticles, Prefill Query: $query for ${getPrefill.metadataForLogging}")
+    logger.info(s"getPrefillArticles, Prefill Query: $query for ${getPrefill.metadataForLogging}")
 
-      val filterResults = (content: Content) => {
-        (for {
-          fields <- content.fields
-          pageCode <- fields.internalPageCode
-        } yield !currentPageCodes.contains(pageCode.toString))
-          .getOrElse(true)
-      }
+    val filterResults = (content: Content) => {
+      (for {
+        fields <- content.fields
+        pageCode <- fields.internalPageCode
+      } yield !currentPageCodes.contains(pageCode.toString))
+        .getOrElse(true)
+    }
 
-      val getResponseFunction = (query: CapiQueryGenerator) => this.getResponse(query)
-      val responses: List[SearchResponse] = GuardianCapi.readAllSearchResponsePages(query, getResponseFunction)
-
-      GuardianCapi.aggregateResults(responses, filterResults)
+    this.getResponse(query).map { response =>
+      val filteredResults = response.results.filter(filterResults)
+      response.copy(
+        total = filteredResults.length,
+        results = filteredResults
+      )
     }
   }
 
@@ -189,7 +190,7 @@ object GuardianCapi extends Logging {
   }
 
   private[services] def readAllSearchResponsePages(query: CapiQueryGenerator,
-                                 getResponse: CapiQueryGenerator => Future[SearchResponse])(implicit ex: ExecutionContext): List[SearchResponse] = {
+                                                   getResponse: CapiQueryGenerator => Future[SearchResponse])(implicit ex: ExecutionContext): List[SearchResponse] = {
 
     // Capi Scala client have functions that reads paginated responses
     // but they give inaccurate results (most of the time it gives only the first page)
@@ -220,22 +221,6 @@ object GuardianCapi extends Logging {
     val restFutures: List[Future[SearchResponse]] = (for (nextPageNum <- remainingPages) yield getResponse(query.page(nextPageNum))).toList
     Await.result(Future.sequence(restFutures), RemainingPagesReqTimeout)
   }
-
-  private[services] def aggregateResults(responses: Seq[SearchResponse], resultsFilter: Content => Boolean): SearchResponse = {
-    val allResults: Seq[Content] = responses.flatMap(_.results)
-    val filteredResults = allResults.filter(resultsFilter)
-    val count = filteredResults.size
-
-    responses.head.copy(
-      results = filteredResults,
-      total = count,
-      pages = 1,
-      pageSize = count,
-      currentPage = 1,
-      startIndex = 1
-    )
-  }
-
 }
 
 case class CapiQueryGenerator(pathType: PathType, parameterHolder: Map[String, Parameter] = Map.empty)
