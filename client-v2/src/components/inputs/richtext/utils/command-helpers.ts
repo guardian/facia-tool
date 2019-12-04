@@ -31,7 +31,7 @@ export const linkItemCommand = (markType: MarkType) => (passedUrl = null) => (
     ? { url: passedUrl, from: state.selection.from, to: state.selection.to }
     : promptForLink(state, markType);
 
-  if (url && from && to) {
+  if (url && from !== undefined && to !== undefined) {
     const { valid, message } = linkValidator(url);
     if (valid) {
       const parsedUrl = parseURL(url);

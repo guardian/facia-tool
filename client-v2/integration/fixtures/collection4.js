@@ -445,7 +445,7 @@ module.exports = {
       frontPublicationDate: 1574268324019,
       id: 'snap/1574268232716',
       meta: {
-        headline: '<p>Test2</p>',
+        headline: 'Test2',
         showByline: false,
         snapType: 'html'
       }
@@ -455,7 +455,7 @@ module.exports = {
       id: 'snap/1574268232717',
       meta: {
         headline:
-          '<p><strong><a href="https://bbc.co.uk/">Bold with a link Test3</a><strong></p>',
+          '<strong><a href="https://bbc.co.uk/">Bold with a link Test3</a><strong>',
         showByline: false,
         snapType: 'html'
       }
