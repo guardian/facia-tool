@@ -7,8 +7,8 @@ resolvers ++= Seq(
   Classpaths.typesafeReleases,
   Resolver.sonatypeRepo("releases"),
   Resolver.typesafeRepo("releases"),
-  Resolver.url("sbt-plugin-snapshots", new URL("http://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns),
-  "Guardian Github Releases" at "http://guardian.github.com/maven/repo-releases",
+  Resolver.url("sbt-plugin-snapshots", new URL("https://repo.scala-sbt.org/scalasbt/sbt-plugin-snapshots/"))(Resolver.ivyStylePatterns),
+  "Guardian Github Releases" at "https://guardian.github.com/maven/repo-releases",
   "Spy" at "https://files.couchbase.com/maven2/"
 )
 
