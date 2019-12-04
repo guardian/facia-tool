@@ -1,7 +1,7 @@
 import { EditionsIssue, IssueVersion } from 'types/Edition';
 import { Moment } from 'moment';
 import pandaFetch from './pandaFetch';
-import { CAPISearchQueryResponse } from './capiQuery';
+import {CapiArticle} from './capiQuery';
 import { EditionsFrontMetadata } from 'types/FaciaApi';
 
 const dateFormat = 'YYYY-MM-DD';
@@ -90,11 +90,16 @@ export const checkIssue = async (id: string): Promise<string[]> => {
 
 export const getPrefills = async (
   id: string
-): Promise<CAPISearchQueryResponse> => {
+): Promise<CapiArticle[]> => {
   return pandaFetch(`/editions-api/collections/${id}/prefill`, {
     method: 'get',
     credentials: 'same-origin'
-  }).then(response => response.json());
+  }).then(response => {
+    // const j = await response.json()
+    //   console.log('response.json()', j)
+      return response.json()
+    }
+  );
 };
 
 export const putFrontMetadata = (

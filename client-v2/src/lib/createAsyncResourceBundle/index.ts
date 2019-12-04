@@ -266,11 +266,13 @@ function createAsyncResourceBundle<Resource>(
   const fetchSuccessAction = (
     data: Resource | Resource[] | any,
     { pagination, order }: { pagination?: IPagination; order?: string[] } = {}
-  ): FetchSuccessAction<Resource> => ({
+  ): FetchSuccessAction<Resource> => {
+    console.log('fetchSuccessAction data', data)
+    return ({
     entity: entityName,
     type: FETCH_SUCCESS,
     payload: { data, pagination, order, time: Date.now() }
-  });
+  })};
 
   const fetchSuccessIgnoreAction = (
     data: Resource | Resource[] | any

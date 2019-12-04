@@ -3,7 +3,7 @@ package controllers
 import java.time.{LocalDate, OffsetDateTime}
 
 import cats.syntax.either._
-import com.gu.contentapi.client.model.v1.SearchResponse
+import com.gu.contentapi.client.model.v1.{Content, SearchResponse}
 import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
 import logging.Logging
@@ -160,7 +160,7 @@ class EditionsController(db: EditionsDB,
         metadataForLogging = MetadataForLogging(issueDate, collectionId = Some(id), collectionName = None)
       )
 
-      val fresults: Future[List[SearchResponse]] = capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes)
+      val fresults: Future[List[Content]] = capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes)
 
       fresults.map { searchResults =>
 

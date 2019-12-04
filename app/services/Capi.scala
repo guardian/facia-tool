@@ -65,7 +65,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
   // Sadly there's no easy way of converting a CAPI client response into JSON so we'll just proxy - similar to controllers.FaciaContentApiProxy
   // this function is used for (suggest articles for collection) functionality
-  def getPrefillArticles(getPrefill: PrefillParamsAdapter, currentPageCodes: List[String]): Future[List[SearchResponse]] = {
+  def getPrefillArticles(getPrefill: PrefillParamsAdapter, currentPageCodes: List[String]): Future[List[Content]] = {
     Future {
       val query = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefill, currentPageCodes)
 
@@ -81,9 +81,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
       val getResponseFunction = (query: CapiQueryGenerator) => this.getResponse(query)
 
-      val responses: List[SearchResponse] = GuardianCapi.readAllSearchResponsePages(query, getResponseFunction)
-      responses
-//      GuardianCapi.aggregateResults(responses, filterResults)
+      GuardianCapi.readAllSearchResponsePages(query, getResponseFunction).flatMap(_.results)
     }
   }
 
@@ -221,22 +219,6 @@ object GuardianCapi extends Logging {
     val restFutures: List[Future[SearchResponse]] = (for (nextPageNum <- remainingPages) yield getResponse(query.page(nextPageNum))).toList
     Await.result(Future.sequence(restFutures), RemainingPagesReqTimeout)
   }
-
-  private[services] def aggregateResults(responses: Seq[SearchResponse], resultsFilter: Content => Boolean): SearchResponse = {
-    val allResults: Seq[Content] = responses.flatMap(_.results)
-    val filteredResults = allResults.filter(resultsFilter)
-    val count = filteredResults.size
-
-    responses.head.copy(
-      results = filteredResults,
-      total = count,
-      pages = 1,
-      pageSize = count,
-      currentPage = 1,
-      startIndex = 1
-    )
-  }
-
 }
 
 case class CapiQueryGenerator(pathType: PathType, parameterHolder: Map[String, Parameter] = Map.empty)
@@ -252,5 +234,5 @@ trait Capi {
 
   def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): List[Prefill]
 
-  def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[List[SearchResponse]]
+  def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[List[Content]]
 }

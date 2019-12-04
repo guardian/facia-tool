@@ -137,21 +137,24 @@ export const fetchPrefill = (
   dispatch(prefillActions.fetchStart('prefill'));
 
   try {
-    const { response } = await getPrefills(id);
-    console.log('getPrefills', response)
-    if (!checkIsContent(response)) {
-      const r = response.results.filter(isNonCommercialArticle, {
-        totalPages: response.pages,
-        currentPage: response.currentPage,
-        pageSize: response.pageSize
-      })
-      console.log(' getPrefills checkIsContent', r)
+    const responses: CapiArticle[] = await getPrefills(id);
+
+    console.log('getPrefills responses', responses)
+
+    const filteredArticles = responses.filter(article =>
+      isNonCommercialArticle(article)
+    );
+
+    // if (!checkIsContent(response)) {
+      // const r = response.results.filter(isNonCommercialArticle, {
+      //   totalPages: response.pages,
+      //   currentPage: response.currentPage,
+      //   pageSize: response.pageSize
+      // })
       dispatch(
-        prefillActions.fetchSuccess(
-          r
-        )
+        prefillActions.fetchSuccess(filteredArticles)
       );
-    }
+    // }
   } catch (e) {
     dispatch(prefillActions.fetchError(e.message));
   }
