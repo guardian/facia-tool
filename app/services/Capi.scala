@@ -188,7 +188,7 @@ object GuardianCapi extends Logging {
     query
   }
 
-  def readAllSearchResponsePages(query: CapiQueryGenerator,
+  private[services] def readAllSearchResponsePages(query: CapiQueryGenerator,
                                  getResponse: CapiQueryGenerator => Future[SearchResponse])(implicit ex: ExecutionContext): List[SearchResponse] = {
 
     // Capi Scala client have functions that reads paginated responses
@@ -221,7 +221,7 @@ object GuardianCapi extends Logging {
     Await.result(Future.sequence(restFutures), RemainingPagesReqTimeout)
   }
 
-  def aggregateResults(responses: Seq[SearchResponse], resultsFilter: Content => Boolean): SearchResponse = {
+  private[services] def aggregateResults(responses: Seq[SearchResponse], resultsFilter: Content => Boolean): SearchResponse = {
     val allResults: Seq[Content] = responses.flatMap(_.results)
     val filteredResults = allResults.filter(resultsFilter)
     val count = filteredResults.size
