@@ -24,22 +24,23 @@ object CapiHelper extends Logging {
   def readAllSearchResponsePages(query: CapiQueryGenerator,
                                  getResponse: CapiQueryGenerator => Future[SearchResponse])(implicit ex: ExecutionContext): List[SearchResponse] = {
     val FirstPageReqTimeout = Duration(3, TimeUnit.SECONDS)
-    val RemainingPagesReqTimeout = Duration(5, TimeUnit.SECONDS)
     val firstPageResponse = Await.result(getResponse(query.page(1)), FirstPageReqTimeout)
     val totalPages = firstPageResponse.pages
 
-    if (totalPages == 0) return List(firstPageResponse)
+    if (totalPages == 0 || totalPages == 1) return List(firstPageResponse)
 
+    val remainingPages = readRemainingPages(totalPages, query, getResponse)
+    val allResponsePages: List[SearchResponse] = firstPageResponse +: remainingPages
+    logger.info(s"readAllSearchResponsePages, fetched CAPI search Response pages count ${allResponsePages.size}")
+    allResponsePages
+  }
+
+  private def readRemainingPages(totalPages: Int, query: CapiQueryGenerator,
+                                 getResponse: CapiQueryGenerator => Future[SearchResponse])(implicit ex: ExecutionContext): List[SearchResponse] = {
+    val RemainingPagesReqTimeout = Duration(5, TimeUnit.SECONDS)
     val remainingPages = (1 to totalPages).tail
-
-    if (remainingPages.isEmpty) return List(firstPageResponse)
-
     val restFutures: List[Future[SearchResponse]] = (for (nextPageNum <- remainingPages) yield getResponse(query.page(nextPageNum))).toList
-
-    val rest = Await.result(Future.sequence(restFutures), RemainingPagesReqTimeout)
-    val responses: List[SearchResponse] = firstPageResponse +: rest
-    logger.info(s"readAllSearchResponsePages, fetched CAPI search Response pages count ${responses.size}")
-    responses
+    Await.result(Future.sequence(restFutures), RemainingPagesReqTimeout)
   }
 
   def aggregateResults(responses: Seq[SearchResponse], resultsFilter: Content => Boolean): SearchResponse = {
