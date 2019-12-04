@@ -3,6 +3,7 @@ package services
 import java.io.IOException
 import java.net.URI
 import java.nio.charset.Charset
+import java.util.concurrent.TimeUnit
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
@@ -17,7 +18,8 @@ import okhttp3.{Call, Callback, Request, Response}
 import org.apache.http.client.utils.URLEncodedUtils
 import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 
-import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future, Promise}
 
 object GuardianCapiDefaults {
   // 200 is max value in CAPI
@@ -78,9 +80,9 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
       }
 
       val getResponseFunction = (query: CapiQueryGenerator) => this.getResponse(query)
-      val responses: List[SearchResponse] = CapiHelper.readAllSearchResponsePages(query, getResponseFunction)
+      val responses: List[SearchResponse] = GuardianCapi.readAllSearchResponsePages(query, getResponseFunction)
 
-      CapiHelper.aggregateResults(responses, filterResults)
+      GuardianCapi.aggregateResults(responses, filterResults)
     }
   }
 
@@ -100,7 +102,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     val getResponseFunction = (query: CapiQueryGenerator) => this.getResponse(query)
     logger.info(s"query => ${query.getUrl(targetUrl)}")
 
-    val searchResponsePages = CapiHelper.readAllSearchResponsePages(query, getResponseFunction)
+    val searchResponsePages = GuardianCapi.readAllSearchResponsePages(query, getResponseFunction)
 
     searchResponsePages.flatMap(mapToPrefill)
   }
@@ -184,6 +186,54 @@ object GuardianCapi extends Logging {
       query = query.q(queryPair.getValue)
     }
     query
+  }
+
+  def readAllSearchResponsePages(query: CapiQueryGenerator,
+                                 getResponse: CapiQueryGenerator => Future[SearchResponse])(implicit ex: ExecutionContext): List[SearchResponse] = {
+
+    // Capi Scala client have functions that reads paginated responses
+    // but they give inaccurate results (most of the time it gives only the first page)
+    // TODO investigate that
+    //
+    //  val paginateFoldRes = client.paginateFold(query)(Seq(): Seq[SearchResponse]) {
+    //    (response: SearchResponse, acc: Seq[SearchResponse]) => acc :+ response
+    //  }
+    //
+    //  val response: List[SearchResponse] = Await.result(paginateFoldRes, Duration.Inf).toList
+
+    val FirstPageReqTimeout = Duration(3, TimeUnit.SECONDS)
+    val firstPageResponse = Await.result(getResponse(query.page(1)), FirstPageReqTimeout)
+    val totalPages = firstPageResponse.pages
+
+    if (totalPages == 0 || totalPages == 1) return List(firstPageResponse)
+
+    val remainingPages = readRemainingPages(totalPages, query, getResponse)
+    val allResponsePages: List[SearchResponse] = firstPageResponse +: remainingPages
+    logger.info(s"readAllSearchResponsePages, fetched CAPI search Response pages count ${allResponsePages.size}")
+    allResponsePages
+  }
+
+  private def readRemainingPages(totalPages: Int, query: CapiQueryGenerator,
+                                 getResponse: CapiQueryGenerator => Future[SearchResponse])(implicit ex: ExecutionContext): List[SearchResponse] = {
+    val RemainingPagesReqTimeout = Duration(5, TimeUnit.SECONDS)
+    val remainingPages = (1 to totalPages).tail
+    val restFutures: List[Future[SearchResponse]] = (for (nextPageNum <- remainingPages) yield getResponse(query.page(nextPageNum))).toList
+    Await.result(Future.sequence(restFutures), RemainingPagesReqTimeout)
+  }
+
+  def aggregateResults(responses: Seq[SearchResponse], resultsFilter: Content => Boolean): SearchResponse = {
+    val allResults: Seq[Content] = responses.flatMap(_.results)
+    val filteredResults = allResults.filter(resultsFilter)
+    val count = filteredResults.size
+
+    responses.head.copy(
+      results = filteredResults,
+      total = count,
+      pages = 1,
+      pageSize = count,
+      currentPage = 1,
+      startIndex = 1
+    )
   }
 
 }
