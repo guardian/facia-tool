@@ -2,12 +2,13 @@ package services
 
 import java.util.concurrent.TimeUnit
 
-import com.gu.contentapi.client.model.v1.SearchResponse
+import com.gu.contentapi.client.model.v1.{Content, SearchResponse}
+import logging.Logging
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future}
 
-object CapiHelper {
+object CapiHelper extends Logging {
 
   // Capi Scala client have functions that reads paginated responses
   // but they give inaccurate results (most of the time it gives only the first page)
@@ -36,7 +37,24 @@ object CapiHelper {
     val restFutures: List[Future[SearchResponse]] = (for (nextPageNum <- remainingPages) yield getResponse(query.page(nextPageNum))).toList
 
     val rest = Await.result(Future.sequence(restFutures), RemainingPagesReqTimeout)
-    firstPageResponse +: rest
+    val responses: List[SearchResponse] = firstPageResponse +: rest
+    logger.info(s"readAllSearchResponsePages, fetched CAPI search Response pages count ${responses.size}")
+    responses
+  }
+
+  def aggregateResults(responses: Seq[SearchResponse], resultsFilter: Content => Boolean): SearchResponse = {
+    val allResults: Seq[Content] = responses.flatMap(_.results)
+    val filteredResults = allResults.filter(resultsFilter)
+    val count = filteredResults.size
+
+    responses.head.copy(
+      results = filteredResults,
+      total = count,
+      pages = 1,
+      pageSize = count,
+      currentPage = 1,
+      startIndex = 1
+    )
   }
 
 }
