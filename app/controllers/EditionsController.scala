@@ -3,6 +3,7 @@ package controllers
 import java.time.{LocalDate, OffsetDateTime}
 
 import cats.syntax.either._
+import com.gu.contentapi.client.model.v1.SearchResponse
 import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
 import logging.Logging
@@ -142,7 +143,7 @@ class EditionsController(db: EditionsDB,
 
   def getPrefillForCollection(id: String) = EditEditionsAuthAction.async { req =>
     db.getCollectionPrefill(id).map { prefillUpdate =>
-      logger.info(s"getPrefillForCollection id=$id, prefillUpdate")
+      println(s"getPrefillForCollection id=$id, prefillUpdate")
       import prefillUpdate._
       val capiDateQueryParam = EditionsTemplates.templates(edition).capiDateQueryParam
       val capiPrefillTimeParams = CapiPrefillTimeParams(capiQueryTimeWindow, capiDateQueryParam)
@@ -158,12 +159,24 @@ class EditionsController(db: EditionsDB,
         edition,
         metadataForLogging = MetadataForLogging(issueDate, collectionId = Some(id), collectionName = None)
       )
-      capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes).map { body =>
+
+      val fresults: Future[List[SearchResponse]] = capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes)
+
+      fresults.map { searchResults =>
+
+
         // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON
-        val json = "{\"response\":" + body.asJson.noSpaces + "}"
-        val decorated = rewriteBody(json)
-        Ok(decorated).as("application/json")
+//        val json = "{\"response\":" + body.asJson.noSpaces + "}"
+//        val decorated = rewriteBody(json)
+//        println("body decorated", decorated)
+        Ok(searchResults.asJson.noSpaces).as("application/json")
       }
+//      capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes).map { body =>
+//        // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON
+//        val json = "{\"response\":" + body.asJson.noSpaces + "}"
+//        val decorated = rewriteBody(json)
+//        Ok(decorated).as("application/json")
+//      }
     }.getOrElse(Future.successful(NotFound("Collection not found")))
   }
 

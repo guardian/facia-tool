@@ -27,8 +27,17 @@ interface CAPISearchQueryResultsResponse {
 function checkIsContent(
   response: CAPISearchQueryContentResponse | CAPISearchQueryResultsResponse
 ): response is CAPISearchQueryContentResponse {
+  console.log('checkIsContent', response)
   return !!(response as CAPISearchQueryContentResponse).content;
 }
+
+// function checkIsArticle(
+//   items: CapiArticle
+// ): items is CapiArticle[] {
+//   console.log('checkIsContent', response)
+//   return !!(items as CapiArticle[]);
+// }
+
 interface CAPISearchQueryContentResponse {
   content: CapiArticle;
   tag?: Tag;

@@ -138,14 +138,17 @@ export const fetchPrefill = (
 
   try {
     const { response } = await getPrefills(id);
+    console.log('getPrefills', response)
     if (!checkIsContent(response)) {
+      const r = response.results.filter(isNonCommercialArticle, {
+        totalPages: response.pages,
+        currentPage: response.currentPage,
+        pageSize: response.pageSize
+      })
+      console.log(' getPrefills checkIsContent', r)
       dispatch(
         prefillActions.fetchSuccess(
-          response.results.filter(isNonCommercialArticle, {
-            totalPages: response.pages,
-            currentPage: response.currentPage,
-            pageSize: response.pageSize
-          })
+          r
         )
       );
     }
