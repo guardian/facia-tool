@@ -144,6 +144,11 @@
                         <span class="label label--snap-uri" data-bind="text: meta.snapUri"></span>
                     <!-- /ko -->
 
+                    <!-- ko if: meta.blockId -->
+                    <span class="label label--snap">block id</span>
+                    <span class="label label--snap-uri" data-bind="text: meta.blockId"></span>
+                    <!-- /ko -->
+
                     <!-- ko if: meta.href -->
                         <span class="label label--snap">url</span>
                         <span class="label label--snap-uri" data-bind="text: meta.href"></span>

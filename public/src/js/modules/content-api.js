@@ -94,6 +94,12 @@ function validateItem (item) {
                         capiItem.capiId = capiItem.id;
                         populate(item, capiItem);
                         cache.put('contentApi', pageCode, capiItem);
+
+                        const maybeBlockId = item.id().split('#block-')[1];
+
+                        if(maybeBlockId) {
+                            item.meta.blockId(maybeBlockId);
+                        }
                         item.id(pageCode);
                     } else {
                         err = 'Sorry, that article is malformed (has no internalPageCode)';
