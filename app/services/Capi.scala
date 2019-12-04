@@ -64,26 +64,26 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   // Sadly there's no easy way of converting a CAPI client response into JSON so we'll just proxy - similar to controllers.FaciaContentApiProxy
   // this function is used for (suggest articles for collection) functionality
   def getPrefillArticles(getPrefill: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = {
+    Future {
+      val query = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefill, currentPageCodes)
 
-    val query = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefill, currentPageCodes)
+      logger.info(s"getPrefillArticles, Prefill Query: $query for ${getPrefill.metadataForLogging}")
 
-    logger.info(s"getPrefillArticles, Prefill Query: $query for ${getPrefill.metadataForLogging}")
-
-    this.getResponse(query).map { response =>
-      val filteredResults = response.results.filter { result =>
+      val filterResults = (content: Content) => {
         (for {
-          fields <- result.fields
+          fields <- content.fields
           pageCode <- fields.internalPageCode
         } yield !currentPageCodes.contains(pageCode.toString))
           .getOrElse(true)
       }
 
-      response.copy(
-        total = filteredResults.length,
-        results = filteredResults
-      )
+      val getResponseFunction = (query: CapiQueryGenerator) => this.getResponse(query)
+      val responses: List[SearchResponse] = CapiHelper.readAllSearchResponsePages(query, getResponseFunction)
+
+      CapiHelper.aggregateResults(responses, filterResults)
     }
   }
+
 
   /**
    * Get a list of article items in the order they exist according to the newspaper page number
@@ -101,8 +101,6 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     logger.info(s"query => ${query.getUrl(targetUrl)}")
 
     val searchResponsePages = CapiHelper.readAllSearchResponsePages(query, getResponseFunction)
-
-    logger.info(s"getUnsortedPrefillArticleItems, fetched CAPI search Response pages count ${searchResponsePages.size}")
 
     searchResponsePages.flatMap(mapToPrefill)
   }
