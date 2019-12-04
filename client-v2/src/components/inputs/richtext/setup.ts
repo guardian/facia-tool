@@ -1,7 +1,7 @@
 import { buildKeymap } from './utils/keymap';
 import { keymap } from 'prosemirror-keymap';
-import { Schema, DOMSerializer, DOMParser, NodeSpec } from 'prosemirror-model';
-import { schema } from 'prosemirror-schema-basic';
+import { Schema, DOMSerializer, DOMParser } from 'prosemirror-model';
+import { schema, nodes } from 'prosemirror-schema-basic';
 import { addListNodes } from 'prosemirror-schema-list';
 import { EditorView } from 'prosemirror-view';
 import { EditorState, Transaction } from 'prosemirror-state';
@@ -18,8 +18,16 @@ const createBasePlugins = (s: Schema) => {
   return plugins;
 };
 
+const nodeMap = OrderedMap.from({
+  doc: {
+    content: '(text | hard_break)+'
+  },
+  text: nodes.text,
+  hard_break: nodes.hard_break
+});
+
 export const basicSchema = new Schema({
-  nodes: addListNodes(schema.spec.nodes as OrderedMap<NodeSpec>, 'block*'),
+  nodes: addListNodes(nodeMap, 'doc *'),
   marks: schema.spec.marks
 });
 
