@@ -211,10 +211,10 @@ object GuardianCapi extends Logging {
     val firstPageResponse = Await.result(getResponse(query.page(1)), FirstPageReqTimeout)
     val totalPages = firstPageResponse.pages
 
-    if (totalPages == 0 || totalPages == 1) return List(firstPageResponse)
-
-    val remainingPages = readRemainingPages(totalPages, query, getResponse)
-    val allResponsePages: List[SearchResponse] = firstPageResponse +: remainingPages
+    val allResponsePages = if (totalPages == 0 || totalPages == 1) List(firstPageResponse) else {
+      val remainingPages = readRemainingPages(totalPages, query, getResponse)
+      firstPageResponse +: remainingPages
+    }
     logger.info(s"readAllSearchResponsePages, fetched CAPI search Response pages count ${allResponsePages.size}")
     allResponsePages
   }
