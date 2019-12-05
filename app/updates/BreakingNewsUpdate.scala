@@ -106,8 +106,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       importance = parseImportance(trail.group),
       topic =  parseTopic(trail.topic),
       debug = false,
-      dryRun = None,
-      blockId = trail.blockId
+      dryRun = None
     )
   }
 
@@ -118,7 +117,8 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
         title = trail.headline,
         git = GITContent,
         thumbnail = trail.thumb,
-        shortUrl = trail.shortUrl
+        shortUrl = trail.shortUrl,
+        blockId = trail.blockId
       )
     } else {
       throw new InvalidNotificationContentType(s"Can't send snap notifications for trail: ${trail.headline}")
