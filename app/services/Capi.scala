@@ -3,6 +3,7 @@ package services
 import java.io.IOException
 import java.net.URI
 import java.nio.charset.Charset
+import java.util.concurrent.TimeUnit
 
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import com.amazonaws.auth.{AWSCredentialsProviderChain, STSAssumeRoleSessionCredentialsProvider}
@@ -17,7 +18,8 @@ import okhttp3.{Call, Callback, Request, Response}
 import org.apache.http.client.utils.URLEncodedUtils
 import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 
-import scala.concurrent.{ExecutionContext, Future, Promise}
+import scala.concurrent.duration.Duration
+import scala.concurrent.{Await, ExecutionContext, Future, Promise}
 
 object GuardianCapiDefaults {
   // 200 is max value in CAPI
@@ -64,20 +66,20 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
   // Sadly there's no easy way of converting a CAPI client response into JSON so we'll just proxy - similar to controllers.FaciaContentApiProxy
   // this function is used for (suggest articles for collection) functionality
   def getPrefillArticles(getPrefill: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = {
-
     val query = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefill, currentPageCodes)
 
     logger.info(s"getPrefillArticles, Prefill Query: $query for ${getPrefill.metadataForLogging}")
 
-    this.getResponse(query).map { response =>
-      val filteredResults = response.results.filter { result =>
-        (for {
-          fields <- result.fields
-          pageCode <- fields.internalPageCode
-        } yield !currentPageCodes.contains(pageCode.toString))
-          .getOrElse(true)
-      }
+    val filterResults = (content: Content) => {
+      (for {
+        fields <- content.fields
+        pageCode <- fields.internalPageCode
+      } yield !currentPageCodes.contains(pageCode.toString))
+        .getOrElse(true)
+    }
 
+    this.getResponse(query).map { response =>
+      val filteredResults = response.results.filter(filterResults)
       response.copy(
         total = filteredResults.length,
         results = filteredResults
@@ -85,26 +87,34 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
     }
   }
 
+
   /**
    * Get a list of article items in the order they exist according to the newspaper page number
    *
    * @param getPrefillParams
    * @return
    */
-  def getUnsortedPrefillArticleItems(getPrefillParams: PrefillParamsAdapter): Future[List[Prefill]] = {
+  def getUnsortedPrefillArticleItems(getPrefillParams: PrefillParamsAdapter): List[Prefill] = {
 
-    val query = GuardianCapi.prepareGetUnsortedPrefillArticleItemsQuery(getPrefillParams)
+    val query: CapiQueryGenerator = GuardianCapi.prepareGetUnsortedPrefillArticleItemsQuery(getPrefillParams)
 
     logger.info(s"getUnsortedPrefillArticleItems, Prefill Query: $query for ${getPrefillParams.metadataForLogging}")
 
-    this.getResponse(query) map { response =>
-      response.results.flatMap(content => prefillMetadata(content)).toList
-    }
+    val getResponseFunction = (query: CapiQueryGenerator) => this.getResponse(query)
+    logger.info(s"query => ${query.getUrl(targetUrl)}")
+
+    val searchResponsePages = GuardianCapi.readAllSearchResponsePages(query, getResponseFunction)
+
+    searchResponsePages.flatMap(mapToPrefill)
   }
 
-  private def prefillMetadata(content: Content): Option[Prefill] = {
-    content.fields.flatMap(_.internalPageCode).map { internalPageCode => CapiPrefiller.prefill(content) }
-  }
+  private def mapToPrefill(response: SearchResponse): List[Prefill] =
+    response.results.flatMap(content => prefillMetadata(content)).toList
+
+
+  private def prefillMetadata(content: Content): Option[Prefill] =
+    content.fields.flatMap(_.internalPageCode).map { internalPageCode => CapiPrefiller.prefill(content)
+    }
 }
 
 object GuardianCapi extends Logging {
@@ -154,14 +164,10 @@ object GuardianCapi extends Logging {
       .parse(new URI(capiPrefillQuery.escapedQueryString()), Charset.forName("UTF-8"))
       .asScala
 
-    import capiPrefillTimeParams.{capiQueryTimeWindow, capiDateQueryParam}
+    import capiPrefillTimeParams.{capiDateQueryParam, capiQueryTimeWindow}
     import capiQueryTimeWindow.{fromDate, toDate}
 
-    // it is paginated
-    // depends on pageSize param if pageSize will be very large then we will not need to iterate over API response pages
-    // TODO we want to get all data, sort by ophan metric or page number then cap the result
     var query = CapiQueryGenerator(capiPrefillQuery.pathType)
-      .page(1)
       .pageSize(GuardianCapiDefaults.MaxPageSize)
       .showFields(fields.mkString(","))
       .useDate(capiDateQueryParam.entryName)
@@ -183,6 +189,38 @@ object GuardianCapi extends Logging {
     query
   }
 
+  private[services] def readAllSearchResponsePages(query: CapiQueryGenerator,
+                                                   getResponse: CapiQueryGenerator => Future[SearchResponse])(implicit ex: ExecutionContext): List[SearchResponse] = {
+
+    // Capi Scala client have functions that reads paginated responses
+    // but they give inaccurate results (most of the time it gives only the first page)
+    // TODO investigate that
+    //
+    //  val paginateFoldRes = client.paginateFold(query)(Seq(): Seq[SearchResponse]) {
+    //    (response: SearchResponse, acc: Seq[SearchResponse]) => acc :+ response
+    //  }
+    //
+    //  val response: List[SearchResponse] = Await.result(paginateFoldRes, Duration.Inf).toList
+
+    val FirstPageReqTimeout = Duration(3, TimeUnit.SECONDS)
+    val firstPageResponse = Await.result(getResponse(query.page(1)), FirstPageReqTimeout)
+    val totalPages = firstPageResponse.pages
+
+    if (totalPages == 0 || totalPages == 1) return List(firstPageResponse)
+
+    val remainingPages = readRemainingPages(totalPages, query, getResponse)
+    val allResponsePages: List[SearchResponse] = firstPageResponse +: remainingPages
+    logger.info(s"readAllSearchResponsePages, fetched CAPI search Response pages count ${allResponsePages.size}")
+    allResponsePages
+  }
+
+  private def readRemainingPages(totalPages: Int, query: CapiQueryGenerator,
+                                 getResponse: CapiQueryGenerator => Future[SearchResponse])(implicit ex: ExecutionContext): List[SearchResponse] = {
+    val RemainingPagesReqTimeout = Duration(5, TimeUnit.SECONDS)
+    val remainingPages = (1 to totalPages).tail
+    val restFutures: List[Future[SearchResponse]] = (for (nextPageNum <- remainingPages) yield getResponse(query.page(nextPageNum))).toList
+    Await.result(Future.sequence(restFutures), RemainingPagesReqTimeout)
+  }
 }
 
 case class CapiQueryGenerator(pathType: PathType, parameterHolder: Map[String, Parameter] = Map.empty)
@@ -196,7 +234,7 @@ case class CapiQueryGenerator(pathType: PathType, parameterHolder: Map[String, P
 trait Capi {
   def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)]
 
-  def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): Future[List[Prefill]]
+  def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): List[Prefill]
 
   def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse]
 }

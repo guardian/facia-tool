@@ -156,7 +156,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
   private def getArticleItemsFromCapi(prefillParams: PrefillParamsAdapter): List[Prefill] = {
     // TODO: This being a try will hide a litany of failures, some of which we might want to surface
     try {
-      Await.result(capi.getUnsortedPrefillArticleItems(prefillParams), 10 seconds)
+     capi.getUnsortedPrefillArticleItems(prefillParams)
     } catch {
       case NonFatal(t) =>
         // At least log this as a warning so we can trace frequency
