@@ -1045,6 +1045,20 @@ collection-widget:first-child .collection {
     color: #999999;
 }
 
+.article__ammends .label--block-id-label,
+.article__ammends .label--block-id {
+    font-weight: bold;
+}
+
+.article__ammends .label--block-id-label {
+    color: #46c430;
+}
+
+.article__ammends .label--block-id {
+    text-transform: lowercase;
+    color: #999999;
+}
+
 .article__ammends .has-sublinks {
     color: #72b9e4;
     font-weight: bold;

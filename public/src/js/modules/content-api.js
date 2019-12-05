@@ -97,7 +97,7 @@ function validateItem (item) {
 
                         const maybeBlockId = item.id().split('#block-')[1];
 
-                        if(maybeBlockId) {
+                        if (maybeBlockId) {
                             item.meta.blockId(maybeBlockId);
                         }
                         item.id(pageCode);

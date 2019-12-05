@@ -472,6 +472,7 @@ export default class Collection extends BaseClass {
                         path: trail.meta.snapType() ? trail.meta.href() : trail.state.capiId(),
                         shortUrl: trail.state.shortUrl(),
                         topic: topic,
+                        blockId: trail.meta.blockId(),
                         alert: !!sendAlert
                     });
                 });
