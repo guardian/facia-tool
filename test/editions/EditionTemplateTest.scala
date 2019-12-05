@@ -16,7 +16,7 @@ class EditionTemplateTest extends FreeSpec with Matchers {
   object TestCapi extends Capi {
     override def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)] = Seq.empty[(String, String)]
 
-    override def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = Future.successful(null)
+    override def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): List[SearchResponse] = Nil
 
     override def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): List[Prefill] = Nil
   }
