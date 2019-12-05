@@ -17,7 +17,7 @@ import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
 import services.editions.db.EditionsDB
-import services.editions.prefills.{CapiPrefillTimeParams, MetadataForLogging, PrefillParamsAdapter}
+import services.editions.prefills.{CapiPrefillTimeParams, CapiQueryTimeWindow, MetadataForLogging, Prefill, PrefillParamsAdapter}
 import services.editions.publishing.EditionsPublishing
 import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
@@ -141,6 +141,12 @@ class EditionsController(db: EditionsDB,
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
+  case class Prefills(items: List[Prefill])
+
+  implicit val format = Json.format[Prefill]
+
+  implicit val prefillsFormat = Json.format[Prefills]
+
   def getPrefillForCollection(id: String) = EditEditionsAuthAction.async { req =>
     db.getCollectionPrefill(id).map { prefillUpdate =>
       println(s"getPrefillForCollection id=$id, prefillUpdate")
@@ -160,16 +166,16 @@ class EditionsController(db: EditionsDB,
         metadataForLogging = MetadataForLogging(issueDate, collectionId = Some(id), collectionName = None)
       )
 
-      val fresults: Future[List[Content]] = capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes)
+      val fresults: Future[List[Prefill]] = capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes)
 
-      fresults.map { searchResults =>
+      fresults.map { prefills =>
 
 
         // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON
 //        val json = "{\"response\":" + body.asJson.noSpaces + "}"
 //        val decorated = rewriteBody(json)
 //        println("body decorated", decorated)
-        Ok(searchResults.asJson.noSpaces).as("application/json")
+        Ok(Json.toJson(Prefills(prefills))).as("application/json")
       }
 //      capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes).map { body =>
 //        // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON

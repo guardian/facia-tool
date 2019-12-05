@@ -136,12 +136,14 @@ export const fetchPrefill = (
   });
   dispatch(prefillActions.fetchStart('prefill'));
 
+  console.log('fetchPrefill')
+
   try {
-    const responses: CapiArticle[] = await getPrefills(id);
+    const resp = await getPrefills(id);
 
-    console.log('getPrefills responses', responses)
+    console.log('fetchPrefill responses results', resp)
 
-    const filteredArticles = responses.filter(article =>
+    const filteredArticles = resp.items.filter(article =>
       isNonCommercialArticle(article)
     );
 
@@ -156,6 +158,7 @@ export const fetchPrefill = (
       );
     // }
   } catch (e) {
+    console.error(e.message)
     dispatch(prefillActions.fetchError(e.message));
   }
 };

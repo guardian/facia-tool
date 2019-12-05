@@ -90,13 +90,11 @@ export const checkIssue = async (id: string): Promise<string[]> => {
 
 export const getPrefills = async (
   id: string
-): Promise<CapiArticle[]> => {
+): Promise<{items: CapiArticle[]}> => {
   return pandaFetch(`/editions-api/collections/${id}/prefill`, {
     method: 'get',
     credentials: 'same-origin'
   }).then(response => {
-    // const j = await response.json()
-    //   console.log('response.json()', j)
       return response.json()
     }
   );

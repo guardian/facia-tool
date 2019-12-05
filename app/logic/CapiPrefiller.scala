@@ -61,6 +61,44 @@ object CapiPrefiller {
       None)
   }
 
+  def articleItemPrefill(content: Content): Prefill = {
+    val internalPageCode = content.fields.flatMap(_.internalPageCode).getOrElse(-1)
+    val newspaperPageNumber = content.fields.flatMap(_.newspaperPageNumber)
+    val webUrl = content.webUrl
+
+    val cardStyle = CardStyle(content, TrailMetaData.empty)
+    val metadata = ResolvedMetaData.fromContent(content, cardStyle)
+
+    // ResolvedMetaData here has a ton of booleans, but some may have been set naively
+    // If the cutout bool is set, we want to find the cutout values and add them in to a sub-object
+    val maybeCutout =
+    if (metadata.imageCutoutReplace) CapiPrefiller.getFirstContributorWithCutoutOption(content)
+    else None
+
+    val (mediaType, cutoutImage) = (metadata.imageCutoutReplace, maybeCutout) match {
+      // if cutout desired and a cutout was found then configure cutout
+      case (true, Some(url)) => (Some(MediaType.Cutout), Some(Image(None, None, url, url)))
+      // if no cutout desired then default nothing
+      case (false, _) => (None, None)
+      // finally if a cutout is desired but nothing appropriate was found then explicitly set to use article trail
+      case (true, None) => (Some(MediaType.UseArticleTrail), None)
+    }
+    val newMetadata = metadata.copy(imageCutoutReplace = mediaType.contains(MediaType.Cutout))
+
+    val pickedKicker = pickKicker(content)
+
+    Prefill(
+      internalPageCode,
+      newspaperPageNumber,
+      webUrl,
+      newMetadata,
+      cutoutImage,
+      cardStyle.toneString,
+      mediaType,
+      pickedKicker,
+      None)
+  }
+
   def getFirstContributorWithCutoutOption(content: Content): Option[String] =
     content.tags
       .filter(_.`type` == TagType.Contributor)

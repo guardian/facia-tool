@@ -20,6 +20,19 @@ package object prefills {
                       promotionMetric: Option[Double]
                     )
 
+  case class ArticleItemPrefill(
+                               apiUrl: String,
+                      internalPageCode: Int,
+                      newspaperPageNumber: Option[Int],
+                      webUrl: String,
+                      metaData: ResolvedMetaData,
+                      cutout: Option[Image],
+                      tone: String,
+                      mediaType: Option[MediaType],
+                      pickedKicker: Option[String], // Note: algorithmically-picked, not human-picked.
+                      promotionMetric: Option[Double]
+                    )
+
   case class CapiQueryTimeWindow(fromDate: Instant, toDate: Instant)
 
   object CapiQueryTimeWindow {
