@@ -20,6 +20,7 @@ import services.editions.prefills.{CapiPrefillTimeParams, MetadataForLogging, Pr
 import services.editions.publishing.EditionsPublishing
 import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
+import util.SearchResponseUtil
 
 import scala.collection.JavaConverters._
 import scala.concurrent.{ExecutionContext, Future}
@@ -140,7 +141,7 @@ class EditionsController(db: EditionsDB,
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def getPrefillForCollection(id: String) = EditEditionsAuthAction.async { req =>
+  def getPrefillForCollection(id: String) = EditEditionsAuthAction { req =>
     db.getCollectionPrefill(id).map { prefillUpdate =>
       logger.info(s"getPrefillForCollection id=$id, prefillUpdate")
       import prefillUpdate._
@@ -158,13 +159,25 @@ class EditionsController(db: EditionsDB,
         edition,
         metadataForLogging = MetadataForLogging(issueDate, collectionId = Some(id), collectionName = None)
       )
-      capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes).map { body =>
-        // Need to wrap this in a "response" object because the CAPI client and CAPI API return different JSON
-        val json = "{\"response\":" + body.asJson.noSpaces + "}"
-        val decorated = rewriteBody(json)
-        Ok(decorated).as("application/json")
-      }
-    }.getOrElse(Future.successful(NotFound("Collection not found")))
+
+      val responses = capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes)
+
+      /**
+       * TODO
+       * aggregating results from multiple SearchResponses into single SearchResponse
+       * Is a quick temp solution to be able to handle pagination on Suggest Articles request
+       * currently result item from SearchResponse.results is a dynamic type which is enhanced by rewriteBody function
+       * see rewriteBody function implementation
+       * rewriteBody dynamically adjust Content type from SearchResponse into type CapiArticle type used on Front-end
+       * making that type safe will require more work and will be done later
+       */
+
+      val responseWithAggregatedResults = SearchResponseUtil.aggregateResults(responses)
+
+      val json = "{\"response\":" + responseWithAggregatedResults.asJson.noSpaces + "}"
+      val decorated = rewriteBody(json)
+      Ok(decorated).as("application/json")
+    }.getOrElse(NotFound("Collection not found"))
   }
 
   def putFrontMetadata(id: String) = EditEditionsAuthAction(parse.json[EditionsFrontMetadata]) { req =>

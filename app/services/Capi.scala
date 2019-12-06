@@ -65,26 +65,31 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
   // Sadly there's no easy way of converting a CAPI client response into JSON so we'll just proxy - similar to controllers.FaciaContentApiProxy
   // this function is used for (suggest articles for collection) functionality
-  def getPrefillArticles(getPrefill: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = {
+  def getPrefillArticles(getPrefill: PrefillParamsAdapter, currentPageCodes: List[String]): List[SearchResponse] = {
     val query = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefill, currentPageCodes)
 
     logger.info(s"getPrefillArticles, Prefill Query: $query for ${getPrefill.metadataForLogging}")
 
-    val filterResults = (content: Content) => {
+    val getResponseFunction = (query: CapiQueryGenerator) => this.getResponse(query)
+    val allResponses = GuardianCapi.readAllSearchResponsePages(query, getResponseFunction)
+    withResultsThatNotContainCurrentPageCodes(allResponses, currentPageCodes)
+  }
+
+  private def withResultsThatNotContainCurrentPageCodes(responses: List[SearchResponse], currentPageCodes: List[String]) = {
+    val filterByPageCodes = (content: Content) => {
       (for {
         fields <- content.fields
         pageCode <- fields.internalPageCode
       } yield !currentPageCodes.contains(pageCode.toString))
         .getOrElse(true)
     }
-
-    this.getResponse(query).map { response =>
-      val filteredResults = response.results.filter(filterResults)
+    responses.map(response => {
+      val filteredResults = response.results.filter(filterByPageCodes)
       response.copy(
         total = filteredResults.length,
         results = filteredResults
       )
-    }
+    })
   }
 
 
@@ -206,10 +211,10 @@ object GuardianCapi extends Logging {
     val firstPageResponse = Await.result(getResponse(query.page(1)), FirstPageReqTimeout)
     val totalPages = firstPageResponse.pages
 
-    if (totalPages == 0 || totalPages == 1) return List(firstPageResponse)
-
-    val remainingPages = readRemainingPages(totalPages, query, getResponse)
-    val allResponsePages: List[SearchResponse] = firstPageResponse +: remainingPages
+    val allResponsePages = if (totalPages == 0 || totalPages == 1) List(firstPageResponse) else {
+      val remainingPages = readRemainingPages(totalPages, query, getResponse)
+      firstPageResponse +: remainingPages
+    }
     logger.info(s"readAllSearchResponsePages, fetched CAPI search Response pages count ${allResponsePages.size}")
     allResponsePages
   }
@@ -236,5 +241,5 @@ trait Capi {
 
   def getUnsortedPrefillArticleItems(prefillParams: PrefillParamsAdapter): List[Prefill]
 
-  def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse]
+  def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): List[SearchResponse]
 }

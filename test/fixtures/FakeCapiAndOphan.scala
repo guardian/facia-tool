@@ -185,7 +185,7 @@ trait FakeCapiAndOphan {
       }
     }
 
-    def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): Future[SearchResponse] = ???
+    def getPrefillArticles(prefillParams: PrefillParamsAdapter, currentPageCodes: List[String]): List[SearchResponse] = ???
   }
 
   val nullOphan = new Ophan {
