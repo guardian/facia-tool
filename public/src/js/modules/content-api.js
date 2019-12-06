@@ -96,7 +96,7 @@ function validateItem (item) {
                         populate(item, capiItem);
                         cache.put('contentApi', pageCode, capiItem);
 
-                        const maybeUrlParams = decodeURIComponent(urlQuery(item.id()))
+                        const maybeUrlParams = decodeURIComponent(urlQuery(item.id()));
                         const maybeBlockId = maybeUrlParams.split('with:block-')[1];
 
                         if (maybeBlockId) {
