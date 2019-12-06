@@ -5,6 +5,7 @@ import * as cache from 'modules/cache';
 import modalDialog from 'modules/modal-dialog';
 import internalPageCode from 'utils/internal-page-code';
 import articlePath from 'utils/article-path';
+import urlQuery from 'utils/url-query';
 import isGuardianUrl from 'utils/is-guardian-url';
 import lenientJsonParse from 'utils/lenient-json-parse';
 import mediator from 'utils/mediator';
@@ -95,7 +96,8 @@ function validateItem (item) {
                         populate(item, capiItem);
                         cache.put('contentApi', pageCode, capiItem);
 
-                        const maybeBlockId = item.id().split('#block-')[1];
+                        const maybeUrlParams = decodeURIComponent(urlQuery(item.id()))
+                        const maybeBlockId = maybeUrlParams.split('with:block-')[1];
 
                         if (maybeBlockId) {
                             item.meta.blockId(maybeBlockId);
