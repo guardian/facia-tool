@@ -50,10 +50,10 @@ object AustralianEdition {
 
   def FrontWeekendAu = front(
     "Weekend",
-    collection("Features"),
-    collection("Culture"),
-    collection("Lifestyle"),
-    collection("Comment")
+    collection("Collection 1"),
+    collection("Collection 2"),
+    collection("Collection 3"),
+    collection("Collection 4")
   )
     .swatch(Lifestyle)
 
