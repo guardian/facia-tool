@@ -75,7 +75,8 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     if (trail.alert.getOrElse(false)) {
       withExceptionHandling({
         structuredLogger.putLog(LogUpdate(HandlingBreakingNewsTrail(collectionId, trail: ClientHydratedTrail), email))
-        client.send(createPayload(trail, email))
+        val payload = createPayload(trail, email)
+        client.send(payload)
           .map(handleSuccessfulFuture)
           .recover {
             case NonFatal(e) => Some(e.getMessage)
@@ -116,7 +117,8 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
         title = trail.headline,
         git = GITContent,
         thumbnail = trail.thumb,
-        shortUrl = trail.shortUrl
+        shortUrl = trail.shortUrl,
+        blockId = trail.blockId
       )
     } else {
       throw new InvalidNotificationContentType(s"Can't send snap notifications for trail: ${trail.headline}")

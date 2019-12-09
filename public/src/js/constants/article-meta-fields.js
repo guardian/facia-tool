@@ -40,6 +40,11 @@ export default Object.freeze([
         type: 'text'
     },
     {
+        key: 'blockId',
+        label: 'blockId',
+        type: 'text'
+    },
+    {
         key: 'imageSrc',
         editable: true,
         dropImage: true,

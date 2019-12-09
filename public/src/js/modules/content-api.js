@@ -5,6 +5,7 @@ import * as cache from 'modules/cache';
 import modalDialog from 'modules/modal-dialog';
 import internalPageCode from 'utils/internal-page-code';
 import articlePath from 'utils/article-path';
+import urlQuery from 'utils/url-query';
 import isGuardianUrl from 'utils/is-guardian-url';
 import lenientJsonParse from 'utils/lenient-json-parse';
 import mediator from 'utils/mediator';
@@ -94,6 +95,13 @@ function validateItem (item) {
                         capiItem.capiId = capiItem.id;
                         populate(item, capiItem);
                         cache.put('contentApi', pageCode, capiItem);
+
+                        const maybeUrlParams = decodeURIComponent(urlQuery(item.id()));
+                        const maybeBlockId = maybeUrlParams.split('with:block-')[1];
+
+                        if (maybeBlockId) {
+                            item.meta.blockId(maybeBlockId);
+                        }
                         item.id(pageCode);
                     } else {
                         err = 'Sorry, that article is malformed (has no internalPageCode)';

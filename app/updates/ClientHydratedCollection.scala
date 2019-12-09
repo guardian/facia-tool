@@ -12,7 +12,8 @@ case class ClientHydratedTrail (
   imageHide: Option[Boolean],
   path: Option[String],
   shortUrl: Option[String],
-  alert: Option[Boolean]
+  alert: Option[Boolean],
+  blockId: Option[String]
 ) {}
 object ClientHydratedTrail {
   implicit val jsonFormat = Json.format[ClientHydratedTrail]
