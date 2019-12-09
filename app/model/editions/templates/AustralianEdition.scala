@@ -61,13 +61,16 @@ object AustralianEdition {
 
   def FrontNationalAu = front(
     "National",
-    collection("News & Politics - 5 days")
-      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics),(tone/news|tone/features),-tone/minutebyminute")
+    collection("News Features")
+      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics),tone/news,tone/features,-tone/minutebyminute")
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withArticleItemsCap(40),
-    collection("Politics")
+    collection("News")
+      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics),tone/news,-(tone/news,tone/features),-tone/minutebyminute")
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
+      .withArticleItemsCap(40)
   )
-    .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
-    .swatch(News)
+  .swatch(News)
 
   //World - International news content
 
