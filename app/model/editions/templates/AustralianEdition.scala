@@ -50,14 +50,10 @@ object AustralianEdition {
 
   def FrontWeekendAu = front(
     "Weekend",
-    collection("Features")
-      .searchPrefill("?tag=type/article,tone/features,(tracking/commissioningdesk/australia-news|tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-investigations|tracking/commissioningdesk/australia-business|tracking/commissioningdesk/australia-technology)"),
-    collection("Culture")
-      .searchPrefill("?tag=type/article,culture/culture,tracking/commissioningdesk/australia-culture,(tone/features|tone/interview|tone/reviews)"),
-    collection("Lifestyle")
-      .searchPrefill("?tag=type/article,lifeandstyle/australian-lifestyle,tracking/commissioningdesk/australia-lifestyle,(tone/news|tone/features)"),
-    collection("Comment")
-      .searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
+    collection("Collection 1"),
+    collection("Collection 2"),
+    collection("Collection 3"),
+    collection("Collection 4")
   )
     .swatch(Lifestyle)
 
@@ -65,21 +61,29 @@ object AustralianEdition {
 
   def FrontNationalAu = front(
     "National",
-    collection("News")
-      .searchPrefill("?tag=type/article,australia-news/australia-news,tone/news,(tracking/commissioningdesk/australia-politics|tracking/commissioningdesk/australia-politics)")
+    collection("News Features")
+      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics),tone/news,tone/features,-tone/minutebyminute")
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withArticleItemsCap(40),
-    collection("Politics")
+    collection("News")
+      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics),tone/news,-(tone/news,tone/features),-tone/minutebyminute")
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
+      .withArticleItemsCap(40)
   )
-    .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-1, 0)))
     .swatch(News)
 
   //World - International news content
 
   def FrontWorldAu = front(
     "World",
-    collection("World")
-      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),tone/news,(tracking/commissioningdesk/us-news|tracking/commissioningdesk/us-foreign|tracking/commissioningdesk/uk-home-news|tracking/commissioningdesk/uk-foreign)")
-      .withArticleItemsCap(40)
+    collection("News Features")
+      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),tone/news,tone/features,-tone/minutebyminute")
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
+      .withArticleItemsCap(40),
+    collection("News")
+      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),tone/news,-(tone/news,tone/features),-tone/minutebyminute")
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
+      .withArticleItemsCap(40)    
   )
     .swatch(News)
 
@@ -88,7 +92,7 @@ object AustralianEdition {
   def FrontOpinionAu = front(
     "Opinion",
     collection("Opinion")
-      .searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics)")
+      .searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,-tone/minutebyminute")
   )
     .swatch(Culture)
 
@@ -96,18 +100,20 @@ object AustralianEdition {
 
   def FrontCultureLifeAu = front(
     "Culture & Lifestyle",
-    collection("Culture")
-      .searchPrefill("?tag=type/article,culture/culture,lifeandstyle/australian-lifestyle,(tone/features|tone/reviews|tone/news),(tracking/commissioningdesk/australia-lifestyle|tracking/commissioningdesk/australia-culture)"),
-    collection("Lifestyle")
+    collection("Features")
+      .searchPrefill("?tag=type/article,culture/culture,lifeandstyle/australian-lifestyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute"),
+    collection("News")
+      .searchPrefill("?tag=type/article,culture/culture,lifeandstyle/australian-lifestyle,tone/news,-tone/minutebyminute")
   )
     .swatch(Lifestyle)
 
   // Recommended Reads (aka Long Reads)
+  // AUS preference would be to do this by word count which we can't currently do
 
   def FrontRecommendedAu = front(
     "Recommended Reads",
     collection("Long Reads")
-      .searchPrefill("?tag=type/article,news/series/the-long-read,tracking/commissioningdesk/long-read")
+      .searchPrefill("?tag=type/article,news/series/the-long-read,tracking/commissioningdesk/long-read,-tone/minutebyminute")
   )
     .swatch(Sport)
 
@@ -115,10 +121,10 @@ object AustralianEdition {
 
   def FrontSportAu = front(
     "Sport",
-    collection("Sports").searchPrefill("?tag=type/article,tracking/commissioningdesk/australia-sport,sport/australia-sport")
+    collection("Sport")
+      .searchPrefill("?tag=type/article,sport/sport,(tone/comment|tone/features|tone/analysis),-tone/minutebyminute")
       .withArticleItemsCap(40)
   )
-    .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-1, 0)))
     .swatch(Sport)
 
   // Crosswords - also Quizzes, not sure if this will work. Split to a separate container.
