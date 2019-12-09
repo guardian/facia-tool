@@ -92,7 +92,7 @@ object AustralianEdition {
   def FrontOpinionAu = front(
     "Opinion",
     collection("Opinion")
-      .searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,(tracking/commissioningdesk/australia-opinion|tracking/commissioningdesk/australia-politics),-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,-tone/minutebyminute")
   )
     .swatch(Culture)
 
