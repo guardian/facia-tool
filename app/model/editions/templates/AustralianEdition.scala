@@ -91,9 +91,9 @@ object AustralianEdition {
 
   def FrontOpinionAu = front(
     "Opinion",
-    collection("Australian Opinion")
-      .searchPrefill("?tag=type/article,tone/comment,(australia-news/australia-news|australia-news/australian-politics),-tone/minutebyminute"),
     collection("Opinion")
+      .searchPrefill("?tag=type/article,tone/comment,(australia-news/australia-news|australia-news/australian-politics),-tone/minutebyminute"),
+    collection("World Opinion")
       .searchPrefill("?tag=type/article,tone/comment,-(australia-news/australia-news|australia-news/australian-politics),-tone/minutebyminute")
   )
     .swatch(Culture)
@@ -102,9 +102,9 @@ object AustralianEdition {
 
   def FrontCultureLifeAu = front(
     "Culture & Lifestyle",
-    collection("Features")
+    collection("Culture")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute"),
-    collection("News")
+    collection("Lifestyle")
       .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
   )
     .swatch(Lifestyle)
@@ -115,7 +115,7 @@ object AustralianEdition {
   def FrontRecommendedAu = front(
     "Recommended Reads",
     collection("Long Reads")
-      .searchPrefill("?tag=type/article,news/series/the-long-read,tracking/commissioningdesk/long-read,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
   )
     .swatch(Sport)
 
