@@ -62,11 +62,11 @@ object AustralianEdition {
   def FrontNationalAu = front(
     "National",
     collection("News Features")
-      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics),tone/news,tone/features,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia),(tone/features|tone/analysis|tone/explainer),-tone/news,-tone/comment,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withArticleItemsCap(40),
     collection("News")
-      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics),tone/news,-(tone/news,tone/features),-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia),-(tone/features|tone/analysis|tone/explainer),tone/news,-tone/comment,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
       .withArticleItemsCap(40)
   )
@@ -77,11 +77,11 @@ object AustralianEdition {
   def FrontWorldAu = front(
     "World",
     collection("News Features")
-      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),tone/news,tone/features,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-tone/news,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withArticleItemsCap(40),
     collection("News")
-      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),tone/news,-(tone/news,tone/features),-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),tone/news,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
       .withArticleItemsCap(40)    
   )
@@ -92,7 +92,9 @@ object AustralianEdition {
   def FrontOpinionAu = front(
     "Opinion",
     collection("Opinion")
-      .searchPrefill("?tag=type/article,commentisfree/commentisfree,tone/comment,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,tone/comment,(australia-news/australia-news|australia-news/australian-politics),-tone/minutebyminute"),
+    collection("World Opinion")
+      .searchPrefill("?tag=type/article,tone/comment,-(australia-news/australia-news|australia-news/australian-politics),-tone/minutebyminute")
   )
     .swatch(Culture)
 
@@ -100,10 +102,10 @@ object AustralianEdition {
 
   def FrontCultureLifeAu = front(
     "Culture & Lifestyle",
-    collection("Features")
-      .searchPrefill("?tag=type/article,culture/culture,lifeandstyle/australian-lifestyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute"),
-    collection("News")
-      .searchPrefill("?tag=type/article,culture/culture,lifeandstyle/australian-lifestyle,tone/news,-tone/minutebyminute")
+    collection("Culture")
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute"),
+    collection("Lifestyle")
+      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
   )
     .swatch(Lifestyle)
 
@@ -113,7 +115,7 @@ object AustralianEdition {
   def FrontRecommendedAu = front(
     "Recommended Reads",
     collection("Long Reads")
-      .searchPrefill("?tag=type/article,news/series/the-long-read,tracking/commissioningdesk/long-read,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
   )
     .swatch(Sport)
 
