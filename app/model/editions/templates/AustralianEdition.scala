@@ -105,9 +105,11 @@ object AustralianEdition {
   def FrontCultureLifeAu = front(
     "Culture & Lifestyle",
     collection("Culture")
-      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute"),
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
+      .withArticleItemsCap(40),
     collection("Lifestyle")
       .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
+      .withArticleItemsCap(40)
   )
     .swatch(Lifestyle)
 
