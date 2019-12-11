@@ -62,11 +62,11 @@ object AustralianEdition {
   def FrontNationalAu = front(
     "National",
     collection("News Features")
-      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia),(tone/features|tone/analysis|tone/explainer),-tone/news,-tone/comment,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,-tone/news,-tone/comment,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withArticleItemsCap(40),
     collection("News")
-      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia),-(tone/features|tone/analysis|tone/explainer),tone/news,-tone/comment,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-(tone/features|tone/analysis|tone/explainer),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/comment,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
       .withArticleItemsCap(40)
   )
@@ -77,11 +77,11 @@ object AustralianEdition {
   def FrontWorldAu = front(
     "World",
     collection("News Features")
-      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-tone/news,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withArticleItemsCap(40),
     collection("News")
-      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),tone/news,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
       .withArticleItemsCap(40)    
   )
@@ -92,10 +92,10 @@ object AustralianEdition {
   def FrontOpinionAu = front(
     "Opinion",
     collection("Opinion")
-      .searchPrefill("?tag=type/article,tone/comment,(australia-news/australia-news|australia-news/australian-politics),-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,tone/comment,(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
       .withArticleItemsCap(40),
     collection("World Opinion")
-      .searchPrefill("?tag=type/article,tone/comment,-(australia-news/australia-news|australia-news/australian-politics),-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,tone/comment,-(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
       .withArticleItemsCap(40)
   )
     .swatch(Culture)
