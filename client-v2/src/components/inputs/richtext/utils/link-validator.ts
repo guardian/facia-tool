@@ -14,7 +14,7 @@ const FUZZY_MATCHERS = [
   },
   {
     // For tel numbers check for + and numerical values
-    regexp: /\+?\d+/,
+    regexp: /^[+, 0-9]*$/,
     message:
       'The URL you entered appears to be a telephone number. ' +
       'Do you want to add the required “tel:” prefix?',
@@ -52,25 +52,27 @@ export const parseURL = (rawLink: string, confirm = window.confirm) => {
   }
 };
 
-export const linkValidator = (rawLink: string) => {
-  const parsedUrl = url.parse(rawLink);
+const isEdToolsDomain = (parsedUrl: url.UrlWithStringQuery) => {
+  // TODO: consider how comprehensive this is. should there be other tools?
   const edToolsDomains = [
     'composer.gutools.co.uk',
     'preview.gutools.co.uk',
     'viewer.gutools.co.uk'
   ];
 
-  if (!parsedUrl.hostname) {
-    return {
-      valid: false,
-      message: `"${rawLink}" is not a valid url, please check and try again`
-    };
-  }
+  return (
+    parsedUrl.hostname &&
+    (edToolsDomains.some(d => parsedUrl.hostname === d) ||
+      /\.gnl/.test(parsedUrl.hostname))
+  );
+};
 
-  if (
-    edToolsDomains.some(d => parsedUrl.hostname === d) ||
-    /\.gnl/.test(parsedUrl.hostname)
-  ) {
+export const linkValidator = (
+  rawLink: string
+): { valid: boolean; message?: string } => {
+  const parsedUrl = url.parse(rawLink);
+
+  if (isEdToolsDomain(parsedUrl)) {
     return {
       valid: false,
       message:
@@ -83,6 +85,20 @@ export const linkValidator = (rawLink: string) => {
       valid: false,
       message:
         'This link can only be accessed by Guardian staff, not readers. Please check and update your link and try again'
+    };
+  }
+
+  if (rawLink.includes('.')) {
+    const possibleUrl = url.parse(`https://${rawLink}`);
+    if (possibleUrl.hostname) {
+      return { valid: true };
+    }
+  }
+
+  if (!parsedUrl.hostname) {
+    return {
+      valid: false,
+      message: `"${rawLink}" is not a valid url, please check and try again`
     };
   }
 
