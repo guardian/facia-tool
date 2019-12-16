@@ -361,7 +361,15 @@ trait IssueQueries {
         true
       }
       case Failure(exception: PSQLException) if exception.getSQLState == ForeignKeyViolationSQLState => {
-        Logger.warn("constraint violation encountered when inserting issue version event")(event.toLogMarker)
+        Logger.warn("Foreign key constraint violation encountered when inserting issue version event")(event.toLogMarker)
+        true
+      }
+      case Failure(exception: PSQLException)  => {
+        Logger.warn(s"Postgres exception (${exception.getMessage}) encountered when inserting issue version event")(event.toLogMarker)
+        true
+      }
+      case Failure(exception)  => {
+        Logger.warn("Non-database exception (${exception.getMessage}) encountered when inserting issue version event")(event.toLogMarker)
         true
       }
     }
