@@ -37,7 +37,8 @@ import { theme } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import { updateCollection as updateCollectionAction } from '../../actions/Collections';
 
-export const createCollectionId = ({ id }: Collection, frontId: string) => `front-${frontId}-collection-${id}`;
+export const createCollectionId = ({ id }: Collection, frontId: string) =>
+  `front-${frontId}-collection-${id}`;
 
 interface ContainerProps {
   id: string;
