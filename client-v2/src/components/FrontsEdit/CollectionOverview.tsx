@@ -116,7 +116,9 @@ const CollectionOverview = ({
       onClick={e => {
         e.preventDefault();
         events.overviewItemClicked(frontId);
-        const el = document.getElementById(createCollectionId(collection));
+        const el = document.getElementById(
+          createCollectionId(collection, frontId)
+        );
         if (el) {
           el.scrollIntoView({
             behavior: 'smooth',

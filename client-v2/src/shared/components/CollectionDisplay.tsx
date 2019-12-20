@@ -37,7 +37,8 @@ import { theme } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import { updateCollection as updateCollectionAction } from '../../actions/Collections';
 
-export const createCollectionId = ({ id }: Collection) => `collection-${id}`;
+export const createCollectionId = ({ id }: Collection, frontId: string) =>
+  `front-${frontId}-collection-${id}`;
 
 interface ContainerProps {
   id: string;
@@ -231,6 +232,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
     const {
       id,
       collection,
+      frontId,
       articleIds,
       headlineContent,
       metaContent,
@@ -247,7 +249,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
     const { displayName } = this.state;
     return (
       <CollectionContainer
-        id={collection && createCollectionId(collection)}
+        id={collection && createCollectionId(collection, frontId)}
         tabIndex={0}
         onFocus={() => handleFocus(id)}
         onBlur={handleBlur}
