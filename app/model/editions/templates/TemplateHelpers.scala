@@ -30,7 +30,10 @@ object TemplateHelpers {
     ophanPath,
     collection("Special Container 1").hide.copy(prefill = prefill),
     collection("Special Container 2").hide,
-    collection("Special Container 3").hide
+    collection("Special Container 3").hide,
+    collection("Special Container 4").hide,
+    collection("Special Container 5").hide,
+    collection("Special Container 6").hide
   ).special
     .swatch(swatch)
 
