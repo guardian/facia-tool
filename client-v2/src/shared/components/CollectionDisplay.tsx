@@ -308,12 +308,12 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
               <HeadlineContentContainer>
                 {headlineContent}
                 <Button
-                    size="l"
-                    priority="default"
-                    onClick={this.startRenameContainer}
-                    title="Rename this container in this issue."
+                  size="l"
+                  priority="default"
+                  onClick={this.startRenameContainer}
+                  title="Rename this container in this issue."
                 >
-                    Rename
+                  Rename
                 </Button>
               </HeadlineContentContainer>
             ) : null}
