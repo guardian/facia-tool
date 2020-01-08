@@ -262,7 +262,9 @@ object DailyEdition {
   def FrontFoodObserver = front(
     "Food",
     collection("Food").printSentAllTags("theobserver/magazine/life-and-style", "food/food"),
-    collection("OFM").printSentAnyTag("theobserver/foodmonthly/features", "theobserver/foodmonthly").hide,
+    collection("OFM 1").printSentAnyTag("theobserver/foodmonthly/features", "theobserver/foodmonthly").hide,
+    collection("OFM 2").hide,
+    collection("OFM 3").hide,
     collection("Food Special").hide,
   )
     .swatch(Lifestyle)
