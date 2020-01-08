@@ -15,8 +15,7 @@ case class EditionsCollection(
                                updatedEmail: Option[String],
                                prefill: Option[CapiPrefillQuery],
                                contentPrefillTimeWindow: Option[CapiQueryTimeWindow],
-                               items: List[EditionsArticle],
-                               canRename: Boolean
+                               items: List[EditionsArticle]
                              ) {
   def toPublishedCollection: PublishedCollection = PublishedCollection(
     id,
@@ -42,8 +41,7 @@ object EditionsCollection {
       rs.stringOpt(prefix + "updated_email"),
       capiPrefillQuery,
       contentPrefillTimeWindow,
-      Nil,
-      rs.boolean(prefix + "is_special"),
+      Nil
     )
   }
 
@@ -82,8 +80,7 @@ object EditionsCollection {
         rs.stringOpt(prefix + "updated_email"),
         capiPrefillQuery,
         contentPrefillTimeWindow,
-        Nil,
-        false
+        Nil
       )
     }
   }

@@ -34,8 +34,7 @@ case class EditionsClientCollection(
   updatedEmail: Option[String],
   prefill: Option[CapiPrefillQuery],
   contentPrefillTimeWindow: Option[CapiQueryTimeWindow],
-  items: List[EditionsClientArticle],
-  canRename: Boolean
+  items: List[EditionsClientArticle]
 )
 case class EditionsFrontendCollectionWrapper(id: String, collection: EditionsClientCollection)
 
@@ -56,8 +55,7 @@ object EditionsFrontendCollectionWrapper {
         collection.updatedEmail,
         collection.prefill,
         collection.contentPrefillTimeWindow,
-        collection.items.map(EditionsClientArticle.fromArticle),
-        collection.canRename
+        collection.items.map(EditionsClientArticle.fromArticle)
       )
     )
   }
@@ -72,8 +70,7 @@ object EditionsFrontendCollectionWrapper {
       frontendCollection.collection.updatedEmail,
       frontendCollection.collection.prefill,
       frontendCollection.collection.contentPrefillTimeWindow,
-      frontendCollection.collection.items.map(EditionsClientArticle.toArticle),
-      frontendCollection.collection.canRename
+      frontendCollection.collection.items.map(EditionsClientArticle.toArticle)
     )
   }
 }

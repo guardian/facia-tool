@@ -62,7 +62,6 @@ type FrontProps = FrontPropsBeforeState & {
   ) => void;
   moveCard: typeof moveCard;
   insertCardFromDropEvent: typeof insertCardFromDropEvent;
-  canRename: boolean;
 };
 
 interface FrontState {
@@ -181,7 +180,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
                       )
                     }
                     handleArticleFocus={this.props.handleArticleFocus}
-                    canRename={false}
                   />
                 </CollectionContainer>
               ))}

@@ -54,7 +54,6 @@ type Props = ContainerProps & {
   metaContent: React.ReactNode;
   children: React.ReactNode;
   isUneditable?: boolean;
-  canRename?: boolean;
   underlyingCollection?: Collection;
   isLocked?: boolean;
   isOpen?: boolean;
@@ -237,7 +236,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       headlineContent,
       metaContent,
       isUneditable,
-      canRename,
       isLocked,
       hasMultipleFrontsOpen,
       children,
@@ -309,16 +307,14 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
             ) : headlineContent ? (
               <HeadlineContentContainer>
                 {headlineContent}
-                {canRename && (
-                  <Button
+                <Button
                     size="l"
                     priority="default"
                     onClick={this.startRenameContainer}
                     title="Rename this container in this issue."
-                  >
+                >
                     Rename
-                  </Button>
-                )}
+                </Button>
               </HeadlineContentContainer>
             ) : null}
           </CollectionHeadingInner>

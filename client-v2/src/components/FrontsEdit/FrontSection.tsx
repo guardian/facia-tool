@@ -230,15 +230,15 @@ class FrontSection extends React.Component<
                   >
                     {isHidden ? 'Unhide' : 'Hide'}
                   </FrontHeaderButton>
-                  <FrontHeaderButton
-                    data-testid="rename-front-button"
-                    onClick={this.renameFront}
-                    size="l"
-                  >
-                    Rename
-                  </FrontHeaderButton>
                 </>
               )}
+              <FrontHeaderButton
+                data-testid="rename-front-button"
+                onClick={this.renameFront}
+                size="l"
+              >
+                Rename
+              </FrontHeaderButton>
               <FrontHeaderButton onClick={this.handleRemoveFront} size="l">
                 <ClearIcon size="xl" />
               </FrontHeaderButton>

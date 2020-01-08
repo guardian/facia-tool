@@ -15,7 +15,6 @@ import {
   selectHasUnpublishedChanges,
   selectCollectionHasPrefill,
   selectCollectionIsHidden,
-  selectCollectionCanRename,
   selectCollectionDisplayName
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
@@ -77,7 +76,6 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasPrefill: boolean;
   setHidden: (id: string, isHidden: boolean) => void;
   isHidden: boolean;
-  canRename: boolean;
   displayName: string;
 };
 
@@ -197,8 +195,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
       hasPrefill,
       isHidden,
       hasContent,
-      hasOpenForms,
-      canRename
+      hasOpenForms
     } = this.props;
 
     const { isPreviouslyOpen, isLaunching } = this.state;
@@ -211,7 +208,6 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
         id={id}
         browsingStage={browsingStage}
         isUneditable={isUneditable}
-        canRename={canRename}
         isLocked={isCollectionLocked}
         isOpen={isOpen}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
@@ -342,7 +338,6 @@ const createMapStateToProps = () => {
     }: CollectionPropsBeforeState
   ) => ({
     isHidden: selectCollectionIsHidden(state, collectionId),
-    canRename: selectCollectionCanRename(state, collectionId),
     displayName: selectCollectionDisplayName(state, collectionId),
     hasPrefill: selectCollectionHasPrefill(state, collectionId),
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
