@@ -36,6 +36,7 @@ import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import { updateCollection as updateCollectionAction } from '../../actions/Collections';
+import {isMode} from "../../selectors/pathSelectors";
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
   `front-${frontId}-collection-${id}`;
@@ -62,6 +63,7 @@ type Props = ContainerProps & {
   handleFocus: (id: string) => void;
   handleBlur: () => void;
   updateCollection: (collection: Collection) => void;
+  isEditions: boolean;
 };
 
 interface CollectionState {
@@ -240,7 +242,8 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       hasMultipleFrontsOpen,
       children,
       handleFocus,
-      handleBlur
+      handleBlur,
+      isEditions
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
     const targetedTerritory = collection ? collection.targetedTerritory : null;
@@ -307,14 +310,17 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
             ) : headlineContent ? (
               <HeadlineContentContainer>
                 {headlineContent}
-                <Button
-                  size="l"
-                  priority="default"
-                  onClick={this.startRenameContainer}
-                  title="Rename this container in this issue."
-                >
-                  Rename
-                </Button>
+                {isEditions &&
+                  <Button
+                    size="s"
+                    priority="default"
+                    onClick={this.startRenameContainer}
+                    title="Rename this container in this issue."
+                    style={{ marginLeft: '5px' }}
+                  >
+                    Rename
+                  </Button>
+                }
               </HeadlineContentContainer>
             ) : null}
           </CollectionHeadingInner>
@@ -410,7 +416,8 @@ const createMapStateToProps = () => {
         collectionId: props.id,
         collectionSet: props.browsingStage,
         includeSupportingArticles: false
-      })
+      }),
+      isEditions: isMode(state, 'editions')
     };
   };
 };

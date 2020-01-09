@@ -25,6 +25,7 @@ import { createFrontId } from 'util/editUtils';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
 import FrontsContainer from './FrontContainer';
+import { isMode } from '../../selectors/pathSelectors';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -119,6 +120,7 @@ type FrontsComponentProps = FrontsContainerProps & {
     ) => void;
     setFrontHiddenState: (id: string, hidden: boolean) => void;
   };
+  isEditions: boolean;
 };
 
 interface ComponentState {
@@ -134,7 +136,7 @@ class FrontSection extends React.Component<
   public state = {
     collectionSet: frontStages.draft,
     frontNameValue: '',
-    editingFrontName: false
+    editingFrontName: false,
   };
 
   public handleCollectionSetSelect(key: string) {
@@ -236,6 +238,7 @@ class FrontSection extends React.Component<
                 data-testid="rename-front-button"
                 onClick={this.renameFront}
                 size="l"
+                style={{ marginLeft: '10px' }}
               >
                 Rename
               </FrontHeaderButton>
@@ -311,7 +314,8 @@ class FrontSection extends React.Component<
 const createMapStateToProps = () => {
   return (state: State, { frontId }: FrontsContainerProps) => ({
     selectedFront: selectFront(state, { frontId }),
-    isOverviewOpen: selectIsFrontOverviewOpen(state, frontId)
+    isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
+    isEditions: isMode(state, 'editions')
   });
 };
 

@@ -218,23 +218,23 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
             <Fragment>
               <EditModeVisibility visibleMode="editions">
                 <Button
-                  size="l"
+                  size="s"
                   priority="default"
                   onClick={() => this.props.setHidden(id, !isHidden)}
                   title="Toggle the visibility of this container in this issue."
                 >
-                  {isHidden ? 'Unhide Container' : 'Hide Container'}
+                  {isHidden ? 'Unhide' : 'Hide'}
                 </Button>
                 {hasPrefill && (
                   <Button
                     data-testid="prefill-button"
-                    size="l"
+                    size="s"
                     priority="default"
                     onClick={() => this.props.fetchPrefill(id)}
                     title="Get suggested articles for this collection"
-                    style={{ marginLeft: '10px' }}
+                    style={{ marginLeft: '5px' }}
                   >
-                    Suggest Articles
+                    Suggest
                   </Button>
                 )}
               </EditModeVisibility>
