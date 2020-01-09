@@ -19,9 +19,9 @@ const selectEditMode = <T>(state: { path: string } & T): EditMode => {
 
 const isMode = <T>(state: { path: string } & T, mode: EditMode): boolean => {
   return selectEditMode(state) === mode;
-}
+};
 
-  const selectPriority = <T>(
+const selectPriority = <T>(
   state: { path: string } & T
 ): keyof Priorities | undefined => {
   const path = selectV2SubPath(state);
@@ -32,4 +32,10 @@ const isMode = <T>(state: { path: string } & T, mode: EditMode): boolean => {
   return match.params.priority as keyof Priorities;
 };
 
-export { selectFullPath, selectV2SubPath, selectEditMode, selectPriority, isMode };
+export {
+  selectFullPath,
+  selectV2SubPath,
+  selectEditMode,
+  selectPriority,
+  isMode
+};
