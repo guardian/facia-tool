@@ -136,7 +136,7 @@ class FrontSection extends React.Component<
   public state = {
     collectionSet: frontStages.draft,
     frontNameValue: '',
-    editingFrontName: false,
+    editingFrontName: false
   };
 
   public handleCollectionSetSelect(key: string) {
