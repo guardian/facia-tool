@@ -175,7 +175,7 @@ function diagnoseStaleFront (container, front, config, when, status) {
     troubleshootResults.querySelector('.frontName').textContent = front;
 
     diagnoseCapiQueries(troubleshootResults, front, config, createScheduler());
-    diagnoseDreamSnaps(troubleshootResults, front, config, createScheduler());
+    diagnoseLatestSnaps(troubleshootResults, front, config, createScheduler());
     populatePressErrorMessage(troubleshootResults, status);
     inject(container, troubleshootResults);
 
@@ -209,8 +209,8 @@ function diagnoseCapiQueries(container, front, config, scheduler) {
     });
 }
 
-function diagnoseDreamSnaps(container, front, config, scheduler) {
-    const dreamSnapsPlaceholder = container.querySelector('.snapLatest');
+function diagnoseLatestSnaps(container, front, config, scheduler) {
+    const latestSnapsPlaceholder = container.querySelector('.snapLatest');
     const listOfCollections = config.fronts[front].collections.map(collectionId => {
         return {
             id: collectionId,
@@ -219,11 +219,11 @@ function diagnoseDreamSnaps(container, front, config, scheduler) {
     });
     const innerElement = clone('snapLatest');
 
-    generateDreamSnapsList(innerElement.querySelector('.dreamSnapsList'), listOfCollections, scheduler);
-    dreamSnapsPlaceholder.appendChild(innerElement);
+    generateLatestSnapsList(innerElement.querySelector('.latestSnapsList'), listOfCollections, scheduler);
+    latestSnapsPlaceholder.appendChild(innerElement);
 
     scheduler.run().then(() => {
-        dreamSnapsPlaceholder.querySelector('.snapLatestFetching').classList.remove('loading');
+        latestSnapsPlaceholder.querySelector('.snapLatestFetching').classList.remove('loading');
     });
 }
 
@@ -288,25 +288,25 @@ function fetchFromCapi (query) {
     });
 }
 
-function generateDreamSnapsList (listContainer, listOfCollections, scheduler) {
+function generateLatestSnapsList (listContainer, listOfCollections, scheduler) {
     listOfCollections.forEach(collection => {
-        const element = clone('dreamSnap');
+        const element = clone('latestSnap');
 
         scheduler.job((id, el) => {
             return fetchCollectionContent(id)
-            .then(filterDreamSnaps)
+            .then(filterLatestSnaps)
             .then(snaps => {
                 if (snaps.length) {
                     fetchSnaps(collection, snaps, listContainer, scheduler);
                 } else {
-                    const emptyMessage = clone('emptyDreamSnapList');
-                    emptyMessage.querySelector('.emptyDreamSnapCollection').textContent = collection.name;
+                    const emptyMessage = clone('emptyLatestSnapList');
+                    emptyMessage.querySelector('.emptyLatestSnapCollection').textContent = collection.name;
                     listContainer.appendChild(emptyMessage);
                     markSuccess(el);
                 }
             })
             .catch(markFailure.bind(null, el));
-        }, [collection.id, element.querySelector('.dreamSnap')]);
+        }, [collection.id, element.querySelector('.latestSnap')]);
     });
 }
 
@@ -317,7 +317,7 @@ function fetchCollectionContent (id) {
     .then(response => response.json());
 }
 
-function filterDreamSnaps (json) {
+function filterLatestSnaps (json) {
     return ['live', 'draft', 'treats'].reduce((list, context) => {
         if (json && json[context]) {
             json[context].forEach(trail => {
@@ -345,24 +345,24 @@ function filterDreamSnaps (json) {
 
 function fetchSnaps (collection, snapList, domList, scheduler) {
     snapList.forEach(snap => {
-        const element = clone('dreamSnap');
-        element.querySelector('.dreamSnapCollection').textContent = collection.name;
-        element.querySelector('.dreamSnapName').textContent = snap.trail.meta.customKicker;
-        element.querySelector('.dreamSnapContext').textContent = snap.context;
+        const element = clone('latestSnap');
+        element.querySelector('.latestSnapCollection').textContent = collection.name;
+        element.querySelector('.latestSnapName').textContent = snap.trail.meta.customKicker;
+        element.querySelector('.latestSnapContext').textContent = snap.context;
 
         if (snap.parent) {
-            const parentTrail = clone('dreamSnapSublink');
+            const parentTrail = clone('latestSnapSublink');
             const parentHeadline = snap.parent.meta && snap.parent.meta.headline ? snap.parent.meta.headline : snap.parent.id;
-            parentTrail.querySelector('.dreamSnapParent').textContent = parentHeadline;
+            parentTrail.querySelector('.latestSnapParent').textContent = parentHeadline;
 
-            element.querySelector('.dreamSnapIsSublink').appendChild(parentTrail);
+            element.querySelector('.latestSnapIsSublink').appendChild(parentTrail);
         }
 
-        scheduler.job((dreamSnap, el) => {
-            return fetchFromCapi(dreamSnap.trail.meta.snapUri)
+        scheduler.job((latestSnap, el) => {
+            return fetchFromCapi(latestSnap.trail.meta.snapUri)
             .then(markSuccess.bind(null, el))
             .catch(markFailure.bind(null, el));
-        }, [snap, element.querySelector('.dreamSnap')]);
+        }, [snap, element.querySelector('.latestSnap')]);
 
         domList.appendChild(element);
     });

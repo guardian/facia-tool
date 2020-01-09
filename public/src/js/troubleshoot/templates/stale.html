@@ -60,7 +60,7 @@
     </div>
 
     <div class="resultBlock snapLatest">
-        <h3>Dream snaps</h3>
+        <h3>Latest snaps</h3>
     </div>
 </template>
 
@@ -93,12 +93,12 @@
     <span>None of the collections of this front contains a CAPI query.</span>
 </template>
 
-<template id="emptyDreamSnapList">
+<template id="emptyLatestSnapList">
     <li class="resultCorrect">
         <span class="resultCorrectStatus">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 -256 1792 1792"><g transform="matrix(1,0,0,-1,7.5932203,1217.0847)"><path d="m1671 970q0-40-28-68L919 178 783 42Q755 14 715 14 675 14 647 42L511 178 149 540q-28 28-28 68 0 40 28 68l136 136q28 28 68 28 40 0 68-28l294-295 656 657q28 28 68 28 40 0 68-28l136-136q28-28 28-68z" fill="currentColor"/></g></svg>
         </span>
-        <span>Collection &ldquo;<span class="emptyDreamSnapCollection"></span>&rdquo; doesn't contain any dream snap.</span>
+        <span>Collection &ldquo;<span class="emptyLatestSnapCollection"></span>&rdquo; doesn't contain any latest snaps.</span>
     </li>
 </template>
 
@@ -107,14 +107,14 @@
         <span class="loadingIcon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 30"><circle cx="15" cy="15" r="15" fill="currentColor"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite"/></circle><circle cx="60" cy="15" r="9" fill="currentColor" fill-opacity="0.3"><animate attributeName="r" from="9" to="9" begin="0s" dur="0.8s" values="9;15;9" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="0.5" to="0.5" begin="0s" dur="0.8s" values=".5;1;.5" calcMode="linear" repeatCount="indefinite"/></circle><circle cx="105" cy="15" r="15" fill="currentColor"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite"/></circle></svg>
         </span>
-        <span class="loadingMessage">Fetching dream snaps inside collections</span>
-        <span class="loadingCompleteMessage">Dream snaps checked</span>
+        <span class="loadingMessage">Fetching latest snaps inside collections</span>
+        <span class="loadingCompleteMessage">Latest snaps checked</span>
     </div>
-    <ul class="dreamSnapsList"></ul>
+    <ul class="latestSnapsList"></ul>
 </template>
 
-<template id="dreamSnap">
-    <li class="dreamSnap loading">
+<template id="latestSnap">
+    <li class="latestSnap loading">
         <span class="loadingIcon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 30"><circle cx="15" cy="15" r="15" fill="currentColor"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite"/></circle><circle cx="60" cy="15" r="9" fill="currentColor" fill-opacity="0.3"><animate attributeName="r" from="9" to="9" begin="0s" dur="0.8s" values="9;15;9" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="0.5" to="0.5" begin="0s" dur="0.8s" values=".5;1;.5" calcMode="linear" repeatCount="indefinite"/></circle><circle cx="105" cy="15" r="15" fill="currentColor"><animate attributeName="r" from="15" to="15" begin="0s" dur="0.8s" values="15;9;15" calcMode="linear" repeatCount="indefinite"/><animate attributeName="fill-opacity" from="1" to="1" begin="0s" dur="0.8s" values="1;.5;1" calcMode="linear" repeatCount="indefinite"/></circle></svg>
         </span>
@@ -125,13 +125,13 @@
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M436.5 75.5c-100-100-262.1-100-362 0 -100 100-100 262.1 0 362 99.9 100 262.1 100 362 0C536.5 337.6 536.5 175.4 436.5 75.5zM119.8 120.7c67.1-67.1 171.7-73.6 246.6-20.3L99.4 367.3C46.2 292.4 52.6 187.8 119.8 120.7zM391.3 392.2c-67.1 67.1-171.7 73.6-246.6 20.3l266.9-266.9C464.8 220.6 458.4 325.1 391.3 392.2z" fill="currentColor"/></svg>
         </span>
 
-        <span>Collection</span> &ldquo;<span class="dreamSnapCollection"></span>&rdquo;
-        <span>with dream snap</span> &ldquo;<span class="dreamSnapName"></span>&rdquo;
-        <span>in</span> <span class="dreamSnapContext"></span>
-        <span class="dreamSnapIsSublink"></span>
+        <span>Collection</span> &ldquo;<span class="latestSnapCollection"></span>&rdquo;
+        <span>with latest snap</span> &ldquo;<span class="latestSnapName"></span>&rdquo;
+        <span>in</span> <span class="latestSnapContext"></span>
+        <span class="latestSnapIsSublink"></span>
     </li>
 </template>
 
-<template id="dreamSnapSublink">
-    <span>as sublink of &ldquo;<span class="dreamSnapParent"></span>&rdquo;</span>
+<template id="latestSnapSublink">
+    <span>as sublink of &ldquo;<span class="latestSnapParent"></span>&rdquo;</span>
 </template>
