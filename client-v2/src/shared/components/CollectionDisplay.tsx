@@ -36,7 +36,7 @@ import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import { updateCollection as updateCollectionAction } from '../../actions/Collections';
-import {isMode} from "../../selectors/pathSelectors";
+import { isMode } from '../../selectors/pathSelectors';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
   `front-${frontId}-collection-${id}`;
@@ -310,7 +310,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
             ) : headlineContent ? (
               <HeadlineContentContainer>
                 {headlineContent}
-                {isEditions &&
+                {isEditions && (
                   <Button
                     size="s"
                     priority="default"
@@ -320,7 +320,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
                   >
                     Rename
                   </Button>
-                }
+                )}
               </HeadlineContentContainer>
             ) : null}
           </CollectionHeadingInner>
