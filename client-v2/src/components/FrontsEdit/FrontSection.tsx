@@ -87,7 +87,7 @@ const FrontSectionContent = styled(SectionContent)`
   padding-top: 0;
 `;
 
-const FrontHeaderButton = styled(Button).attrs({size: 'l'})`
+const FrontHeaderButton = styled(Button).attrs({ size: 'l' })`
   color: #fff;
   padding: 0 5px;
   display: flex;
