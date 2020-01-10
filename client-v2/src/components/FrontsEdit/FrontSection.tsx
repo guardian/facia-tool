@@ -87,7 +87,7 @@ const FrontSectionContent = styled(SectionContent)`
   padding-top: 0;
 `;
 
-const FrontHeaderButton = styled(Button)`
+const FrontHeaderButton = styled(Button).attrs({size: "l"})`
   color: #fff;
   padding: 0 5px;
   display: flex;
@@ -155,7 +155,7 @@ class FrontSection extends React.Component<
   };
 
   public render() {
-    const { frontId, isOverviewOpen } = this.props;
+    const { frontId, isOverviewOpen, isEditions } = this.props;
     const title = this.getTitle();
 
     const { frontNameValue, editingFrontName } = this.state;
@@ -203,7 +203,7 @@ class FrontSection extends React.Component<
                   }`}
                   target="preview"
                 >
-                  <FrontHeaderButton size="l">
+                  <FrontHeaderButton>
                     <PreviewEyeIcon size="xl" />
                     <PreviewButtonText>Preview</PreviewButtonText>
                   </FrontHeaderButton>
@@ -228,21 +228,21 @@ class FrontSection extends React.Component<
                   <FrontHeaderButton
                     data-testid="toggle-hidden-front-button"
                     onClick={() => this.setFrontHiddenState(!isHidden)}
-                    size="l"
                   >
                     {isHidden ? 'Unhide' : 'Hide'}
                   </FrontHeaderButton>
                 </>
               )}
-              <FrontHeaderButton
-                data-testid="rename-front-button"
-                onClick={this.renameFront}
-                size="l"
-                style={{ marginLeft: '10px' }}
-              >
-                Rename
-              </FrontHeaderButton>
-              <FrontHeaderButton onClick={this.handleRemoveFront} size="l">
+              {isEditions && (
+                <FrontHeaderButton
+                  data-testid="rename-front-button"
+                  onClick={this.renameFront}
+                  style={{ marginLeft: '10px' }}
+                >
+                  Rename
+                </FrontHeaderButton>
+              )}
+              <FrontHeaderButton onClick={this.handleRemoveFront}>
                 <ClearIcon size="xl" />
               </FrontHeaderButton>
             </FrontHeaderMeta>

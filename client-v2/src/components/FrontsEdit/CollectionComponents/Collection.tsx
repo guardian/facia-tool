@@ -1,6 +1,7 @@
 import { Dispatch } from 'types/Store';
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+import { HeadlineContentButton } from 'shared/components/CollectionDisplay';
 import CollectionDisplay from 'shared/components/CollectionDisplay';
 import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
@@ -217,25 +218,22 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
           canPublish && (
             <Fragment>
               <EditModeVisibility visibleMode="editions">
-                <Button
-                  size="s"
+                <HeadlineContentButton
                   priority="default"
                   onClick={() => this.props.setHidden(id, !isHidden)}
                   title="Toggle the visibility of this container in this issue."
                 >
                   {isHidden ? 'Unhide' : 'Hide'}
-                </Button>
+                </HeadlineContentButton>
                 {hasPrefill && (
-                  <Button
+                  <HeadlineContentButton
                     data-testid="prefill-button"
-                    size="s"
                     priority="default"
                     onClick={() => this.props.fetchPrefill(id)}
                     title="Get suggested articles for this collection"
-                    style={{ marginLeft: '5px' }}
                   >
                     Suggest
-                  </Button>
+                  </HeadlineContentButton>
                 )}
               </EditModeVisibility>
               <ActionButtonsContainer

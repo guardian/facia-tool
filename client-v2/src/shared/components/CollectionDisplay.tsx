@@ -91,6 +91,14 @@ const HeadlineContentContainer = styled.span`
   display: flex;
 `;
 
+export const HeadlineContentButton = styled(Button).attrs({size: "s"})`
+  color: #fff;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+`;
+
+
 const CollectionDisabledTheme = styled.div`
   position: absolute;
   background-color: hsla(0, 0%, 100%, 0.3);
@@ -311,15 +319,13 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
               <HeadlineContentContainer>
                 {headlineContent}
                 {isEditions && (
-                  <Button
-                    size="s"
+                  <HeadlineContentButton
                     priority="default"
                     onClick={this.startRenameContainer}
                     title="Rename this container in this issue."
-                    style={{ marginLeft: '5px' }}
                   >
                     Rename
-                  </Button>
+                  </HeadlineContentButton>
                 )}
               </HeadlineContentContainer>
             ) : null}
