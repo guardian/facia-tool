@@ -96,6 +96,7 @@ export const HeadlineContentButton = styled(Button).attrs({size: 's'})`
   padding: 0 5px;
   display: flex;
   align-items: center;
+  margin-left: 5px;
 `;
 
 const CollectionDisabledTheme = styled.div`
