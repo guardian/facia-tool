@@ -237,7 +237,6 @@ class FrontSection extends React.Component<
                 <FrontHeaderButton
                   data-testid="rename-front-button"
                   onClick={this.renameFront}
-                  style={{ marginLeft: '10px' }}
                 >
                   Rename
                 </FrontHeaderButton>
