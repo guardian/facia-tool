@@ -36,6 +36,7 @@ import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
 import Button from 'shared/components/input/ButtonDefault';
 import { updateCollection as updateCollectionAction } from '../../actions/Collections';
+import { isMode } from '../../selectors/pathSelectors';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
   `front-${frontId}-collection-${id}`;
@@ -54,7 +55,6 @@ type Props = ContainerProps & {
   metaContent: React.ReactNode;
   children: React.ReactNode;
   isUneditable?: boolean;
-  canRename?: boolean;
   underlyingCollection?: Collection;
   isLocked?: boolean;
   isOpen?: boolean;
@@ -63,6 +63,7 @@ type Props = ContainerProps & {
   handleFocus: (id: string) => void;
   handleBlur: () => void;
   updateCollection: (collection: Collection) => void;
+  isEditions: boolean;
 };
 
 interface CollectionState {
@@ -88,6 +89,14 @@ const HeadlineContentContainer = styled.span`
   position: relative;
   margin-right: -11px;
   display: flex;
+`;
+
+export const HeadlineContentButton = styled(Button).attrs({ size: 's' })`
+  color: #fff;
+  padding: 0 5px;
+  display: flex;
+  align-items: center;
+  margin-left: 5px;
 `;
 
 const CollectionDisabledTheme = styled.div`
@@ -237,12 +246,12 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       headlineContent,
       metaContent,
       isUneditable,
-      canRename,
       isLocked,
       hasMultipleFrontsOpen,
       children,
       handleFocus,
-      handleBlur
+      handleBlur,
+      isEditions
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
     const targetedTerritory = collection ? collection.targetedTerritory : null;
@@ -309,15 +318,14 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
             ) : headlineContent ? (
               <HeadlineContentContainer>
                 {headlineContent}
-                {canRename && (
-                  <Button
-                    size="l"
+                {isEditions && (
+                  <HeadlineContentButton
                     priority="default"
                     onClick={this.startRenameContainer}
                     title="Rename this container in this issue."
                   >
                     Rename
-                  </Button>
+                  </HeadlineContentButton>
                 )}
               </HeadlineContentContainer>
             ) : null}
@@ -414,7 +422,8 @@ const createMapStateToProps = () => {
         collectionId: props.id,
         collectionSet: props.browsingStage,
         includeSupportingArticles: false
-      })
+      }),
+      isEditions: isMode(state, 'editions')
     };
   };
 };

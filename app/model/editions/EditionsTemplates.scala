@@ -137,11 +137,10 @@ private[editions] case class CollectionTemplate(
   presentation: CollectionPresentation,
   maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
   hidden: Boolean = false,
-  canRename: Boolean = false,
   articleItemsCap: Int = Defaults.defaultCollectionArticleItemsCap
 ) {
 
-  def hide = copy(hidden = true).copy(canRename = true)
+  def hide = copy(hidden = true)
 
   def withPresentation(presentation: CollectionPresentation) = copy(presentation = presentation)
 

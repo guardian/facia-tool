@@ -1,6 +1,7 @@
 import { Dispatch } from 'types/Store';
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
+import { HeadlineContentButton } from 'shared/components/CollectionDisplay';
 import CollectionDisplay from 'shared/components/CollectionDisplay';
 import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
@@ -15,7 +16,6 @@ import {
   selectHasUnpublishedChanges,
   selectCollectionHasPrefill,
   selectCollectionIsHidden,
-  selectCollectionCanRename,
   selectCollectionDisplayName
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
@@ -77,7 +77,6 @@ type CollectionProps = CollectionPropsBeforeState & {
   hasPrefill: boolean;
   setHidden: (id: string, isHidden: boolean) => void;
   isHidden: boolean;
-  canRename: boolean;
   displayName: string;
 };
 
@@ -197,8 +196,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
       hasPrefill,
       isHidden,
       hasContent,
-      hasOpenForms,
-      canRename
+      hasOpenForms
     } = this.props;
 
     const { isPreviouslyOpen, isLaunching } = this.state;
@@ -211,7 +209,6 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
         id={id}
         browsingStage={browsingStage}
         isUneditable={isUneditable}
-        canRename={canRename}
         isLocked={isCollectionLocked}
         isOpen={isOpen}
         hasMultipleFrontsOpen={hasMultipleFrontsOpen}
@@ -221,25 +218,22 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
           canPublish && (
             <Fragment>
               <EditModeVisibility visibleMode="editions">
-                <Button
-                  size="l"
+                <HeadlineContentButton
                   priority="default"
                   onClick={() => this.props.setHidden(id, !isHidden)}
                   title="Toggle the visibility of this container in this issue."
                 >
-                  {isHidden ? 'Unhide Container' : 'Hide Container'}
-                </Button>
+                  {isHidden ? 'Unhide' : 'Hide'}
+                </HeadlineContentButton>
                 {hasPrefill && (
-                  <Button
+                  <HeadlineContentButton
                     data-testid="prefill-button"
-                    size="l"
                     priority="default"
                     onClick={() => this.props.fetchPrefill(id)}
                     title="Get suggested articles for this collection"
-                    style={{ marginLeft: '10px' }}
                   >
-                    Suggest Articles
-                  </Button>
+                    Suggest
+                  </HeadlineContentButton>
                 )}
               </EditModeVisibility>
               <ActionButtonsContainer
@@ -342,7 +336,6 @@ const createMapStateToProps = () => {
     }: CollectionPropsBeforeState
   ) => ({
     isHidden: selectCollectionIsHidden(state, collectionId),
-    canRename: selectCollectionCanRename(state, collectionId),
     displayName: selectCollectionDisplayName(state, collectionId),
     hasPrefill: selectCollectionHasPrefill(state, collectionId),
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {

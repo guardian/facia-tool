@@ -25,6 +25,7 @@ import { createFrontId } from 'util/editUtils';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
 import FrontsContainer from './FrontContainer';
+import { isMode } from '../../selectors/pathSelectors';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -86,7 +87,7 @@ const FrontSectionContent = styled(SectionContent)`
   padding-top: 0;
 `;
 
-const FrontHeaderButton = styled(Button)`
+const FrontHeaderButton = styled(Button).attrs({ size: 'l' })`
   color: #fff;
   padding: 0 5px;
   display: flex;
@@ -119,6 +120,7 @@ type FrontsComponentProps = FrontsContainerProps & {
     ) => void;
     setFrontHiddenState: (id: string, hidden: boolean) => void;
   };
+  isEditions: boolean;
 };
 
 interface ComponentState {
@@ -153,7 +155,7 @@ class FrontSection extends React.Component<
   };
 
   public render() {
-    const { frontId, isOverviewOpen } = this.props;
+    const { frontId, isOverviewOpen, isEditions } = this.props;
     const title = this.getTitle();
 
     const { frontNameValue, editingFrontName } = this.state;
@@ -201,7 +203,7 @@ class FrontSection extends React.Component<
                   }`}
                   target="preview"
                 >
-                  <FrontHeaderButton size="l">
+                  <FrontHeaderButton>
                     <PreviewEyeIcon size="xl" />
                     <PreviewButtonText>Preview</PreviewButtonText>
                   </FrontHeaderButton>
@@ -226,20 +228,20 @@ class FrontSection extends React.Component<
                   <FrontHeaderButton
                     data-testid="toggle-hidden-front-button"
                     onClick={() => this.setFrontHiddenState(!isHidden)}
-                    size="l"
                   >
                     {isHidden ? 'Unhide' : 'Hide'}
                   </FrontHeaderButton>
-                  <FrontHeaderButton
-                    data-testid="rename-front-button"
-                    onClick={this.renameFront}
-                    size="l"
-                  >
-                    Rename
-                  </FrontHeaderButton>
                 </>
               )}
-              <FrontHeaderButton onClick={this.handleRemoveFront} size="l">
+              {isEditions && (
+                <FrontHeaderButton
+                  data-testid="rename-front-button"
+                  onClick={this.renameFront}
+                >
+                  Rename
+                </FrontHeaderButton>
+              )}
+              <FrontHeaderButton onClick={this.handleRemoveFront}>
                 <ClearIcon size="xl" />
               </FrontHeaderButton>
             </FrontHeaderMeta>
@@ -311,7 +313,8 @@ class FrontSection extends React.Component<
 const createMapStateToProps = () => {
   return (state: State, { frontId }: FrontsContainerProps) => ({
     selectedFront: selectFront(state, { frontId }),
-    isOverviewOpen: selectIsFrontOverviewOpen(state, frontId)
+    isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
+    isEditions: isMode(state, 'editions')
   });
 };
 
