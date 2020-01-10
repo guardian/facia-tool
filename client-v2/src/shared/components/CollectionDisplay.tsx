@@ -91,13 +91,12 @@ const HeadlineContentContainer = styled.span`
   display: flex;
 `;
 
-export const HeadlineContentButton = styled(Button).attrs({size: s})`
+export const HeadlineContentButton = styled(Button).attrs({size: 's'})`
   color: #fff;
   padding: 0 5px;
   display: flex;
   align-items: center;
 `;
-
 
 const CollectionDisabledTheme = styled.div`
   position: absolute;
