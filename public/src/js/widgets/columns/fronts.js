@@ -301,6 +301,10 @@ export default class Front extends ColumnWidget {
         return _.contains(CONST.askForConfirmation, this.front());
     }
 
+    disableSnapLinks() {
+        return _.contains(CONST.disableSnapLinks, this.front());
+    }
+
     showIndicatorsEnabled() {
         return !this.confirmSendingAlert() && this.mode() !== 'treats';
     }
@@ -313,6 +317,10 @@ export default class Front extends ColumnWidget {
         return new Promise((resolve, reject) => {
             if (this.confirmSendingAlert() && !isOnlyArticle(item, this)) {
                 reject('You can only have one article in this collection.');
+            }
+
+            if (item.meta.snapType() && this.disableSnapLinks()) {
+                reject('You cannot use snap links in this collection.')
             }
 
             var defaults = this.baseModel.state().defaults;
