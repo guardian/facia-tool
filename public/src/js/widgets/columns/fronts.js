@@ -320,7 +320,7 @@ export default class Front extends ColumnWidget {
             }
 
             if (item.meta.snapType() && this.disableSnapLinks()) {
-                reject('You cannot use snap links in this collection.')
+                reject('You cannot use snap links in this collection.');
             }
 
             var defaults = this.baseModel.state().defaults;
