@@ -268,10 +268,11 @@ export default class Collection extends BaseClass {
             reportErrors(new Error(message)); //report to sentry
         })
         .catch(() => {
+            const breakingNewsMsg = 'breaking news alert. The alert has not been sent. Please contact Central Production.';
             const isBreakingNewsAlert = this.front.confirmSendingAlert();
-            const message = `Failed ${action}ing the ${isBreakingNewsAlert ? 'breaking news alert' : 'collection'}`;
+            const message = `Failed ${action}ing the ${isBreakingNewsAlert ? breakingNewsMsg : 'collection'}`;
             this.setPending(false);
-            alert(message);
+            alert(message, 'error');
         });
     }
 
