@@ -111,6 +111,10 @@ export default {
         'breaking-news'
     ],
 
+    disableSnapLinks: [
+        'breaking-news'
+    ],
+
     restrictedEditor: [
         'breaking-news'
     ],
