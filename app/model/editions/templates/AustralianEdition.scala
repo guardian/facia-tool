@@ -11,9 +11,13 @@ object AustralianEdition {
   lazy val template = EditionTemplate(
     List(
       FrontTopStoriesAu -> WeekDays(List(WeekDay.Sat)),
+      FrontSpecial1Au -> WeekDays(List(WeekDay.Sat)),
       FrontWeekendAu -> WeekDays(List(WeekDay.Sat)),
+      FrontSpecial2Au -> WeekDays(List(WeekDay.Sat)),
       FrontNationalAu -> WeekDays(List(WeekDay.Sat)),
+      FrontSpecial3Au -> WeekDays(List(WeekDay.Sat)),
       FrontWorldAu -> WeekDays(List(WeekDay.Sat)),
+      FrontSpecial4Au -> WeekDays(List(WeekDay.Sat)),
       FrontOpinionAu -> WeekDays(List(WeekDay.Sat)),
       FrontCultureLifeAu -> WeekDays(List(WeekDay.Sat)),
       FrontRecommendedAu -> WeekDays(List(WeekDay.Sat)),
@@ -45,6 +49,10 @@ object AustralianEdition {
     collection("Top Stories")
   )
     .swatch(News)
+  
+  // Special 1
+  
+  def FrontSpecial1Au = specialFront("Front Special 1", News, None)
 
   // Weekend - Features, Culture, Lifestyle, Comment
 
@@ -56,6 +64,10 @@ object AustralianEdition {
     collection("Collection 4")
   )
     .swatch(Lifestyle)
+  
+  // Special 2
+  
+  def FrontSpecial2Au = specialFront("Front Special 2", Lifestyle, None)
 
   //National - News two containers, maybe split out politics into second container?
 
@@ -71,6 +83,10 @@ object AustralianEdition {
       .withArticleItemsCap(40)
   )
     .swatch(News)
+  
+  // Special 3
+  
+  def FrontSpecial3Au = specialFront("Front Special 3", News, None)
 
   //World - International news content
 
@@ -86,6 +102,10 @@ object AustralianEdition {
       .withArticleItemsCap(40)    
   )
     .swatch(News)
+  
+  // Special 4
+  
+  def FrontSpecial4Au = specialFront("Front Special 4", News, None)
 
   // Opinion
 
