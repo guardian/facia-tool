@@ -198,6 +198,7 @@ object DailyEdition {
     collection("Science & Technology").printSentAnyTag("theobserver/new-review/discover"),
     collection("Critics").printSentAnyTag("theobserver/new-review/critics"),
     collection("Culture Special").hide,
+    collection("Culture Special 2").hide
   )
     .swatch(Culture)
 
