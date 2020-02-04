@@ -144,11 +144,7 @@ function validateItem (item) {
 
                     // A snap, of default type 'link'.
                 } else {
-                    if (!isGuardianUrl(item.id())) {
-                        item.convertToLinkSnap();
-                    } else {
-                        err = 'Content not found. \n \nYou have dropped a Guardian URL, but we could not find the content it refers to in the Content API. Please contact Central Production if this persists.';
-                    }
+                    item.convertToLinkSnap();
                 }
 
                 if (err) {
