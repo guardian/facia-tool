@@ -2344,10 +2344,6 @@ hr {
     margin-right: 8px;
 }
 
-.modalDialog-message--text {
-    white-space: pre-line;
-}
-
 .modalDialog-confirm,
 .modalDialog-alert {
     height: 42px;
