@@ -44,7 +44,8 @@ object AmericanEdition {
   )
 
 
-  // Manually curated, the top three stories section
+  // Front: Essential Reads
+  // Description: top three stories, manually curated
 
   def FrontEssentialReadsUs = front(
     "Essential Reads",
@@ -52,11 +53,13 @@ object AmericanEdition {
   )
     .swatch(News)
   
-  // Special Section, News swatch
+  // Front: Special Section, News swatch
+  // Description: General Special section
   
   def FrontSpecial1Us = specialFront("Front Special 1", News, None)
 
-  // People Section, Lifestyle swatch
+  // Front: People, Lifestyle swatch
+  // Description: Interviews, profiles and Q&As
 
   def FrontPeopleUs = front(
     "People",
@@ -72,12 +75,13 @@ object AmericanEdition {
   )
     .swatch(Lifestyle)
   
-  // Special 2
+  // Front: Special 2
+  // Description: General Special section
   
   def FrontSpecial2Us = specialFront("Front Special 2", Lifestyle, None)
 
-  //Spotlight Section, News swatch
-  //Description: Best Reads, News Features
+  // Front: Spotlight, News swatch
+  // Description: Best Reads, News Features
 
   def FrontSpotlightUs = front(
     "Spotlight",
@@ -92,12 +96,13 @@ object AmericanEdition {
   )
     .swatch(News)
   
-  // Special 3, News swatch
-  // General Special section
+  // Front: Special 3, News swatch
+  // Description: General Special section
 
   def FrontSpecial3Us = specialFront("Front Special 3", News, None)
 
-  //US News Section, local news content, news swatch
+  // Front: US News
+  // Description: local news content, news swatch
 
   def FrontUsNewsUs = front(
     "US News",
@@ -110,13 +115,13 @@ object AmericanEdition {
   )
     .swatch(News)
   
-  // Special 4, News swatch
-  // General Special section
+  // Front: Special 4, News swatch
+  // Description: General Special section
 
   def FrontSpecial4Us = specialFront("Front Special 4", News, None)
 
-  // World News, News Swatch
-  // Non US news features and news
+  // Front: World News, News Swatch
+  // Description: Non US news features and news
 
   def FrontWorldNewsUs = front(
     "World News",
@@ -129,7 +134,8 @@ object AmericanEdition {
   )
     .swatch(News)
 
-  // Opinion 
+  // Front: Opinion
+  // Description: US comment
 
   def FrontOpinionUs = front(
     "Opinion",
@@ -139,17 +145,19 @@ object AmericanEdition {
   )
     .swatch(Opinion)
   
-  // Environment 
-
+  // Front: Environment 
+  // Description: Environment coverage
+  
   def FrontEnvironmentUs = front(
     "Environment",
     collection("Environment")
-    .searchPrefill("?tag=type/article,(us-news/us-news,environment/environment),-sport/sport,-tone/minutebyminute")
+    .searchPrefill("?tag=type/article,environment/environment,-sport/sport,-tone/minutebyminute")
     .withArticleItemsCap(40)
   )
     .swatch(News)
   
-  // Culture 
+  // Front: Culture 
+  // Description: Culture features and reviews 
 
   def FrontCultureUs = front(
     "Culture",
