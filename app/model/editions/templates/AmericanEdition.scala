@@ -20,7 +20,7 @@ object AmericanEdition {
       FrontSpecial4Us -> WeekDays(List(WeekDay.Sat)),
       FrontWorldNewsUs -> WeekDays(List(WeekDay.Sat)),
       FrontOpinionUs -> WeekDays(List(WeekDay.Sat)),
-      FrontEnivronmentUs -> WeekDays(List(WeekDay.Sat)),
+      FrontEnvironmentUs -> WeekDays(List(WeekDay.Sat)),
       FrontCultureUs -> WeekDays(List(WeekDay.Sat)),
       FrontLifestyleUs -> WeekDays(List(WeekDay.Sat)),
       FrontSportUs -> WeekDays(List(WeekDay.Sat)),
@@ -106,7 +106,7 @@ object AmericanEdition {
 
   def FrontUsNewsUs = front(
     "US News",
-    collection("News Features"),
+    collection("News Features")
       .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,-tone/news,-tone/comment,-tone/minutebyminute")
       .withArticleItemsCap(20),
     collection("News")
@@ -153,7 +153,7 @@ object AmericanEdition {
     collection("Environment")
     .searchPrefill("?tag=type/article,environment/environment,-sport/sport,-tone/minutebyminute")
     .withArticleItemsCap(20)
-  )
+  ) 
     .swatch(News)
   
   // Front: Culture 
@@ -171,7 +171,7 @@ object AmericanEdition {
 
   def FrontLifestyleUs = front(
     "Lifestyle",
-    collection("Lifestyle"),
+    collection("Lifestyle")
     .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,-tone/minutebyminute")
     .withArticleItemsCap(20),
     collection("Recipes")
