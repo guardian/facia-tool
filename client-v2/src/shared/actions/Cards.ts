@@ -217,8 +217,8 @@ const getArticleEntitiesFromDrop = async (
     } catch (e) {
       dispatch(
         startOptionsModal(
-          'Invalid atom link',
-          "It looks like you've tried to add an interactive atom that doesn't exist. Check the link and try again.",
+          'Invalid link',
+          'It looks like you’ve tried to add something from our content-api that we don’t accept. Only interactive atoms can be added as cards. Check the link is for an interactive atom and that the link is valid and try again.',
           [],
           noop,
           true
