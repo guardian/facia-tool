@@ -18,6 +18,8 @@ import configureStore from 'util/configureStore';
 import { selectOptionsModalOptions } from 'selectors/modalSelectors';
 import { selectCard, selectSharedState } from 'shared/selectors/shared';
 import capiInteractiveAtomResponse from 'fixtures/capiInteractiveAtomResponse';
+import { startOptionsModal } from 'actions/OptionsModal';
+import noop from 'lodash/noop';
 
 jest.mock('uuid/v4', () => () => 'card1');
 const middlewares = [thunk];
@@ -287,7 +289,7 @@ describe('Snap cards actions', () => {
         })
       );
     });
-    it('takes a content.guardianapis.com URL and returns an invalid atom card if there is no atom', async () => {
+    it('it takes an invalid atom URL, for an atom that cannot be found in CAPI, and displays an error modal', async () => {
       const store = mockStore(initialState);
       const snapUrl =
         'https://content.guardianapis.com/atom/interactive/interactives/2017/06/not-an-atom';
@@ -305,20 +307,15 @@ describe('Snap cards actions', () => {
         idDrop(snapUrl)
       ) as any);
       const actions = store.getActions();
+      expect(actions[0].type).toEqual('MODAL/START_OPTIONS_MODAL');
       expect(actions[0]).toEqual(
-        cardsReceived({
-          card1: {
-            frontPublicationDate: 1487076708000,
-            id: 'snap/1487076708000',
-            meta: {
-              headline: 'Invalid atom',
-              snapType: 'interactive',
-              href:
-                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/not-an-atom'
-            },
-            uuid: 'card1'
-          }
-        })
+        startOptionsModal(
+          'Invalid atom link',
+          "It looks like you've tried to add an interactive atom that doesn't exist. Check the link and try again.",
+          [],
+          noop,
+          true
+        )
       );
     });
   });

@@ -9,6 +9,10 @@ import tagPageHtml from '../../fixtures/guardianTagPage';
 import fetchMock from 'fetch-mock';
 import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
 import { capiAtom } from 'shared/fixtures/capiAtom.js';
+import {
+  CAPIInteractiveAtomResponse,
+  CAPIAtomInteractive
+} from 'services/capiQuery';
 
 jest.mock('uuid/v4', () => () => 'uuid');
 
@@ -98,8 +102,26 @@ describe('utils/snap', () => {
   describe('convert to Atom snap', async () => {
     it("should create a snap of 'interactive', given a link to an atom in the public content api", async () => {
       fetchMock.once('begin:/api/live', capiAtom);
+      const interactive: CAPIAtomInteractive = {
+        id: '',
+        atomType: '',
+        labels: [],
+        defaultHtml: '',
+        data: { interactive: { title: 'General Election 2017' } },
+        contentChangeDetails: {},
+        commissioningDesks: []
+      };
+      const atom: CAPIInteractiveAtomResponse = {
+        response: {
+          status: 'ok',
+          userTier: capiAtom.response.userTier,
+          total: capiAtom.response.total,
+          interactive
+        }
+      };
       const atomLinkSnap = await createAtomSnap(
-        'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter'
+        'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
+        atom
       );
       expect(atomLinkSnap).toEqual({
         uuid: 'uuid',
@@ -111,10 +133,10 @@ describe('utils/snap', () => {
           showByline: false,
           snapType: 'interactive',
           snapUri:
-            'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter',
+            'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
           atomId: 'atom/interactive/interactives/2017/06/general-election',
           href:
-            'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election?api-key=teleporter'
+            'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election'
         }
       });
     });
