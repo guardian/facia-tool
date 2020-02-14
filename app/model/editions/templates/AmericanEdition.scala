@@ -65,13 +65,13 @@ object AmericanEdition {
     "People",
     collection("Interviews")
       .searchPrefill("?tag=type/article,tone/interview")
-      .withArticleItemsCap(40),
+      .withArticleItemsCap(20),
     collection("Profiles")
       .searchPrefill("?tag=type/article,tone/profiles")
-      .withArticleItemsCap(40),
+      .withArticleItemsCap(20),
     collection("Q&A")
       .searchPrefill("?tag=type/article,tone/q-and-as")
-      .withArticleItemsCap(40)
+      .withArticleItemsCap(20)
   )
     .swatch(Lifestyle)
   
@@ -108,10 +108,10 @@ object AmericanEdition {
     "US News",
     collection("News Features"),
       .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,-tone/news,-tone/comment,-tone/minutebyminute")
-      .withArticleItemsCap(40),
+      .withArticleItemsCap(20),
     collection("News")
       .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business),-(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,tone/news,-tone/comment,-tone/minutebyminute")
-      .withArticleItemsCap(40)    
+      .withArticleItemsCap(20)    
   )
     .swatch(News)
   
@@ -127,10 +127,10 @@ object AmericanEdition {
     "World News",
     collection("News Features")
       .searchPrefill("?tag=type/article,(world/world|australia-news/australia-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-(us-news/us-news|us-news/us-politics|business/business),-tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
-      .withArticleItemsCap(40),
+      .withArticleItemsCap(20),
     collection("News")
       .searchPrefill("?tag=type/article,(world/world|australia-news/australia-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(us-news/us-news|us-news/us-politics|business/business),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
-      .withArticleItemsCap(40)    
+      .withArticleItemsCap(20)    
   )
     .swatch(News)
 
@@ -141,7 +141,7 @@ object AmericanEdition {
     "Opinion",
     collection("Opinion")
     .searchPrefill("?tag=type/article,tone/comment,(us-news/us-news|us-news/us-politics|business/business),-sport/sport,-tone/minutebyminute")
-    .withArticleItemsCap(40)
+    .withArticleItemsCap(20)
   )
     .swatch(Opinion)
   
@@ -152,7 +152,7 @@ object AmericanEdition {
     "Environment",
     collection("Environment")
     .searchPrefill("?tag=type/article,environment/environment,-sport/sport,-tone/minutebyminute")
-    .withArticleItemsCap(40)
+    .withArticleItemsCap(20)
   )
     .swatch(News)
   
@@ -163,7 +163,7 @@ object AmericanEdition {
     "Culture",
     collection("Culture")
     .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews),-tone/news,-tone/minutebyminute")
-    .withArticleItemsCap(40)
+    .withArticleItemsCap(20)
   )
     .swatch(News)
 
@@ -173,10 +173,10 @@ object AmericanEdition {
     "Lifestyle",
     collection("Lifestyle"),
     .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,-tone/minutebyminute")
-    .withArticleItemsCap(40),
+    .withArticleItemsCap(20),
     collection("Recipes")
     .searchPrefill("?tag=type/article,tone/recipes,food/food,-tone/minutebyminute")
-    .withArticleItemsCap(40)
+    .withArticleItemsCap(20)
   )
     .swatch(News)
 
@@ -186,7 +186,7 @@ object AmericanEdition {
     "Sport",
     collection("Sport")
     .searchPrefill("?tag=type/article,sport/sport,(tone/comment|tone/features|tone/analysis),-tone/minutebyminute")
-    .withArticleItemsCap(40)
+    .withArticleItemsCap(20)
   )
     .swatch(Sport)
 
@@ -195,6 +195,6 @@ object AmericanEdition {
   def FrontCrosswordsUs = front(
     "Puzzles",
     collection("Crosswords").searchPrefill("?tag=type/crossword")
-      .withArticleItemsCap(40)
+      .withArticleItemsCap(10)
   )
 }
