@@ -1,6 +1,10 @@
 import keyBy from 'lodash/keyBy';
 import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
-import { getContent, transformExternalArticle } from 'services/faciaApi';
+import {
+  getContent,
+  transformExternalArticle,
+  getAtomFromCapi
+} from 'services/faciaApi';
 import { ThunkResult, Dispatch } from 'types/Store';
 import {
   CardsReceived,
@@ -15,13 +19,19 @@ import {
 import { createCard } from 'shared/util/card';
 import { createSnap, createLatestSnap, createAtomSnap } from 'shared/util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
-import { isValidURL, isGuardianUrl, isCapiUrl } from 'shared/util/url';
+import {
+  isValidURL,
+  isGuardianUrl,
+  isCapiUrl,
+  getAbsolutePath
+} from 'shared/util/url';
 import { MappableDropType } from 'util/collectionUtils';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
 import { Card, CardMeta } from '../types/Collection';
 import { selectEditMode } from '../../selectors/pathSelectors';
 import { startOptionsModal } from 'actions/OptionsModal';
+import noop from 'lodash/noop';
 
 export const UPDATE_CARD_META = 'SHARED/UPDATE_CARD_META';
 export const CARDS_RECEIVED = 'SHARED/CARDS_RECEIVED';
@@ -198,8 +208,24 @@ const getArticleEntitiesFromDrop = async (
   const isPlainUrl = isURL && !id && !guMeta;
   const isCAPIUrl = isCapiUrl(resourceIdOrUrl);
   if (isCAPIUrl) {
-    const card = await createAtomSnap(resourceIdOrUrl);
-    return [card];
+    try {
+      const atom = await getAtomFromCapi(
+        getAbsolutePath(resourceIdOrUrl, false)
+      );
+      const card = await createAtomSnap(resourceIdOrUrl, atom);
+      return [card];
+    } catch (e) {
+      dispatch(
+        startOptionsModal(
+          'Invalid link',
+          'It looks like you’ve tried to add something from our content-api that we don’t accept. Only interactive atoms can be added as cards. Check the link is for an interactive atom and that the link is valid and try again.',
+          [],
+          noop,
+          true
+        )
+      );
+      return [];
+    }
   }
   if (isPlainUrl) {
     const card = await createSnap(resourceIdOrUrl);

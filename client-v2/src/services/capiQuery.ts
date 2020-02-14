@@ -188,6 +188,7 @@ export {
   CAPISearchQueryResultsResponse,
   checkIsResults,
   CAPITagQueryReponse,
-  CAPIInteractiveAtomResponse
+  CAPIInteractiveAtomResponse,
+  CAPIAtomInteractive
 };
 export default capiQuery;

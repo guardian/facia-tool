@@ -4,7 +4,6 @@ import { Card, CardMeta } from '../types/Collection';
 import v4 from 'uuid/v4';
 import set from 'lodash/fp/set';
 import { PartialBy } from 'types/Util';
-import { getAtomFromCapi } from 'services/faciaApi';
 import { CAPIInteractiveAtomResponse } from 'services/capiQuery';
 
 function generateId() {
@@ -64,40 +63,28 @@ async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
   }
 }
 
-async function createAtomSnap(url: string, meta?: CardMeta): Promise<Card> {
-  const uuid = v4();
-  try {
-    const atom: CAPIInteractiveAtomResponse = await getAtomFromCapi(
-      getAbsolutePath(url, false)
-    );
-    const { title } = atom.response.interactive.data.interactive;
-    const atomId = new URL(url).pathname.substr(1);
+async function createAtomSnap(
+  url: string,
+  atom: CAPIInteractiveAtomResponse,
+  meta?: CardMeta
+): Promise<Card> {
+  const { title } = atom.response.interactive.data.interactive;
+  const atomId = new URL(url).pathname.substr(1);
 
-    return convertToSnap({
-      uuid,
-      id: url,
-      frontPublicationDate: Date.now(),
-      meta: {
-        headline: title,
-        byline: 'Guardian Visuals',
-        showByline: false,
-        snapType: 'interactive',
-        snapUri: url,
-        atomId,
-        ...meta
-      }
-    });
-  } catch (e) {
-    return convertToSnap({
-      uuid,
-      id: url,
-      frontPublicationDate: Date.now(),
-      meta: {
-        headline: 'Invalid atom',
-        snapType: 'interactive'
-      }
-    });
-  }
+  return convertToSnap({
+    uuid: v4(),
+    id: url,
+    frontPublicationDate: Date.now(),
+    meta: {
+      headline: title,
+      byline: 'Guardian Visuals',
+      showByline: false,
+      snapType: 'interactive',
+      snapUri: url,
+      atomId,
+      ...meta
+    }
+  });
 }
 
 function createLatestSnap(url: string, kicker: string) {
