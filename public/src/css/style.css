@@ -2326,15 +2326,22 @@ hr {
     border: 1px solid #ddd;
     background-color: #fff;
 }
+
+.modalDialog-content--error {
+    border: 3px solid red;
+    background-color: lightcoral;
+}
+
+.modalDialog-content--error hr {
+    background-color: red;
+}
+
 .modalDialog-message {
     padding: 10px 20px 20px;
 }
+
 .modalDialog-message h3 i {
     margin-right: 8px;
-}
-
-.modalDialog-message--text {
-    white-space: pre-line;
 }
 
 .modalDialog-confirm,

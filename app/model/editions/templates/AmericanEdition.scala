@@ -10,291 +10,191 @@ import model.editions.templates.TemplateHelpers._
 object AmericanEdition {
   lazy val template = EditionTemplate(
     List(
-      // Top Stories and Nuclear specials
-      FrontSpecial1 -> Daily(),
-      FrontTopStories -> Daily(),
-      FrontSpecial2 -> Daily(),
-      // News fronts then special
-      FrontNewsUkGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri)),
-      FrontNewsUkGuardianSaturday -> WeekDays(List(WeekDay.Sat)),
-      FrontNewsUkObserver -> WeekDays(List(WeekDay.Sun)),
-      FrontNewsSpecial -> Daily(),
-      // World News fronts and special
-      FrontNewsWorldGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
-      FrontNewsWorldObserver -> WeekDays(List(WeekDay.Sun)),
-      FrontWorldSpecial -> Daily(),
-      // Financial fronts and special
-      FrontFinancialGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
-      FrontFinancialObserver -> WeekDays(List(WeekDay.Sun)),
-      // Journal, Comment and special
-      FrontJournal -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
-      FrontComment -> WeekDays(List(WeekDay.Sun)),
-      FrontOpinionSpecial -> Daily(),
-      // Culture fronts and special
-      FrontCulture -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
-      FrontCultureFilmMusic -> WeekDays(List(WeekDay.Fri)),
-      FrontCultureGuide -> WeekDays(List(WeekDay.Sat)),
-      FrontCultureNewReview -> WeekDays(List(WeekDay.Sun)),
-      FrontBooks -> WeekDays(List(WeekDay.Sat, WeekDay.Sun)),
-      FrontCultureSpecial -> Daily(),
-      // Life fronts and special
-      FrontLife -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
-      FrontLifeWeekend -> WeekDays(List(WeekDay.Sat)),
-      FrontTravelGuardian -> WeekDays(List(WeekDay.Sat)),
-      FrontLifeMagazineObserver -> WeekDays(List(WeekDay.Sun)),
-      FrontFood -> WeekDays(List(WeekDay.Sat)),
-      FrontFoodObserver -> WeekDays(List(WeekDay.Sun)),
-      FrontLifeFashion -> WeekDays(List(WeekDay.Sat)),
-      FrontLifeSpecial -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Sat, WeekDay.Sun)),
-      // Sport fronts and special
-      FrontSportGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
-      FrontSportObserver -> WeekDays(List(WeekDay.Sun)),
-      FrontSportSpecial -> Daily(),
-      // Special Supplements
-      FrontSupplementSpecial1 -> Daily(),
-      FrontSupplementSpecial2 -> Daily(),
-      // Crosswords
-      FrontCrosswords -> Daily(),
+      FrontEssentialReadsUs -> WeekDays(List(WeekDay.Sat)),
+      FrontSpecial1Us -> WeekDays(List(WeekDay.Sat)),
+      FrontPeopleUs -> WeekDays(List(WeekDay.Sat)),
+      FrontSpecial2Us -> WeekDays(List(WeekDay.Sat)),
+      FrontSpotlightUs -> WeekDays(List(WeekDay.Sat)),
+      FrontSpecial3Us -> WeekDays(List(WeekDay.Sat)),
+      FrontUsNewsUs -> WeekDays(List(WeekDay.Sat)),
+      FrontSpecial4Us -> WeekDays(List(WeekDay.Sat)),
+      FrontWorldNewsUs -> WeekDays(List(WeekDay.Sat)),
+      FrontOpinionUs -> WeekDays(List(WeekDay.Sat)),
+      FrontEnvironmentUs -> WeekDays(List(WeekDay.Sat)),
+      FrontCultureUs -> WeekDays(List(WeekDay.Sat)),
+      FrontLifestyleUs -> WeekDays(List(WeekDay.Sat)),
+      FrontSportUs -> WeekDays(List(WeekDay.Sat)),
+      FrontCrosswordsUs -> WeekDays(List(WeekDay.Sat))
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
-      startOffset = 0,
+      startOffset = -6,
       endOffset = 0,
     ),
-    capiDateQueryParam = CapiDateQueryParam.NewspaperEdition,
+    capiDateQueryParam = CapiDateQueryParam.Published,
     zoneId = ZoneId.of("Europe/London"),
-    availability = Daily(),
-    maybeOphanPath = None,
+    availability = WeekDays(List(WeekDay.Sat)),
+    maybeOphanPath = Some("us"),
     ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
-      apiKey = s"fronts-editions-us",
+      apiKey = "fronts-editions-us",
       timeWindowConfig = TimeWindowConfigInDays(
-        startOffset = 0,
-        endOffset = -7
+        startOffset = -6,
+        endOffset = 0,
       ))
     )
   )
 
-  def FrontSpecial1 = specialFront("Top Special 1", Neutral)
 
-  def FrontTopStories = front(
-    "Top stories",
-    collection("Top stories")
+  // Front: Essential Reads
+  // Description: top three stories, manually curated
+
+  def FrontEssentialReadsUs = front(
+    "Essential Reads",
+    collection("Essential Reads")
   )
+    .swatch(News)
+  
+  // Front: Special Section, News swatch
+  // Description: General Special section
+  
+  def FrontSpecial1Us = specialFront("Front Special 1", News, None)
 
-  def FrontSpecial2 = specialFront("Top Special 2", Neutral)
+  // Front: People, Lifestyle swatch
+  // Description: Interviews, profiles and Q&As
 
-  def FrontNewsUkGuardian = front(
-    "National",
-    collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
-    collection("News Special").hide,
-    collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
-    collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
+  def FrontPeopleUs = front(
+    "People",
+    collection("Interviews")
+      .searchPrefill("?tag=type/article,tone/interview")
+      .withArticleItemsCap(20),
+    collection("Profiles")
+      .searchPrefill("?tag=type/article,tone/profiles")
+      .withArticleItemsCap(20),
+    collection("Q&A")
+      .searchPrefill("?tag=type/article,tone/q-and-as")
+      .withArticleItemsCap(20)
+  )
+    .swatch(Lifestyle)
+  
+  // Front: Special 2
+  // Description: General Special section
+  
+  def FrontSpecial2Us = specialFront("Front Special 2", Lifestyle, None)
+
+  // Front: Spotlight, News swatch
+  // Description: Best Reads, News Features
+
+  def FrontSpotlightUs = front(
+    "Spotlight",
+    collection("News Features"),
+     // .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,-tone/news,-tone/comment,-tone/minutebyminute")
+     // .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
+     // .withArticleItemsCap(40),
+    collection("Features")
+     // .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-(tone/features|tone/analysis|tone/explainer),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/comment,-tone/minutebyminute")
+     // .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
+     // .withArticleItemsCap(40)
+  )
+    .swatch(News)
+  
+  // Front: Special 3, News swatch
+  // Description: General Special section
+
+  def FrontSpecial3Us = specialFront("Front Special 3", News, None)
+
+  // Front: US News
+  // Description: local news content, news swatch
+
+  def FrontUsNewsUs = front(
+    "US News",
+    collection("News Features")
+      .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,-tone/news,-tone/comment,-tone/minutebyminute")
+      .withArticleItemsCap(20),
+    collection("News")
+      .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business),-(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,tone/news,-tone/comment,-tone/minutebyminute")
+      .withArticleItemsCap(20)    
+  )
+    .swatch(News)
+  
+  // Front: Special 4, News swatch
+  // Description: General Special section
+
+  def FrontSpecial4Us = specialFront("Front Special 4", News, None)
+
+  // Front: World News, News Swatch
+  // Description: Non US news features and news
+
+  def FrontWorldNewsUs = front(
+    "World News",
+    collection("News Features")
+      .searchPrefill("?tag=type/article,(world/world|australia-news/australia-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-(us-news/us-news|us-news/us-politics|business/business),-tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
+      .withArticleItemsCap(20),
+    collection("News")
+      .searchPrefill("?tag=type/article,(world/world|australia-news/australia-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(us-news/us-news|us-news/us-politics|business/business),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
+      .withArticleItemsCap(20)    
   )
     .swatch(News)
 
-  def FrontNewsUkGuardianSaturday = front(
-    "National",
-    collection("Front Page").printSentAnyTag("theguardian/mainsection/topstories"),
-    collection("News Special").hide,
-    collection("UK News").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
-    collection("Week in Review").printSentAnyTag("theguardian/mainsection/week-in-review"),
-    collection("Weather").printSentAnyTag("theguardian/mainsection/weather2")
-  )
-    .swatch(News)
+  // Front: Opinion
+  // Description: US comment
 
-  def FrontNewsSpecial = specialFront("News Special", News)
-
-  def FrontNewsWorldGuardian = front(
-    "World",
-    collection("World News").printSentAnyTag("theguardian/mainsection/international"),
-    collection("World Special").hide
-  )
-    .swatch(News)
-
-  def FrontNewsUkObserver = front(
-    "National",
-    collection("Front Page"),
-    collection("UK News").printSentAnyTag("theobserver/news/uknews"),
-    collection("Focus").printSentAnyTag("theobserver/news/focus").hide,
-    collection("News Special").hide,
-  )
-    .swatch(News)
-
-  def FrontNewsWorldObserver = front(
-    "World",
-    collection("World News").printSentAnyTag("theobserver/news/worldnews"),
-    collection("World Special").hide,
-  )
-    .swatch(News)
-
-  def FrontWorldSpecial = specialFront("World Special", News)
-
-  // Financial fronts then special
-
-  def FrontFinancialGuardian = front(
-    "Financial",
-    collection("Financial").printSentAnyTag("theguardian/mainsection/financial3", "theguardian/mainsection/money"),
-    collection("Financial Special").hide,
-  )
-    .swatch(News)
-
-  def FrontFinancialObserver = front(
-    "Financial",
-    collection("Financial").printSentAnyTag("theobserver/news/business", "theobserver/news/cash"),
-    collection("Financial Special").hide,
-  )
-    .swatch(News)
-
-  def FrontFinancialSpecial = specialFront("Financial Special", News)
-
-  def FrontJournal = front(
-    "Journal",
-    collection("Features").printSentAnyTag("theguardian/journal/the-long-read", "theguardian/journal/features"),
-    collection("Comment").printSentAnyTag("theguardian/journal/opinion"),
-    collection("Letters").printSentAnyTag("theguardian/journal/letters"),
-    collection("Obituaries").printSentAnyTag("theguardian/journal/obituaries"),
-    collection("Journal Special").hide,
+  def FrontOpinionUs = front(
+    "Opinion",
+    collection("Opinion")
+    .searchPrefill("?tag=type/article,tone/comment,(us-news/us-news|us-news/us-politics|business/business),-sport/sport,-tone/minutebyminute")
+    .withArticleItemsCap(20)
   )
     .swatch(Opinion)
+  
+  // Front: Environment 
+  // Description: Environment coverage
+  
+  def FrontEnvironmentUs = front(
+    "Environment",
+    collection("Environment")
+    .searchPrefill("?tag=type/article,environment/environment,-sport/sport,-tone/minutebyminute")
+    .withArticleItemsCap(20)
+  ) 
+    .swatch(News)
+  
+  // Front: Culture 
+  // Description: Culture features and reviews 
 
-  def FrontComment = front(
-    "Journal",
-    collection("Comment").printSentAnyTag("theobserver/news/comment"),
-    collection("Comment Special").hide,
-  )
-    .swatch(Opinion)
-
-  def FrontOpinionSpecial = specialFront("Journal Special", Opinion)
-
-  def FrontCulture = front(
+  def FrontCultureUs = front(
     "Culture",
-    collection("Arts").printSentAnyTag("theguardian/g2/arts"),
-    collection("TV & Radio").printSentAnyTag("theguardian/g2/tvandradio"),
-    collection("Culture Special").hide,
+    collection("Culture")
+    .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews),-tone/news,-tone/minutebyminute")
+    .withArticleItemsCap(20)
   )
-    .swatch(Culture)
+    .swatch(News)
 
-  def FrontCultureFilmMusic = front(
-    "Culture",
-    collection("Film").printSentAnyTag("theguardian/g2/film"),
-    collection("Music").printSentAnyTag("theguardian/g2/music"),
-    collection("Arts").printSentAnyTag("theguardian/g2/arts"),
-    collection("TV & Radio").printSentAnyTag("theguardian/g2/tvandradio"),
-    collection("Culture Special"),
+  // Lifestyle
+
+  def FrontLifestyleUs = front(
+    "Lifestyle",
+    collection("Lifestyle")
+    .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,-tone/minutebyminute")
+    .withArticleItemsCap(20),
+    collection("Recipes")
+    .searchPrefill("?tag=type/article,tone/recipes,food/food,-tone/minutebyminute")
+    .withArticleItemsCap(20)
   )
-    .swatch(Culture)
+    .swatch(News)
 
-  def FrontCultureGuide = front(
-    "Culture",
-    collection("Features").printSentAnyTag("theguardian/theguide/features"),
-    collection("Preview").printSentAnyTag("theguardian/theguide/reviews"),
-    collection("TV and Radio").printSentAnyTag("theguardian/theguide/tv-radio"),
-    collection("Culture Special"),
-  )
-    .swatch(Culture)
+  // Sports
 
-  def FrontCultureNewReview = front(
-    "Culture",
-    collection("Features").printSentAnyTag("theobserver/new-review/features"),
-    collection("Agenda").printSentAnyTag("theobserver/new-review/agenda"),
-    collection("Science & Technology").printSentAnyTag("theobserver/new-review/discover"),
-    collection("Critics").printSentAnyTag("theobserver/new-review/critics"),
-    collection("Culture Special").hide,
-  )
-    .swatch(Culture)
-
-  def FrontBooks = front(
-    "Books",
-    collection("Books").printSentAnyTag("theguardian/guardianreview/saturdayreviewsfeatres", "theobserver/new-review/books"),
-    collection("Books Special").hide,
-  )
-    .swatch(Culture)
-
-  def FrontCultureSpecial = specialFront("Culture Special", Culture)
-
-  def FrontLife = front(
-    "Life",
-    collection("Features").printSentAnyTag("theguardian/g2/features"),
-    collection("Life Special").hide,
-  )
-    .swatch(Lifestyle)
-
-  def FrontLifeFashion = front(
-    "The Fashion",
-    collection("Fashion 1").printSentAnyTag("theguardian/the-fashion/the-fashion"),
-    collection("Fashion 2").hide,
-    collection("Fashion 3").hide,
-  )
-    .swatch(Lifestyle)
-
-  def FrontLifeWeekend = front(
-    "Life",
-    collection("Weekend").printSentAnyTag("theguardian/weekend/starters", "theguardian/weekend/features2", "theguardian/weekend/back"),
-    collection("Family").printSentAnyTag("theguardian/weekend/family"),
-    collection("Space").printSentAnyTag("theguardian/weekend/space2"),
-    collection("Fashion & Beauty").printSentAnyTag("theguardian/weekend/fashion-and-beauty"),
-    collection("Body & Mind").printSentAnyTag("theguardian/weekend/body-and-mind"),
-    collection("Life Special").hide,
-  )
-    .swatch(Lifestyle)
-
-  def FrontTravelGuardian = front(
-    "Travel",
-    collection("Travel").printSentAnyTag("theguardian/travel/travel"),
-    collection("Travel Special").hide,
-  )
-    .swatch(Lifestyle);
-
-  def FrontLifeMagazineObserver = front(
-    "Life",
-    collection("Features").printSentAnyTag("theobserver/magazine/features2"),
-    collection("Life & Style").printSentAllTags("theobserver/magazine/life-and-style", "-food/food"),
-    collection("Life Special").printSentAnyTag("theobserver/design/design").hide,
-  )
-    .swatch(Lifestyle)
-
-  def FrontFood = front(
-    "Food",
-    collection("Food").printSentAnyTag("theguardian/feast/feast"),
-    collection("Food Special").hide,
-  )
-    .swatch(Lifestyle)
-
-  def FrontFoodObserver = front(
-    "Food",
-    collection("Food").printSentAllTags("theobserver/magazine/life-and-style", "food/food"),
-    collection("OFM").printSentAnyTag("theobserver/foodmonthly/features", "theobserver/foodmonthly").hide,
-    collection("Food Special").hide,
-  )
-    .swatch(Lifestyle)
-
-  def FrontLifeSpecial = specialFront("Life Special", Lifestyle)
-
-  def FrontSportGuardian = front(
+  def FrontSportUs = front(
     "Sport",
-    collection("Sport").printSentAnyTag("theguardian/sport/news"),
-    collection("Sport Special").hide,
+    collection("Sport")
+    .searchPrefill("?tag=type/article,sport/sport,(tone/comment|tone/features|tone/analysis),-tone/minutebyminute")
+    .withArticleItemsCap(20)
   )
     .swatch(Sport)
 
-  def FrontSportObserver = front(
-    "Sport",
-    collection("Sport").printSentAnyTag("theobserver/sport/news"),
-    collection("Sport Special").hide,
-  )
-    .swatch(Sport)
+  // Crosswords
 
-  def FrontSportSpecial = specialFront("Sport Special", Sport)
-
-  def FrontSupplementSpecial1 = specialFront(
-    "Special Supplement 1",
-    swatch = Neutral,
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent))
-  )
-
-  def FrontSupplementSpecial2 = specialFront("Special Supplement 2", Neutral)
-
-  def FrontCrosswords = front(
-    "Crosswords",
-    collection("Crosswords").searchPrefill("?tag=type/crossword"),
+  def FrontCrosswordsUs = front(
+    "Puzzles",
+    collection("Crosswords").searchPrefill("?tag=type/crossword")
+      .withArticleItemsCap(10)
   )
 }
