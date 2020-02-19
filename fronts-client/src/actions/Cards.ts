@@ -212,13 +212,6 @@ const updateCardMetaWithPersist = addPersistMetaToAction(updateCardMeta, {
   persistTo: 'collection'
 });
 
-const updateClipboardCardMetaWithPersist = addPersistMetaToAction(
-  updateCardMeta,
-  {
-    persistTo: 'clipboard'
-  }
-);
-
 const insertCardWithCreate = (
   to: PosSpec,
   drop: MappableDropType,
@@ -393,8 +386,7 @@ const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
 export {
   insertCardWithCreate,
   moveCard,
-  updateCardMetaWithPersist as updateCardMeta,
-  updateClipboardCardMetaWithPersist as updateClipboardCardMeta,
+  updateCardMetaWithPersist,
   removeCard,
   addImageToCard,
   copyCardImageMetaWithPersist,

@@ -7,7 +7,7 @@ import { insertCardFromDropEvent } from 'util/collectionUtils';
 import {
   moveCard,
   removeCard as removeCardAction,
-  updateCardMeta
+  updateCardMetaWithPersist as updateCardMeta
 } from 'actions/Cards';
 import {
   editorSelectCard,
