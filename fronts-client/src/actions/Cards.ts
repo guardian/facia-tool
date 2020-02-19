@@ -21,8 +21,7 @@ import {
   RemoveSupportingCard,
   UpdateCardMeta,
 } from 'shared/types/Action';
-import { Card } from 'shared/types/Collection';
-import { Card, CardMeta } from '../types/Collection';
+import { Card, CardMeta } from 'types/Collection';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { cloneCard, createCard } from 'shared/util/card';
 import { createAtomSnap, createLatestSnap, createSnap } from 'shared/util/snap';
@@ -775,20 +774,13 @@ const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
     copyCardImageMeta,
     hasWhitelistedParams,
     snapMetaWhitelist,
-    marketingParamsWhiteList
+    marketingParamsWhiteList,
+    insertCardWithCreate,
+    moveCard,
+    updateCardMetaWithPersist,
+    removeCard,
+    addImageToCard,
+    copyCardImageMetaWithPersist,
+    cloneCardToTarget,
+    addCardToClipboard
   };
-
-
-
-
-
-export {
-  insertCardWithCreate,
-  moveCard,
-  updateCardMetaWithPersist,
-  removeCard,
-  addImageToCard,
-  copyCardImageMetaWithPersist,
-  cloneCardToTarget,
-  addCardToClipboard
-};
