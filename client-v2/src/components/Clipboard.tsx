@@ -16,7 +16,7 @@ import {
   createSelectCollectionIdsWithOpenForms
 } from 'bundles/frontsUIBundle';
 import { clipboardId } from 'constants/fronts';
-import { Card as TCard } from 'shared/types/Collection';
+import { Card as TCard } from 'types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import CardLevel from './clipboard/CardLevel';
 import Card from './FrontsEdit/CollectionComponents/Card';

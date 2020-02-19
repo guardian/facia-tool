@@ -36,9 +36,19 @@ import { getImageMetaFromValidationResponse } from 'util/form';
 import { getFromGroupIndicesWithRespectToState, getToGroupIndicesWithRespectToState } from 'util/moveUtils';
 
 import { selectEditMode } from '../selectors/pathSelectors';
-import { Card, CardMeta } from '../types/Collection';
+import { Card, CardMeta } from 'types/Collection';
 import { removeClipboardCard, thunkInsertClipboardCard } from './Clipboard';
 import { startOptionsModal } from './OptionsModal';
+
+export const UPDATE_CARD_META = 'SHARED/UPDATE_CARD_META';
+export const CARDS_RECEIVED = 'SHARED/CARDS_RECEIVED';
+export const CLEAR_CARDS = 'SHARED/CLEAR_CARDS';
+export const REMOVE_GROUP_CARD = 'SHARED/REMOVE_GROUP_CARD';
+export const REMOVE_SUPPORTING_CARD = 'SHARED/REMOVE_SUPPORTING_CARD';
+export const INSERT_GROUP_CARD = 'SHARED/INSERT_GROUP_CARD';
+export const INSERT_SUPPORTING_CARD = 'SHARED/INSERT_SUPPORTING_CARD';
+export const COPY_CARD_IMAGE_META = 'SHARED/COPY_CARD_IMAGE_META';
+
 
 
 
@@ -66,14 +76,16 @@ type InsertThunkActionCreator = (
 // the persistence stuff needs to be dynamic as we sometimes need to insert an
 // card and save to clipboard and sometimes save to collection
 // depending on the location of that card
-const createInsertCardThunk = (action: InsertActionCreator) => (
-  persistTo: 'collection' | 'clipboard'
-) => (id: string, index: number, cardId: string, removeAction?: Action) => (
-  dispatch: Dispatch
-) => {
+const createInsertCardThunk =
+(action: InsertActionCreator) =>
+( persistTo: 'collection' | 'clipboard') =>
+(id: string, index: number, cardId: string, removeAction?: Action) =>
+(dispatch: Dispatch) => {
   if (removeAction) {
     dispatch(removeAction);
   }
+  console.log("inside createInsertCardThunk action is ==>", action )
+  console.log("inside createInsertCardThunk action called is ==>", action(id, index, cardId, persistTo));
   // This cast seems to be necessary to disambiguate the type fed to Dispatch,
   // whose call signature accepts either an Action or a ThunkResult. I'm not really
   // sure why.
@@ -166,6 +178,24 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
   };
 };
 
+const insertSupportingCard = (
+  id: string,
+  index: number,
+  cardId: string,
+  persistTo: 'collection' | 'clipboard'
+): InsertSupportingCard => ({
+  type: INSERT_SUPPORTING_CARD,
+  payload: {
+    id,
+    index,
+    cardId
+  },
+  meta: {
+    persistTo,
+    key: 'cardId'
+  }
+});
+
 const addActionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
   card: createInsertCardThunk(insertSupportingCard),
   group: maybeInsertGroupCard,
@@ -180,7 +210,10 @@ const getInsertionActionCreatorFromType = (
   type: string,
   persistTo: 'collection' | 'clipboard'
 ) => {
+  // console.log("type ===>", type)
   const actionCreator = addActionMap[type] || null;
+  // console.log("actionCreator is ====>", actionCreator);
+  // console.log("addAction Map Type is ====>", addActionMap[type]);
 
   // partially apply the action creator with it's persist logic
   return actionCreator && actionCreator(persistTo);
@@ -211,12 +244,12 @@ const getRemoveActionCreatorFromType = (
     : actionCreator;
 };
 
-const updateCardMetaWithPersist = addPersistMetaToAction(updateCardMeta, {
+const updateCardMetaWithPersist = addPersistMetaToAction(updateCardMetaWithoutPersist, {
   persistTo: 'collection'
 });
 
 const updateClipboardCardMetaWithPersist = addPersistMetaToAction(
-  updateCardMeta,
+  updateCardMetaWithoutPersist,
   {
     persistTo: 'clipboard'
   }
@@ -229,10 +262,17 @@ const insertCardWithCreate = (
   // allow the factory to be injected for testing
   cardFactory = createArticleEntitiesFromDrop
 ): ThunkResult<void> => async (dispatch: Dispatch, getState) => {
+
+  // console.log("insertCArdWithCreate parms to insertActionCreator", to.type, persistTo);
+
   const insertActionCreator = getInsertionActionCreatorFromType(
     to.type,
     persistTo
   );
+
+  // console.log("type of insertActionCreator", typeof insertActionCreator)
+  // console.log("insertActionCreator", insertActionCreator)
+
   if (!insertActionCreator) {
     return;
   }
@@ -245,9 +285,16 @@ const insertCardWithCreate = (
   if (toWithRespectToState) {
     try {
       const card = await dispatch(cardFactory(drop));
+
+      console.log("card in InsertCardWithCreate >>>>>", card)
+
       if (!card) {
         return;
       }
+
+      console.log("params to insertActionCreator", toWithRespectToState.id, toWithRespectToState.index, card.uuid)
+
+      //problem here
       dispatch(
         insertActionCreator(
           toWithRespectToState.id,
@@ -262,10 +309,12 @@ const insertCardWithCreate = (
         card.uuid
       );
       if (frontId && collectionId) {
+        console.log("try to get page view data")
         await dispatch(getPageViewData(frontId, collectionId, [card.uuid]));
       }
     } catch (e) {
       // Insert failed -- @todo handle error
+      console.log("error in insertCardWithCreate ===>", e);
     }
   }
 };
@@ -311,6 +360,7 @@ const moveCard = (
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
   return (dispatch: Dispatch, getState) => {
+
     const removeActionCreator =
       from && getRemoveActionCreatorFromType(from.type, persistTo);
     const insertActionCreator = getInsertionActionCreatorFromType(
@@ -393,7 +443,7 @@ const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
     { merge: true }
   );
 
-  function updateCardMeta(
+  function updateCardMetaWithoutPersist(
     id: string,
     meta: CardMeta,
     { merge }: { merge: boolean } = { merge: false }
@@ -483,23 +533,7 @@ const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
     }
   });
 
-  const insertSupportingCard = (
-    id: string,
-    index: number,
-    cardId: string,
-    persistTo: 'collection' | 'clipboard'
-  ): InsertSupportingCard => ({
-    type: INSERT_SUPPORTING_CARD,
-    payload: {
-      id,
-      index,
-      cardId
-    },
-    meta: {
-      persistTo,
-      key: 'cardId'
-    }
-  });
+
 
   type TArticleEntities = [Card?, ExternalArticle?];
 
@@ -755,17 +789,24 @@ const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
     }
   });
 
-
-
-
 export {
   insertCardWithCreate as insertCard,
   moveCard,
+  updateCardMetaWithoutPersist,
   updateCardMetaWithPersist as updateCardMeta,
   updateClipboardCardMetaWithPersist as updateClipboardCardMeta,
   removeCard,
   addImageToCard,
   copyCardImageMetaWithPersist,
   cloneCardToTarget,
-  addCardToClipboard
+  addCardToClipboard,
+  cardsReceived,
+  clearCards,
+  removeSupportingCard,
+  removeGroupCard,
+  createArticleEntitiesFromDrop,
+  copyCardImageMeta,
+  hasWhitelistedParams,
+  snapMetaWhitelist,
+  marketingParamsWhiteList
 };

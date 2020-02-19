@@ -3,7 +3,7 @@ import { styled } from 'shared/constants/theme';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { media } from 'shared/util/mediaQueries';
-import { CardSizes } from 'shared/types/Collection';
+import { CardSizes } from 'types/Collection';
 
 const metaContainerSizeWidthMap = {
   default: 100,

@@ -4,7 +4,7 @@ import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
-import { CardMeta } from 'shared/types/Collection';
+import { CardMeta } from 'types/Collection';
 import { DerivedArticle } from 'shared/types/Article';
 import { CapiArticle } from 'types/Capi';
 import { State } from 'types/State';

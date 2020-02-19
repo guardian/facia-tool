@@ -1,6 +1,6 @@
 import { createType, build, createFieldType } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
-import { Card } from 'shared/types/Collection';
+import { Card } from 'types/Collection';
 
 const preProcessCard = (card: Card): object => ({
   ...card,

@@ -14,7 +14,7 @@ import { ExternalArticle } from 'shared/types/ExternalArticle';
 import {
   CollectionWithNestedArticles,
   NestedCard
-} from 'shared/types/Collection';
+} from 'types/Collection';
 import pandaFetch from './pandaFetch';
 import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';

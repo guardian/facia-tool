@@ -1,6 +1,6 @@
 import { getAbsolutePath, isGuardianUrl } from './url';
 import fetchOpenGraphData from './openGraph';
-import { Card, CardMeta } from '../types/Collection';
+import { Card, CardMeta } from 'types/Collection';
 import v4 from 'uuid/v4';
 import set from 'lodash/fp/set';
 import { PartialBy } from 'types/Util';

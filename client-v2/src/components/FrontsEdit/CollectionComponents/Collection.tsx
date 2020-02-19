@@ -5,7 +5,7 @@ import { HeadlineContentButton } from 'shared/components/CollectionDisplay';
 import CollectionDisplay from 'shared/components/CollectionDisplay';
 import CollectionNotification from 'components/CollectionNotification';
 import Button from 'shared/components/input/ButtonDefault';
-import { AlsoOnDetail } from 'types/Collection';
+import { AlsoOnDetail, CardSets, Group } from 'types/Collection';
 import {
   publishCollection,
   discardDraftChangesToCollection,
@@ -20,7 +20,6 @@ import {
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
-import { CardSets, Group } from 'shared/types/Collection';
 import {
   createSelectCollectionStageGroups,
   createSelectCollectionEditWarning,

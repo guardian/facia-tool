@@ -1,7 +1,7 @@
 import { CapiArticleFields } from 'types/Capi';
 import { ExternalArticle } from './ExternalArticle';
 import { $Diff } from 'utility-types';
-import { CardRootFields, CardMeta } from './Collection';
+import { CardRootFields, CardMeta } from 'types/Collection';
 
 type DerivedArticle = Partial<
   $Diff<

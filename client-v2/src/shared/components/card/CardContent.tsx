@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { CardSizes } from 'shared/types/Collection';
+import { CardSizes } from 'types/Collection';
 
 const CardContent = styled.div<{
   displaySize?: CardSizes;

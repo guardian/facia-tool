@@ -1,8 +1,8 @@
 import { FrontConfig, CollectionConfig } from 'types/FaciaApi';
-import { CollectionWithNestedArticles, Card } from 'shared/types/Collection';
+import { CollectionWithNestedArticles, Card } from 'types/Collection';
 import { detectPressFailureMs } from 'constants/fronts';
 import { ArticleDetails } from 'types/FaciaApi';
-import { Stages, Collection } from 'shared/types/Collection';
+import { Stages, Collection } from 'types/Collection';
 import { frontStages } from 'constants/fronts';
 
 const getFrontCollections = (

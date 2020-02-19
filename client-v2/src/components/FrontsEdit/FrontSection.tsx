@@ -17,7 +17,7 @@ import { State } from 'types/State';
 import { selectFront } from 'selectors/frontsSelectors';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';
-import { CardSets, Collection, Stages } from 'shared/types/Collection';
+import { CardSets, Collection, Stages } from 'types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';

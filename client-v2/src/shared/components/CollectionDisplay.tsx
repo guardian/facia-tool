@@ -11,7 +11,7 @@ import {
   Collection,
   CardSets,
   Collection as CollectionType
-} from '../types/Collection';
+} from 'types/Collection';
 import DragIntentContainer from './DragIntentContainer';
 import ButtonCircularCaret, {
   ButtonCircularWithTransition

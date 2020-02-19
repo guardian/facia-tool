@@ -1,5 +1,5 @@
 import v4 from 'uuid/v4';
-import { Card, CardMeta } from 'shared/types/Collection';
+import { Card, CardMeta } from 'types/Collection';
 import pick from 'lodash/pick';
 import cloneDeep from 'lodash/cloneDeep';
 

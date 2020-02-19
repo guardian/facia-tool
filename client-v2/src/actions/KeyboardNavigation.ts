@@ -4,7 +4,7 @@ import {
   selectNextClipboardIndexSelector
 } from '../selectors/keyboardNavigationSelectors';
 import { selectSharedState, selectIndexInGroup } from 'shared/selectors/shared';
-import { Card } from 'shared/types/Collection';
+import { Card } from 'types/Collection';
 import { PosSpec } from 'lib/dnd';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { setFocusState } from 'bundles/focusBundle';

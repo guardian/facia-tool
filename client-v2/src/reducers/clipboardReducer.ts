@@ -10,6 +10,11 @@ import {
 type State = string[];
 
 const clipboard = (state: State = [], action: Action): State => {
+
+  console.log("STATE IN clipBOARD REDUCER ====>", state);
+  console.log("ACTION type IN clipBOARD REDUCER ====>", action.type);
+
+
   switch (action.type) {
     case UPDATE_CLIPBOARD_CONTENT: {
       const { payload } = action;
@@ -30,6 +35,7 @@ const clipboard = (state: State = [], action: Action): State => {
       return [];
     }
     default: {
+      console.log("DEFAULT CASE IN clipBOARD REDUCER HIT")
       return state;
     }
   }
