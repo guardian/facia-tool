@@ -64,7 +64,7 @@ object AmericanEdition {
   def FrontPeopleUs = front(
     "People",
     collection("Interviews")
-      .searchPrefill("?tag=type/article,(tone/interview|lifeandstyle/series/experience")
+      .searchPrefill("?tag=type/article,(tone/interview|lifeandstyle/series/experience)")
       .withArticleItemsCap(20),
     collection("Profiles")
       .searchPrefill("?tag=type/article,tone/profiles")
