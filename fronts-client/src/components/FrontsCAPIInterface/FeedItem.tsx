@@ -16,7 +16,7 @@ import {
   HoverAddToClipboardButton
 } from 'shared/components/input/HoverActionButtons';
 import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
-import { insertCard } from 'actions/Cards';
+import { insertCardWithCreate } from 'actions/Cards';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
 import { ThumbnailSmall } from 'shared/components/image/Thumbnail';
@@ -269,7 +269,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   return {
     onAddToClipboard: (article: CapiArticle) =>
       dispatch(
-        insertCard(
+        insertCardWithCreate(
           { type: 'clipboard', id: 'clipboard', index: 0 },
           { type: 'CAPI', data: article },
           'clipboard'
