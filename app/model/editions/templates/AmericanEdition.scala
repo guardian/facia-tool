@@ -64,7 +64,7 @@ object AmericanEdition {
   def FrontPeopleUs = front(
     "People",
     collection("Interviews")
-      .searchPrefill("?tag=type/article,tone/interview")
+      .searchPrefill("?tag=type/article,(tone/interview|lifeandstyle/series/experience)")
       .withArticleItemsCap(20),
     collection("Profiles")
       .searchPrefill("?tag=type/article,tone/profiles")
@@ -107,10 +107,10 @@ object AmericanEdition {
   def FrontUsNewsUs = front(
     "US News",
     collection("News Features")
-      .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,-tone/news,-tone/comment,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business|media/media|news/series/the-long-read),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,tone/news,-tone/comment,-tone/minutebyminute")
       .withArticleItemsCap(20),
     collection("News")
-      .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business),-(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,tone/news,-tone/comment,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business|media/media),-(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,tone/news,-tone/comment,-tone/minutebyminute")
       .withArticleItemsCap(20)    
   )
     .swatch(News)
@@ -126,10 +126,10 @@ object AmericanEdition {
   def FrontWorldNewsUs = front(
     "World News",
     collection("News Features")
-      .searchPrefill("?tag=type/article,(world/world|australia-news/australia-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-(us-news/us-news|us-news/us-politics|business/business),-tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(world/world|australia-news/australia-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-(us-news/us-news|us-news/us-politics|business/business|media/media),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
       .withArticleItemsCap(20),
     collection("News")
-      .searchPrefill("?tag=type/article,(world/world|australia-news/australia-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(us-news/us-news|us-news/us-politics|business/business),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
+      .searchPrefill("?tag=type/article,(world/world|australia-news/australia-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(us-news/us-news|us-news/us-politics|business/business|media/media),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
       .withArticleItemsCap(20)    
   )
     .swatch(News)
@@ -140,7 +140,7 @@ object AmericanEdition {
   def FrontOpinionUs = front(
     "Opinion",
     collection("Opinion")
-    .searchPrefill("?tag=type/article,tone/comment,(us-news/us-news|us-news/us-politics|business/business),-sport/sport,-tone/minutebyminute")
+    .searchPrefill("?tag=type/article,tone/comment,(us-news/us-news|us-news/us-politics|business/business|media/media),-sport/sport,-tone/minutebyminute")
     .withArticleItemsCap(20)
   )
     .swatch(Opinion)
