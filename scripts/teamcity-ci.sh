@@ -25,7 +25,7 @@ javascriptV1() {
 }
 
 javascriptV2() {
-    pushd client-v2
+    pushd fronts-client
 
     yarn install
     yarn lint

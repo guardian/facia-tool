@@ -2,15 +2,15 @@
 
 The Guardian front pages editor.
 
-## Client V2
+## Fronts Client 
 
-Fronts Client V2 is in Active Development. You'll find it over at [client-v2](/client-v2).
+You can find the client for the Fronts tool in [fronts-client](/fronts-client).
 
 ### Setup (need to be done once)
 
 1. Install [NVM](https://github.com/creationix/nvm).
-1. Get credentials from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev).
-2. From the project root, run `./scripts/setup.sh`.
+2. Get credentials from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev).
+3. From the project root, run `./scripts/setup.sh`.
 
 ### Dev Start
 

@@ -38,7 +38,7 @@ set_node_version() {
 }
 
 install_deps_and_build() {
-  cd client-v2
+  cd fronts-client
   yarn install
   printf "\nCompiling Javascript... \n\r\n\r"
   yarn build
