@@ -384,7 +384,7 @@ const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
   );
 
 export {
-  insertCardWithCreate as insertCard,
+  insertCardWithCreate,
   moveCard,
   updateCardMetaWithPersist,
   removeCard,

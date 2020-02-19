@@ -1,7 +1,7 @@
 import React from 'react';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { PosSpec } from 'lib/dnd';
-import { insertCard } from 'actions/Cards';
+import { insertCardWithCreate } from 'actions/Cards';
 import { CapiArticle } from 'types/Capi';
 
 export interface RefDrop {
@@ -44,7 +44,7 @@ const insertCardFromDropEvent = (
     if (!dropType) {
       return;
     }
-    dispatch(insertCard(to, dropType, persistTo));
+    dispatch(insertCardWithCreate(to, dropType, persistTo));
   };
 };
 
