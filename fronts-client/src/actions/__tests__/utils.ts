@@ -1,4 +1,4 @@
-import { CardMeta } from 'shared/types/Collection';
+import { CardMeta } from 'types/Collection';
 
 export interface CardMap {
   [uuid: string]: {

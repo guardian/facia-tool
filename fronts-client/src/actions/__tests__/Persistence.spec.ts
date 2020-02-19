@@ -6,7 +6,7 @@ import { enableBatching } from 'redux-batched-actions';
 import { moveCard } from 'actions/Cards';
 import { Dispatch } from 'types/Store';
 import rootReducer from 'reducers/rootReducer';
-import { NestedCard } from 'shared/types/Collection';
+import { NestedCard } from 'types/Collection';
 import { updateCollection } from 'actions/Collections';
 
 const A1 = {

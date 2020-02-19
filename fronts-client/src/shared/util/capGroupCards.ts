@@ -1,4 +1,4 @@
-import { Group } from 'shared/types/Collection';
+import { Group } from 'types/Collection';
 
 // runs through an array of groups, assumed to be ordered, and removes all
 // cards beyond maxCards

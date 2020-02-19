@@ -1,7 +1,7 @@
 import { ExternalArticle } from './ExternalArticle';
-import { Collection, Card, Group, CardMeta } from './Collection';
+import { Collection, Card, Group, CardMeta } from 'types/Collection';
 import { Actions } from 'lib/createAsyncResourceBundle';
-import { copyCardImageMeta } from 'shared/actions/Cards';
+import { copyCardImageMeta } from 'actions/Cards';
 import { PageViewStory } from './PageViewData';
 import { PersistMeta } from 'util/storeMiddleware';
 

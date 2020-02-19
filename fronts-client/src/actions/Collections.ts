@@ -32,7 +32,7 @@ import {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection
 } from 'shared/util/shared';
-import { cardsReceived, clearCards } from 'shared/actions/Cards';
+import { cardsReceived, clearCards } from 'actions/Cards';
 import { groupsReceived } from 'actions/Groups';
 import {
   recordVisibleArticles,
@@ -44,7 +44,7 @@ import { selectCollectionConfig, selectFront } from 'selectors/frontsSelectors';
 import { Dispatch, ThunkResult } from 'types/Store';
 import { Action } from 'types/Action';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
-import { Stages, Collection, CardSets } from 'shared/types/Collection';
+import { Stages, Collection, CardSets } from 'types/Collection';
 import difference from 'lodash/difference';
 import { selectArticlesInCollections } from 'shared/selectors/collection';
 import {

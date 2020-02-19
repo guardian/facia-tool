@@ -1,4 +1,4 @@
-import { Stages, CardSets } from 'shared/types/Collection';
+import { Stages, CardSets } from 'types/Collection';
 import {
   gridDataTransferTypes,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,

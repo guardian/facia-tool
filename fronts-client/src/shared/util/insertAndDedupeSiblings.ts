@@ -1,5 +1,5 @@
 import uniqBy from 'lodash/uniqBy';
-import { Card } from 'shared/types/Collection';
+import { Card } from 'types/Collection';
 
 export const insertAndDedupeSiblings = (
   existingSiblingUUIDs: string[],

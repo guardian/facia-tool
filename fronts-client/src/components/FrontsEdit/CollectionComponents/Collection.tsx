@@ -20,7 +20,7 @@ import {
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import { State } from 'types/State';
-import { CardSets, Group } from 'shared/types/Collection';
+import { CardSets, Group } from 'types/Collection';
 import {
   createSelectCollectionStageGroups,
   createSelectCollectionEditWarning,

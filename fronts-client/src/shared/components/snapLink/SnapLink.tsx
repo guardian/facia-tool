@@ -15,7 +15,7 @@ import {
   HoverOphanButton
 } from '../input/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
-import { Card, CardSizes } from 'shared/types/Collection';
+import { Card, CardSizes } from 'types/Collection';
 import {
   selectSharedState,
   selectCard,

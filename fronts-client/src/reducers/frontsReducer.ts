@@ -1,5 +1,5 @@
 import set from 'lodash/fp/set';
-import { Stages } from 'shared/types/Collection';
+import { Stages } from 'types/Collection';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 
 import { Action } from 'types/Action';

@@ -20,7 +20,7 @@ import {
 } from 'shared/selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
 import { defaultObject } from 'shared/util/selectorUtils';
-import { CardMeta, ArticleTag } from 'shared/types/Collection';
+import { CardMeta, ArticleTag } from 'types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
 import InputCheckboxToggleInline from 'shared/components/input/InputCheckboxToggleInline';

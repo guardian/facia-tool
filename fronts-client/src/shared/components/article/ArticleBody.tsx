@@ -20,7 +20,7 @@ import {
   HoverAddToClipboardButton
 } from '../input/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
-import { CardSizes } from 'shared/types/Collection';
+import { CardSizes } from 'types/Collection';
 import CardMetaContent from '../card/CardMetaContent';
 import CardDraftMetaContent from '../card/CardDraftMetaContent';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';

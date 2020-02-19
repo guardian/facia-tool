@@ -1,4 +1,4 @@
-import { Card, NestedCard } from 'shared/types/Collection';
+import { Card, NestedCard } from 'types/Collection';
 import { selectClipboard } from 'selectors/frontsSelectors';
 import { State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
