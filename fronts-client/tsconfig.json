@@ -12,7 +12,7 @@
     "sourceMap": true,
     "baseUrl": "src",
     "strict": true,
-    "outDir": "../../public/client-v2/dist",
+    "outDir": "../../public/fronts-client/dist",
     "skipLibCheck": true
   },
   "exclude": [

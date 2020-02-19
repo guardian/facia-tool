@@ -1,5 +1,5 @@
 {
-  "name": "client-v2",
+  "name": "fronts-client",
   "version": "0.1.0",
   "description": "Facia tool client side",
   "main": "src/index.js",

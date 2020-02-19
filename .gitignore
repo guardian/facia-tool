@@ -51,8 +51,8 @@ developer.properties
 .cache
 
 ##
-public/client-v2/dist
-client-v2/.vscode
+public/fronts-client/dist
+fronts-client/.vscode
 .vscode
 
 .metals

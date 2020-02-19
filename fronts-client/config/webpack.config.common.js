@@ -10,7 +10,7 @@ const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 module.exports = {
   entry: './src/index.tsx',
   output: {
-    path: path.resolve(__dirname, '../../public/client-v2/dist'),
+    path: path.resolve(__dirname, '../../public/fronts-client/dist'),
     filename: 'app.bundle.js'
   },
   plugins: [new ForkTsCheckerWebpackPlugin()],
@@ -33,7 +33,7 @@ module.exports = {
         test: /\.(eot|svg|ttf|woff|woff2|otf|gif)$/,
         loader: 'file-loader',
         options: {
-          publicPath: '/assets/client-v2/dist/'
+          publicPath: '/assets/fronts-client/dist/'
         }
       },
       {
