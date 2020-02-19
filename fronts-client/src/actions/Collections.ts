@@ -33,7 +33,7 @@ import {
   denormaliseCollection
 } from 'shared/util/shared';
 import { cardsReceived, clearCards } from 'shared/actions/Cards';
-import { groupsReceived } from 'shared/actions/Groups';
+import { groupsReceived } from 'actions/Groups';
 import {
   recordVisibleArticles,
   recordStaleFronts,
