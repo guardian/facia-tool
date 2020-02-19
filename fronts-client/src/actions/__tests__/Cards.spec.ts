@@ -14,7 +14,7 @@ import { createCardStateFromSpec, CardSpec, specToCard } from './utils';
 import {
   moveCard,
   removeCard,
-  insertCard,
+  insertCardWithCreate,
   addImageToCard,
   cloneCardToTarget
 } from 'actions/Cards';
@@ -108,7 +108,7 @@ const insert = async (
     [uuid, id, undefined],
     collectionCapInfo ? collectionCapInfo.cap : Infinity
   );
-  await dispatch(insertCard(
+  await dispatch(insertCardWithCreate(
     { type: parentType, id: parentId, index },
     { type: 'REF', data: parentId },
     'collection',
