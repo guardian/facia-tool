@@ -27,7 +27,7 @@ import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
 import { removeClipboardCard, thunkInsertClipboardCard } from './Clipboard';
 import { State } from 'types/State';
-import { capGroupSiblings } from 'shared/actions/Groups';
+import { capGroupSiblings } from 'actions/Groups';
 import { selectCollectionCap } from 'selectors/configSelectors';
 import { getImageMetaFromValidationResponse } from 'util/form';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
