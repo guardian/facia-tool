@@ -35,7 +35,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import { bindActionCreators } from 'redux';
 import CardFormInline from '../CardFormInline';
-import { updateCardMeta as updateCardMetaAction } from 'actions/Cards';
+import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { events } from 'services/GA';
