@@ -8,7 +8,7 @@ import {
 } from 'constants/polling';
 import { selectPriority } from 'selectors/pathSelectors';
 import { getPageViewDataForCollection } from '../redux/modules/pageViewData/actions';
-import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
+import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import {
   selectSharedState,
   selectExternalArticleIdFromCard
@@ -32,8 +32,10 @@ export default (store: Store) => {
   setInterval(createRefreshStaleCollections(store), collectionsPollInterval);
   setInterval(createRefreshOpenArticles(store), collectionArticlesPollInterval);
 
+  const getState = (state: any) => state;
+
   const shouldPollOphan = selectFeatureValue(
-    selectSharedState(store.getState()),
+    getState(store.getState()),
     'page-view-data-visualisation'
   );
 

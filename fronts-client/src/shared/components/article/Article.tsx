@@ -17,7 +17,7 @@ import CardMetaHeading from '../card/CardMetaHeading';
 import ArticleBody from './ArticleBody';
 import { CardSizes } from 'shared/types/Collection';
 import DragIntentContainer from '../DragIntentContainer';
-import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
+import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import { theme } from 'constants/theme';
 import { getPillarColor } from 'shared/util/getPillarColor';
 
@@ -205,12 +205,13 @@ const createMapStateToProps = () => {
       : selectSharedState(state);
     const article = selectArticle(sharedState, props.id);
     const card = selectCard(sharedState, props.id);
+    const getState = (s: any) => s;
 
     return {
       article,
       isLoading: selectors.selectIsLoadingInitialDataById(sharedState, card.id),
       featureFlagPageViewData: selectFeatureValue(
-        selectSharedState(state),
+        getState(state),
         'page-view-data-visualisation'
       )
     };

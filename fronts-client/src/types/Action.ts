@@ -45,7 +45,7 @@ import {
   EditorCloseFormsForCollection
 } from 'bundles/frontsUIBundle';
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
-import { ActionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
+import { ActionSetFeatureValue } from 'redux/modules/featureSwitches';
 import { ReactNode } from 'react';
 import { SetHidden } from '../bundles/collectionsBundle';
 import { OptionsModalChoices } from './Modals';
