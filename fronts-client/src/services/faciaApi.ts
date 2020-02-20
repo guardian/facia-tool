@@ -10,7 +10,7 @@ import {
   CollectionResponse,
   EditionCollectionResponse
 } from 'types/FaciaApi';
-import { ExternalArticle } from 'shared/types/ExternalArticle';
+import { ExternalArticle } from 'types/ExternalArticle';
 import {
   CollectionWithNestedArticles,
   NestedCard

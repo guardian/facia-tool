@@ -30,7 +30,7 @@ import url from 'constants/url';
 import CardHeadingContainer from '../card/CardHeadingContainer';
 import CardSettingsDisplay from '../card/CardSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
-import { DerivedArticle } from 'shared/types/Article';
+import { DerivedArticle } from 'types/Article';
 import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 import { theme } from 'constants/theme';
 import ArticleGraph from '../article/ArticleGraph';

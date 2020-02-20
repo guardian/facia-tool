@@ -8,7 +8,7 @@ import {
 } from 'util/CAPIUtils';
 import { selectors as externalArticleSelectors } from '../../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../../bundles/collectionsBundle';
-import { ExternalArticle } from '../types/ExternalArticle';
+import { ExternalArticle } from '../../types/ExternalArticle';
 import {
   Card,
   Collection,
@@ -20,7 +20,7 @@ import {
 import { State } from '../types/State';
 import { cardSets } from 'constants/fronts';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
-import { DerivedArticle } from 'shared/types/Article';
+import { DerivedArticle } from 'types/Article';
 import { hasMainVideo } from 'util/externalArticle';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.

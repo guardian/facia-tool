@@ -1,7 +1,7 @@
 import { oc } from 'ts-optchain';
 import { Element } from 'types/Capi';
-import { ExternalArticle } from 'shared/types/ExternalArticle';
-import { DerivedArticle } from 'shared/types/Article';
+import { ExternalArticle } from 'types/ExternalArticle';
+import { DerivedArticle } from 'types/Article';
 import isAfter from 'date-fns/is_after';
 import isValid from 'date-fns/is_valid';
 

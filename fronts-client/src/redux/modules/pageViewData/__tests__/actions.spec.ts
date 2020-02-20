@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 import { fetchPageViewData } from '../actions';
-import { PageViewDataFromOphan } from 'shared/types/PageViewData';
+import { PageViewDataFromOphan } from 'types/PageViewData';
 import {
   longOphanQuery,
   addendumToLongOphanQuery,

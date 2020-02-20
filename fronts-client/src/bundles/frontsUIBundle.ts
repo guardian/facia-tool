@@ -43,7 +43,7 @@ import {
 } from 'shared/actions/Cards';
 import { Stages, CardSets } from 'shared/types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
-import { CollectionWithArticles } from 'shared/types/PageViewData';
+import { CollectionWithArticles } from 'types/PageViewData';
 import {
   createSelectArticlesInCollection,
   selectSharedState,
