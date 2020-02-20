@@ -5,7 +5,7 @@ import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { BATCH } from 'redux-batched-actions';
 import { Action, ActionPersistMeta } from 'types/Action';
-import { selectors } from 'shared/bundles/collectionsBundle';
+import { selectors } from 'bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
 import { selectSharedState } from 'shared/selectors/shared';

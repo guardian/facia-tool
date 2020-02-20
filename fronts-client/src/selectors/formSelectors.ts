@@ -1,4 +1,4 @@
-import { selectors } from 'shared/bundles/collectionsBundle';
+import { selectors } from 'bundles/collectionsBundle';
 import {
   selectSharedState,
   createSelectArticleFromCard

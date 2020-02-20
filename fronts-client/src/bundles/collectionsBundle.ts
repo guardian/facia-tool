@@ -1,10 +1,10 @@
-import { State as SharedState } from '../types/State';
+import { State as SharedState } from '../shared/types/State';
 import createAsyncResourceBundle, {
   State,
   Actions
 } from 'lib/createAsyncResourceBundle';
 import { Collection } from 'shared/types/Collection';
-import { addPersistMetaToAction } from '../../util/action';
+import { addPersistMetaToAction } from '../util/action';
 import set from 'lodash/fp/set';
 
 const collectionsEntityName = 'collections';

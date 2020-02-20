@@ -23,7 +23,7 @@ import {
   selectSharedState,
   createSelectArticlesInCollection
 } from '../selectors/shared';
-import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
+import { selectors as collectionSelectors } from '../../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer, {
   contentContainerMargin

@@ -48,7 +48,7 @@ import {
   editionsMobileCardImageCriteria,
   editionsTabletCardImageCriteria
 } from 'constants/image';
-import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
+import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode, selectV2SubPath } from 'selectors/pathSelectors';

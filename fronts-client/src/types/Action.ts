@@ -47,7 +47,7 @@ import {
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'shared/redux/modules/featureSwitches';
 import { ReactNode } from 'react';
-import { SetHidden } from '../shared/bundles/collectionsBundle';
+import { SetHidden } from '../bundles/collectionsBundle';
 import { OptionsModalChoices } from './Modals';
 
 interface EditorOpenCurrentFrontsMenu {

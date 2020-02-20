@@ -21,7 +21,7 @@ import {
 import {
   actions as externalArticleActions,
   selectIsExternalArticleStale
-} from 'shared/bundles/externalArticlesBundle';
+} from 'bundles/externalArticlesBundle';
 import {
   combineCollectionWithConfig,
   populateDraftArticles,
@@ -39,7 +39,7 @@ import {
   recordStaleFronts,
   fetchLastPressedSuccess
 } from 'actions/Fronts';
-import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
+import { actions as collectionActions } from 'bundles/collectionsBundle';
 import { selectCollectionConfig, selectFront } from 'selectors/frontsSelectors';
 import { Dispatch, ThunkResult } from 'types/Store';
 import { Action } from 'types/Action';
