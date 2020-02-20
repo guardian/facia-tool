@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme-shared';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
 import upperFirst from 'lodash/upperFirst';
 import { oc } from 'ts-optchain';

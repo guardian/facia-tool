@@ -1,4 +1,4 @@
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme-shared';
 import { theme } from 'constants/theme';
 
 export default styled.button`

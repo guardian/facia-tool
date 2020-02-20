@@ -1,4 +1,4 @@
-import { styled } from '../../constants/theme';
+import { styled } from '../../../constants/theme-shared';
 import { theme } from 'constants/theme';
 
 export const contentContainerMargin = '10px';

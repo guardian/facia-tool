@@ -15,7 +15,7 @@ import {
 import { CardSets, Card as TCard } from 'shared/types/Collection';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
-import { theme as sharedTheme } from 'shared/constants/theme';
+import { theme as sharedTheme } from 'constants/theme-shared';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import ButtonRoundedWithLabel, {
   ButtonLabel

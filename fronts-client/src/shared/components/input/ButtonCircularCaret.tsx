@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme-shared';
 import ButtonCircular from './ButtonCircular';
 import { DownCaretIcon } from '../icons/Icons';
 import { theme } from 'constants/theme';

@@ -1,4 +1,4 @@
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme-shared';
 import { CardSizes } from 'shared/types/Collection';
 
 export default styled.div<{

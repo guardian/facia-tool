@@ -1,4 +1,4 @@
-import { styled, theme } from 'shared/constants/theme';
+import { styled, theme } from 'constants/theme-shared';
 import { keyframes } from 'styled-components';
 
 const rotate360 = keyframes`

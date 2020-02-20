@@ -4,7 +4,7 @@
  *  replace: `import styled from 'styled-components';`
  *  with : `import { styled } from 'constants/theme';`
  */
-import { theme as shared } from 'shared/constants/theme';
+import { theme as shared } from 'constants/theme-shared';
 import baseStyled, {
   css as baseCss,
   ThemedStyledInterface,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme-shared';
 import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 

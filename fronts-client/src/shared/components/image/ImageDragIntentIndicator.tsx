@@ -1,4 +1,4 @@
-import { styled, theme } from 'shared/constants/theme';
+import { styled, theme } from 'constants/theme-shared';
 
 export default styled.div`
   position: absolute;

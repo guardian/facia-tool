@@ -5,7 +5,7 @@ import {
   ClearIcon
 } from 'shared/components/icons/Icons';
 import { SmallRoundButton } from 'util/sharedStyles/buttons';
-import { theme as globalTheme } from 'shared/constants/theme';
+import { theme as globalTheme } from 'constants/theme-shared';
 
 const InputWrapper = styled.div`
   position: relative;

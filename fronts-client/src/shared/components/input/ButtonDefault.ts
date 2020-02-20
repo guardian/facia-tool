@@ -1,5 +1,5 @@
-import { styled } from 'shared/constants/theme';
-import { theme } from '../../constants/theme';
+import { styled } from 'constants/theme-shared';
+import { theme } from '../../../constants/theme-shared';
 
 type ButtonSizes = 's' | 'm' | 'l';
 type ButtonPriorities = 'primary' | 'default' | 'muted';

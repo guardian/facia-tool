@@ -1,4 +1,4 @@
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme-shared';
 import React from 'react';
 import { WrappedFieldMetaProps, WrappedFieldInputProps } from 'redux-form';
 

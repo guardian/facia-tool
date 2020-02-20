@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme-shared';
 import { theme } from 'constants/theme';
 
 const ToolTip = styled.div<{ text: string }>`

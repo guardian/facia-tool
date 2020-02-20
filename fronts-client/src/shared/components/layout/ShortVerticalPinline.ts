@@ -1,6 +1,6 @@
 // @flow
 
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme-shared';
 
 export default styled.div`
   position: absolute;

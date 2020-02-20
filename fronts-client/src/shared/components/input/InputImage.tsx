@@ -1,5 +1,5 @@
 import React from 'react';
-import { theme as globalTheme, styled } from 'shared/constants/theme';
+import { theme as globalTheme, styled } from 'constants/theme-shared';
 import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
 import { events } from 'services/GA';

@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from '../../constants/theme';
+import { styled } from '../../../constants/theme-shared';
 import { theme } from 'constants/theme';
 
 const MetadataContainer = styled.div`

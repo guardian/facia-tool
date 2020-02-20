@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme-shared';
 
 interface GroupDisplayComponentProps {
   groupName: string | null;
