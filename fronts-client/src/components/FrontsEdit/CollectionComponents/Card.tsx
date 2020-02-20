@@ -9,7 +9,7 @@ import {
   selectExternalArticleFromCard,
   selectSupportingArticleCount
 } from 'shared/selectors/shared';
-import cardTypes from 'shared/constants/cardTypes';
+import cardTypes from 'constants/cardTypes';
 import { CardTypes, CardSizes, CardMeta } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';
 import {
