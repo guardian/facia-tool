@@ -4,8 +4,8 @@ import {
   createLatestSnap,
   createSnap,
   createAtomSnap
-} from '../snap';
-import tagPageHtml from '../../../fixtures/guardianTagPage';
+} from 'util/snap';
+import tagPageHtml from 'fixtures/guardianTagPage';
 import fetchMock from 'fetch-mock';
 import bbcSectionPage from 'fixtures/bbcSectionPage';
 import { capiAtom } from 'fixtures/capiAtom.js';

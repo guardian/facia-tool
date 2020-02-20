@@ -1,4 +1,4 @@
-import { capGroupCards } from '../capGroupCards';
+import { capGroupCards } from 'util/capGroupCards';
 import { Group } from 'shared/types/Collection';
 
 let id = 0;

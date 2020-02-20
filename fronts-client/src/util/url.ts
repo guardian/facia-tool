@@ -1,4 +1,4 @@
-import urlConstants from '../../constants/url';
+import urlConstants from 'constants/url';
 
 const a = document.createElement('a');
 

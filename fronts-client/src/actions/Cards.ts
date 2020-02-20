@@ -18,7 +18,7 @@ import {
 } from 'shared/selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/action';
-import { cloneCard } from 'shared/util/card';
+import { cloneCard } from 'util/card';
 import {
   getFromGroupIndicesWithRespectToState,
   getToGroupIndicesWithRespectToState
@@ -30,7 +30,7 @@ import { State } from 'types/State';
 import { capGroupSiblings } from 'actions/Groups';
 import { selectCollectionCap } from 'selectors/configSelectors';
 import { getImageMetaFromValidationResponse } from 'util/form';
-import { ValidationResponse } from 'shared/util/validateImageSrc';
+import { ValidationResponse } from 'util/validateImageSrc';
 import { MappableDropType } from 'util/collectionUtils';
 import { selectWillCollectionHitCollectionCap } from 'selectors/collectionSelectors';
 import { batchActions } from 'redux-batched-actions';

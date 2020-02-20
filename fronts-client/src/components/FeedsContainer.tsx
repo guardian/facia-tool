@@ -26,7 +26,7 @@ import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline'
 import { DEFAULT_PARAMS } from 'services/faciaApi';
 import ScrollContainer from './ScrollContainer';
 import ClipboardHeader from 'components/ClipboardHeader';
-import { media } from 'shared/util/mediaQueries';
+import { media } from 'util/mediaQueries';
 import ContainerHeading from 'shared/components/typography/ContainerHeading';
 import { ClearIcon } from 'shared/components/icons/Icons';
 import Button from 'shared/components/input/ButtonDefault';

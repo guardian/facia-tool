@@ -31,7 +31,7 @@ import {
 import {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection
-} from 'shared/util/shared';
+} from 'util/shared';
 import { cardsReceived, clearCards } from 'shared/actions/Cards';
 import { groupsReceived } from 'actions/Groups';
 import {

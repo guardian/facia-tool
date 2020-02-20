@@ -1,4 +1,4 @@
-import { getAbsolutePath } from '../url';
+import { getAbsolutePath } from 'util/url';
 
 describe('utils/url-abs-path', () => {
   it('extracts the path name', () => {

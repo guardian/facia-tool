@@ -5,7 +5,7 @@ import SectionContent from './layout/SectionContent';
 import FeedContainer from './FeedsContainer';
 import Clipboard from './Clipboard';
 import FeedSectionHeader from './FeedSectionHeader';
-import { media } from 'shared/util/mediaQueries';
+import { media } from 'util/mediaQueries';
 
 interface Props {
   isClipboardOpen: boolean;

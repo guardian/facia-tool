@@ -14,7 +14,7 @@ import {
   validateImageEvent,
   validateMediaItem,
   validateImageSrc
-} from '../../util/validateImageSrc';
+} from '../../../util/validateImageSrc';
 import { selectGridUrl } from 'selectors/configSelectors';
 import { State } from 'types/State';
 import { GridData, Criteria } from 'shared/types/Grid';

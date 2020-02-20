@@ -1,6 +1,6 @@
 import find from 'lodash/find';
 import sortBy from 'lodash/sortBy';
-import urlConstants from '../../constants/url';
+import urlConstants from 'constants/url';
 import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';

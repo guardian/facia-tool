@@ -19,9 +19,9 @@ import {
 } from '../types/Collection';
 import { State } from '../types/State';
 import { cardSets } from 'constants/fronts';
-import { createShallowEqualResultSelector } from 'shared/util/selectorUtils';
+import { createShallowEqualResultSelector } from 'util/selectorUtils';
 import { DerivedArticle } from 'shared/types/Article';
-import { hasMainVideo } from 'shared/util/externalArticle';
+import { hasMainVideo } from 'util/externalArticle';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): State => rootState.shared;

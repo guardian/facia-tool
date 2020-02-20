@@ -6,7 +6,7 @@ import { checkIsContent } from 'services/capiQuery';
 import { getPrefills } from 'services/editionsApi';
 import { Dispatch } from 'redux';
 import { State } from 'types/State';
-import { createSelectIsArticleStale } from 'shared/util/externalArticle';
+import { createSelectIsArticleStale } from 'util/externalArticle';
 
 type FeedState = CapiArticle;
 

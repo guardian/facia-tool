@@ -19,7 +19,7 @@ import { CardSizes } from 'shared/types/Collection';
 import DragIntentContainer from '../DragIntentContainer';
 import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import { theme } from 'constants/theme';
-import { getPillarColor } from 'shared/util/getPillarColor';
+import { getPillarColor } from 'util/getPillarColor';
 
 const ArticleBodyContainer = styled(CardBody)<{
   pillarId: string | undefined;

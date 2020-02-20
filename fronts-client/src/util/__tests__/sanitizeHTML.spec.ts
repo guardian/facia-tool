@@ -1,4 +1,4 @@
-import { sanitizeHTML } from '../sanitizeHTML';
+import { sanitizeHTML } from 'util/sanitizeHTML';
 
 describe('sanitizeHTML', () => {
   it('removes unwanted / unsafe tags', () => {

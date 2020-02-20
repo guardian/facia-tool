@@ -7,7 +7,7 @@ import startCase from 'lodash/startCase';
 
 import { selectArticleAcrossResources } from 'bundles/capiFeedBundle';
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
-import { getPillarColor, notLiveColour } from 'shared/util/getPillarColor';
+import { getPillarColor, notLiveColour } from 'util/getPillarColor';
 import { HoverActionsAreaOverlay } from 'shared/components/CollectionHoverItems';
 import { HoverActionsButtonWrapper } from 'shared/components/input/HoverActionButtonWrapper';
 import {
@@ -27,10 +27,10 @@ import {
   dragOffsetX,
   dragOffsetY
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
-import { media } from 'shared/util/mediaQueries';
+import { media } from 'util/mediaQueries';
 import { State } from 'types/State';
 import { liveBlogTones } from 'constants/fronts';
-import { hasMainVideo } from 'shared/util/externalArticle';
+import { hasMainVideo } from 'util/externalArticle';
 import { VideoIcon } from 'shared/components/icons/Icons';
 import CircularIconContainer from 'shared/components/icons/CircularIconContainer';
 import RefreshPeriodically from '../util/RefreshPeriodically';

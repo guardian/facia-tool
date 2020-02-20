@@ -1,5 +1,5 @@
 import { Action } from 'types/Action';
-import { insertAndDedupeSiblings } from 'shared/util/insertAndDedupeSiblings';
+import { insertAndDedupeSiblings } from 'util/insertAndDedupeSiblings';
 import {
   INSERT_CLIPBOARD_CARD,
   REMOVE_CLIPBOARD_CARD,

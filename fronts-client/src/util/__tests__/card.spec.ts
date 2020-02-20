@@ -1,4 +1,4 @@
-import { cloneActiveImageMeta } from '../card';
+import { cloneActiveImageMeta } from 'util/card';
 import { CardMeta } from 'shared/types/Collection';
 
 const createCard = (meta: CardMeta = {}) => ({

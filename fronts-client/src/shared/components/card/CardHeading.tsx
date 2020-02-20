@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'constants/theme';
-import { sanitizeHTML } from 'shared/util/sanitizeHTML';
-import { media } from 'shared/util/mediaQueries';
+import { sanitizeHTML } from 'util/sanitizeHTML';
+import { media } from 'util/mediaQueries';
 import { theme } from 'constants/theme';
 import { CardSizes } from 'shared/types/Collection';
 
