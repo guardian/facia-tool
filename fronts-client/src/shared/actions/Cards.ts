@@ -1,5 +1,5 @@
 import keyBy from 'lodash/keyBy';
-import { actions as externalArticleActions } from 'shared/bundles/externalArticlesBundle';
+import { actions as externalArticleActions } from 'bundles/externalArticlesBundle';
 import {
   getContent,
   transformExternalArticle,

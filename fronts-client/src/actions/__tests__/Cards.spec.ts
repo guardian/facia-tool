@@ -21,7 +21,7 @@ import {
 import {
   reducer as collectionsReducer,
   initialState as collectionsState
-} from 'shared/bundles/collectionsBundle';
+} from 'bundles/collectionsBundle';
 import { optionsModal } from 'reducers/modalsReducer';
 import config from 'reducers/configReducer';
 import { enableBatching } from 'redux-batched-actions';

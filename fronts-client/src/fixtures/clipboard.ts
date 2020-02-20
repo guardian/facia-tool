@@ -1,5 +1,5 @@
-import { initialState as externalArticlesState } from 'shared/bundles/externalArticlesBundle';
-import { initialState as collectionsState } from 'shared/bundles/collectionsBundle';
+import { initialState as externalArticlesState } from 'bundles/externalArticlesBundle';
+import { initialState as collectionsState } from 'bundles/collectionsBundle';
 
 const stateWithClipboard = {
   clipboard: ['article', 'article2'],

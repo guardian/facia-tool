@@ -4,7 +4,7 @@ import {
   Collection,
   Card
 } from 'shared/types/Collection';
-import { selectors as collectionSelectors } from 'shared/bundles/collectionsBundle';
+import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { selectSharedState } from 'shared/selectors/shared';
 import { State } from 'types/State';
 

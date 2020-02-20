@@ -11,7 +11,7 @@ import {
   discardDraftChangesToCollection,
   openCollectionsAndFetchTheirArticles
 } from 'actions/Collections';
-import { actions, selectors } from 'shared/bundles/collectionsBundle';
+import { actions, selectors } from 'bundles/collectionsBundle';
 import {
   selectHasUnpublishedChanges,
   selectCollectionHasPrefill,

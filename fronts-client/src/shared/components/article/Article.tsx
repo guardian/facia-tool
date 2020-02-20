@@ -8,7 +8,7 @@ import {
   selectSharedState,
   selectCard
 } from '../../selectors/shared';
-import { selectors } from 'shared/bundles/externalArticlesBundle';
+import { selectors } from 'bundles/externalArticlesBundle';
 import { State } from '../../types/State';
 import { DerivedArticle } from '../../types/Article';
 import CardBody from '../card/CardBody';

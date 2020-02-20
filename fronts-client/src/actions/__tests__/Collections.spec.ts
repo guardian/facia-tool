@@ -9,11 +9,11 @@ import {
   getCollectionsApiResponse,
   getCollectionsApiResponseWithoutStoriesVisible
 } from 'fixtures/collectionsEndpointResponse';
-import { actions as collectionActions } from 'shared/bundles/collectionsBundle';
+import { actions as collectionActions } from 'bundles/collectionsBundle';
 import {
   actions as externalArticleActions,
   actionNames as externalArticleActionNames
-} from 'shared/bundles/externalArticlesBundle';
+} from 'bundles/externalArticlesBundle';
 import {
   getCollections,
   getArticlesForCollections,
