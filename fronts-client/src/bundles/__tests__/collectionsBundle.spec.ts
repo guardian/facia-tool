@@ -2,7 +2,7 @@ import { selectors } from '../collectionsBundle';
 import {
   stateWithCollection,
   stateWithCollectionAndSupporting
-} from '../../shared/fixtures/shared';
+} from '../../fixtures/shared';
 
 describe('collectionsBundle', () => {
   describe('selectors', () => {

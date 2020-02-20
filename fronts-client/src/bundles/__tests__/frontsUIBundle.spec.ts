@@ -43,7 +43,7 @@ import { removeSupportingCard, removeGroupCard } from 'shared/actions/Cards';
 import { removeClipboardCard } from 'actions/Clipboard';
 import { State as GlobalState } from 'types/State';
 import { State as GlobalSharedState } from 'shared/types/State';
-import { initialState as initialSharedState } from 'shared/fixtures/shared';
+import { initialState as initialSharedState } from 'fixtures/shared';
 
 type State = ReturnType<typeof innerReducer>;
 

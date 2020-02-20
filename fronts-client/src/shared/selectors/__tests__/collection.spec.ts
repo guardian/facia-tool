@@ -2,7 +2,7 @@ import {
   selectArticlesInCollections,
   createSelectIsArticleInCollection
 } from '../collection';
-import { stateWithCollection } from '../../fixtures/shared';
+import { stateWithCollection } from '../../../fixtures/shared';
 
 describe('Collection selectors', () => {
   describe('selectArticlesInCollections', () => {

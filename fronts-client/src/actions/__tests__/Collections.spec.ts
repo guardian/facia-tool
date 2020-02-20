@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import set from 'lodash/fp/set';
 import configureStore from 'util/configureStore';
 import config from 'fixtures/config';
-import { stateWithCollection, capiArticle } from 'shared/fixtures/shared';
+import { stateWithCollection, capiArticle } from 'fixtures/shared';
 import {
   getCollectionsApiResponse,
   getCollectionsApiResponseWithoutStoriesVisible

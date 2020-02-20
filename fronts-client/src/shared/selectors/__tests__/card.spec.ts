@@ -1,5 +1,5 @@
 import { createSelectCardType } from '../card';
-import { stateWithSnaplinksAndArticles } from 'shared/fixtures/shared';
+import { stateWithSnaplinksAndArticles } from 'fixtures/shared';
 import cardTypes from 'constants/cardTypes';
 
 describe('Card selectors', () => {
