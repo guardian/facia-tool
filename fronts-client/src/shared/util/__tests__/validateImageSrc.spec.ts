@@ -10,7 +10,7 @@ import grid from '../grid';
 
 (global as any).Image = ImageMock;
 
-jest.mock('../../constants/url', () => ({
+jest.mock('constants/url', () => ({
   media: {
     imageCdnDomainExpr: new RegExp(`http://localhost`),
     imgIXDomainExpr: /http:\/\/imgix\//,

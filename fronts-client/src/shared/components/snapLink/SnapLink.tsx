@@ -26,7 +26,7 @@ import CardHeading from '../card/CardHeading';
 import CardContent from '../card/CardContent';
 import CardBody from '../card/CardBody';
 import CardMetaContent from '../card/CardMetaContent';
-import urls from 'shared/constants/url';
+import urls from 'constants/url';
 import CardHeadingContainer from '../card/CardHeadingContainer';
 import CardSettingsDisplay from '../card/CardSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
