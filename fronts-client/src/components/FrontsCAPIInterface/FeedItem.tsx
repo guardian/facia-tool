@@ -15,7 +15,7 @@ import {
   HoverOphanButton,
   HoverAddToClipboardButton
 } from 'shared/components/input/HoverActionButtons';
-import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
+import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import { insertCardWithCreate } from 'actions/Cards';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
@@ -29,7 +29,6 @@ import {
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import { media } from 'shared/util/mediaQueries';
 import { State } from 'types/State';
-import { selectSharedState } from 'shared/selectors/shared';
 import { liveBlogTones } from 'constants/fronts';
 import { hasMainVideo } from 'shared/util/externalArticle';
 import { VideoIcon } from 'shared/components/icons/Icons';
@@ -257,11 +256,10 @@ class FeedItem extends React.Component<ComponentProps> {
   };
 }
 
+const getState = (state: any) => state;
+
 const mapStateToProps = (state: State, { id }: ContainerProps) => ({
-  shouldObscureFeed: selectFeatureValue(
-    selectSharedState(state),
-    'obscure-feed'
-  ),
+  shouldObscureFeed: selectFeatureValue(getState(state), 'obscure-feed'),
   article: selectArticleAcrossResources(state, id)
 });
 

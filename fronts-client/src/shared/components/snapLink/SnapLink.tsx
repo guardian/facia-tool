@@ -34,7 +34,7 @@ import { DerivedArticle } from 'shared/types/Article';
 import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 import { theme } from 'constants/theme';
 import ArticleGraph from '../article/ArticleGraph';
-import { selectFeatureValue } from 'shared/redux/modules/featureSwitches/selectors';
+import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import PageViewDataWrapper from '../PageViewDataWrapper';
 import ImageAndGraphWrapper from '../image/ImageAndGraphWrapper';
 import { ThumbnailCutout } from '../image/Thumbnail';
@@ -225,11 +225,13 @@ const mapStateToProps = () => {
       ? props.selectSharedState(state)
       : selectSharedState(state);
     const article = selectArticle(sharedState, props.id);
+    const getState = (s: any) => s;
+
     return {
       card: selectCard(sharedState, props.id),
       article,
       featureFlagPageViewData: selectFeatureValue(
-        selectSharedState(state),
+        getState(state),
         'page-view-data-visualisation'
       )
     };
