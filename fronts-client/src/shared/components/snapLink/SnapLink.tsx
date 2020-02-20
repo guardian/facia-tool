@@ -26,7 +26,7 @@ import CardHeading from '../card/CardHeading';
 import CardContent from '../card/CardContent';
 import CardBody from '../card/CardBody';
 import CardMetaContent from '../card/CardMetaContent';
-import urls from 'constants/url';
+import url from 'constants/url';
 import CardHeadingContainer from '../card/CardHeadingContainer';
 import CardSettingsDisplay from '../card/CardSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
@@ -102,7 +102,7 @@ const SnapLink = ({
 
   const normaliseSnapUrl = (href: string) => {
     if (href && !/^https?:\/\//.test(href)) {
-      return 'https://' + urls.base.mainDomain + href;
+      return 'https://' + url.base.mainDomain + href;
     }
     return href;
   };

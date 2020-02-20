@@ -54,7 +54,7 @@ import { EditMode } from 'types/EditMode';
 import { selectEditMode, selectV2SubPath } from 'selectors/pathSelectors';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import InputLabel from 'shared/components/input/InputLabel';
-import urls from 'constants/urls';
+import url from 'constants/url';
 import { RichTextInput } from 'components/inputs/RichTextInput';
 
 interface ComponentProps extends ContainerProps {
@@ -661,7 +661,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <Row>
                 <Col>
                   <a
-                    href={urls.editionsCardBuilder}
+                    href={url.editionsCardBuilder}
                     target="_blank"
                     rel="noreferrer noopener"
                   >
