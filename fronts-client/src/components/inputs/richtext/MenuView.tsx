@@ -26,14 +26,14 @@ const MenuButton = styled.div`
   background: transparent;
   text-align: center;
   border: 1px solid black;
-  background-color: ${theme.shared.colors.whiteDark};
+  background-color: ${theme.colors.whiteDark};
   :hover {
-    background-color: ${theme.shared.colors.greyLight};
+    background-color: ${theme.colors.greyLight};
     cursor: pointer;
   }
   svg {
     height: 100%;
-    fill: ${theme.shared.colors.blackDark};
+    fill: ${theme.colors.blackDark};
   }
 `;
 

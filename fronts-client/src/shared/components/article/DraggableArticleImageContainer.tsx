@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
 import {
@@ -60,8 +60,8 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
       >
         <DraggingImageContainer ref={this.dragNode}>
           <img
-            width={theme.shared.thumbnailImage.width}
-            height={theme.shared.thumbnailImage.height}
+            width={theme.thumbnailImage.width}
+            height={theme.thumbnailImage.height}
             src={this.props.currentImageUrl}
           />
         </DraggingImageContainer>

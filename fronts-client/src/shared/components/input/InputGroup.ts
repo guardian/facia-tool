@@ -1,4 +1,4 @@
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 import InputContainer from './InputContainer';
 
 export default styled.div`

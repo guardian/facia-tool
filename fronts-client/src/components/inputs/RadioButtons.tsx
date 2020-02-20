@@ -18,7 +18,7 @@ const ControlIndicator = styled.div`
   left: 0;
   width: 18px;
   height: 18px;
-  background: ${theme.shared.base.colors.backgroundColorFocused};
+  background: ${theme.base.colors.backgroundColorFocused};
   /* Check mark */
   &:after {
     position: absolute;
@@ -42,7 +42,7 @@ const ControlRadio = styled.label<{ inline?: boolean; checked?: boolean }>`
 
   & > ${ControlIndicator} {
     border-radius: 50%;
-    border:  ${`solid 1px ${theme.shared.input.borderColor}`};
+    border:  ${`solid 1px ${theme.input.borderColor}`};
   }
 
   /* Checked state */
@@ -57,7 +57,7 @@ const ControlRadio = styled.label<{ inline?: boolean; checked?: boolean }>`
     ${Input}:disabled ~ ${ControlIndicator} {
       pointer-events: none;
       opacity: 0.6;
-      background: ${theme.shared.input.radioButtonBackgroundDisabled};
+      background: ${theme.input.radioButtonBackgroundDisabled};
     }
   }
 
@@ -77,17 +77,17 @@ const ControlRadio = styled.label<{ inline?: boolean; checked?: boolean }>`
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background-color: ${theme.shared.base.colors.highlightColor};
+      background-color: ${theme.base.colors.highlightColor};
     }
 
     ${Input}:hover:not(:checked) ~ ${ControlIndicator}:after {
-      background-color: ${theme.shared.base.colors.highlightColor};
+      background-color: ${theme.base.colors.highlightColor};
     }
   }
 
   /* Disabled circle colour */
   & ${Input}:disabled ~ ${ControlIndicator}:after {
-    background: ${theme.shared.colors.greyMedium};
+    background: ${theme.colors.greyMedium};
   }
 `;
 

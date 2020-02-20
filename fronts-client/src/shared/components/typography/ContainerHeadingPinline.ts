@@ -10,5 +10,5 @@ export default styled(ContainerHeading)<{ setBack?: boolean }>`
   border-bottom: ${({ theme, setBack }) =>
     setBack
       ? 'transparent'
-      : `1px solid ${theme.shared.base.colors.borderColor}`};
+      : `1px solid ${theme.base.colors.borderColor}`};
 `;

@@ -1,4 +1,4 @@
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 
 export default styled.a.attrs({
   target: '_blank',
@@ -7,6 +7,6 @@ export default styled.a.attrs({
   text-decoration: none;
 
   &:focus {
-    outline: 1px solid ${props => props.theme.shared.base.colors.focusColor};
+    outline: 1px solid ${props => props.theme.base.colors.focusColor};
   }
 `;

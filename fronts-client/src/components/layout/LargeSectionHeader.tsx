@@ -5,7 +5,7 @@ export default styled.div`
   padding: 10px;
   font-size: 28px;
   line-height: ${theme.layout.sectionHeaderHeight}px;
-  color: ${theme.shared.base.colors.textLight};
+  color: ${theme.base.colors.textLight};
   font-family: GHGuardianHeadline;
   font-weight: bold;
 `;

@@ -1,5 +1,5 @@
-import { styled } from 'constants/theme-shared';
-import { theme } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
+import { theme } from 'constants/theme';
 
 export default styled.div<{ status?: 'info' | 'error' }>`
   position: relative;

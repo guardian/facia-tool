@@ -142,7 +142,7 @@ const SlideshowRow = styled(Row)`
 
 const SlideshowLabel = styled.div`
   font-size: 12px;
-  color: ${theme.shared.colors.greyMedium};
+  color: ${theme.colors.greyMedium};
   margin-bottom: 12px;
 `;
 
@@ -162,7 +162,7 @@ const CollectionEditedError = styled.div`
 const FieldsContainerWrap = styled(Row)`
   flex-wrap: wrap;
   padding-bottom: 4px;
-  border-bottom: 1px solid ${theme.shared.base.colors.borderColor};
+  border-bottom: 1px solid ${theme.base.colors.borderColor};
 `;
 
 const SlideshowCol = styled(Col)`
@@ -240,10 +240,10 @@ const CardReplacementWarning = styled.div`
 
 const KickerSuggestionButton = styled(InputButton)`
   background: transparent;
-  border: 1px solid ${theme.shared.colors.greyMediumLight};
-  color: ${theme.shared.colors.blackDark};
+  border: 1px solid ${theme.colors.greyMediumLight};
+  color: ${theme.colors.blackDark};
   &:hover:enabled {
-    background-color: ${theme.shared.colors.greyLight};
+    background-color: ${theme.colors.greyLight};
   }
 `;
 

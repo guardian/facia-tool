@@ -1,4 +1,4 @@
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 import React from 'react';
 import { WrappedFieldMetaProps, WrappedFieldInputProps } from 'redux-form';
 
@@ -12,7 +12,7 @@ const CheckboxContainer = styled.div`
 `;
 
 const Label = styled(InputLabel)`
-  color: ${props => props.theme.shared.base.colors.textMuted};
+  color: ${props => props.theme.base.colors.textMuted};
   flex: 1;
   cursor: pointer;
 `;
@@ -33,9 +33,9 @@ const CheckboxLabel = styled.label`
   height: 24px;
   padding: 0;
   line-height: 24px;
-  border: ${`2px solid ${theme.shared.input.borderColor}`};
+  border: ${`2px solid ${theme.input.borderColor}`};
   border-radius: 24px;
-  background-color: ${theme.shared.input.checkboxColorInactive};
+  background-color: ${theme.input.checkboxColorInactive};
   transition: background-color 0.1s ease-in;
   :before {
     content: '';
@@ -43,12 +43,12 @@ const CheckboxLabel = styled.label`
     width: 24px;
     height: 24px;
     margin: 0px;
-    background: ${theme.shared.input.checkboxColorInactive};
+    background: ${theme.input.checkboxColorInactive};
     position: absolute;
     top: 0;
     bottom: 0;
     right: 16px;
-    border: ${`2px solid ${theme.shared.input.borderColor}`};
+    border: ${`2px solid ${theme.input.borderColor}`};
     border-radius: 24px;
     transition: all 0.1s ease-in 0s;
   }
@@ -57,10 +57,10 @@ const CheckboxLabel = styled.label`
 const Checkbox = styled.input`
   display: none;
   :checked + ${CheckboxLabel} {
-    background-color: ${theme.shared.input.checkboxColorActive};
+    background-color: ${theme.input.checkboxColorActive};
   }
   &:checked + ${CheckboxLabel}, &:checked + ${CheckboxLabel}:before {
-    border-color: ${theme.shared.input.checkboxColorActive};
+    border-color: ${theme.input.checkboxColorActive};
     right: 0px;
   }
 `;

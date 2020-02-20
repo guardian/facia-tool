@@ -20,7 +20,7 @@ const PaginationElement = styled.span`
 const Page = styled(PaginationElement)<{ isSelected: boolean }>`
   border-radius: 100%;
   ${({ isSelected, theme }) =>
-    isSelected && `background-color: ${theme.shared.colors.whiteDark}`}
+    isSelected && `background-color: ${theme.colors.whiteDark}`}
   cursor: pointer;
 `;
 

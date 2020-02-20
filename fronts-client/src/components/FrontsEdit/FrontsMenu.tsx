@@ -31,7 +31,7 @@ const FrontsMenuSubHeading = styled.div`
   font-size: 16px;
   line-height: 30px;
   font-weight: bold;
-  color: ${theme.shared.colors.orangeLight};
+  color: ${theme.colors.orangeLight};
   border-bottom: solid 1px ${theme.front.frontListBorder};
   max-height: 100%;
 `;
@@ -44,13 +44,13 @@ const ButtonOverlayContainer = styled.div`
 
 const FrontsMenuContainer = styled.div<{ isOpen?: boolean }>`
   z-index: 100;
-  background-color: ${theme.shared.colors.blackLight};
+  background-color: ${theme.colors.blackLight};
   position: fixed;
   height: 100%;
   width: 390px;
   top: 0;
   right: 0;
-  color: ${theme.shared.base.colors.textLight};
+  color: ${theme.base.colors.textLight};
   transition: transform 0.15s;
   transform: ${({ isOpen }) =>
     isOpen ? 'translate3d(0px, 0, 0)' : 'translate3d(390px, 0, 0)'};

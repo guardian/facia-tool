@@ -7,12 +7,12 @@ const SectionHeader = styled(LargeSectionHeader)<{
 }>`
   border-right: ${({ theme, includeBorder }) =>
     `solid 1px ${
-      includeBorder ? theme.shared.colors.whiteDark : 'transparent'
+      includeBorder ? theme.colors.whiteDark : 'transparent'
     }`};
   background-color: ${({ theme, greyHeader }) =>
     greyHeader
-      ? theme.shared.colors.greyVeryLight
-      : theme.shared.colors.blackDark};
+      ? theme.colors.greyVeryLight
+      : theme.colors.blackDark};
 `;
 
 const SectionHeaderUnpadded = styled(SectionHeader)`

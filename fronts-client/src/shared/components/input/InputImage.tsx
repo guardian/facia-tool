@@ -1,5 +1,5 @@
 import React from 'react';
-import { theme as globalTheme, styled } from 'constants/theme-shared';
+import { theme, styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import { WrappedFieldProps } from 'redux-form';
 import { events } from 'services/GA';
@@ -44,13 +44,13 @@ const ImageContainer = styled.div<{
 
 const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
   background-color: ${({ small, theme }) =>
-    small ? theme.shared.colors.greyLight : `#5e5e5e50`};
+    small ? theme.colors.greyLight : `#5e5e5e50`};
   &:hover,
   &:active,
   &:hover:enabled,
   &:active:enabled {
     background-color: ${({ small, theme }) =>
-      small ? theme.shared.colors.greyVeryLight : '#5e5e5e99'};
+      small ? theme.colors.greyVeryLight : '#5e5e5e99'};
   }
   width: 100%;
   height: 100%;
@@ -99,7 +99,7 @@ const ImageUrlInput = styled(InputBase)`
 const Label = styled(InputLabel)`
   cursor: pointer;
   display: inline-block;
-  color: ${props => props.theme.shared.base.colors.textLight};
+  color: ${props => props.theme.base.colors.textLight};
   padding-inline-start: 5px;
   vertical-align: super;
 `;
@@ -141,10 +141,10 @@ const InputImageContainer = styled(InputContainer)<{
 }>`
   position: relative;
   ${props => !props.small && `padding: 5px;`}
-  background-color: ${props => props.theme.shared.colors.greyLight};
+  background-color: ${props => props.theme.colors.greyLight};
   ${props =>
     props.isHovering &&
-    `box-shadow inset 0 -10px 0 ${globalTheme.base.colors.highlightColor}`};
+    `box-shadow inset 0 -10px 0 ${theme.base.colors.highlightColor}`};
 `;
 
 export interface InputImageContainerProps {

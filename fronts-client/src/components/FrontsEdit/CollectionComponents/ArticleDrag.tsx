@@ -28,7 +28,7 @@ const DragContainer = styled.div`
 `;
 
 const DragContent = styled.div`
-  background: ${theme.shared.colors.yellow};
+  background: ${theme.colors.yellow};
   position: absolute;
   display: inline-block;
   border-radius: 4px;
@@ -50,7 +50,7 @@ const DragContentIcon = styled.div`
   width: 28px;
   height: 28px;
   border-radius: 14px;
-  background: ${theme.shared.colors.yellow};
+  background: ${theme.colors.yellow};
   padding: 6px 8px;
 
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);

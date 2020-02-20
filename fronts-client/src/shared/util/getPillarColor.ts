@@ -9,7 +9,7 @@ const pillarColorMap = {
 } as { [pillar: string]: string };
 
 const noPillarColour = '#221133';
-const deadLiveBlogColour = theme.shared.colors.greyMediumDark;
+const deadLiveBlogColour = theme.colors.greyMediumDark;
 
 export const notLiveColour = '#ff7f0f';
 

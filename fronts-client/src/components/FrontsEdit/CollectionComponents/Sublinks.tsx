@@ -15,18 +15,18 @@ const SublinkCardBody = styled(CardBody)<{
 }>`
   display: flex;
   min-height: 30px;
-  border-top: 1px solid ${theme.shared.colors.greyLightPinkish};
+  border-top: 1px solid ${theme.colors.greyLightPinkish};
   background-color: ${({ dragHoverActive }) =>
     dragHoverActive
-      ? theme.shared.card.backgroundHover
-      : theme.shared.colors.white};
+      ? theme.card.backgroundHover
+      : theme.colors.white};
   flex-direction: row;
   span {
     font-size: 12px;
     font-weight: normal;
   }
   :hover {
-    background-color: ${theme.shared.card.backgroundHover};
+    background-color: ${theme.card.backgroundHover};
   }
 `;
 

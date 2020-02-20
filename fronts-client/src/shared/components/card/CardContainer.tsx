@@ -1,4 +1,4 @@
-import { styled, css } from 'constants/theme-shared';
+import { styled, css } from 'constants/theme';
 import { DefaultDropIndicator } from 'components/DropZone';
 
 export default styled.div<{ isDraggingArticleOver?: boolean }>`

@@ -120,13 +120,13 @@ const AppFonts = createGlobalStyle`
   }
 
   a {
-    color: ${theme.shared.base.colors.text}
+    color: ${theme.base.colors.text}
   }
 `;
 
 const AppContainer = styled.div`
-  background-color: ${theme.shared.base.colors.backgroundColorLight};
-  color: ${theme.shared.base.colors.textDark};
+  background-color: ${theme.base.colors.backgroundColorLight};
+  color: ${theme.base.colors.textDark};
   height: 100%;
   width: 100%;
 `;

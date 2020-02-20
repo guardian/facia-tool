@@ -36,9 +36,9 @@ class ArticleGraph extends React.Component<ArticleGraphComponentProps> {
           <Area
             type="monotone"
             dataKey="count"
-            stroke={theme.shared.colors.greenDark}
+            stroke={theme.colors.greenDark}
             strokeWidth="1.5"
-            fill={theme.shared.colors.greenLight}
+            fill={theme.colors.greenLight}
           />
         </AreaChart>
       </>

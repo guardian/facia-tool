@@ -17,7 +17,7 @@ import { styled, theme } from 'constants/theme';
 
 const StyledModal = styled(Modal)`
   font-size: 14px;
-  background: ${theme.shared.base.colors.backgroundColorLight};
+  background: ${theme.base.colors.backgroundColorLight};
   outline: none;
   padding: 20px;
   min-height: 200px;
@@ -28,7 +28,7 @@ const StyledModal = styled(Modal)`
 `;
 
 const Actions = styled.div`
-  border-top: solid 1px ${theme.shared.base.colors.borderColor};
+  border-top: solid 1px ${theme.base.colors.borderColor};
   margin-top: 1.5em;
   padding-top: 1.5em;
   text-align: right;

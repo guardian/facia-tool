@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled, theme as globalTheme, theme } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { ClearIcon } from 'shared/components/icons/Icons';
 import { SmallRoundButton } from 'util/sharedStyles/buttons';
 
@@ -26,7 +26,7 @@ const FilterItem = ({ children, onClear }: FilterItemProps) => (
   <SearchTermItem>
     {children}
     <SmallRoundButton onClick={() => onClear()} title="Clear search">
-      <ClearIcon fill={globalTheme.shared.base.colors.text} size={'l'} />
+      <ClearIcon fill={theme.base.colors.text} size={'l'} />
     </SmallRoundButton>
   </SearchTermItem>
 );

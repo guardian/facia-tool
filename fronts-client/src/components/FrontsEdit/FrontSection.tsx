@@ -45,7 +45,7 @@ const FrontsHeaderText = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: ${theme.shared.colors.blackDark};
+  color: ${theme.colors.blackDark};
 `;
 
 const FrontsHeaderInput = styled.input`
@@ -56,7 +56,7 @@ const FrontsHeaderInput = styled.input`
 `;
 
 const StageSelectButtons = styled.div`
-  color: ${theme.shared.colors.blackDark};
+  color: ${theme.colors.blackDark};
   padding: 0px 15px;
 `;
 

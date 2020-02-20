@@ -10,8 +10,8 @@ import {
 } from './ArticleDrag';
 
 const DragToAddSnapContainer = styled.div`
-  border-top: 1px solid ${theme.shared.card.border};
-  background-color: ${theme.shared.colors.whiteMedium};
+  border-top: 1px solid ${theme.card.border};
+  background-color: ${theme.colors.whiteMedium};
   font-size: 12px;
   font-weight: bold;
   line-height: 18px;
@@ -19,7 +19,7 @@ const DragToAddSnapContainer = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: ${theme.shared.colors.whiteDark};
+    background-color: ${theme.colors.whiteDark};
   }
   > a {
     text-decoration: none;

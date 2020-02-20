@@ -1,6 +1,5 @@
 import React from 'react';
-import { styled, theme as globalTheme, theme } from 'constants/theme';
-import { theme as styleTheme } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import CardHeading from '../card/CardHeading';
@@ -42,7 +41,7 @@ const ThumbnailPlaceholder = styled(BasePlaceholder)`
 `;
 
 const NotLiveContainer = styled(CardMetaHeading)`
-  color: ${theme.shared.base.colors.highlightColor};
+  color: ${theme.base.colors.highlightColor};
 `;
 
 const KickerHeading = styled(CardHeading)<{ pillarId?: string }>`
@@ -50,8 +49,8 @@ const KickerHeading = styled(CardHeading)<{ pillarId?: string }>`
   font-weight: bold;
   font-size: ${({ displaySize }) =>
     displaySize === 'small'
-      ? globalTheme.shared.card.fontSizeSmall
-      : globalTheme.shared.card.fontSizeDefault};
+      ? theme.card.fontSizeSmall
+      : theme.card.fontSizeDefault};
   ${media.large`font-size: 13px;`}
   color: ${({ pillarId }) => getPillarColor(pillarId, true)};
 `;
@@ -59,13 +58,13 @@ const KickerHeading = styled(CardHeading)<{ pillarId?: string }>`
 const ArticleBodyByline = styled.div`
   font-family: TS3TextSans;
   font-weight: bold;
-  font-size: ${styleTheme.shared.card.fontSizeDefault};
+  font-size: ${theme.card.fontSizeDefault};
   font-style: italic;
   padding-top: 5px;
 `;
 
 const FirstPublicationDate = styled(CardMetaContent)`
-  color: ${theme.shared.colors.green};
+  color: ${theme.colors.green};
 `;
 
 const Tone = styled.span`

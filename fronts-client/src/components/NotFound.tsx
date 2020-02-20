@@ -3,7 +3,7 @@ import { styled, theme } from 'constants/theme';
 
 const NotFoundContainer = styled.div`
   background-color: ${theme.capiInterface.feedItemText};
-  color: ${theme.shared.base.colors.textLight};
+  color: ${theme.base.colors.textLight};
   display: flex;
   font-size: 20px;
   padding: 5px;

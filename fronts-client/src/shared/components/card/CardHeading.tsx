@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 import { sanitizeHTML } from 'shared/util/sanitizeHTML';
 import { media } from 'shared/util/mediaQueries';
 import { theme } from 'constants/theme';
@@ -12,7 +12,7 @@ const Wrapper = styled.span<{
   font-family: TS3TextSans;
   font-weight: normal;
   padding: 2px 0 0;
-  font-size: ${theme.shared.card.fontSizeSmall};
+  font-size: ${theme.card.fontSizeSmall};
   ${media.large`font-size: 13px;`}
 `;
 

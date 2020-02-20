@@ -15,7 +15,7 @@ import {
 import { CardSets, Card as TCard } from 'shared/types/Collection';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
-import { theme as sharedTheme } from 'constants/theme-shared';
+import { theme } from 'constants/theme';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import ButtonRoundedWithLabel, {
   ButtonLabel
@@ -44,8 +44,7 @@ const OverviewToggleContainer = styled.div<{ active: boolean }>`
   font-weight: bold;
   padding-left: 10px;
   padding-top: 3px;
-  border-left: ${({ theme }) =>
-    `solid 1px  ${theme.shared.colors.greyVeryLight}`};
+  border-left: ${({ theme }) => `solid 1px  ${theme.colors.greyVeryLight}`};
   padding-top: 13px;
   padding-bottom: 10px;
   text-align: right;
@@ -70,7 +69,7 @@ const OverviewHeadingButton = styled(ButtonRoundedWithLabel)`
   }
   :hover {
     background-color: ${({ theme }) =>
-      theme.shared.base.colors.backgroundColorFocused};
+      theme.base.colors.backgroundColorFocused};
   }
   margin-right: 10px;
   margin-bottom: 10px;
@@ -138,7 +137,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
       <React.Fragment>
         <div
           style={{
-            background: sharedTheme.base.colors.backgroundColorLight,
+            background: theme.base.colors.backgroundColorLight,
             display: this.state.error ? 'block' : 'none',
             padding: '1em',
             position: 'absolute',
@@ -157,13 +156,13 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
               )}
               <OverviewHeadingButton onClick={this.handleOpenCollections}>
                 <ButtonLabel>Expand all&nbsp;</ButtonLabel>
-                <DownCaretIcon fill={sharedTheme.base.colors.text} />
+                <DownCaretIcon fill={theme.base.colors.text} />
               </OverviewHeadingButton>
               <OverviewHeadingButton onClick={this.handleCloseCollections}>
                 <ButtonLabel>Collapse all&nbsp;</ButtonLabel>
                 <DownCaretIcon
                   direction="up"
-                  fill={sharedTheme.base.colors.text}
+                  fill={theme.base.colors.text}
                 />
               </OverviewHeadingButton>
               {!overviewIsOpen && this.overviewToggle(overviewIsOpen)}

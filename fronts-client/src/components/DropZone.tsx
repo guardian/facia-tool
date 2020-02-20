@@ -35,7 +35,7 @@ export const DropIndicatorBar = styled.div<{
   margin-left: 5px;
   ${({ color, isActive }) =>
     `background-color: ${
-      isActive ? color : theme.shared.colors.greyVeryLight
+      isActive ? color : theme.colors.greyVeryLight
     } !important`}
 `;
 
@@ -55,7 +55,7 @@ export const DropIndicatorMessage = styled.div<{
   color: white;
   ${({ color, isActive }) =>
     `background-color: ${
-      isActive ? color : theme.shared.colors.greyVeryLight
+      isActive ? color : theme.colors.greyVeryLight
     } !important`}
 `;
 

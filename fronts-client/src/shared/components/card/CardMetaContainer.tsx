@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 
 import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
 import { media } from 'shared/util/mediaQueries';

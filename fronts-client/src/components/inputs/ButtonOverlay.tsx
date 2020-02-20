@@ -11,15 +11,15 @@ const ButtonWithShadow = styled(Button)<{ active?: boolean }>`
   height: 50px;
   padding: 5px;
   border-radius: 100%;
-  background-color: ${theme.shared.colors.blackDark};
+  background-color: ${theme.colors.blackDark};
   transition: transform 0.15s, background-color 0.15s;
   ${({ active }) =>
     active &&
     css`
       transform: rotate(45deg);
-      background-color: ${theme.shared.button.backgroundColorHighlight};
+      background-color: ${theme.button.backgroundColorHighlight};
       &:hover {
-        background-color: ${theme.shared.colors.orangeDark};
+        background-color: ${theme.colors.orangeDark};
       }
     `};
 `;

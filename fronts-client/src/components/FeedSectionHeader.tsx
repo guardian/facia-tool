@@ -39,14 +39,14 @@ const SectionHeaderContent = styled.div`
 `;
 
 const LogoContainer = styled.div`
-  background-color: ${theme.shared.colors.greyMediumDark};
+  background-color: ${theme.colors.greyMediumDark};
   position: relative;
   display: flex;
   vertical-align: top;
   cursor: pointer;
   z-index: 2;
   &:hover {
-    background-color: ${theme.shared.colors.greyMedium};
+    background-color: ${theme.colors.greyMedium};
   }
 `;
 
@@ -57,7 +57,7 @@ const LogoBackground = styled.div<{ includeBorder?: boolean }>`
   height: 60px;
   border-right: 1px solid
     ${({ includeBorder }) =>
-      includeBorder ? theme.shared.colors.greyMedium : 'transparent'};
+      includeBorder ? theme.colors.greyMedium : 'transparent'};
 `;
 
 const Logo = styled.img`
@@ -74,7 +74,7 @@ const FrontCount = styled.div`
   width: 100%;
   top: -6px;
   text-align: center;
-  color: ${theme.shared.colors.blackDark};
+  color: ${theme.colors.blackDark};
 `;
 
 const CloseButtonOuter = styled.div`

@@ -43,7 +43,7 @@ const Notification = styled.span`
 `;
 
 const selectGrey = ({ theme }: { theme: Theme }) =>
-  theme.shared.colors.greyMediumLight;
+  theme.colors.greyMediumLight;
 
 const VisibilityDividerEl = styled.div`
   display: flex;

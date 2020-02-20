@@ -14,7 +14,7 @@ import {
   createSelectEditorFrontsByPriority
 } from 'bundles/frontsUIBundle';
 import { FrontConfig } from 'types/FaciaApi';
-import { styled, theme as themeConstants } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { scrollToLeft } from 'util/scroll';
 import { frontsContainerId, createFrontId } from 'util/editUtils';
 
@@ -25,9 +25,7 @@ interface ComponentProps {
 
 const FrontTabList = styled.div<{ isDraggingOver?: boolean }>`
   background-color: ${({ isDraggingOver, theme }) =>
-    isDraggingOver
-      ? theme.shared.colors.greyMedium
-      : theme.shared.colors.greyMediumDark};
+    isDraggingOver ? theme.colors.greyMedium : theme.colors.greyMediumDark};
   position: absolute;
   height: 60px;
   line-height: 60px;
@@ -55,16 +53,14 @@ const FrontTab = styled.div<{ isDragging: boolean }>`
   overflow: hidden;
   text-overflow: ellipsis;
   background-color: ${({ isDragging }) =>
-    isDragging
-      ? themeConstants.shared.colors.blackDark
-      : themeConstants.shared.colors.greyMediumDark};
+    isDragging ? theme.colors.blackDark : theme.colors.greyMediumDark};
   & + & {
     box-shadow: -1px 0 0 0
       ${({ isDragging }) =>
-        isDragging ? 'transparent' : themeConstants.shared.colors.greyMedium};
+        isDragging ? 'transparent' : theme.colors.greyMedium};
   }
   &:hover {
-    background-color: ${themeConstants.shared.colors.greyMedium};
+    background-color: ${theme.colors.greyMedium};
   }
 `;
 

@@ -94,7 +94,7 @@ const PreviouslyCollectionToggle = styled(CollectionMetaContainer)`
   font-weight: normal;
   padding-top: 0.25em;
   justify-content: unset;
-  border-top: 1px solid ${theme.shared.colors.greyMediumLight};
+  border-top: 1px solid ${theme.colors.greyMediumLight};
 `;
 
 const PreviouslyGroupsWrapper = styled.div`
@@ -103,8 +103,8 @@ const PreviouslyGroupsWrapper = styled.div`
 `;
 
 const PreviouslyCollectionInfo = styled.div`
-  background: ${theme.shared.colors.greyVeryLight};
-  color: ${theme.shared.colors.blackDark};
+  background: ${theme.colors.greyVeryLight};
+  color: ${theme.colors.blackDark};
   padding: 4px 6px;
   font-size: 14px;
 `;
@@ -116,7 +116,7 @@ const LoadingImageBox = styled.div`
 const PreviouslyCircularCaret = styled(ButtonCircularCaret)`
   height: 15px;
   width: 15px;
-  background-color: ${theme.shared.colors.greyMediumLight};
+  background-color: ${theme.colors.greyMediumLight};
   margin-left: 6px;
   svg {
     height: 15px;
@@ -128,8 +128,8 @@ const OpenFormsWarningContainer = styled.div`
   position: absolute;
   top: 100%;
   left: 0;
-  border: 1px solid ${theme.shared.base.colors.brandColor};
-  background-color: ${theme.shared.base.colors.brandColorLight};
+  border: 1px solid ${theme.base.colors.brandColor};
+  background-color: ${theme.base.colors.brandColorLight};
   padding: 10px;
   font-family: TS3TextSans;
   font-weight: normal;

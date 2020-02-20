@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled, theme as globalTheme } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { connect } from 'react-redux';
 import sortBy from 'lodash/sortBy';
 import debounce from 'lodash/debounce';
@@ -95,7 +95,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
           !!element &&
           element.offsetTop +
             element.clientHeight -
-            globalTheme.layout.sectionHeaderHeight >
+            theme.layout.sectionHeaderHeight >
             scrollTop
       )
       .map(([id, element]) => [id, element!.offsetTop] as [string, number]);

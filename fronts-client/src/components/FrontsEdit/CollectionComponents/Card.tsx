@@ -62,7 +62,7 @@ const CardContainer = styled('div')<{
   border-top-color: ${({ size, pillarId, isLive, theme }) =>
     size !== 'small' && pillarId && isLive
       ? getPillarColor(pillarId, isLive)
-      : theme.shared.base.colors.borderColor};
+      : theme.base.colors.borderColor};
 `;
 
 interface ContainerProps {

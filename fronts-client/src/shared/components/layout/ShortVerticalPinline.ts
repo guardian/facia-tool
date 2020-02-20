@@ -1,6 +1,6 @@
 // @flow
 
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 
 export default styled.div`
   position: absolute;
@@ -8,5 +8,5 @@ export default styled.div`
   right: 0;
   height: 20px;
   border-right: ${({ theme }) =>
-    `1px solid ${theme.shared.base.colors.borderColor}`};
+    `1px solid ${theme.base.colors.borderColor}`};
 `;

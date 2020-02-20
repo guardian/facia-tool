@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 import ButtonCircular from './ButtonCircular';
 import { DownCaretIcon } from '../icons/Icons';
 import { theme } from 'constants/theme';
@@ -19,16 +19,16 @@ export const ButtonCircularWithTransition = styled(ButtonCircular)<{
   ${({ clear }) => clear && 'background-color: transparent'}
   ${({ highlight, clear }) =>
     highlight && !clear
-      ? `background-color: ${theme.shared.button.backgroundColorHighlight}`
+      ? `background-color: ${theme.button.backgroundColorHighlight}`
       : ``};
   ${({ clear }) =>
     clear &&
     `
-    & svg { fill: ${theme.shared.base.colors.text} }
+    & svg { fill: ${theme.base.colors.text} }
     &:hover {
       background-color: transparent;
       svg {
-        fill: ${theme.shared.base.colors.textMuted}
+        fill: ${theme.base.colors.textMuted}
       }
     }`}
 `;
@@ -100,7 +100,7 @@ export default ({
   >
     <CaretIcon
       small={small}
-      fill={clear ? undefined : theme.shared.colors.white}
+      fill={clear ? undefined : theme.colors.white}
     />
   </ButtonCircularWithTransition>
 );

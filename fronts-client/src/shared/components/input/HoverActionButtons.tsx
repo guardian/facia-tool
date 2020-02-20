@@ -15,16 +15,16 @@ import { theme } from 'constants/theme';
 const ActionButton = styled(ButtonCircular)<{ danger?: boolean }>`
   background: ${({ danger }) =>
     danger
-      ? theme.shared.button.backgroundColorHighlight
-      : theme.shared.button.backgroundColor};
-  color: ${theme.shared.button.color};
+      ? theme.button.backgroundColorHighlight
+      : theme.button.backgroundColor};
+  color: ${theme.button.color};
   margin: 0 2px 2px 2px;
   line-height: 1;
   &:hover:enabled {
     background: ${({ danger }) =>
       danger
-        ? theme.shared.button.backgroundColorHighlightFocused
-        : theme.shared.button.backgroundColorFocused};
+        ? theme.button.backgroundColorHighlightFocused
+        : theme.button.backgroundColorFocused};
   }
 `;
 

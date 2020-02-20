@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import upperFirst from 'lodash/upperFirst';
 
@@ -41,7 +41,7 @@ import { ThumbnailCutout } from '../image/Thumbnail';
 
 const SnapLinkBodyContainer = styled(CardBody)`
   justify-content: space-between;
-  border-top-color: ${theme.shared.base.colors.borderColor};
+  border-top-color: ${theme.base.colors.borderColor};
 `;
 
 const SnapLinkURL = styled.p`

@@ -1,4 +1,4 @@
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 
 export default styled.label<{
   size?: 'sm';
@@ -9,9 +9,9 @@ export default styled.label<{
   display: ${props => (props.hidden ? 'none' : 'inline-block')};
   font-size: ${props =>
     props.size === 'sm'
-      ? props.theme.shared.label.fontSizeSmall
-      : props.theme.shared.label.fontSize};
-  line-height: ${props => props.theme.shared.label.lineHeight};
+      ? props.theme.label.fontSizeSmall
+      : props.theme.label.fontSize};
+  line-height: ${props => props.theme.label.lineHeight};
   font-weight: bold;
   ${props => !props.active && `color:`};
 `;

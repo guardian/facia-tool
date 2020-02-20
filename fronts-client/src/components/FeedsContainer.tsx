@@ -74,7 +74,7 @@ const RefreshButton = styled.button`
   appearance: none;
   border: none;
   background: transparent;
-  color: ${theme.shared.base.colors.text};
+  color: ${theme.base.colors.text};
   cursor: pointer;
   font-family: inherit;
   font-size: 13px;
@@ -82,11 +82,11 @@ const RefreshButton = styled.button`
   outline: none;
 
   &:hover {
-    color: ${theme.shared.base.colors.buttonFocused};
+    color: ${theme.base.colors.buttonFocused};
   }
 
   &:disabled {
-    color: ${theme.shared.base.colors.textMuted};
+    color: ${theme.base.colors.textMuted};
   }
 `;
 
@@ -103,7 +103,7 @@ const ResultsContainer = styled.div`
 `;
 
 const ResultsHeadingContainer = styled.div`
-  border-top: 1px solid ${theme.shared.colors.greyVeryLight};
+  border-top: 1px solid ${theme.colors.greyVeryLight};
   align-items: baseline;
   display: flex;
   margin-bottom: 10px;

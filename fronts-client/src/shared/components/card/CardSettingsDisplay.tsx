@@ -10,7 +10,7 @@ const ArticleMetadataProperties = styled.div`
 `;
 
 const ArticleMetadataProperty = styled.div`
-  background-color: ${theme.shared.colors.whiteDark};
+  background-color: ${theme.colors.whiteDark};
   padding: 1px 4px;
   flex: 0 0 auto;
   margin: 0 2px 1px 0;

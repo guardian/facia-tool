@@ -1,4 +1,4 @@
-import { styled } from 'constants/theme-shared';
+import { styled } from 'constants/theme';
 import BasePlaceholder from './image/ImagePlaceholder';
 
 export default styled(BasePlaceholder)<{ width?: number }>`
