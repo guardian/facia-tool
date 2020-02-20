@@ -5,10 +5,10 @@ import {
   createSnap,
   createAtomSnap
 } from '../snap';
-import tagPageHtml from '../../fixtures/guardianTagPage';
+import tagPageHtml from '../../../fixtures/guardianTagPage';
 import fetchMock from 'fetch-mock';
-import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
-import { capiAtom } from 'shared/fixtures/capiAtom.js';
+import bbcSectionPage from 'fixtures/bbcSectionPage';
+import { capiAtom } from 'fixtures/capiAtom.js';
 import {
   CAPIInteractiveAtomResponse,
   CAPIAtomInteractive

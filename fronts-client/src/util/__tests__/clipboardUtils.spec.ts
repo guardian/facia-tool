@@ -1,4 +1,4 @@
-import { liveArticle, articleWithSupporting } from 'shared/fixtures/shared';
+import { liveArticle, articleWithSupporting } from 'fixtures/shared';
 import { stateWithClipboard } from 'fixtures/clipboard';
 import { normaliseClipboard, denormaliseClipboard } from '../clipboardUtils';
 

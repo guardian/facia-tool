@@ -1,6 +1,6 @@
 import configureStore from 'redux-mock-store';
 import thunk from 'redux-thunk';
-import { stateWithCollection } from 'shared/fixtures/shared';
+import { stateWithCollection } from 'fixtures/shared';
 import config from 'fixtures/config';
 import {
   persistCollectionOnEdit,

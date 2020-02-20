@@ -7,7 +7,7 @@ import {
   liveSelectors,
   previewSelectors
 } from '../capiFeedBundle';
-import { capiArticle } from 'shared/fixtures/shared';
+import { capiArticle } from 'fixtures/shared';
 
 const resources = [
   {

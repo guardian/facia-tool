@@ -2,7 +2,7 @@ import {
   stateWithCollection,
   capiArticle,
   capiArticleWithVideo
-} from 'shared/fixtures/shared';
+} from 'fixtures/shared';
 
 const state = {
   ...stateWithCollection,

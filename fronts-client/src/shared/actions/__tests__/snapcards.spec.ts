@@ -9,10 +9,10 @@ import {
   marketingParamsWhiteList
 } from '../Cards';
 import initialState from 'fixtures/initialState';
-import { capiArticle } from '../../fixtures/shared';
+import { capiArticle } from '../../../fixtures/shared';
 import { createSnap, createLatestSnap } from 'shared/util/snap';
-import guardianTagPage from 'shared/fixtures/guardianTagPage';
-import bbcSectionPage from 'shared/fixtures/bbcSectionPage';
+import guardianTagPage from 'fixtures/guardianTagPage';
+import bbcSectionPage from 'fixtures/bbcSectionPage';
 import { RefDrop } from 'util/collectionUtils';
 import configureStore from 'util/configureStore';
 import { selectOptionsModalOptions } from 'selectors/modalSelectors';

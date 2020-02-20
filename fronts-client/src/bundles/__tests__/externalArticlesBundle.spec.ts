@@ -1,6 +1,6 @@
 import set from 'lodash/fp/set';
 import { selectIsExternalArticleStale } from '../externalArticlesBundle';
-import { initialState } from '../../shared/fixtures/shared';
+import { initialState } from '../../fixtures/shared';
 import { capiArticleWithElementsThumbnail } from 'fixtures/capiArticle';
 
 const exampleArticleWithoutLastModified = capiArticleWithElementsThumbnail;

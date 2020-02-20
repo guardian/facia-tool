@@ -7,7 +7,7 @@ import {
   stateWithCollection,
   stateWithCollectionAndSupporting,
   normalisedCollectonWithPreviously
-} from 'shared/fixtures/shared';
+} from 'fixtures/shared';
 import {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection,
