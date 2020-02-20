@@ -32,7 +32,7 @@ const FrontCollectionsContainer = styled.div`
   overflow-y: scroll;
   max-height: calc(100% - 43px);
   padding-top: 1px;
-  padding-bottom: ${({ theme }) => theme.front.paddingForAddFrontButton}px;
+  padding-bottom: ${theme.front.paddingForAddFrontButton}px;
 `;
 
 const isDropFromCAPIFeed = (e: React.DragEvent) =>

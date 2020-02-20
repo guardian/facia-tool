@@ -8,7 +8,5 @@ export default styled(ContainerHeading)<{ setBack?: boolean }>`
   vertical-align: middle;
   justify-content: space-between;
   border-bottom: ${({ theme, setBack }) =>
-    setBack
-      ? 'transparent'
-      : `1px solid ${theme.base.colors.borderColor}`};
+    setBack ? 'transparent' : `1px solid ${theme.base.colors.borderColor}`};
 `;

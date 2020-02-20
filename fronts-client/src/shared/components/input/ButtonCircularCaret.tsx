@@ -98,9 +98,6 @@ export default ({
       ...props.style
     }}
   >
-    <CaretIcon
-      small={small}
-      fill={clear ? undefined : theme.colors.white}
-    />
+    <CaretIcon small={small} fill={clear ? undefined : theme.colors.white} />
   </ButtonCircularWithTransition>
 );

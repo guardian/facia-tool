@@ -83,9 +83,7 @@ const ListItem = styled.li<{ isActive?: boolean; isStarred?: boolean }>`
       }
       :hover svg .fill {
         fill: ${({ isStarred }) =>
-          isStarred
-            ? theme.colors.orangeLight
-            : theme.front.frontListButton};
+          isStarred ? theme.colors.orangeLight : theme.front.frontListButton};
       }
     `};
 `;

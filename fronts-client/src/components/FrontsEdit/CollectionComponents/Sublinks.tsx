@@ -17,9 +17,7 @@ const SublinkCardBody = styled(CardBody)<{
   min-height: 30px;
   border-top: 1px solid ${theme.colors.greyLightPinkish};
   background-color: ${({ dragHoverActive }) =>
-    dragHoverActive
-      ? theme.card.backgroundHover
-      : theme.colors.white};
+    dragHoverActive ? theme.card.backgroundHover : theme.colors.white};
   flex-direction: row;
   span {
     font-size: 12px;

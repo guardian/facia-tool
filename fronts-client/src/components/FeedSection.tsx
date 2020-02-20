@@ -24,9 +24,7 @@ const FeedWrapper = styled.div<{ isClipboardOpen: boolean }>`
   width: 409px;
   ${media.large`width: 335px;`}
   border-right: ${({ isClipboardOpen }) =>
-    isClipboardOpen
-      ? `solid 1px ${theme.base.colors.borderColor}`
-      : null};
+    isClipboardOpen ? `solid 1px ${theme.base.colors.borderColor}` : null};
 `;
 
 export default ({ isClipboardOpen }: Props) => (

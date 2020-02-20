@@ -43,13 +43,13 @@ const ImageContainer = styled.div<{
 `;
 
 const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
-  background-color: ${({ small, theme }) =>
+  background-color: ${({ small }) =>
     small ? theme.colors.greyLight : `#5e5e5e50`};
   &:hover,
   &:active,
   &:hover:enabled,
   &:active:enabled {
-    background-color: ${({ small, theme }) =>
+    background-color: ${({ small }) =>
       small ? theme.colors.greyVeryLight : '#5e5e5e99'};
   }
   width: 100%;

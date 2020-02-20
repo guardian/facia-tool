@@ -53,8 +53,7 @@ const Container = styled.div<{ isSelected: boolean }>`
   transition: background-color 0.3s;
 
   ${props =>
-    props.isSelected &&
-    `background-color: ${props.theme.colors.whiteDark}`}
+    props.isSelected && `background-color: ${props.theme.colors.whiteDark}`}
 
   &:hover {
     background-color: ${theme.colors.whiteDark};

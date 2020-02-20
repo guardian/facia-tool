@@ -44,7 +44,7 @@ const OverviewToggleContainer = styled.div<{ active: boolean }>`
   font-weight: bold;
   padding-left: 10px;
   padding-top: 3px;
-  border-left: ${({ theme }) => `solid 1px  ${theme.colors.greyVeryLight}`};
+  border-left: ${`solid 1px  ${theme.colors.greyVeryLight}`};
   padding-top: 13px;
   padding-bottom: 10px;
   text-align: right;
@@ -68,8 +68,7 @@ const OverviewHeadingButton = styled(ButtonRoundedWithLabel)`
     vertical-align: middle;
   }
   :hover {
-    background-color: ${({ theme }) =>
-      theme.base.colors.backgroundColorFocused};
+    background-color: ${theme.base.colors.backgroundColorFocused};
   }
   margin-right: 10px;
   margin-bottom: 10px;
@@ -160,10 +159,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
               </OverviewHeadingButton>
               <OverviewHeadingButton onClick={this.handleCloseCollections}>
                 <ButtonLabel>Collapse all&nbsp;</ButtonLabel>
-                <DownCaretIcon
-                  direction="up"
-                  fill={theme.base.colors.text}
-                />
+                <DownCaretIcon direction="up" fill={theme.base.colors.text} />
               </OverviewHeadingButton>
               {!overviewIsOpen && this.overviewToggle(overviewIsOpen)}
             </SectionContentMetaContainer>
