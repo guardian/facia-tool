@@ -13,7 +13,7 @@ export default styled.div<{
   display: flex;
   min-height: ${({ size }) => (size === 'small' ? '25px' : '50px')};
   cursor: pointer;
-  background-color: ${theme.shared.base.colors.backgroundColorLight};
+  background-color: ${theme.base.colors.backgroundColorLight};
   opacity: ${({ fade }) => (fade ? 0.5 : 1)};
 
   ${HoverActionsAreaOverlay} {
@@ -24,7 +24,7 @@ export default styled.div<{
   }
 
   :hover {
-    background-color: ${theme.shared.base.colors.backgroundColorFocused};
+    background-color: ${theme.base.colors.backgroundColorFocused};
 
     ${HoverActionsAreaOverlay} {
       transition-delay: 0s;

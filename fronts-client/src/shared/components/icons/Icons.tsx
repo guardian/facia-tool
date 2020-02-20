@@ -1,5 +1,5 @@
 import React from 'react';
-import { theme } from 'shared/constants/theme';
+import { theme } from 'constants/theme';
 
 interface IconProps {
   fill?: string;

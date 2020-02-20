@@ -54,7 +54,7 @@ import { EditMode } from 'types/EditMode';
 import { selectEditMode, selectV2SubPath } from 'selectors/pathSelectors';
 import { ValidationResponse } from 'shared/util/validateImageSrc';
 import InputLabel from 'shared/components/input/InputLabel';
-import urls from 'constants/urls';
+import url from 'constants/url';
 import { RichTextInput } from 'components/inputs/RichTextInput';
 
 interface ComponentProps extends ContainerProps {
@@ -142,7 +142,7 @@ const SlideshowRow = styled(Row)`
 
 const SlideshowLabel = styled.div`
   font-size: 12px;
-  color: ${theme.shared.colors.greyMedium};
+  color: ${theme.colors.greyMedium};
   margin-bottom: 12px;
 `;
 
@@ -162,7 +162,7 @@ const CollectionEditedError = styled.div`
 const FieldsContainerWrap = styled(Row)`
   flex-wrap: wrap;
   padding-bottom: 4px;
-  border-bottom: 1px solid ${theme.shared.base.colors.borderColor};
+  border-bottom: 1px solid ${theme.base.colors.borderColor};
 `;
 
 const SlideshowCol = styled(Col)`
@@ -240,10 +240,10 @@ const CardReplacementWarning = styled.div`
 
 const KickerSuggestionButton = styled(InputButton)`
   background: transparent;
-  border: 1px solid ${theme.shared.colors.greyMediumLight};
-  color: ${theme.shared.colors.blackDark};
+  border: 1px solid ${theme.colors.greyMediumLight};
+  color: ${theme.colors.blackDark};
   &:hover:enabled {
-    background-color: ${theme.shared.colors.greyLight};
+    background-color: ${theme.colors.greyLight};
   }
 `;
 
@@ -661,7 +661,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               <Row>
                 <Col>
                   <a
-                    href={urls.editionsCardBuilder}
+                    href={url.editionsCardBuilder}
                     target="_blank"
                     rel="noreferrer noopener"
                   >

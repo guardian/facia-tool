@@ -1,5 +1,5 @@
 import capiQuery from './capiQuery';
-import urls from 'constants/urls';
+import url from 'constants/url';
 
-export const liveCapi = capiQuery(urls.capiLiveUrl);
-export const previewCapi = capiQuery(urls.capiPreviewUrl);
+export const liveCapi = capiQuery(url.capiLiveUrl);
+export const previewCapi = capiQuery(url.capiPreviewUrl);

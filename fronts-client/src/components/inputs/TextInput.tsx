@@ -5,18 +5,17 @@ import {
   ClearIcon
 } from 'shared/components/icons/Icons';
 import { SmallRoundButton } from 'util/sharedStyles/buttons';
-import { theme as globalTheme } from 'shared/constants/theme';
 
 const InputWrapper = styled.div`
   position: relative;
   width: ${({ width }: { width?: number }) => width || 'auto'};
   display: flex;
-  border: ${`solid 1px ${theme.shared.input.borderColor}`};
-  background: ${theme.shared.input.backgroundColor};
+  border: ${`solid 1px ${theme.input.borderColor}`};
+  background: ${theme.input.backgroundColor};
 `;
 
 const Input = styled.input`
-  background: ${theme.shared.input.backgroundColor};
+  background: ${theme.input.backgroundColor};
   border: none;
   width: 100%;
   height: 50px;
@@ -33,11 +32,11 @@ const Input = styled.input`
 `;
 
 const SmallRoundButtonOrange = styled(SmallRoundButton)`
-  background-color: ${theme.shared.button.backgroundColorHighlight};
+  background-color: ${theme.button.backgroundColorHighlight};
   margin-right: 4px;
   padding: 4px;
   :hover {
-    background-color: ${theme.shared.button.backgroundColorHighlightFocused};
+    background-color: ${theme.button.backgroundColorHighlightFocused};
   }
 `;
 
@@ -82,7 +81,7 @@ const TextInput = ({
       )}
       {onDisplaySearchFilters && (
         <SearchButtonIcon>
-          <SearchIcon size={'fill'} fill={globalTheme.colors.blackLight} />
+          <SearchIcon size={'fill'} fill={theme.colors.blackLight} />
         </SearchButtonIcon>
       )}
     </ButtonsContainer>

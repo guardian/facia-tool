@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme';
 import distanceFromNow from 'date-fns/distance_in_words_to_now';
 import upperFirst from 'lodash/upperFirst';
 import { oc } from 'ts-optchain';
@@ -75,10 +75,10 @@ interface CollectionState {
 const CollectionContainer = styled(ContentContainer)<{
   hasMultipleFrontsOpen?: boolean;
 }>`
-  background-color: ${props => props.theme.shared.collection.background};
+  background-color: ${props => props.theme.collection.background};
 
   &:focus {
-    border: 1px solid ${props => props.theme.shared.base.colors.focusColor};
+    border: 1px solid ${props => props.theme.base.colors.focusColor};
     border-top: none;
     outline: none;
   }
@@ -111,10 +111,10 @@ const CollectionDisabledTheme = styled.div`
 const LockedCollectionFlag = styled.span`
   font-family: GHGuardianHeadline;
   font-size: 22px;
-  color: ${theme.shared.base.colors.text};
+  color: ${theme.base.colors.text};
   height: 40px;
   line-height: 40px;
-  border-bottom: 1px solid ${theme.shared.base.colors.borderColor};
+  border-bottom: 1px solid ${theme.base.colors.borderColor};
 `;
 
 const CollectionMetaBase = styled.span`
@@ -133,15 +133,15 @@ const ItemCountMeta = CollectionMetaBase;
 const CollectionHeadingSticky = styled.div`
   position: sticky;
   top: 0;
-  background-color: ${theme.shared.collection.background};
-  box-shadow: 0 -1px 0 ${theme.shared.base.colors.text};
+  background-color: ${theme.collection.background};
+  box-shadow: 0 -1px 0 ${theme.base.colors.text};
   z-index: 20;
   margin: 0 -${contentContainerMargin};
   padding: 0 ${contentContainerMargin};
 `;
 
 const CollectionHeadingInner = styled(ContainerHeadingPinline)`
-  border-bottom: 1px solid ${theme.shared.base.colors.borderColor};
+  border-bottom: 1px solid ${theme.base.colors.borderColor};
 `;
 
 const CollectionHeadlineWithConfigContainer = styled.div`
@@ -156,7 +156,7 @@ const CollectionHeadingText = styled.div<{ isLoading: boolean }>`
   ${({ isLoading }) =>
     isLoading &&
     css`
-      color: ${theme.shared.base.colors.textMuted};
+      color: ${theme.base.colors.textMuted};
     `} white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -170,7 +170,7 @@ const CollectionToggleContainer = styled.div`
   z-index: 2;
   :hover {
     ${ButtonCircularWithTransition} {
-      background-color: ${theme.shared.button.backgroundColorFocused};
+      background-color: ${theme.button.backgroundColorFocused};
     }
   }
 `;
@@ -179,7 +179,7 @@ const CollectionConfigContainer = styled.div`
   display: inline-block;
   font-family: GHGuardianHeadline;
   font-size: 15px;
-  color: ${theme.shared.base.colors.text};
+  color: ${theme.base.colors.text};
   white-space: nowrap;
   margin-left: 3px;
   vertical-align: bottom;
@@ -192,7 +192,7 @@ const CollectionConfigText = styled.div`
 `;
 
 const CollectionConfigTextPipe = styled.span`
-  color: ${theme.shared.base.colors.borderColor};
+  color: ${theme.base.colors.borderColor};
 `;
 
 const CollectionShortVerticalPinline = styled(ShortVerticalPinline)`

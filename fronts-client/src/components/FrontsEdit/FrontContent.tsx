@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled, theme as globalTheme } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { connect } from 'react-redux';
 import sortBy from 'lodash/sortBy';
 import debounce from 'lodash/debounce';
@@ -32,7 +32,7 @@ const FrontCollectionsContainer = styled.div`
   overflow-y: scroll;
   max-height: calc(100% - 43px);
   padding-top: 1px;
-  padding-bottom: ${({ theme }) => theme.front.paddingForAddFrontButton}px;
+  padding-bottom: ${theme.front.paddingForAddFrontButton}px;
 `;
 
 const isDropFromCAPIFeed = (e: React.DragEvent) =>
@@ -95,7 +95,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
           !!element &&
           element.offsetTop +
             element.clientHeight -
-            globalTheme.layout.sectionHeaderHeight >
+            theme.layout.sectionHeaderHeight >
             scrollTop
       )
       .map(([id, element]) => [id, element!.offsetTop] as [string, number]);

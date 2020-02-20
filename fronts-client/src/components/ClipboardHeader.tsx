@@ -25,18 +25,18 @@ const StyledDragIntentContainer = styled(DragIntentContainer)`
 const Header = styled.div<{
   isOpen: boolean;
 }>`
-  background-color: ${theme.shared.collection.background};
+  background-color: ${theme.collection.background};
   align-items: center;
   justify-content: space-between;
   border-right: none;
-  border: ${`1px solid ${theme.shared.base.colors.borderColor}`};
+  border: ${`1px solid ${theme.base.colors.borderColor}`};
   border-right: none;
   display: flex;
   padding: 10px;
   height: 52px;
   margin-left: 8px;
   box-shadow: ${({ isOpen }) =>
-    `2px 0 0 -1px ${isOpen ? theme.shared.collection.background : 'none'}`};
+    `2px 0 0 -1px ${isOpen ? theme.collection.background : 'none'}`};
 `;
 
 const ClipboardTitle = styled.label`

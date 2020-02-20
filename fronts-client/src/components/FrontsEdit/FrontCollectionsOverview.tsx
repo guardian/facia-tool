@@ -29,7 +29,7 @@ interface ContainerProps {
 
 const Container = styled(ContentContainer)<ContainerProps>`
   border: ${({ isClosed }) =>
-    isClosed ? `1px solid ${theme.shared.base.colors.borderColor}` : 'none'};
+    isClosed ? `1px solid ${theme.base.colors.borderColor}` : 'none'};
   border-top: none;
   display: flex;
   flex-direction: column;

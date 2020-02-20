@@ -1,4 +1,4 @@
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme';
 import { theme } from 'constants/theme';
 
 export default styled.button`
@@ -7,7 +7,7 @@ export default styled.button`
   font-weight: bold;
   font-size: 12px;
   padding: 0 6px 0 8px;
-  border: ${`solid 1px ${theme.shared.colors.greyMediumLight}`};
+  border: ${`solid 1px ${theme.colors.greyMediumLight}`};
   border-radius: 20px;
   :focus {
     outline: none;
@@ -16,7 +16,7 @@ export default styled.button`
     vertical-align: middle;
   }
   :hover:enabled {
-    background-color: ${theme.shared.base.colors.backgroundColorFocused};
+    background-color: ${theme.base.colors.backgroundColorFocused};
   }
   :disabled,
   :disabled:hover {

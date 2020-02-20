@@ -16,5 +16,10 @@ export default {
     imageCdnDomain: '.guim.co.uk',
     staticImageCdnDomain: 'https://static.guim.co.uk/',
     imageCdnDomainExpr: /^https:\/\/(.*)\.guim\.co\.uk\//
-  }
+  },
+  capiLiveUrl: '/api/live',
+  capiPreviewUrl: '/api/preview',
+  manageEditions: '/manage-editions/',
+  appRoot: 'v2',
+  editionsCardBuilder: 'https://editions-card-builder.gutools.co.uk'
 };

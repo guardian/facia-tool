@@ -8,7 +8,7 @@ const SectionHeader = styled(SectionHeaderUnpadded)`
 `;
 
 const LogoTypeContainer = styled(Link)`
-  background-color: ${theme.shared.colors.blackDark};
+  background-color: ${theme.colors.blackDark};
   display: inline-block;
   text-align: center;
   height: 60px;

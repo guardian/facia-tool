@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import upperFirst from 'lodash/upperFirst';
 
@@ -26,7 +26,7 @@ import CardHeading from '../card/CardHeading';
 import CardContent from '../card/CardContent';
 import CardBody from '../card/CardBody';
 import CardMetaContent from '../card/CardMetaContent';
-import urls from 'shared/constants/url';
+import url from 'constants/url';
 import CardHeadingContainer from '../card/CardHeadingContainer';
 import CardSettingsDisplay from '../card/CardSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
@@ -41,7 +41,7 @@ import { ThumbnailCutout } from '../image/Thumbnail';
 
 const SnapLinkBodyContainer = styled(CardBody)`
   justify-content: space-between;
-  border-top-color: ${theme.shared.base.colors.borderColor};
+  border-top-color: ${theme.base.colors.borderColor};
 `;
 
 const SnapLinkURL = styled.p`
@@ -102,7 +102,7 @@ const SnapLink = ({
 
   const normaliseSnapUrl = (href: string) => {
     if (href && !/^https?:\/\//.test(href)) {
-      return 'https://' + urls.base.mainDomain + href;
+      return 'https://' + url.base.mainDomain + href;
     }
     return href;
   };

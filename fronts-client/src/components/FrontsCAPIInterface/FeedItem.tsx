@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'types/Store';
-import { styled, theme as styleTheme, theme } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import startCase from 'lodash/startCase';
 
@@ -64,7 +64,7 @@ const Title = styled.h2`
   margin: 2px 0 0;
   vertical-align: top;
   font-family: TS3TextSans;
-  font-size: ${styleTheme.shared.card.fontSizeDefault};
+  font-size: ${theme.card.fontSizeDefault};
   ${media.large`font-size: 13px;`}
   font-weight: normal;
 `;
@@ -174,7 +174,7 @@ class FeedItem extends React.Component<ComponentProps> {
                     article.pillarId,
                     isLive(article),
                     article.frontsMeta.tone === liveBlogTones.dead
-                  ) || styleTheme.capiInterface.textLight
+                  ) || theme.capiInterface.textLight
               }}
             >
               {getArticleLabel(article)}

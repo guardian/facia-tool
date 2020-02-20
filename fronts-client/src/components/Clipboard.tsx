@@ -43,12 +43,12 @@ const ClipboardWrapper = styled.div.attrs({
 }>`
   width: ${({ clipboardHasOpenForms }) =>
     clipboardHasOpenForms ? theme.front.minWidth : 220}px;
-  background: ${theme.shared.collection.background};
-  border-top: 1px solid ${theme.shared.colors.greyLightPinkish};
+  background: ${theme.collection.background};
+  border-top: 1px solid ${theme.colors.greyLightPinkish};
   overflow-y: scroll;
   &:focus {
-    border: 1px solid ${theme.shared.base.colors.focusColor};
-    border-top: 1px solid ${theme.shared.base.colors.focusColor};
+    border: 1px solid ${theme.base.colors.focusColor};
+    border-top: 1px solid ${theme.base.colors.focusColor};
     outline: none;
   }
 `;

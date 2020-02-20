@@ -1,5 +1,5 @@
-import { styled } from 'shared/constants/theme';
-import { theme } from '../../constants/theme';
+import { styled } from 'constants/theme';
+import { theme } from '../../../constants/theme';
 
 type ButtonSizes = 's' | 'm' | 'l';
 type ButtonPriorities = 'primary' | 'default' | 'muted';
@@ -143,7 +143,7 @@ export default styled.button<ButtonProps>`
     cursor: pointer;
   }
   &:focus {
-    outline: 1px solid ${props => props.theme.shared.base.colors.focusColor};
+    outline: 1px solid ${props => props.theme.base.colors.focusColor};
   }
 
   :not(:first-child) {

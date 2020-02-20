@@ -1,4 +1,4 @@
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme';
 import CardMetaContent from './CardMetaContent';
 import { notLiveColour } from 'shared/util/getPillarColor';
 

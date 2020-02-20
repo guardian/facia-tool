@@ -37,8 +37,8 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
 const Container = styled.div<{ isSelected: boolean }>`
   align-items: center;
   appearance: none;
-  background-color: ${theme.shared.base.colors.backgroundColor};
-  border: solid 1px ${theme.shared.base.colors.borderColor};
+  background-color: ${theme.base.colors.backgroundColor};
+  border: solid 1px ${theme.base.colors.borderColor};
   border-radius: 1.25em;
   color: inherit;
   cursor: pointer;
@@ -53,11 +53,10 @@ const Container = styled.div<{ isSelected: boolean }>`
   transition: background-color 0.3s;
 
   ${props =>
-    props.isSelected &&
-    `background-color: ${props.theme.shared.colors.whiteDark}`}
+    props.isSelected && `background-color: ${props.theme.colors.whiteDark}`}
 
   &:hover {
-    background-color: ${theme.shared.colors.whiteDark};
+    background-color: ${theme.colors.whiteDark};
   }
 
   &:focus {
@@ -78,7 +77,7 @@ const TextContainerRight = styled.div`
 `;
 
 const Name = styled.span`
-  color: ${theme.shared.base.colors.text};
+  color: ${theme.base.colors.text};
   font-weight: bold;
   padding-right: 0.25em;
 `;
@@ -92,7 +91,7 @@ const StatusWarning = styled(ButtonDefault)`
   :not(:first-child) {
     margin-left: 5px;
   }
-  color: ${theme.shared.button.color};
+  color: ${theme.button.color};
   height: 20px;
   width: 20px;
   border-radius: 20px;

@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import noop from 'lodash/noop';
 
@@ -30,11 +30,11 @@ const ArticleBodyContainer = styled(CardBody)<{
   border-top-color: ${({ size, pillarId, isLive }) =>
     size === 'default' && pillarId && isLive
       ? getPillarColor(pillarId, isLive)
-      : theme.shared.base.colors.borderColor};
+      : theme.base.colors.borderColor};
 
   :hover {
     ${CardMetaHeading} {
-      color: ${theme.shared.base.colors.textMuted};
+      color: ${theme.base.colors.textMuted};
     }
   }
   height: 100%;

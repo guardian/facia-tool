@@ -5,7 +5,7 @@ const ContainerHeading = styled.div`
   font-family: GHGuardianHeadline;
   font-weight: bold;
   font-size: 22px;
-  color: ${theme.shared.base.colors.text};
+  color: ${theme.base.colors.text};
 `;
 
 export default ContainerHeading;

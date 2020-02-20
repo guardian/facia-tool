@@ -1,4 +1,4 @@
-import { styled } from 'shared/constants/theme';
+import { styled } from 'constants/theme';
 
 export default styled.div<{
   fade?: boolean;

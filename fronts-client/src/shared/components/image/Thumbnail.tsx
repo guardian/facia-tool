@@ -2,7 +2,7 @@ import { theme, styled } from 'constants/theme';
 
 const ThumbnailBase = styled.div`
   background-size: cover;
-  background-color: ${theme.shared.base.colors.backgroundColorFocused};
+  background-color: ${theme.base.colors.backgroundColorFocused};
 `;
 
 const ThumbnailSmall = styled(ThumbnailBase)<{
@@ -11,9 +11,9 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
   imageHide?: boolean;
 }>`
   position: relative;
-  width: ${theme.shared.thumbnailImage.width};
-  min-width: ${theme.shared.thumbnailImage.width};
-  height: ${theme.shared.thumbnailImage.height};
+  width: ${theme.thumbnailImage.width};
+  min-width: ${theme.thumbnailImage.width};
+  height: ${theme.thumbnailImage.height};
   color: white;
   font-size: 10px;
   font-weight: bold;

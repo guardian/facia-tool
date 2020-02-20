@@ -1,8 +1,8 @@
 import { priorities } from '../constants/priorities';
 import { matchPath } from 'react-router';
-import urls from 'constants/urls';
+import url from 'constants/url';
 
-export const base = `/${urls.appRoot}`;
+export const base = `/${url.appRoot}`;
 
 const editionsApi = (path: string) => `/editions-api${path}`;
 

@@ -12,8 +12,8 @@ const InputWrapper = styled.div`
   width: ${({ width }: { width?: number }) => width || 'auto'};
   display: flex;
   flex-direction: column;
-  border: ${`solid 1px ${theme.shared.input.borderColor}`};
-  background: ${theme.shared.input.backgroundColor};
+  border: ${`solid 1px ${theme.input.borderColor}`};
+  background: ${theme.input.backgroundColor};
   padding: 3px 5px;
   font-size: 14px;
   outline: none;

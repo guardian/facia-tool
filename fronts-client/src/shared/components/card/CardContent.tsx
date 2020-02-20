@@ -9,8 +9,8 @@ const CardContent = styled.div<{
   min-width: 0;
   font-size: ${({ textSize, theme }) =>
     textSize === 'small'
-      ? theme.shared.card.fontSizeSmall
-      : theme.shared.card.fontSizeDefault};
+      ? theme.card.fontSizeSmall
+      : theme.card.fontSizeDefault};
   flex-basis: 100%;
   hyphens: auto;
   word-break: break-word;

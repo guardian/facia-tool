@@ -1,5 +1,5 @@
 import GridUtil from 'grid-util-js';
-import urlConstants from '../constants/url';
+import urlConstants from '../../constants/url';
 
 class Grid {
   public instance = new GridUtil({
