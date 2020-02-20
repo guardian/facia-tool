@@ -16,15 +16,15 @@ import {
   ClearCards,
   MaybeAddFrontPublicationDate
 } from 'shared/types/Action';
-import { createCard } from 'shared/util/card';
-import { createSnap, createLatestSnap, createAtomSnap } from 'shared/util/snap';
+import { createCard } from 'util/card';
+import { createSnap, createLatestSnap, createAtomSnap } from 'util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
 import {
   isValidURL,
   isGuardianUrl,
   isCapiUrl,
   getAbsolutePath
-} from 'shared/util/url';
+} from 'util/url';
 import { MappableDropType } from 'util/collectionUtils';
 import { ExternalArticle } from 'shared/types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';

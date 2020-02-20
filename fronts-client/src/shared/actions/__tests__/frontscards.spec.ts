@@ -5,7 +5,7 @@ import { createArticleEntitiesFromDrop, cardsReceived } from '../Cards';
 import initialState from 'fixtures/initialState';
 import { capiArticle } from '../../../fixtures/shared';
 import { actionNames as externalArticleActionNames } from 'bundles/externalArticlesBundle';
-import { createCard } from 'shared/util/card';
+import { createCard } from 'util/card';
 import { RefDrop } from 'util/collectionUtils';
 
 jest.mock('uuid/v4', () => () => 'card1');

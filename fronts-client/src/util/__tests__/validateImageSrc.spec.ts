@@ -4,9 +4,9 @@ import {
   validateImageSrc,
   validateImageEvent,
   ValidationResponse
-} from '../validateImageSrc';
-import ImageMock from '../ImageMock';
-import grid from '../grid';
+} from 'util/validateImageSrc';
+import ImageMock from 'util/ImageMock';
+import grid from 'util/grid';
 
 (global as any).Image = ImageMock;
 

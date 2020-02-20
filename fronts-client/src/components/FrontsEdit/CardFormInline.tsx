@@ -19,7 +19,7 @@ import {
   selectArticleTag
 } from 'shared/selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
-import { defaultObject } from 'shared/util/selectorUtils';
+import { defaultObject } from 'util/selectorUtils';
 import { CardMeta, ArticleTag } from 'shared/types/Collection';
 import InputText from 'shared/components/input/InputText';
 import InputTextArea from 'shared/components/input/InputTextArea';
@@ -52,7 +52,7 @@ import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode, selectV2SubPath } from 'selectors/pathSelectors';
-import { ValidationResponse } from 'shared/util/validateImageSrc';
+import { ValidationResponse } from 'util/validateImageSrc';
 import InputLabel from 'shared/components/input/InputLabel';
 import url from 'constants/url';
 import { RichTextInput } from 'components/inputs/RichTextInput';

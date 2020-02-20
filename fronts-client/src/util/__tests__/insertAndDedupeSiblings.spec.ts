@@ -1,4 +1,4 @@
-import { insertAndDedupeSiblings } from '../insertAndDedupeSiblings';
+import { insertAndDedupeSiblings } from 'util/insertAndDedupeSiblings';
 
 const cardMap = {
   a: {

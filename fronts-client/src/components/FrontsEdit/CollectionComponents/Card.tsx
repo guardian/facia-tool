@@ -17,10 +17,7 @@ import {
   addImageToCard,
   addCardToClipboard
 } from 'actions/Cards';
-import {
-  validateImageEvent,
-  ValidationResponse
-} from 'shared/util/validateImageSrc';
+import { validateImageEvent, ValidationResponse } from 'util/validateImageSrc';
 import {
   cardImageCriteria,
   editionsCardImageCriteria,
@@ -41,7 +38,7 @@ import { selectEditMode } from 'selectors/pathSelectors';
 import { events } from 'services/GA';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { styled } from 'constants/theme';
-import { getPillarColor } from 'shared/util/getPillarColor';
+import { getPillarColor } from 'util/getPillarColor';
 import { isLive as isArticleLive } from 'util/CAPIUtils';
 
 export const createCardId = (id: string) => `collection-item-${id}`;

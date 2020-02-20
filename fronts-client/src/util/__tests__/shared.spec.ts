@@ -12,7 +12,7 @@ import {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection,
   createPreviouslyCardIds
-} from '../shared';
+} from 'util/shared';
 
 describe('Shared utilities', () => {
   describe('denormaliseCollection', () => {

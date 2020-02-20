@@ -1,5 +1,5 @@
 import { Action } from '../types/Action';
-import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
+import { insertAndDedupeSiblings } from '../../util/insertAndDedupeSiblings';
 import { State } from './sharedReducer';
 import {
   UPDATE_CARD_META,
@@ -9,7 +9,7 @@ import {
   INSERT_SUPPORTING_CARD,
   COPY_CARD_IMAGE_META
 } from 'shared/actions/Cards';
-import { cloneActiveImageMeta } from 'shared/util/card';
+import { cloneActiveImageMeta } from 'util/card';
 
 const cards = (state: State['cards'] = {}, action: Action) => {
   switch (action.type) {

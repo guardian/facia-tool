@@ -15,7 +15,7 @@ import {
 } from 'shared/selectors/shared';
 import { CardSets } from 'shared/types/Collection';
 import pandaFetch from 'services/pandaFetch';
-import { isValidURL } from 'shared/util/url';
+import { isValidURL } from 'util/url';
 
 const totalPeriodInHours = 1;
 const intervalInMinutes = 10;
