@@ -5,7 +5,7 @@ import { SingleDatePicker } from 'react-dates';
 import moment, { Moment } from 'moment';
 import { EditionsIssue } from 'types/Edition';
 import Issue from './Issue';
-import ButtonDefault from '../../shared/components/input/ButtonDefault';
+import ButtonDefault from '../inputs/ButtonDefault';
 import {
   fetchIssuesForDateRange,
   fetchIssueByDate,

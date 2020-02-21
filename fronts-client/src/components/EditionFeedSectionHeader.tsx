@@ -8,7 +8,7 @@ import { publishEditionIssue, check } from '../actions/Editions';
 import { styled } from '../constants/theme';
 import startCase from 'lodash/startCase';
 import EditModeVisibility from './util/EditModeVisibility';
-import Button from '../shared/components/input/ButtonDefault';
+import Button from './inputs/ButtonDefault';
 import { Link } from 'react-router-dom';
 import url from 'constants/url';
 import noop from 'lodash/noop';

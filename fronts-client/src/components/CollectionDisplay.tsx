@@ -11,32 +11,32 @@ import {
   Collection,
   CardSets,
   Collection as CollectionType
-} from '../types/Collection';
+} from '../shared/types/Collection';
 import DragIntentContainer from './DragIntentContainer';
 import ButtonCircularCaret, {
   ButtonCircularWithTransition
-} from './input/ButtonCircularCaret';
-import { State as SharedState } from '../types/State';
-import { State } from '../../types/State';
+} from './inputs/ButtonCircularCaret';
+import { State as SharedState } from '../shared/types/State';
+import { State } from '../types/State';
 
 import {
   selectSharedState,
   createSelectArticlesInCollection
-} from '../../selectors/shared';
-import { selectors as collectionSelectors } from '../../bundles/collectionsBundle';
-import FadeIn from '../../components/animation/FadeIn';
+} from '../selectors/shared';
+import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
+import FadeIn from './animation/FadeIn';
 import ContentContainer, {
   contentContainerMargin
 } from './layout/ContentContainer';
 import { css } from 'styled-components';
 import { events } from 'services/GA';
-import CollectionMetaContainer from '../../components/collection/CollectionMetaContainer';
+import CollectionMetaContainer from './collection/CollectionMetaContainer';
 import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
-import Button from 'shared/components/input/ButtonDefault';
-import { updateCollection as updateCollectionAction } from '../../actions/Collections';
-import { isMode } from '../../selectors/pathSelectors';
+import Button from 'components/inputs/ButtonDefault';
+import { updateCollection as updateCollectionAction } from '../actions/Collections';
+import { isMode } from '../selectors/pathSelectors';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
   `front-${frontId}-collection-${id}`;

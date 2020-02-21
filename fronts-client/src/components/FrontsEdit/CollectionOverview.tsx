@@ -9,8 +9,8 @@ import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 import { Collection, CardSets } from 'shared/types/Collection';
-import { createCollectionId } from 'shared/components/CollectionDisplay';
-import ButtonDefault from 'shared/components/input/ButtonCircular';
+import { createCollectionId } from 'components/CollectionDisplay';
+import ButtonDefault from 'components/inputs/ButtonCircular';
 import {
   createSelectCollection,
   selectSharedState,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled, css, theme } from 'constants/theme';
 
-import ButtonCircular from 'shared/components/input/ButtonCircular';
+import ButtonCircular from 'components/inputs/ButtonCircular';
 import { MoreIcon, StarIcon } from 'components/icons/Icons';
 import TextHighlighter from './util/TextHighlighter';
 

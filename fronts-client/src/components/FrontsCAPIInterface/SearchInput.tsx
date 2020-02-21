@@ -6,7 +6,7 @@ import CAPIFieldFilter from '../FrontsCAPIInterface/FieldFilter';
 import CAPIDateRangeInput from '../FrontsCAPIInterface/DateInput';
 import moment from 'moment';
 import FilterItem from './FilterItem';
-import ButtonDefault from 'shared/components/input/ButtonDefault';
+import ButtonDefault from 'components/inputs/ButtonDefault';
 
 interface StringArrSearchItems {
   tags: string[];

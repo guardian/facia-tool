@@ -21,7 +21,7 @@ import ClipboardLevel from './clipboard/ClipboardLevel';
 import CardLevel from './clipboard/CardLevel';
 import Card from './FrontsEdit/CollectionComponents/Card';
 import { styled, theme } from 'constants/theme';
-import DragIntentContainer from 'shared/components/DragIntentContainer';
+import DragIntentContainer from 'components/DragIntentContainer';
 import {
   setFocusState,
   resetFocusState,
@@ -31,7 +31,7 @@ import FocusWrapper from './FocusWrapper';
 import { bindActionCreators } from 'redux';
 import ButtonRoundedWithLabel, {
   ButtonLabel
-} from 'shared/components/input/ButtonRoundedWithLabel';
+} from 'components/inputs/ButtonRoundedWithLabel';
 import { clearClipboardWithPersist } from 'actions/Clipboard';
 import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 

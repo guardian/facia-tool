@@ -6,15 +6,15 @@ import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import startCase from 'lodash/startCase';
 
 import { selectArticleAcrossResources } from 'bundles/capiFeedBundle';
-import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
+import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { getPillarColor, notLiveColour } from 'util/getPillarColor';
-import { HoverActionsAreaOverlay } from 'shared/components/CollectionHoverItems';
-import { HoverActionsButtonWrapper } from 'shared/components/input/HoverActionButtonWrapper';
+import { HoverActionsAreaOverlay } from 'components/CollectionHoverItems';
+import { HoverActionsButtonWrapper } from 'components/inputs/HoverActionButtonWrapper';
 import {
   HoverViewButton,
   HoverOphanButton,
   HoverAddToClipboardButton
-} from 'shared/components/input/HoverActionButtons';
+} from 'components/inputs/HoverActionButtons';
 import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import { insertCardWithCreate } from 'actions/Cards';
 import noop from 'lodash/noop';

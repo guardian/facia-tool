@@ -5,7 +5,7 @@ import 'prosemirror-menu/style/menu.css';
 import { createEditorView } from './richtext/setup';
 import { MenuView } from './richtext/MenuView';
 import { WrappedFieldInputProps } from 'redux-form';
-import InputLabel from 'shared/components/input/InputLabel';
+import InputLabel from 'components/inputs/InputLabel';
 
 const InputWrapper = styled.div`
   position: relative;

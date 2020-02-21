@@ -1,5 +1,5 @@
 import React from 'react';
-import ButtonDefault from 'shared/components/input/ButtonDefault';
+import ButtonDefault from 'components/inputs/ButtonDefault';
 import { OptionsModalProps } from '../types/Modals';
 import { State } from 'types/State';
 import {

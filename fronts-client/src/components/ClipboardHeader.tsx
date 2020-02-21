@@ -8,8 +8,8 @@ import {
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { styled, theme } from 'constants/theme';
-import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
-import DragIntentContainer from 'shared/components/DragIntentContainer';
+import ButtonCircularCaret from 'components/inputs/ButtonCircularCaret';
+import DragIntentContainer from 'components/DragIntentContainer';
 
 interface ClipboardHeaderProps {
   isClipboardOpen: boolean;

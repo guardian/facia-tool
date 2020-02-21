@@ -3,7 +3,7 @@ import { styled, Theme } from 'constants/theme';
 import Collection from './CollectionComponents/Collection';
 import { AlsoOnDetail } from 'types/Collection';
 import { CardSets, Card as TCard } from 'shared/types/Collection';
-import GroupDisplayComponent from 'shared/components/GroupDisplay';
+import GroupDisplayComponent from 'components/GroupDisplay';
 import GroupLevel from 'components/clipboard/GroupLevel';
 import Card from './CollectionComponents/Card';
 import CardLevel from 'components/clipboard/CardLevel';

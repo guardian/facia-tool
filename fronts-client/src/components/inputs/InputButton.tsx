@@ -1,6 +1,6 @@
 import React from 'react';
 import { WrappedFieldProps } from 'redux-form';
-import Button from 'shared/components/input/ButtonDefault';
+import Button from 'components/inputs/ButtonDefault';
 
 type Props = {
   buttonText: string;

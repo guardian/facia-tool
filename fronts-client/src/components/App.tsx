@@ -37,7 +37,7 @@ import {
 } from 'routes/routes';
 import ManageView from './Editions/ManageView';
 import FeaturesView from './Features/FeaturesView';
-import { PlaceholderAnimation } from 'shared/components/BasePlaceholder';
+import { PlaceholderAnimation } from 'components/BasePlaceholder';
 import OptionsModal from './OptionsModal';
 
 // tslint:disable:no-unused-expression

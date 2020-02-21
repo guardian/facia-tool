@@ -1,7 +1,7 @@
 import React from 'react';
 import Modal from 'react-modal';
 import { styled } from 'constants/theme';
-import ButtonDefault from 'shared/components/input/ButtonDefault';
+import ButtonDefault from 'components/inputs/ButtonDefault';
 import { CloseIcon } from 'components/icons/Icons';
 
 interface ModalProps {

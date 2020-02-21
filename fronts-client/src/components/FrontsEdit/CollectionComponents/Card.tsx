@@ -11,7 +11,7 @@ import {
 } from 'selectors/shared';
 import cardTypes from 'constants/cardTypes';
 import { CardTypes, CardSizes, CardMeta } from 'shared/types/Collection';
-import SnapLink from 'shared/components/snapLink/SnapLink';
+import SnapLink from 'components/snapLink/SnapLink';
 import {
   copyCardImageMetaWithPersist,
   addImageToCard,

@@ -22,14 +22,14 @@ import { Dispatch } from 'types/Store';
 import debounce from 'lodash/debounce';
 import Pagination from './FrontsCAPIInterface/Pagination';
 import { IPagination } from 'lib/createAsyncResourceBundle';
-import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
+import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { DEFAULT_PARAMS } from 'services/faciaApi';
 import ScrollContainer from './ScrollContainer';
 import ClipboardHeader from 'components/ClipboardHeader';
 import { media } from 'util/mediaQueries';
-import ContainerHeading from 'shared/components/typography/ContainerHeading';
+import ContainerHeading from 'components/typography/ContainerHeading';
 import { ClearIcon } from 'components/icons/Icons';
-import Button from 'shared/components/input/ButtonDefault';
+import Button from 'components/inputs/ButtonDefault';
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
 import { feedArticlesPollInterval } from 'constants/polling';
 
