@@ -4,7 +4,7 @@ import FadeIn from 'components/animation/FadeIn';
 import {
   MoreIcon,
   MagnifyingGlassIcon as SearchIcon
-} from 'shared/components/icons/Icons';
+} from 'components/icons/Icons';
 
 import LargeSectionHeader from '../layout/LargeSectionHeader';
 import ButtonOverlay from '../inputs/ButtonOverlay';

@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'constants/theme';
 import ButtonCircular from './ButtonCircular';
-import { DownCaretIcon } from '../icons/Icons';
+import { DownCaretIcon } from '../../../components/icons/Icons';
 import { theme } from 'constants/theme';
 
 export const ButtonCircularWithTransition = styled(ButtonCircular)<{

@@ -28,7 +28,7 @@ import ScrollContainer from './ScrollContainer';
 import ClipboardHeader from 'components/ClipboardHeader';
 import { media } from 'util/mediaQueries';
 import ContainerHeading from 'shared/components/typography/ContainerHeading';
-import { ClearIcon } from 'shared/components/icons/Icons';
+import { ClearIcon } from 'components/icons/Icons';
 import Button from 'shared/components/input/ButtonDefault';
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
 import { feedArticlesPollInterval } from 'constants/polling';

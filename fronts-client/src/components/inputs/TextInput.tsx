@@ -3,7 +3,7 @@ import { styled, theme } from 'constants/theme';
 import {
   MagnifyingGlassIcon as SearchIcon,
   ClearIcon
-} from 'shared/components/icons/Icons';
+} from 'components/icons/Icons';
 import { SmallRoundButton } from 'util/sharedStyles/buttons';
 
 const InputWrapper = styled.div`
