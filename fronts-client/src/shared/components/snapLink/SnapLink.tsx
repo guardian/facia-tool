@@ -33,7 +33,7 @@ import { distanceInWordsStrict } from 'date-fns';
 import { DerivedArticle } from 'types/Article';
 import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 import { theme } from 'constants/theme';
-import ArticleGraph from '../article/ArticleGraph';
+import ArticleGraph from '../../../components/article/ArticleGraph';
 import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import PageViewDataWrapper from '../PageViewDataWrapper';
 import ImageAndGraphWrapper from '../image/ImageAndGraphWrapper';

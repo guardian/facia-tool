@@ -7,16 +7,16 @@ import {
   createSelectArticleFromCard,
   selectSharedState,
   selectCard
-} from '../../../selectors/shared';
+} from '../../selectors/shared';
 import { selectors } from 'bundles/externalArticlesBundle';
-import { State } from '../../types/State';
-import { DerivedArticle } from '../../../types/Article';
-import CardBody from '../card/CardBody';
-import CardContainer from '../card/CardContainer';
-import CardMetaHeading from '../card/CardMetaHeading';
+import { State } from '../../shared/types/State';
+import { DerivedArticle } from '../../types/Article';
+import CardBody from '../../shared/components/card/CardBody';
+import CardContainer from '../../shared/components/card/CardContainer';
+import CardMetaHeading from '../../shared/components/card/CardMetaHeading';
 import ArticleBody from './ArticleBody';
 import { CardSizes } from 'shared/types/Collection';
-import DragIntentContainer from '../DragIntentContainer';
+import DragIntentContainer from '../../shared/components/DragIntentContainer';
 import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import { theme } from 'constants/theme';
 import { getPillarColor } from 'util/getPillarColor';

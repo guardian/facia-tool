@@ -2,37 +2,37 @@ import React from 'react';
 import { styled, theme } from 'constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
-import CardHeading from '../card/CardHeading';
-import BasePlaceholder from '../BasePlaceholder';
+import CardHeading from '../../shared/components/card/CardHeading';
+import BasePlaceholder from '../../shared/components/BasePlaceholder';
 import { getPillarColor } from 'util/getPillarColor';
-import CardMetaContainer from '../card/CardMetaContainer';
-import CardContent from '../card/CardContent';
+import CardMetaContainer from '../../shared/components/card/CardMetaContainer';
+import CardContent from '../../shared/components/card/CardContent';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import TextPlaceholder from 'shared/components/TextPlaceholder';
-import { ThumbnailSmall, ThumbnailCutout } from '../image/Thumbnail';
-import CardMetaHeading from '../card/CardMetaHeading';
-import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
+import { ThumbnailSmall, ThumbnailCutout } from '../../shared/components/image/Thumbnail';
+import CardMetaHeading from '../../shared/components/card/CardMetaHeading';
+import { HoverActionsButtonWrapper } from '../../shared/components/input/HoverActionButtonWrapper';
 import {
   HoverViewButton,
   HoverOphanButton,
   HoverDeleteButton,
   HoverAddToClipboardButton
-} from '../input/HoverActionButtons';
-import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
+} from '../../shared/components/input/HoverActionButtons';
+import { HoverActionsAreaOverlay } from '../../shared/components/CollectionHoverItems';
 import { CardSizes } from 'shared/types/Collection';
-import CardMetaContent from '../card/CardMetaContent';
-import CardDraftMetaContent from '../card/CardDraftMetaContent';
+import CardMetaContent from '../../shared/components/card/CardMetaContent';
+import CardDraftMetaContent from '../../shared/components/card/CardDraftMetaContent';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'util/mediaQueries';
 import ArticleGraph from './ArticleGraph';
-import { VideoIcon } from '../icons/Icons';
-import CardHeadingContainer from '../card/CardHeadingContainer';
-import CardSettingsDisplay from '../card/CardSettingsDisplay';
-import CircularIconContainer from '../icons/CircularIconContainer';
-import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
+import { VideoIcon } from '../../shared/components/icons/Icons';
+import CardHeadingContainer from '../../shared/components/card/CardHeadingContainer';
+import CardSettingsDisplay from '../../shared/components/card/CardSettingsDisplay';
+import CircularIconContainer from '../../shared/components/icons/CircularIconContainer';
+import { ImageMetadataContainer } from '../../shared/components/image/ImageMetaDataContainer';
 import EditModeVisibility from 'components/util/EditModeVisibility';
-import PageViewDataWrapper from '../PageViewDataWrapper';
-import ImageAndGraphWrapper from '../image/ImageAndGraphWrapper';
+import PageViewDataWrapper from '../../shared/components/PageViewDataWrapper';
+import ImageAndGraphWrapper from '../../shared/components/image/ImageAndGraphWrapper';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;

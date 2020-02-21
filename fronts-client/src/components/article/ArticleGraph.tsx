@@ -1,10 +1,10 @@
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis } from 'recharts';
 import { PageViewStory } from 'types/PageViewData';
-import { theme } from '../../../constants/theme';
+import { theme } from '../../constants/theme';
 import { State } from 'types/State';
 import { connect } from 'react-redux';
-import { selectDataForArticle } from '../../../redux/modules/pageViewData/selectors';
+import { selectDataForArticle } from '../../redux/modules/pageViewData/selectors';
 
 interface ArticleGraphContainerProps {
   articleId: string;
