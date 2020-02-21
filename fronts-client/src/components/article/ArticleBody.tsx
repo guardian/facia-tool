@@ -9,10 +9,7 @@ import CardMetaContainer from '../card/CardMetaContainer';
 import CardContent from '../card/CardContent';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import TextPlaceholder from 'shared/components/TextPlaceholder';
-import {
-  ThumbnailSmall,
-  ThumbnailCutout
-} from 'components/image/Thumbnail';
+import { ThumbnailSmall, ThumbnailCutout } from 'components/image/Thumbnail';
 import CardMetaHeading from '../card/CardMetaHeading';
 import { HoverActionsButtonWrapper } from '../../shared/components/input/HoverActionButtonWrapper';
 import {
