@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import clipboardReducer from '../../reducers/clipboardReducer';
-import groupsReducer from '../../shared/reducers/groupsReducer';
+import groupsReducer from 'reducers/groupsReducer';
 import cardsReducer from '../../shared/reducers/cardsReducer';
 import {
   createSelectGroupArticles,
