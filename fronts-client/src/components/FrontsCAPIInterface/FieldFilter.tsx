@@ -3,7 +3,7 @@ import Downshift from 'downshift';
 import startCase from 'lodash/startCase';
 import { styled, theme } from 'constants/theme';
 import ButtonCircularCaret from '../../shared/components/input/ButtonCircularCaret';
-import FadeIn from 'shared/components/animation/FadeIn';
+import FadeIn from 'components/animation/FadeIn';
 
 interface CAPIFieldFilterProps<T> {
   onChange: (value: T) => void;

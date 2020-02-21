@@ -24,7 +24,7 @@ import {
   createSelectArticlesInCollection
 } from '../../selectors/shared';
 import { selectors as collectionSelectors } from '../../bundles/collectionsBundle';
-import FadeIn from './animation/FadeIn';
+import FadeIn from '../../components/animation/FadeIn';
 import ContentContainer, {
   contentContainerMargin
 } from './layout/ContentContainer';

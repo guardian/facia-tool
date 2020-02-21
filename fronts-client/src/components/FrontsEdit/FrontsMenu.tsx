@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
-import FadeIn from 'shared/components/animation/FadeIn';
+import FadeIn from 'components/animation/FadeIn';
 import {
   MoreIcon,
   MagnifyingGlassIcon as SearchIcon

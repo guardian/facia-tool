@@ -13,7 +13,7 @@ import {
 } from 'services/editionsApi';
 import { withRouter, RouteComponentProps } from 'react-router';
 import Spinner from 'shared/components/async/Spinner';
-import InformationMsg from 'shared/components/alert/InformationMsg';
+import InformationMsg from 'components/alert/InformationMsg';
 import url from 'constants/url';
 
 interface ManageEditionState {
