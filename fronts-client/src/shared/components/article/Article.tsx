@@ -10,7 +10,7 @@ import {
 } from '../../selectors/shared';
 import { selectors } from 'bundles/externalArticlesBundle';
 import { State } from '../../types/State';
-import { DerivedArticle } from '../../types/Article';
+import { DerivedArticle } from '../../../types/Article';
 import CardBody from '../card/CardBody';
 import CardContainer from '../card/CardContainer';
 import CardMetaHeading from '../card/CardMetaHeading';

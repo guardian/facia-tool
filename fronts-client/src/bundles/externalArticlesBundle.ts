@@ -1,5 +1,5 @@
 import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
-import { ExternalArticle } from 'shared/types/ExternalArticle';
+import { ExternalArticle } from 'types/ExternalArticle';
 
 import { createSelectIsArticleStale } from 'util/externalArticle';
 

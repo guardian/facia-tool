@@ -3,11 +3,8 @@ import {
   PageViewDataRequested,
   PageViewDataReceived
 } from '../../../shared/types/Action';
-import {
-  PageViewDataFromOphan,
-  PageViewStory
-} from 'shared/types/PageViewData';
-import { DerivedArticle } from 'shared/types/Article';
+import { PageViewDataFromOphan, PageViewStory } from 'types/PageViewData';
+import { DerivedArticle } from 'types/Article';
 import {
   createSelectArticlesInCollection,
   selectSharedState,

@@ -26,7 +26,7 @@ import {
   getAbsolutePath
 } from 'util/url';
 import { MappableDropType } from 'util/collectionUtils';
-import { ExternalArticle } from 'shared/types/ExternalArticle';
+import { ExternalArticle } from 'types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
 import { Card, CardMeta } from '../types/Collection';
 import { selectEditMode } from '../../selectors/pathSelectors';

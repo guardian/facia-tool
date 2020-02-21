@@ -17,7 +17,7 @@ import {
 } from '../../../util/validateImageSrc';
 import { selectGridUrl } from 'selectors/configSelectors';
 import { State } from 'types/State';
-import { GridData, Criteria } from 'shared/types/Grid';
+import { GridData, Criteria } from 'types/Grid';
 import { RubbishBinIcon, AddImageIcon, VideoIcon } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
