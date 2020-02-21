@@ -7,9 +7,9 @@ import {
   hasWhitelistedParams,
   snapMetaWhitelist,
   marketingParamsWhiteList
-} from '../Cards';
+} from '../../shared/actions/Cards';
 import initialState from 'fixtures/initialState';
-import { capiArticle } from '../../../fixtures/shared';
+import { capiArticle } from '../../fixtures/shared';
 import { createSnap, createLatestSnap } from 'util/snap';
 import guardianTagPage from 'fixtures/guardianTagPage';
 import bbcSectionPage from 'fixtures/bbcSectionPage';
