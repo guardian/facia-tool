@@ -1,9 +1,9 @@
 import cards from 'reducers/cardsReducer';
 import groups from 'reducers/groupsReducer';
-import { reducer as collections } from '../../bundles/collectionsBundle';
-import { reducer as externalArticles } from '../../bundles/externalArticlesBundle';
+import { reducer as collections } from '../bundles/collectionsBundle';
+import { reducer as externalArticles } from '../bundles/externalArticlesBundle';
 import { reducer as featureSwitches } from 'redux/modules/featureSwitches';
-import { reducer as pageViewData } from '../../redux/modules/pageViewData';
+import { reducer as pageViewData } from '../redux/modules/pageViewData';
 import { Card, Group } from 'shared/types/Collection';
 
 interface State {

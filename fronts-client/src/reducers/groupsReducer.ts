@@ -1,6 +1,6 @@
 import { Action } from '../shared/types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
-import { State } from '../shared/reducers/sharedReducer';
+import { State } from 'reducers/sharedReducer';
 import { selectCards, selectGroupSiblings } from 'shared/selectors/shared';
 import { capGroupCards } from 'util/capGroupCards';
 import keyBy from 'lodash/keyBy';
