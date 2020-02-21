@@ -1,4 +1,4 @@
-import reducer from '../cardsReducer';
+import reducer from 'reducers/cardsReducer';
 import { updateCardMeta } from '../../actions/Cards';
 import { stateWithClipboard } from 'fixtures/clipboard';
 

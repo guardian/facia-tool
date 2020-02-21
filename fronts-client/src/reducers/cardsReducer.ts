@@ -1,6 +1,6 @@
-import { Action } from '../types/Action';
-import { insertAndDedupeSiblings } from '../../util/insertAndDedupeSiblings';
-import { State } from './sharedReducer';
+import { Action } from '../shared/types/Action';
+import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
+import { State } from '../shared/reducers/sharedReducer';
 import {
   UPDATE_CARD_META,
   CARDS_RECEIVED,

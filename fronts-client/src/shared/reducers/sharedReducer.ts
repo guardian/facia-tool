@@ -1,5 +1,5 @@
-import cards from './cardsReducer';
-import groups from '../../reducers/groupsReducer';
+import cards from 'reducers/cardsReducer';
+import groups from 'reducers/groupsReducer';
 import { reducer as collections } from '../../bundles/collectionsBundle';
 import { reducer as externalArticles } from '../../bundles/externalArticlesBundle';
 import { reducer as featureSwitches } from 'redux/modules/featureSwitches';
