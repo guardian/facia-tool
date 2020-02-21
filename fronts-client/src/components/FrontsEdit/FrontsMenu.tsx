@@ -1,10 +1,10 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
-import FadeIn from 'shared/components/animation/FadeIn';
+import FadeIn from 'components/animation/FadeIn';
 import {
   MoreIcon,
   MagnifyingGlassIcon as SearchIcon
-} from 'shared/components/icons/Icons';
+} from 'components/icons/Icons';
 
 import LargeSectionHeader from '../layout/LargeSectionHeader';
 import ButtonOverlay from '../inputs/ButtonOverlay';

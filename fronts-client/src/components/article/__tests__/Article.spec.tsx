@@ -4,7 +4,7 @@ import { ArticleComponent } from '../Article';
 import 'jest-dom/extend-expect';
 import derivedArticle from 'fixtures/derivedArticle';
 import { ThemeProvider } from 'styled-components';
-import { theme } from '../../../../constants/theme';
+import { theme } from '../../../constants/theme';
 import { Provider } from 'react-redux';
 import configureStore from 'util/configureStore';
 

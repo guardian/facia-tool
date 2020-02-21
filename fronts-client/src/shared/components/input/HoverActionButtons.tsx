@@ -8,7 +8,7 @@ import {
   OphanHoverIcon,
   ViewHoverIcon,
   DeleteHoverIcon
-} from '../icons/HoverIcons';
+} from '../../../components/icons/HoverIcons';
 import styled from 'styled-components';
 import { theme } from 'constants/theme';
 

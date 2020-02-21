@@ -3,9 +3,9 @@ import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import upperFirst from 'lodash/upperFirst';
 
-import CardContainer from '../card/CardContainer';
-import CardMetaContainer from '../card/CardMetaContainer';
-import CardMetaHeading from '../card/CardMetaHeading';
+import CardContainer from '../../../components/card/CardContainer';
+import CardMetaContainer from '../../../components/card/CardMetaContainer';
+import CardMetaHeading from '../../../components/card/CardMetaHeading';
 import { ThumbnailSmall } from '../image/Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
@@ -22,18 +22,18 @@ import {
   createSelectArticleFromCard
 } from '../../../selectors/shared';
 import { State } from '../../types/State';
-import CardHeading from '../card/CardHeading';
-import CardContent from '../card/CardContent';
-import CardBody from '../card/CardBody';
-import CardMetaContent from '../card/CardMetaContent';
+import CardHeading from '../../../components/card/CardHeading';
+import CardContent from '../../../components/card/CardContent';
+import CardBody from '../../../components/card/CardBody';
+import CardMetaContent from '../../../components/card/CardMetaContent';
 import url from 'constants/url';
-import CardHeadingContainer from '../card/CardHeadingContainer';
-import CardSettingsDisplay from '../card/CardSettingsDisplay';
+import CardHeadingContainer from '../../../components/card/CardHeadingContainer';
+import CardSettingsDisplay from '../../../components/card/CardSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
 import { DerivedArticle } from 'types/Article';
 import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
 import { theme } from 'constants/theme';
-import ArticleGraph from '../article/ArticleGraph';
+import ArticleGraph from '../../../components/article/ArticleGraph';
 import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import PageViewDataWrapper from '../PageViewDataWrapper';
 import ImageAndGraphWrapper from '../image/ImageAndGraphWrapper';

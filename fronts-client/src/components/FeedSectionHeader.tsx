@@ -15,7 +15,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import { Dispatch } from 'types/Store';
 import FadeTransition from './transitions/FadeTransition';
-import { MoreIcon } from 'shared/components/icons/Icons';
+import { MoreIcon } from 'components/icons/Icons';
 import { RouteComponentProps } from 'react-router';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { getEditionIssue } from 'actions/Editions';

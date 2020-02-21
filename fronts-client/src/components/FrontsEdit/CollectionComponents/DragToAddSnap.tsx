@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import v4 from 'uuid/v4';
-import { DragIcon } from 'shared/components/icons/Icons';
+import { DragIcon } from 'components/icons/Icons';
 import { styled, theme } from 'constants/theme';
 import RenderOffscreen from 'components/util/RenderOffscreen';
 import {

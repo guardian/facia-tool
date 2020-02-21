@@ -1,7 +1,7 @@
 import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
-import Article from 'shared/components/article/Article';
+import Article from 'components/article/Article';
 import { State } from 'types/State';
 import { createSelectCardType } from 'selectors/cardSelectors';
 import {

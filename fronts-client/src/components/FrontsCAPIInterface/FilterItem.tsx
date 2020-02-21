@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
-import { ClearIcon } from 'shared/components/icons/Icons';
+import { ClearIcon } from 'components/icons/Icons';
 import { SmallRoundButton } from 'util/sharedStyles/buttons';
 
 const SearchTermItem = styled.div`

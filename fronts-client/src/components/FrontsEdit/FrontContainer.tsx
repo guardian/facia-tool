@@ -20,7 +20,7 @@ import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import ButtonRoundedWithLabel, {
   ButtonLabel
 } from 'shared/components/input/ButtonRoundedWithLabel';
-import { DownCaretIcon } from 'shared/components/icons/Icons';
+import { DownCaretIcon } from 'components/icons/Icons';
 import FrontCollectionsOverview from './FrontCollectionsOverview';
 import FrontContent from './FrontContent';
 import DragToAddSnap from './CollectionComponents/DragToAddSnap';

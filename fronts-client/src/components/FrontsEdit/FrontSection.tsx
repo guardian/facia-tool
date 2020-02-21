@@ -20,7 +20,7 @@ import SectionContent from '../layout/SectionContent';
 import { CardSets, Collection, Stages } from 'shared/types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
-import { PreviewEyeIcon, ClearIcon } from 'shared/components/icons/Icons';
+import { PreviewEyeIcon, ClearIcon } from 'components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';

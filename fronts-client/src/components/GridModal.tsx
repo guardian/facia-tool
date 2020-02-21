@@ -2,7 +2,7 @@ import React from 'react';
 import Modal from 'react-modal';
 import { styled } from 'constants/theme';
 import ButtonDefault from 'shared/components/input/ButtonDefault';
-import { CloseIcon } from 'shared/components/icons/Icons';
+import { CloseIcon } from 'components/icons/Icons';
 
 interface ModalProps {
   isOpen: boolean;

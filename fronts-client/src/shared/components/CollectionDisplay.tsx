@@ -24,13 +24,13 @@ import {
   createSelectArticlesInCollection
 } from '../../selectors/shared';
 import { selectors as collectionSelectors } from '../../bundles/collectionsBundle';
-import FadeIn from './animation/FadeIn';
+import FadeIn from '../../components/animation/FadeIn';
 import ContentContainer, {
   contentContainerMargin
 } from './layout/ContentContainer';
 import { css } from 'styled-components';
 import { events } from 'services/GA';
-import CollectionMetaContainer from './collection/CollectionMetaContainer';
+import CollectionMetaContainer from '../../components/collection/CollectionMetaContainer';
 import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
