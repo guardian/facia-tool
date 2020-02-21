@@ -30,7 +30,7 @@ import ContentContainer, {
 } from './layout/ContentContainer';
 import { css } from 'styled-components';
 import { events } from 'services/GA';
-import CollectionMetaContainer from './collection/CollectionMetaContainer';
+import CollectionMetaContainer from '../../components/collection/CollectionMetaContainer';
 import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';

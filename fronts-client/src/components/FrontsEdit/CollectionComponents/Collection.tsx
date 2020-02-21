@@ -35,7 +35,7 @@ import {
 } from 'bundles/frontsUIBundle';
 import { getArticlesForCollections } from 'actions/Collections';
 import { cardSets } from 'constants/fronts';
-import CollectionMetaContainer from 'shared/components/collection/CollectionMetaContainer';
+import CollectionMetaContainer from 'components/collection/CollectionMetaContainer';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
 import { theme, styled } from 'constants/theme';
 import EditModeVisibility from 'components/util/EditModeVisibility';

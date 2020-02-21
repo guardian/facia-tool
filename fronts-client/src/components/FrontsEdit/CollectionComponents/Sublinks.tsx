@@ -1,11 +1,11 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
 
-import CardBody from 'shared/components/card/CardBody';
+import CardBody from 'components/card/CardBody';
 import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
-import CardContainer from 'shared/components/card/CardContainer';
-import CardContent from 'shared/components/card/CardContent';
-import CardMetaContainer from 'shared/components/card/CardMetaContainer';
+import CardContainer from 'components/card/CardContainer';
+import CardContent from 'components/card/CardContent';
+import CardMetaContainer from 'components/card/CardMetaContainer';
 import DragIntentContainer from 'shared/components/DragIntentContainer';
 import { dragEventIsBlacklisted } from 'lib/dnd/Level';
 import { collectionDropTypeBlacklist } from 'constants/fronts';

@@ -11,9 +11,9 @@ import {
 import { selectors } from 'bundles/externalArticlesBundle';
 import { State } from '../../shared/types/State';
 import { DerivedArticle } from '../../types/Article';
-import CardBody from '../../shared/components/card/CardBody';
-import CardContainer from '../../shared/components/card/CardContainer';
-import CardMetaHeading from '../../shared/components/card/CardMetaHeading';
+import CardBody from '../card/CardBody';
+import CardContainer from '../card/CardContainer';
+import CardMetaHeading from '../card/CardMetaHeading';
 import ArticleBody from './ArticleBody';
 import { CardSizes } from 'shared/types/Collection';
 import DragIntentContainer from '../../shared/components/DragIntentContainer';

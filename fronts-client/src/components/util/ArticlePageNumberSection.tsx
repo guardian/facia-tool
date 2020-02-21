@@ -1,4 +1,4 @@
-import CardMetaContent from '../../shared/components/card/CardMetaContent';
+import CardMetaContent from '../card/CardMetaContent';
 import { CapiArticle } from 'types/Capi';
 import * as React from 'react';
 
