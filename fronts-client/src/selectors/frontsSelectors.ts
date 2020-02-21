@@ -15,7 +15,7 @@ import {
   createSelectArticlesInCollection,
   createSelectCollection,
   selectSharedState
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
 
 interface FrontConfigMap {

@@ -26,7 +26,7 @@ import {
   createSelectCollectionEditWarning,
   selectSharedState,
   createSelectPreviouslyLiveArticlesInCollection
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import {
   selectIsCollectionOpen,
   editorCloseCollections,

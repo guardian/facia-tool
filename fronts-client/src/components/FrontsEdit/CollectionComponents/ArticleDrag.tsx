@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {
   createSelectArticleFromCard,
   selectSharedState
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import { State } from 'types/State';
 import { theme, styled } from '../../../constants/theme';
 import documentDragIcon from 'images/icons/document-drag-icon.svg';

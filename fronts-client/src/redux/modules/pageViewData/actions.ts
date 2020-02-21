@@ -9,7 +9,7 @@ import {
   createSelectArticlesInCollection,
   selectSharedState,
   createSelectArticleFromCard
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import { CardSets } from 'shared/types/Collection';
 import pandaFetch from 'services/pandaFetch';
 import { isValidURL } from 'util/url';

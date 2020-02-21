@@ -2,7 +2,7 @@ import { selectors } from 'bundles/collectionsBundle';
 import {
   selectSharedState,
   createSelectArticleFromCard
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
 import { isCollectionConfigDynamic } from '../util/frontsUtils';

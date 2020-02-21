@@ -8,7 +8,7 @@ import {
   createSelectSupportingArticles,
   selectCard,
   selectSharedState
-} from '../../shared/selectors/shared';
+} from '../../selectors/shared';
 import { selectClipboard as innerClipboardSelector } from '../../selectors/frontsSelectors';
 import { createCardStateFromSpec, CardSpec, specToCard } from './utils';
 import {

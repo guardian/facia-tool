@@ -1,6 +1,6 @@
 import { PosSpec } from 'lib/dnd';
 import { State } from 'shared/types/State';
-import { selectGroupSiblings } from 'shared/selectors/shared';
+import { selectGroupSiblings } from 'selectors/shared';
 import { Group } from 'shared/types/Collection';
 import findIndex from 'lodash/findIndex';
 

@@ -11,7 +11,7 @@ import DropZone, {
   DefaultDropContainer,
   DefaultDropIndicator
 } from 'components/DropZone';
-import { createSelectSupportingArticles } from 'shared/selectors/shared';
+import { createSelectSupportingArticles } from 'selectors/shared';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
 import { theme, styled } from 'constants/theme';
 

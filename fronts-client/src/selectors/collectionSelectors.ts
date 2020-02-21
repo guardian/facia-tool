@@ -4,7 +4,7 @@ import {
   selectSharedState,
   createSelectCollection,
   groupsArticleCount
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import { getUpdatedSiblingGroupsForInsertion } from 'reducers/groupsReducer';
 
 const selectCollection = createSelectCollection();

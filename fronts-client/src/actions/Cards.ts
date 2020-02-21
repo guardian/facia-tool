@@ -15,7 +15,7 @@ import {
   selectCards,
   selectCard,
   selectArticleGroup
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/action';
 import { cloneCard } from 'util/card';

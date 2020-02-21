@@ -13,7 +13,7 @@ import {
 } from 'types/Action';
 import { State } from 'types/State';
 import { addPersistMetaToAction } from 'util/action';
-import { selectCards, selectSharedState } from 'shared/selectors/shared';
+import { selectCards, selectSharedState } from 'selectors/shared';
 
 export const REMOVE_CLIPBOARD_CARD = 'REMOVE_CLIPBOARD_CARD';
 export const UPDATE_CLIPBOARD_CONTENT = 'UPDATE_CLIPBOARD_CONTENT';
