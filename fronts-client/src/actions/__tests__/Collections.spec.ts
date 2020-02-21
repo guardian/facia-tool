@@ -20,10 +20,7 @@ import {
   updateCollection,
   fetchArticles
 } from '../Collections';
-import {
-  createSelectCollection,
-  selectSharedState
-} from 'shared/selectors/shared';
+import { createSelectCollection, selectSharedState } from 'selectors/shared';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);

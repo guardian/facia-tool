@@ -4,7 +4,7 @@ import {
   selectGroups,
   selectGroupCollection,
   createSelectCollection
-} from '../shared/selectors/shared';
+} from './shared';
 import { selectClipboardContent } from 'selectors/clipboardSelectors';
 import { State } from 'types/State';
 import { selectUnlockedFrontCollections } from './frontsSelectors';

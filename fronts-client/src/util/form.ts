@@ -8,7 +8,7 @@ import { CardMeta } from 'shared/types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { CapiArticle } from 'types/Capi';
 import { State } from 'types/State';
-import { selectCard, selectSharedState } from 'shared/selectors/shared';
+import { selectCard, selectSharedState } from 'selectors/shared';
 
 export interface CardFormData {
   headline: string;

@@ -1,5 +1,5 @@
 import { State } from 'types/State';
-import { selectCardsFromRootState } from 'shared/selectors/shared';
+import { selectCardsFromRootState } from 'selectors/shared';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
 
 const selectClipboardContent = (state: State) => state.clipboard || [];

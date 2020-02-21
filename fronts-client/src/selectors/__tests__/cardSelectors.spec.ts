@@ -1,4 +1,4 @@
-import { createSelectCardType } from '../card';
+import { createSelectCardType } from '../cardSelectors';
 import { stateWithSnaplinksAndArticles } from 'fixtures/shared';
 import cardTypes from 'constants/cardTypes';
 

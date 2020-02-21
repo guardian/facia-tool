@@ -48,7 +48,7 @@ import {
   createSelectArticlesInCollection,
   selectSharedState,
   createSelectArticleFromCard
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import { ThunkResult } from 'types/Store';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 

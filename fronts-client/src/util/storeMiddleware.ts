@@ -8,7 +8,7 @@ import { Action, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
-import { selectSharedState } from 'shared/selectors/shared';
+import { selectSharedState } from 'selectors/shared';
 import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/userDataApi';
 import { NestedCard } from 'shared/types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';

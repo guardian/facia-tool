@@ -16,7 +16,7 @@ import bbcSectionPage from 'fixtures/bbcSectionPage';
 import { RefDrop } from 'util/collectionUtils';
 import configureStore from 'util/configureStore';
 import { selectOptionsModalOptions } from 'selectors/modalSelectors';
-import { selectCard, selectSharedState } from 'shared/selectors/shared';
+import { selectCard, selectSharedState } from 'selectors/shared';
 import capiInteractiveAtomResponse from 'fixtures/capiInteractiveAtomResponse';
 import { startOptionsModal } from 'actions/OptionsModal';
 import noop from 'lodash/noop';

@@ -15,7 +15,7 @@ import {
   createSelectCollection,
   selectSharedState,
   createSelectArticlesInCollection
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUIBundle';
 

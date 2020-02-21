@@ -17,7 +17,7 @@ import {
   createSelectGroupArticles,
   selectSharedState,
   createSelectAllArticlesInCollection
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import {
   actions as externalArticleActions,
   selectIsExternalArticleStale
@@ -46,7 +46,7 @@ import { Action } from 'types/Action';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
 import { Stages, Collection, CardSets } from 'shared/types/Collection';
 import difference from 'lodash/difference';
-import { selectArticlesInCollections } from 'shared/selectors/collection';
+import { selectArticlesInCollections } from 'selectors/collection';
 import {
   editorOpenCollections,
   editorCloseCollections,

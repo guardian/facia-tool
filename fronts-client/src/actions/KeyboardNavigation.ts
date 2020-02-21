@@ -3,7 +3,7 @@ import {
   selectNextIndexAndGroup,
   selectNextClipboardIndexSelector
 } from '../selectors/keyboardNavigationSelectors';
-import { selectSharedState, selectIndexInGroup } from 'shared/selectors/shared';
+import { selectSharedState, selectIndexInGroup } from 'selectors/shared';
 import { Card } from 'shared/types/Collection';
 import { PosSpec } from 'lib/dnd';
 import { ThunkResult, Dispatch } from 'types/Store';

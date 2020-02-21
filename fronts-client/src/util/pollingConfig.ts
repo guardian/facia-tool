@@ -12,7 +12,7 @@ import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import {
   selectSharedState,
   selectExternalArticleIdFromCard
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import {
   selectOpenFrontsCollectionsAndArticles,
   selectOpenCardIds

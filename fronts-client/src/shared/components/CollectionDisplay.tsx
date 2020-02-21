@@ -22,7 +22,7 @@ import { State } from '../../types/State';
 import {
   selectSharedState,
   createSelectArticlesInCollection
-} from '../selectors/shared';
+} from '../../selectors/shared';
 import { selectors as collectionSelectors } from '../../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer, {

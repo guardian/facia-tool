@@ -6,9 +6,9 @@ import {
   getContributorImage,
   isLive
 } from 'util/CAPIUtils';
-import { selectors as externalArticleSelectors } from '../../bundles/externalArticlesBundle';
-import { selectors as collectionSelectors } from '../../bundles/collectionsBundle';
-import { ExternalArticle } from '../../types/ExternalArticle';
+import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
+import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
+import { ExternalArticle } from '../types/ExternalArticle';
 import {
   Card,
   Collection,
@@ -16,8 +16,8 @@ import {
   CardSets,
   CardDenormalised,
   ArticleTag
-} from '../types/Collection';
-import { State } from '../types/State';
+} from '../shared/types/Collection';
+import { State } from '../shared/types/State';
 import { cardSets } from 'constants/fronts';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
 import { DerivedArticle } from 'types/Article';

@@ -6,7 +6,7 @@ import {
   selectSharedState,
   selectCardHasMediaOverrides,
   createSelectArticleFromCard
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import {
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL

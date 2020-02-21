@@ -3,12 +3,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Article from 'shared/components/article/Article';
 import { State } from 'types/State';
-import { createSelectCardType } from 'shared/selectors/card';
+import { createSelectCardType } from 'selectors/cardSelectors';
 import {
   selectSharedState,
   selectExternalArticleFromCard,
   selectSupportingArticleCount
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import cardTypes from 'constants/cardTypes';
 import { CardTypes, CardSizes, CardMeta } from 'shared/types/Collection';
 import SnapLink from 'shared/components/snapLink/SnapLink';

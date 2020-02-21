@@ -17,7 +17,7 @@ import {
   selectSharedState,
   selectExternalArticleFromCard,
   selectArticleTag
-} from 'shared/selectors/shared';
+} from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
 import { defaultObject } from 'util/selectorUtils';
 import { CardMeta, ArticleTag } from 'shared/types/Collection';
