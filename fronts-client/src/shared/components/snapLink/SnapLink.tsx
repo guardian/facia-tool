@@ -6,7 +6,7 @@ import upperFirst from 'lodash/upperFirst';
 import CardContainer from '../../../components/card/CardContainer';
 import CardMetaContainer from '../../../components/card/CardMetaContainer';
 import CardMetaHeading from '../../../components/card/CardMetaHeading';
-import { ThumbnailSmall } from '../image/Thumbnail';
+import { ThumbnailSmall } from 'components/image/Thumbnail';
 import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
 import {
   HoverDeleteButton,
@@ -31,13 +31,13 @@ import CardHeadingContainer from '../../../components/card/CardHeadingContainer'
 import CardSettingsDisplay from '../../../components/card/CardSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
 import { DerivedArticle } from 'types/Article';
-import { ImageMetadataContainer } from '../image/ImageMetaDataContainer';
+import { ImageMetadataContainer } from 'components/image/ImageMetaDataContainer';
 import { theme } from 'constants/theme';
 import ArticleGraph from '../../../components/article/ArticleGraph';
 import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import PageViewDataWrapper from '../PageViewDataWrapper';
-import ImageAndGraphWrapper from '../image/ImageAndGraphWrapper';
-import { ThumbnailCutout } from '../image/Thumbnail';
+import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
+import { ThumbnailCutout } from 'components/image/Thumbnail';
 
 const SnapLinkBodyContainer = styled(CardBody)`
   justify-content: space-between;

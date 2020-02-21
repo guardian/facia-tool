@@ -1,5 +1,5 @@
-import { styled } from '../../../constants/theme';
-import { CardSizes } from '../../types/Collection';
+import { styled } from '../../constants/theme';
+import { CardSizes } from '../../shared/types/Collection';
 
 export default styled.div<{ size: CardSizes }>`
   display: flex;

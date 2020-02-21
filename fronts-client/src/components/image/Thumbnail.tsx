@@ -45,7 +45,7 @@ const ThumbnailEditForm = styled(ThumbnailBase)<{
   url: string | undefined | void;
 }>`
   width: 100%;
-  height: 115px
+  height: 115px;
   margin-bottom: 10px;
   opacity: ${({ imageHide }) => (imageHide ? 0.5 : 1)};
   background-image: ${({ url }) => `url('${url}')`};

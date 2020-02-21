@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { HoverActionsAreaOverlay } from '../../shared/components/CollectionHoverItems';
-import Thumbnail from '../../shared/components/image/Thumbnail';
+import Thumbnail from 'components/image/Thumbnail';
 import { CardSizes } from 'shared/types/Collection';
 import { theme } from 'constants/theme';
 

@@ -19,7 +19,7 @@ import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import { insertCardWithCreate } from 'actions/Cards';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';
-import { ThumbnailSmall } from 'shared/components/image/Thumbnail';
+import { ThumbnailSmall } from 'components/image/Thumbnail';
 import { CapiArticle } from 'types/Capi';
 import { getThumbnail, getArticleLabel, isLive } from 'util/CAPIUtils';
 import {
