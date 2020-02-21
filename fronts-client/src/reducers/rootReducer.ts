@@ -1,6 +1,6 @@
 import { reducer as form } from 'redux-form';
 
-import shared from 'shared/reducers/sharedReducer';
+import shared from 'reducers/sharedReducer';
 import config from './configReducer';
 import fronts from './frontsReducer';
 import error from './errorReducer';

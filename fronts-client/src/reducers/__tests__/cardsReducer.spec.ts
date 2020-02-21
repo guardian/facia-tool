@@ -1,5 +1,5 @@
-import reducer from '../cardsReducer';
-import { updateCardMeta } from '../../actions/Cards';
+import reducer from 'reducers/cardsReducer';
+import { updateCardMeta } from '../../shared/actions/Cards';
 import { stateWithClipboard } from 'fixtures/clipboard';
 
 describe('cardsReducer', () => {
