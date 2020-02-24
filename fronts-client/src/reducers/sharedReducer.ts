@@ -19,7 +19,7 @@ interface State {
   pageViewData: ReturnType<typeof pageViewData>;
 }
 
-const rootReducer = (state: any = {}, action: any): State => ({
+const sharedRootReducer = (state: any = {}, action: any): State => ({
   cards: cards(state.cards, action),
   groups: groups(state.groups, action, state),
   collections: collections(state.collections, action),
@@ -30,4 +30,4 @@ const rootReducer = (state: any = {}, action: any): State => ({
 
 export { State };
 
-export default rootReducer;
+export default sharedRootReducer;
