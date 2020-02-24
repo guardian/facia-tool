@@ -1,4 +1,4 @@
-import { State as SharedState } from '../shared/types/State';
+import { SharedState } from '../types/State';
 import createAsyncResourceBundle, {
   State,
   Actions

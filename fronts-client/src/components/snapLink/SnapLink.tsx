@@ -21,7 +21,7 @@ import {
   selectCard,
   createSelectArticleFromCard
 } from '../../selectors/shared';
-import { State } from '../../shared/types/State';
+import { SharedState } from '../../types/State';
 import CardHeading from '../card/CardHeading';
 import CardContent from '../card/CardContent';
 import CardBody from 'components/card/CardBody';
@@ -53,7 +53,7 @@ const SnapLinkURL = styled.p`
 `;
 
 interface ContainerProps {
-  selectSharedState?: (state: any) => State;
+  selectSharedState?: (state: any) => SharedState;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: (uuid: string) => void;
@@ -220,7 +220,7 @@ const SnapLink = ({
 
 const mapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
-  return (state: State, props: ContainerProps) => {
+  return (state: SharedState, props: ContainerProps) => {
     const sharedState = props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state);

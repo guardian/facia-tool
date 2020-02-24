@@ -30,7 +30,7 @@ import { State as GlobalState } from 'types/State';
 import flatten from 'lodash/flatten';
 import { createSelector } from 'reselect';
 
-import { State as GlobalSharedState } from 'shared/types/State';
+import { SharedState as GlobalSharedState } from 'types/State';
 import { events } from 'services/GA';
 import {
   selectFronts,

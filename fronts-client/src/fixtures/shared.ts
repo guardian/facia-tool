@@ -1,4 +1,4 @@
-import { State } from 'shared/types/State';
+import { SharedState } from 'types/State';
 
 const capiArticle = {
   id:
@@ -879,7 +879,7 @@ const initialState = {
   cards: {},
   featureSwitches: {},
   pageViewData: {}
-} as State;
+} as SharedState;
 
 export {
   capiArticle,
