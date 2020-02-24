@@ -26,7 +26,8 @@ import { hasMainVideo } from 'util/externalArticle';
 // Selects the shared part of the application state mounted at its default point, '.shared'.
 const selectSharedState = (rootState: any): SharedState => rootState.shared;
 
-const selectGroups = (state: SharedState): { [id: string]: Group } => state.groups;
+const selectGroups = (state: SharedState): { [id: string]: Group } =>
+  state.groups;
 const selectCards = (state: SharedState) => state.cards;
 
 const selectCardsFromRootState = createSelector(
@@ -83,7 +84,10 @@ const selectArticleTag = (state: SharedState, id: string): ArticleTag => {
   return emptyTag;
 };
 
-const selectArticleKicker = (state: SharedState, id: string): string | undefined => {
+const selectArticleKicker = (
+  state: SharedState,
+  id: string
+): string | undefined => {
   const card = selectCard(state, id);
 
   if (!card) {
@@ -495,8 +499,11 @@ const groupsArticleCount = (groups: Group[]) =>
 const selectGroupSiblingsArticleCount = (state: SharedState, groupId: string) =>
   groupsArticleCount(selectGroupSiblings(state, groupId));
 
-const selectIndexInGroup = (state: SharedState, groupId: string, articleId: string) =>
-  selectGroups(state)[groupId].cards.indexOf(articleId);
+const selectIndexInGroup = (
+  state: SharedState,
+  groupId: string,
+  articleId: string
+) => selectGroups(state)[groupId].cards.indexOf(articleId);
 
 const selectExternalArticleIdFromCard = (
   state: SharedState,
