@@ -1,4 +1,4 @@
-import { Action } from '../shared/types/Action';
+import { Action } from 'types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import { State } from 'reducers/sharedReducer';
 import {

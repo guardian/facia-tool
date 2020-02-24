@@ -8,14 +8,14 @@ import {
 import { ThunkResult, Dispatch } from 'types/Store';
 import {
   CardsReceived,
-  InsertGroupCard,
   InsertSupportingCard,
   RemoveGroupCard,
   RemoveSupportingCard,
   UpdateCardMeta,
   ClearCards,
   MaybeAddFrontPublicationDate
-} from 'shared/types/Action';
+} from 'types/Action';
+import { InsertGroupCard } from 'types/Action';
 import { createCard } from 'util/card';
 import { createSnap, createLatestSnap, createAtomSnap } from 'util/snap';
 import { getIdFromURL } from 'util/CAPIUtils';
