@@ -142,7 +142,7 @@ object AmericanEdition {
     collection("US")
     .searchPrefill("?tag=type/article,tone/comment,(us-news/us-news|us-news/us-politics),-sport/sport,-tone/minutebyminute")
     .withArticleItemsCap(20),
-    collection("Global")
+    collection("World")
     .searchPrefill("?tag=type/article,tone/comment,-(us-news/us-news|us-news/us-politics),-sport/sport,-tone/minutebyminute")
     .withArticleItemsCap(20)
   )
