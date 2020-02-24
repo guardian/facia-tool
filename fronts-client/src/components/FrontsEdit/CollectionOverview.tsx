@@ -8,7 +8,7 @@ import { Dispatch } from 'types/Store';
 import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
-import { Collection, CardSets } from 'shared/types/Collection';
+import { Collection, CardSets } from 'types/Collection';
 import { createCollectionId } from 'components/CollectionDisplay';
 import ButtonDefault from 'components/inputs/ButtonCircular';
 import {

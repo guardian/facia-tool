@@ -13,7 +13,7 @@ import { selectFocusState, setFocusState } from 'bundles/focusBundle';
 import { RefDrop } from 'util/collectionUtils';
 import { createArticleEntitiesFromDrop } from 'shared/actions/Cards';
 import { moveUp, moveDown } from './keyboardActionMaps/move';
-import { Card } from '../shared/types/Collection';
+import { Card } from '../types/Collection';
 import { thunkInsertClipboardCard } from 'actions/Clipboard';
 
 type FocusableTypes =

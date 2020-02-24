@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'constants/theme';
 import ToolTip from './HoverActionToolTip';
-import { CardSizes } from 'shared/types/Collection';
+import { CardSizes } from 'types/Collection';
 
 const HoverActionsWrapper = styled.div<{
   size?: string; // Article Component size

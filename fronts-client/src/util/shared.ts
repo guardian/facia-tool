@@ -3,7 +3,7 @@ import {
   Group,
   Collection,
   Card
-} from 'shared/types/Collection';
+} from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { selectSharedState } from 'selectors/shared';
 import { State } from 'types/State';

@@ -19,7 +19,7 @@ import {
   EditionsFrontMetadata
 } from './FaciaApi';
 import { BatchAction } from 'redux-batched-actions';
-import { Stages, Card } from 'shared/types/Collection';
+import { Stages, Card } from 'types/Collection';
 import {
   EDITOR_OPEN_CURRENT_FRONTS_MENU,
   EDITOR_CLOSE_CURRENT_FRONTS_MENU,

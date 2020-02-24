@@ -3,7 +3,7 @@ import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import { State } from 'types/State';
 import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 import { connect } from 'react-redux';
-import { Card } from 'shared/types/Collection';
+import { Card } from 'types/Collection';
 import ArticleDrag, {
   dragOffsetX,
   dragOffsetY

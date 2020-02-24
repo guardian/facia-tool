@@ -3,7 +3,7 @@ import { Action } from 'types/Action';
 import { fetchLastPressed as fetchLastPressedApi } from 'services/faciaApi';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
-import { Stages } from 'shared/types/Collection';
+import { Stages } from 'types/Collection';
 import { State } from 'types/State';
 import { fetchFrontsConfigStrategy } from 'strategies/fetch-fronts-config';
 

@@ -1,7 +1,7 @@
 import { createType, build } from 'normalise-with-fields';
 import v4 from 'uuid/v4';
 import { postProcessCard, supportingArticles } from 'util/schema';
-import { Card } from 'shared/types/Collection';
+import { Card } from 'types/Collection';
 
 const cards = createType('cards', {
   preProcess: (af: Card) => ({

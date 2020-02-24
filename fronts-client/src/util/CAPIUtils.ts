@@ -1,6 +1,6 @@
 import { Element, Tag, CapiArticle } from 'types/Capi';
 import { ExternalArticle } from '../types/ExternalArticle';
-import { CardMeta } from '../shared/types/Collection';
+import { CardMeta } from '../types/Collection';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import startCase from 'lodash/startCase';
 

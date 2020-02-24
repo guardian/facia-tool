@@ -16,7 +16,7 @@ import {
   CardSets,
   CardDenormalised,
   ArticleTag
-} from '../shared/types/Collection';
+} from '../types/Collection';
 import { State } from '../shared/types/State';
 import { cardSets } from 'constants/fronts';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';

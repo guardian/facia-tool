@@ -10,7 +10,7 @@ import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 
-import { CardSets, Stages } from 'shared/types/Collection';
+import { CardSets, Stages } from 'types/Collection';
 import {
   createSelectArticlesInCollection,
   createSelectCollection,

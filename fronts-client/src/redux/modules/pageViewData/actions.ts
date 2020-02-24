@@ -10,7 +10,7 @@ import {
   selectSharedState,
   createSelectArticleFromCard
 } from 'selectors/shared';
-import { CardSets } from 'shared/types/Collection';
+import { CardSets } from 'types/Collection';
 import pandaFetch from 'services/pandaFetch';
 import { isValidURL } from 'util/url';
 

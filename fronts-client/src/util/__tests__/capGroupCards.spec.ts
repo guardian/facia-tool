@@ -1,5 +1,5 @@
 import { capGroupCards } from 'util/capGroupCards';
-import { Group } from 'shared/types/Collection';
+import { Group } from 'types/Collection';
 
 let id = 0;
 let uuid = 0;
