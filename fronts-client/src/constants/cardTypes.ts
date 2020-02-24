@@ -1,4 +1,4 @@
-import { CardTypes } from 'shared/types/Collection';
+import { CardTypes } from 'types/Collection';
 
 export default {
   SNAP_LINK: 'SNAP_LINK',

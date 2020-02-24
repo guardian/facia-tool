@@ -44,7 +44,7 @@ import { selectCollectionConfig, selectFront } from 'selectors/frontsSelectors';
 import { Dispatch, ThunkResult } from 'types/Store';
 import { Action } from 'types/Action';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
-import { Stages, Collection, CardSets } from 'shared/types/Collection';
+import { Stages, Collection, CardSets } from 'types/Collection';
 import difference from 'lodash/difference';
 import { selectArticlesInCollections } from 'selectors/collection';
 import {

@@ -9,7 +9,7 @@ import {
   maybeAddFrontPublicationDate,
   copyCardImageMeta
 } from 'shared/actions/Cards';
-import { Card } from 'shared/types/Collection';
+import { Card } from 'types/Collection';
 import {
   selectSharedState,
   selectCards,

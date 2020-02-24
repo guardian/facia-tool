@@ -10,7 +10,7 @@ import {
   selectSupportingArticleCount
 } from 'selectors/shared';
 import cardTypes from 'constants/cardTypes';
-import { CardTypes, CardSizes, CardMeta } from 'shared/types/Collection';
+import { CardTypes, CardSizes, CardMeta } from 'types/Collection';
 import SnapLink from 'components/snapLink/SnapLink';
 import {
   copyCardImageMetaWithPersist,

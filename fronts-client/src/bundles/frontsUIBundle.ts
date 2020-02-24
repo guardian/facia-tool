@@ -41,7 +41,7 @@ import {
   REMOVE_GROUP_CARD,
   REMOVE_SUPPORTING_CARD
 } from 'shared/actions/Cards';
-import { Stages, CardSets } from 'shared/types/Collection';
+import { Stages, CardSets } from 'types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
 import { CollectionWithArticles } from 'types/PageViewData';
 import {

@@ -5,7 +5,7 @@ import { State } from 'types/State';
 import { selectFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import CollectionOverview from './CollectionOverview';
-import { CardSets } from 'shared/types/Collection';
+import { CardSets } from 'types/Collection';
 import ContainerHeadingPinline from 'components/typography/ContainerHeadingPinline';
 import ContentContainer from 'components/layout/ContentContainer';
 import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';

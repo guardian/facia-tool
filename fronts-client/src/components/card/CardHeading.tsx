@@ -3,7 +3,7 @@ import { styled } from 'constants/theme';
 import { sanitizeHTML } from 'util/sanitizeHTML';
 import { media } from 'util/mediaQueries';
 import { theme } from 'constants/theme';
-import { CardSizes } from 'shared/types/Collection';
+import { CardSizes } from 'types/Collection';
 
 const Wrapper = styled.span<{
   displaySize?: CardSizes;

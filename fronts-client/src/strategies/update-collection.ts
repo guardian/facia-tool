@@ -2,7 +2,7 @@ import { State } from 'types/State';
 import { updateCollection } from 'services/faciaApi';
 import { updateEditionsCollection } from 'services/faciaApi';
 import { runStrategy } from './run-strategy';
-import { CollectionWithNestedArticles } from 'shared/types/Collection';
+import { CollectionWithNestedArticles } from 'types/Collection';
 import { EditionsCollection } from 'types/Edition';
 
 const collectionToEditionCollection = (

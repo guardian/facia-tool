@@ -28,7 +28,7 @@ import {
 import { MappableDropType } from 'util/collectionUtils';
 import { ExternalArticle } from 'types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
-import { Card, CardMeta } from '../types/Collection';
+import { Card, CardMeta } from '../../types/Collection';
 import { selectEditMode } from '../../selectors/pathSelectors';
 import { startOptionsModal } from 'actions/OptionsModal';
 import noop from 'lodash/noop';

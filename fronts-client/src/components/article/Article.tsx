@@ -15,7 +15,7 @@ import CardBody from '../card/CardBody';
 import CardContainer from '../card/CardContainer';
 import CardMetaHeading from '../card/CardMetaHeading';
 import ArticleBody from './ArticleBody';
-import { CardSizes } from 'shared/types/Collection';
+import { CardSizes } from 'types/Collection';
 import DragIntentContainer from '../DragIntentContainer';
 import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
 import { theme } from 'constants/theme';

@@ -7,7 +7,7 @@ import {
   persistOpenFrontsOnEdit,
   persistFavouriteFrontsOnEdit
 } from '../storeMiddleware';
-import { Collection } from 'shared/types/Collection';
+import { Collection } from 'types/Collection';
 
 const mockCollectionUpdateAction: any = (collection: Collection) => ({
   type: 'UPDATE_COLLECTION',

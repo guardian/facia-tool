@@ -1,5 +1,5 @@
 import { $Diff } from 'utility-types';
-import { CollectionFromResponse, NestedCard } from 'shared/types/Collection';
+import { CollectionFromResponse, NestedCard } from 'types/Collection';
 import { EditionsPrefill } from './Edition';
 
 interface FrontConfigResponse {

@@ -1,4 +1,4 @@
-import { NestedCard } from 'shared/types/Collection';
+import { NestedCard } from 'types/Collection';
 import { FeatureSwitch } from './Features';
 
 interface Permission {

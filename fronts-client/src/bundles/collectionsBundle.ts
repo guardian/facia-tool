@@ -3,7 +3,7 @@ import createAsyncResourceBundle, {
   State,
   Actions
 } from 'lib/createAsyncResourceBundle';
-import { Collection } from 'shared/types/Collection';
+import { Collection } from 'types/Collection';
 import { addPersistMetaToAction } from '../util/action';
 import set from 'lodash/fp/set';
 

@@ -1,5 +1,5 @@
 import { State } from 'shared/types/State';
-import { CardSets } from 'shared/types/Collection';
+import { CardSets } from 'types/Collection';
 import { createSelectArticlesInCollection } from './shared';
 import uniq from 'lodash/uniq';
 import flatten from 'lodash/flatten';

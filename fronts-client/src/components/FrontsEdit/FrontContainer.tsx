@@ -12,7 +12,7 @@ import {
   editorOpenAllCollectionsForFront,
   editorCloseAllCollectionsForFront
 } from 'bundles/frontsUIBundle';
-import { CardSets, Card as TCard } from 'shared/types/Collection';
+import { CardSets, Card as TCard } from 'types/Collection';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
 import { theme } from 'constants/theme';

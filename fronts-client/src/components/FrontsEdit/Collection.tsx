@@ -2,7 +2,7 @@ import React from 'react';
 import { styled, Theme } from 'constants/theme';
 import Collection from './CollectionComponents/Collection';
 import { AlsoOnDetail } from 'types/Collection';
-import { CardSets, Card as TCard } from 'shared/types/Collection';
+import { CardSets, Card as TCard } from 'types/Collection';
 import GroupDisplayComponent from 'components/GroupDisplay';
 import GroupLevel from 'components/clipboard/GroupLevel';
 import Card from './CollectionComponents/Card';

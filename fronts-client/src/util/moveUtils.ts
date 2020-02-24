@@ -1,7 +1,7 @@
 import { PosSpec } from 'lib/dnd';
 import { State } from 'shared/types/State';
 import { selectGroupSiblings } from 'selectors/shared';
-import { Group } from 'shared/types/Collection';
+import { Group } from 'types/Collection';
 import findIndex from 'lodash/findIndex';
 
 function getFromGroupIndicesWithRespectToState(

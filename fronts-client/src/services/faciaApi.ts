@@ -11,10 +11,7 @@ import {
   EditionCollectionResponse
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'types/ExternalArticle';
-import {
-  CollectionWithNestedArticles,
-  NestedCard
-} from 'shared/types/Collection';
+import { CollectionWithNestedArticles, NestedCard } from 'types/Collection';
 import pandaFetch from './pandaFetch';
 import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';

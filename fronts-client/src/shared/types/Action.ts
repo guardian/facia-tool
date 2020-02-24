@@ -1,5 +1,5 @@
 import { ExternalArticle } from '../../types/ExternalArticle';
-import { Collection, Card, Group, CardMeta } from './Collection';
+import { Collection, Card, Group, CardMeta } from '../../types/Collection';
 import { Actions } from 'lib/createAsyncResourceBundle';
 import { copyCardImageMeta } from 'shared/actions/Cards';
 import { PageViewStory } from '../../types/PageViewData';
