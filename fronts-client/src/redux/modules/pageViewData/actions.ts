@@ -2,7 +2,7 @@ import { ThunkResult } from 'types/Store';
 import {
   PageViewDataRequested,
   PageViewDataReceived
-} from '../../../shared/types/Action';
+} from '../../../types/Action';
 import { PageViewDataFromOphan, PageViewStory } from 'types/PageViewData';
 import { DerivedArticle } from 'types/Article';
 import {

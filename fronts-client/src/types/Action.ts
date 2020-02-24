@@ -2,15 +2,6 @@
  * Need to add new types into here and union them with `Action` in order
  * for typing to work nicely in reducers
  */
-import {
-  InsertGroupCard as SharedInsertGroupCard,
-  InsertSupportingCard as SharedInsertSupportingCard,
-  RemoveGroupCard as SharedRemoveGroupCard,
-  RemoveSupportingCard as SharedRemoveSupportingCard,
-  Action as SharedActions,
-  InsertCardPayload,
-  RemoveCardPayload
-} from 'shared/types/Action';
 import { PersistMeta } from 'util/storeMiddleware';
 import { Config } from './Config';
 import {
@@ -19,7 +10,7 @@ import {
   EditionsFrontMetadata
 } from './FaciaApi';
 import { BatchAction } from 'redux-batched-actions';
-import { Stages, Card } from 'types/Collection';
+import { Stages, Collection, Card, Group, CardMeta } from 'types/Collection';
 import {
   EDITOR_OPEN_CURRENT_FRONTS_MENU,
   EDITOR_CLOSE_CURRENT_FRONTS_MENU,
@@ -49,6 +40,10 @@ import { ActionSetFeatureValue } from 'redux/modules/featureSwitches';
 import { ReactNode } from 'react';
 import { SetHidden } from '../bundles/collectionsBundle';
 import { OptionsModalChoices } from './Modals';
+import { Actions } from 'lib/createAsyncResourceBundle';
+import { ExternalArticle } from 'types/ExternalArticle';
+import { copyCardImageMeta } from 'shared/actions/Cards';
+import { PageViewStory } from 'types/PageViewData';
 
 interface EditorOpenCurrentFrontsMenu {
   type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
@@ -168,14 +163,50 @@ interface ActionPersistMeta {
   meta: PersistMeta;
 }
 
-type InsertGroupCard = SharedInsertGroupCard & ActionPersistMeta;
-type InsertSupportingCard = SharedInsertSupportingCard & ActionPersistMeta;
+interface CardsReceived {
+  type: 'SHARED/CARDS_RECEIVED';
+  payload: { [id: string]: Card };
+}
+interface ClearCards {
+  type: 'SHARED/CLEAR_CARDS';
+  payload: { ids: string[] };
+}
+interface GroupsReceived {
+  type: 'SHARED/GROUPS_RECEIVED';
+  payload: { [id: string]: Group };
+}
+
+type InsertGroupCard = {
+  type: 'SHARED/INSERT_GROUP_CARD';
+} & {
+  payload: InsertCardPayload;
+  meta: PersistMeta;
+} & ActionPersistMeta;
+
+type InsertSupportingCard = {
+  type: 'SHARED/INSERT_SUPPORTING_CARD';
+} & {
+  payload: InsertCardPayload;
+  meta: PersistMeta;
+} & ActionPersistMeta;
+
 type InsertClipboardCard = {
   type: 'INSERT_CLIPBOARD_CARD';
 } & { payload: InsertCardPayload & { currentCards: { [uuid: string]: Card } } };
 
-type RemoveGroupCard = SharedRemoveGroupCard & ActionPersistMeta;
-type RemoveSupportingCard = SharedRemoveSupportingCard & ActionPersistMeta;
+interface RemoveCardPayload {
+  payload: {
+    id: string;
+    cardId: string;
+  };
+}
+
+type RemoveGroupCard = {
+  type: 'SHARED/REMOVE_GROUP_CARD';
+} & RemoveCardPayload;
+type RemoveSupportingCard = {
+  type: 'SHARED/REMOVE_SUPPORTING_CARD';
+} & RemoveCardPayload;
 type RemoveClipboardCard = {
   type: 'REMOVE_CLIPBOARD_CARD';
 } & RemoveCardPayload;
@@ -301,6 +332,56 @@ interface EditionsFrontHiddenStateUpdate {
   };
 }
 
+interface PageViewDataRequested {
+  type: 'PAGE_VIEW_DATA_REQUESTED';
+  payload: {
+    frontId: string;
+  };
+}
+
+interface PageViewDataReceived {
+  type: 'PAGE_VIEW_DATA_RECEIVED';
+  payload: {
+    data: PageViewStory[];
+    frontId: string;
+    collectionId: string;
+    clearPreviousData: boolean;
+  };
+}
+
+interface UpdateCardMeta {
+  type: 'SHARED/UPDATE_CARD_META';
+  payload: {
+    id: string;
+    meta: CardMeta;
+    merge: boolean;
+  };
+}
+
+interface InsertCardPayload {
+  id: string;
+  index: number;
+  cardId: string;
+}
+
+interface CapGroupSiblings {
+  type: 'SHARED/CAP_GROUP_SIBLINGS';
+  payload: {
+    id: string;
+    collectionCap: number;
+  };
+}
+
+interface MaybeAddFrontPublicationDate {
+  type: 'SHARED/MAYBE_ADD_FRONT_PUBLICATION';
+  payload: {
+    id: string;
+    date: number;
+  };
+}
+
+type CopyCardImageMeta = ReturnType<typeof copyCardImageMeta>;
+
 type SetFocusState = ReturnType<typeof setFocusState>;
 type ResetFocusState = ReturnType<typeof resetFocusState>;
 
@@ -313,7 +394,6 @@ type Action =
   | RequestFrontCollectionAction
   | ErrorInAction
   | FrontsUpdateLastPressedAction
-  | SharedActions
   | RecordUnpublishedChanges
   | InsertGroupCard
   | InsertSupportingCard
@@ -356,7 +436,21 @@ type Action =
   | ChangedBrowsingStage
   | EditorCloseFormsForCollection
   | StartOptionsModal
-  | EndOptionsModal;
+  | EndOptionsModal
+  | InsertGroupCard
+  | GroupsReceived
+  | CardsReceived
+  | ClearCards
+  | RemoveGroupCard
+  | InsertSupportingCard
+  | Actions<ExternalArticle>
+  | Actions<Collection>
+  | UpdateCardMeta
+  | MaybeAddFrontPublicationDate
+  | CapGroupSiblings
+  | CopyCardImageMeta
+  | PageViewDataRequested
+  | PageViewDataReceived;
 
 export {
   ActionError,
@@ -370,7 +464,6 @@ export {
   RequestFrontCollectionAction,
   ErrorInAction,
   FrontsUpdateLastPressedAction,
-  SharedActions,
   RecordUnpublishedChanges,
   InsertGroupCard,
   InsertSupportingCard,
@@ -404,5 +497,14 @@ export {
   IsPrefillMode,
   ChangedBrowsingStage,
   StartOptionsModal,
-  EndOptionsModal
+  EndOptionsModal,
+  CardsReceived,
+  ClearCards,
+  UpdateCardMeta,
+  InsertCardPayload,
+  RemoveCardPayload,
+  CapGroupSiblings,
+  MaybeAddFrontPublicationDate,
+  PageViewDataRequested,
+  PageViewDataReceived
 };

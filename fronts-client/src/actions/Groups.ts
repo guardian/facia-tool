@@ -1,5 +1,5 @@
 import { Group } from 'types/Collection';
-import { CapGroupSiblings } from 'shared/types/Action';
+import { CapGroupSiblings } from 'types/Action';
 
 function groupsReceived(groups: { [id: string]: Group }) {
   return {
