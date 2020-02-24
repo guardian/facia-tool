@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'constants/theme';
 
-import ShortVerticalPinline from 'shared/components/layout/ShortVerticalPinline';
+import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { media } from 'util/mediaQueries';
 import { CardSizes } from 'shared/types/Collection';
 

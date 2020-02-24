@@ -16,10 +16,10 @@ import { CardSets, Card as TCard } from 'shared/types/Collection';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
 import { theme } from 'constants/theme';
-import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
+import ButtonCircularCaret from 'components/inputs/ButtonCircularCaret';
 import ButtonRoundedWithLabel, {
   ButtonLabel
-} from 'shared/components/input/ButtonRoundedWithLabel';
+} from 'components/inputs/ButtonRoundedWithLabel';
 import { DownCaretIcon } from 'components/icons/Icons';
 import FrontCollectionsOverview from './FrontCollectionsOverview';
 import FrontContent from './FrontContent';

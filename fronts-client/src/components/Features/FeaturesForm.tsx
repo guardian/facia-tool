@@ -1,5 +1,5 @@
 import React from 'react';
-import InputCheckboxToggle from 'shared/components/input/InputCheckboxToggle';
+import InputCheckboxToggle from 'components/inputs/InputCheckboxToggle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { selectAllFeatures } from 'redux/modules/featureSwitches/selectors';

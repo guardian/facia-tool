@@ -1,4 +1,4 @@
-import BasePlaceholder from '../../shared/components/BasePlaceholder';
+import BasePlaceholder from '../BasePlaceholder';
 import { styled } from 'constants/theme';
 
 export default styled(BasePlaceholder)<{ width?: number; height?: number }>`

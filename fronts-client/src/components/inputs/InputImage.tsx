@@ -14,21 +14,17 @@ import {
   validateImageEvent,
   validateMediaItem,
   validateImageSrc
-} from '../../../util/validateImageSrc';
+} from '../../util/validateImageSrc';
 import { selectGridUrl } from 'selectors/configSelectors';
 import { State } from 'types/State';
 import { GridData, Criteria } from 'types/Grid';
-import {
-  RubbishBinIcon,
-  AddImageIcon,
-  VideoIcon
-} from '../../../components/icons/Icons';
+import { RubbishBinIcon, AddImageIcon, VideoIcon } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
 import ImageDragIntentIndicator from 'components/image/ImageDragIntentIndicator';
 import { EditMode } from 'types/EditMode';
-import { selectEditMode } from '../../../selectors/pathSelectors';
-import CircularIconContainer from '../../../components/icons/CircularIconContainer';
+import { selectEditMode } from '../../selectors/pathSelectors';
+import CircularIconContainer from '../icons/CircularIconContainer';
 
 const ImageContainer = styled.div<{
   small?: boolean;

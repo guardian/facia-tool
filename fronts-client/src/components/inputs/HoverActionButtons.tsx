@@ -1,14 +1,14 @@
 import React from 'react';
 import ButtonCircular from './ButtonCircular';
 import Link from '../Link';
-import { getPaths } from '../../../util/paths';
+import { getPaths } from '../../util/paths';
 import { ButtonPropsFromWrapper } from './HoverActionButtonWrapper';
 import {
   AddToClipboardHoverIcon,
   OphanHoverIcon,
   ViewHoverIcon,
   DeleteHoverIcon
-} from '../../../components/icons/HoverIcons';
+} from '../icons/HoverIcons';
 import styled from 'styled-components';
 import { theme } from 'constants/theme';
 

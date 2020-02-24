@@ -5,7 +5,7 @@ import { styled, theme } from 'constants/theme';
 import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
 import CurrentFrontsList from './CurrentFrontsList';
 import FrontsLogo from 'images/icons/fronts-logo.svg';
-import Button from 'shared/components/input/ButtonDefault';
+import Button from 'components/inputs/ButtonDefault';
 import { State } from 'types/State';
 import {
   selectIsCurrentFrontsMenuOpen,

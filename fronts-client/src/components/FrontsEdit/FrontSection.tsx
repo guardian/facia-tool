@@ -10,7 +10,7 @@ import {
   selectIsFrontOverviewOpen,
   changedBrowsingStage
 } from 'bundles/frontsUIBundle';
-import Button from 'shared/components/input/ButtonDefault';
+import Button from 'components/inputs/ButtonDefault';
 import { frontStages } from 'constants/fronts';
 import { FrontConfig, EditionsFrontMetadata } from 'types/FaciaApi';
 import { State } from 'types/State';

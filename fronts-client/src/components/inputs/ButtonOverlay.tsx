@@ -2,7 +2,7 @@ import React from 'react';
 import { styled, theme } from 'constants/theme';
 import { css } from 'styled-components';
 
-import Button from 'shared/components/input/ButtonDefault';
+import Button from 'components/inputs/ButtonDefault';
 
 const ButtonWithShadow = styled(Button)<{ active?: boolean }>`
   box-shadow: rgba(0, 0, 0, 0.15) 0px 1px 10px 2px,

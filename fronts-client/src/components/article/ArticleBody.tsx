@@ -3,22 +3,22 @@ import { styled, theme } from 'constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
 import CardHeading from '../card/CardHeading';
-import BasePlaceholder from '../../shared/components/BasePlaceholder';
+import BasePlaceholder from '../BasePlaceholder';
 import { getPillarColor } from 'util/getPillarColor';
 import CardMetaContainer from '../card/CardMetaContainer';
 import CardContent from '../card/CardContent';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
-import TextPlaceholder from 'shared/components/TextPlaceholder';
+import TextPlaceholder from 'components/TextPlaceholder';
 import { ThumbnailSmall, ThumbnailCutout } from 'components/image/Thumbnail';
 import CardMetaHeading from '../card/CardMetaHeading';
-import { HoverActionsButtonWrapper } from '../../shared/components/input/HoverActionButtonWrapper';
+import { HoverActionsButtonWrapper } from '../inputs/HoverActionButtonWrapper';
 import {
   HoverViewButton,
   HoverOphanButton,
   HoverDeleteButton,
   HoverAddToClipboardButton
-} from '../../shared/components/input/HoverActionButtons';
-import { HoverActionsAreaOverlay } from '../../shared/components/CollectionHoverItems';
+} from '../inputs/HoverActionButtons';
+import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { CardSizes } from 'shared/types/Collection';
 import CardMetaContent from '../card/CardMetaContent';
 import CardDraftMetaContent from '../card/CardDraftMetaContent';
@@ -31,7 +31,7 @@ import CardSettingsDisplay from '../card/CardSettingsDisplay';
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { ImageMetadataContainer } from 'components/image/ImageMetaDataContainer';
 import EditModeVisibility from 'components/util/EditModeVisibility';
-import PageViewDataWrapper from '../../shared/components/PageViewDataWrapper';
+import PageViewDataWrapper from '../PageViewDataWrapper';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`

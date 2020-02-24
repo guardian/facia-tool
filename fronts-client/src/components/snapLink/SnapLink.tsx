@@ -3,41 +3,41 @@ import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import upperFirst from 'lodash/upperFirst';
 
-import CardContainer from '../../../components/card/CardContainer';
-import CardMetaContainer from '../../../components/card/CardMetaContainer';
-import CardMetaHeading from '../../../components/card/CardMetaHeading';
+import CardContainer from 'components/card/CardContainer';
+import CardMetaContainer from 'components/card/CardMetaContainer';
+import CardMetaHeading from 'components/card/CardMetaHeading';
 import { ThumbnailSmall } from 'components/image/Thumbnail';
-import { HoverActionsButtonWrapper } from '../input/HoverActionButtonWrapper';
+import { HoverActionsButtonWrapper } from 'components/inputs/HoverActionButtonWrapper';
 import {
   HoverDeleteButton,
   HoverAddToClipboardButton,
   HoverViewButton,
   HoverOphanButton
-} from '../input/HoverActionButtons';
+} from '../inputs/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { Card, CardSizes } from 'shared/types/Collection';
 import {
   selectSharedState,
   selectCard,
   createSelectArticleFromCard
-} from '../../../selectors/shared';
-import { State } from '../../types/State';
-import CardHeading from '../../../components/card/CardHeading';
-import CardContent from '../../../components/card/CardContent';
-import CardBody from '../../../components/card/CardBody';
-import CardMetaContent from '../../../components/card/CardMetaContent';
+} from '../../selectors/shared';
+import { State } from '../../shared/types/State';
+import CardHeading from '../card/CardHeading';
+import CardContent from '../card/CardContent';
+import CardBody from 'components/card/CardBody';
+import CardMetaContent from '../card/CardMetaContent';
 import url from 'constants/url';
-import CardHeadingContainer from '../../../components/card/CardHeadingContainer';
-import CardSettingsDisplay from '../../../components/card/CardSettingsDisplay';
+import CardHeadingContainer from '../card/CardHeadingContainer';
+import CardSettingsDisplay from '../card/CardSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
 import { DerivedArticle } from 'types/Article';
 import { ImageMetadataContainer } from 'components/image/ImageMetaDataContainer';
 import { theme } from 'constants/theme';
-import ArticleGraph from '../../../components/article/ArticleGraph';
+import ArticleGraph from '../article/ArticleGraph';
 import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
-import PageViewDataWrapper from '../PageViewDataWrapper';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { ThumbnailCutout } from 'components/image/Thumbnail';
+import PageViewDataWrapper from 'components/PageViewDataWrapper';
 
 const SnapLinkBodyContainer = styled(CardBody)`
   justify-content: space-between;

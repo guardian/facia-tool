@@ -2,7 +2,7 @@ import React from 'react';
 import range from 'lodash/range';
 import { IPagination as PaginationState } from 'lib/createAsyncResourceBundle';
 import { styled } from 'constants/theme';
-import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
+import ButtonCircularCaret from 'components/inputs/ButtonCircularCaret';
 
 interface PaginationProps {
   pageChange: (currentPage: number) => void;

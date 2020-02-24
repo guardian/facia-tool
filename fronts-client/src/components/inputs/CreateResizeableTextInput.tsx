@@ -5,7 +5,7 @@ import clamp from 'lodash/clamp';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
-import { RewindIcon } from '../../../components/icons/Icons';
+import { RewindIcon } from '../icons/Icons';
 import { styled } from 'constants/theme';
 
 type Props = {

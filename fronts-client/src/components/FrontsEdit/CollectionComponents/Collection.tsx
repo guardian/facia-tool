@@ -1,10 +1,10 @@
 import { Dispatch } from 'types/Store';
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import { HeadlineContentButton } from 'shared/components/CollectionDisplay';
-import CollectionDisplay from 'shared/components/CollectionDisplay';
+import { HeadlineContentButton } from 'components/CollectionDisplay';
+import CollectionDisplay from 'components/CollectionDisplay';
 import CollectionNotification from 'components/CollectionNotification';
-import Button from 'shared/components/input/ButtonDefault';
+import Button from 'components/inputs/ButtonDefault';
 import { AlsoOnDetail } from 'types/Collection';
 import {
   publishCollection,
@@ -36,7 +36,7 @@ import {
 import { getArticlesForCollections } from 'actions/Collections';
 import { cardSets } from 'constants/fronts';
 import CollectionMetaContainer from 'components/collection/CollectionMetaContainer';
-import ButtonCircularCaret from 'shared/components/input/ButtonCircularCaret';
+import ButtonCircularCaret from 'components/inputs/ButtonCircularCaret';
 import { theme, styled } from 'constants/theme';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { fetchPrefill } from 'bundles/capiFeedBundle';

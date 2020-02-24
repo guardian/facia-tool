@@ -1,5 +1,5 @@
 import { styled } from 'constants/theme';
-import { theme } from '../../../constants/theme';
+import { theme } from '../../constants/theme';
 
 type ButtonSizes = 's' | 'm' | 'l';
 type ButtonPriorities = 'primary' | 'default' | 'muted';

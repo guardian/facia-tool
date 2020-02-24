@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
 import AddParentInfo, { isMove, isInside } from './AddParentInfo';
 import createStore, { Store } from './store';
-import DragIntentContainer from 'shared/components/DragIntentContainer';
+import DragIntentContainer from 'components/DragIntentContainer';
 import styled from 'styled-components';
 import { DropZoneContainer } from './DropZone';
 

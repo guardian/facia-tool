@@ -10,8 +10,8 @@ import {
   FieldArray
 } from 'redux-form';
 import { styled, theme } from 'constants/theme';
-import Button from 'shared/components/input/ButtonDefault';
-import ContentContainer from 'shared/components/layout/ContentContainer';
+import Button from 'components/inputs/ButtonDefault';
+import ContentContainer from 'components/layout/ContentContainer';
 import {
   createSelectArticleFromCard,
   selectSharedState,
@@ -21,12 +21,12 @@ import {
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
 import { defaultObject } from 'util/selectorUtils';
 import { CardMeta, ArticleTag } from 'shared/types/Collection';
-import InputText from 'shared/components/input/InputText';
-import InputTextArea from 'shared/components/input/InputTextArea';
-import InputCheckboxToggleInline from 'shared/components/input/InputCheckboxToggleInline';
-import InputImage from 'shared/components/input/InputImage';
-import InputGroup from 'shared/components/input/InputGroup';
-import InputButton from 'shared/components/input/InputButton';
+import InputText from 'components/inputs/InputText';
+import InputTextArea from 'components/inputs/InputTextArea';
+import InputCheckboxToggleInline from 'components/inputs/InputCheckboxToggleInline';
+import InputImage from 'components/inputs/InputImage';
+import InputGroup from 'components/inputs/InputGroup';
+import InputButton from 'components/inputs/InputButton';
 import Row from '../Row';
 import Col from '../Col';
 import { State } from 'types/State';
@@ -53,7 +53,7 @@ import { getContributorImage } from 'util/CAPIUtils';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode, selectV2SubPath } from 'selectors/pathSelectors';
 import { ValidationResponse } from 'util/validateImageSrc';
-import InputLabel from 'shared/components/input/InputLabel';
+import InputLabel from 'components/inputs/InputLabel';
 import url from 'constants/url';
 import { RichTextInput } from 'components/inputs/RichTextInput';
 
