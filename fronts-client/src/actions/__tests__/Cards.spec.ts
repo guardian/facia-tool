@@ -22,7 +22,7 @@ import {
   reducer as collectionsReducer,
   initialState as collectionsState
 } from 'bundles/collectionsBundle';
-import  optionsModal from 'reducers/modalsReducer';
+import optionsModal from 'reducers/modalsReducer';
 import config from 'reducers/configReducer';
 import { enableBatching } from 'redux-batched-actions';
 import { Dispatch } from 'types/Store';

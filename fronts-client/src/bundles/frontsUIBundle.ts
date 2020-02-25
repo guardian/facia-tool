@@ -625,10 +625,7 @@ const getFrontPosition = (
   }
 };
 
-const reducer = (
-  state: State = defaultState,
-  action: Action
-): State => {
+const reducer = (state: State = defaultState, action: Action): State => {
   switch (action.type) {
     case EDITOR_OPEN_CURRENT_FRONTS_MENU: {
       return {

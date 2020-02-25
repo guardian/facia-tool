@@ -1,9 +1,10 @@
 import { Action } from 'types/Action';
 import { OptionsModalChoices } from 'types/Modals';
+import { ReactNode } from 'react';
 
-export type OptionsModalState = null | {
+type OptionsModalState = null | {
   title: string;
-  description: string;
+  description: string | ReactNode;
   options: OptionsModalChoices[];
   onCancel: () => void;
   showCancelButton: boolean;
@@ -22,5 +23,5 @@ const optionsModal = (state: OptionsModalState, action: Action) => {
     }
   }
 };
-
+export { OptionsModalState };
 export default optionsModal;

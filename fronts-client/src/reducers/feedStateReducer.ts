@@ -22,5 +22,5 @@ const feedState = (
   }
 };
 
-export {State};
+export { State };
 export default feedState;
