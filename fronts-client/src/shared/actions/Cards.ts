@@ -26,12 +26,12 @@ import {
   getAbsolutePath
 } from 'util/url';
 import { MappableDropType } from 'util/collectionUtils';
-import { ExternalArticle } from 'types/ExternalArticle';
 import { CapiArticle } from 'types/Capi';
 import { Card, CardMeta } from '../../types/Collection';
 import { selectEditMode } from '../../selectors/pathSelectors';
 import { startOptionsModal } from 'actions/OptionsModal';
 import noop from 'lodash/noop';
+import { TArticleEntities } from 'types/Cards';
 
 export const UPDATE_CARD_META = 'UPDATE_CARD_META';
 export const CARDS_RECEIVED = 'CARDS_RECEIVED';
@@ -149,8 +149,6 @@ const insertSupportingCard = (
     key: 'cardId'
   }
 });
-
-type TArticleEntities = [Card?, ExternalArticle?];
 
 /**
  * Create the appropriate article entities from a MappableDropType,
