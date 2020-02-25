@@ -1,4 +1,5 @@
 import urlConstants from 'constants/url';
+import { CardMeta } from 'types/Collection';
 
 const a = document.createElement('a');
 
@@ -54,11 +55,70 @@ function isCapiUrl(url: string) {
   return matchHostname(url, [urlConstants.base.capi]);
 }
 
+/**
+ * Given a URL, identify whether it has been provided as Google redirect URL,
+ * e.g. https://www.google.com/url?q=https://example.com/foobar&sa=D&source=hangouts&ust=someId&usg=anotherId
+ * This can happen as a result of a URL being copied from Google Hangouts
+ */
+const isGoogleRedirectUrl = (url: string) => {
+  a.href = url;
+  return a.hostname.includes('google') && hasWhitelistedParams(url, ['q']);
+};
+
+const getRelevantURLFromGoogleRedirectURL = (url: string) => {
+  const params = checkQueryParams(url, ['q']);
+  if (params && isValidURL(params[0][1])) {
+    return params[0][1];
+  }
+  return url;
+};
+
+const checkQueryParams = (url: string, whiteList: string[]) => {
+  let urlObj: URL | undefined;
+  try {
+    urlObj = new URL(url);
+  } catch (e) {
+    // This wasn't a valid URL -- we won't be able to extract values.
+    return undefined;
+  }
+  const allParams = Array.from(urlObj.searchParams);
+  return allParams.filter(([key]) => whiteList.includes(key));
+};
+
+const hasWhitelistedParams = (url: string, whiteList: string[]) => {
+  const validParams = checkQueryParams(url, whiteList);
+  return validParams && validParams.length > 0;
+};
+
+const guPrefix = 'gu-';
+
+/**
+ * Given a URL, produce an object with the appropriate meta values.
+ */
+const getCardMetaFromUrlParams = (
+  url: string,
+  whitelist: []
+): CardMeta | undefined => {
+  const guParams = checkQueryParams(url, whitelist);
+  return (
+    guParams &&
+    guParams.reduce(
+      (acc, [key, value]) => ({ ...acc, [key.replace(guPrefix, '')]: value }),
+      {}
+    )
+  );
+};
+
 export {
   getAbsolutePath,
   getHostname,
   isGuardianWebsiteUrl,
   isGuardianUrl,
   isValidURL,
-  isCapiUrl
+  isCapiUrl,
+  isGoogleRedirectUrl,
+  getRelevantURLFromGoogleRedirectURL,
+  checkQueryParams,
+  hasWhitelistedParams,
+  getCardMetaFromUrlParams
 };

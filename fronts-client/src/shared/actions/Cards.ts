@@ -1,37 +1,42 @@
-import keyBy from 'lodash/keyBy';
+import { startOptionsModal } from 'actions/OptionsModal';
 import { actions as externalArticleActions } from 'bundles/externalArticlesBundle';
+import keyBy from 'lodash/keyBy';
+import noop from 'lodash/noop';
 import {
+  getAtomFromCapi,
   getContent,
-  transformExternalArticle,
-  getAtomFromCapi
+  transformExternalArticle
 } from 'services/faciaApi';
-import { ThunkResult, Dispatch } from 'types/Store';
 import {
   CardsReceived,
+  ClearCards,
+  InsertGroupCard,
   InsertSupportingCard,
+  MaybeAddFrontPublicationDate,
   RemoveGroupCard,
   RemoveSupportingCard,
-  UpdateCardMeta,
-  ClearCards,
-  MaybeAddFrontPublicationDate
+  UpdateCardMeta
 } from 'types/Action';
-import { InsertGroupCard } from 'types/Action';
-import { createCard } from 'util/card';
-import { createSnap, createLatestSnap, createAtomSnap } from 'util/snap';
-import { getIdFromURL } from 'util/CAPIUtils';
-import {
-  isValidURL,
-  isGuardianUrl,
-  isCapiUrl,
-  getAbsolutePath
-} from 'util/url';
-import { MappableDropType } from 'util/collectionUtils';
 import { CapiArticle } from 'types/Capi';
-import { Card, CardMeta } from '../../types/Collection';
-import { selectEditMode } from '../../selectors/pathSelectors';
-import { startOptionsModal } from 'actions/OptionsModal';
-import noop from 'lodash/noop';
 import { TArticleEntities } from 'types/Cards';
+import { Dispatch, ThunkResult } from 'types/Store';
+import { getIdFromURL } from 'util/CAPIUtils';
+import { createCard } from 'util/card';
+import { MappableDropType } from 'util/collectionUtils';
+import { createAtomSnap, createLatestSnap, createSnap } from 'util/snap';
+import {
+  checkQueryParams,
+  getAbsolutePath,
+  getRelevantURLFromGoogleRedirectURL,
+  hasWhitelistedParams,
+  isCapiUrl,
+  isGoogleRedirectUrl,
+  isGuardianUrl,
+  isValidURL
+} from 'util/url';
+
+import { selectEditMode } from '../../selectors/pathSelectors';
+import { Card, CardMeta } from '../../types/Collection';
 
 export const UPDATE_CARD_META = 'UPDATE_CARD_META';
 export const CARDS_RECEIVED = 'CARDS_RECEIVED';
@@ -307,23 +312,6 @@ const guPrefix = 'gu-';
 
 const marketingParamsWhiteList = ['acquisitionData', 'INTCMP'];
 
-const hasWhitelistedParams = (url: string, whiteList: string[]) => {
-  const validParams = checkQueryParams(url, whiteList);
-  return validParams && validParams.length > 0;
-};
-
-const checkQueryParams = (url: string, whiteList: string[]) => {
-  let urlObj: URL | undefined;
-  try {
-    urlObj = new URL(url);
-  } catch (e) {
-    // This wasn't a valid URL -- we won't be able to extract values.
-    return undefined;
-  }
-  const allParams = Array.from(urlObj.searchParams);
-  return allParams.filter(([key]) => whiteList.includes(key));
-};
-
 /**
  * Given a URL, produce an object with the appropriate meta values.
  */
@@ -336,25 +324,6 @@ const getCardMetaFromUrlParams = (url: string): CardMeta | undefined => {
       {}
     )
   );
-};
-
-/**
- * Given a URL, identify whether it has been provided as Google redirect URL,
- * e.g. https://www.google.com/url?q=https://example.com/foobar&sa=D&source=hangouts&ust=someId&usg=anotherId
- * This can happen as a result of a URL being copied from Google Hangouts
- */
-const isGoogleRedirectUrl = (url: string) => {
-  const a = document.createElement('a');
-  a.href = url;
-  return a.hostname.includes('google') && hasWhitelistedParams(url, ['q']);
-};
-
-const getRelevantURLFromGoogleRedirectURL = (url: string) => {
-  const params = checkQueryParams(url, ['q']);
-  if (params && isValidURL(params[0][1])) {
-    return params[0][1];
-  }
-  return url;
 };
 
 const getArticleEntitiesFromGuardianPath = async (
@@ -413,7 +382,6 @@ export {
   clearCards,
   maybeAddFrontPublicationDate,
   copyCardImageMeta,
-  hasWhitelistedParams,
   snapMetaWhitelist,
   marketingParamsWhiteList
 };
