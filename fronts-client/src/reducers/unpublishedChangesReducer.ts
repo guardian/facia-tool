@@ -1,6 +1,6 @@
 import { Action } from 'types/Action';
 
-interface State {
+export interface State {
   [id: string]: boolean;
 }
 

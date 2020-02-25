@@ -1,7 +1,7 @@
 import { Action } from 'types/Action';
 import { OptionsModalChoices } from 'types/Modals';
 
-type OptionsModalState = null | {
+export type OptionsModalState = null | {
   title: string;
   description: string;
   options: OptionsModalChoices[];
@@ -9,7 +9,7 @@ type OptionsModalState = null | {
   showCancelButton: boolean;
 };
 
-export const optionsModal = (state: OptionsModalState, action: Action) => {
+const optionsModal = (state: OptionsModalState, action: Action) => {
   switch (action.type) {
     case 'MODAL/START_OPTIONS_MODAL': {
       return action.payload;
@@ -23,4 +23,4 @@ export const optionsModal = (state: OptionsModalState, action: Action) => {
   }
 };
 
-export default { optionsModal };
+export default optionsModal;

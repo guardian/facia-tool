@@ -22,4 +22,5 @@ const feedState = (
   }
 };
 
+export {State};
 export default feedState;

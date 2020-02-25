@@ -1,6 +1,6 @@
 import { Action } from 'types/Action';
 
-type State = string;
+export type State = string;
 
 const path = (state: State = '', action: Action) => {
   switch (action.type) {

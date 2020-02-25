@@ -30,7 +30,6 @@ import { State as GlobalState } from 'types/State';
 import flatten from 'lodash/flatten';
 import { createSelector } from 'reselect';
 
-import { SharedState as GlobalSharedState } from 'types/State';
 import { events } from 'services/GA';
 import {
   selectFronts,
@@ -628,8 +627,7 @@ const getFrontPosition = (
 
 const reducer = (
   state: State = defaultState,
-  action: Action,
-  sharedState: GlobalSharedState
+  action: Action
 ): State => {
   switch (action.type) {
     case EDITOR_OPEN_CURRENT_FRONTS_MENU: {
@@ -915,7 +913,8 @@ export {
   changedBrowsingStage,
   EditorCloseFormsForCollection,
   editorCloseFormsForCollection,
-  defaultState
+  defaultState,
+  State
 };
 
 export default reducer;
