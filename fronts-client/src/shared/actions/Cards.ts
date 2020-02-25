@@ -33,14 +33,14 @@ import { selectEditMode } from '../../selectors/pathSelectors';
 import { startOptionsModal } from 'actions/OptionsModal';
 import noop from 'lodash/noop';
 
-export const UPDATE_CARD_META = 'SHARED/UPDATE_CARD_META';
-export const CARDS_RECEIVED = 'SHARED/CARDS_RECEIVED';
-export const CLEAR_CARDS = 'SHARED/CLEAR_CARDS';
-export const REMOVE_GROUP_CARD = 'SHARED/REMOVE_GROUP_CARD';
-export const REMOVE_SUPPORTING_CARD = 'SHARED/REMOVE_SUPPORTING_CARD';
-export const INSERT_GROUP_CARD = 'SHARED/INSERT_GROUP_CARD';
-export const INSERT_SUPPORTING_CARD = 'SHARED/INSERT_SUPPORTING_CARD';
-export const COPY_CARD_IMAGE_META = 'SHARED/COPY_CARD_IMAGE_META';
+export const UPDATE_CARD_META = 'UPDATE_CARD_META';
+export const CARDS_RECEIVED = 'CARDS_RECEIVED';
+export const CLEAR_CARDS = 'CLEAR_CARDS';
+export const REMOVE_GROUP_CARD = 'REMOVE_GROUP_CARD';
+export const REMOVE_SUPPORTING_CARD = 'REMOVE_SUPPORTING_CARD';
+export const INSERT_GROUP_CARD = 'INSERT_GROUP_CARD';
+export const INSERT_SUPPORTING_CARD = 'INSERT_SUPPORTING_CARD';
+export const COPY_CARD_IMAGE_META = 'COPY_CARD_IMAGE_META';
 
 function updateCardMeta(
   id: string,
@@ -84,7 +84,7 @@ function copyCardImageMeta(from: string, to: string) {
 
 function clearCards(ids: string[]): ClearCards {
   return {
-    type: 'SHARED/CLEAR_CARDS',
+    type: 'CLEAR_CARDS',
     payload: {
       ids
     }
