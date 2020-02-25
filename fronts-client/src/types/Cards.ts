@@ -1,5 +1,5 @@
-import { Action } from "redux";
-import { ThunkResult } from "./Store";
+import { Action } from 'redux';
+import { ThunkResult } from './Store';
 
 export type RemoveActionCreator = (id: string, cardId: string) => Action;
 
