@@ -6,7 +6,7 @@ import {
   cardsReceived,
   snapMetaWhitelist,
   marketingParamsWhiteList
-} from '../../shared/actions/Cards';
+} from '../CardsCommon';
 import initialState from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
 import { createSnap, createLatestSnap } from 'util/snap';

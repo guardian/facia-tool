@@ -42,7 +42,7 @@ import { SetHidden } from '../bundles/collectionsBundle';
 import { OptionsModalChoices } from './Modals';
 import { Actions } from 'lib/createAsyncResourceBundle';
 import { ExternalArticle } from 'types/ExternalArticle';
-import { copyCardImageMeta } from 'shared/actions/Cards';
+import { copyCardImageMeta } from 'actions/CardsCommon';
 import { PageViewStory } from 'types/PageViewData';
 
 interface EditorOpenCurrentFrontsMenu {

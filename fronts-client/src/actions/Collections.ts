@@ -32,7 +32,7 @@ import {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection
 } from 'util/shared';
-import { cardsReceived, clearCards } from 'shared/actions/Cards';
+import { cardsReceived, clearCards } from 'actions/CardsCommon';
 import { groupsReceived } from 'actions/Groups';
 import {
   recordVisibleArticles,
