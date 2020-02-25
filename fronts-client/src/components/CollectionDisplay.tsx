@@ -16,7 +16,7 @@ import DragIntentContainer from './DragIntentContainer';
 import ButtonCircularCaret, {
   ButtonCircularWithTransition
 } from './inputs/ButtonCircularCaret';
-import { State as SharedState } from '../shared/types/State';
+import { SharedState } from '../types/State';
 import { State } from '../types/State';
 
 import {
