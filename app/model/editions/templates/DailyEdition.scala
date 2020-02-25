@@ -129,14 +129,16 @@ object DailyEdition {
 
   def FrontFinancialGuardian = front(
     "Financial",
-    collection("Financial").printSentAnyTag("theguardian/mainsection/financial3", "theguardian/mainsection/money"),
+    collection("Financial").printSentAnyTag("theguardian/mainsection/financial3"),
+    collection("Money"),printSentAnyTag("theguardian/mainsection/money"),
     collection("Financial Special").hide,
   )
     .swatch(News)
 
   def FrontFinancialObserver = front(
     "Financial",
-    collection("Financial").printSentAnyTag("theobserver/news/business", "theobserver/news/cash"),
+    collection("Financial").printSentAnyTag("theobserver/news/business"),
+    collection("Cash").printSentAnyTag("theobserver/news/cash"),
     collection("Financial Special").hide
   )
     .swatch(News)
@@ -195,7 +197,7 @@ object DailyEdition {
     "Culture",
     collection("Features").printSentAnyTag("theobserver/new-review/features"),
     collection("Agenda").printSentAnyTag("theobserver/new-review/agenda"),
-    collection("Science & Technology").printSentAnyTag("theobserver/new-review/discover"),
+    collection("Discover").printSentAnyTag("theobserver/new-review/discover"),
     collection("Critics").printSentAnyTag("theobserver/new-review/critics"),
     collection("Culture Special").hide,
     collection("Culture Special 2").hide
@@ -220,9 +222,9 @@ object DailyEdition {
 
   def FrontLifeFashion = front(
     "The Fashion",
-    collection("Fashion 1").printSentAnyTag("theguardian/the-fashion/the-fashion"),
-    collection("Fashion 2").hide,
-    collection("Fashion 3").hide,
+    collection("The Fashion").printSentAnyTag("theguardian/the-fashion/the-fashion"),
+    collection("The Fashion").hide,
+    collection("The Fashion").hide,
   )
     .special
     .swatch(Lifestyle)
@@ -232,8 +234,8 @@ object DailyEdition {
     collection("Weekend").printSentAnyTag("theguardian/weekend/starters", "theguardian/weekend/features2", "theguardian/weekend/back"),
     collection("Family").printSentAnyTag("theguardian/weekend/family"),
     collection("Space").printSentAnyTag("theguardian/weekend/space2"),
-    collection("Fashion & Beauty").printSentAnyTag("theguardian/weekend/fashion-and-beauty"),
-    collection("Body & Mind").printSentAnyTag("theguardian/weekend/body-and-mind"),
+    collection("Fashion").printSentAnyTag("theguardian/weekend/fashion-and-beauty"),
+    collection("Body").printSentAnyTag("theguardian/weekend/body-and-mind"),
     collection("Life Special").hide,
   )
     .swatch(Lifestyle)
@@ -248,7 +250,7 @@ object DailyEdition {
   def FrontLifeMagazineObserver = front(
     "Life",
     collection("Features").printSentAnyTag("theobserver/magazine/features2"),
-    collection("Life & Style").printSentAllTags("theobserver/magazine/life-and-style", "-food/food"),
+    collection("Style").printSentAllTags("theobserver/magazine/life-and-style", "-food/food"),
     collection("Life Special").printSentAnyTag("theobserver/design/design").hide,
   )
     .swatch(Lifestyle)
@@ -263,9 +265,9 @@ object DailyEdition {
   def FrontFoodObserver = front(
     "Food",
     collection("Food").printSentAllTags("theobserver/magazine/life-and-style", "food/food"),
-    collection("OFM 1").printSentAnyTag("theobserver/foodmonthly/features", "theobserver/foodmonthly").hide,
-    collection("OFM 2").hide,
-    collection("OFM 3").hide,
+    collection("Monthly").printSentAnyTag("theobserver/foodmonthly/features", "theobserver/foodmonthly").hide,
+    collection("Monthly").hide,
+    collection("Monthly").hide,
     collection("Food Special").hide,
   )
     .swatch(Lifestyle)
@@ -275,10 +277,10 @@ object DailyEdition {
   def FrontSportGuardian = front(
     "Sport",
     collection("Sport").printSentAnyTag("theguardian/sport/news"),
-    collection("Sport 1"),
-    collection("Sport 2"),
-    collection("Sport 3"),
-    collection("Sport Special").hide,
+    collection("Sport"),
+    collection("Sport"),
+    collection("Sport"),
+    collection("Sport").hide,
   )
     .swatch(Sport)
 
