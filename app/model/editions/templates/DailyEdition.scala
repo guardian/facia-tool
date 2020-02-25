@@ -285,10 +285,10 @@ object DailyEdition {
   def FrontSportObserver = front(
     "Sport",
     collection("Sport").printSentAnyTag("theobserver/sport/news"),
-    collection("Sport 1"),
-    collection("Sport 2"),
-    collection("Sport 3"),
-    collection("Sport Special").hide,
+    collection("Sport"),
+    collection("Sport"),
+    collection("Sport"),
+    collection("Sport").hide,
   )
     .swatch(Sport)
 
