@@ -4,7 +4,7 @@ import thunk from 'redux-thunk';
 import {
   createArticleEntitiesFromDrop,
   cardsReceived
-} from '../../shared/actions/Cards';
+} from '../CardsCommon';
 import initialState from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
 import { actionNames as externalArticleActionNames } from 'bundles/externalArticlesBundle';

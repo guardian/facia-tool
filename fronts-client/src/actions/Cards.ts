@@ -8,7 +8,7 @@ import {
   cardsReceived,
   maybeAddFrontPublicationDate,
   copyCardImageMeta
-} from 'shared/actions/Cards';
+} from 'actions/CardsCommon';
 import { Card } from 'types/Collection';
 import {
   selectSharedState,

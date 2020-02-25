@@ -35,8 +35,8 @@ import {
   isValidURL
 } from 'util/url';
 
-import { selectEditMode } from '../../selectors/pathSelectors';
-import { Card, CardMeta } from '../../types/Collection';
+import { selectEditMode } from '../selectors/pathSelectors';
+import { Card, CardMeta } from '../types/Collection';
 
 export const UPDATE_CARD_META = 'UPDATE_CARD_META';
 export const CARDS_RECEIVED = 'CARDS_RECEIVED';

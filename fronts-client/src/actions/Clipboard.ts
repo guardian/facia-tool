@@ -2,7 +2,7 @@ import { Dispatch, ThunkResult } from 'types/Store';
 import { saveClipboardStrategy } from 'strategies/save-clipboard';
 import { fetchArticles } from 'actions/Collections';
 import { batchActions } from 'redux-batched-actions';
-import { cardsReceived } from 'shared/actions/Cards';
+import { cardsReceived } from 'actions/CardsCommon';
 import { Card, NestedCard } from 'types/Collection';
 import { normaliseClipboard } from 'util/clipboardUtils';
 import {
