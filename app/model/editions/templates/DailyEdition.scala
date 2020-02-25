@@ -67,21 +67,21 @@ object DailyEdition {
     ophanQueryPrefillParams = None
   )
 
-  def FrontSpecial1 = specialFront("Top Special 1", Neutral, None)
+  def FrontSpecial1 = specialFront("Special", Neutral, None)
 
   def FrontTopStories = front(
     "Top stories",
     collection("Top stories")
   )
 
-  def FrontSpecial2 = specialFront("Top Special 2", Neutral, None)
+  def FrontSpecial2 = specialFront("Special", Neutral, None)
 
   def FrontNewsUkGuardian = front(
     "National",
     collection("National").printSentAnyTag("theguardian/mainsection/topstories"),
     collection("National").hide,
     collection("National").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
-    collection("Weather").printSentAnyTag("theguardian/mainsection/weather2"),
+    collection("National").printSentAnyTag("theguardian/mainsection/weather2"),
     collection("National").hide
   )
     .swatch(News)
@@ -92,7 +92,7 @@ object DailyEdition {
     collection("National").hide,
     collection("National").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
     collection("Week in Review").printSentAnyTag("theguardian/mainsection/week-in-review"),
-    collection("Weather").printSentAnyTag("theguardian/mainsection/weather2"),
+    collection("National").printSentAnyTag("theguardian/mainsection/weather2"),
     collection("National").hide
   )
     .swatch(News)
@@ -101,15 +101,15 @@ object DailyEdition {
 
   def FrontNewsWorldGuardian = front(
     "World",
-    collection("World News").printSentAnyTag("theguardian/mainsection/international"),
+    collection("World").printSentAnyTag("theguardian/mainsection/international"),
     collection("World").hide
   )
     .swatch(News)
 
   def FrontNewsUkObserver = front(
     "National",
-    collection("Front Page"),
-    collection("News").printSentAnyTag("theobserver/news/uknews"),
+    collection("National"),
+    collection("National").printSentAnyTag("theobserver/news/uknews"),
     collection("Focus").printSentAnyTag("theobserver/news/focus").hide,
     collection("National").hide,
     collection("National").hide
@@ -118,7 +118,7 @@ object DailyEdition {
 
   def FrontNewsWorldObserver = front(
     "World",
-    collection("World News").printSentAnyTag("theobserver/news/worldnews"),
+    collection("World").printSentAnyTag("theobserver/news/worldnews"),
     collection("World").hide,
   )
     .swatch(News)
@@ -297,12 +297,12 @@ object DailyEdition {
   def FrontSportSpecial = specialFront("Sport Special", Sport)
 
   def FrontSupplementSpecial1 = specialFront(
-    "Special Supplement 1",
+    "Special Supplement",
     swatch = Neutral,
     prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent))
   )
 
-  def FrontSupplementSpecial2 = specialFront("Special Supplement 2", Neutral)
+  def FrontSupplementSpecial2 = specialFront("Special Supplement", Neutral)
 
   def FrontCrosswords = front(
     "Crosswords",
