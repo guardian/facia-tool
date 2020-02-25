@@ -139,8 +139,11 @@ object AmericanEdition {
 
   def FrontOpinionUs = front(
     "Opinion",
-    collection("Opinion")
-    .searchPrefill("?tag=type/article,tone/comment,(us-news/us-news|us-news/us-politics|business/business|media/media),-sport/sport,-tone/minutebyminute")
+    collection("US")
+    .searchPrefill("?tag=type/article,tone/comment,(us-news/us-news|us-news/us-politics),-sport/sport,-tone/minutebyminute")
+    .withArticleItemsCap(20),
+    collection("World")
+    .searchPrefill("?tag=type/article,tone/comment,-(us-news/us-news|us-news/us-politics),-sport/sport,-tone/minutebyminute")
     .withArticleItemsCap(20)
   )
     .swatch(Opinion)
@@ -161,8 +164,11 @@ object AmericanEdition {
 
   def FrontCultureUs = front(
     "Culture",
-    collection("Culture")
-    .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews),-tone/news,-tone/minutebyminute")
+    collection("Features")
+    .searchPrefill("?tag=type/article,culture/culture,tone/features,-tone/reviews,-tone/news,-tone/minutebyminute")
+    .withArticleItemsCap(20),
+    collection("Reviews")
+    .searchPrefill("?tag=type/article,culture/culture,-tone/features,tone/reviews,-tone/news,-tone/minutebyminute")
     .withArticleItemsCap(20)
   )
     .swatch(News)
