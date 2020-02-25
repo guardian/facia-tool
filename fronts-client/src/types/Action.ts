@@ -164,11 +164,11 @@ interface ActionPersistMeta {
 }
 
 interface CardsReceived {
-  type: 'SHARED/CARDS_RECEIVED';
+  type: 'CARDS_RECEIVED';
   payload: { [id: string]: Card };
 }
 interface ClearCards {
-  type: 'SHARED/CLEAR_CARDS';
+  type: 'CLEAR_CARDS';
   payload: { ids: string[] };
 }
 interface GroupsReceived {
@@ -177,14 +177,14 @@ interface GroupsReceived {
 }
 
 type InsertGroupCard = {
-  type: 'SHARED/INSERT_GROUP_CARD';
+  type: 'INSERT_GROUP_CARD';
 } & {
   payload: InsertCardPayload;
   meta: PersistMeta;
 } & ActionPersistMeta;
 
 type InsertSupportingCard = {
-  type: 'SHARED/INSERT_SUPPORTING_CARD';
+  type: 'INSERT_SUPPORTING_CARD';
 } & {
   payload: InsertCardPayload;
   meta: PersistMeta;
@@ -202,10 +202,10 @@ interface RemoveCardPayload {
 }
 
 type RemoveGroupCard = {
-  type: 'SHARED/REMOVE_GROUP_CARD';
+  type: 'REMOVE_GROUP_CARD';
 } & RemoveCardPayload;
 type RemoveSupportingCard = {
-  type: 'SHARED/REMOVE_SUPPORTING_CARD';
+  type: 'REMOVE_SUPPORTING_CARD';
 } & RemoveCardPayload;
 type RemoveClipboardCard = {
   type: 'REMOVE_CLIPBOARD_CARD';
@@ -350,7 +350,7 @@ interface PageViewDataReceived {
 }
 
 interface UpdateCardMeta {
-  type: 'SHARED/UPDATE_CARD_META';
+  type: 'UPDATE_CARD_META';
   payload: {
     id: string;
     meta: CardMeta;
