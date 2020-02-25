@@ -37,10 +37,7 @@ import {
   selectFrontsWithPriority,
   selectFront
 } from 'selectors/frontsSelectors';
-import {
-  REMOVE_GROUP_CARD,
-  REMOVE_SUPPORTING_CARD
-} from 'actions/CardsCommon';
+import { REMOVE_GROUP_CARD, REMOVE_SUPPORTING_CARD } from 'actions/CardsCommon';
 import { Stages, CardSets } from 'types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
 import { CollectionWithArticles } from 'types/PageViewData';
