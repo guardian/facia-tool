@@ -4,7 +4,6 @@ import thunk from 'redux-thunk';
 import {
   createArticleEntitiesFromDrop,
   cardsReceived,
-  hasWhitelistedParams,
   snapMetaWhitelist,
   marketingParamsWhiteList
 } from '../../shared/actions/Cards';
@@ -20,6 +19,7 @@ import { selectCard, selectSharedState } from 'selectors/shared';
 import capiInteractiveAtomResponse from 'fixtures/capiInteractiveAtomResponse';
 import { startOptionsModal } from 'actions/OptionsModal';
 import noop from 'lodash/noop';
+import { hasWhitelistedParams } from 'util/url';
 
 jest.mock('uuid/v4', () => () => 'card1');
 const middlewares = [thunk];
