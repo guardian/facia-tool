@@ -39,7 +39,7 @@ import initialState from 'fixtures/initialState';
 import initialStateForOpenFronts from '../../fixtures/initialStateForOpenFronts';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { Action } from 'types/Action';
-import { removeSupportingCard, removeGroupCard } from 'shared/actions/Cards';
+import { removeSupportingCard, removeGroupCard } from 'actions/CardsCommon';
 import { removeClipboardCard } from 'actions/Clipboard';
 import { State as GlobalState } from 'types/State';
 import { SharedState as GlobalSharedState } from 'types/State';

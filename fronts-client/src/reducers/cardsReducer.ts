@@ -8,7 +8,7 @@ import {
   REMOVE_SUPPORTING_CARD,
   INSERT_SUPPORTING_CARD,
   COPY_CARD_IMAGE_META
-} from 'shared/actions/Cards';
+} from 'actions/CardsCommon';
 import { cloneActiveImageMeta } from 'util/card';
 
 const cards = (state: State['cards'] = {}, action: Action) => {
