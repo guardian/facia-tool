@@ -266,8 +266,8 @@ object DailyEdition {
     "Food",
     collection("Food").printSentAllTags("theobserver/magazine/life-and-style", "food/food"),
     collection("Monthly").printSentAnyTag("theobserver/foodmonthly/features", "theobserver/foodmonthly").hide,
-    collection("Monthly").hide,
-    collection("Monthly").hide,
+    collection("Food").hide,
+    collection("Food").hide,
     collection("Food").hide,
   )
     .swatch(Lifestyle)
