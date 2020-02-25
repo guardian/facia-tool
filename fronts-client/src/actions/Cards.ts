@@ -38,22 +38,8 @@ import noop from 'lodash/noop';
 import { selectOpenParentFrontOfCard } from 'bundles/frontsUIBundle';
 import { getPageViewData } from 'redux/modules/pageViewData';
 import { startOptionsModal } from './OptionsModal';
+import { RemoveActionCreator, InsertActionCreator, InsertThunkActionCreator } from 'types/Cards';
 
-type InsertActionCreator = (
-  id: string,
-  index: number,
-  cardId: string,
-  persistTo: 'collection' | 'clipboard'
-) => ThunkResult<void> | Action;
-
-type InsertThunkActionCreator = (
-  persistTo: 'collection' | 'clipboard'
-) => (
-  id: string,
-  index: number,
-  cardId: string,
-  removeAction?: Action
-) => ThunkResult<void>;
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -183,7 +169,6 @@ const getInsertionActionCreatorFromType = (
   return actionCreator && actionCreator(persistTo);
 };
 
-type RemoveActionCreator = (id: string, cardId: string) => Action;
 
 const removeActionMap: { [type: string]: RemoveActionCreator | undefined } = {
   card: removeSupportingCard,
