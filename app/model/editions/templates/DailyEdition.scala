@@ -278,7 +278,7 @@ object DailyEdition {
     collection("Travel").hide,
     collection("Travel").hide
   )
-    .swatch(Lifestyle);
+    .swatch(Lifestyle)
 
   def FrontLifeMagazineObserver = front(
     "Life",
