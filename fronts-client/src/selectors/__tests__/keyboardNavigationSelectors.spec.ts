@@ -147,12 +147,9 @@ describe('nextIndexAndGroupSelector', () => {
   };
   const stateWithGroups = {
     ...state,
-    shared: {
-      ...state.shared,
-      groups: groupsWithCards,
-      cards,
-      collections
-    }
+    groups: groupsWithCards,
+    cards,
+    collections
   };
 
   it('return null when moving articles in an empty group', () => {
@@ -166,10 +163,7 @@ describe('nextIndexAndGroupSelector', () => {
     };
     const stateWithEmptyGroup = {
       ...state,
-      shared: {
-        ...state.shared,
-        groups: emptyGroups
-      }
+      groups: emptyGroups
     };
     expect(
       selectNextIndexAndGroup(

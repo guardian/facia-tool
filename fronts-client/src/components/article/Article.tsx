@@ -9,7 +9,7 @@ import {
   selectCard
 } from '../../selectors/shared';
 import { selectors } from 'bundles/externalArticlesBundle';
-import { SharedState } from '../../types/State';
+import { State } from 'types/State';
 import { DerivedArticle } from '../../types/Article';
 import CardBody from '../card/CardBody';
 import CardContainer from '../card/CardContainer';
@@ -60,7 +60,7 @@ interface ArticleComponentProps {
 }
 
 interface ContainerProps extends ArticleComponentProps {
-  selectSharedState?: (state: any) => SharedState;
+  selectSharedState?: (state: any) => State;
 }
 
 interface ComponentProps extends ContainerProps {
@@ -193,7 +193,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
 const createMapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
   return (
-    state: SharedState,
+    state: State,
     props: ContainerProps
   ): {
     article?: DerivedArticle;

@@ -20,74 +20,71 @@ const state = {
     collectionIds: [],
     frontIdsByBrowsingStage: {}
   },
-  shared: {
-    ...initialState.shared,
-    collections: {
-      ...initialState.shared.collections,
-      data: {
-        collection1: {
-          id: 'collection1',
-          draft: ['group1'],
-          live: []
-        },
-        collection6: {
-          id: 'collection6',
-          draft: [],
-          live: []
-        }
+  collections: {
+    ...initialState.collections,
+    data: {
+      collection1: {
+        id: 'collection1',
+        draft: ['group1'],
+        live: []
+      },
+      collection6: {
+        id: 'collection6',
+        draft: [],
+        live: []
       }
+    }
+  },
+  groups: {
+    ...initialState.groups,
+    group1: {
+      uuid: 'group1',
+      id: 'group1',
+      name: 'Group 1',
+      cards: ['card1', 'card2', 'card3']
+    }
+  },
+  cards: {
+    ...initialState.cards,
+    card1: {
+      uuid: 'card1',
+      id: 'capiArticle1',
+      frontPublicationDate: 0,
+      meta: {}
     },
-    groups: {
-      ...initialState.shared.groups,
-      group1: {
-        uuid: 'group1',
-        id: 'group1',
-        name: 'Group 1',
-        cards: ['card1', 'card2', 'card3']
-      }
+    card2: {
+      uuid: 'card2',
+      id: 'capiArticle2',
+      frontPublicationDate: 0,
+      meta: {}
     },
-    cards: {
-      ...initialState.shared.cards,
-      card1: {
-        uuid: 'card1',
+    card3: {
+      uuid: 'card3',
+      frontPublicationDate: 0,
+      id: 'capiArticle3',
+      meta: {}
+    }
+  },
+  externalArticles: {
+    ...initialState.externalArticles,
+    data: {
+      capiArticle1: {
         id: 'capiArticle1',
-        frontPublicationDate: 0,
-        meta: {}
+        urlPath: 'path/capiArticle1',
+        frontsMeta: {},
+        fields: {}
       },
-      card2: {
-        uuid: 'card2',
+      capiArticle2: {
         id: 'capiArticle2',
-        frontPublicationDate: 0,
-        meta: {}
+        urlPath: 'path/capiArticle2',
+        frontsMeta: {},
+        fields: {}
       },
-      card3: {
-        uuid: 'card3',
-        frontPublicationDate: 0,
+      capiArticle3: {
         id: 'capiArticle3',
-        meta: {}
-      }
-    },
-    externalArticles: {
-      ...initialState.shared.externalArticles,
-      data: {
-        capiArticle1: {
-          id: 'capiArticle1',
-          urlPath: 'path/capiArticle1',
-          frontsMeta: {},
-          fields: {}
-        },
-        capiArticle2: {
-          id: 'capiArticle2',
-          urlPath: 'path/capiArticle2',
-          frontsMeta: {},
-          fields: {}
-        },
-        capiArticle3: {
-          id: 'capiArticle3',
-          urlPath: 'path/capiArticle3',
-          frontsMeta: {},
-          fields: {}
-        }
+        urlPath: 'path/capiArticle3',
+        frontsMeta: {},
+        fields: {}
       }
     }
   },

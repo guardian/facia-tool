@@ -1,8 +1,8 @@
 import { oc } from 'ts-optchain';
-import { State } from '../../../types/State';
+import { State } from 'types/State';
 import { PageViewStory } from 'types/PageViewData';
 
-const selectPageViewData = (state: State) => state.shared.pageViewData;
+const selectPageViewData = (state: State) => state.pageViewData;
 
 const selectOpenCollectionsForFront = (
   allCollectionsInAFront: string[],
@@ -19,7 +19,7 @@ const selectDataForArticle = (
   collectionId: string,
   frontId: string
 ): PageViewStory | undefined =>
-  oc(state).shared.pageViewData[frontId].collections[collectionId].stories[
+  oc(state).pageViewData[frontId].collections[collectionId].stories[
     articleId
   ]();
 

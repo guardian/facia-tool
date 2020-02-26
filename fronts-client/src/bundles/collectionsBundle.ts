@@ -1,6 +1,6 @@
-import { SharedState } from '../types/State';
+import { State } from 'types/State';
 import createAsyncResourceBundle, {
-  State,
+  State as LibState,
   Actions
 } from 'lib/createAsyncResourceBundle';
 import { Collection } from 'types/Collection';
@@ -22,7 +22,7 @@ const {
 const collectionSelectors = {
   ...selectors,
   selectParentCollectionOfCard: (
-    state: SharedState,
+    state: State,
     cardId: string
   ): string | null => {
     let collectionId: null | string = null;
@@ -83,9 +83,9 @@ const collectionActions = {
 type CollectionActions = Actions<Collection> | SetHidden;
 
 const collectionReducer = (
-  state: State<Collection>,
+  state: LibState<Collection>,
   action: CollectionActions
-): State<Collection> => {
+): LibState<Collection> => {
   const updatedState = reducer(state, action);
   switch (action.type) {
     case SET_HIDDEN: {

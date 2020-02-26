@@ -6,7 +6,7 @@ describe('cardsReducer', () => {
   it('should update the card meta', () => {
     expect(
       reducer(
-        stateWithClipboard.shared.cards as any,
+        stateWithClipboard.cards as any,
         updateCardMeta('article', {
           headline: 'headline'
         })
@@ -18,7 +18,7 @@ describe('cardsReducer', () => {
   it('should overwrite properties', () => {
     expect(
       reducer(
-        stateWithClipboard.shared.cards as any,
+        stateWithClipboard.cards as any,
         updateCardMeta('article2', {
           headline: 'headline'
         })
@@ -30,7 +30,7 @@ describe('cardsReducer', () => {
   it('should merge properties if the merge flag is set', () => {
     expect(
       reducer(
-        stateWithClipboard.shared.cards as any,
+        stateWithClipboard.cards as any,
         updateCardMeta(
           'article2',
           {

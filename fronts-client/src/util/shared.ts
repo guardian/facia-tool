@@ -178,8 +178,8 @@ function denormaliseCollection(
   }
 
   return denormalize(collection, {
-    cards: state.shared.cards,
-    groups: state.shared.groups
+    cards: state.cards,
+    groups: state.groups
   });
 }
 

@@ -176,45 +176,43 @@ const visibilityState = {
       }
     }
   },
-  shared: {
-    collections: {
-      data: {
-        a: {
-          draft: ['g1', 'g2']
-        }
+  collections: {
+    data: {
+      a: {
+        draft: ['g1', 'g2']
+      }
+    }
+  },
+  groups: {
+    g1: {
+      cards: ['a1', 'a2', 'a3']
+    },
+    g2: {
+      cards: ['a4', 'a5']
+    }
+  },
+  cards: {
+    a1: {
+      uuid: 'a1',
+      meta: {
+        // this tests that we ignore supporting articles
+        supporting: ['a6']
       }
     },
-    groups: {
-      g1: {
-        cards: ['a1', 'a2', 'a3']
-      },
-      g2: {
-        cards: ['a4', 'a5']
-      }
+    a2: {
+      uuid: 'a2'
     },
-    cards: {
-      a1: {
-        uuid: 'a1',
-        meta: {
-          // this tests that we ignore supporting articles
-          supporting: ['a6']
-        }
-      },
-      a2: {
-        uuid: 'a2'
-      },
-      a3: {
-        uuid: 'a3'
-      },
-      a4: {
-        uuid: 'a4'
-      },
-      a5: {
-        uuid: 'a5'
-      },
-      a6: {
-        uuid: 'a5'
-      }
+    a3: {
+      uuid: 'a3'
+    },
+    a4: {
+      uuid: 'a4'
+    },
+    a5: {
+      uuid: 'a5'
+    },
+    a6: {
+      uuid: 'a5'
     }
   }
 };

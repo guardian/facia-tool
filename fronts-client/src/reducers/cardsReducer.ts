@@ -1,6 +1,6 @@
 import { Action } from 'types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
-import { SharedState } from 'reducers/sharedReducer';
+import { State } from 'types/State';
 import {
   UPDATE_CARD_META,
   CARDS_RECEIVED,
@@ -11,7 +11,7 @@ import {
 } from 'actions/CardsCommon';
 import { cloneActiveImageMeta } from 'util/card';
 
-const cards = (state: SharedState['cards'] = {}, action: Action) => {
+const cards = (state: State['cards'] = {}, action: Action) => {
   switch (action.type) {
     case UPDATE_CARD_META: {
       const { id } = action.payload;

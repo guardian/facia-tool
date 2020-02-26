@@ -5,10 +5,7 @@ import { State } from 'types/State';
 
 const state = {
   ...globalState,
-  shared: {
-    ...globalState.shared,
-    pageViewData
-  }
+  pageViewData
 } as State;
 
 describe('selectors', () => {

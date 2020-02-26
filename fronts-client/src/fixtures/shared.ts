@@ -1,5 +1,3 @@
-import { SharedState } from 'types/State';
-
 const capiArticle = {
   id:
     'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
@@ -664,194 +662,188 @@ const stateWithCollection: any = {
     lastPressed: {},
     collectionVisibility: { draft: {}, live: {} }
   },
-  shared: {
-    collections: {
-      data: {
-        exampleCollection: {
-          id: 'exampleCollection',
-          displayName: 'Example Collection',
-          live: ['abc', 'def'],
-          draft: [],
-          previously: undefined,
-          type: 'type'
-        },
-        exampleCollectionTwo: {
-          id: 'exampleCollection',
-          displayName: 'Example Collection',
-          live: ['abc'],
-          draft: ['def'],
-          previously: undefined,
-          type: 'type'
-        }
+  collections: {
+    data: {
+      exampleCollection: {
+        id: 'exampleCollection',
+        displayName: 'Example Collection',
+        live: ['abc', 'def'],
+        draft: [],
+        previously: undefined,
+        type: 'type'
       },
-      lastError: null,
-      error: null,
-      lastFetch: null,
-      loading: false,
-      loadingIds: [],
-      updatingIds: []
-    },
-    groups: {
-      abc: {
-        id: '1',
-        uuid: 'abc',
-        cards: ['95e2bfc0-8999-4e6e-a359-19960967c1e0'],
-        name: 'group1'
-      },
-      def: {
-        id: null,
-        uuid: 'def',
-        name: 'group2',
-        cards: [
-          '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
-          '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
-        ]
+      exampleCollectionTwo: {
+        id: 'exampleCollection',
+        displayName: 'Example Collection',
+        live: ['abc'],
+        draft: ['def'],
+        previously: undefined,
+        type: 'type'
       }
     },
-    cards: {
-      '95e2bfc0-8999-4e6e-a359-19960967c1e0': {
-        id: 'article/live/0',
-        frontPublicationDate: 1,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '95e2bfc0-8999-4e6e-a359-19960967c1e0'
-      },
-      '4bc11359-bb3e-45e7-a0a9-86c0ee52653d': {
-        id: 'article/draft/1',
-        frontPublicationDate: 2,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '4bc11359-bb3e-45e7-a0a9-86c0ee52653d'
-      },
-      '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d': {
-        id: 'a/long/path/2',
-        frontPublicationDate: 2,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
-      }
+    lastError: null,
+    error: null,
+    lastFetch: null,
+    loading: false,
+    loadingIds: [],
+    updatingIds: []
+  },
+  groups: {
+    abc: {
+      id: '1',
+      uuid: 'abc',
+      cards: ['95e2bfc0-8999-4e6e-a359-19960967c1e0'],
+      name: 'group1'
     },
-    externalArticles: {
-      data: {},
-      lastError: null,
-      error: null,
-      lastFetch: null,
-      loading: false,
-      loadingIds: [],
-      updatingIds: []
+    def: {
+      id: null,
+      uuid: 'def',
+      name: 'group2',
+      cards: [
+        '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
+        '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
+      ]
     }
+  },
+  cards: {
+    '95e2bfc0-8999-4e6e-a359-19960967c1e0': {
+      id: 'article/live/0',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '95e2bfc0-8999-4e6e-a359-19960967c1e0'
+    },
+    '4bc11359-bb3e-45e7-a0a9-86c0ee52653d': {
+      id: 'article/draft/1',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '4bc11359-bb3e-45e7-a0a9-86c0ee52653d'
+    },
+    '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d': {
+      id: 'a/long/path/2',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
+    }
+  },
+  externalArticles: {
+    data: {},
+    lastError: null,
+    error: null,
+    lastFetch: null,
+    loading: false,
+    loadingIds: [],
+    updatingIds: []
   },
   feed: {}
 };
 
 const stateWithCollectionAndSupporting: any = {
   path: '/v2/editorial',
-  shared: {
-    collections: {
-      data: {
-        exampleCollection: {
-          id: 'exampleCollection',
-          displayName: 'Example Collection',
-          live: ['abc'],
-          draft: [],
-          previously: undefined
-        }
+  collections: {
+    data: {
+      exampleCollection: {
+        id: 'exampleCollection',
+        displayName: 'Example Collection',
+        live: ['abc'],
+        draft: [],
+        previously: undefined
       }
-    },
-    groups: {
-      abc: {
-        id: '0',
-        uuid: 'abc',
-        cards: [
-          '1269c42e-a341-4464-b206-a5731b92fa46',
-          '322f0527-cf14-43c1-8520-e6732ab01297'
-        ]
-      }
-    },
-    cards: {
-      '1269c42e-a341-4464-b206-a5731b92fa46': {
-        id: 'article/live/0',
-        frontPublicationDate: 1,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
-      },
-      '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
-        id: 'article/draft/2',
-        frontPublicationDate: 2,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
-      },
-      '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
-        id: 'article/draft/3',
-        frontPublicationDate: 3,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
-      },
-      '322f0527-cf14-43c1-8520-e6732ab01297': {
-        id: 'a/long/path/1',
-        frontPublicationDate: 1,
-        publishedBy: 'Computers',
-        meta: {
-          supporting: [
-            '134c9d4f-b05c-43f4-be41-a605b6dccab9',
-            '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
-          ]
-        },
-        uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
-      }
-    },
-    externalArticles: {
-      data: {},
-      lastError: null,
-      error: null,
-      lastFetch: null,
-      loading: false,
-      loadingIds: [],
-      updatingIds: []
     }
+  },
+  groups: {
+    abc: {
+      id: '0',
+      uuid: 'abc',
+      cards: [
+        '1269c42e-a341-4464-b206-a5731b92fa46',
+        '322f0527-cf14-43c1-8520-e6732ab01297'
+      ]
+    }
+  },
+  cards: {
+    '1269c42e-a341-4464-b206-a5731b92fa46': {
+      id: 'article/live/0',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
+    },
+    '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
+      id: 'article/draft/2',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
+    },
+    '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
+      id: 'article/draft/3',
+      frontPublicationDate: 3,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+    },
+    '322f0527-cf14-43c1-8520-e6732ab01297': {
+      id: 'a/long/path/1',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {
+        supporting: [
+          '134c9d4f-b05c-43f4-be41-a605b6dccab9',
+          '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+        ]
+      },
+      uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
+    }
+  },
+  externalArticles: {
+    data: {},
+    lastError: null,
+    error: null,
+    lastFetch: null,
+    loading: false,
+    loadingIds: [],
+    updatingIds: []
   }
 };
 
 const stateWithSnaplinksAndArticles: any = {
   path: '/v2/editorial',
-  shared: {
-    cards: {
-      '1269c42e-a341-4464-b206-a5731b92fa46': {
-        id: 'article/live/0',
-        frontPublicationDate: 1,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
+  cards: {
+    '1269c42e-a341-4464-b206-a5731b92fa46': {
+      id: 'article/live/0',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
+    },
+    '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
+      id: 'article/draft/2',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
+    },
+    '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
+      id: 'snap/32145544543',
+      frontPublicationDate: 3,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+    },
+    '322f0527-cf14-43c1-8520-e6732ab01297': {
+      id: 'a/long/path/1',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {
+        supporting: [
+          '134c9d4f-b05c-43f4-be41-a605b6dccab9',
+          '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+        ]
       },
-      '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
-        id: 'article/draft/2',
-        frontPublicationDate: 2,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
-      },
-      '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
-        id: 'snap/32145544543',
-        frontPublicationDate: 3,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
-      },
-      '322f0527-cf14-43c1-8520-e6732ab01297': {
-        id: 'a/long/path/1',
-        frontPublicationDate: 1,
-        publishedBy: 'Computers',
-        meta: {
-          supporting: [
-            '134c9d4f-b05c-43f4-be41-a605b6dccab9',
-            '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
-          ]
-        },
-        uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
-      }
+      uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
     }
   }
 };
@@ -879,7 +871,7 @@ const initialState = {
   cards: {},
   featureSwitches: {},
   pageViewData: {}
-} as SharedState;
+};
 
 export {
   capiArticle,
