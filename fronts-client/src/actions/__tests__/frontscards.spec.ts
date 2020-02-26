@@ -2,7 +2,7 @@ import configureMockStore from 'redux-mock-store';
 import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
 import { createArticleEntitiesFromDrop, cardsReceived } from '../CardsCommon';
-import initialState from 'fixtures/initialState';
+import { state as initialState } from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
 import { actionNames as externalArticleActionNames } from 'bundles/externalArticlesBundle';
 import { createCard } from 'util/card';

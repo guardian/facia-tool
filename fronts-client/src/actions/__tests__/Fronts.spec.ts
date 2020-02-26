@@ -1,11 +1,11 @@
 import configureStore from 'util/configureStore';
 import fetchMock from 'fetch-mock';
-import initialState from 'fixtures/initialState';
+import { state as initialState } from 'fixtures/initialState';
 import { scJohnsonPartnerZoneCollection } from 'fixtures/collectionsEndpointResponse';
 import { articlesForScJohnsonPartnerZone } from 'actions/__tests__/capiEndpointResponse';
 import { selectIsCollectionOpen } from 'bundles/frontsUIBundle';
 import { selectArticlesInCollections } from 'selectors/collection';
-import { selectCard, selectSharedState } from 'selectors/shared';
+import { selectCard } from 'selectors/shared';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 
 describe('Fronts actions', () => {
@@ -37,7 +37,6 @@ describe('Fronts actions', () => {
       ) as any);
 
       const state = store.getState();
-      const sharedState = selectSharedState(state);
       const collectionIds = [
         'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
         '4ab657ff-c105-4292-af23-cda00457b6b7',
@@ -53,10 +52,10 @@ describe('Fronts actions', () => {
       // TODO this selectArticalsInCollections returns internal code pages which means we cannot use it with cardSelector
       //  This worked previously because selectArticles in Collection was returning an empty array which was erroneous - TODO
       expect(
-        selectArticlesInCollections(sharedState, {
+        selectArticlesInCollections(state, {
           collectionIds,
           itemSet: 'draft'
-        }).every(_ => !!selectCard(sharedState, _))
+        }).every(_ => !!selectCard(state, _))
       ).toBe(true);
     });
   });

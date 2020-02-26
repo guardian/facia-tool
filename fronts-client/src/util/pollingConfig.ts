@@ -9,10 +9,7 @@ import {
 import { selectPriority } from 'selectors/pathSelectors';
 import { getPageViewDataForCollection } from '../redux/modules/pageViewData/actions';
 import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
-import {
-  selectSharedState,
-  selectExternalArticleIdFromCard
-} from 'selectors/shared';
+import { selectExternalArticleIdFromCard } from 'selectors/shared';
 import {
   selectOpenFrontsCollectionsAndArticles,
   selectOpenCardIds
@@ -61,7 +58,7 @@ const createRefreshOpenArticles = (store: Store) => () => {
   const state = store.getState();
   const openCardIds = selectOpenCardIds(state);
   const externalArticleIds = openCardIds
-    .map(_ => selectExternalArticleIdFromCard(selectSharedState(state), _))
+    .map(_ => selectExternalArticleIdFromCard(state, _))
     .filter(_ => _) as string[];
   (store.dispatch as Dispatch)(fetchArticles(externalArticleIds));
 };

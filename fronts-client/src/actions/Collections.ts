@@ -15,7 +15,6 @@ import {
 } from 'selectors/configSelectors';
 import {
   createSelectGroupArticles,
-  selectSharedState,
   createSelectAllArticlesInCollection
 } from 'selectors/shared';
 import {
@@ -76,7 +75,7 @@ function fetchStaleCollections(
       getCollections(collectionIds, true)
     );
     const prevArticleIds = articlesInCollection(
-      selectSharedState(prevState),
+      prevState,
       fetchedCollectionIds
     );
 
@@ -301,7 +300,7 @@ const fetchArticles = (
     const articles = await getArticlesBatched(articleIdsWithoutSnaps);
     const freshArticles = articles.filter(article =>
       selectIsExternalArticleStale(
-        selectSharedState(getState()),
+        getState(),
         article.id,
         article.fields.lastModified
       )
@@ -339,7 +338,7 @@ const getArticlesForCollections = (
   const articleIds = itemSets.reduce(
     (acc, itemSet) => [
       ...acc,
-      ...selectArticlesInCollections(selectSharedState(getState()), {
+      ...selectArticlesInCollections(getState(), {
         collectionIds,
         itemSet
       })

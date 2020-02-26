@@ -40,11 +40,7 @@ import { REMOVE_GROUP_CARD, REMOVE_SUPPORTING_CARD } from 'actions/CardsCommon';
 import { Stages, CardSets } from 'types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
 import { CollectionWithArticles } from 'types/PageViewData';
-import {
-  createSelectArticlesInCollection,
-  selectSharedState,
-  createSelectArticleFromCard
-} from 'selectors/shared';
+import { createSelectArticlesInCollection, createSelectArticleFromCard } from 'selectors/shared';
 import { ThunkResult } from 'types/Store';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
@@ -522,7 +518,7 @@ const createSelectOpenCardTitlesForCollection = () => {
     });
     return compact(
       cardIds
-        .map(id => selectArticleFromCard(selectSharedState(state), id))
+        .map(id => selectArticleFromCard(state, id))
         .filter(_ => _)
         .map(
           derivedArticle =>
@@ -551,14 +547,11 @@ const selectOpenFrontsCollectionsAndArticles = (
       frontAndCollections.frontId
     );
     const collections = frontAndCollections.collections.map((cId: string) => {
-      const articleIds: string[] = selectAllArticleIdsForCollection(
-        selectSharedState(state),
-        {
-          collectionId: cId,
+      const articleIds: string[] = selectAllArticleIdsForCollection(state, {
+        collectionId: cId,
           collectionSet: browsingStage,
           includeSupportingArticles: false
-        }
-      );
+      });
       return {
         id: cId,
         articleIds

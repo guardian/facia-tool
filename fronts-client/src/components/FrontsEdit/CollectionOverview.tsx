@@ -13,7 +13,6 @@ import { createCollectionId } from 'components/CollectionDisplay';
 import ButtonDefault from 'components/inputs/ButtonCircular';
 import {
   createSelectCollection,
-  selectSharedState,
   createSelectArticlesInCollection
 } from 'selectors/shared';
 import EditModeVisibility from 'components/util/EditModeVisibility';
@@ -172,10 +171,10 @@ const mapStateToProps = () => {
       browsingStage: collectionSet
     }: FrontCollectionOverviewContainerProps
   ) => ({
-    collection: selectCollection(selectSharedState(state), {
+    collection: selectCollection(state, {
       collectionId
     }),
-    articleCount: selectArticlesInCollection(selectSharedState(state), {
+    articleCount: selectArticlesInCollection(state, {
       collectionSet,
       collectionId,
       includeSupportingArticles: false

@@ -13,7 +13,7 @@ import {
 } from 'types/Action';
 import { State } from 'types/State';
 import { addPersistMetaToAction } from 'util/action';
-import { selectCards, selectSharedState } from 'selectors/shared';
+import { selectCards } from 'selectors/shared';
 
 export const REMOVE_CLIPBOARD_CARD = 'REMOVE_CLIPBOARD_CARD';
 export const UPDATE_CLIPBOARD_CONTENT = 'UPDATE_CLIPBOARD_CONTENT';
@@ -96,7 +96,7 @@ const thunkInsertClipboardCard = (
   index: number,
   cardId: string
 ): ThunkResult<void> => (dispatch, getState) => {
-  const currentCards = selectCards(selectSharedState(getState()));
+  const currentCards = selectCards(getState());
   dispatch(
     actionInsertClipboardCardWithPersist(id, index, cardId, currentCards)
   );

@@ -2,7 +2,7 @@ import {
   selectNextClipboardIndexSelector,
   selectNextIndexAndGroup
 } from 'selectors/keyboardNavigationSelectors';
-import state from 'fixtures/initialState';
+import { state } from 'fixtures/initialState';
 
 describe('nextClipboardIndexSelector', () => {
   const stateWithClipboard = {

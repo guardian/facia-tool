@@ -5,7 +5,6 @@ import noop from 'lodash/noop';
 
 import {
   createSelectArticleFromCard,
-  selectSharedState,
   selectCard
 } from '../../selectors/shared';
 import { selectors } from 'bundles/externalArticlesBundle';
@@ -59,11 +58,7 @@ interface ArticleComponentProps {
   collectionId?: string;
 }
 
-interface ContainerProps extends ArticleComponentProps {
-  selectSharedState?: (state: any) => State;
-}
-
-interface ComponentProps extends ContainerProps {
+interface ComponentProps extends ArticleComponentProps {
   article?: DerivedArticle;
   isLoading?: boolean;
   size?: CardSizes;
@@ -194,22 +189,19 @@ const createMapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
   return (
     state: State,
-    props: ContainerProps
+    props: ArticleComponentProps
   ): {
     article?: DerivedArticle;
     isLoading: boolean;
     featureFlagPageViewData: boolean;
   } => {
-    const sharedState = props.selectSharedState
-      ? props.selectSharedState(state)
-      : selectSharedState(state);
-    const article = selectArticle(sharedState, props.id);
-    const card = selectCard(sharedState, props.id);
+    const article = selectArticle(state, props.id);
+    const card = selectCard(state, props.id);
     const getState = (s: any) => s;
 
     return {
       article,
-      isLoading: selectors.selectIsLoadingInitialDataById(sharedState, card.id),
+      isLoading: selectors.selectIsLoadingInitialDataById(state, card.id),
       featureFlagPageViewData: selectFeatureValue(
         getState(state),
         'page-view-data-visualisation'

@@ -18,10 +18,7 @@ import ButtonCircularCaret, {
 } from './inputs/ButtonCircularCaret';
 import { State } from '../types/State';
 
-import {
-  selectSharedState,
-  createSelectArticlesInCollection
-} from '../selectors/shared';
+import { createSelectArticlesInCollection } from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer, {
@@ -42,7 +39,6 @@ export const createCollectionId = ({ id }: Collection, frontId: string) =>
 
 interface ContainerProps {
   id: string;
-  selectSharedState?: (state: any) => State;
   browsingStage: CardSets;
   frontId: string;
 }
@@ -412,12 +408,9 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 const createMapStateToProps = () => {
   const selectArticlesInCollection = createSelectArticlesInCollection();
   return (state: State, props: ContainerProps) => {
-    const sharedState = props.selectSharedState
-      ? props.selectSharedState(state)
-      : selectSharedState(state);
     return {
-      collection: collectionSelectors.selectById(sharedState, props.id),
-      articleIds: selectArticlesInCollection(sharedState, {
+      collection: collectionSelectors.selectById(state, props.id),
+      articleIds: selectArticlesInCollection(state, {
         collectionId: props.id,
         collectionSet: props.browsingStage,
         includeSupportingArticles: false
