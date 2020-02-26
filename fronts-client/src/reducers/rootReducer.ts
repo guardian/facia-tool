@@ -8,7 +8,8 @@ import unpublishedChanges, {
   State as unpublishedChangesState
 } from './unpublishedChangesReducer';
 import clipboard, { State as clipboardState } from './clipboardReducer';
-import optionsModal, { OptionsModalState } from './modalsReducer';
+import optionsModal from 'reducers/modalsReducer';
+import { OptionsModalProps as OptionsModalState } from 'types/Modals';
 import editor, { State as editorState } from '../bundles/frontsUIBundle';
 import editionsIssue, {
   EditionsIssueState
@@ -51,7 +52,7 @@ export interface State {
   editor: editorState;
   staleFronts: staleFrontsState;
   form: FormStateMap;
-  optionsModal: OptionsModalState;
+  optionsModal: OptionsModalState | null;
   feed: FeedState;
   focus: focusState;
   editionsIssue: EditionsIssueState;
