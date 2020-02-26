@@ -1,6 +1,5 @@
-import { StateType } from 'typesafe-actions';
-import rootReducer from 'reducers/rootReducer';
+import { State as StateInterface } from 'reducers/rootReducer';
 import sharedRootReducer from 'reducers/sharedReducer';
 
-export type State = StateType<typeof rootReducer>;
+export type State = StateInterface;
 export type SharedState = ReturnType<typeof sharedRootReducer>;

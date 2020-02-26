@@ -7,7 +7,7 @@ import {
   CLEAR_CLIPBOARD
 } from 'actions/Clipboard';
 
-type State = string[];
+export type State = string[];
 
 const clipboard = (state: State = [], action: Action): State => {
   switch (action.type) {

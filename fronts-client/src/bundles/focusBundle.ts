@@ -31,7 +31,7 @@ export const selectFocusedArticle = (state: GlobalState, focusType: string) => {
   }
 };
 
-interface State {
+export interface State {
   focusState?: ApplicationFocusStates;
 }
 

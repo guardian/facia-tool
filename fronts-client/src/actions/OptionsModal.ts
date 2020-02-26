@@ -15,7 +15,8 @@ const startOptionsModal = (
     description,
     options,
     onCancel,
-    showCancelButton
+    showCancelButton,
+    isOpen: true
   }
 });
 

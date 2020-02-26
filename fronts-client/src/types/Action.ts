@@ -37,9 +37,8 @@ import {
 } from 'bundles/frontsUIBundle';
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'redux/modules/featureSwitches';
-import { ReactNode } from 'react';
 import { SetHidden } from '../bundles/collectionsBundle';
-import { OptionsModalChoices } from './Modals';
+import { OptionsModalProps } from 'types/Modals';
 import { Actions } from 'lib/createAsyncResourceBundle';
 import { ExternalArticle } from 'types/ExternalArticle';
 import { copyCardImageMeta } from 'actions/CardsCommon';
@@ -296,13 +295,7 @@ interface FetchVisibleArticlesSuccess {
 
 interface StartOptionsModal {
   type: 'MODAL/START_OPTIONS_MODAL';
-  payload: {
-    title: string;
-    description: string | ReactNode;
-    options: OptionsModalChoices[];
-    onCancel: () => void;
-    showCancelButton: boolean;
-  };
+  payload: OptionsModalProps;
 }
 
 interface EndOptionsModal {

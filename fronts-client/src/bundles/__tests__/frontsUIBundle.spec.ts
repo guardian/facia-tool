@@ -42,20 +42,14 @@ import { Action } from 'types/Action';
 import { removeSupportingCard, removeGroupCard } from 'actions/CardsCommon';
 import { removeClipboardCard } from 'actions/Clipboard';
 import { State as GlobalState } from 'types/State';
-import { SharedState as GlobalSharedState } from 'types/State';
-import { initialState as initialSharedState } from 'fixtures/shared';
 
 type State = ReturnType<typeof innerReducer>;
 
 // this allows us to put _in_ our own slice of state but receive a _global_
 // state so that we can test out selectors
-const reducer = (
-  state: State | undefined,
-  action: Action,
-  sharedState: GlobalSharedState = initialSharedState
-): GlobalState =>
+const reducer = (state: State | undefined, action: Action): GlobalState =>
   ({
-    editor: innerReducer(state, action, (sharedState = initialSharedState))
+    editor: innerReducer(state, action)
   } as any);
 
 describe('frontsUIBundle', () => {
@@ -505,8 +499,7 @@ describe('frontsUIBundle', () => {
       it('should do nothing when there is no form for the front', () => {
         const state = innerReducer(
           defaultState,
-          editorCloseFormsForCollection('collectionId', 'frontId'),
-          initialSharedState
+          editorCloseFormsForCollection('collectionId', 'frontId')
         );
         expect(state.selectedCards).toEqual(defaultState.selectedCards);
       });
@@ -535,8 +528,7 @@ describe('frontsUIBundle', () => {
         };
         const state = innerReducer(
           initial,
-          editorCloseFormsForCollection('collectionId', 'frontId'),
-          initialSharedState
+          editorCloseFormsForCollection('collectionId', 'frontId')
         );
         expect(state.selectedCards).toEqual({
           frontId: [

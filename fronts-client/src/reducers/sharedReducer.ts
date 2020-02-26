@@ -6,7 +6,7 @@ import { reducer as featureSwitches } from 'redux/modules/featureSwitches';
 import { reducer as pageViewData } from '../redux/modules/pageViewData';
 import { Card, Group } from 'types/Collection';
 
-interface State {
+interface SharedState {
   cards: {
     [uuid: string]: Card;
   };
@@ -19,7 +19,7 @@ interface State {
   pageViewData: ReturnType<typeof pageViewData>;
 }
 
-const sharedRootReducer = (state: any = {}, action: any): State => ({
+const sharedRootReducer = (state: any = {}, action: any): SharedState => ({
   cards: cards(state.cards, action),
   groups: groups(state.groups, action, state),
   collections: collections(state.collections, action),
@@ -28,6 +28,6 @@ const sharedRootReducer = (state: any = {}, action: any): State => ({
   pageViewData: pageViewData(state.pageViewData, action)
 });
 
-export { State };
+export { SharedState };
 
 export default sharedRootReducer;
