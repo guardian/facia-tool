@@ -17,14 +17,14 @@ import {
   CardDenormalised,
   ArticleTag
 } from '../types/Collection';
-import { SharedState } from '../types/State';
+import { SharedState, State } from '../types/State';
 import { cardSets } from 'constants/fronts';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
 import { DerivedArticle } from 'types/Article';
 import { hasMainVideo } from 'util/externalArticle';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
-const selectSharedState = (rootState: any): SharedState => rootState.shared;
+const selectSharedState = (rootState: any): State['shared'] => rootState.shared;
 
 const selectGroups = (state: SharedState): { [id: string]: Group } =>
   state.groups;

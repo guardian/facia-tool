@@ -2,7 +2,7 @@ import { Action } from 'types/Action';
 import { SET_FEATURE_VALUE } from './actions';
 import { FeatureSwitch } from 'types/Features';
 
-interface State {
+export interface State {
   [key: string]: FeatureSwitch;
 }
 
