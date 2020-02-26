@@ -38,7 +38,7 @@ describe('Collection actions', () => {
   describe('Update collection thunk', () => {
     it('should issue a collection update', async () => {
       const collection: any =
-        stateWithCollection.shared.collections.data.exampleCollection;
+        stateWithCollection.collections.data.exampleCollection;
       fetchMock.once('/v2Edits', collection, {
         headers: { 'Content-Type': 'application/json' },
         method: 'POST'
@@ -94,7 +94,7 @@ describe('Collection actions', () => {
       ];
       fetchMock.post('/collections', getCollectionsApiResponse);
       await store.dispatch(getCollections(collectionIds) as any);
-      expect(store.getState().shared.collections.data).toEqual({
+      expect(store.getState().collections.data).toEqual({
         exampleCollection: {
           displayName: 'Example Collection',
           draft: [],
@@ -160,7 +160,7 @@ describe('Collection actions', () => {
       const collectionIds = ['automatedCollection'];
       fetchMock.post('/collections', []);
       await store.dispatch(getCollections(collectionIds) as any);
-      expect(store.getState().shared.collections.data).toEqual({
+      expect(store.getState().collections.data).toEqual({
         exampleCollection: {
           displayName: 'Example Collection',
           draft: [],
@@ -340,7 +340,7 @@ describe('Collection actions', () => {
         capiArticle
       );
       const state = set(
-        ['shared', 'externalArticles', 'data', 'internal-code/page/5029528'],
+        ['externalArticles', 'data', 'internal-code/page/5029528'],
         newerArticle,
         initialState
       );

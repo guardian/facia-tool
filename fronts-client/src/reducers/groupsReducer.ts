@@ -6,8 +6,8 @@ import { capGroupCards } from 'util/capGroupCards';
 import keyBy from 'lodash/keyBy';
 
 const getUpdatedSiblingGroupsForInsertion = (
-  sharedState: State['shared'],
-  groupsState: State['shared']['groups'],
+  sharedState: State,
+  groupsState: State['groups'],
   insertionGroupId: string,
   insertionIndex: number,
   cardId: string
@@ -34,14 +34,14 @@ const getUpdatedSiblingGroupsForInsertion = (
         )
       }
     }),
-    {} as State['shared']['groups']
+    {} as State['groups']
   );
 };
 
 const groups = (
-  state: State['shared']['groups'] = {},
+  state: State['groups'] = {},
   action: Action,
-  prevSharedState: State['shared']
+  prevSharedState: State
 ) => {
   switch (action.type) {
     case 'SHARED/GROUPS_RECEIVED': {

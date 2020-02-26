@@ -32,11 +32,9 @@ const root = (state: any = {}, action: any) => ({
   optionsModal: optionsModal(state.optionsModal, action),
   clipboard: clipboardReducer(state.clipboard, action),
   path: '',
-  shared: {
-    cards: cardsReducer(state.shared.cards, action),
-    collections: collectionsReducer(state.shared.collections, action),
-    groups: groupsReducer(state.shared.groups, action, state.shared)
-  },
+  cards: cardsReducer(state.cards, action),
+  collections: collectionsReducer(state.collections, action),
+  groups: groupsReducer(state.groups, action, state),
   config: config(state.config, action)
 });
 
@@ -62,21 +60,19 @@ const buildStore = (added: CardSpec, collectionCap = Infinity) => {
     config: {
       collectionCap
     },
-    shared: {
-      collections: {
-        ...collectionsState,
-        data: {
-          a: {
-            id: 'a',
-            live: ['a', 'b']
-          }
+    collections: {
+      ...collectionsState,
+      data: {
+        a: {
+          id: 'a',
+          live: ['a', 'b']
         }
-      },
-      cards: createCardStateFromSpec(all),
-      groups: {
-        a: { cards: groupA.map(([uuid]) => uuid), uuid: 'a' },
-        b: { cards: groupB.map(([uuid]) => uuid), uuid: 'b' }
       }
+    },
+    cards: createCardStateFromSpec(all),
+    groups: {
+      a: { cards: groupA.map(([uuid]) => uuid), uuid: 'a' },
+      b: { cards: groupB.map(([uuid]) => uuid), uuid: 'b' }
     },
     clipboard: clipboard.map(([uuid]) => uuid)
   };
@@ -343,7 +339,7 @@ describe('Cards actions', () => {
 
   describe('insert image', () => {
     it('adds the correct image data', () => {
-      const s1 = root({ shared: { cards: { a: {} } } }, { type: '@@INIT' });
+      const s1 = root({ cards: { a: {} } }, { type: '@@INIT' });
 
       const src = 'http://www.images.com/image/1/master';
       const thumb = 'http://www.images.com/image/1/thumb';
@@ -362,7 +358,7 @@ describe('Cards actions', () => {
         })
       );
 
-      expect(s2.shared.cards.a.meta).toMatchObject({
+      expect(s2.cards.a.meta).toMatchObject({
         imageSrc: src,
         imageSrcThumb: thumb,
         imageSrcOrigin: origin,

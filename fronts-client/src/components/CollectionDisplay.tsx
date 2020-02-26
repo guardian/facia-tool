@@ -42,7 +42,7 @@ export const createCollectionId = ({ id }: Collection, frontId: string) =>
 
 interface ContainerProps {
   id: string;
-  selectSharedState?: (state: any) => State['shared'];
+  selectSharedState?: (state: any) => State;
   browsingStage: CardSets;
   frontId: string;
 }

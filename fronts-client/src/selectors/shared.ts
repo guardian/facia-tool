@@ -24,26 +24,26 @@ import { DerivedArticle } from 'types/Article';
 import { hasMainVideo } from 'util/externalArticle';
 
 // Selects the shared part of the application state mounted at its default point, '.shared'.
-const selectSharedState = (rootState: any): State['shared'] => rootState.shared;
+const selectSharedState = (rootState: any): State => rootState;
 
-const selectGroups = (state: State['shared']): { [id: string]: Group } =>
+const selectGroups = (state: State): { [id: string]: Group } =>
   state.groups;
-const selectCards = (state: State['shared']) => state.cards;
+const selectCards = (state: State) => state.cards;
 
 const selectCardsFromRootState = createSelector(
   [selectSharedState],
-  (state: State['shared']) => selectCards(state)
+  (state: State) => selectCards(state)
 );
 
 const selectGroupsFromRootState = createSelector(
   [selectSharedState],
-  (state: State['shared']) => selectGroups(state)
+  (state: State) => selectGroups(state)
 );
 
-const selectCard = (state: State['shared'], id: string): Card => state.cards[id];
+const selectCard = (state: State, id: string): Card => state.cards[id];
 
 const selectExternalArticleFromCard = (
-  state: State['shared'],
+  state: State,
   id: string
 ): ExternalArticle | undefined => {
   const card = selectCard(state, id);
@@ -54,7 +54,7 @@ const selectExternalArticleFromCard = (
   return externalArticles[card.id];
 };
 
-const selectSupportingArticleCount = (state: State['shared'], uuid: string) => {
+const selectSupportingArticleCount = (state: State, uuid: string) => {
   const maybeArticle = selectCard(state, uuid);
   if (maybeArticle && maybeArticle && maybeArticle.meta.supporting) {
     return maybeArticle.meta.supporting.length;
@@ -62,7 +62,7 @@ const selectSupportingArticleCount = (state: State['shared'], uuid: string) => {
   return 0;
 };
 
-const selectArticleTag = (state: State['shared'], id: string): ArticleTag => {
+const selectArticleTag = (state: State, id: string): ArticleTag => {
   const externalArticle = selectExternalArticleFromCard(state, id);
   const emptyTag = {
     webTitle: undefined,
@@ -85,7 +85,7 @@ const selectArticleTag = (state: State['shared'], id: string): ArticleTag => {
 };
 
 const selectArticleKicker = (
-  state: State['shared'],
+  state: State,
   id: string
 ): string | undefined => {
   const card = selectCard(state, id);
@@ -115,7 +115,7 @@ const selectArticleKicker = (
   return undefined;
 };
 
-const selectCardHasMediaOverrides = (state: State['shared'], id: string) => {
+const selectCardHasMediaOverrides = (state: State, id: string) => {
   const article = selectCard(state, id);
   return (
     !!article &&
@@ -339,7 +339,7 @@ const createSelectArticlesInCollectionGroup = () => {
 const createSelectArticlesInCollection = () => {
   const selectArticlesInCollectionGroups = createSelectArticlesInCollectionGroup();
   return (
-    state: State['shared'],
+    state: State,
     {
       collectionId,
       collectionSet,
@@ -360,7 +360,7 @@ const createSelectArticlesInCollection = () => {
 const createSelectAllArticlesInCollection = () => {
   const articlesInCollection = createSelectArticlesInCollection();
 
-  return (state: State['shared'], collectionIds: string[]) =>
+  return (state: State, collectionIds: string[]) =>
     collectionIds.reduce(
       (acc, id) => [
         ...acc,
@@ -461,13 +461,13 @@ const selectGroupCollectionMap = createSelector(
     )
 );
 
-const selectGroupCollection = (state: State['shared'], groupId: string) => {
+const selectGroupCollection = (state: State, groupId: string) => {
   const { collectionId, cardSet } = selectGroupCollectionMap(state)[groupId];
   const collection = collectionSelectors.selectById(state, collectionId);
   return { collection, cardSet };
 };
 
-const selectGroupSiblings = (state: State['shared'], groupId: string) => {
+const selectGroupSiblings = (state: State, groupId: string) => {
   const { collection, cardSet } = selectGroupCollection(state, groupId);
   if (!collection) {
     return [];
@@ -476,7 +476,7 @@ const selectGroupSiblings = (state: State['shared'], groupId: string) => {
 };
 
 const selectArticleGroup = (
-  state: State['shared'],
+  state: State,
   groupIdFromAction: string,
   cardId: string
 ) => {
@@ -496,17 +496,17 @@ const selectArticleGroup = (
 const groupsArticleCount = (groups: Group[]) =>
   groups.reduce((acc, group) => acc + group.cards.length, 0);
 
-const selectGroupSiblingsArticleCount = (state: State['shared'], groupId: string) =>
+const selectGroupSiblingsArticleCount = (state: State, groupId: string) =>
   groupsArticleCount(selectGroupSiblings(state, groupId));
 
 const selectIndexInGroup = (
-  state: State['shared'],
+  state: State,
   groupId: string,
   articleId: string
 ) => selectGroups(state)[groupId].cards.indexOf(articleId);
 
 const selectExternalArticleIdFromCard = (
-  state: State['shared'],
+  state: State,
   id: string
 ): string | undefined => {
   const externalArticle = selectExternalArticleFromCard(state, id);

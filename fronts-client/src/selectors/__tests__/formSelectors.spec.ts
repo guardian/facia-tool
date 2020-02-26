@@ -37,7 +37,7 @@ describe('Form utils', () => {
     });
     it('should add showLivePlayable for live blogs', () => {
       const localState = cloneDeep(state);
-      localState.shared.externalArticles.data[
+      localState.externalArticles.data[
         'article/live/0'
       ].fields.liveBloggingNow = 'true';
       const selectFormFields = createSelectFormFieldsForCard();

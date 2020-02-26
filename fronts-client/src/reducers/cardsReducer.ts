@@ -11,7 +11,7 @@ import {
 } from 'actions/CardsCommon';
 import { cloneActiveImageMeta } from 'util/card';
 
-const cards = (state: State['shared']['cards'] = {}, action: Action) => {
+const cards = (state: State['cards'] = {}, action: Action) => {
   switch (action.type) {
     case UPDATE_CARD_META: {
       const { id } = action.payload;

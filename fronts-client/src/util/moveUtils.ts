@@ -6,7 +6,7 @@ import findIndex from 'lodash/findIndex';
 
 function getFromGroupIndicesWithRespectToState(
   position: PosSpec | null,
-  state: State['shared']
+  state: State
 ): { fromWithRespectToState: PosSpec | null; fromOrphanedGroup: boolean } {
   if (!position) {
     return { fromWithRespectToState: null, fromOrphanedGroup: false };
@@ -57,7 +57,7 @@ function getFromGroupIndicesWithRespectToState(
 
 function getToGroupIndicesWithRespectToState(
   position: PosSpec,
-  state: State['shared'],
+  state: State,
   fromOrphanedGroup: boolean
 ): PosSpec | null {
   if (position.type !== 'group') {
@@ -82,7 +82,7 @@ const isOrphanedGroup = (group: Group) =>
 
 function getGroupIndicesWithRespectToState(
   position: PosSpec,
-  state: State['shared']
+  state: State
 ): { articleCount: number; groupSiblings: Group[] } {
   const groupId = position.id;
   const groupSiblings = selectGroupSiblings(state, groupId);

@@ -60,7 +60,7 @@ interface ArticleComponentProps {
 }
 
 interface ContainerProps extends ArticleComponentProps {
-  selectSharedState?: (state: any) => State['shared'];
+  selectSharedState?: (state: any) => State;
 }
 
 interface ComponentProps extends ContainerProps {
@@ -193,7 +193,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
 const createMapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
   return (
-    state: State['shared'],
+    state: State,
     props: ContainerProps
   ): {
     article?: DerivedArticle;

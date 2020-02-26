@@ -1,5 +1,3 @@
-import { State } from 'types/State';
-
 const capiArticle = {
   id:
     'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
@@ -664,89 +662,86 @@ const stateWithCollection: any = {
     lastPressed: {},
     collectionVisibility: { draft: {}, live: {} }
   },
-  shared: {
-    collections: {
-      data: {
-        exampleCollection: {
-          id: 'exampleCollection',
-          displayName: 'Example Collection',
-          live: ['abc', 'def'],
-          draft: [],
-          previously: undefined,
-          type: 'type'
-        },
-        exampleCollectionTwo: {
-          id: 'exampleCollection',
-          displayName: 'Example Collection',
-          live: ['abc'],
-          draft: ['def'],
-          previously: undefined,
-          type: 'type'
-        }
+  collections: {
+    data: {
+      exampleCollection: {
+        id: 'exampleCollection',
+        displayName: 'Example Collection',
+        live: ['abc', 'def'],
+        draft: [],
+        previously: undefined,
+        type: 'type'
       },
-      lastError: null,
-      error: null,
-      lastFetch: null,
-      loading: false,
-      loadingIds: [],
-      updatingIds: []
-    },
-    groups: {
-      abc: {
-        id: '1',
-        uuid: 'abc',
-        cards: ['95e2bfc0-8999-4e6e-a359-19960967c1e0'],
-        name: 'group1'
-      },
-      def: {
-        id: null,
-        uuid: 'def',
-        name: 'group2',
-        cards: [
-          '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
-          '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
-        ]
+      exampleCollectionTwo: {
+        id: 'exampleCollection',
+        displayName: 'Example Collection',
+        live: ['abc'],
+        draft: ['def'],
+        previously: undefined,
+        type: 'type'
       }
     },
-    cards: {
-      '95e2bfc0-8999-4e6e-a359-19960967c1e0': {
-        id: 'article/live/0',
-        frontPublicationDate: 1,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '95e2bfc0-8999-4e6e-a359-19960967c1e0'
-      },
-      '4bc11359-bb3e-45e7-a0a9-86c0ee52653d': {
-        id: 'article/draft/1',
-        frontPublicationDate: 2,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '4bc11359-bb3e-45e7-a0a9-86c0ee52653d'
-      },
-      '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d': {
-        id: 'a/long/path/2',
-        frontPublicationDate: 2,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
-      }
+    lastError: null,
+    error: null,
+    lastFetch: null,
+    loading: false,
+    loadingIds: [],
+    updatingIds: []
+  },
+  groups: {
+    abc: {
+      id: '1',
+      uuid: 'abc',
+      cards: ['95e2bfc0-8999-4e6e-a359-19960967c1e0'],
+      name: 'group1'
     },
-    externalArticles: {
-      data: {},
-      lastError: null,
-      error: null,
-      lastFetch: null,
-      loading: false,
-      loadingIds: [],
-      updatingIds: []
+    def: {
+      id: null,
+      uuid: 'def',
+      name: 'group2',
+      cards: [
+        '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
+        '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
+      ]
     }
   },
-  feed: {}
+  cards: {
+    '95e2bfc0-8999-4e6e-a359-19960967c1e0': {
+      id: 'article/live/0',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '95e2bfc0-8999-4e6e-a359-19960967c1e0'
+    },
+    '4bc11359-bb3e-45e7-a0a9-86c0ee52653d': {
+      id: 'article/draft/1',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '4bc11359-bb3e-45e7-a0a9-86c0ee52653d'
+    },
+    '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d': {
+      id: 'a/long/path/2',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
+    }
+  },
+  externalArticles: {
+    data: {},
+    lastError: null,
+    error: null,
+    lastFetch: null,
+    loading: false,
+    loadingIds: [],
+    updatingIds: []
+  },
+  feed: {},
 };
 
 const stateWithCollectionAndSupporting: any = {
   path: '/v2/editorial',
-  shared: {
     collections: {
       data: {
         exampleCollection: {
@@ -812,12 +807,10 @@ const stateWithCollectionAndSupporting: any = {
       loadingIds: [],
       updatingIds: []
     }
-  }
 };
 
 const stateWithSnaplinksAndArticles: any = {
   path: '/v2/editorial',
-  shared: {
     cards: {
       '1269c42e-a341-4464-b206-a5731b92fa46': {
         id: 'article/live/0',
@@ -853,7 +846,6 @@ const stateWithSnaplinksAndArticles: any = {
         uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
       }
     }
-  }
 };
 
 const initialState = {
@@ -879,7 +871,7 @@ const initialState = {
   cards: {},
   featureSwitches: {},
   pageViewData: {}
-} as State['shared'];
+};
 
 export {
   capiArticle,

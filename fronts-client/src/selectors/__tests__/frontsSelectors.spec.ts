@@ -176,7 +176,6 @@ const visibilityState = {
       }
     }
   },
-  shared: {
     collections: {
       data: {
         a: {
@@ -216,7 +215,6 @@ const visibilityState = {
         uuid: 'a5'
       }
     }
-  }
 };
 
 describe('Article visibility selector', () => {

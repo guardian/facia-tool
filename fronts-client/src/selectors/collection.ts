@@ -11,7 +11,7 @@ const selectArticleIdsInCollection = createSelectArticlesInCollection();
 // Does not return UUIDs. Returns interal page codes for fetching cards
 export const selectArticlesInCollections = createSelector(
   (
-    state: State['shared'],
+    state: State,
     { collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets }
   ) =>
     collectionIds.map(_ =>
@@ -29,7 +29,7 @@ export const createSelectIsArticleInCollection = () => {
   const selectArticlesInCollection = createSelectArticlesInCollection();
   return createSelector(
     selectArticlesInCollection,
-    (_: State['shared'], { cardId: articleId }: { cardId: string }) => articleId,
+    (_: State, { cardId: articleId }: { cardId: string }) => articleId,
     (articleIds, articleId) => articleIds.indexOf(articleId) !== -1
   );
 };

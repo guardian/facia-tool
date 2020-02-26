@@ -22,7 +22,7 @@ const {
 const collectionSelectors = {
   ...selectors,
   selectParentCollectionOfCard: (
-    state: State['shared'],
+    state: State,
     cardId: string
   ): string | null => {
     let collectionId: null | string = null;

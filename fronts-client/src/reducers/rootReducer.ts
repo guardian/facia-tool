@@ -1,5 +1,4 @@
 import { reducer as form, FormStateMap } from 'redux-form';
-import shared, { SharedState } from 'reducers/sharedReducer';
 import config from './configReducer';
 import fronts, { State as frontsState } from './frontsReducer';
 import error from './errorReducer';
@@ -22,6 +21,12 @@ import {
 import staleFronts, { State as staleFrontsState } from './staleFrontsReducer';
 import feedState, { State as feedStateType } from './feedStateReducer';
 
+import { reducer as collections } from '../bundles/collectionsBundle';
+import { reducer as pageViewData } from '../redux/modules/pageViewData';
+import { reducer as externalArticles } from '../bundles/externalArticlesBundle';
+import cards from 'reducers/cardsReducer';
+import groups from 'reducers/groupsReducer';
+
 import {
   reducer as focusReducer,
   State as focusState
@@ -33,6 +38,7 @@ import {
 
 import { Config } from 'types/Config';
 import { ActionError } from 'types/Action';
+import { Card, Group } from 'types/Collection';
 
 interface FeedState {
   feedState: feedStateType;
@@ -46,7 +52,6 @@ export interface State {
   config: Config | null;
   error: ActionError;
   path: pathState;
-  shared: SharedState;
   unpublishedChanges: unpublishedChangesState;
   clipboard: clipboardState;
   editor: editorState;
@@ -57,6 +62,15 @@ export interface State {
   focus: focusState;
   editionsIssue: EditionsIssueState;
   featureSwitches: featureSwitchesState;
+  cards: {
+    [uuid: string]: Card;
+  };
+  groups: {
+    [id: string]: Group;
+  };
+  collections: ReturnType<typeof collections>;
+  externalArticles: ReturnType<typeof externalArticles>;
+  pageViewData: ReturnType<typeof pageViewData>;
 }
 
 const rootReducer = (state: any = { feed: {} }, action: any) => ({
@@ -64,7 +78,6 @@ const rootReducer = (state: any = { feed: {} }, action: any) => ({
   config: config(state.config, action),
   error: error(state.error, action),
   path: path(state.path, action),
-  shared: shared(state.shared, action),
   unpublishedChanges: unpublishedChanges(state.unpublishedChanges, action),
   clipboard: clipboard(state.clipboard, action),
   editor: editor(state.editor, action),
@@ -79,7 +92,12 @@ const rootReducer = (state: any = { feed: {} }, action: any) => ({
   },
   focus: focusReducer(state.focus, action),
   editionsIssue: editionsIssue(state.editionsIssue, action),
-  featureSwitches: featureSwitches(state.featureSwitches, action)
+  featureSwitches: featureSwitches(state.featureSwitches, action),
+  cards: cards(state.cards, action),
+  groups: groups(state.groups, action, state),
+  collections: collections(state.collections, action),
+  externalArticles: externalArticles(state.externalArticles, action),
+  pageViewData: pageViewData(state.pageViewData, action)
 });
 
 export default rootReducer;

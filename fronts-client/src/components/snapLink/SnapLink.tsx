@@ -53,7 +53,7 @@ const SnapLinkURL = styled.p`
 `;
 
 interface ContainerProps {
-  selectSharedState?: (state: any) => State['shared'];
+  selectSharedState?: (state: any) => State;
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: (uuid: string) => void;
@@ -220,7 +220,7 @@ const SnapLink = ({
 
 const mapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
-  return (state: State['shared'], props: ContainerProps) => {
+  return (state: State, props: ContainerProps) => {
     const sharedState = props.selectSharedState
       ? props.selectSharedState(state)
       : selectSharedState(state);

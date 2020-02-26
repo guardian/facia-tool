@@ -20,7 +20,7 @@ function normaliseClipboard(clipboard: {
 function denormaliseClipboard(state: State): { articles: NestedCard[] } {
   const clipboard = selectClipboard(state);
 
-  return denormalize({ articles: clipboard }, { cards: state.shared.cards });
+  return denormalize({ articles: clipboard }, { cards: state.cards });
 }
 
 const getArticleLabel = (

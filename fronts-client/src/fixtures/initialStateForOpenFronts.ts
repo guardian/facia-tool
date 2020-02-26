@@ -20,10 +20,8 @@ const state = {
     collectionIds: [],
     frontIdsByBrowsingStage: {}
   },
-  shared: {
-    ...initialState.shared,
     collections: {
-      ...initialState.shared.collections,
+      ...initialState.collections,
       data: {
         collection1: {
           id: 'collection1',
@@ -38,7 +36,7 @@ const state = {
       }
     },
     groups: {
-      ...initialState.shared.groups,
+      ...initialState.groups,
       group1: {
         uuid: 'group1',
         id: 'group1',
@@ -47,7 +45,7 @@ const state = {
       }
     },
     cards: {
-      ...initialState.shared.cards,
+      ...initialState.cards,
       card1: {
         uuid: 'card1',
         id: 'capiArticle1',
@@ -68,7 +66,7 @@ const state = {
       }
     },
     externalArticles: {
-      ...initialState.shared.externalArticles,
+      ...initialState.externalArticles,
       data: {
         capiArticle1: {
           id: 'capiArticle1',
@@ -89,7 +87,6 @@ const state = {
           fields: {}
         }
       }
-    }
   },
   path: '/v2/editorial'
 } as State;

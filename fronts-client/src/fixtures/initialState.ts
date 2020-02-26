@@ -260,51 +260,7 @@ const config = {
   capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/'
 };
 
-const shared = {
-  featureSwitches: {},
-  cards: {
-    '56a3b407-741c-439f-a678-175abea44a9f': {
-      id: 'internal-code/page/5592826',
-      frontPublicationDate: 1547204861924,
-      meta: { supporting: [] },
-      uuid: '56a3b407-741c-439f-a678-175abea44a9f'
-    },
-    exampleId: {
-      id: 'internal-code/page/5592826',
-      frontPublicationDate: 1547204861924,
-      meta: { headline: 'Bill Shorten', supporting: [] },
-      uuid: 'exampleId'
-    }
-  },
-  groups: {
-    group123: {
-      id: 'gobbleygook',
-      name: 'groupname',
-      uuid: 'group123',
-      cards: ['56a3b407-741c-439f-a678-175abea44a9f']
-    }
-  },
-  collections: {
-    data: {
-      'e59785e9-ba82-48d8-b79a-0a80b2f9f808': {
-        live: ['group123'],
-        lastUpdated: 1547202598354,
-        updatedBy: 'Name Surname',
-        updatedEmail: 'email@email.co.uk',
-        displayName: 'headlines',
-        id: '5a32abdf-2d1c-4f9e-a116-617e4d055ab9',
-        type: 'fixed/small/slow-IV'
-      }
-    },
-    pagination: null,
-    lastError: null,
-    error: null,
-    lastFetch: null,
-    loading: false,
-    loadingIds: [],
-    updatingIds: []
-  },
-  externalArticles: {
+const externalArticles = {
     data: {
       'internal-code/page/5592826': {
         id: 'internal-code/page/5592826',
@@ -661,9 +617,7 @@ const shared = {
     loading: false,
     loadingIds: [],
     updatingIds: []
-  },
-  pageViewData: {}
-};
+  };
 
 const emptyFeedBundle = {
   data: [],
@@ -682,7 +636,6 @@ const state = {
   config,
   error: '',
   path: '/v2/editorial',
-  shared,
   unpublishedChanges: {},
   clipboard: ['56a3b407-741c-439f-a678-175abea44a9f'],
   editor: {
@@ -717,7 +670,51 @@ const state = {
     loadingIds: [],
     updatingIds: []
   },
-  featureSwitches: {}
+  featureSwitches: {},
+  pageViewData: {},
+  externalArticles,
+  cards: {
+    '56a3b407-741c-439f-a678-175abea44a9f': {
+      id: 'internal-code/page/5592826',
+      frontPublicationDate: 1547204861924,
+      meta: { supporting: [] },
+      uuid: '56a3b407-741c-439f-a678-175abea44a9f'
+    },
+    exampleId: {
+      id: 'internal-code/page/5592826',
+      frontPublicationDate: 1547204861924,
+      meta: { headline: 'Bill Shorten', supporting: [] },
+      uuid: 'exampleId'
+    }
+  },
+  groups: {
+    group123: {
+      id: 'gobbleygook',
+      name: 'groupname',
+      uuid: 'group123',
+      cards: ['56a3b407-741c-439f-a678-175abea44a9f']
+    }
+  },
+  collections: {
+    data: {
+      'e59785e9-ba82-48d8-b79a-0a80b2f9f808': {
+        live: ['group123'],
+        lastUpdated: 1547202598354,
+        updatedBy: 'Name Surname',
+        updatedEmail: 'email@email.co.uk',
+        displayName: 'headlines',
+        id: '5a32abdf-2d1c-4f9e-a116-617e4d055ab9',
+        type: 'fixed/small/slow-IV'
+      }
+    },
+    pagination: null,
+    lastError: null,
+    error: null,
+    lastFetch: null,
+    loading: false,
+    loadingIds: [],
+    updatingIds: []
+  },
 } as State;
 
 export default state;

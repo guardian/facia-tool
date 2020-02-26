@@ -40,7 +40,6 @@ const A4 = {
 const init = () => {
   const initState = {
     path: '/v2/editorial',
-    shared: {
       collections: {
         loadingIds: [],
         updatingIds: [],
@@ -78,8 +77,7 @@ const init = () => {
         a2: A2,
         a3: A3,
         a4: A4
-      }
-    },
+      },
     feed: {}
   };
   const reducer = enableBatching(rootReducer);
