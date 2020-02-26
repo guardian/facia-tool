@@ -1,12 +1,12 @@
 import { PosSpec } from 'lib/dnd';
-import { SharedState } from 'types/State';
+import { State } from 'types/State';
 import { selectGroupSiblings } from 'selectors/shared';
 import { Group } from 'types/Collection';
 import findIndex from 'lodash/findIndex';
 
 function getFromGroupIndicesWithRespectToState(
   position: PosSpec | null,
-  state: SharedState
+  state: State['shared']
 ): { fromWithRespectToState: PosSpec | null; fromOrphanedGroup: boolean } {
   if (!position) {
     return { fromWithRespectToState: null, fromOrphanedGroup: false };
@@ -57,7 +57,7 @@ function getFromGroupIndicesWithRespectToState(
 
 function getToGroupIndicesWithRespectToState(
   position: PosSpec,
-  state: SharedState,
+  state: State['shared'],
   fromOrphanedGroup: boolean
 ): PosSpec | null {
   if (position.type !== 'group') {
@@ -82,7 +82,7 @@ const isOrphanedGroup = (group: Group) =>
 
 function getGroupIndicesWithRespectToState(
   position: PosSpec,
-  state: SharedState
+  state: State['shared']
 ): { articleCount: number; groupSiblings: Group[] } {
   const groupId = position.id;
   const groupSiblings = selectGroupSiblings(state, groupId);

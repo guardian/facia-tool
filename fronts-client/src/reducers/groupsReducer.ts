@@ -1,13 +1,13 @@
 import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from 'util/insertAndDedupeSiblings';
-import { SharedState } from 'reducers/sharedReducer';
+import { State } from 'types/State';
 import { selectCards, selectGroupSiblings } from 'selectors/shared';
 import { capGroupCards } from 'util/capGroupCards';
 import keyBy from 'lodash/keyBy';
 
 const getUpdatedSiblingGroupsForInsertion = (
-  sharedState: SharedState,
-  groupsState: SharedState['groups'],
+  sharedState: State['shared'],
+  groupsState: State['shared']['groups'],
   insertionGroupId: string,
   insertionIndex: number,
   cardId: string
@@ -34,14 +34,14 @@ const getUpdatedSiblingGroupsForInsertion = (
         )
       }
     }),
-    {} as SharedState['groups']
+    {} as State['shared']['groups']
   );
 };
 
 const groups = (
-  state: SharedState['groups'] = {},
+  state: State['shared']['groups'] = {},
   action: Action,
-  prevSharedState: SharedState
+  prevSharedState: State['shared']
 ) => {
   switch (action.type) {
     case 'SHARED/GROUPS_RECEIVED': {
