@@ -20,10 +20,7 @@ describe('collectionsBundle', () => {
         )
       ).toBe('exampleCollection');
       expect(
-        selectors.selectParentCollectionOfCard(
-          stateWithCollection,
-          'invalidId'
-        )
+        selectors.selectParentCollectionOfCard(stateWithCollection, 'invalidId')
       ).toBe(null);
     });
   });

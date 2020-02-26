@@ -40,44 +40,44 @@ const A4 = {
 const init = () => {
   const initState = {
     path: '/v2/editorial',
-      collections: {
-        loadingIds: [],
-        updatingIds: [],
-        data: {
-          c1: {
-            id: 'c1',
-            live: ['g1'],
-            draft: [],
-            previously: []
-          },
-          c2: {
-            id: 'c2',
-            live: ['g2'],
-            draft: [],
-            previously: []
-          }
-        }
-      },
-      groups: {
-        g1: {
-          uuid: 'g1',
-          id: 'g1',
-          cards: ['a1', 'a2'],
-          name: 'g1'
+    collections: {
+      loadingIds: [],
+      updatingIds: [],
+      data: {
+        c1: {
+          id: 'c1',
+          live: ['g1'],
+          draft: [],
+          previously: []
         },
-        g2: {
-          uuid: 'g2',
-          id: 'g2',
-          cards: ['a3', 'a4'],
-          name: 'g2'
+        c2: {
+          id: 'c2',
+          live: ['g2'],
+          draft: [],
+          previously: []
         }
+      }
+    },
+    groups: {
+      g1: {
+        uuid: 'g1',
+        id: 'g1',
+        cards: ['a1', 'a2'],
+        name: 'g1'
       },
-      cards: {
-        a1: A1,
-        a2: A2,
-        a3: A3,
-        a4: A4
-      },
+      g2: {
+        uuid: 'g2',
+        id: 'g2',
+        cards: ['a3', 'a4'],
+        name: 'g2'
+      }
+    },
+    cards: {
+      a1: A1,
+      a2: A2,
+      a3: A3,
+      a4: A4
+    },
     feed: {}
   };
   const reducer = enableBatching(rootReducer);

@@ -261,363 +261,360 @@ const config = {
 };
 
 const externalArticles = {
-    data: {
-      'internal-code/page/5592826': {
-        id: 'internal-code/page/5592826',
-        type: 'video',
-        sectionId: 'media',
-        sectionName: 'Media',
-        webPublicationDate: '2019-01-11T11:06:58Z',
-        webTitle: 'Fiona Bruce makes debut as Question Time host – video',
-        webUrl:
-          'https://www.theguardian.com/media/video/2019/jan/11/fiona-bruce-makes-debut-as-question-time-host-video',
-        apiUrl:
-          'https://preview.content.guardianapis.com/media/video/2019/jan/11/fiona-bruce-makes-debut-as-question-time-host-video',
-        fields: {
-          headline: 'Fiona Bruce makes debut as Question Time host – video',
-          trailText:
-            "<p>The presenter made her first appearance as the host of the BBC show.&nbsp; It is the first time in the programme's history that a woman has held the position</p>",
-          byline: '',
-          firstPublicationDate: '2019-01-11T11:06:58Z',
-          internalPageCode: '5592826',
-          shortUrl: 'https://gu.com/p/ae3zj',
-          thumbnail:
-            'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/500.jpg',
-          isLive: 'true'
+  data: {
+    'internal-code/page/5592826': {
+      id: 'internal-code/page/5592826',
+      type: 'video',
+      sectionId: 'media',
+      sectionName: 'Media',
+      webPublicationDate: '2019-01-11T11:06:58Z',
+      webTitle: 'Fiona Bruce makes debut as Question Time host – video',
+      webUrl:
+        'https://www.theguardian.com/media/video/2019/jan/11/fiona-bruce-makes-debut-as-question-time-host-video',
+      apiUrl:
+        'https://preview.content.guardianapis.com/media/video/2019/jan/11/fiona-bruce-makes-debut-as-question-time-host-video',
+      fields: {
+        headline: 'Fiona Bruce makes debut as Question Time host – video',
+        trailText:
+          "<p>The presenter made her first appearance as the host of the BBC show.&nbsp; It is the first time in the programme's history that a woman has held the position</p>",
+        byline: '',
+        firstPublicationDate: '2019-01-11T11:06:58Z',
+        internalPageCode: '5592826',
+        shortUrl: 'https://gu.com/p/ae3zj',
+        thumbnail:
+          'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/500.jpg',
+        isLive: 'true'
+      },
+      tags: [
+        {
+          id: 'media/fiona-bruce',
+          type: 'keyword',
+          sectionId: 'media',
+          sectionName: 'Media',
+          webTitle: 'Fiona Bruce',
+          webUrl: 'https://www.theguardian.com/media/fiona-bruce',
+          apiUrl: 'https://preview.content.guardianapis.com/media/fiona-bruce',
+          references: []
         },
-        tags: [
-          {
-            id: 'media/fiona-bruce',
-            type: 'keyword',
-            sectionId: 'media',
-            sectionName: 'Media',
-            webTitle: 'Fiona Bruce',
-            webUrl: 'https://www.theguardian.com/media/fiona-bruce',
-            apiUrl:
-              'https://preview.content.guardianapis.com/media/fiona-bruce',
-            references: []
-          },
-          {
-            id: 'media/bbc',
-            type: 'keyword',
-            sectionId: 'media',
-            sectionName: 'Media',
-            webTitle: 'BBC',
-            webUrl: 'https://www.theguardian.com/media/bbc',
-            apiUrl: 'https://preview.content.guardianapis.com/media/bbc',
-            references: []
-          },
-          {
-            id: 'tone/news',
-            type: 'tone',
-            webTitle: 'News',
-            webUrl: 'https://www.theguardian.com/tone/news',
-            apiUrl: 'https://preview.content.guardianapis.com/tone/news',
-            references: []
-          },
-          {
-            id: 'media/media',
-            type: 'keyword',
-            sectionId: 'media',
-            sectionName: 'Media',
-            webTitle: 'Media',
-            webUrl: 'https://www.theguardian.com/media/media',
-            apiUrl: 'https://preview.content.guardianapis.com/media/media',
-            references: []
-          },
-          {
-            id: 'tv-and-radio/question-time',
-            type: 'keyword',
-            sectionId: 'tv-and-radio',
-            sectionName: 'Television & radio',
-            webTitle: 'Question Time',
-            webUrl: 'https://www.theguardian.com/tv-and-radio/question-time',
-            apiUrl:
-              'https://preview.content.guardianapis.com/tv-and-radio/question-time',
-            references: []
-          },
-          {
-            id: 'politics/politics',
-            type: 'keyword',
-            sectionId: 'politics',
-            sectionName: 'Politics',
-            webTitle: 'Politics',
-            webUrl: 'https://www.theguardian.com/politics/politics',
-            apiUrl:
-              'https://preview.content.guardianapis.com/politics/politics',
-            references: []
-          },
-          {
-            id: 'culture/culture',
-            type: 'keyword',
-            sectionId: 'culture',
-            sectionName: 'Culture',
-            webTitle: 'Culture',
-            webUrl: 'https://www.theguardian.com/culture/culture',
-            apiUrl: 'https://preview.content.guardianapis.com/culture/culture',
-            references: []
-          },
-          {
-            id: 'type/video',
-            type: 'type',
-            webTitle: 'Video',
-            webUrl: 'https://www.theguardian.com/video',
-            apiUrl: 'https://preview.content.guardianapis.com/type/video',
-            references: []
-          },
-          {
-            id: 'tracking/commissioningdesk/uk-video',
-            type: 'tracking',
-            webTitle: 'UK Video',
-            webUrl:
-              'https://www.theguardian.com/tracking/commissioningdesk/uk-video',
-            apiUrl:
-              'https://preview.content.guardianapis.com/tracking/commissioningdesk/uk-video',
-            references: []
-          }
-        ],
-        elements: [],
-        blocks: {
-          main: {
-            id: '5c38752ee4b0cebe761842fa',
-            bodyHtml:
-              '<figure class="element element-atom"> <gu-atom data-atom-id="4b651e39-3d5d-46c3-b10b-05bd77f89673"         data-atom-type="media"    > </gu-atom> </figure>',
-            bodyTextSummary: '',
-            attributes: {},
-            published: false,
-            createdDate: '2019-01-11T10:51:26Z',
-            lastModifiedDate: '2019-01-11T11:11:07Z',
-            contributors: [],
-            createdBy: {
-              email: 'tola.onanuga.casual@guardian.co.uk',
-              firstName: 'Tola',
-              lastName: 'Onanuga'
-            },
-            lastModifiedBy: {
-              email: 'gary.marshall.casual@guardian.co.uk',
-              firstName: 'Gary',
-              lastName: 'Marshall'
-            },
-            elements: [
-              {
-                type: 'contentatom',
-                assets: [],
-                contentAtomTypeData: {
-                  atomId: '4b651e39-3d5d-46c3-b10b-05bd77f89673',
-                  atomType: 'media'
-                }
-              }
-            ]
-          }
+        {
+          id: 'media/bbc',
+          type: 'keyword',
+          sectionId: 'media',
+          sectionName: 'Media',
+          webTitle: 'BBC',
+          webUrl: 'https://www.theguardian.com/media/bbc',
+          apiUrl: 'https://preview.content.guardianapis.com/media/bbc',
+          references: []
         },
-        atoms: {
-          media: [
+        {
+          id: 'tone/news',
+          type: 'tone',
+          webTitle: 'News',
+          webUrl: 'https://www.theguardian.com/tone/news',
+          apiUrl: 'https://preview.content.guardianapis.com/tone/news',
+          references: []
+        },
+        {
+          id: 'media/media',
+          type: 'keyword',
+          sectionId: 'media',
+          sectionName: 'Media',
+          webTitle: 'Media',
+          webUrl: 'https://www.theguardian.com/media/media',
+          apiUrl: 'https://preview.content.guardianapis.com/media/media',
+          references: []
+        },
+        {
+          id: 'tv-and-radio/question-time',
+          type: 'keyword',
+          sectionId: 'tv-and-radio',
+          sectionName: 'Television & radio',
+          webTitle: 'Question Time',
+          webUrl: 'https://www.theguardian.com/tv-and-radio/question-time',
+          apiUrl:
+            'https://preview.content.guardianapis.com/tv-and-radio/question-time',
+          references: []
+        },
+        {
+          id: 'politics/politics',
+          type: 'keyword',
+          sectionId: 'politics',
+          sectionName: 'Politics',
+          webTitle: 'Politics',
+          webUrl: 'https://www.theguardian.com/politics/politics',
+          apiUrl: 'https://preview.content.guardianapis.com/politics/politics',
+          references: []
+        },
+        {
+          id: 'culture/culture',
+          type: 'keyword',
+          sectionId: 'culture',
+          sectionName: 'Culture',
+          webTitle: 'Culture',
+          webUrl: 'https://www.theguardian.com/culture/culture',
+          apiUrl: 'https://preview.content.guardianapis.com/culture/culture',
+          references: []
+        },
+        {
+          id: 'type/video',
+          type: 'type',
+          webTitle: 'Video',
+          webUrl: 'https://www.theguardian.com/video',
+          apiUrl: 'https://preview.content.guardianapis.com/type/video',
+          references: []
+        },
+        {
+          id: 'tracking/commissioningdesk/uk-video',
+          type: 'tracking',
+          webTitle: 'UK Video',
+          webUrl:
+            'https://www.theguardian.com/tracking/commissioningdesk/uk-video',
+          apiUrl:
+            'https://preview.content.guardianapis.com/tracking/commissioningdesk/uk-video',
+          references: []
+        }
+      ],
+      elements: [],
+      blocks: {
+        main: {
+          id: '5c38752ee4b0cebe761842fa',
+          bodyHtml:
+            '<figure class="element element-atom"> <gu-atom data-atom-id="4b651e39-3d5d-46c3-b10b-05bd77f89673"         data-atom-type="media"    > </gu-atom> </figure>',
+          bodyTextSummary: '',
+          attributes: {},
+          published: false,
+          createdDate: '2019-01-11T10:51:26Z',
+          lastModifiedDate: '2019-01-11T11:11:07Z',
+          contributors: [],
+          createdBy: {
+            email: 'tola.onanuga.casual@guardian.co.uk',
+            firstName: 'Tola',
+            lastName: 'Onanuga'
+          },
+          lastModifiedBy: {
+            email: 'gary.marshall.casual@guardian.co.uk',
+            firstName: 'Gary',
+            lastName: 'Marshall'
+          },
+          elements: [
             {
-              id: '4b651e39-3d5d-46c3-b10b-05bd77f89673',
-              atomType: 'media',
-              labels: [],
-              defaultHtml:
-                '<iframe frameborder="0" allowfullscreen="true" src="https://www.youtube.com/embed/bGnEcyxZIOM?showinfo=0&rel=0"></iframe>',
-              data: {
-                media: {
-                  assets: [
-                    {
-                      assetType: 'video',
-                      version: 1,
-                      id: 'bGnEcyxZIOM',
-                      platform: 'youtube'
-                    }
-                  ],
-                  activeVersion: 1,
-                  title:
-                    'Fiona Bruce makes debut as Question Time host – video',
-                  category: 'news',
-                  duration: 69,
-                  source: 'BBC',
-                  posterUrl:
-                    'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/master/851.jpg',
-                  description:
-                    '<p>The presenter made her first appearance as host of <a href="https://www.bbc.co.uk/iplayer/episode/b0by97hj/question-time-2019-10012019">the BBC show</a> on Thursday. It is the first time in the programme\'s history that a woman has held the position. Bruce received generally positive reviews for the Brexit-dominated episode</p><ul><li><a href="https://www.theguardian.com/tv-and-radio/2019/jan/11/question-time-fiona-bruce-is-fresh-face-in-a-tired-format">Question Time: Fiona Bruce is fresh face in a tired format</a></li></ul>',
-                  metadata: {
-                    tags: [
-                      'question time',
-                      'bbc',
-                      'bbc question time',
-                      'fiona bruce',
-                      'fiona bruce question time',
-                      'emily thornberry',
-                      'James Cleverly',
-                      'James Cleverly question time',
-                      'emily thornberry question time',
-                      'politics',
-                      'culture'
-                    ],
-                    categoryId: '25',
-                    channelId: 'UCIRYBXDze5krPDzAEOxFGVA',
-                    pluto: { commissionId: 'KP-46751', projectId: 'KP-46881' }
-                  },
-                  posterImage: {
-                    assets: [
-                      {
-                        mimeType: 'image/jpeg',
-                        file:
-                          'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/500.jpg',
-                        dimensions: { height: 281, width: 500 },
-                        size: 23272,
-                        aspectRatio: '16:9'
-                      },
-                      {
-                        mimeType: 'image/jpeg',
-                        file:
-                          'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/140.jpg',
-                        dimensions: { height: 79, width: 140 },
-                        size: 6256,
-                        aspectRatio: '16:9'
-                      },
-                      {
-                        mimeType: 'image/jpeg',
-                        file:
-                          'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/851.jpg',
-                        dimensions: { height: 479, width: 851 },
-                        size: 50542,
-                        aspectRatio: '16:9'
-                      }
-                    ],
-                    master: {
-                      mimeType: 'image/jpeg',
-                      file:
-                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/master/851.jpg',
-                      dimensions: { height: 479, width: 851 },
-                      size: 170842,
-                      aspectRatio: '16:9'
-                    },
-                    mediaId:
-                      'https://api.media.gutools.co.uk/images/d38bca368b0fa22d1a47923ac05fb4c6d20005a1',
-                    source: 'BBC'
-                  },
-                  trailText:
-                    "<p>The presenter made her first appearance as the host of the BBC show.&nbsp; It is the first time in the programme's history that a woman has held the position</p>",
-                  byline: [],
-                  commissioningDesks: ['tracking/commissioningdesk/uk-video'],
-                  keywords: [
-                    'media/fiona-bruce',
-                    'media/bbc',
-                    'tone/news',
-                    'media/media',
-                    'tv-and-radio/question-time',
-                    'politics/politics',
-                    'culture/culture'
-                  ],
-                  trailImage: {
-                    assets: [
-                      {
-                        mimeType: 'image/jpeg',
-                        file:
-                          'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/500.jpg',
-                        dimensions: { height: 300, width: 500 },
-                        size: 24328,
-                        aspectRatio: '5:3'
-                      },
-                      {
-                        mimeType: 'image/jpeg',
-                        file:
-                          'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/140.jpg',
-                        dimensions: { height: 84, width: 140 },
-                        size: 6675,
-                        aspectRatio: '5:3'
-                      },
-                      {
-                        mimeType: 'image/jpeg',
-                        file:
-                          'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/814.jpg',
-                        dimensions: { height: 488, width: 814 },
-                        size: 47050,
-                        aspectRatio: '5:3'
-                      }
-                    ],
-                    master: {
-                      mimeType: 'image/jpeg',
-                      file:
-                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/master/814.jpg',
-                      dimensions: { height: 488, width: 814 },
-                      size: 154564,
-                      aspectRatio: '5:3'
-                    },
-                    mediaId:
-                      'https://api.media.gutools.co.uk/images/d38bca368b0fa22d1a47923ac05fb4c6d20005a1',
-                    source: 'BBC'
-                  },
-                  optimisedForWeb: true
-                }
-              },
-              contentChangeDetails: {
-                lastModified: {
-                  date: 1547207897000,
-                  user: {
-                    email: 'andrew.halley@guardian.co.uk',
-                    firstName: 'Andrew',
-                    lastName: 'Halley'
-                  }
-                },
-                created: {
-                  date: 1547199831000,
-                  user: {
-                    email: 'gary.marshall.casual@guardian.co.uk',
-                    firstName: 'Gary',
-                    lastName: 'Marshall'
-                  }
-                },
-                published: {
-                  date: 1547205070000,
-                  user: {
-                    email: 'gary.marshall.casual@guardian.co.uk',
-                    firstName: 'Gary',
-                    lastName: 'Marshall'
-                  }
-                },
-                revision: 30
-              },
-              flags: { blockAds: true },
-              title: 'Fiona Bruce makes debut as Question Time host – video',
-              commissioningDesks: []
+              type: 'contentatom',
+              assets: [],
+              contentAtomTypeData: {
+                atomId: '4b651e39-3d5d-46c3-b10b-05bd77f89673',
+                atomType: 'media'
+              }
             }
           ]
+        }
+      },
+      atoms: {
+        media: [
+          {
+            id: '4b651e39-3d5d-46c3-b10b-05bd77f89673',
+            atomType: 'media',
+            labels: [],
+            defaultHtml:
+              '<iframe frameborder="0" allowfullscreen="true" src="https://www.youtube.com/embed/bGnEcyxZIOM?showinfo=0&rel=0"></iframe>',
+            data: {
+              media: {
+                assets: [
+                  {
+                    assetType: 'video',
+                    version: 1,
+                    id: 'bGnEcyxZIOM',
+                    platform: 'youtube'
+                  }
+                ],
+                activeVersion: 1,
+                title: 'Fiona Bruce makes debut as Question Time host – video',
+                category: 'news',
+                duration: 69,
+                source: 'BBC',
+                posterUrl:
+                  'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/master/851.jpg',
+                description:
+                  '<p>The presenter made her first appearance as host of <a href="https://www.bbc.co.uk/iplayer/episode/b0by97hj/question-time-2019-10012019">the BBC show</a> on Thursday. It is the first time in the programme\'s history that a woman has held the position. Bruce received generally positive reviews for the Brexit-dominated episode</p><ul><li><a href="https://www.theguardian.com/tv-and-radio/2019/jan/11/question-time-fiona-bruce-is-fresh-face-in-a-tired-format">Question Time: Fiona Bruce is fresh face in a tired format</a></li></ul>',
+                metadata: {
+                  tags: [
+                    'question time',
+                    'bbc',
+                    'bbc question time',
+                    'fiona bruce',
+                    'fiona bruce question time',
+                    'emily thornberry',
+                    'James Cleverly',
+                    'James Cleverly question time',
+                    'emily thornberry question time',
+                    'politics',
+                    'culture'
+                  ],
+                  categoryId: '25',
+                  channelId: 'UCIRYBXDze5krPDzAEOxFGVA',
+                  pluto: { commissionId: 'KP-46751', projectId: 'KP-46881' }
+                },
+                posterImage: {
+                  assets: [
+                    {
+                      mimeType: 'image/jpeg',
+                      file:
+                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/500.jpg',
+                      dimensions: { height: 281, width: 500 },
+                      size: 23272,
+                      aspectRatio: '16:9'
+                    },
+                    {
+                      mimeType: 'image/jpeg',
+                      file:
+                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/140.jpg',
+                      dimensions: { height: 79, width: 140 },
+                      size: 6256,
+                      aspectRatio: '16:9'
+                    },
+                    {
+                      mimeType: 'image/jpeg',
+                      file:
+                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/851.jpg',
+                      dimensions: { height: 479, width: 851 },
+                      size: 50542,
+                      aspectRatio: '16:9'
+                    }
+                  ],
+                  master: {
+                    mimeType: 'image/jpeg',
+                    file:
+                      'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/master/851.jpg',
+                    dimensions: { height: 479, width: 851 },
+                    size: 170842,
+                    aspectRatio: '16:9'
+                  },
+                  mediaId:
+                    'https://api.media.gutools.co.uk/images/d38bca368b0fa22d1a47923ac05fb4c6d20005a1',
+                  source: 'BBC'
+                },
+                trailText:
+                  "<p>The presenter made her first appearance as the host of the BBC show.&nbsp; It is the first time in the programme's history that a woman has held the position</p>",
+                byline: [],
+                commissioningDesks: ['tracking/commissioningdesk/uk-video'],
+                keywords: [
+                  'media/fiona-bruce',
+                  'media/bbc',
+                  'tone/news',
+                  'media/media',
+                  'tv-and-radio/question-time',
+                  'politics/politics',
+                  'culture/culture'
+                ],
+                trailImage: {
+                  assets: [
+                    {
+                      mimeType: 'image/jpeg',
+                      file:
+                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/500.jpg',
+                      dimensions: { height: 300, width: 500 },
+                      size: 24328,
+                      aspectRatio: '5:3'
+                    },
+                    {
+                      mimeType: 'image/jpeg',
+                      file:
+                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/140.jpg',
+                      dimensions: { height: 84, width: 140 },
+                      size: 6675,
+                      aspectRatio: '5:3'
+                    },
+                    {
+                      mimeType: 'image/jpeg',
+                      file:
+                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/814.jpg',
+                      dimensions: { height: 488, width: 814 },
+                      size: 47050,
+                      aspectRatio: '5:3'
+                    }
+                  ],
+                  master: {
+                    mimeType: 'image/jpeg',
+                    file:
+                      'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/master/814.jpg',
+                    dimensions: { height: 488, width: 814 },
+                    size: 154564,
+                    aspectRatio: '5:3'
+                  },
+                  mediaId:
+                    'https://api.media.gutools.co.uk/images/d38bca368b0fa22d1a47923ac05fb4c6d20005a1',
+                  source: 'BBC'
+                },
+                optimisedForWeb: true
+              }
+            },
+            contentChangeDetails: {
+              lastModified: {
+                date: 1547207897000,
+                user: {
+                  email: 'andrew.halley@guardian.co.uk',
+                  firstName: 'Andrew',
+                  lastName: 'Halley'
+                }
+              },
+              created: {
+                date: 1547199831000,
+                user: {
+                  email: 'gary.marshall.casual@guardian.co.uk',
+                  firstName: 'Gary',
+                  lastName: 'Marshall'
+                }
+              },
+              published: {
+                date: 1547205070000,
+                user: {
+                  email: 'gary.marshall.casual@guardian.co.uk',
+                  firstName: 'Gary',
+                  lastName: 'Marshall'
+                }
+              },
+              revision: 30
+            },
+            flags: { blockAds: true },
+            title: 'Fiona Bruce makes debut as Question Time host – video',
+            commissioningDesks: []
+          }
+        ]
+      },
+      isGone: false,
+      isHosted: false,
+      pillarId: 'pillar/news',
+      pillarName: 'News',
+      frontsMeta: {
+        defaults: {
+          isBreaking: false,
+          isBoosted: false,
+          showMainVideo: true,
+          imageHide: false,
+          showKickerCustom: false,
+          showByline: false,
+          showQuotedHeadline: false,
+          imageSlideshowReplace: false,
+          showKickerTag: false,
+          showLivePlayable: false,
+          imageReplace: false,
+          imageCutoutReplace: false,
+          showKickerSection: false,
+          showLargeHeadline: false
         },
-        isGone: false,
-        isHosted: false,
-        pillarId: 'pillar/news',
-        pillarName: 'News',
-        frontsMeta: {
-          defaults: {
-            isBreaking: false,
-            isBoosted: false,
-            showMainVideo: true,
-            imageHide: false,
-            showKickerCustom: false,
-            showByline: false,
-            showQuotedHeadline: false,
-            imageSlideshowReplace: false,
-            showKickerTag: false,
-            showLivePlayable: false,
-            imageReplace: false,
-            imageCutoutReplace: false,
-            showKickerSection: false,
-            showLargeHeadline: false
-          },
-          tone: 'media'
-        },
-        urlPath:
-          'media/video/2019/jan/11/fiona-bruce-makes-debut-as-question-time-host-video'
-      }
-    },
-    pagination: null,
-    lastError: null,
-    error: null,
-    lastFetch: 1547474510279,
-    loading: false,
-    loadingIds: [],
-    updatingIds: []
-  };
+        tone: 'media'
+      },
+      urlPath:
+        'media/video/2019/jan/11/fiona-bruce-makes-debut-as-question-time-host-video'
+    }
+  },
+  pagination: null,
+  lastError: null,
+  error: null,
+  lastFetch: 1547474510279,
+  loading: false,
+  loadingIds: [],
+  updatingIds: []
+};
 
 const emptyFeedBundle = {
   data: [],
@@ -714,7 +711,7 @@ const state = {
     loading: false,
     loadingIds: [],
     updatingIds: []
-  },
+  }
 } as State;
 
 export default state;

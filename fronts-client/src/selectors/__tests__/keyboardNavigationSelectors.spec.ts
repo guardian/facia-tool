@@ -147,9 +147,9 @@ describe('nextIndexAndGroupSelector', () => {
   };
   const stateWithGroups = {
     ...state,
-      groups: groupsWithCards,
-      cards,
-      collections
+    groups: groupsWithCards,
+    cards,
+    collections
   };
 
   it('return null when moving articles in an empty group', () => {
@@ -163,7 +163,7 @@ describe('nextIndexAndGroupSelector', () => {
     };
     const stateWithEmptyGroup = {
       ...state,
-        groups: emptyGroups
+      groups: emptyGroups
     };
     expect(
       selectNextIndexAndGroup(

@@ -737,115 +737,115 @@ const stateWithCollection: any = {
     loadingIds: [],
     updatingIds: []
   },
-  feed: {},
+  feed: {}
 };
 
 const stateWithCollectionAndSupporting: any = {
   path: '/v2/editorial',
-    collections: {
-      data: {
-        exampleCollection: {
-          id: 'exampleCollection',
-          displayName: 'Example Collection',
-          live: ['abc'],
-          draft: [],
-          previously: undefined
-        }
+  collections: {
+    data: {
+      exampleCollection: {
+        id: 'exampleCollection',
+        displayName: 'Example Collection',
+        live: ['abc'],
+        draft: [],
+        previously: undefined
       }
-    },
-    groups: {
-      abc: {
-        id: '0',
-        uuid: 'abc',
-        cards: [
-          '1269c42e-a341-4464-b206-a5731b92fa46',
-          '322f0527-cf14-43c1-8520-e6732ab01297'
-        ]
-      }
-    },
-    cards: {
-      '1269c42e-a341-4464-b206-a5731b92fa46': {
-        id: 'article/live/0',
-        frontPublicationDate: 1,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
-      },
-      '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
-        id: 'article/draft/2',
-        frontPublicationDate: 2,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
-      },
-      '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
-        id: 'article/draft/3',
-        frontPublicationDate: 3,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
-      },
-      '322f0527-cf14-43c1-8520-e6732ab01297': {
-        id: 'a/long/path/1',
-        frontPublicationDate: 1,
-        publishedBy: 'Computers',
-        meta: {
-          supporting: [
-            '134c9d4f-b05c-43f4-be41-a605b6dccab9',
-            '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
-          ]
-        },
-        uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
-      }
-    },
-    externalArticles: {
-      data: {},
-      lastError: null,
-      error: null,
-      lastFetch: null,
-      loading: false,
-      loadingIds: [],
-      updatingIds: []
     }
+  },
+  groups: {
+    abc: {
+      id: '0',
+      uuid: 'abc',
+      cards: [
+        '1269c42e-a341-4464-b206-a5731b92fa46',
+        '322f0527-cf14-43c1-8520-e6732ab01297'
+      ]
+    }
+  },
+  cards: {
+    '1269c42e-a341-4464-b206-a5731b92fa46': {
+      id: 'article/live/0',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
+    },
+    '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
+      id: 'article/draft/2',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
+    },
+    '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
+      id: 'article/draft/3',
+      frontPublicationDate: 3,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+    },
+    '322f0527-cf14-43c1-8520-e6732ab01297': {
+      id: 'a/long/path/1',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {
+        supporting: [
+          '134c9d4f-b05c-43f4-be41-a605b6dccab9',
+          '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+        ]
+      },
+      uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
+    }
+  },
+  externalArticles: {
+    data: {},
+    lastError: null,
+    error: null,
+    lastFetch: null,
+    loading: false,
+    loadingIds: [],
+    updatingIds: []
+  }
 };
 
 const stateWithSnaplinksAndArticles: any = {
   path: '/v2/editorial',
-    cards: {
-      '1269c42e-a341-4464-b206-a5731b92fa46': {
-        id: 'article/live/0',
-        frontPublicationDate: 1,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
+  cards: {
+    '1269c42e-a341-4464-b206-a5731b92fa46': {
+      id: 'article/live/0',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
+    },
+    '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
+      id: 'article/draft/2',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
+    },
+    '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
+      id: 'snap/32145544543',
+      frontPublicationDate: 3,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+    },
+    '322f0527-cf14-43c1-8520-e6732ab01297': {
+      id: 'a/long/path/1',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {
+        supporting: [
+          '134c9d4f-b05c-43f4-be41-a605b6dccab9',
+          '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+        ]
       },
-      '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
-        id: 'article/draft/2',
-        frontPublicationDate: 2,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
-      },
-      '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
-        id: 'snap/32145544543',
-        frontPublicationDate: 3,
-        publishedBy: 'Computers',
-        meta: {},
-        uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
-      },
-      '322f0527-cf14-43c1-8520-e6732ab01297': {
-        id: 'a/long/path/1',
-        frontPublicationDate: 1,
-        publishedBy: 'Computers',
-        meta: {
-          supporting: [
-            '134c9d4f-b05c-43f4-be41-a605b6dccab9',
-            '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
-          ]
-        },
-        uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
-      }
+      uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
     }
+  }
 };
 
 const initialState = {
