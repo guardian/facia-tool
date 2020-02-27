@@ -5,7 +5,6 @@ import Article from 'components/article/Article';
 import { State } from 'types/State';
 import { createSelectCardType } from 'selectors/cardSelectors';
 import {
-  selectSharedState,
   selectExternalArticleFromCard,
   selectSupportingArticleCount
 } from 'selectors/shared';
@@ -272,19 +271,13 @@ class Card extends React.Component<ArticleContainerProps> {
 const createMapStateToProps = () => {
   const selectType = createSelectCardType();
   return (state: State, { uuid, frontId }: ContainerProps) => {
-    const maybeExternalArticle = selectExternalArticleFromCard(
-      selectSharedState(state),
-      uuid
-    );
+    const maybeExternalArticle = selectExternalArticleFromCard(state, uuid);
     return {
-      type: selectType(selectSharedState(state), uuid),
+      type: selectType(state, uuid),
       isSelected: selectIsCardFormOpen(state, uuid, frontId),
       isLive: maybeExternalArticle && isArticleLive(maybeExternalArticle),
       pillarId: maybeExternalArticle && maybeExternalArticle.pillarId,
-      numSupportingArticles: selectSupportingArticleCount(
-        selectSharedState(state),
-        uuid
-      ),
+      numSupportingArticles: selectSupportingArticleCount(state, uuid),
       editMode: selectEditMode(state)
     };
   };

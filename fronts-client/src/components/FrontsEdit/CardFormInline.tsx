@@ -14,7 +14,6 @@ import Button from 'components/inputs/ButtonDefault';
 import ContentContainer from 'components/layout/ContentContainer';
 import {
   createSelectArticleFromCard,
-  selectSharedState,
   selectExternalArticleFromCard,
   selectArticleTag
 } from 'selectors/shared';
@@ -821,29 +820,17 @@ const createMapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
   const selectFormFields = createSelectFormFieldsForCard();
   return (state: State, { cardId, isSupporting = false }: InterfaceProps) => {
-    const externalArticle = selectExternalArticleFromCard(
-      selectSharedState(state),
-      cardId
-    );
+    const externalArticle = selectExternalArticleFromCard(state, cardId);
     const valueSelector = formValueSelector(cardId);
-    const article = selectArticle(selectSharedState(state), cardId);
+    const article = selectArticle(state, cardId);
     const parentCollectionId =
-      collectionSelectors.selectParentCollectionOfCard(
-        selectSharedState(state),
-        cardId
-      ) || null;
+      collectionSelectors.selectParentCollectionOfCard(state, cardId) || null;
     const parentCollection = parentCollectionId
-      ? collectionSelectors.selectById(
-          selectSharedState(state),
-          parentCollectionId
-        )
+      ? collectionSelectors.selectById(state, parentCollectionId)
       : null;
 
     function getLastUpdatedBy(collectionId: string) {
-      const collection = collectionSelectors.selectById(
-        selectSharedState(state),
-        collectionId
-      );
+      const collection = collectionSelectors.selectById(state, collectionId);
       if (!collection) {
         return null;
       }
@@ -862,9 +849,7 @@ const createMapStateToProps = () => {
       articleCapiFieldValues: getCapiValuesForArticleFields(externalArticle),
       editableFields:
         article && selectFormFields(state, article.uuid, isSupporting),
-      kickerOptions: article
-        ? selectArticleTag(selectSharedState(state), cardId)
-        : defaultObject,
+      kickerOptions: article ? selectArticleTag(state, cardId) : defaultObject,
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
       imageHide: valueSelector(state, 'imageHide'),
       imageReplace: valueSelector(state, 'imageReplace'),

@@ -5,7 +5,6 @@ import {
   Card
 } from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
-import { selectSharedState } from 'selectors/shared';
 import { State } from 'types/State';
 
 import { normalize, denormalize } from './schema';
@@ -167,10 +166,7 @@ function denormaliseCollection(
   state: State,
   id: string
 ): CollectionWithNestedArticles {
-  const collection = collectionSelectors.selectById(
-    selectSharedState(state),
-    id
-  );
+  const collection = collectionSelectors.selectById(state, id);
   if (!collection) {
     throw new Error(
       `Could not denormalise collection - no collection found with id '${id}'`

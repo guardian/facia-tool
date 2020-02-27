@@ -24,7 +24,6 @@ import { CardSets, Group } from 'types/Collection';
 import {
   createSelectCollectionStageGroups,
   createSelectCollectionEditWarning,
-  selectSharedState,
   createSelectPreviouslyLiveArticlesInCollection
 } from 'selectors/shared';
 import {
@@ -342,19 +341,19 @@ const createMapStateToProps = () => {
       collectionId
     }),
     isCollectionLocked: selectIsCollectionLocked(state, collectionId),
-    groups: selectCollectionStageGroups(selectSharedState(state), {
+    groups: selectCollectionStageGroups(state, {
       collectionSet: browsingStage,
       collectionId
     }),
-    previousGroup: selectPreviously(selectSharedState(state), {
+    previousGroup: selectPreviously(state, {
       collectionId
     }),
-    displayEditWarning: selectEditWarning(selectSharedState(state), {
+    displayEditWarning: selectEditWarning(state, {
       collectionId
     }),
     isOpen: selectIsCollectionOpen(state, collectionId),
     hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
-    hasContent: !!selectors.selectById(selectSharedState(state), collectionId),
+    hasContent: !!selectors.selectById(state, collectionId),
     hasOpenForms: selectHasOpenForms(state, { collectionId, frontId })
   });
 };

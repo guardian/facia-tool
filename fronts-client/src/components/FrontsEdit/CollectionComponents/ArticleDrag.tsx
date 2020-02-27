@@ -1,9 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import {
-  createSelectArticleFromCard,
-  selectSharedState
-} from 'selectors/shared';
+import { createSelectArticleFromCard } from 'selectors/shared';
 import { State } from 'types/State';
 import { theme, styled } from '../../../constants/theme';
 import documentDragIcon from 'images/icons/document-drag-icon.svg';
@@ -69,7 +66,7 @@ export const DraggingArticleComponent = ({ headline }: ComponentProps) =>
 const createMapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
   return (state: State, props: ContainerProps): { headline?: string } => {
-    const article = selectArticle(selectSharedState(state), props.id);
+    const article = selectArticle(state, props.id);
     return { headline: article && article.headline };
   };
 };

@@ -1,5 +1,4 @@
 import {
-  selectSharedState,
   selectIndexInGroup,
   selectGroups,
   selectGroupCollection,
@@ -38,19 +37,14 @@ const selectNextIndexAndGroup = (
   action: 'up' | 'down',
   frontId: string
 ) => {
-  const sharedState = selectSharedState(state);
-  const group = selectGroups(sharedState)[groupId];
+  const group = selectGroups(state)[groupId];
   if (!group) {
     return null;
   }
 
   const groupCards = group.cards;
 
-  const currentArticleIndex = selectIndexInGroup(
-    sharedState,
-    groupId,
-    articleId
-  );
+  const currentArticleIndex = selectIndexInGroup(state, groupId, articleId);
 
   // Checking if moving inside the group
   if (action === 'down') {
@@ -68,7 +62,7 @@ const selectNextIndexAndGroup = (
   }
 
   // Checking if moving between groups but inside the collection
-  const { collection, cardSet } = selectGroupCollection(sharedState, groupId);
+  const { collection, cardSet } = selectGroupCollection(state, groupId);
   if (collection) {
     const collectionGroups = collection[cardSet];
 
@@ -84,8 +78,7 @@ const selectNextIndexAndGroup = (
       if (action === 'up') {
         if (groupIndex !== 0) {
           const nextGroupId = collectionGroups[groupIndex - 1];
-          const nextGroupArticles = selectGroups(sharedState)[nextGroupId]
-            .cards;
+          const nextGroupArticles = selectGroups(state)[nextGroupId].cards;
           return { toIndex: nextGroupArticles.length, nextGroupId };
         }
       }
@@ -97,7 +90,7 @@ const selectNextIndexAndGroup = (
     if (action === 'down') {
       if (collectionIndex < frontCollections.length - 1) {
         const selectCollection = createSelectCollection();
-        const coll = selectCollection(sharedState, {
+        const coll = selectCollection(state, {
           collectionId: frontCollections[collectionIndex + 1]
         });
         if (!coll || !coll.draft) {
@@ -111,7 +104,7 @@ const selectNextIndexAndGroup = (
     if (action === 'up') {
       if (collectionIndex !== 0) {
         const selectCollection = createSelectCollection();
-        const coll = selectCollection(sharedState, {
+        const coll = selectCollection(state, {
           collectionId: frontCollections[collectionIndex - 1]
         });
 
@@ -122,7 +115,7 @@ const selectNextIndexAndGroup = (
         const nextIndex = coll.draft.length;
         const nextGroupId = coll.draft[nextIndex - 1];
 
-        const nextGroupArticles = selectGroups(sharedState)[nextGroupId].cards;
+        const nextGroupArticles = selectGroups(state)[nextGroupId].cards;
 
         return {
           toIndex: nextGroupArticles.length,

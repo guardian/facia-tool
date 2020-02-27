@@ -1,5 +1,5 @@
 import { selectAllFeatures } from '../selectors';
-import initialState from 'fixtures/initialState';
+import { state as initialState } from 'fixtures/initialState';
 import { State } from 'types/State';
 
 describe('Feature selectors', () => {

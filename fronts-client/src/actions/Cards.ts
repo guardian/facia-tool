@@ -10,12 +10,7 @@ import {
   copyCardImageMeta
 } from 'actions/CardsCommon';
 import { Card } from 'types/Collection';
-import {
-  selectSharedState,
-  selectCards,
-  selectCard,
-  selectArticleGroup
-} from 'selectors/shared';
+import { selectCards, selectCard, selectArticleGroup } from 'selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/action';
 import { cloneCard } from 'util/card';
@@ -213,10 +208,10 @@ const insertCardWithCreate = (
   if (!insertActionCreator) {
     return;
   }
-  const sharedState = selectSharedState(getState());
+  const state = getState();
   const toWithRespectToState = getToGroupIndicesWithRespectToState(
     to,
-    sharedState,
+    state,
     false
   );
   if (toWithRespectToState) {
@@ -260,11 +255,7 @@ const removeCard = (
       }
       // The card may belong to an orphaned group -
       // we need to find the actual group the card belongs to
-      const idFromState = selectArticleGroup(
-        selectSharedState(getState()),
-        collectionId,
-        cardId
-      );
+      const idFromState = selectArticleGroup(getState(), collectionId, cardId);
       if (idFromState) {
         return idFromState;
       }
@@ -299,7 +290,7 @@ const moveCard = (
       return;
     }
 
-    const sharedState = selectSharedState(getState());
+    const state = getState();
 
     // If move actions are happening to/from groups which have cards displayed
     // in them which don't belong to these groups we need to adjust the indices of the move
@@ -307,11 +298,11 @@ const moveCard = (
     const fromDetails: {
       fromWithRespectToState: PosSpec | null;
       fromOrphanedGroup: boolean;
-    } = getFromGroupIndicesWithRespectToState(from, sharedState);
+    } = getFromGroupIndicesWithRespectToState(from, state);
 
     const toWithRespectToState: PosSpec | null = getToGroupIndicesWithRespectToState(
       to,
-      sharedState,
+      state,
       fromDetails.fromOrphanedGroup
     );
     if (toWithRespectToState) {
@@ -320,7 +311,7 @@ const moveCard = (
       // if from is not null then assume we're copying a moved card
       // into this new position
       const { parent, supporting } = !fromWithRespectToState
-        ? cloneCard(card, selectCards(sharedState))
+        ? cloneCard(card, selectCards(state))
         : { parent: card, supporting: [] };
 
       if (toWithRespectToState) {
@@ -349,7 +340,7 @@ const cloneCardToTarget = (
 ): ThunkResult<void> => {
   return (dispatch, getState) => {
     const to = { id: toType, type: toType, index: 0 };
-    const card = selectCard(selectSharedState(getState()), uuid);
+    const card = selectCard(getState(), uuid);
     const from = null;
     dispatch(moveCard(to, card, from, toType));
   };

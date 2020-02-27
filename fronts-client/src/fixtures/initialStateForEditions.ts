@@ -1,4 +1,4 @@
-import initialState from './initialState';
+import { state as initialState } from 'fixtures/initialState';
 import { State } from 'types/State';
 
 const state = {

@@ -3,7 +3,7 @@ import {
   selectNextIndexAndGroup,
   selectNextClipboardIndexSelector
 } from '../selectors/keyboardNavigationSelectors';
-import { selectSharedState, selectIndexInGroup } from 'selectors/shared';
+import { selectIndexInGroup } from 'selectors/shared';
 import { Card } from 'types/Collection';
 import { PosSpec } from 'lib/dnd';
 import { ThunkResult, Dispatch } from 'types/Store';
@@ -25,11 +25,7 @@ const keyboardCardMove = (
     const state = getState();
     const id = card.uuid;
     if (persistTo === 'collection') {
-      const fromIndex = selectIndexInGroup(
-        selectSharedState(state),
-        groupId || '',
-        id
-      );
+      const fromIndex = selectIndexInGroup(state, groupId || '', id);
       const type = 'group';
 
       const from: PosSpec = { type, index: fromIndex, id: groupId || '' };

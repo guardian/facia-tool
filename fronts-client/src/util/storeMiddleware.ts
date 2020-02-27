@@ -8,7 +8,6 @@ import { Action, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
 import { updateClipboard } from 'actions/Clipboard';
-import { selectSharedState } from 'selectors/shared';
 import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/userDataApi';
 import { NestedCard } from 'types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
@@ -96,9 +95,9 @@ const persistCollectionOnEdit = (
   let pendingCollectionIds = [] as string[];
   const throttledPersistCollectionEdits = debounce(
     () => {
-      const sharedState = selectSharedState(store.getState());
+      const state = store.getState();
       pendingCollectionIds.forEach(id => {
-        const collection = selectors.selectById(sharedState, id);
+        const collection = selectors.selectById(state, id);
         if (collection) {
           store.dispatch(updateCollectionAction(collection));
         }
@@ -143,7 +142,7 @@ const persistCollectionOnEdit = (
         }
 
         const collectionId = selectors.selectParentCollectionOfCard(
-          selectSharedState(store.getState()),
+          store.getState(),
           id
         );
         if (!collectionId) {

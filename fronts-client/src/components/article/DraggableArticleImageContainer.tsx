@@ -3,7 +3,6 @@ import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
 import {
-  selectSharedState,
   selectCardHasMediaOverrides,
   createSelectArticleFromCard
 } from 'selectors/shared';
@@ -93,15 +92,12 @@ const mapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
 
   return (state: State, { id, canDrag = true }: ContainerProps) => {
-    const article = selectArticle(selectSharedState(state), id);
+    const article = selectArticle(state, id);
 
     return {
       currentImageUrl: article && article.thumbnail,
       canDrag: article ? !!article.thumbnail && canDrag : false,
-      hasImageOverrides: selectCardHasMediaOverrides(
-        selectSharedState(state),
-        id
-      )
+      hasImageOverrides: selectCardHasMediaOverrides(state, id)
     };
   };
 };

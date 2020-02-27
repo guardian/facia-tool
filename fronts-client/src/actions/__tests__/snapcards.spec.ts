@@ -7,7 +7,7 @@ import {
   snapMetaWhitelist,
   marketingParamsWhiteList
 } from '../CardsCommon';
-import initialState from 'fixtures/initialState';
+import { state as initialState } from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
 import { createSnap, createLatestSnap } from 'util/snap';
 import guardianTagPage from 'fixtures/guardianTagPage';
@@ -15,7 +15,7 @@ import bbcSectionPage from 'fixtures/bbcSectionPage';
 import { RefDrop } from 'util/collectionUtils';
 import configureStore from 'util/configureStore';
 import { selectOptionsModalOptions } from 'selectors/modalSelectors';
-import { selectCard, selectSharedState } from 'selectors/shared';
+import { selectCard } from 'selectors/shared';
 import capiInteractiveAtomResponse from 'fixtures/capiInteractiveAtomResponse';
 import { startOptionsModal } from 'actions/OptionsModal';
 import noop from 'lodash/noop';
@@ -108,7 +108,7 @@ describe('Snap cards actions', () => {
           .forEach(option => option.callback());
       });
       await promise;
-      expect(selectCard(selectSharedState(store.getState()), 'card1')).toEqual(
+      expect(selectCard(store.getState(), 'card1')).toEqual(
         createLatestSnap(
           'https://www.theguardian.com/example/tag/page',
           'Example title'
@@ -138,7 +138,7 @@ describe('Snap cards actions', () => {
       });
 
       await promise;
-      expect(selectCard(selectSharedState(store.getState()), 'card1')).toEqual(
+      expect(selectCard(store.getState(), 'card1')).toEqual(
         await createSnap('https://www.theguardian.com/example/tag/page')
       );
     });
