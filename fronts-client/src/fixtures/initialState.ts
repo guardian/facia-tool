@@ -714,6 +714,4 @@ const state = {
   }
 } as State;
 
-export { config, state };
-
-// export default state;
+export { state };

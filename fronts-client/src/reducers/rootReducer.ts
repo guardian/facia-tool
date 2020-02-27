@@ -50,7 +50,7 @@ interface FeedState {
 export interface State {
   fronts: frontsState;
   config: Config | null;
-  error: ActionError | null;
+  error: ActionError;
   path: pathState;
   unpublishedChanges: unpublishedChangesState;
   clipboard: clipboardState;
