@@ -15,7 +15,7 @@ import {
   HoverOphanButton,
   HoverAddToClipboardButton
 } from 'components/inputs/HoverActionButtons';
-import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
+import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { insertCardWithCreate } from 'actions/Cards';
 import noop from 'lodash/noop';
 import { getPaths } from 'util/paths';

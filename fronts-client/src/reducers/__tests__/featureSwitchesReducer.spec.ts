@@ -1,5 +1,5 @@
-import { reducer } from '../reducer';
-import { actionSetFeatureValue } from '../actions';
+import { reducer } from 'reducers/featureSwitchesReducer';
+import { actionSetFeatureValue } from 'actions/FeatureSwitches';
 
 describe('Feature reducer', () => {
   it('should set feature switch values', () => {

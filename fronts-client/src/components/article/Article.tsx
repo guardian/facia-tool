@@ -16,7 +16,7 @@ import CardMetaHeading from '../card/CardMetaHeading';
 import ArticleBody from './ArticleBody';
 import { CardSizes } from 'types/Collection';
 import DragIntentContainer from '../DragIntentContainer';
-import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
+import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { theme } from 'constants/theme';
 import { getPillarColor } from 'util/getPillarColor';
 

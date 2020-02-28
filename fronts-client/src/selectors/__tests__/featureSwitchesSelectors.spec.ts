@@ -1,4 +1,4 @@
-import { selectAllFeatures } from '../selectors';
+import { selectAllFeatures } from '../featureSwitchesSelectors';
 import { state as initialState } from 'fixtures/initialState';
 import { State } from 'types/State';
 

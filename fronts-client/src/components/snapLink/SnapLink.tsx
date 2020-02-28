@@ -33,7 +33,7 @@ import { DerivedArticle } from 'types/Article';
 import { ImageMetadataContainer } from 'components/image/ImageMetaDataContainer';
 import { theme } from 'constants/theme';
 import ArticleGraph from '../article/ArticleGraph';
-import { selectFeatureValue } from 'redux/modules/featureSwitches/selectors';
+import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { ThumbnailCutout } from 'components/image/Thumbnail';
 import PageViewDataWrapper from 'components/PageViewDataWrapper';

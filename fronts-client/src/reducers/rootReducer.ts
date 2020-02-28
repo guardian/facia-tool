@@ -34,7 +34,7 @@ import {
 import {
   reducer as featureSwitches,
   State as featureSwitchesState
-} from 'redux/modules/featureSwitches';
+} from 'reducers/featureSwitchesReducer';
 
 import { Config } from 'types/Config';
 import { ActionError } from 'types/Action';

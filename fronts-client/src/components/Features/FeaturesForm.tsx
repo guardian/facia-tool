@@ -2,10 +2,10 @@ import React from 'react';
 import InputCheckboxToggle from 'components/inputs/InputCheckboxToggle';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
-import { selectAllFeatures } from 'redux/modules/featureSwitches/selectors';
+import { selectAllFeatures } from 'selectors/featureSwitchesSelectors';
 import { FeatureSwitch } from 'types/Features';
 import { Dispatch } from 'types/Store';
-import { actionSetFeatureValue } from 'redux/modules/featureSwitches';
+import { actionSetFeatureValue } from 'actions/FeatureSwitches';
 import { saveFeatureSwitch } from 'services/userDataApi';
 
 interface Props {
