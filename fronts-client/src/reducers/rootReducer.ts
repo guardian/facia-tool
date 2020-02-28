@@ -22,7 +22,7 @@ import staleFronts, { State as staleFrontsState } from './staleFrontsReducer';
 import feedState, { State as feedStateType } from './feedStateReducer';
 
 import { reducer as collections } from '../bundles/collectionsBundle';
-import { reducer as pageViewData } from '../redux/modules/pageViewData';
+import { reducer as pageViewData } from 'reducers/pageViewDataReducer';
 import { reducer as externalArticles } from '../bundles/externalArticlesBundle';
 import cards from 'reducers/cardsReducer';
 import groups from 'reducers/groupsReducer';

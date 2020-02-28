@@ -1,5 +1,5 @@
-import { selectDataForArticle } from '../selectors';
-import { state as pageViewData, data } from './fixtures';
+import { selectDataForArticle } from '../pageViewDataSelectors';
+import { state as pageViewData, data } from '../../reducers/__tests__/fixtures';
 import { state as globalState } from 'fixtures/initialState';
 import { State } from 'types/State';
 

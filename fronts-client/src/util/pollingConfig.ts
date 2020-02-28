@@ -7,7 +7,7 @@ import {
   collectionArticlesPollInterval
 } from 'constants/polling';
 import { selectPriority } from 'selectors/pathSelectors';
-import { getPageViewDataForCollection } from '../redux/modules/pageViewData/actions';
+import { getPageViewDataForCollection } from '../actions/PageViewData';
 import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { selectExternalArticleIdFromCard } from 'selectors/shared';
 import {

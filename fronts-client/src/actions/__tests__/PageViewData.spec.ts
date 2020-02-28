@@ -1,11 +1,11 @@
 import fetchMock from 'fetch-mock';
-import { fetchPageViewData } from '../actions';
+import { fetchPageViewData } from '../PageViewData';
 import { PageViewDataFromOphan } from 'types/PageViewData';
 import {
   longOphanQuery,
   addendumToLongOphanQuery,
   shortOphanQuery
-} from '../../../../fixtures/pageViewData';
+} from '../../fixtures/pageViewData';
 
 describe('fetchPageViewData', () => {
   it('should make a request to ophan to get ophan data', async () => {

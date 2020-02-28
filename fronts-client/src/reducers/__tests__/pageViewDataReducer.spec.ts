@@ -1,7 +1,7 @@
 import set from 'lodash/fp/set';
 import { state, data } from './fixtures';
-import { reducer } from '../reducer';
-import { pageViewDataReceivedAction } from '../actions';
+import { reducer } from '../pageViewDataReducer';
+import { pageViewDataReceivedAction } from '../../actions/PageViewData';
 
 describe('Page view data reducer', () => {
   it('adds data to the store when it is received', () => {

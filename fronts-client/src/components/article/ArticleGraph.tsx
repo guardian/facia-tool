@@ -4,7 +4,7 @@ import { PageViewStory } from 'types/PageViewData';
 import { theme } from '../../constants/theme';
 import { State } from 'types/State';
 import { connect } from 'react-redux';
-import { selectDataForArticle } from '../../redux/modules/pageViewData/selectors';
+import { selectDataForArticle } from '../../selectors/pageViewDataSelectors';
 
 interface ArticleGraphContainerProps {
   articleId: string;
