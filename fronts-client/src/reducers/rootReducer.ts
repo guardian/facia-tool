@@ -10,15 +10,15 @@ import clipboard, { State as clipboardState } from 'reducers/clipboardReducer';
 import optionsModal from 'reducers/modalsReducer';
 import { OptionsModalProps as OptionsModalState } from 'types/Modals';
 import editor, { State as editorState } from 'bundles/frontsUIBundle';
-import editionsIssue, {
-  EditionsIssueState
-} from 'bundles/editionsIssueBundle';
+import editionsIssue, { EditionsIssueState } from 'bundles/editionsIssueBundle';
 import {
   capiLiveFeed,
   capiPreviewFeed,
   prefillFeed
 } from 'bundles/capiFeedBundle';
-import staleFronts, { State as staleFrontsState } from 'reducers/staleFrontsReducer';
+import staleFronts, {
+  State as staleFrontsState
+} from 'reducers/staleFrontsReducer';
 import feedState, { State as feedStateType } from 'reducers/feedStateReducer';
 
 import { reducer as collections } from 'bundles/collectionsBundle';

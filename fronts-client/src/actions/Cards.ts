@@ -31,7 +31,7 @@ import { selectWillCollectionHitCollectionCap } from 'selectors/collectionSelect
 import { batchActions } from 'redux-batched-actions';
 import noop from 'lodash/noop';
 import { selectOpenParentFrontOfCard } from 'bundles/frontsUIBundle';
-import { getPageViewData } from 'actions/pageViewData';
+import { getPageViewData } from 'actions/PageViewData';
 import { startOptionsModal } from './OptionsModal';
 import {
   RemoveActionCreator,
