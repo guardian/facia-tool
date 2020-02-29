@@ -20,7 +20,7 @@ import {
   updateCollection,
   fetchArticles
 } from '../Collections';
-import { createSelectCollection, selectSharedState } from 'selectors/shared';
+import { createSelectCollection } from 'selectors/shared';
 
 const middlewares = [thunk];
 const mockStore = configureMockStore(middlewares);
@@ -254,9 +254,9 @@ describe('Collection actions', () => {
       );
       await store.dispatch(getCollections(collectionIds) as any);
       const selector = createSelectCollection();
-      const sharedState = selectSharedState(store.getState());
+      const state = store.getState();
       expect(
-        selector(sharedState, { collectionId: 'testCollection1' }).displayName
+        selector(state, { collectionId: 'testCollection1' }).displayName
       ).toEqual('testCollection');
     });
     it('should send collection id, type and lastUpdated in request body when returnOnlyUpdatedCollection is true', async () => {

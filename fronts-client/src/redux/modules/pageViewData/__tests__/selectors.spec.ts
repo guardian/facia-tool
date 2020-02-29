@@ -1,6 +1,6 @@
 import { selectDataForArticle } from '../selectors';
 import { state as pageViewData, data } from './fixtures';
-import globalState from '../../../../fixtures/initialState';
+import { state as globalState } from 'fixtures/initialState';
 import { State } from 'types/State';
 
 const state = {

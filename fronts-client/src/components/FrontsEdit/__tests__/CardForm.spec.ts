@@ -4,7 +4,7 @@ import {
   getInitialValuesForCardForm
 } from 'util/form';
 import derivedArticle from 'fixtures/derivedArticle';
-import initialState from 'fixtures/initialState';
+import { state as initialState } from 'fixtures/initialState';
 import { State } from 'types/State';
 
 const formValues = {

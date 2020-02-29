@@ -1,10 +1,6 @@
 import { State } from 'types/State';
 import { selectCollectionConfig } from './frontsSelectors';
-import {
-  selectSharedState,
-  createSelectCollection,
-  groupsArticleCount
-} from 'selectors/shared';
+import { createSelectCollection, groupsArticleCount } from 'selectors/shared';
 import { getUpdatedSiblingGroupsForInsertion } from 'reducers/groupsReducer';
 
 const selectCollection = createSelectCollection();
@@ -26,7 +22,7 @@ const selectCollectionParams = (
       }
 
       if (returnOnlyUpdatedCollections) {
-        const maybeCollection = selectCollection(selectSharedState(state), {
+        const maybeCollection = selectCollection(state, {
           collectionId: id
         });
         // Some collections are automated and they don't have any content in them.
@@ -51,10 +47,9 @@ const selectWillCollectionHitCollectionCap = (
   cardId: string,
   collectionCap: number
 ) => {
-  const shared = selectSharedState(state);
   const patch = getUpdatedSiblingGroupsForInsertion(
-    shared,
-    shared.groups,
+    state,
+    state.groups,
     groupId,
     index,
     cardId

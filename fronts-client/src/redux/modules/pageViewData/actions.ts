@@ -7,7 +7,6 @@ import { PageViewDataFromOphan, PageViewStory } from 'types/PageViewData';
 import { DerivedArticle } from 'types/Article';
 import {
   createSelectArticlesInCollection,
-  selectSharedState,
   createSelectArticleFromCard
 } from 'selectors/shared';
 import { CardSets } from 'types/Collection';
@@ -31,7 +30,7 @@ const getPageViewDataForCollection = (
   return async (dispatch, getState) => {
     dispatch(pageViewDataRequestedAction(frontId));
     try {
-      const state = selectSharedState(getState());
+      const state = getState();
       const articleIds: string[] = selectArticlesInCollection(state, {
         collectionId,
         collectionSet
@@ -48,7 +47,7 @@ const getPageViewData = (
   collectionId: string,
   articleIds: string[]
 ): ThunkResult<void> => async (dispatch, getState) => {
-  const state = selectSharedState(getState());
+  const state = getState();
   const articles = articleIds
     .map(_ => selectArticleFromCard(state, _))
     .filter(_ => _) as DerivedArticle[];

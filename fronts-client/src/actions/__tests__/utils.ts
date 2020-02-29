@@ -4,6 +4,7 @@ export interface CardMap {
   [uuid: string]: {
     uuid: string;
     id: string;
+    frontPublicationDate: number;
     meta: object;
   };
 }
@@ -37,6 +38,7 @@ export const createCardStateFromSpec = (specs: CardSpec[]) =>
               [suuid]: {
                 uuid: suuid,
                 id: sid,
+                frontPublicationDate: 1234,
                 meta: { ...meta }
               }
             }),

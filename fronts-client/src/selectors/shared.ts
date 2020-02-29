@@ -23,21 +23,12 @@ import { createShallowEqualResultSelector } from 'util/selectorUtils';
 import { DerivedArticle } from 'types/Article';
 import { hasMainVideo } from 'util/externalArticle';
 
-// Selects the shared part of the application state mounted at its default point, '.shared'.
-const selectSharedState = (rootState: any): State => rootState;
-
 const selectGroups = (state: State): { [id: string]: Group } => state.groups;
 const selectCards = (state: State) => state.cards;
 
-const selectCardsFromRootState = createSelector(
-  [selectSharedState],
-  (state: State) => selectCards(state)
-);
+const selectCardsFromRootState = (state: State) => selectCards(state);
 
-const selectGroupsFromRootState = createSelector(
-  [selectSharedState],
-  (state: State) => selectGroups(state)
-);
+const selectGroupsFromRootState = (state: State) => selectGroups(state);
 
 const selectCard = (state: State, id: string): Card => state.cards[id];
 
@@ -55,7 +46,7 @@ const selectExternalArticleFromCard = (
 
 const selectSupportingArticleCount = (state: State, uuid: string) => {
   const maybeArticle = selectCard(state, uuid);
-  if (maybeArticle && maybeArticle && maybeArticle.meta.supporting) {
+  if (maybeArticle && maybeArticle.meta.supporting) {
     return maybeArticle.meta.supporting.length;
   }
   return 0;
@@ -524,7 +515,6 @@ export {
   createSelectCollectionStageGroups,
   createSelectPreviouslyLiveArticlesInCollection,
   createDemornalisedCard,
-  selectSharedState,
   selectCard,
   createSelectCollectionEditWarning,
   selectCards,

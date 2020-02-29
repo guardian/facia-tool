@@ -13,8 +13,7 @@ import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 import { CardSets, Stages } from 'types/Collection';
 import {
   createSelectArticlesInCollection,
-  createSelectCollection,
-  selectSharedState
+  createSelectCollection
 } from 'selectors/shared';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
 
@@ -138,7 +137,7 @@ const selectCollectionIsHidden = (
   state: State,
   collectionId: string
 ): boolean => {
-  const collection = selectCollection(selectSharedState(state), {
+  const collection = selectCollection(state, {
     collectionId
   });
   return !!collection && !!collection.isHidden;
@@ -148,7 +147,7 @@ const selectCollectionDisplayName = (
   state: State,
   collectionId: string
 ): string => {
-  const collection = selectCollection(selectSharedState(state), {
+  const collection = selectCollection(state, {
     collectionId
   });
   return !!collection ? collection.displayName : '';
@@ -341,7 +340,7 @@ const createSelectArticleVisibilityDetails = () => {
       collectionSet: CardSets;
     }
   ) =>
-    selectArticlesInCollection(selectSharedState(state), {
+    selectArticlesInCollection(state, {
       ...extra,
       includeSupportingArticles: false
     });

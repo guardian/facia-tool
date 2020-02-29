@@ -6,9 +6,8 @@ import cardsReducer from 'reducers/cardsReducer';
 import {
   createSelectGroupArticles,
   createSelectSupportingArticles,
-  selectCard,
-  selectSharedState
-} from '../../selectors/shared';
+  selectCard
+} from 'selectors/shared';
 import { selectClipboard as innerClipboardSelector } from '../../selectors/frontsSelectors';
 import { createCardStateFromSpec, CardSpec, specToCard } from './utils';
 import {
@@ -104,18 +103,14 @@ const insert = async (
     [uuid, id, undefined],
     collectionCapInfo ? collectionCapInfo.cap : Infinity
   );
+
+  const stateHere: any = getState();
   await dispatch(insertCardWithCreate(
     { type: parentType, id: parentId, index },
     { type: 'REF', data: parentId },
     'collection',
-    afId => () =>
-      Promise.resolve(selectCard(selectSharedState(getState()), uuid))
+    afId => () => Promise.resolve(selectCard(stateHere, uuid))
   ) as any);
-
-  // TODO: use modal service to mock return from modal
-  // if (collectionCapInfo && collectionCapInfo.accept !== null) {
-  //   dispatch(endConfirmModal(collectionCapInfo.accept));
-  // }
 
   return getState();
 };

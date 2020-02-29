@@ -35,7 +35,7 @@ import {
   selectOpenParentFrontOfCard,
   createSelectDoesCollectionHaveOpenForms
 } from '../frontsUIBundle';
-import initialState from 'fixtures/initialState';
+import { state as initialState } from 'fixtures/initialState';
 import initialStateForOpenFronts from '../../fixtures/initialStateForOpenFronts';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { Action } from 'types/Action';

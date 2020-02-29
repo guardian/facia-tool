@@ -8,7 +8,7 @@ import { CardMeta } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { CapiArticle } from 'types/Capi';
 import { State } from 'types/State';
-import { selectCard, selectSharedState } from 'selectors/shared';
+import { selectCard } from 'selectors/shared';
 
 export interface CardFormData {
   headline: string;
@@ -209,7 +209,7 @@ export const getCardMetaFromFormValues = (
     return selectIsDirty(state, formToMetaFieldMap[key] || key);
   });
 
-  const existingCard = selectCard(selectSharedState(state), id);
+  const existingCard = selectCard(state, id);
 
   const existingCardMeta = existingCard ? existingCard.meta || {} : {};
 
