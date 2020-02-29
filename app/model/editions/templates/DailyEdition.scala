@@ -266,7 +266,7 @@ object DailyEdition {
     collection("Family").printSentAnyTag("theguardian/weekend/family"),
     collection("Space").printSentAnyTag("theguardian/weekend/space2"),
     collection("Style").printSentAnyTag("theguardian/weekend/fashion-and-beauty"),
-    collection("Body & Mind").printSentAnyTag("theguardian/weekend/body-and-mind"),
+    collection("Body & mind").printSentAnyTag("theguardian/weekend/body-and-mind"),
     collection("Life").hide,
     collection("Life").hide
   )
