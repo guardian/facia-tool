@@ -2,7 +2,7 @@
 
 The Guardian front pages editor.
 
-## Fronts Client 
+## Fronts Client
 
 You can find the client for the Fronts tool in [fronts-client](/fronts-client).
 
@@ -44,8 +44,61 @@ You can find the client for the Fronts tool in [fronts-client](/fronts-client).
 
 - If you are developing locally and do not have frontend credentials from janus, the fronts tool won't have permissions to push events to the sqs queue that Facia-Press reads from. To test that a front is pressed, you will have to deploy your changes to code, and test the code from there.
 
-#### Troubleshooting
-##### Postgres
+
+## Different tools in this codebase
+
+### The Fronts Tool
+The most important part of this app is the Fronts Tool, used to curate the web and app front pages of the Guardian. Additionally it is used to manually curate emails.
+
+In the UI, users can move stories from the Content API feed into different front pages or emails. These fronts can then be launched or published.
+
+The Fronts Tool uses the most up-to-date front end, a React-Redux app located in [fronts-client](https://github.com/guardian/facia-tool/tree/master/fronts-client)
+
+Useful things to know:
+* An api call to Ophan pulls in page view data to allow users to understand at a glance that story's performance in the context of the front it is in
+
+* Containers can be shared between fronts. An update to a container in one place updates it everywhere
+
+* Certain containers have geolocation properties. This means they can only be seen by users in the location specified
+
+* Interactive atoms can be pasted into a front as CAPI links. This allows designers and the interactives team to create special content eg banners showing election results. Apart from articles, interactive atoms are the only other type of CAPI content allowed on Fronts
+
+* In the Email editor only - free text boxes can be created. This allows email editors to add introductions to their emails by hijacking the headline field. Rich text editing is enabled for this using Prosemirror.
+
+
+### The Editions creator
+
+The Editions interface is used to curate content on the Editions app (currently known as The Daily on iOS and Android). Editions also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
+
+Curation works in the same way as the main fronts tool. But there are these differences:
+
+* Fronts are part of Issues (normally one issue per day). You need to create or open a valid issue to make changes
+
+* Editions are published once instead of being continually updated and launched
+
+* The publication process for Editions is different to the main fronts. We push the json we produce to a lambda - the [backend of the Editions app](https://github.com/guardian/editions), and this combines fronts data with CAPI calls etc to produce the Edition.
+
+Full [Editions codebase and documentation here](https://github.com/guardian/editions).
+
+
+
+
+### The Config Tool
+
+Fronts and collections are configured in the config tool. This allows for the name, geolocation and visual properties of collections to be set. The types and order of collections in a Front is set here too. This tool uses the "old" front end client. Each "type of fronts" has its own config url eg: https://fronts.gutools.co.uk/email/config
+
+
+### The Breaking News Tool
+
+This enables breaking news notifications to be sent to app users who have signed up. This tool also uses the "old" front end client. You need permission from Central Production to access this tool in PROD.  https://fronts.gutools.co.uk/breaking-news
+
+In CODE the breaking news tool sends notifications to the "debug version" of the Android/iOS App.
+
+Breaking News is represented by a front called `breaking-news` which is considered to be a special case. It has a `Send Alert` button rather than a `Launch` button. Only one thing can be added to a collection at a given time. You cannot send the same alert twice, and snap links cannot be added / alerted on. Different collections represent different audience groups (eg by location or by subscription to different topics.) To add a new one, just create a container. New breaking news containers need to have the layout `breaking-news/not-for-other-fronts`.
+
+
+## Troubleshooting
+### Postgres
 - If you wish to delete everything in the database you can use `docker-compose down -v` which will delete the container's persistent volumes.
 - If you wish to connect to the local database you can run `./scripts/local-psql.sh` which has the user, database and password preconfigured and ready to go.
 - If you need the master passwords for the production postgres instances they are stored as SSM parameters and can be found at:
@@ -55,7 +108,7 @@ You can find the client for the Fronts tool in [fronts-client](/fronts-client).
 
   `aws ssm get-parameter --name /facia-tool/cms-fronts/CODE/db/password --with-decryption --profile cmsFronts --region eu-west-1`
 
-##### Linting
+### Linting
 
 Fronts tool uses `eslint` to ensure consistent style. Run `eslint` with
 

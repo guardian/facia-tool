@@ -16,7 +16,7 @@
 
 ## Motivations
 
-Fronts Client V2 looks to rebuild the Fronts tool with modern technologies, develop reusable patterns for content curation and build shareable components for across the tools.
+Fronts Client V2 looks to rebuild the Fronts tool with modern technologies, and develop reusable patterns for content curation.
 
 ## Dev Setup (need to be done once)
 
@@ -32,9 +32,9 @@ Fronts Client V2 looks to rebuild the Fronts tool with modern technologies, deve
 
 ### Technologies
 
-V2 is a ReactRedux Javascript application hooking into the existing Fronts API and CAPI.
+Fronts-Client is a ReactRedux Javascript application hooking into the existing Fronts API and CAPI.
 
-You'll need to understand the concepts of Thunks and Selectors.
+You'll need to understand the Redux concepts of Thunks and Selectors.
 
 | Uses        | For         | Config |
 | ------------|------------- |--- |
@@ -115,7 +115,7 @@ yarn lint-fix
 | [TSLint](https://palantir.github.io/tslint/)      | Typescript Linting | [tslint](tslint.json)|
 
 ## Typescript
-We are using Typescript for typing in Fronts V2.
+We are using Typescript for typing in Fronts-Client.
 
 ## File Structure
 
@@ -123,7 +123,7 @@ We are using Typescript for typing in Fronts V2.
     - The [App component](src/components/App.tsx) is the application entry point
     - All reducers are combined in the [Root Reducer](src/reducers/rootReducer.ts) as per standard convention
 - `bundles`
-    - A bundle exports a reducer and all of the related things a reducer needs to function in an app - selectors, actions and action names. It's a bit like an index.ts for a single redux module. This is especially useful when you're generating the actions, reducer and selectors rather than writing them manually, for example with the `createAsyncResourceBundle` utility in shared/util.
+    - A bundle exports a reducer and all of the related things a reducer needs to function in an app - selectors, actions and action names. It's a bit like an index.ts for a single redux module. This is especially useful when you're generating the actions, reducer and selectors rather than writing them manually, for example with the `createAsyncResourceBundle` utility in shared/util. This is one way of storing Redux code and is [explained here](https://reduxbundler.com/).
 - `constants` store high-level application constants such as theme styles and image paths
 - `services` contains the modules for requests to APIs such as CAPI and FaciaAPI
 - `lib` contains modules designed to be reusable such as the Drag N' Drop (dnd) module
@@ -179,3 +179,17 @@ We already handle all of our persistence calls for collections in one place -- t
 At the moment, we normalise on the client. This introduces a degree of complexity to the client-side code that, although well encapsulated, seems an unnecessary concern for the client domain -- better to have the server pass data in an ideal format and handle the details of modelling for the persistence domain.
 
 In normalising on the server, we have an additional advantage -- if the persistence model changes, for example if in the future we move to an RDS to store collection data, we can swap out the models without disturbing the client, avoiding concerns with overlapping versions etc.
+
+
+### Use a third party library for Drag and Drop
+
+We currently have a custom-made npm module - [Guration](https://www.npmjs.com/package/@guardian/guration) - implementing Drag and Drop specially for the Fronts Tool.
+
+This module was written by the team in 2018 and is not maintained by anyone else. It covers the complex area of drag and drop, working with the tricky HTML spec.
+
+If this module breaks the Fronts tool is basically non-functional and it will take work to figure out what is going on inside Guration.
+
+The problem it was written to solve (lists within lists - ie sublinks) is now solved by other npm modules that have a big user-base and are properly maintained. (eg. [React Beautiful DnD](https://www.npmjs.com/package/react-beautiful-dnd).)
+
+By switching to a more popular module with good documentation, it will be easier for new developers to pick up.  We already use React Beautiful DnD for small interactions on the menu so it won’t add extra weight.
+
