@@ -181,13 +181,15 @@ At the moment, we normalise on the client. This introduces a degree of complexit
 In normalising on the server, we have an additional advantage -- if the persistence model changes, for example if in the future we move to an RDS to store collection data, we can swap out the models without disturbing the client, avoiding concerns with overlapping versions etc.
 
 
-### Use 3rd party library for Drag and Drop
+### Use a third party library for Drag and Drop
 
 We currently have a custom-made npm module - [Guration](https://www.npmjs.com/package/@guardian/guration) - implementing Drag and Drop specially for the Fronts Tool.
 
-The custom-made NPM module the team wrote is not maintained by anyone else. It is very complex. The HTML drag and drop spec is a bit of a nightmare.
-If this breaks in any way the Fronts tool is basically non-functional and it will take work to figure out what is going on in the module.
-The problem it was written to solve (lists within lists - ie sublinks) is now solved by other npm modules that have a big user-base and are properly maintained. (eg. React Beautiful DnD.) It now has “tree view” and item combination (allowing for sublinks etc)
+This module was written by the team in 2018 and is not maintained by anyone else. It covers the complex area of drag and drop, working with the tricky HTML spec.
 
-This will remove a fair amount of code. Make changes to this area easier. And by using a well-used module with good documentation, it will be easier for new developers to pick up.  We already use the module so it won’t add extra weight.
+If this module breaks the Fronts tool is basically non-functional and it will take work to figure out what is going on inside Guration.
+
+The problem it was written to solve (lists within lists - ie sublinks) is now solved by other npm modules that have a big user-base and are properly maintained. (eg. [React Beautiful DnD](https://www.npmjs.com/package/react-beautiful-dnd).)
+
+By switching to a more popular module with good documentation, it will be easier for new developers to pick up.  We already use React Beautiful DnD for small interactions on the menu so it won’t add extra weight.
 

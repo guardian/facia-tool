@@ -48,18 +48,18 @@ You can find the client for the Fronts tool in [fronts-client](/fronts-client).
 ## Different tools in this codebase
 
 ### The Fronts Tool
-The most important part of this app is the Fronts Tool which is used to curate the web and app front pages of the Guardian. Additionally it is used to manually create emails (each front representing a different email).
+The most important part of this app is the Fronts Tool, used to curate the web and app front pages of the Guardian. Additionally it is used to manually curate emails.
 
-Users can move stories from the Content API feed into different front pages. These fronts can then be launched which triggers a set of processes that updates the front pages on dotcom and the iOS and Android apps.
+In the UI, users can move stories from the Content API feed into different front pages or emails. These fronts can then be launched or published.
 
-The Fronts Tool uses the most up-to-date front end as stored in [fronts-client](https://github.com/guardian/facia-tool/tree/master/fronts-client)
+The Fronts Tool uses the most up-to-date front end, a React-Redux app located in [fronts-client](https://github.com/guardian/facia-tool/tree/master/fronts-client)
 
 Useful things to know:
-* An api call to Ophan pulls in page view data to allow users to understand at a glance views for a given story. Normally this is only visible for stories that are actually on a front page. If there is no data, the graph is not shown.
+* An api call to Ophan pulls in page view data to allow users to understand at a glance that story's performance in the context of the front it is in
 
-* Containers can be shared between fronts and updates to a container in one place updates it everywhere.
+* Containers can be shared between fronts. An update to a container in one place updates it everywhere
 
-* Certain containers have geolocation properties. This means they can only be seen by users in the location specified.
+* Certain containers have geolocation properties. This means they can only be seen by users in the location specified
 
 * Interactive atoms can be pasted into a front as CAPI links. This allows designers and the interactives team to create special content eg banners showing election results. Apart from articles, interactive atoms are the only other type of CAPI content allowed on Fronts
 
@@ -68,17 +68,13 @@ Useful things to know:
 
 ### The Editions creator
 
-The Editions interface is used to curate content on the Editions app (currently known as The Daily iOS and Android). Editions also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the homepage: https://fronts.code.dev-gutools.co.uk/v2
+The Editions interface is used to curate content on the Editions app (currently known as The Daily on iOS and Android). Editions also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
 
 Curation works in the same way as the main fronts tool. But there are these differences:
 
 * Fronts are part of Issues (normally one issue per day). You need to create or open a valid issue to make changes
 
 * Editions are published once instead of being continually updated and launched
-
-* ??? What other differences are there from a user perspective ?
-
-* ??? Are Editions pressed using Fronts press?
 
 
 ### The Config Tool
@@ -91,11 +87,9 @@ Fronts and collections are configured in the config tool. This allows for the na
 This enables breaking news notifications to be sent to app users who have signed up. This tool also uses the "old" front end client. You need permission from
 Central Production to access this tool. It does not exist in the CODE environment.  https://fronts.gutools.co.uk/breaking-news
 
-** ANYONE GOT ANY MORE INFORMATION ABOUT HOW THIS TOOL WORKS?**
 
-
-#### Troubleshooting
-##### Postgres
+## Troubleshooting
+### Postgres
 - If you wish to delete everything in the database you can use `docker-compose down -v` which will delete the container's persistent volumes.
 - If you wish to connect to the local database you can run `./scripts/local-psql.sh` which has the user, database and password preconfigured and ready to go.
 - If you need the master passwords for the production postgres instances they are stored as SSM parameters and can be found at:
@@ -105,7 +99,7 @@ Central Production to access this tool. It does not exist in the CODE environmen
 
   `aws ssm get-parameter --name /facia-tool/cms-fronts/CODE/db/password --with-decryption --profile cmsFronts --region eu-west-1`
 
-##### Linting
+### Linting
 
 Fronts tool uses `eslint` to ensure consistent style. Run `eslint` with
 
