@@ -2,7 +2,7 @@
 
 The Guardian front pages editor.
 
-## Fronts Client 
+## Fronts Client
 
 You can find the client for the Fronts tool in [fronts-client](/fronts-client).
 
@@ -43,6 +43,56 @@ You can find the client for the Fronts tool in [fronts-client](/fronts-client).
 - Select the front your are trying to view on the config page, click on the edit-metadata link, and deselect the `is hidden`-property.
 
 - If you are developing locally and do not have frontend credentials from janus, the fronts tool won't have permissions to push events to the sqs queue that Facia-Press reads from. To test that a front is pressed, you will have to deploy your changes to code, and test the code from there.
+
+
+## Different tools in this codebase
+
+### The Fronts Tool
+The most important part of this app is the Fronts Tool which is used to curate the web and app front pages of the Guardian. Additionally it is used to manually create emails (each front representing a different email).
+
+Users can move stories from the Content API feed into different front pages. These fronts can then be launched which triggers a set of processes that updates the front pages on dotcom and the iOS and Android apps.
+
+The Fronts Tool uses the most up-to-date front end as stored in [fronts-client](https://github.com/guardian/facia-tool/tree/master/fronts-client)
+
+Useful things to know:
+* An api call to Ophan pulls in page view data to allow users to understand at a glance views for a given story. Normally this is only visible for stories that are actually on a front page. If there is no data, the graph is not shown.
+
+* Containers can be shared between fronts and updates to a container in one place updates it everywhere.
+
+* Certain containers have geolocation properties. This means they can only be seen by users in the location specified.
+
+* Interactive atoms can be pasted into a front as CAPI links. This allows designers and the interactives team to create special content eg banners showing election results. Apart from articles, interactive atoms are the only other type of CAPI content allowed on Fronts
+
+* In the Email editor only - free text boxes can be created. This allows email editors to add introductions to their emails by hijacking the headline field. Rich text editing is enabled for this using Prosemirror.
+
+
+### The Editions creator
+
+The Editions interface is used to curate content on the Editions app (currently known as The Daily iOS and Android). Editions also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the homepage: https://fronts.code.dev-gutools.co.uk/v2
+
+Curation works in the same way as the main fronts tool. But there are these differences:
+
+* Fronts are part of Issues (normally one issue per day). You need to create or open a valid issue to make changes
+
+* Editions are published once instead of being continually updated and launched
+
+* ??? What other differences are there from a user perspective ?
+
+* ??? Are Editions pressed using Fronts press?
+
+
+### The Config Tool
+
+Fronts and collections are configured in the config tool. This allows for the name, geolocation and visual properties of collections to be set. The types and order of collections in a Front is set here too. This tool uses the "old" front end client. Each "type of fronts" has its own config url eg: https://fronts.gutools.co.uk/email/config
+
+
+### The Breaking News Tool
+
+This enables breaking news notifications to be sent to app users who have signed up. This tool also uses the "old" front end client. You need permission from
+Central Production to access this tool. It does not exist in the CODE environment.  https://fronts.gutools.co.uk/breaking-news
+
+** ANYONE GOT ANY MORE INFORMATION ABOUT HOW THIS TOOL WORKS?**
+
 
 #### Troubleshooting
 ##### Postgres

@@ -1,3 +1,5 @@
+# Editions: deleting an issue
+
 Open the issue you need to delete, then open the javascript console and paste the following:
 
 ```
