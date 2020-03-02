@@ -76,6 +76,12 @@ Curation works in the same way as the main fronts tool. But there are these diff
 
 * Editions are published once instead of being continually updated and launched
 
+* The publication process for Editions is different to the main fronts. We push the json we produce to a lambda - the [backend of the Editions app](https://github.com/guardian/editions), and this combines fronts data with CAPI calls etc to produce the Edition.
+
+Full [Editions codebase and documentation here](https://github.com/guardian/editions).
+
+
+
 
 ### The Config Tool
 
@@ -84,8 +90,11 @@ Fronts and collections are configured in the config tool. This allows for the na
 
 ### The Breaking News Tool
 
-This enables breaking news notifications to be sent to app users who have signed up. This tool also uses the "old" front end client. You need permission from
-Central Production to access this tool. It does not exist in the CODE environment.  https://fronts.gutools.co.uk/breaking-news
+This enables breaking news notifications to be sent to app users who have signed up. This tool also uses the "old" front end client. You need permission from Central Production to access this tool in PROD.  https://fronts.gutools.co.uk/breaking-news
+
+In CODE the breaking news tool sends notifications to the "debug version" of the Android/iOS App.
+
+Breaking News is represented by a front called `breaking-news` which is considered to be a special case. It has a `Send Alert` button rather than a `Launch` button. Only one thing can be added to a collection at a given time. You cannot send the same alert twice, and snap links cannot be added / alerted on. Different collections represent different audience groups (eg by location or by subscription to different topics.) To add a new one, just create a container. New breaking news containers need to have the layout `breaking-news/not-for-other-fronts`.
 
 
 ## Troubleshooting
