@@ -1,5 +1,5 @@
 import set from 'lodash/fp/set';
-import { PAGE_VIEW_DATA_RECEIVED } from './actions';
+import { PAGE_VIEW_DATA_RECEIVED } from '../actions/PageViewData';
 import { Action } from 'types/Action';
 import { PageViewDataPerFront, PageViewStory } from 'types/PageViewData';
 

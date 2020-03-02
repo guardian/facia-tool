@@ -62,7 +62,7 @@ import { events } from 'services/GA';
 import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 import { updateCollectionStrategy } from 'strategies/update-collection';
-import { getPageViewDataForCollection } from 'redux/modules/pageViewData';
+import { getPageViewDataForCollection } from 'actions/PageViewData';
 
 const articlesInCollection = createSelectAllArticlesInCollection();
 

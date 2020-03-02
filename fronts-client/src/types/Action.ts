@@ -36,7 +36,7 @@ import {
   EditorCloseFormsForCollection
 } from 'bundles/frontsUIBundle';
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
-import { ActionSetFeatureValue } from 'redux/modules/featureSwitches';
+import { ActionSetFeatureValue } from 'actions/FeatureSwitches';
 import { SetHidden } from '../bundles/collectionsBundle';
 import { OptionsModalProps } from 'types/Modals';
 import { Actions } from 'lib/createAsyncResourceBundle';

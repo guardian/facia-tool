@@ -20,7 +20,7 @@ import { init as initGA } from 'services/GA';
 import { listenForKeyboardEvents } from 'keyboard';
 import pollingConfig from 'util/pollingConfig';
 import { base } from 'routes/routes';
-import { actionSetFeatureValue } from 'redux/modules/featureSwitches';
+import { actionSetFeatureValue } from 'actions/FeatureSwitches';
 import { deleteIssue } from 'util/delete';
 
 initGA();
