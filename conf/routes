@@ -114,4 +114,5 @@ PUT         /editions-api/fronts/:frontId/is-hidden/:state       controllers.Edi
 
 POST        /editions-api/collections                            controllers.EditionsController.getCollections
 PUT         /editions-api/collections/:collectionId              controllers.EditionsController.updateCollection(collectionId)
+PATCH       /editions-api/collections/:collectionId/name         controllers.EditionsController.renameCollection(collectionId)
 GET         /editions-api/collections/:collectionId/prefill      controllers.EditionsController.getPrefillForCollection(collectionId)

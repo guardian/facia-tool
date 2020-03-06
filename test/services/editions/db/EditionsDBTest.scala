@@ -297,6 +297,44 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       olderCollections.size shouldBe 0
     }
 
+    "should allow renaming of a collection" taggedAs UsesDatabase in {
+      val id = insertSkeletonIssue(2019, 9, 30,
+        front("news/uk",
+          collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
+            article("12345"),
+            article("23456")
+          ),
+          collection("international", None,
+            article("34567"),
+            article("45678"),
+            article("56789")
+          )
+        )
+      )
+
+      val retrievedIssue = editionsDB.getIssue(id).value
+      val brexshit = retrievedIssue.fronts.head.collections.head
+
+      val newName = "Say My Name, Say My Name..."
+
+      val evenMoreBrexshit = brexshit.copy(
+        displayName = newName,
+        updatedBy = Some("BoJo"),
+        updatedEmail = Some("bojo@piffle.paffle"),
+      )
+
+      editionsDB.updateCollectionName(evenMoreBrexshit)
+
+      val collections = editionsDB.getCollections(List(GetCollectionsFilter(brexshit.id, None)))
+      collections.size shouldBe 1
+      val updatedBrexshit = collections.head
+
+      updatedBrexshit.updatedBy.value shouldBe "BoJo"
+      updatedBrexshit.updatedEmail.value shouldBe "bojo@piffle.paffle"
+      updatedBrexshit.lastUpdated.value should be > brexshit.lastUpdated.value
+      updatedBrexshit.displayName shouldBe newName
+    }
+
     "should allow updating of a collection" taggedAs UsesDatabase in {
       val id = insertSkeletonIssue(2019, 9, 30,
         front("news/uk",

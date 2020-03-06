@@ -7,7 +7,7 @@ import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
-import model.editions.{CapiTimeWindowConfigInDays, Edition, EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
+import model.editions.{CapiTimeWindowConfigInDays, Edition, EditionsCollection, EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
 import model.forms._
 import net.logstash.logback.marker.Markers
 import play.api.Logger
@@ -126,6 +126,26 @@ class EditionsController(db: EditionsDB,
       publishing.updatePreview(issue)
     }
     Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
+  }
+
+  def renameCollection(collectionId: String) = EditEditionsAuthAction(parse.json[CollectionRenameRequest]) { req =>
+    logger.info(s"Renaming collection ${collectionId}")
+
+    val collection = db.getCollections(List(GetCollectionsFilter(id = collectionId, None)))
+
+    if(collection.isEmpty) {
+      logger.warn(s"Collection not found ${collectionId}")
+      NotFound(s"Collection $collectionId not found")
+    } else {
+      val updatingCollection = collection.head.copy(
+        displayName = req.body.displayName,
+        updatedBy = Some(req.user.username),
+        updatedEmail = Some(req.user.email)
+      )
+
+      val updatedCollection = db.updateCollectionName(updatingCollection)
+      Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
+    }
   }
 
   def getPreviewEdition(id: String) = EditEditionsAuthAction { _ =>
