@@ -57,7 +57,7 @@ type Props = ContainerProps & {
   onChangeOpenState?: (isOpen: boolean) => void;
   handleFocus: (id: string) => void;
   handleBlur: () => void;
-  updateCollection: (collection: Collection) => void;
+  updateCollection: (collection: Collection, renamingCollection: boolean) => void;
   isEditions: boolean;
 };
 
@@ -401,7 +401,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
     this.setState({
       editingContainerName: false
     });
-    this.props.updateCollection(collection!);
+    this.props.updateCollection(collection!, true);
   };
 }
 
@@ -424,8 +424,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   handleBlur: () => dispatch(resetFocusState()),
   handleFocus: (collectionId: string) =>
     dispatch(setFocusState({ type: 'collection', collectionId })),
-  updateCollection: (collection: CollectionType) => {
-    dispatch(updateCollectionAction(collection));
+  updateCollection: (collection: CollectionType, renamingCollection: boolean) => {
+    dispatch(updateCollectionAction(collection, renamingCollection));
   }
 });
 

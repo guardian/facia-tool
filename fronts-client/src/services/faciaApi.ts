@@ -209,6 +209,12 @@ const updateEditionsCollection = (collectionId: string) =>
     'put'
   )(collectionId);
 
+const renameEditionsCollection = (collectionId: string) =>
+createUpdateCollection<EditionsCollection>(
+  `/editions-api/collections/${collectionId}/name`,
+  'PATCH'
+)(collectionId);
+
 const saveClipboard = (content: NestedCard[]) =>
   createSaveClipboard(content, '/clipboard');
 const saveEditionsClipboard = (content: NestedCard[]) =>
@@ -446,6 +452,7 @@ export {
   publishCollection,
   updateCollection,
   updateEditionsCollection,
+  renameEditionsCollection,
   saveClipboard,
   saveEditionsClipboard,
   saveOpenFrontIds,

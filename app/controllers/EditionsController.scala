@@ -128,7 +128,7 @@ class EditionsController(db: EditionsDB,
     Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
   }
 
-  def renameCollection(collectionId: String) = EditEditionsAuthAction(parse.json[CollectionRenameRequest]) { req =>
+  def renameCollection(collectionId: String) = EditEditionsAuthAction(parse.json[EditionsFrontendCollectionWrapper]) { req =>
     logger.info(s"Renaming collection ${collectionId}")
 
     val collection = db.getCollections(List(GetCollectionsFilter(id = collectionId, None)))
@@ -138,8 +138,8 @@ class EditionsController(db: EditionsDB,
       NotFound(s"Front $collectionId not found")
     } else {
       val updatingCollection = collection.head.copy(
-        displayName = req.body.displayName,
-        updatedBy = Some(req.user.username),
+        displayName = req.body.collection.displayName,
+        updatedBy = Some(s"${req.user.firstName} ${req.user.lastName}"),
         updatedEmail = Some(req.user.email)
       )
 
