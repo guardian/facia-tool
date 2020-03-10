@@ -243,7 +243,10 @@ function getCollections(
   };
 }
 
-function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
+function updateCollection(
+  collection: Collection,
+  renamingCollection: boolean = false
+): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     dispatch(
@@ -265,7 +268,8 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
       await updateCollectionStrategy(
         getState(),
         collection.id,
-        denormalisedCollection
+        denormalisedCollection,
+        renamingCollection
       );
       dispatch(collectionActions.updateSuccess(collection.id));
       const visibleArticles = await getVisibleArticles(
