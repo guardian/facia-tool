@@ -114,6 +114,17 @@ class EditionsController(db: EditionsDB,
 
   }
 
+  def getCollection(collectionId: String) = EditEditionsAuthAction { req =>
+    val collection = db.getCollections(List(GetCollectionsFilter(id = collectionId, None)))
+
+    if(collection.isEmpty) {
+      logger.warn(s"Collection not found ${collectionId}")
+      NotFound(s"Collection $collectionId not found")
+    } else {
+      Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(collection.head)))
+    }
+  }
+
   def updateCollection(collectionId: String) = EditEditionsAuthAction(parse.json[EditionsFrontendCollectionWrapper]) { req =>
     val form = req.body
     val collectionToUpdate = EditionsFrontendCollectionWrapper.toCollection(form)
