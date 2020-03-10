@@ -3,8 +3,8 @@ package services.editions.db
 import java.time._
 
 import model.editions.internal.PrefillUpdate
-import model.editions.{CapiPrefillQuery, Edition, EditionsCollection, EditionsTemplates, PathType}
-import model.forms.GetCollectionsFilter
+import model.editions.{CapiPrefillQuery, Edition, EditionsCollection, PathType}
+import model.forms.{CollectionRenameRequest, GetCollectionsFilter}
 import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.DbEditionsArticle
@@ -70,6 +70,27 @@ trait CollectionsQueries {
     rows.headOption.map { case (issueDate, edition, zone, prefillQueryUrlSegments, contentPrefillQueryTimeWindow, _) =>
       PrefillUpdate(issueDate, edition, zone, prefillQueryUrlSegments, contentPrefillQueryTimeWindow, rows.map(_._6))
     }
+  }
+
+  def updateCollectionName(collection: EditionsCollection): EditionsCollection = DB localTx { implicit session =>
+    val lastUpdated = LocalDateTime.now()
+    sql"""
+      UPDATE collections
+      SET "name" = ${collection.displayName},
+          updated_on = $lastUpdated,
+          updated_by = ${collection.updatedBy},
+          updated_email = ${collection.updatedEmail}
+      WHERE id = ${collection.id}
+    """.execute().apply
+
+    val rows = fetchCollectionsSql(where = sqls"collections.id = ${collection.id}").apply()
+
+    val updatedCollections = convertRowsToCollections(rows)
+
+    // we have filtered on a single id so this list should only contain one collection
+    assert(updatedCollections.size == 1, s"Retrieved ${updatedCollections.size} collections from DB but there should be exactly one. Failing fast.")
+
+    updatedCollections.head
   }
 
   def updateCollection(collection: EditionsCollection): EditionsCollection = DB localTx { implicit session =>
