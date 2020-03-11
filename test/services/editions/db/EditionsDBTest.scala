@@ -374,6 +374,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
       val evenMoreBrexshit = brexshit.copy(
         lastUpdated = Some(futureMillis),
+        displayName = "i=am-ignored",
         updatedBy = Some("BoJo"),
         updatedEmail = Some("bojo@piffle.paffle"),
         items = items
@@ -388,8 +389,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
       updatedBrexshit.updatedBy.value shouldBe "BoJo"
       updatedBrexshit.updatedEmail.value shouldBe "bojo@piffle.paffle"
-
       updatedBrexshit.lastUpdated.value shouldBe futureMillis
+      updatedBrexshit.displayName shouldBe "brexshit"
 
       // check we are storing some metadata
       updatedBrexshit.items.find(_.pageCode == "654789").value.addedOn shouldBe future.toInstant.toEpochMilli
