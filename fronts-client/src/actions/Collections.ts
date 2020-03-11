@@ -63,6 +63,7 @@ import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 import { updateCollectionStrategy } from 'strategies/update-collection';
 import { getPageViewDataForCollection } from 'actions/PageViewData';
+import { isMode } from 'selectors/pathSelectors';
 
 const articlesInCollection = createSelectAllArticlesInCollection();
 
@@ -122,19 +123,22 @@ function getCollectionActions(
   collectionResponse: CollectionResponse,
   getState: () => State
 ) {
+  const state = getState();
   const {
     id,
     collection: collectionWithoutId,
     storiesVisibleByStage
   } = collectionResponse;
-  const collectionConfig = selectCollectionConfig(getState(), id);
+  const collectionConfig = selectCollectionConfig(state, id);
   const collection = {
     ...collectionWithoutId,
     id
   };
+  const isEditionsMode = isMode(state, 'editions');
   const collectionWithNestedArticles = combineCollectionWithConfig(
     collectionConfig,
-    collection
+    collection,
+    isEditionsMode
   );
   const hasUnpublishedChanges =
     collectionWithNestedArticles.draft !== undefined;
@@ -243,7 +247,10 @@ function getCollections(
   };
 }
 
-function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
+function updateCollection(
+  collection: Collection,
+  renamingCollection: boolean = false
+): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     const state = getState();
     dispatch(
@@ -265,7 +272,8 @@ function updateCollection(collection: Collection): ThunkResult<Promise<void>> {
       await updateCollectionStrategy(
         getState(),
         collection.id,
-        denormalisedCollection
+        denormalisedCollection,
+        renamingCollection
       );
       dispatch(collectionActions.updateSuccess(collection.id));
       const visibleArticles = await getVisibleArticles(

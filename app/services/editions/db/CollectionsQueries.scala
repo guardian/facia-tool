@@ -4,7 +4,7 @@ import java.time._
 
 import model.editions.internal.PrefillUpdate
 import model.editions.{CapiPrefillQuery, Edition, EditionsCollection, PathType}
-import model.forms.{CollectionRenameRequest, GetCollectionsFilter}
+import model.forms.GetCollectionsFilter
 import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.DbEditionsArticle
