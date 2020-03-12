@@ -33,6 +33,12 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       apiKey = config.notification.key
     )
   }
+  val CovidBreakingNewsTopics = List(
+    BreakingNewsCovid19Uk,
+    BreakingNewsCovid19Us,
+    BreakingNewsCovid19Au,
+    BreakingNewsCovid19International
+  )
 
   def putBreakingNewsUpdate(
     collectionId: String,
@@ -91,6 +97,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
   private def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     val title = trail.topic match {
       case Some("uk-general-election") => Some("General election 2019")
+      case Some(topic) if CovidBreakingNewsTopics.map(_.name).contains(topic) => Some("Coronavirus")
       case _ => None
     }
     BreakingNewsPayload(
