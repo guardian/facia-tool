@@ -66,7 +66,7 @@ const ImageComponent = styled.div<{ small: boolean }>`
     left: 0;
     width: 100%;
     height: 100%;`
-      : 'position: relative'}
+      : 'position: relative;'}
   background-size: cover;
   flex-grow: 1;
   cursor: grab;
