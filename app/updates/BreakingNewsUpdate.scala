@@ -33,6 +33,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       apiKey = config.notification.key
     )
   }
+  val CovidGlobalTopicName = "global-covid-19"
   val CovidBreakingNewsTopics = List(
     BreakingNewsCovid19Uk,
     BreakingNewsCovid19Us,
@@ -97,7 +98,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
   private def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     val title = trail.topic match {
       case Some("uk-general-election") => Some("General election 2019")
-      case Some(topic) if CovidBreakingNewsTopics.map(_.name).contains(topic) => Some("Coronavirus")
+      case Some(topic) if (CovidBreakingNewsTopics.map(_.name) ++ CovidGlobalTopicName).contains(topic) => Some("Coronavirus")
       case _ => None
     }
     BreakingNewsPayload(
@@ -155,7 +156,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       case Some("us-covid-19") => List(BreakingNewsCovid19Us)
       case Some("au-covid-19") => List(BreakingNewsCovid19Au)
       case Some("international-covid-19") => List(BreakingNewsCovid19International)
-      case Some("global-covid-19") => CovidBreakingNewsTopics
+      case Some(CovidGlobalTopicName) => CovidBreakingNewsTopics
       case Some("") => throw new InvalidParameterException(s"Invalid empty string topic")
       case Some(notYetImplementedTopic) => List(Topic(Breaking, notYetImplementedTopic))
       case None => throw new InvalidParameterException(s"Invalid empty topic")
