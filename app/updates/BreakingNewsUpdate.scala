@@ -24,6 +24,85 @@ import scala.util.{Failure, Success, Try}
 
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
+object BreakingNewsUpdate {
+  val CovidGlobalTopicName = "global-covid-19"
+  val CovidBreakingNewsTopics = List(
+    BreakingNewsCovid19Uk,
+    BreakingNewsCovid19Us,
+    BreakingNewsCovid19Au,
+    BreakingNewsCovid19International
+  )
+
+  def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
+    val title = trail.topic match {
+      case Some("uk-general-election") => Some("General election 2019")
+      case Some(topic) if (CovidBreakingNewsTopics.map(_.name) :+ CovidGlobalTopicName).contains(topic) => Some("Coronavirus")
+      case _ => None
+    }
+
+    BreakingNewsPayload(
+      title = title,
+      message = Some(StringEscapeUtils.unescapeHtml4(trail.headline)),
+      thumbnailUrl = trail.thumb.map{new URI(_)},
+      sender = email,
+      link = createLinkDetails(trail),
+      imageUrl = trail.imageHide match {
+        case Some(true) => None
+        case _ => trail.image.map{new URI(_)}
+      },
+      importance = parseImportance(trail.group),
+      topic =  parseTopic(trail.topic),
+      debug = false,
+      dryRun = None
+    )
+  }
+
+  private def parseImportance(name: Option[String]): Importance = {
+    name match {
+      case Some("major") => Importance.Major
+      case Some("minor") => Importance.Minor
+      case Some("") => Importance.Minor
+      case Some(importance) => throw new InvalidParameterException(s"Invalid importance $importance")
+      case None => Importance.Minor
+    }
+  }
+
+  private def parseTopic(topic: Option[String]): List[Topic] = {
+    topic match {
+      case Some("global") => List(BreakingNewsUk, BreakingNewsUs, BreakingNewsAu, BreakingNewsInternational)
+      case Some("au") => List(BreakingNewsAu)
+      case Some("international") => List(BreakingNewsInternational)
+      case Some("uk") => List(BreakingNewsUk)
+      case Some("us") => List(BreakingNewsUs)
+      case Some("sport") => List(BreakingNewsSport)
+      case Some("uk-general-election") => List(BreakingNewsElection)
+      case Some("uk-covid-19") => List(BreakingNewsCovid19Uk)
+      case Some("us-covid-19") => List(BreakingNewsCovid19Us)
+      case Some("au-covid-19") => List(BreakingNewsCovid19Au)
+      case Some("international-covid-19") => List(BreakingNewsCovid19International)
+      case Some(CovidGlobalTopicName) => CovidBreakingNewsTopics
+      case Some("") => throw new InvalidParameterException(s"Invalid empty string topic")
+      case Some(notYetImplementedTopic) => List(Topic(Breaking, notYetImplementedTopic))
+      case None => throw new InvalidParameterException(s"Invalid empty topic")
+    }
+  }
+
+  private def createLinkDetails(trail: ClientHydratedTrail) = {
+    if (trail.isArticle) {
+      GuardianLinkDetails(
+        contentApiId = trail.path.getOrElse(throw new InvalidParameterException(s"Missing content API id for ${trail.headline}")),
+        title = trail.headline,
+        git = GITContent,
+        thumbnail = trail.thumb,
+        shortUrl = trail.shortUrl,
+        blockId = trail.blockId
+      )
+    } else {
+      throw new InvalidNotificationContentType(s"Can't send snap notifications for trail: ${trail.headline}")
+    }
+  }
+}
+
 class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient, val structuredLogger: StructuredLogger) extends Logging {
   lazy val client = {
     logger.info(s"Configuring breaking news client to send notifications to ${config.notification.host}")
@@ -33,13 +112,6 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
       apiKey = config.notification.key
     )
   }
-  val CovidGlobalTopicName = "global-covid-19"
-  val CovidBreakingNewsTopics = List(
-    BreakingNewsCovid19Uk,
-    BreakingNewsCovid19Us,
-    BreakingNewsCovid19Au,
-    BreakingNewsCovid19International
-  )
 
   def putBreakingNewsUpdate(
     collectionId: String,
@@ -82,7 +154,7 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     if (trail.alert.getOrElse(false)) {
       withExceptionHandling({
         structuredLogger.putLog(LogUpdate(HandlingBreakingNewsTrail(collectionId, trail: ClientHydratedTrail), email))
-        val payload = createPayload(trail, email)
+        val payload = BreakingNewsUpdate.createPayload(trail, email)
         client.send(payload)
           .map(handleSuccessfulFuture)
           .recover {
@@ -92,74 +164,6 @@ class BreakingNewsUpdate(val config: ApplicationConfiguration, val ws: WSClient,
     } else {
       logger.error(s"Failed to send a breaking news alert for trail ${trail} because alert was missing")
       Future.successful(Some("There may have been a problem in sending a breaking news alert. Please contact central production for information"))
-    }
-  }
-
-  private def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
-    val title = trail.topic match {
-      case Some("uk-general-election") => Some("General election 2019")
-      case Some(topic) if (CovidBreakingNewsTopics.map(_.name) ++ CovidGlobalTopicName).contains(topic) => Some("Coronavirus")
-      case _ => None
-    }
-    BreakingNewsPayload(
-      title = title,
-      message = Some(StringEscapeUtils.unescapeHtml4(trail.headline)),
-      thumbnailUrl = trail.thumb.map{new URI(_)},
-      sender = email,
-      link = createLinkDetails(trail),
-      imageUrl = trail.imageHide match {
-        case Some(true) => None
-        case _ => trail.image.map{new URI(_)}
-      },
-      importance = parseImportance(trail.group),
-      topic =  parseTopic(trail.topic),
-      debug = false,
-      dryRun = None
-    )
-  }
-
-  private def createLinkDetails(trail: ClientHydratedTrail) = {
-    if (trail.isArticle) {
-      GuardianLinkDetails(
-        contentApiId = trail.path.getOrElse(throw new InvalidParameterException(s"Missing content API id for ${trail.headline}")),
-        title = trail.headline,
-        git = GITContent,
-        thumbnail = trail.thumb,
-        shortUrl = trail.shortUrl,
-        blockId = trail.blockId
-      )
-    } else {
-      throw new InvalidNotificationContentType(s"Can't send snap notifications for trail: ${trail.headline}")
-    }
-  }
-
-  private def parseImportance(name: Option[String]): Importance = {
-    name match {
-      case Some("major") => Importance.Major
-      case Some("minor") => Importance.Minor
-      case Some("") => Importance.Minor
-      case Some(importance) => throw new InvalidParameterException(s"Invalid importance $importance")
-      case None => Importance.Minor
-    }
-  }
-
-  private def parseTopic(topic: Option[String]): List[Topic] = {
-    topic match {
-      case Some("global") => List(BreakingNewsUk, BreakingNewsUs, BreakingNewsAu, BreakingNewsInternational)
-      case Some("au") => List(BreakingNewsAu)
-      case Some("international") => List(BreakingNewsInternational)
-      case Some("uk") => List(BreakingNewsUk)
-      case Some("us") => List(BreakingNewsUs)
-      case Some("sport") => List(BreakingNewsSport)
-      case Some("uk-general-election") => List(BreakingNewsElection)
-      case Some("uk-covid-19") => List(BreakingNewsCovid19Uk)
-      case Some("us-covid-19") => List(BreakingNewsCovid19Us)
-      case Some("au-covid-19") => List(BreakingNewsCovid19Au)
-      case Some("international-covid-19") => List(BreakingNewsCovid19International)
-      case Some(CovidGlobalTopicName) => CovidBreakingNewsTopics
-      case Some("") => throw new InvalidParameterException(s"Invalid empty string topic")
-      case Some(notYetImplementedTopic) => List(Topic(Breaking, notYetImplementedTopic))
-      case None => throw new InvalidParameterException(s"Invalid empty topic")
     }
   }
 }
