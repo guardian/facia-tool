@@ -28,23 +28,28 @@ const Message = styled.div`
   flex-grow: 1;
 `;
 
-const CloseButton = styled(Button).attrs({ size: 'm', priority: 'transparent' })`
+const CloseButton = styled(Button).attrs({
+  size: 'm',
+  priority: 'transparent'
+})`
   margin-left: auto;
   padding: 0;
   width: 26px;
+  flex-shrink: 0;
 `;
 
 const NotificationsBanner = ({
   message,
   actionRemoveNotificationBanner: removeNotificationBanner
-}: Props) => (
-  <BannerWrapper>
-    <Message>{message}</Message>
-    <CloseButton onClick={removeNotificationBanner}>
-      <ClearIcon size="fill" />
-    </CloseButton>
-  </BannerWrapper>
-);
+}: Props) =>
+  message ? (
+    <BannerWrapper>
+      <Message>{message}</Message>
+      <CloseButton onClick={removeNotificationBanner}>
+        <ClearIcon size="fill" />
+      </CloseButton>
+    </BannerWrapper>
+  ) : null;
 
 const mapStateToProps = (state: State) => ({
   message: selectBannerMessage(state)

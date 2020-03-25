@@ -127,6 +127,7 @@ const AppFonts = createGlobalStyle`
 
 const AppContainer = styled.div`
   background-color: ${theme.base.colors.backgroundColorLight};
+  position: relative;
   color: ${theme.base.colors.textDark};
   height: 100%;
   width: 100%;
