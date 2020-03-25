@@ -35,6 +35,7 @@ import {
   reducer as featureSwitches,
   State as featureSwitchesState
 } from 'reducers/featureSwitchesReducer';
+import { reducer as notificationsReducer } from 'bundles/notificationsBundle';
 
 import { Config } from 'types/Config';
 import { ActionError } from 'types/Action';
@@ -71,6 +72,7 @@ export interface State {
   collections: ReturnType<typeof collections>;
   externalArticles: ReturnType<typeof externalArticles>;
   pageViewData: ReturnType<typeof pageViewData>;
+  notifications: ReturnType<typeof notificationsReducer>;
 }
 
 const rootReducer = (state: any = { feed: {} }, action: any) => ({
@@ -97,7 +99,8 @@ const rootReducer = (state: any = { feed: {} }, action: any) => ({
   groups: groups(state.groups, action, state),
   collections: collections(state.collections, action),
   externalArticles: externalArticles(state.externalArticles, action),
-  pageViewData: pageViewData(state.pageViewData, action)
+  pageViewData: pageViewData(state.pageViewData, action),
+  notifications: notificationsReducer(state.notifications, action)
 });
 
 export default rootReducer;

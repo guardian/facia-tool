@@ -43,6 +43,7 @@ import { Actions } from 'lib/createAsyncResourceBundle';
 import { ExternalArticle } from 'types/ExternalArticle';
 import { copyCardImageMeta } from 'actions/CardsCommon';
 import { PageViewStory } from 'types/PageViewData';
+import { NotificationActions } from 'bundles/notificationsBundle';
 
 interface EditorOpenCurrentFrontsMenu {
   type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
@@ -443,7 +444,8 @@ type Action =
   | CapGroupSiblings
   | CopyCardImageMeta
   | PageViewDataRequested
-  | PageViewDataReceived;
+  | PageViewDataReceived
+  | NotificationActions;
 
 export {
   ActionError,
