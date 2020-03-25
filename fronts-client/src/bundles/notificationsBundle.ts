@@ -6,6 +6,7 @@ import { State } from 'types/State';
 interface BannerNotification {
   id: string;
   message: string;
+  duplicates: number;
 }
 
 export interface NotificationState {
@@ -46,13 +47,33 @@ export const reducer = (
 ): NotificationState => {
   switch (action.type) {
     case NOTIFICATION_ADD_BANNER: {
+      const duplicateNotification = state.banners.find(
+        _ => _.message === action.payload.message
+      );
+      if (duplicateNotification) {
+        return {
+          banners: [
+            ...state.banners.filter(_ => _.id !== duplicateNotification.id),
+            {
+              ...duplicateNotification,
+              duplicates: duplicateNotification.duplicates + 1
+            }
+          ]
+        };
+      }
+
       return {
         banners: [
           ...state.banners,
-          { id: action.payload.id, message: action.payload.message }
+          {
+            id: action.payload.id,
+            message: action.payload.message,
+            duplicates: 1
+          }
         ]
       };
     }
+
     case NOTIFICATION_REMOVE_BANNER: {
       return { banners: state.banners.filter(_ => _.id !== action.payload.id) };
     }
