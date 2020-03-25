@@ -33,7 +33,10 @@ const colors = {
   yellow: '#FFE500',
   green: '#4F9245',
   greenDark: '#36842A',
-  greenLight: '#ddead9'
+  greenLight: '#ddead9',
+  red: '#d01d00',
+  blackTransparent20: 'rgba(0,0,0,0.2)',
+  blackTransparent40: 'rgba(0,0,0,0.4)'
 };
 
 const base = {
@@ -64,7 +67,8 @@ const base = {
     borderColorFocus: colors.greyLight,
     placeholderLight: colors.greyLightPinkish,
     placeholderDark: colors.greyLight,
-    focusColor: colors.orange
+    focusColor: colors.orange,
+    dangerColor: colors.red
   }
 };
 
