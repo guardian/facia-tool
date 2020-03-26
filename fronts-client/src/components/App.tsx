@@ -39,6 +39,7 @@ import ManageView from './Editions/ManageView';
 import FeaturesView from './Features/FeaturesView';
 import { PlaceholderAnimation } from 'components/BasePlaceholder';
 import OptionsModal from './OptionsModal';
+import BannerNotification from './notifications/BannerNotification';
 
 // tslint:disable:no-unused-expression
 // NB the properties described in font-face work as matchers, assigning text to the font imported by the source.
@@ -126,6 +127,7 @@ const AppFonts = createGlobalStyle`
 
 const AppContainer = styled.div`
   background-color: ${theme.base.colors.backgroundColorLight};
+  position: relative;
   color: ${theme.base.colors.textDark};
   height: 100%;
   width: 100%;
@@ -141,6 +143,7 @@ const BackgroundHeader = styled.div`
 const App = () => (
   <ThemeProvider theme={styleTheme}>
     <DropDisabler>
+      <BannerNotification />
       <AppContainer>
         <BackgroundHeader>
           <SectionHeaderWithLogo greyHeader={true} />

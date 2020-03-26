@@ -711,7 +711,8 @@ const state = {
     loading: false,
     loadingIds: [],
     updatingIds: []
-  }
+  },
+  notifications: { banners: [] }
 } as State;
 
 export { state };

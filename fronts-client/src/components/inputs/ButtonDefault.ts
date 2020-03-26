@@ -2,7 +2,7 @@ import { styled } from 'constants/theme';
 import { theme } from '../../constants/theme';
 
 type ButtonSizes = 's' | 'm' | 'l';
-type ButtonPriorities = 'primary' | 'default' | 'muted';
+type ButtonPriorities = 'primary' | 'default' | 'muted' | 'transparent';
 
 type SizeMap = { [k in ButtonSizes]: string };
 type PriorityMap = { [k in ButtonPriorities]: string };
@@ -44,17 +44,20 @@ const colorMap = {
   disabled: {
     default: theme.colors.white,
     primary: theme.colors.greyLight,
-    muted: theme.colors.blackLight
+    muted: theme.colors.blackLight,
+    transparent: theme.colors.white
   },
   selected: {
     default: theme.colors.white,
     primary: theme.colors.white,
-    muted: theme.colors.blackLight
+    muted: theme.colors.blackLight,
+    transparent: theme.colors.white
   },
   deselected: {
     default: theme.colors.white,
     primary: theme.colors.blackDark,
-    muted: theme.colors.blackLight
+    muted: theme.colors.blackLight,
+    transparent: theme.colors.white
   }
 };
 
@@ -62,17 +65,20 @@ const backgroundMap = {
   disabled: {
     default: theme.colors.greyMediumLight,
     primary: theme.colors.whiteMedium,
-    muted: theme.colors.greyLight
+    muted: theme.colors.greyLight,
+    transparent: theme.colors.blackTransparent20
   },
   selected: {
     default: theme.colors.greyMediumDark,
     primary: theme.colors.orangeLight,
-    muted: theme.colors.greyLight
+    muted: theme.colors.greyLight,
+    transparent: theme.colors.blackTransparent60
   },
   deselected: {
     default: theme.colors.blackLight,
     primary: theme.colors.orange,
-    muted: theme.colors.greyLightPinkish
+    muted: theme.colors.greyLightPinkish,
+    transparent: theme.colors.blackTransparent40
   }
 };
 
@@ -80,17 +86,20 @@ const backgroundHoverMap = {
   disabled: {
     default: theme.colors.greyMediumLight,
     primary: theme.colors.orangeDark,
-    muted: theme.colors.greyLight
+    muted: theme.colors.greyLight,
+    transparent: theme.colors.blackTransparent20
   },
   selected: {
     default: theme.colors.greyMediumDark,
     primary: theme.colors.orangeLight,
-    muted: theme.colors.greyLight
+    muted: theme.colors.greyLight,
+    transparent: theme.colors.blackTransparent60
   },
   deselected: {
     default: theme.colors.greyMediumDark,
     primary: theme.colors.orangeLight,
-    muted: theme.colors.greyLight
+    muted: theme.colors.greyLight,
+    transparent: theme.colors.blackTransparent60
   }
 };
 
