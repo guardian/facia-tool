@@ -47,7 +47,7 @@ const NotificationsBanner = ({
 }: Props) => (
   <>
     {banners.map((banner) => (
-      <BannerWrapper>
+      <BannerWrapper key={banner.id}>
         <Message>
           {banner.message}
           {banner.duplicates ? ` (${banner.duplicates + 1})` : ''}
