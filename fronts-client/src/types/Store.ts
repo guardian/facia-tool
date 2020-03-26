@@ -1,4 +1,4 @@
-import { Store as ReduxStore, Dispatch } from 'redux';
+import { Store as ReduxStore } from 'redux';
 import { Action } from './Action';
 import { State } from './State';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
