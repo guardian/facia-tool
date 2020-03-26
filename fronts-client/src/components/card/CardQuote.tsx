@@ -9,7 +9,7 @@ interface ColouredQuoteProps {
 const ColouredQuote = ({
   colour,
   width = '8px',
-  height = '19px'
+  height = '19px',
 }: ColouredQuoteProps) => (
   <svg
     width={width}

@@ -68,14 +68,14 @@ export const getCapiValuesForArticleFields = (
       headline: '',
       trailText: '',
       byline: '',
-      thumbnail: ''
+      thumbnail: '',
     };
   }
   return {
     headline: article.fields.headline || '',
     trailText: article.fields.trailText || '',
     byline: article.fields.byline || '',
-    thumbnail: article.fields.thumbnail
+    thumbnail: article.fields.thumbnail,
   };
 };
 
@@ -87,10 +87,10 @@ export const getInitialValuesForCardForm = (
   }
   const slideshowBackfill: Array<ImageData | void> = [];
   const slideshow: Array<ImageData | void> = (article.slideshow || []).map(
-    image => ({
+    (image) => ({
       ...image,
       width: strToInt(image.width),
-      height: strToInt(image.height)
+      height: strToInt(image.height),
     })
   );
   slideshowBackfill.length = clamp(5 - slideshow.length, 0, 5);
@@ -120,14 +120,14 @@ export const getInitialValuesForCardForm = (
           width: strToInt(article.imageSrcWidth),
           height: strToInt(article.imageSrcHeight),
           origin: article.imageSrcOrigin,
-          thumb: article.imageSrcThumb
+          thumb: article.imageSrcThumb,
         },
         cutoutImage: {
           src: article.imageCutoutSrc,
           width: strToInt(article.imageCutoutSrcWidth),
           height: strToInt(article.imageCutoutSrcHeight),
           origin: article.imageCutoutSrcOrigin,
-          thumb: article.imageCutoutSrc
+          thumb: article.imageCutoutSrc,
         },
         slideshow: slideshow.concat(slideshowBackfill),
         overrideArticleMainMedia: article.overrideArticleMainMedia || false,
@@ -135,7 +135,7 @@ export const getInitialValuesForCardForm = (
         showMainVideo: !!article.showMainVideo,
         coverCardImageReplace: article.coverCardImageReplace || false,
         coverCardMobileImage: article.coverCardMobileImage || {},
-        coverCardTabletImage: article.coverCardTabletImage || {}
+        coverCardTabletImage: article.coverCardTabletImage || {},
       }
     : undefined;
 };
@@ -153,7 +153,7 @@ const formToMetaFieldMap: { [fieldName: string]: string } = {
   imageCutoutSrc: 'cutoutImage',
   imageCutoutSrcWidth: 'cutoutImage',
   imageCutoutSrcHeight: 'cutoutImage',
-  imageCutoutSrcOrigin: 'cutoutImage'
+  imageCutoutSrcOrigin: 'cutoutImage',
 };
 
 export const getImageMetaFromValidationResponse = (image: ImageData) => ({
@@ -161,7 +161,7 @@ export const getImageMetaFromValidationResponse = (image: ImageData) => ({
   imageSrcThumb: image.thumb,
   imageSrcWidth: intToStr(image.width),
   imageSrcHeight: intToStr(image.height),
-  imageSrcOrigin: image.origin
+  imageSrcOrigin: image.origin,
 });
 
 export const getCardMetaFromFormValues = (
@@ -175,7 +175,7 @@ export const getCardMetaFromFormValues = (
     (image: ImageData) => ({
       ...image,
       width: intToStr(image.width),
-      height: intToStr(image.height)
+      height: intToStr(image.height),
     })
   );
   const getStringField = (field: string) => {
@@ -197,7 +197,7 @@ export const getCardMetaFromFormValues = (
       imageCutoutSrcWidth: intToStr(cutoutImage.width),
       imageCutoutSrcHeight: intToStr(cutoutImage.height),
       imageCutoutSrcOrigin: cutoutImage.origin,
-      slideshow: slideshow.length ? slideshow : undefined
+      slideshow: slideshow.length ? slideshow : undefined,
     },
     'primaryImage',
     'cutoutImage'
@@ -215,7 +215,7 @@ export const getCardMetaFromFormValues = (
 
   let newCardMeta = {
     ...existingCardMeta,
-    ...dirtiedFields
+    ...dirtiedFields,
   };
 
   if (!values.customKicker) {

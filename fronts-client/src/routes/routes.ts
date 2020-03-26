@@ -16,7 +16,7 @@ export interface FrontsEditParams {
 
 const frontsEditPathProps = {
   exact: true,
-  path: `/:priority(${Object.keys(priorities).join('|')})`
+  path: `/:priority(${Object.keys(priorities).join('|')})`,
 };
 
 const matchFrontsEditPath = (path: string) =>
@@ -24,7 +24,7 @@ const matchFrontsEditPath = (path: string) =>
 
 const frontsFeatureProps = {
   exact: true,
-  path: '/features'
+  path: '/features',
 };
 
 /**
@@ -33,7 +33,7 @@ const frontsFeatureProps = {
 
 const issuePathProps = {
   exact: true,
-  path: '/issues/:priority'
+  path: '/issues/:priority',
 };
 
 // The `priority` in this path is actually the edition issueId, but is mapped to priority
@@ -46,7 +46,7 @@ export const manageEditions = `/manage-editions/:editionName`;
 const EditionsRoutes = {
   issuePath: (issueId: string) => editionsApi(`/issues/${issueId}`),
   collectionPath: (collectionId: string) =>
-    editionsApi(`/editions/collections/${collectionId}`)
+    editionsApi(`/editions/collections/${collectionId}`),
 };
 
 export {
@@ -55,5 +55,5 @@ export {
   matchIssuePath,
   issuePathProps,
   frontsFeatureProps,
-  EditionsRoutes
+  EditionsRoutes,
 };

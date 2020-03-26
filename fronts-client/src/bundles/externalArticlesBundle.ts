@@ -8,9 +8,9 @@ export const {
   actionNames,
   reducer,
   selectors,
-  initialState
+  initialState,
 } = createAsyncResourceBundle<ExternalArticle>('externalArticles', {
-  indexById: true
+  indexById: true,
 });
 
 export const selectIsExternalArticleStale = createSelectIsArticleStale(

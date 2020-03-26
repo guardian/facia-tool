@@ -5,13 +5,13 @@ import {
   DragDropContext,
   Droppable,
   Draggable,
-  DropResult
+  DropResult,
 } from 'react-beautiful-dnd';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
   editorMoveFront,
-  createSelectEditorFrontsByPriority
+  createSelectEditorFrontsByPriority,
 } from 'bundles/frontsUIBundle';
 import { FrontConfig } from 'types/FaciaApi';
 import { styled, theme } from 'constants/theme';
@@ -122,7 +122,7 @@ class Component extends React.Component<ComponentProps> {
 const mapStateToProps = () => {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
   return (state: State) => ({
-    fronts: selectEditorFrontsByPriority(state)
+    fronts: selectEditorFrontsByPriority(state),
   });
 };
 
@@ -131,10 +131,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dropResult.destination &&
     dispatch(
       editorMoveFront(dropResult.draggableId, dropResult.destination.index)
-    )
+    ),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Component);
+export default connect(mapStateToProps, mapDispatchToProps)(Component);

@@ -18,7 +18,7 @@ function optionize(handlerFn: (value: string | void) => void) {
             : undefined
         );
       }
-    }
+    },
   };
 }
 

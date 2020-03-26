@@ -6,7 +6,7 @@ import RenderOffscreen from 'components/util/RenderOffscreen';
 import {
   DraggingArticleComponent,
   dragOffsetX,
-  dragOffsetY
+  dragOffsetY,
 } from './ArticleDrag';
 
 const DragToAddSnapContainer = styled.div`
@@ -61,7 +61,7 @@ const DragToAddTextSnap = () => {
       </RenderOffscreen>
       <DragToAddSnapContainer
         data-testid="drag-to-add-snap"
-        onDragStart={e => handleDragStart(e, ref.current)}
+        onDragStart={(e) => handleDragStart(e, ref.current)}
         draggable={true}
       >
         <DragIcon /> Drag to add a text card

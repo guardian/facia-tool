@@ -10,7 +10,7 @@ import {
   editorCloseOverview,
   selectIsFrontOverviewOpen,
   editorOpenAllCollectionsForFront,
-  editorCloseAllCollectionsForFront
+  editorCloseAllCollectionsForFront,
 } from 'bundles/frontsUIBundle';
 import { CardSets, Card as TCard } from 'types/Collection';
 import { initialiseCollectionsForFront } from 'actions/Collections';
@@ -18,7 +18,7 @@ import { setFocusState } from 'bundles/focusBundle';
 import { theme } from 'constants/theme';
 import ButtonCircularCaret from 'components/inputs/ButtonCircularCaret';
 import ButtonRoundedWithLabel, {
-  ButtonLabel
+  ButtonLabel,
 } from 'components/inputs/ButtonRoundedWithLabel';
 import { DownCaretIcon } from 'components/icons/Icons';
 import FrontCollectionsOverview from './FrontCollectionsOverview';
@@ -48,7 +48,7 @@ const OverviewToggleContainer = styled.div<{ active: boolean }>`
   padding-top: 13px;
   padding-bottom: 10px;
   text-align: right;
-  margin-left: ${props => (props.active ? '0' : '-1px')};
+  margin-left: ${(props) => (props.active ? '0' : '-1px')};
   cursor: pointer;
 `;
 
@@ -121,12 +121,12 @@ interface FrontState {
 class FrontContainer extends React.Component<FrontProps, FrontState> {
   public state = {
     error: undefined,
-    currentlyScrolledCollectionId: undefined
+    currentlyScrolledCollectionId: undefined,
   };
 
   public handleError = (error: string) => {
     this.setState({
-      error
+      error,
     });
   };
 
@@ -140,7 +140,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
             display: this.state.error ? 'block' : 'none',
             padding: '1em',
             position: 'absolute',
-            width: '100%'
+            width: '100%',
           }}
         >
           {this.state.error || ''}
@@ -200,7 +200,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
           <ButtonCircularCaret
             id={overviewToggleId}
             style={{
-              margin: '0'
+              margin: '0',
             }}
             openDir="right"
             active={this.props.overviewIsOpen}
@@ -243,7 +243,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
   return {
     overviewIsOpen: selectIsFrontOverviewOpen(state, id),
-    priority: selectPriority(state)
+    priority: selectPriority(state),
   };
 };
 
@@ -260,7 +260,7 @@ const mapDispatchToProps = (
           type: 'collectionArticle',
           groupId,
           card,
-          frontId
+          frontId,
         })
       ),
     toggleOverview: (open: boolean) =>
@@ -269,14 +269,11 @@ const mapDispatchToProps = (
       {
         selectCard: editorSelectCard,
         editorOpenAllCollectionsForFront,
-        editorCloseAllCollectionsForFront
+        editorCloseAllCollectionsForFront,
       },
       dispatch
-    )
+    ),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FrontContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(FrontContainer);

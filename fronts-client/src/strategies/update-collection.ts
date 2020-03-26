@@ -2,7 +2,7 @@ import { State } from 'types/State';
 import { updateCollection } from 'services/faciaApi';
 import {
   updateEditionsCollection,
-  renameEditionsCollection
+  renameEditionsCollection,
 } from 'services/faciaApi';
 import { runStrategy } from './run-strategy';
 import { CollectionWithNestedArticles } from 'types/Collection';
@@ -15,7 +15,7 @@ const collectionToEditionCollection = (
   return {
     ...restCol,
     isHidden: isHidden || false,
-    items: draft || []
+    items: draft || [],
   };
 };
 
@@ -35,7 +35,7 @@ const updateCollectionStrategy = (
         : updateEditionsCollection(id)(
             collectionToEditionCollection(collection)
           ),
-    none: () => null
+    none: () => null,
   });
 
 export { updateCollectionStrategy };

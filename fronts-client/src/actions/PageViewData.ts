@@ -4,7 +4,7 @@ import { PageViewDataFromOphan, PageViewStory } from 'types/PageViewData';
 import { DerivedArticle } from 'types/Article';
 import {
   createSelectArticlesInCollection,
-  createSelectArticleFromCard
+  createSelectArticleFromCard,
 } from 'selectors/shared';
 import { CardSets } from 'types/Collection';
 import pandaFetch from 'services/pandaFetch';
@@ -30,7 +30,7 @@ const getPageViewDataForCollection = (
       const state = getState();
       const articleIds: string[] = selectArticlesInCollection(state, {
         collectionId,
-        collectionSet
+        collectionSet,
       });
       dispatch(getPageViewData(frontId, collectionId, articleIds));
     } catch (e) {
@@ -46,16 +46,16 @@ const getPageViewData = (
 ): ThunkResult<void> => async (dispatch, getState) => {
   const state = getState();
   const articles = articleIds
-    .map(_ => selectArticleFromCard(state, _))
-    .filter(_ => _) as DerivedArticle[];
+    .map((_) => selectArticleFromCard(state, _))
+    .filter((_) => _) as DerivedArticle[];
   const urlPaths: string[] = articles
     .map(
-      article =>
+      (article) =>
         article.urlPath
           ? article.urlPath // it's an article
           : article.href && !isValidURL(article.href) && article.href.substr(1) // it's a snaplink
     )
-    .filter(_ => _) as string[];
+    .filter((_) => _) as string[];
   const data = await fetchPageViewData(frontId, urlPaths);
   const dataWithArticleIds = convertToStoriesData(data, articles);
   dispatch(
@@ -67,23 +67,20 @@ const convertToStoriesData = (
   allStories: PageViewDataFromOphan[],
   articles: DerivedArticle[]
 ): PageViewStory[] =>
-  allStories.reduce(
-    (acc, story) => {
-      const articleId = getArticleIdFromOphanData(story, articles);
-      return articleId
-        ? acc.concat({
-            articleId,
-            articlePath: story.path,
-            totalHits: story.totalHits,
-            data:
-              story.series.length > 0 && story.series[0].data
-                ? story.series[0].data
-                : []
-          })
-        : acc;
-    },
-    [] as PageViewStory[]
-  );
+  allStories.reduce((acc, story) => {
+    const articleId = getArticleIdFromOphanData(story, articles);
+    return articleId
+      ? acc.concat({
+          articleId,
+          articlePath: story.path,
+          totalHits: story.totalHits,
+          data:
+            story.series.length > 0 && story.series[0].data
+              ? story.series[0].data
+              : [],
+        })
+      : acc;
+  }, [] as PageViewStory[]);
 
 const getArticleIdFromOphanData = (
   ophanData: PageViewDataFromOphan,
@@ -92,7 +89,7 @@ const getArticleIdFromOphanData = (
   // if we have a urlPath, we need to trim the Ophan data path to make the comparison
   // if we have an href - because the article is a snap link - we don't need to trim
   const matchingArticle = articles.find(
-    a => a.urlPath === ophanData.path.substr(1) || a.href === ophanData.path
+    (a) => a.urlPath === ophanData.path.substr(1) || a.href === ophanData.path
   );
   return matchingArticle ? matchingArticle.uuid : undefined;
 };
@@ -111,8 +108,8 @@ const pageViewDataReceivedAction = (
       data,
       frontId,
       collectionId,
-      clearPreviousData
-    }
+      clearPreviousData,
+    },
   };
 };
 
@@ -122,8 +119,8 @@ const pageViewDataRequestedAction = (
   return {
     type: PAGE_VIEW_DATA_REQUESTED,
     payload: {
-      frontId
-    }
+      frontId,
+    },
   };
 };
 
@@ -136,29 +133,26 @@ const fetchPageViewData = async (
   const timePeriod = `hours=${totalPeriodInHours}&interval=${intervalInMinutes}`;
   const maxLength = 2048 - timePeriod.length - base.length;
 
-  const articlePaths = articlesInFront.map(article => `path=/${article}&`);
+  const articlePaths = articlesInFront.map((article) => `path=/${article}&`);
 
-  const urls: string[] = articlePaths.reduce(
-    (acc, path) => {
-      const latestUrl = acc[acc.length - 1];
-      if (acc.length && latestUrl.length + path.length < maxLength) {
-        acc.splice(acc.length - 1, 1, latestUrl + path);
-        return acc;
-      }
-      return acc.concat(referringPath + path);
-    },
-    [] as string[]
-  );
+  const urls: string[] = articlePaths.reduce((acc, path) => {
+    const latestUrl = acc[acc.length - 1];
+    if (acc.length && latestUrl.length + path.length < maxLength) {
+      acc.splice(acc.length - 1, 1, latestUrl + path);
+      return acc;
+    }
+    return acc.concat(referringPath + path);
+  }, [] as string[]);
 
-  const ophanCalls = urls.map(url =>
+  const ophanCalls = urls.map((url) =>
     pandaFetch(`${url}${timePeriod}`, {
       method: 'get',
-      credentials: 'same-origin'
+      credentials: 'same-origin',
     })
   );
 
   const response = await Promise.all(ophanCalls);
-  const parsedResponse = await Promise.all(response.map(r => r.json()));
+  const parsedResponse = await Promise.all(response.map((r) => r.json()));
 
   return ([] as PageViewDataFromOphan[]).concat(...parsedResponse);
 };
@@ -167,5 +161,5 @@ export {
   fetchPageViewData,
   getPageViewData,
   getPageViewDataForCollection,
-  pageViewDataReceivedAction
+  pageViewDataReceivedAction,
 };

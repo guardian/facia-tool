@@ -3,7 +3,7 @@ import { styled, theme } from 'constants/theme';
 import FadeIn from 'components/animation/FadeIn';
 import {
   MoreIcon,
-  MagnifyingGlassIcon as SearchIcon
+  MagnifyingGlassIcon as SearchIcon,
 } from 'components/icons/Icons';
 
 import LargeSectionHeader from '../layout/LargeSectionHeader';
@@ -96,7 +96,7 @@ interface State {
 class FrontsMenu extends React.Component<Props, State> {
   public state = {
     isOpen: false,
-    searchString: ''
+    searchString: '',
   };
   public inputRef = React.createRef<HTMLInputElement>();
 
@@ -118,7 +118,7 @@ class FrontsMenu extends React.Component<Props, State> {
       return;
     }
     this.setState({
-      searchString: event.target.value
+      searchString: event.target.value,
     });
   };
 
@@ -127,7 +127,7 @@ class FrontsMenu extends React.Component<Props, State> {
       this.inputRef.current.focus();
     }
     this.setState({
-      isOpen: !this.state.isOpen
+      isOpen: !this.state.isOpen,
     });
   };
 

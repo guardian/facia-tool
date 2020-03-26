@@ -27,8 +27,8 @@ const createCard = (
     ...(showByline ? { showByline } : {}),
     ...(showQuotedHeadline ? { showQuotedHeadline } : {}),
     ...(isEdition || showKickerCustom ? { showKickerCustom: true } : {}),
-    ...(isEdition || showKickerCustom ? { customKicker } : {})
-  }
+    ...(isEdition || showKickerCustom ? { customKicker } : {}),
+  },
 });
 
 // only go one deep
@@ -37,13 +37,13 @@ const cloneCard = (
   cards: { [id: string]: Card } // all the cards to enable nested rebuilds
 ): { parent: Card; supporting: Card[] } => {
   const sup = (card.meta.supporting || [])
-    .map(id => {
+    .map((id) => {
       const supportingCard = cards[id];
       const { supporting, ...meta } = supportingCard.meta;
       return cloneCard(
         {
           ...supportingCard,
-          meta
+          meta,
         },
         cards
       ).parent;
@@ -56,10 +56,10 @@ const cloneCard = (
       uuid: v4(),
       meta: {
         ...card.meta,
-        supporting: sup.map(({ uuid }) => uuid)
-      }
+        supporting: sup.map(({ uuid }) => uuid),
+      },
     },
-    supporting: sup
+    supporting: sup,
   };
 };
 
@@ -67,7 +67,7 @@ const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
   const newMeta: CardMeta = {
     imageCutoutReplace: false,
     imageSlideshowReplace: false,
-    imageReplace: false
+    imageReplace: false,
   };
   if (meta.imageReplace) {
     return {
@@ -77,16 +77,16 @@ const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
         'imageSrcThumb',
         'imageSrcWidth',
         'imageSrcHeight',
-        'imageSrcOrigin'
+        'imageSrcOrigin',
       ]),
-      imageReplace: true
+      imageReplace: true,
     };
   }
   if (meta.imageSlideshowReplace) {
     return {
       ...newMeta,
       slideshow: cloneDeep(meta.slideshow),
-      imageSlideshowReplace: true
+      imageSlideshowReplace: true,
     };
   }
   if (meta.imageCutoutReplace) {
@@ -96,9 +96,9 @@ const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
         'imageCutoutSrc',
         'imageCutoutSrcWidth',
         'imageCutoutSrcHeight',
-        'imageCutoutSrcOrigin'
+        'imageCutoutSrcOrigin',
       ]),
-      imageCutoutReplace: true
+      imageCutoutReplace: true,
     };
   }
   return {};

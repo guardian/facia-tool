@@ -59,12 +59,12 @@ const FrontCollectionsOverview = ({
   id,
   front,
   browsingStage,
-  currentCollection
+  currentCollection,
 }: FrontCollectionOverviewProps) => (
   <Container setBack isClosed={false}>
     <OverviewContainerHeadingPinline>Overview</OverviewContainerHeadingPinline>
     <ContainerBody>
-      {front.collections.map(collectionId => (
+      {front.collections.map((collectionId) => (
         <CollectionOverview
           frontId={id}
           key={collectionId}
@@ -78,14 +78,14 @@ const FrontCollectionsOverview = ({
 );
 
 const mapStateToProps = (state: State, props: FrontContainerProps) => ({
-  front: selectFront(state, { frontId: props.id })
+  front: selectFront(state, { frontId: props.id }),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       updateCardMeta: updateCardMetaAction,
-      clearCardSelection: editorClearCardSelection
+      clearCardSelection: editorClearCardSelection,
     },
     dispatch
   );

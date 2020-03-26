@@ -1,6 +1,6 @@
 import {
   getFromGroupIndicesWithRespectToState,
-  getToGroupIndicesWithRespectToState
+  getToGroupIndicesWithRespectToState,
 } from '../moveUtils';
 
 describe('Move utilities', () => {
@@ -10,49 +10,49 @@ describe('Move utilities', () => {
         c1: {
           id: 'c1',
           groups: ['group1', 'group2'],
-          live: ['g1', 'g2']
+          live: ['g1', 'g2'],
         },
         c2: {
           id: 'c2',
           groups: ['group3', 'group4', 'group5'],
-          draft: ['g5', 'g4', 'g3', 'g6']
-        }
-      }
+          draft: ['g5', 'g4', 'g3', 'g6'],
+        },
+      },
     },
     groups: {
       g1: {
         uuid: 'g1',
-        name: 'g1'
+        name: 'g1',
       },
       g2: {
         uuid: 'g2',
         id: 'group2',
         cards: ['af1'],
-        name: 'g2'
+        name: 'g2',
       },
       g3: {
         uuid: 'g3',
         id: 'group3',
         name: 'group3',
-        cards: ['af3', 'af4']
+        cards: ['af3', 'af4'],
       },
       g4: {
         uuid: 'g4',
         id: 'group4',
-        cards: ['af5']
+        cards: ['af5'],
       },
       g5: {
         uuid: 'g5',
         id: 'group5',
-        cards: ['af6']
+        cards: ['af6'],
       },
       g6: {
         uuid: 'g6',
         id: 'group6',
         name: 'group6',
-        cards: ['af7', 'af8']
-      }
-    }
+        cards: ['af7', 'af8'],
+      },
+    },
   };
 
   const position = { type: 'group', id: 'g1', index: 2 };
@@ -85,7 +85,7 @@ describe('Move utilities', () => {
 
       expect(fromWithRespectToState).toEqual({
         ...positionWithOrphanedGroups,
-        index: 1
+        index: 1,
       });
     });
 
@@ -97,7 +97,7 @@ describe('Move utilities', () => {
       expect(fromWithRespectToState).toEqual({
         ...positionInOrphanedGroup,
         index: 0,
-        id: 'g5'
+        id: 'g5',
       });
     });
   });
@@ -122,7 +122,7 @@ describe('Move utilities', () => {
 
       expect(toWithRespectToState).toEqual({
         ...positionWithOrphanedGroups,
-        index: 1
+        index: 1,
       });
     });
 
@@ -135,7 +135,7 @@ describe('Move utilities', () => {
 
       expect(toWithRespectToState).toEqual({
         ...positionWithOrphanedGroups,
-        index: 2
+        index: 2,
       });
     });
 

@@ -19,8 +19,8 @@ const createDragEvent = (top: boolean) => {
     currentTarget: {
       getBoundingClientRect: () => ({
         top: 0,
-        height: 10
-      })
+        height: 10,
+      }),
     },
     clientY: top ? 1 : 9,
     dataTransfer: {
@@ -31,8 +31,8 @@ const createDragEvent = (top: boolean) => {
         data[key] = val;
         types.push(key);
       },
-      getData: (key: string) => data[key]
-    }
+      getData: (key: string) => data[key],
+    },
   };
 };
 
@@ -87,11 +87,11 @@ describe('Curation', () => {
                 parentType="a"
                 parentId={child.id}
                 getId={({ id }) => id}
-                onMove={e => {
+                onMove={(e) => {
                   edit = e;
                 }}
                 onDrop={() => null}
-                renderDrop={getDropProps => {
+                renderDrop={(getDropProps) => {
                   if (getDropProps.index === 1) {
                     dropProps = getDropProps;
                   }
@@ -111,7 +111,7 @@ describe('Curation', () => {
     expect(edit).toEqual({
       data: { id: '1' },
       from: { type: 'b', id: '0', index: 0 },
-      to: { type: 'a', id: '2', index: 1 }
+      to: { type: 'a', id: '2', index: 1 },
     });
   });
 
@@ -144,7 +144,7 @@ describe('Curation', () => {
                 parentType="a"
                 parentId={child.id}
                 getId={({ id }) => id}
-                onMove={e => {
+                onMove={(e) => {
                   edit = e;
                 }}
                 onDrop={() => null}
@@ -165,7 +165,7 @@ describe('Curation', () => {
     expect(edit).toEqual({
       data: { id: '1' },
       from: { type: 'b', id: '0', index: 0 },
-      to: { type: 'a', id: '2', index: 0 }
+      to: { type: 'a', id: '2', index: 0 },
     });
 
     runDrag(nodeProps)(dropProps, false);
@@ -201,7 +201,7 @@ describe('Curation', () => {
                 parentType="a"
                 parentId={child.id}
                 getId={({ id }) => id}
-                onMove={e => {
+                onMove={(e) => {
                   edit = e;
                 }}
                 onDrop={() => null}
@@ -251,7 +251,7 @@ describe('Curation', () => {
                 event = e;
                 to = toSpec;
               }}
-              renderDrop={getDropProps => {
+              renderDrop={(getDropProps) => {
                 dropProps = getDropProps;
                 return null;
               }}
@@ -265,12 +265,12 @@ describe('Curation', () => {
 
     const data = {
       type: 'a',
-      id: 2
+      id: 2,
     };
 
     runDrag('text', {
       type: 'a',
-      id: 2
+      id: 2,
     })(dropProps);
 
     expect(JSON.parse(event.dataTransfer.getData('text'))).toEqual(data);
@@ -304,10 +304,10 @@ describe('Curation', () => {
                 getId={({ id }) => id}
                 parentId="2"
                 onMove={() => null}
-                onDrop={e => {
+                onDrop={(e) => {
                   edit = e;
                 }}
-                renderDrop={getDropProps => {
+                renderDrop={(getDropProps) => {
                   dropProps = getDropProps;
                   return null;
                 }}
@@ -338,11 +338,11 @@ describe('Curation', () => {
           type="b"
           getId={({ id }) => id}
           arr={[{ id: '1' }, { id: '2' }, { id: '3' }]}
-          onMove={e => {
+          onMove={(e) => {
             edit = e;
           }}
           onDrop={() => null}
-          renderDrop={getDropProps => {
+          renderDrop={(getDropProps) => {
             dropProps = getDropProps;
             return null;
           }}
@@ -376,11 +376,11 @@ describe('Curation', () => {
           parentId="root"
           getId={({ id }) => id}
           type="a"
-          onMove={e => {
+          onMove={(e) => {
             edit = e;
           }}
           onDrop={() => null}
-          renderDrop={getDropProps => {
+          renderDrop={(getDropProps) => {
             dropProps = getDropProps;
             return null;
           }}
@@ -411,11 +411,11 @@ describe('Curation', () => {
           parentId="root"
           getId={({ id }) => id}
           type="a"
-          onMove={e => {
+          onMove={(e) => {
             edit = e;
           }}
           onDrop={() => null}
-          renderDrop={getDropProps => {
+          renderDrop={(getDropProps) => {
             dropProps = getDropProps;
             return null;
           }}
@@ -464,11 +464,11 @@ describe('Curation', () => {
             parentType="root"
             parentId="1"
             arr={[{ id: '2' }, { id: '3' }]}
-            onMove={e => {
+            onMove={(e) => {
               edit = e;
             }}
             onDrop={() => null}
-            renderDrop={getDropProps => {
+            renderDrop={(getDropProps) => {
               dropProps = getDropProps;
               return null;
             }}

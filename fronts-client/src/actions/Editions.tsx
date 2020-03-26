@@ -4,7 +4,7 @@ import {
   publishIssue,
   checkIssue,
   putFrontHiddenState,
-  putFrontMetadata
+  putFrontMetadata,
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
@@ -88,8 +88,8 @@ export const updateFrontMetadata = (
       type: 'FETCH_UPDATE_METADATA_SUCCESS',
       payload: {
         frontId: id,
-        metadata: serverMetadata
-      }
+        metadata: serverMetadata,
+      },
     });
   } catch (error) {
     // @todo implement centralised error handling
@@ -106,8 +106,8 @@ export const setFrontHiddenState = (
       type: 'FETCH_FRONT_HIDDEN_STATE_SUCCESS',
       payload: {
         frontId: id,
-        hidden: serverHidden
-      }
+        hidden: serverHidden,
+      },
     });
   } catch (error) {
     // @todo implement centralised error handling

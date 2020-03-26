@@ -95,7 +95,7 @@ export default ({
     highlight={preActive}
     style={{
       transform: `rotate(${getRotation(openDir, active, preActive)}deg)`,
-      ...props.style
+      ...props.style,
     }}
   >
     <CaretIcon small={small} fill={clear ? undefined : theme.colors.white} />

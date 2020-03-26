@@ -13,22 +13,22 @@ import { history } from 'prosemirror-history';
 const createBasePlugins = (s: Schema) => {
   const plugins = [
     keymap(buildKeymap(s, {}, {})),
-    history({ depth: 100, newGroupDelay: 500 })
+    history({ depth: 100, newGroupDelay: 500 }),
   ];
   return plugins;
 };
 
 const nodeMap = OrderedMap.from({
   doc: {
-    content: '(text | hard_break)+'
+    content: '(text | hard_break)+',
   },
   text: nodes.text,
-  hard_break: nodes.hard_break
+  hard_break: nodes.hard_break,
 });
 
 export const basicSchema = new Schema({
   nodes: addListNodes(nodeMap, 'doc *'),
-  marks: schema.spec.marks
+  marks: schema.spec.marks,
 });
 
 export const createEditorView = (
@@ -42,7 +42,7 @@ export const createEditorView = (
   const ed: EditorView = new EditorView(editorEl.current, {
     state: EditorState.create({
       doc: DOMParser.fromSchema(basicSchema).parse(contentEl),
-      plugins: createBasePlugins(basicSchema)
+      plugins: createBasePlugins(basicSchema),
     }),
     dispatchTransaction: (transaction: Transaction) => {
       const { state, transactions } = ed.state.applyTransaction(transaction);
@@ -58,7 +58,7 @@ export const createEditorView = (
           input.onChange(tmp.innerHTML);
         }
       }
-    }
+    },
   });
   return ed;
 };

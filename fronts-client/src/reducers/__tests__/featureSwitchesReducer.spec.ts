@@ -6,7 +6,7 @@ describe('Feature reducer', () => {
     const feature = {
       key: 'exampleFeature',
       title: 'Feature title',
-      enabled: true
+      enabled: true,
     };
     const action = actionSetFeatureValue(feature);
     const newState = reducer(undefined, action);

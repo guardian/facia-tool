@@ -1,7 +1,7 @@
 import { moveCard } from 'actions/Cards';
 import {
   selectNextIndexAndGroup,
-  selectNextClipboardIndexSelector
+  selectNextClipboardIndexSelector,
 } from '../selectors/keyboardNavigationSelectors';
 import { selectIndexInGroup } from 'selectors/shared';
 import { Card } from 'types/Collection';
@@ -53,7 +53,7 @@ const keyboardCardMove = (
             type: 'collectionArticle',
             groupId: nextGroupId,
             card,
-            frontId
+            frontId,
           })
         );
       }

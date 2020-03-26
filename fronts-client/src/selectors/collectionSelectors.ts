@@ -23,7 +23,7 @@ const selectCollectionParams = (
 
       if (returnOnlyUpdatedCollections) {
         const maybeCollection = selectCollection(state, {
-          collectionId: id
+          collectionId: id,
         });
         // Some collections are automated and they don't have any content in them.
         // We ignore these collections and don't fetch updates for them.
@@ -61,5 +61,5 @@ const selectWillCollectionHitCollectionCap = (
 export {
   selectWillCollectionHitCollectionCap,
   selectCollectionParams,
-  selectIsCollectionLocked
+  selectIsCollectionLocked,
 };

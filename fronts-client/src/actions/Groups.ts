@@ -4,7 +4,7 @@ import { CapGroupSiblings } from 'types/Action';
 function groupsReceived(groups: { [id: string]: Group }) {
   return {
     type: 'SHARED/GROUPS_RECEIVED' as 'SHARED/GROUPS_RECEIVED',
-    payload: groups
+    payload: groups,
   };
 }
 
@@ -15,8 +15,8 @@ const capGroupSiblings = (
   type: 'SHARED/CAP_GROUP_SIBLINGS',
   payload: {
     id,
-    collectionCap
-  }
+    collectionCap,
+  },
 });
 
 export { groupsReceived, capGroupSiblings };

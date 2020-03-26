@@ -5,7 +5,7 @@ import noop from 'lodash/noop';
 import {
   getAtomFromCapi,
   getContent,
-  transformExternalArticle
+  transformExternalArticle,
 } from 'services/faciaApi';
 import {
   CardsReceived,
@@ -15,7 +15,7 @@ import {
   MaybeAddFrontPublicationDate,
   RemoveGroupCard,
   RemoveSupportingCard,
-  UpdateCardMeta
+  UpdateCardMeta,
 } from 'types/Action';
 import { CapiArticle } from 'types/Capi';
 import { TArticleEntities } from 'types/Cards';
@@ -32,7 +32,7 @@ import {
   isCapiUrl,
   isGoogleRedirectUrl,
   isGuardianUrl,
-  isValidURL
+  isValidURL,
 } from 'util/url';
 
 import { selectEditMode } from '../selectors/pathSelectors';
@@ -57,8 +57,8 @@ function updateCardMeta(
     payload: {
       id,
       meta,
-      merge
-    }
+      merge,
+    },
   };
 }
 
@@ -76,14 +76,14 @@ function cardsReceived(
     : cards;
   return {
     type: CARDS_RECEIVED,
-    payload
+    payload,
   };
 }
 
 function copyCardImageMeta(from: string, to: string) {
   return {
     type: COPY_CARD_IMAGE_META as typeof COPY_CARD_IMAGE_META,
-    payload: { from, to }
+    payload: { from, to },
   };
 }
 
@@ -91,8 +91,8 @@ function clearCards(ids: string[]): ClearCards {
   return {
     type: 'CLEAR_CARDS',
     payload: {
-      ids
-    }
+      ids,
+    },
   };
 }
 
@@ -101,8 +101,8 @@ function removeGroupCard(id: string, cardId: string): RemoveGroupCard {
     type: REMOVE_GROUP_CARD,
     payload: {
       id,
-      cardId
-    }
+      cardId,
+    },
   };
 }
 
@@ -114,8 +114,8 @@ function removeSupportingCard(
     type: REMOVE_SUPPORTING_CARD,
     payload: {
       id,
-      cardId
-    }
+      cardId,
+    },
   };
 }
 
@@ -129,12 +129,12 @@ const insertGroupCard = (
   payload: {
     id,
     index,
-    cardId
+    cardId,
   },
   meta: {
     persistTo,
-    key: 'cardId'
-  }
+    key: 'cardId',
+  },
 });
 
 const insertSupportingCard = (
@@ -147,12 +147,12 @@ const insertSupportingCard = (
   payload: {
     id,
     index,
-    cardId
+    cardId,
   },
   meta: {
     persistTo,
-    key: 'cardId'
-  }
+    key: 'cardId',
+  },
 });
 
 /**
@@ -253,7 +253,7 @@ const getArticleEntitiesFromDrop = async (
     }
     const {
       articles: [article, ...rest],
-      title
+      title,
     } = await getContent(id);
     if (rest.length) {
       // If we have multiple articles returned from a single resource, we're
@@ -306,7 +306,7 @@ const snapMetaWhitelist = [
   'gu-snapUri',
   'gu-snapType',
   'gu-headline',
-  'gu-trailText'
+  'gu-trailText',
 ];
 const guPrefix = 'gu-';
 
@@ -345,15 +345,15 @@ const getArticleEntitiesFromGuardianPath = async (
                 title || 'Unknown title'
               );
               resolve(card);
-            }
+            },
           },
           {
             buttonText: 'Link',
             callback: async () => {
               const snap = await createSnap(resourceId);
               resolve(snap);
-            }
-          }
+            },
+          },
         ],
         reject,
         true
@@ -367,8 +367,8 @@ const maybeAddFrontPublicationDate = (
   type: 'SHARED/MAYBE_ADD_FRONT_PUBLICATION',
   payload: {
     id: cardId,
-    date: Date.now()
-  }
+    date: Date.now(),
+  },
 });
 
 export {
@@ -383,5 +383,5 @@ export {
   maybeAddFrontPublicationDate,
   copyCardImageMeta,
   snapMetaWhitelist,
-  marketingParamsWhiteList
+  marketingParamsWhiteList,
 };

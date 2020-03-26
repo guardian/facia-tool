@@ -21,13 +21,10 @@ const reducer = (state: State = {}, action: Action): State => {
       );
 
       if (clearPreviousData) {
-        const stories = data.reduce(
-          (acc, pageViewStory) => {
-            acc[pageViewStory.articleId] = pageViewStory;
-            return acc;
-          },
-          {} as { [id: string]: PageViewStory }
-        );
+        const stories = data.reduce((acc, pageViewStory) => {
+          acc[pageViewStory.articleId] = pageViewStory;
+          return acc;
+        }, {} as { [id: string]: PageViewStory });
         return set(
           [frontId, 'collections', collectionId],
           { collectionId, stories },

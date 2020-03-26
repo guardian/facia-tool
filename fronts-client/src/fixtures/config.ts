@@ -17,11 +17,11 @@ export default {
     'facia-tool-allow-config-for-all': false,
     'facia-tool-sparklines': true,
     'facia-tool-draft-content': true,
-    'facia-tool-disable': false
+    'facia-tool-disable': false,
   },
   acl: {
     fronts: { 'breaking-news': false },
-    permissions: { 'configure-config': true }
+    permissions: { 'configure-config': true },
   },
   collectionCap: 20,
   navListCap: 40,
@@ -30,8 +30,8 @@ export default {
     { type: 'Canonical' },
     { type: 'Special' },
     { type: 'Breaking' },
-    { type: 'Branded' }
+    { type: 'Branded' },
   ],
   capiLiveUrl: 'https://fronts.local.dev-gutools.co.uk/api/live/',
-  capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/'
+  capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/',
 };

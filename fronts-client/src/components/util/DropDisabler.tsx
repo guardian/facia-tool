@@ -14,8 +14,8 @@ const DisablerWrapper = styled.div`
 // zone), the default behaviour is navigating to the linked document
 const DropDisabler = ({ children }: DropDisablerChildren) => (
   <DisablerWrapper
-    onDrop={e => e.preventDefault()}
-    onDragOver={e => e.preventDefault()}
+    onDrop={(e) => e.preventDefault()}
+    onDragOver={(e) => e.preventDefault()}
   >
     {children}
   </DisablerWrapper>

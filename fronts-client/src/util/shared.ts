@@ -2,7 +2,7 @@ import {
   CollectionWithNestedArticles,
   Group,
   Collection,
-  Card
+  Card,
 } from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { State } from 'types/State';
@@ -22,7 +22,7 @@ const createGroup = (
   id,
   name,
   uuid: v4(),
-  cards
+  cards,
 });
 
 const getUUID = <T extends { uuid: string }>({ uuid }: T) => uuid;
@@ -36,7 +36,7 @@ const configGroupIndexExistsInGroups = (
   groupsToSearch: Group[],
   index: number
 ): boolean =>
-  groupsToSearch.some(group => {
+  groupsToSearch.some((group) => {
     if (group.id) {
       return parseInt(group.id, 10) === index;
     }
@@ -48,8 +48,8 @@ const addGroupsForStage = (
   entities: { [id: string]: Group },
   collectionConfig: CollectionConfig
 ) => {
-  const groups = groupIds.map(id => entities[id]);
-  const groupsWithNames = groups.map(group => {
+  const groups = groupIds.map((id) => entities[id]);
+  const groupsWithNames = groups.map((group) => {
     let name: string | null = null;
     const groupNumberAsInt = getGroupIndex(group.id);
     if (
@@ -80,11 +80,11 @@ const addGroupsForStage = (
   // Finally we need to sort the groups according to their ids.
   const sortedGroupsWithNames = sortBy(
     groupsWithNames,
-    group => -getGroupIndex(group.id)
+    (group) => -getGroupIndex(group.id)
   );
   return {
     addedGroups: keyBy(sortedGroupsWithNames, getUUID),
-    groupIds: sortedGroupsWithNames.map(getUUID)
+    groupIds: sortedGroupsWithNames.map(getUUID),
   };
 };
 
@@ -110,9 +110,9 @@ const addGroups = (
         ...acc,
         addedGroups: {
           ...acc.addedGroups,
-          ...addedGroups
+          ...addedGroups,
         },
-        [key]: groupIds
+        [key]: groupIds,
       };
     },
     { live: [], draft: [], previously: [], addedGroups: {} } as ReduceResult
@@ -125,10 +125,12 @@ const createPreviouslyCardIds = (
   collection: CollectionWithNestedArticles,
   normalisedCollection: any
 ) =>
-  compact(collection.previously || []).map(nestedCard => {
-    const maybeCard = Object.entries(normalisedCollection.entities.cards as {
-      [uuid: string]: Card;
-    }).find(([_, article]) => article.id === nestedCard.id);
+  compact(collection.previously || []).map((nestedCard) => {
+    const maybeCard = Object.entries(
+      normalisedCollection.entities.cards as {
+        [uuid: string]: Card;
+      }
+    ).find(([_, article]) => article.id === nestedCard.id);
     return maybeCard ? maybeCard[0] : undefined;
   });
 
@@ -155,10 +157,10 @@ const normaliseCollectionWithNestedArticles = (
       live,
       draft,
       previously,
-      previouslyCardIds
+      previouslyCardIds,
     },
     groups: addedGroups,
-    cards: normalisedCollection.entities.cards || {}
+    cards: normalisedCollection.entities.cards || {},
   };
 };
 
@@ -175,12 +177,12 @@ function denormaliseCollection(
 
   return denormalize(collection, {
     cards: state.cards,
-    groups: state.groups
+    groups: state.groups,
   });
 }
 
 export {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection,
-  createPreviouslyCardIds
+  createPreviouslyCardIds,
 };

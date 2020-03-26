@@ -49,7 +49,7 @@ const promptForLink = (state: EditorState, markType: MarkType) => {
 
   if (from === to && !href) {
     return {
-      url: null
+      url: null,
     };
   }
 
@@ -57,7 +57,7 @@ const promptForLink = (state: EditorState, markType: MarkType) => {
   return {
     from,
     to,
-    url
+    url,
   };
 };
 

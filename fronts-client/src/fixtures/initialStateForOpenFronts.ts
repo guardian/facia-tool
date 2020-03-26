@@ -9,16 +9,16 @@ const state = {
     ...initialState.fronts,
     frontsConfig: {
       ...initialState.fronts.frontsConfig,
-      ...frontsConfig
-    }
+      ...frontsConfig,
+    },
   },
   editor: {
     ...defaultState,
     frontIdsByPriority: {
-      editorial: ['editorialFront', 'editorialFront2']
+      editorial: ['editorialFront', 'editorialFront2'],
     },
     collectionIds: [],
-    frontIdsByBrowsingStage: {}
+    frontIdsByBrowsingStage: {},
   },
   collections: {
     ...initialState.collections,
@@ -26,14 +26,14 @@ const state = {
       collection1: {
         id: 'collection1',
         draft: ['group1'],
-        live: []
+        live: [],
       },
       collection6: {
         id: 'collection6',
         draft: [],
-        live: []
-      }
-    }
+        live: [],
+      },
+    },
   },
   groups: {
     ...initialState.groups,
@@ -41,8 +41,8 @@ const state = {
       uuid: 'group1',
       id: 'group1',
       name: 'Group 1',
-      cards: ['card1', 'card2', 'card3']
-    }
+      cards: ['card1', 'card2', 'card3'],
+    },
   },
   cards: {
     ...initialState.cards,
@@ -50,20 +50,20 @@ const state = {
       uuid: 'card1',
       id: 'capiArticle1',
       frontPublicationDate: 0,
-      meta: {}
+      meta: {},
     },
     card2: {
       uuid: 'card2',
       id: 'capiArticle2',
       frontPublicationDate: 0,
-      meta: {}
+      meta: {},
     },
     card3: {
       uuid: 'card3',
       frontPublicationDate: 0,
       id: 'capiArticle3',
-      meta: {}
-    }
+      meta: {},
+    },
   },
   externalArticles: {
     ...initialState.externalArticles,
@@ -72,23 +72,23 @@ const state = {
         id: 'capiArticle1',
         urlPath: 'path/capiArticle1',
         frontsMeta: {},
-        fields: {}
+        fields: {},
       },
       capiArticle2: {
         id: 'capiArticle2',
         urlPath: 'path/capiArticle2',
         frontsMeta: {},
-        fields: {}
+        fields: {},
       },
       capiArticle3: {
         id: 'capiArticle3',
         urlPath: 'path/capiArticle3',
         frontsMeta: {},
-        fields: {}
-      }
-    }
+        fields: {},
+      },
+    },
   },
-  path: '/v2/editorial'
+  path: '/v2/editorial',
 } as State;
 
 export default state;

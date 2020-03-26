@@ -5,7 +5,7 @@ import {
   getCapiUriForContentIds,
   getArticlesBatched,
   getContent,
-  getTagOrSectionTitle
+  getTagOrSectionTitle,
 } from '../faciaApi';
 import chunk from 'lodash/chunk';
 
@@ -26,7 +26,7 @@ describe('faciaApi', () => {
     it('should reject with an appropriate error message if the server throws an error', async () => {
       fetchMock.once('/front/lastmodified/exampleId', {
         status: 500,
-        body: 'Server error'
+        body: 'Server error',
       });
       expect.assertions(3);
       try {
@@ -50,7 +50,7 @@ describe('faciaApi', () => {
   });
   describe('updateCollection', () => {
     const collection: any = {
-      displayName: 'exampleCollection'
+      displayName: 'exampleCollection',
     };
     it('should issue a post request to the update endpoint', () => {
       fetchMock.once('/v2Edits', collection, {
@@ -59,8 +59,8 @@ describe('faciaApi', () => {
           opts.body ===
           JSON.stringify({
             id: 'exampleId',
-            collection
-          })
+            collection,
+          }),
       });
       expect.assertions(1);
       return expect(updateCollection('exampleId')(collection)).resolves.toEqual(
@@ -87,10 +87,10 @@ describe('faciaApi', () => {
     });
     it('should chunk requests for large numbers of articles into separate requests', async () => {
       const articleIds = [
-        ...Array.from(Array(175).keys()).map(_ => _.toString())
+        ...Array.from(Array(175).keys()).map((_) => _.toString()),
       ];
       const chunkedArticleIds = chunk(articleIds, 50);
-      chunkedArticleIds.map(_ =>
+      chunkedArticleIds.map((_) =>
         fetchMock.once(
           getCapiUriForContentIds(_),
           '{"response":{ "results": [] }}'
@@ -110,12 +110,12 @@ describe('faciaApi', () => {
               id: 'tagId',
               type: 'tag',
               webUrl: 'exampleUrl',
-              webTitle: 'Example tag title'
+              webTitle: 'Example tag title',
             },
             currentPage: 0,
             pageSize: 0,
-            pages: 0
-          }
+            pages: 0,
+          },
         })
       ).toEqual('Example tag title');
       expect(
@@ -124,12 +124,12 @@ describe('faciaApi', () => {
             status: 'ok',
             results: [],
             section: {
-              webTitle: 'Example section title'
+              webTitle: 'Example section title',
             },
             currentPage: 0,
             pageSize: 0,
-            pages: 0
-          }
+            pages: 0,
+          },
         })
       ).toEqual('Example section title');
     });
@@ -141,13 +141,13 @@ describe('faciaApi', () => {
         // CAPI will return the search results for the tag instead.
         'begin:/api/preview/exampleTag',
         JSON.stringify({
-          response: { results: [], tag: { webTitle: 'Example title' } }
+          response: { results: [], tag: { webTitle: 'Example title' } },
         })
       );
       const result = await getContent('exampleTag');
       expect(result).toEqual({
         articles: [],
-        title: 'Example title'
+        title: 'Example title',
       });
     });
   });

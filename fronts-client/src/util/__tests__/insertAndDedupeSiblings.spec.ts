@@ -5,32 +5,32 @@ const cardMap = {
     uuid: 'a',
     id: '1',
     meta: {},
-    frontPublicationDate: 0
+    frontPublicationDate: 0,
   },
   b: {
     uuid: 'b',
     id: '2',
     meta: {},
-    frontPublicationDate: 0
+    frontPublicationDate: 0,
   },
   c: {
     uuid: 'c',
     id: '3',
     meta: {},
-    frontPublicationDate: 0
+    frontPublicationDate: 0,
   },
   d: {
     uuid: 'd',
     id: '3', // same as c
     meta: {},
-    frontPublicationDate: 0
+    frontPublicationDate: 0,
   },
   e: {
     uuid: 'e',
     id: '2', // same as b
     meta: {},
-    frontPublicationDate: 0
-  }
+    frontPublicationDate: 0,
+  },
 };
 
 describe('insertAndDedupeSiblings', () => {
@@ -38,41 +38,41 @@ describe('insertAndDedupeSiblings', () => {
     expect(insertAndDedupeSiblings(['a', 'b'], ['c'], 0, cardMap)).toEqual([
       'c',
       'a',
-      'b'
+      'b',
     ]);
 
     expect(insertAndDedupeSiblings(['a', 'b'], ['c'], 2, cardMap)).toEqual([
       'a',
       'b',
-      'c'
+      'c',
     ]);
   });
 
   it('keeps the latest insertion if the items are the same', () => {
     expect(insertAndDedupeSiblings(['a', 'c'], ['a'], 2, cardMap)).toEqual([
       'c',
-      'a'
+      'a',
     ]);
   });
 
   it('keeps the first occurence of existing duplicates and removes the rest', () => {
     expect(insertAndDedupeSiblings(['c', 'd'], ['a'], 0, cardMap)).toEqual([
       'a',
-      'c'
+      'c',
     ]);
   });
 
   it('removes duplicates for new insertions', () => {
     expect(insertAndDedupeSiblings(['a', 'd'], ['c'], 2, cardMap)).toEqual([
       'a',
-      'c'
+      'c',
     ]);
   });
 
   it('always keeps the recently added duplicate', () => {
     expect(insertAndDedupeSiblings(['a', 'c'], ['d'], 2, cardMap)).toEqual([
       'a',
-      'd'
+      'd',
     ]);
   });
 
@@ -100,8 +100,8 @@ describe('insertAndDedupeSiblings', () => {
   });
 
   it('takes multiple insertions with duplicates and keeps the first', () => {
-    expect(insertAndDedupeSiblings(['a', 'c'], ['b', 'e'], 1, cardMap)).toEqual(
-      ['a', 'b', 'c']
-    );
+    expect(
+      insertAndDedupeSiblings(['a', 'c'], ['b', 'e'], 1, cardMap)
+    ).toEqual(['a', 'b', 'c']);
   });
 });

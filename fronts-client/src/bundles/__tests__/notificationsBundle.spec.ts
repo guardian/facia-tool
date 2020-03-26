@@ -3,7 +3,7 @@ import {
   initialState,
   actionAddNotificationBanner,
   actionRemoveNotificationBanner,
-  selectBanners
+  selectBanners,
 } from '../notificationsBundle';
 import { state as fixtureState } from 'fixtures/initialState';
 
@@ -51,7 +51,7 @@ describe('Notifications bundle', () => {
       );
       const rootState = {
         ...fixtureState,
-        notifications: state
+        notifications: state,
       };
       expect(selectBanners(rootState)).toEqual(state.banners);
     });

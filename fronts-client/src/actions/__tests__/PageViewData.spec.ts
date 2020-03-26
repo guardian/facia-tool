@@ -4,7 +4,7 @@ import { PageViewDataFromOphan } from 'types/PageViewData';
 import {
   longOphanQuery,
   addendumToLongOphanQuery,
-  shortOphanQuery
+  shortOphanQuery,
 } from '../../fixtures/pageViewData';
 
 describe('fetchPageViewData', () => {
@@ -13,7 +13,7 @@ describe('fetchPageViewData', () => {
     const articleIds: string[] = [
       'film/2015/aug/13/dads-army-film-first-trailer-bill-nighy-toby-jones-catherine-zeta-jones',
       'commentisfree/2015/aug/13/intern-tent-david-hyde-un-internship-geneva',
-      'uk-news/2018/mar/14/sharp-rise-in-number-of-eu-nationals-applying-for-uk-citizenship'
+      'uk-news/2018/mar/14/sharp-rise-in-number-of-eu-nationals-applying-for-uk-citizenship',
     ];
 
     fetchMock.once(`/ophan/histogram${shortOphanQuery}`, []);
@@ -47,28 +47,28 @@ describe('fetchPageViewData', () => {
       'business/2019/aug/28/thomas-cook-agrees-terms-of-900m-rescue-deal-with-fosun',
       'business/live/2019/aug/28/recession-fears-us-yield-curve-inverts-brexit-stock-market-bonds-looms-business-live',
       'commentisfree/2019/aug/22/why-planned-parenthood-was-right-to-refuse-federal-funding',
-      'business/live/2019/aug/20/investors-stimulus-recession-fears-markets-ftse-trump-uk-factories-business-live'
+      'business/live/2019/aug/20/investors-stimulus-recession-fears-markets-ftse-trump-uk-factories-business-live',
     ];
 
     const dataFromOphan1: PageViewDataFromOphan = {
       totalHits: 100,
       series: [],
-      path: ''
+      path: '',
     };
 
     const dataFromOphan2: PageViewDataFromOphan = {
       totalHits: 200,
       series: [],
-      path: ''
+      path: '',
     };
 
     const interval = 'hours=1&interval=10';
 
     fetchMock.once(`/ophan/histogram${longOphanQuery}${interval}`, [
-      dataFromOphan1
+      dataFromOphan1,
     ]);
     fetchMock.once(`/ophan/histogram${addendumToLongOphanQuery}${interval}`, [
-      dataFromOphan2
+      dataFromOphan2,
     ]);
 
     const result = await fetchPageViewData(frontIds, articleIds);

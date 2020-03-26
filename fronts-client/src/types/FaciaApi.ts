@@ -136,5 +136,5 @@ export {
   EditionCollectionResponse,
   VisibleArticlesResponse,
   FrontsToolSettings,
-  EditionsFrontMetadata
+  EditionsFrontMetadata,
 };

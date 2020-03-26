@@ -10,7 +10,7 @@ import {
   persistCollectionOnEdit,
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit,
-  persistFavouriteFrontsOnEdit
+  persistFavouriteFrontsOnEdit,
 } from './storeMiddleware';
 import { State } from 'types/State';
 

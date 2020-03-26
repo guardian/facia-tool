@@ -19,9 +19,9 @@ const dropToArticle = (e: React.DragEvent): MappableDropType | null => {
   const map = {
     capi: (data: string): CAPIDrop => ({
       type: 'CAPI',
-      data: JSON.parse(data)
+      data: JSON.parse(data),
     }),
-    text: (url: string): RefDrop => ({ type: 'REF', data: url })
+    text: (url: string): RefDrop => ({ type: 'REF', data: url }),
   };
 
   for (const [type, fn] of Object.entries(map)) {

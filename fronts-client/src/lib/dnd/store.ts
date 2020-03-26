@@ -17,17 +17,17 @@ const createStore = (
   let subs: Sub[] = [];
   let state = initState;
   const notify = throttle(
-    () => subs.forEach(sub => sub(state.key, state.index)),
+    () => subs.forEach((sub) => sub(state.key, state.index)),
     100,
     {
       leading: true,
-      trailing: true
+      trailing: true,
     }
   );
 
   return {
     subscribe: (fn: Sub) => (subs = [...subs, fn]),
-    unsubscribe: (fn: Sub) => (subs = subs.filter(c => c !== fn)),
+    unsubscribe: (fn: Sub) => (subs = subs.filter((c) => c !== fn)),
     update: (key: Key, index: Index, isDraggedOver: boolean) => {
       if (
         key === state.key &&
@@ -39,7 +39,7 @@ const createStore = (
       state = { key, index, isDraggedOver };
       notify();
     },
-    getState: () => state
+    getState: () => state,
   };
 };
 

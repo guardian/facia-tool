@@ -32,18 +32,20 @@ describe('Fronts cards actions', () => {
     it('should fetch an article and create a corresponding card representing an article', async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
-          results: [capiArticle]
-        }
+          results: [capiArticle],
+        },
       });
       const store = mockStore(initialState);
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop('internal-code/page/5029528')
-      ) as any);
+      await store.dispatch(
+        createArticleEntitiesFromDrop(
+          idDrop('internal-code/page/5029528')
+        ) as any
+      );
       const actions = store.getActions();
       expect(actions[0].type).toEqual(externalArticleActionNames.fetchSuccess);
       expect(actions[1]).toEqual(
         cardsReceived({
-          card1: createCard('internal-code/page/5029528', false)
+          card1: createCard('internal-code/page/5029528', false),
         })
       );
     });

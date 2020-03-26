@@ -7,7 +7,7 @@ import { Config } from './Config';
 import {
   FrontsConfig,
   VisibleArticlesResponse,
-  EditionsFrontMetadata
+  EditionsFrontMetadata,
 } from './FaciaApi';
 import { BatchAction } from 'redux-batched-actions';
 import { Stages, Collection, Card, Group, CardMeta } from 'types/Collection';
@@ -33,7 +33,7 @@ import {
   EDITOR_OPEN_ALL_OVERVIEWS,
   EDITOR_CLOSE_ALL_OVERVIEWS,
   CHANGED_BROWSING_STAGE,
-  EditorCloseFormsForCollection
+  EditorCloseFormsForCollection,
 } from 'bundles/frontsUIBundle';
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'actions/FeatureSwitches';
@@ -501,5 +501,5 @@ export {
   CapGroupSiblings,
   MaybeAddFrontPublicationDate,
   PageViewDataRequested,
-  PageViewDataReceived
+  PageViewDataReceived,
 };

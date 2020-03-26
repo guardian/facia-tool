@@ -10,7 +10,7 @@ import {
   editorUnfavouriteFront,
   selectEditorFrontIdsByPriority,
   selectIsCurrentFrontsMenuOpen,
-  selectIsClipboardOpen
+  selectIsClipboardOpen,
 } from 'bundles/frontsUIBundle';
 import { State } from 'types/State';
 import { ActionError } from 'types/Action';
@@ -82,22 +82,22 @@ class FrontsEdit extends React.Component<Props> {
             id={frontsContainerId}
             makeRoomForExtraHeader={this.props.isCurrentFrontsMenuOpen}
           >
-            {this.props.frontIds.map(id => (
+            {this.props.frontIds.map((id) => (
               <FrontContainer key={id} frontId={id} />
             ))}
           </FrontsContainer>
         </SectionsContainer>
         <FrontsMenu
-          onSelectFront={id =>
+          onSelectFront={(id) =>
             this.props.editorOpenFront(id, this.props.match.params.priority)
           }
-          onFavouriteFront={id =>
+          onFavouriteFront={(id) =>
             this.props.editorFavouriteFront(
               id,
               this.props.match.params.priority
             )
           }
-          onUnfavouriteFront={id =>
+          onUnfavouriteFront={(id) =>
             this.props.editorUnfavouriteFront(
               id,
               this.props.match.params.priority
@@ -117,7 +117,7 @@ const mapStateToProps = (state: State, props: Props) => ({
     props.match.params.priority || ''
   ),
   isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
-  isClipboardOpen: selectIsClipboardOpen(state)
+  isClipboardOpen: selectIsClipboardOpen(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
@@ -128,10 +128,7 @@ const mapDispatchToProps = (dispatch: Dispatch, props: Props) => ({
     dispatch(editorFavouriteFront(id, props.match.params.priority)),
   editorUnfavouriteFront: (id: string) =>
     dispatch(editorUnfavouriteFront(id, props.match.params.priority)),
-  getFrontsConfig: () => dispatch(getFrontsConfig())
+  getFrontsConfig: () => dispatch(getFrontsConfig()),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FrontsEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(FrontsEdit);

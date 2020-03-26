@@ -6,7 +6,7 @@ describe('store', () => {
     expect(store.getState()).toEqual({
       key: null,
       index: null,
-      isDraggedOver: false
+      isDraggedOver: false,
     });
   });
 
@@ -16,7 +16,7 @@ describe('store', () => {
     expect(store.getState()).toEqual({
       key: 'a',
       index: 1,
-      isDraggedOver: false
+      isDraggedOver: false,
     });
   });
 

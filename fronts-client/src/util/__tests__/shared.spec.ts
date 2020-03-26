@@ -6,12 +6,12 @@ import {
   collectionWithSupportingArticles,
   stateWithCollection,
   stateWithCollectionAndSupporting,
-  normalisedCollectonWithPreviously
+  normalisedCollectonWithPreviously,
 } from 'fixtures/shared';
 import {
   normaliseCollectionWithNestedArticles,
   denormaliseCollection,
-  createPreviouslyCardIds
+  createPreviouslyCardIds,
 } from 'util/shared';
 
 describe('Shared utilities', () => {
@@ -23,7 +23,7 @@ describe('Shared utilities', () => {
         ...collection,
         // We re-add a blank draft value here. (We could keep it undefined, it just feels a little odd!)
         draft: [],
-        previously: []
+        previously: [],
       });
       expect(
         denormaliseCollection(
@@ -33,7 +33,7 @@ describe('Shared utilities', () => {
       ).toEqual({
         ...collectionWithSupportingArticles,
         draft: [],
-        previously: []
+        previously: [],
       });
     });
   });
@@ -66,18 +66,18 @@ describe('Shared utilities', () => {
                 id: 'article/live/2',
                 frontPublicationDate: 3,
                 publishedBy: 'Computers',
-                meta: {}
-              }
+                meta: {},
+              },
             ],
             previously: [
               {
                 id: 'article/live/3',
                 frontPublicationDate: 4,
                 publishedBy: 'Computers',
-                meta: {}
-              }
-            ]
-          }
+                meta: {},
+              },
+            ],
+          },
         },
         collectionConfig
       );
@@ -113,7 +113,7 @@ describe('Shared utilities', () => {
       const result = normaliseCollectionWithNestedArticles(
         {
           ...collection,
-          ...{ live: [] }
+          ...{ live: [] },
         },
         collectionConfigWithoutGroups
       );
@@ -131,7 +131,7 @@ describe('Shared utilities', () => {
       expect(Object.keys(result.cards).length).toEqual(4);
       expect(
         Object.keys(result.cards).every(
-          articleId =>
+          (articleId) =>
             !result.cards[articleId].meta.supporting ||
             result.cards[articleId].meta.supporting!.every(
               (id: string) => typeof id === 'string'
@@ -145,7 +145,7 @@ describe('Shared utilities', () => {
         collectionWithoutGroups,
         {
           ...collectionConfig,
-          groups: undefined
+          groups: undefined,
         }
       );
       const groupId = result.normalisedCollection.live![0];
@@ -154,7 +154,7 @@ describe('Shared utilities', () => {
     it('should create different groups for cards belonging to different groups even if they are not specificied in the config', () => {
       const result = normaliseCollectionWithNestedArticles(collection, {
         ...collectionConfig,
-        groups: undefined
+        groups: undefined,
       });
       const groupId1 = result.normalisedCollection.live![0];
       expect(result.groups[groupId1].cards).toHaveLength(1);
@@ -164,11 +164,11 @@ describe('Shared utilities', () => {
     it("should create empty groups for groups in the config which don't have cards in them", () => {
       const configWithExtraGroup = {
         ...collectionConfig,
-        ...{ groups: ['extra', 'large', 'medium', 'small'] }
+        ...{ groups: ['extra', 'large', 'medium', 'small'] },
       };
       const result = normaliseCollectionWithNestedArticles(collection, {
         ...configWithExtraGroup,
-        groups: undefined
+        groups: undefined,
       });
       expect(Object.keys(result.groups)).toHaveLength(4);
     });

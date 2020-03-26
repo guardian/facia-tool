@@ -1,5 +1,5 @@
 import createAsyncResourceBundle, {
-  State
+  State,
 } from 'lib/createAsyncResourceBundle';
 import { FrontsConfig } from 'types/FaciaApi';
 
@@ -8,14 +8,14 @@ export const {
   actionNames,
   reducer,
   selectors,
-  initialState
+  initialState,
 } = createAsyncResourceBundle<FrontsConfig>('frontsConfig', {
   indexById: false,
-  selectLocalState: state => state.fronts.frontsConfig,
+  selectLocalState: (state) => state.fronts.frontsConfig,
   initialData: {
     fronts: {},
-    collections: {}
-  }
+    collections: {},
+  },
 });
 
 export type FrontsConfigState = State<FrontsConfig>;

@@ -19,7 +19,7 @@ const capiArticleWithElementsThumbnail = {
       'Fifteen-person team linked to disappearance of dissident, Turkish media report',
     firstPublicationDate: '2018-10-10T10:33:45Z',
     internalPageCode: '5158739',
-    isLive: 'true'
+    isLive: 'true',
   },
   blocks: [],
   elements: [
@@ -51,8 +51,8 @@ const capiArticleWithElementsThumbnail = {
             suppliersReference: 'AFP_19W5G0',
             mediaApiUri:
               'https://api.media.gutools.co.uk/images/b901bb680b236bc377d02d2ec24434558186fa65',
-            copyright: 'AFP or licensors'
-          }
+            copyright: 'AFP or licensors',
+          },
         },
         {
           type: 'image',
@@ -78,8 +78,8 @@ const capiArticleWithElementsThumbnail = {
             suppliersReference: 'AFP_19W5G0',
             mediaApiUri:
               'https://api.media.gutools.co.uk/images/b901bb680b236bc377d02d2ec24434558186fa65',
-            copyright: 'AFP or licensors'
-          }
+            copyright: 'AFP or licensors',
+          },
         },
         {
           type: 'image',
@@ -104,8 +104,8 @@ const capiArticleWithElementsThumbnail = {
             suppliersReference: 'AFP_19W5G0',
             mediaApiUri:
               'https://api.media.gutools.co.uk/images/b901bb680b236bc377d02d2ec24434558186fa65',
-            copyright: 'AFP or licensors'
-          }
+            copyright: 'AFP or licensors',
+          },
         },
         {
           type: 'image',
@@ -130,8 +130,8 @@ const capiArticleWithElementsThumbnail = {
             suppliersReference: 'AFP_19W5G0',
             mediaApiUri:
               'https://api.media.gutools.co.uk/images/b901bb680b236bc377d02d2ec24434558186fa65',
-            copyright: 'AFP or licensors'
-          }
+            copyright: 'AFP or licensors',
+          },
         },
         {
           type: 'image',
@@ -156,8 +156,8 @@ const capiArticleWithElementsThumbnail = {
             suppliersReference: 'AFP_19W5G0',
             mediaApiUri:
               'https://api.media.gutools.co.uk/images/b901bb680b236bc377d02d2ec24434558186fa65',
-            copyright: 'AFP or licensors'
-          }
+            copyright: 'AFP or licensors',
+          },
         },
         {
           type: 'image',
@@ -182,10 +182,10 @@ const capiArticleWithElementsThumbnail = {
             suppliersReference: 'AFP_19W5G0',
             mediaApiUri:
               'https://api.media.gutools.co.uk/images/b901bb680b236bc377d02d2ec24434558186fa65',
-            copyright: 'AFP or licensors'
-          }
-        }
-      ]
+            copyright: 'AFP or licensors',
+          },
+        },
+      ],
     },
     {
       id: '6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556',
@@ -211,8 +211,8 @@ const capiArticleWithElementsThumbnail = {
             imageType: 'Photograph',
             suppliersReference: 'TH101',
             mediaApiUri:
-              'https://api.media.gutools.co.uk/images/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556'
-          }
+              'https://api.media.gutools.co.uk/images/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556',
+          },
         },
         {
           type: 'image',
@@ -232,8 +232,8 @@ const capiArticleWithElementsThumbnail = {
             imageType: 'Photograph',
             suppliersReference: 'TH101',
             mediaApiUri:
-              'https://api.media.gutools.co.uk/images/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556'
-          }
+              'https://api.media.gutools.co.uk/images/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556',
+          },
         },
         {
           type: 'image',
@@ -253,11 +253,11 @@ const capiArticleWithElementsThumbnail = {
             imageType: 'Photograph',
             suppliersReference: 'TH101',
             mediaApiUri:
-              'https://api.media.gutools.co.uk/images/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556'
-          }
-        }
-      ]
-    }
+              'https://api.media.gutools.co.uk/images/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556',
+          },
+        },
+      ],
+    },
   ],
   isGone: false,
   isHosted: false,
@@ -278,11 +278,11 @@ const capiArticleWithElementsThumbnail = {
       imageReplace: false,
       imageCutoutReplace: false,
       showKickerSection: false,
-      showLargeHeadline: false
+      showLargeHeadline: false,
     },
     tone: 'string',
-    sectionName: 'news'
-  }
+    sectionName: 'news',
+  },
 } as CapiArticle;
 
 export { capiArticleWithElementsThumbnail };

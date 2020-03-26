@@ -21,7 +21,7 @@ export default ({
   showByline,
   showQuotedHeadline,
   showLargeHeadline,
-  isBoosted
+  isBoosted,
 }: {
   isBreaking?: boolean;
   showByline?: boolean;

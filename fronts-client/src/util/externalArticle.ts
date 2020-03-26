@@ -16,7 +16,7 @@ export const hasMainVideo = (article: ExternalArticle | DerivedArticle) => {
 export function getArticleMainElementType(
   article: ExternalArticle | DerivedArticle
 ) {
-  const element = (article.elements || []).find(_ => _.relation === 'main');
+  const element = (article.elements || []).find((_) => _.relation === 'main');
   return element ? element.type : undefined;
 }
 
@@ -39,7 +39,7 @@ export function hasMainMediaVideoAtom(
     const atom =
       oc(article)
         .atoms.media([])
-        .find(_ => _.id === atomId) || undefined;
+        .find((_) => _.id === atomId) || undefined;
     const firstAsset = oc(atom).data.media.assets([])[0] || undefined;
     return firstAsset && firstAsset.assetType === 'video';
   }

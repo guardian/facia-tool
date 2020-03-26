@@ -37,18 +37,18 @@ class Node<T> extends React.Component<Props<T>> {
           <div
             style={{
               position: 'absolute',
-              transform: 'translateX(-9999px)'
+              transform: 'translateX(-9999px)',
             }}
-            ref={node => {
+            ref={(node) => {
               this.dragImage = node;
             }}
           >
             {renderDrag(data)}
           </div>
         )}
-        {this.props.children(forceClone => ({
+        {this.props.children((forceClone) => ({
           draggable: true,
-          onDragStart: this.onDragStart(forceClone)
+          onDragStart: this.onDragStart(forceClone),
         }))}
       </>
     );

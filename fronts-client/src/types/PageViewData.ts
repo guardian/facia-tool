@@ -53,5 +53,5 @@ export {
   PageViewDataPerCollection,
   PageViewStory,
   CollectionWithArticles,
-  PageViewArticlesOnFront
+  PageViewArticlesOnFront,
 };

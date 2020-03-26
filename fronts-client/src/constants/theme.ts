@@ -7,7 +7,7 @@
 import baseStyled, {
   css as baseCss,
   ThemedStyledInterface,
-  ThemedCssFunction
+  ThemedCssFunction,
 } from 'styled-components';
 
 const colors = {
@@ -37,7 +37,7 @@ const colors = {
   red: '#d01d00',
   blackTransparent20: 'rgba(0,0,0,0.2)',
   blackTransparent40: 'rgba(0,0,0,0.4)',
-  blackTransparent60: 'rgba(0,0,0,0.6)'
+  blackTransparent60: 'rgba(0,0,0,0.6)',
 };
 
 const base = {
@@ -69,8 +69,8 @@ const base = {
     placeholderLight: colors.greyLightPinkish,
     placeholderDark: colors.greyLight,
     focusColor: colors.orange,
-    dangerColor: colors.red
-  }
+    dangerColor: colors.red,
+  },
 };
 
 const capiInterface = {
@@ -84,7 +84,7 @@ const capiInterface = {
   backgroundDark: colors.whiteDark,
   backgroundLight: colors.whiteLight,
   backgroundWhite: colors.white,
-  backgroundSelected: colors.orange
+  backgroundSelected: colors.orange,
 };
 
 const front = {
@@ -93,15 +93,15 @@ const front = {
   frontListButton: colors.greyDark,
   minWidth: 380,
   overviewMinWidth: 160,
-  paddingForAddFrontButton: 80
+  paddingForAddFrontButton: 80,
 };
 
 const form = {
-  formBackground: '#dcdcdc'
+  formBackground: '#dcdcdc',
 };
 
 const layout = {
-  sectionHeaderHeight: 40
+  sectionHeaderHeight: 40,
 };
 
 const button = {
@@ -109,7 +109,7 @@ const button = {
   backgroundColor: base.colors.button,
   backgroundColorFocused: base.colors.buttonFocused,
   backgroundColorHighlight: base.colors.highlightColor,
-  backgroundColorHighlightFocused: base.colors.highlightColorFocused
+  backgroundColorHighlightFocused: base.colors.highlightColorFocused,
 };
 
 const input = {
@@ -128,17 +128,17 @@ const input = {
   checkboxBorderColorInactive: base.colors.borderColor,
   checkboxColorActive: base.colors.highlightColor,
   placeholderText: base.colors.placeholderDark,
-  radioButtonBackgroundDisabled: '#E6E6E6'
+  radioButtonBackgroundDisabled: '#E6E6E6',
 };
 
 const collection = {
-  background: '#e5e5e5'
+  background: '#e5e5e5',
 };
 
 const label = {
   fontSize: '14px',
   fontSizeSmall: '12px',
-  lineHeight: '24px'
+  lineHeight: '24px',
 };
 
 const card = {
@@ -146,12 +146,12 @@ const card = {
   fontSizeSmall: '13px',
   dropZone: '#D6D6D6',
   border: colors.greyLightPinkish,
-  backgroundHover: colors.whiteMedium
+  backgroundHover: colors.whiteMedium,
 };
 
 const thumbnailImage = {
   width: '83px',
-  height: '50px'
+  height: '50px',
 };
 
 export const theme = {
@@ -166,7 +166,7 @@ export const theme = {
   label,
   card,
   collection,
-  thumbnailImage
+  thumbnailImage,
 };
 
 export type Theme = typeof theme;

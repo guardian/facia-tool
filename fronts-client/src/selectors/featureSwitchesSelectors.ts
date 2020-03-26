@@ -8,7 +8,6 @@ export const selectFeatureValue = (state: State, featureKey: string): boolean =>
 
 const selectFeatures = (state: State) => state.featureSwitches;
 
-export const selectAllFeatures = createSelector(
-  selectFeatures,
-  features => Object.values(features)
+export const selectAllFeatures = createSelector(selectFeatures, (features) =>
+  Object.values(features)
 );

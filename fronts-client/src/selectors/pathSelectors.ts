@@ -37,5 +37,5 @@ export {
   selectV2SubPath,
   selectEditMode,
   selectPriority,
-  isMode
+  isMode,
 };

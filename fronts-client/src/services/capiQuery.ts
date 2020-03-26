@@ -82,9 +82,7 @@ interface CAPIAtomInteractive {
 }
 
 const getErrorMessageFromResponse = (response: Response) =>
-  `Error making a request to CAPI: the server returned ${response.status}, ${
-    response.statusText
-  }`;
+  `Error making a request to CAPI: the server returned ${response.status}, ${response.statusText}`;
 
 /**
  * Fetch a CAPI response.
@@ -133,7 +131,7 @@ const capiQuery = (baseURL: string) => {
     return options && options.isResource
       ? `${baseURL}/${q}${qs({ ...rest })}`
       : `${baseURL}/${path}${qs({
-          ...params
+          ...params,
         })}`;
   };
 
@@ -157,14 +155,14 @@ const capiQuery = (baseURL: string) => {
     tags: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
         `${baseURL}/tags${qs({
-          ...params
+          ...params,
         })}`
       );
     },
     sections: async (params: any): Promise<CAPITagQueryReponse> => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
         `${baseURL}/sections${qs({
-          ...params
+          ...params,
         })}`
       );
     },
@@ -172,10 +170,10 @@ const capiQuery = (baseURL: string) => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
         `${baseURL}/tags${qs({
           type: 'tracking',
-          ...params
+          ...params,
         })}`
       );
-    }
+    },
   };
 };
 
@@ -189,6 +187,6 @@ export {
   checkIsResults,
   CAPITagQueryReponse,
   CAPIInteractiveAtomResponse,
-  CAPIAtomInteractive
+  CAPIAtomInteractive,
 };
 export default capiQuery;

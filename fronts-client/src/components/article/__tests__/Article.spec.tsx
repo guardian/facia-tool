@@ -16,8 +16,8 @@ const draftArticle = {
     isLive: false,
     firstPublicationDate: undefined,
     canShowPageViewData: false,
-    featureFlagPageViewData: false
-  }
+    featureFlagPageViewData: false,
+  },
 };
 
 const store = configureStore();

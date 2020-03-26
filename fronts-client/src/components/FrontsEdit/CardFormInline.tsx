@@ -7,7 +7,7 @@ import {
   Field,
   EventWithDataHandler,
   WrappedFieldArrayProps,
-  FieldArray
+  FieldArray,
 } from 'redux-form';
 import { styled, theme } from 'constants/theme';
 import Button from 'components/inputs/ButtonDefault';
@@ -15,7 +15,7 @@ import ContentContainer from 'components/layout/ContentContainer';
 import {
   createSelectArticleFromCard,
   selectExternalArticleFromCard,
-  selectArticleTag
+  selectArticleTag,
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
 import { defaultObject } from 'util/selectorUtils';
@@ -37,7 +37,7 @@ import {
   getCardMetaFromFormValues,
   getInitialValuesForCardForm,
   getCapiValuesForArticleFields,
-  shouldRenderField
+  shouldRenderField,
 } from 'util/form';
 import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
@@ -45,7 +45,7 @@ import {
   cardImageCriteria,
   editionsCardImageCriteria,
   editionsMobileCardImageCriteria,
-  editionsTabletCardImageCriteria
+  editionsTabletCardImageCriteria,
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
@@ -194,7 +194,7 @@ const CheckboxFieldsContainer: React.SFC<{
   editableFields: string[];
   size?: string;
 }> = ({ children, editableFields, size }) => {
-  const childrenToRender = children.filter(child =>
+  const childrenToRender = children.filter((child) =>
     shouldRenderField(child.props.name, editableFields)
   );
   if (!childrenToRender.length) {
@@ -202,7 +202,7 @@ const CheckboxFieldsContainer: React.SFC<{
   }
   return (
     <FieldsContainerWrap>
-      {childrenToRender.map(child => {
+      {childrenToRender.map((child) => {
         return (
           <FieldContainer key={child.props.name} size={size}>
             {child}
@@ -260,7 +260,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
   }
 
   public state: FormComponentState = {
-    lastKnownCollectionId: null
+    lastKnownCollectionId: null,
   };
 
   public render() {
@@ -288,7 +288,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       hasMainVideo,
       coverCardImageReplace,
       coverCardMobileImage,
-      coverCardTabletImage
+      coverCardTabletImage,
     } = this.props;
 
     const isEditionsMode = editMode === 'editions';
@@ -306,7 +306,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
       // kicker suggestions now set the value of `customKicker` rather than set a flag
       // set the old flags to false
-      ['showKickerTag', 'showKickerSection'].forEach(field =>
+      ['showKickerTag', 'showKickerSection'].forEach((field) =>
         change(field, false)
       );
     };
@@ -331,14 +331,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
         ...new Set([
           pickedKicker || '',
           kickerOptions.webTitle || '',
-          kickerOptions.sectionName || ''
-        ])
+          kickerOptions.sectionName || '',
+        ]),
       ];
       return (
         <>
           <span>Suggested:&nbsp;</span>
           {uniqueKickerSuggestions
-            .filter(value => !!value)
+            .filter((value) => !!value)
             .map(renderKickerSuggestion)}
           <span>&nbsp;&nbsp;&nbsp;</span>
           <Field
@@ -390,7 +390,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 </KickerSuggestionsContainer>
               }
               placeholder="Add custom kicker"
-              format={value => {
+              format={(value) => {
                 if (showKickerTag) {
                   return kickerOptions.webTitle;
                 }
@@ -399,7 +399,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 }
                 return value;
               }}
-              onChange={e => {
+              onChange={(e) => {
                 if (e) {
                   setCustomKicker(e.target.value);
                 }
@@ -540,7 +540,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       id={getInputId(cardId, 'hide-media')}
                       type="checkbox"
                       default={false}
-                      onChange={_ => this.changeImageField('imageHide')}
+                      onChange={(_) => this.changeImageField('imageHide')}
                     />
                   </InputGroup>
                   <InputGroup>
@@ -552,7 +552,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       id={getInputId(cardId, 'use-cutout')}
                       type="checkbox"
                       default={false}
-                      onChange={_ =>
+                      onChange={(_) =>
                         this.changeImageField('imageCutoutReplace')
                       }
                     />
@@ -566,7 +566,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       label="Replace Cover Card Image"
                       type="checkbox"
                       default={false}
-                      onChange={_ =>
+                      onChange={(_) =>
                         this.changeImageField('coverCardImageReplace')
                       }
                     />
@@ -579,7 +579,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       label="Show video"
                       id={getInputId(cardId, 'show-video')}
                       type="checkbox"
-                      onChange={_ => this.changeImageField('showMainVideo')}
+                      onChange={(_) => this.changeImageField('showMainVideo')}
                     />
                   </InputGroup>
                   <InputGroup>
@@ -590,7 +590,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       label="Slideshow"
                       id={getInputId(cardId, 'slideshow')}
                       type="checkbox"
-                      onChange={_ =>
+                      onChange={(_) =>
                         this.changeImageField('imageSlideshowReplace')
                       }
                     />
@@ -605,7 +605,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                         id={getInputId(cardId, 'image-replace')}
                         type="checkbox"
                         default={false}
-                        onChange={_ => this.changeImageField('imageReplace')}
+                        onChange={(_) => this.changeImageField('imageReplace')}
                       />
                     </InputGroup>
                   )}
@@ -735,10 +735,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       'imageSlideshowReplace',
       'imageReplace',
       'showMainVideo',
-      'coverCardImageReplace'
+      'coverCardImageReplace',
     ];
 
-    allImageFields.forEach(field => {
+    allImageFields.forEach((field) => {
       if (field === fieldToSet) {
         this.props.change(field, true);
       } else {
@@ -777,7 +777,7 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
       );
       props.onSave(meta);
     });
-  }
+  },
 })(FormComponent);
 
 interface ContainerProps {
@@ -812,7 +812,7 @@ interface InterfaceProps {
   size?: string;
 }
 
-const formContainer: React.SFC<ContainerProps & InterfaceProps> = props => (
+const formContainer: React.SFC<ContainerProps & InterfaceProps> = (props) => (
   <CardForm {...props} />
 );
 
@@ -867,7 +867,7 @@ const createMapStateToProps = () => {
       coverCardMobileImage: valueSelector(state, 'coverCardMobileImage'),
       coverCardTabletImage: valueSelector(state, 'coverCardTabletImage'),
       pickedKicker: !!article ? article.pickedKicker : undefined,
-      isEmailFronts
+      isEmailFronts,
     };
   };
 };

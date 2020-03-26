@@ -30,13 +30,13 @@ function isValidURL(url: string) {
 
 function matchHostname(url: string, hostnames: string[]): boolean {
   const host = getHostname(url);
-  return hostnames.some(_ => _ === host);
+  return hostnames.some((_) => _ === host);
 }
 
 function isGuardianWebsiteUrl(url: string) {
   return matchHostname(url, [
     urlConstants.base.mainDomain,
-    urlConstants.base.mainDomainShort
+    urlConstants.base.mainDomainShort,
   ]);
 }
 
@@ -46,7 +46,7 @@ function isGuardianUrl(url: string) {
     urlConstants.base.mainDomainShort,
     urlConstants.base.previewDomain,
     urlConstants.base.frontendDomain,
-    urlConstants.base.shortDomain
+    urlConstants.base.shortDomain,
   ]);
 }
 
@@ -120,5 +120,5 @@ export {
   getRelevantURLFromGoogleRedirectURL,
   checkQueryParams,
   hasWhitelistedParams,
-  getCardMetaFromUrlParams
+  getCardMetaFromUrlParams,
 };

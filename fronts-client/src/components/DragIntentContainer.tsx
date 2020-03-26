@@ -11,7 +11,7 @@ type Props = {
 
 class DragIntentContainer extends React.Component<Props> {
   public static defaultProps = {
-    active: true
+    active: true,
   };
 
   private dragTimer: number | null = null;

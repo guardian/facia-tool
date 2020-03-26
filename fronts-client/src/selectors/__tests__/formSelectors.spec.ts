@@ -3,7 +3,7 @@ import {
   createSelectFormFieldsForCard,
   defaultFields,
   supportingFields,
-  emailFieldsToExclude
+  emailFieldsToExclude,
 } from '../formSelectors';
 import { state, stateWithVideoArticle } from 'fixtures/form';
 import without from 'lodash/without';

@@ -1,13 +1,13 @@
 import {
   selectNextClipboardIndexSelector,
-  selectNextIndexAndGroup
+  selectNextIndexAndGroup,
 } from 'selectors/keyboardNavigationSelectors';
 import { state } from 'fixtures/initialState';
 
 describe('nextClipboardIndexSelector', () => {
   const stateWithClipboard = {
     ...state,
-    clipboard: ['id-1', 'id-2', 'id-3', 'id-4']
+    clipboard: ['id-1', 'id-2', 'id-3', 'id-4'],
   };
 
   it('return null when clipboard is empty', () => {
@@ -48,70 +48,70 @@ describe('nextIndexAndGroupSelector', () => {
       id: 'group1',
       name: 'groupname',
       uuid: 'group1',
-      cards: ['card-1', 'card-2', 'card-3']
+      cards: ['card-1', 'card-2', 'card-3'],
     },
     group2: {
       id: 'group2',
       name: 'groupname',
       uuid: 'group2',
-      cards: ['card-4', 'card-5', 'card-6']
+      cards: ['card-4', 'card-5', 'card-6'],
     },
     group3: {
       id: 'group3',
       name: 'groupname',
       uuid: 'group3',
-      cards: ['card-7', 'card-8']
-    }
+      cards: ['card-7', 'card-8'],
+    },
   };
   const cards = {
     'card-1': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
-      uuid: 'id-1'
+      uuid: 'id-1',
     },
     'card-2': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
-      uuid: 'id-2'
+      uuid: 'id-2',
     },
     'card-3': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
-      uuid: 'id-3'
+      uuid: 'id-3',
     },
     'card-4': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
-      uuid: 'id-4'
+      uuid: 'id-4',
     },
     'card-5': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
-      uuid: 'id-5'
+      uuid: 'id-5',
     },
     'card-6': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
-      uuid: 'id-6'
+      uuid: 'id-6',
     },
     'card-7': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
-      uuid: 'id-7'
+      uuid: 'id-7',
     },
     'card-8': {
       id: 'internal-code/page/123',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
-      uuid: 'id-8'
-    }
+      uuid: 'id-8',
+    },
   };
   const collections = {
     data: {
@@ -122,10 +122,10 @@ describe('nextIndexAndGroupSelector', () => {
         updatedEmail: 'email@email.co.uk',
         displayName: 'headlines',
         id: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
-        type: 'fixed/small/slow-IV'
+        type: 'fixed/small/slow-IV',
       },
       'c7f48719-6cbc-4024-ae92-1b5f9f6c0c99': {
-        uneditable: true
+        uneditable: true,
       },
       '4ab657ff-c105-4292-af23-cda00457b6b7': {
         draft: ['group3'],
@@ -134,8 +134,8 @@ describe('nextIndexAndGroupSelector', () => {
         updatedEmail: 'email@email.co.uk',
         displayName: 'headlines',
         id: '4ab657ff-c105-4292-af23-cda00457b6b7',
-        type: 'fixed/small/slow-IV'
-      }
+        type: 'fixed/small/slow-IV',
+      },
     },
     pagination: null,
     lastError: null,
@@ -143,13 +143,13 @@ describe('nextIndexAndGroupSelector', () => {
     lastFetch: null,
     loading: false,
     loadingIds: [],
-    updatingIds: []
+    updatingIds: [],
   };
   const stateWithGroups = {
     ...state,
     groups: groupsWithCards,
     cards,
-    collections
+    collections,
   };
 
   it('return null when moving articles in an empty group', () => {
@@ -158,12 +158,12 @@ describe('nextIndexAndGroupSelector', () => {
         id: 'gobbleygook',
         name: 'groupname',
         uuid: 'group123',
-        cards: []
-      }
+        cards: [],
+      },
     };
     const stateWithEmptyGroup = {
       ...state,
-      groups: emptyGroups
+      groups: emptyGroups,
     };
     expect(
       selectNextIndexAndGroup(
@@ -260,7 +260,7 @@ describe('nextIndexAndGroupSelector', () => {
     ).toEqual({
       toIndex: 3,
       nextGroupId: 'group2',
-      collectionId: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808'
+      collectionId: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
     });
   });
 
@@ -276,7 +276,7 @@ describe('nextIndexAndGroupSelector', () => {
     ).toEqual({
       toIndex: 0,
       nextGroupId: 'group3',
-      collectionId: '4ab657ff-c105-4292-af23-cda00457b6b7'
+      collectionId: '4ab657ff-c105-4292-af23-cda00457b6b7',
     });
   });
 });

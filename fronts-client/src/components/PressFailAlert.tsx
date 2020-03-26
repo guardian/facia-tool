@@ -15,15 +15,12 @@ const AlertContainer = styled.div`
 const PressFailAlert = (props: Props) => {
   const failedFronts: string[] =
     props.staleFronts &&
-    Object.keys(props.staleFronts).reduce(
-      (fronts, frontId) => {
-        if (props.staleFronts[frontId]) {
-          fronts.push(frontId);
-        }
-        return fronts;
-      },
-      [] as string[]
-    );
+    Object.keys(props.staleFronts).reduce((fronts, frontId) => {
+      if (props.staleFronts[frontId]) {
+        fronts.push(frontId);
+      }
+      return fronts;
+    }, [] as string[]);
 
   const getErrorString = () => {
     const usePlural = failedFronts.length > 1;

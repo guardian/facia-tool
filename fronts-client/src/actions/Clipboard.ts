@@ -9,7 +9,7 @@ import {
   UpdateClipboardContent,
   InsertClipboardCard,
   RemoveClipboardCard,
-  ClearClipboard
+  ClearClipboard,
 } from 'types/Action';
 import { State } from 'types/State';
 import { addPersistMetaToAction } from 'util/action';
@@ -25,7 +25,7 @@ function updateClipboardContent(
 ): UpdateClipboardContent {
   return {
     type: UPDATE_CLIPBOARD_CONTENT,
-    payload: clipboardContent
+    payload: clipboardContent,
   };
 }
 
@@ -35,7 +35,7 @@ function storeClipboardContent(clipboardContent: NestedCard[]) {
       clipboard: { articles: string[] };
       cards: { [id: string]: Card };
     } = normaliseClipboard({
-      articles: clipboardContent
+      articles: clipboardContent,
     });
     const clipboardArticles = normalisedClipboard.clipboard.articles;
     const { cards } = normalisedClipboard;
@@ -43,11 +43,11 @@ function storeClipboardContent(clipboardContent: NestedCard[]) {
     dispatch(
       batchActions([
         updateClipboardContent(clipboardArticles),
-        cardsReceived(cards)
+        cardsReceived(cards),
       ])
     );
 
-    const cardIds = Object.values(cards).map(card => card.id);
+    const cardIds = Object.values(cards).map((card) => card.id);
     return dispatch(fetchArticles(cardIds));
   };
 }
@@ -79,15 +79,15 @@ const actionInsertClipboardCard = (
     id,
     index,
     cardId,
-    currentCards
-  }
+    currentCards,
+  },
 });
 
 const actionInsertClipboardCardWithPersist = addPersistMetaToAction(
   actionInsertClipboardCard,
   {
     persistTo: 'clipboard',
-    key: 'cardId'
+    key: 'cardId',
   }
 );
 
@@ -109,19 +109,19 @@ const removeClipboardCard = (
   type: REMOVE_CLIPBOARD_CARD,
   payload: {
     id,
-    cardId
-  }
+    cardId,
+  },
 });
 
 const clearClipboard = (id: string): ClearClipboard => ({
   type: CLEAR_CLIPBOARD,
   payload: {
-    id
-  }
+    id,
+  },
 });
 
 const clearClipboardWithPersist = addPersistMetaToAction(clearClipboard, {
-  persistTo: 'clipboard'
+  persistTo: 'clipboard',
 });
 
 export {
@@ -131,5 +131,5 @@ export {
   thunkInsertClipboardCard,
   removeClipboardCard,
   clearClipboard,
-  clearClipboardWithPersist
+  clearClipboardWithPersist,
 };

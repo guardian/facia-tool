@@ -1,7 +1,7 @@
 import {
   css,
   ThemedCssFunction,
-  ThemedStyledInterface
+  ThemedStyledInterface,
 } from 'styled-components';
 
 type Breakpoints = 'large' | 'medium' | 'small';
@@ -11,11 +11,11 @@ type BreakpointMap = { [Breakpoint in Breakpoints]: number };
 const sizes = {
   large: 1280,
   medium: 992,
-  small: 768
+  small: 768,
 } as BreakpointMap;
 
 type MediaQueryMap = {
-  [Key in Breakpoints]: ThemedCssFunction<ThemedStyledInterface<any>>
+  [Key in Breakpoints]: ThemedCssFunction<ThemedStyledInterface<any>>;
 };
 
 /**

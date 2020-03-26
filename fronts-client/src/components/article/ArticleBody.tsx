@@ -16,7 +16,7 @@ import {
   HoverViewButton,
   HoverOphanButton,
   HoverDeleteButton,
-  HoverAddToClipboardButton
+  HoverAddToClipboardButton,
 } from '../inputs/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { CardSizes } from 'types/Collection';
@@ -166,7 +166,7 @@ const articleBodyDefault = React.memo(
     frontId,
     collectionId,
     newspaperPageNumber,
-    promotionMetric
+    promotionMetric,
   }: ArticleBodyProps) => {
     const displayByline = size === 'default' && showByline && byline;
     const now = Date.now();
@@ -188,7 +188,7 @@ const articleBodyDefault = React.memo(
                     pillarId,
                     isLive,
                     tone === liveBlogTones.dead
-                  )
+                  ),
                 }}
               >
                 {startCase(sectionName)}
@@ -309,13 +309,13 @@ const articleBodyDefault = React.memo(
               { text: 'View', component: HoverViewButton },
               { text: 'Ophan', component: HoverOphanButton },
               { text: 'Clipboard', component: HoverAddToClipboardButton },
-              { text: 'Delete', component: HoverDeleteButton }
+              { text: 'Delete', component: HoverDeleteButton },
             ]}
             buttonProps={{
               isLive,
               urlPath,
               onDelete,
-              onAddToClipboard
+              onAddToClipboard,
             }}
             size={size}
             toolTipPosition={'top'}

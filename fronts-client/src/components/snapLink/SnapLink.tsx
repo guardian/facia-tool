@@ -12,13 +12,13 @@ import {
   HoverDeleteButton,
   HoverAddToClipboardButton,
   HoverViewButton,
-  HoverOphanButton
+  HoverOphanButton,
 } from '../inputs/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
 import { Card, CardSizes } from 'types/Collection';
 import {
   selectCard,
-  createSelectArticleFromCard
+  createSelectArticleFromCard,
 } from '../../selectors/shared';
 import { State } from 'types/State';
 import CardHeading from '../card/CardHeading';
@@ -196,14 +196,14 @@ const SnapLink = ({
               { text: 'View', component: HoverViewButton },
               { text: 'Ophan', component: HoverOphanButton },
               { text: 'Clipboard', component: HoverAddToClipboardButton },
-              { text: 'Delete', component: HoverDeleteButton }
+              { text: 'Delete', component: HoverDeleteButton },
             ]}
             buttonProps={{
               isLive: true, // it should not be possible for a snap link to be anything other than live?
               urlPath,
               onAddToClipboard,
               onDelete,
-              isSnapLink: true
+              isSnapLink: true,
             }}
             size={size}
             toolTipPosition={'top'}
@@ -228,7 +228,7 @@ const mapStateToProps = () => {
       featureFlagPageViewData: selectFeatureValue(
         getState(state),
         'page-view-data-visualisation'
-      )
+      ),
     };
   };
 };

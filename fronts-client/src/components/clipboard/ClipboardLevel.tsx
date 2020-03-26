@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import { Card } from 'types/Collection';
 import ArticleDrag, {
   dragOffsetX,
-  dragOffsetY
+  dragOffsetY,
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, { DefaultDropContainer } from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
@@ -54,8 +54,8 @@ const ClipboardLevel = ({ children, cards, onMove, onDrop }: Props) => (
     getId={({ uuid }) => uuid}
     onMove={onMove}
     onDrop={onDrop}
-    renderDrag={af => <ArticleDrag id={af.uuid} />}
-    renderDrop={props => (
+    renderDrag={(af) => <ArticleDrag id={af.uuid} />}
+    renderDrop={(props) => (
       <DropZone
         {...props}
         dropColor={theme.base.colors.dropZoneActiveStory}
@@ -68,7 +68,7 @@ const ClipboardLevel = ({ children, cards, onMove, onDrop }: Props) => (
 );
 
 const mapStateToProps = (state: State) => ({
-  cards: selectClipboardArticles(state)
+  cards: selectClipboardArticles(state),
 });
 
 export default connect(mapStateToProps)(ClipboardLevel);

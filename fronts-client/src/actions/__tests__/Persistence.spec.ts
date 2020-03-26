@@ -13,28 +13,28 @@ const A1 = {
   uuid: 'a1',
   id: 'a',
   frontPublicationDate: 1000,
-  meta: {}
+  meta: {},
 };
 
 const A2 = {
   uuid: 'a2',
   id: 'b',
   frontPublicationDate: 2000,
-  meta: {}
+  meta: {},
 };
 
 const A3 = {
   uuid: 'a3',
   id: 'c',
   frontPublicationDate: 2000,
-  meta: {}
+  meta: {},
 };
 
 const A4 = {
   uuid: 'a4',
   id: 'd',
   frontPublicationDate: 2000,
-  meta: {}
+  meta: {},
 };
 
 const init = () => {
@@ -48,37 +48,37 @@ const init = () => {
           id: 'c1',
           live: ['g1'],
           draft: [],
-          previously: []
+          previously: [],
         },
         c2: {
           id: 'c2',
           live: ['g2'],
           draft: [],
-          previously: []
-        }
-      }
+          previously: [],
+        },
+      },
     },
     groups: {
       g1: {
         uuid: 'g1',
         id: 'g1',
         cards: ['a1', 'a2'],
-        name: 'g1'
+        name: 'g1',
       },
       g2: {
         uuid: 'g2',
         id: 'g2',
         cards: ['a3', 'a4'],
-        name: 'g2'
-      }
+        name: 'g2',
+      },
     },
     cards: {
       a1: A1,
       a2: A2,
       a3: A3,
-      a4: A4
+      a4: A4,
     },
-    feed: {}
+    feed: {},
   };
   const reducer = enableBatching(rootReducer);
   const middleware = compose(
@@ -98,7 +98,7 @@ const groupedCardIds = (afs: NestedCard[]) =>
   afs.reduce(
     (acc, af) => ({
       ...acc,
-      [af.meta.group || 0]: (acc[af.meta.group || 0] || []).concat(af.id)
+      [af.meta.group || 0]: (acc[af.meta.group || 0] || []).concat(af.id),
     }),
     {} as { [groupId: string]: string[] }
   );
@@ -115,7 +115,7 @@ describe('Collection persistence', () => {
         /v2Edits/,
         {},
         {
-          name: 'edits'
+          name: 'edits',
         }
       );
       dispatch(
@@ -145,7 +145,7 @@ describe('Collection persistence', () => {
         /v2Edits/,
         {},
         {
-          name: 'edits'
+          name: 'edits',
         }
       );
       dispatch(
@@ -166,13 +166,13 @@ describe('Collection persistence', () => {
         JSON.parse(calls[0][1].body).collection.live
       );
       expect(c1afs).toEqual({
-        g1: ['b']
+        g1: ['b'],
       });
       const c2afs = groupedCardIds(
         JSON.parse(calls[1][1].body).collection.live
       );
       expect(c2afs).toEqual({
-        g2: ['a', 'c', 'd']
+        g2: ['a', 'c', 'd'],
       });
     });
 
@@ -184,7 +184,7 @@ describe('Collection persistence', () => {
         /v2Edits/,
         {},
         {
-          name: 'edits'
+          name: 'edits',
         }
       );
       dispatch(
@@ -205,13 +205,13 @@ describe('Collection persistence', () => {
         JSON.parse(calls[0][1].body).collection.live
       );
       expect(c1afs).toEqual({
-        g2: ['d']
+        g2: ['d'],
       });
       const c2afs = groupedCardIds(
         JSON.parse(calls[1][1].body).collection.live
       );
       expect(c2afs).toEqual({
-        g1: ['c', 'a', 'b']
+        g1: ['c', 'a', 'b'],
       });
     });
   });

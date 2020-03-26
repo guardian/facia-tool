@@ -4,7 +4,7 @@ import fronts, { State as frontsState } from 'reducers/frontsReducer';
 import error from 'reducers/errorReducer';
 import path, { State as pathState } from 'reducers/pathReducer';
 import unpublishedChanges, {
-  State as unpublishedChangesState
+  State as unpublishedChangesState,
 } from 'reducers/unpublishedChangesReducer';
 import clipboard, { State as clipboardState } from 'reducers/clipboardReducer';
 import optionsModal from 'reducers/modalsReducer';
@@ -14,10 +14,10 @@ import editionsIssue, { EditionsIssueState } from 'bundles/editionsIssueBundle';
 import {
   capiLiveFeed,
   capiPreviewFeed,
-  prefillFeed
+  prefillFeed,
 } from 'bundles/capiFeedBundle';
 import staleFronts, {
-  State as staleFrontsState
+  State as staleFrontsState,
 } from 'reducers/staleFrontsReducer';
 import feedState, { State as feedStateType } from 'reducers/feedStateReducer';
 
@@ -29,11 +29,11 @@ import groups from 'reducers/groupsReducer';
 
 import {
   reducer as focusReducer,
-  State as focusState
+  State as focusState,
 } from 'bundles/focusBundle';
 import {
   reducer as featureSwitches,
-  State as featureSwitchesState
+  State as featureSwitchesState,
 } from 'reducers/featureSwitchesReducer';
 import { reducer as notificationsReducer } from 'bundles/notificationsBundle';
 
@@ -90,7 +90,7 @@ const rootReducer = (state: any = { feed: {} }, action: any) => ({
     feedState: feedState(state.feed.feedState, action),
     capiLiveFeed: capiLiveFeed(state.feed.capiLiveFeed, action),
     capiPreviewFeed: capiPreviewFeed(state.feed.capiPreviewFeed, action),
-    prefillFeed: prefillFeed(state.feed.prefillFeed, action)
+    prefillFeed: prefillFeed(state.feed.prefillFeed, action),
   },
   focus: focusReducer(state.focus, action),
   editionsIssue: editionsIssue(state.editionsIssue, action),
@@ -100,7 +100,7 @@ const rootReducer = (state: any = { feed: {} }, action: any) => ({
   collections: collections(state.collections, action),
   externalArticles: externalArticles(state.externalArticles, action),
   pageViewData: pageViewData(state.pageViewData, action),
-  notifications: notificationsReducer(state.notifications, action)
+  notifications: notificationsReducer(state.notifications, action),
 });
 
 export default rootReducer;

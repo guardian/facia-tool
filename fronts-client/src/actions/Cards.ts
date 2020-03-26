@@ -7,7 +7,7 @@ import {
   createArticleEntitiesFromDrop,
   cardsReceived,
   maybeAddFrontPublicationDate,
-  copyCardImageMeta
+  copyCardImageMeta,
 } from 'actions/CardsCommon';
 import { Card } from 'types/Collection';
 import { selectCards, selectCard, selectArticleGroup } from 'selectors/shared';
@@ -16,7 +16,7 @@ import { addPersistMetaToAction } from 'util/action';
 import { cloneCard } from 'util/card';
 import {
   getFromGroupIndicesWithRespectToState,
-  getToGroupIndicesWithRespectToState
+  getToGroupIndicesWithRespectToState,
 } from 'util/moveUtils';
 import { PosSpec } from 'lib/dnd';
 import { Action } from 'types/Action';
@@ -36,7 +36,7 @@ import { startOptionsModal } from './OptionsModal';
 import {
   RemoveActionCreator,
   InsertActionCreator,
-  InsertThunkActionCreator
+  InsertThunkActionCreator,
 } from 'types/Cards';
 
 // Creates a thunk action creator from a plain action creator that also allows
@@ -63,7 +63,7 @@ const createInsertCardThunk = (action: InsertActionCreator) => (
 
 const copyCardImageMetaWithPersist = addPersistMetaToAction(copyCardImageMeta, {
   persistTo: 'collection',
-  key: 'to'
+  key: 'to',
 });
 
 // Creates a thunk with persistence that will launch a confirm modal if required
@@ -103,10 +103,10 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
           addPersistMetaToAction(capGroupSiblings, {
             id: cardId,
             persistTo,
-            applyBeforeReducer: true
-          })(id, collectionCap)
+            applyBeforeReducer: true,
+          })(id, collectionCap),
         ])
-        .forEach(action => dispatch(action));
+        .forEach((action) => dispatch(action));
     };
 
     if (willCollectionHitCollectionCap) {
@@ -124,8 +124,8 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
           [
             {
               buttonText: 'Confirm',
-              callback: confirmRemoval
-            }
+              callback: confirmRemoval,
+            },
           ],
           // otherwise do nothing
           noop,
@@ -139,7 +139,7 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
         batchActions(
           (removeAction ? [removeAction] : []).concat([
             maybeAddFrontPublicationDate(cardId),
-            insertGroupCard(id, index, cardId, persistTo)
+            insertGroupCard(id, index, cardId, persistTo),
           ])
         )
       );
@@ -150,7 +150,7 @@ const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
 const addActionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
   card: createInsertCardThunk(insertSupportingCard),
   group: maybeInsertGroupCard,
-  clipboard: createInsertCardThunk(thunkInsertClipboardCard)
+  clipboard: createInsertCardThunk(thunkInsertClipboardCard),
 };
 
 // This maps a type string such as `clipboard` to an insert action creator and
@@ -170,7 +170,7 @@ const getInsertionActionCreatorFromType = (
 const removeActionMap: { [type: string]: RemoveActionCreator | undefined } = {
   card: removeSupportingCard,
   group: removeGroupCard,
-  clipboard: removeClipboardCard
+  clipboard: removeClipboardCard,
 };
 
 // this maps a type string such as `group` to a remove action creator and if
@@ -185,13 +185,13 @@ const getRemoveActionCreatorFromType = (
     ? addPersistMetaToAction(actionCreator, {
         persistTo,
         key: 'cardId',
-        applyBeforeReducer: true
+        applyBeforeReducer: true,
       })
     : actionCreator;
 };
 
 const updateCardMetaWithPersist = addPersistMetaToAction(updateCardMeta, {
-  persistTo: 'collection'
+  persistTo: 'collection',
 });
 
 const insertCardWithCreate = (
@@ -356,7 +356,7 @@ const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
       ...getImageMetaFromValidationResponse(imageData),
       imageReplace: true,
       imageCutoutReplace: false,
-      imageSlideshowReplace: false
+      imageSlideshowReplace: false,
     },
     { merge: true }
   );
@@ -369,5 +369,5 @@ export {
   addImageToCard,
   copyCardImageMetaWithPersist,
   cloneCardToTarget,
-  addCardToClipboard
+  addCardToClipboard,
 };

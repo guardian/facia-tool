@@ -7,7 +7,7 @@ import {
   selectOptionsModalDescription,
   selectOptionsModalTitle,
   selectOptionsModalShowCancelButton,
-  selectOptionsModalOptions
+  selectOptionsModalOptions,
 } from 'selectors/modalSelectors';
 import { connect } from 'react-redux';
 import { Dispatch } from 'types/Store';
@@ -40,15 +40,15 @@ const OptionsModal = ({
   isOpen,
   options,
   onCancel,
-  showCancelButton
+  showCancelButton,
 }: OptionsModalProps) => (
   <StyledModal
     style={{
       overlay: {
         backgroundColor: 'rgba(0, 0, 0, 0.75)',
         zIndex: 1000,
-        backdropFilter: 'blur(10px)'
-      }
+        backdropFilter: 'blur(10px)',
+      },
     }}
     isOpen={isOpen}
     onRequestClose={onCancel}
@@ -70,7 +70,7 @@ const OptionsModal = ({
         </ButtonDefault>
       )}
       {options &&
-        options.map(option => (
+        options.map((option) => (
           <ButtonDefault
             data-testid={`options-modal-${option.buttonText
               .toLocaleLowerCase()
@@ -96,14 +96,11 @@ const mapStateToProps = (state: State) => ({
   title: selectOptionsModalTitle(state),
   description: selectOptionsModalDescription(state),
   options: selectOptionsModalOptions(state),
-  showCancelButton: selectOptionsModalShowCancelButton(state)
+  showCancelButton: selectOptionsModalShowCancelButton(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  onCancel: () => dispatch(endOptionsModal())
+  onCancel: () => dispatch(endOptionsModal()),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(OptionsModal);
+export default connect(mapStateToProps, mapDispatchToProps)(OptionsModal);

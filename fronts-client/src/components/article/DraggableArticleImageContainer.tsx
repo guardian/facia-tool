@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import {
   selectCardHasMediaOverrides,
-  createSelectArticleFromCard
+  createSelectArticleFromCard,
 } from 'selectors/shared';
 import {
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
-  DRAG_DATA_GRID_IMAGE_URL
+  DRAG_DATA_GRID_IMAGE_URL,
 } from 'constants/image';
 import { theme } from 'constants/theme';
 
@@ -97,7 +97,7 @@ const mapStateToProps = () => {
     return {
       currentImageUrl: article && article.thumbnail,
       canDrag: article ? !!article.thumbnail && canDrag : false,
-      hasImageOverrides: selectCardHasMediaOverrides(state, id)
+      hasImageOverrides: selectCardHasMediaOverrides(state, id),
     };
   };
 };

@@ -33,7 +33,7 @@ class CollectionNotification extends React.Component<
   ComponentState
 > {
   public state = {
-    showFrontDetails: false
+    showFrontDetails: false,
   };
 
   public render() {
@@ -71,10 +71,10 @@ class CollectionNotification extends React.Component<
           &nbsp;
           <ToggleDetailsButton
             tabIndex={-1}
-            onClick={e => {
+            onClick={(e) => {
               e.stopPropagation();
               return this.setState({
-                showFrontDetails: !this.state.showFrontDetails
+                showFrontDetails: !this.state.showFrontDetails,
               });
             }}
           >
@@ -82,7 +82,7 @@ class CollectionNotification extends React.Component<
           </ToggleDetailsButton>
           {this.state.showFrontDetails && (
             <AlsoOnLinksWrapper>
-              {alsoOn.fronts.map(front => (
+              {alsoOn.fronts.map((front) => (
                 <div key={front.id}>{front.id}</div>
               ))}
             </AlsoOnLinksWrapper>

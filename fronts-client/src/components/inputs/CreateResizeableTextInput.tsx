@@ -24,7 +24,7 @@ interface State {
 }
 
 const RewindButton = styled.button.attrs({
-  type: 'button'
+  type: 'button',
 })`
   background: transparent;
   align-self: center;
@@ -41,7 +41,7 @@ const RewindButton = styled.button.attrs({
 `;
 
 const TextInputLabel = styled(InputLabel)`
-  display: ${props => (props.hidden ? 'none' : 'flex')};
+  display: ${(props) => (props.hidden ? 'none' : 'flex')};
   align-items: flex-end;
 `;
 
@@ -87,7 +87,7 @@ const createResizeableTextInput = (
             this.inputElement.current.scrollHeight,
             0,
             maxAutoResizeHeight
-          )
+          ),
         });
       }
     }

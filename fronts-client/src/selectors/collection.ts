@@ -14,15 +14,15 @@ export const selectArticlesInCollections = createSelector(
     state: State,
     { collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets }
   ) =>
-    collectionIds.map(_ =>
+    collectionIds.map((_) =>
       selectArticleIdsInCollection(state, {
         collectionId: _,
-        collectionSet: itemSet
+        collectionSet: itemSet,
       })
-        .map(articleId => selectCard(state, articleId))
-        .map(article => article.id)
+        .map((articleId) => selectCard(state, articleId))
+        .map((article) => article.id)
     ),
-  articleIds => uniq(flatten(articleIds))
+  (articleIds) => uniq(flatten(articleIds))
 );
 
 export const createSelectIsArticleInCollection = () => {

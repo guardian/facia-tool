@@ -17,7 +17,7 @@ const mapStateToProps = () => {
         state,
         props.match.params.priority || '',
         selectEditMode(state) === 'editions' ? 'index' : 'id'
-      )
+      ),
     };
   };
 };

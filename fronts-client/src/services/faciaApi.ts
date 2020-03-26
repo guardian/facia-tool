@@ -8,7 +8,7 @@ import {
   FrontConfig,
   CollectionConfigMap,
   CollectionResponse,
-  EditionCollectionResponse
+  EditionCollectionResponse,
 } from 'types/FaciaApi';
 import { ExternalArticle } from 'types/ExternalArticle';
 import { CollectionWithNestedArticles, NestedCard } from 'types/Collection';
@@ -23,31 +23,31 @@ import { EditionsRoutes } from 'routes/routes';
 function fetchEditionsIssueAsConfig(issueId: string): Promise<FrontsConfig> {
   return pandaFetch(EditionsRoutes.issuePath(issueId), {
     method: 'get',
-    credentials: 'same-origin'
+    credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then((json: EditionsIssue) => {
       const fronts: FrontConfigMap = {};
       const collections: CollectionConfigMap = {};
 
-      json.fronts.forEach(front => {
+      json.fronts.forEach((front) => {
         fronts[front.id] = {
           ...front,
-          collections: front.collections.map(collection => collection.id),
-          priority: issueId
+          collections: front.collections.map((collection) => collection.id),
+          priority: issueId,
         };
-        front.collections.forEach(collection => {
+        front.collections.forEach((collection) => {
           collections[collection.id] = {
             ...collection,
             displayName: collection.displayName,
-            type: ''
+            type: '',
           };
         });
       });
 
       return {
         fronts,
-        collections
+        collections,
       };
     });
 }
@@ -55,34 +55,34 @@ function fetchEditionsIssueAsConfig(issueId: string): Promise<FrontsConfig> {
 function fetchFrontsConfig(): Promise<FrontsConfig> {
   return pandaFetch('/config', {
     method: 'get',
-    credentials: 'same-origin'
+    credentials: 'same-origin',
   })
-    .then(response => response.json())
+    .then((response) => response.json())
     .then((json: FrontsConfigResponse) => {
       const fronts: FrontConfigMap = {};
 
-      Object.keys(json.fronts).forEach(id => {
+      Object.keys(json.fronts).forEach((id) => {
         const front: FrontConfig = {
           ...json.fronts[id],
           id,
-          priority: json.fronts[id].priority || 'editorial'
+          priority: json.fronts[id].priority || 'editorial',
         };
         fronts[id] = front;
       });
 
       const collections: CollectionConfigMap = {};
 
-      Object.keys(json.collections).forEach(id => {
+      Object.keys(json.collections).forEach((id) => {
         const collection = {
           ...json.collections[id],
-          id
+          id,
         };
         collections[id] = collection;
       });
 
       return {
         fronts,
-        collections
+        collections,
       };
     });
 }
@@ -90,8 +90,8 @@ function fetchFrontsConfig(): Promise<FrontsConfig> {
 async function fetchLastPressed(frontId: string): Promise<string> {
   // The server does not respond with JSON
   return pandaFetch(`/front/lastmodified/${frontId}`)
-    .then(response => response.text())
-    .then(date => {
+    .then((response) => response.text())
+    .then((date) => {
       if (!date || !isValid(new Date(date))) {
         throw new Error(
           `Tried to fetch last pressed time for front with id ${frontId}, but there was an error processing the response, which was ${date}`
@@ -99,11 +99,9 @@ async function fetchLastPressed(frontId: string): Promise<string> {
       }
       return date;
     })
-    .catch(response => {
+    .catch((response) => {
       throw new Error(
-        `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${
-          response.status
-        }: ${response.body}`
+        `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${response.status}: ${response.body}`
       );
     });
 }
@@ -120,17 +118,15 @@ async function fetchVisibleArticles(
     const response = await pandaFetch(`/stories-visible/${collectionType}`, {
       method: 'post',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
-      body: JSON.stringify({ stories: articles })
+      body: JSON.stringify({ stories: articles }),
     });
     return await response.json();
   } catch (response) {
     throw new Error(
-      `Tried to fetch visible stories for collection type '${collectionType}', but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to fetch visible stories for collection type '${collectionType}', but the server responded with ${response.status}: ${response.body}`
     );
   }
 }
@@ -143,17 +139,15 @@ async function discardDraftChangesToCollection(
     const response = await pandaFetch(`/collection/v2Discard/${collectionId}`, {
       method: 'post',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
-      body: JSON.stringify({ collectionId })
+      body: JSON.stringify({ collectionId }),
     });
     return await response.json();
   } catch (response) {
     throw new Error(
-      `Tried to discard changes to collection with id ${collectionId}, but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to discard changes to collection with id ${collectionId}, but the server responded with ${response.status}: ${response.body}`
     );
   }
 }
@@ -163,16 +157,14 @@ async function publishCollection(collectionId: string): Promise<void> {
     await pandaFetch(`/collection/publish/${collectionId}`, {
       method: 'post',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
-      body: JSON.stringify({ collectionId })
+      body: JSON.stringify({ collectionId }),
     });
   } catch (response) {
     throw new Error(
-      `Tried to publish collection with id ${collectionId}, but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to publish collection with id ${collectionId}, but the server responded with ${response.status}: ${response.body}`
     );
   }
 }
@@ -184,17 +176,15 @@ const createUpdateCollection = <T>(path: string, method: string) => (
     const response = await pandaFetch(path, {
       method,
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       credentials: 'same-origin',
-      body: JSON.stringify({ id, collection })
+      body: JSON.stringify({ id, collection }),
     });
     return await response.json();
   } catch (response) {
     throw new Error(
-      `Tried to update collection with id ${id}, but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to update collection with id ${id}, but the server responded with ${response.status}: ${response.body}`
     );
   }
 };
@@ -231,14 +221,12 @@ async function createSaveClipboard(
       credentials: 'same-origin',
       body: JSON.stringify(clipboardContent),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   } catch (response) {
     throw new Error(
-      `Tried to update a clipboard but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to update a clipboard but the server responded with ${response.status}: ${response.body}`
     );
   }
 }
@@ -252,14 +240,12 @@ async function saveOpenFrontIds(frontsByPriority?: {
       credentials: 'same-origin',
       body: JSON.stringify(frontsByPriority),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   } catch (response) {
     throw new Error(
-      `Tried to store the open fronts configuration but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to store the open fronts configuration but the server responded with ${response.status}: ${response.body}`
     );
   }
 }
@@ -273,14 +259,12 @@ async function saveFavouriteFrontIds(favouriteFrontsByPriority?: {
       credentials: 'same-origin',
       body: JSON.stringify(favouriteFrontsByPriority),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   } catch (response) {
     throw new Error(
-      `Tried to store the favourite fronts configuration but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to store the favourite fronts configuration but the server responded with ${response.status}: ${response.body}`
     );
   }
 }
@@ -305,9 +289,9 @@ const createGetCollections = <R>(path: string) => async (
     body: JSON.stringify(collections),
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    credentials: 'same-origin'
+    credentials: 'same-origin',
   });
   return response.json();
 };
@@ -326,7 +310,7 @@ const DEFAULT_PARAMS = {
   'show-tags': 'all',
   'show-atoms': 'media',
   'show-fields':
-    'internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl,newspaperPageNumber,lastModified'
+    'internalPageCode,isLive,firstPublicationDate,scheduledPublicationDate,headline,trailText,byline,thumbnail,secureThumbnail,liveBloggingNow,membershipAccess,shortUrl,newspaperPageNumber,lastModified',
 };
 
 /*
@@ -340,7 +324,7 @@ const getCapiUriForContentIds = (contentIds: string[]) => {
       ? `search?ids=${contentIdsStr}&`
       : `${contentIdsStr}?`;
   return `/api/preview/${searchStr}${Object.entries(DEFAULT_PARAMS)
-    .map(e => e.join('='))
+    .map((e) => e.join('='))
     .join('&')}`;
 };
 
@@ -348,7 +332,7 @@ const getCapiUriForContentIds = (contentIds: string[]) => {
 const getAtomFromCapi = async (path: string) => {
   const response = await pandaFetch(`/api/live/${path}`, {
     method: 'get',
-    credentials: 'same-origin'
+    credentials: 'same-origin',
   });
   return await response.json();
 };
@@ -367,7 +351,7 @@ const getExternalArticleId = (article: CapiArticle) =>
 const transformExternalArticle = (article: CapiArticle) => ({
   ...article,
   urlPath: article.id,
-  id: getExternalArticleId(article)
+  id: getExternalArticleId(article),
 });
 
 const parseArticleListFromResponses = (
@@ -403,12 +387,12 @@ async function getContent(
 }> {
   const response = await pandaFetch(getCapiUriForContentIds([contentId]), {
     method: 'get',
-    credentials: 'same-origin'
+    credentials: 'same-origin',
   });
   const parsedResponse: CAPISearchQueryResponse = await response.json();
   return {
     articles: parseArticleListFromResponses(parsedResponse),
-    title: getTagOrSectionTitle(parsedResponse)
+    title: getTagOrSectionTitle(parsedResponse),
   };
 }
 
@@ -420,17 +404,17 @@ async function getContent(
 async function getArticlesBatched(
   articleIds: string[]
 ): Promise<ExternalArticle[]> {
-  const capiPromises = chunk(articleIds, 50).map(localArticleIDs => {
+  const capiPromises = chunk(articleIds, 50).map((localArticleIDs) => {
     return pandaFetch(getCapiUriForContentIds(localArticleIDs), {
       method: 'get',
-      credentials: 'same-origin'
+      credentials: 'same-origin',
     });
   });
 
   try {
     const responses = await Promise.all(capiPromises);
     const parsedResponses: CAPISearchQueryResponse[] = await Promise.all(
-      responses.map(_ => _.json())
+      responses.map((_) => _.json())
     );
     return flatMap(parsedResponses.map(parseArticleListFromResponses));
   } catch (e) {
@@ -462,5 +446,5 @@ export {
   discardDraftChangesToCollection,
   transformExternalArticle,
   getAtomFromCapi,
-  DEFAULT_PARAMS
+  DEFAULT_PARAMS,
 };

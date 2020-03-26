@@ -16,7 +16,7 @@ const directionMap = {
   up: (px: number) => `0, ${px}, 0`,
   right: (px: number) => `${px}px, 0, 0`,
   down: (px: number) => `0, ${-px}px, 0`,
-  left: (px: number) => `${-px}px, 0, 0`
+  left: (px: number) => `${-px}px, 0, 0`,
 };
 
 const applyDirection = ({ direction, length = 15 }: TransitionProps) =>

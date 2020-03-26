@@ -17,7 +17,7 @@ const pandaFetch = (
     async (resolve: (r: Response) => any, reject: (r: Response) => any) => {
       const res = await fetch(url, {
         ...options,
-        credentials: 'same-origin'
+        credentials: 'same-origin',
       });
 
       if (res.status === 419 && count < 1) {

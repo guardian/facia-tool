@@ -6,7 +6,7 @@ import { State } from 'types/State';
 import { createSelectCardType } from 'selectors/cardSelectors';
 import {
   selectExternalArticleFromCard,
-  selectSupportingArticleCount
+  selectSupportingArticleCount,
 } from 'selectors/shared';
 import cardTypes from 'constants/cardTypes';
 import { CardTypes, CardSizes, CardMeta } from 'types/Collection';
@@ -14,20 +14,20 @@ import SnapLink from 'components/snapLink/SnapLink';
 import {
   copyCardImageMetaWithPersist,
   addImageToCard,
-  addCardToClipboard
+  addCardToClipboard,
 } from 'actions/Cards';
 import { validateImageEvent, ValidationResponse } from 'util/validateImageSrc';
 import {
   cardImageCriteria,
   editionsCardImageCriteria,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
-  DRAG_DATA_GRID_IMAGE_URL
+  DRAG_DATA_GRID_IMAGE_URL,
 } from 'constants/image';
 import Sublinks from './Sublinks';
 import { gridDropTypes } from 'constants/fronts';
 import {
   selectIsCardFormOpen,
-  editorClearCardSelection
+  editorClearCardSelection,
 } from 'bundles/frontsUIBundle';
 import { bindActionCreators } from 'redux';
 import CardFormInline from '../CardFormInline';
@@ -45,7 +45,7 @@ export const createCardId = (id: string) => `collection-item-${id}`;
 const imageDropTypes = [
   ...gridDropTypes,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
-  DRAG_DATA_GRID_IMAGE_URL
+  DRAG_DATA_GRID_IMAGE_URL,
 ];
 
 const CardContainer = styled('div')<{
@@ -95,7 +95,7 @@ type ArticleContainerProps = ContainerProps & {
 
 class Card extends React.Component<ArticleContainerProps> {
   public state = {
-    showArticleSublinks: false
+    showArticleSublinks: false,
   };
 
   public toggleShowArticleSublinks = (e?: React.MouseEvent) => {
@@ -128,7 +128,7 @@ class Card extends React.Component<ArticleContainerProps> {
       canDragImage,
       canShowPageViewData = false,
       isLive,
-      pillarId
+      pillarId,
     } = this.props;
 
     const getSublinks = (
@@ -217,7 +217,7 @@ class Card extends React.Component<ArticleContainerProps> {
               key={uuid}
               form={uuid}
               frontId={frontId}
-              onSave={meta => {
+              onSave={(meta) => {
                 updateCardMeta(uuid, meta);
                 clearCardSelection(uuid);
               }}
@@ -263,7 +263,9 @@ class Card extends React.Component<ArticleContainerProps> {
 
     // Our drag contains Grid data
     validateImageEvent(e, this.props.frontId, imageCriteria)
-      .then(imageData => this.props.addImageToCard(this.props.uuid, imageData))
+      .then((imageData) =>
+        this.props.addImageToCard(this.props.uuid, imageData)
+      )
       .catch(alert);
   };
 }
@@ -278,7 +280,7 @@ const createMapStateToProps = () => {
       isLive: maybeExternalArticle && isArticleLive(maybeExternalArticle),
       pillarId: maybeExternalArticle && maybeExternalArticle.pillarId,
       numSupportingArticles: selectSupportingArticleCount(state, uuid),
-      editMode: selectEditMode(state)
+      editMode: selectEditMode(state),
     };
   };
 };
@@ -290,13 +292,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
       copyCardImageMeta: copyCardImageMetaWithPersist,
       addImageToCard,
       updateCardMeta: updateCardMetaAction,
-      clearCardSelection: editorClearCardSelection
+      clearCardSelection: editorClearCardSelection,
     },
     dispatch
   );
 };
 
-export default connect(
-  createMapStateToProps,
-  mapDispatchToProps
-)(Card);
+export default connect(createMapStateToProps, mapDispatchToProps)(Card);

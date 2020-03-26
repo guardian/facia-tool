@@ -171,5 +171,5 @@ export {
   Group,
   Stages,
   CardSets,
-  ArticleTag
+  ArticleTag,
 };

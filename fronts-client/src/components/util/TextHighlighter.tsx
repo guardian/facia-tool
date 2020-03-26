@@ -15,7 +15,7 @@ interface IProps {
  */
 const textHighlighter: React.StatelessComponent<IProps> = ({
   originalString,
-  searchString
+  searchString,
 }) => {
   if (!searchString || searchString.length < 2) {
     return <span>{originalString}</span>;
@@ -32,7 +32,7 @@ const textHighlighter: React.StatelessComponent<IProps> = ({
           : acc.concat(strPart),
       [] as string[]
     )
-    .filter(_ => !!_);
+    .filter((_) => !!_);
 
   return (
     <span>

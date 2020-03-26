@@ -2,7 +2,7 @@ import {
   selectIndexInGroup,
   selectGroups,
   selectGroupCollection,
-  createSelectCollection
+  createSelectCollection,
 } from './shared';
 import { selectClipboardContent } from 'selectors/clipboardSelectors';
 import { State } from 'types/State';
@@ -91,7 +91,7 @@ const selectNextIndexAndGroup = (
       if (collectionIndex < frontCollections.length - 1) {
         const selectCollection = createSelectCollection();
         const coll = selectCollection(state, {
-          collectionId: frontCollections[collectionIndex + 1]
+          collectionId: frontCollections[collectionIndex + 1],
         });
         if (!coll || !coll.draft) {
           return null;
@@ -105,7 +105,7 @@ const selectNextIndexAndGroup = (
       if (collectionIndex !== 0) {
         const selectCollection = createSelectCollection();
         const coll = selectCollection(state, {
-          collectionId: frontCollections[collectionIndex - 1]
+          collectionId: frontCollections[collectionIndex - 1],
         });
 
         if (!coll || !coll.draft) {
@@ -120,7 +120,7 @@ const selectNextIndexAndGroup = (
         return {
           toIndex: nextGroupArticles.length,
           nextGroupId,
-          collectionId: coll.id
+          collectionId: coll.id,
         };
       }
     }
@@ -133,5 +133,5 @@ const selectNextIndexAndGroup = (
 
 export {
   selectNextIndexAndGroup,
-  selectNextClipboardIndex as selectNextClipboardIndexSelector
+  selectNextClipboardIndex as selectNextClipboardIndexSelector,
 };

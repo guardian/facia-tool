@@ -1,3 +1,3 @@
 export const error = {
-  primary: '#eb4c42'
+  primary: '#eb4c42',
 };
