@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
 import { connect } from 'react-redux';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { bindActionCreators } from 'redux';
 
 import {

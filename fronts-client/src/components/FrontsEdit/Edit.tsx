@@ -11,8 +11,8 @@ import {
   selectEditorFrontIdsByPriority,
   selectIsCurrentFrontsMenuOpen,
   selectIsClipboardOpen
-} from 'bundles/frontsUIBundle';
-import { State } from 'types/State';
+} from 'bundles/frontsUI';
+import type { State } from 'types/State';
 import { ActionError } from 'types/Action';
 import FrontContainer from './FrontSection';
 import FeedSection from '../FeedSection';

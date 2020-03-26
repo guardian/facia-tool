@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import { state as initialState } from 'fixtures/initialState';
 import { scJohnsonPartnerZoneCollection } from 'fixtures/collectionsEndpointResponse';
 import { articlesForScJohnsonPartnerZone } from 'actions/__tests__/capiEndpointResponse';
-import { selectIsCollectionOpen } from 'bundles/frontsUIBundle';
+import { selectIsCollectionOpen } from 'bundles/frontsUI';
 import { selectArticlesInCollections } from 'selectors/collection';
 import { selectCard } from 'selectors/shared';
 import { initialiseCollectionsForFront } from 'actions/Collections';

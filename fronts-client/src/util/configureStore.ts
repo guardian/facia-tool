@@ -12,10 +12,9 @@ import {
   persistOpenFrontsOnEdit,
   persistFavouriteFrontsOnEdit
 } from './storeMiddleware';
-import { State } from 'types/State';
 
 export default function configureStore(
-  initialState?: State,
+  initialState?: any,
   initialPath?: string /* only used for tests */
 ) {
   const history = createBrowserHistory();

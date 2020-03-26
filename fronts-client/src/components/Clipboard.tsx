@@ -2,7 +2,7 @@ import { Dispatch } from 'types/Store';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
 import { Root, Move, PosSpec } from 'lib/dnd';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { insertCardFromDropEvent } from 'util/collectionUtils';
 import {
   moveCard,
@@ -14,7 +14,7 @@ import {
   editorClearCardSelection,
   selectIsClipboardOpen,
   createSelectCollectionIdsWithOpenForms
-} from 'bundles/frontsUIBundle';
+} from 'bundles/frontsUI';
 import { clipboardId } from 'constants/fronts';
 import { Card as TCard } from 'types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';

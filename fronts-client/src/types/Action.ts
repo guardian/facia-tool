@@ -2,15 +2,16 @@
  * Need to add new types into here and union them with `Action` in order
  * for typing to work nicely in reducers
  */
-import { PersistMeta } from 'util/storeMiddleware';
-import { Config } from './Config';
-import {
+import { BatchAction } from 'redux-batched-actions';
+
+import type { PersistMeta } from 'util/storeMiddleware';
+import type { Config } from './Config';
+import type {
   FrontsConfig,
   VisibleArticlesResponse,
   EditionsFrontMetadata
 } from './FaciaApi';
-import { BatchAction } from 'redux-batched-actions';
-import { Stages, Collection, Card, Group, CardMeta } from 'types/Collection';
+import type { Stages, Collection, CardMeta } from 'types/Collection';
 import {
   EDITOR_OPEN_CURRENT_FRONTS_MENU,
   EDITOR_CLOSE_CURRENT_FRONTS_MENU,
@@ -34,7 +35,9 @@ import {
   EDITOR_CLOSE_ALL_OVERVIEWS,
   CHANGED_BROWSING_STAGE,
   EditorCloseFormsForCollection
-} from 'bundles/frontsUIBundle';
+} from 'bundles/frontsUI';
+import { CardActions } from 'actions/CardsCommon';
+import { ClipboardActions } from 'actions/Clipboard';
 import { setFocusState, resetFocusState } from '../bundles/focusBundle';
 import { ActionSetFeatureValue } from 'actions/FeatureSwitches';
 import { SetHidden } from '../bundles/collectionsBundle';
@@ -44,6 +47,7 @@ import { ExternalArticle } from 'types/ExternalArticle';
 import { copyCardImageMeta } from 'actions/CardsCommon';
 import { PageViewStory } from 'types/PageViewData';
 import { NotificationActions } from 'bundles/notificationsBundle';
+import { GroupActions } from 'actions/Groups';
 
 interface EditorOpenCurrentFrontsMenu {
   type: typeof EDITOR_OPEN_CURRENT_FRONTS_MENU;
@@ -163,54 +167,6 @@ interface ActionPersistMeta {
   meta: PersistMeta;
 }
 
-interface CardsReceived {
-  type: 'CARDS_RECEIVED';
-  payload: { [id: string]: Card };
-}
-interface ClearCards {
-  type: 'CLEAR_CARDS';
-  payload: { ids: string[] };
-}
-interface GroupsReceived {
-  type: 'SHARED/GROUPS_RECEIVED';
-  payload: { [id: string]: Group };
-}
-
-type InsertGroupCard = {
-  type: 'INSERT_GROUP_CARD';
-} & {
-  payload: InsertCardPayload;
-  meta: PersistMeta;
-} & ActionPersistMeta;
-
-type InsertSupportingCard = {
-  type: 'INSERT_SUPPORTING_CARD';
-} & {
-  payload: InsertCardPayload;
-  meta: PersistMeta;
-} & ActionPersistMeta;
-
-type InsertClipboardCard = {
-  type: 'INSERT_CLIPBOARD_CARD';
-} & { payload: InsertCardPayload & { currentCards: { [uuid: string]: Card } } };
-
-interface RemoveCardPayload {
-  payload: {
-    id: string;
-    cardId: string;
-  };
-}
-
-type RemoveGroupCard = {
-  type: 'REMOVE_GROUP_CARD';
-} & RemoveCardPayload;
-type RemoveSupportingCard = {
-  type: 'REMOVE_SUPPORTING_CARD';
-} & RemoveCardPayload;
-type RemoveClipboardCard = {
-  type: 'REMOVE_CLIPBOARD_CARD';
-} & RemoveCardPayload;
-
 type ActionError =
   | 'Could not fetch fronts config'
   | 'Could not fetch collection'
@@ -268,16 +224,6 @@ interface ErrorInAction {
 interface RecordUnpublishedChanges {
   type: 'RECORD_UNPUBLISHED_CHANGES';
   payload: { [id: string]: boolean };
-}
-
-interface UpdateClipboardContent {
-  type: 'UPDATE_CLIPBOARD_CONTENT';
-  payload: string[];
-}
-
-interface ClearClipboard {
-  type: 'CLEAR_CLIPBOARD';
-  payload: { id: string };
 }
 
 interface RecordStaleFronts {
@@ -389,14 +335,7 @@ type Action =
   | ErrorInAction
   | FrontsUpdateLastPressedAction
   | RecordUnpublishedChanges
-  | InsertGroupCard
-  | InsertSupportingCard
-  | InsertClipboardCard
-  | RemoveGroupCard
-  | RemoveSupportingCard
-  | RemoveClipboardCard
-  | UpdateClipboardContent
-  | ClearClipboard
+  | CardActions
   | EditorOpenCurrentFrontsMenu
   | EditorCloseCurrentFrontsMenu
   | EditorAddFront
@@ -431,12 +370,6 @@ type Action =
   | EditorCloseFormsForCollection
   | StartOptionsModal
   | EndOptionsModal
-  | InsertGroupCard
-  | GroupsReceived
-  | CardsReceived
-  | ClearCards
-  | RemoveGroupCard
-  | InsertSupportingCard
   | Actions<ExternalArticle>
   | Actions<Collection>
   | UpdateCardMeta
@@ -445,7 +378,9 @@ type Action =
   | CopyCardImageMeta
   | PageViewDataRequested
   | PageViewDataReceived
-  | NotificationActions;
+  | NotificationActions
+  | ClipboardActions
+  | GroupActions;
 
 export {
   ActionError,
@@ -460,14 +395,6 @@ export {
   ErrorInAction,
   FrontsUpdateLastPressedAction,
   RecordUnpublishedChanges,
-  InsertGroupCard,
-  InsertSupportingCard,
-  InsertClipboardCard,
-  RemoveGroupCard,
-  RemoveSupportingCard,
-  RemoveClipboardCard,
-  UpdateClipboardContent,
-  ClearClipboard,
   EditorOpenCurrentFrontsMenu,
   EditorCloseCurrentFrontsMenu,
   EditorAddFront,
@@ -493,11 +420,8 @@ export {
   ChangedBrowsingStage,
   StartOptionsModal,
   EndOptionsModal,
-  CardsReceived,
-  ClearCards,
   UpdateCardMeta,
   InsertCardPayload,
-  RemoveCardPayload,
   CapGroupSiblings,
   MaybeAddFrontPublicationDate,
   PageViewDataRequested,

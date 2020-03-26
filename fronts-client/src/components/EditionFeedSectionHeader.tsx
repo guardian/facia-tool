@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { EditionsIssue } from '../types/Edition';
 import { connect } from 'react-redux';
-import { State } from '../types/State';
+import type { State } from 'types/State';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
 import { Dispatch } from '../types/Store';
 import { publishEditionIssue, check } from '../actions/Editions';

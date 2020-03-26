@@ -1,15 +1,19 @@
+import type { Action } from 'types/Action';
+import type { State } from 'types/State';
+import type { Card } from 'types/Collection';
+
+import { actions as externalArticleActions } from 'bundles/externalArticlesBundle';
+import { selectEditMode } from '../selectors/pathSelectors';
 import {
   insertGroupCard,
   insertSupportingCard,
   removeGroupCard,
   removeSupportingCard,
   updateCardMeta,
-  createArticleEntitiesFromDrop,
   cardsReceived,
   maybeAddFrontPublicationDate,
   copyCardImageMeta
 } from 'actions/CardsCommon';
-import { Card } from 'types/Collection';
 import { selectCards, selectCard, selectArticleGroup } from 'selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/action';
@@ -19,9 +23,8 @@ import {
   getToGroupIndicesWithRespectToState
 } from 'util/moveUtils';
 import { PosSpec } from 'lib/dnd';
-import { Action } from 'types/Action';
-import { removeClipboardCard, thunkInsertClipboardCard } from './Clipboard';
-import { State } from 'types/State';
+import { removeClipboardCard } from './Clipboard';
+import {  thunkInsertClipboardCard} from './ClipboardThunks';
 import { capGroupSiblings } from 'actions/Groups';
 import { selectCollectionCap } from 'selectors/configSelectors';
 import { getImageMetaFromValidationResponse } from 'util/form';
@@ -30,9 +33,10 @@ import { MappableDropType } from 'util/collectionUtils';
 import { selectWillCollectionHitCollectionCap } from 'selectors/collectionSelectors';
 import { batchActions } from 'redux-batched-actions';
 import noop from 'lodash/noop';
-import { selectOpenParentFrontOfCard } from 'bundles/frontsUIBundle';
+import { selectOpenParentFrontOfCard } from 'bundles/frontsUI';
 import { getPageViewData } from 'actions/PageViewData';
 import { startOptionsModal } from './OptionsModal';
+import { getArticleEntitiesFromDrop } from 'util/card';
 import {
   RemoveActionCreator,
   InsertActionCreator,
@@ -49,9 +53,12 @@ import {
 // depending on the location of that card
 const createInsertCardThunk = (action: InsertActionCreator) => (
   persistTo: 'collection' | 'clipboard'
-) => (id: string, index: number, cardId: string, removeAction?: Action) => (
-  dispatch: Dispatch
-) => {
+) => (
+  id: string,
+  index: number,
+  cardId: string,
+  removeAction?: Action
+) => (dispatch: Dispatch) => {
   if (removeAction) {
     dispatch(removeAction);
   }
@@ -360,6 +367,31 @@ const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
     },
     { merge: true }
   );
+
+
+/**
+ * Create the appropriate article entities from a MappableDropType,
+ * and add them to the application state.
+ */
+export const createArticleEntitiesFromDrop = (
+  drop: MappableDropType
+): ThunkResult<Promise<Card | undefined>> => {
+  return async (dispatch, getState) => {
+    const isEdition = selectEditMode(getState()) === 'editions';
+    const [maybeCard, maybeExternalArticle] = await getArticleEntitiesFromDrop(
+      drop,
+      isEdition,
+      dispatch
+    );
+    if (maybeExternalArticle) {
+      dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
+    }
+    if (maybeCard) {
+      dispatch(cardsReceived([maybeCard]));
+    }
+    return maybeCard;
+  };
+};
 
 export {
   insertCardWithCreate,

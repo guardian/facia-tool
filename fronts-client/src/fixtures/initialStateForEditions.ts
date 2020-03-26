@@ -1,5 +1,5 @@
 import { state as initialState } from 'fixtures/initialState';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 
 const state = {
   ...initialState,

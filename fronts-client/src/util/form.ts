@@ -7,7 +7,7 @@ import { isDirty } from 'redux-form';
 import { CardMeta } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { CapiArticle } from 'types/Capi';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
 
 export interface CardFormData {

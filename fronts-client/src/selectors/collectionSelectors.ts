@@ -1,4 +1,4 @@
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectCollectionConfig } from './frontsSelectors';
 import { createSelectCollection, groupsArticleCount } from 'selectors/shared';
 import { getUpdatedSiblingGroupsForInsertion } from 'reducers/groupsReducer';
@@ -37,8 +37,10 @@ const selectCollectionParams = (
     []
   );
 
-const selectIsCollectionLocked = (state: State, id: string): boolean =>
-  !!selectCollectionConfig(state, id).uneditable;
+const selectIsCollectionLocked = (
+  state: State,
+  id: string
+): boolean => !!selectCollectionConfig(state, id).uneditable;
 
 const selectWillCollectionHitCollectionCap = (
   state: State,

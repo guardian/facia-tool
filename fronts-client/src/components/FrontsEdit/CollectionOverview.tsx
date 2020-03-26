@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { styled, theme } from 'constants/theme';
 import { events } from 'services/GA';
 
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
@@ -16,7 +16,7 @@ import {
   createSelectArticlesInCollection
 } from 'selectors/shared';
 import EditModeVisibility from 'components/util/EditModeVisibility';
-import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUIBundle';
+import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;

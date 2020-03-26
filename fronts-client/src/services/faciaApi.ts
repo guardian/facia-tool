@@ -1,5 +1,4 @@
-import isValid from 'date-fns/is_valid';
-import {
+import type {
   FrontsConfig,
   FrontsConfigResponse,
   FrontConfigMap,
@@ -10,15 +9,16 @@ import {
   CollectionResponse,
   EditionCollectionResponse
 } from 'types/FaciaApi';
+import type { CollectionWithNestedArticles, NestedCard } from 'types/Collection';
+import type { EditionsIssue, EditionsCollection } from 'types/Edition';
+import { EditionsRoutes } from 'routes/routes';
+import isValid from 'date-fns/is_valid';
 import { ExternalArticle } from 'types/ExternalArticle';
-import { CollectionWithNestedArticles, NestedCard } from 'types/Collection';
 import pandaFetch from './pandaFetch';
 import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
 import { CAPISearchQueryResponse, checkIsResults } from './capiQuery';
 import flatMap from 'lodash/flatMap';
-import { EditionsIssue, EditionsCollection } from 'types/Edition';
-import { EditionsRoutes } from 'routes/routes';
 
 function fetchEditionsIssueAsConfig(issueId: string): Promise<FrontsConfig> {
   return pandaFetch(EditionsRoutes.issuePath(issueId), {

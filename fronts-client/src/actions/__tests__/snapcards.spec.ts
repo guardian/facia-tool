@@ -1,12 +1,9 @@
 import configureMockStore from 'redux-mock-store';
 import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
-import {
-  createArticleEntitiesFromDrop,
-  cardsReceived,
-  snapMetaWhitelist,
-  marketingParamsWhiteList
-} from '../CardsCommon';
+import { createArticleEntitiesFromDrop } from '../Cards';
+import { cardsReceived } from '../CardsCommon';
+import { snapMetaWhitelist, marketingParamsWhiteList } from 'util/card';
 import { state as initialState } from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
 import { createSnap, createLatestSnap } from 'util/snap';

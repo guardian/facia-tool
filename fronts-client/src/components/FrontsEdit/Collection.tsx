@@ -12,7 +12,7 @@ import { Dispatch } from 'types/Store';
 import { removeCard as removeCardAction } from 'actions/Cards';
 import { resetFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
 

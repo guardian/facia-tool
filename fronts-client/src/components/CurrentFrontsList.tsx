@@ -7,12 +7,12 @@ import {
   Draggable,
   DropResult
 } from 'react-beautiful-dnd';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
   editorMoveFront,
   createSelectEditorFrontsByPriority
-} from 'bundles/frontsUIBundle';
+} from 'bundles/frontsUI';
 import { FrontConfig } from 'types/FaciaApi';
 import { styled, theme } from 'constants/theme';
 import { scrollToLeft } from 'util/scroll';

@@ -1,7 +1,7 @@
-import { defaultState } from 'bundles/frontsUIBundle';
+import { defaultState } from 'bundles/frontsUI';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { state as initialState } from './initialState';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 
 const state = {
   ...initialState,

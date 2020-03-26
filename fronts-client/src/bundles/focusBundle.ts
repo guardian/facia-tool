@@ -1,6 +1,6 @@
 import { ApplicationFocusStates } from 'keyboard';
-import { Action } from '../types/Action';
-import { State as GlobalState } from '../types/State';
+import type { Action } from 'types/Action';
+import type { State as RootState } from 'types/State';
 
 export const FOCUS_SET_FOCUS_STATE = 'FOCUS_SET_FOCUS_STATE';
 export const FOCUS_RESET_FOCUS_STATE = 'FOCUS_RESET_FOCUS_STATE';
@@ -14,9 +14,9 @@ export const resetFocusState = () => ({
   type: FOCUS_RESET_FOCUS_STATE as typeof FOCUS_RESET_FOCUS_STATE
 });
 
-export const selectFocusState = (state: GlobalState) => state.focus.focusState;
+export const selectFocusState = (state: RootState) => state.focus.focusState;
 
-export const selectIsClipboardFocused = (state: GlobalState) => {
+export const selectIsClipboardFocused = (state: RootState) => {
   const focusState = selectFocusState(state);
   if (focusState) {
     return focusState.type === 'clipboard';
@@ -24,7 +24,7 @@ export const selectIsClipboardFocused = (state: GlobalState) => {
   return false;
 };
 
-export const selectFocusedArticle = (state: GlobalState, focusType: string) => {
+export const selectFocusedArticle = (state: RootState, focusType: string) => {
   const focusState = selectFocusState(state);
   if (focusState && focusState.type === focusType) {
     return focusState.card && focusState.card.uuid;

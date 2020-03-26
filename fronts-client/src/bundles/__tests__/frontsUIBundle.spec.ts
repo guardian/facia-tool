@@ -34,14 +34,14 @@ import {
   selectOpenFrontsCollectionsAndArticles,
   selectOpenParentFrontOfCard,
   createSelectDoesCollectionHaveOpenForms
-} from '../frontsUIBundle';
+} from '../frontsUI';
 import { state as initialState } from 'fixtures/initialState';
 import initialStateForOpenFronts from '../../fixtures/initialStateForOpenFronts';
 import { frontsConfig } from 'fixtures/frontsConfig';
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
+import type { State as GlobalState } from 'types/State';
 import { removeSupportingCard, removeGroupCard } from 'actions/CardsCommon';
 import { removeClipboardCard } from 'actions/Clipboard';
-import { State as GlobalState } from 'types/State';
 
 type State = ReturnType<typeof innerReducer>;
 

@@ -2,16 +2,18 @@ import React from 'react';
 import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import {
   editorSelectCard,
   editorOpenOverview,
   editorCloseOverview,
-  selectIsFrontOverviewOpen,
+  selectIsFrontOverviewOpen
+} from 'bundles/frontsUI';
+import {
   editorOpenAllCollectionsForFront,
   editorCloseAllCollectionsForFront
-} from 'bundles/frontsUIBundle';
+} from 'bundles/frontsUI/thunks';
 import { CardSets, Card as TCard } from 'types/Collection';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
@@ -240,7 +242,10 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
   };
 }
 
-const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
+const mapStateToProps = (
+  state: State,
+  { id }: FrontPropsBeforeState
+) => {
   return {
     overviewIsOpen: selectIsFrontOverviewOpen(state, id),
     priority: selectPriority(state)

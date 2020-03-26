@@ -1,4 +1,4 @@
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 
 export interface State {
   [id: string]: boolean;

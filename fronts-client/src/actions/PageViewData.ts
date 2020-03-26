@@ -1,12 +1,12 @@
-import { ThunkResult } from 'types/Store';
-import { PageViewDataRequested, PageViewDataReceived } from '../types/Action';
-import { PageViewDataFromOphan, PageViewStory } from 'types/PageViewData';
-import { DerivedArticle } from 'types/Article';
+import type { ThunkResult } from 'types/Store';
+import type { PageViewDataRequested, PageViewDataReceived } from '../types/Action';
+import type { PageViewDataFromOphan, PageViewStory } from 'types/PageViewData';
+import type { DerivedArticle } from 'types/Article';
+import type { CardSets } from 'types/Collection';
 import {
   createSelectArticlesInCollection,
   createSelectArticleFromCard
 } from 'selectors/shared';
-import { CardSets } from 'types/Collection';
 import pandaFetch from 'services/pandaFetch';
 import { isValidURL } from 'util/url';
 

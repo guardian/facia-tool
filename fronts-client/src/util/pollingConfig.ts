@@ -13,8 +13,8 @@ import { selectExternalArticleIdFromCard } from 'selectors/shared';
 import {
   selectOpenFrontsCollectionsAndArticles,
   selectOpenCardIds
-} from 'bundles/frontsUIBundle';
-import { createSelectCollectionsInOpenFronts } from 'bundles/frontsUIBundle';
+} from 'bundles/frontsUI';
+import { createSelectCollectionsInOpenFronts } from 'bundles/frontsUI';
 
 /**
  * TODO: do we want to check if there are any collectionUpdates going out here

@@ -1,5 +1,5 @@
 import { oc } from 'ts-optchain';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { PageViewStory } from 'types/PageViewData';
 
 const selectPageViewData = (state: State) => state.pageViewData;

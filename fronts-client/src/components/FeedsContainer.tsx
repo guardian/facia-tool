@@ -7,7 +7,7 @@ import SearchInput, {
 } from './FrontsCAPIInterface/SearchInput';
 import Feed from './FrontsCAPIInterface/Feed';
 import { RadioButton, RadioGroup } from './inputs/RadioButtons';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import {
   liveSelectors,
   previewSelectors,

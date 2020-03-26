@@ -1,6 +1,6 @@
 import without from 'lodash/without';
 import isEqual from 'lodash/isEqual';
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 
 interface BaseResource {
   id: string;

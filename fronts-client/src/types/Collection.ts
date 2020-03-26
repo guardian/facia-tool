@@ -1,6 +1,6 @@
 import { CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
-import { FrontsToolSettings } from 'types/FaciaApi';
+import type { FrontsToolSettings } from 'types/FaciaApi';
 
 interface CollectionArticles {
   draft: CapiArticle[];

@@ -4,7 +4,7 @@ import capitalize from 'lodash/capitalize';
 import debounce from 'lodash/debounce';
 import { styled, theme } from 'constants/theme';
 import { Tag } from 'types/Capi';
-import { liveCapi } from 'services/frontsCapi';
+import { liveCapi } from 'services/capiQuery';
 
 type SearchTypes = 'tags' | 'sections' | 'desks';
 

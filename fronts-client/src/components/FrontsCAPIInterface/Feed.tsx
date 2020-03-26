@@ -7,7 +7,7 @@ import {
   prefillSelectors
 } from 'bundles/capiFeedBundle';
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { connect } from 'react-redux';
 
 interface ErrorDisplayProps {

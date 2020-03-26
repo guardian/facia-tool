@@ -20,7 +20,7 @@ import {
   selectCard,
   createSelectArticleFromCard
 } from '../../selectors/shared';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import CardHeading from '../card/CardHeading';
 import CardContent from '../card/CardContent';
 import CardBody from 'components/card/CardBody';

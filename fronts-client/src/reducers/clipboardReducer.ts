@@ -1,4 +1,4 @@
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 import { insertAndDedupeSiblings } from 'util/insertAndDedupeSiblings';
 import {
   INSERT_CLIPBOARD_CARD,

@@ -1,9 +1,9 @@
-import { State } from 'types/State';
 import createAsyncResourceBundle, {
   State as LibState,
   Actions
 } from 'lib/createAsyncResourceBundle';
 import { Collection } from 'types/Collection';
+import { State } from 'types/State';
 import { addPersistMetaToAction } from '../util/action';
 import set from 'lodash/fp/set';
 

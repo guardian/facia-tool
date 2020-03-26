@@ -1,13 +1,15 @@
 import { Middleware } from 'redux';
 import uniq from 'lodash/uniq';
 import mapValues from 'lodash/mapValues';
-import { State } from 'types/State';
+import debounce from 'lodash/debounce';
+import { PersistMeta, Entity } from 'types/Middleware';
+import type { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { BATCH } from 'redux-batched-actions';
 import { Action, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
-import { updateClipboard } from 'actions/Clipboard';
+import { updateClipboard } from 'actions/ClipboardThunks';
 import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/userDataApi';
 import { NestedCard } from 'types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
@@ -15,10 +17,13 @@ import { selectFront } from 'selectors/frontsSelectors';
 import {
   selectEditorFrontIds,
   selectEditorFavouriteFrontIds
-} from 'bundles/frontsUIBundle';
-import debounce from 'lodash/debounce';
+} from 'bundles/frontsUI';
 
-const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
+const updateStateFromUrlChange: Middleware<
+  {},
+  State,
+  Dispatch
+> = ({
   dispatch,
   getState
 }: {
@@ -43,31 +48,6 @@ const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
 
   return result;
 };
-
-type PersistTo =
-  | 'collection'
-  | 'clipboard'
-  | 'openFrontIds'
-  | 'favouriteFrontIds';
-
-type Entity = 'collection';
-
-interface PersistMeta {
-  // The resource to persist the data to
-  persistTo: PersistTo;
-  // The id to to search for in this resource
-  id?: string;
-  // The key to take from the action payload if it is not specified. Defaults to
-  // 'id'.
-  key?: string;
-  // Should we find collection parents before or after the reducer is called?
-  // This is important when the relevant collection is affected by when the operation
-  // occurs - finding the parent collection before a remove operation, for example,
-  // or after an add operation.
-  applyBeforeReducer?: boolean;
-  // Entity to which the Action id refers to
-  entity?: Entity;
-}
 
 /**
  * Return an array of actions - either a single action,
@@ -196,7 +176,9 @@ const persistCollectionOnEdit = (
 
 const persistClipboardOnEdit = (
   updateClipboardAction = updateClipboard
-): Middleware<{}, State, Dispatch> => store => next => (action: Action) => {
+): Middleware<{}, State, Dispatch> => store => next => (
+  action: Action
+) => {
   const actions = unwrapBatchedActions(action);
 
   if (

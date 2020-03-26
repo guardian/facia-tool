@@ -1,4 +1,4 @@
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { updateCollection } from 'services/faciaApi';
 import {
   updateEditionsCollection,

@@ -1,6 +1,6 @@
-import { StartOptionsModal } from 'types/Action';
+import type { StartOptionsModal } from 'types/Action';
+import type { OptionsModalChoices } from 'types/Modals';
 import { ReactNode } from 'react';
-import { OptionsModalChoices } from 'types/Modals';
 
 const startOptionsModal = (
   title: string,

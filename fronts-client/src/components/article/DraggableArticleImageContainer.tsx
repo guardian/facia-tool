@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import {
   selectCardHasMediaOverrides,
   createSelectArticleFromCard
@@ -91,7 +91,10 @@ class DraggableArticleImageContainer extends React.Component<ComponentProps> {
 const mapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
 
-  return (state: State, { id, canDrag = true }: ContainerProps) => {
+  return (
+    state: State,
+    { id, canDrag = true }: ContainerProps
+  ) => {
     const article = selectArticle(state, id);
 
     return {

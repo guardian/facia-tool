@@ -5,7 +5,7 @@ import {
   Card
 } from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 
 import { normalize, denormalize } from './schema';
 import { CollectionConfig } from 'types/FaciaApi';

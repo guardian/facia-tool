@@ -2,8 +2,11 @@ import without from 'lodash/without';
 import compact from 'lodash/compact';
 import uniq from 'lodash/uniq';
 import sortBy from 'lodash/sortBy';
-import {
-  Action,
+import flatten from 'lodash/flatten';
+import { createSelector } from 'reselect';
+
+import type { Action } from 'types/Action';
+import type {
   EditorOpenCurrentFrontsMenu,
   EditorCloseCurrentFrontsMenu,
   EditorCloseFront,
@@ -26,26 +29,21 @@ import {
   EditorCloseAllOverviews,
   ChangedBrowsingStage
 } from 'types/Action';
-import { State as GlobalState } from 'types/State';
-import flatten from 'lodash/flatten';
-import { createSelector } from 'reselect';
+import type { State as GlobalState } from 'types/State';
 
 import { events } from 'services/GA';
 import {
   selectFronts,
-  selectFrontsWithPriority,
-  selectFront
+  selectFrontsWithPriority
 } from 'selectors/frontsSelectors';
 import { REMOVE_GROUP_CARD, REMOVE_SUPPORTING_CARD } from 'actions/CardsCommon';
-import { Stages, CardSets } from 'types/Collection';
+import { Stages } from 'types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
 import { CollectionWithArticles } from 'types/PageViewData';
 import {
   createSelectArticlesInCollection,
   createSelectArticleFromCard
 } from 'selectors/shared';
-import { ThunkResult } from 'types/Store';
-import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
   'EDITOR_OPEN_CURRENT_FRONTS_MENU';
@@ -86,26 +84,6 @@ const editorCloseCollections = (
   payload: { collectionIds }
 });
 
-const editorOpenAllCollectionsForFront = (
-  frontId: string,
-  browsingStage: CardSets
-): ThunkResult<void> => (dispatch, getState) => {
-  const front = selectFront(getState(), { frontId });
-  dispatch(
-    openCollectionsAndFetchTheirArticles(
-      front.collections,
-      front.id,
-      browsingStage
-    )
-  );
-};
-
-const editorCloseAllCollectionsForFront = (
-  frontId: string
-): ThunkResult<void> => (dispatch, getState) => {
-  const front = selectFront(getState(), { frontId });
-  dispatch(editorCloseCollections(front.collections));
-};
 
 const editorOpenCurrentFrontsMenu = (): EditorOpenCurrentFrontsMenu => ({
   type: EDITOR_OPEN_CURRENT_FRONTS_MENU
@@ -895,8 +873,6 @@ export {
   editorCloseOverview,
   editorOpenAllOverviews,
   editorCloseAllOverviews,
-  editorOpenAllCollectionsForFront,
-  editorCloseAllCollectionsForFront,
   selectIsClipboardOpen,
   selectIsFrontOverviewOpen,
   selectHasMultipleFrontsOpen,

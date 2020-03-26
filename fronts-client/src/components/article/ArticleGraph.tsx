@@ -2,7 +2,7 @@ import React from 'react';
 import { AreaChart, Area, XAxis, YAxis } from 'recharts';
 import { PageViewStory } from 'types/PageViewData';
 import { theme } from '../../constants/theme';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { connect } from 'react-redux';
 import { selectDataForArticle } from '../../selectors/pageViewDataSelectors';
 

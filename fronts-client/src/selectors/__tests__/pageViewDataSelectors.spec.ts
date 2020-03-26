@@ -1,7 +1,7 @@
 import { selectDataForArticle } from '../pageViewDataSelectors';
 import { state as pageViewData, data } from '../../reducers/__tests__/fixtures';
 import { state as globalState } from 'fixtures/initialState';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 
 const state = {
   ...globalState,

@@ -5,7 +5,7 @@ import {
   CollectionConfig,
   VisibleArticlesResponse
 } from 'types/FaciaApi';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
@@ -32,8 +32,10 @@ interface FrontsByPriority {
 const selectFronts = (state: State): FrontConfigMap =>
   frontsConfigSelectors.selectAll(state).fronts || {};
 
-const selectFrontId = (state: State, { frontId }: { frontId: string }) =>
-  frontId;
+const selectFrontId = (
+  state: State,
+  { frontId }: { frontId: string }
+) => frontId;
 
 const selectFront = createSelector(
   selectFronts,
@@ -70,8 +72,10 @@ const getFrontsByPriority = createSelector(
       }, {})
 );
 
-const selectPriority = (state: State, { priority }: { priority: string }) =>
-  priority;
+const selectPriority = (
+  state: State,
+  { priority }: { priority: string }
+) => priority;
 
 const selectCollectionSet = (
   state: State,
@@ -94,7 +98,8 @@ const selectCollectionId = (
   { collectionId }: { collectionId: string }
 ) => collectionId;
 
-const selectUnpublishedChanges = (state: State) => state.unpublishedChanges;
+const selectUnpublishedChanges = (state: State) =>
+  state.unpublishedChanges;
 
 const selectFrontsAsArray = createSelector(
   [selectFronts],
@@ -125,10 +130,15 @@ const selectFrontsWithPriority = (
 const getCollections = (state: State): CollectionConfigMap =>
   frontsConfigSelectors.selectAll(state).collections || {};
 
-const selectCollectionConfig = (state: State, id: string): CollectionConfig =>
-  getCollections(state)[id];
+const selectCollectionConfig = (
+  state: State,
+  id: string
+): CollectionConfig => getCollections(state)[id];
 
-const selectCollectionHasPrefill = (state: State, id: string): boolean =>
+const selectCollectionHasPrefill = (
+  state: State,
+  id: string
+): boolean =>
   !!(selectCollectionConfig(state, id) || { prefill: undefined }).prefill;
 
 const selectCollection = createSelectCollection();

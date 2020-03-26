@@ -1,6 +1,7 @@
 import { qs } from 'util/qs';
-import { CapiArticle, Tag } from 'types/Capi';
+import type { CapiArticle, Tag } from 'types/Capi';
 import pandaFetch from 'services/pandaFetch';
+import url from 'constants/url';
 
 type Fetch = (path: string) => Promise<Response>;
 
@@ -179,6 +180,9 @@ const capiQuery = (baseURL: string) => {
   };
 };
 
+export const liveCapi = capiQuery(url.capiLiveUrl);
+export const previewCapi = capiQuery(url.capiPreviewUrl);
+
 export {
   Fetch,
   CapiArticle,
@@ -189,6 +193,7 @@ export {
   checkIsResults,
   CAPITagQueryReponse,
   CAPIInteractiveAtomResponse,
-  CAPIAtomInteractive
+  CAPIAtomInteractive,
 };
+
 export default capiQuery;

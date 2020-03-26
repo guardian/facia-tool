@@ -2,7 +2,7 @@ import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
 import Article from 'components/article/Article';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { createSelectCardType } from 'selectors/cardSelectors';
 import {
   selectExternalArticleFromCard,
@@ -28,7 +28,7 @@ import { gridDropTypes } from 'constants/fronts';
 import {
   selectIsCardFormOpen,
   editorClearCardSelection
-} from 'bundles/frontsUIBundle';
+} from 'bundles/frontsUI';
 import { bindActionCreators } from 'redux';
 import CardFormInline from '../CardFormInline';
 import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';

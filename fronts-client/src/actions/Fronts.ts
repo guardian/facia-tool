@@ -1,10 +1,10 @@
 import { Dispatch, ThunkResult } from 'types/Store';
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
+import type { State } from 'types/State';
 import { fetchLastPressed as fetchLastPressedApi } from 'services/faciaApi';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 import { Stages } from 'types/Collection';
-import { State } from 'types/State';
 import { fetchFrontsConfigStrategy } from 'strategies/fetch-fronts-config';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {

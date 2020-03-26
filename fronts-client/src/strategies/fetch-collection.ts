@@ -1,4 +1,4 @@
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { getCollections as fetchCollections } from 'services/faciaApi';
 import { getEditionsCollections as fetchEditionsCollections } from 'services/faciaApi';

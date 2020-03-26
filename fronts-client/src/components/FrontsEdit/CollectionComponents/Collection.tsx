@@ -19,7 +19,7 @@ import {
   selectCollectionDisplayName
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { CardSets, Group } from 'types/Collection';
 import {
   createSelectCollectionStageGroups,
@@ -31,7 +31,7 @@ import {
   editorCloseCollections,
   selectHasMultipleFrontsOpen,
   createSelectDoesCollectionHaveOpenForms
-} from 'bundles/frontsUIBundle';
+} from 'bundles/frontsUI';
 import { getArticlesForCollections } from 'actions/Collections';
 import { cardSets } from 'constants/fronts';
 import CollectionMetaContainer from 'components/collection/CollectionMetaContainer';

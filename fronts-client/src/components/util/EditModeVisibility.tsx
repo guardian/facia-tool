@@ -1,7 +1,7 @@
 import React, { Fragment, ReactNode } from 'react';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { connect } from 'react-redux';
 
 interface EditModeVisibilityProps {

@@ -1,6 +1,6 @@
-import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from 'util/insertAndDedupeSiblings';
-import { State } from 'types/State';
+import type { Action } from 'types/Action';
+import type { State } from 'types/State';
 import { selectCards, selectGroupSiblings } from 'selectors/shared';
 import { capGroupCards } from 'util/capGroupCards';
 import keyBy from 'lodash/keyBy';

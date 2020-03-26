@@ -16,7 +16,7 @@ import DragIntentContainer from './DragIntentContainer';
 import ButtonCircularCaret, {
   ButtonCircularWithTransition
 } from './inputs/ButtonCircularCaret';
-import { State } from '../types/State';
+import type { State } from 'types/State';
 
 import { createSelectArticlesInCollection } from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';

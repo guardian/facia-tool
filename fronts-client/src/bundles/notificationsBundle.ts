@@ -1,7 +1,6 @@
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
+import type { State } from 'types/State';
 import v4 from 'uuid/v4';
-
-import { State } from 'types/State';
 
 interface BannerNotification {
   id: string;
@@ -35,11 +34,14 @@ export type NotificationActions =
 
 // Selectors
 
-export const selectBanners = (state: State) => state.notifications.banners;
+export const selectBanners = (state: State) =>
+  state.notifications.banners;
 
 // Reducer
 
-export const initialState: NotificationState = { banners: [] };
+export const initialState: NotificationState = {
+  banners: []
+};
 
 export const reducer = (
   state: NotificationState = initialState,

@@ -4,7 +4,7 @@ import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
 import { isCollectionConfigDynamic } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectEditMode, selectPriority } from './pathSelectors';
 import { FormFields } from 'util/form';
 import without from 'lodash/without';
@@ -54,15 +54,20 @@ export const emailFieldsToExclude = [
 const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
   isSupporting;
 
-const selectParentCollectionConfig = (state: State, cardId: string) => {
+const selectParentCollectionConfig = (
+  state: State,
+  cardId: string
+) => {
   const collectionId = selectors.selectParentCollectionOfCard(state, cardId);
   return collectionId ? selectCollectionConfig(state, collectionId) : undefined;
 };
 
 export const createSelectFormFieldsForCard = () => {
   const selectDerivedArticle = createSelectArticleFromCard();
-  const selectDerivedArticleFromRootState = (state: State, id: string) =>
-    selectDerivedArticle(state, id);
+  const selectDerivedArticleFromRootState = (
+    state: State,
+    id: string
+  ) => selectDerivedArticle(state, id);
   return createSelector(
     selectDerivedArticleFromRootState,
     selectParentCollectionConfig,

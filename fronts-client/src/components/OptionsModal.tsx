@@ -1,7 +1,7 @@
 import React from 'react';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import { OptionsModalProps } from '../types/Modals';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import {
   selectOptionsModalIsOpen,
   selectOptionsModalDescription,

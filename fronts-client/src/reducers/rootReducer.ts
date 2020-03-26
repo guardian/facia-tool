@@ -1,4 +1,5 @@
 import { reducer as form, FormStateMap } from 'redux-form';
+
 import config from 'reducers/configReducer';
 import fronts, { State as frontsState } from 'reducers/frontsReducer';
 import error from 'reducers/errorReducer';
@@ -9,7 +10,7 @@ import unpublishedChanges, {
 import clipboard, { State as clipboardState } from 'reducers/clipboardReducer';
 import optionsModal from 'reducers/modalsReducer';
 import { OptionsModalProps as OptionsModalState } from 'types/Modals';
-import editor, { State as editorState } from 'bundles/frontsUIBundle';
+import editor, { State as editorState } from 'bundles/frontsUI';
 import editionsIssue, { EditionsIssueState } from 'bundles/editionsIssueBundle';
 import {
   capiLiveFeed,

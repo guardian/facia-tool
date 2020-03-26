@@ -1,4 +1,4 @@
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { CardSets } from 'types/Collection';
 import { createSelectArticlesInCollection } from './shared';
 import uniq from 'lodash/uniq';
@@ -29,7 +29,8 @@ export const createSelectIsArticleInCollection = () => {
   const selectArticlesInCollection = createSelectArticlesInCollection();
   return createSelector(
     selectArticlesInCollection,
-    (_: State, { cardId: articleId }: { cardId: string }) => articleId,
+    (_: State, { cardId: articleId }: { cardId: string }) =>
+      articleId,
     (articleIds, articleId) => articleIds.indexOf(articleId) !== -1
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { connect } from 'react-redux';
 import { Card } from 'types/Collection';
 import ArticleDrag, {

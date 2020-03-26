@@ -2,7 +2,7 @@ import {
   fetchEditionsIssueAsConfig,
   fetchFrontsConfig
 } from 'services/faciaApi';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { runStrategy } from './run-strategy';
 import { FrontsConfig } from 'types/FaciaApi';
 

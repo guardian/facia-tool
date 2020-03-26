@@ -1,22 +1,24 @@
 import { Group } from 'types/Collection';
-import { CapGroupSiblings } from 'types/Action';
 
 function groupsReceived(groups: { [id: string]: Group }) {
   return {
-    type: 'SHARED/GROUPS_RECEIVED' as 'SHARED/GROUPS_RECEIVED',
+    type: 'SHARED/GROUPS_RECEIVED' as const,
     payload: groups
   };
 }
 
-const capGroupSiblings = (
-  id: string,
-  collectionCap: number
-): CapGroupSiblings => ({
-  type: 'SHARED/CAP_GROUP_SIBLINGS',
+type GroupsReceived = ReturnType<typeof groupsReceived>;
+
+const capGroupSiblings = (id: string, collectionCap: number) => ({
+  type: 'SHARED/CAP_GROUP_SIBLINGS' as const,
   payload: {
     id,
     collectionCap
   }
 });
+
+type CapGroupSiblings = ReturnType<typeof capGroupSiblings>;
+
+export type GroupActions = GroupsReceived | CapGroupSiblings;
 
 export { groupsReceived, capGroupSiblings };

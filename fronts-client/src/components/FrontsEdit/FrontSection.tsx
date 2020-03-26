@@ -9,11 +9,11 @@ import {
   editorCloseFront,
   selectIsFrontOverviewOpen,
   changedBrowsingStage
-} from 'bundles/frontsUIBundle';
+} from 'bundles/frontsUI';
 import Button from 'components/inputs/ButtonDefault';
 import { frontStages } from 'constants/fronts';
 import { FrontConfig, EditionsFrontMetadata } from 'types/FaciaApi';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectFront } from 'selectors/frontsSelectors';
 import SectionHeader from '../layout/SectionHeader';
 import SectionContent from '../layout/SectionContent';

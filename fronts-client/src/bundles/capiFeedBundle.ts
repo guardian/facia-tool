@@ -1,11 +1,11 @@
 import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
 import { CapiArticle } from 'types/Capi';
 import { ThunkResult } from 'types/Store';
-import { previewCapi, liveCapi } from 'services/frontsCapi';
+import { previewCapi, liveCapi } from 'services/capiQuery';
 import { checkIsContent } from 'services/capiQuery';
 import { getPrefills } from 'services/editionsApi';
 import { Dispatch } from 'redux';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { createSelectIsArticleStale } from 'util/externalArticle';
 
 type FeedState = CapiArticle;

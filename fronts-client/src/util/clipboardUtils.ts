@@ -1,6 +1,6 @@
 import { Card, NestedCard } from 'types/Collection';
 import { selectClipboard } from 'selectors/frontsSelectors';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
 import { notLiveLabels } from 'constants/fronts';
 
@@ -17,7 +17,9 @@ function normaliseClipboard(clipboard: {
   };
 }
 
-function denormaliseClipboard(state: State): { articles: NestedCard[] } {
+function denormaliseClipboard(
+  state: State
+): { articles: NestedCard[] } {
   const clipboard = selectClipboard(state);
 
   return denormalize({ articles: clipboard }, { cards: state.cards });

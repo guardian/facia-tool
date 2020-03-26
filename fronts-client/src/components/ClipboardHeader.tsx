@@ -5,8 +5,8 @@ import {
   selectIsClipboardOpen,
   editorOpenClipboard,
   editorCloseClipboard
-} from 'bundles/frontsUIBundle';
-import { State } from 'types/State';
+} from 'bundles/frontsUI';
+import type { State } from 'types/State';
 import { styled, theme } from 'constants/theme';
 import ButtonCircularCaret from 'components/inputs/ButtonCircularCaret';
 import DragIntentContainer from 'components/DragIntentContainer';

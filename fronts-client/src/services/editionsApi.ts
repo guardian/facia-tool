@@ -1,8 +1,8 @@
-import { EditionsIssue, IssueVersion } from 'types/Edition';
+import type { EditionsIssue, IssueVersion } from 'types/Edition';
+import type { CAPISearchQueryResponse } from './capiQuery';
+import type { EditionsFrontMetadata } from 'types/FaciaApi';
 import { Moment } from 'moment';
 import pandaFetch from './pandaFetch';
-import { CAPISearchQueryResponse } from './capiQuery';
-import { EditionsFrontMetadata } from 'types/FaciaApi';
 
 const dateFormat = 'YYYY-MM-DD';
 

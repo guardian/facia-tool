@@ -28,7 +28,7 @@ import {
   dragOffsetY
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import { media } from 'util/mediaQueries';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { liveBlogTones } from 'constants/fronts';
 import { hasMainVideo } from 'util/externalArticle';
 import { VideoIcon } from 'components/icons/Icons';
@@ -258,7 +258,10 @@ class FeedItem extends React.Component<ComponentProps> {
 
 const getState = (state: any) => state;
 
-const mapStateToProps = (state: State, { id }: ContainerProps) => ({
+const mapStateToProps = (
+  state: State,
+  { id }: ContainerProps
+) => ({
   shouldObscureFeed: selectFeatureValue(getState(state), 'obscure-feed'),
   article: selectArticleAcrossResources(state, id)
 });

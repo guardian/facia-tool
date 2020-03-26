@@ -1,7 +1,7 @@
 import { styled } from 'constants/theme';
 import { selectFocusedArticle } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 
 const Wrapper = styled.div<{ isSelected: boolean }>`
   outline: ${props =>

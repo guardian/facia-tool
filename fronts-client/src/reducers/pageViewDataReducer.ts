@@ -1,6 +1,6 @@
 import set from 'lodash/fp/set';
 import { PAGE_VIEW_DATA_RECEIVED } from '../actions/PageViewData';
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 import { PageViewDataPerFront, PageViewStory } from 'types/PageViewData';
 
 export interface State {

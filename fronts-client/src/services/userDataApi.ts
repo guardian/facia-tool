@@ -1,5 +1,5 @@
-import { FeatureSwitch } from 'types/Features';
-import { NestedCard } from 'types/Collection';
+import type { FeatureSwitch } from 'types/Features';
+import type { NestedCard } from 'types/Collection';
 import pandaFetch from './pandaFetch';
 
 const saveFeatureSwitch = async (featureSwitch: FeatureSwitch) => {

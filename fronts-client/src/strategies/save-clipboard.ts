@@ -1,4 +1,4 @@
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { saveClipboard, saveEditionsClipboard } from 'services/faciaApi';
 import { runStrategy } from './run-strategy';
 import { NestedCard } from 'types/Collection';

@@ -12,8 +12,8 @@ import { configReceived } from 'actions/Config';
 import {
   editorSetOpenFronts,
   editorSetFavouriteFronts
-} from 'bundles/frontsUIBundle';
-import { storeClipboardContent } from 'actions/Clipboard';
+} from 'bundles/frontsUI';
+import { storeClipboardContent } from 'actions/ClipboardThunks';
 import { Dispatch } from 'types/Store';
 import Modal from 'react-modal';
 import { init as initGA } from 'services/GA';

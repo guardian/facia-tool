@@ -1,4 +1,6 @@
 import { batchActions } from 'redux-batched-actions';
+
+import type { VisibleArticlesResponse, CollectionResponse } from 'types/FaciaApi';
 import {
   getArticlesBatched,
   discardDraftChangesToCollection as discardDraftChangesToCollectionApi,
@@ -7,7 +9,6 @@ import {
   publishCollection as publishCollectionApi,
   getCollection as getCollectionApi
 } from 'services/faciaApi';
-import { VisibleArticlesResponse, CollectionResponse } from 'types/FaciaApi';
 import {
   selectUserEmail,
   selectFirstName,
@@ -41,7 +42,8 @@ import {
 import { actions as collectionActions } from 'bundles/collectionsBundle';
 import { selectCollectionConfig, selectFront } from 'selectors/frontsSelectors';
 import { Dispatch, ThunkResult } from 'types/Store';
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
+import type { State } from 'types/State';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
 import { Stages, Collection, CardSets } from 'types/Collection';
 import difference from 'lodash/difference';
@@ -50,14 +52,13 @@ import {
   editorOpenCollections,
   editorCloseCollections,
   editorCloseFormsForCollection
-} from 'bundles/frontsUIBundle';
+} from 'bundles/frontsUI';
 import flatten from 'lodash/flatten';
 import uniq from 'lodash/uniq';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
 import { selectVisibleArticles } from 'selectors/frontsSelectors';
 import { frontStages } from 'constants/fronts';
-import { State } from 'types/State';
 import { events } from 'services/GA';
 import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';

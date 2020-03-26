@@ -5,7 +5,7 @@ import {
   createSelectCollection
 } from './shared';
 import { selectClipboardContent } from 'selectors/clipboardSelectors';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectUnlockedFrontCollections } from './frontsSelectors';
 
 const selectNextClipboardIndex = (

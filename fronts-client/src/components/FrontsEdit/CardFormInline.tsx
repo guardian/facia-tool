@@ -28,7 +28,7 @@ import InputGroup from 'components/inputs/InputGroup';
 import InputButton from 'components/inputs/InputButton';
 import Row from '../Row';
 import Col from '../Col';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import ConditionalField from 'components/inputs/ConditionalField';
 import ConditionalComponent from 'components/layout/ConditionalComponent';
 import {
@@ -819,7 +819,10 @@ const formContainer: React.SFC<ContainerProps & InterfaceProps> = props => (
 const createMapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
   const selectFormFields = createSelectFormFieldsForCard();
-  return (state: State, { cardId, isSupporting = false }: InterfaceProps) => {
+  return (
+    state: State,
+    { cardId, isSupporting = false }: InterfaceProps
+  ) => {
     const externalArticle = selectExternalArticleFromCard(state, cardId);
     const valueSelector = formValueSelector(cardId);
     const article = selectArticle(state, cardId);
@@ -874,6 +877,9 @@ const createMapStateToProps = () => {
 
 export { getCardMetaFromFormValues, getInitialValuesForCardForm };
 
-export default connect<ContainerProps, {}, InterfaceProps, State>(
-  createMapStateToProps
-)(formContainer);
+export default connect<
+  ContainerProps,
+  {},
+  InterfaceProps,
+  State
+>(createMapStateToProps)(formContainer);

@@ -1,7 +1,10 @@
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { createSelector } from 'reselect';
 
-export const selectFeatureValue = (state: State, featureKey: string): boolean =>
+export const selectFeatureValue = (
+  state: State,
+  featureKey: string
+): boolean =>
   state.featureSwitches[featureKey]
     ? state.featureSwitches[featureKey].enabled
     : false;

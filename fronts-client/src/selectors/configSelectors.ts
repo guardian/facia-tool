@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectEditMode } from './pathSelectors';
 
 const selectConfig = (state: State) => state.config;

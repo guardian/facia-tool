@@ -1,5 +1,5 @@
-import { NestedCard } from 'types/Collection';
-import { FeatureSwitch } from './Features';
+import type { NestedCard } from 'types/Collection';
+import type { FeatureSwitch } from './Features';
 
 interface Permission {
   [id: string]: boolean;

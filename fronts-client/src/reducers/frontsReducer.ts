@@ -2,7 +2,7 @@ import set from 'lodash/fp/set';
 import { Stages } from 'types/Collection';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 import {
   reducer as frontsConfigReducer,
   initialState,
