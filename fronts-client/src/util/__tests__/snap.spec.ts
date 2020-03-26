@@ -3,7 +3,7 @@ import {
   generateId,
   createLatestSnap,
   createSnap,
-  createAtomSnap
+  createAtomSnap,
 } from 'util/snap';
 import tagPageHtml from 'fixtures/guardianTagPage';
 import fetchMock from 'fetch-mock';
@@ -11,7 +11,7 @@ import bbcSectionPage from 'fixtures/bbcSectionPage';
 import { capiAtom } from 'fixtures/capiAtom.js';
 import {
   CAPIInteractiveAtomResponse,
-  CAPIAtomInteractive
+  CAPIAtomInteractive,
 } from 'services/capiQuery';
 
 jest.mock('uuid/v4', () => () => 'uuid');
@@ -52,9 +52,9 @@ describe('utils/snap', () => {
           href: 'example',
           showKickerCustom: true,
           snapType: 'latest',
-          snapUri: 'example'
+          snapUri: 'example',
         },
-        uuid: 'uuid'
+        uuid: 'uuid',
       });
     });
   });
@@ -74,9 +74,9 @@ describe('utils/snap', () => {
           trailText: undefined,
           snapType: 'link',
           byline: undefined,
-          showByline: false
+          showByline: false,
         },
-        uuid: 'uuid'
+        uuid: 'uuid',
       });
     });
     it("should create a snap of type 'link' given an external link", async () => {
@@ -92,9 +92,9 @@ describe('utils/snap', () => {
           showByline: true,
           snapType: 'link',
           trailText:
-            'The latest BBC Business News: breaking personal finance, company, financial and economic news, plus insight and analysis into UK and global markets.'
+            'The latest BBC Business News: breaking personal finance, company, financial and economic news, plus insight and analysis into UK and global markets.',
         },
-        uuid: 'uuid'
+        uuid: 'uuid',
       });
     });
   });
@@ -109,15 +109,15 @@ describe('utils/snap', () => {
         defaultHtml: '',
         data: { interactive: { title: 'General Election 2017' } },
         contentChangeDetails: {},
-        commissioningDesks: []
+        commissioningDesks: [],
       };
       const atom: CAPIInteractiveAtomResponse = {
         response: {
           status: 'ok',
           userTier: capiAtom.response.userTier,
           total: capiAtom.response.total,
-          interactive
-        }
+          interactive,
+        },
       };
       const atomLinkSnap = await createAtomSnap(
         'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
@@ -136,8 +136,8 @@ describe('utils/snap', () => {
             'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
           atomId: 'atom/interactive/interactives/2017/06/general-election',
           href:
-            'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election'
-        }
+            'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
+        },
       });
     });
   });

@@ -7,13 +7,13 @@ import { insertCardFromDropEvent } from 'util/collectionUtils';
 import {
   moveCard,
   removeCard as removeCardAction,
-  updateCardMetaWithPersist as updateCardMeta
+  updateCardMetaWithPersist as updateCardMeta,
 } from 'actions/Cards';
 import {
   editorSelectCard,
   editorClearCardSelection,
   selectIsClipboardOpen,
-  createSelectCollectionIdsWithOpenForms
+  createSelectCollectionIdsWithOpenForms,
 } from 'bundles/frontsUI';
 import { clipboardId } from 'constants/fronts';
 import { Card as TCard } from 'types/Collection';
@@ -25,18 +25,18 @@ import DragIntentContainer from 'components/DragIntentContainer';
 import {
   setFocusState,
   resetFocusState,
-  selectIsClipboardFocused
+  selectIsClipboardFocused,
 } from 'bundles/focusBundle';
 import FocusWrapper from './FocusWrapper';
 import { bindActionCreators } from 'redux';
 import ButtonRoundedWithLabel, {
-  ButtonLabel
+  ButtonLabel,
 } from 'components/inputs/ButtonRoundedWithLabel';
 import { clearClipboardWithPersist } from 'actions/Clipboard';
 import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 
 const ClipboardWrapper = styled.div.attrs({
-  'data-testid': 'clipboard-wrapper'
+  'data-testid': 'clipboard-wrapper',
 })<{
   'data-testid'?: string;
   clipboardHasOpenForms: boolean;
@@ -99,7 +99,7 @@ type TClipboardWrapper = any;
 
 class Clipboard extends React.Component<ClipboardProps> {
   public state = {
-    preActive: false
+    preActive: false,
   };
 
   private focusClipboardIfInFocus: () => void;
@@ -141,7 +141,7 @@ class Clipboard extends React.Component<ClipboardProps> {
       clipboardHasContent,
       selectCard,
       removeCard,
-      removeSupportingCard
+      removeSupportingCard,
     } = this.props;
     return (
       <React.Fragment>
@@ -181,7 +181,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                       <>
                         <FocusWrapper
                           tabIndex={0}
-                          onFocus={e => this.handleArticleFocus(e, card)}
+                          onFocus={(e) => this.handleArticleFocus(e, card)}
                           area="clipboard"
                           onBlur={this.handleBlur}
                           uuid={card.uuid}
@@ -212,7 +212,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                                   getNodeProps={getSProps}
                                   size="small"
                                   showMeta={false}
-                                  onSelect={id => selectCard(id, true)}
+                                  onSelect={(id) => selectCard(id, true)}
                                   onDelete={() =>
                                     removeSupportingCard(
                                       card.uuid,
@@ -256,8 +256,8 @@ const mapStateToProps = () => {
     isClipboardFocused: selectIsClipboardFocused(state),
     clipboardHasContent: !!selectClipboardArticles(state).length,
     clipboardHasOpenForms: !!selectCollectionIdsWithOpenForms(state, {
-      frontId: clipboardId
-    }).length
+      frontId: clipboardId,
+    }).length,
   });
 };
 
@@ -275,14 +275,14 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   handleFocus: () =>
     dispatch(
       setFocusState({
-        type: 'clipboard'
+        type: 'clipboard',
       })
     ),
   handleArticleFocus: (card: TCard) => {
     dispatch(
       setFocusState({
         type: 'clipboardArticle',
-        card
+        card,
       })
     );
   },
@@ -290,11 +290,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     {
       selectCard: editorSelectCard,
       updateCardMeta,
-      handleBlur: resetFocusState
+      handleBlur: resetFocusState,
     },
     dispatch
   ),
-  dispatch
+  dispatch,
 });
 
 type TStateProps = ReturnType<ReturnType<typeof mapStateToProps>>;
@@ -312,7 +312,7 @@ const mergeProps = (
       clipboardId, // clipboardId is passed twice here as both the collection ID...
       clipboardId, // and the front ID
       isSupporting
-    )
+    ),
 });
 
 export default connect(

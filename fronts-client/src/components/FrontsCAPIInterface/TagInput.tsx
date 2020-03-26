@@ -71,12 +71,12 @@ class CAPITagInput extends React.Component<
   { input: string; tags: Tag[] }
 > {
   public static defaultProps = {
-    placeholder: 'Type tag name'
+    placeholder: 'Type tag name',
   };
 
   public state = {
     input: '',
-    tags: []
+    tags: [],
   };
 
   private run: (value: string) => void;
@@ -97,8 +97,8 @@ class CAPITagInput extends React.Component<
     return (
       <Downshift
         defaultIsOpen={false}
-        itemToString={item => (item ? item.id : '')}
-        onSelect={value => {
+        itemToString={(item) => (item ? item.id : '')}
+        onSelect={(value) => {
           onSelect(value, searchType);
         }}
       >
@@ -108,7 +108,7 @@ class CAPITagInput extends React.Component<
           getMenuProps,
           getItemProps,
           highlightedIndex,
-          isOpen
+          isOpen,
         }) => (
           <div>
             <SearchContainer>
@@ -116,12 +116,12 @@ class CAPITagInput extends React.Component<
                 {capitalize(searchType)}:
               </SearchTitle>
               <SearchInput
-                {...getInputProps({
+                {...(getInputProps({
                   placeholder,
                   width: '100%',
                   value: this.state.input,
-                  onChange: (input: any) => this.onSearchChange(input)
-                }) as GetInputPropsOptions & { ref: any; as: any }}
+                  onChange: (input: any) => this.onSearchChange(input),
+                }) as GetInputPropsOptions & { ref: any; as: any })}
               />
             </SearchContainer>
             <TagDropdown {...getMenuProps()}>
@@ -137,15 +137,15 @@ class CAPITagInput extends React.Component<
                             <DropdownItem
                               {...getItemProps({
                                 item: tag,
-                                index: seen.length
+                                index: seen.length,
                               })}
                               highlighted={highlightedIndex === seen.length}
                               key={id}
                             >
                               {id}
-                            </DropdownItem>
+                            </DropdownItem>,
                           ],
-                          seen: [...seen, id]
+                          seen: [...seen, id],
                         };
                   },
                   { els: [], seen: [] } as {
@@ -164,7 +164,7 @@ class CAPITagInput extends React.Component<
     const tags = (await liveCapi[this.props.searchType]({ q })).response
       .results;
     this.setState({
-      tags
+      tags,
     });
   }
 
@@ -172,7 +172,7 @@ class CAPITagInput extends React.Component<
     const { value } = e.currentTarget;
     this.setState(
       {
-        input: value
+        input: value,
       },
       () => this.run(value)
     );

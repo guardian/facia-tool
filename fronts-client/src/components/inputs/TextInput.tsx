@@ -2,7 +2,7 @@ import React from 'react';
 import { styled, theme } from 'constants/theme';
 import {
   MagnifyingGlassIcon as SearchIcon,
-  ClearIcon
+  ClearIcon,
 } from 'components/icons/Icons';
 import { SmallRoundButton } from 'util/sharedStyles/buttons';
 

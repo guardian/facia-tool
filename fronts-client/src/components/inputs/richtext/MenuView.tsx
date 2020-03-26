@@ -7,7 +7,7 @@ import { icons } from './icons';
 import {
   linkItemCommand,
   removeAllMarksFromSelection,
-  unlinkItemCommand
+  unlinkItemCommand,
 } from './utils/command-helpers';
 import { EditorState, Transaction } from 'prosemirror-state';
 import { undo, redo } from 'prosemirror-history';
@@ -45,39 +45,39 @@ export const MenuView = ({ edView }: { edView: EditorView }) => {
     {
       command: toggleMark(basicSchema.marks.strong),
       dom: icons.strong,
-      title: 'bold'
+      title: 'bold',
     },
     {
       command: toggleMark(basicSchema.marks.em),
       dom: icons.emphasis,
-      title: 'italic'
+      title: 'italic',
     },
     {
       command: linkItemCommand(basicSchema.marks.link)(),
       dom: icons.link,
-      title: 'add-link'
+      title: 'add-link',
     },
     {
       command: unlinkItemCommand(basicSchema.marks.link),
       dom: icons.unlink,
-      title: 'remove-link'
+      title: 'remove-link',
     },
     {
       command: undo,
       dom: icons.undo,
-      title: 'undo'
+      title: 'undo',
     },
     {
       command: redo,
       dom: icons.redo,
-      title: 'redo'
+      title: 'redo',
     },
     {
       command: (state: EditorState, dispatch: (tr: Transaction) => void) =>
         removeAllMarksFromSelection(state, dispatch),
       dom: icons.removeFormatting,
-      title: 'remove-formatting'
-    }
+      title: 'remove-formatting',
+    },
   ];
 
   return (
@@ -86,7 +86,7 @@ export const MenuView = ({ edView }: { edView: EditorView }) => {
         return (
           <MenuButton
             className="iconBox"
-            onMouseDown={e => {
+            onMouseDown={(e) => {
               e.preventDefault();
               item.command(edView.state, edView.dispatch);
             }}

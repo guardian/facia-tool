@@ -1,5 +1,5 @@
 import type { Card, CardMeta } from 'types/Collection';
-import type{ CAPIInteractiveAtomResponse } from 'services/capiQuery';
+import type { CAPIInteractiveAtomResponse } from 'services/capiQuery';
 import { getAbsolutePath, isGuardianUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import v4 from 'uuid/v4';
@@ -21,7 +21,7 @@ function convertToSnap({ id, ...rest }: PartialBy<Card, 'id'>): Card {
   const card = {
     id: generateId(),
     ...rest,
-    meta: rest.meta
+    meta: rest.meta,
   };
 
   if (!id) {
@@ -47,8 +47,8 @@ async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
         byline: siteName,
         showByline: siteName ? true : false,
         snapType: 'link',
-        ...meta
-      }
+        ...meta,
+      },
     });
   } catch (e) {
     return convertToSnap({
@@ -57,8 +57,8 @@ async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
       frontPublicationDate: Date.now(),
       meta: {
         headline: 'Invalid page',
-        snapType: 'link'
-      }
+        snapType: 'link',
+      },
     });
   }
 }
@@ -82,8 +82,8 @@ async function createAtomSnap(
       snapType: 'interactive',
       snapUri: url,
       atomId,
-      ...meta
-    }
+      ...meta,
+    },
   });
 }
 
@@ -96,8 +96,8 @@ function createLatestSnap(url: string, kicker: string) {
       snapType: 'latest',
       snapUri: getAbsolutePath(url),
       showKickerCustom: true,
-      customKicker: kicker
-    }
+      customKicker: kicker,
+    },
   });
 }
 

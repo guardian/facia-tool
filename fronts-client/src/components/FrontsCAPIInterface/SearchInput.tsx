@@ -57,7 +57,7 @@ const initState = {
   ratings: [],
   query: '',
   toDate: null,
-  fromDate: null
+  fromDate: null,
 } as SearchInputState;
 
 class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
@@ -86,15 +86,15 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
   public clearSelectedDates = () => {
     this.setStateInner({
       fromDate: null,
-      toDate: null
+      toDate: null,
     });
   };
 
   public handleSearchInput = ({
-    currentTarget
+    currentTarget,
   }: React.SyntheticEvent<HTMLInputElement>) => {
     this.setStateInner({
-      query: currentTarget.value
+      query: currentTarget.value,
     });
   };
 
@@ -112,7 +112,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
       desks,
       ratings,
       fromDate: from,
-      toDate: to
+      toDate: to,
     } = this.state;
 
     return (
@@ -128,7 +128,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
               onSearch={this.hideSearchFilters}
               searchTermsExist={this.searchTermsExist}
               onDisplaySearchFilters={this.handleDisplaySearchFilters}
-              onKeyUp={e => {
+              onKeyUp={(e) => {
                 if (e.keyCode === 13) {
                   this.hideSearchFilters();
                 }
@@ -137,7 +137,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
           </TextInputContainer>
           {rightHandContainer}
         </InputContainer>
-        {tags.map(tag => (
+        {tags.map((tag) => (
           <FilterItem
             key={tag}
             onClear={() => this.removeStringFromStateKey('tags', tag)}
@@ -145,7 +145,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
             <span>{tag}</span>
           </FilterItem>
         ))}
-        {sections.map(section => (
+        {sections.map((section) => (
           <FilterItem
             key={section}
             onClear={() => this.removeStringFromStateKey('sections', section)}
@@ -153,7 +153,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
             <span>{section}</span>
           </FilterItem>
         ))}
-        {desks.map(desk => (
+        {desks.map((desk) => (
           <FilterItem
             key={desk}
             onClear={() => this.removeStringFromStateKey('desks', desk)}
@@ -161,7 +161,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
             <span>{desk}</span>
           </FilterItem>
         ))}
-        {ratings.map(rating => (
+        {ratings.map((rating) => (
           <FilterItem
             key={rating}
             onClear={() => this.removeStringFromStateKey('ratings', rating)}
@@ -202,7 +202,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
                   { id: '2', label: '2 Stars' },
                   { id: '3', label: '3 Stars' },
                   { id: '4', label: '4 Stars' },
-                  { id: '5', label: '5 Stars' }
+                  { id: '5', label: '5 Stars' },
                 ]}
                 onChange={this.addUniqueStringToStateKey('ratings')}
               />
@@ -240,7 +240,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
       const arr = this.state[key];
       this.setStateInner({
         ...this.state,
-        [key]: arr.includes(id) ? arr : [...arr, id]
+        [key]: arr.includes(id) ? arr : [...arr, id],
       });
     };
   }
@@ -252,7 +252,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
     const arr = this.state[key];
     this.setStateInner({
       ...this.state,
-      [key]: arr.includes(val) ? arr.filter(v => v !== val) : arr
+      [key]: arr.includes(val) ? arr.filter((v) => v !== val) : arr,
     });
   }
 

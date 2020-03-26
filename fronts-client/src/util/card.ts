@@ -7,7 +7,7 @@ import noop from 'lodash/noop';
 import {
   getAtomFromCapi,
   getContent,
-  transformExternalArticle
+  transformExternalArticle,
 } from 'services/faciaApi';
 import { CapiArticle } from 'types/Capi';
 import { TArticleEntities } from 'types/Cards';
@@ -23,7 +23,7 @@ import {
   isCapiUrl,
   isGoogleRedirectUrl,
   isGuardianUrl,
-  isValidURL
+  isValidURL,
 } from 'util/url';
 
 // Ideally we will convert this to a type. See
@@ -50,8 +50,8 @@ const createCard = (
     ...(showByline ? { showByline } : {}),
     ...(showQuotedHeadline ? { showQuotedHeadline } : {}),
     ...(isEdition || showKickerCustom ? { showKickerCustom: true } : {}),
-    ...(isEdition || showKickerCustom ? { customKicker } : {})
-  }
+    ...(isEdition || showKickerCustom ? { customKicker } : {}),
+  },
 });
 
 // only go one deep
@@ -60,13 +60,13 @@ const cloneCard = (
   cards: { [id: string]: Card } // all the cards to enable nested rebuilds
 ): { parent: Card; supporting: Card[] } => {
   const sup = (card.meta.supporting || [])
-    .map(id => {
+    .map((id) => {
       const supportingCard = cards[id];
       const { supporting, ...meta } = supportingCard.meta;
       return cloneCard(
         {
           ...supportingCard,
-          meta
+          meta,
         },
         cards
       ).parent;
@@ -79,10 +79,10 @@ const cloneCard = (
       uuid: v4(),
       meta: {
         ...card.meta,
-        supporting: sup.map(({ uuid }) => uuid)
-      }
+        supporting: sup.map(({ uuid }) => uuid),
+      },
     },
-    supporting: sup
+    supporting: sup,
   };
 };
 
@@ -90,7 +90,7 @@ const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
   const newMeta: CardMeta = {
     imageCutoutReplace: false,
     imageSlideshowReplace: false,
-    imageReplace: false
+    imageReplace: false,
   };
   if (meta.imageReplace) {
     return {
@@ -100,16 +100,16 @@ const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
         'imageSrcThumb',
         'imageSrcWidth',
         'imageSrcHeight',
-        'imageSrcOrigin'
+        'imageSrcOrigin',
       ]),
-      imageReplace: true
+      imageReplace: true,
     };
   }
   if (meta.imageSlideshowReplace) {
     return {
       ...newMeta,
       slideshow: cloneDeep(meta.slideshow),
-      imageSlideshowReplace: true
+      imageSlideshowReplace: true,
     };
   }
   if (meta.imageCutoutReplace) {
@@ -119,9 +119,9 @@ const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
         'imageCutoutSrc',
         'imageCutoutSrcWidth',
         'imageCutoutSrcHeight',
-        'imageCutoutSrcOrigin'
+        'imageCutoutSrcOrigin',
       ]),
-      imageCutoutReplace: true
+      imageCutoutReplace: true,
     };
   }
   return {};
@@ -201,7 +201,7 @@ const getArticleEntitiesFromDrop = async (
     }
     const {
       articles: [article, ...rest],
-      title
+      title,
     } = await getContent(id);
     if (rest.length) {
       // If we have multiple articles returned from a single resource, we're
@@ -254,7 +254,7 @@ const snapMetaWhitelist = [
   'gu-snapUri',
   'gu-snapType',
   'gu-headline',
-  'gu-trailText'
+  'gu-trailText',
 ];
 const guPrefix = 'gu-';
 
@@ -293,15 +293,15 @@ const getArticleEntitiesFromGuardianPath = async (
                 title || 'Unknown title'
               );
               resolve(card);
-            }
+            },
           },
           {
             buttonText: 'Link',
             callback: async () => {
               const snap = await createSnap(resourceId);
               resolve(snap);
-            }
-          }
+            },
+          },
         ],
         reject,
         true
@@ -315,5 +315,5 @@ export {
   cloneActiveImageMeta,
   getArticleEntitiesFromDrop,
   snapMetaWhitelist,
-  marketingParamsWhiteList
+  marketingParamsWhiteList,
 };

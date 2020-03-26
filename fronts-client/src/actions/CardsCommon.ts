@@ -21,8 +21,8 @@ function updateCardMeta(
     payload: {
       id,
       meta,
-      merge
-    }
+      merge,
+    },
   };
 }
 
@@ -42,7 +42,7 @@ function cardsReceived(
     : cards;
   return {
     type: CARDS_RECEIVED,
-    payload
+    payload,
   };
 }
 
@@ -51,7 +51,7 @@ type CardsReceived = ReturnType<typeof cardsReceived>;
 function copyCardImageMeta(from: string, to: string) {
   return {
     type: COPY_CARD_IMAGE_META as typeof COPY_CARD_IMAGE_META,
-    payload: { from, to }
+    payload: { from, to },
   };
 }
 
@@ -59,8 +59,8 @@ function clearCards(ids: string[]) {
   return {
     type: CLEAR_CARDS,
     payload: {
-      ids
-    }
+      ids,
+    },
   };
 }
 
@@ -71,8 +71,8 @@ function removeGroupCard(id: string, cardId: string) {
     type: REMOVE_GROUP_CARD,
     payload: {
       id,
-      cardId
-    }
+      cardId,
+    },
   };
 }
 
@@ -83,8 +83,8 @@ function removeSupportingCard(id: string, cardId: string) {
     type: REMOVE_SUPPORTING_CARD,
     payload: {
       id,
-      cardId
-    }
+      cardId,
+    },
   };
 }
 
@@ -100,12 +100,12 @@ const insertGroupCard = (
   payload: {
     id,
     index,
-    cardId
+    cardId,
   },
   meta: {
     persistTo,
-    key: 'cardId'
-  }
+    key: 'cardId',
+  },
 });
 
 type InsertGroupCard = ReturnType<typeof insertGroupCard>;
@@ -120,12 +120,12 @@ const insertSupportingCard = (
   payload: {
     id,
     index,
-    cardId
+    cardId,
   },
   meta: {
     persistTo,
-    key: 'cardId'
-  }
+    key: 'cardId',
+  },
 });
 
 type InsertSupportingCard = ReturnType<typeof insertSupportingCard>;
@@ -134,8 +134,8 @@ const maybeAddFrontPublicationDate = (cardId: string) => ({
   type: MAYBE_ADD_FRONT_PUBLICATION,
   payload: {
     id: cardId,
-    date: Date.now()
-  }
+    date: Date.now(),
+  },
 });
 
 type MaybeAddFrontPublicationDate = ReturnType<
@@ -161,5 +161,5 @@ export {
   removeSupportingCard,
   clearCards,
   maybeAddFrontPublicationDate,
-  copyCardImageMeta
+  copyCardImageMeta,
 };

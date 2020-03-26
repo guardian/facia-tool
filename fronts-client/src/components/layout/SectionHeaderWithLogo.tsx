@@ -21,7 +21,7 @@ const LogoTypeContainer = styled(Link)`
 export default ({
   children,
   includeBorder,
-  greyHeader
+  greyHeader,
 }: {
   children?: React.ReactNode;
   includeBorder?: boolean;

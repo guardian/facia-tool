@@ -13,7 +13,7 @@ const DIMENSION_MAP = {
   dimension1: 'front_id',
   dimension2: 'drag_source',
   dimension3: 'collection_id',
-  dimension4: 'version'
+  dimension4: 'version',
 };
 
 let gtag = (window as any).gtag;
@@ -30,7 +30,7 @@ if (!gtag) {
 const init = () => {
   gtag('set', {
     custom_map: DIMENSION_MAP,
-    version: '2'
+    version: '2',
   });
 };
 
@@ -44,39 +44,39 @@ type ImageAdditionMethod =
 const events = {
   addFront: (frontId: string) =>
     gtag('event', 'add_front', {
-      front_id: frontId // either front id or 'clipboard'
+      front_id: frontId, // either front id or 'clipboard'
     }),
   moveFront: (frontId: string) =>
     gtag('event', 'move_front', {
-      front_id: frontId // either front id or 'clipboard'
+      front_id: frontId, // either front id or 'clipboard'
     }),
   removeFront: (frontId: string) =>
     gtag('event', 'remove_front', {
-      front_id: frontId
+      front_id: frontId,
     }),
   dropArticle: (frontId: string, source?: string) =>
     gtag('event', 'drop_article', {
       front_id: frontId,
-      drag_source: source // 'feed', 'url', 'collection' etc.
+      drag_source: source, // 'feed', 'url', 'collection' etc.
     }),
   overviewItemClicked: (frontId: string) =>
     gtag('event', 'overview_item_clicked', {
-      front_id: frontId
+      front_id: frontId,
     }),
   collectionToggleClicked: (frontId: string) =>
     gtag('event', 'collection_toggle_clicked', {
-      front_id: frontId
+      front_id: frontId,
     }),
   collectionPublished: (frontId: string, collectionId: string) =>
     gtag('event', 'collection_published', {
       collection_id: collectionId,
-      front_id: frontId
+      front_id: frontId,
     }),
   imageAdded: (frontId: string, method: ImageAdditionMethod) =>
     gtag('event', `image_added: ${method}`, {
       front_id: frontId,
-      method
-    })
+      method,
+    }),
 };
 
 export { init, events, gtag };

@@ -8,26 +8,26 @@ const fronts = {
           collections: [
             'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
             '4ab657ff-c105-4292-af23-cda00457b6b7',
-            'c7f48719-6cbc-4024-ae92-1b5f9f6c0c99'
+            'c7f48719-6cbc-4024-ae92-1b5f9f6c0c99',
           ],
           priority: 'commercial',
           canonical: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
           group: 'US professional',
           id: 'sc-johnson-partner-zone',
-          index: 0
+          index: 0,
         },
         'a-shot-of-sustainability': {
           collections: [
             'bf2267c3-93a3-405c-8381-672fcb0e0b86',
             '7902d549-b02a-49b7-828b-c959d4b6f5db',
             'e4e9d1f0-542b-4df2-bbc4-6ac0532396bb',
-            'e307d948-c6d5-4a2e-b0f4-3fdef9d8655c'
+            'e307d948-c6d5-4a2e-b0f4-3fdef9d8655c',
           ],
           priority: 'commercial',
           canonical: 'e4e9d1f0-542b-4df2-bbc4-6ac0532396bb',
           group: 'UK consumer',
           id: 'a-shot-of-sustainability',
-          index: 1
+          index: 1,
         },
         'sustainable-business/fairtrade-partner-zone': {
           collections: [
@@ -37,18 +37,18 @@ const fronts = {
             '8df68e59-e7ef-40e5-bcf3-4ea3eb30950c',
             'ab21e2b6-93cb-4140-ac09-97c382dcaeb2',
             '6851252b-5b53-4089-886d-47e2e32a8a2d',
-            'd5a943c6-ce77-4ffa-a9ab-3c9e736cc611'
+            'd5a943c6-ce77-4ffa-a9ab-3c9e736cc611',
           ],
           priority: 'commercial',
           id: 'sustainable-business/fairtrade-partner-zone',
-          index: 2
+          index: 2,
         },
         'un-global-compact-partner-zone': {
           collections: ['082d2dc8-f196-4c00-979e-7f541f2772f4'],
           priority: 'commercial',
           canonical: '082d2dc8-f196-4c00-979e-7f541f2772f4',
           id: 'un-global-compact-partner-zone',
-          index: 3
+          index: 3,
         },
         'gnm-archive': {
           collections: [
@@ -56,143 +56,143 @@ const fronts = {
             '28d44c92-0666-48d3-8f3b-ed3806455af6',
             '51e1da7b-84b1-4274-84e1-4aa368bf893a',
             'effe55e6-1a11-4c39-be17-d245f776ba4c',
-            '7a35f3e8-3fab-4b2a-bc2f-7649f8342b56'
+            '7a35f3e8-3fab-4b2a-bc2f-7649f8342b56',
           ],
           id: 'gnm-archive',
           priority: 'editorial',
-          index: 4
-        }
+          index: 4,
+        },
       },
       collections: {
         '28d44c92-0666-48d3-8f3b-ed3806455af6': {
           displayName: 'pictures and video',
           backfill: {
             type: 'capi',
-            query: 'search?tag=gnm-archive/gnm-archive,type/gallery'
+            query: 'search?tag=gnm-archive/gnm-archive,type/gallery',
           },
           type: 'fixed/medium/slow-VI',
           href: 'gnm-archive/gnm-archive+type/gallery',
-          id: '28d44c92-0666-48d3-8f3b-ed3806455af6'
+          id: '28d44c92-0666-48d3-8f3b-ed3806455af6',
         },
         '7a35f3e8-3fab-4b2a-bc2f-7649f8342b56': {
           displayName: 'other Guardian sites',
           type: 'nav/list',
-          id: '7a35f3e8-3fab-4b2a-bc2f-7649f8342b56'
+          id: '7a35f3e8-3fab-4b2a-bc2f-7649f8342b56',
         },
         '5dfd1f1a-4442-436a-a5aa-83486d78f905': {
           displayName: 'interactive',
           type: 'fixed/small/slow-III',
-          id: '5dfd1f1a-4442-436a-a5aa-83486d78f905'
+          id: '5dfd1f1a-4442-436a-a5aa-83486d78f905',
         },
         'e59785e9-ba82-48d8-b79a-0a80b2f9f808': {
           displayName: 'sc johnson partner zone',
           metadata: [{ type: 'Branded' }],
           type: 'fixed/large/slow-XIV',
-          id: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808'
+          id: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
         },
         'effe55e6-1a11-4c39-be17-d245f776ba4c': {
           displayName: 'the collections',
           type: 'fixed/small/slow-IV',
-          id: 'effe55e6-1a11-4c39-be17-d245f776ba4c'
+          id: 'effe55e6-1a11-4c39-be17-d245f776ba4c',
         },
         'e307d948-c6d5-4a2e-b0f4-3fdef9d8655c': {
           displayName: 'discover Nespresso',
           backfill: { type: 'capi', query: 'discover-nespresso' },
           type: 'fixed/small/slow-IV',
           href: 'discover-nespresso',
-          id: 'e307d948-c6d5-4a2e-b0f4-3fdef9d8655c'
+          id: 'e307d948-c6d5-4a2e-b0f4-3fdef9d8655c',
         },
         '082d2dc8-f196-4c00-979e-7f541f2772f4': {
           displayName: 'UN Global Compact partner zone',
           type: 'fixed/small/slow-III',
-          id: '082d2dc8-f196-4c00-979e-7f541f2772f4'
+          id: '082d2dc8-f196-4c00-979e-7f541f2772f4',
         },
         '7902d549-b02a-49b7-828b-c959d4b6f5db': {
           displayName: 'interactive.',
           type: 'fixed/small/slow-I',
-          id: '7902d549-b02a-49b7-828b-c959d4b6f5db'
+          id: '7902d549-b02a-49b7-828b-c959d4b6f5db',
         },
         '341974f3-aff8-42bf-b2d2-fb789b450d57': {
           displayName: 'fairtrade foundation partner zone',
           type: 'fixed/medium/fast-XI',
-          id: '341974f3-aff8-42bf-b2d2-fb789b450d57'
+          id: '341974f3-aff8-42bf-b2d2-fb789b450d57',
         },
         'e4e9d1f0-542b-4df2-bbc4-6ac0532396bb': {
           displayName: 'a shot of sustainability',
           backfill: {
             type: 'capi',
-            query: 'search?section=a-shot-of-sustainability'
+            query: 'search?section=a-shot-of-sustainability',
           },
           type: 'fixed/medium/slow-VII',
           href: 'a-shot-of-sustainability',
-          id: 'e4e9d1f0-542b-4df2-bbc4-6ac0532396bb'
+          id: 'e4e9d1f0-542b-4df2-bbc4-6ac0532396bb',
         },
         '8df68e59-e7ef-40e5-bcf3-4ea3eb30950c': {
           displayName: 'commodities',
           type: 'fixed/medium/slow-VII',
-          id: '8df68e59-e7ef-40e5-bcf3-4ea3eb30950c'
+          id: '8df68e59-e7ef-40e5-bcf3-4ea3eb30950c',
         },
         '51e1da7b-84b1-4274-84e1-4aa368bf893a': {
           displayName: 'the big picture',
           type: 'fixed/small/slow-I',
-          id: '51e1da7b-84b1-4274-84e1-4aa368bf893a'
+          id: '51e1da7b-84b1-4274-84e1-4aa368bf893a',
         },
         '4ab657ff-c105-4292-af23-cda00457b6b7': {
           displayName: 'popular in sustainable business',
           backfill: {
             type: 'capi',
             query:
-              'sustainable-business/sustainable-business?show-most-viewed=true&show-editors-picks=false&hide-recent-content=true'
+              'sustainable-business/sustainable-business?show-most-viewed=true&show-editors-picks=false&hide-recent-content=true',
           },
           type: 'news/most-popular',
           href: 'sustainable-business/sustainable-business',
-          id: '4ab657ff-c105-4292-af23-cda00457b6b7'
+          id: '4ab657ff-c105-4292-af23-cda00457b6b7',
         },
         '6851252b-5b53-4089-886d-47e2e32a8a2d': {
           displayName: 'get involved',
           type: 'fixed/small/slow-III',
-          id: '6851252b-5b53-4089-886d-47e2e32a8a2d'
+          id: '6851252b-5b53-4089-886d-47e2e32a8a2d',
         },
         'dc14dd30-da03-4d42-8e96-0a7243a4274e': {
           displayName: 'the archive',
           type: 'fixed/large/slow-XIV',
-          id: 'dc14dd30-da03-4d42-8e96-0a7243a4274e'
+          id: 'dc14dd30-da03-4d42-8e96-0a7243a4274e',
         },
         'c7f48719-6cbc-4024-ae92-1b5f9f6c0c99': {
           displayName: 'values-led business hub',
           backfill: {
             type: 'capi',
             query:
-              'search?tag=sustainable-business/series/values-business&use-date=published'
+              'search?tag=sustainable-business/series/values-business&use-date=published',
           },
           metadata: [{ type: 'Branded' }],
           type: 'fixed/small/slow-IV',
           href: 'sustainable-business/series/values-business',
           description:
             'Exploring how values – and their influence over everyday decisions – affect business sustainability and success',
-          id: 'c7f48719-6cbc-4024-ae92-1b5f9f6c0c99'
+          id: 'c7f48719-6cbc-4024-ae92-1b5f9f6c0c99',
         },
         'd5a943c6-ce77-4ffa-a9ab-3c9e736cc611': {
           displayName: 'more from fairtrade foundation',
           type: 'fixed/small/slow-IV',
-          id: 'd5a943c6-ce77-4ffa-a9ab-3c9e736cc611'
+          id: 'd5a943c6-ce77-4ffa-a9ab-3c9e736cc611',
         },
         'bf2267c3-93a3-405c-8381-672fcb0e0b86': {
           displayName: 'Important news 2',
           type: 'fixed/medium/slow-VI',
-          id: 'bf2267c3-93a3-405c-8381-672fcb0e0b86'
+          id: 'bf2267c3-93a3-405c-8381-672fcb0e0b86',
         },
         'ab21e2b6-93cb-4140-ac09-97c382dcaeb2': {
           displayName: 'business supply chains',
           type: 'fixed/medium/fast-XI',
-          id: 'ab21e2b6-93cb-4140-ac09-97c382dcaeb2'
+          id: 'ab21e2b6-93cb-4140-ac09-97c382dcaeb2',
         },
         '44b4cefc-cca4-4019-8aa2-df424d0307ab': {
           displayName: 'smallholder farmers',
           type: 'fixed/medium/slow-XII-mpu',
-          id: '44b4cefc-cca4-4019-8aa2-df424d0307ab'
-        }
-      }
+          id: '44b4cefc-cca4-4019-8aa2-df424d0307ab',
+        },
+      },
     },
     pagination: null,
     lastError: null,
@@ -200,10 +200,10 @@ const fronts = {
     lastFetch: 1547474511048,
     loading: false,
     loadingIds: [],
-    updatingIds: []
+    updatingIds: [],
   },
   lastPressed: {},
-  collectionVisibility: { draft: {}, live: {} }
+  collectionVisibility: { draft: {}, live: {} },
 };
 const config = {
   dev: true,
@@ -228,11 +228,11 @@ const config = {
     'facia-tool-allow-launch-commercial-fronts-for-all': false,
     'facia-tool-sparklines': true,
     'facia-tool-draft-content': true,
-    'facia-tool-disable': false
+    'facia-tool-disable': false,
   },
   acl: {
     fronts: { 'breaking-news': true },
-    permissions: { 'configure-config': true }
+    permissions: { 'configure-config': true },
   },
   collectionCap: 20,
   navListCap: 40,
@@ -241,23 +241,23 @@ const config = {
     { type: 'Canonical' },
     { type: 'Special' },
     { type: 'Breaking' },
-    { type: 'Branded' }
+    { type: 'Branded' },
   ],
   userData: {
     clipboardArticles: [
       {
         id: 'internal-code/page/5592826',
         frontPublicationDate: 1547204861924,
-        meta: {}
-      }
+        meta: {},
+      },
     ],
     frontIds: [],
     frontIdsByPriority: {},
     favouriteFrontIdsByPriority: {},
-    featureSwitches: []
+    featureSwitches: [],
   },
   capiLiveUrl: 'https://fronts.local.dev-gutools.co.uk/api/live/',
-  capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/'
+  capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/',
 };
 
 const externalArticles = {
@@ -283,7 +283,7 @@ const externalArticles = {
         shortUrl: 'https://gu.com/p/ae3zj',
         thumbnail:
           'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/500.jpg',
-        isLive: 'true'
+        isLive: 'true',
       },
       tags: [
         {
@@ -294,7 +294,7 @@ const externalArticles = {
           webTitle: 'Fiona Bruce',
           webUrl: 'https://www.theguardian.com/media/fiona-bruce',
           apiUrl: 'https://preview.content.guardianapis.com/media/fiona-bruce',
-          references: []
+          references: [],
         },
         {
           id: 'media/bbc',
@@ -304,7 +304,7 @@ const externalArticles = {
           webTitle: 'BBC',
           webUrl: 'https://www.theguardian.com/media/bbc',
           apiUrl: 'https://preview.content.guardianapis.com/media/bbc',
-          references: []
+          references: [],
         },
         {
           id: 'tone/news',
@@ -312,7 +312,7 @@ const externalArticles = {
           webTitle: 'News',
           webUrl: 'https://www.theguardian.com/tone/news',
           apiUrl: 'https://preview.content.guardianapis.com/tone/news',
-          references: []
+          references: [],
         },
         {
           id: 'media/media',
@@ -322,7 +322,7 @@ const externalArticles = {
           webTitle: 'Media',
           webUrl: 'https://www.theguardian.com/media/media',
           apiUrl: 'https://preview.content.guardianapis.com/media/media',
-          references: []
+          references: [],
         },
         {
           id: 'tv-and-radio/question-time',
@@ -333,7 +333,7 @@ const externalArticles = {
           webUrl: 'https://www.theguardian.com/tv-and-radio/question-time',
           apiUrl:
             'https://preview.content.guardianapis.com/tv-and-radio/question-time',
-          references: []
+          references: [],
         },
         {
           id: 'politics/politics',
@@ -343,7 +343,7 @@ const externalArticles = {
           webTitle: 'Politics',
           webUrl: 'https://www.theguardian.com/politics/politics',
           apiUrl: 'https://preview.content.guardianapis.com/politics/politics',
-          references: []
+          references: [],
         },
         {
           id: 'culture/culture',
@@ -353,7 +353,7 @@ const externalArticles = {
           webTitle: 'Culture',
           webUrl: 'https://www.theguardian.com/culture/culture',
           apiUrl: 'https://preview.content.guardianapis.com/culture/culture',
-          references: []
+          references: [],
         },
         {
           id: 'type/video',
@@ -361,7 +361,7 @@ const externalArticles = {
           webTitle: 'Video',
           webUrl: 'https://www.theguardian.com/video',
           apiUrl: 'https://preview.content.guardianapis.com/type/video',
-          references: []
+          references: [],
         },
         {
           id: 'tracking/commissioningdesk/uk-video',
@@ -371,8 +371,8 @@ const externalArticles = {
             'https://www.theguardian.com/tracking/commissioningdesk/uk-video',
           apiUrl:
             'https://preview.content.guardianapis.com/tracking/commissioningdesk/uk-video',
-          references: []
-        }
+          references: [],
+        },
       ],
       elements: [],
       blocks: {
@@ -389,12 +389,12 @@ const externalArticles = {
           createdBy: {
             email: 'tola.onanuga.casual@guardian.co.uk',
             firstName: 'Tola',
-            lastName: 'Onanuga'
+            lastName: 'Onanuga',
           },
           lastModifiedBy: {
             email: 'gary.marshall.casual@guardian.co.uk',
             firstName: 'Gary',
-            lastName: 'Marshall'
+            lastName: 'Marshall',
           },
           elements: [
             {
@@ -402,11 +402,11 @@ const externalArticles = {
               assets: [],
               contentAtomTypeData: {
                 atomId: '4b651e39-3d5d-46c3-b10b-05bd77f89673',
-                atomType: 'media'
-              }
-            }
-          ]
-        }
+                atomType: 'media',
+              },
+            },
+          ],
+        },
       },
       atoms: {
         media: [
@@ -423,8 +423,8 @@ const externalArticles = {
                     assetType: 'video',
                     version: 1,
                     id: 'bGnEcyxZIOM',
-                    platform: 'youtube'
-                  }
+                    platform: 'youtube',
+                  },
                 ],
                 activeVersion: 1,
                 title: 'Fiona Bruce makes debut as Question Time host – video',
@@ -447,11 +447,11 @@ const externalArticles = {
                     'James Cleverly question time',
                     'emily thornberry question time',
                     'politics',
-                    'culture'
+                    'culture',
                   ],
                   categoryId: '25',
                   channelId: 'UCIRYBXDze5krPDzAEOxFGVA',
-                  pluto: { commissionId: 'KP-46751', projectId: 'KP-46881' }
+                  pluto: { commissionId: 'KP-46751', projectId: 'KP-46881' },
                 },
                 posterImage: {
                   assets: [
@@ -461,7 +461,7 @@ const externalArticles = {
                         'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/500.jpg',
                       dimensions: { height: 281, width: 500 },
                       size: 23272,
-                      aspectRatio: '16:9'
+                      aspectRatio: '16:9',
                     },
                     {
                       mimeType: 'image/jpeg',
@@ -469,7 +469,7 @@ const externalArticles = {
                         'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/140.jpg',
                       dimensions: { height: 79, width: 140 },
                       size: 6256,
-                      aspectRatio: '16:9'
+                      aspectRatio: '16:9',
                     },
                     {
                       mimeType: 'image/jpeg',
@@ -477,8 +477,8 @@ const externalArticles = {
                         'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/851.jpg',
                       dimensions: { height: 479, width: 851 },
                       size: 50542,
-                      aspectRatio: '16:9'
-                    }
+                      aspectRatio: '16:9',
+                    },
                   ],
                   master: {
                     mimeType: 'image/jpeg',
@@ -486,11 +486,11 @@ const externalArticles = {
                       'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/master/851.jpg',
                     dimensions: { height: 479, width: 851 },
                     size: 170842,
-                    aspectRatio: '16:9'
+                    aspectRatio: '16:9',
                   },
                   mediaId:
                     'https://api.media.gutools.co.uk/images/d38bca368b0fa22d1a47923ac05fb4c6d20005a1',
-                  source: 'BBC'
+                  source: 'BBC',
                 },
                 trailText:
                   "<p>The presenter made her first appearance as the host of the BBC show.&nbsp; It is the first time in the programme's history that a woman has held the position</p>",
@@ -503,7 +503,7 @@ const externalArticles = {
                   'media/media',
                   'tv-and-radio/question-time',
                   'politics/politics',
-                  'culture/culture'
+                  'culture/culture',
                 ],
                 trailImage: {
                   assets: [
@@ -513,7 +513,7 @@ const externalArticles = {
                         'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/500.jpg',
                       dimensions: { height: 300, width: 500 },
                       size: 24328,
-                      aspectRatio: '5:3'
+                      aspectRatio: '5:3',
                     },
                     {
                       mimeType: 'image/jpeg',
@@ -521,7 +521,7 @@ const externalArticles = {
                         'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/140.jpg',
                       dimensions: { height: 84, width: 140 },
                       size: 6675,
-                      aspectRatio: '5:3'
+                      aspectRatio: '5:3',
                     },
                     {
                       mimeType: 'image/jpeg',
@@ -529,8 +529,8 @@ const externalArticles = {
                         'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/814.jpg',
                       dimensions: { height: 488, width: 814 },
                       size: 47050,
-                      aspectRatio: '5:3'
-                    }
+                      aspectRatio: '5:3',
+                    },
                   ],
                   master: {
                     mimeType: 'image/jpeg',
@@ -538,14 +538,14 @@ const externalArticles = {
                       'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/master/814.jpg',
                     dimensions: { height: 488, width: 814 },
                     size: 154564,
-                    aspectRatio: '5:3'
+                    aspectRatio: '5:3',
                   },
                   mediaId:
                     'https://api.media.gutools.co.uk/images/d38bca368b0fa22d1a47923ac05fb4c6d20005a1',
-                  source: 'BBC'
+                  source: 'BBC',
                 },
-                optimisedForWeb: true
-              }
+                optimisedForWeb: true,
+              },
             },
             contentChangeDetails: {
               lastModified: {
@@ -553,32 +553,32 @@ const externalArticles = {
                 user: {
                   email: 'andrew.halley@guardian.co.uk',
                   firstName: 'Andrew',
-                  lastName: 'Halley'
-                }
+                  lastName: 'Halley',
+                },
               },
               created: {
                 date: 1547199831000,
                 user: {
                   email: 'gary.marshall.casual@guardian.co.uk',
                   firstName: 'Gary',
-                  lastName: 'Marshall'
-                }
+                  lastName: 'Marshall',
+                },
               },
               published: {
                 date: 1547205070000,
                 user: {
                   email: 'gary.marshall.casual@guardian.co.uk',
                   firstName: 'Gary',
-                  lastName: 'Marshall'
-                }
+                  lastName: 'Marshall',
+                },
               },
-              revision: 30
+              revision: 30,
             },
             flags: { blockAds: true },
             title: 'Fiona Bruce makes debut as Question Time host – video',
-            commissioningDesks: []
-          }
-        ]
+            commissioningDesks: [],
+          },
+        ],
       },
       isGone: false,
       isHosted: false,
@@ -599,13 +599,13 @@ const externalArticles = {
           imageReplace: false,
           imageCutoutReplace: false,
           showKickerSection: false,
-          showLargeHeadline: false
+          showLargeHeadline: false,
         },
-        tone: 'media'
+        tone: 'media',
       },
       urlPath:
-        'media/video/2019/jan/11/fiona-bruce-makes-debut-as-question-time-host-video'
-    }
+        'media/video/2019/jan/11/fiona-bruce-makes-debut-as-question-time-host-video',
+    },
   },
   pagination: null,
   lastError: null,
@@ -613,7 +613,7 @@ const externalArticles = {
   lastFetch: 1547474510279,
   loading: false,
   loadingIds: [],
-  updatingIds: []
+  updatingIds: [],
 };
 
 const emptyFeedBundle = {
@@ -624,7 +624,7 @@ const emptyFeedBundle = {
   lastFetch: 1547474573228,
   loading: false,
   loadingIds: [],
-  updatingIds: []
+  updatingIds: [],
 };
 
 const state = {
@@ -644,17 +644,17 @@ const state = {
     selectedCards: {},
     closedOverviews: [],
     clipboardOpen: true,
-    frontIdsByBrowsingStage: {}
+    frontIdsByBrowsingStage: {},
   },
   staleFronts: {},
   form: {},
   feed: {
     feedState: {
-      isPrefillMode: false
+      isPrefillMode: false,
     },
     capiLiveFeed: emptyFeedBundle,
     capiPreviewFeed: emptyFeedBundle,
-    prefillFeed: emptyFeedBundle
+    prefillFeed: emptyFeedBundle,
   },
   focus: { focusState: undefined },
   editionsIssue: {
@@ -665,7 +665,7 @@ const state = {
     lastFetch: 1547474573363,
     loading: false,
     loadingIds: [],
-    updatingIds: []
+    updatingIds: [],
   },
   featureSwitches: {},
   pageViewData: {},
@@ -675,22 +675,22 @@ const state = {
       id: 'internal-code/page/5592826',
       frontPublicationDate: 1547204861924,
       meta: { supporting: [] },
-      uuid: '56a3b407-741c-439f-a678-175abea44a9f'
+      uuid: '56a3b407-741c-439f-a678-175abea44a9f',
     },
     exampleId: {
       id: 'internal-code/page/5592826',
       frontPublicationDate: 1547204861924,
       meta: { headline: 'Bill Shorten', supporting: [] },
-      uuid: 'exampleId'
-    }
+      uuid: 'exampleId',
+    },
   },
   groups: {
     group123: {
       id: 'gobbleygook',
       name: 'groupname',
       uuid: 'group123',
-      cards: ['56a3b407-741c-439f-a678-175abea44a9f']
-    }
+      cards: ['56a3b407-741c-439f-a678-175abea44a9f'],
+    },
   },
   collections: {
     data: {
@@ -701,8 +701,8 @@ const state = {
         updatedEmail: 'email@email.co.uk',
         displayName: 'headlines',
         id: '5a32abdf-2d1c-4f9e-a116-617e4d055ab9',
-        type: 'fixed/small/slow-IV'
-      }
+        type: 'fixed/small/slow-IV',
+      },
     },
     pagination: null,
     lastError: null,
@@ -710,9 +710,9 @@ const state = {
     lastFetch: null,
     loading: false,
     loadingIds: [],
-    updatingIds: []
+    updatingIds: [],
   },
-  notifications: { banners: [] }
+  notifications: { banners: [] },
 } as State;
 
 export { state };

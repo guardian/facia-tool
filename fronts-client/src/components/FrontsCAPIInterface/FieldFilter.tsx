@@ -67,11 +67,11 @@ const CAPIFieldFilter = <T extends { label: string; id: string }>({
   onChange,
   items,
   placeholder,
-  filterTitle
+  filterTitle,
 }: CAPIFieldFilterProps<T>) => (
   <Downshift
-    itemToString={item => (item ? item.id : '')}
-    onChange={value => {
+    itemToString={(item) => (item ? item.id : '')}
+    onChange={(value) => {
       return onChange(value);
     }}
   >
@@ -81,7 +81,7 @@ const CAPIFieldFilter = <T extends { label: string; id: string }>({
       getMenuProps,
       getToggleButtonProps,
       isOpen,
-      highlightedIndex
+      highlightedIndex,
     }) => (
       <div>
         <FilterContainer>
@@ -89,7 +89,7 @@ const CAPIFieldFilter = <T extends { label: string; id: string }>({
             style={{
               flexGrow: 1,
               display: 'flex',
-              justifyContent: 'space-between'
+              justifyContent: 'space-between',
             }}
           >
             <div>
@@ -116,7 +116,7 @@ const CAPIFieldFilter = <T extends { label: string; id: string }>({
                   {...getItemProps({
                     key: item.id,
                     item,
-                    index
+                    index,
                   })}
                   highlighted={highlightedIndex === index}
                 >
@@ -130,7 +130,7 @@ const CAPIFieldFilter = <T extends { label: string; id: string }>({
 );
 
 CAPIFieldFilter.defaultProps = {
-  placeholder: 'Select field filters'
+  placeholder: 'Select field filters',
 };
 
 export default CAPIFieldFilter;

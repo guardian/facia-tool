@@ -16,7 +16,7 @@ const CheckboxContainer = styled.div`
 
 const Label = styled(InputLabel)`
   padding-left: 5px;
-  color: ${props => props.theme.input.colorLabel};
+  color: ${(props) => props.theme.input.colorLabel};
   line-height: 15px;
   flex: 1;
   cursor: pointer;

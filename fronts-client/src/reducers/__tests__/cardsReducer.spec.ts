@@ -8,11 +8,11 @@ describe('cardsReducer', () => {
       reducer(
         stateWithClipboard.cards as any,
         updateCardMeta('article', {
-          headline: 'headline'
+          headline: 'headline',
         })
       ).article.meta
     ).toEqual({
-      headline: 'headline'
+      headline: 'headline',
     });
   });
   it('should overwrite properties', () => {
@@ -20,11 +20,11 @@ describe('cardsReducer', () => {
       reducer(
         stateWithClipboard.cards as any,
         updateCardMeta('article2', {
-          headline: 'headline'
+          headline: 'headline',
         })
       ).article2.meta
     ).toEqual({
-      headline: 'headline'
+      headline: 'headline',
     });
   });
   it('should merge properties if the merge flag is set', () => {
@@ -34,14 +34,14 @@ describe('cardsReducer', () => {
         updateCardMeta(
           'article2',
           {
-            headline: 'headline'
+            headline: 'headline',
           },
           { merge: true }
         )
       ).article2.meta
     ).toEqual({
       headline: 'headline',
-      supporting: ['article3']
+      supporting: ['article3'],
     });
   });
 });

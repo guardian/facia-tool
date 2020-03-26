@@ -8,7 +8,7 @@ import { CardSizes } from 'types/Collection';
 const metaContainerSizeWidthMap = {
   default: 100,
   medium: 80,
-  small: 60
+  small: 60,
 } as { [Sizes in CardSizes]: number };
 
 const MetaContainer = styled.div<{ size?: CardSizes }>`
@@ -28,7 +28,7 @@ const MetaContainer = styled.div<{ size?: CardSizes }>`
 
 export default ({
   children,
-  size = 'default'
+  size = 'default',
 }: {
   children?: React.ReactNode;
   size?: CardSizes;

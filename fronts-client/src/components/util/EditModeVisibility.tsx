@@ -13,7 +13,7 @@ interface EditModeVisibilityProps {
 const EditModeVisibility = ({
   currentMode,
   visibleMode,
-  children
+  children,
 }: EditModeVisibilityProps) => {
   if (currentMode === visibleMode) {
     return <Fragment>{children}</Fragment>;
@@ -24,7 +24,7 @@ const EditModeVisibility = ({
 
 const createMapStateToProps = (state: State) => {
   return {
-    currentMode: selectEditMode(state)
+    currentMode: selectEditMode(state),
   };
 };
 

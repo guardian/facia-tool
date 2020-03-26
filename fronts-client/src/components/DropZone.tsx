@@ -76,7 +76,7 @@ class DropZone extends React.Component<{
 }> {
   public static defaultProps = {
     dropColor: theme.base.colors.dropZone,
-    dropMessage: 'Place here'
+    dropMessage: 'Place here',
   };
 
   public handleDrop = (e: React.DragEvent<HTMLElement>) => {
@@ -93,7 +93,7 @@ class DropZone extends React.Component<{
       length,
       isTarget,
       dropContainer: DropContainer = DefaultDropContainer,
-      dropIndicator: DropIndicator = DefaultDropIndicator
+      dropIndicator: DropIndicator = DefaultDropIndicator,
     } = this.props;
     return (
       <DropContainer

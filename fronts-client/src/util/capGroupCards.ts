@@ -12,14 +12,14 @@ export const capGroupCards = (groups: Group[], maxCards: number) =>
           cards:
             remaining < sibling.cards.length
               ? sibling.cards.slice(0, remaining)
-              : sibling.cards
-        }
+              : sibling.cards,
+        },
       ],
-      remaining: Math.max(remaining - sibling.cards.length, 0)
+      remaining: Math.max(remaining - sibling.cards.length, 0),
     }),
     {
       arr: [],
-      remaining: maxCards
+      remaining: maxCards,
     } as {
       arr: Group[];
       remaining: number;

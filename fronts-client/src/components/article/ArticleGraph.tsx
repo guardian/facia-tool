@@ -53,7 +53,7 @@ const mapStateToProps = () => {
       props.articleId,
       props.collectionId,
       props.frontId
-    )
+    ),
   });
 };
 

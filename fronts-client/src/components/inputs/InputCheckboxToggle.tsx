@@ -12,7 +12,7 @@ const CheckboxContainer = styled.div`
 `;
 
 const Label = styled(InputLabel)`
-  color: ${props => props.theme.base.colors.textMuted};
+  color: ${(props) => props.theme.base.colors.textMuted};
   flex: 1;
   cursor: pointer;
 `;

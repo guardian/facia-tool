@@ -105,7 +105,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
     const {
       startConfirmPublishModal,
       editionsIssue,
-      publishEditionsIssue
+      publishEditionsIssue,
     } = this.props;
 
     startConfirmPublishModal(
@@ -122,7 +122,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
 
 const mapStateToProps = () => {
   return (state: State) => ({
-    editionsIssue: editionsIssueSelectors.selectAll(state)
+    editionsIssue: editionsIssueSelectors.selectAll(state),
   });
 };
 
@@ -141,7 +141,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       )
     ),
   publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id)),
-  checkIssue: (id: string) => dispatch(check(id))
+  checkIssue: (id: string) => dispatch(check(id)),
 });
 
 export default connect(

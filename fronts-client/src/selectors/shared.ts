@@ -4,7 +4,7 @@ import {
   getThumbnail,
   getPrimaryTag,
   getContributorImage,
-  isLive
+  isLive,
 } from 'util/CAPIUtils';
 import { selectors as externalArticleSelectors } from '../bundles/externalArticlesBundle';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
@@ -15,7 +15,7 @@ import {
   Group,
   CardSets,
   CardDenormalised,
-  ArticleTag
+  ArticleTag,
 } from '../types/Collection';
 import type { State } from 'types/State';
 import { cardSets } from 'constants/fronts';
@@ -23,18 +23,14 @@ import { createShallowEqualResultSelector } from 'util/selectorUtils';
 import { DerivedArticle } from 'types/Article';
 import { hasMainVideo } from 'util/externalArticle';
 
-const selectGroups = (state: State): { [id: string]: Group } =>
-  state.groups;
+const selectGroups = (state: State): { [id: string]: Group } => state.groups;
 const selectCards = (state: State) => state.cards;
 
-const selectCardsFromRootState = (state: State) =>
-  selectCards(state);
+const selectCardsFromRootState = (state: State) => selectCards(state);
 
-const selectGroupsFromRootState = (state: State) =>
-  selectGroups(state);
+const selectGroupsFromRootState = (state: State) => selectGroups(state);
 
-const selectCard = (state: State, id: string): Card =>
-  state.cards[id];
+const selectCard = (state: State, id: string): Card => state.cards[id];
 
 const selectExternalArticleFromCard = (
   state: State,
@@ -48,10 +44,7 @@ const selectExternalArticleFromCard = (
   return externalArticles[card.id];
 };
 
-const selectSupportingArticleCount = (
-  state: State,
-  uuid: string
-) => {
+const selectSupportingArticleCount = (state: State, uuid: string) => {
   const maybeArticle = selectCard(state, uuid);
   if (maybeArticle && maybeArticle.meta.supporting) {
     return maybeArticle.meta.supporting.length;
@@ -59,14 +52,11 @@ const selectSupportingArticleCount = (
   return 0;
 };
 
-const selectArticleTag = (
-  state: State,
-  id: string
-): ArticleTag => {
+const selectArticleTag = (state: State, id: string): ArticleTag => {
   const externalArticle = selectExternalArticleFromCard(state, id);
   const emptyTag = {
     webTitle: undefined,
-    sectionName: undefined
+    sectionName: undefined,
   };
 
   if (!externalArticle) {
@@ -78,16 +68,13 @@ const selectArticleTag = (
   if (tag) {
     return {
       webTitle: tag.webTitle,
-      sectionName: tag.sectionName
+      sectionName: tag.sectionName,
     };
   }
   return emptyTag;
 };
 
-const selectArticleKicker = (
-  state: State,
-  id: string
-): string | undefined => {
+const selectArticleKicker = (state: State, id: string): string | undefined => {
   const card = selectCard(state, id);
 
   if (!card) {
@@ -115,10 +102,7 @@ const selectArticleKicker = (
   return undefined;
 };
 
-const selectCardHasMediaOverrides = (
-  state: State,
-  id: string
-) => {
+const selectCardHasMediaOverrides = (state: State, id: string) => {
   const article = selectCard(state, id);
   return (
     !!article &&
@@ -132,7 +116,7 @@ const selectCardHasMediaOverrides = (
 const createSelectIsCardLive = () =>
   createSelector(
     selectExternalArticleFromCard,
-    externalArticle => !!externalArticle && isLive(externalArticle)
+    (externalArticle) => !!externalArticle && isLive(externalArticle)
   );
 
 const createSelectArticleFromCard = () =>
@@ -180,7 +164,7 @@ const createSelectArticleFromCard = () =>
         tone: externalArticle ? externalArticle.frontsMeta.tone : undefined,
         hasMainVideo: !!externalArticle && hasMainVideo(externalArticle),
         showMainVideo: !!articleMeta.showMainVideo,
-        urlPath: externalArticle && externalArticle.urlPath
+        urlPath: externalArticle && externalArticle.urlPath,
       };
     }
   );
@@ -214,7 +198,7 @@ const createSelectCollectionStageGroups = () => {
       stage: CardSets
     ): Group[] => {
       const grps = ((collection && collection[stage]) || []).map(
-        id => groups[id]
+        (id) => groups[id]
       );
       if (grps.length < 2) {
         return grps;
@@ -224,18 +208,18 @@ const createSelectCollectionStageGroups = () => {
       // the collection layout has changed. We need to collect the cards in these
       // groups and display them in the top group.
       const orphanedCards: string[] = grps
-        .filter(grp => !grp.name && grp.id)
+        .filter((grp) => !grp.name && grp.id)
         .reduce((frags: string[], g) => frags.concat(g.cards), []);
 
       // The final array of groups consist of groups where all groups without names but with ids
       // are filtered out as these groups no longer exist in the config of the collection.
-      const finalGroups = grps.filter(grp => grp.name || !grp.id);
+      const finalGroups = grps.filter((grp) => grp.name || !grp.id);
       if (finalGroups.length > 0) {
         const originalFirstGroupCards = finalGroups[0].cards;
         const firstGroupCards = orphanedCards.concat(originalFirstGroupCards);
         const firstGroup = {
           ...finalGroups[0],
-          ...{ cards: firstGroupCards }
+          ...{ cards: firstGroupCards },
         };
         finalGroups[0] = firstGroup;
       }
@@ -256,7 +240,7 @@ const createSelectPreviouslyLiveArticlesInCollection = () => {
       id: null,
       name: null,
       uuid: 'previously',
-      cards: ((collection && collection.previouslyCardIds) || []).slice(0, 5)
+      cards: ((collection && collection.previouslyCardIds) || []).slice(0, 5),
     })
   );
 };
@@ -277,7 +261,7 @@ const createSelectCollectionEditWarning = () => {
 const selectGroupName = (
   _: unknown,
   {
-    groupName
+    groupName,
   }: {
     groupName?: string;
     includeSupportingArticles?: boolean;
@@ -289,7 +273,7 @@ const selectGroupName = (
 const selectIncludeSupportingArticles = (
   _: unknown,
   {
-    includeSupportingArticles
+    includeSupportingArticles,
   }: {
     groupName?: string;
     includeSupportingArticles?: boolean;
@@ -309,8 +293,8 @@ const createSelectArticlesInCollectionGroup = () => {
       const groups = groupName
         ? [
             collectionGroups.find(({ id }) => id === groupName) || {
-              cards: []
-            }
+              cards: [],
+            },
           ]
         : collectionGroups;
       const groupCardIds = groups.reduce(
@@ -320,21 +304,18 @@ const createSelectArticlesInCollectionGroup = () => {
       if (!includeSupportingArticles) {
         return groupCardIds;
       }
-      return groupCardIds.reduce(
-        (acc, id) => {
-          const card = cards[id];
-          if (
-            !card ||
-            !card.meta ||
-            !card.meta.supporting ||
-            !card.meta.supporting.length
-          ) {
-            return acc.concat(id);
-          }
-          return acc.concat(id, card.meta.supporting);
-        },
-        [] as string[]
-      );
+      return groupCardIds.reduce((acc, id) => {
+        const card = cards[id];
+        if (
+          !card ||
+          !card.meta ||
+          !card.meta.supporting ||
+          !card.meta.supporting.length
+        ) {
+          return acc.concat(id);
+        }
+        return acc.concat(id, card.meta.supporting);
+      }, [] as string[]);
     }
   );
 };
@@ -346,7 +327,7 @@ const createSelectArticlesInCollection = () => {
     {
       collectionId,
       collectionSet,
-      includeSupportingArticles = true
+      includeSupportingArticles = true,
     }: {
       collectionId: string;
       collectionSet: CardSets;
@@ -356,7 +337,7 @@ const createSelectArticlesInCollection = () => {
     selectArticlesInCollectionGroups(state, {
       collectionId,
       collectionSet,
-      includeSupportingArticles
+      includeSupportingArticles,
     });
 };
 
@@ -372,11 +353,11 @@ const createSelectAllArticlesInCollection = () => {
             ...acc1,
             ...articlesInCollection(state, {
               collectionId: id,
-              collectionSet
-            })
+              collectionSet,
+            }),
           ],
           [] as string[]
-        )
+        ),
       ],
       [] as string[]
     );
@@ -400,7 +381,7 @@ const createSelectGroupArticles = () =>
     selectCardsFromRootState,
     (_: any, { groupId }: { groupId: string }) => groupId,
     (groups, cards, groupId) =>
-      (groups[groupId].cards || []).map(afId => cards[afId])
+      (groups[groupId].cards || []).map((afId) => cards[afId])
   );
 
 const createSelectArticlesFromIds = () =>
@@ -423,8 +404,8 @@ const createDemornalisedCard = (
             cards[cardId].meta.supporting &&
             cards[cardId].meta.supporting!.map(
               (supportingCardId: string) => cards[supportingCardId]
-            )
-        }
+            ),
+        },
       }
     : { ...cards[cardId] };
 
@@ -451,23 +432,20 @@ const selectGroupCollectionMap = createSelector(
                 ...groupsAcc,
                 [groupId]: {
                   collectionId: collection.id,
-                  cardSet: stage
-                }
+                  cardSet: stage,
+                },
               }),
               {}
-            )
+            ),
           }),
           {}
-        )
+        ),
       }),
       {}
     )
 );
 
-const selectGroupCollection = (
-  state: State,
-  groupId: string
-) => {
+const selectGroupCollection = (state: State, groupId: string) => {
   const { collectionId, cardSet } = selectGroupCollectionMap(state)[groupId];
   const collection = collectionSelectors.selectById(state, collectionId);
   return { collection, cardSet };
@@ -478,7 +456,7 @@ const selectGroupSiblings = (state: State, groupId: string) => {
   if (!collection) {
     return [];
   }
-  return (collection[cardSet] || []).map(id => selectGroups(state)[id]);
+  return (collection[cardSet] || []).map((id) => selectGroups(state)[id]);
 };
 
 const selectArticleGroup = (
@@ -493,7 +471,7 @@ const selectArticleGroup = (
   }
 
   const actualCardGroup = Object.values(groups).find(
-    group => group && group.cards.includes(cardId)
+    (group) => group && group.cards.includes(cardId)
   );
 
   return actualCardGroup && actualCardGroup.uuid;
@@ -502,16 +480,11 @@ const selectArticleGroup = (
 const groupsArticleCount = (groups: Group[]) =>
   groups.reduce((acc, group) => acc + group.cards.length, 0);
 
-const selectGroupSiblingsArticleCount = (
-  state: State,
-  groupId: string
-) => groupsArticleCount(selectGroupSiblings(state, groupId));
+const selectGroupSiblingsArticleCount = (state: State, groupId: string) =>
+  groupsArticleCount(selectGroupSiblings(state, groupId));
 
-const selectIndexInGroup = (
-  state: State,
-  groupId: string,
-  articleId: string
-) => selectGroups(state)[groupId].cards.indexOf(articleId);
+const selectIndexInGroup = (state: State, groupId: string, articleId: string) =>
+  selectGroups(state)[groupId].cards.indexOf(articleId);
 
 const selectExternalArticleIdFromCard = (
   state: State,
@@ -554,5 +527,5 @@ export {
   selectCardHasMediaOverrides,
   createSelectArticlesFromIds,
   createSelectIsCardLive,
-  selectSupportingArticleCount
+  selectSupportingArticleCount,
 };

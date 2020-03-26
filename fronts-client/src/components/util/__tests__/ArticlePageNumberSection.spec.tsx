@@ -28,8 +28,8 @@ const testCapiArticleWithPageNumber: CapiArticle = {
       showKickerTag: false,
       showLivePlayable: false,
       showMainVideo: false,
-      showQuotedHeadline: false
-    }
+      showQuotedHeadline: false,
+    },
   },
   fields: {
     headline: 'test',
@@ -40,12 +40,12 @@ const testCapiArticleWithPageNumber: CapiArticle = {
     liveBloggingNow: 'false',
     shortUrl: 'test/test',
     thumbnail: 'test',
-    newspaperPageNumber: 5
+    newspaperPageNumber: 5,
   },
   blocks: {},
   isHosted: false,
   pillarId: 'pillar/test',
-  pillarName: 'test'
+  pillarName: 'test',
 };
 
 describe('ArticlePageNumberSection', () => {

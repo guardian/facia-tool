@@ -9,14 +9,14 @@ import { AlsoOnDetail } from 'types/Collection';
 import {
   publishCollection,
   discardDraftChangesToCollection,
-  openCollectionsAndFetchTheirArticles
+  openCollectionsAndFetchTheirArticles,
 } from 'actions/Collections';
 import { actions, selectors } from 'bundles/collectionsBundle';
 import {
   selectHasUnpublishedChanges,
   selectCollectionHasPrefill,
   selectCollectionIsHidden,
-  selectCollectionDisplayName
+  selectCollectionDisplayName,
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import type { State } from 'types/State';
@@ -24,13 +24,13 @@ import { CardSets, Group } from 'types/Collection';
 import {
   createSelectCollectionStageGroups,
   createSelectCollectionEditWarning,
-  createSelectPreviouslyLiveArticlesInCollection
+  createSelectPreviouslyLiveArticlesInCollection,
 } from 'selectors/shared';
 import {
   selectIsCollectionOpen,
   editorCloseCollections,
   selectHasMultipleFrontsOpen,
-  createSelectDoesCollectionHaveOpenForms
+  createSelectDoesCollectionHaveOpenForms,
 } from 'bundles/frontsUI';
 import { getArticlesForCollections } from 'actions/Collections';
 import { cardSets } from 'constants/fronts';
@@ -144,7 +144,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
   public state = {
     isPreviouslyOpen: false,
     isLaunching: false,
-    showOpenFormsWarning: false
+    showOpenFormsWarning: false,
   };
 
   // added to prevent setState call on unmounted component
@@ -168,7 +168,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 
   public startPublish = (id: string, frontId: string) => {
     this.setState({ isLaunching: true });
-    this.props.publishCollection(id, frontId).then(res => {
+    this.props.publishCollection(id, frontId).then((res) => {
       if (this.isComponentMounted) {
         this.setState({ isLaunching: false });
       }
@@ -195,7 +195,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
       hasPrefill,
       isHidden,
       hasContent,
-      hasOpenForms
+      hasOpenForms,
     } = this.props;
 
     const { isPreviouslyOpen, isLaunching } = this.state;
@@ -284,7 +284,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
           ) : null
         }
       >
-        {groups.map(group => children(group, isUneditable, true))}
+        {groups.map((group) => children(group, isUneditable, true))}
         {hasContent && (
           <EditModeVisibility visibleMode="fronts">
             <PreviouslyCollectionContainer data-testid="previously">
@@ -331,30 +331,30 @@ const createMapStateToProps = () => {
       browsingStage,
       id: collectionId,
       priority,
-      frontId
+      frontId,
     }: CollectionPropsBeforeState
   ) => ({
     isHidden: selectCollectionIsHidden(state, collectionId),
     displayName: selectCollectionDisplayName(state, collectionId),
     hasPrefill: selectCollectionHasPrefill(state, collectionId),
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
-      collectionId
+      collectionId,
     }),
     isCollectionLocked: selectIsCollectionLocked(state, collectionId),
     groups: selectCollectionStageGroups(state, {
       collectionSet: browsingStage,
-      collectionId
+      collectionId,
     }),
     previousGroup: selectPreviously(state, {
-      collectionId
+      collectionId,
     }),
     displayEditWarning: selectEditWarning(state, {
-      collectionId
+      collectionId,
     }),
     isOpen: selectIsCollectionOpen(state, collectionId),
     hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
     hasContent: !!selectors.selectById(state, collectionId),
-    hasOpenForms: selectHasOpenForms(state, { collectionId, frontId })
+    hasOpenForms: selectHasOpenForms(state, { collectionId, frontId }),
   });
 };
 
@@ -380,10 +380,7 @@ const mapDispatchToProps = (
   },
   fetchPreviousCollectionArticles: (id: string) => {
     dispatch(getArticlesForCollections([id], cardSets.previously));
-  }
+  },
 });
 
-export default connect(
-  createMapStateToProps,
-  mapDispatchToProps
-)(Collection);
+export default connect(createMapStateToProps, mapDispatchToProps)(Collection);

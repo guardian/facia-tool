@@ -9,7 +9,7 @@ const createGroup = (cards = 0): Group => ({
   id: `${id}`,
   uuid: `${uuid++}`,
   name: `Group ${id++}`,
-  cards: Array.from({ length: cards }, () => `${afid++}`)
+  cards: Array.from({ length: cards }, () => `${afid++}`),
 });
 
 const createGroups = (...groupCardCount: number[]) =>

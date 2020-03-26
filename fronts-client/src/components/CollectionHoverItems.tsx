@@ -9,7 +9,7 @@ const HoverActionsAreaOverlay = styled.div<{
 `;
 
 HoverActionsAreaOverlay.defaultProps = {
-  justify: 'space-between'
+  justify: 'space-between',
 };
 
 export { HoverActionsAreaOverlay };

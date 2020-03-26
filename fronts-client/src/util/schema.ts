@@ -6,7 +6,7 @@ const preProcessCard = (card: Card): object => ({
   ...card,
   // guard against missing meta from the server
   meta: card.meta || {},
-  uuid: v4()
+  uuid: v4(),
 });
 
 const postProcessCard = (card: Card): object => {
@@ -28,7 +28,7 @@ const postProcessCard = (card: Card): object => {
 
   return {
     ...af,
-    meta
+    meta,
   };
 };
 
@@ -39,25 +39,25 @@ const cards = createType('cards', {
   field: createFieldType('groups', {
     key: 'meta.group',
     valueKey: 'id',
-    uuid: v4
-  })
+    uuid: v4,
+  }),
 });
 const supportingArticles = createType('cards', {
   preProcess: preProcessCard,
   postProcess: postProcessCard,
-  idKey: 'uuid'
+  idKey: 'uuid',
 });
 
 export const { normalize, denormalize } = build({
   live: cards({
-    'meta.supporting': supportingArticles()
+    'meta.supporting': supportingArticles(),
   }),
   previously: cards({
-    'meta.supporting': supportingArticles()
+    'meta.supporting': supportingArticles(),
   }),
   draft: cards({
-    'meta.supporting': supportingArticles()
-  })
+    'meta.supporting': supportingArticles(),
+  }),
 });
 
 export { postProcessCard, supportingArticles };

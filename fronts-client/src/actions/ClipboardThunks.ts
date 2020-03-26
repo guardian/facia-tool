@@ -6,7 +6,10 @@ import { fetchArticles } from 'actions/Collections';
 import { batchActions } from 'redux-batched-actions';
 import { cardsReceived } from 'actions/CardsCommon';
 import { normaliseClipboard } from 'util/clipboardUtils';
-import { updateClipboardContent, actionInsertClipboardCardWithPersist } from './Clipboard';
+import {
+  updateClipboardContent,
+  actionInsertClipboardCardWithPersist,
+} from './Clipboard';
 import { selectCards } from 'selectors/shared';
 
 export const thunkInsertClipboardCard = (
@@ -26,7 +29,7 @@ export function storeClipboardContent(clipboardContent: NestedCard[]) {
       clipboard: { articles: string[] };
       cards: { [id: string]: Card };
     } = normaliseClipboard({
-      articles: clipboardContent
+      articles: clipboardContent,
     });
     const clipboardArticles = normalisedClipboard.clipboard.articles;
     const { cards } = normalisedClipboard;
@@ -34,11 +37,11 @@ export function storeClipboardContent(clipboardContent: NestedCard[]) {
     dispatch(
       batchActions([
         updateClipboardContent(clipboardArticles),
-        cardsReceived(cards)
+        cardsReceived(cards),
       ])
     );
 
-    const cardIds = Object.values(cards).map(card => card.id);
+    const cardIds = Object.values(cards).map((card) => card.id);
     return dispatch(fetchArticles(cardIds));
   };
 }

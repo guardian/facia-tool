@@ -10,7 +10,7 @@ const saveClipboardStrategy = (
   runStrategy<Promise<void> | null>(state, {
     front: () => saveClipboard(content),
     edition: () => saveEditionsClipboard(content),
-    none: () => null
+    none: () => null,
   });
 
 export { saveClipboardStrategy };

@@ -8,10 +8,7 @@ interface StrategyMap<R> {
   none: () => R;
 }
 
-const runStrategy = <R>(
-  state: State,
-  strategies: StrategyMap<R>
-) => {
+const runStrategy = <R>(state: State, strategies: StrategyMap<R>) => {
   const path = selectV2SubPath(state);
 
   const frontsMatch = matchFrontsEditPath(path);

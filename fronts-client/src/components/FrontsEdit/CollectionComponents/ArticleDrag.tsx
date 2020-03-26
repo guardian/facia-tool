@@ -65,10 +65,7 @@ export const DraggingArticleComponent = ({ headline }: ComponentProps) =>
 
 const createMapStateToProps = () => {
   const selectArticle = createSelectArticleFromCard();
-  return (
-    state: State,
-    props: ContainerProps
-  ): { headline?: string } => {
+  return (state: State, props: ContainerProps): { headline?: string } => {
     const article = selectArticle(state, props.id);
     return { headline: article && article.headline };
   };

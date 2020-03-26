@@ -1,43 +1,46 @@
 import { batchActions } from 'redux-batched-actions';
 
-import type { VisibleArticlesResponse, CollectionResponse } from 'types/FaciaApi';
+import type {
+  VisibleArticlesResponse,
+  CollectionResponse,
+} from 'types/FaciaApi';
 import {
   getArticlesBatched,
   discardDraftChangesToCollection as discardDraftChangesToCollectionApi,
   fetchVisibleArticles,
   fetchLastPressed as fetchLastPressedApi,
   publishCollection as publishCollectionApi,
-  getCollection as getCollectionApi
+  getCollection as getCollectionApi,
 } from 'services/faciaApi';
 import {
   selectUserEmail,
   selectFirstName,
-  selectLastName
+  selectLastName,
 } from 'selectors/configSelectors';
 import {
   createSelectGroupArticles,
-  createSelectAllArticlesInCollection
+  createSelectAllArticlesInCollection,
 } from 'selectors/shared';
 import {
   actions as externalArticleActions,
-  selectIsExternalArticleStale
+  selectIsExternalArticleStale,
 } from 'bundles/externalArticlesBundle';
 import {
   combineCollectionWithConfig,
   populateDraftArticles,
   getVisibilityArticleDetails,
-  getGroupsByStage
+  getGroupsByStage,
 } from 'util/frontsUtils';
 import {
   normaliseCollectionWithNestedArticles,
-  denormaliseCollection
+  denormaliseCollection,
 } from 'util/shared';
 import { cardsReceived, clearCards } from 'actions/CardsCommon';
 import { groupsReceived } from 'actions/Groups';
 import {
   recordVisibleArticles,
   recordStaleFronts,
-  fetchLastPressedSuccess
+  fetchLastPressedSuccess,
 } from 'actions/Fronts';
 import { actions as collectionActions } from 'bundles/collectionsBundle';
 import { selectCollectionConfig, selectFront } from 'selectors/frontsSelectors';
@@ -51,7 +54,7 @@ import { selectArticlesInCollections } from 'selectors/collection';
 import {
   editorOpenCollections,
   editorCloseCollections,
-  editorCloseFormsForCollection
+  editorCloseFormsForCollection,
 } from 'bundles/frontsUI';
 import flatten from 'lodash/flatten';
 import uniq from 'lodash/uniq';
@@ -108,15 +111,15 @@ function getCollectionActionForMissingCollection(
     live: [],
     previously: [],
     id,
-    displayName: collectionConfig.displayName
+    displayName: collectionConfig.displayName,
   });
   const {
     normalisedCollection,
-    groups
+    groups,
   } = normaliseCollectionWithNestedArticles(collection, collectionConfig);
   return [
     collectionActions.fetchSuccess(normalisedCollection),
-    groupsReceived(groups)
+    groupsReceived(groups),
   ];
 }
 
@@ -128,12 +131,12 @@ function getCollectionActions(
   const {
     id,
     collection: collectionWithoutId,
-    storiesVisibleByStage
+    storiesVisibleByStage,
   } = collectionResponse;
   const collectionConfig = selectCollectionConfig(state, id);
   const collection = {
     ...collectionWithoutId,
-    id
+    id,
   };
   const isEditionsMode = isMode(state, 'editions');
   const collectionWithNestedArticles = combineCollectionWithConfig(
@@ -146,12 +149,12 @@ function getCollectionActions(
 
   const collectionWithDraftArticles = {
     ...collectionWithNestedArticles,
-    draft: populateDraftArticles(collectionWithNestedArticles)
+    draft: populateDraftArticles(collectionWithNestedArticles),
   };
   const {
     normalisedCollection,
     cards,
-    groups
+    groups,
   } = normaliseCollectionWithNestedArticles(
     collectionWithDraftArticles,
     collectionConfig
@@ -161,7 +164,7 @@ function getCollectionActions(
     collectionActions.fetchSuccess(normalisedCollection),
     cardsReceived(cards),
     recordUnpublishedChanges(collection.id, hasUnpublishedChanges),
-    groupsReceived(groups)
+    groupsReceived(groups),
   ];
 
   if (storiesVisibleByStage.live) {
@@ -211,27 +214,27 @@ function getCollections(
       // find all collections missing in the response and ensure their 'fetch'
       // status is reset
       const missingCollections = difference(
-        collectionResponses.map(cr => cr.id),
+        collectionResponses.map((cr) => cr.id),
         collectionIds
       );
-      const missingActions = missingCollections.map(id =>
+      const missingActions = missingCollections.map((id) =>
         collectionActions.fetchSuccessIgnore({
-          id
+          id,
         })
       );
 
       let missingCollectionActions: Action[][];
       if (!returnOnlyUpdatedCollections) {
         const missingCollectionIds = collectionIds.filter(
-          id => !collectionResponses.some(response => response.id === id)
+          (id) => !collectionResponses.some((response) => response.id === id)
         );
-        missingCollectionActions = missingCollectionIds.map(id =>
+        missingCollectionActions = missingCollectionIds.map((id) =>
           getCollectionActionForMissingCollection(id, getState)
         );
       } else {
         missingCollectionActions = [];
       }
-      const actions = collectionResponses.map(collectionResponse =>
+      const actions = collectionResponses.map((collectionResponse) =>
         getCollectionActions(collectionResponse, getState)
       );
 
@@ -260,9 +263,9 @@ function updateCollection(
           ...collection,
           updatedEmail: selectUserEmail(getState()) || '',
           updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
-          lastUpdated: Date.now()
+          lastUpdated: Date.now(),
         }),
-        recordUnpublishedChanges(collection.id, true)
+        recordUnpublishedChanges(collection.id, true),
       ])
     );
     try {
@@ -299,7 +302,7 @@ const fetchArticles = (
   articleIds: string[]
 ): ThunkResult<Promise<void>> => async (dispatch, getState) => {
   const articleIdsWithoutSnaps = uniq(
-    articleIds.filter(id => !id.match(/^snap/))
+    articleIds.filter((id) => !id.match(/^snap/))
   );
   if (!articleIdsWithoutSnaps.length) {
     return;
@@ -307,7 +310,7 @@ const fetchArticles = (
   dispatch(externalArticleActions.fetchStart(articleIdsWithoutSnaps));
   try {
     const articles = await getArticlesBatched(articleIdsWithoutSnaps);
-    const freshArticles = articles.filter(article =>
+    const freshArticles = articles.filter((article) =>
       selectIsExternalArticleStale(
         getState(),
         article.id,
@@ -320,7 +323,7 @@ const fetchArticles = (
     }
     const remainingArticles = difference(
       articleIdsWithoutSnaps,
-      articles.map(_ => _.id)
+      articles.map((_) => _.id)
     );
     if (remainingArticles.length) {
       dispatch(
@@ -349,8 +352,8 @@ const getArticlesForCollections = (
       ...acc,
       ...selectArticlesInCollections(getState(), {
         collectionIds,
-        itemSet
-      })
+        itemSet,
+      }),
     ],
     [] as string[]
   );
@@ -361,8 +364,8 @@ const getOphanDataForCollections = (
   collectionIds: string[],
   frontId: string,
   itemSet: CardSets
-): ThunkResult<Promise<void[]>> => async dispatch => {
-  const ophanRequests = collectionIds.map(collectionId => {
+): ThunkResult<Promise<void[]>> => async (dispatch) => {
+  const ophanRequests = collectionIds.map((collectionId) => {
     return dispatch(
       getPageViewDataForCollection(frontId, collectionId, itemSet)
     );
@@ -374,14 +377,14 @@ const openCollectionsAndFetchTheirArticles = (
   collectionIds: string[],
   frontId: string,
   itemSet: CardSets
-): ThunkResult<Promise<void>> => async dispatch => {
+): ThunkResult<Promise<void>> => async (dispatch) => {
   dispatch(editorOpenCollections(collectionIds));
   await dispatch(getArticlesForCollections(collectionIds, itemSet));
   await dispatch(getOphanDataForCollections(collectionIds, frontId, itemSet));
 };
 
 const closeCollections = (collectionIds: string[]): ThunkResult<void> => {
-  return dispatch => {
+  return (dispatch) => {
     return dispatch(editorCloseCollections(collectionIds));
   };
 };
@@ -394,7 +397,7 @@ function getVisibleArticles(
   const collectionType = collection.type;
   const groups = getGroupsByStage(collection, stage);
   const selectGroupArticles = createSelectGroupArticles();
-  const groupsWithArticles = groups.map(id =>
+  const groupsWithArticles = groups.map((id) =>
     selectGroupArticles(state, { groupId: id })
   );
   const articleDetails = getVisibilityArticleDetails(groupsWithArticles);
@@ -446,12 +449,12 @@ function publishCollection(
       .then(() => {
         const batchedActions = [
           recordUnpublishedChanges(collectionId, false),
-          editorCloseFormsForCollection(collectionId, frontId)
+          editorCloseFormsForCollection(collectionId, frontId),
         ];
 
         const draftVisibleArticles = selectVisibleArticles(getState(), {
           collectionId,
-          stage: frontStages.draft
+          stage: frontStages.draft,
         });
         // some collections don't have visible articles (the property which shows where articles cut off on mobile/desktop) eg, those with a 'fast' layout
         if (draftVisibleArticles) {
@@ -470,7 +473,7 @@ function publishCollection(
 
         return;
       })
-      .catch(e => {
+      .catch((e) => {
         // tslint:disable-next-line
         console.error('Error during publishing collection:', e);
       });
@@ -482,12 +485,12 @@ function pollForCollectionPublished(
   frontId: string
 ): ThunkResult<Promise<void>> {
   return (dispatch, getState) => {
-    return new Promise(resolve => setTimeout(resolve, 10000))
+    return new Promise((resolve) => setTimeout(resolve, 10000))
       .then(() => {
         const [params] = selectCollectionParams(getState(), [collectionId]);
         return Promise.all([
           getCollectionApi(params),
-          fetchLastPressedApi(frontId)
+          fetchLastPressedApi(frontId),
         ]);
       })
       .then(([collectionResponse, lastPressed]) => {
@@ -501,7 +504,7 @@ function pollForCollectionPublished(
                 lastPressedInMilliseconds
               )
             ),
-            fetchLastPressedSuccess(frontId, lastPressed)
+            fetchLastPressedSuccess(frontId, lastPressed),
           ])
         );
       });
@@ -513,7 +516,7 @@ function discardDraftChangesToCollection(
 ): ThunkResult<Promise<void>> {
   return (dispatch: Dispatch, getState: () => State) => {
     return discardDraftChangesToCollectionApi(collectionId).then(
-      collectionJson => {
+      (collectionJson) => {
         dispatch(batchActions(getCollectionActions(collectionJson, getState)));
       }
     );
@@ -530,5 +533,5 @@ export {
   updateCollection,
   initialiseCollectionsForFront,
   publishCollection,
-  discardDraftChangesToCollection
+  discardDraftChangesToCollection,
 };

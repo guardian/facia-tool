@@ -35,7 +35,7 @@ export default (props: Props) => {
         </tr>
       </thead>
       <tbody>
-        {props.events.map(event => {
+        {props.events.map((event) => {
           return (
             <tr key={event.eventTime}>
               <td>{moment(event.eventTime).format('YYYY-MM-DD HH:mm:ss')}</td>

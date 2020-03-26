@@ -10,7 +10,7 @@ const FUZZY_MATCHERS = [
     message:
       'The URL you entered appears to be an email address. ' +
       'Do you want to add the required “mailto:” prefix?',
-    action: (link: string) => `mailto:${link}`
+    action: (link: string) => `mailto:${link}`,
   },
   {
     // For tel numbers check for + and numerical values
@@ -18,15 +18,15 @@ const FUZZY_MATCHERS = [
     message:
       'The URL you entered appears to be a telephone number. ' +
       'Do you want to add the required “tel:” prefix?',
-    action: (link: string) => `tel:${link}`
+    action: (link: string) => `tel:${link}`,
   },
   {
     regexp: /.+/,
     message:
       'The URL you entered appears to be a link. ' +
       'Do you want to add the required “http://” prefix?',
-    action: (link: string) => `http://${link.trim()}`
-  }
+    action: (link: string) => `http://${link.trim()}`,
+  },
 ];
 
 export const parseURL = (rawLink: string, confirm = window.confirm) => {
@@ -57,12 +57,12 @@ const isEdToolsDomain = (parsedUrl: url.UrlWithStringQuery) => {
   const edToolsDomains = [
     'composer.gutools.co.uk',
     'preview.gutools.co.uk',
-    'viewer.gutools.co.uk'
+    'viewer.gutools.co.uk',
   ];
 
   return (
     parsedUrl.hostname &&
-    (edToolsDomains.some(d => parsedUrl.hostname === d) ||
+    (edToolsDomains.some((d) => parsedUrl.hostname === d) ||
       /\.gnl/.test(parsedUrl.hostname))
   );
 };
@@ -76,7 +76,7 @@ export const linkValidator = (
     return {
       valid: false,
       message:
-        'This is a preview link, which can only be accessed by Guardian staff, not readers. Please check and update your link and try again'
+        'This is a preview link, which can only be accessed by Guardian staff, not readers. Please check and update your link and try again',
     };
   }
 
@@ -84,7 +84,7 @@ export const linkValidator = (
     return {
       valid: false,
       message:
-        'This link can only be accessed by Guardian staff, not readers. Please check and update your link and try again'
+        'This link can only be accessed by Guardian staff, not readers. Please check and update your link and try again',
     };
   }
 
@@ -98,11 +98,11 @@ export const linkValidator = (
   if (!parsedUrl.hostname) {
     return {
       valid: false,
-      message: `"${rawLink}" is not a valid url, please check and try again`
+      message: `"${rawLink}" is not a valid url, please check and try again`,
     };
   }
 
   return {
-    valid: true
+    valid: true,
   };
 };

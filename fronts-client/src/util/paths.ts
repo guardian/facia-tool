@@ -20,12 +20,12 @@ const getPaths = (uri: string) => {
     ? {
         ophan: ophanURIFromPath(path),
         live: liveURIFromPath(path),
-        preview: previewURIFromPath(path)
+        preview: previewURIFromPath(path),
       }
     : {
         ophan: undefined,
         live: undefined,
-        preview: undefined
+        preview: undefined,
       };
 };
 

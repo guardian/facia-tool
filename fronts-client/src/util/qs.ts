@@ -6,7 +6,7 @@ const enc = encodeURIComponent;
  */
 const qs = (o: { [key: string]: string | void }) =>
   `?${Object.keys(o)
-    .map(key => {
+    .map((key) => {
       const val = o[key];
 
       if (!val) {

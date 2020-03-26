@@ -6,7 +6,7 @@ function recordUnpublishedChanges(
 ): Action {
   return {
     type: 'RECORD_UNPUBLISHED_CHANGES',
-    payload: { [collectionId]: lastPressed }
+    payload: { [collectionId]: lastPressed },
   };
 }
 

@@ -9,7 +9,7 @@ import ButtonDefault from '../inputs/ButtonDefault';
 import {
   fetchIssuesForDateRange,
   fetchIssueByDate,
-  createIssue
+  createIssue,
 } from 'services/editionsApi';
 import { withRouter, RouteComponentProps } from 'react-router';
 import Spinner from 'components/async/Spinner';
@@ -53,7 +53,7 @@ class ManageEdition extends React.Component<
     infoMessage: '',
     isError: false,
     isLoading: false,
-    isCreatingIssue: false
+    isCreatingIssue: false,
   };
 
   public render() {
@@ -77,7 +77,7 @@ class ManageEdition extends React.Component<
               onPrevMonthClick={this.handleMonthClick}
               id="editions-date"
               displayFormat="DD-MM-YYYY"
-              isDayHighlighted={date => !!this.isIssuePresentForDate(date)}
+              isDayHighlighted={(date) => !!this.isIssuePresentForDate(date)}
               isOutsideRange={() => false}
             />
           </span>
@@ -140,12 +140,12 @@ class ManageEdition extends React.Component<
     }
     this.handleLoadingState(
       createIssue(this.props.match.params.editionName, this.state.date).then(
-        issue => {
+        (issue) => {
           this.setState({
             infoMessage: 'New issue created!',
             isError: false,
             currentIssue: issue,
-            isCreatingIssue: false
+            isCreatingIssue: false,
           });
         }
       ),
@@ -164,12 +164,13 @@ class ManageEdition extends React.Component<
       date,
       infoMessage: '',
       isError: false,
-      currentIssue: null
+      currentIssue: null,
     });
     this.handleLoadingState(
-      fetchIssueByDate(this.props.match.params.editionName, date).then(issue =>
-        this.setState({ currentIssue: issue || null })
-      ),
+      fetchIssueByDate(
+        this.props.match.params.editionName,
+        date
+      ).then((issue) => this.setState({ currentIssue: issue || null })),
       `Could not fetch an issue for the date ${date.format('DD-MM-YYYY')}`
     );
   };
@@ -178,22 +179,17 @@ class ManageEdition extends React.Component<
     this.setState({ isDatePickerOpen: !!isFocussedObj.focused });
     if (isFocussedObj.focused) {
       const startDate = moment().startOf('month');
-      const endDate = moment()
-        .add(1, 'month')
-        .endOf('month');
+      const endDate = moment().add(1, 'month').endOf('month');
       this.fetchDateRange(startDate, endDate);
     }
   };
 
   private isIssuePresentForDate = (date: Moment) =>
-    this.state.issues.find(i => moment(i.issueDate).isSame(date, 'day'));
+    this.state.issues.find((i) => moment(i.issueDate).isSame(date, 'day'));
 
   private handleMonthClick = (month: Moment) => {
     const startDate = month.clone().startOf('month');
-    const endDate = month
-      .clone()
-      .add(1, 'month')
-      .endOf('month');
+    const endDate = month.clone().add(1, 'month').endOf('month');
 
     this.fetchDateRange(startDate, endDate);
   };
@@ -204,7 +200,7 @@ class ManageEdition extends React.Component<
         this.props.match.params.editionName,
         startDate,
         endDate
-      ).then(issues => this.setState({ issues })),
+      ).then((issues) => this.setState({ issues })),
       `Fetching issues for this date range failed: ${startDate} to ${endDate}`
     );
   };
@@ -221,11 +217,9 @@ class ManageEdition extends React.Component<
       this.setState(
         this.addExtraKey(
           {
-            infoMessage: `${errorMessage}: ${response.status}, ${
-              response.statusText
-            }`,
+            infoMessage: `${errorMessage}: ${response.status}, ${response.statusText}`,
             isError: true,
-            isLoading: false
+            isLoading: false,
           },
           extraLoadingKey,
           false
@@ -242,7 +236,7 @@ class ManageEdition extends React.Component<
     key
       ? {
           ...obj,
-          [key]: value
+          [key]: value,
         }
       : obj;
 }

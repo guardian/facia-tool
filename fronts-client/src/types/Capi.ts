@@ -151,5 +151,5 @@ export {
   CapiArticleFields,
   CapiArticleWithMetadata,
   Tag,
-  Element
+  Element,
 };

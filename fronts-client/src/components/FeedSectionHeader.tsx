@@ -11,7 +11,7 @@ import {
   selectIsCurrentFrontsMenuOpen,
   editorShowOpenFrontsMenu,
   editorHideOpenFrontsMenu,
-  createSelectEditorFrontsByPriority
+  createSelectEditorFrontsByPriority,
 } from 'bundles/frontsUI';
 import { Dispatch } from 'types/Store';
 import FadeTransition from './transitions/FadeTransition';
@@ -117,7 +117,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
       toggleCurrentFrontsMenu,
       isCurrentFrontsMenuOpen,
       frontCount,
-      editMode
+      editMode,
     } = this.props;
     return (
       <SectionHeaderWithLogo includeBorder={!isCurrentFrontsMenuOpen}>
@@ -167,7 +167,7 @@ const mapStateToProps = () => {
   return (state: State) => ({
     isCurrentFrontsMenuOpen: selectIsCurrentFrontsMenuOpen(state),
     frontCount: selectEditorFrontsByPriority(state).length,
-    editMode: selectEditMode(state)
+    editMode: selectEditMode(state),
   });
 };
 
@@ -176,7 +176,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   toggleCurrentFrontsMenu: (menuState: boolean) =>
     menuState
       ? dispatch(editorShowOpenFrontsMenu())
-      : dispatch(editorHideOpenFrontsMenu())
+      : dispatch(editorHideOpenFrontsMenu()),
 });
 
 const mergeProps = (
@@ -188,13 +188,9 @@ const mergeProps = (
   ...ownProps,
   ...dispatchProps,
   toggleCurrentFrontsMenu: () =>
-    dispatchProps.toggleCurrentFrontsMenu(!stateProps.isCurrentFrontsMenuOpen)
+    dispatchProps.toggleCurrentFrontsMenu(!stateProps.isCurrentFrontsMenuOpen),
 });
 
 export default withRouter(
-  connect(
-    mapStateToProps,
-    mapDispatchToProps,
-    mergeProps
-  )(FeedSectionHeader)
+  connect(mapStateToProps, mapDispatchToProps, mergeProps)(FeedSectionHeader)
 );

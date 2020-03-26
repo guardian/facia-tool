@@ -27,14 +27,14 @@ import type {
   EditorCloseOverview,
   EditorOpenAllOverviews,
   EditorCloseAllOverviews,
-  ChangedBrowsingStage
+  ChangedBrowsingStage,
 } from 'types/Action';
 import type { State as GlobalState } from 'types/State';
 
 import { events } from 'services/GA';
 import {
   selectFronts,
-  selectFrontsWithPriority
+  selectFrontsWithPriority,
 } from 'selectors/frontsSelectors';
 import { REMOVE_GROUP_CARD, REMOVE_SUPPORTING_CARD } from 'actions/CardsCommon';
 import { Stages } from 'types/Collection';
@@ -42,7 +42,7 @@ import { selectPriority } from 'selectors/pathSelectors';
 import { CollectionWithArticles } from 'types/PageViewData';
 import {
   createSelectArticlesInCollection,
-  createSelectArticleFromCard
+  createSelectArticleFromCard,
 } from 'selectors/shared';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
@@ -74,23 +74,22 @@ const editorOpenCollections = (
   collectionIds: string | string[]
 ): EditorOpenCollection => ({
   type: EDITOR_OPEN_COLLECTION,
-  payload: { collectionIds }
+  payload: { collectionIds },
 });
 
 const editorCloseCollections = (
   collectionIds: string | string[]
 ): EditorCloseCollection => ({
   type: EDITOR_CLOSE_COLLECTION,
-  payload: { collectionIds }
+  payload: { collectionIds },
 });
 
-
 const editorOpenCurrentFrontsMenu = (): EditorOpenCurrentFrontsMenu => ({
-  type: EDITOR_OPEN_CURRENT_FRONTS_MENU
+  type: EDITOR_OPEN_CURRENT_FRONTS_MENU,
 });
 
 const editorCloseCurrentFrontsMenu = (): EditorCloseCurrentFrontsMenu => ({
-  type: EDITOR_CLOSE_CURRENT_FRONTS_MENU
+  type: EDITOR_CLOSE_CURRENT_FRONTS_MENU,
 });
 
 /**
@@ -106,8 +105,8 @@ const editorOpenFront = (frontId: string, priority: string): EditorAddFront => {
     type: EDITOR_OPEN_FRONT,
     payload: { frontId, priority },
     meta: {
-      persistTo: 'openFrontIds'
-    }
+      persistTo: 'openFrontIds',
+    },
   };
 };
 
@@ -117,8 +116,8 @@ const editorMoveFront = (frontId: string, toIndex: number): EditorMoveFront => {
     type: 'EDITOR_MOVE_FRONT',
     payload: { frontId, toIndex },
     meta: {
-      persistTo: 'openFrontIds'
-    }
+      persistTo: 'openFrontIds',
+    },
   };
 };
 
@@ -128,8 +127,8 @@ const editorCloseFront = (frontId: string): EditorCloseFront => {
     type: EDITOR_CLOSE_FRONT,
     payload: { frontId },
     meta: {
-      persistTo: 'openFrontIds'
-    }
+      persistTo: 'openFrontIds',
+    },
   };
 };
 
@@ -141,8 +140,8 @@ const changedBrowsingStage = (
     type: CHANGED_BROWSING_STAGE,
     payload: {
       frontId,
-      browsingStage
-    }
+      browsingStage,
+    },
   };
 };
 
@@ -154,8 +153,8 @@ const editorFavouriteFront = (
     type: EDITOR_FAVOURITE_FRONT,
     payload: { frontId, priority },
     meta: {
-      persistTo: 'favouriteFrontIds'
-    }
+      persistTo: 'favouriteFrontIds',
+    },
   };
 };
 
@@ -167,16 +166,16 @@ const editorUnfavouriteFront = (
     type: EDITOR_UNFAVOURITE_FRONT,
     payload: { frontId, priority },
     meta: {
-      persistTo: 'favouriteFrontIds'
-    }
+      persistTo: 'favouriteFrontIds',
+    },
   };
 };
 
 const editorClearOpenFronts = (): EditorClearOpenFronts => ({
   type: EDITOR_CLEAR_OPEN_FRONTS,
   meta: {
-    persistTo: 'openFrontIds'
-  }
+    persistTo: 'openFrontIds',
+  },
 });
 
 const editorSetOpenFronts = (frontIdsByPriority: {
@@ -184,8 +183,8 @@ const editorSetOpenFronts = (frontIdsByPriority: {
 }): EditorSetOpenFronts => ({
   type: EDITOR_SET_OPEN_FRONTS,
   payload: {
-    frontIdsByPriority
-  }
+    frontIdsByPriority,
+  },
 });
 
 const editorSetFavouriteFronts = (favouriteFrontIdsByPriority: {
@@ -193,8 +192,8 @@ const editorSetFavouriteFronts = (favouriteFrontIdsByPriority: {
 }): EditorSetFavouriteFronts => ({
   type: EDITOR_SET_FAVE_FRONTS,
   payload: {
-    favouriteFrontIdsByPriority
-  }
+    favouriteFrontIdsByPriority,
+  },
 });
 
 const editorSelectCard = (
@@ -204,14 +203,14 @@ const editorSelectCard = (
   isSupporting = false
 ): EditorSelectCard => ({
   type: EDITOR_SELECT_CARD,
-  payload: { cardId, frontId, collectionId, isSupporting }
+  payload: { cardId, frontId, collectionId, isSupporting },
 });
 
 const editorClearCardSelection = (
   cardId: string
 ): EditorClearCardSelection => ({
   type: EDITOR_CLEAR_CARD_SELECTION,
-  payload: { cardId }
+  payload: { cardId },
 });
 
 const editorCloseFormsForCollection = (
@@ -219,7 +218,7 @@ const editorCloseFormsForCollection = (
   frontId: string
 ) => ({
   type: EDITOR_CLOSE_FORMS_FOR_COLLECTION,
-  payload: { collectionId, frontId }
+  payload: { collectionId, frontId },
 });
 
 type EditorCloseFormsForCollection = ReturnType<
@@ -227,33 +226,33 @@ type EditorCloseFormsForCollection = ReturnType<
 >;
 
 const editorOpenClipboard = (): EditorOpenClipboard => ({
-  type: EDITOR_OPEN_CLIPBOARD
+  type: EDITOR_OPEN_CLIPBOARD,
 });
 
 const editorCloseClipboard = (): EditorCloseClipboard => ({
-  type: EDITOR_CLOSE_CLIPBOARD
+  type: EDITOR_CLOSE_CLIPBOARD,
 });
 
 const editorOpenOverview = (frontId: string): EditorOpenOverview => ({
   type: EDITOR_OPEN_OVERVIEW,
   payload: {
-    frontId
-  }
+    frontId,
+  },
 });
 
 const editorCloseOverview = (frontId: string): EditorCloseOverview => ({
   type: EDITOR_CLOSE_OVERVIEW,
   payload: {
-    frontId
-  }
+    frontId,
+  },
 });
 
 const editorOpenAllOverviews = (): EditorOpenAllOverviews => ({
-  type: EDITOR_OPEN_ALL_OVERVIEWS
+  type: EDITOR_OPEN_ALL_OVERVIEWS,
 });
 
 const editorCloseAllOverviews = (): EditorCloseAllOverviews => ({
-  type: EDITOR_CLOSE_ALL_OVERVIEWS
+  type: EDITOR_CLOSE_ALL_OVERVIEWS,
 });
 
 interface OpenCardData {
@@ -314,10 +313,10 @@ const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
         id,
         displayName,
         index,
-        isOpen: !!openFronts.find(_ => _.id === id),
-        isStarred: !!favouriteFronts.includes(id)
+        isOpen: !!openFronts.find((_) => _.id === id),
+        isStarred: !!favouriteFronts.includes(id),
       }));
-      return sortBy(fronts, front => front[sortKey]);
+      return sortBy(fronts, (front) => front[sortKey]);
     }
   );
 };
@@ -326,7 +325,7 @@ function createSelectCollectionsInOpenFronts() {
   const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
   return (state: GlobalState): string[] => {
     const openFrontsForPriority = selectEditorFrontsByPriority(state);
-    return flatten(openFrontsForPriority.map(front => front.collections));
+    return flatten(openFrontsForPriority.map((front) => front.collections));
   };
 }
 
@@ -336,17 +335,17 @@ const createSelectCurrentlyOpenCollectionsByFront = () => {
     selectEditorFrontsByPriority,
     selectOpenCollections,
     (openFronts, openCollectionIds) => {
-      const openFrontsWithCollections = openFronts.map(front => ({
+      const openFrontsWithCollections = openFronts.map((front) => ({
         id: front.id,
-        collections: front.collections
+        collections: front.collections,
       }));
-      return openFrontsWithCollections.map(front => {
-        const collections = front.collections.filter(collection =>
+      return openFrontsWithCollections.map((front) => {
+        const collections = front.collections.filter((collection) =>
           openCollectionIds.includes(collection)
         );
         return {
           frontId: front.id,
-          collections
+          collections,
         };
       });
     }
@@ -411,7 +410,7 @@ const createSelectEditorFrontsByPriority = () =>
         return [];
       }
       const openFrontIds = frontIdsByPriority[priority] || [];
-      return compact(openFrontIds.map(frontId => fronts[frontId]));
+      return compact(openFrontIds.map((frontId) => fronts[frontId]));
     }
   );
 
@@ -433,7 +432,7 @@ const selectEditorFavouriteFrontIdsByPriority = (
 
 const selectHasMultipleFrontsOpen = createSelector(
   selectEditorFrontIdsByPriority,
-  frontIdsByPriority => {
+  (frontIdsByPriority) => {
     return frontIdsByPriority.length > 1;
   }
 );
@@ -451,14 +450,13 @@ const selectIsCardFormOpen = (
   frontId: string
 ) => {
   return (selectOpenCardForms(state, { frontId }) || []).some(
-    _ => _.id === cardId
+    (_) => _.id === cardId
   );
 };
 
 const createSelectCollectionIdsWithOpenForms = () =>
-  createSelector(
-    selectOpenCardForms,
-    forms => uniq(forms.map(_ => _.collectionId))
+  createSelector(selectOpenCardForms, (forms) =>
+    uniq(forms.map((_) => _.collectionId))
   );
 
 const createSelectDoesCollectionHaveOpenForms = () =>
@@ -469,7 +467,7 @@ const createSelectDoesCollectionHaveOpenForms = () =>
       { frontId, collectionId }: { frontId: string; collectionId: string }
     ) => ({ frontId, collectionId }),
     (forms, { collectionId }) =>
-      forms.some(form => form.collectionId === collectionId)
+      forms.some((form) => form.collectionId === collectionId)
   );
 
 const selectCollectionId = (
@@ -482,7 +480,7 @@ const createSelectOpenCardIdsForCollection = () =>
     selectOpenCardForms,
     selectCollectionId,
     (forms, collectionId) =>
-      forms.filter(_ => _.collectionId === collectionId).map(_ => _.id)
+      forms.filter((_) => _.collectionId === collectionId).map((_) => _.id)
   );
 
 // NB: This selector is not memoized.
@@ -495,17 +493,17 @@ const createSelectOpenCardTitlesForCollection = () => {
   ): Array<{ uuid: string; title: string | undefined }> => {
     const cardIds = selectOpenCardIdsForCollection(state, {
       collectionId,
-      frontId
+      frontId,
     });
     return compact(
       cardIds
-        .map(id => selectArticleFromCard(state, id))
-        .filter(_ => _)
+        .map((id) => selectArticleFromCard(state, id))
+        .filter((_) => _)
         .map(
-          derivedArticle =>
+          (derivedArticle) =>
             derivedArticle && {
               uuid: derivedArticle.uuid,
-              title: derivedArticle.headline || derivedArticle.customKicker
+              title: derivedArticle.headline || derivedArticle.customKicker,
             }
         )
     );
@@ -522,7 +520,7 @@ const selectOpenFrontsCollectionsAndArticles = (
   state: GlobalState
 ): Array<{ frontId: string; collections: CollectionWithArticles[] }> => {
   const openCollectionsByFront = selectCurrentlyOpenCollectionsByFront(state);
-  return openCollectionsByFront.map(frontAndCollections => {
+  return openCollectionsByFront.map((frontAndCollections) => {
     const browsingStage = selectFrontBrowsingStage(
       state,
       frontAndCollections.frontId
@@ -531,16 +529,16 @@ const selectOpenFrontsCollectionsAndArticles = (
       const articleIds: string[] = selectAllArticleIdsForCollection(state, {
         collectionId: cId,
         collectionSet: browsingStage,
-        includeSupportingArticles: false
+        includeSupportingArticles: false,
       });
       return {
         id: cId,
-        articleIds
+        articleIds,
       };
     });
     return {
       frontId: frontAndCollections.frontId,
-      collections
+      collections,
     };
   });
 };
@@ -554,14 +552,14 @@ const defaultState = {
   clipboardOpen: true,
   closedOverviews: [],
   selectedCards: {},
-  frontIdsByBrowsingStage: {}
+  frontIdsByBrowsingStage: {},
 };
 
 const clearCardSelection = (state: State, cardId: string): State => {
   let frontId: string | null = null;
   for (const entry of Object.entries(state.selectedCards)) {
     const [currentFrontId, cardDatas] = entry;
-    const currentCardDataIndex = cardDatas.findIndex(_ => _.id === cardId);
+    const currentCardDataIndex = cardDatas.findIndex((_) => _.id === cardId);
     if (currentCardDataIndex !== -1) {
       frontId = currentFrontId;
       break;
@@ -576,8 +574,8 @@ const clearCardSelection = (state: State, cardId: string): State => {
     ...state,
     selectedCards: {
       ...state.selectedCards,
-      [frontId]: state.selectedCards[frontId].filter(_ => _.id !== cardId)
-    }
+      [frontId]: state.selectedCards[frontId].filter((_) => _.id !== cardId),
+    },
   };
 };
 
@@ -592,7 +590,7 @@ const getFrontPosition = (
     .map(([priority, frontIds]) => ({
       frontId,
       priority,
-      index: frontIds.indexOf(frontId)
+      index: frontIds.indexOf(frontId),
     }));
   if (positions.length) {
     return positions[0];
@@ -604,14 +602,14 @@ const reducer = (state: State = defaultState, action: Action): State => {
     case EDITOR_OPEN_CURRENT_FRONTS_MENU: {
       return {
         ...state,
-        showOpenFrontsMenu: true
+        showOpenFrontsMenu: true,
       };
     }
 
     case EDITOR_CLOSE_CURRENT_FRONTS_MENU: {
       return {
         ...state,
-        showOpenFrontsMenu: false
+        showOpenFrontsMenu: false,
       };
     }
 
@@ -623,8 +621,8 @@ const reducer = (state: State = defaultState, action: Action): State => {
           ...state.frontIdsByPriority,
           [priority]: (state.frontIdsByPriority[priority] || []).concat(
             action.payload.frontId
-          )
-        }
+          ),
+        },
       };
     }
 
@@ -633,8 +631,8 @@ const reducer = (state: State = defaultState, action: Action): State => {
         ...state,
         frontIdsByBrowsingStage: {
           ...state.frontIdsByBrowsingStage,
-          [action.payload.frontId]: action.payload.browsingStage
-        }
+          [action.payload.frontId]: action.payload.browsingStage,
+        },
       };
     }
 
@@ -659,8 +657,8 @@ const reducer = (state: State = defaultState, action: Action): State => {
         ...state,
         frontIdsByPriority: {
           ...state.frontIdsByPriority,
-          [priority]: newFrontIds
-        }
+          [priority]: newFrontIds,
+        },
       };
     }
     case EDITOR_CLOSE_FRONT: {
@@ -679,8 +677,8 @@ const reducer = (state: State = defaultState, action: Action): State => {
           [priority]: without(
             state.frontIdsByPriority[priority],
             action.payload.frontId
-          )
-        }
+          ),
+        },
       };
     }
     case EDITOR_FAVOURITE_FRONT: {
@@ -691,8 +689,8 @@ const reducer = (state: State = defaultState, action: Action): State => {
           ...state.favouriteFrontIdsByPriority,
           [priority]: (
             state.favouriteFrontIdsByPriority[priority] || []
-          ).concat(action.payload.frontId)
-        }
+          ).concat(action.payload.frontId),
+        },
       };
     }
     case EDITOR_UNFAVOURITE_FRONT: {
@@ -704,33 +702,33 @@ const reducer = (state: State = defaultState, action: Action): State => {
           [priority]: without(
             state.favouriteFrontIdsByPriority[priority],
             action.payload.frontId
-          )
-        }
+          ),
+        },
       };
     }
     case EDITOR_SET_FAVE_FRONTS: {
       return {
         ...state,
-        favouriteFrontIdsByPriority: action.payload.favouriteFrontIdsByPriority
+        favouriteFrontIdsByPriority: action.payload.favouriteFrontIdsByPriority,
       };
     }
     case EDITOR_CLEAR_OPEN_FRONTS: {
       return {
         ...state,
         frontIds: [],
-        frontIdsByPriority: {}
+        frontIdsByPriority: {},
       };
     }
     case EDITOR_SET_OPEN_FRONTS: {
       return {
         ...state,
-        frontIdsByPriority: action.payload.frontIdsByPriority
+        frontIdsByPriority: action.payload.frontIdsByPriority,
       };
     }
     case EDITOR_OPEN_COLLECTION: {
       return {
         ...state,
-        collectionIds: state.collectionIds.concat(action.payload.collectionIds)
+        collectionIds: state.collectionIds.concat(action.payload.collectionIds),
       };
     }
     case EDITOR_CLOSE_COLLECTION: {
@@ -741,7 +739,7 @@ const reducer = (state: State = defaultState, action: Action): State => {
           ...(Array.isArray(action.payload.collectionIds)
             ? action.payload.collectionIds
             : [action.payload.collectionIds])
-        )
+        ),
       };
     }
     case EDITOR_SELECT_CARD: {
@@ -751,21 +749,21 @@ const reducer = (state: State = defaultState, action: Action): State => {
         frontId,
         collectionId,
         isSupporting,
-        cardId: id
+        cardId: id,
       } = action.payload;
       const openCards = currentlyOpenCards.concat([
         {
           id,
           isSupporting,
-          collectionId
-        }
+          collectionId,
+        },
       ]);
       return {
         ...state,
         selectedCards: {
           ...state.selectedCards,
-          [frontId]: openCards
-        }
+          [frontId]: openCards,
+        },
       };
     }
     case EDITOR_CLEAR_CARD_SELECTION: {
@@ -795,39 +793,39 @@ const reducer = (state: State = defaultState, action: Action): State => {
     case EDITOR_OPEN_CLIPBOARD: {
       return {
         ...state,
-        clipboardOpen: true
+        clipboardOpen: true,
       };
     }
     case EDITOR_CLOSE_CLIPBOARD: {
       return {
         ...state,
-        clipboardOpen: false
+        clipboardOpen: false,
       };
     }
     case EDITOR_OPEN_OVERVIEW: {
       return {
         ...state,
         closedOverviews: state.closedOverviews.filter(
-          id => id !== action.payload.frontId
-        )
+          (id) => id !== action.payload.frontId
+        ),
       };
     }
     case EDITOR_CLOSE_OVERVIEW: {
       return {
         ...state,
-        closedOverviews: state.closedOverviews.concat(action.payload.frontId)
+        closedOverviews: state.closedOverviews.concat(action.payload.frontId),
       };
     }
     case EDITOR_OPEN_ALL_OVERVIEWS: {
       return {
         ...state,
-        closedOverviews: []
+        closedOverviews: [],
       };
     }
     case EDITOR_CLOSE_ALL_OVERVIEWS: {
       return {
         ...state,
-        closedOverviews: [...state.frontIds]
+        closedOverviews: [...state.frontIds],
       };
     }
     default: {
@@ -883,7 +881,7 @@ export {
   EditorCloseFormsForCollection,
   editorCloseFormsForCollection,
   defaultState,
-  State
+  State,
 };
 
 export default reducer;

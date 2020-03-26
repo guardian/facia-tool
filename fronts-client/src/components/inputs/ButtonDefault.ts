@@ -25,19 +25,19 @@ interface ButtonProps {
 const heightMap = {
   s: '20px',
   m: '24px',
-  l: '40px'
+  l: '40px',
 };
 
 const paddingMap = {
   s: '5px',
   m: '15px',
-  l: '15px'
+  l: '15px',
 };
 
 const fontSizeMap = {
   s: '12px',
   m: '14px',
-  l: '14px'
+  l: '14px',
 };
 
 const colorMap = {
@@ -45,20 +45,20 @@ const colorMap = {
     default: theme.colors.white,
     primary: theme.colors.greyLight,
     muted: theme.colors.blackLight,
-    transparent: theme.colors.white
+    transparent: theme.colors.white,
   },
   selected: {
     default: theme.colors.white,
     primary: theme.colors.white,
     muted: theme.colors.blackLight,
-    transparent: theme.colors.white
+    transparent: theme.colors.white,
   },
   deselected: {
     default: theme.colors.white,
     primary: theme.colors.blackDark,
     muted: theme.colors.blackLight,
-    transparent: theme.colors.white
-  }
+    transparent: theme.colors.white,
+  },
 };
 
 const backgroundMap = {
@@ -66,20 +66,20 @@ const backgroundMap = {
     default: theme.colors.greyMediumLight,
     primary: theme.colors.whiteMedium,
     muted: theme.colors.greyLight,
-    transparent: theme.colors.blackTransparent20
+    transparent: theme.colors.blackTransparent20,
   },
   selected: {
     default: theme.colors.greyMediumDark,
     primary: theme.colors.orangeLight,
     muted: theme.colors.greyLight,
-    transparent: theme.colors.blackTransparent60
+    transparent: theme.colors.blackTransparent60,
   },
   deselected: {
     default: theme.colors.blackLight,
     primary: theme.colors.orange,
     muted: theme.colors.greyLightPinkish,
-    transparent: theme.colors.blackTransparent40
-  }
+    transparent: theme.colors.blackTransparent40,
+  },
 };
 
 const backgroundHoverMap = {
@@ -87,31 +87,31 @@ const backgroundHoverMap = {
     default: theme.colors.greyMediumLight,
     primary: theme.colors.orangeDark,
     muted: theme.colors.greyLight,
-    transparent: theme.colors.blackTransparent20
+    transparent: theme.colors.blackTransparent20,
   },
   selected: {
     default: theme.colors.greyMediumDark,
     primary: theme.colors.orangeLight,
     muted: theme.colors.greyLight,
-    transparent: theme.colors.blackTransparent60
+    transparent: theme.colors.blackTransparent60,
   },
   deselected: {
     default: theme.colors.greyMediumDark,
     primary: theme.colors.orangeLight,
     muted: theme.colors.greyLight,
-    transparent: theme.colors.blackTransparent60
-  }
+    transparent: theme.colors.blackTransparent60,
+  },
 };
 
 const letterSpacingMap = {
   s: '0px',
   m: '0px',
-  l: '0.5px'
+  l: '0.5px',
 };
 
 const getMapKey = ({
   disabled,
-  selected
+  selected,
 }: {
   disabled?: boolean | undefined;
   selected?: boolean | undefined;
@@ -126,7 +126,7 @@ const mapSize = (map: SizeMap) => ({ size = 'm' }: ButtonProps) => map[size];
 const mapAction = (map: ColorMap) => ({
   selected,
   disabled,
-  priority = 'default'
+  priority = 'default',
 }: ButtonProps) => map[getMapKey({ selected, disabled })][priority];
 
 export default styled.button<ButtonProps>`
@@ -152,7 +152,7 @@ export default styled.button<ButtonProps>`
     cursor: pointer;
   }
   &:focus {
-    outline: 1px solid ${props => props.theme.base.colors.focusColor};
+    outline: 1px solid ${(props) => props.theme.base.colors.focusColor};
   }
 
   :not(:first-child) {

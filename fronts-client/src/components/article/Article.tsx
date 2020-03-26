@@ -5,7 +5,7 @@ import noop from 'lodash/noop';
 
 import {
   createSelectArticleFromCard,
-  selectCard
+  selectCard,
 } from '../../selectors/shared';
 import { selectors } from 'bundles/externalArticlesBundle';
 import type { State } from 'types/State';
@@ -76,7 +76,7 @@ interface ComponentState {
 class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
   public state = {
     isDraggingImageOver: false,
-    isDraggingArticleOver: false
+    isDraggingArticleOver: false,
   };
 
   public setIsImageHovering = (isDraggingImageOver: boolean) =>
@@ -108,23 +108,23 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       featureFlagPageViewData,
       canShowPageViewData = false,
       frontId,
-      collectionId
+      collectionId,
     } = this.props;
 
     const dragEventHasImageData = (e: React.DragEvent) =>
-      e.dataTransfer.types.some(dataTransferType =>
+      e.dataTransfer.types.some((dataTransferType) =>
         imageDropTypes.includes(dataTransferType)
       );
 
     const getArticleData = () =>
       article || {
         uuid: id,
-        headline: !isLoading ? 'Content not found' : undefined
+        headline: !isLoading ? 'Content not found' : undefined,
       };
 
     return (
       <DragIntentContainer
-        filterRegisterEvent={e => !dragEventHasImageData(e)}
+        filterRegisterEvent={(e) => !dragEventHasImageData(e)}
         onDragIntentStart={() => this.setIsArticleHovering(true)}
         onDragIntentEnd={() => this.setIsArticleHovering(false)}
       >
@@ -134,7 +134,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
           onDragStart={onDragStart}
           onDragOver={onDragOver}
           onDrop={onDrop}
-          onClick={e => {
+          onClick={(e) => {
             if (isLoading || !article) {
               return;
             }
@@ -147,7 +147,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
             filterRegisterEvent={dragEventHasImageData}
             onDragIntentStart={() => this.setIsImageHovering(true)}
             onDragIntentEnd={() => this.setIsImageHovering(false)}
-            onDrop={e => {
+            onDrop={(e) => {
               if (dragEventHasImageData(e) && onImageDrop) {
                 onImageDrop(e);
               }
@@ -205,7 +205,7 @@ const createMapStateToProps = () => {
       featureFlagPageViewData: selectFeatureValue(
         getState(state),
         'page-view-data-visualisation'
-      )
+      ),
     };
   };
 };

@@ -27,7 +27,7 @@ const dragEventIsBlacklisted = (
   e: React.DragEvent,
   blacklist: string[] | undefined
 ) => {
-  return e.dataTransfer.types.some(type => (blacklist || []).includes(type));
+  return e.dataTransfer.types.some((type) => (blacklist || []).includes(type));
 };
 
 interface Move<T> {
@@ -109,7 +109,7 @@ class Level<T> extends React.Component<Props<T>, State> {
       type,
       dragImageOffsetX,
       dragImageOffsetY,
-      store
+      store,
     } = this.props;
     const Container = this.props.containerElement || DefaultContainer;
     return (
@@ -117,7 +117,7 @@ class Level<T> extends React.Component<Props<T>, State> {
         {arr.map((node, i) => (
           <React.Fragment key={getId(node)}>
             <DropZone store={store} parentKey={this.key} index={i}>
-              {isTarget =>
+              {(isTarget) =>
                 renderDrop && renderDrop(this.getDropProps(arr, i, isTarget))
               }
             </DropZone>
@@ -130,7 +130,7 @@ class Level<T> extends React.Component<Props<T>, State> {
               index={i}
               data={node}
             >
-              {getNodeDragProps =>
+              {(getNodeDragProps) =>
                 children(
                   node,
                   this.getNodeDropProps(i, getNodeDragProps),
@@ -142,7 +142,7 @@ class Level<T> extends React.Component<Props<T>, State> {
           </React.Fragment>
         ))}
         <DropZone store={store} parentKey={this.key} index={arr.length}>
-          {isTarget =>
+          {(isTarget) =>
             renderDrop &&
             renderDrop(this.getDropProps(arr, arr.length, isTarget))
           }
@@ -181,7 +181,7 @@ class Level<T> extends React.Component<Props<T>, State> {
     const to = {
       index: i,
       type: this.props.parentType,
-      id: this.props.parentId
+      id: this.props.parentId,
     };
 
     if (!af) {
@@ -196,7 +196,7 @@ class Level<T> extends React.Component<Props<T>, State> {
         isMove(this.props.parents, parents) && {
           type: parentType,
           id: parentId,
-          index
+          index,
         };
 
       const adjustedTo = from ? adjustToIndexForMove(from, to) : to;
@@ -213,7 +213,7 @@ class Level<T> extends React.Component<Props<T>, State> {
       onDrop: this.onDrop(index),
       isTarget,
       index,
-      length: arr.length
+      length: arr.length,
     };
   }
 
@@ -226,7 +226,7 @@ class Level<T> extends React.Component<Props<T>, State> {
       ...getNodeDragProps(forceClone),
       ...(canDrop
         ? { onDragOver: this.onDragOver(i), onDrop: this.onDrop(i) }
-        : {})
+        : {}),
     });
   }
 }
@@ -256,5 +256,5 @@ export {
   LevelChild,
   MoveHandler,
   DropHandler,
-  dragEventIsBlacklisted
+  dragEventIsBlacklisted,
 };

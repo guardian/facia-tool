@@ -5,11 +5,11 @@ import { connect } from 'react-redux';
 import { Card } from 'types/Collection';
 import ArticleDrag, {
   dragOffsetX,
-  dragOffsetY
+  dragOffsetY,
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, {
   DefaultDropContainer,
-  DefaultDropIndicator
+  DefaultDropIndicator,
 } from 'components/DropZone';
 import { createSelectSupportingArticles } from 'selectors/shared';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
@@ -47,7 +47,7 @@ const CardLevel = ({
   supporting,
   onMove,
   onDrop,
-  isUneditable
+  isUneditable,
 }: Props) => (
   <Level
     arr={supporting || []}
@@ -59,13 +59,13 @@ const CardLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     canDrop={!isUneditable}
-    renderDrag={af => <ArticleDrag id={af.uuid} />}
+    renderDrag={(af) => <ArticleDrag id={af.uuid} />}
     dragImageOffsetX={dragOffsetX}
     dragImageOffsetY={dragOffsetY}
     renderDrop={
       isUneditable
         ? undefined
-        : props => (
+        : (props) => (
             <DropZone
               {...props}
               dropColor={theme.base.colors.dropZoneActiveSublink}
@@ -83,7 +83,7 @@ const CardLevel = ({
 const createMapStateToProps = () => {
   const selectSupportingArticles = createSelectSupportingArticles();
   return (state: State, { cardId }: OuterProps) => ({
-    supporting: selectSupportingArticles(state, { cardId })
+    supporting: selectSupportingArticles(state, { cardId }),
   });
 };
 

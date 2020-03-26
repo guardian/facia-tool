@@ -36,7 +36,7 @@ const OpenFormsWarning = ({ openArticleTitles }: ComponentProps) => (
                 element.scrollIntoView({
                   behavior: 'smooth',
                   inline: 'start',
-                  block: 'end'
+                  block: 'end',
                 });
               }
             }}
@@ -51,14 +51,11 @@ const OpenFormsWarning = ({ openArticleTitles }: ComponentProps) => (
 
 const mapStateToProps = () => {
   const selectOpenCardTitlesForCollection = createSelectOpenCardTitlesForCollection();
-  return (
-    state: State,
-    { collectionId, frontId }: ContainerProps
-  ) => ({
+  return (state: State, { collectionId, frontId }: ContainerProps) => ({
     openArticleTitles: selectOpenCardTitlesForCollection(state, {
       collectionId,
-      frontId
-    })
+      frontId,
+    }),
   });
 };
 

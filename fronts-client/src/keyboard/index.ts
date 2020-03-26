@@ -5,7 +5,7 @@ import {
   editorOpenAllOverviews,
   selectIsClipboardOpen,
   editorCloseClipboard,
-  editorOpenClipboard
+  editorOpenClipboard,
 } from 'bundles/frontsUI';
 import { ThunkResult } from 'types/Store';
 import Mousetrap from 'mousetrap';
@@ -56,12 +56,12 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
   up: {
     title: 'Up',
     description: 'Move an entity up',
-    action: bindActionMap(store, moveUp)
+    action: bindActionMap(store, moveUp),
   },
   down: {
     title: 'Down',
     description: 'Move an entity down',
-    action: bindActionMap(store, moveDown)
+    action: bindActionMap(store, moveDown),
   },
   'command+v': {
     title: 'Paste',
@@ -86,19 +86,19 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
       } catch (e) {
         Raven.captureMessage(`Paste to clipboard failed: ${e.message}`);
       }
-    }
+    },
   },
   'command+j': {
     title: 'Close all overviews',
     action: () => {
       store.dispatch(editorCloseAllOverviews());
-    }
+    },
   },
   'command+k': {
     title: 'Open all overviews',
     action: () => {
       store.dispatch(editorOpenAllOverviews());
-    }
+    },
   },
   'command+u': {
     title: 'Toggle clipboard',
@@ -108,7 +108,7 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
       } else {
         store.dispatch(editorOpenClipboard());
       }
-    }
+    },
   },
   'command+b': {
     title: 'Focus clipboard',
@@ -116,12 +116,12 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
       if (selectIsClipboardOpen(store.getState())) {
         store.dispatch(
           setFocusState({
-            type: 'clipboard'
+            type: 'clipboard',
           })
         );
       }
-    }
-  }
+    },
+  },
 });
 
 /**

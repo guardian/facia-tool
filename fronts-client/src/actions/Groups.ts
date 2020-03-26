@@ -3,7 +3,7 @@ import { Group } from 'types/Collection';
 function groupsReceived(groups: { [id: string]: Group }) {
   return {
     type: 'SHARED/GROUPS_RECEIVED' as const,
-    payload: groups
+    payload: groups,
   };
 }
 
@@ -13,8 +13,8 @@ const capGroupSiblings = (id: string, collectionCap: number) => ({
   type: 'SHARED/CAP_GROUP_SIBLINGS' as const,
   payload: {
     id,
-    collectionCap
-  }
+    collectionCap,
+  },
 });
 
 type CapGroupSiblings = ReturnType<typeof capGroupSiblings>;

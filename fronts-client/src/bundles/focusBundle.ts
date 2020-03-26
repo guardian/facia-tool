@@ -7,11 +7,11 @@ export const FOCUS_RESET_FOCUS_STATE = 'FOCUS_RESET_FOCUS_STATE';
 
 export const setFocusState = (focusState: ApplicationFocusStates) => ({
   type: FOCUS_SET_FOCUS_STATE as typeof FOCUS_SET_FOCUS_STATE,
-  payload: { focusState }
+  payload: { focusState },
 });
 
 export const resetFocusState = () => ({
-  type: FOCUS_RESET_FOCUS_STATE as typeof FOCUS_RESET_FOCUS_STATE
+  type: FOCUS_RESET_FOCUS_STATE as typeof FOCUS_RESET_FOCUS_STATE,
 });
 
 export const selectFocusState = (state: RootState) => state.focus.focusState;
@@ -43,7 +43,7 @@ export const reducer = (
     case FOCUS_SET_FOCUS_STATE: {
       return {
         ...state,
-        focusState: action.payload.focusState
+        focusState: action.payload.focusState,
       };
     }
     default: {
@@ -51,7 +51,7 @@ export const reducer = (
     }
     case FOCUS_RESET_FOCUS_STATE: {
       return {
-        focusState: undefined
+        focusState: undefined,
       };
     }
   }

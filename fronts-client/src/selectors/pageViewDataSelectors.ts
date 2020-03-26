@@ -8,7 +8,7 @@ const selectOpenCollectionsForFront = (
   allCollectionsInAFront: string[],
   openCollectionIds: string[]
 ): string[] => {
-  return allCollectionsInAFront.filter(collection =>
+  return allCollectionsInAFront.filter((collection) =>
     openCollectionIds.includes(collection)
   );
 };
@@ -26,5 +26,5 @@ const selectDataForArticle = (
 export {
   selectPageViewData,
   selectOpenCollectionsForFront,
-  selectDataForArticle
+  selectDataForArticle,
 };

@@ -24,7 +24,7 @@ export const defaultFields = [
   'imageSlideshowReplace',
   'primaryImage',
   'cutoutImage',
-  'slideshow'
+  'slideshow',
 ] as FormFields[];
 
 export const supportingFields = [
@@ -32,7 +32,7 @@ export const supportingFields = [
   'customKicker',
   'isBreaking',
   'showKickerSection',
-  'showKickerCustom'
+  'showKickerCustom',
 ] as FormFields[];
 
 export const htmlSnapFields = [
@@ -41,33 +41,28 @@ export const htmlSnapFields = [
   'cutoutImage',
   'imageCutoutReplace',
   'imageHide',
-  'imageReplace'
+  'imageReplace',
 ];
 
 export const emailFieldsToExclude = [
   'isBreaking',
   'showLargeHeadline',
   'slideshow',
-  'imageSlideshowReplace'
+  'imageSlideshowReplace',
 ] as FormFields[];
 
 const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>
   isSupporting;
 
-const selectParentCollectionConfig = (
-  state: State,
-  cardId: string
-) => {
+const selectParentCollectionConfig = (state: State, cardId: string) => {
   const collectionId = selectors.selectParentCollectionOfCard(state, cardId);
   return collectionId ? selectCollectionConfig(state, collectionId) : undefined;
 };
 
 export const createSelectFormFieldsForCard = () => {
   const selectDerivedArticle = createSelectArticleFromCard();
-  const selectDerivedArticleFromRootState = (
-    state: State,
-    id: string
-  ) => selectDerivedArticle(state, id);
+  const selectDerivedArticleFromRootState = (state: State, id: string) =>
+    selectDerivedArticle(state, id);
   return createSelector(
     selectDerivedArticleFromRootState,
     selectParentCollectionConfig,

@@ -15,6 +15,6 @@ export default styled.div<{ status?: 'info' | 'error' }>`
     left: 0;
     bottom: -1px;
     border-left: 4px solid
-      ${props => (props.status === 'info' ? 'green' : 'red')};
+      ${(props) => (props.status === 'info' ? 'green' : 'red')};
   }
 `;

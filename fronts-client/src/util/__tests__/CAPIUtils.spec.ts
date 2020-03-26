@@ -4,7 +4,7 @@ import {
   getIdFromURL,
   getContributorImage,
   getThumbnail,
-  isLive
+  isLive,
 } from 'util/CAPIUtils';
 import { CapiArticle } from 'types/Capi';
 
@@ -66,7 +66,7 @@ describe('CAPIUtils', () => {
         getThumbnail(
           {
             ...cardWithSlideshowThumbnailMeta,
-            imageSlideshowReplace: false
+            imageSlideshowReplace: false,
           },
           capiArticleWithElementsThumbnail
         )
@@ -79,14 +79,14 @@ describe('CAPIUtils', () => {
         getThumbnail(
           {
             ...cardWithSlideshowThumbnailMeta,
-            imageCutoutReplace: true
+            imageCutoutReplace: true,
           },
           {
             ...capiArticleWithElementsThumbnail,
             fields: {
               ...capiArticleWithElementsThumbnail.fields,
-              thumbnail: 'fieldSrc'
-            }
+              thumbnail: 'fieldSrc',
+            },
           }
         )
       ).toEqual('fieldSrc');
@@ -94,15 +94,15 @@ describe('CAPIUtils', () => {
         getThumbnail(
           {
             ...cardWithSlideshowThumbnailMeta,
-            imageCutoutReplace: true
+            imageCutoutReplace: true,
           },
           {
             ...capiArticleWithElementsThumbnail,
             fields: {
               ...capiArticleWithElementsThumbnail.fields,
               thumbnail: 'fieldSrc',
-              secureThumbnail: 'fieldSrcSecure'
-            }
+              secureThumbnail: 'fieldSrcSecure',
+            },
           }
         )
       ).toEqual('fieldSrcSecure');
@@ -112,16 +112,16 @@ describe('CAPIUtils', () => {
         getThumbnail(
           {
             ...cardWithSlideshowThumbnailMeta,
-            imageCutoutReplace: true
+            imageCutoutReplace: true,
           },
           {
             ...capiArticleWithElementsThumbnail,
             tags: [
               {
                 type: 'contributor',
-                bylineLargeImageUrl: 'contributorSrc'
-              }
-            ]
+                bylineLargeImageUrl: 'contributorSrc',
+              },
+            ],
           } as any
         )
       ).toEqual('contributorSrc');
@@ -132,21 +132,21 @@ describe('CAPIUtils', () => {
           {
             ...cardWithSlideshowThumbnailMeta,
             imageCutoutReplace: true,
-            imageCutoutSrc: 'imageCutoutSrc'
+            imageCutoutSrc: 'imageCutoutSrc',
           },
           {
             ...capiArticleWithElementsThumbnail,
             tags: [
               {
                 type: 'contributor',
-                bylineLargeImageUrl: 'contributorSrc'
-              }
+                bylineLargeImageUrl: 'contributorSrc',
+              },
             ],
             fields: {
               ...capiArticleWithElementsThumbnail.fields,
               thumbnail: 'fieldSrc',
-              secureThumbnail: 'fieldSrcSecure'
-            }
+              secureThumbnail: 'fieldSrcSecure',
+            },
           } as any
         )
       ).toEqual('imageCutoutSrc');
@@ -159,21 +159,21 @@ describe('CAPIUtils', () => {
             imageReplace: true,
             imageCutoutReplace: true,
             imageCutoutSrc: 'imageCutoutSrc',
-            imageSrc: 'imageSrc'
+            imageSrc: 'imageSrc',
           },
           {
             ...capiArticleWithElementsThumbnail,
             tags: [
               {
                 type: 'contributor',
-                bylineLargeImageUrl: 'contributorSrc'
-              }
+                bylineLargeImageUrl: 'contributorSrc',
+              },
             ],
             fields: {
               ...capiArticleWithElementsThumbnail.fields,
               thumbnail: 'fieldSrc',
-              secureThumbnail: 'fieldSrcSecure'
-            }
+              secureThumbnail: 'fieldSrcSecure',
+            },
           } as any
         )
       ).toEqual('imageSrc');
@@ -187,21 +187,21 @@ describe('CAPIUtils', () => {
             imageCutoutReplace: true,
             imageCutoutSrc: 'imageCutoutSrc',
             imageSrc: 'imageSrc',
-            imageSrcThumb: 'imageSrcThumb'
+            imageSrcThumb: 'imageSrcThumb',
           },
           {
             ...capiArticleWithElementsThumbnail,
             tags: [
               {
                 type: 'contributor',
-                bylineLargeImageUrl: 'contributorSrc'
-              }
+                bylineLargeImageUrl: 'contributorSrc',
+              },
             ],
             fields: {
               ...capiArticleWithElementsThumbnail.fields,
               thumbnail: 'fieldSrc',
-              secureThumbnail: 'fieldSrcSecure'
-            }
+              secureThumbnail: 'fieldSrcSecure',
+            },
           } as any
         )
       ).toEqual('imageSrcThumb');
@@ -213,8 +213,8 @@ describe('CAPIUtils', () => {
       const article = {
         ...capiArticleWithElementsThumbnail,
         fields: {
-          isLive: false
-        }
+          isLive: false,
+        },
       } as CapiArticle;
 
       expect(article.fields.isLive).toEqual(false);
@@ -225,8 +225,8 @@ describe('CAPIUtils', () => {
       const article = {
         ...capiArticleWithElementsThumbnail,
         fields: {
-          isLive: 'false'
-        }
+          isLive: 'false',
+        },
       } as CapiArticle;
 
       expect(article.fields.isLive).toEqual('false');
@@ -237,8 +237,8 @@ describe('CAPIUtils', () => {
       const article = {
         ...capiArticleWithElementsThumbnail,
         fields: {
-          isLive: true
-        }
+          isLive: true,
+        },
       } as CapiArticle;
 
       expect(article.fields.isLive).toEqual(true);
@@ -249,8 +249,8 @@ describe('CAPIUtils', () => {
       const article = {
         ...capiArticleWithElementsThumbnail,
         fields: {
-          isLive: 'true'
-        }
+          isLive: 'true',
+        },
       } as CapiArticle;
 
       expect(article.fields.isLive).toEqual('true');
@@ -260,7 +260,7 @@ describe('CAPIUtils', () => {
     it('should return true if a CapiArticle comes from live CAPI (denoted by isLive being undefined)', () => {
       const article = {
         ...capiArticleWithElementsThumbnail,
-        fields: {}
+        fields: {},
       } as CapiArticle;
 
       expect(article.fields.isLive).toBeUndefined();

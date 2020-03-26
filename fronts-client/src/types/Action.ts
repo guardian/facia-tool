@@ -9,7 +9,7 @@ import type { Config } from './Config';
 import type {
   FrontsConfig,
   VisibleArticlesResponse,
-  EditionsFrontMetadata
+  EditionsFrontMetadata,
 } from './FaciaApi';
 import type { Stages, Collection, CardMeta } from 'types/Collection';
 import {
@@ -34,7 +34,7 @@ import {
   EDITOR_OPEN_ALL_OVERVIEWS,
   EDITOR_CLOSE_ALL_OVERVIEWS,
   CHANGED_BROWSING_STAGE,
-  EditorCloseFormsForCollection
+  EditorCloseFormsForCollection,
 } from 'bundles/frontsUI';
 import { CardActions } from 'actions/CardsCommon';
 import { ClipboardActions } from 'actions/Clipboard';
@@ -425,5 +425,5 @@ export {
   CapGroupSiblings,
   MaybeAddFrontPublicationDate,
   PageViewDataRequested,
-  PageViewDataReceived
+  PageViewDataReceived,
 };

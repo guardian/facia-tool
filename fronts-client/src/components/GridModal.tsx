@@ -51,8 +51,8 @@ export const GridModal = ({ isOpen, url, onMessage, onClose }: ModalProps) => (
       isOpen={isOpen}
       style={{
         overlay: {
-          zIndex: 900
-        }
+          zIndex: 900,
+        },
       }}
     >
       <ModalButton type="button" priority="primary" onClick={onClose}>

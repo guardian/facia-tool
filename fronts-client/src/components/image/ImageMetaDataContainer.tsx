@@ -18,7 +18,7 @@ export const ImageMetadataContainer = ({
   imageSlideshowReplace,
   imageReplace,
   imageCutoutReplace,
-  showMainVideo
+  showMainVideo,
 }: ImageMetadataContainerProps) => (
   <MetadataContainer>
     {imageSlideshowReplace && 'Slideshow'}

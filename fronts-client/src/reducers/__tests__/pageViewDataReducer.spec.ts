@@ -24,7 +24,7 @@ describe('Page view data reducer', () => {
     const expectedState = set(
       ['frontId', 'collections', 'collectionId', 'stories'],
       {
-        articleId2: newData
+        articleId2: newData,
       },
       state
     );

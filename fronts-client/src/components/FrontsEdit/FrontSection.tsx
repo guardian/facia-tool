@@ -8,7 +8,7 @@ import { updateCollection } from 'actions/Collections';
 import {
   editorCloseFront,
   selectIsFrontOverviewOpen,
-  changedBrowsingStage
+  changedBrowsingStage,
 } from 'bundles/frontsUI';
 import Button from 'components/inputs/ButtonDefault';
 import { frontStages } from 'constants/fronts';
@@ -136,13 +136,13 @@ class FrontSection extends React.Component<
   public state = {
     collectionSet: frontStages.draft,
     frontNameValue: '',
-    editingFrontName: false
+    editingFrontName: false,
   };
 
   public handleCollectionSetSelect(key: string) {
     const browsingStage = frontStages[key];
     this.setState({
-      collectionSet: browsingStage
+      collectionSet: browsingStage,
     });
     this.props.frontsActions.changeBrowsingStage(
       this.props.frontId,
@@ -180,10 +180,10 @@ class FrontSection extends React.Component<
                 data-testid="rename-front-input"
                 value={frontNameValue}
                 autoFocus
-                onChange={e =>
+                onChange={(e) =>
                   this.setState({ frontNameValue: e.target.value })
                 }
-                onKeyDown={e => {
+                onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     this.setName();
                   }
@@ -198,9 +198,7 @@ class FrontSection extends React.Component<
             <FrontHeaderMeta>
               <EditModeVisibility visibleMode="fronts">
                 <a
-                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${
-                    this.props.frontId
-                  }`}
+                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${this.props.frontId}`}
                   target="preview"
                 >
                   <FrontHeaderButton>
@@ -210,7 +208,7 @@ class FrontSection extends React.Component<
                 </a>
                 <StageSelectButtons>
                   <RadioGroup>
-                    {Object.keys(frontStages).map(key => (
+                    {Object.keys(frontStages).map((key) => (
                       <RadioButton
                         inline
                         key={key}
@@ -262,7 +260,7 @@ class FrontSection extends React.Component<
   private renameFront = () => {
     this.setState({
       frontNameValue: this.getTitle() || '',
-      editingFrontName: true
+      editingFrontName: true,
     });
   };
 
@@ -294,11 +292,11 @@ class FrontSection extends React.Component<
       this.state.frontNameValue !== ''
         ? {
             ...this.props.selectedFront.metadata,
-            nameOverride: this.state.frontNameValue
+            nameOverride: this.state.frontNameValue,
           }
         : {
             ...this.props.selectedFront.metadata,
-            nameOverride: undefined
+            nameOverride: undefined,
           };
 
     this.props.frontsActions.updateFrontMetadata(
@@ -314,7 +312,7 @@ const createMapStateToProps = () => {
   return (state: State, { frontId }: FrontsContainerProps) => ({
     selectedFront: selectFront(state, { frontId }),
     isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
-    isEditions: isMode(state, 'editions')
+    isEditions: isMode(state, 'editions'),
   });
 };
 
@@ -329,14 +327,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     updateFrontMetadata: (id: string, metadata: EditionsFrontMetadata) =>
       dispatch(updateFrontMetadata(id, metadata)),
     setFrontHiddenState: (id: string, hidden: boolean) =>
-      dispatch(setFrontHiddenState(id, hidden))
-  }
+      dispatch(setFrontHiddenState(id, hidden)),
+  },
 });
 
 export { FrontSection };
 export { FrontsComponentProps };
 
-export default connect(
-  createMapStateToProps,
-  mapDispatchToProps
-)(FrontSection);
+export default connect(createMapStateToProps, mapDispatchToProps)(FrontSection);

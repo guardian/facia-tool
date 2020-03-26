@@ -4,7 +4,7 @@ import {
   createSelectArticlesInCollectionGroup,
   createSelectArticlesInCollection,
   createSelectCollection,
-  selectGroupSiblings
+  selectGroupSiblings,
 } from '../shared';
 
 const state: any = {
@@ -13,66 +13,66 @@ const state: any = {
       c1: {
         id: 'c1',
         groups: ['group1', 'group2'],
-        live: ['g1', 'g2']
+        live: ['g1', 'g2'],
       },
       c2: {
         id: 'c2',
         groups: ['group1'],
-        draft: ['g3']
+        draft: ['g3'],
       },
       c3: {
         groups: ['group1'],
-        draft: ['g4']
+        draft: ['g4'],
       },
       c4: {
         groups: ['group1'],
-        draft: ['g5']
+        draft: ['g5'],
       },
       c5: {
         id: 'c5',
         groups: ['group6'],
-        live: ['g6']
+        live: ['g6'],
       },
       c6: {
         id: 'c1',
         groups: ['group1', 'group2'],
-        live: ['g1', 'g2', 'g7']
-      }
-    }
+        live: ['g1', 'g2', 'g7'],
+      },
+    },
   },
   groups: {
     g1: {
       uuid: 'g1',
       id: 'group1',
       cards: ['af2'],
-      name: 'g1'
+      name: 'g1',
     },
     g2: {
       uuid: 'g2',
       id: 'group2',
       cards: ['af1'],
-      name: 'g2'
+      name: 'g2',
     },
     g3: {
       uuid: 'g3',
       id: 'group1',
-      cards: ['af3', 'af4']
+      cards: ['af3', 'af4'],
     },
     g4: {
       uuid: 'g4',
       id: 'group1',
-      cards: ['af5']
+      cards: ['af5'],
     },
     g5: {
       uuid: 'g5',
       id: 'group1',
-      cards: ['af5']
+      cards: ['af5'],
     },
     g6: {
       uuid: 'g6',
       id: 'group6',
-      cards: ['afWithSupporting']
-    }
+      cards: ['afWithSupporting'],
+    },
   },
   externalArticles: {
     data: {
@@ -80,41 +80,41 @@ const state: any = {
         id: 'ea1',
         pillarName: 'external-pillar',
         frontsMeta: {
-          defaults: {}
+          defaults: {},
         },
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
           byline: 'external-byline',
           isLive: 'true',
-          firstPublicationDate: '2018-10-19T10:30:39Z'
-        }
+          firstPublicationDate: '2018-10-19T10:30:39Z',
+        },
       },
       ea2: {
         id: 'ea2',
         pillarName: 'external-pillar',
         frontsMeta: {
-          defaults: {}
+          defaults: {},
         },
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
           byline: 'external-byline',
           isLive: 'false',
-          firstPublicationDate: '2018-10-19T10:30:39Z'
-        }
+          firstPublicationDate: '2018-10-19T10:30:39Z',
+        },
       },
       ea3: {
         id: 'ea3',
         pillarName: 'external-pillar',
         frontsMeta: {
-          defaults: {}
+          defaults: {},
         },
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
-          byline: 'external-byline'
-        }
+          byline: 'external-byline',
+        },
       },
       ea4: {
         id: 'ea4',
@@ -134,29 +134,29 @@ const state: any = {
             showKickerTag: false,
             showLivePlayable: false,
             showMainVideo: false,
-            showQuotedHeadline: false
-          }
+            showQuotedHeadline: false,
+          },
         },
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
-          byline: 'external-byline'
-        }
+          byline: 'external-byline',
+        },
       },
       ea5: {
         id: 'ea5',
         pillarName: 'external-pillar',
         tags: [{ webTitle: 'tag', sectionName: 'section' }],
         frontsMeta: {
-          defaults: {}
+          defaults: {},
         },
         fields: {
           headline: 'external-headline',
           trailText: 'external-trailText',
-          byline: 'external-byline'
-        }
-      }
-    }
+          byline: 'external-byline',
+        },
+      },
+    },
   },
   cards: {
     af1: {
@@ -164,7 +164,7 @@ const state: any = {
       id: 'ea1',
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
-      meta: {}
+      meta: {},
     },
     af1WithOverrides: {
       uuid: 'af1',
@@ -176,34 +176,34 @@ const state: any = {
         trailText: 'card-trailText',
         byline: 'card-byline',
         customKicker: 'card-kicker',
-        showKickerCustom: true
-      }
+        showKickerCustom: true,
+      },
     },
     afWithInvalidReference: {
       uuid: 'afWithInvalidReference',
       id: 'invalid',
-      meta: {}
+      meta: {},
     },
     af2: {
       uuid: 'af2',
       meta: {},
-      id: 'ea2'
+      id: 'ea2',
     },
     af3: {
       uuid: 'af3',
       meta: {},
-      id: 'ea3'
+      id: 'ea3',
     },
     af4: {
       uuid: 'af4',
       meta: {},
-      id: 'ea4'
+      id: 'ea4',
     },
     af5: {
-      uuid: 'af5'
+      uuid: 'af5',
     },
     af6: {
-      uuid: 'af5'
+      uuid: 'af5',
     },
     afWithTagKicker: {
       uuid: 'afWithTagKicker',
@@ -214,8 +214,8 @@ const state: any = {
         headline: 'card-headline',
         trailText: 'card-trailText',
         byline: 'card-byline',
-        showKickerTag: true
-      }
+        showKickerTag: true,
+      },
     },
     afWithSectionKicker: {
       uuid: 'afWithSectionKicker',
@@ -226,8 +226,8 @@ const state: any = {
         headline: 'card-headline',
         trailText: 'card-trailText',
         byline: 'card-byline',
-        showKickerSection: true
-      }
+        showKickerSection: true,
+      },
     },
     afWithSupporting: {
       uuid: 'afWithSupporting',
@@ -235,10 +235,10 @@ const state: any = {
       frontPublicationDate: 1,
       publishedBy: 'A. N. Author',
       meta: {
-        supporting: ['afWithSectionKicker']
-      }
-    }
-  }
+        supporting: ['afWithSectionKicker'],
+      },
+    },
+  },
 };
 
 describe('Shared selectors', () => {
@@ -248,7 +248,7 @@ describe('Shared selectors', () => {
       expect(selector(state, { collectionId: 'c1' })).toEqual({
         groups: ['group1', 'group2'],
         live: ['g1', 'g2'],
-        id: 'c1'
+        id: 'c1',
       });
     });
   });
@@ -278,7 +278,7 @@ describe('Shared selectors', () => {
         trailText: 'external-trailText',
         byline: 'external-byline',
         isLive: true,
-        firstPublicationDate: '2018-10-19T10:30:39Z'
+        firstPublicationDate: '2018-10-19T10:30:39Z',
       });
 
       expect(selector(state, 'af1WithOverrides')).toMatchObject({
@@ -296,20 +296,20 @@ describe('Shared selectors', () => {
         isLive: true,
         firstPublicationDate: '2018-10-19T10:30:39Z',
         pillarId: undefined,
-        showKickerCustom: true
+        showKickerCustom: true,
       });
       expect(selector(state, 'invalid')).toEqual(undefined);
     });
     it('should set isLive property to false if article is not live', () => {
       const selector = createSelectArticleFromCard();
       expect(selector(state, 'af2')).toMatchObject({
-        isLive: false
+        isLive: false,
       });
     });
     it('should set isLive to true if property is missing', () => {
       const selector = createSelectArticleFromCard();
       expect(selector(state, 'af3')).toMatchObject({
-        isLive: true
+        isLive: true,
       });
     });
     it('should populate default metadata correctly', () => {
@@ -343,7 +343,7 @@ describe('Shared selectors', () => {
         tone: undefined,
         cutoutThumbnail: undefined,
         firstPublicationDate: undefined,
-        frontPublicationDate: undefined
+        frontPublicationDate: undefined,
       });
     });
   });
@@ -354,7 +354,7 @@ describe('Shared selectors', () => {
       expect(
         selector(state, {
           collectionId: 'c1',
-          collectionSet: 'live'
+          collectionSet: 'live',
         })
       ).toEqual(['af2', 'af1']);
     });
@@ -363,7 +363,7 @@ describe('Shared selectors', () => {
       expect(
         selector(state, {
           collectionId: 'c5',
-          collectionSet: 'live'
+          collectionSet: 'live',
         })
       ).toEqual(['afWithSupporting', 'afWithSectionKicker']);
     });
@@ -373,7 +373,7 @@ describe('Shared selectors', () => {
         selector(state, {
           collectionId: 'c5',
           collectionSet: 'live',
-          includeSupportingArticles: false
+          includeSupportingArticles: false,
         })
       ).toEqual(['afWithSupporting']);
     });
@@ -386,21 +386,21 @@ describe('Shared selectors', () => {
         selector(state, {
           collectionId: 'c1',
           collectionSet: 'live',
-          groupName: 'group1'
+          groupName: 'group1',
         })
       ).toEqual(['af2']);
       expect(
         selector(state, {
           collectionId: 'c1',
           collectionSet: 'live',
-          groupName: 'group2'
+          groupName: 'group2',
         })
       ).toEqual(['af1']);
       expect(
         selector(state, {
           collectionId: 'c2',
           collectionSet: 'draft',
-          groupName: 'group1'
+          groupName: 'group1',
         })
       ).toEqual(['af3', 'af4']);
     });
@@ -409,14 +409,14 @@ describe('Shared selectors', () => {
       const currentGroups = state.groups;
       const newGroups = {
         ...currentGroups,
-        ...{ g7: { uuid: 'g7', id: 'group7', cards: ['af6'] } }
+        ...{ g7: { uuid: 'g7', id: 'group7', cards: ['af6'] } },
       };
       expect(
         selector(
           { ...state, ...{ groups: newGroups } },
           {
             collectionId: 'c6',
-            collectionSet: 'live'
+            collectionSet: 'live',
           }
         )
       ).toEqual(['af6', 'af2', 'af1']);
@@ -426,14 +426,14 @@ describe('Shared selectors', () => {
       const newGroups = {
         ...{ g1: { uuid: 'g1', cards: ['af4'] } },
         ...{ g2: { uuid: 'g2', id: 'group6', cards: ['af5'] } },
-        ...{ g7: { uuid: 'g7', id: 'group7', cards: ['af6'] } }
+        ...{ g7: { uuid: 'g7', id: 'group7', cards: ['af6'] } },
       };
       expect(
         selector(
           { ...state, ...{ groups: newGroups } },
           {
             collectionId: 'c6',
-            collectionSet: 'live'
+            collectionSet: 'live',
           }
         )
       ).toEqual(['af5', 'af6', 'af4']);
@@ -444,7 +444,7 @@ describe('Shared selectors', () => {
         selector(state, {
           collectionId: 'c5',
           collectionSet: 'live',
-          groupName: 'group6'
+          groupName: 'group6',
         })
       ).toEqual(['afWithSupporting', 'afWithSectionKicker']);
     });
@@ -455,7 +455,7 @@ describe('Shared selectors', () => {
           collectionId: 'c5',
           collectionSet: 'live',
           groupName: 'group6',
-          includeSupportingArticles: false
+          includeSupportingArticles: false,
         })
       ).toEqual(['afWithSupporting']);
     });
@@ -465,7 +465,7 @@ describe('Shared selectors', () => {
         selector(state, {
           collectionId: 'invalid',
           collectionSet: 'live',
-          groupName: 'group1'
+          groupName: 'group1',
         })
       ).toEqual([]);
     });
@@ -475,7 +475,7 @@ describe('Shared selectors', () => {
         selector(state, {
           collectionId: 'c1',
           collectionSet: 'invalid',
-          groupName: 'groupName'
+          groupName: 'groupName',
         } as any)
       ).toEqual([]);
     });
@@ -485,7 +485,7 @@ describe('Shared selectors', () => {
         selector(state, {
           collectionId: 'c4',
           collectionSet: 'draft',
-          groupName: 'invalidGroup'
+          groupName: 'invalidGroup',
         })
       ).toEqual([]);
     });
@@ -495,7 +495,7 @@ describe('Shared selectors', () => {
         selector(state, {
           collectionId: 'c3',
           collectionSet: 'draft',
-          groupName: 'group1'
+          groupName: 'group1',
         })
       ).toEqual(['af5']);
     });
@@ -503,14 +503,14 @@ describe('Shared selectors', () => {
       const selector = createSelectArticleFromCard();
 
       expect(selector(state, 'afWithTagKicker')).toMatchObject({
-        kicker: 'tag'
+        kicker: 'tag',
       });
     });
     it('should set the correct kicker when section kicker is set ', () => {
       const selector = createSelectArticleFromCard();
 
       expect(selector(state, 'afWithSectionKicker')).toMatchObject({
-        kicker: 'section'
+        kicker: 'section',
       });
     });
   });
@@ -519,7 +519,7 @@ describe('Shared selectors', () => {
     it('selects the sibling groups of a given group id', () => {
       expect(selectGroupSiblings(state, 'g1').map(({ uuid }) => uuid)).toEqual([
         'g1',
-        'g2'
+        'g2',
       ]);
     });
   });

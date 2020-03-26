@@ -18,14 +18,14 @@ export const NOTIFICATION_ADD_BANNER = 'NOTIFICATION_ADD_BANNER' as const;
 
 export const actionAddNotificationBanner = (message: string) => ({
   type: NOTIFICATION_ADD_BANNER,
-  payload: { message, id: v4() }
+  payload: { message, id: v4() },
 });
 
 export const NOTIFICATION_REMOVE_BANNER = 'NOTIFICATION_REMOVE_BANNER' as const;
 
 export const actionRemoveNotificationBanner = (id: string) => ({
   type: NOTIFICATION_REMOVE_BANNER,
-  payload: { id }
+  payload: { id },
 });
 
 export type NotificationActions =
@@ -34,13 +34,12 @@ export type NotificationActions =
 
 // Selectors
 
-export const selectBanners = (state: State) =>
-  state.notifications.banners;
+export const selectBanners = (state: State) => state.notifications.banners;
 
 // Reducer
 
 export const initialState: NotificationState = {
-  banners: []
+  banners: [],
 };
 
 export const reducer = (
@@ -50,17 +49,17 @@ export const reducer = (
   switch (action.type) {
     case NOTIFICATION_ADD_BANNER: {
       const duplicateNotification = state.banners.find(
-        _ => _.message === action.payload.message
+        (_) => _.message === action.payload.message
       );
       if (duplicateNotification) {
         return {
           banners: [
-            ...state.banners.filter(_ => _.id !== duplicateNotification.id),
+            ...state.banners.filter((_) => _.id !== duplicateNotification.id),
             {
               ...duplicateNotification,
-              duplicates: duplicateNotification.duplicates + 1
-            }
-          ]
+              duplicates: duplicateNotification.duplicates + 1,
+            },
+          ],
         };
       }
 
@@ -70,14 +69,16 @@ export const reducer = (
           {
             id: action.payload.id,
             message: action.payload.message,
-            duplicates: 0
-          }
-        ]
+            duplicates: 0,
+          },
+        ],
       };
     }
 
     case NOTIFICATION_REMOVE_BANNER: {
-      return { banners: state.banners.filter(_ => _.id !== action.payload.id) };
+      return {
+        banners: state.banners.filter((_) => _.id !== action.payload.id),
+      };
     }
   }
   return state;

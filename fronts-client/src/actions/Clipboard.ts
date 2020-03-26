@@ -9,12 +9,11 @@ export const CLEAR_CLIPBOARD = 'CLEAR_CLIPBOARD' as const;
 function updateClipboardContent(clipboardContent: string[] = []) {
   return {
     type: UPDATE_CLIPBOARD_CONTENT,
-    payload: clipboardContent
+    payload: clipboardContent,
   };
 }
 
 type UpdateClipboardContent = ReturnType<typeof updateClipboardContent>;
-
 
 const actionInsertClipboardCard = (
   id: string,
@@ -27,8 +26,8 @@ const actionInsertClipboardCard = (
     id,
     index,
     cardId,
-    currentCards
-  }
+    currentCards,
+  },
 });
 
 type InsertClipboardCard = ReturnType<typeof actionInsertClipboardCard>;
@@ -37,7 +36,7 @@ const actionInsertClipboardCardWithPersist = addPersistMetaToAction(
   actionInsertClipboardCard,
   {
     persistTo: 'clipboard',
-    key: 'cardId'
+    key: 'cardId',
   }
 );
 
@@ -45,8 +44,8 @@ const removeClipboardCard = (id: string, cardId: string) => ({
   type: REMOVE_CLIPBOARD_CARD,
   payload: {
     id,
-    cardId
-  }
+    cardId,
+  },
 });
 
 type RemoveClipboardCard = ReturnType<typeof removeClipboardCard>;
@@ -54,14 +53,14 @@ type RemoveClipboardCard = ReturnType<typeof removeClipboardCard>;
 const clearClipboard = (id: string) => ({
   type: CLEAR_CLIPBOARD,
   payload: {
-    id
-  }
+    id,
+  },
 });
 
 type ClearClipboard = ReturnType<typeof clearClipboard>;
 
 const clearClipboardWithPersist = addPersistMetaToAction(clearClipboard, {
-  persistTo: 'clipboard'
+  persistTo: 'clipboard',
 });
 
 export type ClipboardActions =
@@ -75,5 +74,5 @@ export {
   removeClipboardCard,
   clearClipboard,
   clearClipboardWithPersist,
-  actionInsertClipboardCardWithPersist
+  actionInsertClipboardCardWithPersist,
 };

@@ -8,7 +8,7 @@ export const deleteIssue = () => {
   if (result) {
     fetch(`/editions-api/issues/${issue}`, {
       credentials: 'include',
-      method: 'DELETE'
+      method: 'DELETE',
     });
     return 'Deleted';
   } else {

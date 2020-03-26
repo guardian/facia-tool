@@ -6,6 +6,6 @@ ttiPolyfill.getFirstConsistentlyInteractive().then((tti: any) => {
     eventCategory: 'Performance Metrics',
     eventAction: 'TTI',
     eventValue: tti,
-    nonInteraction: true
+    nonInteraction: true,
   });
 });

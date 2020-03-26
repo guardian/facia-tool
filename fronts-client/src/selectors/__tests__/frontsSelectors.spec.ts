@@ -1,43 +1,47 @@
 import {
   selectFrontsWithPriority,
   selectAlsoOnFront,
-  createSelectArticleVisibilityDetails
+  createSelectArticleVisibilityDetails,
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import { FrontConfig } from 'types/FaciaApi';
 
 const editorialFrontsInConfig: FrontConfig[] = [
   { collections: ['collection1'], id: 'editorialFront', priority: 'editorial' },
-  { collections: ['collection6'], id: 'editorialFront2', priority: 'editorial' }
+  {
+    collections: ['collection6'],
+    id: 'editorialFront2',
+    priority: 'editorial',
+  },
 ];
 
 const additionalEditorialFronts: FrontConfig[] = [
   {
     collections: ['collection2'],
     id: 'editorialNotShared',
-    priority: 'editorial'
+    priority: 'editorial',
   },
   {
     collections: ['collection5', 'collection3'],
     id: 'editorialSharedWithTraining',
-    priority: 'editorial'
-  }
+    priority: 'editorial',
+  },
 ];
 
 const trainingFronts: FrontConfig[] = [
   {
     collections: ['collection3'],
     id: 'trainingFront',
-    priority: 'training'
-  }
+    priority: 'training',
+  },
 ];
 
 const commercialFronts: FrontConfig[] = [
   {
     collections: ['collection1'],
     id: 'commercialFront',
-    priority: 'commercial'
-  }
+    priority: 'commercial',
+  },
 ];
 
 describe('Filtering fronts correctly', () => {
@@ -48,10 +52,10 @@ describe('Filtering fronts correctly', () => {
           fronts: {
             frontsConfig: {
               data: {
-                fronts: {}
-              }
-            }
-          }
+                fronts: {},
+              },
+            },
+          },
         } as any,
         'editorial'
       )
@@ -63,8 +67,8 @@ describe('Filtering fronts correctly', () => {
       selectFrontsWithPriority(
         {
           fronts: {
-            frontsConfig
-          }
+            frontsConfig,
+          },
         } as any,
         'editorial'
       )
@@ -76,8 +80,8 @@ describe('Filtering fronts correctly', () => {
       selectFrontsWithPriority(
         {
           fronts: {
-            frontsConfig
-          }
+            frontsConfig,
+          },
         } as any,
         'commercial'
       )
@@ -94,14 +98,14 @@ describe('Selecting which front collection is also on correctly', () => {
     expect(
       selectAlsoOnFront(
         additionalEditorialFronts.find(
-          front => front.id === 'editorialSharedWithTraining'
+          (front) => front.id === 'editorialSharedWithTraining'
         ),
         allFronts
       )
     ).toEqual(
       expect.objectContaining({
         collection3: expect.any(Object),
-        collection5: expect.any(Object)
+        collection5: expect.any(Object),
       })
     );
   });
@@ -110,57 +114,57 @@ describe('Selecting which front collection is also on correctly', () => {
     expect(
       selectAlsoOnFront(
         additionalEditorialFronts.find(
-          front => front.id === 'editorialNotShared'
+          (front) => front.id === 'editorialNotShared'
         ),
         allFronts
       )
     ).toEqual({
-      collection2: { priorities: [], meritsWarning: false, fronts: [] }
+      collection2: { priorities: [], meritsWarning: false, fronts: [] },
     });
   });
 
   it('returns correct list of shared fronts and priorities for shared collections', () => {
     expect(
       selectAlsoOnFront(
-        trainingFronts.find(front => front.id === 'trainingFront'),
+        trainingFronts.find((front) => front.id === 'trainingFront'),
         allFronts
       )
     ).toEqual({
       collection3: {
         priorities: ['editorial'],
         meritsWarning: false,
-        fronts: [{ id: 'editorialSharedWithTraining', priority: 'editorial' }]
-      }
+        fronts: [{ id: 'editorialSharedWithTraining', priority: 'editorial' }],
+      },
     });
   });
 
   it('sets merit warning to false if shared collection appears on a commercial front', () => {
     expect(
       selectAlsoOnFront(
-        commercialFronts.find(front => front.id === 'commercialFront'),
+        commercialFronts.find((front) => front.id === 'commercialFront'),
         allFronts
       )
     ).toEqual({
       collection1: {
         priorities: ['editorial'],
         meritsWarning: false,
-        fronts: [{ id: 'editorialFront', priority: 'editorial' }]
-      }
+        fronts: [{ id: 'editorialFront', priority: 'editorial' }],
+      },
     });
   });
 
   it('sets merits warnign to true if a commercial collection is shared on another priority', () => {
     expect(
       selectAlsoOnFront(
-        editorialFrontsInConfig.find(front => front.id === 'editorialFront'),
+        editorialFrontsInConfig.find((front) => front.id === 'editorialFront'),
         allFronts
       )
     ).toEqual({
       collection1: {
         priorities: ['commercial'],
         meritsWarning: true,
-        fronts: [{ id: 'commercialFront', priority: 'commercial' }]
-      }
+        fronts: [{ id: 'commercialFront', priority: 'commercial' }],
+      },
     });
   });
 });
@@ -171,50 +175,50 @@ const visibilityState = {
       draft: {
         a: {
           desktop: 4,
-          mobile: 3
-        }
-      }
-    }
+          mobile: 3,
+        },
+      },
+    },
   },
   collections: {
     data: {
       a: {
-        draft: ['g1', 'g2']
-      }
-    }
+        draft: ['g1', 'g2'],
+      },
+    },
   },
   groups: {
     g1: {
-      cards: ['a1', 'a2', 'a3']
+      cards: ['a1', 'a2', 'a3'],
     },
     g2: {
-      cards: ['a4', 'a5']
-    }
+      cards: ['a4', 'a5'],
+    },
   },
   cards: {
     a1: {
       uuid: 'a1',
       meta: {
         // this tests that we ignore supporting articles
-        supporting: ['a6']
-      }
+        supporting: ['a6'],
+      },
     },
     a2: {
-      uuid: 'a2'
+      uuid: 'a2',
     },
     a3: {
-      uuid: 'a3'
+      uuid: 'a3',
     },
     a4: {
-      uuid: 'a4'
+      uuid: 'a4',
     },
     a5: {
-      uuid: 'a5'
+      uuid: 'a5',
     },
     a6: {
-      uuid: 'a5'
-    }
-  }
+      uuid: 'a5',
+    },
+  },
 };
 
 describe('Article visibility selector', () => {
@@ -223,11 +227,11 @@ describe('Article visibility selector', () => {
     expect(
       selectArticleVisibilityDetails(visibilityState as any, {
         collectionSet: 'draft',
-        collectionId: 'a'
+        collectionId: 'a',
       })
     ).toEqual({
       desktop: 'a4',
-      mobile: 'a3'
+      mobile: 'a3',
     });
   });
 });

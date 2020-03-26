@@ -6,18 +6,18 @@ const frontsConfig: { data: FrontsConfig } = {
       editorialFront: {
         id: 'editorialFront',
         collections: ['collection1'],
-        priority: 'editorial'
+        priority: 'editorial',
       },
       editorialFront2: {
         id: 'editorialFront2',
         collections: ['collection6'],
-        priority: 'editorial'
+        priority: 'editorial',
       },
       commercialFront: {
         id: 'commercialFront',
         collections: ['collection1'],
-        priority: 'commercial'
-      }
+        priority: 'commercial',
+      },
     },
     collections: {
       collection1: {
@@ -28,16 +28,16 @@ const frontsConfig: { data: FrontsConfig } = {
         backfill: {
           type: 'capi',
           query:
-            'uk/commentisfree?show-most-viewed=true&show-editors-picks=false&hide-recent-content=true'
-        }
+            'uk/commentisfree?show-most-viewed=true&show-editors-picks=false&hide-recent-content=true',
+        },
       },
       collection2: {
         id: 'collection1',
         displayName: 'name',
-        type: 'collection'
-      }
-    }
-  }
+        type: 'collection',
+      },
+    },
+  },
 };
 
 export { frontsConfig };

@@ -74,7 +74,7 @@ const VisibilityDividerEl = styled.div`
 const VisibilityDivider = ({ notifications }: { notifications: string[] }) =>
   notifications.length ? (
     <VisibilityDividerEl>
-      {notifications.map(notification => (
+      {notifications.map((notification) => (
         <Notification key={notification}>{notification}</Notification>
       ))}
     </VisibilityDividerEl>
@@ -127,7 +127,7 @@ class CollectionContext extends React.Component<
       removeCard,
       removeSupportingCard,
       lastDesktopArticle,
-      lastMobileArticle
+      lastMobileArticle,
     } = this.props;
 
     return (
@@ -160,7 +160,7 @@ class CollectionContext extends React.Component<
                       tabIndex={0}
                       area="collection"
                       onBlur={() => handleBlur()}
-                      onFocus={e =>
+                      onFocus={(e) =>
                         handleArticleFocus(e, group.uuid, card, frontId)
                       }
                       uuid={card.uuid}
@@ -226,12 +226,12 @@ const createMapStateToProps = () => {
   return (state: State, props: CollectionContextProps) => {
     const articleVisibilityDetails = selectArticleVisibilityDetails(state, {
       collectionId: props.id,
-      collectionSet: props.browsingStage
+      collectionSet: props.browsingStage,
     });
 
     return {
       lastDesktopArticle: articleVisibilityDetails.desktop,
-      lastMobileArticle: articleVisibilityDetails.mobile
+      lastMobileArticle: articleVisibilityDetails.mobile,
     };
   };
 };
@@ -243,7 +243,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   removeSupportingCard: (parentId: string, uuid: string) => {
     dispatch(removeCardAction('card', parentId, uuid, 'collection'));
   },
-  handleBlur: () => dispatch(resetFocusState())
+  handleBlur: () => dispatch(resetFocusState()),
 });
 
 export default connect(

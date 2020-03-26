@@ -6,14 +6,14 @@ interface State {
 
 const feedState = (
   state: State = {
-    isPrefillMode: false
+    isPrefillMode: false,
   },
   action: Action
 ) => {
   switch (action.type) {
     case 'FEED_STATE_IS_PREFILL_MODE': {
       return {
-        isPrefillMode: action.payload.isPrefillMode
+        isPrefillMode: action.payload.isPrefillMode,
       };
     }
     default: {

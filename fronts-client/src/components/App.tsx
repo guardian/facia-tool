@@ -33,7 +33,7 @@ import {
   manageEditions,
   frontsEditPathProps,
   issuePathProps,
-  frontsFeatureProps
+  frontsFeatureProps,
 } from 'routes/routes';
 import ManageView from './Editions/ManageView';
 import FeaturesView from './Features/FeaturesView';

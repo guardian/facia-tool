@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { styled, theme } from 'constants/theme';
 import SearchInput, {
   SearchInputState,
-  initState
+  initState,
 } from './FrontsCAPIInterface/SearchInput';
 import Feed from './FrontsCAPIInterface/Feed';
 import { RadioButton, RadioGroup } from './inputs/RadioButtons';
@@ -14,7 +14,7 @@ import {
   fetchLive,
   fetchPreview,
   prefillSelectors,
-  hidePrefills
+  hidePrefills,
 } from 'bundles/capiFeedBundle';
 import { getTodayDate } from 'util/getTodayDate';
 import { getIdFromURL } from 'util/CAPIUtils';
@@ -159,7 +159,7 @@ const PrefillCloseButton = styled(Button)`
 const getCapiFieldsToShow = (isPreview: boolean) => {
   const defaultFieldsToShow = DEFAULT_PARAMS['show-fields']
     .split(',')
-    .filter(f => f !== 'scheduledPublicationDate')
+    .filter((f) => f !== 'scheduledPublicationDate')
     .join(',');
 
   if (!isPreview) {
@@ -178,7 +178,7 @@ const getParams = (
     desks,
     ratings,
     toDate: to,
-    fromDate: from
+    fromDate: from,
   }: SearchInputState,
   isPreview: boolean,
   sortByParam: string
@@ -197,7 +197,7 @@ const getParams = (
   'show-blocks': 'main',
   ...(isPreview
     ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
-    : { 'order-by': 'newest', 'order-date': sortByParam })
+    : { 'order-by': 'newest', 'order-date': sortByParam }),
 });
 class FeedsContainer extends React.Component<
   FeedsContainerProps,
@@ -208,7 +208,7 @@ class FeedsContainer extends React.Component<
     displaySearchFilters: false,
     inputState: initState,
     displayPrevResults: false,
-    sortByParam: 'published'
+    sortByParam: 'published',
   };
 
   private interval: null | number = null;
@@ -232,7 +232,7 @@ class FeedsContainer extends React.Component<
   public handleParamsUpdate = (state: SearchInputState) => {
     this.setState(
       {
-        inputState: state
+        inputState: state,
       },
       () => this.debouncedRunSearchAndRestartPolling()
     );
@@ -240,13 +240,13 @@ class FeedsContainer extends React.Component<
 
   public updateDisplaySearchFilters = (newValue: boolean) =>
     this.setState({
-      displaySearchFilters: newValue
+      displaySearchFilters: newValue,
     });
 
   public handleFeedClick = (index: number) =>
     this.setState(
       {
-        capiFeedIndex: index
+        capiFeedIndex: index,
       },
       this.runSearch
     );
@@ -404,7 +404,7 @@ class FeedsContainer extends React.Component<
     fetch(
       {
         ...getParams(searchTerm, inputState, !isLive, this.state.sortByParam),
-        page
+        page,
       },
       !!maybeArticleId
     );
@@ -435,7 +435,7 @@ const mapStateToProps = (state: State) => ({
   prefillLoading: prefillSelectors.selectIsLoading(state),
   livePagination: liveSelectors.selectPagination(state),
   previewPagination: previewSelectors.selectPagination(state),
-  prefillPagination: prefillSelectors.selectPagination(state)
+  prefillPagination: prefillSelectors.selectPagination(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
@@ -443,10 +443,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     dispatch(fetchLive(params, isResource)),
   fetchPreview: (params: object, isResource: boolean) =>
     dispatch(fetchPreview(params, isResource)),
-  hidePrefills: () => dispatch(hidePrefills())
+  hidePrefills: () => dispatch(hidePrefills()),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FeedsContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(FeedsContainer);

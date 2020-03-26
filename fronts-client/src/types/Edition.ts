@@ -42,7 +42,7 @@ const issueVersionStatus = [
   'Started',
   'Processing',
   'Published',
-  'Failed'
+  'Failed',
 ] as const;
 
 type IssueVersionStatus = typeof issueVersionStatus[number];
@@ -69,5 +69,5 @@ export {
   EditionsPrefill,
   IssueVersionStatus,
   IssueVersionEvent,
-  IssueVersion
+  IssueVersion,
 };

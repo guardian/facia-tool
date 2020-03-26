@@ -13,7 +13,7 @@ export const reducer = (state: State = initialState, action: Action): State => {
     case SET_FEATURE_VALUE: {
       return {
         ...state,
-        [action.payload.featureSwitch.key]: action.payload.featureSwitch
+        [action.payload.featureSwitch.key]: action.payload.featureSwitch,
       };
     }
   }

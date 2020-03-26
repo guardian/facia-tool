@@ -7,8 +7,8 @@ describe('Validating Front Collection configuration metadata', () => {
       selectIsCollectionLocked(
         {
           fronts: {
-            frontsConfig
-          }
+            frontsConfig,
+          },
         } as any,
         'collection1'
       )
@@ -17,8 +17,8 @@ describe('Validating Front Collection configuration metadata', () => {
       selectIsCollectionLocked(
         {
           fronts: {
-            frontsConfig
-          }
+            frontsConfig,
+          },
         } as any,
         'collection2'
       )

@@ -5,7 +5,7 @@ import type { State } from 'types/State';
 
 const state = {
   ...globalState,
-  pageViewData
+  pageViewData,
 } as State;
 
 describe('selectors', () => {

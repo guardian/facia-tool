@@ -9,21 +9,21 @@ describe('Feature selectors', () => {
         exampleFeature1: {
           key: 'exampleFeature1',
           title: 'Title',
-          enabled: false
+          enabled: false,
         },
         exampleFeature2: {
           key: 'exampleFeature2',
           title: 'Title',
-          enabled: false
-        }
+          enabled: false,
+        },
       };
       const state = {
         ...initialState,
-        featureSwitches
+        featureSwitches,
       } as State;
       expect(selectAllFeatures(state)).toEqual([
         featureSwitches.exampleFeature1,
-        featureSwitches.exampleFeature2
+        featureSwitches.exampleFeature2,
       ]);
     });
     it('should be memoised', () => {

@@ -11,7 +11,7 @@ import App from 'components/App';
 import { configReceived } from 'actions/Config';
 import {
   editorSetOpenFronts,
-  editorSetFavouriteFronts
+  editorSetFavouriteFronts,
 } from 'bundles/frontsUI';
 import { storeClipboardContent } from 'actions/ClipboardThunks';
 import { Dispatch } from 'types/Store';
@@ -38,8 +38,8 @@ if (pageConfig.env.toUpperCase() !== 'DEV' && pageConfig.sentryPublicDSN) {
     tags: {
       stack: 'cms-fronts',
       stage: pageConfig.env.toUpperCase(),
-      app: 'facia-tool-v2'
-    }
+      app: 'facia-tool-v2',
+    },
   };
 
   Raven.config(pageConfig.sentryPublicDSN, sentryOptions).install();
@@ -56,7 +56,7 @@ if (pageConfig.userData) {
     );
   }
   if (pageConfig.userData.featureSwitches) {
-    pageConfig.userData.featureSwitches.forEach(featureSwitch =>
+    pageConfig.userData.featureSwitches.forEach((featureSwitch) =>
       store.dispatch(actionSetFeatureValue(featureSwitch))
     );
   }

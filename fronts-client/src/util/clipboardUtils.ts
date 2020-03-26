@@ -13,13 +13,11 @@ function normaliseClipboard(clipboard: {
   const normalisedClipboard = normalize(clipboard);
   return {
     clipboard: normalisedClipboard.result,
-    cards: normalisedClipboard.entities.cards || {}
+    cards: normalisedClipboard.entities.cards || {},
   };
 }
 
-function denormaliseClipboard(
-  state: State
-): { articles: NestedCard[] } {
+function denormaliseClipboard(state: State): { articles: NestedCard[] } {
   const clipboard = selectClipboard(state);
 
   return denormalize({ articles: clipboard }, { cards: state.cards });
