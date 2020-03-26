@@ -5,7 +5,7 @@ import { State } from 'types/State';
 import { bindActionCreators } from 'redux';
 
 import {
-  selectBannerMessage,
+  selectBanners,
   actionRemoveNotificationBanner
 } from 'bundles/notificationsBundle';
 import { Dispatch } from 'types/Store';
@@ -22,6 +22,9 @@ const BannerWrapper = styled.div`
   padding: 10px;
   text-align: center;
   color: white;
+  & + & {
+    border-top: 1px solid ${theme.colors.blackTransparent20};
+  }
 `;
 
 const Message = styled.div`
@@ -39,20 +42,26 @@ const CloseButton = styled(Button).attrs({
 `;
 
 const NotificationsBanner = ({
-  message,
+  banners,
   actionRemoveNotificationBanner: removeNotificationBanner
-}: Props) =>
-  message ? (
-    <BannerWrapper>
-      <Message>{message}</Message>
-      <CloseButton onClick={removeNotificationBanner}>
-        <ClearIcon size="fill" />
-      </CloseButton>
-    </BannerWrapper>
-  ) : null;
+}: Props) => (
+  <>
+    {banners.map(banner => (
+      <BannerWrapper>
+        <Message>
+          {banner.message}
+          {banner.duplicates ? ` (${banner.duplicates + 1})` : ''}
+        </Message>
+        <CloseButton onClick={() => removeNotificationBanner(banner.id)}>
+          <ClearIcon size="fill" />
+        </CloseButton>
+      </BannerWrapper>
+    ))}
+  </>
+);
 
 const mapStateToProps = (state: State) => ({
-  message: selectBannerMessage(state)
+  banners: selectBanners(state)
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>

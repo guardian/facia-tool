@@ -68,7 +68,7 @@ export const reducer = (
           {
             id: action.payload.id,
             message: action.payload.message,
-            duplicates: 1
+            duplicates: 0
           }
         ]
       };

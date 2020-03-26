@@ -27,7 +27,7 @@ describe('Notifications bundle', () => {
         actionAddNotificationBanner('Example message')
       );
       expect(newState.banners.length).toBe(1);
-      expect(newState.banners[0].duplicates).toBe(2);
+      expect(newState.banners[0].duplicates).toBe(1);
     });
 
     it('should remove a notification banner message', () => {
