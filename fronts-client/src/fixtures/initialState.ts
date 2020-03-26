@@ -712,7 +712,7 @@ const state = {
     loadingIds: [],
     updatingIds: []
   },
-  notifications: { banner: undefined }
+  notifications: { banners: [] }
 } as State;
 
 export { state };
