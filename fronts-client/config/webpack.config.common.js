@@ -6,6 +6,7 @@ const createStyledComponentsTransformer = require('typescript-plugin-styled-comp
   .default;
 const styledComponentsTransformer = createStyledComponentsTransformer();
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const CircularDependencyPlugin = require('circular-dependency-plugin');
 
 module.exports = {
   entry: './src/index.tsx',
@@ -13,7 +14,10 @@ module.exports = {
     path: path.resolve(__dirname, '../../public/fronts-client/dist'),
     filename: 'app.bundle.js'
   },
-  plugins: [new ForkTsCheckerWebpackPlugin()],
+  plugins: [
+    new ForkTsCheckerWebpackPlugin(),
+    new CircularDependencyPlugin({ failOnError: true, exclude: /node_modules/ })
+  ],
   module: {
     rules: [
       {
