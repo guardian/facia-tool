@@ -1,26 +1,21 @@
-import { reducer as form, FormStateMap } from 'redux-form';
+import { reducer as form } from 'redux-form';
 
 import config from 'reducers/configReducer';
-import fronts, { State as frontsState } from 'reducers/frontsReducer';
+import fronts from 'reducers/frontsReducer';
 import error from 'reducers/errorReducer';
-import path, { State as pathState } from 'reducers/pathReducer';
-import unpublishedChanges, {
-  State as unpublishedChangesState,
-} from 'reducers/unpublishedChangesReducer';
-import clipboard, { State as clipboardState } from 'reducers/clipboardReducer';
+import path from 'reducers/pathReducer';
+import unpublishedChanges from 'reducers/unpublishedChangesReducer';
+import clipboard from 'reducers/clipboardReducer';
 import optionsModal from 'reducers/modalsReducer';
-import { OptionsModalProps as OptionsModalState } from 'types/Modals';
-import editor, { State as editorState } from 'bundles/frontsUI';
-import editionsIssue, { EditionsIssueState } from 'bundles/editionsIssueBundle';
+import editor from 'bundles/frontsUI';
+import editionsIssue from 'bundles/editionsIssueBundle';
 import {
   capiLiveFeed,
   capiPreviewFeed,
   prefillFeed,
 } from 'bundles/capiFeedBundle';
-import staleFronts, {
-  State as staleFrontsState,
-} from 'reducers/staleFrontsReducer';
-import feedState, { State as feedStateType } from 'reducers/feedStateReducer';
+import staleFronts from 'reducers/staleFrontsReducer';
+import feedState from 'reducers/feedStateReducer';
 
 import { reducer as collections } from 'bundles/collectionsBundle';
 import { reducer as pageViewData } from 'reducers/pageViewDataReducer';
@@ -28,53 +23,9 @@ import { reducer as externalArticles } from 'bundles/externalArticlesBundle';
 import cards from 'reducers/cardsReducer';
 import groups from 'reducers/groupsReducer';
 
-import {
-  reducer as focusReducer,
-  State as focusState,
-} from 'bundles/focusBundle';
-import {
-  reducer as featureSwitches,
-  State as featureSwitchesState,
-} from 'reducers/featureSwitchesReducer';
+import { reducer as focusReducer } from 'bundles/focusBundle';
+import { reducer as featureSwitches } from 'reducers/featureSwitchesReducer';
 import { reducer as notificationsReducer } from 'bundles/notificationsBundle';
-
-import { Config } from 'types/Config';
-import { ActionError } from 'types/Action';
-import { Card, Group } from 'types/Collection';
-
-interface FeedState {
-  feedState: feedStateType;
-  capiLiveFeed: ReturnType<typeof capiLiveFeed>;
-  capiPreviewFeed: ReturnType<typeof capiPreviewFeed>;
-  prefillFeed: ReturnType<typeof prefillFeed>;
-}
-
-export interface State {
-  fronts: frontsState;
-  config: Config | null;
-  error: ActionError;
-  path: pathState;
-  unpublishedChanges: unpublishedChangesState;
-  clipboard: clipboardState;
-  editor: editorState;
-  staleFronts: staleFrontsState;
-  form: FormStateMap;
-  optionsModal: OptionsModalState | null;
-  feed: FeedState;
-  focus: focusState;
-  editionsIssue: EditionsIssueState;
-  featureSwitches: featureSwitchesState;
-  cards: {
-    [uuid: string]: Card;
-  };
-  groups: {
-    [id: string]: Group;
-  };
-  collections: ReturnType<typeof collections>;
-  externalArticles: ReturnType<typeof externalArticles>;
-  pageViewData: ReturnType<typeof pageViewData>;
-  notifications: ReturnType<typeof notificationsReducer>;
-}
 
 const rootReducer = (state: any = { feed: {} }, action: any) => ({
   fronts: fronts(state.fronts, action),
