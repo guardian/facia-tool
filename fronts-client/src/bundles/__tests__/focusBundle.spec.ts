@@ -7,7 +7,7 @@ describe('focusBundle', () => {
         expect(
           reducer(undefined, setFocusState({ type: 'clipboard' }))
         ).toEqual({
-          focusState: { type: 'clipboard' }
+          focusState: { type: 'clipboard' },
         });
       });
     });
@@ -16,7 +16,7 @@ describe('focusBundle', () => {
         expect(
           reducer({ focusState: { type: 'clipboard' } }, resetFocusState())
         ).toEqual({
-          focusState: undefined
+          focusState: undefined,
         });
       });
     });

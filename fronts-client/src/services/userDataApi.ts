@@ -1,5 +1,5 @@
-import { FeatureSwitch } from 'types/Features';
-import { NestedCard } from 'types/Collection';
+import type { FeatureSwitch } from 'types/Features';
+import type { NestedCard } from 'types/Collection';
 import pandaFetch from './pandaFetch';
 
 const saveFeatureSwitch = async (featureSwitch: FeatureSwitch) => {
@@ -9,14 +9,12 @@ const saveFeatureSwitch = async (featureSwitch: FeatureSwitch) => {
       body: JSON.stringify(featureSwitch),
       credentials: 'same-origin',
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   } catch (response) {
     throw new Error(
-      `Tried to persist feature switch, but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to persist feature switch, but the server responded with ${response.status}: ${response.body}`
     );
   }
 };
@@ -30,14 +28,12 @@ async function saveOpenFrontIds(frontsByPriority?: {
       credentials: 'same-origin',
       body: JSON.stringify(frontsByPriority),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   } catch (response) {
     throw new Error(
-      `Tried to store the open fronts configuration but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to store the open fronts configuration but the server responded with ${response.status}: ${response.body}`
     );
   }
 }
@@ -51,14 +47,12 @@ async function saveFavouriteFrontIds(favouriteFrontsByPriority?: {
       credentials: 'same-origin',
       body: JSON.stringify(favouriteFrontsByPriority),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
   } catch (response) {
     throw new Error(
-      `Tried to store the favourite fronts configuration but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to store the favourite fronts configuration but the server responded with ${response.status}: ${response.body}`
     );
   }
 }
@@ -73,15 +67,13 @@ async function saveClipboard(
       credentials: 'same-origin',
       body: JSON.stringify(clipboardContent),
       headers: {
-        'Content-Type': 'application/json'
-      }
+        'Content-Type': 'application/json',
+      },
     });
     return await response.json();
   } catch (response) {
     throw new Error(
-      `Tried to update a clipboard but the server responded with ${
-        response.status
-      }: ${response.body}`
+      `Tried to update a clipboard but the server responded with ${response.status}: ${response.body}`
     );
   }
 }
@@ -90,5 +82,5 @@ export {
   saveClipboard,
   saveFavouriteFrontIds,
   saveOpenFrontIds,
-  saveFeatureSwitch
+  saveFeatureSwitch,
 };

@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import {
   selectIsClipboardOpen,
   editorOpenClipboard,
-  editorCloseClipboard
-} from 'bundles/frontsUIBundle';
-import { State } from 'types/State';
+  editorCloseClipboard,
+} from 'bundles/frontsUI';
+import type { State } from 'types/State';
 import { styled, theme } from 'constants/theme';
 import ButtonCircularCaret from 'components/inputs/ButtonCircularCaret';
 import DragIntentContainer from 'components/DragIntentContainer';
@@ -50,7 +50,7 @@ const ClipboardTitle = styled.label`
 
 class ClipboardHeader extends React.Component<ClipboardHeaderProps> {
   public state = {
-    preActive: false
+    preActive: false,
   };
   public render() {
     return (
@@ -82,15 +82,12 @@ class ClipboardHeader extends React.Component<ClipboardHeaderProps> {
 }
 
 const mapStateToProps = (state: State) => ({
-  isClipboardOpen: selectIsClipboardOpen(state)
+  isClipboardOpen: selectIsClipboardOpen(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   toggleClipboard: (open: boolean) =>
-    dispatch(open ? editorOpenClipboard() : editorCloseClipboard())
+    dispatch(open ? editorOpenClipboard() : editorCloseClipboard()),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ClipboardHeader);
+export default connect(mapStateToProps, mapDispatchToProps)(ClipboardHeader);

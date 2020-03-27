@@ -1,12 +1,12 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
 import { connect } from 'react-redux';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { bindActionCreators } from 'redux';
 
 import {
   selectBanners,
-  actionRemoveNotificationBanner
+  actionRemoveNotificationBanner,
 } from 'bundles/notificationsBundle';
 import { Dispatch } from 'types/Store';
 import { ClearIcon } from 'components/icons/Icons';
@@ -33,7 +33,7 @@ const Message = styled.div`
 
 const CloseButton = styled(Button).attrs({
   size: 'm',
-  priority: 'transparent'
+  priority: 'transparent',
 })`
   margin-left: auto;
   padding: 0;
@@ -43,10 +43,10 @@ const CloseButton = styled(Button).attrs({
 
 const NotificationsBanner = ({
   banners,
-  actionRemoveNotificationBanner: removeNotificationBanner
+  actionRemoveNotificationBanner: removeNotificationBanner,
 }: Props) => (
   <>
-    {banners.map(banner => (
+    {banners.map((banner) => (
       <BannerWrapper key={banner.id}>
         <Message>
           {banner.message}
@@ -61,7 +61,7 @@ const NotificationsBanner = ({
 );
 
 const mapStateToProps = (state: State) => ({
-  banners: selectBanners(state)
+  banners: selectBanners(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>

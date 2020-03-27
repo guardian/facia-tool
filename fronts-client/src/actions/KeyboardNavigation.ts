@@ -1,14 +1,14 @@
 import { moveCard } from 'actions/Cards';
 import {
   selectNextIndexAndGroup,
-  selectNextClipboardIndexSelector
+  selectNextClipboardIndexSelector,
 } from '../selectors/keyboardNavigationSelectors';
 import { selectIndexInGroup } from 'selectors/shared';
 import { Card } from 'types/Collection';
 import { PosSpec } from 'lib/dnd';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { setFocusState } from 'bundles/focusBundle';
-import { editorOpenCollections } from 'bundles/frontsUIBundle';
+import { editorOpenCollections } from 'bundles/frontsUI';
 
 const keyboardCardMove = (
   action: 'up' | 'down',
@@ -53,7 +53,7 @@ const keyboardCardMove = (
             type: 'collectionArticle',
             groupId: nextGroupId,
             card,
-            frontId
+            frontId,
           })
         );
       }

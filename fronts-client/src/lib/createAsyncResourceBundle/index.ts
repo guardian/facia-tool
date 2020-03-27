@@ -1,6 +1,6 @@
 import without from 'lodash/without';
 import isEqual from 'lodash/isEqual';
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 
 interface BaseResource {
   id: string;
@@ -120,9 +120,9 @@ function formatIncomingResourceData<Resource extends BaseResource>(
         }
         return {
           ...acc,
-          [model.id]: model
+          [model.id]: model,
         };
-      }, {})
+      }, {}),
     };
     return result;
   }
@@ -137,7 +137,7 @@ function formatIncomingResourceData<Resource extends BaseResource>(
 
   return {
     ...data,
-    [newData.id]: newData
+    [newData.id]: newData,
   };
 }
 
@@ -209,7 +209,7 @@ function createAsyncResourceBundle<Resource>(
     // The initial state of the reducer data. Defaults to an empty object.
     initialData?: Resource;
   } = {
-    indexById: false
+    indexById: false,
   }
 ) {
   const { indexById } = options;
@@ -254,13 +254,13 @@ function createAsyncResourceBundle<Resource>(
     error: null,
     lastFetch: null,
     loadingIds: [],
-    updatingIds: []
+    updatingIds: [],
   };
 
   const fetchStartAction = (ids?: string[] | string): FetchStartAction => ({
     entity: entityName,
     type: FETCH_START,
-    payload: { ids }
+    payload: { ids },
   });
 
   const fetchSuccessAction = (
@@ -269,7 +269,7 @@ function createAsyncResourceBundle<Resource>(
   ): FetchSuccessAction<Resource> => ({
     entity: entityName,
     type: FETCH_SUCCESS,
-    payload: { data, pagination, order, time: Date.now() }
+    payload: { data, pagination, order, time: Date.now() },
   });
 
   const fetchSuccessIgnoreAction = (
@@ -277,7 +277,7 @@ function createAsyncResourceBundle<Resource>(
   ): FetchSuccessIgnoreAction<Resource> => ({
     entity: entityName,
     type: FETCH_SUCCESS_IGNORE,
-    payload: { data, time: Date.now() }
+    payload: { data, time: Date.now() },
   });
 
   const fetchErrorAction = (
@@ -286,13 +286,13 @@ function createAsyncResourceBundle<Resource>(
   ): FetchErrorAction => ({
     entity: entityName,
     type: FETCH_ERROR,
-    payload: { error, ids, time: Date.now() }
+    payload: { error, ids, time: Date.now() },
   });
 
   const updateStartAction = (data: Resource): UpdateStartAction<Resource> => ({
     entity: entityName,
     type: UPDATE_START,
-    payload: { data }
+    payload: { data },
   });
 
   const updateSuccessAction = (
@@ -301,13 +301,13 @@ function createAsyncResourceBundle<Resource>(
   ): UpdateSuccessAction<Resource> => ({
     entity: entityName,
     type: UPDATE_SUCCESS,
-    payload: { id, data, time: Date.now() }
+    payload: { id, data, time: Date.now() },
   });
 
   const updateErrorAction = (error: string, id: string): UpdateErrorAction => ({
     entity: entityName,
     type: UPDATE_ERROR,
-    payload: { error, id, time: Date.now() }
+    payload: { error, id, time: Date.now() },
   });
 
   const isAction = (
@@ -335,7 +335,7 @@ function createAsyncResourceBundle<Resource>(
         case FETCH_START: {
           return {
             ...state,
-            loadingIds: applyStatusIds(state.loadingIds, action.payload.ids)
+            loadingIds: applyStatusIds(state.loadingIds, action.payload.ids),
           };
         }
         case FETCH_SUCCESS: {
@@ -366,7 +366,7 @@ function createAsyncResourceBundle<Resource>(
               entityName,
               state.lastFetchOrder,
               action.payload.order
-            )
+            ),
           };
         }
         case FETCH_SUCCESS_IGNORE: {
@@ -378,7 +378,7 @@ function createAsyncResourceBundle<Resource>(
                   state.loadingIds,
                   getStatusIdsFromData(action.payload.data)
                 )
-              : []
+              : [],
           };
         }
         case FETCH_ERROR: {
@@ -398,7 +398,7 @@ function createAsyncResourceBundle<Resource>(
             error: action.payload.error,
             loadingIds: indexById
               ? removeStatusIds(state.loadingIds, action.payload.ids)
-              : []
+              : [],
           };
         }
         case UPDATE_START: {
@@ -414,7 +414,7 @@ function createAsyncResourceBundle<Resource>(
             updatingIds: applyStatusIds(
               state.updatingIds,
               indexById ? action.payload.data.id : undefined
-            )
+            ),
           };
         }
         case UPDATE_SUCCESS: {
@@ -435,7 +435,7 @@ function createAsyncResourceBundle<Resource>(
             data,
             lastFetch: action.payload.time,
             error: null,
-            updatingIds: removeStatusIds(state.updatingIds, action.payload.id)
+            updatingIds: removeStatusIds(state.updatingIds, action.payload.id),
           };
         }
         case UPDATE_ERROR: {
@@ -443,7 +443,7 @@ function createAsyncResourceBundle<Resource>(
             ...state,
             error: action.payload.error,
             lastError: action.payload.error,
-            updatingIds: removeStatusIds(state.updatingIds, action.payload.id)
+            updatingIds: removeStatusIds(state.updatingIds, action.payload.id),
           };
         }
         default: {
@@ -459,7 +459,7 @@ function createAsyncResourceBundle<Resource>(
       fetchError: FETCH_ERROR,
       updateStart: UPDATE_START,
       updateSuccess: UPDATE_SUCCESS,
-      updateError: UPDATE_ERROR
+      updateError: UPDATE_ERROR,
     },
     actions: {
       fetchStart: fetchStartAction,
@@ -468,7 +468,7 @@ function createAsyncResourceBundle<Resource>(
       fetchError: fetchErrorAction,
       updateStart: updateStartAction,
       updateSuccess: updateSuccessAction,
-      updateError: updateErrorAction
+      updateError: updateErrorAction,
     },
     selectors: {
       selectPagination,
@@ -480,8 +480,8 @@ function createAsyncResourceBundle<Resource>(
       selectIsLoadingInitialDataById,
       selectById,
       selectLastFetchOrder,
-      selectAll
-    }
+      selectAll,
+    },
   };
 }
 

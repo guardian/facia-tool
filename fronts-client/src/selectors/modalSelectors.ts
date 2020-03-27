@@ -1,4 +1,4 @@
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { OptionsModalChoices } from 'types/Modals';
 
 export const selectOptionsModalIsOpen = (state: State) => !!state.optionsModal;

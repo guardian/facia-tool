@@ -24,7 +24,7 @@ describe('createAsyncResourceBundle', () => {
         fetchError: 'FETCH_ERROR',
         updateStart: 'UPDATE_START',
         updateSuccess: 'UPDATE_SUCCESS',
-        updateError: 'UPDATE_ERROR'
+        updateError: 'UPDATE_ERROR',
       });
     });
   });
@@ -34,12 +34,12 @@ describe('createAsyncResourceBundle', () => {
       expect(actions.fetchStart()).toEqual({
         entity: 'books',
         type: 'FETCH_START',
-        payload: { ids: undefined }
+        payload: { ids: undefined },
       });
       expect(actions.fetchStart(['bookId'])).toEqual({
         entity: 'books',
         type: 'FETCH_START',
-        payload: { ids: ['bookId'] }
+        payload: { ids: ['bookId'] },
       });
       expect(actions.fetchSuccess({ data: 'exampleData' })).toEqual({
         entity: 'books',
@@ -47,18 +47,18 @@ describe('createAsyncResourceBundle', () => {
         payload: {
           data: { data: 'exampleData' },
           pagination: undefined,
-          time: 1337
-        }
+          time: 1337,
+        },
       });
       expect(actions.fetchSuccessIgnore({ data: 'exampleData' })).toEqual({
         entity: 'books',
         type: 'FETCH_SUCCESS_IGNORE',
-        payload: { data: { data: 'exampleData' }, time: 1337 }
+        payload: { data: { data: 'exampleData' }, time: 1337 },
       });
       expect(actions.fetchError('Something went wrong')).toEqual({
         entity: 'books',
         type: 'FETCH_ERROR',
-        payload: { error: 'Something went wrong', time: 1337 }
+        payload: { error: 'Something went wrong', time: 1337 },
       });
     });
   });
@@ -68,16 +68,16 @@ describe('createAsyncResourceBundle', () => {
       expect(selectors.selectIsLoading({ books: initialState })).toBe(false);
       expect(
         selectors.selectIsLoading({
-          books: { ...initialState, loadingIds: ['@@ALL'] }
+          books: { ...initialState, loadingIds: ['@@ALL'] },
         })
       ).toBe(true);
     });
     it('should provide a selector to get the loading state for specific IDs', () => {
       const bundle = createAsyncResourceBundle('books', {
-        indexById: true
+        indexById: true,
       });
       const state = {
-        books: { ...bundle.initialState, loadingIds: ['1', '2'] }
+        books: { ...bundle.initialState, loadingIds: ['1', '2'] },
       };
       expect(bundle.selectors.selectIsLoadingById(state, '1')).toBe(true);
       expect(bundle.selectors.selectIsLoadingById(state, '2')).toBe(true);
@@ -85,11 +85,11 @@ describe('createAsyncResourceBundle', () => {
     });
     it('should accept a state selector to allow selectors to work on non-standard mount points', () => {
       const bundle = createAsyncResourceBundle('books', {
-        selectLocalState: (state: any) => state.otherBooks
+        selectLocalState: (state: any) => state.otherBooks,
       });
       expect(
         bundle.selectors.selectIsLoading({
-          otherBooks: { ...bundle.initialState, loadingIds: ['@@ALL'] }
+          otherBooks: { ...bundle.initialState, loadingIds: ['@@ALL'] },
         })
       ).toBe(true);
     });
@@ -97,7 +97,7 @@ describe('createAsyncResourceBundle', () => {
       expect(selectors.selectCurrentError({ books: initialState })).toBe(null);
       expect(
         selectors.selectCurrentError({
-          books: { ...initialState, error: 'Something went wrong' }
+          books: { ...initialState, error: 'Something went wrong' },
         })
       ).toBe('Something went wrong');
     });
@@ -105,7 +105,7 @@ describe('createAsyncResourceBundle', () => {
       expect(selectors.selectLastError({ books: initialState })).toBe(null);
       expect(
         selectors.selectLastError({
-          books: { ...initialState, lastError: 'Something went wrong' }
+          books: { ...initialState, lastError: 'Something went wrong' },
         })
       ).toBe('Something went wrong');
     });
@@ -113,7 +113,7 @@ describe('createAsyncResourceBundle', () => {
       expect(selectors.selectLastFetch({ books: initialState })).toBe(null);
       expect(
         selectors.selectLastFetch({
-          books: { ...initialState, lastFetch: 1337 }
+          books: { ...initialState, lastFetch: 1337 },
         })
       ).toBe(1337);
     });
@@ -124,29 +124,29 @@ describe('createAsyncResourceBundle', () => {
     });
     it('should provide a selector to select data by id, if indexById is true', () => {
       const bundle = createAsyncResourceBundle('books', {
-        indexById: true
+        indexById: true,
       });
       const state = {
         books: {
           data: {
             '1': { id: '1' },
-            '2': { id: '2' }
-          }
-        }
+            '2': { id: '2' },
+          },
+        },
       };
       expect(bundle.selectors.selectById(state, '1')).toEqual({
-        id: '1'
+        id: '1',
       });
       expect(bundle.selectors.selectById(state, '2')).toEqual({
-        id: '2'
+        id: '2',
       });
     });
     it('should provide a selector to select whether a resource is loading for the first time', () => {
       const bundle = createAsyncResourceBundle('books', {
-        indexById: true
+        indexById: true,
       });
       const state = {
-        books: { data: { '1': { id: '1' } }, loadingIds: ['1', '2'] }
+        books: { data: { '1': { id: '1' } }, loadingIds: ['1', '2'] },
       };
       expect(bundle.selectors.selectIsLoadingInitialDataById(state, '1')).toBe(
         false
@@ -157,18 +157,18 @@ describe('createAsyncResourceBundle', () => {
     });
     it('should provide a selector to select the current resource order', () => {
       const bundle = createAsyncResourceBundle('books', {
-        indexById: true
+        indexById: true,
       });
       const state = {
         books: {
           data: { '1': { id: '1' }, '2': { id: '2' }, '3': { id: '3' } },
-          lastFetchOrder: ['1', '2', '3']
-        }
+          lastFetchOrder: ['1', '2', '3'],
+        },
       };
       expect(bundle.selectors.selectLastFetchOrder(state)).toEqual([
         '1',
         '2',
-        '3'
+        '3',
       ]);
     });
   });
@@ -182,7 +182,7 @@ describe('createAsyncResourceBundle', () => {
         });
         it('should add loading keys by uuid as strings', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const newState = bundle.reducer(
             initialState,
@@ -192,7 +192,7 @@ describe('createAsyncResourceBundle', () => {
         });
         it('should add loading keys by uuid as arrays', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const newState = bundle.reducer(
             initialState,
@@ -209,12 +209,12 @@ describe('createAsyncResourceBundle', () => {
           );
           expect(newState.loadingIds).toEqual([]);
           expect(newState.data).toEqual({
-            uuid: { id: 'uuid', author: 'Mark Twain' }
+            uuid: { id: 'uuid', author: 'Mark Twain' },
           });
         });
         it('should merge data by id if indexById is true', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const newState = bundle.reducer(
             { ...initialState, loadingIds: ['uuid'] },
@@ -222,31 +222,31 @@ describe('createAsyncResourceBundle', () => {
           );
           expect(newState.loadingIds).toEqual([]);
           expect(newState.data).toEqual({
-            uuid: { id: 'uuid', author: 'Mark Twain' }
+            uuid: { id: 'uuid', author: 'Mark Twain' },
           });
         });
         it('should merge arrays, too', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const newState = bundle.reducer(
             { ...initialState },
             bundle.actions.fetchSuccess([
               { id: 'uuid', author: 'Mark Twain' },
-              { id: 'uuid2', author: 'Elizabeth Gaskell' }
+              { id: 'uuid2', author: 'Elizabeth Gaskell' },
             ])
           );
           expect(newState.loadingIds).toEqual([]);
           expect(newState.data).toEqual({
             uuid: { id: 'uuid', author: 'Mark Twain' },
-            uuid2: { id: 'uuid2', author: 'Elizabeth Gaskell' }
+            uuid2: { id: 'uuid2', author: 'Elizabeth Gaskell' },
           });
         });
         it('should remove global loading indicators when merging arrays', () => {
           const { reducer: indexedReducer } = createAsyncResourceBundle(
             'books',
             {
-              indexById: true
+              indexById: true,
             }
           );
           const newState = indexedReducer(
@@ -255,32 +255,32 @@ describe('createAsyncResourceBundle', () => {
           );
           expect(newState.loadingIds).toEqual([]);
           expect(newState.data).toEqual({
-            uuid: { id: 'uuid', author: 'Mark Twain' }
+            uuid: { id: 'uuid', author: 'Mark Twain' },
           });
         });
         it('should keep order information when merging arrays', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const newState = bundle.reducer(
             { ...initialState },
             bundle.actions.fetchSuccess([
               { id: 'uuid', author: 'Mark Twain' },
-              { id: 'uuid2', author: 'Elizabeth Gaskell' }
+              { id: 'uuid2', author: 'Elizabeth Gaskell' },
             ])
           );
           expect(newState.lastFetchOrder).toEqual(['uuid', 'uuid2']);
         });
         it('should use a custom order if provided', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const newState = bundle.reducer(
             { ...initialState },
             bundle.actions.fetchSuccess(
               [
                 { id: 'uuid', author: 'Mark Twain' },
-                { id: 'uuid2', author: 'Elizabeth Gaskell' }
+                { id: 'uuid2', author: 'Elizabeth Gaskell' },
               ],
               { order: ['uuid2', 'uuid'] }
             )
@@ -289,7 +289,7 @@ describe('createAsyncResourceBundle', () => {
         });
         it('should not update the order reference if the order is the same by value comparison', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const firstState = bundle.reducer(
             { ...initialState },
@@ -325,7 +325,7 @@ describe('createAsyncResourceBundle', () => {
           expect(newState.pagination).toEqual({
             pageSize: 20,
             currentPage: 1,
-            totalPages: 20
+            totalPages: 20,
           });
         });
         it('should not replace identical pagination data', () => {
@@ -350,7 +350,7 @@ describe('createAsyncResourceBundle', () => {
         const newState = reducer(
           { ...initialState, loadingIds: ['uuid'] },
           actions.fetchSuccessIgnore({
-            uuid: { id: 'uuid', author: 'Mark Twain' }
+            uuid: { id: 'uuid', author: 'Mark Twain' },
           })
         );
         it('should return initial state data when a successIgnore action is dispatched', () => {
@@ -387,19 +387,19 @@ describe('createAsyncResourceBundle', () => {
         });
         it('should add updating keys by uuid as strings', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const newState = bundle.reducer(
             initialState,
             actions.updateStart({
-              id: 'uuid'
+              id: 'uuid',
             })
           );
           expect(newState.updatingIds).toEqual(['uuid']);
         });
         it('should add the incoming updated model to the state', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const newState = bundle.reducer(
             initialState,
@@ -411,7 +411,7 @@ describe('createAsyncResourceBundle', () => {
       describe('Update success', () => {
         it('should remove the updating id from the state', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const state = bundle.reducer(
             initialState,
@@ -426,7 +426,7 @@ describe('createAsyncResourceBundle', () => {
         });
         it('should replace the model data if data is supplied', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const state = bundle.reducer(
             initialState,
@@ -436,28 +436,28 @@ describe('createAsyncResourceBundle', () => {
             state,
             actions.updateSuccess('uuid', {
               id: 'uuid',
-              lastModified: 123456789
+              lastModified: 123456789,
             })
           );
           expect(newState.data.uuid).toEqual({
             id: 'uuid',
-            lastModified: 123456789
+            lastModified: 123456789,
           });
           expect(newState.updatingIds).toEqual([]);
         });
         it('should remove the error message if it exists', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const newState = bundle.reducer(
             {
               ...initialState,
               error: 'There was a problem',
-              lastError: 'There was a problem'
+              lastError: 'There was a problem',
             },
             actions.updateSuccess('uuid', {
               id: 'uuid',
-              lastModified: 123456789
+              lastModified: 123456789,
             })
           );
           expect(newState.error).toEqual(null);
@@ -467,7 +467,7 @@ describe('createAsyncResourceBundle', () => {
       describe('Update error', () => {
         it('should remove the updating id from the state, and add an error message', () => {
           const bundle = createAsyncResourceBundle('books', {
-            indexById: true
+            indexById: true,
           });
           const state = bundle.reducer(
             initialState,

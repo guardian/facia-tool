@@ -1,13 +1,13 @@
-import { Action } from 'types/Action';
 import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
-import { State } from 'types/State';
+import type { Action } from 'types/Action';
+import type { State } from 'types/State';
 import {
   UPDATE_CARD_META,
   CARDS_RECEIVED,
   CLEAR_CARDS,
   REMOVE_SUPPORTING_CARD,
   INSERT_SUPPORTING_CARD,
-  COPY_CARD_IMAGE_META
+  COPY_CARD_IMAGE_META,
 } from 'actions/CardsCommon';
 import { cloneActiveImageMeta } from 'util/card';
 
@@ -21,8 +21,8 @@ const cards = (state: State['cards'] = {}, action: Action) => {
           ...state[id],
           meta: action.payload.merge
             ? { ...(state[id].meta || {}), ...action.payload.meta }
-            : action.payload.meta
-        }
+            : action.payload.meta,
+        },
       };
     }
     case CLEAR_CARDS: {
@@ -44,10 +44,10 @@ const cards = (state: State['cards'] = {}, action: Action) => {
           meta: {
             ...card.meta,
             supporting: (card.meta.supporting || []).filter(
-              sid => sid !== action.payload.cardId
-            )
-          }
-        }
+              (sid) => sid !== action.payload.cardId
+            ),
+          },
+        },
       };
     }
     case INSERT_SUPPORTING_CARD: {
@@ -73,8 +73,8 @@ const cards = (state: State['cards'] = {}, action: Action) => {
           ...targetCard,
           meta: {
             ...targetCard.meta,
-            supporting
-          }
+            supporting,
+          },
         },
         //
         [cardId]: {
@@ -83,9 +83,9 @@ const cards = (state: State['cards'] = {}, action: Action) => {
             ...insertedCard.meta,
             // ...ensuer that after flattening we remove the supporting from
             // the inserted card
-            supporting: []
-          }
-        }
+            supporting: [],
+          },
+        },
       };
     }
     // We add frontPublicationDates here  because sublinks coming from the old tool do not have front publication
@@ -101,7 +101,7 @@ const cards = (state: State['cards'] = {}, action: Action) => {
       const newCard = { ...card, frontPublicationDate: date };
       return {
         ...state,
-        [id]: newCard
+        [id]: newCard,
       };
     }
     case COPY_CARD_IMAGE_META: {
@@ -117,9 +117,9 @@ const cards = (state: State['cards'] = {}, action: Action) => {
           ...state[to],
           meta: {
             ...(state[to].meta || {}),
-            ...cloneActiveImageMeta(fromArticle)
-          }
-        }
+            ...cloneActiveImageMeta(fromArticle),
+          },
+        },
       };
     }
     default: {

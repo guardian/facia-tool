@@ -1,6 +1,6 @@
 import set from 'lodash/fp/set';
 import { PAGE_VIEW_DATA_RECEIVED } from '../actions/PageViewData';
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 import { PageViewDataPerFront, PageViewStory } from 'types/PageViewData';
 
 export interface State {
@@ -21,13 +21,10 @@ const reducer = (state: State = {}, action: Action): State => {
       );
 
       if (clearPreviousData) {
-        const stories = data.reduce(
-          (acc, pageViewStory) => {
-            acc[pageViewStory.articleId] = pageViewStory;
-            return acc;
-          },
-          {} as { [id: string]: PageViewStory }
-        );
+        const stories = data.reduce((acc, pageViewStory) => {
+          acc[pageViewStory.articleId] = pageViewStory;
+          return acc;
+        }, {} as { [id: string]: PageViewStory });
         return set(
           [frontId, 'collections', collectionId],
           { collectionId, stories },

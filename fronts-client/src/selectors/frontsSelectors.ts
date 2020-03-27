@@ -3,9 +3,9 @@ import { createSelector } from 'reselect';
 import {
   FrontConfig,
   CollectionConfig,
-  VisibleArticlesResponse
+  VisibleArticlesResponse,
 } from 'types/FaciaApi';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
@@ -13,7 +13,7 @@ import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 import { CardSets, Stages } from 'types/Collection';
 import {
   createSelectArticlesInCollection,
-  createSelectCollection
+  createSelectCollection,
 } from 'selectors/shared';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
 
@@ -60,12 +60,12 @@ const getFrontsByPriority = createSelector(
   [selectFronts],
   (fronts: FrontConfigMap): FrontsByPriority =>
     Object.keys(fronts)
-      .filter(id => id !== breakingNewsFrontId)
+      .filter((id) => id !== breakingNewsFrontId)
       .reduce((acc: FrontsByPriority, id): FrontsByPriority => {
         const front = fronts[id];
         return {
           ...acc,
-          [front.priority]: [...(acc[front.priority] || []), fronts[id]]
+          [front.priority]: [...(acc[front.priority] || []), fronts[id]],
         };
       }, {})
 );
@@ -83,7 +83,7 @@ const selectCollectionIdAndStage = (
   { stage, collectionId }: { stage: Stages; collectionId: string }
 ) => ({
   stage,
-  collectionId
+  collectionId,
 });
 
 const selectCollectionVisibilities = (state: State) =>
@@ -96,23 +96,17 @@ const selectCollectionId = (
 
 const selectUnpublishedChanges = (state: State) => state.unpublishedChanges;
 
-const selectFrontsAsArray = createSelector(
-  [selectFronts],
-  fronts => {
-    if (!fronts) {
-      return [];
-    }
-    return Object.keys(fronts).reduce(
-      (frontsAsArray, frontId) => {
-        const front = fronts[frontId];
-        const withId = Object.assign({}, front, { id: frontId });
-        frontsAsArray.push(withId);
-        return frontsAsArray;
-      },
-      [] as FrontConfig[]
-    );
+const selectFrontsAsArray = createSelector([selectFronts], (fronts) => {
+  if (!fronts) {
+    return [];
   }
-);
+  return Object.keys(fronts).reduce((frontsAsArray, frontId) => {
+    const front = fronts[frontId];
+    const withId = Object.assign({}, front, { id: frontId });
+    frontsAsArray.push(withId);
+    return frontsAsArray;
+  }, [] as FrontConfig[]);
+});
 
 const defaultFrontsWithPriority = [] as [];
 
@@ -138,7 +132,7 @@ const selectCollectionIsHidden = (
   collectionId: string
 ): boolean => {
   const collection = selectCollection(state, {
-    collectionId
+    collectionId,
   });
   return !!collection && !!collection.isHidden;
 };
@@ -148,22 +142,19 @@ const selectCollectionDisplayName = (
   collectionId: string
 ): string => {
   const collection = selectCollection(state, {
-    collectionId
+    collectionId,
   });
   return !!collection ? collection.displayName : '';
 };
 
-const selectFrontsIds = createSelector(
-  [selectFronts],
-  (fronts): string[] => {
-    if (!fronts) {
-      return [];
-    }
-    return Object.keys(fronts)
-      .filter(frontId => frontId !== breakingNewsFrontId)
-      .sort();
+const selectFrontsIds = createSelector([selectFronts], (fronts): string[] => {
+  if (!fronts) {
+    return [];
   }
-);
+  return Object.keys(fronts)
+    .filter((frontId) => frontId !== breakingNewsFrontId)
+    .sort();
+});
 
 const deriveFrontsFromIdsAndPriority = (
   fronts: FrontConfigMap,
@@ -191,7 +182,7 @@ const deriveFrontsFromIdsAndPriority = (
   );
   return {
     fronts: frontsWithPriority,
-    collections
+    collections,
   };
 };
 
@@ -204,10 +195,10 @@ const getCollectionConfigs = (
     return [];
   }
 
-  const selectedFront = fronts.find(front => front.id === frontId);
+  const selectedFront = fronts.find((front) => front.id === frontId);
 
   if (selectedFront) {
-    return selectedFront.collections.map(collectionId =>
+    return selectedFront.collections.map((collectionId) =>
       Object.assign({}, collections[collectionId], { id: collectionId })
     );
   }
@@ -263,8 +254,8 @@ const selectAlsoOnFront = (
                   priorities: soFar.priorities.concat([front.priority]),
                   meritsWarning: soFar.meritsWarning || meritsWarning,
                   fronts: soFar.fronts.concat([
-                    { id: front.id, priority: front.priority }
-                  ])
+                    { id: front.id, priority: front.priority },
+                  ]),
                 };
               }
               return soFar;
@@ -272,7 +263,7 @@ const selectAlsoOnFront = (
             {
               priorities: [] as string[],
               meritsWarning: false,
-              fronts: [] as Array<{ id: string; priority: string }>
+              fronts: [] as Array<{ id: string; priority: string }>,
             }
           );
 
@@ -287,19 +278,19 @@ const selectAlsoOnFront = (
               duplicatesOnFront.meritsWarning,
             fronts: collectionAlsoOnSoFar.fronts.concat(
               duplicatesOnFront.fronts
-            )
+            ),
           };
         },
         {
           priorities: [] as string[],
           fronts: [] as Array<{ id: string; priority: string }>,
-          meritsWarning: false
+          meritsWarning: false,
         }
       );
 
       return {
         ...allCollectionAlsoOn,
-        [currentFrontCollectionId]: collectionAlsoOn
+        [currentFrontCollectionId]: collectionAlsoOn,
       };
     },
     {}
@@ -307,10 +298,7 @@ const selectAlsoOnFront = (
 };
 
 const createSelectAlsoOnFronts = () =>
-  createSelector(
-    [selectFront, selectFrontsAsArray],
-    selectAlsoOnFront
-  );
+  createSelector([selectFront, selectFrontsAsArray], selectAlsoOnFront);
 
 const selectClipboard = (state: State) => state.clipboard;
 
@@ -326,7 +314,7 @@ const selectVisibleArticles = createSelector(
 
 const defaultVisibleFrontArticles = {
   desktop: undefined,
-  mobile: undefined
+  mobile: undefined,
 };
 
 const createSelectArticleVisibilityDetails = () => {
@@ -342,7 +330,7 @@ const createSelectArticleVisibilityDetails = () => {
   ) =>
     selectArticlesInCollection(state, {
       ...extra,
-      includeSupportingArticles: false
+      includeSupportingArticles: false,
     });
 
   return createShallowEqualResultSelector(
@@ -362,7 +350,7 @@ const createSelectArticleVisibilityDetails = () => {
 
       return {
         desktop: articles[visibilities.desktop - 1],
-        mobile: articles[visibilities.mobile - 1]
+        mobile: articles[visibilities.mobile - 1],
       };
     }
   );
@@ -385,5 +373,5 @@ export {
   selectClipboard,
   selectVisibleArticles,
   selectUnlockedFrontCollections,
-  createSelectArticleVisibilityDetails
+  createSelectArticleVisibilityDetails,
 };

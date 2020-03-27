@@ -6,8 +6,8 @@ class Grid {
     apiBaseUrl: urlConstants.media.apiBaseUrl,
     fetchInit: {
       credentials: 'include',
-      mode: 'cors'
-    }
+      mode: 'cors',
+    },
   });
 
   get gridInstance() {
@@ -24,15 +24,15 @@ const grid = new Grid();
 export function recordUsage(mediaId: string, frontId?: string) {
   const usageData = {
     mediaId,
-    front: frontId
+    front: frontId,
   };
 
   return fetch(urlConstants.media.usageBaseUrl, {
     method: 'POST',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(usageData)
+    body: JSON.stringify(usageData),
   });
 }
 

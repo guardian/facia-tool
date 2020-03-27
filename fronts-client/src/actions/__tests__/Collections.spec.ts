@@ -7,18 +7,18 @@ import config from 'fixtures/config';
 import { stateWithCollection, capiArticle } from 'fixtures/shared';
 import {
   getCollectionsApiResponse,
-  getCollectionsApiResponseWithoutStoriesVisible
+  getCollectionsApiResponseWithoutStoriesVisible,
 } from 'fixtures/collectionsEndpointResponse';
 import { actions as collectionActions } from 'bundles/collectionsBundle';
 import {
   actions as externalArticleActions,
-  actionNames as externalArticleActionNames
+  actionNames as externalArticleActionNames,
 } from 'bundles/externalArticlesBundle';
 import {
   getCollections,
   getArticlesForCollections,
   updateCollection,
-  fetchArticles
+  fetchArticles,
 } from '../Collections';
 import { createSelectCollection } from 'selectors/shared';
 
@@ -41,12 +41,12 @@ describe('Collection actions', () => {
         stateWithCollection.collections.data.exampleCollection;
       fetchMock.once('/v2Edits', collection, {
         headers: { 'Content-Type': 'application/json' },
-        method: 'POST'
+        method: 'POST',
       });
       fetchMock.once('/stories-visible/type', {});
       const store = mockStore({
         config,
-        ...stateWithCollection
+        ...stateWithCollection,
       });
       await store.dispatch(updateCollection(collection) as any);
       const actions = store.getActions();
@@ -55,20 +55,20 @@ describe('Collection actions', () => {
           ...collection,
           updatedEmail: 'jonathon.herbert@guardian.co.uk',
           updatedBy: 'Jonathon Herbert',
-          lastUpdated: 1337
+          lastUpdated: 1337,
         })
       );
       expect(actions[0].payload[1]).toEqual({
         type: 'RECORD_UNPUBLISHED_CHANGES',
-        payload: { exampleCollection: true }
+        payload: { exampleCollection: true },
       });
       expect(actions[2]).toEqual({
         type: 'FETCH_VISIBLE_ARTICLES_SUCCESS',
         payload: {
           collectionId: 'exampleCollection',
           visibleArticles: {},
-          stage: 'draft'
-        }
+          stage: 'draft',
+        },
       });
       expect(actions[1]).toEqual(
         collectionActions.updateSuccess('exampleCollection')
@@ -81,7 +81,7 @@ describe('Collection actions', () => {
     const store = configureStore(
       {
         config,
-        ...stateWithCollection
+        ...stateWithCollection,
       },
       '/v2/editorial'
     );
@@ -90,7 +90,7 @@ describe('Collection actions', () => {
       const collectionIds = [
         'testCollection1',
         'testCollection2',
-        'geoLocatedCollection'
+        'geoLocatedCollection',
       ];
       fetchMock.post('/collections', getCollectionsApiResponse);
       await store.dispatch(getCollections(collectionIds) as any);
@@ -101,7 +101,7 @@ describe('Collection actions', () => {
           id: 'exampleCollection',
           live: ['abc', 'def'],
           previously: undefined,
-          type: 'type'
+          type: 'type',
         },
         exampleCollectionTwo: {
           displayName: 'Example Collection',
@@ -109,7 +109,7 @@ describe('Collection actions', () => {
           id: 'exampleCollection',
           live: ['abc'],
           previously: undefined,
-          type: 'type'
+          type: 'type',
         },
         testCollection1: {
           displayName: 'testCollection',
@@ -123,7 +123,7 @@ describe('Collection actions', () => {
           platform: undefined,
           previously: ['uuid'],
           previouslyCardIds: [],
-          type: 'type'
+          type: 'type',
         },
         testCollection2: {
           displayName: 'testCollection',
@@ -137,7 +137,7 @@ describe('Collection actions', () => {
           platform: undefined,
           previously: ['uuid'],
           previouslyCardIds: [],
-          type: 'type'
+          type: 'type',
         },
         geoLocatedCollection: {
           displayName: 'New Zealand News',
@@ -152,8 +152,8 @@ describe('Collection actions', () => {
           previously: ['uuid'],
           previouslyCardIds: [],
           type: 'type',
-          targetedTerritory: 'NZ'
-        }
+          targetedTerritory: 'NZ',
+        },
       });
     });
     it('should add fetched automated collections to the store', async () => {
@@ -167,7 +167,7 @@ describe('Collection actions', () => {
           id: 'exampleCollection',
           live: ['abc', 'def'],
           previously: undefined,
-          type: 'type'
+          type: 'type',
         },
         exampleCollectionTwo: {
           displayName: 'Example Collection',
@@ -175,7 +175,7 @@ describe('Collection actions', () => {
           id: 'exampleCollection',
           live: ['abc'],
           previously: undefined,
-          type: 'type'
+          type: 'type',
         },
         automatedCollection: {
           id: 'automatedCollection',
@@ -188,7 +188,7 @@ describe('Collection actions', () => {
           previously: ['uuid'],
           previouslyCardIds: [],
           groups: undefined,
-          frontsToolSettings: undefined
+          frontsToolSettings: undefined,
         },
         testCollection1: {
           displayName: 'testCollection',
@@ -202,7 +202,7 @@ describe('Collection actions', () => {
           platform: undefined,
           previously: ['uuid'],
           previouslyCardIds: [],
-          type: 'type'
+          type: 'type',
         },
         testCollection2: {
           displayName: 'testCollection',
@@ -216,7 +216,7 @@ describe('Collection actions', () => {
           platform: undefined,
           previously: ['uuid'],
           previouslyCardIds: [],
-          type: 'type'
+          type: 'type',
         },
         geoLocatedCollection: {
           displayName: 'New Zealand News',
@@ -231,8 +231,8 @@ describe('Collection actions', () => {
           previously: ['uuid'],
           previouslyCardIds: [],
           type: 'type',
-          targetedTerritory: 'NZ'
-        }
+          targetedTerritory: 'NZ',
+        },
       });
     });
 
@@ -243,7 +243,7 @@ describe('Collection actions', () => {
       const result = request.lastOptions().body;
       expect(JSON.parse(result as string)).toEqual([
         { id: 'testCollection1' },
-        { id: 'testCollection2' }
+        { id: 'testCollection2' },
       ]);
     });
     it('should handle an empty storiesVisibleByStage object in the server response', async () => {
@@ -266,14 +266,14 @@ describe('Collection actions', () => {
       const result = request.lastOptions().body;
       expect(JSON.parse(result as string)).toEqual([
         { id: 'testCollection1', lastUpdated: 1547479667115 },
-        { id: 'testCollection2', lastUpdated: 1547479667115 }
+        { id: 'testCollection2', lastUpdated: 1547479667115 },
       ]);
     });
     it('should correctly poll for changes in automated collections', async () => {
       const collectionIds = [
         'testCollection1',
         'testCollection2',
-        'automatedCollection'
+        'automatedCollection',
       ];
       const request = fetchMock.post('/collections', getCollectionsApiResponse);
       await store.dispatch(getCollections(collectionIds, true) as any);
@@ -281,7 +281,7 @@ describe('Collection actions', () => {
       expect(JSON.parse(result as string)).toEqual([
         { id: 'testCollection1', lastUpdated: 1547479667115 },
         { id: 'testCollection2', lastUpdated: 1547479667115 },
-        { id: 'automatedCollection' }
+        { id: 'automatedCollection' },
       ]);
     });
   });
@@ -289,18 +289,18 @@ describe('Collection actions', () => {
   describe('fetchArticles thunk', () => {
     const store = mockStore({
       config,
-      ...stateWithCollection
+      ...stateWithCollection,
     });
     beforeEach(() => {
       store.clearActions();
     });
     it('should issue fetch requests for the given articles and dispatch start and success actions', async () => {
       fetchMock.once('begin:/api/preview/internal-code/page/5029528', {
-        response: { results: [capiArticle] }
+        response: { results: [capiArticle] },
       });
-      await store.dispatch(fetchArticles([
-        'internal-code/page/5029528'
-      ]) as any);
+      await store.dispatch(
+        fetchArticles(['internal-code/page/5029528']) as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         externalArticleActions.fetchStart(['internal-code/page/5029528'])
@@ -310,8 +310,8 @@ describe('Collection actions', () => {
           {
             ...capiArticle,
             id: 'internal-code/page/5029528',
-            urlPath: capiArticle.id
-          }
+            urlPath: capiArticle.id,
+          },
         ])
       );
     });
@@ -327,7 +327,7 @@ describe('Collection actions', () => {
     it("should not add articles to the state if they're not stale", async () => {
       const initialState = {
         config,
-        ...stateWithCollection
+        ...stateWithCollection,
       };
       const olderArticle = set(
         ['fields', 'lastModified'],
@@ -347,12 +347,12 @@ describe('Collection actions', () => {
       const storeWithStaleArticle = mockStore(state);
       fetchMock.once('begin:/api/preview/internal-code/page/5029528', {
         response: {
-          results: [olderArticle]
-        }
+          results: [olderArticle],
+        },
       });
-      await storeWithStaleArticle.dispatch(fetchArticles([
-        'internal-code/page/5029528'
-      ]) as any);
+      await storeWithStaleArticle.dispatch(
+        fetchArticles(['internal-code/page/5029528']) as any
+      );
       const actions = storeWithStaleArticle.getActions();
       expect(actions[0]).toEqual(
         externalArticleActions.fetchStart(['internal-code/page/5029528'])
@@ -362,12 +362,11 @@ describe('Collection actions', () => {
     });
     it('should remove snaplinks', async () => {
       fetchMock.once('begin:/api/preview/internal-code/page/5029528', {
-        response: { results: [capiArticle] }
+        response: { results: [capiArticle] },
       });
-      await store.dispatch(fetchArticles([
-        'internal-code/page/5029528',
-        'snap/12345'
-      ]) as any);
+      await store.dispatch(
+        fetchArticles(['internal-code/page/5029528', 'snap/12345']) as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         externalArticleActions.fetchStart(['internal-code/page/5029528'])
@@ -375,17 +374,19 @@ describe('Collection actions', () => {
     });
     it("should dispatch errors when the CAPI result count doesn't match the requested articles", async () => {
       fetchMock.once('begin:/api/preview/search', {
-        response: { results: [capiArticle] }
+        response: { results: [capiArticle] },
       });
-      await store.dispatch(fetchArticles([
-        'internal-code/page/5029528',
-        'internal-code/page/12345'
-      ]) as any);
+      await store.dispatch(
+        fetchArticles([
+          'internal-code/page/5029528',
+          'internal-code/page/12345',
+        ]) as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         externalArticleActions.fetchStart([
           'internal-code/page/5029528',
-          'internal-code/page/12345'
+          'internal-code/page/12345',
         ])
       );
       expect(actions[1]).toEqual(
@@ -393,8 +394,8 @@ describe('Collection actions', () => {
           {
             ...capiArticle,
             id: 'internal-code/page/5029528',
-            urlPath: capiArticle.id
-          }
+            urlPath: capiArticle.id,
+          },
         ])
       );
       // We raise an error here for the missing article in the response
@@ -411,18 +412,17 @@ describe('Collection actions', () => {
       );
       const store = mockStore({
         config,
-        ...stateWithCollection
+        ...stateWithCollection,
       });
-      await store.dispatch(getArticlesForCollections(
-        ['exampleCollection'],
-        'live'
-      ) as any);
+      await store.dispatch(
+        getArticlesForCollections(['exampleCollection'], 'live') as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         externalArticleActions.fetchStart([
           'article/live/0',
           'article/draft/1',
-          'a/long/path/2'
+          'a/long/path/2',
         ])
       );
       // We don't care about the implementation of getArticle here,
@@ -436,18 +436,17 @@ describe('Collection actions', () => {
       );
       const store = mockStore({
         config,
-        ...stateWithCollection
+        ...stateWithCollection,
       });
-      await store.dispatch(getArticlesForCollections(
-        ['exampleCollection'],
-        'live'
-      ) as any);
+      await store.dispatch(
+        getArticlesForCollections(['exampleCollection'], 'live') as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         externalArticleActions.fetchStart([
           'article/live/0',
           'article/draft/1',
-          'a/long/path/2'
+          'a/long/path/2',
         ])
       );
       expect(actions[1].type).toEqual(externalArticleActionNames.fetchError);

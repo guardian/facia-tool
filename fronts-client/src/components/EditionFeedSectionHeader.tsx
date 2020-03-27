@@ -1,7 +1,7 @@
 import React, { ReactNode } from 'react';
 import { EditionsIssue } from '../types/Edition';
 import { connect } from 'react-redux';
-import { State } from '../types/State';
+import type { State } from 'types/State';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
 import { Dispatch } from '../types/Store';
 import { publishEditionIssue, check } from '../actions/Editions';
@@ -105,7 +105,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
     const {
       startConfirmPublishModal,
       editionsIssue,
-      publishEditionsIssue
+      publishEditionsIssue,
     } = this.props;
 
     startConfirmPublishModal(
@@ -122,7 +122,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
 
 const mapStateToProps = () => {
   return (state: State) => ({
-    editionsIssue: editionsIssueSelectors.selectAll(state)
+    editionsIssue: editionsIssueSelectors.selectAll(state),
   });
 };
 
@@ -141,7 +141,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       )
     ),
   publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id)),
-  checkIssue: (id: string) => dispatch(check(id))
+  checkIssue: (id: string) => dispatch(check(id)),
 });
 
 export default connect(

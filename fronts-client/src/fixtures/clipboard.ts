@@ -13,24 +13,24 @@ const stateWithClipboard = {
       frontPublicationDate: 1,
       publishedBy: 'Computers',
       meta: {},
-      uuid: 'article'
+      uuid: 'article',
     },
     article2: {
       id: 'article/live/1',
       frontPublicationDate: 1,
       publishedBy: 'Computers',
       meta: { supporting: ['article3'] },
-      uuid: 'article2'
+      uuid: 'article2',
     },
     article3: {
       id: 'article/live/3',
       frontPublicationDate: 1,
       publishedBy: 'Computers',
       meta: {},
-      uuid: 'article3'
-    }
+      uuid: 'article3',
+    },
   },
-  pageViewData: {}
+  pageViewData: {},
 };
 
 export { stateWithClipboard };

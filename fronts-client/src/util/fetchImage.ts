@@ -1,4 +1,4 @@
-import { ImageDescription } from './validateImageSrc';
+import type { ImageDescription } from './validateImageSrc';
 
 function fetchImage(description: ImageDescription): Promise<ImageDescription> {
   return new Promise((resolve, reject) => {
@@ -10,11 +10,11 @@ function fetchImage(description: ImageDescription): Promise<ImageDescription> {
       const size = {
         width: img.width,
         height: img.height,
-        ratio: img.width / img.height
+        ratio: img.width / img.height,
       };
       const asset: ImageDescription = {
         ...description,
-        ...size
+        ...size,
       };
       resolve(asset);
     };

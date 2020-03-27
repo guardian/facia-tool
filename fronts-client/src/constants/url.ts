@@ -6,7 +6,7 @@ export default {
     frontendDomain: 'frontend.gutools.co.uk',
     previewDomain: 'preview.gutools.co.uk',
     shortDomain: 'gu.com',
-    capi: 'content.guardianapis.com'
+    capi: 'content.guardianapis.com',
   },
   media: {
     apiBaseUrl: pageConfig.apiBaseUrl,
@@ -15,11 +15,11 @@ export default {
     imgIXDomainExpr: /^https:\/\/i\.guim\.co\.uk\/img\/static\//,
     imageCdnDomain: '.guim.co.uk',
     staticImageCdnDomain: 'https://static.guim.co.uk/',
-    imageCdnDomainExpr: /^https:\/\/(.*)\.guim\.co\.uk\//
+    imageCdnDomainExpr: /^https:\/\/(.*)\.guim\.co\.uk\//,
   },
   capiLiveUrl: '/api/live',
   capiPreviewUrl: '/api/preview',
   manageEditions: '/manage-editions/',
   appRoot: 'v2',
-  editionsCardBuilder: 'https://editions-card-builder.gutools.co.uk'
+  editionsCardBuilder: 'https://editions-card-builder.gutools.co.uk',
 };

@@ -26,7 +26,7 @@ const Dropdown = ({
   items,
   onChange,
   deselectValue,
-  deselectText = 'Select one'
+  deselectText = 'Select one',
 }: DropdownProps) => (
   <Select
     value={current || ''}

@@ -29,7 +29,7 @@ const moveUp: KeyboardActionMap = {
     } catch (e) {
       Raven.captureMessage(`Moving item up in clipboard failed: ${e.message}`);
     }
-  }
+  },
 };
 
 const moveDown: KeyboardActionMap = {
@@ -62,7 +62,7 @@ const moveDown: KeyboardActionMap = {
         `Moving item down in clipboard failed: ${e.message}`
       );
     }
-  }
+  },
 };
 
 export { moveUp, moveDown };

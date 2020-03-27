@@ -22,8 +22,8 @@ export const specToCard = ([uuid, id, supporting, meta]: CardSpec) => ({
   frontPublicationDate: 0,
   meta: {
     ...meta,
-    supporting: supporting && supporting.map(([suuid]) => suuid)
-  }
+    supporting: supporting && supporting.map(([suuid]) => suuid),
+  },
 });
 
 export const createCardStateFromSpec = (specs: CardSpec[]) =>
@@ -39,12 +39,12 @@ export const createCardStateFromSpec = (specs: CardSpec[]) =>
                 uuid: suuid,
                 id: sid,
                 frontPublicationDate: 1234,
-                meta: { ...meta }
-              }
+                meta: { ...meta },
+              },
             }),
             {} as CardMap
           )
-        : {})
+        : {}),
     }),
     {} as CardMap
   );

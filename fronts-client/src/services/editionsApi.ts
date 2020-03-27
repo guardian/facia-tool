@@ -1,8 +1,8 @@
-import { EditionsIssue, IssueVersion } from 'types/Edition';
+import type { EditionsIssue, IssueVersion } from 'types/Edition';
+import type { CAPISearchQueryResponse } from './capiQuery';
+import type { EditionsFrontMetadata } from 'types/FaciaApi';
 import { Moment } from 'moment';
 import pandaFetch from './pandaFetch';
-import { CAPISearchQueryResponse } from './capiQuery';
-import { EditionsFrontMetadata } from 'types/FaciaApi';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -17,9 +17,9 @@ export const fetchIssuesForDateRange = async (
     )}&dateTo=${end.format(dateFormat)}`,
     {
       method: 'get',
-      credentials: 'same-origin'
+      credentials: 'same-origin',
     }
-  ).then(response => response.json());
+  ).then((response) => response.json());
 };
 
 export const fetchIssueByDate = async (
@@ -32,15 +32,15 @@ export const fetchIssueByDate = async (
     )}&dateTo=${date.format(dateFormat)}`,
     {
       method: 'get',
-      credentials: 'same-origin'
+      credentials: 'same-origin',
     }
   )
-    .then(response => {
+    .then((response) => {
       if (response.status === 200) {
         return response.json();
       }
     })
-    .then(issues => issues[0])
+    .then((issues) => issues[0])
     .catch(() => {
       // We catch here to prevent 404s, which are expected, being uncaught.
       // Other errors are possible, of course, and it'd be nice to catch them here,
@@ -56,11 +56,11 @@ export const createIssue = async (
     method: 'post',
     mode: 'cors',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
     credentials: 'include',
-    body: JSON.stringify({ issueDate: `${date.format(dateFormat)}` })
-  }).then(response => {
+    body: JSON.stringify({ issueDate: `${date.format(dateFormat)}` }),
+  }).then((response) => {
     return response.json();
   });
 };
@@ -68,22 +68,22 @@ export const createIssue = async (
 export const getIssueSummary = async (id: string): Promise<EditionsIssue> => {
   return pandaFetch(`/editions-api/issues/${id}/summary`, {
     method: 'get',
-    credentials: 'same-origin'
-  }).then(response => {
+    credentials: 'same-origin',
+  }).then((response) => {
     return response.json();
   });
 };
 
 export const publishIssue = async (id: string): Promise<void> => {
   return pandaFetch(`/editions-api/issues/${id}/publish`, {
-    method: 'POST'
+    method: 'POST',
   }).then(() => {});
 };
 
 export const checkIssue = async (id: string): Promise<string[]> => {
   return pandaFetch(`/editions-api/issues/${id}/preflight-checks`, {
-    method: 'GET'
-  }).then(response => {
+    method: 'GET',
+  }).then((response) => {
     return response.json();
   });
 };
@@ -93,8 +93,8 @@ export const getPrefills = async (
 ): Promise<CAPISearchQueryResponse> => {
   return pandaFetch(`/editions-api/collections/${id}/prefill`, {
     method: 'get',
-    credentials: 'same-origin'
-  }).then(response => response.json());
+    credentials: 'same-origin',
+  }).then((response) => response.json());
 };
 
 export const putFrontMetadata = (
@@ -104,22 +104,22 @@ export const putFrontMetadata = (
   return pandaFetch(`/editions-api/fronts/${id}/metadata`, {
     method: 'PUT',
     headers: {
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json',
     },
-    body: JSON.stringify(metadata)
-  }).then(response => response.json());
+    body: JSON.stringify(metadata),
+  }).then((response) => response.json());
 };
 
 export const putFrontHiddenState = (id: string, hidden: boolean) => {
   return pandaFetch(`/editions-api/fronts/${id}/is-hidden/${hidden}`, {
-    method: 'PUT'
-  }).then(response => response.json());
+    method: 'PUT',
+  }).then((response) => response.json());
 };
 
 export async function getIssueVersions(
   issueId: string
 ): Promise<IssueVersion[]> {
   return await pandaFetch(`/editions-api/issues/${issueId}/versions`, {
-    method: 'get'
-  }).then(response => response.json());
+    method: 'get',
+  }).then((response) => response.json());
 }

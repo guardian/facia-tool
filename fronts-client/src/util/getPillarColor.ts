@@ -5,7 +5,7 @@ const pillarColorMap = {
   'pillar/sport': '#0084c6',
   'pillar/opinion': '#e05e00',
   'pillar/lifestyle': '#bb3b80',
-  'pillar/arts': '#a1845c'
+  'pillar/arts': '#a1845c',
 } as { [pillar: string]: string };
 
 const noPillarColour = '#221133';

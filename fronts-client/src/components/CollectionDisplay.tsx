@@ -10,19 +10,19 @@ import ContainerHeadingPinline from './typography/ContainerHeadingPinline';
 import {
   Collection,
   CardSets,
-  Collection as CollectionType
+  Collection as CollectionType,
 } from '../types/Collection';
 import DragIntentContainer from './DragIntentContainer';
 import ButtonCircularCaret, {
-  ButtonCircularWithTransition
+  ButtonCircularWithTransition,
 } from './inputs/ButtonCircularCaret';
-import { State } from '../types/State';
+import type { State } from 'types/State';
 
 import { createSelectArticlesInCollection } from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer, {
-  contentContainerMargin
+  contentContainerMargin,
 } from './layout/ContentContainer';
 import { css } from 'styled-components';
 import { events } from 'services/GA';
@@ -73,10 +73,10 @@ interface CollectionState {
 const CollectionContainer = styled(ContentContainer)<{
   hasMultipleFrontsOpen?: boolean;
 }>`
-  background-color: ${props => props.theme.collection.background};
+  background-color: ${(props) => props.theme.collection.background};
 
   &:focus {
-    border: 1px solid ${props => props.theme.base.colors.focusColor};
+    border: 1px solid ${(props) => props.theme.base.colors.focusColor};
     border-top: none;
     outline: none;
   }
@@ -219,13 +219,13 @@ const CollectionHeaderInput = styled.input`
 class CollectionDisplay extends React.Component<Props, CollectionState> {
   public static defaultProps = {
     isUneditable: false,
-    isOpen: true
+    isOpen: true,
   };
 
   public state = {
     displayName: 'Loading...',
     hasDragOpenIntent: false,
-    editingContainerName: false
+    editingContainerName: false,
   };
 
   public toggleVisibility = () => {
@@ -249,7 +249,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       children,
       handleFocus,
       handleBlur,
-      isEditions
+      isEditions,
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
     const targetedTerritory = collection ? collection.targetedTerritory : null;
@@ -270,10 +270,10 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
                   data-testid="rename-front-input"
                   value={displayName}
                   autoFocus
-                  onChange={e => {
+                  onChange={(e) => {
                     this.setState({ displayName: e.target.value });
                   }}
-                  onKeyDown={e => {
+                  onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       this.setName();
                     }
@@ -394,7 +394,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
   private startRenameContainer = () => {
     this.setState({
       displayName: this.getDisplayName(),
-      editingContainerName: true
+      editingContainerName: true,
     });
   };
 
@@ -402,7 +402,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
     const { collection } = this.props;
     collection!.displayName = this.state.displayName;
     this.setState({
-      editingContainerName: false
+      editingContainerName: false,
     });
     this.props.updateCollection(collection!, true);
   };
@@ -416,9 +416,9 @@ const createMapStateToProps = () => {
       articleIds: selectArticlesInCollection(state, {
         collectionId: props.id,
         collectionSet: props.browsingStage,
-        includeSupportingArticles: false
+        includeSupportingArticles: false,
       }),
-      isEditions: isMode(state, 'editions')
+      isEditions: isMode(state, 'editions'),
     };
   };
 };
@@ -432,7 +432,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     renamingCollection: boolean
   ) => {
     dispatch(updateCollectionAction(collection, renamingCollection));
-  }
+  },
 });
 
 export default connect(

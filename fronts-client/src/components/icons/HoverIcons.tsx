@@ -9,7 +9,7 @@ interface IconProps {
 
 const AddToClipboardHoverIcon = ({
   fill = theme.colors.white,
-  size = 10
+  size = 10,
 }: IconProps) => (
   <svg
     style={{ pointerEvents: 'none' }}
@@ -40,7 +40,7 @@ const CopyHoverIcon = ({ fill = theme.colors.white, size = 10 }: IconProps) => (
 
 const PasteSublinkHoverIcon = ({
   fill = theme.colors.white,
-  size = 10
+  size = 10,
 }: IconProps) => (
   <svg
     style={{ pointerEvents: 'none' }}
@@ -60,7 +60,7 @@ const PasteSublinkHoverIcon = ({
 
 const OphanHoverIcon = ({
   fill = theme.colors.white,
-  size = 10
+  size = 10,
 }: IconProps) => (
   <svg
     style={{ pointerEvents: 'none' }}
@@ -97,7 +97,7 @@ const ViewHoverIcon = ({ fill = theme.colors.white }: IconProps) => (
 
 const DeleteHoverIcon = ({
   fill = theme.colors.white,
-  size = 10
+  size = 10,
 }: IconProps) => (
   <svg
     style={{ pointerEvents: 'none' }}
@@ -121,5 +121,5 @@ export {
   PasteSublinkHoverIcon,
   OphanHoverIcon,
   ViewHoverIcon,
-  DeleteHoverIcon
+  DeleteHoverIcon,
 };

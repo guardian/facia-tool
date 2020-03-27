@@ -9,8 +9,8 @@ describe('Dropdown', () => {
         items={[
           {
             value: '1',
-            label: 'one'
-          }
+            label: 'one',
+          },
         ]}
         onChange={() => {}}
       />

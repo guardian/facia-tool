@@ -1,5 +1,5 @@
 import { oc } from 'ts-optchain';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { PageViewStory } from 'types/PageViewData';
 
 const selectPageViewData = (state: State) => state.pageViewData;
@@ -8,7 +8,7 @@ const selectOpenCollectionsForFront = (
   allCollectionsInAFront: string[],
   openCollectionIds: string[]
 ): string[] => {
-  return allCollectionsInAFront.filter(collection =>
+  return allCollectionsInAFront.filter((collection) =>
     openCollectionIds.includes(collection)
   );
 };
@@ -26,5 +26,5 @@ const selectDataForArticle = (
 export {
   selectPageViewData,
   selectOpenCollectionsForFront,
-  selectDataForArticle
+  selectDataForArticle,
 };

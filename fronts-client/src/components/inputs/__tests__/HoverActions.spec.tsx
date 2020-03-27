@@ -4,13 +4,13 @@ import {
   cleanup,
   fireEvent,
   waitForElement,
-  wait
+  wait,
 } from 'react-testing-library';
 import { HoverActionsButtonWrapper } from '../HoverActionButtonWrapper';
 import {
   HoverDeleteButton,
   HoverViewButton,
-  HoverOphanButton
+  HoverOphanButton,
 } from '../HoverActionButtons';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../../../constants/theme';
@@ -22,7 +22,7 @@ const onDelete = () => {};
 const Buttons = [
   { text: 'View', component: HoverViewButton },
   { text: 'Ophan', component: HoverOphanButton },
-  { text: 'Delete', component: HoverDeleteButton }
+  { text: 'Delete', component: HoverDeleteButton },
 ];
 
 const HoverWrapper = (
@@ -32,7 +32,7 @@ const HoverWrapper = (
       buttonProps={{
         isLive: true,
         urlPath: 'test-string',
-        onDelete
+        onDelete,
       }}
       toolTipPosition={'top'}
       toolTipAlign={'center'}
@@ -60,7 +60,7 @@ describe('Hover Action Button Wrapper', () => {
           buttonProps={{
             isLive: false, // testing isLive
             urlPath: 'test-string',
-            onDelete
+            onDelete,
           }}
           toolTipPosition={'top'}
           toolTipAlign={'center'}

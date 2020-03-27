@@ -6,7 +6,7 @@ describe('Clipboard utilities', () => {
   describe('normaliseClipboard', () => {
     it('should normalise a clipboard with articles', () => {
       const result = normaliseClipboard({
-        articles: [liveArticle, articleWithSupporting]
+        articles: [liveArticle, articleWithSupporting],
       });
       const { cards } = result;
       const clipboardArticles = result.clipboard.articles;

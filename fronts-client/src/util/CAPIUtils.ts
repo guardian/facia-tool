@@ -18,7 +18,7 @@ const getThumbnailFromElements = (elements: Element[]) => {
     return undefined;
   }
   const imageElements = elements.filter(
-    element => element.type === 'image' && element.relation === 'thumbnail'
+    (element) => element.type === 'image' && element.relation === 'thumbnail'
   );
 
   if (!imageElements.length) {
@@ -48,7 +48,7 @@ const getThumbnailFromElements = (elements: Element[]) => {
 function getContributorImage(externalArticle: ExternalArticle) {
   const contributor =
     externalArticle.tags &&
-    externalArticle.tags.find(tag => tag.type === 'contributor');
+    externalArticle.tags.find((tag) => tag.type === 'contributor');
 
   return contributor && contributor.bylineLargeImageUrl;
 }
@@ -107,7 +107,7 @@ const getArticleLabel = (article: CapiArticle) => {
   const {
     fields: { firstPublicationDate },
     sectionName,
-    frontsMeta: { tone }
+    frontsMeta: { tone },
   } = article;
   if (!isLive(article)) {
     if (firstPublicationDate) {
@@ -130,5 +130,5 @@ export {
   getContributorImage,
   getPrimaryTag,
   getArticleLabel,
-  isLive
+  isLive,
 };

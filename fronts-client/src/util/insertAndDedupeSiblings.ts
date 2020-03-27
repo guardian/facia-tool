@@ -13,11 +13,11 @@ export const insertAndDedupeSiblings = (
     ? [
         ...existingSiblingUUIDs.slice(0, index),
         ...insertionUUIDs,
-        ...existingSiblingUUIDs.slice(index)
+        ...existingSiblingUUIDs.slice(index),
       ]
     : existingSiblingUUIDs;
-  const insertionIDs = insertionUUIDs.map(id => cardMap[id].id);
-  const newSiblingCards = newSiblingUUIDs.map(id => cardMap[id]);
+  const insertionIDs = insertionUUIDs.map((id) => cardMap[id].id);
+  const newSiblingCards = newSiblingUUIDs.map((id) => cardMap[id]);
 
   const isAnInsertedItem = (i: number) =>
     i >= index && i < index + insertionUUIDs.length;

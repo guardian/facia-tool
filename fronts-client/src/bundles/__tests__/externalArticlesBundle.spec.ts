@@ -9,16 +9,16 @@ const exampleArticleWithInvalidLastModified = {
   ...capiArticleWithElementsThumbnail,
   fields: {
     ...capiArticleWithElementsThumbnail.fields,
-    lastModified: 'Not a valid date!'
-  }
+    lastModified: 'Not a valid date!',
+  },
 };
 
 const exampleArticleWithLastModified = {
   ...capiArticleWithElementsThumbnail,
   fields: {
     ...capiArticleWithElementsThumbnail.fields,
-    lastModified: '2018-10-10T10:10:10Z'
-  }
+    lastModified: '2018-10-10T10:10:10Z',
+  },
 };
 
 describe('selectors', () => {

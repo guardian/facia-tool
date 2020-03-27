@@ -40,18 +40,21 @@ function filterGridCrops(
         ? widthAspectRatio / heightAspectRatio
         : NaN;
 
-    return !!find([crop.master].concat(crop.assets).filter(Boolean), asset => {
-      const { width, height } = asset.dimensions;
-      const actualRatio = width / height;
-      if (maxWidth && maxWidth < width) {
-        return false;
-      } else if (minWidth && minWidth > width) {
-        return false;
-      } else if (ratio && Math.abs(ratio - actualRatio) > 0.01) {
-        return false;
+    return !!find(
+      [crop.master].concat(crop.assets).filter(Boolean),
+      (asset) => {
+        const { width, height } = asset.dimensions;
+        const actualRatio = width / height;
+        if (maxWidth && maxWidth < width) {
+          return false;
+        } else if (minWidth && minWidth > width) {
+          return false;
+        } else if (ratio && Math.abs(ratio - actualRatio) > 0.01) {
+          return false;
+        }
+        return true;
       }
-      return true;
-    });
+    );
   });
 }
 
@@ -70,19 +73,19 @@ function getSuitableImageDetails(
     [crops[0].master]
       .concat(crops[0].assets)
       .filter(Boolean)
-      .filter(asset =>
+      .filter((asset) =>
         maxWidth
           ? parseInt(`${deepGet(asset, ['dimensions', 'width'])}`, 10) <=
             maxWidth
           : true
       )
-      .filter(asset =>
+      .filter((asset) =>
         minWidth
           ? parseInt(`${deepGet(asset, ['dimensions', 'width'])}`, 10) >=
             minWidth
           : true
       ),
-    asset => parseInt(`${deepGet(asset, ['dimensions', 'width'])}`, 10) * -1
+    (asset) => parseInt(`${deepGet(asset, ['dimensions', 'width'])}`, 10) * -1
   );
 
   if (assets.length) {
@@ -95,7 +98,7 @@ function getSuitableImageDetails(
       origin: `${urlConstants.media.mediaBaseUrl}/image/${id}`,
       height,
       width,
-      ratio: width / height
+      ratio: width / height,
     });
   }
   return Promise.reject(
@@ -112,13 +115,13 @@ function validateActualImage(image: ImageDescription, frontId?: string) {
       criteria,
       path,
       origin,
-      thumb
+      thumb,
     } = image;
     const {
       maxWidth,
       minWidth,
       widthAspectRatio,
-      heightAspectRatio
+      heightAspectRatio,
     }: Criteria = criteria || {};
     const criteriaRatio =
       widthAspectRatio && heightAspectRatio
@@ -136,8 +139,9 @@ function validateActualImage(image: ImageDescription, frontId?: string) {
     } else if (criteriaRatio && criteriaRatio - ratio > 0.01) {
       return reject(
         new Error(
-          `Images must have a ${widthAspectRatio || ''}:${heightAspectRatio ||
-            ''} aspect ratio`
+          `Images must have a ${widthAspectRatio || ''}:${
+            heightAspectRatio || ''
+          } aspect ratio`
         )
       );
     }
@@ -167,7 +171,7 @@ function stripImplementationDetails(
         );
       resolve({
         path: localSource,
-        criteria
+        criteria,
       });
     } else if (maybeFromGrid) {
       grid.gridInstance
@@ -186,22 +190,20 @@ function stripImplementationDetails(
         .then((asset: ImageDescription) =>
           resolve({
             ...asset,
-            criteria
+            criteria,
           })
         )
         .catch(reject);
     } else if (!urlConstants.media.imageCdnDomainExpr.test(src)) {
       reject(
         new Error(
-          `Images must come from ${
-            urlConstants.media.imageCdnDomain
-          } or the Grid`
+          `Images must come from ${urlConstants.media.imageCdnDomain} or the Grid`
         )
       );
     } else {
       resolve({
         path: src,
-        criteria
+        criteria,
       });
     }
   });
@@ -224,13 +226,13 @@ function validateImageSrc(
 
   return stripImplementationDetails(src, criteria)
     .then(fetchImage)
-    .then(image => validateActualImage(image, frontId))
+    .then((image) => validateActualImage(image, frontId))
     .then(({ path, origin, thumb, width, height }) => ({
       src: path,
       origin: origin || path,
       thumb: thumb || path,
       width,
-      height
+      height,
     }));
 }
 
@@ -253,19 +255,19 @@ function validateMediaItem(
   criteria?: Criteria
 ): Promise<ValidationResponse> {
   return getSuitableImageDetails([crop], crop.id, criteria || {})
-    .then(asset => {
+    .then((asset) => {
       const newImageDetails = asset;
       newImageDetails.criteria = criteria;
       newImageDetails.origin = imageOrigin;
       return newImageDetails;
     })
-    .then(img => validateActualImage(img, frontId))
+    .then((img) => validateActualImage(img, frontId))
     .then(({ path, origin, thumb, width, height }) => ({
       src: path,
       origin: origin || path,
       thumb: thumb || path,
       width,
-      height
+      height,
     }));
 }
 
@@ -298,5 +300,5 @@ export {
   ValidationResponse,
   validateImageSrc,
   validateImageEvent,
-  validateMediaItem
+  validateMediaItem,
 };

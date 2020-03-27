@@ -5,13 +5,13 @@ export const data = {
   data: [
     {
       dateTime: 1238984989,
-      count: 345
+      count: 345,
     },
     {
       dateTime: 1238985490,
-      count: 895
-    }
-  ]
+      count: 895,
+    },
+  ],
 };
 
 export const state = {
@@ -21,9 +21,9 @@ export const state = {
       collectionId: {
         collectionId: 'collectionId',
         stories: {
-          articleId: data
-        }
-      }
-    }
-  }
+          articleId: data,
+        },
+      },
+    },
+  },
 };

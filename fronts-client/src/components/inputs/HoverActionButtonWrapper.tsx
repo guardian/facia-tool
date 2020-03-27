@@ -19,13 +19,13 @@ const ToolTipWrapper = styled.div<{
   toolTipAlign: string;
 }>`
   position: absolute;
-  top: ${props => (props.toolTipPosition === 'bottom' ? '30px' : null)};
-  left: ${props =>
+  top: ${(props) => (props.toolTipPosition === 'bottom' ? '30px' : null)};
+  left: ${(props) =>
     props.toolTipPosition === 'left' || props.toolTipAlign === 'left'
       ? '0px'
       : null};
-  bottom: ${props => (props.toolTipPosition === 'top' ? '30px' : null)};
-  right: ${props =>
+  bottom: ${(props) => (props.toolTipPosition === 'top' ? '30px' : null)};
+  right: ${(props) =>
     props.toolTipAlign === 'center'
       ? '-10px'
       : props.toolTipPosition === 'right' || props.toolTipAlign === 'right'
@@ -63,7 +63,7 @@ class HoverActionsButtonWrapper<ButtonProps> extends React.Component<
     super(props);
     this.state = {
       isToolTipVisible: false,
-      toolTipText: ''
+      toolTipText: '',
     };
   }
 
@@ -84,7 +84,7 @@ class HoverActionsButtonWrapper<ButtonProps> extends React.Component<
             <ToolTip text={toolTipText} />
           </ToolTipWrapper>
         ) : null}
-        {buttons.map(ButtonObj => (
+        {buttons.map((ButtonObj) => (
           <ButtonObj.component
             key={ButtonObj.text}
             {...buttonProps}
@@ -103,12 +103,12 @@ class HoverActionsButtonWrapper<ButtonProps> extends React.Component<
   private showToolTip = (text: string) =>
     this.setState({
       isToolTipVisible: true,
-      toolTipText: text
+      toolTipText: text,
     });
 
   private hideToolTip = () => {
     this.setState({
-      isToolTipVisible: false
+      isToolTipVisible: false,
     });
   };
 }

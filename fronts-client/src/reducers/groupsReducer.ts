@@ -1,6 +1,6 @@
-import { Action } from '../types/Action';
 import { insertAndDedupeSiblings } from 'util/insertAndDedupeSiblings';
-import { State } from 'types/State';
+import type { Action } from 'types/Action';
+import type { State } from 'types/State';
 import { selectCards, selectGroupSiblings } from 'selectors/shared';
 import { capGroupCards } from 'util/capGroupCards';
 import keyBy from 'lodash/keyBy';
@@ -31,8 +31,8 @@ const getUpdatedSiblingGroupsForInsertion = (
           insertionIndex,
           cardsMap,
           sibling.uuid === insertionGroupId // this means no insertions happen here if it's not this group
-        )
-      }
+        ),
+      },
     }),
     {} as State['groups']
   );
@@ -48,7 +48,7 @@ const groups = (
       const { payload } = action;
       return {
         ...state,
-        ...payload
+        ...payload,
       };
     }
     case 'REMOVE_GROUP_CARD': {
@@ -58,8 +58,8 @@ const groups = (
         ...state,
         [id]: {
           ...group,
-          cards: (group.cards || []).filter(afId => afId !== cardId)
-        }
+          cards: (group.cards || []).filter((afId) => afId !== cardId),
+        },
       };
     }
     case 'INSERT_GROUP_CARD': {
@@ -72,7 +72,7 @@ const groups = (
           id,
           index,
           cardId
-        )
+        ),
       };
     }
     case 'SHARED/CAP_GROUP_SIBLINGS': {
@@ -85,7 +85,7 @@ const groups = (
 
       return {
         ...state,
-        ...cappedSiblings
+        ...cappedSiblings,
       };
     }
     default: {

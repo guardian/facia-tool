@@ -5,7 +5,7 @@ const createCard = (meta: CardMeta = {}) => ({
   id: 'id',
   uuid: 'uuid',
   frontPublicationDate: 123,
-  meta
+  meta,
 });
 
 describe('card utils', () => {
@@ -22,7 +22,7 @@ describe('card utils', () => {
             imageSrcThumb: 'image',
             imageSrcWidth: 'image',
             imageSrcHeight: 'image',
-            imageSrcOrigin: 'image'
+            imageSrcOrigin: 'image',
           })
         )
       ).toEqual({
@@ -33,7 +33,7 @@ describe('card utils', () => {
         imageSrcThumb: 'image',
         imageSrcWidth: 'image',
         imageSrcHeight: 'image',
-        imageSrcOrigin: 'image'
+        imageSrcOrigin: 'image',
       });
     });
     it('should replace cutouts and enable them', () => {
@@ -44,7 +44,7 @@ describe('card utils', () => {
             imageCutoutSrc: 'image',
             imageCutoutSrcWidth: 'image',
             imageCutoutSrcHeight: 'image',
-            imageCutoutSrcOrigin: 'image'
+            imageCutoutSrcOrigin: 'image',
           })
         )
       ).toEqual({
@@ -54,7 +54,7 @@ describe('card utils', () => {
         imageCutoutSrc: 'image',
         imageCutoutSrcWidth: 'image',
         imageCutoutSrcHeight: 'image',
-        imageCutoutSrcOrigin: 'image'
+        imageCutoutSrcOrigin: 'image',
       });
     });
     it('should replace slideshows and enable them', () => {
@@ -68,9 +68,9 @@ describe('card utils', () => {
                 thumb: 'slideshow',
                 width: 'slideshow',
                 height: 'slideshow',
-                origin: 'slideshow'
-              }
-            ]
+                origin: 'slideshow',
+              },
+            ],
           })
         )
       ).toEqual({
@@ -83,9 +83,9 @@ describe('card utils', () => {
             thumb: 'slideshow',
             width: 'slideshow',
             height: 'slideshow',
-            origin: 'slideshow'
-          }
-        ]
+            origin: 'slideshow',
+          },
+        ],
       });
     });
     it('should not replace both images and slideshows', () => {
@@ -106,9 +106,9 @@ describe('card utils', () => {
                 thumb: 'slideshow',
                 width: 'slideshow',
                 height: 'slideshow',
-                origin: 'slideshow'
-              }
-            ]
+                origin: 'slideshow',
+              },
+            ],
           })
         )
       ).toEqual({
@@ -118,7 +118,7 @@ describe('card utils', () => {
         imageSrc: 'image',
         imageSrcWidth: 'image',
         imageSrcHeight: 'image',
-        imageSrcOrigin: 'image'
+        imageSrcOrigin: 'image',
       });
     });
   });

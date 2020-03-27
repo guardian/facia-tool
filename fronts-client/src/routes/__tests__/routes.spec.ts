@@ -1,7 +1,7 @@
 import {
   matchFrontsEditPath,
   FrontsEditParams,
-  matchIssuePath
+  matchIssuePath,
 } from 'routes/routes';
 
 describe('Routes', () => {
@@ -9,13 +9,13 @@ describe('Routes', () => {
     it('correctly returns the right types of parameters', () => {
       // using types here also checks the typings
       expect(matchFrontsEditPath('/editorial')!.params).toEqual({
-        priority: 'editorial'
+        priority: 'editorial',
       });
     });
 
     it('has typings that are in sync with the actual return type', () => {
       const params: FrontsEditParams = {
-        priority: 'editorial'
+        priority: 'editorial',
       };
       expect(matchFrontsEditPath('/editorial')!.params).toEqual(params);
     });
@@ -34,13 +34,13 @@ describe('Routes', () => {
   describe('matchIssuePath', () => {
     it('correctly returns the right types of parameters', () => {
       expect(matchIssuePath('/issues/a')!.params).toEqual({
-        priority: 'a'
+        priority: 'a',
       });
     });
 
     it('has typings that are in sync with the actual return type', () => {
       const params: FrontsEditParams = {
-        priority: 'a'
+        priority: 'a',
       };
       expect(matchIssuePath('/issues/a')!.params).toEqual(params);
     });

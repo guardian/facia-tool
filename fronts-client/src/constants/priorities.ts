@@ -4,28 +4,28 @@ export const priorities: Priorities = {
   editorial: {},
   commercial: {},
   training: {},
-  email: {}
+  email: {},
 };
 
 export const editionPriorities: { [index: string]: EditionPriority } = {
   dailyEdition: {
     description: 'Daily Edition',
-    address: 'daily-edition'
+    address: 'daily-edition',
   },
   americanEdition: {
     description: 'American Edition',
-    address: 'american-edition'
+    address: 'american-edition',
   },
   australianEdition: {
     description: 'Australian Edition',
-    address: 'australian-edition'
+    address: 'australian-edition',
   },
   trainingEdition: {
     description: 'Training Edition',
-    address: 'training-edition'
+    address: 'training-edition',
   },
   theDummyEdition: {
     description: 'The Dummy Edition',
-    address: 'the-dummy-edition'
-  }
+    address: 'the-dummy-edition',
+  },
 };

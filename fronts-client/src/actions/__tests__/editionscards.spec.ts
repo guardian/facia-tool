@@ -1,7 +1,8 @@
 import configureMockStore from 'redux-mock-store';
 import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
-import { createArticleEntitiesFromDrop, cardsReceived } from '../CardsCommon';
+import { createArticleEntitiesFromDrop } from '../Cards';
+import { cardsReceived } from '../CardsCommon';
 import initialState from 'fixtures/initialStateForEditions';
 import { capiArticle } from '../../fixtures/shared';
 import { actionNames as externalArticleActionNames } from 'bundles/externalArticlesBundle';
@@ -32,18 +33,20 @@ describe('Editions cards actions', () => {
     it('should fetch an article and create a corresponding editions card representing an article', async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
-          results: [capiArticle]
-        }
+          results: [capiArticle],
+        },
       });
       const store = mockStore(initialState);
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop('internal-code/page/5029528')
-      ) as any);
+      await store.dispatch(
+        createArticleEntitiesFromDrop(
+          idDrop('internal-code/page/5029528')
+        ) as any
+      );
       const actions = store.getActions();
       expect(actions[0].type).toEqual(externalArticleActionNames.fetchSuccess);
       expect(actions[1]).toEqual(
         cardsReceived({
-          card1: createCard('internal-code/page/5029528', true)
+          card1: createCard('internal-code/page/5029528', true),
         })
       );
     });

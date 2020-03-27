@@ -1,4 +1,4 @@
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 
 function recordUnpublishedChanges(
   collectionId: string,
@@ -6,7 +6,7 @@ function recordUnpublishedChanges(
 ): Action {
   return {
     type: 'RECORD_UNPUBLISHED_CHANGES',
-    payload: { [collectionId]: lastPressed }
+    payload: { [collectionId]: lastPressed },
   };
 }
 

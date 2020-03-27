@@ -59,7 +59,7 @@ class Pagination extends React.Component<PaginationProps, PaginationState> {
             </Page>
           )}
           {addStartingEllipsis && <PaginationElement>...</PaginationElement>}
-          {pages.map(page => (
+          {pages.map((page) => (
             <Page
               key={page}
               onClick={() => pageChange(page)}
@@ -87,13 +87,13 @@ class Pagination extends React.Component<PaginationProps, PaginationState> {
     if (currentPage < 4) {
       return {
         min: 1,
-        max: Math.min(4, totalPages)
+        max: Math.min(4, totalPages),
       };
     }
     if (currentPage === totalPages) {
       return {
         min: totalPages - 2,
-        max: totalPages
+        max: totalPages,
       };
     }
     const min = currentPage < 3 ? 1 : currentPage - 1;

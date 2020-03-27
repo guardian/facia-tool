@@ -5,7 +5,7 @@ import {
   fetchLive,
   fetchPreview,
   liveSelectors,
-  previewSelectors
+  previewSelectors,
 } from '../capiFeedBundle';
 import { capiArticle } from 'fixtures/shared';
 
@@ -14,14 +14,14 @@ const resources = [
     fetchAction: fetchLive,
     selectors: liveSelectors,
     endpoint: 'live',
-    searchQuery: '/search'
+    searchQuery: '/search',
   },
   {
     fetchAction: fetchPreview,
     selectors: previewSelectors,
     endpoint: 'preview',
-    searchQuery: '/content/scheduled'
-  }
+    searchQuery: '/content/scheduled',
+  },
 ];
 const createStoreAndFetchMock = (pattern: string, response: any) => {
   fetchMock.get(pattern, response, { overwriteRoutes: true });
@@ -32,63 +32,69 @@ describe('capiFeedBundle', () => {
   beforeEach(() => fetchMock.reset());
   it('should add CAPI results to the application state', async () => {
     await Promise.all(
-      resources.map(async resource => {
+      resources.map(async (resource) => {
         const store = createStoreAndFetchMock(
           `begin:/api/${resource.endpoint}${resource.searchQuery}`,
           {
             response: {
-              results: [capiArticle]
-            }
+              results: [capiArticle],
+            },
           }
         );
-        await store.dispatch(resource.fetchAction(
-          {
-            q: 'Something topical'
-          },
-          false
-        ) as any);
+        await store.dispatch(
+          resource.fetchAction(
+            {
+              q: 'Something topical',
+            },
+            false
+          ) as any
+        );
         expect(resource.selectors.selectAll(store.getState())).toEqual({
-          'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina': capiArticle
+          'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina': capiArticle,
         });
       })
     );
   });
   it('should add a single CAPI content result to the application state', async () => {
     await Promise.all(
-      resources.map(async resource => {
+      resources.map(async (resource) => {
         const store = createStoreAndFetchMock(
           `begin:/api/${resource.endpoint}/a/single/resource`,
           {
             response: {
-              content: capiArticle
-            }
+              content: capiArticle,
+            },
           }
         );
-        await store.dispatch(resource.fetchAction(
-          {
-            q: 'a/single/resource'
-          },
-          true
-        ) as any);
+        await store.dispatch(
+          resource.fetchAction(
+            {
+              q: 'a/single/resource',
+            },
+            true
+          ) as any
+        );
         expect(resource.selectors.selectAll(store.getState())).toEqual({
-          'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina': capiArticle
+          'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina': capiArticle,
         });
       })
     );
   });
   it('should handle HTTP errors', async () => {
     await Promise.all(
-      resources.map(async resource => {
+      resources.map(async (resource) => {
         const store = createStoreAndFetchMock(
           `begin:/api/${resource.endpoint}${resource.searchQuery}`,
           400
         );
-        await store.dispatch(resource.fetchAction(
-          {
-            q: 'Something topical'
-          },
-          false
-        ) as any);
+        await store.dispatch(
+          resource.fetchAction(
+            {
+              q: 'Something topical',
+            },
+            false
+          ) as any
+        );
         expect(resource.selectors.selectAll(store.getState())).toEqual({});
         expect(resource.selectors.selectCurrentError(store.getState())).toMatch(
           /400/
@@ -98,17 +104,19 @@ describe('capiFeedBundle', () => {
   });
   it('should handle an invalid response from the server', async () => {
     await Promise.all(
-      resources.map(async resource => {
+      resources.map(async (resource) => {
         const store = createStoreAndFetchMock(
           `begin:/api/${resource.endpoint}${resource.searchQuery}`,
           '{This is not JSON}'
         );
-        await store.dispatch(resource.fetchAction(
-          {
-            q: 'Something topical'
-          },
-          false
-        ) as any);
+        await store.dispatch(
+          resource.fetchAction(
+            {
+              q: 'Something topical',
+            },
+            false
+          ) as any
+        );
         expect(resource.selectors.selectAll(store.getState())).toEqual({});
         expect(resource.selectors.selectCurrentError(store.getState())).toMatch(
           /Error parsing a response/
@@ -118,17 +126,19 @@ describe('capiFeedBundle', () => {
   });
   it('should handle CAPI errors', async () => {
     await Promise.all(
-      resources.map(async resource => {
+      resources.map(async (resource) => {
         const store = createStoreAndFetchMock(
           `begin:/api/${resource.endpoint}${resource.searchQuery}`,
           { response: { status: 'error', message: 'CAPI is unwell' } }
         );
-        await store.dispatch(resource.fetchAction(
-          {
-            q: 'Something topical'
-          },
-          false
-        ) as any);
+        await store.dispatch(
+          resource.fetchAction(
+            {
+              q: 'Something topical',
+            },
+            false
+          ) as any
+        );
         expect(resource.selectors.selectAll(store.getState())).toEqual({});
         expect(resource.selectors.selectCurrentError(store.getState())).toMatch(
           /CAPI is unwell/

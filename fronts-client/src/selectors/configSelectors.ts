@@ -1,30 +1,30 @@
 import { createSelector } from 'reselect';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectEditMode } from './pathSelectors';
 
 const selectConfig = (state: State) => state.config;
 
 const selectUserEmail = createSelector(
   selectConfig,
-  config => config && config.email
+  (config) => config && config.email
 );
 const selectFirstName = createSelector(
   selectConfig,
-  config => config && config.firstName
+  (config) => config && config.firstName
 );
 const selectLastName = createSelector(
   selectConfig,
-  config => config && config.lastName
+  (config) => config && config.lastName
 );
 
 const selectCapiLiveURL = createSelector(
   selectConfig,
-  config => config && config.capiLiveUrl
+  (config) => config && config.capiLiveUrl
 );
 
 const selectCapiPreviewURL = createSelector(
   selectConfig,
-  config => config && config.capiPreviewUrl
+  (config) => config && config.capiPreviewUrl
 );
 
 const selectCollectionCap = createSelector(
@@ -36,7 +36,7 @@ const selectCollectionCap = createSelector(
 
 const selectGridUrl = createSelector(
   selectConfig,
-  config => config && config.mediaBaseUrl
+  (config) => config && config.mediaBaseUrl
 );
 
 export {
@@ -46,5 +46,5 @@ export {
   selectFirstName,
   selectLastName,
   selectCollectionCap,
-  selectGridUrl
+  selectGridUrl,
 };

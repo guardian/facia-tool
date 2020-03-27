@@ -1,4 +1,4 @@
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { createSelector } from 'reselect';
 
 export const selectFeatureValue = (state: State, featureKey: string): boolean =>
@@ -8,7 +8,6 @@ export const selectFeatureValue = (state: State, featureKey: string): boolean =>
 
 const selectFeatures = (state: State) => state.featureSwitches;
 
-export const selectAllFeatures = createSelector(
-  selectFeatures,
-  features => Object.values(features)
+export const selectAllFeatures = createSelector(selectFeatures, (features) =>
+  Object.values(features)
 );

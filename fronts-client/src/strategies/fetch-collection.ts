@@ -1,4 +1,4 @@
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { getCollections as fetchCollections } from 'services/faciaApi';
 import { getEditionsCollections as fetchEditionsCollections } from 'services/faciaApi';
@@ -17,13 +17,13 @@ const editionCollectionToCollection = (
     collection: {
       ...restCol,
       draft: items,
-      live: []
+      live: [],
     },
     storiesVisibleByStage: {
       // TODO - remove me once we figure out what to do here!
       live: { mobile: 0, desktop: 0 },
-      draft: { mobile: 0, desktop: 0 }
-    }
+      draft: { mobile: 0, desktop: 0 },
+    },
   };
 };
 
@@ -48,8 +48,8 @@ const fetchCollectionsStrategy = (
           collectionIds,
           returnOnlyUpdatedCollections
         )
-      ).then(collections => collections.map(editionCollectionToCollection)), // TODO, this needs to be mirrored on save!
-    none: () => null
+      ).then((collections) => collections.map(editionCollectionToCollection)), // TODO, this needs to be mirrored on save!
+    none: () => null,
   });
 
 export { fetchCollectionsStrategy };

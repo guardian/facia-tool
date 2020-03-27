@@ -8,7 +8,7 @@ const getPandaFetchWithSessionMock = (
 ): typeof pandaFetchImp => {
   jest.resetModules();
   jest.mock('panda-session', () => ({
-    reEstablishSession: fn
+    reEstablishSession: fn,
   }));
   return require('../pandaFetch').default;
 };
@@ -22,7 +22,7 @@ describe('pandaFetch', () => {
   it('attempts to reauth when auth has timed out', async () => {
     const pandaFetch = getPandaFetchWithSessionMock(() => Promise.resolve());
     setReauthedResponse({ ok: true }, '/test');
-    const json = await pandaFetch('/test').then(res => res.json());
+    const json = await pandaFetch('/test').then((res) => res.json());
     expect(json.ok).toBe(true);
   });
 
@@ -32,14 +32,14 @@ describe('pandaFetch', () => {
       throw e;
     });
     setReauthedResponse({ ok: true }, '/test');
-    const thrown = await pandaFetch('/test').catch(er => er);
+    const thrown = await pandaFetch('/test').catch((er) => er);
     expect(thrown).toBe(e);
   });
 
   it('rejects with non 2XX responses', async () => {
     const pandaFetch = getPandaFetchWithSessionMock(() => Promise.resolve());
     setReauthedResponse(500, '/test');
-    const res = await pandaFetch('/test').catch(r => r);
+    const res = await pandaFetch('/test').catch((r) => r);
     expect(res.status).toBe(500);
   });
 });

@@ -1,10 +1,10 @@
 import { Dispatch, ThunkResult } from 'types/Store';
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
+import type { State } from 'types/State';
 import { fetchLastPressed as fetchLastPressedApi } from 'services/faciaApi';
 import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 import { Stages } from 'types/Collection';
-import { State } from 'types/State';
 import { fetchFrontsConfigStrategy } from 'strategies/fetch-fronts-config';
 
 function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
@@ -13,8 +13,8 @@ function fetchLastPressedSuccess(frontId: string, datePressed: string): Action {
     payload: {
       receivedAt: Date.now(),
       frontId,
-      datePressed
-    }
+      datePressed,
+    },
   };
 }
 
@@ -22,8 +22,8 @@ function recordStaleFronts(frontId: string, frontIsStale: boolean): Action {
   return {
     type: 'RECORD_STALE_FRONTS',
     payload: {
-      [frontId]: frontIsStale
-    }
+      [frontId]: frontIsStale,
+    },
   };
 }
 
@@ -37,15 +37,15 @@ function recordVisibleArticles(
     payload: {
       collectionId,
       visibleArticles,
-      stage
-    }
+      stage,
+    },
   };
 }
 
 function fetchLastPressed(frontId: string): ThunkResult<void> {
   return (dispatch: Dispatch) =>
     fetchLastPressedApi(frontId)
-      .then(datePressed =>
+      .then((datePressed) =>
         dispatch(fetchLastPressedSuccess(frontId, datePressed))
       )
       .catch(() => {
@@ -57,7 +57,7 @@ export {
   fetchLastPressed,
   fetchLastPressedSuccess,
   recordVisibleArticles,
-  recordStaleFronts
+  recordStaleFronts,
 };
 
 export default function getFrontsConfig(): ThunkResult<
@@ -77,7 +77,7 @@ export default function getFrontsConfig(): ThunkResult<
       );
     }
     return promise
-      .then(res => {
+      .then((res) => {
         return dispatch(frontsConfigActions.fetchSuccess(res));
       })
       .catch((error: string) =>

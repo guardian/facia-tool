@@ -1,4 +1,4 @@
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 import { OptionsModalProps } from 'types/Modals';
 
 const optionsModal = (state: OptionsModalProps, action: Action) => {

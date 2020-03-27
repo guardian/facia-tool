@@ -35,7 +35,7 @@ export const articlesForScJohnsonPartnerZone = {
           shortUrl: 'https://gu.com/p/aennd',
           thumbnail:
             'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/500.jpg',
-          isLive: 'true'
+          isLive: 'true',
         },
         tags: [
           {
@@ -47,7 +47,7 @@ export const articlesForScJohnsonPartnerZone = {
             webUrl: 'https://www.theguardian.com/football/leedsunited',
             apiUrl:
               'https://preview.content.guardianapis.com/football/leedsunited',
-            references: []
+            references: [],
           },
           {
             id: 'football/premierleague',
@@ -58,7 +58,7 @@ export const articlesForScJohnsonPartnerZone = {
             webUrl: 'https://www.theguardian.com/football/premierleague',
             apiUrl:
               'https://preview.content.guardianapis.com/football/premierleague',
-            references: []
+            references: [],
           },
           {
             id: 'football/southafrica',
@@ -69,7 +69,7 @@ export const articlesForScJohnsonPartnerZone = {
             webUrl: 'https://www.theguardian.com/football/southafrica',
             apiUrl:
               'https://preview.content.guardianapis.com/football/southafrica',
-            references: []
+            references: [],
           },
           {
             id: 'football/football',
@@ -80,7 +80,7 @@ export const articlesForScJohnsonPartnerZone = {
             webUrl: 'https://www.theguardian.com/football/football',
             apiUrl:
               'https://preview.content.guardianapis.com/football/football',
-            references: []
+            references: [],
           },
           {
             id: 'sport/sport',
@@ -90,7 +90,7 @@ export const articlesForScJohnsonPartnerZone = {
             webTitle: 'Sport',
             webUrl: 'https://www.theguardian.com/sport/sport',
             apiUrl: 'https://preview.content.guardianapis.com/sport/sport',
-            references: []
+            references: [],
           },
           {
             id: 'tone/features',
@@ -98,7 +98,7 @@ export const articlesForScJohnsonPartnerZone = {
             webTitle: 'Features',
             webUrl: 'https://www.theguardian.com/tone/features',
             apiUrl: 'https://preview.content.guardianapis.com/tone/features',
-            references: []
+            references: [],
           },
           {
             id: 'type/article',
@@ -106,7 +106,7 @@ export const articlesForScJohnsonPartnerZone = {
             webTitle: 'Article',
             webUrl: 'https://www.theguardian.com/articles',
             apiUrl: 'https://preview.content.guardianapis.com/type/article',
-            references: []
+            references: [],
           },
           {
             id: 'profile/ed-aarons',
@@ -125,7 +125,7 @@ export const articlesForScJohnsonPartnerZone = {
             firstName: 'aarons',
             lastName: 'ed',
             twitterHandle: 'ed_aarons',
-            r2ContributorId: '61586'
+            r2ContributorId: '61586',
           },
           {
             id: 'publication/theguardian',
@@ -138,7 +138,7 @@ export const articlesForScJohnsonPartnerZone = {
               'https://preview.content.guardianapis.com/publication/theguardian',
             references: [],
             description:
-              "All the latest from the world's leading liberal voice."
+              "All the latest from the world's leading liberal voice.",
           },
           {
             id: 'theguardian/sport',
@@ -149,7 +149,7 @@ export const articlesForScJohnsonPartnerZone = {
             webUrl: 'https://www.theguardian.com/theguardian/sport',
             apiUrl:
               'https://preview.content.guardianapis.com/theguardian/sport',
-            references: []
+            references: [],
           },
           {
             id: 'theguardian/sport/news',
@@ -160,7 +160,7 @@ export const articlesForScJohnsonPartnerZone = {
             webUrl: 'https://www.theguardian.com/theguardian/sport/news',
             apiUrl:
               'https://preview.content.guardianapis.com/theguardian/sport/news',
-            references: []
+            references: [],
           },
           {
             id: 'tracking/commissioningdesk/uk-sport',
@@ -170,8 +170,8 @@ export const articlesForScJohnsonPartnerZone = {
               'https://www.theguardian.com/tracking/commissioningdesk/uk-sport',
             apiUrl:
               'https://preview.content.guardianapis.com/tracking/commissioningdesk/uk-sport',
-            references: []
-          }
+            references: [],
+          },
         ],
         elements: [],
         blocks: {
@@ -188,12 +188,12 @@ export const articlesForScJohnsonPartnerZone = {
             createdBy: {
               email: 'john.ashdown@guardian.co.uk',
               firstName: 'John',
-              lastName: 'Ashdown'
+              lastName: 'Ashdown',
             },
             lastModifiedBy: {
               email: 'john.ashdown@guardian.co.uk',
               firstName: 'John',
-              lastName: 'Ashdown'
+              lastName: 'Ashdown',
             },
             elements: [
               {
@@ -204,28 +204,28 @@ export const articlesForScJohnsonPartnerZone = {
                     mimeType: 'image/jpeg',
                     file:
                       'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/1000.jpg',
-                    typeData: { aspectRatio: '5:3', width: 1000, height: 600 }
+                    typeData: { aspectRatio: '5:3', width: 1000, height: 600 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
                     file:
                       'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/500.jpg',
-                    typeData: { aspectRatio: '5:3', width: 500, height: 300 }
+                    typeData: { aspectRatio: '5:3', width: 500, height: 300 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
                     file:
                       'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/140.jpg',
-                    typeData: { aspectRatio: '5:3', width: 140, height: 84 }
+                    typeData: { aspectRatio: '5:3', width: 140, height: 84 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
                     file:
                       'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/1365.jpg',
-                    typeData: { aspectRatio: '5:3', width: 1365, height: 819 }
+                    typeData: { aspectRatio: '5:3', width: 1365, height: 819 },
                   },
                   {
                     type: 'image',
@@ -236,9 +236,9 @@ export const articlesForScJohnsonPartnerZone = {
                       aspectRatio: '5:3',
                       width: 1365,
                       height: 819,
-                      isMaster: true
-                    }
-                  }
+                      isMaster: true,
+                    },
+                  },
                 ],
                 imageTypeData: {
                   caption:
@@ -254,11 +254,11 @@ export const articlesForScJohnsonPartnerZone = {
                   mediaApiUri:
                     'https://api.media.gutools.co.uk/images/d5a17304e2a277a1d558a643ef95c087fb2af0f1',
                   suppliersReference: "Leeds v B'ham 3",
-                  imageType: 'Photograph'
-                }
-              }
-            ]
-          }
+                  imageType: 'Photograph',
+                },
+              },
+            ],
+          },
         },
         isGone: false,
         isHosted: false,
@@ -279,10 +279,10 @@ export const articlesForScJohnsonPartnerZone = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showLargeHeadline: false
+            showLargeHeadline: false,
           },
-          tone: 'feature'
-        }
+          tone: 'feature',
+        },
       },
       {
         id: 'sport/2019/jan/14/john-isner-reilly-opelka-australia-open-tennis',
@@ -309,7 +309,7 @@ export const articlesForScJohnsonPartnerZone = {
           shortUrl: 'https://gu.com/p/aez3k',
           thumbnail:
             'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/500.jpg',
-          isLive: 'true'
+          isLive: 'true',
         },
         tags: [
           {
@@ -321,7 +321,7 @@ export const articlesForScJohnsonPartnerZone = {
             webUrl: 'https://www.theguardian.com/sport/australian-open',
             apiUrl:
               'https://preview.content.guardianapis.com/sport/australian-open',
-            references: []
+            references: [],
           },
           {
             id: 'sport/australian-open-2019',
@@ -332,7 +332,7 @@ export const articlesForScJohnsonPartnerZone = {
             webUrl: 'https://www.theguardian.com/sport/australian-open-2019',
             apiUrl:
               'https://preview.content.guardianapis.com/sport/australian-open-2019',
-            references: []
+            references: [],
           },
           {
             id: 'sport/australia-sport',
@@ -343,7 +343,7 @@ export const articlesForScJohnsonPartnerZone = {
             webUrl: 'https://www.theguardian.com/sport/australia-sport',
             apiUrl:
               'https://preview.content.guardianapis.com/sport/australia-sport',
-            references: []
+            references: [],
           },
           {
             id: 'sport/us-sport',
@@ -353,7 +353,7 @@ export const articlesForScJohnsonPartnerZone = {
             webTitle: 'US sports',
             webUrl: 'https://www.theguardian.com/sport/us-sport',
             apiUrl: 'https://preview.content.guardianapis.com/sport/us-sport',
-            references: []
+            references: [],
           },
           {
             id: 'sport/sport',
@@ -363,7 +363,7 @@ export const articlesForScJohnsonPartnerZone = {
             webTitle: 'Sport',
             webUrl: 'https://www.theguardian.com/sport/sport',
             apiUrl: 'https://preview.content.guardianapis.com/sport/sport',
-            references: []
+            references: [],
           },
           {
             id: 'sport/tennis',
@@ -373,7 +373,7 @@ export const articlesForScJohnsonPartnerZone = {
             webTitle: 'Tennis',
             webUrl: 'https://www.theguardian.com/sport/tennis',
             apiUrl: 'https://preview.content.guardianapis.com/sport/tennis',
-            references: []
+            references: [],
           },
           {
             id: 'type/article',
@@ -381,7 +381,7 @@ export const articlesForScJohnsonPartnerZone = {
             webTitle: 'Article',
             webUrl: 'https://www.theguardian.com/articles',
             apiUrl: 'https://preview.content.guardianapis.com/type/article',
-            references: []
+            references: [],
           },
           {
             id: 'tone/news',
@@ -389,7 +389,7 @@ export const articlesForScJohnsonPartnerZone = {
             webTitle: 'News',
             webUrl: 'https://www.theguardian.com/tone/news',
             apiUrl: 'https://preview.content.guardianapis.com/tone/news',
-            references: []
+            references: [],
           },
           {
             id: 'tracking/commissioningdesk/us-sport',
@@ -399,8 +399,8 @@ export const articlesForScJohnsonPartnerZone = {
               'https://www.theguardian.com/tracking/commissioningdesk/us-sport',
             apiUrl:
               'https://preview.content.guardianapis.com/tracking/commissioningdesk/us-sport',
-            references: []
-          }
+            references: [],
+          },
         ],
         elements: [],
         blocks: {
@@ -417,12 +417,12 @@ export const articlesForScJohnsonPartnerZone = {
             createdBy: {
               email: 'tom.lutz@guardian.co.uk',
               firstName: 'Tom',
-              lastName: 'Lutz'
+              lastName: 'Lutz',
             },
             lastModifiedBy: {
               email: 'tom.lutz@guardian.co.uk',
               firstName: 'Tom',
-              lastName: 'Lutz'
+              lastName: 'Lutz',
             },
             elements: [
               {
@@ -433,35 +433,35 @@ export const articlesForScJohnsonPartnerZone = {
                     mimeType: 'image/jpeg',
                     file:
                       'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/2000.jpg',
-                    typeData: { aspectRatio: '5:3', width: 2000, height: 1200 }
+                    typeData: { aspectRatio: '5:3', width: 2000, height: 1200 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
                     file:
                       'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/1000.jpg',
-                    typeData: { aspectRatio: '5:3', width: 1000, height: 600 }
+                    typeData: { aspectRatio: '5:3', width: 1000, height: 600 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
                     file:
                       'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/500.jpg',
-                    typeData: { aspectRatio: '5:3', width: 500, height: 300 }
+                    typeData: { aspectRatio: '5:3', width: 500, height: 300 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
                     file:
                       'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/140.jpg',
-                    typeData: { aspectRatio: '5:3', width: 140, height: 84 }
+                    typeData: { aspectRatio: '5:3', width: 140, height: 84 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
                     file:
                       'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/4516.jpg',
-                    typeData: { aspectRatio: '5:3', width: 4516, height: 2709 }
+                    typeData: { aspectRatio: '5:3', width: 4516, height: 2709 },
                   },
                   {
                     type: 'image',
@@ -472,9 +472,9 @@ export const articlesForScJohnsonPartnerZone = {
                       aspectRatio: '5:3',
                       width: 4516,
                       height: 2709,
-                      isMaster: true
-                    }
-                  }
+                      isMaster: true,
+                    },
+                  },
                 ],
                 imageTypeData: {
                   caption:
@@ -490,11 +490,11 @@ export const articlesForScJohnsonPartnerZone = {
                   mediaApiUri:
                     'https://api.media.gutools.co.uk/images/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125',
                   suppliersReference: 'AFP_1C77XQ',
-                  imageType: 'Photograph'
-                }
-              }
-            ]
-          }
+                  imageType: 'Photograph',
+                },
+              },
+            ],
+          },
         },
         isGone: false,
         isHosted: false,
@@ -515,11 +515,11 @@ export const articlesForScJohnsonPartnerZone = {
             imageReplace: false,
             imageCutoutReplace: false,
             showKickerSection: false,
-            showLargeHeadline: false
+            showLargeHeadline: false,
           },
-          tone: 'news'
-        }
-      }
-    ]
-  }
+          tone: 'news',
+        },
+      },
+    ],
+  },
 };

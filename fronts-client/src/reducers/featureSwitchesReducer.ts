@@ -1,4 +1,4 @@
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 import { SET_FEATURE_VALUE } from '../actions/FeatureSwitches';
 import { FeatureSwitch } from 'types/Features';
 
@@ -13,7 +13,7 @@ export const reducer = (state: State = initialState, action: Action): State => {
     case SET_FEATURE_VALUE: {
       return {
         ...state,
-        [action.payload.featureSwitch.key]: action.payload.featureSwitch
+        [action.payload.featureSwitch.key]: action.payload.featureSwitch,
       };
     }
   }

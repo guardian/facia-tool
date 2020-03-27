@@ -31,7 +31,7 @@ export const sanitizeHTML = (html: string) =>
       'th',
       'td',
       'pre',
-      'span'
+      'span',
       // 'iframe'
     ],
     allowedAttributes: {
@@ -47,10 +47,10 @@ export const sanitizeHTML = (html: string) =>
         'basefont',
         'input',
         'link',
-        'meta'
-      ]
+        'meta',
+      ],
     },
     allowedSchemes: ['http', 'https'],
     allowedSchemesAppliedToAttributes: ['href', 'src', 'cite'],
-    allowProtocolRelative: false
+    allowProtocolRelative: false,
   });

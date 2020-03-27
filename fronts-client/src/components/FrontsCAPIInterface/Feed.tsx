@@ -4,10 +4,10 @@ import FeedItem from './FeedItem';
 import {
   liveSelectors,
   previewSelectors,
-  prefillSelectors
+  prefillSelectors,
 } from 'bundles/capiFeedBundle';
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { connect } from 'react-redux';
 
 interface ErrorDisplayProps {
@@ -44,7 +44,7 @@ const Feed = ({
   prefillArticleIds: prefillArticles,
   prefillError,
   isPrefillMode,
-  isLive
+  isLive,
 }: FeedComponentProps) => {
   const error = isPrefillMode
     ? prefillError
@@ -60,7 +60,7 @@ const Feed = ({
   return (
     <ErrorDisplay error={error || undefined}>
       {articleIds.length ? (
-        articleIds.map(id => <FeedItem key={id} id={id} />)
+        articleIds.map((id) => <FeedItem key={id} id={id} />)
       ) : (
         <NoResults>No results found</NoResults>
       )}
@@ -75,7 +75,7 @@ const mapStateToProps = (state: State) => ({
   prefillArticleIds: prefillSelectors.selectLastFetchOrder(state),
   liveError: liveSelectors.selectCurrentError(state),
   previewError: previewSelectors.selectCurrentError(state),
-  prefillError: prefillSelectors.selectCurrentError(state)
+  prefillError: prefillSelectors.selectCurrentError(state),
 });
 
 export default connect(mapStateToProps)(Feed);

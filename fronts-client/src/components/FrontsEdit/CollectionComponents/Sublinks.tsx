@@ -45,7 +45,7 @@ interface SublinkProps {
 
 class Sublinks extends React.Component<SublinkProps> {
   public state = {
-    dragHoverActive: false
+    dragHoverActive: false,
   };
 
   public render() {
@@ -53,7 +53,7 @@ class Sublinks extends React.Component<SublinkProps> {
       numSupportingArticles,
       toggleShowArticleSublinks,
       showArticleSublinks,
-      parentId
+      parentId,
     } = this.props;
 
     const isClipboard = parentId === 'clipboard';

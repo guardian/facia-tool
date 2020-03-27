@@ -11,8 +11,8 @@ export default {
       data: {
         interactive: {
           type: 'interactive',
-          title: 'General Election 2017'
-        }
+          title: 'General Election 2017',
+        },
       },
       contentChangeDetails: {
         lastModified: {
@@ -20,28 +20,28 @@ export default {
           user: {
             email: 'graphics@theguardian.com',
             firstName: 'Visuals',
-            lastName: 'Guardian'
-          }
+            lastName: 'Guardian',
+          },
         },
         created: {
           date: 1561564370000,
           user: {
             email: 'graphics@theguardian.com',
             firstName: 'Visuals',
-            lastName: 'Guardian'
-          }
+            lastName: 'Guardian',
+          },
         },
         published: {
           date: 1561564370000,
           user: {
             email: 'graphics@theguardian.com',
             firstName: 'Visuals',
-            lastName: 'Guardian'
-          }
+            lastName: 'Guardian',
+          },
         },
-        revision: 1561564370681
+        revision: 1561564370681,
       },
-      commissioningDesks: []
-    }
-  }
+      commissioningDesks: [],
+    },
+  },
 };

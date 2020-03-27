@@ -1,6 +1,6 @@
 import {
   getVisibilityArticleDetails,
-  combineCollectionWithConfig
+  combineCollectionWithConfig,
 } from '../frontsUtils';
 import { boostedCard, card } from 'fixtures/card';
 import { frontsConfig } from 'fixtures/frontsConfig';
@@ -26,7 +26,7 @@ describe('Front utilities', () => {
       lastUpdated: 1583857626481,
       updatedBy: 'Foo Bar',
       updatedEmail: 'foo.bar@guardian.co.uk',
-      live: []
+      live: [],
     };
     it('should fallback to config displayName by default', () => {
       const actual = combineCollectionWithConfig(collectionConfig, collection);

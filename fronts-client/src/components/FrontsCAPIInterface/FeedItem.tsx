@@ -13,7 +13,7 @@ import { HoverActionsButtonWrapper } from 'components/inputs/HoverActionButtonWr
 import {
   HoverViewButton,
   HoverOphanButton,
-  HoverAddToClipboardButton
+  HoverAddToClipboardButton,
 } from 'components/inputs/HoverActionButtons';
 import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { insertCardWithCreate } from 'actions/Cards';
@@ -25,10 +25,10 @@ import { getThumbnail, getArticleLabel, isLive } from 'util/CAPIUtils';
 import {
   DraggingArticleComponent,
   dragOffsetX,
-  dragOffsetY
+  dragOffsetY,
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import { media } from 'util/mediaQueries';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { liveBlogTones } from 'constants/fronts';
 import { hasMainVideo } from 'util/externalArticle';
 import { VideoIcon } from 'components/icons/Icons';
@@ -145,7 +145,7 @@ class FeedItem extends React.Component<ComponentProps> {
       id,
       article,
       onAddToClipboard = noop,
-      shouldObscureFeed
+      shouldObscureFeed,
     } = this.props;
     if (!article) {
       return <p>Article with id {id} not found.</p>;
@@ -161,7 +161,7 @@ class FeedItem extends React.Component<ComponentProps> {
         </RenderOffscreen>
         <FeedItemContainer
           href={getPaths(article.id).live}
-          onClick={e => e.preventDefault()}
+          onClick={(e) => e.preventDefault()}
           aria-disabled
           blur={shouldObscureFeed}
         >
@@ -173,7 +173,7 @@ class FeedItem extends React.Component<ComponentProps> {
                     article.pillarId,
                     isLive(article),
                     article.frontsMeta.tone === liveBlogTones.dead
-                  ) || theme.capiInterface.textLight
+                  ) || theme.capiInterface.textLight,
               }}
             >
               {getArticleLabel(article)}
@@ -214,7 +214,7 @@ class FeedItem extends React.Component<ComponentProps> {
               backgroundImage: `url('${getThumbnail(
                 article.frontsMeta.defaults,
                 article
-              )}')`
+              )}')`,
             }}
           >
             {hasMainVideo(article) && (
@@ -229,12 +229,12 @@ class FeedItem extends React.Component<ComponentProps> {
             buttons={[
               { text: 'View', component: HoverViewButton },
               { text: 'Ophan', component: HoverOphanButton },
-              { text: 'Clipboard', component: HoverAddToClipboardButton }
+              { text: 'Clipboard', component: HoverAddToClipboardButton },
             ]}
             buttonProps={{
               isLive: isLive(article),
               urlPath: article.id,
-              onAddToClipboard: () => onAddToClipboard(article)
+              onAddToClipboard: () => onAddToClipboard(article),
             }}
             toolTipPosition={'top'}
             toolTipAlign={'right'}
@@ -260,7 +260,7 @@ const getState = (state: any) => state;
 
 const mapStateToProps = (state: State, { id }: ContainerProps) => ({
   shouldObscureFeed: selectFeatureValue(getState(state), 'obscure-feed'),
-  article: selectArticleAcrossResources(state, id)
+  article: selectArticleAcrossResources(state, id),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
@@ -272,11 +272,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
           { type: 'CAPI', data: article },
           'clipboard'
         )
-      )
+      ),
   };
 };
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FeedItem);
+export default connect(mapStateToProps, mapDispatchToProps)(FeedItem);

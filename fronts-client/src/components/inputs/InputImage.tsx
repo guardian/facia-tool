@@ -13,10 +13,10 @@ import { GridModal } from 'components/GridModal';
 import {
   validateImageEvent,
   validateMediaItem,
-  validateImageSrc
+  validateImageSrc,
 } from '../../util/validateImageSrc';
 import { selectGridUrl } from 'selectors/configSelectors';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { GridData, Criteria } from 'types/Grid';
 import { RubbishBinIcon, AddImageIcon, VideoIcon } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
@@ -33,12 +33,12 @@ const ImageContainer = styled.div<{
   flex-direction: column;
   position: relative;
   width: 100%;
-  max-width: ${props => !props.small && '180px'};
+  max-width: ${(props) => !props.small && '180px'};
   ${({ small }) =>
     small &&
     `min-width: 50px;
     padding: 40%;`}
-  height: ${props => (props.small ? '0' : '115px')};
+  height: ${(props) => (props.small ? '0' : '115px')};
   transition: background-color 0.15s;
 `;
 
@@ -99,7 +99,7 @@ const ImageUrlInput = styled(InputBase)`
 const Label = styled(InputLabel)`
   cursor: pointer;
   display: inline-block;
-  color: ${props => props.theme.base.colors.textLight};
+  color: ${(props) => props.theme.base.colors.textLight};
   padding-inline-start: 5px;
   vertical-align: super;
 `;
@@ -109,10 +109,10 @@ const ButtonDelete = styled(ButtonDefault)<{
 }>`
   position: absolute;
   display: block;
-  top: ${props => (props.small ? '2px' : '6px')};
-  right: ${props => (props.small ? '2px' : '6px')};
-  height: ${props => (props.small ? '24px' : '32px')};
-  width: ${props => (props.small ? '24px' : '32px')};
+  top: ${(props) => (props.small ? '2px' : '6px')};
+  right: ${(props) => (props.small ? '2px' : '6px')};
+  height: ${(props) => (props.small ? '24px' : '32px')};
+  width: ${(props) => (props.small ? '24px' : '32px')};
   text-align: center;
   padding: 0;
   border-radius: 24px;
@@ -125,8 +125,8 @@ const IconDelete = styled.div<{
   position: absolute;
   height: 14px;
   width: 14px;
-  top: ${props => (props.small ? '5px' : '9px')};
-  left: ${props => (props.small ? '5px' : '9px')};
+  top: ${(props) => (props.small ? '5px' : '9px')};
+  left: ${(props) => (props.small ? '5px' : '9px')};
 `;
 
 const VideoIconContainer = styled(CircularIconContainer)`
@@ -140,9 +140,9 @@ const InputImageContainer = styled(InputContainer)<{
   isHovering?: boolean;
 }>`
   position: relative;
-  ${props => !props.small && `padding: 5px;`}
-  background-color: ${props => props.theme.colors.greyLight};
-  ${props =>
+  ${(props) => !props.small && `padding: 5px;`}
+  background-color: ${(props) => props.theme.colors.greyLight};
+  ${(props) =>
     props.isHovering &&
     `box-shadow inset 0 -10px 0 ${theme.base.colors.highlightColor}`};
 `;
@@ -175,7 +175,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   public state = {
     isHovering: false,
     modalOpen: false,
-    imageSrc: ''
+    imageSrc: '',
   };
 
   private inputRef = React.createRef<HTMLInputElement>();
@@ -190,7 +190,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       message = 'Replace image',
       hasVideo,
       editMode,
-      disabled
+      disabled,
     } = this.props;
 
     if (!gridUrl) {
@@ -225,7 +225,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           <ImageContainer small={small}>
             <ImageComponent
               style={{
-                backgroundImage: `url(${imageUrl}`
+                backgroundImage: `url(${imageUrl}`,
               }}
               draggable
               onDragStart={this.handleDragStart}
@@ -314,7 +314,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     e.preventDefault();
     validateImageEvent(e, this.props.frontId, this.props.criteria)
       .then(this.props.input.onChange)
-      .catch(err => {
+      .catch((err) => {
         alert(err);
         // tslint:disable-next-line no-console
         console.log('@todo:handle error', err);
@@ -338,10 +338,10 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       this.props.frontId,
       this.props.criteria
     )
-      .then(mediaItem => {
+      .then((mediaItem) => {
         this.props.input.onChange(mediaItem);
       })
-      .catch(err => {
+      .catch((err) => {
         alert(err);
         // tslint:disable-next-line no-console
         console.log('@todo:handle error', err);
@@ -384,11 +384,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       this.props.frontId,
       this.props.criteria
     )
-      .then(mediaItem => {
+      .then((mediaItem) => {
         events.imageAdded(this.props.frontId, 'click to modal');
         this.props.input.onChange(mediaItem);
       })
-      .catch(err => {
+      .catch((err) => {
         alert(err);
         // tslint:disable-next-line no-console
         console.log('@todo:handle error', err);
@@ -409,7 +409,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 const mapStateToProps = (state: State) => {
   return {
     gridUrl: selectGridUrl(state),
-    editMode: selectEditMode(state)
+    editMode: selectEditMode(state),
   };
 };
 

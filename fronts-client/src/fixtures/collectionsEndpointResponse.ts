@@ -6,23 +6,23 @@ export const scJohnsonPartnerZoneCollection = [
       draft: [
         {
           id: 'internal-code/page/5607373',
-          frontPublicationDate: 1547479659039
+          frontPublicationDate: 1547479659039,
         },
         {
           id: 'internal-code/page/5607569',
-          frontPublicationDate: 1547479662461
-        }
+          frontPublicationDate: 1547479662461,
+        },
       ],
       lastUpdated: 1547479662508,
       updatedBy: 'Jonathon Herbert',
       updatedEmail: 'jonathon.herbert@guardian.co.uk',
       displayName: 'sc johnson partner zone',
-      previously: []
+      previously: [],
     },
     storiesVisibleByStage: {
       live: { desktop: 4, mobile: 4 },
-      draft: { desktop: 4, mobile: 4 }
-    }
+      draft: { desktop: 4, mobile: 4 },
+    },
   },
   {
     collection: {
@@ -31,21 +31,21 @@ export const scJohnsonPartnerZoneCollection = [
       draft: [
         {
           id: 'internal-code/page/5607569',
-          frontPublicationDate: 1547479667072
-        }
+          frontPublicationDate: 1547479667072,
+        },
       ],
       lastUpdated: 1547479667115,
       updatedBy: 'Jonathon Herbert',
       updatedEmail: 'jonathon.herbert@guardian.co.uk',
       displayName: 'popular in sustainable business',
-      previously: []
+      previously: [],
     },
     storiesVisibleByStage: {
       live: { desktop: 4, mobile: 4 },
-      draft: { desktop: 4, mobile: 4 }
-    }
+      draft: { desktop: 4, mobile: 4 },
+    },
   },
-  null
+  null,
 ];
 
 export const getCollectionsApiResponse = [
@@ -57,12 +57,12 @@ export const getCollectionsApiResponse = [
       draft: [],
       lastUpdated: 1547479667115,
       previously: undefined,
-      type: 'type'
+      type: 'type',
     },
     storiesVisibleByStage: {
       live: { desktop: 4, mobile: 4 },
-      draft: { desktop: 4, mobile: 4 }
-    }
+      draft: { desktop: 4, mobile: 4 },
+    },
   },
   {
     id: 'testCollection2',
@@ -72,12 +72,12 @@ export const getCollectionsApiResponse = [
       draft: ['def'],
       lastUpdated: 1547479667115,
       previously: undefined,
-      type: 'type'
+      type: 'type',
     },
     storiesVisibleByStage: {
       live: { desktop: 4, mobile: 4 },
-      draft: { desktop: 4, mobile: 4 }
-    }
+      draft: { desktop: 4, mobile: 4 },
+    },
   },
   {
     id: 'geoLocatedCollection',
@@ -88,13 +88,13 @@ export const getCollectionsApiResponse = [
       lastUpdated: 1547479667115,
       previously: undefined,
       type: 'type',
-      targetedTerritory: 'NZ'
+      targetedTerritory: 'NZ',
     },
     storiesVisibleByStage: {
       live: { desktop: 4, mobile: 4 },
-      draft: { desktop: 4, mobile: 4 }
-    }
-  }
+      draft: { desktop: 4, mobile: 4 },
+    },
+  },
 ];
 
 export const getCollectionsApiResponseWithoutStoriesVisible = [
@@ -106,8 +106,8 @@ export const getCollectionsApiResponseWithoutStoriesVisible = [
       draft: [],
       lastUpdated: 1547479667115,
       previously: undefined,
-      type: 'type'
+      type: 'type',
     },
-    storiesVisibleByStage: {}
-  }
+    storiesVisibleByStage: {},
+  },
 ];

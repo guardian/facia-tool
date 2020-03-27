@@ -105,19 +105,19 @@ const FrontList = ({
   onSelect,
   onStar,
   onUnfavourite,
-  searchString
+  searchString,
 }: Props) => {
   if (!fronts) {
     return null;
   }
   const frontsToRender = renderOnlyStarred
-    ? fronts.filter(_ => _.isStarred)
+    ? fronts.filter((_) => _.isStarred)
     : searchString
-    ? fronts.filter(_ => _.id.includes(searchString))
+    ? fronts.filter((_) => _.id.includes(searchString))
     : fronts;
   return (
     <ListContainer>
-      {frontsToRender.map(front => (
+      {frontsToRender.map((front) => (
         <ListItem
           data-testid="fronts-menu-item"
           isActive={!front.isOpen}

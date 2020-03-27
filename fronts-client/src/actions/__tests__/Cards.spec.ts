@@ -6,7 +6,7 @@ import cardsReducer from 'reducers/cardsReducer';
 import {
   createSelectGroupArticles,
   createSelectSupportingArticles,
-  selectCard
+  selectCard,
 } from 'selectors/shared';
 import { selectClipboard as innerClipboardSelector } from '../../selectors/frontsSelectors';
 import { createCardStateFromSpec, CardSpec, specToCard } from './utils';
@@ -15,11 +15,11 @@ import {
   removeCard,
   insertCardWithCreate,
   addImageToCard,
-  cloneCardToTarget
+  cloneCardToTarget,
 } from 'actions/Cards';
 import {
   reducer as collectionsReducer,
-  initialState as collectionsState
+  initialState as collectionsState,
 } from 'bundles/collectionsBundle';
 import optionsModal from 'reducers/modalsReducer';
 import config from 'reducers/configReducer';
@@ -34,46 +34,46 @@ const root = (state: any = {}, action: any) => ({
   cards: cardsReducer(state.cards, action),
   collections: collectionsReducer(state.collections, action),
   groups: groupsReducer(state.groups, action, state),
-  config: config(state.config, action)
+  config: config(state.config, action),
 });
 
 const buildStore = (added: CardSpec, collectionCap = Infinity) => {
   const groupA: CardSpec[] = [
     ['a', '1', [['g', '7']]],
     ['b', '2', undefined],
-    ['c', '3', undefined]
+    ['c', '3', undefined],
   ];
   const groupB: CardSpec[] = [
     ['i', '9', [['g', '7']]],
     ['j', '10', undefined],
-    ['k', '11', undefined]
+    ['k', '11', undefined],
   ];
   const clipboard: CardSpec[] = [
     ['d', '4', [['g', '7']]],
     ['e', '5', undefined],
-    ['f', '6', undefined]
+    ['f', '6', undefined],
   ];
   const all = [...groupA, ...groupB, ...clipboard, added];
   const state = {
     path: '',
     config: {
-      collectionCap
+      collectionCap,
     },
     collections: {
       ...collectionsState,
       data: {
         a: {
           id: 'a',
-          live: ['a', 'b']
-        }
-      }
+          live: ['a', 'b'],
+        },
+      },
     },
     cards: createCardStateFromSpec(all),
     groups: {
       a: { cards: groupA.map(([uuid]) => uuid), uuid: 'a' },
-      b: { cards: groupB.map(([uuid]) => uuid), uuid: 'b' }
+      b: { cards: groupB.map(([uuid]) => uuid), uuid: 'b' },
     },
-    clipboard: clipboard.map(([uuid]) => uuid)
+    clipboard: clipboard.map(([uuid]) => uuid),
   };
   const { getState, dispatch } = createStore(
     enableBatching(root),
@@ -82,7 +82,7 @@ const buildStore = (added: CardSpec, collectionCap = Infinity) => {
   );
   return {
     getState,
-    dispatch: dispatch as Dispatch
+    dispatch: dispatch as Dispatch,
   };
 };
 
@@ -105,12 +105,14 @@ const insert = async (
   );
 
   const stateHere: any = getState();
-  await dispatch(insertCardWithCreate(
-    { type: parentType, id: parentId, index },
-    { type: 'REF', data: parentId },
-    'collection',
-    afId => () => Promise.resolve(selectCard(stateHere, uuid))
-  ) as any);
+  await dispatch(
+    insertCardWithCreate(
+      { type: parentType, id: parentId, index },
+      { type: 'REF', data: parentId },
+      'collection',
+      (afId) => () => Promise.resolve(selectCard(stateHere, uuid))
+    ) as any
+  );
 
   return getState();
 };
@@ -134,20 +136,22 @@ const move = (
     [uuid, id, undefined],
     collectionCapInfo ? collectionCapInfo.cap : Infinity
   );
-  dispatch(moveCard(
-    {
-      type: toType,
-      id: toId,
-      index
-    },
-    specToCard([uuid, id, undefined]),
-    {
-      id: fromId,
-      type: fromType,
-      index: -1 // this doesn't matter
-    },
-    'clipboard' // doesn't matter where we persist
-  ) as any);
+  dispatch(
+    moveCard(
+      {
+        type: toType,
+        id: toId,
+        index,
+      },
+      specToCard([uuid, id, undefined]),
+      {
+        id: fromId,
+        type: fromType,
+        index: -1, // this doesn't matter
+      },
+      'clipboard' // doesn't matter where we persist
+    ) as any
+  );
 
   // TODO: use modal service to mock return from modal
   // if (collectionCapInfo && collectionCapInfo.accept !== null) {
@@ -166,12 +170,14 @@ const remove = (
     ['uuid', 'id', undefined],
     Infinity
   );
-  dispatch(removeCard(
-    type,
-    parentId,
-    id,
-    'clipboard' // doesn't matter where we persist
-  ) as any);
+  dispatch(
+    removeCard(
+      type,
+      parentId,
+      id,
+      'clipboard' // doesn't matter where we persist
+    ) as any
+  );
 
   return getState();
 };
@@ -245,7 +251,7 @@ describe('Cards actions', () => {
         selectGroupArticles(
           await insert(['h', '8'], 2, 'group', 'a', {
             cap: 3,
-            accept: true
+            accept: true,
           }),
           'a'
         )
@@ -255,7 +261,7 @@ describe('Cards actions', () => {
         selectGroupArticles(
           await insert(['h', '8'], 2, 'group', 'a', {
             cap: 3,
-            accept: false
+            accept: false,
           }),
           'a'
         )
@@ -278,14 +284,14 @@ describe('Cards actions', () => {
     it.skip('enforces collection caps on move through a modal', () => {
       const s1 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard', {
         cap: 3,
-        accept: true
+        accept: true,
       });
       expect(selectGroupArticles(s1, 'a')).toEqual(['d', 'a', 'b']);
       expect(selectClipboard(s1)).toEqual(['e', 'f']);
 
       const s2 = move(['d', '4'], 0, 'group', 'a', 'clipboard', 'clipboard', {
         cap: 3,
-        accept: false
+        accept: false,
       });
       expect(selectGroupArticles(s2, 'a')).toEqual(['a', 'b', 'c']);
       expect(selectClipboard(s2)).toEqual(['d', 'e', 'f']);
@@ -295,7 +301,7 @@ describe('Cards actions', () => {
     it.skip('collection caps allow moves within collections without a modal', () => {
       const s1 = move(['a', '1'], 2, 'group', 'a', 'group', 'a', {
         cap: 6,
-        accept: null
+        accept: null,
       });
       expect(selectGroupArticles(s1, 'a')).toEqual(['b', 'c', 'a']);
     });
@@ -320,14 +326,14 @@ describe('Cards actions', () => {
         '123',
         '456',
         undefined,
-        { headline: 'Headline was overwritten with this' }
+        { headline: 'Headline was overwritten with this' },
       ]);
       store.dispatch(cloneCardToTarget('123', 'clipboard'));
       const state = store.getState();
       expect(selectClipboardArticles(state as any)[0].id).toEqual('456');
       expect(selectClipboardArticles(state as any)[0].meta).toEqual({
         supporting: [],
-        headline: 'Headline was overwritten with this'
+        headline: 'Headline was overwritten with this',
       });
     });
   });
@@ -349,7 +355,7 @@ describe('Cards actions', () => {
           thumb,
           origin,
           height,
-          width
+          width,
         })
       );
 
@@ -361,7 +367,7 @@ describe('Cards actions', () => {
         imageSrcHeight: height.toString(),
         imageReplace: true,
         imageSlideshowReplace: false,
-        imageCutoutReplace: false
+        imageCutoutReplace: false,
       });
     });
   });

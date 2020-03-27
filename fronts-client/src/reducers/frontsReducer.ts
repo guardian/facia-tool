@@ -2,11 +2,11 @@ import set from 'lodash/fp/set';
 import { Stages } from 'types/Collection';
 import { VisibleArticlesResponse } from 'types/FaciaApi';
 
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 import {
   reducer as frontsConfigReducer,
   initialState,
-  FrontsConfigState
+  FrontsConfigState,
 } from 'bundles/frontsConfigBundle';
 
 interface State {
@@ -17,7 +17,7 @@ interface State {
   collectionVisibility: {
     [stage in Stages]: {
       [collectionId: string]: VisibleArticlesResponse;
-    }
+    };
   };
 }
 
@@ -27,8 +27,8 @@ const reducer = (
     lastPressed: {},
     collectionVisibility: {
       draft: {},
-      live: {}
-    }
+      live: {},
+    },
   },
   action: Action
 ): State => {
@@ -38,7 +38,7 @@ const reducer = (
   if (frontsConfig !== state.frontsConfig) {
     newState = {
       ...state,
-      frontsConfig
+      frontsConfig,
     };
   }
   switch (action.type) {
@@ -77,7 +77,7 @@ const reducer = (
       const newCollectionVisibility = { [collectionId]: visibleArticles };
       const newVisibilities = {
         ...collectionVisibilities,
-        ...newCollectionVisibility
+        ...newCollectionVisibility,
       };
 
       return set(['collectionVisibility', stage], newVisibilities, newState);

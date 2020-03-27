@@ -6,7 +6,7 @@ import debounce from 'lodash/debounce';
 import { events } from 'services/GA';
 import { Root, PosSpec, Move } from 'lib/dnd';
 import Collection from './Collection';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import WithDimensions from 'components/util/WithDimensions';
 import { selectFront } from 'selectors/frontsSelectors';
 import { Dispatch } from 'types/Store';
@@ -15,7 +15,7 @@ import { FrontConfig } from 'types/FaciaApi';
 import { moveCard } from 'actions/Cards';
 import { insertCardFromDropEvent } from 'util/collectionUtils';
 import { bindActionCreators } from 'redux';
-import { editorSelectCard } from 'bundles/frontsUIBundle';
+import { editorSelectCard } from 'bundles/frontsUI';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { createSelectAlsoOnFronts } from 'selectors/frontsSelectors';
 import { AlsoOnDetail } from 'types/Collection';
@@ -70,7 +70,7 @@ interface FrontState {
 
 class FrontContent extends React.Component<FrontProps, FrontState> {
   public state = {
-    currentlyScrolledCollectionId: undefined
+    currentlyScrolledCollectionId: undefined,
   };
   private collectionElements: {
     [collectionId: string]: HTMLDivElement | null;
@@ -146,15 +146,15 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
     return (
       <FrontCollectionsContainer
         onScroll={this.handleScroll}
-        ref={ref => (this.collectionContainerElement = ref)}
+        ref={(ref) => (this.collectionContainerElement = ref)}
       >
         <WithDimensions>
           {({ width }) => (
             <Root id={this.props.id} data-testid={this.props.id}>
-              {front.collections.map(collectionId => (
+              {front.collections.map((collectionId) => (
                 <CollectionContainer
                   key={collectionId}
-                  ref={ref => (this.collectionElements[collectionId] = ref)}
+                  ref={(ref) => (this.collectionElements[collectionId] = ref)}
                 >
                   <Collection
                     id={collectionId}
@@ -196,7 +196,7 @@ const mapStateToProps = () => {
   return (state: State, { id }: FrontPropsBeforeState) => {
     return {
       front: selectFront(state, { frontId: id }),
-      alsoOn: selectAlsoOnFronts(state, { frontId: id })
+      alsoOn: selectAlsoOnFronts(state, { frontId: id }),
     };
   };
 };
@@ -207,12 +207,9 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
       selectCard: editorSelectCard,
       initialiseCollectionsForFront,
       moveCard,
-      insertCardFromDropEvent
+      insertCardFromDropEvent,
     },
     dispatch
   );
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(FrontContent);
+export default connect(mapStateToProps, mapDispatchToProps)(FrontContent);

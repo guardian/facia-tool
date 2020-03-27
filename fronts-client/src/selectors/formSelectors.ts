@@ -4,7 +4,7 @@ import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
 import { isCollectionConfigDynamic } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectEditMode, selectPriority } from './pathSelectors';
 import { FormFields } from 'util/form';
 import without from 'lodash/without';
@@ -24,7 +24,7 @@ export const defaultFields = [
   'imageSlideshowReplace',
   'primaryImage',
   'cutoutImage',
-  'slideshow'
+  'slideshow',
 ] as FormFields[];
 
 export const supportingFields = [
@@ -32,7 +32,7 @@ export const supportingFields = [
   'customKicker',
   'isBreaking',
   'showKickerSection',
-  'showKickerCustom'
+  'showKickerCustom',
 ] as FormFields[];
 
 export const htmlSnapFields = [
@@ -41,14 +41,14 @@ export const htmlSnapFields = [
   'cutoutImage',
   'imageCutoutReplace',
   'imageHide',
-  'imageReplace'
+  'imageReplace',
 ];
 
 export const emailFieldsToExclude = [
   'isBreaking',
   'showLargeHeadline',
   'slideshow',
-  'imageSlideshowReplace'
+  'imageSlideshowReplace',
 ] as FormFields[];
 
 const selectIsSupporting = (_: unknown, __: unknown, isSupporting: boolean) =>

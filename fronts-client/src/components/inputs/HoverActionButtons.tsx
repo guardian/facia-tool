@@ -7,7 +7,7 @@ import {
   AddToClipboardHoverIcon,
   OphanHoverIcon,
   ViewHoverIcon,
-  DeleteHoverIcon
+  DeleteHoverIcon,
 } from '../icons/HoverIcons';
 import styled from 'styled-components';
 import { theme } from 'constants/theme';
@@ -29,7 +29,7 @@ const ActionButton = styled(ButtonCircular)<{ danger?: boolean }>`
 `;
 
 ActionButton.defaultProps = {
-  danger: false
+  danger: false,
 };
 
 interface ButtonPropsFromArticle {
@@ -44,14 +44,14 @@ type ButtonProps = ButtonPropsFromArticle & ButtonPropsFromWrapper;
 const HoverDeleteButton = ({
   showToolTip,
   hideToolTip,
-  onDelete
+  onDelete,
 }: ButtonProps) => (
   <ActionButton
     danger
     data-testid={'delete-hover-button'}
     onMouseEnter={showToolTip}
     onMouseLeave={hideToolTip}
-    onClick={e => {
+    onClick={(e) => {
       e.stopPropagation();
       return onDelete && onDelete();
     }}
@@ -63,13 +63,13 @@ const HoverDeleteButton = ({
 const HoverAddToClipboardButton = ({
   showToolTip,
   hideToolTip,
-  onAddToClipboard
+  onAddToClipboard,
 }: ButtonProps) => (
   <ActionButton
     data-testid={'add-to-clipboard-hover-button'}
     onMouseEnter={showToolTip}
     onMouseLeave={hideToolTip}
-    onClick={e => {
+    onClick={(e) => {
       e.stopPropagation();
       return onAddToClipboard && onAddToClipboard();
     }}
@@ -83,10 +83,10 @@ const HoverViewButton = ({
   urlPath = '',
   showToolTip,
   hideToolTip,
-  isSnapLink = false
+  isSnapLink = false,
 }: ButtonProps) => (
   <Link
-    onClick={e => {
+    onClick={(e) => {
       e.stopPropagation();
     }}
     href={
@@ -112,11 +112,11 @@ const HoverOphanButton = ({
   urlPath,
   showToolTip,
   hideToolTip,
-  isSnapLink = false
+  isSnapLink = false,
 }: ButtonProps) =>
   isLive ? (
     <Link
-      onClick={e => {
+      onClick={(e) => {
         e.stopPropagation();
       }}
       href={
@@ -140,5 +140,5 @@ export {
   HoverDeleteButton,
   HoverViewButton,
   HoverOphanButton,
-  HoverAddToClipboardButton
+  HoverAddToClipboardButton,
 };

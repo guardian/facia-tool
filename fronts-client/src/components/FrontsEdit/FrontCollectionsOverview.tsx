@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { styled, theme } from 'constants/theme';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import CollectionOverview from './CollectionOverview';
@@ -9,7 +9,7 @@ import { CardSets } from 'types/Collection';
 import ContainerHeadingPinline from 'components/typography/ContainerHeadingPinline';
 import ContentContainer from 'components/layout/ContentContainer';
 import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
-import { editorClearCardSelection } from 'bundles/frontsUIBundle';
+import { editorClearCardSelection } from 'bundles/frontsUI';
 import { bindActionCreators } from 'redux';
 import { Dispatch } from 'types/Store';
 
@@ -59,12 +59,12 @@ const FrontCollectionsOverview = ({
   id,
   front,
   browsingStage,
-  currentCollection
+  currentCollection,
 }: FrontCollectionOverviewProps) => (
   <Container setBack isClosed={false}>
     <OverviewContainerHeadingPinline>Overview</OverviewContainerHeadingPinline>
     <ContainerBody>
-      {front.collections.map(collectionId => (
+      {front.collections.map((collectionId) => (
         <CollectionOverview
           frontId={id}
           key={collectionId}
@@ -78,14 +78,14 @@ const FrontCollectionsOverview = ({
 );
 
 const mapStateToProps = (state: State, props: FrontContainerProps) => ({
-  front: selectFront(state, { frontId: props.id })
+  front: selectFront(state, { frontId: props.id }),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
   bindActionCreators(
     {
       updateCardMeta: updateCardMetaAction,
-      clearCardSelection: editorClearCardSelection
+      clearCardSelection: editorClearCardSelection,
     },
     dispatch
   );

@@ -1,11 +1,11 @@
 import React from 'react';
 import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { connect } from 'react-redux';
 import { Card } from 'types/Collection';
 import ArticleDrag, {
   dragOffsetX,
-  dragOffsetY
+  dragOffsetY,
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, { DefaultDropContainer } from 'components/DropZone';
 import { collectionDropTypeBlacklist } from 'constants/fronts';
@@ -63,7 +63,7 @@ const GroupLevel = ({
   cards,
   onMove,
   onDrop,
-  isUneditable
+  isUneditable,
 }: Props) => (
   <Level
     arr={cards}
@@ -77,11 +77,11 @@ const GroupLevel = ({
     onMove={onMove}
     onDrop={onDrop}
     canDrop={!isUneditable}
-    renderDrag={af => <ArticleDrag id={af.uuid} />}
+    renderDrag={(af) => <ArticleDrag id={af.uuid} />}
     renderDrop={
       isUneditable
         ? () => <Spacer />
-        : props => (
+        : (props) => (
             <DropZone
               {...props}
               dropColor={theme.base.colors.dropZoneActiveStory}
@@ -99,8 +99,8 @@ const createMapStateToProps = () => {
   const selectArticlesFromIds = createSelectArticlesFromIds();
   return (state: State, { cardIds }: OuterProps) => ({
     cards: selectArticlesFromIds(state, {
-      cardIds
-    })
+      cardIds,
+    }),
   });
 };
 

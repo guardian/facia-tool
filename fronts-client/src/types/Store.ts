@@ -1,6 +1,6 @@
 import { Store as ReduxStore } from 'redux';
-import { Action } from './Action';
-import { State } from './State';
+import { State } from 'types/State';
+import { Action } from 'types/Action';
 import { ThunkDispatch, ThunkAction } from 'redux-thunk';
 
 export type Store = ReduxStore<State>;

@@ -1,6 +1,6 @@
-import { StartOptionsModal } from 'types/Action';
+import type { StartOptionsModal } from 'types/Action';
+import type { OptionsModalChoices } from 'types/Modals';
 import { ReactNode } from 'react';
-import { OptionsModalChoices } from 'types/Modals';
 
 const startOptionsModal = (
   title: string,
@@ -16,12 +16,12 @@ const startOptionsModal = (
     options,
     onCancel,
     showCancelButton,
-    isOpen: true
-  }
+    isOpen: true,
+  },
 });
 
 const endOptionsModal = () => ({
-  type: 'MODAL/END_OPTIONS_MODAL' as const
+  type: 'MODAL/END_OPTIONS_MODAL' as const,
 });
 
 export { startOptionsModal, endOptionsModal };

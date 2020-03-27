@@ -19,7 +19,7 @@ const getFrontCollections = (
 
   if (selectedFront) {
     return selectedFront.collections.map(
-      collectionId => collections[collectionId]
+      (collectionId) => collections[collectionId]
     );
   }
 
@@ -41,7 +41,7 @@ const combineCollectionWithConfig = (
     frontsToolSettings: collectionConfig.frontsToolSettings,
     platform: collectionConfig.platform,
     metadata: collectionConfig.metadata,
-    targetedTerritory: collectionConfig.targetedTerritory
+    targetedTerritory: collectionConfig.targetedTerritory,
   });
 };
 
@@ -56,17 +56,14 @@ const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
 };
 
 const getVisibilityArticleDetails = (groupsWithArticles: Card[][]) =>
-  groupsWithArticles.reduce(
-    (articles, articlesInGroup, index) => {
-      const numberOfGroups = groupsWithArticles.length;
-      const groupArticles = articlesInGroup.map(story => ({
-        group: numberOfGroups - index - 1,
-        isBoosted: !!story.meta.isBoosted
-      }));
-      return articles.concat(groupArticles);
-    },
-    [] as ArticleDetails[]
-  );
+  groupsWithArticles.reduce((articles, articlesInGroup, index) => {
+    const numberOfGroups = groupsWithArticles.length;
+    const groupArticles = articlesInGroup.map((story) => ({
+      group: numberOfGroups - index - 1,
+      isBoosted: !!story.meta.isBoosted,
+    }));
+    return articles.concat(groupArticles);
+  }, [] as ArticleDetails[]);
 
 const getGroupsByStage = (collection: Collection, stage: Stages) => {
   if (stage === frontStages.draft) {
@@ -88,5 +85,5 @@ export {
   isFrontStale,
   getVisibilityArticleDetails,
   getGroupsByStage,
-  isCollectionConfigDynamic
+  isCollectionConfigDynamic,
 };

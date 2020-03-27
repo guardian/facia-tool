@@ -5,5 +5,5 @@ export {
   PosSpec,
   LevelChild,
   MoveHandler,
-  DropHandler
+  DropHandler,
 } from './Level';

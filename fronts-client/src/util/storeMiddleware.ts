@@ -1,26 +1,27 @@
 import { Middleware } from 'redux';
 import uniq from 'lodash/uniq';
 import mapValues from 'lodash/mapValues';
-import { State } from 'types/State';
+import debounce from 'lodash/debounce';
+import { PersistMeta, Entity } from 'types/Middleware';
+import type { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { BATCH } from 'redux-batched-actions';
 import { Action, ActionPersistMeta } from 'types/Action';
 import { selectors } from 'bundles/collectionsBundle';
 import { updateCollection } from 'actions/Collections';
-import { updateClipboard } from 'actions/Clipboard';
+import { updateClipboard } from 'actions/ClipboardThunks';
 import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/userDataApi';
 import { NestedCard } from 'types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
 import { selectFront } from 'selectors/frontsSelectors';
 import {
   selectEditorFrontIds,
-  selectEditorFavouriteFrontIds
-} from 'bundles/frontsUIBundle';
-import debounce from 'lodash/debounce';
+  selectEditorFavouriteFrontIds,
+} from 'bundles/frontsUI';
 
 const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
   dispatch,
-  getState
+  getState,
 }: {
   dispatch: Dispatch;
   getState: () => State;
@@ -32,42 +33,17 @@ const updateStateFromUrlChange: Middleware<{}, State, Dispatch> = ({
   if (prevState.path !== window.location.pathname) {
     dispatch({
       type: 'PATH_UPDATE',
-      path: window.location.pathname
+      path: window.location.pathname,
     });
 
     dispatch({
       type: 'CLEAR_ERROR',
-      receivedAt: Date.now()
+      receivedAt: Date.now(),
     });
   }
 
   return result;
 };
-
-type PersistTo =
-  | 'collection'
-  | 'clipboard'
-  | 'openFrontIds'
-  | 'favouriteFrontIds';
-
-type Entity = 'collection';
-
-interface PersistMeta {
-  // The resource to persist the data to
-  persistTo: PersistTo;
-  // The id to to search for in this resource
-  id?: string;
-  // The key to take from the action payload if it is not specified. Defaults to
-  // 'id'.
-  key?: string;
-  // Should we find collection parents before or after the reducer is called?
-  // This is important when the relevant collection is affected by when the operation
-  // occurs - finding the parent collection before a remove operation, for example,
-  // or after an add operation.
-  applyBeforeReducer?: boolean;
-  // Entity to which the Action id refers to
-  entity?: Entity;
-}
 
 /**
  * Return an array of actions - either a single action,
@@ -91,12 +67,12 @@ const isPersistingToCollection = (act: Action): boolean =>
 const persistCollectionOnEdit = (
   updateCollectionAction = updateCollection,
   debounceTime = 500
-): Middleware<{}, State, Dispatch> => store => {
+): Middleware<{}, State, Dispatch> => (store) => {
   let pendingCollectionIds = [] as string[];
   const throttledPersistCollectionEdits = debounce(
     () => {
       const state = store.getState();
-      pendingCollectionIds.forEach(id => {
+      pendingCollectionIds.forEach((id) => {
         const collection = selectors.selectById(state, id);
         if (collection) {
           store.dispatch(updateCollectionAction(collection));
@@ -109,7 +85,7 @@ const persistCollectionOnEdit = (
   );
 
   const persistCollectionEdits = (ids: string[]) => {
-    ids.forEach(id => {
+    ids.forEach((id) => {
       if (!pendingCollectionIds.includes(id)) {
         pendingCollectionIds.push(id);
       }
@@ -131,7 +107,7 @@ const persistCollectionOnEdit = (
           (act.meta.key ? act.payload[act.meta.key] : act.payload.id);
         return {
           id,
-          entity: act.meta.entity
+          entity: act.meta.entity,
         };
       }
     );
@@ -155,7 +131,7 @@ const persistCollectionOnEdit = (
     return uniq(collectionIds);
   };
 
-  return next => (action: Action) => {
+  return (next) => (action: Action) => {
     const actions = unwrapBatchedActions(action);
 
     if (!actions.some(isPersistingToCollection)) {
@@ -165,7 +141,7 @@ const persistCollectionOnEdit = (
     // Gather the collections that are touched before the new state.
     let collectionIds = getCollectionIdsForActions(
       actions.filter(
-        act =>
+        (act) =>
           isPersistingToCollection(act) &&
           (act as Action & ActionPersistMeta).meta &&
           (act as Action & ActionPersistMeta).meta.applyBeforeReducer
@@ -179,7 +155,7 @@ const persistCollectionOnEdit = (
       collectionIds.concat(
         getCollectionIdsForActions(
           actions.filter(
-            act =>
+            (act) =>
               isPersistingToCollection(act) &&
               (act as Action & ActionPersistMeta).meta &&
               !(act as Action & ActionPersistMeta).meta.applyBeforeReducer
@@ -196,12 +172,12 @@ const persistCollectionOnEdit = (
 
 const persistClipboardOnEdit = (
   updateClipboardAction = updateClipboard
-): Middleware<{}, State, Dispatch> => store => next => (action: Action) => {
+): Middleware<{}, State, Dispatch> => (store) => (next) => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
   if (
     !actions.some(
-      act =>
+      (act) =>
         (act as Action & ActionPersistMeta).meta &&
         (act as Action & ActionPersistMeta).meta.persistTo === 'clipboard'
     )
@@ -218,17 +194,17 @@ const persistClipboardOnEdit = (
 };
 
 const persistOpenFrontsOnEdit: (
-  persistFn?: (
-    persistFrontIds?: { [priority: string]: string[] }
-  ) => Promise<void>
-) => Middleware<{}, State, Dispatch> = (
-  persistFrontIds = saveOpenFrontIds
-) => store => next => (action: Action) => {
+  persistFn?: (persistFrontIds?: {
+    [priority: string]: string[];
+  }) => Promise<void>
+) => Middleware<{}, State, Dispatch> = (persistFrontIds = saveOpenFrontIds) => (
+  store
+) => (next) => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
   if (
     !actions.some(
-      act =>
+      (act) =>
         (act as Action & ActionPersistMeta).meta &&
         (act as Action & ActionPersistMeta).meta.persistTo === 'openFrontIds'
     )
@@ -241,8 +217,8 @@ const persistOpenFrontsOnEdit: (
 
   // Only persist fronts that exist in the state, clearing out
   // fronts that have been deleted.
-  const filteredFrontIdsByPriority = mapValues(frontIdsByPriority, frontIds =>
-    frontIds.filter(frontId => !!selectFront(state, { frontId }))
+  const filteredFrontIdsByPriority = mapValues(frontIdsByPriority, (frontIds) =>
+    frontIds.filter((frontId) => !!selectFront(state, { frontId }))
   );
   // Now they're in the state, persist the relevant front ids.
   persistFrontIds(filteredFrontIdsByPriority);
@@ -250,17 +226,17 @@ const persistOpenFrontsOnEdit: (
 };
 
 const persistFavouriteFrontsOnEdit: (
-  persistFn?: (
-    persistFrontIds?: { [priority: string]: string[] }
-  ) => Promise<void>
+  persistFn?: (persistFrontIds?: {
+    [priority: string]: string[];
+  }) => Promise<void>
 ) => Middleware<{}, State, Dispatch> = (
   persistFrontIds = saveFavouriteFrontIds
-) => store => next => (action: Action) => {
+) => (store) => (next) => (action: Action) => {
   const actions = unwrapBatchedActions(action);
 
   if (
     !actions.some(
-      act =>
+      (act) =>
         (act as Action & ActionPersistMeta).meta &&
         (act as Action & ActionPersistMeta).meta.persistTo ===
           'favouriteFrontIds'
@@ -282,5 +258,5 @@ export {
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit,
   persistFavouriteFrontsOnEdit,
-  updateStateFromUrlChange
+  updateStateFromUrlChange,
 };

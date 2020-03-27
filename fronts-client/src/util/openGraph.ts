@@ -7,7 +7,7 @@ interface OpenGraphData {
   siteName: string | undefined;
 }
 
-export default async function(url: string): Promise<OpenGraphData> {
+export default async function (url: string): Promise<OpenGraphData> {
   const isOnSite = isGuardianWebsiteUrl(url);
   try {
     const response = await pandaFetch(
@@ -18,7 +18,7 @@ export default async function(url: string): Promise<OpenGraphData> {
     doc.innerHTML = content;
 
     const graph: { [id: string]: string | null } = {};
-    Array.from(doc.querySelectorAll('meta[property^="og:"]')).forEach(tag => {
+    Array.from(doc.querySelectorAll('meta[property^="og:"]')).forEach((tag) => {
       const attributeKey = (tag.getAttribute('property') || '').replace(
         /^og\:/,
         ''
@@ -36,7 +36,7 @@ export default async function(url: string): Promise<OpenGraphData> {
       description: graph.description || undefined,
       siteName: !isOnSite
         ? graph.site_name || getHostname(url).replace(/^www\./, '')
-        : undefined
+        : undefined,
     };
   } catch (e) {
     throw new Error(`Unable to fetch ${url} \n ${e.statusText || e.message}`);

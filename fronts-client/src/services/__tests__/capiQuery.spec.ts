@@ -6,11 +6,11 @@ describe('CAPI', () => {
       Promise.resolve({
         json: () => ({
           response: {
-            results: []
-          }
+            results: [],
+          },
         }),
         status: 200,
-        ok: true
+        ok: true,
       })
     );
   });
@@ -21,7 +21,7 @@ describe('CAPI', () => {
       const capiUrl = 'https://capiurl.guardian.com';
       const capi = capiQuery(capiUrl);
       capi.search({
-        'api-key': apiKey
+        'api-key': apiKey,
       });
       expect((global as any).fetch).toBeCalled();
       expect((global as any).fetch.mock.calls[0][0].includes(apiKey)).toBe(
@@ -40,10 +40,10 @@ describe('CAPI', () => {
       capi.search(
         {
           'api-key': apiKey,
-          q
+          q,
         },
         {
-          isResource: true
+          isResource: true,
         }
       );
       expect((global as any).fetch).toBeCalled();
@@ -60,7 +60,7 @@ describe('CAPI', () => {
       const capiUrl = 'https://capiurl.guardian.com';
       const capi = capiQuery(capiUrl);
       capi.scheduled({
-        'api-key': apiKey
+        'api-key': apiKey,
       });
       expect((global as any).fetch).toBeCalled();
       const fetchEndpoint = (global as any).fetch.mock.calls[0][0];
@@ -76,10 +76,10 @@ describe('CAPI', () => {
       capi.scheduled(
         {
           'api-key': apiKey,
-          q
+          q,
         },
         {
-          isResource: true
+          isResource: true,
         }
       );
       expect((global as any).fetch).toBeCalled();
@@ -96,7 +96,7 @@ describe('CAPI', () => {
       const capiUrl = 'https://capiurl.guardian.com';
       const capi = capiQuery(capiUrl);
       capi.tags({
-        'api-key': apiKey
+        'api-key': apiKey,
       });
       expect((global as any).fetch).toBeCalled();
       expect((global as any).fetch.mock.calls[0][0].includes(apiKey)).toBe(

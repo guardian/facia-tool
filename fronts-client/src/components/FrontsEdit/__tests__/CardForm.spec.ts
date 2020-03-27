@@ -1,11 +1,11 @@
 import { reducer, initialize, change } from 'redux-form';
 import {
   getCardMetaFromFormValues,
-  getInitialValuesForCardForm
+  getInitialValuesForCardForm,
 } from 'util/form';
 import derivedArticle from 'fixtures/derivedArticle';
 import { state as initialState } from 'fixtures/initialState';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 
 const formValues = {
   overrideArticleMainMedia: false,
@@ -16,7 +16,7 @@ const formValues = {
     origin: undefined,
     src: 'somewhere',
     thumb: 'somewhere',
-    width: undefined
+    width: undefined,
   },
   headline: "Sister of academic's killer warned police he was mentally ill",
   imageCutoutReplace: false,
@@ -32,7 +32,7 @@ const formValues = {
     origin: undefined,
     src: undefined,
     thumb: undefined,
-    width: undefined
+    width: undefined,
   },
   showLargeHeadline: false,
   showByline: false,
@@ -47,7 +47,7 @@ const formValues = {
   coverCardImageReplace: false,
   coverCardMobileImage: {},
   coverCardTabletImage: {},
-  pickedKicker: 'kick'
+  pickedKicker: 'kick',
 };
 
 const createStateWithChangedFormFields = (
@@ -65,7 +65,7 @@ const createStateWithChangedFormFields = (
     form: Object.keys(fieldValueMap).reduce(
       (acc, key) => reducer(acc, change(articleId, key, fieldValueMap[key])),
       formState
-    )
+    ),
   };
 };
 
@@ -80,16 +80,16 @@ describe('CardForm transform functions', () => {
         width: 100,
         height: 100,
         origin: 'origin',
-        thumb: 'thumb'
+        thumb: 'thumb',
       };
       const slideshow = Array(6).fill(exampleImage);
       const slideshowArticle = {
         ...derivedArticle,
-        slideshow
+        slideshow,
       };
       expect(getInitialValuesForCardForm(slideshowArticle)).toEqual({
         ...formValues,
-        slideshow
+        slideshow,
       });
     });
     it('should get number values for all image widths and heights', () => {
@@ -111,16 +111,16 @@ describe('CardForm transform functions', () => {
               height: '300',
               width: '300',
               thumb: 'exampleThumb',
-              origin: 'exampleOrigin'
+              origin: 'exampleOrigin',
             },
             {
               src: 'exampleSrc4',
               height: '400',
               width: '400',
               thumb: 'exampleThumb',
-              origin: 'exampleOrigin'
-            }
-          ]
+              origin: 'exampleOrigin',
+            },
+          ],
         })
       ).toEqual({
         ...formValues,
@@ -130,14 +130,14 @@ describe('CardForm transform functions', () => {
           width: 100,
           height: 100,
           origin: 'exampleOrigin',
-          thumb: 'exampleThumb'
+          thumb: 'exampleThumb',
         },
         cutoutImage: {
           src: 'exampleSrc2',
           width: 200,
           height: 200,
           origin: 'exampleOrigin',
-          thumb: 'exampleSrc2'
+          thumb: 'exampleSrc2',
         },
         slideshow: [
           {
@@ -145,19 +145,19 @@ describe('CardForm transform functions', () => {
             width: 300,
             height: 300,
             origin: 'exampleOrigin',
-            thumb: 'exampleThumb'
+            thumb: 'exampleThumb',
           },
           {
             src: 'exampleSrc4',
             width: 400,
             height: 400,
             origin: 'exampleOrigin',
-            thumb: 'exampleThumb'
+            thumb: 'exampleThumb',
           },
           undefined,
           undefined,
-          undefined
-        ]
+          undefined,
+        ],
       });
     });
   });
@@ -168,9 +168,9 @@ describe('CardForm transform functions', () => {
         'exampleId',
         {}
       );
-      expect(getCardMetaFromFormValues(state, 'exampleId', formValues)).toEqual(
-        { headline: 'Bill Shorten' }
-      );
+      expect(
+        getCardMetaFromFormValues(state, 'exampleId', formValues)
+      ).toEqual({ headline: 'Bill Shorten' });
     });
     it('should derive values, removing the slideshow array if empty', () => {
       const byline = 'Caroline Davies edited';
@@ -186,7 +186,7 @@ describe('CardForm transform functions', () => {
           byline,
           headline,
           trailText,
-          pickedKicker
+          pickedKicker,
         }
       );
       expect(
@@ -194,7 +194,7 @@ describe('CardForm transform functions', () => {
           ...formValues,
           byline,
           headline,
-          trailText
+          trailText,
         })
       ).toEqual({
         byline: 'Caroline Davies edited',
@@ -202,7 +202,7 @@ describe('CardForm transform functions', () => {
           "Sister of academic's killer warned police he was mentally ill edited",
         trailText:
           'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him edited',
-        pickedKicker: 'kick'
+        pickedKicker: 'kick',
       });
     });
     it('should derive values, setting the imageReplace value if necessary', () => {
@@ -212,8 +212,8 @@ describe('CardForm transform functions', () => {
           width: 100,
           height: 100,
           origin: 'exampleOrigin',
-          thumb: 'exampleThumb'
-        }
+          thumb: 'exampleThumb',
+        },
       };
       const state = createStateWithChangedFormFields(
         initialState,
@@ -223,7 +223,7 @@ describe('CardForm transform functions', () => {
       expect(
         getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
-          ...values
+          ...values,
         })
       ).toEqual({
         imageSrc: 'exampleSrc',
@@ -231,13 +231,13 @@ describe('CardForm transform functions', () => {
         imageSrcOrigin: 'exampleOrigin',
         imageSrcThumb: 'exampleThumb',
         imageSrcWidth: '100',
-        headline: 'Bill Shorten'
+        headline: 'Bill Shorten',
       });
     });
     it('should remove customKicker and showKickerCustom if the kicker is empty', () => {
       const values = {
         customKicker: '',
-        showKickerCustom: true
+        showKickerCustom: true,
       };
       const state = createStateWithChangedFormFields(
         initialState,
@@ -247,7 +247,7 @@ describe('CardForm transform functions', () => {
       expect(
         getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
-          ...values
+          ...values,
         })
       ).toEqual({ headline: 'Bill Shorten' });
     });
@@ -258,7 +258,7 @@ describe('CardForm transform functions', () => {
           width: 100,
           height: 100,
           origin: 'exampleOrigin',
-          thumb: 'exampleThumb'
+          thumb: 'exampleThumb',
         },
         slideshow: [
           {
@@ -266,16 +266,16 @@ describe('CardForm transform functions', () => {
             width: 100,
             height: 100,
             origin: 'exampleOrigin',
-            thumb: 'exampleThumb'
+            thumb: 'exampleThumb',
           },
           {
             src: 'exampleSrc',
             width: 100,
             height: 100,
             origin: 'exampleOrigin',
-            thumb: 'exampleThumb'
-          }
-        ]
+            thumb: 'exampleThumb',
+          },
+        ],
       };
       const state = createStateWithChangedFormFields(
         initialState,
@@ -285,7 +285,7 @@ describe('CardForm transform functions', () => {
       expect(
         getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
-          ...values
+          ...values,
         })
       ).toEqual({
         headline: 'Bill Shorten',
@@ -300,21 +300,21 @@ describe('CardForm transform functions', () => {
             width: '100',
             height: '100',
             origin: 'exampleOrigin',
-            thumb: 'exampleThumb'
+            thumb: 'exampleThumb',
           },
           {
             src: 'exampleSrc',
             width: '100',
             height: '100',
             origin: 'exampleOrigin',
-            thumb: 'exampleThumb'
-          }
-        ]
+            thumb: 'exampleThumb',
+          },
+        ],
       });
     });
     it('should remove undefined values from the meta', () => {
       const values = {
-        showQuotedHeadline: undefined
+        showQuotedHeadline: undefined,
       };
       const state = createStateWithChangedFormFields(
         initialState,
@@ -324,13 +324,13 @@ describe('CardForm transform functions', () => {
       expect(
         getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
-          ...values
+          ...values,
         } as any)
       ).toEqual({ headline: 'Bill Shorten' });
     });
     it('should keep false values', () => {
       const values = {
-        showQuotedHeadline: false
+        showQuotedHeadline: false,
       };
       const state = createStateWithChangedFormFields(
         initialState,
@@ -341,7 +341,7 @@ describe('CardForm transform functions', () => {
       expect(
         getCardMetaFromFormValues(state, 'exampleId', {
           ...formValues,
-          ...values
+          ...values,
         })
       ).toEqual({ showQuotedHeadline: false, headline: 'Bill Shorten' });
     });

@@ -1,6 +1,6 @@
 import { Card, NestedCard } from 'types/Collection';
 import { selectClipboard } from 'selectors/frontsSelectors';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
 import { notLiveLabels } from 'constants/fronts';
 
@@ -13,7 +13,7 @@ function normaliseClipboard(clipboard: {
   const normalisedClipboard = normalize(clipboard);
   return {
     clipboard: normalisedClipboard.result,
-    cards: normalisedClipboard.entities.cards || {}
+    cards: normalisedClipboard.entities.cards || {},
   };
 }
 

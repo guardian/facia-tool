@@ -1,5 +1,5 @@
 import createAsyncResourceBundle, {
-  State
+  State,
 } from 'lib/createAsyncResourceBundle';
 import { EditionsIssue } from 'types/Edition';
 
@@ -8,10 +8,10 @@ export const {
   actionNames,
   reducer,
   selectors,
-  initialState
+  initialState,
 } = createAsyncResourceBundle<EditionsIssue>('editionsIssue', {
   indexById: false,
-  initialData: undefined
+  initialData: undefined,
 });
 
 export type EditionsIssueState = State<EditionsIssue>;

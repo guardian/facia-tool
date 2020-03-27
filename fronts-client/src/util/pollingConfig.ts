@@ -4,7 +4,7 @@ import { Store } from 'types/Store';
 import {
   collectionsPollInterval,
   ophanPollInterval,
-  collectionArticlesPollInterval
+  collectionArticlesPollInterval,
 } from 'constants/polling';
 import { selectPriority } from 'selectors/pathSelectors';
 import { getPageViewDataForCollection } from '../actions/PageViewData';
@@ -12,9 +12,9 @@ import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { selectExternalArticleIdFromCard } from 'selectors/shared';
 import {
   selectOpenFrontsCollectionsAndArticles,
-  selectOpenCardIds
-} from 'bundles/frontsUIBundle';
-import { createSelectCollectionsInOpenFronts } from 'bundles/frontsUIBundle';
+  selectOpenCardIds,
+} from 'bundles/frontsUI';
+import { createSelectCollectionsInOpenFronts } from 'bundles/frontsUI';
 
 /**
  * TODO: do we want to check if there are any collectionUpdates going out here
@@ -58,8 +58,8 @@ const createRefreshOpenArticles = (store: Store) => () => {
   const state = store.getState();
   const openCardIds = selectOpenCardIds(state);
   const externalArticleIds = openCardIds
-    .map(_ => selectExternalArticleIdFromCard(state, _))
-    .filter(_ => _) as string[];
+    .map((_) => selectExternalArticleIdFromCard(state, _))
+    .filter((_) => _) as string[];
   (store.dispatch as Dispatch)(fetchArticles(externalArticleIds));
 };
 
@@ -68,8 +68,8 @@ const createRefreshOphanData = (store: Store) => () => {
   const openFrontsCollectionAndArticles = selectOpenFrontsCollectionsAndArticles(
     state
   );
-  openFrontsCollectionAndArticles.forEach(front => {
-    front.collections.forEach(collection => {
+  openFrontsCollectionAndArticles.forEach((front) => {
+    front.collections.forEach((collection) => {
       if (collection.articleIds.length > 0) {
         (store.dispatch as Dispatch)(
           getPageViewDataForCollection(front.frontId, collection.id, 'draft')

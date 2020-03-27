@@ -1,4 +1,4 @@
-import { Action } from 'types/Action';
+import type { Action } from 'types/Action';
 import { Config } from 'types/Config';
 
 type State = Config | null;

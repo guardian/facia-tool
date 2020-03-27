@@ -1,6 +1,6 @@
 import {
   selectArticlesInCollections,
-  createSelectIsArticleInCollection
+  createSelectIsArticleInCollection,
 } from '../collection';
 import { stateWithCollection } from '../../fixtures/shared';
 
@@ -10,19 +10,19 @@ describe('Collection selectors', () => {
       expect(
         selectArticlesInCollections(stateWithCollection, {
           collectionIds: ['exampleCollection'],
-          itemSet: 'live'
+          itemSet: 'live',
         })
       ).toEqual(['article/live/0', 'article/draft/1', 'a/long/path/2']);
       expect(
         selectArticlesInCollections(stateWithCollection, {
           collectionIds: ['exampleCollectionTwo'],
-          itemSet: 'live'
+          itemSet: 'live',
         })
       ).toEqual(['article/live/0']);
       expect(
         selectArticlesInCollections(stateWithCollection, {
           collectionIds: ['exampleCollectionTwo'],
-          itemSet: 'draft'
+          itemSet: 'draft',
         })
       ).toEqual(['article/draft/1', 'a/long/path/2']);
     });
@@ -30,7 +30,7 @@ describe('Collection selectors', () => {
       expect(
         selectArticlesInCollections(stateWithCollection, {
           collectionIds: ['invalidCollectionId'],
-          itemSet: 'draft'
+          itemSet: 'draft',
         })
       ).toEqual([]);
     });
@@ -42,7 +42,7 @@ describe('Collection selectors', () => {
         selectIsArticleInCollection(stateWithCollection, {
           collectionId: 'exampleCollection',
           collectionSet: 'live',
-          cardId: '95e2bfc0-8999-4e6e-a359-19960967c1e0'
+          cardId: '95e2bfc0-8999-4e6e-a359-19960967c1e0',
         })
       ).toEqual(true);
     });
@@ -51,7 +51,7 @@ describe('Collection selectors', () => {
         selectIsArticleInCollection(stateWithCollection, {
           collectionId: 'exampleCollection',
           collectionSet: 'live',
-          cardId: 'not-a-thing'
+          cardId: 'not-a-thing',
         })
       ).toEqual(false);
     });

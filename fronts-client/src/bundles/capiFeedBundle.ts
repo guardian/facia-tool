@@ -1,11 +1,11 @@
 import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
 import { CapiArticle } from 'types/Capi';
 import { ThunkResult } from 'types/Store';
-import { previewCapi, liveCapi } from 'services/frontsCapi';
+import { previewCapi, liveCapi } from 'services/capiQuery';
 import { checkIsContent } from 'services/capiQuery';
 import { getPrefills } from 'services/editionsApi';
 import { Dispatch } from 'redux';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { createSelectIsArticleStale } from 'util/externalArticle';
 
 type FeedState = CapiArticle;
@@ -13,10 +13,10 @@ type FeedState = CapiArticle;
 const {
   actions: liveActions,
   reducer: capiLiveFeed,
-  selectors: liveSelectors
+  selectors: liveSelectors,
 } = createAsyncResourceBundle<FeedState>('capiLiveFeed', {
-  selectLocalState: state => state.feed.capiLiveFeed,
-  indexById: true
+  selectLocalState: (state) => state.feed.capiLiveFeed,
+  indexById: true,
 });
 
 const isNonCommercialArticle = (article: CapiArticle | undefined): boolean => {
@@ -32,16 +32,16 @@ const isNonCommercialArticle = (article: CapiArticle | undefined): boolean => {
     return true;
   }
 
-  return article.tags.every(tag => tag.type !== 'paid-content');
+  return article.tags.every((tag) => tag.type !== 'paid-content');
 };
 
 const {
   actions: previewActions,
   reducer: capiPreviewFeed,
-  selectors: previewSelectors
+  selectors: previewSelectors,
 } = createAsyncResourceBundle<FeedState>('capiPreviewFeed', {
-  selectLocalState: state => state.feed.capiPreviewFeed,
-  indexById: true
+  selectLocalState: (state) => state.feed.capiPreviewFeed,
+  indexById: true,
 });
 
 const fetchResourceOrResults = async (
@@ -62,8 +62,8 @@ const fetchResourceOrResults = async (
       : {
           totalPages: response.pages,
           currentPage: response.currentPage,
-          pageSize: response.pageSize
-        }
+          pageSize: response.pageSize,
+        },
   };
 };
 
@@ -84,10 +84,10 @@ export const createFetch = (
       isPreview
     );
     if (resultData) {
-      const nonCommercialResults = resultData.results.filter(article =>
+      const nonCommercialResults = resultData.results.filter((article) =>
         isNonCommercialArticle(article)
       );
-      const updatedResults = nonCommercialResults.filter(article =>
+      const updatedResults = nonCommercialResults.filter((article) =>
         selectIsArticleStale(
           getState(),
           article.id,
@@ -97,7 +97,7 @@ export const createFetch = (
       dispatch(
         actions.fetchSuccess(updatedResults, {
           pagination: resultData.pagination || undefined,
-          order: nonCommercialResults.map(_ => _.id)
+          order: nonCommercialResults.map((_) => _.id),
         })
       );
     } else {
@@ -121,18 +121,18 @@ export const fetchPreview = createFetch(
 const {
   actions: prefillActions,
   reducer: prefillFeed,
-  selectors: prefillSelectors
+  selectors: prefillSelectors,
 } = createAsyncResourceBundle<FeedState>('prefillFeed', {
-  selectLocalState: state => state.feed.prefillFeed,
-  indexById: true
+  selectLocalState: (state) => state.feed.prefillFeed,
+  indexById: true,
 });
 
-export const fetchPrefill = (
-  id: string
-): ThunkResult<void> => async dispatch => {
+export const fetchPrefill = (id: string): ThunkResult<void> => async (
+  dispatch
+) => {
   dispatch({
     type: 'FEED_STATE_IS_PREFILL_MODE',
-    payload: { isPrefillMode: true }
+    payload: { isPrefillMode: true },
   });
   dispatch(prefillActions.fetchStart('prefill'));
 
@@ -144,7 +144,7 @@ export const fetchPrefill = (
           response.results.filter(isNonCommercialArticle, {
             totalPages: response.pages,
             currentPage: response.currentPage,
-            pageSize: response.pageSize
+            pageSize: response.pageSize,
           })
         )
       );
@@ -157,7 +157,7 @@ export const fetchPrefill = (
 export const hidePrefills = () => (dispatch: Dispatch) => {
   dispatch({
     type: 'FEED_STATE_IS_PREFILL_MODE',
-    payload: { isPrefillMode: false }
+    payload: { isPrefillMode: false },
   });
 };
 
@@ -178,5 +178,5 @@ export {
   prefillFeed,
   liveSelectors,
   previewSelectors,
-  prefillSelectors
+  prefillSelectors,
 };

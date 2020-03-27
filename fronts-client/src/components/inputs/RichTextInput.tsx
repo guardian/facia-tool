@@ -27,7 +27,7 @@ const InputWrapper = styled.div`
 `;
 
 const TextInputLabel = styled(InputLabel)`
-  display: ${props => (props.hidden ? 'none' : 'flex')};
+  display: ${(props) => (props.hidden ? 'none' : 'flex')};
   align-items: flex-end;
 `;
 

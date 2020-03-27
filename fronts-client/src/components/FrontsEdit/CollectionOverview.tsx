@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { styled, theme } from 'constants/theme';
 import { events } from 'services/GA';
 
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
@@ -13,10 +13,10 @@ import { createCollectionId } from 'components/CollectionDisplay';
 import ButtonDefault from 'components/inputs/ButtonCircular';
 import {
   createSelectCollection,
-  createSelectArticlesInCollection
+  createSelectArticlesInCollection,
 } from 'selectors/shared';
 import EditModeVisibility from 'components/util/EditModeVisibility';
-import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUIBundle';
+import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
 
 interface FrontCollectionOverviewContainerProps {
   frontId: string;
@@ -51,7 +51,7 @@ const Container = styled.div<{ isSelected: boolean }>`
   text-decoration: none;
   transition: background-color 0.3s;
 
-  ${props =>
+  ${(props) =>
     props.isSelected && `background-color: ${props.theme.colors.whiteDark}`}
 
   &:hover {
@@ -107,11 +107,11 @@ const CollectionOverview = ({
   frontId,
   hasUnpublishedChanges,
   isSelected,
-  hasOpenForms
+  hasOpenForms,
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
-      onClick={e => {
+      onClick={(e) => {
         e.preventDefault();
         events.overviewItemClicked(frontId);
         const el = document.getElementById(
@@ -121,7 +121,7 @@ const CollectionOverview = ({
           el.scrollIntoView({
             behavior: 'smooth',
             inline: 'start',
-            block: 'start'
+            block: 'start',
           });
         }
         openCollection(collection.id);
@@ -168,24 +168,24 @@ const mapStateToProps = () => {
     {
       frontId,
       collectionId,
-      browsingStage: collectionSet
+      browsingStage: collectionSet,
     }: FrontCollectionOverviewContainerProps
   ) => ({
     collection: selectCollection(state, {
-      collectionId
+      collectionId,
     }),
     articleCount: selectArticlesInCollection(state, {
       collectionSet,
       collectionId,
-      includeSupportingArticles: false
+      includeSupportingArticles: false,
     }).length,
     hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
-      collectionId
+      collectionId,
     }),
     hasOpenForms:
       selectCollectionIdsWithOpenForms(state, { frontId }).indexOf(
         collectionId
-      ) !== -1
+      ) !== -1,
   });
 };
 
@@ -200,10 +200,7 @@ const mapDispatchToProps = (
         props.frontId,
         props.browsingStage
       )
-    )
+    ),
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(CollectionOverview);
+export default connect(mapStateToProps, mapDispatchToProps)(CollectionOverview);

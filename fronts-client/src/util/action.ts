@@ -1,5 +1,5 @@
-import { Action, ActionPersistMeta } from 'types/Action';
-import { PersistMeta } from './storeMiddleware';
+import type { Action, ActionPersistMeta } from 'types/Action';
+import type { PersistMeta } from './storeMiddleware';
 
 export const addPersistMetaToAction = <TArgs extends any[]>(
   actionCreator: (...args: TArgs) => Action,

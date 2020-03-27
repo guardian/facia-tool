@@ -33,7 +33,7 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
 
     this.state = {
       data: [],
-      polling: setInterval(this.update, 500)
+      polling: setInterval(this.update, 500),
     };
   }
 
@@ -50,7 +50,7 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
 
     return (
       <IssueVersionList>
-        {data.map(issueVersion => (
+        {data.map((issueVersion) => (
           <li key={issueVersion.id}>
             <strong>
               {moment(issueVersion.launchedOn).format('YYYY-MM-DD HH:mm:ss')}

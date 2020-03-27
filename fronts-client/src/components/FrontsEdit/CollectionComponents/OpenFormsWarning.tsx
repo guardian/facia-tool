@@ -1,8 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import FlatUl from 'components/layout/FlatUl';
-import { createSelectOpenCardTitlesForCollection } from 'bundles/frontsUIBundle';
+import { createSelectOpenCardTitlesForCollection } from 'bundles/frontsUI';
 import { createCardId } from './Card';
 import styled from 'styled-components';
 
@@ -36,7 +36,7 @@ const OpenFormsWarning = ({ openArticleTitles }: ComponentProps) => (
                 element.scrollIntoView({
                   behavior: 'smooth',
                   inline: 'start',
-                  block: 'end'
+                  block: 'end',
                 });
               }
             }}
@@ -54,8 +54,8 @@ const mapStateToProps = () => {
   return (state: State, { collectionId, frontId }: ContainerProps) => ({
     openArticleTitles: selectOpenCardTitlesForCollection(state, {
       collectionId,
-      frontId
-    })
+      frontId,
+    }),
   });
 };
 

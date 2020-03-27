@@ -23,7 +23,7 @@ const capiArticle = {
     liveBloggingNow: 'false',
     shortUrl: 'https://gu.com/p/9ce5m',
     thumbnail:
-      'https://media.guim.co.uk/35b940fe70bfa86b82c45f6c7a8c3b342028a3be/0_2_3000_1800/500.jpg'
+      'https://media.guim.co.uk/35b940fe70bfa86b82c45f6c7a8c3b342028a3be/0_2_3000_1800/500.jpg',
   },
   tags: [
     {
@@ -34,7 +34,7 @@ const capiArticle = {
       webTitle: 'Hurricane Florence',
       webUrl: 'https://www.theguardian.com/world/hurricane-florence',
       apiUrl: 'https://content.guardianapis.com/world/hurricane-florence',
-      references: []
+      references: [],
     },
     {
       id: 'tone/news',
@@ -43,8 +43,8 @@ const capiArticle = {
       webUrl: 'https://www.theguardian.com/tone/news',
       apiUrl: 'https://preview.content.guardianapis.com/tone/news',
       references: [],
-      internalName: 'News (Tone)'
-    }
+      internalName: 'News (Tone)',
+    },
   ],
   blocks: {
     main: {
@@ -62,12 +62,12 @@ const capiArticle = {
       createdBy: {
         email: 'akshata.rao.casual@guardian.co.uk',
         firstName: 'Akshata',
-        lastName: 'Rao'
+        lastName: 'Rao',
       },
       lastModifiedBy: {
         email: 'akshata.rao.casual@guardian.co.uk',
         firstName: 'Akshata',
-        lastName: 'Rao'
+        lastName: 'Rao',
       },
       elements: [
         {
@@ -75,22 +75,22 @@ const capiArticle = {
           assets: [],
           contentAtomTypeData: {
             atomId: '06666fe2-10f1-468f-b4de-91f5653931ac',
-            atomType: 'media'
-          }
-        }
-      ]
-    }
+            atomType: 'media',
+          },
+        },
+      ],
+    },
   },
   atoms: {
-    media: []
+    media: [],
   },
   frontsMeta: {
     defaults: {},
-    pickedKicker: 'kick me'
+    pickedKicker: 'kick me',
   },
   isHosted: false,
   pillarId: 'pillar/news',
-  pillarName: 'News'
+  pillarName: 'News',
 };
 
 const capiArticleWithVideo = {
@@ -118,7 +118,7 @@ const capiArticleWithVideo = {
     liveBloggingNow: 'false',
     shortUrl: 'https://gu.com/p/9ce5m',
     thumbnail:
-      'https://media.guim.co.uk/35b940fe70bfa86b82c45f6c7a8c3b342028a3be/0_2_3000_1800/500.jpg'
+      'https://media.guim.co.uk/35b940fe70bfa86b82c45f6c7a8c3b342028a3be/0_2_3000_1800/500.jpg',
   },
   tags: [
     {
@@ -129,8 +129,8 @@ const capiArticleWithVideo = {
       webTitle: 'Hurricane Florence',
       webUrl: 'https://www.theguardian.com/world/hurricane-florence',
       apiUrl: 'https://content.guardianapis.com/world/hurricane-florence',
-      references: []
-    }
+      references: [],
+    },
   ],
   blocks: {
     main: {
@@ -148,12 +148,12 @@ const capiArticleWithVideo = {
       createdBy: {
         email: 'akshata.rao.casual@guardian.co.uk',
         firstName: 'Akshata',
-        lastName: 'Rao'
+        lastName: 'Rao',
       },
       lastModifiedBy: {
         email: 'akshata.rao.casual@guardian.co.uk',
         firstName: 'Akshata',
-        lastName: 'Rao'
+        lastName: 'Rao',
       },
       elements: [
         {
@@ -161,11 +161,11 @@ const capiArticleWithVideo = {
           assets: [],
           contentAtomTypeData: {
             atomId: '06666fe2-10f1-468f-b4de-91f5653931ac',
-            atomType: 'media'
-          }
-        }
-      ]
-    }
+            atomType: 'media',
+          },
+        },
+      ],
+    },
   },
   atoms: {
     media: [
@@ -182,26 +182,26 @@ const capiArticleWithVideo = {
                 assetType: 'video',
                 version: 4,
                 id: 'Vg4dddBmukI',
-                platform: 'youtube'
+                platform: 'youtube',
               },
               {
                 assetType: 'video',
                 version: 3,
                 id: 'jBNmcz6rlTo',
-                platform: 'youtube'
+                platform: 'youtube',
               },
               {
                 assetType: 'video',
                 version: 2,
                 id: 'WQKiwLaMRjc',
-                platform: 'youtube'
+                platform: 'youtube',
               },
               {
                 assetType: 'video',
                 version: 1,
                 id: 'RyvXK7X2zg8',
-                platform: 'youtube'
-              }
+                platform: 'youtube',
+              },
             ],
             activeVersion: 4,
             title:
@@ -246,14 +246,14 @@ const capiArticleWithVideo = {
                 'florence path',
                 'florence map',
                 'florence wind',
-                'florence aftermath'
+                'florence aftermath',
               ],
               categoryId: '25',
               channelId: 'UCIRYBXDze5krPDzAEOxFGVA',
               pluto: {
                 commissionId: 'KP-22289',
-                projectId: 'KP-22321'
-              }
+                projectId: 'KP-22321',
+              },
             },
             posterImage: {
               assets: [
@@ -263,10 +263,10 @@ const capiArticleWithVideo = {
                     'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/2000.jpg',
                   dimensions: {
                     height: 1125,
-                    width: 2000
+                    width: 2000,
                   },
                   size: 322318,
-                  aspectRatio: '16:9'
+                  aspectRatio: '16:9',
                 },
                 {
                   mimeType: 'image/jpeg',
@@ -274,10 +274,10 @@ const capiArticleWithVideo = {
                     'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/1000.jpg',
                   dimensions: {
                     height: 563,
-                    width: 1000
+                    width: 1000,
                   },
                   size: 97135,
-                  aspectRatio: '16:9'
+                  aspectRatio: '16:9',
                 },
                 {
                   mimeType: 'image/jpeg',
@@ -285,10 +285,10 @@ const capiArticleWithVideo = {
                     'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/500.jpg',
                   dimensions: {
                     height: 281,
-                    width: 500
+                    width: 500,
                   },
                   size: 28827,
-                  aspectRatio: '16:9'
+                  aspectRatio: '16:9',
                 },
                 {
                   mimeType: 'image/jpeg',
@@ -296,10 +296,10 @@ const capiArticleWithVideo = {
                     'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/140.jpg',
                   dimensions: {
                     height: 79,
-                    width: 140
+                    width: 140,
                   },
                   size: 6055,
-                  aspectRatio: '16:9'
+                  aspectRatio: '16:9',
                 },
                 {
                   mimeType: 'image/jpeg',
@@ -307,11 +307,11 @@ const capiArticleWithVideo = {
                     'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/3000.jpg',
                   dimensions: {
                     height: 1688,
-                    width: 3000
+                    width: 3000,
                   },
                   size: 673897,
-                  aspectRatio: '16:9'
-                }
+                  aspectRatio: '16:9',
+                },
               ],
               master: {
                 mimeType: 'image/jpeg',
@@ -319,14 +319,14 @@ const capiArticleWithVideo = {
                   'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/master/3000.jpg',
                 dimensions: {
                   height: 1688,
-                  width: 3000
+                  width: 3000,
                 },
                 size: 1696693,
-                aspectRatio: '16:9'
+                aspectRatio: '16:9',
               },
               mediaId:
                 'https://api.media.gutools.co.uk/images/e43df93d3022d27100292b233fabcab9c22ac163',
-              source: 'Getty Images'
+              source: 'Getty Images',
             },
             trailText:
               '<p><a href="https://www.theguardian.com/world/hurricane-florence">Hurricane Florence</a>&nbsp;has made landfall in North Carolina with winds near 90mph and warnings of catastrophic flooding&nbsp;</p>',
@@ -337,7 +337,7 @@ const capiArticleWithVideo = {
               'world/natural-disasters',
               'us-news/us-news',
               'tone/news',
-              'us-news/northcarolina'
+              'us-news/northcarolina',
             ],
             trailImage: {
               assets: [
@@ -347,10 +347,10 @@ const capiArticleWithVideo = {
                     'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/2000.jpg',
                   dimensions: {
                     height: 1200,
-                    width: 2000
+                    width: 2000,
                   },
                   size: 341405,
-                  aspectRatio: '5:3'
+                  aspectRatio: '5:3',
                 },
                 {
                   mimeType: 'image/jpeg',
@@ -358,10 +358,10 @@ const capiArticleWithVideo = {
                     'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/1000.jpg',
                   dimensions: {
                     height: 600,
-                    width: 1000
+                    width: 1000,
                   },
                   size: 103236,
-                  aspectRatio: '5:3'
+                  aspectRatio: '5:3',
                 },
                 {
                   mimeType: 'image/jpeg',
@@ -369,10 +369,10 @@ const capiArticleWithVideo = {
                     'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/500.jpg',
                   dimensions: {
                     height: 300,
-                    width: 500
+                    width: 500,
                   },
                   size: 30814,
-                  aspectRatio: '5:3'
+                  aspectRatio: '5:3',
                 },
                 {
                   mimeType: 'image/jpeg',
@@ -380,10 +380,10 @@ const capiArticleWithVideo = {
                     'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/140.jpg',
                   dimensions: {
                     height: 84,
-                    width: 140
+                    width: 140,
                   },
                   size: 6312,
-                  aspectRatio: '5:3'
+                  aspectRatio: '5:3',
                 },
                 {
                   mimeType: 'image/jpeg',
@@ -391,11 +391,11 @@ const capiArticleWithVideo = {
                     'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/3000.jpg',
                   dimensions: {
                     height: 1800,
-                    width: 3000
+                    width: 3000,
                   },
                   size: 712250,
-                  aspectRatio: '5:3'
-                }
+                  aspectRatio: '5:3',
+                },
               ],
               master: {
                 mimeType: 'image/jpeg',
@@ -403,16 +403,16 @@ const capiArticleWithVideo = {
                   'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/master/3000.jpg',
                 dimensions: {
                   height: 1800,
-                  width: 3000
+                  width: 3000,
                 },
                 size: 1775031,
-                aspectRatio: '5:3'
+                aspectRatio: '5:3',
               },
               mediaId:
                 'https://api.media.gutools.co.uk/images/e43df93d3022d27100292b233fabcab9c22ac163',
-              source: 'Getty Images'
-            }
-          }
+              source: 'Getty Images',
+            },
+          },
         },
         contentChangeDetails: {
           lastModified: {
@@ -420,42 +420,42 @@ const capiArticleWithVideo = {
             user: {
               email: 'adam.sich@guardian.co.uk',
               firstName: 'Adam',
-              lastName: 'Sich'
-            }
+              lastName: 'Sich',
+            },
           },
           created: {
             date: 1536873965000,
             user: {
               email: 'akshata.rao.casual@guardian.co.uk',
               firstName: 'Akshata',
-              lastName: 'Rao'
-            }
+              lastName: 'Rao',
+            },
           },
           published: {
             date: 1537175465000,
             user: {
               email: 'adam.sich@guardian.co.uk',
               firstName: 'Adam',
-              lastName: 'Sich'
-            }
+              lastName: 'Sich',
+            },
           },
-          revision: 45
+          revision: 45,
         },
         flags: {
-          blockAds: true
+          blockAds: true,
         },
         title:
           'Life-threatening Hurricane Florence makes landfall in North Carolina – video report ',
-        commissioningDesks: []
-      }
-    ]
+        commissioningDesks: [],
+      },
+    ],
   },
   frontsMeta: {
-    defaults: {}
+    defaults: {},
   },
   isHosted: false,
   pillarId: 'pillar/news',
-  pillarName: 'News'
+  pillarName: 'News',
 };
 
 const liveArticle = {
@@ -463,8 +463,8 @@ const liveArticle = {
   frontPublicationDate: 1,
   publishedBy: 'Computers',
   meta: {
-    group: '1'
-  }
+    group: '1',
+  },
 };
 
 const articleWithSupporting = {
@@ -477,16 +477,16 @@ const articleWithSupporting = {
         id: 'article/draft/2',
         frontPublicationDate: 2,
         publishedBy: 'Computers',
-        meta: {}
+        meta: {},
       },
       {
         id: 'article/draft/3',
         frontPublicationDate: 3,
         publishedBy: 'Computers',
-        meta: {}
-      }
-    ]
-  }
+        meta: {},
+      },
+    ],
+  },
 };
 
 const collectionWithoutGroups = {
@@ -495,24 +495,24 @@ const collectionWithoutGroups = {
       id: 'article/draft/1',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
-      meta: {}
+      meta: {},
     },
     {
       id: 'a/long/path/2',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
-      meta: {}
+      meta: {},
     },
     {
       id: 'a/long/path/3',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
-      meta: {}
-    }
+      meta: {},
+    },
   ],
   id: 'collectionWithoutGroups',
   displayName: 'Collection Without Groups',
-  type: 'type'
+  type: 'type',
 };
 const collection = {
   live: [
@@ -521,18 +521,18 @@ const collection = {
       id: 'article/draft/1',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
-      meta: {}
+      meta: {},
     },
     {
       id: 'a/long/path/2',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
-      meta: {}
-    }
+      meta: {},
+    },
   ],
   id: 'exampleCollection',
   displayName: 'Example Collection',
-  type: 'type'
+  type: 'type',
 };
 
 const collectionWithPreviously = {
@@ -542,32 +542,32 @@ const collectionWithPreviously = {
       id: 'article/draft/1',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
-      meta: {}
+      meta: {},
     },
     {
       id: 'a/long/path/2',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
-      meta: {}
-    }
+      meta: {},
+    },
   ],
   previously: [
     {
       id: 'internal-code/page/qrt',
       meta: {},
       frontPublicationDate: 123,
-      publishedBy: 'A Dev'
+      publishedBy: 'A Dev',
     },
     {
       id: 'internal-code/page/xyz',
       meta: {},
       frontPublicationDate: 124,
-      publishedBy: 'Another Dev'
-    }
+      publishedBy: 'Another Dev',
+    },
   ],
   id: 'exampleCollection',
   displayName: 'Example Collection',
-  type: 'type'
+  type: 'type',
 };
 
 const normalisedCollectonWithPreviously = {
@@ -577,13 +577,13 @@ const normalisedCollectonWithPreviously = {
     cards: {
       uuid1: {
         id: 'internal-code/page/qrt',
-        uuid: 'uuid1'
+        uuid: 'uuid1',
       },
       uuid2: {
         id: 'internal-code/page/xyz',
-        uuid: 'uuid2'
-      }
-    }
+        uuid: 'uuid2',
+      },
+    },
   },
   frontsToolSettings: undefined,
   groups: undefined,
@@ -594,14 +594,14 @@ const normalisedCollectonWithPreviously = {
   platform: undefined,
   previously: ['uuid'],
   previouslyCardIds: [],
-  type: 'type'
+  type: 'type',
 };
 
 const collectionConfig = {
   id: 'exampleCollection',
   displayName: 'Example Collection',
   type: 'any',
-  groups: ['large', 'medium', 'small']
+  groups: ['large', 'medium', 'small'],
 };
 
 const collectionWithSupportingArticles = {
@@ -610,12 +610,12 @@ const collectionWithSupportingArticles = {
       id: 'article/live/0',
       frontPublicationDate: 1,
       publishedBy: 'Computers',
-      meta: {}
+      meta: {},
     },
-    articleWithSupporting
+    articleWithSupporting,
   ],
   id: 'exampleCollection',
-  displayName: 'Example Collection'
+  displayName: 'Example Collection',
 };
 
 const stateWithCollection: any = {
@@ -627,40 +627,40 @@ const stateWithCollection: any = {
         collections: {
           exampleCollection: {
             displayName: 'Example Collection',
-            type: 'type'
+            type: 'type',
           },
           testCollection1: {
             displayName: 'testCollection',
-            type: 'type'
+            type: 'type',
           },
           testCollection2: {
             displayName: 'testCollection',
-            type: 'type'
+            type: 'type',
           },
           automatedCollection: {
             displayName: 'automated',
-            type: 'type'
+            type: 'type',
           },
           testCollection5: {
             displayName: 'testCollection5',
-            type: 'type'
+            type: 'type',
           },
           geoLocatedCollection: {
             displayName: 'New Zealand News',
             type: 'type',
-            targetedTerritory: 'NZ'
-          }
-        }
+            targetedTerritory: 'NZ',
+          },
+        },
       },
       lastError: null,
       error: null,
       lastFetch: 1547474511048,
       loading: false,
       loadingIds: [],
-      updatingIds: []
+      updatingIds: [],
     },
     lastPressed: {},
-    collectionVisibility: { draft: {}, live: {} }
+    collectionVisibility: { draft: {}, live: {} },
   },
   collections: {
     data: {
@@ -670,7 +670,7 @@ const stateWithCollection: any = {
         live: ['abc', 'def'],
         draft: [],
         previously: undefined,
-        type: 'type'
+        type: 'type',
       },
       exampleCollectionTwo: {
         id: 'exampleCollection',
@@ -678,22 +678,22 @@ const stateWithCollection: any = {
         live: ['abc'],
         draft: ['def'],
         previously: undefined,
-        type: 'type'
-      }
+        type: 'type',
+      },
     },
     lastError: null,
     error: null,
     lastFetch: null,
     loading: false,
     loadingIds: [],
-    updatingIds: []
+    updatingIds: [],
   },
   groups: {
     abc: {
       id: '1',
       uuid: 'abc',
       cards: ['95e2bfc0-8999-4e6e-a359-19960967c1e0'],
-      name: 'group1'
+      name: 'group1',
     },
     def: {
       id: null,
@@ -701,9 +701,9 @@ const stateWithCollection: any = {
       name: 'group2',
       cards: [
         '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
-        '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
-      ]
-    }
+        '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d',
+      ],
+    },
   },
   cards: {
     '95e2bfc0-8999-4e6e-a359-19960967c1e0': {
@@ -711,22 +711,22 @@ const stateWithCollection: any = {
       frontPublicationDate: 1,
       publishedBy: 'Computers',
       meta: {},
-      uuid: '95e2bfc0-8999-4e6e-a359-19960967c1e0'
+      uuid: '95e2bfc0-8999-4e6e-a359-19960967c1e0',
     },
     '4bc11359-bb3e-45e7-a0a9-86c0ee52653d': {
       id: 'article/draft/1',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
       meta: {},
-      uuid: '4bc11359-bb3e-45e7-a0a9-86c0ee52653d'
+      uuid: '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
     },
     '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d': {
       id: 'a/long/path/2',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
       meta: {},
-      uuid: '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d'
-    }
+      uuid: '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d',
+    },
   },
   externalArticles: {
     data: {},
@@ -735,9 +735,9 @@ const stateWithCollection: any = {
     lastFetch: null,
     loading: false,
     loadingIds: [],
-    updatingIds: []
+    updatingIds: [],
   },
-  feed: {}
+  feed: {},
 };
 
 const stateWithCollectionAndSupporting: any = {
@@ -749,9 +749,9 @@ const stateWithCollectionAndSupporting: any = {
         displayName: 'Example Collection',
         live: ['abc'],
         draft: [],
-        previously: undefined
-      }
-    }
+        previously: undefined,
+      },
+    },
   },
   groups: {
     abc: {
@@ -759,9 +759,9 @@ const stateWithCollectionAndSupporting: any = {
       uuid: 'abc',
       cards: [
         '1269c42e-a341-4464-b206-a5731b92fa46',
-        '322f0527-cf14-43c1-8520-e6732ab01297'
-      ]
-    }
+        '322f0527-cf14-43c1-8520-e6732ab01297',
+      ],
+    },
   },
   cards: {
     '1269c42e-a341-4464-b206-a5731b92fa46': {
@@ -769,21 +769,21 @@ const stateWithCollectionAndSupporting: any = {
       frontPublicationDate: 1,
       publishedBy: 'Computers',
       meta: {},
-      uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
+      uuid: '1269c42e-a341-4464-b206-a5731b92fa46',
     },
     '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
       id: 'article/draft/2',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
       meta: {},
-      uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
+      uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9',
     },
     '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
       id: 'article/draft/3',
       frontPublicationDate: 3,
       publishedBy: 'Computers',
       meta: {},
-      uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+      uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5',
     },
     '322f0527-cf14-43c1-8520-e6732ab01297': {
       id: 'a/long/path/1',
@@ -792,11 +792,11 @@ const stateWithCollectionAndSupporting: any = {
       meta: {
         supporting: [
           '134c9d4f-b05c-43f4-be41-a605b6dccab9',
-          '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
-        ]
+          '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5',
+        ],
       },
-      uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
-    }
+      uuid: '322f0527-cf14-43c1-8520-e6732ab01297',
+    },
   },
   externalArticles: {
     data: {},
@@ -805,8 +805,8 @@ const stateWithCollectionAndSupporting: any = {
     lastFetch: null,
     loading: false,
     loadingIds: [],
-    updatingIds: []
-  }
+    updatingIds: [],
+  },
 };
 
 const stateWithSnaplinksAndArticles: any = {
@@ -817,21 +817,21 @@ const stateWithSnaplinksAndArticles: any = {
       frontPublicationDate: 1,
       publishedBy: 'Computers',
       meta: {},
-      uuid: '1269c42e-a341-4464-b206-a5731b92fa46'
+      uuid: '1269c42e-a341-4464-b206-a5731b92fa46',
     },
     '134c9d4f-b05c-43f4-be41-a605b6dccab9': {
       id: 'article/draft/2',
       frontPublicationDate: 2,
       publishedBy: 'Computers',
       meta: {},
-      uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9'
+      uuid: '134c9d4f-b05c-43f4-be41-a605b6dccab9',
     },
     '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5': {
       id: 'snap/32145544543',
       frontPublicationDate: 3,
       publishedBy: 'Computers',
       meta: {},
-      uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
+      uuid: '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5',
     },
     '322f0527-cf14-43c1-8520-e6732ab01297': {
       id: 'a/long/path/1',
@@ -840,12 +840,12 @@ const stateWithSnaplinksAndArticles: any = {
       meta: {
         supporting: [
           '134c9d4f-b05c-43f4-be41-a605b6dccab9',
-          '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5'
-        ]
+          '4c21ff2c-e2c5-4bac-ae14-24beb3f8d8b5',
+        ],
       },
-      uuid: '322f0527-cf14-43c1-8520-e6732ab01297'
-    }
-  }
+      uuid: '322f0527-cf14-43c1-8520-e6732ab01297',
+    },
+  },
 };
 
 const initialState = {
@@ -856,7 +856,7 @@ const initialState = {
     loadingIds: [],
     updatingIds: [],
     lastFetch: null,
-    error: null
+    error: null,
   },
   externalArticles: {
     data: {},
@@ -865,12 +865,12 @@ const initialState = {
     loadingIds: [],
     updatingIds: [],
     lastFetch: null,
-    error: null
+    error: null,
   },
   groups: {},
   cards: {},
   featureSwitches: {},
-  pageViewData: {}
+  pageViewData: {},
 };
 
 export {
@@ -887,5 +887,5 @@ export {
   liveArticle,
   articleWithSupporting,
   collectionConfig,
-  collectionWithoutGroups
+  collectionWithoutGroups,
 };

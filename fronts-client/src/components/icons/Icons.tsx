@@ -20,7 +20,7 @@ const IconSizeMap = {
   l: 22,
   xl: 30,
   xxl: 40,
-  fill: '100%'
+  fill: '100%',
 };
 const mapSize = (size: IconSizes): number | string => IconSizeMap[size];
 
@@ -28,7 +28,7 @@ const DownCaretIcon = ({
   fill,
   size = 'm',
   title = null,
-  direction = 'down'
+  direction = 'down',
 }: IconProps & Directions) => (
   <svg
     width={mapSize(size)}
@@ -70,7 +70,7 @@ const StarIcon = ({
   fill = theme.colors.white,
   outline = theme.colors.white,
   size = 'm',
-  title = null
+  title = null,
 }: IconProps & { outline?: string }) => (
   <svg
     className="star-icon"
@@ -97,7 +97,7 @@ const StarIcon = ({
 const RubbishBinIcon = ({
   fill = theme.colors.white,
   size = 'm',
-  title = null
+  title = null,
 }: IconProps) => (
   <svg
     width={mapSize(size)}
@@ -117,7 +117,7 @@ const RubbishBinIcon = ({
 const MagnifyingGlassIcon = ({
   fill = theme.colors.white,
   size = 'm',
-  title = 'Search'
+  title = 'Search',
 }: IconProps) => (
   <svg
     width={mapSize(size)}
@@ -138,7 +138,7 @@ const MagnifyingGlassIcon = ({
 const CloseIcon = ({
   fill = theme.colors.white,
   size = 'm',
-  title = null
+  title = null,
 }: IconProps) => (
   <svg
     width={mapSize(size)}
@@ -160,7 +160,7 @@ const CloseIcon = ({
 const ClearIcon = ({
   fill = theme.colors.white,
   size = 'm',
-  title = null
+  title = null,
 }: IconProps) => (
   <svg
     style={{ transform: 'rotate(45deg)' }}
@@ -182,7 +182,7 @@ const ClearIcon = ({
 const MoreIcon = ({
   fill = theme.colors.white,
   size = 'm',
-  title = null
+  title = null,
 }: IconProps) => (
   <svg
     width={mapSize(size)}
@@ -202,7 +202,7 @@ const MoreIcon = ({
 const LockedPadlockIcon = ({
   fill = theme.colors.white,
   size = 'm',
-  title = 'Locked'
+  title = 'Locked',
 }: IconProps) => (
   <svg width={mapSize(size)} height={mapSize(size)} viewBox="0 0 535 535">
     <title>{title}</title>
@@ -219,7 +219,7 @@ const LockedPadlockIcon = ({
 const AddImageIcon = ({
   fill = theme.colors.white,
   size = 'm',
-  title = 'Add mage'
+  title = 'Add mage',
 }: IconProps) => (
   <svg width={mapSize(size)} height={mapSize(size)} viewBox="0 0 22 22">
     <title>{title}</title>
@@ -233,7 +233,7 @@ const AddImageIcon = ({
 const PreviewEyeIcon = ({
   fill = theme.colors.white,
   size = 'm',
-  title = null
+  title = null,
 }: IconProps) => (
   <svg
     width={mapSize(size)}
@@ -295,5 +295,5 @@ export {
   StarIcon,
   PreviewEyeIcon,
   VideoIcon,
-  DragHandleIcon as DragIcon
+  DragHandleIcon as DragIcon,
 };

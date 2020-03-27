@@ -1,9 +1,9 @@
-import { State } from 'types/State';
 import createAsyncResourceBundle, {
   State as LibState,
-  Actions
+  Actions,
 } from 'lib/createAsyncResourceBundle';
 import { Collection } from 'types/Collection';
+import { State } from 'types/State';
 import { addPersistMetaToAction } from '../util/action';
 import set from 'lodash/fp/set';
 
@@ -14,9 +14,9 @@ const {
   actionNames,
   reducer,
   selectors,
-  initialState
+  initialState,
 } = createAsyncResourceBundle<Collection>(collectionsEntityName, {
-  indexById: true
+  indexById: true,
 });
 
 const collectionSelectors = {
@@ -26,8 +26,8 @@ const collectionSelectors = {
     cardId: string
   ): string | null => {
     let collectionId: null | string = null;
-    Object.keys(state.collections.data).some(id =>
-      ['live', 'draft', 'previously'].some(stage => {
+    Object.keys(state.collections.data).some((id) =>
+      ['live', 'draft', 'previously'].some((stage) => {
         const groups = state.collections.data[id][stage] || [];
 
         return groups.some((gId: string) => {
@@ -53,7 +53,7 @@ const collectionSelectors = {
       })
     );
     return collectionId;
-  }
+  },
 };
 
 const SET_HIDDEN = 'SET_HIDDEN' as 'SET_HIDDEN';
@@ -63,21 +63,21 @@ const setHidden = (collectionId: string, isHidden: boolean) => ({
   type: SET_HIDDEN,
   payload: {
     collectionId,
-    isHidden
-  }
+    isHidden,
+  },
 });
 
 const setHiddenAndPersist = addPersistMetaToAction(setHidden, {
   persistTo: 'collection',
   key: 'collectionId',
-  entity: 'collection'
+  entity: 'collection',
 });
 
 export type SetHidden = ReturnType<typeof setHidden>;
 
 const collectionActions = {
   ...actions,
-  setHiddenAndPersist
+  setHiddenAndPersist,
 };
 
 type CollectionActions = Actions<Collection> | SetHidden;
@@ -110,5 +110,5 @@ export {
   actionNames,
   collectionSelectors as selectors,
   collectionReducer as reducer,
-  initialState
+  initialState,
 };

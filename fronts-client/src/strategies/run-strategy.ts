@@ -1,4 +1,4 @@
-import { State } from 'types/State';
+import type { State } from 'types/State';
 import { selectV2SubPath } from 'selectors/pathSelectors';
 import { matchFrontsEditPath, matchIssuePath } from 'routes/routes';
 

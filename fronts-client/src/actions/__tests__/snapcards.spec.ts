@@ -1,12 +1,9 @@
 import configureMockStore from 'redux-mock-store';
 import fetchMock from 'fetch-mock';
 import thunk from 'redux-thunk';
-import {
-  createArticleEntitiesFromDrop,
-  cardsReceived,
-  snapMetaWhitelist,
-  marketingParamsWhiteList
-} from '../CardsCommon';
+import { createArticleEntitiesFromDrop } from '../Cards';
+import { cardsReceived } from '../CardsCommon';
+import { snapMetaWhitelist, marketingParamsWhiteList } from 'util/card';
 import { state as initialState } from 'fixtures/initialState';
 import { capiArticle } from '../../fixtures/shared';
 import { createSnap, createLatestSnap } from 'util/snap';
@@ -45,39 +42,43 @@ describe('Snap cards actions', () => {
     it('should fetch a link and create a corresponding card representing a snap link', async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
-          results: []
-        }
+          results: [],
+        },
       });
       fetchMock.mock('/http/proxy/https://bbc.co.uk/some/page', bbcSectionPage);
       const store = mockStore(initialState);
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop('https://bbc.co.uk/some/page')
-      ) as any);
+      await store.dispatch(
+        createArticleEntitiesFromDrop(
+          idDrop('https://bbc.co.uk/some/page')
+        ) as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         cardsReceived({
-          card1: await createSnap('https://bbc.co.uk/some/page')
+          card1: await createSnap('https://bbc.co.uk/some/page'),
         })
       );
     });
     it('should fetch a link and create a corresponding card representing a snap link - query params in external urls should be preserved', async () => {
       fetchMock.once('begin:/api/preview', {
         response: {
-          results: []
-        }
+          results: [],
+        },
       });
       fetchMock.mock(
         '/http/proxy/https://bbc.co.uk/some/page?great=true',
         bbcSectionPage
       );
       const store = mockStore(initialState);
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop('https://bbc.co.uk/some/page?great=true')
-      ) as any);
+      await store.dispatch(
+        createArticleEntitiesFromDrop(
+          idDrop('https://bbc.co.uk/some/page?great=true')
+        ) as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         cardsReceived({
-          card1: await createSnap('https://bbc.co.uk/some/page?great=true')
+          card1: await createSnap('https://bbc.co.uk/some/page?great=true'),
         })
       );
     });
@@ -85,17 +86,19 @@ describe('Snap cards actions', () => {
       fetchMock.once('begin:/api/preview', {
         response: {
           results: [capiArticle, capiArticle],
-          tag: { webTitle: 'Example title' }
-        }
+          tag: { webTitle: 'Example title' },
+        },
       });
       fetchMock.once(
         '/http/proxy/https://www.theguardian.com/example/tag/page?view=mobile',
         guardianTagPage
       );
       const store = configureStore(initialState);
-      const promise = store.dispatch(createArticleEntitiesFromDrop(
-        idDrop('https://www.theguardian.com/example/tag/page')
-      ) as any);
+      const promise = store.dispatch(
+        createArticleEntitiesFromDrop(
+          idDrop('https://www.theguardian.com/example/tag/page')
+        ) as any
+      );
       // We can't wait for the entire promise to be done here -- we need to call the modal
       // callbacks in order for the thunk to proceed. However, the modal callbacks are only
       // available on the next event loop tick, so a setTimeout is necessary to ensure they
@@ -104,8 +107,8 @@ describe('Snap cards actions', () => {
         const options = selectOptionsModalOptions(store.getState());
         // This is effectively simulating clicking a modal option.
         options
-          .filter(option => option.buttonText === 'Latest from')
-          .forEach(option => option.callback());
+          .filter((option) => option.buttonText === 'Latest from')
+          .forEach((option) => option.callback());
       });
       await promise;
       expect(selectCard(store.getState(), 'card1')).toEqual(
@@ -119,22 +122,24 @@ describe('Snap cards actions', () => {
       fetchMock.once('begin:/api/preview', {
         response: {
           results: [capiArticle, capiArticle],
-          tag: { webTitle: 'Example title' }
-        }
+          tag: { webTitle: 'Example title' },
+        },
       });
       fetchMock.mock(
         '/http/proxy/https://www.theguardian.com/example/tag/page?view=mobile',
         guardianTagPage
       );
       const store = configureStore(initialState);
-      const promise = store.dispatch(createArticleEntitiesFromDrop(
-        idDrop('https://www.theguardian.com/example/tag/page')
-      ) as any);
+      const promise = store.dispatch(
+        createArticleEntitiesFromDrop(
+          idDrop('https://www.theguardian.com/example/tag/page')
+        ) as any
+      );
       setTimeout(() => {
         const options = selectOptionsModalOptions(store.getState());
         options
-          .filter(option => option.buttonText === 'Link')
-          .forEach(option => option.callback());
+          .filter((option) => option.buttonText === 'Link')
+          .forEach((option) => option.callback());
       });
 
       await promise;
@@ -146,23 +151,25 @@ describe('Snap cards actions', () => {
       fetchMock.once('begin:/api/preview', {
         response: {
           status: 'error',
-          message: 'The requested resource could not be found.'
-        }
+          message: 'The requested resource could not be found.',
+        },
       });
       fetchMock.mock(
         '/http/proxy/https://www.theguardian.com/example/non/tag/page?view=mobile',
         guardianTagPage
       );
       const store = mockStore(initialState);
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop('https://www.theguardian.com/example/non/tag/page')
-      ) as any);
+      await store.dispatch(
+        createArticleEntitiesFromDrop(
+          idDrop('https://www.theguardian.com/example/non/tag/page')
+        ) as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         cardsReceived({
           card1: await createSnap(
             'https://www.theguardian.com/example/non/tag/page'
-          )
+          ),
         })
       );
     });
@@ -172,9 +179,9 @@ describe('Snap cards actions', () => {
         const snapUrl =
           'https://www.theguardian.com/football/live?gu-snapType=json.html&gu-snapCss=football&gu-snapUri=https%3A%2F%2Fapi.nextgen.guardianapps.co.uk%2Ffootball%2Flive.json&gu-headline=Live+matches&gu-trailText=Today%27s+matches';
         fetchMock.mock(snapUrl, JSON.stringify({}));
-        await store.dispatch(createArticleEntitiesFromDrop(
-          idDrop(snapUrl)
-        ) as any);
+        await store.dispatch(
+          createArticleEntitiesFromDrop(idDrop(snapUrl)) as any
+        );
         const actions = store.getActions();
         expect(actions[0]).toEqual(
           cardsReceived({
@@ -190,10 +197,10 @@ describe('Snap cards actions', () => {
                 snapType: 'json.html',
                 snapUri:
                   'https://api.nextgen.guardianapps.co.uk/football/live.json',
-                trailText: "Today's matches"
+                trailText: "Today's matches",
               },
-              uuid: 'card1'
-            }
+              uuid: 'card1',
+            },
           })
         );
       });
@@ -202,9 +209,9 @@ describe('Snap cards actions', () => {
         const snapUrl =
           'https://gu.com?gu-snapType=json.html&gu-snapUri=https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json';
         fetchMock.mock(snapUrl, JSON.stringify({}));
-        await store.dispatch(createArticleEntitiesFromDrop(
-          idDrop(snapUrl)
-        ) as any);
+        await store.dispatch(
+          createArticleEntitiesFromDrop(idDrop(snapUrl)) as any
+        );
         const actions = store.getActions();
         expect(actions[0]).toEqual(
           cardsReceived({
@@ -217,10 +224,10 @@ describe('Snap cards actions', () => {
                 showByline: false,
                 snapType: 'json.html',
                 snapUri:
-                  'https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json'
+                  'https://interactive.guim.co.uk/atoms/2019/03/29/unmeaningful-vote/snap/snap.json',
               },
-              uuid: 'card1'
-            }
+              uuid: 'card1',
+            },
           })
         );
       });
@@ -264,9 +271,9 @@ describe('Snap cards actions', () => {
         '/api/live/atom/interactive/interactives/2017/06/general-election',
         CapiResponse
       );
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop(snapUrl)
-      ) as any);
+      await store.dispatch(
+        createArticleEntitiesFromDrop(idDrop(snapUrl)) as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         cardsReceived({
@@ -282,10 +289,10 @@ describe('Snap cards actions', () => {
               snapUri:
                 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
               href:
-                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election'
+                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
             },
-            uuid: 'card1'
-          }
+            uuid: 'card1',
+          },
         })
       );
     });
@@ -296,16 +303,16 @@ describe('Snap cards actions', () => {
       const CapiErrorResponse = {
         response: {
           status: 'error',
-          message: 'atom id not found: interactives/2017/06/not-an-atom'
-        }
+          message: 'atom id not found: interactives/2017/06/not-an-atom',
+        },
       };
       fetchMock.mock(
         '/api/live/atom/interactive/interactives/2017/06/not-an-atom',
         CapiErrorResponse
       );
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop(snapUrl)
-      ) as any);
+      await store.dispatch(
+        createArticleEntitiesFromDrop(idDrop(snapUrl)) as any
+      );
       const actions = store.getActions();
       expect(actions[0].type).toEqual('MODAL/START_OPTIONS_MODAL');
       expect(actions[0]).toEqual(
@@ -329,9 +336,9 @@ describe('Snap cards actions', () => {
         '/api/live/atom/interactive/interactives/2017/06/general-election',
         CapiResponse
       );
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop(snapUrl)
-      ) as any);
+      await store.dispatch(
+        createArticleEntitiesFromDrop(idDrop(snapUrl)) as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         cardsReceived({
@@ -347,10 +354,10 @@ describe('Snap cards actions', () => {
               snapUri:
                 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
               href:
-                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election'
+                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
             },
-            uuid: 'card1'
-          }
+            uuid: 'card1',
+          },
         })
       );
     });
@@ -363,9 +370,9 @@ describe('Snap cards actions', () => {
         '/api/live/atom/interactive/interactives/2017/06/general-election',
         CapiResponse
       );
-      await store.dispatch(createArticleEntitiesFromDrop(
-        idDrop(snapUrl)
-      ) as any);
+      await store.dispatch(
+        createArticleEntitiesFromDrop(idDrop(snapUrl)) as any
+      );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
         cardsReceived({
@@ -381,10 +388,10 @@ describe('Snap cards actions', () => {
               snapType: 'json.html',
               snapUri:
                 'https://api.nextgen.guardianapps.co.uk/football/live.json',
-              trailText: "Today's matches"
+              trailText: "Today's matches",
             },
-            uuid: 'card1'
-          }
+            uuid: 'card1',
+          },
         })
       );
     });
