@@ -12,19 +12,31 @@ describe('Notifications bundle', () => {
     it('should add a notification banner message', () => {
       const state = reducer(
         initialState,
-        actionAddNotificationBanner('Example message')
+        actionAddNotificationBanner({
+          message: 'Example message',
+          level: 'error',
+        })
       );
-      expect(state.banners[0].message).toBe('Example message');
+      expect(state.banners[0].message).toBe({
+        message: 'Example message',
+        level: 'error',
+      });
     });
 
     it('should find duplicate messages and bump the duplicate count rather than display a new notification', () => {
       const state = reducer(
         initialState,
-        actionAddNotificationBanner('Example message')
+        actionAddNotificationBanner({
+          message: 'Example message',
+          level: 'error',
+        })
       );
       const newState = reducer(
         state,
-        actionAddNotificationBanner('Example message')
+        actionAddNotificationBanner({
+          message: 'Example message',
+          level: 'error',
+        })
       );
       expect(newState.banners.length).toBe(1);
       expect(newState.banners[0].duplicates).toBe(1);
@@ -33,7 +45,10 @@ describe('Notifications bundle', () => {
     it('should remove a notification banner message', () => {
       const state = reducer(
         initialState,
-        actionAddNotificationBanner('Example message')
+        actionAddNotificationBanner({
+          message: 'Example message',
+          level: 'error',
+        })
       );
       const newState = reducer(
         initialState,
@@ -47,7 +62,10 @@ describe('Notifications bundle', () => {
     it('should select the current banners', () => {
       const state = reducer(
         initialState,
-        actionAddNotificationBanner('Example message')
+        actionAddNotificationBanner({
+          message: 'Example message',
+          level: 'error',
+        })
       );
       const rootState = {
         ...fixtureState,
