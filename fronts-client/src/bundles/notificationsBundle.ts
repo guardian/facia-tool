@@ -6,7 +6,7 @@ type NotificationLevels = 'error';
 
 export interface Notification {
   message: string;
-  level: NotificationLevels
+  level: NotificationLevels;
 }
 
 interface InternalBannerNotification extends Notification {

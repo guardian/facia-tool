@@ -17,10 +17,7 @@ describe('Notifications bundle', () => {
           level: 'error',
         })
       );
-      expect(state.banners[0].message).toBe({
-        message: 'Example message',
-        level: 'error',
-      });
+      expect(state.banners[0].message).toEqual('Example message');
     });
 
     it('should find duplicate messages and bump the duplicate count rather than display a new notification', () => {
