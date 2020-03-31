@@ -21,7 +21,7 @@ const BannerWrapper = styled.div`
   position: relative;
   padding: 10px;
   text-align: center;
-  color: white;
+  color: ${theme.base.colors.textLight};
   & + & {
     border-top: 1px solid ${theme.colors.blackTransparent20};
   }
@@ -29,6 +29,10 @@ const BannerWrapper = styled.div`
 
 const Message = styled.div`
   flex-grow: 1;
+  a,
+  a:hover {
+    color: ${theme.base.colors.textLight};
+  }
 `;
 
 const CloseButton = styled(Button).attrs({
@@ -49,7 +53,7 @@ const NotificationsBanner = ({
     {banners.map((banner) => (
       <BannerWrapper key={banner.id}>
         <Message>
-          {banner.message}
+          <span dangerouslySetInnerHTML={{ __html: banner.message }} />
           {banner.duplicates ? ` (${banner.duplicates + 1})` : ''}
         </Message>
         <CloseButton onClick={() => removeNotificationBanner(banner.id)}>
