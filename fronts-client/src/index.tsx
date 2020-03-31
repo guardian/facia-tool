@@ -22,10 +22,17 @@ import pollingConfig from 'util/pollingConfig';
 import { base } from 'routes/routes';
 import { actionSetFeatureValue } from 'actions/FeatureSwitches';
 import { deleteIssue } from 'util/delete';
+import notifications from 'services/notifications';
+import { actionAddNotificationBanner } from 'bundles/notificationsBundle';
 
 initGA();
 
 const store = configureStore();
+
+// Wire up our notifications service
+notifications.subscribe((notification) =>
+  store.dispatch(actionAddNotificationBanner(notification))
+);
 
 // @ts-ignore -- Unbind is not used yet but can be used for removed all the
 // keyboard events. The keyboardActionMap contains a list of all active keyboard

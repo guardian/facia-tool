@@ -2,23 +2,29 @@ import type { Action } from 'types/Action';
 import type { State } from 'types/State';
 import v4 from 'uuid/v4';
 
-interface BannerNotification {
-  id: string;
+type NotificationLevels = 'error';
+
+export interface Notification {
   message: string;
+  level: NotificationLevels;
+}
+
+interface InternalBannerNotification extends Notification {
+  id: string;
   duplicates: number;
 }
 
 export interface NotificationState {
-  banners: BannerNotification[];
+  banners: InternalBannerNotification[];
 }
 
 // Actions
 
 export const NOTIFICATION_ADD_BANNER = 'NOTIFICATION_ADD_BANNER' as const;
 
-export const actionAddNotificationBanner = (message: string) => ({
+export const actionAddNotificationBanner = (notification: Notification) => ({
   type: NOTIFICATION_ADD_BANNER,
-  payload: { message, id: v4() },
+  payload: { ...notification, id: v4() },
 });
 
 export const NOTIFICATION_REMOVE_BANNER = 'NOTIFICATION_REMOVE_BANNER' as const;
@@ -67,8 +73,7 @@ export const reducer = (
         banners: [
           ...state.banners,
           {
-            id: action.payload.id,
-            message: action.payload.message,
+            ...action.payload,
             duplicates: 0,
           },
         ],

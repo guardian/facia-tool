@@ -1,6 +1,8 @@
 import { reEstablishSession } from 'panda-session';
+import notifications from './notifications';
 
 const reauthUrl = '/login/status';
+const reauthErrorMessage = `We couldn't log you back in. Your changes may not be saved. Please  <a href="${window.location.href}" target="_self">log in again</a> to reauthenticate.`;
 
 /**
  * Make a fetch request with Panda authentication.
@@ -29,6 +31,7 @@ const pandaFetch = (
           return reject(e);
         }
       } else if (res.status < 200 || res.status >= 300) {
+        notifications.notify({ message: reauthErrorMessage, level: 'error' });
         return reject(res);
       }
 
