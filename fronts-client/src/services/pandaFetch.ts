@@ -22,16 +22,16 @@ const pandaFetch = (
         credentials: 'same-origin',
       });
 
-      if (res.status === 419 && count < 1) {
+      if ((res.status === 419 || res.status === 401) && count < 1) {
         try {
           await reEstablishSession(reauthUrl, 5000);
           const res2 = await pandaFetch(url, options, count + 1);
           return resolve(res2);
         } catch (e) {
+          notifications.notify({ message: reauthErrorMessage, level: 'error' });
           return reject(e);
         }
       } else if (res.status < 200 || res.status >= 300) {
-        notifications.notify({ message: reauthErrorMessage, level: 'error' });
         return reject(res);
       }
 
