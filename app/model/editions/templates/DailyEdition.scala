@@ -155,6 +155,7 @@ object DailyEdition {
     collection("Comment").printSentAnyTag("theguardian/journal/opinion"),
     collection("Comment").hide,
     collection("Letters").printSentAnyTag("theguardian/journal/letters"),
+    collection("Journal"),
     collection("Obituaries").printSentAnyTag("theguardian/journal/obituaries"),
     collection("Journal").hide,
   )
