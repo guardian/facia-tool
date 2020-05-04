@@ -1,46 +1,43 @@
-import setup from '../server/setup';
-import teardown from '../server/teardown';
 import {
+  allCards,
+  card,
+  cardAddToClipboardButton,
+  cardDeleteButton,
+  clipboardItem,
+  clipboardItemDeleteButton,
+  clipboardWrapper,
+  collection,
+  collectionDiscardButton,
+  collectionDropZone,
+  collectionLaunchButton,
+  externalSnapLink,
+  feedItem,
+  feedItemHeadline,
   frontDropZone,
   frontHeadline,
   frontSnapLink,
-  feedItem,
-  feedItemHeadline,
   guardianSnapLink,
-  externalSnapLink,
-  previouslyToggle,
+  optionsModalChoice,
   previouslyDropZone,
   previouslyItem,
-  clipboardWrapper,
-  clipboardItem,
-  hoverOverlay,
-  collection,
-  card,
-  collectionDropZone,
-  cardHoverZone,
-  allCards,
-  allCollectionDropZones,
-  cardDeleteButton,
-  collectionDiscardButton,
-  collectionLaunchButton,
-  cardAddToClipboardButton,
-  clipboardItemDeleteButton,
-  optionsModalChoice
+  previouslyToggle,
 } from '../selectors';
+import setup from '../server/setup';
+import teardown from '../server/teardown';
 
 fixture`Fronts edit`.page`http://localhost:3456/v2/editorial`
   .before(setup)
   .after(teardown);
 
 // quick and dirty check to see if there are any console errors on page load
-test('Console errors', async t => {
+test('Console errors', async (t) => {
   // await the front to load
   const topFrontHeadline = await frontHeadline(0).textContent;
   const { error } = await t.getBrowserConsoleMessages();
   await t.expect(error.length).eql(0);
 });
 
-test('Drag and drop', async t => {
+test('Drag and drop', async (t) => {
   const topFrontHeadline = await frontHeadline(0).textContent;
   const topFeedHeadline = await feedItemHeadline(0).textContent;
   const frontDropsCount = await frontDropZone().count;
@@ -66,7 +63,7 @@ test('Drag and drop', async t => {
     .eql(topFrontHeadline);
 });
 
-test('Drag from feed to group position', async t => {
+test('Drag from feed to group position', async (t) => {
   const frontDropsCount = await frontDropZone().count;
   await t
     .dragToElement(feedItem(0), frontDropZone(2))
@@ -76,7 +73,7 @@ test('Drag from feed to group position', async t => {
     .eql(true);
 });
 
-test('Drag from feed to supporting position', async t => {
+test('Drag from feed to supporting position', async (t) => {
   const frontDropsCount = await frontDropZone().count;
   await t
     .dragToElement(feedItem(0), frontDropZone(3))
@@ -88,7 +85,7 @@ test('Drag from feed to supporting position', async t => {
     .eql(true);
 });
 
-test('Drag between two collections', async t => {
+test('Drag between two collections', async (t) => {
   const firstCollectionStory = card(0, 0);
   const secondCollectionDropZone = collectionDropZone(1, 0);
   await t
@@ -99,7 +96,7 @@ test('Drag between two collections', async t => {
     .eql(1);
 });
 
-test('Drag from clipboard to collection', async t => {
+test('Drag from clipboard to collection', async (t) => {
   const firstCollectionStoryCount = await allCards(0).count;
   const clipboardStoryCount = await clipboardItem().count;
   await t
@@ -110,28 +107,28 @@ test('Drag from clipboard to collection', async t => {
     .eql(clipboardStoryCount);
 });
 
-test('Discarding changes to a collection works', async t => {
+test('Discarding changes to a collection works', async (t) => {
   await t
     .click(collectionDiscardButton(0))
     .expect(allCards(0).count) // discarding overwrites a collection's draft content with its live content
     .eql(0);
 });
 
-test('Send item from collection to clipboard using hover button', async t => {
-  const firstCollectionItem = await collectionItem(0, 0);
-  const firstCollectionStoryCount = await allCollectionItems(0).count;
+test('Send item from collection to clipboard using hover button', async (t) => {
+  const firstCollectionItem = card(0, 0);
+  const firstCollectionStoryCount = await allCards(0).count;
   const clipboardStoryCount = await clipboardItem().count;
-  const sendToClipboardButton = await collectionItemAddToClipboardButton(0, 0);
+  const sendToClipboardButton = await cardAddToClipboardButton(0, 0);
   await t
     .hover(firstCollectionItem, { speed: 0.5 })
     .click(sendToClipboardButton)
-    .expect(allCollectionItems(0).count)
-    .eql(firstCollectionStoryCount - 1)
+    .expect(allCards(0).count)
+    .eql(firstCollectionStoryCount)
     .expect(clipboardItem().count)
     .eql(clipboardStoryCount + 1);
 });
 
-test('Deleting an article from clipboard with hover button works', async t => {
+test('Deleting an article from clipboard with hover button works', async (t) => {
   const clipboardStory = await clipboardItem();
   const clipboardStoryCount = await clipboardItem().count;
   const deleteButton = await clipboardItemDeleteButton();
@@ -141,61 +138,18 @@ test('Deleting an article from clipboard with hover button works', async t => {
     .expect(clipboardItem().count)
     .eql(clipboardStoryCount - 1);
 });
-test('Deleting an article from a collection with hover button works', async t => {
-  const firstCollectionItem = await collectionItem(0, 0);
-  const firstCollectionStoryCount = await allCollectionItems(0).count;
-  const deleteButton = await collectionItemDeleteButton(0, 0);
+test('Deleting an article from a collection with hover button works', async (t) => {
+  const firstCollectionItem = await card(0, 0);
+  const firstCollectionStoryCount = await allCards(0).count;
+  const deleteButton = await cardDeleteButton(0, 0);
   await t
     .hover(firstCollectionItem)
     .click(deleteButton)
-    .expect(allCollectionItems(0).count)
+    .expect(allCards(0).count)
     .eql(firstCollectionStoryCount - 1);
 });
 
-test('Snap Links - Guardian', async t => {
-  const frontDropsCount = await frontDropZone().count;
-  const tagSnap = await guardianSnapLink();
-  await t
-    .maximizeWindow() // needed to find DOM elements in headless mode
-    .setNativeDialogHandler(() => false)
-    .dragToElement(tagSnap, frontDropZone(1)) //drag tag into parent position (not a sublink)
-    .expect(frontDropZone().count)
-    .eql(frontDropsCount + 2) // adding a sublink adds 1 dropzone, adding a normal article adds 2
-    .expect(frontSnapLink(0).textContent)
-    .contains('Recipes | The Guardian')
-    .expect(frontSnapLink(0).textContent)
-    .notContains('Latest');
-});
-
-test('Snap Links - Guardian Latest', async t => {
-  const frontDropsCount = await frontDropZone().count;
-  const tagSnap = await guardianSnapLink();
-  await t
-    .maximizeWindow() // needed to find DOM elements in headless mode
-    .setNativeDialogHandler(() => true)
-    .dragToElement(tagSnap, frontDropZone(1))
-    .expect(frontDropZone().count)
-    .eql(frontDropsCount + 2)
-    .expect(frontSnapLink(0).textContent)
-    .contains('{ Recipes }')
-    .expect(frontSnapLink(0).textContent)
-    .contains('Latest');
-});
-
-test('Snap Links - External', async t => {
-  const frontDropsCount = await frontDropZone().count;
-  const externalSnap = await externalSnapLink();
-  await t
-    .maximizeWindow() // needed to find DOM elements in headless mode
-    .setNativeDialogHandler(() => false)
-    .dragToElement(externalSnap, frontDropZone(1))
-    .expect(frontDropZone().count)
-    .eql(frontDropsCount + 2)
-    .expect(frontSnapLink(0).textContent)
-    .contains('Business - BBC News');
-});
-
-test('Previously', async t => {
+test('Previously', async (t) => {
   const frontDropsCount = await frontDropZone().count;
 
   await t
@@ -217,21 +171,21 @@ test('Previously', async t => {
     .eql(previouslyItemCount); // does not remove the previously item
 });
 
-test('Clipboard - drop depth', async t => {
+test('Clipboard - drop depth', async (t) => {
   const prevCount = await clipboardItem().count;
   await t
     // drag to a position in the UI wrapper - NOT the clipboard itself
     // this checks that the clipboard drop area extends to the bottom of the visual clipboard wrapper
     .dragToElement(feedItem(0), clipboardWrapper(), {
       destinationOffsetX: 40,
-      destinationOffsetY: -40
+      destinationOffsetY: -40,
     })
     .wait(1000)
     .expect(prevCount + 1)
     .eql(2);
 });
 
-test('Drag from clipboard to full collection - accept modal', async t => {
+test('Drag from clipboard to full collection - accept modal', async (t) => {
   const externalSnap = await externalSnapLink();
   const fullCollectionCount = await allCards(2).count;
 
@@ -242,7 +196,7 @@ test('Drag from clipboard to full collection - accept modal', async t => {
     .eql(fullCollectionCount - 1); // there are now 19 articles and 1 snap
 });
 
-test('Drag from clipboard to full collection - cancel modal', async t => {
+test('Drag from clipboard to full collection - cancel modal', async (t) => {
   const externalSnap = await externalSnapLink();
   const fullCollectionCount = await allCards(2).count;
 
