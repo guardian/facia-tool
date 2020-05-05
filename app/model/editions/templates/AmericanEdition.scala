@@ -49,7 +49,10 @@ object AmericanEdition {
 
   def FrontEssentialReadsUs = front(
     "Essential Reads",
+    collection("Essential Reads"),
+    collection("Essential Reads"),
     collection("Essential Reads")
+
   )
     .swatch(News)
   
