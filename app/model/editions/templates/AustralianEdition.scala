@@ -46,6 +46,8 @@ object AustralianEdition {
 
   def FrontTopStoriesAu = front(
     "Top stories",
+    collection("Top Stories"),
+    collection("Top Stories"),
     collection("Top Stories")
   )
     .swatch(News)
