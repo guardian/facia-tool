@@ -7,9 +7,10 @@ import play.api.libs.json._
 
 trait FrontsQueries extends Logging {
   def updateFrontMetadata(id: String, metadata: EditionsFrontMetadata): Option[EditionsFrontMetadata] = DB localTx { implicit session =>
+    val updatedMetadata = metadata.copy(nameOverride = metadata.nameOverride.map(_.trim()))
     sql"""
           UPDATE fronts
-          SET metadata = ${metadata.toPGobject}
+          SET metadata = ${updatedMetadata.toPGobject}
           WHERE id = $id
       """.execute().apply()
 
