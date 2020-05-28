@@ -149,7 +149,7 @@ class EditionsController(db: EditionsDB,
       NotFound(s"Collection $collectionId not found")
     } else {
       val updatingCollection = collection.head.copy(
-        displayName = req.body.collection.displayName,
+        displayName = req.body.collection.displayName.trim(),
         updatedBy = Some(UserUtil.getDisplayName(req.user)),
         updatedEmail = Some(req.user.email)
       )
