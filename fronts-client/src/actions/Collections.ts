@@ -261,6 +261,7 @@ function updateCollection(
       batchActions([
         collectionActions.updateStart({
           ...collection,
+          displayName: collection.displayName && collection.displayName.trim(),
           updatedEmail: selectUserEmail(getState()) || '',
           updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
           lastUpdated: Date.now(),

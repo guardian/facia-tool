@@ -48,6 +48,20 @@ test('Check renaming a front works', async t => {
     .eql('Super neat custom front name');
 });
 
+test('Check renaming a front trims whitespace', async t => {
+  await t
+    .click(frontsMenuButton())
+    .click(frontsMenuItem(1))
+    .expect(frontName(0).textContent)
+    .eql('Special 1')
+    .click(renameFrontButton(0))
+    .selectText(renameFrontInput())
+    .typeText(renameFrontInput(), 'Super neat custom front name        ')
+    .pressKey('enter')
+    .expect(frontName(0).textContent)
+    .eql('Super neat custom front name');
+});
+
 test('Check publish edition button opens modal', async t => {
   await t
     .click(publishEditionButton())

@@ -83,7 +83,12 @@ export const updateFrontMetadata = (
   metadata: EditionsFrontMetadata
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
   try {
-    const serverMetadata = await putFrontMetadata(id, metadata);
+    const nameOverride = metadata.nameOverride && metadata.nameOverride.trim();
+    const serverMetadata = await putFrontMetadata(id, {
+      ...metadata,
+      nameOverride,
+    });
+
     dispatch({
       type: 'FETCH_UPDATE_METADATA_SUCCESS',
       payload: {
