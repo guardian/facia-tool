@@ -104,6 +104,7 @@ object DailyEdition {
     "World",
     collection("World").printSentAnyTag("theguardian/mainsection/international"),
     collection("World").hide,
+    collection("World").hide,
     collection("World").hide
   )
     .swatch(News)
@@ -121,6 +122,7 @@ object DailyEdition {
   def FrontNewsWorldObserver = front(
     "World",
     collection("World").printSentAnyTag("theobserver/news/worldnews"),
+    collection("World").hide,
     collection("World").hide,
     collection("World").hide
   )
