@@ -38,6 +38,49 @@ export const check = (id: string): ThunkResult<Promise<void>> => async (
   }
 };
 
+export const proofEditionIssue = (
+  id: string
+): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
+  try {
+    await proofIssue(id);
+    dispatch(
+      startOptionsModal(
+        'Proof Succeeded',
+        <>
+          <p>
+            This issue has been submitted for proofing, please check your app
+            using the proof bucket setting, in the next few minutes.
+          </p>
+          <p>
+            If you do not see the issue within 5 minutes please contact a member
+            of the support team.
+          </p>
+
+          <IssueVersions issueId={id} />
+        </>,
+        [{ buttonText: 'Dismiss', callback: noop }],
+        noop,
+        false
+      )
+    );
+
+  } catch (error) {
+    dispatch(
+      startOptionsModal(
+        'Proofing Failed',
+        <>
+          <p>Failed to proof issue!</p>
+          <p>If this problem persists, contact the support team.</p>
+        </>,
+        [],
+        noop,
+        true
+      )
+    );
+  }
+
+};
+
 export const publishEditionIssue = (
   id: string
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import type { State } from 'types/State';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
 import { Dispatch } from '../types/Store';
-import { publishEditionIssue, check } from '../actions/Editions';
+import { publishEditionIssue, proofEditionIssue, check } from '../actions/Editions';
 import { styled } from '../constants/theme';
 import startCase from 'lodash/startCase';
 import EditModeVisibility from './util/EditModeVisibility';
