@@ -74,6 +74,12 @@ export const getIssueSummary = async (id: string): Promise<EditionsIssue> => {
   });
 };
 
+export const proofIssue = async (id: string): Promise<void> => {
+  return pandaFetch(`/editions-api/issues/${id}/proof`, {
+    method: 'POST',
+  }).then(() => {});
+};
+
 export const publishIssue = async (id: string): Promise<void> => {
   return pandaFetch(`/editions-api/issues/${id}/publish`, {
     method: 'POST',
