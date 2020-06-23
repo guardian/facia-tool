@@ -15,13 +15,20 @@ import noop from 'lodash/noop';
 import { startOptionsModal } from 'actions/OptionsModal';
 import IssueVersions from './Editions/IssueVersions/index';
 
+enum ProofOrPublish {
+  Proof = 'Proof',
+  Publish = 'Publish',
+}
+
 interface ComponentProps {
   editionsIssue: EditionsIssue;
-  startConfirmPublishModal: (
+  startConfirmProofOrPublishModal: (
     title: string,
     description: ReactNode,
+    buttonText: ProofOrPublish,
     onAccept: () => void
   ) => void;
+  proofEditionsIssue: (id: string) => Promise<void>;
   publishEditionsIssue: (id: string) => Promise<void>;
   checkIssue: (id: string) => Promise<void>;
 }
@@ -84,13 +91,24 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
               data-testid="publish-edition-button"
               size="l"
               priority="primary"
+              onClick={() => this.confirmProof()}
+              tabIndex={-1}
+              title="Proof Edition"
+            >
+              Proof
+            </Button>
+          </EditModeVisibility>
+            &nbsp;
+            <Button
+              data-testid="publish-edition-button"
+              size="l"
+              priority="primary"
               onClick={() => this.confirmPublish()}
               tabIndex={-1}
               title="Publish Edition"
             >
               Publish
             </Button>
-          </EditModeVisibility>
         </EditionPublish>
       </>
     );
@@ -101,23 +119,43 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
     checkIssue(editionsIssue.id);
   };
 
+  private confirmProof = () => {
+    const {
+      startConfirmProofOrPublishModal,
+      editionsIssue,
+      proofEditionsIssue,
+    } = this.props;
+
+    startConfirmProofOrPublishModal(
+      'Confirm proof',
+      <>
+        <p>Confirm the proofing of a new version of this issue.</p>
+        <IssueVersions issueId={editionsIssue.id} />
+      </>,
+      ProofOrPublish.Proof,
+      () => proofEditionsIssue(editionsIssue.id)
+    );
+  };
+
   private confirmPublish = () => {
     const {
-      startConfirmPublishModal,
+      startConfirmProofOrPublishModal,
       editionsIssue,
       publishEditionsIssue,
     } = this.props;
 
-    startConfirmPublishModal(
+    startConfirmProofOrPublishModal(
       'Confirm publish',
       <>
         <p>Confirm the publication of a new version of this issue.</p>
         <p>Publishing a new version will not halt in-progress versions.</p>
         <IssueVersions issueId={editionsIssue.id} />
       </>,
+      ProofOrPublish.Publish,
       () => publishEditionsIssue(editionsIssue.id)
     );
   };
+
 }
 
 const mapStateToProps = () => {
@@ -127,19 +165,21 @@ const mapStateToProps = () => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  startConfirmPublishModal: (
+  startConfirmProofOrPublishModal: (
     title: string,
     description: ReactNode,
+    buttonText: ProofOrPublish,
     onAccept: () => void
   ) =>
     dispatch(
       startOptionsModal(
         title,
         description,
-        [{ buttonText: 'Publish', callback: onAccept }],
+        [{ buttonText: buttonText, callback: onAccept }],
         noop
       )
     ),
+  proofEditionsIssue: (id: string) => dispatch(proofEditionIssue(id)),
   publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id)),
   checkIssue: (id: string) => dispatch(check(id)),
 });
