@@ -15,8 +15,8 @@ You can find the client for the Fronts tool in [fronts-client](/fronts-client).
 ### Dev Start
 
 1. To run the application:
-   - From the project root, run `./scripts/start-dev.sh`
-   - From the project root, run without debug `./scripts/start-dev.sh --no-debug`
+   - From the project root, run `./scripts/dev-start.sh`
+   - From the project root, run without debug `./scripts/dev-start.sh --no-debug`
 2. Open `https://fronts.local.dev-gutools.co.uk`.
 
 ### Unit tests
