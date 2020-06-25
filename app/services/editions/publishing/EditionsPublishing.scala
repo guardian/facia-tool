@@ -17,12 +17,17 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
     previewBucket.putIssue(previewIssue)
   }
 
-  def publish(issue: EditionsIssue, user: User, now: OffsetDateTime) = {
+  def proof(issue: EditionsIssue, user: User, now: OffsetDateTime) = {
+    proofOrPublishToS3(issue, user, now, "proof")
+  }
+
+  private def proofOrPublishToS3(issue: EditionsIssue, user: User, now: OffsetDateTime, action: String) = {
     // Bump the recently published counters
     val versionId = db.createIssueVersion(issue.id, user, now)
 
     val markers = Markers.appendEntries(
-      Map (
+      Map(
+        "issue-action" -> action,
         "issue-id" -> issue.id,
         "issue-date" -> issue.issueDate.toString,
         "version" -> versionId,
@@ -30,11 +35,15 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
       ).asJava
     )
 
-    Logger.info(s"Publishing issue ${issue.id}")(markers)
+    Logger.info(s"Uploading $action request for issue ${issue.id} to S3")(markers)
 
-    val publishedIssue = issue.toPublishedIssue(versionId)
+    val publishedIssue = issue.toPublishedIssue(versionId, action)
 
     // Archive a copy
     publishedBucket.putIssue(publishedIssue)
+  }
+
+  def publish(issue: EditionsIssue, user: User, now: OffsetDateTime) = {
+    proofOrPublishToS3(issue, user, now, "publish")
   }
 }

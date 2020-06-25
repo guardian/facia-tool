@@ -49,6 +49,7 @@ case class PublishedCollection(id: String, name: String, items: List[PublishedAr
 case class PublishedFront(id: String, name: String, collections: List[PublishedCollection], swatch: Swatch)
 
 case class PublishedIssue(
+  action: String,
   id: String, // TODO: Not sure we should be leaking our internal ID here...
   name: Edition, // TODO: remove this once downstream is consuming 'edition'
   edition: Edition,

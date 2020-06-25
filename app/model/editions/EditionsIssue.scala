@@ -20,7 +20,8 @@ case class EditionsIssue(
 ) {
   def toPreviewIssue: PublishedIssue = toPublishedIssue("preview")
 
-  def toPublishedIssue(version: String): PublishedIssue = PublishedIssue(
+  def toPublishedIssue(version: String, action: String): PublishedIssue = PublishedIssue(
+    action,
     id,
     edition,
     edition,

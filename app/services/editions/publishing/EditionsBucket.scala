@@ -8,7 +8,7 @@ import play.api.libs.json.Json
 import PublishedIssueFormatters._
 
 object EditionsBucket {
-  def createIssuePrefix(issue: PublishedIssue): String = s"${issue.name.entryName}/${issue.issueDate.toString}"
+  def createIssuePrefix(issue: PublishedIssue): String = s"${issue.action}/${issue.name.entryName}/${issue.issueDate.toString}"
 
   def createIssueFilename(issue: PublishedIssue): String = s"${issue.version}.json"
 

@@ -166,7 +166,10 @@ class EditionsController(db: EditionsDB,
   }
 
   def proofIssue(id: String) = EditEditionsAuthAction { req =>
-    NotFound(s"Proofing process not implemented")
+    db.getIssue(id).map { issue =>
+      publishing.proof(issue, req.user, OffsetDateTime.now())
+      NoContent
+    }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
   def publishIssue(id: String) = EditEditionsAuthAction { req =>
