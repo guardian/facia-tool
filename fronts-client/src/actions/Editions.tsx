@@ -39,7 +39,7 @@ export const check = (id: string): ThunkResult<Promise<void>> => async (
   }
 };
 
-  export const proofEditionIssue = (
+export const proofEditionIssue = (
   id: string
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
   try {
@@ -64,7 +64,6 @@ export const check = (id: string): ThunkResult<Promise<void>> => async (
         false
       )
     );
-
   } catch (error) {
     dispatch(
       startOptionsModal(
@@ -79,7 +78,6 @@ export const check = (id: string): ThunkResult<Promise<void>> => async (
       )
     );
   }
-
 };
 
 export const publishEditionIssue = (

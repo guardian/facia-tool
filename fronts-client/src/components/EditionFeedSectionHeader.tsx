@@ -99,17 +99,17 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
               Proof
             </Button>
           </EditModeVisibility>
-            &nbsp;
-            <Button
-              data-testid="publish-edition-button"
-              size="l"
-              priority="primary"
-              onClick={() => this.confirmPublish()}
-              tabIndex={-1}
-              title="Publish Edition"
-            >
-              Publish
-            </Button>
+          &nbsp;
+          <Button
+            data-testid="publish-edition-button"
+            size="l"
+            priority="primary"
+            onClick={() => this.confirmPublish()}
+            tabIndex={-1}
+            title="Publish Edition"
+          >
+            Publish
+          </Button>
         </EditionPublish>
       </>
     );

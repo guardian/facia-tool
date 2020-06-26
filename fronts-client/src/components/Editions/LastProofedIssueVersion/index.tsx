@@ -27,7 +27,10 @@ interface ComponentState {
   polling: any;
 }
 
-class LastProofedIssueVersion extends React.Component<ComponentProps, ComponentState> {
+class LastProofedIssueVersion extends React.Component<
+  ComponentProps,
+  ComponentState
+> {
   constructor(props: ComponentProps) {
     super(props);
 
@@ -50,9 +53,7 @@ class LastProofedIssueVersion extends React.Component<ComponentProps, ComponentS
 
     return (
       <IssueVersionList>
-        <span>
-          {data}
-        </span>
+        <span>{data}</span>
       </IssueVersionList>
     );
   }
