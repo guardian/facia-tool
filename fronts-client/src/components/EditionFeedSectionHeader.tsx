@@ -182,7 +182,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       startOptionsModal(
         title,
         description,
-        [{ buttonText: buttonText, callback: onAccept }],
+        [{ buttonText, callback: onAccept }],
         noop
       )
     ),
