@@ -1,9 +1,6 @@
 import React from 'react';
 import { styled } from 'constants/theme';
-import moment from 'moment';
-
 import { IssueVersion } from 'types/Edition';
-import VersionPublicationTable from './VersionPublicationTable';
 import { getLastProofedIssueVersion } from 'services/editionsApi';
 
 const IssueVersionList = styled.ul`
