@@ -7,7 +7,7 @@ import { Dispatch } from '../types/Store';
 import {
   publishEditionIssue,
   proofEditionIssue,
-  check
+  check,
 } from '../actions/Editions';
 import { styled } from '../constants/theme';
 import startCase from 'lodash/startCase';
