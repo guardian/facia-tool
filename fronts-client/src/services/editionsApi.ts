@@ -129,3 +129,11 @@ export async function getIssueVersions(
     method: 'get',
   }).then((response) => response.json());
 }
+
+export async function getLastProofedIssueVersion(
+  issueId: string
+): Promise<IssueVersion[]> {
+  return await pandaFetch(`/editions-api/issues/${issueId}/last-proofed-version`, {
+    method: 'get',
+  }).then((response) => response.json());
+}

@@ -79,6 +79,12 @@ class EditionsController(db: EditionsDB,
       .getOrElse(NotFound(s"Issue $id not found"))
   }
 
+  def getLastProofedVersion(id: String) = AccessAPIAuthAction { _ =>
+    db.getIssue(id)
+      .map(_ => Ok(Json.toJson(db.getLastProofedIssueVersion(id))))
+      .getOrElse(NotFound(s"Issue $id not found"))
+  }
+
   def getAvailableEditions = EditEditionsAuthAction { _ =>
     Ok(Json.toJson(EditionsTemplates.getAvailableEditions))
   }

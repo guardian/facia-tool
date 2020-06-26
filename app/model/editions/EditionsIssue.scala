@@ -2,8 +2,20 @@ package model.editions
 
 import java.time.LocalDate
 
+import model.editions.PublishAction.PublishAction
 import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
+
+object PublishAction extends Enumeration
+{
+  type PublishAction = Value
+
+  // Assigning values
+  val preview = Value("preview")
+  val proof = Value("proof")
+  val publish = Value("publish")
+
+}
 
 case class EditionsIssue(
     id: String,
@@ -18,16 +30,18 @@ case class EditionsIssue(
     launchedEmail: Option[String],
     fronts: List[EditionsFront]
 ) {
-  def toPreviewIssue: PublishedIssue = toPublishedIssue("preview")
 
-  def toPublishedIssue(version: String, action: String): PublishedIssue = PublishedIssue(
-    action,
+  def toPreviewIssue = toPublishableIssue("preview", PublishAction.preview)
+
+  def toPublishableIssue(version: String, action: PublishAction): PublishableIssue = PublishableIssue(
+    action.toString,
     id,
     edition,
     edition,
     issueDate,
     version,
-    fronts
+    if (action == PublishAction.publish) List()   // publish does not need or want config
+    else fronts
       .filterNot(_.isHidden) // drop hidden fronts
       .map(_.toPublishedFront) // convert
       .filterNot(_.collections.isEmpty) // drop fronts that contain no collections

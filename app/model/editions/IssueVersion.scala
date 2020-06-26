@@ -12,6 +12,7 @@ object IssueVersionStatus extends PlayEnum[IssueVersionStatus] {
   // The values below should match the `Status` provided by the Editions Archiver lambda
   // See https://github.com/guardian/editions/blob/34ed6cdacc9bc7a2c5b2067f58a6635704b8e425/projects/archiver/src/tasks/notification/helpers/pub-status-notifier.ts#L7
   case object Processing extends IssueVersionStatus
+  case object Proofed extends IssueVersionStatus
   case object Published extends IssueVersionStatus
   case object Failed extends IssueVersionStatus
 

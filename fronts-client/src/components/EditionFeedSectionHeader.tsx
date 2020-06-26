@@ -14,6 +14,7 @@ import url from 'constants/url';
 import noop from 'lodash/noop';
 import { startOptionsModal } from 'actions/OptionsModal';
 import IssueVersions from './Editions/IssueVersions/index';
+import LastProofedIssueVersion from './Editions/LastProofedIssueVersion/index';
 
 enum ProofOrPublish {
   Proof = 'Proof',
@@ -149,7 +150,9 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       <>
         <p>Confirm the publication of a new version of this issue.</p>
         <p>Publishing a new version will not halt in-progress versions.</p>
-        <IssueVersions issueId={editionsIssue.id} />
+        <b>Version to be published is:
+          <LastProofedIssueVersion issueId={editionsIssue.id} />
+        </b>
       </>,
       ProofOrPublish.Publish,
       () => publishEditionsIssue(editionsIssue.id)

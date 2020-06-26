@@ -170,8 +170,29 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     }
   }
 
-
   "PublishedIssue" - {
+    "fronts should be filtered out" in {
+      val testIssue = issue(2019, 9, 30,
+        front("uk-news",
+          collection("london", None, article("123")),
+          collection("financial", None, article("123"))
+        ),
+        front("culture",
+          collection("art", None, article("123")),
+          collection("theatre", None, article("123"))
+        ),
+        front("special",
+          collection("magic", None, article("123"))
+        ).hide
+      )
+      testIssue.fronts.size shouldBe 3
+      val publishedIssue = testIssue.toPublishableIssue("foo", PublishAction.publish)
+      publishedIssue.fronts.size shouldBe 0
+    }
+
+  }
+
+  "ProofedIssue" - {
     "fronts should be filtered out when hidden" in {
       val testIssue = issue(2019, 9, 30,
         front("uk-news",
@@ -187,7 +208,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         ).hide
       )
       testIssue.fronts.size shouldBe 3
-      val publishedIssue = testIssue.toPublishedIssue("foo")
+      val publishedIssue = testIssue.toPublishableIssue("foo", PublishAction.proof)
       publishedIssue.fronts.size shouldBe 2
       publishedIssue.fronts.find(_.name == "special") shouldBe None
     }
@@ -202,7 +223,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         front("empty")
       )
       testIssue.fronts.size shouldBe 3
-      val publishedIssue = testIssue.toPublishedIssue("foo")
+      val publishedIssue = testIssue.toPublishableIssue("foo", PublishAction.proof)
       publishedIssue.fronts.size shouldBe 1
       publishedIssue.fronts.find(_.name == "culture").value.collections.size shouldBe 2
     }
@@ -220,7 +241,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         front("empty")
       )
       testIssue.fronts.size shouldBe 3
-      val publishedIssue = testIssue.toPublishedIssue("foo")
+      val publishedIssue = testIssue.toPublishableIssue("foo", PublishAction.proof)
       publishedIssue.fronts.size shouldBe 1
       publishedIssue.fronts.find(_.name == "culture").value.collections.size shouldBe 2
     }

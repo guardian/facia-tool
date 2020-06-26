@@ -306,6 +306,24 @@ trait IssueQueries {
     """.execute().apply()
   }
 
+
+
+  def getLastProofedIssueVersion(issueId: String): Option[EditionIssueVersionId] = DB localTx { implicit session =>
+
+      sql"""
+      SELECT max(v.id)                AS version_id
+      FROM issue_versions v
+      LEFT JOIN issue_versions_events e
+        ON v.id = e.version_id
+      WHERE v.issue_id = $issueId
+      AND   e.status = "proofed"
+    """.map(rs => rs.string("version_id"))
+        .list()
+        .apply()
+        .headOption
+
+  }
+
   def getIssueVersions(issueId: String): List[IssueVersion] = DB localTx { implicit session =>
     case class Row(version: IssueVersion, event: IssueVersionEvent)
 

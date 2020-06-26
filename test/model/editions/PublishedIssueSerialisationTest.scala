@@ -1,6 +1,6 @@
 package model.editions
 
-import java.time.{LocalDate, OffsetDateTime, OffsetTime, ZoneOffset}
+import java.time.LocalDate
 
 import org.scalatest.{FreeSpec, Matchers}
 import play.api.libs.json.Json
@@ -8,7 +8,6 @@ import services.editions.publishing.PublishedIssueFormatters._
 
 class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
   "EditionsIssueTest" - {
-    val midnight = OffsetTime.of(0, 0, 0, 0, ZoneOffset.UTC)
     val issueDate = LocalDate.of(2019, 9, 30)
 
     val issue: EditionsIssue = EditionsIssue(
@@ -28,6 +27,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
     "test serialisation into a preview issue" in {
       val expectedJson =
         """{
+          |  "action" : "preview",
           |  "id" : "4290573248905743296789524389623",
           |  "name" : "daily-edition",
           |  "edition" : "daily-edition",
@@ -42,9 +42,10 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
       json shouldBe expectedJson
     }
 
-    "test serialisation into a published issue" in {
+    "test serialisation into a proof issue" in {
       val expectedJson =
         """{
+          |  "action" : "proof",
           |  "id" : "4290573248905743296789524389623",
           |  "name" : "daily-edition",
           |  "edition" : "daily-edition",
@@ -53,7 +54,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           |  "fronts" : [ ]
           |}""".stripMargin
 
-      val publishedIssue = issue.toPublishedIssue("foo")
+      val publishedIssue = issue.toPublishableIssue("foo", PublishAction.proof)
       val json = Json.prettyPrint(Json.toJson(publishedIssue))
 
       json shouldBe expectedJson

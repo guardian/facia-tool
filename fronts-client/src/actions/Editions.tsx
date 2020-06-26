@@ -14,6 +14,7 @@ import { EditionsFrontMetadata } from 'types/FaciaApi';
 import noop from 'lodash/noop';
 import { startOptionsModal } from './OptionsModal';
 import IssueVersions from 'components/Editions/IssueVersions';
+import LastProofedIssueVersion from 'components/Editions/LastProofedIssueVersion';
 
 export const getEditionIssue = (
   id: string
@@ -38,7 +39,7 @@ export const check = (id: string): ThunkResult<Promise<void>> => async (
   }
 };
 
-export const proofEditionIssue = (
+  export const proofEditionIssue = (
   id: string
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
   try {
@@ -99,7 +100,7 @@ export const publishEditionIssue = (
             of the support team.
           </p>
 
-          <IssueVersions issueId={id} />
+          <LastProofedIssueVersion issueId={id} />
         </>,
         [{ buttonText: 'Dismiss', callback: noop }],
         noop,
