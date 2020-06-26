@@ -4,7 +4,11 @@ import { connect } from 'react-redux';
 import type { State } from 'types/State';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
 import { Dispatch } from '../types/Store';
-import { publishEditionIssue, proofEditionIssue, check } from '../actions/Editions';
+import {
+  publishEditionIssue,
+  proofEditionIssue,
+  check
+} from '../actions/Editions';
 import { styled } from '../constants/theme';
 import startCase from 'lodash/startCase';
 import EditModeVisibility from './util/EditModeVisibility';
@@ -150,7 +154,8 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       <>
         <p>Confirm the publication of a new version of this issue.</p>
         <p>Publishing a new version will not halt in-progress versions.</p>
-        <b>Version to be published is:
+        <b>
+          Version to be published is:
           <LastProofedIssueVersion issueId={editionsIssue.id} />
         </b>
       </>,
@@ -158,7 +163,6 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       () => publishEditionsIssue(editionsIssue.id)
     );
   };
-
 }
 
 const mapStateToProps = () => {
