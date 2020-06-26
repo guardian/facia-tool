@@ -67,4 +67,4 @@ class LastProofedIssueVersion extends React.Component<
   };
 }
 
-export default LastProofedIssueVersion  ;
+export default LastProofedIssueVersion;
