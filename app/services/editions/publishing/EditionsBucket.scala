@@ -12,7 +12,7 @@ object EditionsBucket {
 
   def createIssueFilename(issue: PublishableIssue): String = s"${issue.version}.json"
 
-  def createKey(issue: PublishableIssue): String = s"${issue.action}/${createIssuePrefix(issue)}/${createIssueFilename(issue)}"
+  def createKey(issue: PublishableIssue): String = s"${createIssuePrefix(issue)}/${createIssueFilename(issue)}"
 
   val objectMetadata: ObjectMetadata = {
     val metadata = new ObjectMetadata()
