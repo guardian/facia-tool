@@ -31,7 +31,7 @@ class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with E
       val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", previewIssue)
 
       "key is correct" in {
-        putObjectRequest.getKey shouldBe "preview/daily-edition/2019-09-30/preview.json"
+        putObjectRequest.getKey shouldBe "daily-edition/2019-09-30/preview.json"
       }
 
       "bucket is correct" in {
@@ -50,7 +50,7 @@ class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with E
       val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", publishedIssue)
 
       "key is correct" in {
-        putObjectRequest.getKey shouldBe "proof/daily-edition/2019-09-30/banana.json"
+        putObjectRequest.getKey shouldBe "daily-edition/2019-09-30/banana.json"
       }
 
       "bucket is correct" in {
