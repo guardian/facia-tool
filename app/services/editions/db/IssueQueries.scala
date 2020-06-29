@@ -316,7 +316,7 @@ trait IssueQueries {
       LEFT JOIN issue_versions_events e
         ON v.id = e.version_id
       WHERE v.issue_id = $issueId
-      AND   e.status = "proofed"
+      AND   e.status = 'Proofed'
     """.map(rs => rs.string("version_id"))
         .list()
         .apply()
