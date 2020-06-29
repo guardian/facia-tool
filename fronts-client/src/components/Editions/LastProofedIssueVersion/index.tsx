@@ -33,7 +33,7 @@ class LastProofedIssueVersion extends React.Component<
 
     this.state = {
       data: [],
-      polling: setInterval(this.update, 500),
+      polling: setInterval(this.update, 5000),
     };
   }
 
@@ -44,8 +44,8 @@ class LastProofedIssueVersion extends React.Component<
   public render() {
     const { data } = this.state;
 
-    if (data.length === 0) {
-      return <p>This issue has not been published yet.</p>;
+    if (!data || data.length === 0) {
+      return <p>This issue has not been proofed yet.</p>;
     }
 
     return (
