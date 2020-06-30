@@ -23,6 +23,7 @@ export default reducer;
 export const getEditionIssue = (
   id: string
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
+  console.log("FETCCHING EDITION")
   try {
     dispatch(actions.fetchStart());
     const issue = await getIssueSummary(id);
