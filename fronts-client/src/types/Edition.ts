@@ -39,8 +39,6 @@ interface EditionsIssue {
   version?: string;
 }
 
-
-
 const issueVersionStatus = [
   'Started',
   'Processing',

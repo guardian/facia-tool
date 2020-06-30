@@ -80,7 +80,10 @@ export const proofIssue = async (id: string): Promise<void> => {
   }).then(() => {});
 };
 
-export const publishIssue = async (id: string, version string): Promise<void> => {
+export const publishIssue = async (
+  id: string,
+  version: string
+): Promise<void> => {
   return pandaFetch(`/editions-api/issues/${id}/publish/${version}`, {
     method: 'POST',
   }).then(() => {});

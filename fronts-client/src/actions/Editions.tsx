@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  getIssueSummary,
   proofIssue,
   publishIssue,
   checkIssue,
@@ -9,12 +8,10 @@ import {
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
-import { actions } from 'bundles/editionsIssueBundle';
 import { EditionsFrontMetadata } from 'types/FaciaApi';
 import noop from 'lodash/noop';
 import { startOptionsModal } from './OptionsModal';
 import IssueVersions from 'components/Editions/IssueVersions';
-import LastProofedIssueVersion from 'components/Editions/LastProofedIssueVersion';
 
 export const check = (id: string): ThunkResult<Promise<void>> => async (
   dispatch: Dispatch
@@ -70,7 +67,7 @@ export const proofEditionIssue = (
 
 export const publishEditionIssue = (
   id: string,
-  version: string,
+  version: string
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
   try {
     await publishIssue(id, version);

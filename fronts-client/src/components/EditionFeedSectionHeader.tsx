@@ -29,7 +29,7 @@ export type StartConfirmProofOrPublishModal = (
   description: ReactNode,
   buttonText: ProofOrPublish,
   onAccept: () => void
-) => void
+) => void;
 
 interface ComponentProps {
   editionsIssue: EditionsIssue;
@@ -137,7 +137,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       'Confirm proof',
       <>
         <p>Confirm the proofing of a new version of this issue.</p>
-        <IssueVersions issueId={editionsIssue.id}/>
+        <IssueVersions issueId={editionsIssue.id} />
       </>,
       ProofOrPublish.Proof,
       () => proofEditionsIssue(editionsIssue.id)
@@ -150,7 +150,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       editionsIssue,
       publishEditionsIssue,
     } = this.props;
-    const {id, version} = editionsIssue
+    const { id, version } = editionsIssue;
     startConfirmProofOrPublishModal(
       'Confirm publish',
       <>
@@ -189,7 +189,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       )
     ),
   proofEditionsIssue: (id: string) => dispatch(proofEditionIssue(id)),
-  publishEditionsIssue: (id: string, version: string) => dispatch(publishEditionIssue(id, version)),
+  publishEditionsIssue: (id: string, version: string) =>
+    dispatch(publishEditionIssue(id, version)),
   checkIssue: (id: string) => dispatch(check(id)),
 });
 

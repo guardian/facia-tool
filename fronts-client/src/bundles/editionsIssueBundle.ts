@@ -30,4 +30,4 @@ export const getEditionIssue = (
   } catch (error) {
     dispatch(actions.fetchError('Failed to get issue'));
   }
-}
+};
