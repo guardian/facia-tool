@@ -67,41 +67,45 @@ export const proofEditionIssue = (
 
 export const publishEditionIssue = (
   id: string,
-  version: string
+  version?: string
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
-  try {
-    await publishIssue(id, version);
-    dispatch(
-      startOptionsModal(
-        'Publish Succeeded',
-        <>
-          <p>
-            This issue has been submitted for publishing, please check your app
-            in the next few minutes.
-          </p>
-          <p>
-            If you do not see the issue within 5 minutes please contact a member
-            of the support team.
-          </p>
-        </>,
-        [{ buttonText: 'Dismiss', callback: noop }],
-        noop,
-        false
-      )
-    );
-  } catch (error) {
-    dispatch(
-      startOptionsModal(
-        'Published Failed',
-        <>
-          <p>Failed to publish issue!</p>
-          <p>If this problem persists, contact the support team.</p>
-        </>,
-        [],
-        noop,
-        true
-      )
-    );
+  if (!version) {
+    alert("No issue version found");
+  } else {
+    try {
+      await publishIssue(id, version);
+      dispatch(
+        startOptionsModal(
+          'Publish Succeeded',
+          <>
+            <p>
+              This issue has been submitted for publishing, please check your app
+              in the next few minutes.
+            </p>
+            <p>
+              If you do not see the issue within 5 minutes please contact a member
+              of the support team.
+            </p>
+          </>,
+          [{ buttonText: 'Dismiss', callback: noop }],
+          noop,
+          false
+        )
+      );
+    } catch (error) {
+      dispatch(
+        startOptionsModal(
+          'Published Failed',
+          <>
+            <p>Failed to publish issue!</p>
+            <p>If this problem persists, contact the support team.</p>
+          </>,
+          [],
+          noop,
+          true
+        )
+      );
+    }
   }
 };
 

@@ -33,10 +33,9 @@ export type StartConfirmProofOrPublishModal = (
 
 interface ComponentProps {
   editionsIssue: EditionsIssue;
-  version: string;
   startConfirmProofOrPublishModal: StartConfirmProofOrPublishModal;
   proofEditionsIssue: (id: string) => Promise<void>;
-  publishEditionsIssue: (id: string, version: string) => Promise<void>;
+  publishEditionsIssue: (id: string, version?: string) => Promise<void>;
   checkIssue: (id: string) => Promise<void>;
 }
 
@@ -149,9 +148,8 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       startConfirmProofOrPublishModal,
       editionsIssue,
       publishEditionsIssue,
-      version,
     } = this.props;
-    const { id } = editionsIssue;
+    const { id, version } = editionsIssue;
     startConfirmProofOrPublishModal(
       'Confirm publish',
       <>
@@ -190,7 +188,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       )
     ),
   proofEditionsIssue: (id: string) => dispatch(proofEditionIssue(id)),
-  publishEditionsIssue: (id: string, version: string) =>
+  publishEditionsIssue: (id: string, version?: string) =>
     dispatch(publishEditionIssue(id, version)),
   checkIssue: (id: string) => dispatch(check(id)),
 });
