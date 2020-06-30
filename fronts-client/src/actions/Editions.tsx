@@ -81,10 +81,11 @@ export const proofEditionIssue = (
 };
 
 export const publishEditionIssue = (
-  id: string
+  id: string,
+  version: string,
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
   try {
-    await publishIssue(id);
+    await publishIssue(id, version);
     dispatch(
       startOptionsModal(
         'Publish Succeeded',

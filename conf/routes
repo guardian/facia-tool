@@ -107,7 +107,7 @@ GET         /editions-api/issues/:id/summary                     controllers.Edi
 GET         /editions-api/issues/:id/versions                    controllers.EditionsController.getVersions(id)
 GET         /editions-api/issues/:id/last-proofed-version        controllers.EditionsController.getLastProofedVersion(id)
 POST        /editions-api/issues/:id/proof                       controllers.EditionsController.proofIssue(id)
-POST        /editions-api/issues/:id/publish                     controllers.EditionsController.publishIssue(id)
+POST        /editions-api/issues/:id/publish/:version            controllers.EditionsController.publishIssue(id, version)
 GET         /editions-api/issues/:id/preview                     controllers.EditionsController.getPreviewEdition(id)
 GET         /editions-api/issues/:id/preflight-checks            controllers.EditionsController.checkIssue(id: String)
 

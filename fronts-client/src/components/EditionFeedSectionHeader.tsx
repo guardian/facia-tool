@@ -25,14 +25,17 @@ enum ProofOrPublish {
   Publish = 'Publish',
 }
 
+export type StartConfirmProofOrPublishModal = (
+  title: string,
+  description: ReactNode,
+  buttonText: ProofOrPublish,
+  onAccept: () => void
+) => void
+
 interface ComponentProps {
   editionsIssue: EditionsIssue;
-  startConfirmProofOrPublishModal: (
-    title: string,
-    description: ReactNode,
-    buttonText: ProofOrPublish,
-    onAccept: () => void
-  ) => void;
+  version: string;
+  startConfirmProofOrPublishModal: StartConfirmProofOrPublishModal;
   proofEditionsIssue: (id: string) => Promise<void>;
   publishEditionsIssue: (id: string) => Promise<void>;
   checkIssue: (id: string) => Promise<void>;
@@ -160,7 +163,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
         </b>
       </>,
       ProofOrPublish.Publish,
-      () => publishEditionsIssue(editionsIssue.id)
+      () => publishEditionsIssue(editionsIssue.id, version)
     );
   };
 }
@@ -187,7 +190,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       )
     ),
   proofEditionsIssue: (id: string) => dispatch(proofEditionIssue(id)),
-  publishEditionsIssue: (id: string) => dispatch(publishEditionIssue(id)),
+  publishEditionsIssue: (id: string, version: string) => dispatch(publishEditionIssue(id, version)),
   checkIssue: (id: string) => dispatch(check(id)),
 });
 

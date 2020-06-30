@@ -178,9 +178,9 @@ class EditionsController(db: EditionsDB,
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def publishIssue(id: String) = EditEditionsAuthAction { req =>
+  def publishIssue(id: String, version: String) = EditEditionsAuthAction { req =>
     db.getIssue(id).map { issue =>
-      publishing.publish(issue, req.user, OffsetDateTime.now())
+      publishing.publish(issue, req.user, version
       NoContent
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
