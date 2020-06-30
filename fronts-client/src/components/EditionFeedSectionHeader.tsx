@@ -17,7 +17,6 @@ import { Link } from 'react-router-dom';
 import url from 'constants/url';
 import noop from 'lodash/noop';
 import { startOptionsModal } from 'actions/OptionsModal';
-import LastProofedIssueVersion from './Editions/LastProofedIssueVersion/index';
 
 enum ProofOrPublish {
   Proof = 'Proof',
