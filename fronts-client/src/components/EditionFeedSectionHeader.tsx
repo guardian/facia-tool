@@ -17,6 +17,7 @@ import { Link } from 'react-router-dom';
 import url from 'constants/url';
 import noop from 'lodash/noop';
 import { startOptionsModal } from 'actions/OptionsModal';
+import IssueVersions from './Editions/IssueVersions';
 
 enum ProofOrPublish {
   Proof = 'Proof',
@@ -35,7 +36,7 @@ interface ComponentProps {
   version: string;
   startConfirmProofOrPublishModal: StartConfirmProofOrPublishModal;
   proofEditionsIssue: (id: string) => Promise<void>;
-  publishEditionsIssue: (id: string) => Promise<void>;
+  publishEditionsIssue: (id: string, version: string) => Promise<void>;
   checkIssue: (id: string) => Promise<void>;
 }
 
@@ -148,8 +149,9 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       startConfirmProofOrPublishModal,
       editionsIssue,
       publishEditionsIssue,
+      version,
     } = this.props;
-    const { id, version } = editionsIssue;
+    const { id } = editionsIssue;
     startConfirmProofOrPublishModal(
       'Confirm publish',
       <>
