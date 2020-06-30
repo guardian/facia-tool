@@ -17,7 +17,6 @@ import { Link } from 'react-router-dom';
 import url from 'constants/url';
 import noop from 'lodash/noop';
 import { startOptionsModal } from 'actions/OptionsModal';
-import IssueVersions from './Editions/IssueVersions/index';
 import LastProofedIssueVersion from './Editions/LastProofedIssueVersion/index';
 
 enum ProofOrPublish {
@@ -138,7 +137,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       'Confirm proof',
       <>
         <p>Confirm the proofing of a new version of this issue.</p>
-        <IssueVersions issueId={editionsIssue.id} />
+        <IssueVersions issueId={editionsIssue.id}/>
       </>,
       ProofOrPublish.Proof,
       () => proofEditionsIssue(editionsIssue.id)
@@ -151,19 +150,19 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       editionsIssue,
       publishEditionsIssue,
     } = this.props;
-
+    const {id, version} = editionsIssue
     startConfirmProofOrPublishModal(
       'Confirm publish',
       <>
         <p>Confirm the publication of a new version of this issue.</p>
         <p>Publishing a new version will not halt in-progress versions.</p>
-        <b>
+        <strong>
           Version to be published is:
-          <LastProofedIssueVersion issueId={editionsIssue.id} />
-        </b>
+          {{ version }}
+        </strong>
       </>,
       ProofOrPublish.Publish,
-      () => publishEditionsIssue(editionsIssue.id, version)
+      () => publishEditionsIssue(id, version)
     );
   };
 }

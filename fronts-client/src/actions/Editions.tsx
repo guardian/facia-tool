@@ -16,18 +16,6 @@ import { startOptionsModal } from './OptionsModal';
 import IssueVersions from 'components/Editions/IssueVersions';
 import LastProofedIssueVersion from 'components/Editions/LastProofedIssueVersion';
 
-export const getEditionIssue = (
-  id: string
-): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
-  try {
-    dispatch(actions.fetchStart());
-    const issue = await getIssueSummary(id);
-    dispatch(actions.fetchSuccess(issue));
-  } catch (error) {
-    dispatch(actions.fetchError('Failed to get issue'));
-  }
-};
-
 export const check = (id: string): ThunkResult<Promise<void>> => async (
   dispatch: Dispatch
 ) => {

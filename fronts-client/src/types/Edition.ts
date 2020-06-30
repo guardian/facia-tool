@@ -36,7 +36,10 @@ interface EditionsIssue {
   launchedBy: string;
   launchedEmail: string;
   fronts: EditionsFront[];
+  version?: string;
 }
+
+
 
 const issueVersionStatus = [
   'Started',
