@@ -84,7 +84,6 @@ export const publishEditionIssue = (
             of the support team.
           </p>
 
-          <LastProofedIssueVersion issueId={id} />
         </>,
         [{ buttonText: 'Dismiss', callback: noop }],
         noop,
