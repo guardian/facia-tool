@@ -83,7 +83,6 @@ export const publishEditionIssue = (
             If you do not see the issue within 5 minutes please contact a member
             of the support team.
           </p>
-
         </>,
         [{ buttonText: 'Dismiss', callback: noop }],
         noop,
