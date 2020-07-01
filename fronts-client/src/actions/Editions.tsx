@@ -70,7 +70,7 @@ export const publishEditionIssue = (
   version?: string
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
   if (!version) {
-    alert("No issue version found");
+    alert('No issue version found');
   } else {
     try {
       await publishIssue(id, version);
@@ -79,12 +79,12 @@ export const publishEditionIssue = (
           'Publish Succeeded',
           <>
             <p>
-              This issue has been submitted for publishing, please check your app
-              in the next few minutes.
+              This issue has been submitted for publishing, please check your
+              app in the next few minutes.
             </p>
             <p>
-              If you do not see the issue within 5 minutes please contact a member
-              of the support team.
+              If you do not see the issue within 5 minutes please contact a
+              member of the support team.
             </p>
           </>,
           [{ buttonText: 'Dismiss', callback: noop }],

@@ -160,7 +160,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
         <p>Publishing a new version will not halt in-progress versions.</p>
         <strong>
           Version to be published is:
-          { version }
+          {version}
         </strong>
       </>,
       ProofOrPublish.Publish,

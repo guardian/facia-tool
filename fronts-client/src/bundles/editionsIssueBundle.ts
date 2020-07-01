@@ -3,7 +3,10 @@ import createAsyncResourceBundle, {
 } from 'lib/createAsyncResourceBundle';
 import { EditionsIssue } from 'types/Edition';
 import { ThunkResult, Dispatch } from 'types/Store';
-import { getIssueSummary, getLastProofedIssueVersion } from 'services/editionsApi';
+import {
+  getIssueSummary,
+  getLastProofedIssueVersion,
+} from 'services/editionsApi';
 
 export const {
   actions,
@@ -28,9 +31,9 @@ export const getEditionIssue = (
     const issuePromise = getIssueSummary(id);
     const version = await getLastProofedIssueVersion(id);
     const i = {
-      ...await issuePromise,
+      ...(await issuePromise),
       version,
-    }
+    };
     dispatch(actions.fetchSuccess(i));
   } catch (error) {
     dispatch(actions.fetchError('Failed to get issue'));
