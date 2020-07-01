@@ -152,7 +152,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
     } = this.props;
     const { id, version } = editionsIssue;
     getEditionIssue(id);
-    const { id, version } = editionsIssue;
+
     startConfirmProofOrPublishModal(
       'Confirm publish',
       <>

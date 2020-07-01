@@ -71,10 +71,8 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
     const { issueId } = this.props;
 
     const data = await getIssueVersions(issueId);
-
-    this.setState({ data });
-
     await getEditionIssue(issueId)
+    this.setState({ data });
   };
 }
 
