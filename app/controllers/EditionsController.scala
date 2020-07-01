@@ -180,7 +180,7 @@ class EditionsController(db: EditionsDB,
 
   def publishIssue(id: String, version: String) = EditEditionsAuthAction { req =>
     db.getIssue(id).map { issue =>
-      publishing.publish(issue, req.user, OffsetDateTime.parse(version))
+      publishing.publish(issue, req.user, version)
       NoContent
     }.getOrElse(NotFound(s"Issue $id not found"))
   }

@@ -5,6 +5,7 @@ import moment from 'moment';
 import { IssueVersion } from 'types/Edition';
 import VersionPublicationTable from './VersionPublicationTable';
 import { getIssueVersions } from 'services/editionsApi';
+import { getEditionIssue } from 'bundles/editionsIssueBundle';
 
 const IssueVersionList = styled.ul`
   max-height: 500px;
@@ -72,6 +73,8 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
     const data = await getIssueVersions(issueId);
 
     this.setState({ data });
+
+    await getEditionIssue(issueId)
   };
 }
 

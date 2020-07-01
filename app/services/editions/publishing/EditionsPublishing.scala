@@ -18,10 +18,10 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
     previewBucket.putIssue(previewIssue)
   }
 
-  def proof(issue: EditionsIssue, user: User, now: OffsetDateTime) =
-    proofOrPublishToS3(issue, user, now, PublishAction.proof)
+  def proof(issue: EditionsIssue, user: User, now: OffsetDateTime) = {
 
-  private def proofOrPublishToS3(issue: EditionsIssue, user: User, now: OffsetDateTime, action: PublishAction) = {
+    val action = PublishAction.proof
+
     // Bump the recently published counters
     val versionId = db.createIssueVersion(issue.id, user, now)
 
@@ -43,6 +43,11 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
     publishedBucket.putIssue(publishedIssue)
   }
 
-  def publish(issue: EditionsIssue, user: User, now: OffsetDateTime) =
-    proofOrPublishToS3(issue, user, now, PublishAction.publish)
+  def publish(issue: EditionsIssue, user: User, version: String) = {
+    val publishedIssue = issue.toPublishableIssue(version, PublishAction.publish)
+
+    // Archive a copy
+    publishedBucket.putIssue(publishedIssue)
+
+  }
 }

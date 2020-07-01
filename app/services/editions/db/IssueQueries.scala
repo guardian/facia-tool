@@ -259,7 +259,7 @@ trait IssueQueries {
 
     // versionId is a date string as the downstream Archiver lambda assumes it is a date
     // TODO move to a GUID
-    val versionId = now.format(DateTimeFormatter.ISO_DATE_TIME)
+    val versionId:String = now.format(DateTimeFormatter.ISO_DATE_TIME)
 
     sql"""
     UPDATE edition_issues
