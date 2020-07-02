@@ -54,14 +54,15 @@ export const refreshEditionVersion = (
     }
 
     // Fetch new version
-    const version = await getLastProofedIssueVersion(issueId);
+    const lastProofedVersion = await getLastProofedIssueVersion(issueId);
 
     // Update current issue with new version
-    dispatch(actions.updateSuccess(issue?.id, {
-      ...issue,
-      version
-    }));
-
+    dispatch(
+      actions.updateSuccess(issue?.id, {
+        ...issue,
+        lastProofedVersion,
+      })
+    );
   } catch (error) {
     dispatch(actions.fetchError('Failed to update issue version'));
   }

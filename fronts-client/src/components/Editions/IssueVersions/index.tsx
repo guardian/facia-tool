@@ -5,7 +5,10 @@ import moment from 'moment';
 import { IssueVersion } from 'types/Edition';
 import VersionPublicationTable from './VersionPublicationTable';
 import { getIssueVersions } from 'services/editionsApi';
-import { getEditionIssue, refreshEditionVersion as doRefreshEditionVersion } from 'bundles/editionsIssueBundle';
+import {
+  getEditionIssue,
+  refreshEditionVersion as doRefreshEditionVersion,
+} from 'bundles/editionsIssueBundle';
 import { Dispatch, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 
@@ -83,8 +86,12 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
 // Bind refreshEditionVersion to store.dispatch
 // and pass it into the component
 
-const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
-  refreshEditionVersion: doRefreshEditionVersion
-}, dispatch)
+const mapDispatchToProps = (dispatch: Dispatch) =>
+  bindActionCreators(
+    {
+      refreshEditionVersion: doRefreshEditionVersion,
+    },
+    dispatch
+  );
 
 export default connect(undefined, mapDispatchToProps)(IssueVersions);

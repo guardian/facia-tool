@@ -36,7 +36,7 @@ interface EditionsIssue {
   launchedBy: string;
   launchedEmail: string;
   fronts: EditionsFront[];
-  version?: string;
+  lastProofedVersion?: string;
 }
 
 const issueVersionStatus = [
