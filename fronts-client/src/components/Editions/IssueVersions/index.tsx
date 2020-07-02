@@ -78,8 +78,9 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
 
   private update = async () => {
     const { issueId, refreshEditionVersion } = this.props;
-    refreshEditionVersion(issueId);
+    const data = await getIssueVersions(issueId);
     this.setState({ data });
+    refreshEditionVersion(issueId);
   };
 }
 
