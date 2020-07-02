@@ -4,7 +4,6 @@ import java.time.OffsetDateTime
 
 import com.gu.pandomainauth.model.User
 import model.editions.{EditionsIssue, PublishAction}
-import model.editions.PublishAction.PublishAction
 import net.logstash.logback.marker.Markers
 import play.api.Logger
 import services.editions.db.EditionsDB
