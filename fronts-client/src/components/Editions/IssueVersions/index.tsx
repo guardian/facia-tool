@@ -5,10 +5,7 @@ import moment from 'moment';
 import { IssueVersion } from 'types/Edition';
 import VersionPublicationTable from './VersionPublicationTable';
 import { getIssueVersions } from 'services/editionsApi';
-import {
-  getEditionIssue,
-  refreshEditionVersion as doRefreshEditionVersion,
-} from 'bundles/editionsIssueBundle';
+import { refreshEditionVersion as doRefreshEditionVersion } from 'bundles/editionsIssueBundle';
 import { Dispatch, bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 

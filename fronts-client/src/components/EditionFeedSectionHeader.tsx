@@ -150,7 +150,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
       editionsIssue,
       publishEditionsIssue,
     } = this.props;
-    const { id, version } = editionsIssue;
+    const { id, lastProofedVersion } = editionsIssue;
     getEditionIssue(id);
 
     startConfirmProofOrPublishModal(
@@ -160,11 +160,11 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
         <p>Publishing a new version will not halt in-progress versions.</p>
         <strong>
           Version to be published is:
-          {version}
+          {lastProofedVersion}
         </strong>
       </>,
       ProofOrPublish.Publish,
-      () => publishEditionsIssue(id, version)
+      () => publishEditionsIssue(id, lastProofedVersion)
     );
   };
 }
