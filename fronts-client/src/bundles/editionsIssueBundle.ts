@@ -45,9 +45,8 @@ export const refreshEditionVersion = (
 ): ThunkResult<Promise<void>> => async (dispatch, getState) => {
   try {
     dispatch(actions.fetchStart());
-
     // Get current issue
-    const issue = selectors.selectById(getState(), issueId);
+    const issue = selectors.selectAll(getState());
     if (!issue) {
       // wtf??
       return;
@@ -58,7 +57,7 @@ export const refreshEditionVersion = (
 
     // Update current issue with new version
     dispatch(
-      actions.updateSuccess(issue?.id, {
+      actions.fetchSuccess({
         ...issue,
         lastProofedVersion,
       })
