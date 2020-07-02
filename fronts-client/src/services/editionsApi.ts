@@ -135,7 +135,7 @@ export async function getIssueVersions(
 
 export async function getLastProofedIssueVersion(
   issueId: string
-): Promise<IssueVersion[]> {
+): Promise<string> {
   return await pandaFetch(
     `/editions-api/issues/${issueId}/last-proofed-version`,
     {

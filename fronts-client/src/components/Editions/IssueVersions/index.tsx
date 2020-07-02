@@ -5,7 +5,9 @@ import moment from 'moment';
 import { IssueVersion } from 'types/Edition';
 import VersionPublicationTable from './VersionPublicationTable';
 import { getIssueVersions } from 'services/editionsApi';
-import { getEditionIssue } from 'bundles/editionsIssueBundle';
+import { getEditionIssue, refreshEditionVersion as doRefreshEditionVersion } from 'bundles/editionsIssueBundle';
+import { Dispatch, bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
 
 const IssueVersionList = styled.ul`
   max-height: 500px;
@@ -19,9 +21,13 @@ const IssueVersionList = styled.ul`
   }
 `;
 
-interface ComponentProps {
+// Props we expect from JSX <component issueId="" />
+interface ContainerProps {
   issueId: string;
 }
+
+// Props we expect from redux bindings
+type ComponentProps = ContainerProps & ReturnType<typeof mapDispatchToProps>;
 
 interface ComponentState {
   data: IssueVersion[];
@@ -68,12 +74,17 @@ class IssueVersions extends React.Component<ComponentProps, ComponentState> {
   }
 
   private update = async () => {
-    const { issueId } = this.props;
-
-    const data = await getIssueVersions(issueId);
-    await getEditionIssue(issueId);
+    const { issueId, refreshEditionVersion } = this.props;
+    refreshEditionVersion(issueId);
     this.setState({ data });
   };
 }
 
-export default IssueVersions;
+// Bind refreshEditionVersion to store.dispatch
+// and pass it into the component
+
+const mapDispatchToProps = (dispatch: Dispatch) => bindActionCreators({
+  refreshEditionVersion: doRefreshEditionVersion
+}, dispatch)
+
+export default connect(undefined, mapDispatchToProps)(IssueVersions);

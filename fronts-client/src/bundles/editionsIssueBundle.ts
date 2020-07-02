@@ -39,3 +39,30 @@ export const getEditionIssue = (
     dispatch(actions.fetchError('Failed to get issue'));
   }
 };
+
+export const refreshEditionVersion = (
+  issueId: string
+): ThunkResult<Promise<void>> => async (dispatch, getState) => {
+  try {
+    dispatch(actions.fetchStart());
+
+    // Get current issue
+    const issue = selectors.selectById(getState(), issueId);
+    if (!issue) {
+      // wtf??
+      return;
+    }
+
+    // Fetch new version
+    const version = await getLastProofedIssueVersion(issueId);
+
+    // Update current issue with new version
+    dispatch(actions.updateSuccess(issue?.id, {
+      ...issue,
+      version
+    }));
+
+  } catch (error) {
+    dispatch(actions.fetchError('Failed to update issue version'));
+  }
+};
