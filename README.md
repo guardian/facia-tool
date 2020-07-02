@@ -9,14 +9,21 @@ You can find the client for the Fronts tool in [fronts-client](/fronts-client).
 ### Setup (need to be done once)
 
 1. Install [NVM](https://github.com/creationix/nvm).
-2. Get credentials from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev).
-3. From the project root, run `./scripts/setup.sh`.
+1. Get credentials from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev).
+1. Grant [code](https://permissions.code.dev-gutools.co.uk/) permissions (used for local builds as well).  You need:
+    1. fronts_access
+    1. launch_commercial_fronts
+    1. edit_editorial_fronts
+    1. edit_editions
+    1. launch_editorial_fronts
+    1. configure_fronts
+1. From the project root, run `./scripts/setup.sh`.
 
 ### Dev Start
 
 1. To run the application:
-   - From the project root, run `./scripts/start-dev.sh`
-   - From the project root, run without debug `./scripts/start-dev.sh --no-debug`
+   - From the project root, run `./scripts/dev-start.sh`
+   - From the project root, run without debug `./scripts/dev-start.sh --no-debug`
 2. Open `https://fronts.local.dev-gutools.co.uk`.
 
 ### Unit tests

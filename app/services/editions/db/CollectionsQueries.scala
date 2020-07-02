@@ -76,7 +76,7 @@ trait CollectionsQueries {
     val lastUpdated = LocalDateTime.now()
     sql"""
       UPDATE collections
-      SET "name" = ${collection.displayName},
+      SET "name" = ${collection.displayName.trim()},
           updated_on = $lastUpdated,
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}
