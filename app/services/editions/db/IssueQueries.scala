@@ -257,9 +257,9 @@ trait IssueQueries {
     val userName = user.firstName + " " + user.lastName
     val truncatedNow = EditionsDB.truncateDateTime(now)
 
-    // versionId is a date string as the downstream Archiver lambda assumes it is a date
-    // TODO move to a GUID
-    val versionId:String = now.format(DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of("UTC")))
+    // versionId is a date string but everything downstream treats it as a string
+    // until we get back to the fronts tool
+    val versionId:String = now.format(DateTimeFormatter.ISO_DATE_TIME)
 
     sql"""
     UPDATE edition_issues
