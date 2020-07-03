@@ -31,7 +31,7 @@ export const proofEditionIssue = (
     await proofIssue(id);
     dispatch(
       startOptionsModal(
-        'Proof Succeeded',
+        'Proof Request Succeeded',
         <>
           <p>
             This issue has been submitted for proofing, please check your app
@@ -76,7 +76,7 @@ export const publishEditionIssue = (
       await publishIssue(id, version);
       dispatch(
         startOptionsModal(
-          'Publish Succeeded',
+          'Publish Request Succeeded',
           <>
             <p>
               This issue has been submitted for publishing, please check your
@@ -86,6 +86,7 @@ export const publishEditionIssue = (
               If you do not see the issue within 5 minutes please contact a
               member of the support team.
             </p>
+            <IssueVersions issueId={id} />
           </>,
           [{ buttonText: 'Dismiss', callback: noop }],
           noop,

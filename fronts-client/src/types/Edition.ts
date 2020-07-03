@@ -41,9 +41,12 @@ interface EditionsIssue {
 
 const issueVersionStatus = [
   'Started',
-  'Processing',
+  'Proofing',
+  'Proofed',
+  'Publishing',
   'Published',
   'Failed',
+  'Processing',
 ] as const;
 
 type IssueVersionStatus = typeof issueVersionStatus[number];
