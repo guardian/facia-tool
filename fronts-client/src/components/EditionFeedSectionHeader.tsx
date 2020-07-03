@@ -154,16 +154,14 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
     const { id, lastProofedVersion } = editionsIssue;
     getEditionIssue(id);
 
-    const timeAndTimeZone = displayTime(lastProofedVersion)
+    const timeAndTimeZone = displayTime(lastProofedVersion);
 
     startConfirmProofOrPublishModal(
       'Confirm publish',
       <>
         <p>Confirm the publication of a new version of this issue.</p>
         <p>Publishing a new version will not halt in-progress versions.</p>
-        <strong>
-          Version to be published is: {timeAndTimeZone}
-        </strong>
+        <strong>Version to be published is: {timeAndTimeZone}</strong>
       </>,
       ProofOrPublish.Publish,
       () => publishEditionsIssue(id, lastProofedVersion)
@@ -173,7 +171,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
 
 function displayTime(lastProofedVersion:string | undefined) {
   if (!lastProofedVersion) {
-    return "No such version"
+    return 'No proofed version available'
   }
   return format(lastProofedVersion, 'HH:mm:ss') + `(${lastProofedVersion})`
 }
