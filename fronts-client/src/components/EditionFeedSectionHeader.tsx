@@ -169,11 +169,11 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
   };
 }
 
-function displayTime(lastProofedVersion:string | undefined) {
+function displayTime(lastProofedVersion: string | undefined) {
   if (!lastProofedVersion) {
-    return 'No proofed version available'
+    return 'No proofed version available';
   }
-  return format(lastProofedVersion, 'HH:mm:ss') + `(${lastProofedVersion})`
+  return format(lastProofedVersion, 'HH:mm:ss') + `(${lastProofedVersion})`;
 }
 
 const mapStateToProps = () => {
