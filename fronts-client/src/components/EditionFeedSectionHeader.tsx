@@ -19,6 +19,7 @@ import noop from 'lodash/noop';
 import { startOptionsModal } from 'actions/OptionsModal';
 import IssueVersions from './Editions/IssueVersions';
 import { getEditionIssue } from 'bundles/editionsIssueBundle';
+import format from 'date-fns/format';
 
 enum ProofOrPublish {
   Proof = 'Proof',
@@ -153,20 +154,28 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
     const { id, lastProofedVersion } = editionsIssue;
     getEditionIssue(id);
 
+    const timeAndTimeZone = displayTime(lastProofedVersion)
+
     startConfirmProofOrPublishModal(
       'Confirm publish',
       <>
         <p>Confirm the publication of a new version of this issue.</p>
         <p>Publishing a new version will not halt in-progress versions.</p>
         <strong>
-          Version to be published is:
-          {lastProofedVersion}
+          Version to be published is: {timeAndTimeZone}
         </strong>
       </>,
       ProofOrPublish.Publish,
       () => publishEditionsIssue(id, lastProofedVersion)
     );
   };
+}
+
+function displayTime(lastProofedVersion:string | undefined) {
+  if (!lastProofedVersion) {
+    return "No such version"
+  }
+  return format(lastProofedVersion, 'HH:mm:ss') + `(${lastProofedVersion})`
 }
 
 const mapStateToProps = () => {

@@ -1,7 +1,7 @@
 package services.editions.db
 
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, OffsetDateTime}
+import java.time.{LocalDate, OffsetDateTime, ZoneId}
 
 import com.gu.pandomainauth.model.User
 import model.editions._
@@ -259,7 +259,7 @@ trait IssueQueries {
 
     // versionId is a date string as the downstream Archiver lambda assumes it is a date
     // TODO move to a GUID
-    val versionId:String = now.format(DateTimeFormatter.ISO_DATE_TIME)
+    val versionId:String = now.format(DateTimeFormatter.ISO_DATE_TIME.withZone(ZoneId.of("UTC")))
 
     sql"""
     UPDATE edition_issues
