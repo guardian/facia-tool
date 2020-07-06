@@ -70,7 +70,7 @@ export const publishEditionIssue = (
   version?: string
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
   if (!version) {
-    alert('No issue version found');
+    alert('No proofed issue version found; please use proof button');
   } else {
     try {
       await publishIssue(id, version);

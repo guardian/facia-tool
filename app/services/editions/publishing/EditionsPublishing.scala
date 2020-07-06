@@ -21,7 +21,6 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
 
     val action = PublishAction.proof
 
-    // Bump the recently published counters
     val versionId = db.createIssueVersion(issue.id, user, now)
 
     val markers = Markers.appendEntries(
@@ -43,6 +42,20 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
   }
 
   def publish(issue: EditionsIssue, user: User, version: String) = {
+    val action = PublishAction.proof
+
+    val markers = Markers.appendEntries(
+      Map(
+        "issue-action" -> action.toString,
+        "issue-id" -> issue.id,
+        "issue-date" -> issue.issueDate.toString,
+        "version" -> version,
+        "user" -> user.email
+      ).asJava
+    )
+
+    Logger.info(s"Uploading $action request for issue ${issue.id} to S3")(markers)
+
     val publishedIssue = issue.toPublishableIssue(version, PublishAction.publish)
 
     // Archive a copy

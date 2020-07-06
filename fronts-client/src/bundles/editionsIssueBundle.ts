@@ -30,11 +30,11 @@ export const getEditionIssue = (
     dispatch(actions.fetchStart());
     const issuePromise = getIssueSummary(id);
     const version = await getLastProofedIssueVersion(id);
-    const i = {
+    const issueWithVersion = {
       ...(await issuePromise),
       version,
     };
-    dispatch(actions.fetchSuccess(i));
+    dispatch(actions.fetchSuccess(issueWithVersion));
   } catch (error) {
     dispatch(actions.fetchError('Failed to get issue'));
   }

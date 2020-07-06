@@ -2,8 +2,9 @@ package model.editions
 
 import java.time.LocalDate
 
+import model.editions
 import model.editions.PublishAction.PublishAction
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OWrites}
 import scalikejdbc.WrappedResultSet
 
 object PublishAction extends Enumeration
@@ -11,9 +12,9 @@ object PublishAction extends Enumeration
   type PublishAction = Value
 
   // Assigning values
-  val preview = Value("preview")
-  val proof = Value("proof")
-  val publish = Value("publish")
+  val preview: editions.PublishAction.Value = Value("preview")
+  val proof: editions.PublishAction.Value = Value("proof")
+  val publish: editions.PublishAction.Value = Value("publish")
 
 }
 
@@ -31,16 +32,19 @@ case class EditionsIssue(
     fronts: List[EditionsFront]
 ) {
 
-  def toPreviewIssue = toPublishableIssue("preview", PublishAction.preview)
+  def toPreviewIssue: PublishableIssue = toPublishableIssue("preview", PublishAction.preview)
 
   def toPublishableIssue(version: String, action: PublishAction): PublishableIssue = PublishableIssue(
-    action.toString,
+    action,
     id,
     edition,
     edition,
     issueDate,
     version,
-    if (action == PublishAction.publish) List()   // publish does not need or want config
+    if (action == PublishAction.publish) 
+      // publish does not need or want config because by definition we are publishing
+      // only the previously provided version. We do not want to be able to change content.
+      List()   
     else fronts
       .filterNot(_.isHidden) // drop hidden fronts
       .map(_.toPublishedFront) // convert
@@ -49,7 +53,7 @@ case class EditionsIssue(
 }
 
 object EditionsIssue {
-  implicit val writes = Json.writes[EditionsIssue]
+  implicit val writes: OWrites[EditionsIssue] = Json.writes[EditionsIssue]
 
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsIssue = {
     EditionsIssue(
