@@ -74,8 +74,17 @@ export const getIssueSummary = async (id: string): Promise<EditionsIssue> => {
   });
 };
 
-export const publishIssue = async (id: string): Promise<void> => {
-  return pandaFetch(`/editions-api/issues/${id}/publish`, {
+export const proofIssue = async (id: string): Promise<void> => {
+  return pandaFetch(`/editions-api/issues/${id}/proof`, {
+    method: 'POST',
+  }).then(() => {});
+};
+
+export const publishIssue = async (
+  id: string,
+  version: string
+): Promise<void> => {
+  return pandaFetch(`/editions-api/issues/${id}/publish/${version}`, {
     method: 'POST',
   }).then(() => {});
 };
@@ -122,4 +131,15 @@ export async function getIssueVersions(
   return await pandaFetch(`/editions-api/issues/${issueId}/versions`, {
     method: 'get',
   }).then((response) => response.json());
+}
+
+export async function getLastProofedIssueVersion(
+  issueId: string
+): Promise<string> {
+  return await pandaFetch(
+    `/editions-api/issues/${issueId}/last-proofed-version`,
+    {
+      method: 'get',
+    }
+  ).then((response) => response.json());
 }

@@ -7,7 +7,7 @@ import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
-import model.editions.{CapiTimeWindowConfigInDays, Edition, EditionsCollection, EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
+import model.editions._
 import model.forms._
 import net.logstash.logback.marker.Markers
 import play.api.Logger
@@ -76,6 +76,12 @@ class EditionsController(db: EditionsDB,
   def getVersions(id: String) = AccessAPIAuthAction { _ =>
     db.getIssue(id)
       .map(_ => Ok(Json.toJson(db.getIssueVersions(id))))
+      .getOrElse(NotFound(s"Issue $id not found"))
+  }
+
+  def getLastProofedVersion(id: String) = AccessAPIAuthAction { _ =>
+    db.getIssue(id)
+      .map(_ => Ok(Json.toJson(db.getLastProofedIssueVersion(id))))
       .getOrElse(NotFound(s"Issue $id not found"))
   }
 
@@ -165,11 +171,24 @@ class EditionsController(db: EditionsDB,
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def publishIssue(id: String) = EditEditionsAuthAction { req =>
+  def proofIssue(id: String) = EditEditionsAuthAction { req =>
     db.getIssue(id).map { issue =>
-      publishing.publish(issue, req.user, OffsetDateTime.now())
+      publishing.proof(issue, req.user, OffsetDateTime.now())
       NoContent
     }.getOrElse(NotFound(s"Issue $id not found"))
+  }
+
+  def publishIssue(id: String, version: EditionIssueVersionId) = EditEditionsAuthAction { req =>
+    val lastProofedIssueVersion = db.getLastProofedIssueVersion(id)
+    // Protect against stale requests.
+    if (lastProofedIssueVersion.filter(_.equals(version)).isEmpty) {
+      BadRequest(s"Last proofed version of issue '${id}' is '${lastProofedIssueVersion.getOrElse("none")}', not '${version}'")
+    } else {
+      db.getIssue(id).map { issue =>
+        publishing.publish(issue, req.user, version)
+        NoContent
+      }.getOrElse(NotFound(s"Issue $id not found"))
+    }
   }
 
   def getPrefillForCollection(id: String) = EditEditionsAuthAction { req =>

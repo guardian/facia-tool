@@ -18,7 +18,7 @@ import FadeTransition from './transitions/FadeTransition';
 import { MoreIcon } from 'components/icons/Icons';
 import { RouteComponentProps } from 'react-router';
 import { selectEditMode } from 'selectors/pathSelectors';
-import { getEditionIssue } from 'actions/Editions';
+import { getEditionIssue } from 'bundles/editionsIssueBundle';
 import { EditMode } from 'types/EditMode';
 import EditionFeedSectionHeader from './EditionFeedSectionHeader';
 

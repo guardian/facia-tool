@@ -2,7 +2,7 @@ package services.editions.publishing
 
 import java.time.LocalDate
 
-import model.editions.{Edition, EditionsIssue}
+import model.editions.{Edition, EditionsIssue, PublishAction}
 import services.editions.publishing.PublishedIssueFormatters._
 import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
 import play.api.libs.json.Json
@@ -46,7 +46,7 @@ class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with E
     }
 
     "publication is version called banana" - {
-      val publishedIssue = issue.toPublishedIssue("banana")
+      val publishedIssue = issue.toPublishableIssue("banana", PublishAction.proof)
       val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", publishedIssue)
 
       "key is correct" in {
