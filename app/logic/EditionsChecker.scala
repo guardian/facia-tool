@@ -16,6 +16,8 @@ object EditionsChecker {
   def checkIssue(issue: EditionsIssue): List[String] =
     if (issue.fronts.isEmpty)
       List(s"Issue is empty")  // This is actually almost impossible because the templates don't let you!
+    else if (issue.fronts.forall(_.isHidden))
+      List(s"Issue contains no visible fronts")
     else
       checkFronts(issue.fronts)
 

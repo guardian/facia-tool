@@ -16,16 +16,17 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
   }
 
   "preflight checks for issues with fronts" - {
-    "empty hidden front" in {
-      val front = getFront()
-        .copy(isHidden = true)
-      val issue = getIssue(front)
-      EditionsChecker.checkIssue(issue).isEmpty shouldEqual true
-    }
     "empty front" in {
       val front = getFront()
       val issue = getIssue(front)
       EditionsChecker.checkIssue(issue).head shouldEqual "Front 'displayName' is visible and empty"
+    }
+    "no visible fronts" in {
+      val c = getCollection()
+      val front = getFront(c)
+        .copy(displayName = "First hidden front", isHidden = true)
+      val issue = getIssue(front)
+      EditionsChecker.checkIssue(issue).headOption shouldEqual (Some("Issue contains no visible fronts"))
     }
     "non-empty special front" in {
       val c = getCollection()
