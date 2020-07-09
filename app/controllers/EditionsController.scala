@@ -7,7 +7,8 @@ import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
-import model.editions.{CapiTimeWindowConfigInDays, Edition, EditionsCollection, EditionsFrontMetadata, EditionsFrontendCollectionWrapper, EditionsTemplates}
+import model.editions._
+import model.editions.templates.EditionDefinition
 import model.forms._
 import net.logstash.logback.marker.Markers
 import play.api.Logger
@@ -176,7 +177,7 @@ class EditionsController(db: EditionsDB,
     db.getCollectionPrefill(id).map { prefillUpdate =>
       logger.info(s"getPrefillForCollection id=$id, prefillUpdate")
       import prefillUpdate._
-      val capiDateQueryParam = EditionsTemplates.templates(edition).capiDateQueryParam
+      val capiDateQueryParam = EditionsTemplates.templates(edition).template.capiDateQueryParam
       val capiPrefillTimeParams = CapiPrefillTimeParams(capiQueryTimeWindow, capiDateQueryParam)
       // TODO
       // when we click (suggest articles) for collection we are not using ophan metrics and we are not sorting on them

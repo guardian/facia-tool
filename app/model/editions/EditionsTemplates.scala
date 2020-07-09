@@ -7,21 +7,21 @@ import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
 import model.editions.templates.TemplateHelpers.Defaults
-import model.editions.templates.{AmericanEdition, AustralianEdition, DailyEdition, TheDummyEdition, TrainingEdition}
+import model.editions.templates._
 import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 import services.editions.prefills.CapiQueryTimeWindow
 
 object EditionsTemplates {
-  val templates: Map[Edition, EditionTemplate] = Map(
-    Edition.DailyEdition -> DailyEdition.template,
-    Edition.AmericanEdition -> AmericanEdition.template,
-    Edition.AustralianEdition -> AustralianEdition.template,
-    Edition.TrainingEdition -> TrainingEdition.template,
-    Edition.TheDummyEdition -> TheDummyEdition.template
+  val templates: Map[Edition, EditionDefinitionWithTemplate] = Map(
+    Edition.DailyEdition -> DailyEdition,
+    Edition.AmericanEdition -> AmericanEdition,
+    Edition.AustralianEdition -> AustralianEdition,
+    Edition.TrainingEdition -> TrainingEdition,
+    Edition.TheDummyEdition -> TheDummyEdition
   )
 
-  val getAvailableEditions: List[Edition] = templates.keys.toList
+  val getAvailableEditions: List[EditionDefinition] = templates.values.toList
 }
 
 case object WeekDay extends Enumeration(1) {

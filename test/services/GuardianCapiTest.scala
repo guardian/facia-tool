@@ -18,7 +18,7 @@ class GuardianCapiTest extends FlatSpec with Matchers with BeforeAndAfterEach {
 
   private val contentPrefillQuery = CapiPrefillQuery("?tag=theguardian/mainsection/topstories", PathType.PrintSent)
 
-  private val timeWindowCfg = TestEdition.templates(Edition.TrainingEdition).timeWindowConfig
+  private val timeWindowCfg = TestEdition.template.timeWindowConfig
 
   private val contentPrefillTimeWindow: CapiQueryTimeWindow = timeWindowCfg.toCapiQueryTimeWindow(issueDate)
 

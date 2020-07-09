@@ -4,9 +4,11 @@ import java.time.ZoneId
 
 import model.editions.templates.TemplateHelpers.Defaults._
 import model.editions._
+import model.editions.templates.{EditionDefinitionWithTemplate, EditionType}
+import model.editions.templates.EditionType.EditionType
 import model.editions.templates.TemplateHelpers.collection
 
-object TestEdition {
+object TestEdition extends EditionDefinitionWithTemplate {
 
   val CapiQueryStartOffsetInDays: Int = -1
   val CapiQueryEndOffsetInDays: Int = 2
@@ -31,7 +33,12 @@ object TestEdition {
     None
   )
 
-  lazy val templates: Map[Edition, EditionTemplate] = Map(Edition.TrainingEdition -> template)
+  lazy val templates: Map[Edition, EditionDefinitionWithTemplate] = Map(Edition.TrainingEdition -> this)
+  override val title: String = "test title"
+  override val subTitle: String = "test subtitle"
+  override val edition: String = "test edition"
+  override val headerTitle: String = "test header title"
+  override val editionType: EditionType = EditionType.Regional
 }
 
 object FrontTopStories {
