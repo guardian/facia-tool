@@ -10,5 +10,5 @@ object PublishedIssueFormatters {
   implicit val publishedArticleWrites = Json.writes[PublishedArticle]
   implicit val publishedCollectionsWrites = Json.writes[PublishedCollection]
   implicit val publishedFrontsWrites = Json.writes[PublishedFront]
-  implicit val publishedIssueWrites = Json.writes[PublishedIssue]
+  implicit val publishedIssueWrites = Json.writes[PublishableIssue]
 }

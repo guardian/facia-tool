@@ -1,7 +1,7 @@
 package services.editions.db
 
 import java.time.format.DateTimeFormatter
-import java.time.{LocalDate, OffsetDateTime}
+import java.time.{LocalDate, OffsetDateTime, ZoneId}
 
 import com.gu.pandomainauth.model.User
 import model.editions._
@@ -257,9 +257,9 @@ trait IssueQueries {
     val userName = user.firstName + " " + user.lastName
     val truncatedNow = EditionsDB.truncateDateTime(now)
 
-    // versionId is a date string as the downstream Archiver lambda assumes it is a date
-    // TODO move to a GUID
-    val versionId = now.format(DateTimeFormatter.ISO_DATE_TIME)
+    // versionId is a date string but everything downstream treats it as a string
+    // until we get back to the fronts tool
+    val versionId:String = now.format(DateTimeFormatter.ISO_DATE_TIME)
 
     sql"""
     UPDATE edition_issues
@@ -304,6 +304,24 @@ trait IssueQueries {
       DELETE FROM edition_issues
       WHERE id = $issueId
     """.execute().apply()
+  }
+
+
+
+  def getLastProofedIssueVersion(issueId: String): Option[EditionIssueVersionId] = DB localTx { implicit session =>
+
+      sql"""
+      SELECT max(v.id)                AS version_id
+      FROM issue_versions v
+      LEFT JOIN issue_versions_events e
+        ON v.id = e.version_id
+      WHERE v.issue_id = $issueId
+      AND   e.status = ${IssueVersionStatus.Proofed.toString}
+    """.map(rs => rs.string("version_id"))
+        .list()
+        .apply()
+        .headOption
+
   }
 
   def getIssueVersions(issueId: String): List[IssueVersion] = DB localTx { implicit session =>

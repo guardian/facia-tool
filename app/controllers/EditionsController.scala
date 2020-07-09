@@ -80,6 +80,12 @@ class EditionsController(db: EditionsDB,
       .getOrElse(NotFound(s"Issue $id not found"))
   }
 
+  def getLastProofedVersion(id: String) = AccessAPIAuthAction { _ =>
+    db.getIssue(id)
+      .map(_ => Ok(Json.toJson(db.getLastProofedIssueVersion(id))))
+      .getOrElse(NotFound(s"Issue $id not found"))
+  }
+
   def getAvailableEditions = EditEditionsAuthAction { _ =>
     Ok(Json.toJson(EditionsTemplates.getAvailableEditions))
   }
@@ -166,11 +172,24 @@ class EditionsController(db: EditionsDB,
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def publishIssue(id: String) = EditEditionsAuthAction { req =>
+  def proofIssue(id: String) = EditEditionsAuthAction { req =>
     db.getIssue(id).map { issue =>
-      publishing.publish(issue, req.user, OffsetDateTime.now())
+      publishing.proof(issue, req.user, OffsetDateTime.now())
       NoContent
     }.getOrElse(NotFound(s"Issue $id not found"))
+  }
+
+  def publishIssue(id: String, version: EditionIssueVersionId) = EditEditionsAuthAction { req =>
+    val lastProofedIssueVersion = db.getLastProofedIssueVersion(id)
+    // Protect against stale requests.
+    if (lastProofedIssueVersion.filter(_.equals(version)).isEmpty) {
+      BadRequest(s"Last proofed version of issue '${id}' is '${lastProofedIssueVersion.getOrElse("none")}', not '${version}'")
+    } else {
+      db.getIssue(id).map { issue =>
+        publishing.publish(issue, req.user, version)
+        NoContent
+      }.getOrElse(NotFound(s"Issue $id not found"))
+    }
   }
 
   def getPrefillForCollection(id: String) = EditEditionsAuthAction { req =>

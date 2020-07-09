@@ -36,13 +36,17 @@ interface EditionsIssue {
   launchedBy: string;
   launchedEmail: string;
   fronts: EditionsFront[];
+  lastProofedVersion?: string;
 }
 
 const issueVersionStatus = [
   'Started',
-  'Processing',
+  'Proofing',
+  'Proofed',
+  'Publishing',
   'Published',
   'Failed',
+  'Processing',
 ] as const;
 
 type IssueVersionStatus = typeof issueVersionStatus[number];

@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  getIssueSummary,
+  proofIssue,
   publishIssue,
   checkIssue,
   putFrontHiddenState,
@@ -8,23 +8,10 @@ import {
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
-import { actions } from 'bundles/editionsIssueBundle';
 import { EditionsFrontMetadata } from 'types/FaciaApi';
 import noop from 'lodash/noop';
 import { startOptionsModal } from './OptionsModal';
 import IssueVersions from 'components/Editions/IssueVersions';
-
-export const getEditionIssue = (
-  id: string
-): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
-  try {
-    dispatch(actions.fetchStart());
-    const issue = await getIssueSummary(id);
-    dispatch(actions.fetchSuccess(issue));
-  } catch (error) {
-    dispatch(actions.fetchError('Failed to get issue'));
-  }
-};
 
 export const check = (id: string): ThunkResult<Promise<void>> => async (
   dispatch: Dispatch
@@ -37,18 +24,18 @@ export const check = (id: string): ThunkResult<Promise<void>> => async (
   }
 };
 
-export const publishEditionIssue = (
+export const proofEditionIssue = (
   id: string
 ): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
   try {
-    await publishIssue(id);
+    await proofIssue(id);
     dispatch(
       startOptionsModal(
-        'Publish Succeeded',
+        'Proof Request Succeeded',
         <>
           <p>
-            This issue has been submitted for publishing, please check your app
-            in the next few minutes.
+            This issue has been submitted for proofing, please check your app
+            using the proof bucket setting, in the next few minutes.
           </p>
           <p>
             If you do not see the issue within 5 minutes please contact a member
@@ -65,9 +52,9 @@ export const publishEditionIssue = (
   } catch (error) {
     dispatch(
       startOptionsModal(
-        'Published Failed',
+        'Proofing Failed',
         <>
-          <p>Failed to publish issue!</p>
+          <p>Failed to proof issue!</p>
           <p>If this problem persists, contact the support team.</p>
         </>,
         [],
@@ -75,6 +62,51 @@ export const publishEditionIssue = (
         true
       )
     );
+  }
+};
+
+export const publishEditionIssue = (
+  id: string,
+  version?: string
+): ThunkResult<Promise<void>> => async (dispatch: Dispatch) => {
+  if (!version) {
+    alert('No proofed issue version found; please use proof button');
+  } else {
+    try {
+      await publishIssue(id, version);
+      dispatch(
+        startOptionsModal(
+          'Publish Request Succeeded',
+          <>
+            <p>
+              This issue has been submitted for publishing, please check your
+              app in the next few minutes.
+            </p>
+            <p>
+              If you do not see the issue within 5 minutes please contact a
+              member of the support team.
+            </p>
+            <IssueVersions issueId={id} />
+          </>,
+          [{ buttonText: 'Dismiss', callback: noop }],
+          noop,
+          false
+        )
+      );
+    } catch (error) {
+      dispatch(
+        startOptionsModal(
+          'Published Failed',
+          <>
+            <p>Failed to publish issue!</p>
+            <p>If this problem persists, contact the support team.</p>
+          </>,
+          [],
+          noop,
+          true
+        )
+      );
+    }
   }
 };
 
