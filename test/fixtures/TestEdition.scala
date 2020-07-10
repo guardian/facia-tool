@@ -4,7 +4,7 @@ import java.time.ZoneId
 
 import model.editions.templates.TemplateHelpers.Defaults._
 import model.editions._
-import model.editions.templates.{EditionDefinitionWithTemplate, EditionType}
+import model.editions.templates.{EditionDefinitionWithTemplate, EditionType, Header}
 import model.editions.templates.EditionType.EditionType
 import model.editions.templates.TemplateHelpers.collection
 
@@ -37,8 +37,7 @@ object TestEdition extends EditionDefinitionWithTemplate {
   override val title: String = "test title"
   override val subTitle: String = "test subtitle"
   override val edition: String = "test edition"
-  override val headerTitle: String = "test header title"
-  override val headerSubTitle: String = "test header subtitle"
+  override val header: Header = Header("test header title", Some("test header subtitle"))
   override val editionType: EditionType = EditionType.Regional
 }
 

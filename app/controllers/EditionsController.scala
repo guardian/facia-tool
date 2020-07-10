@@ -8,7 +8,7 @@ import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
 import model.editions._
-import model.editions.templates.EditionDefinition
+import model.editions.templates.{EditionDefinition, EditionType}
 import model.forms._
 import net.logstash.logback.marker.Markers
 import play.api.Logger
@@ -86,9 +86,19 @@ class EditionsController(db: EditionsDB,
       .getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def getAvailableEditions = EditEditionsAuthAction { _ =>
-    Ok(Json.toJson(EditionsTemplates.getAvailableEditions))
-  }
+  def getAvailableEditions = EditEditionsAuthAction { _ => {
+    val allEditions = EditionsTemplates.getAvailableEditions
+    val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
+    val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
+    val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
+    val editions = Map(
+      "regionalEditions" -> regionalEditions,
+      "specialEditions" -> specialEditions,
+      "trainingEditions" -> trainingEditions
+    )
+    Ok(Json.toJson(editions))
+
+  }}
 
   def checkIssue(id: String) = EditEditionsAuthAction { _ =>
     val maybeIssue = db.getIssue(id)

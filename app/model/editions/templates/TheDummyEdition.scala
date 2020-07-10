@@ -11,8 +11,7 @@ object TheDummyEdition extends EditionDefinitionWithTemplate {
   override val title = "The Dummy Edition"
   override val subTitle = "Internal usage only, for reproducing issues"
   override val edition = "the-dummy-edition"
-  override val headerTitle = "The Dummy"
-  override val headerSubTitle = "Edition"
+  override val header = Header("The Dummy", Some("Edition"))
   override val editionType = EditionType.Training
 
   lazy val template = EditionTemplate(

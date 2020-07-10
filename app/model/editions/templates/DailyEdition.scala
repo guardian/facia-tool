@@ -11,8 +11,7 @@ object DailyEdition extends EditionDefinitionWithTemplate {
   override val title = "The Daily"
   override val subTitle = "Published every morning by 6am (GMT)"
   override val edition = "daily-edition"
-  override val headerTitle = "The Daily"
-  override val headerSubTitle = ""
+  override val header = Header("The Daily")
   override val editionType = EditionType.Regional
 
   lazy val template = EditionTemplate(
