@@ -8,11 +8,12 @@ import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
 object TheDummyEdition extends EditionDefinitionWithTemplate {
-  override val title = "The Daily"
-  override val subTitle = "Published every morning by 6am (GMT)"
-  override val edition = "daily-edition"
-  override val headerTitle = "The Daily"
-  override val editionType = EditionType.Regional
+  override val title = "The Dummy Edition"
+  override val subTitle = "Internal usage only, for reproducing issues"
+  override val edition = "the-dummy-edition"
+  override val headerTitle = "The Dummy"
+  override val headerSubTitle = "Edition"
+  override val editionType = EditionType.Training
 
   lazy val template = EditionTemplate(
     List(

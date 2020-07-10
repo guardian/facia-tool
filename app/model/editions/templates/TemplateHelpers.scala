@@ -1,7 +1,7 @@
 package model.editions.templates
 
 import model.editions.templates.EditionType.EditionType
-import model.editions._
+import model.editions.{templates, _}
 import play.api.libs.json._
 
 object TemplateHelpers {
@@ -45,8 +45,8 @@ case object EditionType extends Enumeration() {
   type EditionType = Value
   val Regional, Special, Training = Value
 
-  implicit val readsMyEnum = Reads.enumNameReads(EditionType)
-  implicit val writesMyEnum = Writes.enumNameWrites
+  implicit val readsMyEnum: Reads[templates.EditionType.Value] = Reads.enumNameReads(EditionType)
+  implicit val writesMyEnum: Writes[templates.EditionType.Value] = Writes.enumNameWrites
 }
 
 trait EditionDefinition {
@@ -54,6 +54,7 @@ trait EditionDefinition {
   val subTitle: String
   val edition: String
   val headerTitle: String
+  val headerSubTitle: String
   val editionType: EditionType
 }
 trait EditionDefinitionWithTemplate extends EditionDefinition {
@@ -65,11 +66,12 @@ object EditionDefinition {
     subTitle: String,
     edition: String,
     headerTitle: String,
+    headerSubTitle: String,
     editionType: EditionType
-  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, headerTitle, editionType)
+  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, headerTitle, headerSubTitle, editionType)
 
-  def unapply(x: EditionDefinition): Option[(String, String, String, String, EditionType)]
-    = Some(x.title, x.subTitle, x.edition, x.headerTitle, x.editionType)
+  def unapply(x: EditionDefinition): Option[(String, String, String, String, String, EditionType)]
+    = Some(x.title, x.subTitle, x.edition, x.headerTitle, x.headerSubTitle, x.editionType)
 
   implicit val formatEditionDefinition: OFormat[EditionDefinition] = Json.format[EditionDefinition]
   implicit val writesEditionDefinition: OWrites[EditionDefinition] = Json.writes[EditionDefinition]
@@ -81,11 +83,12 @@ case class EditionDefinitionRecord(
                          override val subTitle: String,
                          override val edition: String,
                          override val headerTitle: String,
+                         override val headerSubTitle: String,
                          override val editionType: EditionType
 ) extends EditionDefinition {}
 
 object EditionDefinitionRecord{
-  implicit val editionDefinitionRecordFormat = Json.format[EditionDefinitionRecord]
-  implicit val editionDefinitionRecordWrites = Json.writes[EditionDefinitionRecord]
-  implicit val editionDefinitionRecordReads = Json.reads[EditionDefinitionRecord]
+  implicit val editionDefinitionRecordFormat: OFormat[EditionDefinitionRecord] = Json.format[EditionDefinitionRecord]
+  implicit val editionDefinitionRecordWrites: OWrites[EditionDefinitionRecord] = Json.writes[EditionDefinitionRecord]
+  implicit val editionDefinitionRecordReads: Reads[EditionDefinitionRecord] = Json.reads[EditionDefinitionRecord]
 }

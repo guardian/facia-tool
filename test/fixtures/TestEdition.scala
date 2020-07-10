@@ -38,6 +38,7 @@ object TestEdition extends EditionDefinitionWithTemplate {
   override val subTitle: String = "test subtitle"
   override val edition: String = "test edition"
   override val headerTitle: String = "test header title"
+  override val headerSubTitle: String = "test header subtitle"
   override val editionType: EditionType = EditionType.Regional
 }
 
