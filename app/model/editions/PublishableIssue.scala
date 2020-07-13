@@ -1,10 +1,12 @@
 package model.editions
 
-import java.time.{LocalDate, OffsetDateTime}
+import java.time.LocalDate
 
 import enumeratum.EnumEntry.Uncapitalised
 import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PublishAction.PublishAction
+
+import scala.collection.immutable
 
 // TODO traitify PublishedItem - when we have more than one type of collection item
 
@@ -16,7 +18,7 @@ object PublishedMediaType extends PlayEnum[PublishedMediaType] {
   case object Image extends PublishedMediaType
   case object CoverCard extends PublishedMediaType
 
-  override def values = findValues
+  override def values: immutable.IndexedSeq[PublishedMediaType] = findValues
 }
 
 case class PublishedImage(height: Option[Int], width: Option[Int], src: String)
@@ -56,5 +58,6 @@ case class PublishableIssue(
   edition: Edition,
   issueDate: LocalDate,
   version: String,
-  fronts: List[PublishedFront]
+  fronts: List[PublishedFront],
+  notificationUTCOffset: Int
 )

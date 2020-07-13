@@ -60,6 +60,7 @@ trait EditionDefinition {
   val edition: String
   val header: Header
   val editionType: EditionType
+  val notificationUTCOffset: Int
 }
 trait EditionDefinitionWithTemplate extends EditionDefinition {
   val template: EditionTemplate
@@ -70,11 +71,12 @@ object EditionDefinition {
     subTitle: String,
     edition: String,
     header: Header,
-    editionType: EditionType
-  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType)
+    editionType: EditionType,
+    notificationUTCOffset: Int
+  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset)
 
-  def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType)]
-    = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType)
+  def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int)]
+    = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType, edition.notificationUTCOffset)
 
   implicit val formatEditionDefinition: OFormat[EditionDefinition] = Json.format[EditionDefinition]
 }
@@ -84,8 +86,10 @@ case class EditionDefinitionRecord(
                          override val subTitle: String,
                          override val edition: String,
                          override val header: Header,
-                         override val editionType: EditionType
+                         override val editionType: EditionType,
+                         override val notificationUTCOffset: Int
 ) extends EditionDefinition {}
+
 
 object EditionDefinitionRecord{
   implicit val editionDefinitionRecordFormat: OFormat[EditionDefinitionRecord] = Json.format[EditionDefinitionRecord]

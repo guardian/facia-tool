@@ -13,6 +13,7 @@ object TrainingEdition extends EditionDefinitionWithTemplate {
   override val edition = "training-edition"
   override val header = Header("Training Edition")
   override val editionType = EditionType.Training
+  override val notificationUTCOffset = 3
 
   lazy val template = EditionTemplate(
     List(

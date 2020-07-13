@@ -39,6 +39,7 @@ object TestEdition extends EditionDefinitionWithTemplate {
   override val edition: String = "test edition"
   override val header: Header = Header("test header title", Some("test header subtitle"))
   override val editionType: EditionType = EditionType.Regional
+  override val notificationUTCOffset: Int = 2
 }
 
 object FrontTopStories {

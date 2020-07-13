@@ -48,7 +48,8 @@ case class EditionsIssue(
     else fronts
       .filterNot(_.isHidden) // drop hidden fronts
       .map(_.toPublishedFront) // convert
-      .filterNot(_.collections.isEmpty) // drop fronts that contain no collections
+      .filterNot(_.collections.isEmpty), // drop fronts that contain no collections
+    EditionsTemplates.templates.get(edition).map(_.notificationUTCOffset).getOrElse(3)
   )
 }
 
