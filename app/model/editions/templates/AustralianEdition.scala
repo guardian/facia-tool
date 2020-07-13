@@ -7,7 +7,14 @@ import model.editions._
 import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
-object AustralianEdition {
+object AustralianEdition extends EditionDefinitionWithTemplate {
+
+  override val title = "Australia Weekender"
+  override val subTitle = "Published every Saturday morning by 6am (AEST)"
+  override val edition = "australian-edition"
+  override val header = Header("Australia", Some("Weekender"))
+  override val editionType = EditionType.Regional
+
   lazy val template = EditionTemplate(
     List(
       FrontTopStoriesAu -> WeekDays(List(WeekDay.Sat)),

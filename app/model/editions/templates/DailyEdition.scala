@@ -7,7 +7,13 @@ import model.editions._
 import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
-object DailyEdition {
+object DailyEdition extends EditionDefinitionWithTemplate {
+  override val title = "The Daily"
+  override val subTitle = "Published every morning by 6am (GMT)"
+  override val edition = "daily-edition"
+  override val header = Header("The Daily")
+  override val editionType = EditionType.Regional
+
   lazy val template = EditionTemplate(
     List(
       // Top Stories and Nuclear specials
@@ -348,4 +354,5 @@ object DailyEdition {
     "Crosswords",
     collection("Crosswords").searchPrefill("?tag=type/crossword")
   )
+
 }

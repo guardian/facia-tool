@@ -4,8 +4,9 @@ import java.time.LocalDate
 
 import logging.Logging
 import model.editions._
+import model.editions.templates.{EditionDefinition, EditionDefinitionWithTemplate}
 import play.api.mvc.{Result, Results}
-import services.editions.prefills.{CapiQueryTimeWindow, CapiPrefillTimeParams, MetadataForLogging, Prefill, PrefillParamsAdapter}
+import services.editions.prefills.{CapiPrefillTimeParams, CapiQueryTimeWindow, MetadataForLogging, Prefill, PrefillParamsAdapter}
 import services.{Capi, Ophan}
 
 import scala.concurrent.Await
@@ -15,17 +16,17 @@ import scala.util.control.NonFatal
 
 case class GenerateEditionTemplateResult(issueSkeleton: EditionsIssueSkeleton, contentPrefillTimeWindow: CapiQueryTimeWindow)
 
-class EditionsTemplating(templates: PartialFunction[Edition, EditionTemplate], capi: Capi, ophan: Ophan) extends Logging {
+class EditionsTemplating(templates: PartialFunction[Edition, EditionDefinitionWithTemplate], capi: Capi, ophan: Ophan) extends Logging {
 
   private val collectionsTemplating = CollectionTemplatingHelper(capi, ophan)
 
   def generateEditionTemplate(edition: Edition, issueDate: LocalDate): Either[Result, GenerateEditionTemplateResult] = {
     templates.lift(edition) match {
-      case Some(editionTemplate) =>
-        if (editionTemplate.availability.isValid(issueDate)) {
+      case Some(editionDefinition) =>
+        if (editionDefinition.template.availability.isValid(issueDate)) {
 
-          val issueSkeleton: EditionsIssueSkeleton = getIssueSkeleton(issueDate, editionTemplate, edition, editionTemplate.ophanQueryPrefillParams)
-          val contentPrefillTimeWindow = editionTemplate.timeWindowConfig.toCapiQueryTimeWindow(issueDate)
+          val issueSkeleton: EditionsIssueSkeleton = getIssueSkeleton(issueDate, editionDefinition.template, edition, editionDefinition.template.ophanQueryPrefillParams)
+          val contentPrefillTimeWindow = editionDefinition.template.timeWindowConfig.toCapiQueryTimeWindow(issueDate)
           Right(GenerateEditionTemplateResult(issueSkeleton, contentPrefillTimeWindow))
 
         } else {
