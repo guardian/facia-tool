@@ -32,6 +32,11 @@ case class EditionsIssue(
     fronts: List[EditionsFront]
 ) {
 
+  // This is a no-op placeholder which matches the UK Daily Edition value.
+  // It should never be needed because the Editions Templates object should always
+  // contain a matching Edition.  It should (TODO) eventually go away.
+  private val defaultOffset = 3
+
   def toPreviewIssue: PublishableIssue = toPublishableIssue("preview", PublishAction.preview)
 
   def toPublishableIssue(version: String, action: PublishAction): PublishableIssue = PublishableIssue(
@@ -49,7 +54,7 @@ case class EditionsIssue(
       .filterNot(_.isHidden) // drop hidden fronts
       .map(_.toPublishedFront) // convert
       .filterNot(_.collections.isEmpty), // drop fronts that contain no collections
-    EditionsTemplates.templates.get(edition).map(_.notificationUTCOffset).getOrElse(3)
+    EditionsTemplates.templates.get(edition).map(_.notificationUTCOffset).getOrElse(defaultOffset)
   )
 }
 
