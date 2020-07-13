@@ -42,6 +42,7 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
   }
 
   def publish(issue: EditionsIssue, user: User, version: String) = {
+
     val action = PublishAction.proof
 
     val markers = Markers.appendEntries(

@@ -13,6 +13,7 @@ object DailyEdition extends EditionDefinitionWithTemplate {
   override val edition = "daily-edition"
   override val header = Header("The Daily")
   override val editionType = EditionType.Regional
+  override val notificationUTCOffset = 3
 
   lazy val template = EditionTemplate(
     List(

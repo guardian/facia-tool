@@ -13,6 +13,7 @@ object TheDummyEdition extends EditionDefinitionWithTemplate {
   override val edition = "the-dummy-edition"
   override val header = Header("The Dummy", Some("Edition"))
   override val editionType = EditionType.Training
+  override val notificationUTCOffset = 3
 
   lazy val template = EditionTemplate(
     List(
