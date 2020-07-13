@@ -51,8 +51,7 @@ case object EditionType extends Enumeration() {
 
 case class Header (title: String, subTitle: Option[String] = None)
 object Header {
-  implicit val readsHeader: Reads[Header] = Json.reads[Header]
-  implicit val writesHeader: Writes[Header] = Json.writes[Header]
+  implicit val formatHeader: OFormat[Header] = Json.format[Header]
 }
 
 trait EditionDefinition {
@@ -74,12 +73,10 @@ object EditionDefinition {
     editionType: EditionType
   ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType)
 
-  def unapply(x: EditionDefinition): Option[(String, String, String, Header, EditionType)]
-    = Some(x.title, x.subTitle, x.edition, x.header, x.editionType)
+  def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType)]
+    = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType)
 
   implicit val formatEditionDefinition: OFormat[EditionDefinition] = Json.format[EditionDefinition]
-  implicit val writesEditionDefinition: OWrites[EditionDefinition] = Json.writes[EditionDefinition]
-  implicit val readsEditionDefinition: Reads[EditionDefinition] = Json.reads[EditionDefinition]
 }
 
 case class EditionDefinitionRecord(
@@ -92,6 +89,4 @@ case class EditionDefinitionRecord(
 
 object EditionDefinitionRecord{
   implicit val editionDefinitionRecordFormat: OFormat[EditionDefinitionRecord] = Json.format[EditionDefinitionRecord]
-  implicit val editionDefinitionRecordWrites: OWrites[EditionDefinitionRecord] = Json.writes[EditionDefinitionRecord]
-  implicit val editionDefinitionRecordReads: Reads[EditionDefinitionRecord] = Json.reads[EditionDefinitionRecord]
 }
