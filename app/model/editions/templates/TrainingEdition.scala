@@ -43,23 +43,32 @@ object TrainingEdition extends EditionDefinitionWithTemplate {
 
   private val query = "?tag=theguardian/mainsection/education"
 
-  def FrontNewsYesterday = front("News (Yesterday)", None,
+  def FrontNewsYesterday = front("News", None,
     collection("Yesterday's Education news")
       .searchPrefill(query)
-      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-1, 0)))
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-1, 0))),
+    collection("News"),
+    collection("News"),
+    collection("News")
   ).swatch(News)
 
-  def FrontNewsLastWeek = front("News (Last Week)", None,
+  def FrontNewsLastWeek = front("Features", None,
     collection("Last Week's Education news")
       .searchPrefill(query)
-      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-7, 0)))
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-7, 0))),
+    collection("Features"),
+    collection("Features"),
+    collection("Features")
   ).swatch(News)
 
-  def FrontNewsLastMonth = front("News (Last Month)", None,
+  def FrontNewsLastMonth = front("Sport", None,
     collection("Last Month's Education news")
       .searchPrefill(query)
-      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-31, 0))))
-    .swatch(News)
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-31, 0))),
+    collection("Sport"),
+    collection("Sport"),
+    collection("Sport")
+  ).swatch(News)
 
   def FrontWorldSpecial = specialFront("World Special", News)
 
@@ -70,3 +79,4 @@ object TrainingEdition extends EditionDefinitionWithTemplate {
     collection("Crosswords").searchPrefill("?tag=type/crossword"),
   )
 }
+
