@@ -9,10 +9,10 @@ import model.editions.templates.TemplateHelpers._
 //noinspection TypeAnnotation
 object AustralianEdition extends EditionDefinitionWithTemplate {
 
-  override val title = "Australia Weekender"
+  override val title = "Australia Weekend"
   override val subTitle = "Published every Saturday morning by 6am (AEST)"
   override val edition = "australian-edition"
-  override val header = Header("Australia", Some("Weekender"))
+  override val header = Header("Australia", Some("Weekend"))
   override val editionType = EditionType.Regional
   override val notificationUTCOffset = -5
 
@@ -137,9 +137,15 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Culture")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
       .withArticleItemsCap(40),
+    collection("Culture"),
+    collection("Culture"),
+    collection("Culture"),
     collection("Lifestyle")
       .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
-      .withArticleItemsCap(40)
+      .withArticleItemsCap(40),
+    collection("Lifestyle"),
+    collection("Lifestyle"),
+    collection("Lifestyle")
   )
     .swatch(Lifestyle)
 

@@ -228,6 +228,7 @@ object DailyEdition extends EditionDefinitionWithTemplate {
     "Books",
     collection("Books").printSentAnyTag("theguardian/guardianreview/saturdayreviewsfeatres", "theobserver/new-review/books"),
     collection("Books").hide,
+    collection("Books").hide,
     collection("Books").hide
   )
     .swatch(Culture)
