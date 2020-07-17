@@ -27,10 +27,14 @@ const Home = () => (
     <h3>Manage edition list</h3>
     <ul>
       <li>
-        <a href='/editions-api/editions'>View Editions json metadata</a>
+        <a href='/editions-api/editions'>
+          View Editions json metadata
+        </a>
       </li>
       <li>
-        <a href='/editions-api/republish-editions'>Republish</a>
+        <a href='/editions-api/republish-editions'>
+          Republish
+        </a>
       </li>
     </ul>
   </HomeContainer>
