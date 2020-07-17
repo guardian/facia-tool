@@ -12,7 +12,7 @@ import model.editions.templates.{EditionDefinition, EditionType}
 import model.forms._
 import net.logstash.logback.marker.Markers
 import play.api.Logger
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, JsValue}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
@@ -86,18 +86,18 @@ class EditionsController(db: EditionsDB,
       .getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def getAvailableEditions = EditEditionsAuthAction { _ => {
-    val allEditions = EditionsTemplates.getAvailableEditions
-    val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
-    val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
-    val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
-    val editions = Map(
-      "regionalEditions" -> regionalEditions,
-      "specialEditions" -> specialEditions,
-      "trainingEditions" -> trainingEditions
-    )
-    Ok(Json.toJson(editions))
+  def republishEditions = EditEditionsAuthAction { _ => {
+    try {
+      val raw = Json.toJson(Map("action" -> "editionList")).as[JsObject] + ("content", Json.toJson(getAvailableEditionsJson))
+      publishing.putEditionsList(raw.toString())
+      Ok("Published.  Please check processing has succeeded.")
+    } catch {
+      case e => InternalServerError(e.getMessage)
+    }
+  }}
 
+  def getAvailableEditions = EditEditionsAuthAction { _ => {
+    Ok(Json.toJson(getAvailableEditionsJson))
   }}
 
   def checkIssue(id: String) = EditEditionsAuthAction { _ =>
@@ -250,4 +250,18 @@ class EditionsController(db: EditionsDB,
       Ok(Json.toJson(state))
     } getOrElse NotFound(s"Front $id not found")
   }
+
+  private def getAvailableEditionsJson = {
+    val allEditions = EditionsTemplates.getAvailableEditions
+    val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
+    val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
+    val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
+    Map(
+      "regionalEditions" -> regionalEditions,
+      "specialEditions" -> specialEditions,
+      "trainingEditions" -> trainingEditions
+    )
+  }
+
+
 }
