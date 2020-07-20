@@ -21,7 +21,7 @@ const renderEditionPriority = (editionPriority: EditionPriority) => (
   </li>
 );
 
-type IProps = ReturnType<typeof mapStateToProps>
+type IProps = ReturnType<typeof mapStateToProps>;
 
 const Home = ({ availableEditions }: IProps) => (
   <HomeContainer>
@@ -29,9 +29,14 @@ const Home = ({ availableEditions }: IProps) => (
     <ul>{Object.keys(priorities).map(renderPriority)}</ul>
 
     <h3>Manage editions</h3>
-    <ul>{availableEditions &&
-      availableEditions.sort((a, b) => (a.editionType === b.editionType ? (a.title < b.title ? 0 : 1) : 1))
-        .map(renderEditionPriority)}</ul>
+    <ul>{
+      availableEditions &&
+        availableEditions
+          .sort((a, b) =>
+            a.editionType === b.editionType ? (a.title < b.title ? 0 : 1) : 1
+          )
+          .map(renderEditionPriority)}
+    </ul>
   </HomeContainer>
 );
 
