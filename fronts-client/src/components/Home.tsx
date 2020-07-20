@@ -1,8 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { priorities, editionPriorities } from 'constants/priorities';
 import HomeContainer from './layout/HomeContainer';
+import { selectAvailableEditions } from 'selectors/configSelectors';
+import type { State } from 'types/State';
 
 const renderPriority = (priority: string) => (
   <li key={priority}>
@@ -16,7 +19,10 @@ const renderEditionPriority = (editionPriority: string) => (
     </Link>
   </li>
 );
-const Home = () => (
+
+type IProps = ReturnType<typeof mapStateToProps>
+
+const Home = ({ availableEditions }: IProps) => (
   <HomeContainer>
     <h3>Front priorities</h3>
     <ul>{Object.keys(priorities).map(renderPriority)}</ul>
@@ -26,4 +32,8 @@ const Home = () => (
   </HomeContainer>
 );
 
-export default Home;
+const mapStateToProps = (state: State) => ({
+  availableEditions: selectAvailableEditions(state)
+});
+
+export default connect(mapStateToProps)(Home);

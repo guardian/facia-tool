@@ -39,6 +39,11 @@ const selectGridUrl = createSelector(
   (config) => config && config.mediaBaseUrl
 );
 
+const selectAvailableEditions = createSelector(
+  selectConfig,
+  (config) => config && config.availableEditions
+);
+
 export {
   selectCapiLiveURL,
   selectCapiPreviewURL,
@@ -47,4 +52,5 @@ export {
   selectLastName,
   selectCollectionCap,
   selectGridUrl,
+  selectAvailableEditions
 };
