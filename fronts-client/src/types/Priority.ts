@@ -6,8 +6,9 @@ interface Priorities {
 }
 
 interface EditionPriority {
-  address: string;
-  description: string;
+  title: string;
+  edition: string;
+  editionType: string;
 }
 
 export { Priorities, EditionPriority };
