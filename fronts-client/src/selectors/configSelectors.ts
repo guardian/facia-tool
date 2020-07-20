@@ -52,5 +52,5 @@ export {
   selectLastName,
   selectCollectionCap,
   selectGridUrl,
-  selectAvailableEditions
+  selectAvailableEditions,
 };

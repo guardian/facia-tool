@@ -29,8 +29,8 @@ const Home = ({ availableEditions }: IProps) => (
     <ul>{Object.keys(priorities).map(renderPriority)}</ul>
 
     <h3>Manage editions</h3>
-    <ul>{
-      availableEditions &&
+    <ul>
+      {availableEditions &&
         availableEditions
           .sort((a, b) =>
             a.editionType === b.editionType ? (a.title < b.title ? 0 : 1) : 1
@@ -41,7 +41,7 @@ const Home = ({ availableEditions }: IProps) => (
 );
 
 const mapStateToProps = (state: State) => ({
-  availableEditions: selectAvailableEditions(state)
+  availableEditions: selectAvailableEditions(state),
 });
 
 export default connect(mapStateToProps)(Home);

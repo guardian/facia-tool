@@ -6,4 +6,3 @@ export const priorities: Priorities = {
   training: {},
   email: {},
 };
-
