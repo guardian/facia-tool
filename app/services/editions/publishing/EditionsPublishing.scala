@@ -41,6 +41,10 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
     publishedBucket.putIssue(publishedIssue)
   }
 
+  def putEditionsList(rawJson: String) = {
+    publishedBucket.putEditionsList(rawJson)
+  }
+
   def publish(issue: EditionsIssue, user: User, version: String) = {
 
     val action = PublishAction.proof

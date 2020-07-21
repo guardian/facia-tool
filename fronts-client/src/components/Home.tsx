@@ -37,6 +37,17 @@ const Home = ({ availableEditions }: IProps) => (
           )
           .map(renderEditionPriority)}
     </ul>
+
+    <h3>Manage edition list</h3>
+    <ul>
+      <li>
+        <a href="/editions-api/editions">View Editions json metadata</a>
+      </li>
+      <li>
+        <a href="/editions-api/republish-editions">Republish</a>
+      </li>
+>>>>>>> master
+    </ul>
   </HomeContainer>
 );
 
