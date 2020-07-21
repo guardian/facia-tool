@@ -1,5 +1,6 @@
 import type { NestedCard } from 'types/Collection';
 import type { FeatureSwitch } from './Features';
+import type { EditionPriority } from '../types/Priority';
 
 interface Permission {
   [id: string]: boolean;
@@ -46,6 +47,7 @@ interface Config {
     clipboardArticles: NestedCard[];
     featureSwitches: FeatureSwitch[];
   };
+  availableEditions: EditionPriority[];
 }
 
 export { Config };

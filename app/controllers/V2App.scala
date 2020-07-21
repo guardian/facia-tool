@@ -7,6 +7,7 @@ import model.{FeatureSwitch, UserData, UserDataForDefaults}
 
 import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.{Metadata, TargetedTerritory}
+import model.editions.EditionsTemplates
 import permissions.Permissions
 import play.api.libs.json.Json
 import switchboard.SwitchManager
@@ -72,7 +73,8 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: AmazonDynamoDB, val deps
       Some(userDataForDefaults),
       routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
       routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true),
-      TargetedTerritory.allTerritories
+      TargetedTerritory.allTerritories,
+      EditionsTemplates.getAvailableEditions
     )
 
     Ok(views.html.V2App.app(

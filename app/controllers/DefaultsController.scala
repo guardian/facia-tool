@@ -1,6 +1,8 @@
 package controllers
 
 import com.gu.facia.client.models.{Metadata, TargetedTerritory, Trail}
+import model.editions.EditionsTemplates
+import model.editions.templates.EditionDefinition
 import model.{Cached, FeatureSwitch, UserDataForDefaults}
 import permissions.Permissions
 import play.api.libs.json.{JsValue, Json}
@@ -31,7 +33,8 @@ case class Defaults(
                      userData: Option[UserDataForDefaults],
                      capiLiveUrl: String = "",
                      capiPreviewUrl: String = "",
-                     availableTerritories: Iterable[TargetedTerritory] = Nil
+                     availableTerritories: Iterable[TargetedTerritory] = Nil,
+                     availableEditions: List[EditionDefinition]
 )
 
 class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
@@ -65,7 +68,8 @@ class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaCo
           case (_, meta) => meta
         },
         None,
-        availableTerritories = TargetedTerritory.allTerritories
+        availableTerritories = TargetedTerritory.allTerritories,
+        availableEditions = EditionsTemplates.getAvailableEditions
       )))
     }
   }
