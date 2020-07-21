@@ -46,7 +46,6 @@ const Home = ({ availableEditions }: IProps) => (
       <li>
         <a href="/editions-api/republish-editions">Republish</a>
       </li>
->>>>>>> master
     </ul>
   </HomeContainer>
 );
