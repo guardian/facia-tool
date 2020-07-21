@@ -23,6 +23,16 @@ const Home = () => (
 
     <h3>Manage editions</h3>
     <ul>{Object.keys(editionPriorities).map(renderEditionPriority)}</ul>
+
+    <h3>Manage edition list</h3>
+    <ul>
+      <li>
+        <a href="/editions-api/editions">View Editions json metadata</a>
+      </li>
+      <li>
+        <a href="/editions-api/republish-editions">Republish</a>
+      </li>
+    </ul>
   </HomeContainer>
 );
 
