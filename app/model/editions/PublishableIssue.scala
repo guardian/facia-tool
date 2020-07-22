@@ -59,5 +59,6 @@ case class PublishableIssue(
   issueDate: LocalDate,
   version: String,
   fronts: List[PublishedFront],
-  notificationUTCOffset: Int
+  notificationUTCOffset: Int,
+  topic: Option[String]
 )

@@ -34,7 +34,8 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           |  "issueDate" : "2019-09-30",
           |  "version" : "preview",
           |  "fronts" : [ ],
-          |  "notificationUTCOffset" : 3
+          |  "notificationUTCOffset" : 3,
+          |  "topic" : "uk"
           |}""".stripMargin
 
       val previewIssue = issue.toPreviewIssue
@@ -53,7 +54,8 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
           |  "issueDate" : "2019-09-30",
           |  "version" : "foo",
           |  "fronts" : [ ],
-          |  "notificationUTCOffset" : 3
+          |  "notificationUTCOffset" : 3,
+          |  "topic" : "uk"
           |}""".stripMargin
 
       val publishedIssue = issue.toPublishableIssue("foo", PublishAction.proof)
