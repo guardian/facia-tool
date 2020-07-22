@@ -15,6 +15,7 @@ object AmericanEdition extends EditionDefinitionWithTemplate {
   override val header = Header("US", Some("Weekend"))
   override val editionType = EditionType.Regional
   override val notificationUTCOffset = 8
+  override val topic = "us"
 
   lazy val template = EditionTemplate(
     List(

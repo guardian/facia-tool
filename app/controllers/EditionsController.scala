@@ -8,7 +8,7 @@ import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
 import model.editions._
-import model.editions.templates.{EditionDefinition, EditionType}
+import model.editions.templates.EditionType
 import model.forms._
 import net.logstash.logback.marker.Markers
 import play.api.Logger
@@ -92,7 +92,7 @@ class EditionsController(db: EditionsDB,
       publishing.putEditionsList(raw.toString())
       Ok("Published.  Please check processing has succeeded.")
     } catch {
-      case e => InternalServerError(e.getMessage)
+      case e: Exception => InternalServerError(e.getMessage)
     }
   }}
 
