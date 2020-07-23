@@ -12,7 +12,7 @@ import type {
   CollectionWithNestedArticles,
   NestedCard,
 } from 'types/Collection';
-import type { EditionsIssue, EditionsCollection } from 'types/Edition';
+import type { EditionsIssue } from 'types/Edition';
 import { EditionsRoutes } from 'routes/routes';
 import isValid from 'date-fns/is_valid';
 import { ExternalArticle } from 'types/ExternalArticle';
