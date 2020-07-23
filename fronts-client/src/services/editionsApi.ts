@@ -3,6 +3,8 @@ import type { CAPISearchQueryResponse } from './capiQuery';
 import type { EditionsFrontMetadata } from 'types/FaciaApi';
 import { Moment } from 'moment';
 import pandaFetch from './pandaFetch';
+import type { EditionCollectionResponse } from 'types/FaciaApi';
+import type { EditionsCollection } from 'types/Edition';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -152,3 +154,58 @@ export async function deleteIssue(issueId: string): Promise<string> {
     .then(() => 'Deleted')
     .catch(() => 'Failed');
 }
+
+export const getEditionsCollections = async (
+  // fetchCollections
+  collections: Array<{ id: string; lastUpdated?: number }>
+): Promise<EditionCollectionResponse[]> => {
+  const response = await pandaFetch('/editions-api/collections', {
+    body: JSON.stringify(collections),
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    credentials: 'same-origin',
+  });
+  return response.json();
+};
+
+export const updateEditionsCollection = (id: string) => async (
+  collection: EditionsCollection
+): Promise<void> => {
+  try {
+    const response = await pandaFetch(`/editions-api/collections/${id}`, {
+      method: 'put',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({ id, collection }),
+    });
+    return await response.json();
+  } catch (response) {
+    throw new Error(
+      `Tried to update collection with id ${id}, but the server responded with ${response.status}: ${response.body}`
+    );
+  }
+};
+
+export const renameEditionsCollection = (id: string) => async (
+  collection: EditionsCollection
+): Promise<void> => {
+  try {
+    const response = await pandaFetch(`/editions-api/collections/${id}/name`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'same-origin',
+      body: JSON.stringify({ id, collection }),
+    });
+    return await response.json();
+  } catch (response) {
+    throw new Error(
+      `Tried to update collection with id ${id}, but the server responded with ${response.status}: ${response.body}`
+    );
+  }
+};

@@ -7,7 +7,6 @@ import type {
   FrontConfig,
   CollectionConfigMap,
   CollectionResponse,
-  EditionCollectionResponse,
 } from 'types/FaciaApi';
 import type {
   CollectionWithNestedArticles,
@@ -172,12 +171,12 @@ async function publishCollection(collectionId: string): Promise<void> {
   }
 }
 
-const createUpdateCollection = <T>(path: string, method: string) => (
-  id: string
-) => async (collection: T): Promise<void> => {
+const updateCollection = (id: string) => async (
+  collection: CollectionWithNestedArticles
+): Promise<void> => {
   try {
-    const response = await pandaFetch(path, {
-      method,
+    const response = await pandaFetch('/v2Edits', {
+      method: 'post',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -191,22 +190,6 @@ const createUpdateCollection = <T>(path: string, method: string) => (
     );
   }
 };
-
-const updateCollection = createUpdateCollection<CollectionWithNestedArticles>(
-  '/v2Edits',
-  'post'
-);
-const updateEditionsCollection = (collectionId: string) =>
-  createUpdateCollection<EditionsCollection>(
-    `/editions-api/collections/${collectionId}`,
-    'put'
-  )(collectionId);
-
-const renameEditionsCollection = (collectionId: string) =>
-  createUpdateCollection<EditionsCollection>(
-    `/editions-api/collections/${collectionId}/name`,
-    'PATCH'
-  )(collectionId);
 
 const saveClipboard = (content: NestedCard[]) =>
   createSaveClipboard(content, '/clipboard');
@@ -284,11 +267,11 @@ async function getCollection(collectionId: {
   return collection;
 }
 
-const createGetCollections = <R>(path: string) => async (
+const getCollections = async (
   // fetchCollections
   collections: Array<{ id: string; lastUpdated?: number }>
-): Promise<R> => {
-  const response = await pandaFetch(path, {
+): Promise<CollectionResponse[]> => {
+  const response = await pandaFetch('/collections', {
     body: JSON.stringify(collections),
     method: 'POST',
     headers: {
@@ -298,13 +281,6 @@ const createGetCollections = <R>(path: string) => async (
   });
   return response.json();
 };
-
-const getCollections = createGetCollections<CollectionResponse[]>(
-  '/collections'
-);
-const getEditionsCollections = createGetCollections<
-  EditionCollectionResponse[]
->('/editions-api/collections');
 
 const DEFAULT_PARAMS = {
   'page-size': 50,
@@ -429,8 +405,6 @@ export {
   fetchFrontsConfig,
   fetchEditionsIssueAsConfig,
   getCollections,
-  createUpdateCollection,
-  getEditionsCollections,
   getCollection,
   getContent,
   getTagOrSectionTitle,
@@ -438,8 +412,6 @@ export {
   fetchLastPressed,
   publishCollection,
   updateCollection,
-  updateEditionsCollection,
-  renameEditionsCollection,
   saveClipboard,
   saveEditionsClipboard,
   saveOpenFrontIds,

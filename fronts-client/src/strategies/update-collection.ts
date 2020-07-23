@@ -1,9 +1,7 @@
 import type { State } from 'types/State';
 import { updateCollection } from 'services/faciaApi';
-import {
-  updateEditionsCollection,
-  renameEditionsCollection,
-} from 'services/faciaApi';
+import { renameEditionsCollection } from 'services/faciaApi';
+import { updateEditionsCollection } from 'services/editionsApi';
 import { runStrategy } from './run-strategy';
 import { CollectionWithNestedArticles } from 'types/Collection';
 import { EditionsCollection } from 'types/Edition';
