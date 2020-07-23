@@ -1,6 +1,6 @@
 import { deleteIssue as deleteIssueAPI } from '../services/editionsApi';
 
-export const deleteIssue = async ():Promise<string> => {
+export const deleteIssue = async (): Promise<string> => {
   const issue = window.location.href.substring(
     window.location.href.lastIndexOf('/') + 1
   );
