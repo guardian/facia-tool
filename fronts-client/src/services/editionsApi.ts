@@ -143,3 +143,15 @@ export async function getLastProofedIssueVersion(
     }
   ).then((response) => response.json());
 }
+
+export async function deleteIssue(
+  issueId: string
+): Promise<string> {
+  return await pandaFetch(`/editions-api/issues/${issueId}`, {
+    credentials: 'include',
+    method: 'DELETE',
+  })
+    .then(() => 'Deleted')
+    .catch(() => 'Failed')
+}
+
