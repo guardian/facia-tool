@@ -1,7 +1,7 @@
 import type { State } from 'types/State';
 import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { getCollections as fetchCollections } from 'services/faciaApi';
-import { getEditionsCollections as fetchEditionsCollections } from 'services/editionsApi';
+import { getEditionsCollections } from 'services/editionsApi';
 import { runStrategy } from './run-strategy';
 import { CollectionResponse, EditionCollectionResponse } from 'types/FaciaApi';
 
@@ -42,7 +42,7 @@ const fetchCollectionsStrategy = (
         )
       ),
     edition: () =>
-      fetchEditionsCollections(
+      getEditionsCollections(
         selectCollectionParams(
           state,
           collectionIds,
