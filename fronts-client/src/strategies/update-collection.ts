@@ -3,7 +3,7 @@ import { updateCollection } from 'services/faciaApi';
 import {
   updateEditionsCollection,
   renameEditionsCollection,
-} from 'services/faciaApi';
+} from 'services/editionsApi';
 import { runStrategy } from './run-strategy';
 import { CollectionWithNestedArticles } from 'types/Collection';
 import { EditionsCollection } from 'types/Edition';
