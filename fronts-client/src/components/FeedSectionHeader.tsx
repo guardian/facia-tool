@@ -149,7 +149,7 @@ class FeedSectionHeader extends Component<ComponentProps> {
               <EditionFeedSectionHeader />
             ) : (
               <FeedbackButton
-                href="https://docs.google.com/forms/d/e/1FAIpQLSc4JF0GxrKoxQgsFE9_tQfjAo1RKRU4M5bJWJRKaVlHbR2rpA/viewform?c=0&w=1"
+                href="https://docs.google.com/forms/d/e/1FAIpQLSeZje55T3OnErlTI_8iGuyZERjDy2Pybh8fdPmbnjy1PNFDAw/viewform"
                 target="_blank"
               >
                 Send us feedback
