@@ -16,7 +16,7 @@ object IssueVersionStatus extends PlayEnum[IssueVersionStatus] {
   case object Publishing extends IssueVersionStatus
   case object Published extends IssueVersionStatus
   case object Failed extends IssueVersionStatus
-  case object Processing extends IssueVersionStatus
+  case object PostProcessing extends IssueVersionStatus
 
   override def values = findValues
 }
