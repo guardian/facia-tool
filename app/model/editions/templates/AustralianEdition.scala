@@ -162,7 +162,7 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
   // AUS preference would be to do this by word count which we can't currently do
 
   def FrontRecommendedAu = front(
-    "Featured",
+    "Recommended",
     collection("Long Reads")
       .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
       .withArticleItemsCap(40)
