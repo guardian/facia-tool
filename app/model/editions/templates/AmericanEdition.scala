@@ -64,7 +64,6 @@ object AmericanEdition extends EditionDefinitionWithTemplate {
     collection("Essential Reads").hide,
     collection("Essential Reads").hide
   )
-    .swatch(News)
   
   // Front: Special Section, News swatch
   // Description: General Special section
@@ -198,7 +197,7 @@ object AmericanEdition extends EditionDefinitionWithTemplate {
     collection("Culture").hide,
     collection("Culture").hide
   )
-    .swatch(News)
+    .swatch(Culture)
 
   // Lifestyle
 
@@ -214,7 +213,7 @@ object AmericanEdition extends EditionDefinitionWithTemplate {
     collection("Lifestyle").hide,
     collection("Lifestyle").hide
   )
-    .swatch(News)
+    .swatch(Lifestyle)
 
   // Sports
 
