@@ -10,7 +10,7 @@ import model.editions.templates.TemplateHelpers._
 object AmericanEdition extends EditionDefinitionWithTemplate {
 
   override val title = "US Weekend"
-  override val subTitle = "Published every Saturday morning by 6am (EST)"
+  override val subTitle = "Published from New York every Saturday morning by 6am (EST)"
   override val edition = "american-edition"
   override val header = Header("US", Some("Weekend"))
   override val editionType = EditionType.Regional
