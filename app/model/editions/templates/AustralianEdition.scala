@@ -9,10 +9,10 @@ import model.editions.templates.TemplateHelpers._
 //noinspection TypeAnnotation
 object AustralianEdition extends EditionDefinitionWithTemplate {
 
-  override val title = "Australia Weekend"
-  override val subTitle = "Published every Saturday morning by 6am (AEST)"
+  override val title = "AU Weekender"
+  override val subTitle = "Published from Sydney every Saturday by 6 am (AEST)"
   override val edition = "australian-edition"
-  override val header = Header("Australia", Some("Weekend"))
+  override val header = Header("AU", Some("Weekender"))
   override val editionType = EditionType.Regional
   override val notificationUTCOffset = -5
   override val topic = "au"
@@ -28,7 +28,8 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
       FrontWorldAu -> WeekDays(List(WeekDay.Sat)),
       FrontSpecial4Au -> WeekDays(List(WeekDay.Sat)),
       FrontOpinionAu -> WeekDays(List(WeekDay.Sat)),
-      FrontCultureLifeAu -> WeekDays(List(WeekDay.Sat)),
+      FrontCultureAu -> WeekDays(List(WeekDay.Sat)),
+      FrontLifeAu -> WeekDays(List(WeekDay.Sat)),
       FrontRecommendedAu -> WeekDays(List(WeekDay.Sat)),
       FrontSportAu -> WeekDays(List(WeekDay.Sat)),
       FrontCrosswordsAu -> WeekDays(List(WeekDay.Sat))
@@ -129,18 +130,25 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
       .searchPrefill("?tag=type/article,tone/comment,-(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
       .withArticleItemsCap(40)
   )
-    .swatch(Culture)
+    .swatch(Opinion)
 
-  // Culture / Life - confused by the connection between this and weekend front above
+  // Culture
 
-  def FrontCultureLifeAu = front(
-    "Culture & Lifestyle",
+  def FrontCultureAu = front(
+    "Culture",
     collection("Culture")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
       .withArticleItemsCap(40),
     collection("Culture"),
     collection("Culture"),
-    collection("Culture"),
+    collection("Culture")
+  )
+    .swatch(Culture)
+  
+    // Life 
+
+  def FrontLifeAu = front(
+    "Lifestyle",
     collection("Lifestyle")
       .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
       .withArticleItemsCap(40),
@@ -154,12 +162,12 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
   // AUS preference would be to do this by word count which we can't currently do
 
   def FrontRecommendedAu = front(
-    "Recommended Reads",
+    "Featured",
     collection("Long Reads")
       .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
       .withArticleItemsCap(40)
   )
-    .swatch(Sport)
+    .swatch(Culture)
 
   // Sports - commissioned
 
