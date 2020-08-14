@@ -9,10 +9,10 @@ import model.editions.templates.TemplateHelpers._
 //noinspection TypeAnnotation
 object AustralianEdition extends EditionDefinitionWithTemplate {
 
-  override val title = "AU Weekender"
+  override val title = "Australia Weekend"
   override val subTitle = "Published from Sydney every Saturday by 6 am (AEST)"
   override val edition = "australian-edition"
-  override val header = Header("AU", Some("Weekender"))
+  override val header = Header("Australia", Some("Weekend"))
   override val editionType = EditionType.Regional
   override val notificationUTCOffset = -5
   override val topic = "au"
