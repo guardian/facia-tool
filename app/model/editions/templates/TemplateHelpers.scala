@@ -119,11 +119,17 @@ object EditionDefinition {
     header: Header,
     editionType: EditionType,
     notificationUTCOffset: Int,
-    topic: String
-  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic)
+    topic: String,
+   image: Option[SpecialEditionImage],
+   expiry: Option[String],
+   buttonStyle: Option[SpecialEditionButtonStyles],
+   headerStyle: Option[SpecialEditionHeaderStyles]
+  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, image, expiry, buttonStyle, headerStyle)
 
-  def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int, String)]
-    = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType, edition.notificationUTCOffset, edition.topic)
+  def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int, String,
+    Option[SpecialEditionImage], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles])]
+    = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType,
+    edition.notificationUTCOffset, edition.topic, edition.image, edition.expiry, edition.buttonStyle, edition.headerStyle)
 
   implicit val formatEditionDefinition: OFormat[EditionDefinition] = Json.format[EditionDefinition]
 }
@@ -135,7 +141,12 @@ case class EditionDefinitionRecord(
                          override val header: Header,
                          override val editionType: EditionType,
                          override val notificationUTCOffset: Int,
-                         override val topic: String
+                         override val topic: String,
+                         override val image: Option[SpecialEditionImage],
+                         override val expiry: Option[String],
+                         override val buttonStyle: Option[SpecialEditionButtonStyles],
+                         override val headerStyle: Option[SpecialEditionHeaderStyles]
+
 ) extends EditionDefinition {}
 
 
