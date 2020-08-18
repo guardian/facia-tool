@@ -54,6 +54,38 @@ object Header {
   implicit val formatHeader: OFormat[Header] = Json.format[Header]
 }
 
+case class SpecialEditionImage(source: String, path: String)
+object SpecialEditionImage {
+  implicit val formatHeader: OFormat[SpecialEditionImage] = Json.format[SpecialEditionImage]
+}
+
+case class SpecialEditionHeaderStyles(backgroundColor: String, textColorPrimary: String, textColorSecondary: String)
+object SpecialEditionHeaderStyles {
+  implicit val formatHeader: OFormat[SpecialEditionHeaderStyles] = Json.format[SpecialEditionHeaderStyles]
+}
+
+case class EditionTextFormatting(color: String, font: String, lineHeight: String, size: String)
+object EditionTextFormatting {
+  implicit val formatEditionTextFormatting : OFormat[EditionTextFormatting] = Json.format[EditionTextFormatting]
+}
+
+case class EditionImageStyle(width: Int, height: Int)
+object EditionImageStyle {
+  implicit val formatEditionImageStyle : OFormat[EditionImageStyle] = Json.format[EditionImageStyle]
+}
+
+case class SpecialEditionButtonStyles(
+  backgroundColor: String,
+  title: EditionTextFormatting,
+  subTitle: EditionTextFormatting,
+  expiry: EditionTextFormatting,
+  image: EditionImageStyle
+)
+
+object SpecialEditionButtonStyles {
+  implicit val formatSpecialEditionButtonStyles : OFormat[SpecialEditionButtonStyles] = Json.format[SpecialEditionButtonStyles]
+}
+
 trait EditionDefinition {
   val title: String
   val subTitle: String
@@ -63,9 +95,18 @@ trait EditionDefinition {
   val notificationUTCOffset: Int
   val topic: String
 }
+
 trait EditionDefinitionWithTemplate extends EditionDefinition {
   val template: EditionTemplate
 }
+
+trait SpecialEditionDefinitionWithTemplate extends EditionDefinitionWithTemplate {
+  val image: SpecialEditionImage
+  val expiry: String
+  val buttonStyle: SpecialEditionButtonStyles
+  val headerStyle: SpecialEditionHeaderStyles
+}
+
 object EditionDefinition {
   def apply(
     title: String,
