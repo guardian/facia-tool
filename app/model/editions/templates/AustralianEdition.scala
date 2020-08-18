@@ -7,7 +7,7 @@ import model.editions._
 import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
-object AustralianEdition extends EditionDefinitionWithTemplate {
+object AustralianEdition extends RegionalEdition {
 
   override val title = "Australia Weekend"
   override val subTitle = "Published from Sydney every\nSaturday by 6 am (AEST)"
@@ -60,9 +60,8 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Top stories"),
     collection("Top stories")
   )
-  
+
   // Special 1
-  
   def FrontSpecial1Au = specialFront("Front Special 1", News, None)
 
   // Weekend - Features, Culture, Lifestyle, Comment
@@ -77,9 +76,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Weekend").hide
   )
     .swatch(Lifestyle)
-  
+
   // Special 2
-  
+
   def FrontSpecial2Au = specialFront("Front Special 2", Lifestyle, None)
 
   //National - News two containers, maybe split out politics into second container?
@@ -98,9 +97,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("National").hide
   )
     .swatch(News)
-  
+
   // Special 3
-  
+
   def FrontSpecial3Au = specialFront("Front Special 3", News, None)
 
   //World - International news content
@@ -119,9 +118,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("World").hide
   )
     .swatch(News)
-  
+
   // Special 4
-  
+
   def FrontSpecial4Au = specialFront("Front Special 4", News, None)
 
   // Opinion
@@ -162,8 +161,8 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Culture").hide
   )
     .swatch(Culture)
-  
-    // Life 
+
+    // Life
 
   def FrontLifeAu = front(
     "Lifestyle",

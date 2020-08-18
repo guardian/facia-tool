@@ -7,7 +7,7 @@ import model.editions._
 import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
-object TrainingEdition extends EditionDefinitionWithTemplate {
+object TrainingEdition extends RegionalEdition {
   override val title = "The Training Edition"
   override val subTitle = "Internal usage only, for training and demonstrations"
   override val edition = "training-edition"

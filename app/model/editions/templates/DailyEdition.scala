@@ -7,7 +7,7 @@ import model.editions._
 import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
-object DailyEdition extends EditionDefinitionWithTemplate {
+object DailyEdition extends RegionalEdition {
   override val title = "UK Daily"
   override val subTitle = "Published from London every\nmorning by 6am (GMT)"
   override val edition = "daily-edition"
@@ -243,7 +243,7 @@ object DailyEdition extends EditionDefinitionWithTemplate {
     collection("Life").hide
   )
     .swatch(Lifestyle)
-  
+
   // Hidden by default, a front for the irregular 'The Fashion' supplement
 
   def FrontLifeFashion = front(
@@ -257,9 +257,9 @@ object DailyEdition extends EditionDefinitionWithTemplate {
   )
     .special
     .swatch(Lifestyle)
-  
+
   // Hidden by default, a front for the irregular 'Design' supplement
-  
+
     def FrontLifeDesign = front(
     "Design",
     collection("Design").printSentAnyTag("theobserver/design/design"),

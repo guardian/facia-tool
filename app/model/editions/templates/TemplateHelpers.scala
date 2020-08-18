@@ -94,17 +94,21 @@ trait EditionDefinition {
   val editionType: EditionType
   val notificationUTCOffset: Int
   val topic: String
+  val image: Option[SpecialEditionImage]
+  val expiry: Option[String]
+  val buttonStyle: Option[SpecialEditionButtonStyles]
+  val headerStyle: Option[SpecialEditionHeaderStyles]
 }
 
 trait EditionDefinitionWithTemplate extends EditionDefinition {
   val template: EditionTemplate
 }
 
-trait SpecialEditionDefinitionWithTemplate extends EditionDefinitionWithTemplate {
-  val image: SpecialEditionImage
-  val expiry: String
-  val buttonStyle: SpecialEditionButtonStyles
-  val headerStyle: SpecialEditionHeaderStyles
+abstract class RegionalEdition extends EditionDefinitionWithTemplate {
+  override val image: Option[SpecialEditionImage] = None
+  override val expiry: Option[String] = None
+  override val buttonStyle: Option[SpecialEditionButtonStyles] = None
+  override val headerStyle: Option[SpecialEditionHeaderStyles] = None
 }
 
 object EditionDefinition {

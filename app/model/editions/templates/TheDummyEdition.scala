@@ -7,7 +7,7 @@ import model.editions._
 import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
-object TheDummyEdition extends EditionDefinitionWithTemplate {
+object TheDummyEdition extends RegionalEdition {
   override val title = "The Dummy Edition"
   override val subTitle = "Internal usage only, for reproducing issues"
   override val edition = "the-dummy-edition"
