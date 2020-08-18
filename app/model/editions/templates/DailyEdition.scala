@@ -9,7 +9,7 @@ import model.editions.templates.TemplateHelpers._
 //noinspection TypeAnnotation
 object DailyEdition extends EditionDefinitionWithTemplate {
   override val title = "UK Daily"
-  override val subTitle = "Published from London every morning by 6am (GMT)"
+  override val subTitle = "Published from London every\nmorning by 6am (GMT)"
   override val edition = "daily-edition"
   override val header = Header("UK Daily")
   override val editionType = EditionType.Regional
