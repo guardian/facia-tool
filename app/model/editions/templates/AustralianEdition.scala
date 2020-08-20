@@ -126,9 +126,11 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Opinion")
       .searchPrefill("?tag=type/article,tone/comment,(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
       .withArticleItemsCap(40),
+    collection("Opinion"),
     collection("World Opinion")
       .searchPrefill("?tag=type/article,tone/comment,-(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
-      .withArticleItemsCap(40)
+      .withArticleItemsCap(40),
+    collection("World Opinion")
   )
     .swatch(Opinion)
 
@@ -165,7 +167,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     "Recommended",
     collection("Long Reads")
       .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
-      .withArticleItemsCap(40)
+      .withArticleItemsCap(40),
+    collection("Long Reads"),
+    collection("Long Reads")
   )
     .swatch(Culture)
 
