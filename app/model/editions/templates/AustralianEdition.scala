@@ -139,12 +139,20 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
   def FrontCultureAu = front(
     "Culture",
     collection("Culture")
-      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
-      .withArticleItemsCap(40),
-    collection("Film and TV"),
-    collection("Music"),
-    collection("Books"),
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign")
+      .withArticleItemsCap(10),
+    collection("Film and TV")
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,(film/film|culture/television),-artanddesign/artanddesign")
+      .withArticleItemsCap(10),
+    collection("Music")
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,music/music,-film/film,-culture/television,-artanddesign/artanddesign")
+      .withArticleItemsCap(10),
+    collection("Books")
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign")
+      .withArticleItemsCap(10),
     collection("Art and Design")
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,artanddesign/artanddesign")
+      .withArticleItemsCap(10)
   )
     .swatch(Culture)
   
