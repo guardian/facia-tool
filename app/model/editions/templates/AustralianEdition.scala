@@ -56,9 +56,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
 
   def FrontTopStoriesAu = front(
     "Top stories",
-    collection("Top Stories"),
-    collection("Top Stories"),
-    collection("Top Stories")
+    collection("Top stories"),
+    collection("Top stories"),
+    collection("Top stories")
   )
     .swatch(News)
   
@@ -70,10 +70,10 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
 
   def FrontWeekendAu = front(
     "Weekend",
-    collection("Collection 1"),
-    collection("Collection 2"),
-    collection("Collection 3"),
-    collection("Collection 4")
+    collection("Weekend"),
+    collection("Weekend"),
+    collection("Weekend"),
+    collection("Weekend")
   )
     .swatch(Lifestyle)
   
@@ -139,11 +139,20 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
   def FrontCultureAu = front(
     "Culture",
     collection("Culture")
-      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
-      .withArticleItemsCap(40),
-    collection("Culture"),
-    collection("Culture"),
-    collection("Culture")
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
+      .withArticleItemsCap(10),
+    collection("Film and TV")
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,(film/film|culture/television|tv-and-radio/tv-and-radio),-artanddesign/artanddesign")
+      .withArticleItemsCap(10),
+    collection("Music")
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
+      .withArticleItemsCap(10),
+    collection("Books")
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
+      .withArticleItemsCap(10),
+    collection("Art and design")
+      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
+      .withArticleItemsCap(10)
   )
     .swatch(Culture)
   
@@ -165,11 +174,10 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
 
   def FrontRecommendedAu = front(
     "Recommended",
-    collection("Long Reads")
+    collection("Long reads")
       .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
       .withArticleItemsCap(40),
-    collection("Long Reads"),
-    collection("Long Reads")
+    collection("Featured")
   )
     .swatch(Culture)
 
