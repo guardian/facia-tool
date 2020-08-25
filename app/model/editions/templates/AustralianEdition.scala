@@ -70,10 +70,10 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
 
   def FrontWeekendAu = front(
     "Weekend",
-    collection("Collection 1"),
-    collection("Collection 2"),
-    collection("Collection 3"),
-    collection("Collection 4")
+    collection("Weekend"),
+    collection("Weekend"),
+    collection("Weekend"),
+    collection("Weekend")
   )
     .swatch(Lifestyle)
   
