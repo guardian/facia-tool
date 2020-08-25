@@ -13,7 +13,6 @@ object AustralianEdition extends RegionalEdition {
   override val subTitle = "Published from Sydney every\nSaturday by 6 am (AEST)"
   override val edition = "australian-edition"
   override val header = Header("Australia", Some("Weekend"))
-  override val editionType = EditionType.Regional
   override val notificationUTCOffset = -5
   override val topic = "au"
 

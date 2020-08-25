@@ -105,10 +105,23 @@ trait EditionDefinitionWithTemplate extends EditionDefinition {
 }
 
 abstract class RegionalEdition extends EditionDefinitionWithTemplate {
+  override val editionType: EditionType =  EditionType.Regional
   override val image: Option[SpecialEditionImage] = None
   override val expiry: Option[String] = None
   override val buttonStyle: Option[SpecialEditionButtonStyles] = None
   override val headerStyle: Option[SpecialEditionHeaderStyles] = None
+}
+
+abstract class InternalEdition extends EditionDefinitionWithTemplate {
+  override val editionType: EditionType = EditionType.Training
+  override val image: Option[SpecialEditionImage] = None
+  override val expiry: Option[String] = None
+  override val buttonStyle: Option[SpecialEditionButtonStyles] = None
+  override val headerStyle: Option[SpecialEditionHeaderStyles] = None
+}
+
+abstract class SpecialEdition extends EditionDefinitionWithTemplate {
+  override val editionType: EditionType = EditionType.Special
 }
 
 object EditionDefinition {

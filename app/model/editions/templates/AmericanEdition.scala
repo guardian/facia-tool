@@ -13,7 +13,6 @@ object AmericanEdition extends RegionalEdition {
   override val subTitle = "Published from New York every\nSaturday morning by 6am (EST)"
   override val edition = "american-edition"
   override val header = Header("US", Some("Weekend"))
-  override val editionType = EditionType.Regional
   override val notificationUTCOffset = 8
   override val topic = "us"
 
