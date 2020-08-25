@@ -56,9 +56,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
 
   def FrontTopStoriesAu = front(
     "Top stories",
-    collection("Top Stories"),
-    collection("Top Stories"),
-    collection("Top Stories")
+    collection("Top stories"),
+    collection("Top stories"),
+    collection("Top stories")
   )
     .swatch(News)
   
@@ -141,9 +141,10 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Culture")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
       .withArticleItemsCap(40),
-    collection("Culture"),
-    collection("Culture"),
-    collection("Culture")
+    collection("Film and TV"),
+    collection("Music"),
+    collection("Books"),
+    collection("Art and Design")
   )
     .swatch(Culture)
   
@@ -165,11 +166,10 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
 
   def FrontRecommendedAu = front(
     "Recommended",
-    collection("Long Reads")
+    collection("Long reads")
       .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
       .withArticleItemsCap(40),
-    collection("Long Reads"),
-    collection("Long Reads")
+    collection("Featured")
   )
     .swatch(Culture)
 
