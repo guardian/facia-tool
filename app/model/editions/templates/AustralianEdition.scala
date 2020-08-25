@@ -150,7 +150,7 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Books")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
       .withArticleItemsCap(10),
-    collection("Art and Design")
+    collection("Art and design")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
       .withArticleItemsCap(10)
   )
