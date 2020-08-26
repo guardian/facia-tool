@@ -60,7 +60,6 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Top stories"),
     collection("Top stories")
   )
-    .swatch(News)
   
   // Special 1
   
@@ -73,7 +72,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Weekend"),
     collection("Weekend"),
     collection("Weekend"),
-    collection("Weekend")
+    collection("Weekend"),
+    collection("Weekend").hide,
+    collection("Weekend").hide
   )
     .swatch(Lifestyle)
   
@@ -92,7 +93,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("News")
       .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-(tone/features|tone/analysis|tone/explainer),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/comment,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
-      .withArticleItemsCap(40)
+      .withArticleItemsCap(40),
+    collection("National").hide,
+    collection("National").hide
   )
     .swatch(News)
   
@@ -111,7 +114,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("News")
       .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
-      .withArticleItemsCap(40)    
+      .withArticleItemsCap(40),
+    collection("World").hide,
+    collection("World").hide
   )
     .swatch(News)
   
@@ -126,11 +131,11 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Opinion")
       .searchPrefill("?tag=type/article,tone/comment,(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
       .withArticleItemsCap(40),
-    collection("Opinion"),
+    collection("Opinion").hide,
     collection("World Opinion")
       .searchPrefill("?tag=type/article,tone/comment,-(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
       .withArticleItemsCap(40),
-    collection("World Opinion")
+    collection("World Opinion").hide
   )
     .swatch(Opinion)
 
@@ -141,6 +146,7 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Culture")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
       .withArticleItemsCap(10),
+    collection("Culture").hide,
     collection("Film and TV")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,(film/film|culture/television|tv-and-radio/tv-and-radio),-artanddesign/artanddesign")
       .withArticleItemsCap(10),
@@ -152,7 +158,8 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
       .withArticleItemsCap(10),
     collection("Art and design")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
-      .withArticleItemsCap(10)
+      .withArticleItemsCap(10),
+    collection("Culture").hide
   )
     .swatch(Culture)
   
@@ -165,7 +172,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
       .withArticleItemsCap(40),
     collection("Lifestyle"),
     collection("Lifestyle"),
-    collection("Lifestyle")
+    collection("Lifestyle"),
+    collection("Lifestyle").hide,
+    collection("Lifestyle").hide
   )
     .swatch(Lifestyle)
 
@@ -177,7 +186,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     collection("Long reads")
       .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
       .withArticleItemsCap(40),
-    collection("Featured")
+    collection("Recommended").hide,
+    collection("Featured"),
+    collection("Recommended").hide
   )
     .swatch(Culture)
 
@@ -187,7 +198,9 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     "Sport",
     collection("Sport")
       .searchPrefill("?tag=type/article,sport/sport,(tone/comment|tone/features|tone/analysis),-tone/minutebyminute")
-      .withArticleItemsCap(40)
+      .withArticleItemsCap(40),
+    collection("Sport").hide,
+    collection("Sport").hide
   )
     .swatch(Sport)
 
