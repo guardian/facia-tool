@@ -64,7 +64,7 @@ object SpecialEditionHeaderStyles {
   implicit val formatHeader: OFormat[SpecialEditionHeaderStyles] = Json.format[SpecialEditionHeaderStyles]
 }
 
-case class EditionTextFormatting(color: String, font: String, lineHeight: String, size: String)
+case class EditionTextFormatting(color: String, font: String, lineHeight: Int, size: Int)
 object EditionTextFormatting {
   implicit val formatEditionTextFormatting : OFormat[EditionTextFormatting] = Json.format[EditionTextFormatting]
 }
