@@ -168,11 +168,20 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
   def FrontLifeAu = front(
     "Lifestyle",
     collection("Lifestyle")
-      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute")
-      .withArticleItemsCap(40),
-    collection("Lifestyle"),
-    collection("Lifestyle"),
-    collection("Lifestyle"),
+      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
+      .withArticleItemsCap(10),
+    collection("Food")
+      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,food/food,-lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
+      .withArticleItemsCap(10),
+    collection("Family")
+      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
+      .withArticleItemsCap(10),
+    collection("Fashion")
+      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
+      .withArticleItemsCap(10),
+    collection("Health")
+      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,-fashion/fashion,(lifeandstyle/health-and-wellbeing|lifeandstyle/fitness)")
+      .withArticleItemsCap(10),
     collection("Lifestyle").hide,
     collection("Lifestyle").hide
   )
