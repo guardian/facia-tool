@@ -5,18 +5,40 @@ import java.time.ZoneId
 import model.editions.Swatch._
 import model.editions._
 import model.editions.templates.TemplateHelpers._
+import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
-object TestSpecialEdition extends EditionDefinitionWithTemplate {
+object TestSpecialEdition extends SpecialEdition {
   override val title = "Special Edition Test"
   override val subTitle = "Demonstration of special edition"
   override val edition = "special-edition-test"
   override val header = Header(title ="Special", subTitle=Some("Edition Test"))
-  override val editionType = EditionType.Special
   override val notificationUTCOffset = 3
   override val topic = "s-e-t"
-  //override val expiry = ???
-  //override val image = ???
+  override val image: Option[SpecialEditionImage] = Some(SpecialEditionImage(
+    source= "media",
+    path="/efe173f8944226a06d667869c7f19d072f6807df/541_232_1740_2680/1740.jpg"
+  ))
+  override val expiry: Option[String] = Some(
+    new DateTime(2020, 9,3,12,0,DateTimeZone.UTC).toString()
+  )
+  override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
+    SpecialEditionButtonStyles(
+      backgroundColor = "",
+      title = EditionTextFormatting(color = "#c1de2b", font="GHGuardianHeadline-Regular", lineHeight = 34, size = 34),
+      subTitle = EditionTextFormatting(color = "#284b7d", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
+      expiry = EditionTextFormatting(color = "#5a287d", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
+      image = EditionImageStyle(87,134)
+    )
+  )
+  override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
+    SpecialEditionHeaderStyles(
+      backgroundColor = "#de2b67",
+      textColorPrimary = "#de482b",
+      textColorSecondary = "#dea22b"
+    )
+  )
+
 
   lazy val template = EditionTemplate(
     List(
