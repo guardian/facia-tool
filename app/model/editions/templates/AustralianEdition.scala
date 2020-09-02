@@ -5,6 +5,7 @@ import java.time.ZoneId
 import model.editions.Swatch._
 import model.editions._
 import model.editions.templates.TemplateHelpers._
+import model.editions.templates.Capi._
 
 //noinspection TypeAnnotation
 object AustralianEdition extends EditionDefinitionWithTemplate {
@@ -87,7 +88,14 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
   def FrontNationalAu = front(
     "National",
     collection("News Features")
-      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,-tone/news,-tone/comment,-tone/minutebyminute")
+      .searchPrefill(
+        Capi().build(
+          article
+             and ( australianews or australianpolitics or businessaustralia or australiamedia)
+             and ( features or analysis or explainer )
+             andnot ( culture or lifestyle or news or comment or minutebyminute)
+        )
+      )
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withArticleItemsCap(40),
     collection("News")

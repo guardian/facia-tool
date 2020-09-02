@@ -150,6 +150,8 @@ private[editions] case class CollectionTemplate(
 
   def printSentAllTags(tags: String*) = printSentPrefill(s"?tag=${tags.mkString(",")}")
 
+  def searchPrefill(capi: Capi) = searchPrefill(capi.toString)
+
   def searchPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, Search)))
 
   def withArticleItemsCap(articleItemsCap: Int) = copy(articleItemsCap = articleItemsCap)
