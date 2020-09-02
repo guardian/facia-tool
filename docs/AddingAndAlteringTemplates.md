@@ -17,7 +17,7 @@ extends `EditionDefinitionWithTemplate`. Ensure it fulfills all the requirements
 object MyLovelyHorseEdition extends EditionDefinitionWithTemplate {
   override val title = "My Lovely Horse"
   override val subTitle = "Published every morning by 6am (GMT)"
-  override val edition = "horse-edition"
+  override val edition = "my-lovely-horse-edition"
   override val header = Header("Horses!", "Lots of horses!")
   override val editionType = EditionType.Regional
   override val notificationUTCOffset = 3
@@ -25,6 +25,9 @@ object MyLovelyHorseEdition extends EditionDefinitionWithTemplate {
   lazy val template = EditionTemplate(
   ...
 ```
+
+NOTE: the `edition` property of your object must be a hypen case version of your object name otherwise the routing won't
+work and you'll get a 404 error when creating an issue
 
 Add the new Edition to _both_ the list of templates and the Edition enum object
 in `app/model/editions/EditionsTemplates.scala`.
