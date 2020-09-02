@@ -4,11 +4,11 @@ import java.time.ZoneId
 
 import model.editions.templates.TemplateHelpers.Defaults._
 import model.editions._
-import model.editions.templates.{EditionDefinitionWithTemplate, EditionType, Header}
+import model.editions.templates.{EditionDefinitionWithTemplate, EditionType, Header, RegionalEdition}
 import model.editions.templates.EditionType.EditionType
 import model.editions.templates.TemplateHelpers.collection
 
-object TestEdition extends EditionDefinitionWithTemplate {
+object TestEdition extends RegionalEdition {
 
   val CapiQueryStartOffsetInDays: Int = -1
   val CapiQueryEndOffsetInDays: Int = 2

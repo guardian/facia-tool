@@ -7,13 +7,12 @@ import model.editions._
 import model.editions.templates.TemplateHelpers._
 
 //noinspection TypeAnnotation
-object AmericanEdition extends EditionDefinitionWithTemplate {
+object AmericanEdition extends RegionalEdition {
 
   override val title = "US Weekend"
   override val subTitle = "Published from New York every\nSaturday morning by 6am (EST)"
   override val edition = "american-edition"
   override val header = Header("US", Some("Weekend"))
-  override val editionType = EditionType.Regional
   override val notificationUTCOffset = 8
   override val topic = "us"
 
@@ -64,10 +63,10 @@ object AmericanEdition extends EditionDefinitionWithTemplate {
     collection("Essential Reads").hide,
     collection("Essential Reads").hide
   )
-  
+
   // Front: Special Section, News swatch
   // Description: General Special section
-  
+
   def FrontSpecial1Us = specialFront("Front Special 1", News, None)
 
   // Front: People, Lifestyle swatch
@@ -88,10 +87,10 @@ object AmericanEdition extends EditionDefinitionWithTemplate {
     collection("People").hide
   )
     .swatch(Lifestyle)
-  
+
   // Front: Special 2
   // Description: General Special section
-  
+
   def FrontSpecial2Us = specialFront("Front Special 2", Lifestyle, None)
 
   // Front: Spotlight, News swatch
@@ -105,7 +104,7 @@ object AmericanEdition extends EditionDefinitionWithTemplate {
     collection("Spotlight").hide
   )
     .swatch(News)
-  
+
   // Front: Special 3, News swatch
   // Description: General Special section
 
@@ -127,7 +126,7 @@ object AmericanEdition extends EditionDefinitionWithTemplate {
     collection("US News").hide
   )
     .swatch(News)
-  
+
   // Front: Special 4, News swatch
   // Description: General Special section
 
@@ -166,10 +165,10 @@ object AmericanEdition extends EditionDefinitionWithTemplate {
     collection("Opinion").hide
   )
     .swatch(Opinion)
-  
-  // Front: Environment 
+
+  // Front: Environment
   // Description: Environment coverage
-  
+
   def FrontEnvironmentUs = front(
     "Environment",
     collection("Environment")
@@ -179,11 +178,11 @@ object AmericanEdition extends EditionDefinitionWithTemplate {
     collection("Environment").hide,
     collection("Environment").hide,
     collection("Environment").hide
-  ) 
+  )
     .swatch(News)
-  
-  // Front: Culture 
-  // Description: Culture features and reviews 
+
+  // Front: Culture
+  // Description: Culture features and reviews
 
   def FrontCultureUs = front(
     "Culture",

@@ -54,6 +54,38 @@ object Header {
   implicit val formatHeader: OFormat[Header] = Json.format[Header]
 }
 
+case class SpecialEditionImage(source: String, path: String)
+object SpecialEditionImage {
+  implicit val formatHeader: OFormat[SpecialEditionImage] = Json.format[SpecialEditionImage]
+}
+
+case class SpecialEditionHeaderStyles(backgroundColor: String, textColorPrimary: String, textColorSecondary: String)
+object SpecialEditionHeaderStyles {
+  implicit val formatHeader: OFormat[SpecialEditionHeaderStyles] = Json.format[SpecialEditionHeaderStyles]
+}
+
+case class EditionTextFormatting(color: String, font: String, lineHeight: Int, size: Int)
+object EditionTextFormatting {
+  implicit val formatEditionTextFormatting : OFormat[EditionTextFormatting] = Json.format[EditionTextFormatting]
+}
+
+case class EditionImageStyle(width: Int, height: Int)
+object EditionImageStyle {
+  implicit val formatEditionImageStyle : OFormat[EditionImageStyle] = Json.format[EditionImageStyle]
+}
+
+case class SpecialEditionButtonStyles(
+  backgroundColor: String,
+  title: EditionTextFormatting,
+  subTitle: EditionTextFormatting,
+  expiry: EditionTextFormatting,
+  image: EditionImageStyle
+)
+
+object SpecialEditionButtonStyles {
+  implicit val formatSpecialEditionButtonStyles : OFormat[SpecialEditionButtonStyles] = Json.format[SpecialEditionButtonStyles]
+}
+
 trait EditionDefinition {
   val title: String
   val subTitle: String
@@ -62,10 +94,36 @@ trait EditionDefinition {
   val editionType: EditionType
   val notificationUTCOffset: Int
   val topic: String
+  val image: Option[SpecialEditionImage]
+  val expiry: Option[String]
+  val buttonStyle: Option[SpecialEditionButtonStyles]
+  val headerStyle: Option[SpecialEditionHeaderStyles]
 }
+
 trait EditionDefinitionWithTemplate extends EditionDefinition {
   val template: EditionTemplate
 }
+
+abstract class RegionalEdition extends EditionDefinitionWithTemplate {
+  override val editionType: EditionType =  EditionType.Regional
+  override val image: Option[SpecialEditionImage] = None
+  override val expiry: Option[String] = None
+  override val buttonStyle: Option[SpecialEditionButtonStyles] = None
+  override val headerStyle: Option[SpecialEditionHeaderStyles] = None
+}
+
+abstract class InternalEdition extends EditionDefinitionWithTemplate {
+  override val editionType: EditionType = EditionType.Training
+  override val image: Option[SpecialEditionImage] = None
+  override val expiry: Option[String] = None
+  override val buttonStyle: Option[SpecialEditionButtonStyles] = None
+  override val headerStyle: Option[SpecialEditionHeaderStyles] = None
+}
+
+abstract class SpecialEdition extends EditionDefinitionWithTemplate {
+  override val editionType: EditionType = EditionType.Special
+}
+
 object EditionDefinition {
   def apply(
     title: String,
@@ -74,11 +132,17 @@ object EditionDefinition {
     header: Header,
     editionType: EditionType,
     notificationUTCOffset: Int,
-    topic: String
-  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic)
+    topic: String,
+   image: Option[SpecialEditionImage],
+   expiry: Option[String],
+   buttonStyle: Option[SpecialEditionButtonStyles],
+   headerStyle: Option[SpecialEditionHeaderStyles]
+  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, image, expiry, buttonStyle, headerStyle)
 
-  def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int, String)]
-    = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType, edition.notificationUTCOffset, edition.topic)
+  def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int, String,
+    Option[SpecialEditionImage], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles])]
+    = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType,
+    edition.notificationUTCOffset, edition.topic, edition.image, edition.expiry, edition.buttonStyle, edition.headerStyle)
 
   implicit val formatEditionDefinition: OFormat[EditionDefinition] = Json.format[EditionDefinition]
 }
@@ -90,7 +154,12 @@ case class EditionDefinitionRecord(
                          override val header: Header,
                          override val editionType: EditionType,
                          override val notificationUTCOffset: Int,
-                         override val topic: String
+                         override val topic: String,
+                         override val image: Option[SpecialEditionImage],
+                         override val expiry: Option[String],
+                         override val buttonStyle: Option[SpecialEditionButtonStyles],
+                         override val headerStyle: Option[SpecialEditionHeaderStyles]
+
 ) extends EditionDefinition {}
 
 
