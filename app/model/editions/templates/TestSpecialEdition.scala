@@ -11,7 +11,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 object TestSpecialEdition extends SpecialEdition {
   override val title = "Special Edition Test"
   override val subTitle = "Demonstration of special edition"
-  override val edition = "special-edition-test"
+  override val edition = "test-special-edition"
   override val header = Header(title ="Special", subTitle=Some("Edition Test"))
   override val notificationUTCOffset = 3
   override val topic = "s-e-t"
