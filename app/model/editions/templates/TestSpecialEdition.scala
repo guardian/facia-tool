@@ -25,7 +25,7 @@ object TestSpecialEdition extends SpecialEdition {
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
       backgroundColor = "",
-      title = EditionTextFormatting(color = "#c1de2b", font="'GHGuardianHeadline-Regular'", lineHeight = 34, size = 34),
+      title = EditionTextFormatting(color = "#c1de2b", font="GHGuardianHeadline-Regular", lineHeight = 34, size = 34),
       subTitle = EditionTextFormatting(color = "#284b7d", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
       expiry = EditionTextFormatting(color = "#5a287d", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
       image = EditionImageStyle(87,134)
