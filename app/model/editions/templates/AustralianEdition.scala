@@ -89,12 +89,10 @@ object AustralianEdition extends EditionDefinitionWithTemplate {
     "National",
     collection("News Features")
       .searchPrefill(
-        Capi().build(
           article
              and ( australianews or australianpolitics or businessaustralia or australiamedia)
              and ( features or analysis or explainer )
              andnot ( culture or lifestyle or news or comment or minutebyminute)
-        )
       )
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withArticleItemsCap(40),
