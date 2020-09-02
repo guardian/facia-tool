@@ -48,7 +48,18 @@ object Capi{
   def businessaustralia=Capi("australia-news/business-australia")
   def australiamedia=Capi("media/australia-media")
 
+  def sport=Capi("sport/sport")
   def culture=Capi("culture/culture")
   def lifestyle=Capi("lifestyle/lifestyle")
   def comment=Capi("tone/comment")
+
+  def world = Capi("world/world")
+  def usnews = Capi("|us-news/us-news")
+  def uk = Capi("uk/uk")
+  def europenews = Capi("world/europe-news")
+  def africa=Capi("world/africa")
+  def americas=Capi("world/americas")
+  def asiapacific=Capi("world/asia-pacific")
+  def middleeast=Capi("world/middleeast")
+
 }
