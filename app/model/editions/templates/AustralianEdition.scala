@@ -67,7 +67,10 @@ object AustralianEdition extends RegionalEdition {
 
   def FrontWeekendAu = front(
     "Weekend",
-    collection("Weekend"),
+    collection("Weekend")
+      .searchPrefill("?tag=type/article,(tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-pictures-),-tone/minutebyminute")
+      .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
+      .withArticleItemsCap(20),
     collection("Weekend"),
     collection("Weekend"),
     collection("Weekend"),
