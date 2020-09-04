@@ -14,6 +14,7 @@ object TrainingEdition extends InternalEdition {
   override val header = Header("Training Edition")
   override val notificationUTCOffset = 3
   override val topic = "tr"
+  override val locale = Some("tr_TR")
 
   lazy val template = EditionTemplate(
     List(

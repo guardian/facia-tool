@@ -14,6 +14,7 @@ object TheDummyEdition extends InternalEdition {
   override val header = Header("The Dummy", Some("Edition"))
   override val notificationUTCOffset = 3
   override val topic = "dm"
+  override val locale = Some("dm_DM")
 
   lazy val template = EditionTemplate(
     List(
