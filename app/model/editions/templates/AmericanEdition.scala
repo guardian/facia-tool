@@ -16,7 +16,6 @@ object AmericanEdition extends RegionalEdition {
   override val notificationUTCOffset = 8
   override val topic = "us"
   override val locale = Some("en_US")
-  override val timezone = Some("America/New_York")
 
   lazy val template = EditionTemplate(
     List(
