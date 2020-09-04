@@ -41,6 +41,7 @@ object TestEdition extends RegionalEdition {
   override val editionType: EditionType = EditionType.Regional
   override val notificationUTCOffset: Int = 2
   override val topic: String = "tt"
+  override val locale: Option[String] = Some("tt_TT")
 }
 
 object FrontTopStories {
