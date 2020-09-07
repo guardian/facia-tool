@@ -15,7 +15,6 @@ import services.editions.prefills.CapiQueryTimeWindow
 object EditionsTemplates {
   val templates: Map[Edition, EditionDefinitionWithTemplate] = Map(
     Edition.DailyEdition -> DailyEdition,
-    Edition.AmericanEdition -> AmericanEdition,
     Edition.AustralianEdition -> AustralianEdition,
     Edition.TrainingEdition -> TrainingEdition,
     Edition.TheDummyEdition -> TheDummyEdition
@@ -59,8 +58,6 @@ sealed abstract class Edition extends EnumEntry with Hyphencase
 object Edition extends PlayEnum[Edition] {
 
   case object DailyEdition extends Edition
-
-  case object AmericanEdition extends Edition
 
   case object AustralianEdition extends Edition
 
