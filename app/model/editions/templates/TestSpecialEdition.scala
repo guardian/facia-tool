@@ -15,10 +15,7 @@ object TestSpecialEdition extends SpecialEdition {
   override val header = Header(title ="Special", subTitle=Some("Edition Test"))
   override val notificationUTCOffset = 3
   override val topic = "s-e-t"
-  override val image: Option[SpecialEditionImage] = Some(SpecialEditionImage(
-    source= "media",
-    path="/efe173f8944226a06d667869c7f19d072f6807df/541_232_1740_2680/1740.jpg"
-  ))
+  override val buttonImageUri = Some("https://media.guim.co.uk/efe173f8944226a06d667869c7f19d072f6807df/541_232_1740_2680/1740.jpg")
   override val expiry: Option[String] = Some(
     new DateTime(2020, 9,3,12,0,DateTimeZone.UTC).toString()
   )
