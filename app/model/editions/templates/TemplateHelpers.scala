@@ -93,26 +93,27 @@ trait EditionDefinition {
   val expiry: Option[String]
   val buttonStyle: Option[SpecialEditionButtonStyles]
   val headerStyle: Option[SpecialEditionHeaderStyles]
+  val isLive: Boolean
 }
 
 trait EditionDefinitionWithTemplate extends EditionDefinition {
   val template: EditionTemplate
 }
 
-abstract class RegionalEdition extends EditionDefinitionWithTemplate {
-  override val editionType: EditionType =  EditionType.Regional
+abstract class EditionBase extends EditionDefinitionWithTemplate {
   override val buttonImageUri: Option[String] = None
   override val expiry: Option[String] = None
   override val buttonStyle: Option[SpecialEditionButtonStyles] = None
   override val headerStyle: Option[SpecialEditionHeaderStyles] = None
+  override val isLive = true
 }
 
-abstract class InternalEdition extends EditionDefinitionWithTemplate {
+abstract class RegionalEdition extends EditionBase {
+  override val editionType: EditionType =  EditionType.Regional
+}
+
+abstract class InternalEdition extends EditionBase {
   override val editionType: EditionType = EditionType.Training
-  override val buttonImageUri: Option[String] = None
-  override val expiry: Option[String] = None
-  override val buttonStyle: Option[SpecialEditionButtonStyles] = None
-  override val headerStyle: Option[SpecialEditionHeaderStyles] = None
 }
 
 abstract class SpecialEdition extends EditionDefinitionWithTemplate {
