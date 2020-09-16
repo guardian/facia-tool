@@ -26,7 +26,7 @@ object MyLovelyHorseEdition extends EditionDefinitionWithTemplate {
   ...
 ```
 
-NOTE: the `edition` property of your object must be a hypen case version of your object name otherwise the routing won't
+NOTE: the `edition` property of your object must be a kebab case version of your object name otherwise the routing won't
 work and you'll get a 404 error when creating an issue
 
 Add the new Edition to _both_ the list of templates and the Edition enum object
