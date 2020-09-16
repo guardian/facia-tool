@@ -93,7 +93,6 @@ trait EditionDefinition {
   val expiry: Option[String]
   val buttonStyle: Option[SpecialEditionButtonStyles]
   val headerStyle: Option[SpecialEditionHeaderStyles]
-  val isLive: Boolean
 }
 
 trait EditionDefinitionWithTemplate extends EditionDefinition {
@@ -105,7 +104,6 @@ abstract class EditionBase extends EditionDefinitionWithTemplate {
   override val expiry: Option[String] = None
   override val buttonStyle: Option[SpecialEditionButtonStyles] = None
   override val headerStyle: Option[SpecialEditionHeaderStyles] = None
-  override val isLive = true
 }
 
 abstract class RegionalEdition extends EditionBase {
@@ -133,13 +131,12 @@ object EditionDefinition {
    expiry: Option[String],
    buttonStyle: Option[SpecialEditionButtonStyles],
    headerStyle: Option[SpecialEditionHeaderStyles],
-    isLive: Boolean
-  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, buttonImageUri, expiry, buttonStyle, headerStyle, isLive)
+  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, buttonImageUri, expiry, buttonStyle, headerStyle)
 
   def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int, String,
-    Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles], Boolean)]
+    Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles])]
     = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType,
-    edition.notificationUTCOffset, edition.topic, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle, edition.isLive)
+    edition.notificationUTCOffset, edition.topic, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle)
 
   implicit val formatEditionDefinition: OFormat[EditionDefinition] = Json.format[EditionDefinition]
 }
@@ -155,8 +152,7 @@ case class EditionDefinitionRecord(
                          override val buttonImageUri: Option[String],
                          override val expiry: Option[String],
                          override val buttonStyle: Option[SpecialEditionButtonStyles],
-                         override val headerStyle: Option[SpecialEditionHeaderStyles],
-                         override val isLive: Boolean
+                         override val headerStyle: Option[SpecialEditionHeaderStyles]
 ) extends EditionDefinition {}
 
 

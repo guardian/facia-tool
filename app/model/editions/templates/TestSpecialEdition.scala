@@ -16,7 +16,6 @@ object TestSpecialEdition extends SpecialEdition {
   override val notificationUTCOffset = 3
   override val topic = "s-e-t"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/efe173f8944226a06d667869c7f19d072f6807df/541_232_1740_2680/1740.jpg?width=200&quality=85&s=a2bb61836c17f02d06173b6bc70034af")
-  override val isLive = false
   override val expiry: Option[String] = Some(
     new DateTime(2020, 10,20,12,0,DateTimeZone.UTC).toString()
   )
