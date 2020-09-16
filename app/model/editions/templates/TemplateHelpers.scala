@@ -132,13 +132,14 @@ object EditionDefinition {
     buttonImageUri: Option[String],
    expiry: Option[String],
    buttonStyle: Option[SpecialEditionButtonStyles],
-   headerStyle: Option[SpecialEditionHeaderStyles]
-  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, buttonImageUri, expiry, buttonStyle, headerStyle)
+   headerStyle: Option[SpecialEditionHeaderStyles],
+    isLive: Boolean
+  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, buttonImageUri, expiry, buttonStyle, headerStyle, isLive)
 
   def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int, String,
-    Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles])]
+    Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles], Boolean)]
     = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType,
-    edition.notificationUTCOffset, edition.topic, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle)
+    edition.notificationUTCOffset, edition.topic, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle, edition.isLive)
 
   implicit val formatEditionDefinition: OFormat[EditionDefinition] = Json.format[EditionDefinition]
 }
@@ -154,8 +155,8 @@ case class EditionDefinitionRecord(
                          override val buttonImageUri: Option[String],
                          override val expiry: Option[String],
                          override val buttonStyle: Option[SpecialEditionButtonStyles],
-                         override val headerStyle: Option[SpecialEditionHeaderStyles]
-
+                         override val headerStyle: Option[SpecialEditionHeaderStyles],
+                         override val isLive: Boolean
 ) extends EditionDefinition {}
 
 
