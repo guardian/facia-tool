@@ -134,9 +134,7 @@ object EditionDefinition {
    expiry: Option[String],
    buttonStyle: Option[SpecialEditionButtonStyles],
    headerStyle: Option[SpecialEditionHeaderStyles]
-  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, 
-                                                 
-                                                 , image, expiry, buttonStyle, headerStyle)
+  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, expiry, buttonStyle, headerStyle)
 
   def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int, String,
     Option[String], Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles])]
