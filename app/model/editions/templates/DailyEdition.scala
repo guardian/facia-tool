@@ -14,6 +14,7 @@ object DailyEdition extends RegionalEdition {
   override val header = Header("UK", Some("Daily"))
   override val notificationUTCOffset = 3
   override val topic = "uk"
+  override val locale = Some("en_GB")
 
   lazy val template = EditionTemplate(
     List(

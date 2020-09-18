@@ -15,6 +15,7 @@ object AustralianEdition extends RegionalEdition {
   override val header = Header("Australia", Some("Weekend"))
   override val notificationUTCOffset = -5
   override val topic = "au"
+  override val locale = Some("en_AU")
 
   lazy val template = EditionTemplate(
     List(
