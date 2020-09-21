@@ -21,7 +21,7 @@ object AustralianEdition extends RegionalEdition {
     List(
       FrontTopStoriesAu -> WeekDays(List(WeekDay.Sat)),
       FrontSpecial1Au -> WeekDays(List(WeekDay.Sat)),
-      FrontWeekendAu -> WeekDays(List(WeekDay.Sat)),
+      FrontSpotlightAu -> WeekDays(List(WeekDay.Sat)),
       FrontSpecial2Au -> WeekDays(List(WeekDay.Sat)),
       FrontNationalAu -> WeekDays(List(WeekDay.Sat)),
       FrontSpecial3Au -> WeekDays(List(WeekDay.Sat)),
@@ -64,19 +64,19 @@ object AustralianEdition extends RegionalEdition {
   // Special 1
   def FrontSpecial1Au = specialFront("Front Special 1", News, None)
 
-  // Weekend - Features, Culture, Lifestyle, Comment
+  // Spotlight - Features, Culture, Lifestyle, Comment
 
-  def FrontWeekendAu = front(
-    "Weekend",
-    collection("Weekend")
+  def FrontSpotlightAu = front(
+    "Spotlight",
+    collection("Spotlight")
       .searchPrefill("?tag=type/article,(tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-pictures-),-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withArticleItemsCap(20),
-    collection("Weekend"),
-    collection("Weekend"),
-    collection("Weekend"),
-    collection("Weekend").hide,
-    collection("Weekend").hide
+    collection("Spotlight"),
+    collection("Spotlight"),
+    collection("Spotlight"),
+    collection("Spotlight").hide,
+    collection("Spotlight").hide
   )
     .swatch(Lifestyle)
 
