@@ -18,7 +18,7 @@ object EditionsTemplates {
     Edition.AustralianEdition -> AustralianEdition,
     Edition.TrainingEdition -> TrainingEdition,
     Edition.TheDummyEdition -> TheDummyEdition,
-    Edition.EarthEdition -> EarthEdition
+    Edition.EarthEdition -> EditionEarth
   )
 
   val getAvailableEditions: List[EditionDefinition] = templates.values.toList

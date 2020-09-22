@@ -8,7 +8,7 @@ import model.editions.templates.TemplateHelpers._
 import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
-object EarthEdition extends SpecialEdition {
+object EditionEarth extends SpecialEdition {
   override val title = "Edition Earth"
   override val subTitle = "A special, one-off Guardian digital supplement devoted to the environment"
   override val edition = "edition-earth"
@@ -72,7 +72,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special01"),
     collection("Special01"),
     collection("Special01"),
-    collection("Special01")                
+    collection("Special01")
   ).swatch(Neutral)
 
   // Climate/global heating (lifestyle/dark #7D0068)
@@ -92,7 +92,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special03"),
     collection("Special03")
   ).swatch(Lifestyle)
-  
+
   // Covid 19 (lifestyle/main #BB3B80)
   def Special04 = front("Special04", None,
     collection("Special04"),
@@ -101,7 +101,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special04"),
     collection("Special04")
   ).swatch(News)
-  
+
   // Enviromental justice (lifestyle/main #BB3B80)
   def Special05 = front("Special05", None,
     collection("Special05"),
@@ -110,16 +110,16 @@ object EarthEdition extends SpecialEdition {
     collection("Special05"),
     collection("Special05")
   ).swatch(Lifestyle)
-  
+
   // Wildlife (sport/dark #005689)
-  def Special6 = front("Special6", None,
+  def Special06 = front("Special6", None,
     collection("Special6"),
     collection("Special6"),
     collection("Special6"),
     collection("Special6"),
     collection("Special6")
   ).swatch(Sport)
-  
+
   // Bushfires (sport/dark #005689)
   def Special07 = front("Special07", None,
     collection("Special07"),
@@ -128,7 +128,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special07"),
     collection("Special07")
   ).swatch(Sport)
-  
+
   // The upside (sport/main #0084C6)
   def Special08 = front("Special08", None,
     collection("Special08"),
@@ -137,7 +137,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special08"),
     collection("Special08")
   ).swatch(Sport)
-  
+
   // Advice and guides (brightness.7 #121212)
   def Special09 = front("Special09", None,
     collection("Special09"),
@@ -146,7 +146,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special09"),
     collection("Special09")
   ).swatch(Neutral)
-  
+
   def Special10 = front("Special10", None,
     collection("Special10"),
     collection("Special10"),
@@ -162,7 +162,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special11"),
     collection("Special11")
   ).swatch(News)
-  
+
   def Special12 = front("Special12", None,
     collection("Special12"),
     collection("Special12"),
@@ -170,7 +170,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special12"),
     collection("Special12")
   ).swatch(News)
-  
+
   def Special13 = front("Special13", None,
     collection("Special13"),
     collection("Special13"),
@@ -178,7 +178,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special13"),
     collection("Special13")
   ).swatch(News)
-  
+
   def Special14 = front("Special14", None,
     collection("Special14"),
     collection("Special14"),
@@ -186,7 +186,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special14"),
     collection("Special14")
   ).swatch(News)
-  
+
   def Special15 = front("Special15", None,
     collection("Special15"),
     collection("Special15"),
