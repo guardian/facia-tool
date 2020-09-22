@@ -32,7 +32,7 @@ object EditionEarth extends SpecialEdition {
     SpecialEditionHeaderStyles(
       backgroundColor = "#7D0068",
       textColorPrimary = "#FFFFFF",
-      textColorSecondary = "#FFFFFF "
+      textColorSecondary = "#FFFFFF"
     )
   )
 
