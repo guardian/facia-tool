@@ -73,7 +73,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special01"),
     collection("Special01"),
     collection("Special01")                
-  ).swatch(News)
+  ).swatch(Neutral)
 
   // Climate/global heating (lifestyle/dark #7D0068)
   def Special02 = front("Special02", None,
@@ -82,7 +82,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special02"),
     collection("Special02"),
     collection("Special02")
-  ).swatch(News)
+  ).swatch(Lifestyle)
 
   // Emissions/renewables (lifestyle/dark #7D0068)
   def Special03 = front("Special03", None,
@@ -91,7 +91,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special03"),
     collection("Special03"),
     collection("Special03")
-  ).swatch(News)
+  ).swatch(Lifestyle)
   
   // Covid 19 (lifestyle/main #BB3B80)
   def Special04 = front("Special04", None,
@@ -109,7 +109,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special05"),
     collection("Special05"),
     collection("Special05")
-  ).swatch(News)
+  ).swatch(Lifestyle)
   
   // Wildlife (sport/dark #005689)
   def Special6 = front("Special6", None,
@@ -118,7 +118,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special6"),
     collection("Special6"),
     collection("Special6")
-  ).swatch(News)
+  ).swatch(Sport)
   
   // Bushfires (sport/dark #005689)
   def Special07 = front("Special07", None,
@@ -127,7 +127,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special07"),
     collection("Special07"),
     collection("Special07")
-  ).swatch(News)
+  ).swatch(Sport)
   
   // The upside (sport/main #0084C6)
   def Special08 = front("Special08", None,
@@ -136,7 +136,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special08"),
     collection("Special08"),
     collection("Special08")
-  ).swatch(News)
+  ).swatch(Sport)
   
   // Advice and guides (brightness.7 #121212)
   def Special09 = front("Special09", None,
@@ -145,7 +145,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special09"),
     collection("Special09"),
     collection("Special09")
-  ).swatch(News)
+  ).swatch(Neutral)
   
   def Special10 = front("Special10", None,
     collection("Special10"),
