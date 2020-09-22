@@ -22,7 +22,7 @@ object EditionEarth extends SpecialEdition {
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
       backgroundColor = "#ededed",
-      title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Regular", lineHeight = 34, size = 34),
+      title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
       subTitle = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
       expiry = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
       image = EditionImageStyle(87,134)
