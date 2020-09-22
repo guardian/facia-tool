@@ -8,31 +8,31 @@ import model.editions.templates.TemplateHelpers._
 import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
-object TestSpecialEdition extends SpecialEdition {
-  override val title = "Special Edition Test"
-  override val subTitle = "Demonstration of special edition"
-  override val edition = "test-special-edition"
-  override val header = Header(title ="Special", subTitle=Some("Edition Test"))
+object EarthEdition extends SpecialEdition {
+  override val title = "Edition Earth"
+  override val subTitle = "A special, one-off Guardian digital supplement devoted to the environment"
+  override val edition = "edition-earth"
+  override val header = Header(title ="Edition", subTitle=Some("Earth"))
   override val notificationUTCOffset = 3
-  override val topic = "s-e-t"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/efe173f8944226a06d667869c7f19d072f6807df/541_232_1740_2680/1740.jpg?width=200&quality=85&s=a2bb61836c17f02d06173b6bc70034af")
+  override val topic = "e-e"
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/23e97e00b2b0c3277ea6ff8a38068709509d92da/0_0_931_934/931.png?width=120&quality=90&s=9f1e7ebe4b62e4cc5a7ffad05e92306c")
   override val expiry: Option[String] = Some(
-    new DateTime(2020, 10,20,12,0,DateTimeZone.UTC).toString()
+    new DateTime(2020, 11,7,23,59,DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
-      backgroundColor = "",
-      title = EditionTextFormatting(color = "#c1de2b", font="GHGuardianHeadline-Regular", lineHeight = 34, size = 34),
-      subTitle = EditionTextFormatting(color = "#284b7d", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
-      expiry = EditionTextFormatting(color = "#5a287d", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
+      backgroundColor = "#ededed",
+      title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Regular", lineHeight = 34, size = 34),
+      subTitle = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
+      expiry = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
       image = EditionImageStyle(87,134)
     )
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
     SpecialEditionHeaderStyles(
-      backgroundColor = "#de2b67",
-      textColorPrimary = "#de482b",
-      textColorSecondary = "#dea22b"
+      backgroundColor = "#7D0068",
+      textColorPrimary = "#FFFFFF",
+      textColorSecondary = "#FFFFFF "
     )
   )
 
