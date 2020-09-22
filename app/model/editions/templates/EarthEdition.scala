@@ -66,6 +66,7 @@ object EarthEdition extends SpecialEdition {
     ophanQueryPrefillParams = None
   )
 
+  // Intro (brightness.7 #121212)
   def Special01 = front("Special01", None,
     collection("Special01"),
     collection("Special01"),
@@ -74,6 +75,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special01")                
   ).swatch(News)
 
+  // Climate/global heating (lifestyle/dark #7D0068)
   def Special02 = front("Special02", None,
     collection("Special02"),
     collection("Special02"),
@@ -82,6 +84,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special02")
   ).swatch(News)
 
+  // Emissions/renewables (lifestyle/dark #7D0068)
   def Special03 = front("Special03", None,
     collection("Special03"),
     collection("Special03"),
@@ -90,6 +93,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special03")
   ).swatch(News)
   
+  // Covid 19 (lifestyle/main #BB3B80)
   def Special04 = front("Special04", None,
     collection("Special04"),
     collection("Special04"),
@@ -98,6 +102,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special04")
   ).swatch(News)
   
+  // Enviromental justice (lifestyle/main #BB3B80)
   def Special05 = front("Special05", None,
     collection("Special05"),
     collection("Special05"),
@@ -106,6 +111,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special05")
   ).swatch(News)
   
+  // Wildlife (sport/dark #005689)
   def Special6 = front("Special6", None,
     collection("Special6"),
     collection("Special6"),
@@ -114,6 +120,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special6")
   ).swatch(News)
   
+  // Bushfires (sport/dark #005689)
   def Special07 = front("Special07", None,
     collection("Special07"),
     collection("Special07"),
@@ -122,6 +129,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special07")
   ).swatch(News)
   
+  // The upside (sport/main #0084C6)
   def Special08 = front("Special08", None,
     collection("Special08"),
     collection("Special08"),
@@ -130,6 +138,7 @@ object EarthEdition extends SpecialEdition {
     collection("Special08")
   ).swatch(News)
   
+  // Advice and guides (brightness.7 #121212)
   def Special09 = front("Special09", None,
     collection("Special09"),
     collection("Special09"),
