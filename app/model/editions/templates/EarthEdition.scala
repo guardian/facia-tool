@@ -39,9 +39,21 @@ object EarthEdition extends SpecialEdition {
 
   lazy val template = EditionTemplate(
     List(
-      Front1 -> Daily(),
-      Front2 -> Daily(),
-      Front3 -> Daily()
+      Special01 -> Daily(),
+      Special02 -> Daily(),
+      Special03 -> Daily(),
+      Special04 -> Daily(),
+      Special05 -> Daily(),
+      Special06 -> Daily(),
+      Special07 -> Daily(),
+      Special08 -> Daily(),
+      Special09 -> Daily(),
+      Special10 -> Daily(),
+      Special11 -> Daily(),
+      Special12 -> Daily(),
+      Special13 -> Daily(),
+      Special14 -> Daily(),
+      Special15 -> Daily()
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
@@ -54,22 +66,124 @@ object EarthEdition extends SpecialEdition {
     ophanQueryPrefillParams = None
   )
 
-  def Front1 = front("Front 1", None,
-    collection("Collection 1"),
-    collection("Collection 2"),
-    collection("Collection 3")
+  def Special01 = front("Special01", None,
+    collection("Special01"),
+    collection("Special01"),
+    collection("Special01"),
+    collection("Special01"),
+    collection("Special01")                
   ).swatch(News)
 
-  def Front2 = front("Front 2", None,
-    collection("Collection 1"),
-    collection("Collection 2"),
-    collection("Collection 3")
-  ).swatch(Culture)
+  def Special02 = front("Special02", None,
+    collection("Special02"),
+    collection("Special02"),
+    collection("Special02"),
+    collection("Special02"),
+    collection("Special02")
+  ).swatch(News)
 
-  def Front3 = front("Front 3", None,
-    collection("Collection 1"),
-    collection("Collection 2"),
-    collection("Collection 3")
-  ).swatch(Sport)
+  def Special03 = front("Special03", None,
+    collection("Special03"),
+    collection("Special03"),
+    collection("Special03"),
+    collection("Special03"),
+    collection("Special03")
+  ).swatch(News)
+  
+  def Special04 = front("Special04", None,
+    collection("Special04"),
+    collection("Special04"),
+    collection("Special04"),
+    collection("Special04"),
+    collection("Special04")
+  ).swatch(News)
+  
+  def Special05 = front("Special05", None,
+    collection("Special05"),
+    collection("Special05"),
+    collection("Special05"),
+    collection("Special05"),
+    collection("Special05")
+  ).swatch(News)
+  
+  def Special6 = front("Special6", None,
+    collection("Special6"),
+    collection("Special6"),
+    collection("Special6"),
+    collection("Special6"),
+    collection("Special6")
+  ).swatch(News)
+  
+  def Special07 = front("Special07", None,
+    collection("Special07"),
+    collection("Special07"),
+    collection("Special07"),
+    collection("Special07"),
+    collection("Special07")
+  ).swatch(News)
+  
+  def Special08 = front("Special08", None,
+    collection("Special08"),
+    collection("Special08"),
+    collection("Special08"),
+    collection("Special08"),
+    collection("Special08")
+  ).swatch(News)
+  
+  def Special09 = front("Special09", None,
+    collection("Special09"),
+    collection("Special09"),
+    collection("Special09"),
+    collection("Special09"),
+    collection("Special09")
+  ).swatch(News)
+  
+  def Special10 = front("Special10", None,
+    collection("Special10"),
+    collection("Special10"),
+    collection("Special10"),
+    collection("Special10"),
+    collection("Special10")
+  ).swatch(News)
+
+  def Special11 = front("Special11", None,
+    collection("Special11"),
+    collection("Special11"),
+    collection("Special11"),
+    collection("Special11"),
+    collection("Special11")
+  ).swatch(News)
+  
+  def Special12 = front("Special12", None,
+    collection("Special12"),
+    collection("Special12"),
+    collection("Special12"),
+    collection("Special12"),
+    collection("Special12")
+  ).swatch(News)
+  
+  def Special13 = front("Special13", None,
+    collection("Special13"),
+    collection("Special13"),
+    collection("Special13"),
+    collection("Special13"),
+    collection("Special13")
+  ).swatch(News)
+  
+  def Special14 = front("Special14", None,
+    collection("Special14"),
+    collection("Special14"),
+    collection("Special14"),
+    collection("Special14"),
+    collection("Special14")
+  ).swatch(News)
+  
+  def Special15 = front("Special15", None,
+    collection("Special15"),
+    collection("Special15"),
+    collection("Special15"),
+    collection("Special15"),
+    collection("Special15")
+  ).swatch(News)
 
 }
