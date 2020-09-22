@@ -112,12 +112,12 @@ object EditionEarth extends SpecialEdition {
   ).swatch(Lifestyle)
 
   // Wildlife (sport/dark #005689)
-  def Special06 = front("Special6", None,
-    collection("Special6"),
-    collection("Special6"),
-    collection("Special6"),
-    collection("Special6"),
-    collection("Special6")
+  def Special06 = front("Special06", None,
+    collection("Special06"),
+    collection("Special06"),
+    collection("Special06"),
+    collection("Special06"),
+    collection("Special06")
   ).swatch(Sport)
 
   // Bushfires (sport/dark #005689)
