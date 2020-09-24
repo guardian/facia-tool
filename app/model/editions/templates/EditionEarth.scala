@@ -15,7 +15,7 @@ object EditionEarth extends SpecialEdition {
   override val header = Header(title ="Edition", subTitle=Some("Earth"))
   override val notificationUTCOffset = 3
   override val topic = "e-e"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/23e97e00b2b0c3277ea6ff8a38068709509d92da/0_0_931_934/931.png?width=134&quality=95&s=5bf4d7e4ea9abd51017379b2dacb1e79")
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/23e97e00b2b0c3277ea6ff8a38068709509d92da/462_0_469_934/469.png?width=67&quality=100&s=78dcf02d6978bb0c8885cbe076fcb257")
   override val expiry: Option[String] = Some(
     new DateTime(2020, 11,7,23,59,DateTimeZone.UTC).toString()
   )
@@ -101,7 +101,7 @@ object EditionEarth extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Opinion)
-  
+
   def Special04 = front("Sp Black 2", None,
     collection("Special"),
     collection("Special"),
@@ -125,7 +125,7 @@ object EditionEarth extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Opinion)
-  
+
   def Special07 = front("Sp Black 3", None,
     collection("Special"),
     collection("Special"),
@@ -149,7 +149,7 @@ object EditionEarth extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Opinion)
-  
+
   def Special10 = front("Sp Black 4", None,
     collection("Special"),
     collection("Special"),
@@ -173,7 +173,7 @@ object EditionEarth extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Opinion)
-  
+
   def Special13 = front("Sp Black 5", None,
     collection("Special"),
     collection("Special"),
@@ -197,7 +197,7 @@ object EditionEarth extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Opinion)
-  
+
   def Special16 = front("Sp Black 6", None,
     collection("Special"),
     collection("Special"),
@@ -221,7 +221,7 @@ object EditionEarth extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Opinion)
-  
+
   def Special19 = front("Sp Black 7", None,
     collection("Special"),
     collection("Special"),
@@ -245,7 +245,7 @@ object EditionEarth extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Opinion)
-  
+
   def Special22 = front("Sp Black 8", None,
     collection("Special"),
     collection("Special"),
@@ -269,7 +269,7 @@ object EditionEarth extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Opinion)
-  
+
   def Special25 = front("Sp Black 9", None,
     collection("Special"),
     collection("Special"),
@@ -294,5 +294,5 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Opinion)
 
-  
+
 }
