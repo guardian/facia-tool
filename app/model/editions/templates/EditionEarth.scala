@@ -53,7 +53,19 @@ object EditionEarth extends SpecialEdition {
       Special12 -> Daily(),
       Special13 -> Daily(),
       Special14 -> Daily(),
-      Special15 -> Daily()
+      Special15 -> Daily(),
+      Special16 -> Daily(),
+      Special17 -> Daily(),
+      Special18 -> Daily(),
+      Special19 -> Daily(),
+      Special20 -> Daily(),
+      Special21 -> Daily(),
+      Special22 -> Daily(),
+      Special23 -> Daily(),
+      Special24 -> Daily(),
+      Special25 -> Daily(),
+      Special26 -> Daily(),
+      Special27 -> Daily()
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
@@ -66,133 +78,221 @@ object EditionEarth extends SpecialEdition {
     ophanQueryPrefillParams = None
   )
 
-  // Intro (brightness.7 #121212)
-  def Special01 = front("Special01", None,
-    collection("Special01"),
-    collection("Special01"),
-    collection("Special01"),
-    collection("Special01"),
-    collection("Special01")
+  def Special01 = front("Sp Black 1", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
   ).swatch(Neutral)
 
-  // Climate/global heating (lifestyle/dark #7D0068)
-  def Special02 = front("Special02", None,
-    collection("Special02"),
-    collection("Special02"),
-    collection("Special02"),
-    collection("Special02"),
-    collection("Special02")
+  def Special02 = front("Sp Pink 1", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
   ).swatch(Lifestyle)
 
-  // Emissions/renewables (lifestyle/dark #7D0068)
-  def Special03 = front("Special03", None,
-    collection("Special03"),
-    collection("Special03"),
-    collection("Special03"),
-    collection("Special03"),
-    collection("Special03")
-  ).swatch(Lifestyle)
-
-  // Covid 19 (lifestyle/main #BB3B80)
-  def Special04 = front("Special04", None,
-    collection("Special04"),
-    collection("Special04"),
-    collection("Special04"),
-    collection("Special04"),
-    collection("Special04")
-  ).swatch(News)
-
-  // Enviromental justice (lifestyle/main #BB3B80)
-  def Special05 = front("Special05", None,
-    collection("Special05"),
-    collection("Special05"),
-    collection("Special05"),
-    collection("Special05"),
-    collection("Special05")
-  ).swatch(Lifestyle)
-
-  // Wildlife (sport/dark #005689)
-  def Special06 = front("Special06", None,
-    collection("Special06"),
-    collection("Special06"),
-    collection("Special06"),
-    collection("Special06"),
-    collection("Special06")
-  ).swatch(Sport)
-
-  // Bushfires (sport/dark #005689)
-  def Special07 = front("Special07", None,
-    collection("Special07"),
-    collection("Special07"),
-    collection("Special07"),
-    collection("Special07"),
-    collection("Special07")
-  ).swatch(Sport)
-
-  // The upside (sport/main #0084C6)
-  def Special08 = front("Special08", None,
-    collection("Special08"),
-    collection("Special08"),
-    collection("Special08"),
-    collection("Special08"),
-    collection("Special08")
-  ).swatch(Sport)
-
-  // Advice and guides (brightness.7 #121212)
-  def Special09 = front("Special09", None,
-    collection("Special09"),
-    collection("Special09"),
-    collection("Special09"),
-    collection("Special09"),
-    collection("Special09")
+  def Special03 = front("Sp Orange 1", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+  
+  def Special04 = front("Sp Black 2", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
   ).swatch(Neutral)
 
-  def Special10 = front("Special10", None,
-    collection("Special10"),
-    collection("Special10"),
-    collection("Special10"),
-    collection("Special10"),
-    collection("Special10")
-  ).swatch(News)
+  def Special05 = front("Sp Pink 2", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
 
-  def Special11 = front("Special11", None,
-    collection("Special11"),
-    collection("Special11"),
-    collection("Special11"),
-    collection("Special11"),
-    collection("Special11")
-  ).swatch(News)
+  def Special06 = front("Sp Orange 2", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+  
+  def Special07 = front("Sp Black 3", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
 
-  def Special12 = front("Special12", None,
-    collection("Special12"),
-    collection("Special12"),
-    collection("Special12"),
-    collection("Special12"),
-    collection("Special12")
-  ).swatch(News)
+  def Special08 = front("Sp Pink 3", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
 
-  def Special13 = front("Special13", None,
-    collection("Special13"),
-    collection("Special13"),
-    collection("Special13"),
-    collection("Special13"),
-    collection("Special13")
-  ).swatch(News)
+  def Special09 = front("Sp Orange 3", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+  
+  def Special10 = front("Sp Black 4", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
 
-  def Special14 = front("Special14", None,
-    collection("Special14"),
-    collection("Special14"),
-    collection("Special14"),
-    collection("Special14"),
-    collection("Special14")
-  ).swatch(News)
+  def Special11 = front("Sp Pink 4", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
 
-  def Special15 = front("Special15", None,
-    collection("Special15"),
-    collection("Special15"),
-    collection("Special15"),
-    collection("Special15"),
-    collection("Special15")
-  ).swatch(News)
+  def Special12 = front("Sp Orange 4", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+  
+  def Special13 = front("Sp Black 5", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
 
+  def Special14 = front("Sp Pink 5", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+
+  def Special15 = front("Sp Orange 5", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+  
+  def Special16 = front("Sp Black 6", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special17 = front("Sp Pink 6", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+
+  def Special18 = front("Sp Orange 6", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+  
+  def Special19 = front("Sp Black 7", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special20 = front("Sp Pink 7", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+
+  def Special21 = front("Sp Orange 7", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+  
+  def Special22 = front("Sp Black 8", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special23 = front("Sp Pink 8", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+
+  def Special24 = front("Sp Orange 8", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+  
+  def Special25 = front("Sp Black 9", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special26 = front("Sp Pink 9", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+
+  def Special27 = front("Sp Orange 9", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+
+  
 }
