@@ -21,7 +21,7 @@ object AustralianEdition extends RegionalEdition {
     List(
       FrontTopStoriesAu -> WeekDays(List(WeekDay.Sat)),
       FrontSpecial1Au -> WeekDays(List(WeekDay.Sat)),
-      FrontSpotlightAu -> WeekDays(List(WeekDay.Sat)),
+      FrontWeekendAu -> WeekDays(List(WeekDay.Sat)),
       FrontSpecial2Au -> WeekDays(List(WeekDay.Sat)),
       FrontNationalAu -> WeekDays(List(WeekDay.Sat)),
       FrontSpecial3Au -> WeekDays(List(WeekDay.Sat)),
@@ -30,7 +30,7 @@ object AustralianEdition extends RegionalEdition {
       FrontOpinionAu -> WeekDays(List(WeekDay.Sat)),
       FrontCultureAu -> WeekDays(List(WeekDay.Sat)),
       FrontLifeAu -> WeekDays(List(WeekDay.Sat)),
-      FrontRecommendedAu -> WeekDays(List(WeekDay.Sat)),
+      FrontFeaturedAu -> WeekDays(List(WeekDay.Sat)),
       FrontSportAu -> WeekDays(List(WeekDay.Sat)),
       FrontCrosswordsAu -> WeekDays(List(WeekDay.Sat))
     ),
@@ -66,17 +66,17 @@ object AustralianEdition extends RegionalEdition {
 
   // Spotlight - Features, Culture, Lifestyle, Comment
 
-  def FrontSpotlightAu = front(
-    "Spotlight",
-    collection("Spotlight")
+  def FrontWeekendAu = front(
+    "Weekend",
+    collection("Weekend")
       .searchPrefill("?tag=type/article,(tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-pictures-),-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withArticleItemsCap(20),
-    collection("Spotlight"),
-    collection("Spotlight"),
-    collection("Spotlight"),
-    collection("Spotlight").hide,
-    collection("Spotlight").hide
+    collection("Weekend"),
+    collection("Weekend"),
+    collection("Weekend"),
+    collection("Weekend").hide,
+    collection("Weekend").hide
   )
     .swatch(Lifestyle)
 
@@ -189,17 +189,17 @@ object AustralianEdition extends RegionalEdition {
   )
     .swatch(Lifestyle)
 
-  // Recommended Reads (aka Long Reads)
+  // Featured (aka Long Reads)
   // AUS preference would be to do this by word count which we can't currently do
 
-  def FrontRecommendedAu = front(
-    "Recommended",
+  def FrontFeaturedAu = front(
+    "Featured",
     collection("Long reads")
       .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
       .withArticleItemsCap(40),
-    collection("Recommended").hide,
+    collection("Featured").hide,
     collection("Featured"),
-    collection("Recommended").hide
+    collection("Featured").hide
   )
     .swatch(Culture)
 
