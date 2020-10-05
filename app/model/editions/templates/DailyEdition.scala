@@ -297,6 +297,7 @@ object DailyEdition extends RegionalEdition {
     collection("Features").printSentAnyTag("theobserver/magazine/features2"),
     collection("Life").printSentAllTags("theobserver/magazine/life-and-style", "-food/food"),
     collection("Life").printSentAnyTag("theobserver/design/design").hide,
+    collection("Life").hide,
     collection("Life").hide
   )
     .swatch(Lifestyle)
