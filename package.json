@@ -7,7 +7,7 @@
     "jspm": "jspm"
   },
   "dependencies": {
-    "babel": "6.0.0",
+    "babel": "6.23.0",
     "eslint-plugin-jasmine": "1.8.1",
     "grunt": "1.0.3",
     "grunt-cache-bust": "1.3.0",
@@ -55,7 +55,7 @@
       "underscore": "npm:underscore@1.8.3"
     },
     "devDependencies": {
-      "babel": "npm:babel-core@^6.0.0",
+      "babel": "6.23.0",
       "babel-runtime": "npm:babel-runtime@^6.0.0",
       "clean-css": "npm:clean-css@^3.4.12",
       "core-js": "npm:core-js@^1.1.4"
