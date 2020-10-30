@@ -14,6 +14,7 @@ import scala.collection.JavaConverters._
 import scala.language.reflectiveCalls
 import com.amazonaws.services.rds.model.DescribeDBInstancesRequest
 import com.amazonaws.services.rds.AmazonRDSClientBuilder
+import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
 
@@ -130,6 +131,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     }
     val rdsClient = AmazonRDSClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
     val ssmClient = AWSSimpleSystemsManagementClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
+    val s3Client = AmazonS3ClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
   }
 
   object postgres {
@@ -253,6 +255,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val domain = getMandatoryString("pandomain.domain")
     lazy val service = getMandatoryString("pandomain.service")
     lazy val roleArn = getMandatoryString("pandomain.roleArn")
+    lazy val bucketName = getMandatoryString("pandomain.bucketName")
+    lazy val settingsFileKey = s"$domain.settings"
     lazy val userGroups = getMandatoryStringPropertiesSplitByComma("pandomain.user.groups")
   }
 

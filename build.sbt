@@ -81,6 +81,7 @@ libraryDependencies ++= Seq(
     filters,
     evolutions,
     jdbc,
+    "com.typesafe.akka" %% "akka-agent" % "2.5.16",
     "com.amazonaws" % "aws-java-sdk-rds" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-core" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion,
@@ -98,7 +99,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "fapi-client-play26" % "3.2.0",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
     "com.gu" %% "mobile-notifications-api-models" % "1.0.7",
-    "com.gu" %% "pan-domain-auth-play_2-6" % "0.7.2",
+    "com.gu" %% "pan-domain-auth-play_2-6" % "0.9.2",
 
     "com.gu" %% "scanamo" % "1.0.0-M7",
 

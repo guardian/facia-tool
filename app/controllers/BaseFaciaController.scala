@@ -23,7 +23,13 @@ abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInCo
   def config: ApplicationConfiguration
 
   lazy val panDomainSettings: PanDomainAuthSettingsRefresher =
-    new PanDomainAuthSettingsRefresher(config.pandomain.domain, config.pandomain.service, actorSystem, config.aws.cmsFrontsAccountCredentials)
+    new PanDomainAuthSettingsRefresher(
+      config.pandomain.domain,
+      config.pandomain.service,
+      config.pandomain.bucketName,
+      config.pandomain.settingsFileKey,
+      config.aws.s3Client
+    )
 
   lazy val permissions = PermissionsProvider(PermissionsConfig(
     stage = config.environment.stage.toUpperCase(Locale.UK),
