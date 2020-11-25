@@ -15,26 +15,24 @@ object EditionGalDemTakeover extends SpecialEdition {
   override val header = Header(title ="Gal-dem ", subTitle=Some("Takeover"))
   override val notificationUTCOffset = 3
   override val topic = "e-g"
-  // IMAGE PENDING
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/23e97e00b2b0c3277ea6ff8a38068709509d92da/462_0_469_934/469.png?width=67&quality=100&s=78dcf02d6978bb0c8885cbe076fcb257")
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/f35642fe13fbe20b00d5bfc43b93e52bb5f6bc6e/0_0_81_81/81.png?width=134&quality=85&s=5cedbf2389b595ff0deff10125ef0893")
   override val expiry: Option[String] = Some(
     new DateTime(2020, 12,31,23,59,DateTimeZone.UTC).toString()
   )
-  // COLOURS PENDING
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
-      backgroundColor = "#ededed",
-      title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
-      subTitle = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
-      expiry = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
+      backgroundColor = "#fec8de",
+      title = EditionTextFormatting(color = "#7d006b", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
+      subTitle = EditionTextFormatting(color = "#7d006b", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
+      expiry = EditionTextFormatting(color = "#7d006b", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
       image = EditionImageStyle(67,134)
     )
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
     SpecialEditionHeaderStyles(
-      backgroundColor = "#7D0068",
-      textColorPrimary = "#FFFFFF",
-      textColorSecondary = "#FFFFFF"
+      backgroundColor = "#fec8de",
+      textColorPrimary = "#000000",
+      textColorSecondary = "#000000"
     )
   )
 
