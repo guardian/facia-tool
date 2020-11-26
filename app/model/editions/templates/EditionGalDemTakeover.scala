@@ -15,7 +15,7 @@ object EditionGalDemTakeover extends SpecialEdition {
   override val header = Header(title ="Gal-dem ", subTitle=Some("Takeover"))
   override val notificationUTCOffset = 3
   override val topic = "e-g"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/f35642fe13fbe20b00d5bfc43b93e52bb5f6bc6e/0_0_81_81/81.png?width=134&quality=85&s=5cedbf2389b595ff0deff10125ef0893")
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/e844afefe7938c4370f33a402d3dab8bbaf2ee3f/0_0_87_145/87.png?quality=85&s=f557a85a597fe987ce30ac386315ddeb")
   override val expiry: Option[String] = Some(
     new DateTime(2020, 12,31,23,59,DateTimeZone.UTC).toString()
   )
