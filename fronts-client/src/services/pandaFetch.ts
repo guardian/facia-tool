@@ -41,11 +41,21 @@ const pandaFetch = (
             );
           }
         } else if (res.status < 200 || res.status >= 300) {
+          notifications.notify({
+            message:
+              'Request failed. Your changes may not be saved. Please wait or reload the page.',
+            level: 'error',
+          });
           return reject(res);
         }
 
         return resolve(res);
       } catch (error) {
+        notifications.notify({
+          message:
+            'Connection issue occurred. Your changes may not be saved. Please wait or reload the page.',
+          level: 'error',
+        });
         return reject(`Connection Issue (${error ? error.toString() : ''})`);
       }
     }
