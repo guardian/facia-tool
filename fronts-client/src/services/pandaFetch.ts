@@ -1,8 +1,11 @@
 import { reEstablishSession } from 'panda-session';
 import notifications from './notifications';
+import { isError } from 'tslint/lib/error';
 
 const reauthUrl = '/login/status';
-const reauthErrorMessage = `We couldn't log you back in. Your changes may not be saved. Please  <a href="${window.location.href}" target="_self">log in again</a> to reauthenticate.`;
+const reauthErrorMessage =
+  "We couldn't log you back in. Your changes may not be saved. " +
+  `Please <a href="${window.location.href}" target="_self">log in again</a> to reauthenticate.`;
 
 /**
  * Make a fetch request with Panda authentication.
@@ -16,26 +19,35 @@ const pandaFetch = (
   count: number = 0
 ): Promise<Response> =>
   new Promise(
-    async (resolve: (r: Response) => any, reject: (r: Response) => any) => {
-      const res = await fetch(url, {
-        ...options,
-        credentials: 'same-origin',
-      });
+    async (resolve: (r: Response) => any, reject: (e: any) => any) => {
+      try {
+        const res = await fetch(url, {
+          ...options,
+          credentials: 'same-origin',
+        });
 
-      if ((res.status === 419 || res.status === 401) && count < 1) {
-        try {
-          await reEstablishSession(reauthUrl, 5000);
-          const res2 = await pandaFetch(url, options, count + 1);
-          return resolve(res2);
-        } catch (e) {
-          notifications.notify({ message: reauthErrorMessage, level: 'error' });
-          return reject(e);
+        if ((res.status === 419 || res.status === 401) && count < 1) {
+          try {
+            await reEstablishSession(reauthUrl, 5000);
+            const res2 = await pandaFetch(url, options, count + 1);
+            return resolve(res2);
+          } catch (e) {
+            notifications.notify({
+              message: reauthErrorMessage,
+              level: 'error',
+            });
+            return reject(
+              isError(e) ? `Auth Issue (${e ? e.toString() : ''})` : e
+            );
+          }
+        } else if (res.status < 200 || res.status >= 300) {
+          return reject(res);
         }
-      } else if (res.status < 200 || res.status >= 300) {
-        return reject(res);
-      }
 
-      return resolve(res);
+        return resolve(res);
+      } catch (error) {
+        return reject(`Connection Issue (${error ? error.toString() : ''})`);
+      }
     }
   );
 
