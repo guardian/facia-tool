@@ -19,6 +19,9 @@ import { editorSelectCard } from 'bundles/frontsUI';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { createSelectAlsoOnFronts } from 'selectors/frontsSelectors';
 import { AlsoOnDetail } from 'types/Collection';
+import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
+
+const TWENTY_SECONDS_IN_MILLIS = 20_000;
 
 const CollectionContainer = styled.div`
   position: relative;
@@ -33,6 +36,23 @@ const FrontCollectionsContainer = styled.div`
   max-height: calc(100% - 43px);
   padding-top: 1px;
   padding-bottom: ${theme.front.paddingForAddFrontButton}px;
+`;
+
+const EditingLockedCollectionsOverlay = styled.div`
+  z-index: 80;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: ${theme.colors.blackTransparent60};
+  color: ${theme.base.colors.textLight};
+  text-shadow: 0 0 10px ${theme.base.colors.textDark};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  h2 {
+    margin-bottom: 0;
+  }
 `;
 
 const isDropFromCAPIFeed = (e: React.DragEvent) =>
@@ -62,6 +82,8 @@ type FrontProps = FrontPropsBeforeState & {
   ) => void;
   moveCard: typeof moveCard;
   insertCardFromDropEvent: typeof insertCardFromDropEvent;
+  collectionsError: string | null;
+  collectionsLastFetch: number | null;
 };
 
 interface FrontState {
@@ -142,7 +164,14 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
-    const { front } = this.props;
+    const { front, collectionsError } = this.props;
+
+    const isCollectionsStale =
+      this.props.collectionsLastFetch &&
+      Date.now() - this.props.collectionsLastFetch > TWENTY_SECONDS_IN_MILLIS;
+
+    const isEditingLocked = isCollectionsStale || !!collectionsError;
+
     return (
       <FrontCollectionsContainer
         onScroll={this.handleScroll}
@@ -156,6 +185,15 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
                   key={collectionId}
                   ref={(ref) => (this.collectionElements[collectionId] = ref)}
                 >
+                  {isEditingLocked && (
+                    <EditingLockedCollectionsOverlay>
+                      <h2>Editing Locked</h2>
+                      <span>
+                        We couldn't refresh this collection. It may be out of
+                        date. Please wait or reload.
+                      </span>
+                    </EditingLockedCollectionsOverlay>
+                  )}
                   <Collection
                     id={collectionId}
                     frontId={this.props.id}
@@ -197,6 +235,8 @@ const mapStateToProps = () => {
     return {
       front: selectFront(state, { frontId: id }),
       alsoOn: selectAlsoOnFronts(state, { frontId: id }),
+      collectionsError: collectionSelectors.selectCurrentError(state),
+      collectionsLastFetch: collectionSelectors.selectLastFetch(state),
     };
   };
 };
