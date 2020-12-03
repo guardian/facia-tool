@@ -21,7 +21,7 @@ import { createSelectAlsoOnFronts } from 'selectors/frontsSelectors';
 import { AlsoOnDetail } from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 
-const TWENTY_SECONDS_IN_MILLIS = 20_000;
+const STALENESS_THRESHOLD_IN_MILLIS = 30_000; // 30 seconds
 
 const CollectionContainer = styled.div`
   position: relative;
@@ -88,11 +88,13 @@ type FrontProps = FrontPropsBeforeState & {
 
 interface FrontState {
   currentlyScrolledCollectionId: string | undefined;
+  isCollectionsStale: boolean | undefined;
 }
 
 class FrontContent extends React.Component<FrontProps, FrontState> {
   public state = {
     currentlyScrolledCollectionId: undefined,
+    isCollectionsStale: undefined,
   };
   private collectionElements: {
     [collectionId: string]: HTMLDivElement | null;
@@ -143,6 +145,13 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
         this.props.browsingStage
       );
     }
+    if (this.props.collectionsLastFetch !== newProps.collectionsLastFetch) {
+      this.updateCollectionsStalenessFlag();
+      setTimeout(
+        this.updateCollectionsStalenessFlag,
+        STALENESS_THRESHOLD_IN_MILLIS
+      );
+    }
   }
 
   public componentDidMount() {
@@ -166,11 +175,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
   public render() {
     const { front, collectionsError } = this.props;
 
-    const isCollectionsStale =
-      this.props.collectionsLastFetch &&
-      Date.now() - this.props.collectionsLastFetch > TWENTY_SECONDS_IN_MILLIS;
-
-    const isEditingLocked = isCollectionsStale || !!collectionsError;
+    const isEditingLocked = this.state.isCollectionsStale || !!collectionsError;
 
     return (
       <FrontCollectionsContainer
@@ -227,6 +232,15 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
       </FrontCollectionsContainer>
     );
   }
+
+  private updateCollectionsStalenessFlag = () => {
+    const isCollectionsStale =
+      !!this.props.collectionsLastFetch &&
+      Date.now() - this.props.collectionsLastFetch >
+        STALENESS_THRESHOLD_IN_MILLIS;
+
+    this.setState({ isCollectionsStale });
+  };
 }
 
 const mapStateToProps = () => {
