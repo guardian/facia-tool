@@ -14,7 +14,7 @@ object EditionEarth extends SpecialEdition {
   override val edition = "edition-badyear"
   override val header = Header(title ="The best of", subTitle=Some("a bad year"))
   override val notificationUTCOffset = 3
-  override val topic = "e-e"
+  override val topic = "e-by"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/23e97e00b2b0c3277ea6ff8a38068709509d92da/462_0_469_934/469.png?width=67&quality=100&s=78dcf02d6978bb0c8885cbe076fcb257")
   override val expiry: Option[String] = Some(
     new DateTime(2021, 1,23,23,59,DateTimeZone.UTC).toString()
