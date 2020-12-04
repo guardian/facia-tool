@@ -77,6 +77,14 @@ const VideoIconContainer = styled(CircularIconContainer)`
   right: 2px;
 `;
 
+const ClipboardFirstPublished = styled.div`
+  font-size: 11px;
+  margin: 4px 4px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+`;
+
 interface ArticleBodyProps {
   newspaperPageNumber?: number;
 
@@ -300,6 +308,14 @@ const articleBodyDefault = React.memo(
                   imageCutoutReplace={imageCutoutReplace}
                   showMainVideo={showMainVideo}
                 />
+                {!collectionId && firstPublicationDate && (
+                  <ClipboardFirstPublished title="The time elapsed since this article was first published.">
+                    {distanceInWordsStrict(
+                      Date.now(),
+                      new Date(firstPublicationDate)
+                    )}
+                  </ClipboardFirstPublished>
+                )}
               </DraggableArticleImageContainer>
             ))}
         </ImageAndGraphWrapper>
