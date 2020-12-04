@@ -79,7 +79,10 @@ const VideoIconContainer = styled(CircularIconContainer)`
 
 const ClipboardFirstPublished = styled.div`
   font-size: 11px;
-  margin: 4px;
+  margin: 4px 4px;
+  position: absolute;
+  bottom: 0;
+  right: 0;
 `;
 
 interface ArticleBodyProps {
@@ -268,14 +271,6 @@ const articleBodyDefault = React.memo(
             </CardHeading>
             {displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
           </CardHeadingContainer>
-          {!collectionId && firstPublicationDate && (
-            <ClipboardFirstPublished title="The time elapsed since this article was first published.">
-              {distanceInWordsStrict(
-                Date.now(),
-                new Date(firstPublicationDate)
-              )}
-            </ClipboardFirstPublished>
-          )}
         </CardContent>
         <ImageAndGraphWrapper size={size}>
           {featureFlagPageViewData && canShowPageViewData && collectionId && (
@@ -313,6 +308,14 @@ const articleBodyDefault = React.memo(
                   imageCutoutReplace={imageCutoutReplace}
                   showMainVideo={showMainVideo}
                 />
+                {!collectionId && firstPublicationDate && (
+                  <ClipboardFirstPublished title="The time elapsed since this article was first published.">
+                    {distanceInWordsStrict(
+                      Date.now(),
+                      new Date(firstPublicationDate)
+                    )}
+                  </ClipboardFirstPublished>
+                )}
               </DraggableArticleImageContainer>
             ))}
         </ImageAndGraphWrapper>
