@@ -9,10 +9,10 @@ import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
 object EditionEarth extends SpecialEdition {
-  override val title = "Best of a bad year"
+  override val title = "The best of a bad year"
   override val subTitle = "A special, one-off Guardian digital supplement for the year we'd rather forget"
   override val edition = "edition-badyear"
-  override val header = Header(title ="Best of a", subTitle=Some("bad year"))
+  override val header = Header(title ="The best of", subTitle=Some("a bad year"))
   override val notificationUTCOffset = 3
   override val topic = "e-e"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/23e97e00b2b0c3277ea6ff8a38068709509d92da/462_0_469_934/469.png?width=67&quality=100&s=78dcf02d6978bb0c8885cbe076fcb257")
