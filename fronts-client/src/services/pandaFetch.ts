@@ -1,6 +1,7 @@
 import { reEstablishSession } from 'panda-session';
 import notifications from './notifications';
 import { isError } from 'tslint/lib/error';
+import Raven from 'raven-js';
 
 const reauthUrl = '/login/status';
 const reauthErrorMessage =
@@ -36,6 +37,9 @@ const pandaFetch = (
               message: reauthErrorMessage,
               level: 'error',
             });
+            Raven.captureException(e, {
+              extra: `Auth issue banner presented to user`,
+            });
             return reject(
               isError(e) ? `Auth Issue (${e ? e.toString() : ''})` : e
             );
@@ -46,6 +50,10 @@ const pandaFetch = (
               'Request failed. Your changes may not be saved. Please wait or reload the page.',
             level: 'error',
           });
+          Raven.captureException(
+            `'Request failed' banner presented to user, because... ${res.status} ${res.status}`,
+            { extra: res }
+          );
           return reject(res);
         }
 
@@ -55,6 +63,9 @@ const pandaFetch = (
           message:
             'Connection issue occurred. Your changes may not be saved. Please wait or reload the page.',
           level: 'error',
+        });
+        Raven.captureException(error, {
+          extra: `'Connection issue' banner presented to user`,
         });
         return reject(`Connection Issue (${error ? error.toString() : ''})`);
       }

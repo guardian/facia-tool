@@ -20,6 +20,7 @@ import { initialiseCollectionsForFront } from 'actions/Collections';
 import { createSelectAlsoOnFronts } from 'selectors/frontsSelectors';
 import { AlsoOnDetail } from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
+import Raven from 'raven-js';
 
 const STALENESS_THRESHOLD_IN_MILLIS = 30_000; // 30 seconds
 
@@ -152,6 +153,11 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
         STALENESS_THRESHOLD_IN_MILLIS
       );
     }
+    if (newProps.collectionsError && !this.props.collectionsError) {
+      Raven.captureMessage(
+        `Collections editing locked due to error: ${newProps.collectionsError}`
+      );
+    }
   }
 
   public componentDidMount() {
@@ -239,7 +245,12 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
       Date.now() - this.props.collectionsLastFetch >
         STALENESS_THRESHOLD_IN_MILLIS;
 
-    this.setState({ isCollectionsStale });
+    this.setState((prevState) => {
+      if (!prevState.isCollectionsStale && isCollectionsStale) {
+        Raven.captureMessage('Collections editing locked due to staleness.');
+      }
+      return { isCollectionsStale };
+    });
   };
 }
 
