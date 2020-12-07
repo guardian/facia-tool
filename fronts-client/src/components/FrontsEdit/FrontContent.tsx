@@ -51,8 +51,10 @@ const EditingLockedCollectionsOverlay = styled.div`
   flex-direction: column;
   align-items: center;
   user-select: none;
+  text-align: center;
+  padding: 5px;
   h2 {
-    margin-bottom: 0;
+    margin: 0;
   }
 `;
 
