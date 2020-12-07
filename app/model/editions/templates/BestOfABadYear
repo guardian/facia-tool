@@ -9,7 +9,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
 object EditionBadYear extends SpecialEdition {
-  override val title = "The best of a bad year"
+  override val title = "The best of\na bad year"
   override val subTitle = "A special, one-off Guardian digital supplement for the year we'd rather forget"
   override val edition = "edition-bad-year"
   override val header = Header(title ="The best of", subTitle=Some("a bad year"))
@@ -21,10 +21,10 @@ object EditionBadYear extends SpecialEdition {
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
-      backgroundColor = "#ededed",
-      title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
-      subTitle = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
-      expiry = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
+      backgroundColor = "#c1d8fc",
+      title = EditionTextFormatting(color = "#FFFFFF", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
+      subTitle = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
+      expiry = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
       image = EditionImageStyle(67,134)
     )
   )
