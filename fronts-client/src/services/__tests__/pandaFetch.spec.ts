@@ -33,7 +33,7 @@ describe('pandaFetch', () => {
     });
     setReauthedResponse({ ok: true }, '/test');
     const thrown = await pandaFetch('/test').catch((er) => er);
-    expect(thrown).toBe(`Auth Issue (${e.toString()})`);
+    expect(thrown).toBe(e);
   });
 
   it('rejects with non 2XX responses', async () => {
