@@ -389,6 +389,9 @@ function createAsyncResourceBundle<Resource>(
           ) {
             return state;
           }
+          if (!action.payload.error) {
+            return state;
+          }
           return {
             ...state,
             lastError: action.payload.error,

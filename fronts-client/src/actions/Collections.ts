@@ -238,20 +238,10 @@ function getCollections(
         getCollectionActions(collectionResponse, getState)
       );
 
-      const actionsToBatch = flatten([
-        ...actions,
-        ...missingActions,
-        ...missingCollectionActions,
-      ]);
-
-      // this is necessary to ensure lastFetch, error etc. are always updated
-      // (as we rely on them elsewhere to lock editing if stale/errored)
-      const noChangesAction = collectionActions.fetchSuccess([]);
-
       dispatch(
-        actionsToBatch.length > 0
-          ? batchActions(actionsToBatch)
-          : noChangesAction
+        batchActions(
+          flatten([...actions, ...missingActions, ...missingCollectionActions])
+        )
       );
       return collectionResponses.map(({ id }) => id);
     } catch (error) {
