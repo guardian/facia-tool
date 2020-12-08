@@ -19,6 +19,10 @@ import { editorSelectCard } from 'bundles/frontsUI';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { createSelectAlsoOnFronts } from 'selectors/frontsSelectors';
 import { AlsoOnDetail } from 'types/Collection';
+import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
+import Raven from 'raven-js';
+
+const STALENESS_THRESHOLD_IN_MILLIS = 30_000; // 30 seconds
 
 const CollectionContainer = styled.div`
   position: relative;
@@ -33,6 +37,25 @@ const FrontCollectionsContainer = styled.div`
   max-height: calc(100% - 43px);
   padding-top: 1px;
   padding-bottom: ${theme.front.paddingForAddFrontButton}px;
+`;
+
+const EditingLockedCollectionsOverlay = styled.div`
+  z-index: 80;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: ${theme.colors.blackTransparent60};
+  color: ${theme.base.colors.textLight};
+  text-shadow: 0 0 10px ${theme.base.colors.textDark};
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  user-select: none;
+  text-align: center;
+  padding: 5px;
+  h2 {
+    margin: 0;
+  }
 `;
 
 const isDropFromCAPIFeed = (e: React.DragEvent) =>
@@ -62,15 +85,19 @@ type FrontProps = FrontPropsBeforeState & {
   ) => void;
   moveCard: typeof moveCard;
   insertCardFromDropEvent: typeof insertCardFromDropEvent;
+  collectionsError: string | null;
+  collectionsLastFetch: number | null;
 };
 
 interface FrontState {
   currentlyScrolledCollectionId: string | undefined;
+  isCollectionsStale: boolean | undefined;
 }
 
 class FrontContent extends React.Component<FrontProps, FrontState> {
   public state = {
     currentlyScrolledCollectionId: undefined,
+    isCollectionsStale: undefined,
   };
   private collectionElements: {
     [collectionId: string]: HTMLDivElement | null;
@@ -121,6 +148,18 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
         this.props.browsingStage
       );
     }
+    if (this.props.collectionsLastFetch !== newProps.collectionsLastFetch) {
+      this.updateCollectionsStalenessFlag();
+      setTimeout(
+        this.updateCollectionsStalenessFlag,
+        STALENESS_THRESHOLD_IN_MILLIS
+      );
+    }
+    if (newProps.collectionsError && !this.props.collectionsError) {
+      Raven.captureMessage(
+        `Collections editing locked due to error: ${newProps.collectionsError}`
+      );
+    }
   }
 
   public componentDidMount() {
@@ -142,7 +181,10 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
-    const { front } = this.props;
+    const { front, collectionsError } = this.props;
+
+    const isEditingLocked = this.state.isCollectionsStale || !!collectionsError;
+
     return (
       <FrontCollectionsContainer
         onScroll={this.handleScroll}
@@ -156,6 +198,15 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
                   key={collectionId}
                   ref={(ref) => (this.collectionElements[collectionId] = ref)}
                 >
+                  {isEditingLocked && (
+                    <EditingLockedCollectionsOverlay>
+                      <h2>Editing Locked</h2>
+                      <span>
+                        We couldn't refresh this collection. It may be out of
+                        date. Please wait or reload.
+                      </span>
+                    </EditingLockedCollectionsOverlay>
+                  )}
                   <Collection
                     id={collectionId}
                     frontId={this.props.id}
@@ -189,6 +240,20 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
       </FrontCollectionsContainer>
     );
   }
+
+  private updateCollectionsStalenessFlag = () => {
+    const isCollectionsStale =
+      !!this.props.collectionsLastFetch &&
+      Date.now() - this.props.collectionsLastFetch >
+        STALENESS_THRESHOLD_IN_MILLIS;
+
+    this.setState((prevState) => {
+      if (!prevState.isCollectionsStale && isCollectionsStale) {
+        Raven.captureMessage('Collections editing locked due to staleness.');
+      }
+      return { isCollectionsStale };
+    });
+  };
 }
 
 const mapStateToProps = () => {
@@ -197,6 +262,8 @@ const mapStateToProps = () => {
     return {
       front: selectFront(state, { frontId: id }),
       alsoOn: selectAlsoOnFronts(state, { frontId: id }),
+      collectionsError: collectionSelectors.selectCurrentError(state),
+      collectionsLastFetch: collectionSelectors.selectLastFetch(state),
     };
   };
 };
