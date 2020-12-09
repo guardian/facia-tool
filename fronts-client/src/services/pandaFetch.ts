@@ -47,13 +47,13 @@ const pandaFetch = (
             );
           }
         } else if (res.status < 200 || res.status >= 300) {
-          notifications.notify({
-            message:
-              'Request failed. Your changes may not be saved. Please wait or reload the page.',
-            level: 'error',
-          });
+          // notifications.notify({
+          //   message:
+          //     'Request failed. Your changes may not be saved. Please wait or reload the page.',
+          //   level: 'error',
+          // });
           Raven.captureException(
-            `'Request failed' banner presented to user, because... ${res.status} ${res.status}`,
+            `'Request failed' banner OUGHT TO BE presented to user, because... ${res.status} ${res.status}`,
             { extra: res }
           );
           return reject(res);
@@ -61,14 +61,14 @@ const pandaFetch = (
 
         return resolve(res);
       } catch (error) {
-        notifications.notify({
-          message:
-            'Connection issue occurred. Your changes may not be saved. Please wait or reload the page.',
-          level: 'error',
-        });
+        // notifications.notify({
+        //   message:
+        //     'Connection issue occurred. Your changes may not be saved. Please wait or reload the page.',
+        //   level: 'error',
+        // });
         Raven.captureException(error, {
           extra: {
-            message: `'Connection issue' banner presented to user`,
+            message: `'Connection issue' banner OUGHT TO BE presented to user`,
           },
         });
         return reject(`Connection Issue (${error ? error.toString() : ''})`);

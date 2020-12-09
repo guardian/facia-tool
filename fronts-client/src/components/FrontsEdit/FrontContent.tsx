@@ -183,7 +183,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
   public render() {
     const { front, collectionsError } = this.props;
 
-    const isEditingLocked = this.state.isCollectionsStale || !!collectionsError;
+    // TODO remove the false bit when we're happy to actually lock users editing
+    const isEditingLocked =
+      false && (this.state.isCollectionsStale || !!collectionsError);
 
     return (
       <FrontCollectionsContainer
@@ -249,7 +251,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
     this.setState((prevState) => {
       if (!prevState.isCollectionsStale && isCollectionsStale) {
-        Raven.captureMessage('Collections editing locked due to staleness.');
+        Raven.captureMessage(
+          'Collections editing OUGHT TO BE locked due to staleness.'
+        );
       }
       return { isCollectionsStale };
     });
