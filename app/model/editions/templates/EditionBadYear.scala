@@ -30,7 +30,7 @@ object EditionBadYear extends SpecialEdition {
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
     SpecialEditionHeaderStyles(
-      backgroundColor = "#7D0068",
+      backgroundColor = "#c1d8fc",
       textColorPrimary = "#FFFFFF",
       textColorSecondary = "#FFFFFF"
     )
