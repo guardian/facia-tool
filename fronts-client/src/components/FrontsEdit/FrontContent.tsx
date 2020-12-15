@@ -251,19 +251,20 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
     const isCollectionsStale =
       collectionsStalenessInMillis > STALENESS_THRESHOLD_IN_MILLIS;
 
-    this.setState((prevState) => {
-      if (!prevState.isCollectionsStale && isCollectionsStale) {
-        Raven.captureMessage(
-          'Collections editing OUGHT TO BE locked due to staleness.',
-          {
-            extra: {
-              collectionsStalenessInMillis,
-            },
-          }
-        );
-      }
-      return { isCollectionsStale };
-    });
+    if (!this.state.isCollectionsStale && isCollectionsStale) {
+      Raven.captureMessage(
+        'Collections editing OUGHT TO BE locked due to staleness.',
+        {
+          extra: {
+            collectionsStalenessInMillis,
+          },
+        }
+      );
+    }
+
+    if (this.state.isCollectionsStale !== isCollectionsStale) {
+      this.setState({ isCollectionsStale });
+    }
   };
 }
 
