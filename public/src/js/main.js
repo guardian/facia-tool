@@ -28,12 +28,14 @@ function checkEnabled (res) {
 
 function registerRaven (res) {
     if (res.defaults.env.toUpperCase() !== 'DEV' && res.defaults.sentryPublicDSN) {
+        const stage = res.defaults.env.toUpperCase();
         const sentryOptions = {
             tags: {
                 stack: 'cms-fronts',
-                stage: res.defaults.env.toUpperCase(),
+                stage,
                 app: 'facia-tool'
-            }
+            },
+            environment: stage
         };
 
         Raven.config(res.defaults.sentryPublicDSN, sentryOptions).install();
