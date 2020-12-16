@@ -71,11 +71,14 @@ const pandaFetch = (
         //     'Connection issue occurred. Your changes may not be saved. Please wait or reload the page.',
         //   level: 'error',
         // });
-        Raven.captureException(error, {
-          extra: {
-            message: `'Connection issue' banner OUGHT TO BE presented to user`,
-          },
-        });
+        Raven.captureException(
+          `'Connection issue' banner OUGHT TO BE presented to user`,
+          {
+            extra: {
+              error,
+            },
+          }
+        );
         return reject(`Connection Issue (${error ? error.toString() : ''})`);
       }
     }

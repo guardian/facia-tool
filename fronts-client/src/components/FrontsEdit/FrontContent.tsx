@@ -156,8 +156,13 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
       );
     }
     if (newProps.collectionsError && !this.props.collectionsError) {
-      Raven.captureMessage(
-        `Collections editing OUGHT TO BE locked due to error: ${newProps.collectionsError}`
+      Raven.captureException(
+        `Collections editing OUGHT TO BE locked due to error: ${newProps.collectionsError}`,
+        {
+          extra: {
+            error: newProps.collectionsError,
+          },
+        }
       );
     }
   }
