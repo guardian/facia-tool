@@ -15,7 +15,7 @@ object EditionBadYear extends SpecialEdition {
   override val header = Header(title ="The best of", subTitle=Some("a bad year"))
   override val notificationUTCOffset = 3
   override val topic = "e-by"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/6426f7cc8b9df19b21d065888dd3918883fef9d6/0_0_185_90/185.png?width=67&quality=100&s=657a9aee4130c4f8c79469f8b0c31351")
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/581b334dc0d3a2c61cabafeee5744eb61171e9f2/0_0_180_356/180.png?width=134&quality=100&s=5ea13373e15fdc35a3f3c8114f4f2184")
   override val expiry: Option[String] = Some(
     new DateTime(2021, 1,23,23,59,DateTimeZone.UTC).toString()
   )
