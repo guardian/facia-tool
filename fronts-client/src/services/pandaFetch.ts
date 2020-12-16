@@ -8,6 +8,8 @@ const reauthErrorMessage =
   "We couldn't log you back in. Your changes may not be saved. " +
   `Please <a href="${window.location.href}" target="_self">log in again</a> to reauthenticate.`;
 
+const AUTH_ERROR_STATUS_CODES = [401, 419];
+
 /**
  * Make a fetch request with Panda authentication.
  *
@@ -22,55 +24,61 @@ const pandaFetch = (
   new Promise(
     async (resolve: (r: Response) => any, reject: (e: any) => any) => {
       try {
-        const res = await fetch(url, {
+        const response = await fetch(url, {
           ...options,
           credentials: 'same-origin',
         });
 
-        if ((res.status === 419 || res.status === 401) && count < 1) {
+        if (AUTH_ERROR_STATUS_CODES.includes(response.status) && count < 1) {
           try {
             await reEstablishSession(reauthUrl, 5000);
             const res2 = await pandaFetch(url, options, count + 1);
             return resolve(res2);
           } catch (e) {
-            notifications.notify({
-              message: reauthErrorMessage,
-              level: 'error',
-            });
-            Raven.captureException(e, {
-              extra: {
-                message: `'Auth issue' banner presented to user`,
-              },
-            });
+            if (!e.status || AUTH_ERROR_STATUS_CODES.includes(e.status)) {
+              notifications.notify({
+                message: reauthErrorMessage,
+                level: 'error',
+              });
+              Raven.captureException(`'Auth issue' banner presented to user`, {
+                extra: {
+                  response: e,
+                },
+              });
+            }
             return reject(
               isError(e) ? `Auth Issue (${e ? e.toString() : ''})` : e
             );
           }
-        } else if (res.status < 200 || res.status >= 300) {
-          // notifications.notify({
-          //   message:
-          //     'Request failed. Your changes may not be saved. Please wait or reload the page.',
-          //   level: 'error',
-          // });
-          Raven.captureException(
-            `'Request failed' banner OUGHT TO BE presented to user, because... ${res.status} ${res.status}`,
-            { extra: res }
-          );
-          return reject(res);
+        } else if (response.status < 200 || response.status >= 300) {
+          if (count < 1 || !AUTH_ERROR_STATUS_CODES.includes(response.status)) {
+            Raven.captureException(
+              `'Request failed' because... ${response.status} ${response.statusText}`,
+              {
+                extra: {
+                  response,
+                },
+              }
+            );
+          }
+          return reject(response);
         }
 
-        return resolve(res);
+        return resolve(response);
       } catch (error) {
         // notifications.notify({
         //   message:
         //     'Connection issue occurred. Your changes may not be saved. Please wait or reload the page.',
         //   level: 'error',
         // });
-        Raven.captureException(error, {
-          extra: {
-            message: `'Connection issue' banner OUGHT TO BE presented to user`,
-          },
-        });
+        Raven.captureException(
+          `'Connection issue' banner OUGHT TO BE presented to user`,
+          {
+            extra: {
+              error,
+            },
+          }
+        );
         return reject(`Connection Issue (${error ? error.toString() : ''})`);
       }
     }

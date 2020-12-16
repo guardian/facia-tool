@@ -156,8 +156,13 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
       );
     }
     if (newProps.collectionsError && !this.props.collectionsError) {
-      Raven.captureMessage(
-        `Collections editing locked due to error: ${newProps.collectionsError}`
+      Raven.captureException(
+        `Collections editing OUGHT TO BE locked due to error: ${newProps.collectionsError}`,
+        {
+          extra: {
+            error: newProps.collectionsError,
+          },
+        }
       );
     }
   }
@@ -251,19 +256,20 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
     const isCollectionsStale =
       collectionsStalenessInMillis > STALENESS_THRESHOLD_IN_MILLIS;
 
-    this.setState((prevState) => {
-      if (!prevState.isCollectionsStale && isCollectionsStale) {
-        Raven.captureMessage(
-          'Collections editing OUGHT TO BE locked due to staleness.',
-          {
-            extra: {
-              collectionsStalenessInMillis,
-            },
-          }
-        );
-      }
-      return { isCollectionsStale };
-    });
+    if (!this.state.isCollectionsStale && isCollectionsStale) {
+      Raven.captureMessage(
+        'Collections editing OUGHT TO BE locked due to staleness.',
+        {
+          extra: {
+            collectionsStalenessInMillis,
+          },
+        }
+      );
+    }
+
+    if (this.state.isCollectionsStale !== isCollectionsStale) {
+      this.setState({ isCollectionsStale });
+    }
   };
 }
 
