@@ -15,24 +15,24 @@ object EditionBadYear extends SpecialEdition {
   override val header = Header(title ="The best of", subTitle=Some("a bad year"))
   override val notificationUTCOffset = 3
   override val topic = "e-by"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/6426f7cc8b9df19b21d065888dd3918883fef9d6/0_0_185_90/185.png?width=67&quality=100&s=657a9aee4130c4f8c79469f8b0c31351")
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/581b334dc0d3a2c61cabafeee5744eb61171e9f2/0_0_180_356/180.png?width=134&quality=100&s=5ea13373e15fdc35a3f3c8114f4f2184")
   override val expiry: Option[String] = Some(
     new DateTime(2021, 1,23,23,59,DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
-      backgroundColor = "#c1d8fc",
-      title = EditionTextFormatting(color = "#000000", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
-      subTitle = EditionTextFormatting(color = "#000000", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
-      expiry = EditionTextFormatting(color = "#000000", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
+      backgroundColor = "#6B5840",
+      title = EditionTextFormatting(color = "#FFFFFF", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
+      subTitle = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
+      expiry = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
       image = EditionImageStyle(67,134)
     )
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
     SpecialEditionHeaderStyles(
-      backgroundColor = "#c1d8fc",
-      textColorPrimary = "#000000",
-      textColorSecondary = "#000000"
+      backgroundColor = "#6B5840",
+      textColorPrimary = "#FFFFFF",
+      textColorSecondary = "#FFFFFF"
     )
   )
 
