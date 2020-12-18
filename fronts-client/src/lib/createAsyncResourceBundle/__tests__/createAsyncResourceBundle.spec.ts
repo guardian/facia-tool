@@ -110,10 +110,12 @@ describe('createAsyncResourceBundle', () => {
       ).toBe('Something went wrong');
     });
     it('should provide a selector to get the last fetch time', () => {
-      expect(selectors.selectLastFetch({ books: initialState })).toBe(null);
       expect(
-        selectors.selectLastFetch({
-          books: { ...initialState, lastFetch: 1337 },
+        selectors.selectLastSuccessfulFetchTimestamp({ books: initialState })
+      ).toBe(null);
+      expect(
+        selectors.selectLastSuccessfulFetchTimestamp({
+          books: { ...initialState, lastSuccessfulFetchTimestamp: 1337 },
         })
       ).toBe(1337);
     });

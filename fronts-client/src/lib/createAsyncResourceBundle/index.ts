@@ -172,7 +172,7 @@ interface State<Resource> {
   pagination: IPagination | null;
   lastError: string | null;
   error: string | null;
-  lastFetch: number | null;
+  lastSuccessfulFetchTimestamp: number | null;
   loadingIds: string[];
   updatingIds: string[];
   // The ids of the resources that were last added to the state, in the order they came in.
@@ -226,8 +226,8 @@ function createAsyncResourceBundle<Resource>(
   const selectLastError = (state: RootState) =>
     selectLocalState(state).lastError;
 
-  const selectLastFetch = (state: RootState) =>
-    selectLocalState(state).lastFetch;
+  const selectLastSuccessfulFetchTimestamp = (state: RootState) =>
+    selectLocalState(state).lastSuccessfulFetchTimestamp;
 
   const selectIsLoading = (state: RootState) =>
     !!selectLocalState(state).loadingIds.length;
@@ -252,7 +252,7 @@ function createAsyncResourceBundle<Resource>(
     pagination: null,
     lastError: null,
     error: null,
-    lastFetch: null,
+    lastSuccessfulFetchTimestamp: null,
     loadingIds: [],
     updatingIds: [],
   };
@@ -353,7 +353,7 @@ function createAsyncResourceBundle<Resource>(
             pagination: isEqual(state.pagination, action.payload.pagination)
               ? state.pagination
               : action.payload.pagination || null,
-            lastFetch: action.payload.time,
+            lastSuccessfulFetchTimestamp: action.payload.time,
             error: null,
             loadingIds: indexById
               ? removeStatusIds(
@@ -430,7 +430,7 @@ function createAsyncResourceBundle<Resource>(
           return {
             ...state,
             data,
-            lastFetch: action.payload.time,
+            lastSuccessfulFetchTimestamp: action.payload.time,
             error: null,
             updatingIds: removeStatusIds(state.updatingIds, action.payload.id),
           };
@@ -471,7 +471,7 @@ function createAsyncResourceBundle<Resource>(
       selectPagination,
       selectCurrentError,
       selectLastError,
-      selectLastFetch,
+      selectLastSuccessfulFetchTimestamp,
       selectIsLoading,
       selectIsLoadingById,
       selectIsLoadingInitialDataById,
