@@ -86,7 +86,7 @@ type FrontProps = FrontPropsBeforeState & {
   moveCard: typeof moveCard;
   insertCardFromDropEvent: typeof insertCardFromDropEvent;
   collectionsError: string | null;
-  collectionsLastFetch: number | null;
+  collectionsLastSuccessfulFetchTimestamp: number | null;
 };
 
 interface FrontState {
@@ -148,7 +148,10 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
         this.props.browsingStage
       );
     }
-    if (this.props.collectionsLastFetch !== newProps.collectionsLastFetch) {
+    if (
+      this.props.collectionsLastSuccessfulFetchTimestamp !==
+      newProps.collectionsLastSuccessfulFetchTimestamp
+    ) {
       this.updateCollectionsStalenessFlag();
       setTimeout(
         this.updateCollectionsStalenessFlag,
@@ -250,8 +253,8 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
   private updateCollectionsStalenessFlag = () => {
     const collectionsStalenessInMillis =
-      !!this.props.collectionsLastFetch &&
-      Date.now() - this.props.collectionsLastFetch;
+      !!this.props.collectionsLastSuccessfulFetchTimestamp &&
+      Date.now() - this.props.collectionsLastSuccessfulFetchTimestamp;
 
     const isCollectionsStale =
       collectionsStalenessInMillis > STALENESS_THRESHOLD_IN_MILLIS;
@@ -280,7 +283,9 @@ const mapStateToProps = () => {
       front: selectFront(state, { frontId: id }),
       alsoOn: selectAlsoOnFronts(state, { frontId: id }),
       collectionsError: collectionSelectors.selectCurrentError(state),
-      collectionsLastFetch: collectionSelectors.selectLastFetch(state),
+      collectionsLastSuccessfulFetchTimestamp: collectionSelectors.selectLastSuccessfulFetchTimestamp(
+        state
+      ),
     };
   };
 };

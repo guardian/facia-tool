@@ -140,7 +140,7 @@ describe('nextIndexAndGroupSelector', () => {
     pagination: null,
     lastError: null,
     error: null,
-    lastFetch: null,
+    lastSuccessfulFetchTimestamp: null,
     loading: false,
     loadingIds: [],
     updatingIds: [],
