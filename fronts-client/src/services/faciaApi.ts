@@ -126,10 +126,11 @@ async function fetchVisibleArticles(
       body: JSON.stringify({ stories: articles }),
     });
     return await response.json();
-  } catch (response) {
-    throw new Error(
-      `Tried to fetch visible stories for collection type '${collectionType}', but the server responded with ${response.status}: ${response.body}`
-    );
+  } catch (err) {
+    if (err instanceof Response) {
+      throw new Error(`Tried to fetch visible stories for collection type '${collectionType}', but the server responded with ${err.status}: ${err.body}`)
+    }
+    throw err;
   }
 }
 
