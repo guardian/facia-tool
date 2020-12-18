@@ -373,6 +373,7 @@ function createAsyncResourceBundle<Resource>(
           return {
             ...state,
             error: null,
+            lastSuccessfulFetchTimestamp: action.payload.time,
             loadingIds: indexById
               ? removeStatusIds(
                   state.loadingIds,

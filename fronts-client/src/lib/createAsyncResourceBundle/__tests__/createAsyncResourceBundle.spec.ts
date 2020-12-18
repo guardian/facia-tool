@@ -347,19 +347,37 @@ describe('createAsyncResourceBundle', () => {
           );
           expect(firstState.pagination).toEqual(secondState.pagination);
         });
+        it('should set lastSuccessfulFetchTimestamp to the current time', () => {
+          const action = actions.fetchSuccess({
+            uuid: { id: 'uuid', author: 'Mark Twain' },
+          });
+          const newState = reducer(
+            { ...initialState, loadingIds: ['uuid'] },
+            action
+          );
+          expect(newState.lastSuccessfulFetchTimestamp).toEqual(
+            action.payload.time
+          );
+        });
       });
       describe('Success Ignore action handler', () => {
+        const action = actions.fetchSuccessIgnore({
+          uuid: { id: 'uuid', author: 'Mark Twain' },
+        });
         const newState = reducer(
           { ...initialState, loadingIds: ['uuid'] },
-          actions.fetchSuccessIgnore({
-            uuid: { id: 'uuid', author: 'Mark Twain' },
-          })
+          action
         );
         it('should return initial state data when a successIgnore action is dispatched', () => {
           expect(newState.data).toEqual(initialState.data);
         });
         it('should clear ID data from loadingIds when a successIgnore action is dispatched', () => {
           expect(newState.loadingIds).toEqual([]);
+        });
+        it('should set lastSuccessfulFetchTimestamp to the current time', () => {
+          expect(newState.lastSuccessfulFetchTimestamp).toEqual(
+            action.payload.time
+          );
         });
       });
       describe('Error action handler', () => {
