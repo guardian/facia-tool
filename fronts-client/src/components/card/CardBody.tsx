@@ -4,11 +4,24 @@ import Thumbnail from 'components/image/Thumbnail';
 import { CardSizes } from 'types/Collection';
 import { theme } from 'constants/theme';
 
+/**
+ * Avoid rendering this section of the card when it's offscreen.
+ *
+ * Assumes a default card height that will be recalculated during layout
+ * when the card becomes visible.
+ */
+const avoidCardOffscreenRender = `
+  content-visibility: auto;
+  contain-intrinsic-size: 65px;
+`;
+
 export default styled.div<{
   fade?: boolean;
   size?: CardSizes;
   tone?: string | void;
 }>`
+  ${avoidCardOffscreenRender}
+
   position: relative;
   display: flex;
   min-height: ${({ size }) => (size === 'small' ? '25px' : '50px')};
