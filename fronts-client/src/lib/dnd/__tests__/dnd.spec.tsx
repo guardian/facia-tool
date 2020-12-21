@@ -1,6 +1,6 @@
 import React from 'react';
 import TestRenderer from 'react-test-renderer';
-import Root from '../Root';
+import DragAndDropRoot from '../Root';
 import Level from '../Level';
 
 const createDragEvent = (top: boolean) => {
@@ -64,7 +64,7 @@ describe('Curation', () => {
     let edit: any;
 
     setup(
-      <Root id="@@ROOT">
+      <DragAndDropRoot id="@@ROOT">
         <Level
           arr={[{ id: '1' }, { id: '2' }]}
           type="a"
@@ -103,7 +103,7 @@ describe('Curation', () => {
             );
           }}
         </Level>
-      </Root>
+      </DragAndDropRoot>
     );
 
     runDrag(nodeProps)(dropProps);
@@ -121,7 +121,7 @@ describe('Curation', () => {
     let edit: any;
 
     setup(
-      <Root id="@@ROOT">
+      <DragAndDropRoot id="@@ROOT">
         <Level
           arr={[{ id: '1' }, { id: '2' }]}
           type="a"
@@ -157,7 +157,7 @@ describe('Curation', () => {
             );
           }}
         </Level>
-      </Root>
+      </DragAndDropRoot>
     );
 
     runDrag(nodeProps)(dropProps);
@@ -177,7 +177,7 @@ describe('Curation', () => {
     let edit: any;
 
     setup(
-      <Root id="@@ROOT">
+      <DragAndDropRoot id="@@ROOT">
         <Level
           arr={[{ id: '1' }, { id: '2' }]}
           type="a"
@@ -214,7 +214,7 @@ describe('Curation', () => {
             );
           }}
         </Level>
-      </Root>
+      </DragAndDropRoot>
     );
 
     runDrag(nodeProps)(dropProps);
@@ -228,7 +228,7 @@ describe('Curation', () => {
     let to: any;
 
     setup(
-      <Root id="@@ROOT">
+      <DragAndDropRoot id="@@ROOT">
         <Level
           arr={[{ id: '2' }]}
           parentId="1"
@@ -260,7 +260,7 @@ describe('Curation', () => {
             </Level>
           )}
         </Level>
-      </Root>
+      </DragAndDropRoot>
     );
 
     const data = {
@@ -283,7 +283,7 @@ describe('Curation', () => {
     let edit;
 
     setup(
-      <Root id="@@ROOT">
+      <DragAndDropRoot id="@@ROOT">
         <Level
           arr={[{ id: '2' }]}
           type="a"
@@ -317,7 +317,7 @@ describe('Curation', () => {
             );
           }}
         </Level>
-      </Root>
+      </DragAndDropRoot>
     );
 
     runDrag(dragProps)(dropProps);
@@ -331,7 +331,7 @@ describe('Curation', () => {
     let edit: any;
 
     setup(
-      <Root id="@@ROOT">
+      <DragAndDropRoot id="@@ROOT">
         <Level
           parentType="root"
           parentId="root"
@@ -355,7 +355,7 @@ describe('Curation', () => {
             return false;
           }}
         </Level>
-      </Root>
+      </DragAndDropRoot>
     );
 
     runDrag(dragProps)(dropProps);
@@ -369,7 +369,7 @@ describe('Curation', () => {
     let edit: any;
 
     setup(
-      <Root id="@@ROOT">
+      <DragAndDropRoot id="@@ROOT">
         <Level
           arr={[{ id: '1' }]}
           parentType="root"
@@ -390,7 +390,7 @@ describe('Curation', () => {
             return null;
           }}
         </Level>
-      </Root>
+      </DragAndDropRoot>
     );
 
     runDrag(dragProps)(dropProps);
@@ -404,7 +404,7 @@ describe('Curation', () => {
     let edit: any;
 
     setup(
-      <Root id="@@ROOT">
+      <DragAndDropRoot id="@@ROOT">
         <Level
           arr={[{ id: '1' }]}
           parentType="root"
@@ -425,7 +425,7 @@ describe('Curation', () => {
             return null;
           }}
         </Level>
-      </Root>
+      </DragAndDropRoot>
     );
 
     runDrag(dragProps)(dropProps);
@@ -440,7 +440,7 @@ describe('Curation', () => {
 
     setup(
       <div>
-        <Root id="@@ROOT">
+        <DragAndDropRoot id="@@ROOT">
           <Level
             type="a"
             getId={({ id }) => id}
@@ -456,8 +456,8 @@ describe('Curation', () => {
               return null;
             }}
           </Level>
-        </Root>
-        <Root id="@@ROOT2">
+        </DragAndDropRoot>
+        <DragAndDropRoot id="@@ROOT2">
           <Level
             type="a"
             getId={({ id }) => id}
@@ -475,7 +475,7 @@ describe('Curation', () => {
           >
             {() => null}
           </Level>
-        </Root>
+        </DragAndDropRoot>
       </div>
     );
 
