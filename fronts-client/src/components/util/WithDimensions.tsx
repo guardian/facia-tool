@@ -13,12 +13,12 @@ interface Props {
 const initialState = { width: undefined, height: undefined } as Dimensions;
 
 /**
- * Supplies the dimensions of the given element to its children.
+ * Supplies the dimensions of the wrapper div provided by this component to its children.
  *
  * ```
- * <WithDimensions element={this.someHTMLElement}>
+ * <WithDimensions>
  *  {({ width, height }) => (
- *    <p>`The dimensions of the given element are ${width} x ${height}`</p>
+ *    <p>`The dimensions of the parent div element are ${width} x ${height}`</p>
  *  )
  * </WithDimensions>
  * ```
