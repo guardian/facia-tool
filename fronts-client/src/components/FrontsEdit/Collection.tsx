@@ -91,7 +91,7 @@ interface CollectionContextProps {
   size?: 'medium' | 'default' | 'wide';
   handleMove: (move: Move<TCard>) => void;
   handleInsert: (e: React.DragEvent, to: PosSpec) => void;
-  selectCard: (id: string, isSupporting: boolean) => void;
+  selectCard: (id: string, collectionId: string, isSupporting: boolean) => void;
 }
 
 interface ConnectedCollectionContextProps extends CollectionContextProps {
@@ -174,7 +174,7 @@ class CollectionContext extends React.Component<
                         size={size}
                         canShowPageViewData={true}
                         getNodeProps={() => getAfNodeProps(isUneditable)}
-                        onSelect={() => selectCard(card.uuid, false)}
+                        onSelect={() => selectCard(card.uuid, id, false)}
                         onDelete={() => removeCard(group.uuid, card.uuid)}
                       >
                         <CardLevel
@@ -189,7 +189,9 @@ class CollectionContext extends React.Component<
                               uuid={supporting.uuid}
                               parentId={card.uuid}
                               canShowPageViewData={false}
-                              onSelect={() => selectCard(supporting.uuid, true)}
+                              onSelect={() =>
+                                selectCard(supporting.uuid, id, true)
+                              }
                               isUneditable={isUneditable}
                               getNodeProps={() =>
                                 getSupportingProps(isUneditable)
