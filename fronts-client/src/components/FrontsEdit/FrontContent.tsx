@@ -232,14 +232,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
                         ? 'default'
                         : 'medium'
                     }
-                    selectCard={(cardId, isSupporting) =>
-                      this.props.selectCard(
-                        cardId,
-                        collectionId,
-                        this.props.id,
-                        isSupporting
-                      )
-                    }
+                    selectCard={this.onSelectCard}
                     handleArticleFocus={this.props.handleArticleFocus}
                   />
                 </CollectionContainer>
@@ -250,6 +243,12 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
       </FrontCollectionsContainer>
     );
   }
+
+  private onSelectCard = (
+    cardId: string,
+    collectionId: string,
+    isSupporting: boolean
+  ) => this.props.selectCard(cardId, collectionId, this.props.id, isSupporting);
 
   private updateCollectionsStalenessFlag = () => {
     const collectionsStalenessInMillis =
