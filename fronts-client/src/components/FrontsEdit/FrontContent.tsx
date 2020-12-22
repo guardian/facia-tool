@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import sortBy from 'lodash/sortBy';
 import debounce from 'lodash/debounce';
 import { events } from 'services/GA';
-import { Root, PosSpec, Move } from 'lib/dnd';
+import { DragAndDropRoot, PosSpec, Move } from 'lib/dnd';
 import Collection from './Collection';
 import type { State } from 'types/State';
 import WithDimensions from 'components/util/WithDimensions';
@@ -202,7 +202,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
       >
         <WithDimensions>
           {({ width }) => (
-            <Root id={this.props.id} data-testid={this.props.id}>
+            <DragAndDropRoot id={this.props.id} data-testid={this.props.id}>
               {front.collections.map((collectionId) => (
                 <CollectionContainer
                   key={collectionId}
@@ -237,7 +237,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
                   />
                 </CollectionContainer>
               ))}
-            </Root>
+            </DragAndDropRoot>
           )}
         </WithDimensions>
       </FrontCollectionsContainer>

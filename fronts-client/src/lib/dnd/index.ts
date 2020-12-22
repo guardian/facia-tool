@@ -1,4 +1,4 @@
-export { default as Root } from './Root';
+export { default as DragAndDropRoot } from './Root';
 export {
   default as Level,
   Move,

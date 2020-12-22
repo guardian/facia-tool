@@ -1,7 +1,7 @@
 import { Dispatch } from 'types/Store';
 import React, { RefObject } from 'react';
 import { connect } from 'react-redux';
-import { Root, Move, PosSpec } from 'lib/dnd';
+import { DragAndDropRoot, Move, PosSpec } from 'lib/dnd';
 import type { State } from 'types/State';
 import { insertCardFromDropEvent } from 'util/collectionUtils';
 import {
@@ -168,7 +168,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                     <ButtonLabel>Clear clipboard</ButtonLabel>
                   </ClearClipboardButton>
                 </ClipboardHeader>
-                <Root
+                <DragAndDropRoot
                   id="clipboard"
                   data-testid="clipboard"
                   style={{ display: 'flex', flex: 1 }}
@@ -227,7 +227,7 @@ class Clipboard extends React.Component<ClipboardProps> {
                       </>
                     )}
                   </ClipboardLevel>
-                </Root>
+                </DragAndDropRoot>
               </ClipboardBody>
             </StyledDragIntentContainer>
           </ClipboardWrapper>

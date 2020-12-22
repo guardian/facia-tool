@@ -30,7 +30,7 @@ const RootContainer = styled.div`
   }
 `;
 
-export default class Root extends React.Component<Props, State> {
+export default class DragAndDropRoot extends React.Component<Props, State> {
   public state = { store: createStore() };
   private rootRef = React.createRef<HTMLDivElement>();
 
