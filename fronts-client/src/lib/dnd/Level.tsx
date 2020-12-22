@@ -162,6 +162,7 @@ class Level<T> extends React.Component<Props<T>, State> {
       return;
     }
     e.preventDefault();
+    e.stopPropagation();
     this.props.store.update(this.key, i, true);
   };
 
