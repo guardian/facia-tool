@@ -21,7 +21,7 @@
     "jasmine-core": "2.4.1",
     "jit-grunt": "0.10.0",
     "jspm": "^0.16.35",
-    "karma": "4.0.0",
+    "karma": "6.0.0",
     "karma-jasmine": "2.0.1",
     "karma-phantomjs-launcher": "1.0.4",
     "karma-spec-reporter": "0.0.32",
