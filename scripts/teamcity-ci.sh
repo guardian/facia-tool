@@ -43,7 +43,7 @@ riffRaffUpload() {
 main() {
     setupNvm
     globalJsDependencies
-    javascriptV1
+    # javascriptV1
     javascriptV2
     riffRaffUpload
 }
