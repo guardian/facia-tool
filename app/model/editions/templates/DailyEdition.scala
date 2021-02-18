@@ -91,6 +91,7 @@ object DailyEdition extends RegionalEdition {
     collection("National").hide,
     collection("National").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
     collection("National").printSentAnyTag("theguardian/mainsection/weather2"),
+    collection("National").hide,
     collection("National").hide
   )
     .swatch(News)
@@ -102,6 +103,7 @@ object DailyEdition extends RegionalEdition {
     collection("National").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
     collection("Week in Review").printSentAnyTag("theguardian/mainsection/week-in-review"),
     collection("National").printSentAnyTag("theguardian/mainsection/weather2"),
+    collection("National").hide,
     collection("National").hide
   )
     .swatch(News)
