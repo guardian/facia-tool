@@ -109,17 +109,14 @@ object AustralianEdition extends RegionalEdition {
       .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-(tone/features|tone/analysis|tone/explainer),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/comment,-tone/minutebyminute,world/coronavirus-outbreak")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
       .withArticleItemsCap(10),
-    "Coronavirus",
      collection("Coronavirus")
       .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute,world/coronavirus-outbreak")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
       .withArticleItemsCap(10),
-    "Coronavirus",
      collection("Coronavirus")
       .searchPrefill("?tag=type/article,tone/comment,-sport/sport,-tone/minutebyminute,world/coronavirus-outbreak")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
       .withArticleItemsCap(10),
-    "Coronavirus",
      collection("Coronavirus").hide
   )
     .swatch(News)
