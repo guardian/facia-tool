@@ -22,6 +22,7 @@ object EditionBooks extends SpecialEdition {
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
       backgroundColor = "#6B5840",
+      titleColor = ???,
       title = EditionTextFormatting(color = "#FFFFFF", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
       subTitle = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
       expiry = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
@@ -79,7 +80,7 @@ object EditionBooks extends SpecialEdition {
       Special38 -> Daily(),
       Special39 -> Daily(),
       Special40 -> Daily()
-      
+
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
@@ -307,7 +308,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
+
   def Special28 = front("Sp Brown 3", None,
     collection("Special"),
     collection("Special"),
@@ -315,7 +316,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
+
   def Special29 = front("Sp Brown 4", None,
     collection("Special"),
     collection("Special"),
@@ -323,7 +324,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
+
   def Special30 = front("Sp Brown 5", None,
     collection("Special"),
     collection("Special"),
@@ -331,7 +332,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
+
   def Special31 = front("Sp Brown 6", None,
     collection("Special"),
     collection("Special"),
@@ -339,7 +340,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
+
   def Special32 = front("Sp Brown 7", None,
     collection("Special"),
     collection("Special"),
@@ -347,7 +348,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
+
   def Special33 = front("Sp Brown 8", None,
     collection("Special"),
     collection("Special"),
@@ -355,7 +356,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
+
   def Special34 = front("Sp Brown 9", None,
     collection("Special"),
     collection("Special"),
@@ -363,7 +364,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
+
   def Special35 = front("Sp Brown 10", None,
     collection("Special"),
     collection("Special"),
@@ -371,7 +372,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
+
   def Special36 = front("Sp Black 6", None,
     collection("Special"),
     collection("Special"),
@@ -379,7 +380,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Neutral)
-  
+
   def Special37 = front("Sp Black 7", None,
     collection("Special"),
     collection("Special"),
@@ -387,7 +388,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Neutral)
-  
+
   def Special38 = front("Sp Black 8", None,
     collection("Special"),
     collection("Special"),
@@ -395,7 +396,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Neutral)
-  
+
   def Special39 = front("Sp Black 9", None,
     collection("Special"),
     collection("Special"),
@@ -403,7 +404,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special"),
     collection("Special")
   ).swatch(Neutral)
-  
+
   def Special40 = front("Sp Black 10", None,
     collection("Special"),
     collection("Special"),
@@ -412,5 +413,5 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-
+  override val pickerButtonImageUri: Option[String] = None
 }
