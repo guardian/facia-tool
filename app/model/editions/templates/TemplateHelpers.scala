@@ -72,6 +72,7 @@ object EditionImageStyle {
 case class SpecialEditionButtonStyles(
   backgroundColor: String,
   title: EditionTextFormatting,
+  titleColor: String,
   subTitle: EditionTextFormatting,
   expiry: EditionTextFormatting,
   image: EditionImageStyle
@@ -91,6 +92,7 @@ trait EditionDefinition {
   val topic: String
   val locale: Option[String]
   val buttonImageUri: Option[String]
+  val pickerButtonImageUri: Option[String]
   val expiry: Option[String]
   val buttonStyle: Option[SpecialEditionButtonStyles]
   val headerStyle: Option[SpecialEditionHeaderStyles]
@@ -131,6 +133,7 @@ object EditionDefinition {
     topic: String,
     locale: Option[String],
     buttonImageUri: Option[String],
+    pickerButtonImageUri: Option[String],
    expiry: Option[String],
    buttonStyle: Option[SpecialEditionButtonStyles],
    headerStyle: Option[SpecialEditionHeaderStyles]
