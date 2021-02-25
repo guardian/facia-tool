@@ -134,9 +134,9 @@ object EditionDefinition {
     locale: Option[String],
     buttonImageUri: Option[String],
     pickerButtonImageUri: Option[String],
-   expiry: Option[String],
-   buttonStyle: Option[SpecialEditionButtonStyles],
-   headerStyle: Option[SpecialEditionHeaderStyles]
+    expiry: Option[String],
+    buttonStyle: Option[SpecialEditionButtonStyles],
+    headerStyle: Option[SpecialEditionHeaderStyles]
   ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, expiry, buttonStyle, headerStyle)
 
   def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int, String,
