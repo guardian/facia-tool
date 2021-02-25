@@ -22,7 +22,7 @@ object EditionBadYear extends SpecialEdition {
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
       backgroundColor = "#6B5840",
-      titleColor = ???,
+      titleColor = "#A1845C",
       title = EditionTextFormatting(color = "#FFFFFF", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
       subTitle = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
       expiry = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
