@@ -111,10 +111,12 @@ abstract class EditionBase extends EditionDefinitionWithTemplate {
 
 abstract class RegionalEdition extends EditionBase {
   override val editionType: EditionType =  EditionType.Regional
+  override val pickerButtonImageUri: Option[String] = None
 }
 
 abstract class InternalEdition extends EditionBase {
   override val editionType: EditionType = EditionType.Training
+  override val pickerButtonImageUri: Option[String] = None
 }
 
 abstract class SpecialEdition extends EditionDefinitionWithTemplate {
@@ -137,12 +139,12 @@ object EditionDefinition {
     expiry: Option[String],
     buttonStyle: Option[SpecialEditionButtonStyles],
     headerStyle: Option[SpecialEditionHeaderStyles]
-  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, expiry, buttonStyle, headerStyle)
+  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, pickerButtonImageUri, expiry, buttonStyle, headerStyle)
 
   def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int, String,
-    Option[String], Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles])]
+    Option[String], Option[String], Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles])]
     = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType,
-    edition.notificationUTCOffset, edition.topic, edition.locale, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle)
+    edition.notificationUTCOffset, edition.topic, edition.locale, edition.buttonImageUri, edition.pickerButtonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle)
 
   implicit val formatEditionDefinition: OFormat[EditionDefinition] = Json.format[EditionDefinition]
 }
@@ -157,10 +159,10 @@ case class EditionDefinitionRecord(
                          override val topic: String,
                          override val locale: Option[String],
                          override val buttonImageUri: Option[String],
+                         override val pickerButtonImageUri: Option[String],
                          override val expiry: Option[String],
                          override val buttonStyle: Option[SpecialEditionButtonStyles],
-                         override val headerStyle: Option[SpecialEditionHeaderStyles],
-                         override val pickerButtonImageUri: Option[String]
+                         override val headerStyle: Option[SpecialEditionHeaderStyles]
 ) extends EditionDefinition {}
 
 object EditionDefinitionRecord{
