@@ -143,7 +143,7 @@ object EditionDefinition {
     Option[String], Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles])]
     = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType,
     edition.notificationUTCOffset, edition.topic, edition.locale, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle)
-  
+
   implicit val formatEditionDefinition: OFormat[EditionDefinition] = Json.format[EditionDefinition]
 }
 
@@ -155,13 +155,13 @@ case class EditionDefinitionRecord(
                          override val editionType: EditionType,
                          override val notificationUTCOffset: Int,
                          override val topic: String,
-                         override val locale: Option[String], 
+                         override val locale: Option[String],
                          override val buttonImageUri: Option[String],
                          override val expiry: Option[String],
                          override val buttonStyle: Option[SpecialEditionButtonStyles],
-                         override val headerStyle: Option[SpecialEditionHeaderStyles]
+                         override val headerStyle: Option[SpecialEditionHeaderStyles],
+                         override val pickerButtonImageUri: Option[String]
 ) extends EditionDefinition {}
-
 
 object EditionDefinitionRecord{
   implicit val editionDefinitionRecordFormat: OFormat[EditionDefinitionRecord] = Json.format[EditionDefinitionRecord]
