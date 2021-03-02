@@ -29,10 +29,10 @@ export const getEditionIssue = (
   try {
     dispatch(actions.fetchStart());
     const issuePromise = getIssueSummary(id);
-    const version = await getLastProofedIssueVersion(id);
+    const lastProofedVersion = await getLastProofedIssueVersion(id);
     const issueWithVersion = {
       ...(await issuePromise),
-      version,
+      lastProofedVersion,
     };
     dispatch(actions.fetchSuccess(issueWithVersion));
   } catch (error) {
