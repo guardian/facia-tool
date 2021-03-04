@@ -74,11 +74,7 @@ object EditionBooks extends SpecialEdition {
       Special33 -> Daily(),
       Special34 -> Daily(),
       Special35 -> Daily(),
-      Special36 -> Daily(),
-      Special37 -> Daily(),
-      Special38 -> Daily(),
-      Special39 -> Daily(),
-      Special40 -> Daily()
+      Special36 -> Daily()
       
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
@@ -92,7 +88,7 @@ object EditionBooks extends SpecialEdition {
     ophanQueryPrefillParams = None
   )
 
-  def Special01 = front("Sp Black 1", None,
+  def Special01 = front("Sp Neutral 1", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -100,7 +96,31 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special02 = front("Sp Black 2", None,
+  def Special02 = front("Sp Culture 2", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Culture)
+
+  def Special03 = front("Sp News 3", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+
+  def Special04 = front("Sp Lifestyle 4", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+  
+  def Special05 = front("Sp Neutral 5", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -108,7 +128,31 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special03 = front("Sp Black 3", None,
+  def Special06 = front("Sp Culture 6", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Culture)
+
+  def Special07 = front("Sp News 7", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+
+  def Special08 = front("Sp Lifestyle 8", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+  
+  def Special09 = front("Sp Neutral 9", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -116,7 +160,31 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special04 = front("Sp Black 4", None,
+  def Special10 = front("Sp Culture 10", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Culture)
+
+  def Special11 = front("Sp News 11", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+
+  def Special12 = front("Sp Lifestyle 12", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+  
+  def Special13 = front("Sp Neutral 13", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -124,7 +192,31 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special05 = front("Sp Black 5", None,
+  def Special14 = front("Sp Culture 14", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Culture)
+
+  def Special15 = front("Sp News 15", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+
+  def Special16 = front("Sp Lifestyle 16", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+  
+  def Special17 = front("Sp Neutral 17", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -132,167 +224,7 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special06 = front("Sp Red 1", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-
-  def Special07 = front("Sp Red 2", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-
-  def Special08 = front("Sp Red 3", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-
-  def Special09 = front("Sp Red 4", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-
-  def Special10 = front("Sp Red 5", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-
-  def Special11 = front("Sp Red 6", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-
-  def Special12 = front("Sp Red 7", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-
-  def Special13 = front("Sp Red 8", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-
-  def Special14 = front("Sp Red 9", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-
-  def Special15 = front("Sp Red 10", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-
-  def Special16 = front("Sp Pink 1", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-
-  def Special17 = front("Sp Pink 2", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-
-  def Special18 = front("Sp Pink 3", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-
-  def Special19 = front("Sp Pink 4", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-
-  def Special20 = front("Sp Pink 5", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-
-  def Special21 = front("Sp Pink 6", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-
-  def Special22 = front("Sp Pink 7", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-
-  def Special23 = front("Sp Pink 8", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-
-  def Special24 = front("Sp Pink 9", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-
-  def Special25 = front("Sp Pink 10", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-
-  def Special26 = front("Sp Brown 1", None,
+  def Special18 = front("Sp Culture 18", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -300,111 +232,23 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special27 = front("Sp Brown 2", None,
+  def Special19 = front("Sp News 19", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Culture)
-  
-  def Special28 = front("Sp Brown 3", None,
+  ).swatch(News)
+
+  def Special20 = front("Sp Lifestyle 20", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Culture)
+  ).swatch(Lifestyle)
   
-  def Special29 = front("Sp Brown 4", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Culture)
-  
-  def Special30 = front("Sp Brown 5", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Culture)
-  
-  def Special31 = front("Sp Brown 6", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Culture)
-  
-  def Special32 = front("Sp Brown 7", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Culture)
-  
-  def Special33 = front("Sp Brown 8", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Culture)
-  
-  def Special34 = front("Sp Brown 9", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Culture)
-  
-  def Special35 = front("Sp Brown 10", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Culture)
-  
-  def Special36 = front("Sp Black 6", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Neutral)
-  
-  def Special37 = front("Sp Black 7", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Neutral)
-  
-  def Special38 = front("Sp Black 8", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Neutral)
-  
-  def Special39 = front("Sp Black 9", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Neutral)
-  
-  def Special40 = front("Sp Black 10", None,
+  def Special21 = front("Sp Neutral 21", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -412,5 +256,124 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
+  def Special22 = front("Sp Culture 22", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Culture)
+
+  def Special23 = front("Sp News 23", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+
+  def Special24 = front("Sp Lifestyle 24", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+  
+  def Special25 = front("Sp Neutral 25", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special26 = front("Sp Culture 26", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Culture)
+
+  def Special27 = front("Sp News 27", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+
+  def Special28 = front("Sp Lifestyle 28", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+  
+  def Special29 = front("Sp Neutral 29", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special30 = front("Sp Culture 30", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Culture)
+
+  def Special31 = front("Sp News 31", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+
+  def Special32 = front("Sp Lifestyle 32", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+  
+  def Special33 = front("Sp Neutral 33", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special34 = front("Sp Culture 34", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Culture)
+
+  def Special35 = front("Sp News 35", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+
+  def Special36 = front("Sp Lifestyle 36", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
 
 }
