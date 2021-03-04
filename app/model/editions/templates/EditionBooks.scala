@@ -9,10 +9,10 @@ import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
 object EditionBooks extends SpecialEdition {
-  override val title = "Edition books first line\nsecond line"
-  override val subTitle = "Edition books subtitle"
+  override val title = "The books\nof 2021"
+  override val subTitle = "A special edition of the Guardian on the books we think you should read this year"
   override val edition = "edition-books"
-  override val header = Header(title ="Edition Books Title", subTitle=Some("Edition Books Subtitle"))
+  override val header = Header(title ="The books", subTitle=Some("of 2021"))
   override val notificationUTCOffset = 3
   override val topic = "e-bk"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/9183f03557872759bde51b1ffa52e7952a45cb20/0_0_525_1050/250.png?width=134&quality=100&s=34d3e831560a25f5b7abb164187ab53f")
@@ -22,10 +22,10 @@ object EditionBooks extends SpecialEdition {
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
       backgroundColor = "#6B5840",
-      title = EditionTextFormatting(color = "#FFFFFF", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
-      subTitle = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
+      title = EditionTextFormatting(color = "#FFFFFF", font="GHGuardianHeadline-Medium", lineHeight = 34, size = 32),
+      subTitle = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 20, size = 17),
       expiry = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
-      image = EditionImageStyle(67,134)
+      image = EditionImageStyle(80,160)
     )
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
