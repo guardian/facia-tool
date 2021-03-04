@@ -15,7 +15,8 @@ object EditionBooks extends SpecialEdition {
   override val header = Header(title ="The books", subTitle=Some("of 2021"))
   override val notificationUTCOffset = 3
   override val topic = "e-bk"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/9183f03557872759bde51b1ffa52e7952a45cb20/0_0_525_1050/250.png?width=134&quality=100&s=34d3e831560a25f5b7abb164187ab53f")
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/e57e787606c4018a1f6d2e1cd3537246acde815e/0_0_250_500/250.png?width=80&quality=85&s=ccb203cdd28a0921c98e5c226b7892fb
+")
   override val expiry: Option[String] = Some(
     new DateTime(2021, 5,10,23,59,DateTimeZone.UTC).toString()
   )
