@@ -104,13 +104,13 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special03 = front("Sp News 3", None,
+  def Special03 = front("Sp Opinion 3", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Opinion)
 
   def Special04 = front("Sp Lifestyle 4", None,
     collection("Special"),
@@ -136,13 +136,13 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special07 = front("Sp News 7", None,
+  def Special07 = front("Sp Opinion 7", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Opinion)
 
   def Special08 = front("Sp Lifestyle 8", None,
     collection("Special"),
@@ -168,13 +168,13 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special11 = front("Sp News 11", None,
+  def Special11 = front("Sp Opinion 11", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Opinion)
 
   def Special12 = front("Sp Lifestyle 12", None,
     collection("Special"),
@@ -200,13 +200,13 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special15 = front("Sp News 15", None,
+  def Special15 = front("Sp Opinion 15", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Opinion)
 
   def Special16 = front("Sp Lifestyle 16", None,
     collection("Special"),
@@ -232,13 +232,13 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special19 = front("Sp News 19", None,
+  def Special19 = front("Sp Opinion 19", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Opinion)
 
   def Special20 = front("Sp Lifestyle 20", None,
     collection("Special"),
@@ -264,13 +264,13 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special23 = front("Sp News 23", None,
+  def Special23 = front("Sp Opinion 23", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Opinion)
 
   def Special24 = front("Sp Lifestyle 24", None,
     collection("Special"),
@@ -296,13 +296,13 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special27 = front("Sp News 27", None,
+  def Special27 = front("Sp Opinion 27", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Opinion)
 
   def Special28 = front("Sp Lifestyle 28", None,
     collection("Special"),
@@ -328,13 +328,13 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special31 = front("Sp News 31", None,
+  def Special31 = front("Sp Opinion 31", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Opinion)
 
   def Special32 = front("Sp Lifestyle 32", None,
     collection("Special"),
@@ -360,13 +360,13 @@ object EditionBooks extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special35 = front("Sp News 35", None,
+  def Special35 = front("Sp Opinion 35", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Opinion)
 
   def Special36 = front("Sp Lifestyle 36", None,
     collection("Special"),
