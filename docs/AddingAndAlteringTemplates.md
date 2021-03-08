@@ -32,3 +32,13 @@ work and you'll get a 404 error when creating an issue
 Add the new Edition to _both_ the list of templates and the Edition enum object
 in `app/model/editions/EditionsTemplates.scala`.
 
+## Special edition buttonImageUri
+When adding a special edition, you need to include an image to include for the icon of the edition in the editions menu.
+This (technically) can be any image URL, but you should use a properly compressed image of the right size. But what is the
+right size? The current default (code is [here](https://github.com/guardian/editions/blob/master/projects/Mallard/src/components/EditionsMenu/SpecialEditionButton/styles.ts#L60))
+is a width of 87 and height of 134, but you can control this using the buttonStyle.image property on your edition.
+
+How to get such an image? Go to the grid, find and crop the image, then on your crop in the bottom right click 'show crops'
+then right click on the biggest crop and 'copy image location'. Next, connect to the digital VPN and use the
+[image url signer tool](http://image-url-signer.s3-website-eu-west-1.amazonaws.com/) to resize the image to a sensible size
+(you can probably use the default compression but make sure you specify a sensible width, no need to specify height).
