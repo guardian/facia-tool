@@ -18,6 +18,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
 
+import scala.util.{Failure, Success, Try}
+
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
 class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean) extends Logging  {
@@ -84,50 +86,33 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val publishedEditionsIssuesBucket = getMandatoryString("aws.publishedEditionsIssuesBucket")
     lazy val previewEditionsIssuesBucket = getMandatoryString("aws.previewEditionsIssuesBucket")
 
-    def cmsFrontsAccountCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for CMS Fronts"))
-    val credentials: Option[AWSCredentialsProvider] = {
+    def cmsFrontsAccountCredentials: AWSCredentialsProvider = accountCredentials("cmsFronts")
+
+    def frontendAccountCredentials: AWSCredentialsProvider = accountCredentials("frontend", Some(faciatool.stsRoleToAssume))
+
+    def mapiAccountCredentials: AWSCredentialsProvider = accountCredentials("mobile", None)
+
+    def accountCredentials(accountName: String, stsRoleToAssume: Option[String] = None): AWSCredentialsProvider = {
+      val secondaryProvider: AWSCredentialsProvider = stsRoleToAssume match {
+        case Some(stsRole) => new STSAssumeRoleSessionCredentialsProvider.Builder(stsRole, accountName).build()
+        case None => new DefaultAWSCredentialsProviderChain()
+      }
       val provider = new AWSCredentialsProviderChain(
-        new ProfileCredentialsProvider("cmsFronts"),
-        new DefaultAWSCredentialsProviderChain()
+        new ProfileCredentialsProvider(accountName),
+        secondaryProvider
       )
 
-      // this is a bit of a convoluted way to check whether we actually have credentials.
-      // I guess in an ideal world there would be some sort of isConfigued() method...
-      try {
-        val creds = provider.getCredentials
-        Some(provider)
-      } catch {
-        case ex: AmazonClientException =>
-          logger.error("amazon client exception")
+      // test if the provider returns a credential on start up
+      Try(provider.getCredentials) match {
+        case Success(_) => provider
+        case Failure(ex: AmazonClientException) =>
+          logger.error(s"amazon client for $accountName failed to initialise", ex)
 
           // We really, really want to ensure that PROD is configured before saying a box is OK
           if (isProd) throw ex
           // this means that on dev machines you only need to configure keys if you are actually going to use them
-          None
-      }
-    }
-
-    def frontendAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account Frontend"))
-    var crossAccount: Option[AWSCredentialsProvider] = {
-      val provider = new AWSCredentialsProviderChain(
-        new ProfileCredentialsProvider("frontend"),
-        new STSAssumeRoleSessionCredentialsProvider.Builder(faciatool.stsRoleToAssume, "frontend").build()
-      )
-
-      // this is a bit of a convoluted way to check whether we actually have credentials.
-      // I guess in an ideal world there would be some sort of isConfigued() method...
-      try {
-        val creds = provider.getCredentials
-        Some(provider)
-      } catch {
-        case ex: AmazonClientException =>
-          logger.error("amazon client cross account exception")
-
-          // We really, really want to ensure that PROD is configured before saying a box is OK
-          if (isProd) throw ex
-          // this means that on dev machines you only need to configure keys if you are actually going to use them
-          None
-      }
+          throw new BadConfigurationException(s"AWS credentials are not configured for cross account $accountName")
+        }
     }
     val rdsClient = AmazonRDSClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
     val ssmClient = AWSSimpleSystemsManagementClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
@@ -230,7 +215,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   object faciatool {
     lazy val breakingNewsFront = "breaking-news"
-    lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
+    lazy val frontPressToolQueue = getMandatoryString("frontpress.sqs.tool_queue_url")
+    lazy val mapiFrontEventQueue = getMandatoryString("mapi.sqs.front.event_queue_url")
     lazy val publishEventsQueue = getMandatoryString("publish_events.queue_url")
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)

@@ -1,9 +1,10 @@
 package services
 
+import com.amazonaws.auth.AWSCredentialsProvider
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.SendMessageResult
-import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob}
+import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob, PressType}
 import conf.ApplicationConfiguration
 import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import logging.Logging
@@ -27,29 +28,29 @@ object PressCommand {
   def forOneId(id: String): PressCommand = PressCommand(Set(id))
 }
 
-class FaciaPressQueue(val config: ApplicationConfiguration) {
-  val maybeQueue = config.faciatool.frontPressToolQueue map { queueUrl =>
-    val credentials = config.aws.frontendAccountCredentials
+case class PressQueue(queueUrl: String, credentials: AWSCredentialsProvider) {
+  private val queue = {
     JsonMessageQueue[PressJob](
-      AmazonSQSAsyncClientBuilder.standard()
+      client = AmazonSQSAsyncClientBuilder.standard()
         .withCredentials(credentials)
         .withRegion(Regions.EU_WEST_1).build(),
-      queueUrl
+      queueUrl = queueUrl
     )
   }
-
   def enqueue(job: PressJob): Future[SendMessageResult] = {
-    maybeQueue match {
-      case Some(queue) =>
-        queue.send(job)
-
-      case None =>
-        Future.failed(new RuntimeException("`facia.press.queue_url` property not in config, could not enqueue job."))
-    }
+    queue.send(job)
   }
 }
 
-class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAgent) extends Logging {
+class FaciaPress(val frontendQueue: PressQueue, val mapiQueue: PressQueue, val configAgent: ConfigAgent) extends Logging {
+  private def enqueueAll(job: PressJob): Future[List[SendMessageResult]] = {
+    for {
+      frontendResult <- frontendQueue.enqueue(job)
+      mapiResult <- mapiQueue.enqueue(job)
+
+    } yield List(frontendResult, mapiResult)
+  }
+
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
@@ -57,38 +58,24 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
         path <- configAgent.getConfigsUsingCollectionId(id)
       } yield path
 
-      lazy val livePress =
-        if (pressCommand.live) {
-          val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = pressCommand.forceConfigUpdate)))
-          fut.onComplete {
-            case Failure(error) =>
-              EnqueuePressFailure.increment()
-              logger.error("Error manually pressing live collection through update from tool", error)
-            case Success(_) =>
-              EnqueuePressSuccess.increment()
-          }
-          fut
-        } else {
-          Future.successful(Set.empty)
-        }
+      val pressType = if (pressCommand.live) {
+        Live
+      } else {
+        Draft
+      }
 
-      lazy val draftPress =
-        if (pressCommand.draft) {
-          val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
-          fut.onComplete {
-            case Failure(error) =>
-              EnqueuePressFailure.increment()
-              logger.error("Error manually pressing draft collection through update from tool", error)
-            case Success(_) =>
-              EnqueuePressSuccess.increment()
-          }
-          fut
-        } else Future.successful(Set.empty)
-
-      for {
-        live <- livePress
-        draft <-  draftPress
-      } yield (live ++ draft).toList
+      val pressJobs = paths.toList.map { path =>
+        PressJob(FrontPath(path), pressType, forceConfigUpdate = pressCommand.forceConfigUpdate)
+      }
+      val result = Future.traverse(pressJobs)(enqueueAll).map(_.flatten)
+      result.onComplete {
+        case Failure(error) =>
+          EnqueuePressFailure.increment()
+          logger.error("Error manually pressing live collection through update from tool", error)
+        case Success(_) =>
+          EnqueuePressSuccess.increment()
+      }
+      result
     }
   }
 }
