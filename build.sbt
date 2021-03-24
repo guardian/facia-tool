@@ -8,7 +8,7 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-scalaVersion in ThisBuild := "2.12.9"
+scalaVersion in ThisBuild := "2.13.5"
 
 import com.gu.riffraff.artifact.BuildInfo
 import sbt.Resolver
@@ -101,7 +101,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "mobile-notifications-api-models" % "1.0.7",
     "com.gu" %% "pan-domain-auth-play_2-6" % "0.9.2",
 
-    "com.gu" %% "scanamo" % "1.0.0-M7",
+    "org.scanamo" %% "scanamo" % "1.0.0-M15",
 
     "com.github.blemale" %% "scaffeine" % "3.1.0" % "compile",
 
@@ -110,7 +110,7 @@ libraryDependencies ++= Seq(
     "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
-    "com.typesafe.play" %% "play-json-joda" % "2.6.9",
+    "com.typesafe.play" %% "play-json-joda" % "2.9.2",
     "ai.x" %% "play-json-extensions" % "0.40.2",
 
     "org.postgresql"           %  "postgresql"                   % "42.2.5",
