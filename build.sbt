@@ -63,9 +63,9 @@ routesImport += "model.editions._"
 val awsVersion = "1.11.293"
 val capiModelsVersion = "15.6"
 val capiClientVersion = "17.1"
-val json4sVersion = "3.6.0-M2"
-val enumeratumPlayVersion = "1.5.13"
-val circeVersion = "0.11.1"
+val json4sVersion = "3.6.6"
+val enumeratumPlayVersion = "1.6.0"
+val circeVersion = "0.12.0"
 
 resolvers ++= Seq(
     Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
@@ -93,7 +93,7 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
     "com.gu" %% "content-api-models-scala" % capiModelsVersion,
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
-    "com.gu" %% "content-api-client-aws" % "0.5",
+    "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "2.0",
     "com.gu" %% "fapi-client-play26" % "3.2.0",
@@ -105,7 +105,7 @@ libraryDependencies ++= Seq(
 
     "com.github.blemale" %% "scaffeine" % "3.1.0" % "compile",
 
-    "com.gu" %% "thrift-serializer" % "4.0.0",
+    "com.gu" %% "thrift-serializer" % "4.0.2",
     "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
     "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
@@ -114,8 +114,8 @@ libraryDependencies ++= Seq(
     "ai.x" %% "play-json-extensions" % "0.40.2",
 
     "org.postgresql"           %  "postgresql"                   % "42.2.5",
-    "org.scalikejdbc"          %% "scalikejdbc"                  % "3.1.0",
-    "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.1.0",
+    "org.scalikejdbc"          %% "scalikejdbc"                  % "3.3.5",
+    "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.3.5",
     "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.1",
 
     "io.circe"                 %% "circe-core"                   % circeVersion,
@@ -125,7 +125,7 @@ libraryDependencies ++= Seq(
     "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
     "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
 
-    "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+    "org.scalatest" %% "scalatest" % "3.0.8" % "test",
     "com.whisk" %% "docker-testkit-scalatest" % "0.9.9" % "test",
     "com.whisk" %% "docker-testkit-impl-docker-java" % "0.9.9" % "test"
 )
