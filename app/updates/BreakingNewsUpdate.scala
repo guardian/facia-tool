@@ -9,7 +9,6 @@ import com.gu.mobile.notifications.client.models.Topic._
 import com.gu.mobile.notifications.client.models.TopicTypes.Breaking
 import com.gu.mobile.notifications.client.models._
 import conf.ApplicationConfiguration
-import org.apache.commons.lang3.StringEscapeUtils
 import logging.Logging
 import play.api.libs.json._
 import play.api.libs.ws.{WSClient, WSResponse}

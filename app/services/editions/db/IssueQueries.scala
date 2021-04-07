@@ -6,7 +6,7 @@ import java.time.{LocalDate, OffsetDateTime, ZoneId}
 import com.gu.pandomainauth.model.User
 import model.editions._
 import org.postgresql.util.PSQLException
-import play.api.{logger, Logging}
+import play.api.{Logger, Logging}
 import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.publishing.events.PublishEvent
@@ -50,7 +50,7 @@ trait IssueQueries extends Logging {
           is_hidden,
           metadata,
           is_special
-        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metadata}, ${front.isSpecial})
+        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metaCollectionsQueries.scaladata()}, ${front.isSpecial})
         RETURNING id;
       """.map(_.string("id")).single().apply().get
 
@@ -295,7 +295,7 @@ trait IssueQueries extends Logging {
       , ${IssueVersionStatus.Started.toString}
     )
     RETURNING version_id;
-    """.map(_.string("version_id")).single.apply.get
+    """.map(_.string("version_id")).single().apply().get
   }
 
   def deleteIssue(issueId: String) = DB localTx { implicit session =>

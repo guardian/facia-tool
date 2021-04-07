@@ -22,12 +22,12 @@ object SystemMetrics {
 
     def gcCount: Double = {
       val totalGcCount = bean.getCollectionCount
-      totalGcCount - lastGcCount.getAndSet(totalGcCount)
+      (totalGcCount - lastGcCount.getAndSet(totalGcCount)).toDouble
     }
 
     def gcTime: Double = {
       val totalGcTime = bean.getCollectionTime
-      totalGcTime - lastGcTime.getAndSet(totalGcTime)
+      (totalGcTime - lastGcTime.getAndSet(totalGcTime)).toDouble
     }
   }
 

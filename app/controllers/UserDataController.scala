@@ -26,6 +26,7 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: AmazonDynamoDB, val
 
     clipboardArticles match {
       case Some(articles) => {
+
         Scanamo.exec(dynamoClient)(userDataTable.update('email -> userEmail, set(Symbol(fieldName) -> articles)))
         Ok
       }

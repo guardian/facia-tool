@@ -1,5 +1,5 @@
 import com.amazonaws.auth.AWSCredentialsProvider
-import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClient}
+import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClient, AmazonDynamoDBClientBuilder}
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
@@ -22,7 +22,7 @@ import services.editions.db.EditionsDB
 import services.editions.publishing.events.PublishEventsListener
 import services.editions.publishing.{EditionsBucket, EditionsPublishing}
 import slices.{Containers, FixedContainers}
-import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClientBuilder
+import software.amazon.awssdk.services.dynamodb.{DynamoDbAsyncClientBuilder, DynamoDbClient}
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
@@ -42,7 +42,9 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val capi = new GuardianCapi(config)
   val ophan = new GuardianOphan(config)
   val awsCredentials: AWSCredentialsProvider = config.aws.cmsFrontsAccountCredentials
-  val dynamo: AmazonDynamoDBClient = DynamoDbAsyncClientBuilder()
+  val dynamo: DynamoDbClient = AmazonDynamoDBClientBuilder
+    .standard
+    .build()
   //Dynamo.client(awsCredentials, config.aws.region)
   val s3Client = S3.client(awsCredentials, config.aws.region)
   val acl = new Acl(permissions)

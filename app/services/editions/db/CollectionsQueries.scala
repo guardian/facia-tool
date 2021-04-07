@@ -81,7 +81,7 @@ trait CollectionsQueries {
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}
       WHERE id = ${collection.id}
-    """.execute().apply
+    """.execute().apply()
 
     val rows = fetchCollectionsSql(where = sqls"collections.id = ${collection.id}").apply()
 
@@ -102,7 +102,7 @@ trait CollectionsQueries {
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}
       WHERE id = ${collection.id}
-    """.execute().apply
+    """.execute().apply()
 
     // At the moment we don't do partial updates so simply delete all of them and reinsert.
     sql"""

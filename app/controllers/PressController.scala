@@ -25,16 +25,18 @@ class PressController (client: AmazonDynamoDB, val deps: BaseFaciaControllerComp
   def getLastModified (path: String) = AccessAPIAuthAction { request =>
     import org.scanamo.syntax._
 
-    val record: Option[FrontPressRecord] = Scanamo(client).exec(
-        pressedTable.get(Symbol("stageName") -> "live" and Symbol("frontId") -> path)).flatMap(_.right.toOption)
+    val record: Option[FrontPressRecord] = Scanamo(client)
+      .exec(pressedTable.query("stageName" === "live" and "frontId" === path))
+      .flatMap(_.right.toOption)
     record.map(r => Ok(r.pressedTime)).getOrElse(NotFound)
   }
 
   def getLastModifiedStatus (stage: String, path: String) = AccessAPIAuthAction { request =>
     import org.scanamo.syntax._
 
-    val record: Option[FrontPressRecord] = Scanamo(client).exec(
-      pressedTable.get(Symbol("stageName") -> stage and Symbol("frontId") -> path)).flatMap(_.right.toOption)
+    val record: Option[FrontPressRecord] = Scanamo(client)
+      .exec(pressedTable.query("stageName" === stage and "frontId" === path))
+      .flatMap(_.right.toOption)
     record.map(r => Ok(Json.toJson(r))).getOrElse(NotFound)
   }
 }
