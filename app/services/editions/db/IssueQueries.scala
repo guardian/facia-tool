@@ -6,16 +6,15 @@ import java.time.{LocalDate, OffsetDateTime, ZoneId}
 import com.gu.pandomainauth.model.User
 import model.editions._
 import org.postgresql.util.PSQLException
-import play.api.Logger
+import play.api.{logger, Logging}
 import play.api.libs.json.Json
 import scalikejdbc._
-import services.editions.CollectionsHelpers._
 import services.editions.publishing.events.PublishEvent
 import services.editions.{DbEditionsArticle, DbEditionsCollection, DbEditionsFront, GenerateEditionTemplateResult}
 
 import scala.util.{Failure, Success, Try}
 
-trait IssueQueries {
+trait IssueQueries extends Logging {
 
   def insertIssue(
                    edition: Edition,
@@ -355,7 +354,7 @@ trait IssueQueries {
 
   def insertIssueVersionEvent(event: PublishEvent) = DB localTx { implicit session =>
     Try {
-      Logger.info(s"saving issue version event message:${event.message}")(event.toLogMarker)
+      logger.info(s"saving issue version event message:${event.message}")(event.toLogMarker)
       sql"""
         INSERT INTO issue_versions_events (
           version_id
@@ -372,19 +371,19 @@ trait IssueQueries {
       """.execute().apply()
     } match {
       case Success(_) => {
-        Logger.info("successfully inserted issue version event message:${event.message}")(event.toLogMarker)
+        logger.info("successfully inserted issue version event message:${event.message}")(event.toLogMarker)
         true
       }
       case Failure(exception: PSQLException) if exception.getSQLState == ForeignKeyViolationSQLState => {
-        Logger.warn("Foreign key constraint violation encountered when inserting issue version event")(event.toLogMarker)
+        logger.warn("Foreign key constraint violation encountered when inserting issue version event")(event.toLogMarker)
         true
       }
       case Failure(exception: PSQLException)  => {
-        Logger.warn(s"Postgres exception (${exception.getMessage}) encountered when inserting issue version event")(event.toLogMarker)
+        logger.warn(s"Postgres exception (${exception.getMessage}) encountered when inserting issue version event")(event.toLogMarker)
         true
       }
       case Failure(exception)  => {
-        Logger.warn("Non-database exception (${exception.getMessage}) encountered when inserting issue version event")(event.toLogMarker)
+        logger.warn("Non-database exception (${exception.getMessage}) encountered when inserting issue version event")(event.toLogMarker)
         true
       }
     }
