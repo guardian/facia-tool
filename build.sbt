@@ -65,7 +65,7 @@ val capiModelsVersion = "15.6"
 val capiClientVersion = "17.1"
 val json4sVersion = "3.6.6"
 val enumeratumPlayVersion = "1.6.0"
-val circeVersion = "0.12.0"
+val circeVersion = "0.13.0"
 
 resolvers ++= Seq(
     Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
@@ -81,7 +81,7 @@ libraryDependencies ++= Seq(
     filters,
     evolutions,
     jdbc,
-    "com.typesafe.akka" %% "akka-agent" % "2.5.16",
+    "com.typesafe.akka" %% "akka-agent" % "2.5.23",
     "com.amazonaws" % "aws-java-sdk-rds" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-core" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion,
@@ -95,11 +95,11 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
-    "com.gu" %% "editorial-permissions-client" % "2.0",
-    "com.gu" %% "fapi-client-play26" % "3.2.0",
+    "com.gu" %% "editorial-permissions-client" % "2.9",
+    "com.gu" %% "fapi-client-play27" % "3.2.0",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
-    "com.gu" %% "mobile-notifications-api-models" % "1.0.7",
-    "com.gu" %% "pan-domain-auth-play_2-6" % "0.9.2",
+    "com.gu" %% "mobile-notifications-api-models" % "1.0.12",
+    "com.gu" %% "pan-domain-auth-play_2-7" % "1.0.4",
 
     "org.scanamo" %% "scanamo" % "1.0.0-M15",
 
@@ -107,7 +107,7 @@ libraryDependencies ++= Seq(
 
     "com.gu" %% "thrift-serializer" % "4.0.2",
     "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
-    "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
+    "org.julienrf" %% "play-json-derived-codecs" % "5.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
     "com.typesafe.play" %% "play-json-joda" % "2.9.2",
@@ -116,7 +116,7 @@ libraryDependencies ++= Seq(
     "org.postgresql"           %  "postgresql"                   % "42.2.5",
     "org.scalikejdbc"          %% "scalikejdbc"                  % "3.3.5",
     "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.3.5",
-    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.1",
+    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.8.0-scalikejdbc-3.5",
 
     "io.circe"                 %% "circe-core"                   % circeVersion,
     "io.circe"                 %% "circe-generic"                % circeVersion,

@@ -139,7 +139,7 @@ export async function getLastProofedIssueVersion(
   issueId: string
 ): Promise<string> {
   return await pandaFetch(
-    `/editions-api/issues/${issueId}/last-proofed-version`,
+      `/editions-api/issues/${issueId}/last-proofed-version`,
     {
       method: 'get',
     }
