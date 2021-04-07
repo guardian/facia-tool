@@ -2,10 +2,10 @@ package controllers
 
 import com.amazonaws.client.builder.AwsClientBuilder
 import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClientBuilder}
-import com.gu.scanamo.{Scanamo, Table}
+import org.scanamo.{Scanamo, Table}
 import play.api.libs.json.Json
 import services.Dynamo
-import com.gu.scanamo.syntax._
+import org.scanamo.syntax._
 
 object FrontPressRecord {
   implicit val jsonFormat = Json.format[FrontPressRecord]
@@ -24,7 +24,7 @@ class PressController (client: AmazonDynamoDB, val deps: BaseFaciaControllerComp
   private lazy val pressedTable = Table[FrontPressRecord](config.faciatool.frontPressUpdateTable)
 
   def getLastModified (path: String) = AccessAPIAuthAction { request =>
-    import com.gu.scanamo.syntax._
+    import org.scanamo.syntax._
 
     val record: Option[FrontPressRecord] = Scanamo.exec(client)(
         pressedTable.get('stageName -> "live" and 'frontId -> path)).flatMap(_.right.toOption)
@@ -32,7 +32,7 @@ class PressController (client: AmazonDynamoDB, val deps: BaseFaciaControllerComp
   }
 
   def getLastModifiedStatus (stage: String, path: String) = AccessAPIAuthAction { request =>
-    import com.gu.scanamo.syntax._
+    import org.scanamo.syntax._
 
     val record: Option[FrontPressRecord] = Scanamo.exec(client)(
       pressedTable.get('stageName -> stage and 'frontId -> path)).flatMap(_.right.toOption)

@@ -1,8 +1,8 @@
 package controllers
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
-import com.gu.scanamo._
-import com.gu.scanamo.syntax._
+import org.scanamo._
+import org.scanamo.syntax._
 import model.{FeatureSwitch, UserData, UserDataForDefaults}
 
 import scala.concurrent.ExecutionContext

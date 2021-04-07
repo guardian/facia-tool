@@ -12,10 +12,11 @@ import play.api.ApplicationLoader.Context
 import play.api.libs.ws.WSClient
 import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.mvc._
-import play.api.{BuiltInComponentsFromContext, Logger}
+import play.api.{BuiltInComponentsFromContext, Logger, Logging}
 import play.filters.cors.CORSComponents
 import switchboard.SwitchManager
 import util.Acl
+
 import scala.concurrent.ExecutionContext
 
 abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents {
@@ -38,7 +39,7 @@ abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInCo
   ))
 }
 
-abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends BaseController with AuthActions {
+abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends BaseController with AuthActions with Logging {
 
   final override def wsClient: WSClient = deps.wsClient
 
@@ -77,7 +78,7 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
   override lazy val panDomainSettings: PanDomainAuthSettingsRefresher = deps.panDomainSettings
 
   override def showUnauthedMessage(message: String)(implicit request: RequestHeader): Result = {
-    Logger.info(message)
+    logger.info(message)
     Ok(views.html.auth.login(Some(message)))
   }
 

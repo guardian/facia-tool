@@ -60,7 +60,7 @@ class EditionsController(db: EditionsDB,
         "user" -> req.user.email
       ).asJava)
 
-      Logger.info(s"Deleting issue ${id}")(markers)
+      logger.info(s"Deleting issue ${id}")(markers)
       db.deleteIssue(id)
       Accepted
     }
