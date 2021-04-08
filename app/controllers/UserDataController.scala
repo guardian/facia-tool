@@ -4,20 +4,21 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.gu.facia.client.models.Trail
 import org.scanamo._
 import org.scanamo.syntax._
-
 import model.{FeatureSwitch, FeatureSwitches, UserData}
-import services.{FrontsApi}
-import model.{UserData}
-
+import services.FrontsApi
+import model.UserData
+import org.scanamo.query.UniqueKey
 import play.api.Logger
 import play.api.libs.json.JsValue
 import services.FrontsApi
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 
 import scala.concurrent.{ExecutionContext, Future}
+import org.scanamo.generic.semiauto._
 
-class UserDataController(frontsApi: FrontsApi, dynamoClient: AmazonDynamoDB, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
-  import model.UserData._
+class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
+  implicit val UserData: DynamoFormat[UserData] = deriveDynamoFormat[UserData]
   private lazy val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
   private def updateClipboardContentByFieldName(articles: Option[JsValue], userEmail: String, fieldName: String) = {
@@ -27,7 +28,7 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: AmazonDynamoDB, val
     clipboardArticles match {
       case Some(articles) => {
 
-        Scanamo.exec(dynamoClient)(userDataTable.update('email -> userEmail, set(Symbol(fieldName) -> articles)))
+        Scanamo(dynamoClient).exec(userDataTable.update(UniqueKey("email", userEmail), set(Symbol(fieldName) -> articles)))
         Ok
       }
       case None => BadRequest
@@ -53,7 +54,7 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: AmazonDynamoDB, val
       _.asOpt[List[String]])
     maybeFrontIds match {
       case Some(frontIds) =>
-        Scanamo.exec(dynamoClient)(userDataTable.update('email -> request.user.email, set('frontIds -> frontIds)))
+        Scanamo(dynamoClient).exec(userDataTable.update(Symbol("email") -> request.user.email, set(Symbol("frontIds") -> frontIds)))
         Ok
       case _ => BadRequest
     }
@@ -64,7 +65,7 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: AmazonDynamoDB, val
       _.asOpt[Map[String, List[String]]])
     maybeFrontIdsByPriority match {
       case Some(frontIdsByPriority) =>
-        Scanamo.exec(dynamoClient)(userDataTable.update('email -> request.user.email, set('frontIdsByPriority -> frontIdsByPriority)))
+        Scanamo(dynamoClient).exec(userDataTable.update(Symbol("email") -> request.user.email, set(Symbol("frontIdsByPriority") -> frontIdsByPriority)))
         Ok
       case _ => BadRequest
     }
@@ -75,7 +76,7 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: AmazonDynamoDB, val
       _.asOpt[Map[String, List[String]]])
     maybeFavouriteFrontIdsByPriority match {
       case Some(favouriteFrontIdsByPriority) =>
-        Scanamo.exec(dynamoClient)(userDataTable.update('email -> request.user.email, set('favouriteFrontIdsByPriority -> favouriteFrontIdsByPriority)))
+        Scanamo(dynamoClient).exec(userDataTable.update(Symbol("email") -> request.user.email, set(Symbol("favouriteFrontIdsByPriority") -> favouriteFrontIdsByPriority)))
         Ok
       case _ => BadRequest
     }
@@ -84,16 +85,16 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: AmazonDynamoDB, val
   def putFeatureSwitch() = APIAuthAction { request =>
     val maybeFeatureSwitch: Option[FeatureSwitch] = request.body.asJson.flatMap(
       _.asOpt[FeatureSwitch])
-    val maybeUserData: Option[UserData] = Scanamo.exec(dynamoClient)(
-      userDataTable.get('email -> request.user.email)).flatMap(_.right.toOption)
+    val maybeUserData: Option[UserData] = Scanamo(dynamoClient).exec(
+      userDataTable.get(Symbol("email") -> request.user.email)).flatMap(_.right.toOption)
 
     (maybeUserData, maybeFeatureSwitch) match {
       case (Some(userData), Some(featureSwitch)) =>
         if (FeatureSwitches.all.map(_.key).contains(featureSwitch.key)) {
           val updatedSwitches = FeatureSwitches.updateFeatureSwitchesForUser(userData.featureSwitches, featureSwitch)
-          Scanamo.exec(dynamoClient)(userDataTable.update(
-            'email -> request.user.email,
-            set('featureSwitches -> updatedSwitches)))
+          Scanamo(dynamoClient).exec(userDataTable.update(
+            Symbol("email") -> request.user.email,
+            set(Symbol("featureSwitches") -> updatedSwitches)))
           Ok
         } else {
           BadRequest(s"Feature with key ${featureSwitch.key} not found")

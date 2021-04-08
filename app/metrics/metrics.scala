@@ -156,7 +156,7 @@ class CloudWatchApplicationMetrics(appName: String, stage: String, cloudWatch: C
       )
     )}
 
-  private def report() {
+  private def report(): Unit = {
     val allMetrics: List[FrontendMetric] = this.systemMetrics ::: this.applicationMetrics
     if (!isDev) {
       val stageDimension = new Dimension().withName("Stage").withValue(stage)

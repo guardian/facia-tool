@@ -135,7 +135,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   }
 
   object postgres {
-    val (hostname, port) = findRDSEndpointAndPort
+    val (hostname, port) = findRDSEndpointAndPort()
     val url = s"jdbc:postgresql://$hostname:$port/faciatool"
     val user =  "faciatool"
     val password = getPassword
@@ -287,7 +287,7 @@ object Properties extends AutomaticResourceManagement {
 }
 
 trait AutomaticResourceManagement {
-  def withCloseable[T <: { def close() }](closeable: T) = new {
+  def withCloseable[T <: { def close():Unit }](closeable: T) = new {
     def apply[S](body: T => S) = try {
       body(closeable)
     } finally {

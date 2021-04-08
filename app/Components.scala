@@ -1,9 +1,10 @@
 import com.amazonaws.auth.AWSCredentialsProvider
-import com.amazonaws.services.dynamodbv2.{AmazonDynamoDB, AmazonDynamoDBClient, AmazonDynamoDBClientBuilder}
+import software.amazon.awssdk.regions.{Region => WeirdRegion}
+import com.amazonaws.regions.Region
+import software.amazon.awssdk.auth.credentials.{AwsCredentialsProvider, DefaultCredentialsProvider}
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
-import filters._
 import frontsapi.model.UpdateActions
 import metrics.CloudWatch
 import play.api.ApplicationLoader.Context
@@ -22,7 +23,7 @@ import services.editions.db.EditionsDB
 import services.editions.publishing.events.PublishEventsListener
 import services.editions.publishing.{EditionsBucket, EditionsPublishing}
 import slices.{Containers, FixedContainers}
-import software.amazon.awssdk.services.dynamodb.{DynamoDbAsyncClientBuilder, DynamoDbClient}
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
@@ -42,9 +43,12 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val capi = new GuardianCapi(config)
   val ophan = new GuardianOphan(config)
   val awsCredentials: AWSCredentialsProvider = config.aws.cmsFrontsAccountCredentials
-  val dynamo: DynamoDbClient = AmazonDynamoDBClientBuilder
-    .standard
+  val AWSCredentials: AwsCredentialsProvider = DefaultCredentialsProvider.builder().???
+  val dynamo: DynamoDbClient = DynamoDbClient.builder()
+    .credentialsProvider(AWSCredentials)
+    .region(WeirdRegion.of(config.aws.region))
     .build()
+//    Dynamo.client(awsCredentials, config.aws.region)
   //Dynamo.client(awsCredentials, config.aws.region)
   val s3Client = S3.client(awsCredentials, config.aws.region)
   val acl = new Acl(permissions)

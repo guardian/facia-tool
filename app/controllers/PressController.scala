@@ -19,7 +19,7 @@ case class FrontPressRecord (
  actionTime: String
 )
 
-class PressController (client: AmazonDynamoDB, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
+class PressController (client: DynamoDbClient, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
   private lazy val pressedTable = Table[FrontPressRecord](config.faciatool.frontPressUpdateTable)
 
   def getLastModified (path: String) = AccessAPIAuthAction { request =>
@@ -27,7 +27,7 @@ class PressController (client: AmazonDynamoDB, val deps: BaseFaciaControllerComp
 
     val record: Option[FrontPressRecord] = Scanamo(client)
       .exec(pressedTable.query("stageName" === "live" and "frontId" === path))
-      .flatMap(_.right.toOption)
+      .flatMap(_.toOption).headOption
     record.map(r => Ok(r.pressedTime)).getOrElse(NotFound)
   }
 
@@ -36,7 +36,7 @@ class PressController (client: AmazonDynamoDB, val deps: BaseFaciaControllerComp
 
     val record: Option[FrontPressRecord] = Scanamo(client)
       .exec(pressedTable.query("stageName" === stage and "frontId" === path))
-      .flatMap(_.right.toOption)
+      .flatMap(_.toOption).headOption
     record.map(r => Ok(Json.toJson(r))).getOrElse(NotFound)
   }
 }

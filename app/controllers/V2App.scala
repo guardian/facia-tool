@@ -10,16 +10,18 @@ import com.gu.facia.client.models.{Metadata, TargetedTerritory}
 import model.editions.EditionsTemplates
 import permissions.Permissions
 import play.api.libs.json.Json
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import switchboard.SwitchManager
 import util.{Acl, AclJson}
 
-class V2App(isDev: Boolean, val acl: Acl, dynamoClient: AmazonDynamoDB, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   import model.UserData._
 
   def index(priority: String = "", frontId: String = "") = getCollectionPermissionFilterByPriority(priority, acl)(ec) { implicit req =>
 
     val editingEdition = priority.startsWith("issues")
+    import org.scanamo.generic.auto._
     val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
     val jsFileName = "dist/app.bundle.js"
@@ -38,8 +40,8 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: AmazonDynamoDB, val deps
 
     val userEmail: String = req.user.email
 
-    val maybeUserData: Option[UserData] = Scanamo.exec(dynamoClient)(
-      userDataTable.get('email -> userEmail)).flatMap(_.right.toOption)
+    val maybeUserData: Option[UserData] = Scanamo(dynamoClient).exec(
+      userDataTable.get(Symbol("email") -> userEmail)).flatMap(_.right.toOption)
 
     val clipboardArticles = if (editingEdition)
       maybeUserData.map(_.editionsClipboardArticles.getOrElse(List()))

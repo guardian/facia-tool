@@ -20,7 +20,7 @@ class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndp
   })
 
   trait LoggingAsyncHandler extends AsyncHandler[PutMetricDataRequest, PutMetricDataResult] {
-    def onError(exception: Exception)
+    def onError(exception: Exception): Unit =
     {
       logger.warn(s"CloudWatch PutMetricDataRequest error: ${exception.getMessage}}")
     }

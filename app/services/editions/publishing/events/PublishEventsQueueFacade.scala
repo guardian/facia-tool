@@ -13,7 +13,7 @@ import scala.util.{Failure, Success, Try}
 private[events] trait PublishEventsQueueFacade {
   def getPublishEventFromQueue: Option[PublishEventMessage]
 
-  def delete(receiptHandle: String)
+  def delete(receiptHandle: String): Unit
 }
 
 private[events] object PublishEventsSQSFacade {
