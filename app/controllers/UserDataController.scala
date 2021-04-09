@@ -1,24 +1,38 @@
 package controllers
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
-import com.gu.facia.client.models.Trail
+import com.gu.facia.client.models.{Trail, TrailMetaData}
 import org.scanamo._
 import org.scanamo.syntax._
 import model.{FeatureSwitch, FeatureSwitches, UserData}
 import services.FrontsApi
 import model.UserData
+import org.scanamo.generic.auto.genericDerivedFormat
 import org.scanamo.query.UniqueKey
 import play.api.Logger
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsArray, JsValue, Json}
 import services.FrontsApi
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 
 import scala.concurrent.{ExecutionContext, Future}
 import org.scanamo.generic.semiauto._
 
-class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+import scala.util.{Failure, Success, Try}
 
+object UserDataController {
+}
+
+class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
   implicit val UserData: DynamoFormat[UserData] = deriveDynamoFormat[UserData]
+  implicit val Trail: DynamoFormat[Trail] = deriveDynamoFormat[Trail]
+  implicit val JsValue: DynamoFormat[JsValue] = DynamoFormat.xmap[JsValue, String](
+    x => Try(Json.parse(x)) match {
+      case Success(y) => Right(y)
+      case Failure(t) => Left(TypeCoercionError(t))
+    },
+    x => (Json.stringify(x))
+  )
+
   private lazy val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
   private def updateClipboardContentByFieldName(articles: Option[JsValue], userEmail: String, fieldName: String) = {
