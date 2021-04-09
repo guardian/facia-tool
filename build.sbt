@@ -125,6 +125,8 @@ libraryDependencies ++= Seq(
     "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
     "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
 
+    "org.apache.commons" % "commons-text" % "1.9",
+
     "org.scalatest" %% "scalatest" % "3.0.8" % "test",
     "com.whisk" %% "docker-testkit-scalatest" % "0.9.9" % "test",
     "com.whisk" %% "docker-testkit-impl-docker-java" % "0.9.9" % "test"
