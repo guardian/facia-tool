@@ -50,7 +50,7 @@ trait IssueQueries extends Logging {
           is_hidden,
           metadata,
           is_special
-        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metaCollectionsQueries.scaladata()}, ${front.isSpecial})
+        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metadata}, ${front.isSpecial})
         RETURNING id;
       """.map(_.string("id")).single().apply().get
 
