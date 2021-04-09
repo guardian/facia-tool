@@ -53,8 +53,7 @@ publishArtifact in (Compile, packageDoc) := false
 
 TwirlKeys.templateImports ++= Seq(
     "conf._",
-    "play.api.Play",
-    "play.api.Play.current"
+    "play.api.Play"
 )
 
 // include the enum path bindables
