@@ -1,8 +1,3 @@
-// cleanupRules => [{match: RegExp, replace: String, inputRule: Bool}]
-// match: RegExp, pattern to match for replacement
-// replace: The string to replace all matches
-// inputRule: Output to both the cleanup command and inputRules or just the cleanup command
-
 export const addFlag = (flag: string) => ({ source, flags }: { source: string, flags: string }) => {
   const newFlags = flags.includes(flag) ? flags : `${flags}${flag}`;
   return new RegExp(source, newFlags);
@@ -15,12 +10,10 @@ export const dollarify = (re: RegExp) => {
     return new RegExp(newPattern, re.flags);
 };
 
-
 // All of these rules should aim to be replacing the last character(s) in the
 // regex this means that InputRules works nicely
 // should also only return one match - any bracketed exporessions other than
 // the match should be a non-capturing group
-
 export interface Rule {
     match: RegExp;
     replace: string;
@@ -36,7 +29,7 @@ type TriggerName = keyof Rule["trigger"];
 
 const ruleset: Rule[] = [
     {
-        match: /([\u00A0 ]-[\u00A0 ]|[\u00A0 ]--[\u00A0 ])/,
+        match: /( - | -- )/,
         replace: " – ",
         trigger: {
             onKeyPress: true,
