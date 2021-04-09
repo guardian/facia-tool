@@ -17,6 +17,7 @@ import com.amazonaws.services.rds.AmazonRDSClientBuilder
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
+import software.amazon.awssdk.auth.credentials.{AwsCredentialsProviderChain => NewAwsCredentialsProviderChain, ProfileCredentialsProvider => NewProfileCredentialsProvider, DefaultCredentialsProvider}
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
@@ -106,6 +107,14 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           None
       }
     }
+    // NB this does not fail with exception (as the 'old' credentials above).  It is assumed that the code
+    // above would have already failed.
+    // If and when this code is rewritten to remove the 'old' approach, then that behaviour may be duplicated here.
+    def newStyleCmsFrontsAccountCredentials = NewAwsCredentialsProviderChain
+      .builder()
+      .addCredentialsProvider(new NewProfileCredentialsProvider("cmsFronts"))
+      .addCredentialsProvider(new DefaultCredentialsProvider())
+      .build()
 
     def frontendAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account Frontend"))
     var crossAccount: Option[AWSCredentialsProvider] = {
