@@ -4,9 +4,9 @@ import java.time.format.DateTimeFormatter
 import java.time.{LocalDate, OffsetDateTime, ZoneId}
 
 import com.gu.pandomainauth.model.User
+import logging.Logging
 import model.editions._
 import org.postgresql.util.PSQLException
-import play.api.{Logger, Logging}
 import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.publishing.events.PublishEvent

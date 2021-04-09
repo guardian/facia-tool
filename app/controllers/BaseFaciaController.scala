@@ -12,9 +12,9 @@ import play.api.ApplicationLoader.Context
 import play.api.libs.ws.WSClient
 import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.mvc._
-import play.api.{BuiltInComponentsFromContext, Logger, Logging}
+import play.api.BuiltInComponentsFromContext
 import play.filters.cors.CORSComponents
-import switchboard.SwitchManager
+import logging.Logging
 import util.Acl
 
 import scala.concurrent.ExecutionContext
