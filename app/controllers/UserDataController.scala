@@ -28,7 +28,7 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val
     clipboardArticles match {
       case Some(articles) => {
 
-        Scanamo(dynamoClient).exec(userDataTable.update(UniqueKey("email", userEmail), set(Symbol(fieldName) -> articles)))
+        Scanamo(dynamoClient).exec(userDataTable.update(UniqueKey("email" === userEmail), set(fieldName, articles)))
         Ok
       }
       case None => BadRequest
@@ -54,7 +54,7 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val
       _.asOpt[List[String]])
     maybeFrontIds match {
       case Some(frontIds) =>
-        Scanamo(dynamoClient).exec(userDataTable.update(Symbol("email") -> request.user.email, set(Symbol("frontIds") -> frontIds)))
+        Scanamo(dynamoClient).exec(userDataTable.update("email" === request.user.email, set("frontIds", frontIds)))
         Ok
       case _ => BadRequest
     }
@@ -65,7 +65,7 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val
       _.asOpt[Map[String, List[String]]])
     maybeFrontIdsByPriority match {
       case Some(frontIdsByPriority) =>
-        Scanamo(dynamoClient).exec(userDataTable.update(Symbol("email") -> request.user.email, set(Symbol("frontIdsByPriority") -> frontIdsByPriority)))
+        Scanamo(dynamoClient).exec(userDataTable.update("email" === request.user.email, set("frontIdsByPriority", frontIdsByPriority)))
         Ok
       case _ => BadRequest
     }
@@ -76,7 +76,7 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val
       _.asOpt[Map[String, List[String]]])
     maybeFavouriteFrontIdsByPriority match {
       case Some(favouriteFrontIdsByPriority) =>
-        Scanamo(dynamoClient).exec(userDataTable.update(Symbol("email") -> request.user.email, set(Symbol("favouriteFrontIdsByPriority") -> favouriteFrontIdsByPriority)))
+        Scanamo(dynamoClient).exec(userDataTable.update("email" === request.user.email, set("favouriteFrontIdsByPriority", favouriteFrontIdsByPriority)))
         Ok
       case _ => BadRequest
     }
@@ -86,15 +86,15 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val
     val maybeFeatureSwitch: Option[FeatureSwitch] = request.body.asJson.flatMap(
       _.asOpt[FeatureSwitch])
     val maybeUserData: Option[UserData] = Scanamo(dynamoClient).exec(
-      userDataTable.get(Symbol("email") -> request.user.email)).flatMap(_.right.toOption)
+      userDataTable.get("email" === request.user.email)).flatMap(_.toOption)
 
     (maybeUserData, maybeFeatureSwitch) match {
       case (Some(userData), Some(featureSwitch)) =>
         if (FeatureSwitches.all.map(_.key).contains(featureSwitch.key)) {
           val updatedSwitches = FeatureSwitches.updateFeatureSwitchesForUser(userData.featureSwitches, featureSwitch)
           Scanamo(dynamoClient).exec(userDataTable.update(
-            Symbol("email") -> request.user.email,
-            set(Symbol("featureSwitches") -> updatedSwitches)))
+            "email" === request.user.email,
+            set("featureSwitches", updatedSwitches)))
           Ok
         } else {
           BadRequest(s"Feature with key ${featureSwitch.key} not found")
