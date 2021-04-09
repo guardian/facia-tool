@@ -7,11 +7,18 @@ import { EditorView } from 'prosemirror-view';
 import { EditorState, Transaction } from 'prosemirror-state';
 import OrderedMap from 'orderedmap';
 import { history } from 'prosemirror-history';
+import { inputRules, InputRule } from "prosemirror-inputrules";
+import { onKeyPressRules } from './cleanerRules';
+
+export const guInputRules = onKeyPressRules.map(({ match, replace }) =>
+    new InputRule(match, replace)
+);
 
 const createBasePlugins = (s: Schema) => {
   const plugins = [
     keymap(buildKeymap(s, {}, {})),
     history({ depth: 100, newGroupDelay: 500 }),
+    inputRules({ rules: guInputRules })
   ];
   return plugins;
 };
