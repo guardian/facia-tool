@@ -32,7 +32,7 @@ object SystemMetrics {
   }
 
 
-  lazy val garbageCollectors: Seq[GcRateMetric] = ManagementFactory.getGarbageCollectorMXBeans.asScala.map(new GcRateMetric(_))
+  lazy val garbageCollectors: Seq[GcRateMetric] = ManagementFactory.getGarbageCollectorMXBeans.asScala.map(new GcRateMetric(_)).toSeq
 
 
   // divide by 1048576 to convert bytes to MB
