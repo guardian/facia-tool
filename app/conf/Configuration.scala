@@ -112,8 +112,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     // If and when this code is rewritten to remove the 'old' approach, then that behaviour may be duplicated here.
     def newStyleCmsFrontsAccountCredentials = NewAwsCredentialsProviderChain
       .builder()
-      .addCredentialsProvider(new NewProfileCredentialsProvider("cmsFronts"))
-      .addCredentialsProvider(new DefaultCredentialsProvider())
+      .addCredentialsProvider(NewProfileCredentialsProvider.create("cmsFronts"))
+      .addCredentialsProvider(DefaultCredentialsProvider.create())
       .build()
 
     def frontendAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account Frontend"))
