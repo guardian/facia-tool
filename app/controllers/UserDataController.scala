@@ -19,9 +19,6 @@ import org.scanamo.generic.semiauto._
 
 import scala.util.{Failure, Success, Try}
 
-object UserDataController {
-}
-
 class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
   implicit val UserData: DynamoFormat[UserData] = deriveDynamoFormat[UserData]
   implicit val Trail: DynamoFormat[Trail] = deriveDynamoFormat[Trail]
