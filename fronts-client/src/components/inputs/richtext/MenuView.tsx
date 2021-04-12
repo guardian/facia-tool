@@ -2,7 +2,7 @@ import { EditorView } from 'prosemirror-view';
 import { toggleMark } from 'prosemirror-commands';
 import React from 'react';
 import { styled, theme } from 'constants/theme';
-import { basicSchema } from './setup';
+import { basicSchema } from './createEditorView';
 import { icons } from './icons';
 import {
   linkItemCommand,

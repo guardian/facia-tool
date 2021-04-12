@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { styled, theme } from 'constants/theme';
 import { EditorView } from 'prosemirror-view';
 import 'prosemirror-menu/style/menu.css';
-import { createEditorView } from './richtext/setup';
+import { createEditorView } from './richtext/createEditorView';
 import { MenuView } from './richtext/MenuView';
 import { WrappedFieldInputProps } from 'redux-form';
 import InputLabel from 'components/inputs/InputLabel';
