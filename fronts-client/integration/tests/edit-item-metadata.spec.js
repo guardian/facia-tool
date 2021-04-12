@@ -31,6 +31,24 @@ test('Metadata edits are persisted in collections- headline', async t => {
     .eql('A better headline');
 });
 
+test('Metadata edits have cleaner rules applied – headline', async t => {
+  const firstCollectionStory = card(0, 0);
+  const headlineInput = editFormHeadlineInput();
+  await t
+    .click(firstCollectionStory)
+    .click(headlineInput)
+    .selectText(headlineInput)
+    .typeText(
+      headlineInput,
+      `Headline "with" a 'quote', and -- dashes ... and ellipsis, and a - hyphen`
+    )
+    .click(editFormSaveButton())
+    .expect(cardHeadline(0, 0).textContent)
+    .eql(
+      'Headline “with” a ‘quote’, and – dashes … and ellipsis, and a – hyphen'
+    );
+});
+
 test('Metadata edits are persisted in clipboard - headline', async t => {
   const firstClipboardStory = clipboardItem(0);
   const headlineInput = editFormHeadlineInput();
