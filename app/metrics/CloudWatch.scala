@@ -8,7 +8,7 @@ import conf.ApplicationConfiguration
 import logging.Logging
 import services.AwsEndpoints
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class CloudWatch(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) extends Logging {
 
