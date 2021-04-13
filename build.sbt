@@ -123,6 +123,7 @@ libraryDependencies ++= Seq(
 
     "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
     "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
+    "com.typesafe.play" %% "play" % "2.8.2",
 
     "org.apache.commons" % "commons-text" % "1.9",
     "com.beust" % "jcommander" % "1.75",
