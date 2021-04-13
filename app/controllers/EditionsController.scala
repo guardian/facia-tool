@@ -11,7 +11,6 @@ import model.editions._
 import model.editions.templates.EditionType
 import model.forms._
 import net.logstash.logback.marker.Markers
-import play.api.Logger
 import play.api.libs.json.{JsObject, Json, JsValue}
 import play.api.mvc.Result
 import services.Capi
@@ -220,6 +219,7 @@ class EditionsController(db: EditionsDB,
         edition,
         metadataForLogging = MetadataForLogging(issueDate, collectionId = Some(id), collectionName = None)
       )
+
 
       val responses = capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes)
 

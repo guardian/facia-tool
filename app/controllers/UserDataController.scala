@@ -5,12 +5,12 @@ import com.gu.facia.client.models.{Trail, TrailMetaData}
 import org.scanamo._
 import org.scanamo.syntax._
 import model.{FeatureSwitch, FeatureSwitches, UserData}
-import services.FrontsApi
-import model.UserData
 import org.scanamo.generic.auto.genericDerivedFormat
 import org.scanamo.query.UniqueKey
-import play.api.Logger
 import play.api.libs.json.{JsArray, JsValue, Json}
+import model.{UserData}
+
+import play.api.libs.json.JsValue
 import services.FrontsApi
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 

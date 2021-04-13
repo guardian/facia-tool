@@ -3,9 +3,9 @@ package services.editions.publishing
 import java.time.OffsetDateTime
 
 import com.gu.pandomainauth.model.User
+import logging.Logging
 import model.editions.{EditionsIssue, PublishAction}
 import net.logstash.logback.marker.Markers
-import play.api.{Logger, Logging}
 import services.editions.db.EditionsDB
 
 import scala.collection.JavaConverters._

@@ -7,6 +7,7 @@ import com.gu.pandomainauth.model.AuthenticatedUser
 import com.gu.pandomainauth.{PanDomain, PanDomainAuthSettingsRefresher}
 import com.gu.permissions.{PermissionsConfig, PermissionsProvider}
 import conf.ApplicationConfiguration
+import logging.Logging
 import permissions._
 import play.api.ApplicationLoader.Context
 import play.api.libs.ws.WSClient
@@ -19,7 +20,7 @@ import util.Acl
 
 import scala.concurrent.ExecutionContext
 
-abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents {
+abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents with Logging {
 
   def config: ApplicationConfiguration
 

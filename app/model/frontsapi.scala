@@ -9,7 +9,6 @@ import services.{ConfigAgent, FrontsApi}
 import tools.{FaciaApi, FaciaApiIO}
 import updates.{ArchiveUpdate, LogUpdate, StructuredLogger, UpdateList}
 import logging.Logging
-import play.api.Logger
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -54,13 +53,12 @@ object CollectionJsonFunctions {
   }
 }
 
-trait UpdateActionsTrait {
+trait UpdateActionsTrait extends Logging {
   def faciaApiIO: FaciaApiIO
   def frontsApi: FrontsApi
   def config: ApplicationConfiguration
   def configAgent: ConfigAgent
   def structuredLogger: StructuredLogger
-  implicit val logger: Logger
   implicit val updateListWrite = Json.writes[UpdateList]
 
   def insertIntoLive(update: UpdateList, identity: User, collectionJson: CollectionJson): CollectionJson =
