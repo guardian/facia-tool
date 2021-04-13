@@ -256,7 +256,7 @@ class FaciaToolController(
 
   def getMetadata() = AccessAPIAuthAction { request =>
     val matchingTags = request.queryString.get("query") match {
-      case Some(Seq(search)) if search.nonEmpty => Metadata.tags.filterKeys(_ contains search)
+      case Some(Seq(search)) if search.nonEmpty => Metadata.tags.view.filterKeys(_ contains search)
       case _ => Metadata.tags
     }
     Ok(Json.toJson(matchingTags.map{

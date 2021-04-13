@@ -41,7 +41,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
     val userEmail: String = req.user.email
 
     val maybeUserData: Option[UserData] = Scanamo(dynamoClient).exec(
-      userDataTable.get("email" === userEmail)).flatMap(_.right.toOption)
+      userDataTable.get("email" === userEmail)).flatMap(_.toOption)
 
     val clipboardArticles = if (editingEdition)
       maybeUserData.map(_.editionsClipboardArticles.getOrElse(List()))

@@ -8,7 +8,7 @@ import model.editions.{EditionsIssue, PublishAction}
 import net.logstash.logback.marker.Markers
 import services.editions.db.EditionsDB
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: EditionsBucket, db: EditionsDB) extends Logging {
 

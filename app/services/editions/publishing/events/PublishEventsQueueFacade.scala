@@ -7,7 +7,7 @@ import conf.ApplicationConfiguration
 import logging.Logging
 import services.editions.publishing.events.PublishEventSNSMessageParser.parseToEvent
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
 
 private[events] trait PublishEventsQueueFacade {

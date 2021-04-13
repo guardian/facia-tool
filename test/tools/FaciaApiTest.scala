@@ -23,10 +23,10 @@ class FaciaApiTest extends FreeSpec with Matchers {
       }
     }
     "existing article should have the old date" in {
-      newCollectionJson.live.collect { case Trail("existingId", 0, Some(""),_) => true } should have('length (1))
+      newCollectionJson.live.collect { case Trail("existingId", 0, Some(""),_) => true } should have(Symbol("length") (1))
     }
     "new article should have an updated timestamp" in {
-      newCollectionJson.live.collect { case Trail("newId", t, Some(""), _) if t != 0 => true } should have('length (1))
+      newCollectionJson.live.collect { case Trail("newId", t, Some(""), _) if t != 0 => true } should have(Symbol("length") (1))
     }
 
   }
@@ -47,7 +47,7 @@ class FaciaApiTest extends FreeSpec with Matchers {
       }
     }
     "existing article should have the old date" in {
-      newCollectionJson.live.collect { case Trail("existingId", 0, Some(""), _) => true } should have('length (1))
+      newCollectionJson.live.collect { case Trail("existingId", 0, Some(""), _) => true } should have(Symbol("length") (1))
     }
 
   }

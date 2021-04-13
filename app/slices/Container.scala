@@ -13,7 +13,7 @@ class Containers(val fixedContainers: FixedContainers) extends Logging {
     ("nav/list", NavList),
     ("nav/media-list", NavMediaList),
     ("news/most-popular", MostPopular)
-  ) ++ fixedContainers.all.mapValues(Fixed.apply)
+  ) ++ fixedContainers.all.view.mapValues(Fixed.apply)
 
   /** So that we don't blow up at runtime, which would SUCK */
   val default = Fixed(fixedContainers.fixedSmallSlowIV)

@@ -5,7 +5,7 @@ import java.time.{LocalDate, LocalDateTime}
 import model.editions.{Edition, EditionIssueVersionId, IssueVersionStatus}
 import net.logstash.logback.marker.{LogstashMarker, Markers}
 import play.api.libs.json.{Format, Json}
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 package object events {
   case class PublishEvent(

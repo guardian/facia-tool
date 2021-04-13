@@ -6,7 +6,7 @@ import net.logstash.logback.marker.Markers
 import play.api.libs.json._
 import services.ConfigAgent
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
 class StructuredLogger(val config: ApplicationConfiguration, val configAgent: ConfigAgent) extends Logging {
   def putLog(log: LogUpdate, level: String = "info", error: Option[Exception] = None): Unit = {
