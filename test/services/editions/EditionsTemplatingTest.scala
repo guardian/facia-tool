@@ -25,7 +25,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
     "Sets the prefill from CAPI with collections cap" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
-      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).toOption.get
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
@@ -64,7 +64,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
     "Sets the prefill metadata from CAPI for Culture Front, with no ordering" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
-      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).toOption.get
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
@@ -98,7 +98,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
     "Sets the prefill metadata from CAPI for Culture Front, with reverse ordering" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, reverseOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
-      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).toOption.get
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
@@ -119,7 +119,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
     "Sets the prefill metadata from CAPI for Culture Front, with forward ordering" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, forwardOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
-      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).toOption.get
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
@@ -140,7 +140,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
     "Sets the prefill metadata from CAPI for Culture Front" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
-      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).toOption.get
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
@@ -171,7 +171,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
     "Sets the prefill metadata from CAPI for UK News Front" in {
       val templating = new EditionsTemplating(TestEdition.templates, fakeCapi, nullOphan)
       val issueDate = LocalDate.of(2019, 9, 30)
-      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).right.value
+      val genTemplateResult = templating.generateEditionTemplate(Edition.TrainingEdition, issueDate).toOption.get
       val issue = genTemplateResult.issueSkeleton
 
       genTemplateResult.contentPrefillTimeWindow shouldEqual CapiQueryTimeWindow(
@@ -192,7 +192,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
         .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
       editionSkeleton.isRight shouldBe (true)
-      editionSkeleton.right.get.contentPrefillTimeWindow shouldBe (
+      editionSkeleton.toOption.get.contentPrefillTimeWindow shouldBe (
         CapiQueryTimeWindow(
           LocalDate.of(2019, 12, 31).atStartOfDay.toInstant(ZoneOffset.UTC),
           LocalDate.of(2020, 1, 3).atStartOfDay.toInstant(ZoneOffset.UTC))
@@ -203,28 +203,28 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
         .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
       editionSkeleton.isRight shouldBe (true)
-      editionSkeleton.right.get.issueSkeleton.issueDate shouldBe (LocalDate.of(2020, 1, 1))
+      editionSkeleton.toOption.get.issueSkeleton.issueDate shouldBe (LocalDate.of(2020, 1, 1))
     }
 
     "Issue zone is correct" in {
       val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
         .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
       editionSkeleton.isRight shouldBe (true)
-      editionSkeleton.right.get.issueSkeleton.zoneId shouldBe (ZoneId.of("Europe/London"))
+      editionSkeleton.toOption.get.issueSkeleton.zoneId shouldBe (ZoneId.of("Europe/London"))
     }
 
     "Issue fronts list is correct" in {
       val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
         .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
       editionSkeleton.isRight shouldBe (true)
-      editionSkeleton.right.get.issueSkeleton.fronts.size shouldBe (4) // No Saturday section on a Wednesday.
+      editionSkeleton.toOption.get.issueSkeleton.fronts.size shouldBe (4) // No Saturday section on a Wednesday.
     }
 
     "Issue first front content with no time window override is correct" in {
       val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
         .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
       editionSkeleton.isRight shouldBe (true)
-      val front = editionSkeleton.right.get.issueSkeleton.fronts(0)
+      val front = editionSkeleton.toOption.get.issueSkeleton.fronts(0)
       front.collections(0).capiQueryTimeWindow shouldBe (
         // This collection has a different time window than that of the main edition template
         CapiQueryTimeWindow(
@@ -238,7 +238,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       val editionSkeleton = new EditionsTemplating(TestEdition.templates, fakeCapi, fakeOphan)
         .generateEditionTemplate(Edition.TrainingEdition, LocalDate.of(2020, 1, 1))
       editionSkeleton.isRight shouldBe (true)
-      val front = editionSkeleton.right.get.issueSkeleton.fronts(0)
+      val front = editionSkeleton.toOption.get.issueSkeleton.fronts(0)
       front.collections(1).capiQueryTimeWindow shouldBe (
         // This collection has a different time window than that of the main edition template
         CapiQueryTimeWindow(

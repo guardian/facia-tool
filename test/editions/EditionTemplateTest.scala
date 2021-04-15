@@ -30,19 +30,19 @@ class EditionTemplateTest extends FreeSpec with Matchers {
   "createEdition" - {
     "should return Monday's content for Monday" in {
       val editionTemplate = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.parse("2019-03-11"))
-      val editionTemplateFronts = editionTemplate.right.toOption.get.issueSkeleton.fronts
+      val editionTemplateFronts = editionTemplate.toOption.get.issueSkeleton.fronts
       editionTemplateFronts.length should be(4)
       editionTemplateFronts.map(_.name) should contain theSameElementsAs Seq("Top Stories", "UK News", "Culture", "Special 2")
     }
 
     "should return Friday's content for Friday" in {
-      val editionTemplateFronts = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.parse("2019-03-15")).right.toOption.get.issueSkeleton.fronts
+      val editionTemplateFronts = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.parse("2019-03-15")).toOption.get.issueSkeleton.fronts
       editionTemplateFronts.length should be(3)
       editionTemplateFronts.map(_.name) should contain theSameElementsAs Seq("Top Stories", "UK News", "Special 2")
     }
 
     "should return Saturday's content for Saturday" in {
-      val editionTemplateFronts = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.parse("2019-03-16")).right.toOption.get.issueSkeleton.fronts
+      val editionTemplateFronts = templating.generateEditionTemplate(Edition.TrainingEdition, LocalDate.parse("2019-03-16")).toOption.get.issueSkeleton.fronts
       editionTemplateFronts.length should be(3)
       editionTemplateFronts.map(_.name) should contain theSameElementsAs Seq("Top Stories", "UK News", "Special 2")
     }

@@ -10,13 +10,14 @@ import org.apache.commons.io.IOUtils
 import play.api.{Configuration => PlayConfiguration}
 import logging.Logging
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.language.reflectiveCalls
 import com.amazonaws.services.rds.model.DescribeDBInstancesRequest
 import com.amazonaws.services.rds.AmazonRDSClientBuilder
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
+import software.amazon.awssdk.auth.credentials.{AwsCredentialsProviderChain => NewAwsCredentialsProviderChain, ProfileCredentialsProvider => NewProfileCredentialsProvider, DefaultCredentialsProvider}
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
@@ -106,6 +107,14 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           None
       }
     }
+    // NB this does not fail with exception (as the 'old' credentials above).  It is assumed that the code
+    // above would have already failed.
+    // If and when this code is rewritten to remove the 'old' approach, then that behaviour may be duplicated here.
+    def newStyleCmsFrontsAccountCredentials = NewAwsCredentialsProviderChain
+      .builder()
+      .addCredentialsProvider(NewProfileCredentialsProvider.create("cmsFronts"))
+      .addCredentialsProvider(DefaultCredentialsProvider.create())
+      .build()
 
     def frontendAccountCredentials: AWSCredentialsProvider = crossAccount.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for cross account Frontend"))
     var crossAccount: Option[AWSCredentialsProvider] = {
@@ -135,7 +144,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
   }
 
   object postgres {
-    val (hostname, port) = findRDSEndpointAndPort
+    val (hostname, port) = findRDSEndpointAndPort()
     val url = s"jdbc:postgresql://$hostname:$port/faciatool"
     val user =  "faciatool"
     val password = getPassword
@@ -287,7 +296,7 @@ object Properties extends AutomaticResourceManagement {
 }
 
 trait AutomaticResourceManagement {
-  def withCloseable[T <: { def close() }](closeable: T) = new {
+  def withCloseable[T <: { def close():Unit }](closeable: T) = new {
     def apply[S](body: T => S) = try {
       body(closeable)
     } finally {

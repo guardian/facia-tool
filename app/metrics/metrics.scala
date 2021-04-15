@@ -8,7 +8,7 @@ import akka.actor.Scheduler
 import com.amazonaws.services.cloudwatch.model.{Dimension, StandardUnit}
 import logging.Logging
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 
@@ -22,17 +22,17 @@ object SystemMetrics {
 
     def gcCount: Double = {
       val totalGcCount = bean.getCollectionCount
-      totalGcCount - lastGcCount.getAndSet(totalGcCount)
+      (totalGcCount - lastGcCount.getAndSet(totalGcCount)).toDouble
     }
 
     def gcTime: Double = {
       val totalGcTime = bean.getCollectionTime
-      totalGcTime - lastGcTime.getAndSet(totalGcTime)
+      (totalGcTime - lastGcTime.getAndSet(totalGcTime)).toDouble
     }
   }
 
 
-  lazy val garbageCollectors: Seq[GcRateMetric] = ManagementFactory.getGarbageCollectorMXBeans.asScala.map(new GcRateMetric(_))
+  lazy val garbageCollectors: Seq[GcRateMetric] = ManagementFactory.getGarbageCollectorMXBeans.asScala.map(new GcRateMetric(_)).toSeq
 
 
   // divide by 1048576 to convert bytes to MB
@@ -156,7 +156,7 @@ class CloudWatchApplicationMetrics(appName: String, stage: String, cloudWatch: C
       )
     )}
 
-  private def report() {
+  private def report(): Unit = {
     val allMetrics: List[FrontendMetric] = this.systemMetrics ::: this.applicationMetrics
     if (!isDev) {
       val stageDimension = new Dimension().withName("Stage").withValue(stage)

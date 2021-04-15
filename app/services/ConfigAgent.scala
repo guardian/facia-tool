@@ -46,7 +46,7 @@ class ConfigAgent(val config: ApplicationConfiguration, val frontsApi: FrontsApi
 
   def getConfigCollectionMap: Map[String, Seq[String]] = {
     val config = configAgent.get()
-    config.map(_.fronts.mapValues(_.collections)).getOrElse(Map.empty)
+    config.map(_.fronts.view.mapValues(_.collections).toMap).getOrElse(Map.empty)
   }
 
   def getConfigsUsingCollectionId(id: String): Seq[String] = {

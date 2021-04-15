@@ -1,9 +1,10 @@
 import com.amazonaws.auth.AWSCredentialsProvider
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
+import software.amazon.awssdk.regions.{Region => WeirdRegion}
+import com.amazonaws.regions.Region
+import software.amazon.awssdk.auth.credentials.{AwsCredentials, AwsCredentialsProvider, AwsCredentialsProviderChain, DefaultCredentialsProvider, ProfileCredentialsProvider}
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
-import filters._
 import frontsapi.model.UpdateActions
 import metrics.CloudWatch
 import play.api.ApplicationLoader.Context
@@ -22,6 +23,7 @@ import services.editions.db.EditionsDB
 import services.editions.publishing.events.PublishEventsListener
 import services.editions.publishing.{EditionsBucket, EditionsPublishing}
 import slices.{Containers, FixedContainers}
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
@@ -40,9 +42,19 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val awsEndpoints = new AwsEndpoints(config)
   val capi = new GuardianCapi(config)
   val ophan = new GuardianOphan(config)
-  val awsCredentials: AWSCredentialsProvider = config.aws.cmsFrontsAccountCredentials
-  val dynamo: AmazonDynamoDB = Dynamo.client(awsCredentials, config.aws.region)
-  val s3Client = S3.client(awsCredentials, config.aws.region)
+
+  val oldAwsCredentials: AWSCredentialsProvider = config.aws.cmsFrontsAccountCredentials
+  val newAwsCredentials: AwsCredentialsProvider = config.aws.newStyleCmsFrontsAccountCredentials
+
+  // Scala 2.13 requires a version of Scanamo which requires the 'new' Amazon AWS SDK.
+  // This means we have two different SDKs for AWS in the build, which is unideal
+  // but should not lead to problems.
+  // TODO Upversion the rest of the AWS SDK code!
+  val dynamo: DynamoDbClient = DynamoDbClient.builder()
+    .credentialsProvider(newAwsCredentials)
+    .region(WeirdRegion.of(config.aws.region))
+    .build()
+  val s3Client = S3.client(oldAwsCredentials, config.aws.region)
   val acl = new Acl(permissions)
 
   // Editions services

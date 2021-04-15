@@ -124,7 +124,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit ex: ExecutionConte
 
 object GuardianCapi extends Logging {
 
-  import scala.collection.JavaConverters._
+  import scala.jdk.CollectionConverters._
 
   def prepareGetUnsortedPrefillArticleItemsQuery(getPrefillParams: PrefillParamsAdapter): CapiQueryGenerator = {
     val fields = List(

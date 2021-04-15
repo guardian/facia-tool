@@ -7,18 +7,20 @@ import com.gu.pandomainauth.model.AuthenticatedUser
 import com.gu.pandomainauth.{PanDomain, PanDomainAuthSettingsRefresher}
 import com.gu.permissions.{PermissionsConfig, PermissionsProvider}
 import conf.ApplicationConfiguration
+import logging.Logging
 import permissions._
 import play.api.ApplicationLoader.Context
 import play.api.libs.ws.WSClient
 import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.mvc._
-import play.api.{BuiltInComponentsFromContext, Logger}
+import play.api.BuiltInComponentsFromContext
 import play.filters.cors.CORSComponents
-import switchboard.SwitchManager
+import logging.Logging
 import util.Acl
+
 import scala.concurrent.ExecutionContext
 
-abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents {
+abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents with Logging {
 
   def config: ApplicationConfiguration
 
@@ -38,7 +40,7 @@ abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInCo
   ))
 }
 
-abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends BaseController with AuthActions {
+abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends BaseController with AuthActions with Logging {
 
   final override def wsClient: WSClient = deps.wsClient
 
@@ -77,7 +79,7 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
   override lazy val panDomainSettings: PanDomainAuthSettingsRefresher = deps.panDomainSettings
 
   override def showUnauthedMessage(message: String)(implicit request: RequestHeader): Result = {
-    Logger.info(message)
+    logger.info(message)
     Ok(views.html.auth.login(Some(message)))
   }
 

@@ -7,13 +7,13 @@ import conf.ApplicationConfiguration
 import logging.Logging
 import services.editions.publishing.events.PublishEventSNSMessageParser.parseToEvent
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
 
 private[events] trait PublishEventsQueueFacade {
   def getPublishEventFromQueue: Option[PublishEventMessage]
 
-  def delete(receiptHandle: String)
+  def delete(receiptHandle: String): Unit
 }
 
 private[events] object PublishEventsSQSFacade {

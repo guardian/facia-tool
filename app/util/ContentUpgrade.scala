@@ -56,8 +56,8 @@ object ContentUpgrade extends Logging {
 
   private def getUpgradedItem(json: JValue): JValue = {
     val jsonString = JsonMethods.compact(JsonMethods.render(json))
-    val maybeParsedJson: Option[Json] = parser.parse(jsonString).right.toOption
-    val maybeCapiContent: Option[Content] = maybeParsedJson.flatMap(json => json.as[Content].right.toOption)
+    val maybeParsedJson: Option[Json] = parser.parse(jsonString).toOption
+    val maybeCapiContent: Option[Content] = maybeParsedJson.flatMap(json => json.as[Content].toOption)
     (json, maybeCapiContent) match {
       case (jsObject: JObject, Some(content)) => {
 

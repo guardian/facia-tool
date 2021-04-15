@@ -43,9 +43,9 @@ GET         /front/lastmodifiedstatus/:stage/*path   controllers.PressController
 GET         /collection/*collectionId                controllers.FaciaToolController.getCollection(collectionId)
 # The below endpoint is a GET but it was decided to send params in the body as they were more than just ids
 # a pragmatic decision if not a semantic one
-POST        /collections                             controllers.FaciaToolV2Controller.getCollections
-POST        /edits                                   controllers.FaciaToolController.collectionEdits
-POST        /v2Edits                                 controllers.FaciaToolV2Controller.collectionEdits
+POST        /collections                             controllers.FaciaToolV2Controller.getCollections()
+POST        /edits                                   controllers.FaciaToolController.collectionEdits()
+POST        /v2Edits                                 controllers.FaciaToolV2Controller.collectionEdits()
 POST        /collection/v2Discard/*collectionId      controllers.FaciaToolV2Controller.discardCollection(collectionId)
 GET         /config                                  controllers.FaciaToolController.getConfig
 GET         /defaults                                controllers.DefaultsController.configuration()
@@ -115,7 +115,7 @@ GET         /editions-api/issues/:id/preflight-checks            controllers.Edi
 PUT         /editions-api/fronts/:frontId/metadata               controllers.EditionsController.putFrontMetadata(frontId)
 PUT         /editions-api/fronts/:frontId/is-hidden/:state       controllers.EditionsController.putFrontHiddenState(frontId, state: Boolean)
 
-POST        /editions-api/collections                            controllers.EditionsController.getCollections
+POST        /editions-api/collections                            controllers.EditionsController.getCollections()
 GET         /editions-api/collections/:collectionId              controllers.EditionsController.getCollection(collectionId)
 PUT         /editions-api/collections/:collectionId              controllers.EditionsController.updateCollection(collectionId)
 PATCH       /editions-api/collections/:collectionId/name         controllers.EditionsController.renameCollection(collectionId)

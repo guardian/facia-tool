@@ -36,9 +36,9 @@ class GuardianCapiTest extends FlatSpec with Matchers with BeforeAndAfterEach {
         collectionId = None, collectionName = None)
     )
 
-    val actual = GuardianCapi.prepareGetUnsortedPrefillArticleItemsQuery(getPrefillParams).getUrl("")
+    val actual = GuardianCapi.prepareGetUnsortedPrefillArticleItemsQuery(getPrefillParams).getUrl("").split("&|\\?").sorted
 
-    val expected = "/content/print-sent" +
+    val expected = ("/content/print-sent" +
       "?order-by=newest" +
       "&page-size=" + GuardianCapiDefaults.MaxPageSize +
       "&tag=theguardian%2Fmainsection%2Ftopstories" +
@@ -46,7 +46,7 @@ class GuardianCapiTest extends FlatSpec with Matchers with BeforeAndAfterEach {
       "&use-date=published" +
       "&show-fields=newspaperEditionDate%2CnewspaperPageNumber%2CinternalPageCode" +
       "&show-tags=all" +
-      "&from-date=2019-10-04T00%3A00%3A00Z"
+      "&from-date=2019-10-04T00%3A00%3A00Z").split("&|\\?").sorted
 
     actual shouldEqual expected
   }
@@ -68,9 +68,9 @@ class GuardianCapiTest extends FlatSpec with Matchers with BeforeAndAfterEach {
         collectionId = None, collectionName = None)
     )
 
-    val actual = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefillParams, currentPageCodes).getUrl("")
+    val actual = GuardianCapi.prepareGetPrefillArticlesQuery(getPrefillParams, currentPageCodes).getUrl("").split("&|\\?").sorted
 
-    actual shouldEqual "/content/print-sent" + "" +
+    val expected = ("/content/print-sent" +
       "?order-by=newest" +
       "&show-elements=images" +
       "&page-size=" + GuardianCapiDefaults.MaxPageSize +
@@ -81,7 +81,9 @@ class GuardianCapiTest extends FlatSpec with Matchers with BeforeAndAfterEach {
       "&show-fields=newspaperEditionDate%2CnewspaperPageNumber%2CinternalPageCode%2CisLive%2CfirstPublicationDate%2Cheadline%2CtrailText%2Cbyline%2Cthumbnail%2CsecureThumbnail%2CliveBloggingNow%2CmembershipAccess%2CshortUrl" +
       "&show-tags=all" +
       "&show-blocks=main" +
-      "&from-date=2019-10-04T00%3A00%3A00Z"
+      "&from-date=2019-10-04T00%3A00%3A00Z").split("&|\\?").sorted
+
+    actual shouldEqual (expected)
   }
 
   behavior of "readAllSearchResponsePages"

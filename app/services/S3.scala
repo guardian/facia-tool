@@ -78,15 +78,15 @@ trait S3 extends Logging {
     result => new DateTime(result.getObjectMetadata.getLastModified)
   }
 
-  def putPublic(key: String, value: String, contentType: String, accounts: List[S3Accounts]) {
+  def putPublic(key: String, value: String, contentType: String, accounts: List[S3Accounts]): Unit = {
     put(key: String, value: String, contentType: String, PublicRead, accounts)
   }
 
-  def putPrivate(key: String, value: String, contentType: String, accounts: List[S3Accounts]) {
+  def putPrivate(key: String, value: String, contentType: String, accounts: List[S3Accounts]): Unit = {
     put(key: String, value: String, contentType: String, Private, accounts)
   }
 
-  private def put(key: String, value: String, contentType: String, accessControlList: CannedAccessControlList, accounts: List[S3Accounts]) {
+  private def put(key: String, value: String, contentType: String, accessControlList: CannedAccessControlList, accounts: List[S3Accounts]):Unit = {
     val metadata = new ObjectMetadata()
     metadata.setCacheControl("no-cache,no-store")
     metadata.setContentType(contentType)

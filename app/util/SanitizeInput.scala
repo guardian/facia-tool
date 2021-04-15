@@ -10,7 +10,7 @@ object SanitizeInput {
   def fromString(s: String) = sanitizeRegex.replaceAllIn(s, "")
 
   def fromConfigSeo(config: ConfigJson): ConfigJson = {
-    config.copy(fronts = config.fronts.mapValues(sanitizeSeoInputFromFront))
+    config.copy(fronts = config.fronts.view.mapValues(sanitizeSeoInputFromFront).toMap)
   }
 
   private def sanitizeSeoInputFromFront(front: FrontJson): FrontJson = front.copy(

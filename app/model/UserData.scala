@@ -1,8 +1,7 @@
 package model
 
 import com.gu.facia.client.models.Trail
-import com.gu.scanamo.DynamoFormat
-import com.gu.scanamo.error.TypeCoercionError
+import org.scanamo.{DynamoFormat, TypeCoercionError}
 import play.api.libs.json.{JsValue, Json}
 
 import scala.util.{Failure, Success, Try}
@@ -14,8 +13,9 @@ object UserData {
     x => Try(Json.parse(x)) match {
       case Success(y) => Right(y)
       case Failure(f) => Left(TypeCoercionError(f))
-    }
-  )(Json.stringify(_))
+    },
+    Json.stringify(_)
+  )
 }
 
 /**

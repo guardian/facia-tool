@@ -11,7 +11,6 @@ import model.editions._
 import model.editions.templates.EditionType
 import model.forms._
 import net.logstash.logback.marker.Markers
-import play.api.Logger
 import play.api.libs.json.{JsObject, Json, JsValue}
 import play.api.mvc.Result
 import services.Capi
@@ -23,7 +22,7 @@ import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
 import util.{SearchResponseUtil, UserUtil}
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 
@@ -60,7 +59,7 @@ class EditionsController(db: EditionsDB,
         "user" -> req.user.email
       ).asJava)
 
-      Logger.info(s"Deleting issue ${id}")(markers)
+      logger.info(s"Deleting issue ${id}")(markers)
       db.deleteIssue(id)
       Accepted
     }
@@ -220,6 +219,7 @@ class EditionsController(db: EditionsDB,
         edition,
         metadataForLogging = MetadataForLogging(issueDate, collectionId = Some(id), collectionName = None)
       )
+
 
       val responses = capi.getPrefillArticles(getPrefillParams, prefillUpdate.currentPageCodes)
 

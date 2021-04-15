@@ -3,14 +3,14 @@ package services.editions.publishing
 import java.time.OffsetDateTime
 
 import com.gu.pandomainauth.model.User
+import logging.Logging
 import model.editions.{EditionsIssue, PublishAction}
 import net.logstash.logback.marker.Markers
-import play.api.Logger
 import services.editions.db.EditionsDB
 
-import scala.collection.JavaConverters._
+import scala.jdk.CollectionConverters._
 
-class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: EditionsBucket, db: EditionsDB) {
+class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: EditionsBucket, db: EditionsDB) extends Logging {
 
   def updatePreview(issue: EditionsIssue) = {
     val previewIssue = issue.toPreviewIssue
@@ -33,7 +33,7 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
       ).asJava
     )
 
-    Logger.info(s"Uploading $action request for issue ${issue.id} to S3")(markers)
+    logger.info(s"Uploading $action request for issue ${issue.id} to S3")(markers)
 
     val publishedIssue = issue.toPublishableIssue(versionId, action)
 
@@ -59,7 +59,7 @@ class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: Edition
       ).asJava
     )
 
-    Logger.info(s"Uploading $action request for issue ${issue.id} to S3")(markers)
+    logger.info(s"Uploading $action request for issue ${issue.id} to S3")(markers)
 
     val publishedIssue = issue.toPublishableIssue(version, PublishAction.publish)
 

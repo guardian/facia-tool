@@ -8,7 +8,7 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-scalaVersion in ThisBuild := "2.12.9"
+scalaVersion in ThisBuild := "2.13.5"
 
 import com.gu.riffraff.artifact.BuildInfo
 import sbt.Resolver
@@ -53,8 +53,7 @@ publishArtifact in (Compile, packageDoc) := false
 
 TwirlKeys.templateImports ++= Seq(
     "conf._",
-    "play.api.Play",
-    "play.api.Play.current"
+    "play.api.Play"
 )
 
 // include the enum path bindables
@@ -63,9 +62,9 @@ routesImport += "model.editions._"
 val awsVersion = "1.11.293"
 val capiModelsVersion = "15.6"
 val capiClientVersion = "17.1"
-val json4sVersion = "3.6.0-M2"
-val enumeratumPlayVersion = "1.5.13"
-val circeVersion = "0.11.1"
+val json4sVersion = "3.6.6"
+val enumeratumPlayVersion = "1.6.0"
+val circeVersion = "0.13.0"
 
 resolvers ++= Seq(
     Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
@@ -81,7 +80,7 @@ libraryDependencies ++= Seq(
     filters,
     evolutions,
     jdbc,
-    "com.typesafe.akka" %% "akka-agent" % "2.5.16",
+    "com.typesafe.akka" %% "akka-agent" % "2.5.23",
     "com.amazonaws" % "aws-java-sdk-rds" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-core" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion,
@@ -93,30 +92,30 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
     "com.gu" %% "content-api-models-scala" % capiModelsVersion,
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
-    "com.gu" %% "content-api-client-aws" % "0.5",
+    "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
-    "com.gu" %% "editorial-permissions-client" % "2.0",
-    "com.gu" %% "fapi-client-play26" % "3.2.0",
+    "com.gu" %% "editorial-permissions-client" % "2.9",
+    "com.gu" %% "fapi-client-play27" % "3.2.0",
     "com.gu" % "kinesis-logback-appender" % "1.4.2",
-    "com.gu" %% "mobile-notifications-api-models" % "1.0.7",
-    "com.gu" %% "pan-domain-auth-play_2-6" % "0.9.2",
+    "com.gu" %% "mobile-notifications-api-models" % "1.0.12",
+    "com.gu" %% "pan-domain-auth-play_2-7" % "1.0.4",
 
-    "com.gu" %% "scanamo" % "1.0.0-M7",
+    "org.scanamo" %% "scanamo" % "1.0.0-M15",
 
     "com.github.blemale" %% "scaffeine" % "3.1.0" % "compile",
 
-    "com.gu" %% "thrift-serializer" % "4.0.0",
+    "com.gu" %% "thrift-serializer" % "4.0.2",
     "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
-    "org.julienrf" %% "play-json-derived-codecs" % "4.0.0",
+    "org.julienrf" %% "play-json-derived-codecs" % "5.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
-    "com.typesafe.play" %% "play-json-joda" % "2.6.9",
+    "com.typesafe.play" %% "play-json-joda" % "2.9.2",
     "ai.x" %% "play-json-extensions" % "0.40.2",
 
     "org.postgresql"           %  "postgresql"                   % "42.2.5",
-    "org.scalikejdbc"          %% "scalikejdbc"                  % "3.1.0",
-    "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.1.0",
-    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.6.0-scalikejdbc-3.1",
+    "org.scalikejdbc"          %% "scalikejdbc"                  % "3.3.5",
+    "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.3.5",
+    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.8.0-scalikejdbc-3.5",
 
     "io.circe"                 %% "circe-core"                   % circeVersion,
     "io.circe"                 %% "circe-generic"                % circeVersion,
@@ -124,8 +123,12 @@ libraryDependencies ++= Seq(
 
     "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
     "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
+    "com.typesafe.play" %% "play" % "2.8.2",
 
-    "org.scalatest" %% "scalatest" % "3.0.5" % "test",
+    "org.apache.commons" % "commons-text" % "1.9",
+    "com.beust" % "jcommander" % "1.75",
+
+    "org.scalatest" %% "scalatest" % "3.0.8" % "test",
     "com.whisk" %% "docker-testkit-scalatest" % "0.9.9" % "test",
     "com.whisk" %% "docker-testkit-impl-docker-java" % "0.9.9" % "test"
 )
