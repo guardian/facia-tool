@@ -10,6 +10,7 @@
   "plugins": ["@typescript-eslint", "testcafe", "jest"],
   "extends": [
     "eslint:recommended",
+    "@guardian/eslint-config-typescript",
     "plugin:@typescript-eslint/recommended",
     "plugin:testcafe/recommended",
     "prettier"
@@ -25,6 +26,19 @@
     "@typescript-eslint/no-non-null-assertion": 0,
     "@typescript-eslint/no-empty-function": 0,
     "no-async-promise-executor": 0,
-    "@typescript-eslint/no-var-requires": 0
+    "@typescript-eslint/no-var-requires": 0,
+    "@typescript-eslint/no-unsafe-member-access": 0,
+    "@typescript-eslint/no-unsafe-call": 0,
+    "@typescript-eslint/no-unsafe-assignment": 0,
+    "@typescript-eslint/no-unsafe-return": 0,
+    "@typescript-eslint/restrict-template-expressions": 0,
+    "@typescript-eslint/prefer-nullish-coalescing": 1,
+    "@typescript-eslint/prefer-optional-chain": 1,
+    "prefer-const": ["error", {"ignoreReadBeforeAssign": true}]
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {} // this loads <rootdir>/tsconfig.json to eslint
+    }
   }
 }
