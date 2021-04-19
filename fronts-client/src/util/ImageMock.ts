@@ -1,8 +1,8 @@
 export default class ImageMock {
   public static defaultLoadDelay = 100;
-  public static defaultWidth: number = 100;
-  public static defaultHeight: number = 100;
-  public static shouldError: boolean = false;
+  public static defaultWidth = 100;
+  public static defaultHeight = 100;
+  public static shouldError = false;
   public static restoreDefaults() {
     ImageMock.defaultWidth = 100;
     ImageMock.defaultHeight = 100;

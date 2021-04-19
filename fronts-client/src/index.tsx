@@ -34,10 +34,9 @@ notifications.subscribe((notification) =>
   store.dispatch(actionAddNotificationBanner(notification))
 );
 
-// @ts-ignore -- Unbind is not used yet but can be used for removed all the
-// keyboard events. The keyboardActionMap contains a list of all active keyboard
+// The keyboardActionMap contains a list of all active keyboard
 // shortcuts, which can eventually be displayed to the user.
-const { unbind, keyboardActionMap } = listenForKeyboardEvents(store);
+listenForKeyboardEvents(store);
 
 // Publish uncaught errors to sentry.io
 if (pageConfig.env.toUpperCase() !== 'DEV' && pageConfig.sentryPublicDSN) {

@@ -253,7 +253,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                     disabled={disabled}
                   >
                     <AddImageIcon size="l" />
-                    {!!small ? null : <Label size="sm">{message}</Label>}
+                    {small ? null : <Label size="sm">{message}</Label>}
                   </AddImageButton>
                 </AddImageViaGridModalButton>
               )}
@@ -263,7 +263,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                 </VideoIconContainer>
               )}
             </ImageComponent>
-            {!!small ? null : (
+            {small ? null : (
               <AddImageViaUrlInput>
                 <ImageUrlInput
                   name="paste-url"

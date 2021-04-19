@@ -3,14 +3,14 @@ import url from 'constants/url';
 import { EditMode } from 'types/EditMode';
 import { Priorities } from 'types/Priority';
 
-const matchRootPath = new RegExp(`^\/${url.appRoot}`);
+const matchRootPath = new RegExp(`^/${url.appRoot}`);
 const maybeRemoveV2Prefix = (path: string) => path.replace(matchRootPath, '');
 const selectFullPath = <T>(state: { path: string } & T) => state.path;
 const selectV2SubPath = <T>(state: { path: string } & T) =>
   maybeRemoveV2Prefix(selectFullPath(state));
 
 const selectEditMode = <T>(state: { path: string } & T): EditMode => {
-  if (!!matchIssuePath(selectV2SubPath(state))) {
+  if (matchIssuePath(selectV2SubPath(state))) {
     return 'editions';
   } else {
     return 'fronts';

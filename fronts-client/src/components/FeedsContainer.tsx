@@ -394,7 +394,7 @@ class FeedsContainer extends React.Component<
     }
   };
 
-  private runSearch(page: number = 1) {
+  private runSearch(page = 1) {
     const { inputState } = this.state;
     const { capiFeedIndex } = this.state;
     const maybeArticleId = getIdFromURL(inputState.query);

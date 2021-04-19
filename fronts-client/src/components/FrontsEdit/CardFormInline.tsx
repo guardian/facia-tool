@@ -866,7 +866,7 @@ const createMapStateToProps = () => {
       coverCardImageReplace: valueSelector(state, 'coverCardImageReplace'),
       coverCardMobileImage: valueSelector(state, 'coverCardMobileImage'),
       coverCardTabletImage: valueSelector(state, 'coverCardTabletImage'),
-      pickedKicker: !!article ? article.pickedKicker : undefined,
+      pickedKicker: article ? article.pickedKicker : undefined,
       isEmailFronts,
     };
   };

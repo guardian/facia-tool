@@ -7,7 +7,7 @@ const startOptionsModal = (
   description: string | ReactNode,
   options: OptionsModalChoices[],
   onCancel: () => void,
-  showCancelButton: boolean = true
+  showCancelButton = true
 ): StartOptionsModal => ({
   type: 'MODAL/START_OPTIONS_MODAL',
   payload: {

@@ -135,7 +135,7 @@ const FrontList = ({
             isStarred={!!front.isStarred}
             onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
               e.stopPropagation();
-              return !!front.isStarred
+              return front.isStarred
                 ? onUnfavourite(front.id)
                 : onStar(front.id);
             }}

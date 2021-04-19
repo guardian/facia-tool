@@ -190,7 +190,7 @@ function getCollectionActions(
 
 function getCollections(
   collectionIds: string[],
-  returnOnlyUpdatedCollections: boolean = false
+  returnOnlyUpdatedCollections = false
 ): ThunkResult<Promise<string[]>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     dispatch(collectionActions.fetchStart(collectionIds));
@@ -263,7 +263,7 @@ function getCollections(
 
 function updateCollection(
   collection: Collection,
-  renamingCollection: boolean = false
+  renamingCollection = false
 ): ThunkResult<Promise<void>> {
   return async (dispatch: Dispatch, getState: () => State) => {
     const state = getState();

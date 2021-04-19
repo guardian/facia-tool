@@ -36,7 +36,7 @@ const createDragEvent = (top: boolean) => {
   };
 };
 
-const runDrag = (type: any, data?: any, json: boolean = true) => (
+const runDrag = (type: any, data?: any, json = true) => (
   dropProps: any,
   top = true
 ) => {

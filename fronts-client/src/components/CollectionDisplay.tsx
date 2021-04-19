@@ -283,9 +283,9 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
               ) : (
                 <CollectionHeadingText
                   isLoading={!collection}
-                  title={!!collection ? collection!.displayName : 'Loading....'}
+                  title={collection ? collection!.displayName : 'Loading....'}
                 >
-                  {!!collection ? collection!.displayName : 'Loading......'}
+                  {collection ? collection!.displayName : 'Loading......'}
                   <CollectionConfigContainer>
                     {oc(collection).metadata[0].type() ? (
                       <CollectionConfigText>
@@ -388,7 +388,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 
   private getDisplayName = () => {
     const { collection } = this.props;
-    return !!collection ? collection!.displayName : 'Loading...';
+    return collection ? collection!.displayName : 'Loading...';
   };
 
   private startRenameContainer = () => {

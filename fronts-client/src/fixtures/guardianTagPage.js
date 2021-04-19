@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default `<!DOCTYPE html>
 <html id="js-context" class="js-off is-not-modern id--signed-out" lang="en" data-page-path="/world/eu">
 <head>

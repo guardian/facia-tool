@@ -1,3 +1,4 @@
+/* eslint-disable */
 export default `
 <!DOCTYPE html>
 <html lang="en-GB" id="responsive-news">

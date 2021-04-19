@@ -31,14 +31,14 @@ import {
 const createCard = (
   id: string,
   isEdition: boolean,
-  imageHide: boolean = false,
-  imageReplace: boolean = false,
-  imageCutoutReplace: boolean = false,
+  imageHide = false,
+  imageReplace = false,
+  imageCutoutReplace = false,
   imageCutoutSrc?: string,
-  showByline: boolean = false,
-  showQuotedHeadline: boolean = false,
-  showKickerCustom: boolean = false,
-  customKicker: string = ''
+  showByline = false,
+  showQuotedHeadline = false,
+  showKickerCustom = false,
+  customKicker = ''
 ) => ({
   uuid: v4(),
   id,

@@ -8,7 +8,7 @@ const selectCollection = createSelectCollection();
 const selectCollectionParams = (
   state: State,
   collectionIds: string[],
-  returnOnlyUpdatedCollections: boolean = false
+  returnOnlyUpdatedCollections = false
 ): Array<{ id: string; lastUpdated?: number }> =>
   collectionIds.reduce(
     (collections: Array<{ id: string; lastUpdated?: number }>, id) => {

@@ -18,7 +18,7 @@ class DragIntentContainer extends React.Component<Props> {
 
   // Keeps track of dragEvents over the Collection's toggleVisibility button
   // to determine enter/leave events
-  private dragHoverDepth: number = 0;
+  private dragHoverDepth = 0;
 
   public handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
     if (!this.isEventValid(e)) {

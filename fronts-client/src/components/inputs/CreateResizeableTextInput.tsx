@@ -57,7 +57,7 @@ const InputComponentContainer = styled.div`
 const createResizeableTextInput = (
   Component: React.ComponentType<any>,
   type?: string,
-  maxAutoResizeHeight: number = 120
+  maxAutoResizeHeight = 120
 ) => {
   return class ResizeableTextInput extends React.Component<Props, State> {
     private inputElement: React.RefObject<HTMLInputElement>;
