@@ -1,10 +1,30 @@
 {
   "root": true,
+  "env": {
+    "node": true,
+    "browser": true,
+    "amd": true,
+    "jest/globals": true
+  },
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "testcafe", "jest"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
+    "plugin:testcafe/recommended",
     "prettier"
-  ]
+  ],
+  "rules": {
+    // All of these rules reflect the current state of the codebase, not strongly
+    // held opinions on linting! Refactoring to pass these rules would be time consuming
+    // but preferable to having to disable them.
+    "@typescript-eslint/no-explicit-any": 0,
+    "@typescript-eslint/explicit-module-boundary-types": 0,
+    "@typescript-eslint/ban-types": 0,
+    "@typescript-eslint/no-unused-vars": 0,
+    "@typescript-eslint/no-non-null-assertion": 0,
+    "@typescript-eslint/no-empty-function": 0,
+    "no-async-promise-executor": 0,
+    "@typescript-eslint/no-var-requires": 0
+  }
 }
