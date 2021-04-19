@@ -48,7 +48,7 @@ const fetchResourceOrResults = async (
   capiService: typeof liveCapi,
   params: object,
   isResource: boolean,
-  fetchFromPreview: boolean = false
+  fetchFromPreview = false
 ) => {
   const capiEndpoint = fetchFromPreview
     ? capiService.scheduled
@@ -70,7 +70,7 @@ const fetchResourceOrResults = async (
 export const createFetch = (
   actions: typeof liveActions,
   selectIsArticleStale: ReturnType<typeof createSelectIsArticleStale>,
-  isPreview: boolean = false
+  isPreview = false
 ) => (params: object, isResource: boolean): ThunkResult<void> => async (
   dispatch,
   getState

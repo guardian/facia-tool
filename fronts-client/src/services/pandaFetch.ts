@@ -1,6 +1,5 @@
 import { reEstablishSession } from 'panda-session';
 import notifications from './notifications';
-import { isError } from 'tslint/lib/error';
 import Raven from 'raven-js';
 
 const reauthUrl = '/login/status';
@@ -9,6 +8,10 @@ const reauthErrorMessage =
   `Please <a href="${window.location.href}" target="_self">log in again</a> to reauthenticate.`;
 
 const AUTH_ERROR_STATUS_CODES = [401, 419];
+
+function isError(possibleError: any): possibleError is Error {
+  return possibleError != undefined && (possibleError as Error).message !== undefined;
+}
 
 /**
  * Make a fetch request with Panda authentication.
@@ -19,7 +22,7 @@ const AUTH_ERROR_STATUS_CODES = [401, 419];
 const pandaFetch = (
   url: string,
   options: RequestInit = {},
-  count: number = 0
+  count = 0
 ): Promise<Response> =>
   new Promise(
     async (resolve: (r: Response) => any, reject: (e: any) => any) => {

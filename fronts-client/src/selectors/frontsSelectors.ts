@@ -144,7 +144,7 @@ const selectCollectionDisplayName = (
   const collection = selectCollection(state, {
     collectionId,
   });
-  return !!collection ? collection.displayName : '';
+  return collection ? collection.displayName : '';
 };
 
 const selectFrontsIds = createSelector([selectFronts], (fronts): string[] => {

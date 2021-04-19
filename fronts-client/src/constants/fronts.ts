@@ -5,9 +5,9 @@ import {
   DRAG_DATA_GRID_IMAGE_URL,
 } from './image';
 
-export const breakingNewsFrontId: string = 'breaking-news';
+export const breakingNewsFrontId = 'breaking-news';
 
-export const clipboardId: string = 'clipboard';
+export const clipboardId = 'clipboard';
 
 export const frontStages: { [key: string]: Stages } = {
   draft: 'draft',

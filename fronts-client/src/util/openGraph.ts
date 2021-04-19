@@ -20,11 +20,9 @@ export default async function (url: string): Promise<OpenGraphData> {
     const graph: { [id: string]: string | null } = {};
     Array.from(doc.querySelectorAll('meta[property^="og:"]')).forEach((tag) => {
       const attributeKey = (tag.getAttribute('property') || '').replace(
-        /^og\:/,
+        /^og:/,
         ''
       );
-      if (attributeKey) {
-      }
       graph[attributeKey] = tag.getAttribute('content');
     });
 

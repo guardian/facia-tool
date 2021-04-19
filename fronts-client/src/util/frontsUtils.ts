@@ -29,7 +29,7 @@ const getFrontCollections = (
 const combineCollectionWithConfig = (
   collectionConfig: CollectionConfig,
   collection: CollectionWithNestedArticles,
-  useCollectionDisplayName: boolean = false
+  useCollectionDisplayName = false
 ): CollectionWithNestedArticles => {
   return Object.assign({}, collection, {
     id: collection.id,

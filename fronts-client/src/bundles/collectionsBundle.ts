@@ -56,7 +56,7 @@ const collectionSelectors = {
   },
 };
 
-const SET_HIDDEN = 'SET_HIDDEN' as 'SET_HIDDEN';
+const SET_HIDDEN = 'SET_HIDDEN' as const;
 
 const setHidden = (collectionId: string, isHidden: boolean) => ({
   entity: collectionsEntityName,

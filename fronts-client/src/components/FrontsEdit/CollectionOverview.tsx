@@ -144,7 +144,7 @@ const CollectionOverview = ({
         )}
         {collection &&
           collection.lastUpdated &&
-          (!!hasUnpublishedChanges ? (
+          (hasUnpublishedChanges ? (
             <EditModeVisibility visibleMode="fronts">
               <StatusWarning
                 priority="primary"
