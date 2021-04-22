@@ -5,8 +5,6 @@ import { schema, nodes } from 'prosemirror-schema-basic';
 import { addListNodes } from 'prosemirror-schema-list';
 import { EditorView } from 'prosemirror-view';
 import { EditorState, Transaction } from 'prosemirror-state';
-import { RefObject } from 'react';
-import { WrappedFieldInputProps } from 'redux-form';
 import OrderedMap from 'orderedmap';
 import { history } from 'prosemirror-history';
 
@@ -32,14 +30,11 @@ export const basicSchema = new Schema({
 });
 
 export const createEditorView = (
-  input: WrappedFieldInputProps,
-  editorEl: RefObject<HTMLDivElement>,
+  onChange: (newState: string) => void,
+  editorEl: HTMLDivElement,
   contentEl: HTMLDivElement
 ) => {
-  if (!editorEl.current) {
-    return;
-  }
-  const ed: EditorView = new EditorView(editorEl.current, {
+  const ed: EditorView = new EditorView(editorEl, {
     state: EditorState.create({
       doc: DOMParser.fromSchema(basicSchema).parse(contentEl),
       plugins: createBasePlugins(basicSchema),
@@ -54,9 +49,7 @@ export const createEditorView = (
         // to format the outputHtml as an html string rather than a document fragment, we are creating a temporary div, adding it as a child, then using innerHTML which returns an html string
         const tmp = document.createElement('div');
         tmp.appendChild(outputHtml);
-        if (input.onChange) {
-          input.onChange(tmp.innerHTML);
-        }
+        onChange(tmp.innerHTML);
       }
     },
   });

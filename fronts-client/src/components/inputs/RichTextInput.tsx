@@ -38,19 +38,23 @@ interface RichTextInputProps
 }
 
 const RichTextInput = ({ ...props }: RichTextInputProps) => {
-  const editorEl = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<HTMLDivElement>(null);
   const [editorView, setEditorView] = useState<EditorView | undefined>(
     undefined
   );
 
   useEffect(() => {
-    if (!props.input.value) {
+    if (!props.input.value || !editorRef.current) {
       return;
     }
     // Editor view takes an HTML Node therefore this string value needs to be converted into a node by placing in a div
     const contentNode = document.createElement('div');
     contentNode.innerHTML = props.input.value;
-    const edView = createEditorView(props.input, editorEl, contentNode);
+    const edView = createEditorView(
+      props.input.onChange,
+      editorRef.current,
+      contentNode
+    );
     setEditorView(edView);
   }, []);
 
@@ -68,7 +72,7 @@ const RichTextInput = ({ ...props }: RichTextInputProps) => {
         <div
           id="editor"
           className="ProseMirror-example-setup-style"
-          ref={editorEl}
+          ref={editorRef}
           data-testid="edit-form-rich-text"
         />
       </InputWrapper>
