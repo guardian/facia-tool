@@ -7,6 +7,8 @@ import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
 import { RewindIcon } from '../icons/Icons';
 import { styled } from 'constants/theme';
+import { runRules } from './richtext/cleanerHelpers';
+import { onKeyPressRules } from './richtext/cleanerRules';
 
 type Props = {
   label?: string;
@@ -93,13 +95,7 @@ const createResizeableTextInput = (
     }
 
     public render() {
-      const {
-        label,
-        input,
-        originalValue,
-        labelContent: LabelContent,
-        ...rest
-      } = this.props;
+      const { label, input, originalValue, labelContent, ...rest } = this.props;
       return (
         <InputContainer>
           {label && (
@@ -110,7 +106,7 @@ const createResizeableTextInput = (
                   <RewindIcon />
                 </RewindButton>
               )}
-              {LabelContent}
+              {labelContent}
             </TextInputLabel>
           )}
           <InputComponentContainer>
@@ -120,12 +116,46 @@ const createResizeableTextInput = (
               id={label}
               {...input}
               {...rest}
+              onChange={this.onChange}
               type={type}
             />
           </InputComponentContainer>
         </InputContainer>
       );
     }
+
+    private onChange = (e: React.KeyboardEvent<HTMLInputElement>) => {
+      const { current } = this.inputElement;
+      if (!current) {
+        return;
+      }
+
+      // We mutate our input imperatively to ensure that asynchronous state updates
+      // (for example, from redux) do not disturb the cursor state.
+
+      const { value, selectionEnd } = e.target as HTMLInputElement;
+      const { cleanedText, offset } = this.cleanText(value, selectionEnd || 0);
+
+      if (cleanedText !== value) {
+        const caretStart = (current.selectionStart || 0) - offset;
+        const caretEnd = (current.selectionEnd || 0) - offset;
+        current.value = cleanedText;
+        current.setSelectionRange(caretStart, caretEnd);
+      }
+      this.props.input.onChange(e);
+    };
+
+    private cleanText = (text: string, selectionEnd: number) => {
+      // We only apply the keypress rules to the last character typed – see Prosemirror's
+      // `InputRule` for more detail (https://github.com/ProseMirror/prosemirror-inputrules).
+      const before = text.substring(0, selectionEnd);
+      const after = text.substring(selectionEnd);
+      const cleanedBefore = runRules(onKeyPressRules)(before);
+      const cleanedText = cleanedBefore + after;
+      const offset = before.length - cleanedBefore.length;
+
+      return { cleanedText, offset };
+    };
   };
 };
 

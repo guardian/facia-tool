@@ -101,3 +101,19 @@ test('Rich text editor removes a link from text', async t => {
     .expect(getSnapHeadlineHtml())
     .eql('<strong>Bold with a link Test3</strong>');
 });
+
+test('Rich text editor cleans up text input', async t => {
+  const secondCollectionStory1 = snap(2, 0);
+  const richTextInput = editFormRichText();
+
+  await t
+    .click(secondCollectionStory1)
+    .click(richTextInput)
+    .selectText(richTextInput)
+    .typeText(
+      richTextInput,
+      `Headline "with" a 'quote' ... and ellipsis, and a - hyphen`
+    )
+    .expect(richTextInput.textContent)
+    .eql(`Headline “with” a ‘quote’ … and ellipsis, and a - hyphen`);
+});
