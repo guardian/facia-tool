@@ -9,15 +9,15 @@ import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
 object EditionWeWereThere extends SpecialEdition {
-  override val title = "The books\nof 2021"
-  override val subTitle = "A special edition of the Guardian on the books we think you should read this year"
+  override val title = "We were\nthere"
+  override val subTitle = "Moments that made the Guardian. A special edition with some of our most memorable journalism from 1821-2021"
   override val edition = "edition-we-were-there"
-  override val header = Header(title ="The books", subTitle=Some("of 2021"))
+  override val header = Header(title ="We were", subTitle=Some("there"))
   override val notificationUTCOffset = 3
-  override val topic = "e-bk"
+  override val topic = "e-wwt"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/e57e787606c4018a1f6d2e1cd3537246acde815e/0_0_250_500/250.png?width=80&quality=85&s=ccb203cdd28a0921c98e5c226b7892fb")
   override val expiry: Option[String] = Some(
-    new DateTime(2021, 5,10,23,59,DateTimeZone.UTC).toString()
+    new DateTime(2021, 6,7,23,59,DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
