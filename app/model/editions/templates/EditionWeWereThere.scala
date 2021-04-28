@@ -65,7 +65,7 @@ object EditionWeWereThere extends SpecialEdition {
     ophanQueryPrefillParams = None
   )
 
-  def Special01 = front("Sp Neutral 1", None,
+  def Special01 = front("Front1", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -73,31 +73,15 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special02 = front("Sp Culture 2", None,
+  def Special02 = front("Front2", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Culture)
+  ).swatch(News)
 
-  def Special03 = front("Sp Opinion 3", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Opinion)
-
-  def Special04 = front("Sp Lifestyle 4", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
-  
-  def Special05 = front("Sp Neutral 5", None,
+  def Special03 = front("Front3", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -105,31 +89,15 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special06 = front("Sp Culture 6", None,
+  def Special04 = front("Front4", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Culture)
-
-  def Special07 = front("Sp Opinion 7", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Opinion)
-
-  def Special08 = front("Sp Lifestyle 8", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
+  ).swatch(News)
   
-  def Special09 = front("Sp Neutral 9", None,
+  def Special05 = front("Front5", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -137,31 +105,63 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special10 = front("Sp Culture 10", None,
+  def Special06 = front("Front6", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+
+  def Special07 = front("Front7", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special08 = front("Front8", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-
-  def Special11 = front("Sp Opinion 11", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Opinion)
-
-  def Special12 = front("Sp Lifestyle 12", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Lifestyle)
   
-  def Special13 = front("Sp Neutral 13", None,
+  def Special09 = front("Front9", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special10 = front("Front10", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+
+  def Special11 = front("Front11", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special12 = front("Front12", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+  
+  def Special13 = front("Front13", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
