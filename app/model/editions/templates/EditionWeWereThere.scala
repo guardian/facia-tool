@@ -21,7 +21,7 @@ object EditionWeWereThere extends SpecialEdition {
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
-      backgroundColor = "#6B5840",
+      backgroundColor = "#C70000",
       title = EditionTextFormatting(color = "#FFFFFF", font="GHGuardianHeadline-Medium", lineHeight = 34, size = 32),
       subTitle = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 20, size = 17),
       expiry = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
@@ -30,7 +30,7 @@ object EditionWeWereThere extends SpecialEdition {
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
     SpecialEditionHeaderStyles(
-      backgroundColor = "#6B5840",
+      backgroundColor = "#C70000",
       textColorPrimary = "#FFFFFF",
       textColorSecondary = "#FFFFFF"
     )
