@@ -67,9 +67,7 @@ val enumeratumPlayVersion = "1.6.0"
 val circeVersion = "0.13.0"
 
 resolvers ++= Seq(
-    Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
-    "Guardian Mobile Bintray" at "https://dl.bintray.com/guardian/mobile",
-    "Guardian Frontend Bintray" at "https://dl.bintray.com/guardian/frontend"
+    Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns)
 )
 
 
