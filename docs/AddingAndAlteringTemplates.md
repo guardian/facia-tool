@@ -32,3 +32,8 @@ work and you'll get a 404 error when creating an issue
 Add the new Edition to _both_ the list of templates and the Edition enum object
 in `app/model/editions/EditionsTemplates.scala`.
 
+## Signing an image for use as a special edition icon
+
+When defining an image in the template, we need to first sign the image and use the signed url.
+You can do that here `http://image-url-signer.s3-website-eu-west-1.amazonaws.com/` but note you need to be on VPN.
+
