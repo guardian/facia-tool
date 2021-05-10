@@ -44,7 +44,7 @@ object BreakingNewsUpdate {
     val title = trail.topic match {
       case Some("uk-general-election") => Some("General election 2019")
       case Some(topic) if (CovidBreakingNewsTopics.map(_.name) :+ CovidGlobalTopicName).contains(topic) => Some("Coronavirus")
-      case Some(topic) if SportBreakingNewsTopics.map(_.name).contains(topic) => Some("Sport")
+      case Some(topic) if SportBreakingNewsTopics.map(_.name).contains(topic) => Some("Sport breaking news")
       case _ => None
     }
 
