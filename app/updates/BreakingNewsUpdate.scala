@@ -9,10 +9,10 @@ import com.gu.mobile.notifications.client.models.Topic._
 import com.gu.mobile.notifications.client.models.TopicTypes.Breaking
 import com.gu.mobile.notifications.client.models._
 import conf.ApplicationConfiguration
-import org.apache.commons.text.StringEscapeUtils
 import logging.Logging
+import org.apache.commons.text.StringEscapeUtils
 import play.api.libs.json._
-import play.api.libs.ws.{WSClient, WSResponse}
+import play.api.libs.ws.WSClient
 import play.api.mvc.Result
 import play.api.mvc.Results.{InternalServerError, Ok}
 
@@ -33,10 +33,18 @@ object BreakingNewsUpdate {
     BreakingNewsCovid19International
   )
 
+  val SportBreakingNewsTopics = List(
+    BreakingNewsSportUk,
+    BreakingNewsSportUs,
+    BreakingNewsSportAu,
+    BreakingNewsSportInternational
+  )
+
   def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     val title = trail.topic match {
       case Some("uk-general-election") => Some("General election 2019")
       case Some(topic) if (CovidBreakingNewsTopics.map(_.name) :+ CovidGlobalTopicName).contains(topic) => Some("Coronavirus")
+      case Some(topic) if SportBreakingNewsTopics.map(_.name).contains(topic) => Some("Sport breaking news")
       case _ => None
     }
 
@@ -74,7 +82,10 @@ object BreakingNewsUpdate {
       case Some("international") => List(BreakingNewsInternational)
       case Some("uk") => List(BreakingNewsUk)
       case Some("us") => List(BreakingNewsUs)
-      case Some("sport") => List(BreakingNewsSport)
+      case Some("uk-sport") => List(BreakingNewsSportUk)
+      case Some("us-sport") => List(BreakingNewsSportUs)
+      case Some("au-sport") => List(BreakingNewsSportAu)
+      case Some("international-sport") => List(BreakingNewsSportInternational)
       case Some("uk-general-election") => List(BreakingNewsElection)
       case Some("uk-covid-19") => List(BreakingNewsCovid19Uk)
       case Some("us-covid-19") => List(BreakingNewsCovid19Us)
