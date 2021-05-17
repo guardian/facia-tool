@@ -232,6 +232,7 @@ object DailyEdition extends RegionalEdition {
     collection("Books").printSentAnyTag("theguardian/guardianreview/saturdayreviewsfeatres", "theobserver/new-review/books"),
     collection("Books").hide,
     collection("Books").hide,
+    collection("Books").hide,
     collection("Books").hide
   )
     .swatch(Culture)
