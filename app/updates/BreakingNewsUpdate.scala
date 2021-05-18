@@ -86,8 +86,8 @@ object BreakingNewsUpdate {
       case Some("uk-sport") => List(BreakingNewsSportUk)
       case Some("us-sport") => List(BreakingNewsSportUs)
       case Some("au-sport") => List(BreakingNewsSportAu)
-      case Some(SportGlobalTopicName) => SportBreakingNewsTopics
       case Some("international-sport") => List(BreakingNewsSportInternational)
+      case Some(SportGlobalTopicName) => SportBreakingNewsTopics
       case Some("uk-general-election") => List(BreakingNewsElection)
       case Some("uk-covid-19") => List(BreakingNewsCovid19Uk)
       case Some("us-covid-19") => List(BreakingNewsCovid19Us)
