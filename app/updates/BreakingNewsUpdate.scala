@@ -33,6 +33,7 @@ object BreakingNewsUpdate {
     BreakingNewsCovid19International
   )
 
+  val SportGlobalTopicName = "global-sport"
   val SportBreakingNewsTopics = List(
     BreakingNewsSportUk,
     BreakingNewsSportUs,
@@ -44,7 +45,7 @@ object BreakingNewsUpdate {
     val title = trail.topic match {
       case Some("uk-general-election") => Some("General election 2019")
       case Some(topic) if (CovidBreakingNewsTopics.map(_.name) :+ CovidGlobalTopicName).contains(topic) => Some("Coronavirus")
-      case Some(topic) if SportBreakingNewsTopics.map(_.name).contains(topic) => Some("Sport breaking news")
+      case Some(topic) if (SportBreakingNewsTopics.map(_.name) :+ SportGlobalTopicName).contains(topic) => Some("Sport breaking news")
       case _ => None
     }
 
@@ -86,6 +87,7 @@ object BreakingNewsUpdate {
       case Some("us-sport") => List(BreakingNewsSportUs)
       case Some("au-sport") => List(BreakingNewsSportAu)
       case Some("international-sport") => List(BreakingNewsSportInternational)
+      case Some(SportGlobalTopicName) => SportBreakingNewsTopics
       case Some("uk-general-election") => List(BreakingNewsElection)
       case Some("uk-covid-19") => List(BreakingNewsCovid19Uk)
       case Some("us-covid-19") => List(BreakingNewsCovid19Us)
