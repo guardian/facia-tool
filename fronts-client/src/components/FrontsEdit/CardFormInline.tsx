@@ -362,15 +362,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           (e: React.MouseEvent) =>
             e.stopPropagation() /* Prevent clicks passing through the form */
         }
-        // Making this component draggable, but preventing drag events from
-        // propagating, ensures we don't leak drag events through to the parent
-        // element. This stops the form being accidentally dragged when people
-        // e.g. attempt to select text in inputs.
-        draggable={true}
-        onDragStart={(e: React.MouseEvent) => {
-          e.preventDefault();
-          e.stopPropagation();
-        }}
       >
         {!articleExists && (
           <CollectionEditedError>

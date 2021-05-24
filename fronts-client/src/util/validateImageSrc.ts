@@ -5,7 +5,11 @@ import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
 import { Crop, Criteria } from 'types/Grid';
-import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
+import {
+  DRAG_DATA_CARD_IMAGE_OVERRIDE,
+  DRAG_DATA_GRID_IMAGE_URL,
+} from 'constants/image';
+import { gridDropTypes } from 'constants/fronts';
 
 interface ImageDescription {
   height?: number;
@@ -294,6 +298,17 @@ function validateImageEvent(
     new Error('Invalid image source, are you dragging from the grid?')
   );
 }
+
+const imageDropTypes = [
+  ...gridDropTypes,
+  DRAG_DATA_CARD_IMAGE_OVERRIDE,
+  DRAG_DATA_GRID_IMAGE_URL,
+];
+
+export const dragEventHasImageData = (e: React.DragEvent) =>
+  e.dataTransfer.types.some((dataTransferType) =>
+    imageDropTypes.includes(dataTransferType)
+  );
 
 export {
   ImageDescription,

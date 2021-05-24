@@ -1,13 +1,5 @@
-import { styled, css } from 'constants/theme';
-import { DefaultDropIndicator } from 'components/DropZone';
+import { styled } from 'constants/theme';
 
-export default styled.div<{ isDraggingArticleOver?: boolean }>`
+export default styled.div`
   position: relative;
-  ${({ isDraggingArticleOver }) =>
-    isDraggingArticleOver &&
-    css`
-      ${DefaultDropIndicator} {
-        opacity: 1;
-      }
-    `}
 `;
