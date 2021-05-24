@@ -16,15 +16,17 @@ import {
   addImageToCard,
   addCardToClipboard,
 } from 'actions/Cards';
-import { validateImageEvent, ValidationResponse } from 'util/validateImageSrc';
+import {
+  dragEventHasImageData,
+  validateImageEvent,
+  ValidationResponse,
+} from 'util/validateImageSrc';
 import {
   cardImageCriteria,
   editionsCardImageCriteria,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
-  DRAG_DATA_GRID_IMAGE_URL,
 } from 'constants/image';
 import Sublinks from './Sublinks';
-import { gridDropTypes } from 'constants/fronts';
 import {
   selectIsCardFormOpen,
   editorClearCardSelection,
@@ -36,17 +38,13 @@ import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { events } from 'services/GA';
 import EditModeVisibility from 'components/util/EditModeVisibility';
-import { styled } from 'constants/theme';
+import { css, styled } from 'constants/theme';
 import { getPillarColor } from 'util/getPillarColor';
 import { isLive as isArticleLive } from 'util/CAPIUtils';
+import { DefaultDropIndicator } from 'components/DropZone';
+import DragIntentContainer from 'components/DragIntentContainer';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
-
-const imageDropTypes = [
-  ...gridDropTypes,
-  DRAG_DATA_CARD_IMAGE_OVERRIDE,
-  DRAG_DATA_GRID_IMAGE_URL,
-];
 
 const CardContainer = styled('div')<{
   pillarId: string | undefined;
@@ -59,6 +57,18 @@ const CardContainer = styled('div')<{
     size !== 'small' && pillarId && isLive
       ? getPillarColor(pillarId, isLive)
       : theme.base.colors.borderColor};
+`;
+
+const DropzoneStyling = styled.div<{
+  isDraggingCardOver?: boolean;
+}>`
+  ${({ isDraggingCardOver }) =>
+    isDraggingCardOver &&
+    css`
+      ${DefaultDropIndicator} {
+        opacity: 1;
+      }
+    `}
 `;
 
 interface ContainerProps {
@@ -79,7 +89,7 @@ interface ContainerProps {
   canShowPageViewData: boolean;
 }
 
-type ArticleContainerProps = ContainerProps & {
+type CardContainerProps = ContainerProps & {
   onAddToClipboard: (uuid: string) => void;
   copyCardImageMeta: (from: string, to: string) => void;
   addImageToCard: (id: string, response: ValidationResponse) => void;
@@ -93,14 +103,15 @@ type ArticleContainerProps = ContainerProps & {
   pillarId?: string;
 };
 
-class Card extends React.Component<ArticleContainerProps> {
+class Card extends React.Component<CardContainerProps> {
   public state = {
-    showArticleSublinks: false,
+    showCardSublinks: false,
+    isDraggingCardOver: false,
   };
 
   public toggleShowArticleSublinks = (e?: React.MouseEvent) => {
-    const togPos = this.state.showArticleSublinks ? false : true;
-    this.setState({ showArticleSublinks: togPos });
+    const togPos = this.state.showCardSublinks ? false : true;
+    this.setState({ showCardSublinks: togPos });
     if (e) {
       e.stopPropagation();
     }
@@ -135,7 +146,7 @@ class Card extends React.Component<ArticleContainerProps> {
       <Sublinks
         numSupportingArticles={numSupportingArticles}
         toggleShowArticleSublinks={this.toggleShowArticleSublinks}
-        showArticleSublinks={this.state.showArticleSublinks}
+        showArticleSublinks={this.state.showCardSublinks}
         parentId={parentId}
       />
     );
@@ -156,7 +167,6 @@ class Card extends React.Component<ArticleContainerProps> {
               size={size}
               textSize={textSize}
               showMeta={showMeta}
-              imageDropTypes={imageDropTypes}
               onImageDrop={this.handleImageDrop}
               canDragImage={canDragImage}
               canShowPageViewData={canShowPageViewData}
@@ -166,7 +176,7 @@ class Card extends React.Component<ArticleContainerProps> {
                 {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
                 {numSupportingArticles === 0
                   ? children
-                  : this.state.showArticleSublinks && children}
+                  : this.state.showCardSublinks && children}
               </EditModeVisibility>
             </Article>
           );
@@ -190,7 +200,7 @@ class Card extends React.Component<ArticleContainerProps> {
               {getSublinks}
               {numSupportingArticles === 0
                 ? children
-                : this.state.showArticleSublinks && children}
+                : this.state.showCardSublinks && children}
             </>
           );
         default:
@@ -227,14 +237,25 @@ class Card extends React.Component<ArticleContainerProps> {
             {getSublinks}
             {numSupportingArticles === 0
               ? children
-              : this.state.showArticleSublinks && children}
+              : this.state.showCardSublinks && children}
           </>
         ) : (
-          getCard()
+          <DragIntentContainer
+            filterRegisterEvent={(e) => !dragEventHasImageData(e)}
+            onDragIntentStart={() => this.setIsDraggingCardOver(true)}
+            onDragIntentEnd={() => this.setIsDraggingCardOver(false)}
+          >
+            <DropzoneStyling isDraggingCardOver={this.state.isDraggingCardOver}>
+              {getCard()}
+            </DropzoneStyling>
+          </DragIntentContainer>
         )}
       </CardContainer>
     );
   }
+
+  public setIsDraggingCardOver = (isDraggingCardOver: boolean) =>
+    this.setState({ isDraggingCardOver });
 
   private handleAddToClipboard = () => {
     this.props.onAddToClipboard(this.props.uuid);
@@ -250,9 +271,9 @@ class Card extends React.Component<ArticleContainerProps> {
     e.persist();
 
     // Our drag is a copy event, from another Card
-    const articleUuid = e.dataTransfer.getData(DRAG_DATA_CARD_IMAGE_OVERRIDE);
-    if (articleUuid) {
-      this.props.copyCardImageMeta(articleUuid, this.props.uuid);
+    const cardUuid = e.dataTransfer.getData(DRAG_DATA_CARD_IMAGE_OVERRIDE);
+    if (cardUuid) {
+      this.props.copyCardImageMeta(cardUuid, this.props.uuid);
       return;
     }
 

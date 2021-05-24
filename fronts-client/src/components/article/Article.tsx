@@ -19,6 +19,7 @@ import DragIntentContainer from '../DragIntentContainer';
 import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { theme } from 'constants/theme';
 import { getPillarColor } from 'util/getPillarColor';
+import { dragEventHasImageData } from 'util/validateImageSrc';
 
 const ArticleBodyContainer = styled(CardBody)<{
   pillarId: string | undefined;
@@ -64,25 +65,20 @@ interface ComponentProps extends ArticleComponentProps {
   size?: CardSizes;
   textSize?: CardSizes;
   children: React.ReactNode;
-  imageDropTypes?: string[];
   onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
 }
 
 interface ComponentState {
   isDraggingImageOver: boolean;
-  isDraggingArticleOver: boolean;
 }
 
 class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
   public state = {
     isDraggingImageOver: false,
-    isDraggingArticleOver: false,
   };
 
   public setIsImageHovering = (isDraggingImageOver: boolean) =>
     this.setState({ isDraggingImageOver });
-  public setIsArticleHovering = (isDraggingArticleOver: boolean) =>
-    this.setState({ isDraggingArticleOver });
 
   public render() {
     const {
@@ -101,7 +97,6 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       onAddToClipboard,
       children,
       isUneditable,
-      imageDropTypes = [],
       onImageDrop,
       showMeta,
       canDragImage,
@@ -111,11 +106,6 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       collectionId,
     } = this.props;
 
-    const dragEventHasImageData = (e: React.DragEvent) =>
-      e.dataTransfer.types.some((dataTransferType) =>
-        imageDropTypes.includes(dataTransferType)
-      );
-
     const getArticleData = () =>
       article || {
         uuid: id,
@@ -123,14 +113,9 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
       };
 
     return (
-      <DragIntentContainer
-        filterRegisterEvent={(e) => !dragEventHasImageData(e)}
-        onDragIntentStart={() => this.setIsArticleHovering(true)}
-        onDragIntentEnd={() => this.setIsArticleHovering(false)}
-      >
+      <>
         <CardContainer
           draggable={draggable}
-          isDraggingArticleOver={this.state.isDraggingArticleOver}
           onDragStart={onDragStart}
           onDragOver={onDragOver}
           onDrop={onDrop}
@@ -178,9 +163,9 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
               />
             </ArticleBodyContainer>
           </DragIntentContainer>
-          {children}
         </CardContainer>
-      </DragIntentContainer>
+        {children}
+      </>
     );
   }
 }
