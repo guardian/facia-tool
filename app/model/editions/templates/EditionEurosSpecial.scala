@@ -8,16 +8,16 @@ import model.editions.templates.TemplateHelpers._
 import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
-object EditionWeWereThere extends SpecialEdition {
-  override val title = "We were\nthere"
-  override val subTitle = "Moments that made the Guardian. A special edition with some of our most memorable journalism from 1821-2021"
-  override val edition = "edition-we-were-there"
-  override val header = Header(title ="We were", subTitle=Some("there"))
+object EditionEurosSpecial extends SpecialEdition {
+  override val title = "Euros\nspecial"
+  override val subTitle = "A special edition of the Guardian on the European championships to kick off a great summer of sport"
+  override val edition = "edition-euros-special"
+  override val header = Header(title ="Euros", subTitle=Some("special"))
   override val notificationUTCOffset = 3
-  override val topic = "e-wwt"
+  override val topic = "e-es"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/375fb77684125af03b760bae24141f27da3b2f46/0_0_1000_2000/250.png?width=80&quality=85&s=808ddc9a72495aa5f2883be6ad69725d")
   override val expiry: Option[String] = Some(
-    new DateTime(2021, 6,7,23,59,DateTimeZone.UTC).toString()
+    new DateTime(2021, 7,11,23,59,DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
@@ -51,7 +51,9 @@ object EditionWeWereThere extends SpecialEdition {
       Special10 -> Daily(),
       Special11 -> Daily(),
       Special12 -> Daily(),
-      Special13 -> Daily()
+      Special13 -> Daily(),
+      Special14 -> Daily(),
+      Special15 -> Daily()
       
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
@@ -87,7 +89,7 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Neutral)
+  ).swatch(News)
 
   def Special04 = front("Front4", None,
     collection("Special"),
@@ -103,7 +105,7 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Neutral)
+  ).swatch(News)
 
   def Special06 = front("Front6", None,
     collection("Special"),
@@ -119,7 +121,7 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Neutral)
+  ).swatch(News)
 
   def Special08 = front("Front8", None,
     collection("Special"),
@@ -127,7 +129,7 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Culture)
+  ).swatch(News)
   
   def Special09 = front("Front9", None,
     collection("Special"),
@@ -135,7 +137,7 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Neutral)
+  ).swatch(Sport)
 
   def Special10 = front("Front10", None,
     collection("Special"),
@@ -143,7 +145,7 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Sport)
 
   def Special11 = front("Front11", None,
     collection("Special"),
@@ -151,7 +153,7 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Neutral)
+  ).swatch(Sport)
 
   def Special12 = front("Front12", None,
     collection("Special"),
@@ -159,7 +161,7 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Sport)
   
   def Special13 = front("Front13", None,
     collection("Special"),
@@ -167,6 +169,22 @@ object EditionWeWereThere extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Neutral)
+  ).swatch(Sport)
+  
+  def Special14 = front("Front14", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Sport)
+  
+  def Special15 = front("Front15", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Sport)
 
 }
