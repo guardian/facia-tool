@@ -15,7 +15,8 @@ object EditionWeWereThere extends SpecialEdition {
   override val header = Header(title ="We were", subTitle=Some("there"))
   override val notificationUTCOffset = 3
   override val topic = "e-wwt"
-   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/375fb77684125af03b760bae24141f27da3b2f46/0_0_1000_2000/250.png?width=80&quality=85&s=808ddc9a72495aa5f2883be6ad69725d")  override val expiry: Option[String] = Some(
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/375fb77684125af03b760bae24141f27da3b2f46/0_0_1000_2000/250.png?width=80&quality=85&s=808ddc9a72495aa5f2883be6ad69725d")
+  override val expiry: Option[String] = Some(
     new DateTime(2021, 6,7,23,59,DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
