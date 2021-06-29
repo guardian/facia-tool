@@ -32,11 +32,15 @@ function convertToSnap({ id, ...rest }: PartialBy<Card, 'id'>): Card {
   return set(['meta', 'href'], href, card);
 }
 
-async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
-  const uuid = v4();
-  if (url && !isValidSnapLinkUrl(url)) {
+async function createPlainSnap(url: string): Promise<Card> {
+  if (!isValidSnapLinkUrl(url)) {
     throw new Error(`The URL is not valid. The URL was: ${url}`);
   }
+  return createSnap(url);
+}
+
+async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
+  const uuid = v4();
   try {
     const { title, description, siteName } =
       meta || !url ? ({} as any) : await fetchOpenGraphData(url);
@@ -104,4 +108,11 @@ function createLatestSnap(url: string, kicker: string) {
   });
 }
 
-export { generateId, validateId, createLatestSnap, createSnap, createAtomSnap };
+export {
+  generateId,
+  validateId,
+  createLatestSnap,
+  createSnap,
+  createAtomSnap,
+  createPlainSnap,
+};

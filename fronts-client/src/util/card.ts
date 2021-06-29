@@ -14,7 +14,12 @@ import { TArticleEntities } from 'types/Cards';
 import { Dispatch } from 'types/Store';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { MappableDropType } from 'util/collectionUtils';
-import { createAtomSnap, createLatestSnap, createSnap } from 'util/snap';
+import {
+  createAtomSnap,
+  createLatestSnap,
+  createPlainSnap,
+  createSnap,
+} from 'util/snap';
 import {
   checkQueryParams,
   getAbsolutePath,
@@ -180,7 +185,7 @@ const getArticleEntitiesFromDrop = async (
   }
   try {
     if (isPlainUrl) {
-      const card = await createSnap(resourceIdOrUrl);
+      const card = await createPlainSnap(resourceIdOrUrl);
       return [card];
     }
   } catch (e) {
@@ -192,6 +197,7 @@ const getArticleEntitiesFromDrop = async (
         noop
       )
     );
+    return [];
   }
 
   try {
