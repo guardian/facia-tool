@@ -1,6 +1,6 @@
 import type { Card, CardMeta } from 'types/Collection';
 import type { CAPIInteractiveAtomResponse } from 'services/capiQuery';
-import { getAbsolutePath, isGuardianUrl } from './url';
+import { getAbsolutePath, isGuardianUrl, isValidSnapLinkUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import v4 from 'uuid/v4';
 import set from 'lodash/fp/set';
@@ -34,6 +34,9 @@ function convertToSnap({ id, ...rest }: PartialBy<Card, 'id'>): Card {
 
 async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
   const uuid = v4();
+  if (url && !isValidSnapLinkUrl(url)) {
+    throw new Error(`The URL is not valid. The URL was: ${url}`);
+  }
   try {
     const { title, description, siteName } =
       meta || !url ? ({} as any) : await fetchOpenGraphData(url);

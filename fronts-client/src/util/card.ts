@@ -178,10 +178,22 @@ const getArticleEntitiesFromDrop = async (
       return [];
     }
   }
-  if (isPlainUrl) {
-    const card = await createSnap(resourceIdOrUrl);
-    return [card];
+  try {
+    if (isPlainUrl) {
+      const card = await createSnap(resourceIdOrUrl);
+      return [card];
+    }
+  } catch (e) {
+    dispatch(
+      startOptionsModal(
+        'Could not create snap link',
+        `We couldn't create a snap link with that URL. The error was: \n\n${e.message}`,
+        [],
+        noop
+      )
+    );
   }
+
   try {
     // If we have gu params in the url, create a snap with the meta we extract.
     if (isGuardianURLWithGuMetaData) {

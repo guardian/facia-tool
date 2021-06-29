@@ -34,6 +34,11 @@ const Actions = styled.div`
   text-align: right;
 `;
 
+const Description = styled.p`
+  white-space: pre-line;
+  word-break: break-word;
+`;
+
 const OptionsModal = ({
   title,
   description,
@@ -57,7 +62,11 @@ const OptionsModal = ({
       {title}
     </h1>
     {description &&
-      (typeof description === 'string' ? <p>{description}</p> : description)}
+      (typeof description === 'string' ? (
+        <Description>{description}</Description>
+      ) : (
+        description
+      ))}
     <Actions>
       {showCancelButton && (
         <ButtonDefault
