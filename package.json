@@ -4,7 +4,9 @@
   "private": true,
   "description": "Guardian front pages editor",
   "scripts": {
-    "jspm": "jspm"
+    "jspm": "jspm",
+    "test": "grunt test",
+    "test:browser": "grunt test --no-single-run"
   },
   "dependencies": {
     "babel": "6.0.0",

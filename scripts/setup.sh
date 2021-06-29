@@ -37,7 +37,7 @@ set_node_version() {
   fi
 }
 
-install_deps_and_build() {
+install_v2_deps_and_build() {
   cd fronts-client
   yarn install
   printf "\nCompiling Javascript... \n\r\n\r"
@@ -45,7 +45,16 @@ install_deps_and_build() {
   cd ..
 }
 
-setup_ngnix() {
+printf "\n\rSetting up Breaking News tool (Fronts Tool V1) dependencies... \n\r\n\r"
+
+install_v1_deps() {
+    printf "\n\rInstalling NPM modules \n\r\n\r"
+    npm install
+    printf "\n\rInstalling JSPM modules \n\r\n\r"
+    npm run jspm install
+}
+
+setup_nginx() {
   brew install guardian/devtools/dev-nginx
   dev-nginx setup-app nginx/nginx-mapping.yml
 }
@@ -56,8 +65,9 @@ main() {
   bash $DIR/fetch-config.sh
   install_yarn
   set_node_version
-  install_deps_and_build
-  setup_ngnix
+  install_v2_deps_and_build
+  install_v1_deps
+  setup_nginx
   printf "\n\rDone.\n\r\n\r"
 }
 
