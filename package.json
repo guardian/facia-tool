@@ -4,7 +4,9 @@
   "private": true,
   "description": "Guardian front pages editor",
   "scripts": {
-    "jspm": "jspm"
+    "jspm": "jspm",
+    "test": "grunt test",
+    "test:browser": "grunt test --no-single-run"
   },
   "dependencies": {
     "babel": "6.0.0",
@@ -15,14 +17,14 @@
     "grunt-contrib-compress": "1.3.0",
     "grunt-contrib-copy": "1.0.0",
     "grunt-eslint": "20.0.0",
-    "grunt-karma": "3.0.0",
+    "grunt-karma": "^4.0.2",
     "grunt-replace": "0.11.0",
     "grunt-shell": "1.3.0",
     "jasmine-core": "2.4.1",
     "jit-grunt": "0.10.0",
     "jspm": "^0.16.35",
     "jspm-github": "^0.13.21",
-    "karma": "4.0.0",
+    "karma": "^6.3.4",
     "karma-jasmine": "2.0.1",
     "karma-phantomjs-launcher": "1.0.4",
     "karma-spec-reporter": "0.0.32",
