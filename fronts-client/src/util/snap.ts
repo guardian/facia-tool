@@ -1,6 +1,6 @@
 import type { Card, CardMeta } from 'types/Collection';
 import type { CAPIInteractiveAtomResponse } from 'services/capiQuery';
-import { getAbsolutePath, isGuardianUrl } from './url';
+import { getAbsolutePath, isGuardianUrl, isValidSnapLinkUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import v4 from 'uuid/v4';
 import set from 'lodash/fp/set';
@@ -30,6 +30,13 @@ function convertToSnap({ id, ...rest }: PartialBy<Card, 'id'>): Card {
 
   const href = isGuardianUrl(id) ? '/' + getAbsolutePath(id, true) : id;
   return set(['meta', 'href'], href, card);
+}
+
+async function createPlainSnap(url: string): Promise<Card> {
+  if (!isValidSnapLinkUrl(url)) {
+    throw new Error(`The URL is not valid. The URL was: ${url}`);
+  }
+  return createSnap(url);
 }
 
 async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
@@ -101,4 +108,11 @@ function createLatestSnap(url: string, kicker: string) {
   });
 }
 
-export { generateId, validateId, createLatestSnap, createSnap, createAtomSnap };
+export {
+  generateId,
+  validateId,
+  createLatestSnap,
+  createSnap,
+  createAtomSnap,
+  createPlainSnap,
+};
