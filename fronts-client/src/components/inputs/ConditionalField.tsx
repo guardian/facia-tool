@@ -6,6 +6,8 @@ import { BaseFieldProps } from 'redux-form';
 interface Props extends BaseFieldProps {
   permittedFields?: string[];
   container?: React.ComponentType;
+  // @TODO – a hack to get around some odd type conflicts w/ React 18.
+  component: any;
 }
 
 const ConditionalField = <P extends {}>(props: Props & P) => {

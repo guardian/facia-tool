@@ -14,7 +14,6 @@ import {
   Collection,
   Group,
   CardSets,
-  CardDenormalised,
   ArticleTag,
 } from '../types/Collection';
 import type { State } from 'types/State';
@@ -391,24 +390,6 @@ const createSelectArticlesFromIds = () =>
     (cards, cardIds) => (cardIds || []).map((afId: string) => cards[afId])
   );
 
-const createDemornalisedCard = (
-  cardId: string,
-  cards: { [id: string]: Card }
-): CardDenormalised =>
-  cards[cardId].meta && cards[cardId].meta.supporting
-    ? {
-        ...cards[cardId],
-        meta: {
-          ...cards[cardId].meta,
-          supporting:
-            cards[cardId].meta.supporting &&
-            cards[cardId].meta.supporting!.map(
-              (supportingCardId: string) => cards[supportingCardId]
-            ),
-        },
-      }
-    : { ...cards[cardId] };
-
 // this creates a map between a group id and it's parent collection id
 // { [groupId: string]: string /* collectionId */ }
 const selectGroupCollectionMap = createSelector(
@@ -511,7 +492,6 @@ export {
   createSelectCollection,
   createSelectCollectionStageGroups,
   createSelectPreviouslyLiveArticlesInCollection,
-  createDemornalisedCard,
   selectCard,
   createSelectCollectionEditWarning,
   selectCards,
