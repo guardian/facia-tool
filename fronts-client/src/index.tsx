@@ -79,15 +79,13 @@ const reactMount = document.getElementById('react-mount');
 
 if (reactMount) {
   Modal.setAppElement(reactMount);
-  (ReactDOM as any)
-    .createRoot(reactMount)
-    .render(
-      <Provider store={store}>
-        <BrowserRouter basename={base}>
-          <App />
-        </BrowserRouter>
-      </Provider>,
-      reactMount
-    );
+  (ReactDOM as any).createRoot(reactMount).render(
+    <Provider store={store}>
+      <BrowserRouter basename={base}>
+        <App />
+      </BrowserRouter>
+    </Provider>,
+    reactMount
+  );
 }
 (window as any).deleteIssue = deleteIssue;
