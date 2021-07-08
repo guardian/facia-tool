@@ -1,7 +1,7 @@
 import './util/tti';
 import 'babel-polyfill';
 import React from 'react';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import Raven from 'raven-js';
 import { BrowserRouter } from 'react-router-dom';
@@ -79,13 +79,15 @@ const reactMount = document.getElementById('react-mount');
 
 if (reactMount) {
   Modal.setAppElement(reactMount);
-  render(
-    <Provider store={store}>
-      <BrowserRouter basename={base}>
-        <App />
-      </BrowserRouter>
-    </Provider>,
-    reactMount
-  );
+  (ReactDOM as any)
+    .createRoot(reactMount)
+    .render(
+      <Provider store={store}>
+        <BrowserRouter basename={base}>
+          <App />
+        </BrowserRouter>
+      </Provider>,
+      reactMount
+    );
 }
 (window as any).deleteIssue = deleteIssue;
