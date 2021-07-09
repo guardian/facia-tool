@@ -320,7 +320,8 @@ const createSelectArticlesInCollectionGroup = () => {
 };
 
 const createSelectArticlesInCollection = () => {
-  const selectArticlesInCollectionGroups = createSelectArticlesInCollectionGroup();
+  const selectArticlesInCollectionGroups =
+    createSelectArticlesInCollectionGroup();
   return (
     state: State,
     {

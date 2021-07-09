@@ -67,46 +67,46 @@ const fetchResourceOrResults = async (
   };
 };
 
-export const createFetch = (
-  actions: typeof liveActions,
-  selectIsArticleStale: ReturnType<typeof createSelectIsArticleStale>,
-  isPreview: boolean = false
-) => (params: object, isResource: boolean): ThunkResult<void> => async (
-  dispatch,
-  getState
-) => {
-  dispatch(actions.fetchStart());
-  try {
-    const resultData = await fetchResourceOrResults(
-      isPreview ? previewCapi : liveCapi,
-      params,
-      isResource,
-      isPreview
-    );
-    if (resultData) {
-      const nonCommercialResults = resultData.results.filter((article) =>
-        isNonCommercialArticle(article)
+export const createFetch =
+  (
+    actions: typeof liveActions,
+    selectIsArticleStale: ReturnType<typeof createSelectIsArticleStale>,
+    isPreview: boolean = false
+  ) =>
+  (params: object, isResource: boolean): ThunkResult<void> =>
+  async (dispatch, getState) => {
+    dispatch(actions.fetchStart());
+    try {
+      const resultData = await fetchResourceOrResults(
+        isPreview ? previewCapi : liveCapi,
+        params,
+        isResource,
+        isPreview
       );
-      const updatedResults = nonCommercialResults.filter((article) =>
-        selectIsArticleStale(
-          getState(),
-          article.id,
-          article.fields.lastModified
-        )
-      );
-      dispatch(
-        actions.fetchSuccess(updatedResults, {
-          pagination: resultData.pagination || undefined,
-          order: nonCommercialResults.map((_) => _.id),
-        })
-      );
-    } else {
-      dispatch(actions.fetchSuccessIgnore([]));
+      if (resultData) {
+        const nonCommercialResults = resultData.results.filter((article) =>
+          isNonCommercialArticle(article)
+        );
+        const updatedResults = nonCommercialResults.filter((article) =>
+          selectIsArticleStale(
+            getState(),
+            article.id,
+            article.fields.lastModified
+          )
+        );
+        dispatch(
+          actions.fetchSuccess(updatedResults, {
+            pagination: resultData.pagination || undefined,
+            order: nonCommercialResults.map((_) => _.id),
+          })
+        );
+      } else {
+        dispatch(actions.fetchSuccessIgnore([]));
+      }
+    } catch (e) {
+      dispatch(actions.fetchError(e.message));
     }
-  } catch (e) {
-    dispatch(actions.fetchError(e.message));
-  }
-};
+  };
 
 export const fetchLive = createFetch(
   liveActions,
@@ -127,32 +127,32 @@ const {
   indexById: true,
 });
 
-export const fetchPrefill = (id: string): ThunkResult<void> => async (
-  dispatch
-) => {
-  dispatch({
-    type: 'FEED_STATE_IS_PREFILL_MODE',
-    payload: { isPrefillMode: true },
-  });
-  dispatch(prefillActions.fetchStart('prefill'));
+export const fetchPrefill =
+  (id: string): ThunkResult<void> =>
+  async (dispatch) => {
+    dispatch({
+      type: 'FEED_STATE_IS_PREFILL_MODE',
+      payload: { isPrefillMode: true },
+    });
+    dispatch(prefillActions.fetchStart('prefill'));
 
-  try {
-    const { response } = await getPrefills(id);
-    if (!checkIsContent(response)) {
-      dispatch(
-        prefillActions.fetchSuccess(
-          response.results.filter(isNonCommercialArticle, {
-            totalPages: response.pages,
-            currentPage: response.currentPage,
-            pageSize: response.pageSize,
-          })
-        )
-      );
+    try {
+      const { response } = await getPrefills(id);
+      if (!checkIsContent(response)) {
+        dispatch(
+          prefillActions.fetchSuccess(
+            response.results.filter(isNonCommercialArticle, {
+              totalPages: response.pages,
+              currentPage: response.currentPage,
+              pageSize: response.pageSize,
+            })
+          )
+        );
+      }
+    } catch (e) {
+      dispatch(prefillActions.fetchError(e.message));
     }
-  } catch (e) {
-    dispatch(prefillActions.fetchError(e.message));
-  }
-};
+  };
 
 export const hidePrefills = () => (dispatch: Dispatch) => {
   dispatch({

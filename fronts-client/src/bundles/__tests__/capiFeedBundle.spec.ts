@@ -50,7 +50,8 @@ describe('capiFeedBundle', () => {
           ) as any
         );
         expect(resource.selectors.selectAll(store.getState())).toEqual({
-          'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina': capiArticle,
+          'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina':
+            capiArticle,
         });
       })
     );
@@ -75,7 +76,8 @@ describe('capiFeedBundle', () => {
           ) as any
         );
         expect(resource.selectors.selectAll(store.getState())).toEqual({
-          'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina': capiArticle,
+          'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina':
+            capiArticle,
         });
       })
     );

@@ -9,7 +9,8 @@ export const REMOVE_SUPPORTING_CARD = 'REMOVE_SUPPORTING_CARD' as const;
 export const INSERT_GROUP_CARD = 'INSERT_GROUP_CARD' as const;
 export const INSERT_SUPPORTING_CARD = 'INSERT_SUPPORTING_CARD' as const;
 export const COPY_CARD_IMAGE_META = 'COPY_CARD_IMAGE_META' as const;
-export const MAYBE_ADD_FRONT_PUBLICATION = 'MAYBE_ADD_FRONT_PUBLICATION' as const;
+export const MAYBE_ADD_FRONT_PUBLICATION =
+  'MAYBE_ADD_FRONT_PUBLICATION' as const;
 
 function updateCardMeta(
   id: string,

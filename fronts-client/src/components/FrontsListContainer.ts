@@ -10,7 +10,8 @@ type Props = {
 } & RouteComponentProps<any>;
 
 const mapStateToProps = () => {
-  const selectFrontIdWithOpenAndStarredStates = createSelectFrontIdWithOpenAndStarredStatesByPriority();
+  const selectFrontIdWithOpenAndStarredStates =
+    createSelectFrontIdWithOpenAndStarredStatesByPriority();
   return (state: State, props: Props) => {
     return {
       fronts: selectFrontIdWithOpenAndStarredStates(

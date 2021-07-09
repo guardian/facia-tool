@@ -113,10 +113,8 @@ function getCollectionActionForMissingCollection(
     id,
     displayName: collectionConfig.displayName,
   });
-  const {
-    normalisedCollection,
-    groups,
-  } = normaliseCollectionWithNestedArticles(collection, collectionConfig);
+  const { normalisedCollection, groups } =
+    normaliseCollectionWithNestedArticles(collection, collectionConfig);
   return [
     collectionActions.fetchSuccess(normalisedCollection),
     groupsReceived(groups),
@@ -151,14 +149,11 @@ function getCollectionActions(
     ...collectionWithNestedArticles,
     draft: populateDraftArticles(collectionWithNestedArticles),
   };
-  const {
-    normalisedCollection,
-    cards,
-    groups,
-  } = normaliseCollectionWithNestedArticles(
-    collectionWithDraftArticles,
-    collectionConfig
-  );
+  const { normalisedCollection, cards, groups } =
+    normaliseCollectionWithNestedArticles(
+      collectionWithDraftArticles,
+      collectionConfig
+    );
 
   const actions = [
     collectionActions.fetchSuccess(normalisedCollection),
@@ -309,90 +304,96 @@ function updateCollection(
 /**
  * Fetch articles from CAPI and add them to the store.
  */
-const fetchArticles = (
-  articleIds: string[]
-): ThunkResult<Promise<void>> => async (dispatch, getState) => {
-  const articleIdsWithoutSnaps = uniq(
-    articleIds.filter((id) => !id.match(/^snap/))
-  );
-  if (!articleIdsWithoutSnaps.length) {
-    return;
-  }
-  dispatch(externalArticleActions.fetchStart(articleIdsWithoutSnaps));
-  try {
-    const articles = await getArticlesBatched(articleIdsWithoutSnaps);
-    const freshArticles = articles.filter((article) =>
-      selectIsExternalArticleStale(
-        getState(),
-        article.id,
-        article.fields.lastModified
-      )
+const fetchArticles =
+  (articleIds: string[]): ThunkResult<Promise<void>> =>
+  async (dispatch, getState) => {
+    const articleIdsWithoutSnaps = uniq(
+      articleIds.filter((id) => !id.match(/^snap/))
     );
-
-    if (freshArticles.length) {
-      dispatch(externalArticleActions.fetchSuccess(freshArticles));
+    if (!articleIdsWithoutSnaps.length) {
+      return;
     }
-    const remainingArticles = difference(
-      articleIdsWithoutSnaps,
-      articles.map((_) => _.id)
-    );
-    if (remainingArticles.length) {
-      dispatch(
-        externalArticleActions.fetchError(
-          `The following article ids were in a CAPI query but were not returned by CAPI: ${remainingArticles.join(
-            ', '
-          )}`,
-          remainingArticles
+    dispatch(externalArticleActions.fetchStart(articleIdsWithoutSnaps));
+    try {
+      const articles = await getArticlesBatched(articleIdsWithoutSnaps);
+      const freshArticles = articles.filter((article) =>
+        selectIsExternalArticleStale(
+          getState(),
+          article.id,
+          article.fields.lastModified
         )
       );
+
+      if (freshArticles.length) {
+        dispatch(externalArticleActions.fetchSuccess(freshArticles));
+      }
+      const remainingArticles = difference(
+        articleIdsWithoutSnaps,
+        articles.map((_) => _.id)
+      );
+      if (remainingArticles.length) {
+        dispatch(
+          externalArticleActions.fetchError(
+            `The following article ids were in a CAPI query but were not returned by CAPI: ${remainingArticles.join(
+              ', '
+            )}`,
+            remainingArticles
+          )
+        );
+      }
+    } catch (e) {
+      dispatch(externalArticleActions.fetchError(e.message, articleIds));
     }
-  } catch (e) {
-    dispatch(externalArticleActions.fetchError(e.message, articleIds));
-  }
-};
+  };
 
-const getArticlesForCollections = (
-  collectionIds: string[],
-  itemSetCandidate: CardSets | CardSets[]
-): ThunkResult<Promise<void>> => async (dispatch, getState) => {
-  const itemSets = Array.isArray(itemSetCandidate)
-    ? itemSetCandidate
-    : [itemSetCandidate];
-  const articleIds = itemSets.reduce(
-    (acc, itemSet) => [
-      ...acc,
-      ...selectArticlesInCollections(getState(), {
-        collectionIds,
-        itemSet,
-      }),
-    ],
-    [] as string[]
-  );
-  await dispatch(fetchArticles(articleIds));
-};
-
-const getOphanDataForCollections = (
-  collectionIds: string[],
-  frontId: string,
-  itemSet: CardSets
-): ThunkResult<Promise<void[]>> => async (dispatch) => {
-  const ophanRequests = collectionIds.map((collectionId) => {
-    return dispatch(
-      getPageViewDataForCollection(frontId, collectionId, itemSet)
+const getArticlesForCollections =
+  (
+    collectionIds: string[],
+    itemSetCandidate: CardSets | CardSets[]
+  ): ThunkResult<Promise<void>> =>
+  async (dispatch, getState) => {
+    const itemSets = Array.isArray(itemSetCandidate)
+      ? itemSetCandidate
+      : [itemSetCandidate];
+    const articleIds = itemSets.reduce(
+      (acc, itemSet) => [
+        ...acc,
+        ...selectArticlesInCollections(getState(), {
+          collectionIds,
+          itemSet,
+        }),
+      ],
+      [] as string[]
     );
-  });
-  return Promise.all(ophanRequests);
-};
+    await dispatch(fetchArticles(articleIds));
+  };
 
-const openCollectionsAndFetchTheirArticles = (
-  collectionIds: string[],
-  frontId: string,
-  itemSet: CardSets
-): ThunkResult<Promise<void>> => async (dispatch) => {
-  dispatch(editorOpenCollections(collectionIds));
-  await dispatch(getArticlesForCollections(collectionIds, itemSet));
-  await dispatch(getOphanDataForCollections(collectionIds, frontId, itemSet));
-};
+const getOphanDataForCollections =
+  (
+    collectionIds: string[],
+    frontId: string,
+    itemSet: CardSets
+  ): ThunkResult<Promise<void[]>> =>
+  async (dispatch) => {
+    const ophanRequests = collectionIds.map((collectionId) => {
+      return dispatch(
+        getPageViewDataForCollection(frontId, collectionId, itemSet)
+      );
+    });
+    return Promise.all(ophanRequests);
+  };
+
+const openCollectionsAndFetchTheirArticles =
+  (
+    collectionIds: string[],
+    frontId: string,
+    itemSet: CardSets
+  ): ThunkResult<Promise<void>> =>
+  async (dispatch) => {
+    dispatch(editorOpenCollections(collectionIds));
+    await dispatch(getArticlesForCollections(collectionIds, itemSet));
+    await dispatch(getOphanDataForCollections(collectionIds, frontId, itemSet));
+  };
 
 const closeCollections = (collectionIds: string[]): ThunkResult<void> => {
   return (dispatch) => {

@@ -4,9 +4,7 @@ import type { State } from 'types/State';
 import { normalize, denormalize } from './clipboardSchema';
 import { notLiveLabels } from 'constants/fronts';
 
-function normaliseClipboard(clipboard: {
-  articles: NestedCard[];
-}): {
+function normaliseClipboard(clipboard: { articles: NestedCard[] }): {
   clipboard: { articles: string[] };
   cards: { [id: string]: Card };
 } {

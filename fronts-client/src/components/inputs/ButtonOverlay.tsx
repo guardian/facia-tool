@@ -27,8 +27,11 @@ const ButtonWithShadow = styled(Button)<{ active?: boolean }>`
 const ButtonOverlay = ({
   children,
   ...rest
-}: { children: React.ReactNode; active?: boolean } & React.HTMLAttributes<
-  HTMLButtonElement
->) => <ButtonWithShadow {...rest}>{children}</ButtonWithShadow>;
+}: {
+  children: React.ReactNode;
+  active?: boolean;
+} & React.HTMLAttributes<HTMLButtonElement>) => (
+  <ButtonWithShadow {...rest}>{children}</ButtonWithShadow>
+);
 
 export default ButtonOverlay;

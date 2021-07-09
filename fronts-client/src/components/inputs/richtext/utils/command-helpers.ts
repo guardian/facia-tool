@@ -4,45 +4,44 @@ import { EditorState, Transaction } from 'prosemirror-state';
 
 // These prosemirror-helper functions are a simplified version of what we use in Composer, and have been lifted and shifted from that repo
 
-export const unlinkItemCommand = (mark: MarkType) => (
-  state: EditorState,
-  dispatch: (tr: Transaction) => void
-) => {
-  if (!markEnabled(state, mark)) {
-    return false;
-  }
-
-  if (!dispatch) {
-    return true;
-  }
-
-  const { from, to } = state.selection
-    ? getExpandedSelectionForMark(state, mark)
-    : state.selection;
-
-  dispatch(state.tr.removeMark(from, to, mark));
-};
-
-export const linkItemCommand = (markType: MarkType) => (passedUrl = null) => (
-  state: EditorState,
-  dispatch: (tr: Transaction) => void
-) => {
-  const { from, to, url } = passedUrl
-    ? { url: passedUrl, from: state.selection.from, to: state.selection.to }
-    : promptForLink(state, markType);
-
-  if (url && from !== undefined && to !== undefined) {
-    const { valid, message } = linkValidator(url);
-    if (valid) {
-      const parsedUrl = parseURL(url);
-      dispatch(
-        state.tr.addMark(from, to, markType.create({ href: parsedUrl }))
-      );
-    } else {
-      window.alert(message);
+export const unlinkItemCommand =
+  (mark: MarkType) =>
+  (state: EditorState, dispatch: (tr: Transaction) => void) => {
+    if (!markEnabled(state, mark)) {
+      return false;
     }
-  }
-};
+
+    if (!dispatch) {
+      return true;
+    }
+
+    const { from, to } = state.selection
+      ? getExpandedSelectionForMark(state, mark)
+      : state.selection;
+
+    dispatch(state.tr.removeMark(from, to, mark));
+  };
+
+export const linkItemCommand =
+  (markType: MarkType) =>
+  (passedUrl = null) =>
+  (state: EditorState, dispatch: (tr: Transaction) => void) => {
+    const { from, to, url } = passedUrl
+      ? { url: passedUrl, from: state.selection.from, to: state.selection.to }
+      : promptForLink(state, markType);
+
+    if (url && from !== undefined && to !== undefined) {
+      const { valid, message } = linkValidator(url);
+      if (valid) {
+        const parsedUrl = parseURL(url);
+        dispatch(
+          state.tr.addMark(from, to, markType.create({ href: parsedUrl }))
+        );
+      } else {
+        window.alert(message);
+      }
+    }
+  };
 
 const promptForLink = (state: EditorState, markType: MarkType) => {
   const { from, to, href } = getCurrentHrefAndEditRange(state, markType);

@@ -282,9 +282,8 @@ const mapStateToProps = () => {
       front: selectFront(state, { frontId: id }),
       alsoOn: selectAlsoOnFronts(state, { frontId: id }),
       collectionsError: collectionSelectors.selectCurrentError(state),
-      collectionsLastSuccessfulFetchTimestamp: collectionSelectors.selectLastSuccessfulFetchTimestamp(
-        state
-      ),
+      collectionsLastSuccessfulFetchTimestamp:
+        collectionSelectors.selectLastSuccessfulFetchTimestamp(state),
     };
   };
 };

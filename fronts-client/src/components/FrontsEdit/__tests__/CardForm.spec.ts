@@ -168,9 +168,9 @@ describe('CardForm transform functions', () => {
         'exampleId',
         {}
       );
-      expect(
-        getCardMetaFromFormValues(state, 'exampleId', formValues)
-      ).toEqual({ headline: 'Bill Shorten' });
+      expect(getCardMetaFromFormValues(state, 'exampleId', formValues)).toEqual(
+        { headline: 'Bill Shorten' }
+      );
     });
     it('should derive values, removing the slideshow array if empty', () => {
       const byline = 'Caroline Davies edited';

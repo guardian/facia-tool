@@ -36,23 +36,22 @@ const createDragEvent = (top: boolean) => {
   };
 };
 
-const runDrag = (type: any, data?: any, json: boolean = true) => (
-  dropProps: any,
-  top = true
-) => {
-  const e = createDragEvent(top);
+const runDrag =
+  (type: any, data?: any, json: boolean = true) =>
+  (dropProps: any, top = true) => {
+    const e = createDragEvent(top);
 
-  if (typeof type === 'string') {
-    e.dataTransfer.setData(type, json ? JSON.stringify(data) : data);
-  } else {
-    // type is actually dragProps
-    type.onDragStart(e);
-  }
+    if (typeof type === 'string') {
+      e.dataTransfer.setData(type, json ? JSON.stringify(data) : data);
+    } else {
+      // type is actually dragProps
+      type.onDragStart(e);
+    }
 
-  if (dropProps.onDrop) {
-    dropProps.onDrop(e);
-  }
-};
+    if (dropProps.onDrop) {
+      dropProps.onDrop(e);
+    }
+  };
 
 const setup = (jsx: React.ReactElement<any>) =>
   TestRenderer.create(jsx).getInstance();

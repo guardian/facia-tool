@@ -135,8 +135,7 @@ describe('utils/snap', () => {
           snapUri:
             'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
           atomId: 'atom/interactive/interactives/2017/06/general-election',
-          href:
-            'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
+          href: 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
         },
       });
     });

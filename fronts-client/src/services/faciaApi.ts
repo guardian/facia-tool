@@ -171,25 +171,25 @@ async function publishCollection(collectionId: string): Promise<void> {
   }
 }
 
-const updateCollection = (id: string) => async (
-  collection: CollectionWithNestedArticles
-): Promise<void> => {
-  try {
-    const response = await pandaFetch('/v2Edits', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      body: JSON.stringify({ id, collection }),
-    });
-    return await response.json();
-  } catch (response) {
-    throw new Error(
-      `Tried to update collection with id ${id}, but the server responded with ${response.status}: ${response.body}`
-    );
-  }
-};
+const updateCollection =
+  (id: string) =>
+  async (collection: CollectionWithNestedArticles): Promise<void> => {
+    try {
+      const response = await pandaFetch('/v2Edits', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ id, collection }),
+      });
+      return await response.json();
+    } catch (response) {
+      throw new Error(
+        `Tried to update collection with id ${id}, but the server responded with ${response.status}: ${response.body}`
+      );
+    }
+  };
 
 const saveClipboard = (content: NestedCard[]) =>
   createSaveClipboard(content, '/clipboard');
@@ -358,9 +358,7 @@ const parseArticleListFromResponses = (
 /**
  * Get the articles and title for a CAPI content id, which could be a tag or an article.
  */
-async function getContent(
-  contentId: string
-): Promise<{
+async function getContent(contentId: string): Promise<{
   articles: ExternalArticle[];
   title: string | undefined;
 }> {
