@@ -17,7 +17,7 @@ object EditionOlympicLegends extends SpecialEdition {
   override val topic = "e-es"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/c2789bcfc339f8a42f8dbfd6384e910a596b2836/0_0_1000_2000/1000.png?width=80&quality=85&s=5b82671dfe610a22e6ccbfc54cba8895")
   override val expiry: Option[String] = Some(
-    new DateTime(2021, 7,11,23,59,DateTimeZone.UTC).toString()
+    new DateTime(2021, 9,23,23,59,DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
