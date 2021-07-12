@@ -34,6 +34,23 @@ notifications.subscribe((notification) =>
   store.dispatch(actionAddNotificationBanner(notification))
 );
 
+// Recommend Chrome 87 users to use Firefox instead, due to drag-and drop
+// performance issue.
+if (navigator.userAgent){
+  const getChromeVersion = () => {
+    const chromeString = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+    return chromeString ? parseInt(chromeString[2], 10) : false;
+  }
+  const chromeVersion = getChromeVersion();
+
+  if (chromeVersion >= 87){
+    notifications.notify({
+      message: `There are known performance issues in Chrome ${chromeVersion}. We recommend the use of Firefox.`,
+      level: 'error',
+    });
+  }
+}
+
 // @ts-ignore -- Unbind is not used yet but can be used for removed all the
 // keyboard events. The keyboardActionMap contains a list of all active keyboard
 // shortcuts, which can eventually be displayed to the user.
