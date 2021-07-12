@@ -21,7 +21,8 @@ object EditionsTemplates {
     Edition.EditionEarth -> EditionEarth,
     Edition.EditionBooks -> EditionBooks,
     Edition.EditionWeWereThere -> EditionWeWereThere,
-    Edition.EditionEurosSpecial -> EditionEurosSpecial
+    Edition.EditionEurosSpecial -> EditionEurosSpecial,
+    Edition.EditionOlympicLegends -> EditionOlympicLegends
   )
 
   val getAvailableEditions: List[EditionDefinition] = templates.values.toList
