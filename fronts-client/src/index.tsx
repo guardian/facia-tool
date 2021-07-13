@@ -24,6 +24,7 @@ import { actionSetFeatureValue } from 'actions/FeatureSwitches';
 import { deleteIssue } from 'util/delete';
 import notifications from 'services/notifications';
 import { actionAddNotificationBanner } from 'bundles/notificationsBundle';
+import { saveFeatureSwitch } from 'services/userDataApi';
 
 initGA();
 
@@ -36,22 +37,34 @@ notifications.subscribe((notification) =>
 
 // Recommend Chrome 87 users to use Firefox instead, due to drag-and drop
 // performance issue.
-if (navigator.userAgent && pageConfig.userData){
-  const getChromeVersion = () => {
-    const chromeString = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
-    return chromeString ? parseInt(chromeString[2], 10) : false;
-  }
-  const chromeVersion = getChromeVersion();
+const maybeWarnChromeUsers = () => {
+  if (!navigator.userAgent || !pageConfig.userData) return;
+  const chromeString = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+  const chromeVersion = chromeString ? parseInt(chromeString[2], 10) : false;
 
-  const featureSwitch = pageConfig.userData.featureSwitches.find(featureSwitch => featureSwitch.key === "show-firefox-prompt");
-  console.log(pageConfig.userData.featureSwitches);
-  if (chromeVersion >= 87 && featureSwitch?.enabled){
-    notifications.notify({
-      message: `There are known performance issues in Chrome ${chromeVersion}. We recommend the use of Firefox.`,
-      level: 'error',
-    });
+  const featureSwitch = pageConfig.userData.featureSwitches.find(
+    (featureSwitch) => featureSwitch.key === 'show-firefox-prompt'
+  );
+
+  if (chromeVersion < 87 || !featureSwitch?.enabled) {
+    return;
   }
-}
+
+  notifications.notify({
+    message: `There are known performance issues in Chrome ${chromeVersion}. If Fronts feels slow, try using Firefox.`,
+    level: 'error',
+    dismissalCallback: () => {
+      const newSwitchValue = {
+        ...featureSwitch,
+        enabled: false,
+      };
+      store.dispatch(actionSetFeatureValue(newSwitchValue));
+      saveFeatureSwitch(newSwitchValue);
+    },
+  });
+};
+
+maybeWarnChromeUsers();
 
 // @ts-ignore -- Unbind is not used yet but can be used for removed all the
 // keyboard events. The keyboardActionMap contains a list of all active keyboard
