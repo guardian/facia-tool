@@ -38,12 +38,14 @@ notifications.subscribe((notification) =>
 // Recommend Chrome 87 users to use Firefox instead, due to drag-and drop
 // performance issue.
 const maybeWarnChromeUsers = () => {
-  if (!navigator.userAgent || !pageConfig.userData) return;
+  if (!navigator.userAgent || !pageConfig.userData) {
+    return;
+  }
   const chromeString = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
   const chromeVersion = chromeString ? parseInt(chromeString[2], 10) : false;
 
   const featureSwitch = pageConfig.userData.featureSwitches.find(
-    (featureSwitch) => featureSwitch.key === 'show-firefox-prompt'
+    (feature) => feature.key === 'show-firefox-prompt'
   );
 
   if (chromeVersion < 87 || !featureSwitch?.enabled) {
