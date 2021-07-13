@@ -53,7 +53,8 @@ const maybeWarnChromeUsers = () => {
   }
 
   notifications.notify({
-    message: `There are known performance issues in Chrome ${chromeVersion}. If Fronts feels slow, try using Firefox.`,
+    message: `There are known performance issues in Chrome ${chromeVersion} for this tool. If it feels slow, try using Firefox. \
+<br>For further information, please contact <a href="mailto:central.production@guardian.co.uk">Central Production.</a>`,
     level: 'error',
     dismissalCallback: () => {
       const newSwitchValue = {
