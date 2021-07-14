@@ -15,7 +15,7 @@ object EditionOlympicLegends extends SpecialEdition {
   override val header = Header(title ="Olympic", subTitle=Some("legends"))
   override val notificationUTCOffset = 3
   override val topic = "e-es"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/c2789bcfc339f8a42f8dbfd6384e910a596b2836/0_0_1000_2000/1000.png?width=80&quality=85&s=5b82671dfe610a22e6ccbfc54cba8895")
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/88b364af00d13f1a13a3111656dd4c5a7d91ea66/0_0_250_500/250.png?width=80&quality=85&s=6a3ad4ccd98f3bc28f46caa96fa7af87")
   override val expiry: Option[String] = Some(
     new DateTime(2021, 9,23,23,59,DateTimeZone.UTC).toString()
   )
