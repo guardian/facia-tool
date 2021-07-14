@@ -43,7 +43,8 @@ object UserDataForDefaults {
 
   def fromUserData(userData: UserData, clipboardArticles: Option[List[Trail]]): UserDataForDefaults = {
     val featureSwitches = userData.featureSwitches.fold(FeatureSwitches.all) { userFeatureSwitches =>
-      val unsetFeatureSwitches = FeatureSwitches.all.diff(userFeatureSwitches)
+      val userFeatureSwitchKeys = userFeatureSwitches.map(_.key)
+      val unsetFeatureSwitches = FeatureSwitches.all.filter(featureSwitch => !userFeatureSwitchKeys.contains(featureSwitch.key))
       unsetFeatureSwitches ++ FeatureSwitches.removeUnknownSwitches(userFeatureSwitches)
     }
     UserDataForDefaults(
