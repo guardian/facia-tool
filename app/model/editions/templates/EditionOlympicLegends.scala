@@ -21,16 +21,16 @@ object EditionOlympicLegends extends SpecialEdition {
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
-      backgroundColor = "#0293E1",
-      title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Medium", lineHeight = 34, size = 32),
-      subTitle = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 20, size = 17),
-      expiry = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
+      backgroundColor = "#6B6F51",
+      title = EditionTextFormatting(color = "#FFFFFF", font="GHGuardianHeadline-Medium", lineHeight = 34, size = 32),
+      subTitle = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 20, size = 17),
+      expiry = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
       image = EditionImageStyle(80,160)
     )
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
     SpecialEditionHeaderStyles(
-      backgroundColor = "#007ABC",
+      backgroundColor = "#AB0613",
       textColorPrimary = "#FFFFFF",
       textColorSecondary = "#FFFFFF"
     )
