@@ -46,8 +46,15 @@ object EditionOlympicLegends extends SpecialEdition {
       Special05 -> Daily(),
       Special06 -> Daily(),
       Special07 -> Daily(),
-      Special08 -> Daily()
-      
+      Special08 -> Daily(),
+      Special09 -> Daily(),
+      Special10 -> Daily(),
+      Special11 -> Daily(),
+      Special12 -> Daily(),
+      Special13 -> Daily(),
+      Special14 -> Daily(),
+      Special15 -> Daily(),
+      Special16 -> Daily()
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
@@ -66,7 +73,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Neutral)
+  ).swatch(News)
 
   def Special02 = front("Front2", None,
     collection("Special"),
@@ -74,7 +81,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Sport)
 
   def Special03 = front("Front3", None,
     collection("Special"),
@@ -90,7 +97,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Sport)
   
   def Special05 = front("Front5", None,
     collection("Special"),
@@ -106,7 +113,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Sport)
 
   def Special07 = front("Front7", None,
     collection("Special"),
@@ -122,6 +129,70 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
+  ).swatch(Sport)
+  
+  def Special09 = front("Front9", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
   ).swatch(News)
+  
+  def Special10 = front("Front10", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Sport)
+  
+  def Special11 = front("Front11", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+  
+  def Special12 = front("Front12", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Sport)
+  
+  def Special13 = front("Front13", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+  
+  def Special14 = front("Front14", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Sport)  
+  
+  def Special15 = front("Front15", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(News)
+  
+  def Special16 = front("Front16", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Sport)
 
 }
