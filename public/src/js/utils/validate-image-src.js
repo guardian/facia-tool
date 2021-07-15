@@ -144,7 +144,7 @@ function validateActualImage (image, frontId) {
         } else {
             if (image.origin) {
                 return recordUsage(image.origin.split('/').slice(-1)[0], frontId)
-                .then(() => { resolve({ path, origin, thumb, width, height }); });
+                .finally(() => { resolve({ path, origin, thumb, width, height }); });
             }
             resolve( { path, origin, thumb, width, height } );
         }
