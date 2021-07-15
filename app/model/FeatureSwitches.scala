@@ -24,8 +24,14 @@ object PageViewDataVisualisation extends FeatureSwitch(
   enabled = true
 )
 
+object ShowFirefoxPrompt extends FeatureSwitch(
+  key = "show-firefox-prompt",
+  title = "Show the prompt to use Firefox if applicable",
+  enabled = true
+)
+
 object FeatureSwitches {
-  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation)
+  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, ShowFirefoxPrompt)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     val newSwitches = userDataSwitches match {
@@ -38,7 +44,7 @@ object FeatureSwitches {
     removeUnknownSwitches(newSwitches)
   }
 
-  def removeUnknownSwitches(featureSwitches: List[FeatureSwitch]) = 
+  def removeUnknownSwitches(featureSwitches: List[FeatureSwitch]) =
     featureSwitches.filter(featureSwitch =>
       FeatureSwitches.all.exists(_.key == featureSwitch.key))
 }

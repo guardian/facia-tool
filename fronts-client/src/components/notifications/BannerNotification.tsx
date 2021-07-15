@@ -56,7 +56,12 @@ const NotificationsBanner = ({
           <span dangerouslySetInnerHTML={{ __html: banner.message }} />
           {banner.duplicates ? ` (${banner.duplicates + 1})` : ''}
         </Message>
-        <CloseButton onClick={() => removeNotificationBanner(banner.id)}>
+        <CloseButton
+          onClick={() => {
+            banner.dismissalCallback?.();
+            removeNotificationBanner(banner.id);
+          }}
+        >
           <ClearIcon size="fill" />
         </CloseButton>
       </BannerWrapper>

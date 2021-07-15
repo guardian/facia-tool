@@ -24,6 +24,7 @@ import { actionSetFeatureValue } from 'actions/FeatureSwitches';
 import { deleteIssue } from 'util/delete';
 import notifications from 'services/notifications';
 import { actionAddNotificationBanner } from 'bundles/notificationsBundle';
+import { saveFeatureSwitch } from 'services/userDataApi';
 
 initGA();
 
@@ -33,6 +34,40 @@ const store = configureStore();
 notifications.subscribe((notification) =>
   store.dispatch(actionAddNotificationBanner(notification))
 );
+
+// Recommend Chrome 87 users to use Firefox instead, due to drag-and drop
+// performance issue.
+const maybeWarnChromeUsers = () => {
+  if (!navigator.userAgent || !pageConfig.userData) {
+    return;
+  }
+  const chromeString = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./);
+  const chromeVersion = chromeString ? parseInt(chromeString[2], 10) : false;
+
+  const featureSwitch = pageConfig.userData.featureSwitches.find(
+    (feature) => feature.key === 'show-firefox-prompt'
+  );
+
+  if (chromeVersion < 87 || !featureSwitch?.enabled) {
+    return;
+  }
+
+  notifications.notify({
+    message: `There are known performance issues in Chrome ${chromeVersion} for this tool. If it feels slow, try using Firefox. \
+<br>For further information, please contact <a href="mailto:central.production@guardian.co.uk">Central Production.</a>`,
+    level: 'error',
+    dismissalCallback: () => {
+      const newSwitchValue = {
+        ...featureSwitch,
+        enabled: false,
+      };
+      store.dispatch(actionSetFeatureValue(newSwitchValue));
+      saveFeatureSwitch(newSwitchValue);
+    },
+  });
+};
+
+maybeWarnChromeUsers();
 
 // @ts-ignore -- Unbind is not used yet but can be used for removed all the
 // keyboard events. The keyboardActionMap contains a list of all active keyboard
