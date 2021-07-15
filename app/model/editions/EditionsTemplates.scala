@@ -77,6 +77,8 @@ object Edition extends PlayEnum[Edition] {
   case object EditionWeWereThere extends Edition
   
   case object EditionEurosSpecial extends Edition
+  
+  case object EditionOlympicLegends extends Edition
 
   override def values = findValues
 }
