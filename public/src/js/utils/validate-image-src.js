@@ -142,11 +142,13 @@ function validateActualImage (image, frontId) {
         } else if (criteriaRatio && criteriaRatio - ratio > 0.01) {
             reject(new Error('Images must have a ' + widthAspectRatio + ':' + heightAspectRatio + ' aspect ratio'));
         } else {
+            const resolveWithImage = () => { resolve({ path, origin, thumb, width, height });};
             if (image.origin) {
                 return recordUsage(image.origin.split('/').slice(-1)[0], frontId)
-                .then(() => { resolve({ path, origin, thumb, width, height }); });
+                .then(resolveWithImage)
+                .catch(resolveWithImage);
             }
-            resolve( { path, origin, thumb, width, height } );
+            resolve(resolveWithImage);
         }
     });
 }
