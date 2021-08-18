@@ -29,6 +29,7 @@ GET         /editorial/config                        controllers.ViewsController
 GET         /commercial/config                       controllers.ViewsController.configEditor()
 GET         /training/config                         controllers.ViewsController.configEditor()
 GET         /email/config                            controllers.ViewsController.configEditor()
+GET         /showcase/config                         controllers.ViewsController.configEditor()
 GET         /edition/config                          controllers.ViewsController.configEditor()
 
 POST        /collection/publish/*collectionId        controllers.FaciaToolController.publishCollection(collectionId)
