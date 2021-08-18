@@ -15,7 +15,8 @@ module.exports = {
     filename: 'app.bundle.js'
   },
   plugins: [
-    new ForkTsCheckerWebpackPlugin(),
+    // new ForkTsCheckerWebpackPlugin(),
+    // here be dragons
     new CircularDependencyPlugin({ failOnError: true, exclude: /node_modules/ })
   ],
   module: {
