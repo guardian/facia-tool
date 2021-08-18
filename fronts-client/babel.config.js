@@ -3,16 +3,17 @@ module.exports = {
     [
       '@babel/env',
       {
+        corejs: '3.16',
         useBuiltIns: 'usage',
         targets: {
-          browsers: ['chrome >= 49', 'firefox >= 48', 'safari >= 10']
-        }
-      }
+          browsers: ['chrome >= 49', 'firefox >= 48', 'safari >= 10'],
+        },
+      },
     ],
-    '@babel/react'
+    '@babel/react',
   ],
   plugins: [
     '@babel/plugin-proposal-object-rest-spread',
-    'transform-class-properties'
-  ]
+    'transform-class-properties',
+  ],
 };
