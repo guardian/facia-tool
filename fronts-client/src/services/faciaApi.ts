@@ -296,13 +296,18 @@ const DEFAULT_PARAMS = {
  * Get a CAPI query string for the given content ids. This could be a single article
  * or tag/section, or a list of articles
  */
-const getCapiUriForContentIds = (contentIds: string[]) => {
+const getCapiUriForContentIds = (
+  contentIds: string[],
+  preview: boolean = true
+) => {
   const contentIdsStr = contentIds.join(',');
   const searchStr =
     contentIds.length > 1
       ? `search?ids=${contentIdsStr}&`
       : `${contentIdsStr}?`;
-  return `/api/preview/${searchStr}${Object.entries(DEFAULT_PARAMS)
+  return `/api/${preview ? 'preview' : 'live'}/${searchStr}${Object.entries(
+    DEFAULT_PARAMS
+  )
     .map((e) => e.join('='))
     .join('&')}`;
 };
@@ -364,15 +369,24 @@ async function getContent(
   articles: ExternalArticle[];
   title: string | undefined;
 }> {
-  const response = await pandaFetch(getCapiUriForContentIds([contentId]), {
-    method: 'get',
-    credentials: 'same-origin',
-  });
-  const parsedResponse: CAPISearchQueryResponse = await response.json();
-  return {
-    articles: parseArticleListFromResponses(parsedResponse),
-    title: getTagOrSectionTitle(parsedResponse),
+  const inner = async (preview: boolean) => {
+    const response = await pandaFetch(getCapiUriForContentIds([contentId]), {
+      method: 'get',
+      credentials: 'same-origin',
+    });
+    const parsedResponse: CAPISearchQueryResponse = await response.json();
+    const articles = parseArticleListFromResponses(parsedResponse);
+    return {
+      articles,
+      title: getTagOrSectionTitle(parsedResponse),
+    };
   };
+
+  const fromLive = await inner(true);
+  if (fromLive.articles.length > 0) {
+    return fromLive;
+  }
+  return inner(true);
 }
 
 /**
@@ -383,22 +397,34 @@ async function getContent(
 async function getArticlesBatched(
   articleIds: string[]
 ): Promise<ExternalArticle[]> {
-  const capiPromises = chunk(articleIds, 50).map((localArticleIDs) => {
-    return pandaFetch(getCapiUriForContentIds(localArticleIDs), {
-      method: 'get',
-      credentials: 'same-origin',
+  // combine preview and live respos
+  const getBatched = async (preview: boolean) => {
+    const capiPromises = chunk(articleIds, 50).map((localArticleIDs) => {
+      return pandaFetch(getCapiUriForContentIds(localArticleIDs, preview), {
+        method: 'get',
+        credentials: 'same-origin',
+      });
     });
-  });
 
-  try {
-    const responses = await Promise.all(capiPromises);
-    const parsedResponses: CAPISearchQueryResponse[] = await Promise.all(
-      responses.map((_) => _.json())
-    );
-    return flatMap(parsedResponses.map(parseArticleListFromResponses));
-  } catch (e) {
-    throw new Error(`Error fetching articles: ${e.message || e.status}`);
-  }
+    try {
+      const responses = await Promise.all(capiPromises);
+      const parsedResponses: CAPISearchQueryResponse[] = await Promise.all(
+        responses.map((_) => _.json())
+      );
+      const articles = flatMap(
+        parsedResponses.map(parseArticleListFromResponses)
+      );
+      return Object.fromEntries(
+        articles.map((article) => [article.id, article])
+      );
+    } catch (e) {
+      throw new Error(`Error fetching articles: ${e.message || e.status}`);
+    }
+  };
+  const fromLivePromise = getBatched(false);
+  const fromPreview = await getBatched(true);
+  const fromLive = await fromLivePromise;
+  return articleIds.map((id) => fromLive[id] || fromPreview[id]);
 }
 
 export {
