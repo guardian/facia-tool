@@ -24,6 +24,7 @@ GET         /editorial                               controllers.ViewsController
 GET         /commercial                              controllers.ViewsController.collectionEditor(priority="commercial")
 GET         /training                                controllers.ViewsController.collectionEditor(priority="training")
 GET         /email                                   controllers.ViewsController.collectionEditor(priority="email")
+GET         /showcase                                controllers.ViewsController.collectionEditor(priority="showcase")
 
 GET         /editorial/config                        controllers.ViewsController.configEditor()
 GET         /commercial/config                       controllers.ViewsController.configEditor()
