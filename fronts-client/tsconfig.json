@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es2019",
     "module": "es6",
     "moduleResolution": "node",
-    "lib": ["dom", "dom.iterable", "es2017"],
+    "lib": ["dom", "dom.iterable", "es2017","es2019"],
     "jsx": "react",
     "allowJs": true,
     "noImplicitAny": true,
