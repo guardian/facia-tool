@@ -4,7 +4,11 @@ import fetchMock from 'fetch-mock';
 import set from 'lodash/fp/set';
 import configureStore from 'util/configureStore';
 import config from 'fixtures/config';
-import { stateWithCollection, capiArticle } from 'fixtures/shared';
+import {
+  stateWithCollection,
+  capiArticle,
+  createCapiArticle,
+} from 'fixtures/shared';
 import {
   getCollectionsApiResponse,
   getCollectionsApiResponseWithoutStoriesVisible,
@@ -405,10 +409,16 @@ describe('Collection actions', () => {
   });
 
   describe('getArticlesForCollections thunk', () => {
-    it('should dispatch start and success actions for articles returned from getCollection()', async () => {
+    it.only('should dispatch start and success actions for articles returned from getCollection()', async () => {
+      fetchMock.once(
+        'begin:/api/live/search?ids=article/live/0,article/draft/1,a/long/path/2',
+        { response: { results: [createCapiArticle('article/live/0')] } }
+      );
+      // /api/live/search?ids=article/live/0,article/draft/1,a/long/path/2
+      // /api/live/search?ids=article/live/0,article/draft/1,a/long/path/2
       fetchMock.once(
         'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
-        { response: { results: [capiArticle] } }
+        { response: { results: [createCapiArticle('article/live/0')] } }
       );
       const store = mockStore({
         config,

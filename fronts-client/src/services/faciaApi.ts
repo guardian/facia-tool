@@ -424,7 +424,10 @@ async function getArticlesBatched(
   const fromLivePromise = getBatched(false);
   const fromPreview = await getBatched(true);
   const fromLive = await fromLivePromise;
-  return articleIds.map((id) => fromLive[id] || fromPreview[id]);
+
+  return articleIds
+    .map((id) => fromLive[id] || fromPreview[id])
+    .filter((maybeArticle) => !!maybeArticle);
 }
 
 export {

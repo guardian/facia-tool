@@ -1,6 +1,5 @@
-const capiArticle = {
-  id:
-    'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
+const createCapiArticle = (id: string) => ({
+  id,
   type: 'liveblog',
   sectionId: 'world',
   sectionName: 'World news',
@@ -91,7 +90,11 @@ const capiArticle = {
   isHosted: false,
   pillarId: 'pillar/news',
   pillarName: 'News',
-};
+});
+
+const capiArticle = createCapiArticle(
+  'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina'
+);
 
 const capiArticleWithVideo = {
   id:
@@ -874,6 +877,7 @@ const initialState = {
 };
 
 export {
+  createCapiArticle,
   capiArticle,
   capiArticleWithVideo,
   collection,
