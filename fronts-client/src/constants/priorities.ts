@@ -5,4 +5,5 @@ export const priorities: Priorities = {
   commercial: {},
   training: {},
   email: {},
+  showcase: {},
 };
