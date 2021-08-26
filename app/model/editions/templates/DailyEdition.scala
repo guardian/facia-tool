@@ -38,15 +38,21 @@ object DailyEdition extends RegionalEdition {
       FrontJournal -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontComment -> WeekDays(List(WeekDay.Sun)),
       FrontOpinionSpecial -> Daily(),
+      // TO DO New Saturday Magazine Culture section: FrontLifeSaturdayMagazine (w Lifestyle, features, cuttings)
       // Culture fronts and special
       FrontCulture -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
       FrontCultureFilmMusic -> WeekDays(List(WeekDay.Fri)),
+      //TO DO KILL FrontCultureGuide after 25/9
       FrontCultureGuide -> WeekDays(List(WeekDay.Sat)),
+      //TO DO New Hidden front: FrontCultureSaturdayMagazine (w Culture book tag - book review tone?)
       FrontCultureNewReview -> WeekDays(List(WeekDay.Sun)),
+      //TO DO KILL FrontBooks ON SATURDAY after 25/9 (this is the old one using Sat Review)
       FrontBooks -> WeekDays(List(WeekDay.Sat, WeekDay.Sun)),
+      //TO DO New Hidden front FrontBooksSaturdayMagazine (probably culture booktag + book review tone?)
       FrontCultureSpecial -> Daily(),
       // Life fronts and special
       FrontLife -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
+      //TO DO KILL FrontLifeWeekend after 25/9
       FrontLifeWeekend -> WeekDays(List(WeekDay.Sat)),
       FrontTravelGuardian -> WeekDays(List(WeekDay.Sat)),
       FrontLifeMagazineObserver -> WeekDays(List(WeekDay.Sun)),
