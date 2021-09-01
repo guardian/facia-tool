@@ -353,10 +353,6 @@ object DailyEdition extends RegionalEdition {
     collection("Space").printSentAnyTag("theguardian/weekend/space2"),
     collection("Style").printSentAnyTag("theguardian/weekend/fashion-and-beauty"),
     collection("Body & mind").printSentAnyTag("theguardian/weekend/body-and-mind"),
-    collection("Front").printSentAnyTag("theguardian/saturday/front").hide,
-    collection("Features").printSentAnyTag("theguardian/saturday/features").hide,
-    collection("Culture").printSentAnyTag("theguardian/saturday/culture").hide,
-    collection("Lifestyle").printSentAnyTag("theguardian/saturday/lifestyle").hide,
     collection("Life").hide,
     collection("Life").hide
   )
