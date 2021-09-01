@@ -3,6 +3,7 @@ interface Priorities {
   commercial: unknown;
   training: unknown;
   email: unknown;
+  showcase: unknown;
 }
 
 interface EditionPriority {

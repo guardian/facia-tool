@@ -14,7 +14,12 @@ import { TArticleEntities } from 'types/Cards';
 import { Dispatch } from 'types/Store';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { MappableDropType } from 'util/collectionUtils';
-import { createAtomSnap, createLatestSnap, createSnap } from 'util/snap';
+import {
+  createAtomSnap,
+  createLatestSnap,
+  createPlainSnap,
+  createSnap,
+} from 'util/snap';
 import {
   checkQueryParams,
   getAbsolutePath,
@@ -178,10 +183,23 @@ const getArticleEntitiesFromDrop = async (
       return [];
     }
   }
-  if (isPlainUrl) {
-    const card = await createSnap(resourceIdOrUrl);
-    return [card];
+  try {
+    if (isPlainUrl) {
+      const card = await createPlainSnap(resourceIdOrUrl);
+      return [card];
+    }
+  } catch (e) {
+    dispatch(
+      startOptionsModal(
+        'Could not create snap link',
+        `We couldn't create a snap link with that URL. The error was: \n\n${e.message}`,
+        [],
+        noop
+      )
+    );
+    return [];
   }
+
   try {
     // If we have gu params in the url, create a snap with the meta we extract.
     if (isGuardianURLWithGuMetaData) {

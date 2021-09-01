@@ -125,6 +125,8 @@ object DailyEdition extends RegionalEdition {
     collection("World").printSentAnyTag("theguardian/mainsection/international"),
     collection("World").hide,
     collection("World").hide,
+    collection("World").hide,
+    collection("World").hide,
     collection("World").hide
   )
     .swatch(News)
@@ -142,6 +144,8 @@ object DailyEdition extends RegionalEdition {
   def FrontNewsWorldObserver = front(
     "World",
     collection("World").printSentAnyTag("theobserver/news/worldnews"),
+    collection("World").hide,
+    collection("World").hide,
     collection("World").hide,
     collection("World").hide,
     collection("World").hide
@@ -379,6 +383,7 @@ object DailyEdition extends RegionalEdition {
   def FrontFood = front(
     "Food",
     collection("Food").printSentAnyTag("theguardian/feast/feast"),
+    collection("Food").hide,
     collection("Food").hide,
     collection("Food").hide
   )

@@ -149,6 +149,12 @@ export default {
             hasGroups: true,
             isTypeLocked: true,
             isHiddenLocked: true
+        },
+        'showcase': {
+            maxFronts: 50,
+            hasGroups: false,
+            isTypeLocked: false,
+            isHiddenLocked: false
         }
 
     },

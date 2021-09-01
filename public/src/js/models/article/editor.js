@@ -154,6 +154,8 @@ export default class Editor extends BaseClass {
             image = imageSrc(),
             opts = params.options;
 
+        this.assignImageToSpreadElement(params, null);
+
         if (image) {
             let {src, origin} = extractImageElements(image);
             const frontId = this.article.front ? this.article.front.front() : 'clipboard';
@@ -163,8 +165,6 @@ export default class Editor extends BaseClass {
                 }, err => {
                     this.assignImageToSpreadElement(params, err);
                 });
-        } else {
-            this.assignImageToSpreadElement(params, null);
         }
     }
 

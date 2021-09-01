@@ -9,30 +9,36 @@ You can find the client for the Fronts tool in [fronts-client](/fronts-client).
 ### Setup (need to be done once)
 
 1. Install [NVM](https://github.com/creationix/nvm).
-1. Get credentials from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev) (`cmsFronts`, `capi` & `frontend`).
-1. Grant [code](https://permissions.code.dev-gutools.co.uk/) permissions (used for local builds as well).  You need:
+2. Ensure [Docker](https://www.docker.com/products/docker-desktop) is installed
+3. Get credentials from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev) (`cmsFronts`, `capi` & `frontend`).
+4. Grant [code](https://permissions.code.dev-gutools.co.uk/) permissions (used for local builds as well).  You need:
     1. fronts_access
     1. launch_commercial_fronts
     1. edit_editorial_fronts
     1. edit_editions
     1. launch_editorial_fronts
     1. configure_fronts
-1. From the project root, run `./scripts/setup.sh`.
+5. From the project root, run `./scripts/setup.sh`.
 
 ### Dev Start
 
-1. To run the application:
+1. Run Docker locally
+2. To run the application:
    - From the project root, run `./scripts/dev-start.sh`
    - From the project root, run without debug `./scripts/dev-start.sh --no-debug`
-2. Open `https://fronts.local.dev-gutools.co.uk`.
+3. Open `https://fronts.local.dev-gutools.co.uk`.
 
 ### Unit tests
 
 - Running server side tests: `sbt test`
-- Running client side tests: `grunt test`
-  - `grunt test --no-single-run` runs the tests in the browser, starts `karma` in debug mode. You can connect your browser at [http://localhost:9876?debug.html](http://localhost:9876?debug.html)
+
+#### Client side tests for V1
+- Running client side tests: `npm run test` in project root
+  - `npm run test:browser` runs the tests in the browser, starts `karma` in debug mode. You can connect your browser at [http://localhost:9876?debug.html](http://localhost:9876?debug.html)
   - You can run a single test going to [http://localhost:9876/debug.html?test=collections](http://localhost:9876/debug.html?test=collections), spec files are inside `facia-tool/test/public/spec`.
 
+#### Client side tests for V2
+Run `yarn test` in `fronts-client` folder. See [fronts-client](/fronts-client) for more details.
 ### IT tests with Database
 
 `sbt test database-int:test`
@@ -127,4 +133,4 @@ More detailed instructions of how to develop fronts tool available [here](./GUID
 
 ## Get Fronts Editors
 
-There is a script to get a list of the fronts editors in the `get-editors-script`. See the [script README](./get-editors-script/README.md) for more details.
+There is a script to get a list of the fronts editors in the `get-editors-script`. See the [script README](./scripts/get-editors-script/README.md) for more details.

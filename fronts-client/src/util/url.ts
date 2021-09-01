@@ -109,6 +109,15 @@ const getCardMetaFromUrlParams = (
   );
 };
 
+const isValidSnapLinkUrl = (maybeLink: string) => {
+  try {
+    const url = new URL(maybeLink);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch (e) {
+    return false;
+  }
+};
+
 export {
   getAbsolutePath,
   getHostname,
@@ -121,4 +130,5 @@ export {
   checkQueryParams,
   hasWhitelistedParams,
   getCardMetaFromUrlParams,
+  isValidSnapLinkUrl,
 };
