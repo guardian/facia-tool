@@ -1,4 +1,4 @@
-import { matchIssuePath, matchFrontsEditPath } from 'routes/routes';
+import { matchIssuePath, matchShowcasePath, matchFrontsEditPath } from 'routes/routes';
 import url from 'constants/url';
 import { EditMode } from 'types/EditMode';
 import { Priorities } from 'types/Priority';
@@ -12,6 +12,8 @@ const selectV2SubPath = <T>(state: { path: string } & T) =>
 const selectEditMode = <T>(state: { path: string } & T): EditMode => {
   if (!!matchIssuePath(selectV2SubPath(state))) {
     return 'editions';
+  } else if (!!matchShowcasePath(selectV2SubPath(state))) {
+    return 'showcase';
   } else {
     return 'fronts';
   }

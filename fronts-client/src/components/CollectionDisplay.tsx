@@ -62,6 +62,7 @@ type Props = ContainerProps & {
     renamingCollection: boolean
   ) => void;
   isEditions: boolean;
+  isShowcase: boolean;
 };
 
 interface CollectionState {
@@ -250,6 +251,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       handleFocus,
       handleBlur,
       isEditions,
+      isShowcase,
     }: Props = this.props;
     const itemCount = articleIds ? articleIds.length : 0;
     const targetedTerritory = collection ? collection.targetedTerritory : null;
@@ -316,7 +318,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
             ) : headlineContent ? (
               <HeadlineContentContainer>
                 {headlineContent}
-                {isEditions && (
+                {(isEditions || isShowcase) && (
                   <HeadlineContentButton
                     priority="default"
                     onClick={this.startRenameContainer}
@@ -419,6 +421,7 @@ const createMapStateToProps = () => {
         includeSupportingArticles: false,
       }),
       isEditions: isMode(state, 'editions'),
+      isShowcase: isMode(state, 'showcase'),
     };
   };
 };

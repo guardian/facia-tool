@@ -1,1 +1,1 @@
-export type EditMode = 'fronts' | 'editions';
+export type EditMode = 'fronts' | 'editions' | 'showcase';
