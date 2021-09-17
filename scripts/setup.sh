@@ -2,8 +2,15 @@
 
 set -e
 
-yellow='\033[1;33m'
-nocolour='\033[0m'
+# colours
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+NOCOLOUR='\033[0m'
+
+
+
+CONFIG_DIR=/etc/gu
 
 printf "\n\rSetting up Fronts Tool V2 dependencies... \n\r\n\r"
 
@@ -28,7 +35,7 @@ set_node_version() {
 
   if ! fileExists "$NVM_DIR/nvm.sh"; then
     node_version=`cat .nvmrc`
-    echo -e "${yellow}nvm not found: please ensure you're using node $node_version\r\n"
+    echo -e "${YELLOW}nvm not found: please ensure you're using node $node_version\r\n"
     echo -e "${nocolour}NVM is not required to run this project, but we recommend using it to easily manage node versions"
     echo -e "Install it from https://github.com/creationix/nvm#installation\r\n\r\n"
   else
@@ -61,8 +68,31 @@ setup_nginx() {
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+download_config() {
+  aws s3 cp s3://facia-private/facia-tool.application.secrets.local.conf ${CONFIG_DIR}/facia-tool.application.secrets.conf --profile cmsFronts
+  aws s3 cp s3://facia-private/facia-tool.local.properties ${CONFIG_DIR}/facia-tool.properties --profile cmsFronts
+}
+
+fetch_config(){
+    if [[ -w ${CONFIG_DIR} ]]; then
+        downloadConfig
+        echo -e "${GREEN}Done ${NOCOLOUR}"
+    else
+      echo "Cannot write to ${CONFIG_DIR}. It either doesn't exist or is not owned by $(whoami)."
+      if [[ $1 = "--allow-creation" ]]; then
+        echo "Creating ${CONFIG_DIR} and making user $(whoami) the owner"
+        sudo mkdir -p ${CONFIG_DIR}
+        sudo chown -R $(whoami):admin ${CONFIG_DIR}
+        download_config
+        echo -e "${GREEN}Done ${NOCOLOUR}"
+      else
+        echo -e "${RED}Error. Re-run this script with flag --allow-creation ${NOCOLOUR}"
+        exit 1
+      fi
+    fi
+}
 main() {
-  bash $DIR/fetch-config.sh
+  fetch_config
   install_yarn
   set_node_version
   install_v2_deps_and_build
