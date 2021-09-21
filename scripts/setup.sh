@@ -75,7 +75,7 @@ download_config() {
 
 fetch_config(){
     if [[ -w ${CONFIG_DIR} ]]; then
-        download_config
+        downloadConfig
         echo -e "${GREEN}Done ${NOCOLOUR}"
     else
       echo "Cannot write to ${CONFIG_DIR}. It either doesn't exist or is not owned by $(whoami)."
