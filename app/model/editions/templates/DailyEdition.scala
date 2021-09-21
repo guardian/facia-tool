@@ -268,7 +268,7 @@ object DailyEdition extends RegionalEdition {
   
     def FrontCultureSaturdayMagazineCulture = front(
     "Culture",
-    collection("Culture").printSentAnyTag("theguardian/saturday/culture"),
+    collection("Culture").printSentAnyTag("theguardian/saturday/culture", "theguardian/whatson/whatson"),
     collection("Culture"),
     collection("Culture"),
     collection("Culture"),
