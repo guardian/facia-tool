@@ -13,6 +13,7 @@ class FixedContainers(val config: ApplicationConfiguration) {
   val fixedMediumFastXI = slices(HalfQQ, Ql2Ql2Ql2Ql2)
   val fixedMediumFastXII = slices(QuarterQuarterQuarterQuarter, Ql2Ql2Ql2Ql2)
 
+  val showcase = slices(ShowcaseSingleStories)
   val thrasher = slices(Fluid).copy(customCssClasses = Set("fc-container--thrasher"))
   val video = slices(TTT).copy(customCssClasses = Set("fc-container--video"))
 
@@ -31,7 +32,8 @@ class FixedContainers(val config: ApplicationConfiguration) {
     ("fixed/medium/fast-XII", fixedMediumFastXII),
     ("fixed/large/slow-XIV", slices(ThreeQuarterQuarter, QuarterQuarterQuarterQuarter, Ql2Ql2Ql2Ql2)),
     ("fixed/video", video),
-    ("fixed/thrasher", thrasher)
+    ("fixed/thrasher", thrasher),
+    ("fixed/showcase", showcase)
   ) ++ (if (config.faciatool.showTestContainers) Map(
     ("all-items/not-for-production", slices(FullMedia100, FullMedia75, FullMedia50, HalfHalf, QuarterThreeQuarter, ThreeQuarterQuarter, Hl4Half, HalfQuarterQl2Ql4, TTTL4, Ql3Ql3Ql3Ql3))
   ) else Map.empty)
