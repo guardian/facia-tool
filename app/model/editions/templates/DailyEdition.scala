@@ -48,8 +48,7 @@ object DailyEdition extends RegionalEdition {
       FrontCultureSaturdayMagazineCulture -> WeekDays(List(WeekDay.Sat)),
       FrontCultureSaturdayMagazineBooks -> WeekDays(List(WeekDay.Sat)),
       FrontCultureNewReview -> WeekDays(List(WeekDay.Sun)),
-      //TO DO KILL FrontBooks ON SATURDAY after 25/9 (this is the old one using Sat Review)
-      FrontBooks -> WeekDays(List(WeekDay.Sat, WeekDay.Sun)),
+      FrontBooks -> WeekDays(List(WeekDay.Sun)),
       FrontCultureSpecial -> Daily(),
       // Life fronts and special
       FrontLife -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
@@ -275,7 +274,7 @@ object DailyEdition extends RegionalEdition {
 
   def FrontBooks = front(
     "Books",
-    collection("Books").printSentAnyTag("theguardian/guardianreview/saturdayreviewsfeatres", "theobserver/new-review/books"),
+    collection("Books").printSentAnyTag("theobserver/new-review/books"),
     collection("Books").hide,
     collection("Books").hide,
     collection("Books").hide,
