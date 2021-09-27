@@ -44,8 +44,6 @@ object DailyEdition extends RegionalEdition {
       // New for Saturday Magazine
       FrontLifeSaturdayMagazineFeatures -> WeekDays(List(WeekDay.Sat)),
       FrontLifeSaturdayMagazineCuttings -> WeekDays(List(WeekDay.Sat)),
-      //TO DO KILL FrontCultureGuide after 25/9
-      FrontCultureGuide -> WeekDays(List(WeekDay.Sat)),
       // New for the Saturday Magazine
       FrontCultureSaturdayMagazineCulture -> WeekDays(List(WeekDay.Sat)),
       FrontCultureSaturdayMagazineBooks -> WeekDays(List(WeekDay.Sat)),
@@ -236,16 +234,6 @@ object DailyEdition extends RegionalEdition {
     collection("Music").printSentAnyTag("theguardian/g2/music"),
     collection("Arts").printSentAnyTag("theguardian/g2/arts"),
     collection("TV & radio").printSentAnyTag("theguardian/g2/tvandradio"),
-    collection("Culture"),
-    collection("Culture").hide
-  )
-    .swatch(Culture)
-  
-  def FrontCultureGuide = front(
-    "Culture",
-    collection("Features").printSentAnyTag("theguardian/theguide/features"),
-    collection("Preview").printSentAnyTag("theguardian/theguide/reviews"),
-    collection("TV & radio").printSentAnyTag("theguardian/theguide/tv-radio"),
     collection("Culture"),
     collection("Culture").hide
   )
