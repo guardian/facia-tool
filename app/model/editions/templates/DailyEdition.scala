@@ -44,7 +44,6 @@ object DailyEdition extends RegionalEdition {
       // New for Saturday Magazine
       FrontLifeSaturdayMagazineFeatures -> WeekDays(List(WeekDay.Sat)),
       FrontLifeSaturdayMagazineCuttings -> WeekDays(List(WeekDay.Sat)),
-      FrontLifeSaturdayMagazineLifestyle -> WeekDays(List(WeekDay.Sat)),
       //TO DO KILL FrontCultureGuide after 25/9
       FrontCultureGuide -> WeekDays(List(WeekDay.Sat)),
       // New for the Saturday Magazine
@@ -56,7 +55,6 @@ object DailyEdition extends RegionalEdition {
       FrontCultureSpecial -> Daily(),
       // Life fronts and special
       FrontLife -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
-      //TO DO KILL FrontLifeWeekend after 25/9
       FrontLifeWeekend -> WeekDays(List(WeekDay.Sat)),
       FrontTravelGuardian -> WeekDays(List(WeekDay.Sat)),
       FrontLifeMagazineObserver -> WeekDays(List(WeekDay.Sun)),
@@ -222,17 +220,6 @@ object DailyEdition extends RegionalEdition {
   )
     .special
     .swatch(Lifestyle)
-  
-  def FrontLifeSaturdayMagazineLifestyle = front(
-    "Lifestyle",
-    collection("Lifestyle").printSentAnyTag("theguardian/saturday/lifestyle"),
-    collection("Lifestyle"),
-    collection("Lifestyle"),
-    collection("Lifestyle"),
-    collection("Lifestyle").hide
-  )
-    .special
-    .swatch(Lifestyle)
 
   def FrontCulture = front(
     "Culture",
@@ -348,11 +335,11 @@ object DailyEdition extends RegionalEdition {
 
   def FrontLifeWeekend = front(
     "Life",
-    collection("Features").printSentAnyTag("theguardian/weekend/starters", "theguardian/weekend/features2", "theguardian/weekend/back"),
-    collection("Family").printSentAnyTag("theguardian/weekend/family"),
-    collection("Space").printSentAnyTag("theguardian/weekend/space2"),
-    collection("Style").printSentAnyTag("theguardian/weekend/fashion-and-beauty"),
-    collection("Body & mind").printSentAnyTag("theguardian/weekend/body-and-mind"),
+    collection("Life").printSentAnyTag("theguardian/saturday/lifestyle"),
+    collection("Life"),
+    collection("Style"),
+    collection("Space"),
+    collection("Life"),
     collection("Life").hide,
     collection("Life").hide
   )
