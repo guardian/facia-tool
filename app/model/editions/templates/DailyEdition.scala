@@ -204,7 +204,6 @@ object DailyEdition extends RegionalEdition {
     collection("Features"),
     collection("Features").hide
   )
-    .special
     .swatch(Lifestyle)
   
     def FrontLifeSaturdayMagazineCuttings = front(
@@ -215,7 +214,6 @@ object DailyEdition extends RegionalEdition {
     collection("Cuttings"),
     collection("Cuttings").hide
   )
-    .special
     .swatch(Lifestyle)
 
   def FrontCulture = front(
