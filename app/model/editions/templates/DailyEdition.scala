@@ -44,19 +44,14 @@ object DailyEdition extends RegionalEdition {
       // New for Saturday Magazine
       FrontLifeSaturdayMagazineFeatures -> WeekDays(List(WeekDay.Sat)),
       FrontLifeSaturdayMagazineCuttings -> WeekDays(List(WeekDay.Sat)),
-      FrontLifeSaturdayMagazineLifestyle -> WeekDays(List(WeekDay.Sat)),
-      //TO DO KILL FrontCultureGuide after 25/9
-      FrontCultureGuide -> WeekDays(List(WeekDay.Sat)),
       // New for the Saturday Magazine
       FrontCultureSaturdayMagazineCulture -> WeekDays(List(WeekDay.Sat)),
       FrontCultureSaturdayMagazineBooks -> WeekDays(List(WeekDay.Sat)),
       FrontCultureNewReview -> WeekDays(List(WeekDay.Sun)),
-      //TO DO KILL FrontBooks ON SATURDAY after 25/9 (this is the old one using Sat Review)
-      FrontBooks -> WeekDays(List(WeekDay.Sat, WeekDay.Sun)),
+      FrontBooks -> WeekDays(List(WeekDay.Sun)),
       FrontCultureSpecial -> Daily(),
       // Life fronts and special
       FrontLife -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
-      //TO DO KILL FrontLifeWeekend after 25/9
       FrontLifeWeekend -> WeekDays(List(WeekDay.Sat)),
       FrontTravelGuardian -> WeekDays(List(WeekDay.Sat)),
       FrontLifeMagazineObserver -> WeekDays(List(WeekDay.Sun)),
@@ -209,7 +204,6 @@ object DailyEdition extends RegionalEdition {
     collection("Features"),
     collection("Features").hide
   )
-    .special
     .swatch(Lifestyle)
   
     def FrontLifeSaturdayMagazineCuttings = front(
@@ -220,18 +214,6 @@ object DailyEdition extends RegionalEdition {
     collection("Cuttings"),
     collection("Cuttings").hide
   )
-    .special
-    .swatch(Lifestyle)
-  
-  def FrontLifeSaturdayMagazineLifestyle = front(
-    "Lifestyle",
-    collection("Lifestyle").printSentAnyTag("theguardian/saturday/lifestyle"),
-    collection("Lifestyle"),
-    collection("Lifestyle"),
-    collection("Lifestyle"),
-    collection("Lifestyle").hide
-  )
-    .special
     .swatch(Lifestyle)
 
   def FrontCulture = front(
@@ -249,16 +231,6 @@ object DailyEdition extends RegionalEdition {
     collection("Music").printSentAnyTag("theguardian/g2/music"),
     collection("Arts").printSentAnyTag("theguardian/g2/arts"),
     collection("TV & radio").printSentAnyTag("theguardian/g2/tvandradio"),
-    collection("Culture"),
-    collection("Culture").hide
-  )
-    .swatch(Culture)
-  
-  def FrontCultureGuide = front(
-    "Culture",
-    collection("Features").printSentAnyTag("theguardian/theguide/features"),
-    collection("Preview").printSentAnyTag("theguardian/theguide/reviews"),
-    collection("TV & radio").printSentAnyTag("theguardian/theguide/tv-radio"),
     collection("Culture"),
     collection("Culture").hide
   )
@@ -300,7 +272,7 @@ object DailyEdition extends RegionalEdition {
 
   def FrontBooks = front(
     "Books",
-    collection("Books").printSentAnyTag("theguardian/guardianreview/saturdayreviewsfeatres", "theobserver/new-review/books"),
+    collection("Books").printSentAnyTag("theobserver/new-review/books"),
     collection("Books").hide,
     collection("Books").hide,
     collection("Books").hide,
@@ -348,11 +320,11 @@ object DailyEdition extends RegionalEdition {
 
   def FrontLifeWeekend = front(
     "Life",
-    collection("Features").printSentAnyTag("theguardian/weekend/starters", "theguardian/weekend/features2", "theguardian/weekend/back"),
-    collection("Family").printSentAnyTag("theguardian/weekend/family"),
-    collection("Space").printSentAnyTag("theguardian/weekend/space2"),
-    collection("Style").printSentAnyTag("theguardian/weekend/fashion-and-beauty"),
-    collection("Body & mind").printSentAnyTag("theguardian/weekend/body-and-mind"),
+    collection("Life").printSentAnyTag("theguardian/saturday/lifestyle"),
+    collection("Life"),
+    collection("Style"),
+    collection("Space"),
+    collection("Life"),
     collection("Life").hide,
     collection("Life").hide
   )
