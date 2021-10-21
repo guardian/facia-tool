@@ -9,10 +9,10 @@ import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
 object EditionOlympicLegends extends SpecialEdition {
-  override val title = "Olympic\nlegends"
-  override val subTitle = "To mark the 32nd Olympiad, our summer of sport special edition looks at 30 of the greatest Olympic moments"
-  override val edition = "edition-olympic-legends"
-  override val header = Header(title ="Olympic", subTitle=Some("legends"))
+  override val title = "Edition\nEarth"
+  override val subTitle = "A special edition of the Guardian's best environmental journalism in the run up to the COP26 Glasgow summit"
+  override val edition = "edition-earth-2021"
+  override val header = Header(title ="Edition", subTitle=Some("Earth"))
   override val notificationUTCOffset = 3
   override val topic = "e-es"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/88b364af00d13f1a13a3111656dd4c5a7d91ea66/0_0_250_500/250.png?width=80&quality=85&s=6a3ad4ccd98f3bc28f46caa96fa7af87")
@@ -48,13 +48,7 @@ object EditionOlympicLegends extends SpecialEdition {
       Special07 -> Daily(),
       Special08 -> Daily(),
       Special09 -> Daily(),
-      Special10 -> Daily(),
-      Special11 -> Daily(),
-      Special12 -> Daily(),
-      Special13 -> Daily(),
-      Special14 -> Daily(),
-      Special15 -> Daily(),
-      Special16 -> Daily()
+      Special10 -> Daily()
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
@@ -67,7 +61,7 @@ object EditionOlympicLegends extends SpecialEdition {
     ophanQueryPrefillParams = None
   )
 
-  def Special01 = front("Front1", None,
+  def Special01 = front("Introduction", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -75,7 +69,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special02 = front("Front2", None,
+  def Special02 = front("Science", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -83,7 +77,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special")
   ).swatch(Sport)
 
-  def Special03 = front("Front3", None,
+  def Special03 = front("Transport", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -91,7 +85,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special04 = front("Front4", None,
+  def Special04 = front("Health", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -99,7 +93,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special")
   ).swatch(Sport)
   
-  def Special05 = front("Front5", None,
+  def Special05 = front("Food", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -107,7 +101,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special06 = front("Front6", None,
+  def Special06 = front("Fashion", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -115,7 +109,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special")
   ).swatch(Sport)
 
-  def Special07 = front("Front7", None,
+  def Special07 = front("Sport", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -123,7 +117,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special08 = front("Front8", None,
+  def Special08 = front("Business", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -131,7 +125,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special")
   ).swatch(Sport)
   
-  def Special09 = front("Front9", None,
+  def Special09 = front("Awareness", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -139,7 +133,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special")
   ).swatch(News)
   
-  def Special10 = front("Front10", None,
+  def Special10 = front("Solutions", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -147,52 +141,4 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special")
   ).swatch(Sport)
   
-  def Special11 = front("Front11", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-  
-  def Special12 = front("Front12", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Sport)
-  
-  def Special13 = front("Front13", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-  
-  def Special14 = front("Front14", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Sport)  
-  
-  def Special15 = front("Front15", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(News)
-  
-  def Special16 = front("Front16", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Sport)
-
 }
