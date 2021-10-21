@@ -75,7 +75,7 @@ object EditionEarth2021 extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Culture)
 
   def Special03 = front("Transport", None,
     collection("Special"),
@@ -91,7 +91,7 @@ object EditionEarth2021 extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Culture)
   
   def Special05 = front("Food", None,
     collection("Special"),
@@ -107,7 +107,7 @@ object EditionEarth2021 extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Culture)
 
   def Special07 = front("Sport", None,
     collection("Special"),
@@ -123,7 +123,7 @@ object EditionEarth2021 extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Culture)
   
   def Special09 = front("Awareness", None,
     collection("Special"),
@@ -139,6 +139,6 @@ object EditionEarth2021 extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Culture)
   
 }
