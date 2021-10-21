@@ -8,7 +8,7 @@ import model.editions.templates.TemplateHelpers._
 import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
-object EditionOlympicLegends extends SpecialEdition {
+object EditionEarth2021 extends SpecialEdition {
   override val title = "Edition\nEarth"
   override val subTitle = "A special edition of the Guardian's best environmental journalism in the run up to the COP26 Glasgow summit"
   override val edition = "edition-earth-2021"
