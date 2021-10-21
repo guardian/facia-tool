@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  security:
+  node:
     runs-on: ubuntu-latest
     env:
       SNYK_COMMAND: test
@@ -38,6 +38,17 @@ jobs:
         with:
           args: --org=guardian --project-name=${{ github.repository }} --file=./fronts-client/yarn.lock
           command: ${{ env.SNYK_COMMAND }}
+  scala:
+    runs-on: ubuntu-latest
+    env:
+      SNYK_COMMAND: test
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v2
+
+      - name: Set command to monitor
+        if: github.ref == 'refs/heads/main'
+        run: echo "SNYK_COMMAND=monitor" >> $GITHUB_ENV
 
       - name: Run Snyk to check for Scala vulnerabilities
         uses: snyk/actions/scala@0.3.0
@@ -45,5 +56,5 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --org=guardian --project-name=${{ github.repository }} --file=./build.sbt
+          args: --org=guardian --all-projects
           command: ${{ env.SNYK_COMMAND }}
