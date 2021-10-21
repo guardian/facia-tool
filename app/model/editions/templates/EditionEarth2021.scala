@@ -30,7 +30,7 @@ object EditionOlympicLegends extends SpecialEdition {
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
     SpecialEditionHeaderStyles(
-      backgroundColor = "#AB0613",
+      backgroundColor = "#076633",
       textColorPrimary = "#FFFFFF",
       textColorSecondary = "#FFFFFF"
     )
