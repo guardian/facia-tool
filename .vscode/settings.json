@@ -1,4 +1,7 @@
 {
   "eslint.enable": true,
-  "eslint.packageManager": "yarn"
+  "eslint.packageManager": "yarn",
+  "files.watcherExclude": {
+    "**/target": true
+  }
 }
