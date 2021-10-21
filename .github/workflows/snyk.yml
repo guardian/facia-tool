@@ -22,7 +22,7 @@ jobs:
         if: github.ref == 'refs/heads/main'
         run: echo "SNYK_COMMAND=monitor" >> $GITHUB_ENV
 
-      - name: Run Snyk to check for vulnerabilities
+      - name: Run Snyk to check for Node vulnerabilities
         uses: snyk/actions/node@0.3.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -30,7 +30,7 @@ jobs:
           args: --org=guardian --project-name=${{ github.repository }} --file=./package-lock.json
           command: ${{ env.SNYK_COMMAND }}
 
-      - name: Run Snyk to check for vulnerabilities
+      - name: Run Snyk to check for Scala vulnerabilities
         uses: snyk/actions/scala@0.3.0
         if: ${{ always() }}
         env:
