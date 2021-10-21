@@ -67,7 +67,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Sport)
 
   def Special02 = front("Science", None,
     collection("Special"),
@@ -75,7 +75,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Culture)
 
   def Special03 = front("Transport", None,
     collection("Special"),
@@ -83,7 +83,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Sport)
 
   def Special04 = front("Health", None,
     collection("Special"),
@@ -91,7 +91,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Culture)
   
   def Special05 = front("Food", None,
     collection("Special"),
@@ -99,7 +99,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Sport)
 
   def Special06 = front("Fashion", None,
     collection("Special"),
@@ -107,7 +107,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Culture)
 
   def Special07 = front("Sport", None,
     collection("Special"),
@@ -115,7 +115,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Sport)
 
   def Special08 = front("Business", None,
     collection("Special"),
@@ -123,7 +123,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Culture)
   
   def Special09 = front("Awareness", None,
     collection("Special"),
@@ -131,7 +131,7 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(News)
+  ).swatch(Sport)
   
   def Special10 = front("Solutions", None,
     collection("Special"),
@@ -139,6 +139,6 @@ object EditionOlympicLegends extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Culture)
   
 }
