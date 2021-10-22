@@ -15,22 +15,22 @@ object EditionEarth extends SpecialEdition {
   override val header = Header(title ="Edition", subTitle=Some("Earth"))
   override val notificationUTCOffset = 3
   override val topic = "e-e"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/23e97e00b2b0c3277ea6ff8a38068709509d92da/462_0_469_934/469.png?width=67&quality=100&s=78dcf02d6978bb0c8885cbe076fcb257")
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/31aee0e66af047a39063131af0889c87aa66151f/0_0_225_450/225.png?width=80&height=160&quality=85&s=00bd9546e8048abc5705f6e4c19dde91")
   override val expiry: Option[String] = Some(
     new DateTime(2021, 12,12,23,59,DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
-      backgroundColor = "#076633",
-      title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
-      subTitle = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
+      backgroundColor = "#0F70B7",
+      title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Medium", lineHeight = 34, size = 32),
+      subTitle = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 20, size = 17),
       expiry = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
       image = EditionImageStyle(67,134)
     )
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
     SpecialEditionHeaderStyles(
-      backgroundColor = "#076633",
+      backgroundColor = "#0F70B7",
       textColorPrimary = "#FFFFFF",
       textColorSecondary = "#FFFFFF"
     )
