@@ -55,6 +55,8 @@ public/fronts-client/dist
 fronts-client/.vscode
 .vscode
 
+metals.sbt
 .metals
 .bloop
+.bsp
 
