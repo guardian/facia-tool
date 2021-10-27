@@ -7,8 +7,8 @@ on:
   schedule:
     - cron: '0 6 * * *'
   push:
-    branches:
-        - main
+    # branches:
+    #     - main
   workflow_dispatch:
 
 jobs:
@@ -18,28 +18,19 @@ jobs:
       - name: Checkout branch
         uses: actions/checkout@v2
 
-      - name: Run Snyk to check for V1 Node vulnerabilities
-        uses: snyk/actions/node@0.3.0
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - uses: snyk/actions/setup@0.3.0
+      - uses: actions/setup-node@v2
         with:
-          args: --org=guardian --project-name=${{ github.repository }}/V1 --file=./package-lock.json
-          command: monitor
+          node-version: 12.x
 
-      - name: Run Snyk to check for V2 Node vulnerabilities
-        if: ${{ always() }} # always ensures we run this regardless of failed steps
-        uses: snyk/actions/node@0.3.0
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+      - uses: actions/setup-java@v2
         with:
-          args: --org=guardian --project-name=${{ github.repository }}/V2 --file=./fronts-client/yarn.lock
-          command: monitor
+          java-version: '8'
+          distribution: 'adopt'
 
-      - name: Run Snyk to check for Scala vulnerabilities
-        uses: snyk/actions/scala@0.3.0
-        if: ${{ always() }} # always ensures we run this regardless of failed steps
+      - name: Snyk monitor
+        run: snyk monitor --all-projects
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --org=guardian --project-name=${{ github.repository }}/Scala --file=./build.sbt
-          command: monitor
+
+
