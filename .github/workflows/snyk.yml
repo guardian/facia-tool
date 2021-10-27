@@ -7,28 +7,24 @@ on:
   schedule:
     - cron: '0 6 * * *'
   push:
+    branches:
+        - main
   workflow_dispatch:
 
 jobs:
   security:
     runs-on: ubuntu-latest
-    env:
-      SNYK_COMMAND: test
     steps:
       - name: Checkout branch
         uses: actions/checkout@v2
-
-      - name: Set command to monitor
-        if: github.ref == 'refs/heads/main'
-        run: echo "SNYK_COMMAND=monitor" >> $GITHUB_ENV
 
       - name: Run Snyk to check for V1 Node vulnerabilities
         uses: snyk/actions/node@0.3.0
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --org=guardian --project-name=${{ github.repository }} --file=./package-lock.json
-          command: ${{ env.SNYK_COMMAND }}
+          args: --org=guardian --project-name=${{ github.repository }}/V1 --file=./package-lock.json
+          command: monitor
 
       - name: Run Snyk to check for V2 Node vulnerabilities
         if: ${{ always() }} # always ensures we run this regardless of failed steps
@@ -36,8 +32,8 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --org=guardian --project-name=${{ github.repository }} --file=./fronts-client/yarn.lock
-          command: ${{ env.SNYK_COMMAND }}
+          args: --org=guardian --project-name=${{ github.repository }}/V2 --file=./fronts-client/yarn.lock
+          command: monitor
 
       - name: Run Snyk to check for Scala vulnerabilities
         uses: snyk/actions/scala@0.3.0
@@ -45,5 +41,5 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
         with:
-          args: --org=guardian --project-name=${{ github.repository }} --file=./build.sbt
-          command: ${{ env.SNYK_COMMAND }}
+          args: --org=guardian --project-name=${{ github.repository }}/Scala --file=./build.sbt
+          command: monitor
