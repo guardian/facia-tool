@@ -1,4 +1,3 @@
-/* global System */
 import ko from 'knockout';
 import Raven from 'raven-js';
 import Bootstrap from 'modules/bootstrap';
