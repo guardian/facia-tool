@@ -1,9 +1,6 @@
 'use strict';
 module.exports = function() {
     return {
-        "rules": {
-            "no-redeclare": ["error", { "builtinGlobals": false }]
-        },
         'static': {
             files: [{
                 expand: true,
