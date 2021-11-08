@@ -31,6 +31,8 @@
         "template-curly-spacing": [2, "never"],
         "no-unused-vars": 2,
         "comma-dangle": 1,
-        "no-extra-semi": 1
+        "no-extra-semi": 1,
+        "no-redeclare": ["error", { "builtinGlobals": false }]
+
     }
 }
