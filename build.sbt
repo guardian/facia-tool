@@ -27,8 +27,8 @@ riffRaffArtifactResources := {
     Seq(
         (packageBin in Debian).value -> s"${name.value}/${name.value}_1.0_all.deb",
         baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml",
-        baseDirectory.value / "fluentbit/td-agent-bit.conf" -> "atom-workshop/fluentbit/td-agent-bit.conf",
-        baseDirectory.value / "fluentbit/parsers.conf" -> "atom-workshop/fluentbit/parsers.conf"
+        baseDirectory.value / "fluentbit/td-agent-bit.conf" -> "facia-tool/fluentbit/td-agent-bit.conf",
+        baseDirectory.value / "fluentbit/parsers.conf" -> "facia-tool/fluentbit/parsers.conf"
     ) ++ ((jsBundlesDir * "*") pair rebase(jsBundlesDir, "static-facia-tool"))
 }
 
