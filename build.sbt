@@ -26,7 +26,9 @@ riffRaffArtifactResources := {
     val jsBundlesDir = baseDirectory.value / "tmp" / "bundles"
     Seq(
         (packageBin in Debian).value -> s"${name.value}/${name.value}_1.0_all.deb",
-        baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml"
+        baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml",
+        baseDirectory.value / "fluentbit/td-agent-bit.conf" -> "atom-workshop/fluentbit/td-agent-bit.conf",
+        baseDirectory.value / "fluentbit/parsers.conf" -> "atom-workshop/fluentbit/parsers.conf"
     ) ++ ((jsBundlesDir * "*") pair rebase(jsBundlesDir, "static-facia-tool"))
 }
 
@@ -101,7 +103,7 @@ libraryDependencies ++= Seq(
     "com.github.blemale" %% "scaffeine" % "3.1.0" % "compile",
 
     "com.gu" %% "thrift-serializer" % "4.0.2",
-    "net.logstash.logback" % "logstash-logback-encoder" % "5.0",
+    "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
     "org.julienrf" %% "play-json-derived-codecs" % "5.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
