@@ -229,14 +229,6 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val navListType: String = "nav/list"
   }
 
-  object logging {
-    lazy val stream = getMandatoryString("logging.kinesis.stream")
-    lazy val streamRegion = getMandatoryString("logging.kinesis.region")
-    lazy val streamRole = getMandatoryString("logging.kinesis.roleArn")
-    lazy val app = getMandatoryString("logging.fields.app")
-    lazy val enabled = getBoolean("logging.enabled").getOrElse(false)
-  }
-
   object faciatool {
     lazy val breakingNewsFront = "breaking-news"
     lazy val frontPressToolQueue = getString("frontpress.sqs.tool_queue_url")
