@@ -1,4 +1,3 @@
-import logging.LogStashConfig
 import metrics.CloudWatchApplicationMetrics
 import play.api.ApplicationLoader.Context
 import play.api.{Application, ApplicationLoader, Configuration, LoggerConfigurator, Mode}
@@ -47,7 +46,6 @@ class Loader extends ApplicationLoader {
       components.actorSystem.scheduler,
       components.isDev
     )
-    new LogStashConfig(components.config)
 
     components.application
   }
