@@ -50,14 +50,15 @@ class Acl(permissions: PermissionsProvider) extends Logging {
   }
 
   def testUserGroupsAndCollections(editorialPermission: PermissionDefinition, commercialPermission: PermissionDefinition,
-                                   trainingPermission: PermissionDefinition, editorialSwitch: String)
+                                   trainingPermission: PermissionDefinition, emailPermission: PermissionDefinition, editorialSwitch: String)
                                   (email: String, priorities: Set[PermissionsPriority]): Authorization = {
 
     val hasCommercialPermissions = testUser(commercialPermission, "facia-tool-allow-launch-commercial-fronts-for-all")(email)
     val hasEditorialPermissions = testUser(editorialPermission, editorialSwitch)(email)
     val hasTrainingPermissions = testUser(trainingPermission, "facia-tool-permissions-access")(email)
+    val hasEmailPermissions = testUser(emailPermission, "facia-tool-email-access")(email)
 
-    PermissionsChecker.check(hasCommercialPermissions, hasEditorialPermissions, hasTrainingPermissions, priorities) match {
+    PermissionsChecker.check(hasCommercialPermissions, hasEditorialPermissions, hasTrainingPermissions, hasEmailPermissions, priorities) match {
       case AccessGranted => AccessGranted
       case AccessDenied => {
         logger.warn(s"User with e-mail ${email} and with the following permissions commercial: $hasCommercialPermissions, " +
@@ -76,12 +77,14 @@ object PermissionsChecker {
              hasCommercialPermissions: Authorization,
              hasEditorialPermissions: Authorization,
              hasTrainingPermissions: Authorization,
+             hasEmailPermissions: Authorization,
              priorities: Set[PermissionsPriority]
            ): Authorization =  {
 
     val trainingPermissionIsValid = priorities.contains(TrainingPermission)
     val editorialPermissionIsValid = priorities.contains(EditorialPermission) || priorities.contains(EmailPermission)
     val commercialPermissionIsValid = priorities.contains(CommercialPermission)
+    val emailPermissionIsValid = priorities.contains(EmailPermission)
 
     if (trainingPermissionIsValid)
       hasTrainingPermissions
@@ -96,6 +99,9 @@ object PermissionsChecker {
 
       else if (commercialPermissionIsValid) {
         hasCommercialPermissions
+      }
+      else if (emailPermissionIsValid) {
+        hasEmailPermissions
       }
       else if (editorialPermissionIsValid)
         hasEditorialPermissions

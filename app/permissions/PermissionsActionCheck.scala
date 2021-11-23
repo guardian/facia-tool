@@ -46,13 +46,17 @@ trait ModifyCollectionsPermissionsCheck extends Logging { self: BaseFaciaControl
     if (priorities.isEmpty) AccessGranted
     else if (isLaunch)
       acl.testUserGroupsAndCollections(
-        Permissions.LaunchEditorialFronts, Permissions.LaunchCommercialFronts,
-        Permissions.FrontsAccess, "facia-tool-allow-launch-editorial-fronts-for-all")(email, priorities)
+        Permissions.LaunchEditorialFronts,
+        Permissions.LaunchCommercialFronts,
+        Permissions.FrontsAccess,
+        Permissions.LaunchAndEditEmailFronts,
+        "facia-tool-allow-launch-editorial-fronts-for-all")(email, priorities)
     else
       acl.testUserGroupsAndCollections(
         Permissions.EditEditorialFronts,
         Permissions.LaunchCommercialFronts,
-        Permissions.FrontsAccess, "facia-tool-allow-edit-editorial-fronts-for-all")(email, priorities)
+        Permissions.FrontsAccess,
+        Permissions.LaunchAndEditEmailFronts, "facia-tool-allow-edit-editorial-fronts-for-all")(email, priorities)
   }
 
   def withModifyGroupPermissionForCollections[A](priorities: Set[PermissionsPriority], secondaryPriorities: Set[PermissionsPriority],
