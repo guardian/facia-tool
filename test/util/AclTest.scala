@@ -13,6 +13,7 @@ class AclTest extends FreeSpec with Matchers {
         hasCommercialPermissions = AccessGranted,
         hasEditorialPermissions = AccessDenied,
         hasTrainingPermissions = AccessDenied,
+        hasEmailPermissions = AccessDenied,
         Set(CommercialPermission)
       ) should be(AccessGranted)
     }
@@ -23,6 +24,7 @@ class AclTest extends FreeSpec with Matchers {
         hasCommercialPermissions = AccessDenied,
         hasEditorialPermissions = AccessGranted,
         hasTrainingPermissions = AccessDenied,
+        hasEmailPermissions = AccessDenied,
         Set(EditorialPermission)
       ) should be(AccessGranted)
     }
@@ -32,6 +34,17 @@ class AclTest extends FreeSpec with Matchers {
         hasCommercialPermissions = AccessDenied,
         hasEditorialPermissions = AccessGranted,
         hasTrainingPermissions = AccessDenied,
+        hasEmailPermissions = AccessDenied,
+        Set(EmailPermission)
+      ) should be(AccessGranted)
+    }
+
+    "Allow access to email fronts if email permissions"  in {
+      PermissionsChecker.check(
+        hasCommercialPermissions = AccessDenied,
+        hasEditorialPermissions = AccessGranted,
+        hasTrainingPermissions = AccessDenied,
+        hasEmailPermissions = AccessGranted,
         Set(EmailPermission)
       ) should be(AccessGranted)
     }
@@ -42,6 +55,7 @@ class AclTest extends FreeSpec with Matchers {
         hasCommercialPermissions = AccessDenied,
         hasEditorialPermissions = AccessDenied,
         hasTrainingPermissions = AccessGranted,
+        hasEmailPermissions = AccessDenied,
         Set(TrainingPermission)
       ) should be(AccessGranted)
     }
@@ -52,6 +66,7 @@ class AclTest extends FreeSpec with Matchers {
         hasCommercialPermissions = AccessGranted,
         hasEditorialPermissions = AccessDenied,
         hasTrainingPermissions = AccessDenied,
+        hasEmailPermissions = AccessDenied,
         Set(EditorialPermission, CommercialPermission)
       ) should be(AccessGranted)
     }
@@ -62,6 +77,7 @@ class AclTest extends FreeSpec with Matchers {
         hasCommercialPermissions = AccessDenied,
         hasEditorialPermissions = AccessGranted,
         hasTrainingPermissions = AccessDenied,
+        hasEmailPermissions = AccessDenied,
         Set(EditorialPermission, CommercialPermission)
       ) should be(AccessGranted)
   }
@@ -72,6 +88,7 @@ class AclTest extends FreeSpec with Matchers {
         hasCommercialPermissions = AccessDenied,
         hasEditorialPermissions = AccessDenied,
         hasTrainingPermissions = AccessGranted,
+        hasEmailPermissions = AccessDenied,
         Set(EditorialPermission, CommercialPermission)
       ) should be(AccessDenied)
 
