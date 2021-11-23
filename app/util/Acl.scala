@@ -100,11 +100,11 @@ object PermissionsChecker {
       else if (commercialPermissionIsValid) {
         hasCommercialPermissions
       }
+      else if (editorialPermissionIsValid)
+        hasEditorialPermissions
       else if (emailPermissionIsValid) {
         hasEmailPermissions
       }
-      else if (editorialPermissionIsValid)
-        hasEditorialPermissions
       else AccessDenied
     }
   }
