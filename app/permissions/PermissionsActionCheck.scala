@@ -46,20 +46,23 @@ trait ModifyCollectionsPermissionsCheck extends Logging { self: BaseFaciaControl
     if (priorities.isEmpty) AccessGranted
     else if (isLaunch)
       acl.testUserGroupsAndCollections(
-        Permissions.LaunchEditorialFronts, Permissions.LaunchCommercialFronts,
-        Permissions.FrontsAccess, "facia-tool-allow-launch-editorial-fronts-for-all")(email, priorities)
+        Permissions.LaunchEditorialFronts,
+        Permissions.LaunchCommercialFronts,
+        Permissions.FrontsAccess,
+        Permissions.LaunchAndEditEmailFronts,
+        "facia-tool-allow-launch-editorial-fronts-for-all")(email, priorities)
     else
       acl.testUserGroupsAndCollections(
         Permissions.EditEditorialFronts,
         Permissions.LaunchCommercialFronts,
-        Permissions.FrontsAccess, "facia-tool-allow-edit-editorial-fronts-for-all")(email, priorities)
+        Permissions.FrontsAccess,
+        Permissions.LaunchAndEditEmailFronts, "facia-tool-allow-edit-editorial-fronts-for-all")(email, priorities)
   }
 
   def withModifyGroupPermissionForCollections[A](priorities: Set[PermissionsPriority], secondaryPriorities: Set[PermissionsPriority],
     isLaunch: Boolean = false)(block: => Future[Result])
   (implicit request: UserRequest[A],
   executionContext: ExecutionContext): Future[Result] = {
-
     (testAccess(request.user.email, priorities, isLaunch), testAccess(request.user.email, secondaryPriorities, isLaunch)) match {
       case (AccessGranted, AccessGranted) => block
       case _ => Future.successful(Results.Unauthorized)
@@ -83,6 +86,18 @@ class EditEditorialFrontsPermissionCheck(val acl: Acl)(implicit ec: ExecutionCon
   override implicit val executionContext: ExecutionContext = ec
   override val testAccess: String => Authorization = acl.testUser(Permissions.EditEditorialFronts, "facia-tool-allow-edit-editorial-fronts-for-all")
   override val restrictedAction: String = "Edit editorial fronts."
+}
+
+class EditEmailFrontsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {
+  override implicit val executionContext: ExecutionContext = ec
+  override val testAccess: String => Authorization = (email: String) => {
+    val emailAccess = acl.testUser(Permissions.LaunchAndEditEmailFronts, "facia-tool-allow-edit-email-fronts-for-all")(email)
+    emailAccess match {
+      case AccessGranted => emailAccess
+      case AccessDenied => new EditEditorialFrontsPermissionCheck(acl)(executionContext).testAccess(email)
+    }
+  }
+  override val restrictedAction: String = "Edit email fronts."
 }
 
 class AccessEditionsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext) extends PermissionActionFilter {

@@ -64,7 +64,7 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
     permissionsPriority match {
       case Some(EditorialPermission) => AccessAuthAction andThen new EditEditorialFrontsPermissionCheck(acl)
       case Some(CommercialPermission) => AccessAuthAction andThen new LaunchCommercialFrontsPermissionCheck(acl)
-      case Some(EmailPermission) => AccessAuthAction andThen new EditEditorialFrontsPermissionCheck(acl)
+      case Some(EmailPermission) => AccessAuthAction andThen new EditEmailFrontsPermissionCheck(acl)
       case Some(EditionsPermission) => AccessAuthAction andThen new AccessEditionsPermissionCheck(acl)
       case _ => AccessAuthAction
     }
