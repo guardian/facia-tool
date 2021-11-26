@@ -61,7 +61,6 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
 
   def getCollectionPermissionFilterByPriority(priority: String, acl: Acl)(implicit ec: ExecutionContext): ActionBuilder[UserRequest, AnyContent] = {
     val permissionsPriority = PermissionsPriority.stringToPermissionPriority(priority)
-    println(permissionsPriority)
     permissionsPriority match {
       case Some(EditorialPermission) => AccessAuthAction andThen new EditEditorialFrontsPermissionCheck(acl)
       case Some(CommercialPermission) => AccessAuthAction andThen new LaunchCommercialFrontsPermissionCheck(acl)
