@@ -81,6 +81,8 @@ object Edition extends PlayEnum[Edition] {
   
   case object EditionOlympicLegends extends Edition
   
+  case object EditionEndOfYear2021 extends Edition
+  
   override def values = findValues
 }
 
