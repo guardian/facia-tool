@@ -8,11 +8,11 @@ import model.editions.templates.TemplateHelpers._
 import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
-object EditionEarth extends SpecialEdition {
-  override val title = "Edition Earth"
-  override val subTitle = "Cop26: A special edition of the Guardian's best recent environmental journalism"
-  override val edition = "edition-earth"
-  override val header = Header(title ="Edition", subTitle=Some("Earth"))
+object EditionEndOfYear2021 extends SpecialEdition {
+  override val title = "Best of 2021"
+  override val subTitle = "A special edition of the Guardian's best journalism from 2021"
+  override val edition = "edition-end-of-year-2021"
+  override val header = Header(title ="Best of", subTitle=Some("2021"))
   override val notificationUTCOffset = 3
   override val topic = "e-e"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/31aee0e66af047a39063131af0889c87aa66151f/0_0_225_450/225.png?width=80&height=160&quality=85&s=00bd9546e8048abc5705f6e4c19dde91")
@@ -48,7 +48,13 @@ object EditionEarth extends SpecialEdition {
       Special07 -> Daily(),
       Special08 -> Daily(),
       Special09 -> Daily(),
-      Special10 -> Daily()
+      Special10 -> Daily(),
+      Special11 -> Daily(),
+      Special12 -> Daily(),
+      Special13 -> Daily(),
+      Special14 -> Daily(),
+      Special15 -> Daily(),
+      Special16 -> Daily()
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
@@ -67,9 +73,65 @@ object EditionEarth extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Opinion)
 
-  def Special02 = front("Science", None,
+  def Special02 = front("World", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+
+  def Special03 = front("Environment", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+
+  def Special04 = front("Spare", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Opinion)
+
+  def Special05 = front("Innovation", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+
+  def Special06 = front("Health", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+
+  def Special07 = front("Heroes", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+
+  def Special08 = front("Spare2", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Lifestyle)
+
+  def Special09 = front("Film", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -77,69 +139,60 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special03 = front("Transport", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Sport)
-
-  def Special04 = front("Health", None,
+  def Special10 = front("Music", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-
-  def Special05 = front("Food", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Sport)
-
-  def Special06 = front("Fashion", None,
+  
+  def Special11 = front("Books", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-
-  def Special07 = front("Sport", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Sport)
-
-  def Special08 = front("Business", None,
+  
+  def Special12 = front("TV", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-
-  def Special09 = front("Awareness", None,
+  
+  def Special13 = front("Humour", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Sport)
-
-  def Special10 = front("Solutions", None,
+  
+  def Special14 = front("Sport", None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Culture)
-
-
+  ).swatch(Sport)
+  
+  def Special15 = front("Looking ahead", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Sport)
+  
+  def Special16 = front("Spare3", None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Sport)
+  
 }
