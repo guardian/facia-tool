@@ -8,13 +8,13 @@ import model.editions.templates.TemplateHelpers._
 import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
-object EditionEndOfYear2021 extends SpecialEdition {
+object EditionEndOfYear extends SpecialEdition {
   override val title = "Best of 2021"
   override val subTitle = "A special edition of the Guardian's best journalism from 2021"
-  override val edition = "edition-end-of-year-2021"
+  override val edition = "edition-end-of-year"
   override val header = Header(title ="Best of", subTitle=Some("2021"))
   override val notificationUTCOffset = 3
-  override val topic = "e-e"
+  override val topic = "e-eoy"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/31aee0e66af047a39063131af0889c87aa66151f/0_0_225_450/225.png?width=80&height=160&quality=85&s=00bd9546e8048abc5705f6e4c19dde91")
   override val expiry: Option[String] = Some(
     new DateTime(2021, 12,12,23,59,DateTimeZone.UTC).toString()
