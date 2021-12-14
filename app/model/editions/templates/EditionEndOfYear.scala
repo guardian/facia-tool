@@ -17,7 +17,7 @@ object EditionEndOfYear extends SpecialEdition {
   override val topic = "e-eoy"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/31aee0e66af047a39063131af0889c87aa66151f/0_0_225_450/225.png?width=80&height=160&quality=85&s=00bd9546e8048abc5705f6e4c19dde91")
   override val expiry: Option[String] = Some(
-    new DateTime(2022, 01,31,23,59,DateTimeZone.UTC).toString()
+    new DateTime(2022, 1,31,23,59,DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
