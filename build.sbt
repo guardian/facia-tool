@@ -98,8 +98,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "mobile-notifications-api-models" % "1.0.14",
     "com.gu" %% "pan-domain-auth-play_2-7" % "1.0.4",
 
-    "org.scanamo" %% "scanamo" % "1.0.0-M17",
-
+    "org.scanamo" %% "scanamo" % "1.0.0-M15" exclude("org.scala-lang.modules", "scala-java8-compat_2.13"),
     "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
 
     "com.gu" %% "thrift-serializer" % "4.0.2",
