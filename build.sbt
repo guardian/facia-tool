@@ -8,7 +8,7 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-scalaVersion in ThisBuild := "2.13.5"
+ThisBuild / scalaVersion := "2.13.5"
 
 import com.gu.riffraff.artifact.BuildInfo
 import sbt.Resolver
@@ -25,16 +25,16 @@ riffRaffUploadManifestBucket := Option("riffraff-builds")
 riffRaffArtifactResources := {
     val jsBundlesDir = baseDirectory.value / "tmp" / "bundles"
     Seq(
-        (packageBin in Debian).value -> s"${name.value}/${name.value}_1.0_all.deb",
+        (Debian / packageBin).value -> s"${name.value}/${name.value}_1.0_all.deb",
         baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml",
         baseDirectory.value / "fluentbit/td-agent-bit.conf" -> "facia-tool/fluentbit/td-agent-bit.conf",
         baseDirectory.value / "fluentbit/parsers.conf" -> "facia-tool/fluentbit/parsers.conf"
     ) ++ ((jsBundlesDir * "*") pair rebase(jsBundlesDir, "static-facia-tool"))
 }
 
-javacOptions in ThisBuild := Seq("-g","-encoding", "utf8")
+ThisBuild / javacOptions := Seq("-g","-encoding", "utf8")
 
-javaOptions in Universal ++= Seq(
+Universal / javaOptions ++= Seq(
     "-Dpidfile.path=/dev/null",
     "-J-XX:MaxRAMFraction=2",
     "-J-XX:InitialRAMFraction=2",
@@ -98,9 +98,8 @@ libraryDependencies ++= Seq(
     "com.gu" %% "mobile-notifications-api-models" % "1.0.14",
     "com.gu" %% "pan-domain-auth-play_2-7" % "1.0.4",
 
-    "org.scanamo" %% "scanamo" % "1.0.0-M15",
-
-    "com.github.blemale" %% "scaffeine" % "3.1.0" % "compile",
+    "org.scanamo" %% "scanamo" % "1.0.0-M15" exclude("org.scala-lang.modules", "scala-java8-compat_2.13"),
+    "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
 
     "com.gu" %% "thrift-serializer" % "4.0.2",
     "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
@@ -151,7 +150,7 @@ lazy val root = (project in file("."))
         }
     )
     .settings(inConfig(UsesDatabaseTest)(Defaults.testTasks): _*)
-    .settings(testOptions in UsesDatabaseTest := Seq(
+    .settings(UsesDatabaseTest / testOptions := Seq(
         Tests.Argument(TestFrameworks.ScalaTest,
             // only include tests with this tag
             "-n", "fixtures.UsesDatabase",
@@ -160,7 +159,7 @@ lazy val root = (project in file("."))
         )
     ))
     // We exclude in other tests
-    .settings(testOptions in Test := Seq(
+    .settings(Test / testOptions := Seq(
         Tests.Argument(TestFrameworks.ScalaTest,
             // exclude tests tagged with UsesDatabase
             "-l", "fixtures.UsesDatabase",
