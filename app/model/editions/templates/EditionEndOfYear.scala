@@ -10,7 +10,7 @@ import org.joda.time.{DateTime, DateTimeZone}
 //noinspection TypeAnnotation
 object EditionEndOfYear extends SpecialEdition {
   override val title = "2021\nhighs, hits and hopes"
-  override val subTitle = "A lookback at our readers' and editors' favourite pieces of the year"
+  override val subTitle = "A lookback at our readers’ and editors’ favourite pieces of the year"
   override val edition = "edition-end-of-year"
   override val header = Header(title ="2021", subTitle=Some("highs, hits and hopes"))
   override val notificationUTCOffset = 3
