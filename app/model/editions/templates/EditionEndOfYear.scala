@@ -21,7 +21,7 @@ object EditionEndOfYear extends SpecialEdition {
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
-      backgroundColor = "#BB3B80",
+      backgroundColor = "#7D0068",
       title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Medium", lineHeight = 34, size = 32),
       subTitle = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 20, size = 17),
       expiry = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
