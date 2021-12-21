@@ -73,7 +73,7 @@ object EditionEndOfYear extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Neutral)
 
   def Special02 = front("World", None,
     collection("Special"),
@@ -81,7 +81,7 @@ object EditionEndOfYear extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Neutral)
 
   def Special03 = front("Environment", None,
     collection("Special"),
@@ -89,7 +89,7 @@ object EditionEndOfYear extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Neutral)
 
   def Special04 = front("Spare", None,
     collection("Special"),
@@ -97,7 +97,7 @@ object EditionEndOfYear extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Neutral)
 
   def Special05 = front("Innovation", None,
     collection("Special"),
