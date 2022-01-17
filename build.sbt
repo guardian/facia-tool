@@ -75,6 +75,14 @@ resolvers ++= Seq(
 
 PlayKeys.devSettings := Seq("play.akka.dev-mode.akka.http.parsing.max-uri-length" -> "20480")
 
+// We need to keep the timestamps to allow caching headers to work as expected on assets.
+// The below should work, but some problem in one of the plugins (possible the play plugin? or sbt-web?) causes
+// the option not to be passed correctly
+//   ThisBuild / packageTimestamp := Package.keepTimestamps
+// Setting as a packageOption seems to bypass that problem, wherever it lies
+import sbt.Package.FixedTimestamp
+ThisBuild / packageOptions += FixedTimestamp(Package.keepTimestamps)
+
 libraryDependencies ++= Seq(
     ws,
     filters,
