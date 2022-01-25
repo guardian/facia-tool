@@ -34,3 +34,4 @@ deployments:
         map: text/plain
         json: application/json
       prefixStack: false
+      publicReadAcl: true
