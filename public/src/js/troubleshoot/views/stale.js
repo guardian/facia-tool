@@ -200,7 +200,6 @@ function diagnoseCapiQueries(container, front, config, scheduler) {
         innerElement.querySelector('.capiQueriesList').appendChild(generateCapiList(listOfQueries, scheduler));
         capiQueriesPlaceholder.appendChild(innerElement);
     } else {
-        capiQueriesPlaceholder.querySelector('.capiQueriesResult').classList.remove('loading');
         capiQueriesPlaceholder.appendChild(clone('emptyCapiQueriesList'));
     }
 
