@@ -92,7 +92,7 @@ fetch_config(){
     fi
 }
 main() {
-  fetch_config
+  fetch_config "$@"
   install_yarn
   set_node_version
   install_v2_deps_and_build
@@ -101,4 +101,4 @@ main() {
   printf "\n\rDone.\n\r\n\r"
 }
 
-main
+main "$@"
