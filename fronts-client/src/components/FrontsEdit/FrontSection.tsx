@@ -27,7 +27,7 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
 import FrontsContainer from './FrontContainer';
 import { isMode } from '../../selectors/pathSelectors';
-import {selectShouldUsePreviewCODE} from "../../selectors/configSelectors";
+import { selectShouldUsePreviewCODE } from '../../selectors/configSelectors';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -132,7 +132,6 @@ interface ComponentState {
   editingFrontName: boolean;
 }
 
-
 class FrontSection extends React.Component<
   FrontsComponentProps,
   ComponentState
@@ -159,7 +158,12 @@ class FrontSection extends React.Component<
   };
 
   public render() {
-    const { frontId, isOverviewOpen, isEditions, shouldUsePreviewCODE } = this.props;
+    const {
+      frontId,
+      isOverviewOpen,
+      isEditions,
+      shouldUsePreviewCODE,
+    } = this.props;
     const title = this.getTitle();
 
     const { frontNameValue, editingFrontName } = this.state;
@@ -202,7 +206,11 @@ class FrontSection extends React.Component<
             <FrontHeaderMeta>
               <EditModeVisibility visibleMode="fronts">
                 <a
-                  href={`${shouldUsePreviewCODE ? urls.previewUrlCODE : urls.previewUrlPROD }${this.props.frontId}`}
+                  href={`${
+                    shouldUsePreviewCODE
+                      ? urls.previewUrlCODE
+                      : urls.previewUrlPROD
+                  }${this.props.frontId}`}
                   target="preview"
                 >
                   <FrontHeaderButton>
@@ -317,7 +325,7 @@ const createMapStateToProps = () => {
     selectedFront: selectFront(state, { frontId }),
     isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
     isEditions: isMode(state, 'editions'),
-    shouldUsePreviewCODE: selectShouldUsePreviewCODE(state)
+    shouldUsePreviewCODE: selectShouldUsePreviewCODE(state),
   });
 };
 

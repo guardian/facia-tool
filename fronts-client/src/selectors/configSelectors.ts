@@ -46,7 +46,7 @@ const selectAvailableEditions = createSelector(
 
 const selectShouldUsePreviewCODE = createSelector(
   selectConfig,
-  (config) => !!config && (config.dev || config.env === "code")
+  (config) => !!config && (config.dev || config.env === 'code')
 );
 
 export {
@@ -58,5 +58,5 @@ export {
   selectCollectionCap,
   selectGridUrl,
   selectAvailableEditions,
-  selectShouldUsePreviewCODE
+  selectShouldUsePreviewCODE,
 };

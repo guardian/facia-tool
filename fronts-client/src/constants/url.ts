@@ -1,6 +1,6 @@
 import pageConfig from 'util/extractConfigFromPage';
 
-const previewDomain = 'preview.gutools.co.uk'
+const previewDomain = 'preview.gutools.co.uk';
 
 export default {
   base: {
@@ -10,7 +10,6 @@ export default {
     previewDomain,
     shortDomain: 'gu.com',
     capi: 'content.guardianapis.com',
-
   },
   media: {
     apiBaseUrl: pageConfig.apiBaseUrl,
