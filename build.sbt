@@ -64,12 +64,13 @@ routesImport += "model.editions._"
 val awsVersion = "1.11.999"
 val capiModelsVersion = "17.1.0"
 val capiClientVersion = "17.21"
-val json4sVersion = "3.6.6"
+val json4sVersion = "4.0.3"
 val enumeratumPlayVersion = "1.6.0"
 val circeVersion = "0.13.0"
 
 resolvers ++= Seq(
-    Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns)
+    Resolver.file("Local", file( Path.userHome.absolutePath + "/.ivy2/local"))(Resolver.ivyStylePatterns),
+    "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 )
 
 
@@ -94,9 +95,9 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "2.9",
-    "com.gu" %% "fapi-client-play27" % "3.3.8",
+    "com.gu" %% "fapi-client-play28" % "3.3.10",
     "com.gu" %% "mobile-notifications-api-models" % "1.0.14",
-    "com.gu" %% "pan-domain-auth-play_2-7" % "1.0.4",
+    "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.4",
 
     "org.scanamo" %% "scanamo" % "1.0.0-M15" exclude("org.scala-lang.modules", "scala-java8-compat_2.13"),
     "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
