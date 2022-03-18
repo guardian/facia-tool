@@ -175,6 +175,11 @@ const ToggleCol = styled(Col)`
   margin-top: 24px;
 `;
 
+const maxCaptionLength = (max: number) => (value: ImageData) =>
+  value && (value.caption?.length ?? 0) > max ? `Must be ${max} characters or less` : undefined;
+
+const maxLength140 = maxCaptionLength(140);
+
 const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
@@ -193,6 +198,7 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
               criteria={cardImageCriteria}
               frontId={frontId}
               isSelected={index === slideshowIndex}
+              validate={[maxLength140]}
             />
           </SlideshowCol>
         ))}
@@ -316,6 +322,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       coverCardImageReplace,
       coverCardMobileImage,
       coverCardTabletImage,
+      valid
     } = this.props;
 
     const isEditionsMode = editMode === 'editions';
@@ -712,7 +719,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           <Button
             priority="primary"
             onClick={this.handleSubmit}
-            disabled={pristine || !articleExists || invalidCardReplacement}
+            disabled={pristine || !articleExists || invalidCardReplacement || !valid}
             size="l"
             data-testid="edit-form-save-button"
           >
