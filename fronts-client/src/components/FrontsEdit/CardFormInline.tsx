@@ -55,6 +55,7 @@ import { ValidationResponse } from 'util/validateImageSrc';
 import InputLabel from 'components/inputs/InputLabel';
 import url from 'constants/url';
 import { RichTextInput } from 'components/inputs/RichTextInput';
+import InputBase from '../inputs/InputBase';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -80,6 +81,7 @@ type Props = ComponentProps &
 
 type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   frontId: string;
+  change: (field: string, value: any) => void;
 };
 
 const FormContainer = styled(ContentContainer.withComponent('form'))`
@@ -173,21 +175,46 @@ const ToggleCol = styled(Col)`
   margin-top: 24px;
 `;
 
-const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
-  <>
-    {fields.map((name, index) => (
-      <SlideshowCol key={`${name}-${index}`}>
-        <Field
-          name={name}
-          component={InputImage}
-          small
-          criteria={cardImageCriteria}
-          frontId={frontId}
-        />
-      </SlideshowCol>
-    ))}
-  </>
-);
+const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
+  const [slideshowIndex, setSlideshowIndex] = React.useState(0);
+
+  return (
+    <>
+      <SlideshowRow>
+        {fields.map((name, index) => (
+          <SlideshowCol
+            key={`${name}-${index}`}
+            onClick={() => setSlideshowIndex(index)}
+          >
+            <Field
+              name={name}
+              component={InputImage}
+              small
+              criteria={cardImageCriteria}
+              frontId={frontId}
+              isSelected={index === slideshowIndex}
+            />
+          </SlideshowCol>
+        ))}
+      </SlideshowRow>
+      <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
+      {fields.get(slideshowIndex) ? (
+        <>
+          <InputLabel>
+            Caption {slideshowIndex + 1}/{fields.length}
+          </InputLabel>
+          <InputBase
+            type="text"
+            value={fields.get(slideshowIndex).caption ?? ''}
+            onChange={(event) =>
+              change(`slideshow[${slideshowIndex}].caption`, event.target.value)
+            }
+          />
+        </>
+      ) : null}
+    </>
+  );
+};
 
 const CheckboxFieldsContainer: React.SFC<{
   children: Array<React.ReactElement<{ name: string }>>;
@@ -618,14 +645,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             </ImageRowContainer>
             {imageSlideshowReplace && (
               <SlideshowRowContainer size={this.props.size}>
-                <SlideshowRow>
-                  <FieldArray
-                    name="slideshow"
-                    frontId={frontId}
-                    component={RenderSlideshow}
-                  />
-                </SlideshowRow>
-                <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
+                <FieldArray
+                  name="slideshow"
+                  frontId={frontId}
+                  component={RenderSlideshow}
+                  change={change}
+                />
               </SlideshowRowContainer>
             )}
           </ImageOptionsContainer>

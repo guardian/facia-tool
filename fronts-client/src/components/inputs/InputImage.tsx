@@ -138,6 +138,7 @@ const VideoIconContainer = styled(CircularIconContainer)`
 const InputImageContainer = styled(InputContainer)<{
   small: boolean;
   isHovering?: boolean;
+  isSelected?: boolean;
 }>`
   position: relative;
   ${(props) => !props.small && `padding: 5px;`}
@@ -145,6 +146,10 @@ const InputImageContainer = styled(InputContainer)<{
   ${(props) =>
     props.isHovering &&
     `box-shadow inset 0 -10px 0 ${theme.base.colors.highlightColor}`};
+  ${(props) =>
+    props.isSelected
+      ? `box-shadow: 0px 0px 0 2px ${theme.button.backgroundColorHighlight};`
+      : ''}
 `;
 
 export interface InputImageContainerProps {
@@ -157,6 +162,7 @@ export interface InputImageContainerProps {
   hasVideo?: boolean;
   message?: string;
   replaceImage: boolean;
+  isSelected?: boolean;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -191,6 +197,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       hasVideo,
       editMode,
       disabled,
+      isSelected,
     } = this.props;
 
     if (!gridUrl) {
@@ -209,7 +216,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         ? input.value.thumb
         : defaultImageUrl;
     return (
-      <InputImageContainer small={small} isHovering={this.state.isHovering}>
+      <InputImageContainer
+        small={small}
+        isHovering={this.state.isHovering}
+        isSelected={isSelected}
+      >
         <GridModal
           url={gridSearchUrl}
           isOpen={this.state.modalOpen}
