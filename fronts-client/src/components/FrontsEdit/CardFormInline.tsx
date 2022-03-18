@@ -183,6 +183,20 @@ const maxLength140 = maxCaptionLength(140);
 const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
+  // Determines whether we can navigate to the next index, and optionally navigates to that index
+  const handleNavigation = (isForwards: boolean = true, shouldNavigate: boolean = false) => () => {
+    const incrementValue = isForwards ? 1 : -1;
+
+    for(let i = slideshowIndex + incrementValue; i < fields.length && i >= 0; i = i + incrementValue) {
+      if(fields.get(i)) {
+        if(shouldNavigate) setSlideshowIndex(i);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   return (
     <>
       <SlideshowRow>
@@ -206,9 +220,25 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
       <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
       {fields.get(slideshowIndex) ? (
         <>
+          <button
+            type="button"
+            disabled={!handleNavigation(false)()}
+            onClick={handleNavigation(false, true)}
+          >
+            ⬅️
+          </button>
           <InputLabel>
             Caption {slideshowIndex + 1}/{fields.length}
           </InputLabel>
+          <button
+            type="button"
+            disabled={!handleNavigation(true)()}
+            onClick={handleNavigation(true, true)}
+          >
+            ➡️
+          </button>
+
+          {fields.get(slideshowIndex)?.caption?.length} / 140
           <InputBase
             type="text"
             value={fields.get(slideshowIndex).caption ?? ''}
