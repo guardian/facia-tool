@@ -56,6 +56,7 @@ import InputLabel from 'components/inputs/InputLabel';
 import url from 'constants/url';
 import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputBase from '../inputs/InputBase';
+import ButtonCircularCaret from "../inputs/ButtonCircularCaret";
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -177,6 +178,22 @@ const ToggleCol = styled(Col)`
   margin-top: 24px;
 `;
 
+const CaptionControls = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+`
+
+const CaptionLength = styled.span`
+ font-size: 12px;
+`
+
+const CaptionLabel = styled(InputLabel)`
+  margin: 0 5px 0 5px;
+`
+
 const maxCaptionLength = (max: number) => (value: ImageData) =>
   value && (value.caption?.length ?? 0) > max ? `Must be ${max} characters or less` : undefined;
 
@@ -222,25 +239,30 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
       <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
       {fields.get(slideshowIndex) ? (
         <div>
-          <button
-            type="button"
-            disabled={!handleNavigation(false)()}
-            onClick={handleNavigation(false, true)}
-          >
-            ⬅️
-          </button>
-          <InputLabel>
-            Caption {slideshowIndex + 1}/{fields.length}
-          </InputLabel>
-          <button
-            type="button"
-            disabled={!handleNavigation(true)()}
-            onClick={handleNavigation(true, true)}
-          >
-            ➡️
-          </button>
+          <CaptionControls>
+            <div>
+              <ButtonCircularCaret
+                clear
+                openDir="left"
+                type="button"
+                disabled={!handleNavigation(false)()}
+                onClick={handleNavigation(false, true)}
+              />
 
-          {fields.get(slideshowIndex)?.caption?.length} / 100
+              <CaptionLabel>
+                Caption {slideshowIndex + 1}/{fields.length}
+              </CaptionLabel>
+
+              <ButtonCircularCaret
+                clear
+                openDir="right"
+                type="button"
+                disabled={!handleNavigation(true)()}
+                onClick={handleNavigation(true, true)}
+              />
+            </div>
+            <CaptionLength>{fields.get(slideshowIndex)?.caption?.length} / 100</CaptionLength>
+          </CaptionControls>
           <InputBase
             type="text"
             value={fields.get(slideshowIndex).caption ?? ''}

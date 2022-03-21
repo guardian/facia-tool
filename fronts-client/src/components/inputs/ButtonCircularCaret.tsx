@@ -50,6 +50,7 @@ interface ButtonCircularCaretWithTransitionProps {
   openDir?: Directions;
   disabled?: boolean;
   clear?: boolean;
+  type?: 'submit' | 'reset' | 'button';
 }
 
 const getBaseRotation = (openDir: Directions) => {
@@ -84,6 +85,7 @@ export default ({
   preActive = false,
   small,
   clear,
+  type,
   openDir = 'down',
   ...props
 }: ButtonCircularCaretWithTransitionProps &
@@ -93,6 +95,7 @@ export default ({
     small={small}
     clear={clear}
     highlight={preActive}
+    type={type}
     style={{
       transform: `rotate(${getRotation(openDir, active, preActive)}deg)`,
       ...props.style,
