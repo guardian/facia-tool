@@ -115,15 +115,16 @@ const RubbishBinIcon = ({
 );
 
 const ConfirmDeleteIcon = ({
-                             fill = theme.colors.white,
-                             size = 'm',
-                             title = null,
-                           }: IconProps) => (
+  fill = theme.colors.white,
+  size = 'm',
+  title = null,
+}: IconProps) => (
   <svg
     width={mapSize(size)}
     height={mapSize(size)}
     viewBox="0 0 14 18"
-    xmlns="http://www.w3.org/2000/svg">
+    xmlns="http://www.w3.org/2000/svg"
+  >
     <title>{title}</title>
     <path
       fill={fill}

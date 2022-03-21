@@ -56,7 +56,7 @@ import InputLabel from 'components/inputs/InputLabel';
 import url from 'constants/url';
 import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputBase from '../inputs/InputBase';
-import ButtonCircularCaret from "../inputs/ButtonCircularCaret";
+import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
 import { error } from '../../styleConstants';
 
 interface ComponentProps extends ContainerProps {
@@ -185,55 +185,82 @@ const CaptionControls = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 4px;
-`
+`;
 
 const CaptionLength = styled.span`
  font-size: 12px;
  margin-left: 2px;
- color: ${(props: { invalid: boolean }) => (props.invalid ? error.primary : 'default')}}
-`
+ color: ${(props: { invalid: boolean }) =>
+   props.invalid ? error.primary : 'default'}}
+`;
 
 const CaptionLabel = styled(InputLabel)`
   margin: 0 5px 0 5px;
-`
+`;
 
 const CaptionInput = styled(InputBase)`
-  color: ${(props: { invalid: boolean }) => (props.invalid ? error.primary : 'default')}}
-  border-color: ${(props: { invalid: boolean }) => (props.invalid ? error.primary : 'default')}
+  color: ${(props: { invalid: boolean }) =>
+    props.invalid ? error.primary : 'default'}}
+  border-color: ${(props: { invalid: boolean }) =>
+    props.invalid ? error.primary : 'default'}
   :focus {
-    border-color: ${(props: { invalid: boolean }) => (props.invalid ? error.primary : 'default')}
+    border-color: ${(props: { invalid: boolean }) =>
+      props.invalid ? error.primary : 'default'}
   }
-`
+`;
 
 const maxCaptionLength = (max: number) => (value: ImageData) =>
-  value && (value.caption?.length ?? 0) > max ? `Must be ${max} characters or less` : undefined;
+  value && (value.caption?.length ?? 0) > max
+    ? `Must be ${max} characters or less`
+    : undefined;
 
 const maxLength100 = maxCaptionLength(100);
 
 const WarningIcon = () => (
-  <svg width="12" height="9" viewBox="0 0 12 9" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path fill-rule="evenodd" clip-rule="evenodd" d="M5.70536 0L0.5 8.52857L0.833929 9H11.1661L11.5 8.52857L6.29464 0H5.70536ZM5.67346 6.08888H6.32656L6.63705 2.63068L6.20879 2.26666H5.79124L5.36298 2.63068L5.67346 6.08888ZM6.00001 6.72593C6.35038 6.72593 6.63705 7.0126 6.63705 7.36297C6.63705 7.71334 6.35038 8 6.00001 8C5.64964 8 5.36298 7.71334 5.36298 7.36297C5.36298 7.0126 5.64964 6.72593 6.00001 6.72593Z" fill="#A51B08"/>
+  <svg
+    width="12"
+    height="9"
+    viewBox="0 0 12 9"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      fill-rule="evenodd"
+      clip-rule="evenodd"
+      d="M5.70536 0L0.5 8.52857L0.833929 9H11.1661L11.5 8.52857L6.29464 0H5.70536ZM5.67346 6.08888H6.32656L6.63705 2.63068L6.20879 2.26666H5.79124L5.36298 2.63068L5.67346 6.08888ZM6.00001 6.72593C6.35038 6.72593 6.63705 7.0126 6.63705 7.36297C6.63705 7.71334 6.35038 8 6.00001 8C5.64964 8 5.36298 7.71334 5.36298 7.36297C5.36298 7.0126 5.64964 6.72593 6.00001 6.72593Z"
+      fill="#A51B08"
+    />
   </svg>
-)
+);
 
 const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
-  const isInvalidCaptionLength = (index: number) => !!maxLength100(fields.get(index));
+  const isInvalidCaptionLength = (index: number) =>
+    !!maxLength100(fields.get(index));
 
   // Determines whether we can navigate to the next index, and optionally navigates to that index
-  const handleNavigation = (isForwards: boolean = true, shouldNavigate: boolean = false) => () => {
+  const handleNavigation = (
+    isForwards: boolean = true,
+    shouldNavigate: boolean = false
+  ) => () => {
     const incrementValue = isForwards ? 1 : -1;
 
-    for(let i = slideshowIndex + incrementValue; i < fields.length && i >= 0; i = i + incrementValue) {
-      if(fields.get(i)) {
-        if(shouldNavigate) setSlideshowIndex(i);
+    for (
+      let i = slideshowIndex + incrementValue;
+      i < fields.length && i >= 0;
+      i = i + incrementValue
+    ) {
+      if (fields.get(i)) {
+        if (shouldNavigate) {
+          setSlideshowIndex(i);
+        }
         return true;
       }
     }
 
     return false;
-  }
+  };
 
   return (
     <>
@@ -283,12 +310,11 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
             </div>
 
             <div>
-              {isInvalidCaptionLength(slideshowIndex) ? <WarningIcon/> : null}
+              {isInvalidCaptionLength(slideshowIndex) ? <WarningIcon /> : null}
               <CaptionLength invalid={isInvalidCaptionLength(slideshowIndex)}>
                 {fields.get(slideshowIndex)?.caption?.length} / 100
               </CaptionLength>
             </div>
-
           </CaptionControls>
           <CaptionInput
             type="text"
@@ -404,7 +430,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       coverCardImageReplace,
       coverCardMobileImage,
       coverCardTabletImage,
-      valid
+      valid,
     } = this.props;
 
     const isEditionsMode = editMode === 'editions';
@@ -801,7 +827,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           <Button
             priority="primary"
             onClick={this.handleSubmit}
-            disabled={pristine || !articleExists || invalidCardReplacement || !valid}
+            disabled={
+              pristine || !articleExists || invalidCardReplacement || !valid
+            }
             size="l"
             data-testid="edit-form-save-button"
           >
