@@ -18,7 +18,7 @@ import {
 import { selectGridUrl } from 'selectors/configSelectors';
 import type { State } from 'types/State';
 import { GridData, Criteria } from 'types/Grid';
-import { RubbishBinIcon, AddImageIcon, VideoIcon } from '../icons/Icons';
+import { RubbishBinIcon, ConfirmDeleteIcon, AddImageIcon, VideoIcon } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
 import ImageDragIntentIndicator from 'components/image/ImageDragIntentIndicator';
@@ -107,6 +107,7 @@ const Label = styled(InputLabel)`
 
 const ButtonDelete = styled(ButtonDefault)<{
   small?: boolean;
+  confirmDelete?: boolean;
 }>`
   position: absolute;
   display: block;
@@ -117,6 +118,16 @@ const ButtonDelete = styled(ButtonDefault)<{
   text-align: center;
   padding: 0;
   border-radius: 24px;
+  background-color: ${(props) => (props.confirmDelete ? error.warningLight : 'default')};
+  :hover {
+      background-color: ${(props) => (props.confirmDelete ? error.warningDark : 'default')};
+  }
+  &:hover:enabled {
+    background-color: ${(props) => (props.confirmDelete ? error.warningDark : 'default')}
+  }
+  &:focus {
+    outline: none;
+  }
 `;
 
 const IconDelete = styled.div<{
@@ -185,17 +196,20 @@ interface ComponentState {
   isHovering: boolean;
   modalOpen: boolean;
   imageSrc: string;
+  confirmDelete: boolean;
 }
 
 const dragImage = new Image();
 dragImage.src = imageDragIcon;
 
 class InputImage extends React.Component<ComponentProps, ComponentState> {
+
   public state = {
     isDragging: false,
     isHovering: false,
     modalOpen: false,
     imageSrc: '',
+    confirmDelete: false,
   };
 
   private inputRef = React.createRef<HTMLInputElement>();
@@ -269,9 +283,10 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   small={small}
                   onClick={this.handleDelete}
                   disabled={disabled}
+                  confirmDelete={this.state.confirmDelete}
                 >
                   <IconDelete small={small}>
-                    <RubbishBinIcon size="s" />
+                    {this.state.confirmDelete ? <ConfirmDeleteIcon size="s" /> : <RubbishBinIcon size="s" />}
                   </IconDelete>
                 </ButtonDelete>
               ) : (
@@ -326,6 +341,16 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
   private handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+
+    if(!this.state.confirmDelete) {
+      this.setState({confirmDelete: true});
+      const resetTimer = setTimeout(() => this.setState({confirmDelete: false}), 3000);
+      return () => {
+        clearTimeout(resetTimer);
+      }
+      return;
+    }
+
     this.clearField();
   };
 
