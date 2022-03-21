@@ -109,8 +109,8 @@ const ButtonDelete = styled(ButtonDefault)<{
 }>`
   position: absolute;
   display: block;
-  top: ${(props) => (props.small ? '2px' : '6px')};
-  right: ${(props) => (props.small ? '2px' : '6px')};
+  top: ${(props) => (props.small ? '-8px' : '-16px')};
+  right: ${(props) => (props.small ? '-8px' : '-16px')};
   height: ${(props) => (props.small ? '24px' : '32px')};
   width: ${(props) => (props.small ? '24px' : '32px')};
   text-align: center;
