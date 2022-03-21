@@ -96,6 +96,7 @@ const FormContent = styled.div`
   display: flex;
   flex-direction: ${(props: { size?: string }) =>
     props.size !== 'wide' ? 'column' : 'row'};
+  margin-bottom: 40px;
 `;
 
 const RowContainer = styled.div`
@@ -120,6 +121,7 @@ const ImageOptionsContainer = styled.div`
 const SlideshowRowContainer = styled(RowContainer)`
   flex: 1 1 auto;
   overflow: visible;
+  margin-top: 4px;
   margin-left: ${(props: { size?: string }) =>
     props.size !== 'wide' ? 0 : '10px'};
 `;
@@ -219,7 +221,7 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
       </SlideshowRow>
       <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
       {fields.get(slideshowIndex) ? (
-        <>
+        <div>
           <button
             type="button"
             disabled={!handleNavigation(false)()}
@@ -246,7 +248,7 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
               change(`slideshow[${slideshowIndex}].caption`, event.target.value)
             }
           />
-        </>
+        </div>
       ) : null}
     </>
   );
