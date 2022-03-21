@@ -49,9 +49,9 @@ routesGenerator := InjectedRoutesGenerator
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-target:jvm-1.8", "-Xcheckinit", "-encoding", "utf8", "-feature")
 
-sources in (Compile, doc) := Seq.empty
+Compile / doc / sources := Seq.empty
 
-publishArtifact in (Compile, packageDoc) := false
+Compile / packageDoc / publishArtifact := false
 
 TwirlKeys.templateImports ++= Seq(
     "conf._",
@@ -95,7 +95,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "2.9",
-    "com.gu" %% "fapi-client-play28" % "3.3.11",
+    "com.gu" %% "fapi-client-play28" % "3.3.12",
     "com.gu" %% "mobile-notifications-api-models" % "1.0.14",
     "com.gu" %% "pan-domain-auth-play_2-8" % "1.0.4",
 
