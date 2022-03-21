@@ -25,6 +25,7 @@ import ImageDragIntentIndicator from 'components/image/ImageDragIntentIndicator'
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from '../../selectors/pathSelectors';
 import CircularIconContainer from '../icons/CircularIconContainer';
+import {error} from "../../styleConstants";
 
 const ImageContainer = styled.div<{
   small?: boolean;
@@ -137,19 +138,29 @@ const VideoIconContainer = styled(CircularIconContainer)`
 
 const InputImageContainer = styled(InputContainer)<{
   small: boolean;
-  isHovering?: boolean;
+  isDragging?: boolean;
   isSelected?: boolean;
+  isHovering?: boolean;
+  isInvalid?: boolean;
 }>`
   position: relative;
   ${(props) => !props.small && `padding: 5px;`}
   background-color: ${(props) => props.theme.colors.greyLight};
   ${(props) =>
-    props.isHovering &&
-    `box-shadow inset 0 -10px 0 ${theme.base.colors.highlightColor}`};
+    props.isDragging &&
+  `box-shadow inset 0 -10px 0 ${theme.colors.orange}`};
   ${(props) =>
-    props.isSelected
-      ? `box-shadow: 0px 0px 0 2px ${theme.button.backgroundColorHighlight};`
-      : ''}
+  props.isSelected
+    ? `box-shadow: 0px 0px 0 2px ${theme.colors.orange};`
+    : ''}
+  ${(props) =>
+  !props.isSelected && props.isHovering
+    ? `box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight};`
+    : ''}
+  ${(props) =>
+  props.isInvalid
+    ? `box-shadow: 0px 0px 0 2px ${error.primary};`
+    : ''}
 `;
 
 export interface InputImageContainerProps {
@@ -163,12 +174,14 @@ export interface InputImageContainerProps {
   message?: string;
   replaceImage: boolean;
   isSelected?: boolean;
+  isInvalid?: boolean;
 }
 
 type ComponentProps = InputImageContainerProps &
   WrappedFieldProps & { gridUrl: string | null; editMode: EditMode };
 
 interface ComponentState {
+  isDragging: boolean;
   isHovering: boolean;
   modalOpen: boolean;
   imageSrc: string;
@@ -179,6 +192,7 @@ dragImage.src = imageDragIcon;
 
 class InputImage extends React.Component<ComponentProps, ComponentState> {
   public state = {
+    isDragging: false,
     isHovering: false,
     modalOpen: false,
     imageSrc: '',
@@ -198,6 +212,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       editMode,
       disabled,
       isSelected,
+      isInvalid,
     } = this.props;
 
     if (!gridUrl) {
@@ -218,8 +233,10 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     return (
       <InputImageContainer
         small={small}
-        isHovering={this.state.isHovering}
+        isDragging={this.state.isDragging}
         isSelected={isSelected}
+        isHovering={this.state.isHovering}
+        isInvalid={isInvalid}
       >
         <GridModal
           url={gridSearchUrl}
@@ -229,9 +246,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         />
         <DragIntentContainer
           active
-          onIntentConfirm={() => this.setState({ isHovering: true })}
-          onDragIntentStart={() => this.setState({ isHovering: true })}
-          onDragIntentEnd={() => this.setState({ isHovering: false })}
+          onIntentConfirm={() => this.setState({ isDragging: true })}
+          onDragIntentStart={() => this.setState({ isDragging: true })}
+          onDragIntentEnd={() => this.setState({ isDragging: false })}
         >
           <ImageContainer small={small}>
             <ImageComponent
@@ -241,6 +258,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
               draggable
               onDragStart={this.handleDragStart}
               onDrop={this.handleDrop}
+              onMouseEnter={(() => this.setState({ isHovering: true }))}
+              onMouseLeave={(() => this.setState({isHovering: false}))}
               small={small}
             >
               {hasImage ? (
@@ -294,7 +313,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
             )}
           </ImageContainer>
         </DragIntentContainer>
-        {this.state.isHovering && <ImageDragIntentIndicator />}
+        {this.state.isDragging && <ImageDragIntentIndicator />}
       </InputImageContainer>
     );
   }
