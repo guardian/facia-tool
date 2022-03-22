@@ -159,7 +159,6 @@ const InputImageContainer = styled(InputContainer)<{
   small: boolean;
   isDragging?: boolean;
   isSelected?: boolean;
-  isHovering?: boolean;
   isInvalid?: boolean;
 }>`
   position: relative;
@@ -170,12 +169,10 @@ const InputImageContainer = styled(InputContainer)<{
   ${(props) =>
     props.isSelected ? `box-shadow: 0px 0px 0 2px ${theme.colors.orange};` : ''}
   ${(props) =>
-    !props.isSelected && props.isHovering
-      ? `box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight};`
-      : ''}
-  ${(props) =>
-    props.isInvalid ? `box-shadow: 0px 0px 0 2px ${error.primary};` : ''}
-`;
+    props.isInvalid ? `box-shadow: 0px 0px 0 2px ${error.warningDark};` : ''}
+  :hover {
+    box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight};
+  }`;
 
 export interface InputImageContainerProps {
   disabled?: boolean;
@@ -196,7 +193,6 @@ type ComponentProps = InputImageContainerProps &
 
 interface ComponentState {
   isDragging: boolean;
-  isHovering: boolean;
   modalOpen: boolean;
   imageSrc: string;
   confirmDelete: boolean;
@@ -208,7 +204,6 @@ dragImage.src = imageDragIcon;
 class InputImage extends React.Component<ComponentProps, ComponentState> {
   public state = {
     isDragging: false,
-    isHovering: false,
     modalOpen: false,
     imageSrc: '',
     confirmDelete: false,
@@ -251,7 +246,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         small={small}
         isDragging={this.state.isDragging}
         isSelected={isSelected}
-        isHovering={this.state.isHovering}
         isInvalid={isInvalid}
       >
         <GridModal
@@ -274,8 +268,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
               draggable
               onDragStart={this.handleDragStart}
               onDrop={this.handleDrop}
-              onMouseEnter={() => this.setState({ isHovering: true })}
-              onMouseLeave={() => this.setState({ isHovering: false })}
               small={small}
             >
               {hasImage ? (

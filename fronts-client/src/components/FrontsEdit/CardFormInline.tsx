@@ -236,8 +236,26 @@ const WarningIcon = () => (
 const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
+  React.useEffect(() => {
+    if(!fields.get(slideshowIndex)) {
+      navigateToNearestIndex();
+    }
+  }, [fields.get(slideshowIndex)]);
+
   const isInvalidCaptionLength = (index: number) =>
     !!maxLength100(fields.get(index));
+
+  const navigateToNearestIndex = () => {
+    if(handleNavigation(true)()) {
+      return handleNavigation(true, true)()
+    }
+
+    if (handleNavigation(false)()) {
+      return handleNavigation(false, true)()
+    }
+
+    return setSlideshowIndex(-1);
+  }
 
   // Determines whether we can navigate to the next index, and optionally navigates to that index
   const handleNavigation = (
