@@ -58,6 +58,7 @@ import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputBase from '../inputs/InputBase';
 import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
 import { error } from '../../styleConstants';
+import {WarningIcon} from "../icons/Icons";
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -209,29 +210,17 @@ const CaptionInput = styled(InputBase)`
   }
 `;
 
+const CaptionLengthContainer = styled.div`
+    display: flex;
+    align-items: center;
+`
+
 const maxCaptionLength = (max: number) => (value: ImageData) =>
   value && (value.caption?.length ?? 0) > max
     ? `Must be ${max} characters or less`
     : undefined;
 
 const maxLength100 = maxCaptionLength(100);
-
-const WarningIcon = () => (
-  <svg
-    width="12"
-    height="9"
-    viewBox="0 0 12 9"
-    fill="none"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
-      d="M5.70536 0L0.5 8.52857L0.833929 9H11.1661L11.5 8.52857L6.29464 0H5.70536ZM5.67346 6.08888H6.32656L6.63705 2.63068L6.20879 2.26666H5.79124L5.36298 2.63068L5.67346 6.08888ZM6.00001 6.72593C6.35038 6.72593 6.63705 7.0126 6.63705 7.36297C6.63705 7.71334 6.35038 8 6.00001 8C5.64964 8 5.36298 7.71334 5.36298 7.36297C5.36298 7.0126 5.64964 6.72593 6.00001 6.72593Z"
-      fill="#A51B08"
-    />
-  </svg>
-);
 
 const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
@@ -327,12 +316,12 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
               />
             </div>
 
-            <div>
-              {isInvalidCaptionLength(slideshowIndex) ? <WarningIcon /> : null}
+            <CaptionLengthContainer>
+              {isInvalidCaptionLength(slideshowIndex) ? <WarningIcon size="s" fill={error.warningDark} /> : null}
               <CaptionLength invalid={isInvalidCaptionLength(slideshowIndex)}>
                 {fields.get(slideshowIndex)?.caption?.length} / 100
               </CaptionLength>
-            </div>
+            </CaptionLengthContainer>
           </CaptionControls>
           <CaptionInput
             type="text"

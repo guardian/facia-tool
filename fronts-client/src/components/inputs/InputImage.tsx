@@ -22,7 +22,7 @@ import {
   RubbishBinIcon,
   ConfirmDeleteIcon,
   AddImageIcon,
-  VideoIcon,
+  VideoIcon, WarningIcon,
 } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
@@ -111,18 +111,17 @@ const Label = styled(InputLabel)`
 `;
 
 const ButtonDelete = styled(ButtonDefault)<{
-  small?: boolean;
   confirmDelete?: boolean;
 }>`
   position: absolute;
   display: block;
-  top: ${(props) => (props.small ? '-8px' : '-16px')};
-  right: ${(props) => (props.small ? '-8px' : '-16px')};
-  height: ${(props) => (props.small ? '24px' : '32px')};
-  width: ${(props) => (props.small ? '24px' : '32px')};
+  top: -10px;
+  right: -6px;
+  height: 24px;
+  width: 24px;
   text-align: center;
   padding: 0;
-  border-radius: 24px;
+  border-radius: 20px;
   background-color: ${(props) =>
     props.confirmDelete ? error.warningLight : 'default'};
   :hover {
@@ -138,15 +137,45 @@ const ButtonDelete = styled(ButtonDefault)<{
   }
 `;
 
-const IconDelete = styled.div<{
-  small?: boolean;
-}>`
+const DeleteIconOptions = styled.div`
   display: block;
   position: absolute;
   height: 14px;
   width: 14px;
-  top: ${(props) => (props.small ? '5px' : '9px')};
-  left: ${(props) => (props.small ? '5px' : '9px')};
+  top: 5px;
+  left: 5px;
+`;
+
+
+const ButtonWarning = styled(ButtonDefault)`
+  position: absolute;
+  display: block;
+  top: 16px;
+  right: -6px;
+  height: 24px;
+  width: 24px;
+  text-align: center;
+  padding: 0;
+  border-radius: 20px;
+  background-color: ${error.warningDark};
+  :hover {
+    background-color: ${error.warningDark};
+  }
+  &:hover:enabled {
+    background-color: ${error.warningDark};
+  }
+  &:focus {
+    outline: none;
+  }
+`;
+
+const IconWarning = styled.div`
+  display: block;
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  top: 5px;
+  left: 5px;
 `;
 
 const VideoIconContainer = styled(CircularIconContainer)`
@@ -271,22 +300,29 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
               small={small}
             >
               {hasImage ? (
-                <ButtonDelete
-                  type="button"
-                  priority="primary"
-                  small={small}
-                  onClick={this.handleDelete}
-                  disabled={disabled}
-                  confirmDelete={this.state.confirmDelete}
-                >
-                  <IconDelete small={small}>
-                    {this.state.confirmDelete ? (
-                      <ConfirmDeleteIcon size="s" />
-                    ) : (
-                      <RubbishBinIcon size="s" />
-                    )}
-                  </IconDelete>
-                </ButtonDelete>
+                <>
+                  <ButtonDelete
+                    type="button"
+                    priority="primary"
+                    onClick={this.handleDelete}
+                    disabled={disabled}
+                    confirmDelete={this.state.confirmDelete}
+                  >
+                    <DeleteIconOptions>
+                      {this.state.confirmDelete ? (
+                        <ConfirmDeleteIcon size="s"/>
+                      ) : (
+                        <RubbishBinIcon size="s"/>
+                      )}
+                    </DeleteIconOptions>
+                  </ButtonDelete>
+
+                  {isInvalid ? <ButtonWarning>
+                    <IconWarning>
+                      <WarningIcon size="s"/>
+                    </IconWarning>
+                  </ButtonWarning> : null}
+                </>
               ) : (
                 <AddImageViaGridModalButton>
                   <AddImageButton
