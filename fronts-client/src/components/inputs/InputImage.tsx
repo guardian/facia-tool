@@ -126,11 +126,11 @@ const ButtonDelete = styled(ButtonDefault)<{
     props.confirmDelete ? error.warningLight : 'default'};
   :hover {
     background-color: ${(props) =>
-      props.confirmDelete ? error.warningDark : 'default'};
+      props.confirmDelete ? error.warningLight : 'default'};
   }
   &:hover:enabled {
     background-color: ${(props) =>
-      props.confirmDelete ? error.warningDark : 'default'};
+      props.confirmDelete ? error.warningLight : 'default'};
   }
   &:focus {
     outline: none;
@@ -189,18 +189,21 @@ const InputImageContainer = styled(InputContainer)<{
   isDragging?: boolean;
   isSelected?: boolean;
   isInvalid?: boolean;
+  confirmDelete?: boolean;
 }>`
   position: relative;
   ${(props) => !props.small && `padding: 5px;`}
   background-color: ${(props) => props.theme.colors.greyLight};
   ${(props) =>
-    props.isDragging && `box-shadow inset 0 -10px 0 ${theme.colors.orange}`};
+    props.isDragging && `box-shadow: inset 0 -10px 0 ${theme.colors.orange}`};
   ${(props) =>
-    props.isSelected ? `box-shadow: 0px 0px 0 2px ${theme.colors.orange};` : ''}
+    props.isSelected && !props.confirmDelete ? `box-shadow: 0px 0px 0 2px ${theme.colors.orange};` : ''}
   ${(props) =>
-    props.isInvalid ? `box-shadow: 0px 0px 0 2px ${error.warningDark};` : ''}
+    !props.isSelected && props.isInvalid ? `box-shadow: 0px 0px 0 2px ${error.warningDark};` : ''}
+  ${(props) =>
+    props.confirmDelete ? `box-shadow: 0px 0px 0 2px ${error.warningLight};` : ''}
   :hover {
-    box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight};
+    ${(props) => !props.confirmDelete ? `box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight}` : ``};
   }`;
 
 export interface InputImageContainerProps {
@@ -276,6 +279,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         isDragging={this.state.isDragging}
         isSelected={isSelected}
         isInvalid={isInvalid}
+        confirmDelete={this.state.confirmDelete}
       >
         <GridModal
           url={gridSearchUrl}
