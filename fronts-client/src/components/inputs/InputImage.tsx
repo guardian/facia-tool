@@ -400,9 +400,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       return () => {
         clearTimeout(resetTimer);
       };
-      return;
     }
 
+    this.setState({ confirmDelete: false });
     this.clearField();
   };
 
