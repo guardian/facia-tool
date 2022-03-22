@@ -58,7 +58,7 @@ import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputBase from '../inputs/InputBase';
 import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
 import { error } from '../../styleConstants';
-import {WarningIcon} from "../icons/Icons";
+import { WarningIcon } from '../icons/Icons';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -211,9 +211,9 @@ const CaptionInput = styled(InputBase)`
 `;
 
 const CaptionLengthContainer = styled.div`
-    display: flex;
-    align-items: center;
-`
+  display: flex;
+  align-items: center;
+`;
 
 const maxCaptionLength = (max: number) => (value: ImageData) =>
   value && (value.caption?.length ?? 0) > max
@@ -226,7 +226,7 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
   React.useEffect(() => {
-    if(!fields.get(slideshowIndex)) {
+    if (!fields.get(slideshowIndex)) {
       navigateToNearestIndex();
     }
   }, [fields.get(slideshowIndex)]);
@@ -235,16 +235,16 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
     !!maxLength100(fields.get(index));
 
   const navigateToNearestIndex = () => {
-    if(handleNavigation(true)()) {
-      return handleNavigation(true, true)()
+    if (handleNavigation(true)()) {
+      return handleNavigation(true, true)();
     }
 
     if (handleNavigation(false)()) {
-      return handleNavigation(false, true)()
+      return handleNavigation(false, true)();
     }
 
     return setSlideshowIndex(-1);
-  }
+  };
 
   // Determines whether we can navigate to the next index, and optionally navigates to that index
   const handleNavigation = (
@@ -317,7 +317,9 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
             </div>
 
             <CaptionLengthContainer>
-              {isInvalidCaptionLength(slideshowIndex) ? <WarningIcon size="s" fill={error.warningDark} /> : null}
+              {isInvalidCaptionLength(slideshowIndex) ? (
+                <WarningIcon size="s" fill={error.warningDark} />
+              ) : null}
               <CaptionLength invalid={isInvalidCaptionLength(slideshowIndex)}>
                 {fields.get(slideshowIndex)?.caption?.length} / 100
               </CaptionLength>

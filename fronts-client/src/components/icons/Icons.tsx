@@ -301,10 +301,7 @@ const DragHandleIcon = ({ fill = theme.colors.greyDark }) => (
   </svg>
 );
 
-const WarningIcon = ({
-                       fill = theme.colors.white,
-                       size = 'm',
-                     }: IconProps) => (
+const WarningIcon = ({ fill = theme.colors.white, size = 'm' }: IconProps) => (
   <svg
     width={mapSize(size)}
     height={mapSize(size)}

@@ -22,7 +22,8 @@ import {
   RubbishBinIcon,
   ConfirmDeleteIcon,
   AddImageIcon,
-  VideoIcon, WarningIcon,
+  VideoIcon,
+  WarningIcon,
 } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
@@ -146,7 +147,6 @@ const DeleteIconOptions = styled.div`
   left: 5px;
 `;
 
-
 const ButtonWarning = styled(ButtonDefault)`
   position: absolute;
   display: block;
@@ -197,13 +197,22 @@ const InputImageContainer = styled(InputContainer)<{
   ${(props) =>
     props.isDragging && `box-shadow: inset 0 -10px 0 ${theme.colors.orange}`};
   ${(props) =>
-    props.isSelected && !props.confirmDelete ? `box-shadow: 0px 0px 0 2px ${theme.colors.orange};` : ''}
+    props.isSelected && !props.confirmDelete
+      ? `box-shadow: 0px 0px 0 2px ${theme.colors.orange};`
+      : ''}
   ${(props) =>
-    !props.isSelected && props.isInvalid ? `box-shadow: 0px 0px 0 2px ${error.warningDark};` : ''}
+    !props.isSelected && props.isInvalid
+      ? `box-shadow: 0px 0px 0 2px ${error.warningDark};`
+      : ''}
   ${(props) =>
-    props.confirmDelete ? `box-shadow: 0px 0px 0 2px ${error.warningLight};` : ''}
+    props.confirmDelete
+      ? `box-shadow: 0px 0px 0 2px ${error.warningLight};`
+      : ''}
   :hover {
-    ${(props) => !props.confirmDelete ? `box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight}` : ``};
+    ${(props) =>
+      !props.confirmDelete
+        ? `box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight}`
+        : ``};
   }`;
 
 export interface InputImageContainerProps {
@@ -314,18 +323,20 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                   >
                     <DeleteIconOptions>
                       {this.state.confirmDelete ? (
-                        <ConfirmDeleteIcon size="s"/>
+                        <ConfirmDeleteIcon size="s" />
                       ) : (
-                        <RubbishBinIcon size="s"/>
+                        <RubbishBinIcon size="s" />
                       )}
                     </DeleteIconOptions>
                   </ButtonDelete>
 
-                  {isInvalid ? <ButtonWarning>
-                    <IconWarning>
-                      <WarningIcon size="s"/>
-                    </IconWarning>
-                  </ButtonWarning> : null}
+                  {isInvalid ? (
+                    <ButtonWarning>
+                      <IconWarning>
+                        <WarningIcon size="s" />
+                      </IconWarning>
+                    </ButtonWarning>
+                  ) : null}
                 </>
               ) : (
                 <AddImageViaGridModalButton>
