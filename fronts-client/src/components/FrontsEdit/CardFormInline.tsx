@@ -55,6 +55,10 @@ import { ValidationResponse } from 'util/validateImageSrc';
 import InputLabel from 'components/inputs/InputLabel';
 import url from 'constants/url';
 import { RichTextInput } from 'components/inputs/RichTextInput';
+import InputBase from '../inputs/InputBase';
+import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
+import { error } from '../../styleConstants';
+import { WarningIcon } from '../icons/Icons';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -80,6 +84,7 @@ type Props = ComponentProps &
 
 type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   frontId: string;
+  change: (field: string, value: any) => void;
 };
 
 const FormContainer = styled(ContentContainer.withComponent('form'))`
@@ -94,6 +99,7 @@ const FormContent = styled.div`
   display: flex;
   flex-direction: ${(props: { size?: string }) =>
     props.size !== 'wide' ? 'column' : 'row'};
+  margin-bottom: 40px;
 `;
 
 const RowContainer = styled.div`
@@ -118,6 +124,7 @@ const ImageOptionsContainer = styled.div`
 const SlideshowRowContainer = styled(RowContainer)`
   flex: 1 1 auto;
   overflow: visible;
+  margin-top: 4px;
   margin-left: ${(props: { size?: string }) =>
     props.size !== 'wide' ? 0 : '10px'};
 `;
@@ -173,21 +180,164 @@ const ToggleCol = styled(Col)`
   margin-top: 24px;
 `;
 
-const RenderSlideshow = ({ fields, frontId }: RenderSlideshowProps) => (
-  <>
-    {fields.map((name, index) => (
-      <SlideshowCol key={`${name}-${index}`}>
-        <Field
-          name={name}
-          component={InputImage}
-          small
-          criteria={cardImageCriteria}
-          frontId={frontId}
-        />
-      </SlideshowCol>
-    ))}
-  </>
-);
+const CaptionControls = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+`;
+
+const CaptionLength = styled.span`
+ font-size: 12px;
+ margin-left: 2px;
+ color: ${(props: { invalid: boolean }) =>
+   props.invalid ? error.primary : 'default'}}
+`;
+
+const CaptionLabel = styled(InputLabel)`
+  margin: 0 5px 0 5px;
+`;
+
+const CaptionInput = styled(InputBase)`
+  color: ${(props: { invalid: boolean }) =>
+    props.invalid ? error.primary : 'default'}}
+  border-color: ${(props: { invalid: boolean }) =>
+    props.invalid ? error.primary : 'default'}
+  :focus {
+    border-color: ${(props: { invalid: boolean }) =>
+      props.invalid ? error.primary : 'default'}
+  }
+`;
+
+const CaptionLengthContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const maxCaptionLength = (max: number) => (value: ImageData) =>
+  value && (value.caption?.length ?? 0) > max
+    ? `Must be ${max} characters or less`
+    : undefined;
+
+const maxLength100 = maxCaptionLength(100);
+
+const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
+  const [slideshowIndex, setSlideshowIndex] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!fields.get(slideshowIndex)) {
+      navigateToNearestIndex();
+    }
+  }, [fields.get(slideshowIndex)]);
+
+  const isInvalidCaptionLength = (index: number) =>
+    !!maxLength100(fields.get(index));
+
+  const navigateToNearestIndex = () => {
+    if (handleNavigation(true)()) {
+      return handleNavigation(true, true)();
+    }
+
+    if (handleNavigation(false)()) {
+      return handleNavigation(false, true)();
+    }
+
+    return setSlideshowIndex(-1);
+  };
+
+  // Determines whether we can navigate to the next index, and optionally navigates to that index
+  const handleNavigation = (
+    isForwards: boolean = true,
+    shouldNavigate: boolean = false
+  ) => () => {
+    const incrementValue = isForwards ? 1 : -1;
+
+    for (
+      let i = slideshowIndex + incrementValue;
+      i < fields.length && i >= 0;
+      i = i + incrementValue
+    ) {
+      if (fields.get(i)) {
+        if (shouldNavigate) {
+          setSlideshowIndex(i);
+        }
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  return (
+    <>
+      <SlideshowRow>
+        {fields.map((name, index) => (
+          <SlideshowCol
+            key={`${name}-${index}`}
+            onClick={() => setSlideshowIndex(index)}
+          >
+            <Field
+              name={name}
+              component={InputImage}
+              small
+              criteria={cardImageCriteria}
+              frontId={frontId}
+              isSelected={index === slideshowIndex}
+              isInvalid={isInvalidCaptionLength(index)}
+              validate={[maxLength100]}
+            />
+          </SlideshowCol>
+        ))}
+      </SlideshowRow>
+      <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
+      {fields.get(slideshowIndex) ? (
+        <div>
+          <CaptionControls>
+            <div>
+              <ButtonCircularCaret
+                clear
+                openDir="left"
+                type="button"
+                disabled={!handleNavigation(false)()}
+                onClick={handleNavigation(false, true)}
+              />
+
+              <CaptionLabel>
+                Caption {slideshowIndex + 1}/{fields.length}
+              </CaptionLabel>
+
+              <ButtonCircularCaret
+                clear
+                openDir="right"
+                type="button"
+                disabled={!handleNavigation(true)()}
+                onClick={handleNavigation(true, true)}
+              />
+            </div>
+
+            <CaptionLengthContainer>
+              {isInvalidCaptionLength(slideshowIndex) ? (
+                <WarningIcon size="s" fill={error.warningDark} />
+              ) : null}
+              <CaptionLength invalid={isInvalidCaptionLength(slideshowIndex)}>
+                {fields.get(slideshowIndex)?.caption?.length} / 100
+              </CaptionLength>
+            </CaptionLengthContainer>
+          </CaptionControls>
+          <CaptionInput
+            type="text"
+            value={fields.get(slideshowIndex).caption ?? ''}
+            invalid={isInvalidCaptionLength(slideshowIndex)}
+            onChange={(event) =>
+              change(`slideshow[${slideshowIndex}].caption`, event.target.value)
+            }
+          />
+        </div>
+      ) : null}
+    </>
+  );
+};
 
 const CheckboxFieldsContainer: React.SFC<{
   children: Array<React.ReactElement<{ name: string }>>;
@@ -289,6 +439,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       coverCardImageReplace,
       coverCardMobileImage,
       coverCardTabletImage,
+      valid,
     } = this.props;
 
     const isEditionsMode = editMode === 'editions';
@@ -618,14 +769,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             </ImageRowContainer>
             {imageSlideshowReplace && (
               <SlideshowRowContainer size={this.props.size}>
-                <SlideshowRow>
-                  <FieldArray
-                    name="slideshow"
-                    frontId={frontId}
-                    component={RenderSlideshow}
-                  />
-                </SlideshowRow>
-                <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
+                <FieldArray
+                  name="slideshow"
+                  frontId={frontId}
+                  component={RenderSlideshow}
+                  change={change}
+                />
               </SlideshowRowContainer>
             )}
           </ImageOptionsContainer>
@@ -687,7 +836,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           <Button
             priority="primary"
             onClick={this.handleSubmit}
-            disabled={pristine || !articleExists || invalidCardReplacement}
+            disabled={
+              pristine || !articleExists || invalidCardReplacement || !valid
+            }
             size="l"
             data-testid="edit-form-save-button"
           >

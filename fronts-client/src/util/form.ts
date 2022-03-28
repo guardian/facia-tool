@@ -48,6 +48,7 @@ export interface ImageData {
   height?: number;
   origin?: string;
   thumb?: string;
+  caption?: string;
 }
 
 export interface CapiFields {

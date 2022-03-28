@@ -18,13 +18,20 @@ import {
 import { selectGridUrl } from 'selectors/configSelectors';
 import type { State } from 'types/State';
 import { GridData, Criteria } from 'types/Grid';
-import { RubbishBinIcon, AddImageIcon, VideoIcon } from '../icons/Icons';
+import {
+  RubbishBinIcon,
+  ConfirmDeleteIcon,
+  AddImageIcon,
+  VideoIcon,
+  WarningIcon,
+} from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
 import ImageDragIntentIndicator from 'components/image/ImageDragIntentIndicator';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from '../../selectors/pathSelectors';
 import CircularIconContainer from '../icons/CircularIconContainer';
+import { error } from '../../styleConstants';
 
 const ImageContainer = styled.div<{
   small?: boolean;
@@ -105,28 +112,70 @@ const Label = styled(InputLabel)`
 `;
 
 const ButtonDelete = styled(ButtonDefault)<{
-  small?: boolean;
+  confirmDelete?: boolean;
 }>`
   position: absolute;
   display: block;
-  top: ${(props) => (props.small ? '2px' : '6px')};
-  right: ${(props) => (props.small ? '2px' : '6px')};
-  height: ${(props) => (props.small ? '24px' : '32px')};
-  width: ${(props) => (props.small ? '24px' : '32px')};
+  top: -10px;
+  right: -6px;
+  height: 24px;
+  width: 24px;
   text-align: center;
   padding: 0;
-  border-radius: 24px;
+  border-radius: 20px;
+  background-color: ${(props) =>
+    props.confirmDelete ? error.warningLight : 'default'};
+  :hover {
+    background-color: ${(props) =>
+      props.confirmDelete ? error.warningLight : 'default'};
+  }
+  &:hover:enabled {
+    background-color: ${(props) =>
+      props.confirmDelete ? error.warningLight : 'default'};
+  }
+  &:focus {
+    outline: none;
+  }
 `;
 
-const IconDelete = styled.div<{
-  small?: boolean;
-}>`
+const DeleteIconOptions = styled.div`
   display: block;
   position: absolute;
   height: 14px;
   width: 14px;
-  top: ${(props) => (props.small ? '5px' : '9px')};
-  left: ${(props) => (props.small ? '5px' : '9px')};
+  top: 5px;
+  left: 5px;
+`;
+
+const ButtonWarning = styled(ButtonDefault)`
+  position: absolute;
+  display: block;
+  top: 16px;
+  right: -6px;
+  height: 24px;
+  width: 24px;
+  text-align: center;
+  padding: 0;
+  border-radius: 20px;
+  background-color: ${error.warningDark};
+  :hover {
+    background-color: ${error.warningDark};
+  }
+  &:hover:enabled {
+    background-color: ${error.warningDark};
+  }
+  &:focus {
+    outline: none;
+  }
+`;
+
+const IconWarning = styled.div`
+  display: block;
+  position: absolute;
+  height: 14px;
+  width: 14px;
+  top: 5px;
+  left: 5px;
 `;
 
 const VideoIconContainer = styled(CircularIconContainer)`
@@ -137,15 +186,34 @@ const VideoIconContainer = styled(CircularIconContainer)`
 
 const InputImageContainer = styled(InputContainer)<{
   small: boolean;
-  isHovering?: boolean;
+  isDragging?: boolean;
+  isSelected?: boolean;
+  isInvalid?: boolean;
+  confirmDelete?: boolean;
 }>`
   position: relative;
   ${(props) => !props.small && `padding: 5px;`}
   background-color: ${(props) => props.theme.colors.greyLight};
   ${(props) =>
-    props.isHovering &&
-    `box-shadow inset 0 -10px 0 ${theme.base.colors.highlightColor}`};
-`;
+    props.isDragging && `box-shadow: inset 0 -10px 0 ${theme.colors.orange}`};
+  ${(props) =>
+    props.isSelected && !props.confirmDelete
+      ? `box-shadow: 0px 0px 0 2px ${theme.colors.orange};`
+      : ''}
+  ${(props) =>
+    !props.isSelected && props.isInvalid
+      ? `box-shadow: 0px 0px 0 2px ${error.warningDark};`
+      : ''}
+  ${(props) =>
+    props.confirmDelete
+      ? `box-shadow: 0px 0px 0 2px ${error.warningLight};`
+      : ''}
+  :hover {
+    ${(props) =>
+      !props.confirmDelete
+        ? `box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight}`
+        : ``};
+  }`;
 
 export interface InputImageContainerProps {
   disabled?: boolean;
@@ -157,15 +225,18 @@ export interface InputImageContainerProps {
   hasVideo?: boolean;
   message?: string;
   replaceImage: boolean;
+  isSelected?: boolean;
+  isInvalid?: boolean;
 }
 
 type ComponentProps = InputImageContainerProps &
   WrappedFieldProps & { gridUrl: string | null; editMode: EditMode };
 
 interface ComponentState {
-  isHovering: boolean;
+  isDragging: boolean;
   modalOpen: boolean;
   imageSrc: string;
+  confirmDelete: boolean;
 }
 
 const dragImage = new Image();
@@ -173,9 +244,10 @@ dragImage.src = imageDragIcon;
 
 class InputImage extends React.Component<ComponentProps, ComponentState> {
   public state = {
-    isHovering: false,
+    isDragging: false,
     modalOpen: false,
     imageSrc: '',
+    confirmDelete: false,
   };
 
   private inputRef = React.createRef<HTMLInputElement>();
@@ -191,6 +263,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       hasVideo,
       editMode,
       disabled,
+      isSelected,
+      isInvalid,
     } = this.props;
 
     if (!gridUrl) {
@@ -209,7 +283,13 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         ? input.value.thumb
         : defaultImageUrl;
     return (
-      <InputImageContainer small={small} isHovering={this.state.isHovering}>
+      <InputImageContainer
+        small={small}
+        isDragging={this.state.isDragging}
+        isSelected={isSelected}
+        isInvalid={isInvalid}
+        confirmDelete={this.state.confirmDelete}
+      >
         <GridModal
           url={gridSearchUrl}
           isOpen={this.state.modalOpen}
@@ -218,9 +298,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         />
         <DragIntentContainer
           active
-          onIntentConfirm={() => this.setState({ isHovering: true })}
-          onDragIntentStart={() => this.setState({ isHovering: true })}
-          onDragIntentEnd={() => this.setState({ isHovering: false })}
+          onIntentConfirm={() => this.setState({ isDragging: true })}
+          onDragIntentStart={() => this.setState({ isDragging: true })}
+          onDragIntentEnd={() => this.setState({ isDragging: false })}
         >
           <ImageContainer small={small}>
             <ImageComponent
@@ -233,17 +313,31 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
               small={small}
             >
               {hasImage ? (
-                <ButtonDelete
-                  type="button"
-                  priority="primary"
-                  small={small}
-                  onClick={this.handleDelete}
-                  disabled={disabled}
-                >
-                  <IconDelete small={small}>
-                    <RubbishBinIcon size="s" />
-                  </IconDelete>
-                </ButtonDelete>
+                <>
+                  <ButtonDelete
+                    type="button"
+                    priority="primary"
+                    onClick={this.handleDelete}
+                    disabled={disabled}
+                    confirmDelete={this.state.confirmDelete}
+                  >
+                    <DeleteIconOptions>
+                      {this.state.confirmDelete ? (
+                        <ConfirmDeleteIcon size="s" />
+                      ) : (
+                        <RubbishBinIcon size="s" />
+                      )}
+                    </DeleteIconOptions>
+                  </ButtonDelete>
+
+                  {isInvalid ? (
+                    <ButtonWarning>
+                      <IconWarning>
+                        <WarningIcon size="s" />
+                      </IconWarning>
+                    </ButtonWarning>
+                  ) : null}
+                </>
               ) : (
                 <AddImageViaGridModalButton>
                   <AddImageButton
@@ -283,7 +377,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
             )}
           </ImageContainer>
         </DragIntentContainer>
-        {this.state.isHovering && <ImageDragIntentIndicator />}
+        {this.state.isDragging && <ImageDragIntentIndicator />}
       </InputImageContainer>
     );
   }
@@ -296,6 +390,19 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
   private handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
+
+    if (!this.state.confirmDelete) {
+      this.setState({ confirmDelete: true });
+      const resetTimer = setTimeout(
+        () => this.setState({ confirmDelete: false }),
+        3000
+      );
+      return () => {
+        clearTimeout(resetTimer);
+      };
+    }
+
+    this.setState({ confirmDelete: false });
     this.clearField();
   };
 
