@@ -44,6 +44,11 @@ const selectAvailableEditions = createSelector(
   (config) => config && config.availableEditions
 );
 
+const selectShouldUsePreviewCODE = createSelector(
+  selectConfig,
+  (config) => !!config && (config.dev || config.env === 'code')
+);
+
 export {
   selectCapiLiveURL,
   selectCapiPreviewURL,
@@ -53,4 +58,5 @@ export {
   selectCollectionCap,
   selectGridUrl,
   selectAvailableEditions,
+  selectShouldUsePreviewCODE,
 };
