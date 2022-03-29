@@ -321,7 +321,7 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
                 <WarningIcon size="s" fill={error.warningDark} />
               ) : null}
               <CaptionLength invalid={isInvalidCaptionLength(slideshowIndex)}>
-                {fields.get(slideshowIndex)?.caption?.length} / 100
+                {fields.get(slideshowIndex)?.caption?.length ?? 0} / 100
               </CaptionLength>
             </CaptionLengthContainer>
           </CaptionControls>
