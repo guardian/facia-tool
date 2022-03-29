@@ -12,6 +12,7 @@ import {
 } from 'bundles/frontsUI';
 import Button from 'components/inputs/ButtonDefault';
 import { frontStages } from 'constants/fronts';
+import urls from 'constants/url';
 import { FrontConfig, EditionsFrontMetadata } from 'types/FaciaApi';
 import type { State } from 'types/State';
 import { selectFront } from 'selectors/frontsSelectors';
@@ -26,6 +27,7 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
 import FrontsContainer from './FrontContainer';
 import { isMode } from '../../selectors/pathSelectors';
+import { selectShouldUsePreviewCODE } from '../../selectors/configSelectors';
 
 const FrontHeader = styled(SectionHeader)`
   display: flex;
@@ -109,6 +111,7 @@ interface FrontsContainerProps {
 type FrontsComponentProps = FrontsContainerProps & {
   selectedFront: FrontConfig;
   isOverviewOpen: boolean;
+  shouldUsePreviewCODE: boolean;
   frontsActions: {
     fetchLastPressed: (frontId: string) => void;
     editorCloseFront: (frontId: string) => void;
@@ -155,7 +158,12 @@ class FrontSection extends React.Component<
   };
 
   public render() {
-    const { frontId, isOverviewOpen, isEditions } = this.props;
+    const {
+      frontId,
+      isOverviewOpen,
+      isEditions,
+      shouldUsePreviewCODE,
+    } = this.props;
     const title = this.getTitle();
 
     const { frontNameValue, editingFrontName } = this.state;
@@ -198,8 +206,12 @@ class FrontSection extends React.Component<
             <FrontHeaderMeta>
               <EditModeVisibility visibleMode="fronts">
                 <a
-                  href={`https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/${this.props.frontId}`}
-                  target="preview"
+                  href={`${
+                    shouldUsePreviewCODE
+                      ? urls.previewUrlCODE
+                      : urls.previewUrlPROD
+                  }${this.props.frontId}`}
+                  target="_blank"
                 >
                   <FrontHeaderButton>
                     <PreviewEyeIcon size="xl" />
@@ -313,6 +325,7 @@ const createMapStateToProps = () => {
     selectedFront: selectFront(state, { frontId }),
     isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
     isEditions: isMode(state, 'editions'),
+    shouldUsePreviewCODE: selectShouldUsePreviewCODE(state),
   });
 };
 
