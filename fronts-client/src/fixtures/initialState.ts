@@ -1,3 +1,4 @@
+import { Config } from 'types/Config';
 import type { State } from 'types/State';
 
 const fronts = {
@@ -205,9 +206,8 @@ const fronts = {
   lastPressed: {},
   collectionVisibility: { draft: {}, live: {} },
 };
-const config = {
+const config: Config = {
   dev: true,
-  stage: 'CODE',
   env: 'code',
   editions: ['uk', 'us', 'au'],
   email: 'jonathon.herbert@guardian.co.uk',

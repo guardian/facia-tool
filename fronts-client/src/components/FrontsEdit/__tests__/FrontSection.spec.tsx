@@ -1,0 +1,99 @@
+import { theme } from 'constants/theme';
+import { frontsConfig } from 'fixtures/frontsConfig';
+import state from 'fixtures/initialStateForOpenFronts';
+import React from 'react';
+import 'jest-dom/extend-expect';
+import { Provider } from 'react-redux';
+import { getByText, render } from 'react-testing-library';
+import { ThemeProvider } from 'styled-components';
+import configureStore from 'util/configureStore';
+import FrontSection from '../FrontSection';
+
+describe('FrontSection component', () => {
+  const defaultProps = {
+    frontId: 'editorialFront',
+    selectedFront: frontsConfig.data.fronts.editorialFront,
+    isOverviewOpen: false,
+    frontsActions: {
+      fetchLastPressed: jest.fn(),
+      editorCloseFront: jest.fn(),
+      updateCollection: jest.fn(),
+      changeBrowsingStage: jest.fn(),
+      updateFrontMetadata: jest.fn(),
+      setFrontHiddenState: jest.fn(),
+    },
+    isEditions: false,
+  };
+
+  it('should give the correct preview link for DEV', () => {
+    const store = configureStore({
+      ...state,
+      config: {
+        ...state.config,
+        dev: true,
+        env: 'code',
+      },
+    });
+
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <FrontSection {...defaultProps} />
+        </ThemeProvider>
+      </Provider>
+    );
+
+    expect(getByText(container, 'Preview').closest('a')).toHaveAttribute(
+      'href',
+      'https://m.code.dev-theguardian.com/editorialFront'
+    );
+  });
+
+  it('should give the correct preview link for CODE', () => {
+    const store = configureStore({
+      ...state,
+      config: {
+        ...state.config,
+        dev: false,
+        env: 'code',
+      },
+    });
+
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <FrontSection {...defaultProps} />
+        </ThemeProvider>
+      </Provider>
+    );
+
+    expect(getByText(container, 'Preview').closest('a')).toHaveAttribute(
+      'href',
+      'https://m.code.dev-theguardian.com/editorialFront'
+    );
+  });
+
+  it('should give the correct preview link for PROD', () => {
+    const store = configureStore({
+      ...state,
+      config: {
+        ...state.config,
+        dev: false,
+        env: 'prod',
+      },
+    });
+
+    const { container } = render(
+      <Provider store={store}>
+        <ThemeProvider theme={theme}>
+          <FrontSection {...defaultProps} />
+        </ThemeProvider>
+      </Provider>
+    );
+
+    expect(getByText(container, 'Preview').closest('a')).toHaveAttribute(
+      'href',
+      'https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/editorialFront'
+    );
+  });
+});

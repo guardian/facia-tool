@@ -20,14 +20,13 @@ interface Config {
   env: string;
   editions: string[];
   email: string;
-  avararUrl?: string;
+  avatarUrl?: string;
   firstName: string;
   lastName: string;
   sentryPublicDSN: string;
   mediaBaseUrl: string;
   apiBaseUrl: string;
   switches: { [key: string]: boolean };
-  stage: string;
   acl: Acl;
   collectionCap: number;
   navListCap: number;
