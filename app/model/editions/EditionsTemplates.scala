@@ -23,7 +23,8 @@ object EditionsTemplates {
     Edition.EditionWeWereThere -> EditionWeWereThere,
     Edition.EditionEurosSpecial -> EditionEurosSpecial,
     Edition.EditionOlympicLegends -> EditionOlympicLegends,
-    Edition.EditionEndOfYear -> EditionEndOfYear
+    Edition.EditionEndOfYear -> EditionEndOfYear,
+    Edition.EditionWellbeing -> EditionWellbeing
   )
 
   val getAvailableEditions: List[EditionDefinition] = templates.values.toList
@@ -82,6 +83,8 @@ object Edition extends PlayEnum[Edition] {
   case object EditionOlympicLegends extends Edition
   
   case object EditionEndOfYear extends Edition
+  
+  case object EditionWellbeing extends Edition
   
   override def values = findValues
 }
