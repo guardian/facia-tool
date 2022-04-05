@@ -18,12 +18,12 @@ object EditionWellbeing extends SpecialEdition {
   override val topic = "e-wb"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/04682faa0ac6d5665ce31f4a7c4bf8d8c0a5e54e/0_0_86_163/86.png?width=86&height=163&quality=85&s=a10d08a2df25b72e67bdf61b943f3b82")
   override val expiry: Option[String] = Some(
-    new DateTime(2022, 1,31,23,59,DateTimeZone.UTC).toString()
+    new DateTime(2022,6,9,23,59,DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
-      backgroundColor = "#7D0068",
-      title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Medium", lineHeight = 34, size = 32),
+      backgroundColor = "#0293E1",
+      title = EditionTextFormatting(color = "#0077B6", font="GHGuardianHeadline-Medium", lineHeight = 34, size = 32),
       subTitle = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 20, size = 17),
       expiry = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
       image = EditionImageStyle(67,134)
@@ -31,7 +31,7 @@ object EditionWellbeing extends SpecialEdition {
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
     SpecialEditionHeaderStyles(
-      backgroundColor = "#7D0068",
+      backgroundColor = "#0077B6",
       textColorPrimary = "#FFFFFF",
       textColorSecondary = "#FFFFFF"
     )
@@ -71,7 +71,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Sport)
 
   def Special02 = front("Special02", None,
     collection("Special"),
@@ -79,7 +79,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Opinion)
 
   def Special03 = front("Special03", None,
     collection("Special"),
@@ -87,7 +87,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Sport)
 
   def Special04 = front("Special04", None,
     collection("Special"),
@@ -95,7 +95,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Opinion)
 
   def Special05 = front("Special05", None,
     collection("Special"),
@@ -103,7 +103,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Sport)
 
   def Special06 = front("Special06", None,
     collection("Special"),
@@ -111,7 +111,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Opinion)
 
   def Special07 = front("Special07", None,
     collection("Special"),
@@ -119,7 +119,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Sport)
 
   def Special08 = front("Special08", None,
     collection("Special"),
@@ -127,7 +127,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Opinion)
 
   def Special09 = front("Special09", None,
     collection("Special"),
@@ -135,7 +135,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Sport)
 
   def Special10 = front("Special10", None,
     collection("Special"),
@@ -143,7 +143,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Opinion)
 
   def Special11 = front("Special11", None,
     collection("Special"),
@@ -151,7 +151,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Sport)
 
   def Special12 = front("Special12", None,
     collection("Special"),
@@ -159,7 +159,7 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Sport)
+  ).swatch(Opinion)
   
     def Special13 = front("Special13", None,
     collection("Special"),
@@ -167,6 +167,6 @@ object EditionWellbeing extends SpecialEdition {
     collection("Special"),
     collection("Special"),
     collection("Special")
-  ).swatch(Opinion)
+  ).swatch(Sport)
 
 }
