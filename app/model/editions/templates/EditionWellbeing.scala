@@ -10,10 +10,10 @@ import org.joda.time.{DateTime, DateTimeZone}
 
 //noinspection TypeAnnotation
 object EditionWellbeing extends SpecialEdition {
-  override val title = "LineOne\nLineTwo"
-  override val subTitle = "A look back at our readers’ and editors’ favourite pieces of the year"
+  override val title = "Self and\nwellbeing"
+  override val subTitle = "This special edition is an exclusive curation of some of our most popular articles around feeling well and improving your life"
   override val edition = "edition-wellbeing"
-  override val header = Header(title ="2021", subTitle=Some("Highs, hits, hopes"))
+  override val header = Header(title ="Self", subTitle=Some("and wellbeing"))
   override val notificationUTCOffset = 3
   override val topic = "e-wb"
   override val buttonImageUri = Some("https://i.guim.co.uk/img/media/04682faa0ac6d5665ce31f4a7c4bf8d8c0a5e54e/0_0_86_163/86.png?width=86&height=163&quality=85&s=a10d08a2df25b72e67bdf61b943f3b82")
