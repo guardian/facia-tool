@@ -16,7 +16,7 @@ object EditionWellbeing extends SpecialEdition {
   override val header = Header(title ="Self", subTitle=Some("and wellbeing"))
   override val notificationUTCOffset = 3
   override val topic = "e-wb"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/04682faa0ac6d5665ce31f4a7c4bf8d8c0a5e54e/0_0_86_163/86.png?width=86&height=163&quality=85&s=a10d08a2df25b72e67bdf61b943f3b82")
+  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/d8460a05286b316e6646d2512b2ee0d6ee36dae4/0_0_5000_5000/5000.png?width=163&quality=100&s=4ffd8ae83df7aaf29cf20545e2a88f87")
   override val expiry: Option[String] = Some(
     new DateTime(2022,6,9,23,59,DateTimeZone.UTC).toString()
   )
