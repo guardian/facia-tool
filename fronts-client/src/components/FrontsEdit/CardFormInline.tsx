@@ -219,7 +219,7 @@ const FlexContainer = styled.div`
 
 const InvalidSlideshowWarning = styled(FlexContainer)`
   margin-top: 4px;
-`
+`;
 
 const InvalidSlideshowText = styled.div`
   color: ${error.primary};
@@ -234,7 +234,12 @@ const maxCaptionLength = (max: number) => (value: ImageData) =>
 
 const maxLength100 = maxCaptionLength(100);
 
-const RenderSlideshow = ({ fields, frontId, change, setHasAtLeastTwoImages }: RenderSlideshowProps) => {
+const RenderSlideshow = ({
+  fields,
+  frontId,
+  change,
+  setHasAtLeastTwoImages,
+}: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
   React.useEffect(() => {
@@ -243,14 +248,13 @@ const RenderSlideshow = ({ fields, frontId, change, setHasAtLeastTwoImages }: Re
     }
   }, [fields.get(slideshowIndex)]);
 
-  const hasAtLeastTwoImages = (fields
-    .map((_, index) => fields.get(index) !== null)
-    .filter(_ => _)
-    .length >= 2)
+  const hasAtLeastTwoImages =
+    fields.map((_, index) => fields.get(index) !== null).filter((_) => _)
+      .length >= 2;
 
   React.useEffect(() => {
-    setHasAtLeastTwoImages(hasAtLeastTwoImages)
-  }, [hasAtLeastTwoImages])
+    setHasAtLeastTwoImages(hasAtLeastTwoImages);
+  }, [hasAtLeastTwoImages]);
 
   const isInvalidCaptionLength = (index: number) =>
     !!maxLength100(fields.get(index));
@@ -359,9 +363,10 @@ const RenderSlideshow = ({ fields, frontId, change, setHasAtLeastTwoImages }: Re
       {!hasAtLeastTwoImages ? (
         <InvalidSlideshowWarning>
           <WarningIcon size="s" fill={error.warningDark} />
-          <InvalidSlideshowText>You need at least two images to make a slideshow</InvalidSlideshowText>
+          <InvalidSlideshowText>
+            You need at least two images to make a slideshow
+          </InvalidSlideshowText>
         </InvalidSlideshowWarning>
-
       ) : null}
     </>
   );
@@ -428,7 +433,7 @@ const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
 interface FormComponentState {
   lastKnownCollectionId: string | null;
-  slideshowHasAtLeastTwoImages: boolean
+  slideshowHasAtLeastTwoImages: boolean;
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
@@ -440,7 +445,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
   public state: FormComponentState = {
     lastKnownCollectionId: null,
-    slideshowHasAtLeastTwoImages: false
+    slideshowHasAtLeastTwoImages: false,
   };
 
   public render() {
@@ -476,7 +481,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
     const imageDefined = (img: ImageData | undefined) => img && img.src;
 
-    const setSlideshowHasAtLeastTwoImages = (state: boolean) => this.setState({slideshowHasAtLeastTwoImages: state})
+    const setSlideshowHasAtLeastTwoImages = (state: boolean) =>
+      this.setState({ slideshowHasAtLeastTwoImages: state });
 
     const invalidCardReplacement = coverCardImageReplace
       ? !imageDefined(coverCardMobileImage) ||
@@ -871,7 +877,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             priority="primary"
             onClick={this.handleSubmit}
             disabled={
-              pristine || !articleExists || invalidCardReplacement || !valid || (imageSlideshowReplace && !this.state.slideshowHasAtLeastTwoImages)
+              pristine ||
+              !articleExists ||
+              invalidCardReplacement ||
+              !valid ||
+              (imageSlideshowReplace &&
+                !this.state.slideshowHasAtLeastTwoImages)
             }
             size="l"
             data-testid="edit-form-save-button"
