@@ -472,7 +472,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     const imageDefined = (img: ImageData | undefined) => img && img.src;
 
     const slideshowHasAtLeastTwoImages =
-      (slideshow ?? []).filter((field) => field !== null).length >= 2;
+      (slideshow ?? []).filter((field) => !!field).length >= 2;
 
     const invalidCardReplacement = coverCardImageReplace
       ? !imageDefined(coverCardMobileImage) ||
@@ -969,7 +969,7 @@ interface ContainerProps {
   collectionId: string | null;
   snapType: string | undefined;
   getLastUpdatedBy: (collectionId: string) => string | null;
-  slideshow: any[] | undefined;
+  slideshow: Array<ImageData | undefined | null> | undefined;
   imageSlideshowReplace: boolean;
   imageCutoutReplace: boolean;
   imageHide: boolean;
