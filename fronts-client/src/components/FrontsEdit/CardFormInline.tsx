@@ -85,6 +85,7 @@ type Props = ComponentProps &
 type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   frontId: string;
   change: (field: string, value: any) => void;
+  slideshowHasAtLeastTwoImages: boolean;
 };
 
 const FormContainer = styled(ContentContainer.withComponent('form'))`
@@ -210,9 +211,19 @@ const CaptionInput = styled(InputBase)`
   }
 `;
 
-const CaptionLengthContainer = styled.div`
+const FlexContainer = styled.div`
   display: flex;
   align-items: center;
+`;
+
+const InvalidSlideshowWarning = styled(FlexContainer)`
+  margin-top: 4px;
+`;
+
+const InvalidSlideshowText = styled.div`
+  color: ${error.primary};
+  font-size: 12px;
+  margin-left: 4px;
 `;
 
 const maxCaptionLength = (max: number) => (value: ImageData) =>
@@ -222,7 +233,12 @@ const maxCaptionLength = (max: number) => (value: ImageData) =>
 
 const maxLength100 = maxCaptionLength(100);
 
-const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
+const RenderSlideshow = ({
+  fields,
+  frontId,
+  change,
+  slideshowHasAtLeastTwoImages,
+}: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
   React.useEffect(() => {
@@ -316,14 +332,14 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
               />
             </div>
 
-            <CaptionLengthContainer>
+            <FlexContainer>
               {isInvalidCaptionLength(slideshowIndex) ? (
                 <WarningIcon size="s" fill={error.warningDark} />
               ) : null}
               <CaptionLength invalid={isInvalidCaptionLength(slideshowIndex)}>
                 {fields.get(slideshowIndex)?.caption?.length ?? 0} / 100
               </CaptionLength>
-            </CaptionLengthContainer>
+            </FlexContainer>
           </CaptionControls>
           <CaptionInput
             type="text"
@@ -334,6 +350,14 @@ const RenderSlideshow = ({ fields, frontId, change }: RenderSlideshowProps) => {
             }
           />
         </div>
+      ) : null}
+      {!slideshowHasAtLeastTwoImages ? (
+        <InvalidSlideshowWarning>
+          <WarningIcon size="s" fill={error.warningDark} />
+          <InvalidSlideshowText>
+            You need at least two images to make a slideshow
+          </InvalidSlideshowText>
+        </InvalidSlideshowWarning>
       ) : null}
     </>
   );
@@ -432,6 +456,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       imageCutoutReplace,
       cutoutImage,
       imageSlideshowReplace,
+      slideshow,
       isBreaking,
       editMode,
       primaryImage,
@@ -445,6 +470,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     const isEditionsMode = editMode === 'editions';
 
     const imageDefined = (img: ImageData | undefined) => img && img.src;
+
+    const slideshowHasAtLeastTwoImages =
+      (slideshow ?? []).filter((field) => !!field).length >= 2;
 
     const invalidCardReplacement = coverCardImageReplace
       ? !imageDefined(coverCardMobileImage) ||
@@ -774,6 +802,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   frontId={frontId}
                   component={RenderSlideshow}
                   change={change}
+                  slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
                 />
               </SlideshowRowContainer>
             )}
@@ -837,7 +866,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             priority="primary"
             onClick={this.handleSubmit}
             disabled={
-              pristine || !articleExists || invalidCardReplacement || !valid
+              pristine ||
+              !articleExists ||
+              invalidCardReplacement ||
+              !valid ||
+              (imageSlideshowReplace && !slideshowHasAtLeastTwoImages)
             }
             size="l"
             data-testid="edit-form-save-button"
@@ -936,6 +969,7 @@ interface ContainerProps {
   collectionId: string | null;
   snapType: string | undefined;
   getLastUpdatedBy: (collectionId: string) => string | null;
+  slideshow: Array<ImageData | undefined | null> | undefined;
   imageSlideshowReplace: boolean;
   imageCutoutReplace: boolean;
   imageHide: boolean;
@@ -1002,6 +1036,7 @@ const createMapStateToProps = () => {
         article && selectFormFields(state, article.uuid, isSupporting),
       kickerOptions: article ? selectArticleTag(state, cardId) : defaultObject,
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
+      slideshow: valueSelector(state, 'slideshow'),
       imageHide: valueSelector(state, 'imageHide'),
       imageReplace: valueSelector(state, 'imageReplace'),
       imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),

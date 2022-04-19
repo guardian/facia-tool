@@ -169,7 +169,7 @@ const CloseIcon = ({
     <title>{title}</title>
     <path
       fill={fill}
-      fill-rule="evenodd"
+      fillRule="evenodd"
       d="M6.485 4.571L9.314 7.4 7.899 8.814 5.071 5.985 2.243 8.814.828 7.399l2.829-2.828L.828 1.743 2.243.328 5.07 3.157 7.9.328l1.415 1.415L6.485 4.57z"
     />
   </svg>
@@ -310,8 +310,8 @@ const WarningIcon = ({ fill = theme.colors.white, size = 'm' }: IconProps) => (
     xmlns="http://www.w3.org/2000/svg"
   >
     <path
-      fill-rule="evenodd"
-      clip-rule="evenodd"
+      fillRule="evenodd"
+      clipRule="evenodd"
       d="M5.70536 0L0.5 8.52857L0.833929 9H11.1661L11.5 8.52857L6.29464 0H5.70536ZM5.67346 6.08888H6.32656L6.63705 2.63068L6.20879 2.26666H5.79124L5.36298 2.63068L5.67346 6.08888ZM6.00001 6.72593C6.35038 6.72593 6.63705 7.0126 6.63705 7.36297C6.63705 7.71334 6.35038 8 6.00001 8C5.64964 8 5.36298 7.71334 5.36298 7.36297C5.36298 7.0126 5.64964 6.72593 6.00001 6.72593Z"
       fill={fill}
     />
