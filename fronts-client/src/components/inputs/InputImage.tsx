@@ -237,6 +237,7 @@ interface ComponentState {
   modalOpen: boolean;
   imageSrc: string;
   confirmDelete: boolean;
+  cancelDeleteTimeout: undefined | (() => void);
 }
 
 const dragImage = new Image();
@@ -248,7 +249,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     modalOpen: false,
     imageSrc: '',
     confirmDelete: false,
-  };
+    cancelDeleteTimeout: undefined,
+  } as ComponentState;
 
   private inputRef = React.createRef<HTMLInputElement>();
 
@@ -382,6 +384,10 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     );
   }
 
+  public componentWillUnmount = () => {
+    this.state.cancelDeleteTimeout?.();
+  };
+
   private handleFocus = () => {
     if (this.inputRef.current) {
       this.inputRef.current.select();
@@ -392,14 +398,16 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     e.stopPropagation();
 
     if (!this.state.confirmDelete) {
-      this.setState({ confirmDelete: true });
       const resetTimer = setTimeout(
         () => this.setState({ confirmDelete: false }),
         3000
       );
-      return () => {
-        clearTimeout(resetTimer);
-      };
+
+      this.setState({
+        confirmDelete: true,
+        cancelDeleteTimeout: () => clearTimeout(resetTimer),
+      });
+      return;
     }
 
     this.setState({ confirmDelete: false });
