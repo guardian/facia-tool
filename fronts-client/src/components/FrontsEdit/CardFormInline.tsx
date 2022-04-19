@@ -85,8 +85,7 @@ type Props = ComponentProps &
 type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   frontId: string;
   change: (field: string, value: any) => void;
-  hasAtLeastTwoImages: boolean;
-  setHasAtLeastTwoImages: (state: boolean) => void;
+  slideshowHasAtLeastTwoImages: boolean;
 };
 
 const FormContainer = styled(ContentContainer.withComponent('form'))`
@@ -238,7 +237,7 @@ const RenderSlideshow = ({
   fields,
   frontId,
   change,
-  setHasAtLeastTwoImages,
+  slideshowHasAtLeastTwoImages,
 }: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
@@ -247,14 +246,6 @@ const RenderSlideshow = ({
       navigateToNearestIndex();
     }
   }, [fields.get(slideshowIndex)]);
-
-  const hasAtLeastTwoImages =
-    fields.map((_, index) => fields.get(index) !== null).filter((_) => _)
-      .length >= 2;
-
-  React.useEffect(() => {
-    setHasAtLeastTwoImages(hasAtLeastTwoImages);
-  }, [hasAtLeastTwoImages]);
 
   const isInvalidCaptionLength = (index: number) =>
     !!maxLength100(fields.get(index));
@@ -360,7 +351,7 @@ const RenderSlideshow = ({
           />
         </div>
       ) : null}
-      {!hasAtLeastTwoImages ? (
+      {!slideshowHasAtLeastTwoImages ? (
         <InvalidSlideshowWarning>
           <WarningIcon size="s" fill={error.warningDark} />
           <InvalidSlideshowText>
@@ -433,7 +424,6 @@ const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
 interface FormComponentState {
   lastKnownCollectionId: string | null;
-  slideshowHasAtLeastTwoImages: boolean;
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
@@ -445,7 +435,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
   public state: FormComponentState = {
     lastKnownCollectionId: null,
-    slideshowHasAtLeastTwoImages: false,
   };
 
   public render() {
@@ -467,6 +456,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       imageCutoutReplace,
       cutoutImage,
       imageSlideshowReplace,
+      slideshow,
       isBreaking,
       editMode,
       primaryImage,
@@ -481,8 +471,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
     const imageDefined = (img: ImageData | undefined) => img && img.src;
 
-    const setSlideshowHasAtLeastTwoImages = (state: boolean) =>
-      this.setState({ slideshowHasAtLeastTwoImages: state });
+    const slideshowHasAtLeastTwoImages =
+      (slideshow ?? []).filter((field) => field !== null).length >= 2;
 
     const invalidCardReplacement = coverCardImageReplace
       ? !imageDefined(coverCardMobileImage) ||
@@ -812,8 +802,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   frontId={frontId}
                   component={RenderSlideshow}
                   change={change}
-                  hasAtLeastTwoImages={this.state.slideshowHasAtLeastTwoImages}
-                  setHasAtLeastTwoImages={setSlideshowHasAtLeastTwoImages}
+                  slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
                 />
               </SlideshowRowContainer>
             )}
@@ -881,8 +870,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               !articleExists ||
               invalidCardReplacement ||
               !valid ||
-              (imageSlideshowReplace &&
-                !this.state.slideshowHasAtLeastTwoImages)
+              (imageSlideshowReplace && !slideshowHasAtLeastTwoImages)
             }
             size="l"
             data-testid="edit-form-save-button"
@@ -981,6 +969,7 @@ interface ContainerProps {
   collectionId: string | null;
   snapType: string | undefined;
   getLastUpdatedBy: (collectionId: string) => string | null;
+  slideshow: any[] | undefined;
   imageSlideshowReplace: boolean;
   imageCutoutReplace: boolean;
   imageHide: boolean;
@@ -1047,6 +1036,7 @@ const createMapStateToProps = () => {
         article && selectFormFields(state, article.uuid, isSupporting),
       kickerOptions: article ? selectArticleTag(state, cardId) : defaultObject,
       imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
+      slideshow: valueSelector(state, 'slideshow'),
       imageHide: valueSelector(state, 'imageHide'),
       imageReplace: valueSelector(state, 'imageReplace'),
       imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
