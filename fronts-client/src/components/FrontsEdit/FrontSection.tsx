@@ -211,7 +211,7 @@ class FrontSection extends React.Component<
                       ? urls.previewUrlCODE
                       : urls.previewUrlPROD
                   }${this.props.frontId}`}
-                  target="_blank"
+                  target="preview"
                 >
                   <FrontHeaderButton>
                     <PreviewEyeIcon size="xl" />
