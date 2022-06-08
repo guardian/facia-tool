@@ -179,7 +179,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
         logger.warn(s"Failed to successfully fetch Ophan scores from ${prefillParams.maybeOphanPath}", t)
         None
     }
-    maybeOphanScores.map(os => os.toList.map((o: OphanScore) => o.capiId -> o.promotionScore).toMap)
+    maybeOphanScores.map(os => os.toList.map(o => o.capiId -> o.promotionScore).toMap)
   }
 
   private def sortArticleItems(articleItems: List[Prefill], maybeOphanScoresMap: Option[Map[String, Double]]): List[Prefill] = {
@@ -188,7 +188,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
     maybeOphanScoresMap match {
       case Some(scoresMap) =>
         articleItems
-          .map((item: Prefill) => item.copy(promotionMetric = scoresMap.get(item.capiId)))
+          .map(item => item.copy(promotionMetric = scoresMap.get(item.capiId)))
           .sortBy(item => item.newspaperPageNumber.getOrElse(999))
           .sortBy(item => item.promotionMetric.getOrElse(0d))(Ordering[Double].reverse)
       case _ => articleItems.sortBy(item => item.newspaperPageNumber.getOrElse(999))
