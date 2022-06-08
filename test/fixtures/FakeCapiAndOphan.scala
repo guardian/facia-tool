@@ -214,9 +214,9 @@ trait FakeCapiAndOphan {
   val forwardOphan = new Ophan {
     override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = Future.successful(Some(
       Array(
-        OphanScore(3d, "capiId123456"),
-        OphanScore(2d, "capiId345678"),
-        OphanScore(1d, "capiId574893"),
+        OphanScore("capiId123456", 3d),
+        OphanScore("capiId345678", 2d),
+        OphanScore("capiId574893", 1d),
       )
     ))
   }
@@ -224,16 +224,16 @@ trait FakeCapiAndOphan {
   val reverseOphan = new Ophan {
     override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = Future.successful(Some(
       Array(
-        OphanScore(1d, "capiId123456"),
-        OphanScore(2d, "capiId345678"),
-        OphanScore(3d, "capiId574893")
+        OphanScore("capiId123456", 1d),
+        OphanScore("capiId345678", 2d),
+        OphanScore("capiId574893", 3d)
       )
     ))
   }
 
   val fakeOphan = new Ophan() {
     override def getOphanScores(maybePath: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] =
-      Future.successful(Some(Array(OphanScore(33d, "banana"))))
+      Future.successful(Some(Array(OphanScore("banana", 33d))))
   }
 
 }

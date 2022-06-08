@@ -17,7 +17,7 @@ import play.api.libs.json.Json
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
-case class OphanScore(val promotionScore: Double, val capiId: String)
+case class OphanScore(capiId: String, promotionScore: Double)
 
 class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends Ophan with Logging {
 
