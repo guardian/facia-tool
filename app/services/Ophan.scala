@@ -10,14 +10,14 @@ import java.util.concurrent.TimeUnit
 import com.github.blemale.scaffeine.{Cache, Scaffeine}
 import com.gu.contentapi.client.model.HttpResponse
 import model.editions.{OphanQueryPrefillParams}
-import okhttp3.{Call, Callback, ConnectionPool, OkHttpClient, Request, Response}
+import okhttp3.{Call, Callback, ConnectionPool, OkHttpClient, Response}
 import okhttp3.Request.Builder
 import play.api.libs.json.Json
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future, Promise}
 
-case class OphanScore(val webUrl: String, val promotionScore: Double)
+case class OphanScore(val promotionScore: Double, val capiId: String)
 
 class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionContext) extends Ophan with Logging {
 
@@ -63,7 +63,7 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
       .maximumSize(50)
       .build((url: String) => getRequest(url))
 
-  def get(host: String, path: String, startDate: LocalDate, endDate: LocalDate, ophanApiKey: String)(implicit context: ExecutionContext): Future[HttpResponse] = {
+  private def get(host: String, path: String, startDate: LocalDate, endDate: LocalDate, ophanApiKey: String)(implicit context: ExecutionContext): Future[HttpResponse] = {
     val fromParam = startDate.toString // iso 8601
     val toParam = endDate.toString // iso 8601
     val url = s"$host$promotionPath$path?from=${fromParam}&to=${toParam}&api-key=${ophanApiKey}"

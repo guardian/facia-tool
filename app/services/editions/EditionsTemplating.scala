@@ -1,14 +1,13 @@
 package services.editions
 
-import java.time.LocalDate
-
 import logging.Logging
 import model.editions._
-import model.editions.templates.{EditionDefinition, EditionDefinitionWithTemplate}
+import model.editions.templates.EditionDefinitionWithTemplate
 import play.api.mvc.{Result, Results}
-import services.editions.prefills.{CapiPrefillTimeParams, CapiQueryTimeWindow, MetadataForLogging, Prefill, PrefillParamsAdapter}
-import services.{Capi, Ophan}
+import services.editions.prefills._
+import services.{Capi, Ophan, OphanScore}
 
+import java.time.LocalDate
 import scala.concurrent.Await
 import scala.concurrent.duration._
 import scala.language.postfixOps
@@ -128,7 +127,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
   // this function fetches articles from CAPI with enough data to resolve the defaults
   private def getPrefillArticles(prefillParams: PrefillParamsAdapter): List[EditionsArticleSkeleton] = {
 
-    val maybeOphanScoresMap: Option[Map[String, Double]] = getOphanMetrcisMap(prefillParams)
+    val maybeOphanScoresMap: Option[Map[String, Double]] = getOphanMetricsMap(prefillParams)
 
     val items = getArticleItemsFromCapi(prefillParams)
 
@@ -141,7 +140,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
 
   private def mapToSkeleton(sortedArticleItems: List[Prefill]): List[EditionsArticleSkeleton] = {
     sortedArticleItems
-      .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker, promotionMetric) =>
+      .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker, promotionMetric, _) =>
         val articleMetadata = ArticleMetadata.default.copy(
           showByline = if (metaData.showByline) Some(true) else None,
           showQuotedHeadline = if (metaData.showQuotedHeadline) Some(true) else None,
@@ -166,7 +165,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
     }
   }
 
-  private def getOphanMetrcisMap(prefillParams: PrefillParamsAdapter): Option[Map[String, Double]] = {
+  private def getOphanMetricsMap(prefillParams: PrefillParamsAdapter): Option[Map[String, Double]] = {
     val maybeOphanScores = try {
       Await.result(
         ophan.getOphanScores(
@@ -180,7 +179,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
         logger.warn(s"Failed to successfully fetch Ophan scores from ${prefillParams.maybeOphanPath}", t)
         None
     }
-    maybeOphanScores.map(os => os.toList.map(o => o.webUrl -> o.promotionScore).toMap)
+    maybeOphanScores.map(os => os.toList.map((o: OphanScore) => o.capiId -> o.promotionScore).toMap)
   }
 
   private def sortArticleItems(articleItems: List[Prefill], maybeOphanScoresMap: Option[Map[String, Double]]): List[Prefill] = {
@@ -189,7 +188,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
     maybeOphanScoresMap match {
       case Some(scoresMap) =>
         articleItems
-          .map(item => item.copy(promotionMetric = scoresMap.get(item.webUrl)))
+          .map((item: Prefill) => item.copy(promotionMetric = scoresMap.get(item.capiId)))
           .sortBy(item => item.newspaperPageNumber.getOrElse(999))
           .sortBy(item => item.promotionMetric.getOrElse(0d))(Ordering[Double].reverse)
       case _ => articleItems.sortBy(item => item.newspaperPageNumber.getOrElse(999))
