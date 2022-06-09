@@ -11,7 +11,7 @@ import services.editions.prefills.{Prefill, PrefillParamsAdapter}
 
 import scala.concurrent.Future
 
-class EditionTemplateTest extends FreeSpec with Matchers {
+class EditionsTemplatingTest extends FreeSpec with Matchers {
 
   object TestCapi extends Capi {
     override def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)] = Seq.empty[(String, String)]
