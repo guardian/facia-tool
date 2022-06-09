@@ -182,7 +182,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
     maybeOphanScores.map(os => os.toList.map(o => o.capiId -> o.promotionScore).toMap)
   }
 
-  def sortArticleItems(articleItems: List[Prefill], maybeOphanScoresMap: Option[Map[String, Double]]): List[Prefill] = {  // TODO protected
+  protected[editions] def sortArticleItems(articleItems: List[Prefill], maybeOphanScoresMap: Option[Map[String, Double]]): List[Prefill] = {
     // If there are no ophan scores OR the request failed, fall back to ordering by newspaperPageNumber
     // Otherwise, copy on the ophan score, then sort by it, descending, default zero
     maybeOphanScoresMap match {

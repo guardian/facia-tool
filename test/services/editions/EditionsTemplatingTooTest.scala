@@ -1,4 +1,4 @@
-package services
+package services.editions
 
 import com.gu.contentapi.client.model.v1.SearchResponse
 import com.gu.facia.api.utils.ResolvedMetaData
@@ -7,12 +7,12 @@ import model.editions.{Edition, OphanQueryPrefillParams}
 import org.scalatest.MustMatchers.convertToAnyMustWrapper
 import org.scalatest.{FreeSpec, Matchers}
 import services.editions.prefills.{Prefill, PrefillParamsAdapter}
-import services.editions.{CollectionTemplatingHelper, EditionsTemplating}
+import services.{Capi, Ophan, OphanScore}
 
 import java.time.LocalDate
 import scala.concurrent.Future
 
-class EditionsTemplatingTest extends FreeSpec with Matchers {
+class EditionsTemplatingTooTest extends FreeSpec with Matchers {
 
   object TestCapi extends Capi {
     override def getPreviewHeaders(headers: Map[String, String], url: String): Seq[(String, String)] = Seq.empty[(String, String)]
@@ -59,11 +59,9 @@ class EditionsTemplatingTest extends FreeSpec with Matchers {
         b.capiId -> 45.3,
         c.capiId -> 100.0,
       )
-      println(prefilled.map(_.capiId).mkString(","))
       val collectionTemplatingHelper = new CollectionTemplatingHelper(TestCapi, TestOphan)
 
       val sortedPrefills = collectionTemplatingHelper.sortArticleItems(prefilled, Some(ophanScores))
-      println(sortedPrefills.map(_.capiId).mkString(","))
 
       sortedPrefills.size mustBe prefilled.size // No content was lost in this sorting
       sortedPrefills.head.capiId mustBe c.capiId // The most promoted item has been sorted to the top
