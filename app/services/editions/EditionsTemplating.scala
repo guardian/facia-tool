@@ -5,7 +5,7 @@ import model.editions._
 import model.editions.templates.EditionDefinitionWithTemplate
 import play.api.mvc.{Result, Results}
 import services.editions.prefills._
-import services.{Capi, Ophan, OphanScore}
+import services.{Capi, Ophan}
 
 import java.time.LocalDate
 import scala.concurrent.Await
@@ -182,8 +182,8 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
     maybeOphanScores.map(os => os.toList.map(o => o.capiId -> o.promotionScore).toMap)
   }
 
-  private def sortArticleItems(articleItems: List[Prefill], maybeOphanScoresMap: Option[Map[String, Double]]): List[Prefill] = {
-    // If there is no ophan url OR the request failed, fall back to ordering by newspaperPageNumber
+  def sortArticleItems(articleItems: List[Prefill], maybeOphanScoresMap: Option[Map[String, Double]]): List[Prefill] = {  // TODO protected
+    // If there are no ophan scores OR the request failed, fall back to ordering by newspaperPageNumber
     // Otherwise, copy on the ophan score, then sort by it, descending, default zero
     maybeOphanScoresMap match {
       case Some(scoresMap) =>
