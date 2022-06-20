@@ -17,7 +17,8 @@ package object prefills {
                       tone: String,
                       mediaType: Option[MediaType],
                       pickedKicker: Option[String], // Note: algorithmically-picked, not human-picked.
-                      promotionMetric: Option[Double]
+                      promotionMetric: Option[Double],
+                      capiId: String
                     )
 
   case class CapiQueryTimeWindow(fromDate: Instant, toDate: Instant)

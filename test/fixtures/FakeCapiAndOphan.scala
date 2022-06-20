@@ -36,7 +36,9 @@ trait FakeCapiAndOphan {
             "tone1",
             None,
             None,
-            None),
+            None,
+            "capiId123456",
+          ),
           Prefill(
             222222,
             None,
@@ -50,7 +52,9 @@ trait FakeCapiAndOphan {
             "tone2",
             None,
             None,
-            None),
+            None,
+            "capiId222222",
+          ),
           Prefill(
             333333,
             None,
@@ -64,7 +68,9 @@ trait FakeCapiAndOphan {
             "tone3",
             None,
             None,
-            None)
+            None,
+            "capiId333333"
+          )
         )
         case "?tag=theguardian/g2/arts" => List(
           Prefill(
@@ -80,7 +86,9 @@ trait FakeCapiAndOphan {
             "tone1",
             Some(MediaType.Cutout),
             None,
-            None),
+            None,
+            "capiId345678"
+          ),
           Prefill(
             574893,
             None,
@@ -94,7 +102,9 @@ trait FakeCapiAndOphan {
             "tone2",
             Some(MediaType.UseArticleTrail),
             None,
-            None),
+            None,
+            "capiId574893"
+          ),
           Prefill(
             674893,
             None,
@@ -108,7 +118,9 @@ trait FakeCapiAndOphan {
             "tone3",
             Some(MediaType.UseArticleTrail),
             None,
-            None)
+            None,
+            "capiId674893"
+          )
         )
         case "?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement" => List(
           Prefill(
@@ -124,7 +136,9 @@ trait FakeCapiAndOphan {
             "tone1",
             Some(MediaType.Cutout),
             None,
-            None),
+            None,
+            "capiId112211",
+          ),
           Prefill(
             122211,
             None,
@@ -138,7 +152,9 @@ trait FakeCapiAndOphan {
             "tone1",
             Some(MediaType.Cutout),
             None,
-            None),
+            None,
+            "capiId122211"
+          ),
           Prefill(
             132211,
             None,
@@ -152,7 +168,8 @@ trait FakeCapiAndOphan {
             "tone1",
             Some(MediaType.Cutout),
             None,
-            None),
+            None,
+            "capiId132211"),
           Prefill(
             142211,
             None,
@@ -166,7 +183,8 @@ trait FakeCapiAndOphan {
             "tone1",
             Some(MediaType.Cutout),
             None,
-            None),
+            None,
+            "capiId132211"),
           Prefill(
             152211,
             None,
@@ -180,7 +198,8 @@ trait FakeCapiAndOphan {
             "tone1",
             Some(MediaType.Cutout),
             None,
-            None)
+            None,
+            "capiId132211")
         )
       }
     }
@@ -195,9 +214,9 @@ trait FakeCapiAndOphan {
   val forwardOphan = new Ophan {
     override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = Future.successful(Some(
       Array(
-        OphanScore("webUrl123456", 3d),
-        OphanScore("webUrl345678", 2d),
-        OphanScore("webUrl574893", 1d)
+        OphanScore("capiId123456", 3d),
+        OphanScore("capiId345678", 2d),
+        OphanScore("capiId574893", 1d),
       )
     ))
   }
@@ -205,9 +224,9 @@ trait FakeCapiAndOphan {
   val reverseOphan = new Ophan {
     override def getOphanScores(maybeUrl: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = Future.successful(Some(
       Array(
-        OphanScore("webUrl123456", 1d),
-        OphanScore("webUrl345678", 2d),
-        OphanScore("webUrl574893", 3d)
+        OphanScore("capiId123456", 1d),
+        OphanScore("capiId345678", 2d),
+        OphanScore("capiId574893", 3d)
       )
     ))
   }
