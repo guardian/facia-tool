@@ -15,10 +15,10 @@ import play.api.libs.ws.ahc.AhcWSComponents
 import play.api.mvc._
 import play.api.BuiltInComponentsFromContext
 import play.filters.cors.CORSComponents
-import logging.Logging
 import util.Acl
 
 import scala.concurrent.ExecutionContext
+import scala.concurrent.duration._
 
 abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents with Logging {
 
@@ -30,7 +30,7 @@ abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInCo
       config.pandomain.service,
       config.pandomain.bucketName,
       config.pandomain.settingsFileKey,
-      config.aws.s3Client
+      config.aws.s3Client,
     )
 
   lazy val permissions = PermissionsProvider(PermissionsConfig(
@@ -51,6 +51,8 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends 
   override def cacheValidation = true
 
   override def authCallbackUrl: String = config.pandomain.host  + "/oauthCallback"
+
+  override val apiGracePeriod: Long = 2.hours.toMillis
 
   private val accessPermissionCheck = new AccessEditorialFrontsPermissionCheck(deps.permissions)(deps.executionContext)
   private val editEditionsPermissionCheck = new EditEditionsPermissionCheck(deps.permissions)(deps.executionContext)
