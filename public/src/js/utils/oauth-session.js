@@ -17,6 +17,7 @@ export default function (overridePanda, overrideRedirect) {
 }
 
 export function reauth (overridePanda) {
-    let session = overridePanda || panda.reEstablishSession;
-    return session(CONST.reauthPath, CONST.reauthTimeout);
+    return fetch(CONST.reauthPath);
+    //let session = overridePanda || panda.reEstablishSession;
+    //return session(CONST.reauthPath, CONST.reauthTimeout);
 }

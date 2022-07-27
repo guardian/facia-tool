@@ -1,4 +1,3 @@
-import { reEstablishSession } from 'panda-session';
 import notifications from './notifications';
 import { isError } from 'tslint/lib/error';
 import Raven from 'raven-js';
@@ -31,7 +30,7 @@ const pandaFetch = (
 
         if (AUTH_ERROR_STATUS_CODES.includes(response.status) && count < 1) {
           try {
-            await reEstablishSession(reauthUrl, 5000);
+            await fetch(reauthUrl, { mode: 'no-cors', credentials: 'include' });
             const res2 = await pandaFetch(url, options, count + 1);
             return resolve(res2);
           } catch (e) {
