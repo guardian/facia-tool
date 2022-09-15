@@ -38,6 +38,7 @@ import {
   getInitialValuesForCardForm,
   getCapiValuesForArticleFields,
   shouldRenderField,
+  maxSlideshowImages,
 } from 'util/form';
 import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
@@ -142,9 +143,23 @@ const ButtonContainer = styled.div`
   margin-bottom: -10px;
 `;
 
+const slideshowGutter = 5;
+const slidesPerRow = 5;
+
 const SlideshowRow = styled(Row)`
+  flex-wrap: wrap;
+  margin-left: 0;
+  margin-right: 0;
   margin-top: 10px;
   margin-bottom: 5px;
+  gap: ${slideshowGutter}px;
+`;
+
+const SlideshowCol = styled(Col)`
+  flex: 0 1 auto;
+  padding: 0;
+  width: calc(${100 / slidesPerRow}% - ${slideshowGutter}px);
+  max-width: 100px;
 `;
 
 const SlideshowLabel = styled.div`
@@ -170,11 +185,6 @@ const FieldsContainerWrap = styled(Row)`
   flex-wrap: wrap;
   padding-bottom: 4px;
   border-bottom: 1px solid ${theme.base.colors.borderColor};
-`;
-
-const SlideshowCol = styled(Col)`
-  max-width: 100px;
-  min-width: 0;
 `;
 
 const ToggleCol = styled(Col)`
@@ -306,7 +316,7 @@ const RenderSlideshow = ({
           </SlideshowCol>
         ))}
       </SlideshowRow>
-      <SlideshowLabel>Drag and drop up to five images</SlideshowLabel>
+      <SlideshowLabel>Drag and drop up to {maxSlideshowImages} images</SlideshowLabel>
       {fields.get(slideshowIndex) ? (
         <div>
           <CaptionControls>

@@ -80,7 +80,7 @@ export const getCapiValuesForArticleFields = (
   };
 };
 
-const maxSlideshowImages = 10;
+export const maxSlideshowImages = 10;
 
 export const getInitialValuesForCardForm = (
   article: DerivedArticle | void
