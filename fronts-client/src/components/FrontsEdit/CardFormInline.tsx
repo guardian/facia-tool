@@ -316,7 +316,9 @@ const RenderSlideshow = ({
           </SlideshowCol>
         ))}
       </SlideshowRow>
-      <SlideshowLabel>Drag and drop up to {maxSlideshowImages} images</SlideshowLabel>
+      <SlideshowLabel>
+        Drag and drop up to {maxSlideshowImages} images
+      </SlideshowLabel>
       {fields.get(slideshowIndex) ? (
         <div>
           <CaptionControls>

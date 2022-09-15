@@ -96,7 +96,11 @@ export const getInitialValuesForCardForm = (
       height: strToInt(image.height),
     })
   );
-  slideshowBackfill.length = clamp(maxSlideshowImages - slideshow.length, 0, maxSlideshowImages);
+  slideshowBackfill.length = clamp(
+    maxSlideshowImages - slideshow.length,
+    0,
+    maxSlideshowImages
+  );
   slideshowBackfill.fill(undefined);
   return article
     ? {
