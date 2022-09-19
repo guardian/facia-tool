@@ -48,6 +48,7 @@ object DailyEdition extends RegionalEdition {
       FrontCultureSaturdayMagazineCulture -> WeekDays(List(WeekDay.Sat)),
       FrontCultureSaturdayMagazineBooks -> WeekDays(List(WeekDay.Sat)),
       FrontCultureNewReview -> WeekDays(List(WeekDay.Sun)),
+      FrontCriticsNewReview -> WeekDays(List(WeekDay.Sun)),
       FrontBooks -> WeekDays(List(WeekDay.Sun)),
       FrontCultureSpecial -> Daily(),
       // Life fronts and special
@@ -269,7 +270,19 @@ object DailyEdition extends RegionalEdition {
     collection("Culture").hide
   )
     .swatch(Culture)
-
+  
+    def FrontCriticsNewReview = front(
+    "Critics",
+    collection("Critics"),
+    collection("Critics"),
+    collection("Critics"),
+    collection("Critics"),
+    collection("Critics").hide,
+    collection("Critics").hide,
+    collection("Critics").hide
+  )
+    .swatch(Culture)
+  
   def FrontBooks = front(
     "Books",
     collection("Books").printSentAnyTag("theobserver/new-review/books"),
