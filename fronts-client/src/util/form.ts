@@ -80,8 +80,6 @@ export const getCapiValuesForArticleFields = (
   };
 };
 
-export const maxSlideshowImages = 10;
-
 export const getInitialValuesForCardForm = (
   article: DerivedArticle | void
 ): CardFormData | void => {
@@ -96,11 +94,7 @@ export const getInitialValuesForCardForm = (
       height: strToInt(image.height),
     })
   );
-  slideshowBackfill.length = clamp(
-    maxSlideshowImages - slideshow.length,
-    0,
-    maxSlideshowImages
-  );
+  slideshowBackfill.length = clamp(5 - slideshow.length, 0, 5);
   slideshowBackfill.fill(undefined);
   return article
     ? {

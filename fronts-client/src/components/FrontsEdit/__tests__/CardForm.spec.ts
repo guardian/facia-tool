@@ -2,7 +2,6 @@ import { reducer, initialize, change } from 'redux-form';
 import {
   getCardMetaFromFormValues,
   getInitialValuesForCardForm,
-  maxSlideshowImages,
 } from 'util/form';
 import derivedArticle from 'fixtures/derivedArticle';
 import { state as initialState } from 'fixtures/initialState';
@@ -38,7 +37,7 @@ const formValues = {
   showLargeHeadline: false,
   showByline: false,
   showQuotedHeadline: false,
-  slideshow: Array(maxSlideshowImages).fill(undefined),
+  slideshow: [undefined, undefined, undefined, undefined, undefined],
   showKickerTag: false,
   showKickerSection: false,
   trailText:
@@ -83,7 +82,7 @@ describe('CardForm transform functions', () => {
         origin: 'origin',
         thumb: 'thumb',
       };
-      const slideshow = Array(maxSlideshowImages + 5).fill(exampleImage);
+      const slideshow = Array(6).fill(exampleImage);
       const slideshowArticle = {
         ...derivedArticle,
         slideshow,
@@ -155,7 +154,9 @@ describe('CardForm transform functions', () => {
             origin: 'exampleOrigin',
             thumb: 'exampleThumb',
           },
-          ...Array(maxSlideshowImages - 2).fill(undefined),
+          undefined,
+          undefined,
+          undefined,
         ],
       });
     });
