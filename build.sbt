@@ -63,7 +63,7 @@ routesImport += "model.editions._"
 
 val awsVersion = "1.11.999"
 val capiModelsVersion = "17.1.0"
-val capiClientVersion = "19.0.3"
+val capiClientVersion = "19.0.5"
 val json4sVersion = "4.0.3"
 val enumeratumPlayVersion = "1.6.0"
 val circeVersion = "0.13.0"
