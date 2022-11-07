@@ -95,7 +95,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "2.9",
-    "com.gu" %% "fapi-client-play28" % "4.0.1",
+    "com.gu" %% "fapi-client-play28" % "4.0.3",
     "com.gu" %% "mobile-notifications-api-models" % "1.0.14",
     "com.gu" %% "pan-domain-auth-play_2-8" % "1.1.1",
 
