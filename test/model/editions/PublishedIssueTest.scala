@@ -175,7 +175,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       val testIssue = issue(2019, 9, 30,
         front("uk-news",
           collection("london", None, article("123")),
-          collection("financial", None, article("123"))
+          collection("business", None, article("123"))
         ),
         front("culture",
           collection("art", None, article("123")),
@@ -197,7 +197,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       val testIssue = issue(2019, 9, 30,
         front("uk-news",
           collection("london", None, article("123")),
-          collection("financial", None, article("123"))
+          collection("business", None, article("123"))
         ),
         front("culture",
           collection("art", None, article("123")),
@@ -232,7 +232,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       val testIssue = issue(2019, 9, 30,
         front("uk-news",
           collection("london", None),
-          collection("financial", None)
+          collection("business", None)
         ),
         front("culture",
           collection("art", None, article("123")),
@@ -251,7 +251,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     "collections should be filtered out when hidden" in {
       val testFront = front("uk-news",
         collection("london", None, article("123")),
-        collection("financial", None, article("123")),
+        collection("business", None, article("123")),
         collection("special", None, article("123")).hide,
         collection("weather", None, article("123"))
       )
@@ -267,7 +267,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     "collections should be filtered out when empty" in {
       val testFront = front("uk-news",
         collection("london", None, article("123")),
-        collection("financial", None, article("123")),
+        collection("business", None, article("123")),
         collection("weather", None)
       )
 

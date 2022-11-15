@@ -31,9 +31,9 @@ object DailyEdition extends RegionalEdition {
       FrontNewsWorldGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontNewsWorldObserver -> WeekDays(List(WeekDay.Sun)),
       FrontWorldSpecial -> Daily(),
-      // Financial fronts and special
-      FrontFinancialGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
-      FrontFinancialObserver -> WeekDays(List(WeekDay.Sun)),
+      // Business fronts and special
+      FrontBusinessGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
+      FrontBusinessObserver -> WeekDays(List(WeekDay.Sun)),
       // Journal, Comment and special
       FrontJournal -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
       FrontComment -> WeekDays(List(WeekDay.Sun)),
@@ -150,26 +150,26 @@ object DailyEdition extends RegionalEdition {
 
   def FrontWorldSpecial = specialFront("World Special", News)
 
-  // Financial fronts then special
+  // Business fronts then special
 
-  def FrontFinancialGuardian = front(
-    "Financial",
-    collection("Financial").printSentAnyTag("theguardian/mainsection/financial3"),
+  def FrontBusinessGuardian = front(
+    "Business",
+    collection("Business").printSentAnyTag("theguardian/mainsection/financial3"),
     collection("Money").printSentAnyTag("theguardian/mainsection/money"),
-    collection("Financial").hide,
-    collection("Financial").hide
+    collection("Business").hide,
+    collection("Business").hide
   )
     .swatch(News)
 
-  def FrontFinancialObserver = front(
-    "Financial",
-    collection("Financial").printSentAnyTag("theobserver/news/business", "theobserver/news/cash"),
-    collection("Financial").hide,
-    collection("Financial").hide
+  def FrontBusinessObserver = front(
+    "Business",
+    collection("Business").printSentAnyTag("theobserver/news/business", "theobserver/news/cash"),
+    collection("Business").hide,
+    collection("Business").hide
   )
     .swatch(News)
 
-  def FrontFinancialSpecial = specialFront("Financial Special", News, None)
+  def FrontBusinessSpecial = specialFront("Business Special", News, None)
 
   def FrontJournal = front(
     "Journal",
@@ -194,9 +194,9 @@ object DailyEdition extends RegionalEdition {
     .swatch(Opinion)
 
   def FrontOpinionSpecial = specialFront("Journal Special", Opinion)
-  
+
   // New for Saturday Life Magazine, we're making temporarily a special to be hidden by default.
-  
+
     def FrontLifeSaturdayMagazineFeatures = front(
     "Features",
     collection("Features").printSentAnyTag("theguardian/saturday/features"),
@@ -206,7 +206,7 @@ object DailyEdition extends RegionalEdition {
     collection("Features").hide
   )
     .swatch(Lifestyle)
-  
+
     def FrontLifeSaturdayMagazineCuttings = front(
     "Cuttings",
     collection("Cuttings").printSentAnyTag("theguardian/saturday/cuttings"),
@@ -236,9 +236,9 @@ object DailyEdition extends RegionalEdition {
     collection("Culture").hide
   )
     .swatch(Culture)
-  
+
   // New for the Saturday Magazine
-  
+
     def FrontCultureSaturdayMagazineCulture = front(
     "Culture",
     collection("Culture").printSentAnyTag("theguardian/saturday/culture", "theguardian/whatson/whatson"),
@@ -248,7 +248,7 @@ object DailyEdition extends RegionalEdition {
     collection("Culture").hide
   )
     .swatch(Culture)
-  
+
     def FrontCultureSaturdayMagazineBooks = front(
     "Books",
     collection("Books"),
@@ -270,7 +270,7 @@ object DailyEdition extends RegionalEdition {
     collection("Culture").hide
   )
     .swatch(Culture)
-  
+
     def FrontCriticsNewReview = front(
     "Critics",
     collection("Critics"),
@@ -282,7 +282,7 @@ object DailyEdition extends RegionalEdition {
     collection("Critics").hide
   )
     .swatch(Culture)
-  
+
   def FrontBooks = front(
     "Books",
     collection("Books").printSentAnyTag("theobserver/new-review/books"),
