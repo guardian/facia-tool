@@ -21,6 +21,7 @@ javascriptV1() {
     npm run jspm registry export github
     npm run jspm install
     grunt --stack validate
+    grunt --stack test
     grunt --stack bundle
 }
 
