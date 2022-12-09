@@ -6,7 +6,7 @@ module.exports = function(grunt, options) {
             singleRun: options.singleRun,
             browserDisconnectTimeout: 10000,
             browserDisconnectTolerance: 3,
-            browserNoActivityTimeout: 60000,
+            browserNoActivityTimeout: 400000,
             reportSlowerThan: 2000,
             colors: options.color,
             port: 9876,
