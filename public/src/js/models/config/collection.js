@@ -19,9 +19,11 @@ export default class ConfigCollection extends DropTarget {
 
         this.id = opts.id;
 
+        const defaults = vars.model.state().defaults;
+
         this.parents = ko.observableArray(findParents(opts.id));
         this.userVisibilities = CONST.userVisibilities;
-        this.availableTerritories = [];
+        this.availableTerritories = (defaults && defaults.availableTerritories) ? defaults.availableTerritories : [];
 
         this.meta = Object.assign(
             asObservableProps([
