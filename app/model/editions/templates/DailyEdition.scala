@@ -230,12 +230,12 @@ object DailyEdition extends RegionalEdition {
     .swatch(Culture)
   
   def FrontWhatsOn = front(
-    "What's On",
-    collection("What's On").printSentAnyTag("theguardian/whatson/whatson"),
-    collection("What's On"),
-    collection("What's On"),
-    collection("What's On"),
-    collection("What's On").hide
+    "What's on",
+    collection("What's on").printSentAnyTag("theguardian/whatson/whatson"),
+    collection("What's on"),
+    collection("What's on"),
+    collection("What's on"),
+    collection("What's on").hide
   )
     .swatch(Culture)
 
