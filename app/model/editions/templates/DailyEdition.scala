@@ -40,14 +40,14 @@ object DailyEdition extends RegionalEdition {
       FrontOpinionSpecial -> Daily(),
       // Culture fronts and special
       FrontCulture -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
-      // What's on
-      FrontWhatsOn -> WeekDays(List(WeekDay.Sat)),
       FrontCultureFilmMusic -> WeekDays(List(WeekDay.Fri)),
       // New for Saturday Magazine
       FrontLifeSaturdayMagazineFeatures -> WeekDays(List(WeekDay.Sat)),
       FrontLifeSaturdayMagazineCuttings -> WeekDays(List(WeekDay.Sat)),
       // New for the Saturday Magazine
       FrontCultureSaturdayMagazineCulture -> WeekDays(List(WeekDay.Sat)),
+      // What's on
+      FrontCultureSaturdayMagazineWhatsOn -> WeekDays(List(WeekDay.Sat)),
       FrontCultureSaturdayMagazineBooks -> WeekDays(List(WeekDay.Sat)),
       FrontCultureNewReview -> WeekDays(List(WeekDay.Sun)),
       FrontCriticsNewReview -> WeekDays(List(WeekDay.Sun)),
@@ -228,8 +228,8 @@ object DailyEdition extends RegionalEdition {
     collection("Culture").hide
   )
     .swatch(Culture)
-  
-  def FrontWhatsOn = front(
+
+  def FrontCultureSaturdayMagazineWhatsOn = front(
     "What's on",
     collection("What's on").printSentAnyTag("theguardian/whatson/whatson"),
     collection("What's on"),
