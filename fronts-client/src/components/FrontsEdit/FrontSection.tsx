@@ -295,11 +295,12 @@ class FrontSection extends React.Component<
       return nameOverride;
     }
 
-    const name = this.props.selectedFront.displayName || this.props.selectedFront.id;
+    const name =
+      this.props.selectedFront.displayName || this.props.selectedFront.id;
     return this.props.isEditions
       ? name
-      // Some fronts are missing a title, and are named by their id. This makes them more legible to editorial staff.
-      : startCase(name);
+      : // Some fronts are missing a title, and are named by their id. This makes them more legible to editorial staff.
+        startCase(name);
   };
 
   private setName = () => {

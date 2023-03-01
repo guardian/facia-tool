@@ -4,7 +4,7 @@ import state from 'fixtures/initialStateForOpenFronts';
 import React from 'react';
 import 'jest-dom/extend-expect';
 import { Provider } from 'react-redux';
-import {getByTestId, getByText, render} from 'react-testing-library';
+import { getByTestId, getByText, render } from 'react-testing-library';
 import { ThemeProvider } from 'styled-components';
 import configureStore from 'util/configureStore';
 import FrontSection from '../FrontSection';
@@ -97,11 +97,11 @@ describe('FrontSection component', () => {
     );
   });
 
-  describe("Front titles", () => {
+  describe('Front titles', () => {
     const sectionProps = {
       ...defaultProps,
-      frontId: "editorial-front-3",
-      selectedFront: frontsConfig.data.fronts["editorial-front-3"]
+      frontId: 'editions-front-3',
+      selectedFront: frontsConfig.data.fronts['editions-front-3'],
     };
 
     it('should make front names more legible when derived from ids', () => {
@@ -111,7 +111,7 @@ describe('FrontSection component', () => {
           ...state.config,
           dev: false,
           env: 'prod',
-        }
+        },
       });
 
       const { container } = render(
@@ -123,19 +123,22 @@ describe('FrontSection component', () => {
       );
 
       expect(getByTestId(container, 'front-name')).toHaveTextContent(
-        "Editorial Front 3",
+        'Editions Front 3'
       );
     });
 
     it('should not alter front names for editions', () => {
-      const store = configureStore({
-        ...state,
-        config: {
-          ...state.config,
-          dev: false,
-          env: 'prod',
-        }
-      }, "/v2/issues/9120723d-7d0d-4598-a22d-d9cf4dc7cbe6");
+      const store = configureStore(
+        {
+          ...state,
+          config: {
+            ...state.config,
+            dev: false,
+            env: 'prod',
+          },
+        },
+        '/v2/issues/9120723d-7d0d-4598-a22d-d9cf4dc7cbe6'
+      );
 
       const { container } = render(
         <Provider store={store}>
@@ -146,7 +149,7 @@ describe('FrontSection component', () => {
       );
 
       expect(getByTestId(container, 'front-name')).toHaveTextContent(
-        "editorial-front-3",
+        'editions-front-3'
       );
     });
   });
