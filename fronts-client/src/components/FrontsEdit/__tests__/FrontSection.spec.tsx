@@ -4,7 +4,7 @@ import state from 'fixtures/initialStateForOpenFronts';
 import React from 'react';
 import 'jest-dom/extend-expect';
 import { Provider } from 'react-redux';
-import { getByText, render } from 'react-testing-library';
+import { getByTestId, getByText, render } from 'react-testing-library';
 import { ThemeProvider } from 'styled-components';
 import configureStore from 'util/configureStore';
 import FrontSection from '../FrontSection';
@@ -95,5 +95,62 @@ describe('FrontSection component', () => {
       'href',
       'https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/editorialFront'
     );
+  });
+
+  describe('Front titles', () => {
+    const sectionProps = {
+      ...defaultProps,
+      frontId: 'editions-front-3',
+      selectedFront: frontsConfig.data.fronts['editions-front-3'],
+    };
+
+    it('should make front names more legible when derived from ids', () => {
+      const store = configureStore({
+        ...state,
+        config: {
+          ...state.config,
+          dev: false,
+          env: 'prod',
+        },
+      });
+
+      const { container } = render(
+        <Provider store={store}>
+          <ThemeProvider theme={theme}>
+            <FrontSection {...sectionProps} />
+          </ThemeProvider>
+        </Provider>
+      );
+
+      expect(getByTestId(container, 'front-name')).toHaveTextContent(
+        'Editions Front 3'
+      );
+    });
+
+    it('should not alter front names for editions', () => {
+      const store = configureStore(
+        {
+          ...state,
+          config: {
+            ...state.config,
+            dev: false,
+            env: 'prod',
+          },
+        },
+        '/v2/issues/9120723d-7d0d-4598-a22d-d9cf4dc7cbe6'
+      );
+
+      const { container } = render(
+        <Provider store={store}>
+          <ThemeProvider theme={theme}>
+            <FrontSection {...sectionProps} />
+          </ThemeProvider>
+        </Provider>
+      );
+
+      expect(getByTestId(container, 'front-name')).toHaveTextContent(
+        'editions-front-3'
+      );
+    });
   });
 });
