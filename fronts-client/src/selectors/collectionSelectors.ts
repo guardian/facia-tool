@@ -37,8 +37,7 @@ const selectCollectionParams = (
     []
   );
 
-const selectIsCollectionLocked = (state: State, id: string): boolean =>
-  !!selectCollectionConfig(state, id).uneditable;
+const selectIsCollectionLocked = (state: State, id: string): boolean => !!selectCollectionConfig(state, id)?.uneditable;
 
 const selectWillCollectionHitCollectionCap = (
   state: State,
