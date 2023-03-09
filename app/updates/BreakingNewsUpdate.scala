@@ -38,7 +38,8 @@ object BreakingNewsUpdate {
     BreakingNewsSportUk,
     BreakingNewsSportUs,
     BreakingNewsSportAu,
-    BreakingNewsSportInternational
+    BreakingNewsSportInternational,
+    BreakingNewsSportEurope,
   )
 
   def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
@@ -78,14 +79,16 @@ object BreakingNewsUpdate {
 
   private def parseTopic(topic: Option[String]): List[Topic] = {
     topic match {
-      case Some("global") => List(BreakingNewsUk, BreakingNewsUs, BreakingNewsAu, BreakingNewsInternational)
+      case Some("global") => List(BreakingNewsUk, BreakingNewsUs, BreakingNewsAu, BreakingNewsInternational, BreakingNewsEurope)
       case Some("au") => List(BreakingNewsAu)
       case Some("international") => List(BreakingNewsInternational)
       case Some("uk") => List(BreakingNewsUk)
       case Some("us") => List(BreakingNewsUs)
+      case Some("europe") => List(BreakingNewsEurope)
       case Some("uk-sport") => List(BreakingNewsSportUk)
       case Some("us-sport") => List(BreakingNewsSportUs)
       case Some("au-sport") => List(BreakingNewsSportAu)
+      case Some("europe-sport") => List(BreakingNewsSportEurope)
       case Some("international-sport") => List(BreakingNewsSportInternational)
       case Some(SportGlobalTopicName) => SportBreakingNewsTopics
       case Some("uk-general-election") => List(BreakingNewsElection)
