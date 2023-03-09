@@ -25,14 +25,6 @@ import scala.util.{Failure, Success, Try}
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
 object BreakingNewsUpdate {
-  val CovidGlobalTopicName = "global-covid-19"
-  val CovidBreakingNewsTopics = List(
-    BreakingNewsCovid19Uk,
-    BreakingNewsCovid19Us,
-    BreakingNewsCovid19Au,
-    BreakingNewsCovid19International
-  )
-
   val SportGlobalTopicName = "global-sport"
   val SportBreakingNewsTopics = List(
     BreakingNewsSportUk,
@@ -45,7 +37,6 @@ object BreakingNewsUpdate {
   def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     val title = trail.topic match {
       case Some("uk-general-election") => Some("General election 2019")
-      case Some(topic) if (CovidBreakingNewsTopics.map(_.name) :+ CovidGlobalTopicName).contains(topic) => Some("Coronavirus")
       case Some(topic) if (SportBreakingNewsTopics.map(_.name) :+ SportGlobalTopicName).contains(topic) => Some("Sport breaking news")
       case _ => None
     }
@@ -92,11 +83,6 @@ object BreakingNewsUpdate {
       case Some("international-sport") => List(BreakingNewsSportInternational)
       case Some(SportGlobalTopicName) => SportBreakingNewsTopics
       case Some("uk-general-election") => List(BreakingNewsElection)
-      case Some("uk-covid-19") => List(BreakingNewsCovid19Uk)
-      case Some("us-covid-19") => List(BreakingNewsCovid19Us)
-      case Some("au-covid-19") => List(BreakingNewsCovid19Au)
-      case Some("international-covid-19") => List(BreakingNewsCovid19International)
-      case Some(CovidGlobalTopicName) => CovidBreakingNewsTopics
       case Some("") => throw new InvalidParameterException(s"Invalid empty string topic")
       case Some(notYetImplementedTopic) => List(Topic(Breaking, notYetImplementedTopic))
       case None => throw new InvalidParameterException(s"Invalid empty topic")
