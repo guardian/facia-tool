@@ -39,7 +39,7 @@ object BreakingNewsUpdate {
     BreakingNewsSportUs,
     BreakingNewsSportAu,
     BreakingNewsSportInternational,
-    BreakingNewsSportEurope,
+    BreakingNewsSportEurope
   )
 
   def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
