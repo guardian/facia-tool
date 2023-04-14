@@ -2,7 +2,7 @@
 
 The Guardian front pages editor, known as the Fronts tool.
 
-For information on core Fronts concepts, see the [glossary](./docs/Glossary).
+For information on core Fronts concepts, see the [glossary](./docs/Glossary.md).
 
 ## Fronts Client
 
