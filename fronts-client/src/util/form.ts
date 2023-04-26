@@ -4,6 +4,7 @@ import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
+import pageConfig from 'util/extractConfigFromPage';
 import { CardMeta } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { CapiArticle } from 'types/Capi';
@@ -80,7 +81,12 @@ export const getCapiValuesForArticleFields = (
   };
 };
 
-export const maxSlideshowImages = 5;
+
+const tenImagesFeatureSwitch = pageConfig?.userData?.featureSwitches.find(
+  (feature) => feature.key === 'ten-image-slideshows'
+);
+
+export const maxSlideshowImages = tenImagesFeatureSwitch?.enabled ? 10 : 5;
 
 export const getInitialValuesForCardForm = (
   article: DerivedArticle | void

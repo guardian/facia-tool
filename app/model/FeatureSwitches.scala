@@ -30,8 +30,14 @@ object ShowFirefoxPrompt extends FeatureSwitch(
   enabled = true
 )
 
+object TenImageSlideshows extends FeatureSwitch(
+  key = "ten-image-slideshows",
+  title = "Allow slideshows to contain 10 images rather than 5",
+  enabled = true
+)
+
 object FeatureSwitches {
-  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, ShowFirefoxPrompt)
+  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, ShowFirefoxPrompt, TenImageSlideshows)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     val newSwitches = userDataSwitches match {
