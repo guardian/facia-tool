@@ -33,7 +33,7 @@ object ShowFirefoxPrompt extends FeatureSwitch(
 object TenImageSlideshows extends FeatureSwitch(
   key = "ten-image-slideshows",
   title = "Allow slideshows to contain 10 images rather than 5",
-  enabled = true
+  enabled = false
 )
 
 object FeatureSwitches {
