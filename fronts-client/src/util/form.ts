@@ -81,7 +81,6 @@ export const getCapiValuesForArticleFields = (
   };
 };
 
-
 const tenImagesFeatureSwitch = pageConfig?.userData?.featureSwitches.find(
   (feature) => feature.key === 'ten-image-slideshows'
 );
