@@ -260,7 +260,7 @@ const persistFavouriteFrontsOnEdit: (
   };
 
 export {
-  PersistMeta,
+  type PersistMeta,
   persistCollectionOnEdit,
   persistClipboardOnEdit,
   persistOpenFrontsOnEdit,

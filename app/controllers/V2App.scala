@@ -83,7 +83,8 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
       "Fronts Tool",
       jsLocation,
       faviconLocation,
-      Json.toJson(conf).toString()
+      Json.toJson(conf).toString(),
+      isDev
     ))
   }
 
