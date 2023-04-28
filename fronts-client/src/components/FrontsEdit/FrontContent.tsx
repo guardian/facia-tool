@@ -141,7 +141,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
     }
   }, 100);
 
-  public componentWillReceiveProps(newProps: FrontProps) {
+  public UNSAFE_componentWillReceiveProps(newProps: FrontProps) {
     if (this.props.browsingStage !== newProps.browsingStage) {
       this.props.initialiseCollectionsForFront(
         this.props.id,
@@ -252,8 +252,8 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
   private updateCollectionsStalenessFlag = () => {
     const collectionsStalenessInMillis =
-      !!this.props.collectionsLastSuccessfulFetchTimestamp &&
-      Date.now() - this.props.collectionsLastSuccessfulFetchTimestamp;
+      !!this.props.collectionsLastSuccessfulFetchTimestamp ?
+      Date.now() - this.props.collectionsLastSuccessfulFetchTimestamp : 0;
 
     const isCollectionsStale =
       collectionsStalenessInMillis > STALENESS_THRESHOLD_IN_MILLIS;
