@@ -38,11 +38,11 @@ function resultCheckMemoize<A extends any[], R>(func: (...args: A) => R) {
 
 const createShallowEqualResultSelector = createSelectorCreator(
   // there seems to be an issue with the reselect typings, but even when casting resultCheckMemoize
-  // as any, the selectors that result are still strongly typed i.e. the issues are local only
+  // as any and never, the selectors that result are still strongly typed i.e. the issues are local only
   // to here
   resultCheckMemoize as any,
-  defaultEqualityCheck,
-  shallowequal
+  defaultEqualityCheck as never,
+  shallowequal as never
 );
 
 export { createShallowEqualResultSelector };

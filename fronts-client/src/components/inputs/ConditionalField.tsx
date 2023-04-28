@@ -1,15 +1,20 @@
-import React from 'react';
-import { Field } from 'redux-form';
+import React, { ComponentType } from 'react';
+import { Field, WrappedFieldProps } from 'redux-form';
 import ConditionalComponent from 'components/layout/ConditionalComponent';
 import { BaseFieldProps } from 'redux-form';
 
-interface Props extends BaseFieldProps {
+type Props = Omit<BaseFieldProps, 'component'> & {
   permittedFields?: string[];
   container?: React.ComponentType;
-}
+  component:
+    | ComponentType<WrappedFieldProps & any>
+    | 'input'
+    | 'select'
+    | 'textarea';
+};
 
-const ConditionalField = <P extends {}>(props: Props & P) => {
-  const FieldComponent = <Field<Props & P> {...props} />;
+const ConditionalField = <P extends Props>(props: P) => {
+  const FieldComponent = <Field {...props} />;
   const Component = props.Container ? (
     <props.Container>{FieldComponent}</props.Container>
   ) : (

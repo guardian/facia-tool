@@ -406,8 +406,8 @@ const createDemornalisedCard = (
               (supportingCardId: string) => cards[supportingCardId]
             ),
         },
-      }
-    : { ...cards[cardId] };
+      } as CardDenormalised
+    : { ...(cards[cardId] as CardDenormalised) };
 
 // this creates a map between a group id and it's parent collection id
 // { [groupId: string]: string /* collectionId */ }
