@@ -1,8 +1,5 @@
-const enzyme = require('enzyme');
-const Adapter = require('enzyme-adapter-react-16');
 const fc = require('fast-check');
-
-enzyme.configure({ adapter: new Adapter() });
+import 'whatwg-fetch';
 
 // ensure google tracking tag is there so as not to see console errors
 window.gtag = () => {};

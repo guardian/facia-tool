@@ -1,6 +1,5 @@
 import configureStore from 'util/configureStore';
 import fetchMock from 'fetch-mock';
-import 'whatwg-fetch';
 import {
   fetchLive,
   fetchPreview,
