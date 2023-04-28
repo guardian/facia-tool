@@ -38,12 +38,6 @@ export default function configureStore(
     ? createStore(reducer, initialState, middleware)
     : createStore(reducer, middleware);
 
-  if (module.hot) {
-    module.hot.accept('reducers/rootReducer.js', () => {
-      store.replaceReducer(rootReducer);
-    });
-  }
-
   if (initialPath) {
     store.dispatch(push(initialPath));
   }

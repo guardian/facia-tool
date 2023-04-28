@@ -251,7 +251,7 @@ export default <T extends any>(props: OuterProps<T>) => (
 );
 
 export {
-  Move,
+  type Move,
   PosSpec,
   LevelChild,
   MoveHandler,
