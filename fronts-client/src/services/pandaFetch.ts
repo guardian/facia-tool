@@ -35,7 +35,7 @@ const pandaFetch = (
             const res2 = await pandaFetch(url, options, count + 1);
             return resolve(res2);
           } catch (e) {
-            if (!e.status || AUTH_ERROR_STATUS_CODES.includes(e.status)) {
+            if ((!(e as Response).status || AUTH_ERROR_STATUS_CODES.includes((e as Response).status))) {
               notifications.notify({
                 message: reauthErrorMessage,
                 level: 'error',

@@ -192,7 +192,7 @@ const getArticleEntitiesFromDrop = async (
     dispatch(
       startOptionsModal(
         'Could not create snap link',
-        `We couldn't create a snap link with that URL. The error was: \n\n${e.message}`,
+        `We couldn't create a snap link with that URL. The error was: \n\n${e instanceof Error ? e.message : e}`,
         [],
         noop
       )

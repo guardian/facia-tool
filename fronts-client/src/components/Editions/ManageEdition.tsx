@@ -15,6 +15,7 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import Spinner from 'components/async/Spinner';
 import InformationMsg from 'components/alert/InformationMsg';
 import url from 'constants/url';
+import { attemptFriendlyErrorMessage } from 'util/error';
 
 interface ManageEditionState {
   date: Moment | null;
@@ -217,7 +218,7 @@ class ManageEdition extends React.Component<
       this.setState(
         this.addExtraKey(
           {
-            infoMessage: `${errorMessage}: ${response.status}, ${response.statusText}`,
+            infoMessage: `${errorMessage}: ${attemptFriendlyErrorMessage(response)}`,
             isError: true,
             isLoading: false,
           },
