@@ -305,9 +305,9 @@ const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
   return createSelector(
     selectFrontsWithPriority,
     selectEditorFrontsByPriority,
-    (state, priority: string) =>
+    (state: GlobalState, priority: string) =>
       selectEditorFavouriteFrontIdsByPriority(state, priority),
-    (_, __, sortKey: 'id' | 'index' = 'id') => sortKey,
+    (_: unknown, __: unknown, sortKey: 'id' | 'index' = 'id') => sortKey,
     (frontsForPriority, openFronts, favouriteFronts, sortKey) => {
       const fronts = frontsForPriority.map(({ id, displayName, index }) => ({
         id,
