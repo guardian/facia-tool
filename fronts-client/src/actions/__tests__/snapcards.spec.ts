@@ -288,8 +288,7 @@ describe('Snap cards actions', () => {
               snapType: 'interactive',
               snapUri:
                 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
-              href:
-                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
+              href: 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
             },
             uuid: 'card1',
           },
@@ -353,8 +352,7 @@ describe('Snap cards actions', () => {
               snapType: 'interactive',
               snapUri:
                 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
-              href:
-                'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
+              href: 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
             },
             uuid: 'card1',
           },

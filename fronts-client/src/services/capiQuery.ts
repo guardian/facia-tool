@@ -97,13 +97,17 @@ const fetchCAPIResponse = async <
   try {
     response = await pandaFetch(request);
   } catch (e) {
-    throw new Error(`Error making a request to CAPI, ${attemptFriendlyErrorMessage(e)}`);
+    throw new Error(
+      `Error making a request to CAPI, ${attemptFriendlyErrorMessage(e)}`
+    );
   }
   let result: TCAPIResponse;
   try {
     result = await response.json();
   } catch (e) {
-    throw new Error(`Error parsing a response from CAPI: ${attemptFriendlyErrorMessage(e)}`);
+    throw new Error(
+      `Error parsing a response from CAPI: ${attemptFriendlyErrorMessage(e)}`
+    );
   }
   if (result.response.status === 'error') {
     throw new Error(`CAPI returned an error: ${result.response.message}`);

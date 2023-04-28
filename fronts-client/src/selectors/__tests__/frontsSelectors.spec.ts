@@ -223,7 +223,8 @@ const visibilityState = {
 
 describe('Article visibility selector', () => {
   it('returns the id of the card at the last visible position for mobile and desktop, ignoring supporting cards', () => {
-    const selectArticleVisibilityDetails = createSelectArticleVisibilityDetails();
+    const selectArticleVisibilityDetails =
+      createSelectArticleVisibilityDetails();
     expect(
       selectArticleVisibilityDetails(visibilityState as any, {
         collectionSet: 'draft',

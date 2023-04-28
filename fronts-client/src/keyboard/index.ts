@@ -85,7 +85,9 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
         }
         dispatch(thunkInsertClipboardCard('clipboard', 0, card.uuid));
       } catch (e) {
-        Raven.captureMessage(`Paste to clipboard failed: ${attemptFriendlyErrorMessage(e)}`);
+        Raven.captureMessage(
+          `Paste to clipboard failed: ${attemptFriendlyErrorMessage(e)}`
+        );
       }
     },
   },

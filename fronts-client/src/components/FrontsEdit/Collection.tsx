@@ -54,7 +54,11 @@ const VisibilityDividerEl = styled.div`
   text-transform: capitalize;
 
   :before {
-    background-image: linear-gradient(transparent 66.66666%, ${selectGrey} 66.66666%, ${selectGrey} 100%);
+    background-image: linear-gradient(
+      transparent 66.66666%,
+      ${selectGrey} 66.66666%,
+      ${selectGrey} 100%
+    );
     background-position: 0px 2px;
     background-size: 3px 3px;
     content: '';
@@ -108,9 +112,7 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
   lastMobileArticle?: string;
 }
 
-class CollectionContext extends React.Component<
-  ConnectedCollectionContextProps
-> {
+class CollectionContext extends React.Component<ConnectedCollectionContextProps> {
   public render() {
     const {
       id,

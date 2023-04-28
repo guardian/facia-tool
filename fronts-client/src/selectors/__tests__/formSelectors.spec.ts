@@ -32,7 +32,11 @@ describe('Form utils', () => {
         'dynamic/example';
       const selectFormFields = createSelectFormFieldsForCard();
       expect(
-        selectFormFields(localState, '95e2bfc0-8999-4e6e-a359-19960967c1e0', false)
+        selectFormFields(
+          localState,
+          '95e2bfc0-8999-4e6e-a359-19960967c1e0',
+          false
+        )
       ).toEqual([...defaultFields, 'isBoosted']);
     });
     it('should add showLivePlayable for live blogs', () => {
@@ -42,7 +46,11 @@ describe('Form utils', () => {
       ].fields.liveBloggingNow = 'true';
       const selectFormFields = createSelectFormFieldsForCard();
       expect(
-        selectFormFields(localState, '95e2bfc0-8999-4e6e-a359-19960967c1e0', false)
+        selectFormFields(
+          localState,
+          '95e2bfc0-8999-4e6e-a359-19960967c1e0',
+          false
+        )
       ).toEqual([...defaultFields, 'showLivePlayable']);
     });
     it('should add showMainVideo for articles with video as the main media', () => {
@@ -60,8 +68,8 @@ describe('Form utils', () => {
       expect(
         selectFormFields(
           { ...state, path: '/v2/email' },
-          '95e2bfc0-8999-4e6e-a359-19960967c1e0'
-          , false
+          '95e2bfc0-8999-4e6e-a359-19960967c1e0',
+          false
         )
       ).toEqual(without(defaultFields, ...emailFieldsToExclude));
     });

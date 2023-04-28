@@ -48,7 +48,7 @@ const maybeWarnChromeUsers = () => {
     (feature) => feature.key === 'show-firefox-prompt'
   );
 
-  if (chromeVersion && chromeVersion < 87 || !featureSwitch?.enabled) {
+  if ((chromeVersion && chromeVersion < 87) || !featureSwitch?.enabled) {
     return;
   }
 

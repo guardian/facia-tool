@@ -51,19 +51,19 @@ import {
 // the persistence stuff needs to be dynamic as we sometimes need to insert an
 // card and save to clipboard and sometimes save to collection
 // depending on the location of that card
-const createInsertCardThunk = (action: InsertActionCreator) => (
-  persistTo: 'collection' | 'clipboard'
-) => (id: string, index: number, cardId: string, removeAction?: Action) => (
-  dispatch: Dispatch
-) => {
-  if (removeAction) {
-    dispatch(removeAction);
-  }
-  // This cast seems to be necessary to disambiguate the type fed to Dispatch,
-  // whose call signature accepts either an Action or a ThunkResult. I'm not really
-  // sure why.
-  dispatch(action(id, index, cardId, persistTo) as Action);
-};
+const createInsertCardThunk =
+  (action: InsertActionCreator) =>
+  (persistTo: 'collection' | 'clipboard') =>
+  (id: string, index: number, cardId: string, removeAction?: Action) =>
+  (dispatch: Dispatch) => {
+    if (removeAction) {
+      dispatch(removeAction);
+    }
+    // This cast seems to be necessary to disambiguate the type fed to Dispatch,
+    // whose call signature accepts either an Action or a ThunkResult. I'm not really
+    // sure why.
+    dispatch(action(id, index, cardId, persistTo) as Action);
+  };
 
 const copyCardImageMetaWithPersist = addPersistMetaToAction(copyCardImageMeta, {
   persistTo: 'collection',
@@ -73,83 +73,81 @@ const copyCardImageMetaWithPersist = addPersistMetaToAction(copyCardImageMeta, {
 // Creates a thunk with persistence that will launch a confirm modal if required
 // when adding to a group, otherwise will just run the action
 // the confirm modal links to the collection caps
-const maybeInsertGroupCard = (persistTo: 'collection' | 'clipboard') => (
-  id: string,
-  index: number,
-  cardId: string,
-  removeAction?: Action
-) => {
-  return (dispatch: Dispatch, getState: () => State) => {
-    // require a modal!
-    const state = getState();
+const maybeInsertGroupCard =
+  (persistTo: 'collection' | 'clipboard') =>
+  (id: string, index: number, cardId: string, removeAction?: Action) => {
+    return (dispatch: Dispatch, getState: () => State) => {
+      // require a modal!
+      const state = getState();
 
-    const collectionCap = selectCollectionCap(state);
+      const collectionCap = selectCollectionCap(state);
 
-    const willCollectionHitCollectionCap = selectWillCollectionHitCollectionCap(
-      state,
-      id,
-      index,
-      cardId,
-      collectionCap
-    );
+      const willCollectionHitCollectionCap =
+        selectWillCollectionHitCollectionCap(
+          state,
+          id,
+          index,
+          cardId,
+          collectionCap
+        );
 
-    const confirmRemoval = () => {
-      const actions = [];
+      const confirmRemoval = () => {
+        const actions = [];
 
-      if (removeAction) {
-        actions.push(removeAction);
-      }
+        if (removeAction) {
+          actions.push(removeAction);
+        }
 
-      actions
-        .concat([
-          insertGroupCard(id, index, cardId, persistTo),
-          maybeAddFrontPublicationDate(cardId),
-          addPersistMetaToAction(capGroupSiblings, {
-            id: cardId,
-            persistTo,
-            applyBeforeReducer: true,
-          })(id, collectionCap),
-        ])
-        .forEach((action) => dispatch(action));
-    };
+        actions
+          .concat([
+            insertGroupCard(id, index, cardId, persistTo),
+            maybeAddFrontPublicationDate(cardId),
+            addPersistMetaToAction(capGroupSiblings, {
+              id: cardId,
+              persistTo,
+              applyBeforeReducer: true,
+            })(id, collectionCap),
+          ])
+          .forEach((action) => dispatch(action));
+      };
 
-    if (willCollectionHitCollectionCap) {
-      // if there are too many cards now then launch a modal to ask the user
-      // what action to take
-      dispatch(
-        startOptionsModal(
-          'Collection limit',
-          `You can have a maximum of ${collectionCap} articles in a collection.
+      if (willCollectionHitCollectionCap) {
+        // if there are too many cards now then launch a modal to ask the user
+        // what action to take
+        dispatch(
+          startOptionsModal(
+            'Collection limit',
+            `You can have a maximum of ${collectionCap} articles in a collection.
           You can proceed, and the last article in the collection will be
           removed automatically, or you can cancel and remove articles from the
           collection yourself.`,
-          // if the user accepts, then remove the moved item (if there was one),
-          // remove cards past the cap count and finally persist
-          [
-            {
-              buttonText: 'Confirm',
-              callback: confirmRemoval,
-            },
-          ],
-          // otherwise do nothing
-          noop,
-          true
-        )
-      );
-    } else {
-      // if we're not going over the cap then just remove a moved article if
-      // needed and insert the new article
-      dispatch(
-        batchActions(
-          (removeAction ? [removeAction] : []).concat([
-            maybeAddFrontPublicationDate(cardId),
-            insertGroupCard(id, index, cardId, persistTo),
-          ])
-        )
-      );
-    }
+            // if the user accepts, then remove the moved item (if there was one),
+            // remove cards past the cap count and finally persist
+            [
+              {
+                buttonText: 'Confirm',
+                callback: confirmRemoval,
+              },
+            ],
+            // otherwise do nothing
+            noop,
+            true
+          )
+        );
+      } else {
+        // if we're not going over the cap then just remove a moved article if
+        // needed and insert the new article
+        dispatch(
+          batchActions(
+            (removeAction ? [removeAction] : []).concat([
+              maybeAddFrontPublicationDate(cardId),
+              insertGroupCard(id, index, cardId, persistTo),
+            ])
+          )
+        );
+      }
+    };
   };
-};
 
 const addActionMap: { [type: string]: InsertThunkActionCreator | undefined } = {
   card: createInsertCardThunk(insertSupportingCard),
@@ -198,53 +196,55 @@ const updateCardMetaWithPersist = addPersistMetaToAction(updateCardMeta, {
   persistTo: 'collection',
 });
 
-const insertCardWithCreate = (
-  to: PosSpec,
-  drop: MappableDropType,
-  persistTo: 'collection' | 'clipboard',
-  // allow the factory to be injected for testing
-  cardFactory = createArticleEntitiesFromDrop
-): ThunkResult<void> => async (dispatch: Dispatch, getState) => {
-  const insertActionCreator = getInsertionActionCreatorFromType(
-    to.type,
-    persistTo
-  );
-  if (!insertActionCreator) {
-    return;
-  }
-  const state = getState();
-  const toWithRespectToState = getToGroupIndicesWithRespectToState(
-    to,
-    state,
-    false
-  );
-  if (toWithRespectToState) {
-    try {
-      const card = await dispatch(cardFactory(drop));
-      if (!card) {
-        return;
-      }
-      dispatch(
-        insertActionCreator(
-          toWithRespectToState.id,
-          toWithRespectToState.index,
-          card.uuid
-        )
-      );
-
-      // Fetch ophan data
-      const [frontId, collectionId] = selectOpenParentFrontOfCard(
-        getState(),
-        card.uuid
-      );
-      if (frontId && collectionId) {
-        await dispatch(getPageViewData(frontId, collectionId, [card.uuid]));
-      }
-    } catch (e) {
-      // Insert failed -- @todo handle error
+const insertCardWithCreate =
+  (
+    to: PosSpec,
+    drop: MappableDropType,
+    persistTo: 'collection' | 'clipboard',
+    // allow the factory to be injected for testing
+    cardFactory = createArticleEntitiesFromDrop
+  ): ThunkResult<void> =>
+  async (dispatch: Dispatch, getState) => {
+    const insertActionCreator = getInsertionActionCreatorFromType(
+      to.type,
+      persistTo
+    );
+    if (!insertActionCreator) {
+      return;
     }
-  }
-};
+    const state = getState();
+    const toWithRespectToState = getToGroupIndicesWithRespectToState(
+      to,
+      state,
+      false
+    );
+    if (toWithRespectToState) {
+      try {
+        const card = await dispatch(cardFactory(drop));
+        if (!card) {
+          return;
+        }
+        dispatch(
+          insertActionCreator(
+            toWithRespectToState.id,
+            toWithRespectToState.index,
+            card.uuid
+          )
+        );
+
+        // Fetch ophan data
+        const [frontId, collectionId] = selectOpenParentFrontOfCard(
+          getState(),
+          card.uuid
+        );
+        if (frontId && collectionId) {
+          await dispatch(getPageViewData(frontId, collectionId, [card.uuid]));
+        }
+      } catch (e) {
+        // Insert failed -- @todo handle error
+      }
+    }
+  };
 
 const removeCard = (
   type: string,
@@ -304,11 +304,12 @@ const moveCard = (
       fromOrphanedGroup: boolean;
     } = getFromGroupIndicesWithRespectToState(from, state);
 
-    const toWithRespectToState: PosSpec | null = getToGroupIndicesWithRespectToState(
-      to,
-      state,
-      fromDetails.fromOrphanedGroup
-    );
+    const toWithRespectToState: PosSpec | null =
+      getToGroupIndicesWithRespectToState(
+        to,
+        state,
+        fromDetails.fromOrphanedGroup
+      );
     if (toWithRespectToState) {
       const { fromWithRespectToState } = fromDetails;
 

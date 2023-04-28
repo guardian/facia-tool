@@ -1,8 +1,7 @@
 import { CapiArticle } from 'types/Capi';
 
 const capiArticleWithElementsThumbnail = {
-  id:
-    'world/2018/oct/10/alleged-saudi-hit-squad-linked-to-jamal-khashoggi-disappearance',
+  id: 'world/2018/oct/10/alleged-saudi-hit-squad-linked-to-jamal-khashoggi-disappearance',
   urlPath:
     'world/2018/oct/10/alleged-saudi-hit-squad-linked-to-jamal-khashoggi-disappearance',
   type: 'article',
@@ -31,8 +30,7 @@ const capiArticleWithElementsThumbnail = {
         {
           type: 'image',
           mimeType: 'image/jpeg',
-          file:
-            'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/4000.jpg',
+          file: 'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/4000.jpg',
           typeData: {
             altText:
               'Protesters in Istanbul hold pictures of missing journalist Jamal Khashoggi on Monday.',
@@ -57,8 +55,7 @@ const capiArticleWithElementsThumbnail = {
         {
           type: 'image',
           mimeType: 'image/jpeg',
-          file:
-            'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/master/4000.jpg',
+          file: 'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/master/4000.jpg',
           typeData: {
             altText:
               'Protesters in Istanbul hold pictures of missing journalist Jamal Khashoggi on Monday.',
@@ -84,8 +81,7 @@ const capiArticleWithElementsThumbnail = {
         {
           type: 'image',
           mimeType: 'image/jpeg',
-          file:
-            'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/2000.jpg',
+          file: 'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/2000.jpg',
           typeData: {
             altText:
               'Protesters in Istanbul hold pictures of missing journalist Jamal Khashoggi on Monday.',
@@ -110,8 +106,7 @@ const capiArticleWithElementsThumbnail = {
         {
           type: 'image',
           mimeType: 'image/jpeg',
-          file:
-            'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/1000.jpg',
+          file: 'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/1000.jpg',
           typeData: {
             altText:
               'Protesters in Istanbul hold pictures of missing journalist Jamal Khashoggi on Monday.',
@@ -136,8 +131,7 @@ const capiArticleWithElementsThumbnail = {
         {
           type: 'image',
           mimeType: 'image/jpeg',
-          file:
-            'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/500.jpg',
+          file: 'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/500.jpg',
           typeData: {
             altText:
               'Protesters in Istanbul hold pictures of missing journalist Jamal Khashoggi on Monday.',
@@ -162,8 +156,7 @@ const capiArticleWithElementsThumbnail = {
         {
           type: 'image',
           mimeType: 'image/jpeg',
-          file:
-            'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/140.jpg',
+          file: 'https://media.guim.co.uk/b901bb680b236bc377d02d2ec24434558186fa65/0_225_4000_2400/140.jpg',
           typeData: {
             altText:
               'Protesters in Istanbul hold pictures of missing journalist Jamal Khashoggi on Monday.',
@@ -195,8 +188,7 @@ const capiArticleWithElementsThumbnail = {
         {
           type: 'image',
           mimeType: 'image/jpeg',
-          file:
-            'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/master/1313.jpg',
+          file: 'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/master/1313.jpg',
           typeData: {
             altText: 'Image taken from CCTV footage',
             credit: 'Photograph: AP',
@@ -217,8 +209,7 @@ const capiArticleWithElementsThumbnail = {
         {
           type: 'image',
           mimeType: 'image/jpeg',
-          file:
-            'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/1313.jpg',
+          file: 'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/1313.jpg',
           typeData: {
             altText: 'Image taken from CCTV footage',
             credit: 'Photograph: AP',
@@ -238,8 +229,7 @@ const capiArticleWithElementsThumbnail = {
         {
           type: 'image',
           mimeType: 'image/jpeg',
-          file:
-            'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/500.jpg',
+          file: 'https://media.guim.co.uk/6780f7f6f3dca00e549487d9ca6b7bd1cdbe1556/337_105_1313_788/500.jpg',
           typeData: {
             altText: 'Image taken from CCTV footage',
             credit: 'Photograph: AP',
