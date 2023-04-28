@@ -99,7 +99,7 @@ describe('utils/snap', () => {
     });
   });
 
-  describe('convert to Atom snap', async () => {
+  describe('convert to Atom snap', () => {
     it("should create a snap of 'interactive', given a link to an atom in the public content api", async () => {
       fetchMock.once('begin:/api/live', capiAtom);
       const interactive: CAPIAtomInteractive = {
