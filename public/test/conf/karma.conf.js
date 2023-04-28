@@ -1,4 +1,8 @@
 /* eslint-env node */
+
+const puppeteer = require('puppeteer');
+process.env.CHROME_BIN = puppeteer.executablePath();
+
 module.exports = function(config) {
   config.set({
     basePath: '../../..',
@@ -33,7 +37,7 @@ module.exports = function(config) {
     logLevel: config.LOG_ERROR,
     autoWatch: true,
 
-    browsers: ['PhantomJS'],
+    browsers: ['ChromeHeadless'],
     captureTimeout: 60000,
     singleRun: false
   });
