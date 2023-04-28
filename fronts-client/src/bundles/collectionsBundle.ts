@@ -9,15 +9,10 @@ import set from 'lodash/fp/set';
 
 const collectionsEntityName = 'collections';
 
-const {
-  actions,
-  actionNames,
-  reducer,
-  selectors,
-  initialState,
-} = createAsyncResourceBundle<Collection>(collectionsEntityName, {
-  indexById: true,
-});
+const { actions, actionNames, reducer, selectors, initialState } =
+  createAsyncResourceBundle<Collection>(collectionsEntityName, {
+    indexById: true,
+  });
 
 const collectionSelectors = {
   ...selectors,

@@ -273,27 +273,26 @@ const RenderSlideshow = ({
   };
 
   // Determines whether we can navigate to the next index, and optionally navigates to that index
-  const handleNavigation = (
-    isForwards: boolean = true,
-    shouldNavigate: boolean = false
-  ) => () => {
-    const incrementValue = isForwards ? 1 : -1;
+  const handleNavigation =
+    (isForwards: boolean = true, shouldNavigate: boolean = false) =>
+    () => {
+      const incrementValue = isForwards ? 1 : -1;
 
-    for (
-      let i = slideshowIndex + incrementValue;
-      i < fields.length && i >= 0;
-      i = i + incrementValue
-    ) {
-      if (fields.get(i)) {
-        if (shouldNavigate) {
-          setSlideshowIndex(i);
+      for (
+        let i = slideshowIndex + incrementValue;
+        i < fields.length && i >= 0;
+        i = i + incrementValue
+      ) {
+        if (fields.get(i)) {
+          if (shouldNavigate) {
+            setSlideshowIndex(i);
+          }
+          return true;
         }
-        return true;
       }
-    }
 
-    return false;
-  };
+      return false;
+    };
 
   return (
     <>

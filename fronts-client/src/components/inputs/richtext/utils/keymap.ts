@@ -13,19 +13,18 @@ interface MapObject {
 const mac =
   typeof navigator !== undefined ? /Mac/.test(navigator.platform) : false;
 
-const createAddHardBreak = (schema: Schema) => (
-  state: EditorState,
-  dispatch?: (tr: Transaction) => void
-) => {
-  if (dispatch) {
-    dispatch(
-      state.tr
-        .replaceSelectionWith(schema.nodes.hard_break.create())
-        .scrollIntoView()
-    );
-  }
-  return true;
-};
+const createAddHardBreak =
+  (schema: Schema) =>
+  (state: EditorState, dispatch?: (tr: Transaction) => void) => {
+    if (dispatch) {
+      dispatch(
+        state.tr
+          .replaceSelectionWith(schema.nodes.hard_break.create())
+          .scrollIntoView()
+      );
+    }
+    return true;
+  };
 
 export const buildKeymap = (schema: Schema, init = {}, mapKeys: MapObject) => {
   const keys: MapObject = init;

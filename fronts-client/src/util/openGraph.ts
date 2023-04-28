@@ -40,6 +40,8 @@ export default async function (url: string): Promise<OpenGraphData> {
         : undefined,
     };
   } catch (error) {
-    throw new Error(`Unable to fetch ${url}: ${attemptFriendlyErrorMessage(error)}`);
+    throw new Error(
+      `Unable to fetch ${url}: ${attemptFriendlyErrorMessage(error)}`
+    );
   }
 }

@@ -250,7 +250,8 @@ class Clipboard extends React.Component<ClipboardProps> {
 }
 
 const mapStateToProps = () => {
-  const selectCollectionIdsWithOpenForms = createSelectCollectionIdsWithOpenForms();
+  const selectCollectionIdsWithOpenForms =
+    createSelectCollectionIdsWithOpenForms();
   return (state: State) => ({
     isClipboardOpen: selectIsClipboardOpen(state),
     isClipboardFocused: selectIsClipboardFocused(state),

@@ -171,42 +171,49 @@ export const getEditionsCollections = async (
   return response.json();
 };
 
-export const updateEditionsCollection = (id: string) => async (
-  collection: EditionsCollection
-): Promise<void> => {
-  try {
-    const response = await pandaFetch(`/editions-api/collections/${id}`, {
-      method: 'put',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      body: JSON.stringify({ id, collection }),
-    });
-    return await response.json();
-} catch (e) {
-  throw new Error(
-      `Tried to update collection with id ${id}, but the server responded with ${attemptFriendlyErrorMessage(e)}`
-    );
-  }
-};
+export const updateEditionsCollection =
+  (id: string) =>
+  async (collection: EditionsCollection): Promise<void> => {
+    try {
+      const response = await pandaFetch(`/editions-api/collections/${id}`, {
+        method: 'put',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ id, collection }),
+      });
+      return await response.json();
+    } catch (e) {
+      throw new Error(
+        `Tried to update collection with id ${id}, but the server responded with ${attemptFriendlyErrorMessage(
+          e
+        )}`
+      );
+    }
+  };
 
-export const renameEditionsCollection = (id: string) => async (
-  collection: EditionsCollection
-): Promise<void> => {
-  try {
-    const response = await pandaFetch(`/editions-api/collections/${id}/name`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      body: JSON.stringify({ id, collection }),
-    });
-    return await response.json();
-} catch (e) {
-  throw new Error(
-      `Tried to update collection with id ${id}, but the server responded with ${attemptFriendlyErrorMessage(e)}`
-    );
-  }
-};
+export const renameEditionsCollection =
+  (id: string) =>
+  async (collection: EditionsCollection): Promise<void> => {
+    try {
+      const response = await pandaFetch(
+        `/editions-api/collections/${id}/name`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'same-origin',
+          body: JSON.stringify({ id, collection }),
+        }
+      );
+      return await response.json();
+    } catch (e) {
+      throw new Error(
+        `Tried to update collection with id ${id}, but the server responded with ${attemptFriendlyErrorMessage(
+          e
+        )}`
+      );
+    }
+  };

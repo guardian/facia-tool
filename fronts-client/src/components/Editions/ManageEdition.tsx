@@ -168,10 +168,9 @@ class ManageEdition extends React.Component<
       currentIssue: null,
     });
     this.handleLoadingState(
-      fetchIssueByDate(
-        this.props.match.params.editionName,
-        date
-      ).then((issue) => this.setState({ currentIssue: issue || null })),
+      fetchIssueByDate(this.props.match.params.editionName, date).then(
+        (issue) => this.setState({ currentIssue: issue || null })
+      ),
       `Could not fetch an issue for the date ${date.format('DD-MM-YYYY')}`
     );
   };
@@ -218,7 +217,9 @@ class ManageEdition extends React.Component<
       this.setState(
         this.addExtraKey(
           {
-            infoMessage: `${errorMessage}: ${attemptFriendlyErrorMessage(response)}`,
+            infoMessage: `${errorMessage}: ${attemptFriendlyErrorMessage(
+              response
+            )}`,
             isError: true,
             isLoading: false,
           },

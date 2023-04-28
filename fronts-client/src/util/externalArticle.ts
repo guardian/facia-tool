@@ -30,9 +30,8 @@ export function hasMainMediaVideoAtom(
   }
 
   function isVideo(blockElement: Element) {
-    const atomId: string | undefined = oc(
-      blockElement
-    ).contentAtomTypeData.atomId();
+    const atomId: string | undefined =
+      oc(blockElement).contentAtomTypeData.atomId();
     if (!atomId) {
       return false;
     }
@@ -55,17 +54,19 @@ export function hasMainMediaVideoAtom(
  * Create a selector to answer the question -- is the article last modified field older than the given date?
  * This function is liberal in what it accepts -- if either date is invalid/missing, it returns `true`.
  */
-export const createSelectIsArticleStale = <State>(
-  selectArticleById: (state: State, id: string) => ExternalArticle | undefined
-) => (state: State, id: string, dateStr: string | undefined): boolean => {
-  const article = selectArticleById(state, id);
-  if (!article || !article.fields.lastModified || !dateStr) {
-    return true;
-  }
-  const articleDate = new Date(article.fields.lastModified);
-  const incomingDate = new Date(dateStr);
-  if (!isValid(articleDate) || !isValid(incomingDate)) {
-    return true;
-  }
-  return isAfter(incomingDate, articleDate);
-};
+export const createSelectIsArticleStale =
+  <State>(
+    selectArticleById: (state: State, id: string) => ExternalArticle | undefined
+  ) =>
+  (state: State, id: string, dateStr: string | undefined): boolean => {
+    const article = selectArticleById(state, id);
+    if (!article || !article.fields.lastModified || !dateStr) {
+      return true;
+    }
+    const articleDate = new Date(article.fields.lastModified);
+    const incomingDate = new Date(dateStr);
+    if (!isValid(articleDate) || !isValid(incomingDate)) {
+      return true;
+    }
+    return isAfter(incomingDate, articleDate);
+  };

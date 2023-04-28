@@ -100,8 +100,8 @@ describe('insertAndDedupeSiblings', () => {
   });
 
   it('takes multiple insertions with duplicates and keeps the first', () => {
-    expect(
-      insertAndDedupeSiblings(['a', 'c'], ['b', 'e'], 1, cardMap)
-    ).toEqual(['a', 'b', 'c']);
+    expect(insertAndDedupeSiblings(['a', 'c'], ['b', 'e'], 1, cardMap)).toEqual(
+      ['a', 'b', 'c']
+    );
   });
 });

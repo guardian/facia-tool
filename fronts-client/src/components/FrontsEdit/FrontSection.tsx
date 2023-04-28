@@ -158,12 +158,8 @@ class FrontSection extends React.Component<
   };
 
   public render() {
-    const {
-      frontId,
-      isOverviewOpen,
-      isEditions,
-      shouldUsePreviewCODE,
-    } = this.props;
+    const { frontId, isOverviewOpen, isEditions, shouldUsePreviewCODE } =
+      this.props;
     const title = this.getTitle();
 
     const { frontNameValue, editingFrontName } = this.state;

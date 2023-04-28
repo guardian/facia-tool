@@ -104,7 +104,9 @@ async function fetchLastPressed(frontId: string): Promise<string> {
     })
     .catch((e) => {
       throw new Error(
-        `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`
+        `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${attemptFriendlyErrorMessage(
+          e
+        )}`
       );
     });
 }
@@ -129,7 +131,9 @@ async function fetchVisibleArticles(
     return await response.json();
   } catch (e) {
     throw new Error(
-      `Tried to fetch visible stories for collection type '${collectionType}', but the server responded with ${attemptFriendlyErrorMessage(e)}`
+      `Tried to fetch visible stories for collection type '${collectionType}', but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -150,7 +154,9 @@ async function discardDraftChangesToCollection(
     return await response.json();
   } catch (e) {
     throw new Error(
-      `Tried to discard changes to collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`
+      `Tried to discard changes to collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -167,30 +173,34 @@ async function publishCollection(collectionId: string): Promise<void> {
     });
   } catch (e) {
     throw new Error(
-      `Tried to publish collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`
+      `Tried to publish collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
 
-const updateCollection = (id: string) => async (
-  collection: CollectionWithNestedArticles
-): Promise<void> => {
-  try {
-    const response = await pandaFetch('/v2Edits', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      body: JSON.stringify({ id, collection }),
-    });
-    return await response.json();
-  } catch (e) {
-    throw new Error(
-      `Tried to update collection with id ${id}, but the server responded with ${attemptFriendlyErrorMessage(e)}`
-    );
-  }
-};
+const updateCollection =
+  (id: string) =>
+  async (collection: CollectionWithNestedArticles): Promise<void> => {
+    try {
+      const response = await pandaFetch('/v2Edits', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ id, collection }),
+      });
+      return await response.json();
+    } catch (e) {
+      throw new Error(
+        `Tried to update collection with id ${id}, but the server responded with ${attemptFriendlyErrorMessage(
+          e
+        )}`
+      );
+    }
+  };
 
 const saveClipboard = (content: NestedCard[]) =>
   createSaveClipboard(content, '/clipboard');
@@ -213,8 +223,10 @@ async function createSaveClipboard(
     });
   } catch (e) {
     throw new Error(
-      `Tried to update a clipboard but the server responded with ${attemptFriendlyErrorMessage(e)}`
-    )
+      `Tried to update a clipboard but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
+    );
   }
 }
 
@@ -232,7 +244,9 @@ async function saveOpenFrontIds(frontsByPriority?: {
     });
   } catch (e) {
     throw new Error(
-      `Tried to store the open fronts configuration but the server responded with ${attemptFriendlyErrorMessage(e)}`
+      `Tried to store the open fronts configuration but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -251,7 +265,9 @@ async function saveFavouriteFrontIds(favouriteFrontsByPriority?: {
     });
   } catch (e) {
     throw new Error(
-      `Tried to store the favourite fronts configuration but the server responded with ${attemptFriendlyErrorMessage(e)}`
+      `Tried to store the favourite fronts configuration but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -351,7 +367,9 @@ const parseArticleListFromResponses = (
     return results.map(transformExternalArticle);
   } catch (error) {
     throw new Error(
-      `Error getting articles from CAPI: cannot parse response - ${attemptFriendlyErrorMessage(error)}`
+      `Error getting articles from CAPI: cannot parse response - ${attemptFriendlyErrorMessage(
+        error
+      )}`
     );
   }
 };
@@ -359,9 +377,7 @@ const parseArticleListFromResponses = (
 /**
  * Get the articles and title for a CAPI content id, which could be a tag or an article.
  */
-async function getContent(
-  contentId: string
-): Promise<{
+async function getContent(contentId: string): Promise<{
   articles: ExternalArticle[];
   title: string | undefined;
 }> {
@@ -398,7 +414,9 @@ async function getArticlesBatched(
     );
     return flatMap(parsedResponses.map(parseArticleListFromResponses));
   } catch (error) {
-    throw new Error(`Error fetching articles: ${attemptFriendlyErrorMessage(error)}`);
+    throw new Error(
+      `Error fetching articles: ${attemptFriendlyErrorMessage(error)}`
+    );
   }
 }
 

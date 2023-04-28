@@ -6,4 +6,4 @@ export const attemptFriendlyErrorMessage = (e: unknown) => {
     return e.message;
   }
   return `${e}`;
-}
+};

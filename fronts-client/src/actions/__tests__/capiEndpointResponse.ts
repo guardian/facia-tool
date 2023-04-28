@@ -10,8 +10,7 @@ export const articlesForScJohnsonPartnerZone = {
     orderBy: 'newest',
     results: [
       {
-        id:
-          'football/2019/jan/14/phil-masinga-south-africa-leeds-premier-league-history',
+        id: 'football/2019/jan/14/phil-masinga-south-africa-leeds-premier-league-history',
         urlPath:
           'football/2019/jan/14/phil-masinga-south-africa-leeds-premier-league-history',
         type: 'article',
@@ -116,8 +115,7 @@ export const articlesForScJohnsonPartnerZone = {
             apiUrl:
               'https://preview.content.guardianapis.com/profile/ed-aarons',
             references: [],
-            bio:
-              "<p>Ed is Guardian Sport's deputy news editor. Having previously worked for Sky Sports, the BBC and the Independent, he also spent two years living in South Africa before the 2010 World Cup. Ed specialises in news stories and features, with particular interest in football transfers and the global game</p>",
+            bio: "<p>Ed is Guardian Sport's deputy news editor. Having previously worked for Sky Sports, the BBC and the Independent, he also spent two years living in South Africa before the 2010 World Cup. Ed specialises in news stories and features, with particular interest in football transfers and the global game</p>",
             bylineImageUrl:
               'https://uploads.guim.co.uk/2017/12/14/Ed-Aarons.jpg',
             bylineLargeImageUrl:
@@ -202,36 +200,31 @@ export const articlesForScJohnsonPartnerZone = {
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/1000.jpg',
+                    file: 'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/1000.jpg',
                     typeData: { aspectRatio: '5:3', width: 1000, height: 600 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/500.jpg',
+                    file: 'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/500.jpg',
                     typeData: { aspectRatio: '5:3', width: 500, height: 300 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/140.jpg',
+                    file: 'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/140.jpg',
                     typeData: { aspectRatio: '5:3', width: 140, height: 84 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/1365.jpg',
+                    file: 'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/1365.jpg',
                     typeData: { aspectRatio: '5:3', width: 1365, height: 819 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/master/1365.jpg',
+                    file: 'https://media.guim.co.uk/d5a17304e2a277a1d558a643ef95c087fb2af0f1/0_16_1365_819/master/1365.jpg',
                     typeData: {
                       aspectRatio: '5:3',
                       width: 1365,
@@ -248,8 +241,7 @@ export const articlesForScJohnsonPartnerZone = {
                   credit: 'Photograph: Paul Barker/PA',
                   source: 'PA',
                   photographer: 'Paul Barker',
-                  alt:
-                    'Phil Masinga played 31 times for Leeds United in the early 1990s',
+                  alt: 'Phil Masinga played 31 times for Leeds United in the early 1990s',
                   mediaId: 'd5a17304e2a277a1d558a643ef95c087fb2af0f1',
                   mediaApiUri:
                     'https://api.media.gutools.co.uk/images/d5a17304e2a277a1d558a643ef95c087fb2af0f1',
@@ -431,43 +423,37 @@ export const articlesForScJohnsonPartnerZone = {
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/2000.jpg',
+                    file: 'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/2000.jpg',
                     typeData: { aspectRatio: '5:3', width: 2000, height: 1200 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/1000.jpg',
+                    file: 'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/1000.jpg',
                     typeData: { aspectRatio: '5:3', width: 1000, height: 600 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/500.jpg',
+                    file: 'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/500.jpg',
                     typeData: { aspectRatio: '5:3', width: 500, height: 300 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/140.jpg',
+                    file: 'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/140.jpg',
                     typeData: { aspectRatio: '5:3', width: 140, height: 84 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/4516.jpg',
+                    file: 'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/4516.jpg',
                     typeData: { aspectRatio: '5:3', width: 4516, height: 2709 },
                   },
                   {
                     type: 'image',
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/master/4516.jpg',
+                    file: 'https://media.guim.co.uk/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125/0_151_4516_2709/master/4516.jpg',
                     typeData: {
                       aspectRatio: '5:3',
                       width: 4516,
@@ -484,8 +470,7 @@ export const articlesForScJohnsonPartnerZone = {
                   credit: 'Photograph: Paul Crock/AFP/Getty Images',
                   source: 'AFP/Getty Images',
                   photographer: 'Paul Crock',
-                  alt:
-                    'Reilly Opelka scored the biggest win of his career on Monday in Melbourne',
+                  alt: 'Reilly Opelka scored the biggest win of his career on Monday in Melbourne',
                   mediaId: '8d7d067e4cb99f6889a6a5a8ca8653f1eba73125',
                   mediaApiUri:
                     'https://api.media.gutools.co.uk/images/8d7d067e4cb99f6889a6a5a8ca8653f1eba73125',
