@@ -205,7 +205,8 @@ describe('frontsUIBundle', () => {
         },
         path: '/v2/commercial',
       } as any;
-      const selectFrontIdWithOpenAndStarredStatesByPriority = createSelectFrontIdWithOpenAndStarredStatesByPriority();
+      const selectFrontIdWithOpenAndStarredStatesByPriority =
+        createSelectFrontIdWithOpenAndStarredStatesByPriority();
       it('should select all fronts by priority', () => {
         expect(
           selectFrontIdWithOpenAndStarredStatesByPriority(
@@ -328,7 +329,8 @@ describe('frontsUIBundle', () => {
       });
     });
     describe('Selecting collections on all open Fronts', () => {
-      const selectCollectionsInOpenFronts = createSelectCollectionsInOpenFronts();
+      const selectCollectionsInOpenFronts =
+        createSelectCollectionsInOpenFronts();
       it('return correct collections for one open Front', () => {
         expect(
           selectCollectionsInOpenFronts({
@@ -373,7 +375,8 @@ describe('frontsUIBundle', () => {
     });
     describe('selectDoesCollectionHaveOpenForms', () => {
       it('should return false when the collection has no forms open', () => {
-        const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
+        const selectDoesCollectionHaveOpenForms =
+          createSelectDoesCollectionHaveOpenForms();
         const state = initialState;
         expect(
           selectDoesCollectionHaveOpenForms(state, {
@@ -383,7 +386,8 @@ describe('frontsUIBundle', () => {
         ).toBe(false);
       });
       it('should return true when the collection has a form open', () => {
-        const selectDoesCollectionHaveOpenForms = createSelectDoesCollectionHaveOpenForms();
+        const selectDoesCollectionHaveOpenForms =
+          createSelectDoesCollectionHaveOpenForms();
         const state = set(
           ['editor', 'selectedCards', 'exampleFront'],
           [{ id: 'id', collectionId: 'collection-id', isSupporting: false }],

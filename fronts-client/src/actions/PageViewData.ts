@@ -42,29 +42,33 @@ const getPageViewDataForCollection = (
   };
 };
 
-const getPageViewData = (
-  frontId: string,
-  collectionId: string,
-  articleIds: string[]
-): ThunkResult<void> => async (dispatch, getState) => {
-  const state = getState();
-  const articles = articleIds
-    .map((_) => selectArticleFromCard(state, _))
-    .filter((_) => _) as DerivedArticle[];
-  const urlPaths: string[] = articles
-    .map(
-      (article) =>
-        article.urlPath
-          ? article.urlPath // it's an article
-          : article.href && !isValidURL(article.href) && article.href.substr(1) // it's a snaplink
-    )
-    .filter((_) => _) as string[];
-  const data = await fetchPageViewData(frontId, urlPaths);
-  const dataWithArticleIds = convertToStoriesData(data, articles);
-  dispatch(
-    pageViewDataReceivedAction(dataWithArticleIds, frontId, collectionId)
-  );
-};
+const getPageViewData =
+  (
+    frontId: string,
+    collectionId: string,
+    articleIds: string[]
+  ): ThunkResult<void> =>
+  async (dispatch, getState) => {
+    const state = getState();
+    const articles = articleIds
+      .map((_) => selectArticleFromCard(state, _))
+      .filter((_) => _) as DerivedArticle[];
+    const urlPaths: string[] = articles
+      .map(
+        (article) =>
+          article.urlPath
+            ? article.urlPath // it's an article
+            : article.href &&
+              !isValidURL(article.href) &&
+              article.href.substr(1) // it's a snaplink
+      )
+      .filter((_) => _) as string[];
+    const data = await fetchPageViewData(frontId, urlPaths);
+    const dataWithArticleIds = convertToStoriesData(data, articles);
+    dispatch(
+      pageViewDataReceivedAction(dataWithArticleIds, frontId, collectionId)
+    );
+  };
 
 const convertToStoriesData = (
   allStories: PageViewDataFromOphan[],

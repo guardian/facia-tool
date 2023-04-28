@@ -68,7 +68,8 @@ export const EDITOR_CLOSE_OVERVIEW = 'EDITOR_CLOSE_OVERVIEW';
 export const EDITOR_OPEN_ALL_OVERVIEWS = 'EDITOR_OPEN_ALL_OVERVIEWS';
 export const EDITOR_CLOSE_ALL_OVERVIEWS = 'EDITOR_CLOSE_ALL_OVERVIEWS';
 export const CHANGED_BROWSING_STAGE = 'CHANGED_BROWSING_STAGE';
-export const EDITOR_CLOSE_FORMS_FOR_COLLECTION = 'EDITOR_CLOSE_FORMS_FOR_COLLECTION' as const;
+export const EDITOR_CLOSE_FORMS_FOR_COLLECTION =
+  'EDITOR_CLOSE_FORMS_FOR_COLLECTION' as const;
 
 const editorOpenCollections = (
   collectionIds: string | string[]
@@ -360,9 +361,8 @@ const selectOpenParentFrontOfCard = (
   state: GlobalState,
   cardId: string
 ): [string, string] | [] => {
-  const openFrontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
-    state
-  );
+  const openFrontsCollectionsAndArticles =
+    selectOpenFrontsCollectionsAndArticles(state);
   let frontId;
   let collectionId;
 
@@ -383,9 +383,8 @@ const selectOpenParentFrontOfCard = (
 };
 
 const selectOpenCardIds = (state: GlobalState): string[] => {
-  const frontsCollectionsAndArticles = selectOpenFrontsCollectionsAndArticles(
-    state
-  );
+  const frontsCollectionsAndArticles =
+    selectOpenFrontsCollectionsAndArticles(state);
   const collections = frontsCollectionsAndArticles.reduce(
     (acc, front) => acc.concat(front.collections),
     [] as CollectionWithArticles[]
@@ -514,7 +513,8 @@ const selectFrontBrowsingStage = (state: GlobalState, frontId: string) =>
   state.editor.frontIdsByBrowsingStage[frontId] || 'draft';
 
 const selectAllArticleIdsForCollection = createSelectArticlesInCollection();
-const selectCurrentlyOpenCollectionsByFront = createSelectCurrentlyOpenCollectionsByFront();
+const selectCurrentlyOpenCollectionsByFront =
+  createSelectCurrentlyOpenCollectionsByFront();
 
 const selectOpenFrontsCollectionsAndArticles = (
   state: GlobalState

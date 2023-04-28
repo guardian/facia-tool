@@ -68,6 +68,6 @@ describe('ArticlePageNumberSection', () => {
       <ArticlePageNumberSection article={testCapiArticleWithoutPageNumber} />
     );
 
-    expect(queryAllByText('Page').length).toBe(0)
+    expect(queryAllByText('Page').length).toBe(0);
   });
 });

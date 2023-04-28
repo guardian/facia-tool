@@ -458,24 +458,21 @@ const externalArticles = {
                   assets: [
                     {
                       mimeType: 'image/jpeg',
-                      file:
-                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/500.jpg',
+                      file: 'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/500.jpg',
                       dimensions: { height: 281, width: 500 },
                       size: 23272,
                       aspectRatio: '16:9',
                     },
                     {
                       mimeType: 'image/jpeg',
-                      file:
-                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/140.jpg',
+                      file: 'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/140.jpg',
                       dimensions: { height: 79, width: 140 },
                       size: 6256,
                       aspectRatio: '16:9',
                     },
                     {
                       mimeType: 'image/jpeg',
-                      file:
-                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/851.jpg',
+                      file: 'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/851.jpg',
                       dimensions: { height: 479, width: 851 },
                       size: 50542,
                       aspectRatio: '16:9',
@@ -483,8 +480,7 @@ const externalArticles = {
                   ],
                   master: {
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/master/851.jpg',
+                    file: 'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/125_60_851_479/master/851.jpg',
                     dimensions: { height: 479, width: 851 },
                     size: 170842,
                     aspectRatio: '16:9',
@@ -510,24 +506,21 @@ const externalArticles = {
                   assets: [
                     {
                       mimeType: 'image/jpeg',
-                      file:
-                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/500.jpg',
+                      file: 'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/500.jpg',
                       dimensions: { height: 300, width: 500 },
                       size: 24328,
                       aspectRatio: '5:3',
                     },
                     {
                       mimeType: 'image/jpeg',
-                      file:
-                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/140.jpg',
+                      file: 'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/140.jpg',
                       dimensions: { height: 84, width: 140 },
                       size: 6675,
                       aspectRatio: '5:3',
                     },
                     {
                       mimeType: 'image/jpeg',
-                      file:
-                        'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/814.jpg',
+                      file: 'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/814.jpg',
                       dimensions: { height: 488, width: 814 },
                       size: 47050,
                       aspectRatio: '5:3',
@@ -535,8 +528,7 @@ const externalArticles = {
                   ],
                   master: {
                     mimeType: 'image/jpeg',
-                    file:
-                      'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/master/814.jpg',
+                    file: 'https://media.guim.co.uk/d38bca368b0fa22d1a47923ac05fb4c6d20005a1/109_80_814_488/master/814.jpg',
                     dimensions: { height: 488, width: 814 },
                     size: 154564,
                     aspectRatio: '5:3',

@@ -49,7 +49,7 @@ const issueVersionStatus = [
   'Processing',
 ] as const;
 
-type IssueVersionStatus = typeof issueVersionStatus[number];
+type IssueVersionStatus = (typeof issueVersionStatus)[number];
 
 interface IssueVersionEvent {
   eventTime: number;

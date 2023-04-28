@@ -287,7 +287,11 @@ function createAsyncResourceBundle<Resource>(
   ): FetchErrorAction => ({
     entity: entityName,
     type: FETCH_ERROR,
-    payload: { error: attemptFriendlyErrorMessage(error), ids, time: Date.now() },
+    payload: {
+      error: attemptFriendlyErrorMessage(error),
+      ids,
+      time: Date.now(),
+    },
   });
 
   const updateStartAction = (data: Resource): UpdateStartAction<Resource> => ({
@@ -305,10 +309,17 @@ function createAsyncResourceBundle<Resource>(
     payload: { id, data, time: Date.now() },
   });
 
-  const updateErrorAction = (error: unknown, id: string): UpdateErrorAction => ({
+  const updateErrorAction = (
+    error: unknown,
+    id: string
+  ): UpdateErrorAction => ({
     entity: entityName,
     type: UPDATE_ERROR,
-    payload: { error: attemptFriendlyErrorMessage(error), id, time: Date.now() },
+    payload: {
+      error: attemptFriendlyErrorMessage(error),
+      id,
+      time: Date.now(),
+    },
   });
 
   const isAction = (

@@ -196,7 +196,11 @@ const getParams = (
   'show-blocks': 'main',
   ...(isPreview
     ? { 'order-by': 'oldest', 'from-date': getTodayDate() }
-    : { 'order-by': 'newest', 'order-date': sortByParam, 'from-date': from && from.format('YYYY-MM-DD') }),
+    : {
+        'order-by': 'newest',
+        'order-date': sortByParam,
+        'from-date': from && from.format('YYYY-MM-DD'),
+      }),
 });
 class FeedsContainer extends React.Component<
   FeedsContainerProps,

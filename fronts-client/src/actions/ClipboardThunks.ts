@@ -12,16 +12,14 @@ import {
 } from './Clipboard';
 import { selectCards } from 'selectors/shared';
 
-export const thunkInsertClipboardCard = (
-  id: string,
-  index: number,
-  cardId: string
-): ThunkResult<void> => (dispatch, getState) => {
-  const currentCards = selectCards(getState());
-  dispatch(
-    actionInsertClipboardCardWithPersist(id, index, cardId, currentCards)
-  );
-};
+export const thunkInsertClipboardCard =
+  (id: string, index: number, cardId: string): ThunkResult<void> =>
+  (dispatch, getState) => {
+    const currentCards = selectCards(getState());
+    dispatch(
+      actionInsertClipboardCardWithPersist(id, index, cardId, currentCards)
+    );
+  };
 
 export function storeClipboardContent(clipboardContent: NestedCard[]) {
   return (dispatch: Dispatch) => {

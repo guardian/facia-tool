@@ -15,7 +15,9 @@ const saveFeatureSwitch = async (featureSwitch: FeatureSwitch) => {
     });
   } catch (e) {
     throw new Error(
-      `Tried to persist feature switch, but the server responded with ${attemptFriendlyErrorMessage(e)}`
+      `Tried to persist feature switch, but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 };
@@ -34,7 +36,9 @@ async function saveOpenFrontIds(frontsByPriority?: {
     });
   } catch (e) {
     throw new Error(
-      `Tried to store the open fronts configuration but the server responded with ${attemptFriendlyErrorMessage(e)}`
+      `Tried to store the open fronts configuration but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -51,9 +55,11 @@ async function saveFavouriteFrontIds(favouriteFrontsByPriority?: {
         'Content-Type': 'application/json',
       },
     });
-} catch (e) {
-  throw new Error(
-      `Tried to store the favourite fronts configuration but the server responded with ${attemptFriendlyErrorMessage(e)}`
+  } catch (e) {
+    throw new Error(
+      `Tried to store the favourite fronts configuration but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -72,9 +78,11 @@ async function saveClipboard(
       },
     });
     return await response.json();
-} catch (e) {
-  throw new Error(
-      `Tried to update a clipboard but the server responded with ${attemptFriendlyErrorMessage(e)}`
+  } catch (e) {
+    throw new Error(
+      `Tried to update a clipboard but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }

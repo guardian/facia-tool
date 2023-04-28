@@ -65,9 +65,8 @@ const createRefreshOpenArticles = (store: Store) => () => {
 
 const createRefreshOphanData = (store: Store) => () => {
   const state = store.getState();
-  const openFrontsCollectionAndArticles = selectOpenFrontsCollectionsAndArticles(
-    state
-  );
+  const openFrontsCollectionAndArticles =
+    selectOpenFrontsCollectionsAndArticles(state);
   openFrontsCollectionAndArticles.forEach((front) => {
     front.collections.forEach((collection) => {
       if (collection.articleIds.length > 0) {

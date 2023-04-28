@@ -213,7 +213,8 @@ const InputImageContainer = styled(InputContainer)<{
       !props.confirmDelete
         ? `box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight}`
         : ``};
-  }`;
+  }
+`;
 
 export interface InputImageContainerProps {
   disabled?: boolean;
