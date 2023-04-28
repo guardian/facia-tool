@@ -104,7 +104,7 @@ export const createFetch = (
       dispatch(actions.fetchSuccessIgnore([]));
     }
   } catch (e) {
-    dispatch(actions.fetchError(e.message));
+    dispatch(actions.fetchError(e));
   }
 };
 
@@ -150,7 +150,7 @@ export const fetchPrefill = (id: string): ThunkResult<void> => async (
       );
     }
   } catch (e) {
-    dispatch(prefillActions.fetchError(e.message));
+    dispatch(prefillActions.fetchError(e));
   }
 };
 

@@ -2,6 +2,7 @@ import Raven from 'raven-js';
 import { KeyboardActionMap, ApplicationFocusStates } from 'keyboard';
 import { Dispatch } from 'types/Store';
 import { keyboardCardMove } from 'actions/KeyboardNavigation';
+import { attemptFriendlyErrorMessage } from 'util/error';
 
 const moveUp: KeyboardActionMap = {
   clipboardArticle: (focusData: ApplicationFocusStates) => async (
@@ -10,7 +11,7 @@ const moveUp: KeyboardActionMap = {
     try {
       dispatch(keyboardCardMove('up', 'clipboard', focusData.card));
     } catch (e) {
-      Raven.captureMessage(`Moving item up in clipboard failed: ${e.message}`);
+      Raven.captureMessage(`Moving item up in clipboard failed: ${attemptFriendlyErrorMessage(e)}`);
     }
   },
   collectionArticle: (focusData: ApplicationFocusStates) => async (
@@ -27,7 +28,7 @@ const moveUp: KeyboardActionMap = {
         )
       );
     } catch (e) {
-      Raven.captureMessage(`Moving item up in clipboard failed: ${e.message}`);
+      Raven.captureMessage(`Moving item up in clipboard failed: ${attemptFriendlyErrorMessage(e)}`);
     }
   },
 };
@@ -40,7 +41,7 @@ const moveDown: KeyboardActionMap = {
       dispatch(keyboardCardMove('down', 'clipboard', focusData.card));
     } catch (e) {
       Raven.captureMessage(
-        `Moving item down in clipboard failed: ${e.message}`
+        `Moving item down in clipboard failed: ${attemptFriendlyErrorMessage(e)}`
       );
     }
   },
@@ -59,7 +60,7 @@ const moveDown: KeyboardActionMap = {
       );
     } catch (e) {
       Raven.captureMessage(
-        `Moving item down in clipboard failed: ${e.message}`
+        `Moving item down in clipboard failed: ${attemptFriendlyErrorMessage(e)}`
       );
     }
   },

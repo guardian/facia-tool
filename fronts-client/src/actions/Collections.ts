@@ -347,7 +347,7 @@ const fetchArticles = (
       );
     }
   } catch (e) {
-    dispatch(externalArticleActions.fetchError(e.message, articleIds));
+    dispatch(externalArticleActions.fetchError(e, articleIds));
   }
 };
 

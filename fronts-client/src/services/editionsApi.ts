@@ -5,6 +5,7 @@ import { Moment } from 'moment';
 import pandaFetch from './pandaFetch';
 import type { EditionCollectionResponse } from 'types/FaciaApi';
 import type { EditionsCollection } from 'types/Edition';
+import { attemptFriendlyErrorMessage } from 'util/error';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -183,9 +184,9 @@ export const updateEditionsCollection = (id: string) => async (
       body: JSON.stringify({ id, collection }),
     });
     return await response.json();
-  } catch (response) {
-    throw new Error(
-      `Tried to update collection with id ${id}, but the server responded with ${response.status}: ${response.body}`
+} catch (e) {
+  throw new Error(
+      `Tried to update collection with id ${id}, but the server responded with ${attemptFriendlyErrorMessage(e)}`
     );
   }
 };
@@ -203,9 +204,9 @@ export const renameEditionsCollection = (id: string) => async (
       body: JSON.stringify({ id, collection }),
     });
     return await response.json();
-  } catch (response) {
-    throw new Error(
-      `Tried to update collection with id ${id}, but the server responded with ${response.status}: ${response.body}`
+} catch (e) {
+  throw new Error(
+      `Tried to update collection with id ${id}, but the server responded with ${attemptFriendlyErrorMessage(e)}`
     );
   }
 };

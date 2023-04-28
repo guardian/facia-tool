@@ -1,5 +1,6 @@
 import pandaFetch from 'services/pandaFetch';
 import { isGuardianWebsiteUrl, getHostname } from './url';
+import { attemptFriendlyErrorMessage } from './error';
 
 interface OpenGraphData {
   title: string | undefined;
@@ -38,7 +39,7 @@ export default async function (url: string): Promise<OpenGraphData> {
         ? graph.site_name || getHostname(url).replace(/^www\./, '')
         : undefined,
     };
-  } catch (e) {
-    throw new Error(`Unable to fetch ${url} \n ${e.statusText || e.message}`);
+  } catch (error) {
+    throw new Error(`Unable to fetch ${url}: ${attemptFriendlyErrorMessage(error)}`);
   }
 }
