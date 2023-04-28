@@ -8,7 +8,6 @@ module.exports = {
   transformIgnorePatterns: [
     '<rootDir>/node_modules/(?!(panda-session|grid-util-js)/)',
   ],
-  setupFilesAfterEnv: ['./node_modules/jest-enzyme/lib/index.js'],
   setupFiles: ['./config/setupTest.js'],
   moduleDirectories: ['<rootDir>/src', 'node_modules'],
   moduleNameMapper: {

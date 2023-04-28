@@ -39,7 +39,7 @@ You'll need to understand the Redux concepts of Thunks and Selectors.
 | Uses        | For         | Config |
 | ------------|------------- |--- |
 | [React](https://jestjs.io/docs/en/getting-started.html)      | Components ||
-| [Redux](https://github.com/airbnb/enzyme)      | State management ||
+| [Redux](https://redux.js.org/)      | State management ||
 | [Redux Thunk](https://github.com/reduxjs/redux-thunk)      | Redux Thunk middleware allows you to write action creators that return a function instead of an action.  ||
 | [Reselect](https://github.com/reduxjs/reselect)      | Selectors can compute derived data, allowing Redux to store the minimal possible state.  ||
 | [Redux Forms](https://redux-form.com/7.4.2/)      | Form state management for Redux apps ||
@@ -64,7 +64,6 @@ You'll need to understand the Redux concepts of Thunks and Selectors.
 | Uses        | For         | Config |
 | ------------|------------- |--- |
 | [Jest](https://jestjs.io/docs/en/getting-started.html)      | Testing library | [jest.config.js](jest.config.js)|
-| [Enzyme](https://github.com/airbnb/enzyme)      | JavaScript Testing utilities for React  ||
 | [react-testing-library](https://github.com/kentcdodds/react-testing-library)     | JavaScript Testing utilities for React Components |
 | [React Test Renderer](https://reactjs.org/docs/test-renderer.html)      | Render Components to JSON (e.g for Jest Snapshotting) ||
 | [Test Cafe](https://testcafe.devexpress.com/)      | Integration testing - see below ||
