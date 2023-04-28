@@ -1,5 +1,6 @@
 module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js'],
+  testEnvironment: 'jsdom',
   transform: {
     '^.+\\.(ts|tsx|js)$': 'ts-jest',
   },
@@ -7,7 +8,7 @@ module.exports = {
   transformIgnorePatterns: [
     '<rootDir>/node_modules/(?!(panda-session|grid-util-js)/)',
   ],
-  setupTestFrameworkScriptFile: './node_modules/jest-enzyme/lib/index.js',
+  setupFilesAfterEnv: ['./node_modules/jest-enzyme/lib/index.js'],
   setupFiles: ['./config/setupTest.js'],
   moduleDirectories: ['<rootDir>/src', 'node_modules'],
   moduleNameMapper: {
