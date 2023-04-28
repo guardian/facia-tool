@@ -2,7 +2,7 @@ import { theme } from 'constants/theme';
 import { frontsConfig } from 'fixtures/frontsConfig';
 import state from 'fixtures/initialStateForOpenFronts';
 import React from 'react';
-import 'jest-dom/extend-expect';
+import '@testing-library/jest-dom/extend-expect';
 import { Provider } from 'react-redux';
 import { getByText, render } from 'react-testing-library';
 import { ThemeProvider } from 'styled-components';
