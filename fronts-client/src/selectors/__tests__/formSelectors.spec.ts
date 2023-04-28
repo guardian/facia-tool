@@ -12,12 +12,12 @@ describe('Form utils', () => {
   describe('selectFormFieldsForCard', () => {
     it("should handle articles that don't exist in the state", () => {
       const selectFormFields = createSelectFormFieldsForCard();
-      expect(selectFormFields(state, 'who-are-you')).toEqual([]);
+      expect(selectFormFields(state, 'who-are-you', false)).toEqual([]);
     });
     it('should give default fields for articles', () => {
       const selectFormFields = createSelectFormFieldsForCard();
       expect(
-        selectFormFields(state, '95e2bfc0-8999-4e6e-a359-19960967c1e0')
+        selectFormFields(state, '95e2bfc0-8999-4e6e-a359-19960967c1e0', false)
       ).toEqual(defaultFields);
     });
     it('should give supporting fields for articles in supporting positions', () => {
@@ -32,7 +32,7 @@ describe('Form utils', () => {
         'dynamic/example';
       const selectFormFields = createSelectFormFieldsForCard();
       expect(
-        selectFormFields(localState, '95e2bfc0-8999-4e6e-a359-19960967c1e0')
+        selectFormFields(localState, '95e2bfc0-8999-4e6e-a359-19960967c1e0', false)
       ).toEqual([...defaultFields, 'isBoosted']);
     });
     it('should add showLivePlayable for live blogs', () => {
@@ -42,7 +42,7 @@ describe('Form utils', () => {
       ].fields.liveBloggingNow = 'true';
       const selectFormFields = createSelectFormFieldsForCard();
       expect(
-        selectFormFields(localState, '95e2bfc0-8999-4e6e-a359-19960967c1e0')
+        selectFormFields(localState, '95e2bfc0-8999-4e6e-a359-19960967c1e0', false)
       ).toEqual([...defaultFields, 'showLivePlayable']);
     });
     it('should add showMainVideo for articles with video as the main media', () => {
@@ -50,7 +50,8 @@ describe('Form utils', () => {
       expect(
         selectFormFields(
           stateWithVideoArticle,
-          '95e2bfc0-8999-4e6e-a359-19960967c1e0'
+          '95e2bfc0-8999-4e6e-a359-19960967c1e0',
+          false
         )
       ).toEqual([...defaultFields, 'showMainVideo']);
     });
@@ -60,6 +61,7 @@ describe('Form utils', () => {
         selectFormFields(
           { ...state, path: '/v2/email' },
           '95e2bfc0-8999-4e6e-a359-19960967c1e0'
+          , false
         )
       ).toEqual(without(defaultFields, ...emailFieldsToExclude));
     });
