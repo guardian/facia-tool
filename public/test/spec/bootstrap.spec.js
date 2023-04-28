@@ -17,6 +17,9 @@ describe('Bootstrap', function () {
         };
 
     beforeEach(function () {
+        // Ensure unhandled errors do not fail tests.
+        // Jasmine reports false positives here – see https://github.com/jasmine/jasmine/issues/1843.
+        spyOn(window, 'onerror');
         jasmine.clock().install();
         ajax = scope();
     });
