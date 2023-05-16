@@ -3,7 +3,7 @@ module.exports = function() {
     return {
         static: {
             options: {
-                baseDir: 'tmp/bundles/',
+                baseDir: 'public/fronts-client-v1/bundles/',
                 assets: ['*.js'],
                 deleteOriginals: true,
                 jsonOutput: true,

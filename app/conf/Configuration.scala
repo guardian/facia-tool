@@ -204,10 +204,6 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     }
   }
 
-  object cdn {
-    lazy val basePath = getString("assets.basePath").getOrElse("/")
-  }
-
   object contentApi {
     case class Auth(user: String, password: String)
 

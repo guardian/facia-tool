@@ -11,8 +11,8 @@ module.exports = function() {
             files: [{
                 expand: true,
                 src: '*.js',
-                cwd: 'tmp/bundles',
-                dest: 'tmp/bundles/'
+                cwd: 'public/fronts-client-v1/bundles',
+                dest: 'public/fronts-client-v1/bundles/'
             }]
         }
     };

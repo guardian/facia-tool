@@ -18,18 +18,3 @@ deployments:
       cloudFormationStackName: facia
       cloudFormationStackByTags: false
       prependStackToCloudFormationStackName: false
-  static-facia-tool:
-    type: aws-s3
-    parameters:
-      bucket: cms-fronts-static-assets
-      cacheControl:
-      - pattern: .*\\.js$
-        value: public, max-age=315360000
-      - pattern: .*
-        value: public, max-age=60
-      mimeTypes:
-        js: application/javascript
-        map: text/plain
-        json: application/json
-      prefixStack: false
-      publicReadAcl: true
