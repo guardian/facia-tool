@@ -46,7 +46,7 @@ describe('Modal Dialog', function () {
             expect(cancel.called).toBe(true);
             expect($('.test-container .what-i-like').length).toBe(0);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

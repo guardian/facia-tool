@@ -43,7 +43,7 @@ describe('Extensions', function () {
             baseModel.dispose();
             expect(extension.dispose).toHaveBeenCalled();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

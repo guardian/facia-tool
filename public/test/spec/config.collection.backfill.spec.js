@@ -18,7 +18,7 @@ describe('Collection Backfill - API query', function () {
 
         this.ko.apply({ meta: this.meta }, true)
         .then(() => { this.backfill = backfill(this.ko.container); })
-        .then(done);
+        .then(() => done());
     });
     afterEach(function () {
         this.ko.dispose();
@@ -45,7 +45,7 @@ describe('Collection Backfill - API query', function () {
             expect(this.backfill.status()).toMatch(/no match/i);
             expect(this.backfill.results().length).toBe(0);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -74,7 +74,7 @@ describe('Collection Backfill - API query', function () {
             expect(this.backfill.status()).toMatch(/found match/i);
             expect(this.backfill.results().length).toBe(2);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -99,7 +99,7 @@ describe('Collection Backfill - API query', function () {
             expect(this.backfill.status()).toMatch(/no match/i);
             expect(this.backfill.results().length).toBe(0);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -152,7 +152,7 @@ describe('Collection Backfill - API query', function () {
             expect(this.backfill.results().length).toBe(1);
             expect(this.backfill.results()[0].text()).toMatch(/another story/i);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });
@@ -170,7 +170,7 @@ describe('Collection Backfill - Parent collection', function () {
 
         this.ko.apply({ meta: this.meta }, true)
         .then(() => { this.backfill = backfill(this.ko.container); })
-        .then(done);
+        .then(() => done());
     });
     afterEach(function () {
         this.ko.dispose();
@@ -188,7 +188,7 @@ describe('Collection Backfill - Parent collection', function () {
         .then(() => {
             expect(modalDialog.confirm).toHaveBeenCalled();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -230,7 +230,7 @@ describe('Collection Backfill - Parent collection', function () {
             expect(this.backfill.status()).toBe('');
             expect(this.backfill.results().length).toBe(0);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -256,7 +256,7 @@ describe('Collection Backfill - Parent collection', function () {
             expect(this.backfill.hasApiQuery()).toBe(true);
             expect(this.meta()).toBe(undefined);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -299,7 +299,7 @@ describe('Collection Backfill - Parent collection', function () {
                 query: 'anything'
             });
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

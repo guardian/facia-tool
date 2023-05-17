@@ -222,7 +222,7 @@ describe('Validate images', function () {
                     expect(image.src).toMatch(/square\.png$/);
                     expect(image.origin).toBe('http://media/image/1234567890123456789012345678901234567890');
                 })
-                .then(done)
+                .then(() => done())
                 .catch(done.fail);
             });
         });
@@ -300,7 +300,7 @@ describe('Validate images', function () {
                     expect(image.src).toMatch(/square\.png$/);
                     expect(image.origin).toBe('http://media/image/1234567890123456789012345678901234567890');
                 })
-                .then(done)
+                .then(() => done())
                 .catch(done.fail);
             });
 
@@ -332,7 +332,7 @@ describe('Validate images', function () {
                     expect(image.origin).toBe('http://media/image/1234567890123456789012345678901234567890');
                     expect(image.thumb).toBe('thumbnail');
                 })
-                .then(done)
+                .then(() => done())
                 .catch(done.fail);
             });
         });
@@ -415,7 +415,7 @@ describe('Validate images', function () {
                 expect(image.origin).toBe('http://media/image/mediaID');
                 expect(image.thumb).toMatch(/thumb\.png$/);
             })
-            .then(done)
+            .then(() => done())
             .catch(done.fail);
         });
 
@@ -445,7 +445,7 @@ describe('Validate images', function () {
                 expect(image.origin).toBe('http://media/image/1234567890123456789012345678901234567890');
                 expect(image.thumb).toMatch(/square\.png$/);
             })
-            .then(done)
+            .then(() => done())
             .catch(done.fail);
         });
     });

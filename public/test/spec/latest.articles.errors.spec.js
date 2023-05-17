@@ -40,7 +40,7 @@ describe('Latest articles errors', function() {
             expect(this.loadSpy).toHaveBeenCalled();
             expect(this.errorSpy).toHaveBeenCalled();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -82,7 +82,7 @@ describe('Latest articles errors', function() {
             expect(this.loadSpy).toHaveBeenCalled();
             expect(this.errorSpy).toHaveBeenCalled();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

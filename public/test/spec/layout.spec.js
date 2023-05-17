@@ -159,7 +159,7 @@ describe('Layout', function () {
             expect(columnsInDOM()).toEqual(['front']);
             expect($('.mock-widget.front').text()).toBe('apple');
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

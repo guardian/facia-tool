@@ -27,7 +27,7 @@ describe('Alternate Drag', function () {
         .then(deleteOneSublink)
         .then(saveArticleWithOneSublink)
         .then(deleteEntireArticle)
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
 
 

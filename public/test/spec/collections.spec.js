@@ -26,7 +26,7 @@ describe('Collections', function () {
         .then(removeItemFromGroup)
         .then(addSublinkInArticle)
         .then(publishLatestChanges)
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
 
         function insertInEmptyGroup () {
@@ -350,7 +350,7 @@ describe('Collections', function () {
         .then(function () {
             expect($('.desktop-indicator .indicator')[0].clientHeight > 100).toBe(true);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -359,7 +359,7 @@ describe('Collections', function () {
         .then(() => {
             expect(this.testPage.regions.clipboard().trail(1).fieldText('headline')).toBe('Nothing happened for once');
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -372,7 +372,7 @@ describe('Collections', function () {
             expect(trail.fieldText('headline')).toBe('I won the elections');
             expect($('.editor', trail.dom).is(':visible')).toBe(false);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -410,7 +410,7 @@ describe('Collections', function () {
             }
         })
         .done
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

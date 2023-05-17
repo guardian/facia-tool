@@ -78,7 +78,7 @@ describe('Bootstrap', function () {
         .then(function () {
             expect(every.calledThrice).toBe(true);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -98,7 +98,7 @@ describe('Bootstrap', function () {
             expect(fail.getCall(0).args[0]).toMatch(/config is invalid/);
             expect(success.called).toBe(false);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -118,7 +118,7 @@ describe('Bootstrap', function () {
             expect(fail.getCall(0).args[0]).toMatch(/defaults is invalid/);
             expect(success.called).toBe(false);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -145,7 +145,7 @@ describe('Bootstrap', function () {
             expect(every.calledOnce).toBe(true);
             expect(fail.calledOnce).toBe(true);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });
