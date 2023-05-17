@@ -109,9 +109,9 @@ trait S3 extends Logging {
   }
 }
 
-class S3FrontsApi(val config: ApplicationConfiguration, val isTest: Boolean, val awsEndpoints: AwsEndpoints) extends S3 {
+class S3FrontsApi(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) extends S3 {
 
-  lazy val stage = if (isTest) "TEST" else config.facia.stage.toUpperCase
+  lazy val stage = config.facia.stage.toUpperCase
   val namespace = "frontsapi"
   lazy val location = s"$stage/$namespace"
   val cmsFrontsS3Account = new CmsFrontsS3Account(config, awsEndpoints)

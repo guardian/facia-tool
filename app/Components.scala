@@ -67,7 +67,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
 
   // Controllers
   val frontsApi = new FrontsApi(config, awsEndpoints)
-  val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
+  val s3FrontsApi = new S3FrontsApi(config, awsEndpoints)
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
   val configAgent = new ConfigAgent(config, frontsApi)
   val structuredLogger = new StructuredLogger(config, configAgent)
