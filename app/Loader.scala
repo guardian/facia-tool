@@ -14,8 +14,8 @@ class Loader extends ApplicationLoader {
     }
 
     // Play server
-    val isProd = context.environment.mode == Mode.Prod
-    val config = new ApplicationConfiguration(context.initialConfiguration, isProd)
+    val isDev = context.environment.mode != Mode.Prod
+    val config = new ApplicationConfiguration(context.initialConfiguration, isDev)
 
     val playConfig = context.initialConfiguration
     // Override the initial configuration from play to allow play evoltions to work with RDS IAM

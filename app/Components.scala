@@ -34,9 +34,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
 
   applicationEvolutions
 
-  val isDev: Boolean = context.environment.mode == Mode.Dev
-  val isTest: Boolean = context.environment.mode == Mode.Test
-  val isProd: Boolean = context.environment.mode == Mode.Prod
+  val isDev: Boolean = context.environment.mode != Mode.Prod
 
   // Services
   val awsEndpoints = new AwsEndpoints(config)

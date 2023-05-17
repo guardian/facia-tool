@@ -21,7 +21,7 @@ import software.amazon.awssdk.auth.credentials.{AwsCredentialsProviderChain => N
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
-class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean) extends Logging  {
+class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isDev: Boolean) extends Logging  {
   private val propertiesFile = "/etc/gu/facia-tool.properties"
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f))
@@ -59,13 +59,13 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
     val applicationName = "facia-tool"
 
-    // isProd is derived from the enviroment mode which is given
-    // to us by play, it is true for both prod and code. Stage is a variable coming
+    // isDev is derived from the enviroment mode which is given
+    // to us by play, it is false for both prod and code. Stage is a variable coming
     // from the config and tells us which bucket we are reading fronts and collections from.
     // Stage is prod for production environment and code for code and dev environemnts.
     // These two variables together allow us to determine the application url.
-    val applicationUrl = if (isProd && stage == "code") "https://fronts.code.dev-gutools.co.uk"
-      else if (isProd) "https://fronts.gutools.co.uk"
+    val applicationUrl = if (!isDev && stage == "code") "https://fronts.code.dev-gutools.co.uk"
+      else if (!isDev) "https://fronts.gutools.co.uk"
       else "https://fronts.local.dev-gutools.co.uk"
   }
 
@@ -102,7 +102,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           logger.error("amazon client exception")
 
           // We really, really want to ensure that PROD is configured before saying a box is OK
-          if (isProd) throw ex
+          if (!isDev) throw ex
           // this means that on dev machines you only need to configure keys if you are actually going to use them
           None
       }
@@ -133,7 +133,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           logger.error("amazon client cross account exception")
 
           // We really, really want to ensure that PROD is configured before saying a box is OK
-          if (isProd) throw ex
+          if (!isDev) throw ex
           // this means that on dev machines you only need to configure keys if you are actually going to use them
           None
       }
@@ -150,22 +150,24 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     val password = getPassword
 
     private def getPassword: String = {
-      // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
-      if (isProd) {
-          val request = new GetParameterRequest()
-            .withName(s"/facia-tool/cms-fronts/$stageFromProperties/db/password")
-            .withWithDecryption(true)
-
-          val response = aws.ssmClient.getParameter(request)
-          response.getParameter.getValue
-      } else {
+      if (isDev) {
         getMandatoryString("db.default.password")
+      } else {
+        val request = new GetParameterRequest()
+          .withName(s"/facia-tool/cms-fronts/$stageFromProperties/db/password")
+          .withWithDecryption(true)
+
+        val response = aws.ssmClient.getParameter(request)
+        response.getParameter.getValue
       }
     }
 
     private def findRDSEndpointAndPort(): (String, String) = {
-      // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
-      if (isProd) {
+      if (isDev) {
+        val host = getMandatoryString("db.default.hostname")
+        val port = getMandatoryString("db.default.port")
+        (host, port)
+      } else {
         val dbIdentifier = if (stageFromProperties == "PROD") "facia-prod-db" else "facia-code-db"
         val request = new DescribeDBInstancesRequest().withDBInstanceIdentifier(dbIdentifier)
         val instances = aws.rdsClient.describeDBInstances(request).getDBInstances.asScala.toList
@@ -178,10 +180,6 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
         val awsHost = instance.getEndpoint.getAddress
         val awsPort = instance.getEndpoint.getPort.toString
         (awsHost, awsPort)
-      } else {
-        val host = getMandatoryString("db.default.hostname")
-        val port = getMandatoryString("db.default.port")
-        (host, port)
       }
     }
 
