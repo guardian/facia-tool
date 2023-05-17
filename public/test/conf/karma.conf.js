@@ -1,6 +1,7 @@
 /* eslint-env node */
 module.exports = function(config) {
   config.set({
+    verboseDeprecations: true,
     basePath: '../../..',
     proxies: {
         '/assets/': '/base/public/src/',

@@ -265,20 +265,16 @@ describe('Front', function () {
         .then(() => done())
         .catch(done.fail);
     });
-    it('displays a warnign if front is hidden ', function (done) {
+    it('displays a warnign if front is hidden ', function () {
         return this.loadFront({}, 'au')
         .then(() => {
             return expect($('.front-hidden').is(':visible')).toBe(true);
-        })
-        .then(() => done())
-        .catch(done.fail);
+        });
     });
-    it('does not display a warnign if the front is not hidden ', function (done) {
+    it('does not display a warnign if the front is not hidden ', function () {
         return this.loadFront({}, 'uk')
         .then(() => {
             return expect($('.front-hidden').is(':visible')).toBe(false);
-        })
-        .then(() => done())
-        .catch(done.fail);
+        });
     });
 });

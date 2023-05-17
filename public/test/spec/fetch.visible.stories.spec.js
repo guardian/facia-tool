@@ -42,15 +42,15 @@ describe('Fetch visible stories', function () {
     });
 
     it('fails if the network fails', function (done) {
-        return fetch('fail', createGroups([false]))
-        .then(done.fail, function (err) {
+        fetch('fail', createGroups([false]))
+        .then(done.fail)
+        .catch(function (err) {
             expect(err).toMatch(/fail/i);
         })
-        .then(() => done())
-        .catch(done.fail);
+        .then(() => done());
     });
 
-    it('gets the visible stories', function (done) {
+    it('gets the visible stories', function () {
         this.mock.set({
             'collection': {
                 mobile: 1
@@ -68,8 +68,6 @@ describe('Fetch visible stories', function () {
             expect(event).toEqual({
                 mobile: 1
             });
-        })
-        .then(() => done())
-        .catch(done.fail);
+        });
     });
 });
