@@ -100,7 +100,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val storiesVisible = new StoriesVisibleController(containerService, this)
   val thumbnail = new ThumbnailController(containerThumbnails, this)
   val troubleshoot = new TroubleshootController(this)
-  val uncachedAssets = new V1Assets(assets, this)
+  val v1Assets = new V1Assets(assets, this)
   val v2Assets = new V2Assets(assets)
   val vanityRedirects = new VanityRedirects(acl, this)
   val views = new ViewsController(acl, assetsManager, isDev, encryption, this)
@@ -117,7 +117,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
 
   override lazy val assets: Assets = new controllers.Assets(httpErrorHandler, assetsMetadata)
 
-  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, uncachedAssets, views, faciaTool,
+  val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, v1Assets, views, faciaTool,
     pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy, editions)
 
 
