@@ -12,7 +12,7 @@ GET         /login/status                            controllers.PandaAuthContro
 
 # static files
 GET         /assets/fronts-client/*file                  controllers.V2Assets.at(file)
-GET         /assets/*file                            controllers.UncachedAssets.at(file)
+GET         /assets/*file                            controllers.V1Assets.at(file)
 
 ##################### NOTE ############################
 #all endpoints below this line should be authenticated#
