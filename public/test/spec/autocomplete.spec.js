@@ -203,7 +203,7 @@ describe('Autocomplete', function () {
             .then(() => {
                 expect($('.search--filter').val()).toBe('');
             })
-            .then(done)
+            .then(() => done())
             .catch(done.fail);
         });
 
@@ -280,7 +280,7 @@ describe('Autocomplete', function () {
                 expect(counter).toBe(3);
                 expect($('.search--filter').val()).toBe('five');
             })
-            .then(done)
+            .then(() => done())
             .catch(done.fail);
         });
 
@@ -333,7 +333,7 @@ describe('Autocomplete', function () {
                     param: 'section'
                 });
             })
-            .then(done)
+            .then(() => done())
             .catch(done.fail);
         });
     });

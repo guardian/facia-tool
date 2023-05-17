@@ -52,7 +52,7 @@ describe('Presser', function () {
         .then(() => {
             expect(this.events.called).toBe(false);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -66,7 +66,7 @@ describe('Presser', function () {
         });
 
         this.presser.press('draft', 'front/name')
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -77,7 +77,7 @@ describe('Presser', function () {
             expect(this.last.getCall(0).args).toEqual(['cool/front']);
             expect(this.events.getCall(0).args).toEqual(['cool/front', new Date(2015, 7, 16)]);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

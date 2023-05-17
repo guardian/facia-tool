@@ -292,7 +292,7 @@ describe('Validate images', () => {
               'http://media/image/1234567890123456789012345678901234567890'
             );
           })
-          .then(done)
+          .then(() => done())
           .catch((err) => done.fail(err));
       });
     });
@@ -393,7 +393,7 @@ describe('Validate images', () => {
               'http://media/image/1234567890123456789012345678901234567890'
             );
           })
-          .then(done)
+          .then(() => done())
           .catch((err) => done.fail(err));
       });
 
@@ -433,7 +433,7 @@ describe('Validate images', () => {
             );
             expect((image as ValidationResponse).thumb).toBe('thumbnail');
           })
-          .then(done)
+          .then(() => done())
           .catch((err) => done.fail(err));
       });
     });
@@ -525,7 +525,7 @@ describe('Validate images', () => {
           );
           expect((image as ValidationResponse).thumb).toMatch(/thumb\.png$/);
         })
-        .then(done)
+        .then(() => done())
         .catch((err) => done.fail(err));
     });
 
@@ -567,7 +567,7 @@ describe('Validate images', () => {
           );
           expect((image as ValidationResponse).thumb).toMatch(/square\.png$/);
         })
-        .then(done)
+        .then(() => done())
         .catch((err) => done.fail(err));
     });
   });

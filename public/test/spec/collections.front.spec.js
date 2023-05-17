@@ -158,7 +158,7 @@ describe('Front', function () {
             expect($('.list-header:nth(0)').hasClass('collapsed')).toBe(true);
             expect($('.list-header:nth(1)').hasClass('collapsed')).toBe(false);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -262,7 +262,7 @@ describe('Front', function () {
         .then(() => {
             expect(callPresser).toBe(1);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
     it('displays a warnign if front is hidden ', function (done) {
@@ -270,7 +270,7 @@ describe('Front', function () {
         .then(() => {
             return expect($('.front-hidden').is(':visible')).toBe(true);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
     it('does not display a warnign if the front is not hidden ', function (done) {
@@ -278,7 +278,7 @@ describe('Front', function () {
         .then(() => {
             return expect($('.front-hidden').is(':visible')).toBe(false);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

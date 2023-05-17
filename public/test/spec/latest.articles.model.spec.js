@@ -44,7 +44,7 @@ describe('Latest articles', function() {
                 }
             }]);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -86,7 +86,7 @@ describe('Latest articles', function() {
                 }
             }]);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -135,7 +135,7 @@ describe('Latest articles', function() {
                 }
             }]);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 

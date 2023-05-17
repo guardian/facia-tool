@@ -24,7 +24,7 @@ describe('Visited articles', function () {
             expect(trailInFirstCollection.opacity()).toBeCloseTo(1);
             expect(trailInClipboard.opacity()).toBeCloseTo(1);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -39,7 +39,7 @@ describe('Visited articles', function () {
             expect(trailInFirstCollection.opacity()).toBeCloseTo(1);
             expect(trailInClipboard.opacity()).toBeCloseTo(1);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -57,7 +57,7 @@ describe('Visited articles', function () {
             expect(trailInFirstCollection.opacity()).toBeCloseTo(1);
             expect(trailInClipboard.opacity()).toBeCloseTo(1);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

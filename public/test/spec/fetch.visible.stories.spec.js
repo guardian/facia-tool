@@ -37,7 +37,7 @@ describe('Fetch visible stories', function () {
         .then(done.fail, function (err) {
             expect(err.message).toMatch(/Empty collection/i);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -46,7 +46,7 @@ describe('Fetch visible stories', function () {
         .then(done.fail, function (err) {
             expect(err).toMatch(/fail/i);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -69,7 +69,7 @@ describe('Fetch visible stories', function () {
                 mobile: 1
             });
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

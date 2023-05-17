@@ -223,7 +223,7 @@ describe('Ajax Collections update', function () {
                     works: true
                 });
             })
-            .then(done)
+            .then(() => done())
             .catch(done.fail);
         });
 
@@ -258,7 +258,7 @@ describe('Ajax Collections update', function () {
                     works: true
                 });
             })
-            .then(done)
+            .then(() => done())
             .catch(done.fail);
         });
 
@@ -312,7 +312,7 @@ describe('Ajax Collections update', function () {
                     removed: true
                 });
             })
-            .then(done)
+            .then(() => done())
             .catch(done.fail);
         });
     });

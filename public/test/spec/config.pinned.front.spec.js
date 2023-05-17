@@ -29,7 +29,7 @@ describe('Config Pinned Front', function () {
         this.scope = mockjax.scope();
 
         this.baseModel = baseModel;
-        this.ko.apply(baseModel).then(() => baseModel.loaded).then(done);
+        this.ko.apply(baseModel).then(() => baseModel.loaded).then(() => done());
     });
     afterEach(function () {
         this.scope.clear();
@@ -53,7 +53,7 @@ describe('Config Pinned Front', function () {
         .then(saveCollection)
         .then(expectFrontScrolledTo)
         .then(possibleToCreateNewFronts)
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
 
         function attemptCreateMultipleFronts () {
@@ -180,7 +180,7 @@ describe('Config Pinned Front', function () {
         .then(updateConfiguration)
         .then(saveCollection)
         .then(expectRequestValid)
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
 
         function populateWithFronts () {

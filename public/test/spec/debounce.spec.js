@@ -75,7 +75,7 @@ describe('Debounce', function () {
             expect(countCalls).toBe(2);
             expect(inProgress).toBe(false);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -135,7 +135,7 @@ describe('Debounce', function () {
             expect(counter).toBe(1);
             expect(inProgress).toBe(false);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -166,7 +166,7 @@ describe('Debounce', function () {
         .then(() => {
             expect(called).toBe(true);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -190,7 +190,7 @@ describe('Debounce', function () {
         tick(200).then(() => {
             expect(called).toBe(false);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

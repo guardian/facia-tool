@@ -31,7 +31,7 @@ describe('Editors', function () {
                 <trail-editor-widget params="context: $context"></trail-editor-widget>
             <!-- /ko -->
         `);
-        this.ko.apply({ editors: this.editors }).then(done);
+        this.ko.apply({ editors: this.editors }).then(() => done());
         this.scope = mockjax.scope();
         this.scope({
             url: '/api/usage',
@@ -82,7 +82,7 @@ describe('Editors', function () {
 
             return wait.ms(150);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -108,7 +108,7 @@ describe('Editors', function () {
             expect(this.article.meta.imageWidth()).toBeUndefined();
             expect(this.article.meta.imageHeight()).toBeUndefined();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -162,7 +162,7 @@ describe('Editors', function () {
             expect(listImages[1].height).toBe(400);
             expect(listImages[2]).toBeUndefined();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

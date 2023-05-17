@@ -46,7 +46,7 @@ describe('Clipboard', function () {
         .then(testLoadingFromStorage)
         .then(testLoadingAfterDelete)
         .then(testChangingMetadata)
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
 
         function testDraggingAnArticle (clipboard) {
@@ -120,7 +120,7 @@ describe('Clipboard', function () {
         .then(pasteLink)
         .then(() => wait.ms(10))
         .then(expectLinkAdded)
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
 
         function pasteLink (clipboard) {
