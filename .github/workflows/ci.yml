@@ -16,6 +16,8 @@ jobs:
                   java-version: "8"
                   distribution: "corretto"
             - name: build
+              env:
+                  JSPM_GITHUB_AUTH_SECRET: ${{ secrets.GITHUB_TOKEN }}
               run: |
                   set -e
                   # Ensure we don't overwrite existing (Teamcity) builds.
