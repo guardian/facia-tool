@@ -18,6 +18,7 @@ jobs:
             - name: build
               env:
                   JSPM_GITHUB_AUTH_SECRET: ${{ secrets.GITHUB_TOKEN }}
+                  TZ: Europe/London # todo: tix tests to pass in UTC
               run: |
                   set -e
                   # Ensure we don't overwrite existing (Teamcity) builds.
