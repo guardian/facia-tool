@@ -74,10 +74,6 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val host = getString("ophan.api.host")
   }
 
-  object analytics {
-    lazy val secret = getMandatoryString("analytics.secret")
-  }
-
   object aws {
     lazy val region = getMandatoryString("aws.region")
     lazy val bucket = getMandatoryString("aws.bucket")

@@ -3,7 +3,6 @@ import _ from 'underscore';
 import Collection from 'models/collections/collection';
 import Presser from 'modules/presser';
 import {CONST} from 'modules/vars';
-import {trackAction} from 'utils/analytics';
 import lastModified from 'utils/fetch-lastmodified';
 import humanTime from 'utils/human-time';
 import mediator from 'utils/mediator';
@@ -48,14 +47,11 @@ export default class Front extends ColumnWidget {
         this.setFront = id => this.front(id);
         this.setModeLive = () => {
             this.mode('live');
-            trackAction('front', 'mode', 'live');
         };
         this.setModeDraft = () => {
             this.mode('draft');
-            trackAction('front', 'mode', 'draft');
         };
         this.trackPreviewClick = () => {
-            trackAction('outbound', 'preview', this.mode());
             return true;
         };
 

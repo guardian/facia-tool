@@ -1,4 +1,3 @@
-import './util/tti';
 import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
@@ -16,7 +15,6 @@ import {
 import { storeClipboardContent } from 'actions/ClipboardThunks';
 import { Dispatch } from 'types/Store';
 import Modal from 'react-modal';
-import { init as initGA } from 'services/GA';
 import { listenForKeyboardEvents } from 'keyboard';
 import pollingConfig from 'util/pollingConfig';
 import { base } from 'routes/routes';
@@ -26,7 +24,6 @@ import notifications from 'services/notifications';
 import { actionAddNotificationBanner } from 'bundles/notificationsBundle';
 import { saveFeatureSwitch } from 'services/userDataApi';
 
-initGA();
 
 const store = configureStore();
 

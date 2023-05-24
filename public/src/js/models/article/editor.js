@@ -5,7 +5,6 @@ import alert from 'utils/alert';
 import mediator from 'utils/mediator';
 import {validateImageSrc, validateImageEvent} from 'utils/validate-image-src';
 import articleCollection from 'utils/article-collection';
-import {trackAction} from 'utils/analytics';
 
 const rxScriptStriper = new RegExp(/<script.*/gi);
 
@@ -113,8 +112,6 @@ export default class Editor extends BaseClass {
         }
 
         this.meta(!this.meta());
-
-        trackAction('story', this.key, this.meta().toString());
 
        _.chain(this.all)
         .filter(editor => editor.visibleWhen === this.key)

@@ -36,7 +36,6 @@ import CardFormInline from '../CardFormInline';
 import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
-import { events } from 'services/GA';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { css, styled } from 'constants/theme';
 import { getPillarColor } from 'util/getPillarColor';
@@ -266,7 +265,6 @@ class Card extends React.Component<CardContainerProps> {
   };
 
   private handleImageDrop = (e: React.DragEvent<HTMLElement>) => {
-    events.imageAdded(this.props.frontId, 'drop-into-card');
     e.preventDefault();
     e.persist();
 

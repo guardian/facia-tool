@@ -1,7 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { styled, theme } from 'constants/theme';
-import { events } from 'services/GA';
 
 import type { State } from 'types/State';
 import { Dispatch } from 'types/Store';
@@ -113,7 +112,6 @@ const CollectionOverview = ({
     <Container
       onClick={(e) => {
         e.preventDefault();
-        events.overviewItemClicked(frontId);
         const el = document.getElementById(
           createCollectionId(collection, frontId)
         );

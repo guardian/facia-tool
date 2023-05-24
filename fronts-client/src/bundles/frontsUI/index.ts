@@ -31,7 +31,6 @@ import type {
 } from 'types/Action';
 import type { State as GlobalState } from 'types/State';
 
-import { events } from 'services/GA';
 import {
   selectFronts,
   selectFrontsWithPriority,
@@ -92,15 +91,7 @@ const editorCloseCurrentFrontsMenu = (): EditorCloseCurrentFrontsMenu => ({
   type: EDITOR_CLOSE_CURRENT_FRONTS_MENU,
 });
 
-/**
- * !SIDE EFFECTS IN ACTION CREATOR
- * we could change these to thunks but the analytics calls are essentially
- * transparent and adding thunks makese the tests for these actions more
- * involved. On balance we're going for it ...
- */
-
 const editorOpenFront = (frontId: string, priority: string): EditorAddFront => {
-  events.addFront(frontId);
   return {
     type: EDITOR_OPEN_FRONT,
     payload: { frontId, priority },
@@ -111,7 +102,6 @@ const editorOpenFront = (frontId: string, priority: string): EditorAddFront => {
 };
 
 const editorMoveFront = (frontId: string, toIndex: number): EditorMoveFront => {
-  events.moveFront(frontId);
   return {
     type: 'EDITOR_MOVE_FRONT',
     payload: { frontId, toIndex },
@@ -122,7 +112,6 @@ const editorMoveFront = (frontId: string, toIndex: number): EditorMoveFront => {
 };
 
 const editorCloseFront = (frontId: string): EditorCloseFront => {
-  events.removeFront(frontId);
   return {
     type: EDITOR_CLOSE_FRONT,
     payload: { frontId },

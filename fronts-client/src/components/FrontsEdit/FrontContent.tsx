@@ -3,7 +3,6 @@ import { styled, theme } from 'constants/theme';
 import { connect } from 'react-redux';
 import sortBy from 'lodash/sortBy';
 import debounce from 'lodash/debounce';
-import { events } from 'services/GA';
 import { DragAndDropRoot, PosSpec, Move } from 'lib/dnd';
 import Collection from './Collection';
 import type { State } from 'types/State';
@@ -179,12 +178,10 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
   }
 
   public handleMove = (move: Move<TCard>) => {
-    events.dropArticle(this.props.id, 'collection');
     this.props.moveCard(move.to, move.data, move.from || null, 'collection');
   };
 
   public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-    events.dropArticle(this.props.id, isDropFromCAPIFeed(e) ? 'feed' : 'url');
     this.props.insertCardFromDropEvent(e, to, 'collection');
   };
 

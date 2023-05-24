@@ -27,7 +27,7 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
-import util.{Acl, Encryption}
+import util.Acl
 
 class AppComponents(context: Context, val config: ApplicationConfiguration)
   extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {

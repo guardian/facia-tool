@@ -17,7 +17,6 @@ import {getViewUrl} from 'models/article/links';
 import * as contentApi from 'modules/content-api';
 import copiedArticle from 'modules/copied-article';
 
-import {trackAction} from 'utils/analytics';
 import articleCollection from 'utils/article-collection';
 import asObservableProps from 'utils/as-observable-props';
 import deepGet from 'utils/deep-get';
@@ -153,18 +152,15 @@ export default class Article extends DropTarget {
 
     copy() {
         copiedArticle.set(this);
-        trackAction('trail', 'copy', !!this.front);
     }
 
     copyToClipboard() {
         mediator.emit('copy:to:clipboard', this.get());
-        trackAction('trail', 'toClip', !!this.front);
     }
 
     setVisitedToTrue() {
         visitedArticleStorage.addArticleToStorage(this.id());
         mediator.emit('set:article:to:visited', this.id());
-        trackAction('trail', 'open', !!this.front);
         return true;
     }
 
@@ -176,7 +172,6 @@ export default class Article extends DropTarget {
                 sourceItem: sourceItem.article.get(),
                 sourceGroup: sourceItem.group
             }, this, this.group);
-            trackAction('trail', 'paste', !!this.front);
         }
     }
 
@@ -370,13 +365,11 @@ export default class Article extends DropTarget {
     }
 
     clickOphan () {
-        trackAction('trail', 'stats', !!this.front);
         return true;
     }
 
     omitItem() {
         this.group.omitItem(this);
-        trackAction('trail', 'remove', !!this.front);
     }
 
     dispose() {

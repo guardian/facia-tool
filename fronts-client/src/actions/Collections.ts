@@ -62,7 +62,6 @@ import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
 import { selectVisibleArticles } from 'selectors/frontsSelectors';
 import { frontStages } from 'constants/fronts';
-import { events } from 'services/GA';
 import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 import { updateCollectionStrategy } from 'strategies/update-collection';
@@ -453,7 +452,6 @@ function publishCollection(
   collectionId: string,
   frontId: string
 ): ThunkResult<Promise<void>> {
-  events.collectionPublished(frontId, collectionId);
 
   return (dispatch: Dispatch, getState: () => State) => {
     return publishCollectionApi(collectionId)

@@ -1,6 +1,5 @@
 import EventEmitter from 'EventEmitter';
 import {CONST} from 'modules/vars';
-import {page} from 'utils/analytics';
 import parseQueryParams from 'utils/parse-query-params';
 import serializeQueryParams from 'utils/serialize-query-params';
 
@@ -21,7 +20,6 @@ class Router extends EventEmitter {
         this.priority = tokens[0] || CONST.defaultPriority;
         this.path = tokens[1] || 'fronts';
         this.params = parseQueryParams(this.location.search || '?');
-        page(`${this.priority}/${this.path}?${serializeQueryParams(this.params)}`);
     }
 
     onpopstate() {

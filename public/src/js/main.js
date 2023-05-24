@@ -2,7 +2,6 @@ import ko from 'knockout';
 import Raven from 'raven-js';
 import Bootstrap from 'modules/bootstrap';
 import 'font-awesome/css/font-awesome.min.css!';
-import {trackStaticResourceTiming} from 'utils/analytics';
 import logger from 'utils/logger';
 import oauthSession from 'utils/oauth-session';
 import Router from 'modules/router';
@@ -57,7 +56,6 @@ function loadApp (res) {
             bootstrap.get().onload(callback).onfail(callback);
         });
         oauthSession();
-        trackStaticResourceTiming();
     });
 }
 

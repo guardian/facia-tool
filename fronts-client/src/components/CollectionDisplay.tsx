@@ -25,7 +25,6 @@ import ContentContainer, {
   contentContainerMargin,
 } from './layout/ContentContainer';
 import { css } from 'styled-components';
-import { events } from 'services/GA';
 import CollectionMetaContainer from './collection/CollectionMetaContainer';
 import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
@@ -229,7 +228,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
   };
 
   public toggleVisibility = () => {
-    events.collectionToggleClicked(this.props.frontId);
     if (this.props.onChangeOpenState) {
       this.props.onChangeOpenState(!this.props.isOpen);
     }
