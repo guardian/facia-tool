@@ -24,7 +24,6 @@ import notifications from 'services/notifications';
 import { actionAddNotificationBanner } from 'bundles/notificationsBundle';
 import { saveFeatureSwitch } from 'services/userDataApi';
 
-
 const store = configureStore();
 
 // Wire up our notifications service

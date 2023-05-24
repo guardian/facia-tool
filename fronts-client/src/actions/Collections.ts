@@ -452,7 +452,6 @@ function publishCollection(
   collectionId: string,
   frontId: string
 ): ThunkResult<Promise<void>> {
-
   return (dispatch: Dispatch, getState: () => State) => {
     return publishCollectionApi(collectionId)
       .then(() => {
