@@ -29,7 +29,7 @@
         "no-self-assign": "error",
         "id-blacklist": ["error", "self"],
         "template-curly-spacing": ["error", "never"],
-        "no-unused-vars": "error",
+        "no-unused-vars": ["error", {"argsIgnorePattern": "^_"}],
         "comma-dangle": "warn",
         "no-extra-semi": "warn",
         "no-redeclare": ["error", { "builtinGlobals": false }]
