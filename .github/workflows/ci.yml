@@ -28,4 +28,4 @@ jobs:
                   # Ensure we don't overwrite existing (Teamcity) builds.
                   LAST_TEAMCITY_BUILD=7360
                   export GITHUB_RUN_NUMBER=$(( $GITHUB_RUN_NUMBER + $LAST_TEAMCITY_BUILD ))
-                  scripts/teamcity-ci.sh
+                  scripts/ci.sh
