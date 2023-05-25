@@ -42,6 +42,7 @@ riffRaffUpload() {
 }
 
 main() {
+    docker-compose up -d
     setupNvm
     globalJsDependencies
     javascriptV1

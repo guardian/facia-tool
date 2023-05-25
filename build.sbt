@@ -127,8 +127,6 @@ libraryDependencies ++= Seq(
     "com.beust" % "jcommander" % "1.75",
 
     "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-    "com.whisk" %% "docker-testkit-scalatest" % "0.9.9" % "test",
-    "com.whisk" %% "docker-testkit-impl-docker-java" % "0.9.9" % "test"
 )
 
 val UsesDatabaseTest = config("database-int") extend Test
