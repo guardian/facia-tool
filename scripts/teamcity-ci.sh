@@ -38,7 +38,7 @@ javascriptV2() {
 }
 
 riffRaffUpload() {
-    sbt clean compile test database-int:test
+    sbt clean compile test database-int:test riffRaffUpload
 }
 
 main() {
