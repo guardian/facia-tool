@@ -1,0 +1,31 @@
+name: Facia-tool CI
+on:
+    workflow_dispatch:
+    push:
+
+jobs:
+    CI:
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+        steps:
+            - uses: actions/checkout@v2
+            - uses: aws-actions/configure-aws-credentials@v1
+              with:
+                  role-to-assume: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+                  aws-region: eu-west-1
+            - uses: actions/setup-java@v3
+              with:
+                  java-version: "8"
+                  distribution: "corretto"
+            - name: build
+              env:
+                  JSPM_GITHUB_AUTH_SECRET: ${{ secrets.GITHUB_TOKEN }}
+                  TZ: Europe/London # todo: tix tests to pass in UTC
+              run: |
+                  set -e
+                  # Ensure we don't overwrite existing (Teamcity) builds.
+                  LAST_TEAMCITY_BUILD=7360
+                  export GITHUB_RUN_NUMBER=$(( $GITHUB_RUN_NUMBER + $LAST_TEAMCITY_BUILD ))
+                  scripts/ci.sh
