@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 console.info('Google Analytics tracking has been disabled');
 let ga = (_command, _params1, _params2, _params3) => {};
 
