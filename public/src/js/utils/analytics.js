@@ -1,4 +1,6 @@
-/* global ga */
+console.info('Google Analytics tracking has been disabled');
+let ga = (_command, _params1, _params2, _params3) => {};
+
 export function time (category, timingVar) {
     if (canMeasureTime()) {
         ga('send', 'timing', category, timingVar, now());
@@ -14,11 +16,9 @@ export function page (path, title) {
 
 export function trackAction (category, action, value) {
     return new Promise(resolve => {
-        if (window.ga) {
-            ga('send', 'event', category, action, value, {
-                hitCallback: () => resolve()
-            });
-        }
+        ga('send', 'event', category, action, value, {
+            hitCallback: () => resolve()
+        });
     });
 }
 
@@ -38,7 +38,7 @@ function isStatic (resource) {
 }
 
 function canMeasureTime () {
-    return window.ga && window.performance;
+    return window.performance;
 }
 
 function now () {

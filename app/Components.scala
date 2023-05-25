@@ -27,7 +27,7 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
-import util.{Acl, Encryption}
+import util.Acl
 
 class AppComponents(context: Context, val config: ApplicationConfiguration)
   extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
@@ -84,7 +84,6 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val cloudwatch = new CloudWatch(config, awsEndpoints)
   val press = new Press(faciaPress)
   val assetsManager = new AssetsManager(config, isDev)
-  val encryption = new Encryption(config)
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
 //  Controllers
