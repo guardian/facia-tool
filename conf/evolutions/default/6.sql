@@ -20,7 +20,7 @@ ALTER TABLE edition_issues ADD COLUMN temp TIMESTAMPTZ;
 
 --- Do the work to migrate back
 -- noinspection SqlWithoutWhere
-UPDATE edition_issues SET temp = CONCAT(issue_date, ' 00:00:00 Europe/London')::TIMESTAMPTZ;
+UPDATE edition_issues SET temp = CONCAT(issue_date, ' 00:00:00 Europe/London')::TIMESTAMP;
 
 ALTER TABLE edition_issues ALTER COLUMN temp SET NOT NULL;
 DROP INDEX edition_issues_issue_date_index;

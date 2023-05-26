@@ -81,8 +81,8 @@ class EditionsDBEvolutionsTest extends FreeSpec with Matchers with EditionsDBSer
       val summerDateTime = getIssueDateTime(summerId)
       val winterDateTime = getIssueDateTime(winterId)
 
-      summerDateTime.toInstant.toString shouldBe "2019-08-20T23:00:00Z"
-      winterDateTime.toInstant.toString shouldBe "2019-02-21T00:00:00Z"
+      summerDateTime.toString shouldBe "2019-08-21T00:00+01:00"
+      winterDateTime.toString shouldBe "2019-02-21T00:00Z"
 
     }
   }
