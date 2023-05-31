@@ -1,10 +1,4 @@
 /**
- * For this to work as expected this script tag needs to exist in the <head></head> tag:
- *
- * <script async src="https://www.googletagmanager.com/gtag/js?id=UA-78290349-2"></script>
- */
-
-/**
  * Custom dimensions need to be added here such that we can send events like
  *
  * `gtag('event', 'drop_article', { front_id: 'my_id_134' })`
@@ -16,14 +10,9 @@ const DIMENSION_MAP = {
   dimension4: 'version',
 };
 
-let gtag = (window as any).gtag;
-
-if (!gtag) {
-  // warn and add a noop incase of missing tracking script
-  // tslint:disable-next-line
-  console.warn('To use Google Analytics add the tracking code to the page.');
-  gtag = () => {};
-}
+// tslint:disable-next-line
+console.info('Google Analytics tracking has been disabled');
+const gtag = (command: string, params1: any, params2?: any) => {};
 
 // we keep this init here so that if we decide to type `gtag` then we can use
 // DIMENSION_MAP to help type it
