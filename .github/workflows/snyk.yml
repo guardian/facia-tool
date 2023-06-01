@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - nt/snyk
   workflow_dispatch:
 
 
@@ -13,7 +12,7 @@ jobs:
   security:
     uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
     with:
-      ORG: guardian-test
+      ORG: guardian
       JAVA_VERSION: 8
     secrets:
       SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
