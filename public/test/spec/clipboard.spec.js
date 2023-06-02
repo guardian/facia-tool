@@ -1,9 +1,9 @@
 import ko from 'knockout';
 import _ from 'underscore';
 import $ from 'jquery';
-import * as cache from 'modules/cache';
-import Droppable from 'modules/droppable';
-import {CONST} from 'modules/vars';
+import * as cache from './modules/cache';
+import Droppable from './modules/droppable';
+import {CONST} from './modules/vars';
 import * as widgets from 'models/widgets';
 import mediator from 'utils/mediator';
 import {injectColumnWidget} from 'test/utils/inject';

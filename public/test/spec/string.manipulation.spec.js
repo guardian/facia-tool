@@ -1,4 +1,4 @@
-import {CONST} from 'modules/vars';
+import {CONST} from './modules/vars';
 import params from 'utils/parse-query-params';
 import urlQuery from 'utils/url-query';
 import serialize from 'utils/serialize-query-params';

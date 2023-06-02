@@ -1,15 +1,15 @@
 import _ from 'underscore';
-import {CONST} from 'modules/vars';
-import {request} from 'modules/authed-ajax';
-import * as cache from 'modules/cache';
-import modalDialog from 'modules/modal-dialog';
-import internalPageCode from 'utils/internal-page-code';
-import articlePath from 'utils/article-path';
-import urlQuery from 'utils/url-query';
-import isGuardianUrl from 'utils/is-guardian-url';
-import mediator from 'utils/mediator';
-import * as snap from 'utils/snap';
-import reportErrors from 'utils/report-errors';
+import {CONST} from './vars';
+import {request} from './authed-ajax';
+import * as cache from './cache';
+import modalDialog from './modal-dialog';
+import internalPageCode from '../utils/internal-page-code';
+import articlePath from '../utils/article-path';
+import urlQuery from '../utils/url-query';
+import isGuardianUrl from '../utils/is-guardian-url';
+import mediator from '../utils/mediator';
+import * as snap from '../utils/snap';
+import reportErrors from '../utils/report-errors';
 
 function populate(article, capiData) {
     article.addCapiData(capiData);

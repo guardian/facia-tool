@@ -1,5 +1,5 @@
-import {CONST} from 'modules/vars';
-import urlAbsPath from 'utils/url-abs-path';
+import {CONST} from '../../modules/vars';
+import urlAbsPath from '../../utils/url-abs-path';
 
 export function getViewUrl(article) {
     var url;

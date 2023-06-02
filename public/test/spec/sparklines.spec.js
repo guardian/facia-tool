@@ -2,7 +2,7 @@ import _ from 'underscore';
 import ko from 'knockout';
 import $ from 'jquery';
 import sinon from 'sinon';
-import * as vars from 'modules/vars';
+import * as vars from './modules/vars';
 import MockHistogram from 'mock/histogram';
 import mockFrontWidget from 'mock/front-widget';
 import * as sparklines from 'utils/sparklines';

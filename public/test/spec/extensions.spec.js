@@ -4,7 +4,7 @@ import extensions from 'models/available-extensions';
 import mainLayout from 'views/templates/main.scala.html!text';
 import verticalLayout from 'views/templates/vertical_layout.scala.html!text';
 import inject from 'test/utils/inject';
-import {CONST} from 'modules/vars';
+import {CONST} from './modules/vars';
 
 describe('Extensions', function () {
     beforeEach(function () {

@@ -1,6 +1,6 @@
 import ko from 'knockout';
-import * as contentApi from 'modules/content-api';
-import modalDialog from 'modules/modal-dialog';
+import * as contentApi from './modules/content-api';
+import modalDialog from './modules/modal-dialog';
 import 'widgets/config-collection-backfill.html!text';
 import drag from 'test/utils/drag';
 import inject from 'test/utils/inject';

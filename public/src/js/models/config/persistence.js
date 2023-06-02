@@ -1,6 +1,6 @@
 import _ from 'underscore';
-import * as authedAjax from 'modules/authed-ajax';
-import EventEmitter from 'EventEmitter';
+import * as authedAjax from '../../modules/authed-ajax';
+import EventEmitter from 'wolfy87-eventemitter';
 
 let postUpdateSym = Symbol();
 class Persistence extends EventEmitter {

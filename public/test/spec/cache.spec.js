@@ -1,4 +1,4 @@
-import * as cache from 'modules/cache';
+import * as cache from './modules/cache';
 
 describe('Cache', function () {
     it('stores until expiry', function () {

@@ -1,6 +1,6 @@
-import * as vars from 'modules/vars';
-import urlAbsPath from 'utils/url-abs-path';
-import findFirstById from 'utils/find-first-by-id';
+import * as vars from '../../modules/vars';
+import urlAbsPath from '../../utils/url-abs-path';
+import findFirstById from '../../utils/find-first-by-id';
 
 function newItemsConstructor (id) {
     return [findFirstById(vars.model.collections, urlAbsPath(id))];

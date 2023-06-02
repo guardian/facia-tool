@@ -1,7 +1,7 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import modal from 'modules/modal-dialog';
-import * as vars from 'modules/vars';
+import modal from './modules/modal-dialog';
+import * as vars from './modules/vars';
 import {register} from 'models/widgets';
 import * as wait from 'test/utils/wait';
 import mediator from 'utils/mediator';

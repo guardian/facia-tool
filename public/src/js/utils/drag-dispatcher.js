@@ -1,18 +1,18 @@
 import _ from 'underscore';
-import Article from 'models/collections/article';
-import ConfigCollection from 'models/config/collection';
-import * as authedAjax from 'modules/authed-ajax';
-import * as capi from 'modules/content-api';
-import * as vars from 'modules/vars';
-import alert from 'utils/alert';
-import cleanClone from 'utils/clean-clone';
-import cloneWithKey from 'utils/clone-with-key';
-import deepGet from 'utils/deep-get';
-import findFirstById from 'utils/find-first-by-id';
-import mediator from 'utils/mediator';
-import removeById from 'utils/remove-by-id';
-import serializeArticleMeta from 'utils/serialize-article-meta';
-import urlAbsPath from 'utils/url-abs-path';
+import Article from '../models/collections/article';
+import ConfigCollection from '../models/config/collection';
+import * as authedAjax from '../modules/authed-ajax';
+import * as capi from '../modules/content-api';
+import * as vars from '../modules/vars';
+import alert from '../utils/alert';
+import cleanClone from '../utils/clean-clone';
+import cloneWithKey from '../utils/clone-with-key';
+import deepGet from '../utils/deep-get';
+import findFirstById from '../utils/find-first-by-id';
+import mediator from '../utils/mediator';
+import removeById from '../utils/remove-by-id';
+import serializeArticleMeta from '../utils/serialize-article-meta';
+import urlAbsPath from '../utils/url-abs-path';
 
 export default function (source, targetItem, targetGroup, alternate) {
     return (alternate ? alternateAction : defaultAction)(source, targetItem, targetGroup);

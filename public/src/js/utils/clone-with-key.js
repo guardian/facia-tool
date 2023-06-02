@@ -1,4 +1,4 @@
-import cleanClone from 'utils/clean-clone';
+import cleanClone from '../utils/clean-clone';
 
 export default function (obj, id) {
     var nuObj = obj ? cleanClone(obj) : {};

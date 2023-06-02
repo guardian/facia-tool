@@ -1,6 +1,6 @@
 import ko from 'knockout';
-import mediator from 'utils/mediator';
-import Extension from 'models/extension';
+import mediator from '../utils/mediator';
+import Extension from '../models/extension';
 
 export default class extends Extension {
     constructor(baseModel) {

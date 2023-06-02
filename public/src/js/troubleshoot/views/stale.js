@@ -1,7 +1,7 @@
-import template from 'troubleshoot/templates/stale.html!text';
-import createScheduler from 'troubleshoot/scheduler';
-import humanTime from 'utils/human-time';
-import CONST from 'constants/defaults';
+import template from '../templates/stale.html!text';
+import createScheduler from '../scheduler';
+import humanTime from '../../utils/human-time';
+import CONST from '../../constants/defaults';
 
 const disposeActions = [];
 const STALE_NETWORK_FRONT = 6 * 60 * 1000;

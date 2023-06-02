@@ -1,16 +1,16 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import {CONST} from 'modules/vars';
-import BaseClass from 'models/base-class';
-import persistence from 'models/config/persistence';
-import Layout from 'models/layout';
-import * as widgets from 'models/widgets';
-import copiedArticle from 'modules/copied-article';
-import Droppable from 'modules/droppable';
-import modalDialog from 'modules/modal-dialog';
-import message from 'widgets/message';
-import cloneWithKey from 'utils/clone-with-key';
-import priorityFromUrl from 'utils/priority-from-url';
+import {CONST} from '../modules/vars';
+import BaseClass from '../models/base-class';
+import persistence from '../models/config/persistence';
+import Layout from '../models/layout';
+import * as widgets from '../models/widgets';
+import copiedArticle from '../modules/copied-article';
+import Droppable from '../modules/droppable';
+import modalDialog from '../modules/modal-dialog';
+import message from '../widgets/message';
+import cloneWithKey from '../utils/clone-with-key';
+import priorityFromUrl from '../utils/priority-from-url';
 
 var droppableSym = Symbol();
 

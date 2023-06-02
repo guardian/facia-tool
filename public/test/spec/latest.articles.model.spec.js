@@ -1,4 +1,4 @@
-import * as contentApi from 'modules/content-api';
+import * as contentApi from './modules/content-api';
 import * as mockjax from 'test/utils/mockjax';
 import parse from 'utils/parse-query-params';
 

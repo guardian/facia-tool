@@ -1,8 +1,8 @@
-import BaseWidget from 'widgets/base-widget';
+import BaseWidget from './base-widget';
 import ko from 'knockout';
 import _ from 'underscore';
 import 'fastsearch';
-import 'fastselect';
+import 'fastselect/src/fastselect.js'; //TODO this could possibly be removed?
 
 export default class CollectionTags extends BaseWidget {
     constructor (params) {

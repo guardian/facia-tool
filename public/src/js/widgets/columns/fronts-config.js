@@ -1,12 +1,12 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import findFirstById from 'utils/find-first-by-id';
-import Front from 'models/config/front';
-import frontCount from 'utils/front-count';
-import ColumnWidget from 'widgets/column-widget';
-import alert from 'utils/alert';
-import CONST from 'constants/defaults';
-import isCodeEnvironment from 'utils/is-code-environment';
+import findFirstById from '../../utils/find-first-by-id';
+import Front from '../../models/config/front';
+import frontCount from '../../utils/front-count';
+import ColumnWidget from '../column-widget';
+import alert from '../../utils/alert';
+import CONST from '../../constants/defaults';
+import isCodeEnvironment from '../../utils/is-code-environment';
 
 export default class FrontConfig extends ColumnWidget {
     constructor(params, element) {

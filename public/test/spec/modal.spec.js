@@ -1,5 +1,5 @@
 import ko from 'knockout';
-import modalDialog from 'modules/modal-dialog';
+import modalDialog from './modules/modal-dialog';
 import alert from 'utils/alert';
 import sinon from 'sinon';
 import $ from 'jquery';

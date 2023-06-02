@@ -1,9 +1,9 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import BaseWidget from 'widgets/base-widget';
-import autocomplete from 'modules/auto-complete';
-import debounce from 'utils/debounce';
-import {CONST} from 'modules/vars';
+import BaseWidget from './base-widget';
+import autocomplete from '../modules/auto-complete';
+import debounce from '../utils/debounce';
+import {CONST} from '../modules/vars';
 
 var typeBounceSym = Symbol();
 var setFilter = Symbol();

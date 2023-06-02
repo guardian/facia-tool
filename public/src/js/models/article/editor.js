@@ -1,11 +1,11 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import BaseClass from 'models/base-class';
-import alert from 'utils/alert';
-import mediator from 'utils/mediator';
-import {validateImageSrc, validateImageEvent} from 'utils/validate-image-src';
-import articleCollection from 'utils/article-collection';
-import {trackAction} from 'utils/analytics';
+import BaseClass from '../../models/base-class';
+import alert from '../../utils/alert';
+import mediator from '../../utils/mediator';
+import {validateImageEvent, validateImageSrc} from '../../utils/validate-image-src';
+import articleCollection from '../../utils/article-collection';
+import {trackAction} from '../../utils/analytics';
 
 const rxScriptStriper = new RegExp(/<script.*/gi);
 

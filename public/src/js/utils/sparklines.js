@@ -2,12 +2,12 @@ import ko from 'knockout';
 import _ from 'underscore';
 import $ from 'jquery';
 import numeral from 'numeral';
-import {request} from 'modules/authed-ajax';
-import * as vars from 'modules/vars';
-import Highcharts from 'utils/highcharts';
-import mediator from 'utils/mediator';
-import parseQueryParams from 'utils/parse-query-params';
-import urlAbsPath from 'utils/url-abs-path';
+import {request} from '../modules/authed-ajax';
+import * as vars from '../modules/vars';
+import Highcharts from '../utils/highcharts';
+import mediator from '../utils/mediator';
+import parseQueryParams from '../utils/parse-query-params';
+import urlAbsPath from '../utils/url-abs-path';
 
 var subscribedFronts = [],
     pollingId;

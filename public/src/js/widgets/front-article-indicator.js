@@ -1,6 +1,6 @@
-import Extension from 'models/extension';
-import fetchVisibleStories from 'utils/fetch-visible-stories';
-import mediator from 'utils/mediator';
+import Extension from '../models/extension';
+import fetchVisibleStories from '../utils/fetch-visible-stories';
+import mediator from '../utils/mediator';
 
 export default class extends Extension {
 

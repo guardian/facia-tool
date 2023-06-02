@@ -1,7 +1,7 @@
 import _ from 'underscore';
-import * as vars from 'modules/vars';
-import Collection from 'models/config/collection';
-import cloneWithKey from 'utils/clone-with-key';
+import * as vars from '../modules/vars';
+import Collection from '../models/config/collection';
+import cloneWithKey from '../utils/clone-with-key';
 
 export default function generateCollections (collections) {
     var collectionDefinition = vars.model.state().config.collections;

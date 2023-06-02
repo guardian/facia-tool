@@ -1,4 +1,4 @@
-import {CONST} from 'modules/vars';
+import {CONST} from './vars';
 
 export let overrides = {
     Date: Date

@@ -1,8 +1,8 @@
-import * as ajax from 'modules/authed-ajax';
+import * as ajax from './modules/authed-ajax';
 import * as mockjax from 'test/utils/mockjax';
 import $ from 'jquery';
 import * as panda from 'panda-session';
-import {CONST} from 'modules/vars';
+import {CONST} from './modules/vars';
 
 describe('Authed Ajax', function () {
     beforeEach(function () {

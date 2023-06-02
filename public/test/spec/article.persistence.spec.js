@@ -3,8 +3,8 @@ import Collection from 'models/collections/collection';
 import persistence from 'models/collections/persistence';
 import Group from 'models/group';
 import MockCollections from 'mock/collection';
-import * as authedAjax from 'modules/authed-ajax';
-import * as contentApi from 'modules/content-api';
+import * as authedAjax from './modules/authed-ajax';
+import * as contentApi from './modules/content-api';
 
 describe('Article Persistence', function () {
     beforeEach(function () {

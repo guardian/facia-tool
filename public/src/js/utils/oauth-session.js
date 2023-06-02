@@ -1,4 +1,4 @@
-import {CONST} from 'modules/vars';
+import {CONST} from '../modules/vars';
 import * as panda from 'panda-session';
 
 function locationRedirect() {

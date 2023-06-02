@@ -1,4 +1,4 @@
-import {CONST} from 'modules/vars';
+import {CONST} from '../../modules/vars';
 
 export function headline() {
     const meta = this.meta, fields = this.fields;

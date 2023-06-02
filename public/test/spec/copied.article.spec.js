@@ -1,4 +1,4 @@
-import copied from 'modules/copied-article';
+import copied from './modules/copied-article';
 
 describe('Copied articles', function () {
     function Article (opts) {

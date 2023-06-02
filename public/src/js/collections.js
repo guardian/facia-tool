@@ -1,0 +1,10 @@
+import './shared';
+import './widgets/columns/latest';
+import './widgets/clipboard';
+import './widgets/columns/fronts';
+import './widgets/columns/fronts-standalone-clipboard';
+import './widgets/autocomplete';
+import './widgets/presser-detect-stale';
+import './widgets/copy-paste-articles';
+import './widgets/sparklines-trails';
+import './widgets/front-article-indicator';

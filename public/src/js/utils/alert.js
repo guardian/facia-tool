@@ -1,4 +1,4 @@
-import modalDialog from 'modules/modal-dialog';
+import modalDialog from '../modules/modal-dialog';
 
 /**
  * Launch a modal dialog.

@@ -1,4 +1,4 @@
-import CONST from 'constants/defaults';
+import CONST from './defaults';
 
 export default Object.freeze([
     {

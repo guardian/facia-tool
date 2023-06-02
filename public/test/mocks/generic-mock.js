@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import clone from 'utils/clean-clone';
 import mockjax from 'test/utils/mockjax';
-import EventEmitter from 'EventEmitter';
+import EventEmitter from 'wolfy87-eventemitter';
 
 class Mock extends EventEmitter {
 

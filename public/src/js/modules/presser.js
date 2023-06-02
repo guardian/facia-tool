@@ -1,9 +1,9 @@
 import _ from 'underscore';
-import BaseClass from 'models/base-class';
-import {request} from 'modules/authed-ajax';
-import {CONST} from 'modules/vars';
-import mediator from 'utils/mediator';
-import debounce from 'utils/debounce';
+import BaseClass from '../models/base-class';
+import {request} from './authed-ajax';
+import {CONST} from './vars';
+import mediator from '../utils/mediator';
+import debounce from '../utils/debounce';
 
 var detectFailuresSym = Symbol();
 

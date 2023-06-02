@@ -1,17 +1,17 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import Collection from 'models/collections/collection';
-import Presser from 'modules/presser';
-import {CONST} from 'modules/vars';
-import {trackAction} from 'utils/analytics';
-import lastModified from 'utils/fetch-lastmodified';
-import humanTime from 'utils/human-time';
-import mediator from 'utils/mediator';
-import * as sparklines from 'utils/sparklines';
-import ColumnWidget from 'widgets/column-widget';
-import deepGet from 'utils/deep-get';
-import modalDialog from 'modules/modal-dialog';
-import isCodeEnvironment from 'utils/is-code-environment';
+import Collection from '../../models/collections/collection';
+import Presser from '../../modules/presser';
+import {CONST} from '../../modules/vars';
+import {trackAction} from '../../utils/analytics';
+import lastModified from '../../utils/fetch-lastmodified';
+import humanTime from '../../utils/human-time';
+import mediator from '../../utils/mediator';
+import * as sparklines from '../../utils/sparklines';
+import ColumnWidget from '../column-widget';
+import deepGet from '../../utils/deep-get';
+import modalDialog from '../../modules/modal-dialog';
+import isCodeEnvironment from '../../utils/is-code-environment';
 
 export default class Front extends ColumnWidget {
     constructor(params, element) {

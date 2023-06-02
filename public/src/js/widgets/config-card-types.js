@@ -1,7 +1,7 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import * as vars from 'modules/vars';
-import Extension from 'models/extension';
+import * as vars from '../modules/vars';
+import Extension from '../models/extension';
 
 export default class extends Extension {
     constructor(baseModel) {

@@ -1,7 +1,7 @@
-import * as vars from 'modules/vars';
-import columns from 'models/available-columns';
-import extensions from 'models/available-extensions';
-import BaseModule from 'models/base-model';
+import * as vars from './vars';
+import columns from '../models/available-columns';
+import extensions from '../models/available-extensions';
+import BaseModule from '../models/base-model';
 
 function getLoader (enabledWidgets, loadedExtensions) {
     return function (router, res) {

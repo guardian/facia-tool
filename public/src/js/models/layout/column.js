@@ -1,7 +1,7 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import BaseClass from 'models/base-class';
-import * as globalListeners from 'utils/global-listeners';
+import BaseClass from '../../models/base-class';
+import * as globalListeners from '../../utils/global-listeners';
 
 function isNarrow (column) {
     var percentage = parseInt(column.style.width(), 10),

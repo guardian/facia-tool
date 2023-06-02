@@ -1,17 +1,17 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import DropTarget from 'models/drop-target';
-import persistence from 'models/config/persistence';
-import * as vars from 'modules/vars';
-import alert from 'utils/alert';
-import asObservableProps from 'utils/as-observable-props';
-import observableNumeric from 'utils/observable-numeric';
-import deepGet from 'utils/deep-get';
-import fullTrim from 'utils/full-trim';
-import populateObservables from 'utils/populate-observables';
-import urlAbsPath from 'utils/url-abs-path';
-import isPlatformSpecificCollection from 'utils/platform';
-import CONST from 'constants/defaults';
+import DropTarget from '../../models/drop-target';
+import persistence from '../../models/config/persistence';
+import * as vars from '../../modules/vars';
+import alert from '../../utils/alert';
+import asObservableProps from '../../utils/as-observable-props';
+import observableNumeric from '../../utils/observable-numeric';
+import deepGet from '../../utils/deep-get';
+import fullTrim from '../../utils/full-trim';
+import populateObservables from '../../utils/populate-observables';
+import urlAbsPath from '../../utils/url-abs-path';
+import isPlatformSpecificCollection from '../../utils/platform';
+import CONST from '../../constants/defaults';
 
 export default class ConfigCollection extends DropTarget {
     constructor(opts = {}) {

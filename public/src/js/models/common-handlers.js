@@ -1,8 +1,8 @@
 import ko from 'knockout';
 import $ from 'jquery';
 import _ from 'underscore';
-import mediator from 'utils/mediator';
-import articleCollection from 'utils/article-collection';
+import mediator from '../utils/mediator';
+import articleCollection from '../utils/article-collection';
 
 ko.bindingHandlers.toggleClick = {
     init: function (element, valueAccessor) {

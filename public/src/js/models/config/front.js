@@ -1,19 +1,19 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import BaseClass from 'models/base-class';
-import Collection from 'models/config/collection';
-import persistence from 'models/config/persistence';
-import Group from 'models/group';
-import * as contentApi from 'modules/content-api';
-import * as vars from 'modules/vars';
-import asObservableProps from 'utils/as-observable-props';
-import cloneWithKey from 'utils/clone-with-key';
-import frontCount from 'utils/front-count';
-import populateObservables from 'utils/populate-observables';
-import generateCollections from 'utils/generate-collections';
-import {validateImageSrc} from 'utils/validate-image-src';
-import alert from 'utils/alert';
-import isPlatformSpecificCollection from 'utils/platform';
+import BaseClass from '../../models/base-class';
+import Collection from '../../models/config/collection';
+import persistence from '../../models/config/persistence';
+import Group from '../../models/group';
+import * as contentApi from '../../modules/content-api';
+import * as vars from '../../modules/vars';
+import asObservableProps from '../../utils/as-observable-props';
+import cloneWithKey from '../../utils/clone-with-key';
+import frontCount from '../../utils/front-count';
+import populateObservables from '../../utils/populate-observables';
+import generateCollections from '../../utils/generate-collections';
+import {validateImageSrc} from '../../utils/validate-image-src';
+import alert from '../../utils/alert';
+import isPlatformSpecificCollection from '../../utils/platform';
 
 export default class ConfigFront extends BaseClass {
     constructor(opts = {}) {

@@ -1,22 +1,22 @@
 import ko from 'knockout';
 import _ from 'underscore';
 import $ from 'jquery';
-import BaseClass from 'models/base-class';
-import Article from 'models/collections/article';
-import Group from 'models/group';
-import * as authedAjax from 'modules/authed-ajax';
-import * as contentApi from 'modules/content-api';
-import modalDialog from 'modules/modal-dialog';
-import * as vars from 'modules/vars';
-import alert from 'utils/alert';
-import asObservableProps from 'utils/as-observable-props';
-import deepGet from 'utils/deep-get';
-import humanTime from 'utils/human-time';
-import mediator from 'utils/mediator';
-import populateObservables from 'utils/populate-observables';
-import reportErrors from 'utils/report-errors';
-import success from 'utils/success';
-import isPlatformSpecificCollection from 'utils/platform';
+import BaseClass from '../../models/base-class';
+import Article from '../../models/collections/article';
+import Group from '../../models/group';
+import * as authedAjax from '../../modules/authed-ajax';
+import * as contentApi from '../../modules/content-api';
+import modalDialog from '../../modules/modal-dialog';
+import * as vars from '../../modules/vars';
+import alert from '../../utils/alert';
+import asObservableProps from '../../utils/as-observable-props';
+import deepGet from '../../utils/deep-get';
+import humanTime from '../../utils/human-time';
+import mediator from '../../utils/mediator';
+import populateObservables from '../../utils/populate-observables';
+import reportErrors from '../../utils/report-errors';
+import success from '../../utils/success';
+import isPlatformSpecificCollection from '../../utils/platform';
 
 export default class Collection extends BaseClass {
     constructor(opts = {}) {

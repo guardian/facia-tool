@@ -1,4 +1,4 @@
-import CONST from 'constants/defaults';
+import CONST from '../constants/defaults';
 
 export {CONST};
 

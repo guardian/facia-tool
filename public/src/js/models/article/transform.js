@@ -1,7 +1,7 @@
 import _ from 'underscore';
-import {getViewUrl, getOphanUrl} from 'models/article/links';
-import deepGet from 'utils/deep-get';
-import getMediaMainImage from 'utils/get-media-main-image';
+import {getViewUrl, getOphanUrl} from './links';
+import deepGet from '../../utils/deep-get';
+import getMediaMainImage from '../../utils/get-media-main-image';
 
 export function getMainMediaType(contentApiArticle) {
     return _.chain(contentApiArticle.elements).where({relation: 'main'}).pluck('type').first().value();

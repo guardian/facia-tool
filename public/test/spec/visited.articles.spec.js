@@ -1,6 +1,6 @@
 import Page from 'test/utils/page';
 import * as wait from 'test/utils/wait';
-import {CONST} from 'modules/vars';
+import {CONST} from './modules/vars';
 
 describe('Visited articles', function () {
     beforeEach(function (done) {

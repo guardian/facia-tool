@@ -1,6 +1,6 @@
 import tick from 'test/utils/tick';
 import session from 'utils/oauth-session';
-import {CONST} from 'modules/vars';
+import {CONST} from './modules/vars';
 
 describe('OAuth Session', function () {
     beforeEach(function () {

@@ -53,8 +53,6 @@ printf "\n\rSetting up Breaking News tool (Fronts Tool V1) dependencies... \n\r\
 install_v1_deps() {
     printf "\n\rInstalling NPM modules \n\r\n\r"
     npm install
-    printf "\n\rInstalling JSPM modules \n\r\n\r"
-    npm run jspm install
 }
 
 setup_nginx() {

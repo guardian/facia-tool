@@ -1,6 +1,6 @@
-import {request} from 'modules/authed-ajax';
-import * as cache from 'modules/cache';
-import {CONST} from 'modules/vars';
+import {request} from './authed-ajax';
+import * as cache from './cache';
+import {CONST} from './vars';
 
 const maxItems = 50;
 

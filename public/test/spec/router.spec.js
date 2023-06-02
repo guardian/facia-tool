@@ -1,5 +1,5 @@
-import Router from 'modules/router';
-import {CONST} from 'modules/vars';
+import Router from './modules/router';
+import {CONST} from './modules/vars';
 import fakePushState from 'test/utils/push-state';
 
 describe('Router', function () {

@@ -1,6 +1,6 @@
-import {request} from 'modules/authed-ajax';
-import {model, CONST} from 'modules/vars';
-import humanTime from 'utils/human-time';
+import {request} from '../modules/authed-ajax';
+import {model, CONST} from '../modules/vars';
+import humanTime from '../utils/human-time';
 
 function getFrontAgeAlertMs(front) {
 

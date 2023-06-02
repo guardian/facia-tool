@@ -32,7 +32,6 @@ RUNNING_PID
 local.sbt
 
 node_modules
-jspm_packages
 screenshots
 
 common/conf/assets
@@ -60,3 +59,4 @@ metals.sbt
 .bloop
 .bsp
 
+dist

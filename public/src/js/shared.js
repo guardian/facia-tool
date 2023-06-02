@@ -1,12 +1,14 @@
+import $ from 'jquery';
+window.jQuery = $;
+
 import ko from 'knockout';
 import Raven from 'raven-js';
-import Bootstrap from 'modules/bootstrap';
-import 'font-awesome/css/font-awesome.min.css!';
-import {trackStaticResourceTiming} from 'utils/analytics';
-import logger from 'utils/logger';
-import oauthSession from 'utils/oauth-session';
-import Router from 'modules/router';
-import handlers from 'modules/route-handlers';
+import Bootstrap from './modules/bootstrap';
+import {trackStaticResourceTiming} from './utils/analytics';
+import logger from './utils/logger';
+import oauthSession from './utils/oauth-session';
+import Router from './modules/router';
+import handlers from './modules/route-handlers';
 
 var router, bootstrap;
 

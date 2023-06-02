@@ -1,6 +1,6 @@
-import CONST from 'constants/defaults';
-import urlHost from 'utils/url-host';
-import urlAbsPath from 'utils/url-abs-path';
+import CONST from '../constants/defaults';
+import urlHost from '../utils/url-host';
+import urlAbsPath from '../utils/url-abs-path';
 
 export default function(url) {
 

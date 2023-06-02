@@ -3,7 +3,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import mediator from 'utils/mediator';
 import Layout from 'models/layout';
-import Router from 'modules/router';
+import Router from './modules/router';
 import verticalLayout from 'views/templates/vertical_layout.scala.html!text';
 import mainLayout from 'views/templates/main.scala.html!text';
 import inject from 'test/utils/inject';

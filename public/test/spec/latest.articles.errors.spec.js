@@ -1,7 +1,7 @@
-import EventEmitter from 'EventEmitter';
+import EventEmitter from 'wolfy87-eventemitter';
 import LatestArticles from 'models/collections/latest-articles';
-import * as capi from 'modules/content-api';
-import {CONST} from 'modules/vars';
+import * as capi from './modules/content-api';
+import {CONST} from './modules/vars';
 import mediator from 'utils/mediator';
 import * as wait from 'test/utils/wait';
 

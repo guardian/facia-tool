@@ -1,4 +1,4 @@
-import {CONST} from 'modules/vars';
+import {CONST} from '../modules/vars';
 
 export default function (pathname = window.location.pathname) {
     var priority = pathname.match(/^\/?([^/]+)/);

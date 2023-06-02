@@ -1,8 +1,8 @@
 import _ from 'underscore';
-import * as vars from 'modules/vars';
-import deepGet from 'utils/deep-get';
-import grid from 'utils/grid';
-import { recordUsage } from 'modules/grid';
+import * as vars from '../modules/vars';
+import deepGet from '../utils/deep-get';
+import grid from '../utils/grid';
+import { recordUsage } from '../modules/grid';
 
 /**
  * Asserts if the given image URL is on The Guardian domain, is proper size and aspect ratio.

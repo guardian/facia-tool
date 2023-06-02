@@ -1,6 +1,6 @@
-import * as authedAjax from 'modules/authed-ajax';
-import isGuardianUrl from 'utils/is-guardian-url';
-import urlHost from 'utils/url-host';
+import * as authedAjax from '../modules/authed-ajax';
+import isGuardianUrl from '../utils/is-guardian-url';
+import urlHost from '../utils/url-host';
 
 export default function (url) {
     const isOnSite = isGuardianUrl(url);

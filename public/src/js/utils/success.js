@@ -1,5 +1,5 @@
-import modalDialog from 'modules/modal-dialog';
-import {CONST} from 'modules/vars';
+import modalDialog from '../modules/modal-dialog';
+import {CONST} from '../modules/vars';
 
 export default function (request) {
     modalDialog.confirm({

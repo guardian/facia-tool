@@ -1,5 +1,5 @@
 import ko from 'knockout';
-import * as vars from 'modules/vars';
+import * as vars from './modules/vars';
 
 var originalValues = {
     imageCdnDomainExpr: '',

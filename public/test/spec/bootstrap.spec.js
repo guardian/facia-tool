@@ -1,5 +1,5 @@
-import {CONST} from 'modules/vars';
-import Bootstrap from 'modules/bootstrap';
+import {CONST} from './modules/vars';
+import Bootstrap from './modules/bootstrap';
 import {scope} from 'test/utils/mockjax';
 import sinon from 'sinon';
 

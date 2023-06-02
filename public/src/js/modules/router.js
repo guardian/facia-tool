@@ -1,8 +1,8 @@
-import EventEmitter from 'EventEmitter';
-import {CONST} from 'modules/vars';
-import {page} from 'utils/analytics';
-import parseQueryParams from 'utils/parse-query-params';
-import serializeQueryParams from 'utils/serialize-query-params';
+import EventEmitter from 'wolfy87-eventemitter';
+import {CONST} from './vars';
+import {page} from '../utils/analytics';
+import parseQueryParams from '../utils/parse-query-params';
+import serializeQueryParams from '../utils/serialize-query-params';
 
 class Router extends EventEmitter {
     constructor(handlers, location, history) {

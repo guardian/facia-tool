@@ -1,7 +1,7 @@
 import _ from 'underscore';
-import deepGet from 'utils/deep-get';
-import parseQueryParams from 'utils/parse-query-params';
-import grid from 'utils/grid';
+import deepGet from '../utils/deep-get';
+import parseQueryParams from '../utils/parse-query-params';
+import grid from '../utils/grid';
 
 function getMediaItem(dataTransfer) {
     var mediaItem = grid().getCropFromEvent({dataTransfer});

@@ -1,5 +1,5 @@
-import { request } from 'modules/authed-ajax';
-import {CONST} from 'modules/vars';
+import { request } from './authed-ajax';
+import {CONST} from './vars';
 
 export function recordUsage(mediaId, frontId) {
     const usageData = {

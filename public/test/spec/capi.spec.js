@@ -1,10 +1,10 @@
 import _ from 'underscore';
 import sinon from 'sinon';
-import {CONST} from 'modules/vars';
-import * as capi from 'modules/content-api';
+import {CONST} from './modules/vars';
+import * as capi from './modules/content-api';
 import {scope} from 'test/utils/mockjax';
-import * as cache from 'modules/cache';
-import modalDialog from 'modules/modal-dialog';
+import * as cache from './modules/cache';
+import modalDialog from './modules/modal-dialog';
 
 describe('Content API', function () {
     var createArticle = function (id) {

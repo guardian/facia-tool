@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import * as vars from 'modules/vars';
+import * as vars from './modules/vars';
 import testConfig from 'test/config';
 import $ from 'jquery';
 

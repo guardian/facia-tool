@@ -1,8 +1,8 @@
 import _ from 'underscore';
 import $ from 'jquery';
-import {CONST} from 'modules/vars';
-import {reauth} from 'utils/oauth-session';
-import reportErrors from 'utils/report-errors';
+import {CONST} from './vars';
+import {reauth} from '../utils/oauth-session';
+import reportErrors from '../utils/report-errors';
 
 function collectionEndPoint (isTreats, edits) {
     if (isTreats) {

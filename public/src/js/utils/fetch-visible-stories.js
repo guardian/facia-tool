@@ -1,6 +1,6 @@
 import _ from 'underscore';
-import {request} from 'modules/authed-ajax';
-import mediator from 'utils/mediator';
+import {request} from '../modules/authed-ajax';
+import mediator from '../utils/mediator';
 
 export default function(type, groups) {
     var promisedAction;

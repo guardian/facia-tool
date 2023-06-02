@@ -1,6 +1,6 @@
 import _ from 'underscore';
-import deepGet from 'utils/deep-get';
-import * as vars from 'modules/vars';
+import deepGet from '../utils/deep-get';
+import * as vars from '../modules/vars';
 
 export default function (contentApiArticle) {
     const mainBodyHtml = deepGet(contentApiArticle, '.blocks.main.bodyHtml');

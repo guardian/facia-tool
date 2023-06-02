@@ -1,12 +1,12 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import * as contentApi from 'modules/content-api';
-import * as vars from 'modules/vars';
-import asObservableProps from 'utils/as-observable-props';
-import debounce from 'utils/debounce';
-import deepGet from 'utils/deep-get';
-import sanitizeApiQuery from 'utils/sanitize-api-query';
-import BaseWidget from 'widgets/base-widget';
+import * as contentApi from '../modules/content-api';
+import * as vars from '../modules/vars';
+import asObservableProps from '../utils/as-observable-props';
+import debounce from '../utils/debounce';
+import deepGet from '../utils/deep-get';
+import sanitizeApiQuery from '../utils/sanitize-api-query';
+import BaseWidget from './base-widget';
 
 const queryApiSym = Symbol();
 

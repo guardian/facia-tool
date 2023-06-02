@@ -1,4 +1,4 @@
-import urlAbsPath from 'utils/url-abs-path';
+import urlAbsPath from '../utils/url-abs-path';
 
 function generateId() {
     return 'snap/' + new Date().getTime();

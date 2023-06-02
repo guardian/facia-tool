@@ -1,4 +1,4 @@
-import {CONST} from 'modules/vars';
+import {CONST} from '../modules/vars';
 import _ from 'underscore';
 
 export default function countFronts (fronts, priority = CONST.defaultPriority) {

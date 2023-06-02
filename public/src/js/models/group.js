@@ -1,8 +1,8 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import DropTarget from 'models/drop-target';
-import copiedArticle from 'modules/copied-article';
-import mediator from 'utils/mediator';
+import DropTarget from '../models/drop-target';
+import copiedArticle from '../modules/copied-article';
+import mediator from '../utils/mediator';
 
 export default class Group extends DropTarget {
     constructor(opts = {}) {

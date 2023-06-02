@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import urlQuery from 'utils/url-query';
+import urlQuery from '../utils/url-query';
 
 /**
  * Returns query params as an object.

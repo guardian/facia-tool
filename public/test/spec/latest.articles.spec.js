@@ -1,8 +1,8 @@
 import ko from 'knockout';
 import $ from 'jquery';
-import * as capi from 'modules/content-api';
+import * as capi from './modules/content-api';
 import * as wait from 'test/utils/wait';
-import {CONST} from 'modules/vars';
+import {CONST} from './modules/vars';
 import {injectColumnWidget} from 'test/utils/inject';
 import * as mockjax from 'test/utils/mockjax';
 import textInside from 'test/utils/text-inside';

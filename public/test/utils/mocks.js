@@ -3,7 +3,7 @@ import MockCollections from 'mock/collection';
 import MockSearch from 'mock/search';
 import MockLastModified from 'mock/lastmodified';
 import MockVisible from 'mock/stories-visible';
-import * as ajax from 'modules/authed-ajax';
+import * as ajax from './modules/authed-ajax';
 
 export default function install ({
     testConfig = {},

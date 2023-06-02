@@ -1,6 +1,6 @@
 import _ from 'underscore';
-import Droppable from 'modules/droppable';
-import {CONST} from 'modules/vars';
+import Droppable from './modules/droppable';
+import {CONST} from './modules/vars';
 import GridUtil from 'grid-util-js';
 
 function Article (element) {

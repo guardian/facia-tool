@@ -1,6 +1,6 @@
 import _ from 'underscore';
-import {request} from 'modules/authed-ajax';
-import CONST from 'constants/defaults';
+import {request} from './authed-ajax';
+import CONST from '../constants/defaults';
 
 var endpoints = [{
     key: 'config',

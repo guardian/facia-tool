@@ -1,5 +1,5 @@
 import _ from 'underscore';
-import parseQueryParams from 'utils/parse-query-params';
+import parseQueryParams from '../utils/parse-query-params';
 
 export default function (url) {
     const bits = (url + '').split('?');

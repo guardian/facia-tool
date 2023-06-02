@@ -2,36 +2,36 @@ import $ from 'jquery';
 import ko from 'knockout';
 import _ from 'underscore';
 
-import metaFields from 'constants/article-meta-fields';
+import metaFields from '../../constants/article-meta-fields';
 
-import {headline, headlineLength, headlineLengthAlert} from 'models/article/headline';
-import {displayLabel} from 'models/article/display-editor';
-import {thumbnail, main as mainImage} from 'models/article/images';
-import Editor from 'models/article/editor';
-import {default as assignState} from 'models/article/transform';
-import persistence from 'models/collections/persistence';
-import DropTarget from 'models/drop-target';
-import Group from 'models/group';
-import {getViewUrl} from 'models/article/links';
+import {headline, headlineLength, headlineLengthAlert} from '../article/headline';
+import {displayLabel} from '../article/display-editor';
+import {thumbnail, main as mainImage} from '../article/images';
+import Editor from '../article/editor';
+import {default as assignState} from '../article/transform';
+import persistence from './persistence';
+import DropTarget from '../drop-target';
+import Group from '../group';
+import {getViewUrl} from '../article/links';
 
-import * as contentApi from 'modules/content-api';
-import copiedArticle from 'modules/copied-article';
+import * as contentApi from '../../modules/content-api';
+import copiedArticle from '../../modules/copied-article';
 
-import {trackAction} from 'utils/analytics';
-import articleCollection from 'utils/article-collection';
-import asObservableProps from 'utils/as-observable-props';
-import deepGet from 'utils/deep-get';
-import humanTime from 'utils/human-time';
-import isGuardianUrl from 'utils/is-guardian-url';
-import isPreviewUrl from 'utils/is-preview-url';
-import logger from 'utils/logger';
-import mediator from 'utils/mediator';
-import openGraph from 'utils/open-graph';
-import populateObservables from 'utils/populate-observables';
-import serializeArticleMeta from 'utils/serialize-article-meta';
-import * as snap from 'utils/snap';
-import urlAbsPath from 'utils/url-abs-path';
-import visitedArticleStorage from 'utils/visited-article-storage';
+import {trackAction} from '../../utils/analytics';
+import articleCollection from '../../utils/article-collection';
+import asObservableProps from '../../utils/as-observable-props';
+import deepGet from '../../utils/deep-get';
+import humanTime from '../../utils/human-time';
+import isGuardianUrl from '../../utils/is-guardian-url';
+import isPreviewUrl from '../../utils/is-preview-url';
+import logger from '../../utils/logger';
+import mediator from '../../utils/mediator';
+import openGraph from '../../utils/open-graph';
+import populateObservables from '../../utils/populate-observables';
+import serializeArticleMeta from '../../utils/serialize-article-meta';
+import * as snap from '../../utils/snap';
+import urlAbsPath from '../../utils/url-abs-path';
+import visitedArticleStorage from '../../utils/visited-article-storage';
 
 const capiProps = [
     'webUrl',

@@ -1,7 +1,7 @@
 import ko from 'knockout';
 import _ from 'underscore';
 import $ from 'jquery';
-import * as vars from 'modules/vars';
+import * as vars from './modules/vars';
 import mediator from 'utils/mediator';
 import dates from 'test/fixtures/dates';
 import inject from 'test/utils/inject';

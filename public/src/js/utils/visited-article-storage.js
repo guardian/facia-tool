@@ -1,5 +1,5 @@
-import * as storage from 'utils/local-storage';
-import * as vars from 'modules/vars';
+import * as storage from '../utils/local-storage';
+import * as vars from '../modules/vars';
 import _ from 'underscore';
 
 let visitedArticleStorage = {};

@@ -1,8 +1,8 @@
 import $ from 'jquery';
-import autocomplete from 'modules/auto-complete';
+import autocomplete from './modules/auto-complete';
 import * as mockjax from 'test/utils/mockjax';
-import * as cache from 'modules/cache';
-import {CONST} from 'modules/vars';
+import * as cache from './modules/cache';
+import {CONST} from './modules/vars';
 import inject from 'test/utils/inject';
 import * as wait from 'test/utils/wait';
 

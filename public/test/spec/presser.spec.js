@@ -1,6 +1,6 @@
 import sinon from 'sinon';
-import Presser from 'modules/presser';
-import {CONST} from 'modules/vars';
+import Presser from './modules/presser';
+import {CONST} from './modules/vars';
 import mediator from 'utils/mediator';
 import * as mockjax from 'test/utils/mockjax';
 import * as wait from 'test/utils/wait';

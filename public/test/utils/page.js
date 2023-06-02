@@ -1,5 +1,5 @@
-import Router from 'modules/router';
-import handlers from 'modules/route-handlers';
+import Router from './modules/router';
+import handlers from './modules/route-handlers';
 import clone from 'utils/clean-clone';
 
 import verticalLayout from 'views/templates/vertical_layout.scala.html!text';

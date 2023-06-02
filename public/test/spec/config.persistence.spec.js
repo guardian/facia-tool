@@ -2,8 +2,8 @@ import ko from 'knockout';
 import persistence from 'models/config/persistence';
 import Front from 'models/config/front';
 import Collection from 'models/config/collection';
-import * as ajax from 'modules/authed-ajax';
-import * as vars from 'modules/vars';
+import * as ajax from './modules/authed-ajax';
+import * as vars from './modules/vars';
 
 describe('Persistence', function () {
     beforeEach(function () {

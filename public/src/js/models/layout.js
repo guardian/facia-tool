@@ -4,11 +4,11 @@ import $ from 'jquery';
 import 'jquery-ui/ui/effect';
 import 'jquery-ui/ui/effect-size';
 import 'jquery-ui/ui/effect-scale';
-import 'models/common-handlers';
-import BaseClass from 'models/base-class';
-import Column from 'models/layout/column';
-import copiedArticle from 'modules/copied-article';
-import * as layoutFromURL from 'utils/layout-from-url';
+import './common-handlers';
+import BaseClass from './base-class';
+import Column from './layout/column';
+import copiedArticle from '../modules/copied-article';
+import * as layoutFromURL from '../utils/layout-from-url';
 
 function columnDataOf (type, columns) {
     return _.find(columns, col => {

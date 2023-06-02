@@ -1,4 +1,4 @@
-import EventEmitter from 'EventEmitter';
+import EventEmitter from 'wolfy87-eventemitter';
 import _ from 'underscore';
 
 var bus = new EventEmitter();

@@ -1,8 +1,8 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import ColumnWidget from 'widgets/column-widget';
-import CONST from 'constants/defaults';
-import generateCollections from 'utils/generate-collections';
+import ColumnWidget from '../column-widget';
+import CONST from '../../constants/defaults';
+import generateCollections from '../../utils/generate-collections';
 
 export default class SearchConfig extends ColumnWidget {
     constructor(params, element) {

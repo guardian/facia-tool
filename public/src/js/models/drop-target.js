@@ -1,4 +1,4 @@
-import BaseClass from 'models/base-class';
+import BaseClass from '../models/base-class';
 
 export default class DropTarget extends BaseClass {
     constructor() {

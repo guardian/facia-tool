@@ -1,6 +1,6 @@
 import Article from 'models/collections/article';
 import serialize from 'utils/serialize-article-meta';
-import * as contentApi from 'modules/content-api';
+import * as contentApi from './modules/content-api';
 
 describe('Serialize Article Meta', function () {
     beforeEach(function () {

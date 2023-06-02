@@ -1,4 +1,4 @@
-import BaseWidget from 'widgets/base-widget';
+import BaseWidget from './base-widget';
 
 export default class ColumnWidget extends BaseWidget {
     constructor(params, element) {

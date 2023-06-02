@@ -1,5 +1,5 @@
-import * as authedAjax from 'modules/authed-ajax';
-import serializeArticleMeta from 'utils/serialize-article-meta';
+import * as authedAjax from '../../modules/authed-ajax';
+import serializeArticleMeta from '../../utils/serialize-article-meta';
 
 class Persistence {
     constructor() {

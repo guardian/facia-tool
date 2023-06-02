@@ -1,6 +1,6 @@
 import _ from 'underscore';
-import sanitizeHtml from 'utils/sanitize-html';
-import fullTrim from 'utils/full-trim';
+import sanitizeHtml from '../utils/sanitize-html';
+import fullTrim from '../utils/full-trim';
 
 export default function (article) {
     const cleanMeta = _.chain(article.meta)

@@ -1,12 +1,12 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import BaseClass from 'models/base-class';
-import copiedArticle from 'modules/copied-article';
-import {CONST} from 'modules/vars';
-import alert from 'utils/alert';
-import * as draggableElement from 'utils/draggable-element';
-import dispatch from 'utils/drag-dispatcher';
-import mediator from 'utils/mediator';
+import BaseClass from '../models/base-class';
+import copiedArticle from './copied-article';
+import {CONST} from './vars';
+import alert from '../utils/alert';
+import * as draggableElement from '../utils/draggable-element';
+import dispatch from '../utils/drag-dispatcher';
+import mediator from '../utils/mediator';
 
 var sourceGroup;
 const defaultDragOver = function (element, event) {

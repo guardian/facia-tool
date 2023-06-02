@@ -1,4 +1,4 @@
-import * as vars from 'modules/vars';
+import * as vars from '../modules/vars';
 import GridUtil from 'grid-util-js';
 
 export default function grid() {

@@ -1,4 +1,4 @@
-import {CONST} from 'modules/vars';
+import {CONST} from './modules/vars';
 import count from 'utils/front-count';
 
 describe('utils/front-count', function () {

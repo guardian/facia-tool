@@ -1,7 +1,7 @@
 import ko from 'knockout';
 import _ from 'underscore';
-import LatestArticles from 'models/collections/latest-articles';
-import ColumnWidget from 'widgets/column-widget';
+import LatestArticles from '../../models/collections/latest-articles';
+import ColumnWidget from '../column-widget';
 
 class Latest extends ColumnWidget {
     constructor(params, element) {
