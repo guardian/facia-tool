@@ -11,8 +11,9 @@ GET         /logout                                  controllers.PandaAuthContro
 GET         /login/status                            controllers.PandaAuthController.status
 
 # static files
-GET         /assets/fronts-client/*file                  controllers.V2Assets.at(path="", file)
-GET         /assets/*file                            controllers.UncachedAssets.at(path="", file)
+GET         /assets/fronts-client/*file              controllers.V2Assets.at(path="", file)
+GET         /assets/dist/*file                       controllers.V1Assets.aggressivelyCached(file)
+GET         /assets/*file                            controllers.V1Assets.notCached(file)
 
 ##################### NOTE ############################
 #all endpoints below this line should be authenticated#

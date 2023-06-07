@@ -4,8 +4,8 @@
   "private": true,
   "description": "Guardian front pages editor",
   "scripts": {
-    "bundleV1config": "esbuild public/src/js/config.js public/src/js/collections.js --bundle --minify --sourcemap --outdir=public/dist ",
-    "watchV1": "esbuild public/src/js/config.js public/src/js/collections.js --bundle --sourcemap --outdir=public/dist --watch",
+    "bundleV1": "esbuild public/src/js/config.js public/src/js/collections.js public/src/js/loadJQuery.js --bundle --minify --sourcemap --outdir=public/dist --entry-names=[name]-[hash]",
+    "watchV1": "esbuild public/src/js/config.js public/src/js/collections.js public/src/js/loadJQuery.js --bundle --sourcemap --outdir=public/dist --entry-names=[name]-[hash] --watch=forever",
     "test": "grunt test",
     "test:browser": "grunt test --no-single-run"
   },

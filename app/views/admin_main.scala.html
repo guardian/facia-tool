@@ -1,4 +1,4 @@
-@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, bundlePath: String, displayV2Message: Boolean = false, priority: String = "")
+@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, jQueryFilename: String, bundleFilename: String, displayV2Message: Boolean = false, priority: String = "")
 
 @import switchboard.SwitchManager
 
@@ -9,14 +9,8 @@
         <title>Fronts Editor</title>
         @templates.meta()
 
-        <script src="/assets/jspm_packages/system.js"></script>
-        <script src="/assets/js/jspm-config.js"></script>
-
-        @if(!isDev) {
-            <script src="@{bundlePath}"></script>
-        }
-
-        <script>System.import('setup');</script>
+        <script src="/assets/dist/@{jQueryFilename}"></script>
+        <script src="/assets/dist/@{bundleFilename}"></script>
     </head>
     <body class="mainFlexContainer is-authed" data-bind="css: {pending: pending}">
 

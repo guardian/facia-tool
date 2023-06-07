@@ -1,5 +1,4 @@
-import $ from 'jquery';
-window.jQuery = $;
+// IMPORTANT jQuery is already loaded at this point (and added to 'window' object)
 
 import ko from 'knockout';
 import Raven from 'raven-js';
@@ -9,6 +8,8 @@ import logger from './utils/logger';
 import oauthSession from './utils/oauth-session';
 import Router from './modules/router';
 import handlers from './modules/route-handlers';
+
+//FIXME reinstate import 'font-awesome/css/font-awesome.min.css!'; here or in the scala templates
 
 var router, bootstrap;
 

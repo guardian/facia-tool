@@ -25,11 +25,14 @@ hasCredentials() {
 main() {
     hasCredentials
 
-    printf "\n\rStarting Yarn... \n\r\n\r"
+    printf "\n\rStarting fronts-client watch... \n\r\n\r"
 
     cd fronts-client
     yarn watch &
     cd ..
+
+    printf "\n\rStarting fronts V1 watch... \n\r\n\r"
+    npm run watchV1 &
 
     printf "\n\rStarting Postgres... \n\r\n\r"
     docker-compose up -d
