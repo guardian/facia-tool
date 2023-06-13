@@ -10,9 +10,10 @@ var register = _.once(() => {
                 return;
             }
 
-            System.import(templateConfig.text + '!text').then(function (text) {
-                callback(ko.utils.parseHtmlFragment(text));
-            });
+            fetch('/assets/js/' + templateConfig.text)
+            .then(_ => _.text())
+            .then(ko.utils.parseHtmlFragment)
+            .then(callback);
         },
         loadViewModel: function (name, templateConfig, callback) {
             if (typeof templateConfig !== 'object' || !('jspm' in templateConfig)) {
@@ -20,7 +21,7 @@ var register = _.once(() => {
                 return;
             }
 
-            System.import('facia-tool/' + templateConfig.jspm).then(function (Component) {
+            import('../js/' + templateConfig.jspm + '.js').then(function (Component) {
                 callback(function (params, componentInfo) {
                     if (Component.default) {
                         Component = Component.default;
