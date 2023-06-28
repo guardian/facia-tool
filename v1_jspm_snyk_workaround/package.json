@@ -1,0 +1,5 @@
+{
+    "scripts": {
+        "preinstall": "node jspm-snyk-workaround.js"
+    }
+}
