@@ -7,10 +7,10 @@ import org.joda.time.DateTime
 import permissions.ConfigPermissionCheck
 import play.api.mvc._
 import services.AssetsManager
-import util.{Acl, Encryption}
+import util.Acl
 
 class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean,
-                      crypto: Encryption, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+                      val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   private def shouldRedirectToV2(request: UserRequest[AnyContent], priority: Option[String] = None): Boolean = {
     val isBreakingNews = priority.getOrElse("") == "breaking-news" || request.queryString.getOrElse("layout", Seq("")).exists(_.contains("breaking-news"))
@@ -39,7 +39,7 @@ class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean
       val identity = request.user
       Cached(60) {
         Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request, isDev),
-          assetsManager.pathForCollections, crypto.encrypt(identity.email), priority != "email", priority))
+          assetsManager.pathForCollections, priority != "email", priority))
       }
     }
   }
@@ -48,7 +48,7 @@ class ViewsController(val acl: Acl, assetsManager: AssetsManager, isDev: Boolean
     val identity = request.user
     Cached(60) {
       Ok(views.html.admin_main(Option(identity), config.facia.stage, overrideIsDev(request, isDev),
-        assetsManager.pathForConfig, crypto.encrypt(identity.email), false))
+        assetsManager.pathForConfig, false))
     }
   }
 

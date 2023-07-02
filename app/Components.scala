@@ -27,7 +27,7 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
-import util.{Acl, Encryption}
+import util.Acl
 
 class AppComponents(context: Context, val config: ApplicationConfiguration)
   extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
@@ -84,7 +84,6 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val cloudwatch = new CloudWatch(config, awsEndpoints)
   val press = new Press(faciaPress)
   val assetsManager = new AssetsManager(config, isDev)
-  val encryption = new Encryption(config)
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
 
 //  Controllers
@@ -103,7 +102,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val v1Assets = new V1Assets(assets, this)
   val v2Assets = new V2Assets(assets)
   val vanityRedirects = new VanityRedirects(acl, this)
-  val views = new ViewsController(acl, assetsManager, isDev, encryption, this)
+  val views = new ViewsController(acl, assetsManager, isDev, this)
   val pressController = new PressController(dynamo, this)
   val v2App = new V2App(isDev, acl, dynamo, this)
   val faciaToolV2 = new FaciaToolV2Controller(acl, structuredLogger, faciaPress, updateActions, configAgent, collectionService, faciaApiIO, this)

@@ -1,4 +1,4 @@
-@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, bundlePath: String, userId: String, displayV2Message: Boolean = false, priority: String = "")
+@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, bundlePath: String, displayV2Message: Boolean = false, priority: String = "")
 
 @import switchboard.SwitchManager
 
@@ -25,7 +25,6 @@
         @templates.header(stage, identity, isDev, displayV2Message, priority)
         @templates.vertical_layout()
         @templates.main()
-        @templates.analytics(userId)
     }
     </body>
 </html>
