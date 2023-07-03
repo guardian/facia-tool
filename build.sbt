@@ -23,13 +23,12 @@ riffRaffManifestProjectName := riffRaffPackageName.value
 riffRaffUploadArtifactBucket := Option("riffraff-artifact")
 riffRaffUploadManifestBucket := Option("riffraff-builds")
 riffRaffArtifactResources := {
-    val jsBundlesDir = baseDirectory.value / "tmp" / "bundles"
     Seq(
         (Debian / packageBin).value -> s"${name.value}/${name.value}_1.0_all.deb",
         baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml",
         baseDirectory.value / "fluentbit/td-agent-bit.conf" -> "facia-tool/fluentbit/td-agent-bit.conf",
         baseDirectory.value / "fluentbit/parsers.conf" -> "facia-tool/fluentbit/parsers.conf"
-    ) ++ ((jsBundlesDir * "*") pair rebase(jsBundlesDir, "static-facia-tool"))
+    )
 }
 
 ThisBuild / javacOptions := Seq("-g","-encoding", "utf8")
