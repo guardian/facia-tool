@@ -32,7 +32,6 @@ class FixedContainers(val config: ApplicationConfiguration) {
     ("fixed/medium/fast-XII", fixedMediumFastXII),
     ("fixed/large/slow-XIV", slices(ThreeQuarterQuarter, QuarterQuarterQuarterQuarter, Ql2Ql2Ql2Ql2)),
     ("fixed/video", video),
-    ("fixed/video/vertical", video),
     ("fixed/thrasher", thrasher),
     ("fixed/showcase", showcase)
   ) ++ (if (config.faciatool.showTestContainers) Map(
