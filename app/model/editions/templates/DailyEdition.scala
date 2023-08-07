@@ -135,6 +135,8 @@ object DailyEdition extends RegionalEdition {
     collection("National").printSentAnyTag("theobserver/news/uknews"),
     collection("National").hide,
     collection("National").hide,
+    collection("National").hide,
+    collection("National").hide,
     collection("National").hide
   )
     .swatch(News)
