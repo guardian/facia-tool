@@ -77,6 +77,7 @@ export default {
         'politics',
         'world',
         'sport',
+        'soccer',
         'football',
         'commentisfree',
         'culture',
