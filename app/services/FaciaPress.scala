@@ -1,6 +1,7 @@
 package services
 
 import com.amazonaws.regions.Regions
+import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.SendMessageResult
 import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob}
@@ -11,6 +12,9 @@ import logging.Logging
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
+import com.google.api.client.json.Json
+import com.amazonaws.services.sns.AmazonSNSClientBuilder
+import com.amazonaws.services.sns.model.PublishResult
 
 case class PressCommand(
   collectionIds: Set[String],
@@ -47,6 +51,28 @@ class FaciaPressQueue(val config: ApplicationConfiguration) {
         Future.failed(new RuntimeException("`facia.press.queue_url` property not in config, could not enqueue job."))
     }
   }
+}
+
+class FaciaPressTopic(val config: ApplicationConfiguration) {
+  val maybeTopic = config.faciatool.frontPressToolTopic map { topicArn =>
+    val credentials = config.aws.cmsFrontsAccountCredentials
+    JsonMessageTopic[PressJob](AmazonSNSAsyncClientBuilder.standard()
+      .withCredentials(credentials)
+      .withRegion(Regions.EU_WEST_1).build(),
+      topicArn
+      )
+  }
+
+  def publish(job: PressJob): Future[PublishResult] = {
+    maybeTopic match {
+      case Some(topicArn) =>
+        topicArn.send(job)
+
+      case None =>
+        Future.failed(new RuntimeException("Could not publish job."))
+    }
+  }
+
 }
 
 class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAgent) extends Logging {
