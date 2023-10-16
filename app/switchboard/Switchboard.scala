@@ -23,7 +23,7 @@ class Lifecycle(conf: SwitchboardConfiguration, scheduler: Scheduler) extends Lo
   scheduler.scheduleOnce(1.seconds) { refreshSwitches() }
 
   def refreshSwitches(): Unit = {
-    logger.info("Refreshing switches from switchboard")
+    logger.info("Refreshing switches from switchboard - v2")
     client.getSwitches() foreach { response => SwitchManager.updateSwitches(response) }
   }
 }
