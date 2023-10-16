@@ -38,6 +38,8 @@ class FaciaToolController(
 
   private val collectionPermissions = CollectionPermissions(configAgent.get)
 
+  logger.info("Facia Controller is being instantiated...")
+
   def getConfig = AccessAPIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
     frontsApi.amazonClient.config.map { configJson =>
@@ -246,6 +248,7 @@ class FaciaToolController(
   }
 
   def pressLivePath(path: String) = AccessAPIAuthAction { request =>
+    logger.info("Calling faciaPressQueue.enqueue...")
     faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
     logger.info("Press live path, getting ready to publish to topic")
     FaciaPressTopic.publish(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
