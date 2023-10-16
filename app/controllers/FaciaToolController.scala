@@ -247,9 +247,9 @@ class FaciaToolController(
 
   def pressLivePath(path: String) = AccessAPIAuthAction { request =>
     faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
-    println("Press live path, getting ready to publish to topic")
+    logger.info("Press live path, getting ready to publish to topic")
     FaciaPressTopic.publish(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
-    println("Published to topic")
+    logger.info("Published to topic")
     NoCache(Ok)
   }
 

@@ -12,6 +12,7 @@ import scala.util.{Failure, Success}
 import com.amazonaws.services.sns.AmazonSNSAsync
 import com.amazonaws.services.sns.model.PublishResult
 import com.amazonaws.services.sns.model.PublishRequest
+import logging.Logging
 
 object SQSQueues {
   implicit class RichAmazonSQSAsyncClient(client: AmazonSQSAsync) {
@@ -77,12 +78,12 @@ case class JsonMessageQueue[A](client: AmazonSQSAsync, queueUrl: String)
 }
 
 case class JsonMessageTopic[A](client: AmazonSNSAsync, topicArn: String)
-                              (implicit executionContext: ExecutionContext) {
+                              (implicit executionContext: ExecutionContext) extends Logging {
   import SNSTopics._
 
   def send(a: A)(implicit writes: Writes[A]): Future[PublishResult] = {
-    println(s"topicArn: ${topicArn}")
-    println(s"message body: ${Json.stringify(Json.toJson(a))}")
+    logger.info(s"topicArn: ${topicArn}")
+    logger.info(s"message body: ${Json.stringify(Json.toJson(a))}")
     client.publishMessageFuture(topicArn: String, Json.stringify(Json.toJson(a)))
   }
                               }
