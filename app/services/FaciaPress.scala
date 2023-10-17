@@ -75,7 +75,7 @@ class FaciaPressTopic(val config: ApplicationConfiguration) {
 
 }
 
-class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAgent) extends Logging {
+class FaciaPress(val faciaPressQueue: FaciaPressQueue, val faciaPressTopic: FaciaPressTopic, val configAgent: ConfigAgent) extends Logging {
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
@@ -94,6 +94,14 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
             case Success(_) =>
               EnqueuePressSuccess.increment()
           }
+          val fut2 = Future.traverse(paths)(path => faciaPressTopic.publish(PressJob(FrontPath(path), Live, forceConfigUpdate = pressCommand.forceConfigUpdate)))
+          fut2.onComplete {
+            case Failure(error) =>
+              EnqueuePressFailure.increment()
+              logger.error("Error manually pressing live collection through update from tool", error)
+            case Success(_) =>
+              EnqueuePressSuccess.increment()
+          }
           fut
         } else {
           Future.successful(Set.empty)
@@ -104,6 +112,14 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
           logger.info("FaciaPress draft press function...")
           val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
           fut.onComplete {
+            case Failure(error) =>
+              EnqueuePressFailure.increment()
+              logger.error("Error manually pressing draft collection through update from tool", error)
+            case Success(_) =>
+              EnqueuePressSuccess.increment()
+          }
+          val fut2 = Future.traverse(paths)(path => faciaPressTopic.publish(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
+          fut2.onComplete {
             case Failure(error) =>
               EnqueuePressFailure.increment()
               logger.error("Error manually pressing draft collection through update from tool", error)
