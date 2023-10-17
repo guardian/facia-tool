@@ -86,7 +86,7 @@ export const MenuView = ({ edView }: { edView: EditorView }) => {
         return (
           <MenuButton
             className="iconBox"
-            onMouseDown={(e) => {
+            onMouseDown={(e: React.MouseEvent) => {
               e.preventDefault();
               item.command(edView.state, edView.dispatch);
             }}

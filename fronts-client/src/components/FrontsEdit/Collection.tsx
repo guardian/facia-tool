@@ -160,7 +160,7 @@ class CollectionContext extends React.Component<
                       tabIndex={0}
                       area="collection"
                       onBlur={() => handleBlur()}
-                      onFocus={(e) =>
+                      onFocus={(e: React.FocusEvent<HTMLDivElement>) =>
                         handleArticleFocus(e, group.uuid, card, frontId)
                       }
                       uuid={card.uuid}

@@ -71,7 +71,7 @@ class CollectionNotification extends React.Component<
           &nbsp;
           <ToggleDetailsButton
             tabIndex={-1}
-            onClick={(e) => {
+            onClick={(e: React.MouseEvent) => {
               e.stopPropagation();
               return this.setState({
                 showFrontDetails: !this.state.showFrontDetails,

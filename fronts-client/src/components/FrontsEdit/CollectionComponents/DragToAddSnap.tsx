@@ -61,7 +61,9 @@ const DragToAddTextSnap = () => {
       </RenderOffscreen>
       <DragToAddSnapContainer
         data-testid="drag-to-add-snap"
-        onDragStart={(e) => handleDragStart(e, ref.current)}
+        onDragStart={(e: React.DragEvent<HTMLDivElement>) =>
+          handleDragStart(e, ref.current)
+        }
         draggable={true}
       >
         <DragIcon /> Drag to add a text card

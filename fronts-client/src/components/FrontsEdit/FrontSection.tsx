@@ -188,10 +188,10 @@ class FrontSection extends React.Component<
                 data-testid="rename-front-input"
                 value={frontNameValue}
                 autoFocus
-                onChange={(e) =>
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   this.setState({ frontNameValue: e.target.value })
                 }
-                onKeyDown={(e) => {
+                onKeyDown={(e: React.KeyboardEvent) => {
                   if (e.key === 'Enter') {
                     this.setName();
                   }

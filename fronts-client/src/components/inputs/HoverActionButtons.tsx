@@ -51,7 +51,7 @@ const HoverDeleteButton = ({
     data-testid={'delete-hover-button'}
     onMouseEnter={showToolTip}
     onMouseLeave={hideToolTip}
-    onClick={(e) => {
+    onClick={(e: React.MouseEvent) => {
       e.stopPropagation();
       return onDelete && onDelete();
     }}
@@ -69,7 +69,7 @@ const HoverAddToClipboardButton = ({
     data-testid={'add-to-clipboard-hover-button'}
     onMouseEnter={showToolTip}
     onMouseLeave={hideToolTip}
-    onClick={(e) => {
+    onClick={(e: React.MouseEvent) => {
       e.stopPropagation();
       return onAddToClipboard && onAddToClipboard();
     }}
@@ -86,7 +86,7 @@ const HoverViewButton = ({
   isSnapLink = false,
 }: ButtonProps) => (
   <Link
-    onClick={(e) => {
+    onClick={(e: React.MouseEvent) => {
       e.stopPropagation();
     }}
     href={
@@ -116,7 +116,7 @@ const HoverOphanButton = ({
 }: ButtonProps) =>
   isLive ? (
     <Link
-      onClick={(e) => {
+      onClick={(e: React.MouseEvent) => {
         e.stopPropagation();
       }}
       href={

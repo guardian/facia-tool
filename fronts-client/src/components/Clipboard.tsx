@@ -181,7 +181,9 @@ class Clipboard extends React.Component<ClipboardProps> {
                       <>
                         <FocusWrapper
                           tabIndex={0}
-                          onFocus={(e) => this.handleArticleFocus(e, card)}
+                          onFocus={(e: React.FocusEvent<HTMLDivElement>) =>
+                            this.handleArticleFocus(e, card)
+                          }
                           area="clipboard"
                           onBlur={this.handleBlur}
                           uuid={card.uuid}

@@ -357,7 +357,7 @@ const RenderSlideshow = ({
             type="text"
             value={fields.get(slideshowIndex).caption ?? ''}
             invalid={isInvalidCaptionLength(slideshowIndex)}
-            onChange={(event) =>
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
               change(`slideshow[${slideshowIndex}].caption`, event.target.value)
             }
           />
