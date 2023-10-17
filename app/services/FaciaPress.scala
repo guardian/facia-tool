@@ -85,6 +85,7 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
 
       lazy val livePress =
         if (pressCommand.live) {
+          logger.info("FaciaPress live press function...")
           val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = pressCommand.forceConfigUpdate)))
           fut.onComplete {
             case Failure(error) =>
@@ -100,6 +101,7 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
 
       lazy val draftPress =
         if (pressCommand.draft) {
+          logger.info("FaciaPress draft press function...")
           val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
           fut.onComplete {
             case Failure(error) =>
