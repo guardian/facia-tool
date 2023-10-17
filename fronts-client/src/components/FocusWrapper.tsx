@@ -20,4 +20,6 @@ const mapStateToProps = (
   isSelected: selectFocusedArticle(state, `${area}Article`) === uuid,
 });
 
-export default connect(mapStateToProps)(Wrapper);
+const FocusWrapper = connect(mapStateToProps)(Wrapper) as typeof Wrapper;
+
+export default FocusWrapper;
