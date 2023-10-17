@@ -82,8 +82,6 @@ case class JsonMessageTopic[A](client: AmazonSNSAsync, topicArn: String)
   import SNSTopics._
 
   def send(a: A)(implicit writes: Writes[A]): Future[PublishResult] = {
-    logger.info(s"topicArn: ${topicArn}")
-    logger.info(s"message body: ${Json.stringify(Json.toJson(a))}")
     client.publishMessageFuture(topicArn: String, Json.stringify(Json.toJson(a)))
   }
                               }

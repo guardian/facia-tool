@@ -18,12 +18,12 @@ case class SwitchboardConfiguration (
 class Lifecycle(conf: SwitchboardConfiguration, scheduler: Scheduler) extends Logging {
   lazy val client: S3client = new S3client(conf, conf.endpoint)
 
-  logger.info("Starting switchboard cache - v2")
+  logger.info("Starting switchboard cache")
   scheduler.schedule(0.seconds, 1.minute) { refreshSwitches() }
   scheduler.scheduleOnce(1.seconds) { refreshSwitches() }
 
   def refreshSwitches(): Unit = {
-    logger.info("Refreshing switches from switchboard - v2")
+    logger.info("Refreshing switches from switchboard")
     client.getSwitches() foreach { response => SwitchManager.updateSwitches(response) }
   }
 }
