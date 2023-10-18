@@ -1180,6 +1180,13 @@
   resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.9.tgz"
   integrity sha512-q6LuBI0t5u04f0Q4/R+cGBqIbZMtJkVvCSF+nTfFBBdQqQvJR/mNHeWjRkszyLl7oyf2rDoKUYMEjTw5AV0hiw==
 
+"@types/cheerio@^0.22.22":
+  version "0.22.33"
+  resolved "https://registry.yarnpkg.com/@types/cheerio/-/cheerio-0.22.33.tgz#e4792408b107384d7d7469e3b4d31408078ec620"
+  integrity sha512-XUlu2BK4q3xJsccRLK69m/cABZd7m60o+cDEPUTG6jTpuG2vqN35UioeF99MQ/HoSOEPq0Bgil8g3jtzE0oH9A==
+  dependencies:
+    "@types/node" "*"
+
 "@types/d3-path@*":
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/@types/d3-path/-/d3-path-1.0.8.tgz"
@@ -3609,7 +3616,7 @@ circular-dependency-plugin@^5.2.0:
 
 circular-json-es6@^2.0.1:
   version "2.0.2"
-  resolved "https://registry.yarnpkg.com/circular-json-es6/-/circular-json-es6-2.0.2.tgz"
+  resolved "https://registry.yarnpkg.com/circular-json-es6/-/circular-json-es6-2.0.2.tgz#e4f4a093e49fb4b6aba1157365746112a78bd344"
   integrity sha512-ODYONMMNb3p658Zv+Pp+/XPa5s6q7afhz3Tzyvo+VRh9WIrJ64J76ZC4GQxnlye/NesTn09jvOiuE8+xxfpwhQ==
 
 circular-json@^0.3.1:
@@ -4278,8 +4285,8 @@ deep-eql@^3.0.1:
 
 deep-equal-ident@^1.1.1:
   version "1.1.1"
-  resolved "https://registry.yarnpkg.com/deep-equal-ident/-/deep-equal-ident-1.1.1.tgz"
-  integrity sha1-BvS4nlNxDNbOpKd4HHqVZkLejck=
+  resolved "https://registry.yarnpkg.com/deep-equal-ident/-/deep-equal-ident-1.1.1.tgz#06f4b89e53710cd6cea4a7781c7a956642de8dc9"
+  integrity sha512-aWv7VhTl/Lju1zenOD3E1w8PpUVrTDbwXCHtbSNr+p/uadr49Y1P1ld0W3Pl6gbvIbiRjoCVsqw70UupCNGh6g==
   dependencies:
     lodash.isequal "^3.0"
 
@@ -4759,7 +4766,7 @@ enzyme-adapter-utils@^1.8.0:
 
 enzyme-matchers@^6.1.2:
   version "6.1.2"
-  resolved "https://registry.yarnpkg.com/enzyme-matchers/-/enzyme-matchers-6.1.2.tgz"
+  resolved "https://registry.yarnpkg.com/enzyme-matchers/-/enzyme-matchers-6.1.2.tgz#cd70e45dbcff34d47406797998d55d06ceb822de"
   integrity sha512-cP9p+HMOZ1ZXQ+k2H4dCkxmTZzIvpEy5zv0ZjgoBl6D0U43v+bJGH5IeWHdIovCzgJ0dVcMCKJ6lNu83lYUCAA==
   dependencies:
     circular-json-es6 "^2.0.1"
@@ -4774,11 +4781,13 @@ enzyme-shallow-equal@^1.0.1:
     object-is "^1.1.5"
 
 enzyme-to-json@^3.3.0:
-  version "3.3.4"
-  resolved "https://registry.yarnpkg.com/enzyme-to-json/-/enzyme-to-json-3.3.4.tgz"
-  integrity sha1-Z8YEDpMRgvGDQYry659DIyWKp38=
+  version "3.6.2"
+  resolved "https://registry.yarnpkg.com/enzyme-to-json/-/enzyme-to-json-3.6.2.tgz#94f85c413bcae8ab67be53b0a94b69a560e27823"
+  integrity sha512-Ynm6Z6R6iwQ0g2g1YToz6DWhxVnt8Dy1ijR2zynRKxTyBGA8rCDXU3rs2Qc4OKvUvc2Qoe1bcFK6bnPs20TrTg==
   dependencies:
-    lodash "^4.17.4"
+    "@types/cheerio" "^0.22.22"
+    lodash "^4.17.21"
+    react-is "^16.12.0"
 
 enzyme@^3.7.0:
   version "3.11.0"
@@ -6330,7 +6339,7 @@ iconv-lite@0.4.23:
 
 iconv-lite@0.4.24, iconv-lite@^0.4.24, iconv-lite@~0.4.13:
   version "0.4.24"
-  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz"
+  resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.24.tgz#2022b4b25fbddc21d2f524974a474aafe733908b"
   integrity sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==
   dependencies:
     safer-buffer ">= 2.1.2 < 3"
@@ -7150,14 +7159,14 @@ jest-each@^23.6.0:
 
 jest-environment-enzyme@^6.1.2:
   version "6.1.2"
-  resolved "https://registry.yarnpkg.com/jest-environment-enzyme/-/jest-environment-enzyme-6.1.2.tgz"
+  resolved "https://registry.yarnpkg.com/jest-environment-enzyme/-/jest-environment-enzyme-6.1.2.tgz#2612805a3cc0fa6934f9c3e62cf6255077d1b16b"
   integrity sha512-WHeBKgBYOdryuOTEoK55lJwjg7Raery1OgXHLwukI3mSYgOkm2UrCDDT+vneqVgy7F8KuRHyStfD+TC/m2b7Kg==
   dependencies:
     jest-environment-jsdom "^22.4.1"
 
 jest-environment-jsdom@^22.4.1:
   version "22.4.3"
-  resolved "https://registry.npmjs.org/jest-environment-jsdom/-/jest-environment-jsdom-22.4.3.tgz"
+  resolved "https://registry.yarnpkg.com/jest-environment-jsdom/-/jest-environment-jsdom-22.4.3.tgz#d67daa4155e33516aecdd35afd82d4abf0fa8a1e"
   integrity sha512-FviwfR+VyT3Datf13+ULjIMO5CSeajlayhhYQwpzgunswoaLIPutdbrnfUHEMyJCwvqQFaVtTmn9+Y8WCt6n1w==
   dependencies:
     jest-mock "^22.4.3"
@@ -7183,7 +7192,7 @@ jest-environment-node@^23.4.0:
 
 jest-enzyme@^6.0.0:
   version "6.1.2"
-  resolved "https://registry.yarnpkg.com/jest-enzyme/-/jest-enzyme-6.1.2.tgz"
+  resolved "https://registry.yarnpkg.com/jest-enzyme/-/jest-enzyme-6.1.2.tgz#89da43da19b4d8ddbfb49e153c2884f22954d330"
   integrity sha512-+ds7r2ru3QkNJxelQ2tnC6d33pjUSsZHPD3v4TlnHlNMuGX3UKdxm5C46yZBvJICYBvIF+RFKBhLMM4evNM95Q==
   dependencies:
     enzyme-matchers "^6.1.2"
@@ -7245,7 +7254,7 @@ jest-matcher-utils@^23.6.0:
 
 jest-message-util@^22.4.3:
   version "22.4.3"
-  resolved "https://registry.npmjs.org/jest-message-util/-/jest-message-util-22.4.3.tgz"
+  resolved "https://registry.yarnpkg.com/jest-message-util/-/jest-message-util-22.4.3.tgz#cf3d38aafe4befddbfc455e57d65d5239e399eb7"
   integrity sha512-iAMeKxhB3Se5xkSjU0NndLLCHtP4n+GtCqV0bISKA5dmOXQfEbdEmYiu2qpnWBDCQdEafNDDU6Q+l6oBMd/+BA==
   dependencies:
     "@babel/code-frame" "^7.0.0-beta.35"
@@ -7267,7 +7276,7 @@ jest-message-util@^23.4.0:
 
 jest-mock@^22.4.3:
   version "22.4.3"
-  resolved "https://registry.npmjs.org/jest-mock/-/jest-mock-22.4.3.tgz"
+  resolved "https://registry.yarnpkg.com/jest-mock/-/jest-mock-22.4.3.tgz#f63ba2f07a1511772cdc7979733397df770aabc7"
   integrity sha512-+4R6mH5M1G4NK16CKg9N1DtCaFmuxhcIqF4lQK/Q1CIotqMs/XBemfpDPeVZBFow6iyUNu6EBT9ugdNOTT5o5Q==
 
 jest-mock@^23.2.0:
@@ -7366,7 +7375,7 @@ jest-snapshot@^23.6.0:
 
 jest-util@^22.4.3:
   version "22.4.3"
-  resolved "https://registry.npmjs.org/jest-util/-/jest-util-22.4.3.tgz"
+  resolved "https://registry.yarnpkg.com/jest-util/-/jest-util-22.4.3.tgz#c70fec8eec487c37b10b0809dc064a7ecf6aafac"
   integrity sha512-rfDfG8wyC5pDPNdcnAlZgwKnzHvZDu8Td2NJI/jAGKEGxJPYiE4F0ss/gSAkG4778Y23Hvbz+0GMrDJTeo7RjQ==
   dependencies:
     callsites "^2.0.0"
@@ -7719,8 +7728,8 @@ lodash-es@^4.17.11:
 
 lodash._baseisequal@^3.0.0:
   version "3.0.7"
-  resolved "https://registry.yarnpkg.com/lodash._baseisequal/-/lodash._baseisequal-3.0.7.tgz"
-  integrity sha1-2AJfdjOdKTQnZ9zIh85cuVpbUfE=
+  resolved "https://registry.yarnpkg.com/lodash._baseisequal/-/lodash._baseisequal-3.0.7.tgz#d8025f76339d29342767dcc887ce5cb95a5b51f1"
+  integrity sha512-U+3GsNEZj9ebI03ncLC2pLmYVjgtYZEwdkAPO7UGgtGvAz36JVFPAQUufpSaVL93Cz5arc6JGRKZRhaOhyVJYA==
   dependencies:
     lodash.isarray "^3.0.0"
     lodash.istypedarray "^3.0.0"
@@ -7728,13 +7737,13 @@ lodash._baseisequal@^3.0.0:
 
 lodash._bindcallback@^3.0.0:
   version "3.0.1"
-  resolved "https://registry.yarnpkg.com/lodash._bindcallback/-/lodash._bindcallback-3.0.1.tgz"
-  integrity sha1-5THCdkTPi1epnhftlbNcdIeJOS4=
+  resolved "https://registry.yarnpkg.com/lodash._bindcallback/-/lodash._bindcallback-3.0.1.tgz#e531c27644cf8b57a99e17ed95b35c748789392e"
+  integrity sha512-2wlI0JRAGX8WEf4Gm1p/mv/SZ+jLijpj0jyaE/AXeuQphzCgD8ZQW4oSpoN8JAopujOFGU3KMuq7qfHBWlGpjQ==
 
 lodash._getnative@^3.0.0:
   version "3.9.1"
-  resolved "https://registry.yarnpkg.com/lodash._getnative/-/lodash._getnative-3.9.1.tgz"
-  integrity sha1-VwvH3t5G1hzc3mh9ZdPuy6o6r/U=
+  resolved "https://registry.yarnpkg.com/lodash._getnative/-/lodash._getnative-3.9.1.tgz#570bc7dede46d61cdcde687d65d3eecbaa3aaff5"
+  integrity sha512-RrL9VxMEPyDMHOd9uFbvMe8X55X16/cGM5IgOKgRElQZutpX89iS6vwl64duTV1/16w5JY7tuFNXqoekmh1EmA==
 
 lodash._reinterpolate@^3.0.0:
   version "3.0.0"
@@ -7758,18 +7767,18 @@ lodash.flattendeep@^4.4.0:
 
 lodash.isarguments@^3.0.0:
   version "3.1.0"
-  resolved "https://registry.yarnpkg.com/lodash.isarguments/-/lodash.isarguments-3.1.0.tgz"
-  integrity sha1-L1c9hcaiQon/AGY7SRwdM4/zRYo=
+  resolved "https://registry.yarnpkg.com/lodash.isarguments/-/lodash.isarguments-3.1.0.tgz#2f573d85c6a24289ff00663b491c1d338ff3458a"
+  integrity sha512-chi4NHZlZqZD18a0imDHnZPrDeBbTtVN7GXMwuGdRH9qotxAjYs3aVLKc7zNOG9eddR5Ksd8rvFEBc9SsggPpg==
 
 lodash.isarray@^3.0.0:
   version "3.0.4"
-  resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-3.0.4.tgz"
-  integrity sha1-eeTriMNqgSKvhvhEqpvNhRtfu1U=
+  resolved "https://registry.yarnpkg.com/lodash.isarray/-/lodash.isarray-3.0.4.tgz#79e4eb88c36a8122af86f844aa9bcd851b5fbb55"
+  integrity sha512-JwObCrNJuT0Nnbuecmqr5DgtuBppuCvGD9lxjFpAzwnVtdGoDQ1zig+5W8k5/6Gcn0gZ3936HDAlGd28i7sOGQ==
 
 lodash.isequal@^3.0:
   version "3.0.4"
-  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-3.0.4.tgz"
-  integrity sha1-HDXrO27wzR/1F0Pj6jz3/f/ay2Q=
+  resolved "https://registry.yarnpkg.com/lodash.isequal/-/lodash.isequal-3.0.4.tgz#1c35eb3b6ef0cd1ff51743e3ea3cf7fdffdacb64"
+  integrity sha512-Bsu5fP9Omd+HBk2Dz8qp4BHbC+83DBykZ87Lz1JmPKTVNy4Q0XQVtUrbfXVAK/udQrWNcGStcKSA9yj/Zkm3TQ==
   dependencies:
     lodash._baseisequal "^3.0.0"
     lodash._bindcallback "^3.0.0"
@@ -7786,13 +7795,13 @@ lodash.isplainobject@^4.0.6:
 
 lodash.istypedarray@^3.0.0:
   version "3.0.6"
-  resolved "https://registry.yarnpkg.com/lodash.istypedarray/-/lodash.istypedarray-3.0.6.tgz"
-  integrity sha1-yaR3SYYHUB2OhJTSg7h8OSgc72I=
+  resolved "https://registry.yarnpkg.com/lodash.istypedarray/-/lodash.istypedarray-3.0.6.tgz#c9a477498607501d8e8494d283b87c39281cef62"
+  integrity sha512-lGWJ6N8AA3KSv+ZZxlTdn4f6A7kMfpJboeyvbFdE7IU9YAgweODqmOgdUHOA+c6lVWeVLysdaxciFXi+foVsWw==
 
 lodash.keys@^3.0.0:
   version "3.1.2"
-  resolved "https://registry.yarnpkg.com/lodash.keys/-/lodash.keys-3.1.2.tgz"
-  integrity sha1-TbwEcrFWvlCgsoaFXRvQsMZWCYo=
+  resolved "https://registry.yarnpkg.com/lodash.keys/-/lodash.keys-3.1.2.tgz#4dbc0472b156be50a0b286855d1bd0b0c656098a"
+  integrity sha512-CuBsapFjcubOGMn3VD+24HOAPxM79tH+V6ivJL3CHYjtrawauDJHUk//Yew9Hvc6e9rbCrURGk8z6PC+8WJBfQ==
   dependencies:
     lodash._getnative "^3.0.0"
     lodash.isarguments "^3.0.0"
@@ -9669,7 +9678,7 @@ react-is@16.8.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.8.0.tgz#518db476214f3fb0716af9f82dfd420225ae970f"
   integrity sha512-LOy+3La39aduxaPfuj+lCXC5RQ8ukjVPAAsFJ3yQ+DIOLf4eR9OMKeWKF0IzjRyE95xMj5QELwiXGgfQsIJguA==
 
-react-is@^16.13.1:
+react-is@^16.12.0, react-is@^16.13.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
