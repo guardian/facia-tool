@@ -1606,13 +1606,14 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-dates@^17.1.5":
-  version "17.1.5"
-  resolved "https://registry.yarnpkg.com/@types/react-dates/-/react-dates-17.1.5.tgz"
-  integrity sha512-aLYYiAfZfsQR6IqBfegrQrTeNk0bLql5fwNjMwst9oRSeB7LIauf1QStfNHifa6fQA5fr4Ivr/YniGdedfaCxg==
+"@types/react-dates@21.8.0":
+  version "21.8.0"
+  resolved "https://registry.yarnpkg.com/@types/react-dates/-/react-dates-21.8.0.tgz#7a708be7a6ccd40622f4480bfcf66f3f450ac84c"
+  integrity sha512-FSvbh8qqz96RK/qfDyJTAyKlcoq5Zv+AAxu26Axdr8+49nquX42GhQ49lKOOQdsJFVqO3fkG4ynDMSAX/9YDBA==
   dependencies:
     "@types/react" "*"
-    moment ">=2.17.1"
+    "@types/react-outside-click-handler" "*"
+    moment "^2.26.0"
 
 "@types/react-dom@^16.8.4":
   version "16.8.4"
@@ -1634,6 +1635,13 @@
   integrity sha512-9+g+DBJIY3bG7+ZlYzKPr9kxTQxUuZQgLWZhYK4RlIcrsm3qaJhL2PU2e/K4CjnzznWCo2Islgec94x2z1pG4Q==
   dependencies:
     "@react-native/virtualized-lists" "^0.72.4"
+    "@types/react" "*"
+
+"@types/react-outside-click-handler@*":
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/@types/react-outside-click-handler/-/react-outside-click-handler-1.3.2.tgz#6f4d9a59a4e834fd8647823a30ce22fe62486dcf"
+  integrity sha512-GcuE5gLSoa+Z0Aj4OQhvZFi2WB1uD4ASYEukqbdWjTMEg7LkGa8v5X+BHgtW3efpGO8nh3io+GxOTYZBNeDdTQ==
+  dependencies:
     "@types/react" "*"
 
 "@types/react-redux@^6.0.9":
@@ -8619,15 +8627,10 @@ moment-duration-format-commonjs@^1.0.0:
   resolved "https://registry.yarnpkg.com/moment-duration-format-commonjs/-/moment-duration-format-commonjs-1.0.0.tgz"
   integrity sha512-MVFR4hIh4jfuwSCPBEE5CCwn3refvTsxK/Yv/DpKJ6YcNnCimlVJ6DQeTJG1KVQPw1o8m3tkbHE9gVjivyv9iA==
 
-moment@>=1.6.0:
+moment@>=1.6.0, moment@^2.26.0, moment@^2.29.4:
   version "2.29.4"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.4.tgz#3dbe052889fe7c1b2ed966fcb3a77328964ef108"
   integrity sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==
-
-moment@>=2.17.1, moment@^2.23.0:
-  version "2.23.0"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.23.0.tgz"
-  integrity sha512-3IE39bHVqFbWWaPOMHZF98Q9c3LDKGTmypMiTM2QygGXXElkFWIH7GxfmlwmY2vwa+wmNsoYZmG2iusf1ZjJoA==
 
 moment@^2.10.3, moment@^2.14.1:
   version "2.22.2"
