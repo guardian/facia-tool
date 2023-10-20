@@ -2,19 +2,17 @@ package services
 
 import com.amazonaws.regions.Regions
 import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder
+import com.amazonaws.services.sns.model.PublishResult
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.SendMessageResult
 import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob}
 import conf.ApplicationConfiguration
-import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import logging.Logging
+import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import com.google.api.client.json.Json
-import com.amazonaws.services.sns.AmazonSNSClientBuilder
-import com.amazonaws.services.sns.model.PublishResult
 
 case class PressCommand(
   collectionIds: Set[String],
@@ -117,13 +115,6 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val faciaPressTopic: Faci
               EnqueuePressSuccess.increment()
           }
           val fut2 = Future.traverse(paths)(path => faciaPressTopic.publish(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
-          fut2.onComplete {
-            case Failure(error) =>
-              EnqueuePressFailure.increment()
-              logger.error("Error manually pressing draft collection through update from tool", error)
-            case Success(_) =>
-              EnqueuePressSuccess.increment()
-          }
           fut
         } else Future.successful(Set.empty)
 
