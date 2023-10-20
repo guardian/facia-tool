@@ -92,13 +92,6 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val faciaPressTopic: Faci
               EnqueuePressSuccess.increment()
           }
           val fut2 = Future.traverse(paths)(path => faciaPressTopic.publish(PressJob(FrontPath(path), Live, forceConfigUpdate = pressCommand.forceConfigUpdate)))
-          fut2.onComplete {
-            case Failure(error) =>
-              EnqueuePressFailure.increment()
-              logger.error("Error manually pressing live collection through update from tool", error)
-            case Success(_) =>
-              EnqueuePressSuccess.increment()
-          }
           fut
         } else {
           Future.successful(Set.empty)
