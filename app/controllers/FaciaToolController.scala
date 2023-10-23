@@ -29,6 +29,7 @@ class FaciaToolController(
                            val structuredLogger: StructuredLogger,
                            val faciaPress: FaciaPress,
                            val faciaPressQueue: FaciaPressQueue,
+                           val FaciaPressTopic: FaciaPressTopic,
                            val configAgent: ConfigAgent,
                            val s3FrontsApi: S3FrontsApi,
                            val deps: BaseFaciaControllerComponents
@@ -246,11 +247,13 @@ class FaciaToolController(
 
   def pressLivePath(path: String) = AccessAPIAuthAction { request =>
     faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
+    FaciaPressTopic.publish(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
 
   def pressDraftPath(path: String) = AccessAPIAuthAction { request =>
     faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
+    FaciaPressTopic.publish(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
 
