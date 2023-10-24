@@ -1,12 +1,14 @@
 package services
 
 import com.amazonaws.regions.Regions
+import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder
+import com.amazonaws.services.sns.model.PublishResult
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.SendMessageResult
 import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob}
 import conf.ApplicationConfiguration
-import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import logging.Logging
+import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -49,7 +51,29 @@ class FaciaPressQueue(val config: ApplicationConfiguration) {
   }
 }
 
-class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAgent) extends Logging {
+class FaciaPressTopic(val config: ApplicationConfiguration) {
+  val maybeTopic = config.faciatool.frontPressToolTopic map { topicArn =>
+    val credentials = config.aws.cmsFrontsAccountCredentials
+    JsonMessageTopic[PressJob](AmazonSNSAsyncClientBuilder.standard()
+      .withCredentials(credentials)
+      .withRegion(Regions.EU_WEST_1).build(),
+      topicArn
+      )
+  }
+
+  def publish(job: PressJob): Future[PublishResult] = {
+    maybeTopic match {
+      case Some(topicArn) =>
+        topicArn.send(job)
+
+      case None =>
+        Future.failed(new RuntimeException("Could not publish job."))
+    }
+  }
+
+}
+
+class FaciaPress(val faciaPressQueue: FaciaPressQueue, val faciaPressTopic: FaciaPressTopic, val configAgent: ConfigAgent) extends Logging {
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
@@ -67,6 +91,7 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
             case Success(_) =>
               EnqueuePressSuccess.increment()
           }
+          val fut2 = Future.traverse(paths)(path => faciaPressTopic.publish(PressJob(FrontPath(path), Live, forceConfigUpdate = pressCommand.forceConfigUpdate)))
           fut
         } else {
           Future.successful(Set.empty)
@@ -82,6 +107,7 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val configAgent: ConfigAg
             case Success(_) =>
               EnqueuePressSuccess.increment()
           }
+          val fut2 = Future.traverse(paths)(path => faciaPressTopic.publish(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
           fut
         } else Future.successful(Set.empty)
 
