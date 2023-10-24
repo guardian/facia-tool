@@ -43,7 +43,7 @@ System.config({
     "raven-js": "npm:raven-js@2.3.0",
     "sinon": "npm:sinon@1.17.3",
     "text": "github:systemjs/plugin-text@0.0.7",
-    "underscore": "npm:underscore@1.8.3",
+    "underscore": "npm:underscore@1.13.6",
     "github:jspm/nodelibs-assert@0.1.0": {
       "assert": "npm:assert@1.3.0"
     },
