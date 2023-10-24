@@ -37,7 +37,7 @@ System.config({
     "jquery": "npm:jquery@2.2.3",
     "jquery-mockjax": "npm:jquery-mockjax@2.1.1",
     "jquery-ui": "github:jquery/jquery-ui@1.11.3",
-    "knockout": "npm:knockout@3.4.0",
+    "knockout": "npm:knockout@3.5.1",
     "numeral": "npm:numeral@1.5.3",
     "panda-session": "github:guardian/panda-session@0.1.6",
     "raven-js": "npm:raven-js@2.3.0",
@@ -62,7 +62,7 @@ System.config({
     "github:jspm/nodelibs-http@1.7.1": {
       "Base64": "npm:Base64@0.2.1",
       "events": "github:jspm/nodelibs-events@0.1.1",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "stream": "github:jspm/nodelibs-stream@0.1.0",
       "url": "github:jspm/nodelibs-url@0.1.0",
       "util": "github:jspm/nodelibs-util@0.1.0"
@@ -105,7 +105,7 @@ System.config({
       "bn.js": "npm:bn.js@4.11.3",
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "minimalistic-assert": "npm:minimalistic-assert@1.0.0",
       "vm": "github:jspm/nodelibs-vm@0.1.0"
     },
@@ -130,7 +130,7 @@ System.config({
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
       "evp_bytestokey": "npm:evp_bytestokey@1.0.0",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "systemjs-json": "github:systemjs/plugin-json@0.1.1"
     },
     "npm:browserify-cipher@1.0.0": {
@@ -145,7 +145,7 @@ System.config({
       "cipher-base": "npm:cipher-base@1.0.2",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
       "des.js": "npm:des.js@1.0.0",
-      "inherits": "npm:inherits@2.0.1"
+      "inherits": "npm:inherits@2.0.3"
     },
     "npm:browserify-rsa@4.0.1": {
       "bn.js": "npm:bn.js@4.11.3",
@@ -162,7 +162,7 @@ System.config({
       "create-hmac": "npm:create-hmac@1.1.4",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
       "elliptic": "npm:elliptic@6.2.3",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "parse-asn1": "npm:parse-asn1@5.0.0",
       "stream": "github:jspm/nodelibs-stream@0.1.0"
     },
@@ -181,7 +181,7 @@ System.config({
     },
     "npm:cipher-base@1.0.2": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "stream": "github:jspm/nodelibs-stream@0.1.0",
       "string_decoder": "github:jspm/nodelibs-string_decoder@0.1.0"
     },
@@ -229,7 +229,7 @@ System.config({
       "cipher-base": "npm:cipher-base@1.0.2",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "ripemd160": "npm:ripemd160@1.0.1",
       "sha.js": "npm:sha.js@2.4.5"
     },
@@ -237,7 +237,7 @@ System.config({
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
       "create-hash": "npm:create-hash@1.1.2",
       "crypto": "github:jspm/nodelibs-crypto@0.1.0",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "stream": "github:jspm/nodelibs-stream@0.1.0"
     },
     "npm:crypto-browserify@3.11.0": {
@@ -247,7 +247,7 @@ System.config({
       "create-hash": "npm:create-hash@1.1.2",
       "create-hmac": "npm:create-hmac@1.1.4",
       "diffie-hellman": "npm:diffie-hellman@5.0.2",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "pbkdf2": "npm:pbkdf2@3.0.4",
       "public-encrypt": "npm:public-encrypt@4.0.0",
       "randombytes": "npm:randombytes@2.0.3"
@@ -264,7 +264,7 @@ System.config({
     },
     "npm:des.js@1.0.0": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "minimalistic-assert": "npm:minimalistic-assert@1.0.0"
     },
     "npm:diffie-hellman@5.0.2": {
@@ -279,7 +279,7 @@ System.config({
       "bn.js": "npm:bn.js@4.11.3",
       "brorand": "npm:brorand@1.0.5",
       "hash.js": "npm:hash.js@1.0.3",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "systemjs-json": "github:systemjs/plugin-json@0.1.1"
     },
     "npm:evp_bytestokey@1.0.0": {
@@ -310,7 +310,7 @@ System.config({
       "get-intrinsic": "npm:get-intrinsic@1.2.2"
     },
     "npm:hash.js@1.0.3": {
-      "inherits": "npm:inherits@2.0.1"
+      "inherits": "npm:inherits@2.0.3"
     },
     "npm:hasown@2.0.0": {
       "function-bind": "npm:function-bind@1.1.2"
@@ -322,9 +322,6 @@ System.config({
     "npm:https-browserify@0.0.0": {
       "http": "github:jspm/nodelibs-http@1.7.1"
     },
-    "npm:inherits@2.0.1": {
-      "util": "github:jspm/nodelibs-util@0.1.0"
-    },
     "npm:inherits@2.0.3": {
       "util": "github:jspm/nodelibs-util@0.1.0"
     },
@@ -332,7 +329,7 @@ System.config({
       "jquery": "npm:jquery@2.2.3",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
-    "npm:knockout@3.4.0": {
+    "npm:knockout@3.5.1": {
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:miller-rabin@4.0.0": {
@@ -408,7 +405,7 @@ System.config({
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
       "core-util-is": "npm:core-util-is@1.0.2",
       "events": "github:jspm/nodelibs-events@0.1.1",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "isarray": "npm:isarray@0.0.1",
       "process": "github:jspm/nodelibs-process@0.1.2",
       "stream-browserify": "npm:stream-browserify@1.0.0",
@@ -427,7 +424,7 @@ System.config({
     "npm:sha.js@2.4.5": {
       "buffer": "github:jspm/nodelibs-buffer@0.1.1",
       "fs": "github:jspm/nodelibs-fs@0.1.2",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "process": "github:jspm/nodelibs-process@0.1.2"
     },
     "npm:sinon@1.17.3": {
@@ -445,7 +442,7 @@ System.config({
     },
     "npm:stream-browserify@1.0.0": {
       "events": "github:jspm/nodelibs-events@0.1.1",
-      "inherits": "npm:inherits@2.0.1",
+      "inherits": "npm:inherits@2.0.3",
       "readable-stream": "npm:readable-stream@1.1.14"
     },
     "npm:string_decoder@0.10.31": {
