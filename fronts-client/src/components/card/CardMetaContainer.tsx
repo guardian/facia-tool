@@ -11,13 +11,17 @@ const metaContainerSizeWidthMap = {
   small: 60,
 } as { [Sizes in CardSizes]: number };
 
-const MetaContainer = styled.div<{ size?: CardSizes }>`
+interface MetaContainerProps {
+  size?: CardSizes;
+}
+const MetaContainer = styled.div<MetaContainerProps>`
   position: relative;
   flex-shrink: 0;
   /* If we have a size property, use that. */
-  width: ${({ size }) => size && `${metaContainerSizeWidthMap[size]}px`};
+  width: ${({ size }: MetaContainerProps) =>
+    size && `${metaContainerSizeWidthMap[size]}px`};
   /* If we don't, fall back to media queries. */
-  ${({ size }) =>
+  ${({ size }: MetaContainerProps) =>
     !size &&
     media.large`
       width: ${metaContainerSizeWidthMap.small}px;

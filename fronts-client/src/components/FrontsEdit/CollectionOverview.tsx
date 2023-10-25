@@ -111,7 +111,7 @@ const CollectionOverview = ({
 }: FrontCollectionOverviewProps) =>
   collection ? (
     <Container
-      onClick={(e) => {
+      onClick={(e: React.MouseEvent) => {
         e.preventDefault();
         events.overviewItemClicked(frontId);
         const el = document.getElementById(

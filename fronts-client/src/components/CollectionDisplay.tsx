@@ -270,10 +270,10 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
                   data-testid="rename-front-input"
                   value={displayName}
                   autoFocus
-                  onChange={(e) => {
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     this.setState({ displayName: e.target.value });
                   }}
-                  onKeyDown={(e) => {
+                  onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
                     if (e.key === 'Enter') {
                       this.setName();
                     }

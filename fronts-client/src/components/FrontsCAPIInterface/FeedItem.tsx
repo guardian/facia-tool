@@ -161,7 +161,7 @@ class FeedItem extends React.Component<ComponentProps> {
         </RenderOffscreen>
         <FeedItemContainer
           href={getPaths(article.id).live}
-          onClick={(e) => e.preventDefault()}
+          onClick={(e: React.MouseEvent) => e.preventDefault()}
           aria-disabled
           blur={shouldObscureFeed}
         >

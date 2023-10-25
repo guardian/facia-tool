@@ -198,7 +198,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
     return (
       <FrontCollectionsContainer
         onScroll={this.handleScroll}
-        ref={(ref) => (this.collectionContainerElement = ref)}
+        ref={(ref: HTMLDivElement | null) =>
+          (this.collectionContainerElement = ref)
+        }
       >
         <WithDimensions>
           {({ width }) => (
@@ -206,7 +208,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
               {front.collections.map((collectionId) => (
                 <CollectionContainer
                   key={collectionId}
-                  ref={(ref) => (this.collectionElements[collectionId] = ref)}
+                  ref={(ref: HTMLDivElement | null) =>
+                    (this.collectionElements[collectionId] = ref)
+                  }
                 >
                   {isEditingLocked && (
                     <EditingLockedCollectionsOverlay>

@@ -119,7 +119,7 @@ class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
           onDragStart={onDragStart}
           onDragOver={onDragOver}
           onDrop={onDrop}
-          onClick={(e) => {
+          onClick={(e: React.MouseEvent) => {
             if (isLoading || !article) {
               return;
             }

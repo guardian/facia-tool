@@ -30,7 +30,9 @@ const Dropdown = ({
 }: DropdownProps) => (
   <Select
     value={current || ''}
-    onChange={({ currentTarget: { value } }) => onChange(value)}
+    onChange={({
+      currentTarget: { value },
+    }: React.ChangeEvent<HTMLSelectElement>) => onChange(value)}
   >
     {!!deselectValue && (
       <option key={deselectValue} value={deselectValue}>
