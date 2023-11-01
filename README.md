@@ -111,6 +111,16 @@ In CODE the breaking news tool sends notifications to the "debug version" of the
 
 Breaking News is represented by a front called `breaking-news` which is considered to be a special case. It has a `Send Alert` button rather than a `Launch` button. Only one thing can be added to a collection at a given time. You cannot send the same alert twice, and snap links cannot be added / alerted on. Different collections represent different audience groups (eg by location or by subscription to different topics.) To add a new one, just create a container. New breaking news containers need to have the layout `breaking-news/not-for-other-fronts`.
 
+## Client-side vulnerabilities: Synk and JSPM
+
+The older client side tools (those with source code at /public/src - not the [Fronts-tool](#the-fronts-tool)) are bundled using [JSPM](https://jspm.org/). Instead of dependencies for the application being listed in the package.json file in the normal way, they are listed under "jspm" and compiled by JSPM using an import map.
+
+A side effect of this is that the vulnerabilities are not surfaced by Synk. To address this, there is a workaround to construct a "regular" package.json file out real one, and a custom action so that Synk can report on vulnerabilities (see [PR#1521](https://github.com/guardian/facia-tool/pull/1521)).
+
+To audit vulernabilities locally:
+ - `cd v1_jsmp_synk_workaround`
+ - `npm run preinstall` - generates the package.json file in the gitignored '/result' subfolder
+ - `npm run audit` - generates a lockfile in '/result' and runs the npm audit command - note you can append parameters for pn audit - eg `npm run audit --production > ./result/audit.txt`
 
 ## Troubleshooting
 ### Postgres
