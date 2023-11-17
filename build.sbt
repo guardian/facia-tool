@@ -88,6 +88,7 @@ libraryDependencies ++= Seq(
     "com.amazonaws" % "aws-java-sdk-ssm" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
+    "com.amazonaws" % "aws-java-sdk-eventbridge" % awsVersion,
     "com.gu" %% "content-api-models-scala" % capiModelsVersion,
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.6",

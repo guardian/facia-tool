@@ -32,6 +32,7 @@ class FaciaToolController(
                            val FaciaPressTopic: FaciaPressTopic,
                            val configAgent: ConfigAgent,
                            val s3FrontsApi: S3FrontsApi,
+                           val eventBridge: EventBridge,
                            val deps: BaseFaciaControllerComponents
                          )(implicit ec: ExecutionContext)
   extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck with ModifyCollectionsPermissionsCheck with Logging {
@@ -248,12 +249,14 @@ class FaciaToolController(
   def pressLivePath(path: String) = AccessAPIAuthAction { request =>
     faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
     FaciaPressTopic.publish(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
+    eventBridge.putEvent(path, Live)
     NoCache(Ok)
   }
 
   def pressDraftPath(path: String) = AccessAPIAuthAction { request =>
     faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     FaciaPressTopic.publish(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
+    eventBridge.putEvent(path, Draft)
     NoCache(Ok)
   }
 

@@ -73,7 +73,7 @@ class FaciaPressTopic(val config: ApplicationConfiguration) {
 
 }
 
-class FaciaPress(val faciaPressQueue: FaciaPressQueue, val faciaPressTopic: FaciaPressTopic, val configAgent: ConfigAgent) extends Logging {
+class FaciaPress(val faciaPressQueue: FaciaPressQueue, val faciaPressTopic: FaciaPressTopic, val eventBridge: EventBridge, val configAgent: ConfigAgent) extends Logging {
   def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
@@ -91,6 +91,11 @@ class FaciaPress(val faciaPressQueue: FaciaPressQueue, val faciaPressTopic: Faci
           faciaPressTopic.publish(event).onComplete { // fire & forget (but log)
             case Failure(error) => logger.error(s"Error publishing to the SNS topic, $pressType event: $event", error)
             case Success(_) => logger.info(s"Published to the SNS topic, $pressType event: $event")
+          }
+
+          eventBridge.putEvent(path, pressType).onComplete { // fire & forget (but log)
+            case Failure(error) => logger.error(s"Error publishing to the EventBridge, $pressType path: $path", error)
+            case Success(_) => logger.info(s"Published to the EventBridge, $pressType path: $path")
           }
 
           faciaPressQueue.enqueue(event)

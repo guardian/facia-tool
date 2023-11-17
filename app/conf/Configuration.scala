@@ -234,6 +234,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val stsRoleToAssume = getString("faciatool.sts.role.to.assume").getOrElse(stsRoleToAssumeFromProperties)
     lazy val frontPressUpdateTable = frontPressedDynamoTable
     lazy val userDataTable = userTable
+    lazy val eventBridgeBusName = getMandatoryString("eventbridge.bus_name")
   }
 
   object media {
