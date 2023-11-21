@@ -75,17 +75,17 @@ object Edition extends PlayEnum[Edition] {
   case object EditionEarth extends Edition
 
   case object EditionBooks extends Edition
-  
+
   case object EditionWeWereThere extends Edition
-  
+
   case object EditionEurosSpecial extends Edition
-  
+
   case object EditionOlympicLegends extends Edition
-  
+
   case object EditionEndOfYear extends Edition
-  
+
   case object EditionWellbeing extends Edition
-  
+
   override def values = findValues
 }
 
@@ -135,6 +135,7 @@ sealed abstract class PathType extends EnumEntry with Uncapitalised {
     this match {
       case PathType.Search => "search"
       case PathType.PrintSent => "content/print-sent"
+      case PathType.EditionsChannel => "channel/editions"
     }
   }
 }
@@ -144,6 +145,8 @@ object PathType extends PlayEnum[PathType] {
   case object Search extends PathType
 
   case object PrintSent extends PathType
+
+  case object EditionsChannel extends PathType
 
   override def values = findValues
 }
