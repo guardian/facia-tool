@@ -68,7 +68,3 @@ A container with a dynamic layout. However when editorial refer to it they typic
 
 It’s typically used for a breaking news story. Dynamos are rendered differently from other containers. The Cambridge Analytica Files is a dynamo.
 
-## MPU - Main Promotional Unit
-
-Some front layouts have a MPU. This is a slot for an advert.
-
