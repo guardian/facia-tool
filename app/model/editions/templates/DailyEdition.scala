@@ -279,7 +279,7 @@ object DailyEdition extends RegionalEdition {
     collection("Features").printSentAnyTag("theobserver/new-review/features"),
     collection("Agenda").printSentAnyTag("theobserver/new-review/agenda"),
     collection("Discover").printSentAnyTag("theobserver/new-review/discover"),
-    collection("Critics").printSentAnyTag("theobserver/new-review/critics"),
+    collection("Critics"),
     collection("Culture").hide,
     collection("Culture").hide,
     collection("Culture").hide
@@ -288,7 +288,7 @@ object DailyEdition extends RegionalEdition {
 
     def FrontCriticsNewReview = front(
     "Critics",
-    collection("Critics"),
+    collection("Critics").printSentAnyTag("theobserver/new-review/critics"),
     collection("Critics"),
     collection("Critics"),
     collection("Critics"),
@@ -406,6 +406,8 @@ object DailyEdition extends RegionalEdition {
     collection("Sport"),
     collection("Sport"),
     collection("Sport").hide,
+    collection("Sport").hide,
+    collection("Sport").hide,
     collection("Sport").hide
   )
     .swatch(Sport)
@@ -416,6 +418,8 @@ object DailyEdition extends RegionalEdition {
     collection("Sport"),
     collection("Sport"),
     collection("Sport"),
+    collection("Sport").hide,
+    collection("Sport").hide,
     collection("Sport").hide,
     collection("Sport").hide
   )
