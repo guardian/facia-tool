@@ -199,9 +199,9 @@ object DailyEdition extends RegionalEdition {
     .swatch(Opinion)
 
   def FrontOpinionSpecial = specialFront("Journal Special", Opinion)
-  
+
   // New for Saturday Life Magazine, we're making temporarily a special to be hidden by default.
-  
+
     def FrontLifeSaturdayMagazineFeatures = front(
     "Features",
     collection("Features").printSentAnyTag("theguardian/saturday/features"),
@@ -211,7 +211,7 @@ object DailyEdition extends RegionalEdition {
     collection("Features").hide
   )
     .swatch(Lifestyle)
-  
+
     def FrontLifeSaturdayMagazineCuttings = front(
     "Cuttings",
     collection("Cuttings").printSentAnyTag("theguardian/saturday/cuttings"),
@@ -251,9 +251,9 @@ object DailyEdition extends RegionalEdition {
     collection("Culture").hide
   )
     .swatch(Culture)
-  
+
   // New for the Saturday Magazine
-  
+
     def FrontCultureSaturdayMagazineCulture = front(
     "Culture",
     collection("Culture").printSentAnyTag("theguardian/saturday/culture", "theguardian/whatson/whatson"),
@@ -263,7 +263,7 @@ object DailyEdition extends RegionalEdition {
     collection("Culture").hide
   )
     .swatch(Culture)
-  
+
     def FrontCultureSaturdayMagazineBooks = front(
     "Books",
     collection("Books"),
@@ -297,7 +297,7 @@ object DailyEdition extends RegionalEdition {
     collection("Critics").hide
   )
     .swatch(Culture)
-  
+
   def FrontBooks = front(
     "Books",
     collection("Books").printSentAnyTag("theobserver/new-review/books"),
@@ -371,6 +371,8 @@ object DailyEdition extends RegionalEdition {
     collection("Features").printSentAnyTag("theobserver/magazine/features2"),
     collection("Life").printSentAllTags("theobserver/magazine/life-and-style", "-food/food"),
     collection("Life").printSentAnyTag("theobserver/design/design").hide,
+    collection("Life").hide,
+    collection("Life").hide,
     collection("Life").hide,
     collection("Life").hide
   )
