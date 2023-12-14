@@ -2,10 +2,9 @@ package model.editions
 
 import java.time.temporal.ChronoField
 import java.time.{LocalDate, ZoneId, ZoneOffset}
-
 import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
-import model.editions.PathType.{PrintSent, Search}
+import model.editions.PathType.{EditionsChannel, PrintSent, Search}
 import model.editions.templates.TemplateHelpers.Defaults
 import model.editions.templates._
 import org.postgresql.util.PGobject
@@ -172,6 +171,12 @@ private[editions] case class CollectionTemplate(
   def printSentAllTags(tags: String*) = printSentPrefill(s"?tag=${tags.mkString(",")}")
 
   def searchPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, Search)))
+
+  def channelPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, EditionsChannel)))
+
+  def channelAnyTag(tags: String*)= channelPrefill(s"?tag=${tags.mkString("|")}")
+
+  def channelAllTags(tags: String*) = channelPrefill(s"?tag=${tags.mkString(",")}")
 
   def withArticleItemsCap(articleItemsCap: Int) = copy(articleItemsCap = articleItemsCap)
 
