@@ -18,7 +18,7 @@ class EventBridge(config: ApplicationConfiguration) {
       .withTime(new Date())
       .withEventBusName(config.faciatool.eventBridgeBusName)  // if we don't define this then we use the default event bus, can be referenced by name or arn
       .withSource("facia-tool") // could be used in the EventPattern to trigger only some Rules
-      .withDetailType("front-path") // maybe superfluous? "used to decide what fields to expect in the event detail"
+      .withDetailType("front-update") // maybe superfluous? "used to decide what fields to expect in the event detail"
       .withDetail(EventBridgeDetail(path, pressType).toJsonString)
 
     val request = new PutEventsRequest()
@@ -28,7 +28,7 @@ class EventBridge(config: ApplicationConfiguration) {
   }
 }
 
-case class EventBridgeDetail(`front-path`: String, pressType: PressType) {
+case class EventBridgeDetail(path: String, pressType: PressType) {
   def toJsonString: String = {
     Json.toJson(this)(Json.writes[EventBridgeDetail]).toString
   }
