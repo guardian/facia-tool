@@ -68,3 +68,6 @@ A container with a dynamic layout. However when editorial refer to it they typic
 
 It’s typically used for a breaking news story. Dynamos are rendered differently from other containers. The Cambridge Analytica Files is a dynamo.
 
+## MPU - Main Promotional Unit
+
+Until [Oct 2023](https://github.com/guardian/dotcom-rendering/pull/9047) when we switched to banner ads, Containers could contain MPU ad slots between [Cards](#card). The MPU is typically 300×250 pixels in size.
