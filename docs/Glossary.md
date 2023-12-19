@@ -70,5 +70,4 @@ It’s typically used for a breaking news story. Dynamos are rendered differentl
 
 ## MPU - Main Promotional Unit
 
-Some front layouts have a MPU. This is a slot for an advert.
-
+Until [Oct 2023](https://github.com/guardian/dotcom-rendering/pull/9047) when we switched DCR-rendered fronts to banner ads, Containers could contain MPU ad slots between [Cards](#card). The MPU is typically 300×250 pixels in size.
