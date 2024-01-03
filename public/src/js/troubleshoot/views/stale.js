@@ -174,7 +174,7 @@ function diagnoseStaleFront (container, front, priority, config, when, status) {
     const troubleshootResults = clone('staleFront');
     troubleshootResults.querySelector('.lastModifyDate').textContent = when || 'never';
     troubleshootResults.querySelector('.frontName').textContent = front;
-    troubleshootResults.querySelector('.frontPrioity').textContent = priority;
+    troubleshootResults.querySelector('.frontPriority').textContent = priority;
 
     diagnoseCapiQueries(troubleshootResults, front, config, createScheduler());
     diagnoseLatestSnaps(troubleshootResults, front, config, createScheduler());
@@ -232,7 +232,7 @@ function frontNotStale (container, front, priority, when, status) {
     const validMessage = clone('frontNotStale');
     validMessage.querySelector('.lastModifyDate').textContent = when;
     validMessage.querySelector('.frontName').textContent = front;
-    validMessage.querySelector('.frontPrioity').textContent = priority;
+    validMessage.querySelector('.frontPriority').textContent = priority;
     populatePressErrorMessage(validMessage, status);
 
     inject(container, validMessage);
