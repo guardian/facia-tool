@@ -20,21 +20,21 @@ import scala.concurrent.{ExecutionContext, Future}
 import permissions.CollectionPermissions
 
 class FaciaToolController(
-                           val acl: Acl,
-                           val frontsApi: FrontsApi,
-                           val collectionService: CollectionService,
-                           val faciaApiIO: FaciaApiIO,
-                           val updateActions: UpdateActions,
-                           breakingNewsUpdate: BreakingNewsUpdate,
-                           val structuredLogger: StructuredLogger,
-                           val faciaPress: FaciaPress,
-                           val faciaPressQueue: FaciaPressQueue,
-                           val FaciaPressTopic: FaciaPressTopic,
-                           val configAgent: ConfigAgent,
-                           val s3FrontsApi: S3FrontsApi,
-                           val deps: BaseFaciaControllerComponents
-                         )(implicit ec: ExecutionContext)
-  extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck with ModifyCollectionsPermissionsCheck with Logging {
+  val acl: Acl,
+  val frontsApi: FrontsApi,
+  val collectionService: CollectionService,
+  val faciaApiIO: FaciaApiIO,
+  val updateActions: UpdateActions,
+  breakingNewsUpdate: BreakingNewsUpdate,
+  val structuredLogger: StructuredLogger,
+  val faciaPress: FaciaPress,
+  val faciaPressTopic: FaciaPressTopic,
+  val configAgent: ConfigAgent,
+  val s3FrontsApi: S3FrontsApi,
+  val deps: BaseFaciaControllerComponents
+)(
+  implicit ec: ExecutionContext
+) extends BaseFaciaController(deps) with BreakingNewsEditCollectionsCheck with ModifyCollectionsPermissionsCheck with Logging {
 
   private val collectionPermissions = CollectionPermissions(configAgent.get)
 
@@ -246,14 +246,12 @@ class FaciaToolController(
   }
 
   def pressLivePath(path: String) = AccessAPIAuthAction { request =>
-    faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
-    FaciaPressTopic.publish(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
+    faciaPressTopic.publish(PressJob(FrontPath(path), Live, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
 
   def pressDraftPath(path: String) = AccessAPIAuthAction { request =>
-    faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
-    FaciaPressTopic.publish(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
+    faciaPressTopic.publish(PressJob(FrontPath(path), Draft, forceConfigUpdate = Option(true)))
     NoCache(Ok)
   }
 

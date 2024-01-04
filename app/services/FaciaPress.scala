@@ -29,28 +29,6 @@ object PressCommand {
   def forOneId(id: String): PressCommand = PressCommand(Set(id))
 }
 
-class FaciaPressQueue(val config: ApplicationConfiguration) {
-  val maybeQueue = config.faciatool.frontPressToolQueue map { queueUrl =>
-    val credentials = config.aws.frontendAccountCredentials
-    JsonMessageQueue[PressJob](
-      AmazonSQSAsyncClientBuilder.standard()
-        .withCredentials(credentials)
-        .withRegion(Regions.EU_WEST_1).build(),
-      queueUrl
-    )
-  }
-
-  def enqueue(job: PressJob): Future[SendMessageResult] = {
-    maybeQueue match {
-      case Some(queue) =>
-        queue.send(job)
-
-      case None =>
-        Future.failed(new RuntimeException("`facia.press.queue_url` property not in config, could not enqueue job."))
-    }
-  }
-}
-
 class FaciaPressTopic(val config: ApplicationConfiguration) {
   val maybeTopic = config.faciatool.frontPressToolTopic map { topicArn =>
     val credentials = config.aws.cmsFrontsAccountCredentials
@@ -73,37 +51,35 @@ class FaciaPressTopic(val config: ApplicationConfiguration) {
 
 }
 
-class FaciaPress(val faciaPressQueue: FaciaPressQueue, val faciaPressTopic: FaciaPressTopic, val configAgent: ConfigAgent) extends Logging {
-  def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
+class FaciaPress(val faciaPressTopic: FaciaPressTopic, val configAgent: ConfigAgent) extends Logging {
+  def press(pressCommand: PressCommand): Future[List[PublishResult]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
         id <- pressCommand.collectionIds
         path <- configAgent.getConfigsUsingCollectionId(id)
       } yield path
 
-      def sendEvents(pressType: PressType) = {
-        val result = Future.traverse(paths.filter(_ => pressType match {
+      def sendEvents(pressType: PressType) = Future.traverse(
+        paths.filter(_ => pressType match {
           case Live => pressCommand.live
           case Draft => pressCommand.draft
-        })) { path =>
+        })
+      ) { path =>
           val event = PressJob(FrontPath(path), pressType, forceConfigUpdate = pressCommand.forceConfigUpdate)
 
-          faciaPressTopic.publish(event).onComplete { // fire & forget (but log)
-            case Failure(error) => logger.error(s"Error publishing to the SNS topic, $pressType event: $event", error)
-            case Success(_) => logger.info(s"Published to the SNS topic, $pressType event: $event")
+          val publishResultFuture = faciaPressTopic.publish(event)
+
+          publishResultFuture.onComplete {
+            case Failure(error) =>
+              logger.error(s"Error publishing to the SNS topic, $pressType event: $event", error)
+              EnqueuePressFailure.increment()
+            case Success(_) =>
+              logger.info(s"Published to the SNS topic, $pressType event: $event")
+              EnqueuePressSuccess.increment()
           }
 
-          faciaPressQueue.enqueue(event)
+          publishResultFuture
         }
-        result.onComplete {
-          case Failure(error) =>
-            EnqueuePressFailure.increment()
-            logger.error(s"Error manually pressing $pressType collection through update from tool", error)
-          case Success(_) =>
-            EnqueuePressSuccess.increment()
-        }
-        result
-      }
 
       for {
         live <- sendEvents(Live)
