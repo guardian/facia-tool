@@ -47,7 +47,7 @@ Run `yarn test` in `fronts-client` folder. See [fronts-client](/fronts-client) f
 
 ### Pressing fronts
 - Before fronts can appear on site, they have to be pressed by Facia-Press which lives on the frontend account.
-- The fronts tool sends events to an sqs queue which Facia-Press listens. You can read more about Facia-Press [here](https://github.com/guardian/frontend/blob/ad74a1da567f047b7b824650e6e1be0f0262952b/docs/02-architecture/01-applications-architecture.md).
+- The fronts tool sends events to an SNS topic, which is subscribed to by a queue (in frontend account) to which Facia-Press listens. You can read more about Facia-Press [here](https://github.com/guardian/frontend/blob/ad74a1da567f047b7b824650e6e1be0f0262952b/docs/02-architecture/01-applications-architecture.md).
 
 - If you are adding a new kind of content to a front or changing the front configuration, you should check that the front can still be pressed.
 
@@ -57,9 +57,8 @@ Run `yarn test` in `fronts-client` folder. See [fronts-client](/fronts-client) f
 - You can remove this property from the front in the fronts config page.
 - Select the front your are trying to view on the config page, click on the edit-metadata link, and deselect the `is hidden`-property.
 
-- If you are developing locally and do not have frontend credentials from janus, the fronts tool won't have permissions to push events to the sqs queue that Facia-Press reads from. To test that a front is pressed, you will have to deploy your changes to code, and test the code from there.
-
-
+- Since the SNS topic lives in the fronts account, CODE fronts should be pressed automatically when running locally.
+-
 ## Different tools in this codebase
 
 ### The Fronts Tool

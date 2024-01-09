@@ -5,7 +5,7 @@ import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder
 import com.amazonaws.services.sns.model.PublishResult
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.SendMessageResult
-import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob}
+import com.gu.facia.api.models.faciapress.{Draft, FrontPath, Live, PressJob, PressType}
 import conf.ApplicationConfiguration
 import logging.Logging
 import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
@@ -27,28 +27,6 @@ case class PressCommand(
 
 object PressCommand {
   def forOneId(id: String): PressCommand = PressCommand(Set(id))
-}
-
-class FaciaPressQueue(val config: ApplicationConfiguration) {
-  val maybeQueue = config.faciatool.frontPressToolQueue map { queueUrl =>
-    val credentials = config.aws.frontendAccountCredentials
-    JsonMessageQueue[PressJob](
-      AmazonSQSAsyncClientBuilder.standard()
-        .withCredentials(credentials)
-        .withRegion(Regions.EU_WEST_1).build(),
-      queueUrl
-    )
-  }
-
-  def enqueue(job: PressJob): Future[SendMessageResult] = {
-    maybeQueue match {
-      case Some(queue) =>
-        queue.send(job)
-
-      case None =>
-        Future.failed(new RuntimeException("`facia.press.queue_url` property not in config, could not enqueue job."))
-    }
-  }
 }
 
 class FaciaPressTopic(val config: ApplicationConfiguration) {
@@ -73,47 +51,39 @@ class FaciaPressTopic(val config: ApplicationConfiguration) {
 
 }
 
-class FaciaPress(val faciaPressQueue: FaciaPressQueue, val faciaPressTopic: FaciaPressTopic, val configAgent: ConfigAgent) extends Logging {
-  def press(pressCommand: PressCommand): Future[List[SendMessageResult]] = {
+class FaciaPress(val faciaPressTopic: FaciaPressTopic, val configAgent: ConfigAgent) extends Logging {
+  def press(pressCommand: PressCommand): Future[List[PublishResult]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
         id <- pressCommand.collectionIds
         path <- configAgent.getConfigsUsingCollectionId(id)
       } yield path
 
-      lazy val livePress =
-        if (pressCommand.live) {
-          val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Live, forceConfigUpdate = pressCommand.forceConfigUpdate)))
-          fut.onComplete {
+      def sendEvents(pressType: PressType) = Future.traverse(
+        paths.filter(_ => pressType match {
+          case Live => pressCommand.live
+          case Draft => pressCommand.draft
+        })
+      ) { path =>
+          val event = PressJob(FrontPath(path), pressType, forceConfigUpdate = pressCommand.forceConfigUpdate)
+
+          val publishResultFuture = faciaPressTopic.publish(event)
+
+          publishResultFuture.onComplete {
             case Failure(error) =>
+              logger.error(s"Error publishing to the SNS topic, $pressType event: $event", error)
               EnqueuePressFailure.increment()
-              logger.error("Error manually pressing live collection through update from tool", error)
             case Success(_) =>
+              logger.info(s"Published to the SNS topic, $pressType event: $event")
               EnqueuePressSuccess.increment()
           }
-          val fut2 = Future.traverse(paths)(path => faciaPressTopic.publish(PressJob(FrontPath(path), Live, forceConfigUpdate = pressCommand.forceConfigUpdate)))
-          fut
-        } else {
-          Future.successful(Set.empty)
+
+          publishResultFuture
         }
 
-      lazy val draftPress =
-        if (pressCommand.draft) {
-          val fut = Future.traverse(paths)(path => faciaPressQueue.enqueue(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
-          fut.onComplete {
-            case Failure(error) =>
-              EnqueuePressFailure.increment()
-              logger.error("Error manually pressing draft collection through update from tool", error)
-            case Success(_) =>
-              EnqueuePressSuccess.increment()
-          }
-          val fut2 = Future.traverse(paths)(path => faciaPressTopic.publish(PressJob(FrontPath(path), Draft, forceConfigUpdate = pressCommand.forceConfigUpdate)))
-          fut
-        } else Future.successful(Set.empty)
-
       for {
-        live <- livePress
-        draft <-  draftPress
+        live <- sendEvents(Live)
+        draft <- sendEvents(Draft)
       } yield (live ++ draft).toList
     }
   }
