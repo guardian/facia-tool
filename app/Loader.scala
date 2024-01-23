@@ -19,12 +19,12 @@ class Loader extends ApplicationLoader {
 
     val playConfig = context.initialConfiguration
     // Override the initial configuration from play to allow play evoltions to work with RDS IAM
-    val configWithPassword = playConfig ++ Configuration.from(
+    val configWithPassword = Configuration.from(
       Map(
         "db.default.url" ->   config.postgres.url,
         "db.default.password" ->  config.postgres.password
       )
-    )
+    ).withFallback(playConfig)
 
     val components = new AppComponents(context.copy(initialConfiguration = configWithPassword), config)
 
