@@ -37,7 +37,7 @@ class Loader extends ApplicationLoader {
       region = components.config.aws.region
     ), components.actorSystem.scheduler)
 
-    components.actorSystem.scheduler.schedule(initialDelay = 1.seconds, interval = 1.minute) { components.configAgent.refresh() }
+    components.actorSystem.scheduler.scheduleWithFixedDelay(initialDelay = 1.seconds, delay = 1.minute) { () => components.configAgent.refresh() }
 
     new CloudWatchApplicationMetrics(
       components.config.environment.applicationName,
