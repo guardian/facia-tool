@@ -84,7 +84,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val cloudwatch = new CloudWatch(config, awsEndpoints)
   val press = new Press(faciaPress)
   val assetsManager = new AssetsManager(config, isDev)
-  override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, sourceMapper, Some(router))
+  override lazy val httpErrorHandler = new LoggingHttpErrorHandler(environment, configuration, devContext.map(_.sourceMapper), Some(router))
 
 //  Controllers
   val editions = new EditionsController(editionsDb, templating, editionsPublishing, capi, this)
