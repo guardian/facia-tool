@@ -12,7 +12,6 @@ ThisBuild / scalaVersion := "2.13.5"
 
 import com.gu.riffraff.artifact.BuildInfo
 import sbt.Resolver
-import sbt.io.Path._
 
 debianPackageDependencies := Seq("openjdk-8-jre-headless")
 
@@ -78,7 +77,6 @@ libraryDependencies ++= Seq(
     filters,
     evolutions,
     jdbc,
-    "com.typesafe.akka" %% "akka-agent" % "2.5.23",
     "com.amazonaws" % "aws-java-sdk-rds" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-core" % awsVersion,
     "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion,
