@@ -165,5 +165,5 @@ class CloudWatchApplicationMetrics(appName: String, stage: String, cloudWatch: C
   }
 
   logger.info("Starting cloudwatch metrics")
-  scheduler.schedule(initialDelay = 1.seconds, interval = 1.minute) { report() }
+  scheduler.scheduleWithFixedDelay(initialDelay = 1.seconds, delay = 1.minute) { () => report() }
 }

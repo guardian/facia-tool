@@ -25,7 +25,7 @@ class AssetsManager(config: ApplicationConfiguration, isDev: Boolean) {
 
   private def readFromPath(path: String): Bundles = {
     val assetsMapSource = Source.fromResource(path)
-    val maybeJson = try { Json.parse(assetsMapSource.mkString) }
+    val maybeJson = Json.parse(assetsMapSource.mkString)
     maybeJson.validate[Bundles] match {
       case e: JsError => throw new InvalidAssetsException(s"JSON in $path does not match a valid Bundles")
       case json: JsSuccess[Bundles] => json.getOrElse(throw new InvalidAssetsException(s"Invalid JSON Bundle in $path"))
