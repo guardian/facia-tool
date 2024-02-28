@@ -5,7 +5,6 @@ set -e
 setupNvm() {
     export NVM_DIR="$HOME/.nvm"
     [[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"  # This loads nvm
-
     nvm install
     nvm use
 }
@@ -27,7 +26,7 @@ javascriptV1() {
 
 javascriptV2() {
     pushd fronts-client
-
+    setupNvm
     yarn install
     yarn lint
     yarn test
