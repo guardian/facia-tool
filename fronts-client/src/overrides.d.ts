@@ -5,7 +5,7 @@ import {
   Normalizer,
   Parser,
   Validator,
-  GenericFieldHTMLAttributes
+  GenericFieldHTMLAttributes,
 } from 'redux-form';
 import { ComponentType, Component } from 'react';
 
