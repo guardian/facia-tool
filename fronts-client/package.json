@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
+    "compileWithBabel": "node -r @babel/register",
     "bundle": "yarn compileWithBabel $(yarn bin)/webpack",
     "build": "yarn bundle --config config/webpack.config.prod.js",
     "watch": "yarn bundle --config config/webpack.config.dev.js --watch",

@@ -1,6 +1,6 @@
-import common from './webpack.config.common';
+const common = require('./webpack.config.common');
 
-export default {
+module.exports = {
   ...common,
   devtool: 'source-map',
   mode: 'production'
