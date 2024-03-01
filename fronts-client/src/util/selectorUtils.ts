@@ -41,8 +41,8 @@ const createShallowEqualResultSelector = createSelectorCreator(
   // as any and never, the selectors that result are still strongly typed i.e. the issues are local only
   // to here
   resultCheckMemoize as any,
-  defaultEqualityCheck as never,
-  shallowequal as never
+  defaultEqualityCheck,
+  shallowequal
 );
 
 export { createShallowEqualResultSelector };
