@@ -24,7 +24,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
     import org.scanamo.generic.auto._
     val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
-    val jsFileName = "dist/app.bundle.js"
+    val jsFileName = "dist/index.js"
     val faviconDirectoryName = "favicon/"
 
     val jsLocation: String = routes.V2Assets.at(jsFileName).toString

@@ -1,20 +1,21 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
-import tsconfigPaths from 'vite-tsconfig-paths'
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
+  base: '/assets/fronts-client',
   build: {
     manifest: true,
     rollupOptions: {
       input: '/src/index.tsx',
       output: {
-        entryFileNames: `build/[name].js`,
-        chunkFileNames: `build/[name].js`,
-        assetFileNames: `build/[name].[ext]`,
+        entryFileNames: `dist/[name].js`,
+        chunkFileNames: `dist/[name].js`,
+        assetFileNames: `dist/[name].[ext]`,
       },
     },
-    outDir: '../public/',
+    outDir: '../public/fronts-client-v2',
   },
   server: {
     origin: 'http://localhost:5173',
