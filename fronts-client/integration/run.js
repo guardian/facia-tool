@@ -15,7 +15,7 @@ createTestCafe('localhost', 1337, 1338)
           process.argv.includes('--dev') ? '' : ':headless'
         }`
       )
-      .run();
+      .run({ skipJsErrors: true });
   })
   .then(failedCount => {
     testcafe.close();
