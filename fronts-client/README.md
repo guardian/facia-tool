@@ -1,16 +1,23 @@
 # Fronts V2
 
 - [Fronts V2](#fronts-v2)
-  * [Motivations](#motivations)
-  * [Setup](#setup)
-  * [Developing](#developing)
-    + [Technologies](#technologies)
-  * [Building and Compiling](#building-and-compiling)
-  * [Testing](#testing)
-  * [Linting](#linting)
-  * [Typescript](#typescript)
-  * [Naming Conventions](#naming-conventions)
-  * [Tech Debt](#tech-debt)
+  - [Motivations](#motivations)
+  - [Dev Setup (need to be done once)](#dev-setup-need-to-be-done-once)
+  - [Dev Start](#dev-start)
+    - [Technologies](#technologies)
+  - [Building and Compiling](#building-and-compiling)
+  - [Testing](#testing)
+  - [Linting](#linting)
+  - [Typescript](#typescript)
+  - [File Structure](#file-structure)
+  - [Naming Conventions](#naming-conventions)
+    - [Collections](#collections)
+  - [Tech Debt](#tech-debt)
+    - [Naming conventions](#naming-conventions-1)
+    - [Persistent UUIDs](#persistent-uuids)
+    - [Reading our own writes](#reading-our-own-writes)
+    - [Collection Persistence](#collection-persistence)
+    - [Normalise on the server](#normalise-on-the-server)
 
 > _Tip:_ Run `yarn markdown-toc README.md` to regenerate the TOC.
 
@@ -56,8 +63,7 @@ You'll need to understand the Redux concepts of Thunks and Selectors.
 | Uses        | For         |Config |
 | ------------|------------- |---|
 | [Yarn](https://yarnpkg.com/en/)      | Yarning | [package.json](package.json) |
-| [Babel](https://babeljs.io/)      | Compile Typescript etc | [babel.config.json](babel.config.json) |
-| [Webpack](https://webpack.js.org/)      | Bundle your assests | [webpack.config.common.js](config/webpack.config.common.js), [webpack.config.prod.js](config/webpack.config.prod.js), [webpack.config.dev.js](config/webpack.config.dev.js) |
+| [Vite](https://vitejs.dev/)      | Bundle your assests | [vite.config.js](vite.config.ts) |
 
 ## Testing
 
@@ -94,7 +100,7 @@ It's also encouraged to abstract these selectors (and their strings) into one pl
 
 ## Linting
 For the time being we're being pretty aggressive regarding linting / style
-(webpack will fail the build). If this proves to get in the way of people's
+(vite will fail the build). If this proves to get in the way of people's
 workflow then we can discuss / remove as needs be. To lint manually run:
 
 ```bash
