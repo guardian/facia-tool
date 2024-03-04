@@ -4,6 +4,7 @@
   "description": "Facia tool client side",
   "main": "src/index.js",
   "license": "MIT",
+  "private": true,
   "scripts": {
     "build": "tsc && vite build",
     "watch": "vite",
