@@ -38,7 +38,7 @@ String, isDev: Boolean)
         <!-- Connect directly to Vite dev server in development -->
         <!-- See https://vitejs.dev/guide/backend-integration.html -->
         <script type="module">
-            import RefreshRuntime from 'http://localhost:5173/@@react-refresh'
+            import RefreshRuntime from 'http://localhost:5173/assets/fronts-client/@@react-refresh'
 
             RefreshRuntime.injectIntoGlobalHook(window)
             window.$RefreshReg$ = () => {
@@ -46,10 +46,10 @@ String, isDev: Boolean)
             window.$RefreshSig$ = () => (type) => type
             window.__vite_plugin_react_preamble_installed__ = true
         </script>
-        <script type="module" src="http://localhost:5173/@@vite/client"></script>
-        <script type="module" src="http://localhost:5173/src/index.tsx"></script>
+        <script type="module" src="http://localhost:5173/assets/fronts-client/@@vite/client"></script>
+        <script type="module" src="http://localhost:5173/assets/fronts-client/src/index.tsx"></script>
     } else {
-        <script  type="module" src="@jsLocation" type="application/javascript"></script>
+        <script type="module" src="@jsLocation" type="application/javascript"></script>
     }
 </body>
 
