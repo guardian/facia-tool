@@ -7,7 +7,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import Raven from 'raven-js';
 import { BrowserRouter } from 'react-router-dom';
-import configureStore from './util/configureStore';
+import configureStore from 'util/configureStore';
 import pageConfig from 'util/extractConfigFromPage';
 import App from 'components/App';
 import { configReceived } from 'actions/Config';
