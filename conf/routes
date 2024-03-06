@@ -11,7 +11,7 @@ GET         /logout                                  controllers.PandaAuthContro
 GET         /login/status                            controllers.PandaAuthController.status
 
 # static files
-GET         /assets/fronts-client/*file                  controllers.V2Assets.at(file)
+GET         /assets/fronts-client-v2/*file           controllers.V2Assets.at(file)
 GET         /assets/*file                            controllers.V1Assets.at(file)
 
 ##################### NOTE ############################

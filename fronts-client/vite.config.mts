@@ -4,7 +4,7 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 
 export default defineConfig({
   plugins: [tsconfigPaths(), react()],
-  base: '/assets/fronts-client',
+  base: '/assets/fronts-client-v2',
   build: {
     manifest: true,
     rollupOptions: {
