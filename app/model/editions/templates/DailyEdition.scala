@@ -383,6 +383,8 @@ object DailyEdition extends RegionalEdition {
     collection("Food").printSentAnyTag("theguardian/feast/feast"),
     collection("Food").hide,
     collection("Food").hide,
+    collection("Food").hide,
+    collection("Food").hide,
     collection("Food").hide
   )
     .swatch(Lifestyle)
