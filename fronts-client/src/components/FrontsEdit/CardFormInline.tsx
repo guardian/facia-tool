@@ -273,27 +273,26 @@ const RenderSlideshow = ({
   };
 
   // Determines whether we can navigate to the next index, and optionally navigates to that index
-  const handleNavigation = (
-    isForwards: boolean = true,
-    shouldNavigate: boolean = false
-  ) => () => {
-    const incrementValue = isForwards ? 1 : -1;
+  const handleNavigation =
+    (isForwards: boolean = true, shouldNavigate: boolean = false) =>
+    () => {
+      const incrementValue = isForwards ? 1 : -1;
 
-    for (
-      let i = slideshowIndex + incrementValue;
-      i < fields.length && i >= 0;
-      i = i + incrementValue
-    ) {
-      if (fields.get(i)) {
-        if (shouldNavigate) {
-          setSlideshowIndex(i);
+      for (
+        let i = slideshowIndex + incrementValue;
+        i < fields.length && i >= 0;
+        i = i + incrementValue
+      ) {
+        if (fields.get(i)) {
+          if (shouldNavigate) {
+            setSlideshowIndex(i);
+          }
+          return true;
         }
-        return true;
       }
-    }
 
-    return false;
-  };
+      return false;
+    };
 
   return (
     <>
@@ -581,7 +580,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 </KickerSuggestionsContainer>
               }
               placeholder="Add custom kicker"
-              format={(value) => {
+              format={(value: string) => {
                 if (showKickerTag) {
                   return kickerOptions.webTitle;
                 }
@@ -590,7 +589,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 }
                 return value;
               }}
-              onChange={(e) => {
+              onChange={(e: React.ChangeEvent<any>) => {
                 if (e) {
                   setCustomKicker(e.target.value);
                 }
@@ -731,7 +730,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       id={getInputId(cardId, 'hide-media')}
                       type="checkbox"
                       default={false}
-                      onChange={(_) => this.changeImageField('imageHide')}
+                      onChange={() => this.changeImageField('imageHide')}
                     />
                   </InputGroup>
                   <InputGroup>
@@ -743,7 +742,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       id={getInputId(cardId, 'use-cutout')}
                       type="checkbox"
                       default={false}
-                      onChange={(_) =>
+                      onChange={() =>
                         this.changeImageField('imageCutoutReplace')
                       }
                     />
@@ -757,7 +756,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       label="Replace Cover Card Image"
                       type="checkbox"
                       default={false}
-                      onChange={(_) =>
+                      onChange={() =>
                         this.changeImageField('coverCardImageReplace')
                       }
                     />
@@ -770,7 +769,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       label="Show video"
                       id={getInputId(cardId, 'show-video')}
                       type="checkbox"
-                      onChange={(_) => this.changeImageField('showMainVideo')}
+                      onChange={() => this.changeImageField('showMainVideo')}
                     />
                   </InputGroup>
                   <InputGroup>
@@ -781,7 +780,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       label="Slideshow"
                       id={getInputId(cardId, 'slideshow')}
                       type="checkbox"
-                      onChange={(_) =>
+                      onChange={() =>
                         this.changeImageField('imageSlideshowReplace')
                       }
                     />
@@ -796,7 +795,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                         id={getInputId(cardId, 'image-replace')}
                         type="checkbox"
                         default={false}
-                        onChange={(_) => this.changeImageField('imageReplace')}
+                        onChange={() => this.changeImageField('imageReplace')}
                       />
                     </InputGroup>
                   )}

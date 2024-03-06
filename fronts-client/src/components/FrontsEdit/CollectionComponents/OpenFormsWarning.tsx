@@ -50,7 +50,8 @@ const OpenFormsWarning = ({ openArticleTitles }: ComponentProps) => (
 );
 
 const mapStateToProps = () => {
-  const selectOpenCardTitlesForCollection = createSelectOpenCardTitlesForCollection();
+  const selectOpenCardTitlesForCollection =
+    createSelectOpenCardTitlesForCollection();
   return (state: State, { collectionId, frontId }: ContainerProps) => ({
     openArticleTitles: selectOpenCardTitlesForCollection(state, {
       collectionId,

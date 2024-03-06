@@ -33,22 +33,20 @@ const TransitionContainer = styled.div<TransitionProps>`
   &.${transitionName}-${({ direction }) => direction}-enter-active {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    transition: opacity ${({ duration = 150 }) =>
-      duration}ms ease-out, transform ${({ duration = 150 }) =>
-  duration}ms ease-out;
+    transition: opacity ${({ duration = 150 }) => duration}ms ease-out,
+      transform ${({ duration = 150 }) => duration}ms ease-out;
   }
 
   &.${transitionName}-${({ direction }) => direction}-exit {
     opacity: 1;
-    transform: translate3d(0,0,0);
+    transform: translate3d(0, 0, 0);
   }
 
   &.${transitionName}-${({ direction }) => direction}-exit-active {
     opacity: 0.01;
     transform: translate3d(${applyDirection});
-    transition: opacity ${({ duration = 150 }) =>
-      duration}ms ease-out, transform ${({ duration = 150 }) =>
-  duration}ms ease-out;
+    transition: opacity ${({ duration = 150 }) => duration}ms ease-out,
+      transform ${({ duration = 150 }) => duration}ms ease-out;
   }
 `;
 

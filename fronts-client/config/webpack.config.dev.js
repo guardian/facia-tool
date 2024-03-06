@@ -1,7 +1,7 @@
-import path from 'path';
-import common from './webpack.config.common.js';
+const path = require('path');
+const common = require('./webpack.config.common.js');
 
-export default {
+module.exports = {
   ...common,
   mode: 'development',
   devtool: 'cheap-module-eval-source-map',

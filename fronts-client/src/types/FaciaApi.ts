@@ -39,7 +39,7 @@ interface CollectionConfigResponse {
   backfill?: unknown;
   href?: string;
   groups?: string[];
-  metadata?: Array<unknown>;
+  metadata?: unknown[];
   uneditable?: boolean;
   showTags?: boolean;
   hideKickers?: boolean;

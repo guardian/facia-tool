@@ -162,7 +162,8 @@ const CollectionOverview = ({
 const mapStateToProps = () => {
   const selectCollection = createSelectCollection();
   const selectArticlesInCollection = createSelectArticlesInCollection();
-  const selectCollectionIdsWithOpenForms = createSelectCollectionIdsWithOpenForms();
+  const selectCollectionIdsWithOpenForms =
+    createSelectCollectionIdsWithOpenForms();
   return (
     state: State,
     {

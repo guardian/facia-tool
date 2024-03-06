@@ -15,6 +15,7 @@ import { createArticleEntitiesFromDrop } from 'actions/Cards';
 import { moveUp, moveDown } from './keyboardActionMaps/move';
 import { Card } from '../types/Collection';
 import { thunkInsertClipboardCard } from 'actions/ClipboardThunks';
+import { attemptFriendlyErrorMessage } from 'util/error';
 
 type FocusableTypes =
   | 'clipboard'
@@ -84,7 +85,9 @@ export const createKeyboardActionMap = (store: Store): KeyboardBindingMap => ({
         }
         dispatch(thunkInsertClipboardCard('clipboard', 0, card.uuid));
       } catch (e) {
-        Raven.captureMessage(`Paste to clipboard failed: ${e.message}`);
+        Raven.captureMessage(
+          `Paste to clipboard failed: ${attemptFriendlyErrorMessage(e)}`
+        );
       }
     },
   },

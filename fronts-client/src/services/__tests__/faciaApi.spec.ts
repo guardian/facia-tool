@@ -32,9 +32,9 @@ describe('faciaApi', () => {
       try {
         await fetchLastPressed('exampleId');
       } catch (e) {
-        expect(e.message).toContain('exampleId');
-        expect(e.message).toContain(500);
-        expect(e.message).toContain('Server error');
+        expect((e as Error).message).toContain('exampleId');
+        expect((e as Error).message).toContain('500');
+        expect((e as Error).message).toContain('Server Error');
       }
     });
 
@@ -44,7 +44,7 @@ describe('faciaApi', () => {
       try {
         await fetchLastPressed('exampleId');
       } catch (e) {
-        expect(e.message).toContain('exampleId');
+        expect((e as Error).message).toContain('exampleId');
       }
     });
   });
@@ -73,7 +73,7 @@ describe('faciaApi', () => {
       try {
         await updateCollection('exampleId')(collection);
       } catch (e) {
-        expect(e.message).toContain('exampleId');
+        expect((e as Error).message).toContain('exampleId');
       }
     });
   });

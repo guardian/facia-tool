@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, cleanup } from 'react-testing-library';
 import { ArticleComponent } from '../Article';
-import 'jest-dom/extend-expect';
+import '@testing-library/jest-dom/extend-expect';
 import derivedArticle from 'fixtures/derivedArticle';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../../../constants/theme';

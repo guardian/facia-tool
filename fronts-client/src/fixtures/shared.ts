@@ -1,6 +1,5 @@
 const capiArticle = {
-  id:
-    'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
+  id: 'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
   type: 'liveblog',
   sectionId: 'world',
   sectionName: 'World news',
@@ -94,8 +93,7 @@ const capiArticle = {
 };
 
 const capiArticleWithVideo = {
-  id:
-    'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
+  id: 'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
   type: 'liveblog',
   sectionId: 'world',
   sectionName: 'World news',
@@ -259,8 +257,7 @@ const capiArticleWithVideo = {
               assets: [
                 {
                   mimeType: 'image/jpeg',
-                  file:
-                    'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/2000.jpg',
+                  file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/2000.jpg',
                   dimensions: {
                     height: 1125,
                     width: 2000,
@@ -270,8 +267,7 @@ const capiArticleWithVideo = {
                 },
                 {
                   mimeType: 'image/jpeg',
-                  file:
-                    'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/1000.jpg',
+                  file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/1000.jpg',
                   dimensions: {
                     height: 563,
                     width: 1000,
@@ -281,8 +277,7 @@ const capiArticleWithVideo = {
                 },
                 {
                   mimeType: 'image/jpeg',
-                  file:
-                    'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/500.jpg',
+                  file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/500.jpg',
                   dimensions: {
                     height: 281,
                     width: 500,
@@ -292,8 +287,7 @@ const capiArticleWithVideo = {
                 },
                 {
                   mimeType: 'image/jpeg',
-                  file:
-                    'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/140.jpg',
+                  file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/140.jpg',
                   dimensions: {
                     height: 79,
                     width: 140,
@@ -303,8 +297,7 @@ const capiArticleWithVideo = {
                 },
                 {
                   mimeType: 'image/jpeg',
-                  file:
-                    'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/3000.jpg',
+                  file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/3000.jpg',
                   dimensions: {
                     height: 1688,
                     width: 3000,
@@ -315,8 +308,7 @@ const capiArticleWithVideo = {
               ],
               master: {
                 mimeType: 'image/jpeg',
-                file:
-                  'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/master/3000.jpg',
+                file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_35_3000_1688/master/3000.jpg',
                 dimensions: {
                   height: 1688,
                   width: 3000,
@@ -343,8 +335,7 @@ const capiArticleWithVideo = {
               assets: [
                 {
                   mimeType: 'image/jpeg',
-                  file:
-                    'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/2000.jpg',
+                  file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/2000.jpg',
                   dimensions: {
                     height: 1200,
                     width: 2000,
@@ -354,8 +345,7 @@ const capiArticleWithVideo = {
                 },
                 {
                   mimeType: 'image/jpeg',
-                  file:
-                    'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/1000.jpg',
+                  file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/1000.jpg',
                   dimensions: {
                     height: 600,
                     width: 1000,
@@ -365,8 +355,7 @@ const capiArticleWithVideo = {
                 },
                 {
                   mimeType: 'image/jpeg',
-                  file:
-                    'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/500.jpg',
+                  file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/500.jpg',
                   dimensions: {
                     height: 300,
                     width: 500,
@@ -376,8 +365,7 @@ const capiArticleWithVideo = {
                 },
                 {
                   mimeType: 'image/jpeg',
-                  file:
-                    'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/140.jpg',
+                  file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/140.jpg',
                   dimensions: {
                     height: 84,
                     width: 140,
@@ -387,8 +375,7 @@ const capiArticleWithVideo = {
                 },
                 {
                   mimeType: 'image/jpeg',
-                  file:
-                    'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/3000.jpg',
+                  file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/3000.jpg',
                   dimensions: {
                     height: 1800,
                     width: 3000,
@@ -399,8 +386,7 @@ const capiArticleWithVideo = {
               ],
               master: {
                 mimeType: 'image/jpeg',
-                file:
-                  'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/master/3000.jpg',
+                file: 'https://media.guim.co.uk/e43df93d3022d27100292b233fabcab9c22ac163/0_15_3000_1800/master/3000.jpg',
                 dimensions: {
                   height: 1800,
                   width: 3000,

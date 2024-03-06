@@ -1,8 +1,7 @@
 import createAsyncResourceBundle, { globalLoadingIndicator } from '../';
 
-const { actions, reducer, selectors, initialState } = createAsyncResourceBundle(
-  'books'
-);
+const { actions, reducer, selectors, initialState } =
+  createAsyncResourceBundle('books');
 
 describe('createAsyncResourceBundle', () => {
   const { now } = Date;

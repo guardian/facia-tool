@@ -1,6 +1,7 @@
 import type { FeatureSwitch } from 'types/Features';
 import type { NestedCard } from 'types/Collection';
 import pandaFetch from './pandaFetch';
+import { attemptFriendlyErrorMessage } from 'util/error';
 
 const saveFeatureSwitch = async (featureSwitch: FeatureSwitch) => {
   try {
@@ -12,9 +13,11 @@ const saveFeatureSwitch = async (featureSwitch: FeatureSwitch) => {
         'Content-Type': 'application/json',
       },
     });
-  } catch (response) {
+  } catch (e) {
     throw new Error(
-      `Tried to persist feature switch, but the server responded with ${response.status}: ${response.body}`
+      `Tried to persist feature switch, but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 };
@@ -31,9 +34,11 @@ async function saveOpenFrontIds(frontsByPriority?: {
         'Content-Type': 'application/json',
       },
     });
-  } catch (response) {
+  } catch (e) {
     throw new Error(
-      `Tried to store the open fronts configuration but the server responded with ${response.status}: ${response.body}`
+      `Tried to store the open fronts configuration but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -50,9 +55,11 @@ async function saveFavouriteFrontIds(favouriteFrontsByPriority?: {
         'Content-Type': 'application/json',
       },
     });
-  } catch (response) {
+  } catch (e) {
     throw new Error(
-      `Tried to store the favourite fronts configuration but the server responded with ${response.status}: ${response.body}`
+      `Tried to store the favourite fronts configuration but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -71,9 +78,11 @@ async function saveClipboard(
       },
     });
     return await response.json();
-  } catch (response) {
+  } catch (e) {
     throw new Error(
-      `Tried to update a clipboard but the server responded with ${response.status}: ${response.body}`
+      `Tried to update a clipboard but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }

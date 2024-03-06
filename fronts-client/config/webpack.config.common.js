@@ -1,10 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const TSConfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
-// https://github.com/Igorbek/typescript-plugin-styled-components
-const createStyledComponentsTransformer = require('typescript-plugin-styled-components')
-  .default;
-const styledComponentsTransformer = createStyledComponentsTransformer();
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const CircularDependencyPlugin = require('circular-dependency-plugin');
 
@@ -27,10 +23,7 @@ module.exports = {
         exclude: /node_modules/,
         options: {
           transpileOnly: true,
-          experimentalWatchApi: true,
-          getCustomTransformers: () => ({
-            before: [styledComponentsTransformer]
-          })
+          experimentalWatchApi: true
         }
       },
       {

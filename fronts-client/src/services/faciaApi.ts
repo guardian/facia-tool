@@ -21,6 +21,7 @@ import { CapiArticle } from 'types/Capi';
 import chunk from 'lodash/chunk';
 import { CAPISearchQueryResponse, checkIsResults } from './capiQuery';
 import flatMap from 'lodash/flatMap';
+import { attemptFriendlyErrorMessage } from 'util/error';
 
 function fetchEditionsIssueAsConfig(issueId: string): Promise<FrontsConfig> {
   return pandaFetch(EditionsRoutes.issuePath(issueId), {
@@ -101,9 +102,11 @@ async function fetchLastPressed(frontId: string): Promise<string> {
       }
       return date;
     })
-    .catch((response) => {
+    .catch((e) => {
       throw new Error(
-        `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${response.status}: ${response.body}`
+        `Tried to fetch last pressed time for front with id ${frontId}, but the server responded with ${attemptFriendlyErrorMessage(
+          e
+        )}`
       );
     });
 }
@@ -126,9 +129,11 @@ async function fetchVisibleArticles(
       body: JSON.stringify({ stories: articles }),
     });
     return await response.json();
-  } catch (response) {
+  } catch (e) {
     throw new Error(
-      `Tried to fetch visible stories for collection type '${collectionType}', but the server responded with ${response.status}: ${response.body}`
+      `Tried to fetch visible stories for collection type '${collectionType}', but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -147,9 +152,11 @@ async function discardDraftChangesToCollection(
       body: JSON.stringify({ collectionId }),
     });
     return await response.json();
-  } catch (response) {
+  } catch (e) {
     throw new Error(
-      `Tried to discard changes to collection with id ${collectionId}, but the server responded with ${response.status}: ${response.body}`
+      `Tried to discard changes to collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -164,32 +171,36 @@ async function publishCollection(collectionId: string): Promise<void> {
       credentials: 'same-origin',
       body: JSON.stringify({ collectionId }),
     });
-  } catch (response) {
+  } catch (e) {
     throw new Error(
-      `Tried to publish collection with id ${collectionId}, but the server responded with ${response.status}: ${response.body}`
+      `Tried to publish collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
 
-const updateCollection = (id: string) => async (
-  collection: CollectionWithNestedArticles
-): Promise<void> => {
-  try {
-    const response = await pandaFetch('/v2Edits', {
-      method: 'post',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'same-origin',
-      body: JSON.stringify({ id, collection }),
-    });
-    return await response.json();
-  } catch (response) {
-    throw new Error(
-      `Tried to update collection with id ${id}, but the server responded with ${response.status}: ${response.body}`
-    );
-  }
-};
+const updateCollection =
+  (id: string) =>
+  async (collection: CollectionWithNestedArticles): Promise<void> => {
+    try {
+      const response = await pandaFetch('/v2Edits', {
+        method: 'post',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin',
+        body: JSON.stringify({ id, collection }),
+      });
+      return await response.json();
+    } catch (e) {
+      throw new Error(
+        `Tried to update collection with id ${id}, but the server responded with ${attemptFriendlyErrorMessage(
+          e
+        )}`
+      );
+    }
+  };
 
 const saveClipboard = (content: NestedCard[]) =>
   createSaveClipboard(content, '/clipboard');
@@ -210,9 +221,11 @@ async function createSaveClipboard(
         'Content-Type': 'application/json',
       },
     });
-  } catch (response) {
+  } catch (e) {
     throw new Error(
-      `Tried to update a clipboard but the server responded with ${response.status}: ${response.body}`
+      `Tried to update a clipboard but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -229,9 +242,11 @@ async function saveOpenFrontIds(frontsByPriority?: {
         'Content-Type': 'application/json',
       },
     });
-  } catch (response) {
+  } catch (e) {
     throw new Error(
-      `Tried to store the open fronts configuration but the server responded with ${response.status}: ${response.body}`
+      `Tried to store the open fronts configuration but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -248,9 +263,11 @@ async function saveFavouriteFrontIds(favouriteFrontsByPriority?: {
         'Content-Type': 'application/json',
       },
     });
-  } catch (response) {
+  } catch (e) {
     throw new Error(
-      `Tried to store the favourite fronts configuration but the server responded with ${response.status}: ${response.body}`
+      `Tried to store the favourite fronts configuration but the server responded with ${attemptFriendlyErrorMessage(
+        e
+      )}`
     );
   }
 }
@@ -348,9 +365,11 @@ const parseArticleListFromResponses = (
       : [response.content];
 
     return results.map(transformExternalArticle);
-  } catch (e) {
+  } catch (error) {
     throw new Error(
-      `Error getting articles from CAPI: cannot parse response - ${e.message}`
+      `Error getting articles from CAPI: cannot parse response - ${attemptFriendlyErrorMessage(
+        error
+      )}`
     );
   }
 };
@@ -358,9 +377,7 @@ const parseArticleListFromResponses = (
 /**
  * Get the articles and title for a CAPI content id, which could be a tag or an article.
  */
-async function getContent(
-  contentId: string
-): Promise<{
+async function getContent(contentId: string): Promise<{
   articles: ExternalArticle[];
   title: string | undefined;
 }> {
@@ -396,8 +413,10 @@ async function getArticlesBatched(
       responses.map((_) => _.json())
     );
     return flatMap(parsedResponses.map(parseArticleListFromResponses));
-  } catch (e) {
-    throw new Error(`Error fetching articles: ${e.message || e.status}`);
+  } catch (error) {
+    throw new Error(
+      `Error fetching articles: ${attemptFriendlyErrorMessage(error)}`
+    );
   }
 }
 

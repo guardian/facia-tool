@@ -122,12 +122,14 @@ const getMapKey = ({
   return selected ? 'selected' : 'deselected';
 };
 
-const mapSize = (map: SizeMap) => ({ size = 'm' }: ButtonProps) => map[size];
-const mapAction = (map: ColorMap) => ({
-  selected,
-  disabled,
-  priority = 'default',
-}: ButtonProps) => map[getMapKey({ selected, disabled })][priority];
+const mapSize =
+  (map: SizeMap) =>
+  ({ size = 'm' }: ButtonProps) =>
+    map[size];
+const mapAction =
+  (map: ColorMap) =>
+  ({ selected, disabled, priority = 'default' }: ButtonProps) =>
+    map[getMapKey({ selected, disabled })][priority];
 
 export default styled.button<ButtonProps>`
   display: inline-block;

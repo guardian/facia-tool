@@ -2,6 +2,7 @@ import { qs } from 'util/qs';
 import type { CapiArticle, Tag } from 'types/Capi';
 import pandaFetch from 'services/pandaFetch';
 import url from 'constants/url';
+import { attemptFriendlyErrorMessage } from 'util/error';
 
 type Fetch = (path: string) => Promise<Response>;
 
@@ -82,9 +83,6 @@ interface CAPIAtomInteractive {
   commissioningDesks: [];
 }
 
-const getErrorMessageFromResponse = (response: Response) =>
-  `Error making a request to CAPI: the server returned ${response.status}, ${response.statusText}`;
-
 /**
  * Fetch a CAPI response.
  *
@@ -99,17 +97,17 @@ const fetchCAPIResponse = async <
   try {
     response = await pandaFetch(request);
   } catch (e) {
-    if (e.status && e.statusText) {
-      // pandaFetch can throw a Response or an Error
-      throw new Error(getErrorMessageFromResponse(e));
-    }
-    throw e;
+    throw new Error(
+      `Error making a request to CAPI, ${attemptFriendlyErrorMessage(e)}`
+    );
   }
   let result: TCAPIResponse;
   try {
     result = await response.json();
   } catch (e) {
-    throw new Error(`Error parsing a response from CAPI: ${e.message}`);
+    throw new Error(
+      `Error parsing a response from CAPI: ${attemptFriendlyErrorMessage(e)}`
+    );
   }
   if (result.response.status === 'error') {
     throw new Error(`CAPI returned an error: ${result.response.message}`);

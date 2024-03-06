@@ -42,7 +42,7 @@ const ControlRadio = styled.label<{ inline?: boolean; checked?: boolean }>`
 
   & > ${ControlIndicator} {
     border-radius: 50%;
-    border:  ${`solid 1px ${theme.input.borderColor}`};
+    border: ${`solid 1px ${theme.input.borderColor}`};
   }
 
   /* Checked state */
@@ -106,13 +106,7 @@ const RadioButton = ({
 } & React.HTMLAttributes<HTMLInputElement>) => (
   <ControlRadio inline={inline} checked={checked}>
     {label}
-    <Input
-      type="radio"
-      name={name}
-      checked={checked}
-      disabled={disabled}
-      {...rest}
-    />
+    <Input type="radio" checked={checked} disabled={disabled} {...rest} />
     <ControlIndicator />
   </ControlRadio>
 );

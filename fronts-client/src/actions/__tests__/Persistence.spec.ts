@@ -45,12 +45,14 @@ const init = () => {
       updatingIds: [],
       data: {
         c1: {
+          type: 'fixed/thrasher',
           id: 'c1',
           live: ['g1'],
           draft: [],
           previously: [],
         },
         c2: {
+          type: 'fixed/thrasher',
           id: 'c2',
           live: ['g2'],
           draft: [],

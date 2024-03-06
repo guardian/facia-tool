@@ -64,10 +64,10 @@ describe('ArticlePageNumberSection', () => {
     );
     delete testCapiArticleWithoutPageNumber.fields.newspaperPageNumber;
 
-    const { getAllByText } = render(
+    const { queryAllByText } = render(
       <ArticlePageNumberSection article={testCapiArticleWithoutPageNumber} />
     );
 
-    expect(getAllByText('').length).toBe(1);
+    expect(queryAllByText('Page').length).toBe(0);
   });
 });

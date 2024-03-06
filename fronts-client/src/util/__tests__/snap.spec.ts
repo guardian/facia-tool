@@ -99,7 +99,7 @@ describe('utils/snap', () => {
     });
   });
 
-  describe('convert to Atom snap', async () => {
+  describe('convert to Atom snap', () => {
     it("should create a snap of 'interactive', given a link to an atom in the public content api", async () => {
       fetchMock.once('begin:/api/live', capiAtom);
       const interactive: CAPIAtomInteractive = {
@@ -135,8 +135,7 @@ describe('utils/snap', () => {
           snapUri:
             'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
           atomId: 'atom/interactive/interactives/2017/06/general-election',
-          href:
-            'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
+          href: 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
         },
       });
     });

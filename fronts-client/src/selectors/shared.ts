@@ -321,7 +321,8 @@ const createSelectArticlesInCollectionGroup = () => {
 };
 
 const createSelectArticlesInCollection = () => {
-  const selectArticlesInCollectionGroups = createSelectArticlesInCollectionGroup();
+  const selectArticlesInCollectionGroups =
+    createSelectArticlesInCollectionGroup();
   return (
     state: State,
     {
@@ -396,7 +397,7 @@ const createDemornalisedCard = (
   cards: { [id: string]: Card }
 ): CardDenormalised =>
   cards[cardId].meta && cards[cardId].meta.supporting
-    ? {
+    ? ({
         ...cards[cardId],
         meta: {
           ...cards[cardId].meta,
@@ -406,8 +407,8 @@ const createDemornalisedCard = (
               (supportingCardId: string) => cards[supportingCardId]
             ),
         },
-      }
-    : { ...cards[cardId] };
+      } as CardDenormalised)
+    : { ...(cards[cardId] as CardDenormalised) };
 
 // this creates a map between a group id and it's parent collection id
 // { [groupId: string]: string /* collectionId */ }

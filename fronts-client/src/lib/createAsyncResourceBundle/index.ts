@@ -1,6 +1,7 @@
 import without from 'lodash/without';
 import isEqual from 'lodash/isEqual';
 import type { Action } from 'types/Action';
+import { attemptFriendlyErrorMessage } from 'util/error';
 
 interface BaseResource {
   id: string;
@@ -281,12 +282,16 @@ function createAsyncResourceBundle<Resource>(
   });
 
   const fetchErrorAction = (
-    error: string,
+    error: unknown,
     ids?: string | string[]
   ): FetchErrorAction => ({
     entity: entityName,
     type: FETCH_ERROR,
-    payload: { error, ids, time: Date.now() },
+    payload: {
+      error: attemptFriendlyErrorMessage(error),
+      ids,
+      time: Date.now(),
+    },
   });
 
   const updateStartAction = (data: Resource): UpdateStartAction<Resource> => ({
@@ -304,10 +309,17 @@ function createAsyncResourceBundle<Resource>(
     payload: { id, data, time: Date.now() },
   });
 
-  const updateErrorAction = (error: string, id: string): UpdateErrorAction => ({
+  const updateErrorAction = (
+    error: unknown,
+    id: string
+  ): UpdateErrorAction => ({
     entity: entityName,
     type: UPDATE_ERROR,
-    payload: { error, id, time: Date.now() },
+    payload: {
+      error: attemptFriendlyErrorMessage(error),
+      id,
+      time: Date.now(),
+    },
   });
 
   const isAction = (

@@ -1,7 +1,7 @@
 import { applyMiddleware, compose, createStore } from 'redux';
 import { enableBatching } from 'redux-batched-actions';
 import thunkMiddleware from 'redux-thunk';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import { routerMiddleware, push } from 'react-router-redux';
 
 import rootReducer from 'reducers/rootReducer';
