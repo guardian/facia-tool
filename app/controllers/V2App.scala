@@ -25,9 +25,11 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
     val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
     val jsFileName = "dist/index.js"
+    val cssFileName = "dist/index.css"
     val faviconDirectoryName = "favicon/"
 
     val jsLocation: String = routes.V2Assets.at(jsFileName).toString
+    val cssLocation: String = routes.V2Assets.at(cssFileName).toString
     val faviconLocation: String = routes.V2Assets.at(faviconDirectoryName).toString
 
     val hasBreakingNews = acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(req.user.email)
@@ -82,6 +84,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
     Ok(views.html.V2App.app(
       "Fronts Tool",
       jsLocation,
+      cssLocation,
       faviconLocation,
       Json.toJson(conf).toString(),
       isDev

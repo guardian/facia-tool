@@ -1,4 +1,4 @@
-@(title: String, jsLocation: String, faviconLocation: String, clientConfigJson:
+@(title: String, jsLocation: String, cssLocation: String, faviconLocation: String, clientConfigJson:
 String, isDev: Boolean)
 <!DOCTYPE html>
 <html lang="en">
@@ -49,6 +49,7 @@ String, isDev: Boolean)
         <script type="module" src="http://localhost:5173/assets/fronts-client/@@vite/client"></script>
         <script type="module" src="http://localhost:5173/assets/fronts-client/src/index.tsx"></script>
     } else {
+        <link rel="stylesheet" href="@cssLocation">
         <script type="module" src="@jsLocation" type="application/javascript"></script>
     }
 </body>
