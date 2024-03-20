@@ -106,7 +106,7 @@ libraryDependencies ++= Seq(
     "com.typesafe.play" %% "play-json-joda" % "2.9.2",
     "ai.x" %% "play-json-extensions" % "0.40.2",
 
-    "org.postgresql"           %  "postgresql"                   % "42.3.7",
+    "org.postgresql"           %  "postgresql"                   % "42.3.9",
     "org.scalikejdbc"          %% "scalikejdbc"                  % "3.3.5",
     "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.3.5",
     "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.8.0-scalikejdbc-3.5",
