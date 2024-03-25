@@ -1,5 +1,7 @@
+// For development mode with Vite
+import 'vite/modulepreload-polyfill';
+
 import './util/tti';
-import 'babel-polyfill';
 import React from 'react';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';

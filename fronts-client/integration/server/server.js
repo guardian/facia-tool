@@ -205,7 +205,7 @@ module.exports = async () =>
         : res.sendFile(
             path.join(
               __dirname,
-              '../../../public/fronts-client/dist',
+              '../../../public/fronts-client-v2/dist',
               req.params.file
             )
           )
