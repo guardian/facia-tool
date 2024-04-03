@@ -86,7 +86,7 @@ object SpecialEditionButtonStyles {
   *
   * An Edition is a curated product that has a push publication model – it
   * pushes updated content to the world in discrete 'editions' that contain a
-  * collection of fronts.
+  * list of fronts.
   *
   * Contrast with e.g. web/app Fronts, which publish their content in real time
   * on a container by container basis.
