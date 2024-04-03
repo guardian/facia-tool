@@ -94,9 +94,9 @@ object SpecialEditionButtonStyles {
 trait EditionDefinition {
   val title: String
   val subTitle: String
-  val edition: String
   val notificationUTCOffset: Int
   val locale: Option[String]
+  val app: String
 }
 
 /**
@@ -105,11 +105,13 @@ trait EditionDefinition {
 trait EditionsAppDefinition extends EditionDefinition {
   val header: Header
   val topic: String
+  val edition: String
   val editionType: EditionType
   val buttonImageUri: Option[String]
   val expiry: Option[String]
   val buttonStyle: Option[SpecialEditionButtonStyles]
   val headerStyle: Option[SpecialEditionHeaderStyles]
+  override val app = "editions"
 }
 
 trait EditionDefinitionWithTemplate extends EditionsAppDefinition {

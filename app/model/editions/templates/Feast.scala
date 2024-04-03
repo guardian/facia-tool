@@ -7,7 +7,7 @@ import java.time.ZoneId
 object Feast extends EditionDefinition {
   override val title = "Feast app"
   override val subTitle = "Make inspiring mealtimes easy with the Guardian’s Feast app."
-  override val edition = "feast"
+  override val app = "feast"
   override val locale = Some("en_GB")
   override val notificationUTCOffset = 0
 
