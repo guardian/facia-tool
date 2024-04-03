@@ -12,7 +12,7 @@ import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 import services.editions.prefills.CapiQueryTimeWindow
 
-object EditionsTemplates {
+object EditionsAppTemplates {
   val templates: Map[Edition, EditionDefinitionWithTemplate] = Map(
     Edition.DailyEdition -> DailyEdition,
     Edition.AustralianEdition -> AustralianEdition,
@@ -27,7 +27,7 @@ object EditionsTemplates {
     Edition.EditionWellbeing -> EditionWellbeing
   )
 
-  val getAvailableEditions: List[EditionDefinition] = templates.values.toList
+  val getAvailableEditions: List[EditionsAppDefinition] = templates.values.toList
 }
 
 case object WeekDay extends Enumeration(1) {
@@ -75,17 +75,17 @@ object Edition extends PlayEnum[Edition] {
   case object EditionEarth extends Edition
 
   case object EditionBooks extends Edition
-  
+
   case object EditionWeWereThere extends Edition
-  
+
   case object EditionEurosSpecial extends Edition
-  
+
   case object EditionOlympicLegends extends Edition
-  
+
   case object EditionEndOfYear extends Edition
-  
+
   case object EditionWellbeing extends Edition
-  
+
   override def values = findValues
 }
 

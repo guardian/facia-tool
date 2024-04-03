@@ -81,22 +81,38 @@ object SpecialEditionButtonStyles {
   implicit val formatSpecialEditionButtonStyles : OFormat[SpecialEditionButtonStyles] = Json.format[SpecialEditionButtonStyles]
 }
 
+/**
+  * An Edition definition.
+  *
+  * An Edition is a curated product that has a push publication model – it
+  * pushes updated content to the world in discrete 'editions' that contain a
+  * collection of fronts.
+  *
+  * Contrast with e.g. web/app Fronts, which publish their content in real time
+  * on a container by container basis.
+  */
 trait EditionDefinition {
   val title: String
   val subTitle: String
   val edition: String
-  val header: Header
-  val editionType: EditionType
   val notificationUTCOffset: Int
-  val topic: String
   val locale: Option[String]
+}
+
+/**
+  * An Edition definition for the Editions app.
+  */
+trait EditionsAppDefinition extends EditionDefinition {
+  val header: Header
+  val topic: String
+  val editionType: EditionType
   val buttonImageUri: Option[String]
   val expiry: Option[String]
   val buttonStyle: Option[SpecialEditionButtonStyles]
   val headerStyle: Option[SpecialEditionHeaderStyles]
 }
 
-trait EditionDefinitionWithTemplate extends EditionDefinition {
+trait EditionDefinitionWithTemplate extends EditionsAppDefinition {
   val template: EditionTemplate
 }
 
@@ -120,7 +136,7 @@ abstract class SpecialEdition extends EditionDefinitionWithTemplate {
   override val locale: Option[String] = None
 }
 
-object EditionDefinition {
+object EditionsAppDefinition {
   def apply(
     title: String,
     subTitle: String,
@@ -134,14 +150,14 @@ object EditionDefinition {
    expiry: Option[String],
    buttonStyle: Option[SpecialEditionButtonStyles],
    headerStyle: Option[SpecialEditionHeaderStyles]
-  ): EditionDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, expiry, buttonStyle, headerStyle)
+  ): EditionsAppDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, expiry, buttonStyle, headerStyle)
 
-  def unapply(edition: EditionDefinition): Option[(String, String, String, Header, EditionType, Int, String,
+  def unapply(edition: EditionsAppDefinition): Option[(String, String, String, Header, EditionType, Int, String,
     Option[String], Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles])]
     = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType,
     edition.notificationUTCOffset, edition.topic, edition.locale, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle)
-  
-  implicit val formatEditionDefinition: OFormat[EditionDefinition] = Json.format[EditionDefinition]
+
+  implicit val formatEditionDefinition: OFormat[EditionsAppDefinition] = Json.format[EditionsAppDefinition]
 }
 
 case class EditionDefinitionRecord(
@@ -152,12 +168,12 @@ case class EditionDefinitionRecord(
                          override val editionType: EditionType,
                          override val notificationUTCOffset: Int,
                          override val topic: String,
-                         override val locale: Option[String], 
+                         override val locale: Option[String],
                          override val buttonImageUri: Option[String],
                          override val expiry: Option[String],
                          override val buttonStyle: Option[SpecialEditionButtonStyles],
                          override val headerStyle: Option[SpecialEditionHeaderStyles]
-) extends EditionDefinition {}
+) extends EditionsAppDefinition {}
 
 
 object EditionDefinitionRecord{

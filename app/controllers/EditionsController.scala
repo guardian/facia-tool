@@ -205,7 +205,7 @@ class EditionsController(db: EditionsDB,
     db.getCollectionPrefill(id).map { prefillUpdate =>
       logger.info(s"getPrefillForCollection id=$id, prefillUpdate")
       import prefillUpdate._
-      val capiDateQueryParam = EditionsTemplates.templates(edition).template.capiDateQueryParam
+      val capiDateQueryParam = EditionsAppTemplates.templates(edition).template.capiDateQueryParam
       val capiPrefillTimeParams = CapiPrefillTimeParams(capiQueryTimeWindow, capiDateQueryParam)
       // TODO
       // when we click (suggest articles) for collection we are not using ophan metrics and we are not sorting on them
@@ -252,7 +252,7 @@ class EditionsController(db: EditionsDB,
   }
 
   private def getAvailableEditionsJson = {
-    val allEditions = EditionsTemplates.getAvailableEditions
+    val allEditions = EditionsAppTemplates.getAvailableEditions
     val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
     val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
     val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
