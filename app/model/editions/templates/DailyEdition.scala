@@ -248,7 +248,9 @@ object DailyEdition extends RegionalEdition {
     collection("Arts").printSentAnyTag("theguardian/g2/arts"),
     collection("TV & radio").printSentAnyTag("theguardian/g2/tvandradio"),
     collection("Culture"),
-    collection("Culture").hide
+    collection("Culture").hide,
+    collection("Culture").hide,
+    collection("Culture").hide,
   )
     .swatch(Culture)
 
