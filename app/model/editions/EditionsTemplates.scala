@@ -2,18 +2,18 @@ package model.editions
 
 import java.time.temporal.ChronoField
 import java.time.{LocalDate, ZoneId, ZoneOffset}
-
 import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
 import model.editions.templates.TemplateHelpers.Defaults
 import model.editions.templates._
+import model.editions.templates.feast.FeastNorthernHemisphere
 import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 import services.editions.prefills.CapiQueryTimeWindow
 
 object EditionsAppTemplates {
-  val templates: Map[Edition, EditionDefinitionWithTemplate] = Map(
+  val templates: Map[Edition, EditionsAppDefinitionWithTemplate] = Map(
     Edition.DailyEdition -> DailyEdition,
     Edition.AustralianEdition -> AustralianEdition,
     Edition.TrainingEdition -> TrainingEdition,
@@ -28,6 +28,12 @@ object EditionsAppTemplates {
   )
 
   val getAvailableEditions: List[EditionsAppDefinition] = templates.values.toList
+}
+
+object FeastAppTemplates {
+  val templates: Map[OtherApps, CuratedPlatformWithTemplate] = Map(
+    OtherApps.Feast -> FeastNorthernHemisphere
+  )
 }
 
 case object WeekDay extends Enumeration(1) {
@@ -89,6 +95,13 @@ object Edition extends PlayEnum[Edition] {
   override def values = findValues
 }
 
+sealed abstract class OtherApps extends EnumEntry with Hyphencase
+
+object OtherApps extends PlayEnum[OtherApps] {
+  case object Feast extends OtherApps
+
+  override def values = findValues
+}
 
 case class FrontPresentation(swatch: Swatch) {
   implicit def frontPresentationFormat = Json.format[FrontPresentation]

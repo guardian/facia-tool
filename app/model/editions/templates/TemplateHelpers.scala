@@ -82,16 +82,14 @@ object SpecialEditionButtonStyles {
 }
 
 /**
-  * An Edition definition.
-  *
-  * An Edition is a curated product that has a push publication model – it
+  * A curated product that has a push publication model – it
   * pushes updated content to the world in discrete 'editions' that contain a
   * list of fronts.
   *
   * Contrast with e.g. web/app Fronts, which publish their content in real time
   * on a container by container basis.
   */
-trait EditionDefinition {
+trait CuratedPlatform {
   val title: String
   val subTitle: String
   val notificationUTCOffset: Int
@@ -102,7 +100,7 @@ trait EditionDefinition {
 /**
   * An Edition definition for the Editions app.
   */
-trait EditionsAppDefinition extends EditionDefinition {
+trait EditionsAppDefinition extends CuratedPlatform {
   val header: Header
   val topic: String
   val edition: String
@@ -114,11 +112,15 @@ trait EditionsAppDefinition extends EditionDefinition {
   override val app = "editions"
 }
 
-trait EditionDefinitionWithTemplate extends EditionsAppDefinition {
+trait TemplatedPlatform {
   val template: EditionTemplate
 }
 
-abstract class EditionBase extends EditionDefinitionWithTemplate {
+trait CuratedPlatformWithTemplate extends CuratedPlatform with TemplatedPlatform
+
+trait EditionsAppDefinitionWithTemplate extends EditionsAppDefinition with TemplatedPlatform
+
+abstract class EditionBase extends EditionsAppDefinitionWithTemplate {
   override val buttonImageUri: Option[String] = None
   override val expiry: Option[String] = None
   override val buttonStyle: Option[SpecialEditionButtonStyles] = None
@@ -133,7 +135,7 @@ abstract class InternalEdition extends EditionBase {
   override val editionType: EditionType = EditionType.Training
 }
 
-abstract class SpecialEdition extends EditionDefinitionWithTemplate {
+abstract class SpecialEdition extends EditionsAppDefinitionWithTemplate {
   override val editionType: EditionType = EditionType.Special
   override val locale: Option[String] = None
 }

@@ -1,20 +1,18 @@
-package model.editions.templates
+package model.editions.templates.feast
 
-import model.editions.templates.TemplateHelpers.{front, collection}
-import model.editions._
+import model.editions.templates.TemplateHelpers.{collection, front}
+import model.editions.{CapiDateQueryParam, CapiTimeWindowConfigInDays, Daily, EditionTemplate}
+
 import java.time.ZoneId
 
-object Feast extends EditionDefinition {
-  override val title = "Feast app"
-  override val subTitle = "Make inspiring mealtimes easy with the Guardian’s Feast app."
-  override val app = "feast"
+object FeastSouthernHemisphere extends FeastEdition {
   override val locale = Some("en_GB")
   override val notificationUTCOffset = 0
 
   val template = EditionTemplate(
     fronts = List(
-      NorthernHemisphere -> Daily(),
-      SouthernHemisphere -> Daily()
+      MainFront -> Daily(),
+      MeatFreeFront -> Daily()
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
@@ -27,7 +25,7 @@ object Feast extends EditionDefinition {
     ophanQueryPrefillParams = None
   )
 
-  val NorthernHemisphere = front(
+  val MainFront = front(
     "Northern hemisphere",
     collection("Dish of the day"),
     collection("Collection 2"),
@@ -40,7 +38,7 @@ object Feast extends EditionDefinition {
     collection("Collection 9")
   )
 
-  val SouthernHemisphere = front(
+  val MeatFreeFront = front(
     "Southern hemisphere",
     collection("Dish of the day"),
     collection("Collection 2"),
