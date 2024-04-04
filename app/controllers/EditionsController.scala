@@ -10,13 +10,13 @@ import model.editions._
 import model.editions.templates.{CuratedPlatformDefinition, CuratedPlatformWithTemplate, EditionType}
 import model.forms._
 import net.logstash.logback.marker.Markers
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
 import services.editions.db.EditionsDB
 import services.editions.prefills.{CapiPrefillTimeParams, MetadataForLogging, PrefillParamsAdapter}
-import services.editions.publishing.EditionsPublishing
+import services.editions.publishing.Publishing
 import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
 import util.{SearchResponseUtil, UserUtil}
@@ -27,7 +27,7 @@ import scala.util.Try
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
-                         publishing: EditionsPublishing,
+                         publishing: Publishing,
                          capi: Capi,
                          val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
 

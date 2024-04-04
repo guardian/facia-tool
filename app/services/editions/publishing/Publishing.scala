@@ -10,7 +10,7 @@ import services.editions.db.EditionsDB
 
 import scala.jdk.CollectionConverters._
 
-class EditionsPublishing(publishedBucket: EditionsBucket, previewBucket: EditionsBucket, db: EditionsDB) extends Logging {
+class Publishing(publishedBucket: PublicationTarget, previewBucket: PublicationTarget, db: EditionsDB) extends Logging {
 
   def updatePreview(issue: EditionsIssue) = {
     val previewIssue = issue.toPreviewIssue

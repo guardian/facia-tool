@@ -20,7 +20,7 @@ import services._
 import services.editions.EditionsTemplating
 import services.editions.db.EditionsDB
 import services.editions.publishing.events.PublishEventsListener
-import services.editions.publishing.{EditionsBucket, EditionsPublishing}
+import services.editions.publishing.{EditionsBucket, Publishing}
 import slices.{Containers, FixedContainers}
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import thumbnails.ContainerThumbnails
@@ -61,7 +61,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val templating = new EditionsTemplating(EditionsAppTemplates.templates ++ FeastAppTemplates.templates, capi, ophan)
   val publishingBucket = new EditionsBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
   val previewBucket = new EditionsBucket(s3Client, config.aws.previewEditionsIssuesBucket)
-  val editionsPublishing = new EditionsPublishing(publishingBucket, previewBucket, editionsDb)
+  val editionsPublishing = new Publishing(publishingBucket, previewBucket, editionsDb)
   PublishEventsListener.apply(config, editionsDb).start
 
   // Controllers

@@ -27,13 +27,13 @@ object EditionsBucket {
   }
 }
 
-class EditionsBucket(s3Client: AmazonS3, bucketName: String) {
-  def putIssue(issue: PublishableIssue): PutObjectResult = {
+class EditionsBucket(s3Client: AmazonS3, bucketName: String) extends PublicationTarget {
+  def putIssue(issue: PublishableIssue): Unit = {
     val request = EditionsBucket.createPutObjectRequest(bucketName, issue)
     s3Client.putObject(request)
   }
 
-  def putEditionsList(rawJson: String) = {
+  def putEditionsList(rawJson: String): Unit = {
     val request = new PutObjectRequest(bucketName, "editionsList", new StringInputStream(rawJson), EditionsBucket.objectMetadata)
     s3Client.putObject(request)
   }
