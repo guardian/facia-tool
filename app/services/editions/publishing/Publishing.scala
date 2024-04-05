@@ -1,24 +1,33 @@
 package services.editions.publishing
 
 import java.time.OffsetDateTime
-
 import com.gu.pandomainauth.model.User
 import logging.Logging
-import model.editions.{EditionsIssue, PublishAction}
+import model.editions.Edition.{FeastNorthernHemisphere, FeastSouthernHemisphere}
+import model.editions.{Edition, EditionsIssue, PublishAction, PublishableIssue}
 import net.logstash.logback.marker.Markers
 import services.editions.db.EditionsDB
 
 import scala.jdk.CollectionConverters._
 
-class Publishing(publishedBucket: PublicationTarget, previewBucket: PublicationTarget, db: EditionsDB) extends Logging {
+class Publishing(editionsAppPublicationBucket: PublicationTarget,
+                 editionsAppPreviewBucket: PublicationTarget,
+                 feastAppPublicationTarget: PublicationTarget,
+                 db: EditionsDB
+                ) extends Logging {
 
   def updatePreview(issue: EditionsIssue) = {
     val previewIssue = issue.toPreviewIssue
-    previewBucket.putIssue(previewIssue)
+    // Archive a copy
+    issue.edition match {
+      case FeastNorthernHemisphere | FeastSouthernHemisphere =>
+        throw new RuntimeException("Feast app does not currently support preview")
+      case _ =>
+        editionsAppPreviewBucket.putIssue(previewIssue)
+    }
   }
 
   def proof(issue: EditionsIssue, user: User, now: OffsetDateTime) = {
-
     val action = PublishAction.proof
 
     val versionId = db.createIssueVersion(issue.id, user, now)
@@ -38,11 +47,16 @@ class Publishing(publishedBucket: PublicationTarget, previewBucket: PublicationT
     val publishedIssue = issue.toPublishableIssue(versionId, action)
 
     // Archive a copy
-    publishedBucket.putIssue(publishedIssue)
+    issue.edition match {
+      case FeastNorthernHemisphere | FeastSouthernHemisphere =>
+        feastAppPublicationTarget.putIssue(publishedIssue)
+      case _ =>
+        editionsAppPublicationBucket.putIssue(publishedIssue)
+    }
   }
 
   def putEditionsList(rawJson: String) = {
-    publishedBucket.putEditionsList(rawJson)
+    editionsAppPublicationBucket.putEditionsList(rawJson)
   }
 
   def publish(issue: EditionsIssue, user: User, version: String) = {
@@ -64,7 +78,11 @@ class Publishing(publishedBucket: PublicationTarget, previewBucket: PublicationT
     val publishedIssue = issue.toPublishableIssue(version, PublishAction.publish)
 
     // Archive a copy
-    publishedBucket.putIssue(publishedIssue)
-
+    issue.edition match {
+      case FeastNorthernHemisphere | FeastSouthernHemisphere =>
+        feastAppPublicationTarget.putIssue(publishedIssue)
+      case _ =>
+        editionsAppPublicationBucket.putIssue(publishedIssue)
+    }
   }
 }

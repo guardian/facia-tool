@@ -114,14 +114,14 @@ object Edition extends PlayEnum[Edition] {
   override def values = findValues
 }
 
-sealed abstract class FeastEditions extends EnumEntry with Hyphencase
-
-object FeastEditions extends PlayEnum[FeastEditions] {
-  case object FeastNorthernHemisphere extends FeastEditions
-  case object FeastSouthernHemisphere extends FeastEditions
-
-  override def values = findValues
-}
+//sealed abstract class FeastEditions extends EnumEntry with Hyphencase
+//
+//object FeastEditions extends PlayEnum[FeastEditions] {
+//  case object FeastNorthernHemisphere extends FeastEditions
+//  case object FeastSouthernHemisphere extends FeastEditions
+//
+//  override def values = findValues
+//}
 
 case class FrontPresentation(swatch: Swatch) {
   implicit def frontPresentationFormat = Json.format[FrontPresentation]

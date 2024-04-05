@@ -1,5 +1,5 @@
 package services.editions.publishing
-import com.amazonaws.services.sns.AmazonSNSClient
+import com.amazonaws.services.sns.AmazonSNS
 import com.amazonaws.services.sns.model.{MessageAttributeValue, PublishRequest}
 import model.editions.PublishableIssue
 import play.api.Configuration
@@ -15,7 +15,7 @@ object FeastPublicationTarget {
   type MessageType = MessageType.Value
 }
 
-class FeastPublicationTarget(snsClient:AmazonSNSClient, config: Configuration) extends PublicationTarget {
+class FeastPublicationTarget(snsClient:AmazonSNS, config: Configuration) extends PublicationTarget {
   import PublishedIssueFormatters._
 
   //FIXME: put in a better config key for this
