@@ -36,6 +36,7 @@ interface EditionsIssue {
   launchedBy: string;
   launchedEmail: string;
   fronts: EditionsFront[];
+  supportsProofing: boolean;
   lastProofedVersion?: string;
 }
 

@@ -95,7 +95,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
         </Button>
         <EditionPublish>
           <EditModeVisibility visibleMode="editions">
-            <Button
+            { editionsIssue.supportsProofing && <Button
               data-testid="publish-edition-button"
               size="l"
               priority="primary"
@@ -105,6 +105,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
             >
               Proof
             </Button>
+            }
           </EditModeVisibility>
           &nbsp;
           <Button
