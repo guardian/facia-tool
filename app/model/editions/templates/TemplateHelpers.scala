@@ -175,13 +175,14 @@ object EditionsAppDefinition {
     buttonImageUri: Option[String],
    expiry: Option[String],
    buttonStyle: Option[SpecialEditionButtonStyles],
-   headerStyle: Option[SpecialEditionHeaderStyles]
-  ): EditionsAppDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, expiry, buttonStyle, headerStyle)
+   headerStyle: Option[SpecialEditionHeaderStyles],
+    app: String
+  ): EditionsAppDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, expiry, buttonStyle, headerStyle, app)
 
   def unapply(edition: EditionsAppDefinition): Option[(String, String, String, Header, EditionType, Int, String,
-    Option[String], Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles])]
+    Option[String], Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles], String)]
     = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType,
-    edition.notificationUTCOffset, edition.topic, edition.locale, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle)
+    edition.notificationUTCOffset, edition.topic, edition.locale, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle, "editions")
 
   implicit val formatEditionDefinition: OFormat[EditionsAppDefinition] = Json.format[EditionsAppDefinition]
 }
@@ -198,7 +199,8 @@ case class EditionDefinitionRecord(
                          override val buttonImageUri: Option[String],
                          override val expiry: Option[String],
                          override val buttonStyle: Option[SpecialEditionButtonStyles],
-                         override val headerStyle: Option[SpecialEditionHeaderStyles]
+                         override val headerStyle: Option[SpecialEditionHeaderStyles],
+                         override val app:String
 ) extends EditionsAppDefinition {}
 
 
