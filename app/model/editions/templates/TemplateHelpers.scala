@@ -1,6 +1,7 @@
 package model.editions.templates
 
 import model.editions.templates.EditionType.EditionType
+import model.editions.templates.feast.FeastEdition
 import model.editions.{templates, _}
 import play.api.libs.json._
 
@@ -97,6 +98,16 @@ trait CuratedPlatform {
   val app: String
 }
 
+object CuratedPlatform {
+  object Formats {
+    implicit def formatCuratedPlatform:OWrites[CuratedPlatform] = {
+      case editionsApp: EditionsAppDefinition =>
+        EditionsAppDefinition.formatEditionDefinition.writes(editionsApp)
+      case genericApp: CuratedPlatformWithTemplate =>
+        CuratedPlatformWithTemplate.writes.writes(genericApp)
+    }
+  }
+}
 /**
   * An Edition definition for the Editions app.
   */
@@ -118,6 +129,16 @@ trait TemplatedPlatform {
 
 trait CuratedPlatformWithTemplate extends CuratedPlatform with TemplatedPlatform
 
+object CuratedPlatformWithTemplate {
+  import play.api.libs.functional.syntax._
+  implicit def writes:OWrites[CuratedPlatformWithTemplate] = (
+    (JsPath \ "title").write[String] and
+      (JsPath \ "subTitle").write[String] and
+      (JsPath \ "notificationUTCOffset").write[Int] and
+      (JsPath \ "locale").writeNullable[String] and
+      (JsPath \ "app").write[String]
+  )(p=>(p.title, p.subTitle, p.notificationUTCOffset, p.locale, p.app))
+}
 trait EditionsAppDefinitionWithTemplate extends EditionsAppDefinition with TemplatedPlatform
 
 abstract class EditionBase extends EditionsAppDefinitionWithTemplate {

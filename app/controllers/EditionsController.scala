@@ -21,7 +21,7 @@ import services.editions.publishing.EditionsPublishing
 import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
 import util.{SearchResponseUtil, UserUtil}
-
+import model.editions.templates.CuratedPlatform.Formats._
 import scala.jdk.CollectionConverters._
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -256,10 +256,13 @@ class EditionsController(db: EditionsDB,
     val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
     val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
     val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
+    val feastAppEditions = FeastAppTemplates.getAvailableEditions
+
     Map(
       "regionalEditions" -> regionalEditions,
       "specialEditions" -> specialEditions,
-      "trainingEditions" -> trainingEditions
+      "trainingEditions" -> trainingEditions,
+      "feastEditions" -> feastAppEditions,
     )
   }
 

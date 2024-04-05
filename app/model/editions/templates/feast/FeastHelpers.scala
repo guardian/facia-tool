@@ -7,3 +7,4 @@ trait FeastEdition extends CuratedPlatformWithTemplate {
   override val subTitle = "Make inspiring mealtimes easy with the Guardian’s Feast app."
   override val app = "feast"
 }
+
