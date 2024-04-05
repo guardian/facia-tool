@@ -1,17 +1,18 @@
 package model.editions.templates.feast
 
 import model.editions.templates.TemplateHelpers.{collection, front}
-import model.editions.{CapiDateQueryParam, CapiTimeWindowConfigInDays, Daily, EditionTemplate, FrontTemplate}
+import model.editions.{CapiDateQueryParam, CapiTimeWindowConfigInDays, Daily, Edition, EditionTemplate, FrontTemplate}
 
 import java.time.ZoneId
 
 object FeastNorthernHemisphere extends FeastEdition {
   override val title: String = "Feast app [Northern hemisphere]"
+  override val edition = Edition.FeastNorthernHemisphere.entryName
   override val locale = Some("en_GB")
   override val notificationUTCOffset = 0
 
   val MainFront: FrontTemplate = front(
-    "Northern hemisphere",
+    "All Recipes",
     collection("Dish of the day"),
     collection("Collection 2"),
     collection("Collection 3"),
@@ -24,13 +25,12 @@ object FeastNorthernHemisphere extends FeastEdition {
   )
 
   val MeatFreeFront: FrontTemplate = front(
-    "Southern hemisphere",
+    "Meat-Free Recipes",
     collection("Dish of the day"),
     collection("Collection 2"),
     collection("Collection 3"),
     collection("Collection 4"),
   )
-
 
   val template: EditionTemplate = EditionTemplate(
     fronts = List(

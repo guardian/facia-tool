@@ -1,12 +1,14 @@
 package model.editions.templates.feast
 
+import com.gu.mobile.notifications.client.models.Editions
 import model.editions.templates.TemplateHelpers.{collection, front}
-import model.editions.{CapiDateQueryParam, CapiTimeWindowConfigInDays, Daily, EditionTemplate, FrontTemplate}
+import model.editions.{CapiDateQueryParam, CapiTimeWindowConfigInDays, Daily, Edition, EditionTemplate, FrontTemplate}
 
 import java.time.ZoneId
 
 object FeastSouthernHemisphere extends FeastEdition {
   override val title: String = "Feast app [Southern hemisphere]"
+  override val edition = Edition.FeastSouthernHemisphere.entryName
   override val locale = Some("en_GB")
   override val notificationUTCOffset = 0
 

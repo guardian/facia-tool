@@ -7,7 +7,7 @@ import model.{FeatureSwitch, UserData, UserDataForDefaults}
 
 import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.{Metadata, TargetedTerritory}
-import model.editions.EditionsAppTemplates
+import model.editions.{EditionsAppTemplates, FeastAppTemplates}
 import permissions.Permissions
 import play.api.libs.json.Json
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
@@ -80,7 +80,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
       routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
       routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true),
       TargetedTerritory.allTerritories,
-      EditionsAppTemplates.getAvailableEditions
+      EditionsAppTemplates.getAvailableEditions ++ FeastAppTemplates.getAvailableEditions
     )
 
     Ok(views.html.V2App.app(

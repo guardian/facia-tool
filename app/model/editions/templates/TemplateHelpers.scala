@@ -93,6 +93,7 @@ object SpecialEditionButtonStyles {
 trait CuratedPlatform {
   val title: String
   val subTitle: String
+  val edition: String
   val notificationUTCOffset: Int
   val locale: Option[String]
   val app: String
@@ -114,7 +115,6 @@ object CuratedPlatform {
 trait EditionsAppDefinition extends CuratedPlatform {
   val header: Header
   val topic: String
-  val edition: String
   val editionType: EditionType
   val buttonImageUri: Option[String]
   val expiry: Option[String]
@@ -134,10 +134,11 @@ object CuratedPlatformWithTemplate {
   implicit def writes:OWrites[CuratedPlatformWithTemplate] = (
     (JsPath \ "title").write[String] and
       (JsPath \ "subTitle").write[String] and
+      (JsPath \ "edition").write[String] and
       (JsPath \ "notificationUTCOffset").write[Int] and
       (JsPath \ "locale").writeNullable[String] and
       (JsPath \ "app").write[String]
-  )(p=>(p.title, p.subTitle, p.notificationUTCOffset, p.locale, p.app))
+  )(p=>(p.title, p.subTitle, p.edition, p.notificationUTCOffset, p.locale, p.app))
 }
 trait EditionsAppDefinitionWithTemplate extends EditionsAppDefinition with TemplatedPlatform
 

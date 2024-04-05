@@ -2,7 +2,7 @@ package services.editions
 
 import logging.Logging
 import model.editions._
-import model.editions.templates.EditionsAppDefinitionWithTemplate
+import model.editions.templates.{CuratedPlatform, CuratedPlatformWithTemplate, EditionsAppDefinitionWithTemplate, TemplatedPlatform}
 import play.api.mvc.{Result, Results}
 import services.editions.prefills._
 import services.{Capi, Ophan}
@@ -15,7 +15,7 @@ import scala.util.control.NonFatal
 
 case class GenerateEditionTemplateResult(issueSkeleton: EditionsIssueSkeleton, contentPrefillTimeWindow: CapiQueryTimeWindow)
 
-class EditionsTemplating(templates: PartialFunction[Edition, EditionsAppDefinitionWithTemplate], capi: Capi, ophan: Ophan) extends Logging {
+class EditionsTemplating(templates: PartialFunction[Edition, CuratedPlatform with TemplatedPlatform], capi: Capi, ophan: Ophan) extends Logging {
 
   private val collectionsTemplating = CollectionTemplatingHelper(capi, ophan)
 
