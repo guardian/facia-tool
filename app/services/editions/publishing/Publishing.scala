@@ -61,7 +61,7 @@ class Publishing(editionsAppPublicationBucket: PublicationTarget,
 
   def publish(issue: EditionsIssue, user: User, version: String) = {
 
-    val action = PublishAction.proof
+    val action = PublishAction.publish
 
     val markers = Markers.appendEntries(
       Map(
@@ -75,7 +75,12 @@ class Publishing(editionsAppPublicationBucket: PublicationTarget,
 
     logger.info(s"Uploading $action request for issue ${issue.id} to S3")(markers)
 
-    val publishedIssue = issue.toPublishableIssue(version, PublishAction.publish)
+    val publishedIssue = if(version==Publishing.ProofingNotRequiredMagicVersion) {
+      val newVersion = db.createIssueVersion(issue.id, user, OffsetDateTime.now())
+      issue.toPublishableIssue(newVersion, PublishAction.proof) //if you put `PublishAction.publish` in here, then you don't get any fronts in the output :(
+    } else {
+      issue.toPublishableIssue(version, PublishAction.publish)
+    }
 
     // Archive a copy
     issue.edition match {
@@ -85,4 +90,8 @@ class Publishing(editionsAppPublicationBucket: PublicationTarget,
         editionsAppPublicationBucket.putIssue(publishedIssue)
     }
   }
+}
+
+object Publishing {
+  val ProofingNotRequiredMagicVersion = "proofing-not-required"
 }

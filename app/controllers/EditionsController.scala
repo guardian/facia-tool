@@ -190,7 +190,7 @@ class EditionsController(db: EditionsDB,
   def publishIssue(id: String, version: EditionIssueVersionId) = EditEditionsAuthAction { req =>
     val lastProofedIssueVersion = db.getLastProofedIssueVersion(id)
     // Protect against stale requests.
-    if (lastProofedIssueVersion.filter(_.equals(version)).isEmpty) {
+    if (version != Publishing.ProofingNotRequiredMagicVersion && !lastProofedIssueVersion.exists(_.equals(version))) {
       BadRequest(s"Last proofed version of issue '${id}' is '${lastProofedIssueVersion.getOrElse("none")}', not '${version}'")
     } else {
       db.getIssue(id).map { issue =>
