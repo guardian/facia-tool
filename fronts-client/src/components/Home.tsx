@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import groupBy from 'lodash/groupBy';
 
 import { priorities } from 'constants/priorities';
 import { EditionPriority } from 'types/Priority';
@@ -26,41 +27,44 @@ const renderEditionPriority = (editionPriority: EditionPriority) => (
 
 type IProps = ReturnType<typeof mapStateToProps>;
 
-const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => (
-  <HomeContainer>
-    <h3>Front priorities</h3>
-    <ul>{Object.keys(priorities).map(renderPriority)}</ul>
-    <h3>Manage editions</h3>
-    <ul>
-    {!editEditionsIsPermitted
-      ? displayNoPermissionMessage('Editions')
-      : availableEditions
-          .filter((ed)=>ed.app==="editions")
-          .sort((a, b) =>
-            a.editionType === b.editionType ? (a.title < b.title ? 0 : 1) : 1
-          )
-          .map(renderEditionPriority)}
-    </ul>
-    <h3>Manage Feast app</h3>
-    <ul>
-      {
-        availableEditions &&
-        availableEditions
-          .filter((ed)=>ed.app==="feast")
-          .map(renderEditionPriority)
-      }
-    </ul>
-    <h3>Manage edition list</h3>
-    <ul>
-      <li>
-        <a href="/editions-api/editions">View Editions json metadata</a>
-      </li>
-      <li>
-        <a href="/editions-api/republish-editions">Republish</a>
-      </li>
-    </ul>
-  </HomeContainer>
-)
+const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => {
+  const { editions, feast } = groupBy(availableEditions || [], 'app');
+
+  return (
+    <HomeContainer>
+      <h3>Front priorities</h3>
+      <ul>{Object.keys(priorities).map(renderPriority)}</ul>
+
+      <h3>Manage editions</h3>
+      <ul>
+      {!editEditionsIsPermitted
+        ? displayNoPermissionMessage('Editions')
+        : editions.sort((a, b) =>
+              a.editionType === b.editionType ? (a.title < b.title ? 0 : 1) : 1
+            )
+            .map(renderEditionPriority)}
+      </ul>
+      <h3>Manage Feast app</h3>
+      <ul>
+        {
+          availableEditions &&
+          availableEditions
+            .filter((ed)=>ed.app==="feast")
+            .map(renderEditionPriority)
+        }
+      </ul>
+      <h3>Manage edition list</h3>
+      <ul>
+        <li>
+          <a href="/editions-api/editions">View Editions json metadata</a>
+        </li>
+        <li>
+          <a href="/editions-api/republish-editions">Republish</a>
+        </li>
+      </ul>
+    </HomeContainer>
+  )
+}
 
 const mapStateToProps = (state: State) => ({
   availableEditions: selectAvailableEditions(state),
