@@ -15,12 +15,12 @@ import scala.util.control.NonFatal
 
 case class GenerateEditionTemplateResult(issueSkeleton: EditionsIssueSkeleton, contentPrefillTimeWindow: CapiQueryTimeWindow)
 
-class EditionsTemplating(templates: PartialFunction[Edition, CuratedPlatform with TemplatedPlatform], capi: Capi, ophan: Ophan) extends Logging {
+class EditionsTemplating(templates: Map[Edition, CuratedPlatform with TemplatedPlatform], capi: Capi, ophan: Ophan) extends Logging {
 
   private val collectionsTemplating = CollectionTemplatingHelper(capi, ophan)
 
   def generateEditionTemplate(edition: Edition, issueDate: LocalDate): Either[Result, GenerateEditionTemplateResult] = {
-    templates.lift(edition) match {
+    templates.get(edition) match {
       case Some(editionDefinition) =>
         if (editionDefinition.template.availability.isValid(issueDate)) {
 
