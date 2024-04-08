@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3
 import com.amazonaws.services.s3.model.{ObjectMetadata, PutObjectRequest, PutObjectResult}
 import com.amazonaws.util.StringInputStream
 import model.editions.PublishableIssue
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, Writes}
 import PublishedIssueFormatters._
 
 object EditionsBucket {
@@ -20,8 +20,7 @@ object EditionsBucket {
     metadata
   }
 
-  def createPutObjectRequest(bucketName: String, issue: PublishableIssue): PutObjectRequest = {
-    val key = EditionsBucket.createKey(issue)
+  def createPutObjectRequest[T:Writes](bucketName: String, key: String, issue: T): PutObjectRequest = {
     val issueJson = Json.stringify(Json.toJson(issue))
     new PutObjectRequest(bucketName, key, new StringInputStream(issueJson), EditionsBucket.objectMetadata)
   }
@@ -29,7 +28,12 @@ object EditionsBucket {
 
 class EditionsBucket(s3Client: AmazonS3, bucketName: String) extends PublicationTarget {
   def putIssue(issue: PublishableIssue): Unit = {
-    val request = EditionsBucket.createPutObjectRequest(bucketName, issue)
+    val key = EditionsBucket.createKey(issue)
+    putIssueJson(issue, key)
+  }
+
+  override def putIssueJson[T: Writes](content: T, key:String): Unit = {
+    val request = EditionsBucket.createPutObjectRequest(bucketName, key, content)
     s3Client.putObject(request)
   }
 

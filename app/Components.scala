@@ -1,6 +1,5 @@
 import com.amazonaws.auth.AWSCredentialsProvider
 import software.amazon.awssdk.regions.{Region => WeirdRegion}
-import com.amazonaws.regions.Region
 import com.amazonaws.services.sns.AmazonSNSClient
 import software.amazon.awssdk.auth.credentials.{AwsCredentials, AwsCredentialsProvider, AwsCredentialsProviderChain, DefaultCredentialsProvider, ProfileCredentialsProvider}
 import conf.ApplicationConfiguration
@@ -29,6 +28,7 @@ import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
 import util.Acl
+import services.editions.publishing.PublishedIssueFormatters._
 
 class AppComponents(context: Context, val config: ApplicationConfiguration)
   extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {

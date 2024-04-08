@@ -4,15 +4,16 @@ import java.time.OffsetDateTime
 import com.gu.pandomainauth.model.User
 import logging.Logging
 import model.editions.Edition.{FeastNorthernHemisphere, FeastSouthernHemisphere}
-import model.editions.{Edition, EditionsIssue, PublishAction, PublishableIssue}
+import model.editions.{EditionsIssue, PublishAction}
 import net.logstash.logback.marker.Markers
 import services.editions.db.EditionsDB
+import play.api.libs.json.Writes
 
 import scala.jdk.CollectionConverters._
 
-class Publishing(editionsAppPublicationBucket: PublicationTarget,
-                 editionsAppPreviewBucket: PublicationTarget,
-                 feastAppPublicationTarget: PublicationTarget,
+class Publishing[+A:Writes, +B:Writes](editionsAppPublicationBucket: PublicationTargetBase[A],
+                 editionsAppPreviewBucket: PublicationTargetBase[A],
+                 feastAppPublicationTarget: PublicationTargetBase[B],
                  db: EditionsDB
                 ) extends Logging {
 

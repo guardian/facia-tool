@@ -27,7 +27,7 @@ import scala.util.Try
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
-                         publishing: Publishing,
+                         publishing: Publishing[Any, Any],
                          capi: Capi,
                          val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
 
@@ -264,6 +264,7 @@ class EditionsController(db: EditionsDB,
     val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
     val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
 
+    //WARNING TODO FIXME - this list is also referenced in the publishing code! Don't confuse editions backend....
     Map(
       "regionalEditions" -> regionalEditions,
       "specialEditions" -> specialEditions,
