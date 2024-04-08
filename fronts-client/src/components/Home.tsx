@@ -34,7 +34,7 @@ const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => {
     <HomeContainer>
       <h3>Front priorities</h3>
       <ul>{Object.keys(priorities).map(renderPriority)}</ul>
-      <h3>Manage editions</h3>
+      <h3>Manage Editions app</h3>
       <ul>
         {!editEditionsIsPermitted
           ? displayNoPermissionMessage('Editions')
