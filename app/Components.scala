@@ -1,7 +1,6 @@
 import com.amazonaws.auth.AWSCredentialsProvider
 import software.amazon.awssdk.regions.{Region => WeirdRegion}
-import com.amazonaws.regions.Region
-import software.amazon.awssdk.auth.credentials.{AwsCredentials, AwsCredentialsProvider, AwsCredentialsProviderChain, DefaultCredentialsProvider, ProfileCredentialsProvider}
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._

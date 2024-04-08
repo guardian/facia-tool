@@ -2,7 +2,7 @@ package services.editions
 
 import logging.Logging
 import model.editions._
-import model.editions.templates.{CuratedPlatform, CuratedPlatformWithTemplate, EditionsAppDefinitionWithTemplate, TemplatedPlatform}
+import model.editions.templates.{CuratedPlatform, TemplatedPlatform}
 import play.api.mvc.{Result, Results}
 import services.editions.prefills._
 import services.{Capi, Ophan}

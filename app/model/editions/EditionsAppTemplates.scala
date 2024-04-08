@@ -4,7 +4,6 @@ import java.time.temporal.ChronoField
 import java.time.{LocalDate, ZoneId, ZoneOffset}
 import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
-import model.editions.EditionsAppTemplates.templates
 import model.editions.PathType.{PrintSent, Search}
 import model.editions.templates.TemplateHelpers.Defaults
 import model.editions.templates._
@@ -28,13 +27,13 @@ object EditionsAppTemplates {
     Edition.EditionWellbeing -> EditionWellbeing
   )
 
-  val getAvailableEditions: List[EditionsAppDefinition] = templates.values.toList
+  val getAvailableEditions: List[EditionsAppDefinitionWithTemplate] = templates.values.toList
 }
 
 object FeastAppTemplates {
-  val templates: Map[FeastEditions, CuratedPlatformWithTemplate] = Map(
-    FeastEditions.FeastNorthernHemisphere -> FeastNorthernHemisphere,
-    FeastEditions.FeastSouthernHemisphere -> FeastSouthernHemisphere
+  val templates: Map[Edition, CuratedPlatformWithTemplate] = Map(
+    Edition.FeastNorthernHemisphere -> FeastNorthernHemisphere,
+    Edition.FeastSouthernHemisphere -> FeastSouthernHemisphere
   )
 
   val getAvailableEditions: List[CuratedPlatformWithTemplate] = templates.values.toList
@@ -95,6 +94,10 @@ object Edition extends PlayEnum[Edition] {
   case object EditionEndOfYear extends Edition
 
   case object EditionWellbeing extends Edition
+
+  case object FeastSouthernHemisphere extends Edition
+
+  case object FeastNorthernHemisphere extends Edition
 
   override def values = findValues
 }

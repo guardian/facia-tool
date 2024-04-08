@@ -45,15 +45,11 @@ const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => (
     <ul>
       {
         availableEditions &&
-          availableEditions
-            .filter((ed)=>ed.app==="feast")
-            .map(renderEditionPriority)
+        availableEditions
+          .filter((ed)=>ed.app==="feast")
+          .map(renderEditionPriority)
       }
     </ul>
-    <pre style={{width: "80%"}}>
-      { JSON.stringify(availableEditions,null,2)}
-    </pre>
->>>>>>> aec711f870 (Fiddle the UI to separate Editions and Feast app sections)
     <h3>Manage edition list</h3>
     <ul>
       <li>
@@ -64,7 +60,7 @@ const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => (
       </li>
     </ul>
   </HomeContainer>
-);
+)
 
 const mapStateToProps = (state: State) => ({
   availableEditions: selectAvailableEditions(state),

@@ -1,17 +1,16 @@
 package controllers
 
 import java.time.{LocalDate, OffsetDateTime}
-
 import cats.syntax.either._
 import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
 import model.editions._
-import model.editions.templates.EditionType
+import model.editions.templates.{CuratedPlatform, CuratedPlatformWithTemplate, EditionType}
 import model.forms._
 import net.logstash.logback.marker.Markers
-import play.api.libs.json.{JsObject, Json, JsValue}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
@@ -21,9 +20,9 @@ import services.editions.publishing.EditionsPublishing
 import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
 import util.{SearchResponseUtil, UserUtil}
-import model.editions.templates.CuratedPlatform.Formats._
+
 import scala.jdk.CollectionConverters._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 class EditionsController(db: EditionsDB,
@@ -251,7 +250,7 @@ class EditionsController(db: EditionsDB,
     } getOrElse NotFound(s"Front $id not found")
   }
 
-  private def getAvailableEditionsJson = {
+  private def getAvailableEditionsJson: Map[String, List[CuratedPlatform]] = {
     val allEditions = EditionsAppTemplates.getAvailableEditions
     val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
     val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
@@ -265,6 +264,4 @@ class EditionsController(db: EditionsDB,
       "feastEditions" -> feastAppEditions,
     )
   }
-
-
 }

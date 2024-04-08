@@ -100,15 +100,14 @@ trait CuratedPlatform {
 }
 
 object CuratedPlatform {
-  object Formats {
-    implicit def formatCuratedPlatform:OWrites[CuratedPlatform] = {
-      case editionsApp: EditionsAppDefinition =>
-        EditionsAppDefinition.formatEditionDefinition.writes(editionsApp)
-      case genericApp: CuratedPlatformWithTemplate =>
-        CuratedPlatformWithTemplate.writes.writes(genericApp)
-    }
+  implicit def formatCuratedPlatform:OWrites[CuratedPlatform] = {
+    case editionsApp: EditionsAppDefinition =>
+      EditionsAppDefinition.formatEditionDefinition.writes(editionsApp)
+    case genericApp: CuratedPlatformWithTemplate =>
+      CuratedPlatformWithTemplate.writes.writes(genericApp)
   }
 }
+
 /**
   * An Edition definition for the Editions app.
   */
@@ -138,7 +137,7 @@ object CuratedPlatformWithTemplate {
       (JsPath \ "notificationUTCOffset").write[Int] and
       (JsPath \ "locale").writeNullable[String] and
       (JsPath \ "app").write[String]
-  )(p=>(p.title, p.subTitle, p.edition, p.notificationUTCOffset, p.locale, p.app))
+  )(p => (p.title, p.subTitle, p.edition, p.notificationUTCOffset, p.locale, p.app))
 }
 trait EditionsAppDefinitionWithTemplate extends EditionsAppDefinition with TemplatedPlatform
 

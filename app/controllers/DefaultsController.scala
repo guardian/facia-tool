@@ -1,10 +1,9 @@
 package controllers
 
-import com.gu.facia.client.models.{Metadata, TargetedTerritory, Trail}
+import com.gu.facia.client.models.{Metadata, TargetedTerritory}
 import model.editions.{EditionsAppTemplates, FeastAppTemplates}
-import model.editions.templates.CuratedPlatform.Formats._
-import model.editions.templates.{CuratedPlatform, CuratedPlatformWithTemplate, EditionsAppDefinition}
-import model.{Cached, FeatureSwitch, UserDataForDefaults}
+import model.editions.templates.CuratedPlatform
+import model.{Cached, UserDataForDefaults}
 import permissions.Permissions
 import play.api.libs.json.{JsValue, Json}
 import switchboard.SwitchManager
