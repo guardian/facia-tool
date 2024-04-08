@@ -84,9 +84,9 @@ class EditionsController(db: EditionsDB,
       .getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def republishEditions = EditEditionsAuthAction { _ => {
+  def republishEditionsAppEditionsList = EditEditionsAuthAction { _ => {
     try {
-      val raw = Json.toJson(Map("action" -> "editionList")).as[JsObject] + ("content", Json.toJson(getAvailableEditionsJson))
+      val raw = Json.toJson(Map("action" -> "editionList")).as[JsObject] + ("content", Json.toJson(getAvailableEditionsAppEditions))
       publishing.putEditionsList(raw.toString())
       Ok("Published.  Please check processing has succeeded.")
     } catch {
@@ -95,7 +95,7 @@ class EditionsController(db: EditionsDB,
   }}
 
   def getAvailableEditions = EditEditionsAuthAction { _ => {
-    Ok(Json.toJson(getAvailableEditionsJson))
+    Ok(Json.toJson(getAvailableCuratedPlatformEditions))
   }}
 
   def checkIssue(id: String) = EditEditionsAuthAction { _ =>
@@ -250,18 +250,24 @@ class EditionsController(db: EditionsDB,
     } getOrElse NotFound(s"Front $id not found")
   }
 
-  private def getAvailableEditionsJson: Map[String, List[CuratedPlatformDefinition]] = {
+  private def getAvailableCuratedPlatformEditions: Map[String, List[CuratedPlatformDefinition]] = {
+    val feastAppEditions = FeastAppTemplates.getAvailableEditions
+
+    getAvailableEditionsAppEditions ++ Map(
+      "feastEditions" -> feastAppEditions,
+    )
+  }
+
+  private def getAvailableEditionsAppEditions: Map[String, List[CuratedPlatformDefinition]] = {
     val allEditions = EditionsAppTemplates.getAvailableEditions
     val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
     val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
     val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
-    val feastAppEditions = FeastAppTemplates.getAvailableEditions
 
     Map(
       "regionalEditions" -> regionalEditions,
       "specialEditions" -> specialEditions,
       "trainingEditions" -> trainingEditions,
-      "feastEditions" -> feastAppEditions,
     )
   }
 }
