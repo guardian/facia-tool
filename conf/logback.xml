@@ -16,10 +16,7 @@
     </appender>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%date [%thread] %-5level %logger{36} - %msg%n%xException{3}</pattern>
-        </encoder>
-        <!--<encoder class="net.logstash.logback.encoder.LogstashEncoder" />-->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
     </appender>
 
     <appender name="ASYNCSTDOUT" class="ch.qos.logback.classic.AsyncAppender">
