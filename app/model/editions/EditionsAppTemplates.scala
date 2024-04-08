@@ -12,6 +12,8 @@ import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 import services.editions.prefills.CapiQueryTimeWindow
 
+
+
 object EditionsAppTemplates {
   val templates: Map[Edition, EditionsAppDefinitionWithTemplate] = Map(
     Edition.DailyEdition -> DailyEdition,
@@ -37,6 +39,16 @@ object FeastAppTemplates {
   )
 
   val getAvailableEditions: List[CuratedPlatformWithTemplate] = templates.values.toList
+}
+
+sealed trait CuratedPlatform extends EnumEntry with Uncapitalised
+
+object CuratedPlatform extends PlayEnum[CuratedPlatform] {
+  case object Editions extends CuratedPlatform
+
+  case object Feast extends CuratedPlatform
+
+  override def values = findValues
 }
 
 case object WeekDay extends Enumeration(1) {

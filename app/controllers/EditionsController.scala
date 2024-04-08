@@ -7,7 +7,7 @@ import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
 import model.editions._
-import model.editions.templates.{CuratedPlatform, CuratedPlatformWithTemplate, EditionType}
+import model.editions.templates.{CuratedPlatformDefinition, CuratedPlatformWithTemplate, EditionType}
 import model.forms._
 import net.logstash.logback.marker.Markers
 import play.api.libs.json.{JsObject, Json}
@@ -250,7 +250,7 @@ class EditionsController(db: EditionsDB,
     } getOrElse NotFound(s"Front $id not found")
   }
 
-  private def getAvailableEditionsJson: Map[String, List[CuratedPlatform]] = {
+  private def getAvailableEditionsJson: Map[String, List[CuratedPlatformDefinition]] = {
     val allEditions = EditionsAppTemplates.getAvailableEditions
     val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
     val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)

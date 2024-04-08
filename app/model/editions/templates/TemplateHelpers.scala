@@ -1,7 +1,6 @@
 package model.editions.templates
 
 import model.editions.templates.EditionType.EditionType
-import model.editions.templates.feast.FeastEdition
 import model.editions.{templates, _}
 import play.api.libs.json._
 
@@ -90,17 +89,17 @@ object SpecialEditionButtonStyles {
   * Contrast with e.g. web/app Fronts, which publish their content in real time
   * on a container by container basis.
   */
-trait CuratedPlatform {
+trait CuratedPlatformDefinition {
   val title: String
   val subTitle: String
   val edition: String
   val notificationUTCOffset: Int
   val locale: Option[String]
-  val app: String
+  val platform: CuratedPlatform
 }
 
-object CuratedPlatform {
-  implicit def formatCuratedPlatform:OWrites[CuratedPlatform] = {
+object CuratedPlatformDefinition {
+  implicit def formatCuratedPlatform:OWrites[CuratedPlatformDefinition] = {
     case editionsApp: EditionsAppDefinition =>
       EditionsAppDefinition.formatEditionDefinition.writes(editionsApp)
     case genericApp: CuratedPlatformWithTemplate =>
@@ -111,7 +110,7 @@ object CuratedPlatform {
 /**
   * An Edition definition for the Editions app.
   */
-trait EditionsAppDefinition extends CuratedPlatform {
+trait EditionsAppDefinition extends CuratedPlatformDefinition {
   val header: Header
   val topic: String
   val editionType: EditionType
@@ -119,14 +118,14 @@ trait EditionsAppDefinition extends CuratedPlatform {
   val expiry: Option[String]
   val buttonStyle: Option[SpecialEditionButtonStyles]
   val headerStyle: Option[SpecialEditionHeaderStyles]
-  override val app = "editions"
+  override val platform: CuratedPlatform = CuratedPlatform.Editions
 }
 
 trait TemplatedPlatform {
   val template: EditionTemplate
 }
 
-trait CuratedPlatformWithTemplate extends CuratedPlatform with TemplatedPlatform
+trait CuratedPlatformWithTemplate extends CuratedPlatformDefinition with TemplatedPlatform
 
 object CuratedPlatformWithTemplate {
   import play.api.libs.functional.syntax._
@@ -136,8 +135,8 @@ object CuratedPlatformWithTemplate {
       (JsPath \ "edition").write[String] and
       (JsPath \ "notificationUTCOffset").write[Int] and
       (JsPath \ "locale").writeNullable[String] and
-      (JsPath \ "app").write[String]
-  )(p => (p.title, p.subTitle, p.edition, p.notificationUTCOffset, p.locale, p.app))
+      (JsPath \ "platform").write[CuratedPlatform]
+  )(p => (p.title, p.subTitle, p.edition, p.notificationUTCOffset, p.locale, p.platform))
 }
 trait EditionsAppDefinitionWithTemplate extends EditionsAppDefinition with TemplatedPlatform
 
@@ -172,16 +171,16 @@ object EditionsAppDefinition {
     topic: String,
     locale: Option[String],
     buttonImageUri: Option[String],
-   expiry: Option[String],
-   buttonStyle: Option[SpecialEditionButtonStyles],
-   headerStyle: Option[SpecialEditionHeaderStyles],
-    app: String
-  ): EditionsAppDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, expiry, buttonStyle, headerStyle, app)
+    expiry: Option[String],
+    buttonStyle: Option[SpecialEditionButtonStyles],
+    headerStyle: Option[SpecialEditionHeaderStyles],
+    platform: CuratedPlatform
+  ): EditionsAppDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, expiry, buttonStyle, headerStyle, platform)
 
   def unapply(edition: EditionsAppDefinition): Option[(String, String, String, Header, EditionType, Int, String,
-    Option[String], Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles], String)]
+    Option[String], Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles], CuratedPlatform)]
     = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType,
-    edition.notificationUTCOffset, edition.topic, edition.locale, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle, "editions")
+    edition.notificationUTCOffset, edition.topic, edition.locale, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle, edition.platform)
 
   implicit val formatEditionDefinition: OFormat[EditionsAppDefinition] = Json.format[EditionsAppDefinition]
 }
@@ -199,7 +198,7 @@ case class EditionDefinitionRecord(
                          override val expiry: Option[String],
                          override val buttonStyle: Option[SpecialEditionButtonStyles],
                          override val headerStyle: Option[SpecialEditionHeaderStyles],
-                         override val app:String
+                         override val platform: CuratedPlatform
 ) extends EditionsAppDefinition {}
 
 
