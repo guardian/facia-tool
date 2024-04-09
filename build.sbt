@@ -87,7 +87,7 @@ libraryDependencies ++= Seq(
     "org.julienrf" %% "play-json-derived-codecs" % "5.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
-    "com.typesafe.play" %% "play-json-joda" % "2.9.2",
+    "org.playframework" %% "play-json-joda" % "3.0.2",
     "ai.x" %% "play-json-extensions" % "0.40.2",
 
     "org.postgresql"           %  "postgresql"                   % "42.3.9",
@@ -101,7 +101,7 @@ libraryDependencies ++= Seq(
 
     "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
     "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
-    "com.typesafe.play" %% "play" % "2.8.2",
+    "org.playframework" %% "play" % "3.0.2",
 
     "org.apache.commons" % "commons-text" % "1.10.0",
     "com.beust" % "jcommander" % "1.75",
