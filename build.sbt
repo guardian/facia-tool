@@ -110,6 +110,17 @@ libraryDependencies ++= Seq(
     "org.mockito" % "mockito-core" % "5.11.0" % Test
 )
 
+dependencyOverrides ++= Seq(
+    // Pinned to resolve transitive dependencies between Play and Scalikejdbc
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1",
+)
+
+// Until all dependencies are on scala-java8-compat v1.x, this avoids unnecessary fatal eviction errors
+libraryDependencySchemes ++= Seq(
+    "org.scala-lang.modules" %% "scala-java8-compat" % VersionScheme.Always,
+    "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
+)
+
 val UsesDatabaseTest = config("database-int") extend Test
 
 lazy val root = (project in file("."))
