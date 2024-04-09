@@ -56,8 +56,6 @@ resolvers ++= Seq(
 )
 
 
-PlayKeys.devSettings := Seq("play.akka.dev-mode.akka.http.parsing.max-uri-length" -> "20480")
-
 libraryDependencies ++= Seq(
     ws,
     filters,
