@@ -8,7 +8,7 @@ object TemplateHelpers {
   object Defaults {
     val defaultFrontPresentation = FrontPresentation(model.editions.Swatch.Neutral)
     val defaultCollectionPresentation = CollectionPresentation()
-    val defaultCollectionArticleItemsCap: Int = 200
+    val defaultCollectionCardsCap: Int = 200
   }
 
   def collection(name: String): CollectionTemplate = {

@@ -78,7 +78,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
       json shouldBe expectedJson
     }
 
-    "test serialisation of article furniture" - {
+    "test serialisation of card furniture" - {
       "should output all the fields in the format expected by the editions backend" in {
         val expectedJson =
           """{

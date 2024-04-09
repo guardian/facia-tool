@@ -77,13 +77,13 @@ object AmericanEdition extends RegionalEdition {
     "People",
     collection("Interviews")
       .searchPrefill("?tag=type/article,(tone/interview|lifeandstyle/series/experience)")
-      .withArticleItemsCap(20),
+      .withCardItemsCap(20),
     collection("Profiles")
       .searchPrefill("?tag=type/article,tone/profiles")
-      .withArticleItemsCap(20),
+      .withCardItemsCap(20),
     collection("Q&A")
       .searchPrefill("?tag=type/article,tone/q-and-as")
-      .withArticleItemsCap(20),
+      .withCardItemsCap(20),
     collection("People").hide,
     collection("People").hide
   )
@@ -118,10 +118,10 @@ object AmericanEdition extends RegionalEdition {
     "US News",
     collection("News Features")
       .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business|media/media|news/series/the-long-read),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,tone/news,-tone/comment,-tone/minutebyminute")
-      .withArticleItemsCap(20),
+      .withCardItemsCap(20),
     collection("News")
       .searchPrefill("?tag=type/article,(us-news/us-news|us-news/us-politics|business/business|media/media),-(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,tone/news,-tone/comment,-tone/minutebyminute")
-      .withArticleItemsCap(20),
+      .withCardItemsCap(20),
     collection("US News").hide,
     collection("US News").hide,
     collection("US News").hide
@@ -140,10 +140,10 @@ object AmericanEdition extends RegionalEdition {
     "World News",
     collection("News Features")
       .searchPrefill("?tag=type/article,(world/world|australia-news/australia-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-(us-news/us-news|us-news/us-politics|business/business|media/media),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
-      .withArticleItemsCap(20),
+      .withCardItemsCap(20),
     collection("News")
       .searchPrefill("?tag=type/article,(world/world|australia-news/australia-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(us-news/us-news|us-news/us-politics|business/business|media/media),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
-      .withArticleItemsCap(20) ,
+      .withCardItemsCap(20) ,
     collection("World News").hide,
     collection("World News").hide,
     collection("World News").hide
@@ -157,10 +157,10 @@ object AmericanEdition extends RegionalEdition {
     "Opinion",
     collection("US")
     .searchPrefill("?tag=type/article,tone/comment,(us-news/us-news|us-news/us-politics),-sport/sport,-tone/minutebyminute")
-    .withArticleItemsCap(20),
+    .withCardItemsCap(20),
     collection("World")
     .searchPrefill("?tag=type/article,tone/comment,-(us-news/us-news|us-news/us-politics),-sport/sport,-tone/minutebyminute")
-    .withArticleItemsCap(20),
+    .withCardItemsCap(20),
     collection("Opinion").hide,
     collection("Opinion").hide,
     collection("Opinion").hide
@@ -174,7 +174,7 @@ object AmericanEdition extends RegionalEdition {
     "Environment",
     collection("Environment")
     .searchPrefill("?tag=type/article,environment/environment,-sport/sport,-tone/minutebyminute")
-    .withArticleItemsCap(20),
+    .withCardItemsCap(20),
     collection("Environment").hide,
     collection("Environment").hide,
     collection("Environment").hide,
@@ -189,10 +189,10 @@ object AmericanEdition extends RegionalEdition {
     "Culture",
     collection("Features")
     .searchPrefill("?tag=type/article,culture/culture,tone/features,-tone/reviews,-tone/news,-tone/minutebyminute")
-    .withArticleItemsCap(20),
+    .withCardItemsCap(20),
     collection("Reviews")
     .searchPrefill("?tag=type/article,culture/culture,-tone/features,tone/reviews,-tone/news,-tone/minutebyminute")
-    .withArticleItemsCap(20),
+    .withCardItemsCap(20),
     collection("Culture").hide,
     collection("Culture").hide,
     collection("Culture").hide
@@ -205,10 +205,10 @@ object AmericanEdition extends RegionalEdition {
     "Lifestyle",
     collection("Lifestyle")
     .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,-tone/minutebyminute")
-    .withArticleItemsCap(20),
+    .withCardItemsCap(20),
     collection("Recipes")
     .searchPrefill("?tag=type/article,tone/recipes,food/food,-tone/minutebyminute")
-    .withArticleItemsCap(20),
+    .withCardItemsCap(20),
     collection("Lifestyle").hide,
     collection("Lifestyle").hide,
     collection("Lifestyle").hide
@@ -221,7 +221,7 @@ object AmericanEdition extends RegionalEdition {
     "Sport",
     collection("Sport")
     .searchPrefill("?tag=type/article,sport/sport,(tone/comment|tone/features|tone/analysis),-tone/minutebyminute")
-    .withArticleItemsCap(20),
+    .withCardItemsCap(20),
     collection("Sport").hide,
     collection("Sport").hide,
     collection("Sport").hide,
@@ -234,6 +234,6 @@ object AmericanEdition extends RegionalEdition {
   def FrontCrosswordsUs = front(
     "Puzzles",
     collection("Crosswords").searchPrefill("?tag=type/crossword")
-      .withArticleItemsCap(10)
+      .withCardItemsCap(10)
   )
 }

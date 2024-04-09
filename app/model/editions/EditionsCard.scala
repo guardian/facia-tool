@@ -24,7 +24,7 @@ object CoverCardImages {
   implicit val format = Json.format[CoverCardImages]
 }
 
-case class ArticleMetadata (
+case class CardMetadata(
   headline: Option[String],
   customKicker: Option[String],
   trailText: Option[String],
@@ -44,14 +44,14 @@ case class ArticleMetadata (
   promotionMetric: Option[Double]
 )
 
-object ArticleMetadata {
-  implicit val format = Json.format[ArticleMetadata]
+object CardMetadata {
+  implicit val format = Json.format[CardMetadata]
 
-  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
+  val default = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
-case class EditionsArticle(id: String, addedOn: Long, metadata: Option[ArticleMetadata]) extends Logging {
-  def toPublishedArticle: PublishedArticle = {
+case class EditionsCard(id: String, addedOn: Long, metadata: Option[CardMetadata]) extends Logging {
+  def toPublishedCard: PublishedArticle = {
     var mediaType: Option[MediaType] = metadata.flatMap(_.mediaType)
 
     val coverCardImages = metadata.flatMap { meta =>
@@ -98,30 +98,30 @@ case class EditionsArticle(id: String, addedOn: Long, metadata: Option[ArticleMe
   }
 }
 
-object EditionsArticle extends Logging {
-  implicit val writes = Json.format[EditionsArticle]
+object EditionsCard extends Logging {
+  implicit val writes = Json.format[EditionsCard]
 
-  def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsArticle = {
-    EditionsArticle(
+  def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsCard = {
+    EditionsCard(
       rs.string(prefix + "id"),
       rs.zonedDateTime(prefix + "added_on").toInstant.toEpochMilli,
-      rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[ArticleMetadata].get)
+      rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[CardMetadata].get)
     )
   }
 
-  def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsArticle] = {
+  def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsCard] = {
     for {
       id <- rs.stringOpt(prefix + "id")
       addedOn <- rs.zonedDateTimeOpt(prefix + "added_on").map(_.toInstant.toEpochMilli)
     } yield
-      EditionsArticle(
+      EditionsCard(
         id,
         addedOn,
         rs.stringOpt(prefix + "metadata").map(
-          s => Json.parse(s).validate[ArticleMetadata] match {
+          s => Json.parse(s).validate[CardMetadata] match {
             case result if (result.isError) => {
-              logger.error(s"Unable to parse article from database: \n${s}")
-              ArticleMetadata.default
+              logger.error(s"Unable to parse card from database: \n${s}")
+              CardMetadata.default
             }
             case result@_ => result.get
           }

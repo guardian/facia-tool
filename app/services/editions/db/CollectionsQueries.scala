@@ -7,7 +7,7 @@ import model.editions.{CapiPrefillQuery, Edition, EditionsCollection, PathType}
 import model.forms.GetCollectionsFilter
 import play.api.libs.json.Json
 import scalikejdbc._
-import services.editions.DbEditionsArticle
+import services.editions.DbEditionsCard
 import services.editions.prefills.CapiQueryTimeWindow
 
 trait CollectionsQueries {
@@ -48,7 +48,7 @@ trait CollectionsQueries {
                  edition_issues.issue_date,
                  edition_issues.timezone_id
           FROM collections
-          LEFT JOIN articles ON (collections.id = articles.collection_id)
+          LEFT JOIN cards ON (collections.id = cards.collection_id)
           JOIN fronts ON (collections.front_id = fronts.id)
           JOIN edition_issues ON (fronts.issue_id = edition_issues.id)
           WHERE collections.id = $id
@@ -106,19 +106,19 @@ trait CollectionsQueries {
 
     // At the moment we don't do partial updates so simply delete all of them and reinsert.
     sql"""
-          DELETE FROM articles WHERE collection_id = ${collection.id}
+          DELETE FROM cards WHERE collection_id = ${collection.id}
     """.execute().apply()
 
-    collection.items.zipWithIndex.foreach { case (article, index) =>
-      val addedOn = EditionsDB.dateTimeFromMillis(article.addedOn)
+    collection.items.zipWithIndex.foreach { case (card, index) =>
+      val addedOn = EditionsDB.dateTimeFromMillis(card.addedOn)
       sql"""
-          INSERT INTO articles (
+          INSERT INTO cards (
           collection_id,
           id,
           index,
           added_on,
           metadata
-          ) VALUES (${collection.id}, ${article.id}, $index, $addedOn, ${article.metadata.map(m => Json.toJson(m).toString)}::JSONB)
+          ) VALUES (${collection.id}, ${card.id}, $index, $addedOn, ${card.metadata.map(m => Json.toJson(m).toString)}::JSONB)
        """.execute().apply()
     }
 
@@ -151,32 +151,32 @@ trait CollectionsQueries {
         collections.content_prefill_window_end,
         fronts.is_special,
 
-        articles.collection_id AS articles_collection_id,
-        articles.id     AS articles_id,
-        articles.index         AS articles_index,
-        articles.added_on      AS articles_added_on,
-        articles.metadata      AS articles_metadata
+        cards.collection_id AS cards_collection_id,
+        cards.id     AS cards_id,
+        cards.index         AS cards_index,
+        cards.added_on      AS cards_added_on,
+        cards.metadata      AS cards_metadata
 
       FROM collections
-      LEFT JOIN articles ON (articles.collection_id = collections.id)
+      LEFT JOIN cards ON (cards.collection_id = collections.id)
       LEFT JOIN fronts ON (collections.front_id = fronts.id)
       WHERE ${where}
       """
     sql.map { rs =>
       GetCollectionsRow(
         EditionsCollection.fromRow(rs),
-        DbEditionsArticle.fromRowOpt(rs, "articles_")
+        DbEditionsCard.fromRowOpt(rs, "cards_")
       )
     }.toList()
   }
 
   private def convertRowsToCollections(rows: List[GetCollectionsRow]): List[EditionsCollection] = {
     rows.groupBy(_.collection.id).values.toList.map { rowsWithId =>
-      val articles = rowsWithId.flatMap(_.article).sortBy(_.index).map(_.article)
-      rowsWithId.head.collection.copy(items = articles)
+      val cards = rowsWithId.flatMap(_.card).sortBy(_.index).map(_.card)
+      rowsWithId.head.collection.copy(items = cards)
     }
   }
 
-  private case class GetCollectionsRow(collection: EditionsCollection, article: Option[DbEditionsArticle])
+  private case class GetCollectionsRow(collection: EditionsCollection, card: Option[DbEditionsCard])
 
 }

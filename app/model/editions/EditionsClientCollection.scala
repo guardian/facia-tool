@@ -1,26 +1,26 @@
 package model.editions
 
-import model.editions.client.ClientArticleMetadata
+import model.editions.client.ClientCardMetadata
 import play.api.libs.json.Json
 import services.editions.prefills.CapiQueryTimeWindow
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
 
-case class EditionsClientArticle(id: String, frontPublicationDate: Long, meta: Option[ClientArticleMetadata])
+case class EditionsClientCard(id: String, frontPublicationDate: Long, meta: Option[ClientCardMetadata])
 
-object EditionsClientArticle {
-  def fromArticle(article: EditionsArticle): EditionsClientArticle = {
-    EditionsClientArticle(
-      "internal-code/page/" + article.id,
-      article.addedOn,
-      article.metadata.map(ClientArticleMetadata.fromArticleMetadata)
+object EditionsClientCard {
+  def fromCard(card: EditionsCard): EditionsClientCard = {
+    EditionsClientCard(
+      "internal-code/page/" + card.id,
+      card.addedOn,
+      card.metadata.map(ClientCardMetadata.fromCardMetadata)
     )
   }
-  def toArticle(article: EditionsClientArticle): EditionsArticle = {
-    EditionsArticle(
-      article.id.split("/").last,
-      article.frontPublicationDate,
-      article.meta.map(_.toArticleMetadata)
+  def toCard(card: EditionsClientCard): EditionsCard = {
+    EditionsCard(
+      card.id.split("/").last,
+      card.frontPublicationDate,
+      card.meta.map(_.toCardMetadata)
     )
   }
 }
@@ -34,12 +34,12 @@ case class EditionsClientCollection(
   updatedEmail: Option[String],
   prefill: Option[CapiPrefillQuery],
   contentPrefillTimeWindow: Option[CapiQueryTimeWindow],
-  items: List[EditionsClientArticle]
+  items: List[EditionsClientCard]
 )
 case class EditionsFrontendCollectionWrapper(id: String, collection: EditionsClientCollection)
 
 object EditionsFrontendCollectionWrapper {
-  implicit def articleFormat = Json.format[EditionsClientArticle]
+  implicit def cardFormat = Json.format[EditionsClientCard]
   implicit def collectionFormat = Json.format[EditionsClientCollection]
   implicit def collectionWrapperFormat = Json.format[EditionsFrontendCollectionWrapper]
 
@@ -55,7 +55,7 @@ object EditionsFrontendCollectionWrapper {
         collection.updatedEmail,
         collection.prefill,
         collection.contentPrefillTimeWindow,
-        collection.items.map(EditionsClientArticle.fromArticle)
+        collection.items.map(EditionsClientCard.fromCard)
       )
     )
   }
@@ -70,7 +70,7 @@ object EditionsFrontendCollectionWrapper {
       frontendCollection.collection.updatedEmail,
       frontendCollection.collection.prefill,
       frontendCollection.collection.contentPrefillTimeWindow,
-      frontendCollection.collection.items.map(EditionsClientArticle.toArticle)
+      frontendCollection.collection.items.map(EditionsClientCard.toCard)
     )
   }
 }

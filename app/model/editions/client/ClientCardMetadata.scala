@@ -1,11 +1,11 @@
 package model.editions.client
 
 import ai.x.play.json.Jsonx
-import model.editions.{ArticleMetadata, CoverCardImages, Image, MediaType}
+import model.editions.{CardMetadata, CoverCardImages, Image, MediaType}
 
 // This is a subset of the shared model here - https://github.com/guardian/facia-scala-client/blob/master/facia-json/src/main/scala/com/gu/facia/client/models/Collection.scala#L18
 // Why not reuse that model? We only want to surface the fields necessary for editions
-case class ClientArticleMetadata (
+case class ClientCardMetadata(
   headline: Option[String],
   customKicker: Option[String],
   showKickerCustom: Option[Boolean],
@@ -37,7 +37,7 @@ case class ClientArticleMetadata (
   coverCardTabletImage: Option[Image],
   promotionMetric: Option[Double]
 ) {
-  def toArticleMetadata: ArticleMetadata = {
+  def toCardMetadata: CardMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
       case (height, width, Some(src), Some(origin)) => Some(Image(height.map(_.toInt), width.map(_.toInt), origin, src))
       // If we don't have an origin, duplicate the src into the origin
@@ -63,7 +63,7 @@ case class ClientArticleMetadata (
       case _ => Some(CoverCardImages(coverCardMobileImage, coverCardTabletImage))
     }
 
-    ArticleMetadata(
+    CardMetadata(
       headline,
       customKicker,
       trailText,
@@ -81,43 +81,43 @@ case class ClientArticleMetadata (
   }
 }
 
-object ClientArticleMetadata {
-  implicit val format = Jsonx.formatCaseClassUseDefaults[ClientArticleMetadata]
+object ClientCardMetadata {
+  implicit val format = Jsonx.formatCaseClassUseDefaults[ClientCardMetadata]
 
-  def fromArticleMetadata(articleMetadata: ArticleMetadata): ClientArticleMetadata = {
-    val mediaType: MediaType = articleMetadata.mediaType.getOrElse(MediaType.UseArticleTrail)
+  def fromCardMetadata(cardMetadata: CardMetadata): ClientCardMetadata = {
+    val mediaType: MediaType = cardMetadata.mediaType.getOrElse(MediaType.UseArticleTrail)
 
-    ClientArticleMetadata(
-      articleMetadata.headline,
-      articleMetadata.customKicker,
-      articleMetadata.customKicker.map(_ => true),
-      articleMetadata.trailText,
-      articleMetadata.showQuotedHeadline,
-      articleMetadata.showByline,
-      articleMetadata.byline,
-      articleMetadata.sportScore,
+    ClientCardMetadata(
+      cardMetadata.headline,
+      cardMetadata.customKicker,
+      cardMetadata.customKicker.map(_ => true),
+      cardMetadata.trailText,
+      cardMetadata.showQuotedHeadline,
+      cardMetadata.showByline,
+      cardMetadata.byline,
+      cardMetadata.sportScore,
 
-      articleMetadata.mediaType.collect({case MediaType.Hide => true}),
+      cardMetadata.mediaType.collect({case MediaType.Hide => true}),
 
-      articleMetadata.replaceImage.map(_ => mediaType == MediaType.Image),
-      articleMetadata.replaceImage.map(_.src),
-      articleMetadata.replaceImage.flatMap(_.height).map(_.toString),
-      articleMetadata.replaceImage.flatMap(_.width).map(_.toString),
-      articleMetadata.replaceImage.map(_.origin),
-      articleMetadata.replaceImage.flatMap(_.thumb),
+      cardMetadata.replaceImage.map(_ => mediaType == MediaType.Image),
+      cardMetadata.replaceImage.map(_.src),
+      cardMetadata.replaceImage.flatMap(_.height).map(_.toString),
+      cardMetadata.replaceImage.flatMap(_.width).map(_.toString),
+      cardMetadata.replaceImage.map(_.origin),
+      cardMetadata.replaceImage.flatMap(_.thumb),
 
-      articleMetadata.mediaType.map(_ == MediaType.Cutout),
-      articleMetadata.cutoutImage.map(_.src),
-      articleMetadata.cutoutImage.flatMap(_.height).map(_.toString),
-      articleMetadata.cutoutImage.flatMap(_.width).map(_.toString),
-      articleMetadata.cutoutImage.map(_.origin),
+      cardMetadata.mediaType.map(_ == MediaType.Cutout),
+      cardMetadata.cutoutImage.map(_.src),
+      cardMetadata.cutoutImage.flatMap(_.height).map(_.toString),
+      cardMetadata.cutoutImage.flatMap(_.width).map(_.toString),
+      cardMetadata.cutoutImage.map(_.origin),
 
-      articleMetadata.overrideArticleMainMedia,
+      cardMetadata.overrideArticleMainMedia,
 
-      articleMetadata.mediaType.map {_ => mediaType == MediaType.CoverCard},
-      articleMetadata.coverCardImages.flatMap(_.mobile),
-      articleMetadata.coverCardImages.flatMap(_.tablet),
-      articleMetadata.promotionMetric
+      cardMetadata.mediaType.map { _ => mediaType == MediaType.CoverCard},
+      cardMetadata.coverCardImages.flatMap(_.mobile),
+      cardMetadata.coverCardImages.flatMap(_.tablet),
+      cardMetadata.promotionMetric
     )
   }
 }

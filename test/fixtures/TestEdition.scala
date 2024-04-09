@@ -46,7 +46,7 @@ object TestEdition extends RegionalEdition {
 object FrontTopStories {
   val collectionTopStories = collection("Top Stories")
     .printSentPrefill("?tag=theguardian/mainsection/topstories")
-    .withArticleItemsCap(1)
+    .withCardItemsCap(1)
 
   val collectionTopStories2 = collection("Top Stories 2")
     .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 2)))
@@ -62,15 +62,15 @@ object FrontTopStories {
 object FrontNewsUkGuardian {
   val collectionNewsFrontPage = collection("Front Page")
     .printSentPrefill("?tag=theguardian/mainsection/topstories")
-    .withArticleItemsCap(1)
+    .withCardItemsCap(1)
 
   val collectionNewsUkNewsGuardian = collection("UK News")
     .printSentPrefill("?tag=theguardian/mainsection/uknews|theguardian/mainsection/education|theguardian/mainsection/society|theguardian/mainsection/media|theguardian/guardian-members/guardian-members")
-    .withArticleItemsCap(1)
+    .withCardItemsCap(1)
 
   val collectionNewsWeather = collection("Weather")
     .printSentPrefill("?tag=theguardian/mainsection/weather2")
-    .withArticleItemsCap(1)
+    .withCardItemsCap(1)
 
   val front = FrontTemplate(
     name = "UK News",
@@ -83,11 +83,11 @@ object FrontNewsUkGuardian {
 object FrontNewsUkGuardianSaturday {
   val collectionNewsFrontPage = collection("Front Page")
     .printSentPrefill("?tag=theguardian/mainsection/topstories")
-    .withArticleItemsCap(1)
+    .withCardItemsCap(1)
 
   val collectionNewsSpecial1 = collection("News Special").hide
 
-  val collectionNewsWeather = collection("Weather").printSentPrefill("?tag=theguardian/mainsection/weather2").withArticleItemsCap(1)
+  val collectionNewsWeather = collection("Weather").printSentPrefill("?tag=theguardian/mainsection/weather2").withCardItemsCap(1)
 
   val front = FrontTemplate(
     name = "UK News",
@@ -99,7 +99,7 @@ object FrontNewsUkGuardianSaturday {
 
 object FrontCulture {
   val collectionCultureArts = collection("Arts")
-    .printSentPrefill("?tag=theguardian/g2/arts").withArticleItemsCap(2)
+    .printSentPrefill("?tag=theguardian/g2/arts").withCardItemsCap(2)
 
   val collectionCultureTVandRadio = collection("TV & Radio")
   .printSentPrefill("?tag=theguardian/g2/tvandradio")
@@ -115,7 +115,7 @@ object FrontCulture {
 object FrontSpecialSpecial2 {
   val collectionSpecialSpecial2 = collection("Special")
     .printSentPrefill("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement")
-      .withArticleItemsCap(4)
+      .withCardItemsCap(4)
 
   val front = FrontTemplate(
     name = "Special 2",

@@ -15,12 +15,12 @@ case class EditionsCollection(
                                updatedEmail: Option[String],
                                prefill: Option[CapiPrefillQuery],
                                contentPrefillTimeWindow: Option[CapiQueryTimeWindow],
-                               items: List[EditionsArticle]
+                               items: List[EditionsCard]
                              ) {
   def toPublishedCollection: PublishedCollection = PublishedCollection(
     id,
     displayName,
-    items.map(_.toPublishedArticle)
+    items.map(_.toPublishedCard)
   )
 }
 

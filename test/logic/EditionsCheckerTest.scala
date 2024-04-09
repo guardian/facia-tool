@@ -3,7 +3,7 @@ package logic
 import java.time.LocalDate
 
 import model.editions.Edition.DailyEdition
-import model.editions.{EditionsArticle, EditionsCollection, EditionsFront, EditionsFrontMetadata, EditionsIssue}
+import model.editions.{EditionsCard, EditionsCollection, EditionsFront, EditionsFrontMetadata, EditionsIssue}
 import org.scalatest.{FreeSpec, Matchers}
 
 class EditionsCheckerTest extends FreeSpec with Matchers {
@@ -60,7 +60,7 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
     }
   }
 
-  private def getCollection(items: EditionsArticle*) = {
+  private def getCollection(items: EditionsCard*) = {
     EditionsCollection(
       "id",
       "displayName",

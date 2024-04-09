@@ -182,13 +182,13 @@ object PathType extends PlayEnum[PathType] {
 }
 
 private[editions] case class CollectionTemplate(
-  name: String,
-  maybeOphanPath: Option[String] = None,
-  prefill: Option[CapiPrefillQuery],
-  presentation: CollectionPresentation,
-  maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
-  hidden: Boolean = false,
-  articleItemsCap: Int = Defaults.defaultCollectionArticleItemsCap
+                                                 name: String,
+                                                 maybeOphanPath: Option[String] = None,
+                                                 prefill: Option[CapiPrefillQuery],
+                                                 presentation: CollectionPresentation,
+                                                 maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
+                                                 hidden: Boolean = false,
+                                                 cardCap: Int = Defaults.defaultCollectionCardsCap
 ) {
 
   def hide = copy(hidden = true)
@@ -203,7 +203,7 @@ private[editions] case class CollectionTemplate(
 
   def searchPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, Search)))
 
-  def withArticleItemsCap(articleItemsCap: Int) = copy(articleItemsCap = articleItemsCap)
+  def withCardItemsCap(articleItemsCap: Int) = copy(cardCap = articleItemsCap)
 
   def withTimeWindowConfig(maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays]) = copy(maybeTimeWindowConfig = maybeTimeWindowConfig)
 }
@@ -299,5 +299,5 @@ case class EditionsCollectionSkeleton(
 
 case class EditionsArticleSkeleton(
                                     id: String,
-                                    metadata: ArticleMetadata
+                                    metadata: CardMetadata
 )
