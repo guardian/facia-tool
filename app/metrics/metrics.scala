@@ -4,7 +4,7 @@ import java.io.File
 import java.lang.management.{GarbageCollectorMXBean, ManagementFactory}
 import java.util.concurrent.atomic.AtomicLong
 
-import akka.actor.Scheduler
+import org.apache.pekko.actor.Scheduler
 import com.amazonaws.services.cloudwatch.model.{Dimension, StandardUnit}
 import logging.Logging
 
