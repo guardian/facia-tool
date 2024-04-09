@@ -43,7 +43,7 @@ trait CollectionsQueries {
                  collections.path_type,
                  collections.content_prefill_window_start,
                  collections.content_prefill_window_end,
-                 articles.page_code,
+                 cards.id,
                  edition_issues.name,
                  edition_issues.issue_date,
                  edition_issues.timezone_id
@@ -64,7 +64,7 @@ trait CollectionsQueries {
 
         val contentPrefillQueryTimeWindow = CapiQueryTimeWindow(timeWinStart, timeWinEnd)
 
-        (date, edition, zone, CapiPrefillQuery(rs.string("prefill"), pathType), contentPrefillQueryTimeWindow, rs.string("page_code"))
+        (date, edition, zone, CapiPrefillQuery(rs.string("prefill"), pathType), contentPrefillQueryTimeWindow, rs.string("id"))
       }.list().apply()
 
     rows.headOption.map { case (issueDate, edition, zone, prefillQueryUrlSegments, contentPrefillQueryTimeWindow, _) =>
@@ -114,11 +114,11 @@ trait CollectionsQueries {
       sql"""
           INSERT INTO articles (
           collection_id,
-          page_code,
+          id,
           index,
           added_on,
           metadata
-          ) VALUES (${collection.id}, ${article.pageCode}, $index, $addedOn, ${article.metadata.map(m => Json.toJson(m).toString)}::JSONB)
+          ) VALUES (${collection.id}, ${article.id}, $index, $addedOn, ${article.metadata.map(m => Json.toJson(m).toString)}::JSONB)
        """.execute().apply()
     }
 
@@ -152,7 +152,7 @@ trait CollectionsQueries {
         fronts.is_special,
 
         articles.collection_id AS articles_collection_id,
-        articles.page_code     AS articles_page_code,
+        articles.id     AS articles_id,
         articles.index         AS articles_index,
         articles.added_on      AS articles_added_on,
         articles.metadata      AS articles_metadata

@@ -64,9 +64,9 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     def hide: EditionsCollection = thisCollection.copy(isHidden = true)
   }
 
-  private def article(pageCode: String): EditionsArticle =
+  private def article(id: String): EditionsArticle =
     EditionsArticle(
-      pageCode,
+      id,
       nowMilli,
       Some(ArticleMetadata.default)
     )

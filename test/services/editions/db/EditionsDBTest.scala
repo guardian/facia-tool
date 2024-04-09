@@ -75,7 +75,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
     EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), capiQueryTimeWindow, hidden = false)
 
-  private def article(pageCode: String): EditionsArticleSkeleton = EditionsArticleSkeleton(pageCode, ArticleMetadata.default)
+  private def article(id: String): EditionsArticleSkeleton = EditionsArticleSkeleton(id, ArticleMetadata.default)
 
   "The editions DB" - {
     "should insert an empty issue" taggedAs UsesDatabase in {
@@ -166,7 +166,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       commentFront.collections.length shouldBe 3
 
       val editionsArticle = newsPoliticsCollection.items.head
-      editionsArticle.pageCode shouldBe "12345"
+      editionsArticle.id shouldBe "12345"
 
       val articleMetadata = editionsArticle.metadata.get
       articleMetadata.overrideArticleMainMedia shouldBe None
@@ -393,11 +393,11 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       updatedBrexshit.displayName shouldBe "brexshit"
 
       // check we are storing some metadata
-      updatedBrexshit.items.find(_.pageCode == "654789").value.addedOn shouldBe future.toInstant.toEpochMilli
-      updatedBrexshit.items.find(_.pageCode == "654789").value.metadata.value shouldBe simpleMetadata
+      updatedBrexshit.items.find(_.id == "654789").value.addedOn shouldBe future.toInstant.toEpochMilli
+      updatedBrexshit.items.find(_.id == "654789").value.metadata.value shouldBe simpleMetadata
 
       // check that the added time hasn't modified
-      updatedBrexshit.items.find(_.pageCode == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
+      updatedBrexshit.items.find(_.id == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
     }
 
     "should allow a special front's hidden status to be changed" taggedAs UsesDatabase in {
@@ -480,7 +480,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       }) shouldBe Some(collectionId)
 
       (DB localTx { implicit session =>
-        sql"""SELECT page_code from articles WHERE collection_id = $collectionId""".map(_.string("page_code")).list().apply()
+        sql"""SELECT id from articles WHERE collection_id = $collectionId""".map(_.string("id")).list().apply()
       }).length shouldBe 2
 
       editionsDB.deleteIssue(dbIssue.id)
@@ -496,7 +496,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       }) should be
 
       (DB localTx { implicit session =>
-        sql"""SELECT page_code from articles WHERE collection_id = $collectionId""".map(_.string("page_code")).list().apply()
+        sql"""SELECT id from articles WHERE collection_id = $collectionId""".map(_.string("id")).list().apply()
       }).length shouldBe 0
     }
 

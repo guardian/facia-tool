@@ -298,6 +298,6 @@ case class EditionsCollectionSkeleton(
 )
 
 case class EditionsArticleSkeleton(
-  pageCode: String,
-  metadata: ArticleMetadata
+                                    id: String,
+                                    metadata: ArticleMetadata
 )

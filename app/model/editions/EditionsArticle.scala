@@ -50,7 +50,7 @@ object ArticleMetadata {
   val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
-case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) extends Logging {
+case class EditionsArticle(id: String, addedOn: Long, metadata: Option[ArticleMetadata]) extends Logging {
   def toPublishedArticle: PublishedArticle = {
     var mediaType: Option[MediaType] = metadata.flatMap(_.mediaType)
 
@@ -80,7 +80,7 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
     })
 
     PublishedArticle(
-      pageCode.toLong,
+      id.toLong,
       PublishedFurniture(
         kicker = metadata.flatMap(_.customKicker),
         headlineOverride = metadata.flatMap(_.headline),
@@ -103,7 +103,7 @@ object EditionsArticle extends Logging {
 
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsArticle = {
     EditionsArticle(
-      rs.string(prefix + "page_code"),
+      rs.string(prefix + "id"),
       rs.zonedDateTime(prefix + "added_on").toInstant.toEpochMilli,
       rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[ArticleMetadata].get)
     )
@@ -111,11 +111,11 @@ object EditionsArticle extends Logging {
 
   def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsArticle] = {
     for {
-      pageCode <- rs.stringOpt(prefix + "page_code")
+      id <- rs.stringOpt(prefix + "id")
       addedOn <- rs.zonedDateTimeOpt(prefix + "added_on").map(_.toInstant.toEpochMilli)
     } yield
       EditionsArticle(
-        pageCode,
+        id,
         addedOn,
         rs.stringOpt(prefix + "metadata").map(
           s => Json.parse(s).validate[ArticleMetadata] match {

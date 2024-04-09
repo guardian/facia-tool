@@ -93,11 +93,11 @@ trait IssueQueries extends Logging {
           sql"""
                     INSERT INTO articles (
                     collection_id,
-                    page_code,
+                    id,
                     index,
                     added_on,
                     metadata
-                    ) VALUES ($collectionId, ${article.pageCode}, $tIndex, $truncatedNow, ${Json.toJson(article.metadata).toString}::JSONB)
+                    ) VALUES ($collectionId, ${article.id}, $tIndex, $truncatedNow, ${Json.toJson(article.metadata).toString}::JSONB)
                  """.execute().apply()
         }
       }
@@ -184,7 +184,7 @@ trait IssueQueries extends Logging {
         collections.content_prefill_window_end         AS collections_content_prefill_window_end,
 
         articles.collection_id AS articles_collection_id,
-        articles.page_code     AS articles_page_code,
+        articles.id     AS articles_id,
         articles.index         AS articles_index,
         articles.added_on      AS articles_added_on,
         articles.metadata      AS articles_metadata

@@ -11,7 +11,7 @@ case class EditionsClientArticle(id: String, frontPublicationDate: Long, meta: O
 object EditionsClientArticle {
   def fromArticle(article: EditionsArticle): EditionsClientArticle = {
     EditionsClientArticle(
-      "internal-code/page/" + article.pageCode,
+      "internal-code/page/" + article.id,
       article.addedOn,
       article.metadata.map(ClientArticleMetadata.fromArticleMetadata)
     )
