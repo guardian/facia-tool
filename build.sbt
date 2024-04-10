@@ -47,7 +47,6 @@ val awsVersion = "1.12.470"
 val capiModelsVersion = "23.0.0"
 val capiClientVersion = "26.0.0"
 val json4sVersion = "4.0.3"
-val enumeratumPlayVersion = "1.6.0"
 val circeVersion = "0.13.0"
 
 resolvers ++= Seq(
@@ -74,9 +73,9 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
-    "com.gu" %% "editorial-permissions-client" % "2.9",
+    "com.gu" %% "editorial-permissions-client" % "2.15",
     "com.gu" %% "fapi-client-play30" % "6.0.0",
-    "com.gu" %% "mobile-notifications-api-models" % "1.0.16",
+    "com.gu" %% "mobile-notifications-api-models" % "1.0.16", // todo: waiting for mobile team to bump to Play 3.0
     "com.gu" %% "pan-domain-auth-play_3-0" % "3.0.1",
 
     "org.scanamo" %% "scanamo" % "1.0.0-M15" exclude("org.scala-lang.modules", "scala-java8-compat_2.13"),
@@ -84,11 +83,11 @@ libraryDependencies ++= Seq(
 
     "com.gu" %% "thrift-serializer" % "4.0.2",
     "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
-    "org.julienrf" %% "play-json-derived-codecs" % "5.0.0",
+    "org.julienrf" %% "play-json-derived-codecs" % "5.0.0", // todo: waiting for new cut see https://github.com/julienrf/play-json-derived-codecs/pull/92
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
     "org.playframework" %% "play-json-joda" % "3.0.2",
-    "ai.x" %% "play-json-extensions" % "0.40.2",
+    "ai.x" %% "play-json-extensions" % "0.40.2", // todo: more work required, see https://github.com/bizzabo/play-json-extensions/issues/94
 
     "org.postgresql"           %  "postgresql"                   % "42.3.9",
     "org.scalikejdbc"          %% "scalikejdbc"                  % "4.2.0",
@@ -99,8 +98,8 @@ libraryDependencies ++= Seq(
     "io.circe"                 %% "circe-generic"                % circeVersion,
     "io.circe"                 %% "circe-parser"                 % circeVersion,
 
-    "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
-    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
+    "com.beachape" %% "enumeratum" % "1.7.3",
+    "com.beachape" %% "enumeratum-play" % "1.8.0",
     "org.playframework" %% "play" % "3.0.2",
 
     "org.apache.commons" % "commons-text" % "1.10.0",
@@ -108,6 +107,12 @@ libraryDependencies ++= Seq(
 
     "org.scalatest" %% "scalatest" % "3.0.8" % "test",
     "org.mockito" % "mockito-core" % "5.11.0" % Test
+)
+
+excludeDependencies ++= Seq(
+    // As of Play 3.0, groupId has changed to org.playframework; exclude transitive dependencies to the old artifacts
+    // Hopefully this workaround can be removed once play-json-extensions either updates to Play 3.0 or is merged into play-json
+    ExclusionRule(organization = "com.typesafe.play")
 )
 
 dependencyOverrides ++= Seq(
