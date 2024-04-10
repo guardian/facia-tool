@@ -117,7 +117,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     allowedOrigins = Origins.Matching(Set(config.environment.applicationUrl))
   )
 
-  override lazy val assets: Assets = new controllers.Assets(httpErrorHandler, assetsMetadata)
+  override lazy val assets: Assets = new controllers.Assets(httpErrorHandler, assetsMetadata, environment)
 
   val router: Router = new Routes(httpErrorHandler, status, pandaAuth, v2Assets, v1Assets, views, faciaTool,
     pressController, faciaToolV2, defaults, userDataController, faciaCapiProxy, thumbnail, front, collection, storiesVisible, vanityRedirects, troubleshoot, v2App, gridProxy, editions)
