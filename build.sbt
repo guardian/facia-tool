@@ -83,7 +83,7 @@ libraryDependencies ++= Seq(
 
     "com.gu" %% "thrift-serializer" % "4.0.2",
     "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
-    "org.julienrf" %% "play-json-derived-codecs" % "5.0.0", // todo: waiting for new cut see https://github.com/julienrf/play-json-derived-codecs/pull/92
+    "org.julienrf" %% "play-json-derived-codecs" % "11.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
     "org.playframework" %% "play-json-joda" % "3.0.2",
