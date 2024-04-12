@@ -6,7 +6,7 @@ import model.editions.{CapiDateQueryParam, CapiTimeWindowConfigInDays, Daily, Ed
 
 import java.time.ZoneId
 
-object FeastSouthernHemisphere extends FeastEdition {
+object FeastSouthernHemisphere extends FeastAppEdition {
   override val title: String = "Feast app [Southern hemisphere]"
   override val edition = Edition.FeastSouthernHemisphere.entryName
   override val locale = Some("en_GB")
