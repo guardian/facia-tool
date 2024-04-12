@@ -99,7 +99,7 @@ trait CuratedPlatformDefinition {
 }
 
 object CuratedPlatformDefinition {
-  implicit def formatCuratedPlatform:OWrites[CuratedPlatformDefinition] = {
+  implicit def formatCuratedPlatform: OWrites[CuratedPlatformDefinition] = {
     case editionsApp: EditionsAppDefinition =>
       EditionsAppDefinition.formatEditionDefinition.writes(editionsApp)
     case genericApp: CuratedPlatformWithTemplate =>
