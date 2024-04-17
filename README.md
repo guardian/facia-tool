@@ -6,7 +6,7 @@ For information on core Fronts concepts, see the [glossary](./docs/Glossary.md).
 
 ## Fronts Client
 
-You can find the client for the Fronts tool in [fronts-client](/fronts-client).
+You can find the client for the Fronts tool in [fronts-client](./fronts-client).
 
 ### Setup (need to be done once)
 
