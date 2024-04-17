@@ -82,7 +82,9 @@ Useful things to know:
 
 ### The Editions creator
 
-The Editions interface is used to curate content on the Editions app (currently known as The Daily on iOS and Android). Editions also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
+The Editions interface is used to curate content on both the Editions app (currently known as The Daily on iOS and Android),
+and the Feast recipes app.
+Editions also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
 
 Curation works in the same way as the main fronts tool. But there are these differences:
 
@@ -94,7 +96,58 @@ Curation works in the same way as the main fronts tool. But there are these diff
 
 Full [Editions codebase and documentation here](https://github.com/guardian/editions).
 
+#### Backend code specifics - class inheritance
+* An "Edition" can be intended for the Editions app; or it can be intended for the Feast app
+* The only differences are in the templates used to build them and the backend chain to publish them
+* The different backend chain necessitates differentiating them in code. This is done through trait inheritance.
+* We introduced the more neutral term "Curated Platform" to refer to commonalities between the Editions app and the Feast app
+* A separate instance of "Edition" is created (and saved to the database) when a user creates an edition for a day.  The template
+from which the Edition is created, is defined in code.
 
+`model.editions.CuratedPlatform` is an **enum** that lists all the types of `CuratedPlatform` (Editions and Feast, at the time of writing).
+
+```mermaid
+---
+title: Edition template class inheritance
+---
+flowchart TD;
+    CuratedPlatformDefinition---->EditionsAppDefinition;
+    CuratedPlatformDefinition---->CuratedPlatformWithTemplate;
+    TemplatedPlatform-->CuratedPlatformWithTemplate;
+    TemplatedPlatform-->EditionsAppDefinitionWithTemplate;
+    EditionsAppDefinition-->EditionsAppDefinitionWithTemplate;
+    EditionsAppDefinitionWithTemplate-->EditionBase;
+    EditionBase-->RegionalEdition;
+    RegionalEdition-->DailyEdition;
+    RegionalEdition-->AmericanEdition;
+    RegionalEdition-->moreRegional["(Other Regional)"];
+    EditionBase-->InternalEdition;
+    InternalEdition-->TrainingEdition;
+    EditionBase-->SpecialEdition;
+    SpecialEdition-->EditionEndOfYear;
+    SpecialEdition-->EditionOlympicLegends;
+    SpecialEdition--> moreSpecial["(Other specials)"];
+    CuratedPlatformWithTemplate--->FeastAppEdition;
+    FeastAppEdition-->FeastNorthernHemisphere;
+    FeastAppEdition-->FeastSouthernHemisphere;
+```
+
+When a new Edition for a given date is created, then one of the concrete classes at the bottom of the diagram is used as the
+factory to do the work.
+
+Edition instances intended for the Editions app have a number of specific metadata fields, hence the need for `EditionsAppDefinition`
+and its cousin `EditionsAppDefinitionWithTemplate` as opposed to the more generic `CuratedPlatformWithTemplate`.
+
+#### Backend code specifics - enums
+Confusingly, the editions are _also_ defined as a list of enums.
+The base class `Edition` is a `PlayEnum` which has values for all of the concrete template classes shown above.
+
+This is so that the app's main menu can be built dynamically by the backend.
+Mappings from the enum values to the concrete classes are carried out by the `EditionsAppTemplates` and `FeastAppTemplates`
+objects which are referenced both in the `EditionsController` and the `V2App` construction.
+
+The naming of the enum values is very close to the naming of the concrete classes, so make sure you know which is which!
+The `EditionsAppTemplates` and `FeastAppTemplates` map one to the other.
 
 
 ### The Config Tool
