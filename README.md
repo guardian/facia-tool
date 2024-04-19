@@ -82,7 +82,7 @@ Useful things to know:
 
 ### The Editions creator
 
-The Editions interface is used to curate content on both the Editions app (currently known as The Daily on iOS and Android),
+The Editions creator is used to curate content on both the Editions app (currently known as The Daily on iOS and Android),
 and the Feast recipes app.
 Editions creator also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
 
