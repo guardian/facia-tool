@@ -84,7 +84,7 @@ Useful things to know:
 
 The Editions interface is used to curate content on both the Editions app (currently known as The Daily on iOS and Android),
 and the Feast recipes app.
-Editions also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
+Editions creator also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
 
 Curation works in the same way as the main fronts tool. But there are these differences:
 
