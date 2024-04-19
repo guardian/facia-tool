@@ -251,7 +251,7 @@ class EditionsController(db: EditionsDB,
   }
 
   private def getAvailableCuratedPlatformEditions: Map[String, List[CuratedPlatformDefinition]] = {
-    val feastAppEditions = FeastAppTemplates.getAvailableEditions
+    val feastAppEditions = FeastAppTemplates.getAvailableTemplates
 
     getAvailableEditionsAppEditions ++ Map(
       "feastEditions" -> feastAppEditions,
@@ -259,7 +259,7 @@ class EditionsController(db: EditionsDB,
   }
 
   private def getAvailableEditionsAppEditions: Map[String, List[CuratedPlatformDefinition]] = {
-    val allEditions = EditionsAppTemplates.getAvailableEditions
+    val allEditions = EditionsAppTemplates.getAvailableTemplates
     val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
     val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
     val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)

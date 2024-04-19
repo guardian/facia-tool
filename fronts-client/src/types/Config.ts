@@ -47,7 +47,7 @@ interface Config {
     clipboardArticles: NestedCard[];
     featureSwitches: FeatureSwitch[];
   };
-  availableEditions: EditionPriority[];
+  availableTemplates: EditionPriority[];
 }
 
 export { Config };

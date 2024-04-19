@@ -80,7 +80,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
       routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
       routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true),
       TargetedTerritory.allTerritories,
-      EditionsAppTemplates.getAvailableEditions ++ FeastAppTemplates.getAvailableEditions
+      EditionsAppTemplates.getAvailableTemplates ++ FeastAppTemplates.getAvailableTemplates
     )
 
     Ok(views.html.V2App.app(

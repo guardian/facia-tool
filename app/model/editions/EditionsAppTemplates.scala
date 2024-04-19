@@ -29,7 +29,7 @@ object EditionsAppTemplates {
     Edition.EditionWellbeing -> EditionWellbeing
   )
 
-  val getAvailableEditions: List[EditionsAppDefinitionWithTemplate] = templates.values.toList
+  val getAvailableTemplates: List[EditionsAppDefinitionWithTemplate] = templates.values.toList
 }
 
 object FeastAppTemplates {
@@ -38,7 +38,7 @@ object FeastAppTemplates {
     Edition.FeastSouthernHemisphere -> FeastSouthernHemisphere
   )
 
-  val getAvailableEditions: List[CuratedPlatformWithTemplate] = templates.values.toList
+  val getAvailableTemplates: List[CuratedPlatformWithTemplate] = templates.values.toList
 }
 
 sealed trait CuratedPlatform extends EnumEntry with Uncapitalised

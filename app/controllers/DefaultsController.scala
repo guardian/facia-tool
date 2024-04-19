@@ -34,7 +34,7 @@ case class Defaults(
                      capiLiveUrl: String = "",
                      capiPreviewUrl: String = "",
                      availableTerritories: Iterable[TargetedTerritory] = Nil,
-                     availableEditions: List[CuratedPlatformDefinition]
+                     availableTemplates: List[CuratedPlatformDefinition]
 )
 
 class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
@@ -71,7 +71,7 @@ class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaCo
         },
         None,
         availableTerritories = TargetedTerritory.allTerritories,
-        availableEditions = EditionsAppTemplates.getAvailableEditions ++ FeastAppTemplates.getAvailableEditions
+        availableTemplates = EditionsAppTemplates.getAvailableTemplates ++ FeastAppTemplates.getAvailableTemplates
       )))
     }
   }
