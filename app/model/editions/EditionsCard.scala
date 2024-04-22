@@ -111,15 +111,6 @@ case class EditionsCard(id: String, cardType: CardType, addedOn: Long, metadata:
 object EditionsCard extends Logging {
   implicit val writes = Json.format[EditionsCard]
 
-  def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsCard = {
-    EditionsCard(
-      rs.string(prefix + "id"),
-      CardType.withName(rs.string(prefix + "card_type")),
-      rs.zonedDateTime(prefix + "added_on").toInstant.toEpochMilli,
-      rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[CardMetadata].get)
-    )
-  }
-
   def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsCard] = {
     for {
       id <- rs.stringOpt(prefix + "id")
