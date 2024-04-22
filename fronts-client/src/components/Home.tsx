@@ -61,8 +61,9 @@ const mapStateToProps = (state: State) => ({
 const displayNoPermissionMessage = (onContent: string) => {
   return (
     <p>
-      You do not have permission to edit {onContent}. Please contact
-      central.production@guardian.co.uk to request access.
+      You do not have permission to edit {onContent}. Please contact{' '}
+      <a href="mailto:central.production@guardian.co.uk">Central Production</a>{' '}
+      to request access.
     </p>
   );
 };

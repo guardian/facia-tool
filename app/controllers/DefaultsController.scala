@@ -45,7 +45,7 @@ class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaCo
 
     val acls = AclJson(
       fronts = Map(config.faciatool.breakingNewsFront -> hasBreakingNews),
-      editions = Map(config.faciatool.editEditions -> hasEditionsPermissions),
+      editions = Map(config.faciatool.canEditEditions -> hasEditionsPermissions),
       permissions = Map("configure-config" -> hasConfigureFronts)
     )
 
