@@ -36,9 +36,6 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
     val hasConfigureFronts = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")(req.user.email)
     val hasEditionsPermissions = acl.testUser(Permissions.EditEditions, "facia-tool-allow-edit-editorial-fronts-for-all")(req.user.email)
 
-    //println("#hasBreakingNews="+hasBreakingNews+" hasConfigureFronts="+hasConfigureFronts+" hasEditionsPermissions="+hasEditionsPermissions)//Will remove this
-    //#hasBreakingNews=util.AccessDenied$@1b35415d hasConfigureFronts=util.AccessGranted$@6c6b1540 hasEditionsPermissions=util.AccessDenied$@1b35415d
-
     val acls = AclJson(
       fronts = Map(config.faciatool.breakingNewsFront -> hasBreakingNews),
       editions = Map(config.faciatool.editEditions -> hasEditionsPermissions),
