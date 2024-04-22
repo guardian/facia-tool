@@ -49,6 +49,11 @@ const selectShouldUsePreviewCODE = createSelector(
   (config) => !config || config.env === 'code'
 );
 
+const selectEditionsPermission = createSelector(
+  selectConfig,
+  (config) => config && config.acl.editions
+);
+
 export {
   selectCapiLiveURL,
   selectCapiPreviewURL,
@@ -59,4 +64,5 @@ export {
   selectGridUrl,
   selectAvailableEditions,
   selectShouldUsePreviewCODE,
+  selectEditionsPermission,
 };
