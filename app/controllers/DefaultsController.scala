@@ -41,9 +41,11 @@ class DefaultsController(val acl: Acl, val isDev: Boolean, val deps: BaseFaciaCo
   def configuration = AccessAPIAuthAction { implicit request =>
     val hasBreakingNews = acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(request.user.email)
     val hasConfigureFronts = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")(request.user.email)
+    val hasEditionsPermissions = acl.testUser(Permissions.EditEditions, "facia-tool-allow-edit-editorial-fronts-for-all")(request.user.email)
 
     val acls = AclJson(
       fronts = Map(config.faciatool.breakingNewsFront -> hasBreakingNews),
+      editions = Map(config.faciatool.editEditions -> hasEditionsPermissions),
       permissions = Map("configure-config" -> hasConfigureFronts)
     )
 
