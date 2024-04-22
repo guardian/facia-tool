@@ -232,6 +232,7 @@ const config: Config = {
   },
   acl: {
     fronts: { 'breaking-news': true },
+    editions: { 'edit-editions': true },
     permissions: { 'configure-config': true },
   },
   collectionCap: 20,
