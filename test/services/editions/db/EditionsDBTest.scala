@@ -370,7 +370,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       val future = now.plusMinutes(20)
       val futureMillis = future.toInstant.toEpochMilli
 
-      val items = EditionsCard("654789", futureMillis, Some(simpleMetadata)) :: brexshit.items
+      val items = EditionsCard("654789", CardType.Article, futureMillis, Some(simpleMetadata)) :: brexshit.items
 
       val evenMoreBrexshit = brexshit.copy(
         lastUpdated = Some(futureMillis),

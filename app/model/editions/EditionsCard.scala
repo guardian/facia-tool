@@ -1,7 +1,9 @@
 package model.editions
 
+import enumeratum.EnumEntry.Uncapitalised
+import enumeratum.{EnumEntry, PlayEnum}
 import logging.Logging
-import play.api.libs.json.{JsResult, Json}
+import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
 case class Image (
@@ -50,7 +52,15 @@ object CardMetadata {
   val default = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
-case class EditionsCard(id: String, addedOn: Long, metadata: Option[CardMetadata]) extends Logging {
+sealed abstract class CardType extends EnumEntry with Uncapitalised
+
+object CardType extends PlayEnum[CardType] {
+  case object Article extends CardType
+  override def values = findValues
+}
+
+
+case class EditionsCard(id: String, cardType: CardType, addedOn: Long, metadata: Option[CardMetadata]) extends Logging {
   def toPublishedCard: PublishedArticle = {
     var mediaType: Option[MediaType] = metadata.flatMap(_.mediaType)
 
@@ -104,6 +114,7 @@ object EditionsCard extends Logging {
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsCard = {
     EditionsCard(
       rs.string(prefix + "id"),
+      CardType.withName(rs.string(prefix + "card_type")),
       rs.zonedDateTime(prefix + "added_on").toInstant.toEpochMilli,
       rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[CardMetadata].get)
     )
@@ -112,10 +123,12 @@ object EditionsCard extends Logging {
   def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsCard] = {
     for {
       id <- rs.stringOpt(prefix + "id")
+      cardType <- rs.stringOpt(prefix + "card_type").flatMap(CardType.withNameOption)
       addedOn <- rs.zonedDateTimeOpt(prefix + "added_on").map(_.toInstant.toEpochMilli)
     } yield
       EditionsCard(
         id,
+        cardType,
         addedOn,
         rs.stringOpt(prefix + "metadata").map(
           s => Json.parse(s).validate[CardMetadata] match {

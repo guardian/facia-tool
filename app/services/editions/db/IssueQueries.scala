@@ -184,7 +184,8 @@ trait IssueQueries extends Logging {
         collections.content_prefill_window_end         AS collections_content_prefill_window_end,
 
         cards.collection_id AS cards_collection_id,
-        cards.id     AS cards_id,
+        cards.id            AS cards_id,
+        cards.card_type     AS cards_card_type,
         cards.index         AS cards_index,
         cards.added_on      AS cards_added_on,
         cards.metadata      AS cards_metadata
