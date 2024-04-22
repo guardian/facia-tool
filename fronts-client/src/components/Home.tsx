@@ -58,7 +58,7 @@ const mapStateToProps = (state: State) => ({
   editEditionsIsPermitted: selectEditionsPermission(state)?.['edit-editions'],
 });
 
-const displayNoPermissionMessage = (onContent: String) => {
+const displayNoPermissionMessage = (onContent: string) => {
   return (
     <p>
       You do not have permission to edit {onContent}. Please contact
