@@ -227,6 +227,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
 
   object faciatool {
     lazy val breakingNewsFront = "breaking-news"
+    lazy val editEditions = "edit-editions"
     lazy val frontPressToolTopic = getString("faciatool.sns.tool_topic_arn")
     lazy val publishEventsQueue = getMandatoryString("publish_events.queue_url")
     lazy val showTestContainers = getBoolean("faciatool.show_test_containers").getOrElse(false)

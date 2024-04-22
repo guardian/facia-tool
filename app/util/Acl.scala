@@ -23,6 +23,7 @@ object AclJson {
 
 case class AclJson (
   fronts: Map[String, Authorization],
+  editions: Map[String, Authorization],
   permissions: Map[String, Authorization]
 )
 
