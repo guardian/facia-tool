@@ -32,19 +32,14 @@ const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => (
     <ul>{Object.keys(priorities).map(renderPriority)}</ul>
     <h3>Manage editions</h3>
     <ul>
-      {!editEditionsIsPermitted ? (
-        <p>
-          You do not have permission to edit Editions. Please contact
-          central.production@guardian.co.uk to request access.
-        </p> /*TODO We can try string to be in Config and display dynamically here? "edit Editions" or "edit Feast Editions" or "edit Fronts" */
-      ) : (
-        availableEditions &&
-        availableEditions
-          .sort((a, b) =>
-            a.editionType === b.editionType ? (a.title < b.title ? 0 : 1) : 1
-          )
-          .map(renderEditionPriority)
-      )}
+      {!editEditionsIsPermitted
+        ? displayNoPermissionMessage('Editions')
+        : availableEditions &&
+          availableEditions
+            .sort((a, b) =>
+              a.editionType === b.editionType ? (a.title < b.title ? 0 : 1) : 1
+            )
+            .map(renderEditionPriority)}
     </ul>
     <h3>Manage edition list</h3>
     <ul>
@@ -60,7 +55,16 @@ const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => (
 
 const mapStateToProps = (state: State) => ({
   availableEditions: selectAvailableEditions(state),
-  editEditionsIsPermitted: selectEditionsPermission(state)['edit-editions'],
+  editEditionsIsPermitted: selectEditionsPermission(state)?.['edit-editions'],
 });
+
+const displayNoPermissionMessage = (onContent: String) => {
+  return (
+    <p>
+      You do not have permission to edit {onContent}. Please contact
+      central.production@guardian.co.uk to request access.
+    </p>
+  );
+};
 
 export default connect(mapStateToProps)(Home);
