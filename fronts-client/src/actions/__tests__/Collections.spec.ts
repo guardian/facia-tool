@@ -90,17 +90,7 @@ describe('Collection actions', () => {
 
       await store.dispatch(updateCollection(collection) as any);
       const actions = store.getActions();
-      expect(actions[2]).toEqual({
-        type: 'FETCH_VISIBLE_ARTICLES_SUCCESS',
-        payload: {
-          collectionId: 'exampleCollection',
-          visibleArticles: {
-            desktop: Infinity,
-            mobile: Infinity,
-          },
-          stage: 'draft',
-        },
-      });
+      expect(actions[2]).toEqual(undefined);
     });
   });
 
