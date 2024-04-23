@@ -39,7 +39,13 @@ const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => {
         {!editEditionsIsPermitted
           ? displayNoPermissionMessage('Editions')
           : editions
-              .sort((a, b) => a.editionType === b.editionType ? (a.title < b.title ? 0 : 1) : 1)
+              .sort((a, b) =>
+                a.editionType === b.editionType
+                  ? a.title < b.title
+                    ? 0
+                    : 1
+                  : 1
+              )
               .map(renderEditionPriority)}
       </ul>
       <h3>Manage edition list</h3>
@@ -54,8 +60,8 @@ const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => {
       <h3>Manage Feast app</h3>
       <ul>{feast.map(renderEditionPriority)}</ul>
     </HomeContainer>
-  )
-}
+  );
+};
 
 const mapStateToProps = (state: State) => ({
   availableEditions: selectAvailableEditions(state),
