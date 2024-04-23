@@ -414,6 +414,14 @@ function getVisibleArticles(
   );
   const articleDetails = getVisibilityArticleDetails(groupsWithArticles);
 
+  // Assume all articles are always visible if there is no collection type.
+  if (!collectionType) {
+    return Promise.resolve({
+      desktop: Infinity,
+      mobile: Infinity,
+    });
+  }
+
   return fetchVisibleArticles(collectionType, articleDetails);
 }
 
