@@ -75,7 +75,7 @@ const getGroupsByStage = (collection: Collection, stage: Stages) => {
 const isCollectionConfigDynamic = (
   config: CollectionConfig | undefined
 ): boolean => {
-  return !!(config && config.type.indexOf('dynamic/') === 0);
+  return !!(config?.type?.indexOf('dynamic/') === 0);
 };
 
 export {
