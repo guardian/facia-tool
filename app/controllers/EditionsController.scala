@@ -1,17 +1,16 @@
 package controllers
 
 import java.time.{LocalDate, OffsetDateTime}
-
 import cats.syntax.either._
 import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
 import model.editions._
-import model.editions.templates.EditionType
+import model.editions.templates.{CuratedPlatformDefinition, CuratedPlatformWithTemplate, EditionType}
 import model.forms._
 import net.logstash.logback.marker.Markers
-import play.api.libs.json.{JsObject, Json, JsValue}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
@@ -23,7 +22,7 @@ import util.ContentUpgrade.rewriteBody
 import util.{SearchResponseUtil, UserUtil}
 
 import scala.jdk.CollectionConverters._
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 class EditionsController(db: EditionsDB,
@@ -85,9 +84,9 @@ class EditionsController(db: EditionsDB,
       .getOrElse(NotFound(s"Issue $id not found"))
   }
 
-  def republishEditions = EditEditionsAuthAction { _ => {
+  def republishEditionsAppEditionsList = EditEditionsAuthAction { _ => {
     try {
-      val raw = Json.toJson(Map("action" -> "editionList")).as[JsObject] + ("content", Json.toJson(getAvailableEditionsJson))
+      val raw = Json.toJson(Map("action" -> "editionList")).as[JsObject] + ("content", Json.toJson(getAvailableEditionsAppEditions))
       publishing.putEditionsList(raw.toString())
       Ok("Published.  Please check processing has succeeded.")
     } catch {
@@ -96,7 +95,7 @@ class EditionsController(db: EditionsDB,
   }}
 
   def getAvailableEditions = EditEditionsAuthAction { _ => {
-    Ok(Json.toJson(getAvailableEditionsJson))
+    Ok(Json.toJson(getAvailableCuratedPlatformEditions))
   }}
 
   def checkIssue(id: String) = EditEditionsAuthAction { _ =>
@@ -205,7 +204,7 @@ class EditionsController(db: EditionsDB,
     db.getCollectionPrefill(id).map { prefillUpdate =>
       logger.info(s"getPrefillForCollection id=$id, prefillUpdate")
       import prefillUpdate._
-      val capiDateQueryParam = EditionsTemplates.templates(edition).template.capiDateQueryParam
+      val capiDateQueryParam = EditionsAppTemplates.templates(edition).template.capiDateQueryParam
       val capiPrefillTimeParams = CapiPrefillTimeParams(capiQueryTimeWindow, capiDateQueryParam)
       // TODO
       // when we click (suggest articles) for collection we are not using ophan metrics and we are not sorting on them
@@ -251,17 +250,24 @@ class EditionsController(db: EditionsDB,
     } getOrElse NotFound(s"Front $id not found")
   }
 
-  private def getAvailableEditionsJson = {
-    val allEditions = EditionsTemplates.getAvailableEditions
-    val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
-    val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
-    val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
-    Map(
-      "regionalEditions" -> regionalEditions,
-      "specialEditions" -> specialEditions,
-      "trainingEditions" -> trainingEditions
+  private def getAvailableCuratedPlatformEditions: Map[String, List[CuratedPlatformDefinition]] = {
+    val feastAppEditions = FeastAppTemplates.getAvailableTemplates
+
+    getAvailableEditionsAppEditions ++ Map(
+      "feastEditions" -> feastAppEditions,
     )
   }
 
+  private def getAvailableEditionsAppEditions: Map[String, List[CuratedPlatformDefinition]] = {
+    val allEditions = EditionsAppTemplates.getAvailableTemplates
+    val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
+    val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
+    val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
 
+    Map(
+      "regionalEditions" -> regionalEditions,
+      "specialEditions" -> specialEditions,
+      "trainingEditions" -> trainingEditions,
+    )
+  }
 }

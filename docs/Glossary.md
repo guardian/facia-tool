@@ -68,6 +68,40 @@ A container with a dynamic layout. However when editorial refer to it they typic
 
 It’s typically used for a breaking news story. Dynamos are rendered differently from other containers. The Cambridge Analytica Files is a dynamo.
 
+## Edition
+
+A collection of Fronts, associated with a specific platform on a specific day (for example, "Daily Edition on 1st Jan 2024").
+
+"Normal" website fronts don't belong to Editions, because they are read as they are updated. Editions are only for platforms
+that don't continually update like the website does.
+
+However, an Edition _can_ be re-published if necessary.
+
+## CuratedPlatform
+
+A curated product that has a push publication model – it pushes updated content to the world in discrete 'editions' that contain a
+list of fronts.
+
+Contrast with e.g. web/app Fronts, which publish their content in real time on a container by container basis.
+Contains all of the Editions for a given publication.
+
+Examples of CuratedPlatforms are the Editions App (currently known as The Daily on iOS and Android) and the Feast App. (At the time of writing, all CuratedPlatforms are mobile apps, but this is not a necessity)
+
+## Template
+
+Because an `Edition` is tied to a specific day (effectively, it's a specific instance), a user needs to be able to create one on-the-fly.
+An Edition composes specific instances of `Fronts` which contain specific instances of `Collections`.
+
+A `Template` defines all of these relationships; it's used to generate an "empty" edition.
+A `Template` is a concrete class in the codebase, which is called to perform this generation.
+Examples include `DailyEdition`, `AmericanEdition`, `AustralianEdition`, `FeastNorthernHemisphere`, `FeastSouthernHemisphere`.
+
+A `Template` contains all of the information required to built an `Edition` - therefore, generic information about the
+CuratedPlatform to which the edition belongs (represented as a `CuratedPlatformDefinition`),
+potentially platform-specific information (e.g. `EditionsAppDefinition`),
+generic information about the template (represented as a `TemplatedPlatform`).
+This is all represented in Scala by a trait-inheritance hierarchy which is defined under `model.editions` in `app`.
+
 ## MPU - Main Promotional Unit
 
 Until [Oct 2023](https://github.com/guardian/dotcom-rendering/pull/9047) when we switched DCR-rendered fronts to banner ads, Containers could contain MPU ad slots between [Cards](#card). The MPU is typically 300×250 pixels in size.

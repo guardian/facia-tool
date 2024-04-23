@@ -41,7 +41,7 @@ const selectGridUrl = createSelector(
 
 const selectAvailableEditions = createSelector(
   selectConfig,
-  (config) => config && config.availableEditions
+  (config) => config && config.availableTemplates
 );
 
 const selectShouldUsePreviewCODE = createSelector(

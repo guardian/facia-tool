@@ -46,16 +46,16 @@ case class EditionsIssue(
     edition,
     issueDate,
     version,
-    if (action == PublishAction.publish) 
+    if (action == PublishAction.publish)
       // publish does not need or want config because by definition we are publishing
       // only the previously provided version. We do not want to be able to change content.
-      List()   
+      List()
     else fronts
       .filterNot(_.isHidden) // drop hidden fronts
       .map(_.toPublishedFront) // convert
       .filterNot(_.collections.isEmpty), // drop fronts that contain no collections
-    EditionsTemplates.templates.get(edition).map(_.notificationUTCOffset).getOrElse(defaultOffset),
-    EditionsTemplates.templates.get(edition).map(_.topic)
+    EditionsAppTemplates.templates.get(edition).map(_.notificationUTCOffset).getOrElse(defaultOffset),
+    EditionsAppTemplates.templates.get(edition).map(_.topic)
   )
 }
 

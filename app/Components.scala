@@ -1,7 +1,6 @@
 import com.amazonaws.auth.AWSCredentialsProvider
 import software.amazon.awssdk.regions.{Region => WeirdRegion}
-import com.amazonaws.regions.Region
-import software.amazon.awssdk.auth.credentials.{AwsCredentials, AwsCredentialsProvider, AwsCredentialsProviderChain, DefaultCredentialsProvider, ProfileCredentialsProvider}
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
@@ -15,7 +14,7 @@ import play.api.routing.Router
 import play.filters.cors.CORSConfig
 import play.filters.cors.CORSConfig.Origins
 import filters._
-import model.editions.EditionsTemplates
+import model.editions.{EditionsAppTemplates, FeastAppTemplates}
 import router.Routes
 import services._
 import services.editions.EditionsTemplating
@@ -59,7 +58,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
 
   // Editions services
   val editionsDb = new EditionsDB(config.postgres.url, config.postgres.user, config.postgres.password)
-  val templating = new EditionsTemplating(EditionsTemplates.templates, capi, ophan)
+  val templating = new EditionsTemplating(EditionsAppTemplates.templates ++ FeastAppTemplates.templates, capi, ophan)
   val publishingBucket = new EditionsBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
   val previewBucket = new EditionsBucket(s3Client, config.aws.previewEditionsIssuesBucket)
   val editionsPublishing = new EditionsPublishing(publishingBucket, previewBucket, editionsDb)

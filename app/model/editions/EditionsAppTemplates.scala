@@ -2,18 +2,20 @@ package model.editions
 
 import java.time.temporal.ChronoField
 import java.time.{LocalDate, ZoneId, ZoneOffset}
-
 import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
 import model.editions.templates.TemplateHelpers.Defaults
 import model.editions.templates._
+import model.editions.templates.feast.{FeastNorthernHemisphere, FeastSouthernHemisphere}
 import org.postgresql.util.PGobject
 import play.api.libs.json.Json
 import services.editions.prefills.CapiQueryTimeWindow
 
-object EditionsTemplates {
-  val templates: Map[Edition, EditionDefinitionWithTemplate] = Map(
+
+
+object EditionsAppTemplates {
+  val templates: Map[Edition, EditionsAppDefinitionWithTemplate] = Map(
     Edition.DailyEdition -> DailyEdition,
     Edition.AustralianEdition -> AustralianEdition,
     Edition.TrainingEdition -> TrainingEdition,
@@ -27,7 +29,26 @@ object EditionsTemplates {
     Edition.EditionWellbeing -> EditionWellbeing
   )
 
-  val getAvailableEditions: List[EditionDefinition] = templates.values.toList
+  val getAvailableTemplates: List[EditionsAppDefinitionWithTemplate] = templates.values.toList
+}
+
+object FeastAppTemplates {
+  val templates: Map[Edition, CuratedPlatformWithTemplate] = Map(
+    Edition.FeastNorthernHemisphere -> FeastNorthernHemisphere,
+    Edition.FeastSouthernHemisphere -> FeastSouthernHemisphere
+  )
+
+  val getAvailableTemplates: List[CuratedPlatformWithTemplate] = templates.values.toList
+}
+
+sealed trait CuratedPlatform extends EnumEntry with Uncapitalised
+
+object CuratedPlatform extends PlayEnum[CuratedPlatform] {
+  case object Editions extends CuratedPlatform
+
+  case object Feast extends CuratedPlatform
+
+  override def values = findValues
 }
 
 case object WeekDay extends Enumeration(1) {
@@ -75,20 +96,32 @@ object Edition extends PlayEnum[Edition] {
   case object EditionEarth extends Edition
 
   case object EditionBooks extends Edition
-  
+
   case object EditionWeWereThere extends Edition
-  
+
   case object EditionEurosSpecial extends Edition
-  
+
   case object EditionOlympicLegends extends Edition
-  
+
   case object EditionEndOfYear extends Edition
-  
+
   case object EditionWellbeing extends Edition
-  
+
+  case object FeastSouthernHemisphere extends Edition
+
+  case object FeastNorthernHemisphere extends Edition
+
   override def values = findValues
 }
 
+sealed abstract class FeastEditions extends EnumEntry with Hyphencase
+
+object FeastEditions extends PlayEnum[FeastEditions] {
+  case object FeastNorthernHemisphere extends FeastEditions
+  case object FeastSouthernHemisphere extends FeastEditions
+
+  override def values = findValues
+}
 
 case class FrontPresentation(swatch: Swatch) {
   implicit def frontPresentationFormat = Json.format[FrontPresentation]

@@ -82,7 +82,9 @@ Useful things to know:
 
 ### The Editions creator
 
-The Editions interface is used to curate content on the Editions app (currently known as The Daily on iOS and Android). Editions also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
+The Editions creator is used to curate content on both the Editions app (currently known as The Daily on iOS and Android),
+and the Feast recipes app.
+Editions creator also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
 
 Curation works in the same way as the main fronts tool. But there are these differences:
 
@@ -92,10 +94,13 @@ Curation works in the same way as the main fronts tool. But there are these diff
 
 * The publication process for Editions is different to the main fronts. We push the json we produce to a lambda - the [backend of the Editions app](https://github.com/guardian/editions), and this combines fronts data with CAPI calls etc to produce the Edition.
 
+For the specific, technical, definitions of the terms `Edition`, `CuratedPlatform` etc. please
+refer to the [Glossary](docs/Glossary.md).
+
+For more information about how specific Editions are built from Templates, see the technical
+docs at [docs/EditionsTemplating.md](docs/EditionsTemplating.md)
+
 Full [Editions codebase and documentation here](https://github.com/guardian/editions).
-
-
-
 
 ### The Config Tool
 

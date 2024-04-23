@@ -1,10 +1,9 @@
 package fixtures
 
 import java.time.ZoneId
-
 import model.editions.templates.TemplateHelpers.Defaults._
 import model.editions._
-import model.editions.templates.{EditionDefinitionWithTemplate, EditionType, Header, RegionalEdition}
+import model.editions.templates.{EditionType, EditionsAppDefinitionWithTemplate, Header, RegionalEdition}
 import model.editions.templates.EditionType.EditionType
 import model.editions.templates.TemplateHelpers.collection
 
@@ -33,7 +32,7 @@ object TestEdition extends RegionalEdition {
     None
   )
 
-  lazy val templates: Map[Edition, EditionDefinitionWithTemplate] = Map(Edition.TrainingEdition -> this)
+  lazy val templates: Map[Edition, EditionsAppDefinitionWithTemplate] = Map(Edition.TrainingEdition -> this)
   override val title: String = "test title"
   override val subTitle: String = "test subtitle"
   override val edition: String = "test edition"
