@@ -8,6 +8,7 @@ interface Permission {
 
 interface Acl {
   fronts: Permission;
+  editions: Permission;
   permissions: Permission;
 }
 

@@ -5,7 +5,10 @@ import { Link } from 'react-router-dom';
 import { priorities } from 'constants/priorities';
 import { EditionPriority } from 'types/Priority';
 import HomeContainer from './layout/HomeContainer';
-import { selectAvailableEditions } from 'selectors/configSelectors';
+import {
+  selectAvailableEditions,
+  selectEditionsPermission,
+} from 'selectors/configSelectors';
 import type { State } from 'types/State';
 
 const renderPriority = (priority: string) => (
@@ -23,21 +26,21 @@ const renderEditionPriority = (editionPriority: EditionPriority) => (
 
 type IProps = ReturnType<typeof mapStateToProps>;
 
-const Home = ({ availableEditions }: IProps) => (
+const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => (
   <HomeContainer>
     <h3>Front priorities</h3>
     <ul>{Object.keys(priorities).map(renderPriority)}</ul>
-
     <h3>Manage editions</h3>
     <ul>
-      {availableEditions &&
-        availableEditions
-          .sort((a, b) =>
-            a.editionType === b.editionType ? (a.title < b.title ? 0 : 1) : 1
-          )
-          .map(renderEditionPriority)}
+      {!editEditionsIsPermitted
+        ? displayNoPermissionMessage('Editions')
+        : availableEditions &&
+          availableEditions
+            .sort((a, b) =>
+              a.editionType === b.editionType ? (a.title < b.title ? 0 : 1) : 1
+            )
+            .map(renderEditionPriority)}
     </ul>
-
     <h3>Manage edition list</h3>
     <ul>
       <li>
@@ -52,6 +55,17 @@ const Home = ({ availableEditions }: IProps) => (
 
 const mapStateToProps = (state: State) => ({
   availableEditions: selectAvailableEditions(state),
+  editEditionsIsPermitted: selectEditionsPermission(state)?.['edit-editions'],
 });
+
+const displayNoPermissionMessage = (onContent: string) => {
+  return (
+    <p>
+      You do not have permission to edit {onContent}. Please contact{' '}
+      <a href="mailto:central.production@guardian.co.uk">Central Production</a>{' '}
+      to request access.
+    </p>
+  );
+};
 
 export default connect(mapStateToProps)(Home);
