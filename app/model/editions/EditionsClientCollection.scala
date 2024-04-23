@@ -6,13 +6,13 @@ import services.editions.prefills.CapiQueryTimeWindow
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
 
-case class EditionsClientCard(id: String, cardType: CardType, frontPublicationDate: Long, meta: Option[ClientCardMetadata])
+case class EditionsClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long, meta: Option[ClientCardMetadata])
 
 object EditionsClientCard {
   def fromCard(card: EditionsCard): EditionsClientCard = {
     EditionsClientCard(
       "internal-code/page/" + card.id,
-      card.cardType,
+      Some(card.cardType),
       card.addedOn,
       card.metadata.map(ClientCardMetadata.fromCardMetadata)
     )
@@ -20,7 +20,7 @@ object EditionsClientCard {
   def toCard(card: EditionsClientCard): EditionsCard = {
     EditionsCard(
       card.id.split("/").last,
-      card.cardType,
+      card.cardType.getOrElse(CardType.Article),
       card.frontPublicationDate,
       card.meta.map(_.toCardMetadata)
     )
