@@ -74,6 +74,34 @@ describe('Collection actions', () => {
         collectionActions.updateSuccess('exampleCollection')
       );
     });
+
+    it('should handle collections without types in a a collection update', async () => {
+      const { type, ...collection }: any =
+        stateWithCollection.collections.data.exampleCollection;
+
+      fetchMock.once('/v2Edits', collection, {
+        headers: { 'Content-Type': 'application/json' },
+        method: 'POST',
+      });
+      const store = mockStore({
+        config,
+        ...stateWithCollection,
+      });
+
+      await store.dispatch(updateCollection(collection) as any);
+      const actions = store.getActions();
+      expect(actions[2]).toEqual({
+        type: 'FETCH_VISIBLE_ARTICLES_SUCCESS',
+        payload: {
+          collectionId: 'exampleCollection',
+          visibleArticles: {
+            desktop: Infinity,
+            mobile: Infinity,
+          },
+          stage: 'draft',
+        },
+      });
+    });
   });
 
   describe('Get Collections thunk', () => {
