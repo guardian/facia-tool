@@ -43,7 +43,6 @@ function fetchEditionsIssueAsConfig(issueId: string): Promise<FrontsConfig> {
           collections[collection.id] = {
             ...collection,
             displayName: collection.displayName,
-            type: '',
           };
         });
       });

@@ -144,7 +144,7 @@ interface Collection {
   groups?: string[];
   metadata?: Array<{ type: string }>;
   uneditable?: boolean;
-  type: string;
+  type?: string;
   frontsToolSettings?: FrontsToolSettings;
   isHidden?: boolean;
   targetedTerritory?: string;

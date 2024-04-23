@@ -35,7 +35,7 @@ interface FrontsToolSettings {
 
 interface CollectionConfigResponse {
   displayName: string;
-  type: string;
+  type?: string;
   backfill?: unknown;
   href?: string;
   groups?: string[];

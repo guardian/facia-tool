@@ -291,9 +291,15 @@ function updateCollection(
         getState(),
         frontStages.draft
       );
-      dispatch(
-        recordVisibleArticles(collection.id, visibleArticles, frontStages.draft)
-      );
+      if (visibleArticles) {
+        dispatch(
+          recordVisibleArticles(
+            collection.id,
+            visibleArticles,
+            frontStages.draft
+          )
+        );
+      }
     } catch (e) {
       dispatch(collectionActions.updateError(e, collection.id));
       throw e;
@@ -405,7 +411,7 @@ function getVisibleArticles(
   collection: Collection,
   state: State,
   stage: Stages
-): Promise<VisibleArticlesResponse> {
+): Promise<VisibleArticlesResponse | undefined> {
   const collectionType = collection.type;
   const groups = getGroupsByStage(collection, stage);
   const selectGroupArticles = createSelectGroupArticles();
@@ -413,6 +419,10 @@ function getVisibleArticles(
     selectGroupArticles(state, { groupId: id })
   );
   const articleDetails = getVisibilityArticleDetails(groupsWithArticles);
+
+  if (!collectionType) {
+    return Promise.resolve(undefined);
+  }
 
   return fetchVisibleArticles(collectionType, articleDetails);
 }
