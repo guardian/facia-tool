@@ -25,7 +25,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       None,
       None,
       None,
-      fronts.zipWithIndex.map{case (f, x) => f.copy(index=x)}.toList
+      fronts.zipWithIndex.map{case (f, x) => f.copy(index=x)}.toList,
+      supportsProofing = true,
     )
   }
 

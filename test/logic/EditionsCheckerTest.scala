@@ -104,7 +104,8 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
       None,
       None,
       None,
-      fronts.toList
+      fronts.toList,
+      supportsProofing = true
     )
   }
 
