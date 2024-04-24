@@ -6,9 +6,14 @@ import FeedContainer from './FeedsContainer';
 import Clipboard from './Clipboard';
 import FeedSectionHeader from './FeedSectionHeader';
 import { media } from 'util/mediaQueries';
+import { connect } from 'react-redux';
+import { isMode } from 'selectors/pathSelectors';
+import { State } from 'types/State';
+import { FeastSearchContainer } from './feast/FeastSearchContainer';
 
 interface Props {
   isClipboardOpen: boolean;
+  isEditions: boolean;
 }
 
 const FeedSectionContainer = styled.div`
@@ -27,14 +32,20 @@ const FeedWrapper = styled.div<{ isClipboardOpen: boolean }>`
     isClipboardOpen ? `solid 1px ${theme.base.colors.borderColor}` : null};
 `;
 
-export default ({ isClipboardOpen }: Props) => (
+const FeedSection = ({ isClipboardOpen, isEditions }: Props) => (
   <FeedSectionContainer>
     <FeedSectionHeader />
     <FeedSectionContent>
       <FeedWrapper isClipboardOpen={isClipboardOpen}>
-        <FeedContainer />
+        {isEditions ? <FeastSearchContainer /> : <FeedContainer />}
       </FeedWrapper>
       <Clipboard />
     </FeedSectionContent>
   </FeedSectionContainer>
 );
+
+const mapStateToProps = (state: State) => ({
+  isEditions: isMode(state, 'editions'),
+});
+
+export default connect(mapStateToProps)(FeedSection);

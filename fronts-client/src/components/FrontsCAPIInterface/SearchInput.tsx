@@ -127,7 +127,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
               onClear={this.clearInput}
               onSearch={this.hideSearchFilters}
               searchTermsExist={this.searchTermsExist}
-              onDisplaySearchFilters={this.handleDisplaySearchFilters}
+              displaySearchIcon={!!this.handleDisplaySearchFilters}
               onKeyUp={(e) => {
                 if (e.keyCode === 13) {
                   this.hideSearchFilters();
