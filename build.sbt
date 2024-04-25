@@ -12,8 +12,8 @@ ThisBuild / scalaVersion := "2.13.5"
 
 import com.gu.riffraff.artifact.BuildInfo
 import sbt.Resolver
-
-debianPackageDependencies := Seq("openjdk-8-jre-headless")
+//
+//debianPackageDependencies := Seq("openjdk-11-jre-headless")
 
 def env(key: String): Option[String] = Option(System.getenv(key))
 
@@ -43,7 +43,7 @@ Universal / javaOptions ++= Seq(
 
 routesGenerator := InjectedRoutesGenerator
 
-scalacOptions := Seq("-unchecked", "-deprecation", "-target:jvm-1.8", "-Xcheckinit", "-encoding", "utf8", "-feature")
+scalacOptions := Seq("-unchecked", "-deprecation", "-target:jvm-11", "-Xcheckinit", "-encoding", "utf8", "-feature")
 
 Compile / doc / sources := Seq.empty
 
