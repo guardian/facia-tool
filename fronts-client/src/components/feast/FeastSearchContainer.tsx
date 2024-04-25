@@ -3,7 +3,11 @@ import TextInput from 'components/inputs/TextInput';
 import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { styled, theme } from 'constants/theme';
 import React from 'react';
+import { connect } from 'react-redux';
 import { media } from 'util/mediaQueries';
+import { selectors as recipeSelectors } from 'bundles/recipesBundle';
+import { State } from 'types/State';
+import { Recipe } from 'types/Recipe';
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
@@ -47,9 +51,13 @@ const Title = styled.h1`
 
 type Props = {
   rightHandContainer?: React.ReactElement<any>;
+  recipes: Recipe[];
 };
 
-export const FeastSearchContainer = ({ rightHandContainer }: Props) => (
+const FeastSearchContainerComponent = ({
+  rightHandContainer,
+  recipes,
+}: Props) => (
   <React.Fragment>
     <InputContainer>
       <TextInputContainer>
@@ -64,6 +72,15 @@ export const FeastSearchContainer = ({ rightHandContainer }: Props) => (
           <ShortVerticalPinline />
         </Title>
       </ResultsHeadingContainer>
+      {recipes.map((recipe) => JSON.stringify(recipe))}
     </FixedContentContainer>
   </React.Fragment>
+);
+
+const mapStateToProps = (state: State) => ({
+  recipes: recipeSelectors.selectAll(state),
+});
+
+export const FeastSearchContainer = connect(mapStateToProps)(
+  FeastSearchContainerComponent
 );

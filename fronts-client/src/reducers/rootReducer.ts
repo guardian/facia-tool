@@ -26,6 +26,7 @@ import groups from 'reducers/groupsReducer';
 import { reducer as focusReducer } from 'bundles/focusBundle';
 import { reducer as featureSwitches } from 'reducers/featureSwitchesReducer';
 import { reducer as notificationsReducer } from 'bundles/notificationsBundle';
+import { reducer as recipesReducer } from 'bundles/recipesBundle';
 
 const rootReducer = (state: any = { feed: {} }, action: any) => ({
   fronts: fronts(state.fronts, action),
@@ -53,6 +54,7 @@ const rootReducer = (state: any = { feed: {} }, action: any) => ({
   externalArticles: externalArticles(state.externalArticles, action),
   pageViewData: pageViewData(state.pageViewData, action),
   notifications: notificationsReducer(state.notifications, action),
+  recipes: recipesReducer(state.recipes, action),
 });
 
 export default rootReducer;
