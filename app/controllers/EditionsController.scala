@@ -7,7 +7,7 @@ import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
 import model.editions._
-import model.editions.templates.{CuratedPlatformDefinition, CuratedPlatformWithTemplate, EditionType}
+import model.editions.templates.{CuratedPlatformDefinition, EditionType}
 import model.forms._
 import net.logstash.logback.marker.Markers
 import play.api.libs.json.{JsObject, JsValue, Json}
@@ -67,8 +67,9 @@ class EditionsController(db: EditionsDB,
   }
 
   def getIssueSummary(id: String) = EditEditionsAuthAction { _ =>
-    db.getIssueSummary(id).map { issue =>
-      Ok(Json.toJson(issue).as[JsObject] - "fronts")
+    db.getIssueSummary(id).map {
+      case Right(issue) => Ok(Json.toJson(issue).as[JsObject] - "fronts")
+      case Left(error) => InternalServerError(error)
     }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
@@ -113,9 +114,8 @@ class EditionsController(db: EditionsDB,
       val dateTo = req.queryString.get("dateTo").map(_.head).get
       (LocalDate.parse(dateFrom), LocalDate.parse(dateTo))
     }.map {
-      case (localDateFrom, localDateTo) => {
-        Ok(Json.toJson(db.listIssues(edition, localDateFrom, localDateTo)))
-      }
+      case (localDateFrom, localDateTo) =>
+        Ok(Json.toJson(db.listIssues(edition, localDateFrom, localDateTo).flatMap(_.toOption)))
     }.getOrElse(BadRequest("Invalid or missing date"))
   }
 
@@ -127,7 +127,6 @@ class EditionsController(db: EditionsDB,
     } else {
       Ok(Json.toJson(db.getCollections(filters).map(EditionsFrontendCollectionWrapper.fromCollection)))
     }
-
   }
 
   def getCollection(collectionId: String) = EditEditionsAuthAction { req =>

@@ -60,7 +60,6 @@ object CardType extends PlayEnum[CardType] {
   override def values = findValues
 }
 
-
 case class EditionsCard(id: String, cardType: CardType, addedOn: Long, metadata: Option[CardMetadata]) extends Logging {
 
   def toPublishedCard: PublishedArticle = {

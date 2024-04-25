@@ -196,14 +196,16 @@ trait IssueQueries extends Logging {
       LEFT JOIN cards ON (cards.collection_id = collections.id)
       WHERE edition_issues.id = $id
       """.map { rs =>
-        GetIssueRow(
-          EditionsIssue.fromRow(rs),
-          DbEditionsFront.fromRowOpt(rs, "fronts_"),
-          DbEditionsCollection.fromRowOpt(rs, "collections_"),
-          DbEditionsCard.fromRowOpt(rs, "cards_"))
+          EditionsIssue.fromRow(rs).toOption.map { issue => GetIssueRow(
+            issue,
+            DbEditionsFront.fromRowOpt(rs, "fronts_"),
+            DbEditionsCollection.fromRowOpt(rs, "collections_"),
+            DbEditionsCard.fromRowOpt(rs, "cards_"))
+        }
       }
         .list
         .apply()
+        .flatten
 
     val fronts: List[EditionsFront] = rows
       .flatMap(row => row.front)
@@ -232,7 +234,7 @@ trait IssueQueries extends Logging {
     rows.headOption.map(_.issue.copy(fronts = fronts))
   }
 
-  def getIssueSummary(id: String) = DB readOnly { implicit session =>
+  def getIssueSummary(id: String): Option[Either[String, EditionsIssue]] = DB readOnly { implicit session =>
     sql"""
        SELECT
          edition_issues.id,
