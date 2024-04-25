@@ -30,6 +30,24 @@ object EditionsAppTemplates {
   )
 
   val getAvailableTemplates: List[EditionsAppDefinitionWithTemplate] = templates.values.toList
+
+  /**
+   * Returns available Editons app templates as a Map which differentiates the various classes
+   * of edition. This is used for grouping purposes in both the UI and the publication logic
+   * @return a Map relating the edition class to a list of the relevant types.
+   */
+  def getAvailableEditionsAppTemplates: Map[String, List[CuratedPlatformDefinition]] = {
+    val allEditions = getAvailableTemplates
+    val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
+    val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
+    val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
+
+    Map(
+      "regionalEditions" -> regionalEditions,
+      "specialEditions" -> specialEditions,
+      "trainingEditions" -> trainingEditions,
+    )
+  }
 }
 
 object FeastAppTemplates {
@@ -113,15 +131,6 @@ object Edition extends PlayEnum[Edition] {
 
   override def values = findValues
 }
-
-//sealed abstract class FeastEditions extends EnumEntry with Hyphencase
-//
-//object FeastEditions extends PlayEnum[FeastEditions] {
-//  case object FeastNorthernHemisphere extends FeastEditions
-//  case object FeastSouthernHemisphere extends FeastEditions
-//
-//  override def values = findValues
-//}
 
 case class FrontPresentation(swatch: Swatch) {
   implicit def frontPresentationFormat = Json.format[FrontPresentation]

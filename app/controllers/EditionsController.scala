@@ -86,7 +86,8 @@ class EditionsController(db: EditionsDB,
 
   def republishEditionsAppEditionsList = EditEditionsAuthAction { _ => {
     try {
-      val raw = Json.toJson(Map("action" -> "editionList")).as[JsObject] + ("content", Json.toJson(getAvailableEditionsAppEditions))
+      //TODO: Make this a case class and serialise it properly
+      val raw = Json.toJson(Map("action" -> "editionList")).as[JsObject] + ("content", Json.toJson(EditionsAppTemplates.getAvailableEditionsAppTemplates))
       publishing.putEditionsList(raw.toString())
       Ok("Published.  Please check processing has succeeded.")
     } catch {
@@ -253,22 +254,9 @@ class EditionsController(db: EditionsDB,
   private def getAvailableCuratedPlatformEditions: Map[String, List[CuratedPlatformDefinition]] = {
     val feastAppEditions = FeastAppTemplates.getAvailableTemplates
 
-    getAvailableEditionsAppEditions ++ Map(
+    EditionsAppTemplates.getAvailableEditionsAppTemplates ++ Map(
       "feastEditions" -> feastAppEditions,
     )
   }
 
-  private def getAvailableEditionsAppEditions: Map[String, List[CuratedPlatformDefinition]] = {
-    val allEditions = EditionsAppTemplates.getAvailableTemplates
-    val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
-    val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
-    val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
-
-    //WARNING TODO FIXME - this list is also referenced in the publishing code! Don't confuse editions backend....
-    Map(
-      "regionalEditions" -> regionalEditions,
-      "specialEditions" -> specialEditions,
-      "trainingEditions" -> trainingEditions,
-    )
-  }
 }

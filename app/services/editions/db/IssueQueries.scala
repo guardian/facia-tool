@@ -324,12 +324,6 @@ trait IssueQueries extends Logging {
 
   }
 
-  def setIssueVersionStatus(versionId: EditionIssueVersionId, newStatus: IssueVersionStatus) = DB localTx { implicit session =>
-    sql"""
-         UPDATE issue_versions_events SET status = ${newStatus.toString} WHERE version_id = $versionId
-       """.execute()
-  }
-
   def getIssueVersions(issueId: String): List[IssueVersion] = DB localTx { implicit session =>
     case class Row(version: IssueVersion, event: IssueVersionEvent)
 

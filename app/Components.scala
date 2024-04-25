@@ -64,7 +64,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val templating = new EditionsTemplating(EditionsAppTemplates.templates ++ FeastAppTemplates.templates, capi, ophan)
   val publishingBucket = new EditionsBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
   val previewBucket = new EditionsBucket(s3Client, config.aws.previewEditionsIssuesBucket)
-  val feastPublicationTarget = new FeastPublicationTarget(snsClient, config.playConfiguration)  //FIXME - make config depend on ApplicationConfiguration
+  val feastPublicationTarget = new FeastPublicationTarget(snsClient, config)
   val editionsPublishing = new Publishing(publishingBucket, previewBucket, feastPublicationTarget, editionsDb)
   PublishEventsListener.apply(config, editionsDb).start
 

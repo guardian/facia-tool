@@ -2,7 +2,6 @@ package conf
 
 import java.io.{File, FileInputStream, InputStream}
 import java.net.URL
-
 import com.amazonaws.AmazonClientException
 import com.amazonaws.auth._
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
@@ -17,14 +16,16 @@ import com.amazonaws.services.rds.AmazonRDSClientBuilder
 import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
-import software.amazon.awssdk.auth.credentials.{AwsCredentialsProviderChain => NewAwsCredentialsProviderChain, ProfileCredentialsProvider => NewProfileCredentialsProvider, DefaultCredentialsProvider}
+import software.amazon.awssdk.auth.credentials.{DefaultCredentialsProvider, AwsCredentialsProviderChain => NewAwsCredentialsProviderChain, ProfileCredentialsProvider => NewProfileCredentialsProvider}
+
+import java.nio.charset.StandardCharsets
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
 class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean) extends Logging  {
   private val propertiesFile = "/etc/gu/facia-tool.properties"
   private val installVars = new File(propertiesFile) match {
-    case f if f.exists => IOUtils.toString(new FileInputStream(f))
+    case f if f.exists => IOUtils.toString(new FileInputStream(f), "UTF-8")
     case _ =>
       logger.warn("Missing configuration file $propertiesFile")
       ""
@@ -84,6 +85,8 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
     lazy val frontsBucket = getMandatoryString("aws.frontsBucket")
     lazy val publishedEditionsIssuesBucket = getMandatoryString("aws.publishedEditionsIssuesBucket")
     lazy val previewEditionsIssuesBucket = getMandatoryString("aws.previewEditionsIssuesBucket")
+
+    lazy val feastAppPublicationTopic = getMandatoryString("feast_app.publication_topic")
 
     def cmsFrontsAccountCredentials: AWSCredentialsProvider = credentials.getOrElse(throw new BadConfigurationException("AWS credentials are not configured for CMS Fronts"))
     val credentials: Option[AWSCredentialsProvider] = {
