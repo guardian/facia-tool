@@ -47,11 +47,11 @@ jobs:
             - name: Build frontend v1
               run: |
                   grunt --stack bundle
-            - uses: actions/upload-artifact@v2
+            - uses: actions/upload-artifact@v4
               with:
                   name: fronts-client-v1
                   path: public/fronts-client-v1
-
+                  if-no-files-found: error
     test_client_v1:
         runs-on: ubuntu-latest
         permissions:
@@ -99,11 +99,11 @@ jobs:
               working-directory: fronts-client
             - run: yarn build
               working-directory: fronts-client
-            - uses: actions/upload-artifact@v2
+            - uses: actions/upload-artifact@v4
               with:
                   name: fronts-client-v2
                   path: public/fronts-client-v2
-
+                  if-no-files-found: error
     test_client_v2:
         runs-on: ubuntu-latest
         permissions:
@@ -119,6 +119,27 @@ jobs:
             - run: yarn install --frozen-lockfile
               working-directory: fronts-client
             - run: yarn test
+              working-directory: fronts-client
+
+    integrationtest_client_v2:
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+        needs:
+        - build_client_v2
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version-file: fronts-client/.nvmrc
+                  cache: yarn
+                  cache-dependency-path: fronts-client/yarn.lock
+            -   uses: actions/download-artifact@v4  #integration test requires built frontend (of course!)
+                with:
+                    path: public/fronts-client-v2
+                    name: fronts-client-v2
+            - run: yarn install --frozen-lockfile
               working-directory: fronts-client
             - run: yarn test-integration-ci
               working-directory: fronts-client
@@ -181,11 +202,11 @@ jobs:
                     - 4724:5432
         steps:
             - uses: actions/checkout@v4
-            - uses: actions/download-artifact@v2
+            - uses: actions/download-artifact@v4
               with:
                   path: public/fronts-client-v1
                   name: fronts-client-v1
-            -   uses: actions/download-artifact@v2
+            -   uses: actions/download-artifact@v4
                 with:
                     path: public/fronts-client-v2
                     name: fronts-client-v2
@@ -199,31 +220,39 @@ jobs:
                   cache: "sbt"
             - name: Bundle
               run: sbt debian:packageBin
-            - uses: actions/upload-artifact@v2
+            - uses: actions/upload-artifact@v4
               with:
                   name: build-package
                   path: target/facia-tool_1.0_all.deb
-
+                  if-no-files-found: error
+                  compression-level: '0' #no point, it's already compressed
     upload:
         runs-on: ubuntu-latest
         permissions:
             id-token: write
             contents: read
+            pull-requests: write
         needs:
+            - generate_build_number
             - test_client_v1
             - test_client_v2
             - test_backend
             - build_backend
+            - integrationtest_client_v2
         steps:
             - uses: actions/checkout@v4
-            - uses: actions/download-artifact@v2
+            - uses: actions/download-artifact@v4
               with:
                   path: target/facia-tool_1.0_all.deb
                   name: build-package
+            - name: Set GITHUB_RUN_NUMBER environment variable
+              run: |
+                  echo "GITHUB_RUN_NUMBER=${{ needs.generate_build_number.outputs.BUILD_NUMBER }}" >> $GITHUB_ENV
             - uses: guardian/actions-riff-raff@v4
               with:
-                  app: cms-fronts::facia-tool
+                  app: facia-tool
                   roleArn: ${{ secrets.GU_RIFF_RAFF_ROLE_ARN }}
+                  buildNumber: ${{ env.GITHUB_RUN_NUMBER }}
                   githubToken: ${{ secrets.GITHUB_TOKEN }}
                   configPath: riff-raff.yaml
                   contentDirectories: |
