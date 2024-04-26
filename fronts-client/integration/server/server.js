@@ -161,23 +161,20 @@ module.exports = async () =>
     app.get('/editions-api/collections/:id/prefill', (req, res) => {
       return res.json(prefill);
     });
+
     app.post('/editions-api/collections', (req, res) => {
-      return res.json([
-        {
-          id: req.body[0].id,
+      const collectionStubs = [collection, collectionTwo];
+
+      // Expects a body of `{ id: string }[]`
+      return res.json(
+        req.body.map(({ id }, index) => ({
+          id,
           collection: {
-            ...collection,
-            items: collection.draft
-          }
-        },
-        {
-          id: req.body[1].id,
-          collection: {
-            ...collectionTwo,
-            items: collectionTwo.draft
-          }
-        }
-      ]);
+            ...collectionStubs[index],
+            items: collectionStubs[index].draft,
+          },
+        }))
+      );
     });
 
     // catch requests to discard collection endpoint
