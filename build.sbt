@@ -87,7 +87,7 @@ libraryDependencies ++= Seq(
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
     "org.playframework" %% "play-json-joda" % "3.0.2",
-    "ai.x" %% "play-json-extensions" % "0.40.2", // todo: more work required, see https://github.com/bizzabo/play-json-extensions/issues/94
+    "ai.x" %% "play-json-extensions" % "0.40.2",
 
     "org.postgresql"           %  "postgresql"                   % "42.3.9",
     "org.scalikejdbc"          %% "scalikejdbc"                  % "4.2.0",
