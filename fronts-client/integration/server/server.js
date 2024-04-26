@@ -195,6 +195,10 @@ module.exports = async () =>
       return res.json([]);
     });
 
+    app.get('*/last-proofed-version*', (req, res) => {
+      return res.json(null);
+    });
+
     // send the assets from dist
     app.get('*/:file', (req, res) =>
       req.params[0].includes('bbc') // prevents error messages from External Snap Link fixture
