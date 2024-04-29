@@ -10,23 +10,11 @@ packageDescription := "Guardian front pages editor"
 
 ThisBuild / scalaVersion := "2.13.5"
 
-import com.gu.riffraff.artifact.BuildInfo
 import sbt.Resolver
 
-debianPackageDependencies := Seq("openjdk-8-jre-headless")
+debianPackageDependencies := Seq("java11-runtime-headless")
 
 def env(key: String): Option[String] = Option(System.getenv(key))
-
-riffRaffPackageName := s"cms-fronts::${name.value}"
-riffRaffManifestProjectName := riffRaffPackageName.value
-riffRaffUploadArtifactBucket := Option("riffraff-artifact")
-riffRaffUploadManifestBucket := Option("riffraff-builds")
-riffRaffArtifactResources := {
-    Seq(
-        (Debian / packageBin).value -> s"${name.value}/${name.value}_1.0_all.deb",
-        baseDirectory.value / "riff-raff.yaml" -> "riff-raff.yaml"
-    )
-}
 
 ThisBuild / javacOptions := Seq("-g","-encoding", "utf8")
 
@@ -35,15 +23,13 @@ Universal / javaOptions ++= Seq(
     "-J-XX:MaxRAMFraction=2",
     "-J-XX:InitialRAMFraction=2",
     "-J-XX:MaxMetaspaceSize=500m",
-    "-J-XX:+PrintGCDetails",
-    "-J-XX:+PrintGCDateStamps",
     s"-J-Xloggc:/var/log/${packageName.value}/gc.log",
     "-Dcom.amazonaws.sdk.disableCbor"
 )
 
 routesGenerator := InjectedRoutesGenerator
 
-scalacOptions := Seq("-unchecked", "-deprecation", "-target:jvm-1.8", "-Xcheckinit", "-encoding", "utf8", "-feature")
+scalacOptions := Seq("-unchecked", "-deprecation", "-target:jvm-11", "-Xcheckinit", "-encoding", "utf8", "-feature")
 
 Compile / doc / sources := Seq.empty
 
@@ -128,19 +114,18 @@ libraryDependencies ++= Seq(
 val UsesDatabaseTest = config("database-int") extend Test
 
 lazy val root = (project in file("."))
-    .enablePlugins(PlayScala, RiffRaffArtifact, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
+    .enablePlugins(PlayScala, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
     .configs(UsesDatabaseTest)
     .settings(
         buildInfoPackage := "facia",
         buildInfoKeys := {
-            lazy val buildInfo = BuildInfo(baseDirectory.value)
             Seq[BuildInfoKey](
-                BuildInfoKey.constant("buildNumber", buildInfo.buildIdentifier),
+                BuildInfoKey.constant("buildNumber", env("GITHUB_BUILD_NUMBER").getOrElse("unknown")),
                 // so this next one is constant to avoid it always recompiling on dev machines.
                 // we only really care about build time on teamcity, when a constant based on when
                 // it was loaded is just fine
                 BuildInfoKey.constant("buildTime", System.currentTimeMillis),
-                BuildInfoKey.constant("gitCommitId", buildInfo.revision)
+                BuildInfoKey.constant("gitCommitId", env("GITHUB_SHA").getOrElse("unknown"))
             )
         }
     )
