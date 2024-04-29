@@ -27,7 +27,7 @@ import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
-import util.Acl
+import util.{Acl, TimestampGenerator}
 import services.editions.publishing.PublishedIssueFormatters._
 
 class AppComponents(context: Context, val config: ApplicationConfiguration)
@@ -64,7 +64,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val templating = new EditionsTemplating(EditionsAppTemplates.templates ++ FeastAppTemplates.templates, capi, ophan)
   val publishingBucket = new EditionsBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
   val previewBucket = new EditionsBucket(s3Client, config.aws.previewEditionsIssuesBucket)
-  val feastPublicationTarget = new FeastPublicationTarget(snsClient, config)
+  val feastPublicationTarget = new FeastPublicationTarget(snsClient, config, TimestampGenerator())
   val editionsPublishing = new Publishing(publishingBucket, previewBucket, feastPublicationTarget, editionsDb)
   PublishEventsListener.apply(config, editionsDb).start
 

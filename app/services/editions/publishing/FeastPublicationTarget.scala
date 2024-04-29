@@ -6,6 +6,7 @@ import model.editions.PublishableIssue
 import play.api.Configuration
 import play.api.libs.json.{Json, Writes}
 import services.editions.publishing.transform.{FeastAppModel, FeastAppTransform}
+import util.TimestampGenerator
 
 import java.time.Instant
 import scala.jdk.CollectionConverters._
@@ -17,7 +18,7 @@ object FeastPublicationTarget {
   type MessageType = MessageType.Value
 }
 
-class FeastPublicationTarget(snsClient:AmazonSNS, config: ApplicationConfiguration) extends PublicationTargetWithTransform[FeastAppModel.FeastAppCuration] {
+class FeastPublicationTarget(snsClient:AmazonSNS, config: ApplicationConfiguration, timestamp:TimestampGenerator) extends PublicationTargetWithTransform[FeastAppModel.FeastAppCuration] {
   override val transform: PublicationTransform[FeastAppModel.FeastAppCuration] = FeastAppTransform()
 
   private def createPublishRequest(content:String, messageType:FeastPublicationTarget.MessageType):PublishRequest = {
@@ -25,7 +26,7 @@ class FeastPublicationTarget(snsClient:AmazonSNS, config: ApplicationConfigurati
       .withMessage(content)
       .withTopicArn(config.aws.feastAppPublicationTopic)
       .withMessageAttributes(Map(
-        "timestamp"->new MessageAttributeValue().withDataType("Number").withStringValue(Instant.now().toEpochMilli.toString),
+        "timestamp"->new MessageAttributeValue().withDataType("Number").withStringValue(timestamp.getTimestamp.toString),
         "type"->new MessageAttributeValue().withDataType("String").withStringValue(messageType.toString),
       ).asJava)
   }
