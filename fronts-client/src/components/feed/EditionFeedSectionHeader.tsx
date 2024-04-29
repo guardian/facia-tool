@@ -1,23 +1,23 @@
 import React, { ReactNode } from 'react';
-import { EditionsIssue } from '../types/Edition';
+import { EditionsIssue } from '../../types/Edition';
 import { connect } from 'react-redux';
 import type { State } from 'types/State';
-import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
-import { Dispatch } from '../types/Store';
+import { selectors as editionsIssueSelectors } from '../../bundles/editionsIssueBundle';
+import { Dispatch } from '../../types/Store';
 import {
   publishEditionIssue,
   proofEditionIssue,
   check,
-} from '../actions/Editions';
-import { styled } from '../constants/theme';
+} from '../../actions/Editions';
+import { styled } from '../../constants/theme';
 import startCase from 'lodash/startCase';
-import EditModeVisibility from './util/EditModeVisibility';
-import Button from './inputs/ButtonDefault';
+import EditModeVisibility from '../util/EditModeVisibility';
+import Button from '../inputs/ButtonDefault';
 import { Link } from 'react-router-dom';
 import url from 'constants/url';
 import noop from 'lodash/noop';
 import { startOptionsModal } from 'actions/OptionsModal';
-import IssueVersions from './Editions/IssueVersions';
+import IssueVersions from '../Editions/IssueVersions';
 import { getEditionIssue } from 'bundles/editionsIssueBundle';
 import format from 'date-fns/format';
 

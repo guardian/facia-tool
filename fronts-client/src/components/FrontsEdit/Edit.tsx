@@ -15,7 +15,7 @@ import {
 import type { State } from 'types/State';
 import { ActionError } from 'types/Action';
 import FrontContainer from './FrontSection';
-import FeedSection from '../FeedSection';
+import FeedSection from '../feed/FeedSection';
 import ErrorBannner from '../ErrorBanner';
 import SectionContainer from '../layout/SectionContainer';
 import SectionsContainer from '../layout/SectionsContainer';

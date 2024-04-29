@@ -4,10 +4,11 @@ import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { styled, theme } from 'constants/theme';
 import React from 'react';
 import { connect } from 'react-redux';
-import { media } from 'util/mediaQueries';
 import { selectors as recipeSelectors } from 'bundles/recipesBundle';
 import { State } from 'types/State';
 import { Recipe } from 'types/Recipe';
+import { SearchResultsHeadingContainer } from './SearchResultsHeadingContainer';
+import { SearchTitle } from './SearchTitle';
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
@@ -23,36 +24,10 @@ const FixedContentContainer = styled.div`
   margin-bottom: 5px;
 `;
 
-// todo - copied
-const ResultsHeadingContainer = styled.div`
-  border-top: 1px solid ${theme.colors.greyVeryLight};
-  align-items: baseline;
-  display: flex;
-  margin-bottom: 10px;
-  flex-direction: row;
-`;
-
-// todo - copied
-const Title = styled.h1`
-  position: relative;
-  margin: 0 10px 0 0;
-  padding-top: 2px;
-  padding-right: 10px;
-  vertical-align: top;
-  font-family: TS3TextSans;
-  font-weight: bold;
-  font-size: 20px;
-  min-width: 80px;
-  ${media.large`
-    min-width: 60px;
-    font-size: 16px;
-  `}
-`;
-
-type Props = {
+interface Props {
   rightHandContainer?: React.ReactElement<any>;
   recipes: Recipe[];
-};
+}
 
 const FeastSearchContainerComponent = ({
   rightHandContainer,
@@ -66,12 +41,12 @@ const FeastSearchContainerComponent = ({
       <ClipboardHeader />
     </InputContainer>
     <FixedContentContainer>
-      <ResultsHeadingContainer>
-        <Title>
+      <SearchResultsHeadingContainer>
+        <SearchTitle>
           {'Results'}
           <ShortVerticalPinline />
-        </Title>
-      </ResultsHeadingContainer>
+        </SearchTitle>
+      </SearchResultsHeadingContainer>
       {recipes.map((recipe) => JSON.stringify(recipe))}
     </FixedContentContainer>
   </React.Fragment>
@@ -81,6 +56,6 @@ const mapStateToProps = (state: State) => ({
   recipes: recipeSelectors.selectAll(state),
 });
 
-export const FeastSearchContainer = connect(mapStateToProps)(
+export const RecipeSearchContainer = connect(mapStateToProps)(
   FeastSearchContainerComponent
 );
