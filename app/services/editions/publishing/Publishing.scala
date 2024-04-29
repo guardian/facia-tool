@@ -84,7 +84,6 @@ class Publishing[+A:Writes, +B:Writes](editionsAppPublicationBucket: Publication
     }
 
     // Archive a copy
-    //FIXME - this path should be tested
     issue.edition match {
       case FeastNorthernHemisphere | FeastSouthernHemisphere =>
         feastAppPublicationTarget.putIssue(publishedIssue)
