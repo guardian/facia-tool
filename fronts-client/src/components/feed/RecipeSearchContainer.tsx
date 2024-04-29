@@ -9,7 +9,10 @@ import { State } from 'types/State';
 import { Recipe } from 'types/Recipe';
 import { SearchResultsHeadingContainer } from './SearchResultsHeadingContainer';
 import { SearchTitle } from './SearchTitle';
+<<<<<<< HEAD
 import { RecipeFeedItem } from './RecipeFeedItem';
+=======
+>>>>>>> d2690845bf (Tidy up)
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
