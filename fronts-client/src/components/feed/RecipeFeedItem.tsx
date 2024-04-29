@@ -1,26 +1,31 @@
-import {Recipe} from "../../types/Recipe";
-import {FeedItem} from "./FeedItem";
-import React from "react";
-import {State} from "../../types/State";
-import {dragOffsetX, dragOffsetY} from "../FrontsEdit/CollectionComponents/ArticleDrag";
-import noop from "lodash/noop";
-import {selectFeatureValue} from "../../selectors/featureSwitchesSelectors";
-import {connect} from "react-redux";
+import { Recipe } from '../../types/Recipe';
+import { FeedItem } from './FeedItem';
+import React from 'react';
+import { State } from '../../types/State';
+import {
+  dragOffsetX,
+  dragOffsetY,
+} from '../FrontsEdit/CollectionComponents/ArticleDrag';
+import noop from 'lodash/noop';
+import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
+import { connect } from 'react-redux';
 
 interface ComponentProps {
-  recipe: Recipe,
-  shouldObscureFeed: boolean
+  recipe: Recipe;
+  shouldObscureFeed: boolean;
 }
 
-export const RecipeFeedItemComponent = ({ recipe, shouldObscureFeed }: ComponentProps) => {
-  const handleDragStart = (event: React.DragEvent<HTMLDivElement>, dragNode: HTMLDivElement) => {
+export const RecipeFeedItemComponent = ({
+  recipe,
+  shouldObscureFeed,
+}: ComponentProps) => {
+  const handleDragStart = (
+    event: React.DragEvent<HTMLDivElement>,
+    dragNode: HTMLDivElement
+  ) => {
     event.dataTransfer.setData('recipe', JSON.stringify(recipe));
     if (dragNode) {
-      event.dataTransfer.setDragImage(
-        dragNode,
-        dragOffsetX,
-        dragOffsetY
-      );
+      event.dataTransfer.setDragImage(dragNode, dragOffsetX, dragOffsetY);
     }
   };
 
@@ -35,12 +40,12 @@ export const RecipeFeedItemComponent = ({ recipe, shouldObscureFeed }: Component
       handleDragStart={handleDragStart}
       onAddToClipboard={noop}
       shouldObscureFeed={shouldObscureFeed}
-      />
-  )
-}
+    />
+  );
+};
 
 const mapStateToProps = (state: State) => ({
   shouldObscureFeed: selectFeatureValue(state, 'obscure-feed'),
-})
+});
 
-export const RecipeFeedItem = connect(mapStateToProps)(RecipeFeedItemComponent)
+export const RecipeFeedItem = connect(mapStateToProps)(RecipeFeedItemComponent);

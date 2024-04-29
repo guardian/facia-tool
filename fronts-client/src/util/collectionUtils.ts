@@ -3,7 +3,7 @@ import { ThunkResult, Dispatch } from 'types/Store';
 import { PosSpec } from 'lib/dnd';
 import { insertCardWithCreate } from 'actions/Cards';
 import { CapiArticle } from 'types/Capi';
-import {Recipe} from "../types/Recipe";
+import { Recipe } from '../types/Recipe';
 
 export interface RefDrop {
   type: 'REF';
@@ -29,7 +29,7 @@ const dropToCard = (e: React.DragEvent): MappableDropType | null => {
     }),
     recipe: (data: string): RecipeDrop => ({
       type: 'RECIPE',
-      data: JSON.parse(data)
+      data: JSON.parse(data),
     }),
     text: (url: string): RefDrop => ({ type: 'REF', data: url }),
   };
