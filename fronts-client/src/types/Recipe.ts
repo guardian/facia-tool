@@ -16,6 +16,8 @@ export interface RecipeImage {
 // be useful to derive from a package.
 export interface Recipe {
   id: string;
+  title: string;
+  canonicalArticle: string;
   featuredImage: RecipeImage; // the latter is an old image format that appears in our test fixtures
   previewImage?: RecipeImage;
 }

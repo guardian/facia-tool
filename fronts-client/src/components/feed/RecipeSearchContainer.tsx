@@ -9,6 +9,7 @@ import { State } from 'types/State';
 import { Recipe } from 'types/Recipe';
 import { SearchResultsHeadingContainer } from './SearchResultsHeadingContainer';
 import { SearchTitle } from './SearchTitle';
+import {RecipeFeedItem} from "./RecipeFeedItem";
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
@@ -47,7 +48,7 @@ const FeastSearchContainerComponent = ({
           <ShortVerticalPinline />
         </SearchTitle>
       </SearchResultsHeadingContainer>
-      {recipes.map((recipe) => JSON.stringify(recipe))}
+      {recipes.map((recipe) => <RecipeFeedItem recipe={recipe} />)}
     </FixedContentContainer>
   </React.Fragment>
 );

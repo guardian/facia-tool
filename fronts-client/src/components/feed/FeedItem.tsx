@@ -101,6 +101,7 @@ const VideoIconContainer = styled(CircularIconContainer)`
 `;
 
 interface FeedItemProps {
+  id: string;
   title: string;
   liveUrl: string;
   metaContent: JSX.Element;
