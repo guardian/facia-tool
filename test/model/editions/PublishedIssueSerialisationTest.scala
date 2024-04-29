@@ -13,6 +13,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
     val issue: EditionsIssue = EditionsIssue(
       id = "4290573248905743296789524389623",
       edition = Edition.DailyEdition,
+      platform = CuratedPlatform.Editions,
       timezoneId = "Europe/London",
       issueDate = issueDate,
       createdOn = 0,

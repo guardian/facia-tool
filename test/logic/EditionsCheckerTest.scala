@@ -1,9 +1,8 @@
 package logic
 
 import java.time.LocalDate
-
 import model.editions.Edition.DailyEdition
-import model.editions.{EditionsCard, EditionsCollection, EditionsFront, EditionsFrontMetadata, EditionsIssue}
+import model.editions.{CuratedPlatform, EditionsCard, EditionsCollection, EditionsFront, EditionsFrontMetadata, EditionsIssue}
 import org.scalatest.{FreeSpec, Matchers}
 
 class EditionsCheckerTest extends FreeSpec with Matchers {
@@ -96,6 +95,7 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
     EditionsIssue(
       "id",
       DailyEdition,
+      CuratedPlatform.Editions,
       "timezoneId",
       LocalDate.now(),
       LocalDate.now().toEpochDay,

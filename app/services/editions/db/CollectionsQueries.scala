@@ -115,10 +115,11 @@ trait CollectionsQueries {
           INSERT INTO cards (
           collection_id,
           id,
+          card_type,
           index,
           added_on,
           metadata
-          ) VALUES (${collection.id}, ${card.id}, $index, $addedOn, ${card.metadata.map(m => Json.toJson(m).toString)}::JSONB)
+          ) VALUES (${collection.id}, ${card.id}, ${card.cardType.entryName}, $index, $addedOn, ${card.metadata.map(m => Json.toJson(m).toString)}::JSONB)
        """.execute.apply()
     }
 

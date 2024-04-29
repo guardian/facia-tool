@@ -115,7 +115,10 @@ class EditionsController(db: EditionsDB,
       (LocalDate.parse(dateFrom), LocalDate.parse(dateTo))
     }.map {
       case (localDateFrom, localDateTo) =>
-        Ok(Json.toJson(db.listIssues(edition, localDateFrom, localDateTo).flatMap(_.toOption)))
+        db.listIssues(edition, localDateFrom, localDateTo) match {
+          case Right(issues) => Ok(Json.toJson(issues))
+          case Left(errors) => InternalServerError(s"Error listing issues: ${errors.mkString(", ")}")
+        }
     }.getOrElse(BadRequest("Invalid or missing date"))
   }
 

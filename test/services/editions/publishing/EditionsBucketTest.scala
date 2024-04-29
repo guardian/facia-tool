@@ -1,8 +1,7 @@
 package services.editions.publishing
 
 import java.time.LocalDate
-
-import model.editions.{Edition, EditionsIssue, PublishAction}
+import model.editions.{CuratedPlatform, Edition, EditionsIssue, PublishAction}
 import services.editions.publishing.PublishedIssueFormatters._
 import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
 import play.api.libs.json.Json
@@ -25,6 +24,7 @@ class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with E
       launchedEmail = None,
       fronts = Nil,
       supportsProofing = true,
+      platform = CuratedPlatform.Editions
     )
 
     "publication is preview" - {
