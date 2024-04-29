@@ -1,21 +1,24 @@
-import {CapiArticle} from "../../types/Capi";
-import React from "react";
-import {dragOffsetX, dragOffsetY} from "../FrontsEdit/CollectionComponents/ArticleDrag";
-import {getPaths} from "../../util/paths";
-import {getArticleLabel, getThumbnail, isLive} from "../../util/CAPIUtils";
-import {hasMainVideo} from "../../util/externalArticle";
-import {getPillarColor} from "../../util/getPillarColor";
-import {liveBlogTones} from "../../constants/fronts";
-import {styled, theme} from "../../constants/theme";
-import startCase from "lodash/startCase";
-import ArticlePageNumberSection from "../util/ArticlePageNumberSection";
-import {State} from "../../types/State";
-import {selectFeatureValue} from "../../selectors/featureSwitchesSelectors";
-import {selectArticleAcrossResources} from "../../bundles/capiFeedBundle";
-import {Dispatch} from "../../types/Store";
-import {insertCardWithCreate} from "../../actions/Cards";
-import {connect} from "react-redux";
-import {FeedItem} from "./FeedItem";
+import { CapiArticle } from '../../types/Capi';
+import React from 'react';
+import {
+  dragOffsetX,
+  dragOffsetY,
+} from '../FrontsEdit/CollectionComponents/ArticleDrag';
+import { getPaths } from '../../util/paths';
+import { getArticleLabel, getThumbnail, isLive } from '../../util/CAPIUtils';
+import { hasMainVideo } from '../../util/externalArticle';
+import { getPillarColor } from '../../util/getPillarColor';
+import { liveBlogTones } from '../../constants/fronts';
+import { styled, theme } from '../../constants/theme';
+import startCase from 'lodash/startCase';
+import ArticlePageNumberSection from '../util/ArticlePageNumberSection';
+import { State } from '../../types/State';
+import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
+import { selectArticleAcrossResources } from '../../bundles/capiFeedBundle';
+import { Dispatch } from '../../types/Store';
+import { insertCardWithCreate } from '../../actions/Cards';
+import { connect } from 'react-redux';
+import { FeedItem } from './FeedItem';
 
 const TagInfo = styled.div`
   padding-top: 2px;
@@ -38,19 +41,22 @@ interface ComponentProps extends ContainerProps {
   onAddToClipboard: (article: CapiArticle) => void;
 }
 
-const ArticleFeedItemComponent = ({ article, id, onAddToClipboard }: ComponentProps) => {
+const ArticleFeedItemComponent = ({
+  article,
+  id,
+  onAddToClipboard,
+}: ComponentProps) => {
   if (!article) {
     return <p>Article with id {id} not found.</p>;
   }
 
-  const handleDragStart = (event: React.DragEvent<HTMLDivElement>, dragNode: HTMLDivElement) => {
+  const handleDragStart = (
+    event: React.DragEvent<HTMLDivElement>,
+    dragNode: HTMLDivElement
+  ) => {
     event.dataTransfer.setData('capi', JSON.stringify(article));
     if (dragNode) {
-      event.dataTransfer.setDragImage(
-        dragNode,
-        dragOffsetX,
-        dragOffsetY
-      );
+      event.dataTransfer.setDragImage(dragNode, dragOffsetX, dragOffsetY);
     }
   };
 
@@ -58,11 +64,8 @@ const ArticleFeedItemComponent = ({ article, id, onAddToClipboard }: ComponentPr
     <FeedItem
       id={article.id}
       title={article.webTitle}
-      livePath={getPaths(article.id).live}
-      thumbnail={getThumbnail(
-        article.frontsMeta.defaults,
-        article
-      )}
+      liveUrl={getPaths(article.id).live}
+      thumbnail={getThumbnail(article.frontsMeta.defaults, article)}
       scheduledPublicationDate={article.fields.scheduledPublicationDate}
       firstPublishedDate={article.webPublicationDate}
       hasVideo={hasMainVideo(article)}
@@ -91,12 +94,10 @@ const ArticleFeedItemComponent = ({ article, id, onAddToClipboard }: ComponentPr
       }
     />
   );
-}
-
-const getState = (state: any) => state;
+};
 
 const mapStateToProps = (state: State, { id }: ContainerProps) => ({
-  shouldObscureFeed: selectFeatureValue(getState(state), 'obscure-feed'),
+  shouldObscureFeed: selectFeatureValue(state, 'obscure-feed'),
   article: selectArticleAcrossResources(state, id),
 });
 
@@ -113,4 +114,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
   };
 };
 
-export const ArticleFeedItem = connect(mapStateToProps, mapDispatchToProps)(ArticleFeedItemComponent);
+export const ArticleFeedItem = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ArticleFeedItemComponent);

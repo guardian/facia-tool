@@ -1,6 +1,5 @@
 import React from 'react';
 import { styled } from 'constants/theme';
-import FeedItem from './FeedItem';
 import {
   liveSelectors,
   previewSelectors,
@@ -9,7 +8,7 @@ import {
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
 import type { State } from 'types/State';
 import { connect } from 'react-redux';
-import {ArticleFeedItem} from "./ArticleFeedItem";
+import { ArticleFeedItem } from './ArticleFeedItem';
 
 interface ErrorDisplayProps {
   error?: string;

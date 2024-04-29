@@ -30,25 +30,42 @@ import {
   isGuardianUrl,
   isValidURL,
 } from 'util/url';
-import {Recipe} from "../types/Recipe";
+import { Recipe } from '../types/Recipe';
+import type { CardTypes } from '../constants/cardTypes';
+
+interface CreateCardOptions {
+  cardType?: CardTypes;
+  imageHide?: boolean;
+  imageReplace?: boolean;
+  imageCutoutReplace?: boolean;
+  imageCutoutSrc?: string;
+  showByline?: boolean;
+  showQuotedHeadline?: boolean;
+  showKickerCustom?: boolean;
+  customKicker?: string;
+}
 
 // Ideally we will convert this to a type. See
 // https://trello.com/c/wIMDut8V/138-add-a-type-to-the-createcard-function-in-src-shared-util-cardts
 const createCard = (
   id: string,
   isEditionsApp: boolean,
-  imageHide: boolean = false,
-  imageReplace: boolean = false,
-  imageCutoutReplace: boolean = false,
-  imageCutoutSrc?: string,
-  showByline: boolean = false,
-  showQuotedHeadline: boolean = false,
-  showKickerCustom: boolean = false,
-  customKicker: string = ''
+  {
+    cardType = 'article',
+    imageHide = false,
+    imageReplace = false,
+    imageCutoutReplace = false,
+    showByline = false,
+    showQuotedHeadline = false,
+    showKickerCustom = false,
+    customKicker = '',
+    imageCutoutSrc,
+  }: CreateCardOptions = {}
 ) => ({
   uuid: v4(),
   id,
   frontPublicationDate: Date.now(),
+  cardType,
   meta: {
     ...(imageHide ? { imageHide } : {}),
     ...(imageReplace ? { imageReplace } : {}),
@@ -150,7 +167,7 @@ const getCardEntitiesFromDrop = async (
   }
 
   if (drop.type === 'RECIPE') {
-    return getRecipeEntityFromFeedDrop(drop.data)
+    return getRecipeEntityFromFeedDrop(drop.data);
   }
 
   const droppedDataURL = drop.data.trim();
@@ -257,28 +274,27 @@ const getCardEntitiesFromDrop = async (
 };
 
 const getRecipeEntityFromFeedDrop = (recipe: Recipe): [Card] => {
-  const card = createCard(recipe.id, false);
+  const card = createCard(recipe.id, false, { cardType: 'recipe' });
 
   return [card];
-}
+};
 
 const getArticleEntitiesFromFeedDrop = (
   capiArticle: CapiArticle,
   isEdition: boolean
 ): TArticleEntities => {
   const article = transformExternalArticle(capiArticle);
-  const card = createCard(
-    article.id,
-    isEdition,
-    article.frontsMeta.defaults.imageHide,
-    article.frontsMeta.defaults.imageReplace,
-    article.frontsMeta.defaults.imageCutoutReplace,
-    article.frontsMeta.cutout,
-    article.frontsMeta.defaults.showByline,
-    article.frontsMeta.defaults.showQuotedHeadline,
-    article.frontsMeta.defaults.showKickerCustom,
-    article.frontsMeta.pickedKicker
-  );
+  const card = createCard(article.id, isEdition, {
+    cardType: 'article',
+    imageHide: article.frontsMeta.defaults.imageHide,
+    imageReplace: article.frontsMeta.defaults.imageReplace,
+    imageCutoutReplace: article.frontsMeta.defaults.imageCutoutReplace,
+    imageCutoutSrc: article.frontsMeta.cutout,
+    showByline: article.frontsMeta.defaults.showByline,
+    showQuotedHeadline: article.frontsMeta.defaults.showQuotedHeadline,
+    showKickerCustom: article.frontsMeta.defaults.showKickerCustom,
+    customKicker: article.frontsMeta.pickedKicker,
+  });
   return [card, article];
 };
 

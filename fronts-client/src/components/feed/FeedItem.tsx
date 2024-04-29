@@ -13,9 +13,7 @@ import {
 } from 'components/inputs/HoverActionButtons';
 import noop from 'lodash/noop';
 import { ThumbnailSmall } from 'components/image/Thumbnail';
-import {
-  DraggingArticleComponent,
-} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
+import { DraggingArticleComponent } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import { media } from 'util/mediaQueries';
 import { VideoIcon } from 'components/icons/Icons';
 import CircularIconContainer from 'components/icons/CircularIconContainer';
@@ -53,7 +51,7 @@ const Title = styled.h2`
   font-weight: normal;
 `;
 
-const FeedItemContainer = styled.a<{ blur: boolean }>`
+const FeedItemContainer = styled.a<{ blur?: boolean }>`
   text-decoration: none;
   display: flex;
   color: inherit;
@@ -88,8 +86,6 @@ const ScheduledPublication = styled(FirstPublished)`
   color: ${notLiveColour};
 `;
 
-
-
 const Body = styled.div`
   padding-left: 8px;
 `;
@@ -103,15 +99,19 @@ const VideoIconContainer = styled(CircularIconContainer)`
 interface FeedItemProps {
   id: string;
   title: string;
-  liveUrl: string;
-  metaContent: JSX.Element;
+  liveUrl?: string;
+  metaContent?: JSX.Element;
   scheduledPublicationDate?: string;
   firstPublishedDate?: string;
   thumbnail?: string;
   hasVideo: boolean;
   isLive: boolean;
   onAddToClipboard: () => void;
-  handleDragStart: (event: React.DragEvent<HTMLDivElement>, dragNode: HTMLDivElement) => void;
+  handleDragStart: (
+    event: React.DragEvent<HTMLDivElement>,
+    dragNode: HTMLDivElement
+  ) => void;
+  shouldObscureFeed?: boolean;
 }
 
 export class FeedItem extends React.Component<FeedItemProps, {}> {
@@ -133,14 +133,16 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
       firstPublishedDate,
       thumbnail,
       hasVideo,
-      handleDragStart
+      handleDragStart,
     } = this.props;
 
     return (
       <Container
         data-testid="feed-item"
         draggable={true}
-        onDragStart={event => this.dragNode.current && handleDragStart(event, this.dragNode.current)}
+        onDragStart={(event) =>
+          this.dragNode.current && handleDragStart(event, this.dragNode.current)
+        }
       >
         <RenderOffscreen ref={this.dragNode}>
           <DraggingArticleComponent headline={title} />

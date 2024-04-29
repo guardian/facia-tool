@@ -1,7 +1,7 @@
 import ClipboardHeader from 'components/ClipboardHeader';
 import TextInput from 'components/inputs/TextInput';
 import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
-import { styled, theme } from 'constants/theme';
+import { styled } from 'constants/theme';
 import React from 'react';
 import { connect } from 'react-redux';
 import { selectors as recipeSelectors } from 'bundles/recipesBundle';
@@ -9,7 +9,7 @@ import { State } from 'types/State';
 import { Recipe } from 'types/Recipe';
 import { SearchResultsHeadingContainer } from './SearchResultsHeadingContainer';
 import { SearchTitle } from './SearchTitle';
-import {RecipeFeedItem} from "./RecipeFeedItem";
+import { RecipeFeedItem } from './RecipeFeedItem';
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
@@ -48,7 +48,9 @@ const FeastSearchContainerComponent = ({
           <ShortVerticalPinline />
         </SearchTitle>
       </SearchResultsHeadingContainer>
-      {recipes.map((recipe) => <RecipeFeedItem recipe={recipe} />)}
+      {recipes.map((recipe) => (
+        <RecipeFeedItem key={recipe.id} recipe={recipe} />
+      ))}
     </FixedContentContainer>
   </React.Fragment>
 );

@@ -23,7 +23,6 @@ import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { DEFAULT_PARAMS } from 'services/faciaApi';
 import ScrollContainer from '../ScrollContainer';
 import ClipboardHeader from 'components/ClipboardHeader';
-import { media } from 'util/mediaQueries';
 import ContainerHeading from 'components/typography/ContainerHeading';
 import { ClearIcon } from 'components/icons/Icons';
 import Button from 'components/inputs/ButtonDefault';

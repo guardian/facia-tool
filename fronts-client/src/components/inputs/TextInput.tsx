@@ -59,13 +59,13 @@ interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onClear?: () => void;
   onSearch?: () => void;
   displaySearchIcon: boolean;
-  searchTermsExist: boolean;
+  searchTermsExist?: boolean;
 }
 
 const TextInput = ({
   onClear,
   onSearch,
-  searchTermsExist,
+  searchTermsExist = true,
   displaySearchIcon,
   ...props
 }: TextInputProps) => (
