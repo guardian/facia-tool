@@ -141,9 +141,9 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
           None
       }
     }
-    val rdsClient = AmazonRDSClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
-    val ssmClient = AWSSimpleSystemsManagementClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
-    val s3Client = AmazonS3ClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
+    lazy val rdsClient = AmazonRDSClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
+    lazy val ssmClient = AWSSimpleSystemsManagementClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
+    lazy val s3Client = AmazonS3ClientBuilder.standard().withCredentials(cmsFrontsAccountCredentials).withRegion(region).build()
   }
 
   object postgres {
