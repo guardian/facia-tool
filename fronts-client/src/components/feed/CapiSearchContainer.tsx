@@ -278,10 +278,10 @@ class CapiSearchContainer extends React.Component<
                 </SearchTitle>
               ) : (
                 <>
-                  <Title>
+                  <SearchTitle>
                     {'Latest'}
                     <ShortVerticalPinline />
-                  </Title>
+                  </SearchTitle>
                   <RefreshButton
                     disabled={this.isLoading}
                     onClick={() => this.runSearchAndRestartPolling()}

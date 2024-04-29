@@ -9,6 +9,7 @@ import {
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
 import type { State } from 'types/State';
 import { connect } from 'react-redux';
+import {ArticleFeedItem} from "./ArticleFeedItem";
 
 interface ErrorDisplayProps {
   error?: string;
@@ -60,7 +61,7 @@ const Feed = ({
   return (
     <ErrorDisplay error={error || undefined}>
       {articleIds.length ? (
-        articleIds.map((id) => <FeedItem key={id} id={id} />)
+        articleIds.map((id) => <ArticleFeedItem key={id} id={id} />)
       ) : (
         <NoResults>No results found</NoResults>
       )}
