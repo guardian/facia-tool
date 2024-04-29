@@ -4,7 +4,9 @@ on:
     pull_request:
         branches:
             - main
-
+    push:
+        branches:
+            - main
 jobs:
     generate_build_number:
         name: Generate build number
