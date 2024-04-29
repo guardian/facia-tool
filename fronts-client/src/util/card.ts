@@ -30,12 +30,13 @@ import {
   isGuardianUrl,
   isValidURL,
 } from 'util/url';
+import {Recipe} from "../types/Recipe";
 
 // Ideally we will convert this to a type. See
 // https://trello.com/c/wIMDut8V/138-add-a-type-to-the-createcard-function-in-src-shared-util-cardts
 const createCard = (
   id: string,
-  isEdition: boolean,
+  isEditionsApp: boolean,
   imageHide: boolean = false,
   imageReplace: boolean = false,
   imageCutoutReplace: boolean = false,
@@ -54,8 +55,8 @@ const createCard = (
     ...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : {}),
     ...(showByline ? { showByline } : {}),
     ...(showQuotedHeadline ? { showQuotedHeadline } : {}),
-    ...(isEdition || showKickerCustom ? { showKickerCustom: true } : {}),
-    ...(isEdition || showKickerCustom ? { customKicker } : {}),
+    ...(isEditionsApp || showKickerCustom ? { showKickerCustom: true } : {}),
+    ...(isEditionsApp || showKickerCustom ? { customKicker } : {}),
   },
 });
 
@@ -133,12 +134,13 @@ const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
 };
 
 /**
- * Given a resource id, extract the appropriate entities -- an Card
+ * Given a resource id, extract the appropriate entities -- a Card
  * and possibly an ExternalArticle. The resource id can be a few different things:
  *  - a article, tag or section (either the full URL or the ID)
+ *  - a recipe for the Feast app
  *  - an external link.
  */
-const getArticleEntitiesFromDrop = async (
+const getCardEntitiesFromDrop = async (
   drop: MappableDropType,
   isEdition: boolean,
   dispatch: Dispatch
@@ -146,6 +148,11 @@ const getArticleEntitiesFromDrop = async (
   if (drop.type === 'CAPI') {
     return getArticleEntitiesFromFeedDrop(drop.data, isEdition);
   }
+
+  if (drop.type === 'RECIPE') {
+    return getRecipeEntityFromFeedDrop(drop.data)
+  }
+
   const droppedDataURL = drop.data.trim();
   const resourceIdOrUrl = isGoogleRedirectUrl(droppedDataURL)
     ? getRelevantURLFromGoogleRedirectURL(droppedDataURL)
@@ -249,6 +256,12 @@ const getArticleEntitiesFromDrop = async (
   return [];
 };
 
+const getRecipeEntityFromFeedDrop = (recipe: Recipe): [Card] => {
+  const card = createCard(recipe.id, false);
+
+  return [card];
+}
+
 const getArticleEntitiesFromFeedDrop = (
   capiArticle: CapiArticle,
   isEdition: boolean
@@ -333,7 +346,7 @@ export {
   createCard,
   cloneCard,
   cloneActiveImageMeta,
-  getArticleEntitiesFromDrop,
+  getCardEntitiesFromDrop,
   snapMetaWhitelist,
   marketingParamsWhiteList,
 };

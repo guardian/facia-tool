@@ -9,7 +9,7 @@ interface ComponentProps {
 
 export const RecipeFeedItem = ({ recipe }: ComponentProps) => {
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>, dragNode: HTMLDivElement) => {
-    event.dataTransfer.setData('capi', JSON.stringify(recipe));
+    event.dataTransfer.setData('recipe', JSON.stringify(recipe));
     if (dragNode) {
       event.dataTransfer.setDragImage(
         dragNode,
