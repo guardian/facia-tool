@@ -6,16 +6,16 @@ import noop from 'lodash/noop';
 import {
   createSelectArticleFromCard,
   selectCard,
-} from '../../selectors/shared';
+} from '../../../selectors/shared';
 import { selectors } from 'bundles/externalArticlesBundle';
 import type { State } from 'types/State';
-import { DerivedArticle } from '../../types/Article';
-import CardBody from '../card/CardBody';
-import CardContainer from '../card/CardContainer';
-import CardMetaHeading from '../card/CardMetaHeading';
+import { DerivedArticle } from '../../../types/Article';
+import CardBody from '../CardBody';
+import CardContainer from '../CardContainer';
+import CardMetaHeading from '../CardMetaHeading';
 import ArticleBody from './ArticleBody';
 import { CardSizes } from 'types/Collection';
-import DragIntentContainer from '../DragIntentContainer';
+import DragIntentContainer from '../../DragIntentContainer';
 import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { theme } from 'constants/theme';
 import { getPillarColor } from 'util/getPillarColor';
@@ -72,7 +72,7 @@ interface ComponentState {
   isDraggingImageOver: boolean;
 }
 
-class ArticleComponent extends React.Component<ComponentProps, ComponentState> {
+class ArticleCard extends React.Component<ComponentProps, ComponentState> {
   public state = {
     isDraggingImageOver: false,
   };
@@ -195,6 +195,6 @@ const createMapStateToProps = () => {
   };
 };
 
-export { ArticleComponentProps, ArticleComponent };
+export { ArticleComponentProps, ArticleCard as ArticleComponent };
 
-export default connect(createMapStateToProps)(ArticleComponent);
+export default connect(createMapStateToProps)(ArticleCard);

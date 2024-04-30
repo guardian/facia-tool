@@ -1,10 +1,10 @@
 import React from 'react';
 import { render, cleanup } from 'react-testing-library';
-import { ArticleComponent } from '../Article';
+import { ArticleCard } from '../ArticleCard';
 import '@testing-library/jest-dom/extend-expect';
 import derivedArticle from 'fixtures/derivedArticle';
 import { ThemeProvider } from 'styled-components';
-import { theme } from '../../../constants/theme';
+import { theme } from '../../../../constants/theme';
 import { Provider } from 'react-redux';
 import configureStore from 'util/configureStore';
 
@@ -28,7 +28,7 @@ describe('Article component ', () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <ArticleComponent
+          <ArticleCard
             frontId={'uk'}
             children={<React.Fragment />}
             article={derivedArticle}
@@ -49,7 +49,7 @@ describe('Article component ', () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <ArticleComponent
+          <ArticleCard
             frontId={'uk'}
             children={<React.Fragment />}
             article={draftArticle}
@@ -68,7 +68,7 @@ describe('Article component ', () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <ArticleComponent
+          <ArticleCard
             frontId={'uk'}
             children={<React.Fragment />}
             article={takenDownArticle}
@@ -87,7 +87,7 @@ describe('Article component ', () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <ArticleComponent
+          <ArticleCard
             frontId={'uk'}
             children={<React.Fragment />}
             article={undefined}
@@ -106,7 +106,7 @@ describe('Article component ', () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <ArticleComponent
+          <ArticleCard
             frontId={'uk'}
             children={<React.Fragment />}
             article={takenDownArticle}
@@ -125,7 +125,7 @@ describe('Article component ', () => {
     let renderResult = render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <ArticleComponent
+          <ArticleCard
             frontId={'uk'}
             children={<React.Fragment />}
             article={takenDownArticle}
@@ -143,7 +143,7 @@ describe('Article component ', () => {
     renderResult = render(
       <Provider store={store}>
         <ThemeProvider theme={theme}>
-          <ArticleComponent
+          <ArticleCard
             frontId={'uk'}
             children={<React.Fragment />}
             article={takenDownArticle}
@@ -164,7 +164,7 @@ it('should show the page view data graph if 3 conditions are true: canShowPageVi
   const { getByTestId } = render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <ArticleComponent
+        <ArticleCard
           frontId={'uk'}
           collectionId={'collectionId'}
           children={<React.Fragment />}
@@ -183,7 +183,7 @@ it('should NOT show the page view data graph if any of these conditions are fals
   const { container } = render(
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <ArticleComponent
+        <ArticleCard
           frontId={'uk'}
           collectionId={'collectionId'}
           children={<React.Fragment />}

@@ -1,7 +1,7 @@
 import { Dispatch } from 'types/Store';
 import React from 'react';
 import { connect } from 'react-redux';
-import Article from 'components/article/Article';
+import Article from 'components/card/article/ArticleCard';
 import type { State } from 'types/State';
 import { createSelectCardType } from 'selectors/cardSelectors';
 import {
@@ -9,7 +9,7 @@ import {
   selectSupportingArticleCount,
 } from 'selectors/shared';
 import { CardSizes, CardMeta } from 'types/Collection';
-import SnapLink from 'components/snapLink/SnapLink';
+import SnapLink from 'components/card/snapLink/SnapLinkCard';
 import {
   copyCardImageMetaWithPersist,
   addImageToCard,
@@ -43,6 +43,7 @@ import { isLive as isArticleLive } from 'util/CAPIUtils';
 import { DefaultDropIndicator } from 'components/DropZone';
 import DragIntentContainer from 'components/DragIntentContainer';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
+import { RecipeCard } from 'components/card/recipe/RecipeCard';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -201,6 +202,24 @@ class Card extends React.Component<CardContainerProps> {
               {numSupportingArticles === 0
                 ? children
                 : this.state.showCardSublinks && children}
+            </>
+          );
+        case CardTypesMap.RECIPE:
+          return (
+            <>
+              <RecipeCard
+                frontId={frontId}
+                collectionId={collectionId}
+                id={uuid}
+                isUneditable={isUneditable}
+                {...getNodeProps()}
+                onDelete={this.onDelete}
+                onAddToClipboard={this.handleAddToClipboard}
+                onClick={isUneditable ? undefined : () => onSelect(uuid)}
+                size={size}
+                textSize={textSize}
+              />
+              {getSublinks}
             </>
           );
         default:
