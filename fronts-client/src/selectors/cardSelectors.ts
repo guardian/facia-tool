@@ -6,9 +6,15 @@ import { getContributorImage } from 'util/CAPIUtils';
 
 const createSelectCardType = () =>
   createSelector(selectCard, (card) => {
-    return card && validateId(card.id)
-      ? CardTypesMap.SNAP_LINK
-      : CardTypesMap.ARTICLE;
+    if (!card) {
+      return undefined;
+    }
+
+    if (card.cardType) {
+      return card.cardType;
+    }
+
+    return validateId(card.id) ? CardTypesMap.SNAP_LINK : CardTypesMap.ARTICLE;
   });
 
 const createSelectCutoutUrl = () =>
