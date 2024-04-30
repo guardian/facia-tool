@@ -11,7 +11,7 @@ case class EditionsClientCard(id: String, cardType: Option[CardType], frontPubli
 object EditionsClientCard {
   def fromCard(card: EditionsCard): EditionsClientCard = {
     EditionsClientCard(
-      "internal-code/page/" + card.id,
+      card.id,
       Some(card.cardType),
       card.addedOn,
       card.metadata.map(ClientCardMetadata.fromCardMetadata)
@@ -19,7 +19,7 @@ object EditionsClientCard {
   }
   def toCard(card: EditionsClientCard): EditionsCard = {
     EditionsCard(
-      card.id.split("/").last,
+      card.id,
       card.cardType.getOrElse(CardType.Article),
       card.frontPublicationDate,
       card.meta.map(_.toCardMetadata)

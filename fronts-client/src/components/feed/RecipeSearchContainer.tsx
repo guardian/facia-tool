@@ -27,7 +27,7 @@ const FixedContentContainer = styled.div`
 
 interface Props {
   rightHandContainer?: React.ReactElement<any>;
-  recipes: Recipe[];
+  recipes: Record<string, Recipe>;
 }
 
 const FeastSearchContainerComponent = ({
@@ -48,7 +48,7 @@ const FeastSearchContainerComponent = ({
           <ShortVerticalPinline />
         </SearchTitle>
       </SearchResultsHeadingContainer>
-      {recipes.map((recipe) => (
+      {Object.values(recipes).map((recipe) => (
         <RecipeFeedItem key={recipe.id} recipe={recipe} />
       ))}
     </FixedContentContainer>

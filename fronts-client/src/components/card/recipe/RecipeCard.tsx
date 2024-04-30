@@ -9,6 +9,8 @@ import CardHeading from '../CardHeading';
 import { selectCard } from 'selectors/shared';
 import { connect } from 'react-redux';
 import { State } from 'types/State';
+import { selectors as recipeSelectors } from 'bundles/recipesBundle';
+import { Recipe } from 'types/Recipe';
 
 interface ContainerProps {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -29,7 +31,7 @@ interface ContainerProps {
 
 interface RecipeProps extends ContainerProps {
   card: Card;
-  featureFlagPageViewData: boolean;
+  recipe: Recipe;
 }
 
 const RecipeCardComponent = ({
@@ -44,7 +46,7 @@ const RecipeCardComponent = ({
   isUneditable,
   collectionId,
   frontId,
-  featureFlagPageViewData,
+  recipe,
   ...rest
 }: RecipeProps) => {
   return (
@@ -60,7 +62,7 @@ const RecipeCardComponent = ({
         <CardHeadingContainer size={size}>
           <CardMetaHeading>Recipe</CardMetaHeading>
           <CardHeading data-testid="headline" html>
-            Recipe heading
+            {recipe.title}
           </CardHeading>
         </CardHeadingContainer>
       </CardContent>
@@ -69,8 +71,11 @@ const RecipeCardComponent = ({
 };
 
 const mapStateToProps = (state: State, props: ContainerProps) => {
+  const card = selectCard(state, props.id);
+
   return {
-    card: selectCard(state, props.id),
+    card,
+    recipe: recipeSelectors.selectById(state, card.id),
   };
 };
 
