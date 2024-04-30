@@ -19,13 +19,7 @@ import { Dispatch } from '../../types/Store';
 import { insertCardWithCreate } from '../../actions/Cards';
 import { connect } from 'react-redux';
 import { FeedItem } from './FeedItem';
-
-const TagInfo = styled.div`
-  padding-top: 2px;
-  font-size: 12px;
-  font-family: TS3TextSans;
-  font-weight: bold;
-`;
+import { ContentInfo } from './ContentInfo';
 
 const Tone = styled.span`
   font-weight: normal;
@@ -74,7 +68,7 @@ const ArticleFeedItemComponent = ({
       handleDragStart={handleDragStart}
       metaContent={
         <>
-          <TagInfo
+          <ContentInfo
             style={{
               color:
                 getPillarColor(
@@ -88,7 +82,7 @@ const ArticleFeedItemComponent = ({
             {article.frontsMeta.tone && (
               <Tone> / {startCase(article.frontsMeta.tone)}</Tone>
             )}
-          </TagInfo>
+          </ContentInfo>
           <ArticlePageNumberSection article={article} />
         </>
       }

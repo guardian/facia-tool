@@ -9,6 +9,7 @@ import {
 import noop from 'lodash/noop';
 import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
 import { connect } from 'react-redux';
+import { ContentInfo } from './ContentInfo';
 
 interface ComponentProps {
   recipe: Recipe;
@@ -40,6 +41,7 @@ export const RecipeFeedItemComponent = ({
       handleDragStart={handleDragStart}
       onAddToClipboard={noop}
       shouldObscureFeed={shouldObscureFeed}
+      metaContent={<ContentInfo>Recipe</ContentInfo>}
     />
   );
 };
