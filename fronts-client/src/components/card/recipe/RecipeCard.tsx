@@ -11,6 +11,10 @@ import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { selectors as recipeSelectors } from 'bundles/recipesBundle';
 import { Recipe } from 'types/Recipe';
+import CardBody from '../CardBody';
+import CardMetaContainer from '../CardMetaContainer';
+import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
+import { ThumbnailSmall } from 'components/image/Thumbnail';
 
 interface ContainerProps {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -51,21 +55,28 @@ const RecipeCardComponent = ({
 }: RecipeProps) => {
   return (
     <CardContainer {...rest}>
-      <CardContent textSize={textSize}>
-        <CardSettingsDisplay
-          isBreaking={card.meta?.isBreaking}
-          showByline={card.meta?.showByline}
-          showQuotedHeadline={card.meta?.showQuotedHeadline}
-          showLargeHeadline={card.meta?.showLargeHeadline}
-          isBoosted={card.meta?.isBoosted}
-        />
-        <CardHeadingContainer size={size}>
+      <CardBody data-testid="snap" size={size} fade={fade}>
+        <CardMetaContainer size={size}>
           <CardMetaHeading>Recipe</CardMetaHeading>
-          <CardHeading data-testid="headline" html>
-            {recipe.title}
-          </CardHeading>
-        </CardHeadingContainer>
-      </CardContent>
+        </CardMetaContainer>
+        <CardContent textSize={textSize}>
+          <CardSettingsDisplay
+            isBreaking={card.meta?.isBreaking}
+            showByline={card.meta?.showByline}
+            showQuotedHeadline={card.meta?.showQuotedHeadline}
+            showLargeHeadline={card.meta?.showLargeHeadline}
+            isBoosted={card.meta?.isBoosted}
+          />
+          <CardHeadingContainer size={size}>
+            <CardHeading data-testid="headline" html>
+              {recipe.title}
+            </CardHeading>
+          </CardHeadingContainer>
+        </CardContent>
+        <ImageAndGraphWrapper size={size}>
+          <ThumbnailSmall url={recipe.featuredImage.url} />
+        </ImageAndGraphWrapper>
+      </CardBody>
     </CardContainer>
   );
 };
