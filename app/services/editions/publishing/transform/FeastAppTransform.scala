@@ -12,6 +12,15 @@ class FeastAppTransform extends PublicationTransform[FeastAppCuration] {
     Recipe(recipe = RecipeIdentifier(source.internalPageCode.toString))
   }
 
+  private val findSpace = "\\s+".r
+
+  /**
+   * Feast app expects a name like `all-recipes` wheras we have `All Recipes`
+   * @param originalName name to transform
+   * @return name in kebab-case
+   */
+  private def transformName(originalName:String):String = findSpace.replaceAllIn(originalName.toLowerCase, "-")
+
   private def transformCollections(collection:PublishedCollection):FeastAppContainer =
     FeastAppContainer(
       id=collection.id,
@@ -22,7 +31,7 @@ class FeastAppTransform extends PublicationTransform[FeastAppCuration] {
 
   override def transformContent(source: PublishableIssue)(implicit evidence: Writes[FeastAppCuration]): FeastAppCuration = {
     source.fronts.map(f=>{
-      (f.name, f.collections.map(transformCollections).toIndexedSeq)
+      (transformName(f.name), f.collections.map(transformCollections).toIndexedSeq)
     })
   }.toMap
 }

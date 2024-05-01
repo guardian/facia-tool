@@ -25,7 +25,7 @@ object FeastNorthernHemisphere extends FeastAppEdition {
   )
 
   val MeatFreeFront: FrontTemplate = front(
-    "Meat-Free Recipes",
+    "Meat-Free",
     collection("Dish of the day"),
     collection("Collection 2"),
     collection("Collection 3"),

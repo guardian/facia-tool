@@ -37,8 +37,8 @@ class FeastAppTransformTest extends FreeSpec with Matchers {
     )
 
     val result = toTest.transformContent(incoming)
-    result.contains("All Recipes") shouldBe true
-    val allRecipesFront = result("All Recipes")
+    result.contains("all-recipes") shouldBe true
+    val allRecipesFront = result("all-recipes")
     allRecipesFront.length shouldBe 1
     allRecipesFront.head.title shouldBe "Dish of the day"
     allRecipesFront.head.body shouldBe Some("") //this is just how the `body` field is currently rendered
