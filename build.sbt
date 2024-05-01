@@ -75,7 +75,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "2.15",
     "com.gu" %% "fapi-client-play30" % "6.0.0",
-    "com.gu" %% "mobile-notifications-api-models" % "1.0.16", // todo: waiting for mobile team to bump to Play 3.0
+    "com.gu" %% "mobile-notifications-api-models" % "1.0.19",
     "com.gu" %% "pan-domain-auth-play_3-0" % "3.0.1",
 
     "org.scanamo" %% "scanamo" % "1.0.0-M15" exclude("org.scala-lang.modules", "scala-java8-compat_2.13"),
