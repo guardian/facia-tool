@@ -22,7 +22,9 @@ class Publishing[+A:Writes, +B:Writes](editionsAppPublicationBucket: Publication
     // Archive a copy
     issue.edition match {
       case FeastNorthernHemisphere | FeastSouthernHemisphere =>
-        throw new RuntimeException("Feast app does not currently support preview")
+        //Feast does not currently support previewing, but we don't need to be reminded of that every time someone drag/drops something!
+        //Preview will be implemented, when it exists.
+        ()
       case _ =>
         editionsAppPreviewBucket.putIssue(previewIssue)
     }

@@ -119,7 +119,7 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       verify(feastAppPublicationTarget, never()).putIssue(any[PublishableIssue],any[String])(any)
     }
 
-    "should throw an exception if you pass a Feast edition" - {
+    "should do nothing if you pass a Feast edition" - {
       val editionsAppPublicationBucket = mock[PublicationTargetBase[PublishableIssue]]
       val editionsAppPreviewBucket = mock[PublicationTargetBase[PublishableIssue]]
       val feastAppPublicationTarget = mock[PublicationTargetBase[FeastAppCuration]]
@@ -146,7 +146,7 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       )
       val result = Try { toTest.updatePreview(iss) }
 
-      assert(result.isFailure)
+      assert(result.isSuccess)
 
       verify(editionsAppPublicationBucket, never()).putIssue(any[PublishableIssue],any[String])(any)
       verify(editionsAppPreviewBucket, never()).putIssue(any[PublishableIssue],any[String])(any)
