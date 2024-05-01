@@ -13,7 +13,7 @@ object FeastSouthernHemisphere extends FeastAppEdition {
   override val notificationUTCOffset = 0
 
   val MainFront: FrontTemplate = front(
-    "Southern hemisphere",
+    "All Recipes",
     collection("Dish of the day"),
     collection("Collection 2"),
     collection("Collection 3"),
@@ -26,7 +26,7 @@ object FeastSouthernHemisphere extends FeastAppEdition {
   )
 
   val MeatFreeFront: FrontTemplate = front(
-    "Southern hemisphere",
+    "Meat-Free",
     collection("Dish of the day"),
     collection("Collection 2"),
     collection("Collection 3"),
