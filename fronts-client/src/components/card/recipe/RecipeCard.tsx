@@ -15,6 +15,8 @@ import CardBody from '../CardBody';
 import CardMetaContainer from '../CardMetaContainer';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { ThumbnailSmall } from 'components/image/Thumbnail';
+import CardMetaContent from '../CardMetaContent';
+import { upperFirst } from 'lodash';
 
 interface ContainerProps {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -58,6 +60,9 @@ const RecipeCardComponent = ({
       <CardBody data-testid="snap" size={size} fade={fade}>
         <CardMetaContainer size={size}>
           <CardMetaHeading>Recipe</CardMetaHeading>
+          <CardMetaContent>
+            {upperFirst(recipe.difficultyLevel)}
+          </CardMetaContent>
         </CardMetaContainer>
         <CardContent textSize={textSize}>
           <CardSettingsDisplay
