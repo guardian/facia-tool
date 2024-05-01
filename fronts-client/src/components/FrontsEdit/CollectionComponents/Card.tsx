@@ -96,7 +96,7 @@ type CardContainerProps = ContainerProps & {
   addImageToCard: (id: string, response: ValidationResponse) => void;
   updateCardMeta: (id: string, meta: CardMeta) => void;
   clearCardSelection: (id: string) => void;
-  type: CardTypes;
+  type?: CardTypes;
   isSelected: boolean;
   numSupportingArticles: number;
   editMode: EditMode;
@@ -218,6 +218,7 @@ class Card extends React.Component<CardContainerProps> {
                 onClick={isUneditable ? undefined : () => onSelect(uuid)}
                 size={size}
                 textSize={textSize}
+                showMeta={showMeta}
               />
               {getSublinks}
             </>

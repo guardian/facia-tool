@@ -195,6 +195,6 @@ const createMapStateToProps = () => {
   };
 };
 
-export { ArticleComponentProps, ArticleCard as ArticleComponent };
+export { ArticleComponentProps, ArticleCard };
 
 export default connect(createMapStateToProps)(ArticleCard);

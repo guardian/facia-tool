@@ -46,7 +46,7 @@ export const RecipeCard = ({
   isUneditable,
   collectionId,
   frontId,
-  showMeta,
+  showMeta = true,
   ...rest
 }: Props) => {
   const card = useSelector<State, Card>((state) => selectCard(state, id));
