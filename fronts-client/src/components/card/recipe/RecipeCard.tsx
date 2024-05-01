@@ -7,18 +7,17 @@ import CardHeadingContainer from '../CardHeadingContainer';
 import CardMetaHeading from '../CardMetaHeading';
 import CardHeading from '../CardHeading';
 import { selectCard } from 'selectors/shared';
-import { connect } from 'react-redux';
 import { State } from 'types/State';
 import { selectors as recipeSelectors } from 'bundles/recipesBundle';
-import { Recipe } from 'types/Recipe';
 import CardBody from '../CardBody';
 import CardMetaContainer from '../CardMetaContainer';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { ThumbnailSmall } from 'components/image/Thumbnail';
 import CardMetaContent from '../CardMetaContent';
 import { upperFirst } from 'lodash';
+import { useSelector } from 'react-redux';
 
-interface ContainerProps {
+interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
   onDelete?: (uuid: string) => void;
@@ -33,14 +32,10 @@ interface ContainerProps {
   fade?: boolean;
   children?: React.ReactNode;
   isUneditable?: boolean;
+  showMeta?: boolean;
 }
 
-interface RecipeProps extends ContainerProps {
-  card: Card;
-  recipe: Recipe;
-}
-
-const RecipeCardComponent = ({
+export const RecipeCard = ({
   id,
   fade,
   size = 'default',
@@ -48,22 +43,28 @@ const RecipeCardComponent = ({
   onDelete,
   onAddToClipboard,
   children,
-  card,
   isUneditable,
   collectionId,
   frontId,
-  recipe,
+  showMeta,
   ...rest
-}: RecipeProps) => {
+}: Props) => {
+  const card = useSelector<State, Card>((state) => selectCard(state, id));
+  const recipe = useSelector((state) =>
+    recipeSelectors.selectById(state, card.id)
+  );
+
   return (
     <CardContainer {...rest}>
       <CardBody data-testid="snap" size={size} fade={fade}>
-        <CardMetaContainer size={size}>
-          <CardMetaHeading>Recipe</CardMetaHeading>
-          <CardMetaContent>
-            {upperFirst(recipe.difficultyLevel)}
-          </CardMetaContent>
-        </CardMetaContainer>
+        {showMeta && (
+          <CardMetaContainer size={size}>
+            <CardMetaHeading>Recipe</CardMetaHeading>
+            <CardMetaContent>
+              {upperFirst(recipe?.difficultyLevel)}
+            </CardMetaContent>
+          </CardMetaContainer>
+        )}
         <CardContent textSize={textSize}>
           <CardSettingsDisplay
             isBreaking={card.meta?.isBreaking}
@@ -74,25 +75,14 @@ const RecipeCardComponent = ({
           />
           <CardHeadingContainer size={size}>
             <CardHeading data-testid="headline" html>
-              {recipe.title}
+              {recipe?.title ?? 'No recipe found'}
             </CardHeading>
           </CardHeadingContainer>
         </CardContent>
         <ImageAndGraphWrapper size={size}>
-          <ThumbnailSmall url={recipe.featuredImage.url} />
+          <ThumbnailSmall url={recipe?.featuredImage.url} />
         </ImageAndGraphWrapper>
       </CardBody>
     </CardContainer>
   );
 };
-
-const mapStateToProps = (state: State, props: ContainerProps) => {
-  const card = selectCard(state, props.id);
-
-  return {
-    card,
-    recipe: recipeSelectors.selectById(state, card.id),
-  };
-};
-
-export const RecipeCard = connect(mapStateToProps)(RecipeCardComponent);
