@@ -19,7 +19,7 @@ object FeastAppModel {
   implicit val paletteFormat:Format[Palette] = Json.format[Palette]
   implicit val subCollectionFormat:Format[SubCollection] = Json.format[SubCollection]
 
-  implicit val containerItemFomat:Format[ContainerItem] = Format.apply(
+  implicit val containerItemFormat:Format[ContainerItem] = Format.apply(
     jsValue=> {
       recipeFormat.reads(jsValue) orElse chefFormat.reads(jsValue) orElse subCollectionFormat.reads(jsValue)
     },
