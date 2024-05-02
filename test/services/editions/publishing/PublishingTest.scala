@@ -44,8 +44,8 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
 
       val expectedIssue = iss.toPublishableIssue("new-version", PublishAction.proof)
 
-      verify(editionsAppPublicationBucket, never()).putIssue(any[PublishableIssue],any[String])(any)
-      verify(editionsAppPreviewBucket, never()).putIssue(any[PublishableIssue],any[String])(any)
+      verify(editionsAppPublicationBucket, never()).putIssue(any[PublishableIssue],any[Option[String]])(any)
+      verify(editionsAppPreviewBucket, never()).putIssue(any[PublishableIssue],any[Option[String]])(any)
       verify(feastAppPublicationTarget, times(1)).putIssue( org.mockito.ArgumentMatchers.eq(expectedIssue),org.mockito.ArgumentMatchers.eq(null))(any)
     }
 
@@ -79,8 +79,8 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val expectedIssue = iss.toPublishableIssue("some-version-id", PublishAction.publish)
 
       verify(editionsAppPublicationBucket, times(1)).putIssue( org.mockito.ArgumentMatchers.eq(expectedIssue),org.mockito.ArgumentMatchers.eq(null))(any)
-      verify(editionsAppPreviewBucket, never()).putIssue(any[PublishableIssue],any[String])(any)
-      verify(feastAppPublicationTarget, never()).putIssue(any[PublishableIssue],any[String])(any)
+      verify(editionsAppPreviewBucket, never()).putIssue(any[PublishableIssue],any[Option[String]])(any)
+      verify(feastAppPublicationTarget, never()).putIssue(any[PublishableIssue],any[Option[String]])(any)
     }
   }
 
@@ -114,9 +114,9 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
 
       val expectedIssue = iss.toPreviewIssue
 
-      verify(editionsAppPublicationBucket, never()).putIssue(any[PublishableIssue],any[String])(any)
+      verify(editionsAppPublicationBucket, never()).putIssue(any[PublishableIssue],any[Option[String]])(any)
       verify(editionsAppPreviewBucket, times(1)).putIssue( org.mockito.ArgumentMatchers.eq(expectedIssue),org.mockito.ArgumentMatchers.eq(null))(any)
-      verify(feastAppPublicationTarget, never()).putIssue(any[PublishableIssue],any[String])(any)
+      verify(feastAppPublicationTarget, never()).putIssue(any[PublishableIssue],any[Option[String]])(any)
     }
 
     "should do nothing if you pass a Feast edition" - {
@@ -148,9 +148,9 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
 
       assert(result.isSuccess)
 
-      verify(editionsAppPublicationBucket, never()).putIssue(any[PublishableIssue],any[String])(any)
-      verify(editionsAppPreviewBucket, never()).putIssue(any[PublishableIssue],any[String])(any)
-      verify(feastAppPublicationTarget, never()).putIssue(any[PublishableIssue],any[String])(any)
+      verify(editionsAppPublicationBucket, never()).putIssue(any[PublishableIssue],any[Option[String]])(any)
+      verify(editionsAppPreviewBucket, never()).putIssue(any[PublishableIssue],any[Option[String]])(any)
+      verify(feastAppPublicationTarget, never()).putIssue(any[PublishableIssue],any[Option[String]])(any)
     }
   }
 }

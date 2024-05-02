@@ -5,8 +5,9 @@ import play.api.libs.json.Writes
 import PublishedIssueFormatters._
 
 trait PublicationTargetBase[T] {
-  def putIssue(issue: PublishableIssue, key:String = "")(implicit evidence: Writes[T]): Unit = {
-    putIssueJson(issue, key)
+  def putIssue(issue: PublishableIssue, key:Option[String] = None)(implicit evidence: Writes[T]): Unit = {
+    val outputKey = key.getOrElse(EditionsBucket.createKey(issue))
+    putIssueJson(issue, outputKey)
   }
 
   protected def putIssueJson[C: Writes](content: C, key:String): Unit
@@ -22,9 +23,10 @@ trait PublicationTarget extends PublicationTargetBase[PublishableIssue]
 trait PublicationTargetWithTransform[T] extends PublicationTargetBase[T] {
   val transform:PublicationTransform[T]
 
-  override def putIssue(issue: PublishableIssue, key:String = "")(implicit evidence: Writes[T]): Unit = {
+  override def putIssue(issue: PublishableIssue, key:Option[String] = None)(implicit evidence: Writes[T]): Unit = {
     val jsonContent = transform.transformContent(issue)
-    putIssueJson(jsonContent, key)
+    val outputKey = key.getOrElse(EditionsBucket.createKey(issue))
+    putIssueJson(jsonContent, outputKey)
   }
 }
 
