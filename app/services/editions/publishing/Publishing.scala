@@ -11,9 +11,9 @@ import play.api.libs.json.Writes
 
 import scala.jdk.CollectionConverters._
 
-class Publishing[+A:Writes, +B:Writes](editionsAppPublicationBucket: PublicationTargetBase[A],
-                 editionsAppPreviewBucket: PublicationTargetBase[A],
-                 feastAppPublicationTarget: PublicationTargetBase[B],
+class Publishing(editionsAppPublicationBucket: EditionsBucket,
+                 editionsAppPreviewBucket: EditionsBucket,
+                 feastAppPublicationTarget: FeastPublicationTarget,
                  db: EditionsDB
                 ) extends Logging {
 

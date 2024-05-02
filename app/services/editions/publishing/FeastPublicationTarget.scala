@@ -2,13 +2,10 @@ package services.editions.publishing
 import com.amazonaws.services.sns.AmazonSNS
 import com.amazonaws.services.sns.model.{MessageAttributeValue, PublishRequest}
 import conf.ApplicationConfiguration
-import model.editions.PublishableIssue
-import play.api.Configuration
+import model.FeastAppModel.{ContainerItem, FeastAppContainer, FeastAppCuration, Recipe, RecipeIdentifier}
+import model.editions.{PublishableIssue, PublishedArticle, PublishedCollection}
 import play.api.libs.json.{Json, Writes}
-import services.editions.publishing.transform.{FeastAppModel, FeastAppTransform}
 import util.TimestampGenerator
-
-import java.time.Instant
 import scala.jdk.CollectionConverters._
 
 object FeastPublicationTarget {
@@ -18,8 +15,39 @@ object FeastPublicationTarget {
   type MessageType = MessageType.Value
 }
 
-class FeastPublicationTarget(snsClient:AmazonSNS, config: ApplicationConfiguration, timestamp:TimestampGenerator) extends PublicationTargetWithTransform[FeastAppModel.FeastAppCuration] {
-  override val transform: PublicationTransform[FeastAppModel.FeastAppCuration] = FeastAppTransform()
+class FeastPublicationTarget(snsClient:AmazonSNS, config: ApplicationConfiguration, timestamp:TimestampGenerator) extends PublicationTarget {
+  private def transformArticles(source:PublishedArticle):ContainerItem = {
+    //FIXME: This is a hack, since we can't actually generate any of the content types that Feast wants yet!
+    Recipe(recipe = RecipeIdentifier(source.internalPageCode.toString))
+  }
+
+  private val findSpace = "\\s+".r
+
+  /**
+   * Feast app expects a name like `all-recipes` wheras we have `All Recipes`
+   * @param originalName name to transform
+   * @return name in kebab-case
+   */
+  private def transformName(originalName:String):String = findSpace.replaceAllIn(originalName.toLowerCase, "-")
+
+  private def transformCollections(collection:PublishedCollection):FeastAppContainer =
+    FeastAppContainer(
+      id=collection.id,
+      title=collection.name,
+      body=Some(""),  //TBD, this is just how it appears in the data at the moment
+      items = collection.items.map(transformArticles)
+    )
+
+  def transformContent(source: PublishableIssue): FeastAppCuration = {
+    source.fronts.map(f=>{
+      (transformName(f.name), f.collections.map(transformCollections).toIndexedSeq)
+    })
+  }.toMap
+
+  override def putIssue(issue: PublishableIssue, key: Option[String]=None): Unit = {
+    val outputKey = key.getOrElse(EditionsBucket.createKey(issue))
+    putIssueJson(transformContent(issue), outputKey)
+  }
 
   private def createPublishRequest(content:String, messageType:FeastPublicationTarget.MessageType):PublishRequest = {
     new PublishRequest()

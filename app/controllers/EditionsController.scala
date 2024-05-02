@@ -27,7 +27,7 @@ import scala.util.Try
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
-                         publishing: Publishing[Any, Any],
+                         publishing: Publishing,
                          capi: Capi,
                          val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
 

@@ -1,4 +1,5 @@
-package services.editions.publishing.transform
+package model
+
 import play.api.libs.json._
 
 object FeastAppModel {
