@@ -16,6 +16,7 @@ export default defineConfig({
       },
     },
     outDir: '../public/fronts-client-v2',
+    sourcemap: true
   },
   server: {
     origin: 'http://localhost:5173',
