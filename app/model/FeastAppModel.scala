@@ -1,6 +1,9 @@
 package model
 
+import model.editions.Edition
 import play.api.libs.json._
+
+import java.time.LocalDate
 
 object FeastAppModel {
   sealed trait ContainerItem
@@ -12,7 +15,15 @@ object FeastAppModel {
   case class SubCollection(byline:Option[String], darkPalette:Option[Palette], image:Option[String], body:Option[String], title:String, lightPalette:Option[Palette], recipes:Seq[String]) extends ContainerItem
 
   case class FeastAppContainer(id:String, title:String, body:Option[String], items:Seq[ContainerItem])
-  type FeastAppCuration = Map[String, IndexedSeq[FeastAppContainer]]
+  //type FeastAppCuration = Map[String, IndexedSeq[FeastAppContainer]]
+
+  case class FeastAppCuration(
+                             id:String,
+                             edition:Edition,
+                             issueDate:LocalDate,
+                             version:String,
+                             fronts:Map[String,IndexedSeq[FeastAppContainer]]
+                             )
 
   implicit val recipeIdentifierFormat:Format[RecipeIdentifier] = Json.format[RecipeIdentifier]
   implicit val recipeFormat:Format[Recipe] = Json.format[Recipe]
@@ -31,6 +42,6 @@ object FeastAppModel {
     }
   )
   implicit val feastAppContainerFormat:Format[FeastAppContainer] = Json.format[FeastAppContainer]
-  //No explicit formatter required for the root level, because it's just a map
+  implicit val feastAppCurationFormat:Format[FeastAppCuration] = Json.format[FeastAppCuration]
 
 }

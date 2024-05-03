@@ -124,8 +124,8 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
       val result = toTest.transformContent(incoming)
-      result.contains("all-recipes") shouldBe true
-      val allRecipesFront = result("all-recipes")
+      result.fronts.contains("all-recipes") shouldBe true
+      val allRecipesFront = result.fronts("all-recipes")
       allRecipesFront.length shouldBe 1
       allRecipesFront.head.title shouldBe "Dish of the day"
       allRecipesFront.head.body shouldBe Some("") //this is just how the `body` field is currently rendered
@@ -165,7 +165,7 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
         topic=None
       )
 
-      val serializedVersion = """{"all-recipes":[{"id":"98e89761-fdf0-4903-b49d-2af7d66fc930","title":"Dish of the day","body":"","items":[{"recipe":{"id":"123456"}}]}]}"""
+      val serializedVersion = """{"id":"123456ABCD","edition":"feast-northern-hemisphere","issueDate":"2024-05-03","version":"v1","fronts":{"all-recipes":[{"id":"98e89761-fdf0-4903-b49d-2af7d66fc930","title":"Dish of the day","body":"","items":[{"recipe":{"id":"123456"}}]}]}}"""
 
       val mockSNS = mock[AmazonSNSClient]
       when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())

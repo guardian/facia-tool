@@ -39,10 +39,16 @@ class FeastPublicationTarget(snsClient:AmazonSNS, config: ApplicationConfigurati
     )
 
   def transformContent(source: PublishableIssue): FeastAppCuration = {
-    source.fronts.map(f=>{
-      (transformName(f.name), f.collections.map(transformCollections).toIndexedSeq)
-    })
-  }.toMap
+    FeastAppCuration(
+      id=source.id,
+      issueDate=source.issueDate,
+      edition=source.edition,
+      version=source.version,
+      fronts=source.fronts.map(f=>{
+        (transformName(f.name), f.collections.map(transformCollections).toIndexedSeq)
+      }).toMap
+    )
+  }
 
   override def putIssue(issue: PublishableIssue, key: Option[String]=None): Unit = {
     val outputKey = key.getOrElse(EditionsBucket.createKey(issue))
