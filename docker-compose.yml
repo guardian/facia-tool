@@ -12,7 +12,7 @@ services:
             - POSTGRES_DB=faciatool
         volumes:
             - postgres-data:/var/lib/postgresql/data
-
+        command: [ "postgres", "-c", "log_statement=all", "-N", "500" ]
 volumes:
     postgres-data:
         driver: local
