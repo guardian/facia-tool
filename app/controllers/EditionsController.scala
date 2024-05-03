@@ -190,15 +190,16 @@ class EditionsController(db: EditionsDB,
 
   def publishIssue(id: String, version: EditionIssueVersionId) = EditEditionsAuthAction { req =>
     val lastProofedIssueVersion = db.getLastProofedIssueVersion(id)
-    // Protect against stale requests.
-    if (version != Publishing.ProofingNotRequiredMagicVersion && !lastProofedIssueVersion.exists(_.equals(version))) {
-      BadRequest(s"Last proofed version of issue '${id}' is '${lastProofedIssueVersion.getOrElse("none")}', not '${version}'")
-    } else {
-      db.getIssue(id).map { issue =>
+
+    db.getIssue(id).map { issue =>
+      // Protect against stale requests, if our output platform supports proofing
+      if(issue.supportsProofing && !lastProofedIssueVersion.exists(_.equals(version))) {
+        BadRequest(s"Last proofed version of issue '${id}' is '${lastProofedIssueVersion.getOrElse("none")}', not '${version}'")
+      } else {
         publishing.publish(issue, req.user, version)
-        NoContent
-      }.getOrElse(NotFound(s"Issue $id not found"))
-    }
+      }
+      NoContent
+    }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
   def getPrefillForCollection(id: String) = EditEditionsAuthAction { req =>

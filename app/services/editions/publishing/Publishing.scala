@@ -78,11 +78,11 @@ class Publishing(editionsAppPublicationBucket: EditionsBucket,
 
     logger.info(s"Uploading $action request for issue ${issue.id} to S3")(markers)
 
-    val publishedIssue = if(version==Publishing.ProofingNotRequiredMagicVersion) {
+    val publishedIssue = if(!issue.supportsProofing) {
       val newVersion = db.createIssueVersion(issue.id, user, OffsetDateTime.now())
-      issue.toPublishableIssue(newVersion, PublishAction.proof) //if you put `PublishAction.publish` in here, then you don't get any fronts in the output :(
+      issue.toPublishableIssue(newVersion, PublishAction.proof) //Not very self-explanatory; the use of `PublishAction.proof` here means "build the issue afresh".
     } else {
-      issue.toPublishableIssue(version, PublishAction.publish)
+      issue.toPublishableIssue(version, PublishAction.publish)  //PublishAction.publish here means "only use the previously proofed issue"
     }
 
     // Archive a copy
@@ -93,8 +93,4 @@ class Publishing(editionsAppPublicationBucket: EditionsBucket,
         editionsAppPublicationBucket.putIssue(publishedIssue)
     }
   }
-}
-
-object Publishing {
-  val ProofingNotRequiredMagicVersion = "proofing-not-required"
 }

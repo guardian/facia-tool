@@ -40,7 +40,7 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
         fronts = List(),
         supportsProofing = false
       )
-      toTest.publish(iss, User("Frank","Smith","fs@u.com", None), Publishing.ProofingNotRequiredMagicVersion)
+      toTest.publish(iss, User("Frank","Smith","fs@u.com", None),"no-proof-needed")
 
       val expectedIssue = iss.toPublishableIssue("new-version", PublishAction.proof)
 
@@ -72,7 +72,7 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
         launchedBy = None,
         launchedEmail = None,
         fronts = List(),
-        supportsProofing = false
+        supportsProofing = true
       )
       toTest.publish(iss, User("Frank","Smith","fs@u.com", None), "some-version-id")
 
