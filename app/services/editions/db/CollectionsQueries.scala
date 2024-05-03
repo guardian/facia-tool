@@ -73,7 +73,7 @@ trait CollectionsQueries {
   }
 
   def updateCollectionName(collection: EditionsCollection): EditionsCollection = DB localTx { implicit session =>
-    val lastUpdated = LocalDateTime.now()
+    val lastUpdated = EditionsDB.truncateDateTime(OffsetDateTime.now())
     sql"""
       UPDATE collections
       SET "name" = ${collection.displayName.trim()},
