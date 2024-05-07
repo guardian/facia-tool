@@ -4,7 +4,7 @@ const getPathFromUri = (uri: string): string | void => {
 };
 
 const ophanURIFromPath = (path: string) =>
-  `https://dashboard.ophan.co.uk/info?path=${path}`;
+  `https://dashboard.ophan.co.uk/info?path=/${path}`;
 
 const liveURIFromPath = (path: string) => `https://www.theguardian.com/${path}`;
 

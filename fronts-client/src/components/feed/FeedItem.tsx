@@ -206,7 +206,9 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
             {(props) => (
               <>
                 <HoverViewButton hoverText="View" href={href} {...props} />
-                <HoverOphanButton {...props} href={ophan} hoverText="Ophan" />
+                {isLive && (
+                  <HoverOphanButton {...props} href={ophan} hoverText="Ophan" />
+                )}
                 <HoverAddToClipboardButton
                   onAddToClipboard={onAddToClipboard}
                   hoverText="Clipboard"
