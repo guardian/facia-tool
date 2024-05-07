@@ -339,7 +339,7 @@ const articleBodyDefault = React.memo(
                 {isLive && (
                   <HoverOphanButton
                     {...props}
-                    href={isLive ? paths?.live : paths?.preview}
+                    href={paths?.ophan}
                     hoverText="Ophan"
                   />
                 )}

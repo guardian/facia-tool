@@ -137,7 +137,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
       handleDragStart,
     } = this.props;
 
-    const { preview, live } = getPaths(id);
+    const { preview, live, ophan } = getPaths(id);
     const href = isLive ? live : preview;
 
     return (
@@ -206,12 +206,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
             {(props) => (
               <>
                 <HoverViewButton hoverText="View" href={href} {...props} />
-                <HoverOphanButton
-                  {...props}
-                  isLive={isLive}
-                  href={href}
-                  hoverText="Ophan"
-                />
+                <HoverOphanButton {...props} href={ophan} hoverText="Ophan" />
                 <HoverAddToClipboardButton
                   onAddToClipboard={onAddToClipboard}
                   hoverText="Clipboard"
