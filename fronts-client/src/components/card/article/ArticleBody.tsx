@@ -33,6 +33,7 @@ import { ImageMetadataContainer } from 'components/image/ImageMetaDataContainer'
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import PageViewDataWrapper from '../../PageViewDataWrapper';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
+import { getPaths } from 'util/paths';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -106,7 +107,7 @@ interface ArticleBodyProps {
   sectionName?: string;
   displayPlaceholders?: boolean;
   uuid: string;
-  onDelete: () => void;
+  onDelete?: () => void;
   onAddToClipboard?: () => void;
   isUneditable?: boolean;
   byline?: string;
@@ -178,6 +179,7 @@ const articleBodyDefault = React.memo(
   }: ArticleBodyProps) => {
     const displayByline = size === 'default' && showByline && byline;
     const now = Date.now();
+    const paths = urlPath ? getPaths(urlPath) : undefined;
 
     return (
       <>
@@ -327,14 +329,20 @@ const articleBodyDefault = React.memo(
           >
             {(props) => (
               <>
-                <HoverViewButton
-                  hoverText="View"
-                  isLive={true}
-                  urlPath={urlPath}
-                  isSnapLink={true}
-                  {...props}
-                />
-                <HoverOphanButton {...props} hoverText="Ophan" />
+                {urlPath && (
+                  <HoverViewButton
+                    hoverText="View"
+                    href={isLive ? paths?.live : paths?.preview}
+                    {...props}
+                  />
+                )}
+                {isLive && (
+                  <HoverOphanButton
+                    {...props}
+                    href={isLive ? paths?.live : paths?.preview}
+                    hoverText="Ophan"
+                  />
+                )}
                 {onAddToClipboard && (
                   <HoverAddToClipboardButton
                     onAddToClipboard={onAddToClipboard}
@@ -342,11 +350,13 @@ const articleBodyDefault = React.memo(
                     {...props}
                   />
                 )}
-                <HoverDeleteButton
-                  onDelete={onDelete}
-                  hoverText="Delete"
-                  {...props}
-                />
+                {onDelete && (
+                  <HoverDeleteButton
+                    onDelete={onDelete}
+                    hoverText="Delete"
+                    {...props}
+                  />
+                )}
               </>
             )}
           </HoverActionsButtonWrapper>

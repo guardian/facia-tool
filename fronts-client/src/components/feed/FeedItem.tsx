@@ -20,6 +20,7 @@ import CircularIconContainer from 'components/icons/CircularIconContainer';
 import RefreshPeriodically from '../util/RefreshPeriodically';
 import { collectionArticlesPollInterval } from 'constants/polling';
 import RenderOffscreen from 'components/util/RenderOffscreen';
+import { getPaths } from 'util/paths';
 
 const Container = styled.div`
   display: flex;
@@ -136,6 +137,9 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
       handleDragStart,
     } = this.props;
 
+    const { preview, live } = getPaths(id);
+    const href = isLive ? live : preview;
+
     return (
       <Container
         data-testid="feed-item"
@@ -201,14 +205,13 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
           >
             {(props) => (
               <>
-                <HoverViewButton
-                  hoverText="View"
-                  isLive={isLive}
-                  urlPath={id}
-                  isSnapLink={true}
+                <HoverViewButton hoverText="View" href={href} {...props} />
+                <HoverOphanButton
                   {...props}
+                  isLive={isLive}
+                  href={href}
+                  hoverText="Ophan"
                 />
-                <HoverOphanButton {...props} hoverText="Ophan" />
                 <HoverAddToClipboardButton
                   onAddToClipboard={onAddToClipboard}
                   hoverText="Clipboard"

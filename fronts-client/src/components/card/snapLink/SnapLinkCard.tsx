@@ -37,6 +37,7 @@ import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { ThumbnailCutout } from 'components/image/Thumbnail';
 import PageViewDataWrapper from 'components/PageViewDataWrapper';
+import { getPathsForSnap } from 'util/paths';
 
 const SnapLinkBodyContainer = styled(CardBody)`
   justify-content: space-between;
@@ -198,14 +199,14 @@ const SnapLinkCard = ({
           >
             {(props) => (
               <>
-                <HoverViewButton
-                  hoverText="View"
-                  isLive={true}
-                  urlPath={urlPath}
-                  isSnapLink={true}
+                {urlPath && (
+                  <HoverViewButton hoverText="View" href={urlPath} {...props} />
+                )}
+                <HoverOphanButton
                   {...props}
+                  hoverText="Ophan"
+                  href={urlPath && getPathsForSnap(urlPath).ophan}
                 />
-                <HoverOphanButton {...props} hoverText="Ophan" />
                 <HoverAddToClipboardButton
                   onAddToClipboard={onAddToClipboard}
                   hoverText="Clipboard"

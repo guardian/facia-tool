@@ -23,14 +23,8 @@ const HoverWrapper = (
     <HoverActionsButtonWrapper toolTipPosition={'top'} toolTipAlign={'center'}>
       {(props) => (
         <>
-          <HoverViewButton
-            hoverText="View"
-            isLive={true}
-            urlPath={'test-string'}
-            isSnapLink={true}
-            {...props}
-          />
-          <HoverOphanButton {...props} isLive={true} hoverText="Ophan" />
+          <HoverViewButton hoverText="View" href={'test-string'} {...props} />
+          <HoverOphanButton {...props} hoverText="Ophan" />
           <HoverDeleteButton onDelete={noop} hoverText="Delete" {...props} />
         </>
       )}
@@ -61,13 +55,10 @@ describe('Hover Action Button Wrapper', () => {
             <>
               <HoverViewButton
                 hoverText="View"
-                isLive={true}
-                urlPath={'test-string'}
-                isSnapLink={true}
+                href={'test-string'}
                 {...props}
               />
-              <HoverOphanButton isLive={false} {...props} hoverText="Ophan" />
-
+              <HoverOphanButton {...props} hoverText="Ophan" />
               <HoverDeleteButton
                 onDelete={noop}
                 hoverText="Delete"

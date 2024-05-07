@@ -1,7 +1,6 @@
 import React from 'react';
 import ButtonCircular from './ButtonCircular';
 import Link from '../Link';
-import { getPaths } from '../../util/paths';
 import { ButtonProps } from './HoverActionButtonWrapper';
 import {
   AddToClipboardHoverIcon,
@@ -76,28 +75,18 @@ const HoverAddToClipboardButton = ({
 );
 
 const HoverViewButton = ({
-  isLive,
-  urlPath = '',
   showToolTip,
   hideToolTip,
-  isSnapLink = false,
+  href,
   hoverText,
 }: ButtonPropsWithHoverText & {
-  isLive?: boolean;
-  urlPath?: string;
-  isSnapLink?: boolean;
+  href?: string;
 }) => (
   <Link
     onClick={(e: React.MouseEvent) => {
       e.stopPropagation();
     }}
-    href={
-      isSnapLink
-        ? urlPath
-        : isLive
-        ? getPaths(urlPath).live
-        : getPaths(urlPath).preview
-    }
+    href={href}
   >
     <ActionButton
       tabIndex={-1}
@@ -110,39 +99,29 @@ const HoverViewButton = ({
 );
 
 const HoverOphanButton = ({
-  isLive,
-  urlPath,
+  href,
   showToolTip,
   hideToolTip,
-  isSnapLink = false,
   hoverText,
 }: ButtonPropsWithHoverText & {
-  isLive?: boolean;
-  urlPath?: string;
-  isSnapLink?: boolean;
-}) =>
-  isLive ? (
-    <Link
-      onClick={(e: React.MouseEvent) => {
-        e.stopPropagation();
-      }}
-      href={
-        isSnapLink
-          ? urlPath && getPaths(urlPath).ophan
-          : getPaths(`https://www.theguardian.com/${urlPath}`).ophan
-      }
-      data-testid={'ophan-hover-button'}
+  href?: string;
+}) => (
+  <Link
+    onClick={(e: React.MouseEvent) => {
+      e.stopPropagation();
+    }}
+    href={href}
+    data-testid={'ophan-hover-button'}
+  >
+    <ActionButton
+      tabIndex={-1}
+      onMouseEnter={() => showToolTip(hoverText)}
+      onMouseLeave={hideToolTip}
     >
-      <ActionButton
-        tabIndex={-1}
-        onMouseEnter={() => showToolTip(hoverText)}
-        onMouseLeave={hideToolTip}
-      >
-        <OphanHoverIcon />
-      </ActionButton>
-    </Link>
-  ) : null;
-
+      <OphanHoverIcon />
+    </ActionButton>
+  </Link>
+);
 export {
   HoverDeleteButton,
   HoverViewButton,
