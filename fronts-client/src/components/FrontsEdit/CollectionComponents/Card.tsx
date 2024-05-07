@@ -44,7 +44,7 @@ import { DefaultDropIndicator } from 'components/DropZone';
 import DragIntentContainer from 'components/DragIntentContainer';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { RecipeCard } from 'components/card/recipe/RecipeCard';
-import { ChefCard } from '../../card/chef/ChefCard';
+import { ChefCard } from 'components/card/chef/ChefCard';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -240,7 +240,6 @@ class Card extends React.Component<CardContainerProps> {
                 textSize={textSize}
                 showMeta={showMeta}
               />
-              {getSublinks}
             </>
           );
         default:

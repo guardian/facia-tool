@@ -36,6 +36,7 @@ export const ChefFeedItemComponent = ({
       title={`${chef.firstName} ${chef.lastName}`}
       hasVideo={false}
       isLive={true}
+      liveUrl={`https://theguardian.com/${chef.apiUrl}`}
       thumbnail={chef.bylineLargeImageUrl}
       onAddToClipboard={noop}
       handleDragStart={handleDragStart}

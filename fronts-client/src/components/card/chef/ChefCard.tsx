@@ -15,7 +15,7 @@ import CardSettingsDisplay from '../CardSettingsDisplay';
 import CardHeadingContainer from '../CardHeadingContainer';
 import CardHeading from '../CardHeading';
 import ImageAndGraphWrapper from '../../image/ImageAndGraphWrapper';
-import Thumbnail, { ThumbnailSmall } from '../../image/Thumbnail';
+import { ThumbnailSmall } from '../../image/Thumbnail';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;

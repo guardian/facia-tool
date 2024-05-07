@@ -56,13 +56,13 @@ const FeastSearchContainerComponent = ({
       {Object.values(recipes).map((recipe) => (
         <RecipeFeedItem key={recipe.id} recipe={recipe} />
       ))}
-      {Object.values(chefs).map(
-        (
-          chef /* TODO: as of now, added rendering of chefs just after the recipes. Need to change when "search-chefs" action gets finalised*/
-        ) => (
-          <ChefFeedItem key={chef.id} chef={chef} />
-        )
-      )}
+      {Object.values(chefs).map((chef) => (
+        <ChefFeedItem
+          key={chef.id}
+          chef={chef}
+        /> /*TODO: as of now, added rendering of chefs just after the recipes. Need
+      to change when "search-chefs" action gets finalised*/
+      ))}
     </FixedContentContainer>
   </React.Fragment>
 );
