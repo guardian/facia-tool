@@ -43,14 +43,14 @@ interface WrapperProps {
   size?: CardSizes; // Article Component size
   toolTipPosition: 'top' | 'left' | 'bottom' | 'right';
   toolTipAlign: 'left' | 'center' | 'right';
-  children: (renderProps: ButtonProps) => JSX.Element;
+  renderButtons: (renderProps: ButtonProps) => JSX.Element;
 }
 
 export const HoverActionsButtonWrapper = ({
   toolTipPosition,
   toolTipAlign,
   size,
-  children,
+  renderButtons,
 }: WrapperProps) => {
   const [toolTipText, setToolTipText] = useState<string | undefined>(undefined);
 
@@ -72,7 +72,7 @@ export const HoverActionsButtonWrapper = ({
           <ToolTip text={toolTipText} />
         </ToolTipWrapper>
       ) : null}
-      {children({
+      {renderButtons({
         showToolTip,
         hideToolTip,
         size: size,

@@ -326,8 +326,7 @@ const articleBodyDefault = React.memo(
             size={size}
             toolTipPosition={'top'}
             toolTipAlign={'right'}
-          >
-            {(props) => (
+            renderButtons={(props) => (
               <>
                 {urlPath && (
                   <HoverViewButton
@@ -359,7 +358,7 @@ const articleBodyDefault = React.memo(
                 )}
               </>
             )}
-          </HoverActionsButtonWrapper>
+          />
         </HoverActionsAreaOverlay>
       </>
     );

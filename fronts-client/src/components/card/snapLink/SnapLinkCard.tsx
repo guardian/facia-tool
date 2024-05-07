@@ -196,8 +196,7 @@ const SnapLinkCard = ({
             size={size}
             toolTipPosition={'top'}
             toolTipAlign={'right'}
-          >
-            {(props) => (
+            renderButtons={(props) => (
               <>
                 {urlPath && (
                   <HoverViewButton hoverText="View" href={urlPath} {...props} />
@@ -219,7 +218,7 @@ const SnapLinkCard = ({
                 />
               </>
             )}
-          </HoverActionsButtonWrapper>
+          />
         </HoverActionsAreaOverlay>
       </SnapLinkBodyContainer>
       {children}

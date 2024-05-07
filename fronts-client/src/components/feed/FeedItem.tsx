@@ -206,8 +206,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
           <HoverActionsButtonWrapper
             toolTipPosition={'top'}
             toolTipAlign={'right'}
-          >
-            {(props) => (
+            renderButtons={(props) => (
               <>
                 <HoverViewButton hoverText="View" href={href} {...props} />
                 {displayOphanLink && (
@@ -220,7 +219,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
                 />
               </>
             )}
-          </HoverActionsButtonWrapper>
+          />
         </HoverActionsAreaOverlay>
       </Container>
     );

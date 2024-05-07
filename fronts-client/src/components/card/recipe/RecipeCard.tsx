@@ -97,8 +97,7 @@ export const RecipeCard = ({
           <HoverActionsButtonWrapper
             toolTipPosition={'top'}
             toolTipAlign={'right'}
-          >
-            {(props) => (
+            renderButtons={(props) => (
               <>
                 <HoverViewButton
                   hoverText="View"
@@ -117,7 +116,7 @@ export const RecipeCard = ({
                 />
               </>
             )}
-          </HoverActionsButtonWrapper>
+          />
         </HoverActionsAreaOverlay>
       </CardBody>
     </CardContainer>

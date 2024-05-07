@@ -20,19 +20,20 @@ afterEach(cleanup);
 
 const HoverWrapper = (
   <ThemeProvider theme={theme}>
-    <HoverActionsButtonWrapper toolTipPosition={'top'} toolTipAlign={'center'}>
-      {(props) => (
+    <HoverActionsButtonWrapper
+      toolTipPosition={'top'}
+      toolTipAlign={'center'}
+      renderButtons={(props) => (
         <>
           <HoverViewButton hoverText="View" href={'test-string'} {...props} />
           <HoverOphanButton {...props} hoverText="Ophan" />
           <HoverDeleteButton onDelete={noop} hoverText="Delete" {...props} />
         </>
       )}
-    </HoverActionsButtonWrapper>
+    />
   </ThemeProvider>
 );
 
-// Tests //
 describe('Hover Action Button Wrapper', () => {
   it('should render Wrapper with Buttons', () => {
     const { container, getByTitle } = render(HoverWrapper);
