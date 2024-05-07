@@ -22,7 +22,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   private val moreRecentThenCreationTime = now.toInstant.toEpochMilli + 1
 
-  private val simpleMetadata = ArticleMetadata(
+  private val simpleMetadata = CardMetadata(
     customKicker = Some("Kicker"),
     headline = None,
     trailText = None,
@@ -75,7 +75,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
     EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), capiQueryTimeWindow, hidden = false)
 
-  private def article(pageCode: String): EditionsArticleSkeleton = EditionsArticleSkeleton(pageCode, ArticleMetadata.default)
+  private def article(id: String): EditionsArticleSkeleton = EditionsArticleSkeleton(id, CardMetadata.default)
 
   "The editions DB" - {
     "should insert an empty issue" taggedAs UsesDatabase in {
@@ -112,7 +112,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       singleIssue.head.issueDate.getDayOfMonth shouldBe 29
     }
 
-    "should insert fronts, collections and articles" taggedAs UsesDatabase in {
+    "should insert fronts, collections and cards" taggedAs UsesDatabase in {
       val id = insertSkeletonIssue(2019, 9, 30,
         front("news/uk",
           collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
@@ -166,7 +166,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       commentFront.collections.length shouldBe 3
 
       val editionsArticle = newsPoliticsCollection.items.head
-      editionsArticle.pageCode shouldBe "12345"
+      editionsArticle.id shouldBe "12345"
 
       val articleMetadata = editionsArticle.metadata.get
       articleMetadata.overrideArticleMainMedia shouldBe None
@@ -370,7 +370,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       val future = now.plusMinutes(20)
       val futureMillis = future.toInstant.toEpochMilli
 
-      val items = EditionsArticle("654789", futureMillis, Some(simpleMetadata)) :: brexshit.items
+      val items = EditionsCard("654789", CardType.Article, futureMillis, Some(simpleMetadata)) :: brexshit.items
 
       val evenMoreBrexshit = brexshit.copy(
         lastUpdated = Some(futureMillis),
@@ -393,11 +393,11 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       updatedBrexshit.displayName shouldBe "brexshit"
 
       // check we are storing some metadata
-      updatedBrexshit.items.find(_.pageCode == "654789").value.addedOn shouldBe future.toInstant.toEpochMilli
-      updatedBrexshit.items.find(_.pageCode == "654789").value.metadata.value shouldBe simpleMetadata
+      updatedBrexshit.items.find(_.id == "654789").value.addedOn shouldBe future.toInstant.toEpochMilli
+      updatedBrexshit.items.find(_.id == "654789").value.metadata.value shouldBe simpleMetadata
 
       // check that the added time hasn't modified
-      updatedBrexshit.items.find(_.pageCode == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
+      updatedBrexshit.items.find(_.id == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
     }
 
     "should allow a special front's hidden status to be changed" taggedAs UsesDatabase in {
@@ -480,7 +480,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       }) shouldBe Some(collectionId)
 
       (DB localTx { implicit session =>
-        sql"""SELECT page_code from articles WHERE collection_id = $collectionId""".map(_.string("page_code")).list().apply()
+        sql"""SELECT id from cards WHERE collection_id = $collectionId""".map(_.string("id")).list().apply()
       }).length shouldBe 2
 
       editionsDB.deleteIssue(dbIssue.id)
@@ -496,7 +496,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       }) should be
 
       (DB localTx { implicit session =>
-        sql"""SELECT page_code from articles WHERE collection_id = $collectionId""".map(_.string("page_code")).list().apply()
+        sql"""SELECT id from cards WHERE collection_id = $collectionId""".map(_.string("id")).list().apply()
       }).length shouldBe 0
     }
 

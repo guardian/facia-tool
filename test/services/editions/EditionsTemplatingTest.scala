@@ -81,7 +81,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       artsCollection.items.size shouldBe 2
 
       val arts1 = artsCollection.items.head
-      arts1.pageCode shouldBe "345678"
+      arts1.id shouldBe "345678"
 
       arts1.metadata.showByline.isDefined shouldBe true
       arts1.metadata.showByline.value shouldBe true
@@ -115,7 +115,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       artsCollection.items.size shouldBe 2
 
       val arts1 = artsCollection.items.head
-      arts1.pageCode shouldBe "574893"
+      arts1.id shouldBe "574893"
 
     }
 
@@ -136,7 +136,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       artsCollection.items.size shouldBe 2
 
       val arts1 = artsCollection.items.head
-      arts1.pageCode shouldBe "345678"
+      arts1.id shouldBe "345678"
 
     }
 
@@ -157,7 +157,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       artsCollection.items.size shouldBe 2
 
       val arts2 = artsCollection.items.tail.head
-      arts2.pageCode shouldBe "574893"
+      arts2.id shouldBe "574893"
 
       arts2.metadata.showByline.isDefined shouldBe true
       arts2.metadata.showByline.value shouldBe true
@@ -186,8 +186,8 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       issue.fronts.size shouldBe 4
       val frontPageCollection = issue.fronts.find(_.name == "UK News").value.collections.find(_.name == "Front Page").value
       frontPageCollection.items.size shouldBe 1
-      frontPageCollection.items.head.pageCode shouldBe "123456"
-      frontPageCollection.items.head.metadata shouldBe ArticleMetadata.default
+      frontPageCollection.items.head.id shouldBe "123456"
+      frontPageCollection.items.head.metadata shouldBe CardMetadata.default
     }
   }
 

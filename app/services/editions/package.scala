@@ -1,6 +1,6 @@
 package services.editions
 
-import model.editions.{EditionsArticle, EditionsCollection, EditionsFront}
+import model.editions.{EditionsCard, EditionsCollection, EditionsFront}
 import scalikejdbc.WrappedResultSet
 
 // Little helpers so we don't contaminate our business model with relational data
@@ -22,12 +22,12 @@ object DbEditionsCollection {
   }
 }
 
-case class DbEditionsArticle(article: EditionsArticle, collectionId: String, index: Int)
-object DbEditionsArticle {
-  def fromRowOpt(rs: WrappedResultSet, prefix: String): Option[DbEditionsArticle] = {
-    EditionsArticle.fromRowOpt(rs, prefix).map { article =>
-      DbEditionsArticle(
-        article,
+case class DbEditionsCard(card: EditionsCard, collectionId: String, index: Int)
+object DbEditionsCard {
+  def fromRowOpt(rs: WrappedResultSet, prefix: String): Option[DbEditionsCard] = {
+    EditionsCard.fromRowOpt(rs, prefix).map { card =>
+      DbEditionsCard(
+        card,
         rs.string(prefix + "collection_id"),
         rs.int(prefix + "index"))
     }

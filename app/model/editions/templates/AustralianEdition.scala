@@ -70,7 +70,7 @@ object AustralianEdition extends RegionalEdition {
     collection("Weekend")
       .searchPrefill("?tag=type/article,(tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-pictures-),-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
-      .withArticleItemsCap(20),
+      .withCardItemsCap(20),
     collection("Weekend"),
     collection("Weekend"),
     collection("Weekend"),
@@ -90,11 +90,11 @@ object AustralianEdition extends RegionalEdition {
     collection("News Features")
       .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,-tone/news,-tone/comment,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
-      .withArticleItemsCap(40),
+      .withCardItemsCap(40),
     collection("News")
       .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-(tone/features|tone/analysis|tone/explainer),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/comment,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
-      .withArticleItemsCap(40),
+      .withCardItemsCap(40),
     collection("National").hide,
     collection("National").hide
   )
@@ -107,11 +107,11 @@ object AustralianEdition extends RegionalEdition {
     collection("News Features")
       .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
-      .withArticleItemsCap(40),
+      .withCardItemsCap(40),
     collection("News")
       .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
-      .withArticleItemsCap(40),
+      .withCardItemsCap(40),
     collection("World").hide,
     collection("World").hide
   )
@@ -127,11 +127,11 @@ object AustralianEdition extends RegionalEdition {
     "Opinion",
     collection("Opinion")
       .searchPrefill("?tag=type/article,tone/comment,(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
-      .withArticleItemsCap(40),
+      .withCardItemsCap(40),
     collection("Opinion").hide,
     collection("World Opinion")
       .searchPrefill("?tag=type/article,tone/comment,-(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
-      .withArticleItemsCap(40),
+      .withCardItemsCap(40),
     collection("World Opinion").hide
   )
     .swatch(Opinion)
@@ -142,20 +142,20 @@ object AustralianEdition extends RegionalEdition {
     "Culture",
     collection("Culture")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
-      .withArticleItemsCap(10),
+      .withCardItemsCap(10),
     collection("Culture").hide,
     collection("Film and TV")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,(film/film|culture/television|tv-and-radio/tv-and-radio),-artanddesign/artanddesign")
-      .withArticleItemsCap(10),
+      .withCardItemsCap(10),
     collection("Music")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
-      .withArticleItemsCap(10),
+      .withCardItemsCap(10),
     collection("Books")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
-      .withArticleItemsCap(10),
+      .withCardItemsCap(10),
     collection("Art and design")
       .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
-      .withArticleItemsCap(10),
+      .withCardItemsCap(10),
     collection("Culture").hide
   )
     .swatch(Culture)
@@ -166,19 +166,19 @@ object AustralianEdition extends RegionalEdition {
     "Lifestyle",
     collection("Lifestyle")
       .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
-      .withArticleItemsCap(10),
+      .withCardItemsCap(10),
     collection("Food")
       .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,food/food,-lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
-      .withArticleItemsCap(10),
+      .withCardItemsCap(10),
     collection("Family")
       .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
-      .withArticleItemsCap(10),
+      .withCardItemsCap(10),
     collection("Fashion")
       .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
-      .withArticleItemsCap(10),
+      .withCardItemsCap(10),
     collection("Health")
       .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,-fashion/fashion,(lifeandstyle/health-and-wellbeing|lifeandstyle/fitness)")
-      .withArticleItemsCap(10),
+      .withCardItemsCap(10),
     collection("Lifestyle").hide,
     collection("Lifestyle").hide
   )
@@ -191,7 +191,7 @@ object AustralianEdition extends RegionalEdition {
     "Featured",
     collection("Long reads")
       .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
-      .withArticleItemsCap(40),
+      .withCardItemsCap(40),
     collection("Featured").hide,
     collection("Featured"),
     collection("Featured").hide
@@ -204,7 +204,7 @@ object AustralianEdition extends RegionalEdition {
     "Sport",
     collection("Sport")
       .searchPrefill("?tag=type/article,sport/sport,(tone/comment|tone/features|tone/analysis),-tone/minutebyminute")
-      .withArticleItemsCap(40),
+      .withCardItemsCap(40),
     collection("Sport").hide,
     collection("Sport").hide
   )
@@ -215,8 +215,8 @@ object AustralianEdition extends RegionalEdition {
   def FrontCrosswordsAu = front(
     "Puzzles",
     collection("Crosswords").searchPrefill("?tag=type/crossword")
-      .withArticleItemsCap(40),
+      .withCardItemsCap(40),
     collection("Quizzes").searchPrefill("?tag=tone/quizzes")
-      .withArticleItemsCap(40)
+      .withCardItemsCap(40)
   )
 }

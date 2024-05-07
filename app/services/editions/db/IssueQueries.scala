@@ -10,7 +10,7 @@ import org.postgresql.util.PSQLException
 import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.publishing.events.PublishEvent
-import services.editions.{DbEditionsArticle, DbEditionsCollection, DbEditionsFront, GenerateEditionTemplateResult}
+import services.editions.{DbEditionsCard, DbEditionsCollection, DbEditionsFront, GenerateEditionTemplateResult}
 
 import scala.util.{Failure, Success, Try}
 
@@ -89,15 +89,15 @@ trait IssueQueries extends Logging {
           RETURNING id;
           """.map(_.string("id")).single().apply().get
 
-        collection.items.zipWithIndex.foreach { case (article, tIndex) =>
+        collection.items.zipWithIndex.foreach { case (card, tIndex) =>
           sql"""
-                    INSERT INTO articles (
+                    INSERT INTO cards (
                     collection_id,
-                    page_code,
+                    id,
                     index,
                     added_on,
                     metadata
-                    ) VALUES ($collectionId, ${article.pageCode}, $tIndex, $truncatedNow, ${Json.toJson(article.metadata).toString}::JSONB)
+                    ) VALUES ($collectionId, ${card.id}, $tIndex, $truncatedNow, ${Json.toJson(card.metadata).toString}::JSONB)
                  """.execute().apply()
         }
       }
@@ -141,7 +141,7 @@ trait IssueQueries extends Logging {
                             issue: EditionsIssue,
                             front: Option[DbEditionsFront],
                             collection: Option[DbEditionsCollection],
-                            article: Option[DbEditionsArticle]
+                            card: Option[DbEditionsCard]
                           )
 
     val rows: List[GetIssueRow] =
@@ -183,23 +183,24 @@ trait IssueQueries extends Logging {
         collections.content_prefill_window_start       AS collections_content_prefill_window_start,
         collections.content_prefill_window_end         AS collections_content_prefill_window_end,
 
-        articles.collection_id AS articles_collection_id,
-        articles.page_code     AS articles_page_code,
-        articles.index         AS articles_index,
-        articles.added_on      AS articles_added_on,
-        articles.metadata      AS articles_metadata
+        cards.collection_id AS cards_collection_id,
+        cards.id            AS cards_id,
+        cards.card_type     AS cards_card_type,
+        cards.index         AS cards_index,
+        cards.added_on      AS cards_added_on,
+        cards.metadata      AS cards_metadata
 
       FROM edition_issues
       LEFT JOIN fronts ON (fronts.issue_id = edition_issues.id)
       LEFT JOIN collections ON (collections.front_id = fronts.id)
-      LEFT JOIN articles ON (articles.collection_id = collections.id)
+      LEFT JOIN cards ON (cards.collection_id = collections.id)
       WHERE edition_issues.id = $id
       """.map { rs =>
         GetIssueRow(
           EditionsIssue.fromRow(rs),
           DbEditionsFront.fromRowOpt(rs, "fronts_"),
           DbEditionsCollection.fromRowOpt(rs, "collections_"),
-          DbEditionsArticle.fromRowOpt(rs, "articles_"))
+          DbEditionsCard.fromRowOpt(rs, "cards_"))
       }
         .list()
         .apply()
@@ -216,13 +217,13 @@ trait IssueQueries extends Logging {
           .map(_.collection)
           .foldLeft(List.empty[EditionsCollection]) { (acc, cur) => if (acc.exists(c => c.id == cur.id)) acc else acc :+ cur }
           .map { collection =>
-            val articles = rows
-              .flatMap(row => row.article.filter(_.collectionId == collection.id))
+            val cards = rows
+              .flatMap(row => row.card.filter(_.collectionId == collection.id))
               .sortBy(_.index)
-              .map(_.article)
+              .map(_.card)
 
             collection
-              .copy(items = articles)
+              .copy(items = cards)
           }
 
         front.copy(collections = collectionsForFront)

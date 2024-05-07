@@ -111,7 +111,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
             ).collectFirst{case Some(path) => path},  // Get first non-None match,
             ophanQueryPrefillParams,
             edition,
-            Some(collectionTemplate.articleItemsCap),
+            Some(collectionTemplate.cardCap),
             MetadataForLogging(issueDate, collectionId = None, collectionName = Some(name))
           )
           getPrefillArticles(prefillParams)
@@ -141,7 +141,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
   private def mapToSkeleton(sortedArticleItems: List[Prefill]): List[EditionsArticleSkeleton] = {
     sortedArticleItems
       .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker, promotionMetric, _) =>
-        val articleMetadata = ArticleMetadata.default.copy(
+        val cardMetadata = CardMetadata.default.copy(
           showByline = if (metaData.showByline) Some(true) else None,
           showQuotedHeadline = if (metaData.showQuotedHeadline) Some(true) else None,
           mediaType = mediaType,
@@ -149,7 +149,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
           customKicker = pickedKicker,
           promotionMetric = promotionMetric
         )
-        EditionsArticleSkeleton(pageCode.toString, articleMetadata)
+        EditionsArticleSkeleton(pageCode.toString, cardMetadata)
       }
   }
 

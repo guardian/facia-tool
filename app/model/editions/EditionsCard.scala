@@ -1,7 +1,9 @@
 package model.editions
 
+import enumeratum.EnumEntry.Uncapitalised
+import enumeratum.{EnumEntry, PlayEnum}
 import logging.Logging
-import play.api.libs.json.{JsResult, Json}
+import play.api.libs.json.Json
 import scalikejdbc.WrappedResultSet
 
 case class Image (
@@ -24,7 +26,7 @@ object CoverCardImages {
   implicit val format = Json.format[CoverCardImages]
 }
 
-case class ArticleMetadata (
+case class CardMetadata(
   headline: Option[String],
   customKicker: Option[String],
   trailText: Option[String],
@@ -44,14 +46,22 @@ case class ArticleMetadata (
   promotionMetric: Option[Double]
 )
 
-object ArticleMetadata {
-  implicit val format = Json.format[ArticleMetadata]
+object CardMetadata {
+  implicit val format = Json.format[CardMetadata]
 
-  val default = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
+  val default = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
-case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[ArticleMetadata]) extends Logging {
-  def toPublishedArticle: PublishedArticle = {
+sealed abstract class CardType extends EnumEntry with Uncapitalised
+
+object CardType extends PlayEnum[CardType] {
+  case object Article extends CardType
+  override def values = findValues
+}
+
+
+case class EditionsCard(id: String, cardType: CardType, addedOn: Long, metadata: Option[CardMetadata]) extends Logging {
+  def toPublishedCard: PublishedArticle = {
     var mediaType: Option[MediaType] = metadata.flatMap(_.mediaType)
 
     val coverCardImages = metadata.flatMap { meta =>
@@ -80,7 +90,7 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
     })
 
     PublishedArticle(
-      pageCode.toLong,
+      id.toLong,
       PublishedFurniture(
         kicker = metadata.flatMap(_.customKicker),
         headlineOverride = metadata.flatMap(_.headline),
@@ -98,30 +108,24 @@ case class EditionsArticle(pageCode: String, addedOn: Long, metadata: Option[Art
   }
 }
 
-object EditionsArticle extends Logging {
-  implicit val writes = Json.format[EditionsArticle]
+object EditionsCard extends Logging {
+  implicit val writes = Json.format[EditionsCard]
 
-  def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsArticle = {
-    EditionsArticle(
-      rs.string(prefix + "page_code"),
-      rs.zonedDateTime(prefix + "added_on").toInstant.toEpochMilli,
-      rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[ArticleMetadata].get)
-    )
-  }
-
-  def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsArticle] = {
+  def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsCard] = {
     for {
-      pageCode <- rs.stringOpt(prefix + "page_code")
+      id <- rs.stringOpt(prefix + "id")
+      cardType <- rs.stringOpt(prefix + "card_type").flatMap(CardType.withNameOption)
       addedOn <- rs.zonedDateTimeOpt(prefix + "added_on").map(_.toInstant.toEpochMilli)
     } yield
-      EditionsArticle(
-        pageCode,
+      EditionsCard(
+        id,
+        cardType,
         addedOn,
         rs.stringOpt(prefix + "metadata").map(
-          s => Json.parse(s).validate[ArticleMetadata] match {
+          s => Json.parse(s).validate[CardMetadata] match {
             case result if (result.isError) => {
-              logger.error(s"Unable to parse article from database: \n${s}")
-              ArticleMetadata.default
+              logger.error(s"Unable to parse card from database: \n${s}")
+              CardMetadata.default
             }
             case result@_ => result.get
           }

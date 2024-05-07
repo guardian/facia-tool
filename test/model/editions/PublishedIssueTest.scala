@@ -47,7 +47,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     def hide: EditionsFront = thisFront.copy(isHidden = true)
   }
 
-  private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticle*): EditionsCollection =
+  private def collection(name: String, prefill: Option[CapiPrefillQuery], cards: EditionsCard*): EditionsCollection =
     EditionsCollection(
       name,
       name,
@@ -57,39 +57,40 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       None,
       prefill,
       None,
-      articles.toList
+      cards.toList
     )
 
   implicit class RichEditionsCollection(thisCollection: EditionsCollection) {
     def hide: EditionsCollection = thisCollection.copy(isHidden = true)
   }
 
-  private def article(pageCode: String): EditionsArticle =
-    EditionsArticle(
-      pageCode,
+  private def card(id: String): EditionsCard =
+    EditionsCard(
+      id,
+      CardType.Article,
       nowMilli,
-      Some(ArticleMetadata.default)
+      Some(CardMetadata.default)
     )
 
-  "PublishedArticles" - {
-    "article fields should be populated correctly" in {
+  "PublishedCards" - {
+    "card fields should be populated correctly" in {
       val now = OffsetDateTime.of(2019, 9, 30, 10, 23, 0, 0, ZoneOffset.ofHours(1))
-      val article = EditionsArticle("1234456", now.toInstant.toEpochMilli, None)
-      val publishedArticle = article.toPublishedArticle
-      publishedArticle.internalPageCode shouldBe 1234456
-      publishedArticle.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None)
+      val card = EditionsCard("1234456", CardType.Article, now.toInstant.toEpochMilli, None)
+      val publishedCard = card.toPublishedCard
+      publishedCard.internalPageCode shouldBe 1234456
+      publishedCard.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None)
     }
 
     "furniture defaults should be populated correctly" in {
-      val furniture = ArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
-      val article = EditionsArticle("123456", 0, Some(furniture))
-      val published = article.toPublishedArticle
+      val furniture = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
+      val card = EditionsCard("123456", CardType.Article, 0, Some(furniture))
+      val published = card.toPublishedCard
 
       published.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None)
     }
 
     val cardImage = Some(Image(Some(100), Some(100), "file://origin.jpg", "file://src.jpg", Some("file://thumb.jpg")))
-    val articleFurniture = ArticleMetadata(
+    val cardFurniture = CardMetadata(
       Some("headline"),
       Some("kicker"),
       Some("trail-text"),
@@ -109,8 +110,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     )
 
     "furniture should be populated when specified, cover cards should be ignored if the media type isn't set to cover card" in {
-      val article = EditionsArticle("123456", 0, Some(articleFurniture))
-      val published = article.toPublishedArticle
+      val card = EditionsCard("123456", CardType.Article, 0, Some(cardFurniture))
+      val published = card.toPublishedCard
 
       published.furniture shouldBe PublishedFurniture(
         Some("kicker"),
@@ -128,8 +129,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     }
 
     "furniture should be populated when specified, cover card should be some if media type is covercard " in {
-      val article = EditionsArticle("123456", 0, Some(articleFurniture.copy(mediaType = Some(MediaType.CoverCard))))
-      val published = article.toPublishedArticle
+      val card = EditionsCard("123456", CardType.Article, 0, Some(cardFurniture.copy(mediaType = Some(MediaType.CoverCard))))
+      val published = card.toPublishedCard
 
       val publishedImage = PublishedImage(Some(100), Some(100), "file://src.jpg")
 
@@ -149,7 +150,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     }
 
     "media type should fall back if there's an invalid cover card" in {
-      val coverCardFurniture = articleFurniture
+      val coverCardFurniture = cardFurniture
         .copy(mediaType = Some(MediaType.CoverCard))
         .copy(coverCardImages = Some(CoverCardImages(
           mobile = cardImage,
@@ -162,10 +163,10 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       )))
 
       List(
-        EditionsArticle("123456", 0, Some(coverCardFurniture)),
-        EditionsArticle("123456", 0, Some(swapped))
+        EditionsCard("123456", CardType.Article, 0, Some(coverCardFurniture)),
+        EditionsCard("123456", CardType.Article, 0, Some(swapped))
       ).foreach { a =>
-        a.toPublishedArticle.furniture.mediaType shouldBe PublishedMediaType.UseArticleTrail
+        a.toPublishedCard.furniture.mediaType shouldBe PublishedMediaType.UseArticleTrail
       }
     }
   }
@@ -174,15 +175,15 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     "fronts should be filtered out" in {
       val testIssue = issue(2019, 9, 30,
         front("uk-news",
-          collection("london", None, article("123")),
-          collection("financial", None, article("123"))
+          collection("london", None, card("123")),
+          collection("financial", None, card("123"))
         ),
         front("culture",
-          collection("art", None, article("123")),
-          collection("theatre", None, article("123"))
+          collection("art", None, card("123")),
+          collection("theatre", None, card("123"))
         ),
         front("special",
-          collection("magic", None, article("123"))
+          collection("magic", None, card("123"))
         ).hide
       )
       testIssue.fronts.size shouldBe 3
@@ -196,15 +197,15 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     "fronts should be filtered out when hidden" in {
       val testIssue = issue(2019, 9, 30,
         front("uk-news",
-          collection("london", None, article("123")),
-          collection("financial", None, article("123"))
+          collection("london", None, card("123")),
+          collection("financial", None, card("123"))
         ),
         front("culture",
-          collection("art", None, article("123")),
-          collection("theatre", None, article("123"))
+          collection("art", None, card("123")),
+          collection("theatre", None, card("123"))
         ),
         front("special",
-          collection("magic", None, article("123"))
+          collection("magic", None, card("123"))
         ).hide
       )
       testIssue.fronts.size shouldBe 3
@@ -217,8 +218,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       val testIssue = issue(2019, 9, 30,
         front("uk-news"),
         front("culture",
-          collection("art", None, article("123")),
-          collection("theatre", None, article("123"))
+          collection("art", None, card("123")),
+          collection("theatre", None, card("123"))
         ),
         front("empty")
       )
@@ -235,8 +236,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
           collection("financial", None)
         ),
         front("culture",
-          collection("art", None, article("123")),
-          collection("theatre", None, article("123"))
+          collection("art", None, card("123")),
+          collection("theatre", None, card("123"))
         ),
         front("empty")
       )
@@ -250,10 +251,10 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
   "PublishedFront" - {
     "collections should be filtered out when hidden" in {
       val testFront = front("uk-news",
-        collection("london", None, article("123")),
-        collection("financial", None, article("123")),
-        collection("special", None, article("123")).hide,
-        collection("weather", None, article("123"))
+        collection("london", None, card("123")),
+        collection("financial", None, card("123")),
+        collection("special", None, card("123")).hide,
+        collection("weather", None, card("123"))
       )
 
       testFront.collections.size shouldBe 4
@@ -266,8 +267,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
 
     "collections should be filtered out when empty" in {
       val testFront = front("uk-news",
-        collection("london", None, article("123")),
-        collection("financial", None, article("123")),
+        collection("london", None, card("123")),
+        collection("financial", None, card("123")),
         collection("weather", None)
       )
 
@@ -289,10 +290,10 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         None,
         None,
         None,
-        List(article("123"))
+        List(card("123"))
       )
       val testFront = front("uk-news",
-        collection("london", None, article("123")),
+        collection("london", None, card("123")),
         test
       )
 

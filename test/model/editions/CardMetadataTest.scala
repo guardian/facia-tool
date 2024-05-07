@@ -3,9 +3,9 @@ package model.editions
 import org.scalatest.{FreeSpec, Matchers}
 import play.api.libs.json.Json
 
-class ArticleMetadataTest extends FreeSpec with Matchers {
+class CardMetadataTest extends FreeSpec with Matchers {
 
-  val articleMetadata = ArticleMetadata(
+  val cardMetadata = CardMetadata(
     Some("headline"),
     Some("customKicker"),
     Some("trailText"),
@@ -33,7 +33,7 @@ class ArticleMetadataTest extends FreeSpec with Matchers {
     None
   )
 
-  private val articleMetadataAsString =
+  private val cardMetadataAsString =
     """
       |{"headline":"headline",
       | "customKicker":"customKicker",
@@ -59,14 +59,14 @@ class ArticleMetadataTest extends FreeSpec with Matchers {
       | "overrideArticleMainMedia":true}
     """.stripMargin.split('\n').map(_.trim).mkString //remove leading/trailing whitespace and join into a single string
 
-  "Article Metadata Data to/from Json" - {
+  "Card Metadata Data to/from Json" - {
 
     "should serialise correctly" in {
-      Json.toJson(articleMetadata).toString() shouldBe articleMetadataAsString
+      Json.toJson(cardMetadata).toString() shouldBe cardMetadataAsString
     }
 
     "should deserialise correctly" in {
-      Json.fromJson[ArticleMetadata](Json.parse(articleMetadataAsString)).get shouldBe articleMetadata
+      Json.fromJson[CardMetadata](Json.parse(cardMetadataAsString)).get shouldBe cardMetadata
     }
 
   }
