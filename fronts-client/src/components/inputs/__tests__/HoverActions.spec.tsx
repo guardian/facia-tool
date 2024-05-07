@@ -14,29 +14,27 @@ import {
 } from '../HoverActionButtons';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../../../constants/theme';
+import { noop } from 'lodash';
 
 afterEach(cleanup);
 
-// Mocks //
-const onDelete = () => {};
-const Buttons = [
-  { text: 'View', component: HoverViewButton },
-  { text: 'Ophan', component: HoverOphanButton },
-  { text: 'Delete', component: HoverDeleteButton },
-];
-
 const HoverWrapper = (
   <ThemeProvider theme={theme}>
-    <HoverActionsButtonWrapper
-      buttons={Buttons}
-      buttonProps={{
-        isLive: true,
-        urlPath: 'test-string',
-        onDelete,
-      }}
-      toolTipPosition={'top'}
-      toolTipAlign={'center'}
-    />
+    <HoverActionsButtonWrapper toolTipPosition={'top'} toolTipAlign={'center'}>
+      {(props) => (
+        <>
+          <HoverViewButton
+            hoverText="View"
+            isLive={true}
+            urlPath={'test-string'}
+            isSnapLink={true}
+            {...props}
+          />
+          <HoverOphanButton {...props} isLive={true} hoverText="Ophan" />
+          <HoverDeleteButton onDelete={noop} hoverText="Delete" {...props} />
+        </>
+      )}
+    </HoverActionsButtonWrapper>
   </ThemeProvider>
 );
 
@@ -56,15 +54,28 @@ describe('Hover Action Button Wrapper', () => {
     const { container } = render(
       <ThemeProvider theme={theme}>
         <HoverActionsButtonWrapper
-          buttons={Buttons}
-          buttonProps={{
-            isLive: false, // testing isLive
-            urlPath: 'test-string',
-            onDelete,
-          }}
           toolTipPosition={'top'}
           toolTipAlign={'center'}
-        />
+        >
+          {(props) => (
+            <>
+              <HoverViewButton
+                hoverText="View"
+                isLive={true}
+                urlPath={'test-string'}
+                isSnapLink={true}
+                {...props}
+              />
+              <HoverOphanButton isLive={false} {...props} hoverText="Ophan" />
+
+              <HoverDeleteButton
+                onDelete={noop}
+                hoverText="Delete"
+                {...props}
+              />
+            </>
+          )}
+        </HoverActionsButtonWrapper>
       </ThemeProvider>
     );
 

@@ -196,19 +196,27 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
         </FeedItemContainer>
         <HoverActionsAreaOverlay data-testid="hover-overlay">
           <HoverActionsButtonWrapper
-            buttons={[
-              { text: 'View', component: HoverViewButton },
-              { text: 'Ophan', component: HoverOphanButton },
-              { text: 'Clipboard', component: HoverAddToClipboardButton },
-            ]}
-            buttonProps={{
-              isLive,
-              urlPath: id,
-              onAddToClipboard,
-            }}
             toolTipPosition={'top'}
             toolTipAlign={'right'}
-          />
+          >
+            {(props) => (
+              <>
+                <HoverViewButton
+                  hoverText="View"
+                  isLive={isLive}
+                  urlPath={id}
+                  isSnapLink={true}
+                  {...props}
+                />
+                <HoverOphanButton {...props} hoverText="Ophan" />
+                <HoverAddToClipboardButton
+                  onAddToClipboard={onAddToClipboard}
+                  hoverText="Clipboard"
+                  {...props}
+                />
+              </>
+            )}
+          </HoverActionsButtonWrapper>
         </HoverActionsAreaOverlay>
       </Container>
     );

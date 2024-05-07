@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from 'constants/theme';
 import ToolTip from './HoverActionToolTip';
 import { CardSizes } from 'types/Collection';
@@ -33,84 +33,50 @@ const ToolTipWrapper = styled.div<{
       : null};
 `;
 
-interface HoverButtonInterface {
-  text: string;
-  component: React.ComponentType<ButtonPropsFromWrapper>;
-}
-export interface ButtonPropsFromWrapper {
-  showToolTip: () => void;
+export interface ButtonProps {
+  showToolTip: (text: string) => void;
   hideToolTip: () => void;
-  isSnapLink?: boolean;
+  size?: CardSizes;
 }
-interface WrapperProps<ButtonProps> {
-  buttons: HoverButtonInterface[];
-  buttonProps: ButtonProps;
+
+interface WrapperProps {
   size?: CardSizes; // Article Component size
   toolTipPosition: 'top' | 'left' | 'bottom' | 'right';
   toolTipAlign: 'left' | 'center' | 'right';
+  children: (renderProps: ButtonProps) => JSX.Element;
 }
 
-interface WrapperState {
-  isToolTipVisible: boolean;
-  toolTipText: string;
-}
+export const HoverActionsButtonWrapper = ({
+  toolTipPosition,
+  toolTipAlign,
+  size,
+  children,
+}: WrapperProps) => {
+  const [toolTipText, setToolTipText] = useState<string | undefined>(undefined);
 
-class HoverActionsButtonWrapper<ButtonProps> extends React.Component<
-  WrapperProps<ButtonProps>,
-  WrapperState
-> {
-  constructor(props: WrapperProps<ButtonProps>) {
-    super(props);
-    this.state = {
-      isToolTipVisible: false,
-      toolTipText: '',
-    };
-  }
-
-  public render() {
-    const { buttons, buttonProps, toolTipPosition, toolTipAlign } = this.props;
-    const { isToolTipVisible, toolTipText } = this.state;
-
-    return (
-      <HoverActionsWrapper
-        size={this.props.size}
-        data-testid="hover-actions-wrapper"
-      >
-        {isToolTipVisible ? (
-          <ToolTipWrapper
-            toolTipPosition={toolTipPosition}
-            toolTipAlign={toolTipAlign}
-          >
-            <ToolTip text={toolTipText} />
-          </ToolTipWrapper>
-        ) : null}
-        {buttons.map((ButtonObj) => (
-          <ButtonObj.component
-            key={ButtonObj.text}
-            {...buttonProps}
-            showToolTip={() => {
-              this.showToolTip(ButtonObj.text);
-            }}
-            hideToolTip={() => {
-              this.hideToolTip();
-            }}
-          />
-        ))}
-      </HoverActionsWrapper>
-    );
-  }
-
-  private showToolTip = (text: string) =>
-    this.setState({
-      isToolTipVisible: true,
-      toolTipText: text,
-    });
-
-  private hideToolTip = () => {
-    this.setState({
-      isToolTipVisible: false,
-    });
+  const showToolTip = (text: string) => {
+    setToolTipText(text);
   };
-}
 
-export { HoverActionsButtonWrapper, HoverButtonInterface };
+  const hideToolTip = () => {
+    setToolTipText(undefined);
+  };
+
+  return (
+    <HoverActionsWrapper size={size} data-testid="hover-actions-wrapper">
+      {toolTipText !== undefined ? (
+        <ToolTipWrapper
+          toolTipPosition={toolTipPosition}
+          toolTipAlign={toolTipAlign}
+        >
+          <ToolTip text={toolTipText} />
+        </ToolTipWrapper>
+      ) : null}
+      {children({
+        showToolTip,
+        hideToolTip,
+        size: size,
+      })}
+    </HoverActionsWrapper>
+  );
+};

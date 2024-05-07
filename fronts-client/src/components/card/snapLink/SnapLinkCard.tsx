@@ -54,8 +54,8 @@ const SnapLinkURL = styled.p`
 interface ContainerProps {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onDelete?: (uuid: string) => void;
-  onAddToClipboard?: (uuid: string) => void;
+  onDelete: () => void;
+  onAddToClipboard: () => void;
   onClick?: () => void;
   id: string;
   collectionId?: string;
@@ -192,23 +192,33 @@ const SnapLinkCard = ({
           justify={'space-between'}
         >
           <HoverActionsButtonWrapper
-            buttons={[
-              { text: 'View', component: HoverViewButton },
-              { text: 'Ophan', component: HoverOphanButton },
-              { text: 'Clipboard', component: HoverAddToClipboardButton },
-              { text: 'Delete', component: HoverDeleteButton },
-            ]}
-            buttonProps={{
-              isLive: true, // it should not be possible for a snap link to be anything other than live?
-              urlPath,
-              onAddToClipboard,
-              onDelete,
-              isSnapLink: true,
-            }}
             size={size}
             toolTipPosition={'top'}
             toolTipAlign={'right'}
-          />
+          >
+            {(props) => (
+              <>
+                <HoverViewButton
+                  hoverText="View"
+                  isLive={true}
+                  urlPath={urlPath}
+                  isSnapLink={true}
+                  {...props}
+                />
+                <HoverOphanButton {...props} hoverText="Ophan" />
+                <HoverAddToClipboardButton
+                  onAddToClipboard={onAddToClipboard}
+                  hoverText="Clipboard"
+                  {...props}
+                />
+                <HoverDeleteButton
+                  onDelete={onDelete}
+                  hoverText="Delete"
+                  {...props}
+                />
+              </>
+            )}
+          </HoverActionsButtonWrapper>
         </HoverActionsAreaOverlay>
       </SnapLinkBodyContainer>
       {children}

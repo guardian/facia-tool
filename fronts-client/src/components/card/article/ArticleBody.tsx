@@ -106,7 +106,7 @@ interface ArticleBodyProps {
   sectionName?: string;
   displayPlaceholders?: boolean;
   uuid: string;
-  onDelete?: () => void;
+  onDelete: () => void;
   onAddToClipboard?: () => void;
   isUneditable?: boolean;
   byline?: string;
@@ -321,22 +321,35 @@ const articleBodyDefault = React.memo(
         </ImageAndGraphWrapper>
         <HoverActionsAreaOverlay disabled={isUneditable}>
           <HoverActionsButtonWrapper
-            buttons={[
-              { text: 'View', component: HoverViewButton },
-              { text: 'Ophan', component: HoverOphanButton },
-              { text: 'Clipboard', component: HoverAddToClipboardButton },
-              { text: 'Delete', component: HoverDeleteButton },
-            ]}
-            buttonProps={{
-              isLive,
-              urlPath,
-              onDelete,
-              onAddToClipboard,
-            }}
             size={size}
             toolTipPosition={'top'}
-            toolTipAlign={'left'}
-          />
+            toolTipAlign={'right'}
+          >
+            {(props) => (
+              <>
+                <HoverViewButton
+                  hoverText="View"
+                  isLive={true}
+                  urlPath={urlPath}
+                  isSnapLink={true}
+                  {...props}
+                />
+                <HoverOphanButton {...props} hoverText="Ophan" />
+                {onAddToClipboard && (
+                  <HoverAddToClipboardButton
+                    onAddToClipboard={onAddToClipboard}
+                    hoverText="Clipboard"
+                    {...props}
+                  />
+                )}
+                <HoverDeleteButton
+                  onDelete={onDelete}
+                  hoverText="Delete"
+                  {...props}
+                />
+              </>
+            )}
+          </HoverActionsButtonWrapper>
         </HoverActionsAreaOverlay>
       </>
     );
