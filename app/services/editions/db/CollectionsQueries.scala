@@ -64,7 +64,7 @@ trait CollectionsQueries {
 
         val contentPrefillQueryTimeWindow = CapiQueryTimeWindow(timeWinStart, timeWinEnd)
 
-        (date, edition, zone, CapiPrefillQuery(rs.string("prefill"), pathType), contentPrefillQueryTimeWindow, rs.string("page_code"))
+        (date, edition, zone, CapiPrefillQuery(rs.string("prefill"), pathType), contentPrefillQueryTimeWindow, rs.string("id"))
       }.list.apply()
 
     rows.headOption.map { case (issueDate, edition, zone, prefillQueryUrlSegments, contentPrefillQueryTimeWindow, _) =>
