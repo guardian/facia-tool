@@ -10,6 +10,7 @@ import noop from 'lodash/noop';
 import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
 import { connect } from 'react-redux';
 import { ContentInfo } from './ContentInfo';
+import { CardTypesMap } from 'constants/cardTypes';
 
 interface ComponentProps {
   recipe: Recipe;
@@ -32,6 +33,7 @@ export const RecipeFeedItemComponent = ({
 
   return (
     <FeedItem
+      type={CardTypesMap.RECIPE}
       id={recipe.id}
       title={recipe.title}
       thumbnail={recipe.featuredImage.url}

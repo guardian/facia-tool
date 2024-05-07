@@ -20,6 +20,7 @@ import { insertCardWithCreate } from '../../actions/Cards';
 import { connect } from 'react-redux';
 import { FeedItem } from './FeedItem';
 import { ContentInfo } from './ContentInfo';
+import { CardTypesMap } from 'constants/cardTypes';
 
 const Tone = styled.span`
   font-weight: normal;
@@ -56,6 +57,7 @@ const ArticleFeedItemComponent = ({
 
   return (
     <FeedItem
+      type={CardTypesMap.ARTICLE}
       id={article.id}
       title={article.webTitle}
       liveUrl={getPaths(article.id).live}

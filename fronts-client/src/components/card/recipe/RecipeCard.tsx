@@ -16,12 +16,20 @@ import { ThumbnailSmall } from 'components/image/Thumbnail';
 import CardMetaContent from '../CardMetaContent';
 import { upperFirst } from 'lodash';
 import { useSelector } from 'react-redux';
+import { HoverActionsAreaOverlay } from 'components/CollectionHoverItems';
+import { HoverActionsButtonWrapper } from 'components/inputs/HoverActionButtonWrapper';
+import {
+  HoverAddToClipboardButton,
+  HoverDeleteButton,
+  HoverViewButton,
+} from 'components/inputs/HoverActionButtons';
+import { getPaths } from 'util/paths';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onDelete?: (uuid: string) => void;
-  onAddToClipboard?: (uuid: string) => void;
+  onDelete: () => void;
+  onAddToClipboard: () => void;
   onClick?: () => void;
   id: string;
   collectionId?: string;
@@ -53,6 +61,9 @@ export const RecipeCard = ({
   const recipe = useSelector((state) =>
     recipeSelectors.selectById(state, card.id)
   );
+  const paths = recipe?.canonicalArticle
+    ? getPaths(recipe.canonicalArticle)
+    : undefined;
 
   return (
     <CardContainer {...rest}>
@@ -82,6 +93,32 @@ export const RecipeCard = ({
         <ImageAndGraphWrapper size={size}>
           <ThumbnailSmall url={recipe?.featuredImage.url} />
         </ImageAndGraphWrapper>
+        <HoverActionsAreaOverlay data-testid="hover-overlay">
+          <HoverActionsButtonWrapper
+            toolTipPosition={'top'}
+            toolTipAlign={'right'}
+          >
+            {(props) => (
+              <>
+                <HoverViewButton
+                  hoverText="View"
+                  href={paths?.live}
+                  {...props}
+                />
+                <HoverAddToClipboardButton
+                  onAddToClipboard={onAddToClipboard}
+                  hoverText="Clipboard"
+                  {...props}
+                />
+                <HoverDeleteButton
+                  hoverText="Delete"
+                  onDelete={onDelete}
+                  {...props}
+                />
+              </>
+            )}
+          </HoverActionsButtonWrapper>
+        </HoverActionsAreaOverlay>
       </CardBody>
     </CardContainer>
   );

@@ -21,6 +21,7 @@ import RefreshPeriodically from '../util/RefreshPeriodically';
 import { collectionArticlesPollInterval } from 'constants/polling';
 import RenderOffscreen from 'components/util/RenderOffscreen';
 import { getPaths } from 'util/paths';
+import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 
 const Container = styled.div`
   display: flex;
@@ -99,6 +100,7 @@ const VideoIconContainer = styled(CircularIconContainer)`
 
 interface FeedItemProps {
   id: string;
+  type: CardTypes;
   title: string;
   liveUrl?: string;
   metaContent?: JSX.Element;
@@ -124,6 +126,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
   public render() {
     const {
       id,
+      type,
       title,
       liveUrl,
       isLive,
@@ -139,6 +142,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 
     const { preview, live, ophan } = getPaths(id);
     const href = isLive ? live : preview;
+    const displayOphanLink = type === CardTypesMap.ARTICLE && isLive;
 
     return (
       <Container
@@ -206,7 +210,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
             {(props) => (
               <>
                 <HoverViewButton hoverText="View" href={href} {...props} />
-                {isLive && (
+                {displayOphanLink && (
                   <HoverOphanButton {...props} href={ophan} hoverText="Ophan" />
                 )}
                 <HoverAddToClipboardButton
