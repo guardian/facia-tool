@@ -9,7 +9,7 @@ import model.editions.templates.TemplateHelpers.Defaults
 import model.editions.templates._
 import model.editions.templates.feast.{FeastNorthernHemisphere, FeastSouthernHemisphere}
 import org.postgresql.util.PGobject
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.editions.prefills.CapiQueryTimeWindow
 
 
@@ -70,7 +70,7 @@ object CuratedPlatform extends PlayEnum[CuratedPlatform] {
 }
 
 case object WeekDay extends Enumeration(1) {
-  implicit lazy val implicitConversions = scala.language.implicitConversions
+  implicit lazy val implicitConversions: languageFeature.implicitConversions = scala.language.implicitConversions
 
   type WeekDay = Value
   val Mon, Tues, Wed, Thurs, Fri, Sat, Sun = Value
@@ -133,11 +133,11 @@ object Edition extends PlayEnum[Edition] {
 }
 
 case class FrontPresentation(swatch: Swatch) {
-  implicit def frontPresentationFormat = Json.format[FrontPresentation]
+  implicit def frontPresentationFormat: OFormat[FrontPresentation] = Json.format[FrontPresentation]
 }
 
 object FrontPresentation {
-  implicit def frontPresentationFormat = Json.format[FrontPresentation]
+  implicit def frontPresentationFormat: OFormat[FrontPresentation] = Json.format[FrontPresentation]
 }
 
 case class CollectionPresentation()
@@ -152,7 +152,7 @@ case class CapiPrefillQuery(queryString: String, pathType: PathType) {
 }
 
 object CapiPrefillQuery {
-  implicit def format = Json.format[CapiPrefillQuery]
+  implicit def format: OFormat[CapiPrefillQuery] = Json.format[CapiPrefillQuery]
 }
 
 import model.editions.WeekDay._

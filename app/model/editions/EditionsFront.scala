@@ -1,11 +1,11 @@
 package model.editions
 
 import org.postgresql.util.PGobject
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat, OWrites}
 import scalikejdbc.WrappedResultSet
 
 object EditionsFrontMetadata {
-  implicit val format = Json.format[EditionsFrontMetadata]
+  implicit val format: OFormat[EditionsFrontMetadata] = Json.format[EditionsFrontMetadata]
 }
 
 case class EditionsFrontMetadata(nameOverride: Option[String], swatch: Option[Swatch]) {
@@ -45,7 +45,7 @@ case class EditionsFront(
 }
 
 object EditionsFront {
-  implicit val writes = Json.writes[EditionsFront]
+  implicit val writes: OWrites[EditionsFront] = Json.writes[EditionsFront]
 
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsFront = {
     EditionsFront(

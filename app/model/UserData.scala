@@ -2,12 +2,12 @@ package model
 
 import com.gu.facia.client.models.Trail
 import org.scanamo.{DynamoFormat, TypeCoercionError}
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, OFormat}
 
 import scala.util.{Failure, Success, Try}
 
 object UserData {
-  implicit val jsonFormat = Json.format[UserData]
+  implicit val jsonFormat: OFormat[UserData] = Json.format[UserData]
 
   implicit val jsValueFormat: DynamoFormat[JsValue] = DynamoFormat.xmap[JsValue, String](
     x => Try(Json.parse(x)) match {
@@ -39,7 +39,7 @@ case class UserData(
 )
 
 object UserDataForDefaults {
-  implicit val jsonFormat = Json.format[UserDataForDefaults]
+  implicit val jsonFormat: OFormat[UserDataForDefaults] = Json.format[UserDataForDefaults]
 
   def fromUserData(userData: UserData, clipboardArticles: Option[List[Trail]]): UserDataForDefaults = {
     val featureSwitches = userData.featureSwitches.fold(FeatureSwitches.all) { userFeatureSwitches =>

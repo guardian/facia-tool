@@ -3,7 +3,7 @@ package services
 import java.io.FileInputStream
 import conf.ApplicationConfiguration
 import play.api.libs.functional.syntax._
-import play.api.libs.json.{JsError, JsPath, JsSuccess, Json}
+import play.api.libs.json.{JsError, JsPath, JsSuccess, Json, Reads}
 
 import scala.io.Source
 
@@ -11,7 +11,7 @@ import scala.io.Source
 class InvalidAssetsException(msg: String) extends RuntimeException(msg)
 
 object Bundles {
-  implicit val jsonRead = (
+  implicit val jsonRead: Reads[Bundles] = (
     (JsPath \ "config.js").read[String] and
     (JsPath \ "collections.js").read[String]
   )(Bundles.apply _)

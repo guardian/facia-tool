@@ -1,8 +1,7 @@
 package model.editions
 
 import java.time.ZonedDateTime
-
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import scalikejdbc.WrappedResultSet
 import services.editions.prefills.CapiQueryTimeWindow
 
@@ -25,7 +24,7 @@ case class EditionsCollection(
 }
 
 object EditionsCollection {
-  implicit val format = Json.format[EditionsCollection]
+  implicit val format: OFormat[EditionsCollection] = Json.format[EditionsCollection]
 
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsCollection = {
     val capiPrefillQuery: Option[CapiPrefillQuery] =

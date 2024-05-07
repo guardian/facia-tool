@@ -2,7 +2,7 @@ package services
 
 import com.gu.facia.client.models.{CollectionJson, ConfigJson, Trail}
 import metrics.FaciaToolMetrics
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import slices.Story
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -10,7 +10,7 @@ import scala.concurrent.{ExecutionContext, Future}
 case class StoriesVisibleByStage(live: Option[StoriesVisibleResponse], draft: Option[StoriesVisibleResponse])
 
 object StoriesVisibleByStage {
-  implicit val jsonFormat = Json.format[StoriesVisibleByStage]
+  implicit val jsonFormat: OFormat[StoriesVisibleByStage] = Json.format[StoriesVisibleByStage]
 }
 
 case class CollectionAndStoriesResponse(id: String, collection: CollectionJson, storiesVisibleByStage: Option[StoriesVisibleByStage]) {
@@ -21,7 +21,7 @@ case class CollectionAndStoriesResponse(id: String, collection: CollectionJson, 
 }
 
 object CollectionAndStoriesResponse {
-  implicit val jsonFormat = Json.format[CollectionAndStoriesResponse]
+  implicit val jsonFormat: OFormat[CollectionAndStoriesResponse] = Json.format[CollectionAndStoriesResponse]
 }
 
 class CollectionService(frontsApi: FrontsApi, containerService: ContainerService)(implicit ec: ExecutionContext) {

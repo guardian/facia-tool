@@ -2,17 +2,16 @@ package services
 
 import java.io.IOException
 import java.time.LocalDate
-
 import conf.ApplicationConfiguration
 import logging.Logging
-import java.util.concurrent.TimeUnit
 
+import java.util.concurrent.TimeUnit
 import com.github.blemale.scaffeine.{Cache, Scaffeine}
 import com.gu.contentapi.client.model.HttpResponse
-import model.editions.{OphanQueryPrefillParams}
+import model.editions.OphanQueryPrefillParams
 import okhttp3.{Call, Callback, ConnectionPool, OkHttpClient, Response}
 import okhttp3.Request.Builder
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 import scala.concurrent.duration._
 import scala.concurrent.{ExecutionContext, Future, Promise}
@@ -23,7 +22,7 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit ex: ExecutionCont
 
   val DEFAULT_OPHAN_ADDRESS = "https://api.ophan.co.uk/api"
   val promotionPath = "/promotion/front/"
-  implicit val ophanScoreReads = Json.format[OphanScore]
+  implicit val ophanScoreReads: OFormat[OphanScore] = Json.format[OphanScore]
 
   def getOphanScores(maybePath: Option[String], baseDate: LocalDate, maybeOphanQueryPrefillParams: Option[OphanQueryPrefillParams]): Future[Option[Array[OphanScore]]] = {
     val maybeDates = maybeOphanQueryPrefillParams.map(ophanQueryPrefillParams => (

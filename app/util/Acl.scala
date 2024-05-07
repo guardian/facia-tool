@@ -3,11 +3,11 @@ package util
 import com.gu.permissions.{PermissionDefinition, PermissionsProvider}
 import logging.Logging
 import permissions._
-import play.api.libs.json.{JsBoolean, JsValue, Json, Writes}
+import play.api.libs.json.{JsBoolean, JsValue, Json, OWrites, Writes}
 import switchboard.SwitchManager
 
 object Authorization {
-  implicit val authorizationWrites = new Writes[Authorization] {
+  implicit val authorizationWrites: Writes[Authorization] = new Writes[Authorization] {
     def writes(access: Authorization): JsValue = access match {
       case AccessGranted => JsBoolean(true)
       case AccessDenied => JsBoolean(false)}}
@@ -18,7 +18,7 @@ object AccessGranted extends Authorization
 object AccessDenied extends Authorization
 
 object AclJson {
-  implicit val jsonWrites = Json.writes[AclJson]
+  implicit val jsonWrites: OWrites[AclJson] = Json.writes[AclJson]
 }
 
 case class AclJson (

@@ -4,7 +4,7 @@ import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.CollectionConfigJson
 import config.UpdateManager
 import permissions.ConfigPermissionCheck
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.Press
 import updates._
 import util.Acl
@@ -12,7 +12,7 @@ import util.Requests._
 import logging.Logging
 
 object CollectionRequest {
-  implicit val jsonFormat = Json.format[CollectionRequest]
+  implicit val jsonFormat: OFormat[CollectionRequest] = Json.format[CollectionRequest]
 }
 
 case class CollectionRequest(
@@ -21,7 +21,7 @@ case class CollectionRequest(
 )
 
 object CreateCollectionResponse {
-  implicit val jsonFormat = Json.format[CreateCollectionResponse]
+  implicit val jsonFormat: OFormat[CreateCollectionResponse] = Json.format[CreateCollectionResponse]
 }
 
 case class CreateCollectionResponse(id: String)

@@ -1,7 +1,7 @@
 package model.editions
 
 import model.editions.client.ClientCardMetadata
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.editions.prefills.CapiQueryTimeWindow
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
@@ -41,9 +41,9 @@ case class EditionsClientCollection(
 case class EditionsFrontendCollectionWrapper(id: String, collection: EditionsClientCollection)
 
 object EditionsFrontendCollectionWrapper {
-  implicit def cardFormat = Json.format[EditionsClientCard]
-  implicit def collectionFormat = Json.format[EditionsClientCollection]
-  implicit def collectionWrapperFormat = Json.format[EditionsFrontendCollectionWrapper]
+  implicit def cardFormat: OFormat[EditionsClientCard] = Json.format[EditionsClientCard]
+  implicit def collectionFormat: OFormat[EditionsClientCollection] = Json.format[EditionsClientCollection]
+  implicit def collectionWrapperFormat: OFormat[EditionsFrontendCollectionWrapper] = Json.format[EditionsFrontendCollectionWrapper]
 
   def fromCollection(collection: EditionsCollection): EditionsFrontendCollectionWrapper = {
     EditionsFrontendCollectionWrapper(

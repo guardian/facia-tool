@@ -1,12 +1,12 @@
 package slices
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import util.Maps._
 
 object Story {
-  implicit val jsonFormat = Json.format[Story]
+  implicit val jsonFormat: OFormat[Story] = Json.format[Story]
 
-  implicit val ordering = Ordering.by[Story, Int](_.group)
+  implicit val ordering: Ordering[Story] = Ordering.by[Story, Int](_.group)
 
   def unboosted(n: Int) = Story(n, isBoosted = false)
 

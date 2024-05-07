@@ -59,7 +59,7 @@ trait UpdateActionsTrait extends Logging {
   def config: ApplicationConfiguration
   def configAgent: ConfigAgent
   def structuredLogger: StructuredLogger
-  implicit val updateListWrite = Json.writes[UpdateList]
+  implicit val updateListWrite: OWrites[UpdateList] = Json.writes[UpdateList]
 
   def insertIntoLive(update: UpdateList, identity: User, collectionJson: CollectionJson): CollectionJson =
     if (update.live) {

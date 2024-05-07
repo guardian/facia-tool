@@ -1,9 +1,9 @@
 package model
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 object FeatureSwitch {
-  implicit val jsonFormat = Json.format[FeatureSwitch]
+  implicit val jsonFormat: OFormat[FeatureSwitch] = Json.format[FeatureSwitch]
 }
 
 case class FeatureSwitch(

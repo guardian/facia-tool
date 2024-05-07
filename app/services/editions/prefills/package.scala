@@ -1,10 +1,9 @@
 package services.editions
 
 import java.time.{Instant, LocalDate}
-
 import com.gu.facia.api.utils.ResolvedMetaData
 import model.editions._
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 
 package object prefills {
 
@@ -24,7 +23,7 @@ package object prefills {
   case class CapiQueryTimeWindow(fromDate: Instant, toDate: Instant)
 
   object CapiQueryTimeWindow {
-    implicit def format = Json.format[CapiQueryTimeWindow]
+    implicit def format: OFormat[CapiQueryTimeWindow] = Json.format[CapiQueryTimeWindow]
   }
 
   case class MetadataForLogging(issueDate: LocalDate, collectionId: Option[String], collectionName: Option[String]) {
