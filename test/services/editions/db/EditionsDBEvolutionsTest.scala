@@ -32,7 +32,7 @@ class EditionsDBEvolutionsTest extends FreeSpec with Matchers with EditionsDBSer
               created_email
             ) VALUES ('test-edition', $issueDate, ${zoneId.toString}, $truncatedNow, ${user.username}, ${user.email})
             RETURNING id;
-         """.map(_.string("id")).single().apply().get
+         """.map(_.string("id")).single.apply().get
     }
   }
 
@@ -40,7 +40,7 @@ class EditionsDBEvolutionsTest extends FreeSpec with Matchers with EditionsDBSer
     DB localTx { implicit session =>
       sql"""
             SELECT issue_date FROM edition_issues WHERE id = $id
-         """.map(_.date("issue_date")).single().apply().get
+         """.map(_.date("issue_date")).single.apply().get
     }
   }
 
@@ -48,7 +48,7 @@ class EditionsDBEvolutionsTest extends FreeSpec with Matchers with EditionsDBSer
     DB localTx { implicit session =>
       sql"""
             SELECT issue_date FROM edition_issues WHERE id = $id
-         """.map(_.offsetDateTime("issue_date")).single().apply().get
+         """.map(_.offsetDateTime("issue_date")).single.apply().get
     }
   }
 

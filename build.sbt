@@ -91,9 +91,9 @@ libraryDependencies ++= Seq(
     "ai.x" %% "play-json-extensions" % "0.40.2",
 
     "org.postgresql"           %  "postgresql"                   % "42.3.9",
-    "org.scalikejdbc"          %% "scalikejdbc"                  % "3.3.5",
-    "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.3.5",
-    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.8.0-scalikejdbc-3.5",
+    "org.scalikejdbc"          %% "scalikejdbc"                  % "4.2.0",
+    "org.scalikejdbc"          %% "scalikejdbc-config"           % "4.2.1",
+    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "3.0.0-scalikejdbc-4.2",
 
     "io.circe"                 %% "circe-core"                   % circeVersion,
     "io.circe"                 %% "circe-generic"                % circeVersion,

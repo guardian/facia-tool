@@ -38,7 +38,7 @@ trait IssueQueries extends Logging {
             created_email
           ) VALUES (${edition.entryName}, ${issueSkeleton.issueDate}, ${issueSkeleton.zoneId.toString}, $truncatedNow, $userName, ${user.email})
           RETURNING id;
-       """.map(_.string("id")).single().apply().get
+       """.map(_.string("id")).single.apply().get
 
     issueSkeleton.fronts.zipWithIndex.foreach { case (front, fIndex) =>
       val frontId =
@@ -52,7 +52,7 @@ trait IssueQueries extends Logging {
           is_special
         ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metadata()}, ${front.isSpecial})
         RETURNING id;
-      """.map(_.string("id")).single().apply().get
+      """.map(_.string("id")).single.apply().get
 
       import contentPrefillTimeWindow.{fromDate, toDate}
 
@@ -87,7 +87,7 @@ trait IssueQueries extends Logging {
             , ${user.email}
             )
           RETURNING id;
-          """.map(_.string("id")).single().apply().get
+          """.map(_.string("id")).single.apply().get
 
         collection.items.zipWithIndex.foreach { case (card, tIndex) =>
           sql"""
@@ -98,7 +98,7 @@ trait IssueQueries extends Logging {
                     added_on,
                     metadata
                     ) VALUES ($collectionId, ${card.id}, $tIndex, $truncatedNow, ${Json.toJson(card.metadata).toString}::JSONB)
-                 """.execute().apply()
+                 """.execute.apply()
         }
       }
     }
@@ -121,7 +121,7 @@ trait IssueQueries extends Logging {
       launched_email
     FROM edition_issues
     WHERE issue_date BETWEEN $dateFrom AND $dateTo AND name = ${edition.entryName}
-    """.map(EditionsIssue.fromRow(_)).list().apply()
+    """.map(EditionsIssue.fromRow(_)).list.apply()
   }
 
   def getIssueIdFromCollectionId(collectionId: String): Option[String] = DB readOnly { implicit session =>
@@ -133,7 +133,7 @@ trait IssueQueries extends Logging {
     WHERE collections.id = $collectionId
     """.map { rs =>
       rs.string("id")
-    }.toOption().apply()
+    }.toOption.apply()
   }
 
   def getIssue(id: String): Option[EditionsIssue] = DB readOnly { implicit session =>
@@ -202,7 +202,7 @@ trait IssueQueries extends Logging {
           DbEditionsCollection.fromRowOpt(rs, "collections_"),
           DbEditionsCard.fromRowOpt(rs, "cards_"))
       }
-        .list()
+        .list
         .apply()
 
     val fronts: List[EditionsFront] = rows
@@ -249,7 +249,7 @@ trait IssueQueries extends Logging {
        WHERE edition_issues.id = $id
        """
       .map(rs => EditionsIssue.fromRow(rs))
-      .single()
+      .single
       .apply()
   }
 
@@ -267,7 +267,7 @@ trait IssueQueries extends Logging {
         launched_by = $userName,
         launched_email = ${user.email}
     WHERE id = $issueId
-    """.execute().apply()
+    """.execute.apply()
 
     sql"""
     INSERT INTO issue_versions (
@@ -283,7 +283,7 @@ trait IssueQueries extends Logging {
       , $userName
       , ${user.email}
     );
-    """.execute().apply()
+    """.execute.apply()
 
     sql"""
     INSERT INTO issue_versions_events (
@@ -296,14 +296,14 @@ trait IssueQueries extends Logging {
       , ${IssueVersionStatus.Started.toString}
     )
     RETURNING version_id;
-    """.map(_.string("version_id")).single().apply().get
+    """.map(_.string("version_id")).single.apply().get
   }
 
   def deleteIssue(issueId: String) = DB localTx { implicit session =>
     sql"""
       DELETE FROM edition_issues
       WHERE id = $issueId
-    """.execute().apply()
+    """.execute.apply()
   }
 
 
@@ -318,7 +318,7 @@ trait IssueQueries extends Logging {
       WHERE v.issue_id = $issueId
       AND   e.status = ${IssueVersionStatus.Proofed.toString}
     """.map(rs => rs.string("version_id"))
-        .list()
+        .list
         .apply()
         .headOption
 
@@ -343,7 +343,7 @@ trait IssueQueries extends Logging {
       WHERE v.issue_id = $issueId
       ORDER BY launched_on DESC
     """.map(rs => Row(IssueVersion.fromRow(rs), IssueVersionEvent.fromRow(rs)))
-        .list()
+        .list
         .apply()
 
     (rows.groupBy(_.version) map {
@@ -369,7 +369,7 @@ trait IssueQueries extends Logging {
           , ${event.status.toString}
           , ${event.message}
         );
-      """.execute().apply()
+      """.execute.apply()
     } match {
       case Success(_) => {
         logger.info(s"successfully inserted issue version event message:${event.message}")(event.toLogMarker)
