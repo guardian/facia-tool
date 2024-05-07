@@ -1,6 +1,7 @@
 import com.amazonaws.auth.AWSCredentialsProvider
 import software.amazon.awssdk.regions.{Region => WeirdRegion}
-import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
+import com.amazonaws.services.sns.AmazonSNSClient
+import software.amazon.awssdk.auth.credentials.{AwsCredentials, AwsCredentialsProvider, AwsCredentialsProviderChain, DefaultCredentialsProvider, ProfileCredentialsProvider}
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
@@ -20,13 +21,14 @@ import services._
 import services.editions.EditionsTemplating
 import services.editions.db.EditionsDB
 import services.editions.publishing.events.PublishEventsListener
-import services.editions.publishing.{EditionsBucket, EditionsPublishing}
+import services.editions.publishing.{EditionsBucket, FeastPublicationTarget, Publishing}
 import slices.{Containers, FixedContainers}
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
-import util.Acl
+import util.{Acl, TimestampGenerator}
+import services.editions.publishing.PublishedIssueFormatters._
 
 class AppComponents(context: Context, val config: ApplicationConfiguration)
   extends BaseFaciaControllerComponents(context) with EvolutionsComponents with DBComponents with HikariCPComponents {
@@ -54,6 +56,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     .region(WeirdRegion.of(config.aws.region))
     .build()
   val s3Client = S3.client(oldAwsCredentials, config.aws.region)
+  val snsClient = AmazonSNSClient.builder().withCredentials(oldAwsCredentials).withRegion(config.aws.region).build()
   val acl = new Acl(permissions)
 
   // Editions services
@@ -61,7 +64,8 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val templating = new EditionsTemplating(EditionsAppTemplates.templates ++ FeastAppTemplates.templates, capi, ophan)
   val publishingBucket = new EditionsBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
   val previewBucket = new EditionsBucket(s3Client, config.aws.previewEditionsIssuesBucket)
-  val editionsPublishing = new EditionsPublishing(publishingBucket, previewBucket, editionsDb)
+  val feastPublicationTarget = new FeastPublicationTarget(snsClient, config, TimestampGenerator())
+  val editionsPublishing = new Publishing(publishingBucket, previewBucket, feastPublicationTarget, editionsDb)
   PublishEventsListener.apply(config, editionsDb).start
 
   // Controllers

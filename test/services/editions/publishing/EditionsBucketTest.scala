@@ -6,7 +6,7 @@ import model.editions.{Edition, EditionsIssue, PublishAction}
 import services.editions.publishing.PublishedIssueFormatters._
 import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
 import play.api.libs.json.Json
-
+import services.editions.publishing.PublishedIssueFormatters._
 import scala.io.Source
 
 class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with EitherValues {
@@ -23,12 +23,14 @@ class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with E
       launchedOn = None,
       launchedBy = None,
       launchedEmail = None,
-      fronts = Nil
+      fronts = Nil,
+      supportsProofing = true,
     )
 
     "publication is preview" - {
       val previewIssue = issue.toPreviewIssue
-      val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", previewIssue)
+      val key = EditionsBucket.createKey(previewIssue)
+      val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", key, previewIssue)
 
       "key is correct" in {
         putObjectRequest.getKey shouldBe "daily-edition/2019-09-30/preview.json"
@@ -47,7 +49,8 @@ class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with E
 
     "publication is version called banana" - {
       val publishedIssue = issue.toPublishableIssue("banana", PublishAction.proof)
-      val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", publishedIssue)
+      val key = EditionsBucket.createKey(publishedIssue)
+      val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", key, publishedIssue)
 
       "key is correct" in {
         putObjectRequest.getKey shouldBe "daily-edition/2019-09-30/banana.json"

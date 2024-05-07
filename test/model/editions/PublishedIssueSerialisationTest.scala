@@ -21,7 +21,8 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
       launchedOn = None,
       launchedBy = None,
       launchedEmail = None,
-      fronts = Nil
+      fronts = Nil,
+      supportsProofing = true,
     )
 
     "test serialisation into a preview issue" in {

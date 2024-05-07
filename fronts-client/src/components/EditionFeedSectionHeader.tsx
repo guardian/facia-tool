@@ -95,16 +95,18 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
         </Button>
         <EditionPublish>
           <EditModeVisibility visibleMode="editions">
-            <Button
-              data-testid="publish-edition-button"
-              size="l"
-              priority="primary"
-              onClick={() => this.confirmProof()}
-              tabIndex={-1}
-              title="Proof Edition"
-            >
-              Proof
-            </Button>
+            {editionsIssue.supportsProofing && (
+              <Button
+                data-testid="publish-edition-button"
+                size="l"
+                priority="primary"
+                onClick={() => this.confirmProof()}
+                tabIndex={-1}
+                title="Proof Edition"
+              >
+                Proof
+              </Button>
+            )}
           </EditModeVisibility>
           &nbsp;
           <Button
@@ -156,16 +158,20 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
 
     const timeAndTimeZone = displayTime(lastProofedVersion);
 
-    startConfirmProofOrPublishModal(
-      'Confirm publish',
-      <>
-        <p>Confirm the publication of a new version of this issue.</p>
-        <p>Publishing a new version will not halt in-progress versions.</p>
-        <strong>Version to be published is: {timeAndTimeZone}</strong>
-      </>,
-      ProofOrPublish.Publish,
-      () => publishEditionsIssue(id, lastProofedVersion)
-    );
+    if (!editionsIssue.supportsProofing) {
+      publishEditionsIssue(id, 'proofing-not-required'); // string here is a `magic value` to avoid the `undefined` case leading to accidental publishing
+    } else {
+      startConfirmProofOrPublishModal(
+        'Confirm publish',
+        <>
+          <p>Confirm the publication of a new version of this issue.</p>
+          <p>Publishing a new version will not halt in-progress versions.</p>
+          <strong>Version to be published is: {timeAndTimeZone}</strong>
+        </>,
+        ProofOrPublish.Publish,
+        () => publishEditionsIssue(id, lastProofedVersion)
+      );
+    }
   };
 }
 

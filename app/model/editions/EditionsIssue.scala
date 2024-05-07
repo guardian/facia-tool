@@ -29,7 +29,8 @@ case class EditionsIssue(
     launchedOn: Option[Long],
     launchedBy: Option[String],
     launchedEmail: Option[String],
-    fronts: List[EditionsFront]
+    fronts: List[EditionsFront],
+    supportsProofing: Boolean,
 ) {
 
   // This is a no-op placeholder which matches the UK Daily Edition value.
@@ -55,7 +56,7 @@ case class EditionsIssue(
       .map(_.toPublishedFront) // convert
       .filterNot(_.collections.isEmpty), // drop fronts that contain no collections
     EditionsAppTemplates.templates.get(edition).map(_.notificationUTCOffset).getOrElse(defaultOffset),
-    EditionsAppTemplates.templates.get(edition).map(_.topic)
+    EditionsAppTemplates.templates.get(edition).map(_.topic),
   )
 }
 
@@ -63,9 +64,10 @@ object EditionsIssue {
   implicit val writes: OWrites[EditionsIssue] = Json.writes[EditionsIssue]
 
   def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsIssue = {
+    val edition = Edition.withName(rs.string(prefix + "name"))
     EditionsIssue(
       rs.string(prefix + "id"),
-      Edition.withName(rs.string(prefix + "name")),
+      edition,
       rs.string(prefix + "timezone_id"),
       rs.localDate(prefix + "issue_date"),
       rs.zonedDateTime(prefix + "created_on").toInstant.toEpochMilli,
@@ -74,7 +76,8 @@ object EditionsIssue {
       rs.zonedDateTimeOpt(prefix + "launched_on").map(_.toInstant.toEpochMilli),
       rs.stringOpt(prefix + "launched_by"),
       rs.stringOpt(prefix + "launched_email"),
-      Nil
+      Nil,
+      supportsProofing = EditionsAppTemplates.templates.contains(edition) //proofing is supported by Editions but not Feast
     )
   }
 }

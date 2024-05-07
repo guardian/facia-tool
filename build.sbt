@@ -109,6 +109,7 @@ libraryDependencies ++= Seq(
     "com.beust" % "jcommander" % "1.75",
 
     "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+    "org.mockito" % "mockito-core" % "5.11.0" % Test
 )
 
 val UsesDatabaseTest = config("database-int") extend Test

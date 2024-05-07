@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import groupBy from 'lodash/groupBy';
-
 import { priorities } from 'constants/priorities';
 import { EditionPriority } from 'types/Priority';
 import HomeContainer from './layout/HomeContainer';

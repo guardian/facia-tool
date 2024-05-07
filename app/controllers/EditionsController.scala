@@ -10,13 +10,13 @@ import model.editions._
 import model.editions.templates.{CuratedPlatformDefinition, CuratedPlatformWithTemplate, EditionType}
 import model.forms._
 import net.logstash.logback.marker.Markers
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
 import services.editions.db.EditionsDB
 import services.editions.prefills.{CapiPrefillTimeParams, MetadataForLogging, PrefillParamsAdapter}
-import services.editions.publishing.EditionsPublishing
+import services.editions.publishing.Publishing
 import services.editions.publishing.PublishedIssueFormatters._
 import util.ContentUpgrade.rewriteBody
 import util.{SearchResponseUtil, UserUtil}
@@ -27,7 +27,7 @@ import scala.util.Try
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
-                         publishing: EditionsPublishing,
+                         publishing: Publishing,
                          capi: Capi,
                          val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
 
@@ -86,7 +86,8 @@ class EditionsController(db: EditionsDB,
 
   def republishEditionsAppEditionsList = EditEditionsAuthAction { _ => {
     try {
-      val raw = Json.toJson(Map("action" -> "editionList")).as[JsObject] + ("content", Json.toJson(getAvailableEditionsAppEditions))
+      //TODO: Make this a case class and serialise it properly
+      val raw = Json.toJson(Map("action" -> "editionList")).as[JsObject] + ("content", Json.toJson(EditionsAppTemplates.getAvailableEditionsAppTemplates))
       publishing.putEditionsList(raw.toString())
       Ok("Published.  Please check processing has succeeded.")
     } catch {
@@ -189,15 +190,16 @@ class EditionsController(db: EditionsDB,
 
   def publishIssue(id: String, version: EditionIssueVersionId) = EditEditionsAuthAction { req =>
     val lastProofedIssueVersion = db.getLastProofedIssueVersion(id)
-    // Protect against stale requests.
-    if (lastProofedIssueVersion.filter(_.equals(version)).isEmpty) {
-      BadRequest(s"Last proofed version of issue '${id}' is '${lastProofedIssueVersion.getOrElse("none")}', not '${version}'")
-    } else {
-      db.getIssue(id).map { issue =>
+
+    db.getIssue(id).map { issue =>
+      // Protect against stale requests, if our output platform supports proofing
+      if(issue.supportsProofing && !lastProofedIssueVersion.exists(_.equals(version))) {
+        BadRequest(s"Last proofed version of issue '${id}' is '${lastProofedIssueVersion.getOrElse("none")}', not '${version}'")
+      } else {
         publishing.publish(issue, req.user, version)
-        NoContent
-      }.getOrElse(NotFound(s"Issue $id not found"))
-    }
+      }
+      NoContent
+    }.getOrElse(NotFound(s"Issue $id not found"))
   }
 
   def getPrefillForCollection(id: String) = EditEditionsAuthAction { req =>
@@ -253,21 +255,9 @@ class EditionsController(db: EditionsDB,
   private def getAvailableCuratedPlatformEditions: Map[String, List[CuratedPlatformDefinition]] = {
     val feastAppEditions = FeastAppTemplates.getAvailableTemplates
 
-    getAvailableEditionsAppEditions ++ Map(
+    EditionsAppTemplates.getAvailableEditionsAppTemplates ++ Map(
       "feastEditions" -> feastAppEditions,
     )
   }
 
-  private def getAvailableEditionsAppEditions: Map[String, List[CuratedPlatformDefinition]] = {
-    val allEditions = EditionsAppTemplates.getAvailableTemplates
-    val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
-    val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
-    val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
-
-    Map(
-      "regionalEditions" -> regionalEditions,
-      "specialEditions" -> specialEditions,
-      "trainingEditions" -> trainingEditions,
-    )
-  }
 }

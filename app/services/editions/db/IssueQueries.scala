@@ -372,7 +372,7 @@ trait IssueQueries extends Logging {
       """.execute().apply()
     } match {
       case Success(_) => {
-        logger.info("successfully inserted issue version event message:${event.message}")(event.toLogMarker)
+        logger.info(s"successfully inserted issue version event message:${event.message}")(event.toLogMarker)
         true
       }
       case Failure(exception: PSQLException) if exception.getSQLState == ForeignKeyViolationSQLState => {
