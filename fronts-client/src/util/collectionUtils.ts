@@ -4,6 +4,7 @@ import { PosSpec } from 'lib/dnd';
 import { insertCardWithCreate } from 'actions/Cards';
 import { CapiArticle } from 'types/Capi';
 import { Recipe } from '../types/Recipe';
+import { Chef } from '../types/Chef';
 
 export interface RefDrop {
   type: 'REF';
@@ -19,7 +20,12 @@ export interface RecipeDrop {
   data: Recipe;
 }
 
-export type MappableDropType = RefDrop | CAPIDrop | RecipeDrop;
+export interface ChefDrop {
+  type: 'CHEF';
+  data: Chef;
+}
+
+export type MappableDropType = RefDrop | CAPIDrop | RecipeDrop | ChefDrop;
 
 const dropToCard = (e: React.DragEvent): MappableDropType | null => {
   const map = {
@@ -29,6 +35,10 @@ const dropToCard = (e: React.DragEvent): MappableDropType | null => {
     }),
     recipe: (data: string): RecipeDrop => ({
       type: 'RECIPE',
+      data: JSON.parse(data),
+    }),
+    chef: (data: string): ChefDrop => ({
+      type: 'CHEF',
       data: JSON.parse(data),
     }),
     text: (url: string): RefDrop => ({ type: 'REF', data: url }),
