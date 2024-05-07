@@ -44,6 +44,7 @@ import { DefaultDropIndicator } from 'components/DropZone';
 import DragIntentContainer from 'components/DragIntentContainer';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { RecipeCard } from 'components/card/recipe/RecipeCard';
+import { ChefCard } from '../../card/chef/ChefCard';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -208,6 +209,25 @@ class Card extends React.Component<CardContainerProps> {
           return (
             <>
               <RecipeCard
+                frontId={frontId}
+                collectionId={collectionId}
+                id={uuid}
+                isUneditable={isUneditable}
+                {...getNodeProps()}
+                onDelete={this.onDelete}
+                onAddToClipboard={this.handleAddToClipboard}
+                onClick={isUneditable ? undefined : () => onSelect(uuid)}
+                size={size}
+                textSize={textSize}
+                showMeta={showMeta}
+              />
+              {getSublinks}
+            </>
+          );
+        case CardTypesMap.CHEF:
+          return (
+            <>
+              <ChefCard
                 frontId={frontId}
                 collectionId={collectionId}
                 id={uuid}
