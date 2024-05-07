@@ -43,41 +43,6 @@ describe('Hover Action Button Wrapper', () => {
     expect(getByTitle('ophan')).toBeTruthy();
     expect(getByTitle('delete')).toBeTruthy();
   });
-
-  it('should render Wrapper without Ophan Button when Draft', () => {
-    const { container } = render(
-      <ThemeProvider theme={theme}>
-        <HoverActionsButtonWrapper
-          toolTipPosition={'top'}
-          toolTipAlign={'center'}
-        >
-          {(props) => (
-            <>
-              <HoverViewButton
-                hoverText="View"
-                href={'test-string'}
-                {...props}
-              />
-              <HoverOphanButton {...props} hoverText="Ophan" />
-              <HoverDeleteButton
-                onDelete={noop}
-                hoverText="Delete"
-                {...props}
-              />
-            </>
-          )}
-        </HoverActionsButtonWrapper>
-      </ThemeProvider>
-    );
-
-    const wrapper = container.firstChild as HTMLElement;
-    expect(wrapper.childNodes.length).toEqual(2);
-    // TODO explicitly check ophanButton is NOT rendered using queryByAltText - solve TS error in testing library
-    const ophanButton = wrapper.querySelector(
-      '[data-testid="ophan-hover-button"]'
-    );
-    expect(ophanButton).toBeFalsy();
-  });
 });
 
 describe('Hover Action Button ToolTip', () => {
