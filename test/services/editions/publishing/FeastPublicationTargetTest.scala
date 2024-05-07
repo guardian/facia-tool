@@ -95,7 +95,7 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
         "123456ABCD",
         Edition.FeastNorthernHemisphere,  //?? maybe a modelling mistake here
         Edition.FeastNorthernHemisphere,
-        LocalDate.now(),
+        LocalDate.of(2024,5,3),
         "v1",
         fronts=List(
           PublishedFront("b09354b1-f971-4d08-961b-dc83004c6b1f","All Recipes",
@@ -142,7 +142,7 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
         "123456ABCD",
         Edition.FeastNorthernHemisphere,  //?? maybe a modelling mistake here
         Edition.FeastNorthernHemisphere,
-        LocalDate.now(),
+        LocalDate.of(2024,5,3),
         "v1",
         fronts=List(
           PublishedFront("b09354b1-f971-4d08-961b-dc83004c6b1f","All Recipes",
