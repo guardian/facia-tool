@@ -112,7 +112,7 @@ class Card extends React.Component<CardContainerProps> {
   };
 
   public toggleShowArticleSublinks = (e?: React.MouseEvent) => {
-    const togPos = this.state.showCardSublinks ? false : true;
+    const togPos = !this.state.showCardSublinks;
     this.setState({ showCardSublinks: togPos });
     if (e) {
       e.stopPropagation();

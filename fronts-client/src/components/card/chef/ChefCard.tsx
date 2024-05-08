@@ -59,7 +59,7 @@ export const ChefCard = ({
         {showMeta && (
           <CardMetaContainer size={size}>
             <CardMetaHeading>Chef</CardMetaHeading>
-            <CardMetaContent>{upperFirst(chef?.sectionName)}</CardMetaContent>
+            <CardMetaContent>{upperFirst(chef?.type)}</CardMetaContent>
           </CardMetaContainer>
         )}
         <CardContent textSize={textSize}>
@@ -72,7 +72,7 @@ export const ChefCard = ({
           />
           <CardHeadingContainer size={size}>
             <CardHeading data-testid="headline" html>
-              {`${chef?.firstName} ${chef?.lastName}` ?? 'No Chef found'}
+              {chef?.webTitle ?? 'No Chef found'}
             </CardHeading>
           </CardHeadingContainer>
         </CardContent>
