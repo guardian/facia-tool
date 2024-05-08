@@ -12,6 +12,7 @@ import services.editions.publishing.PublishedIssueFormatters._
 
 import java.time.LocalDate
 import scala.util.{Failure, Try}
+import model.editions.CuratedPlatform
 
 class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
   "publishing.publish" - {
@@ -38,7 +39,8 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
         launchedBy = None,
         launchedEmail = None,
         fronts = List(),
-        supportsProofing = false
+        supportsProofing = false,
+        platform = CuratedPlatform.Feast
       )
       toTest.publish(iss, User("Frank","Smith","fs@u.com", None),"no-proof-needed")
 
@@ -72,7 +74,8 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
         launchedBy = None,
         launchedEmail = None,
         fronts = List(),
-        supportsProofing = true
+        supportsProofing = true,
+        platform = CuratedPlatform.Editions
       )
       toTest.publish(iss, User("Frank","Smith","fs@u.com", None), "some-version-id")
 
@@ -108,7 +111,8 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
         launchedBy = None,
         launchedEmail = None,
         fronts = List(),
-        supportsProofing = false
+        supportsProofing = false,
+        platform = CuratedPlatform.Editions
       )
       toTest.updatePreview(iss)
 
@@ -142,7 +146,8 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
         launchedBy = None,
         launchedEmail = None,
         fronts = List(),
-        supportsProofing = false
+        supportsProofing = false,
+        platform = CuratedPlatform.Feast
       )
       val result = Try { toTest.updatePreview(iss) }
 
