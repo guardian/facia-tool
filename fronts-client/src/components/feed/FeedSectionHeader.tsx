@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { styled, theme } from 'constants/theme';
-import SectionHeaderWithLogo from './layout/SectionHeaderWithLogo';
-import CurrentFrontsList from './CurrentFrontsList';
+import SectionHeaderWithLogo from '../layout/SectionHeaderWithLogo';
+import CurrentFrontsList from '../CurrentFrontsList';
 import FrontsLogo from 'images/icons/fronts-logo.svg';
 import Button from 'components/inputs/ButtonDefault';
 import type { State } from 'types/State';
@@ -14,7 +14,7 @@ import {
   createSelectEditorFrontsByPriority,
 } from 'bundles/frontsUI';
 import { Dispatch } from 'types/Store';
-import FadeTransition from './transitions/FadeTransition';
+import FadeTransition from '../transitions/FadeTransition';
 import { MoreIcon } from 'components/icons/Icons';
 import { RouteComponentProps } from 'react-router';
 import { selectEditMode } from 'selectors/pathSelectors';

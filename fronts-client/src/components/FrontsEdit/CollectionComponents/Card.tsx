@@ -8,8 +8,7 @@ import {
   selectExternalArticleFromCard,
   selectSupportingArticleCount,
 } from 'selectors/shared';
-import cardTypes from 'constants/cardTypes';
-import { CardTypes, CardSizes, CardMeta } from 'types/Collection';
+import { CardSizes, CardMeta } from 'types/Collection';
 import SnapLink from 'components/snapLink/SnapLink';
 import {
   copyCardImageMetaWithPersist,
@@ -43,6 +42,7 @@ import { getPillarColor } from 'util/getPillarColor';
 import { isLive as isArticleLive } from 'util/CAPIUtils';
 import { DefaultDropIndicator } from 'components/DropZone';
 import DragIntentContainer from 'components/DragIntentContainer';
+import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -153,7 +153,7 @@ class Card extends React.Component<CardContainerProps> {
 
     const getCard = () => {
       switch (type) {
-        case cardTypes.ARTICLE:
+        case CardTypesMap.ARTICLE:
           return (
             <Article
               frontId={frontId}
@@ -180,7 +180,7 @@ class Card extends React.Component<CardContainerProps> {
               </EditModeVisibility>
             </Article>
           );
-        case cardTypes.SNAP_LINK:
+        case CardTypesMap.SNAP_LINK:
           return (
             <>
               <SnapLink

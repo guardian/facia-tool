@@ -36,7 +36,7 @@ import noop from 'lodash/noop';
 import { selectOpenParentFrontOfCard } from 'bundles/frontsUI';
 import { getPageViewData } from 'actions/PageViewData';
 import { startOptionsModal } from './OptionsModal';
-import { getArticleEntitiesFromDrop } from 'util/card';
+import { getCardEntitiesFromDrop } from 'util/card';
 import {
   RemoveActionCreator,
   InsertActionCreator,
@@ -375,7 +375,7 @@ export const createArticleEntitiesFromDrop = (
 ): ThunkResult<Promise<Card | undefined>> => {
   return async (dispatch, getState) => {
     const isEdition = selectEditMode(getState()) === 'editions';
-    const [maybeCard, maybeExternalArticle] = await getArticleEntitiesFromDrop(
+    const [maybeCard, maybeExternalArticle] = await getCardEntitiesFromDrop(
       drop,
       isEdition,
       dispatch

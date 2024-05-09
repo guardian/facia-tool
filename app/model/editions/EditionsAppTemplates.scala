@@ -59,6 +59,10 @@ object FeastAppTemplates {
   val getAvailableTemplates: List[CuratedPlatformWithTemplate] = templates.values.toList
 }
 
+object AllTemplates {
+  val templates = EditionsAppTemplates.templates ++ FeastAppTemplates.templates
+}
+
 sealed trait CuratedPlatform extends EnumEntry with Uncapitalised
 
 object CuratedPlatform extends PlayEnum[CuratedPlatform] {

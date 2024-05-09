@@ -1,14 +1,19 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
 
-import SectionContent from './layout/SectionContent';
-import FeedContainer from './FeedsContainer';
-import Clipboard from './Clipboard';
+import { selectors as editionsIssueSelectors } from '../../bundles/editionsIssueBundle';
+import SectionContent from '../layout/SectionContent';
+import CapiSearchContainer from './CapiSearchContainer';
+import Clipboard from '../Clipboard';
 import FeedSectionHeader from './FeedSectionHeader';
 import { media } from 'util/mediaQueries';
+import { connect } from 'react-redux';
+import { State } from 'types/State';
+import { RecipeSearchContainer } from './RecipeSearchContainer';
 
 interface Props {
   isClipboardOpen: boolean;
+  isFeast: boolean;
 }
 
 const FeedSectionContainer = styled.div`
@@ -27,14 +32,20 @@ const FeedWrapper = styled.div<{ isClipboardOpen: boolean }>`
     isClipboardOpen ? `solid 1px ${theme.base.colors.borderColor}` : null};
 `;
 
-export default ({ isClipboardOpen }: Props) => (
+const FeedSection = ({ isClipboardOpen, isFeast }: Props) => (
   <FeedSectionContainer>
     <FeedSectionHeader />
     <FeedSectionContent>
       <FeedWrapper isClipboardOpen={isClipboardOpen}>
-        <FeedContainer />
+        {isFeast ? <RecipeSearchContainer /> : <CapiSearchContainer />}
       </FeedWrapper>
       <Clipboard />
     </FeedSectionContent>
   </FeedSectionContainer>
 );
+
+const mapStateToProps = (state: State) => ({
+  isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
+});
+
+export default connect(mapStateToProps)(FeedSection);

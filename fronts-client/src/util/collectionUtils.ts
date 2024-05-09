@@ -3,6 +3,7 @@ import { ThunkResult, Dispatch } from 'types/Store';
 import { PosSpec } from 'lib/dnd';
 import { insertCardWithCreate } from 'actions/Cards';
 import { CapiArticle } from 'types/Capi';
+import { Recipe } from '../types/Recipe';
 
 export interface RefDrop {
   type: 'REF';
@@ -13,12 +14,21 @@ export interface CAPIDrop {
   data: CapiArticle;
 }
 
-export type MappableDropType = RefDrop | CAPIDrop;
+export interface RecipeDrop {
+  type: 'RECIPE';
+  data: Recipe;
+}
 
-const dropToArticle = (e: React.DragEvent): MappableDropType | null => {
+export type MappableDropType = RefDrop | CAPIDrop | RecipeDrop;
+
+const dropToCard = (e: React.DragEvent): MappableDropType | null => {
   const map = {
     capi: (data: string): CAPIDrop => ({
       type: 'CAPI',
+      data: JSON.parse(data),
+    }),
+    recipe: (data: string): RecipeDrop => ({
+      type: 'RECIPE',
       data: JSON.parse(data),
     }),
     text: (url: string): RefDrop => ({ type: 'REF', data: url }),
@@ -40,7 +50,7 @@ const insertCardFromDropEvent = (
   persistTo: 'collection' | 'clipboard'
 ): ThunkResult<void> => {
   return (dispatch: Dispatch) => {
-    const dropType = dropToArticle(e);
+    const dropType = dropToCard(e);
     if (!dropType) {
       return;
     }

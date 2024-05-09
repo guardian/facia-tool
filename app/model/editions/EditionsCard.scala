@@ -56,11 +56,12 @@ sealed abstract class CardType extends EnumEntry with Uncapitalised
 
 object CardType extends PlayEnum[CardType] {
   case object Article extends CardType
+  case object Recipe extends CardType
   override def values = findValues
 }
 
-
 case class EditionsCard(id: String, cardType: CardType, addedOn: Long, metadata: Option[CardMetadata]) extends Logging {
+
   def toPublishedCard: PublishedArticle = {
     var mediaType: Option[MediaType] = metadata.flatMap(_.mediaType)
 

@@ -24,8 +24,6 @@ interface Group {
 type CardSets = 'draft' | 'live' | 'previously';
 // Stages represent only those lists which are curated by the user.
 type Stages = 'draft' | 'live';
-
-type CardTypes = 'SNAP_LINK' | 'ARTICLE';
 type CardSizes = 'wide' | 'default' | 'medium' | 'small';
 
 interface NestedCardRootFields {
@@ -166,7 +164,6 @@ export {
   CollectionWithNestedArticles,
   CollectionFromResponse,
   Collection,
-  CardTypes,
   CardSizes,
   Group,
   Stages,

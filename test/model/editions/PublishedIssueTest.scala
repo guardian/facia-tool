@@ -17,6 +17,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     EditionsIssue(
       "test-edition",
       Edition.DailyEdition,
+      CuratedPlatform.Editions,
       LondonZone.toString,
       date,
       dateTimeMilli,

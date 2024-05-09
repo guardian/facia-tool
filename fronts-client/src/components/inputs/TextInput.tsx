@@ -58,15 +58,15 @@ const ClearButtonIcon = styled.div``;
 interface TextInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   onClear?: () => void;
   onSearch?: () => void;
-  onDisplaySearchFilters?: () => void;
-  searchTermsExist: boolean;
+  displaySearchIcon: boolean;
+  searchTermsExist?: boolean;
 }
 
 const TextInput = ({
   onClear,
   onSearch,
-  searchTermsExist,
-  onDisplaySearchFilters,
+  searchTermsExist = true,
+  displaySearchIcon,
   ...props
 }: TextInputProps) => (
   <InputWrapper>
@@ -79,7 +79,7 @@ const TextInput = ({
           </ClearButtonIcon>
         </SmallRoundButtonOrange>
       )}
-      {onDisplaySearchFilters && (
+      {displaySearchIcon && (
         <SearchButtonIcon>
           <SearchIcon size={'fill'} fill={theme.colors.blackLight} />
         </SearchButtonIcon>

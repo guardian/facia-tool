@@ -1,12 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { styled, theme } from 'constants/theme';
-import SearchInput, {
-  SearchInputState,
-  initState,
-} from './FrontsCAPIInterface/SearchInput';
-import Feed from './FrontsCAPIInterface/Feed';
-import { RadioButton, RadioGroup } from './inputs/RadioButtons';
+import SearchInput, { SearchInputState, initState } from './SearchInput';
+import Feed from './Feed';
+import { RadioButton, RadioGroup } from '../inputs/RadioButtons';
 import type { State } from 'types/State';
 import {
   liveSelectors,
@@ -20,20 +17,21 @@ import { getTodayDate } from 'util/getTodayDate';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { Dispatch } from 'types/Store';
 import debounce from 'lodash/debounce';
-import Pagination from './FrontsCAPIInterface/Pagination';
+import Pagination from './Pagination';
 import { IPagination } from 'lib/createAsyncResourceBundle';
 import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { DEFAULT_PARAMS } from 'services/faciaApi';
-import ScrollContainer from './ScrollContainer';
+import ScrollContainer from '../ScrollContainer';
 import ClipboardHeader from 'components/ClipboardHeader';
-import { media } from 'util/mediaQueries';
 import ContainerHeading from 'components/typography/ContainerHeading';
 import { ClearIcon } from 'components/icons/Icons';
 import Button from 'components/inputs/ButtonDefault';
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
 import { feedArticlesPollInterval } from 'constants/polling';
+import { SearchTitle } from './SearchTitle';
+import { SearchResultsHeadingContainer } from './SearchResultsHeadingContainer';
 
-interface FeedsContainerProps {
+interface CapiSearchContainerProps {
   fetchLive: (params: object, isResource: boolean) => void;
   fetchPreview: (params: object, isResource: boolean) => void;
   hidePrefills: () => void;
@@ -45,29 +43,13 @@ interface FeedsContainerProps {
   prefillLoading: boolean;
 }
 
-interface FeedsContainerState {
+interface CapiSearchContainerState {
   capiFeedIndex: number;
   displaySearchFilters: boolean;
   inputState: SearchInputState;
   displayPrevResults: boolean;
   sortByParam: string;
 }
-
-const Title = styled.h1`
-  position: relative;
-  margin: 0 10px 0 0;
-  padding-top: 2px;
-  padding-right: 10px;
-  vertical-align: top;
-  font-family: TS3TextSans;
-  font-weight: bold;
-  font-size: 20px;
-  min-width: 80px;
-  ${media.large`
-    min-width: 60px;
-    font-size: 16px;
-  `}
-`;
 
 const RefreshButton = styled.button`
   padding-left: 0;
@@ -100,14 +82,6 @@ const PaginationContainer = styled.div`
 
 const ResultsContainer = styled.div`
   margin-right: 10px;
-`;
-
-const ResultsHeadingContainer = styled.div`
-  border-top: 1px solid ${theme.colors.greyVeryLight};
-  align-items: baseline;
-  display: flex;
-  margin-bottom: 10px;
-  flex-direction: row;
 `;
 
 const FixedContentContainer = styled.div`
@@ -169,7 +143,6 @@ const getCapiFieldsToShow = (isPreview: boolean) => {
   return defaultFieldsToShow + ',scheduledPublicationDate';
 };
 
-export type directionParam = 'from-date' | 'to-date';
 const getParams = (
   query: string,
   {
@@ -202,9 +175,9 @@ const getParams = (
         'from-date': from && from.format('YYYY-MM-DD'),
       }),
 });
-class FeedsContainer extends React.Component<
-  FeedsContainerProps,
-  FeedsContainerState
+class CapiSearchContainer extends React.Component<
+  CapiSearchContainerProps,
+  CapiSearchContainerState
 > {
   public state = {
     capiFeedIndex: 0,
@@ -216,7 +189,7 @@ class FeedsContainer extends React.Component<
 
   private interval: null | number = null;
 
-  constructor(props: FeedsContainerProps) {
+  constructor(props: CapiSearchContainerProps) {
     super(props);
     this.debouncedRunSearchAndRestartPolling = debounce(
       () => this.runSearchAndRestartPolling(),
@@ -295,19 +268,19 @@ class FeedsContainer extends React.Component<
           rightHandContainer={<ClipboardHeader />}
         />
         <FixedContentContainer>
-          <ResultsHeadingContainer>
+          <SearchResultsHeadingContainer>
             <div>
               {displaySearchFilters ? (
-                <Title>
+                <SearchTitle>
                   {'Results'}
                   <ShortVerticalPinline />
-                </Title>
+                </SearchTitle>
               ) : (
                 <>
-                  <Title>
+                  <SearchTitle>
                     {'Latest'}
                     <ShortVerticalPinline />
-                  </Title>
+                  </SearchTitle>
                   <RefreshButton
                     disabled={this.isLoading}
                     onClick={() => this.runSearchAndRestartPolling()}
@@ -357,7 +330,7 @@ class FeedsContainer extends React.Component<
                 </select>
               </SortByContainer>
             </Sorters>
-          </ResultsHeadingContainer>
+          </SearchResultsHeadingContainer>
         </FixedContentContainer>
       </React.Fragment>
     );
@@ -449,4 +422,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
   hidePrefills: () => dispatch(hidePrefills()),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FeedsContainer);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(CapiSearchContainer);

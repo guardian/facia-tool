@@ -38,6 +38,7 @@ interface EditionsIssue {
   fronts: EditionsFront[];
   supportsProofing: boolean;
   lastProofedVersion?: string;
+  platform: string;
 }
 
 const issueVersionStatus = [

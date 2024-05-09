@@ -1,7 +1,6 @@
 package model.editions
 
 import java.time.LocalDate
-
 import model.editions
 import model.editions.PublishAction.PublishAction
 import play.api.libs.json.{Json, OWrites}
@@ -21,6 +20,7 @@ object PublishAction extends Enumeration
 case class EditionsIssue(
     id: String,
     edition: Edition,
+    platform: CuratedPlatform,
     timezoneId: String,
     issueDate: LocalDate,
     createdOn: Long,
@@ -63,21 +63,29 @@ case class EditionsIssue(
 object EditionsIssue {
   implicit val writes: OWrites[EditionsIssue] = Json.writes[EditionsIssue]
 
-  def fromRow(rs: WrappedResultSet, prefix: String = ""): EditionsIssue = {
+  def fromRow(rs: WrappedResultSet, prefix: String = ""): Either[String, EditionsIssue] = {
     val edition = Edition.withName(rs.string(prefix + "name"))
-    EditionsIssue(
-      rs.string(prefix + "id"),
-      edition,
-      rs.string(prefix + "timezone_id"),
-      rs.localDate(prefix + "issue_date"),
-      rs.zonedDateTime(prefix + "created_on").toInstant.toEpochMilli,
-      rs.string(prefix + "created_by"),
-      rs.string(prefix + "created_email"),
-      rs.zonedDateTimeOpt(prefix + "launched_on").map(_.toInstant.toEpochMilli),
-      rs.stringOpt(prefix + "launched_by"),
-      rs.stringOpt(prefix + "launched_email"),
-      Nil,
-      supportsProofing = EditionsAppTemplates.templates.contains(edition) //proofing is supported by Editions but not Feast
-    )
+    val maybePlatform = AllTemplates.templates.get(edition) match {
+      case Some(template) => Right(template.platform)
+      case None => Left(s"No template found for edition $edition")
+    }
+
+    maybePlatform.map { platform =>
+      EditionsIssue(
+        id = rs.string(prefix + "id"),
+        edition = Edition.withName(rs.string(prefix + "name")),
+        platform = platform,
+        timezoneId = rs.string(prefix + "timezone_id"),
+        issueDate = rs.localDate(prefix + "issue_date"),
+        createdOn = rs.zonedDateTime(prefix + "created_on").toInstant.toEpochMilli,
+        createdBy = rs.string(prefix + "created_by"),
+        createdEmail = rs.string(prefix + "created_email"),
+        launchedOn = rs.zonedDateTimeOpt(prefix + "launched_on").map(_.toInstant.toEpochMilli),
+        launchedBy = rs.stringOpt(prefix + "launched_by"),
+        launchedEmail = rs.stringOpt(prefix + "launched_email"),
+        fronts = Nil,
+        supportsProofing = EditionsAppTemplates.templates.contains(edition) //proofing is supported by Editions but not Feast
+      )
+    }
   }
 }

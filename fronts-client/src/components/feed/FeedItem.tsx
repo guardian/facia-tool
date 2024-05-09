@@ -1,13 +1,9 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Dispatch } from 'types/Store';
 import { styled, theme } from 'constants/theme';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
-import startCase from 'lodash/startCase';
 
-import { selectArticleAcrossResources } from 'bundles/capiFeedBundle';
 import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
-import { getPillarColor, notLiveColour } from 'util/getPillarColor';
+import { notLiveColour } from 'util/getPillarColor';
 import { HoverActionsAreaOverlay } from 'components/CollectionHoverItems';
 import { HoverActionsButtonWrapper } from 'components/inputs/HoverActionButtonWrapper';
 import {
@@ -15,28 +11,15 @@ import {
   HoverOphanButton,
   HoverAddToClipboardButton,
 } from 'components/inputs/HoverActionButtons';
-import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
-import { insertCardWithCreate } from 'actions/Cards';
 import noop from 'lodash/noop';
-import { getPaths } from 'util/paths';
 import { ThumbnailSmall } from 'components/image/Thumbnail';
-import { CapiArticle } from 'types/Capi';
-import { getThumbnail, getArticleLabel, isLive } from 'util/CAPIUtils';
-import {
-  DraggingArticleComponent,
-  dragOffsetX,
-  dragOffsetY,
-} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
+import { DraggingArticleComponent } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import { media } from 'util/mediaQueries';
-import type { State } from 'types/State';
-import { liveBlogTones } from 'constants/fronts';
-import { hasMainVideo } from 'util/externalArticle';
 import { VideoIcon } from 'components/icons/Icons';
 import CircularIconContainer from 'components/icons/CircularIconContainer';
 import RefreshPeriodically from '../util/RefreshPeriodically';
 import { collectionArticlesPollInterval } from 'constants/polling';
 import RenderOffscreen from 'components/util/RenderOffscreen';
-import ArticlePageNumberSection from '../util/ArticlePageNumberSection';
 
 const Container = styled.div`
   display: flex;
@@ -68,7 +51,7 @@ const Title = styled.h2`
   font-weight: normal;
 `;
 
-const FeedItemContainer = styled.a<{ blur: boolean }>`
+const FeedItemContainer = styled.a<{ blur?: boolean }>`
   text-decoration: none;
   display: flex;
   color: inherit;
@@ -103,17 +86,6 @@ const ScheduledPublication = styled(FirstPublished)`
   color: ${notLiveColour};
 `;
 
-const TagInfo = styled.div`
-  padding-top: 2px;
-  font-size: 12px;
-  font-family: TS3TextSans;
-  font-weight: bold;
-`;
-
-const Tone = styled.span`
-  font-weight: normal;
-`;
-
 const Body = styled.div`
   padding-left: 8px;
 `;
@@ -124,80 +96,81 @@ const VideoIconContainer = styled(CircularIconContainer)`
   right: 2px;
 `;
 
-interface ContainerProps {
+interface FeedItemProps {
   id: string;
+  title: string;
+  liveUrl?: string;
+  metaContent?: JSX.Element;
+  scheduledPublicationDate?: string;
+  firstPublishedDate?: string;
+  thumbnail?: string;
+  hasVideo: boolean;
+  isLive: boolean;
+  onAddToClipboard: () => void;
+  handleDragStart: (
+    event: React.DragEvent<HTMLDivElement>,
+    dragNode: HTMLDivElement
+  ) => void;
+  shouldObscureFeed?: boolean;
 }
 
-interface ComponentProps extends ContainerProps {
-  article?: CapiArticle;
-  shouldObscureFeed: boolean;
-  onAddToClipboard: (article: CapiArticle) => void;
-}
-
-class FeedItem extends React.Component<ComponentProps> {
+export class FeedItem extends React.Component<FeedItemProps, {}> {
   private dragNode: React.RefObject<HTMLDivElement>;
-  public constructor(props: ComponentProps) {
+  public constructor(props: FeedItemProps) {
     super(props);
     this.dragNode = React.createRef();
   }
   public render() {
     const {
       id,
-      article,
+      title,
+      liveUrl,
+      isLive,
+      metaContent,
       onAddToClipboard = noop,
       shouldObscureFeed,
+      scheduledPublicationDate,
+      firstPublishedDate,
+      thumbnail,
+      hasVideo,
+      handleDragStart,
     } = this.props;
-    if (!article) {
-      return <p>Article with id {id} not found.</p>;
-    }
+
     return (
       <Container
         data-testid="feed-item"
         draggable={true}
-        onDragStart={this.handleDragStart}
+        onDragStart={(event) =>
+          this.dragNode.current && handleDragStart(event, this.dragNode.current)
+        }
       >
         <RenderOffscreen ref={this.dragNode}>
-          <DraggingArticleComponent headline={article.webTitle} />
+          <DraggingArticleComponent headline={title} />
         </RenderOffscreen>
         <FeedItemContainer
-          href={getPaths(article.id).live}
+          href={liveUrl}
           onClick={(e: React.MouseEvent) => e.preventDefault()}
           aria-disabled
           blur={shouldObscureFeed}
         >
           <MetaContainer>
-            <TagInfo
-              style={{
-                color:
-                  getPillarColor(
-                    article.pillarId,
-                    isLive(article),
-                    article.frontsMeta.tone === liveBlogTones.dead
-                  ) || theme.capiInterface.textLight,
-              }}
-            >
-              {getArticleLabel(article)}
-              {article.frontsMeta.tone && (
-                <Tone> / {startCase(article.frontsMeta.tone)}</Tone>
-              )}
-            </TagInfo>
-            <ArticlePageNumberSection article={article} />
+            {metaContent}
             <RefreshPeriodically rateMs={collectionArticlesPollInterval}>
               {() => (
                 <>
-                  {article.fields.scheduledPublicationDate && (
+                  {scheduledPublicationDate && (
                     <ScheduledPublication>
                       {distanceInWordsStrict(
-                        new Date(article.fields.scheduledPublicationDate),
+                        new Date(scheduledPublicationDate),
                         Date.now()
                       )}
                     </ScheduledPublication>
                   )}
-                  {article.webPublicationDate && (
+                  {firstPublishedDate && (
                     <FirstPublished>
                       {distanceInWordsStrict(
                         Date.now(),
-                        new Date(article.webPublicationDate)
+                        new Date(firstPublishedDate)
                       )}
                     </FirstPublished>
                   )}
@@ -207,17 +180,14 @@ class FeedItem extends React.Component<ComponentProps> {
             <ShortVerticalPinline />
           </MetaContainer>
           <Body>
-            <Title data-testid="headline">{article.webTitle}</Title>
+            <Title data-testid="headline">{title}</Title>
           </Body>
           <ArticleThumbnail
             style={{
-              backgroundImage: `url('${getThumbnail(
-                article.frontsMeta.defaults,
-                article
-              )}')`,
+              backgroundImage: `url('${thumbnail}')`,
             }}
           >
-            {hasMainVideo(article) && (
+            {hasVideo && (
               <VideoIconContainer title="This media has video content.">
                 <VideoIcon />
               </VideoIconContainer>
@@ -232,9 +202,9 @@ class FeedItem extends React.Component<ComponentProps> {
               { text: 'Clipboard', component: HoverAddToClipboardButton },
             ]}
             buttonProps={{
-              isLive: isLive(article),
-              urlPath: article.id,
-              onAddToClipboard: () => onAddToClipboard(article),
+              isLive,
+              urlPath: id,
+              onAddToClipboard,
             }}
             toolTipPosition={'top'}
             toolTipAlign={'right'}
@@ -243,37 +213,4 @@ class FeedItem extends React.Component<ComponentProps> {
       </Container>
     );
   }
-
-  private handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    event.dataTransfer.setData('capi', JSON.stringify(this.props.article));
-    if (this.dragNode.current) {
-      event.dataTransfer.setDragImage(
-        this.dragNode.current,
-        dragOffsetX,
-        dragOffsetY
-      );
-    }
-  };
 }
-
-const getState = (state: any) => state;
-
-const mapStateToProps = (state: State, { id }: ContainerProps) => ({
-  shouldObscureFeed: selectFeatureValue(getState(state), 'obscure-feed'),
-  article: selectArticleAcrossResources(state, id),
-});
-
-const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    onAddToClipboard: (article: CapiArticle) =>
-      dispatch(
-        insertCardWithCreate(
-          { type: 'clipboard', id: 'clipboard', index: 0 },
-          { type: 'CAPI', data: article },
-          'clipboard'
-        )
-      ),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(FeedItem);

@@ -17,6 +17,7 @@
     "strict": true,
     "outDir": "../../public/fronts-client-v2/dist",
     "skipLibCheck": true,
+    "resolveJsonModule": true
   },
   "exclude": [
     "config",

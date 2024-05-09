@@ -1,9 +1,9 @@
 import React from 'react';
 import { styled } from 'constants/theme';
 import TextInput from '../inputs/TextInput';
-import CAPITagInput from '../FrontsCAPIInterface/TagInput';
-import CAPIFieldFilter from '../FrontsCAPIInterface/FieldFilter';
-import CAPIDateRangeInput from '../FrontsCAPIInterface/DateInput';
+import CAPITagInput from './/TagInput';
+import CAPIFieldFilter from './/FieldFilter';
+import CAPIDateRangeInput from './/DateInput';
 import moment from 'moment';
 import FilterItem from './FilterItem';
 import ButtonDefault from 'components/inputs/ButtonDefault';
@@ -127,7 +127,7 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
               onClear={this.clearInput}
               onSearch={this.hideSearchFilters}
               searchTermsExist={this.searchTermsExist}
-              onDisplaySearchFilters={this.handleDisplaySearchFilters}
+              displaySearchIcon={!!this.handleDisplaySearchFilters}
               onKeyUp={(e) => {
                 if (e.keyCode === 13) {
                   this.hideSearchFilters();

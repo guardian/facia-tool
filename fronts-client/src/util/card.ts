@@ -30,32 +30,50 @@ import {
   isGuardianUrl,
   isValidURL,
 } from 'util/url';
+import { Recipe } from '../types/Recipe';
+import type { CardTypes } from '../constants/cardTypes';
+
+interface CreateCardOptions {
+  cardType?: CardTypes;
+  imageHide?: boolean;
+  imageReplace?: boolean;
+  imageCutoutReplace?: boolean;
+  imageCutoutSrc?: string;
+  showByline?: boolean;
+  showQuotedHeadline?: boolean;
+  showKickerCustom?: boolean;
+  customKicker?: string;
+}
 
 // Ideally we will convert this to a type. See
 // https://trello.com/c/wIMDut8V/138-add-a-type-to-the-createcard-function-in-src-shared-util-cardts
 const createCard = (
   id: string,
-  isEdition: boolean,
-  imageHide: boolean = false,
-  imageReplace: boolean = false,
-  imageCutoutReplace: boolean = false,
-  imageCutoutSrc?: string,
-  showByline: boolean = false,
-  showQuotedHeadline: boolean = false,
-  showKickerCustom: boolean = false,
-  customKicker: string = ''
+  isEditionsApp: boolean,
+  {
+    cardType = 'article',
+    imageHide = false,
+    imageReplace = false,
+    imageCutoutReplace = false,
+    showByline = false,
+    showQuotedHeadline = false,
+    showKickerCustom = false,
+    customKicker = '',
+    imageCutoutSrc,
+  }: CreateCardOptions = {}
 ) => ({
   uuid: v4(),
   id,
   frontPublicationDate: Date.now(),
+  cardType,
   meta: {
     ...(imageHide ? { imageHide } : {}),
     ...(imageReplace ? { imageReplace } : {}),
     ...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : {}),
     ...(showByline ? { showByline } : {}),
     ...(showQuotedHeadline ? { showQuotedHeadline } : {}),
-    ...(isEdition || showKickerCustom ? { showKickerCustom: true } : {}),
-    ...(isEdition || showKickerCustom ? { customKicker } : {}),
+    ...(isEditionsApp || showKickerCustom ? { showKickerCustom: true } : {}),
+    ...(isEditionsApp || showKickerCustom ? { customKicker } : {}),
   },
 });
 
@@ -133,12 +151,13 @@ const cloneActiveImageMeta = ({ meta }: Card): CardMeta => {
 };
 
 /**
- * Given a resource id, extract the appropriate entities -- an Card
+ * Given a resource id, extract the appropriate entities -- a Card
  * and possibly an ExternalArticle. The resource id can be a few different things:
  *  - a article, tag or section (either the full URL or the ID)
+ *  - a recipe for the Feast app
  *  - an external link.
  */
-const getArticleEntitiesFromDrop = async (
+const getCardEntitiesFromDrop = async (
   drop: MappableDropType,
   isEdition: boolean,
   dispatch: Dispatch
@@ -146,6 +165,11 @@ const getArticleEntitiesFromDrop = async (
   if (drop.type === 'CAPI') {
     return getArticleEntitiesFromFeedDrop(drop.data, isEdition);
   }
+
+  if (drop.type === 'RECIPE') {
+    return getRecipeEntityFromFeedDrop(drop.data);
+  }
+
   const droppedDataURL = drop.data.trim();
   const resourceIdOrUrl = isGoogleRedirectUrl(droppedDataURL)
     ? getRelevantURLFromGoogleRedirectURL(droppedDataURL)
@@ -249,23 +273,28 @@ const getArticleEntitiesFromDrop = async (
   return [];
 };
 
+const getRecipeEntityFromFeedDrop = (recipe: Recipe): [Card] => {
+  const card = createCard(recipe.id, false, { cardType: 'recipe' });
+
+  return [card];
+};
+
 const getArticleEntitiesFromFeedDrop = (
   capiArticle: CapiArticle,
   isEdition: boolean
 ): TArticleEntities => {
   const article = transformExternalArticle(capiArticle);
-  const card = createCard(
-    article.id,
-    isEdition,
-    article.frontsMeta.defaults.imageHide,
-    article.frontsMeta.defaults.imageReplace,
-    article.frontsMeta.defaults.imageCutoutReplace,
-    article.frontsMeta.cutout,
-    article.frontsMeta.defaults.showByline,
-    article.frontsMeta.defaults.showQuotedHeadline,
-    article.frontsMeta.defaults.showKickerCustom,
-    article.frontsMeta.pickedKicker
-  );
+  const card = createCard(article.id, isEdition, {
+    cardType: 'article',
+    imageHide: article.frontsMeta.defaults.imageHide,
+    imageReplace: article.frontsMeta.defaults.imageReplace,
+    imageCutoutReplace: article.frontsMeta.defaults.imageCutoutReplace,
+    imageCutoutSrc: article.frontsMeta.cutout,
+    showByline: article.frontsMeta.defaults.showByline,
+    showQuotedHeadline: article.frontsMeta.defaults.showQuotedHeadline,
+    showKickerCustom: article.frontsMeta.defaults.showKickerCustom,
+    customKicker: article.frontsMeta.pickedKicker,
+  });
   return [card, article];
 };
 
@@ -333,7 +362,7 @@ export {
   createCard,
   cloneCard,
   cloneActiveImageMeta,
-  getArticleEntitiesFromDrop,
+  getCardEntitiesFromDrop,
   snapMetaWhitelist,
   marketingParamsWhiteList,
 };

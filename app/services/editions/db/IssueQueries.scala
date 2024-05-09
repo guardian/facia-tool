@@ -107,21 +107,26 @@ trait IssueQueries extends Logging {
   }
 
   def listIssues(edition: Edition, dateFrom: LocalDate, dateTo: LocalDate) = DB readOnly { implicit session =>
-    sql"""
-    SELECT
-      id,
-      name,
-      issue_date,
-      timezone_id,
-      created_on,
-      created_by,
-      created_email,
-      launched_on,
-      launched_by,
-      launched_email
-    FROM edition_issues
-    WHERE issue_date BETWEEN $dateFrom AND $dateTo AND name = ${edition.entryName}
-    """.map(EditionsIssue.fromRow(_)).list.apply()
+    val maybeIssues = sql"""
+      SELECT
+        id,
+        name,
+        issue_date,
+        timezone_id,
+        created_on,
+        created_by,
+        created_email,
+        launched_on,
+        launched_by,
+        launched_email
+      FROM edition_issues
+      WHERE issue_date BETWEEN $dateFrom AND $dateTo AND name = ${edition.entryName}
+      """.map(EditionsIssue.fromRow(_)).list.apply()
+
+    maybeIssues.partitionMap(identity) match {
+      case (Nil, rights) => Right(rights)
+      case (lefts, _) => Left(lefts)
+    }
   }
 
   def getIssueIdFromCollectionId(collectionId: String): Option[String] = DB readOnly { implicit session =>
@@ -196,14 +201,16 @@ trait IssueQueries extends Logging {
       LEFT JOIN cards ON (cards.collection_id = collections.id)
       WHERE edition_issues.id = $id
       """.map { rs =>
-        GetIssueRow(
-          EditionsIssue.fromRow(rs),
-          DbEditionsFront.fromRowOpt(rs, "fronts_"),
-          DbEditionsCollection.fromRowOpt(rs, "collections_"),
-          DbEditionsCard.fromRowOpt(rs, "cards_"))
+          EditionsIssue.fromRow(rs).toOption.map { issue => GetIssueRow(
+            issue,
+            DbEditionsFront.fromRowOpt(rs, "fronts_"),
+            DbEditionsCollection.fromRowOpt(rs, "collections_"),
+            DbEditionsCard.fromRowOpt(rs, "cards_"))
+        }
       }
         .list
         .apply()
+        .flatten
 
     val fronts: List[EditionsFront] = rows
       .flatMap(row => row.front)
@@ -232,7 +239,7 @@ trait IssueQueries extends Logging {
     rows.headOption.map(_.issue.copy(fronts = fronts))
   }
 
-  def getIssueSummary(id: String) = DB readOnly { implicit session =>
+  def getIssueSummary(id: String): Option[Either[String, EditionsIssue]] = DB readOnly { implicit session =>
     sql"""
        SELECT
          edition_issues.id,
