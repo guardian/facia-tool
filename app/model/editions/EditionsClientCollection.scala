@@ -10,16 +10,26 @@ case class EditionsClientCard(id: String, cardType: Option[CardType], frontPubli
 
 object EditionsClientCard {
   def fromCard(card: EditionsCard): EditionsClientCard = {
+    val id = card.cardType match {
+      case CardType.Article => "internal-code/page/" + card.id
+      case _ => card.id
+    }
+
     EditionsClientCard(
-      card.id,
+      id,
       Some(card.cardType),
       card.addedOn,
       card.metadata.map(ClientCardMetadata.fromCardMetadata)
     )
   }
   def toCard(card: EditionsClientCard): EditionsCard = {
+    val id = card.cardType match {
+      case Some(CardType.Article) | None => card.id.split("/").last
+      case _ => card.id
+    }
+
     EditionsCard(
-      card.id,
+      id,
       card.cardType.getOrElse(CardType.Article),
       card.frontPublicationDate,
       card.meta.map(_.toCardMetadata)
