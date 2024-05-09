@@ -47,7 +47,7 @@ export const RecipeFeedItem = ({ recipe }: ComponentProps) => {
   return (
     <FeedItem
       type={CardTypesMap.RECIPE}
-      id={recipe.id}
+      id={recipe.canonicalArticle}
       title={recipe.title}
       thumbnail={recipe.featuredImage.url}
       liveUrl={`https://theguardian.com/${recipe.canonicalArticle}`}
