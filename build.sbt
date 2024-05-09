@@ -8,7 +8,7 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-ThisBuild / scalaVersion := "2.13.5"
+ThisBuild / scalaVersion := "2.13.13"
 
 import sbt.Resolver
 
@@ -29,7 +29,7 @@ Universal / javaOptions ++= Seq(
 
 routesGenerator := InjectedRoutesGenerator
 
-scalacOptions := Seq("-unchecked", "-deprecation", "-target:jvm-11", "-Xcheckinit", "-encoding", "utf8", "-feature")
+scalacOptions := Seq("-unchecked", "-deprecation", "-release:11", "-Xcheckinit", "-encoding", "utf8", "-feature")
 
 Compile / doc / sources := Seq.empty
 
@@ -44,10 +44,9 @@ TwirlKeys.templateImports ++= Seq(
 routesImport += "model.editions._"
 
 val awsVersion = "1.12.470"
-val capiModelsVersion = "17.5.1"
-val capiClientVersion = "19.2.1"
+val capiModelsVersion = "23.0.0"
+val capiClientVersion = "26.0.0"
 val json4sVersion = "4.0.3"
-val enumeratumPlayVersion = "1.6.0"
 val circeVersion = "0.13.0"
 
 resolvers ++= Seq(
@@ -55,8 +54,6 @@ resolvers ++= Seq(
     "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
 )
 
-
-PlayKeys.devSettings := Seq("play.akka.dev-mode.akka.http.parsing.max-uri-length" -> "20480")
 
 libraryDependencies ++= Seq(
     ws,
@@ -76,40 +73,57 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-models-json" % capiModelsVersion,
     "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
-    "com.gu" %% "editorial-permissions-client" % "2.9",
-    "com.gu" %% "fapi-client-play28" % "4.0.5",
-    "com.gu" %% "mobile-notifications-api-models" % "1.0.16",
-    "com.gu" %% "pan-domain-auth-play_2-8" % "1.2.2",
+    "com.gu" %% "editorial-permissions-client" % "2.15",
+    "com.gu" %% "fapi-client-play30" % "6.0.0",
+    "com.gu" %% "mobile-notifications-api-models" % "1.0.19",
+    "com.gu" %% "pan-domain-auth-play_3-0" % "3.0.1",
 
-    "org.scanamo" %% "scanamo" % "1.0.0-M15" exclude("org.scala-lang.modules", "scala-java8-compat_2.13"),
+    "org.scanamo" %% "scanamo" % "1.1.1" exclude("org.scala-lang.modules", "scala-java8-compat_2.13"),
     "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
 
     "com.gu" %% "thrift-serializer" % "4.0.2",
     "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
-    "org.julienrf" %% "play-json-derived-codecs" % "5.0.0",
+    "org.julienrf" %% "play-json-derived-codecs" % "11.0.0",
     "org.json4s" %% "json4s-native" % json4sVersion,
     "org.json4s" %% "json4s-jackson" % json4sVersion,
-    "com.typesafe.play" %% "play-json-joda" % "2.9.2",
+    "org.playframework" %% "play-json-joda" % "3.0.2",
     "ai.x" %% "play-json-extensions" % "0.40.2",
 
     "org.postgresql"           %  "postgresql"                   % "42.3.9",
-    "org.scalikejdbc"          %% "scalikejdbc"                  % "3.3.5",
-    "org.scalikejdbc"          %% "scalikejdbc-config"           % "3.3.5",
-    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "2.8.0-scalikejdbc-3.5",
+    "org.scalikejdbc"          %% "scalikejdbc"                  % "4.2.0",
+    "org.scalikejdbc"          %% "scalikejdbc-config"           % "4.2.1",
+    "org.scalikejdbc"          %% "scalikejdbc-play-initializer" % "3.0.0-scalikejdbc-4.2",
 
     "io.circe"                 %% "circe-core"                   % circeVersion,
     "io.circe"                 %% "circe-generic"                % circeVersion,
     "io.circe"                 %% "circe-parser"                 % circeVersion,
 
-    "com.beachape" %% "enumeratum" % enumeratumPlayVersion,
-    "com.beachape" %% "enumeratum-play" % enumeratumPlayVersion,
-    "com.typesafe.play" %% "play" % "2.8.2",
+    "com.beachape" %% "enumeratum" % "1.7.3",
+    "com.beachape" %% "enumeratum-play" % "1.8.0",
+    "org.playframework" %% "play" % "3.0.2",
 
     "org.apache.commons" % "commons-text" % "1.10.0",
     "com.beust" % "jcommander" % "1.75",
 
     "org.scalatest" %% "scalatest" % "3.0.8" % "test",
     "org.mockito" % "mockito-core" % "5.11.0" % Test
+)
+
+excludeDependencies ++= Seq(
+    // As of Play 3.0, groupId has changed to org.playframework; exclude transitive dependencies to the old artifacts
+    // Hopefully this workaround can be removed once play-json-extensions either updates to Play 3.0 or is merged into play-json
+    ExclusionRule(organization = "com.typesafe.play")
+)
+
+dependencyOverrides ++= Seq(
+    // Pinned to resolve transitive dependencies between Play and Scalikejdbc
+    "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1",
+)
+
+// Until all dependencies are on scala-java8-compat v1.x, this avoids unnecessary fatal eviction errors
+libraryDependencySchemes ++= Seq(
+    "org.scala-lang.modules" %% "scala-java8-compat" % VersionScheme.Always,
+    "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 )
 
 val UsesDatabaseTest = config("database-int") extend Test

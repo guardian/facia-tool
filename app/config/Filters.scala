@@ -1,6 +1,6 @@
 package config
 
-import akka.stream.Materializer
+import org.apache.pekko.stream.Materializer
 import play.api.mvc.ResponseHeader
 import play.filters.gzip.GzipFilter
 

@@ -12,7 +12,7 @@ sealed trait UpdateMessage {
 
 /* Config updates */
 object CreateFront {
-  implicit val jsonFormat = Json.format[CreateFront].filter(_.id.matches("""^[a-z0-9\/\-+]*$"""))
+  implicit val jsonFormat: Reads[CreateFront] = Json.format[CreateFront].filter(_.id.matches("""^[a-z0-9\/\-+]*$"""))
 }
 case class CreateFront(
   id: String,
@@ -101,7 +101,7 @@ case class V2CollectionUpdate(id: String, collection: CollectionJson) extends Up
 
 /* Macro - Watch out, this needs to be after the case classes */
 object UpdateMessage {
-  implicit val format = derived.flat.oformat[UpdateMessage]((__ \ "type").format[String])
+  implicit val format: OFormat[UpdateMessage] = derived.flat.oformat[UpdateMessage]((__ \ "type").format[String])
 }
 
 /* Kinesis messages */

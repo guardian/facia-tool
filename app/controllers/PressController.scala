@@ -3,11 +3,11 @@ package controllers
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import org.scanamo.generic.auto.genericDerivedFormat
 import org.scanamo.{Scanamo, Table}
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 
 object FrontPressRecord {
-  implicit val jsonFormat = Json.format[FrontPressRecord]
+  implicit val jsonFormat: OFormat[FrontPressRecord] = Json.format[FrontPressRecord]
 }
 case class FrontPressRecord (
  stageName: String,

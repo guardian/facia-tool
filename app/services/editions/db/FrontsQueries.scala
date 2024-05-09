@@ -12,7 +12,7 @@ trait FrontsQueries extends Logging {
           UPDATE fronts
           SET metadata = ${updatedMetadata.toPGobject}
           WHERE id = $id
-      """.execute().apply()
+      """.execute.apply()
 
     sql"""
         SELECT metadata FROM fronts WHERE id = $id
@@ -21,7 +21,7 @@ trait FrontsQueries extends Logging {
         // Throw if we can't parse the metadata to signal to the user that something is broken
         Json.parse(metadataString).validate[EditionsFrontMetadata].get
       }
-    }.single().apply().flatten
+    }.single.apply().flatten
   }
 
   def getFrontMetadata(id: String): EditionsFrontMetadata = DB localTx { implicit session =>
@@ -35,7 +35,7 @@ trait FrontsQueries extends Logging {
           case "" => "{}"
           case s:String => s
         }
-      }).single().apply().get
+      }).single.apply().get
     Json.fromJson[EditionsFrontMetadata](Json.parse(rawJson)).get
   }
 
@@ -46,13 +46,13 @@ trait FrontsQueries extends Logging {
          UPDATE fronts
          SET is_hidden = $isHidden
          WHERE id = $id AND is_special = TRUE
-       """.execute().apply()
+       """.execute.apply()
 
     val newState = sql"""
         SELECT is_hidden, is_special FROM fronts WHERE id = $id
       """.map { rs =>
         (rs.boolean("is_hidden"), rs.boolean("is_special"))
-      }.single().apply()
+      }.single.apply()
 
     newState.map { case (isHidden, isSpecial) =>
       if (!isSpecial) logger.warn(s"Tried to update hidden state on front $id which is not a special front")

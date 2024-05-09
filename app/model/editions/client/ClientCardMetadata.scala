@@ -2,6 +2,7 @@ package model.editions.client
 
 import ai.x.play.json.Jsonx
 import model.editions.{CardMetadata, CoverCardImages, Image, MediaType}
+import play.api.libs.json.OFormat
 
 // This is a subset of the shared model here - https://github.com/guardian/facia-scala-client/blob/master/facia-json/src/main/scala/com/gu/facia/client/models/Collection.scala#L18
 // Why not reuse that model? We only want to surface the fields necessary for editions
@@ -82,7 +83,7 @@ case class ClientCardMetadata(
 }
 
 object ClientCardMetadata {
-  implicit val format = Jsonx.formatCaseClassUseDefaults[ClientCardMetadata]
+  implicit val format: OFormat[ClientCardMetadata] = Jsonx.formatCaseClassUseDefaults[ClientCardMetadata]
 
   def fromCardMetadata(cardMetadata: CardMetadata): ClientCardMetadata = {
     val mediaType: MediaType = cardMetadata.mediaType.getOrElse(MediaType.UseArticleTrail)

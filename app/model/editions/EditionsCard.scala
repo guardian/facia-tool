@@ -3,7 +3,7 @@ package model.editions
 import enumeratum.EnumEntry.Uncapitalised
 import enumeratum.{EnumEntry, PlayEnum}
 import logging.Logging
-import play.api.libs.json.Json
+import play.api.libs.json.{JsResult, Json, OFormat}
 import scalikejdbc.WrappedResultSet
 
 case class Image (
@@ -17,13 +17,13 @@ case class Image (
 }
 
 object Image {
-  implicit val format = Json.format[Image]
+  implicit val format: OFormat[Image] = Json.format[Image]
 }
 
 case class CoverCardImages(mobile: Option[Image], tablet: Option[Image])
 
 object CoverCardImages {
-  implicit val format = Json.format[CoverCardImages]
+  implicit val format: OFormat[CoverCardImages] = Json.format[CoverCardImages]
 }
 
 case class CardMetadata(
@@ -47,7 +47,7 @@ case class CardMetadata(
 )
 
 object CardMetadata {
-  implicit val format = Json.format[CardMetadata]
+  implicit val format: OFormat[CardMetadata] = Json.format[CardMetadata]
 
   val default = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
 }
@@ -109,7 +109,7 @@ case class EditionsCard(id: String, cardType: CardType, addedOn: Long, metadata:
 }
 
 object EditionsCard extends Logging {
-  implicit val writes = Json.format[EditionsCard]
+  implicit val writes: OFormat[EditionsCard] = Json.format[EditionsCard]
 
   def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsCard] = {
     for {

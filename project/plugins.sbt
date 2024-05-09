@@ -12,7 +12,7 @@ resolvers ++= Seq(
   "Spy" at "https://files.couchbase.com/maven2/"
 )
 
-addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.8.11")
+addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.2")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.9.3")
 

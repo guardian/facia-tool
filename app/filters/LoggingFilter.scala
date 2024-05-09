@@ -2,7 +2,7 @@ package filters
 
 import javax.inject.Inject
 import scala.jdk.CollectionConverters._
-import akka.stream.Materializer
+import org.apache.pekko.stream.Materializer
 import play.api.MarkerContext
 import play.api.mvc._
 import scala.concurrent.{ExecutionContext, Future}

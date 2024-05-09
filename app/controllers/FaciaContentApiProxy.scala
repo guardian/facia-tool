@@ -1,11 +1,10 @@
 package controllers
 
 import java.net.{URI, URLEncoder}
-
 import com.gu.contentapi.client.IAMEncoder
 import metrics.FaciaToolMetrics
 import model.Cached
-import play.api.libs.concurrent.Futures
+import play.api.libs.concurrent.{DefaultFutures, Futures}
 import play.api.libs.concurrent.Futures._
 
 import scala.concurrent.duration._
@@ -18,7 +17,7 @@ import scala.concurrent.ExecutionContext
 
 
 class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
-  implicit val futures = new play.api.libs.concurrent.DefaultFutures(akka.actor.ActorSystem())
+  implicit val futures: DefaultFutures = new play.api.libs.concurrent.DefaultFutures(org.apache.pekko.actor.ActorSystem())
   implicit class string2encodings(s: String) {
     lazy val urlEncoded = URLEncoder.encode(s, "utf-8")
   }

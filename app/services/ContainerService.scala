@@ -1,6 +1,6 @@
 package services
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import slices._
 
 case class StoriesVisibleResponse(
@@ -9,7 +9,7 @@ case class StoriesVisibleResponse(
                                  )
 
 object StoriesVisibleResponse {
-  implicit val jsonFormat = Json.format[StoriesVisibleResponse]
+  implicit val jsonFormat: OFormat[StoriesVisibleResponse] = Json.format[StoriesVisibleResponse]
 }
 
 class ContainerService(val containers: Containers) {

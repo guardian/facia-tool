@@ -20,16 +20,15 @@ import org.scanamo.generic.semiauto._
 import scala.util.{Failure, Success, Try}
 
 class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
-  implicit val UserData: DynamoFormat[UserData] = deriveDynamoFormat[UserData]
-  implicit val Trail: DynamoFormat[Trail] = deriveDynamoFormat[Trail]
-  implicit val JsValue: DynamoFormat[JsValue] = DynamoFormat.xmap[JsValue, String](
+  implicit val jsValue: DynamoFormat[JsValue] = DynamoFormat.xmap[JsValue, String](
     x => Try(Json.parse(x)) match {
       case Success(y) => Right(y)
       case Failure(t) => Left(TypeCoercionError(t))
     },
     x => (Json.stringify(x))
   )
-
+  implicit val trail: DynamoFormat[Trail] = deriveDynamoFormat[Trail]
+  implicit val userData: DynamoFormat[UserData] = deriveDynamoFormat[UserData]
   private lazy val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
   private def updateClipboardContentByFieldName(articles: Option[JsValue], userEmail: String, fieldName: String) = {

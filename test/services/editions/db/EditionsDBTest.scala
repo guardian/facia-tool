@@ -472,15 +472,15 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       val collectionId = collectionIds.head
 
       (DB localTx { implicit session =>
-        sql"""SELECT id from fronts WHERE issue_id = ${dbIssue.id}""".map(_.string("id")).single().apply()
+        sql"""SELECT id from fronts WHERE issue_id = ${dbIssue.id}""".map(_.string("id")).single.apply()
       }) shouldBe Some(frontId)
 
       (DB localTx { implicit session =>
-        sql"""SELECT id from collections WHERE front_id = $frontId""".map(_.string("id")).single().apply()
+        sql"""SELECT id from collections WHERE front_id = $frontId""".map(_.string("id")).single.apply()
       }) shouldBe Some(collectionId)
 
       (DB localTx { implicit session =>
-        sql"""SELECT id from cards WHERE collection_id = $collectionId""".map(_.string("id")).list().apply()
+        sql"""SELECT id from cards WHERE collection_id = $collectionId""".map(_.string("id")).list.apply()
       }).length shouldBe 2
 
       editionsDB.deleteIssue(dbIssue.id)
@@ -488,15 +488,15 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
       // ensure an issue deletion performs a cascading delete
       (DB localTx { implicit session =>
-        sql"""SELECT id from fronts WHERE id = $frontId""".map(_.string("id")).single().apply()
+        sql"""SELECT id from fronts WHERE id = $frontId""".map(_.string("id")).single.apply()
       }) should be
 
       (DB localTx { implicit session =>
-        sql"""SELECT id from collections WHERE front_id = $frontId""".map(_.string("id")).single().apply()
+        sql"""SELECT id from collections WHERE front_id = $frontId""".map(_.string("id")).single.apply()
       }) should be
 
       (DB localTx { implicit session =>
-        sql"""SELECT id from cards WHERE collection_id = $collectionId""".map(_.string("id")).list().apply()
+        sql"""SELECT id from cards WHERE collection_id = $collectionId""".map(_.string("id")).list.apply()
       }).length shouldBe 0
     }
 

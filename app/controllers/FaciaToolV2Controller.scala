@@ -4,7 +4,7 @@ import frontsapi.model.UpdateActions
 import logging.Logging
 import metrics.FaciaToolMetrics
 import model.NoCache
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services._
 import updates._
 import util.Acl
@@ -16,7 +16,7 @@ import permissions.CollectionPermissions
 import scala.concurrent.{ExecutionContext, Future}
 
 object CollectionSpec {
-  implicit val jsonFormat = Json.format[CollectionSpec]
+  implicit val jsonFormat: OFormat[CollectionSpec] = Json.format[CollectionSpec]
 }
 
 case class CollectionSpec(id: String, lastUpdated: Option[Long])

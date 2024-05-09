@@ -1,6 +1,7 @@
 package switchboard
 
-import akka.actor.Scheduler
+
+import org.apache.pekko.actor.Scheduler
 import com.amazonaws.auth.AWSCredentialsProvider
 import logging.Logging
 

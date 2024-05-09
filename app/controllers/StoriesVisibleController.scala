@@ -1,12 +1,12 @@
 package controllers
 
 import logging.Logging
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat}
 import services.ContainerService
 import slices.Story
 
 object StoriesVisibleRequest {
-  implicit val jsonFormat = Json.format[StoriesVisibleRequest]
+  implicit val jsonFormat: OFormat[StoriesVisibleRequest] = Json.format[StoriesVisibleRequest]
 }
 
 case class StoriesVisibleRequest(

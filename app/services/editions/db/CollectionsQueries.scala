@@ -65,7 +65,7 @@ trait CollectionsQueries {
         val contentPrefillQueryTimeWindow = CapiQueryTimeWindow(timeWinStart, timeWinEnd)
 
         (date, edition, zone, CapiPrefillQuery(rs.string("prefill"), pathType), contentPrefillQueryTimeWindow, rs.string("id"))
-      }.list().apply()
+      }.list.apply()
 
     rows.headOption.map { case (issueDate, edition, zone, prefillQueryUrlSegments, contentPrefillQueryTimeWindow, _) =>
       PrefillUpdate(issueDate, edition, zone, prefillQueryUrlSegments, contentPrefillQueryTimeWindow, rows.map(_._6))
@@ -81,7 +81,7 @@ trait CollectionsQueries {
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}
       WHERE id = ${collection.id}
-    """.execute().apply()
+    """.execute.apply()
 
     val rows = fetchCollectionsSql(where = sqls"collections.id = ${collection.id}").apply()
 
@@ -102,12 +102,12 @@ trait CollectionsQueries {
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}
       WHERE id = ${collection.id}
-    """.execute().apply()
+    """.execute.apply()
 
     // At the moment we don't do partial updates so simply delete all of them and reinsert.
     sql"""
           DELETE FROM cards WHERE collection_id = ${collection.id}
-    """.execute().apply()
+    """.execute.apply()
 
     collection.items.zipWithIndex.foreach { case (card, index) =>
       val addedOn = EditionsDB.dateTimeFromMillis(card.addedOn)
@@ -119,7 +119,7 @@ trait CollectionsQueries {
           added_on,
           metadata
           ) VALUES (${collection.id}, ${card.id}, $index, $addedOn, ${card.metadata.map(m => Json.toJson(m).toString)}::JSONB)
-       """.execute().apply()
+       """.execute.apply()
     }
 
     val rows = fetchCollectionsSql(where = sqls"collections.id = ${collection.id}").apply()
@@ -168,7 +168,7 @@ trait CollectionsQueries {
         EditionsCollection.fromRow(rs),
         DbEditionsCard.fromRowOpt(rs, "cards_")
       )
-    }.toList()
+    }.toList
   }
 
   private def convertRowsToCollections(rows: List[GetCollectionsRow]): List[EditionsCollection] = {

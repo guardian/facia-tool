@@ -5,12 +5,12 @@ import model.editions.{EditionsAppTemplates, FeastAppTemplates}
 import model.editions.templates.CuratedPlatformDefinition
 import model.{Cached, UserDataForDefaults}
 import permissions.Permissions
-import play.api.libs.json.{JsValue, Json}
+import play.api.libs.json.{JsValue, Json, OWrites}
 import switchboard.SwitchManager
 import util.{Acl, AclJson}
 
 object Defaults {
-  implicit val jsonFormat = Json.writes[Defaults]
+  implicit val jsonFormat: OWrites[Defaults] = Json.writes[Defaults]
 }
 
 case class Defaults(

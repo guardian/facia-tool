@@ -1,6 +1,6 @@
 package model.editions
 
-import play.api.libs.json.Json
+import play.api.libs.json.{Format, Json, OFormat}
 import scalikejdbc.WrappedResultSet
 import enumeratum.{EnumEntry, PlayEnum}
 
@@ -28,8 +28,7 @@ case class IssueVersionEvent(
 )
 
 object IssueVersionEvent {
-  implicit val reads = Json.reads[IssueVersionEvent]
-  implicit val writes = Json.writes[IssueVersionEvent]
+  implicit val format: Format[IssueVersionEvent] = Json.format[IssueVersionEvent]
 
   def fromRow(rs: WrappedResultSet): IssueVersionEvent = IssueVersionEvent(
     rs.zonedDateTime("event_time").toInstant.toEpochMilli,
@@ -47,8 +46,7 @@ case class IssueVersion(
 )
 
 object IssueVersion {
-  implicit val reads = Json.reads[IssueVersion]
-  implicit val writes = Json.writes[IssueVersion]
+  implicit val format: OFormat[IssueVersion] = Json.format[IssueVersion]
 
   def fromRow(rs: WrappedResultSet): IssueVersion = IssueVersion(
     rs.string("version_id"),
