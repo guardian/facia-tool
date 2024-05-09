@@ -1,5 +1,5 @@
 import { Chef } from '../../types/Chef';
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   dragOffsetX,
   dragOffsetY,
@@ -8,9 +8,9 @@ import { FeedItem } from './FeedItem';
 import { ContentInfo } from './ContentInfo';
 import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
 import { State } from '../../types/State';
-import { connect } from 'react-redux';
-import noop from 'lodash/noop';
 import { CardTypesMap } from 'constants/cardTypes';
+import { connect, useDispatch } from 'react-redux';
+import { insertCardWithCreate } from '../../actions/Cards';
 
 interface ComponentProps {
   chef: Chef;
@@ -21,6 +21,18 @@ export const ChefFeedItemComponent = ({
   chef,
   shouldObscureFeed,
 }: ComponentProps) => {
+  const dispatch = useDispatch();
+
+  const onAddToClipboard = useCallback(() => {
+    dispatch<any>(
+      insertCardWithCreate(
+        { type: 'clipboard', id: 'clipboard', index: 0 },
+        { type: 'CHEF', data: chef },
+        'clipboard'
+      )
+    );
+  }, [chef]);
+
   const handleDragStart = (
     event: React.DragEvent<HTMLDivElement>,
     dragNode: HTMLDivElement
@@ -40,7 +52,7 @@ export const ChefFeedItemComponent = ({
       isLive={true}
       liveUrl={`https://theguardian.com/${chef.apiUrl}`}
       thumbnail={chef.bylineLargeImageUrl}
-      onAddToClipboard={noop}
+      onAddToClipboard={onAddToClipboard}
       handleDragStart={handleDragStart}
       shouldObscureFeed={shouldObscureFeed}
       metaContent={<ContentInfo>Chef</ContentInfo>}
