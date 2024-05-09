@@ -13,21 +13,21 @@ import {
   HoverAddToClipboardButton,
   HoverViewButton,
   HoverOphanButton,
-} from '../inputs/HoverActionButtons';
-import { HoverActionsAreaOverlay } from '../CollectionHoverItems';
+} from '../../inputs/HoverActionButtons';
+import { HoverActionsAreaOverlay } from '../../CollectionHoverItems';
 import { Card, CardSizes } from 'types/Collection';
 import {
   selectCard,
   createSelectArticleFromCard,
-} from '../../selectors/shared';
+} from '../../../selectors/shared';
 import type { State } from 'types/State';
-import CardHeading from '../card/CardHeading';
-import CardContent from '../card/CardContent';
+import CardHeading from '../CardHeading';
+import CardContent from '../CardContent';
 import CardBody from 'components/card/CardBody';
-import CardMetaContent from '../card/CardMetaContent';
+import CardMetaContent from '../CardMetaContent';
 import url from 'constants/url';
-import CardHeadingContainer from '../card/CardHeadingContainer';
-import CardSettingsDisplay from '../card/CardSettingsDisplay';
+import CardHeadingContainer from '../CardHeadingContainer';
+import CardSettingsDisplay from '../CardSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
 import { DerivedArticle } from 'types/Article';
 import { ImageMetadataContainer } from 'components/image/ImageMetaDataContainer';
@@ -76,7 +76,7 @@ interface SnapLinkProps extends ContainerProps {
   featureFlagPageViewData: boolean;
 }
 
-const SnapLink = ({
+const SnapLinkCard = ({
   id,
   fade,
   size = 'default',
@@ -233,4 +233,4 @@ const mapStateToProps = () => {
   };
 };
 
-export default connect(mapStateToProps)(SnapLink);
+export default connect(mapStateToProps)(SnapLinkCard);

@@ -208,7 +208,7 @@ function createAsyncResourceBundle<Resource>(
     // e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
     namespace?: string;
     // The initial state of the reducer data. Defaults to an empty object.
-    initialData?: Resource;
+    initialData?: unknown;
   } = {
     indexById: false,
   }

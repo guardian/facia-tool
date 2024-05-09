@@ -1,6 +1,7 @@
 import { CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
 import type { FrontsToolSettings } from 'types/FaciaApi';
+import { CardTypes } from 'constants/cardTypes';
 
 interface CollectionArticles {
   draft: CapiArticle[];
@@ -28,6 +29,7 @@ type CardSizes = 'wide' | 'default' | 'medium' | 'small';
 
 interface NestedCardRootFields {
   id: string;
+  cardType?: CardTypes;
   frontPublicationDate: number;
   publishedBy?: string;
 }
