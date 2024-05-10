@@ -20,6 +20,8 @@ import CircularIconContainer from 'components/icons/CircularIconContainer';
 import RefreshPeriodically from '../util/RefreshPeriodically';
 import { collectionArticlesPollInterval } from 'constants/polling';
 import RenderOffscreen from 'components/util/RenderOffscreen';
+import { getPaths } from 'util/paths';
+import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 
 const Container = styled.div`
   display: flex;
@@ -98,6 +100,7 @@ const VideoIconContainer = styled(CircularIconContainer)`
 
 interface FeedItemProps {
   id: string;
+  type: CardTypes;
   title: string;
   liveUrl?: string;
   metaContent?: JSX.Element;
@@ -123,6 +126,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
   public render() {
     const {
       id,
+      type,
       title,
       liveUrl,
       isLive,
@@ -135,6 +139,10 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
       hasVideo,
       handleDragStart,
     } = this.props;
+
+    const { preview, live, ophan } = getPaths(id);
+    const href = isLive ? live : preview;
+    const displayOphanLink = type === CardTypesMap.ARTICLE && isLive;
 
     return (
       <Container
@@ -196,18 +204,21 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
         </FeedItemContainer>
         <HoverActionsAreaOverlay data-testid="hover-overlay">
           <HoverActionsButtonWrapper
-            buttons={[
-              { text: 'View', component: HoverViewButton },
-              { text: 'Ophan', component: HoverOphanButton },
-              { text: 'Clipboard', component: HoverAddToClipboardButton },
-            ]}
-            buttonProps={{
-              isLive,
-              urlPath: id,
-              onAddToClipboard,
-            }}
             toolTipPosition={'top'}
             toolTipAlign={'right'}
+            renderButtons={(props) => (
+              <>
+                <HoverViewButton hoverText="View" href={href} {...props} />
+                {displayOphanLink && (
+                  <HoverOphanButton {...props} href={ophan} hoverText="Ophan" />
+                )}
+                <HoverAddToClipboardButton
+                  onAddToClipboard={onAddToClipboard}
+                  hoverText="Clipboard"
+                  {...props}
+                />
+              </>
+            )}
           />
         </HoverActionsAreaOverlay>
       </Container>

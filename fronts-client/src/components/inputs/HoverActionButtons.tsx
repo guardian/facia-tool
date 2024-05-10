@@ -1,8 +1,7 @@
 import React from 'react';
 import ButtonCircular from './ButtonCircular';
 import Link from '../Link';
-import { getPaths } from '../../util/paths';
-import { ButtonPropsFromWrapper } from './HoverActionButtonWrapper';
+import { ButtonProps } from './HoverActionButtonWrapper';
 import {
   AddToClipboardHoverIcon,
   OphanHoverIcon,
@@ -32,24 +31,20 @@ ActionButton.defaultProps = {
   danger: false,
 };
 
-interface ButtonPropsFromArticle {
-  isLive?: boolean;
-  urlPath?: string;
-  onDelete?: () => void;
-  onAddToClipboard?: () => void;
-}
-
-type ButtonProps = ButtonPropsFromArticle & ButtonPropsFromWrapper;
+type ButtonPropsWithHoverText = ButtonProps & {
+  hoverText: string;
+};
 
 const HoverDeleteButton = ({
   showToolTip,
   hideToolTip,
   onDelete,
-}: ButtonProps) => (
+  hoverText,
+}: ButtonPropsWithHoverText & { onDelete: () => void }) => (
   <ActionButton
     danger
     data-testid={'delete-hover-button'}
-    onMouseEnter={showToolTip}
+    onMouseEnter={() => showToolTip(hoverText)}
     onMouseLeave={hideToolTip}
     onClick={(e: React.MouseEvent) => {
       e.stopPropagation();
@@ -64,10 +59,11 @@ const HoverAddToClipboardButton = ({
   showToolTip,
   hideToolTip,
   onAddToClipboard,
-}: ButtonProps) => (
+  hoverText,
+}: ButtonPropsWithHoverText & { onAddToClipboard: () => void }) => (
   <ActionButton
     data-testid={'add-to-clipboard-hover-button'}
-    onMouseEnter={showToolTip}
+    onMouseEnter={() => showToolTip(hoverText)}
     onMouseLeave={hideToolTip}
     onClick={(e: React.MouseEvent) => {
       e.stopPropagation();
@@ -79,27 +75,22 @@ const HoverAddToClipboardButton = ({
 );
 
 const HoverViewButton = ({
-  isLive,
-  urlPath = '',
   showToolTip,
   hideToolTip,
-  isSnapLink = false,
-}: ButtonProps) => (
+  href,
+  hoverText,
+}: ButtonPropsWithHoverText & {
+  href?: string;
+}) => (
   <Link
     onClick={(e: React.MouseEvent) => {
       e.stopPropagation();
     }}
-    href={
-      isSnapLink
-        ? urlPath
-        : isLive
-        ? getPaths(urlPath).live
-        : getPaths(urlPath).preview
-    }
+    href={href}
   >
     <ActionButton
       tabIndex={-1}
-      onMouseEnter={showToolTip}
+      onMouseEnter={() => showToolTip(hoverText)}
       onMouseLeave={hideToolTip}
     >
       <ViewHoverIcon />
@@ -108,34 +99,29 @@ const HoverViewButton = ({
 );
 
 const HoverOphanButton = ({
-  isLive,
-  urlPath,
+  href,
   showToolTip,
   hideToolTip,
-  isSnapLink = false,
-}: ButtonProps) =>
-  isLive ? (
-    <Link
-      onClick={(e: React.MouseEvent) => {
-        e.stopPropagation();
-      }}
-      href={
-        isSnapLink
-          ? urlPath && getPaths(urlPath).ophan
-          : getPaths(`https://www.theguardian.com/${urlPath}`).ophan
-      }
-      data-testid={'ophan-hover-button'}
+  hoverText,
+}: ButtonPropsWithHoverText & {
+  href?: string;
+}) => (
+  <Link
+    onClick={(e: React.MouseEvent) => {
+      e.stopPropagation();
+    }}
+    href={href}
+    data-testid={'ophan-hover-button'}
+  >
+    <ActionButton
+      tabIndex={-1}
+      onMouseEnter={() => showToolTip(hoverText)}
+      onMouseLeave={hideToolTip}
     >
-      <ActionButton
-        tabIndex={-1}
-        onMouseEnter={showToolTip}
-        onMouseLeave={hideToolTip}
-      >
-        <OphanHoverIcon />
-      </ActionButton>
-    </Link>
-  ) : null;
-
+      <OphanHoverIcon />
+    </ActionButton>
+  </Link>
+);
 export {
   HoverDeleteButton,
   HoverViewButton,

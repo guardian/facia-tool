@@ -37,6 +37,7 @@ import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { ThumbnailCutout } from 'components/image/Thumbnail';
 import PageViewDataWrapper from 'components/PageViewDataWrapper';
+import { getPathsForSnap } from 'util/paths';
 
 const SnapLinkBodyContainer = styled(CardBody)`
   justify-content: space-between;
@@ -54,8 +55,8 @@ const SnapLinkURL = styled.p`
 interface ContainerProps {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onDelete?: (uuid: string) => void;
-  onAddToClipboard?: (uuid: string) => void;
+  onDelete: () => void;
+  onAddToClipboard: () => void;
   onClick?: () => void;
   id: string;
   collectionId?: string;
@@ -192,22 +193,31 @@ const SnapLinkCard = ({
           justify={'space-between'}
         >
           <HoverActionsButtonWrapper
-            buttons={[
-              { text: 'View', component: HoverViewButton },
-              { text: 'Ophan', component: HoverOphanButton },
-              { text: 'Clipboard', component: HoverAddToClipboardButton },
-              { text: 'Delete', component: HoverDeleteButton },
-            ]}
-            buttonProps={{
-              isLive: true, // it should not be possible for a snap link to be anything other than live?
-              urlPath,
-              onAddToClipboard,
-              onDelete,
-              isSnapLink: true,
-            }}
             size={size}
             toolTipPosition={'top'}
             toolTipAlign={'right'}
+            renderButtons={(props) => (
+              <>
+                {urlPath && (
+                  <HoverViewButton hoverText="View" href={urlPath} {...props} />
+                )}
+                <HoverOphanButton
+                  {...props}
+                  hoverText="Ophan"
+                  href={urlPath && getPathsForSnap(urlPath).ophan}
+                />
+                <HoverAddToClipboardButton
+                  onAddToClipboard={onAddToClipboard}
+                  hoverText="Clipboard"
+                  {...props}
+                />
+                <HoverDeleteButton
+                  onDelete={onDelete}
+                  hoverText="Delete"
+                  {...props}
+                />
+              </>
+            )}
           />
         </HoverActionsAreaOverlay>
       </SnapLinkBodyContainer>

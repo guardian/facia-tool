@@ -10,6 +10,7 @@ import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
 import { State } from '../../types/State';
 import { connect } from 'react-redux';
 import noop from 'lodash/noop';
+import { CardTypesMap } from 'constants/cardTypes';
 
 interface ComponentProps {
   chef: Chef;
@@ -33,6 +34,7 @@ export const ChefFeedItemComponent = ({
   return (
     <FeedItem
       id={chef.id}
+      type={CardTypesMap.CHEF}
       title={`${chef.firstName} ${chef.lastName}`}
       hasVideo={false}
       isLive={true}

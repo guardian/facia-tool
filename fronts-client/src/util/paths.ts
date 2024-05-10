@@ -4,14 +4,17 @@ const getPathFromUri = (uri: string): string | void => {
 };
 
 const ophanURIFromPath = (path: string) =>
-  `https://dashboard.ophan.co.uk/info?path=${path}`;
+  `https://dashboard.ophan.co.uk/info?path=/${path}`;
 
 const liveURIFromPath = (path: string) => `https://www.theguardian.com/${path}`;
 
 const previewURIFromPath = (path: string) =>
   `https://preview.gutools.co.uk/${path}`;
 
-const getPaths = (uri: string) => {
+export const getPathsForSnap = (path: string) =>
+  getPaths(`https://www.theguardian.com/${path}`);
+
+export const getPaths = (uri: string) => {
   const path = /https:\/\/www\.theguardian.com(.+)/.test(uri)
     ? getPathFromUri(uri)
     : uri;
@@ -28,5 +31,3 @@ const getPaths = (uri: string) => {
         preview: undefined,
       };
 };
-
-export { getPaths };

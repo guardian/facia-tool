@@ -33,6 +33,7 @@ import { ImageMetadataContainer } from 'components/image/ImageMetaDataContainer'
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import PageViewDataWrapper from '../../PageViewDataWrapper';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
+import { getPaths } from 'util/paths';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -178,6 +179,7 @@ const articleBodyDefault = React.memo(
   }: ArticleBodyProps) => {
     const displayByline = size === 'default' && showByline && byline;
     const now = Date.now();
+    const paths = urlPath ? getPaths(urlPath) : undefined;
 
     return (
       <>
@@ -321,21 +323,41 @@ const articleBodyDefault = React.memo(
         </ImageAndGraphWrapper>
         <HoverActionsAreaOverlay disabled={isUneditable}>
           <HoverActionsButtonWrapper
-            buttons={[
-              { text: 'View', component: HoverViewButton },
-              { text: 'Ophan', component: HoverOphanButton },
-              { text: 'Clipboard', component: HoverAddToClipboardButton },
-              { text: 'Delete', component: HoverDeleteButton },
-            ]}
-            buttonProps={{
-              isLive,
-              urlPath,
-              onDelete,
-              onAddToClipboard,
-            }}
             size={size}
             toolTipPosition={'top'}
-            toolTipAlign={'left'}
+            toolTipAlign={'right'}
+            renderButtons={(props) => (
+              <>
+                {urlPath && (
+                  <HoverViewButton
+                    hoverText="View"
+                    href={isLive ? paths?.live : paths?.preview}
+                    {...props}
+                  />
+                )}
+                {isLive && (
+                  <HoverOphanButton
+                    {...props}
+                    href={paths?.ophan}
+                    hoverText="Ophan"
+                  />
+                )}
+                {onAddToClipboard && (
+                  <HoverAddToClipboardButton
+                    onAddToClipboard={onAddToClipboard}
+                    hoverText="Clipboard"
+                    {...props}
+                  />
+                )}
+                {onDelete && (
+                  <HoverDeleteButton
+                    onDelete={onDelete}
+                    hoverText="Delete"
+                    {...props}
+                  />
+                )}
+              </>
+            )}
           />
         </HoverActionsAreaOverlay>
       </>
