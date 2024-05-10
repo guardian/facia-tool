@@ -16,12 +16,19 @@ import CardHeadingContainer from '../CardHeadingContainer';
 import CardHeading from '../CardHeading';
 import ImageAndGraphWrapper from '../../image/ImageAndGraphWrapper';
 import { ThumbnailSmall } from '../../image/Thumbnail';
+import { HoverActionsAreaOverlay } from '../../CollectionHoverItems';
+import { HoverActionsButtonWrapper } from '../../inputs/HoverActionButtonWrapper';
+import {
+  HoverAddToClipboardButton,
+  HoverDeleteButton,
+  HoverViewButton,
+} from '../../inputs/HoverActionButtons';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
   onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onDelete?: (uuid: string) => void;
-  onAddToClipboard?: (uuid: string) => void;
+  onDelete: () => void;
+  onAddToClipboard: () => void;
   onClick?: () => void;
   id: string;
   collectionId?: string;
@@ -79,6 +86,31 @@ export const ChefCard = ({
         <ImageAndGraphWrapper size={size}>
           <ThumbnailSmall url={chef?.bylineLargeImageUrl} />
         </ImageAndGraphWrapper>
+        <HoverActionsAreaOverlay data-testid="hover-overlay">
+          <HoverActionsButtonWrapper
+            toolTipPosition={'top'}
+            toolTipAlign={'right'}
+            renderButtons={(props) => (
+              <>
+                <HoverViewButton
+                  hoverText="View"
+                  href={chef?.webUrl}
+                  {...props}
+                />
+                <HoverAddToClipboardButton
+                  hoverText="Clipboard"
+                  onAddToClipboard={onAddToClipboard}
+                  {...props}
+                />
+                <HoverDeleteButton
+                  hoverText="Delete"
+                  onDelete={onDelete}
+                  {...props}
+                />
+              </>
+            )}
+          />
+        </HoverActionsAreaOverlay>
       </CardBody>
     </CardContainer>
   );
