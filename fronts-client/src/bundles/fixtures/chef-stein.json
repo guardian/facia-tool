@@ -1,0 +1,9 @@
+{
+  "id": "profile/rick-stein",
+  "type": "contributor",
+  "webTitle": "Rick Stein",
+  "webUrl": "https://www.theguardian.com/profile/rick-stein",
+  "apiUrl": "https://content.guardianapis.com/profile/rick-stein",
+  "firstName": "stein",
+  "lastName": "rick"
+}

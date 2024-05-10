@@ -57,6 +57,7 @@ sealed abstract class CardType extends EnumEntry with Uncapitalised
 object CardType extends PlayEnum[CardType] {
   case object Article extends CardType
   case object Recipe extends CardType
+  case object Chef extends CardType
   override def values = findValues
 }
 

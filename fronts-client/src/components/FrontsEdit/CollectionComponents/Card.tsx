@@ -44,6 +44,7 @@ import { DefaultDropIndicator } from 'components/DropZone';
 import DragIntentContainer from 'components/DragIntentContainer';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { RecipeCard } from 'components/card/recipe/RecipeCard';
+import { ChefCard } from 'components/card/chef/ChefCard';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -111,7 +112,7 @@ class Card extends React.Component<CardContainerProps> {
   };
 
   public toggleShowArticleSublinks = (e?: React.MouseEvent) => {
-    const togPos = this.state.showCardSublinks ? false : true;
+    const togPos = !this.state.showCardSublinks;
     this.setState({ showCardSublinks: togPos });
     if (e) {
       e.stopPropagation();
@@ -221,6 +222,24 @@ class Card extends React.Component<CardContainerProps> {
                 showMeta={showMeta}
               />
               {getSublinks}
+            </>
+          );
+        case CardTypesMap.CHEF:
+          return (
+            <>
+              <ChefCard
+                frontId={frontId}
+                collectionId={collectionId}
+                id={uuid}
+                isUneditable={isUneditable}
+                {...getNodeProps()}
+                onDelete={this.onDelete}
+                onAddToClipboard={this.handleAddToClipboard}
+                onClick={isUneditable ? undefined : () => onSelect(uuid)}
+                size={size}
+                textSize={textSize}
+                showMeta={showMeta}
+              />
             </>
           );
         default:

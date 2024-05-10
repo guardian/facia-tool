@@ -32,6 +32,7 @@ import {
 } from 'util/url';
 import { Recipe } from '../types/Recipe';
 import type { CardTypes } from '../constants/cardTypes';
+import { Chef } from '../types/Chef';
 
 interface CreateCardOptions {
   cardType?: CardTypes;
@@ -170,6 +171,10 @@ const getCardEntitiesFromDrop = async (
     return getRecipeEntityFromFeedDrop(drop.data);
   }
 
+  if (drop.type === 'CHEF') {
+    return getChefEntityFromFeedDrop(drop.data);
+  }
+
   const droppedDataURL = drop.data.trim();
   const resourceIdOrUrl = isGoogleRedirectUrl(droppedDataURL)
     ? getRelevantURLFromGoogleRedirectURL(droppedDataURL)
@@ -271,6 +276,11 @@ const getCardEntitiesFromDrop = async (
     }
   }
   return [];
+};
+
+const getChefEntityFromFeedDrop = (chef: Chef): [Card] => {
+  const card = createCard(chef.id, false, { cardType: 'chef' });
+  return [card];
 };
 
 const getRecipeEntityFromFeedDrop = (recipe: Recipe): [Card] => {
