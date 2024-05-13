@@ -23,7 +23,7 @@ fileExists() {
 check_yarn_installed() {
   if ! [ -x "$(command -v yarn)" ]; then
     echo -e "\r\n\r\n${red}yarn not found: please install yarn from https://yarnpkg.com/${plain}\r\n"
-    echo -e "Yarn is required to ensure developers use consistent JS dependencies"
+    echo -e "Yarn is required in the fronts-client directory to ensure developers use consistent JS dependencies"
 
     exit 1
   fi
