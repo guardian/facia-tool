@@ -21,7 +21,7 @@ class Lifecycle(conf: SwitchboardConfiguration, scheduler: Scheduler) extends Lo
 
   logger.info("Starting switchboard cache")
   scheduler.scheduleWithFixedDelay(0.seconds, 1.minute) { () => refreshSwitches() }
-  scheduler.scheduleWithFixedDelay(0.seconds, 1.seconds) { () => refreshSwitches() }
+  scheduler.scheduleOnce(0.seconds) { () => refreshSwitches() }
 
   def refreshSwitches(): Unit = {
     logger.info("Refreshing switches from switchboard")
