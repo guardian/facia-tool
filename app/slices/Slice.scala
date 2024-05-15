@@ -903,3 +903,44 @@ case object ShowcaseSingleStories extends Slice {
     ),
   )
 }
+
+
+/*
+ * The Highlights layout is used to display select features above the title piece for apps and web
+ * 
+ * .___________.___________.___________.
+ * |           |           |           |
+ * |           |           |           |
+ * |_#########_|_#########_|_#########_|
+ * |_#########_|_#########_|_#########_|
+ * |_#########_|_#########_|_#########_|
+ * `-----------------------------------'
+ */
+case object Highlights extends Slice {
+  val layout = SliceLayout(
+    // cssClassName = "t-t-t",
+    columns = Seq(
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Half,
+          tablet = Third
+        )
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Half,
+          tablet = Third
+        )
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Half,
+          tablet = Third
+        )
+      )
+    )
+  )
+}
