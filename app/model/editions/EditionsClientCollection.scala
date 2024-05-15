@@ -9,6 +9,8 @@ import services.editions.prefills.CapiQueryTimeWindow
 case class EditionsClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long, meta: Option[ClientCardMetadata])
 
 object EditionsClientCard {
+  implicit val format: OFormat[EditionsClientCard] = Json.format[EditionsClientCard]
+
   def fromCard(card: EditionsCard): EditionsClientCard = {
     val id = card.cardType match {
       case CardType.Article => "internal-code/page/" + card.id
