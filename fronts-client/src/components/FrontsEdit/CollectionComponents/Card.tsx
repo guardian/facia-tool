@@ -31,7 +31,7 @@ import {
   editorClearCardSelection,
 } from 'bundles/frontsUI';
 import { bindActionCreators } from 'redux';
-import CardFormInline from '../CardFormInline';
+import ArticleMetaForm from '../ArticleMetaForm';
 import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
@@ -260,7 +260,7 @@ class Card extends React.Component<CardContainerProps> {
       >
         {isSelected ? (
           <>
-            <CardFormInline
+            <ArticleMetaForm
               cardId={uuid}
               isSupporting={isSupporting}
               key={uuid}
