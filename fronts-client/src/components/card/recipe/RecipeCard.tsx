@@ -59,7 +59,7 @@ export const RecipeCard = ({
 }: Props) => {
   const card = useSelector<State, Card>((state) => selectCard(state, id));
   const recipe = useSelector((state) =>
-    recipeSelectors.selectById(state, card.id)
+    recipeSelectors.selectRecipeFromCard(state, card.uuid)
   );
   const paths = recipe?.canonicalArticle
     ? getPaths(recipe.canonicalArticle)

@@ -43,6 +43,7 @@ type NestedCard = NestedCardRootFields & {
 
 interface CardRootMeta {
   group?: string;
+  title?: string;
   headline?: string;
   trailText?: string;
   byline?: string;
@@ -99,7 +100,7 @@ type CardMeta = CardRootMeta & {
 
 type RecipeCardMeta = {
   title?: string;
-}
+};
 
 interface Card extends CardRootFields {
   meta: CardMeta;
@@ -175,5 +176,5 @@ export {
   Stages,
   CardSets,
   ArticleTag,
-  RecipeCardMeta
+  RecipeCardMeta,
 };

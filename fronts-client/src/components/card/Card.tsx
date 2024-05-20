@@ -129,7 +129,7 @@ class Card extends React.Component<CardContainerProps> {
       getNodeProps,
       onSelect,
       type,
-      size,
+      size = 'default',
       textSize,
       isUneditable,
       numSupportingArticles,

@@ -109,7 +109,7 @@ interface InterfaceProps {
 
 const mapStateToProps = (state: State, { cardId }: InterfaceProps) => {
   const card = selectCard(state, cardId);
-  const recipe = selectors.selectById(state, card.id);
+  const recipe = selectors.selectRecipeFromCard(state, cardId);
   return {
     recipe,
     card,
