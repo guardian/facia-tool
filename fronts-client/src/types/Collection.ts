@@ -97,6 +97,10 @@ type CardMeta = CardRootMeta & {
   supporting?: string[];
 };
 
+type RecipeCardMeta = {
+  title?: string;
+}
+
 interface Card extends CardRootFields {
   meta: CardMeta;
 }
@@ -171,4 +175,5 @@ export {
   Stages,
   CardSets,
   ArticleTag,
+  RecipeCardMeta
 };

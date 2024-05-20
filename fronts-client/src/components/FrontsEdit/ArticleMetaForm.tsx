@@ -11,7 +11,6 @@ import {
 } from 'redux-form';
 import { styled, theme } from 'constants/theme';
 import Button from 'components/inputs/ButtonDefault';
-import ContentContainer from 'components/layout/ContentContainer';
 import {
   createSelectArticleFromCard,
   selectExternalArticleFromCard,
@@ -60,6 +59,10 @@ import InputBase from '../inputs/InputBase';
 import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
 import { error } from '../../styleConstants';
 import { WarningIcon } from '../icons/Icons';
+import { FormContainer } from 'components/form/FormContainer';
+import { FormContent, FormSize } from 'components/form/FormContent';
+import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
+import { FormButtonContainer } from 'components/form/FormButtonContainer';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -89,27 +92,8 @@ type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   slideshowHasAtLeastTwoImages: boolean;
 };
 
-const FormContainer = styled(ContentContainer.withComponent('form'))`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  background-color: ${theme.base.colors.formBackground};
-`;
-
-const FormContent = styled.div`
-  flex: 3;
-  display: flex;
-  flex-direction: ${(props: { size?: string }) =>
-    props.size !== 'wide' ? 'column' : 'row'};
-  margin-bottom: 40px;
-`;
-
 const RowContainer = styled.div`
   overflow: hidden;
-`;
-
-const TextOptionsContainer = styled(InputGroup)`
-  flex: 2;
 `;
 
 const ImageOptionsContainer = styled.div`
@@ -135,12 +119,6 @@ const ImageRowContainer = styled(RowContainer)`
   flex: 1 1 auto;
   margin-left: ${(props: { size?: string }) =>
     props.size !== 'wide' ? 0 : '10px'};
-`;
-
-const ButtonContainer = styled.div`
-  margin-left: auto;
-  margin-right: -10px;
-  margin-bottom: -10px;
 `;
 
 const slideshowGutter = 5;
@@ -562,7 +540,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           </CollectionEditedError>
         )}
         <FormContent size={this.props.size}>
-          <TextOptionsContainer>
+          <TextOptionsInputGroup>
             <ConditionalField
               name="customKicker"
               label="Kicker"
@@ -683,7 +661,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               placeholder=""
               originalValue={''}
             />
-          </TextOptionsContainer>
+          </TextOptionsInputGroup>
           <ImageOptionsContainer size={this.props.size}>
             <ImageRowContainer size={this.props.size}>
               <Row>
@@ -869,7 +847,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             </RowContainer>
           )}
         </FormContent>
-        <ButtonContainer>
+        <FormButtonContainer>
           <Button onClick={this.handleCancel} type="button" size="l">
             Cancel
           </Button>
@@ -888,7 +866,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
           >
             Save
           </Button>
-        </ButtonContainer>
+        </FormButtonContainer>
       </FormContainer>
     );
   }
@@ -1005,7 +983,7 @@ interface InterfaceProps {
   onCancel: () => void;
   onSave: (meta: CardMeta) => void;
   frontId: string;
-  size?: string;
+  size?: FormSize;
 }
 
 const formContainer: React.SFC<ContainerProps & InterfaceProps> = (props) => (

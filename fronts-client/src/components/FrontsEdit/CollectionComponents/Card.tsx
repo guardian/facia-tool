@@ -45,6 +45,7 @@ import DragIntentContainer from 'components/DragIntentContainer';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { RecipeCard } from 'components/card/recipe/RecipeCard';
 import { ChefCard } from 'components/card/chef/ChefCard';
+import { RecipeMetaForm } from '../RecipeMetaForm';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -251,15 +252,26 @@ class Card extends React.Component<CardContainerProps> {
       }
     };
 
-    return (
-      <CardContainer
-        id={createCardId(uuid)}
-        size={size}
-        isLive={isLive}
-        pillarId={pillarId}
-      >
-        {isSelected ? (
-          <>
+    const getCardForm = () => {
+      switch (type) {
+        case CardTypesMap.RECIPE:
+          return (
+            <RecipeMetaForm
+              cardId={uuid}
+              isSupporting={isSupporting}
+              key={uuid}
+              form={uuid}
+              frontId={frontId}
+              onSave={(meta) => {
+                updateCardMeta(uuid, meta);
+                clearCardSelection(uuid);
+              }}
+              onCancel={() => clearCardSelection(uuid)}
+              size={size}
+            />
+          );
+        default:
+          return (
             <ArticleMetaForm
               cardId={uuid}
               isSupporting={isSupporting}
@@ -273,6 +285,20 @@ class Card extends React.Component<CardContainerProps> {
               onCancel={() => clearCardSelection(uuid)}
               size={size}
             />
+          );
+      }
+    };
+
+    return (
+      <CardContainer
+        id={createCardId(uuid)}
+        size={size}
+        isLive={isLive}
+        pillarId={pillarId}
+      >
+        {isSelected ? (
+          <>
+            {getCardForm()}
             {getSublinks}
             {numSupportingArticles === 0
               ? children
