@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
-import { Card, RecipeCardMeta } from '../../types/Collection';
+import { Card, CardSizes, RecipeCardMeta } from '../../types/Collection';
 import { Dispatch } from '../../types/Store';
 import { selectors } from '../../bundles/recipesBundle';
 import { State } from '../../types/State';
@@ -11,7 +11,7 @@ import InputText from 'components/inputs/InputText';
 import { selectCard } from 'selectors/shared';
 import { Recipe } from 'types/Recipe';
 import { FormContainer } from 'components/form/FormContainer';
-import { FormContent, FormSize } from 'components/form/FormContent';
+import { FormContent } from 'components/form/FormContent';
 import { CollectionEditedError } from 'components/form/CollectionEditedError';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
@@ -22,7 +22,7 @@ type FormProps = {
     title: string;
   };
   recipe?: Recipe;
-  size: FormSize;
+  size: CardSizes;
   onCancel: () => void;
   onSave: (meta: RecipeCardFormData) => void;
 };

@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import type { State } from 'types/State';
 import FlatUl from 'components/layout/FlatUl';
 import { createSelectOpenCardTitlesForCollection } from 'bundles/frontsUI';
-import { createCardId } from './Card';
+import { createCardId } from '../../card/Card';
 import styled from 'styled-components';
 
 interface ContainerProps {

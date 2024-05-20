@@ -18,7 +18,7 @@ import {
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
 import { defaultObject } from 'util/selectorUtils';
-import { CardMeta, ArticleTag } from 'types/Collection';
+import { CardMeta, ArticleTag, CardSizes } from 'types/Collection';
 import InputText from 'components/inputs/InputText';
 import InputTextArea from 'components/inputs/InputTextArea';
 import InputCheckboxToggleInline from 'components/inputs/InputCheckboxToggleInline';
@@ -60,7 +60,7 @@ import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
 import { error } from '../../styleConstants';
 import { WarningIcon } from '../icons/Icons';
 import { FormContainer } from 'components/form/FormContainer';
-import { FormContent, FormSize } from 'components/form/FormContent';
+import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
 
@@ -983,7 +983,7 @@ interface InterfaceProps {
   onCancel: () => void;
   onSave: (meta: CardMeta) => void;
   frontId: string;
-  size?: FormSize;
+  size?: CardSizes;
 }
 
 const formContainer: React.SFC<ContainerProps & InterfaceProps> = (props) => (

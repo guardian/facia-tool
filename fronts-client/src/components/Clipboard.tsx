@@ -19,7 +19,7 @@ import { clipboardId } from 'constants/fronts';
 import { Card as TCard } from 'types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import CardLevel from './clipboard/CardLevel';
-import Card from './FrontsEdit/CollectionComponents/Card';
+import Card from './card/Card';
 import { styled, theme } from 'constants/theme';
 import DragIntentContainer from 'components/DragIntentContainer';
 import {
