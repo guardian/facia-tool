@@ -1,5 +1,11 @@
 import { default as sanitize } from 'sanitize-html';
 
+export const stripHtml = (html: string) => {
+  const tempNode = document.createElement('div');
+  tempNode.innerHTML = html;
+  return tempNode.innerText || '';
+};
+
 // these are the defaults from html-sanitize (although disallowing `iframes`)
 // Thgey've been left quite broad as they allow *rendering* in the fronts tool
 // but we're not trying to keep up to date with what dotcom do / don't allow in

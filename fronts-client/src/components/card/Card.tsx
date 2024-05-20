@@ -45,7 +45,7 @@ import DragIntentContainer from 'components/DragIntentContainer';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { RecipeCard } from 'components/card/recipe/RecipeCard';
 import { ChefCard } from 'components/card/chef/ChefCard';
-import { RecipeMetaForm } from '../form/RecipeMetaForm';
+import { ChefMetaForm } from '../form/ChefMetaForm';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -254,9 +254,9 @@ class Card extends React.Component<CardContainerProps> {
 
     const getCardForm = () => {
       switch (type) {
-        case CardTypesMap.RECIPE:
+        case CardTypesMap.CHEF:
           return (
-            <RecipeMetaForm
+            <ChefMetaForm
               cardId={uuid}
               isSupporting={isSupporting}
               key={uuid}
@@ -289,6 +289,9 @@ class Card extends React.Component<CardContainerProps> {
       }
     };
 
+    const supportsForm = type !== 'recipe';
+    const shouldDisplayForm = isSelected && supportsForm;
+
     return (
       <CardContainer
         id={createCardId(uuid)}
@@ -296,7 +299,7 @@ class Card extends React.Component<CardContainerProps> {
         isLive={isLive}
         pillarId={pillarId}
       >
-        {isSelected ? (
+        {shouldDisplayForm ? (
           <>
             {getCardForm()}
             {getSublinks}

@@ -43,7 +43,6 @@ type NestedCard = NestedCardRootFields & {
 
 interface CardRootMeta {
   group?: string;
-  title?: string;
   headline?: string;
   trailText?: string;
   byline?: string;
@@ -88,6 +87,7 @@ interface CardRootMeta {
   coverCardImageReplace?: boolean;
   coverCardMobileImage?: ImageData;
   coverCardTabletImage?: ImageData;
+  bio?: string;
 }
 
 type CardRootFields = NestedCardRootFields & {
@@ -98,8 +98,8 @@ type CardMeta = CardRootMeta & {
   supporting?: string[];
 };
 
-type RecipeCardMeta = {
-  title?: string;
+type ChefCardMeta = {
+  bio: string;
 };
 
 interface Card extends CardRootFields {
@@ -176,5 +176,5 @@ export {
   Stages,
   CardSets,
   ArticleTag,
-  RecipeCardMeta,
+  ChefCardMeta,
 };

@@ -1,34 +1,34 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
-import { Card, CardSizes, RecipeCardMeta } from '../../types/Collection';
+import { Card, CardSizes, ChefCardMeta } from '../../types/Collection';
 import { Dispatch } from '../../types/Store';
-import { selectors } from '../../bundles/recipesBundle';
+import { selectors } from '../../bundles/chefsBundle';
 import { State } from '../../types/State';
-import { RecipeCardFormData } from '../../util/form';
+import { ChefCardFormData } from '../../util/form';
 import Button from 'components/inputs/ButtonDefault';
 import InputText from 'components/inputs/InputText';
 import { selectCard } from 'selectors/shared';
-import { Recipe } from 'types/Recipe';
 import { FormContainer } from 'components/form/FormContainer';
 import { FormContent } from 'components/form/FormContent';
 import { CollectionEditedError } from 'components/form/CollectionEditedError';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
+import { Chef } from 'types/Chef';
 
 type FormProps = {
   card: Card;
   initialValues: {
-    title: string;
+    bio: string;
   };
-  recipe?: Recipe;
+  chef?: Chef;
   size: CardSizes;
   onCancel: () => void;
-  onSave: (meta: RecipeCardFormData) => void;
+  onSave: (meta: ChefCardFormData) => void;
 };
 
 type ComponentProps = FormProps &
-  InjectedFormProps<RecipeCardFormData, FormProps, {}>;
+  InjectedFormProps<ChefCardFormData, FormProps, {}>;
 
 const Form = ({
   card,
@@ -38,7 +38,7 @@ const Form = ({
   handleSubmit,
   onCancel,
   initialValues,
-  recipe,
+  chef,
 }: ComponentProps) => {
   return (
     <FormContainer
@@ -57,12 +57,12 @@ const Form = ({
       <FormContent size={size}>
         <TextOptionsInputGroup>
           <Field
-            name="title"
-            label="Title"
+            name="bio"
+            label="Bio"
             rows="2"
-            placeholder={recipe?.title}
+            placeholder={chef?.bio}
             component={InputText}
-            originalValue={initialValues.title}
+            originalValue={initialValues.bio}
             data-testid="edit-form-headline-field"
           />
         </TextOptionsInputGroup>
@@ -85,13 +85,9 @@ const Form = ({
   );
 };
 
-const ConnectedRecipeForm = reduxForm<RecipeCardFormData, FormProps, {}>({
+const ConnectedChefForm = reduxForm<ChefCardFormData, FormProps, {}>({
   destroyOnUnmount: true,
-  onSubmit: (
-    values: RecipeCardFormData,
-    dispatch: Dispatch,
-    props: FormProps
-  ) =>
+  onSubmit: (values: ChefCardFormData, dispatch: Dispatch, props: FormProps) =>
     dispatch(() => {
       props.onSave(values);
     }),
@@ -102,21 +98,21 @@ interface InterfaceProps {
   cardId: string;
   isSupporting?: boolean;
   onCancel: () => void;
-  onSave: (meta: RecipeCardMeta) => void;
+  onSave: (meta: ChefCardMeta) => void;
   frontId: string;
   size?: string;
 }
 
 const mapStateToProps = (state: State, { cardId }: InterfaceProps) => {
   const card = selectCard(state, cardId);
-  const recipe = selectors.selectRecipeFromCard(state, cardId);
+  const chef = selectors.selectChefFromCard(state, cardId);
   return {
-    recipe,
+    chef,
     card,
     initialValues: {
-      title: recipe?.title ?? '',
+      bio: chef?.bio ?? '',
     },
   };
 };
 
-export const RecipeMetaForm = connect(mapStateToProps)(ConnectedRecipeForm);
+export const ChefMetaForm = connect(mapStateToProps)(ConnectedChefForm);

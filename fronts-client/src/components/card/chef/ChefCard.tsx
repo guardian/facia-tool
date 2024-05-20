@@ -57,8 +57,8 @@ export const ChefCard = ({
   ...rest
 }: Props) => {
   const card = useSelector<State, Card>((state) => selectCard(state, id));
-  const chef = useSelector((state) =>
-    chefsSelectors.selectById(state, card.id)
+  const chef = useSelector((state: State) =>
+    chefsSelectors.selectChefFromCard(state, card.uuid)
   );
   return (
     <CardContainer {...rest}>
@@ -81,6 +81,7 @@ export const ChefCard = ({
             <CardHeading data-testid="headline" html>
               {chef?.webTitle ?? 'No Chef found'}
             </CardHeading>
+            <CardMetaContent>{chef?.bio}</CardMetaContent>
           </CardHeadingContainer>
         </CardContent>
         <ImageAndGraphWrapper size={size}>

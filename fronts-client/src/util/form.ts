@@ -11,8 +11,8 @@ import { CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
 
-export interface RecipeCardFormData {
-  title: string;
+export interface ChefCardFormData {
+  bio: string;
 }
 
 export interface CardFormData {
