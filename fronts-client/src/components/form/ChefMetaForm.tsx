@@ -1,5 +1,4 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useMemo } from 'react';
 import { reduxForm, Field, InjectedFormProps } from 'redux-form';
 import { Card, CardSizes, ChefCardMeta } from '../../types/Collection';
 import { Dispatch } from '../../types/Store';
@@ -15,6 +14,7 @@ import { CollectionEditedError } from 'components/form/CollectionEditedError';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
 import { Chef } from 'types/Chef';
+import { useSelector } from 'react-redux';
 
 type FormProps = {
   card: Card;
@@ -93,26 +93,27 @@ const ConnectedChefForm = reduxForm<ChefCardFormData, FormProps, {}>({
     }),
 })(Form);
 
-interface InterfaceProps {
-  form: string;
+interface ChefMetaFormProps {
   cardId: string;
-  isSupporting?: boolean;
   onCancel: () => void;
   onSave: (meta: ChefCardMeta) => void;
-  frontId: string;
-  size?: string;
+  size: CardSizes;
 }
 
-const mapStateToProps = (state: State, { cardId }: InterfaceProps) => {
-  const card = selectCard(state, cardId);
-  const chef = selectors.selectChefFromCard(state, cardId);
-  return {
-    chef,
-    card,
-    initialValues: {
-      bio: chef?.bio ?? '',
-    },
-  };
-};
+export const ChefMetaForm = ({ cardId, ...rest }: ChefMetaFormProps) => {
+  const card = useSelector((state: State) => selectCard(state, cardId));
+  const chef = useSelector((state: State) =>
+    selectors.selectChefFromCard(state, cardId)
+  );
 
-export const ChefMetaForm = connect(mapStateToProps)(ConnectedChefForm);
+  const initialValues = useMemo(() => ({ bio: chef?.bio ?? '' }), [chef?.bio]);
+
+  return (
+    <ConnectedChefForm
+      chef={chef}
+      card={card}
+      initialValues={initialValues}
+      {...rest}
+    />
+  );
+};
