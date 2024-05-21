@@ -58,7 +58,8 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
-        Some(1)
+        Some(1),
+        None
       )
       val cardMetadata = clientCardMetadata.toCardMetadata
       cardMetadata.promotionMetric should be (Some(1))
@@ -211,7 +212,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
   "ClientCardMetadata to CardMetadata" - {
 
     def getEmptyClientCardMetadata = ClientCardMetadata(
-      None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
+      None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
     )
 
     "should convert into CardMetadata with multiple image overrides" in {

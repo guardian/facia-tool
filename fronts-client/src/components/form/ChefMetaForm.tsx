@@ -36,7 +36,6 @@ const Form = ({
   size,
   handleSubmit,
   onCancel,
-  initialValues,
   chef,
   chefWithoutOverrides,
 }: ComponentProps) => {
@@ -95,6 +94,7 @@ const ConnectedChefForm = reduxForm<ChefCardFormData, FormProps, {}>({
 
 interface ChefMetaFormProps {
   cardId: string;
+  form: string;
   onCancel: () => void;
   onSave: (meta: ChefCardMeta) => void;
   size: CardSizes;

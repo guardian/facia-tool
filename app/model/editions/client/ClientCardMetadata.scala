@@ -37,7 +37,7 @@ case class ClientCardMetadata(
   coverCardMobileImage: Option[Image],
   coverCardTabletImage: Option[Image],
   promotionMetric: Option[Double],
-  bio: Option[String],
+  bio: Option[String]
 ) {
   def toCardMetadata: CardMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {

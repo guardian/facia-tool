@@ -43,7 +43,7 @@ case class CardMetadata(
   overrideArticleMainMedia: Option[Boolean],
   coverCardImages: Option[CoverCardImages],
   promotionMetric: Option[Double],
-  bio: Option[String]
+  bio: Option[String] = None
 )
 
 object CardMetadata {

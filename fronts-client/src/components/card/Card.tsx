@@ -258,10 +258,8 @@ class Card extends React.Component<CardContainerProps> {
           return (
             <ChefMetaForm
               cardId={uuid}
-              isSupporting={isSupporting}
               key={uuid}
               form={uuid}
-              frontId={frontId}
               onSave={(meta) => {
                 updateCardMeta(uuid, meta);
                 clearCardSelection(uuid);

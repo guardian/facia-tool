@@ -30,7 +30,7 @@ class CardMetadataTest extends FreeSpec with Matchers {
     )),
     Some(true),
     None,
-    None
+    None,
   )
 
   private val cardMetadataAsString =
