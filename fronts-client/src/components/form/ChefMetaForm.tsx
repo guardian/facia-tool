@@ -6,7 +6,6 @@ import { selectors } from '../../bundles/chefsBundle';
 import { State } from '../../types/State';
 import { ChefCardFormData } from '../../util/form';
 import Button from 'components/inputs/ButtonDefault';
-import InputText from 'components/inputs/InputText';
 import { selectCard } from 'selectors/shared';
 import { FormContainer } from 'components/form/FormContainer';
 import { FormContent } from 'components/form/FormContent';
@@ -15,13 +14,13 @@ import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
 import { Chef } from 'types/Chef';
 import { useSelector } from 'react-redux';
+import InputTextArea from 'components/inputs/InputTextArea';
 
 type FormProps = {
   card: Card;
-  initialValues: {
-    bio: string;
-  };
-  chef?: Chef;
+  initialValues: ChefCardMeta;
+  chef: Chef | undefined;
+  chefWithoutOverrides: Chef | undefined;
   size: CardSizes;
   onCancel: () => void;
   onSave: (meta: ChefCardFormData) => void;
@@ -39,6 +38,7 @@ const Form = ({
   onCancel,
   initialValues,
   chef,
+  chefWithoutOverrides,
 }: ComponentProps) => {
   return (
     <FormContainer
@@ -61,8 +61,8 @@ const Form = ({
             label="Bio"
             rows="2"
             placeholder={chef?.bio}
-            component={InputText}
-            originalValue={initialValues.bio}
+            component={InputTextArea}
+            originalValue={chefWithoutOverrides?.bio}
             data-testid="edit-form-headline-field"
           />
         </TextOptionsInputGroup>
@@ -102,6 +102,9 @@ interface ChefMetaFormProps {
 
 export const ChefMetaForm = ({ cardId, ...rest }: ChefMetaFormProps) => {
   const card = useSelector((state: State) => selectCard(state, cardId));
+  const chefWithoutOverrides = useSelector((state: State) =>
+    selectors.selectById(state, card.id)
+  );
   const chef = useSelector((state: State) =>
     selectors.selectChefFromCard(state, cardId)
   );
@@ -111,6 +114,7 @@ export const ChefMetaForm = ({ cardId, ...rest }: ChefMetaFormProps) => {
   return (
     <ConnectedChefForm
       chef={chef}
+      chefWithoutOverrides={chefWithoutOverrides}
       card={card}
       initialValues={initialValues}
       {...rest}

@@ -31,6 +31,10 @@ const selectChefDataFromCardId = (
   return selectors.selectById(state, card.id);
 };
 
+/**
+ * Select a Chef from a card, overriding the original values with the card meta
+ * if it's present.
+ */
 const selectChefFromCard = createSelector(
   selectCard,
   selectChefDataFromCardId,
