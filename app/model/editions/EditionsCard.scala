@@ -34,7 +34,6 @@ case class CardMetadata(
   showByline: Option[Boolean],
   byline: Option[String],
   sportScore: Option[String],
-
   mediaType: Option[MediaType],
 
   // keep overrides even if not used so user can switch back w/out needing to re-crop
@@ -43,13 +42,14 @@ case class CardMetadata(
   replaceImage: Option[Image],
   overrideArticleMainMedia: Option[Boolean],
   coverCardImages: Option[CoverCardImages],
-  promotionMetric: Option[Double]
+  promotionMetric: Option[Double],
+  bio: Option[String] = None
 )
 
 object CardMetadata {
   implicit val format: OFormat[CardMetadata] = Json.format[CardMetadata]
 
-  val default = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
+  val default = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
 sealed abstract class CardType extends EnumEntry with Uncapitalised

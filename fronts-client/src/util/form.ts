@@ -11,6 +11,10 @@ import { CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
 
+export interface ChefCardFormData {
+  bio: string;
+}
+
 export interface CardFormData {
   headline: string;
   isBoosted: boolean;

@@ -25,13 +25,13 @@ import {
   editionsCardImageCriteria,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
 } from 'constants/image';
-import Sublinks from './Sublinks';
+import Sublinks from '../FrontsEdit/CollectionComponents/Sublinks';
 import {
   selectIsCardFormOpen,
   editorClearCardSelection,
 } from 'bundles/frontsUI';
 import { bindActionCreators } from 'redux';
-import CardFormInline from '../CardFormInline';
+import ArticleMetaForm from '../form/ArticleMetaForm';
 import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
@@ -45,6 +45,7 @@ import DragIntentContainer from 'components/DragIntentContainer';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { RecipeCard } from 'components/card/recipe/RecipeCard';
 import { ChefCard } from 'components/card/chef/ChefCard';
+import { ChefMetaForm } from '../form/ChefMetaForm';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -128,7 +129,7 @@ class Card extends React.Component<CardContainerProps> {
       getNodeProps,
       onSelect,
       type,
-      size,
+      size = 'default',
       textSize,
       isUneditable,
       numSupportingArticles,
@@ -251,16 +252,25 @@ class Card extends React.Component<CardContainerProps> {
       }
     };
 
-    return (
-      <CardContainer
-        id={createCardId(uuid)}
-        size={size}
-        isLive={isLive}
-        pillarId={pillarId}
-      >
-        {isSelected ? (
-          <>
-            <CardFormInline
+    const getCardForm = () => {
+      switch (type) {
+        case CardTypesMap.CHEF:
+          return (
+            <ChefMetaForm
+              cardId={uuid}
+              key={uuid}
+              form={uuid}
+              onSave={(meta) => {
+                updateCardMeta(uuid, meta);
+                clearCardSelection(uuid);
+              }}
+              onCancel={() => clearCardSelection(uuid)}
+              size={size}
+            />
+          );
+        default:
+          return (
+            <ArticleMetaForm
               cardId={uuid}
               isSupporting={isSupporting}
               key={uuid}
@@ -273,6 +283,23 @@ class Card extends React.Component<CardContainerProps> {
               onCancel={() => clearCardSelection(uuid)}
               size={size}
             />
+          );
+      }
+    };
+
+    const supportsForm = type !== 'recipe';
+    const shouldDisplayForm = isSelected && supportsForm;
+
+    return (
+      <CardContainer
+        id={createCardId(uuid)}
+        size={size}
+        isLive={isLive}
+        pillarId={pillarId}
+      >
+        {shouldDisplayForm ? (
+          <>
+            {getCardForm()}
             {getSublinks}
             {numSupportingArticles === 0
               ? children
