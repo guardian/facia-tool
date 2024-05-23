@@ -36,7 +36,7 @@ object BreakingNewsUpdate {
 
   def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     val title = trail.topic match {
-      case Some("uk-general-election") => Some("General election 2019")
+      case Some("uk-general-election") => Some("UK general election")
       case Some(topic) if (SportBreakingNewsTopics.map(_.name) :+ SportGlobalTopicName).contains(topic) => Some("Sport breaking news")
       case _ => None
     }
