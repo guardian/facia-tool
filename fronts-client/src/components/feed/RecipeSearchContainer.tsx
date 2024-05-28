@@ -35,15 +35,34 @@ interface Props {
   chefs: Record<string, Chef>;
 }
 
+enum FeedType {
+  recipes = 'recipeFeed',
+  chefs = 'chefFeed',
+}
+
 const FeastSearchContainerComponent = ({
   rightHandContainer,
   recipes,
   chefs,
 }: Props) => {
-  const [selectedOption, setSelectedOption] = useState<string>('recipeFeed');
-  const handleOptionChange = (optionName: string) => {
+  const [selectedOption, setSelectedOption] = useState(FeedType.recipes);
+  const handleOptionChange = (optionName: FeedType) => {
     setSelectedOption(optionName);
   };
+
+  const renderTheFeed = () => {
+    switch (selectedOption) {
+      case FeedType.recipes:
+        return Object.values(recipes).map((recipe) => (
+          <RecipeFeedItem key={recipe.id} recipe={recipe} />
+        ));
+      case FeedType.chefs:
+        return Object.values(chefs).map((chef) => (
+          <ChefFeedItem key={chef.id} chef={chef} />
+        ));
+    }
+  };
+
   return (
     <React.Fragment>
       <InputContainer>
@@ -54,15 +73,15 @@ const FeastSearchContainerComponent = ({
       </InputContainer>
       <RadioGroup>
         <RadioButton
-          checked={selectedOption === 'recipeFeed'}
-          onChange={() => handleOptionChange('recipeFeed')}
+          checked={selectedOption === FeedType.recipes}
+          onChange={() => handleOptionChange(FeedType.recipes)}
           label="Recipes"
           inline
           name="recipeFeed"
         />
         <RadioButton
-          checked={selectedOption === 'chefFeed'}
-          onChange={() => handleOptionChange('chefFeed')}
+          checked={selectedOption === FeedType.chefs}
+          onChange={() => handleOptionChange(FeedType.chefs)}
           label="Chefs"
           inline
           name="chefFeed"
@@ -75,13 +94,7 @@ const FeastSearchContainerComponent = ({
             <ShortVerticalPinline />
           </SearchTitle>
         </SearchResultsHeadingContainer>
-        {selectedOption === 'recipeFeed'
-          ? Object.values(recipes).map((recipe) => (
-              <RecipeFeedItem key={recipe.id} recipe={recipe} />
-            ))
-          : Object.values(chefs).map((chef) => (
-              <ChefFeedItem key={chef.id} chef={chef} />
-            ))}
+        {renderTheFeed()}
       </FixedContentContainer>
     </React.Fragment>
   );
