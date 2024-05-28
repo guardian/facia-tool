@@ -56,12 +56,12 @@ export default {
             'big'
           ]
         },
-        { name: 'fixed/highlights' },
         { name: 'nav/list' },
         { name: 'nav/media-list' },
         { name: 'news/most-popular' },
         { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
-        { 'name': 'fixed/showcase' }
+        { 'name': 'fixed/showcase' },
+        { name: 'fixed/highlights' }
     ],
 
     emailTypes: [
