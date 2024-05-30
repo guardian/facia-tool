@@ -31,7 +31,6 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val
   private lazy val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
   private def updateClipboardContentByFieldName[T](maybeJson: Option[JsValue], userEmail: String, fieldName: String)(implicit dynamoFormat: DynamoFormat[T], jsonFormat: Reads[T]) = {
-    val a = maybeJson.map(_.validate[T])
     maybeJson.map(_.validate[T]) match {
       case Some(JsSuccess(model, _)) =>
         Scanamo(dynamoClient).exec(userDataTable.update(UniqueKey("email" === userEmail), set(fieldName, model)))
