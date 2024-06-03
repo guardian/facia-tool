@@ -1,20 +1,17 @@
 package controllers
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
-import com.gu.facia.client.models.{Trail, TrailMetaData}
+import com.gu.facia.client.models.Trail
+import model.editions.{CardType, EditionsClientCard}
 import org.scanamo._
 import org.scanamo.syntax._
 import model.{FeatureSwitch, FeatureSwitches, UserData}
 import org.scanamo.generic.auto.genericDerivedFormat
 import org.scanamo.query.UniqueKey
-import play.api.libs.json.{JsArray, JsValue, Json}
-import model.{UserData}
-
-import play.api.libs.json.JsValue
+import play.api.libs.json.{JsError, JsResult, JsSuccess, JsValue, Json, JsonValidationError, Reads}
 import services.FrontsApi
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 
-import scala.concurrent.{ExecutionContext, Future}
+import scala.concurrent.ExecutionContext
 import org.scanamo.generic.semiauto._
 
 import scala.util.{Failure, Success, Try}
@@ -28,35 +25,29 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val
     x => (Json.stringify(x))
   )
   implicit val trail: DynamoFormat[Trail] = deriveDynamoFormat[Trail]
+  implicit val cardType: DynamoFormat[CardType] = deriveDynamoFormat[CardType]
+  implicit val editionsCard: DynamoFormat[EditionsClientCard] = deriveDynamoFormat[EditionsClientCard]
   implicit val userData: DynamoFormat[UserData] = deriveDynamoFormat[UserData]
   private lazy val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
-  private def updateClipboardContentByFieldName(articles: Option[JsValue], userEmail: String, fieldName: String) = {
-    val clipboardArticles: Option[List[Trail]] = articles.flatMap(jsValue =>
-      jsValue.asOpt[List[Trail]])
-
-    clipboardArticles match {
-      case Some(articles) => {
-
-        Scanamo(dynamoClient).exec(userDataTable.update(UniqueKey("email" === userEmail), set(fieldName, articles)))
+  private def updateClipboardContentByFieldName[T](maybeJson: Option[JsValue], userEmail: String, fieldName: String)(implicit dynamoFormat: DynamoFormat[T], jsonFormat: Reads[T]) = {
+    maybeJson.map(_.validate[T]) match {
+      case Some(JsSuccess(model, _)) =>
+        Scanamo(dynamoClient).exec(userDataTable.update(UniqueKey("email" === userEmail), set(fieldName, model)))
         Ok
-      }
+      case Some(JsError(errors)) =>
+        BadRequest(errors.toString())
       case None => BadRequest
     }
-
   }
 
 
   def putClipboardContent() = APIAuthAction { request =>
-
-    updateClipboardContentByFieldName(request.body.asJson, request.user.email, "clipboardArticles")
-
+    updateClipboardContentByFieldName[List[Trail]](request.body.asJson, request.user.email, "clipboardArticles")
   }
 
   def putEditionsClipboardContent() = APIAuthAction { request =>
-
-    updateClipboardContentByFieldName(request.body.asJson, request.user.email, "editionsClipboardArticles")
-
+    updateClipboardContentByFieldName[List[EditionsClientCard]](request.body.asJson, request.user.email, "editionsClipboardArticles")
   }
 
   def putFrontIds() = APIAuthAction { request =>

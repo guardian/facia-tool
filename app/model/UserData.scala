@@ -1,6 +1,7 @@
 package model
 
 import com.gu.facia.client.models.Trail
+import model.editions.EditionsClientCard
 import org.scanamo.{DynamoFormat, TypeCoercionError}
 import play.api.libs.json.{JsValue, Json, OFormat}
 
@@ -31,7 +32,7 @@ object UserData {
 case class UserData(
                      email: String,
                      clipboardArticles: Option[List[Trail]] = None,
-                     editionsClipboardArticles: Option[List[Trail]] = None,
+                     editionsClipboardArticles: Option[List[EditionsClientCard]] = None,
                      frontIds: Option[List[String]] = None,
                      frontIdsByPriority: Option[Map[String, List[String]]] = None,
                      favouriteFrontIdsByPriority: Option[Map[String, List[String]]] = None,
@@ -41,7 +42,7 @@ case class UserData(
 object UserDataForDefaults {
   implicit val jsonFormat: OFormat[UserDataForDefaults] = Json.format[UserDataForDefaults]
 
-  def fromUserData(userData: UserData, clipboardArticles: Option[List[Trail]]): UserDataForDefaults = {
+  def fromUserData(userData: UserData, clipboardArticles: Option[List[ClipboardCard]]): UserDataForDefaults = {
     val featureSwitches = userData.featureSwitches.fold(FeatureSwitches.all) { userFeatureSwitches =>
       val userFeatureSwitchKeys = userFeatureSwitches.map(_.key)
       val unsetFeatureSwitches = FeatureSwitches.all.filter(featureSwitch => !userFeatureSwitchKeys.contains(featureSwitch.key))
@@ -58,7 +59,7 @@ object UserDataForDefaults {
 }
 
 case class UserDataForDefaults(
-  clipboardArticles: Option[List[Trail]],
+  clipboardArticles: Option[List[ClipboardCard]],
   frontIds: Option[List[String]],
   frontIdsByPriority: Option[Map[String, List[String]]],
   favouriteFrontIdsByPriority: Option[Map[String, List[String]]],

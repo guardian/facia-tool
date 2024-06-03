@@ -3,7 +3,7 @@ package controllers
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import org.scanamo._
 import org.scanamo.syntax._
-import model.{FeatureSwitch, UserData, UserDataForDefaults}
+import model.{ClipboardCard, FeatureSwitch, UserData, UserDataForDefaults}
 
 import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.{Metadata, TargetedTerritory}
@@ -48,9 +48,9 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
       userDataTable.get("email" === userEmail)).flatMap(_.toOption)
 
     val clipboardArticles = if (editingEdition)
-      maybeUserData.map(_.editionsClipboardArticles.getOrElse(List()))
+      maybeUserData.map(_.editionsClipboardArticles.getOrElse(List()).map(ClipboardCard.apply))
     else
-      maybeUserData.map(_.clipboardArticles.getOrElse(List()))
+      maybeUserData.map(_.clipboardArticles.getOrElse(List()).map(ClipboardCard.apply))
 
     val userDataForDefaults = UserDataForDefaults.fromUserData(
       maybeUserData.getOrElse(UserData(userEmail)),
