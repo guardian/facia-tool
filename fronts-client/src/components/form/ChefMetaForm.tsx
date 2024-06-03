@@ -1,5 +1,12 @@
-import React, { useMemo } from 'react';
-import { reduxForm, Field, InjectedFormProps } from 'redux-form';
+import React, { useCallback, useMemo } from 'react';
+import {
+  reduxForm,
+  Field,
+  InjectedFormProps,
+  change,
+  getFormValues,
+  formValueSelector,
+} from 'redux-form';
 import { Card, CardSizes, ChefCardMeta } from '../../types/Collection';
 import { Dispatch } from '../../types/Store';
 import { selectors } from '../../bundles/chefsBundle';
@@ -16,12 +23,23 @@ import { Chef } from 'types/Chef';
 import { useSelector } from 'react-redux';
 import InputTextArea from 'components/inputs/InputTextArea';
 import InputImage from 'components/inputs/InputImage';
-import { cardImageCriteria } from 'constants/image';
+import { defaultCardTrailImageCriteria } from 'constants/image';
 import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import Row from 'components/Row';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import InputLabel from 'components/inputs/InputLabel';
+import ButtonDefault from 'components/inputs/ButtonDefault';
+import { useDispatch } from 'react-redux';
+import { startOptionsModal } from 'actions/OptionsModal';
+import {
+  ChefPalette,
+  ChefPaletteId,
+  chefPalettes,
+} from 'constants/feastPalettes';
+import { styled } from 'constants/theme';
+import { noop } from 'lodash';
+import { OptionsModalBodyProps } from 'types/Modals';
 
 interface FormProps {
   card: Card;
@@ -31,6 +49,8 @@ interface FormProps {
   size: CardSizes;
   onCancel: () => void;
   onSave: (meta: ChefCardFormData) => void;
+  openPaletteModal: () => void;
+  currentPaletteId: ChefPaletteId;
 }
 
 type ComponentProps = FormProps &
@@ -45,6 +65,8 @@ const Form = ({
   onCancel,
   chef,
   chefWithoutOverrides,
+  openPaletteModal,
+  currentPaletteId,
 }: ComponentProps) => {
   return (
     <FormContainer
@@ -71,6 +93,18 @@ const Form = ({
             originalValue={chefWithoutOverrides?.bio}
             data-testid="edit-form-headline-field"
           />
+          <InputLabel>Palette</InputLabel>
+          {currentPaletteId ? (
+            <PaletteItem
+              id={currentPaletteId}
+              palette={chefPalettes[currentPaletteId]}
+            />
+          ) : (
+            <p>No palette selected</p>
+          )}
+          <ButtonDefault onClick={openPaletteModal} type="button">
+            Change palette
+          </ButtonDefault>
         </TextOptionsInputGroup>
         <ImageOptionsInputGroup size={size}>
           <ImageRowContainer size={size}>
@@ -80,8 +114,7 @@ const Form = ({
                 <Field
                   name={'image'}
                   component={InputImage}
-
-                  criteria={cardImageCriteria}
+                  criteria={defaultCardTrailImageCriteria}
                 />
               </ImageCol>
             </Row>
@@ -122,7 +155,8 @@ interface ChefMetaFormProps {
   size: CardSizes;
 }
 
-export const ChefMetaForm = ({ cardId, ...rest }: ChefMetaFormProps) => {
+export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
+  const valueSelector = formValueSelector(form);
   const card = useSelector((state: State) => selectCard(state, cardId));
   const chefWithoutOverrides = useSelector((state: State) =>
     selectors.selectById(state, card.id)
@@ -130,8 +164,25 @@ export const ChefMetaForm = ({ cardId, ...rest }: ChefMetaFormProps) => {
   const chef = useSelector((state: State) =>
     selectors.selectChefFromCard(state, cardId)
   );
+  const paletteId = useSelector((state: State) =>
+    valueSelector(state, 'paletteId')
+  );
 
   const initialValues = useMemo(() => ({ bio: chef?.bio ?? '' }), [chef?.bio]);
+  const dispatch = useDispatch();
+  const openPaletteModal = useCallback(
+    () =>
+      dispatch(
+        startOptionsModal(
+          'Select a palette',
+          createPaletteForm(form),
+          [],
+          noop,
+          false
+        )
+      ),
+    []
+  );
 
   return (
     <ConnectedChefForm
@@ -139,7 +190,124 @@ export const ChefMetaForm = ({ cardId, ...rest }: ChefMetaFormProps) => {
       chefWithoutOverrides={chefWithoutOverrides}
       card={card}
       initialValues={initialValues}
+      openPaletteModal={openPaletteModal}
+      currentPaletteId={paletteId}
+      form={form}
       {...rest}
     />
   );
 };
+
+const createPaletteForm =
+  (formName: string) =>
+  ({ onCancel }: OptionsModalBodyProps) => {
+    const dispatch = useDispatch();
+    const currentPaletteId = useSelector((state: State) => {
+      const formValues = getFormValues(formName)(state) as {
+        paletteId: string;
+      };
+      return formValues['paletteId'];
+    });
+    const setPaletteOption = useCallback(
+      (paletteName: keyof typeof chefPalettes) => {
+        dispatch(change(formName, 'paletteId', paletteName));
+        dispatch(
+          change(
+            formName,
+            'foregroundHex',
+            chefPalettes[paletteName].foregroundHex
+          )
+        );
+        dispatch(
+          change(
+            formName,
+            'backgroundHex',
+            chefPalettes[paletteName].backgroundHex
+          )
+        );
+
+        onCancel();
+      },
+      [formName]
+    );
+
+    return (
+      <PaletteList>
+        {Object.entries(chefPalettes).map(([name, palette]) => (
+          <PaletteItem
+            palette={palette}
+            key={name}
+            id={name as ChefPaletteId}
+            onClick={(name) => setPaletteOption(name as ChefPaletteId)}
+            isSelected={name === currentPaletteId}
+          />
+        ))}
+      </PaletteList>
+    );
+  };
+
+const PaletteItem = ({
+  id,
+  palette,
+  onClick = noop,
+  isSelected = false,
+}: {
+  id: ChefPaletteId;
+  palette: ChefPalette;
+  onClick?: (paletteId: ChefPaletteId) => void;
+  isSelected?: boolean;
+}) => {
+  return (
+    <PaletteOption key={id} onClick={() => onClick(id)} isSelected={isSelected}>
+      <PaletteHeading>{id}</PaletteHeading>
+      <PaletteSwatch colors={[palette.backgroundHex, palette.foregroundHex]} />
+    </PaletteOption>
+  );
+};
+
+const PaletteHeading = styled.h3`
+  margin-top: 0;
+`;
+
+const PaletteOption = styled.div<{ isSelected: boolean }>`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 100px;
+  width: min-content;
+  padding: 10px;
+  margin: 5px 5px 5px 0;
+  border: 2px solid ${({ isSelected }) => (isSelected ? 'darkblue' : '#ccc')};
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
+const PaletteList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
+const PaletteSwatch = ({ colors }: { colors: string[] }) => (
+  <PaletteContainer borderColor={colors[0]}>
+    {colors.map((color) => (
+      <PaletteColor key={color} color={color} />
+    ))}
+  </PaletteContainer>
+);
+
+const PaletteContainer = styled.div<{ borderColor: string | undefined }>`
+  display: flex;
+  width: 50px;
+  height: 50px;
+  border-radius: 5px;
+  border: ${({ borderColor }) =>
+    borderColor ? `2px solid ${borderColor}` : 'none'};
+  overflow: hidden;
+`;
+
+const PaletteColor = styled.div<{ color: string }>`
+  flex-grow: 1;
+  background-color: ${({ color }) => color};
+  height: 100%;
+  min-width: 10px;
+`;
