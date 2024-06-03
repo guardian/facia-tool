@@ -34,7 +34,7 @@ const Actions = styled.div`
   text-align: right;
 `;
 
-const Description = styled.p`
+const Description = styled.div`
   white-space: pre-line;
   word-break: break-word;
 `;
@@ -46,59 +46,69 @@ const OptionsModal = ({
   options,
   onCancel,
   showCancelButton,
-}: OptionsModalProps) => (
-  <StyledModal
-    style={{
-      overlay: {
-        backgroundColor: 'rgba(0, 0, 0, 0.75)',
-        zIndex: 1000,
-        backdropFilter: 'blur(10px)',
-      },
-    }}
-    isOpen={isOpen}
-    onRequestClose={onCancel}
-  >
-    <h1 data-testid="options-modal" style={{ margin: 0 }}>
-      {title}
-    </h1>
-    {description &&
-      (typeof description === 'string' ? (
-        <Description>{description}</Description>
-      ) : (
-        description
-      ))}
-    <Actions>
-      {showCancelButton && (
-        <ButtonDefault
-          data-testid="options-modal-cancel"
-          size="l"
-          inline
-          onClick={onCancel}
-        >
-          Cancel
-        </ButtonDefault>
+}: OptionsModalProps) => {
+  const body = (() => {
+    switch (typeof description) {
+      case 'function':
+        return description({ onCancel });
+      case 'undefined':
+        return <></>;
+      default:
+        return description;
+    }
+  })();
+
+  return (
+    <StyledModal
+      style={{
+        overlay: {
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          zIndex: 1000,
+          backdropFilter: 'blur(10px)',
+        },
+      }}
+      isOpen={isOpen}
+      onRequestClose={onCancel}
+    >
+      <h1 data-testid="options-modal" style={{ margin: 0 }}>
+        {title}
+      </h1>
+      <Description>{body}</Description>
+      {(showCancelButton || options.length) && (
+        <Actions>
+          {showCancelButton && (
+            <ButtonDefault
+              data-testid="options-modal-cancel"
+              size="l"
+              inline
+              onClick={onCancel}
+            >
+              Cancel
+            </ButtonDefault>
+          )}
+          {options &&
+            options.map((option) => (
+              <ButtonDefault
+                data-testid={`options-modal-${option.buttonText
+                  .toLocaleLowerCase()
+                  .replace(' ', '-')}`}
+                size="l"
+                inline
+                priority="primary"
+                onClick={() => {
+                  option.callback();
+                  onCancel();
+                }}
+                key={option.buttonText}
+              >
+                {option.buttonText}
+              </ButtonDefault>
+            ))}
+        </Actions>
       )}
-      {options &&
-        options.map((option) => (
-          <ButtonDefault
-            data-testid={`options-modal-${option.buttonText
-              .toLocaleLowerCase()
-              .replace(' ', '-')}`}
-            size="l"
-            inline
-            priority="primary"
-            onClick={() => {
-              option.callback();
-              onCancel();
-            }}
-            key={option.buttonText}
-          >
-            {option.buttonText}
-          </ButtonDefault>
-        ))}
-    </Actions>
-  </StyledModal>
-);
+    </StyledModal>
+  );
+};
 
 const mapStateToProps = (state: State) => ({
   isOpen: selectOptionsModalIsOpen(state),
