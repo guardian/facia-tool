@@ -30,7 +30,11 @@ import InputLabel from 'components/inputs/InputLabel';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import { useDispatch } from 'react-redux';
 import { startOptionsModal } from 'actions/OptionsModal';
-import { ChefPaletteId, chefPalettes } from 'constants/feastPalettes';
+import {
+  ChefPaletteId,
+  CustomPalette,
+  chefPalettes,
+} from 'constants/feastPalettes';
 import { PaletteItem, createPaletteForm } from './PaletteForm';
 
 interface FormProps {
@@ -43,6 +47,8 @@ interface FormProps {
   onSave: (meta: ChefCardMeta) => void;
   openPaletteModal: () => void;
   currentPaletteId: ChefPaletteId;
+  currentForegroundHex: string;
+  currentBackgroundHex: string;
 }
 
 type ComponentProps = FormProps &
@@ -59,6 +65,8 @@ const Form = ({
   chefWithoutOverrides,
   openPaletteModal,
   currentPaletteId,
+  currentForegroundHex,
+  currentBackgroundHex,
 }: ComponentProps) => {
   return (
     <FormContainer
@@ -89,7 +97,10 @@ const Form = ({
           {currentPaletteId ? (
             <PaletteItem
               id={currentPaletteId}
-              palette={chefPalettes[currentPaletteId]}
+              palette={{
+                foregroundHex: currentForegroundHex,
+                backgroundHex: currentBackgroundHex,
+              }}
               onClick={openPaletteModal}
             />
           ) : (
@@ -162,11 +173,11 @@ const formToChefMeta = (form: ChefCardFormData): ChefCardMeta => {
   const { image, ...valuesToCopy } = form;
   return {
     ...valuesToCopy,
-    imageSrc: image.src,
-    imageSrcHeight: intToStr(image.height),
-    imageSrcWidth: intToStr(image.width),
-    imageSrcThumb: image.thumb,
-    imageSrcOrigin: image.origin,
+    imageSrc: image?.src,
+    imageSrcHeight: intToStr(image?.height),
+    imageSrcWidth: intToStr(image?.width),
+    imageSrcThumb: image?.thumb,
+    imageSrcOrigin: image?.origin,
   };
 };
 
@@ -196,6 +207,12 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
   const paletteId = useSelector(
     (state: State) => valueSelector(state, 'paletteId') as ChefPaletteId
   );
+  const foregroundHex = useSelector(
+    (state: State) => valueSelector(state, 'foregroundHex') as ChefPaletteId
+  );
+  const backgroundHex = useSelector(
+    (state: State) => valueSelector(state, 'backgroundHex') as ChefPaletteId
+  );
 
   const dispatch = useDispatch();
   const openPaletteModal = useCallback(
@@ -209,9 +226,11 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
       chef={chef}
       chefWithoutOverrides={chefWithoutOverrides}
       card={card}
-      initialValues={chefMetaToForm(card.meta)}
+      initialValues={chefMetaToForm(card.meta as ChefCardMeta)}
       openPaletteModal={openPaletteModal}
       currentPaletteId={paletteId}
+      currentForegroundHex={foregroundHex}
+      currentBackgroundHex={backgroundHex}
       form={form}
       {...rest}
     />
