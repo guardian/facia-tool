@@ -37,7 +37,10 @@ case class ClientCardMetadata(
   coverCardMobileImage: Option[Image],
   coverCardTabletImage: Option[Image],
   promotionMetric: Option[Double],
-  bio: Option[String]
+  bio: Option[String],
+  backgroundHex: Option[String],
+  foregroundHex: Option[String],
+  paletteId: Option[String]
 ) {
   def toCardMetadata: CardMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
@@ -79,7 +82,10 @@ case class ClientCardMetadata(
       overrideArticleMainMedia,
       coverCardImages,
       promotionMetric,
-      bio
+      bio,
+      backgroundHex,
+      foregroundHex,
+      paletteId
     )
   }
 }
@@ -121,7 +127,10 @@ object ClientCardMetadata {
       cardMetadata.coverCardImages.flatMap(_.mobile),
       cardMetadata.coverCardImages.flatMap(_.tablet),
       cardMetadata.promotionMetric,
-      cardMetadata.bio
+      cardMetadata.bio,
+      cardMetadata.backgroundHex,
+      cardMetadata.foregroundHex,
+      cardMetadata.paletteId
     )
   }
 }

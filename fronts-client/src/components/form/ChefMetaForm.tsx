@@ -98,13 +98,16 @@ const Form = ({
             <PaletteItem
               id={currentPaletteId}
               palette={chefPalettes[currentPaletteId]}
+              onClick={openPaletteModal}
             />
           ) : (
-            <p>No palette selected</p>
+            <p>
+              No palette selected.{' '}
+              <ButtonDefault type="button" onClick={openPaletteModal}>
+                Add a palette
+              </ButtonDefault>
+            </p>
           )}
-          <ButtonDefault onClick={openPaletteModal} type="button">
-            Change palette
-          </ButtonDefault>
         </TextOptionsInputGroup>
         <ImageOptionsInputGroup size={size}>
           <ImageRowContainer size={size}>
@@ -168,7 +171,6 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
     valueSelector(state, 'paletteId')
   );
 
-  const initialValues = useMemo(() => ({ bio: chef?.bio ?? '' }), [chef?.bio]);
   const dispatch = useDispatch();
   const openPaletteModal = useCallback(
     () =>
@@ -189,7 +191,7 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
       chef={chef}
       chefWithoutOverrides={chefWithoutOverrides}
       card={card}
-      initialValues={initialValues}
+      initialValues={chef}
       openPaletteModal={openPaletteModal}
       currentPaletteId={paletteId}
       form={form}

@@ -1,5 +1,5 @@
 export type ChefPalette = { foregroundHex: string; backgroundHex: string };
-export type ChefPaletteId = keyof typeof chefPalettes;
+export type ChefPaletteId = keyof typeof chefPalettes & 'custom';
 
 export const chefPalettes = {
   Kaffir: {
