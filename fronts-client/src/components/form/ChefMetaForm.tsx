@@ -30,11 +30,7 @@ import InputLabel from 'components/inputs/InputLabel';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import { useDispatch } from 'react-redux';
 import { startOptionsModal } from 'actions/OptionsModal';
-import {
-  ChefPaletteId,
-  CustomPalette,
-  chefPalettes,
-} from 'constants/feastPalettes';
+import { ChefPaletteId } from 'constants/feastPalettes';
 import { PaletteItem, createPaletteForm } from './PaletteForm';
 import { noop } from 'lodash';
 
@@ -117,7 +113,7 @@ const Form = ({
           <ImageRowContainer size={size}>
             <Row>
               <ImageCol>
-                <InputLabel htmlFor="image">Trail image</InputLabel>
+                <InputLabel htmlFor="image">Replace image</InputLabel>
                 <Field
                   name="image"
                   component={InputImage}
