@@ -61,6 +61,21 @@ object CardType extends PlayEnum[CardType] {
   override def values = findValues
 }
 
+/**
+  * A Card for Editions-based platforms. Analogous to the `Trail` type in
+  * facia-scala-client.
+  *
+  * I suspect it's distinct from `Trail` because the Editions cards have
+  * slightly different properties:
+  *   - `frontPublicationDate` does not make sense in this context and is
+  *     replaced with `addedOn`
+  *   - `publishedBy` is not required ... and `Trail` is in a library upstream
+  *     that is not used by the Editions product.
+  *
+  * Ideally, this and Trail would be perhaps be represented by a sealed trait
+  * and a discriminator field (arguably cardType) – the client does not
+  * distinguish between these two types.
+  */
 case class EditionsCard(id: String, cardType: CardType, addedOn: Long, metadata: Option[CardMetadata]) extends Logging {
 
   def toPublishedCard: PublishedArticle = {
