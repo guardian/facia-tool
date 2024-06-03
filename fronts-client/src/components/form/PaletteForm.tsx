@@ -17,11 +17,6 @@ import InputLabel from 'components/inputs/InputLabel';
 import { InputColor } from 'components/inputs/InputColor';
 import { ChefCardFormData } from 'util/form';
 
-const PaletteList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
 export const createPaletteForm =
   (formName: string) =>
   ({ onCancel }: OptionsModalBodyProps) => {
@@ -34,9 +29,9 @@ export const createPaletteForm =
         }
 
         return [
-          formValues['paletteId'],
-          formValues['foregroundHex'],
-          formValues['backgroundHex'],
+          formValues.paletteId,
+          formValues.foregroundHex,
+          formValues.backgroundHex,
         ];
       });
     const setPaletteOption = useCallback(
@@ -154,6 +149,19 @@ export const PaletteItem = ({
   );
 };
 
+const PaletteSwatch = ({ colors }: { colors: string[] }) => (
+  <PaletteContainer borderColor={colors[0]}>
+    {colors.map((color) => (
+      <PaletteColor key={color} color={color} />
+    ))}
+  </PaletteContainer>
+);
+
+const PaletteList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+`;
+
 const PaletteHeading = styled.h3`
   margin-top: 0;
 `;
@@ -170,14 +178,6 @@ const PaletteOption = styled.div<{ isSelected: boolean }>`
   border-radius: 5px;
   cursor: pointer;
 `;
-
-const PaletteSwatch = ({ colors }: { colors: string[] }) => (
-  <PaletteContainer borderColor={colors[0]}>
-    {colors.map((color) => (
-      <PaletteColor key={color} color={color} />
-    ))}
-  </PaletteContainer>
-);
 
 const PaletteContainer = styled.div<{ borderColor: string | undefined }>`
   display: flex;

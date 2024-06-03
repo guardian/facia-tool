@@ -1,4 +1,4 @@
-export type ChefPalette = { foregroundHex: string; backgroundHex: string };
+export interface ChefPalette { foregroundHex: string; backgroundHex: string }
 export const CustomPalette = 'Custom';
 export type ChefPaletteId = keyof typeof chefPalettes | typeof CustomPalette;
 
