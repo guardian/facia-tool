@@ -38,7 +38,7 @@ import {
 import ManageView from './Editions/ManageView';
 import FeaturesView from './Features/FeaturesView';
 import { PlaceholderAnimation } from 'components/BasePlaceholder';
-import OptionsModal from './OptionsModal';
+import OptionsModal from './modals/OptionsModal';
 import BannerNotification from './notifications/BannerNotification';
 
 // tslint:disable:no-unused-expression
