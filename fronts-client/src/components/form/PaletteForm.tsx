@@ -4,6 +4,7 @@ import { noop } from 'lodash';
 import {
   ChefPalette,
   ChefPaletteId,
+  CustomPalette,
   chefPalettes,
 } from 'constants/feastPalettes';
 import { styled } from 'constants/theme';
@@ -12,6 +13,9 @@ import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { change, getFormValues } from 'redux-form';
 import { State } from 'types/State';
+import InputLabel from 'components/inputs/InputLabel';
+import { InputColor } from 'components/inputs/InputColor';
+import { ChefCardFormData } from 'util/form';
 
 const PaletteList = styled.div`
   display: flex;
@@ -22,49 +26,100 @@ export const createPaletteForm =
   (formName: string) =>
   ({ onCancel }: OptionsModalBodyProps) => {
     const dispatch = useDispatch();
-    const currentPaletteId = useSelector((state: State) => {
-      const formValues = getFormValues(formName)(state) as {
-        paletteId: string;
-      };
-      return formValues['paletteId'];
-    });
-    const setPaletteOption = useCallback(
-      (paletteName: keyof typeof chefPalettes) => {
-        dispatch(change(formName, 'paletteId', paletteName));
-        dispatch(
-          change(
-            formName,
-            'foregroundHex',
-            chefPalettes[paletteName].foregroundHex
-          )
-        );
-        dispatch(
-          change(
-            formName,
-            'backgroundHex',
-            chefPalettes[paletteName].backgroundHex
-          )
-        );
+    const [currentPaletteId, currentForegroundHex, currentBackgroundHex] =
+      useSelector((state: State) => {
+        const formValues = getFormValues(formName)(state) as ChefCardFormData;
+        if (!formValues) {
+          return [];
+        }
 
-        onCancel();
+        return [
+          formValues['paletteId'],
+          formValues['foregroundHex'],
+          formValues['backgroundHex'],
+        ];
+      });
+    const setPaletteOption = useCallback(
+      (
+        paletteName: ChefPaletteId,
+        foregroundHex: string,
+        backgroundHex: string
+      ) => {
+        dispatch(change(formName, 'paletteId', paletteName));
+        dispatch(change(formName, 'foregroundHex', foregroundHex));
+        dispatch(change(formName, 'backgroundHex', backgroundHex));
       },
       [formName]
     );
 
     return (
-      <PaletteList>
-        {Object.entries(chefPalettes).map(([name, palette]) => (
+      <>
+        <PaletteList>
+          {Object.entries(chefPalettes).map(([name, palette]) => (
+            <PaletteItem
+              palette={palette}
+              key={name}
+              id={name as ChefPaletteId}
+              onClick={(name, foregroundHex, backgroundHex) => {
+                setPaletteOption(
+                  name as ChefPaletteId,
+                  foregroundHex,
+                  backgroundHex
+                );
+                onCancel();
+              }}
+              isSelected={name === currentPaletteId}
+            />
+          ))}
           <PaletteItem
-            palette={palette}
-            key={name}
-            id={name as ChefPaletteId}
-            onClick={(name) => setPaletteOption(name as ChefPaletteId)}
-            isSelected={name === currentPaletteId}
+            id={CustomPalette}
+            palette={
+              currentPaletteId === CustomPalette
+                ? {
+                    foregroundHex: currentForegroundHex,
+                    backgroundHex: currentBackgroundHex,
+                  }
+                : undefined
+            }
+            onClick={(_, foregroundHex, backgroundHex) =>
+              setPaletteOption(CustomPalette, foregroundHex, backgroundHex)
+            }
+            isSelected={currentPaletteId === CustomPalette}
           />
-        ))}
-      </PaletteList>
+        </PaletteList>
+        {currentPaletteId === CustomPalette && (
+          <CustomPaletteContainer>
+            <h3>Choose a custom palette</h3>
+            <div>
+              <InputLabel htmlFor="foregroundHex">Foreground colour</InputLabel>
+              <InputColor
+                type="color"
+                value={currentForegroundHex}
+                onChange={(e) => {
+                  dispatch(change(formName, 'foregroundHex', e.target.value));
+                }}
+              />
+            </div>
+            <div>
+              <InputLabel htmlFor="backgroundHex">Background colour</InputLabel>
+              <InputColor
+                type="color"
+                value={currentBackgroundHex}
+                onChange={(e) => {
+                  dispatch(change(formName, 'backgroundHex', e.target.value));
+                }}
+              />
+            </div>
+          </CustomPaletteContainer>
+        )}
+      </>
     );
   };
+
+const CustomPaletteContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
 
 export const PaletteItem = ({
   id,
@@ -73,14 +128,28 @@ export const PaletteItem = ({
   isSelected = false,
 }: {
   id: ChefPaletteId;
-  palette: ChefPalette;
-  onClick?: (paletteId: ChefPaletteId) => void;
+  palette?: ChefPalette;
+  onClick?: (
+    paletteId: ChefPaletteId,
+    foregroundHex: string,
+    backgroundHex: string
+  ) => void;
   isSelected?: boolean;
 }) => {
   return (
-    <PaletteOption key={id} onClick={() => onClick(id)} isSelected={isSelected}>
+    <PaletteOption
+      key={id}
+      onClick={() =>
+        onClick(id, palette?.foregroundHex ?? '', palette?.backgroundHex ?? '')
+      }
+      isSelected={isSelected}
+    >
       <PaletteHeading>{id}</PaletteHeading>
-      <PaletteSwatch colors={[palette.backgroundHex, palette.foregroundHex]} />
+      {palette && (
+        <PaletteSwatch
+          colors={[palette.backgroundHex, palette.foregroundHex]}
+        />
+      )}
     </PaletteOption>
   );
 };
