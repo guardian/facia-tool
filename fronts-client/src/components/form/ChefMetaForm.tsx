@@ -15,6 +15,13 @@ import { FormButtonContainer } from 'components/form/FormButtonContainer';
 import { Chef } from 'types/Chef';
 import { useSelector } from 'react-redux';
 import InputTextArea from 'components/inputs/InputTextArea';
+import InputImage from 'components/inputs/InputImage';
+import { cardImageCriteria } from 'constants/image';
+import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
+import Row from 'components/Row';
+import { ImageRowContainer } from './ImageRowContainer';
+import { ImageCol } from './ImageCol';
+import InputLabel from 'components/inputs/InputLabel';
 
 interface FormProps {
   card: Card;
@@ -65,6 +72,21 @@ const Form = ({
             data-testid="edit-form-headline-field"
           />
         </TextOptionsInputGroup>
+        <ImageOptionsInputGroup size={size}>
+          <ImageRowContainer size={size}>
+            <Row>
+              <ImageCol>
+                <InputLabel htmlFor="image">Trail image</InputLabel>
+                <Field
+                  name={'image'}
+                  component={InputImage}
+
+                  criteria={cardImageCriteria}
+                />
+              </ImageCol>
+            </Row>
+          </ImageRowContainer>
+        </ImageOptionsInputGroup>
       </FormContent>
       <FormButtonContainer>
         <Button onClick={onCancel} type="button" size="l">
