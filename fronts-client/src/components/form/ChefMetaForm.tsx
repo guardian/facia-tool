@@ -36,6 +36,7 @@ import {
   chefPalettes,
 } from 'constants/feastPalettes';
 import { PaletteItem, createPaletteForm } from './PaletteForm';
+import { noop } from 'lodash';
 
 interface FormProps {
   card: Card;
@@ -217,7 +218,15 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
   const dispatch = useDispatch();
   const openPaletteModal = useCallback(
     () =>
-      dispatch(startOptionsModal('Select a palette', createPaletteForm(form))),
+      dispatch(
+        startOptionsModal(
+          'Select a palette',
+          createPaletteForm(form),
+          [{ buttonText: 'Done', callback: noop }],
+          undefined,
+          false
+        )
+      ),
     []
   );
 
