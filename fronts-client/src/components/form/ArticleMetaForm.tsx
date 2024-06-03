@@ -63,6 +63,10 @@ import { FormContainer } from 'components/form/FormContainer';
 import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
+import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
+import { RowContainer } from './RowContainer';
+import { ImageRowContainer } from './ImageRowContainer';
+import { ImageCol } from './ImageCol';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -92,31 +96,10 @@ type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   slideshowHasAtLeastTwoImages: boolean;
 };
 
-const RowContainer = styled.div`
-  overflow: hidden;
-`;
-
-const ImageOptionsContainer = styled.div`
-  display: flex;
-  height: fit-content;
-  flex-wrap: wrap;
-  flex: 1;
-  flex-direction: column;
-  min-width: 300px;
-  margin-top: ${(props: { size?: string }) =>
-    props.size !== 'wide' ? 0 : '6px'};
-`;
-
 const SlideshowRowContainer = styled(RowContainer)`
   flex: 1 1 auto;
   overflow: visible;
   margin-top: 4px;
-  margin-left: ${(props: { size?: string }) =>
-    props.size !== 'wide' ? 0 : '10px'};
-`;
-
-const ImageRowContainer = styled(RowContainer)`
-  flex: 1 1 auto;
   margin-left: ${(props: { size?: string }) =>
     props.size !== 'wide' ? 0 : '10px'};
 `;
@@ -144,13 +127,6 @@ const SlideshowLabel = styled.div`
   font-size: 12px;
   color: ${theme.colors.greyMedium};
   margin-bottom: 12px;
-`;
-
-const ImageCol = styled(Col)`
-  flex: initial;
-  flex-shrink: 0;
-  transition: opacity 0.15s;
-  opacity: ${(props: { faded: boolean }) => (props.faded ? 0.6 : 1)};
 `;
 
 const CollectionEditedError = styled.div`
@@ -662,7 +638,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
               originalValue={''}
             />
           </TextOptionsInputGroup>
-          <ImageOptionsContainer size={this.props.size}>
+          <ImageOptionsInputGroup size={this.props.size}>
             <ImageRowContainer size={this.props.size}>
               <Row>
                 <ImageCol faded={imageHide || !!coverCardImageReplace}>
@@ -795,7 +771,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 />
               </SlideshowRowContainer>
             )}
-          </ImageOptionsContainer>
+          </ImageOptionsInputGroup>
           {isEditionsMode && coverCardImageReplace && (
             <RowContainer>
               <Row>
