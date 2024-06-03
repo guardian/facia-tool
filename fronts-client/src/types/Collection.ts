@@ -99,7 +99,7 @@ type CardMeta = CardRootMeta & {
 };
 
 type ChefCardMeta = {
-  bio: string;
+  bio?: string;
 };
 
 interface Card extends CardRootFields {
