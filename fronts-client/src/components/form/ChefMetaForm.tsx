@@ -38,7 +38,7 @@ import {
 import { PaletteItem, createPaletteForm } from './PaletteForm';
 import { noop } from 'lodash';
 
-type FormProps = {
+interface FormProps {
   card: Card;
   initialValues: ChefCardMeta;
   chef: Chef | undefined;
@@ -50,7 +50,7 @@ type FormProps = {
   currentPaletteId: ChefPaletteId;
   currentForegroundHex: string;
   currentBackgroundHex: string;
-};
+}
 
 type ComponentProps = FormProps &
   InjectedFormProps<ChefCardFormData, FormProps, {}>;
