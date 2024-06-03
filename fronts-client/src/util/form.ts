@@ -13,6 +13,10 @@ import { selectCard } from 'selectors/shared';
 
 export interface ChefCardFormData {
   bio: string;
+  foregroundHex: string;
+  backgroundHex: string;
+  paletteId: string;
+  image: ImageData;
 }
 
 export interface CardFormData {
@@ -63,8 +67,10 @@ export interface CapiFields {
   thumbnail?: string | void;
 }
 
-const strToInt = (str: string | void) => (str ? parseInt(str, 10) : undefined);
-const intToStr = (int: number | void) => (int ? int.toString() : undefined);
+export const strToInt = (str: string | void) =>
+  str ? parseInt(str, 10) : undefined;
+export const intToStr = (int: number | void) =>
+  int ? int.toString() : undefined;
 
 export const getCapiValuesForArticleFields = (
   article: CapiArticle | void

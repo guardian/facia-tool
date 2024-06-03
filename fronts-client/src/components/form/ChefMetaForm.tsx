@@ -3,15 +3,13 @@ import {
   reduxForm,
   Field,
   InjectedFormProps,
-  change,
-  getFormValues,
   formValueSelector,
 } from 'redux-form';
 import { Card, CardSizes, ChefCardMeta } from '../../types/Collection';
 import { Dispatch } from '../../types/Store';
 import { selectors } from '../../bundles/chefsBundle';
 import { State } from '../../types/State';
-import { ChefCardFormData } from '../../util/form';
+import { ChefCardFormData, intToStr, strToInt } from '../../util/form';
 import Button from 'components/inputs/ButtonDefault';
 import { selectCard } from 'selectors/shared';
 import { FormContainer } from 'components/form/FormContainer';
@@ -32,14 +30,8 @@ import InputLabel from 'components/inputs/InputLabel';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import { useDispatch } from 'react-redux';
 import { startOptionsModal } from 'actions/OptionsModal';
-import {
-  ChefPaletteId,
-  chefPalettes,
-} from 'constants/feastPalettes';
-import { styled } from 'constants/theme';
-import { noop } from 'lodash';
-import { OptionsModalBodyProps } from 'types/Modals';
-import { PaletteItem } from './Palette';
+import { ChefPaletteId, chefPalettes } from 'constants/feastPalettes';
+import { PaletteItem, createPaletteForm } from './PaletteForm';
 
 interface FormProps {
   card: Card;
@@ -48,7 +40,7 @@ interface FormProps {
   chefWithoutOverrides: Chef | undefined;
   size: CardSizes;
   onCancel: () => void;
-  onSave: (meta: ChefCardFormData) => void;
+  onSave: (meta: ChefCardMeta) => void;
   openPaletteModal: () => void;
   currentPaletteId: ChefPaletteId;
 }
@@ -113,9 +105,9 @@ const Form = ({
           <ImageRowContainer size={size}>
             <Row>
               <ImageCol>
-                <InputLabel htmlFor="replaceImage">Trail image</InputLabel>
+                <InputLabel htmlFor="image">Trail image</InputLabel>
                 <Field
-                  name="replaceImage"
+                  name="image"
                   component={InputImage}
                   criteria={defaultCardTrailImageCriteria}
                 />
@@ -142,12 +134,46 @@ const Form = ({
   );
 };
 
+const chefMetaToForm = (meta: ChefCardMeta): ChefCardFormData => {
+  const {
+    imageSrc,
+    imageSrcHeight,
+    imageSrcWidth,
+    imageSrcThumb,
+    imageSrcOrigin,
+    bio,
+    ...valuesToCopy
+  } = meta;
+
+  return {
+    ...valuesToCopy,
+    bio: bio ?? '',
+    image: {
+      src: imageSrc,
+      height: strToInt(imageSrcHeight),
+      width: strToInt(imageSrcWidth),
+      thumb: imageSrcThumb,
+      origin: imageSrcOrigin,
+    },
+  };
+};
+
+const formToChefMeta = (form: ChefCardFormData): ChefCardMeta => {
+  const { image, ...valuesToCopy } = form;
+  return {
+    ...valuesToCopy,
+    imageSrc: image.src,
+    imageSrcHeight: intToStr(image.height),
+    imageSrcWidth: intToStr(image.width),
+    imageSrcThumb: image.thumb,
+    imageSrcOrigin: image.origin,
+  };
+};
+
 const ConnectedChefForm = reduxForm<ChefCardFormData, FormProps, {}>({
   destroyOnUnmount: true,
   onSubmit: (values: ChefCardFormData, dispatch: Dispatch, props: FormProps) =>
-    dispatch(() => {
-      props.onSave(values);
-    }),
+    dispatch(() => props.onSave(formToChefMeta(values))),
 })(Form);
 
 interface ChefMetaFormProps {
@@ -174,15 +200,7 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
   const dispatch = useDispatch();
   const openPaletteModal = useCallback(
     () =>
-      dispatch(
-        startOptionsModal(
-          'Select a palette',
-          createPaletteForm(form),
-          [],
-          noop,
-          false
-        )
-      ),
+      dispatch(startOptionsModal('Select a palette', createPaletteForm(form))),
     []
   );
 
@@ -191,7 +209,7 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
       chef={chef}
       chefWithoutOverrides={chefWithoutOverrides}
       card={card}
-      initialValues={card.meta}
+      initialValues={chefMetaToForm(card.meta)}
       openPaletteModal={openPaletteModal}
       currentPaletteId={paletteId}
       form={form}
@@ -199,56 +217,3 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
     />
   );
 };
-
-const PaletteList = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-`;
-
-const createPaletteForm =
-  (formName: string) =>
-  ({ onCancel }: OptionsModalBodyProps) => {
-    const dispatch = useDispatch();
-    const currentPaletteId = useSelector((state: State) => {
-      const formValues = getFormValues(formName)(state) as {
-        paletteId: string;
-      };
-      return formValues['paletteId'];
-    });
-    const setPaletteOption = useCallback(
-      (paletteName: keyof typeof chefPalettes) => {
-        dispatch(change(formName, 'paletteId', paletteName));
-        dispatch(
-          change(
-            formName,
-            'foregroundHex',
-            chefPalettes[paletteName].foregroundHex
-          )
-        );
-        dispatch(
-          change(
-            formName,
-            'backgroundHex',
-            chefPalettes[paletteName].backgroundHex
-          )
-        );
-
-        onCancel();
-      },
-      [formName]
-    );
-
-    return (
-      <PaletteList>
-        {Object.entries(chefPalettes).map(([name, palette]) => (
-          <PaletteItem
-            palette={palette}
-            key={name}
-            id={name as ChefPaletteId}
-            onClick={(name) => setPaletteOption(name as ChefPaletteId)}
-            isSelected={name === currentPaletteId}
-          />
-        ))}
-      </PaletteList>
-    );
-  };

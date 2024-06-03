@@ -98,9 +98,17 @@ type CardMeta = CardRootMeta & {
   supporting?: string[];
 };
 
-interface ChefCardMeta {
-  bio: string;
-}
+type ChefCardMeta = {
+  bio?: string;
+  foregroundHex: string;
+  backgroundHex: string;
+  paletteId: string;
+  imageSrc?: string;
+  imageSrcThumb?: string;
+  imageSrcWidth?: string;
+  imageSrcHeight?: string;
+  imageSrcOrigin?: string;
+};
 
 interface Card extends CardRootFields {
   meta: CardMeta;
