@@ -228,6 +228,7 @@ export interface InputImageContainerProps {
   replaceImage: boolean;
   isSelected?: boolean;
   isInvalid?: boolean;
+  requirePortraitTrails?: boolean;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -268,6 +269,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       disabled,
       isSelected,
       isInvalid,
+      requirePortraitTrails = false,
     } = this.props;
 
     if (!gridUrl) {
@@ -279,7 +281,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     }
 
     const gridSearchUrl =
-      editMode === 'editions' ? `${gridUrl}` : `${gridUrl}?cropType=landscape`;
+      editMode === 'editions'
+        ? `${gridUrl}`
+        : requirePortraitTrails
+        ? `${gridUrl}?cropType=portrait`
+        : `${gridUrl}?cropType=landscape`;
     const hasImage = !useDefault && !!input.value && !!input.value.thumb;
     const imageUrl =
       !useDefault && input.value && input.value.thumb
@@ -305,6 +311,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           onDragIntentStart={() => this.setState({ isDragging: true })}
           onDragIntentEnd={() => this.setState({ isDragging: false })}
         >
+          {/* TO DO - need to update this component to allow for portrait images */}
           <ImageContainer small={small}>
             <ImageComponent
               style={{

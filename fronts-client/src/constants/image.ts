@@ -1,7 +1,13 @@
-export const cardImageCriteria = {
+export const landScapeCardImageCriteria = {
   minWidth: 400,
   widthAspectRatio: 5,
   heightAspectRatio: 3,
+};
+
+export const portraitCardImageCriteria = {
+  minWidth: 400,
+  widthAspectRatio: 4,
+  heightAspectRatio: 5,
 };
 
 export const editionsCardImageCriteria = {

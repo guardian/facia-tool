@@ -42,10 +42,11 @@ import {
 import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import {
-  cardImageCriteria,
+  landScapeCardImageCriteria,
   editionsCardImageCriteria,
   editionsMobileCardImageCriteria,
   editionsTabletCardImageCriteria,
+  portraitCardImageCriteria,
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
@@ -63,6 +64,9 @@ import { FormContainer } from 'components/form/FormContainer';
 import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
+
+// TO DO - replace this constant with logic based on container type
+const FORCE_ALL_CARDS_TO_USE_PORTRAIT_TRAILS = true as boolean;
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -284,7 +288,8 @@ const RenderSlideshow = ({
               name={name}
               component={InputImage}
               small
-              criteria={cardImageCriteria}
+              // TO DO - will this always be landscape?
+              criteria={landScapeCardImageCriteria}
               frontId={frontId}
               isSelected={index === slideshowIndex}
               isInvalid={isInvalidCaptionLength(index)}
@@ -682,7 +687,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     criteria={
                       isEditionsMode
                         ? editionsCardImageCriteria
-                        : cardImageCriteria
+                        : FORCE_ALL_CARDS_TO_USE_PORTRAIT_TRAILS
+                        ? portraitCardImageCriteria
+                        : landScapeCardImageCriteria
                     }
                     frontId={frontId}
                     defaultImageUrl={
@@ -693,6 +700,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     useDefault={!imageCutoutReplace && !imageReplace}
                     message={
                       imageCutoutReplace ? 'Add cutout' : 'Replace image'
+                    }
+                    requirePortraitTrails={
+                      FORCE_ALL_CARDS_TO_USE_PORTRAIT_TRAILS
                     }
                     hasVideo={hasMainVideo}
                     onChange={this.handleImageChange}
