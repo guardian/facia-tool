@@ -36,6 +36,9 @@ import { selectEditMode } from '../../selectors/pathSelectors';
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { error } from '../../styleConstants';
 
+// assuming any portrait image (ie height>width)
+// is in the 4:5 ratio for purposes of styling
+// the image container
 const ImageContainer = styled.div<{
   small?: boolean;
   portrait?: boolean;
@@ -323,7 +326,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         ? input.value.thumb
         : defaultImageUrl;
 
-    const imageContainerShouldBePortrait = !!(
+    const portraitImage = !!(
       !useDefault &&
       imageDims &&
       imageDims.height > imageDims.width
@@ -349,10 +352,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           onDragIntentStart={() => this.setState({ isDragging: true })}
           onDragIntentEnd={() => this.setState({ isDragging: false })}
         >
-          <ImageContainer
-            small={small}
-            portrait={imageContainerShouldBePortrait}
-          >
+          <ImageContainer small={small} portrait={portraitImage}>
             <ImageComponent
               style={{
                 backgroundImage: `url(${imageUrl}`,
@@ -591,6 +591,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       return `${gridUrl}?cropType=portrait,landscape`;
     }
 
+    // assumes the only criteria that will be passed as props the defined
+    // constants for portrait(4:5) and landscape (5:3)
     const usingPortrait =
       portraitCardImageCriteria.widthAspectRatio == criteria.widthAspectRatio &&
       portraitCardImageCriteria.heightAspectRatio == criteria.heightAspectRatio;
