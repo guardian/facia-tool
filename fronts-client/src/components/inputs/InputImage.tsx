@@ -26,7 +26,10 @@ import {
   WarningIcon,
 } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
-import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
+import {
+  DRAG_DATA_GRID_IMAGE_URL,
+  portraitCardImageCriteria,
+} from 'constants/image';
 import ImageDragIntentIndicator from 'components/image/ImageDragIntentIndicator';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from '../../selectors/pathSelectors';
@@ -236,7 +239,6 @@ export interface InputImageContainerProps {
   replaceImage: boolean;
   isSelected?: boolean;
   isInvalid?: boolean;
-  allowPortraitTrails?: boolean;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -302,7 +304,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       disabled,
       isSelected,
       isInvalid,
-      allowPortraitTrails = false,
     } = this.props;
     const { imageDims } = this.state;
 
@@ -315,11 +316,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     }
 
     const gridSearchUrl =
-      editMode === 'editions'
-        ? `${gridUrl}`
-        : allowPortraitTrails
-        ? `${gridUrl}?cropType=landscape,portrait`
-        : `${gridUrl}?cropType=landscape`;
+      editMode === 'editions' ? `${gridUrl}` : this.criteriaToGridUrl();
     const hasImage = !useDefault && !!input.value && !!input.value.thumb;
     const imageUrl =
       !useDefault && input.value && input.value.thumb
@@ -585,6 +582,22 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   private openModal = () => {
     this.setState({ modalOpen: true });
     window.addEventListener('message', this.onMessage, false);
+  };
+
+  private criteriaToGridUrl = (): string => {
+    const { criteria, gridUrl } = this.props;
+
+    if (!criteria) {
+      return `${gridUrl}?cropType=portrait,landscape`;
+    }
+
+    const usingPortrait =
+      portraitCardImageCriteria.widthAspectRatio == criteria.widthAspectRatio &&
+      portraitCardImageCriteria.heightAspectRatio == criteria.heightAspectRatio;
+
+    return usingPortrait
+      ? `${gridUrl}?cropType=portrait`
+      : `${gridUrl}?cropType=landscape`;
   };
 }
 

@@ -701,7 +701,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     message={
                       imageCutoutReplace ? 'Add cutout' : 'Replace image'
                     }
-                    allowPortraitTrails={FORCE_ALL_CARDS_TO_USE_PORTRAIT_TRAILS}
                     hasVideo={hasMainVideo}
                     onChange={this.handleImageChange}
                   />
