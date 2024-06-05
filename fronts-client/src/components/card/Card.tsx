@@ -25,6 +25,7 @@ import {
   editionsCardImageCriteria,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
   portraitCardImageCriteria,
+  defaultCardTrailImageCriteria,
 } from 'constants/image';
 import Sublinks from '../FrontsEdit/CollectionComponents/Sublinks';
 import {
@@ -49,9 +50,6 @@ import { ChefCard } from 'components/card/chef/ChefCard';
 import { ChefMetaForm } from '../form/ChefMetaForm';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
-
-// TO DO - replace this constant with logic based on container type
-const FORCE_ALL_CARDS_TO_USE_PORTRAIT_TRAILS = true as boolean;
 
 const CardContainer = styled('div')<{
   pillarId: string | undefined;
@@ -350,9 +348,7 @@ class Card extends React.Component<CardContainerProps> {
     const isEditionsMode = this.props.editMode === 'editions';
     const imageCriteria = isEditionsMode
       ? editionsCardImageCriteria
-      : FORCE_ALL_CARDS_TO_USE_PORTRAIT_TRAILS
-      ? portraitCardImageCriteria
-      : landScapeCardImageCriteria;
+      : defaultCardTrailImageCriteria;
 
     // Our drag contains Grid data
     validateImageEvent(e, this.props.frontId, imageCriteria)

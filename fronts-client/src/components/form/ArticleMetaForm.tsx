@@ -46,7 +46,7 @@ import {
   editionsCardImageCriteria,
   editionsMobileCardImageCriteria,
   editionsTabletCardImageCriteria,
-  portraitCardImageCriteria,
+  defaultCardTrailImageCriteria,
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
@@ -64,9 +64,6 @@ import { FormContainer } from 'components/form/FormContainer';
 import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
-
-// TO DO - replace this constant with logic based on container type
-const FORCE_ALL_CARDS_TO_USE_PORTRAIT_TRAILS = true as boolean;
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -288,7 +285,7 @@ const RenderSlideshow = ({
               name={name}
               component={InputImage}
               small
-              // TO DO - will this always be landscape?
+              // TO DO - will slideshows always be landscape?
               criteria={landScapeCardImageCriteria}
               frontId={frontId}
               isSelected={index === slideshowIndex}
@@ -687,9 +684,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     criteria={
                       isEditionsMode
                         ? editionsCardImageCriteria
-                        : FORCE_ALL_CARDS_TO_USE_PORTRAIT_TRAILS
-                        ? portraitCardImageCriteria
-                        : landScapeCardImageCriteria
+                        : defaultCardTrailImageCriteria
                     }
                     frontId={frontId}
                     defaultImageUrl={

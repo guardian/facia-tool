@@ -10,6 +10,8 @@ export const portraitCardImageCriteria = {
   heightAspectRatio: 5,
 };
 
+export const defaultCardTrailImageCriteria = landScapeCardImageCriteria;
+
 export const editionsCardImageCriteria = {
   minWidth: 400,
 };
