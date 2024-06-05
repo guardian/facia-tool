@@ -21,10 +21,8 @@ import {
   ValidationResponse,
 } from 'util/validateImageSrc';
 import {
-  landScapeCardImageCriteria,
   editionsCardImageCriteria,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
-  portraitCardImageCriteria,
   defaultCardTrailImageCriteria,
 } from 'constants/image';
 import Sublinks from '../FrontsEdit/CollectionComponents/Sublinks';
