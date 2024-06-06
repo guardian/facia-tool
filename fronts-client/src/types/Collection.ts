@@ -106,11 +106,14 @@ export interface ImageData {
   caption?: string;
 }
 
-interface ChefCardMeta {
-  bio?: string;
+interface Palette {
   foregroundHex?: string;
   backgroundHex?: string;
   paletteId?: string;
+}
+
+interface ChefCardMeta extends Palette {
+  bio?: string;
   chefImageOverride?: ImageData;
 }
 
