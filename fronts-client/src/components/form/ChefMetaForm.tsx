@@ -31,7 +31,7 @@ import { useDispatch } from 'react-redux';
 import { startOptionsModal } from 'actions/OptionsModal';
 import { ChefPaletteId } from 'constants/feastPalettes';
 import { PaletteItem, createPaletteForm } from './PaletteForm';
-import { noop } from 'lodash';
+import noop from 'lodash/noop';
 
 interface FormProps {
   card: Card;
