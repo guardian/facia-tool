@@ -48,6 +48,7 @@ import {
   editionsMobileCardImageCriteria,
   editionsTabletCardImageCriteria,
   defaultCardTrailImageCriteria,
+  portraitCardImageCriteria,
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
@@ -66,6 +67,7 @@ import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
 import { selectCollectionType } from 'selectors/frontsSelectors';
+import { Criteria } from 'types/Grid';
 
 const supportPortraitCropsSwitch = pageConfig?.userData?.featureSwitches.find(
   (feature) => feature.key === 'support-portrait-crops'
@@ -75,7 +77,8 @@ const SUPPORT_PORTRAIT_CROPS = supportPortraitCropsSwitch
   ? supportPortraitCropsSwitch.enabled
   : false;
 
-console.log({ SUPPORT_PORTRAIT_CROPS });
+//TO DO - get the right list of types, put it in the right place
+const COLLECTIONS_USING_PORTRAIT_TRAILS = ['fixed/small/slow-IV'];
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -697,7 +700,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     criteria={
                       isEditionsMode
                         ? editionsCardImageCriteria
-                        : defaultCardTrailImageCriteria
+                        : this.determineCardCriteria()
                     }
                     frontId={frontId}
                     defaultImageUrl={
@@ -946,6 +949,16 @@ class FormComponent extends React.Component<Props, FormComponentState> {
    */
   private getHeadlineLabel = () =>
     this.props.snapType === 'html' ? 'Content' : 'Headline';
+
+  private determineCardCriteria = (): Criteria => {
+    const { collectionType } = this.props;
+    if (!SUPPORT_PORTRAIT_CROPS || !collectionType) {
+      return defaultCardTrailImageCriteria;
+    }
+    return COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collectionType)
+      ? portraitCardImageCriteria
+      : landScapeCardImageCriteria;
+  };
 }
 
 const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
