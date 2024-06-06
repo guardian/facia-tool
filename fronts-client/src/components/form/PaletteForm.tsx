@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import noop from 'lodash/noop';
 
 import {
-  ChefPalette,
   ChefPaletteId,
   CustomPalette,
   chefPalettes,
@@ -15,34 +14,31 @@ import { change, getFormValues } from 'redux-form';
 import { State } from 'types/State';
 import InputLabel from 'components/inputs/InputLabel';
 import { InputColor } from 'components/inputs/InputColor';
-import { ChefCardMeta } from 'types/Collection';
+import { Palette } from 'types/Collection';
 
 export const createPaletteForm =
-  (formName: string) =>
+  <T extends string>(formName: string, fieldName: T) =>
   ({ onCancel }: OptionsModalBodyProps) => {
     const dispatch = useDispatch();
-    const [currentPaletteId, currentForegroundHex, currentBackgroundHex] =
-      useSelector((state: State) => {
-        const formValues = getFormValues(formName)(state) as ChefCardMeta;
-        if (!formValues) {
-          return [];
-        }
+    const formPalette = useSelector((state: State) => {
+      const formValues = getFormValues(formName)(state) as {
+        [T: string]: Palette;
+      };
+      if (!formValues) {
+        return undefined;
+      }
 
-        return [
-          formValues.paletteId,
-          formValues.foregroundHex,
-          formValues.backgroundHex,
-        ];
-      });
+      return formValues[fieldName] as Palette;
+    });
     const setPaletteOption = useCallback(
       (
         paletteName: ChefPaletteId,
         foregroundHex: string,
         backgroundHex: string
       ) => {
-        dispatch(change(formName, 'paletteId', paletteName));
-        dispatch(change(formName, 'foregroundHex', foregroundHex));
-        dispatch(change(formName, 'backgroundHex', backgroundHex));
+        dispatch(change(formName, `${fieldName}.paletteId`, paletteName));
+        dispatch(change(formName, `${fieldName}.foregroundHex`, foregroundHex));
+        dispatch(change(formName, `${fieldName}.backgroundHex`, backgroundHex));
       },
       [formName]
     );
@@ -50,11 +46,11 @@ export const createPaletteForm =
     return (
       <>
         <PaletteList>
-          {Object.entries(chefPalettes).map(([name, palette]) => (
+          {Object.entries(chefPalettes).map(([paletteId, palette]) => (
             <PaletteItem
               palette={palette}
-              key={name}
-              id={name as ChefPaletteId}
+              key={paletteId}
+              id={paletteId as ChefPaletteId}
               onClick={(name, foregroundHex, backgroundHex) => {
                 setPaletteOption(
                   name as ChefPaletteId,
@@ -63,35 +59,43 @@ export const createPaletteForm =
                 );
                 onCancel();
               }}
-              isSelected={name === currentPaletteId}
+              isSelected={
+                formPalette?.paletteId && paletteId === formPalette?.paletteId
+              }
             />
           ))}
           <PaletteItem
             id={CustomPalette}
             palette={
-              currentPaletteId === CustomPalette
+              formPalette?.paletteId === CustomPalette
                 ? {
-                    foregroundHex: currentForegroundHex,
-                    backgroundHex: currentBackgroundHex,
+                    foregroundHex: formPalette?.foregroundHex,
+                    backgroundHex: formPalette?.backgroundHex,
                   }
                 : undefined
             }
             onClick={(_, foregroundHex, backgroundHex) =>
               setPaletteOption(CustomPalette, foregroundHex, backgroundHex)
             }
-            isSelected={currentPaletteId === CustomPalette}
+            isSelected={formPalette?.paletteId === CustomPalette}
           />
         </PaletteList>
-        {currentPaletteId === CustomPalette && (
+        {formPalette?.paletteId === CustomPalette && (
           <CustomPaletteContainer>
             <h3>Choose a custom palette</h3>
             <div>
               <InputLabel htmlFor="foregroundHex">Foreground colour</InputLabel>
               <InputColor
                 type="color"
-                value={currentForegroundHex}
+                value={formPalette?.foregroundHex}
                 onChange={(e) => {
-                  dispatch(change(formName, 'foregroundHex', e.target.value));
+                  dispatch(
+                    change(
+                      formName,
+                      `${fieldName}.foregroundHex`,
+                      e.target.value
+                    )
+                  );
                 }}
               />
             </div>
@@ -99,9 +103,15 @@ export const createPaletteForm =
               <InputLabel htmlFor="backgroundHex">Background colour</InputLabel>
               <InputColor
                 type="color"
-                value={currentBackgroundHex}
+                value={formPalette?.backgroundHex}
                 onChange={(e) => {
-                  dispatch(change(formName, 'backgroundHex', e.target.value));
+                  dispatch(
+                    change(
+                      formName,
+                      `${fieldName}.backgroundHex`,
+                      e.target.value
+                    )
+                  );
                 }}
               />
             </div>
@@ -123,7 +133,7 @@ export const PaletteItem = ({
   isSelected = false,
 }: {
   id: ChefPaletteId;
-  palette?: ChefPalette;
+  palette?: Omit<Palette, 'paletteId'>;
   onClick?: (
     paletteId: ChefPaletteId,
     foregroundHex: string,
@@ -142,6 +152,7 @@ export const PaletteItem = ({
       <PaletteHeading>{id}</PaletteHeading>
       {palette && (
         <PaletteSwatch
+          key={id}
           colors={[palette.backgroundHex, palette.foregroundHex]}
         />
       )}

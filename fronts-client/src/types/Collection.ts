@@ -2,6 +2,7 @@ import { CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
 import type { FrontsToolSettings } from 'types/FaciaApi';
 import { CardTypes } from 'constants/cardTypes';
+import { ChefPaletteId } from 'constants/feastPalettes';
 
 interface CollectionArticles {
   draft: CapiArticle[];
@@ -106,14 +107,15 @@ export interface ImageData {
   caption?: string;
 }
 
-interface Palette {
-  foregroundHex?: string;
-  backgroundHex?: string;
-  paletteId?: string;
+export interface Palette {
+  foregroundHex: string;
+  backgroundHex: string;
+  paletteId: ChefPaletteId;
 }
 
-interface ChefCardMeta extends Palette {
+interface ChefCardMeta {
   bio?: string;
+  palette?: Palette;
   chefImageOverride?: ImageData;
 }
 
