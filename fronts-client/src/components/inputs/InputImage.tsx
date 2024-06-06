@@ -228,6 +228,7 @@ export interface InputImageContainerProps {
   replaceImage: boolean;
   isSelected?: boolean;
   isInvalid?: boolean;
+  collectionType?: string;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -268,6 +269,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       disabled,
       isSelected,
       isInvalid,
+      collectionType,
     } = this.props;
 
     if (!gridUrl) {
@@ -293,6 +295,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         isInvalid={isInvalid}
         confirmDelete={this.state.confirmDelete}
       >
+        <p>collectionType: {collectionType}</p>
         <GridModal
           url={gridSearchUrl}
           isOpen={this.state.modalOpen}

@@ -63,6 +63,7 @@ import { FormContainer } from 'components/form/FormContainer';
 import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
+import { selectCollectionType } from 'selectors/frontsSelectors';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -80,6 +81,7 @@ interface ComponentProps extends ContainerProps {
   coverCardTabletImage?: ImageData;
   size?: string;
   isEmailFronts?: boolean;
+  collectionType?: string;
 }
 
 type Props = ComponentProps &
@@ -696,6 +698,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     }
                     hasVideo={hasMainVideo}
                     onChange={this.handleImageChange}
+                    collectionType={this.props.collectionType}
                   />
                 </ImageCol>
                 <ToggleCol flex={2}>
@@ -1012,11 +1015,12 @@ const createMapStateToProps = () => {
     }
 
     const isEmailFronts = selectV2SubPath(state) === '/email';
+    const collectionId = (parentCollection && parentCollection.id) || null;
 
     return {
       articleExists: !!article,
       hasMainVideo: !!article && !!article.hasMainVideo,
-      collectionId: (parentCollection && parentCollection.id) || null,
+      collectionId,
       getLastUpdatedBy,
       snapType: article && article.snapType,
       initialValues: getInitialValuesForCardForm(article),
@@ -1043,6 +1047,9 @@ const createMapStateToProps = () => {
       coverCardTabletImage: valueSelector(state, 'coverCardTabletImage'),
       pickedKicker: !!article ? article.pickedKicker : undefined,
       isEmailFronts,
+      collectionType: collectionId
+        ? selectCollectionType(state, collectionId)
+        : undefined,
     };
   };
 };
