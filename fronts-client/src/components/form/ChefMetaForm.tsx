@@ -9,7 +9,6 @@ import { Card, CardSizes, ChefCardMeta } from '../../types/Collection';
 import { Dispatch } from '../../types/Store';
 import { selectors } from '../../bundles/chefsBundle';
 import { State } from '../../types/State';
-import { ChefCardFormData, intToStr, strToInt } from '../../util/form';
 import Button from 'components/inputs/ButtonDefault';
 import { selectCard } from 'selectors/shared';
 import { FormContainer } from 'components/form/FormContainer';
@@ -49,7 +48,7 @@ interface FormProps {
 }
 
 type ComponentProps = FormProps &
-  InjectedFormProps<ChefCardFormData, FormProps, {}>;
+  InjectedFormProps<ChefCardMeta, FormProps, {}>;
 
 const Form = ({
   card,
@@ -113,9 +112,11 @@ const Form = ({
           <ImageRowContainer size={size}>
             <Row>
               <ImageCol>
-                <InputLabel htmlFor="image">Replace image</InputLabel>
+                <InputLabel htmlFor="chefImageOverride">
+                  Replace image
+                </InputLabel>
                 <Field
-                  name="image"
+                  name="chefImageOverride"
                   component={InputImage}
                   criteria={defaultCardTrailImageCriteria}
                 />
@@ -142,46 +143,10 @@ const Form = ({
   );
 };
 
-const chefMetaToForm = (meta: ChefCardMeta): ChefCardFormData => {
-  const {
-    imageSrc,
-    imageSrcHeight,
-    imageSrcWidth,
-    imageSrcThumb,
-    imageSrcOrigin,
-    bio,
-    ...valuesToCopy
-  } = meta;
-
-  return {
-    ...valuesToCopy,
-    bio: bio ?? '',
-    image: {
-      src: imageSrc,
-      height: strToInt(imageSrcHeight),
-      width: strToInt(imageSrcWidth),
-      thumb: imageSrcThumb,
-      origin: imageSrcOrigin,
-    },
-  };
-};
-
-const formToChefMeta = (form: ChefCardFormData): ChefCardMeta => {
-  const { image, ...valuesToCopy } = form;
-  return {
-    ...valuesToCopy,
-    imageSrc: image?.src,
-    imageSrcHeight: intToStr(image?.height),
-    imageSrcWidth: intToStr(image?.width),
-    imageSrcThumb: image?.thumb,
-    imageSrcOrigin: image?.origin,
-  };
-};
-
-const ConnectedChefForm = reduxForm<ChefCardFormData, FormProps, {}>({
+const ConnectedChefForm = reduxForm<ChefCardMeta, FormProps, {}>({
   destroyOnUnmount: true,
-  onSubmit: (values: ChefCardFormData, dispatch: Dispatch, props: FormProps) =>
-    dispatch(() => props.onSave(formToChefMeta(values))),
+  onSubmit: (values: ChefCardMeta, dispatch: Dispatch, props: FormProps) =>
+    dispatch(() => props.onSave(values)),
 })(Form);
 
 interface ChefMetaFormProps {
@@ -231,7 +196,7 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
       chef={chef}
       chefWithoutOverrides={chefWithoutOverrides}
       card={card}
-      initialValues={chefMetaToForm(card.meta as ChefCardMeta)}
+      initialValues={card.meta as ChefCardMeta}
       openPaletteModal={openPaletteModal}
       currentPaletteId={paletteId}
       currentForegroundHex={foregroundHex}

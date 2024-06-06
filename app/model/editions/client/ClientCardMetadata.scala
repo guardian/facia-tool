@@ -40,7 +40,8 @@ case class ClientCardMetadata(
   bio: Option[String], // Chef
   backgroundHex: Option[String], // Chef
   foregroundHex: Option[String], // Chef
-  paletteId: Option[String] // Chef
+  paletteId: Option[String], // Chef
+  chefImageOverride: Option[Image] // Chef
 ) {
   def toCardMetadata: CardMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
@@ -85,7 +86,8 @@ case class ClientCardMetadata(
       bio,
       backgroundHex,
       foregroundHex,
-      paletteId
+      paletteId,
+      chefImageOverride
     )
   }
 }
@@ -130,7 +132,8 @@ object ClientCardMetadata {
       cardMetadata.bio,
       cardMetadata.backgroundHex,
       cardMetadata.foregroundHex,
-      cardMetadata.paletteId
+      cardMetadata.paletteId,
+      cardMetadata.chefImageOverride
     )
   }
 }

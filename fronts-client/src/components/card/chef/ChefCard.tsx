@@ -85,7 +85,9 @@ export const ChefCard = ({
           </CardHeadingContainer>
         </CardContent>
         <ImageAndGraphWrapper size={size}>
-          <ThumbnailSmall url={chef?.bylineLargeImageUrl} />
+          <ThumbnailSmall
+            url={chef?.chefImageOverride?.src ?? chef?.bylineLargeImageUrl}
+          />
         </ImageAndGraphWrapper>
         <HoverActionsAreaOverlay data-testid="hover-overlay">
           <HoverActionsButtonWrapper

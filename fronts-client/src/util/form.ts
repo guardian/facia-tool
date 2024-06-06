@@ -5,19 +5,11 @@ import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
 import pageConfig from 'util/extractConfigFromPage';
-import { CardMeta } from 'types/Collection';
+import { CardMeta, ImageData } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
-
-export interface ChefCardFormData {
-  bio: string;
-  foregroundHex: string;
-  backgroundHex: string;
-  paletteId: string;
-  image: ImageData;
-}
 
 export interface CardFormData {
   headline: string;
@@ -50,15 +42,6 @@ export interface CardFormData {
 }
 
 export type FormFields = keyof CardFormData;
-
-export interface ImageData {
-  src?: string;
-  width?: number;
-  height?: number;
-  origin?: string;
-  thumb?: string;
-  caption?: string;
-}
 
 export interface CapiFields {
   headline: string;
