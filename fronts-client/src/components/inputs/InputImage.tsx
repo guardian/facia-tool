@@ -26,15 +26,22 @@ import {
   WarningIcon,
 } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
-import { DRAG_DATA_GRID_IMAGE_URL } from 'constants/image';
+import {
+  DRAG_DATA_GRID_IMAGE_URL,
+  portraitCardImageCriteria,
+} from 'constants/image';
 import ImageDragIntentIndicator from 'components/image/ImageDragIntentIndicator';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from '../../selectors/pathSelectors';
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { error } from '../../styleConstants';
 
+// assuming any portrait image (ie height>width)
+// is in the 4:5 ratio for purposes of styling
+// the image container
 const ImageContainer = styled.div<{
   small?: boolean;
+  portrait?: boolean;
 }>`
   display: flex;
   flex-direction: column;
@@ -47,6 +54,13 @@ const ImageContainer = styled.div<{
     padding: 40%;`}
   height: ${(props) => (props.small ? '0' : '115px')};
   transition: background-color 0.15s;
+
+  ${({ portrait, small }) =>
+    portrait &&
+    `
+    width: ${small ? 50 : 200}px;
+    height: ${small ? 62 : 250}px;
+  `}
 `;
 
 const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
@@ -238,6 +252,10 @@ interface ComponentState {
   isDragging: boolean;
   modalOpen: boolean;
   imageSrc: string;
+  imageDims?: {
+    width: number;
+    height: number;
+  };
   confirmDelete: boolean;
   cancelDeleteTimeout: undefined | (() => void);
 }
@@ -246,15 +264,36 @@ const dragImage = new Image();
 dragImage.src = imageDragIcon;
 
 class InputImage extends React.Component<ComponentProps, ComponentState> {
-  public state = {
-    isDragging: false,
-    modalOpen: false,
-    imageSrc: '',
-    confirmDelete: false,
-    cancelDeleteTimeout: undefined,
-  } as ComponentState;
-
   private inputRef = React.createRef<HTMLInputElement>();
+
+  public constructor(props: ComponentProps) {
+    super(props);
+
+    const { value } = props.input;
+    const valueRecord =
+      value && typeof value === 'object'
+        ? (value as Record<string, unknown>)
+        : undefined;
+
+    const { src, height, width } = valueRecord ?? {};
+    const imageSrc = typeof src === 'string' ? src : '';
+    const imageDims =
+      typeof height === 'number' && typeof width === 'number'
+        ? {
+            height,
+            width,
+          }
+        : undefined;
+
+    this.state = {
+      isDragging: false,
+      modalOpen: false,
+      imageSrc,
+      imageDims,
+      confirmDelete: false,
+      cancelDeleteTimeout: undefined,
+    } as ComponentState;
+  }
 
   public render() {
     const {
@@ -271,6 +310,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       isInvalid,
       collectionType,
     } = this.props;
+    const { imageDims } = this.state;
 
     if (!gridUrl) {
       return (
@@ -281,12 +321,19 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     }
 
     const gridSearchUrl =
-      editMode === 'editions' ? `${gridUrl}` : `${gridUrl}?cropType=landscape`;
+      editMode === 'editions' ? `${gridUrl}` : this.criteriaToGridUrl();
     const hasImage = !useDefault && !!input.value && !!input.value.thumb;
     const imageUrl =
       !useDefault && input.value && input.value.thumb
         ? input.value.thumb
         : defaultImageUrl;
+
+    const portraitImage = !!(
+      !useDefault &&
+      imageDims &&
+      imageDims.height > imageDims.width
+    );
+
     return (
       <InputImageContainer
         small={small}
@@ -308,7 +355,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           onDragIntentStart={() => this.setState({ isDragging: true })}
           onDragIntentEnd={() => this.setState({ isDragging: false })}
         >
-          <ImageContainer small={small}>
+          <ImageContainer small={small} portrait={portraitImage}>
             <ImageComponent
               style={{
                 backgroundImage: `url(${imageUrl}`,
@@ -451,13 +498,18 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
   private validateAndGetImage = () => {
     events.imageAdded(this.props.frontId, 'paste');
-
     validateImageSrc(
       this.state.imageSrc,
       this.props.frontId,
       this.props.criteria
     )
       .then((mediaItem) => {
+        this.setState({
+          imageDims: {
+            height: mediaItem.height,
+            width: mediaItem.width,
+          },
+        });
         this.props.input.onChange(mediaItem);
       })
       .catch((err) => {
@@ -465,10 +517,15 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         // tslint:disable-next-line no-console
         console.log('@todo:handle error', err);
       });
-    this.setState({ imageSrc: '' });
+    this.setState({ imageSrc: '', imageDims: undefined });
   };
 
-  private clearField = () => this.props.input.onChange(null);
+  private clearField = () => {
+    this.setState({
+      imageDims: undefined,
+    });
+    return this.props.input.onChange(null);
+  };
 
   private validMessage(data: GridData) {
     return data && data.crop && data.crop.data && data.image && data.image.data;
@@ -505,6 +562,12 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     )
       .then((mediaItem) => {
         events.imageAdded(this.props.frontId, 'click to modal');
+        this.setState({
+          imageDims: {
+            width: mediaItem.width,
+            height: mediaItem.height,
+          },
+        });
         this.props.input.onChange(mediaItem);
       })
       .catch((err) => {
@@ -522,6 +585,24 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   private openModal = () => {
     this.setState({ modalOpen: true });
     window.addEventListener('message', this.onMessage, false);
+  };
+
+  private criteriaToGridUrl = (): string => {
+    const { criteria, gridUrl } = this.props;
+
+    if (!criteria) {
+      return `${gridUrl}?cropType=portrait,landscape`;
+    }
+
+    // assumes the only criteria that will be passed as props the defined
+    // constants for portrait(4:5) and landscape (5:3)
+    const usingPortrait =
+      portraitCardImageCriteria.widthAspectRatio == criteria.widthAspectRatio &&
+      portraitCardImageCriteria.heightAspectRatio == criteria.heightAspectRatio;
+
+    return usingPortrait
+      ? `${gridUrl}?cropType=portrait`
+      : `${gridUrl}?cropType=landscape`;
   };
 }
 
