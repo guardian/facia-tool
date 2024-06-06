@@ -14,7 +14,7 @@ import {
 } from '../HoverActionButtons';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '../../../constants/theme';
-import { noop } from 'lodash';
+import noop from 'lodash/noop';
 
 afterEach(cleanup);
 

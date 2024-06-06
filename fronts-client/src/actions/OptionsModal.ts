@@ -1,7 +1,7 @@
 import type { StartOptionsModal } from 'types/Action';
 import type { OptionsModalChoices } from 'types/Modals';
 import { ReactNode } from 'react';
-import { noop } from 'lodash';
+import noop from 'lodash/noop';
 
 const startOptionsModal = (
   title: string,
