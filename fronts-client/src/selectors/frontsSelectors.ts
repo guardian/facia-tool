@@ -147,6 +147,16 @@ const selectCollectionDisplayName = (
   return !!collection ? collection.displayName : '';
 };
 
+const selectCollectionType = (
+  state: State,
+  collectionId: string
+): string | undefined => {
+  const collection = selectCollection(state, {
+    collectionId,
+  });
+  return collection?.type;
+};
+
 const selectFrontsIds = createSelector([selectFronts], (fronts): string[] => {
   if (!fronts) {
     return [];
@@ -363,6 +373,7 @@ export {
   selectCollectionHasPrefill,
   selectCollectionIsHidden,
   selectCollectionDisplayName,
+  selectCollectionType,
   selectFrontsConfig,
   selectCollectionConfigs,
   selectFrontsIds,
