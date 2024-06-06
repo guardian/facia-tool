@@ -18,7 +18,7 @@ import {
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
 import { defaultObject } from 'util/selectorUtils';
-import { CardMeta, ArticleTag, CardSizes } from 'types/Collection';
+import { CardMeta, ArticleTag, CardSizes, ImageData } from 'types/Collection';
 import InputText from 'components/inputs/InputText';
 import InputTextArea from 'components/inputs/InputTextArea';
 import InputCheckboxToggleInline from 'components/inputs/InputCheckboxToggleInline';
@@ -32,7 +32,6 @@ import ConditionalField from 'components/inputs/ConditionalField';
 import ConditionalComponent from 'components/layout/ConditionalComponent';
 import {
   CardFormData,
-  ImageData,
   getCardMetaFromFormValues,
   getInitialValuesForCardForm,
   getCapiValuesForArticleFields,
