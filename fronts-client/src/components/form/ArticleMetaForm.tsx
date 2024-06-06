@@ -17,6 +17,7 @@ import {
   selectArticleTag,
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
+import pageConfig from 'util/extractConfigFromPage';
 import { defaultObject } from 'util/selectorUtils';
 import { CardMeta, ArticleTag, CardSizes } from 'types/Collection';
 import InputText from 'components/inputs/InputText';
@@ -64,6 +65,16 @@ import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
 import { selectCollectionType } from 'selectors/frontsSelectors';
+
+const supportPortraitCropsSwitch = pageConfig?.userData?.featureSwitches.find(
+  (feature) => feature.key === 'support-portrait-crops'
+);
+
+const SUPPORT_PORTRAIT_CROPS = supportPortraitCropsSwitch
+  ? supportPortraitCropsSwitch.enabled
+  : false;
+
+console.log({ SUPPORT_PORTRAIT_CROPS });
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;

@@ -5,6 +5,7 @@ import type { State } from 'types/State';
 import { selectAllFeatures } from 'selectors/featureSwitchesSelectors';
 import { FeatureSwitch } from 'types/Features';
 import { Dispatch } from 'types/Store';
+import pageConfig from 'util/extractConfigFromPage';
 import { actionSetFeatureValue } from 'actions/FeatureSwitches';
 import { saveFeatureSwitch } from 'services/userDataApi';
 
@@ -13,12 +14,17 @@ interface Props {
   setFeatureValue: (featureSwitch: FeatureSwitch) => void;
 }
 
+const STAGE = pageConfig.env;
+const filterSwitchesByStage = (featureSwitch: FeatureSwitch): boolean =>
+  STAGE === 'code' || !featureSwitch.hideOnProd;
+
 class FeaturesForm extends React.Component<Props> {
   public render() {
     const { featureSwitches } = this.props;
+    console.log(featureSwitches);
     return (
       <form>
-        {featureSwitches.map((featureSwitch) => (
+        {featureSwitches.filter(filterSwitchesByStage).map((featureSwitch) => (
           <InputCheckboxToggle
             key={featureSwitch.key}
             label={featureSwitch.title}

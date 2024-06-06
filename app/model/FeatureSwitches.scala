@@ -9,35 +9,47 @@ object FeatureSwitch {
 case class FeatureSwitch(
   key: String,
   title: String,
-  enabled: Boolean
+  enabled: Boolean,
+  hideOnProd: Boolean
 )
 
 object ObscureFeed extends FeatureSwitch(
   key = "obscure-feed",
   title = "Obscure the feed -- it's distracting for developers!",
-  enabled = false
+  enabled = false,
+  hideOnProd = false
 )
 
 object PageViewDataVisualisation extends FeatureSwitch(
   key = "page-view-data-visualisation",
   title = "Show page view data visualisation (aka spark lines)",
-  enabled = true
+  enabled = true,
+  hideOnProd = false
 )
 
 object ShowFirefoxPrompt extends FeatureSwitch(
   key = "show-firefox-prompt",
   title = "Show the prompt to use Firefox if applicable",
-  enabled = true
+  enabled = false,
+  hideOnProd = false
 )
 
 object TenImageSlideshows extends FeatureSwitch(
   key = "ten-image-slideshows",
   title = "Allow slideshows to contain 10 images rather than 5",
-  enabled = false
+  enabled = false,
+  hideOnProd = false
+)
+
+object UsePortraitCropsForSomeCollectionTypes extends FeatureSwitch(
+  key = "support-portrait-crops",
+  title = "Use portrait crops for the experimental big card containers",
+  enabled = false,
+  hideOnProd = true
 )
 
 object FeatureSwitches {
-  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, ShowFirefoxPrompt, TenImageSlideshows)
+  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, ShowFirefoxPrompt, TenImageSlideshows, UsePortraitCropsForSomeCollectionTypes)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     val newSwitches = userDataSwitches match {
