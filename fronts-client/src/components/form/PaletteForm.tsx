@@ -15,7 +15,7 @@ import { change, getFormValues } from 'redux-form';
 import { State } from 'types/State';
 import InputLabel from 'components/inputs/InputLabel';
 import { InputColor } from 'components/inputs/InputColor';
-import { ChefCardFormData } from 'util/form';
+import { ChefCardMeta } from 'types/Collection';
 
 export const createPaletteForm =
   (formName: string) =>
@@ -23,7 +23,7 @@ export const createPaletteForm =
     const dispatch = useDispatch();
     const [currentPaletteId, currentForegroundHex, currentBackgroundHex] =
       useSelector((state: State) => {
-        const formValues = getFormValues(formName)(state) as ChefCardFormData;
+        const formValues = getFormValues(formName)(state) as ChefCardMeta;
         if (!formValues) {
           return [];
         }
