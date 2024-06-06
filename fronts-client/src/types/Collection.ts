@@ -41,7 +41,7 @@ type NestedCard = NestedCardRootFields & {
   };
 };
 
-interface CardRootMeta {
+interface CardRootMeta extends ChefCardMeta {
   group?: string;
   headline?: string;
   trailText?: string;
@@ -87,7 +87,6 @@ interface CardRootMeta {
   coverCardImageReplace?: boolean;
   coverCardMobileImage?: ImageData;
   coverCardTabletImage?: ImageData;
-  bio?: string;
 }
 
 type CardRootFields = NestedCardRootFields & {
@@ -98,16 +97,21 @@ type CardMeta = CardRootMeta & {
   supporting?: string[];
 };
 
+export interface ImageData {
+  src?: string;
+  width?: number;
+  height?: number;
+  origin?: string;
+  thumb?: string;
+  caption?: string;
+}
+
 interface ChefCardMeta {
   bio?: string;
-  foregroundHex: string;
-  backgroundHex: string;
-  paletteId: string;
-  imageSrc?: string;
-  imageSrcThumb?: string;
-  imageSrcWidth?: string;
-  imageSrcHeight?: string;
-  imageSrcOrigin?: string;
+  foregroundHex?: string;
+  backgroundHex?: string;
+  paletteId?: string;
+  chefImageOverride?: ImageData;
 }
 
 interface Card extends CardRootFields {

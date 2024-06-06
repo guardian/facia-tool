@@ -47,6 +47,7 @@ case class CardMetadata(
   backgroundHex: Option[String] = None, // Chef
   foregroundHex: Option[String] = None, // Chef
   paletteId: Option[String] = None, // Chef
+  chefImageOverride: Option[Image] = None, // Chef
 )
 
 object CardMetadata {

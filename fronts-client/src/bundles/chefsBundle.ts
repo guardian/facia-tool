@@ -7,6 +7,7 @@ import { selectCard } from 'selectors/shared';
 import { State } from 'types/State';
 import { createSelector } from 'reselect';
 import { stripHtml } from 'util/sanitizeHTML';
+import { ChefCardMeta } from 'types/Collection';
 
 const sanitizeChef = (chef: Chef) => ({
   ...chef,
