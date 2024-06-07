@@ -107,6 +107,7 @@ type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   frontId: string;
   change: (field: string, value: any) => void;
   slideshowHasAtLeastTwoImages: boolean;
+  criteria: Criteria;
 };
 
 const RowContainer = styled.div`
@@ -243,6 +244,7 @@ const RenderSlideshow = ({
   frontId,
   change,
   slideshowHasAtLeastTwoImages,
+  criteria,
 }: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
@@ -301,8 +303,7 @@ const RenderSlideshow = ({
               name={name}
               component={InputImage}
               small
-              // TO DO - will slideshows always be landscape?
-              criteria={landScapeCardImageCriteria}
+              criteria={criteria}
               frontId={frontId}
               isSelected={index === slideshowIndex}
               isInvalid={isInvalidCaptionLength(index)}
@@ -810,6 +811,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   frontId={frontId}
                   component={RenderSlideshow}
                   change={change}
+                  criteria={this.determineCardCriteria()}
                   slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
                 />
               </SlideshowRowContainer>
