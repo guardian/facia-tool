@@ -252,10 +252,6 @@ interface ComponentState {
   isDragging: boolean;
   modalOpen: boolean;
   imageSrc: string;
-  imageDims?: {
-    width: number;
-    height: number;
-  };
   confirmDelete: boolean;
   cancelDeleteTimeout: undefined | (() => void);
 }
@@ -275,21 +271,14 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         ? (value as Record<string, unknown>)
         : undefined;
 
-    const { src, height, width } = valueRecord ?? {};
+    const { src } = valueRecord ?? {};
     const imageSrc = typeof src === 'string' ? src : '';
-    const imageDims =
-      typeof height === 'number' && typeof width === 'number'
-        ? {
-            height,
-            width,
-          }
-        : undefined;
+
 
     this.state = {
       isDragging: false,
       modalOpen: false,
       imageSrc,
-      imageDims,
       confirmDelete: false,
       cancelDeleteTimeout: undefined,
     } as ComponentState;
@@ -310,7 +299,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       isInvalid,
       collectionType,
     } = this.props;
-    const { imageDims } = this.state;
+
+    const imageDims = this.getCurrentImageDimensions();
 
     if (!gridUrl) {
       return (
@@ -503,27 +493,16 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       this.props.frontId,
       this.props.criteria
     )
-      .then((mediaItem) => {
-        this.setState({
-          imageDims: {
-            height: mediaItem.height,
-            width: mediaItem.width,
-          },
-        });
-        this.props.input.onChange(mediaItem);
-      })
+      .then(this.props.input.onChange)
       .catch((err) => {
         alert(err);
         // tslint:disable-next-line no-console
         console.log('@todo:handle error', err);
       });
-    this.setState({ imageSrc: '', imageDims: undefined });
+    this.setState({ imageSrc: '' });
   };
 
   private clearField = () => {
-    this.setState({
-      imageDims: undefined,
-    });
     return this.props.input.onChange(null);
   };
 
@@ -562,12 +541,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     )
       .then((mediaItem) => {
         events.imageAdded(this.props.frontId, 'click to modal');
-        this.setState({
-          imageDims: {
-            width: mediaItem.width,
-            height: mediaItem.height,
-          },
-        });
         this.props.input.onChange(mediaItem);
       })
       .catch((err) => {
@@ -603,6 +576,23 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     return usingPortrait
       ? `${gridUrl}?cropType=portrait`
       : `${gridUrl}?cropType=landscape`;
+  };
+
+  private getCurrentImageDimensions = () => {
+    const { value } = this.props.input;
+    const valueRecord =
+      value && typeof value === 'object'
+        ? (value as Record<string, unknown>)
+        : undefined;
+
+    const { height, width } = valueRecord ?? {};
+
+    return typeof height === 'number' && typeof width === 'number'
+      ? {
+          height,
+          width,
+        }
+      : undefined;
   };
 }
 
