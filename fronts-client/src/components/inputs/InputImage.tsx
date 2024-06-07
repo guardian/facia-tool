@@ -274,7 +274,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     const { src } = valueRecord ?? {};
     const imageSrc = typeof src === 'string' ? src : '';
 
-
     this.state = {
       isDragging: false,
       modalOpen: false,
@@ -297,7 +296,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       disabled,
       isSelected,
       isInvalid,
-      collectionType,
     } = this.props;
 
     const imageDims = this.getCurrentImageDimensions();
@@ -332,7 +330,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         isInvalid={isInvalid}
         confirmDelete={this.state.confirmDelete}
       >
-        <p>collectionType: {collectionType}</p>
         <GridModal
           url={gridSearchUrl}
           isOpen={this.state.modalOpen}
