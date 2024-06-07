@@ -186,6 +186,9 @@ function stripImplementationDetails(
           )
         )
         .then((gridImageJson: string) =>
+          // TO DO - filtering here means getSuitableImageDetails only get crops that match
+          // criteria, so the error message ("The image does not have a valid crop on the Grid")
+          // is misleading - can be that it has valid crops but not matching criteria.
           filterGridCrops(gridImageJson, maybeFromGrid, criteria)
         )
         .then((crops: Crop[]) =>
