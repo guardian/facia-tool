@@ -67,12 +67,14 @@ function getSuitableImageDetails(
   id: string,
   desired: Criteria
 ): Promise<ImageDescription> {
+  const { maxWidth, minWidth, widthAspectRatio, heightAspectRatio } = desired;
   if (crops.length === 0) {
     return Promise.reject(
-      new Error('The image does not have a valid crop on the Grid')
+      new Error(
+        `The image does not have a valid ${widthAspectRatio}:${heightAspectRatio} crop on the Grid`
+      )
     );
   }
-  const { maxWidth, minWidth } = desired;
   const assets = sortBy(
     [crops[0].master]
       .concat(crops[0].assets)
@@ -185,14 +187,31 @@ function stripImplementationDetails(
             new Error(`There was a problem contacting The Grid - ${e.message}`)
           )
         )
-        .then((gridImageJson: string) =>
-          // TO DO - filtering here means getSuitableImageDetails only get crops that match
-          // criteria, so the error message ("The image does not have a valid crop on the Grid")
-          // is misleading - can be that it has valid crops but not matching criteria.
-          filterGridCrops(gridImageJson, maybeFromGrid, criteria)
-        )
-        .then((crops: Crop[]) =>
-          getSuitableImageDetails(crops, maybeFromGrid.id, criteria || {})
+        .then((gridImageJson: string) => ({
+          crops: filterGridCrops(gridImageJson, maybeFromGrid, criteria),
+          areNoCropsOfAnySize:
+            filterGridCrops(gridImageJson, maybeFromGrid).length === 0,
+        }))
+        .then(
+          ({
+            crops,
+            areNoCropsOfAnySize,
+          }: {
+            crops: Crop[];
+            areNoCropsOfAnySize: boolean;
+          }) => {
+            if (crops.length === 0 && areNoCropsOfAnySize) {
+              return Promise.reject(
+                new Error('The image does not have any crops on the Grid')
+              );
+            }
+
+            return getSuitableImageDetails(
+              crops,
+              maybeFromGrid.id,
+              criteria || {}
+            );
+          }
         )
         .then((asset: ImageDescription) =>
           resolve({
