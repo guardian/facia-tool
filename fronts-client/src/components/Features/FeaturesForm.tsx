@@ -15,8 +15,10 @@ interface Props {
 }
 
 const STAGE = pageConfig.env;
+const SWITCHES_TO_HIDE_ON_PROD = ['support-portrait-crops'];
+
 const filterSwitchesByStage = (featureSwitch: FeatureSwitch): boolean =>
-  STAGE === 'code' || !featureSwitch.hideOnProd;
+  STAGE === 'code' || !SWITCHES_TO_HIDE_ON_PROD.includes(featureSwitch.key);
 
 class FeaturesForm extends React.Component<Props> {
   public render() {

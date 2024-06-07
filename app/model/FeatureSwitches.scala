@@ -9,43 +9,37 @@ object FeatureSwitch {
 case class FeatureSwitch(
   key: String,
   title: String,
-  enabled: Boolean,
-  hideOnProd: Boolean
+  enabled: Boolean
 )
 
 object ObscureFeed extends FeatureSwitch(
   key = "obscure-feed",
   title = "Obscure the feed -- it's distracting for developers!",
-  enabled = false,
-  hideOnProd = false
+  enabled = false
 )
 
 object PageViewDataVisualisation extends FeatureSwitch(
   key = "page-view-data-visualisation",
   title = "Show page view data visualisation (aka spark lines)",
-  enabled = true,
-  hideOnProd = false
+  enabled = true
 )
 
 object ShowFirefoxPrompt extends FeatureSwitch(
   key = "show-firefox-prompt",
   title = "Show the prompt to use Firefox if applicable",
-  enabled = false,
-  hideOnProd = false
+  enabled = false
 )
 
 object TenImageSlideshows extends FeatureSwitch(
   key = "ten-image-slideshows",
   title = "Allow slideshows to contain 10 images rather than 5",
-  enabled = false,
-  hideOnProd = false
+  enabled = false
 )
 
 object UsePortraitCropsForSomeCollectionTypes extends FeatureSwitch(
   key = "support-portrait-crops",
   title = "Use portrait crops for the experimental big card containers",
-  enabled = false,
-  hideOnProd = true
+  enabled = false
 )
 
 object FeatureSwitches {
