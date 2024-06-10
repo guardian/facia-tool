@@ -346,6 +346,10 @@ class Card extends React.Component<CardContainerProps> {
     // Our drag is a copy event, from another Card
     const cardUuid = e.dataTransfer.getData(DRAG_DATA_CARD_IMAGE_OVERRIDE);
     if (cardUuid) {
+      // TO DO - before copying from another card, check its image
+      // matches this card's collection's criteria.
+      // ideally - if they don't match, check grid for a matching
+      // crop on the image and use that if present!
       this.props.copyCardImageMeta(cardUuid, this.props.uuid);
       return;
     }
