@@ -27,7 +27,7 @@ object PageViewDataVisualisation extends FeatureSwitch(
 object ShowFirefoxPrompt extends FeatureSwitch(
   key = "show-firefox-prompt",
   title = "Show the prompt to use Firefox if applicable",
-  enabled = false
+  enabled = true
 )
 
 object TenImageSlideshows extends FeatureSwitch(
