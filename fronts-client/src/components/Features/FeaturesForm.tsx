@@ -15,6 +15,11 @@ interface Props {
 }
 
 const STAGE = pageConfig.env;
+
+// We don't yet have any collectionTypes that use portrait crops
+// but even when we do, we might not want to show the option on PROD
+// it might lead to some broken visuals if used before implemented
+// on platforms.
 const SWITCHES_TO_HIDE_ON_PROD = ['support-portrait-crops'];
 
 const filterSwitchesByStage = (featureSwitch: FeatureSwitch): boolean =>

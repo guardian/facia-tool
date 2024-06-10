@@ -364,7 +364,7 @@ class Card extends React.Component<CardContainerProps> {
         );
         if (!validationForDraggedImage.matchesCriteria) {
           // @todo - if they don't match, check grid for a matching
-          // crop on the image and use that if present?
+          // crop of the image and use that if present?
           // @todo handle error
           alert(
             `Cannot copy that image to this card: ${validationForDraggedImage.reason}`
@@ -387,12 +387,13 @@ class Card extends React.Component<CardContainerProps> {
 
   private determineCardCriteria = (): Criteria => {
     const { collectionType, parentId } = this.props;
-    // @todo - how best to handle image drags to a clipboard card?
-    // Ask the user what type they want with a modal?
-    // ideally, should resolve the conflict when the clipboard item
-    // is dragged to a collection, not force the user to decide in advance.
-    // For using the default (landscape)
-    // since that is what all live containers use.
+    // @todo - how best to handle crop drags to a clipboard card?
+    // Using the default (landscape) for now.
+    // But, if you set a replacement (lanscape) trail on a clipboard
+    // item, that item can't be dragged to a portrit collection.
+    // Ideally, handleImageDrop will check if the Image has a matching
+    // crop of the required criteria and use that instead of the crop
+    // being dragged (or the crop on the card being dragged) onto the card
     if (parentId === 'clipboard') {
       return defaultCardTrailImageCriteria;
     }
@@ -440,7 +441,6 @@ const createMapStateToProps = () => {
       numSupportingArticles: selectSupportingArticleCount(state, uuid),
       editMode: selectEditMode(state),
       collectionType: collectionId && selectCollectionType(state, collectionId),
-
       selectOtherCard: (uuid: string) => selectCard(state, uuid),
     };
   };
