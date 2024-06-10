@@ -47,7 +47,6 @@ import {
   editionsCardImageCriteria,
   editionsMobileCardImageCriteria,
   editionsTabletCardImageCriteria,
-  defaultCardTrailImageCriteria,
   portraitCardImageCriteria,
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
@@ -955,7 +954,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
   private determineCardCriteria = (): Criteria => {
     const { collectionType } = this.props;
     if (!SUPPORT_PORTRAIT_CROPS || !collectionType) {
-      return defaultCardTrailImageCriteria;
+      return landScapeCardImageCriteria;
     }
     return COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collectionType)
       ? portraitCardImageCriteria
