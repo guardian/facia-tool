@@ -9,6 +9,7 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
   url?: string | void;
   isDraggingImageOver?: boolean;
   imageHide?: boolean;
+  isPortrait?: boolean;
 }>`
   position: relative;
   width: ${theme.thumbnailImage.width};
@@ -19,6 +20,15 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
   font-weight: bold;
   opacity: ${({ imageHide }) => (imageHide && imageHide ? '0.5' : '1')};
   background-image: ${({ url }) => `url('${url}')`};
+
+  ${({ isPortrait }) =>
+    isPortrait &&
+    `
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position-x: center;
+  `}
+
   ${({ isDraggingImageOver }) =>
     isDraggingImageOver &&
     `background: ${theme.base.colors.dropZoneActiveStory};

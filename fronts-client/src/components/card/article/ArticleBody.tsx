@@ -86,6 +86,15 @@ const ClipboardFirstPublished = styled.div`
   right: 0;
 `;
 
+const getThumbnailDims = (imageSrcWidth?: string, imageSrcHeight?: string) => {
+  if (!imageSrcHeight || !imageSrcWidth) {
+    return undefined;
+  }
+  const height = Number(imageSrcHeight);
+  const width = Number(imageSrcWidth);
+  return isNaN(height) || isNaN(width) ? undefined : { width, height };
+};
+
 interface ArticleBodyProps {
   newspaperPageNumber?: number;
 
@@ -131,6 +140,8 @@ interface ArticleBodyProps {
   canShowPageViewData: boolean;
   frontId: string;
   collectionId?: string;
+  imageSrcWidth?: string;
+  imageSrcHeight?: string;
 }
 
 const articleBodyDefault = React.memo(
@@ -176,10 +187,18 @@ const articleBodyDefault = React.memo(
     collectionId,
     newspaperPageNumber,
     promotionMetric,
+    imageSrcWidth,
+    imageSrcHeight,
   }: ArticleBodyProps) => {
     const displayByline = size === 'default' && showByline && byline;
     const now = Date.now();
     const paths = urlPath ? getPaths(urlPath) : undefined;
+
+    const thumbnailDims = getThumbnailDims(imageSrcWidth, imageSrcHeight);
+    const thumbnailIsPortrait =
+      !!imageReplace &&
+      thumbnailDims &&
+      thumbnailDims.height > thumbnailDims.width;
 
     return (
       <>
@@ -294,6 +313,7 @@ const articleBodyDefault = React.memo(
                   imageHide={imageHide}
                   url={thumbnail}
                   isDraggingImageOver={isDraggingImageOver}
+                  isPortrait={thumbnailIsPortrait}
                 >
                   {cutoutThumbnail ? (
                     <ThumbnailCutout src={cutoutThumbnail} />
