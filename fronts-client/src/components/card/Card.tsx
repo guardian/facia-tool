@@ -21,9 +21,9 @@ import {
   ValidationResponse,
 } from 'util/validateImageSrc';
 import {
-  cardImageCriteria,
   editionsCardImageCriteria,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
+  defaultCardTrailImageCriteria,
 } from 'constants/image';
 import Sublinks from '../FrontsEdit/CollectionComponents/Sublinks';
 import {
@@ -346,7 +346,7 @@ class Card extends React.Component<CardContainerProps> {
     const isEditionsMode = this.props.editMode === 'editions';
     const imageCriteria = isEditionsMode
       ? editionsCardImageCriteria
-      : cardImageCriteria;
+      : defaultCardTrailImageCriteria;
 
     // Our drag contains Grid data
     validateImageEvent(e, this.props.frontId, imageCriteria)

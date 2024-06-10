@@ -42,10 +42,11 @@ import {
 import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
 import {
-  cardImageCriteria,
+  landScapeCardImageCriteria,
   editionsCardImageCriteria,
   editionsMobileCardImageCriteria,
   editionsTabletCardImageCriteria,
+  defaultCardTrailImageCriteria,
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
@@ -284,7 +285,8 @@ const RenderSlideshow = ({
               name={name}
               component={InputImage}
               small
-              criteria={cardImageCriteria}
+              // TO DO - will slideshows always be landscape?
+              criteria={landScapeCardImageCriteria}
               frontId={frontId}
               isSelected={index === slideshowIndex}
               isInvalid={isInvalidCaptionLength(index)}
@@ -682,7 +684,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     criteria={
                       isEditionsMode
                         ? editionsCardImageCriteria
-                        : cardImageCriteria
+                        : defaultCardTrailImageCriteria
                     }
                     frontId={frontId}
                     defaultImageUrl={

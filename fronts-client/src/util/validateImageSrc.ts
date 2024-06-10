@@ -140,7 +140,7 @@ function validateActualImage(image: ImageDescription, frontId?: string) {
       return reject(
         new Error(`Images cannot be less than ${minWidth} pixels wide`)
       );
-    } else if (criteriaRatio && criteriaRatio - ratio > 0.01) {
+    } else if (criteriaRatio && Math.abs(criteriaRatio - ratio) > 0.01) {
       return reject(
         new Error(
           `Images must have a ${widthAspectRatio || ''}:${
