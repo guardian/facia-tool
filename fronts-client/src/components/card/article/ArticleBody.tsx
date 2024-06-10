@@ -34,6 +34,7 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import PageViewDataWrapper from '../../PageViewDataWrapper';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { getPaths } from 'util/paths';
+import { getMaybeDimensionsFromWidthAndHeight } from 'util/validateImageSrc';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -85,15 +86,6 @@ const ClipboardFirstPublished = styled.div`
   bottom: 0;
   right: 0;
 `;
-
-const getThumbnailDims = (imageSrcWidth?: string, imageSrcHeight?: string) => {
-  if (!imageSrcHeight || !imageSrcWidth) {
-    return undefined;
-  }
-  const height = Number(imageSrcHeight);
-  const width = Number(imageSrcWidth);
-  return isNaN(height) || isNaN(width) ? undefined : { width, height };
-};
 
 interface ArticleBodyProps {
   newspaperPageNumber?: number;
@@ -194,7 +186,10 @@ const articleBodyDefault = React.memo(
     const now = Date.now();
     const paths = urlPath ? getPaths(urlPath) : undefined;
 
-    const thumbnailDims = getThumbnailDims(imageSrcWidth, imageSrcHeight);
+    const thumbnailDims = getMaybeDimensionsFromWidthAndHeight(
+      imageSrcWidth,
+      imageSrcHeight
+    );
     const thumbnailIsPortrait =
       !!imageReplace &&
       thumbnailDims &&

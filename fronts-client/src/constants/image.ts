@@ -17,7 +17,7 @@ export const portraitCardImageCriteria = {
   heightAspectRatio: 5,
 };
 
-//TO DO - get the right list of types
+// @todo - add the right collection type when it exists
 export const COLLECTIONS_USING_PORTRAIT_TRAILS = ['fixed/small/slow-IV'];
 
 export const defaultCardTrailImageCriteria = landScapeCardImageCriteria;

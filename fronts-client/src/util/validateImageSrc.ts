@@ -321,6 +321,53 @@ function validateImageEvent(
   );
 }
 
+const getMaybeDimensionsFromWidthAndHeight = (
+  imageSrcWidth?: string | number,
+  imageSrcHeight?: string | number
+) => {
+  if (!imageSrcHeight || !imageSrcWidth) {
+    return undefined;
+  }
+  const height = Number(imageSrcHeight);
+  const width = Number(imageSrcWidth);
+  return isNaN(height) || isNaN(width) ? undefined : { width, height };
+};
+
+function validateDimensions(
+  dimensions: { width: number; height: number },
+  criteria: Criteria
+): { matchesCriteria: true } | { matchesCriteria: false; reason: string } {
+  const { width, height } = dimensions;
+  const { maxWidth, minWidth, widthAspectRatio, heightAspectRatio } = criteria;
+  const criteriaRatio =
+    widthAspectRatio && heightAspectRatio
+      ? widthAspectRatio / heightAspectRatio
+      : NaN;
+
+  const ratio = width / height;
+
+  if (maxWidth && maxWidth < width) {
+    return {
+      matchesCriteria: false,
+      reason: `Images cannot be more than ${maxWidth} pixels wide`,
+    };
+  } else if (minWidth && minWidth > width) {
+    return {
+      matchesCriteria: false,
+      reason: `Images cannot be less than ${minWidth} pixels wide`,
+    };
+  } else if (criteriaRatio && Math.abs(criteriaRatio - ratio) > 0.01) {
+    return {
+      matchesCriteria: false,
+      reason: `Images must have a ${widthAspectRatio || ''}:${
+        heightAspectRatio || ''
+      } aspect ratio`,
+    };
+  }
+
+  return { matchesCriteria: true };
+}
+
 const imageDropTypes = [
   ...gridDropTypes,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
@@ -338,4 +385,6 @@ export {
   validateImageSrc,
   validateImageEvent,
   validateMediaItem,
+  validateDimensions,
+  getMaybeDimensionsFromWidthAndHeight,
 };
