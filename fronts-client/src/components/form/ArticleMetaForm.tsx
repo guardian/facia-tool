@@ -17,7 +17,6 @@ import {
   selectArticleTag,
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
-import pageConfig from 'util/extractConfigFromPage';
 import { defaultObject } from 'util/selectorUtils';
 import { CardMeta, ArticleTag, CardSizes } from 'types/Collection';
 import InputText from 'components/inputs/InputText';
