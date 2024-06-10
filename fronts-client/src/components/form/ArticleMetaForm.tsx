@@ -48,6 +48,8 @@ import {
   editionsMobileCardImageCriteria,
   editionsTabletCardImageCriteria,
   portraitCardImageCriteria,
+  COLLECTIONS_USING_PORTRAIT_TRAILS,
+  SUPPORT_PORTRAIT_CROPS,
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
@@ -68,16 +70,6 @@ import { FormButtonContainer } from 'components/form/FormButtonContainer';
 import { selectCollectionType } from 'selectors/frontsSelectors';
 import { Criteria } from 'types/Grid';
 
-const supportPortraitCropsSwitch = pageConfig?.userData?.featureSwitches.find(
-  (feature) => feature.key === 'support-portrait-crops'
-);
-
-const SUPPORT_PORTRAIT_CROPS = supportPortraitCropsSwitch
-  ? supportPortraitCropsSwitch.enabled
-  : false;
-
-//TO DO - get the right list of types, put it in the right place
-const COLLECTIONS_USING_PORTRAIT_TRAILS = ['fixed/small/slow-IV'];
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
