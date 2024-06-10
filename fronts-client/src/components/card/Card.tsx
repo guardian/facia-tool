@@ -23,6 +23,10 @@ import {
 import {
   editionsCardImageCriteria,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
+  SUPPORT_PORTRAIT_CROPS,
+  COLLECTIONS_USING_PORTRAIT_TRAILS,
+  landScapeCardImageCriteria,
+  portraitCardImageCriteria,
   defaultCardTrailImageCriteria,
 } from 'constants/image';
 import Sublinks from '../FrontsEdit/CollectionComponents/Sublinks';
@@ -46,6 +50,8 @@ import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { RecipeCard } from 'components/card/recipe/RecipeCard';
 import { ChefCard } from 'components/card/chef/ChefCard';
 import { ChefMetaForm } from '../form/ChefMetaForm';
+import { selectCollectionType } from 'selectors/frontsSelectors';
+import { Criteria } from 'types/Grid';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -104,6 +110,7 @@ type CardContainerProps = ContainerProps & {
   editMode: EditMode;
   isLive?: boolean;
   pillarId?: string;
+  collectionType?: string;
 };
 
 class Card extends React.Component<CardContainerProps> {
@@ -346,7 +353,7 @@ class Card extends React.Component<CardContainerProps> {
     const isEditionsMode = this.props.editMode === 'editions';
     const imageCriteria = isEditionsMode
       ? editionsCardImageCriteria
-      : defaultCardTrailImageCriteria;
+      : this.determineCardCriteria();
 
     // Our drag contains Grid data
     validateImageEvent(e, this.props.frontId, imageCriteria)
@@ -355,11 +362,29 @@ class Card extends React.Component<CardContainerProps> {
       )
       .catch(alert);
   };
+
+  private determineCardCriteria = (): Criteria => {
+    const { collectionType, parentId } = this.props;
+
+    // TO DO - how to handle image drags to a clipboard card?
+    // ask the user what type they want with a modal?
+    if (parentId === 'clipboard') {
+      return defaultCardTrailImageCriteria;
+    }
+
+    if (!SUPPORT_PORTRAIT_CROPS || !collectionType) {
+      return landScapeCardImageCriteria;
+    }
+
+    return COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collectionType)
+      ? portraitCardImageCriteria
+      : landScapeCardImageCriteria;
+  };
 }
 
 const createMapStateToProps = () => {
   const selectType = createSelectCardType();
-  return (state: State, { uuid, frontId }: ContainerProps) => {
+  return (state: State, { uuid, frontId, collectionId }: ContainerProps) => {
     const maybeExternalArticle = selectExternalArticleFromCard(state, uuid);
     return {
       type: selectType(state, uuid),
@@ -368,6 +393,7 @@ const createMapStateToProps = () => {
       pillarId: maybeExternalArticle && maybeExternalArticle.pillarId,
       numSupportingArticles: selectSupportingArticleCount(state, uuid),
       editMode: selectEditMode(state),
+      collectionType: collectionId && selectCollectionType(state, collectionId),
     };
   };
 };
