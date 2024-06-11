@@ -175,6 +175,10 @@ const getCardEntitiesFromDrop = async (
     return getChefEntityFromFeedDrop(drop.data);
   }
 
+  if (drop.type === 'RECIPE_COLLECTION') {
+    return getRecipeCollectionFromFeedDrop();
+  }
+
   const droppedDataURL = drop.data.trim();
   const resourceIdOrUrl = isGoogleRedirectUrl(droppedDataURL)
     ? getRelevantURLFromGoogleRedirectURL(droppedDataURL)
@@ -287,6 +291,10 @@ const getRecipeEntityFromFeedDrop = (recipe: Recipe): [Card] => {
   const card = createCard(recipe.id, false, { cardType: 'recipe' });
 
   return [card];
+};
+
+const getRecipeCollectionFromFeedDrop = (): [Card] => {
+  return [createCard(v4(), false, { cardType: 'recipe-collection' })];
 };
 
 const getArticleEntitiesFromFeedDrop = (

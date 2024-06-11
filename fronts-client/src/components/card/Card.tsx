@@ -46,6 +46,7 @@ import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { RecipeCard } from 'components/card/recipe/RecipeCard';
 import { ChefCard } from 'components/card/chef/ChefCard';
 import { ChefMetaForm } from '../form/ChefMetaForm';
+import { RecipeCollectionCard } from './recipeCollection/RecipeCollectionCard';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -241,6 +242,29 @@ class Card extends React.Component<CardContainerProps> {
                 textSize={textSize}
                 showMeta={showMeta}
               />
+            </>
+          );
+        case CardTypesMap.RECIPE_COLLECTION:
+          return (
+            <>
+              <RecipeCollectionCard
+                frontId={frontId}
+                collectionId={collectionId}
+                id={uuid}
+                isUneditable={isUneditable}
+                {...getNodeProps()}
+                onDelete={this.onDelete}
+                onAddToClipboard={this.handleAddToClipboard}
+                onClick={isUneditable ? undefined : () => onSelect(uuid)}
+                size={size}
+                textSize={textSize}
+                showMeta={showMeta}
+              />
+              {getSublinks}
+              {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
+              {numSupportingArticles === 0
+                ? children
+                : this.state.showCardSublinks && children}
             </>
           );
         default:
