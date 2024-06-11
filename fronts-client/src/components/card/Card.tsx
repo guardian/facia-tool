@@ -46,7 +46,7 @@ import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { RecipeCard } from 'components/card/recipe/RecipeCard';
 import { ChefCard } from 'components/card/chef/ChefCard';
 import { ChefMetaForm } from '../form/ChefMetaForm';
-import { RecipeCollectionCard } from './recipeCollection/RecipeCollectionCard';
+import { FeastCollectionCard } from './feastCollection/FeastCollectionCard';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -244,10 +244,10 @@ class Card extends React.Component<CardContainerProps> {
               />
             </>
           );
-        case CardTypesMap.RECIPE_COLLECTION:
+        case CardTypesMap.FEAST_COLLECTION:
           return (
             <>
-              <RecipeCollectionCard
+              <FeastCollectionCard
                 frontId={frontId}
                 collectionId={collectionId}
                 id={uuid}

@@ -3,7 +3,7 @@ export const CardTypesMap = {
   ARTICLE: 'article',
   RECIPE: 'recipe',
   CHEF: 'chef',
-  RECIPE_COLLECTION: 'recipe-collection',
+  FEAST_COLLECTION: 'feast-collection',
 } as const;
 
 export type CardTypes = (typeof CardTypesMap)[keyof typeof CardTypesMap];

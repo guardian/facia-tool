@@ -26,8 +26,8 @@ export interface ChefDrop {
   data: Chef;
 }
 
-export interface RecipeCollectionDrop {
-  type: 'RECIPE_COLLECTION';
+export interface FeastCollectionDrop {
+  type: 'FEAST_COLLECTION';
 }
 
 export type MappableDropType =
@@ -35,7 +35,7 @@ export type MappableDropType =
   | CAPIDrop
   | RecipeDrop
   | ChefDrop
-  | RecipeCollectionDrop;
+  | FeastCollectionDrop;
 
 const dropToCard = (e: React.DragEvent): MappableDropType | null => {
   const map = {
@@ -51,8 +51,8 @@ const dropToCard = (e: React.DragEvent): MappableDropType | null => {
       type: 'CHEF',
       data: JSON.parse(data),
     }),
-    [CardTypesMap.RECIPE_COLLECTION]: (data: string): RecipeCollectionDrop => ({
-      type: 'RECIPE_COLLECTION',
+    [CardTypesMap.FEAST_COLLECTION]: (data: string): FeastCollectionDrop => ({
+      type: 'FEAST_COLLECTION',
     }),
     text: (url: string): RefDrop => ({ type: 'REF', data: url }),
   };

@@ -36,7 +36,7 @@ interface Props {
   showMeta?: boolean;
 }
 
-export const RecipeCollectionCard = ({
+export const FeastCollectionCard = ({
   id,
   fade,
   size = 'default',

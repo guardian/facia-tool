@@ -29,7 +29,7 @@ import FrontContent from './FrontContent';
 import DragToAddSnap from './CollectionComponents/DragToAddSnap';
 import { selectPriority } from 'selectors/pathSelectors';
 import { Priorities } from 'types/Priority';
-import { DragToAddRecipeCollection } from './CollectionComponents/DragToAddRecipeCollection';
+import { DragToAddFeastCollection } from './CollectionComponents/DragToAddFeastCollection';
 
 const FrontWrapper = styled.div`
   height: 100%;
@@ -160,7 +160,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
               )}
               {isFeast && (
                 <DragToAddContainer>
-                  <DragToAddRecipeCollection />
+                  <DragToAddFeastCollection />
                 </DragToAddContainer>
               )}
               <OverviewHeadingButton onClick={this.handleOpenCollections}>

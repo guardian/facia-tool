@@ -13,33 +13,33 @@ const handleDragStart = (
   event: React.DragEvent<HTMLDivElement>,
   dragImageElement: HTMLDivElement | null
 ) => {
-  const recipeCollectionCard: Card = {
-    cardType: 'recipe-collection',
+  const feastCollectionCard: Card = {
+    cardType: 'feast-collection',
     id: v4(),
     meta: {},
     uuid: v4(),
     frontPublicationDate: Date.now(),
   };
   event.dataTransfer.setData(
-    'recipe-collection',
-    JSON.stringify(recipeCollectionCard)
+    'feast-collection',
+    JSON.stringify(feastCollectionCard)
   );
   if (dragImageElement) {
     event.dataTransfer.setDragImage(dragImageElement, dragOffsetX, dragOffsetY);
   }
 };
 
-export const DragToAddRecipeCollection = () => {
+export const DragToAddFeastCollection = () => {
   const ref = useRef<HTMLDivElement>(null);
   return (
     <DragToAdd
-      dragImage={<DraggingArticleComponent headline="Recipe collection" />}
+      dragImage={<DraggingArticleComponent headline="Feast collection" />}
       dragImageRef={ref}
       onDragStart={(e: React.DragEvent<HTMLDivElement>) =>
         handleDragStart(e, ref.current)
       }
     >
-      Drag to add a recipe collection
+      Drag to add a feast collection
     </DragToAdd>
   );
 };

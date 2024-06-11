@@ -67,7 +67,7 @@ object CardType extends PlayEnum[CardType] {
   case object Article extends CardType
   case object Recipe extends CardType
   case object Chef extends CardType
-  case object RecipeCollection extends CardType
+  case object FeastCollection extends CardType
   override def values = findValues
 }
 
