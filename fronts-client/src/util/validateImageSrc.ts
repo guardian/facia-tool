@@ -71,7 +71,10 @@ function getSuitableImageDetails(
   if (crops.length === 0) {
     return Promise.reject(
       new Error(
-        `The image does not have a valid ${widthAspectRatio}:${heightAspectRatio} crop on the Grid`
+        typeof widthAspectRatio === 'number' &&
+        typeof heightAspectRatio === 'number'
+          ? `The image does not have a valid ${widthAspectRatio}:${heightAspectRatio} crop on the Grid`
+          : `The image does not have any valid crops on the Grid`
       )
     );
   }
