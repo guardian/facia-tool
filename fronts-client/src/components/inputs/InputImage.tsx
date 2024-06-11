@@ -272,8 +272,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
     const { src } = valueRecord ?? {};
     const imageSrc = typeof src === 'string' ? src : '';
-
-
     this.state = {
       isDragging: false,
       modalOpen: false,
@@ -316,7 +314,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         ? input.value.thumb
         : defaultImageUrl;
 
-    const portraitImage = !!(
+    const usePortraitImageStyling = !!(
+      editMode !== 'editions' &&
       !useDefault &&
       imageDims &&
       imageDims.height > imageDims.width
@@ -342,7 +341,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           onDragIntentStart={() => this.setState({ isDragging: true })}
           onDragIntentEnd={() => this.setState({ isDragging: false })}
         >
-          <ImageContainer small={small} portrait={portraitImage}>
+          <ImageContainer small={small} portrait={usePortraitImageStyling}>
             <ImageComponent
               style={{
                 backgroundImage: `url(${imageUrl}`,
