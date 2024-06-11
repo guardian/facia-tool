@@ -202,7 +202,7 @@ function stripImplementationDetails(
           }) => {
             if (crops.length === 0 && areNoCropsOfAnySize) {
               return Promise.reject(
-                new Error('The image does not have any crops on the Grid')
+                new Error('The image does not have any valid crops on the Grid')
               );
             }
 

@@ -213,7 +213,7 @@ describe('Validate images', () => {
         ).then(
           (err) => done.fail(err.toString()),
           (err) => {
-            expect(err.message).toMatch(/does not have a valid crop/i);
+            expect(err.message).toMatch(/does not have any valid crops/i);
             done();
           }
         );
@@ -242,13 +242,13 @@ describe('Validate images', () => {
           {
             minWidth: 100,
             maxWidth: 1000,
-            widthAspectRatio: 5,
+            widthAspectRatio: 7,
             heightAspectRatio: 4,
           }
         ).then(
           (err) => done.fail(err.toString()),
           (err) => {
-            expect(err.message).toMatch(/does not have a valid crop/i);
+            expect(err.message).toMatch(/does not have a valid 7:4 crop/i);
             done();
           }
         );
@@ -311,7 +311,7 @@ describe('Validate images', () => {
         ).then(
           (err) => done.fail(err.toString()),
           (err) => {
-            expect(err.message).toMatch(/does not have a valid crop/i);
+            expect(err.message).toMatch(/does not have any valid crops/i);
             done();
           }
         );
@@ -348,7 +348,7 @@ describe('Validate images', () => {
         ).then(
           (err) => done.fail(err.toString()),
           (err) => {
-            expect(err.message).toMatch(/does not have a valid crop/i);
+            expect(err.message).toMatch(/does not have a valid 5:4 crop/i);
             done();
           }
         );
