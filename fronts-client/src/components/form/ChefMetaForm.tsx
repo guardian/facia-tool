@@ -16,7 +16,7 @@ import { Chef } from 'types/Chef';
 import { useSelector } from 'react-redux';
 import InputTextArea from 'components/inputs/InputTextArea';
 
-type FormProps = {
+interface FormProps {
   card: Card;
   initialValues: ChefCardMeta;
   chef: Chef | undefined;
@@ -24,7 +24,7 @@ type FormProps = {
   size: CardSizes;
   onCancel: () => void;
   onSave: (meta: ChefCardFormData) => void;
-};
+}
 
 type ComponentProps = FormProps &
   InjectedFormProps<ChefCardFormData, FormProps, {}>;
