@@ -22,8 +22,8 @@ export const ChefFeedItemComponent = ({
   id,
   shouldObscureFeed,
 }: ComponentProps) => {
-  const chef: Chef = useSelector((state) =>
-    chefSelectors.selectById(state, id)
+  const chef: Chef = useSelector(
+    (state) => chefSelectors.selectById(state, id)!
   );
   const dispatch = useDispatch();
 
