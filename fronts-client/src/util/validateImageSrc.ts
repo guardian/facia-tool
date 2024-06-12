@@ -120,39 +120,21 @@ function validateActualImage(image: ImageDescription, frontId?: string) {
     const {
       width = 0,
       height = 0,
-      ratio = 0,
+      ratio,
       criteria,
       path,
       origin,
       thumb,
     } = image;
-    const {
-      maxWidth,
-      minWidth,
-      widthAspectRatio,
-      heightAspectRatio,
-    }: Criteria = criteria || {};
-    const criteriaRatio =
-      widthAspectRatio && heightAspectRatio
-        ? widthAspectRatio / heightAspectRatio
-        : NaN;
 
-    if (maxWidth && maxWidth < width) {
-      return reject(
-        new Error(`Images cannot be more than ${maxWidth} pixels wide`)
+    if (criteria) {
+      const dimensionValidation = validateDimensions(
+        { width, height, ratio },
+        criteria
       );
-    } else if (minWidth && minWidth > width) {
-      return reject(
-        new Error(`Images cannot be less than ${minWidth} pixels wide`)
-      );
-    } else if (criteriaRatio && Math.abs(criteriaRatio - ratio) > 0.01) {
-      return reject(
-        new Error(
-          `Images must have a ${widthAspectRatio || ''}:${
-            heightAspectRatio || ''
-          } aspect ratio`
-        )
-      );
+      if (dimensionValidation.matchesCriteria === false) {
+        return reject(new Error(dimensionValidation.reason));
+      }
     }
     if (image.origin) {
       return recordUsage(image.origin.split('/').slice(-1)[0], frontId).then(
@@ -337,7 +319,7 @@ const getMaybeDimensionsFromWidthAndHeight = (
 };
 
 function validateDimensions(
-  dimensions: { width: number; height: number },
+  dimensions: { width: number; height: number; ratio?: number },
   criteria: Criteria
 ): { matchesCriteria: true } | { matchesCriteria: false; reason: string } {
   const { width, height } = dimensions;
@@ -347,7 +329,10 @@ function validateDimensions(
       ? widthAspectRatio / heightAspectRatio
       : NaN;
 
-  const ratio = width / height;
+  // if validating a mediaItem with defined ratio value, use that instead of
+  // calculating from width and height
+  const ratio =
+    typeof dimensions.ratio == 'number' ? dimensions.ratio : width / height;
 
   if (maxWidth && maxWidth < width) {
     return {
