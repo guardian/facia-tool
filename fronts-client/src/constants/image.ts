@@ -18,7 +18,7 @@ export const portraitCardImageCriteria = {
 };
 
 // @todo - add the right collection type when it exists
-export const COLLECTIONS_USING_PORTRAIT_TRAILS = ['fixed/small/slow-IV'];
+export const COLLECTIONS_USING_PORTRAIT_TRAILS = [];
 
 export const defaultCardTrailImageCriteria = landScapeCardImageCriteria;
 
