@@ -34,7 +34,7 @@ import Button from 'components/inputs/ButtonDefault';
 import { updateCollection as updateCollectionAction } from '../actions/Collections';
 import { isMode } from '../selectors/pathSelectors';
 import { COLLECTIONS_USING_PORTRAIT_TRAILS } from 'constants/image';
-import { CropIcon, StarIcon } from './icons/Icons';
+import { CropIcon } from './icons/Icons';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
   `front-${frontId}-collection-${id}`;
