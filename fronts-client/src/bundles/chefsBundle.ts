@@ -7,14 +7,15 @@ import { selectCard } from 'selectors/shared';
 import { State } from 'types/State';
 import { createSelector } from 'reselect';
 import { stripHtml } from 'util/sanitizeHTML';
-//import { createSelectIsArticleStale } from 'util/externalArticle';
+// import { createSelectIsArticleStale } from 'util/externalArticle';
 import { ThunkResult } from 'types/Store';
 import { previewCapi, liveCapi } from 'services/capiQuery';
 import { createSelectIsArticleStale } from '../util/externalArticle';
+import { Tag } from '../types/Capi';
 
-const sanitizeChef = (chef: Chef) => ({
-  ...chef,
-  bio: stripHtml(chef.bio ?? ''),
+const sanitizeTag = (tag: Tag) => ({
+  ...tag,
+  bio: stripHtml(tag.bio ?? ''),
 });
 
 const bundle = createAsyncResourceBundle<Chef>('chefs', {
@@ -52,7 +53,7 @@ const fetchResourceOrResults = async (
   isResource: boolean,
   fetchFromPreview: boolean = false
 ) => {
-  //const capiEndpoint = fetchFromPreview ? capiService.tags : capiService.search;
+  // const capiEndpoint = fetchFromPreview ? capiService.tags : capiService.search;
   const capiEndpoint = capiService.chefs;
   const { response } = await capiEndpoint(params);
 
@@ -69,7 +70,7 @@ const fetchResourceOrResults = async (
 export const createFetch =
   (
     actions: typeof bundle.actions,
-    //selectIsArticleStale: ReturnType<typeof createSelectIsArticleStale>,
+    // selectIsArticleStale: ReturnType<typeof createSelectIsArticleStale>,
     isPreview: boolean = false
   ) =>
   (params: object, isResource: boolean): ThunkResult<void> =>
@@ -96,7 +97,7 @@ export const createFetch =
 
              */
         dispatch(
-          actions.fetchSuccess(resultData.results, {
+          actions.fetchSuccess(resultData.results.map(sanitizeTag), {
             pagination: resultData.pagination || undefined,
             order: resultData.results.map((_) => _.id),
           })
@@ -111,7 +112,7 @@ export const createFetch =
 
 export const fetchLive = createFetch(
   bundle.actions
-  //createSelectIsArticleStale(bundle.selectors.selectById)
+  // createSelectIsArticleStale(bundle.selectors.selectById)
 );
 
 const selectChefDataFromCardId = (
