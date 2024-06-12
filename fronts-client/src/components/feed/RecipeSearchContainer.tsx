@@ -3,7 +3,7 @@ import TextInput from 'components/inputs/TextInput';
 import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { styled } from 'constants/theme';
 import React, { useEffect, useState, useCallback } from 'react';
-import { connect } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { selectors as recipeSelectors } from 'bundles/recipesBundle';
 import { fetchLive, selectors as chefSelectors } from 'bundles/chefsBundle';
 import { State } from 'types/State';
@@ -33,8 +33,6 @@ const FixedContentContainer = styled.div`
 
 interface Props {
   rightHandContainer?: React.ReactElement<any>;
-  recipes: Record<string, Recipe>;
-  chefs: Record<string, Chef>;
 }
 
 enum FeedType {
@@ -42,14 +40,27 @@ enum FeedType {
   chefs = 'chefFeed',
 }
 
-const FeastSearchContainerComponent = ({
-  rightHandContainer,
-  recipes,
-  chefs,
-}: Props) => {
+export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   const [selectedOption, setSelectedOption] = useState(FeedType.recipes);
   const [intervalId, setIntervalId] = useState(null);
   const [inputState, setInputState] = useState({ query: '', chefs: [] });
+  const recipes: Record<string, Recipe> = useSelector((state: State) =>
+    recipeSelectors.selectAll(state)
+  );
+  const dispatch = useDispatch();
+  const fetchChefs = useCallback(
+    (params: object, isResource: boolean) => {
+      dispatch(fetchLive(params, isResource));
+    },
+    [dispatch]
+  );
+  const chefs: Record<string, Chef> = useSelector((state: State) =>
+    chefSelectors.selectAll(state)
+  );
+
+  useEffect(() => {
+    runSearchAndRestartPolling();
+  }, [selectedOption]);
 
   const handleOptionChange = (optionName: FeedType) => {
     setSelectedOption(optionName);
@@ -76,7 +87,7 @@ const FeastSearchContainerComponent = ({
       const searchTerm = id ? id : inputState.query;
       //const isLive = capiFeedIndex === 0;
       //const fetch = isLive ? this.props.fetchLive : this.props.fetchPreview;
-      const fetch = selectedOption === FeedType.chefs ? chefs : recipes;
+      const fetch = selectedOption === FeedType.chefs ? fetchChefs : () => {};
       fetch(
         {
           ...getParams(searchTerm),
@@ -85,7 +96,7 @@ const FeastSearchContainerComponent = ({
         !!id
       );
     },
-    [inputState]
+    [inputState, selectedOption]
   );
 
   const runSearchAndRestartPolling = useCallback(() => {
@@ -97,9 +108,9 @@ const FeastSearchContainerComponent = ({
     runSearch();
   }, [stopPolling, runSearch]);
   //
-  // useEffect(() => {
-  //   return () => stopPolling();
-  // }, [stopPolling]);
+  useEffect(() => {
+    return () => stopPolling();
+  }, [stopPolling]);
 
   const renderTheFeed = () => {
     switch (selectedOption) {
@@ -119,10 +130,6 @@ const FeastSearchContainerComponent = ({
       <InputContainer>
         <TextInputContainer>
           <TextInput placeholder="Search recipes" displaySearchIcon />
-          <div>
-            <button onClick={runSearchAndRestartPolling}>Start Search</button>
-            <button onClick={stopPolling}>Stop Search</button>
-          </div>
         </TextInputContainer>
         <ClipboardHeader />
       </InputContainer>
@@ -154,15 +161,3 @@ const FeastSearchContainerComponent = ({
     </React.Fragment>
   );
 };
-
-const mapStateToProps = (state: State, dispatch: Dispatch) => ({
-  recipes: recipeSelectors.selectAll(state),
-  chefs: (params: object, isResource: boolean) =>
-    dispatch(fetchLive(params, isResource)),
-});
-
-//chefs: chefSelectors.selectAll(state),
-
-export const RecipeSearchContainer = connect(mapStateToProps)(
-  FeastSearchContainerComponent
-);

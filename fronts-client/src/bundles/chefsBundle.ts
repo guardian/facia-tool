@@ -96,7 +96,7 @@ export const createFetch =
 
              */
         dispatch(
-          actions.fetchSuccess(resultData, {
+          actions.fetchSuccess(resultData.results, {
             pagination: resultData.pagination || undefined,
             order: resultData.results.map((_) => _.id),
           })
