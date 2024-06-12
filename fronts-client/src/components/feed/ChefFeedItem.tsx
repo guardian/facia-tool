@@ -51,7 +51,7 @@ export const ChefFeedItemComponent = ({
     <FeedItem
       id={chef.id}
       type={CardTypesMap.CHEF}
-      title={`${chef.firstName} ${chef.lastName}`}
+      title={`${chef.firstName ?? 'Unknown name'} ${chef.lastName ?? ''}`}
       hasVideo={false}
       isLive={true}
       liveUrl={`https://theguardian.com/${chef.apiUrl}`}
