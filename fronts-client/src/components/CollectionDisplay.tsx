@@ -33,7 +33,10 @@ import { theme } from 'constants/theme';
 import Button from 'components/inputs/ButtonDefault';
 import { updateCollection as updateCollectionAction } from '../actions/Collections';
 import { isMode } from '../selectors/pathSelectors';
-import { COLLECTIONS_USING_PORTRAIT_TRAILS } from 'constants/image';
+import {
+  COLLECTIONS_USING_PORTRAIT_TRAILS,
+  SUPPORT_PORTRAIT_CROPS,
+} from 'constants/image';
 import { CropIcon } from './icons/Icons';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
@@ -258,6 +261,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
     const { displayName } = this.state;
 
     const usePortrait =
+      SUPPORT_PORTRAIT_CROPS &&
       collection?.type &&
       COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collection?.type);
 
