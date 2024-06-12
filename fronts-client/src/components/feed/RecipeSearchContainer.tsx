@@ -43,7 +43,7 @@ enum FeedType {
 export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   const [selectedOption, setSelectedOption] = useState(FeedType.recipes);
   const [intervalId, setIntervalId] = useState(null);
-  const [inputState, setInputState] = useState({ query: '', chefs: [] });
+  const [searchText, setSearchText] = useState('');
   const recipes: Record<string, Recipe> = useSelector((state: State) =>
     recipeSelectors.selectAll(state)
   );
@@ -54,20 +54,16 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     },
     [dispatch]
   );
-  const chefs: Record<string, Chef> = useSelector((state: State) =>
-    chefSelectors.selectAll(state)
+  const chefSearchIds = useSelector((state: State) =>
+    chefSelectors.selectLastFetchOrder(state)
   );
 
   useEffect(() => {
     runSearchAndRestartPolling();
-  }, [selectedOption]);
-
-  const handleOptionChange = (optionName: FeedType) => {
-    setSelectedOption(optionName);
-  };
+  }, [selectedOption, searchText]);
 
   const getParams = (query: string) => ({
-    q: query,
+    'web-title': query,
     'page-size': '20',
     'show-elements': 'image',
     'show-fields': 'all',
@@ -83,20 +79,16 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
   const runSearch = useCallback(
     (page = 1) => {
-      const id = getIdFromURL(inputState.query);
-      const searchTerm = id ? id : inputState.query;
-      //const isLive = capiFeedIndex === 0;
-      //const fetch = isLive ? this.props.fetchLive : this.props.fetchPreview;
       const fetch = selectedOption === FeedType.chefs ? fetchChefs : () => {};
       fetch(
         {
-          ...getParams(searchTerm),
+          ...getParams(searchText),
           page,
         },
-        !!id
+        false
       );
     },
-    [inputState, selectedOption]
+    [selectedOption, searchText]
   );
 
   const runSearchAndRestartPolling = useCallback(() => {
@@ -119,8 +111,8 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
           <RecipeFeedItem key={recipe.id} recipe={recipe} />
         ));
       case FeedType.chefs:
-        return Object.values(chefs).map((chef) => (
-          <ChefFeedItem key={chef.id} chef={chef} />
+        return chefSearchIds.map((chefId) => (
+          <ChefFeedItem key={chefId} id={chefId} />
         ));
     }
   };
@@ -129,21 +121,28 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     <React.Fragment>
       <InputContainer>
         <TextInputContainer>
-          <TextInput placeholder="Search recipes" displaySearchIcon />
+          <TextInput
+            placeholder="Search recipes"
+            displaySearchIcon
+            onChange={(event) => {
+              setSearchText(event.target.value);
+            }}
+            value={searchText}
+          />
         </TextInputContainer>
         <ClipboardHeader />
       </InputContainer>
       <RadioGroup>
         <RadioButton
           checked={selectedOption === FeedType.recipes}
-          onChange={() => handleOptionChange(FeedType.recipes)}
+          onChange={() => setSelectedOption(FeedType.recipes)}
           label="Recipes"
           inline
           name="recipeFeed"
         />
         <RadioButton
           checked={selectedOption === FeedType.chefs}
-          onChange={() => handleOptionChange(FeedType.chefs)}
+          onChange={() => setSelectedOption(FeedType.chefs)}
           label="Chefs"
           inline
           name="chefFeed"

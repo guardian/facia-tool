@@ -9,18 +9,22 @@ import { ContentInfo } from './ContentInfo';
 import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
 import { State } from '../../types/State';
 import { CardTypesMap } from 'constants/cardTypes';
-import { connect, useDispatch } from 'react-redux';
+import { connect, useDispatch, useSelector } from 'react-redux';
 import { insertCardWithCreate } from '../../actions/Cards';
+import { selectors as chefSelectors } from 'bundles/chefsBundle';
 
 interface ComponentProps {
-  chef: Chef;
+  id: string;
   shouldObscureFeed: boolean;
 }
 
 export const ChefFeedItemComponent = ({
-  chef,
+  id,
   shouldObscureFeed,
 }: ComponentProps) => {
+  const chef: Chef = useSelector((state) =>
+    chefSelectors.selectById(state, id)
+  );
   const dispatch = useDispatch();
 
   const onAddToClipboard = useCallback(() => {
