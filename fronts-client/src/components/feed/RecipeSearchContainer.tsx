@@ -15,7 +15,7 @@ import { RecipeFeedItem } from './RecipeFeedItem';
 import { ChefFeedItem } from './ChefFeedItem';
 import { RadioButton, RadioGroup } from '../inputs/RadioButtons';
 import { getIdFromURL } from '../../util/CAPIUtils';
-import { Dispatch } from '../../types/Store';
+import { Dispatch } from 'types/Store';
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
@@ -42,12 +42,11 @@ enum FeedType {
 
 export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   const [selectedOption, setSelectedOption] = useState(FeedType.recipes);
-  const [intervalId, setIntervalId] = useState(null);
   const [searchText, setSearchText] = useState('');
   const recipes: Record<string, Recipe> = useSelector((state: State) =>
     recipeSelectors.selectAll(state)
   );
-  const dispatch = useDispatch();
+  const dispatch: Dispatch = useDispatch();
   const fetchChefs = useCallback(
     (params: object, isResource: boolean) => {
       dispatch(fetchLive(params, isResource));
@@ -59,7 +58,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   );
 
   useEffect(() => {
-    runSearchAndRestartPolling();
+    runSearch();
   }, [selectedOption, searchText]);
 
   const getParams = (query: string) => ({
@@ -68,14 +67,6 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     'show-elements': 'image',
     'show-fields': 'all',
   });
-
-  // Function to stop polling
-  const stopPolling = useCallback(() => {
-    if (intervalId) {
-      clearInterval(intervalId);
-      setIntervalId(null);
-    }
-  }, [intervalId]);
 
   const runSearch = useCallback(
     (page = 1) => {
@@ -90,19 +81,6 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     },
     [selectedOption, searchText]
   );
-
-  const runSearchAndRestartPolling = useCallback(() => {
-    stopPolling();
-    const newIntervalId = setInterval(() => {
-      runSearch();
-    }, 30000);
-    setIntervalId(newIntervalId);
-    runSearch();
-  }, [stopPolling, runSearch]);
-  //
-  useEffect(() => {
-    return () => stopPolling();
-  }, [stopPolling]);
 
   const renderTheFeed = () => {
     switch (selectedOption) {
