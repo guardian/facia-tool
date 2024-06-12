@@ -14,6 +14,7 @@ import { RecipeFeedItem } from './RecipeFeedItem';
 import { ChefFeedItem } from './ChefFeedItem';
 import { RadioButton, RadioGroup } from '../inputs/RadioButtons';
 import { Dispatch } from 'types/Store';
+import debounce from 'lodash/debounce';
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
@@ -55,8 +56,10 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     chefSelectors.selectLastFetchOrder(state)
   );
 
+  const debouncedRunSearch = debounce(() => runSearch(), 750);
+
   useEffect(() => {
-    runSearch();
+    debouncedRunSearch();
   }, [selectedOption, searchText]);
 
   const getParams = (query: string) => ({
