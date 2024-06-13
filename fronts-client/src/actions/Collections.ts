@@ -48,7 +48,7 @@ import { Dispatch, ThunkResult } from 'types/Store';
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
-import { Stages, Collection, CardSets } from 'types/Collection';
+import { Stages, Collection, CardSets, Card } from 'types/Collection';
 import difference from 'lodash/difference';
 import { selectCardsInCollections } from 'selectors/collection';
 import {
@@ -57,7 +57,6 @@ import {
   editorCloseFormsForCollection,
 } from 'bundles/frontsUI';
 import flatten from 'lodash/flatten';
-import uniq from 'lodash/uniq';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
 import { selectVisibleArticles } from 'selectors/frontsSelectors';
@@ -68,6 +67,7 @@ import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 import { updateCollectionStrategy } from 'strategies/update-collection';
 import { getPageViewDataForCollection } from 'actions/PageViewData';
 import { isMode } from 'selectors/pathSelectors';
+import { groupBy, uniqBy } from 'lodash';
 
 const articlesInCollection = createSelectAllArticlesInCollection();
 
@@ -313,15 +313,16 @@ function updateCollection(
 const fetchArticles =
   (articleIds: string[]): ThunkResult<Promise<void>> =>
   async (dispatch, getState) => {
-    const articleIdsWithoutSnaps = uniq(
-      articleIds.filter((id) => !id.match(/^snap/))
+    const uniqueArticleIdsWithoutSnaps = articleIds.filter(
+      (id) => !id.match(/^snap/)
     );
-    if (!articleIdsWithoutSnaps.length) {
+
+    if (!uniqueArticleIdsWithoutSnaps.length) {
       return;
     }
-    dispatch(externalArticleActions.fetchStart(articleIdsWithoutSnaps));
+    dispatch(externalArticleActions.fetchStart(uniqueArticleIdsWithoutSnaps));
     try {
-      const articles = await getArticlesBatched(articleIdsWithoutSnaps);
+      const articles = await getArticlesBatched(uniqueArticleIdsWithoutSnaps);
       const freshArticles = articles.filter((article) =>
         selectIsExternalArticleStale(
           getState(),
@@ -334,7 +335,7 @@ const fetchArticles =
         dispatch(externalArticleActions.fetchSuccess(freshArticles));
       }
       const remainingArticles = difference(
-        articleIdsWithoutSnaps,
+        uniqueArticleIdsWithoutSnaps,
         articles.map((_) => _.id)
       );
       if (remainingArticles.length) {
@@ -373,22 +374,33 @@ const fetchCardReferencedEntities =
         ...selectCardsInCollections(state, {
           collectionIds,
           itemSet,
-        }).map((card) => card.id),
+        }),
       ],
-      [] as string[]
+      [] as Card[]
     );
 
-    await dispatch(fetchArticles(cards));
+    const dedupedCards = uniqBy(cards, (card) => card.id);
 
-    // const chefIds = selectChefsInCollections(state, {
-    //   collectionIds,
-    //   itemSet,
-    // });
+    // Separate cards by type
+    const cardsByCardType = groupBy(
+      dedupedCards,
+      (card) => card.cardType ?? 'article'
+    );
 
-    // await Promise.all([
-    //   dispatch(fetchChefs(chefIds)),
-    //   dispatch(fetchArticles(articleIds)),
-    // ]);
+    const promises = [];
+
+    if (cardsByCardType.article) {
+      const articlesPromise = dispatch(
+        fetchArticles(cardsByCardType.article.map((card) => card.id))
+      );
+      promises.push(articlesPromise);
+    }
+
+    if (cardsByCardType.chef) {
+      // Todo: fetch our chefs!
+    }
+
+    await Promise.all(promises);
   };
 
 const getOphanDataForCollections =

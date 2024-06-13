@@ -834,6 +834,99 @@ const stateWithSnaplinksAndArticles: any = {
   },
 };
 
+export const stateWithDuplicateArticleIdsInCollection: any = {
+  path: '/v2/editorial',
+  fronts: {
+    frontsConfig: {
+      data: {
+        fronts: {},
+        collections: {
+          exampleCollection: {
+            displayName: 'Example Collection',
+            type: 'type',
+          },
+        },
+      },
+      lastError: null,
+      error: null,
+      lastSuccessfulFetchTimestamp: 1547474511048,
+      loading: false,
+      loadingIds: [],
+      updatingIds: [],
+    },
+    lastPressed: {},
+    collectionVisibility: { draft: {}, live: {} },
+  },
+  collections: {
+    data: {
+      exampleCollection: {
+        id: 'exampleCollection',
+        displayName: 'Example Collection',
+        live: ['abc', 'def'],
+        draft: [],
+        previously: undefined,
+        type: 'type',
+      },
+    },
+    lastError: null,
+    error: null,
+    lastSuccessfulFetchTimestamp: null,
+    loading: false,
+    loadingIds: [],
+    updatingIds: [],
+  },
+  groups: {
+    abc: {
+      id: '1',
+      uuid: 'abc',
+      cards: ['95e2bfc0-8999-4e6e-a359-19960967c1e0'],
+      name: 'group1',
+    },
+    def: {
+      id: null,
+      uuid: 'def',
+      name: 'group2',
+      cards: [
+        '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
+        '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d',
+      ],
+    },
+  },
+  cards: {
+    '95e2bfc0-8999-4e6e-a359-19960967c1e0': {
+      id: 'article/live/0',
+      frontPublicationDate: 1,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '95e2bfc0-8999-4e6e-a359-19960967c1e0',
+    },
+    '4bc11359-bb3e-45e7-a0a9-86c0ee52653d': {
+      id: 'article/live/0',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '4bc11359-bb3e-45e7-a0a9-86c0ee52653d',
+    },
+    '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d': {
+      id: 'a/long/path/2',
+      frontPublicationDate: 2,
+      publishedBy: 'Computers',
+      meta: {},
+      uuid: '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d',
+    },
+  },
+  externalArticles: {
+    data: {},
+    lastError: null,
+    error: null,
+    lastSuccessfulFetchTimestamp: null,
+    loading: false,
+    loadingIds: [],
+    updatingIds: [],
+  },
+  feed: {},
+};
+
 const initialState = {
   collections: {
     data: {},

@@ -4,7 +4,11 @@ import fetchMock from 'fetch-mock';
 import set from 'lodash/fp/set';
 import configureStore from 'util/configureStore';
 import config from 'fixtures/config';
-import { stateWithCollection, capiArticle } from 'fixtures/shared';
+import {
+  stateWithCollection,
+  capiArticle,
+  stateWithDuplicateArticleIdsInCollection,
+} from 'fixtures/shared';
 import {
   getCollectionsApiResponse,
   getCollectionsApiResponseWithoutStoriesVisible,
@@ -422,7 +426,7 @@ describe('Collection actions', () => {
     });
   });
 
-  describe('getArticlesForCollections thunk', () => {
+  describe('fetchCardReferencedEntities thunk', () => {
     it('should dispatch start and success actions for articles returned from getCollection()', async () => {
       fetchMock.once(
         'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
@@ -447,6 +451,27 @@ describe('Collection actions', () => {
       // so we just check that the action type is correct
       expect(actions[1].type).toEqual(externalArticleActionNames.fetchSuccess);
     });
+    it('should deduplicate article ids when two cards reference the same article', async () => {
+      fetchMock.once(
+        'begin:/api/preview/search?ids=article/live/0,a/long/path/2',
+        { response: { results: [capiArticle] } }
+      );
+      const store = mockStore({
+        config,
+        ...stateWithDuplicateArticleIdsInCollection,
+      });
+      await store.dispatch(
+        fetchCardReferencedEntities(['exampleCollection'], 'live') as any
+      );
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(
+        externalArticleActions.fetchStart(['article/live/0', 'a/long/path/2'])
+      );
+      // We don't care about the implementation of getArticle here,
+      // so we just check that the action type is correct
+      expect(actions[1].type).toEqual(externalArticleActionNames.fetchSuccess);
+    });
+
     it('should dispatch start and error actions when getPrefillArticles throws', async () => {
       fetchMock.once(
         'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
