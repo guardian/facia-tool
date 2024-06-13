@@ -182,6 +182,7 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
       chef={chef}
       chefWithoutOverrides={chefWithoutOverrides}
       card={card}
+      // This cast should not be necessary once a card's meta and its cardType are linked in the Card type.
       initialValues={card.meta as ChefCardMeta}
       openPaletteModal={openPaletteModal}
       currentPalette={palette}
