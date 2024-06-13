@@ -85,7 +85,7 @@ function fetchStaleCollections(
     );
 
     dispatch(
-      getArticlesForCollections(
+      fetchCardReferencedEntities(
         fetchedCollectionIds,
         // get article for *all* collecitonItemSets as it reduces complexity of
         // this code (finding which cardSets we need), and the overlap
@@ -352,7 +352,11 @@ const fetchArticles =
     }
   };
 
-const getArticlesForCollections =
+/**
+ * Fetch all of the entities referenced by the cards in the given collection ids
+ * – articles, recipes etc.
+ */
+const fetchCardReferencedEntities =
   (
     collectionIds: string[],
     itemSetCandidate: CardSets | CardSets[]
@@ -363,18 +367,18 @@ const getArticlesForCollections =
       ? itemSetCandidate
       : [itemSetCandidate];
 
-    const articleIds = itemSets.reduce(
+    const cards = itemSets.reduce(
       (acc, itemSet) => [
         ...acc,
         ...selectCardsInCollections(state, {
           collectionIds,
           itemSet,
-        }),
+        }).map((card) => card.id),
       ],
       [] as string[]
     );
 
-    await dispatch(fetchArticles(articleIds));
+    await dispatch(fetchArticles(cards));
 
     // const chefIds = selectChefsInCollections(state, {
     //   collectionIds,
@@ -410,7 +414,7 @@ const openCollectionsAndFetchTheirArticles =
   ): ThunkResult<Promise<void>> =>
   async (dispatch) => {
     dispatch(editorOpenCollections(collectionIds));
-    await dispatch(getArticlesForCollections(collectionIds, itemSet));
+    await dispatch(fetchCardReferencedEntities(collectionIds, itemSet));
     await dispatch(getOphanDataForCollections(collectionIds, frontId, itemSet));
   };
 
@@ -461,7 +465,7 @@ function initialiseCollectionsForFront(
     dispatch(editorOpenCollections(collectionsWithArticlesToLoad));
     await dispatch(getCollections(front.collections));
     await dispatch(
-      getArticlesForCollections(collectionsWithArticlesToLoad, browsingStage)
+      fetchCardReferencedEntities(collectionsWithArticlesToLoad, browsingStage)
     );
     await dispatch(
       getOphanDataForCollections(
@@ -560,7 +564,7 @@ function discardDraftChangesToCollection(
 
 export {
   getCollections,
-  getArticlesForCollections,
+  fetchCardReferencedEntities,
   openCollectionsAndFetchTheirArticles,
   closeCollections,
   fetchStaleCollections,

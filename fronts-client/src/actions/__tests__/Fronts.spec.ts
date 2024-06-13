@@ -54,7 +54,7 @@ describe('Fronts actions', () => {
         selectCardsInCollections(state, {
           collectionIds,
           itemSet: 'draft',
-        }).every((_) => !!selectCard(state, _))
+        }).every((_) => !!selectCard(state, _.uuid))
       ).toBe(true);
     });
   });

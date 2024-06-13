@@ -1,29 +1,23 @@
 import type { State } from 'types/State';
-import { CardSets } from 'types/Collection';
+import { Card, CardSets } from 'types/Collection';
 import { createSelectCardsInCollection } from './shared';
-import uniq from 'lodash/uniq';
-import flatten from 'lodash/flatten';
 import { createSelector } from 'reselect';
 import { selectCard } from '../selectors/shared';
 
 const selectCardsInCollection = createSelectCardsInCollection();
 
-// Does not return UUIDs. Returns interal page codes for fetching cards
-export const selectCardsInCollections = createSelector(
-  (
-    state: State,
-    { collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets }
-  ) =>
-    collectionIds.map((_) =>
-      selectCardsInCollection(state, {
-        collectionId: _,
-        collectionSet: itemSet,
-      })
-        .map((articleId) => selectCard(state, articleId))
-        .map((article) => article.id)
-    ),
-  (articleIds) => uniq(flatten(articleIds))
-);
+// Unmemoized – intended to be used for fetch calls.
+// Will need to be memoized if used in UI.
+export const selectCardsInCollections = (
+  state: State,
+  { collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets }
+): Card[] =>
+  collectionIds.flatMap((_) =>
+    selectCardsInCollection(state, {
+      collectionId: _,
+      collectionSet: itemSet,
+    }).map((cardId) => selectCard(state, cardId))
+  );
 
 export const selectChefsInCollections = (
   state: State,

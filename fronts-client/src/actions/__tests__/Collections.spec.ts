@@ -16,7 +16,7 @@ import {
 } from 'bundles/externalArticlesBundle';
 import {
   getCollections,
-  getArticlesForCollections,
+  fetchCardReferencedEntities,
   updateCollection,
   fetchArticles,
 } from '../Collections';
@@ -433,7 +433,7 @@ describe('Collection actions', () => {
         ...stateWithCollection,
       });
       await store.dispatch(
-        getArticlesForCollections(['exampleCollection'], 'live') as any
+        fetchCardReferencedEntities(['exampleCollection'], 'live') as any
       );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
@@ -457,7 +457,7 @@ describe('Collection actions', () => {
         ...stateWithCollection,
       });
       await store.dispatch(
-        getArticlesForCollections(['exampleCollection'], 'live') as any
+        fetchCardReferencedEntities(['exampleCollection'], 'live') as any
       );
       const actions = store.getActions();
       expect(actions[0]).toEqual(
