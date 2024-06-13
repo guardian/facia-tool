@@ -1,21 +1,21 @@
 import type { State } from 'types/State';
 import { CardSets } from 'types/Collection';
-import { createSelectArticlesInCollection } from './shared';
+import { createSelectCardsInCollection } from './shared';
 import uniq from 'lodash/uniq';
 import flatten from 'lodash/flatten';
 import { createSelector } from 'reselect';
 import { selectCard } from '../selectors/shared';
 
-const selectArticleIdsInCollection = createSelectArticlesInCollection();
+const selectCardsInCollection = createSelectCardsInCollection();
 
 // Does not return UUIDs. Returns interal page codes for fetching cards
-export const selectArticlesInCollections = createSelector(
+export const selectCardsInCollections = createSelector(
   (
     state: State,
     { collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets }
   ) =>
     collectionIds.map((_) =>
-      selectArticleIdsInCollection(state, {
+      selectCardsInCollection(state, {
         collectionId: _,
         collectionSet: itemSet,
       })
@@ -25,8 +25,13 @@ export const selectArticlesInCollections = createSelector(
   (articleIds) => uniq(flatten(articleIds))
 );
 
+export const selectChefsInCollections = (
+  state: State,
+  { collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets }
+) => {};
+
 export const createSelectIsArticleInCollection = () => {
-  const selectArticlesInCollection = createSelectArticlesInCollection();
+  const selectArticlesInCollection = createSelectCardsInCollection();
   return createSelector(
     selectArticlesInCollection,
     (_: State, { cardId: articleId }: { cardId: string }) => articleId,

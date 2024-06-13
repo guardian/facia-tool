@@ -41,7 +41,7 @@ import { Stages } from 'types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
 import { CollectionWithArticles } from 'types/PageViewData';
 import {
-  createSelectArticlesInCollection,
+  createSelectCardsInCollection,
   createSelectArticleFromCard,
 } from 'selectors/shared';
 
@@ -512,7 +512,7 @@ const createSelectOpenCardTitlesForCollection = () => {
 const selectFrontBrowsingStage = (state: GlobalState, frontId: string) =>
   state.editor.frontIdsByBrowsingStage[frontId] || 'draft';
 
-const selectAllArticleIdsForCollection = createSelectArticlesInCollection();
+const selectAllArticleIdsForCollection = createSelectCardsInCollection();
 const selectCurrentlyOpenCollectionsByFront =
   createSelectCurrentlyOpenCollectionsByFront();
 

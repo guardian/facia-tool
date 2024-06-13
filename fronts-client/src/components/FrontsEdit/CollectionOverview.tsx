@@ -13,7 +13,7 @@ import { createCollectionId } from 'components/CollectionDisplay';
 import ButtonDefault from 'components/inputs/ButtonCircular';
 import {
   createSelectCollection,
-  createSelectArticlesInCollection,
+  createSelectCardsInCollection,
 } from 'selectors/shared';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
@@ -161,7 +161,7 @@ const CollectionOverview = ({
 
 const mapStateToProps = () => {
   const selectCollection = createSelectCollection();
-  const selectArticlesInCollection = createSelectArticlesInCollection();
+  const selectArticlesInCollection = createSelectCardsInCollection();
   const selectCollectionIdsWithOpenForms =
     createSelectCollectionIdsWithOpenForms();
   return (

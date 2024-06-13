@@ -18,7 +18,7 @@ import ButtonCircularCaret, {
 } from './inputs/ButtonCircularCaret';
 import type { State } from 'types/State';
 
-import { createSelectArticlesInCollection } from '../selectors/shared';
+import { createSelectCardsInCollection } from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer, {
@@ -423,7 +423,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 }
 
 const createMapStateToProps = () => {
-  const selectArticlesInCollection = createSelectArticlesInCollection();
+  const selectArticlesInCollection = createSelectCardsInCollection();
   return (state: State, props: ContainerProps) => {
     return {
       collection: collectionSelectors.selectById(state, props.id),

@@ -50,7 +50,7 @@ import type { State } from 'types/State';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
 import { Stages, Collection, CardSets } from 'types/Collection';
 import difference from 'lodash/difference';
-import { selectArticlesInCollections } from 'selectors/collection';
+import { selectCardsInCollections } from 'selectors/collection';
 import {
   editorOpenCollections,
   editorCloseCollections,
@@ -358,20 +358,33 @@ const getArticlesForCollections =
     itemSetCandidate: CardSets | CardSets[]
   ): ThunkResult<Promise<void>> =>
   async (dispatch, getState) => {
+    const state = getState();
     const itemSets = Array.isArray(itemSetCandidate)
       ? itemSetCandidate
       : [itemSetCandidate];
+
     const articleIds = itemSets.reduce(
       (acc, itemSet) => [
         ...acc,
-        ...selectArticlesInCollections(getState(), {
+        ...selectCardsInCollections(state, {
           collectionIds,
           itemSet,
         }),
       ],
       [] as string[]
     );
+
     await dispatch(fetchArticles(articleIds));
+
+    // const chefIds = selectChefsInCollections(state, {
+    //   collectionIds,
+    //   itemSet,
+    // });
+
+    // await Promise.all([
+    //   dispatch(fetchChefs(chefIds)),
+    //   dispatch(fetchArticles(articleIds)),
+    // ]);
   };
 
 const getOphanDataForCollections =

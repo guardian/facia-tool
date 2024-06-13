@@ -1,8 +1,8 @@
 import {
   selectExternalArticleFromCard,
   createSelectArticleFromCard,
-  createSelectArticlesInCollectionGroup,
-  createSelectArticlesInCollection,
+  createSelectCardsInCollectionGroup,
+  createSelectCardsInCollection,
   createSelectCollection,
   selectGroupSiblings,
 } from '../shared';
@@ -350,7 +350,7 @@ describe('Shared selectors', () => {
 
   describe('createArticlesInCollectionSelector', () => {
     it('should return a list of all the articles in a given collection', () => {
-      const selector = createSelectArticlesInCollection();
+      const selector = createSelectCardsInCollection();
       expect(
         selector(state, {
           collectionId: 'c1',
@@ -359,7 +359,7 @@ describe('Shared selectors', () => {
       ).toEqual(['af2', 'af1']);
     });
     it('should return articles in supporting positions', () => {
-      const selector = createSelectArticlesInCollection();
+      const selector = createSelectCardsInCollection();
       expect(
         selector(state, {
           collectionId: 'c5',
@@ -368,7 +368,7 @@ describe('Shared selectors', () => {
       ).toEqual(['afWithSupporting', 'afWithSectionKicker']);
     });
     it('should not return articles in supporting positions if includeSupportingArticles is false', () => {
-      const selector = createSelectArticlesInCollection();
+      const selector = createSelectCardsInCollection();
       expect(
         selector(state, {
           collectionId: 'c5',
@@ -381,7 +381,7 @@ describe('Shared selectors', () => {
 
   describe('createArticlesInCollectionGroupSelector', () => {
     it('should return a list of articles held by the given collection for the given display index', () => {
-      const selector = createSelectArticlesInCollectionGroup();
+      const selector = createSelectCardsInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c1',
@@ -405,7 +405,7 @@ describe('Shared selectors', () => {
       ).toEqual(['af3', 'af4']);
     });
     it('should put articles which are in groups that don`t exis in the config in the first group', () => {
-      const selector = createSelectArticlesInCollectionGroup();
+      const selector = createSelectCardsInCollectionGroup();
       const currentGroups = state.groups;
       const newGroups = {
         ...currentGroups,
@@ -422,7 +422,7 @@ describe('Shared selectors', () => {
       ).toEqual(['af6', 'af2', 'af1']);
     });
     it('should put articles which are in groups that don`t exis in the config in the first group even when none of the groups have names', () => {
-      const selector = createSelectArticlesInCollectionGroup();
+      const selector = createSelectCardsInCollectionGroup();
       const newGroups = {
         ...{ g1: { uuid: 'g1', cards: ['af4'] } },
         ...{ g2: { uuid: 'g2', id: 'group6', cards: ['af5'] } },
@@ -439,7 +439,7 @@ describe('Shared selectors', () => {
       ).toEqual(['af5', 'af6', 'af4']);
     });
     it('should return articles in supporting positions', () => {
-      const selector = createSelectArticlesInCollectionGroup();
+      const selector = createSelectCardsInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c5',
@@ -449,7 +449,7 @@ describe('Shared selectors', () => {
       ).toEqual(['afWithSupporting', 'afWithSectionKicker']);
     });
     it('should not return articles in supporting positions if includeSupportingArticles is false', () => {
-      const selector = createSelectArticlesInCollectionGroup();
+      const selector = createSelectCardsInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c5',
@@ -460,7 +460,7 @@ describe('Shared selectors', () => {
       ).toEqual(['afWithSupporting']);
     });
     it('should return an empty array if the collection is not found', () => {
-      const selector = createSelectArticlesInCollectionGroup();
+      const selector = createSelectCardsInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'invalid',
@@ -470,7 +470,7 @@ describe('Shared selectors', () => {
       ).toEqual([]);
     });
     it('should return an empty array if the collectionSet is not found', () => {
-      const selector = createSelectArticlesInCollectionGroup();
+      const selector = createSelectCardsInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c1',
@@ -480,7 +480,7 @@ describe('Shared selectors', () => {
       ).toEqual([]);
     });
     it("should handle articles that don't contain a meta key", () => {
-      const selector = createSelectArticlesInCollectionGroup();
+      const selector = createSelectCardsInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c4',
@@ -490,7 +490,7 @@ describe('Shared selectors', () => {
       ).toEqual([]);
     });
     it('should assume that articles without a meta key are in the first available group', () => {
-      const selector = createSelectArticlesInCollectionGroup();
+      const selector = createSelectCardsInCollectionGroup();
       expect(
         selector(state, {
           collectionId: 'c3',

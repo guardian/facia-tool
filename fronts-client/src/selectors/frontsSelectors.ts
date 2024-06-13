@@ -12,7 +12,7 @@ import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 
 import { CardSets, Stages } from 'types/Collection';
 import {
-  createSelectArticlesInCollection,
+  createSelectCardsInCollection,
   createSelectCollection,
 } from 'selectors/shared';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
@@ -328,7 +328,7 @@ const defaultVisibleFrontArticles = {
 };
 
 const createSelectArticleVisibilityDetails = () => {
-  const selectArticlesInCollection = createSelectArticlesInCollection();
+  const selectArticlesInCollection = createSelectCardsInCollection();
 
   // Have to adapt this to work on root state
   const selectRootArticlesInCollection = (

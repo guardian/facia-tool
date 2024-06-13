@@ -1,5 +1,5 @@
 import {
-  selectArticlesInCollections,
+  selectCardsInCollections,
   createSelectIsArticleInCollection,
 } from '../collection';
 import { stateWithCollection } from '../../fixtures/shared';
@@ -8,19 +8,19 @@ describe('Collection selectors', () => {
   describe('selectArticlesInCollections', () => {
     it("should select all of the articles in a given collection's itemSet", () => {
       expect(
-        selectArticlesInCollections(stateWithCollection, {
+        selectCardsInCollections(stateWithCollection, {
           collectionIds: ['exampleCollection'],
           itemSet: 'live',
         })
       ).toEqual(['article/live/0', 'article/draft/1', 'a/long/path/2']);
       expect(
-        selectArticlesInCollections(stateWithCollection, {
+        selectCardsInCollections(stateWithCollection, {
           collectionIds: ['exampleCollectionTwo'],
           itemSet: 'live',
         })
       ).toEqual(['article/live/0']);
       expect(
-        selectArticlesInCollections(stateWithCollection, {
+        selectCardsInCollections(stateWithCollection, {
           collectionIds: ['exampleCollectionTwo'],
           itemSet: 'draft',
         })
@@ -28,7 +28,7 @@ describe('Collection selectors', () => {
     });
     it('should return an empty array if no collections are found', () => {
       expect(
-        selectArticlesInCollections(stateWithCollection, {
+        selectCardsInCollections(stateWithCollection, {
           collectionIds: ['invalidCollectionId'],
           itemSet: 'draft',
         })

@@ -282,14 +282,14 @@ const selectIncludeSupportingArticles = (
   }
 ) => includeSupportingArticles;
 
-const createSelectArticlesInCollectionGroup = () => {
+const createSelectCardsInCollectionGroup = () => {
   const selectCollectionStageGroups = createSelectCollectionStageGroups();
   return createShallowEqualResultSelector(
     selectCards,
     selectCollectionStageGroups,
     selectGroupName,
     selectIncludeSupportingArticles,
-    (cards, collectionGroups, groupName, includeSupportingArticles = true) => {
+    (cards, collectionGroups, groupName, includeSupportingCards = true) => {
       const groups = groupName
         ? [
             collectionGroups.find(({ id }) => id === groupName) || {
@@ -301,7 +301,7 @@ const createSelectArticlesInCollectionGroup = () => {
         (acc, group) => acc.concat(group.cards || []),
         [] as string[]
       );
-      if (!includeSupportingArticles) {
+      if (!includeSupportingCards) {
         return groupCardIds;
       }
       return groupCardIds.reduce((acc, id) => {
@@ -320,9 +320,8 @@ const createSelectArticlesInCollectionGroup = () => {
   );
 };
 
-const createSelectArticlesInCollection = () => {
-  const selectArticlesInCollectionGroups =
-    createSelectArticlesInCollectionGroup();
+const createSelectCardsInCollection = () => {
+  const selectArticlesInCollectionGroups = createSelectCardsInCollectionGroup();
   return (
     state: State,
     {
@@ -343,7 +342,7 @@ const createSelectArticlesInCollection = () => {
 };
 
 const createSelectAllArticlesInCollection = () => {
-  const articlesInCollection = createSelectArticlesInCollection();
+  const articlesInCollection = createSelectCardsInCollection();
 
   return (state: State, collectionIds: string[]) =>
     collectionIds.reduce(
@@ -504,8 +503,8 @@ export {
   selectExternalArticleFromCard,
   createSelectArticleFromCard,
   selectCardsFromRootState,
-  createSelectArticlesInCollectionGroup,
-  createSelectArticlesInCollection,
+  createSelectCardsInCollectionGroup,
+  createSelectCardsInCollection,
   createSelectAllArticlesInCollection,
   createSelectGroupArticles,
   createSelectSupportingArticles,
