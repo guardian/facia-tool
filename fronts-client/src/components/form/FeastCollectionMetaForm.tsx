@@ -5,9 +5,13 @@ import {
   InjectedFormProps,
   formValueSelector,
 } from 'redux-form';
-import { Card, CardSizes, ChefCardMeta, Palette } from '../../types/Collection';
+import {
+  Card,
+  CardSizes,
+  ChefCardMeta,
+  ChefPalette,
+} from '../../types/Collection';
 import { Dispatch } from '../../types/Store';
-import { selectors } from '../../bundles/chefsBundle';
 import { State } from '../../types/State';
 import Button from 'components/inputs/ButtonDefault';
 import { selectCard } from 'selectors/shared';
@@ -16,32 +20,25 @@ import { FormContent } from 'components/form/FormContent';
 import { CollectionEditedError } from 'components/form/CollectionEditedError';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
-import { Chef } from 'types/Chef';
 import { useSelector } from 'react-redux';
-import InputTextArea from 'components/inputs/InputTextArea';
-import InputImage from 'components/inputs/InputImage';
-import { cardImageCriteria } from 'constants/image';
-import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
-import Row from 'components/Row';
-import { ImageRowContainer } from './ImageRowContainer';
-import { ImageCol } from './ImageCol';
 import InputLabel from 'components/inputs/InputLabel';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import { useDispatch } from 'react-redux';
 import { startOptionsModal } from 'actions/OptionsModal';
 import { PaletteItem, createPaletteForm } from './PaletteForm';
 import noop from 'lodash/noop';
+import InputText from 'components/inputs/InputText';
+import { RichTextInput } from 'components/inputs/RichTextInput';
+import InputContainer from 'components/inputs/InputContainer';
 
 interface FormProps {
   card: Card;
   initialValues: ChefCardMeta;
-  chef: Chef | undefined;
-  chefWithoutOverrides: Chef | undefined;
   size: CardSizes;
   onCancel: () => void;
   onSave: (meta: ChefCardMeta) => void;
   openPaletteModal: () => void;
-  currentPalette: Palette;
+  currentPalette: ChefPalette;
 }
 
 type ComponentProps = FormProps &
@@ -54,8 +51,6 @@ const Form = ({
   size,
   handleSubmit,
   onCancel,
-  chef,
-  chefWithoutOverrides,
   openPaletteModal,
   currentPalette,
 }: ComponentProps) => {
@@ -76,46 +71,38 @@ const Form = ({
       <FormContent size={size}>
         <TextOptionsInputGroup>
           <Field
-            name="bio"
-            label="Bio"
+            name="title"
+            label="Title"
             rows="2"
-            placeholder={chef?.bio}
-            component={InputTextArea}
-            originalValue={chefWithoutOverrides?.bio}
-            data-testid="edit-form-headline-field"
+            placeholder="Add a title"
+            component={InputText}
           />
-          <InputLabel>Palette</InputLabel>
-          {currentPalette ? (
-            <PaletteItem
-              id={currentPalette.paletteId}
-              palette={currentPalette}
-              onClick={openPaletteModal}
-            />
-          ) : (
-            <p>
-              No palette selected.{' '}
-              <ButtonDefault type="button" onClick={openPaletteModal}>
-                Add a palette
-              </ButtonDefault>
-            </p>
-          )}
+          <Field
+            name="body"
+            label="Body text"
+            rows="2"
+            placeholder="Add body text"
+            originalValue=""
+            component={RichTextInput}
+          />
+          <InputContainer>
+            <InputLabel>Palette</InputLabel>
+            {currentPalette ? (
+              <PaletteItem
+                id={currentPalette.paletteId}
+                palette={currentPalette}
+                onClick={openPaletteModal}
+              />
+            ) : (
+              <p>
+                No palette selected.{' '}
+                <ButtonDefault type="button" onClick={openPaletteModal}>
+                  Add a palette
+                </ButtonDefault>
+              </p>
+            )}
+          </InputContainer>
         </TextOptionsInputGroup>
-        <ImageOptionsInputGroup size={size}>
-          <ImageRowContainer size={size}>
-            <Row>
-              <ImageCol>
-                <InputLabel htmlFor="chefImageOverride">
-                  Replace image
-                </InputLabel>
-                <Field
-                  name="chefImageOverride"
-                  component={InputImage}
-                  criteria={cardImageCriteria}
-                />
-              </ImageCol>
-            </Row>
-          </ImageRowContainer>
-        </ImageOptionsInputGroup>
       </FormContent>
       <FormButtonContainer>
         <Button onClick={onCancel} type="button" size="l">
@@ -135,13 +122,13 @@ const Form = ({
   );
 };
 
-const ConnectedChefForm = reduxForm<ChefCardMeta, FormProps, {}>({
+const ConnectedFeastCollectionForm = reduxForm<ChefCardMeta, FormProps, {}>({
   destroyOnUnmount: true,
   onSubmit: (values: ChefCardMeta, dispatch: Dispatch, props: FormProps) =>
     dispatch(() => props.onSave(values)),
 })(Form);
 
-interface ChefMetaFormProps {
+interface FeastCollectionMetaFormProps {
   cardId: string;
   form: string;
   onCancel: () => void;
@@ -153,17 +140,11 @@ export const FeastCollectionMetaForm = ({
   cardId,
   form,
   ...rest
-}: ChefMetaFormProps) => {
+}: FeastCollectionMetaFormProps) => {
   const valueSelector = formValueSelector(form);
   const card = useSelector((state: State) => selectCard(state, cardId));
-  const chefWithoutOverrides = useSelector((state: State) =>
-    selectors.selectById(state, card.id)
-  );
-  const chef = useSelector((state: State) =>
-    selectors.selectChefFromCard(state, cardId)
-  );
   const palette = useSelector(
-    (state: State) => valueSelector(state, 'palette') as Palette
+    (state: State) => valueSelector(state, 'palette') as ChefPalette
   );
 
   const dispatch = useDispatch();
@@ -182,9 +163,7 @@ export const FeastCollectionMetaForm = ({
   );
 
   return (
-    <ConnectedChefForm
-      chef={chef}
-      chefWithoutOverrides={chefWithoutOverrides}
+    <ConnectedFeastCollectionForm
       card={card}
       initialValues={card.meta as ChefCardMeta}
       openPaletteModal={openPaletteModal}

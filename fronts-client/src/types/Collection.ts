@@ -110,13 +110,28 @@ export interface ImageData {
 export interface Palette {
   foregroundHex: string;
   backgroundHex: string;
+}
+
+export interface ChefPalette extends Palette {
   paletteId: ChefPaletteId;
 }
 
 interface ChefCardMeta {
   bio?: string;
-  palette?: Palette;
+  palette?: ChefPalette;
   chefImageOverride?: ImageData;
+}
+
+export interface FeastCollectionPalette {
+  darkPalette: Palette;
+  lightPalette: Palette;
+  paletteId: string;
+}
+
+interface FeastCollectionCardMeta {
+  title?: string;
+  body?: string;
+  palette?: FeastCollectionPalette;
 }
 
 interface Card extends CardRootFields {

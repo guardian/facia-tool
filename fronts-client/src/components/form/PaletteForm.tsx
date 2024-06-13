@@ -14,7 +14,7 @@ import { change, getFormValues } from 'redux-form';
 import { State } from 'types/State';
 import InputLabel from 'components/inputs/InputLabel';
 import { InputColor } from 'components/inputs/InputColor';
-import { Palette } from 'types/Collection';
+import { ChefPalette } from 'types/Collection';
 
 export const createPaletteForm =
   <T extends string>(formName: string, fieldName: T) =>
@@ -22,13 +22,13 @@ export const createPaletteForm =
     const dispatch = useDispatch();
     const formPalette = useSelector((state: State) => {
       const formValues = getFormValues(formName)(state) as {
-        [T: string]: Palette;
+        [T: string]: ChefPalette;
       };
       if (!formValues) {
         return undefined;
       }
 
-      return formValues[fieldName] as Palette;
+      return formValues[fieldName] as ChefPalette;
     });
     const setPaletteOption = useCallback(
       (
@@ -133,7 +133,7 @@ export const PaletteItem = ({
   isSelected = false,
 }: {
   id: ChefPaletteId;
-  palette?: Omit<Palette, 'paletteId'>;
+  palette?: Omit<ChefPalette, 'paletteId'>;
   onClick?: (
     paletteId: ChefPaletteId,
     foregroundHex: string,
