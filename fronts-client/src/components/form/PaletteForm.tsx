@@ -15,6 +15,7 @@ import { State } from 'types/State';
 import InputLabel from 'components/inputs/InputLabel';
 import { InputColor } from 'components/inputs/InputColor';
 import { Palette } from 'types/Collection';
+import { entries } from 'util/object';
 
 export const createPaletteForm =
   <T extends string>(formName: string, fieldName: T) =>
@@ -46,17 +47,13 @@ export const createPaletteForm =
     return (
       <>
         <PaletteList>
-          {Object.entries(chefPalettes).map(([paletteId, palette]) => (
+          {entries(chefPalettes).map(([paletteId, palette]) => (
             <PaletteItem
               palette={palette}
               key={paletteId}
-              id={paletteId as ChefPaletteId}
+              id={paletteId}
               onClick={(name, foregroundHex, backgroundHex) => {
-                setPaletteOption(
-                  name as ChefPaletteId,
-                  foregroundHex,
-                  backgroundHex
-                );
+                setPaletteOption(name, foregroundHex, backgroundHex);
                 onCancel();
               }}
               isSelected={
