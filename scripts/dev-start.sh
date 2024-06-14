@@ -36,7 +36,7 @@ main() {
 
     printf "\n\rStarting Play App... \n\r\n\r"
 
-    export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -XX:MaxPermSize=4G -Xmx4G -Xss4m"
+    export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -Xmx4G -Xss4m"
 
     if [[ "$NO_DEBUG" = true ]] ; then
       sbt "run"
