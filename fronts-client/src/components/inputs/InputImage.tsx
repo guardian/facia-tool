@@ -54,15 +54,19 @@ const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
 `;
 
 const ImageComponent = styled.div<{ small: boolean }>`
+  background-size: cover;
   ${({ small }) =>
     small
       ? `position: absolute;
     top: 0;
     left: 0;
     width: 100%;
-    height: 100%;`
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    `
       : 'position: relative;'}
-  background-size: cover;
   flex-grow: 1;
   cursor: grab;
 `;
