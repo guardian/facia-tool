@@ -707,6 +707,7 @@ const state = {
     updatingIds: [],
   },
   notifications: { banners: [] },
+  chefs: emptyFeedBundle,
 } as State;
 
 export { state };

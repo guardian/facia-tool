@@ -75,7 +75,7 @@ export const HoverActionsButtonWrapper = ({
       {renderButtons({
         showToolTip,
         hideToolTip,
-        size: size,
+        size,
       })}
     </HoverActionsWrapper>
   );

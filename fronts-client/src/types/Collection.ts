@@ -98,9 +98,9 @@ type CardMeta = CardRootMeta & {
   supporting?: string[];
 };
 
-type ChefCardMeta = {
+interface ChefCardMeta {
   bio: string;
-};
+}
 
 interface Card extends CardRootFields {
   meta: CardMeta;

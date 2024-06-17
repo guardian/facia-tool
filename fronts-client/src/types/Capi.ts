@@ -80,6 +80,7 @@ interface Tag {
   bylineLargeImageUrl?: string;
   sectionId?: string;
   sectionName?: string;
+  bio?: string;
 }
 
 type CapiBool = 'true' | 'false' | boolean;

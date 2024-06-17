@@ -2,18 +2,19 @@ import ClipboardHeader from 'components/ClipboardHeader';
 import TextInput from 'components/inputs/TextInput';
 import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { styled } from 'constants/theme';
-import React, { useState } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectors as recipeSelectors } from 'bundles/recipesBundle';
-import { selectors as chefSelectors } from 'bundles/chefsBundle';
+import { fetchLive, selectors as chefSelectors } from 'bundles/chefsBundle';
 import { State } from 'types/State';
 import { Recipe } from 'types/Recipe';
-import { Chef } from 'types/Chef';
 import { SearchResultsHeadingContainer } from './SearchResultsHeadingContainer';
 import { SearchTitle } from './SearchTitle';
 import { RecipeFeedItem } from './RecipeFeedItem';
 import { ChefFeedItem } from './ChefFeedItem';
 import { RadioButton, RadioGroup } from '../inputs/RadioButtons';
+import { Dispatch } from 'types/Store';
+import debounce from 'lodash/debounce';
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
@@ -31,8 +32,6 @@ const FixedContentContainer = styled.div`
 
 interface Props {
   rightHandContainer?: React.ReactElement<any>;
-  recipes: Record<string, Recipe>;
-  chefs: Record<string, Chef>;
 }
 
 enum FeedType {
@@ -40,15 +39,49 @@ enum FeedType {
   chefs = 'chefFeed',
 }
 
-const FeastSearchContainerComponent = ({
-  rightHandContainer,
-  recipes,
-  chefs,
-}: Props) => {
+export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   const [selectedOption, setSelectedOption] = useState(FeedType.recipes);
-  const handleOptionChange = (optionName: FeedType) => {
-    setSelectedOption(optionName);
-  };
+  const [searchText, setSearchText] = useState('');
+  const recipes: Record<string, Recipe> = useSelector((state: State) =>
+    recipeSelectors.selectAll(state)
+  );
+  const dispatch: Dispatch = useDispatch();
+  const fetchChefs = useCallback(
+    (params: object, isResource: boolean) => {
+      dispatch(fetchLive(params, isResource));
+    },
+    [dispatch]
+  );
+  const chefSearchIds = useSelector((state: State) =>
+    chefSelectors.selectLastFetchOrder(state)
+  );
+
+  const debouncedRunSearch = debounce(() => runSearch(), 750);
+
+  useEffect(() => {
+    debouncedRunSearch();
+  }, [selectedOption, searchText]);
+
+  const getParams = (query: string) => ({
+    'web-title': query,
+    'page-size': '20',
+    'show-elements': 'image',
+    'show-fields': 'all',
+  });
+
+  const runSearch = useCallback(
+    (page = 1) => {
+      const fetch = selectedOption === FeedType.chefs ? fetchChefs : () => {};
+      fetch(
+        {
+          ...getParams(searchText),
+          page,
+        },
+        false
+      );
+    },
+    [selectedOption, searchText]
+  );
 
   const renderTheFeed = () => {
     switch (selectedOption) {
@@ -57,8 +90,8 @@ const FeastSearchContainerComponent = ({
           <RecipeFeedItem key={recipe.id} recipe={recipe} />
         ));
       case FeedType.chefs:
-        return Object.values(chefs).map((chef) => (
-          <ChefFeedItem key={chef.id} chef={chef} />
+        return chefSearchIds.map((chefId) => (
+          <ChefFeedItem key={chefId} id={chefId} />
         ));
     }
   };
@@ -67,21 +100,28 @@ const FeastSearchContainerComponent = ({
     <React.Fragment>
       <InputContainer>
         <TextInputContainer>
-          <TextInput placeholder="Search recipes" displaySearchIcon />
+          <TextInput
+            placeholder="Search recipes"
+            displaySearchIcon
+            onChange={(event) => {
+              setSearchText(event.target.value);
+            }}
+            value={searchText}
+          />
         </TextInputContainer>
         <ClipboardHeader />
       </InputContainer>
       <RadioGroup>
         <RadioButton
           checked={selectedOption === FeedType.recipes}
-          onChange={() => handleOptionChange(FeedType.recipes)}
+          onChange={() => setSelectedOption(FeedType.recipes)}
           label="Recipes"
           inline
           name="recipeFeed"
         />
         <RadioButton
           checked={selectedOption === FeedType.chefs}
-          onChange={() => handleOptionChange(FeedType.chefs)}
+          onChange={() => setSelectedOption(FeedType.chefs)}
           label="Chefs"
           inline
           name="chefFeed"
@@ -99,12 +139,3 @@ const FeastSearchContainerComponent = ({
     </React.Fragment>
   );
 };
-
-const mapStateToProps = (state: State) => ({
-  recipes: recipeSelectors.selectAll(state),
-  chefs: chefSelectors.selectAll(state),
-});
-
-export const RecipeSearchContainer = connect(mapStateToProps)(
-  FeastSearchContainerComponent
-);

@@ -1,27 +1,70 @@
 import createAsyncResourceBundle from '../lib/createAsyncResourceBundle';
 import { Chef } from '../types/Chef';
-import chefOttolenghi from './fixtures/chef-ottolenghi.json';
-import chefStein from './fixtures/chef-stein.json';
-import chefCloake from './fixtures/chef-cloake.json';
 import { selectCard } from 'selectors/shared';
 import { State } from 'types/State';
 import { createSelector } from 'reselect';
 import { stripHtml } from 'util/sanitizeHTML';
+import { ThunkResult } from 'types/Store';
+import { previewCapi, liveCapi } from 'services/capiQuery';
+import { Tag } from '../types/Capi';
 
-const sanitizeChef = (chef: Chef) => ({
-  ...chef,
-  bio: stripHtml(chef.bio ?? ''),
+const sanitizeTag = (tag: Tag) => ({
+  ...tag,
+  bio: stripHtml(tag.bio ?? ''),
 });
 
 const bundle = createAsyncResourceBundle<Chef>('chefs', {
   indexById: true,
-  initialData: {
-    // Add stub data in the absence of proper search data.
-    [chefOttolenghi.id]: sanitizeChef(chefOttolenghi),
-    [chefStein.id]: sanitizeChef(chefStein),
-    [chefCloake.id]: sanitizeChef(chefCloake),
-  },
+  selectLocalState: (state) => state.chefs,
 });
+
+const fetchResourceOrResults = async (
+  capiService: typeof liveCapi,
+  params: object,
+  isResource: boolean,
+  fetchFromPreview: boolean = false
+) => {
+  const capiEndpoint = capiService.chefs;
+  const { response } = await capiEndpoint(params);
+
+  return {
+    results: response.results,
+    pagination: {
+      totalPages: response.pages,
+      currentPage: response.currentPage,
+      pageSize: response.pageSize,
+    },
+  };
+};
+
+export const createFetch =
+  (actions: typeof bundle.actions, isPreview: boolean = false) =>
+  (params: object, isResource: boolean): ThunkResult<void> =>
+  async (dispatch, getState) => {
+    dispatch(actions.fetchStart());
+    try {
+      const resultData = await fetchResourceOrResults(
+        isPreview ? previewCapi : liveCapi,
+        params,
+        isResource,
+        isPreview
+      );
+      if (resultData) {
+        dispatch(
+          actions.fetchSuccess(resultData.results.map(sanitizeTag), {
+            pagination: resultData.pagination || undefined,
+            order: resultData.results.map((_) => _.id),
+          })
+        );
+      } else {
+        dispatch(actions.fetchSuccessIgnore([]));
+      }
+    } catch (e) {
+      dispatch(actions.fetchError(e));
+    }
+  };
+
+export const fetchLive = createFetch(bundle.actions);
 
 const selectChefDataFromCardId = (
   state: State,

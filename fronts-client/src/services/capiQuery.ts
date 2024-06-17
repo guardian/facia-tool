@@ -57,6 +57,9 @@ interface CAPITagQueryReponse {
     results: Tag[];
     status: CAPIStatus;
     message?: string;
+    currentPage: number;
+    pageSize: number;
+    pages: number;
   };
 }
 
@@ -169,6 +172,14 @@ const capiQuery = (baseURL: string) => {
       return fetchCAPIResponse<CAPITagQueryReponse>(
         `${baseURL}/tags${qs({
           type: 'tracking',
+          ...params,
+        })}`
+      );
+    },
+    chefs: async (params: any): Promise<CAPITagQueryReponse> => {
+      return fetchCAPIResponse<CAPITagQueryReponse>(
+        `${baseURL}/tags${qs({
+          type: 'contributor',
           ...params,
         })}`
       );
