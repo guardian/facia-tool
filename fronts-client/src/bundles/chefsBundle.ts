@@ -35,16 +35,16 @@ const fetchResourceOrResults = async (
   };
 };
 
-export const fetchChefsById =
-  (tagIds: string[], page = 1, pageSize = 20): ThunkResult<void> =>
+export const fetchChefs =
+  (
+    // The params to include in the request
+    params: Record<string, string[] | string | number>,
+    // The ids of the chefs being fetched, if known
+    ids?: string[]
+  ): ThunkResult<void> =>
   async (dispatch) => {
-    dispatch(actions.fetchStart(tagIds));
+    dispatch(actions.fetchStart(ids));
     try {
-      const params = {
-        ids: tagIds,
-        page,
-        'page-size': pageSize,
-      };
       const resultData = await fetchResourceOrResults(liveCapi, params);
       if (resultData) {
         dispatch(
@@ -60,6 +60,19 @@ export const fetchChefsById =
       dispatch(actions.fetchError(e));
     }
   };
+
+export const fetchChefsById = (
+  tagIds: string[],
+  page = 1,
+  pageSize = 20
+): ThunkResult<void> => {
+  const params = {
+    ids: tagIds,
+    page,
+    'page-size': pageSize,
+  };
+  return fetchChefs(params, tagIds);
+};
 
 const selectChefDataFromCardId = (
   state: State,

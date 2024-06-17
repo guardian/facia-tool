@@ -436,19 +436,25 @@ describe('Collection actions', () => {
     const assertFetchedEntities = async ({
       fixture,
       action,
-      endpoint,
+      mockEndpoint,
       fetchStartAction,
       fetchCompleteActionType,
-      fetchResponse = { response: { results: [capiArticle] } },
+      fetchMockResponse = { response: { results: [capiArticle] } },
     }: {
+      // The state fixture
       fixture: Record<string, unknown>;
+      // The fetchCardReferencedEntities action to dispatch
       action: any;
-      endpoint: string;
+      // The endpoint to mock
+      mockEndpoint: string;
+      // The FETCH_START action we expect
       fetchStartAction: unknown;
+      // The action we expect to complete this thunk with – either success, or error
       fetchCompleteActionType: string;
-      fetchResponse?: number | Record<string, unknown>;
+      // The response to reply with when the mock endpoint is hit
+      fetchMockResponse?: number | Record<string, unknown>;
     }) => {
-      fetchMock.once(endpoint, fetchResponse);
+      fetchMock.once(mockEndpoint, fetchMockResponse);
       const store = mockStore({
         config,
         ...fixture,
@@ -463,7 +469,7 @@ describe('Collection actions', () => {
       await assertFetchedEntities({
         fixture: stateWithCollection,
         action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
-        endpoint:
+        mockEndpoint:
           'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
         fetchStartAction: externalArticleActions.fetchStart([
           'article/live/0',
@@ -477,7 +483,8 @@ describe('Collection actions', () => {
       await assertFetchedEntities({
         fixture: stateWithDuplicateArticleIdsInCollection,
         action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
-        endpoint: 'begin:/api/preview/search?ids=article/live/0,a/long/path/2',
+        mockEndpoint:
+          'begin:/api/preview/search?ids=article/live/0,a/long/path/2',
         fetchStartAction: externalArticleActions.fetchStart([
           'article/live/0',
           'a/long/path/2',
@@ -490,13 +497,14 @@ describe('Collection actions', () => {
       await assertFetchedEntities({
         fixture: stateWithDuplicateArticleIdsInCollection,
         action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
-        endpoint: 'begin:/api/preview/search?ids=article/live/0,a/long/path/2',
+        mockEndpoint:
+          'begin:/api/preview/search?ids=article/live/0,a/long/path/2',
         fetchStartAction: externalArticleActions.fetchStart([
           'article/live/0',
           'a/long/path/2',
         ]),
         fetchCompleteActionType: externalArticleActionNames.fetchError,
-        fetchResponse: 400,
+        fetchMockResponse: 400,
       });
     });
 
@@ -504,7 +512,7 @@ describe('Collection actions', () => {
       await assertFetchedEntities({
         fixture: stateWithCollectionWithChefs,
         action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
-        endpoint:
+        mockEndpoint:
           'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein%2Cprofile%2Ffelicity-cloake',
         fetchStartAction: chefActions.fetchStart([
           'profile/yotamottolenghi',
@@ -519,7 +527,7 @@ describe('Collection actions', () => {
       await assertFetchedEntities({
         fixture: stateWithCollectionWithDuplicateChefs,
         action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
-        endpoint:
+        mockEndpoint:
           'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein',
         fetchStartAction: chefActions.fetchStart([
           'profile/yotamottolenghi',

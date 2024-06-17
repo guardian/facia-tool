@@ -5,7 +5,7 @@ import { styled } from 'constants/theme';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectors as recipeSelectors } from 'bundles/recipesBundle';
-import { fetchLive, selectors as chefSelectors } from 'bundles/chefsBundle';
+import { fetchChefs, selectors as chefSelectors } from 'bundles/chefsBundle';
 import { State } from 'types/State';
 import { Recipe } from 'types/Recipe';
 import { SearchResultsHeadingContainer } from './SearchResultsHeadingContainer';
@@ -46,9 +46,9 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     recipeSelectors.selectAll(state)
   );
   const dispatch: Dispatch = useDispatch();
-  const fetchChefs = useCallback(
-    (params: object, isResource: boolean) => {
-      dispatch(fetchLive(params, isResource));
+  const searchForChefs = useCallback(
+    (params: Record<string, string[] | string | number>) => {
+      dispatch(fetchChefs(params));
     },
     [dispatch]
   );
@@ -71,14 +71,12 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
   const runSearch = useCallback(
     (page = 1) => {
-      const fetch = selectedOption === FeedType.chefs ? fetchChefs : () => {};
-      fetch(
-        {
-          ...getParams(searchText),
-          page,
-        },
-        false
-      );
+      const fetch =
+        selectedOption === FeedType.chefs ? searchForChefs : () => {};
+      fetch({
+        ...getParams(searchText),
+        page,
+      });
     },
     [selectedOption, searchText]
   );
