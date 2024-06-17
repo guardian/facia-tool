@@ -36,8 +36,14 @@ object TenImageSlideshows extends FeatureSwitch(
   enabled = false
 )
 
+object UsePortraitCropsForSomeCollectionTypes extends FeatureSwitch(
+  key = "support-portrait-crops",
+  title = "Use portrait crops for the experimental big card containers",
+  enabled = false
+)
+
 object FeatureSwitches {
-  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, ShowFirefoxPrompt, TenImageSlideshows)
+  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, ShowFirefoxPrompt, TenImageSlideshows, UsePortraitCropsForSomeCollectionTypes)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     val newSwitches = userDataSwitches match {

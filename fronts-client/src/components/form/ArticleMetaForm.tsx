@@ -46,7 +46,9 @@ import {
   editionsCardImageCriteria,
   editionsMobileCardImageCriteria,
   editionsTabletCardImageCriteria,
-  defaultCardTrailImageCriteria,
+  portraitCardImageCriteria,
+  COLLECTIONS_USING_PORTRAIT_TRAILS,
+  SUPPORT_PORTRAIT_CROPS,
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
@@ -64,6 +66,9 @@ import { FormContainer } from 'components/form/FormContainer';
 import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
 import { FormButtonContainer } from 'components/form/FormButtonContainer';
+import { selectCollectionType } from 'selectors/frontsSelectors';
+import { Criteria } from 'types/Grid';
+
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -81,6 +86,7 @@ interface ComponentProps extends ContainerProps {
   coverCardTabletImage?: ImageData;
   size?: string;
   isEmailFronts?: boolean;
+  collectionType?: string;
 }
 
 type Props = ComponentProps &
@@ -91,6 +97,7 @@ type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
   frontId: string;
   change: (field: string, value: any) => void;
   slideshowHasAtLeastTwoImages: boolean;
+  criteria: Criteria;
 };
 
 const RowContainer = styled.div`
@@ -227,6 +234,7 @@ const RenderSlideshow = ({
   frontId,
   change,
   slideshowHasAtLeastTwoImages,
+  criteria,
 }: RenderSlideshowProps) => {
   const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
@@ -285,8 +293,7 @@ const RenderSlideshow = ({
               name={name}
               component={InputImage}
               small
-              // TO DO - will slideshows always be landscape?
-              criteria={landScapeCardImageCriteria}
+              criteria={criteria}
               frontId={frontId}
               isSelected={index === slideshowIndex}
               isInvalid={isInvalidCaptionLength(index)}
@@ -684,7 +691,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     criteria={
                       isEditionsMode
                         ? editionsCardImageCriteria
-                        : defaultCardTrailImageCriteria
+                        : this.determineCardCriteria()
                     }
                     frontId={frontId}
                     defaultImageUrl={
@@ -698,6 +705,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                     }
                     hasVideo={hasMainVideo}
                     onChange={this.handleImageChange}
+                    collectionType={this.props.collectionType}
                   />
                 </ImageCol>
                 <ToggleCol flex={2}>
@@ -793,6 +801,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                   frontId={frontId}
                   component={RenderSlideshow}
                   change={change}
+                  criteria={this.determineCardCriteria()}
                   slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
                 />
               </SlideshowRowContainer>
@@ -932,6 +941,16 @@ class FormComponent extends React.Component<Props, FormComponentState> {
    */
   private getHeadlineLabel = () =>
     this.props.snapType === 'html' ? 'Content' : 'Headline';
+
+  private determineCardCriteria = (): Criteria => {
+    const { collectionType } = this.props;
+    if (!SUPPORT_PORTRAIT_CROPS || !collectionType) {
+      return landScapeCardImageCriteria;
+    }
+    return COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collectionType)
+      ? portraitCardImageCriteria
+      : landScapeCardImageCriteria;
+  };
 }
 
 const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
@@ -1014,11 +1033,12 @@ const createMapStateToProps = () => {
     }
 
     const isEmailFronts = selectV2SubPath(state) === '/email';
+    const collectionId = (parentCollection && parentCollection.id) || null;
 
     return {
       articleExists: !!article,
       hasMainVideo: !!article && !!article.hasMainVideo,
-      collectionId: (parentCollection && parentCollection.id) || null,
+      collectionId,
       getLastUpdatedBy,
       snapType: article && article.snapType,
       initialValues: getInitialValuesForCardForm(article),
@@ -1045,6 +1065,9 @@ const createMapStateToProps = () => {
       coverCardTabletImage: valueSelector(state, 'coverCardTabletImage'),
       pickedKicker: !!article ? article.pickedKicker : undefined,
       isEmailFronts,
+      collectionType: collectionId
+        ? selectCollectionType(state, collectionId)
+        : undefined,
     };
   };
 };

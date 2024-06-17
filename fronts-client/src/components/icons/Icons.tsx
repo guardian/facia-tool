@@ -318,6 +318,28 @@ const WarningIcon = ({ fill = theme.colors.white, size = 'm' }: IconProps) => (
   </svg>
 );
 
+const CropIcon = ({
+  fill = theme.colors.greyDark,
+  size = 'xl',
+  title = null,
+}: IconProps) => (
+  <svg
+    width={mapSize(size)}
+    height={mapSize(size)}
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <title>{title}</title>
+    <path
+      fillRule="evenodd"
+      clipRule="evenodd"
+      d="M17 15h2V7c0-1.1-.9-2-2-2H9v2h8zM7 17V1H5v4H1v2h4v10c0 1.1.9 2 2 2h10v4h2v-4h4v-2z"
+      fill={fill}
+    />
+  </svg>
+);
+
 export {
   DownCaretIcon,
   RubbishBinIcon,
@@ -334,4 +356,5 @@ export {
   VideoIcon,
   DragHandleIcon as DragIcon,
   WarningIcon,
+  CropIcon,
 };

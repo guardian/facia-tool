@@ -34,6 +34,7 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import PageViewDataWrapper from '../../PageViewDataWrapper';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { getPaths } from 'util/paths';
+import { getMaybeDimensionsFromWidthAndHeight } from 'util/validateImageSrc';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -131,6 +132,8 @@ interface ArticleBodyProps {
   canShowPageViewData: boolean;
   frontId: string;
   collectionId?: string;
+  imageSrcWidth?: string;
+  imageSrcHeight?: string;
 }
 
 const articleBodyDefault = React.memo(
@@ -176,10 +179,21 @@ const articleBodyDefault = React.memo(
     collectionId,
     newspaperPageNumber,
     promotionMetric,
+    imageSrcWidth,
+    imageSrcHeight,
   }: ArticleBodyProps) => {
     const displayByline = size === 'default' && showByline && byline;
     const now = Date.now();
     const paths = urlPath ? getPaths(urlPath) : undefined;
+
+    const thumbnailDims = getMaybeDimensionsFromWidthAndHeight(
+      imageSrcWidth,
+      imageSrcHeight
+    );
+    const thumbnailIsPortrait =
+      !!imageReplace &&
+      thumbnailDims &&
+      thumbnailDims.height > thumbnailDims.width;
 
     return (
       <>
@@ -294,6 +308,7 @@ const articleBodyDefault = React.memo(
                   imageHide={imageHide}
                   url={thumbnail}
                   isDraggingImageOver={isDraggingImageOver}
+                  isPortrait={thumbnailIsPortrait}
                 >
                   {cutoutThumbnail ? (
                     <ThumbnailCutout src={cutoutThumbnail} />

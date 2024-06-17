@@ -213,7 +213,7 @@ describe('Validate images', () => {
         ).then(
           (err) => done.fail(err.toString()),
           (err) => {
-            expect(err.message).toMatch(/does not have a valid crop/i);
+            expect(err.message).toMatch(/does not have any valid crops/i);
             done();
           }
         );
@@ -242,13 +242,13 @@ describe('Validate images', () => {
           {
             minWidth: 100,
             maxWidth: 1000,
-            widthAspectRatio: 5,
+            widthAspectRatio: 7,
             heightAspectRatio: 4,
           }
         ).then(
           (err) => done.fail(err.toString()),
           (err) => {
-            expect(err.message).toMatch(/does not have a valid crop/i);
+            expect(err.message).toMatch(/does not have a valid 7:4 crop/i);
             done();
           }
         );
@@ -311,13 +311,13 @@ describe('Validate images', () => {
         ).then(
           (err) => done.fail(err.toString()),
           (err) => {
-            expect(err.message).toMatch(/does not have a valid crop/i);
+            expect(err.message).toMatch(/does not have any valid crops/i);
             done();
           }
         );
       });
 
-      it("fails if crops don't respect criteria", (done) => {
+      it("fails if crops don't respect criteria with an aspect ratio", (done) => {
         ImageMock.defaultWidth = 140;
         ImageMock.defaultHeight = 140;
         grid.gridInstance.getImage = () =>
@@ -348,7 +348,41 @@ describe('Validate images', () => {
         ).then(
           (err) => done.fail(err.toString()),
           (err) => {
-            expect(err.message).toMatch(/does not have a valid crop/i);
+            expect(err.message).toMatch(/does not have a valid 5:4 crop/i);
+            done();
+          }
+        );
+      });
+      it("fails if crops don't respect criteria without an aspect ration", (done) => {
+        ImageMock.defaultWidth = 140;
+        ImageMock.defaultHeight = 140;
+        grid.gridInstance.getImage = () =>
+          Promise.resolve({
+            data: {
+              exports: [
+                {
+                  id: 'image_crop',
+                  assets: [
+                    { dimensions: { width: 900, height: 100 } },
+                    { dimensions: { width: 500, height: 10 } },
+                    { dimensions: { width: 50, height: 1 } },
+                  ],
+                },
+              ],
+            },
+          });
+
+        validateImageSrc(
+          'http://grid.co.uk/1234567890123456789012345678901234567890',
+          'front',
+          {
+            minWidth: 1000,
+            maxWidth: 2000,
+          }
+        ).then(
+          (err) => done.fail(err.toString()),
+          (err) => {
+            expect(err.message).toMatch(/does not have any valid crops/i);
             done();
           }
         );

@@ -31,37 +31,11 @@ import {
   portraitCardImageCriteria,
 } from 'constants/image';
 import ImageDragIntentIndicator from 'components/image/ImageDragIntentIndicator';
+import { ImageInputImageContainer as ImageContainer } from 'components/image/ImageInputImageContainer';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from '../../selectors/pathSelectors';
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { error } from '../../styleConstants';
-
-// assuming any portrait image (ie height>width)
-// is in the 4:5 ratio for purposes of styling
-// the image container
-const ImageContainer = styled.div<{
-  small?: boolean;
-  portrait?: boolean;
-}>`
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  width: 100%;
-  max-width: ${(props) => !props.small && '180px'};
-  ${({ small }) =>
-    small &&
-    `min-width: 50px;
-    padding: 40%;`}
-  height: ${(props) => (props.small ? '0' : '115px')};
-  transition: background-color 0.15s;
-
-  ${({ portrait, small }) =>
-    portrait &&
-    `
-    width: ${small ? 50 : 200}px;
-    height: ${small ? 62 : 250}px;
-  `}
-`;
 
 const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
   background-color: ${({ small }) =>
@@ -242,6 +216,7 @@ export interface InputImageContainerProps {
   replaceImage: boolean;
   isSelected?: boolean;
   isInvalid?: boolean;
+  collectionType?: string;
 }
 
 type ComponentProps = InputImageContainerProps &
@@ -272,7 +247,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
     const { src } = valueRecord ?? {};
     const imageSrc = typeof src === 'string' ? src : '';
-
 
     this.state = {
       isDragging: false,

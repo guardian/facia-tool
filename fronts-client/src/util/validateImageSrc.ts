@@ -67,12 +67,17 @@ function getSuitableImageDetails(
   id: string,
   desired: Criteria
 ): Promise<ImageDescription> {
+  const { maxWidth, minWidth, widthAspectRatio, heightAspectRatio } = desired;
   if (crops.length === 0) {
     return Promise.reject(
-      new Error('The image does not have a valid crop on the Grid')
+      new Error(
+        typeof widthAspectRatio === 'number' &&
+        typeof heightAspectRatio === 'number'
+          ? `The image does not have a valid ${widthAspectRatio}:${heightAspectRatio} crop on the Grid`
+          : `The image does not have any valid crops on the Grid`
+      )
     );
   }
-  const { maxWidth, minWidth } = desired;
   const assets = sortBy(
     [crops[0].master]
       .concat(crops[0].assets)
@@ -115,39 +120,21 @@ function validateActualImage(image: ImageDescription, frontId?: string) {
     const {
       width = 0,
       height = 0,
-      ratio = 0,
+      ratio,
       criteria,
       path,
       origin,
       thumb,
     } = image;
-    const {
-      maxWidth,
-      minWidth,
-      widthAspectRatio,
-      heightAspectRatio,
-    }: Criteria = criteria || {};
-    const criteriaRatio =
-      widthAspectRatio && heightAspectRatio
-        ? widthAspectRatio / heightAspectRatio
-        : NaN;
 
-    if (maxWidth && maxWidth < width) {
-      return reject(
-        new Error(`Images cannot be more than ${maxWidth} pixels wide`)
+    if (criteria) {
+      const dimensionValidation = validateDimensions(
+        { width, height, ratio },
+        criteria
       );
-    } else if (minWidth && minWidth > width) {
-      return reject(
-        new Error(`Images cannot be less than ${minWidth} pixels wide`)
-      );
-    } else if (criteriaRatio && Math.abs(criteriaRatio - ratio) > 0.01) {
-      return reject(
-        new Error(
-          `Images must have a ${widthAspectRatio || ''}:${
-            heightAspectRatio || ''
-          } aspect ratio`
-        )
-      );
+      if (dimensionValidation.matchesCriteria === false) {
+        return reject(new Error(dimensionValidation.reason));
+      }
     }
     if (image.origin) {
       return recordUsage(image.origin.split('/').slice(-1)[0], frontId).then(
@@ -185,11 +172,31 @@ function stripImplementationDetails(
             new Error(`There was a problem contacting The Grid - ${e.message}`)
           )
         )
-        .then((gridImageJson: string) =>
-          filterGridCrops(gridImageJson, maybeFromGrid, criteria)
-        )
-        .then((crops: Crop[]) =>
-          getSuitableImageDetails(crops, maybeFromGrid.id, criteria || {})
+        .then((gridImageJson: string) => ({
+          crops: filterGridCrops(gridImageJson, maybeFromGrid, criteria),
+          areNoCropsOfAnySize:
+            filterGridCrops(gridImageJson, maybeFromGrid).length === 0,
+        }))
+        .then(
+          ({
+            crops,
+            areNoCropsOfAnySize,
+          }: {
+            crops: Crop[];
+            areNoCropsOfAnySize: boolean;
+          }) => {
+            if (crops.length === 0 && areNoCropsOfAnySize) {
+              return Promise.reject(
+                new Error('The image does not have any valid crops on the Grid')
+              );
+            }
+
+            return getSuitableImageDetails(
+              crops,
+              maybeFromGrid.id,
+              criteria || {}
+            );
+          }
         )
         .then((asset: ImageDescription) =>
           resolve({
@@ -299,6 +306,56 @@ function validateImageEvent(
   );
 }
 
+const getMaybeDimensionsFromWidthAndHeight = (
+  imageSrcWidth?: string | number,
+  imageSrcHeight?: string | number
+) => {
+  if (!imageSrcHeight || !imageSrcWidth) {
+    return undefined;
+  }
+  const height = Number(imageSrcHeight);
+  const width = Number(imageSrcWidth);
+  return isNaN(height) || isNaN(width) ? undefined : { width, height };
+};
+
+function validateDimensions(
+  dimensions: { width: number; height: number; ratio?: number },
+  criteria: Criteria
+): { matchesCriteria: true } | { matchesCriteria: false; reason: string } {
+  const { width, height } = dimensions;
+  const { maxWidth, minWidth, widthAspectRatio, heightAspectRatio } = criteria;
+  const criteriaRatio =
+    widthAspectRatio && heightAspectRatio
+      ? widthAspectRatio / heightAspectRatio
+      : NaN;
+
+  // if validating a mediaItem with defined ratio value, use that instead of
+  // calculating from width and height
+  const ratio =
+    typeof dimensions.ratio == 'number' ? dimensions.ratio : width / height;
+
+  if (maxWidth && maxWidth < width) {
+    return {
+      matchesCriteria: false,
+      reason: `Images cannot be more than ${maxWidth} pixels wide`,
+    };
+  } else if (minWidth && minWidth > width) {
+    return {
+      matchesCriteria: false,
+      reason: `Images cannot be less than ${minWidth} pixels wide`,
+    };
+  } else if (criteriaRatio && Math.abs(criteriaRatio - ratio) > 0.01) {
+    return {
+      matchesCriteria: false,
+      reason: `Images must have a ${widthAspectRatio || ''}:${
+        heightAspectRatio || ''
+      } aspect ratio`,
+    };
+  }
+
+  return { matchesCriteria: true };
+}
+
 const imageDropTypes = [
   ...gridDropTypes,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
@@ -316,4 +373,6 @@ export {
   validateImageSrc,
   validateImageEvent,
   validateMediaItem,
+  validateDimensions,
+  getMaybeDimensionsFromWidthAndHeight,
 };

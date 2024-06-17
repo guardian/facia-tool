@@ -5,6 +5,7 @@ import Article from 'components/card/article/ArticleCard';
 import type { State } from 'types/State';
 import { createSelectCardType } from 'selectors/cardSelectors';
 import {
+  selectCard,
   selectExternalArticleFromCard,
   selectSupportingArticleCount,
 } from 'selectors/shared';
@@ -17,12 +18,18 @@ import {
 } from 'actions/Cards';
 import {
   dragEventHasImageData,
+  getMaybeDimensionsFromWidthAndHeight,
+  validateDimensions,
   validateImageEvent,
   ValidationResponse,
 } from 'util/validateImageSrc';
 import {
   editionsCardImageCriteria,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
+  SUPPORT_PORTRAIT_CROPS,
+  COLLECTIONS_USING_PORTRAIT_TRAILS,
+  landScapeCardImageCriteria,
+  portraitCardImageCriteria,
   defaultCardTrailImageCriteria,
 } from 'constants/image';
 import Sublinks from '../FrontsEdit/CollectionComponents/Sublinks';
@@ -46,6 +53,9 @@ import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { RecipeCard } from 'components/card/recipe/RecipeCard';
 import { ChefCard } from 'components/card/chef/ChefCard';
 import { ChefMetaForm } from '../form/ChefMetaForm';
+import { selectCollectionType } from 'selectors/frontsSelectors';
+import { Criteria } from 'types/Grid';
+import { Card as CardType } from 'types/Collection';
 
 export const createCardId = (id: string) => `collection-item-${id}`;
 
@@ -104,6 +114,8 @@ type CardContainerProps = ContainerProps & {
   editMode: EditMode;
   isLive?: boolean;
   pillarId?: string;
+  collectionType?: string;
+  selectOtherCard: { (uuid: string): CardType };
 };
 
 class Card extends React.Component<CardContainerProps> {
@@ -336,17 +348,34 @@ class Card extends React.Component<CardContainerProps> {
     e.preventDefault();
     e.persist();
 
-    // Our drag is a copy event, from another Card
-    const cardUuid = e.dataTransfer.getData(DRAG_DATA_CARD_IMAGE_OVERRIDE);
-    if (cardUuid) {
-      this.props.copyCardImageMeta(cardUuid, this.props.uuid);
-      return;
-    }
-
     const isEditionsMode = this.props.editMode === 'editions';
     const imageCriteria = isEditionsMode
       ? editionsCardImageCriteria
-      : defaultCardTrailImageCriteria;
+      : this.determineCardCriteria();
+
+    // Our drag is a copy event, from another Card
+    const cardUuid = e.dataTransfer.getData(DRAG_DATA_CARD_IMAGE_OVERRIDE);
+    if (cardUuid) {
+      if (!isEditionsMode) {
+        // check dragged image matches this card's collection's criteria.
+        const validationForDraggedImage = this.checkDraggedImage(
+          cardUuid,
+          imageCriteria
+        );
+        if (!validationForDraggedImage.matchesCriteria) {
+          // @todo - if they don't match, check grid for a matching
+          // crop of the image and use that if present?
+          // @todo handle error
+          alert(
+            `Cannot copy that image to this card: ${validationForDraggedImage.reason}`
+          );
+          return;
+        }
+      }
+
+      this.props.copyCardImageMeta(cardUuid, this.props.uuid);
+      return;
+    }
 
     // Our drag contains Grid data
     validateImageEvent(e, this.props.frontId, imageCriteria)
@@ -355,11 +384,54 @@ class Card extends React.Component<CardContainerProps> {
       )
       .catch(alert);
   };
+
+  private determineCardCriteria = (): Criteria => {
+    const { collectionType, parentId } = this.props;
+    // @todo - how best to handle crop drags to a clipboard card?
+    // Using the default (landscape) for now.
+    // But, if you set a replacement (lanscape) trail on a clipboard
+    // item, that item can't be dragged to a portrit collection.
+    // Ideally, handleImageDrop will check if the Image has a matching
+    // crop of the required criteria and use that instead of the crop
+    // being dragged (or the crop on the card being dragged) onto the card
+    if (parentId === 'clipboard') {
+      return defaultCardTrailImageCriteria;
+    }
+
+    if (!SUPPORT_PORTRAIT_CROPS || !collectionType) {
+      return landScapeCardImageCriteria;
+    }
+
+    return COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collectionType)
+      ? portraitCardImageCriteria
+      : landScapeCardImageCriteria;
+  };
+
+  private checkDraggedImage = (
+    cardUuid: string,
+    imageCriteria: Criteria
+  ): ReturnType<typeof validateDimensions> => {
+    // check dragged image matches this card's collection's criteria.
+    const cardImageWasDraggedFrom = this.props.selectOtherCard(cardUuid);
+
+    const draggedImageDims = getMaybeDimensionsFromWidthAndHeight(
+      cardImageWasDraggedFrom?.meta?.imageSrcWidth,
+      cardImageWasDraggedFrom?.meta?.imageSrcHeight
+    );
+
+    if (!draggedImageDims) {
+      return {
+        matchesCriteria: false,
+        reason: 'no replacement image found',
+      };
+    }
+    return validateDimensions(draggedImageDims, imageCriteria);
+  };
 }
 
 const createMapStateToProps = () => {
   const selectType = createSelectCardType();
-  return (state: State, { uuid, frontId }: ContainerProps) => {
+  return (state: State, { uuid, frontId, collectionId }: ContainerProps) => {
     const maybeExternalArticle = selectExternalArticleFromCard(state, uuid);
     return {
       type: selectType(state, uuid),
@@ -368,6 +440,8 @@ const createMapStateToProps = () => {
       pillarId: maybeExternalArticle && maybeExternalArticle.pillarId,
       numSupportingArticles: selectSupportingArticleCount(state, uuid),
       editMode: selectEditMode(state),
+      collectionType: collectionId && selectCollectionType(state, collectionId),
+      selectOtherCard: (uuid: string) => selectCard(state, uuid),
     };
   };
 };

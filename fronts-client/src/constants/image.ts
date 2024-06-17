@@ -1,3 +1,10 @@
+import pageConfig from 'util/extractConfigFromPage';
+
+export const SUPPORT_PORTRAIT_CROPS =
+  pageConfig?.userData?.featureSwitches.find(
+    (feature) => feature.key === 'support-portrait-crops'
+  )?.enabled || false;
+
 export const landScapeCardImageCriteria = {
   minWidth: 400,
   widthAspectRatio: 5,
@@ -9,6 +16,9 @@ export const portraitCardImageCriteria = {
   widthAspectRatio: 4,
   heightAspectRatio: 5,
 };
+
+// @todo - add the right collection type when it exists
+export const COLLECTIONS_USING_PORTRAIT_TRAILS: string[] = [];
 
 export const defaultCardTrailImageCriteria = landScapeCardImageCriteria;
 

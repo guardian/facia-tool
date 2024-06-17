@@ -33,6 +33,11 @@ import { theme } from 'constants/theme';
 import Button from 'components/inputs/ButtonDefault';
 import { updateCollection as updateCollectionAction } from '../actions/Collections';
 import { isMode } from '../selectors/pathSelectors';
+import {
+  COLLECTIONS_USING_PORTRAIT_TRAILS,
+  SUPPORT_PORTRAIT_CROPS,
+} from 'constants/image';
+import { CropIcon } from './icons/Icons';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
   `front-${frontId}-collection-${id}`;
@@ -254,6 +259,12 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
     const itemCount = articleIds ? articleIds.length : 0;
     const targetedTerritory = collection ? collection.targetedTerritory : null;
     const { displayName } = this.state;
+
+    const usePortrait =
+      SUPPORT_PORTRAIT_CROPS &&
+      collection?.type &&
+      COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collection?.type);
+
     return (
       <CollectionContainer
         id={collection && createCollectionId(collection, frontId)}
@@ -264,6 +275,9 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       >
         <CollectionHeadingSticky tabIndex={-1}>
           <CollectionHeadingInner>
+            {usePortrait && (
+              <CropIcon title={'uses portrait (5:4) image crops'} />
+            )}
             <CollectionHeadlineWithConfigContainer>
               {this.state.editingContainerName ? (
                 <CollectionHeaderInput
