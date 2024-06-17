@@ -15,6 +15,8 @@ import { ChefFeedItem } from './ChefFeedItem';
 import { RadioButton, RadioGroup } from '../inputs/RadioButtons';
 import { Dispatch } from 'types/Store';
 import debounce from 'lodash/debounce';
+import { IPagination } from 'lib/createAsyncResourceBundle';
+import Pagination from './Pagination';
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
@@ -33,6 +35,15 @@ const FixedContentContainer = styled.div`
 interface Props {
   rightHandContainer?: React.ReactElement<any>;
 }
+
+const PaginationContainer = styled.div`
+  margin-left: auto;
+`;
+
+const TopOptions = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
 
 enum FeedType {
   recipes = 'recipeFeed',
@@ -56,11 +67,21 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     chefSelectors.selectLastFetchOrder(state)
   );
 
+  const [page, setPage] = useState(1);
+
   const debouncedRunSearch = debounce(() => runSearch(), 750);
 
   useEffect(() => {
-    debouncedRunSearch();
-  }, [selectedOption, searchText]);
+    if (page > 1) runSearch(page);
+    else debouncedRunSearch();
+  }, [selectedOption, searchText, page]);
+
+  //const chefsPagination = IPagination | null;
+  const chefsPagination: IPagination | null = useSelector((state: State) =>
+    chefSelectors.selectPagination(state)
+  );
+
+  const hasPages = !!(chefsPagination && chefsPagination.totalPages > 1);
 
   const getParams = (query: string) => ({
     'web-title': query,
@@ -70,10 +91,10 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   });
 
   const runSearch = useCallback(
-    (page = 1) => {
-      const fetch =
-        selectedOption === FeedType.chefs ? searchForChefs : () => {};
-      fetch({
+    (page: number = 1) => {
+      const fetch = selectedOption === FeedType.chefs ? fetchChefs : () => {};
+      fetch(
+        {
         ...getParams(searchText),
         page,
       });
@@ -99,7 +120,11 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
       <InputContainer>
         <TextInputContainer>
           <TextInput
-            placeholder="Search recipes"
+            placeholder={
+              selectedOption === FeedType.recipes
+                ? 'Search recipes'
+                : 'Search chefs'
+            }
             displaySearchIcon
             onChange={(event) => {
               setSearchText(event.target.value);
@@ -109,22 +134,33 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
         </TextInputContainer>
         <ClipboardHeader />
       </InputContainer>
-      <RadioGroup>
-        <RadioButton
-          checked={selectedOption === FeedType.recipes}
-          onChange={() => setSelectedOption(FeedType.recipes)}
-          label="Recipes"
-          inline
-          name="recipeFeed"
-        />
-        <RadioButton
-          checked={selectedOption === FeedType.chefs}
-          onChange={() => setSelectedOption(FeedType.chefs)}
-          label="Chefs"
-          inline
-          name="chefFeed"
-        />
-      </RadioGroup>
+      <TopOptions>
+        <RadioGroup>
+          <RadioButton
+            checked={selectedOption === FeedType.recipes}
+            onChange={() => setSelectedOption(FeedType.recipes)}
+            label="Recipes"
+            inline
+            name="recipeFeed"
+          />
+          <RadioButton
+            checked={selectedOption === FeedType.chefs}
+            onChange={() => setSelectedOption(FeedType.chefs)}
+            label="Chefs"
+            inline
+            name="chefFeed"
+          />
+        </RadioGroup>
+        {selectedOption === FeedType.chefs && chefsPagination && hasPages && (
+          <PaginationContainer>
+            <Pagination
+              pageChange={(page) => setPage(page)}
+              currentPage={chefsPagination.currentPage}
+              totalPages={chefsPagination.totalPages}
+            />
+          </PaginationContainer>
+        )}
+      </TopOptions>
       <FixedContentContainer>
         <SearchResultsHeadingContainer>
           <SearchTitle>
