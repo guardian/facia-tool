@@ -5,7 +5,7 @@ import { State } from 'types/State';
 import { createSelector } from 'reselect';
 import { stripHtml } from 'util/sanitizeHTML';
 import { ThunkResult } from 'types/Store';
-import { previewCapi, liveCapi } from 'services/capiQuery';
+import { liveCapi } from 'services/capiQuery';
 import { Tag } from '../types/Capi';
 
 const sanitizeTag = (tag: Tag) => ({
@@ -20,9 +20,7 @@ const bundle = createAsyncResourceBundle<Chef>('chefs', {
 
 const fetchResourceOrResults = async (
   capiService: typeof liveCapi,
-  params: object,
-  isResource: boolean,
-  fetchFromPreview: boolean = false
+  params: Record<string, string[] | string | number>
 ) => {
   const capiEndpoint = capiService.chefs;
   const { response } = await capiEndpoint(params);
@@ -37,18 +35,17 @@ const fetchResourceOrResults = async (
   };
 };
 
-export const createFetch =
-  (actions: typeof bundle.actions, isPreview: boolean = false) =>
-  (params: object, isResource: boolean): ThunkResult<void> =>
-  async (dispatch, getState) => {
-    dispatch(actions.fetchStart());
+export const fetchChefsById =
+  (tagIds: string[], page = 1, pageSize = 20): ThunkResult<void> =>
+  async (dispatch) => {
+    dispatch(actions.fetchStart(tagIds));
     try {
-      const resultData = await fetchResourceOrResults(
-        isPreview ? previewCapi : liveCapi,
-        params,
-        isResource,
-        isPreview
-      );
+      const params = {
+        ids: tagIds,
+        page,
+        'page-size': pageSize,
+      };
+      const resultData = await fetchResourceOrResults(liveCapi, params);
       if (resultData) {
         dispatch(
           actions.fetchSuccess(resultData.results.map(sanitizeTag), {
@@ -63,8 +60,6 @@ export const createFetch =
       dispatch(actions.fetchError(e));
     }
   };
-
-export const fetchLive = createFetch(bundle.actions);
 
 const selectChefDataFromCardId = (
   state: State,
@@ -93,6 +88,7 @@ const selectChefFromCard = createSelector(
   }
 );
 
+export const actionNames = bundle.actionNames;
 export const actions = bundle.actions;
 export const reducer = bundle.reducer;
 export const selectors = {

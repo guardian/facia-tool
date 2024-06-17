@@ -68,6 +68,7 @@ import { updateCollectionStrategy } from 'strategies/update-collection';
 import { getPageViewDataForCollection } from 'actions/PageViewData';
 import { isMode } from 'selectors/pathSelectors';
 import { groupBy, uniqBy } from 'lodash';
+import { fetchChefsById } from 'bundles/chefsBundle';
 
 const articlesInCollection = createSelectAllArticlesInCollection();
 
@@ -397,7 +398,10 @@ const fetchCardReferencedEntities =
     }
 
     if (cardsByCardType.chef) {
-      // Todo: fetch our chefs!
+      const chefsPromise = dispatch(
+        fetchChefsById(cardsByCardType.chef.map((chef) => chef.id))
+      );
+      promises.push(chefsPromise);
     }
 
     await Promise.all(promises);

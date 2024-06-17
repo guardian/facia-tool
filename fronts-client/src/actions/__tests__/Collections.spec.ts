@@ -455,7 +455,6 @@ describe('Collection actions', () => {
       });
       await store.dispatch(action);
       const actions = store.getActions();
-      console.log(actions[1]);
       expect(actions[0]).toEqual(fetchStartAction);
       expect(actions[1].type).toEqual(fetchCompleteActionType);
     };
