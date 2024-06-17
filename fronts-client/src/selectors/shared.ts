@@ -321,7 +321,7 @@ const createSelectCardsInCollectionGroup = () => {
 };
 
 const createSelectCardsInCollection = () => {
-  const selectArticlesInCollectionGroups = createSelectCardsInCollectionGroup();
+  const selectCardsInCollectionGroups = createSelectCardsInCollectionGroup();
   return (
     state: State,
     {
@@ -334,15 +334,15 @@ const createSelectCardsInCollection = () => {
       includeSupportingArticles?: boolean;
     }
   ) =>
-    selectArticlesInCollectionGroups(state, {
+    selectCardsInCollectionGroups(state, {
       collectionId,
       collectionSet,
       includeSupportingArticles,
     });
 };
 
-const createSelectAllArticlesInCollection = () => {
-  const articlesInCollection = createSelectCardsInCollection();
+const createSelectAllCardsInCollection = () => {
+  const selectCardsInCollection = createSelectCardsInCollection();
 
   return (state: State, collectionIds: string[]) =>
     collectionIds.reduce(
@@ -351,7 +351,7 @@ const createSelectAllArticlesInCollection = () => {
         ...Object.values(cardSets).reduce(
           (acc1, collectionSet) => [
             ...acc1,
-            ...articlesInCollection(state, {
+            ...selectCardsInCollection(state, {
               collectionId: id,
               collectionSet,
             }),
@@ -505,7 +505,7 @@ export {
   selectCardsFromRootState,
   createSelectCardsInCollectionGroup,
   createSelectCardsInCollection,
-  createSelectAllArticlesInCollection,
+  createSelectAllCardsInCollection,
   createSelectGroupArticles,
   createSelectSupportingArticles,
   createSelectCollection,

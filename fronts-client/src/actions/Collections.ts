@@ -19,7 +19,7 @@ import {
 } from 'selectors/configSelectors';
 import {
   createSelectGroupArticles,
-  createSelectAllArticlesInCollection,
+  createSelectAllCardsInCollection,
 } from 'selectors/shared';
 import {
   actions as externalArticleActions,
@@ -70,7 +70,7 @@ import { isMode } from 'selectors/pathSelectors';
 import { groupBy, uniqBy } from 'lodash';
 import { fetchChefsById } from 'bundles/chefsBundle';
 
-const articlesInCollection = createSelectAllArticlesInCollection();
+const articlesInCollection = createSelectAllCardsInCollection();
 
 function fetchStaleCollections(
   collectionIds: string[]

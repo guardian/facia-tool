@@ -50,7 +50,7 @@ interface ContainerProps {
 
 type Props = ContainerProps & {
   collection: Collection | undefined;
-  articleIds?: string[];
+  cardIds?: string[];
   headlineContent: React.ReactNode;
   metaContent: React.ReactNode;
   children: React.ReactNode;
@@ -245,7 +245,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       id,
       collection,
       frontId,
-      articleIds,
+      cardIds,
       headlineContent,
       metaContent,
       isUneditable,
@@ -256,7 +256,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       handleBlur,
       isEditions,
     }: Props = this.props;
-    const itemCount = articleIds ? articleIds.length : 0;
+    const itemCount = cardIds ? cardIds.length : 0;
     const targetedTerritory = collection ? collection.targetedTerritory : null;
     const { displayName } = this.state;
 
@@ -423,11 +423,11 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 }
 
 const createMapStateToProps = () => {
-  const selectArticlesInCollection = createSelectCardsInCollection();
+  const selectCardsInCollection = createSelectCardsInCollection();
   return (state: State, props: ContainerProps) => {
     return {
       collection: collectionSelectors.selectById(state, props.id),
-      articleIds: selectArticlesInCollection(state, {
+      cardIds: selectCardsInCollection(state, {
         collectionId: props.id,
         collectionSet: props.browsingStage,
         includeSupportingArticles: false,
