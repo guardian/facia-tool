@@ -71,6 +71,8 @@ import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
+import { selectCollectionType } from 'selectors/frontsSelectors';
+import { Criteria } from 'types/Grid';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
