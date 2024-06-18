@@ -92,9 +92,9 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
   const runSearch = useCallback(
     (page: number = 1) => {
-      const fetch = selectedOption === FeedType.chefs ? fetchChefs : () => {};
-      fetch(
-        {
+      const fetch =
+        selectedOption === FeedType.chefs ? searchForChefs : () => {};
+      fetch({
         ...getParams(searchText),
         page,
       });
