@@ -72,7 +72,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   const debouncedRunSearch = debounce(() => runSearch(), 750);
 
   useEffect(() => {
-    if (page > 1) runSearch(page);
+    if (page > 1 && searchText.length === 0) runSearch(page);
     else debouncedRunSearch();
   }, [selectedOption, searchText, page]);
 
