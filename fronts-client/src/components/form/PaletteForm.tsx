@@ -159,8 +159,8 @@ export const PaletteItem = ({
 
 const PaletteSwatch = ({ colors }: { colors: string[] }) => (
   <PaletteContainer borderColor={colors[0]}>
-    {colors.map((color) => (
-      <PaletteColor key={color} color={color} />
+    {colors.map((color, index) => (
+      <PaletteColor key={`${color}-${index}`} color={color} />
     ))}
   </PaletteContainer>
 );

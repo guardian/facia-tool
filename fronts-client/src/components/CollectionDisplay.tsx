@@ -35,16 +35,10 @@ import { updateCollection as updateCollectionAction } from '../actions/Collectio
 import { isMode } from '../selectors/pathSelectors';
 import {
   COLLECTIONS_USING_PORTRAIT_TRAILS,
-<<<<<<< HEAD
   portraitCardImageCriteria,
   SUPPORT_PORTRAIT_CROPS,
 } from 'constants/image';
 import { AspectRatioBadge } from './icons/AspectRatioBadge';
-=======
-  SUPPORT_PORTRAIT_CROPS,
-} from 'constants/image';
-import { CropIcon } from './icons/Icons';
->>>>>>> bcec3449ad (set criteria by collection type, style portrait thumbnails, validate on drop (#1591))
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
   `front-${frontId}-collection-${id}`;
@@ -282,13 +276,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       >
         <CollectionHeadingSticky tabIndex={-1}>
           <CollectionHeadingInner>
-<<<<<<< HEAD
             {usePortrait && <AspectRatioBadge {...portraitCardImageCriteria} />}
-=======
-            {usePortrait && (
-              <CropIcon title={'uses portrait (5:4) image crops'} />
-            )}
->>>>>>> bcec3449ad (set criteria by collection type, style portrait thumbnails, validate on drop (#1591))
             <CollectionHeadlineWithConfigContainer>
               {this.state.editingContainerName ? (
                 <CollectionHeaderInput

@@ -39,13 +39,9 @@ interface FormProps {
   chefWithoutOverrides: Chef | undefined;
   size: CardSizes;
   onCancel: () => void;
-<<<<<<< HEAD
   onSave: (meta: ChefCardMeta) => void;
   openPaletteModal: () => void;
   currentPalette: Palette;
-=======
-  onSave: (meta: ChefCardFormData) => void;
->>>>>>> 22a334ddb3 (linting fix)
 }
 
 type ComponentProps = FormProps &
