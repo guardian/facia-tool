@@ -7,9 +7,8 @@ const TEXTINPUT_HEIGHT = 30;
 
 const smallPortaitStyle = `
   width: ${SMALL_PORTRAIT_WIDTH}px;
-  height: ${Math.floor(SMALL_PORTRAIT_WIDTH * PORTRAIT_RATIO)}px;
+  height: 100%;
   padding: 40% 0;
-  min-width: 50px;
   margin: 0 auto;
 `;
 
@@ -60,5 +59,6 @@ export const ImageInputImageContainer = styled.div<{
   flex-direction: column;
   position: relative;
   transition: background-color 0.15s;
+  max-width: 100%;
   ${getVariableImageContainerStyle}
 `;

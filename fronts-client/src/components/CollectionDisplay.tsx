@@ -35,9 +35,10 @@ import { updateCollection as updateCollectionAction } from '../actions/Collectio
 import { isMode } from '../selectors/pathSelectors';
 import {
   COLLECTIONS_USING_PORTRAIT_TRAILS,
+  portraitCardImageCriteria,
   SUPPORT_PORTRAIT_CROPS,
 } from 'constants/image';
-import { CropIcon } from './icons/Icons';
+import { AspectRatioBadge } from './icons/AspectRatioBadge';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
   `front-${frontId}-collection-${id}`;
@@ -275,9 +276,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       >
         <CollectionHeadingSticky tabIndex={-1}>
           <CollectionHeadingInner>
-            {usePortrait && (
-              <CropIcon title={'uses portrait (5:4) image crops'} />
-            )}
+            {usePortrait && <AspectRatioBadge {...portraitCardImageCriteria} />}
             <CollectionHeadlineWithConfigContainer>
               {this.state.editingContainerName ? (
                 <CollectionHeaderInput

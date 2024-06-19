@@ -53,7 +53,7 @@ const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
   text-shadow: 0 0 2px black;
 `;
 
-const ImageComponent = styled.div<{ small: boolean }>`
+const ImageComponent = styled.div<{ small: boolean; portrait: boolean }>`
   ${({ small }) =>
     small
       ? `position: absolute;
@@ -63,6 +63,14 @@ const ImageComponent = styled.div<{ small: boolean }>`
     height: 100%;`
       : 'position: relative;'}
   background-size: cover;
+  ${({ small, portrait }) =>
+    small && portrait
+      ? `
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    `
+      : ``}
   flex-grow: 1;
   cursor: grab;
 `;
@@ -325,6 +333,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
               onDragStart={this.handleDragStart}
               onDrop={this.handleDrop}
               small={small}
+              portrait={portraitImage}
             >
               {hasImage ? (
                 <>
