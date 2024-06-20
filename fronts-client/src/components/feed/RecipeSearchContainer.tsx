@@ -103,17 +103,13 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   );
 
   const renderTheFeed = () => {
-    /*To fix duplicate keys error for chefs. example "profile/alex-clapham" is present twice which throws error and makes Fronts work wierdly.
-      TODO - to check if this is viable solution means removing duplicate value or we can fix at source level (in database) to not to have any contributor repeated?
-    */
-    const uniqueChefsData = Array.from(new Set(chefSearchIds));
     switch (selectedOption) {
       case FeedType.recipes:
         return Object.values(recipes).map((recipe) => (
           <RecipeFeedItem key={recipe.id} recipe={recipe} />
         ));
       case FeedType.chefs:
-        return uniqueChefsData.map((chefId) => (
+        return chefSearchIds.map((chefId) => (
           <ChefFeedItem key={chefId} id={chefId} />
         ));
     }
