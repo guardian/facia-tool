@@ -70,7 +70,7 @@ import { isMode } from 'selectors/pathSelectors';
 import { groupBy, uniqBy } from 'lodash';
 import { fetchChefsById } from 'bundles/chefsBundle';
 
-const articlesInCollection = createSelectAllCardsInCollection();
+const selectAllCardsInCollection = createSelectAllCardsInCollection();
 
 function fetchStaleCollections(
   collectionIds: string[]
@@ -80,7 +80,7 @@ function fetchStaleCollections(
     const fetchedCollectionIds = await dispatch(
       getCollections(collectionIds, true)
     );
-    const prevArticleIds = articlesInCollection(
+    const prevArticleIds = selectAllCardsInCollection(
       prevState,
       fetchedCollectionIds
     );
