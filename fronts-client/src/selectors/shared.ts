@@ -282,14 +282,14 @@ const selectIncludeSupportingArticles = (
   }
 ) => includeSupportingArticles;
 
-const createSelectArticlesInCollectionGroup = () => {
+const createSelectCardsInCollectionGroup = () => {
   const selectCollectionStageGroups = createSelectCollectionStageGroups();
   return createShallowEqualResultSelector(
     selectCards,
     selectCollectionStageGroups,
     selectGroupName,
     selectIncludeSupportingArticles,
-    (cards, collectionGroups, groupName, includeSupportingArticles = true) => {
+    (cards, collectionGroups, groupName, includeSupportingCards = true) => {
       const groups = groupName
         ? [
             collectionGroups.find(({ id }) => id === groupName) || {
@@ -301,7 +301,7 @@ const createSelectArticlesInCollectionGroup = () => {
         (acc, group) => acc.concat(group.cards || []),
         [] as string[]
       );
-      if (!includeSupportingArticles) {
+      if (!includeSupportingCards) {
         return groupCardIds;
       }
       return groupCardIds.reduce((acc, id) => {
@@ -320,9 +320,8 @@ const createSelectArticlesInCollectionGroup = () => {
   );
 };
 
-const createSelectArticlesInCollection = () => {
-  const selectArticlesInCollectionGroups =
-    createSelectArticlesInCollectionGroup();
+const createSelectCardsInCollection = () => {
+  const selectCardsInCollectionGroups = createSelectCardsInCollectionGroup();
   return (
     state: State,
     {
@@ -335,15 +334,15 @@ const createSelectArticlesInCollection = () => {
       includeSupportingArticles?: boolean;
     }
   ) =>
-    selectArticlesInCollectionGroups(state, {
+    selectCardsInCollectionGroups(state, {
       collectionId,
       collectionSet,
       includeSupportingArticles,
     });
 };
 
-const createSelectAllArticlesInCollection = () => {
-  const articlesInCollection = createSelectArticlesInCollection();
+const createSelectAllCardsInCollection = () => {
+  const selectCardsInCollection = createSelectCardsInCollection();
 
   return (state: State, collectionIds: string[]) =>
     collectionIds.reduce(
@@ -352,7 +351,7 @@ const createSelectAllArticlesInCollection = () => {
         ...Object.values(cardSets).reduce(
           (acc1, collectionSet) => [
             ...acc1,
-            ...articlesInCollection(state, {
+            ...selectCardsInCollection(state, {
               collectionId: id,
               collectionSet,
             }),
@@ -504,9 +503,9 @@ export {
   selectExternalArticleFromCard,
   createSelectArticleFromCard,
   selectCardsFromRootState,
-  createSelectArticlesInCollectionGroup,
-  createSelectArticlesInCollection,
-  createSelectAllArticlesInCollection,
+  createSelectCardsInCollectionGroup,
+  createSelectCardsInCollection,
+  createSelectAllCardsInCollection,
   createSelectGroupArticles,
   createSelectSupportingArticles,
   createSelectCollection,

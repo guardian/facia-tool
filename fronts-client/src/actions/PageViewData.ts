@@ -7,7 +7,7 @@ import type { PageViewDataFromOphan, PageViewStory } from 'types/PageViewData';
 import type { DerivedArticle } from 'types/Article';
 import type { CardSets } from 'types/Collection';
 import {
-  createSelectArticlesInCollection,
+  createSelectCardsInCollection,
   createSelectArticleFromCard,
 } from 'selectors/shared';
 import pandaFetch from 'services/pandaFetch';
@@ -19,7 +19,7 @@ const intervalInMinutes = 10;
 export const PAGE_VIEW_DATA_RECEIVED = 'PAGE_VIEW_DATA_RECEIVED';
 export const PAGE_VIEW_DATA_REQUESTED = 'PAGE_VIEW_DATA_REQUESTED';
 
-const selectArticlesInCollection = createSelectArticlesInCollection();
+const selectArticlesInCollection = createSelectCardsInCollection();
 const selectArticleFromCard = createSelectArticleFromCard();
 
 const getPageViewDataForCollection = (

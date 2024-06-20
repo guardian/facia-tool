@@ -19,7 +19,7 @@ import {
 } from 'selectors/configSelectors';
 import {
   createSelectGroupArticles,
-  createSelectAllArticlesInCollection,
+  createSelectAllCardsInCollection,
 } from 'selectors/shared';
 import {
   actions as externalArticleActions,
@@ -48,16 +48,15 @@ import { Dispatch, ThunkResult } from 'types/Store';
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
-import { Stages, Collection, CardSets } from 'types/Collection';
+import { Stages, Collection, CardSets, Card } from 'types/Collection';
 import difference from 'lodash/difference';
-import { selectArticlesInCollections } from 'selectors/collection';
+import { selectCardsInCollections } from 'selectors/collection';
 import {
   editorOpenCollections,
   editorCloseCollections,
   editorCloseFormsForCollection,
 } from 'bundles/frontsUI';
 import flatten from 'lodash/flatten';
-import uniq from 'lodash/uniq';
 import { recordUnpublishedChanges } from 'actions/UnpublishedChanges';
 import { isFrontStale } from 'util/frontsUtils';
 import { selectVisibleArticles } from 'selectors/frontsSelectors';
@@ -68,8 +67,10 @@ import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
 import { updateCollectionStrategy } from 'strategies/update-collection';
 import { getPageViewDataForCollection } from 'actions/PageViewData';
 import { isMode } from 'selectors/pathSelectors';
+import { groupBy, uniqBy } from 'lodash';
+import { fetchChefsById } from 'bundles/chefsBundle';
 
-const articlesInCollection = createSelectAllArticlesInCollection();
+const selectAllCardsInCollection = createSelectAllCardsInCollection();
 
 function fetchStaleCollections(
   collectionIds: string[]
@@ -79,13 +80,13 @@ function fetchStaleCollections(
     const fetchedCollectionIds = await dispatch(
       getCollections(collectionIds, true)
     );
-    const prevArticleIds = articlesInCollection(
+    const prevArticleIds = selectAllCardsInCollection(
       prevState,
       fetchedCollectionIds
     );
 
     dispatch(
-      getArticlesForCollections(
+      fetchCardReferencedEntities(
         fetchedCollectionIds,
         // get article for *all* collecitonItemSets as it reduces complexity of
         // this code (finding which cardSets we need), and the overlap
@@ -313,15 +314,16 @@ function updateCollection(
 const fetchArticles =
   (articleIds: string[]): ThunkResult<Promise<void>> =>
   async (dispatch, getState) => {
-    const articleIdsWithoutSnaps = uniq(
-      articleIds.filter((id) => !id.match(/^snap/))
+    const uniqueArticleIdsWithoutSnaps = articleIds.filter(
+      (id) => !id.match(/^snap/)
     );
-    if (!articleIdsWithoutSnaps.length) {
+
+    if (!uniqueArticleIdsWithoutSnaps.length) {
       return;
     }
-    dispatch(externalArticleActions.fetchStart(articleIdsWithoutSnaps));
+    dispatch(externalArticleActions.fetchStart(uniqueArticleIdsWithoutSnaps));
     try {
-      const articles = await getArticlesBatched(articleIdsWithoutSnaps);
+      const articles = await getArticlesBatched(uniqueArticleIdsWithoutSnaps);
       const freshArticles = articles.filter((article) =>
         selectIsExternalArticleStale(
           getState(),
@@ -334,7 +336,7 @@ const fetchArticles =
         dispatch(externalArticleActions.fetchSuccess(freshArticles));
       }
       const remainingArticles = difference(
-        articleIdsWithoutSnaps,
+        uniqueArticleIdsWithoutSnaps,
         articles.map((_) => _.id)
       );
       if (remainingArticles.length) {
@@ -352,26 +354,57 @@ const fetchArticles =
     }
   };
 
-const getArticlesForCollections =
+/**
+ * Fetch all of the entities referenced by the cards in the given collection ids
+ * – articles, recipes etc.
+ */
+const fetchCardReferencedEntities =
   (
     collectionIds: string[],
     itemSetCandidate: CardSets | CardSets[]
   ): ThunkResult<Promise<void>> =>
   async (dispatch, getState) => {
+    const state = getState();
     const itemSets = Array.isArray(itemSetCandidate)
       ? itemSetCandidate
       : [itemSetCandidate];
-    const articleIds = itemSets.reduce(
+
+    const cards = itemSets.reduce(
       (acc, itemSet) => [
         ...acc,
-        ...selectArticlesInCollections(getState(), {
+        ...selectCardsInCollections(state, {
           collectionIds,
           itemSet,
         }),
       ],
-      [] as string[]
+      [] as Card[]
     );
-    await dispatch(fetchArticles(articleIds));
+
+    const dedupedCards = uniqBy(cards, (card) => card.id);
+
+    // Separate cards by type
+    const cardsByCardType = groupBy(
+      dedupedCards,
+      (card) => card.cardType ?? 'article'
+    );
+
+    const promises = [];
+
+    if (cardsByCardType.article) {
+      const articlesPromise = dispatch(
+        fetchArticles(cardsByCardType.article.map((card) => card.id))
+      );
+      promises.push(articlesPromise);
+    }
+
+    if (cardsByCardType.chef) {
+      const chefsPromise = dispatch(
+        fetchChefsById(cardsByCardType.chef.map((chef) => chef.id))
+      );
+      promises.push(chefsPromise);
+    }
+
+    await Promise.all(promises);
   };
 
 const getOphanDataForCollections =
@@ -397,7 +430,7 @@ const openCollectionsAndFetchTheirArticles =
   ): ThunkResult<Promise<void>> =>
   async (dispatch) => {
     dispatch(editorOpenCollections(collectionIds));
-    await dispatch(getArticlesForCollections(collectionIds, itemSet));
+    await dispatch(fetchCardReferencedEntities(collectionIds, itemSet));
     await dispatch(getOphanDataForCollections(collectionIds, frontId, itemSet));
   };
 
@@ -448,7 +481,7 @@ function initialiseCollectionsForFront(
     dispatch(editorOpenCollections(collectionsWithArticlesToLoad));
     await dispatch(getCollections(front.collections));
     await dispatch(
-      getArticlesForCollections(collectionsWithArticlesToLoad, browsingStage)
+      fetchCardReferencedEntities(collectionsWithArticlesToLoad, browsingStage)
     );
     await dispatch(
       getOphanDataForCollections(
@@ -547,7 +580,7 @@ function discardDraftChangesToCollection(
 
 export {
   getCollections,
-  getArticlesForCollections,
+  fetchCardReferencedEntities,
   openCollectionsAndFetchTheirArticles,
   closeCollections,
   fetchStaleCollections,

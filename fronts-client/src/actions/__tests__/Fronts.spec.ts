@@ -4,7 +4,7 @@ import { state as initialState } from 'fixtures/initialState';
 import { scJohnsonPartnerZoneCollection } from 'fixtures/collectionsEndpointResponse';
 import { articlesForScJohnsonPartnerZone } from 'actions/__tests__/capiEndpointResponse';
 import { selectIsCollectionOpen } from 'bundles/frontsUI';
-import { selectArticlesInCollections } from 'selectors/collection';
+import { selectCardsInCollections } from 'selectors/collection';
 import { selectCard } from 'selectors/shared';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 
@@ -51,10 +51,10 @@ describe('Fronts actions', () => {
       // TODO this selectArticalsInCollections returns internal code pages which means we cannot use it with cardSelector
       //  This worked previously because selectArticles in Collection was returning an empty array which was erroneous - TODO
       expect(
-        selectArticlesInCollections(state, {
+        selectCardsInCollections(state, {
           collectionIds,
           itemSet: 'draft',
-        }).every((_) => !!selectCard(state, _))
+        }).every((_) => !!selectCard(state, _.uuid))
       ).toBe(true);
     });
   });

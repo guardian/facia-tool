@@ -13,7 +13,7 @@ import { createCollectionId } from 'components/CollectionDisplay';
 import ButtonDefault from 'components/inputs/ButtonCircular';
 import {
   createSelectCollection,
-  createSelectArticlesInCollection,
+  createSelectCardsInCollection,
 } from 'selectors/shared';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
@@ -27,7 +27,7 @@ interface FrontCollectionOverviewContainerProps {
 
 type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
   collection: Collection | undefined;
-  articleCount: number;
+  cardCount: number;
   openCollection: (id: string) => void;
   hasUnpublishedChanges: boolean;
   hasOpenForms: boolean;
@@ -102,7 +102,7 @@ const StatusWarning = styled(ButtonDefault)`
 
 const CollectionOverview = ({
   collection,
-  articleCount,
+  cardCount,
   openCollection,
   frontId,
   hasUnpublishedChanges,
@@ -130,7 +130,7 @@ const CollectionOverview = ({
     >
       <TextContainerLeft>
         <Name>{collection.displayName}</Name>
-        <ItemCount>({articleCount})</ItemCount>
+        <ItemCount>({cardCount})</ItemCount>
       </TextContainerLeft>
       <TextContainerRight>
         {!!hasOpenForms && (
@@ -161,7 +161,7 @@ const CollectionOverview = ({
 
 const mapStateToProps = () => {
   const selectCollection = createSelectCollection();
-  const selectArticlesInCollection = createSelectArticlesInCollection();
+  const selectCardsInCollection = createSelectCardsInCollection();
   const selectCollectionIdsWithOpenForms =
     createSelectCollectionIdsWithOpenForms();
   return (
@@ -175,7 +175,7 @@ const mapStateToProps = () => {
     collection: selectCollection(state, {
       collectionId,
     }),
-    articleCount: selectArticlesInCollection(state, {
+    cardCount: selectCardsInCollection(state, {
       collectionSet,
       collectionId,
       includeSupportingArticles: false,

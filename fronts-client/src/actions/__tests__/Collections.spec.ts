@@ -4,7 +4,13 @@ import fetchMock from 'fetch-mock';
 import set from 'lodash/fp/set';
 import configureStore from 'util/configureStore';
 import config from 'fixtures/config';
-import { stateWithCollection, capiArticle } from 'fixtures/shared';
+import {
+  stateWithCollection,
+  capiArticle,
+  stateWithDuplicateArticleIdsInCollection,
+  stateWithCollectionWithChefs,
+  stateWithCollectionWithDuplicateChefs,
+} from 'fixtures/shared';
 import {
   getCollectionsApiResponse,
   getCollectionsApiResponseWithoutStoriesVisible,
@@ -15,8 +21,12 @@ import {
   actionNames as externalArticleActionNames,
 } from 'bundles/externalArticlesBundle';
 import {
+  actions as chefActions,
+  actionNames as chefActionNames,
+} from 'bundles/chefsBundle';
+import {
   getCollections,
-  getArticlesForCollections,
+  fetchCardReferencedEntities,
   updateCollection,
   fetchArticles,
 } from '../Collections';
@@ -422,53 +432,109 @@ describe('Collection actions', () => {
     });
   });
 
-  describe('getArticlesForCollections thunk', () => {
+  describe('fetchCardReferencedEntities thunk', () => {
+    const assertFetchedEntities = async ({
+      fixture,
+      action,
+      mockEndpoint,
+      fetchStartAction,
+      fetchCompleteActionType,
+      fetchMockResponse = { response: { results: [capiArticle] } },
+    }: {
+      // The state fixture
+      fixture: Record<string, unknown>;
+      // The fetchCardReferencedEntities action to dispatch
+      action: any;
+      // The endpoint to mock
+      mockEndpoint: string;
+      // The FETCH_START action we expect
+      fetchStartAction: unknown;
+      // The action we expect to complete this thunk with – either success, or error
+      fetchCompleteActionType: string;
+      // The response to reply with when the mock endpoint is hit
+      fetchMockResponse?: number | Record<string, unknown>;
+    }) => {
+      fetchMock.once(mockEndpoint, fetchMockResponse);
+      const store = mockStore({
+        config,
+        ...fixture,
+      });
+      await store.dispatch(action);
+      const actions = store.getActions();
+      expect(actions[0]).toEqual(fetchStartAction);
+      expect(actions[1].type).toEqual(fetchCompleteActionType);
+    };
+
     it('should dispatch start and success actions for articles returned from getCollection()', async () => {
-      fetchMock.once(
-        'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
-        { response: { results: [capiArticle] } }
-      );
-      const store = mockStore({
-        config,
-        ...stateWithCollection,
-      });
-      await store.dispatch(
-        getArticlesForCollections(['exampleCollection'], 'live') as any
-      );
-      const actions = store.getActions();
-      expect(actions[0]).toEqual(
-        externalArticleActions.fetchStart([
+      await assertFetchedEntities({
+        fixture: stateWithCollection,
+        action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
+        mockEndpoint:
+          'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
+        fetchStartAction: externalArticleActions.fetchStart([
           'article/live/0',
           'article/draft/1',
           'a/long/path/2',
-        ])
-      );
-      // We don't care about the implementation of getArticle here,
-      // so we just check that the action type is correct
-      expect(actions[1].type).toEqual(externalArticleActionNames.fetchSuccess);
+        ]),
+        fetchCompleteActionType: externalArticleActionNames.fetchSuccess,
+      });
     });
-    it('should dispatch start and error actions when getPrefillArticles throws', async () => {
-      fetchMock.once(
-        'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
-        400
-      );
-      const store = mockStore({
-        config,
-        ...stateWithCollection,
-      });
-      await store.dispatch(
-        getArticlesForCollections(['exampleCollection'], 'live') as any
-      );
-      const actions = store.getActions();
-      expect(actions[0]).toEqual(
-        externalArticleActions.fetchStart([
+    it('should deduplicate article ids when two cards reference the same article', async () => {
+      await assertFetchedEntities({
+        fixture: stateWithDuplicateArticleIdsInCollection,
+        action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
+        mockEndpoint:
+          'begin:/api/preview/search?ids=article/live/0,a/long/path/2',
+        fetchStartAction: externalArticleActions.fetchStart([
           'article/live/0',
-          'article/draft/1',
           'a/long/path/2',
-        ])
-      );
-      expect(actions[1].type).toEqual(externalArticleActionNames.fetchError);
-      expect(actions[1].payload.error).toContain('400');
+        ]),
+        fetchCompleteActionType: externalArticleActionNames.fetchSuccess,
+      });
+    });
+
+    it('should dispatch start and error actions when getPrefillArticles throws', async () => {
+      await assertFetchedEntities({
+        fixture: stateWithDuplicateArticleIdsInCollection,
+        action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
+        mockEndpoint:
+          'begin:/api/preview/search?ids=article/live/0,a/long/path/2',
+        fetchStartAction: externalArticleActions.fetchStart([
+          'article/live/0',
+          'a/long/path/2',
+        ]),
+        fetchCompleteActionType: externalArticleActionNames.fetchError,
+        fetchMockResponse: 400,
+      });
+    });
+
+    it('should dispatch start and success actions for chefs returned from getCollection()', async () => {
+      await assertFetchedEntities({
+        fixture: stateWithCollectionWithChefs,
+        action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
+        mockEndpoint:
+          'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein%2Cprofile%2Ffelicity-cloake',
+        fetchStartAction: chefActions.fetchStart([
+          'profile/yotamottolenghi',
+          'profile/rick-stein',
+          'profile/felicity-cloake',
+        ]),
+        fetchCompleteActionType: chefActionNames.fetchSuccess,
+      });
+    });
+
+    it('should deduplicate chef ids', async () => {
+      await assertFetchedEntities({
+        fixture: stateWithCollectionWithDuplicateChefs,
+        action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
+        mockEndpoint:
+          'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein',
+        fetchStartAction: chefActions.fetchStart([
+          'profile/yotamottolenghi',
+          'profile/rick-stein',
+        ]),
+        fetchCompleteActionType: chefActionNames.fetchSuccess,
+      });
     });
   });
 });

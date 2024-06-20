@@ -32,7 +32,7 @@ import {
   selectHasMultipleFrontsOpen,
   createSelectDoesCollectionHaveOpenForms,
 } from 'bundles/frontsUI';
-import { getArticlesForCollections } from 'actions/Collections';
+import { fetchCardReferencedEntities } from 'actions/Collections';
 import { cardSets } from 'constants/fronts';
 import CollectionMetaContainer from 'components/collection/CollectionMetaContainer';
 import ButtonCircularCaret from 'components/inputs/ButtonCircularCaret';
@@ -379,7 +379,7 @@ const mapDispatchToProps = (
     }
   },
   fetchPreviousCollectionArticles: (id: string) => {
-    dispatch(getArticlesForCollections([id], cardSets.previously));
+    dispatch(fetchCardReferencedEntities([id], cardSets.previously));
   },
 });
 
