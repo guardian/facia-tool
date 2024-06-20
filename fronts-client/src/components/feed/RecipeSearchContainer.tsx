@@ -81,7 +81,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     chefSelectors.selectPagination(state)
   );
 
-  const hasPages = !!(chefsPagination && chefsPagination.totalPages > 1);
+  const hasPages = (chefsPagination?.totalPages ?? 0) > 1;
 
   const getParams = (query: string) => ({
     'web-title': query,
