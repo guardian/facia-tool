@@ -9,7 +9,7 @@ import InputContainer from './InputContainer';
 import InputBase from './InputBase';
 import InputLabel from './InputLabel';
 import DragIntentContainer from '../DragIntentContainer';
-import { GridModal } from 'components/GridModal';
+import { GridModal } from 'components/modals/GridModal';
 import {
   validateImageEvent,
   validateMediaItem,

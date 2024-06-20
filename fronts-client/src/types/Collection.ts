@@ -2,6 +2,7 @@ import { CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
 import type { FrontsToolSettings } from 'types/FaciaApi';
 import { CardTypes } from 'constants/cardTypes';
+import { ChefPaletteId } from 'constants/feastPalettes';
 
 interface CollectionArticles {
   draft: CapiArticle[];
@@ -41,7 +42,7 @@ type NestedCard = NestedCardRootFields & {
   };
 };
 
-interface CardRootMeta {
+interface CardRootMeta extends ChefCardMeta {
   group?: string;
   headline?: string;
   trailText?: string;
@@ -87,7 +88,6 @@ interface CardRootMeta {
   coverCardImageReplace?: boolean;
   coverCardMobileImage?: ImageData;
   coverCardTabletImage?: ImageData;
-  bio?: string;
 }
 
 type CardRootFields = NestedCardRootFields & {
@@ -98,8 +98,25 @@ type CardMeta = CardRootMeta & {
   supporting?: string[];
 };
 
+export interface ImageData {
+  src?: string;
+  width?: number;
+  height?: number;
+  origin?: string;
+  thumb?: string;
+  caption?: string;
+}
+
+export interface Palette {
+  foregroundHex: string;
+  backgroundHex: string;
+  paletteId: ChefPaletteId;
+}
+
 interface ChefCardMeta {
-  bio: string;
+  bio?: string;
+  palette?: Palette;
+  chefImageOverride?: ImageData;
 }
 
 interface Card extends CardRootFields {

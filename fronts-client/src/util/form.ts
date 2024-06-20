@@ -5,15 +5,11 @@ import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
 import pageConfig from 'util/extractConfigFromPage';
-import { CardMeta } from 'types/Collection';
+import { CardMeta, ImageData } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
-
-export interface ChefCardFormData {
-  bio: string;
-}
 
 export interface CardFormData {
   headline: string;
@@ -47,15 +43,6 @@ export interface CardFormData {
 
 export type FormFields = keyof CardFormData;
 
-export interface ImageData {
-  src?: string;
-  width?: number;
-  height?: number;
-  origin?: string;
-  thumb?: string;
-  caption?: string;
-}
-
 export interface CapiFields {
   headline: string;
   trailText: string;
@@ -63,8 +50,10 @@ export interface CapiFields {
   thumbnail?: string | void;
 }
 
-const strToInt = (str: string | void) => (str ? parseInt(str, 10) : undefined);
-const intToStr = (int: number | void) => (int ? int.toString() : undefined);
+export const strToInt = (str: string | void) =>
+  str ? parseInt(str, 10) : undefined;
+export const intToStr = (int: number | void) =>
+  int ? int.toString() : undefined;
 
 export const getCapiValuesForArticleFields = (
   article: CapiArticle | void

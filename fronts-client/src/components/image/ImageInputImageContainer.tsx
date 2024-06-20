@@ -7,8 +7,9 @@ const TEXTINPUT_HEIGHT = 30;
 
 const smallPortaitStyle = `
   width: ${SMALL_PORTRAIT_WIDTH}px;
-  height: 100%;
+  height: ${Math.floor(SMALL_PORTRAIT_WIDTH * PORTRAIT_RATIO)}px;
   padding: 40% 0;
+  min-width: 50px;
   margin: 0 auto;
 `;
 

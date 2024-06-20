@@ -3,6 +3,7 @@ package model.editions.client
 import ai.x.play.json.Jsonx
 import model.editions.{CardMetadata, CoverCardImages, Image, MediaType}
 import play.api.libs.json.OFormat
+import model.editions.Palette
 
 // This is a subset of the shared model here - https://github.com/guardian/facia-scala-client/blob/master/facia-json/src/main/scala/com/gu/facia/client/models/Collection.scala#L18
 // Why not reuse that model? We only want to surface the fields necessary for editions
@@ -37,7 +38,9 @@ case class ClientCardMetadata(
   coverCardMobileImage: Option[Image],
   coverCardTabletImage: Option[Image],
   promotionMetric: Option[Double],
-  bio: Option[String]
+  bio: Option[String], // Chef
+  palette: Option[Palette], // Chef
+  chefImageOverride: Option[Image] // Chef
 ) {
   def toCardMetadata: CardMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
@@ -79,7 +82,9 @@ case class ClientCardMetadata(
       overrideArticleMainMedia,
       coverCardImages,
       promotionMetric,
-      bio
+      bio,
+      palette,
+      chefImageOverride
     )
   }
 }
@@ -121,7 +126,9 @@ object ClientCardMetadata {
       cardMetadata.coverCardImages.flatMap(_.mobile),
       cardMetadata.coverCardImages.flatMap(_.tablet),
       cardMetadata.promotionMetric,
-      cardMetadata.bio
+      cardMetadata.bio,
+      cardMetadata.palette,
+      cardMetadata.chefImageOverride
     )
   }
 }

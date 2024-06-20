@@ -26,6 +26,13 @@ object CoverCardImages {
   implicit val format: OFormat[CoverCardImages] = Json.format[CoverCardImages]
 }
 
+
+case class Palette(paletteId: String, foregroundHex: String, backgroundHex: String)
+
+object Palette {
+    implicit val format: OFormat[Palette] = Json.format[Palette]
+}
+
 case class CardMetadata(
   headline: Option[String],
   customKicker: Option[String],
@@ -43,7 +50,9 @@ case class CardMetadata(
   overrideArticleMainMedia: Option[Boolean],
   coverCardImages: Option[CoverCardImages],
   promotionMetric: Option[Double],
-  bio: Option[String] = None
+  bio: Option[String] = None, // Chef,
+  palette: Option[Palette] = None, // Chef
+  chefImageOverride: Option[Image] = None, // Chef
 )
 
 object CardMetadata {
