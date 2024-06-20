@@ -29,7 +29,7 @@ export const createPaletteForm =
         return undefined;
       }
 
-      return formValues[fieldName] as Palette;
+      return formValues[fieldName];
     });
     const setPaletteOption = useCallback(
       (
