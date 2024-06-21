@@ -1,6 +1,5 @@
 import ClipboardHeader from 'components/ClipboardHeader';
 import TextInput from 'components/inputs/TextInput';
-import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { styled } from 'constants/theme';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,13 +7,14 @@ import { selectors as recipeSelectors } from 'bundles/recipesBundle';
 import { fetchChefs, selectors as chefSelectors } from 'bundles/chefsBundle';
 import { State } from 'types/State';
 import { Recipe } from 'types/Recipe';
-import { SearchResultsHeadingContainer } from './SearchResultsHeadingContainer';
-import { SearchTitle } from './SearchTitle';
 import { RecipeFeedItem } from './RecipeFeedItem';
 import { ChefFeedItem } from './ChefFeedItem';
 import { RadioButton, RadioGroup } from '../inputs/RadioButtons';
 import { Dispatch } from 'types/Store';
-import debounce from 'lodash/debounce';
+//import debounce from 'lodash/debounce'; // needed for debounce work, mentioned in Todo below
+import { IPagination } from 'lib/createAsyncResourceBundle';
+import Pagination from './Pagination';
+import ScrollContainer from '../ScrollContainer';
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
@@ -26,13 +26,26 @@ const TextInputContainer = styled.div`
   flex-grow: 2;
 `;
 
-const FixedContentContainer = styled.div`
-  margin-bottom: 5px;
-`;
-
 interface Props {
   rightHandContainer?: React.ReactElement<any>;
 }
+
+const PaginationContainer = styled.div`
+  margin-left: auto;
+`;
+
+const TopOptions = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+
+const FeedsContainerWrapper = styled.div`
+  height: 100%;
+`;
+
+const ResultsContainer = styled.div`
+  margin-right: 10px;
+`;
 
 enum FeedType {
   recipes = 'recipeFeed',
@@ -56,11 +69,19 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     chefSelectors.selectLastFetchOrder(state)
   );
 
-  const debouncedRunSearch = debounce(() => runSearch(), 750);
+  const [page, setPage] = useState(1);
+
+  /*const debouncedRunSearch = debounce(() => runSearch(page), 750); TODO need to check if needed for chef-search? if yes then how to improve implementing it*/
 
   useEffect(() => {
-    debouncedRunSearch();
-  }, [selectedOption, searchText]);
+    runSearch(page);
+  }, [selectedOption, searchText, page]);
+
+  const chefsPagination: IPagination | null = useSelector((state: State) =>
+    chefSelectors.selectPagination(state)
+  );
+
+  const hasPages = (chefsPagination?.totalPages ?? 0) > 1;
 
   const getParams = (query: string) => ({
     'web-title': query,
@@ -70,7 +91,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   });
 
   const runSearch = useCallback(
-    (page = 1) => {
+    (page: number = 1) => {
       const fetch =
         selectedOption === FeedType.chefs ? searchForChefs : () => {};
       fetch({
@@ -78,7 +99,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
         page,
       });
     },
-    [selectedOption, searchText]
+    [selectedOption, searchText, page]
   );
 
   const renderTheFeed = () => {
@@ -99,9 +120,14 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
       <InputContainer>
         <TextInputContainer>
           <TextInput
-            placeholder="Search recipes"
+            placeholder={
+              selectedOption === FeedType.recipes
+                ? 'Search recipes'
+                : 'Search chefs'
+            }
             displaySearchIcon
             onChange={(event) => {
+              setPage(1);
               setSearchText(event.target.value);
             }}
             value={searchText}
@@ -109,31 +135,38 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
         </TextInputContainer>
         <ClipboardHeader />
       </InputContainer>
-      <RadioGroup>
-        <RadioButton
-          checked={selectedOption === FeedType.recipes}
-          onChange={() => setSelectedOption(FeedType.recipes)}
-          label="Recipes"
-          inline
-          name="recipeFeed"
-        />
-        <RadioButton
-          checked={selectedOption === FeedType.chefs}
-          onChange={() => setSelectedOption(FeedType.chefs)}
-          label="Chefs"
-          inline
-          name="chefFeed"
-        />
-      </RadioGroup>
-      <FixedContentContainer>
-        <SearchResultsHeadingContainer>
-          <SearchTitle>
-            {'Results'}
-            <ShortVerticalPinline />
-          </SearchTitle>
-        </SearchResultsHeadingContainer>
-        {renderTheFeed()}
-      </FixedContentContainer>
+      <TopOptions>
+        <RadioGroup>
+          <RadioButton
+            checked={selectedOption === FeedType.recipes}
+            onChange={() => setSelectedOption(FeedType.recipes)}
+            label="Recipes"
+            inline
+            name="recipeFeed"
+          />
+          <RadioButton
+            checked={selectedOption === FeedType.chefs}
+            onChange={() => setSelectedOption(FeedType.chefs)}
+            label="Chefs"
+            inline
+            name="chefFeed"
+          />
+        </RadioGroup>
+        {selectedOption === FeedType.chefs && chefsPagination && hasPages && (
+          <PaginationContainer>
+            <Pagination
+              pageChange={(page) => setPage(page)}
+              currentPage={chefsPagination.currentPage}
+              totalPages={chefsPagination.totalPages}
+            />
+          </PaginationContainer>
+        )}
+      </TopOptions>
+      <FeedsContainerWrapper>
+        <ScrollContainer fixed={<h3>Results</h3>}>
+          <ResultsContainer>{renderTheFeed()}</ResultsContainer>
+        </ScrollContainer>
+      </FeedsContainerWrapper>
     </React.Fragment>
   );
 };
