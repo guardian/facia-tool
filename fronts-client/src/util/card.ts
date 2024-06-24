@@ -31,7 +31,7 @@ import {
   isValidURL,
 } from 'util/url';
 import { Recipe } from '../types/Recipe';
-import type { CardTypes } from '../constants/cardTypes';
+import { CardTypesMap, type CardTypes } from '../constants/cardTypes';
 import { Chef } from '../types/Chef';
 
 interface CreateCardOptions {
@@ -283,18 +283,18 @@ const getCardEntitiesFromDrop = async (
 };
 
 const getChefEntityFromFeedDrop = (chef: Chef): [Card] => {
-  const card = createCard(chef.id, false, { cardType: 'chef' });
+  const card = createCard(chef.id, false, { cardType: CardTypesMap.CHEF });
   return [card];
 };
 
 const getRecipeEntityFromFeedDrop = (recipe: Recipe): [Card] => {
-  const card = createCard(recipe.id, false, { cardType: 'recipe' });
+  const card = createCard(recipe.id, false, { cardType: CardTypesMap.RECIPE });
 
   return [card];
 };
 
 const getFeastCollectionFromFeedDrop = (): [Card] => {
-  return [createCard(v4(), false, { cardType: 'feast-collection' })];
+  return [createCard(v4(), false, { cardType: CardTypesMap.FEAST_COLLECTION })];
 };
 
 const getArticleEntitiesFromFeedDrop = (

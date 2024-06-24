@@ -8,20 +8,21 @@ import {
 } from './ArticleDrag';
 import { DragToAdd } from './DragToAdd';
 import { Card } from 'types/Collection';
+import { CardTypesMap } from 'constants/cardTypes';
 
 const handleDragStart = (
   event: React.DragEvent<HTMLDivElement>,
   dragImageElement: HTMLDivElement | null
 ) => {
   const feastCollectionCard: Card = {
-    cardType: 'feast-collection',
+    cardType: CardTypesMap.FEAST_COLLECTION,
     id: v4(),
     meta: {},
     uuid: v4(),
     frontPublicationDate: Date.now(),
   };
   event.dataTransfer.setData(
-    'feast-collection',
+    CardTypesMap.FEAST_COLLECTION,
     JSON.stringify(feastCollectionCard)
   );
   if (dragImageElement) {
