@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React from 'react';
 import { DragIcon } from 'components/icons/Icons';
 import { styled, theme } from 'constants/theme';
 import RenderOffscreen from 'components/util/RenderOffscreen';
