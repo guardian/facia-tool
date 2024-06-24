@@ -12,4 +12,5 @@ export interface Chef {
   firstName: string;
   lastName: string;
   twitterHandle?: string;
+  r2ContributorId?: string;
 }

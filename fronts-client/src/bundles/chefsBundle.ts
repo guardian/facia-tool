@@ -50,7 +50,9 @@ export const fetchChefs =
         dispatch(
           actions.fetchSuccess(resultData.results.map(sanitizeTag), {
             pagination: resultData.pagination || undefined,
-            order: resultData.results.map((_) => _.id),
+            order: resultData.results.map(
+              (_) => _.id + '#' + _.r2ContributorId //to fix duplicate chef id where Fronts throws exception (example "profile/alex-clapham" was twice in the data), hence suffix with unique r2ContributorId.
+            ),
           })
         );
       } else {

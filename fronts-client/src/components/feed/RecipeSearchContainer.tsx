@@ -108,10 +108,11 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
         return Object.values(recipes).map((recipe) => (
           <RecipeFeedItem key={recipe.id} recipe={recipe} />
         ));
-      case FeedType.chefs:
+      case FeedType.chefs: {
         return chefSearchIds.map((chefId) => (
-          <ChefFeedItem key={chefId} id={chefId} />
+          <ChefFeedItem key={chefId} id={chefId.split('#')[0]} /> //read id only by removing suffixed r2ContributorId (see chefsBundle.ts for reference)
         ));
+      }
     }
   };
 
