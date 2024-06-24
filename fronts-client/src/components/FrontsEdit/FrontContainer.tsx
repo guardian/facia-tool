@@ -14,6 +14,7 @@ import {
   editorOpenAllCollectionsForFront,
   editorCloseAllCollectionsForFront,
 } from 'bundles/frontsUI/thunks';
+import { selectors as editionsIssueSelectors } from '../../bundles/editionsIssueBundle';
 import { CardSets, Card as TCard } from 'types/Collection';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { setFocusState } from 'bundles/focusBundle';
@@ -28,6 +29,7 @@ import FrontContent from './FrontContent';
 import DragToAddSnap from './CollectionComponents/DragToAddSnap';
 import { selectPriority } from 'selectors/pathSelectors';
 import { Priorities } from 'types/Priority';
+import { DragToAddFeastCollection } from './CollectionComponents/DragToAddFeastCollection';
 
 const FrontWrapper = styled.div`
   height: 100%;
@@ -54,7 +56,7 @@ const OverviewToggleContainer = styled.div<{ active: boolean }>`
   cursor: pointer;
 `;
 
-const DragToAddSnapContainer = styled.div`
+const DragToAddContainer = styled.div`
   margin-right: auto;
   margin-bottom: 10px;
   margin-top: 10px;
@@ -113,6 +115,7 @@ type FrontProps = FrontPropsBeforeState & {
   overviewIsOpen: boolean;
   editorOpenAllCollectionsForFront: typeof editorOpenAllCollectionsForFront;
   editorCloseAllCollectionsForFront: typeof editorCloseAllCollectionsForFront;
+  isFeast: boolean;
 };
 
 interface FrontState {
@@ -133,7 +136,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
   };
 
   public render() {
-    const { overviewIsOpen, id, browsingStage, priority } = this.props;
+    const { overviewIsOpen, id, browsingStage, priority, isFeast } = this.props;
     return (
       <React.Fragment>
         <div
@@ -151,9 +154,14 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
           <FrontContentContainer>
             <SectionContentMetaContainer>
               {priority === 'email' && (
-                <DragToAddSnapContainer>
+                <DragToAddContainer>
                   <DragToAddSnap />
-                </DragToAddSnapContainer>
+                </DragToAddContainer>
+              )}
+              {isFeast && (
+                <DragToAddContainer>
+                  <DragToAddFeastCollection />
+                </DragToAddContainer>
               )}
               <OverviewHeadingButton onClick={this.handleOpenCollections}>
                 <ButtonLabel>Expand all&nbsp;</ButtonLabel>
@@ -246,6 +254,7 @@ const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
   return {
     overviewIsOpen: selectIsFrontOverviewOpen(state, id),
     priority: selectPriority(state),
+    isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
   };
 };
 
