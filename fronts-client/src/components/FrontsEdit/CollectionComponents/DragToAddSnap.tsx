@@ -1,33 +1,12 @@
 import React, { useRef } from 'react';
 import v4 from 'uuid/v4';
-import { DragIcon } from 'components/icons/Icons';
-import { styled, theme } from 'constants/theme';
-import RenderOffscreen from 'components/util/RenderOffscreen';
+
 import {
   DraggingArticleComponent,
   dragOffsetX,
   dragOffsetY,
 } from './ArticleDrag';
-
-const DragToAddSnapContainer = styled.div`
-  border-top: 1px solid ${theme.card.border};
-  background-color: ${theme.colors.whiteMedium};
-  font-size: 12px;
-  font-weight: bold;
-  line-height: 18px;
-  padding: 0 5px;
-  cursor: pointer;
-
-  &:hover {
-    background-color: ${theme.colors.whiteDark};
-  }
-  > a {
-    text-decoration: none;
-    &:hover {
-      text-decoration: none;
-    }
-  }
-`;
+import { DragToAdd } from './DragToAdd';
 
 const handleDragStart = (
   event: React.DragEvent<HTMLDivElement>,
@@ -55,20 +34,16 @@ const handleDragStart = (
 const DragToAddTextSnap = () => {
   const ref = useRef<HTMLDivElement>(null);
   return (
-    <>
-      <RenderOffscreen ref={ref}>
-        <DraggingArticleComponent headline="Free text snaplink" />
-      </RenderOffscreen>
-      <DragToAddSnapContainer
-        data-testid="drag-to-add-snap"
-        onDragStart={(e: React.DragEvent<HTMLDivElement>) =>
-          handleDragStart(e, ref.current)
-        }
-        draggable={true}
-      >
-        <DragIcon /> Drag to add a text card
-      </DragToAddSnapContainer>
-    </>
+    <DragToAdd
+      dragImage={<DraggingArticleComponent headline="Free text snaplink" />}
+      dragImageRef={ref}
+      testId="drag-to-add-snap"
+      onDragStart={(e: React.DragEvent<HTMLDivElement>) =>
+        handleDragStart(e, ref.current)
+      }
+    >
+      Drag to add a text card
+    </DragToAdd>
   );
 };
 

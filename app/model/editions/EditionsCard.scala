@@ -1,6 +1,6 @@
 package model.editions
 
-import enumeratum.EnumEntry.Uncapitalised
+import enumeratum.EnumEntry.{Uncapitalised, Hyphencase}
 import enumeratum.{EnumEntry, PlayEnum}
 import logging.Logging
 import play.api.libs.json.{JsResult, Json, OFormat}
@@ -61,12 +61,13 @@ object CardMetadata {
   val default = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
-sealed abstract class CardType extends EnumEntry with Uncapitalised
+sealed abstract class CardType extends EnumEntry with Uncapitalised with Hyphencase
 
 object CardType extends PlayEnum[CardType] {
   case object Article extends CardType
   case object Recipe extends CardType
   case object Chef extends CardType
+  case object FeastCollection extends CardType
   override def values = findValues
 }
 
