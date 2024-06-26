@@ -82,6 +82,15 @@ const selectChefDataFromCardId = (
   return selectors.selectById(state, card.id);
 };
 
+const selectLastFetchOrderChefs = (state: State): Chef[] => {
+  return bundle.selectors
+    .selectLastFetchOrder(state)
+    .map((id) => {
+      return bundle.selectors.selectById(state, id) as Chef;
+    })
+    .filter((_) => !!_);
+};
+
 /**
  * Select a Chef from a card, overriding the original values with the card meta
  * if it's present.
@@ -107,4 +116,5 @@ export const reducer = bundle.reducer;
 export const selectors = {
   ...bundle.selectors,
   selectChefFromCard,
+  selectLastFetchOrderChefs,
 };

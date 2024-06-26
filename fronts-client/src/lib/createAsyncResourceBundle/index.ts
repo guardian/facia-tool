@@ -2,6 +2,7 @@ import without from 'lodash/without';
 import isEqual from 'lodash/isEqual';
 import type { Action } from 'types/Action';
 import { attemptFriendlyErrorMessage } from 'util/error';
+import { Chef } from '../../types/Chef';
 
 interface BaseResource {
   id: string;

@@ -81,6 +81,7 @@ interface Tag {
   sectionId?: string;
   sectionName?: string;
   bio?: string;
+  r2ContributorId?: string;
 }
 
 type CapiBool = 'true' | 'false' | boolean;
