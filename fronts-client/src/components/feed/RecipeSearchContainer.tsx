@@ -65,8 +65,8 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     },
     [dispatch]
   );
-  const chefSearchIds = useSelector((state: State) =>
-    chefSelectors.selectLastFetchOrder(state)
+  const chefs = useSelector((state: State) =>
+    chefSelectors.selectLastFetchOrderChefs(state)
   );
 
   const [page, setPage] = useState(1);
@@ -109,8 +109,8 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
           <RecipeFeedItem key={recipe.id} recipe={recipe} />
         ));
       case FeedType.chefs: {
-        return chefSearchIds.map((chefId) => (
-          <ChefFeedItem key={chefId} id={chefId.split('#')[0]} /> //read id only by removing suffixed r2ContributorId (see chefsBundle.ts for reference)
+        return chefs.map((chef) => (
+          <ChefFeedItem key={chef.id + chef.r2ContributorId} id={chef.id} />
         ));
       }
     }

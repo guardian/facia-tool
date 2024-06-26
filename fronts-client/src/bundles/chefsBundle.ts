@@ -50,9 +50,7 @@ export const fetchChefs =
         dispatch(
           actions.fetchSuccess(resultData.results.map(sanitizeTag), {
             pagination: resultData.pagination || undefined,
-            order: resultData.results.map(
-              (_) => _.id + '#' + _.r2ContributorId //to fix duplicate chef id where Fronts throws exception (example "profile/alex-clapham" was twice in the data), hence suffix with unique r2ContributorId.
-            ),
+            order: resultData.results.map((_) => _.id),
           })
         );
       } else {
@@ -84,6 +82,15 @@ const selectChefDataFromCardId = (
   return selectors.selectById(state, card.id);
 };
 
+const selectLastFetchOrderChefs = (state: State): Chef[] => {
+  return bundle.selectors
+    .selectLastFetchOrder(state)
+    .map((id) => {
+      return bundle.selectors.selectById(state, id) as Chef;
+    })
+    .filter((_) => !!_);
+};
+
 /**
  * Select a Chef from a card, overriding the original values with the card meta
  * if it's present.
@@ -109,4 +116,5 @@ export const reducer = bundle.reducer;
 export const selectors = {
   ...bundle.selectors,
   selectChefFromCard,
+  selectLastFetchOrderChefs,
 };
