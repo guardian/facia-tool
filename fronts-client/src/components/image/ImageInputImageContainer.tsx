@@ -31,7 +31,7 @@ const smallLandscapeStyle = `
 const normalLandscapeStyle = `
   width: 100%;
   maxWidth: 180px;
-  height: 115px;
+  aspect-ratio: 5/4;
 `;
 
 const getVariableImageContainerStyle = ({
