@@ -14,12 +14,14 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
   position: relative;
   width: ${theme.thumbnailImage.width};
   min-width: ${theme.thumbnailImage.width};
-  height: ${theme.thumbnailImage.height};
+  aspect-ratio: 5/4;
   color: white;
   font-size: 10px;
   font-weight: bold;
   opacity: ${({ imageHide }) => (imageHide && imageHide ? '0.5' : '1')};
   background-image: ${({ url }) => `url('${url}')`};
+  background-position: center center;
+  background-repeat: no-repeat;
 
   ${({ isPortrait }) =>
     isPortrait &&
@@ -55,7 +57,7 @@ const ThumbnailEditForm = styled(ThumbnailBase)<{
   url: string | undefined | void;
 }>`
   width: 100%;
-  height: 115px;
+  aspect-ratio: 8/3;
   margin-bottom: 10px;
   opacity: ${({ imageHide }) => (imageHide ? 0.5 : 1)};
   background-image: ${({ url }) => `url('${url}')`};

@@ -555,7 +555,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
     return usingPortrait
       ? `${gridUrl}?cropType=portrait`
-      : `${gridUrl}?cropType=landscape`;
+      : `${gridUrl}?customRatio=new,5,4`;
   };
 
   private getCurrentImageDimensions = () => {
