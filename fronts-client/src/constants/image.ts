@@ -8,7 +8,7 @@ export const SUPPORT_PORTRAIT_CROPS =
 export const landScapeCardImageCriteria = {
   minWidth: 400,
   widthAspectRatio: 5,
-  heightAspectRatio: 3,
+  heightAspectRatio: 4,
 };
 
 export const portraitCardImageCriteria = {
