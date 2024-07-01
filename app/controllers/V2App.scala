@@ -19,8 +19,8 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
   import model.UserData._
 
   def index(priority: String = "", frontId: String = "") = getCollectionPermissionFilterByPriority(priority, acl)(ec) { implicit req =>
-
     val editingEdition = priority.startsWith("issues")
+    val isFeast = priority.contains("c5f8225b-3ee8-4bbb-8459-71bf15f23efd") //for testing only (will remove with proper way of checking feast edition)
     import org.scanamo.generic.auto._
     val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
@@ -47,14 +47,17 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
     val maybeUserData: Option[UserData] = Scanamo(dynamoClient).exec(
       userDataTable.get("email" === userEmail)).flatMap(_.toOption)
 
-    val clipboardArticles = if (editingEdition)
-      maybeUserData.map(_.editionsClipboardArticles.getOrElse(List()).map(ClipboardCard.apply))
-    else
+    val clipboardCards = if (editingEdition) {
+      if(isFeast)
+        maybeUserData.map(_.feastEditionsClipboardCards.getOrElse(List()).map(ClipboardCard.apply))
+      else
+        maybeUserData.map(_.editionsClipboardArticles.getOrElse(List()).map(ClipboardCard.apply))
+    } else
       maybeUserData.map(_.clipboardArticles.getOrElse(List()).map(ClipboardCard.apply))
 
     val userDataForDefaults = UserDataForDefaults.fromUserData(
       maybeUserData.getOrElse(UserData(userEmail)),
-      clipboardArticles
+      clipboardCards
     )
 
     val conf = Defaults(
