@@ -205,6 +205,8 @@ const saveClipboard = (content: NestedCard[]) =>
   createSaveClipboard(content, '/clipboard');
 const saveEditionsClipboard = (content: NestedCard[]) =>
   createSaveClipboard(content, '/editionsClipboard');
+const saveFeastClipboard = (content: NestedCard[]) =>
+  createSaveClipboard(content, '/feastClipboard');
 
 async function createSaveClipboard(
   clipboardContent: NestedCard[],
@@ -432,6 +434,7 @@ export {
   updateCollection,
   saveClipboard,
   saveEditionsClipboard,
+  saveFeastClipboard,
   saveOpenFrontIds,
   saveFavouriteFrontIds,
   getCapiUriForContentIds,
