@@ -35,6 +35,15 @@ const updateCollectionStrategy = (
         : updateEditionsCollection(id)(
             collectionToEditionCollection(collection)
           ),
+    feast: () =>
+      //for testing only, copied from edition code above
+      renamingCollection
+        ? renameEditionsCollection(id)(
+            collectionToEditionCollection(collection)
+          )
+        : updateEditionsCollection(id)(
+            collectionToEditionCollection(collection)
+          ),
     none: () => null,
   });
 
