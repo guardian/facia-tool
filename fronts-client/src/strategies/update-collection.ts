@@ -24,27 +24,17 @@ const updateCollectionStrategy = (
   id: string,
   collection: CollectionWithNestedArticles,
   renamingCollection: boolean
-) =>
-  runStrategy<void>(state, {
+) => {
+  const curatedPlatformStrategy = () =>
+    renamingCollection
+      ? renameEditionsCollection(id)(collectionToEditionCollection(collection))
+      : updateEditionsCollection(id)(collectionToEditionCollection(collection));
+  return runStrategy<void>(state, {
     front: () => updateCollection(id)(collection),
-    edition: () =>
-      renamingCollection
-        ? renameEditionsCollection(id)(
-            collectionToEditionCollection(collection)
-          )
-        : updateEditionsCollection(id)(
-            collectionToEditionCollection(collection)
-          ),
-    feast: () =>
-      //for testing only, copied from edition code above
-      renamingCollection
-        ? renameEditionsCollection(id)(
-            collectionToEditionCollection(collection)
-          )
-        : updateEditionsCollection(id)(
-            collectionToEditionCollection(collection)
-          ),
+    edition: curatedPlatformStrategy,
+    feast: curatedPlatformStrategy,
     none: () => null,
   });
+};
 
 export { updateCollectionStrategy };

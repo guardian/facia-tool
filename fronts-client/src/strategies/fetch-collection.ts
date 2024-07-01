@@ -31,8 +31,12 @@ const fetchCollectionsStrategy = (
   state: State,
   collectionIds: string[],
   returnOnlyUpdatedCollections: boolean
-) =>
-  runStrategy<Promise<CollectionResponse[]> | null>(state, {
+) => {
+  const curatedPlatformStrategy = () =>
+    getEditionsCollections(
+      selectCollectionParams(state, collectionIds, returnOnlyUpdatedCollections)
+    ).then((collections) => collections.map(editionCollectionToCollection)); // TODO, this needs to be mirrored on save!
+  return runStrategy<Promise<CollectionResponse[]> | null>(state, {
     front: () =>
       fetchCollections(
         selectCollectionParams(
@@ -41,24 +45,10 @@ const fetchCollectionsStrategy = (
           returnOnlyUpdatedCollections
         )
       ),
-    edition: () =>
-      getEditionsCollections(
-        selectCollectionParams(
-          state,
-          collectionIds,
-          returnOnlyUpdatedCollections
-        )
-      ).then((collections) => collections.map(editionCollectionToCollection)), // TODO, this needs to be mirrored on save!
-    feast: () =>
-      // for testing just picked same from editions code above, need to modify the code properly for feast
-      getEditionsCollections(
-        selectCollectionParams(
-          state,
-          collectionIds,
-          returnOnlyUpdatedCollections
-        )
-      ).then((collections) => collections.map(editionCollectionToCollection)), // TODO, this needs to be mirrored on save!
+    edition: curatedPlatformStrategy,
+    feast: curatedPlatformStrategy,
     none: () => null,
   });
+};
 
 export { fetchCollectionsStrategy };
