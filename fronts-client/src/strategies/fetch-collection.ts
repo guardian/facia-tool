@@ -49,6 +49,15 @@ const fetchCollectionsStrategy = (
           returnOnlyUpdatedCollections
         )
       ).then((collections) => collections.map(editionCollectionToCollection)), // TODO, this needs to be mirrored on save!
+    feast: () =>
+      // for testing just picked same from editions code above, need to modify the code properly for feast
+      getEditionsCollections(
+        selectCollectionParams(
+          state,
+          collectionIds,
+          returnOnlyUpdatedCollections
+        )
+      ).then((collections) => collections.map(editionCollectionToCollection)), // TODO, this needs to be mirrored on save!
     none: () => null,
   });
 
