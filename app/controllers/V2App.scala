@@ -7,20 +7,24 @@ import model.{ClipboardCard, FeatureSwitch, UserData, UserDataForDefaults}
 
 import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.{Metadata, TargetedTerritory}
-import model.editions.{EditionsAppTemplates, FeastAppTemplates}
+import model.editions.{CuratedPlatform, EditionsAppTemplates, FeastAppTemplates}
+import org.apache.hc.core5.reactor.Command.Priority
 import permissions.Permissions
 import play.api.libs.json.Json
+import services.editions.db.EditionsDB
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import switchboard.SwitchManager
 import util.{Acl, AclJson}
 
-class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, db: EditionsDB, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   import model.UserData._
+  def editionIndex(issueId: String) = index(s"issues/${issueId}", Some(issueId))
+  def index(priority: String = "", issueId: Option[String] = None) = getCollectionPermissionFilterByPriority(priority, acl)(ec) { implicit req =>
+    val editingEdition = issueId.isDefined
 
-  def index(priority: String = "", frontId: String = "") = getCollectionPermissionFilterByPriority(priority, acl)(ec) { implicit req =>
-    val editingEdition = priority.startsWith("issues")
-    val isFeast = priority.contains("c5f8225b-3ee8-4bbb-8459-71bf15f23efd") //for testing only (will remove with proper way of checking feast edition)
+    val isFeast = issueId.flatMap(id => db.getIssue(id).map(issue => issue.platform == CuratedPlatform.Feast)).getOrElse(false)
+
     import org.scanamo.generic.auto._
     val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
