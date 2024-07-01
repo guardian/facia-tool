@@ -95,6 +95,7 @@ GET         /troubleshoot/*section                   controllers.TroubleshootCon
 
 # React App
 GET         /v2                                      controllers.V2App.index(path="")
+GET         /v2/issues/*issueId                      controllers.V2App.editionIndex(issueId)
 GET         /v2/*path                                controllers.V2App.index(path)
 
 # Grid Usages
