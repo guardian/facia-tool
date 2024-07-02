@@ -33,6 +33,7 @@ case class UserData(
                      email: String,
                      clipboardArticles: Option[List[Trail]] = None,
                      editionsClipboardArticles: Option[List[EditionsClientCard]] = None,
+                     feastEditionsClipboardCards: Option[List[EditionsClientCard]] = None,
                      frontIds: Option[List[String]] = None,
                      frontIdsByPriority: Option[Map[String, List[String]]] = None,
                      favouriteFrontIdsByPriority: Option[Map[String, List[String]]] = None,

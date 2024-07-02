@@ -7,20 +7,24 @@ import model.{ClipboardCard, FeatureSwitch, UserData, UserDataForDefaults}
 
 import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.{Metadata, TargetedTerritory}
-import model.editions.{EditionsAppTemplates, FeastAppTemplates}
+import model.editions.{CuratedPlatform, EditionsAppTemplates, FeastAppTemplates}
+import org.apache.hc.core5.reactor.Command.Priority
 import permissions.Permissions
 import play.api.libs.json.Json
+import services.editions.db.EditionsDB
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import switchboard.SwitchManager
 import util.{Acl, AclJson}
 
-class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, db: EditionsDB, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
   import model.UserData._
+  def editionIndex(issueId: String) = index(s"issues/${issueId}", Some(issueId))
+  def index(priority: String = "", issueId: Option[String] = None) = getCollectionPermissionFilterByPriority(priority, acl)(ec) { implicit req =>
+    val editingEdition = issueId.isDefined
 
-  def index(priority: String = "", frontId: String = "") = getCollectionPermissionFilterByPriority(priority, acl)(ec) { implicit req =>
+    val isFeast = issueId.flatMap(id => db.getIssue(id).map(issue => issue.platform == CuratedPlatform.Feast)).getOrElse(false)
 
-    val editingEdition = priority.startsWith("issues")
     import org.scanamo.generic.auto._
     val userDataTable = Table[UserData](config.faciatool.userDataTable)
 
@@ -47,14 +51,17 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, val deps
     val maybeUserData: Option[UserData] = Scanamo(dynamoClient).exec(
       userDataTable.get("email" === userEmail)).flatMap(_.toOption)
 
-    val clipboardArticles = if (editingEdition)
-      maybeUserData.map(_.editionsClipboardArticles.getOrElse(List()).map(ClipboardCard.apply))
-    else
+    val clipboardCards = if (editingEdition) {
+      if(isFeast)
+        maybeUserData.map(_.feastEditionsClipboardCards.getOrElse(List()).map(ClipboardCard.apply))
+      else
+        maybeUserData.map(_.editionsClipboardArticles.getOrElse(List()).map(ClipboardCard.apply))
+    } else
       maybeUserData.map(_.clipboardArticles.getOrElse(List()).map(ClipboardCard.apply))
 
     val userDataForDefaults = UserDataForDefaults.fromUserData(
       maybeUserData.getOrElse(UserData(userEmail)),
-      clipboardArticles
+      clipboardCards
     )
 
     val conf = Defaults(
