@@ -246,7 +246,7 @@ function createAsyncResourceBundle<Resource>(
   const selectLastFetchOrder = (state: RootState): string[] =>
     selectLocalState(state).lastFetchOrder || defaultArray;
 
-  const selectAll = (state: RootState) => selectLocalState(state).data;
+  const selectAll = (state: RootState) => selectLocalState(state)?.data || {};
 
   const initialState: State<Resource> = {
     data: options.initialData || {},
