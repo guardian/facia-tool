@@ -2,7 +2,7 @@ import type { Dispatch, ThunkResult } from 'types/Store';
 import type { Card, NestedCard } from 'types/Collection';
 import type { State } from 'types/State';
 import { saveClipboardStrategy } from 'strategies/save-clipboard';
-import { fetchArticles } from 'actions/Collections';
+import { fetchCardReferencedEntitiesForCards } from 'actions/Collections';
 import { batchActions } from 'redux-batched-actions';
 import { cardsReceived } from 'actions/CardsCommon';
 import { normaliseClipboard } from 'util/clipboardUtils';
@@ -39,8 +39,8 @@ export function storeClipboardContent(clipboardContent: NestedCard[]) {
       ])
     );
 
-    const cardIds = Object.values(cards).map((card) => card.id);
-    return dispatch(fetchArticles(cardIds));
+    const cardIds = Object.values(cards).map((card) => card.uuid);
+    return dispatch(fetchCardReferencedEntitiesForCards(cardIds));
   };
 }
 
