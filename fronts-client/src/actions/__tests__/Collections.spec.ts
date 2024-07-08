@@ -26,7 +26,7 @@ import {
 } from 'bundles/chefsBundle';
 import {
   getCollections,
-  fetchCardReferencedEntities,
+  fetchCardReferencedEntitiesForCollections,
   updateCollection,
   fetchArticles,
 } from '../Collections';
@@ -468,7 +468,10 @@ describe('Collection actions', () => {
     it('should dispatch start and success actions for articles returned from getCollection()', async () => {
       await assertFetchedEntities({
         fixture: stateWithCollection,
-        action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
+        action: fetchCardReferencedEntitiesForCollections(
+          ['exampleCollection'],
+          'live'
+        ),
         mockEndpoint:
           'begin:/api/preview/search?ids=article/live/0,article/draft/1,a/long/path/2',
         fetchStartAction: externalArticleActions.fetchStart([
@@ -482,7 +485,10 @@ describe('Collection actions', () => {
     it('should deduplicate article ids when two cards reference the same article', async () => {
       await assertFetchedEntities({
         fixture: stateWithDuplicateArticleIdsInCollection,
-        action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
+        action: fetchCardReferencedEntitiesForCollections(
+          ['exampleCollection'],
+          'live'
+        ),
         mockEndpoint:
           'begin:/api/preview/search?ids=article/live/0,a/long/path/2',
         fetchStartAction: externalArticleActions.fetchStart([
@@ -496,7 +502,10 @@ describe('Collection actions', () => {
     it('should dispatch start and error actions when getPrefillArticles throws', async () => {
       await assertFetchedEntities({
         fixture: stateWithDuplicateArticleIdsInCollection,
-        action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
+        action: fetchCardReferencedEntitiesForCollections(
+          ['exampleCollection'],
+          'live'
+        ),
         mockEndpoint:
           'begin:/api/preview/search?ids=article/live/0,a/long/path/2',
         fetchStartAction: externalArticleActions.fetchStart([
@@ -511,7 +520,10 @@ describe('Collection actions', () => {
     it('should dispatch start and success actions for chefs returned from getCollection()', async () => {
       await assertFetchedEntities({
         fixture: stateWithCollectionWithChefs,
-        action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
+        action: fetchCardReferencedEntitiesForCollections(
+          ['exampleCollection'],
+          'live'
+        ),
         mockEndpoint:
           'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein%2Cprofile%2Ffelicity-cloake',
         fetchStartAction: chefActions.fetchStart([
@@ -526,7 +538,10 @@ describe('Collection actions', () => {
     it('should deduplicate chef ids', async () => {
       await assertFetchedEntities({
         fixture: stateWithCollectionWithDuplicateChefs,
-        action: fetchCardReferencedEntities(['exampleCollection'], 'live'),
+        action: fetchCardReferencedEntitiesForCollections(
+          ['exampleCollection'],
+          'live'
+        ),
         mockEndpoint:
           'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein',
         fetchStartAction: chefActions.fetchStart([
