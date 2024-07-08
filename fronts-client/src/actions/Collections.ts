@@ -20,6 +20,7 @@ import {
 import {
   createSelectGroupArticles,
   createSelectAllCardsInCollection,
+  selectCard,
 } from 'selectors/shared';
 import {
   actions as externalArticleActions,
@@ -86,7 +87,7 @@ function fetchStaleCollections(
     );
 
     dispatch(
-      fetchCardReferencedEntities(
+      fetchCardReferencedEntitiesForCollections(
         fetchedCollectionIds,
         // get article for *all* collecitonItemSets as it reduces complexity of
         // this code (finding which cardSets we need), and the overlap
@@ -358,7 +359,7 @@ const fetchArticles =
  * Fetch all of the entities referenced by the cards in the given collection ids
  * – articles, recipes etc.
  */
-const fetchCardReferencedEntities =
+const fetchCardReferencedEntitiesForCollections =
   (
     collectionIds: string[],
     itemSetCandidate: CardSets | CardSets[]
@@ -368,7 +369,7 @@ const fetchCardReferencedEntities =
     const itemSets = Array.isArray(itemSetCandidate)
       ? itemSetCandidate
       : [itemSetCandidate];
-
+    //1.
     const cards = itemSets.reduce(
       (acc, itemSet) => [
         ...acc,
@@ -380,9 +381,19 @@ const fetchCardReferencedEntities =
       [] as Card[]
     );
 
-    const dedupedCards = uniqBy(cards, (card) => card.id);
-
     // Separate cards by type
+    await dispatch(
+      fetchCardReferencedEntitiesForCards(cards.map((card) => card.uuid))
+    );
+  };
+
+export const fetchCardReferencedEntitiesForCards =
+  (cardIds: string[]): ThunkResult<Promise<void>> =>
+  async (dispatch, getState) => {
+    const state = getState();
+
+    const cards = cardIds.map((id) => selectCard(state, id));
+    const dedupedCards = uniqBy(cards, (card) => card.id);
     const cardsByCardType = groupBy(
       dedupedCards,
       (card) => card.cardType ?? 'article'
@@ -430,7 +441,9 @@ const openCollectionsAndFetchTheirArticles =
   ): ThunkResult<Promise<void>> =>
   async (dispatch) => {
     dispatch(editorOpenCollections(collectionIds));
-    await dispatch(fetchCardReferencedEntities(collectionIds, itemSet));
+    await dispatch(
+      fetchCardReferencedEntitiesForCollections(collectionIds, itemSet)
+    );
     await dispatch(getOphanDataForCollections(collectionIds, frontId, itemSet));
   };
 
@@ -481,7 +494,10 @@ function initialiseCollectionsForFront(
     dispatch(editorOpenCollections(collectionsWithArticlesToLoad));
     await dispatch(getCollections(front.collections));
     await dispatch(
-      fetchCardReferencedEntities(collectionsWithArticlesToLoad, browsingStage)
+      fetchCardReferencedEntitiesForCollections(
+        collectionsWithArticlesToLoad,
+        browsingStage
+      )
     );
     await dispatch(
       getOphanDataForCollections(
@@ -580,7 +596,7 @@ function discardDraftChangesToCollection(
 
 export {
   getCollections,
-  fetchCardReferencedEntities,
+  fetchCardReferencedEntitiesForCollections,
   openCollectionsAndFetchTheirArticles,
   closeCollections,
   fetchStaleCollections,

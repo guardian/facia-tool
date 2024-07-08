@@ -50,6 +50,10 @@ class UserDataController(frontsApi: FrontsApi, dynamoClient: DynamoDbClient, val
     updateClipboardContentByFieldName[List[EditionsClientCard]](request.body.asJson, request.user.email, "editionsClipboardArticles")
   }
 
+  def putFeastClipboardContent() = APIAuthAction { request =>
+    updateClipboardContentByFieldName[List[EditionsClientCard]](request.body.asJson, request.user.email, "feastEditionsClipboardCards")
+  }
+
   def putFrontIds() = APIAuthAction { request =>
     val maybeFrontIds: Option[List[String]] = request.body.asJson.flatMap(
       _.asOpt[List[String]])

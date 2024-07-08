@@ -57,6 +57,7 @@ POST        /treats/*collectionId                    controllers.FaciaToolContro
 
 PUT        /userdata/clipboard                       controllers.UserDataController.putClipboardContent()
 PUT        /userdata/editionsClipboard               controllers.UserDataController.putEditionsClipboardContent()
+PUT        /userdata/feastClipboard                  controllers.UserDataController.putFeastClipboardContent()
 PUT        /userdata/frontIds                        controllers.UserDataController.putFrontIds()
 PUT        /userdata/frontIdsByPriority              controllers.UserDataController.putFrontIdsByPriority()
 PUT        /userdata/favouriteFrontIdsByPriority     controllers.UserDataController.putFavouriteFrontIdsByPriority()
@@ -94,6 +95,7 @@ GET         /troubleshoot/*section                   controllers.TroubleshootCon
 
 # React App
 GET         /v2                                      controllers.V2App.index(path="")
+GET         /v2/issues/*issueId                      controllers.V2App.editionIndex(issueId)
 GET         /v2/*path                                controllers.V2App.index(path)
 
 # Grid Usages

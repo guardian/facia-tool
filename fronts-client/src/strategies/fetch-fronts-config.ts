@@ -9,6 +9,7 @@ import { FrontsConfig } from 'types/FaciaApi';
 const fetchFrontsConfigStrategy = (state: State) =>
   runStrategy<Promise<FrontsConfig> | null>(state, {
     none: () => null,
+    feast: (editionId) => fetchEditionsIssueAsConfig(editionId),
     edition: (editionId) => fetchEditionsIssueAsConfig(editionId),
     front: () => fetchFrontsConfig(),
   });
