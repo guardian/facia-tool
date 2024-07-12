@@ -54,7 +54,11 @@ const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
   text-shadow: 0 0 2px black;
 `;
 
-const ImageComponent = styled.div<{ small: boolean; portrait: boolean }>`
+const ImageComponent = styled.div<{
+  small: boolean;
+  portrait: boolean;
+  shouldShowLandscape54: boolean;
+}>`
   ${({ small }) =>
     small
       ? `position: absolute;
@@ -72,6 +76,12 @@ const ImageComponent = styled.div<{ small: boolean; portrait: boolean }>`
     background-position: center;
     `
       : ``}
+  ${({ shouldShowLandscape54 }) =>
+    shouldShowLandscape54 &&
+    `aspect-ratio: 5/4;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;`}
   flex-grow: 1;
   cursor: grab;
 `;
@@ -279,6 +289,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       disabled,
       isSelected,
       isInvalid,
+      criteria,
     } = this.props;
 
     const imageDims = this.getCurrentImageDimensions();
@@ -304,7 +315,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       imageDims &&
       imageDims.height > imageDims.width
     );
-
+    const shouldShowLandscape54 =
+      criteria != null &&
+      this.compareAspectRatio(landscape5To4CardImageCriteria, criteria);
     return (
       <InputImageContainer
         small={small}
@@ -325,7 +338,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           onDragIntentStart={() => this.setState({ isDragging: true })}
           onDragIntentEnd={() => this.setState({ isDragging: false })}
         >
-          <ImageContainer small={small} portrait={portraitImage}>
+          <ImageContainer
+            small={small}
+            portrait={portraitImage}
+            shouldShowLandscape54={shouldShowLandscape54}
+          >
             <ImageComponent
               style={{
                 backgroundImage: `url(${imageUrl}`,
@@ -335,6 +352,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
               onDrop={this.handleDrop}
               small={small}
               portrait={portraitImage}
+              shouldShowLandscape54={shouldShowLandscape54}
             >
               {hasImage ? (
                 <>

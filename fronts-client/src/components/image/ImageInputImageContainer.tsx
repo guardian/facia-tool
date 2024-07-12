@@ -37,7 +37,6 @@ const normalLandscapeStyle = `
 const smallLandscape54Style = `
   width: 100%;
   maxWidth: 180px;
-  aspect-ratio: 5/4;
   padding: 40%;
   minWidth: 50px;
 `;
@@ -45,23 +44,22 @@ const smallLandscape54Style = `
 const normalLandscape54Style = `
   width: 100%;
   maxWidth: 180px;
-  aspect-ratio: 5/4;
 `;
 
 const getVariableImageContainerStyle = ({
   portrait = false,
   small = false,
+  shouldShowLandscape54: shouldShowLandscape54 = false,
 }: {
   small?: boolean;
   portrait?: boolean;
-}) =>
-  portrait
-    ? small
-      ? smallPortaitStyle
-      : normalPortraitStyle
-    : small
-    ? smallLandscapeStyle
-    : normalLandscapeStyle;
+  shouldShowLandscape54?: boolean;
+}) => {
+  if (portrait) return small ? smallPortaitStyle : normalPortraitStyle;
+  else if (shouldShowLandscape54)
+    return small ? smallLandscape54Style : normalLandscape54Style;
+  else return small ? smallLandscapeStyle : normalLandscapeStyle;
+};
 
 // assuming any portrait image (ie height>width)
 // is in the 4:5 ratio for purposes of styling
@@ -69,6 +67,7 @@ const getVariableImageContainerStyle = ({
 export const ImageInputImageContainer = styled.div<{
   small?: boolean;
   portrait?: boolean;
+  shouldShowLandscape54?: boolean;
 }>`
   display: flex;
   flex-direction: column;
