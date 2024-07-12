@@ -48,6 +48,8 @@ import {
   portraitCardImageCriteria,
   COLLECTIONS_USING_PORTRAIT_TRAILS,
   SUPPORT_PORTRAIT_CROPS,
+  COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS,
+  landscape5To4CardImageCriteria,
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
@@ -918,7 +920,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
   private determineCardCriteria = (): Criteria => {
     const { collectionType } = this.props;
-    if (!SUPPORT_PORTRAIT_CROPS || !collectionType) {
+    if (!collectionType) {
+      return landScapeCardImageCriteria;
+    }
+    if (COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS.includes(collectionType)) {
+      return landscape5To4CardImageCriteria;
+    }
+    if (!SUPPORT_PORTRAIT_CROPS) {
       return landScapeCardImageCriteria;
     }
     return COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collectionType)

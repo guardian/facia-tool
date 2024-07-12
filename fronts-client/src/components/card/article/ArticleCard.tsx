@@ -20,6 +20,7 @@ import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { theme } from 'constants/theme';
 import { getPillarColor } from 'util/getPillarColor';
 import { dragEventHasImageData } from 'util/validateImageSrc';
+import { Criteria } from 'types/Grid';
 
 const ArticleBodyContainer = styled(CardBody)<{
   pillarId: string | undefined;
@@ -57,6 +58,7 @@ interface ArticleComponentProps {
   featureFlagPageViewData?: boolean;
   frontId: string;
   collectionId?: string;
+  imageCriteria?: Criteria;
 }
 
 interface ComponentProps extends ArticleComponentProps {
@@ -104,6 +106,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
       canShowPageViewData = false,
       frontId,
       collectionId,
+      imageCriteria,
     } = this.props;
 
     const getArticleData = () =>
@@ -160,6 +163,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
                 isDraggingImageOver={this.state.isDraggingImageOver}
                 featureFlagPageViewData={featureFlagPageViewData}
                 canShowPageViewData={canShowPageViewData}
+                imageCriteria={imageCriteria}
               />
             </ArticleBodyContainer>
           </DragIntentContainer>

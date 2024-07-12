@@ -28,6 +28,7 @@ import {
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import {
   DRAG_DATA_GRID_IMAGE_URL,
+  landscape5To4CardImageCriteria,
   portraitCardImageCriteria,
 } from 'constants/image';
 import ImageDragIntentIndicator from 'components/image/ImageDragIntentIndicator';
@@ -540,6 +541,13 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     window.addEventListener('message', this.onMessage, false);
   };
 
+  private compareAspectRatio = (criteria1: Criteria, criteria2: Criteria) => {
+    return (
+      criteria1.widthAspectRatio == criteria2.widthAspectRatio &&
+      criteria1.heightAspectRatio == criteria2.heightAspectRatio
+    );
+  };
+
   private criteriaToGridUrl = (): string => {
     const { criteria, gridUrl } = this.props;
 
@@ -548,14 +556,12 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     }
 
     // assumes the only criteria that will be passed as props the defined
-    // constants for portrait(4:5) and landscape (5:3)
-    const usingPortrait =
-      portraitCardImageCriteria.widthAspectRatio == criteria.widthAspectRatio &&
-      portraitCardImageCriteria.heightAspectRatio == criteria.heightAspectRatio;
-
-    return usingPortrait
-      ? `${gridUrl}?cropType=portrait`
-      : `${gridUrl}?customRatio=new,5,4`;
+    // constants for portrait(4:5), landscape (5:3) and landscape (5:4)
+    if (this.compareAspectRatio(portraitCardImageCriteria, criteria))
+      return `${gridUrl}?cropType=portrait`;
+    else if (this.compareAspectRatio(landscape5To4CardImageCriteria, criteria))
+      return `${gridUrl}?cropType=landscape-5-4&customRatio=landscape-5-4,5,4`;
+    else return `${gridUrl}?cropType=landscape`;
   };
 
   private getCurrentImageDimensions = () => {

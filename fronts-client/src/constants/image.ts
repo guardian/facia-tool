@@ -8,7 +8,7 @@ export const SUPPORT_PORTRAIT_CROPS =
 export const landScapeCardImageCriteria = {
   minWidth: 400,
   widthAspectRatio: 5,
-  heightAspectRatio: 4,
+  heightAspectRatio: 3,
 };
 
 export const portraitCardImageCriteria = {
@@ -17,8 +17,18 @@ export const portraitCardImageCriteria = {
   heightAspectRatio: 5,
 };
 
+export const landscape5To4CardImageCriteria = {
+  minWidth: 400,
+  widthAspectRatio: 5,
+  heightAspectRatio: 4,
+};
+
 // @todo - add the right collection type when it exists
 export const COLLECTIONS_USING_PORTRAIT_TRAILS: string[] = [];
+
+export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [
+  'fixed/highlights',
+];
 
 export const defaultCardTrailImageCriteria = landScapeCardImageCriteria;
 

@@ -151,6 +151,7 @@ const card = {
 
 const thumbnailImage = {
   width: '83px',
+  height: '50px',
 };
 
 export const theme = {

@@ -31,6 +31,20 @@ const smallLandscapeStyle = `
 const normalLandscapeStyle = `
   width: 100%;
   maxWidth: 180px;
+  height: 115px;
+`;
+
+const smallLandscape54Style = `
+  width: 100%;
+  maxWidth: 180px;
+  aspect-ratio: 5/4;
+  padding: 40%;
+  minWidth: 50px;
+`;
+
+const normalLandscape54Style = `
+  width: 100%;
+  maxWidth: 180px;
   aspect-ratio: 5/4;
 `;
 
