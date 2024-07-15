@@ -80,7 +80,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       val card = EditionsCard("1234456", CardType.Article, now.toInstant.toEpochMilli, None)
       val publishedCard = card.toPublishedCard
       publishedCard.internalPageCode shouldBe 1234456
-      publishedCard.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None)
+      publishedCard.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None, Some("1234456"))
     }
 
     "furniture defaults should be populated correctly" in {
@@ -88,7 +88,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       val card = EditionsCard("123456", CardType.Article, 0, Some(furniture))
       val published = card.toPublishedCard
 
-      published.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None)
+      published.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None, Some("123456"))
     }
 
     val cardImage = Some(Image(Some(100), Some(100), "file://origin.jpg", "file://src.jpg", Some("file://thumb.jpg")))
@@ -126,7 +126,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         imageSrcOverride = Some(PublishedImage(Some(100), Some(100), "file://image-1.jpg")),
         sportScore = Some("sport-score"),
         overrideArticleMainMedia = false,
-        coverCardImages = None
+        coverCardImages = None,
+        id = Some("123456")
       )
     }
 
@@ -147,7 +148,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         imageSrcOverride = None,
         sportScore = Some("sport-score"),
         overrideArticleMainMedia = false,
-        coverCardImages = Some(PublishedCardImage(publishedImage, publishedImage))
+        coverCardImages = Some(PublishedCardImage(publishedImage, publishedImage)),
+        id = Some("123456")
       )
     }
 

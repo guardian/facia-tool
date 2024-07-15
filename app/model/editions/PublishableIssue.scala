@@ -36,7 +36,8 @@ case class PublishedFurniture(
   imageSrcOverride: Option[PublishedImage],
   sportScore: Option[String],
   overrideArticleMainMedia: Boolean,
-  coverCardImages: Option[PublishedCardImage]
+  coverCardImages: Option[PublishedCardImage],
+  id: Option[String] = None
 )
 
 case class PublishedArticle(internalPageCode: Long, furniture: PublishedFurniture)

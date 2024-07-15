@@ -117,8 +117,9 @@ case class EditionsCard(id: String, cardType: CardType, addedOn: Long, metadata:
     })
 
     PublishedArticle(
-      id.toLong,
+      id.toLongOption.getOrElse(0),
       PublishedFurniture(
+        id = Some(id),
         kicker = metadata.flatMap(_.customKicker),
         headlineOverride = metadata.flatMap(_.headline),
         trailTextOverride = metadata.flatMap(_.trailText),
