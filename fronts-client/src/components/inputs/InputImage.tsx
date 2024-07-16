@@ -578,7 +578,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     if (this.compareAspectRatio(portraitCardImageCriteria, criteria))
       return `${gridUrl}?cropType=portrait`;
     else if (this.compareAspectRatio(landscape5To4CardImageCriteria, criteria))
-      return `${gridUrl}?cropType=landscape-5-4&customRatio=landscape-5-4,5,4`;
+      return `${gridUrl}?cropType=Landscape&customRatio=Landscape,5,4`;
     else return `${gridUrl}?cropType=landscape`;
   };
 
