@@ -73,7 +73,6 @@ object CardType extends PlayEnum[CardType] {
   override def values = findValues
 }
 
-
 /**
   * A Card for Editions-based platforms. Analogous to the `Trail` type in
   * facia-scala-client.
@@ -82,6 +81,10 @@ object CardType extends PlayEnum[CardType] {
   * not available in facia-scala-client.
   */
 sealed trait EditionsCard
+
+object EditionsCard {
+  implicit val format: OFormat[EditionsCard] = Json.format[EditionsCard]
+}
 
 case class EditionsArticle(id: String, addedOn: Long, metadata: Option[EditionsArticleMetadata]) extends EditionsCard with Logging {
   def toPublished: PublishedArticle = {
@@ -132,7 +135,7 @@ case class EditionsArticle(id: String, addedOn: Long, metadata: Option[EditionsA
 }
 
 object EditionsArticle extends Logging {
-  implicit val writes: OFormat[EditionsArticle] = Json.format[EditionsArticle]
+  implicit val format: OFormat[EditionsArticle] = Json.format[EditionsArticle]
 
   def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsCard] = {
     for {
@@ -158,12 +161,28 @@ object EditionsArticle extends Logging {
 
 case class EditionsRecipe(id: String, addedOn: Long) extends EditionsCard
 
+object EditionsRecipe {
+  implicit val format: OFormat[EditionsRecipe] = Json.format[EditionsRecipe]
+}
+
 case class EditionsChefMetadata(
   bio: Option[String] = None,
   palette: Option[Palette] = None, 
   chefImageOverride: Option[Image] = None, 
 )
 
+object EditionsChefMetadata {
+  implicit val format: OFormat[EditionsChefMetadata] = Json.format[EditionsChefMetadata]
+}
+
 case class EditionsChef(id: String, addedOn: Long, metadata: Option[EditionsChefMetadata]) extends EditionsCard
 
+object EditionsChef {
+  implicit val format: OFormat[EditionsChef] = Json.format[EditionsChef]
+}
+
 case class EditionsFeastCollection(id: String, addedOn: Long) extends EditionsCard
+
+object EditionsFeastCollection {
+  implicit val format: OFormat[EditionsFeastCollection] = Json.format[EditionsFeastCollection]
+}

@@ -4,45 +4,54 @@ import ai.x.play.json.Jsonx
 import model.editions.{CardMetadata, CoverCardImages, Image, MediaType}
 import play.api.libs.json.OFormat
 import model.editions.Palette
+import model.editions.EditionsArticleMetadata
+import model.editions.EditionsChefMetadata
 
 // This is a subset of the shared model here - https://github.com/guardian/facia-scala-client/blob/master/facia-json/src/main/scala/com/gu/facia/client/models/Collection.scala#L18
 // Why not reuse that model? We only want to surface the fields necessary for editions
 case class ClientCardMetadata(
-  headline: Option[String],
-  customKicker: Option[String],
-  showKickerCustom: Option[Boolean],
-  trailText: Option[String],
-  showQuotedHeadline: Option[Boolean],
-  showByline: Option[Boolean],
-  byline: Option[String],
-  sportScore: Option[String],
+  headline: Option[String] = None,
+  customKicker: Option[String] = None,
+  showKickerCustom: Option[Boolean] = None,
+  trailText: Option[String] = None,
+  showQuotedHeadline: Option[Boolean] = None,
+  showByline: Option[Boolean] = None,
+  byline: Option[String] = None,
+  sportScore: Option[String] = None,
 
-  imageHide: Option[Boolean],
+  imageHide: Option[Boolean] = None,
 
-  imageReplace: Option[Boolean],
-  imageSrc: Option[String],
-  imageSrcHeight: Option[String],
-  imageSrcWidth: Option[String],
-  imageSrcOrigin: Option[String],
-  imageSrcThumb: Option[String],
+  imageReplace: Option[Boolean] = None,
+  imageSrc: Option[String] = None,
+  imageSrcHeight: Option[String] = None,
+  imageSrcWidth: Option[String] = None,
+  imageSrcOrigin: Option[String] = None,
+  imageSrcThumb: Option[String] = None,
 
-  imageCutoutReplace: Option[Boolean],
-  imageCutoutSrc: Option[String],
-  imageCutoutSrcHeight: Option[String],
-  imageCutoutSrcWidth: Option[String],
-  imageCutoutSrcOrigin: Option[String],
+  imageCutoutReplace: Option[Boolean] = None,
+  imageCutoutSrc: Option[String] = None,
+  imageCutoutSrcHeight: Option[String] = None,
+  imageCutoutSrcWidth: Option[String] = None,
+  imageCutoutSrcOrigin: Option[String] = None,
 
-  overrideArticleMainMedia: Option[Boolean],
+  overrideArticleMainMedia: Option[Boolean] = None,
 
-  coverCardImageReplace: Option[Boolean],
-  coverCardMobileImage: Option[Image],
-  coverCardTabletImage: Option[Image],
-  promotionMetric: Option[Double],
-  bio: Option[String], // Chef
-  palette: Option[Palette], // Chef
-  chefImageOverride: Option[Image] // Chef
+  coverCardImageReplace: Option[Boolean] = None,
+  coverCardMobileImage: Option[Image] = None,
+  coverCardTabletImage: Option[Image] = None,
+  promotionMetric: Option[Double] = None,
+  bio: Option[String] = None, // Chef
+  palette: Option[Palette] = None, // Chef
+  chefImageOverride: Option[Image] = None// Chef
 ) {
-  def toCardMetadata: CardMetadata = {
+  def toChefMetadata: EditionsChefMetadata = 
+    EditionsChefMetadata(
+      bio,
+      palette,
+      chefImageOverride
+    )
+
+  def toArticleMetadata: EditionsArticleMetadata = {
     val cutoutImage: Option[Image] = (imageCutoutSrcHeight, imageCutoutSrcWidth, imageCutoutSrc, imageCutoutSrcOrigin) match {
       case (height, width, Some(src), Some(origin)) => Some(Image(height.map(_.toInt), width.map(_.toInt), origin, src))
       // If we don't have an origin, duplicate the src into the origin
@@ -68,7 +77,7 @@ case class ClientCardMetadata(
       case _ => Some(CoverCardImages(coverCardMobileImage, coverCardTabletImage))
     }
 
-    CardMetadata(
+    EditionsArticleMetadata(
       headline,
       customKicker,
       trailText,
@@ -81,10 +90,7 @@ case class ClientCardMetadata(
       replaceImage,
       overrideArticleMainMedia,
       coverCardImages,
-      promotionMetric,
-      bio,
-      palette,
-      chefImageOverride
+      promotionMetric
     )
   }
 }
@@ -92,7 +98,15 @@ case class ClientCardMetadata(
 object ClientCardMetadata {
   implicit val format: OFormat[ClientCardMetadata] = Jsonx.formatCaseClassUseDefaults[ClientCardMetadata]
 
-  def fromCardMetadata(cardMetadata: CardMetadata): ClientCardMetadata = {
+  def fromCardMetadata(cardMetadata: EditionsChefMetadata): ClientCardMetadata = {
+    ClientCardMetadata(
+      bio = cardMetadata.bio,
+      palette = cardMetadata.palette,
+      chefImageOverride = cardMetadata.chefImageOverride
+    )
+  }
+
+  def fromCardMetadata(cardMetadata: EditionsArticleMetadata): ClientCardMetadata = {
     val mediaType: MediaType = cardMetadata.mediaType.getOrElse(MediaType.UseArticleTrail)
 
     ClientCardMetadata(
@@ -125,10 +139,7 @@ object ClientCardMetadata {
       cardMetadata.mediaType.map { _ => mediaType == MediaType.CoverCard},
       cardMetadata.coverCardImages.flatMap(_.mobile),
       cardMetadata.coverCardImages.flatMap(_.tablet),
-      cardMetadata.promotionMetric,
-      cardMetadata.bio,
-      cardMetadata.palette,
-      cardMetadata.chefImageOverride
+      cardMetadata.promotionMetric
     )
   }
 }
