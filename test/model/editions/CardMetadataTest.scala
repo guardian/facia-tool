@@ -5,7 +5,7 @@ import play.api.libs.json.Json
 
 class CardMetadataTest extends FreeSpec with Matchers {
 
-  val cardMetadata = CardMetadata(
+  val cardMetadata = EditionsArticleMetadata(
     Some("headline"),
     Some("customKicker"),
     Some("trailText"),
@@ -66,7 +66,7 @@ class CardMetadataTest extends FreeSpec with Matchers {
     }
 
     "should deserialise correctly" in {
-      Json.fromJson[CardMetadata](Json.parse(cardMetadataAsString)).get shouldBe cardMetadata
+      Json.fromJson[EditionsArticleMetadata](Json.parse(cardMetadataAsString)).get shouldBe cardMetadata
     }
 
   }

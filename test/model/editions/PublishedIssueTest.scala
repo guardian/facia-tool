@@ -71,7 +71,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       id,
       CardType.Article,
       nowMilli,
-      Some(CardMetadata.default)
+      Some(EditionsArticleMetadata.default)
     )
 
   "PublishedCards" - {
@@ -84,7 +84,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     }
 
     "furniture defaults should be populated correctly" in {
-      val furniture = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
+      val furniture = EditionsArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
       val card = EditionsCard("123456", CardType.Article, 0, Some(furniture))
       val published = card.toPublishedCard
 
@@ -92,7 +92,7 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     }
 
     val cardImage = Some(Image(Some(100), Some(100), "file://origin.jpg", "file://src.jpg", Some("file://thumb.jpg")))
-    val cardFurniture = CardMetadata(
+    val cardFurniture = EditionsArticleMetadata(
       Some("headline"),
       Some("kicker"),
       Some("trail-text"),

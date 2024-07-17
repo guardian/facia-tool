@@ -312,5 +312,5 @@ case class EditionsCollectionSkeleton(
 
 case class EditionsArticleSkeleton(
                                     id: String,
-                                    metadata: CardMetadata
+                                    metadata: EditionsArticleMetadata
 )

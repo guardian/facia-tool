@@ -22,7 +22,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   private val moreRecentThenCreationTime = now.toInstant.toEpochMilli + 1
 
-  private val simpleMetadata = CardMetadata(
+  private val simpleMetadata = EditionsArticleMetadata(
     customKicker = Some("Kicker"),
     headline = None,
     trailText = None,
@@ -75,7 +75,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
     EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), capiQueryTimeWindow, hidden = false)
 
-  private def article(id: String): EditionsArticleSkeleton = EditionsArticleSkeleton(id, CardMetadata.default)
+  private def article(id: String): EditionsArticleSkeleton = EditionsArticleSkeleton(id, EditionsArticleMetadata.default)
 
   "should insert an empty issue" taggedAs UsesDatabase in {
     val id = insertSkeletonIssue(2019, 9, 30)

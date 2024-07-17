@@ -141,7 +141,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
   private def mapToSkeleton(sortedArticleItems: List[Prefill]): List[EditionsArticleSkeleton] = {
     sortedArticleItems
       .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker, promotionMetric, _) =>
-        val cardMetadata = CardMetadata.default.copy(
+        val cardMetadata = EditionsArticleMetadata.default.copy(
           showByline = if (metaData.showByline) Some(true) else None,
           showQuotedHeadline = if (metaData.showQuotedHeadline) Some(true) else None,
           mediaType = mediaType,

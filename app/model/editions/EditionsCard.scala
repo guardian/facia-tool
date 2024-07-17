@@ -5,6 +5,11 @@ import enumeratum.{EnumEntry, PlayEnum}
 import logging.Logging
 import play.api.libs.json.{JsResult, Json, OFormat}
 import scalikejdbc.WrappedResultSet
+import play.api.libs.json.JsValue
+import play.api.libs.json.JsPath
+import play.api.libs.json.JsonValidationError
+import play.api.libs.json.JsError
+import play.api.libs.json.Reads
 
 case class Image (
   height: Option[Int],
@@ -33,7 +38,7 @@ object Palette {
     implicit val format: OFormat[Palette] = Json.format[Palette]
 }
 
-case class CardMetadata(
+case class EditionsArticleMetadata(
   headline: Option[String],
   customKicker: Option[String],
   trailText: Option[String],
@@ -49,16 +54,13 @@ case class CardMetadata(
   replaceImage: Option[Image],
   overrideArticleMainMedia: Option[Boolean],
   coverCardImages: Option[CoverCardImages],
-  promotionMetric: Option[Double],
-  bio: Option[String] = None, // Chef,
-  palette: Option[Palette] = None, // Chef
-  chefImageOverride: Option[Image] = None, // Chef
+  promotionMetric: Option[Double]
 )
 
-object CardMetadata {
-  implicit val format: OFormat[CardMetadata] = Json.format[CardMetadata]
+object EditionsArticleMetadata {
+  implicit val format: OFormat[EditionsArticleMetadata] = Json.format[EditionsArticleMetadata]
 
-  val default = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None, None)
+  val default = EditionsArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
 }
 
 sealed abstract class CardType extends EnumEntry with Uncapitalised with Hyphencase
@@ -71,24 +73,18 @@ object CardType extends PlayEnum[CardType] {
   override def values = findValues
 }
 
+
 /**
   * A Card for Editions-based platforms. Analogous to the `Trail` type in
   * facia-scala-client.
   *
-  * I suspect it's distinct from `Trail` because the Editions cards have
-  * slightly different properties:
-  *   - `frontPublicationDate` does not make sense in this context and is
-  *     replaced with `addedOn`
-  *   - `publishedBy` is not required ... and `Trail` is in a library upstream
-  *     that is not used by the Editions product.
-  *
-  * Ideally, this and Trail would be perhaps be represented by a sealed trait
-  * and a discriminator field (arguably cardType) – the client does not
-  * distinguish between these two types.
+  * Distinct from `Trail` because Editions Cards include Feast-specific entities that are 
+  * not available in facia-scala-client.
   */
-case class EditionsCard(id: String, cardType: CardType, addedOn: Long, metadata: Option[CardMetadata]) extends Logging {
+sealed trait EditionsCard
 
-  def toPublishedCard: PublishedArticle = {
+case class EditionsArticle(id: String, addedOn: Long, metadata: Option[EditionsArticleMetadata]) extends EditionsCard with Logging {
+  def toPublished: PublishedArticle = {
     var mediaType: Option[MediaType] = metadata.flatMap(_.mediaType)
 
     val coverCardImages = metadata.flatMap { meta =>
@@ -135,8 +131,8 @@ case class EditionsCard(id: String, cardType: CardType, addedOn: Long, metadata:
   }
 }
 
-object EditionsCard extends Logging {
-  implicit val writes: OFormat[EditionsCard] = Json.format[EditionsCard]
+object EditionsArticle extends Logging {
+  implicit val writes: OFormat[EditionsArticle] = Json.format[EditionsArticle]
 
   def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsCard] = {
     for {
@@ -144,15 +140,14 @@ object EditionsCard extends Logging {
       cardType <- rs.stringOpt(prefix + "card_type").flatMap(CardType.withNameOption)
       addedOn <- rs.zonedDateTimeOpt(prefix + "added_on").map(_.toInstant.toEpochMilli)
     } yield
-      EditionsCard(
+      EditionsArticle(
         id,
-        cardType,
         addedOn,
         rs.stringOpt(prefix + "metadata").map(
-          s => Json.parse(s).validate[CardMetadata] match {
+          s => Json.parse(s).validate[EditionsArticleMetadata] match {
             case result if (result.isError) => {
               logger.error(s"Unable to parse card from database: \n${s}")
-              CardMetadata.default
+              EditionsArticleMetadata.default
             }
             case result@_ => result.get
           }
@@ -160,3 +155,15 @@ object EditionsCard extends Logging {
       )
   }
 }
+
+case class EditionsRecipe(id: String, addedOn: Long) extends EditionsCard
+
+case class EditionsChefMetadata(
+  bio: Option[String] = None,
+  palette: Option[Palette] = None, 
+  chefImageOverride: Option[Image] = None, 
+)
+
+case class EditionsChef(id: String, addedOn: Long, metadata: Option[EditionsChefMetadata]) extends EditionsCard
+
+case class EditionsFeastCollection(id: String, addedOn: Long) extends EditionsCard

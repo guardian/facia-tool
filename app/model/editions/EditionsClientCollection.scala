@@ -1,17 +1,38 @@
 package model.editions
 
-import model.editions.client.ClientCardMetadata
+import model.editions.client.ClientArticleMetadata
 import play.api.libs.json.{Json, OFormat}
 import services.editions.prefills.CapiQueryTimeWindow
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
 
-case class EditionsClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long, meta: Option[ClientCardMetadata])
+case class EditionsClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long, meta: Option[ClientArticleMetadata] = None)
 
 object EditionsClientCard {
   implicit val format: OFormat[EditionsClientCard] = Json.format[EditionsClientCard]
 
-  def fromCard(card: EditionsCard): EditionsClientCard = {
+  def fromCard(card: EditionsCard): EditionsClientCard = card match {
+    case EditionsArticle(id, addedOn, metadata) => 
+      EditionsClientCard(
+        id,
+        Some(card.cardType),
+        card.addedOn,
+        card.metadata.map(ClientArticleMetadata.fromCardMetadata)
+      )
+    case EditionsRecipe(id, addedOn) => 
+      EditionsClientCard(
+        id,
+        Some(CardType.Recipe),
+        card.addedOn
+      )
+    case EditionsChef(id, addedOn, metadata) => 
+      EditionsClientCard(
+        id,
+        Some(CardType.Recipe),
+        card.addedOn
+      )
+    case EditionsFeastCollection(id, addedOn) => 
+  }
     val id = card.cardType match {
       case CardType.Article => "internal-code/page/" + card.id
       case _ => card.id
@@ -21,7 +42,7 @@ object EditionsClientCard {
       id,
       Some(card.cardType),
       card.addedOn,
-      card.metadata.map(ClientCardMetadata.fromCardMetadata)
+      card.metadata.map(ClientArticleMetadata.fromCardMetadata)
     )
   }
   def toCard(card: EditionsClientCard): EditionsCard = {

@@ -1,6 +1,6 @@
 package model.editions.client
 
-import model.editions.{CardMetadata, CoverCardImages, Image, MediaType}
+import model.editions.{EditionsArticleMetadata, CoverCardImages, Image, MediaType}
 import org.scalatest.{FreeSpec, Matchers}
 
 class ClientCardMetadataTest extends FreeSpec with Matchers {
@@ -8,7 +8,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
   "ClientCardMetadata from CardMetadata" - {
 
     "should recover promotion metric from a simple CardMetadata" in {
-      val cardMetadata = CardMetadata(
+      val cardMetadata = EditionsArticleMetadata(
         Some("Britain has summer!"),
         Some("Breaking News"),
         Some("Goneth the rain, cometh the sun"),
@@ -23,12 +23,12 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None,
         Some(1)
       )
-      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
       clientCardMetadata.promotionMetric should be (Some(1))
     }
 
     "should send promotion metric to a simple CardMetadata" in {
-      val clientCardMetadata = ClientCardMetadata(
+      val clientCardMetadata = ClientArticleMetadata(
         Some("Britain has summer!"),
         None,
         None,
@@ -68,7 +68,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
     }
 
     "should serialise from a simple CardMetadata" in {
-      val cardMetadata = CardMetadata(
+      val cardMetadata = EditionsArticleMetadata(
         Some("Britain has summer!"),
         Some("Breaking News"),
         Some("Goneth the rain, cometh the sun"),
@@ -84,7 +84,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
 
-      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
 
       clientCardMetadata.headline.isDefined shouldBe true
       clientCardMetadata.headline.get shouldBe "Britain has summer!"
@@ -102,7 +102,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
     }
 
     "should persist cutout image when selected override is hide image" in {
-      val cardMetadata = CardMetadata(
+      val cardMetadata = EditionsArticleMetadata(
         Some("New Pokemon discovered"),
         None,
         None,
@@ -118,7 +118,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
 
-      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
 
       clientCardMetadata.headline.isDefined shouldBe true
       clientCardMetadata.headline.get shouldBe "New Pokemon discovered"
@@ -136,7 +136,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
     }
 
     "should persist slideshow images when selected override is replace image" in {
-      val cardMetadata = CardMetadata(
+      val cardMetadata = EditionsArticleMetadata(
         Some("Elephants declared best animal"),
         None,
         None,
@@ -152,7 +152,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
 
-      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
 
       clientCardMetadata.headline.isDefined shouldBe true
       clientCardMetadata.headline.get shouldBe "Elephants declared best animal"
@@ -167,7 +167,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
     }
 
     "should only set an image override boolean if its fields are also set" in {
-      val cardMetadata = CardMetadata(
+      val cardMetadata = EditionsArticleMetadata(
         Some("Teenage Mutant Ninja Turtles"),
         None,
         None,
@@ -183,13 +183,13 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
 
-      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
 
       clientCardMetadata.imageReplace shouldBe None
     }
 
     "should explicitly set cutout to false if media type is set but not to a cutout" in {
-      val cardMetadata = CardMetadata(
+      val cardMetadata = EditionsArticleMetadata(
         Some("Teenage Mutant Ninja Turtles"),
         None,
         None,
@@ -205,7 +205,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
 
-      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
 
       clientCardMetadata.imageCutoutReplace shouldBe Some(false)
     }
@@ -213,7 +213,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
 
   "ClientCardMetadata to CardMetadata" - {
 
-    def getEmptyClientCardMetadata = ClientCardMetadata(
+    def getEmptyClientCardMetadata = ClientArticleMetadata(
       None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
     )
 
