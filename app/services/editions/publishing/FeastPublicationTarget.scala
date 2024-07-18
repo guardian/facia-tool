@@ -3,9 +3,9 @@ package services.editions.publishing
 import com.amazonaws.services.sns.AmazonSNS
 import com.amazonaws.services.sns.model.{MessageAttributeValue, PublishRequest}
 import conf.ApplicationConfiguration
-import model.FeastAppModel.{Chef, ContainerItem, FeastAppContainer, FeastAppCuration, FeastCollection, Palette, Recipe, RecipeIdentifier}
+import model.FeastAppModel.{Chef, ContainerItem, FeastAppContainer, FeastAppCuration, FeastCollection, Recipe, RecipeIdentifier}
 import model.editions.PublishAction.PublishAction
-import model.editions.{EditionsArticle, EditionsCard, EditionsChef, EditionsCollection, EditionsFeastCollection, EditionsIssue, EditionsRecipe, PublishableIssue, PublishedArticle, PublishedCollection}
+import model.editions.{EditionsArticle, EditionsCard, EditionsChef, EditionsCollection, EditionsFeastCollection, EditionsIssue, EditionsRecipe}
 import play.api.libs.json.{Json, Writes}
 import util.TimestampGenerator
 

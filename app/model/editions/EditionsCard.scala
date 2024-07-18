@@ -4,12 +4,8 @@ import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
 import logging.Logging
 import model.editions.EditionsArticle.logger
-import play.api.libs.json.{JsResult, Json, OFormat}
+import play.api.libs.json.{Json, OFormat}
 import scalikejdbc.WrappedResultSet
-import play.api.libs.json.JsValue
-import play.api.libs.json.JsPath
-import play.api.libs.json.JsonValidationError
-import play.api.libs.json.JsError
 import play.api.libs.json.Reads
 
 case class Image (

@@ -9,7 +9,7 @@ import org.scalatestplus.mockito.MockitoSugar
 import services.editions.db.EditionsDB
 
 import java.time.LocalDate
-import scala.util.{Failure, Try}
+import scala.util.Try
 import model.editions.CuratedPlatform
 import model.editions.PublishAction.PublishAction
 

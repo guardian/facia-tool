@@ -5,7 +5,6 @@ import model.editions.{CuratedPlatform, Edition, EditionsIssue, PublishAction}
 import services.editions.publishing.PublishedIssueFormatters._
 import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
 import play.api.libs.json.Json
-import services.editions.publishing.PublishedIssueFormatters._
 import scala.io.Source
 
 class EditionsAppPublicationTargetTest extends FreeSpec with Matchers with OptionValues with EitherValues {

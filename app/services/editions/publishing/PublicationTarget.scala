@@ -1,6 +1,6 @@
 package services.editions.publishing
 
-import model.editions.{EditionsIssue, PublishableIssue}
+import model.editions.EditionsIssue
 import model.editions.PublishAction.PublishAction
 import play.api.libs.json.Writes
 

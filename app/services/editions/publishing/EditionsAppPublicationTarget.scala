@@ -1,9 +1,9 @@
 package services.editions.publishing
 
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.{ObjectMetadata, PutObjectRequest, PutObjectResult}
+import com.amazonaws.services.s3.model.{ObjectMetadata, PutObjectRequest}
 import com.amazonaws.util.StringInputStream
-import model.editions.{EditionsIssue, PublishAction, PublishableIssue}
+import model.editions.EditionsIssue
 import play.api.libs.json.{Json, Writes}
 import PublishedIssueFormatters._
 import com.typesafe.scalalogging.LazyLogging

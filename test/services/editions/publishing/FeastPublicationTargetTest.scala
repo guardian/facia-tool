@@ -4,14 +4,14 @@ import com.amazonaws.services.sns.AmazonSNSClient
 import com.amazonaws.services.sns.model.{MessageAttributeValue, PublishRequest, PublishResult}
 import conf.ApplicationConfiguration
 import model.FeastAppModel
-import model.editions.{CuratedPlatform, Edition, EditionsCollection, EditionsFront, EditionsIssue, EditionsRecipe, PublishAction, PublishableIssue, PublishedArticle, PublishedCollection, PublishedFront}
+import model.editions.{CuratedPlatform, Edition, EditionsCollection, EditionsFront, EditionsIssue, EditionsRecipe, PublishAction}
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers._
 import org.scalatest.{FreeSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import play.api.libs.json.Json
-import model.FeastAppModel.{Chef, FeastAppContainer, FeastAppCuration, Recipe, RecipeIdentifier}
+import model.FeastAppModel.{Chef, FeastAppContainer, Recipe, RecipeIdentifier}
 import util.TimestampGenerator
 
 import java.time.LocalDate
