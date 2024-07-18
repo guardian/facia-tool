@@ -16,8 +16,8 @@ import model.editions.PublishAction.PublishAction
 class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
   "publishing.publish" - {
     "should send Feast editions to Feast publication backend" - {
-      val editionsAppPublicationBucket = mock[EditionsBucket]
-      val editionsAppPreviewBucket = mock[EditionsBucket]
+      val editionsAppPublicationBucket = mock[EditionsAppPublicationTarget]
+      val editionsAppPreviewBucket = mock[EditionsAppPublicationTarget]
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
@@ -49,8 +49,8 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
     }
 
     "should send Editorial editions to Editions publication backend" - {
-      val editionsAppPublicationBucket = mock[EditionsBucket]
-      val editionsAppPreviewBucket = mock[EditionsBucket]
+      val editionsAppPublicationBucket = mock[EditionsAppPublicationTarget]
+      val editionsAppPreviewBucket = mock[EditionsAppPublicationTarget]
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
@@ -84,8 +84,8 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
 
   "publishing.updatePreview" - {
     "should send Editorial editions to Editions preview backend" - {
-      val editionsAppPublicationBucket = mock[EditionsBucket]
-      val editionsAppPreviewBucket = mock[EditionsBucket]
+      val editionsAppPublicationBucket = mock[EditionsAppPublicationTarget]
+      val editionsAppPreviewBucket = mock[EditionsAppPublicationTarget]
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
@@ -117,8 +117,8 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
     }
 
     "should do nothing if you pass a Feast edition" - {
-      val editionsAppPublicationBucket = mock[EditionsBucket]
-      val editionsAppPreviewBucket = mock[EditionsBucket]
+      val editionsAppPublicationBucket = mock[EditionsAppPublicationTarget]
+      val editionsAppPreviewBucket = mock[EditionsAppPublicationTarget]
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 

@@ -21,7 +21,7 @@ import services._
 import services.editions.EditionsTemplating
 import services.editions.db.EditionsDB
 import services.editions.publishing.events.PublishEventsListener
-import services.editions.publishing.{EditionsBucket, FeastPublicationTarget, Publishing}
+import services.editions.publishing.{EditionsAppPublicationTarget, FeastPublicationTarget, Publishing}
 import slices.{Containers, FixedContainers}
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import thumbnails.ContainerThumbnails
@@ -62,8 +62,8 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   // Editions services
   val editionsDb = new EditionsDB(config.postgres.url, config.postgres.user, config.postgres.password)
   val templating = new EditionsTemplating(EditionsAppTemplates.templates ++ FeastAppTemplates.templates, capi, ophan)
-  val publishingBucket = new EditionsBucket(s3Client, config.aws.publishedEditionsIssuesBucket)
-  val previewBucket = new EditionsBucket(s3Client, config.aws.previewEditionsIssuesBucket)
+  val publishingBucket = new EditionsAppPublicationTarget(s3Client, config.aws.publishedEditionsIssuesBucket)
+  val previewBucket = new EditionsAppPublicationTarget(s3Client, config.aws.previewEditionsIssuesBucket)
   val feastPublicationTarget = new FeastPublicationTarget(snsClient, config, TimestampGenerator())
   val editionsPublishing = new Publishing(publishingBucket, previewBucket, feastPublicationTarget, editionsDb)
   PublishEventsListener.apply(config, editionsDb).start

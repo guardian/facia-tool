@@ -173,5 +173,4 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
       verify(mockSNS).publish(expectedRequest)
     }
   }
-
 }

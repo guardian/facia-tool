@@ -12,7 +12,7 @@ import org.apache.commons.lang3.builder.{ReflectionToStringBuilder, ToStringStyl
 
 import java.nio.charset.StandardCharsets
 
-object EditionsBucket extends LazyLogging {
+object EditionsAppPublicationTarget extends LazyLogging {
 
   val baseMetadata: ObjectMetadata = {
     val metadata = new ObjectMetadata()
@@ -33,7 +33,7 @@ object EditionsBucket extends LazyLogging {
   }
 }
 
-class EditionsBucket(s3Client: AmazonS3, bucketName: String) extends PublicationTarget with LazyLogging {
+class EditionsAppPublicationTarget(s3Client: AmazonS3, bucketName: String) extends PublicationTarget with LazyLogging {
   override def putIssue(issue: EditionsIssue, version: String, action: PublishAction): Unit = {
     val outputKey = createKey(issue, version)
     val publishableIssue = issue.toPublishableIssue(version, action)
@@ -41,13 +41,13 @@ class EditionsBucket(s3Client: AmazonS3, bucketName: String) extends Publication
   }
 
   override def putIssueJson[T: Writes](content: T, key:String): Unit = {
-    val request = EditionsBucket.createPutObjectRequest(bucketName, key, content)
+    val request = EditionsAppPublicationTarget.createPutObjectRequest(bucketName, key, content)
     logger.info(ReflectionToStringBuilder.toString(request, ToStringStyle.MULTI_LINE_STYLE))
     s3Client.putObject(request)
   }
 
   def putEditionsList(rawJson: String): Unit = {
-    val metadata = EditionsBucket.baseMetadata
+    val metadata = EditionsAppPublicationTarget.baseMetadata
     metadata.setContentLength(rawJson.getBytes(StandardCharsets.UTF_8).length)
     val request = new PutObjectRequest(bucketName, "editionsList", new StringInputStream(rawJson), metadata)
     s3Client.putObject(request)
