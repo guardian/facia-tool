@@ -10,11 +10,11 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
   isDraggingImageOver?: boolean;
   imageHide?: boolean;
   isPortrait?: boolean;
+  showLandscape54?: boolean;
 }>`
   position: relative;
   width: ${theme.thumbnailImage.width};
   min-width: ${theme.thumbnailImage.width};
-  height: ${theme.thumbnailImage.height};
   color: white;
   font-size: 10px;
   font-weight: bold;
@@ -28,6 +28,14 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
     background-repeat: no-repeat;
     background-position-x: center;
   `}
+  ${({ showLandscape54 }) =>
+    showLandscape54
+      ? `
+    aspect-ratio: 5/4;
+    background-position: center center;
+    background-repeat: no-repeat;
+  `
+      : `height: ${theme.thumbnailImage.height};`}
 
   ${({ isDraggingImageOver }) =>
     isDraggingImageOver &&

@@ -31,6 +31,8 @@ import {
   landScapeCardImageCriteria,
   portraitCardImageCriteria,
   defaultCardTrailImageCriteria,
+  landscape5To4CardImageCriteria,
+  COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS,
 } from 'constants/image';
 import Sublinks from '../FrontsEdit/CollectionComponents/Sublinks';
 import {
@@ -186,6 +188,7 @@ class Card extends React.Component<CardContainerProps> {
               onImageDrop={this.handleImageDrop}
               canDragImage={canDragImage}
               canShowPageViewData={canShowPageViewData}
+              imageCriteria={this.determineCardCriteria()}
             >
               <EditModeVisibility visibleMode="fronts">
                 {getSublinks}
@@ -422,7 +425,15 @@ class Card extends React.Component<CardContainerProps> {
       return defaultCardTrailImageCriteria;
     }
 
-    if (!SUPPORT_PORTRAIT_CROPS || !collectionType) {
+    if (!collectionType) {
+      return landScapeCardImageCriteria;
+    }
+
+    if (COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS.includes(collectionType)) {
+      return landscape5To4CardImageCriteria;
+    }
+
+    if (!SUPPORT_PORTRAIT_CROPS) {
       return landScapeCardImageCriteria;
     }
 

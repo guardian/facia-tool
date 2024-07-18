@@ -28,6 +28,7 @@ import {
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import {
   DRAG_DATA_GRID_IMAGE_URL,
+  landscape5To4CardImageCriteria,
   portraitCardImageCriteria,
 } from 'constants/image';
 import ImageDragIntentIndicator from 'components/image/ImageDragIntentIndicator';
@@ -53,7 +54,11 @@ const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
   text-shadow: 0 0 2px black;
 `;
 
-const ImageComponent = styled.div<{ small: boolean; portrait: boolean }>`
+const ImageComponent = styled.div<{
+  small: boolean;
+  portrait: boolean;
+  shouldShowLandscape54: boolean;
+}>`
   ${({ small }) =>
     small
       ? `position: absolute;
@@ -71,6 +76,12 @@ const ImageComponent = styled.div<{ small: boolean; portrait: boolean }>`
     background-position: center;
     `
       : ``}
+  ${({ shouldShowLandscape54 }) =>
+    shouldShowLandscape54 &&
+    `aspect-ratio: 5/4;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;`}
   flex-grow: 1;
   cursor: grab;
 `;
@@ -278,6 +289,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       disabled,
       isSelected,
       isInvalid,
+      criteria,
     } = this.props;
 
     const imageDims = this.getCurrentImageDimensions();
@@ -303,7 +315,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       imageDims &&
       imageDims.height > imageDims.width
     );
-
+    const shouldShowLandscape54 =
+      criteria != null &&
+      this.compareAspectRatio(landscape5To4CardImageCriteria, criteria);
     return (
       <InputImageContainer
         small={small}
@@ -324,7 +338,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
           onDragIntentStart={() => this.setState({ isDragging: true })}
           onDragIntentEnd={() => this.setState({ isDragging: false })}
         >
-          <ImageContainer small={small} portrait={portraitImage}>
+          <ImageContainer
+            small={small}
+            portrait={portraitImage}
+            shouldShowLandscape54={shouldShowLandscape54}
+          >
             <ImageComponent
               style={{
                 backgroundImage: `url(${imageUrl}`,
@@ -334,6 +352,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
               onDrop={this.handleDrop}
               small={small}
               portrait={portraitImage}
+              shouldShowLandscape54={shouldShowLandscape54}
             >
               {hasImage ? (
                 <>
@@ -540,6 +559,13 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     window.addEventListener('message', this.onMessage, false);
   };
 
+  private compareAspectRatio = (criteria1: Criteria, criteria2: Criteria) => {
+    return (
+      criteria1.widthAspectRatio == criteria2.widthAspectRatio &&
+      criteria1.heightAspectRatio == criteria2.heightAspectRatio
+    );
+  };
+
   private criteriaToGridUrl = (): string => {
     const { criteria, gridUrl } = this.props;
 
@@ -548,14 +574,12 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     }
 
     // assumes the only criteria that will be passed as props the defined
-    // constants for portrait(4:5) and landscape (5:3)
-    const usingPortrait =
-      portraitCardImageCriteria.widthAspectRatio == criteria.widthAspectRatio &&
-      portraitCardImageCriteria.heightAspectRatio == criteria.heightAspectRatio;
-
-    return usingPortrait
-      ? `${gridUrl}?cropType=portrait`
-      : `${gridUrl}?cropType=landscape`;
+    // constants for portrait(4:5), landscape (5:3) and landscape (5:4)
+    if (this.compareAspectRatio(portraitCardImageCriteria, criteria))
+      return `${gridUrl}?cropType=portrait`;
+    else if (this.compareAspectRatio(landscape5To4CardImageCriteria, criteria))
+      return `${gridUrl}?cropType=Landscape&customRatio=Landscape,5,4`;
+    else return `${gridUrl}?cropType=landscape`;
   };
 
   private getCurrentImageDimensions = () => {

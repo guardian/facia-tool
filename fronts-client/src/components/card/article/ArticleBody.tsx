@@ -35,6 +35,8 @@ import PageViewDataWrapper from '../../PageViewDataWrapper';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { getPaths } from 'util/paths';
 import { getMaybeDimensionsFromWidthAndHeight } from 'util/validateImageSrc';
+import { Criteria } from 'types/Grid';
+import { landscape5To4CardImageCriteria } from 'constants/image';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
   flex-shrink: 0;
@@ -134,6 +136,7 @@ interface ArticleBodyProps {
   collectionId?: string;
   imageSrcWidth?: string;
   imageSrcHeight?: string;
+  imageCriteria?: Criteria;
 }
 
 const articleBodyDefault = React.memo(
@@ -181,6 +184,7 @@ const articleBodyDefault = React.memo(
     promotionMetric,
     imageSrcWidth,
     imageSrcHeight,
+    imageCriteria,
   }: ArticleBodyProps) => {
     const displayByline = size === 'default' && showByline && byline;
     const now = Date.now();
@@ -194,6 +198,12 @@ const articleBodyDefault = React.memo(
       !!imageReplace &&
       thumbnailDims &&
       thumbnailDims.height > thumbnailDims.width;
+    const showThumbnailInLandscape54 =
+      imageCriteria &&
+      imageCriteria.widthAspectRatio ===
+        landscape5To4CardImageCriteria.widthAspectRatio &&
+      imageCriteria.heightAspectRatio ===
+        landscape5To4CardImageCriteria.heightAspectRatio;
 
     return (
       <>
@@ -309,6 +319,7 @@ const articleBodyDefault = React.memo(
                   url={thumbnail}
                   isDraggingImageOver={isDraggingImageOver}
                   isPortrait={thumbnailIsPortrait}
+                  showLandscape54={showThumbnailInLandscape54}
                 >
                   {cutoutThumbnail ? (
                     <ThumbnailCutout src={cutoutThumbnail} />
