@@ -27,9 +27,10 @@ class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with E
       platform = CuratedPlatform.Editions
     )
 
+    val previewIssue = issue.toPreviewIssue
+
     "publication is preview" - {
-      val previewIssue = issue.toPreviewIssue
-      val key = EditionsBucket.createKey(previewIssue)
+      val key = PublicationTarget.createKey(issue, "preview")
       val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", key, previewIssue)
 
       "key is correct" in {
@@ -49,7 +50,7 @@ class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with E
 
     "publication is version called banana" - {
       val publishedIssue = issue.toPublishableIssue("banana", PublishAction.proof)
-      val key = EditionsBucket.createKey(publishedIssue)
+      val key = PublicationTarget.createKey(issue, "banana")
       val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", key, publishedIssue)
 
       "key is correct" in {

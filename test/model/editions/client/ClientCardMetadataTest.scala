@@ -23,12 +23,12 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None,
         Some(1)
       )
-      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
       clientCardMetadata.promotionMetric should be (Some(1))
     }
 
     "should send promotion metric to a simple CardMetadata" in {
-      val clientCardMetadata = ClientArticleMetadata(
+      val clientCardMetadata = ClientCardMetadata(
         Some("Britain has summer!"),
         None,
         None,
@@ -63,7 +63,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None,
         None
       )
-      val cardMetadata = clientCardMetadata.toCardMetadata
+      val cardMetadata = clientCardMetadata.toArticleMetadata
       cardMetadata.promotionMetric should be (Some(1))
     }
 
@@ -84,7 +84,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
 
-      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
 
       clientCardMetadata.headline.isDefined shouldBe true
       clientCardMetadata.headline.get shouldBe "Britain has summer!"
@@ -118,7 +118,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
 
-      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
 
       clientCardMetadata.headline.isDefined shouldBe true
       clientCardMetadata.headline.get shouldBe "New Pokemon discovered"
@@ -152,7 +152,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
 
-      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
 
       clientCardMetadata.headline.isDefined shouldBe true
       clientCardMetadata.headline.get shouldBe "Elephants declared best animal"
@@ -183,7 +183,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
 
-      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
 
       clientCardMetadata.imageReplace shouldBe None
     }
@@ -205,7 +205,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
 
-      val clientCardMetadata = ClientArticleMetadata.fromCardMetadata(cardMetadata)
+      val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
 
       clientCardMetadata.imageCutoutReplace shouldBe Some(false)
     }
@@ -213,7 +213,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
 
   "ClientCardMetadata to CardMetadata" - {
 
-    def getEmptyClientCardMetadata = ClientArticleMetadata(
+    def getEmptyClientCardMetadata = ClientCardMetadata(
       None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
     )
 
@@ -232,7 +232,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         .copy(imageCutoutSrcHeight = Some("100"))
         .copy(imageCutoutSrcWidth = Some("100"))
         .copy(imageCutoutSrcOrigin = Some("file://broom.gif"))
-        .toCardMetadata
+        .toArticleMetadata
 
       cardMetadata.headline.isDefined shouldBe true
       cardMetadata.headline.get shouldBe "New Harry Potter book being written"
@@ -269,7 +269,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         .copy(imageCutoutSrc = Some("file://broom.jpg"))
         .copy(coverCardMobileImage = Some(Image(Some(100), Some(100), "file://origin.png", "file://src.png", Some("file://thumb.png"))))
         .copy(coverCardTabletImage = Some(Image(Some(100), Some(100), "file://origin.png", "file://src.png", Some("file://thumb.png"))))
-        .toCardMetadata
+        .toArticleMetadata
 
       cardMetadata.mediaType.isDefined shouldBe true
       cardMetadata.mediaType.get shouldBe MediaType.Image

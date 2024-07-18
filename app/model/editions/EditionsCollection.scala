@@ -19,7 +19,9 @@ case class EditionsCollection(
   def toPublishedCollection: PublishedCollection = PublishedCollection(
     id,
     displayName,
-    items.map(_.toPublishedCard)
+    items.collect {
+      case article: EditionsArticle => EditionsArticle.toPublishedArticle(article)
+    }
   )
 }
 

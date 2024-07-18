@@ -1,9 +1,8 @@
 package services.editions.db
 
 import java.time._
-
 import model.editions.internal.PrefillUpdate
-import model.editions.{CapiPrefillQuery, Edition, EditionsCollection, PathType}
+import model.editions.{CapiPrefillQuery, Edition, EditionsArticle, EditionsChef, EditionsCollection, PathType}
 import model.forms.GetCollectionsFilter
 import play.api.libs.json.Json
 import scalikejdbc._
@@ -110,6 +109,12 @@ trait CollectionsQueries {
     """.execute.apply()
 
     collection.items.zipWithIndex.foreach { case (card, index) =>
+      val metadataJson = card match {
+        case EditionsArticle(_, _, metadata) => metadata.map(m => Json.toJson(m).toString)
+        case EditionsChef(_, _, metadata) => metadata.map(m => Json.toJson(m).toString)
+        case _ => "{}"
+      }
+
       val addedOn = EditionsDB.dateTimeFromMillis(card.addedOn)
       sql"""
           INSERT INTO cards (
@@ -119,7 +124,7 @@ trait CollectionsQueries {
           index,
           added_on,
           metadata
-          ) VALUES (${collection.id}, ${card.id}, ${card.cardType.entryName}, $index, $addedOn, ${card.metadata.map(m => Json.toJson(m).toString)}::JSONB)
+          ) VALUES (${collection.id}, ${card.id}, ${card.cardType.entryName}, $index, $addedOn, $metadataJson::JSONB)
        """.execute.apply()
     }
 

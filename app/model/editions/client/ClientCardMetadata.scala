@@ -1,7 +1,8 @@
 package model.editions.client
 
 import ai.x.play.json.Jsonx
-import model.editions.{CardMetadata, CoverCardImages, Image, MediaType}
+import play.api.libs.json.JsSuccess
+import model.editions.{CoverCardImages, Image, MediaType}
 import play.api.libs.json.OFormat
 import model.editions.Palette
 import model.editions.EditionsArticleMetadata
@@ -18,24 +19,19 @@ case class ClientCardMetadata(
   showByline: Option[Boolean] = None,
   byline: Option[String] = None,
   sportScore: Option[String] = None,
-
   imageHide: Option[Boolean] = None,
-
   imageReplace: Option[Boolean] = None,
   imageSrc: Option[String] = None,
   imageSrcHeight: Option[String] = None,
   imageSrcWidth: Option[String] = None,
   imageSrcOrigin: Option[String] = None,
   imageSrcThumb: Option[String] = None,
-
   imageCutoutReplace: Option[Boolean] = None,
   imageCutoutSrc: Option[String] = None,
   imageCutoutSrcHeight: Option[String] = None,
   imageCutoutSrcWidth: Option[String] = None,
   imageCutoutSrcOrigin: Option[String] = None,
-
   overrideArticleMainMedia: Option[Boolean] = None,
-
   coverCardImageReplace: Option[Boolean] = None,
   coverCardMobileImage: Option[Image] = None,
   coverCardTabletImage: Option[Image] = None,
@@ -44,7 +40,7 @@ case class ClientCardMetadata(
   palette: Option[Palette] = None, // Chef
   chefImageOverride: Option[Image] = None// Chef
 ) {
-  def toChefMetadata: EditionsChefMetadata = 
+  def toChefMetadata: EditionsChefMetadata =
     EditionsChefMetadata(
       bio,
       palette,
