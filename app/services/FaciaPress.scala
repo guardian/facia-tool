@@ -13,6 +13,8 @@ import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
+import play.api.libs.json.Json
+import play.api.libs.json.JsObject
 
 case class PressCommand(
   collectionIds: Set[String],
@@ -39,10 +41,15 @@ class FaciaPressTopic(val config: ApplicationConfiguration) {
       )
   }
 
-  def publish(job: PressJob): Future[PublishResult] = {
+  def publish(job: PressJob, collectionIds: Set[String] = Set()): Future[PublishResult] = {
     maybeTopic match {
-      case Some(topicArn) =>
-        topicArn.send(job)
+      case Some(topic) if collectionIds.nonEmpty =>
+        import SNSTopics._
+        val event = Json.toJson(job).as[JsObject] ++ JsObject(Map("collectionIds" -> Json.toJson(collectionIds)))
+        topic.client.publishMessageFuture(topic.topicArn, Json.stringify(event))
+
+      case Some(topic) =>
+        topic.send(job)
 
       case None =>
         Future.failed(new RuntimeException("Could not publish job."))
@@ -67,7 +74,7 @@ class FaciaPress(val faciaPressTopic: FaciaPressTopic, val configAgent: ConfigAg
       ) { path =>
           val event = PressJob(FrontPath(path), pressType, forceConfigUpdate = pressCommand.forceConfigUpdate)
 
-          val publishResultFuture = faciaPressTopic.publish(event)
+          val publishResultFuture = faciaPressTopic.publish(event, pressCommand.collectionIds)
 
           publishResultFuture.onComplete {
             case Failure(error) =>
