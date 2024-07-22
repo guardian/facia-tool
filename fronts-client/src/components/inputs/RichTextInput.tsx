@@ -44,9 +44,6 @@ const RichTextInput = ({ ...props }: RichTextInputProps) => {
   );
 
   useEffect(() => {
-    if (!props.input.value) {
-      return;
-    }
     // Editor view takes an HTML Node therefore this string value needs to be converted into a node by placing in a div
     const contentNode = document.createElement('div');
     contentNode.innerHTML = props.input.value;
