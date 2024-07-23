@@ -8,7 +8,6 @@ import CardBody from '../CardBody';
 import CardMetaHeading from '../CardMetaHeading';
 import CardMetaContainer from '../CardMetaContainer';
 import CardContent from '../CardContent';
-import CardSettingsDisplay from '../CardSettingsDisplay';
 import CardHeadingContainer from '../CardHeadingContainer';
 import CardHeading from '../CardHeading';
 import { HoverActionsAreaOverlay } from '../../CollectionHoverItems';
