@@ -1,7 +1,7 @@
 package model
 
 import com.gu.facia.client.models.Trail
-import model.editions.EditionsClientCard
+import model.editions.client.EditionsClientCard
 import org.scanamo.{DynamoFormat, TypeCoercionError}
 import play.api.libs.json.{JsValue, Json, OFormat}
 

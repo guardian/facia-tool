@@ -24,6 +24,7 @@ import util.{SearchResponseUtil, UserUtil}
 import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext
 import scala.util.Try
+import model.editions.client.EditionsFrontendCollectionWrapper
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,

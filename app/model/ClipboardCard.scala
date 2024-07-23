@@ -1,7 +1,7 @@
 package model
 
 import com.gu.facia.client.models.Trail
-import model.editions.EditionsClientCard
+import model.editions.client.EditionsClientCard
 import play.api.libs.json.{Format, JsPath, JsValue, Json, Reads, Writes}
 import play.api.libs.functional.syntax._
 

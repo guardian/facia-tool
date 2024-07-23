@@ -1,9 +1,12 @@
-package model.editions
+package model.editions.client
 
 import model.editions.client.ClientCardMetadata
 import play.api.libs.json.{Json, OFormat}
 import services.editions.prefills.CapiQueryTimeWindow
 import model.editions.client.ClientCardMetadata
+import model.editions.EditionsCard
+import model.editions.EditionsArticle
+import model.editions.{CapiPrefillQuery, EditionsCollection, EditionsRecipe, EditionsChef, EditionsFeastCollection, CardType}
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
 
@@ -33,11 +36,12 @@ object EditionsClientCard {
         addedOn,
         metadata.map(ClientCardMetadata.fromCardMetadata)
       )
-    case EditionsFeastCollection(id, addedOn) => 
+    case EditionsFeastCollection(id, addedOn, metadata) => 
       EditionsClientCard(
         id,
         Some(CardType.FeastCollection),
-        addedOn
+        addedOn,
+        metadata.map(ClientCardMetadata.fromCardMetadata)
       )
   }
 
@@ -64,6 +68,7 @@ object EditionsClientCard {
       EditionsFeastCollection(
         card.id,
         card.frontPublicationDate,
+        card.meta.map(_.toFeastCollectionMetadata)
       )
   }
 }

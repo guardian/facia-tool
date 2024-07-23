@@ -1,7 +1,8 @@
 package controllers
 
 import com.gu.facia.client.models.Trail
-import model.editions.{CardType, EditionsClientCard}
+import model.editions.{CardType}
+import model.editions.client.EditionsClientCard
 import org.scanamo._
 import org.scanamo.syntax._
 import model.{FeatureSwitch, FeatureSwitches, UserData}

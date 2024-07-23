@@ -7,6 +7,9 @@ import play.api.libs.json.OFormat
 import model.editions.Palette
 import model.editions.EditionsArticleMetadata
 import model.editions.EditionsChefMetadata
+import play.api.libs.json.Json
+import model.editions.FeastCollectionTheme
+import model.editions.EditionsFeastCollectionMetadata
 
 // This is a subset of the shared model here - https://github.com/guardian/facia-scala-client/blob/master/facia-json/src/main/scala/com/gu/facia/client/models/Collection.scala#L18
 // Why not reuse that model? We only want to surface the fields necessary for editions
@@ -38,13 +41,24 @@ case class ClientCardMetadata(
   promotionMetric: Option[Double] = None,
   bio: Option[String] = None, // Chef
   palette: Option[Palette] = None, // Chef
-  chefImageOverride: Option[Image] = None// Chef
+  chefImageOverride: Option[Image] = None, // Chef
+  title: Option[String] = None, // FeastCollection
+  theme: Option[FeastCollectionTheme] = None, // FeastCollection
+  feastCollectionImageOverride: Option[Image] = None // FeastCollection
+
 ) {
   def toChefMetadata: EditionsChefMetadata =
     EditionsChefMetadata(
       bio,
       palette,
       chefImageOverride
+    )
+
+  def toFeastCollectionMetadata = 
+    EditionsFeastCollectionMetadata(
+      title: Option[String],
+      theme: Option[FeastCollectionTheme],
+      feastCollectionImageOverride: Option[Image],
     )
 
   def toArticleMetadata: EditionsArticleMetadata = {
@@ -93,6 +107,14 @@ case class ClientCardMetadata(
 
 object ClientCardMetadata {
   implicit val format: OFormat[ClientCardMetadata] = Jsonx.formatCaseClassUseDefaults[ClientCardMetadata]
+
+  def fromCardMetadata(cardMetadata: EditionsFeastCollectionMetadata): ClientCardMetadata = {
+    ClientCardMetadata(
+      title = cardMetadata.title,
+      theme = cardMetadata.theme,
+      feastCollectionImageOverride = cardMetadata.feastCollectionImageOverride
+    )
+  }
 
   def fromCardMetadata(cardMetadata: EditionsChefMetadata): ClientCardMetadata = {
     ClientCardMetadata(
