@@ -119,6 +119,16 @@ interface ChefCardMeta {
   chefImageOverride?: ImageData;
 }
 
+export interface FeastCollectionCardMeta {
+  title?: string;
+  body?: string;
+  theme: {
+    lightPalette: Palette;
+    darkPalette: Palette;
+  };
+  image: ImageData;
+}
+
 interface Card extends CardRootFields {
   meta: CardMeta;
 }

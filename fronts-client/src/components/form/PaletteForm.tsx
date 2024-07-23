@@ -1,13 +1,12 @@
 import React, { useCallback } from 'react';
 import noop from 'lodash/noop';
-
+import get from 'lodash/get';
 import {
   ChefPaletteId,
   CustomPalette,
   chefPalettes,
 } from 'constants/feastPalettes';
 import { styled } from 'constants/theme';
-import { OptionsModalBodyProps } from 'types/Modals';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { change, getFormValues } from 'redux-form';
@@ -18,8 +17,14 @@ import { Palette } from 'types/Collection';
 import { entries } from 'util/object';
 
 export const createPaletteForm =
-  <T extends string>(formName: string, fieldName: T) =>
-  ({ onCancel }: OptionsModalBodyProps) => {
+  <T extends string>(
+    formName: string,
+    // The name of the field to set. Can be in dot accessor notation, e.g.
+    // `nested.field.property`.
+    fieldName: T,
+    onPaletteSelect: () => void = noop
+  ) =>
+  () => {
     const dispatch = useDispatch();
     const formPalette = useSelector((state: State) => {
       const formValues = getFormValues(formName)(state) as {
@@ -29,7 +34,7 @@ export const createPaletteForm =
         return undefined;
       }
 
-      return formValues[fieldName];
+      return get(formValues, fieldName);
     });
     const setPaletteOption = useCallback(
       (
@@ -54,7 +59,7 @@ export const createPaletteForm =
               id={paletteId}
               onClick={(name, foregroundHex, backgroundHex) => {
                 setPaletteOption(name, foregroundHex, backgroundHex);
-                onCancel();
+                onPaletteSelect();
               }}
               isSelected={
                 formPalette?.paletteId && paletteId === formPalette?.paletteId

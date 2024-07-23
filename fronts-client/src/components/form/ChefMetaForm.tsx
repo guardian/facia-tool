@@ -28,7 +28,7 @@ import { ImageCol } from './ImageCol';
 import InputLabel from 'components/inputs/InputLabel';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import { useDispatch } from 'react-redux';
-import { startOptionsModal } from 'actions/OptionsModal';
+import { endOptionsModal, startOptionsModal } from 'actions/OptionsModal';
 import { PaletteItem, createPaletteForm } from './PaletteForm';
 import noop from 'lodash/noop';
 
@@ -163,12 +163,13 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
   );
 
   const dispatch = useDispatch();
+  const closeModal = () => dispatch(endOptionsModal());
   const openPaletteModal = useCallback(
     () =>
       dispatch(
         startOptionsModal(
           'Select a palette',
-          createPaletteForm(form, 'palette'),
+          createPaletteForm(form, 'palette', closeModal),
           [{ buttonText: 'Done', callback: noop }],
           undefined,
           false

@@ -5,7 +5,11 @@ import {
   InjectedFormProps,
   formValueSelector,
 } from 'redux-form';
-import { Card, CardSizes, ChefCardMeta, Palette } from '../../types/Collection';
+import {
+  Card,
+  CardSizes,
+  FeastCollectionCardMeta,
+} from '../../types/Collection';
 import { Dispatch } from '../../types/Store';
 import { State } from '../../types/State';
 import Button from 'components/inputs/ButtonDefault';
@@ -25,19 +29,25 @@ import noop from 'lodash/noop';
 import InputText from 'components/inputs/InputText';
 import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputContainer from 'components/inputs/InputContainer';
+import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
+import { ImageRowContainer } from './ImageRowContainer';
+import Row from 'components/Row';
+import { ImageCol } from './ImageCol';
+import InputImage from 'components/inputs/InputImage';
+import { defaultCardTrailImageCriteria } from 'constants/image';
 
 interface FormProps {
   card: Card;
-  initialValues: ChefCardMeta;
+  initialValues: FeastCollectionCardMeta;
   size: CardSizes;
   onCancel: () => void;
-  onSave: (meta: ChefCardMeta) => void;
+  onSave: (meta: FeastCollectionCardMeta) => void;
   openPaletteModal: () => void;
-  currentPalette: Palette;
+  currentTheme: FeastCollectionCardMeta['theme'];
 }
 
 type ComponentProps = FormProps &
-  InjectedFormProps<ChefCardMeta, FormProps, {}>;
+  InjectedFormProps<FeastCollectionCardMeta, FormProps, {}>;
 
 const Form = ({
   card,
@@ -47,7 +57,7 @@ const Form = ({
   handleSubmit,
   onCancel,
   openPaletteModal,
-  currentPalette,
+  currentTheme,
 }: ComponentProps) => {
   return (
     <FormContainer
@@ -82,15 +92,26 @@ const Form = ({
           />
           <InputContainer>
             <InputLabel>Palette</InputLabel>
-            {currentPalette ? (
-              <PaletteItem
-                id={currentPalette.paletteId}
-                palette={currentPalette}
-                onClick={openPaletteModal}
-              />
+            {currentTheme ? (
+              <>
+                {currentTheme.lightPalette && (
+                  <PaletteItem
+                    id={currentTheme.lightPalette.paletteId}
+                    palette={currentTheme.lightPalette}
+                    onClick={openPaletteModal}
+                  />
+                )}
+                {currentTheme.darkPalette && (
+                  <PaletteItem
+                    id={currentTheme.darkPalette.paletteId}
+                    palette={currentTheme.darkPalette}
+                    onClick={openPaletteModal}
+                  />
+                )}
+              </>
             ) : (
               <p>
-                No palette selected.{' '}
+                No palettes selected.{' '}
                 <ButtonDefault type="button" onClick={openPaletteModal}>
                   Add a palette
                 </ButtonDefault>
@@ -98,6 +119,20 @@ const Form = ({
             )}
           </InputContainer>
         </TextOptionsInputGroup>
+        <ImageOptionsInputGroup size={size}>
+          <ImageRowContainer size={size}>
+            <Row>
+              <ImageCol>
+                <InputLabel htmlFor="image">Replace image</InputLabel>
+                <Field
+                  name="image"
+                  component={InputImage}
+                  criteria={defaultCardTrailImageCriteria}
+                />
+              </ImageCol>
+            </Row>
+          </ImageRowContainer>
+        </ImageOptionsInputGroup>
       </FormContent>
       <FormButtonContainer>
         <Button onClick={onCancel} type="button" size="l">
@@ -117,19 +152,40 @@ const Form = ({
   );
 };
 
-const ConnectedFeastCollectionForm = reduxForm<ChefCardMeta, FormProps, {}>({
+const ConnectedFeastCollectionForm = reduxForm<
+  FeastCollectionCardMeta,
+  FormProps,
+  {}
+>({
   destroyOnUnmount: true,
-  onSubmit: (values: ChefCardMeta, dispatch: Dispatch, props: FormProps) =>
-    dispatch(() => props.onSave(values)),
+  onSubmit: (
+    values: FeastCollectionCardMeta,
+    dispatch: Dispatch,
+    props: FormProps
+  ) => dispatch(() => props.onSave(values)),
 })(Form);
 
 interface FeastCollectionMetaFormProps {
   cardId: string;
   form: string;
   onCancel: () => void;
-  onSave: (meta: ChefCardMeta) => void;
+  onSave: (meta: FeastCollectionCardMeta) => void;
   size: CardSizes;
 }
+
+const createFeastCollectionPaletteForm = (form: string) => () => {
+  const LightPaletteForm = createPaletteForm(form, 'theme.lightPalette');
+  const DarkPaletteForm = createPaletteForm(form, 'theme.darkPalette');
+
+  return (
+    <>
+      <h2>Light palette</h2>
+      <LightPaletteForm />
+      <h2>Dark palette</h2>
+      <DarkPaletteForm />
+    </>
+  );
+};
 
 export const FeastCollectionMetaForm = ({
   cardId,
@@ -138,8 +194,9 @@ export const FeastCollectionMetaForm = ({
 }: FeastCollectionMetaFormProps) => {
   const valueSelector = formValueSelector(form);
   const card = useSelector((state: State) => selectCard(state, cardId));
-  const palette = useSelector(
-    (state: State) => valueSelector(state, 'palette') as Palette
+  const theme = useSelector(
+    (state: State) =>
+      valueSelector(state, 'theme') as FeastCollectionCardMeta['theme']
   );
 
   const dispatch = useDispatch();
@@ -147,8 +204,8 @@ export const FeastCollectionMetaForm = ({
     () =>
       dispatch(
         startOptionsModal(
-          'Select a palette',
-          createPaletteForm(form, 'palette'),
+          'Select palettes',
+          createFeastCollectionPaletteForm(form),
           [{ buttonText: 'Done', callback: noop }],
           undefined,
           false
@@ -160,9 +217,9 @@ export const FeastCollectionMetaForm = ({
   return (
     <ConnectedFeastCollectionForm
       card={card}
-      initialValues={card.meta as ChefCardMeta}
+      initialValues={card.meta as FeastCollectionCardMeta}
       openPaletteModal={openPaletteModal}
-      currentPalette={palette}
+      currentTheme={theme}
       form={form}
       {...rest}
     />
