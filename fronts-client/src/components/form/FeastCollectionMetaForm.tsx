@@ -27,7 +27,6 @@ import { startOptionsModal } from 'actions/OptionsModal';
 import { PaletteItem, createPaletteForm } from './PaletteForm';
 import noop from 'lodash/noop';
 import InputText from 'components/inputs/InputText';
-import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputContainer from 'components/inputs/InputContainer';
 import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import { ImageRowContainer } from './ImageRowContainer';
@@ -81,14 +80,6 @@ const Form = ({
             rows="2"
             placeholder="Add a title"
             component={InputText}
-          />
-          <Field
-            name="body"
-            label="Body text"
-            rows="2"
-            placeholder="Add body text"
-            originalValue=""
-            component={RichTextInput}
           />
           <InputContainer>
             <InputLabel>Palette</InputLabel>

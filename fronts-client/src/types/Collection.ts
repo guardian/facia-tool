@@ -121,7 +121,6 @@ interface ChefCardMeta {
 
 export interface FeastCollectionCardMeta {
   title?: string;
-  body?: string;
   theme: {
     lightPalette: Palette;
     darkPalette: Palette;
