@@ -56,9 +56,9 @@ case class ClientCardMetadata(
 
   def toFeastCollectionMetadata = 
     EditionsFeastCollectionMetadata(
-      title: Option[String],
-      theme: Option[FeastCollectionTheme],
-      feastCollectionImageOverride: Option[Image],
+      title,
+      theme,
+      feastCollectionImageOverride,
     )
 
   def toArticleMetadata: EditionsArticleMetadata = {

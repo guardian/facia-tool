@@ -125,7 +125,7 @@ object EditionsCard {
       case result if result.isError =>
         logger.error(s"Unable to parse card from database: \n$s")
         default
-      case result@_ => result.get
+      case result => result.get
     }
   )
 }

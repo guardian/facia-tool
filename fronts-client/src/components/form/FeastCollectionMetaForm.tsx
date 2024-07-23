@@ -123,9 +123,11 @@ const Form = ({
           <ImageRowContainer size={size}>
             <Row>
               <ImageCol>
-                <InputLabel htmlFor="image">Replace image</InputLabel>
+                <InputLabel htmlFor="feastCollectionImageOverride">
+                  Replace image
+                </InputLabel>
                 <Field
-                  name="image"
+                  name="feastCollectionImageOverride"
                   component={InputImage}
                   criteria={defaultCardTrailImageCriteria}
                 />
