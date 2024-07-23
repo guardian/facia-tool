@@ -17,6 +17,8 @@ import {
   HoverAddToClipboardButton,
   HoverDeleteButton,
 } from '../../inputs/HoverActionButtons';
+import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
+import { ThumbnailSmall } from 'components/image/Thumbnail';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -62,19 +64,15 @@ export const FeastCollectionCard = ({
             </CardMetaContainer>
           )}
           <CardContent textSize={textSize}>
-            <CardSettingsDisplay
-              isBreaking={card.meta?.isBreaking}
-              showByline={card.meta?.showByline}
-              showQuotedHeadline={card.meta?.showQuotedHeadline}
-              showLargeHeadline={card.meta?.showLargeHeadline}
-              isBoosted={card.meta?.isBoosted}
-            />
             <CardHeadingContainer size={size}>
               <CardHeading data-testid="headline" html>
-                Recipe collection
+                {card.meta.title ? card.meta.title : 'No title'}
               </CardHeading>
             </CardHeadingContainer>
           </CardContent>
+          <ImageAndGraphWrapper size={size}>
+            <ThumbnailSmall url={card?.meta.chefImageOverride?.src} />
+          </ImageAndGraphWrapper>
           <HoverActionsAreaOverlay data-testid="hover-overlay">
             <HoverActionsButtonWrapper
               toolTipPosition={'top'}
