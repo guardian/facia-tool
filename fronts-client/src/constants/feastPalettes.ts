@@ -3,26 +3,32 @@ export type ChefPaletteId = keyof typeof chefPalettes | typeof CustomPalette;
 
 export const chefPalettes = {
   Kaffir: {
+    paletteId: 'Kaffir',
     foregroundHex: '#F9F9F5',
     backgroundHex: '#697311',
   },
   Paprika: {
+    paletteId: 'Paprika',
     foregroundHex: '#F9F9F5',
     backgroundHex: '#C25400',
   },
   Berry: {
+    paletteId: 'Berry',
     foregroundHex: '#F9F9F5',
     backgroundHex: '#BB3B80',
   },
   Chilli: {
+    paletteId: 'Chilli',
     foregroundHex: '#F9F9F5',
     backgroundHex: '#9A1E1E',
   },
   Blueberry: {
+    paletteId: 'Blueberry',
     foregroundHex: '#F9F9F5',
     backgroundHex: '#20809E',
   },
   Tarragon: {
+    paletteId: 'Tarragon',
     foregroundHex: '#F9F9F5',
     backgroundHex: '#68773C',
   },
@@ -30,6 +36,7 @@ export const chefPalettes = {
 
 export const collectionPalettes = {
   Autumn: {
+    paletteId: 'Autumn',
     lightForegroundHex: '#C25400',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0CDB4',
@@ -37,6 +44,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Autumn.png',
   },
   Barbecue: {
+    paletteId: 'Barbecue',
     lightForegroundHex: '#697311',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#E1E5B8',
@@ -44,6 +52,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/01/Barbecue-01.png',
   },
   'Baking/Pies': {
+    paletteId: 'Baking/Pies',
     lightForegroundHex: '#DB2712',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#FCF1F0',
@@ -51,6 +60,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Baking.png',
   },
   Budget: {
+    paletteId: 'Budget',
     lightForegroundHex: '#9A1E1E',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0BAB4',
@@ -58,6 +68,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Budget.png',
   },
   Brunch: {
+    paletteId: 'Brunch',
     lightForegroundHex: '#9A1E1E',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0BAB4',
@@ -65,6 +76,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Brunch.png',
   },
   Cakes: {
+    paletteId: 'Cakes',
     lightForegroundHex: '#BB3B80',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#FCF0F7',
@@ -72,6 +84,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Cakes.png',
   },
   Celebration: {
+    paletteId: 'Celebration',
     lightForegroundHex: '#801919',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#FCF1F0',
@@ -79,6 +92,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Celebration.png',
   },
   'Celebration\nCakes': {
+    paletteId: 'Celebration\nCakes',
     lightForegroundHex: '#BB3B80',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#FCF0F7',
@@ -86,6 +100,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Celebrationcakes.png',
   },
   Cheese: {
+    paletteId: 'Cheese',
     lightForegroundHex: '#C25400',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0CDB4',
@@ -93,6 +108,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Cheese.png',
   },
   Chicken: {
+    paletteId: 'Chicken',
     lightForegroundHex: '#C25400',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0CDB4',
@@ -100,6 +116,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Chicken.png',
   },
   Chocolate: {
+    paletteId: 'Chocolate',
     lightForegroundHex: '#80513E',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0CDB4',
@@ -107,6 +124,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Chocolate.png',
   },
   Cookies: {
+    paletteId: 'Cookies',
     lightForegroundHex: '#603D2F',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0C5B4',
@@ -114,6 +132,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Cookies.png',
   },
   Dessert: {
+    paletteId: 'Dessert',
     lightForegroundHex: '#603D2F',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0C5B4',
@@ -121,6 +140,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Dessert-01.png',
   },
   Eggs: {
+    paletteId: 'Eggs',
     lightForegroundHex: '#C25400',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0CDB4',
@@ -128,6 +148,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Eggs.png',
   },
   Fish: {
+    paletteId: 'Fish',
     lightForegroundHex: '#427585',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#ACD8E5',
@@ -135,6 +156,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Fish.png',
   },
   Fruit: {
+    paletteId: 'Fruit',
     lightForegroundHex: '#9A1E1E',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0BAB4',
@@ -142,6 +164,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Fruit.png',
   },
   'Meals for One': {
+    paletteId: 'Meals for One',
     lightForegroundHex: '#427585',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#ACD8E5',
@@ -149,6 +172,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/MealsforOne.png',
   },
   Meat: {
+    paletteId: 'Meat',
     lightForegroundHex: '#9A1E1E',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0BAB4',
@@ -156,6 +180,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Meat.png',
   },
   Noodles: {
+    paletteId: 'Noodles',
     lightForegroundHex: '#427585',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#ACD8E5',
@@ -163,6 +188,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Noodles.png',
   },
   Pasta: {
+    paletteId: 'Pasta',
     lightForegroundHex: '#427585',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#ACD8E5',
@@ -170,6 +196,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Pasta.png',
   },
   Peas: {
+    paletteId: 'Peas',
     lightForegroundHex: '#697311',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#E1E5B8',
@@ -177,6 +204,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Peas.png',
   },
   Picnic: {
+    paletteId: 'Picnic',
     lightForegroundHex: '#427585',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#ACD8E5',
@@ -184,6 +212,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Picnic.png',
   },
   Potatos: {
+    paletteId: 'Potatos',
     lightForegroundHex: '#99614B',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0C5B4',
@@ -191,6 +220,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Potatos.png',
   },
   Rice: {
+    paletteId: 'Rice',
     lightForegroundHex: '#68773C',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#DAE5B8',
@@ -198,6 +228,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Rice.png',
   },
   Salads: {
+    paletteId: 'Salads',
     lightForegroundHex: '#697311',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#E1E5B8',
@@ -205,6 +236,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Salads.png',
   },
   'Quick Meals': {
+    paletteId: 'Quick Meals',
     lightForegroundHex: '#994100',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#ACD8E5',
@@ -212,6 +244,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/QuickmealsV2-01.png',
   },
   Soup: {
+    paletteId: 'Soup',
     lightForegroundHex: '#406508',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#DAE5B8',
@@ -219,6 +252,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Soups.png',
   },
   Spring: {
+    paletteId: 'Spring',
     lightForegroundHex: '#697311',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#E1E5B8',
@@ -226,6 +260,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Spring.png',
   },
   Summer: {
+    paletteId: 'Summer',
     lightForegroundHex: '#9A1E1E',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0BAB4',
@@ -233,6 +268,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Summer.png',
   },
   Sprouts: {
+    paletteId: 'Sprouts',
     lightForegroundHex: '#9A1E1E',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0BAB4',
@@ -240,6 +276,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/01/Sprouts-01-01.png',
   },
   Tacos: {
+    paletteId: 'Tacos',
     lightForegroundHex: '#DB2712',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#FCF1F0',
@@ -247,6 +284,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Tacos.png',
   },
   Tins: {
+    paletteId: 'Tins',
     lightForegroundHex: '#427585',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#ACD8E5',
@@ -254,6 +292,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Tins.png',
   },
   Traybake: {
+    paletteId: 'Traybake',
     lightForegroundHex: '#801919',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#FCF1F0',
@@ -261,6 +300,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Traybake.png',
   },
   'TV snacks': {
+    paletteId: 'TV snacks',
     lightForegroundHex: '#427585',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#ACD8E5',
@@ -268,6 +308,7 @@ export const collectionPalettes = {
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/TVsbacks.png',
   },
   Vegan: {
+    paletteId: 'Vegan',
     lightForegroundHex: '#98215A',
     lightBackgroundHex: '#F9F9F5',
     darkForegroundHex: '#F0C0D9',

@@ -86,11 +86,7 @@ const Form = ({
           />
           <InputLabel>Palette</InputLabel>
           {currentPalette ? (
-            <PaletteItem
-              id={currentPalette.paletteId}
-              palette={currentPalette}
-              onClick={openPaletteModal}
-            />
+            <PaletteItem palette={currentPalette} onClick={openPaletteModal} />
           ) : (
             <p>
               No palette selected.{' '}

@@ -14,7 +14,6 @@ import { State } from 'types/State';
 import InputLabel from 'components/inputs/InputLabel';
 import { InputColor } from 'components/inputs/InputColor';
 import { Palette } from 'types/Collection';
-import { entries } from 'util/object';
 
 export const createPaletteForm =
   <T extends string>(
@@ -52,30 +51,32 @@ export const createPaletteForm =
     return (
       <>
         <PaletteList>
-          {entries(chefPalettes).map(([paletteId, palette]) => (
+          {Object.values(chefPalettes).map((palette) => (
             <PaletteItem
               palette={palette}
-              key={paletteId}
-              id={paletteId}
+              key={palette.paletteId}
               onClick={(name, foregroundHex, backgroundHex) => {
                 setPaletteOption(name, foregroundHex, backgroundHex);
                 onPaletteSelect();
               }}
               isSelected={
-                formPalette?.paletteId && paletteId === formPalette?.paletteId
+                formPalette?.paletteId &&
+                palette.paletteId === formPalette?.paletteId
               }
             />
           ))}
           <PaletteItem
-            id={CustomPalette}
-            palette={
-              formPalette?.paletteId === CustomPalette
-                ? {
-                    foregroundHex: formPalette?.foregroundHex,
-                    backgroundHex: formPalette?.backgroundHex,
-                  }
-                : undefined
-            }
+            palette={{
+              foregroundHex:
+                formPalette?.paletteId === CustomPalette
+                  ? formPalette?.foregroundHex
+                  : '',
+              backgroundHex:
+                formPalette?.paletteId === CustomPalette
+                  ? formPalette?.backgroundHex
+                  : '',
+              paletteId: CustomPalette,
+            }}
             onClick={(_, foregroundHex, backgroundHex) =>
               setPaletteOption(CustomPalette, foregroundHex, backgroundHex)
             }
@@ -128,42 +129,59 @@ const CustomPaletteContainer = styled.div`
   flex-direction: column;
 `;
 
+type PaletteSize = 'm' | 's';
+
 export const PaletteItem = ({
-  id,
   palette,
   onClick = noop,
   isSelected = false,
+  size = 'm',
 }: {
-  id: ChefPaletteId;
-  palette?: Omit<Palette, 'paletteId'>;
+  palette: Palette;
   onClick?: (
     paletteId: ChefPaletteId,
     foregroundHex: string,
     backgroundHex: string
   ) => void;
   isSelected?: boolean;
+  size?: 'm' | 's';
 }) => {
+  const swatch = (
+    <PaletteSwatch
+      size={size}
+      colors={[palette.backgroundHex, palette.foregroundHex]}
+    />
+  );
+
+  if (size === 's') {
+    return swatch;
+  }
+
   return (
     <PaletteOption
-      key={id}
       onClick={() =>
-        onClick(id, palette?.foregroundHex ?? '', palette?.backgroundHex ?? '')
+        onClick(
+          palette.paletteId,
+          palette.foregroundHex ?? '',
+          palette.backgroundHex ?? ''
+        )
       }
       isSelected={isSelected}
     >
-      <PaletteHeading>{id}</PaletteHeading>
-      {palette && (
-        <PaletteSwatch
-          key={id}
-          colors={[palette.backgroundHex, palette.foregroundHex]}
-        />
-      )}
+      <PaletteHeading>{palette.paletteId}</PaletteHeading>
+      {swatch}
     </PaletteOption>
   );
 };
 
-const PaletteSwatch = ({ colors }: { colors: string[] }) => (
-  <PaletteContainer borderColor={colors[0]}>
+const PaletteSwatch = ({
+  colors,
+  size,
+}: {
+  colors: string[];
+  size: PaletteSize;
+}) => (
+  <PaletteContainer borderColor={colors[0]} size={size}>
     {colors.map((color, index) => (
       <PaletteColor key={`${color}-${index}`} color={color} />
     ))}
@@ -192,10 +210,13 @@ const PaletteOption = styled.div<{ isSelected: boolean }>`
   cursor: pointer;
 `;
 
-const PaletteContainer = styled.div<{ borderColor: string | undefined }>`
+const PaletteContainer = styled.div<{
+  borderColor: string | undefined;
+  size: PaletteSize;
+}>`
   display: flex;
-  width: 50px;
-  height: 50px;
+  width: ${({ size }) => (size === 'm' ? '50px' : '40px')};
+  height: ${({ size }) => (size === 'm' ? '50px' : '40px')};
   border-radius: 5px;
   border: ${({ borderColor }) =>
     borderColor ? `2px solid ${borderColor}` : 'none'};

@@ -18,6 +18,9 @@ import {
 } from '../../inputs/HoverActionButtons';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { ThumbnailSmall } from 'components/image/Thumbnail';
+import CardMetaContent from '../CardMetaContent';
+import { PaletteItem } from 'components/form/PaletteForm';
+import { styled } from 'constants/theme';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -36,6 +39,12 @@ interface Props {
   isUneditable?: boolean;
   showMeta?: boolean;
 }
+
+const CardPalette = styled.div`
+  display: flex;
+  gap: 5px;
+  padding: 5px;
+`;
 
 export const FeastCollectionCard = ({
   id,
@@ -69,6 +78,16 @@ export const FeastCollectionCard = ({
               </CardHeading>
             </CardHeadingContainer>
           </CardContent>
+          {card.meta.theme && (
+            <CardPalette>
+              {card.meta.theme.lightPalette && (
+                <PaletteItem size="s" palette={card.meta.theme.lightPalette} />
+              )}
+              {card.meta.theme?.darkPalette && (
+                <PaletteItem size="s" palette={card.meta.theme.darkPalette} />
+              )}
+            </CardPalette>
+          )}
           <ImageAndGraphWrapper size={size}>
             <ThumbnailSmall url={card?.meta.chefImageOverride?.src} />
           </ImageAndGraphWrapper>
