@@ -4,6 +4,8 @@ import {
   Field,
   InjectedFormProps,
   formValueSelector,
+  getFormValues,
+  change,
 } from 'redux-form';
 import { Card, CardSizes, ChefCardMeta, Palette } from '../../types/Collection';
 import { Dispatch } from '../../types/Store';
@@ -28,9 +30,16 @@ import { ImageCol } from './ImageCol';
 import InputLabel from 'components/inputs/InputLabel';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import { useDispatch } from 'react-redux';
-import { endOptionsModal, startOptionsModal } from 'actions/OptionsModal';
-import { PaletteItem, createPaletteForm } from './PaletteForm';
+import { startOptionsModal } from 'actions/OptionsModal';
+import { PaletteForm, PaletteItem } from './PaletteForm';
 import noop from 'lodash/noop';
+import get from 'lodash/get';
+import {
+  chefPalettes,
+  CustomPaletteId,
+  DefaultCustomPaletteChef,
+  PaletteOption,
+} from 'constants/feastPalettes';
 
 interface FormProps {
   card: Card;
@@ -145,6 +154,65 @@ interface ChefMetaFormProps {
   size: CardSizes;
 }
 
+const formPaletteToPaletteOption = (
+  palette: Palette | undefined
+): PaletteOption | undefined => {
+  if (!palette) {
+    return;
+  }
+
+  const maybePresetPalette = chefPalettes.find((p) => p.id === palette?.id);
+
+  return (
+    maybePresetPalette ?? {
+      id: CustomPaletteId,
+      name: 'Custom',
+      palettes: [palette],
+    }
+  );
+};
+
+const paletteOptionToFormPalette = (paletteOption: PaletteOption): Palette => {
+  return {
+    id: paletteOption.id,
+    ...(paletteOption.palettes[0] ?? {}),
+  };
+};
+
+const ChefPaletteForm = (formName: string) => () => {
+  const dispatch = useDispatch();
+  const fieldName = 'palette';
+
+  const currentPaletteOption = useSelector((state: State) => {
+    const formValues = getFormValues(formName)(state) as {
+      [T: string]: Palette;
+    };
+    if (!formValues) {
+      return undefined;
+    }
+
+    return formPaletteToPaletteOption(get(formValues, fieldName));
+  });
+
+  const setPaletteOption = useCallback(
+    (paletteOption: PaletteOption) => {
+      dispatch(
+        change(formName, fieldName, paletteOptionToFormPalette(paletteOption))
+      );
+    },
+    [formName]
+  );
+
+  return (
+    <PaletteForm
+      currentPaletteOption={currentPaletteOption}
+      defaultCustomPaletteOption={DefaultCustomPaletteChef}
+      paletteOptions={chefPalettes}
+      onChange={setPaletteOption}
+    />
+  );
+};
+
 export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
   const valueSelector = formValueSelector(form);
   const card = useSelector((state: State) => selectCard(state, cardId));
@@ -159,13 +227,12 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
   );
 
   const dispatch = useDispatch();
-  const closeModal = () => dispatch(endOptionsModal());
   const openPaletteModal = useCallback(
     () =>
       dispatch(
         startOptionsModal(
           'Select a palette',
-          createPaletteForm(form, 'palette', closeModal),
+          ChefPaletteForm(form),
           [{ buttonText: 'Done', callback: noop }],
           undefined,
           false

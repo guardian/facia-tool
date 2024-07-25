@@ -23,6 +23,8 @@ import {
   HoverDeleteButton,
   HoverViewButton,
 } from '../../inputs/HoverActionButtons';
+import { CardPalette } from '../CardPalette';
+import { PaletteItem } from 'components/form/PaletteForm';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -84,6 +86,11 @@ export const ChefCard = ({
             <CardMetaContent>{chef?.bio}</CardMetaContent>
           </CardHeadingContainer>
         </CardContent>
+        {card.meta.palette && (
+          <CardPalette>
+            <PaletteItem size="s" palette={card.meta.palette} />
+          </CardPalette>
+        )}
         <ImageAndGraphWrapper size={size}>
           <ThumbnailSmall
             url={chef?.chefImageOverride?.src ?? chef?.bylineLargeImageUrl}

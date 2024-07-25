@@ -4,6 +4,8 @@ import {
   Field,
   InjectedFormProps,
   formValueSelector,
+  getFormValues,
+  change,
 } from 'redux-form';
 import {
   Card,
@@ -24,7 +26,7 @@ import InputLabel from 'components/inputs/InputLabel';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import { useDispatch } from 'react-redux';
 import { startOptionsModal } from 'actions/OptionsModal';
-import { PaletteItem, createPaletteForm } from './PaletteForm';
+import { PaletteForm, PaletteItem } from './PaletteForm';
 import noop from 'lodash/noop';
 import InputText from 'components/inputs/InputText';
 import InputContainer from 'components/inputs/InputContainer';
@@ -34,6 +36,14 @@ import Row from 'components/Row';
 import { ImageCol } from './ImageCol';
 import InputImage from 'components/inputs/InputImage';
 import { defaultCardTrailImageCriteria } from 'constants/image';
+import { styled } from 'constants/theme';
+import {
+  feastCollectionPalettes,
+  DefaultCustomPaletteFeastCollection,
+  PaletteOption,
+  CustomPaletteId,
+} from 'constants/feastPalettes';
+import { get } from 'lodash';
 
 interface FormProps {
   card: Card;
@@ -47,6 +57,10 @@ interface FormProps {
 
 type ComponentProps = FormProps &
   InjectedFormProps<FeastCollectionCardMeta, FormProps, {}>;
+
+const PaletteContainer = styled.div`
+  display: flex;
+`;
 
 const Form = ({
   card,
@@ -84,22 +98,22 @@ const Form = ({
           <InputContainer>
             <InputLabel>Palette</InputLabel>
             {currentTheme ? (
-              <>
+              <PaletteContainer>
                 {currentTheme.lightPalette && (
                   <PaletteItem
-                    id={currentTheme.lightPalette.paletteId}
                     palette={currentTheme.lightPalette}
+                    imageURL={currentTheme.imageURL}
                     onClick={openPaletteModal}
                   />
                 )}
                 {currentTheme.darkPalette && (
                   <PaletteItem
-                    id={currentTheme.darkPalette.paletteId}
                     palette={currentTheme.darkPalette}
+                    imageURL={currentTheme.imageURL}
                     onClick={openPaletteModal}
                   />
                 )}
-              </>
+              </PaletteContainer>
             ) : (
               <p>
                 No palettes selected.{' '}
@@ -166,17 +180,72 @@ interface FeastCollectionMetaFormProps {
   size: CardSizes;
 }
 
-const createFeastCollectionPaletteForm = (form: string) => () => {
-  const LightPaletteForm = createPaletteForm(form, 'theme.lightPalette');
-  const DarkPaletteForm = createPaletteForm(form, 'theme.darkPalette');
+const formPaletteToPaletteOption = (
+  theme: FeastCollectionCardMeta['theme']
+): PaletteOption | undefined => {
+  if (!theme) {
+    return;
+  }
+
+  const maybePresetPalette = feastCollectionPalettes.find(
+    (p) => p.id === theme?.id
+  );
 
   return (
-    <>
-      <h2>Light palette</h2>
-      <LightPaletteForm />
-      <h2>Dark palette</h2>
-      <DarkPaletteForm />
-    </>
+    maybePresetPalette ?? {
+      id: CustomPaletteId,
+      name: 'Custom',
+      palettes: [
+        { name: 'light', ...theme.lightPalette },
+        { name: 'dark', ...theme.darkPalette },
+      ],
+      imageURL: theme.imageURL,
+    }
+  );
+};
+
+const paletteOptionToFormPalette = (
+  paletteOption: PaletteOption
+): FeastCollectionCardMeta['theme'] => {
+  return {
+    id: paletteOption.id,
+    lightPalette: paletteOption.palettes.find((p) => p.prefix === 'light')!,
+    darkPalette: paletteOption.palettes.find((p) => p.prefix === 'dark')!,
+    imageURL: paletteOption.imageURL,
+  };
+};
+
+const FeastCollectionPaletteForm = (formName: string) => () => {
+  const dispatch = useDispatch();
+  const fieldName = 'theme';
+
+  const currentPaletteOption = useSelector((state: State) => {
+    const formValues = getFormValues(formName)(state) as {
+      [T: string]: FeastCollectionCardMeta['theme'];
+    };
+    if (!formValues) {
+      return undefined;
+    }
+
+    return formPaletteToPaletteOption(get(formValues, fieldName));
+  });
+
+  const setPaletteOption = useCallback(
+    (paletteOption: PaletteOption) => {
+      dispatch(
+        change(formName, fieldName, paletteOptionToFormPalette(paletteOption))
+      );
+    },
+    [formName]
+  );
+
+  return (
+    <PaletteForm
+      currentPaletteOption={currentPaletteOption}
+      defaultCustomPaletteOption={DefaultCustomPaletteFeastCollection}
+      paletteOptions={feastCollectionPalettes}
+      onChange={setPaletteOption}
+    />
   );
 };
 
@@ -198,7 +267,7 @@ export const FeastCollectionMetaForm = ({
       dispatch(
         startOptionsModal(
           'Select palettes',
-          createFeastCollectionPaletteForm(form),
+          FeastCollectionPaletteForm(form),
           [{ buttonText: 'Done', callback: noop }],
           undefined,
           false

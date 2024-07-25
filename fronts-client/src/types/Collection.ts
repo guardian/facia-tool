@@ -2,7 +2,6 @@ import { CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
 import type { FrontsToolSettings } from 'types/FaciaApi';
 import { CardTypes } from 'constants/cardTypes';
-import { ChefPaletteId } from 'constants/feastPalettes';
 
 interface CollectionArticles {
   draft: CapiArticle[];
@@ -111,7 +110,7 @@ export interface ImageData {
 export interface Palette {
   foregroundHex: string;
   backgroundHex: string;
-  paletteId: ChefPaletteId;
+  id: string;
 }
 
 interface ChefCardMeta {
@@ -123,10 +122,11 @@ interface ChefCardMeta {
 export interface FeastCollectionCardMeta {
   title?: string;
   theme?: {
-    lightPalette: Palette;
-    darkPalette: Palette;
+    id: string;
+    lightPalette: Omit<Palette, 'id'>;
+    darkPalette: Omit<Palette, 'id'>;
+    imageURL?: string;
   };
-  feastCollectionOverrideImage?: ImageData;
 }
 
 interface Card extends CardRootFields {

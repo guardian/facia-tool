@@ -1,155 +1,161 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import noop from 'lodash/noop';
-import get from 'lodash/get';
 import {
-  ChefPaletteId,
-  CustomPalette,
-  chefPalettes,
+  CustomPaletteId,
+  PaletteFacet,
+  PaletteOption,
 } from 'constants/feastPalettes';
 import { styled } from 'constants/theme';
-import { useDispatch } from 'react-redux';
-import { useSelector } from 'react-redux';
-import { change, getFormValues } from 'redux-form';
-import { State } from 'types/State';
 import InputLabel from 'components/inputs/InputLabel';
 import { InputColor } from 'components/inputs/InputColor';
-import { Palette } from 'types/Collection';
+import { set } from 'lodash/fp';
 
-export const createPaletteForm =
-  <T extends string>(
-    formName: string,
-    // The name of the field to set. Can be in dot accessor notation, e.g.
-    // `nested.field.property`.
-    fieldName: T,
-    onPaletteSelect: () => void = noop
-  ) =>
-  () => {
-    const dispatch = useDispatch();
-    const formPalette = useSelector((state: State) => {
-      const formValues = getFormValues(formName)(state) as {
-        [T: string]: Palette;
-      };
-      if (!formValues) {
-        return undefined;
-      }
+export const PaletteForm = ({
+  currentPaletteOption,
+  defaultCustomPaletteOption,
+  paletteOptions,
+  onChange,
+}: {
+  currentPaletteOption: PaletteOption | undefined;
+  defaultCustomPaletteOption: PaletteOption;
+  paletteOptions: PaletteOption[];
+  onChange: (paletteOption: PaletteOption) => void;
+}) => {
+  // const currentPaletteOption = useSelector((state: State) => {
+  //   const formValues = getFormValues(formName)(state) as {
+  //     [T: string]: PaletteOption;
+  //   };
+  //   if (!formValues) {
+  //     return undefined;
+  //   }
 
-      return get(formValues, fieldName);
-    });
-    const setPaletteOption = useCallback(
-      (
-        paletteName: ChefPaletteId,
-        foregroundHex: string,
-        backgroundHex: string
-      ) => {
-        dispatch(change(formName, `${fieldName}.paletteId`, paletteName));
-        dispatch(change(formName, `${fieldName}.foregroundHex`, foregroundHex));
-        dispatch(change(formName, `${fieldName}.backgroundHex`, backgroundHex));
-      },
-      [formName]
-    );
+  //   return get(formValues, fieldName);
+  // });
 
-    return (
-      <>
-        <PaletteList>
-          {Object.values(chefPalettes).map((palette) => (
-            <PaletteItem
-              palette={palette}
-              key={palette.paletteId}
-              onClick={(name, foregroundHex, backgroundHex) => {
-                setPaletteOption(name, foregroundHex, backgroundHex);
-                onPaletteSelect();
-              }}
-              isSelected={
-                formPalette?.paletteId &&
-                palette.paletteId === formPalette?.paletteId
-              }
-            />
-          ))}
-          <PaletteItem
-            palette={{
-              foregroundHex:
-                formPalette?.paletteId === CustomPalette
-                  ? formPalette?.foregroundHex
-                  : '',
-              backgroundHex:
-                formPalette?.paletteId === CustomPalette
-                  ? formPalette?.backgroundHex
-                  : '',
-              paletteId: CustomPalette,
+  // const setPaletteOption = useCallback(
+  //   (paletteName: string, foregroundHex: string, backgroundHex: string) => {
+  //     dispatch(change(formName, `${fieldName}.id`, paletteName));
+  //     dispatch(change(formName, `${fieldName}.foregroundHex`, foregroundHex));
+  //     dispatch(change(formName, `${fieldName}.backgroundHex`, backgroundHex));
+  //   },
+  //   [formName]
+  // );
+
+  const customPalette =
+    currentPaletteOption?.id === CustomPaletteId
+      ? currentPaletteOption
+      : defaultCustomPaletteOption;
+
+  return (
+    <>
+      <PaletteList>
+        {paletteOptions.map((palette) => (
+          <PaletteOption
+            onClick={() => {
+              onChange(palette);
             }}
-            onClick={(_, foregroundHex, backgroundHex) =>
-              setPaletteOption(CustomPalette, foregroundHex, backgroundHex)
+            isSelected={
+              !!currentPaletteOption?.id &&
+              palette.id === currentPaletteOption?.id
             }
-            isSelected={formPalette?.paletteId === CustomPalette}
+            paletteOption={palette}
+            key={palette.id}
+          ></PaletteOption>
+        ))}
+        <PaletteOption
+          paletteOption={customPalette}
+          onClick={() => onChange(defaultCustomPaletteOption)}
+          isSelected={currentPaletteOption?.id === CustomPaletteId}
+        />
+      </PaletteList>
+      {currentPaletteOption?.id === CustomPaletteId && (
+        <CustomPaletteContainer>
+          <h3>Choose a custom palette</h3>
+          <CustomPalettePicker
+            paletteOption={currentPaletteOption}
+            onChange={onChange}
           />
-        </PaletteList>
-        {formPalette?.paletteId === CustomPalette && (
-          <CustomPaletteContainer>
-            <h3>Choose a custom palette</h3>
-            <div>
-              <InputLabel htmlFor="foregroundHex">Foreground colour</InputLabel>
-              <InputColor
-                type="color"
-                value={formPalette?.foregroundHex}
-                onChange={(e) => {
-                  dispatch(
-                    change(
-                      formName,
-                      `${fieldName}.foregroundHex`,
-                      e.target.value
-                    )
-                  );
-                }}
-              />
-            </div>
-            <div>
-              <InputLabel htmlFor="backgroundHex">Background colour</InputLabel>
-              <InputColor
-                type="color"
-                value={formPalette?.backgroundHex}
-                onChange={(e) => {
-                  dispatch(
-                    change(
-                      formName,
-                      `${fieldName}.backgroundHex`,
-                      e.target.value
-                    )
-                  );
-                }}
-              />
-            </div>
-          </CustomPaletteContainer>
-        )}
-      </>
-    );
-  };
+        </CustomPaletteContainer>
+      )}
+    </>
+  );
+};
 
 const CustomPaletteContainer = styled.div`
   display: flex;
   flex-direction: column;
 `;
 
+const CustomPalettePicker = ({
+  paletteOption,
+  onChange,
+}: {
+  paletteOption: PaletteOption;
+  onChange: (palette: PaletteOption) => void;
+}) => {
+  const handleChange =
+    (paletteField: string, paletteIndex: number) =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newPaletteValue = set(
+        `palette[${paletteIndex}].${paletteField}`,
+        e.target.value,
+        paletteOption
+      );
+      onChange(newPaletteValue);
+    };
+
+  return (
+    <>
+      {paletteOption.palettes.map((palette, index) => (
+        <div key={index}>
+          <h4>{palette.name}</h4>
+          <PaletteColorRow>
+            <InputColor
+              type="color"
+              value={palette?.foregroundHex}
+              onChange={handleChange('foregroundHex', index)}
+            />
+            <InputLabel htmlFor="foregroundHex">Foreground colour</InputLabel>
+          </PaletteColorRow>
+          <PaletteColorRow>
+            <InputColor
+              type="color"
+              value={palette?.backgroundHex}
+              onChange={handleChange('backgroundHex', index)}
+            />
+            <InputLabel htmlFor="backgroundHex">Background colour</InputLabel>
+          </PaletteColorRow>
+        </div>
+      ))}
+    </>
+  );
+};
+
+const PaletteColorRow = styled.div`
+  display: flex;
+  gap: 5px;
+  padding-bottom: 5px;
+`;
+
 type PaletteSize = 'm' | 's';
 
 export const PaletteItem = ({
   palette,
-  onClick = noop,
-  isSelected = false,
   size = 'm',
+  onClick = noop,
+  imageURL,
 }: {
-  palette: Palette;
-  onClick?: (
-    paletteId: ChefPaletteId,
-    foregroundHex: string,
-    backgroundHex: string
-  ) => void;
-  isSelected?: boolean;
+  palette: PaletteFacet;
   size?: 'm' | 's';
+  onClick?: () => void;
+  imageURL?: string;
 }) => {
   const swatch = (
     <PaletteSwatch
       size={size}
-      colors={[palette.backgroundHex, palette.foregroundHex]}
+      backgroundColor={palette.backgroundHex}
+      foregroundColor={palette.foregroundHex}
+      imageURL={imageURL}
     />
   );
 
@@ -158,74 +164,87 @@ export const PaletteItem = ({
   }
 
   return (
-    <PaletteOption
-      onClick={() =>
-        onClick(
-          palette.paletteId,
-          palette.foregroundHex ?? '',
-          palette.backgroundHex ?? ''
-        )
-      }
-      isSelected={isSelected}
-    >
-      <PaletteHeading>{palette.paletteId}</PaletteHeading>
-      {swatch}
-    </PaletteOption>
+    <PaletteSwatchWrapper onClick={onClick}>{swatch}</PaletteSwatchWrapper>
   );
 };
 
-const PaletteSwatch = ({
-  colors,
-  size,
-}: {
-  colors: string[];
+const PaletteSwatch: React.FC<{
+  backgroundColor: string;
+  foregroundColor: string;
   size: PaletteSize;
-}) => (
-  <PaletteContainer borderColor={colors[0]} size={size}>
-    {colors.map((color, index) => (
-      <PaletteColor key={`${color}-${index}`} color={color} />
-    ))}
-  </PaletteContainer>
-);
+  imageURL?: string;
+}> = (props) => <PaletteContainer {...props}>Aa</PaletteContainer>;
 
 const PaletteList = styled.div`
   display: flex;
   flex-wrap: wrap;
+  gap: 5px;
 `;
 
-const PaletteHeading = styled.h3`
+const PaletteHeading = styled.h4`
   margin-top: 0;
+  text-align: center;
 `;
 
-const PaletteOption = styled.div<{ isSelected: boolean }>`
+const PaletteOptionWrapper = styled.div<{ isSelected: boolean }>`
+  background-color: ${({ isSelected }) => (isSelected ? '#ddd' : '#eee')};
+  outline: ${({ isSelected }) => (isSelected ? '2px solid #aaa' : 'none')};
+  padding: 5px;
+  border-radius: 5px;
+`;
+
+const PaletteOption = ({
+  paletteOption: paletteOption,
+  isSelected,
+  onClick,
+}: {
+  paletteOption: PaletteOption;
+  isSelected: boolean;
+  onClick: () => void;
+}) => (
+  <PaletteOptionWrapper isSelected={isSelected} onClick={onClick}>
+    <PaletteHeading>{paletteOption.name}</PaletteHeading>
+    {paletteOption.palettes.map((palette) => (
+      <PaletteItem
+        palette={palette}
+        key={palette.name}
+        imageURL={paletteOption.imageURL}
+      />
+    ))}
+  </PaletteOptionWrapper>
+);
+
+const PaletteSwatchWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-width: 100px;
+  min-width: 90px;
   width: min-content;
-  padding: 10px;
-  margin: 5px 5px 5px 0;
-  border: 2px solid ${({ isSelected }) => (isSelected ? 'darkblue' : '#ccc')};
+  padding: 5px;
   border-radius: 5px;
   cursor: pointer;
 `;
 
 const PaletteContainer = styled.div<{
-  borderColor: string | undefined;
+  backgroundColor: string;
+  foregroundColor: string;
   size: PaletteSize;
+  imageURL?: string;
 }>`
   display: flex;
   width: ${({ size }) => (size === 'm' ? '50px' : '40px')};
   height: ${({ size }) => (size === 'm' ? '50px' : '40px')};
+  padding: 2px 5px;
   border-radius: 5px;
-  border: ${({ borderColor }) =>
-    borderColor ? `2px solid ${borderColor}` : 'none'};
+  background-color: ${({ backgroundColor }) => backgroundColor};
+  background-image: ${({ imageURL }) => `url(${imageURL})` ?? 'none'};
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: bottom;
+  color: ${({ foregroundColor }) => foregroundColor};
+  font-family: GHGuardianHeadline;
+  font-weight: 700;
+  justify-content: left;
+  align-items: top;
   overflow: hidden;
-`;
-
-const PaletteColor = styled.div<{ color: string }>`
-  flex-grow: 1;
-  background-color: ${({ color }) => color};
-  height: 100%;
-  min-width: 10px;
 `;
