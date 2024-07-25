@@ -38,6 +38,13 @@ class ContainerService(val containers: Containers) {
           Some(numberVisible)
         )
       }
+      case DynamicV2(container) => {
+        val numberVisible = container.storiesVisible(stories)
+        StoriesVisibleResponse(
+          Some(numberVisible),
+          Some(numberVisible)
+        )
+      }
       case MostPopular =>
         StoriesVisibleResponse(
           Some(10 min numberOfStories),
