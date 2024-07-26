@@ -30,7 +30,6 @@ import { PaletteForm, PaletteItem } from './PaletteForm';
 import noop from 'lodash/noop';
 import InputText from 'components/inputs/InputText';
 import InputContainer from 'components/inputs/InputContainer';
-import { styled } from 'constants/theme';
 import {
   feastCollectionPalettes,
   DefaultCustomPaletteFeastCollection,
@@ -40,6 +39,7 @@ import {
 import { get } from 'lodash';
 import InputBase from 'components/inputs/InputBase';
 import { TextInputLabel } from 'components/inputs/CreateResizeableTextInput';
+import { PaletteItemContainer } from './PaletteItemContainer';
 
 interface FormProps {
   card: Card;
@@ -53,10 +53,6 @@ interface FormProps {
 
 type ComponentProps = FormProps &
   InjectedFormProps<FeastCollectionCardMeta, FormProps, {}>;
-
-const PaletteContainer = styled.div`
-  display: flex;
-`;
 
 const Form = ({
   card,
@@ -94,22 +90,20 @@ const Form = ({
           <InputContainer>
             <InputLabel>Palette</InputLabel>
             {currentTheme ? (
-              <PaletteContainer>
+              <PaletteItemContainer onClick={openPaletteModal}>
                 {currentTheme.lightPalette && (
                   <PaletteItem
                     palette={currentTheme.lightPalette}
                     imageURL={currentTheme.imageURL}
-                    onClick={openPaletteModal}
                   />
                 )}
                 {currentTheme.darkPalette && (
                   <PaletteItem
                     palette={currentTheme.darkPalette}
                     imageURL={currentTheme.imageURL}
-                    onClick={openPaletteModal}
                   />
                 )}
-              </PaletteContainer>
+              </PaletteItemContainer>
             ) : (
               <p>
                 No palettes selected.{' '}

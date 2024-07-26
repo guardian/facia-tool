@@ -40,6 +40,8 @@ import {
   DefaultCustomPaletteChef,
   PaletteOption,
 } from 'constants/feastPalettes';
+import { styled } from 'constants/theme';
+import { PaletteItemContainer } from './PaletteItemContainer';
 
 interface FormProps {
   card: Card;
@@ -95,7 +97,9 @@ const Form = ({
           />
           <InputLabel>Palette</InputLabel>
           {currentPalette ? (
-            <PaletteItem palette={currentPalette} onClick={openPaletteModal} />
+            <PaletteItemContainer onClick={openPaletteModal}>
+              <PaletteItem size="s" palette={currentPalette} />
+            </PaletteItemContainer>
           ) : (
             <p>
               No palette selected.{' '}

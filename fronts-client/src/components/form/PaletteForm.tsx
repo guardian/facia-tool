@@ -125,38 +125,21 @@ type PaletteSize = 'm' | 's';
 export const PaletteItem = ({
   palette,
   size = 'm',
-  onClick = noop,
   imageURL,
 }: {
   palette: PaletteFacet;
   size?: 'm' | 's';
-  onClick?: () => void;
   imageURL?: string;
-}) => {
-  const swatch = (
-    <PaletteSwatch
-      size={size}
-      backgroundColor={palette.backgroundHex}
-      foregroundColor={palette.foregroundHex}
-      imageURL={imageURL}
-    />
-  );
-
-  if (size === 's') {
-    return swatch;
-  }
-
-  return (
-    <PaletteSwatchWrapper onClick={onClick}>{swatch}</PaletteSwatchWrapper>
-  );
-};
-
-const PaletteSwatch: React.FC<{
-  backgroundColor: string;
-  foregroundColor: string;
-  size: PaletteSize;
-  imageURL?: string;
-}> = (props) => <PaletteContainer {...props}>Aa</PaletteContainer>;
+}) => (
+  <Swatch
+    size={size}
+    backgroundColor={palette.backgroundHex}
+    foregroundColor={palette.foregroundHex}
+    imageURL={imageURL}
+  >
+    Aa
+  </Swatch>
+);
 
 const PaletteList = styled.div`
   display: flex;
@@ -188,11 +171,13 @@ const PaletteOption = ({
   <PaletteOptionWrapper isSelected={isSelected} onClick={onClick}>
     <PaletteHeading>{paletteOption.name}</PaletteHeading>
     {entries(paletteOption.palettes).map(([paletteName, palette]) => (
-      <PaletteItem
-        palette={palette}
-        key={paletteName}
-        imageURL={paletteOption.imageURL}
-      />
+      <PaletteSwatchWrapper onClick={onClick}>
+        <PaletteItem
+          palette={palette}
+          key={paletteName}
+          imageURL={paletteOption.imageURL}
+        />
+      </PaletteSwatchWrapper>
     ))}
   </PaletteOptionWrapper>
 );
@@ -208,7 +193,7 @@ const PaletteSwatchWrapper = styled.div`
   cursor: pointer;
 `;
 
-const PaletteContainer = styled.div<{
+const Swatch = styled.div<{
   backgroundColor: string;
   foregroundColor: string;
   size: PaletteSize;

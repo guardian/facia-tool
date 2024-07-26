@@ -22,7 +22,7 @@ import {
   HoverDeleteButton,
   HoverViewButton,
 } from '../../inputs/HoverActionButtons';
-import { CardPalette } from '../CardPalette';
+import { CardPaletteContainer } from '../CardPaletteContainer';
 import { PaletteItem } from 'components/form/PaletteForm';
 
 interface Props {
@@ -85,9 +85,9 @@ export const ChefCard = ({
           </CardHeadingContainer>
         </CardContent>
         {card.meta.chefTheme && (
-          <CardPalette>
+          <CardPaletteContainer>
             <PaletteItem size="s" palette={card.meta.chefTheme.palette} />
-          </CardPalette>
+          </CardPaletteContainer>
         )}
         <ImageAndGraphWrapper size="small">
           <ThumbnailSmall

@@ -17,7 +17,7 @@ import {
   HoverDeleteButton,
 } from '../../inputs/HoverActionButtons';
 import { PaletteItem } from 'components/form/PaletteForm';
-import { CardPalette } from '../CardPalette';
+import { CardPaletteContainer } from '../CardPaletteContainer';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -70,7 +70,7 @@ export const FeastCollectionCard = ({
             </CardHeadingContainer>
           </CardContent>
           {card.meta.feastCollectionTheme && (
-            <CardPalette>
+            <CardPaletteContainer>
               {card.meta.feastCollectionTheme.lightPalette && (
                 <PaletteItem
                   size="s"
@@ -85,7 +85,7 @@ export const FeastCollectionCard = ({
                   imageURL={card.meta.feastCollectionTheme.imageURL}
                 />
               )}
-            </CardPalette>
+            </CardPaletteContainer>
           )}
           <HoverActionsAreaOverlay data-testid="hover-overlay">
             <HoverActionsButtonWrapper
