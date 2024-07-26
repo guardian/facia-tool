@@ -167,7 +167,7 @@ const formPaletteToPaletteOption = (
     maybePresetPalette ?? {
       id: CustomPaletteId,
       name: 'Custom',
-      palettes: [theme.palette],
+      palettes: { default: theme.palette },
     }
   );
 };
@@ -175,7 +175,7 @@ const formPaletteToPaletteOption = (
 const paletteOptionToFormPalette = (
   paletteOption: PaletteOption
 ): ChefCardMeta['chefTheme'] | undefined => {
-  const palette = paletteOption.palettes[0];
+  const palette = paletteOption.palettes.default;
 
   return palette
     ? {

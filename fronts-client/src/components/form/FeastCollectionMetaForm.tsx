@@ -175,10 +175,10 @@ const formPaletteToPaletteOption = (
     maybePresetPalette ?? {
       id: CustomPaletteId,
       name: 'Custom',
-      palettes: [
-        { name: 'light', ...theme.lightPalette },
-        { name: 'dark', ...theme.darkPalette },
-      ],
+      palettes: {
+        light: theme.lightPalette,
+        dark: theme.darkPalette,
+      },
       imageURL: theme.imageURL,
     }
   );
@@ -189,8 +189,8 @@ const paletteOptionToFormPalette = (
 ): FeastCollectionCardMeta['feastCollectionTheme'] => {
   return {
     id: paletteOption.id,
-    lightPalette: paletteOption.palettes.find((p) => p.prefix === 'light')!,
-    darkPalette: paletteOption.palettes.find((p) => p.prefix === 'dark')!,
+    lightPalette: paletteOption.palettes.light,
+    darkPalette: paletteOption.palettes.dark,
     imageURL: paletteOption.imageURL,
   };
 };

@@ -1,5 +1,7 @@
 import React from 'react';
 import noop from 'lodash/noop';
+import set from 'lodash/fp/set';
+import upperFirst from 'lodash/upperFirst';
 import {
   CustomPaletteId,
   PaletteFacet,
@@ -8,7 +10,7 @@ import {
 import { styled } from 'constants/theme';
 import InputLabel from 'components/inputs/InputLabel';
 import { InputColor } from 'components/inputs/InputColor';
-import { set } from 'lodash/fp';
+import { entries } from 'util/object';
 
 export const PaletteForm = ({
   currentPaletteOption,
@@ -74,10 +76,10 @@ const CustomPalettePicker = ({
   onChange: (palette: PaletteOption) => void;
 }) => {
   const handleChange =
-    (paletteField: string, paletteIndex: number) =>
+    (paletteField: string, paletteKey: string) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newPaletteValue = set(
-        `palettes[${paletteIndex}].${paletteField}`,
+        `palettes.${paletteKey}.${paletteField}`,
         e.target.value,
         paletteOption
       );
@@ -87,14 +89,14 @@ const CustomPalettePicker = ({
 
   return (
     <>
-      {paletteOption.palettes.map((palette, index) => (
-        <div key={index}>
-          <h4>{palette.name}</h4>
+      {entries(paletteOption.palettes).map(([paletteName, palette]) => (
+        <div key={paletteName}>
+          <h4>{upperFirst(paletteName)}</h4>
           <PaletteColorRow>
             <InputColor
               type="color"
               value={palette?.foregroundHex}
-              onChange={handleChange('foregroundHex', index)}
+              onChange={handleChange('foregroundHex', paletteName)}
             />
             <InputLabel htmlFor="foregroundHex">Foreground colour</InputLabel>
           </PaletteColorRow>
@@ -102,7 +104,7 @@ const CustomPalettePicker = ({
             <InputColor
               type="color"
               value={palette?.backgroundHex}
-              onChange={handleChange('backgroundHex', index)}
+              onChange={handleChange('backgroundHex', paletteName)}
             />
             <InputLabel htmlFor="backgroundHex">Background colour</InputLabel>
           </PaletteColorRow>
@@ -185,10 +187,10 @@ const PaletteOption = ({
 }) => (
   <PaletteOptionWrapper isSelected={isSelected} onClick={onClick}>
     <PaletteHeading>{paletteOption.name}</PaletteHeading>
-    {paletteOption.palettes.map((palette) => (
+    {entries(paletteOption.palettes).map(([paletteName, palette]) => (
       <PaletteItem
         palette={palette}
-        key={palette.name}
+        key={paletteName}
         imageURL={paletteOption.imageURL}
       />
     ))}
