@@ -10,6 +10,7 @@ import model.editions.EditionsChefMetadata
 import play.api.libs.json.Json
 import model.editions.FeastCollectionTheme
 import model.editions.EditionsFeastCollectionMetadata
+import model.editions.ChefTheme
 
 // This is a subset of the shared model here - https://github.com/guardian/facia-scala-client/blob/master/facia-json/src/main/scala/com/gu/facia/client/models/Collection.scala#L18
 // Why not reuse that model? We only want to surface the fields necessary for editions
@@ -40,25 +41,22 @@ case class ClientCardMetadata(
   coverCardTabletImage: Option[Image] = None,
   promotionMetric: Option[Double] = None,
   bio: Option[String] = None, // Chef
-  palette: Option[Palette] = None, // Chef
+  chefTheme: Option[ChefTheme] = None, // Chef
   chefImageOverride: Option[Image] = None, // Chef
   title: Option[String] = None, // FeastCollection
-  theme: Option[FeastCollectionTheme] = None, // FeastCollection
-  feastCollectionImageOverride: Option[Image] = None // FeastCollection
-
+  feastCollectionTheme: Option[FeastCollectionTheme] = None, // FeastCollection
 ) {
   def toChefMetadata: EditionsChefMetadata =
     EditionsChefMetadata(
       bio,
-      palette,
+      chefTheme,
       chefImageOverride
     )
 
   def toFeastCollectionMetadata = 
     EditionsFeastCollectionMetadata(
       title,
-      theme,
-      feastCollectionImageOverride,
+      feastCollectionTheme,
     )
 
   def toArticleMetadata: EditionsArticleMetadata = {
@@ -111,15 +109,14 @@ object ClientCardMetadata {
   def fromCardMetadata(cardMetadata: EditionsFeastCollectionMetadata): ClientCardMetadata = {
     ClientCardMetadata(
       title = cardMetadata.title,
-      theme = cardMetadata.theme,
-      feastCollectionImageOverride = cardMetadata.feastCollectionImageOverride
+      feastCollectionTheme = cardMetadata.theme
     )
   }
 
   def fromCardMetadata(cardMetadata: EditionsChefMetadata): ClientCardMetadata = {
     ClientCardMetadata(
       bio = cardMetadata.bio,
-      palette = cardMetadata.palette,
+      chefTheme = cardMetadata.theme,
       chefImageOverride = cardMetadata.chefImageOverride
     )
   }

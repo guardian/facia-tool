@@ -50,7 +50,7 @@ interface FormProps {
   onCancel: () => void;
   onSave: (meta: ChefCardMeta) => void;
   openPaletteModal: () => void;
-  currentPalette: Palette;
+  currentPalette: Palette | undefined;
 }
 
 type ComponentProps = FormProps &
@@ -155,37 +155,43 @@ interface ChefMetaFormProps {
 }
 
 const formPaletteToPaletteOption = (
-  palette: Palette | undefined
+  theme: ChefCardMeta['chefTheme'] | undefined
 ): PaletteOption | undefined => {
-  if (!palette) {
+  if (!theme) {
     return;
   }
 
-  const maybePresetPalette = chefPalettes.find((p) => p.id === palette?.id);
+  const maybePresetPalette = chefPalettes.find((p) => p.id === theme?.id);
 
   return (
     maybePresetPalette ?? {
       id: CustomPaletteId,
       name: 'Custom',
-      palettes: [palette],
+      palettes: [theme.palette],
     }
   );
 };
 
-const paletteOptionToFormPalette = (paletteOption: PaletteOption): Palette => {
-  return {
-    id: paletteOption.id,
-    ...(paletteOption.palettes[0] ?? {}),
-  };
+const paletteOptionToFormPalette = (
+  paletteOption: PaletteOption
+): ChefCardMeta['chefTheme'] | undefined => {
+  const palette = paletteOption.palettes[0];
+
+  return palette
+    ? {
+        id: paletteOption.id,
+        palette,
+      }
+    : undefined;
 };
 
 const ChefPaletteForm = (formName: string) => () => {
   const dispatch = useDispatch();
-  const fieldName = 'palette';
+  const fieldName = 'chefTheme';
 
   const currentPaletteOption = useSelector((state: State) => {
     const formValues = getFormValues(formName)(state) as {
-      [T: string]: Palette;
+      [T: string]: ChefCardMeta['chefTheme'];
     };
     if (!formValues) {
       return undefined;
@@ -222,8 +228,9 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
   const chef = useSelector((state: State) =>
     selectors.selectChefFromCard(state, cardId)
   );
-  const palette = useSelector(
-    (state: State) => valueSelector(state, 'palette') as Palette
+  const theme = useSelector(
+    (state: State) =>
+      valueSelector(state, 'chefTheme') as ChefCardMeta['chefTheme']
   );
 
   const dispatch = useDispatch();
@@ -249,7 +256,7 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
       // This cast should not be necessary once a card's meta and its cardType are linked in the Card type.
       initialValues={card.meta as ChefCardMeta}
       openPaletteModal={openPaletteModal}
-      currentPalette={palette}
+      currentPalette={theme?.palette}
       form={form}
       {...rest}
     />

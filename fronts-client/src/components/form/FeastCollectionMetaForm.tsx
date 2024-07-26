@@ -30,12 +30,6 @@ import { PaletteForm, PaletteItem } from './PaletteForm';
 import noop from 'lodash/noop';
 import InputText from 'components/inputs/InputText';
 import InputContainer from 'components/inputs/InputContainer';
-import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
-import { ImageRowContainer } from './ImageRowContainer';
-import Row from 'components/Row';
-import { ImageCol } from './ImageCol';
-import InputImage from 'components/inputs/InputImage';
-import { defaultCardTrailImageCriteria } from 'constants/image';
 import { styled } from 'constants/theme';
 import {
   feastCollectionPalettes,
@@ -52,7 +46,7 @@ interface FormProps {
   onCancel: () => void;
   onSave: (meta: FeastCollectionCardMeta) => void;
   openPaletteModal: () => void;
-  currentTheme: FeastCollectionCardMeta['theme'];
+  currentTheme: FeastCollectionCardMeta['feastCollectionTheme'];
 }
 
 type ComponentProps = FormProps &
@@ -124,22 +118,6 @@ const Form = ({
             )}
           </InputContainer>
         </TextOptionsInputGroup>
-        <ImageOptionsInputGroup size={size}>
-          <ImageRowContainer size={size}>
-            <Row>
-              <ImageCol>
-                <InputLabel htmlFor="feastCollectionImageOverride">
-                  Replace image
-                </InputLabel>
-                <Field
-                  name="feastCollectionImageOverride"
-                  component={InputImage}
-                  criteria={defaultCardTrailImageCriteria}
-                />
-              </ImageCol>
-            </Row>
-          </ImageRowContainer>
-        </ImageOptionsInputGroup>
       </FormContent>
       <FormButtonContainer>
         <Button onClick={onCancel} type="button" size="l">
@@ -181,7 +159,7 @@ interface FeastCollectionMetaFormProps {
 }
 
 const formPaletteToPaletteOption = (
-  theme: FeastCollectionCardMeta['theme']
+  theme: FeastCollectionCardMeta['feastCollectionTheme']
 ): PaletteOption | undefined => {
   if (!theme) {
     return;
@@ -206,7 +184,7 @@ const formPaletteToPaletteOption = (
 
 const paletteOptionToFormPalette = (
   paletteOption: PaletteOption
-): FeastCollectionCardMeta['theme'] => {
+): FeastCollectionCardMeta['feastCollectionTheme'] => {
   return {
     id: paletteOption.id,
     lightPalette: paletteOption.palettes.find((p) => p.prefix === 'light')!,
@@ -217,11 +195,11 @@ const paletteOptionToFormPalette = (
 
 const FeastCollectionPaletteForm = (formName: string) => () => {
   const dispatch = useDispatch();
-  const fieldName = 'theme';
+  const fieldName = 'feastCollectionTheme';
 
   const currentPaletteOption = useSelector((state: State) => {
     const formValues = getFormValues(formName)(state) as {
-      [T: string]: FeastCollectionCardMeta['theme'];
+      [T: string]: FeastCollectionCardMeta['feastCollectionTheme'];
     };
     if (!formValues) {
       return undefined;
@@ -258,7 +236,10 @@ export const FeastCollectionMetaForm = ({
   const card = useSelector((state: State) => selectCard(state, cardId));
   const theme = useSelector(
     (state: State) =>
-      valueSelector(state, 'theme') as FeastCollectionCardMeta['theme']
+      valueSelector(
+        state,
+        'feastCollectionTheme'
+      ) as FeastCollectionCardMeta['feastCollectionTheme']
   );
 
   const dispatch = useDispatch();

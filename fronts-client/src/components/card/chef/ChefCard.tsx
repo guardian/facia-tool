@@ -9,7 +9,6 @@ import CardBody from '../CardBody';
 import CardMetaHeading from '../CardMetaHeading';
 import CardMetaContainer from '../CardMetaContainer';
 import CardMetaContent from '../CardMetaContent';
-import upperFirst from 'lodash/upperFirst';
 import CardContent from '../CardContent';
 import CardSettingsDisplay from '../CardSettingsDisplay';
 import CardHeadingContainer from '../CardHeadingContainer';
@@ -68,7 +67,6 @@ export const ChefCard = ({
         {showMeta && (
           <CardMetaContainer size={size}>
             <CardMetaHeading>Chef</CardMetaHeading>
-            <CardMetaContent>{upperFirst(chef?.type)}</CardMetaContent>
           </CardMetaContainer>
         )}
         <CardContent textSize={textSize}>
@@ -86,12 +84,12 @@ export const ChefCard = ({
             <CardMetaContent>{chef?.bio}</CardMetaContent>
           </CardHeadingContainer>
         </CardContent>
-        {card.meta.palette && (
+        {card.meta.chefTheme && (
           <CardPalette>
-            <PaletteItem size="s" palette={card.meta.palette} />
+            <PaletteItem size="s" palette={card.meta.chefTheme.palette} />
           </CardPalette>
         )}
-        <ImageAndGraphWrapper size={size}>
+        <ImageAndGraphWrapper size="small">
           <ThumbnailSmall
             url={chef?.chefImageOverride?.src ?? chef?.bylineLargeImageUrl}
           />

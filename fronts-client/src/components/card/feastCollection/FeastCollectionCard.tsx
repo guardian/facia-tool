@@ -16,9 +16,6 @@ import {
   HoverAddToClipboardButton,
   HoverDeleteButton,
 } from '../../inputs/HoverActionButtons';
-import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
-import { ThumbnailSmall } from 'components/image/Thumbnail';
-import { styled } from 'constants/theme';
 import { PaletteItem } from 'components/form/PaletteForm';
 import { CardPalette } from '../CardPalette';
 
@@ -62,7 +59,7 @@ export const FeastCollectionCard = ({
         <CardBody data-testid="snap" size={size} fade={fade}>
           {showMeta && (
             <CardMetaContainer size={size}>
-              <CardMetaHeading>Recipe collection</CardMetaHeading>
+              <CardMetaHeading>Feast collection</CardMetaHeading>
             </CardMetaContainer>
           )}
           <CardContent textSize={textSize}>
@@ -72,27 +69,24 @@ export const FeastCollectionCard = ({
               </CardHeading>
             </CardHeadingContainer>
           </CardContent>
-          {card.meta.theme && (
+          {card.meta.feastCollectionTheme && (
             <CardPalette>
-              {card.meta.theme.lightPalette && (
+              {card.meta.feastCollectionTheme.lightPalette && (
                 <PaletteItem
                   size="s"
-                  palette={card.meta.theme.lightPalette}
-                  imageURL={card.meta.theme.imageURL}
+                  palette={card.meta.feastCollectionTheme.lightPalette}
+                  imageURL={card.meta.feastCollectionTheme.imageURL}
                 />
               )}
-              {card.meta.theme?.darkPalette && (
+              {card.meta.feastCollectionTheme?.darkPalette && (
                 <PaletteItem
                   size="s"
-                  palette={card.meta.theme.darkPalette}
-                  imageURL={card.meta.theme.imageURL}
+                  palette={card.meta.feastCollectionTheme.darkPalette}
+                  imageURL={card.meta.feastCollectionTheme.imageURL}
                 />
               )}
             </CardPalette>
           )}
-          <ImageAndGraphWrapper size={size}>
-            <ThumbnailSmall url={card?.meta.chefImageOverride?.src} />
-          </ImageAndGraphWrapper>
           <HoverActionsAreaOverlay data-testid="hover-overlay">
             <HoverActionsButtonWrapper
               toolTipPosition={'top'}

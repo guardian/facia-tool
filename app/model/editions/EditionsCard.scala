@@ -28,14 +28,19 @@ object CoverCardImages {
   implicit val format: OFormat[CoverCardImages] = Json.format[CoverCardImages]
 }
 
-
-case class Palette(paletteId: String, foregroundHex: String, backgroundHex: String)
+case class Palette(foregroundHex: String, backgroundHex: String)
 
 object Palette {
     implicit val format: OFormat[Palette] = Json.format[Palette]
 }
 
-case class FeastCollectionTheme(lightPalette: Palette, darkPalette: Palette)
+case class ChefTheme(id: String, palette: Palette)
+
+object ChefTheme {
+  implicit val format: OFormat[ChefTheme] = Json.format[ChefTheme]
+}
+
+case class FeastCollectionTheme(id: String, lightPalette: Palette, darkPalette: Palette, imageURL: Option[String])
 
 object FeastCollectionTheme {
   implicit val format: OFormat[FeastCollectionTheme] = Json.format[FeastCollectionTheme]
@@ -194,7 +199,7 @@ object EditionsRecipe {
 
 case class EditionsChefMetadata(
   bio: Option[String] = None,
-  palette: Option[Palette] = None,
+  theme: Option[ChefTheme] = None,
   chefImageOverride: Option[Image] = None,
 )
 
@@ -212,8 +217,7 @@ object EditionsChef {
 
 case class EditionsFeastCollectionMetadata(
   title: Option[String] = None,
-  theme: Option[FeastCollectionTheme] = None,
-  feastCollectionImageOverride: Option[Image] = None
+  theme: Option[FeastCollectionTheme] = None
 )
 
 object EditionsFeastCollectionMetadata {

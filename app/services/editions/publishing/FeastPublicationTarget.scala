@@ -27,8 +27,8 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
       case EditionsChef(id, addedOn, metadata) => Chef(id = id,
         image = metadata.flatMap(_.chefImageOverride.map(_.src)),
         bio = metadata.flatMap(_.bio),
-        backgroundHex = metadata.flatMap(_.palette.map(_.backgroundHex)),
-        foregroundHex = metadata.flatMap(_.palette.map(_.foregroundHex)))
+        backgroundHex = metadata.flatMap(_.theme.map(_.palette.backgroundHex)),
+        foregroundHex = metadata.flatMap(_.theme.map(_.palette.foregroundHex)))
       case _:EditionsFeastCollection => FeastCollection(byline=None, darkPalette=None, image=None, body=None, title="", lightPalette=None, recipes=List.empty)
     }
   }
