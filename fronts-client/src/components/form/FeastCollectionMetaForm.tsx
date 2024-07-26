@@ -38,6 +38,8 @@ import {
   CustomPaletteId,
 } from 'constants/feastPalettes';
 import { get } from 'lodash';
+import InputBase from 'components/inputs/InputBase';
+import { TextInputLabel } from 'components/inputs/CreateResizeableTextInput';
 
 interface FormProps {
   card: Card;
@@ -218,12 +220,33 @@ const FeastCollectionPaletteForm = (formName: string) => () => {
   );
 
   return (
-    <PaletteForm
-      currentPaletteOption={currentPaletteOption}
-      defaultCustomPaletteOption={DefaultCustomPaletteFeastCollection}
-      paletteOptions={feastCollectionPalettes}
-      onChange={setPaletteOption}
-    />
+    <>
+      <PaletteForm
+        currentPaletteOption={currentPaletteOption}
+        defaultCustomPaletteOption={DefaultCustomPaletteFeastCollection}
+        paletteOptions={feastCollectionPalettes}
+        onChange={setPaletteOption}
+      />
+      {currentPaletteOption?.id === CustomPaletteId && (
+        <InputContainer>
+          <TextInputLabel htmlFor="custom-image-url">
+            <span>Custom image URL</span>
+          </TextInputLabel>
+          <InputBase
+            id="custom-image-url"
+            type="text"
+            value={currentPaletteOption?.imageURL || ''}
+            onChange={(e) => {
+              e.preventDefault();
+              setPaletteOption({
+                ...currentPaletteOption,
+                imageURL: e.target.value,
+              });
+            }}
+          />
+        </InputContainer>
+      )}
+    </>
   );
 };
 
