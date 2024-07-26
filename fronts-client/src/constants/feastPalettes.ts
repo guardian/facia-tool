@@ -17,7 +17,7 @@ export type PaletteOption = {
 export const DefaultCustomPaletteChef = {
   id: CustomPaletteId,
   name: 'Custom',
-  palettes: [{ foregroundHex: '#FFF', backgroundHex: '#333' }],
+  palettes: [{ foregroundHex: '#FFFFFF', backgroundHex: '#333333' }],
 };
 
 export const DefaultCustomPaletteFeastCollection = {
@@ -27,14 +27,14 @@ export const DefaultCustomPaletteFeastCollection = {
     {
       prefix: 'light',
       name: 'Light',
-      foregroundHex: '#FFF',
-      backgroundHex: '#333',
+      foregroundHex: '#FFFFFF',
+      backgroundHex: '#333333',
     },
     {
       prefix: 'dark',
       name: 'Dark',
-      foregroundHex: '#333',
-      backgroundHex: '#FFF',
+      foregroundHex: '#333333',
+      backgroundHex: '#FFFFFF',
     },
   ],
 };

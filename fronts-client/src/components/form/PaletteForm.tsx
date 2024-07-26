@@ -21,26 +21,6 @@ export const PaletteForm = ({
   paletteOptions: PaletteOption[];
   onChange: (paletteOption: PaletteOption) => void;
 }) => {
-  // const currentPaletteOption = useSelector((state: State) => {
-  //   const formValues = getFormValues(formName)(state) as {
-  //     [T: string]: PaletteOption;
-  //   };
-  //   if (!formValues) {
-  //     return undefined;
-  //   }
-
-  //   return get(formValues, fieldName);
-  // });
-
-  // const setPaletteOption = useCallback(
-  //   (paletteName: string, foregroundHex: string, backgroundHex: string) => {
-  //     dispatch(change(formName, `${fieldName}.id`, paletteName));
-  //     dispatch(change(formName, `${fieldName}.foregroundHex`, foregroundHex));
-  //     dispatch(change(formName, `${fieldName}.backgroundHex`, backgroundHex));
-  //   },
-  //   [formName]
-  // );
-
   const customPalette =
     currentPaletteOption?.id === CustomPaletteId
       ? currentPaletteOption
@@ -97,10 +77,11 @@ const CustomPalettePicker = ({
     (paletteField: string, paletteIndex: number) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const newPaletteValue = set(
-        `palette[${paletteIndex}].${paletteField}`,
+        `palettes[${paletteIndex}].${paletteField}`,
         e.target.value,
         paletteOption
       );
+
       onChange(newPaletteValue);
     };
 
