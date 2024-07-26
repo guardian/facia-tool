@@ -59,6 +59,7 @@ interface ArticleComponentProps {
   frontId: string;
   collectionId?: string;
   imageCriteria?: Criteria;
+  collectionType?: string;
 }
 
 interface ComponentProps extends ArticleComponentProps {
@@ -107,6 +108,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
       frontId,
       collectionId,
       imageCriteria,
+      collectionType,
     } = this.props;
 
     const getArticleData = () =>
@@ -164,6 +166,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
                 featureFlagPageViewData={featureFlagPageViewData}
                 canShowPageViewData={canShowPageViewData}
                 imageCriteria={imageCriteria}
+                collectionType={collectionType}
               />
             </ArticleBodyContainer>
           </DragIntentContainer>

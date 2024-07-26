@@ -2,7 +2,11 @@ import { selectors } from 'bundles/collectionsBundle';
 import { createSelectArticleFromCard } from 'selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
-import { isCollectionConfigDynamic } from '../util/frontsUtils';
+import {
+  isCollectionConfigDynamic,
+  isCollectionConfigDynamicV1,
+  isCollectionConfigDynamicV2,
+} from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import type { State } from 'types/State';
 import { selectEditMode, selectPriority } from './pathSelectors';
@@ -88,9 +92,13 @@ export const createSelectFormFieldsForCard = () => {
       let fields = defaultFields.slice();
 
       if (
-        isCollectionConfigDynamic(parentCollectionConfig) ||
-        derivedArticle.isBoosted
+        isCollectionConfigDynamicV2(parentCollectionConfig) ||
+        derivedArticle.boostLevel
       ) {
+        fields.push('boostLevel');
+        fields = without(fields, 'showLargeHeadline');
+      }
+      if (isCollectionConfigDynamicV1(parentCollectionConfig)) {
         fields.push('isBoosted');
       }
       if (derivedArticle.liveBloggingNow === 'true') {

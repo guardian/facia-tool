@@ -14,6 +14,7 @@ import { selectCard } from 'selectors/shared';
 export interface CardFormData {
   headline: string;
   isBoosted: boolean;
+  boostLevel: string;
   showQuotedHeadline: boolean;
   showLargeHeadline: boolean;
   customKicker: string;
@@ -104,6 +105,7 @@ export const getInitialValuesForCardForm = (
     ? {
         headline: article.headline || '',
         isBoosted: article.isBoosted || false,
+        boostLevel: article.boostLevel || 'default',
         showQuotedHeadline: article.showQuotedHeadline || false,
         showLargeHeadline: article.showLargeHeadline || false,
         showKickerTag: article.showKickerTag || false,

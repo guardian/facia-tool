@@ -78,6 +78,23 @@ const isCollectionConfigDynamic = (
   return !!(config?.type?.indexOf('dynamic/') === 0);
 };
 
+const isCollectionConfigDynamicV2 = (
+  config: CollectionConfig | undefined
+): boolean => {
+  return (
+    !!(config?.type?.indexOf('dynamic/fast-v2') === 0) ||
+    !!(config?.type?.indexOf('dynamic/package-v2') === 0)
+  );
+};
+
+const isCollectionConfigDynamicV1 = (
+  config: CollectionConfig | undefined
+): boolean => {
+  return (
+    isCollectionConfigDynamic(config) && !isCollectionConfigDynamicV2(config)
+  );
+};
+
 export {
   getFrontCollections,
   combineCollectionWithConfig,
@@ -86,4 +103,6 @@ export {
   getVisibilityArticleDetails,
   getGroupsByStage,
   isCollectionConfigDynamic,
+  isCollectionConfigDynamicV1,
+  isCollectionConfigDynamicV2,
 };

@@ -159,6 +159,7 @@ class Card extends React.Component<CardContainerProps> {
       canShowPageViewData = false,
       isLive,
       pillarId,
+      collectionType,
     } = this.props;
 
     const getSublinks = (
@@ -190,6 +191,7 @@ class Card extends React.Component<CardContainerProps> {
               canDragImage={canDragImage}
               canShowPageViewData={canShowPageViewData}
               imageCriteria={this.determineCardCriteria()}
+              collectionType={collectionType}
             >
               <EditModeVisibility visibleMode="fronts">
                 {getSublinks}

@@ -73,6 +73,7 @@ import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
+import InputRadio from 'components/inputs/InputRadio';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -147,6 +148,10 @@ const FieldsContainerWrap = styled(Row)`
   flex-wrap: wrap;
   padding-bottom: 4px;
   border-bottom: 1px solid ${theme.base.colors.borderColor};
+  ${(props: { extraBottomMargin?: string }) =>
+    props.extraBottomMargin
+      ? `margin-bottom: ${props.extraBottomMargin};`
+      : null}
 `;
 
 const ToggleCol = styled(Col)`
@@ -341,7 +346,8 @@ const CheckboxFieldsContainer: React.SFC<{
   children: Array<React.ReactElement<{ name: string }>>;
   editableFields: string[];
   size?: string;
-}> = ({ children, editableFields, size }) => {
+  extraBottomMargin?: string;
+}> = ({ children, editableFields, size, extraBottomMargin }) => {
   const childrenToRender = children.filter((child) =>
     shouldRenderField(child.props.name, editableFields)
   );
@@ -349,7 +355,7 @@ const CheckboxFieldsContainer: React.SFC<{
     return null;
   }
   return (
-    <FieldsContainerWrap>
+    <FieldsContainerWrap extraBottomMargin={extraBottomMargin}>
       {childrenToRender.map((child) => {
         return (
           <FieldContainer key={child.props.name} size={size}>
@@ -571,6 +577,44 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 data-testid="edit-form-headline-field"
               />
             )}
+            <CheckboxFieldsContainer
+              editableFields={editableFields}
+              size={this.props.size}
+              extraBottomMargin="8px"
+            >
+              <Field
+                name="boostLevel"
+                component={InputRadio}
+                label="Default"
+                id={getInputId(cardId, 'boostlevel-0')}
+                value="default"
+                type="radio"
+              />
+              <Field
+                name="boostLevel"
+                component={InputRadio}
+                label="Boost"
+                id={getInputId(cardId, 'boostlevel-1')}
+                value="boost"
+                type="radio"
+              />
+              <Field
+                name="boostLevel"
+                component={InputRadio}
+                label="Mega Boost"
+                id={getInputId(cardId, 'boostlevel-2')}
+                value="megaboost"
+                type="radio"
+              />
+              <Field
+                name="boostLevel"
+                component={InputRadio}
+                label="Giga Boost"
+                id={getInputId(cardId, 'boostlevel-3')}
+                value="gigaboost"
+                type="radio"
+              />
+            </CheckboxFieldsContainer>
             <CheckboxFieldsContainer
               editableFields={editableFields}
               size={this.props.size}

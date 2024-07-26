@@ -61,6 +61,7 @@ type CardRootMeta = ChefCardMeta &
     imageCutoutSrcOrigin?: string;
     isBreaking?: boolean;
     isBoosted?: boolean;
+    boostLevel?: string;
     showLivePlayable?: boolean;
     showMainVideo?: boolean;
     showLargeHeadline?: boolean;

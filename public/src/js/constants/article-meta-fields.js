@@ -142,9 +142,17 @@ export default Object.freeze([
         key: 'isBoosted',
         editable: true,
         omitForSupporting: true,
-        ifState: 'inDynamicCollection',
+        ifState: 'inDynamicCollectionV1',
         label: 'boost',
         type: 'boolean'
+    },
+    {
+        key: 'boostLevel',
+        editable: true,
+        omitForSupporting: true,
+        ifState: 'inDynamicCollectionV2',
+        label: 'boost level',
+        type: 'string'
     },
     {
         key: 'showLivePlayable',

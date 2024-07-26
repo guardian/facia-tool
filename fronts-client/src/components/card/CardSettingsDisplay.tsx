@@ -16,19 +16,37 @@ const ArticleMetadataProperty = styled.div`
   margin: 0 2px 1px 0;
 `;
 
+const shouldShowLegacyBoost = (collectionType?: string, isBoosted?: boolean) =>
+  collectionType?.indexOf('dynamic/') === 0 &&
+  collectionType !== 'dynamic/fast-v2' &&
+  collectionType !== 'dynamic/package-v2' &&
+  isBoosted;
+
+const shouldShowBoostLevel = (collectionType?: string, boostLevel?: string) =>
+  (collectionType === 'dynamic/fast-v2' ||
+    collectionType === 'dynamic/package-v2' ||
+    collectionType?.indexOf('dynamic/') !== 0) &&
+  boostLevel !== 'default';
+
 export default ({
+  collectionType,
   isBreaking,
   showByline,
   showQuotedHeadline,
   showLargeHeadline,
   isBoosted,
+  boostLevel,
 }: {
+  collectionType?: string;
   isBreaking?: boolean;
   showByline?: boolean;
   showQuotedHeadline?: boolean;
   showLargeHeadline?: boolean;
   isBoosted?: boolean;
+  boostLevel?: string;
 }) =>
+  shouldShowBoostLevel(collectionType, boostLevel) ||
+  shouldShowLegacyBoost(collectionType, isBoosted) ||
   isBreaking ||
   showByline ||
   showQuotedHeadline ||
@@ -49,6 +67,11 @@ export default ({
       {showLargeHeadline && (
         <ArticleMetadataProperty>Large headline</ArticleMetadataProperty>
       )}
-      {isBoosted && <ArticleMetadataProperty>Boost</ArticleMetadataProperty>}
+      {shouldShowBoostLevel(collectionType, boostLevel) && (
+        <ArticleMetadataProperty>{boostLevel}</ArticleMetadataProperty>
+      )}
+      {shouldShowLegacyBoost(collectionType, isBoosted) && (
+        <ArticleMetadataProperty>Boost</ArticleMetadataProperty>
+      )}
     </ArticleMetadataProperties>
   ) : null;
