@@ -441,7 +441,7 @@ object DailyEdition extends RegionalEdition {
 
   def FrontCrosswords = front(
     "Crosswords",
-    collection("Crosswords").searchPrefill("?tag=type/crossword,-crosswords/series/quick-cryptic")
+    collection("Crosswords").searchPrefill("?tag=type/crossword")
   )
 
 }
