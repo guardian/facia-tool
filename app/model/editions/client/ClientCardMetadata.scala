@@ -1,13 +1,10 @@
 package model.editions.client
 
 import ai.x.play.json.Jsonx
-import play.api.libs.json.JsSuccess
 import model.editions.{CoverCardImages, Image, MediaType}
-import play.api.libs.json.OFormat
-import model.editions.Palette
+import play.api.libs.json.{OFormat, JsSuccess}
 import model.editions.EditionsArticleMetadata
 import model.editions.EditionsChefMetadata
-import play.api.libs.json.Json
 import model.editions.FeastCollectionTheme
 import model.editions.EditionsFeastCollectionMetadata
 import model.editions.ChefTheme
@@ -53,7 +50,7 @@ case class ClientCardMetadata(
       chefImageOverride
     )
 
-  def toFeastCollectionMetadata = 
+  def toFeastCollectionMetadata =
     EditionsFeastCollectionMetadata(
       title,
       feastCollectionTheme,

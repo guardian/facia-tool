@@ -1,9 +1,7 @@
 package model.editions.client
 
-import model.editions.client.ClientCardMetadata
 import play.api.libs.json.{Json, OFormat}
 import services.editions.prefills.CapiQueryTimeWindow
-import model.editions.client.ClientCardMetadata
 import model.editions.EditionsCard
 import model.editions.EditionsArticle
 import model.editions.{CapiPrefillQuery, EditionsCollection, EditionsRecipe, EditionsChef, EditionsFeastCollection, CardType}
@@ -16,27 +14,27 @@ object EditionsClientCard {
   implicit val format: OFormat[EditionsClientCard] = Json.format[EditionsClientCard]
 
   def fromCard(card: EditionsCard): EditionsClientCard = card match {
-    case EditionsArticle(id, addedOn, metadata) => 
+    case EditionsArticle(id, addedOn, metadata) =>
       EditionsClientCard(
         id = "internal-code/page/" + id,
         Some(CardType.Article),
         addedOn,
         metadata.map(ClientCardMetadata.fromCardMetadata)
       )
-    case EditionsRecipe(id, addedOn) => 
+    case EditionsRecipe(id, addedOn) =>
       EditionsClientCard(
         id,
         Some(CardType.Recipe),
         addedOn
       )
-    case EditionsChef(id, addedOn, metadata) => 
+    case EditionsChef(id, addedOn, metadata) =>
       EditionsClientCard(
         id,
         Some(CardType.Chef),
         addedOn,
         metadata.map(ClientCardMetadata.fromCardMetadata)
       )
-    case EditionsFeastCollection(id, addedOn, metadata) => 
+    case EditionsFeastCollection(id, addedOn, metadata) =>
       EditionsClientCard(
         id,
         Some(CardType.FeastCollection),
@@ -46,7 +44,7 @@ object EditionsClientCard {
   }
 
   def toCard(card: EditionsClientCard): EditionsCard = card.cardType match {
-    case Some(CardType.Article) | None => 
+    case Some(CardType.Article) | None =>
       val id = card.id.split("/").last
       EditionsArticle(
         id,
