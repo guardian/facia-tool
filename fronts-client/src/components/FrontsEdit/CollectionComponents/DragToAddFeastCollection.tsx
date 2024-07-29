@@ -9,6 +9,7 @@ import {
 import { DragToAdd } from './DragToAdd';
 import { Card } from 'types/Collection';
 import { CardTypesMap } from 'constants/cardTypes';
+import { CARD_TYPE } from 'lib/dnd/constants';
 
 const handleDragStart = (
   event: React.DragEvent<HTMLDivElement>,
@@ -25,6 +26,7 @@ const handleDragStart = (
     CardTypesMap.FEAST_COLLECTION,
     JSON.stringify(feastCollectionCard)
   );
+  event.dataTransfer.setData(CARD_TYPE, CardTypesMap.FEAST_COLLECTION);
   if (dragImageElement) {
     event.dataTransfer.setDragImage(dragImageElement, dragOffsetX, dragOffsetY);
   }
