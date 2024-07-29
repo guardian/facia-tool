@@ -8,7 +8,7 @@ import ArticleDrag, {
   dragOffsetY,
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, { DefaultDropContainer } from 'components/DropZone';
-import { collectionDropTypeBlacklist } from 'constants/fronts';
+import { collectionDropTypeDenylist } from 'constants/fronts';
 import { createSelectArticlesFromIds } from 'selectors/shared';
 import { theme, styled } from 'constants/theme';
 
@@ -67,7 +67,7 @@ const GroupLevel = ({
 }: Props) => (
   <Level
     arr={cards}
-    blacklistedDataTransferTypes={collectionDropTypeBlacklist}
+    denylistedDataTransferTypes={collectionDropTypeDenylist}
     parentType="group"
     parentId={groupId}
     type="card"

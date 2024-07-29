@@ -1,5 +1,4 @@
 import React from 'react';
-import noop from 'lodash/noop';
 import set from 'lodash/fp/set';
 import upperFirst from 'lodash/upperFirst';
 import {

@@ -7,8 +7,8 @@ import CardContainer from 'components/card/CardContainer';
 import CardContent from 'components/card/CardContent';
 import CardMetaContainer from 'components/card/CardMetaContainer';
 import DragIntentContainer from 'components/DragIntentContainer';
-import { dragEventIsBlacklisted } from 'lib/dnd/Level';
-import { collectionDropTypeBlacklist } from 'constants/fronts';
+import { dragEventIsDenylisted } from 'lib/dnd/Level';
+import { collectionDropTypeDenylist } from 'constants/fronts';
 
 const SublinkCardBody = styled(CardBody)<{
   dragHoverActive: boolean;
@@ -69,7 +69,7 @@ class Sublinks extends React.Component<SublinkProps> {
               this.setState({ dragHoverActive: false });
             }}
             delay={100}
-            filterRegisterEvent={this.dragEventNotBlacklisted}
+            filterRegisterEvent={this.dragEventNotDenylisted}
             onIntentConfirm={() => {
               toggleShowArticleSublinks();
             }}
@@ -98,8 +98,8 @@ class Sublinks extends React.Component<SublinkProps> {
     );
   }
 
-  private dragEventNotBlacklisted = (e: React.DragEvent) =>
-    !dragEventIsBlacklisted(e, collectionDropTypeBlacklist);
+  private dragEventNotDenylisted = (e: React.DragEvent) =>
+    !dragEventIsDenylisted(e, collectionDropTypeDenylist);
 }
 
 export default Sublinks;

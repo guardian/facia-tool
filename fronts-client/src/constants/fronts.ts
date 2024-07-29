@@ -34,7 +34,7 @@ export const liveBlogTones: { [key: string]: string } = {
 
 export const gridDropTypes = Object.values(gridDataTransferTypes);
 
-export const collectionDropTypeBlacklist = [
+export const collectionDropTypeDenylist = [
   ...gridDropTypes,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
   DRAG_DATA_GRID_IMAGE_URL,

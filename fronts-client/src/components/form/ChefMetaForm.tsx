@@ -40,7 +40,6 @@ import {
   DefaultCustomPaletteChef,
   PaletteOption,
 } from 'constants/feastPalettes';
-import { styled } from 'constants/theme';
 import { PaletteItemContainer } from './PaletteItemContainer';
 
 interface FormProps {
