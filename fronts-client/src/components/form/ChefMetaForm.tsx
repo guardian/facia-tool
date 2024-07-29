@@ -4,6 +4,8 @@ import {
   Field,
   InjectedFormProps,
   formValueSelector,
+  getFormValues,
+  change,
 } from 'redux-form';
 import { Card, CardSizes, ChefCardMeta, Palette } from '../../types/Collection';
 import { Dispatch } from '../../types/Store';
@@ -29,8 +31,17 @@ import InputLabel from 'components/inputs/InputLabel';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import { useDispatch } from 'react-redux';
 import { startOptionsModal } from 'actions/OptionsModal';
-import { PaletteItem, createPaletteForm } from './PaletteForm';
+import { PaletteForm, PaletteItem } from './PaletteForm';
 import noop from 'lodash/noop';
+import get from 'lodash/get';
+import {
+  chefPalettes,
+  CustomPaletteId,
+  DefaultCustomPaletteChef,
+  PaletteOption,
+} from 'constants/feastPalettes';
+import { styled } from 'constants/theme';
+import { PaletteItemContainer } from './PaletteItemContainer';
 
 interface FormProps {
   card: Card;
@@ -41,7 +52,7 @@ interface FormProps {
   onCancel: () => void;
   onSave: (meta: ChefCardMeta) => void;
   openPaletteModal: () => void;
-  currentPalette: Palette;
+  currentPalette: Palette | undefined;
 }
 
 type ComponentProps = FormProps &
@@ -86,11 +97,9 @@ const Form = ({
           />
           <InputLabel>Palette</InputLabel>
           {currentPalette ? (
-            <PaletteItem
-              id={currentPalette.paletteId}
-              palette={currentPalette}
-              onClick={openPaletteModal}
-            />
+            <PaletteItemContainer onClick={openPaletteModal}>
+              <PaletteItem size="s" palette={currentPalette} />
+            </PaletteItemContainer>
           ) : (
             <p>
               No palette selected.{' '}
@@ -149,6 +158,71 @@ interface ChefMetaFormProps {
   size: CardSizes;
 }
 
+const formPaletteToPaletteOption = (
+  theme: ChefCardMeta['chefTheme'] | undefined
+): PaletteOption | undefined => {
+  if (!theme) {
+    return;
+  }
+
+  const maybePresetPalette = chefPalettes.find((p) => p.id === theme?.id);
+
+  return (
+    maybePresetPalette ?? {
+      id: CustomPaletteId,
+      name: 'Custom',
+      palettes: { default: theme.palette },
+    }
+  );
+};
+
+const paletteOptionToFormPalette = (
+  paletteOption: PaletteOption
+): ChefCardMeta['chefTheme'] | undefined => {
+  const palette = paletteOption.palettes.default;
+
+  return palette
+    ? {
+        id: paletteOption.id,
+        palette,
+      }
+    : undefined;
+};
+
+const ChefPaletteForm = (formName: string) => () => {
+  const dispatch = useDispatch();
+  const fieldName = 'chefTheme';
+
+  const currentPaletteOption = useSelector((state: State) => {
+    const formValues = getFormValues(formName)(state) as {
+      [T: string]: ChefCardMeta['chefTheme'];
+    };
+    if (!formValues) {
+      return undefined;
+    }
+
+    return formPaletteToPaletteOption(get(formValues, fieldName));
+  });
+
+  const setPaletteOption = useCallback(
+    (paletteOption: PaletteOption) => {
+      dispatch(
+        change(formName, fieldName, paletteOptionToFormPalette(paletteOption))
+      );
+    },
+    [formName]
+  );
+
+  return (
+    <PaletteForm
+      currentPaletteOption={currentPaletteOption}
+      defaultCustomPaletteOption={DefaultCustomPaletteChef}
+      paletteOptions={chefPalettes}
+      onChange={setPaletteOption}
+    />
+  );
+};
+
 export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
   const valueSelector = formValueSelector(form);
   const card = useSelector((state: State) => selectCard(state, cardId));
@@ -158,8 +232,9 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
   const chef = useSelector((state: State) =>
     selectors.selectChefFromCard(state, cardId)
   );
-  const palette = useSelector(
-    (state: State) => valueSelector(state, 'palette') as Palette
+  const theme = useSelector(
+    (state: State) =>
+      valueSelector(state, 'chefTheme') as ChefCardMeta['chefTheme']
   );
 
   const dispatch = useDispatch();
@@ -168,7 +243,7 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
       dispatch(
         startOptionsModal(
           'Select a palette',
-          createPaletteForm(form, 'palette'),
+          ChefPaletteForm(form),
           [{ buttonText: 'Done', callback: noop }],
           undefined,
           false
@@ -185,7 +260,7 @@ export const ChefMetaForm = ({ cardId, form, ...rest }: ChefMetaFormProps) => {
       // This cast should not be necessary once a card's meta and its cardType are linked in the Card type.
       initialValues={card.meta as ChefCardMeta}
       openPaletteModal={openPaletteModal}
-      currentPalette={palette}
+      currentPalette={theme?.palette}
       form={form}
       {...rest}
     />

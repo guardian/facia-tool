@@ -9,7 +9,6 @@ import CardBody from '../CardBody';
 import CardMetaHeading from '../CardMetaHeading';
 import CardMetaContainer from '../CardMetaContainer';
 import CardMetaContent from '../CardMetaContent';
-import upperFirst from 'lodash/upperFirst';
 import CardContent from '../CardContent';
 import CardSettingsDisplay from '../CardSettingsDisplay';
 import CardHeadingContainer from '../CardHeadingContainer';
@@ -23,6 +22,8 @@ import {
   HoverDeleteButton,
   HoverViewButton,
 } from '../../inputs/HoverActionButtons';
+import { CardPaletteContainer } from '../CardPaletteContainer';
+import { PaletteItem } from 'components/form/PaletteForm';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -66,7 +67,6 @@ export const ChefCard = ({
         {showMeta && (
           <CardMetaContainer size={size}>
             <CardMetaHeading>Chef</CardMetaHeading>
-            <CardMetaContent>{upperFirst(chef?.type)}</CardMetaContent>
           </CardMetaContainer>
         )}
         <CardContent textSize={textSize}>
@@ -84,7 +84,12 @@ export const ChefCard = ({
             <CardMetaContent>{chef?.bio}</CardMetaContent>
           </CardHeadingContainer>
         </CardContent>
-        <ImageAndGraphWrapper size={size}>
+        {card.meta.chefTheme && (
+          <CardPaletteContainer>
+            <PaletteItem size="s" palette={card.meta.chefTheme.palette} />
+          </CardPaletteContainer>
+        )}
+        <ImageAndGraphWrapper size="small">
           <ThumbnailSmall
             url={chef?.chefImageOverride?.src ?? chef?.bylineLargeImageUrl}
           />

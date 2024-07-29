@@ -8,6 +8,8 @@ import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.DbEditionsCard
 import services.editions.prefills.CapiQueryTimeWindow
+import model.editions.EditionsFeastCollection
+import play.api.libs.json.Writes
 
 trait CollectionsQueries {
 
@@ -110,8 +112,9 @@ trait CollectionsQueries {
 
     collection.items.zipWithIndex.foreach { case (card, index) =>
       val metadataJson = card match {
-        case EditionsArticle(_, _, metadata) => metadata.map(m => Json.toJson(m).toString)
-        case EditionsChef(_, _, metadata) => metadata.map(m => Json.toJson(m).toString)
+        case EditionsArticle(_, _, metadata) => maybeJson(metadata)
+        case EditionsChef(_, _, metadata) => maybeJson(metadata)
+        case EditionsFeastCollection(_, _, metadata) => maybeJson(metadata)
         case _ => "{}"
       }
 
@@ -137,6 +140,8 @@ trait CollectionsQueries {
 
     updatedCollections.head
   }
+
+  private def maybeJson[T](maybeModel: Option[T])(implicit writes: Writes[T]) = maybeModel.map(m => Json.toJson(m).toString)
 
   private def fetchCollectionsSql(where: SQLSyntax): SQLToList[GetCollectionsRow, HasExtractor] = {
     val sql =

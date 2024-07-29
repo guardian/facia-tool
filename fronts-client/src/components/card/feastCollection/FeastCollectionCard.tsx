@@ -8,7 +8,6 @@ import CardBody from '../CardBody';
 import CardMetaHeading from '../CardMetaHeading';
 import CardMetaContainer from '../CardMetaContainer';
 import CardContent from '../CardContent';
-import CardSettingsDisplay from '../CardSettingsDisplay';
 import CardHeadingContainer from '../CardHeadingContainer';
 import CardHeading from '../CardHeading';
 import { HoverActionsAreaOverlay } from '../../CollectionHoverItems';
@@ -17,6 +16,8 @@ import {
   HoverAddToClipboardButton,
   HoverDeleteButton,
 } from '../../inputs/HoverActionButtons';
+import { PaletteItem } from 'components/form/PaletteForm';
+import { CardPaletteContainer } from '../CardPaletteContainer';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -58,23 +59,34 @@ export const FeastCollectionCard = ({
         <CardBody data-testid="snap" size={size} fade={fade}>
           {showMeta && (
             <CardMetaContainer size={size}>
-              <CardMetaHeading>Recipe collection</CardMetaHeading>
+              <CardMetaHeading>Feast collection</CardMetaHeading>
             </CardMetaContainer>
           )}
           <CardContent textSize={textSize}>
-            <CardSettingsDisplay
-              isBreaking={card.meta?.isBreaking}
-              showByline={card.meta?.showByline}
-              showQuotedHeadline={card.meta?.showQuotedHeadline}
-              showLargeHeadline={card.meta?.showLargeHeadline}
-              isBoosted={card.meta?.isBoosted}
-            />
             <CardHeadingContainer size={size}>
               <CardHeading data-testid="headline" html>
-                Recipe collection
+                {card.meta.title ? card.meta.title : 'No title'}
               </CardHeading>
             </CardHeadingContainer>
           </CardContent>
+          {card.meta.feastCollectionTheme && (
+            <CardPaletteContainer>
+              {card.meta.feastCollectionTheme.lightPalette && (
+                <PaletteItem
+                  size="s"
+                  palette={card.meta.feastCollectionTheme.lightPalette}
+                  imageURL={card.meta.feastCollectionTheme.imageURL}
+                />
+              )}
+              {card.meta.feastCollectionTheme?.darkPalette && (
+                <PaletteItem
+                  size="s"
+                  palette={card.meta.feastCollectionTheme.darkPalette}
+                  imageURL={card.meta.feastCollectionTheme.imageURL}
+                />
+              )}
+            </CardPaletteContainer>
+          )}
           <HoverActionsAreaOverlay data-testid="hover-overlay">
             <HoverActionsButtonWrapper
               toolTipPosition={'top'}

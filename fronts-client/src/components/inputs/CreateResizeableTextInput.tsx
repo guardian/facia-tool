@@ -40,7 +40,7 @@ const RewindButton = styled.button.attrs({
   }
 `;
 
-const TextInputLabel = styled(InputLabel)`
+export const TextInputLabel = styled(InputLabel)`
   display: ${(props) => (props.hidden ? 'none' : 'flex')};
   align-items: flex-end;
 `;

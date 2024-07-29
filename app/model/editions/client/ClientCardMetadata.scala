@@ -1,12 +1,13 @@
 package model.editions.client
 
 import ai.x.play.json.Jsonx
-import play.api.libs.json.JsSuccess
 import model.editions.{CoverCardImages, Image, MediaType}
-import play.api.libs.json.OFormat
-import model.editions.Palette
+import play.api.libs.json.{OFormat, JsSuccess}
 import model.editions.EditionsArticleMetadata
 import model.editions.EditionsChefMetadata
+import model.editions.FeastCollectionTheme
+import model.editions.EditionsFeastCollectionMetadata
+import model.editions.ChefTheme
 
 // This is a subset of the shared model here - https://github.com/guardian/facia-scala-client/blob/master/facia-json/src/main/scala/com/gu/facia/client/models/Collection.scala#L18
 // Why not reuse that model? We only want to surface the fields necessary for editions
@@ -37,14 +38,22 @@ case class ClientCardMetadata(
   coverCardTabletImage: Option[Image] = None,
   promotionMetric: Option[Double] = None,
   bio: Option[String] = None, // Chef
-  palette: Option[Palette] = None, // Chef
-  chefImageOverride: Option[Image] = None// Chef
+  chefTheme: Option[ChefTheme] = None, // Chef
+  chefImageOverride: Option[Image] = None, // Chef
+  title: Option[String] = None, // FeastCollection
+  feastCollectionTheme: Option[FeastCollectionTheme] = None, // FeastCollection
 ) {
   def toChefMetadata: EditionsChefMetadata =
     EditionsChefMetadata(
       bio,
-      palette,
+      chefTheme,
       chefImageOverride
+    )
+
+  def toFeastCollectionMetadata =
+    EditionsFeastCollectionMetadata(
+      title,
+      feastCollectionTheme,
     )
 
   def toArticleMetadata: EditionsArticleMetadata = {
@@ -94,10 +103,17 @@ case class ClientCardMetadata(
 object ClientCardMetadata {
   implicit val format: OFormat[ClientCardMetadata] = Jsonx.formatCaseClassUseDefaults[ClientCardMetadata]
 
+  def fromCardMetadata(cardMetadata: EditionsFeastCollectionMetadata): ClientCardMetadata = {
+    ClientCardMetadata(
+      title = cardMetadata.title,
+      feastCollectionTheme = cardMetadata.theme
+    )
+  }
+
   def fromCardMetadata(cardMetadata: EditionsChefMetadata): ClientCardMetadata = {
     ClientCardMetadata(
       bio = cardMetadata.bio,
-      palette = cardMetadata.palette,
+      chefTheme = cardMetadata.theme,
       chefImageOverride = cardMetadata.chefImageOverride
     )
   }

@@ -2,7 +2,6 @@ import { CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
 import type { FrontsToolSettings } from 'types/FaciaApi';
 import { CardTypes } from 'constants/cardTypes';
-import { ChefPaletteId } from 'constants/feastPalettes';
 
 interface CollectionArticles {
   draft: CapiArticle[];
@@ -42,53 +41,54 @@ type NestedCard = NestedCardRootFields & {
   };
 };
 
-interface CardRootMeta extends ChefCardMeta {
-  group?: string;
-  headline?: string;
-  trailText?: string;
-  byline?: string;
-  sportScore?: string;
-  customKicker?: string;
-  href?: string;
-  imageSrc?: string;
-  imageSrcThumb?: string;
-  imageSrcWidth?: string;
-  imageSrcHeight?: string;
-  imageSrcOrigin?: string;
-  imageCutoutSrc?: string;
-  imageCutoutSrcWidth?: string;
-  imageCutoutSrcHeight?: string;
-  imageCutoutSrcOrigin?: string;
-  isBreaking?: boolean;
-  isBoosted?: boolean;
-  showLivePlayable?: boolean;
-  showMainVideo?: boolean;
-  showLargeHeadline?: boolean;
-  showQuotedHeadline?: boolean;
-  showByline?: boolean;
-  imageCutoutReplace?: boolean;
-  imageReplace?: boolean;
-  imageHide?: boolean;
-  showKickerTag?: boolean;
-  showKickerSection?: boolean;
-  showKickerCustom?: boolean;
-  snapUri?: string;
-  snapType?: string;
-  snapCss?: string;
-  atomId?: string;
-  imageSlideshowReplace?: boolean;
-  slideshow?: Array<{
-    src?: string;
-    thumb?: string;
-    width?: string;
-    height?: string;
-    origin?: string;
-  }>;
-  overrideArticleMainMedia?: boolean;
-  coverCardImageReplace?: boolean;
-  coverCardMobileImage?: ImageData;
-  coverCardTabletImage?: ImageData;
-}
+type CardRootMeta = ChefCardMeta &
+  FeastCollectionCardMeta & {
+    group?: string;
+    headline?: string;
+    trailText?: string;
+    byline?: string;
+    sportScore?: string;
+    customKicker?: string;
+    href?: string;
+    imageSrc?: string;
+    imageSrcThumb?: string;
+    imageSrcWidth?: string;
+    imageSrcHeight?: string;
+    imageSrcOrigin?: string;
+    imageCutoutSrc?: string;
+    imageCutoutSrcWidth?: string;
+    imageCutoutSrcHeight?: string;
+    imageCutoutSrcOrigin?: string;
+    isBreaking?: boolean;
+    isBoosted?: boolean;
+    showLivePlayable?: boolean;
+    showMainVideo?: boolean;
+    showLargeHeadline?: boolean;
+    showQuotedHeadline?: boolean;
+    showByline?: boolean;
+    imageCutoutReplace?: boolean;
+    imageReplace?: boolean;
+    imageHide?: boolean;
+    showKickerTag?: boolean;
+    showKickerSection?: boolean;
+    showKickerCustom?: boolean;
+    snapUri?: string;
+    snapType?: string;
+    snapCss?: string;
+    atomId?: string;
+    imageSlideshowReplace?: boolean;
+    slideshow?: Array<{
+      src?: string;
+      thumb?: string;
+      width?: string;
+      height?: string;
+      origin?: string;
+    }>;
+    overrideArticleMainMedia?: boolean;
+    coverCardImageReplace?: boolean;
+    coverCardMobileImage?: ImageData;
+    coverCardTabletImage?: ImageData;
+  };
 
 type CardRootFields = NestedCardRootFields & {
   uuid: string;
@@ -110,13 +110,25 @@ export interface ImageData {
 export interface Palette {
   foregroundHex: string;
   backgroundHex: string;
-  paletteId: ChefPaletteId;
 }
 
 interface ChefCardMeta {
   bio?: string;
-  palette?: Palette;
+  chefTheme?: {
+    id: string;
+    palette: Palette;
+  };
   chefImageOverride?: ImageData;
+}
+
+export interface FeastCollectionCardMeta {
+  title?: string;
+  feastCollectionTheme?: {
+    id: string;
+    lightPalette: Omit<Palette, 'id'>;
+    darkPalette: Omit<Palette, 'id'>;
+    imageURL?: string;
+  };
 }
 
 interface Card extends CardRootFields {

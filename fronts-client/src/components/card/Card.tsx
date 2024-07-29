@@ -56,6 +56,7 @@ import { RecipeCard } from 'components/card/recipe/RecipeCard';
 import { ChefCard } from 'components/card/chef/ChefCard';
 import { ChefMetaForm } from '../form/ChefMetaForm';
 import { FeastCollectionCard } from './feastCollection/FeastCollectionCard';
+import { FeastCollectionMetaForm } from 'components/form/FeastCollectionMetaForm';
 import { selectCollectionType } from 'selectors/frontsSelectors';
 import { Criteria } from 'types/Grid';
 import { Card as CardType } from 'types/Collection';
@@ -296,6 +297,20 @@ class Card extends React.Component<CardContainerProps> {
         case CardTypesMap.CHEF:
           return (
             <ChefMetaForm
+              cardId={uuid}
+              key={uuid}
+              form={uuid}
+              onSave={(meta) => {
+                updateCardMeta(uuid, meta);
+                clearCardSelection(uuid);
+              }}
+              onCancel={() => clearCardSelection(uuid)}
+              size={size}
+            />
+          );
+        case CardTypesMap.FEAST_COLLECTION:
+          return (
+            <FeastCollectionMetaForm
               cardId={uuid}
               key={uuid}
               form={uuid}

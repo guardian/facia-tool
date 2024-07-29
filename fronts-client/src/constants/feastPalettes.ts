@@ -1,277 +1,609 @@
-export const CustomPalette = 'Custom';
-export type ChefPaletteId = keyof typeof chefPalettes | typeof CustomPalette;
+export const CustomPaletteId = 'Custom';
 
-export const chefPalettes = {
-  Kaffir: {
-    foregroundHex: '#F9F9F5',
-    backgroundHex: '#697311',
-  },
-  Paprika: {
-    foregroundHex: '#F9F9F5',
-    backgroundHex: '#C25400',
-  },
-  Berry: {
-    foregroundHex: '#F9F9F5',
-    backgroundHex: '#BB3B80',
-  },
-  Chilli: {
-    foregroundHex: '#F9F9F5',
-    backgroundHex: '#9A1E1E',
-  },
-  Blueberry: {
-    foregroundHex: '#F9F9F5',
-    backgroundHex: '#20809E',
-  },
-  Tarragon: {
-    foregroundHex: '#F9F9F5',
-    backgroundHex: '#68773C',
-  },
-} as const;
+export type PaletteFacet = {
+  foregroundHex: string;
+  backgroundHex: string;
+};
 
-export const collectionPalettes = {
-  Autumn: {
-    lightForegroundHex: '#C25400',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0CDB4',
-    darkBackgroundHex: '#363632',
+export type PaletteOption = {
+  id: string;
+  name: string;
+  palettes: Record<string, PaletteFacet>;
+  imageURL?: string;
+};
+
+export const DefaultCustomPaletteChef = {
+  id: CustomPaletteId,
+  name: 'Custom',
+  palettes: { default: { foregroundHex: '#FFFFFF', backgroundHex: '#333333' } },
+};
+
+export const DefaultCustomPaletteFeastCollection = {
+  id: CustomPaletteId,
+  name: 'Custom',
+  palettes: {
+    light: {
+      foregroundHex: '#FFFFFF',
+      backgroundHex: '#333333',
+    },
+    dark: {
+      prefix: 'dark',
+      name: 'Dark',
+      foregroundHex: '#333333',
+      backgroundHex: '#FFFFFF',
+    },
+  },
+};
+
+export const chefPalettes: PaletteOption[] = [
+  {
+    id: 'kaffir',
+    name: 'Kaffir',
+    palettes: {
+      default: { foregroundHex: '#F9F9F5', backgroundHex: '#697311' },
+    },
+  },
+  {
+    id: 'paprika',
+    name: 'Paprika',
+    palettes: {
+      default: { foregroundHex: '#F9F9F5', backgroundHex: '#C25400' },
+    },
+  },
+  {
+    id: 'berry',
+    name: 'Berry',
+    palettes: {
+      default: { foregroundHex: '#F9F9F5', backgroundHex: '#BB3B80' },
+    },
+  },
+  {
+    id: 'chilli',
+    name: 'Chilli',
+    palettes: {
+      default: { foregroundHex: '#F9F9F5', backgroundHex: '#9A1E1E' },
+    },
+  },
+  {
+    id: 'blueberry',
+    name: 'Blueberry',
+    palettes: {
+      default: { foregroundHex: '#F9F9F5', backgroundHex: '#20809E' },
+    },
+  },
+  {
+    id: 'tarragon',
+    name: 'Tarragon',
+    palettes: {
+      default: { foregroundHex: '#F9F9F5', backgroundHex: '#68773C' },
+    },
+  },
+];
+
+export const feastCollectionPalettes: PaletteOption[] = [
+  {
+    id: 'autumn',
+    name: 'Autumn',
+    palettes: {
+      light: {
+        foregroundHex: '#C25400',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0CDB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Autumn.png',
   },
-  Barbecue: {
-    lightForegroundHex: '#697311',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#E1E5B8',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'barbecue',
+    name: 'Barbecue',
+    palettes: {
+      light: {
+        foregroundHex: '#697311',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#E1E5B8',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/01/Barbecue-01.png',
   },
-  'Baking/Pies': {
-    lightForegroundHex: '#DB2712',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#FCF1F0',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'baking/pies',
+    name: 'Baking/Pies',
+    palettes: {
+      light: {
+        foregroundHex: '#DB2712',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#FCF1F0',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Baking.png',
   },
-  Budget: {
-    lightForegroundHex: '#9A1E1E',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0BAB4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'budget',
+    name: 'Budget',
+    palettes: {
+      light: {
+        foregroundHex: '#9A1E1E',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0BAB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Budget.png',
   },
-  Brunch: {
-    lightForegroundHex: '#9A1E1E',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0BAB4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'brunch',
+    name: 'Brunch',
+    palettes: {
+      light: {
+        foregroundHex: '#9A1E1E',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0BAB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Brunch.png',
   },
-  Cakes: {
-    lightForegroundHex: '#BB3B80',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#FCF0F7',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'cakes',
+    name: 'Cakes',
+    palettes: {
+      light: {
+        foregroundHex: '#BB3B80',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#FCF0F7',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Cakes.png',
   },
-  Celebration: {
-    lightForegroundHex: '#801919',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#FCF1F0',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'celebration',
+    name: 'Celebration',
+    palettes: {
+      light: {
+        foregroundHex: '#801919',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#FCF1F0',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Celebration.png',
   },
-  'Celebration\nCakes': {
-    lightForegroundHex: '#BB3B80',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#FCF0F7',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'celebration\ncakes',
+    name: 'Celebration\nCakes',
+    palettes: {
+      light: {
+        foregroundHex: '#BB3B80',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#FCF0F7',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Celebrationcakes.png',
   },
-  Cheese: {
-    lightForegroundHex: '#C25400',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0CDB4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'cheese',
+    name: 'Cheese',
+    palettes: {
+      light: {
+        foregroundHex: '#C25400',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0CDB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Cheese.png',
   },
-  Chicken: {
-    lightForegroundHex: '#C25400',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0CDB4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'chicken',
+    name: 'Chicken',
+    palettes: {
+      light: {
+        foregroundHex: '#C25400',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0CDB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Chicken.png',
   },
-  Chocolate: {
-    lightForegroundHex: '#80513E',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0CDB4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'chocolate',
+    name: 'Chocolate',
+    palettes: {
+      light: {
+        foregroundHex: '#80513E',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0CDB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Chocolate.png',
   },
-  Cookies: {
-    lightForegroundHex: '#603D2F',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0C5B4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'cookies',
+    name: 'Cookies',
+    palettes: {
+      light: {
+        foregroundHex: '#603D2F',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0C5B4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Cookies.png',
   },
-  Dessert: {
-    lightForegroundHex: '#603D2F',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0C5B4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'dessert',
+    name: 'Dessert',
+    palettes: {
+      light: {
+        foregroundHex: '#603D2F',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0C5B4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Dessert-01.png',
   },
-  Eggs: {
-    lightForegroundHex: '#C25400',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0CDB4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'eggs',
+    name: 'Eggs',
+    palettes: {
+      light: {
+        foregroundHex: '#C25400',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0CDB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Eggs.png',
   },
-  Fish: {
-    lightForegroundHex: '#427585',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#ACD8E5',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'fish',
+    name: 'Fish',
+    palettes: {
+      light: {
+        foregroundHex: '#427585',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#ACD8E5',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Fish.png',
   },
-  Fruit: {
-    lightForegroundHex: '#9A1E1E',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0BAB4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'fruit',
+    name: 'Fruit',
+    palettes: {
+      light: {
+        foregroundHex: '#9A1E1E',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0BAB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Fruit.png',
   },
-  'Meals for One': {
-    lightForegroundHex: '#427585',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#ACD8E5',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'meals for one',
+    name: 'Meals for One',
+    palettes: {
+      light: {
+        foregroundHex: '#427585',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#ACD8E5',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/MealsforOne.png',
   },
-  Meat: {
-    lightForegroundHex: '#9A1E1E',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0BAB4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'meat',
+    name: 'Meat',
+    palettes: {
+      light: {
+        foregroundHex: '#9A1E1E',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0BAB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Meat.png',
   },
-  Noodles: {
-    lightForegroundHex: '#427585',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#ACD8E5',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'noodles',
+    name: 'Noodles',
+    palettes: {
+      light: {
+        foregroundHex: '#427585',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#ACD8E5',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Noodles.png',
   },
-  Pasta: {
-    lightForegroundHex: '#427585',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#ACD8E5',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'pasta',
+    name: 'Pasta',
+    palettes: {
+      light: {
+        foregroundHex: '#427585',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#ACD8E5',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Pasta.png',
   },
-  Peas: {
-    lightForegroundHex: '#697311',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#E1E5B8',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'peas',
+    name: 'Peas',
+    palettes: {
+      light: {
+        foregroundHex: '#697311',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#E1E5B8',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Peas.png',
   },
-  Picnic: {
-    lightForegroundHex: '#427585',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#ACD8E5',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'picnic',
+    name: 'Picnic',
+    palettes: {
+      light: {
+        foregroundHex: '#427585',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#ACD8E5',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Picnic.png',
   },
-  Potatos: {
-    lightForegroundHex: '#99614B',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0C5B4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'potatos',
+    name: 'Potatos',
+    palettes: {
+      light: {
+        foregroundHex: '#99614B',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0C5B4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Potatos.png',
   },
-  Rice: {
-    lightForegroundHex: '#68773C',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#DAE5B8',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'rice',
+    name: 'Rice',
+    palettes: {
+      light: {
+        foregroundHex: '#68773C',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#DAE5B8',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Rice.png',
   },
-  Salads: {
-    lightForegroundHex: '#697311',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#E1E5B8',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'salads',
+    name: 'Salads',
+    palettes: {
+      light: {
+        foregroundHex: '#697311',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#E1E5B8',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Salads.png',
   },
-  'Quick Meals': {
-    lightForegroundHex: '#994100',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#ACD8E5',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'quick meals',
+    name: 'Quick Meals',
+    palettes: {
+      light: {
+        foregroundHex: '#994100',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#ACD8E5',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/QuickmealsV2-01.png',
   },
-  Soup: {
-    lightForegroundHex: '#406508',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#DAE5B8',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'soup',
+    name: 'Soup',
+    palettes: {
+      light: {
+        foregroundHex: '#406508',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#DAE5B8',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Soups.png',
   },
-  Spring: {
-    lightForegroundHex: '#697311',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#E1E5B8',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'spring',
+    name: 'Spring',
+    palettes: {
+      light: {
+        foregroundHex: '#697311',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#E1E5B8',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Spring.png',
   },
-  Summer: {
-    lightForegroundHex: '#9A1E1E',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0BAB4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'summer',
+    name: 'Summer',
+    palettes: {
+      light: {
+        foregroundHex: '#9A1E1E',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0BAB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Summer.png',
   },
-  Sprouts: {
-    lightForegroundHex: '#9A1E1E',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0BAB4',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'sprouts',
+    name: 'Sprouts',
+    palettes: {
+      light: {
+        foregroundHex: '#9A1E1E',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0BAB4',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/01/Sprouts-01-01.png',
   },
-  Tacos: {
-    lightForegroundHex: '#DB2712',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#FCF1F0',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'tacos',
+    name: 'Tacos',
+    palettes: {
+      light: {
+        foregroundHex: '#DB2712',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#FCF1F0',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Tacos.png',
   },
-  Tins: {
-    lightForegroundHex: '#427585',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#ACD8E5',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'tins',
+    name: 'Tins',
+    palettes: {
+      light: {
+        foregroundHex: '#427585',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#ACD8E5',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Tins.png',
   },
-  Traybake: {
-    lightForegroundHex: '#801919',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#FCF1F0',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'traybake',
+    name: 'Traybake',
+    palettes: {
+      light: {
+        foregroundHex: '#801919',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#FCF1F0',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/Traybake.png',
   },
-  'TV snacks': {
-    lightForegroundHex: '#427585',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#ACD8E5',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'tv snacks',
+    name: 'TV snacks',
+    palettes: {
+      light: {
+        foregroundHex: '#427585',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#ACD8E5',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/21/TVsbacks.png',
   },
-  Vegan: {
-    lightForegroundHex: '#98215A',
-    lightBackgroundHex: '#F9F9F5',
-    darkForegroundHex: '#F0C0D9',
-    darkBackgroundHex: '#363632',
+  {
+    id: 'vegan',
+    name: 'Vegan',
+    palettes: {
+      light: {
+        foregroundHex: '#98215A',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0C0D9',
+        backgroundHex: '#363632',
+      },
+    },
     imageURL: 'https://uploads.guim.co.uk/2024/03/01/Vegan-01.png',
   },
-} as const;
+];

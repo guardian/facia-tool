@@ -28,11 +28,22 @@ object CoverCardImages {
   implicit val format: OFormat[CoverCardImages] = Json.format[CoverCardImages]
 }
 
-
-case class Palette(paletteId: String, foregroundHex: String, backgroundHex: String)
+case class Palette(foregroundHex: String, backgroundHex: String)
 
 object Palette {
     implicit val format: OFormat[Palette] = Json.format[Palette]
+}
+
+case class ChefTheme(id: String, palette: Palette)
+
+object ChefTheme {
+  implicit val format: OFormat[ChefTheme] = Json.format[ChefTheme]
+}
+
+case class FeastCollectionTheme(id: String, lightPalette: Palette, darkPalette: Palette, imageURL: Option[String])
+
+object FeastCollectionTheme {
+  implicit val format: OFormat[FeastCollectionTheme] = Json.format[FeastCollectionTheme]
 }
 
 case class EditionsArticleMetadata(
@@ -105,7 +116,12 @@ object EditionsCard {
           metadata = extractMetadata[EditionsChefMetadata](rs, prefix, EditionsChefMetadata())
         )
       case CardType.Recipe => EditionsRecipe(id, addedOn)
-      case CardType.FeastCollection => EditionsFeastCollection(id, addedOn)
+      case CardType.FeastCollection => 
+        EditionsFeastCollection(
+          id, 
+          addedOn, 
+          metadata = extractMetadata[EditionsFeastCollectionMetadata](rs, prefix, EditionsFeastCollectionMetadata())
+        )
     }
   }
 
@@ -114,7 +130,7 @@ object EditionsCard {
       case result if result.isError =>
         logger.error(s"Unable to parse card from database: \n$s")
         default
-      case result@_ => result.get
+      case result => result.get
     }
   )
 }
@@ -183,7 +199,7 @@ object EditionsRecipe {
 
 case class EditionsChefMetadata(
   bio: Option[String] = None,
-  palette: Option[Palette] = None,
+  theme: Option[ChefTheme] = None,
   chefImageOverride: Option[Image] = None,
 )
 
@@ -199,7 +215,20 @@ object EditionsChef {
   implicit val format: OFormat[EditionsChef] = Json.format[EditionsChef]
 }
 
-case class EditionsFeastCollection(id: String, addedOn: Long) extends EditionsCard {
+case class EditionsFeastCollectionMetadata(
+  title: Option[String] = None,
+  theme: Option[FeastCollectionTheme] = None
+)
+
+object EditionsFeastCollectionMetadata {
+  implicit val format: OFormat[EditionsFeastCollectionMetadata] = Json.format[EditionsFeastCollectionMetadata]
+}
+
+case class EditionsFeastCollection(
+  id: String,
+  addedOn: Long,
+  metadata: Option[EditionsFeastCollectionMetadata]
+) extends EditionsCard {
   val cardType: CardType = CardType.FeastCollection
 }
 
