@@ -40,7 +40,7 @@ interface SublinkProps {
   toggleShowArticleSublinks: (e?: React.MouseEvent) => void;
   showArticleSublinks: boolean;
   parentId: string;
-  // The label to show the user, e.g. '2 sublinks'. Should be singular.
+  // The singular label to show the user, e.g. 'sublink'.
   sublinkLabel?: string;
 }
 
@@ -100,8 +100,7 @@ class Sublinks extends React.Component<SublinkProps> {
     );
   }
 
-  private dragEventNotDenylisted = (e: React.DragEvent) =>
-    !denyDragEvent()(e);
+  private dragEventNotDenylisted = (e: React.DragEvent) => !denyDragEvent()(e);
 }
 
 export default Sublinks;

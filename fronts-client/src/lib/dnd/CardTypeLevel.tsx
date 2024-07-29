@@ -4,8 +4,21 @@ import Level, { LevelProps } from './Level';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { collectionDropTypeDenylist } from 'constants/fronts';
 import { CARD_TYPE } from './constants';
+import ArticleDrag, {
+  dragOffsetX,
+  dragOffsetY,
+} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 
-type Props = Omit<LevelProps<Card>, 'denyDragEvent' | 'getDropType'> & {
+type Props = Omit<
+  LevelProps<Card>,
+  | 'denyDragEvent'
+  | 'getDropType'
+  | 'dragImageOffsetX'
+  | 'dragImageOffsetY'
+  | 'renderDrag'
+  | 'type'
+  | 'getId'
+> & {
   cardTypeAllowList?: CardTypes[];
 };
 
@@ -32,5 +45,10 @@ export const CardTypeLevel: React.FC<Props> = (props: Props) => (
     {...props}
     denyDragEvent={denyDragEvent(props.cardTypeAllowList)}
     getDropType={(card) => card.cardType || CardTypesMap.ARTICLE}
+    dragImageOffsetX={dragOffsetX}
+    dragImageOffsetY={dragOffsetY}
+    renderDrag={(af) => <ArticleDrag id={af.uuid} />}
+    type="card"
+    getId={({ uuid }) => uuid}
   />
 );

@@ -31,7 +31,7 @@ export const DragToAddFeastCollection = () => {
       dragImage={<DraggingArticleComponent headline="Feast collection" />}
       dragImageRef={ref}
       onDragStart={(e: React.DragEvent<HTMLDivElement>) =>
-        handleDragStart(e, ref.current!)
+        ref.current && handleDragStart(e, ref.current)
       }
     >
       Drag to add a feast collection

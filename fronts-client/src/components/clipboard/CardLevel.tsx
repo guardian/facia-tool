@@ -3,10 +3,6 @@ import { LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import type { State } from 'types/State';
 import { connect } from 'react-redux';
 import { Card } from 'types/Collection';
-import ArticleDrag, {
-  dragOffsetX,
-  dragOffsetY,
-} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, {
   DefaultDropContainer,
   DefaultDropIndicator,
@@ -58,15 +54,10 @@ const CardLevel = ({
     arr={supporting || []}
     parentType="card"
     parentId={cardId}
-    type="card"
-    getId={({ uuid }) => uuid}
     onMove={onMove}
     onDrop={onDrop}
     canDrop={!isUneditable}
     cardTypeAllowList={cardTypeAllowList}
-    renderDrag={(af) => <ArticleDrag id={af.uuid} />}
-    dragImageOffsetX={dragOffsetX}
-    dragImageOffsetY={dragOffsetY}
     renderDrop={
       isUneditable
         ? undefined

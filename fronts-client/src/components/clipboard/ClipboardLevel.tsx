@@ -4,10 +4,6 @@ import type { State } from 'types/State';
 import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 import { connect } from 'react-redux';
 import { Card } from 'types/Collection';
-import ArticleDrag, {
-  dragOffsetX,
-  dragOffsetY,
-} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, { DefaultDropContainer } from 'components/DropZone';
 import { styled, theme } from 'constants/theme';
 import { CardTypeLevel } from 'lib/dnd/CardTypeLevel';
@@ -47,13 +43,8 @@ const ClipboardLevel = ({ children, cards, onMove, onDrop }: Props) => (
     arr={cards}
     parentType="clipboard"
     parentId="clipboard"
-    type="card"
-    dragImageOffsetX={dragOffsetX}
-    dragImageOffsetY={dragOffsetY}
-    getId={({ uuid }) => uuid}
     onMove={onMove}
     onDrop={onDrop}
-    renderDrag={(af) => <ArticleDrag id={af.uuid} />}
     renderDrop={(props) => (
       <DropZone
         {...props}
