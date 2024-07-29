@@ -5,10 +5,9 @@ import model.editions.{CuratedPlatform, Edition, EditionsIssue, PublishAction}
 import services.editions.publishing.PublishedIssueFormatters._
 import org.scalatest.{EitherValues, FreeSpec, Matchers, OptionValues}
 import play.api.libs.json.Json
-import services.editions.publishing.PublishedIssueFormatters._
 import scala.io.Source
 
-class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with EitherValues {
+class EditionsAppPublicationTargetTest extends FreeSpec with Matchers with OptionValues with EitherValues {
   "Saving a publication to a bucket" - {
     val issueDate = LocalDate.of(2019, 9, 30)
     val issue: EditionsIssue = EditionsIssue(
@@ -27,10 +26,11 @@ class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with E
       platform = CuratedPlatform.Editions
     )
 
+    val previewIssue = issue.toPreviewIssue
+
     "publication is preview" - {
-      val previewIssue = issue.toPreviewIssue
-      val key = EditionsBucket.createKey(previewIssue)
-      val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", key, previewIssue)
+      val key = PublicationTarget.createKey(issue, "preview")
+      val putObjectRequest = EditionsAppPublicationTarget.createPutObjectRequest("test-bucket", key, previewIssue)
 
       "key is correct" in {
         putObjectRequest.getKey shouldBe "daily-edition/2019-09-30/preview.json"
@@ -49,8 +49,8 @@ class EditionsBucketTest extends FreeSpec with Matchers with OptionValues with E
 
     "publication is version called banana" - {
       val publishedIssue = issue.toPublishableIssue("banana", PublishAction.proof)
-      val key = EditionsBucket.createKey(publishedIssue)
-      val putObjectRequest = EditionsBucket.createPutObjectRequest("test-bucket", key, publishedIssue)
+      val key = PublicationTarget.createKey(issue, "banana")
+      val putObjectRequest = EditionsAppPublicationTarget.createPutObjectRequest("test-bucket", key, publishedIssue)
 
       "key is correct" in {
         putObjectRequest.getKey shouldBe "daily-edition/2019-09-30/banana.json"

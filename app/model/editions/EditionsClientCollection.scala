@@ -3,39 +3,68 @@ package model.editions
 import model.editions.client.ClientCardMetadata
 import play.api.libs.json.{Json, OFormat}
 import services.editions.prefills.CapiQueryTimeWindow
+import model.editions.client.ClientCardMetadata
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
 
-case class EditionsClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long, meta: Option[ClientCardMetadata])
+case class EditionsClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long, meta: Option[ClientCardMetadata] = None)
 
 object EditionsClientCard {
   implicit val format: OFormat[EditionsClientCard] = Json.format[EditionsClientCard]
 
-  def fromCard(card: EditionsCard): EditionsClientCard = {
-    val id = card.cardType match {
-      case CardType.Article => "internal-code/page/" + card.id
-      case _ => card.id
-    }
-
-    EditionsClientCard(
-      id,
-      Some(card.cardType),
-      card.addedOn,
-      card.metadata.map(ClientCardMetadata.fromCardMetadata)
-    )
+  def fromCard(card: EditionsCard): EditionsClientCard = card match {
+    case EditionsArticle(id, addedOn, metadata) => 
+      EditionsClientCard(
+        id = "internal-code/page/" + id,
+        Some(CardType.Article),
+        addedOn,
+        metadata.map(ClientCardMetadata.fromCardMetadata)
+      )
+    case EditionsRecipe(id, addedOn) => 
+      EditionsClientCard(
+        id,
+        Some(CardType.Recipe),
+        addedOn
+      )
+    case EditionsChef(id, addedOn, metadata) => 
+      EditionsClientCard(
+        id,
+        Some(CardType.Chef),
+        addedOn,
+        metadata.map(ClientCardMetadata.fromCardMetadata)
+      )
+    case EditionsFeastCollection(id, addedOn) => 
+      EditionsClientCard(
+        id,
+        Some(CardType.FeastCollection),
+        addedOn
+      )
   }
-  def toCard(card: EditionsClientCard): EditionsCard = {
-    val id = card.cardType match {
-      case Some(CardType.Article) | None => card.id.split("/").last
-      case _ => card.id
-    }
 
-    EditionsCard(
-      id,
-      card.cardType.getOrElse(CardType.Article),
-      card.frontPublicationDate,
-      card.meta.map(_.toCardMetadata)
-    )
+  def toCard(card: EditionsClientCard): EditionsCard = card.cardType match {
+    case Some(CardType.Article) | None => 
+      val id = card.id.split("/").last
+      EditionsArticle(
+        id,
+        card.frontPublicationDate,
+        card.meta.map(_.toArticleMetadata)
+      )
+    case Some(CardType.Recipe) =>
+      EditionsRecipe(
+        card.id,
+        card.frontPublicationDate,
+      )
+    case Some(CardType.Chef) =>
+      EditionsChef(
+        card.id,
+        card.frontPublicationDate,
+        card.meta.map(_.toChefMetadata)
+      )
+    case Some(CardType.FeastCollection) =>
+      EditionsFeastCollection(
+        card.id,
+        card.frontPublicationDate,
+      )
   }
 }
 

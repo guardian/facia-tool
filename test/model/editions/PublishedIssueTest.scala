@@ -67,32 +67,31 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
   }
 
   private def card(id: String): EditionsCard =
-    EditionsCard(
+    EditionsArticle(
       id,
-      CardType.Article,
       nowMilli,
-      Some(CardMetadata.default)
+      Some(EditionsArticleMetadata.default)
     )
 
   "PublishedCards" - {
     "card fields should be populated correctly" in {
       val now = OffsetDateTime.of(2019, 9, 30, 10, 23, 0, 0, ZoneOffset.ofHours(1))
-      val card = EditionsCard("1234456", CardType.Article, now.toInstant.toEpochMilli, None)
-      val publishedCard = card.toPublishedCard
+      val card = EditionsArticle("1234456", now.toInstant.toEpochMilli, None)
+      val publishedCard = EditionsArticle.toPublishedArticle(card)
       publishedCard.internalPageCode shouldBe 1234456
       publishedCard.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None)
     }
 
     "furniture defaults should be populated correctly" in {
-      val furniture = CardMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
-      val card = EditionsCard("123456", CardType.Article, 0, Some(furniture))
-      val published = card.toPublishedCard
+      val furniture = EditionsArticleMetadata(None, None, None, None, None, None, None, None, None, None, None, None, None)
+      val card = EditionsArticle("123456", 0, Some(furniture))
+      val published = EditionsArticle.toPublishedArticle(card)
 
       published.furniture shouldBe PublishedFurniture(None, None, None, None, false, false, PublishedMediaType.UseArticleTrail, None, None, false, None)
     }
 
     val cardImage = Some(Image(Some(100), Some(100), "file://origin.jpg", "file://src.jpg", Some("file://thumb.jpg")))
-    val cardFurniture = CardMetadata(
+    val cardFurniture = EditionsArticleMetadata(
       Some("headline"),
       Some("kicker"),
       Some("trail-text"),
@@ -112,8 +111,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     )
 
     "furniture should be populated when specified, cover cards should be ignored if the media type isn't set to cover card" in {
-      val card = EditionsCard("123456", CardType.Article, 0, Some(cardFurniture))
-      val published = card.toPublishedCard
+      val card = EditionsArticle("123456", 0, Some(cardFurniture))
+      val published = EditionsArticle.toPublishedArticle(card)
 
       published.furniture shouldBe PublishedFurniture(
         Some("kicker"),
@@ -131,8 +130,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
     }
 
     "furniture should be populated when specified, cover card should be some if media type is covercard " in {
-      val card = EditionsCard("123456", CardType.Article, 0, Some(cardFurniture.copy(mediaType = Some(MediaType.CoverCard))))
-      val published = card.toPublishedCard
+      val card = EditionsArticle("123456", 0, Some(cardFurniture.copy(mediaType = Some(MediaType.CoverCard))))
+      val published = EditionsArticle.toPublishedArticle(card)
 
       val publishedImage = PublishedImage(Some(100), Some(100), "file://src.jpg")
 
@@ -165,10 +164,10 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       )))
 
       List(
-        EditionsCard("123456", CardType.Article, 0, Some(coverCardFurniture)),
-        EditionsCard("123456", CardType.Article, 0, Some(swapped))
+        EditionsArticle("123456", 0, Some(coverCardFurniture)),
+        EditionsArticle("123456", 0, Some(swapped))
       ).foreach { a =>
-        a.toPublishedCard.furniture.mediaType shouldBe PublishedMediaType.UseArticleTrail
+        EditionsArticle.toPublishedArticle(a).furniture.mediaType shouldBe PublishedMediaType.UseArticleTrail
       }
     }
   }

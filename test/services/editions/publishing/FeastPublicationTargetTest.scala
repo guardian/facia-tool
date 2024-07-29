@@ -4,14 +4,14 @@ import com.amazonaws.services.sns.AmazonSNSClient
 import com.amazonaws.services.sns.model.{MessageAttributeValue, PublishRequest, PublishResult}
 import conf.ApplicationConfiguration
 import model.FeastAppModel
-import model.editions.{Edition, PublishAction, PublishableIssue, PublishedArticle, PublishedCollection, PublishedFront}
+import model.editions.{CuratedPlatform, Edition, EditionsCollection, EditionsFront, EditionsIssue, EditionsRecipe, PublishAction}
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers._
 import org.scalatest.{FreeSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import play.api.libs.json.Json
-import model.FeastAppModel.{Chef, FeastAppContainer, FeastAppCuration, Recipe, RecipeIdentifier}
+import model.FeastAppModel.{Chef, FeastAppContainer, Recipe, RecipeIdentifier}
 import util.TimestampGenerator
 
 import java.time.LocalDate
@@ -27,12 +27,58 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
     false
   )
 
+  val testIssue = EditionsIssue(
+    id = "123456ABCD",
+    edition = Edition.FeastNorthernHemisphere,  //?? ma
+    platform = CuratedPlatform.Feast,
+    timezoneId = "Europe/London",
+    issueDate = LocalDate.of(2024,5,3),
+    createdOn = 0L,
+    createdBy = "test",
+    createdEmail = "test@test.com",
+    launchedOn = None,
+    launchedBy = None,
+    launchedEmail = None,
+    supportsProofing = false,
+    fronts = List(
+      EditionsFront(
+        "b09354b1-f971-4d08-961b-dc83004c6b1f",
+        "All Recipes",
+        index = 0,
+        isSpecial = false, // :(
+        isHidden = false,
+        updatedOn = None,
+        updatedBy = None,
+        updatedEmail = None,
+        metadata = None,
+        collections = List(
+          EditionsCollection(
+            id="98e89761-fdf0-4903-b49d-2af7d66fc930",
+            displayName="Dish of the day",
+            isHidden =  false,
+            lastUpdated = None,
+            updatedBy = None,
+            updatedEmail = None,
+            prefill = None,
+            contentPrefillTimeWindow = None,
+            items=List(
+              EditionsRecipe(
+                "id",
+                0L
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+
   val mockTSG = mock[TimestampGenerator]
   when(mockTSG.getTimestamp).thenReturn(12345678L)
 
   "putIssueJson" - {
     val issue = Map(
-      "chefs" -> FeastAppContainer("chefs", "Chefs", None, Seq(Chef(None, "bob-the-pirate", None, "Bob is a pirate", None))),
+      "chefs" -> FeastAppContainer("chefs", "Chefs", None, Seq(Chef("bob-the-pirate", None, Some("Bob is a pirate"), None, None))),
       "recipes" -> FeastAppContainer("recipes", "Recipes", None, Seq(Recipe(RecipeIdentifier("abcdefg"))))
     )
 
@@ -90,40 +136,12 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
 
   "transformContent" - {
     "should transform the Editions content" - {
-      val incoming = PublishableIssue(
-        PublishAction.publish,
-        "123456ABCD",
-        Edition.FeastNorthernHemisphere,  //?? maybe a modelling mistake here
-        Edition.FeastNorthernHemisphere,
-        LocalDate.of(2024,5,3),
-        "v1",
-        fronts=List(
-          PublishedFront("b09354b1-f971-4d08-961b-dc83004c6b1f","All Recipes",
-            swatch=null,
-            collections=List(
-              PublishedCollection(
-                id="98e89761-fdf0-4903-b49d-2af7d66fc930",
-                name="Dish of the day",
-                items=List(
-                  PublishedArticle(
-                    internalPageCode = 123456,
-                    null
-                  )
-                )
-              )
-            )
-          )
-        ),
-        notificationUTCOffset=0,
-        topic=None
-      )
-
       val mockSNS = mock[AmazonSNSClient]
       when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
 
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
-      val result = toTest.transformContent(incoming)
+      val result = toTest.transformContent(testIssue, "v1")
       result.fronts.contains("all-recipes") shouldBe true
       val allRecipesFront = result.fronts("all-recipes")
       allRecipesFront.length shouldBe 1
@@ -131,57 +149,28 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
       allRecipesFront.head.body shouldBe Some("") //this is just how the `body` field is currently rendered
       allRecipesFront.head.id shouldBe "98e89761-fdf0-4903-b49d-2af7d66fc930"
       allRecipesFront.head.items.length shouldBe 1
-      allRecipesFront.head.items.head.asInstanceOf[FeastAppModel.Recipe].recipe.id shouldBe "123456"
+      allRecipesFront.head.items.head.asInstanceOf[FeastAppModel.Recipe].recipe.id shouldBe "id"
     }
   }
 
   "putIssue" - {
     "should output the transformed version of the content" - {
-      val incoming = PublishableIssue(
-        PublishAction.publish,
-        "123456ABCD",
-        Edition.FeastNorthernHemisphere,  //?? maybe a modelling mistake here
-        Edition.FeastNorthernHemisphere,
-        LocalDate.of(2024,5,3),
-        "v1",
-        fronts=List(
-          PublishedFront("b09354b1-f971-4d08-961b-dc83004c6b1f","All Recipes",
-            swatch=null,
-            collections=List(
-              PublishedCollection(
-                id="98e89761-fdf0-4903-b49d-2af7d66fc930",
-                name="Dish of the day",
-                items=List(
-                  PublishedArticle(
-                    internalPageCode = 123456,
-                    null
-                  )
-                )
-              )
-            )
-          )
-        ),
-        notificationUTCOffset=0,
-        topic=None
-      )
-
-      val serializedVersion = """{"id":"123456ABCD","edition":"feast-northern-hemisphere","issueDate":"2024-05-03","version":"v1","fronts":{"all-recipes":[{"id":"98e89761-fdf0-4903-b49d-2af7d66fc930","title":"Dish of the day","body":"","items":[{"recipe":{"id":"123456"}}]}]}}"""
+      val serializedVersion = """{"id":"123456ABCD","edition":"feast-northern-hemisphere","issueDate":"2024-05-03","version":"v1","fronts":{"all-recipes":[{"id":"98e89761-fdf0-4903-b49d-2af7d66fc930","title":"Dish of the day","body":"","items":[{"recipe":{"id":"id"}}]}]}}"""
 
       val mockSNS = mock[AmazonSNSClient]
       when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
 
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
-      toTest.putIssue(incoming, Some("test-key"))
+      toTest.putIssue(testIssue, "v1", PublishAction.publish)
       val expectedRequest = new PublishRequest()
         .withTopicArn("fake-publication-topic")
         .withMessage(serializedVersion)
         .withMessageAttributes(Map(
-          "type"->new MessageAttributeValue().withDataType("String").withStringValue("Issue"),
-          "timestamp"->new MessageAttributeValue().withDataType("Number").withStringValue("12345678")
+          "timestamp"->new MessageAttributeValue().withDataType("Number").withStringValue("12345678"),
+          "type"->new MessageAttributeValue().withDataType("String").withStringValue("Issue")
         ).asJava)
       verify(mockSNS).publish(expectedRequest)
     }
   }
-
 }

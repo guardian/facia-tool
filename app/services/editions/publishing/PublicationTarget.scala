@@ -1,11 +1,11 @@
 package services.editions.publishing
 
-import model.editions.PublishableIssue
+import model.editions.EditionsIssue
+import model.editions.PublishAction.PublishAction
 import play.api.libs.json.Writes
-import PublishedIssueFormatters._
 
-trait PublicationTarget {
-  def putIssue(issue: PublishableIssue, key:Option[String] = None): Unit
+trait PublicationTarget extends PublicationTargetHelpers {
+  def putIssue(issue: EditionsIssue, version:String, action: PublishAction): Unit
 
   protected def putIssueJson[C: Writes](content: C, key:String): Unit
 
@@ -15,3 +15,12 @@ trait PublicationTarget {
   def putEditionsList(rawJson: String): Unit
 }
 
+object PublicationTarget extends PublicationTargetHelpers
+
+trait PublicationTargetHelpers {
+  private def createIssuePrefix(issue: EditionsIssue): String = s"${issue.edition.entryName}/${issue.issueDate.toString}"
+
+  private def createIssueFilename(version:String): String = s"$version.json"
+
+  def createKey(issue: EditionsIssue, version:String): String = s"${createIssuePrefix(issue)}/${createIssueFilename(version)}"
+}

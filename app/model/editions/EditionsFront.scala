@@ -30,7 +30,7 @@ case class EditionsFront(
     collections: List[EditionsCollection]
 ) {
   def toPublishedFront: PublishedFront = {
-    val name = metadata.collect { case EditionsFrontMetadata(Some(overrideName), _) => overrideName }.getOrElse(displayName)
+    val name = getName
     val swatch = metadata.collect { case EditionsFrontMetadata(_, Some(swatch)) => swatch }.getOrElse(Swatch.Neutral)
     PublishedFront(
       id,
@@ -42,6 +42,9 @@ case class EditionsFront(
       swatch
     )
   }
+
+  def getName = metadata.collect { case EditionsFrontMetadata(Some(overrideName), _) => overrideName }.getOrElse(displayName)
+
 }
 
 object EditionsFront {

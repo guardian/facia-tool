@@ -1,23 +1,18 @@
 package services.editions.publishing
 
 import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.{ObjectMetadata, PutObjectRequest, PutObjectResult}
+import com.amazonaws.services.s3.model.{ObjectMetadata, PutObjectRequest}
 import com.amazonaws.util.StringInputStream
-import model.editions.PublishableIssue
+import model.editions.EditionsIssue
 import play.api.libs.json.{Json, Writes}
 import PublishedIssueFormatters._
 import com.typesafe.scalalogging.LazyLogging
+import model.editions.PublishAction.PublishAction
 import org.apache.commons.lang3.builder.{ReflectionToStringBuilder, ToStringStyle}
 
 import java.nio.charset.StandardCharsets
 
-object EditionsBucket extends LazyLogging {
-
-  def createIssuePrefix(issue: PublishableIssue): String = s"${issue.name.entryName}/${issue.issueDate.toString}"
-
-  def createIssueFilename(issue: PublishableIssue): String = s"${issue.version}.json"
-
-  def createKey(issue: PublishableIssue): String = s"${createIssuePrefix(issue)}/${createIssueFilename(issue)}"
+object EditionsAppPublicationTarget extends LazyLogging {
 
   val baseMetadata: ObjectMetadata = {
     val metadata = new ObjectMetadata()
@@ -38,20 +33,21 @@ object EditionsBucket extends LazyLogging {
   }
 }
 
-class EditionsBucket(s3Client: AmazonS3, bucketName: String) extends PublicationTarget with LazyLogging {
-  override def putIssue(issue: PublishableIssue, key: Option[String]=None): Unit = {
-    val outputKey = key.getOrElse(EditionsBucket.createKey(issue))
-    putIssueJson(issue, outputKey)
+class EditionsAppPublicationTarget(s3Client: AmazonS3, bucketName: String) extends PublicationTarget with LazyLogging {
+  override def putIssue(issue: EditionsIssue, version: String, action: PublishAction): Unit = {
+    val outputKey = createKey(issue, version)
+    val publishableIssue = issue.toPublishableIssue(version, action)
+    putIssueJson(publishableIssue, outputKey)
   }
 
   override def putIssueJson[T: Writes](content: T, key:String): Unit = {
-    val request = EditionsBucket.createPutObjectRequest(bucketName, key, content)
+    val request = EditionsAppPublicationTarget.createPutObjectRequest(bucketName, key, content)
     logger.info(ReflectionToStringBuilder.toString(request, ToStringStyle.MULTI_LINE_STYLE))
     s3Client.putObject(request)
   }
 
   def putEditionsList(rawJson: String): Unit = {
-    val metadata = EditionsBucket.baseMetadata
+    val metadata = EditionsAppPublicationTarget.baseMetadata
     metadata.setContentLength(rawJson.getBytes(StandardCharsets.UTF_8).length)
     val request = new PutObjectRequest(bucketName, "editionsList", new StringInputStream(rawJson), metadata)
     s3Client.putObject(request)

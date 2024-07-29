@@ -187,7 +187,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       val frontPageCollection = issue.fronts.find(_.name == "UK News").value.collections.find(_.name == "Front Page").value
       frontPageCollection.items.size shouldBe 1
       frontPageCollection.items.head.id shouldBe "123456"
-      frontPageCollection.items.head.metadata shouldBe CardMetadata.default
+      frontPageCollection.items.head.metadata shouldBe EditionsArticleMetadata.default
     }
   }
 

@@ -22,7 +22,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   private val moreRecentThenCreationTime = now.toInstant.toEpochMilli + 1
 
-  private val simpleMetadata = CardMetadata(
+  private val simpleMetadata = EditionsArticleMetadata(
     customKicker = Some("Kicker"),
     headline = None,
     trailText = None,
@@ -75,7 +75,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
     EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), capiQueryTimeWindow, hidden = false)
 
-  private def article(id: String): EditionsArticleSkeleton = EditionsArticleSkeleton(id, CardMetadata.default)
+  private def article(id: String): EditionsArticleSkeleton = EditionsArticleSkeleton(id, EditionsArticleMetadata.default)
 
   "should insert an empty issue" taggedAs UsesDatabase in {
     val id = insertSkeletonIssue(2019, 9, 30)
@@ -166,8 +166,11 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val editionsArticle = newsPoliticsCollection.items.head
     editionsArticle.id shouldBe "12345"
 
-    val articleMetadata = editionsArticle.metadata.get
-    articleMetadata.overrideArticleMainMedia shouldBe None
+    val articleMetadata = editionsArticle match {
+      case e: EditionsArticle => e.metadata
+      case _ => None
+    }
+    articleMetadata.get.overrideArticleMainMedia shouldBe None
 
     commentFront.metadata.get.nameOverride shouldBe None
     commentFront.metadata.get.swatch shouldBe Some(Swatch.Culture)
@@ -368,7 +371,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val future = now.plusMinutes(20)
     val futureMillis = future.toInstant.toEpochMilli
 
-    val items = EditionsCard("654789", CardType.Article, futureMillis, Some(simpleMetadata)) :: brexshit.items
+    val items = EditionsArticle("654789", futureMillis, Some(simpleMetadata)) :: brexshit.items
 
     val evenMoreBrexshit = brexshit.copy(
       lastUpdated = Some(futureMillis),
@@ -392,7 +395,12 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     // check we are storing some metadata
     updatedBrexshit.items.find(_.id == "654789").value.addedOn shouldBe future.toInstant.toEpochMilli
-    updatedBrexshit.items.find(_.id == "654789").value.metadata.value shouldBe simpleMetadata
+    val metadata = updatedBrexshit.items.find(_.id == "654789").value match {
+      case e: EditionsArticle => e.metadata
+      case _ => None
+    }
+
+    metadata.get shouldBe simpleMetadata
 
     // check that the added time hasn't modified
     updatedBrexshit.items.find(_.id == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
@@ -410,7 +418,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val retrievedIssue = editionsDB.getIssue(id).value
     val retrievedCollection = retrievedIssue.fronts.head.collections.head
 
-    val recipeCard = EditionsCard("654789", CardType.Recipe, now.toInstant.toEpochMilli, Some(simpleMetadata))
+    val recipeCard = EditionsRecipe("654789", now.toInstant.toEpochMilli)
     val items = retrievedCollection.copy(items = retrievedCollection.items :+ recipeCard)
     editionsDB.updateCollection(items)
 
