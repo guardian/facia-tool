@@ -9,7 +9,7 @@ import ArticleDrag, {
   dragOffsetY,
 } from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, { DefaultDropContainer } from 'components/DropZone';
-import { collectionDropTypeBlacklist } from 'constants/fronts';
+import { collectionDropTypeDenylist } from 'constants/fronts';
 import { styled, theme } from 'constants/theme';
 
 interface OuterProps {
@@ -44,7 +44,7 @@ const ClipboardDropContainer = styled(DefaultDropContainer)<{
 const ClipboardLevel = ({ children, cards, onMove, onDrop }: Props) => (
   <Level
     containerElement={ClipboardItemContainer}
-    blacklistedDataTransferTypes={collectionDropTypeBlacklist}
+    denylistedDataTransferTypes={collectionDropTypeDenylist}
     arr={cards}
     parentType="clipboard"
     parentId="clipboard"

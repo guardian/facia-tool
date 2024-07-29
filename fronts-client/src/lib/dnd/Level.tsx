@@ -23,11 +23,11 @@ const adjustToIndexForMove = (from: PosSpec, to: PosSpec): PosSpec =>
 const isMoveToSamePosition = (from: PosSpec, to: PosSpec): boolean =>
   isOnSameLevel(from, to) && from.index === to.index;
 
-const dragEventIsBlacklisted = (
+const dragEventIsDenyListed = (
   e: React.DragEvent,
-  blacklist: string[] | undefined
+  denyList: string[] | undefined
 ) => {
-  return e.dataTransfer.types.some((type) => (blacklist || []).includes(type));
+  return e.dataTransfer.types.some((type) => (denyList || []).includes(type));
 };
 
 interface Move<T> {
@@ -74,7 +74,7 @@ interface OuterProps<T> {
   renderDrop?: (props: DropProps) => React.ReactNode | null;
   // Any occurence of these in the data transfer will cause all dragging
   // behaviour to be bypassed.
-  blacklistedDataTransferTypes?: string[];
+  denylistedDataTransferTypes?: string[];
   containerElement?: React.ComponentType<ContainerDragTypes>;
 }
 
@@ -157,7 +157,7 @@ class Level<T> extends React.Component<Props<T>, State> {
     }
     if (
       e.defaultPrevented ||
-      dragEventIsBlacklisted(e, this.props.blacklistedDataTransferTypes)
+      dragEventIsDenyListed(e, this.props.denylistedDataTransferTypes)
     ) {
       return;
     }
@@ -168,7 +168,7 @@ class Level<T> extends React.Component<Props<T>, State> {
   private onDrop = (i: number) => (e: React.DragEvent) => {
     if (
       e.defaultPrevented ||
-      dragEventIsBlacklisted(e, this.props.blacklistedDataTransferTypes)
+      dragEventIsDenyListed(e, this.props.denylistedDataTransferTypes)
     ) {
       return;
     }
@@ -256,5 +256,5 @@ export {
   LevelChild,
   MoveHandler,
   DropHandler,
-  dragEventIsBlacklisted,
+  dragEventIsDenyListed as dragEventIsDenylisted,
 };

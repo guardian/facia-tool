@@ -12,7 +12,7 @@ import DropZone, {
   DefaultDropIndicator,
 } from 'components/DropZone';
 import { createSelectSupportingArticles } from 'selectors/shared';
-import { collectionDropTypeBlacklist } from 'constants/fronts';
+import { collectionDropTypeDenylist } from 'constants/fronts';
 import { theme, styled } from 'constants/theme';
 
 interface OuterProps {
@@ -51,7 +51,7 @@ const CardLevel = ({
 }: Props) => (
   <Level
     arr={supporting || []}
-    blacklistedDataTransferTypes={collectionDropTypeBlacklist}
+    denylistedDataTransferTypes={collectionDropTypeDenylist}
     parentType="card"
     parentId={cardId}
     type="card"
