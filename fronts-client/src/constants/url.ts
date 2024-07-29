@@ -22,6 +22,7 @@ export default {
   },
   capiLiveUrl: '/api/live',
   capiPreviewUrl: '/api/preview',
+  recipes: 'https://recipes.guardianapis.com',
   manageEditions: '/manage-editions/',
   appRoot: 'v2',
   editionsCardBuilder: 'https://editions-card-builder.gutools.co.uk',
