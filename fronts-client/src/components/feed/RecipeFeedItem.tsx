@@ -2,16 +2,13 @@ import { Recipe } from '../../types/Recipe';
 import { FeedItem } from './FeedItem';
 import React, { useCallback } from 'react';
 import { State } from '../../types/State';
-import {
-  dragOffsetX,
-  dragOffsetY,
-} from '../FrontsEdit/CollectionComponents/ArticleDrag';
 import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
 import { ContentInfo } from './ContentInfo';
 import { CardTypesMap } from 'constants/cardTypes';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { insertCardWithCreate } from 'actions/Cards';
+import { handleDragStartForCard } from 'util/dragAndDrop';
 
 interface ComponentProps {
   recipe: Recipe;
@@ -34,16 +31,6 @@ export const RecipeFeedItem = ({ recipe }: ComponentProps) => {
     );
   }, [recipe]);
 
-  const handleDragStart = (
-    event: React.DragEvent<HTMLDivElement>,
-    dragNode: HTMLDivElement
-  ) => {
-    event.dataTransfer.setData('recipe', JSON.stringify(recipe));
-    if (dragNode) {
-      event.dataTransfer.setDragImage(dragNode, dragOffsetX, dragOffsetY);
-    }
-  };
-
   return (
     <FeedItem
       type={CardTypesMap.RECIPE}
@@ -53,7 +40,7 @@ export const RecipeFeedItem = ({ recipe }: ComponentProps) => {
       liveUrl={`https://theguardian.com/${recipe.canonicalArticle}`}
       hasVideo={false}
       isLive={true} // We do not yet serve preview recipes
-      handleDragStart={handleDragStart}
+      handleDragStart={handleDragStartForCard(CardTypesMap.RECIPE, recipe)}
       onAddToClipboard={onAddToClipboard}
       shouldObscureFeed={shouldObscureFeed}
       metaContent={<ContentInfo>Recipe</ContentInfo>}
