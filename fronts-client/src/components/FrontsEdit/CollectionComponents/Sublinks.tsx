@@ -41,6 +41,8 @@ interface SublinkProps {
   toggleShowArticleSublinks: (e?: React.MouseEvent) => void;
   showArticleSublinks: boolean;
   parentId: string;
+  // The label to show the user, e.g. '2 sublinks'. Should be singular.
+  sublinkLabel?: string;
 }
 
 class Sublinks extends React.Component<SublinkProps> {
@@ -54,6 +56,7 @@ class Sublinks extends React.Component<SublinkProps> {
       toggleShowArticleSublinks,
       showArticleSublinks,
       parentId,
+      sublinkLabel = 'sublink',
     } = this.props;
 
     const isClipboard = parentId === 'clipboard';
@@ -82,7 +85,7 @@ class Sublinks extends React.Component<SublinkProps> {
                 {!isClipboard && <CardMetaContainer />}
                 <SublinkCardContent displaySize="small" showMeta={isClipboard}>
                   <span>
-                    {numSupportingArticles} sublink
+                    {numSupportingArticles} {sublinkLabel}
                     {numSupportingArticles > 1 && 's'}
                     <ButtonCircularCaret
                       openDir={showArticleSublinks ? 'up' : 'down'}
