@@ -276,7 +276,13 @@ class Card extends React.Component<CardContainerProps> {
                 textSize={textSize}
                 showMeta={showMeta}
               />
-              {getSublinks}
+              <Sublinks
+                numSupportingArticles={numSupportingArticles}
+                toggleShowArticleSublinks={this.toggleShowArticleSublinks}
+                showArticleSublinks={this.state.showCardSublinks}
+                parentId={parentId}
+                sublinkLabel="recipe"
+              />
               {/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
               {numSupportingArticles === 0
                 ? children
