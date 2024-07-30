@@ -123,6 +123,19 @@ const recipeQuery = (baseUrl:string) => {
         console.error(content);
         throw new Error(`Unable to contact recipe API: ${response.status}`);
       }
+    },
+    recipesById: async (idList:string[]):Promise<Recipe[]> => {
+      const responses = await Promise.all(
+        idList.map(id=>fetch(`${baseUrl}/search/uid/${id}`,
+          {
+            redirect: "follow"
+          }))
+      );
+
+      const successes = responses.filter((_)=>_.status===200);
+      return Promise.all(
+        successes.map((_)=>_.json())
+      ) as Promise<Recipe[]>
     }
   }
 }

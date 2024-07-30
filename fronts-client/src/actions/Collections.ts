@@ -70,6 +70,7 @@ import { getPageViewDataForCollection } from 'actions/PageViewData';
 import { isMode } from 'selectors/pathSelectors';
 import { groupBy, uniqBy } from 'lodash';
 import { fetchChefsById } from 'bundles/chefsBundle';
+import { fetchRecipesById } from '../bundles/recipesBundle';
 
 const selectAllCardsInCollection = createSelectAllCardsInCollection();
 
@@ -415,6 +416,12 @@ export const fetchCardReferencedEntitiesForCards =
       promises.push(chefsPromise);
     }
 
+    if(cardsByCardType.recipe) {
+      const recipesPromise = dispatch(
+        fetchRecipesById(cardsByCardType.recipe.map((recep)=>recep.id))
+      );
+      promises.push(recipesPromise);
+    }
     await Promise.all(promises);
   };
 

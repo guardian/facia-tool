@@ -1,6 +1,7 @@
 import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
 import { liveRecipes, RecipeSearchHit, RecipeSearchParams } from '../services/recipeQuery';
 import { ThunkResult } from '../types/Store';
+import { dispose } from '../../../public/src/js/troubleshoot/views/stale';
 
 export const { actions, reducer, selectors } =
   createAsyncResourceBundle<RecipeSearchHit>('recipes', {
@@ -29,5 +30,18 @@ export const fetchRecipes = (
     }
   }
 
+export const fetchRecipesById = (
+  idList: string[]
+): ThunkResult<void> =>
+  async (dispatch) => {
+    dispatch(actions.fetchStart());
 
-
+    try {
+      const recipes = await liveRecipes.recipesById(idList);
+      dispatch(actions.fetchSuccess(recipes, {
+        order: recipes.map((_)=>_.id)
+      }));
+    } catch(e) {
+      dispatch(actions.fetchError(e));
+    }
+  }
