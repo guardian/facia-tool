@@ -39,7 +39,10 @@ export const fetchChefs =
   (
     // The params to include in the request
     params: Record<string, string[] | string | number>,
-    // The ids of the chefs being fetched, if known
+    // The ids of the chefs being fetched, if known.
+    // If we know which IDs we're searching for, we do not include their order
+    // in our state. This lets us keep `lastFetchOrder` for order-sensitive
+    // tasks, like listing search results.
     ids?: string[]
   ): ThunkResult<void> =>
   async (dispatch) => {
@@ -47,11 +50,15 @@ export const fetchChefs =
     try {
       const resultData = await fetchResourceOrResults(liveCapi, params);
       if (resultData) {
+        const payload = ids
+          ? { ignoreOrder: true }
+          : {
+              pagination: resultData.pagination || undefined,
+              order: resultData.results.map((_) => _.id),
+            };
+
         dispatch(
-          actions.fetchSuccess(resultData.results.map(sanitizeTag), {
-            pagination: resultData.pagination || undefined,
-            order: resultData.results.map((_) => _.id),
-          })
+          actions.fetchSuccess(resultData.results.map(sanitizeTag), payload)
         );
       } else {
         dispatch(actions.fetchSuccessIgnore([]));
