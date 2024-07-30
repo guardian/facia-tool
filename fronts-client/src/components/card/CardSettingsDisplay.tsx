@@ -28,6 +28,13 @@ const shouldShowBoostLevel = (collectionType?: string, boostLevel?: string) =>
     collectionType?.indexOf('dynamic/') !== 0) &&
   boostLevel !== 'default';
 
+const displayBoostLevel = (boostLevel?: string) => {
+  if (boostLevel === 'gigaboost') return 'Giga boost';
+  else if (boostLevel === 'megaboost') return 'Mega boost';
+  else if (boostLevel === 'boost') return 'Boost';
+  else return '';
+};
+
 export default ({
   collectionType,
   isBreaking,
@@ -68,7 +75,9 @@ export default ({
         <ArticleMetadataProperty>Large headline</ArticleMetadataProperty>
       )}
       {shouldShowBoostLevel(collectionType, boostLevel) && (
-        <ArticleMetadataProperty>{boostLevel}</ArticleMetadataProperty>
+        <ArticleMetadataProperty>
+          {displayBoostLevel(boostLevel)}
+        </ArticleMetadataProperty>
       )}
       {shouldShowLegacyBoost(collectionType, isBoosted) && (
         <ArticleMetadataProperty>Boost</ArticleMetadataProperty>
