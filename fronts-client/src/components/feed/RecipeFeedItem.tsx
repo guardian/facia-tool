@@ -1,4 +1,3 @@
-import { Recipe } from '../../types/Recipe';
 import { FeedItem } from './FeedItem';
 import React, { useCallback } from 'react';
 import { State } from '../../types/State';
@@ -12,17 +11,22 @@ import { CardTypesMap } from 'constants/cardTypes';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { insertCardWithCreate } from 'actions/Cards';
+import {selectors as recipeSelectors} from  "bundles/recipesBundle";
 
 interface ComponentProps {
-  recipe: Recipe;
+  id: string;
 }
 
-export const RecipeFeedItem = ({ recipe }: ComponentProps) => {
+export const RecipeFeedItem = ({ id }: ComponentProps) => {
   const shouldObscureFeed = useSelector<State, boolean>((state) =>
     selectFeatureValue(state, 'obscure-feed')
   );
 
   const dispatch = useDispatch();
+
+  const recipe = useSelector((state)=>
+    recipeSelectors.selectById(state, id)!
+  );
 
   const onAddToClipboard = useCallback(() => {
     dispatch<any>(
