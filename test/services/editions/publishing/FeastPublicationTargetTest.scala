@@ -3,7 +3,6 @@ package services.editions.publishing
 import com.amazonaws.services.sns.AmazonSNSClient
 import com.amazonaws.services.sns.model.{MessageAttributeValue, PublishRequest, PublishResult}
 import conf.ApplicationConfiguration
-import model.FeastAppModel
 import model.editions.{CuratedPlatform, Edition, EditionsCollection, EditionsFront, EditionsIssue, EditionsRecipe, PublishAction}
 import org.mockito.Mockito._
 import org.mockito.ArgumentMatchers._
@@ -11,12 +10,20 @@ import org.scalatest.{FreeSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import play.api.libs.json.Json
-import model.FeastAppModel.{Chef, FeastAppContainer, Recipe, RecipeIdentifier}
+import model.FeastAppModel.{Chef, FeastCollection, FeastAppContainer, Recipe, RecipeIdentifier}
 import util.TimestampGenerator
 
 import java.time.LocalDate
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Try}
+import model.editions.EditionsFeastCollection
+import model.editions.EditionsFeastCollectionMetadata
+import model.editions.FeastCollectionTheme
+import model.editions.Palette
+import model.editions.EditionsChef
+import model.editions.EditionsChefMetadata
+import model.editions.ChefTheme
+import model.editions.Image
 
 class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSugar {
   val conf = new ApplicationConfiguration(
@@ -63,8 +70,40 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
             contentPrefillTimeWindow = None,
             items=List(
               EditionsRecipe(
-                "id",
+                "recipe-id",
                 0L
+              ),
+              EditionsChef(
+                "chef-id",
+                0L,
+                Some(EditionsChefMetadata(
+                  bio = Some("bio"),
+                  theme = Some(ChefTheme(
+                    id = "theme-id",
+                    palette = Palette("#FFF", "#333"),
+                  )),
+                  chefImageOverride = Some(Image(
+                    width = None,
+                    height = None,
+                    origin = "image-origin",
+                    src = "image-src"
+                  ))
+                ))
+              ),
+              EditionsFeastCollection(
+                "collection-id",
+                0L,
+                Some(EditionsFeastCollectionMetadata(
+                  title = Some("Collection title"),
+                  theme = Some(FeastCollectionTheme(
+                    id = "theme-id",
+                    lightPalette = Palette("#FFF", "#333"),
+                    darkPalette = Palette("#333", "#FFF"),
+                    imageURL = Some("https://example.com/an-image.jpg")
+                  )),
+                  collectionItems = List(EditionsRecipe("nested-recipe-id", 0L))
+
+                ))
               )
             )
           )
@@ -82,7 +121,7 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
       "recipes" -> FeastAppContainer("recipes", "Recipes", None, Seq(Recipe(RecipeIdentifier("abcdefg"))))
     )
 
-    "should push the relevant content into SNS" - {
+    "should push the relevant content into SNS" in {
       val mockSNS = mock[AmazonSNSClient]
       when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
 
@@ -101,7 +140,7 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
       verify(mockSNS, times(1)).publish(expectedRequest)
     }
 
-    "should not catch an SNS exception" - {
+    "should not catch an SNS exception" in {
       val mockSNS = mock[AmazonSNSClient]
       val except = new RuntimeException("My hovercraft is full of eels")
       when(mockSNS.publish(any[PublishRequest])).thenThrow(except)
@@ -114,7 +153,7 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
   }
 
   "putEditionsList" - {
-    "should push the relevant content into SNS" - {
+    "should push the relevant content into SNS" in {
       val mockSNS = mock[AmazonSNSClient]
       when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
 
@@ -135,7 +174,7 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
   }
 
   "transformContent" - {
-    "should transform the Editions content" - {
+    "should transform the Editions content" in {
       val mockSNS = mock[AmazonSNSClient]
       when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
 
@@ -148,14 +187,29 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
       allRecipesFront.head.title shouldBe "Dish of the day"
       allRecipesFront.head.body shouldBe Some("") //this is just how the `body` field is currently rendered
       allRecipesFront.head.id shouldBe "98e89761-fdf0-4903-b49d-2af7d66fc930"
-      allRecipesFront.head.items.length shouldBe 1
-      allRecipesFront.head.items.head.asInstanceOf[FeastAppModel.Recipe].recipe.id shouldBe "id"
+      allRecipesFront.head.items shouldBe List(
+        Recipe(RecipeIdentifier("recipe-id")),
+        Chef(
+          id = "chef-id",
+          image = Some("image-src"),
+          bio = Some("bio"),
+          backgroundHex = Some("#333"),
+          foregroundHex = Some("#FFF")
+        ),
+        FeastCollection(
+          darkPalette = Some(Palette("#333", "#FFF")),
+          lightPalette = Some(Palette("#FFF", "#333")),
+          image = Some("https://example.com/an-image.jpg"),
+          title = "Collection title",
+          recipes = List("nested-recipe-id")
+        )
+      )
     }
   }
 
   "putIssue" - {
-    "should output the transformed version of the content" - {
-      val serializedVersion = """{"id":"123456ABCD","edition":"feast-northern-hemisphere","issueDate":"2024-05-03","version":"v1","fronts":{"all-recipes":[{"id":"98e89761-fdf0-4903-b49d-2af7d66fc930","title":"Dish of the day","body":"","items":[{"recipe":{"id":"id"}}]}]}}"""
+    "should output the transformed version of the content" in {
+      val serializedVersion = """{"id":"123456ABCD","edition":"feast-northern-hemisphere","issueDate":"2024-05-03","version":"v1","fronts":{"all-recipes":[{"id":"98e89761-fdf0-4903-b49d-2af7d66fc930","title":"Dish of the day","body":"","items":[{"recipe":{"id":"recipe-id"}},{"id":"chef-id","image":"image-src","bio":"bio","backgroundHex":"#333","foregroundHex":"#FFF"},{"darkPalette":{"foregroundHex":"#333","backgroundHex":"#FFF"},"image":"https://example.com/an-image.jpg","title":"Collection title","lightPalette":{"foregroundHex":"#FFF","backgroundHex":"#333"},"recipes":["nested-recipe-id"]}]}]}}"""
 
       val mockSNS = mock[AmazonSNSClient]
       when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
