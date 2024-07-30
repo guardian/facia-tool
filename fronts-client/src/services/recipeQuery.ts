@@ -108,6 +108,8 @@ const recipeQuery = (baseUrl:string) => {
       const response = await fetch(`${baseUrl}/search`, {
         method: "POST",
         body: queryDoc,
+        mode: "cors",
+        headers: new Headers({"Content-Type": "application/json"})
       });
       const content = await response.json();
       if(response.status==200) {
