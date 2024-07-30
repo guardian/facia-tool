@@ -6,7 +6,7 @@ import {
   dragOffsetY,
 } from '../FrontsEdit/CollectionComponents/ArticleDrag';
 import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
-import { ContentInfo } from './ContentInfo';
+import { ContentExtra, ContentInfo } from './ContentInfo';
 import { CardTypesMap } from 'constants/cardTypes';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
@@ -60,7 +60,12 @@ export const RecipeFeedItem = ({ id }: ComponentProps) => {
       handleDragStart={handleDragStart}
       onAddToClipboard={onAddToClipboard}
       shouldObscureFeed={shouldObscureFeed}
-      metaContent={<ContentInfo>Recipe</ContentInfo>}
+      metaContent={<>
+        <ContentInfo>Recipe</ContentInfo>
+        <ContentExtra>
+          {recipe?.score && recipe.score<1 ?  `Relevance ${Math.ceil(recipe.score*100)}%` : ""}
+        </ContentExtra>
+      </>}
     />
   );
 };

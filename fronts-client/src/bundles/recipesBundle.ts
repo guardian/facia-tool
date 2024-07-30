@@ -1,7 +1,6 @@
 import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
 import { liveRecipes, RecipeSearchHit, RecipeSearchParams } from '../services/recipeQuery';
 import { ThunkResult } from '../types/Store';
-import { dispose } from '../../../public/src/js/troubleshoot/views/stale';
 
 export const { actions, reducer, selectors } =
   createAsyncResourceBundle<RecipeSearchHit>('recipes', {
