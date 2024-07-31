@@ -92,12 +92,21 @@ export const createSelectFormFieldsForCard = () => {
 
       if (
         isCollectionConfigDynamicV2(parentCollectionConfig) ||
-        derivedArticle.boostLevel
+        (derivedArticle.boostLevel &&
+          derivedArticle.boostLevel !== 'default' &&
+          !parentCollectionConfig) /* show in clipboard if it is boosted */
       ) {
         fields.push('boostLevel');
+      }
+      if (isCollectionConfigDynamicV2(parentCollectionConfig)) {
         fields = without(fields, 'showLargeHeadline');
       }
-      if (isCollectionConfigDynamicV1(parentCollectionConfig)) {
+      if (
+        isCollectionConfigDynamicV1(parentCollectionConfig) ||
+        /* don't show old Boost checkbox in new dynamic container */
+        (derivedArticle.isBoosted &&
+          !isCollectionConfigDynamicV2(parentCollectionConfig))
+      ) {
         fields.push('isBoosted');
       }
       if (derivedArticle.liveBloggingNow === 'true') {

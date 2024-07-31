@@ -529,11 +529,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     };
 
     const allowGigaBoost = () =>
-      collectionType &&
-      (collectionType === DYNAMIC_PACKAGE_V2_NAME ||
-        (collectionType === DYNAMIC_FAST_V2_NAME &&
-          groupSizeId &&
-          groupSizeId > 0));
+      !collectionType /* clipboard */ ||
+      (collectionType &&
+        (collectionType === DYNAMIC_PACKAGE_V2_NAME /* dynamic package */ ||
+          (collectionType ===
+            DYNAMIC_FAST_V2_NAME /* splash group in dynamic fast */ &&
+            groupSizeId &&
+            groupSizeId > 0)));
 
     return (
       <FormContainer

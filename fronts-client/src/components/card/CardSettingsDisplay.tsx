@@ -21,10 +21,13 @@ const ArticleMetadataProperty = styled.div`
 `;
 
 const shouldShowLegacyBoost = (collectionType?: string, isBoosted?: boolean) =>
-  DYNAMIC_CONTAINER_V1_SET.includes(collectionType) || isBoosted;
+  /* don't show old Boost option in dynamic v2 */
+  isBoosted && !DYNAMIC_CONTAINER_V2_SET.includes(collectionType);
 
 const shouldShowBoostLevel = (collectionType?: string, boostLevel?: string) =>
-  DYNAMIC_CONTAINER_V2_SET.includes(collectionType) && boostLevel !== 'default';
+  boostLevel !== 'default' &&
+  /* show new Boost level in new dynamic container or clipboard */
+  (DYNAMIC_CONTAINER_V2_SET.includes(collectionType) || !collectionType);
 
 const displayBoostLevel = (boostLevel?: string) => {
   if (boostLevel === 'gigaboost') return 'Giga boost';
