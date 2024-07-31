@@ -178,6 +178,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
                         getNodeProps={() => getAfNodeProps(isUneditable)}
                         onSelect={() => selectCard(card.uuid, id, false)}
                         onDelete={() => removeCard(group.uuid, card.uuid)}
+                        groupSizeId={group.id ? parseInt(group.id) : 0}
                       >
                         <CardLevel
                           isUneditable={isUneditable}

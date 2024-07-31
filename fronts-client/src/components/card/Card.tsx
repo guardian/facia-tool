@@ -120,6 +120,7 @@ type CardContainerProps = ContainerProps & {
   pillarId?: string;
   collectionType?: string;
   selectOtherCard: { (uuid: string): CardType };
+  groupSizeId?: number;
 };
 
 class Card extends React.Component<CardContainerProps> {
@@ -160,6 +161,7 @@ class Card extends React.Component<CardContainerProps> {
       isLive,
       pillarId,
       collectionType,
+      groupSizeId,
     } = this.props;
 
     const getSublinks = (
@@ -338,6 +340,7 @@ class Card extends React.Component<CardContainerProps> {
               }}
               onCancel={() => clearCardSelection(uuid)}
               size={size}
+              groupSizeId={groupSizeId}
             />
           );
       }

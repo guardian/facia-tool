@@ -14,7 +14,13 @@ import {
   maybeAddFrontPublicationDate,
   copyCardImageMeta,
 } from 'actions/CardsCommon';
-import { selectCards, selectCard, selectArticleGroup } from 'selectors/shared';
+import {
+  selectCards,
+  selectCard,
+  selectArticleGroup,
+  selectGroupCollection,
+  selectGroups,
+} from 'selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/action';
 import { cloneCard } from 'util/card';
@@ -42,6 +48,7 @@ import {
   InsertActionCreator,
   InsertThunkActionCreator,
 } from 'types/Cards';
+import { DYNAMIC_FAST_V2_NAME } from 'constants/dynamicContainers';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -196,6 +203,34 @@ const updateCardMetaWithPersist = addPersistMetaToAction(updateCardMeta, {
   persistTo: 'collection',
 });
 
+const mayModifyCardForDestinationGroup = (
+  state: State,
+  to: PosSpec,
+  card: Card,
+  persistTo: 'collection' | 'clipboard'
+) => {
+  if (to.type === 'group' && persistTo === 'collection') {
+    const groupId = to.id;
+    const { collection } = selectGroupCollection(state, groupId);
+    const group = selectGroups(state)[groupId];
+    if (collection?.type === DYNAMIC_FAST_V2_NAME) {
+      if (
+        group &&
+        (!group.id || parseInt(group.id) === 0) &&
+        card.meta.boostLevel === 'gigaboost'
+      ) {
+        return updateCardMeta(
+          card.uuid,
+          {
+            boostLevel: 'megaboost',
+          },
+          { merge: true }
+        );
+      }
+    }
+  }
+};
+
 const insertCardWithCreate =
   (
     to: PosSpec,
@@ -224,6 +259,16 @@ const insertCardWithCreate =
         if (!card) {
           return;
         }
+
+        const modifyCardAction = mayModifyCardForDestinationGroup(
+          state,
+          to,
+          card,
+          persistTo
+        );
+        if (modifyCardAction) dispatch(modifyCardAction);
+
+        // TODO modify card data
         dispatch(
           insertActionCreator(
             toWithRespectToState.id,
@@ -323,6 +368,14 @@ const moveCard = (
         if (!fromWithRespectToState) {
           dispatch(cardsReceived([parent, ...supporting]));
         }
+
+        const modifyCardAction = mayModifyCardForDestinationGroup(
+          state,
+          to,
+          parent,
+          persistTo
+        );
+        if (modifyCardAction) dispatch(modifyCardAction);
 
         dispatch(
           insertActionCreator(

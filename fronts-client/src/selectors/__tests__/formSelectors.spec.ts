@@ -29,7 +29,7 @@ describe('Form utils', () => {
     it('should add isBoosted for dynamic collection configs', () => {
       const localState = cloneDeep(state);
       localState.fronts.frontsConfig.data.collections.exampleCollection.type =
-        'dynamic/example';
+        'dynamic/slow';
       const selectFormFields = createSelectFormFieldsForCard();
       expect(
         selectFormFields(

@@ -74,6 +74,10 @@ import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import InputRadio from 'components/inputs/InputRadio';
+import {
+  DYNAMIC_FAST_V2_NAME,
+  DYNAMIC_PACKAGE_V2_NAME,
+} from 'constants/dynamicContainers';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -343,13 +347,18 @@ const RenderSlideshow = ({
 };
 
 const CheckboxFieldsContainer: React.SFC<{
-  children: Array<React.ReactElement<{ name: string }>>;
+  children: Array<React.ReactElement<{
+    name: string;
+    type?: string;
+    value?: string;
+  }> | null>;
   editableFields: string[];
   size?: string;
   extraBottomMargin?: string;
 }> = ({ children, editableFields, size, extraBottomMargin }) => {
-  const childrenToRender = children.filter((child) =>
-    shouldRenderField(child.props.name, editableFields)
+  const childrenToRender = children.filter(
+    (child) =>
+      child !== null && shouldRenderField(child.props.name, editableFields)
   );
   if (!childrenToRender.length) {
     return null;
@@ -357,8 +366,12 @@ const CheckboxFieldsContainer: React.SFC<{
   return (
     <FieldsContainerWrap extraBottomMargin={extraBottomMargin}>
       {childrenToRender.map((child) => {
+        const key =
+          child?.props.type && child?.props.type === 'radio'
+            ? `${child?.props.name}-${child?.props.value}`
+            : child?.props.name;
         return (
-          <FieldContainer key={child.props.name} size={size}>
+          <FieldContainer key={key} size={size}>
             {child}
           </FieldContainer>
         );
@@ -445,6 +458,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       coverCardMobileImage,
       coverCardTabletImage,
       valid,
+      collectionType,
+      groupSizeId,
     } = this.props;
 
     const isEditionsMode = editMode === 'editions';
@@ -512,6 +527,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
         </>
       );
     };
+
+    const allowGigaBoost = () =>
+      collectionType &&
+      (collectionType === DYNAMIC_PACKAGE_V2_NAME ||
+        (collectionType === DYNAMIC_FAST_V2_NAME &&
+          groupSizeId &&
+          groupSizeId > 0));
 
     return (
       <FormContainer
@@ -606,14 +628,16 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 value="megaboost"
                 type="radio"
               />
-              <Field
-                name="boostLevel"
-                component={InputRadio}
-                label="Giga Boost"
-                id={getInputId(cardId, 'boostlevel-3')}
-                value="gigaboost"
-                type="radio"
-              />
+              {allowGigaBoost() ? (
+                <Field
+                  name="boostLevel"
+                  component={InputRadio}
+                  label="Giga Boost"
+                  id={getInputId(cardId, 'boostlevel-3')}
+                  value="gigaboost"
+                  type="radio"
+                />
+              ) : null}
             </CheckboxFieldsContainer>
             <CheckboxFieldsContainer
               editableFields={editableFields}
@@ -1031,6 +1055,7 @@ interface InterfaceProps {
   onSave: (meta: CardMeta) => void;
   frontId: string;
   size?: CardSizes;
+  groupSizeId?: number;
 }
 
 const formContainer: React.SFC<ContainerProps & InterfaceProps> = (props) => (

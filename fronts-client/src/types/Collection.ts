@@ -26,6 +26,9 @@ type CardSets = 'draft' | 'live' | 'previously';
 // Stages represent only those lists which are curated by the user.
 type Stages = 'draft' | 'live';
 type CardSizes = 'wide' | 'default' | 'medium' | 'small';
+// BoostLevels defines the string literals which represents each of the four levels
+// introduced by the new dynamic containers
+type BoostLevels = 'default' | 'boost' | 'megaboost' | 'gigaboost';
 
 interface NestedCardRootFields {
   id: string;
@@ -61,7 +64,7 @@ type CardRootMeta = ChefCardMeta &
     imageCutoutSrcOrigin?: string;
     isBreaking?: boolean;
     isBoosted?: boolean;
-    boostLevel?: string;
+    boostLevel?: BoostLevels;
     showLivePlayable?: boolean;
     showMainVideo?: boolean;
     showLargeHeadline?: boolean;
@@ -207,4 +210,5 @@ export {
   CardSets,
   ArticleTag,
   ChefCardMeta,
+  BoostLevels,
 };

@@ -3,7 +3,6 @@ import { createSelectArticleFromCard } from 'selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
 import {
-  isCollectionConfigDynamic,
   isCollectionConfigDynamicV1,
   isCollectionConfigDynamicV2,
 } from '../util/frontsUtils';

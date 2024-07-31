@@ -26,6 +26,7 @@ const formValues = {
   imageReplace: false,
   imageSlideshowReplace: false,
   isBoosted: false,
+  boostLevel: 'default',
   isBreaking: false,
   showLivePlayable: false,
   primaryImage: {

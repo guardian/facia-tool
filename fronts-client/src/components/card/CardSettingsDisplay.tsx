@@ -1,5 +1,9 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
+import {
+  DYNAMIC_CONTAINER_V1_SET,
+  DYNAMIC_CONTAINER_V2_SET,
+} from 'constants/dynamicContainers';
 
 const ArticleMetadataProperties = styled.div`
   padding: 0 4px 3px 0;
@@ -17,16 +21,10 @@ const ArticleMetadataProperty = styled.div`
 `;
 
 const shouldShowLegacyBoost = (collectionType?: string, isBoosted?: boolean) =>
-  collectionType?.indexOf('dynamic/') === 0 &&
-  collectionType !== 'dynamic/fast-v2' &&
-  collectionType !== 'dynamic/package-v2' &&
-  isBoosted;
+  DYNAMIC_CONTAINER_V1_SET.includes(collectionType) || isBoosted;
 
 const shouldShowBoostLevel = (collectionType?: string, boostLevel?: string) =>
-  (collectionType === 'dynamic/fast-v2' ||
-    collectionType === 'dynamic/package-v2' ||
-    collectionType?.indexOf('dynamic/') !== 0) &&
-  boostLevel !== 'default';
+  DYNAMIC_CONTAINER_V2_SET.includes(collectionType) && boostLevel !== 'default';
 
 const displayBoostLevel = (boostLevel?: string) => {
   if (boostLevel === 'gigaboost') return 'Giga boost';
