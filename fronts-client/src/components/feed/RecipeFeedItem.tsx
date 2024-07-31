@@ -53,7 +53,7 @@ export const RecipeFeedItem = ({ id }: ComponentProps) => {
       type={CardTypesMap.RECIPE}
       id={recipe.canonicalArticle}
       title={recipe.title}
-      thumbnail={recipe.featuredImage.url}
+      thumbnail={recipe.previewImage?.url ?? recipe.featuredImage?.url ?? ""}
       liveUrl={`https://theguardian.com/${recipe.canonicalArticle}`}
       hasVideo={false}
       isLive={true} // We do not yet serve preview recipes

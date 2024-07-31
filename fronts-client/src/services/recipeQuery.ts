@@ -55,25 +55,31 @@ export const updateImageScalingParams = (url:string) => {
 }
 
 const setupRecipeThumbnails = (recep:Recipe) => {
-  return {
-    ...recep,
-    previewImage: recep.previewImage ? {
-      ...recep.previewImage,
-      url: updateImageScalingParams(recep.previewImage.url),
-    } : undefined,
-    featuredImage: {
-      ...recep.featuredImage,
-      url: updateImageScalingParams(recep.featuredImage.url),
+  try {
+    return {
+      ...recep,
+      previewImage: recep.previewImage ? {
+        ...recep.previewImage,
+        url: updateImageScalingParams(recep.previewImage.url),
+      } : undefined,
+      featuredImage: recep.featuredImage ? {
+        ...recep.featuredImage,
+        url: updateImageScalingParams(recep.featuredImage.url),
+      } : undefined
     }
+  } catch(err) {
+    console.error(err);
+    return recep;
   }
 }
 
 const recipeQuery = (baseUrl:string) => {
   const fetchOne = async (href:string):Promise<Recipe|undefined> => {
     const response = await fetch(`${baseUrl}${href}`);
-    const content = response.json();
+    const content = await response.json();
     if(response.status==200) {
-      return setupRecipeThumbnails(content as unknown as Recipe);
+      const result = setupRecipeThumbnails(content as unknown as Recipe);
+      return result;
     } else {
       console.error(`Could not retrieve recipe ${href}: ${response.status}`);
       return undefined;

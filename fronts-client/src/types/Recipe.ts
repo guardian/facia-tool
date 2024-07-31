@@ -19,6 +19,6 @@ export interface Recipe {
   title: string;
   canonicalArticle: string;
   difficultyLevel: string;
-  featuredImage: RecipeImage; // the latter is an old image format that appears in our test fixtures
+  featuredImage?: RecipeImage; // the latter is an old image format that appears in our test fixtures
   previewImage?: RecipeImage;
 }
