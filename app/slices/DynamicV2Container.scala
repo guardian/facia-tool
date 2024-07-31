@@ -12,7 +12,7 @@ object DynamicFastV2 extends DynamicV2Container {
             byGroup.getOrElse(1, Seq.empty)
     val numOfSplash = splash.size min 1
     val numOfStandard = stories.size - numOfSplash
-    return numOfSplash + (numOfStandard min 8)
+    return numOfSplash + (numOfStandard min 10)
   }
 }
 
