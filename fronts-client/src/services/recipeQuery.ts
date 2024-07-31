@@ -49,13 +49,31 @@ export interface DietSearchResponse {
   "diet-ids": KeyAndCount[];
 }
 
+const widthParam = /width=(\d+)/;
+export const updateImageScalingParams = (url:string) => {
+  return url.replace(widthParam, "width=83")
+}
+
+const setupRecipeThumbnails = (recep:Recipe) => {
+  return {
+    ...recep,
+    previewImage: recep.previewImage ? {
+      ...recep.previewImage,
+      url: updateImageScalingParams(recep.previewImage.url),
+    } : undefined,
+    featuredImage: {
+      ...recep.featuredImage,
+      url: updateImageScalingParams(recep.featuredImage.url),
+    }
+  }
+}
 
 const recipeQuery = (baseUrl:string) => {
   const fetchOne = async (href:string):Promise<Recipe|undefined> => {
     const response = await fetch(`${baseUrl}${href}`);
     const content = response.json();
     if(response.status==200) {
-      return content as unknown as Recipe;
+      return setupRecipeThumbnails(content as unknown as Recipe);
     } else {
       console.error(`Could not retrieve recipe ${href}: ${response.status}`);
       return undefined;
