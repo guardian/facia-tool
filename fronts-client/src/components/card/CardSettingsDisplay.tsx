@@ -1,9 +1,6 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
-import {
-  DYNAMIC_CONTAINER_V1_SET,
-  DYNAMIC_CONTAINER_V2_SET,
-} from 'constants/dynamicContainers';
+import { DYNAMIC_CONTAINER_V2_SET } from 'constants/dynamicContainers';
 
 const ArticleMetadataProperties = styled.div`
   padding: 0 4px 3px 0;

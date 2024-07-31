@@ -98,6 +98,7 @@ describe('CardForm transform functions', () => {
       expect(
         getInitialValuesForCardForm({
           ...derivedArticle,
+          boostLevel: 'megaboost',
           imageSrc: 'exampleSrc1',
           imageSrcHeight: '100',
           imageSrcWidth: '100',
@@ -126,6 +127,7 @@ describe('CardForm transform functions', () => {
         })
       ).toEqual({
         ...formValues,
+        boostLevel: 'megaboost',
         imageCutoutSrc: 'exampleSrc2',
         primaryImage: {
           src: 'exampleSrc1',
@@ -179,6 +181,7 @@ describe('CardForm transform functions', () => {
       const trailText =
         'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him edited';
       const pickedKicker = 'kick';
+      const boostLevel = 'gigaboost';
       const state = createStateWithChangedFormFields(
         initialState,
         'exampleId',
@@ -187,6 +190,7 @@ describe('CardForm transform functions', () => {
           headline,
           trailText,
           pickedKicker,
+          boostLevel,
         }
       );
       expect(
@@ -195,6 +199,7 @@ describe('CardForm transform functions', () => {
           byline,
           headline,
           trailText,
+          boostLevel,
         })
       ).toEqual({
         byline: 'Caroline Davies edited',
@@ -203,6 +208,7 @@ describe('CardForm transform functions', () => {
         trailText:
           'Police noted concerns over Femi Nandap, who went on to stab lecturer, but released him edited',
         pickedKicker: 'kick',
+        boostLevel: 'gigaboost',
       });
     });
     it('should derive values, setting the imageReplace value if necessary', () => {
