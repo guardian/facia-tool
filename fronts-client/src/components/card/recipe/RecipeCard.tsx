@@ -91,7 +91,7 @@ export const RecipeCard = ({
           </CardHeadingContainer>
         </CardContent>
         <ImageAndGraphWrapper size="small">
-          <ThumbnailSmall url={recipe?.featuredImage.url} />
+          <ThumbnailSmall url={recipe?.previewImage?.url ?? recipe?.featuredImage?.url} />
         </ImageAndGraphWrapper>
         <HoverActionsAreaOverlay data-testid="hover-overlay">
           <HoverActionsButtonWrapper
