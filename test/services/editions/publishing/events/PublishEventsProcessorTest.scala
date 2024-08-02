@@ -1,9 +1,10 @@
 package services.editions.publishing.events
 
 import java.time.{LocalDate, LocalDateTime}
-
 import model.editions.{Edition, IssueVersionStatus}
 import org.scalatest.{FunSuite, Matchers}
+
+import scala.util.{Failure, Success, Try}
 
 class PublishEventsProcessorTest extends FunSuite with Matchers {
 
@@ -31,7 +32,7 @@ class PublishEventsProcessorTest extends FunSuite with Matchers {
     val queueFacade = new InMemoQueue(initialMessagesInQueue)
     val processor = new PublishEventsProcessor(queueFacade)
 
-    def stubDBUpdateAlwaysSuccess(event: PublishEvent): Boolean = true
+    def stubDBUpdateAlwaysSuccess(event: PublishEvent): Try[Unit] = Success(())
 
     processor.processPublishEvent(stubDBUpdateAlwaysSuccess)
 
@@ -42,7 +43,7 @@ class PublishEventsProcessorTest extends FunSuite with Matchers {
     val queueFacade = new InMemoQueue(initialMessagesInQueue)
     val processor = new PublishEventsProcessor(queueFacade)
 
-    def stubDBUpdateAlwaysFailure(event: PublishEvent): Boolean = false
+    def stubDBUpdateAlwaysFailure(event: PublishEvent): Try[Unit] = Failure(new Error("Oops"))
 
     processor.processPublishEvent(stubDBUpdateAlwaysFailure)
 
