@@ -55,9 +55,6 @@ enum FeedType {
 export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   const [selectedOption, setSelectedOption] = useState(FeedType.recipes);
   const [searchText, setSearchText] = useState('');
-  // const recipes: Record<string, Recipe> = useSelector((state: State) =>
-  //   recipeSelectors.selectAll(state)
-  // );
   const dispatch: Dispatch = useDispatch();
   const searchForChefs = useCallback(
     (params: Record<string, string[] | string | number>) => {
