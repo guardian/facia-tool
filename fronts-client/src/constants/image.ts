@@ -1,4 +1,8 @@
 import pageConfig from 'util/extractConfigFromPage';
+import {
+  DYNAMIC_FAST_V2_NAME,
+  DYNAMIC_PACKAGE_V2_NAME,
+} from './dynamicContainers';
 
 export const SUPPORT_PORTRAIT_CROPS =
   pageConfig?.userData?.featureSwitches.find(
@@ -26,7 +30,10 @@ export const landscape5To4CardImageCriteria = {
 // @todo - add the right collection type when it exists
 export const COLLECTIONS_USING_PORTRAIT_TRAILS: string[] = [];
 
-export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [];
+export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [
+  DYNAMIC_FAST_V2_NAME,
+  DYNAMIC_PACKAGE_V2_NAME,
+];
 
 export const defaultCardTrailImageCriteria = landScapeCardImageCriteria;
 
