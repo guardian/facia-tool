@@ -71,7 +71,7 @@ class Sublinks extends React.Component<SublinkProps> {
               this.setState({ dragHoverActive: false });
             }}
             delay={100}
-            filterRegisterEvent={this.dragEventNotDenylisted}
+            filterRegisterEvent={e => !denyDragEvent()(e)}
             onIntentConfirm={() => {
               toggleShowArticleSublinks();
             }}
@@ -99,8 +99,6 @@ class Sublinks extends React.Component<SublinkProps> {
       </>
     );
   }
-
-  private dragEventNotDenylisted = (e: React.DragEvent) => !denyDragEvent()(e);
 }
 
 export default Sublinks;
