@@ -360,9 +360,9 @@ trait IssueQueries extends Logging {
       .reverse
   }
 
-  def insertIssueVersionEvent(event: PublishEvent) = DB localTx { implicit session =>
-    Try {
-      logger.info(s"saving issue version event message:${event.message}")(event.toLogMarker)
+  def insertIssueVersionEvent(event: PublishEvent): Try[Unit] = DB localTx { implicit session =>
+    val maybeInsertEvent = Try {
+      logger.info(s"Saving issue version event with status: ${event.status} and message: ${event.message} to version: ${event.version} with timestamp: ${event.timestamp}")(event.toLogMarker)
       sql"""
         INSERT INTO issue_versions_events (
           version_id
@@ -377,23 +377,21 @@ trait IssueQueries extends Logging {
           , ${event.message}
         );
       """.execute.apply()
-    } match {
-      case Success(_) => {
-        logger.info(s"successfully inserted issue version event message:${event.message}")(event.toLogMarker)
-        true
-      }
-      case Failure(exception: PSQLException) if exception.getSQLState == ForeignKeyViolationSQLState => {
-        logger.warn("Foreign key constraint violation encountered when inserting issue version event")(event.toLogMarker)
-        true
-      }
-      case Failure(exception: PSQLException)  => {
-        logger.warn(s"Postgres exception (${exception.getMessage}) encountered when inserting issue version event")(event.toLogMarker)
-        true
-      }
-      case Failure(exception)  => {
-        logger.warn("Non-database exception (${exception.getMessage}) encountered when inserting issue version event")(event.toLogMarker)
-        true
-      }
     }
+
+    maybeInsertEvent match {
+      case Success(true) =>
+        logger.info(s"successfully inserted issue version event message:${event.message}")(event.toLogMarker)
+      case Success(false) =>
+        logger.warn("Attempted to insert issue, but ")(event.toLogMarker)
+      case Failure(exception: PSQLException) if exception.getSQLState == ForeignKeyViolationSQLState =>
+        logger.warn("Foreign key constraint violation encountered when inserting issue version event")(event.toLogMarker)
+      case Failure(exception: PSQLException)  =>
+        logger.warn(s"Postgres exception (${exception.getMessage}) encountered when inserting issue version event")(event.toLogMarker)
+      case Failure(exception) =>
+        logger.warn(s"Non-database exception (${exception.getMessage}) encountered when inserting issue version event")(event.toLogMarker)
+    }
+
+    maybeInsertEvent.map { _ => () }
   }
 }
