@@ -24,12 +24,19 @@ interface FetchStartAction {
 interface FetchSuccessAction<Resource> {
   entity: string;
   type: 'FETCH_SUCCESS';
-  payload: {
-    data: Resource | Resource[] | any;
-    order?: string[];
-    pagination?: IPagination;
-    time: number;
-  };
+  payload:
+    | {
+        data: Resource | Resource[] | any;
+        order?: string[];
+        ignoreOrder: false;
+        pagination?: IPagination;
+        time: number;
+      }
+    | {
+        data: Resource | Resource[] | any;
+        ignoreOrder: true; // If this is true, `lastFetchOrder` stays the same
+        time: number;
+      };
 }
 
 interface FetchSuccessIgnoreAction<Resource> {
@@ -266,12 +273,23 @@ function createAsyncResourceBundle<Resource>(
 
   const fetchSuccessAction = (
     data: Resource | Resource[] | any,
-    { pagination, order }: { pagination?: IPagination; order?: string[] } = {}
-  ): FetchSuccessAction<Resource> => ({
-    entity: entityName,
-    type: FETCH_SUCCESS,
-    payload: { data, pagination, order, time: Date.now() },
-  });
+    {
+      pagination,
+      order,
+      ignoreOrder,
+    }:
+      | { ignoreOrder?: undefined; pagination?: IPagination; order?: string[] }
+      | { ignoreOrder: boolean; pagination?: undefined; order?: undefined } = {}
+  ): FetchSuccessAction<Resource> => {
+    const time = Date.now();
+    return {
+      entity: entityName,
+      type: FETCH_SUCCESS,
+      payload: ignoreOrder
+        ? { data, ignoreOrder, time }
+        : { data, ignoreOrder: false, pagination, order, time },
+    };
+  };
 
   const fetchSuccessIgnoreAction = (
     data: Resource | Resource[] | any
@@ -351,6 +369,21 @@ function createAsyncResourceBundle<Resource>(
           };
         }
         case FETCH_SUCCESS: {
+          const pagination =
+            action.payload.ignoreOrder ||
+            isEqual(state.pagination, action.payload.pagination)
+              ? state.pagination
+              : action.payload.pagination || null;
+
+          const lastFetchOrder = action.payload.ignoreOrder
+            ? state.lastFetchOrder
+            : getOrderFromIncomingResourceData(
+                action.payload.data,
+                entityName,
+                state.lastFetchOrder,
+                action.payload.order
+              );
+
           return {
             ...state,
             data: !indexById
@@ -362,9 +395,7 @@ function createAsyncResourceBundle<Resource>(
                 ),
             // Only update pagination if the values have changed. This saves components
             // having to rerender when pagination information hasn't changed.
-            pagination: isEqual(state.pagination, action.payload.pagination)
-              ? state.pagination
-              : action.payload.pagination || null,
+            pagination,
             lastSuccessfulFetchTimestamp: action.payload.time,
             error: null,
             loadingIds: indexById
@@ -373,12 +404,7 @@ function createAsyncResourceBundle<Resource>(
                   getStatusIdsFromData(action.payload.data)
                 )
               : [],
-            lastFetchOrder: getOrderFromIncomingResourceData(
-              action.payload.data,
-              entityName,
-              state.lastFetchOrder,
-              action.payload.order
-            ),
+            lastFetchOrder,
           };
         }
         case FETCH_SUCCESS_IGNORE: {
