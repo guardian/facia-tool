@@ -1,25 +1,29 @@
-import { Recipe } from '../../types/Recipe';
 import { FeedItem } from './FeedItem';
 import React, { useCallback } from 'react';
 import { State } from '../../types/State';
 import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
-import { ContentInfo } from './ContentInfo';
+import { ContentExtra, ContentInfo } from './ContentInfo';
 import { CardTypesMap } from 'constants/cardTypes';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { insertCardWithCreate } from 'actions/Cards';
+import { selectors as recipeSelectors } from  "bundles/recipesBundle";
 import { handleDragStartForCard } from 'util/dragAndDrop';
 
 interface ComponentProps {
-  recipe: Recipe;
+  id: string;
 }
 
-export const RecipeFeedItem = ({ recipe }: ComponentProps) => {
+export const RecipeFeedItem = ({ id }: ComponentProps) => {
   const shouldObscureFeed = useSelector<State, boolean>((state) =>
     selectFeatureValue(state, 'obscure-feed')
   );
 
   const dispatch = useDispatch();
+
+  const recipe = useSelector((state)=>
+    recipeSelectors.selectById(state, id)!
+  );
 
   const onAddToClipboard = useCallback(() => {
     dispatch<any>(
@@ -36,14 +40,19 @@ export const RecipeFeedItem = ({ recipe }: ComponentProps) => {
       type={CardTypesMap.RECIPE}
       id={recipe.canonicalArticle}
       title={recipe.title}
-      thumbnail={recipe.featuredImage.url}
+      thumbnail={recipe.previewImage?.url ?? recipe.featuredImage?.url ?? ""}
       liveUrl={`https://theguardian.com/${recipe.canonicalArticle}`}
       hasVideo={false}
       isLive={true} // We do not yet serve preview recipes
       handleDragStart={handleDragStartForCard(CardTypesMap.RECIPE, recipe)}
       onAddToClipboard={onAddToClipboard}
       shouldObscureFeed={shouldObscureFeed}
-      metaContent={<ContentInfo>Recipe</ContentInfo>}
+      metaContent={<>
+        <ContentInfo>Recipe</ContentInfo>
+        <ContentExtra>
+          {recipe?.score && recipe.score<1 ?  `Relevance ${Math.ceil(recipe.score*100)}%` : ""}
+        </ContentExtra>
+      </>}
     />
   );
 };

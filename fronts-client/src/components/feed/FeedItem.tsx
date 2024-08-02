@@ -44,6 +44,15 @@ const Container = styled.div`
   }
 `;
 
+const Byline = styled.h2`
+  margin: 2px 0 0;
+  vertical-align: top;
+  font-family: TS3TextSans;
+  font-size: ${theme.card.fontSizeDefault};
+  ${media.large`font-size: 13px;`}
+  font-weight: bold;
+`;
+
 const Title = styled.h2`
   margin: 2px 0 0;
   vertical-align: top;
@@ -115,6 +124,7 @@ interface FeedItemProps {
     dragNode: HTMLDivElement
   ) => void;
   shouldObscureFeed?: boolean;
+  byline?: string;
 }
 
 export class FeedItem extends React.Component<FeedItemProps, {}> {
@@ -138,6 +148,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
       thumbnail,
       hasVideo,
       handleDragStart,
+      byline
     } = this.props;
 
     const { preview, live, ophan } = getPaths(id);
@@ -189,6 +200,9 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
           </MetaContainer>
           <Body>
             <Title data-testid="headline">{title}</Title>
+            {
+              byline ? <Byline data-testid="byline">{byline}</Byline> : undefined
+            }
           </Body>
           <ArticleThumbnail
             style={{

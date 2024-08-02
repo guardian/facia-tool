@@ -1,14 +1,46 @@
 import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
-import { Recipe } from 'types/Recipe';
-import recipe1 from './fixtures/recipe1.json';
-import recipe2 from './fixtures/recipe2.json';
+import { liveRecipes, RecipeSearchHit, RecipeSearchParams } from '../services/recipeQuery';
+import { ThunkResult } from '../types/Store';
 
 export const { actions, reducer, selectors } =
-  createAsyncResourceBundle<Recipe>('recipes', {
+  createAsyncResourceBundle<RecipeSearchHit>('recipes', {
     indexById: true,
-    // Add stub data in the absence of proper search data.
-    initialData: {
-      [recipe1.id]: recipe1,
-      [recipe2.id]: recipe2,
-    },
+    selectLocalState: (state)=>state.recipes
   });
+
+export const fetchRecipes = (
+  params: RecipeSearchParams
+): ThunkResult<void> =>
+  async (dispatch) => {
+    dispatch(actions.fetchStart());
+
+    try {
+      const response = await liveRecipes.recipes(params);
+      dispatch(actions.fetchSuccess(response.recipes, {
+        pagination: {
+          pageSize: response.recipes.length,
+          currentPage: 1,
+          totalPages: 1
+        },
+        order: response.recipes.map((_)=>_.id)
+      }));
+    } catch(e) {
+      dispatch(actions.fetchError(e));
+    }
+  }
+
+export const fetchRecipesById = (
+  idList: string[]
+): ThunkResult<void> =>
+  async (dispatch) => {
+    dispatch(actions.fetchStart());
+
+    try {
+      const recipes = await liveRecipes.recipesById(idList);
+      dispatch(actions.fetchSuccess(recipes, {
+        order: recipes.map((_)=>_.id)
+      }));
+    } catch(e) {
+      dispatch(actions.fetchError(e));
+    }
+  }

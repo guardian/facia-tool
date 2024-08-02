@@ -3,18 +3,18 @@ import TextInput from 'components/inputs/TextInput';
 import { styled } from 'constants/theme';
 import React, { useEffect, useState, useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectors as recipeSelectors } from 'bundles/recipesBundle';
+import { fetchRecipes, selectors as recipeSelectors } from 'bundles/recipesBundle';
 import { fetchChefs, selectors as chefSelectors } from 'bundles/chefsBundle';
 import { State } from 'types/State';
-import { Recipe } from 'types/Recipe';
 import { RecipeFeedItem } from './RecipeFeedItem';
 import { ChefFeedItem } from './ChefFeedItem';
 import { RadioButton, RadioGroup } from '../inputs/RadioButtons';
 import { Dispatch } from 'types/Store';
-//import debounce from 'lodash/debounce'; // needed for debounce work, mentioned in Todo below
 import { IPagination } from 'lib/createAsyncResourceBundle';
 import Pagination from './Pagination';
 import ScrollContainer from '../ScrollContainer';
+import { RecipeSearchParams } from '../../services/recipeQuery';
+import debounce from 'lodash/debounce';
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
@@ -55,9 +55,6 @@ enum FeedType {
 export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   const [selectedOption, setSelectedOption] = useState(FeedType.recipes);
   const [searchText, setSearchText] = useState('');
-  const recipes: Record<string, Recipe> = useSelector((state: State) =>
-    recipeSelectors.selectAll(state)
-  );
   const dispatch: Dispatch = useDispatch();
   const searchForChefs = useCallback(
     (params: Record<string, string[] | string | number>) => {
@@ -65,6 +62,16 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
     },
     [dispatch]
   );
+  const searchForRecipes = useCallback(
+    (params: RecipeSearchParams) => {
+      dispatch(fetchRecipes(params));
+    },
+    [dispatch]
+  );
+  const recipeSearchIds = useSelector((state: State) =>
+    recipeSelectors.selectLastFetchOrder(state)
+  );
+
   const chefSearchIds = useSelector((state: State) =>
     chefSelectors.selectLastFetchOrder(state)
   );
@@ -74,7 +81,9 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   /*const debouncedRunSearch = debounce(() => runSearch(page), 750); TODO need to check if needed for chef-search? if yes then how to improve implementing it*/
 
   useEffect(() => {
-    runSearch(page);
+    const dbf = debounce(()=>runSearch(page), 750);
+    dbf();
+    return ()=>dbf.cancel();
   }, [selectedOption, searchText, page]);
 
   const chefsPagination: IPagination | null = useSelector((state: State) =>
@@ -92,12 +101,19 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
   const runSearch = useCallback(
     (page: number = 1) => {
-      const fetch =
-        selectedOption === FeedType.chefs ? searchForChefs : () => {};
-      fetch({
-        ...getParams(searchText),
-        page,
-      });
+      switch(selectedOption) {
+        case FeedType.chefs:
+          searchForChefs({
+            ...getParams(searchText),
+            page
+          });
+          break;
+        case FeedType.recipes:
+          searchForRecipes({
+            queryText: searchText
+          });
+          break;
+      }
     },
     [selectedOption, searchText, page]
   );
@@ -105,8 +121,8 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   const renderTheFeed = () => {
     switch (selectedOption) {
       case FeedType.recipes:
-        return Object.values(recipes).map((recipe) => (
-          <RecipeFeedItem key={recipe.id} recipe={recipe} />
+        return recipeSearchIds.map((id) => (
+          <RecipeFeedItem key={id} id={id} />
         ));
       case FeedType.chefs:
         return chefSearchIds.map((chefId) => (
