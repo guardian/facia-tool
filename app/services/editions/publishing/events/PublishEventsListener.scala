@@ -45,7 +45,7 @@ private[events] class PublishEventsListener(val config: ApplicationConfiguration
    * while(true) here is for SQS long pooling
    * the wait time between requests when queue gets empty will be set in @PublishEventsSQSFacade.sqsClientLongPoolingWaitTimeSec constant
    */
-  private def processPublishEventsInLongPooling(updateEventInDB: PublishEvent => Boolean): Unit = {
+  private def processPublishEventsInLongPooling(updateEventInDB: PublishEvent => Try[Unit]): Unit = {
     while (true) {
       issuePublishEventsProcessor.processPublishEvent(updateEventInDB)
     }
