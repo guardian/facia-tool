@@ -1,16 +1,12 @@
 import React from 'react';
-import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
+import { LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import type { State } from 'types/State';
 import { connect } from 'react-redux';
 import { Card } from 'types/Collection';
-import ArticleDrag, {
-  dragOffsetX,
-  dragOffsetY,
-} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, { DefaultDropContainer } from 'components/DropZone';
-import { collectionDropTypeDenylist } from 'constants/fronts';
 import { createSelectArticlesFromIds } from 'selectors/shared';
 import { theme, styled } from 'constants/theme';
+import { CardTypeLevel } from 'lib/dnd/CardTypeLevel';
 
 interface OuterProps {
   groupId: string;
@@ -65,19 +61,13 @@ const GroupLevel = ({
   onDrop,
   isUneditable,
 }: Props) => (
-  <Level
+  <CardTypeLevel
     arr={cards}
-    denylistedDataTransferTypes={collectionDropTypeDenylist}
     parentType="group"
     parentId={groupId}
-    type="card"
-    dragImageOffsetX={dragOffsetX}
-    dragImageOffsetY={dragOffsetY}
-    getId={({ uuid }) => uuid}
     onMove={onMove}
     onDrop={onDrop}
     canDrop={!isUneditable}
-    renderDrag={(af) => <ArticleDrag id={af.uuid} />}
     renderDrop={
       isUneditable
         ? () => <Spacer />
@@ -92,7 +82,7 @@ const GroupLevel = ({
     }
   >
     {children}
-  </Level>
+  </CardTypeLevel>
 );
 
 const createMapStateToProps = () => {

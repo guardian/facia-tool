@@ -45,6 +45,7 @@ describe('createAsyncResourceBundle', () => {
         type: 'FETCH_SUCCESS',
         payload: {
           data: { data: 'exampleData' },
+          ignoreOrder: false,
           pagination: undefined,
           time: 1337,
         },

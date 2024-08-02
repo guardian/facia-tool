@@ -37,27 +37,29 @@ export type MappableDropType =
   | ChefDrop
   | FeastCollectionDrop;
 
-const dropToCard = (e: React.DragEvent): MappableDropType | null => {
-  const map = {
-    capi: (data: string): CAPIDrop => ({
-      type: 'CAPI',
-      data: JSON.parse(data),
-    }),
-    [CardTypesMap.RECIPE]: (data: string): RecipeDrop => ({
-      type: 'RECIPE',
-      data: JSON.parse(data),
-    }),
-    [CardTypesMap.CHEF]: (data: string): ChefDrop => ({
-      type: 'CHEF',
-      data: JSON.parse(data),
-    }),
-    [CardTypesMap.FEAST_COLLECTION]: (data: string): FeastCollectionDrop => ({
-      type: 'FEAST_COLLECTION',
-    }),
-    text: (url: string): RefDrop => ({ type: 'REF', data: url }),
-  };
+const dropToCardMap = {
+  capi: (data: string): CAPIDrop => ({
+    type: 'CAPI',
+    data: JSON.parse(data),
+  }),
+  [CardTypesMap.RECIPE]: (data: string): RecipeDrop => ({
+    type: 'RECIPE',
+    data: JSON.parse(data),
+  }),
+  [CardTypesMap.CHEF]: (data: string): ChefDrop => ({
+    type: 'CHEF',
+    data: JSON.parse(data),
+  }),
+  [CardTypesMap.FEAST_COLLECTION]: (): FeastCollectionDrop => ({
+    type: 'FEAST_COLLECTION',
+  }),
+  text: (url: string): RefDrop => ({ type: 'REF', data: url }),
+};
 
-  for (const [type, fn] of Object.entries(map)) {
+export type InsertDropType = keyof typeof dropToCardMap;
+
+const dropToCard = (e: React.DragEvent): MappableDropType | null => {
+  for (const [type, fn] of Object.entries(dropToCardMap)) {
     const data = e.dataTransfer.getData(type);
     if (data) {
       return fn(data);

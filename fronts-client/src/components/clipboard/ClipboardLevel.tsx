@@ -1,16 +1,12 @@
 import React from 'react';
-import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
+import { LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import type { State } from 'types/State';
 import { selectClipboardArticles } from 'selectors/clipboardSelectors';
 import { connect } from 'react-redux';
 import { Card } from 'types/Collection';
-import ArticleDrag, {
-  dragOffsetX,
-  dragOffsetY,
-} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, { DefaultDropContainer } from 'components/DropZone';
-import { collectionDropTypeDenylist } from 'constants/fronts';
 import { styled, theme } from 'constants/theme';
+import { CardTypeLevel } from 'lib/dnd/CardTypeLevel';
 
 interface OuterProps {
   children: LevelChild<Card>;
@@ -42,19 +38,13 @@ const ClipboardDropContainer = styled(DefaultDropContainer)<{
 `;
 
 const ClipboardLevel = ({ children, cards, onMove, onDrop }: Props) => (
-  <Level
+  <CardTypeLevel
     containerElement={ClipboardItemContainer}
-    denylistedDataTransferTypes={collectionDropTypeDenylist}
     arr={cards}
     parentType="clipboard"
     parentId="clipboard"
-    type="card"
-    dragImageOffsetX={dragOffsetX}
-    dragImageOffsetY={dragOffsetY}
-    getId={({ uuid }) => uuid}
     onMove={onMove}
     onDrop={onDrop}
-    renderDrag={(af) => <ArticleDrag id={af.uuid} />}
     renderDrop={(props) => (
       <DropZone
         {...props}
@@ -64,7 +54,7 @@ const ClipboardLevel = ({ children, cards, onMove, onDrop }: Props) => (
     )}
   >
     {children}
-  </Level>
+  </CardTypeLevel>
 );
 
 const mapStateToProps = (state: State) => ({

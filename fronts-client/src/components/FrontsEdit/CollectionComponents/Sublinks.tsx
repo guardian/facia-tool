@@ -7,8 +7,7 @@ import CardContainer from 'components/card/CardContainer';
 import CardContent from 'components/card/CardContent';
 import CardMetaContainer from 'components/card/CardMetaContainer';
 import DragIntentContainer from 'components/DragIntentContainer';
-import { dragEventIsDenylisted } from 'lib/dnd/Level';
-import { collectionDropTypeDenylist } from 'constants/fronts';
+import { denyDragEvent } from 'lib/dnd/CardTypeLevel';
 
 const SublinkCardBody = styled(CardBody)<{
   dragHoverActive: boolean;
@@ -41,6 +40,8 @@ interface SublinkProps {
   toggleShowArticleSublinks: (e?: React.MouseEvent) => void;
   showArticleSublinks: boolean;
   parentId: string;
+  // The singular label to show the user, e.g. 'sublink'.
+  sublinkLabel?: string;
 }
 
 class Sublinks extends React.Component<SublinkProps> {
@@ -54,6 +55,7 @@ class Sublinks extends React.Component<SublinkProps> {
       toggleShowArticleSublinks,
       showArticleSublinks,
       parentId,
+      sublinkLabel = 'sublink',
     } = this.props;
 
     const isClipboard = parentId === 'clipboard';
@@ -69,7 +71,7 @@ class Sublinks extends React.Component<SublinkProps> {
               this.setState({ dragHoverActive: false });
             }}
             delay={100}
-            filterRegisterEvent={this.dragEventNotDenylisted}
+            filterRegisterEvent={e => !denyDragEvent()(e)}
             onIntentConfirm={() => {
               toggleShowArticleSublinks();
             }}
@@ -82,7 +84,7 @@ class Sublinks extends React.Component<SublinkProps> {
                 {!isClipboard && <CardMetaContainer />}
                 <SublinkCardContent displaySize="small" showMeta={isClipboard}>
                   <span>
-                    {numSupportingArticles} sublink
+                    {numSupportingArticles} {sublinkLabel}
                     {numSupportingArticles > 1 && 's'}
                     <ButtonCircularCaret
                       openDir={showArticleSublinks ? 'up' : 'down'}
@@ -97,9 +99,6 @@ class Sublinks extends React.Component<SublinkProps> {
       </>
     );
   }
-
-  private dragEventNotDenylisted = (e: React.DragEvent) =>
-    !dragEventIsDenylisted(e, collectionDropTypeDenylist);
 }
 
 export default Sublinks;

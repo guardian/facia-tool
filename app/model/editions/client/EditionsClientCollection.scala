@@ -5,9 +5,9 @@ import services.editions.prefills.CapiQueryTimeWindow
 import model.editions.EditionsCard
 import model.editions.EditionsArticle
 import model.editions.{CapiPrefillQuery, EditionsCollection, EditionsRecipe, EditionsChef, EditionsFeastCollection, CardType}
+import model.editions.EditionsFeastCollectionItem
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
-
 case class EditionsClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long, meta: Option[ClientCardMetadata] = None)
 
 object EditionsClientCard {
@@ -69,6 +69,19 @@ object EditionsClientCard {
         card.meta.map(_.toFeastCollectionMetadata)
       )
   }
+}
+
+case class EditionsSupportingClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long)
+
+object EditionsSupportingClientCard {
+  implicit def format: OFormat[EditionsSupportingClientCard] = Json.format[EditionsSupportingClientCard]
+
+  def fromFeastCollectionItem(item: EditionsFeastCollectionItem) = item match {
+    case EditionsRecipe(id, addedOn) => EditionsSupportingClientCard(id, Some(CardType.Recipe), addedOn)
+  }
+
+  def toFeastCollectionItem(supportingCard: EditionsSupportingClientCard) = 
+    EditionsRecipe(supportingCard.id, supportingCard.frontPublicationDate)
 }
 
 case class EditionsClientCollection(

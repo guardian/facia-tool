@@ -1,17 +1,14 @@
 import { FeedItem } from './FeedItem';
 import React, { useCallback } from 'react';
 import { State } from '../../types/State';
-import {
-  dragOffsetX,
-  dragOffsetY,
-} from '../FrontsEdit/CollectionComponents/ArticleDrag';
 import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
 import { ContentExtra, ContentInfo } from './ContentInfo';
 import { CardTypesMap } from 'constants/cardTypes';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { insertCardWithCreate } from 'actions/Cards';
-import {selectors as recipeSelectors} from  "bundles/recipesBundle";
+import { selectors as recipeSelectors } from  "bundles/recipesBundle";
+import { handleDragStartForCard } from 'util/dragAndDrop';
 
 interface ComponentProps {
   id: string;
@@ -38,16 +35,6 @@ export const RecipeFeedItem = ({ id }: ComponentProps) => {
     );
   }, [recipe]);
 
-  const handleDragStart = (
-    event: React.DragEvent<HTMLDivElement>,
-    dragNode: HTMLDivElement
-  ) => {
-    event.dataTransfer.setData('recipe', JSON.stringify(recipe));
-    if (dragNode) {
-      event.dataTransfer.setDragImage(dragNode, dragOffsetX, dragOffsetY);
-    }
-  };
-
   return (
     <FeedItem
       type={CardTypesMap.RECIPE}
@@ -57,7 +44,7 @@ export const RecipeFeedItem = ({ id }: ComponentProps) => {
       liveUrl={`https://theguardian.com/${recipe.canonicalArticle}`}
       hasVideo={false}
       isLive={true} // We do not yet serve preview recipes
-      handleDragStart={handleDragStart}
+      handleDragStart={handleDragStartForCard(CardTypesMap.RECIPE, recipe)}
       onAddToClipboard={onAddToClipboard}
       shouldObscureFeed={shouldObscureFeed}
       metaContent={<>

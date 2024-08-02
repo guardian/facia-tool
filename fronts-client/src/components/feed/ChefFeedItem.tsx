@@ -1,9 +1,5 @@
 import { Chef } from '../../types/Chef';
 import React, { useCallback } from 'react';
-import {
-  dragOffsetX,
-  dragOffsetY,
-} from '../FrontsEdit/CollectionComponents/ArticleDrag';
 import { FeedItem } from './FeedItem';
 import { ContentInfo } from './ContentInfo';
 import { selectFeatureValue } from '../../selectors/featureSwitchesSelectors';
@@ -12,6 +8,7 @@ import { CardTypesMap } from 'constants/cardTypes';
 import { connect, useDispatch, useSelector } from 'react-redux';
 import { insertCardWithCreate } from '../../actions/Cards';
 import { selectors as chefSelectors } from 'bundles/chefsBundle';
+import { handleDragStartForCard } from 'util/dragAndDrop';
 
 interface ComponentProps {
   id: string;
@@ -37,16 +34,6 @@ export const ChefFeedItemComponent = ({
     );
   }, [chef]);
 
-  const handleDragStart = (
-    event: React.DragEvent<HTMLDivElement>,
-    dragNode: HTMLDivElement
-  ) => {
-    event.dataTransfer.setData('chef', JSON.stringify(chef));
-    if (dragNode) {
-      event.dataTransfer.setDragImage(dragNode, dragOffsetX, dragOffsetY);
-    }
-  };
-
   return (
     <FeedItem
       id={chef.id}
@@ -57,7 +44,7 @@ export const ChefFeedItemComponent = ({
       liveUrl={`https://theguardian.com/${chef.apiUrl}`}
       thumbnail={chef.bylineLargeImageUrl}
       onAddToClipboard={onAddToClipboard}
-      handleDragStart={handleDragStart}
+      handleDragStart={handleDragStartForCard(CardTypesMap.CHEF, chef)}
       shouldObscureFeed={shouldObscureFeed}
       metaContent={<ContentInfo>Chef</ContentInfo>}
     />

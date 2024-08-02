@@ -23,13 +23,6 @@ const adjustToIndexForMove = (from: PosSpec, to: PosSpec): PosSpec =>
 const isMoveToSamePosition = (from: PosSpec, to: PosSpec): boolean =>
   isOnSameLevel(from, to) && from.index === to.index;
 
-const dragEventIsDenyListed = (
-  e: React.DragEvent,
-  denyList: string[] | undefined
-) => {
-  return e.dataTransfer.types.some((type) => (denyList || []).includes(type));
-};
-
 interface Move<T> {
   data: T;
   from: false | PosSpec;
@@ -58,12 +51,13 @@ type ContainerDragTypes = Pick<
   'onDragOver'
 >;
 
-interface OuterProps<T> {
+export interface LevelProps<T> {
   arr: T[];
   children: LevelChild<T>;
   parentId: string;
   parentType: string;
   type: string;
+  getDropType?: (item: T) => string;
   dragImageOffsetX?: number;
   dragImageOffsetY?: number;
   canDrop?: boolean;
@@ -72,9 +66,8 @@ interface OuterProps<T> {
   onDrop: (e: React.DragEvent, to: PosSpec) => void;
   renderDrag?: (data: T) => React.ReactNode;
   renderDrop?: (props: DropProps) => React.ReactNode | null;
-  // Any occurence of these in the data transfer will cause all dragging
-  // behaviour to be bypassed.
-  denylistedDataTransferTypes?: string[];
+  // If this function returns false, all dragging behaviour is bypassed.
+  denyDragEvent?: (e: React.DragEvent) => boolean;
   containerElement?: React.ComponentType<ContainerDragTypes>;
 }
 
@@ -83,7 +76,7 @@ interface ContextProps {
   parents: Parent[];
 }
 
-type Props<T> = OuterProps<T> & ContextProps;
+type Props<T> = LevelProps<T> & ContextProps;
 
 interface State {
   isDraggedOver: boolean;
@@ -109,6 +102,7 @@ class Level<T> extends React.Component<Props<T>, State> {
       type,
       dragImageOffsetX,
       dragImageOffsetY,
+      getDropType,
       store,
     } = this.props;
     const Container = this.props.containerElement || DefaultContainer;
@@ -127,6 +121,7 @@ class Level<T> extends React.Component<Props<T>, State> {
               dragImageOffsetY={dragImageOffsetY}
               id={getId(node)}
               type={type}
+              dropType={getDropType?.(node)}
               index={i}
               data={node}
             >
@@ -151,25 +146,26 @@ class Level<T> extends React.Component<Props<T>, State> {
     );
   }
 
+  private denyDragEvent = (e: React.DragEvent) =>
+    this.props.denyDragEvent?.(e) ?? false;
+
   private onDragOver = (i: number | null) => (e: React.DragEvent) => {
     if (!this.props.store) {
       throw new Error(NO_STORE_ERROR);
     }
-    if (
-      e.defaultPrevented ||
-      dragEventIsDenyListed(e, this.props.denylistedDataTransferTypes)
-    ) {
+
+    if (e.defaultPrevented || this.denyDragEvent(e)) {
+      e.preventDefault();
+      e.stopPropagation();
       return;
     }
+
     e.preventDefault();
     this.props.store.update(this.key, i, true);
   };
 
   private onDrop = (i: number) => (e: React.DragEvent) => {
-    if (
-      e.defaultPrevented ||
-      dragEventIsDenyListed(e, this.props.denylistedDataTransferTypes)
-    ) {
+    if (e.defaultPrevented || this.denyDragEvent(e)) {
       return;
     }
 
@@ -231,7 +227,7 @@ class Level<T> extends React.Component<Props<T>, State> {
   }
 }
 
-export default <T extends any>(props: OuterProps<T>) => (
+export default <T extends any>(props: LevelProps<T>) => (
   <StoreConsumer>
     {(store: Store | null) => (
       <AddParentInfo id={props.parentId} type={props.parentType}>
@@ -250,11 +246,4 @@ export default <T extends any>(props: OuterProps<T>) => (
   </StoreConsumer>
 );
 
-export {
-  Move,
-  PosSpec,
-  LevelChild,
-  MoveHandler,
-  DropHandler,
-  dragEventIsDenyListed as dragEventIsDenylisted,
-};
+export { Move, PosSpec, LevelChild, MoveHandler, DropHandler };

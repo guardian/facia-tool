@@ -15,6 +15,7 @@ import { connect } from 'react-redux';
 import type { State } from 'types/State';
 import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
+import { CardTypes } from 'constants/cardTypes';
 
 const getArticleNotifications = (
   id: string,
@@ -184,6 +185,10 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
                           cardId={card.uuid}
                           onMove={handleMove}
                           onDrop={handleInsert}
+                          cardTypeAllowList={this.getPermittedCardTypes(
+                            card.cardType
+                          )}
+                          dropMessage={this.getDropMessage(card.cardType)}
                         >
                           {(supporting, getSupportingProps) => (
                             <Card
@@ -223,6 +228,14 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
       </CollectionWrapper>
     );
   }
+
+  private getPermittedCardTypes = (
+    cardType?: CardTypes
+  ): CardTypes[] | undefined =>
+    cardType === 'feast-collection' ? ['recipe'] : undefined;
+
+  private getDropMessage = (cardType?: CardTypes) =>
+    cardType === 'feast-collection' ? 'Place recipe here' : 'Sublink';
 }
 
 const createMapStateToProps = () => {

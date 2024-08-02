@@ -189,7 +189,14 @@ object EditionsArticle extends Logging {
   }
 }
 
-case class EditionsRecipe(id: String, addedOn: Long) extends EditionsCard {
+// Only certain cards are permitted within a FeastCollection.
+sealed trait EditionsFeastCollectionItem extends EditionsCard
+
+object EditionsFeastCollectionItem {
+  implicit val format: OFormat[EditionsFeastCollectionItem] = Json.format[EditionsFeastCollectionItem]
+}
+
+case class EditionsRecipe(id: String, addedOn: Long) extends EditionsCard with EditionsFeastCollectionItem {
   val cardType: CardType = CardType.Recipe
 }
 
@@ -217,7 +224,8 @@ object EditionsChef {
 
 case class EditionsFeastCollectionMetadata(
   title: Option[String] = None,
-  theme: Option[FeastCollectionTheme] = None
+  theme: Option[FeastCollectionTheme] = None,
+  collectionItems: List[EditionsFeastCollectionItem] = List.empty
 )
 
 object EditionsFeastCollectionMetadata {
