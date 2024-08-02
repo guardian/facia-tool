@@ -42,6 +42,7 @@ case class ClientCardMetadata(
   chefImageOverride: Option[Image] = None, // Chef
   title: Option[String] = None, // FeastCollection
   feastCollectionTheme: Option[FeastCollectionTheme] = None, // FeastCollection
+  supporting: List[EditionsSupportingClientCard] = List.empty
 ) {
   def toChefMetadata: EditionsChefMetadata =
     EditionsChefMetadata(
@@ -54,6 +55,7 @@ case class ClientCardMetadata(
     EditionsFeastCollectionMetadata(
       title,
       feastCollectionTheme,
+      collectionItems = supporting.map(EditionsSupportingClientCard.toFeastCollectionItem)
     )
 
   def toArticleMetadata: EditionsArticleMetadata = {
@@ -106,7 +108,8 @@ object ClientCardMetadata {
   def fromCardMetadata(cardMetadata: EditionsFeastCollectionMetadata): ClientCardMetadata = {
     ClientCardMetadata(
       title = cardMetadata.title,
-      feastCollectionTheme = cardMetadata.theme
+      feastCollectionTheme = cardMetadata.theme,
+      supporting = cardMetadata.collectionItems.map(card => EditionsSupportingClientCard.fromFeastCollectionItem(card))
     )
   }
 

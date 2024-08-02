@@ -1,6 +1,6 @@
 import React from 'react';
 import { PathConsumer, Parent } from './AddParentInfo';
-import { TRANSFER_TYPE } from './constants';
+import { CARD_TYPE, TRANSFER_TYPE } from './constants';
 
 interface ChildrenProps {
   draggable: true;
@@ -11,6 +11,7 @@ interface OuterProps<T> {
   children: (
     getProps: (forceClone: boolean) => ChildrenProps
   ) => React.ReactNode;
+  dropType?: string;
   renderDrag?: (data: T) => React.ReactNode;
   dragImageOffsetX?: number;
   dragImageOffsetY?: number;
@@ -66,11 +67,15 @@ class Node<T> extends React.Component<Props<T>> {
         dragImageOffsetY
       );
     }
-    const { parents, type, id, index, data } = this.props;
+    const { parents, type, id, index, data, dropType } = this.props;
     e.dataTransfer.setData(
       TRANSFER_TYPE,
       JSON.stringify({ parents, type, id, index, data, forceClone })
     );
+
+    if (dropType) {
+      e.dataTransfer.setData(CARD_TYPE, dropType);
+    }
   };
 }
 

@@ -1,19 +1,16 @@
 import React from 'react';
-import { Level, LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
+import { LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import type { State } from 'types/State';
 import { connect } from 'react-redux';
 import { Card } from 'types/Collection';
-import ArticleDrag, {
-  dragOffsetX,
-  dragOffsetY,
-} from 'components/FrontsEdit/CollectionComponents/ArticleDrag';
 import DropZone, {
   DefaultDropContainer,
   DefaultDropIndicator,
 } from 'components/DropZone';
 import { createSelectSupportingArticles } from 'selectors/shared';
-import { collectionDropTypeDenylist } from 'constants/fronts';
 import { theme, styled } from 'constants/theme';
+import { CardTypeLevel } from 'lib/dnd/CardTypeLevel';
+import { CardTypes } from 'constants/cardTypes';
 
 interface OuterProps {
   cardId: string;
@@ -21,6 +18,8 @@ interface OuterProps {
   onMove: MoveHandler<Card>;
   onDrop: DropHandler;
   isUneditable?: boolean;
+  dropMessage?: string;
+  cardTypeAllowList?: CardTypes[];
 }
 
 interface InnerProps {
@@ -48,20 +47,17 @@ const CardLevel = ({
   onMove,
   onDrop,
   isUneditable,
+  dropMessage,
+  cardTypeAllowList,
 }: Props) => (
-  <Level
+  <CardTypeLevel
     arr={supporting || []}
-    denylistedDataTransferTypes={collectionDropTypeDenylist}
     parentType="card"
     parentId={cardId}
-    type="card"
-    getId={({ uuid }) => uuid}
     onMove={onMove}
     onDrop={onDrop}
     canDrop={!isUneditable}
-    renderDrag={(af) => <ArticleDrag id={af.uuid} />}
-    dragImageOffsetX={dragOffsetX}
-    dragImageOffsetY={dragOffsetY}
+    cardTypeAllowList={cardTypeAllowList}
     renderDrop={
       isUneditable
         ? undefined
@@ -69,7 +65,7 @@ const CardLevel = ({
             <DropZone
               {...props}
               dropColor={theme.base.colors.dropZoneActiveSublink}
-              dropMessage={'Sublink'}
+              dropMessage={dropMessage ?? 'Sublink'}
               dropContainer={CardDropContainer}
               dropIndicator={CardDropIndicator}
             />
@@ -77,7 +73,7 @@ const CardLevel = ({
     }
   >
     {children}
-  </Level>
+  </CardTypeLevel>
 );
 
 const createMapStateToProps = () => {
