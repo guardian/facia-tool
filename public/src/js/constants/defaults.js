@@ -56,21 +56,6 @@ export default {
             'big'
           ]
         },
-        // {
-        //   'name': 'dynamic/fast-v2',
-        //   'groups': [
-        //     'standard',
-        //     'splash'
-        //   ]
-        // },
-        // {
-        //   'name': 'dynamic/package-v2',
-        //   'groups': [
-        //     'standard',
-        //     'snap'
-        //   ],
-        //   'displayName': 'Flexible multiple'
-        // },
         { name: 'nav/list' },
         { name: 'nav/media-list' },
         { name: 'news/most-popular' },

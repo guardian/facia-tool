@@ -18,12 +18,6 @@ object ObscureFeed extends FeatureSwitch(
   enabled = false
 )
 
-object UseNewContainers extends FeatureSwitch(
-  key = "use-new-containers",
-  title = "Use the fancy fairgound new containers",
-  enabled = false
-)
-
 object PageViewDataVisualisation extends FeatureSwitch(
   key = "page-view-data-visualisation",
   title = "Show page view data visualisation (aka spark lines)",
@@ -49,7 +43,7 @@ object UsePortraitCropsForSomeCollectionTypes extends FeatureSwitch(
 )
 
 object FeatureSwitches {
-  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, ShowFirefoxPrompt, TenImageSlideshows, UsePortraitCropsForSomeCollectionTypes, UseNewContainers)
+  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, ShowFirefoxPrompt, TenImageSlideshows, UsePortraitCropsForSomeCollectionTypes)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     val newSwitches = userDataSwitches match {
