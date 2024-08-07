@@ -4,12 +4,8 @@ import { detectPressFailureMs } from 'constants/fronts';
 import { ArticleDetails } from 'types/FaciaApi';
 import { Stages, Collection } from 'types/Collection';
 import { frontStages } from 'constants/fronts';
-import {
-  DYNAMIC_CONTAINER_V1_SET,
-} from 'constants/dynamicContainers';
-import {
-  FLEXIBLE_CONTAINER_SET
-} from 'constants/flexibleContainers';
+import { DYNAMIC_CONTAINER_SET } from 'constants/dynamicContainers';
+import { FLEXIBLE_CONTAINER_SET } from 'constants/flexibleContainers';
 
 const getFrontCollections = (
   frontId: string | void,
@@ -80,13 +76,7 @@ const getGroupsByStage = (collection: Collection, stage: Stages) => {
 
 const isCollectionConfigDynamic = (
   config: CollectionConfig | undefined
-): boolean => {
-  return !!(config?.type?.indexOf('dynamic/') === 0);
-};
-
-const isCollectionConfigDynamicV1 = (
-  config: CollectionConfig | undefined
-): boolean => DYNAMIC_CONTAINER_V1_SET.includes(config?.type);
+): boolean => DYNAMIC_CONTAINER_SET.includes(config?.type);
 
 const isCollectionConfigFlexible = (
   config: CollectionConfig | undefined
@@ -100,6 +90,5 @@ export {
   getVisibilityArticleDetails,
   getGroupsByStage,
   isCollectionConfigDynamic,
-  isCollectionConfigDynamicV1,
   isCollectionConfigFlexible,
 };

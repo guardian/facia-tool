@@ -142,7 +142,7 @@ export default Object.freeze([
         key: 'isBoosted',
         editable: true,
         omitForSupporting: true,
-        ifState: 'inDynamicCollectionV1',
+        ifState: 'inDynamicCollection',
         label: 'boost',
         type: 'boolean'
     },

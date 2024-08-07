@@ -3,7 +3,7 @@ import { createSelectArticleFromCard } from 'selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
 import {
-  isCollectionConfigDynamicV1,
+  isCollectionConfigDynamic,
   isCollectionConfigFlexible,
 } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
@@ -101,12 +101,7 @@ export const createSelectFormFieldsForCard = () => {
       if (isCollectionConfigFlexible(parentCollectionConfig)) {
         fields = without(fields, 'showLargeHeadline');
       }
-      if (
-        isCollectionConfigDynamicV1(parentCollectionConfig) ||
-        /* don't show old Boost checkbox in new dynamic container */
-        (derivedArticle.isBoosted &&
-          !isCollectionConfigFlexible(parentCollectionConfig))
-      ) {
+      if (isCollectionConfigDynamic(parentCollectionConfig)) {
         fields.push('isBoosted');
       }
       if (derivedArticle.liveBloggingNow === 'true') {
