@@ -90,6 +90,8 @@ export const createSelectFormFieldsForCard = () => {
       }
       let fields = defaultFields.slice();
 
+      // Flexible collections have various boost levels options.
+      // The previously existing dynamic collections only have one boost level (isBoosted)."
       if (
         isCollectionConfigFlexible(parentCollectionConfig) ||
         (derivedArticle.boostLevel &&

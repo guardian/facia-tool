@@ -21,13 +21,13 @@ interface Group {
   cards: string[];
 }
 
-// CardSets represent all of the lists of cards available in a collection.
+/** CardSets represent all of the lists of cards available in a collection. */
 type CardSets = 'draft' | 'live' | 'previously';
-// Stages represent only those lists which are curated by the user.
+/** Stages represent only those lists which are curated by the user.*/
 type Stages = 'draft' | 'live';
 type CardSizes = 'wide' | 'default' | 'medium' | 'small';
-// BoostLevels defines the string literals which represents each of the four levels
-// introduced by the new dynamic containers
+/** BoostLevels defines the string literals which represents each of the four levels
+ * introduced by the new flexible containers. */
 type BoostLevels = 'default' | 'boost' | 'megaboost' | 'gigaboost';
 
 interface NestedCardRootFields {
@@ -63,7 +63,9 @@ type CardRootMeta = ChefCardMeta &
     imageCutoutSrcHeight?: string;
     imageCutoutSrcOrigin?: string;
     isBreaking?: boolean;
+    /** For dynamic collections only */
     isBoosted?: boolean;
+    /** For flexible collections only */
     boostLevel?: BoostLevels;
     showLivePlayable?: boolean;
     showMainVideo?: boolean;

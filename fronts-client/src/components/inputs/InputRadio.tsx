@@ -58,7 +58,8 @@ const RadioButtonLabel = styled.label`
 `;
 
 const RadioButton = styled.input`
-  display: none;
+  position: absolute;
+  opacity: 0;
   :checked + ${RadioButtonLabel} {
     border-radius: 50%;
     border: solid 1px ${theme.base.colors.radioButtonSelected};
@@ -68,6 +69,12 @@ const RadioButton = styled.input`
   }
   &:hover:not(:checked):not([disabled]) + ${RadioButtonLabel}:after {
     display: block;
+  }
+  :focus + ${RadioButtonLabel} {
+    outline-offset: 1px;
+    outline-width: 1px;
+    outline-color: ${theme.base.colors.highlightColor};
+    outline-style: solid;
   }
 
   &:disabled + ${RadioButtonLabel} {
