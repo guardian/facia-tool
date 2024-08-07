@@ -4,6 +4,10 @@ import { detectPressFailureMs } from 'constants/fronts';
 import { ArticleDetails } from 'types/FaciaApi';
 import { Stages, Collection } from 'types/Collection';
 import { frontStages } from 'constants/fronts';
+import {
+  DYNAMIC_CONTAINER_V1_SET,
+  DYNAMIC_CONTAINER_V2_SET,
+} from 'constants/dynamicContainers';
 
 const getFrontCollections = (
   frontId: string | void,
@@ -78,6 +82,14 @@ const isCollectionConfigDynamic = (
   return !!(config?.type?.indexOf('dynamic/') === 0);
 };
 
+const isCollectionConfigDynamicV1 = (
+  config: CollectionConfig | undefined
+): boolean => DYNAMIC_CONTAINER_V1_SET.includes(config?.type);
+
+const isCollectionConfigDynamicV2 = (
+  config: CollectionConfig | undefined
+): boolean => DYNAMIC_CONTAINER_V2_SET.includes(config?.type);
+
 export {
   getFrontCollections,
   combineCollectionWithConfig,
@@ -86,4 +98,6 @@ export {
   getVisibilityArticleDetails,
   getGroupsByStage,
   isCollectionConfigDynamic,
+  isCollectionConfigDynamicV1,
+  isCollectionConfigDynamicV2,
 };

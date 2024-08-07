@@ -2,7 +2,10 @@ import { selectors } from 'bundles/collectionsBundle';
 import { createSelectArticleFromCard } from 'selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
-import { isCollectionConfigDynamic } from '../util/frontsUtils';
+import {
+  isCollectionConfigDynamicV1,
+  isCollectionConfigDynamicV2,
+} from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import type { State } from 'types/State';
 import { selectEditMode, selectPriority } from './pathSelectors';
@@ -88,8 +91,21 @@ export const createSelectFormFieldsForCard = () => {
       let fields = defaultFields.slice();
 
       if (
-        isCollectionConfigDynamic(parentCollectionConfig) ||
-        derivedArticle.isBoosted
+        isCollectionConfigDynamicV2(parentCollectionConfig) ||
+        (derivedArticle.boostLevel &&
+          derivedArticle.boostLevel !== 'default' &&
+          !parentCollectionConfig) /* show in clipboard if it is boosted */
+      ) {
+        fields.push('boostLevel');
+      }
+      if (isCollectionConfigDynamicV2(parentCollectionConfig)) {
+        fields = without(fields, 'showLargeHeadline');
+      }
+      if (
+        isCollectionConfigDynamicV1(parentCollectionConfig) ||
+        /* don't show old Boost checkbox in new dynamic container */
+        (derivedArticle.isBoosted &&
+          !isCollectionConfigDynamicV2(parentCollectionConfig))
       ) {
         fields.push('isBoosted');
       }

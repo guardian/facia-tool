@@ -37,6 +37,8 @@ export default class Collection extends BaseClass {
             && this.alsoOn.some(front => front.priority === 'commercial');
 
         this.isDynamic = opts.type.indexOf('dynamic/') === 0;
+        this.isDynamicV2 = opts.type === ('dynamic/fast-v2') || opts.type === ('dynamic/package-v2');
+        this.isDynamicV1 = this.isDynamic && !this.isDynamicV2;
 
         this.dom = undefined;
         var onDomLoadResolve;

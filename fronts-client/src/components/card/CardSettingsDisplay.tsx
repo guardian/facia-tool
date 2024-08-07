@@ -1,5 +1,6 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
+import { DYNAMIC_CONTAINER_V2_SET } from 'constants/dynamicContainers';
 
 const ArticleMetadataProperties = styled.div`
   padding: 0 4px 3px 0;
@@ -16,19 +17,41 @@ const ArticleMetadataProperty = styled.div`
   margin: 0 2px 1px 0;
 `;
 
+const shouldShowLegacyBoost = (collectionType?: string, isBoosted?: boolean) =>
+  /* don't show old Boost option in dynamic v2 */
+  isBoosted && !DYNAMIC_CONTAINER_V2_SET.includes(collectionType);
+
+const shouldShowBoostLevel = (collectionType?: string, boostLevel?: string) =>
+  boostLevel !== 'default' &&
+  /* show new Boost level in new dynamic container or clipboard */
+  (DYNAMIC_CONTAINER_V2_SET.includes(collectionType) || !collectionType);
+
+const displayBoostLevel = (boostLevel?: string) => {
+  if (boostLevel === 'gigaboost') return 'Giga boost';
+  else if (boostLevel === 'megaboost') return 'Mega boost';
+  else if (boostLevel === 'boost') return 'Boost';
+  else return '';
+};
+
 export default ({
+  collectionType,
   isBreaking,
   showByline,
   showQuotedHeadline,
   showLargeHeadline,
   isBoosted,
+  boostLevel,
 }: {
+  collectionType?: string;
   isBreaking?: boolean;
   showByline?: boolean;
   showQuotedHeadline?: boolean;
   showLargeHeadline?: boolean;
   isBoosted?: boolean;
+  boostLevel?: string;
 }) =>
+  shouldShowBoostLevel(collectionType, boostLevel) ||
+  shouldShowLegacyBoost(collectionType, isBoosted) ||
   isBreaking ||
   showByline ||
   showQuotedHeadline ||
@@ -49,6 +72,13 @@ export default ({
       {showLargeHeadline && (
         <ArticleMetadataProperty>Large headline</ArticleMetadataProperty>
       )}
-      {isBoosted && <ArticleMetadataProperty>Boost</ArticleMetadataProperty>}
+      {shouldShowBoostLevel(collectionType, boostLevel) && (
+        <ArticleMetadataProperty>
+          {displayBoostLevel(boostLevel)}
+        </ArticleMetadataProperty>
+      )}
+      {shouldShowLegacyBoost(collectionType, isBoosted) && (
+        <ArticleMetadataProperty>Boost</ArticleMetadataProperty>
+      )}
     </ArticleMetadataProperties>
   ) : null;

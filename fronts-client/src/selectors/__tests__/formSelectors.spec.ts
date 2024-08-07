@@ -29,7 +29,7 @@ describe('Form utils', () => {
     it('should add isBoosted for dynamic collection configs', () => {
       const localState = cloneDeep(state);
       localState.fronts.frontsConfig.data.collections.exampleCollection.type =
-        'dynamic/example';
+        'dynamic/slow';
       const selectFormFields = createSelectFormFieldsForCard();
       expect(
         selectFormFields(
@@ -38,6 +38,23 @@ describe('Form utils', () => {
           false
         )
       ).toEqual([...defaultFields, 'isBoosted']);
+    });
+    it('should add boostLevel and remove large headline for dynamic collection v2 configs', () => {
+      const localState = cloneDeep(state);
+      localState.fronts.frontsConfig.data.collections.exampleCollection.type =
+        'dynamic/fast-v2';
+      const selectFormFields = createSelectFormFieldsForCard();
+      expect(
+        selectFormFields(
+          localState,
+          '95e2bfc0-8999-4e6e-a359-19960967c1e0',
+          false
+        )
+      ).toEqual(
+        [...defaultFields, 'boostLevel'].filter(
+          (t) => t !== 'showLargeHeadline'
+        )
+      );
     });
     it('should add showLivePlayable for live blogs', () => {
       const localState = cloneDeep(state);

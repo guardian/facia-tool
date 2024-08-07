@@ -120,6 +120,7 @@ type CardContainerProps = ContainerProps & {
   pillarId?: string;
   collectionType?: string;
   selectOtherCard: { (uuid: string): CardType };
+  groupSizeId?: number;
 };
 
 class Card extends React.Component<CardContainerProps> {
@@ -159,6 +160,8 @@ class Card extends React.Component<CardContainerProps> {
       canShowPageViewData = false,
       isLive,
       pillarId,
+      collectionType,
+      groupSizeId,
     } = this.props;
 
     const getSublinks = (
@@ -190,6 +193,7 @@ class Card extends React.Component<CardContainerProps> {
               canDragImage={canDragImage}
               canShowPageViewData={canShowPageViewData}
               imageCriteria={this.determineCardCriteria()}
+              collectionType={collectionType}
             >
               <EditModeVisibility visibleMode="fronts">
                 {getSublinks}
@@ -342,6 +346,7 @@ class Card extends React.Component<CardContainerProps> {
               }}
               onCancel={() => clearCardSelection(uuid)}
               size={size}
+              groupSizeId={groupSizeId}
             />
           );
       }

@@ -127,6 +127,7 @@ interface ArticleBodyProps {
   canDragImage?: boolean;
   isDraggingImageOver: boolean;
   isBoosted?: boolean;
+  boostLevel?: string;
   hasMainVideo?: boolean;
   showMainVideo?: boolean;
   tone?: string | undefined;
@@ -137,6 +138,7 @@ interface ArticleBodyProps {
   imageSrcWidth?: string;
   imageSrcHeight?: string;
   imageCriteria?: Criteria;
+  collectionType?: string;
 }
 
 const articleBodyDefault = React.memo(
@@ -173,6 +175,7 @@ const articleBodyDefault = React.memo(
     canDragImage = true,
     isDraggingImageOver,
     isBoosted,
+    boostLevel,
     tone,
     featureFlagPageViewData,
     canShowPageViewData,
@@ -185,6 +188,7 @@ const articleBodyDefault = React.memo(
     imageSrcWidth,
     imageSrcHeight,
     imageCriteria,
+    collectionType,
   }: ArticleBodyProps) => {
     const displayByline = size === 'default' && showByline && byline;
     const now = Date.now();
@@ -270,11 +274,13 @@ const articleBodyDefault = React.memo(
         )}
         <CardContent displaySize={size} textSize={textSize}>
           <CardSettingsDisplay
+            collectionType={collectionType}
             isBreaking={isBreaking}
             showByline={showByline}
             showQuotedHeadline={showQuotedHeadline}
             showLargeHeadline={showLargeHeadline}
             isBoosted={isBoosted}
+            boostLevel={boostLevel}
           />
           <CardHeadingContainer size={size}>
             {displayPlaceholders && (

@@ -430,6 +430,39 @@ case object Hl4Half extends Slice {
   )
 }
 
+/* ._________________._________________.
+ * |#################|_###_____________|
+ * |#################|_###_____________|
+ * |_________________|_###_____________|
+ */
+/*
+* The order of this sequence is important.
+* We use flex-direction(row-reverse) to maintain DOM hierarchy whilst having correct visual ordering.
+* */
+case object HalfHl3 extends Slice {
+  val layout = SliceLayout(
+    cssClassName = "hl3-h",
+    columns = Seq(
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = Half
+        )
+      ),
+      Rows(
+        colSpan = 1,
+        columns = 1,
+        rows = 3,
+        ItemClasses(
+          mobile = MediaList,
+          tablet = MediaList
+        )
+      )
+    )
+  )
+}
+
 
 /* ._________________._________________.
  * |_###_____________|                 |
@@ -907,14 +940,14 @@ case object ShowcaseSingleStories extends Slice {
 
 /*
  * The Highlights layout is used to display select features in the header for apps and web
- * 
+ *
  * Desktop:
  * .____________.____________.____________.
  * |       #####|       #####|       #####|
  * |       #####|       #####|       #####|
  * |       #####|       #####|       #####|
  * '--------------------------------------'
- * 
+ *
  * Mobile:
  * .___________.___________.___________.
  * |           |           |           |

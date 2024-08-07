@@ -73,6 +73,11 @@ import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
+import InputRadio from 'components/inputs/InputRadio';
+import {
+  DYNAMIC_FAST_V2_NAME,
+  DYNAMIC_PACKAGE_V2_NAME,
+} from 'constants/dynamicContainers';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -147,6 +152,10 @@ const FieldsContainerWrap = styled(Row)`
   flex-wrap: wrap;
   padding-bottom: 4px;
   border-bottom: 1px solid ${theme.base.colors.borderColor};
+  ${(props: { extraBottomMargin?: string }) =>
+    props.extraBottomMargin
+      ? `margin-bottom: ${props.extraBottomMargin};`
+      : null}
 `;
 
 const ToggleCol = styled(Col)`
@@ -338,21 +347,31 @@ const RenderSlideshow = ({
 };
 
 const CheckboxFieldsContainer: React.SFC<{
-  children: Array<React.ReactElement<{ name: string }>>;
+  children: Array<React.ReactElement<{
+    name: string;
+    type?: string;
+    value?: string;
+  }> | null>;
   editableFields: string[];
   size?: string;
-}> = ({ children, editableFields, size }) => {
-  const childrenToRender = children.filter((child) =>
-    shouldRenderField(child.props.name, editableFields)
+  extraBottomMargin?: string;
+}> = ({ children, editableFields, size, extraBottomMargin }) => {
+  const childrenToRender = children.filter(
+    (child) =>
+      child !== null && shouldRenderField(child.props.name, editableFields)
   );
   if (!childrenToRender.length) {
     return null;
   }
   return (
-    <FieldsContainerWrap>
+    <FieldsContainerWrap extraBottomMargin={extraBottomMargin}>
       {childrenToRender.map((child) => {
+        const key =
+          child?.props.type && child?.props.type === 'radio'
+            ? `${child?.props.name}-${child?.props.value}`
+            : child?.props.name;
         return (
-          <FieldContainer key={child.props.name} size={size}>
+          <FieldContainer key={key} size={size}>
             {child}
           </FieldContainer>
         );
@@ -439,6 +458,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       coverCardMobileImage,
       coverCardTabletImage,
       valid,
+      collectionType,
+      groupSizeId,
     } = this.props;
 
     const isEditionsMode = editMode === 'editions';
@@ -507,6 +528,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       );
     };
 
+    const allowGigaBoost = () =>
+      !collectionType /* clipboard */ ||
+      (collectionType &&
+        (collectionType === DYNAMIC_PACKAGE_V2_NAME /* dynamic package */ ||
+          (collectionType ===
+            DYNAMIC_FAST_V2_NAME /* splash group in dynamic fast */ &&
+            groupSizeId &&
+            groupSizeId > 0)));
+
     return (
       <FormContainer
         data-testid="edit-form"
@@ -571,6 +601,46 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                 data-testid="edit-form-headline-field"
               />
             )}
+            <CheckboxFieldsContainer
+              editableFields={editableFields}
+              size={this.props.size}
+              extraBottomMargin="8px"
+            >
+              <Field
+                name="boostLevel"
+                component={InputRadio}
+                label="Default"
+                id={getInputId(cardId, 'boostlevel-0')}
+                value="default"
+                type="radio"
+              />
+              <Field
+                name="boostLevel"
+                component={InputRadio}
+                label="Boost"
+                id={getInputId(cardId, 'boostlevel-1')}
+                value="boost"
+                type="radio"
+              />
+              <Field
+                name="boostLevel"
+                component={InputRadio}
+                label="Mega Boost"
+                id={getInputId(cardId, 'boostlevel-2')}
+                value="megaboost"
+                type="radio"
+              />
+              {allowGigaBoost() ? (
+                <Field
+                  name="boostLevel"
+                  component={InputRadio}
+                  label="Giga Boost"
+                  id={getInputId(cardId, 'boostlevel-3')}
+                  value="gigaboost"
+                  type="radio"
+                />
+              ) : null}
+            </CheckboxFieldsContainer>
             <CheckboxFieldsContainer
               editableFields={editableFields}
               size={this.props.size}
@@ -987,6 +1057,7 @@ interface InterfaceProps {
   onSave: (meta: CardMeta) => void;
   frontId: string;
   size?: CardSizes;
+  groupSizeId?: number;
 }
 
 const formContainer: React.SFC<ContainerProps & InterfaceProps> = (props) => (
