@@ -6,8 +6,10 @@ import { Stages, Collection } from 'types/Collection';
 import { frontStages } from 'constants/fronts';
 import {
   DYNAMIC_CONTAINER_V1_SET,
-  DYNAMIC_CONTAINER_V2_SET,
 } from 'constants/dynamicContainers';
+import {
+  FLEXIBLE_CONTAINER_SET
+} from 'constants/flexibleContainers';
 
 const getFrontCollections = (
   frontId: string | void,
@@ -86,9 +88,9 @@ const isCollectionConfigDynamicV1 = (
   config: CollectionConfig | undefined
 ): boolean => DYNAMIC_CONTAINER_V1_SET.includes(config?.type);
 
-const isCollectionConfigDynamicV2 = (
+const isCollectionConfigFlexible = (
   config: CollectionConfig | undefined
-): boolean => DYNAMIC_CONTAINER_V2_SET.includes(config?.type);
+): boolean => FLEXIBLE_CONTAINER_SET.includes(config?.type);
 
 export {
   getFrontCollections,
@@ -99,5 +101,5 @@ export {
   getGroupsByStage,
   isCollectionConfigDynamic,
   isCollectionConfigDynamicV1,
-  isCollectionConfigDynamicV2,
+  isCollectionConfigFlexible,
 };

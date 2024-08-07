@@ -150,7 +150,7 @@ export default Object.freeze([
         key: 'boostLevel',
         editable: true,
         omitForSupporting: true,
-        ifState: 'inDynamicCollectionV2',
+        ifState: 'inFlexibleCollection',
         label: 'boost level',
         type: 'string'
     },

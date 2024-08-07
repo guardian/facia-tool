@@ -48,7 +48,7 @@ import {
   InsertActionCreator,
   InsertThunkActionCreator,
 } from 'types/Cards';
-import { DYNAMIC_FAST_V2_NAME } from 'constants/dynamicContainers';
+import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -213,7 +213,7 @@ const mayModifyCardForDestinationGroup = (
     const groupId = to.id;
     const { collection } = selectGroupCollection(state, groupId);
     const group = selectGroups(state)[groupId];
-    if (collection?.type === DYNAMIC_FAST_V2_NAME) {
+    if (collection?.type === FLEXIBLE_GENERAL_NAME) {
       if (
         group &&
         (!group.id || parseInt(group.id) === 0) &&

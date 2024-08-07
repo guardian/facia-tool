@@ -10,8 +10,8 @@ class Containers(val fixedContainers: FixedContainers) extends Logging {
     ("dynamic/slow", Dynamic(DynamicSlow)),
     ("dynamic/package", Dynamic(DynamicPackage)),
     ("dynamic/slow-mpu", Dynamic(DynamicSlowMPU)),
-    ("dynamic/fast-v2", DynamicV2(DynamicFastV2)),
-    ("dynamic/package-v2", DynamicV2(DynamicPackageV2)),
+    ("flexible/general", Flexible(FlexibleGeneral)),
+    ("flexible/special", Flexible(FlexibleSpecial)),
     ("nav/list", NavList),
     ("nav/media-list", NavMediaList),
     ("news/most-popular", MostPopular)
@@ -32,7 +32,7 @@ class Containers(val fixedContainers: FixedContainers) extends Logging {
 sealed trait Container
 
 case class Dynamic(get: DynamicContainer) extends Container
-case class DynamicV2(get: DynamicV2Container) extends Container
+case class Flexible(get: FlexibleContainer) extends Container
 case class Fixed(get: ContainerDefinition) extends Container
 case object NavList extends Container
 case object NavMediaList extends Container

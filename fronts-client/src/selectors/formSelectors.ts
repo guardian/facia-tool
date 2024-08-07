@@ -4,7 +4,7 @@ import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
 import {
   isCollectionConfigDynamicV1,
-  isCollectionConfigDynamicV2,
+  isCollectionConfigFlexible,
 } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import type { State } from 'types/State';
@@ -91,21 +91,21 @@ export const createSelectFormFieldsForCard = () => {
       let fields = defaultFields.slice();
 
       if (
-        isCollectionConfigDynamicV2(parentCollectionConfig) ||
+        isCollectionConfigFlexible(parentCollectionConfig) ||
         (derivedArticle.boostLevel &&
           derivedArticle.boostLevel !== 'default' &&
           !parentCollectionConfig) /* show in clipboard if it is boosted */
       ) {
         fields.push('boostLevel');
       }
-      if (isCollectionConfigDynamicV2(parentCollectionConfig)) {
+      if (isCollectionConfigFlexible(parentCollectionConfig)) {
         fields = without(fields, 'showLargeHeadline');
       }
       if (
         isCollectionConfigDynamicV1(parentCollectionConfig) ||
         /* don't show old Boost checkbox in new dynamic container */
         (derivedArticle.isBoosted &&
-          !isCollectionConfigDynamicV2(parentCollectionConfig))
+          !isCollectionConfigFlexible(parentCollectionConfig))
       ) {
         fields.push('isBoosted');
       }

@@ -39,10 +39,10 @@ describe('Form utils', () => {
         )
       ).toEqual([...defaultFields, 'isBoosted']);
     });
-    it('should add boostLevel and remove large headline for dynamic collection v2 configs', () => {
+    it('should add boostLevel and remove large headline for flexible collection configs', () => {
       const localState = cloneDeep(state);
       localState.fronts.frontsConfig.data.collections.exampleCollection.type =
-        'dynamic/fast-v2';
+        'flexible/general';
       const selectFormFields = createSelectFormFieldsForCard();
       expect(
         selectFormFields(

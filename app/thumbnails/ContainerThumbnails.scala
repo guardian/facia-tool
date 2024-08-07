@@ -161,10 +161,10 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
       case "fixed/small/slow-V-half" =>
         Some(Seq(HalfHl4))
 
-      case "dynamic/fast-v2" =>
+      case "flexible/general" =>
         Some(Seq(FullMedia75, HalfHl3))
 
-      case "dynamic/package-v2" =>
+      case "flexible/special" =>
         Some(Seq(FullMedia75, QuarterQuarterQuarterQuarter))
 
       case _ =>
