@@ -29,7 +29,19 @@ Universal / javaOptions ++= Seq(
 
 routesGenerator := InjectedRoutesGenerator
 
-scalacOptions := Seq("-unchecked", "-deprecation", "-release:11", "-Xcheckinit", "-encoding", "utf8", "-feature")
+scalacOptions := Seq(
+    "-unchecked",
+    "-deprecation",
+    "-release:11",
+    "-Xcheckinit",
+    "-encoding",
+    "utf8",
+    "-feature",
+    "-Xlint",
+    "-Wunused:patvars",
+    "-Wdead-code",
+    "-Wvalue-discard"
+)
 
 Compile / doc / sources := Seq.empty
 
