@@ -38,7 +38,7 @@ class ContainerService(val containers: Containers) {
           Some(numberVisible)
         )
       }
-      case DynamicV2(container) => {
+      case Flexible(container) => {
         val numberVisible = container.storiesVisible(stories)
         StoriesVisibleResponse(
           Some(numberVisible),

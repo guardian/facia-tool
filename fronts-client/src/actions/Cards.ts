@@ -48,7 +48,7 @@ import {
   InsertActionCreator,
   InsertThunkActionCreator,
 } from 'types/Cards';
-import { DYNAMIC_FAST_V2_NAME } from 'constants/dynamicContainers';
+import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -203,7 +203,12 @@ const updateCardMetaWithPersist = addPersistMetaToAction(updateCardMeta, {
   persistTo: 'collection',
 });
 
-const mayModifyCardForDestinationGroup = (
+/** Cards in the standard group of a flexible general container should not be gigaboosted.
+ * When moving a card from the splash group to the standard group, this function checks if the card should be modified.
+ * If so, it will automatically adjust the boost level from gigaboost to megaboost.
+ */
+
+const mayLowerCardBoostLevelForDestinationGroup = (
   state: State,
   to: PosSpec,
   card: Card,
@@ -213,7 +218,7 @@ const mayModifyCardForDestinationGroup = (
     const groupId = to.id;
     const { collection } = selectGroupCollection(state, groupId);
     const group = selectGroups(state)[groupId];
-    if (collection?.type === DYNAMIC_FAST_V2_NAME) {
+    if (collection?.type === FLEXIBLE_GENERAL_NAME) {
       if (
         group &&
         (!group.id || parseInt(group.id) === 0) &&
@@ -260,7 +265,7 @@ const insertCardWithCreate =
           return;
         }
 
-        const modifyCardAction = mayModifyCardForDestinationGroup(
+        const modifyCardAction = mayLowerCardBoostLevelForDestinationGroup(
           state,
           to,
           card,
@@ -268,7 +273,6 @@ const insertCardWithCreate =
         );
         if (modifyCardAction) dispatch(modifyCardAction);
 
-        // TODO modify card data
         dispatch(
           insertActionCreator(
             toWithRespectToState.id,
@@ -369,7 +373,7 @@ const moveCard = (
           dispatch(cardsReceived([parent, ...supporting]));
         }
 
-        const modifyCardAction = mayModifyCardForDestinationGroup(
+        const modifyCardAction = mayLowerCardBoostLevelForDestinationGroup(
           state,
           to,
           parent,

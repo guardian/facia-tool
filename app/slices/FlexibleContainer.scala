@@ -1,10 +1,10 @@
 package slices
 
-trait DynamicV2Container {
+trait FlexibleContainer {
   def storiesVisible(stories: Seq[Story]): Int
 }
 
-object DynamicFastV2 extends DynamicV2Container {
+object FlexibleGeneral extends FlexibleContainer {
   def storiesVisible(stories: Seq[Story]): Int = {
     val byGroup = Story.segmentByGroup(stories)
     val splash = byGroup.getOrElse(3, Seq.empty) ++
@@ -16,7 +16,7 @@ object DynamicFastV2 extends DynamicV2Container {
   }
 }
 
-object DynamicPackageV2 extends DynamicV2Container {
+object FlexibleSpecial extends FlexibleContainer {
   def storiesVisible(stories: Seq[Story]): Int = {
     val byGroup = Story.segmentByGroup(stories)
     val snap = byGroup.getOrElse(3, Seq.empty) ++

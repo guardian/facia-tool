@@ -1,6 +1,6 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
-import { DYNAMIC_CONTAINER_V2_SET } from 'constants/dynamicContainers';
+import { FLEXIBLE_CONTAINER_SET } from 'constants/flexibleContainers';
 
 const ArticleMetadataProperties = styled.div`
   padding: 0 4px 3px 0;
@@ -18,19 +18,25 @@ const ArticleMetadataProperty = styled.div`
 `;
 
 const shouldShowLegacyBoost = (collectionType?: string, isBoosted?: boolean) =>
-  /* don't show old Boost option in dynamic v2 */
-  isBoosted && !DYNAMIC_CONTAINER_V2_SET.includes(collectionType);
+  /* don't show old Boost option in flexible containers */
+  isBoosted && !FLEXIBLE_CONTAINER_SET.includes(collectionType);
 
 const shouldShowBoostLevel = (collectionType?: string, boostLevel?: string) =>
   boostLevel !== 'default' &&
-  /* show new Boost level in new dynamic container or clipboard */
-  (DYNAMIC_CONTAINER_V2_SET.includes(collectionType) || !collectionType);
+  /* show new Boost level in flexible containers or clipboard */
+  (FLEXIBLE_CONTAINER_SET.includes(collectionType) || !collectionType);
 
-const displayBoostLevel = (boostLevel?: string) => {
-  if (boostLevel === 'gigaboost') return 'Giga boost';
-  else if (boostLevel === 'megaboost') return 'Mega boost';
-  else if (boostLevel === 'boost') return 'Boost';
-  else return '';
+const getBoostLevelLabel = (boostLevel?: string): string | undefined => {
+  switch (boostLevel) {
+    case 'gigaboost':
+      return 'Giga boost';
+    case 'megaboost':
+      return 'Mega boost';
+    case 'boost':
+      return 'Boost';
+    default:
+      return undefined;
+  }
 };
 
 export default ({
@@ -74,7 +80,7 @@ export default ({
       )}
       {shouldShowBoostLevel(collectionType, boostLevel) && (
         <ArticleMetadataProperty>
-          {displayBoostLevel(boostLevel)}
+          {getBoostLevelLabel(boostLevel)}
         </ArticleMetadataProperty>
       )}
       {shouldShowLegacyBoost(collectionType, isBoosted) && (

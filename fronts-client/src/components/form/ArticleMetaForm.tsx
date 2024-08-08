@@ -75,9 +75,9 @@ import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import InputRadio from 'components/inputs/InputRadio';
 import {
-  DYNAMIC_FAST_V2_NAME,
-  DYNAMIC_PACKAGE_V2_NAME,
-} from 'constants/dynamicContainers';
+  FLEXIBLE_GENERAL_NAME,
+  FLEXIBLE_SPECIAL_NAME,
+} from 'constants/flexibleContainers';
 
 interface ComponentProps extends ContainerProps {
   articleExists: boolean;
@@ -531,9 +531,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     const allowGigaBoost = () =>
       !collectionType /* clipboard */ ||
       (collectionType &&
-        (collectionType === DYNAMIC_PACKAGE_V2_NAME /* dynamic package */ ||
+        (collectionType === FLEXIBLE_SPECIAL_NAME /* flexible special */ ||
           (collectionType ===
-            DYNAMIC_FAST_V2_NAME /* splash group in dynamic fast */ &&
+            FLEXIBLE_GENERAL_NAME /* splash group in flexible general */ &&
             groupSizeId &&
             groupSizeId > 0)));
 

@@ -16,14 +16,14 @@ export function init (res) {
     if (res.defaults.env.toLowerCase() !== 'prod') {
         CONST.types.push(
              {
-              'name': 'dynamic/fast-v2',
+              'name': 'flexible/general',
               'groups': [
                 'standard',
                 'splash'
               ]
             },
             {
-              'name': 'dynamic/package-v2',
+              'name': 'flexible/special',
               'groups': [
                 'standard',
                 'snap'
