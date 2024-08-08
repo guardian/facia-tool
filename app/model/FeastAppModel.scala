@@ -4,15 +4,31 @@ import model.editions.Edition
 import play.api.libs.json._
 
 import java.time.LocalDate
+import model.editions.Palette
 
 object FeastAppModel {
   sealed trait ContainerItem
 
-  case class RecipeIdentifier(id:String)
-  case class Recipe(recipe:RecipeIdentifier) extends ContainerItem
-  case class Chef(id:String, image:Option[String], bio: Option[String], backgroundHex:Option[String], foregroundHex:Option[String]) extends ContainerItem
-  case class Palette(backgroundHex:String, foregroundHex:String)
-  case class FeastCollection(byline:Option[String], darkPalette:Option[Palette], image:Option[String], body:Option[String], title:String, lightPalette:Option[Palette], recipes:Seq[String]) extends ContainerItem
+  case class RecipeIdentifier(id: String)
+
+  case class Recipe(recipe: RecipeIdentifier) extends ContainerItem
+
+  case class Chef(id: String,
+    image: Option[String] = None,
+    bio:  Option[String] = None,
+    backgroundHex: Option[String] = None,
+    foregroundHex: Option[String] = None
+  ) extends ContainerItem
+
+  case class FeastCollection(
+    byline: Option[String] = None,
+    darkPalette: Option[Palette] = None,
+    image: Option[String] = None,
+    body: Option[String] = None,
+    title: String,
+    lightPalette: Option[Palette] = None,
+    recipes: Seq[String]
+  ) extends ContainerItem
 
   case class FeastAppContainer(id:String, title:String, body:Option[String], items:Seq[ContainerItem])
   //type FeastAppCuration = Map[String, IndexedSeq[FeastAppContainer]]
