@@ -194,7 +194,7 @@ class BreakingNewsClientImpl(ws: WSClient, host: String, apiKey: String) extends
           }
         } else {
           logger.error(s"Unable to send breaking news notification, Status ${response.status}: ${response.statusText}, Body: ${response.body}")
-          Left(ApiClientError("Unable to send breaking news notification, status ${response.status}: ${response.statusText}"))
+          Left(ApiClientError(s"Unable to send breaking news notification, status ${response.status}: ${response.statusText}"))
         }
       }
   }
