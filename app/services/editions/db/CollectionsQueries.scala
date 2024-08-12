@@ -10,6 +10,8 @@ import services.editions.DbEditionsCard
 import services.editions.prefills.CapiQueryTimeWindow
 import model.editions.EditionsFeastCollection
 import play.api.libs.json.Writes
+import com.gu.pandomainauth.model.User
+import scala.util.Try
 
 trait CollectionsQueries {
 
@@ -191,4 +193,34 @@ trait CollectionsQueries {
 
   private case class GetCollectionsRow(collection: EditionsCollection, card: Option[DbEditionsCard])
 
+  protected def insertCollection(frontId: String, collectionIndex: Int, name: String, now: OffsetDateTime, user: User)(implicit session: DBSession) = 
+    Try { 
+      sql"""
+        INSERT INTO collections (
+          front_id,
+          index,
+          name,
+          is_hidden,
+          updated_on,
+          updated_by,
+          updated_email
+        ) VALUES (
+          $frontId
+          , ${collectionIndex}
+          , $name
+          , FALSE
+          , $now
+          , ${EditionsDB.getUserName(user)}
+          , ${user.email}
+        )
+        RETURNING id;
+      """.map(_.string("id"))
+        .single
+        .apply()
+        .toRight(EditionsDB.WriteError("Could not write new collection to database"))
+    }
+      .toEither
+      .left
+      .map { error => EditionsDB.WriteError(error.getMessage()) }
+      .flatten
 }

@@ -2,8 +2,13 @@ package services.editions.db
 
 import logging.Logging
 import model.editions.{EditionsFront, EditionsFrontMetadata}
+import services.editions.DbEditionsFront
 import scalikejdbc._
 import play.api.libs.json._
+import com.gu.pandomainauth.model.User
+import java.time.OffsetDateTime
+import scala.util.Try
+import scala.util.Failure
 
 trait FrontsQueries extends Logging {
   def updateFrontMetadata(id: String, metadata: EditionsFrontMetadata): Option[EditionsFrontMetadata] = DB localTx { implicit session =>

@@ -22,8 +22,8 @@ trait IssueQueries extends Logging {
                    user: User,
                    now: OffsetDateTime
                  ): String = DB localTx { implicit session =>
-    val userName = user.firstName + " " + user.lastName
     val truncatedNow = EditionsDB.truncateDateTime(now)
+    val userName = EditionsDB.getUserName(user)
 
     import genEditionTemplateResult.{issueSkeleton, contentPrefillTimeWindow}
 
@@ -141,7 +141,11 @@ trait IssueQueries extends Logging {
     }.toOption.apply()
   }
 
-  def getIssue(id: String): Option[EditionsIssue] = DB readOnly { implicit session =>
+  def getIssue(id: String): Option[EditionsIssue] = DB readOnly { implicit session => getIssue(id, session) }
+
+  def getIssue(id: String, session: DBSession): Option[EditionsIssue] = {
+    implicit val _session = session
+
     case class GetIssueRow(
                             issue: EditionsIssue,
                             front: Option[DbEditionsFront],
