@@ -25,14 +25,14 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
     source match {
       case _: EditionsArticle => throw new Error("Article not permitted in a Feast Front")
       case EditionsRecipe(id, _) => Recipe(RecipeIdentifier(id))
-      case EditionsChef(id, addedOn, metadata) => Chef(id = id,
+      case EditionsChef(id, _, metadata) => Chef(id = id,
         image = metadata.flatMap(_.chefImageOverride.map(_.src)),
         bio = metadata.flatMap(_.bio),
         backgroundHex = metadata.flatMap(_.theme.map(_.palette.backgroundHex)),
         foregroundHex = metadata.flatMap(_.theme.map(_.palette.foregroundHex)))
-      case EditionsFeastCollection(id, addedOn, metadata) => 
+      case EditionsFeastCollection(_, _, metadata) =>
         val recipes = metadata.map(_.collectionItems.map {
-          case EditionsRecipe(id, addedOn) => id
+          case EditionsRecipe(id, _) => id
         }).getOrElse(List.empty)
 
         FeastCollection(
