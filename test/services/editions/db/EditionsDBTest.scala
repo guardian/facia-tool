@@ -602,19 +602,47 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   private def issueDateToUTCStartOfDay(issueDate: LocalDate) = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
 
   "Collection operations" - {
-    "should insert a new collection at the specified index" taggedAs UsesDatabase in {
-      val issueId = insertSkeletonIssue(2020, 1, 1,
-        front("news/uk", collection("politics", None))
-      )
-      val issue: EditionsIssue = editionsDB.getIssue(issueId).value
-      val frontFromIssue = issue.fronts.head
-      
-      editionsDB.addCollectionToFront(frontFromIssue.id, user = user, now = now) match {
-        case Right(front) =>
-          front.collections.size shouldBe 2
-          front.collections.last.displayName shouldBe "New collection"
-        case Left(error) =>
-          Assertions.fail(s"Error adding collection to front: ${error.getMessage()}")
+    "Add collection" - {
+      "should insert a new collection at the specified index" taggedAs UsesDatabase in {
+        val issueId = insertSkeletonIssue(2020, 1, 1,
+          front("news/uk", collection("politics", None))
+        )
+        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val frontFromIssue = issue.fronts.head
+
+        editionsDB.addCollectionToFront(frontFromIssue.id, user = user, now = now) match {
+          case Right(front) =>
+            front.collections.size shouldBe 2
+            front.collections.last.displayName shouldBe "New collection"
+          case Left(error) =>
+            Assertions.fail(s"Error adding collection to front: ${error.getMessage()}")
+        }
+      }
+
+
+      "should fail with a NotFoundError when the specified front does not exist" taggedAs UsesDatabase in {
+        editionsDB.addCollectionToFront("does-not-exist", user = user, now = now) match {
+          case Right(front) =>
+            Assertions.fail()
+          case Left(error) =>
+            error shouldBe an[EditionsDB.NotFoundError]
+        }
+      }
+
+      "should fail with a WriteError when we attempt to write to an invalid index" taggedAs UsesDatabase in {
+        val issueId = insertSkeletonIssue(2020, 1, 1,
+          front("news/uk", collection("politics", None))
+        )
+        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val frontFromIssue = issue.fronts.head
+        val invalidIndex = Some(0)
+
+        editionsDB.addCollectionToFront(frontFromIssue.id, collectionIndex = invalidIndex, user = user, now = now) match {
+          case Right(front) =>
+            Assertions.fail()
+          case Left(error) =>
+            error shouldBe an[EditionsDB.WriteError]
+        }
       }
     }
   }
