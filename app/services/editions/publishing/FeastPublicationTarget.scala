@@ -10,6 +10,7 @@ import play.api.libs.json.{Json, Writes}
 import util.TimestampGenerator
 
 import scala.jdk.CollectionConverters._
+import logging.Logging
 
 object FeastPublicationTarget {
   object MessageType extends Enumeration {
@@ -19,17 +20,30 @@ object FeastPublicationTarget {
   type MessageType = MessageType.Value
 }
 
-class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfiguration, timestamp: TimestampGenerator) extends PublicationTarget {
-  private def transformArticles(source: EditionsCard): ContainerItem = {
+class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfiguration, timestamp: TimestampGenerator) extends PublicationTarget with Logging {
+  private def transformCards(source: EditionsCard): ContainerItem = {
     source match {
       case _: EditionsArticle => throw new Error("Article not permitted in a Feast Front")
       case EditionsRecipe(id, _) => Recipe(RecipeIdentifier(id))
-      case EditionsChef(id, addedOn, metadata) => Chef(id = id,
+      case EditionsChef(id, _, metadata) => Chef(id = id,
         image = metadata.flatMap(_.chefImageOverride.map(_.src)),
         bio = metadata.flatMap(_.bio),
         backgroundHex = metadata.flatMap(_.theme.map(_.palette.backgroundHex)),
         foregroundHex = metadata.flatMap(_.theme.map(_.palette.foregroundHex)))
-      case _:EditionsFeastCollection => FeastCollection(byline=None, darkPalette=None, image=None, body=None, title="", lightPalette=None, recipes=List.empty)
+      case EditionsFeastCollection(_, _, metadata) =>
+        val recipes = metadata.map(_.collectionItems.map {
+          case EditionsRecipe(id, _) => id
+        }).getOrElse(List.empty)
+
+        FeastCollection(
+          byline = None,
+          darkPalette = metadata.flatMap(_.theme.map(_.darkPalette)),
+          lightPalette = metadata.flatMap(_.theme.map(_.lightPalette)),
+          image = metadata.flatMap(_.theme.flatMap(_.imageURL)),
+          body = None,
+          title = metadata.flatMap(_.title).getOrElse("No title"),
+          recipes = recipes
+        )
     }
   }
 
@@ -48,7 +62,7 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
       id = collection.id,
       title = collection.displayName,
       body = Some(""), //TBD, this is just how it appears in the data at the moment
-      items = collection.items.map(transformArticles)
+      items = collection.items.map(transformCards)
     )
 
   def transformContent(source: EditionsIssue, version: String): FeastAppCuration = {
@@ -80,6 +94,9 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
 
   override def putIssueJson[T: Writes](issue: T, key: String): Unit = {
     val content = Json.stringify(Json.toJson(issue))
+
+    logger.info(s"Publishing content for issue $key: $content")
+
     snsClient.publish(createPublishRequest(content, FeastPublicationTarget.MessageType.Issue))
   }
 
