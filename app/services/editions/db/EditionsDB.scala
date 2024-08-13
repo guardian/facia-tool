@@ -35,7 +35,31 @@ class EditionsDB(url: String, user: String, password: String) extends IssueQueri
       newCollection <- updatedFront.collections.find(_.id == collectionId).toRight(EditionsDB.InvariantError(s"New collection ${collectionId} not found in updated front ${frontId}"))
     } yield updatedFront
   }
-}
+
+  /**
+    * Remove an EditionsCollection from an EditionsFront.
+    */
+  def removeCollectionFromFront(frontId: String, collectionId: String, user: User, now: OffsetDateTime): Either[Error, EditionsFront] = DB localTx { implicit session =>
+    val truncatedNow = EditionsDB.truncateDateTime(now)
+
+    for {
+      _ <- getFront(frontId).toRight(EditionsDB.NotFoundError(s"Front ${frontId} not found"))
+      _ <- deleteCollection(
+        collectionId,
+        user = user,
+        now = truncatedNow
+      )
+      updatedFront <- reindexCollectionsForFront(frontId, user, now)
+    } yield updatedFront
+  }
+
+  private def reindexCollectionsForFront(frontId: String, user: User, now: OffsetDateTime)(implicit session: DBSession): Either[Error, EditionsFront] =
+    for {
+      front <- getFront(frontId).toRight(EditionsDB.InvariantError("Could not find front to reindex"))
+      _ <- updateCollectionIndices(front.collections.map(_.id))
+      updatedFront <- getFront(frontId).toRight(EditionsDB.InvariantError("Could not find front with reindexed collections"))
+    } yield front
+  }
 
 object EditionsDB {
   def dateTimeFromMillis(millis: Long): OffsetDateTime = Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC)
