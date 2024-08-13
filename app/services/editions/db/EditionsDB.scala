@@ -23,7 +23,7 @@ class EditionsDB(url: String, user: String, password: String) extends IssueQueri
     val truncatedNow = EditionsDB.truncateDateTime(now)
 
     for {
-      currentFront <- getFront(frontId).toRight(EditionsDB.NotFoundError("Front not found"))
+      currentFront <- getFront(frontId).toRight(EditionsDB.NotFoundError(s"Front ${frontId} not found"))
       collectionId <- insertCollection(
         frontId = currentFront.id,
         collectionIndex = collectionIndex.getOrElse(currentFront.collections.size),
@@ -31,8 +31,8 @@ class EditionsDB(url: String, user: String, password: String) extends IssueQueri
         user = user,
         now = truncatedNow
       )
-      updatedFront <- getFront(frontId).toRight(EditionsDB.InvariantError("Updated front not found in issue"))
-      newCollection <- updatedFront.collections.find(_.id == collectionId).toRight(EditionsDB.InvariantError("New collection not found in updated front"))
+      updatedFront <- getFront(frontId).toRight(EditionsDB.InvariantError(s"Updated front ${frontId} not found in issue"))
+      newCollection <- updatedFront.collections.find(_.id == collectionId).toRight(EditionsDB.InvariantError(s"New collection ${collectionId} not found in updated front ${frontId}"))
     } yield updatedFront
   }
 }
