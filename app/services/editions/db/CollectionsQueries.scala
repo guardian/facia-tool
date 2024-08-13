@@ -193,8 +193,13 @@ trait CollectionsQueries {
 
   private case class GetCollectionsRow(collection: EditionsCollection, card: Option[DbEditionsCard])
 
-  protected def insertCollection(frontId: String, collectionIndex: Int, name: String, now: OffsetDateTime, user: User)(implicit session: DBSession) = 
-    Try { 
+  /**
+    * Insert a collection owned by the specified front.
+    *
+    * @return the Collection id
+    */
+  protected def insertCollection(frontId: String, collectionIndex: Int, name: String, now: OffsetDateTime, user: User)(implicit session: DBSession) =
+    Try {
       sql"""
         INSERT INTO collections (
           front_id,

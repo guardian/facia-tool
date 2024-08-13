@@ -15,20 +15,19 @@ class EditionsDB(url: String, user: String, password: String) extends IssueQueri
 
 
   /**
-    * Add a Collection to a Front at the specified index.
+    * Add a EditionsCollection to an EditionsFront at the specified index.
     *
     * @return the ID of the collection.
     */
-  def addCollectionToFront(frontId: String, collectionIndex: Option[Int] = None, user: User, now: OffsetDateTime): Either[Error, EditionsFront] = DB localTx { implicit session =>
+  def addCollectionToFront(frontId: String, name: Option[String] = None, collectionIndex: Option[Int] = None, user: User, now: OffsetDateTime): Either[Error, EditionsFront] = DB localTx { implicit session =>
     val truncatedNow = EditionsDB.truncateDateTime(now)
-    val defaultName = "New collection"
 
     for {
       currentFront <- getFront(frontId).toRight(EditionsDB.NotFoundError("Front not found"))
       collectionId <- insertCollection(
         frontId = currentFront.id,
         collectionIndex = collectionIndex.getOrElse(currentFront.collections.size),
-        name = defaultName,
+        name = name.getOrElse("New collection"),
         user = user,
         now = truncatedNow
       )
