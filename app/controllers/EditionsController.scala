@@ -256,9 +256,16 @@ class EditionsController(db: EditionsDB,
   }
 
   def addCollectionToFront(id: String) = EditEditionsAuthAction { req =>
-    db.addCollectionToFront(frontId = id, user = req.user, now = OffsetDateTime.now()).map {
-      state => Ok(Json.toJson(state))
-    } getOrElse NotFound(s"Front $id not found")
+    db.addCollectionToFront(
+      frontId = id,
+      user = req.user,
+      now = OffsetDateTime.now(),
+      name = req.queryString.get("name").flatMap(_.headOption)
+    ) match {
+      case Right(front) => Ok(Json.toJson(front))
+      case Left(EditionsDB.NotFoundError(message)) => NotFound
+      case Left(error) => InternalServerError(error.getMessage())
+    }
   }
 
   private def getAvailableCuratedPlatformEditions: Map[String, List[CuratedPlatformDefinition]] = {
