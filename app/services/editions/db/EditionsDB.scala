@@ -19,14 +19,12 @@ class EditionsDB(url: String, user: String, password: String) extends IssueQueri
     *
     * @return the ID of the collection.
     */
-  def addCollectionToFront(frontId: String, collectionIndex: Option[Int] = None, user: User, now: OffsetDateTime): Either[Error, EditionsFront] = DB localTx { implicit session => 
+  def addCollectionToFront(frontId: String, collectionIndex: Option[Int] = None, user: User, now: OffsetDateTime): Either[Error, EditionsFront] = DB localTx { implicit session =>
     val truncatedNow = EditionsDB.truncateDateTime(now)
     val defaultName = "New collection"
 
     for {
-      currentDBFront <- getFront(frontId).toRight(EditionsDB.NotFoundError("Front not found"))
-      currentIssue <- getIssue(currentDBFront.issueId, session).toRight(EditionsDB.InvariantError("Issue not found for given front"))
-      currentFront <- currentIssue.fronts.find(_.id == frontId).toRight(EditionsDB.InvariantError("Front not found in issue"))
+      currentFront <- getFront(frontId).toRight(EditionsDB.NotFoundError("Front not found"))
       collectionId <- insertCollection(
         frontId = currentFront.id,
         collectionIndex = collectionIndex.getOrElse(currentFront.collections.size),
@@ -34,20 +32,9 @@ class EditionsDB(url: String, user: String, password: String) extends IssueQueri
         user = user,
         now = truncatedNow
       )
-      updatedIssue <- getIssue(currentDBFront.issueId, session).toRight(EditionsDB.InvariantError("Issue not found for updated front"))
-      updatedFront <- updatedIssue.fronts.find(_.id == frontId).toRight(EditionsDB.InvariantError("Updated front not found in issue"))
+      updatedFront <- getFront(frontId).toRight(EditionsDB.InvariantError("Updated front not found in issue"))
       newCollection <- updatedFront.collections.find(_.id == collectionId).toRight(EditionsDB.InvariantError("New collection not found in updated front"))
     } yield updatedFront
-  }
-
-  private def getFront(id: String)(implicit session: DBSession): Option[DbEditionsFront] = {
-    sql"""
-        SELECT *
-        FROM fronts
-        WHERE id = $id
-    """.map(rs => {
-      DbEditionsFront.fromRowOpt(rs, "")
-    }).single.apply().flatMap(identity)
   }
 }
 
