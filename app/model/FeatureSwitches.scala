@@ -24,12 +24,6 @@ object PageViewDataVisualisation extends FeatureSwitch(
   enabled = true
 )
 
-object ShowFirefoxPrompt extends FeatureSwitch(
-  key = "show-firefox-prompt",
-  title = "Show the prompt to use Firefox if applicable",
-  enabled = true
-)
-
 object TenImageSlideshows extends FeatureSwitch(
   key = "ten-image-slideshows",
   title = "Allow slideshows to contain 10 images rather than 5",
@@ -43,7 +37,7 @@ object UsePortraitCropsForSomeCollectionTypes extends FeatureSwitch(
 )
 
 object FeatureSwitches {
-  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, ShowFirefoxPrompt, TenImageSlideshows, UsePortraitCropsForSomeCollectionTypes)
+  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, TenImageSlideshows, UsePortraitCropsForSomeCollectionTypes)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     val newSwitches = userDataSwitches match {
