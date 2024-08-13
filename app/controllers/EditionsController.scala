@@ -268,6 +268,19 @@ class EditionsController(db: EditionsDB,
     }
   }
 
+  def removeCollectionFromFront(frontId: String, collectionId: String) = EditEditionsAuthAction { req =>
+    db.removeCollectionFromFront(
+      frontId = frontId,
+      collectionId,
+      user = req.user,
+      now = OffsetDateTime.now()
+    ) match {
+      case Right(front) => Ok(Json.toJson(front))
+      case Left(EditionsDB.NotFoundError(message)) => NotFound
+      case Left(error) => InternalServerError(error.getMessage())
+    }
+  }
+
   private def getAvailableCuratedPlatformEditions: Map[String, List[CuratedPlatformDefinition]] = {
     val feastAppEditions = FeastAppTemplates.getAvailableTemplates
 

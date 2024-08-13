@@ -12,6 +12,7 @@ import model.editions.EditionsFeastCollection
 import play.api.libs.json.Writes
 import com.gu.pandomainauth.model.User
 import scala.util.Try
+import model.editions.CuratedPlatform.Editions
 
 trait CollectionsQueries {
 
@@ -143,6 +144,32 @@ trait CollectionsQueries {
     updatedCollections.head
   }
 
+  /**
+    * Update the indices for a list of collections, setting their index as their position in the given list.
+    *
+    * @param collection
+    * @return
+    */
+  protected def updateCollectionIndices(collectionIds: List[String])(implicit session: DBSession): Either[Error, Unit] =
+  Try {
+    collectionIds match {
+      case Nil => Right(())
+      case ids =>
+        sql"""
+          UPDATE collections
+          SET index=CASE
+            ${sqls.join(collectionIds.zipWithIndex.map {
+              case (id, index) => sqls"""WHEN id=${id} THEN ${index}"""
+            }, sqls.empty)}
+          END
+          WHERE id IN (${collectionIds.mkString(", ")})
+        """.update.apply()
+    }
+  }.toEither match {
+    case Left(error) => Left(EditionsDB.WriteError(s"Could not update collection indices: ${error.getMessage}"))
+    case Right(_) => Right(())
+  }
+
   private def maybeJson[T](maybeModel: Option[T])(implicit writes: Writes[T]) = maybeModel.map(m => Json.toJson(m).toString)
 
   private def fetchCollectionsSql(where: SQLSyntax): SQLToList[GetCollectionsRow, HasExtractor] = {
@@ -228,4 +255,19 @@ trait CollectionsQueries {
       .left
       .map { error => EditionsDB.WriteError(error.getMessage()) }
       .flatten
+
+  /**
+    * Delete a collection.
+    */
+  protected def deleteCollection(collectionId: String, now: OffsetDateTime, user: User)(implicit session: DBSession): Either[Error, Unit] =
+    Try {
+      sql"""DELETE FROM collections WHERE id=$collectionId""".map(_.string("id"))
+        .update
+        .apply()
+    }
+      .toEither match {
+        case Right(1) => Right(())
+        case Right(_) => Left(EditionsDB.NotFoundError(s"Collection ${collectionId} was not found"))
+        case Left(error) => Left(EditionsDB.WriteError(error.getMessage()))
+      }
 }
