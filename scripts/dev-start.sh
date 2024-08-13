@@ -32,7 +32,7 @@ main() {
     cd ..
 
     printf "\n\rStarting Postgres... \n\r\n\r"
-    docker-compose up -d
+    docker compose up -d
 
     printf "\n\rStarting Play App... \n\r\n\r"
 
