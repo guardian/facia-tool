@@ -12,6 +12,7 @@ import scalikejdbc._
 import services.editions.GenerateEditionTemplateResult
 import services.editions.prefills.CapiQueryTimeWindow
 import org.scalatest.Assertions
+import services.editions.db.EditionsDB.NotFoundError
 
 class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with EditionsDBEvolutions with OptionValues {
 
@@ -656,6 +657,63 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
             Assertions.fail()
           case Left(error) =>
             error shouldBe an[EditionsDB.WriteError]
+        }
+      }
+    }
+
+    "Remove collection" - {
+      "should remove a given collection" taggedAs UsesDatabase in {
+        val issueId = insertSkeletonIssue(2020, 1, 1,
+          front("news/uk", collection("politics", None), collection("sport", None), collection("culture", None)),
+        )
+        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val frontFromIssue = issue.fronts.head
+        frontFromIssue.collections.size shouldBe 3
+
+        editionsDB.removeCollectionFromFront(frontFromIssue.id, frontFromIssue.collections(2).id, user = user, now = now) match {
+          case Right(front) =>
+            front.collections.map(_.displayName) shouldBe List("politics", "sport")
+          case Left(error) =>
+            Assertions.fail(s"Error removing collection to front: ${error.getMessage()}")
+        }
+
+        editionsDB.removeCollectionFromFront(frontFromIssue.id, frontFromIssue.collections(0).id, user = user, now = now) match {
+          case Right(front) =>
+            front.collections.map(_.displayName) shouldBe List("sport")
+          case Left(error) =>
+            Assertions.fail(s"Error removing collection to front: ${error.getMessage()}")
+        }
+      }
+
+      "should fail when the front does not exist" taggedAs UsesDatabase in {
+        val issueId = insertSkeletonIssue(2020, 1, 1,
+          front("news/uk", collection("politics", None), collection("sport", None), collection("culture", None)),
+        )
+        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val frontFromIssue = issue.fronts.head
+        frontFromIssue.collections.size shouldBe 3
+
+        editionsDB.removeCollectionFromFront("does-not-exist", frontFromIssue.collections(2).id, user = user, now = now) match {
+          case Right(front) =>
+            Assertions.fail(s"Removing a collection from a front that does not exist should not succeed")
+          case Left(error) =>
+            error shouldBe an[NotFoundError]
+        }
+      }
+
+      "should fail when the collection does not exist" taggedAs UsesDatabase in {
+        val issueId = insertSkeletonIssue(2020, 1, 1,
+          front("news/uk", collection("politics", None), collection("sport", None), collection("culture", None)),
+        )
+        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val frontFromIssue = issue.fronts.head
+        frontFromIssue.collections.size shouldBe 3
+
+        editionsDB.removeCollectionFromFront(frontFromIssue.id, "does-not-exist", user = user, now = now) match {
+          case Right(front) =>
+            Assertions.fail(s"Removing a collection that does not exist should not succeed")
+          case Left(error) =>
+            error shouldBe an[NotFoundError]
         }
       }
     }
