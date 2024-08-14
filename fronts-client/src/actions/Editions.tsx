@@ -5,6 +5,7 @@ import {
   checkIssue,
   putFrontHiddenState,
   putFrontMetadata,
+  addCollectionToFront,
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
@@ -146,5 +147,21 @@ export const setFrontHiddenState =
       });
     } catch (error) {
       // @todo implement centralised error handling
+    }
+  };
+
+export const addFrontCollection =
+  (id: string): ThunkResult<Promise<void>> =>
+  async (dispatch: Dispatch) => {
+    try {
+      await addCollectionToFront(id);
+      dispatch({
+        type: 'FETCH_FRONT_ADD_COLLECTION_SUCCESS',
+        payload: {
+          frontId: id,
+        },
+      });
+    } catch (error) {
+      //todo
     }
   };

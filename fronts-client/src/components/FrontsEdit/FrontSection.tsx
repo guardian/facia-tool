@@ -24,7 +24,11 @@ import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
 import { PreviewEyeIcon, ClearIcon } from 'components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import EditModeVisibility from 'components/util/EditModeVisibility';
-import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
+import {
+  setFrontHiddenState,
+  updateFrontMetadata,
+  addFrontCollection,
+} from 'actions/Editions';
 import FrontsContainer from './FrontContainer';
 import { isMode } from '../../selectors/pathSelectors';
 import { selectShouldUsePreviewCODE } from '../../selectors/configSelectors';
@@ -122,6 +126,7 @@ type FrontsComponentProps = FrontsContainerProps & {
       metadata: EditionsFrontMetadata
     ) => void;
     setFrontHiddenState: (id: string, hidden: boolean) => void;
+    addFrontCollection: (frontId: string) => void;
   };
   isEditions: boolean;
 };
@@ -259,6 +264,12 @@ class FrontSection extends React.Component<
                 browsingStage={this.state.collectionSet}
               />
             )}
+            <Button
+              style={{ marginTop: '30px' }}
+              onClick={() => this.addFrontCollection()}
+            >
+              Add New New New....
+            </Button>
           </FrontSectionContent>
         </FrontContainer>
       </SingleFrontContainer>
@@ -277,6 +288,10 @@ class FrontSection extends React.Component<
       this.props.selectedFront.id,
       hidden
     );
+  };
+
+  private addFrontCollection = () => {
+    this.props.frontsActions.addFrontCollection(this.props.selectedFront.id);
   };
 
   private getTitle = () => {
@@ -341,6 +356,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       dispatch(updateFrontMetadata(id, metadata)),
     setFrontHiddenState: (id: string, hidden: boolean) =>
       dispatch(setFrontHiddenState(id, hidden)),
+    addFrontCollection: (id: string) => dispatch(addFrontCollection(id)),
   },
 });
 

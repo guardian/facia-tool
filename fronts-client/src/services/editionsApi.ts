@@ -128,6 +128,12 @@ export const putFrontHiddenState = (id: string, hidden: boolean) => {
   }).then((response) => response.json());
 };
 
+export const addCollectionToFront = (id: string) => {
+  return pandaFetch(`/editions-api/fronts/${id}/add-collection`, {
+    method: 'PUT',
+  }).then((response) => response.json());
+};
+
 export async function getIssueVersions(
   issueId: string
 ): Promise<IssueVersion[]> {

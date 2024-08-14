@@ -32,7 +32,7 @@ import { Priorities } from 'types/Priority';
 import { DragToAddFeastCollection } from './CollectionComponents/DragToAddFeastCollection';
 
 const FrontWrapper = styled.div`
-  height: 100%;
+  height: 80%;
   display: flex;
 `;
 
