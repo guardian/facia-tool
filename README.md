@@ -128,7 +128,7 @@ To audit vulernabilities locally:
 
 ## Troubleshooting
 ### Postgres
-- If you wish to delete everything in the database you can use `docker-compose down -v` which will delete the container's persistent volumes.
+- If you wish to delete everything in the database you can use `docker compose down -v` which will delete the container's persistent volumes.
 - If you wish to connect to the local database you can run `./scripts/local-psql.sh` which has the user, database and password preconfigured and ready to go.
 - If you need the master passwords for the production postgres instances they are stored as SSM parameters and can be found at:
   - CODE: `facia-tool/cms-fronts/CODE/db/password`
