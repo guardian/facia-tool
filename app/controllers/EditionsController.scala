@@ -37,8 +37,21 @@ class EditionsController(db: EditionsDB,
 
     val result = for {
       edition <- Either.fromOption[Result, Edition](Edition.withNameOption(name), NotFound(s"Edition $name not found"))
-      genEditionTemplateResult <- templating.generateEditionTemplate(edition, form.issueDate)
-      issueId = db.insertIssue(edition, genEditionTemplateResult, req.user, OffsetDateTime.now())
+      templateResult <- templating.generateEditionTemplate(edition, form.issueDate)
+      issueId = db.insertIssue(edition, templateResult.issueSkeleton, req.user, OffsetDateTime.now())
+      issue <- Either.fromOption(db.getIssue(issueId), NotFound("Issue created but could not retrieve it from the database"))
+    } yield issue
+
+    result.fold(identity, issue => Created(Json.toJson(issue)))
+  }
+
+  def createIssueFromPreviousIssue(name: String) = EditEditionsAuthAction(parse.json[CreateIssue]) { req =>
+    val form = req.body
+
+    val result = for {
+      edition <- Either.fromOption[Result, Edition](Edition.withNameOption(name), NotFound(s"Edition $name not found"))
+      previousIssue <- db.getIssue(edition, form.issueDate).toRight(NotFound(s"Previous issue not found"))
+      issueId = db.insertIssue(edition, previousIssue.toSkeleton, req.user, OffsetDateTime.now())
       issue <- Either.fromOption(db.getIssue(issueId), NotFound("Issue created but could not retrieve it from the database"))
     } yield issue
 
