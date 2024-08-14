@@ -937,51 +937,73 @@ case object ShowcaseSingleStories extends Slice {
   )
 }
 
-
 /*
- * The Highlights layout is used to display select features in the header for apps and web
+ * The Highlights layout is used to display select features in the header for apps and web, notably via a carousel.
+ * The implementation on platforms effectively limits the display to 6 cards altogether, and only 2-4 cards at a time.
+ * In the tool, we're satisfied with using a 6 card layout to hint at the number of visible stories.
  *
  * Desktop:
- * .____________.____________.____________.
- * |       #####|       #####|       #####|
- * |       #####|       #####|       #####|
- * |       #####|       #####|       #####|
- * '--------------------------------------'
+ * .____________.____________.____________.____________.____________.____________.
+ * |       #####|       #####|       #####|       #####|       #####|       #####|
+ * |       #####|       #####|       #####|       #####|       #####|       #####|
+ * |       #####|       #####|       #####|       #####|       #####|       #####|
+ * '-----------------------------------------------------------------------------'
  *
  * Mobile:
- * .___________.___________.___________.
- * |           |           |           |
- * |           |           |           |
- * |_#########_|_#########_|_#########_|
- * |_#########_|_#########_|_#########_|
- * |_#########_|_#########_|_#########_|
- * `-----------------------------------'
+ * .___________.___________.___________.___________.___________.___________.
+ * |           |           |           |           |           |           |
+ * |           |           |           |           |           |           |
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * `-----------------------------------------------------------------------'
  */
 case object Highlights extends Slice {
   val layout = SliceLayout(
-    cssClassName = "t-t-t",
+    cssClassName = "t-t-t-t-t-t",
     columns = Seq(
       SingleItem(
         colSpan = 1,
         ItemClasses(
           mobile = Standard,
-          tablet = MediaList
-        )
+          tablet = MediaList,
+        ),
       ),
       SingleItem(
         colSpan = 1,
         ItemClasses(
           mobile = Standard,
-          tablet = MediaList
-        )
+          tablet = MediaList,
+        ),
       ),
       SingleItem(
         colSpan = 1,
         ItemClasses(
           mobile = Standard,
-          tablet = MediaList
-        )
-      )
-    )
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+    ),
   )
 }
