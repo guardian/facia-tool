@@ -124,7 +124,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
   }
 
   // this function fetches articles from CAPI with enough data to resolve the defaults
-  private def getPrefillArticles(prefillParams: PrefillParamsAdapter): List[EditionsArticleSkeleton] = {
+  private def getPrefillArticles(prefillParams: PrefillParamsAdapter): List[EditionsCardSkeleton] = {
 
     val maybeOphanScoresMap: Option[Map[String, Double]] = getOphanMetricsMap(prefillParams)
 
@@ -137,7 +137,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
     mapToSkeleton(cappedItems)
   }
 
-  private def mapToSkeleton(sortedArticleItems: List[Prefill]): List[EditionsArticleSkeleton] = {
+  private def mapToSkeleton(sortedArticleItems: List[Prefill]): List[EditionsCardSkeleton] = {
     sortedArticleItems
       .map { case Prefill(pageCode, _, _, metaData, cutoutImage, _, mediaType, pickedKicker, promotionMetric, _) =>
         val cardMetadata = EditionsArticleMetadata.default.copy(
@@ -148,7 +148,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
           customKicker = pickedKicker,
           promotionMetric = promotionMetric
         )
-        EditionsArticleSkeleton(pageCode.toString, cardMetadata)
+        EditionsCardSkeleton(pageCode.toString, CardType.Article, Some(cardMetadata))
       }
   }
 

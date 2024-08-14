@@ -55,7 +55,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val timeWindow = CapiQueryTimeWindow(start, end)
     val genTemplateRes = GenerateEditionTemplateResult(skeleton, timeWindow)
     editionsDB.insertIssue(Edition.DailyEdition,
-      genTemplateRes,
+      genTemplateRes.issueSkeleton,
       user,
       now
     )
@@ -74,10 +74,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     def special() = frontSkel.copy(isSpecial = true, hidden = true)
   }
 
-  private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
-    EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), capiQueryTimeWindow, hidden = false)
+  private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsCardSkeleton*): EditionsCollectionSkeleton =
+    EditionsCollectionSkeleton(name, articles.toList, prefill, capiQueryTimeWindow, hidden = false)
 
-  private def article(id: String): EditionsArticleSkeleton = EditionsArticleSkeleton(id, EditionsArticleMetadata.default)
+  private def article(id: String): EditionsCardSkeleton = EditionsCardSkeleton(id, CardType.Article, Some(EditionsArticleMetadata.default))
 
   "should insert an empty issue" taggedAs UsesDatabase in {
     val id = insertSkeletonIssue(2019, 9, 30)

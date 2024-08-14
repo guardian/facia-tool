@@ -18,14 +18,12 @@ trait IssueQueries extends Logging {
 
   def insertIssue(
                    edition: Edition,
-                   genEditionTemplateResult: GenerateEditionTemplateResult,
+                   issueSkeleton: EditionsIssueSkeleton,
                    user: User,
                    now: OffsetDateTime
                  ): String = DB localTx { implicit session =>
     val truncatedNow = EditionsDB.truncateDateTime(now)
     val userName = EditionsDB.getUserName(user)
-
-    import genEditionTemplateResult.{issueSkeleton, contentPrefillTimeWindow}
 
     val issueId =
       sql"""
@@ -53,8 +51,6 @@ trait IssueQueries extends Logging {
         ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metadata()}, ${front.isSpecial})
         RETURNING id;
       """.map(_.string("id")).single.apply().get
-
-      import contentPrefillTimeWindow.{fromDate, toDate}
 
       front.collections.zipWithIndex.foreach { case (collection, cIndex) =>
         val collectionId =
