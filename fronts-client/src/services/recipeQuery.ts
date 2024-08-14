@@ -76,23 +76,30 @@ const setupRecipeThumbnails = (recep:Recipe) => {
 const recipeQuery = (baseUrl:string) => {
   const fetchOne = async (href:string):Promise<Recipe|undefined> => {
     const response = await fetch(`${baseUrl}${href}`);
-    const content = await response.json();
-    if(response.status==200) {
-      const result = setupRecipeThumbnails(content as unknown as Recipe);
-      return result;
-    } else {
-      console.error(`Could not retrieve recipe ${href}: ${response.status}`);
-      return undefined;
+
+    switch(response.status) {
+      case 200:
+        const content = await response.json();
+        return setupRecipeThumbnails(content as unknown as Recipe);
+      case 404:
+      case 403:
+        console.warn(`Search response returned outdated recipe ${baseUrl}${href}`);
+        return undefined;
+      default:
+        console.error(`Could not retrieve recipe ${href}: ${response.status}`);
+        return undefined;
     }
   }
 
   const fetchAllRecipes = async (forRecipes:RecipeSearchTitlesResponse[]):Promise<RecipeSearchHit[]> => {
     const results = await Promise.all(
       forRecipes.map(r=>
-        fetchOne(r.href).then(recep=>recep ? ({
-          ...recep,
-          score: r.score,
-        }) : undefined)
+        fetchOne(r.href)
+          .then(recep=>recep ? ({
+            ...recep,
+            score: r.score,
+          }) : undefined)
+          .catch(console.warn)
       )
     )
 
