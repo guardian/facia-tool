@@ -22,6 +22,7 @@ import chunk from 'lodash/chunk';
 import { CAPISearchQueryResponse, checkIsResults } from './capiQuery';
 import flatMap from 'lodash/flatMap';
 import { attemptFriendlyErrorMessage } from 'util/error';
+import { toFrontsConfig } from '../bundles/frontsConfigBundle';
 
 function fetchEditionsIssueAsConfig(issueId: string): Promise<FrontsConfig> {
   return pandaFetch(EditionsRoutes.issuePath(issueId), {
@@ -30,27 +31,7 @@ function fetchEditionsIssueAsConfig(issueId: string): Promise<FrontsConfig> {
   })
     .then((response) => response.json())
     .then((json: EditionsIssue) => {
-      const fronts: FrontConfigMap = {};
-      const collections: CollectionConfigMap = {};
-
-      json.fronts.forEach((front) => {
-        fronts[front.id] = {
-          ...front,
-          collections: front.collections.map((collection) => collection.id),
-          priority: issueId,
-        };
-        front.collections.forEach((collection) => {
-          collections[collection.id] = {
-            ...collection,
-            displayName: collection.displayName,
-          };
-        });
-      });
-
-      return {
-        fronts,
-        collections,
-      };
+      return toFrontsConfig(json.fronts, issueId);
     });
 }
 

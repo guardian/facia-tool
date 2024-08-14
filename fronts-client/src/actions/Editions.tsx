@@ -13,6 +13,8 @@ import { EditionsFrontMetadata } from 'types/FaciaApi';
 import noop from 'lodash/noop';
 import { startOptionsModal } from './OptionsModal';
 import IssueVersions from 'components/Editions/IssueVersions';
+import { actions, toFrontsConfig } from 'bundles/frontsConfigBundle';
+import { selectors } from 'bundles/editionsIssueBundle';
 
 export const check =
   (id: string): ThunkResult<Promise<void>> =>
@@ -152,15 +154,15 @@ export const setFrontHiddenState =
 
 export const addFrontCollection =
   (id: string): ThunkResult<Promise<void>> =>
-  async (dispatch: Dispatch) => {
+  async (dispatch, getState) => {
+    const state = getState();
     try {
-      await addCollectionToFront(id);
-      dispatch({
-        type: 'FETCH_FRONT_ADD_COLLECTION_SUCCESS',
-        payload: {
-          frontId: id,
-        },
-      });
+      const newFront = await addCollectionToFront(id);
+      const frontConfig = toFrontsConfig(
+        [newFront],
+        selectors.selectAll(state).id
+      );
+      dispatch(actions.fetchSuccess(frontConfig));
     } catch (error) {
       //todo
     }
