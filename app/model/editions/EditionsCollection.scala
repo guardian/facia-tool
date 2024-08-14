@@ -1,6 +1,6 @@
 package model.editions
 
-import java.time.ZonedDateTime
+import java.time.{Instant, ZonedDateTime}
 import play.api.libs.json.{Json, OFormat}
 import scalikejdbc.WrappedResultSet
 import services.editions.prefills.CapiQueryTimeWindow
@@ -22,6 +22,14 @@ case class EditionsCollection(
     items.collect {
       case article: EditionsArticle => EditionsArticle.toPublishedArticle(article)
     }
+  )
+
+  def toSkeleton: EditionsCollectionSkeleton = EditionsCollectionSkeleton(
+    name = displayName,
+    items = items.map(_.toSkeleton),
+    prefill = prefill,
+    hidden = isHidden,
+    capiQueryTimeWindow = contentPrefillTimeWindow.getOrElse(CapiQueryTimeWindow(Instant.now, Instant.now))
   )
 }
 

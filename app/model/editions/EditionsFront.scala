@@ -43,8 +43,18 @@ case class EditionsFront(
     )
   }
 
-  def getName = metadata.collect { case EditionsFrontMetadata(Some(overrideName), _) => overrideName }.getOrElse(displayName)
+  def toSkeleton: EditionsFrontSkeleton = EditionsFrontSkeleton(
+    name = displayName,
+    collections = collections.map(_.toSkeleton),
+    presentation = metadata
+      .flatMap(_.swatch)
+      .map(FrontPresentation.apply)
+      .getOrElse(FrontPresentation(Swatch.Neutral)),
+    hidden = isHidden,
+    isSpecial = isSpecial
+  )
 
+  def getName = metadata.collect { case EditionsFrontMetadata(Some(overrideName), _) => overrideName }.getOrElse(displayName)
 }
 
 object EditionsFront {

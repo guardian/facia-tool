@@ -4,9 +4,8 @@ import enumeratum.EnumEntry.{Hyphencase, Uncapitalised}
 import enumeratum.{EnumEntry, PlayEnum}
 import logging.Logging
 import model.editions.EditionsArticle.logger
-import play.api.libs.json.{Json, OFormat}
+import play.api.libs.json.{Json, OFormat, Reads, Writes}
 import scalikejdbc.WrappedResultSet
-import play.api.libs.json.Reads
 
 case class Image (
   height: Option[Int],
@@ -46,6 +45,12 @@ object FeastCollectionTheme {
   implicit val format: OFormat[FeastCollectionTheme] = Json.format[FeastCollectionTheme]
 }
 
+sealed trait EditionsCardMetadata
+
+object EditionsCardMetadata {
+  implicit val format: OFormat[EditionsCardMetadata] = Json.format[EditionsCardMetadata]
+}
+
 case class EditionsArticleMetadata(
   headline: Option[String],
   customKicker: Option[String],
@@ -63,7 +68,7 @@ case class EditionsArticleMetadata(
   overrideArticleMainMedia: Option[Boolean],
   coverCardImages: Option[CoverCardImages],
   promotionMetric: Option[Double]
-)
+) extends EditionsCardMetadata
 
 object EditionsArticleMetadata {
   implicit val format: OFormat[EditionsArticleMetadata] = Json.format[EditionsArticleMetadata]
@@ -92,6 +97,13 @@ sealed trait EditionsCard {
   val id: String
   val addedOn: Long
   val cardType: CardType
+
+  def toSkeleton: EditionsCardSkeleton = this match {
+    case EditionsArticle(id, _, metadata) => EditionsCardSkeleton(id, cardType, metadata)
+    case EditionsRecipe(id, _) => EditionsCardSkeleton(id, cardType)
+    case EditionsChef(id, _, metadata) => EditionsCardSkeleton(id, cardType, metadata)
+    case EditionsFeastCollection(id, _, metadata) => EditionsCardSkeleton(id, cardType, metadata)
+  }
 }
 
 object EditionsCard {
@@ -116,14 +128,24 @@ object EditionsCard {
           metadata = extractMetadata[EditionsChefMetadata](rs, prefix, EditionsChefMetadata())
         )
       case CardType.Recipe => EditionsRecipe(id, addedOn)
-      case CardType.FeastCollection => 
+      case CardType.FeastCollection =>
         EditionsFeastCollection(
-          id, 
-          addedOn, 
+          id,
+          addedOn,
           metadata = extractMetadata[EditionsFeastCollectionMetadata](rs, prefix, EditionsFeastCollectionMetadata())
         )
     }
   }
+
+  def getMetadataJson(card: EditionsCard): Option[String] =
+    card match {
+      case EditionsArticle(_, _, metadata) => maybeJson(metadata)
+      case EditionsChef(_, _, metadata) => maybeJson(metadata)
+      case EditionsFeastCollection(_, _, metadata) => maybeJson(metadata)
+      case _ => Some("{}")
+    }
+
+  private def maybeJson[T](maybeModel: Option[T])(implicit writes: Writes[T]) = maybeModel.map(m => Json.toJson(m).toString)
 
   private def extractMetadata[T](rs: WrappedResultSet, prefix: String, default: T)(implicit reads: Reads[T]): Option[T] = rs.stringOpt(prefix + "metadata").map(
     s => Json.parse(s).validate[T] match {
@@ -208,7 +230,7 @@ case class EditionsChefMetadata(
   bio: Option[String] = None,
   theme: Option[ChefTheme] = None,
   chefImageOverride: Option[Image] = None,
-)
+) extends EditionsCardMetadata
 
 object EditionsChefMetadata {
   implicit val format: OFormat[EditionsChefMetadata] = Json.format[EditionsChefMetadata]
@@ -226,7 +248,7 @@ case class EditionsFeastCollectionMetadata(
   title: Option[String] = None,
   theme: Option[FeastCollectionTheme] = None,
   collectionItems: List[EditionsFeastCollectionItem] = List.empty
-)
+) extends EditionsCardMetadata
 
 object EditionsFeastCollectionMetadata {
   implicit val format: OFormat[EditionsFeastCollectionMetadata] = Json.format[EditionsFeastCollectionMetadata]
