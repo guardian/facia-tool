@@ -102,6 +102,24 @@ trait IssueQueries extends Logging {
     issueId
   }
 
+  def insertIssueFromClosestPreviousIssue(edition: Edition,
+                                          issueDate: LocalDate,
+                                          user: User,
+                                          now: OffsetDateTime): Either[Error, EditionsIssue] = DB readOnly { implicit session =>
+    for {
+      previousIssue <- getClosestPreviousIssue(issueDate).toRight(EditionsDB.NotFoundError(s"Previous issue not found"))
+      issueId = insertIssue(edition, previousIssue.toSkeleton, user, now)
+      issue <- getIssue(issueId).toRight(EditionsDB.NotFoundError("Issue created but could not retrieve it from the database"))
+    } yield issue
+  }
+
+  private def getClosestPreviousIssue(issueDate: LocalDate)(implicit session: DBSession): Option[EditionsIssue] =
+    getIssue(sqls"""
+      WHERE issue_date < $issueDate
+      ORDER BY issue_date
+      LIMIT 1"""
+    )
+
   def listIssues(edition: Edition, dateFrom: LocalDate, dateTo: LocalDate) = DB readOnly { implicit session =>
     val maybeIssues = sql"""
       SELECT
@@ -165,7 +183,7 @@ trait IssueQueries extends Logging {
       LEFT JOIN fronts ON (fronts.issue_id = edition_issues.id)
       LEFT JOIN collections ON (collections.front_id = fronts.id)
       LEFT JOIN cards ON (cards.collection_id = collections.id)
-      ${whereClause}
+      $whereClause
       """.map { rs =>
         val maybeIssue = EditionsIssue.fromRow(rs).toOption
         val frontRow = FrontAndNestedEntitiesRow(

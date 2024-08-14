@@ -7,10 +7,10 @@ import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
 import model.editions._
-import model.editions.templates.{CuratedPlatformDefinition, EditionType}
+import model.editions.templates.CuratedPlatformDefinition
 import model.forms._
 import net.logstash.logback.marker.Markers
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
@@ -49,10 +49,16 @@ class EditionsController(db: EditionsDB,
     val form = req.body
 
     val result = for {
-      edition <- Either.fromOption[Result, Edition](Edition.withNameOption(name), NotFound(s"Edition $name not found"))
-      previousIssue <- db.getIssue(edition, form.issueDate).toRight(NotFound(s"Previous issue not found"))
-      issueId = db.insertIssue(edition, previousIssue.toSkeleton, req.user, OffsetDateTime.now())
-      issue <- Either.fromOption(db.getIssue(issueId), NotFound("Issue created but could not retrieve it from the database"))
+      edition <- Edition.withNameOption(name).toRight(NotFound(s"Edition $name not found"))
+      issue <- db.insertIssueFromClosestPreviousIssue(
+        edition = edition,
+        issueDate = form.issueDate,
+        user = req.user,
+        now = OffsetDateTime.now()
+      ).left.map {
+        case EditionsDB.NotFoundError(message) => NotFound(message)
+        case e => InternalServerError(e.getMessage)
+      }
     } yield issue
 
     result.fold(identity, issue => Created(Json.toJson(issue)))
