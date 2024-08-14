@@ -268,7 +268,7 @@ class FrontSection extends React.Component<
               style={{ marginTop: '30px' }}
               onClick={() => this.addFrontCollection()}
             >
-              Add New New New....
+              Add New Collection
             </Button>
           </FrontSectionContent>
         </FrontContainer>
