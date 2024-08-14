@@ -575,6 +575,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   }
 
+  private def issueDateToUTCStartOfDay(issueDate: LocalDate) = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
+
   "should insert content prefill time-window correctly" taggedAs UsesDatabase in {
 
     val issueId = insertSkeletonIssue(2020, 1, 1,
@@ -600,7 +602,19 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     )
   }
 
-  private def issueDateToUTCStartOfDay(issueDate: LocalDate) = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
+  "getIssue" - {
+    "should get an issue by date" taggedAs UsesDatabase in {
+      insertSkeletonIssue(2020, 1, 1, front("news/uk", collection("politics", None)))
+      val issue = editionsDB.getIssue(Edition.DailyEdition, LocalDate.of(2020, 1, 1)).value
+      issue.fronts.head.displayName shouldBe "news/uk"
+    }
+
+    "should return None when the issue is not found" taggedAs UsesDatabase in {
+      val issue = editionsDB.getIssue(Edition.DailyEdition, LocalDate.of(2020, 1, 1))
+
+      issue shouldBe None
+    }
+  }
 
   "Collection operations" - {
     "Add collection" - {

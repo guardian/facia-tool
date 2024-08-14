@@ -141,7 +141,15 @@ trait IssueQueries extends Logging {
     }.toOption.apply()
   }
 
+  def getIssue(edition: Edition, date: LocalDate): Option[EditionsIssue] = DB readOnly { implicit session =>
+    getIssue(sqls"""WHERE edition_issues.name = ${edition.entryName} AND edition_issues.issue_date = $date""")
+  }
+
   def getIssue(id: String): Option[EditionsIssue] = DB readOnly { implicit session =>
+    getIssue(sqls"""WHERE edition_issues.id = $id""")
+  }
+
+  private def getIssue(whereClause: SQLSyntax)(implicit session: DBSession): Option[EditionsIssue] = {
     val rows: List[(EditionsIssue, FrontAndNestedEntitiesRow)] =
       sql"""
       SELECT
@@ -161,7 +169,7 @@ trait IssueQueries extends Logging {
       LEFT JOIN fronts ON (fronts.issue_id = edition_issues.id)
       LEFT JOIN collections ON (collections.front_id = fronts.id)
       LEFT JOIN cards ON (cards.collection_id = collections.id)
-      WHERE edition_issues.id = $id
+      ${whereClause}
       """.map { rs =>
         val maybeIssue = EditionsIssue.fromRow(rs).toOption
         val frontRow = FrontAndNestedEntitiesRow(
