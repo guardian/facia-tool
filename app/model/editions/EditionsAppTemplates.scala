@@ -144,8 +144,6 @@ object FrontPresentation {
   implicit def frontPresentationFormat: OFormat[FrontPresentation] = Json.format[FrontPresentation]
 }
 
-case class CollectionPresentation()
-
 case class CapiPrefillQuery(queryString: String, pathType: PathType) {
   def escapedQueryString(): String =
     queryString
@@ -198,15 +196,12 @@ private[editions] case class CollectionTemplate(
                                                  name: String,
                                                  maybeOphanPath: Option[String] = None,
                                                  prefill: Option[CapiPrefillQuery],
-                                                 presentation: CollectionPresentation,
                                                  maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
                                                  hidden: Boolean = false,
                                                  cardCap: Int = Defaults.defaultCollectionCardsCap
 ) {
 
   def hide = copy(hidden = true)
-
-  def withPresentation(presentation: CollectionPresentation) = copy(presentation = presentation)
 
   def printSentPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, PrintSent)))
 

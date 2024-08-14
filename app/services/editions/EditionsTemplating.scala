@@ -84,7 +84,7 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
     val collections = frontTemplate.collections
     val maybeOphanPath = frontTemplate.maybeOphanPath
     collections.map { collectionTemplate =>
-      import collectionTemplate.{hidden, name, prefill, presentation}
+      import collectionTemplate.{hidden, name, prefill}
 
       val timeWindowConfig = List(
         collectionTemplate.maybeTimeWindowConfig,
@@ -117,7 +117,6 @@ class CollectionTemplatingHelper(capi: Capi, ophan: Ophan) extends Logging {
           getPrefillArticles(prefillParams)
         }.getOrElse(Nil),
         prefill,
-        presentation,
         capiQueryTimeWindow,
         hidden
       )
