@@ -9,12 +9,13 @@ import {
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
-import { EditionsFrontMetadata } from 'types/FaciaApi';
+import { EditionsFrontMetadata, FrontsConfig } from 'types/FaciaApi';
 import noop from 'lodash/noop';
 import { startOptionsModal } from './OptionsModal';
 import IssueVersions from 'components/Editions/IssueVersions';
 import { actions, toFrontsConfig } from 'bundles/frontsConfigBundle';
-import { selectors } from 'bundles/editionsIssueBundle';
+import { selectors as issueSelector } from 'bundles/editionsIssueBundle';
+import { selectors as frontsConfigSelector } from 'bundles/frontsConfigBundle';
 
 export const check =
   (id: string): ThunkResult<Promise<void>> =>
@@ -158,11 +159,25 @@ export const addFrontCollection =
     const state = getState();
     try {
       const newFront = await addCollectionToFront(id);
-      const frontConfig = toFrontsConfig(
+      const newFrontsConfig = toFrontsConfig(
         [newFront],
-        selectors.selectAll(state).id
+        issueSelector.selectAll(state).id
       );
-      dispatch(actions.fetchSuccess(frontConfig));
+      const existingFrontsConfig: FrontsConfig =
+        frontsConfigSelector.selectAll(state);
+
+      const mergedFrontsConfig = {
+        fronts: {
+          ...existingFrontsConfig.fronts,
+          ...newFrontsConfig.fronts,
+        },
+        collections: {
+          ...existingFrontsConfig.collections,
+          ...newFrontsConfig.collections,
+        },
+      };
+
+      dispatch(actions.fetchSuccess(mergedFrontsConfig));
     } catch (error) {
       //todo
     }
