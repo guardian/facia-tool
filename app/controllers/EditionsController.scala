@@ -25,6 +25,7 @@ import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 import model.editions.client.EditionsFrontendCollectionWrapper
+import play.api.libs.json.Format.GenericFormat
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
@@ -129,17 +130,28 @@ class EditionsController(db: EditionsDB,
   }
 
   def listIssues(edition: Edition) = EditEditionsAuthAction { req =>
-    Try {
+    val params = Try {
       val dateFrom = req.queryString.get("dateFrom").map(_.head).get
       val dateTo = req.queryString.get("dateTo").map(_.head).get
       (LocalDate.parse(dateFrom), LocalDate.parse(dateTo))
-    }.map {
-      case (localDateFrom, localDateTo) =>
-        db.listIssues(edition, localDateFrom, localDateTo) match {
-          case Right(issues) => Ok(Json.toJson(issues))
-          case Left(errors) => InternalServerError(s"Error listing issues: ${errors.mkString(", ")}")
-        }
-    }.getOrElse(BadRequest("Invalid or missing date"))
+    }.toEither.left.map { _ =>
+      BadRequest("Invalid or missing date")
+    }
+
+    val response = for {
+      dates <- params
+      (localDateFrom, localDateTo) = dates
+      platform <- AllTemplates.templates.get(edition).toRight(BadRequest("No platform for this edition"))
+      issues <- db.listIssues(edition, localDateFrom, localDateTo).left.map(errors => InternalServerError(s"Error listing issues: ${errors.mkString(", ")}"))
+    } yield {
+      val result = Json.obj(
+        "issues" -> Json.toJson(issues),
+        "platform" -> platform.platform.entryName
+      )
+      Ok(Json.toJson(result))
+    }
+
+    response.merge
   }
 
   // Ideally the frontend can be changed so we don't have this bonkers modelling!

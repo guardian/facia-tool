@@ -26,6 +26,7 @@ interface ManageEditionState {
   isError: boolean;
   isLoading: boolean;
   isCreatingIssue: boolean;
+  platform: string | undefined;
 }
 
 const LinkButton = styled(ButtonDefault.withComponent('a'))`
@@ -43,6 +44,11 @@ const IssueContainer = styled.div`
   margin: 10px 0;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;
+  gap: 5px;
+`;
+
 class ManageEdition extends React.Component<
   RouteComponentProps<{ editionName: string }>
 > {
@@ -55,6 +61,7 @@ class ManageEdition extends React.Component<
     isError: false,
     isLoading: false,
     isCreatingIssue: false,
+    platform: undefined,
   };
 
   public render() {
@@ -103,7 +110,7 @@ class ManageEdition extends React.Component<
     const selectedDateText = this.state.date
       ? this.state.date.format('DD-MM-YYYY')
       : '';
-    const isFeast = this.state.currentIssue?.platform === 'feast';
+    const isFeast = this.state.platform === 'feast';
     return hasCurrentIssue ? (
       <>
         <h3>Current issue: {selectedDateText}</h3>
@@ -121,7 +128,17 @@ class ManageEdition extends React.Component<
       noCurrentIssue && (
         <>
           <p>No issue found for {selectedDateText}</p>
-          <p>
+          <ButtonContainer>
+            {isFeast && (
+              <ButtonDefault
+                size="l"
+                priority="primary"
+                disabled={this.state.isCreatingIssue}
+                onClick={() => this.createEdition(true)}
+              >
+                Create issue from previous issue
+              </ButtonDefault>
+            )}
             <ButtonDefault
               size="l"
               disabled={this.state.isCreatingIssue}
@@ -129,16 +146,7 @@ class ManageEdition extends React.Component<
             >
               Create {isFeast ? 'new' : ''} issue
             </ButtonDefault>
-            {isFeast && (
-              <ButtonDefault
-                size="l"
-                disabled={this.state.isCreatingIssue}
-                onClick={() => this.createEdition(true)}
-              >
-                Create issue from previous issue
-              </ButtonDefault>
-            )}
-          </p>
+          </ButtonContainer>
         </>
       )
     );
@@ -213,7 +221,7 @@ class ManageEdition extends React.Component<
         this.props.match.params.editionName,
         startDate,
         endDate
-      ).then((issues) => this.setState({ issues })),
+      ).then(({ issues, platform }) => this.setState({ issues, platform })),
       `Fetching issues for this date range failed: ${startDate} to ${endDate}`
     );
   };

@@ -13,7 +13,7 @@ export const fetchIssuesForDateRange = async (
   editionName: string,
   start: Moment,
   end: Moment
-): Promise<EditionsIssue[]> => {
+): Promise<{ issues: EditionsIssue[]; platform: string }> => {
   return pandaFetch(
     `/editions-api/editions/${editionName}/issues?dateFrom=${start.format(
       dateFormat
@@ -57,8 +57,8 @@ export const createIssue = async (
   fromPreviousIssue?: boolean
 ): Promise<EditionsIssue> => {
   const path = fromPreviousIssue
-    ? `/editions-api/editions/${editionName}/issues`
-    : `/editions-api/editions/${editionName}/issues/from-previous-issue`;
+    ? `/editions-api/editions/${editionName}/issues/from-previous-issue`
+    : `/editions-api/editions/${editionName}/issues`;
   return pandaFetch(path, {
     method: 'post',
     mode: 'cors',
