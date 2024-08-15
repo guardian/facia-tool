@@ -15,12 +15,11 @@ import services.editions.{DbEditionsCard, DbEditionsCollection, DbEditionsFront,
 import scala.util.{Failure, Success, Try}
 
 trait IssueQueries extends Logging {
-
   def insertIssue(
                    edition: Edition,
                    issueSkeleton: EditionsIssueSkeleton,
                    user: User,
-                   now: OffsetDateTime
+                   now: OffsetDateTime,
                  ): String = DB localTx { implicit session =>
     val truncatedNow = EditionsDB.truncateDateTime(now)
     val userName = EditionsDB.getUserName(user)
@@ -48,7 +47,7 @@ trait IssueQueries extends Logging {
           is_hidden,
           metadata,
           is_special
-        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metadata()}, ${front.isSpecial})
+        ) VALUES ($issueId, $fIndex, ${front.name}, ${front.hidden}, ${front.metadata()}, ${front.isSpecial})
         RETURNING id;
       """.map(_.string("id")).single.apply().get
 
@@ -90,10 +89,11 @@ trait IssueQueries extends Logging {
                     INSERT INTO cards (
                     collection_id,
                     id,
+                    card_type,
                     index,
                     added_on,
                     metadata
-                    ) VALUES ($collectionId, ${card.id}, $tIndex, $truncatedNow, ${Json.toJson(card.metadata).toString}::JSONB)
+                    ) VALUES ($collectionId, ${card.id}, ${card.cardType.entryName}, $tIndex, $truncatedNow, ${card.metadata.map(Json.toJson(_).toString).getOrElse("{}")}::JSONB)
                  """.execute.apply()
         }
       }
@@ -108,17 +108,23 @@ trait IssueQueries extends Logging {
                                           now: OffsetDateTime): Either[Error, EditionsIssue] = DB readOnly { implicit session =>
     for {
       previousIssue <- getClosestPreviousIssue(issueDate).toRight(EditionsDB.NotFoundError(s"Previous issue not found"))
-      issueId = insertIssue(edition, previousIssue.toSkeleton, user, now)
+      newIssueSkeleton = previousIssue.toSkeleton.copy(issueDate = issueDate)
+      issueId = insertIssue(edition, newIssueSkeleton, user, now)
       issue <- getIssue(issueId).toRight(EditionsDB.NotFoundError("Issue created but could not retrieve it from the database"))
     } yield issue
   }
 
-  private def getClosestPreviousIssue(issueDate: LocalDate)(implicit session: DBSession): Option[EditionsIssue] =
-    getIssue(sqls"""
-      WHERE issue_date < $issueDate
-      ORDER BY issue_date
-      LIMIT 1"""
-    )
+  private def getClosestPreviousIssue(issueDate: LocalDate)(implicit session: DBSession): Option[EditionsIssue] = {
+    val id =
+      sql"""
+        SELECT id from edition_issues
+        WHERE issue_date < $issueDate
+        ORDER BY issue_date DESC
+        LIMIT 1
+      """.map(_.string("id")).single.apply()
+
+    id.flatMap(getIssue)
+  }
 
   def listIssues(edition: Edition, dateFrom: LocalDate, dateTo: LocalDate) = DB readOnly { implicit session =>
     val maybeIssues = sql"""

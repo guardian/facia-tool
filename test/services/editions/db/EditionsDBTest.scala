@@ -1,9 +1,9 @@
 package services.editions.db
 
 import java.time._
-
 import com.gu.pandomainauth.model.User
 import fixtures.{EditionsDBEvolutions, EditionsDBService, UsesDatabase}
+import model.editions
 import model.editions.internal.PrefillUpdate
 import model.editions.{TimeWindowConfigInDays, _}
 import model.forms.GetCollectionsFilter
@@ -13,6 +13,7 @@ import services.editions.GenerateEditionTemplateResult
 import services.editions.prefills.CapiQueryTimeWindow
 import org.scalatest.Assertions
 import services.editions.db.EditionsDB.NotFoundError
+import editions.{EditionsRecipe, EditionsChef, EditionsFeastCollection}
 
 class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with EditionsDBEvolutions with OptionValues {
 
@@ -78,10 +79,11 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     def special() = frontSkel.copy(isSpecial = true, hidden = true)
   }
 
-  private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsCardSkeleton*): EditionsCollectionSkeleton =
-    EditionsCollectionSkeleton(name, articles.toList, prefill, capiQueryTimeWindow, hidden = false)
+  private def collection(name: String, prefill: Option[CapiPrefillQuery], cards: EditionsCardSkeleton*): EditionsCollectionSkeleton =
+    EditionsCollectionSkeleton(name, cards.toList, prefill, capiQueryTimeWindow, hidden = false)
 
-  private def article(id: String): EditionsCardSkeleton = EditionsCardSkeleton(id, CardType.Article, Some(EditionsArticleMetadata.default))
+  private def card(id: String, cardType: Option[CardType] = None, meta: Option[EditionsCardMetadata] = None): EditionsCardSkeleton =
+    EditionsCardSkeleton(id, cardType.getOrElse(CardType.Article), meta.orElse(Some(EditionsArticleMetadata.default)))
 
   "should insert an empty issue" taggedAs UsesDatabase in {
     val id = insertSkeletonIssueForDaily(2019, 9, 30)
@@ -120,27 +122,27 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         ),
         collection("international", None,
-          article("34567"),
-          article("45678"),
-          article("56789")
+          card("34567"),
+          card("45678"),
+          card("56789")
         )
       ),
       front("comment",
         collection("opinion", Some(CapiPrefillQuery("magic-opinion-query", PathType.PrintSent)),
-          article("54321"),
-          article("65432")
+          card("54321"),
+          card("65432")
         ),
         collection("brexshit", None,
-          article("76543"),
-          article("87654")
+          card("76543"),
+          card("87654")
         ),
         collection("sigh", None,
-          article("98765"),
-          article("09876")
+          card("98765"),
+          card("09876")
         )
       )
     )
@@ -186,24 +188,24 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       )
     )
     insertSkeletonIssueForDaily(2019, 9, 29,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("54321"),
-          article("65432")
+          card("54321"),
+          card("65432")
         )
       )
     )
     insertSkeletonIssueForDaily(2019, 9, 28,
       front("news/uk",
         collection("politics", None,
-          article("14789"),
-          article("32147")
+          card("14789"),
+          card("32147")
         )
       )
     )
@@ -219,26 +221,26 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         ),
-        collection("international", None, article("34567"),
-          article("45678"),
-          article("56789")
+        collection("international", None, card("34567"),
+          card("45678"),
+          card("56789")
         )
       ),
       front("comment",
         collection("opinion", Some(CapiPrefillQuery("magic-opinion-query", PathType.PrintSent)),
-          article("54321"),
-          article("65432")
+          card("54321"),
+          card("65432")
         ),
         collection("brexshit", None,
-          article("76543"),
-          article("87654")
+          card("76543"),
+          card("87654")
         ),
         collection("sigh", None,
-          article("98765"),
-          article("09876")
+          card("98765"),
+          card("09876")
         )
       )
     )
@@ -261,27 +263,27 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         ),
         collection("international", None,
-          article("34567"),
-          article("45678"),
-          article("56789")
+          card("34567"),
+          card("45678"),
+          card("56789")
         )
       ),
       front("comment",
         collection("opinion", Some(CapiPrefillQuery("magic-opinion-query", PathType.PrintSent)),
-          article("54321"),
-          article("65432")
+          card("54321"),
+          card("65432")
         ),
         collection("brexshit", None,
-          article("76543"),
-          article("87654")
+          card("76543"),
+          card("87654")
         ),
         collection("sigh", None,
-          article("98765"),
-          article("09876")
+          card("98765"),
+          card("09876")
         )
       )
     )
@@ -308,13 +310,13 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         ),
         collection("international", None,
-          article("34567"),
-          article("45678"),
-          article("56789")
+          card("34567"),
+          card("45678"),
+          card("56789")
         )
       )
     )
@@ -346,27 +348,27 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         ),
         collection("international", None,
-          article("34567"),
-          article("45678"),
-          article("56789")
+          card("34567"),
+          card("45678"),
+          card("56789")
         )
       ),
       front("comment",
         collection("opinion", Some(CapiPrefillQuery("magic-opinion-query", PathType.PrintSent)),
-          article("54321"),
-          article("65432")
+          card("54321"),
+          card("65432")
         ),
         collection("brexshit", None,
-          article("76543"),
-          article("87654")
+          card("76543"),
+          card("87654")
         ),
         collection("sigh", None,
-          article("98765"),
-          article("09876")
+          card("98765"),
+          card("09876")
         )
       )
     )
@@ -416,7 +418,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
+          card("12345"),
         )
       )
     )
@@ -438,8 +440,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       ).special()
     )
@@ -467,8 +469,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       )
     )
@@ -489,8 +491,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val issue = insertSkeletonIssueForDaily(2019, 9, 1,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       )
     )
@@ -547,8 +549,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val newsUkIssueId = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(prefillFromPrintSent),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       )
     )
@@ -556,9 +558,9 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val internationalIssueId = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("international", Some(prefillFromSearch),
-          article("34567"),
-          article("45678"),
-          article("56789")
+          card("34567"),
+          card("45678"),
+          card("56789")
         )
       )
     )
@@ -586,8 +588,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       )
     )
@@ -621,8 +623,25 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "insertIssueFromClosestPreviousIssue" - {
+    val cards = List(
+      EditionsRecipe("recipe", 0L),
+      EditionsChef("chef", 0L, Some(EditionsChefMetadata(Some("bio"), chefImageOverride = Some(Image(None, None, "origin", "src"))))),
+      EditionsFeastCollection("feast-collection", 0L, Some(EditionsFeastCollectionMetadata(
+        title = Some("Feast collection title"),
+        theme = Some(FeastCollectionTheme(
+          id = "theme",
+          lightPalette = Palette("#333", "#666"),
+          darkPalette = Palette("#333", "#666"),
+          imageURL = None
+        )),
+        collectionItems = List(EditionsRecipe("nested-recipe", 0L))
+      )))
+    )
+
+    val cardsSkeleton = cards.map(_.toSkeleton)
+
     "should insert an issue that is a copy of the closest issue prior to that issue" taggedAs UsesDatabase in {
-      insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere, front("first", collection("politics", None)))
+      insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere, front("first", collection("politics", None, cardsSkeleton: _*)))
       insertSkeletonIssue(2020, 1, 12, Edition.FeastNorthernHemisphere, front("second", collection("politics", None)))
 
       editionsDB.insertIssueFromClosestPreviousIssue(
@@ -631,10 +650,54 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         user,
         now
       ) match {
-        case Right(issue) => issue.fronts.head.displayName shouldBe "first"
+        case Right(issue) =>
+          issue.issueDate shouldBe LocalDate.of(2020, 1, 2)
+
+          val front = issue.fronts.head
+          val items = front.collections.head.items
+
+          front.displayName shouldBe "first"
+
+          items.map {
+            case card: EditionsArticle => card.copy(addedOn = 0L)
+            case card: EditionsRecipe => card.copy(addedOn = 0L)
+            case card: EditionsChef => card.copy(addedOn = 0L)
+            case card: EditionsFeastCollection => card.copy(addedOn = 0L)
+          } shouldBe cards
         case Left(e) => fail(e.getMessage)
       }
     }
+
+    "should only copy the fronts, collections and cards related to that issue" taggedAs UsesDatabase in {
+      insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere, front("first", collection("politics", None, cardsSkeleton: _*)))
+      insertSkeletonIssue(2020, 1, 12, Edition.FeastNorthernHemisphere, front("second", collection("politics", None, cardsSkeleton: _*)))
+
+      editionsDB.insertIssueFromClosestPreviousIssue(
+        Edition.FeastNorthernHemisphere,
+        LocalDate.of(2020, 1, 13),
+        user,
+        now
+      ) match {
+        case Right(issue) =>
+          issue.issueDate shouldBe LocalDate.of(2020, 1, 13)
+          issue.fronts.size shouldBe 1
+
+          val front = issue.fronts.head
+          val items = front.collections.head.items
+
+          front.displayName shouldBe "second"
+          front.collections.size shouldBe 1
+
+          items.map {
+            case card: EditionsArticle => card.copy(addedOn = 0L)
+            case card: EditionsRecipe => card.copy(addedOn = 0L)
+            case card: EditionsChef => card.copy(addedOn = 0L)
+            case card: EditionsFeastCollection => card.copy(addedOn = 0L)
+          } shouldBe cards
+        case Left(e) => fail(e.getMessage)
+      }
+    }
+
 
     "should fail if there is no issue prior that that issue" taggedAs UsesDatabase in {
       editionsDB.insertIssueFromClosestPreviousIssue(
@@ -700,7 +763,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         val invalidIndex = Some(0)
 
         editionsDB.addCollectionToFront(frontFromIssue.id, collectionIndex = invalidIndex, user = user, now = now) match {
-          case Right(front) =>
+          case Right(_) =>
             Assertions.fail()
           case Left(error) =>
             error shouldBe an[EditionsDB.WriteError]
@@ -721,14 +784,14 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
           case Right(front) =>
             front.collections.map(_.displayName) shouldBe List("politics", "sport")
           case Left(error) =>
-            Assertions.fail(s"Error removing collection to front: ${error.getMessage()}")
+            Assertions.fail(s"Error removing collection to front: ${error.getMessage}")
         }
 
         editionsDB.removeCollectionFromFront(frontFromIssue.id, frontFromIssue.collections(0).id, user = user, now = now) match {
           case Right(front) =>
             front.collections.map(_.displayName) shouldBe List("sport")
           case Left(error) =>
-            Assertions.fail(s"Error removing collection to front: ${error.getMessage()}")
+            Assertions.fail(s"Error removing collection to front: ${error.getMessage}")
         }
       }
 
