@@ -103,6 +103,7 @@ class ManageEdition extends React.Component<
     const selectedDateText = this.state.date
       ? this.state.date.format('DD-MM-YYYY')
       : '';
+    const isFeast = this.state.currentIssue?.platform === 'feast';
     return hasCurrentIssue ? (
       <>
         <h3>Current issue: {selectedDateText}</h3>
@@ -124,32 +125,44 @@ class ManageEdition extends React.Component<
             <ButtonDefault
               size="l"
               disabled={this.state.isCreatingIssue}
-              onClick={this.createEdition}
+              onClick={() => this.createEdition(false)}
             >
-              Create issue
+              Create {isFeast ? 'new' : ''} issue
             </ButtonDefault>
+            {isFeast && (
+              <ButtonDefault
+                size="l"
+                disabled={this.state.isCreatingIssue}
+                onClick={() => this.createEdition(true)}
+              >
+                Create issue from previous issue
+              </ButtonDefault>
+            )}
           </p>
         </>
       )
     );
   };
 
-  private createEdition = () => {
+  private createEdition = (fromPreviousIssue: boolean) => {
     if (!this.state.date) {
       this.setState({ infoMessage: 'Please select a date.', isError: true });
       return;
     }
+
     this.handleLoadingState(
-      createIssue(this.props.match.params.editionName, this.state.date).then(
-        (issue) => {
-          this.setState({
-            infoMessage: 'New issue created!',
-            isError: false,
-            currentIssue: issue,
-            isCreatingIssue: false,
-          });
-        }
-      ),
+      createIssue(
+        this.props.match.params.editionName,
+        this.state.date,
+        fromPreviousIssue
+      ).then((issue) => {
+        this.setState({
+          infoMessage: 'New issue created!',
+          isError: false,
+          currentIssue: issue,
+          isCreatingIssue: false,
+        });
+      }),
       `Creating an issue for the date ${this.state.date.format(
         'DD-MM-YYYY'
       )} failed`,
