@@ -78,38 +78,7 @@ trait FrontsQueries extends Logging {
     val rows: List[FrontAndNestedEntitiesRow] =
       sql"""
         SELECT
-          fronts.id            AS fronts_id,
-          fronts.issue_id      AS fronts_issue_id,
-          fronts.index         AS fronts_index,
-          fronts.name          AS fronts_name,
-          fronts.is_special    AS fronts_is_special,
-          fronts.is_hidden     AS fronts_is_hidden,
-          fronts.metadata      AS fronts_metadata,
-          fronts.updated_on    AS fronts_updated_on,
-          fronts.updated_by    AS fronts_updated_by,
-          fronts.updated_email AS fronts_updated_email,
-
-          collections.id            AS collections_id,
-          collections.front_id      AS collections_front_id,
-          collections.index         AS collections_index,
-          collections.name          AS collections_name,
-          collections.is_hidden     AS collections_is_hidden,
-          collections.metadata      AS collections_metadata,
-          collections.updated_on    AS collections_updated_on,
-          collections.updated_by    AS collections_updated_by,
-          collections.updated_email AS collections_updated_email,
-          collections.prefill       AS collections_prefill,
-          collections.path_type     AS collections_path_type,
-          collections.content_prefill_window_start       AS collections_content_prefill_window_start,
-          collections.content_prefill_window_end         AS collections_content_prefill_window_end,
-
-          cards.collection_id AS cards_collection_id,
-          cards.id            AS cards_id,
-          cards.card_type     AS cards_card_type,
-          cards.index         AS cards_index,
-          cards.added_on      AS cards_added_on,
-          cards.metadata      AS cards_metadata
-
+        ${FrontsQueries.frontAndNestedEntitiesColumns}
         FROM fronts
         LEFT JOIN collections ON (collections.front_id = fronts.id)
         LEFT JOIN cards ON (cards.collection_id = collections.id)
@@ -155,4 +124,38 @@ object FrontsQueries {
         front.copy(collections = collectionsForFront)
       }
   }
+
+  val frontAndNestedEntitiesColumns = sqls"""
+      fronts.id            AS fronts_id,
+      fronts.issue_id      AS fronts_issue_id,
+      fronts.index         AS fronts_index,
+      fronts.name          AS fronts_name,
+      fronts.is_special    AS fronts_is_special,
+      fronts.is_hidden     AS fronts_is_hidden,
+      fronts.metadata      AS fronts_metadata,
+      fronts.updated_on    AS fronts_updated_on,
+      fronts.updated_by    AS fronts_updated_by,
+      fronts.updated_email AS fronts_updated_email,
+
+      collections.id            AS collections_id,
+      collections.front_id      AS collections_front_id,
+      collections.index         AS collections_index,
+      collections.name          AS collections_name,
+      collections.is_hidden     AS collections_is_hidden,
+      collections.metadata      AS collections_metadata,
+      collections.updated_on    AS collections_updated_on,
+      collections.updated_by    AS collections_updated_by,
+      collections.updated_email AS collections_updated_email,
+      collections.prefill       AS collections_prefill,
+      collections.path_type     AS collections_path_type,
+      collections.content_prefill_window_start       AS collections_content_prefill_window_start,
+      collections.content_prefill_window_end         AS collections_content_prefill_window_end,
+
+      cards.collection_id AS cards_collection_id,
+      cards.id            AS cards_id,
+      cards.card_type     AS cards_card_type,
+      cards.index         AS cards_index,
+      cards.added_on      AS cards_added_on,
+      cards.metadata      AS cards_metadata
+  """
 }
