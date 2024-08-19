@@ -320,13 +320,14 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     val newName = "Say My Name, Say My Name..."
 
-    val evenMoreBrexshit = brexshit.copy(
-      displayName = newName,
+    val evenMoreBrexshit = EditionsCollectionUpdate(
+      id = brexshit.id,
+      displayName = Some(newName),
       updatedBy = Some("BoJo"),
       updatedEmail = Some("bojo@piffle.paffle"),
     )
 
-    editionsDB.updateCollectionName(evenMoreBrexshit)
+    editionsDB.updateCollection(evenMoreBrexshit, OffsetDateTime.now())
 
     val collections = editionsDB.getCollections(List(GetCollectionsFilter(brexshit.id, None)))
     collections.size shouldBe 1
@@ -375,15 +376,14 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     val items = EditionsArticle("654789", futureMillis, Some(simpleMetadata)) :: brexshit.items
 
-    val evenMoreBrexshit = brexshit.copy(
-      lastUpdated = Some(futureMillis),
-      displayName = "i=am-ignored",
+    val evenMoreBrexshit = EditionsCollectionUpdate(
+      id = brexshit.id,
       updatedBy = Some("BoJo"),
       updatedEmail = Some("bojo@piffle.paffle"),
-      items = items
+      items = Some(items)
     )
 
-    editionsDB.updateCollection(evenMoreBrexshit)
+    editionsDB.updateCollection(evenMoreBrexshit, future)
 
     val collections = editionsDB.getCollections(List(GetCollectionsFilter(brexshit.id, None)))
     collections.size shouldBe 1
@@ -421,8 +421,13 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val retrievedCollection = retrievedIssue.fronts.head.collections.head
 
     val recipeCard = EditionsRecipe("654789", now.toInstant.toEpochMilli)
-    val items = retrievedCollection.copy(items = retrievedCollection.items :+ recipeCard)
-    editionsDB.updateCollection(items)
+    val items = EditionsCollectionUpdate(
+      id = retrievedCollection.id,
+      items = Some(retrievedCollection.items :+ recipeCard),
+      updatedBy = retrievedCollection.updatedBy,
+      updatedEmail = retrievedCollection.updatedEmail,
+    )
+    editionsDB.updateCollection(items, OffsetDateTime.now())
 
     val collections = editionsDB.getCollections(List(GetCollectionsFilter(retrievedCollection.id, None)))
     collections.size shouldBe 1

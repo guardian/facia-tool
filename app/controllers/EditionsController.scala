@@ -14,7 +14,7 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
-import services.editions.db.EditionsDB
+import services.editions.db.{EditionsCollectionUpdate, EditionsDB}
 import services.editions.prefills.{CapiPrefillTimeParams, MetadataForLogging, PrefillParamsAdapter}
 import services.editions.publishing.Publishing
 import services.editions.publishing.PublishedIssueFormatters._
@@ -144,10 +144,9 @@ class EditionsController(db: EditionsDB,
     }
   }
 
-  def updateCollection(collectionId: String) = EditEditionsAuthAction(parse.json[EditionsFrontendCollectionWrapper]) { req =>
+  def updateCollection() = EditEditionsAuthAction(parse.json[EditionsCollectionUpdate]) { req =>
     val form = req.body
-    val collectionToUpdate = EditionsFrontendCollectionWrapper.toCollection(form)
-    val updatedCollection = db.updateCollection(collectionToUpdate)
+    val updatedCollection = db.updateCollection(form, OffsetDateTime.now())
     for {
       issueId <- db.getIssueIdFromCollectionId(updatedCollection.id)
       issue <- db.getIssue(issueId)
@@ -156,26 +155,6 @@ class EditionsController(db: EditionsDB,
       publishing.updatePreview(issue)
     }
     Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
-  }
-
-  def renameCollection(collectionId: String) = EditEditionsAuthAction(parse.json[EditionsFrontendCollectionWrapper]) { req =>
-    logger.info(s"Renaming collection ${collectionId}")
-
-    val collection = db.getCollections(List(GetCollectionsFilter(id = collectionId, None)))
-
-    if(collection.isEmpty) {
-      logger.warn(s"Collection not found ${collectionId}")
-      NotFound(s"Collection $collectionId not found")
-    } else {
-      val updatingCollection = collection.head.copy(
-        displayName = req.body.collection.displayName,
-        updatedBy = Some(UserUtil.getDisplayName(req.user)),
-        updatedEmail = Some(req.user.email)
-      )
-
-      val updatedCollection = db.updateCollectionName(updatingCollection)
-      Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
-    }
   }
 
   def getPreviewEdition(id: String) = EditEditionsAuthAction { _ =>

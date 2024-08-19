@@ -123,6 +123,5 @@ DELETE      /editions-api/fronts/:frontId/collection/:collectionId          cont
 
 POST        /editions-api/collections                                       controllers.EditionsController.getCollections()
 GET         /editions-api/collections/:collectionId                         controllers.EditionsController.getCollection(collectionId)
-PUT         /editions-api/collections/:collectionId                         controllers.EditionsController.updateCollection(collectionId)
-PATCH       /editions-api/collections/:collectionId/name                    controllers.EditionsController.renameCollection(collectionId)
+PUT         /editions-api/collections                                       controllers.EditionsController.updateCollection()
 GET         /editions-api/collections/:collectionId/prefill                 controllers.EditionsController.getPrefillForCollection(collectionId)
