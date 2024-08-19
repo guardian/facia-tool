@@ -32,7 +32,7 @@ class EditionsDB(url: String, user: String, password: String) extends IssueQueri
         now = truncatedNow
       )
       updatedFront <- getFront(frontId).toRight(EditionsDB.InvariantError(s"Updated front ${frontId} not found in issue"))
-      newCollection <- updatedFront.collections.find(_.id == collectionId).toRight(EditionsDB.InvariantError(s"New collection ${collectionId} not found in updated front ${frontId}"))
+      _ <- updatedFront.collections.find(_.id == collectionId).toRight(EditionsDB.InvariantError(s"New collection ${collectionId} not found in updated front ${frontId}"))
     } yield updatedFront
   }
 
