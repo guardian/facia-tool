@@ -5,9 +5,7 @@ import java.time.temporal.ChronoUnit
 
 import scalikejdbc._
 import com.gu.pandomainauth.model.User
-import services.editions.DbEditionsFront
 import model.editions.EditionsFront
-import scala.util.Try
 
 class EditionsDB(url: String, user: String, password: String) extends IssueQueries with FrontsQueries with CollectionsQueries {
   Class.forName("org.postgresql.Driver")

@@ -52,7 +52,7 @@ CREATE TABLE collections (
 );
 
 CREATE INDEX collections_front_id_index ON collections(front_id);
-ALTER TABLE collections ADD CONSTRAINT collection_index_must_be_unique UNIQUE (front_id, index);
+ALTER TABLE collections ADD CONSTRAINT collection_index_must_be_unique UNIQUE (front_id, index) deferrable initially immediate;
 
 CREATE TABLE articles (
     collection_id  TEXT        REFERENCES collections(id) ON DELETE CASCADE NOT NULL,
