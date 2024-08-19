@@ -14,7 +14,7 @@ import play.api.libs.json.{JsObject, JsValue, Json}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
-import services.editions.db.EditionsDB
+import services.editions.db.{EditionsCollectionUpdate, EditionsDB}
 import services.editions.prefills.{CapiPrefillTimeParams, MetadataForLogging, PrefillParamsAdapter}
 import services.editions.publishing.Publishing
 import services.editions.publishing.PublishedIssueFormatters._
@@ -144,10 +144,9 @@ class EditionsController(db: EditionsDB,
     }
   }
 
-  def updateCollection(collectionId: String) = EditEditionsAuthAction(parse.json[EditionsFrontendCollectionWrapper]) { req =>
+  def updateCollection() = EditEditionsAuthAction(parse.json[EditionsCollectionUpdate]) { req =>
     val form = req.body
-    val collectionToUpdate = EditionsFrontendCollectionWrapper.toCollection(form)
-    val updatedCollection = db.updateCollection(collectionToUpdate)
+    val updatedCollection = db.updateCollection(form)
     for {
       issueId <- db.getIssueIdFromCollectionId(updatedCollection.id)
       issue <- db.getIssue(issueId)

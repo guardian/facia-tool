@@ -2,17 +2,30 @@ package services.editions.db
 
 import java.time._
 import model.editions.internal.PrefillUpdate
-import model.editions.{CapiPrefillQuery, Edition, EditionsArticle, EditionsChef, EditionsCollection, PathType}
+import model.editions.{CapiPrefillQuery, Edition, EditionsArticle, EditionsCard, EditionsChef, EditionsCollection, EditionsFeastCollection, PathType}
 import model.forms.GetCollectionsFilter
-import play.api.libs.json.Json
+import play.api.libs.json.{Json, OFormat, Writes}
 import scalikejdbc._
 import services.editions.DbEditionsCard
 import services.editions.prefills.CapiQueryTimeWindow
-import model.editions.EditionsFeastCollection
-import play.api.libs.json.Writes
 import com.gu.pandomainauth.model.User
+
 import scala.util.Try
-import model.editions.CuratedPlatform.Editions
+
+case class EditionsCollectionUpdate(
+  id: String,
+  displayName: Option[String] = None,
+  index: Option[Int] = None,
+  isHidden: Option[Boolean] = None,
+  lastUpdated: Option[Long],
+  updatedBy: Option[String],
+  updatedEmail: Option[String],
+  items: Option[List[EditionsCard]]
+)
+
+object EditionsCollectionUpdate {
+  implicit val format: OFormat[EditionsCollectionUpdate] = Json.format[EditionsCollectionUpdate]
+}
 
 trait CollectionsQueries {
 
@@ -97,32 +110,60 @@ trait CollectionsQueries {
     updatedCollections.head
   }
 
-  def updateCollection(collection: EditionsCollection): EditionsCollection = DB localTx { implicit session =>
-    val lastUpdated = collection.lastUpdated.map(EditionsDB.dateTimeFromMillis)
-    sql"""
-      UPDATE collections
-      SET is_hidden = ${collection.isHidden},
-          updated_on = $lastUpdated,
-          updated_by = ${collection.updatedBy},
-          updated_email = ${collection.updatedEmail}
-      WHERE id = ${collection.id}
-    """.execute.apply()
+  def updateCollection(collectionUpdate: EditionsCollectionUpdate): EditionsCollection = DB localTx { implicit session =>
+    val lastUpdated = collectionUpdate.lastUpdated.map(EditionsDB.dateTimeFromMillis)
 
-    // At the moment we don't do partial updates so simply delete all of them and reinsert.
-    sql"""
-          DELETE FROM cards WHERE collection_id = ${collection.id}
-    """.execute.apply()
-
-    collection.items.zipWithIndex.foreach { case (card, index) =>
-      val metadataJson = card match {
-        case EditionsArticle(_, _, metadata) => maybeJson(metadata)
-        case EditionsChef(_, _, metadata) => maybeJson(metadata)
-        case EditionsFeastCollection(_, _, metadata) => maybeJson(metadata)
-        case _ => "{}"
+    for {
+      previousCollection <- getCollections(List(GetCollectionsFilter(id = collectionUpdate.id, None))).headOption.toRight {
+        EditionsDB.NotFoundError(s"Attempted to update collection, but could not find collection for ID: ${collectionUpdate.id}")
       }
+    } yield {
+      val isHiddenStmt = collectionUpdate.isHidden.map { isHidden => sqls"is_hidden = $isHidden," }.getOrElse(sqls.empty)
+      val nameStmt = collectionUpdate.displayName.map { displayName => sqls"name = ${displayName.trim()}," }.getOrElse(sqls.empty)
 
-      val addedOn = EditionsDB.dateTimeFromMillis(card.addedOn)
       sql"""
+        UPDATE collections
+          SET $isHiddenStmt
+              $nameStmt
+              updated_on = $lastUpdated,
+              updated_by = ${collectionUpdate.updatedBy},
+              updated_email = ${collectionUpdate.updatedEmail}
+          WHERE id = ${collectionUpdate.id}
+        """.execute.apply()
+
+      // Update the collection indices, if necessary
+      collectionUpdate.index.foreach { newIndex =>
+        val existingIndices =
+          sql"""
+            SELECT id
+            FROM collections
+            WHERE front_id = (
+              SELECT front_id
+              FROM collections
+              WHERE id=${previousCollection.id}
+             )
+        """.map { _.string("id") }.list.apply()
+
+        updateCollectionIndices(existingIndices.take(newIndex) ++ List(collectionUpdate.id) ++ existingIndices.drop(newIndex))
+      }
+    }
+
+
+    collectionUpdate.items.foreach {
+      // At the moment we don't do partial updates so simply delete all of them and reinsert.
+      sql"""
+        DELETE FROM cards WHERE collection_id = ${collectionUpdate.id}
+      """.execute.apply()
+      _.zipWithIndex.foreach { case (card, index) =>
+        val metadataJson = card match {
+          case EditionsArticle(_, _, metadata) => maybeJson(metadata)
+          case EditionsChef(_, _, metadata) => maybeJson(metadata)
+          case EditionsFeastCollection(_, _, metadata) => maybeJson(metadata)
+          case _ => "{}"
+        }
+
+        val addedOn = EditionsDB.dateTimeFromMillis(card.addedOn)
+        sql"""
           INSERT INTO cards (
           collection_id,
           id,
@@ -130,11 +171,12 @@ trait CollectionsQueries {
           index,
           added_on,
           metadata
-          ) VALUES (${collection.id}, ${card.id}, ${card.cardType.entryName}, $index, $addedOn, $metadataJson::JSONB)
+          ) VALUES (${collectionUpdate.id}, ${card.id}, ${card.cardType.entryName}, $index, $addedOn, $metadataJson::JSONB)
        """.execute.apply()
+      }
     }
 
-    val rows = fetchCollectionsSql(where = sqls"collections.id = ${collection.id}").apply()
+    val rows = fetchCollectionsSql(where = sqls"collections.id = ${collectionUpdate.id}").apply()
 
     val updatedCollections = convertRowsToCollections(rows)
 

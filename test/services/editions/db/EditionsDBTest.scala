@@ -375,12 +375,12 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     val items = EditionsArticle("654789", futureMillis, Some(simpleMetadata)) :: brexshit.items
 
-    val evenMoreBrexshit = brexshit.copy(
+    val evenMoreBrexshit = EditionsCollectionUpdate(
+      id = brexshit.id,
       lastUpdated = Some(futureMillis),
-      displayName = "i=am-ignored",
       updatedBy = Some("BoJo"),
       updatedEmail = Some("bojo@piffle.paffle"),
-      items = items
+      items = Some(items)
     )
 
     editionsDB.updateCollection(evenMoreBrexshit)
@@ -421,7 +421,13 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val retrievedCollection = retrievedIssue.fronts.head.collections.head
 
     val recipeCard = EditionsRecipe("654789", now.toInstant.toEpochMilli)
-    val items = retrievedCollection.copy(items = retrievedCollection.items :+ recipeCard)
+    val items = EditionsCollectionUpdate(
+      id = retrievedCollection.id,
+      items = Some(retrievedCollection.items :+ recipeCard),
+      updatedBy = retrievedCollection.updatedBy,
+      updatedEmail = retrievedCollection.updatedEmail,
+      lastUpdated = retrievedCollection.lastUpdated
+    )
     editionsDB.updateCollection(items)
 
     val collections = editionsDB.getCollections(List(GetCollectionsFilter(retrievedCollection.id, None)))
