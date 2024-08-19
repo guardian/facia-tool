@@ -22,8 +22,8 @@ trait IssueQueries extends Logging {
                    user: User,
                    now: OffsetDateTime
                  ): String = DB localTx { implicit session =>
-    val userName = user.firstName + " " + user.lastName
     val truncatedNow = EditionsDB.truncateDateTime(now)
+    val userName = EditionsDB.getUserName(user)
 
     import genEditionTemplateResult.{issueSkeleton, contentPrefillTimeWindow}
 
@@ -142,14 +142,7 @@ trait IssueQueries extends Logging {
   }
 
   def getIssue(id: String): Option[EditionsIssue] = DB readOnly { implicit session =>
-    case class GetIssueRow(
-                            issue: EditionsIssue,
-                            front: Option[DbEditionsFront],
-                            collection: Option[DbEditionsCollection],
-                            card: Option[DbEditionsCard]
-                          )
-
-    val rows: List[GetIssueRow] =
+    val rows: List[(EditionsIssue, FrontAndNestedEntitiesRow)] =
       sql"""
       SELECT
         edition_issues.id,
@@ -162,38 +155,7 @@ trait IssueQueries extends Logging {
         edition_issues.launched_on,
         edition_issues.launched_by,
         edition_issues.launched_email,
-
-        fronts.id            AS fronts_id,
-        fronts.issue_id      AS fronts_issue_id,
-        fronts.index         AS fronts_index,
-        fronts.name          AS fronts_name,
-        fronts.is_special    AS fronts_is_special,
-        fronts.is_hidden     AS fronts_is_hidden,
-        fronts.metadata      AS fronts_metadata,
-        fronts.updated_on    AS fronts_updated_on,
-        fronts.updated_by    AS fronts_updated_by,
-        fronts.updated_email AS fronts_updated_email,
-
-        collections.id            AS collections_id,
-        collections.front_id      AS collections_front_id,
-        collections.index         AS collections_index,
-        collections.name          AS collections_name,
-        collections.is_hidden     AS collections_is_hidden,
-        collections.metadata      AS collections_metadata,
-        collections.updated_on    AS collections_updated_on,
-        collections.updated_by    AS collections_updated_by,
-        collections.updated_email AS collections_updated_email,
-        collections.prefill       AS collections_prefill,
-        collections.path_type     AS collections_path_type,
-        collections.content_prefill_window_start       AS collections_content_prefill_window_start,
-        collections.content_prefill_window_end         AS collections_content_prefill_window_end,
-
-        cards.collection_id AS cards_collection_id,
-        cards.id            AS cards_id,
-        cards.card_type     AS cards_card_type,
-        cards.index         AS cards_index,
-        cards.added_on      AS cards_added_on,
-        cards.metadata      AS cards_metadata
+        ${FrontsQueries.frontAndNestedEntitiesColumns}
 
       FROM edition_issues
       LEFT JOIN fronts ON (fronts.issue_id = edition_issues.id)
@@ -201,42 +163,22 @@ trait IssueQueries extends Logging {
       LEFT JOIN cards ON (cards.collection_id = collections.id)
       WHERE edition_issues.id = $id
       """.map { rs =>
-          EditionsIssue.fromRow(rs).toOption.map { issue => GetIssueRow(
-            issue,
-            DbEditionsFront.fromRowOpt(rs, "fronts_"),
-            DbEditionsCollection.fromRowOpt(rs, "collections_"),
-            DbEditionsCard.fromRowOpt(rs, "cards_"))
-        }
+        val maybeIssue = EditionsIssue.fromRow(rs).toOption
+        val frontRow = FrontAndNestedEntitiesRow(
+          DbEditionsFront.fromRowOpt(rs, "fronts_"),
+          DbEditionsCollection.fromRowOpt(rs, "collections_"),
+          DbEditionsCard.fromRowOpt(rs, "cards_")
+        )
+
+        maybeIssue.map(issue => (issue, frontRow))
       }
         .list
         .apply()
         .flatten
 
-    val fronts: List[EditionsFront] = rows
-      .flatMap(row => row.front)
-      .sortBy(_.index)
-      .map(_.front)
-      .distinctBy(_.id)
-      .map { front =>
-        val collectionsForFront = rows
-          .flatMap(row => row.collection.filter(_.frontId == front.id))
-          .sortBy(_.index)
-          .map(_.collection)
-          .foldLeft(List.empty[EditionsCollection]) { (acc, cur) => if (acc.exists(c => c.id == cur.id)) acc else acc :+ cur }
-          .map { collection =>
-            val cards = rows
-              .flatMap(row => row.card.filter(_.collectionId == collection.id))
-              .sortBy(_.index)
-              .map(_.card)
-
-            collection
-              .copy(items = cards)
-          }
-
-        front.copy(collections = collectionsForFront)
-      }
-
-    rows.headOption.map(_.issue.copy(fronts = fronts))
+    rows.headOption.map {
+      case (issue, _) => issue.copy(fronts = FrontsQueries.toEditionsFront(rows.map(_._2)))
+    }
   }
 
   def getIssueSummary(id: String): Option[Either[String, EditionsIssue]] = DB readOnly { implicit session =>

@@ -10,6 +10,9 @@ import services.editions.DbEditionsCard
 import services.editions.prefills.CapiQueryTimeWindow
 import model.editions.EditionsFeastCollection
 import play.api.libs.json.Writes
+import com.gu.pandomainauth.model.User
+import scala.util.Try
+import model.editions.CuratedPlatform.Editions
 
 trait CollectionsQueries {
 
@@ -141,6 +144,32 @@ trait CollectionsQueries {
     updatedCollections.head
   }
 
+  /**
+    * Update the indices for a list of collections, setting their index as their position in the given list.
+    *
+    * @param collection
+    * @return
+    */
+  protected def updateCollectionIndices(collectionIds: List[String])(implicit session: DBSession): Either[Error, Unit] =
+  Try {
+    collectionIds match {
+      case Nil => Right(())
+      case ids =>
+        sql"""
+          UPDATE collections
+          SET index=CASE
+            ${sqls.join(collectionIds.zipWithIndex.map {
+              case (id, index) => sqls"""WHEN id=${id} THEN ${index}"""
+            }, sqls.empty)}
+          END
+          WHERE id IN (${collectionIds.mkString(", ")})
+        """.update.apply()
+    }
+  }.toEither match {
+    case Left(error) => Left(EditionsDB.WriteError(s"Could not update collection indices: ${error.getMessage}"))
+    case Right(_) => Right(())
+  }
+
   private def maybeJson[T](maybeModel: Option[T])(implicit writes: Writes[T]) = maybeModel.map(m => Json.toJson(m).toString)
 
   private def fetchCollectionsSql(where: SQLSyntax): SQLToList[GetCollectionsRow, HasExtractor] = {
@@ -191,4 +220,54 @@ trait CollectionsQueries {
 
   private case class GetCollectionsRow(collection: EditionsCollection, card: Option[DbEditionsCard])
 
+  /**
+    * Insert a collection owned by the specified front.
+    *
+    * @return the Collection id
+    */
+  protected def insertCollection(frontId: String, collectionIndex: Int, name: String, now: OffsetDateTime, user: User)(implicit session: DBSession) =
+    Try {
+      sql"""
+        INSERT INTO collections (
+          front_id,
+          index,
+          name,
+          is_hidden,
+          updated_on,
+          updated_by,
+          updated_email
+        ) VALUES (
+          $frontId
+          , ${collectionIndex}
+          , $name
+          , FALSE
+          , $now
+          , ${EditionsDB.getUserName(user)}
+          , ${user.email}
+        )
+        RETURNING id;
+      """.map(_.string("id"))
+        .single
+        .apply()
+        .toRight(EditionsDB.WriteError("Could not write new collection to database"))
+    }
+      .toEither
+      .left
+      .map { error => EditionsDB.WriteError(error.getMessage()) }
+      .flatten
+
+  /**
+    * Delete a collection.
+    */
+  protected def deleteCollection(collectionId: String, now: OffsetDateTime, user: User)(implicit session: DBSession): Either[Error, Unit] =
+    Try {
+      sql"""DELETE FROM collections WHERE id=$collectionId""".map(_.string("id"))
+        .update
+        .apply()
+    }
+      .toEither match {
+        case Right(1) => Right(())
+        case Right(_) => Left(EditionsDB.NotFoundError(s"Collection ${collectionId} was not found"))
+        case Left(error) => Left(EditionsDB.WriteError(error.getMessage()))
+      }
 }

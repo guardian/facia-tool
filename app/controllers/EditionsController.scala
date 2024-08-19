@@ -255,6 +255,32 @@ class EditionsController(db: EditionsDB,
     } getOrElse NotFound(s"Front $id not found")
   }
 
+  def addCollectionToFront(id: String) = EditEditionsAuthAction { req =>
+    db.addCollectionToFront(
+      frontId = id,
+      user = req.user,
+      now = OffsetDateTime.now(),
+      name = req.queryString.get("name").flatMap(_.headOption)
+    ) match {
+      case Right(front) => Ok(Json.toJson(front))
+      case Left(EditionsDB.NotFoundError(message)) => NotFound
+      case Left(error) => InternalServerError(error.getMessage())
+    }
+  }
+
+  def removeCollectionFromFront(frontId: String, collectionId: String) = EditEditionsAuthAction { req =>
+    db.removeCollectionFromFront(
+      frontId = frontId,
+      collectionId,
+      user = req.user,
+      now = OffsetDateTime.now()
+    ) match {
+      case Right(front) => Ok(Json.toJson(front))
+      case Left(EditionsDB.NotFoundError(message)) => NotFound
+      case Left(error) => InternalServerError(error.getMessage())
+    }
+  }
+
   private def getAvailableCuratedPlatformEditions: Map[String, List[CuratedPlatformDefinition]] = {
     val feastAppEditions = FeastAppTemplates.getAvailableTemplates
 

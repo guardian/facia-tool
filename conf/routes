@@ -102,25 +102,27 @@ GET         /v2/*path                                controllers.V2App.index(pat
 POST        /api/usage                               controllers.GridProxy.addUsage()
 
 # Editions
-GET         /editions-api/editions                               controllers.EditionsController.getAvailableEditions
-GET         /editions-api/editions/:edition/issues               controllers.EditionsController.listIssues(edition: Edition)
-POST        /editions-api/editions/:name/issues                  controllers.EditionsController.createIssue(name)
-GET         /editions-api/republish-editions                     controllers.EditionsController.republishEditionsAppEditionsList
-GET         /editions-api/issues/:id                             controllers.EditionsController.getIssue(id)
-DELETE      /editions-api/issues/:id                             controllers.EditionsController.deleteIssue(id)
-GET         /editions-api/issues/:id/summary                     controllers.EditionsController.getIssueSummary(id)
-GET         /editions-api/issues/:id/versions                    controllers.EditionsController.getVersions(id)
-GET         /editions-api/issues/:id/last-proofed-version        controllers.EditionsController.getLastProofedVersion(id)
-POST        /editions-api/issues/:id/proof                       controllers.EditionsController.proofIssue(id)
-POST        /editions-api/issues/:id/publish/:version            controllers.EditionsController.publishIssue(id, version)
-GET         /editions-api/issues/:id/preview                     controllers.EditionsController.getPreviewEdition(id)
-GET         /editions-api/issues/:id/preflight-checks            controllers.EditionsController.checkIssue(id: String)
+GET         /editions-api/editions                                          controllers.EditionsController.getAvailableEditions
+GET         /editions-api/editions/:edition/issues                          controllers.EditionsController.listIssues(edition: Edition)
+POST        /editions-api/editions/:name/issues                             controllers.EditionsController.createIssue(name)
+GET         /editions-api/republish-editions                                controllers.EditionsController.republishEditionsAppEditionsList
+GET         /editions-api/issues/:id                                        controllers.EditionsController.getIssue(id)
+DELETE      /editions-api/issues/:id                                        controllers.EditionsController.deleteIssue(id)
+GET         /editions-api/issues/:id/summary                                controllers.EditionsController.getIssueSummary(id)
+GET         /editions-api/issues/:id/versions                               controllers.EditionsController.getVersions(id)
+GET         /editions-api/issues/:id/last-proofed-version                   controllers.EditionsController.getLastProofedVersion(id)
+POST        /editions-api/issues/:id/proof                                  controllers.EditionsController.proofIssue(id)
+POST        /editions-api/issues/:id/publish/:version                       controllers.EditionsController.publishIssue(id, version)
+GET         /editions-api/issues/:id/preview                                controllers.EditionsController.getPreviewEdition(id)
+GET         /editions-api/issues/:id/preflight-checks                       controllers.EditionsController.checkIssue(id: String)
 
-PUT         /editions-api/fronts/:frontId/metadata               controllers.EditionsController.putFrontMetadata(frontId)
-PUT         /editions-api/fronts/:frontId/is-hidden/:state       controllers.EditionsController.putFrontHiddenState(frontId, state: Boolean)
+PUT         /editions-api/fronts/:frontId/metadata                          controllers.EditionsController.putFrontMetadata(frontId)
+PUT         /editions-api/fronts/:frontId/is-hidden/:state                  controllers.EditionsController.putFrontHiddenState(frontId, state: Boolean)
+PUT         /editions-api/fronts/:frontId/collection                        controllers.EditionsController.addCollectionToFront(frontId)
+DELETE      /editions-api/fronts/:frontId/collection/:collectionId          controllers.EditionsController.removeCollectionFromFront(frontId, collectionId)
 
-POST        /editions-api/collections                            controllers.EditionsController.getCollections()
-GET         /editions-api/collections/:collectionId              controllers.EditionsController.getCollection(collectionId)
-PUT         /editions-api/collections/:collectionId              controllers.EditionsController.updateCollection(collectionId)
-PATCH       /editions-api/collections/:collectionId/name         controllers.EditionsController.renameCollection(collectionId)
-GET         /editions-api/collections/:collectionId/prefill      controllers.EditionsController.getPrefillForCollection(collectionId)
+POST        /editions-api/collections                                       controllers.EditionsController.getCollections()
+GET         /editions-api/collections/:collectionId                         controllers.EditionsController.getCollection(collectionId)
+PUT         /editions-api/collections/:collectionId                         controllers.EditionsController.updateCollection(collectionId)
+PATCH       /editions-api/collections/:collectionId/name                    controllers.EditionsController.renameCollection(collectionId)
+GET         /editions-api/collections/:collectionId/prefill                 controllers.EditionsController.getPrefillForCollection(collectionId)
