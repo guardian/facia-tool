@@ -16,6 +16,9 @@ import IssueVersions from 'components/Editions/IssueVersions';
 import { actions, toFrontsConfig } from 'bundles/frontsConfigBundle';
 import { selectors as issueSelector } from 'bundles/editionsIssueBundle';
 import { selectors as frontsConfigSelector } from 'bundles/frontsConfigBundle';
+import { editionCollectionToCollection } from '../strategies/fetch-collection';
+import { getCollectionActions } from './Collections';
+import { batchActions } from 'redux-batched-actions';
 
 export const check =
   (id: string): ThunkResult<Promise<void>> =>
@@ -178,7 +181,13 @@ export const addFrontCollection =
       };
 
       dispatch(actions.fetchSuccess(mergedFrontsConfig));
+
+      const collectionActions = newFront.collections.flatMap((c) =>
+        getCollectionActions(editionCollectionToCollection(c), getState)
+      );
+
+      dispatch(batchActions(collectionActions));
     } catch (error) {
-      //todo
+      throw error;
     }
   };

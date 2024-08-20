@@ -3,17 +3,17 @@ import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { getCollections as fetchCollections } from 'services/faciaApi';
 import { getEditionsCollections } from 'services/editionsApi';
 import { runStrategy } from './run-strategy';
-import { CollectionResponse, EditionCollectionResponse } from 'types/FaciaApi';
+import {
+  CollectionResponse,
+  EditionCollectionFromResponse,
+} from 'types/FaciaApi';
 
-const editionCollectionToCollection = (
-  col: EditionCollectionResponse
+export const editionCollectionToCollection = (
+  col: EditionCollectionFromResponse
 ): CollectionResponse => {
-  const {
-    collection: { items, ...restCol },
-    ...restRes
-  } = col;
+  const { id, items, ...restCol } = col;
   return {
-    ...restRes,
+    id,
     collection: {
       ...restCol,
       draft: items,
@@ -35,7 +35,11 @@ const fetchCollectionsStrategy = (
   const curatedPlatformStrategy = () =>
     getEditionsCollections(
       selectCollectionParams(state, collectionIds, returnOnlyUpdatedCollections)
-    ).then((collections) => collections.map(editionCollectionToCollection)); // TODO, this needs to be mirrored on save!
+    ).then((collections) =>
+      collections.map((c) => {
+        return editionCollectionToCollection(c.collection);
+      })
+    ); // TODO, this needs to be mirrored on save!
   return runStrategy<Promise<CollectionResponse[]> | null>(state, {
     front: () =>
       fetchCollections(
