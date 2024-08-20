@@ -109,7 +109,7 @@ trait CollectionsQueries {
         WHERE front_id = (
           SELECT front_id
           FROM collections
-          WHERE id=${collectionId}
+          WHERE id=$collectionId
         )
       """.map(_.string("id"))
         .list
