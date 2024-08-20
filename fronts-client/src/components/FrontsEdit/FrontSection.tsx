@@ -27,7 +27,7 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import {
   setFrontHiddenState,
   updateFrontMetadata,
-  addFrontCollection,
+  //addFrontCollection,
 } from 'actions/Editions';
 import FrontsContainer from './FrontContainer';
 import { isMode } from '../../selectors/pathSelectors';
@@ -126,7 +126,7 @@ type FrontsComponentProps = FrontsContainerProps & {
       metadata: EditionsFrontMetadata
     ) => void;
     setFrontHiddenState: (id: string, hidden: boolean) => void;
-    addFrontCollection: (frontId: string) => void;
+    //addFrontCollection: (frontId: string) => void;
   };
   isEditions: boolean;
 };
@@ -264,12 +264,6 @@ class FrontSection extends React.Component<
                 browsingStage={this.state.collectionSet}
               />
             )}
-            <Button
-              style={{ marginTop: '30px' }}
-              onClick={() => this.addFrontCollection()}
-            >
-              Add New Collection
-            </Button>
           </FrontSectionContent>
         </FrontContainer>
       </SingleFrontContainer>
@@ -290,9 +284,9 @@ class FrontSection extends React.Component<
     );
   };
 
-  private addFrontCollection = () => {
-    this.props.frontsActions.addFrontCollection(this.props.selectedFront.id);
-  };
+  // private addFrontCollection = () => {
+  //   this.props.frontsActions.addFrontCollection(this.props.selectedFront.id);
+  // };
 
   private getTitle = () => {
     const { selectedFront } = this.props;
@@ -356,7 +350,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
       dispatch(updateFrontMetadata(id, metadata)),
     setFrontHiddenState: (id: string, hidden: boolean) =>
       dispatch(setFrontHiddenState(id, hidden)),
-    addFrontCollection: (id: string) => dispatch(addFrontCollection(id)),
+    //addFrontCollection: (id: string) => dispatch(addFrontCollection(id)),
   },
 });
 

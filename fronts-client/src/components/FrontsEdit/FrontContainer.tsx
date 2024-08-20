@@ -30,6 +30,8 @@ import DragToAddSnap from './CollectionComponents/DragToAddSnap';
 import { selectPriority } from 'selectors/pathSelectors';
 import { Priorities } from 'types/Priority';
 import { DragToAddFeastCollection } from './CollectionComponents/DragToAddFeastCollection';
+import Button from '../inputs/ButtonDefault';
+import { addFrontCollection } from '../../actions/Editions';
 
 const FrontWrapper = styled.div`
   height: 80%;
@@ -116,6 +118,7 @@ type FrontProps = FrontPropsBeforeState & {
   editorOpenAllCollectionsForFront: typeof editorOpenAllCollectionsForFront;
   editorCloseAllCollectionsForFront: typeof editorCloseAllCollectionsForFront;
   isFeast: boolean;
+  addFrontCollection: (frontId: string) => void;
 };
 
 interface FrontState {
@@ -162,6 +165,14 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
                 <DragToAddContainer>
                   <DragToAddFeastCollection />
                 </DragToAddContainer>
+              )}
+              {isFeast && (
+                <Button
+                  style={{ marginTop: '10px' }}
+                  onClick={() => this.addFrontCollection()}
+                >
+                  Add New Collection
+                </Button>
               )}
               <OverviewHeadingButton onClick={this.handleOpenCollections}>
                 <ButtonLabel>Expand all&nbsp;</ButtonLabel>
@@ -248,6 +259,10 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
     this.props.handleArticleFocus(groupId, card, frontId);
     e.stopPropagation();
   };
+
+  private addFrontCollection = () => {
+    this.props.addFrontCollection(this.props.id);
+  };
 }
 
 const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
@@ -265,6 +280,7 @@ const mapDispatchToProps = (
   return {
     initialiseFront: () =>
       dispatch(initialiseCollectionsForFront(id, browsingStage)),
+    addFrontCollection: (id: string) => dispatch(addFrontCollection(id)),
     handleArticleFocus: (groupId: string, card: TCard, frontId: string) =>
       dispatch(
         setFocusState({
