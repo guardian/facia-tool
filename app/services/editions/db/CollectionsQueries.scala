@@ -94,11 +94,11 @@ trait CollectionsQueries {
       previousCollection <- getCollections(List(GetCollectionsFilter(id = collectionUpdate.id, None))).headOption.toRight {
         EditionsDB.NotFoundError(s"Attempted to update collection, but could not find collection for ID: ${collectionUpdate.id}")
       }
+    } yield {
+      val isHiddenStmt = collectionUpdate.isHidden.map { isHidden => sqls"is_hidden = $isHidden," }.getOrElse(sqls.empty)
+      val nameStmt = collectionUpdate.displayName.map { displayName => sqls"name = ${displayName.trim()}," }.getOrElse(sqls.empty)
 
-      isHiddenStmt = collectionUpdate.isHidden.map { isHidden => sqls"is_hidden = $isHidden," }.getOrElse(sqls.empty)
-      nameStmt = collectionUpdate.displayName.map { displayName => sqls"name = ${displayName.trim()}," }.getOrElse(sqls.empty)
-
-      _ = sql"""
+      sql"""
         UPDATE collections
           SET $isHiddenStmt
               $nameStmt
@@ -107,40 +107,7 @@ trait CollectionsQueries {
               updated_email = ${collectionUpdate.updatedEmail}
           WHERE id = ${collectionUpdate.id}
         """.execute.apply()
-
-      // Update the collection indices, if necessary
-      _ <- collectionUpdate.index match {
-        case None => Right(())
-        case Some(newIndex) =>
-          val currentCollectionIds = {
-            sql"""
-              SELECT id
-              FROM collections
-              WHERE front_id = (
-                SELECT front_id
-                FROM collections
-                WHERE id=${previousCollection.id}
-              )
-            """.map(_.string("id"))
-              .list
-              .apply()
-          }
-
-          currentCollectionIds
-            .zipWithIndex
-            .find { case (id, _) => id == collectionUpdate.id }
-            .map { case (_, index) => index }
-            .toRight( EditionsDB.InvariantError(s"Could not find collection with ID ${collectionUpdate.id} when retrieving existing indices"))
-            .flatMap { currentIndex =>
-              val adjustedIndex = if (currentIndex < newIndex) newIndex - 1 else newIndex
-              val newCollectionIds = currentCollectionIds
-                .filter(_ != collectionUpdate.id)
-                .updated(adjustedIndex, collectionUpdate.id)
-
-              updateCollectionIndices(newCollectionIds)
-            }
-      }
-    } yield ()
+    }
 
     collectionUpdate.items.foreach {
       // At the moment we don't do partial updates so simply delete all of them and reinsert.
@@ -197,7 +164,7 @@ trait CollectionsQueries {
               case (id, index) => sqls"""WHEN id=${id} THEN ${index}"""
             }, sqls.empty)}
           END
-          WHERE id IN (${sqls.join(collectionIds.map(id => sqls"$id"), sqls",")})
+          WHERE id IN (${collectionIds.mkString(", ")})
         """.update.apply()
     }
   }.toEither match {
