@@ -408,6 +408,32 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     updatedBrexshit.items.find(_.id == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
   }
 
+
+  "moveCollection" - {
+    "should update the other collections in the front when the collection index is modified, reordering as needed" taggedAs UsesDatabase in {
+      val id = insertSkeletonIssue(2019, 9, 30,
+        front("news/uk",
+          collection("politics", None),
+          collection("international", None),
+          collection("culture", None),
+          collection("sport", None)
+        )
+      )
+
+      val retrievedIssue = editionsDB.getIssue(id).value
+      val retrievedFront = retrievedIssue.fronts.head
+      val firstCollection = retrievedFront.collections.head
+      firstCollection.displayName shouldBe "politics"
+
+      editionsDB.moveCollection(retrievedFront.id, firstCollection.id, 3) match {
+        case Right(updatedFront) =>
+          val updatedCollectionDisplayNames = updatedFront.collections.map(_.displayName)
+          updatedCollectionDisplayNames shouldBe List("international", "culture", "politics", "sport")
+        case Left(e) => fail(e.getMessage)
+      }
+    }
+  }
+
   "should store cards of different types" taggedAs UsesDatabase in {
     val id = insertSkeletonIssue(2019, 9, 30,
       front("news/uk",
