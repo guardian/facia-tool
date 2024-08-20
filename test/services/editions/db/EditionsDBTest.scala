@@ -410,26 +410,39 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
 
   "moveCollection" - {
-    "should update the other collections in the front when the collection index is modified, reordering as needed" taggedAs UsesDatabase in {
-      val id = insertSkeletonIssue(2019, 9, 30,
-        front("news/uk",
-          collection("politics", None),
-          collection("international", None),
-          collection("culture", None),
-          collection("sport", None)
-        )
-      )
+    val testFront = front("news/uk",
+      collection("politics", None),
+      collection("international", None),
+      collection("culture", None),
+      collection("sport", None)
+    )
 
-      val retrievedIssue = editionsDB.getIssue(id).value
-      val retrievedFront = retrievedIssue.fronts.head
-      val firstCollection = retrievedFront.collections.head
-      firstCollection.displayName shouldBe "politics"
+    val testCases = List(
+      (0, List("politics", "international", "culture", "sport")),
+      (1, List("politics", "international", "culture", "sport")),
+      (2, List("international", "politics", "culture", "sport")),
+      (3, List("international", "culture", "politics", "sport")),
+      (4, List("international", "culture", "sport", "politics")),
+      (5, List("international", "culture", "sport", "politics"))
+    )
 
-      editionsDB.moveCollection(retrievedFront.id, firstCollection.id, 3) match {
-        case Right(updatedFront) =>
-          val updatedCollectionDisplayNames = updatedFront.collections.map(_.displayName)
-          updatedCollectionDisplayNames shouldBe List("international", "culture", "politics", "sport")
-        case Left(e) => fail(e.getMessage)
+    "should update the other collections in the front when the collection index is modified, reordering as needed" - {
+      testCases.foreach {
+        case (newIndex, expectedOrder) =>
+          s"moving to index $newIndex" taggedAs UsesDatabase in {
+            val id = insertSkeletonIssue(2019, 9, 30, testFront)
+            val retrievedIssue = editionsDB.getIssue(id).value
+            val retrievedFront = retrievedIssue.fronts.head
+            val firstCollection = retrievedFront.collections.head
+            firstCollection.displayName shouldBe "politics"
+
+            editionsDB.moveCollection(retrievedFront.id, firstCollection.id, newIndex) match {
+              case Right(updatedFront) =>
+                val updatedCollectionDisplayNames = updatedFront.collections.map(_.displayName)
+                updatedCollectionDisplayNames shouldBe expectedOrder
+              case Left(e) => fail(e.getMessage)
+            }
+          }
       }
     }
   }
