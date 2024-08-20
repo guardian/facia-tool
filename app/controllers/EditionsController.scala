@@ -134,8 +134,8 @@ class EditionsController(db: EditionsDB,
       val dateFrom = req.queryString.get("dateFrom").map(_.head).get
       val dateTo = req.queryString.get("dateTo").map(_.head).get
       (LocalDate.parse(dateFrom), LocalDate.parse(dateTo))
-    }.toEither.left.map { _ =>
-      BadRequest("Invalid or missing date")
+    }.toEither.left.map { e =>
+      BadRequest(s"Error getting dates from query param: ${e.getMessage}")
     }
 
     val response = for {
