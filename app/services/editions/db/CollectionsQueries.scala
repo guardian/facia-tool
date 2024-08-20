@@ -14,11 +14,10 @@ import scala.util.Try
 
 case class EditionsCollectionUpdate(
   id: String,
+  updatedBy: String,
+  updatedEmail: String,
   displayName: Option[String] = None,
-  index: Option[Int] = None,
   isHidden: Option[Boolean] = None,
-  updatedBy: Option[String],
-  updatedEmail: Option[String],
   items: Option[List[EditionsCard]] = None
 )
 

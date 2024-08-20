@@ -323,8 +323,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val evenMoreBrexshit = EditionsCollectionUpdate(
       id = brexshit.id,
       displayName = Some(newName),
-      updatedBy = Some("BoJo"),
-      updatedEmail = Some("bojo@piffle.paffle"),
+      updatedBy = "BoJo",
+      updatedEmail = "bojo@piffle.paffle",
     )
 
     editionsDB.updateCollection(evenMoreBrexshit, OffsetDateTime.now())
@@ -378,8 +378,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     val evenMoreBrexshit = EditionsCollectionUpdate(
       id = brexshit.id,
-      updatedBy = Some("BoJo"),
-      updatedEmail = Some("bojo@piffle.paffle"),
+      updatedBy = "BoJo",
+      updatedEmail = "bojo@piffle.paffle",
       items = Some(items)
     )
 
@@ -408,34 +408,6 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     updatedBrexshit.items.find(_.id == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
   }
 
-  "should update the other collections in the front when the collection index is modified, reordering as needed" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30,
-      front("news/uk",
-        collection("politics", None),
-        collection("international", None),
-        collection("culture", None),
-        collection("sport", None)
-      )
-    )
-
-    val retrievedIssue = editionsDB.getIssue(id).value
-    val firstCollection = retrievedIssue.fronts.head.collections.head
-    firstCollection.displayName shouldBe "politics"
-
-    val update = EditionsCollectionUpdate(
-      id = firstCollection.id,
-      updatedBy = Some("BoJo"),
-      updatedEmail = Some("bojo@piffle.paffle"),
-      index = Some(3)
-    )
-
-    editionsDB.updateCollection(update, OffsetDateTime.now())
-
-    val updatedIssue = editionsDB.getIssue(id).value
-    val updatedCollectionDisplayNames = updatedIssue.fronts.head.collections.map(_.displayName)
-    updatedCollectionDisplayNames shouldBe List("international", "culture", "politics", "sport")
-  }
-
   "should store cards of different types" taggedAs UsesDatabase in {
     val id = insertSkeletonIssue(2019, 9, 30,
       front("news/uk",
@@ -452,8 +424,8 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val items = EditionsCollectionUpdate(
       id = retrievedCollection.id,
       items = Some(retrievedCollection.items :+ recipeCard),
-      updatedBy = retrievedCollection.updatedBy,
-      updatedEmail = retrievedCollection.updatedEmail,
+      updatedBy = retrievedCollection.updatedBy.get,
+      updatedEmail = retrievedCollection.updatedEmail.get,
     )
     editionsDB.updateCollection(items, OffsetDateTime.now())
 
