@@ -168,7 +168,12 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
               )}
               {isFeast && (
                 <Button
-                  style={{ marginTop: '10px' }}
+                  style={{
+                    marginTop: '9px',
+                    padding: '5px',
+                    marginRight: '5px',
+                    borderRadius: '12px',
+                  }}
                   onClick={() => this.addFrontCollection()}
                 >
                   Add New Collection
