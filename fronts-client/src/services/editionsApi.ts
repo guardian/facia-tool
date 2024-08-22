@@ -1,4 +1,4 @@
-import type { EditionsIssue, IssueVersion } from 'types/Edition';
+import type { EditionsFront, EditionsIssue, IssueVersion } from 'types/Edition';
 import type { CAPISearchQueryResponse } from './capiQuery';
 import type { EditionsFrontMetadata } from 'types/FaciaApi';
 import { Moment } from 'moment';
@@ -124,6 +124,14 @@ export const putFrontMetadata = (
 
 export const putFrontHiddenState = (id: string, hidden: boolean) => {
   return pandaFetch(`/editions-api/fronts/${id}/is-hidden/${hidden}`, {
+    method: 'PUT',
+  }).then((response) => response.json());
+};
+
+export const addCollectionToFront = (
+  frontId: string
+): Promise<EditionsFront> => {
+  return pandaFetch(`/editions-api/fronts/${frontId}/collection`, {
     method: 'PUT',
   }).then((response) => response.json());
 };

@@ -279,6 +279,10 @@ class FrontSection extends React.Component<
     );
   };
 
+  // private addFrontCollection = () => {
+  //   this.props.frontsActions.addFrontCollection(this.props.selectedFront.id);
+  // };
+
   private getTitle = () => {
     const { selectedFront } = this.props;
 

@@ -124,7 +124,7 @@ module.exports = async () =>
       return res.json([
         {
           id: req.body[0].id,
-          collection,
+          collection: { ...collection, id: req.body[0].id },
           storiesVisibleByStage: {
             live: { desktop: 4, mobile: 4 },
             draft: { desktop: 4, mobile: 4 }
@@ -132,7 +132,7 @@ module.exports = async () =>
         },
         {
           id: req.body[1].id,
-          collection: collectionTwo,
+          collection: { ...collectionTwo, id: req.body[1].id },
           storiesVisibleByStage: {
             live: { desktop: 4, mobile: 4 },
             draft: { desktop: 4, mobile: 4 }
@@ -140,7 +140,7 @@ module.exports = async () =>
         },
         {
           id: req.body[2].id,
-          collection: collectionFour,
+          collection: { ...collectionFour, id: req.body[2].id },
           storiesVisibleByStage: {
             live: { desktop: 4, mobile: 4 },
             draft: { desktop: 4, mobile: 4 }
@@ -170,6 +170,7 @@ module.exports = async () =>
         req.body.map(({ id }, index) => ({
           id,
           collection: {
+            id,
             ...collectionStubs[index],
             items: collectionStubs[index].draft,
           },
@@ -182,7 +183,7 @@ module.exports = async () =>
       return res.json({
         id: req.body.collectionId,
         // Collection three is empty, simulating a discard event
-        collection: collectionThree,
+        collection: { ...collectionThree, id: req.body.collectionId },
         storiesVisibleByStage: {
           live: { desktop: 4, mobile: 4 },
           draft: { desktop: 4, mobile: 4 }

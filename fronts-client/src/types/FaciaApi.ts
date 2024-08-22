@@ -101,7 +101,8 @@ interface CollectionResponse {
   };
 }
 
-interface EditionCollectionFromResponse {
+export interface EditionCollectionFromResponse {
+  id: string;
   items: NestedCard[];
   lastUpdated?: number;
   updatedBy?: string;

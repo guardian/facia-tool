@@ -5,13 +5,20 @@ import {
   checkIssue,
   putFrontHiddenState,
   putFrontMetadata,
+  addCollectionToFront,
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
-import { EditionsFrontMetadata } from 'types/FaciaApi';
+import { EditionsFrontMetadata, FrontsConfig } from 'types/FaciaApi';
 import noop from 'lodash/noop';
 import { startOptionsModal } from './OptionsModal';
 import IssueVersions from 'components/Editions/IssueVersions';
+import { actions, toFrontsConfig } from 'bundles/frontsConfigBundle';
+import { selectors as issueSelector } from 'bundles/editionsIssueBundle';
+import { selectors as frontsConfigSelector } from 'bundles/frontsConfigBundle';
+import { editionCollectionToCollection } from '../strategies/fetch-collection';
+import { getCollectionActions } from './Collections';
+import { batchActions } from 'redux-batched-actions';
 
 export const check =
   (id: string): ThunkResult<Promise<void>> =>
@@ -146,5 +153,41 @@ export const setFrontHiddenState =
       });
     } catch (error) {
       // @todo implement centralised error handling
+    }
+  };
+
+export const addFrontCollection =
+  (id: string): ThunkResult<Promise<void>> =>
+  async (dispatch, getState) => {
+    const state = getState();
+    try {
+      const newFront = await addCollectionToFront(id);
+      const newFrontsConfig = toFrontsConfig(
+        [newFront],
+        issueSelector.selectAll(state).id
+      );
+      const existingFrontsConfig: FrontsConfig =
+        frontsConfigSelector.selectAll(state);
+
+      const mergedFrontsConfig = {
+        fronts: {
+          ...existingFrontsConfig.fronts,
+          ...newFrontsConfig.fronts,
+        },
+        collections: {
+          ...existingFrontsConfig.collections,
+          ...newFrontsConfig.collections,
+        },
+      };
+
+      dispatch(actions.fetchSuccess(mergedFrontsConfig));
+
+      const collectionActions = newFront.collections.flatMap((c) =>
+        getCollectionActions(editionCollectionToCollection(c), getState)
+      );
+
+      dispatch(batchActions(collectionActions));
+    } catch (error) {
+      throw error;
     }
   };

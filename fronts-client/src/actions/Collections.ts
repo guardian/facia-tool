@@ -124,7 +124,7 @@ function getCollectionActionForMissingCollection(
   ];
 }
 
-function getCollectionActions(
+export function getCollectionActions(
   collectionResponse: CollectionResponse,
   getState: () => State
 ) {
@@ -416,9 +416,9 @@ export const fetchCardReferencedEntitiesForCards =
       promises.push(chefsPromise);
     }
 
-    if(cardsByCardType.recipe) {
+    if (cardsByCardType.recipe) {
       const recipesPromise = dispatch(
-        fetchRecipesById(cardsByCardType.recipe.map((recep)=>recep.id))
+        fetchRecipesById(cardsByCardType.recipe.map((recep) => recep.id))
       );
       promises.push(recipesPromise);
     }
