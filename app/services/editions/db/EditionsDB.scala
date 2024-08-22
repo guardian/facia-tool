@@ -23,15 +23,15 @@ class EditionsDB(url: String, user: String, password: String) extends IssueQueri
     val truncatedNow = EditionsDB.truncateDateTime(now)
 
     for {
-      currentFront <- getFront(frontId).toRight(EditionsDB.NotFoundError(s"Front ${frontId} not found"))
+      currentFront <- getFront(frontId).toRight(EditionsDB.NotFoundError(s"Front $frontId not found"))
       collectionId <- insertCollection(
         frontId = currentFront.id,
-        collectionIndex = collectionIndex.getOrElse(currentFront.collections.size),
+        collectionIndex = collectionIndex.getOrElse(0),
         name = name.getOrElse("New collection"),
         user = user,
         now = truncatedNow
       )
-      updatedFront <- getFront(frontId).toRight(EditionsDB.InvariantError(s"Updated front ${frontId} not found in issue"))
+      updatedFront <- getFront(frontId).toRight(EditionsDB.InvariantError(s"Updated front $frontId not found in issue"))
       _ <- updatedFront.collections.find(_.id == collectionId).toRight(EditionsDB.InvariantError(s"New collection ${collectionId} not found in updated front ${frontId}"))
     } yield updatedFront
   }
@@ -76,6 +76,9 @@ object EditionsDB {
 
   // An entity the user expected to be there was not found
   case class NotFoundError(message: String) extends Error(message)
+
+  // The input data is incorrect
+  case class InvalidInput(message: String) extends Error(message)
 
   // There was a problem writing data to the DB
   case class WriteError(message: String) extends Error(message)

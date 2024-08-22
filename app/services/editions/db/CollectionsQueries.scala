@@ -101,33 +101,22 @@ trait CollectionsQueries {
    * Move the collection to the given index, updating the index values for the
    * other collections in that front to ensure a contiguous range.
    */
-  def moveCollectionToIndex(collectionId: String, newIndex: Int)(implicit session: DBSession): Either[Error, Unit] = {
-    val currentCollectionIds = {
-      sql"""
-        SELECT id
-        FROM collections
-        WHERE front_id = (
-          SELECT front_id
-          FROM collections
-          WHERE id=$collectionId
-        )
-      """.map(_.string("id"))
-        .list
-        .apply()
-    }
+  def moveCollectionToIndex(collectionId: String, newIndex: Int)(implicit session: DBSession): Either[Error, Unit] =
+    for {
+      currentCollectionIds <- getCollectionIdsInFrontFromCollectionId(collectionId)
+    } yield {
+      currentCollectionIds.indexOf(collectionId) match {
+        case -1 => Left(EditionsDB.NotFoundError(s"Tried to move collection $collectionId to $newIndex, but could not find collection with that ID"))
+        case currentIndex if currentIndex == newIndex => Right(()) // No move
+        case currentIndex =>
+          val indexOffset = if (newIndex > currentIndex) -1 else 0
+          val newCollectionIds = currentCollectionIds
+            .filter(_ != collectionId)
+            .patch(newIndex + indexOffset, List(collectionId), 0)
 
-    currentCollectionIds.indexOf(collectionId) match {
-      case -1 => Left(EditionsDB.NotFoundError(s"Tried to move collection $collectionId to $newIndex, but could not find collection with that ID"))
-      case currentIndex if currentIndex == newIndex => Right(()) // No move
-      case currentIndex =>
-        val indexOffset = if (newIndex > currentIndex) -1 else 0
-        val newCollectionIds = currentCollectionIds
-          .filter(_ != collectionId)
-          .patch(newIndex + indexOffset, List(collectionId), 0)
-
-        updateCollectionIndices(newCollectionIds)
+          updateCollectionIndices(newCollectionIds)
+      }
     }
-  }
 
   def updateCollection(collection: EditionsCollection): EditionsCollection = DB localTx { implicit session =>
     val lastUpdated = collection.lastUpdated.map(EditionsDB.dateTimeFromMillis)
@@ -179,10 +168,11 @@ trait CollectionsQueries {
   /**
     * Update the indices for a list of collections, setting their index as their position in the given list.
     *
-    * @param collection
+    * @param collectionIds The list of collectionIds, in order they are to be indexed
+    * @param offset If supplied, offset the indices by this value
     * @return
     */
-  protected def updateCollectionIndices(collectionIds: List[String])(implicit session: DBSession): Either[Error, Unit] =
+  protected def updateCollectionIndices(collectionIds: List[String], offset: Option[Int] = None)(implicit session: DBSession): Either[Error, Unit] =
   Try {
     collectionIds match {
       case Nil => Right(())
@@ -191,7 +181,7 @@ trait CollectionsQueries {
           UPDATE collections
           SET index=CASE
             ${sqls.join(collectionIds.zipWithIndex.map {
-              case (id, index) => sqls"""WHEN id=${id} THEN ${index}"""
+              case (id, index) => sqls"""WHEN id=$id THEN ${index + offset.getOrElse(0)}"""
             }, sqls.empty)}
           END
           WHERE id IN (${sqls.join(collectionIds.map(id => sqls"$id"), sqls",")})
@@ -201,6 +191,29 @@ trait CollectionsQueries {
     case Left(error) => Left(EditionsDB.WriteError(s"Could not update collection indices: ${error.getMessage}"))
     case Right(_) => Right(())
   }
+
+  private def getCollectionIdsInFrontFromCollectionId(collectionId: String)(implicit session: DBSession): Either[Error, List[String]] =
+    getCollectionIds(sqls"""
+      WHERE front_id = (
+        SELECT front_id
+        FROM collections
+        WHERE id=$collectionId
+      )""")
+
+  private def getCollectionIdsInFront(frontId: String)(implicit session: DBSession): Either[Error, List[String]] =
+    getCollectionIds(sqls"""WHERE front_id = $frontId""")
+
+  private def getCollectionIds(where: SQLSyntax)(implicit session: DBSession): Either[Error, List[String]] =
+    sql"""
+      SELECT id
+      FROM collections
+      $where
+    """.map(_.string("id"))
+      .list
+      .apply() match {
+      case Nil => Left(EditionsDB.NotFoundError(s"No collection found"))
+      case collectionIds => Right(collectionIds)
+    }
 
   private def maybeJson[T](maybeModel: Option[T])(implicit writes: Writes[T]) = maybeModel.map(m => Json.toJson(m).toString)
 
@@ -233,7 +246,7 @@ trait CollectionsQueries {
       FROM collections
       LEFT JOIN cards ON (cards.collection_id = collections.id)
       LEFT JOIN fronts ON (collections.front_id = fronts.id)
-      WHERE ${where}
+      WHERE $where
       """
     sql.map { rs =>
       GetCollectionsRow(
@@ -257,9 +270,17 @@ trait CollectionsQueries {
     *
     * @return the Collection id
     */
-  protected def insertCollection(frontId: String, collectionIndex: Int, name: String, now: OffsetDateTime, user: User)(implicit session: DBSession) =
-    Try {
-      sql"""
+  protected def insertCollection(frontId: String, collectionIndex: Int, name: String, now: OffsetDateTime, user: User)(implicit session: DBSession): Either[Error, String] = {
+    for {
+      currentCollectionIds <- getCollectionIdsInFront(frontId)
+      maxCollectionIndex = currentCollectionIds.size
+      _ <- if (collectionIndex > maxCollectionIndex) {
+        Left(EditionsDB.InvalidInput(s"Cannot add a collection at index $collectionIndex (min: 0, max: $maxCollectionIndex"))
+      } else Right(())
+      // Make a gap in the index for the new collection
+      _ <- updateCollectionIndices(currentCollectionIds.slice(collectionIndex, currentCollectionIds.size), Some(collectionIndex + 1))
+      id <- Try {
+        sql"""
         INSERT INTO collections (
           front_id,
           index,
@@ -270,7 +291,7 @@ trait CollectionsQueries {
           updated_email
         ) VALUES (
           $frontId
-          , ${collectionIndex}
+          , $collectionIndex
           , $name
           , FALSE
           , $now
@@ -279,14 +300,16 @@ trait CollectionsQueries {
         )
         RETURNING id;
       """.map(_.string("id"))
-        .single
-        .apply()
-        .toRight(EditionsDB.WriteError("Could not write new collection to database"))
-    }
-      .toEither
-      .left
-      .map { error => EditionsDB.WriteError(error.getMessage()) }
-      .flatten
+          .single
+          .apply()
+          .toRight(EditionsDB.WriteError("Could not write new collection to database"))
+      }
+        .toEither
+        .left
+        .map { error => EditionsDB.WriteError(error.getMessage) }
+        .flatten
+    } yield id
+  }
 
   /**
     * Delete a collection.
