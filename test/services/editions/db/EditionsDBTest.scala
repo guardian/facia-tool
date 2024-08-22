@@ -659,6 +659,29 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         }
       }
 
+      "should default to the top of the front as multiple collections are added" taggedAs UsesDatabase in {
+        val issueId = insertSkeletonIssue(2020, 1, 1,
+          front("news/uk", collection("politics", None))
+        )
+        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val frontFromIssue = issue.fronts.head
+
+        val result = for {
+          _ <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection"), user = user, now = now)
+          _ <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection 2"), user = user, now = now)
+          front <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection 3"), user = user, now = now)
+        } yield {
+          front.collections.map(_.displayName) shouldBe List (
+            "Test Collection 3",
+            "Test Collection 2",
+            "Test Collection",
+            "politics"
+          )
+        }
+
+        result.left.foreach(e => fail(e.getMessage))
+      }
+
       "should add a default name if one is not provided" taggedAs UsesDatabase in {
         val issueId = insertSkeletonIssue(2020, 1, 1,
           front("news/uk", collection("politics", None))
