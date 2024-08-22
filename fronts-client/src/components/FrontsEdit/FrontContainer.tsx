@@ -34,7 +34,7 @@ import Button from '../inputs/ButtonDefault';
 import { addFrontCollection } from '../../actions/Editions';
 
 const FrontWrapper = styled.div`
-  height: 80%;
+  height: 100%;
   display: flex;
 `;
 
