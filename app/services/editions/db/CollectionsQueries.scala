@@ -97,6 +97,38 @@ trait CollectionsQueries {
     updatedCollections.head
   }
 
+  /**
+   * Move the collection to the given index, updating the index values for the
+   * other collections in that front to ensure a contiguous range.
+   */
+  def moveCollectionToIndex(collectionId: String, newIndex: Int)(implicit session: DBSession): Either[Error, Unit] = {
+    val currentCollectionIds = {
+      sql"""
+        SELECT id
+        FROM collections
+        WHERE front_id = (
+          SELECT front_id
+          FROM collections
+          WHERE id=$collectionId
+        )
+      """.map(_.string("id"))
+        .list
+        .apply()
+    }
+
+    currentCollectionIds.indexOf(collectionId) match {
+      case -1 => Left(EditionsDB.NotFoundError(s"Tried to move collection $collectionId to $newIndex, but could not find collection with that ID"))
+      case currentIndex if currentIndex == newIndex => Right(()) // No move
+      case currentIndex =>
+        val indexOffset = if (newIndex > currentIndex) -1 else 0
+        val newCollectionIds = currentCollectionIds
+          .filter(_ != collectionId)
+          .patch(newIndex + indexOffset, List(collectionId), 0)
+
+        updateCollectionIndices(newCollectionIds)
+    }
+  }
+
   def updateCollection(collection: EditionsCollection): EditionsCollection = DB localTx { implicit session =>
     val lastUpdated = collection.lastUpdated.map(EditionsDB.dateTimeFromMillis)
     sql"""
@@ -162,7 +194,7 @@ trait CollectionsQueries {
               case (id, index) => sqls"""WHEN id=${id} THEN ${index}"""
             }, sqls.empty)}
           END
-          WHERE id IN (${collectionIds.mkString(", ")})
+          WHERE id IN (${sqls.join(collectionIds.map(id => sqls"$id"), sqls",")})
         """.update.apply()
     }
   }.toEither match {
@@ -242,7 +274,7 @@ trait CollectionsQueries {
           , $name
           , FALSE
           , $now
-          , ${EditionsDB.getUserName(user)}
+        , ${EditionsDB.getUserName(user)}
           , ${user.email}
         )
         RETURNING id;

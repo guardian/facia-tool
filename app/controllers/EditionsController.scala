@@ -163,7 +163,7 @@ class EditionsController(db: EditionsDB,
 
     val collection = db.getCollections(List(GetCollectionsFilter(id = collectionId, None)))
 
-    if(collection.isEmpty) {
+    if (collection.isEmpty) {
       logger.warn(s"Collection not found ${collectionId}")
       NotFound(s"Collection $collectionId not found")
     } else {
@@ -176,6 +176,26 @@ class EditionsController(db: EditionsDB,
       val updatedCollection = db.updateCollectionName(updatingCollection)
       Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
     }
+  }
+
+  def moveCollection(frontId: String, collectionId: String) = EditEditionsAuthAction(parse.json[MoveCollection]) { req =>
+    val form = req.body
+
+    val result = for {
+      updatedFront <- db.moveCollection(frontId, collectionId, form.newIndex).left.map {
+        case EditionsDB.NotFoundError(message) => NotFound(message)
+        case error => InternalServerError(error.getMessage)
+      }
+      issueId <- db.getIssueIdFromCollectionId(collectionId).toRight { InternalServerError("Issue ID not found for updated collection") }
+      issue <- db.getIssue(issueId).toRight { InternalServerError("Issue not found for updated collection") }
+    } yield {
+      logger.info("Updating preview")
+      publishing.updatePreview(issue)
+
+      Ok(Json.toJson(updatedFront))
+    }
+
+    result.merge
   }
 
   def getPreviewEdition(id: String) = EditEditionsAuthAction { _ =>

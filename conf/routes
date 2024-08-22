@@ -120,6 +120,7 @@ PUT         /editions-api/fronts/:frontId/metadata                          cont
 PUT         /editions-api/fronts/:frontId/is-hidden/:state                  controllers.EditionsController.putFrontHiddenState(frontId, state: Boolean)
 PUT         /editions-api/fronts/:frontId/collection                        controllers.EditionsController.addCollectionToFront(frontId)
 DELETE      /editions-api/fronts/:frontId/collection/:collectionId          controllers.EditionsController.removeCollectionFromFront(frontId, collectionId)
+PUT         /editions-api/fronts/:frontId/collection/:collectionId/move     controllers.EditionsController.moveCollection(frontId, collectionId)
 
 POST        /editions-api/collections                                       controllers.EditionsController.getCollections()
 GET         /editions-api/collections/:collectionId                         controllers.EditionsController.getCollection(collectionId)

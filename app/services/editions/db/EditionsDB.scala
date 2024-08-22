@@ -49,16 +49,24 @@ class EditionsDB(url: String, user: String, password: String) extends IssueQueri
         user = user,
         now = truncatedNow
       )
-      updatedFront <- reindexCollectionsForFront(frontId, user, now)
+      updatedFront <- reindexCollectionsForFront(frontId)
     } yield updatedFront
   }
 
-  private def reindexCollectionsForFront(frontId: String, user: User, now: OffsetDateTime)(implicit session: DBSession): Either[Error, EditionsFront] =
+  def moveCollection(frontId: String, collectionId: String, newIndex: Int): Either[Error, EditionsFront] = DB localTx { implicit session =>
+    for {
+      _ <- getFront(frontId).toRight(EditionsDB.NotFoundError(s"Front $frontId not found"))
+      _ <- moveCollectionToIndex(collectionId, newIndex)
+      updatedFront <- getFront(frontId).toRight(EditionsDB.InvariantError(s"Front $frontId not found after collection index was updated"))
+    } yield updatedFront
+  }
+
+  private def reindexCollectionsForFront(frontId: String)(implicit session: DBSession): Either[Error, EditionsFront] =
     for {
       front <- getFront(frontId).toRight(EditionsDB.InvariantError("Could not find front to reindex"))
       _ <- updateCollectionIndices(front.collections.map(_.id))
       updatedFront <- getFront(frontId).toRight(EditionsDB.InvariantError("Could not find front with reindexed collections"))
-    } yield front
+    } yield updatedFront
   }
 
 object EditionsDB {
