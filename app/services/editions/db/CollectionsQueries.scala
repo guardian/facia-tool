@@ -11,10 +11,12 @@ import services.editions.prefills.CapiQueryTimeWindow
 import model.editions.EditionsFeastCollection
 import play.api.libs.json.Writes
 import com.gu.pandomainauth.model.User
+import logging.Logging
+
 import scala.util.Try
 import model.editions.CuratedPlatform.Editions
 
-trait CollectionsQueries {
+trait CollectionsQueries extends Logging {
 
   def getCollections(filters: List[GetCollectionsFilter]) = DB readOnly { implicit session =>
     case class TypedFilters(id: String, updatedAt: Option[OffsetDateTime])
@@ -105,14 +107,18 @@ trait CollectionsQueries {
     for {
       currentCollectionIds <- getCollectionIdsInFrontFromCollectionId(collectionId)
     } yield {
+      logger.info(s"Moving $collectionId to index $newIndex")
       currentCollectionIds.indexOf(collectionId) match {
         case -1 => Left(EditionsDB.NotFoundError(s"Tried to move collection $collectionId to $newIndex, but could not find collection with that ID"))
-        case currentIndex if currentIndex == newIndex => Right(()) // No move
+        case currentIndex if currentIndex == newIndex =>
+          logger.info(s"Collection $collectionId is already at index $newIndex")
+          Right(()) // No move
         case currentIndex =>
           val indexOffset = if (newIndex > currentIndex) -1 else 0
           val newCollectionIds = currentCollectionIds
             .filter(_ != collectionId)
             .patch(newIndex + indexOffset, List(collectionId), 0)
+
 
           updateCollectionIndices(newCollectionIds)
       }
@@ -172,11 +178,12 @@ trait CollectionsQueries {
     * @param offset If supplied, offset the indices by this value
     * @return
     */
-  protected def updateCollectionIndices(collectionIds: List[String], offset: Option[Int] = None)(implicit session: DBSession): Either[Error, Unit] =
+  protected def updateCollectionIndices(collectionIds: List[String], offset: Option[Int] = None)(implicit session: DBSession): Either[Error, Unit] = {
+  logger.info(s"Updating collection indices with order ${collectionIds.mkString(",")} at offset $offset")
   Try {
     collectionIds match {
       case Nil => Right(())
-      case ids =>
+      case _ =>
         sql"""
           UPDATE collections
           SET index=CASE
@@ -190,6 +197,7 @@ trait CollectionsQueries {
   }.toEither match {
     case Left(error) => Left(EditionsDB.WriteError(s"Could not update collection indices: ${error.getMessage}"))
     case Right(_) => Right(())
+  }
   }
 
   private def getCollectionIdsInFrontFromCollectionId(collectionId: String)(implicit session: DBSession): Either[Error, List[String]] =
@@ -208,6 +216,7 @@ trait CollectionsQueries {
       SELECT id
       FROM collections
       $where
+      ORDER BY index
     """.map(_.string("id"))
       .list
       .apply() match {
@@ -271,6 +280,7 @@ trait CollectionsQueries {
     * @return the Collection id
     */
   protected def insertCollection(frontId: String, collectionIndex: Int, name: String, now: OffsetDateTime, user: User)(implicit session: DBSession): Either[Error, String] = {
+    logger.info(s"Inserting new collection into front $frontId at index $collectionIndex")
     for {
       currentCollectionIds <- getCollectionIdsInFront(frontId)
       maxCollectionIndex = currentCollectionIds.size
