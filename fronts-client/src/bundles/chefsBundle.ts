@@ -19,6 +19,9 @@ const bundle = createAsyncResourceBundle<Chef>('chefs', {
   selectLocalState: (state) => state.chefs,
 });
 
+function sanitisePrintableName(name:string):string {
+  return name.toLowerCase().replace(/[^A-Za-z\d]+/g, "_")
+}
 export const fetchChefs =
   (
     // The params to include in the request
@@ -36,12 +39,18 @@ export const fetchChefs =
       console.log(`Got a total of ${chefs.results.length} hits`);
       const chefsWithTags = chefs.results.filter(chef=>chef.contributorType==="Profile");
       console.log(`${chefsWithTags.length} had associated contributor tags`);
-      if(chefsWithTags.length==0) {
-        dispatch(actions.fetchSuccess([]));
-        return;
-      }
 
-      dispatch(fetchChefsById(chefsWithTags.map(chef =>chef.nameOrId)));
+      const chefsWithoutTags = chefs.results.filter((_)=>_.contributorType==="Byline");
+      const bylinedChefs:Chef[] = chefsWithoutTags.map(c=>({
+        id: `byline/${sanitisePrintableName(c.nameOrId)}`,
+        type: 'contributor',
+        internalName: c.nameOrId,
+        webTitle: c.nameOrId,
+        webUrl: "",
+        apiUrl: ""
+      }));
+      dispatch(fetchChefsById(chefsWithTags.map(chef => chef.nameOrId), bylinedChefs));
+
     } catch (e) {
       dispatch(actions.fetchError(e));
     }
@@ -49,33 +58,34 @@ export const fetchChefs =
 
 export const fetchChefsById = (
   tagIds: string[],
+  existingChefs: Chef[] = [],
   page = 1,
   pageSize = 20
 ): ThunkResult<void> =>
   async (dispatch) => {
 
   try {
-    console.log(`tags to look up: ${tagIds.join(",")}`)
     const chefTags = await liveCapi.chefs({
       'ids': tagIds.join(","),
       'show-elements': 'image',
       'show-fields': 'all',
     });
 
-    chefTags.response.results.forEach((t)=>
-      console.log(JSON.stringify(t))
-    );
+    const allTags = chefTags.response.results.concat(existingChefs);
+
+    allTags.forEach(t=>console.log(t));
+
     const payload: { ignoreOrder?: undefined; pagination?: IPagination; order?: string[] } = {
       pagination: {
-        pageSize: chefTags.response.pageSize,
-        totalPages: chefTags.response.pages,
-        currentPage: chefTags.response.currentPage
+        pageSize: allTags.length,
+        totalPages: 1,
+        currentPage: 1
       },
       order: tagIds
     };
 
     dispatch(
-      actions.fetchSuccess(chefTags.response.results.map(sanitizeTag), payload)
+      actions.fetchSuccess(allTags.map(sanitizeTag), payload)
     )
   } catch(err) {
     dispatch(actions.fetchError(err))

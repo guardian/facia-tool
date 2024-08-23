@@ -10,7 +10,5 @@ export interface Chef {
   bio?: string;
   bylineImageUrl?: string;
   bylineLargeImageUrl?: string;
-  firstName: string;
-  lastName: string;
   twitterHandle?: string;
 }
