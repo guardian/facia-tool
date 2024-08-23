@@ -127,6 +127,18 @@ export const addCollectionToFront = (
   }).then((response) => response.json());
 };
 
+export const removeCollectionFromFront = (
+  frontId: string,
+  collectionId: string
+): Promise<EditionsFront> => {
+  return pandaFetch(
+    `/editions-api/fronts/${frontId}/collection/${collectionId} `,
+    {
+      method: 'DELETE',
+    }
+  ).then((response) => response.json());
+};
+
 export async function getIssueVersions(
   issueId: string
 ): Promise<IssueVersion[]> {

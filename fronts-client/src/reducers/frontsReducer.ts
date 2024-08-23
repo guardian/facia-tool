@@ -63,6 +63,20 @@ const reducer = (
         newState
       );
     }
+    case 'FETCH_FRONT_REMOVE_COLLECTION_SUCCESS': {
+      return set(
+        [
+          'frontsConfig',
+          'data',
+          'fronts',
+          action.payload.frontId,
+          'collections',
+          action.payload.collectionId,
+        ],
+        action.payload,
+        newState
+      );
+    }
     case 'FETCH_LAST_PRESSED_SUCCESS': {
       return set(
         ['lastPressed', action.payload.frontId],

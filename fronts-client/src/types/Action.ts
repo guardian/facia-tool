@@ -279,6 +279,14 @@ interface EditionsFrontAddCollectionUpdate {
   };
 }
 
+interface EditionsFrontRemoveCollectionUpdate {
+  type: 'FETCH_FRONT_REMOVE_COLLECTION_SUCCESS';
+  payload: {
+    frontId: string;
+    collectionId: string;
+  };
+}
+
 interface PageViewDataRequested {
   type: 'PAGE_VIEW_DATA_REQUESTED';
   payload: {
@@ -372,6 +380,7 @@ type Action =
   | EditionsFrontMetadataUpdate
   | EditionsFrontHiddenStateUpdate
   | EditionsFrontAddCollectionUpdate
+  | EditionsFrontRemoveCollectionUpdate
   | IsPrefillMode
   | SetHidden
   | ChangedBrowsingStage
