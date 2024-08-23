@@ -15,7 +15,6 @@ import Pagination from './Pagination';
 import ScrollContainer from '../ScrollContainer';
 import { ChefSearchParams, RecipeSearchParams } from '../../services/recipeQuery';
 import debounce from 'lodash/debounce';
-import * as sea from 'node:sea';
 
 const InputContainer = styled.div`
   margin-bottom: 10px;
