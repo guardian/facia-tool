@@ -19,23 +19,6 @@ const bundle = createAsyncResourceBundle<Chef>('chefs', {
   selectLocalState: (state) => state.chefs,
 });
 
-// const fetchResourceOrResults = async (
-//   capiService: typeof liveCapi,
-//   params: Record<string, string[] | string | number>
-// ) => {
-//   const capiEndpoint = capiService.chefs;
-//   const { response } = await capiEndpoint(params);
-//
-//   return {
-//     results: response.results,
-//     pagination: {
-//       totalPages: response.pages,
-//       currentPage: response.currentPage,
-//       pageSize: response.pageSize,
-//     },
-//   };
-// };
-
 export const fetchChefs =
   (
     // The params to include in the request
@@ -54,9 +37,7 @@ export const fetchChefs =
       const chefsWithTags = chefs.results.filter(chef=>chef.contributorType==="Profile");
       console.log(`${chefsWithTags.length} had associated contributor tags`);
       if(chefsWithTags.length==0) {
-        dispatch(
-          actions.fetchSuccessIgnore([])
-        );
+        dispatch(actions.fetchSuccess([]));
         return;
       }
 
