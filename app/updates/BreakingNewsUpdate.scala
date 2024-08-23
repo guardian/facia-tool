@@ -33,6 +33,14 @@ object BreakingNewsUpdate {
     BreakingNewsSportInternational,
     BreakingNewsSportEurope
   )
+  val UsElectionBreakingNewsTopics = List(
+    BreakingNewsUsElectionGlobal,
+    BreakingNewsUsElectionUk,
+    BreakingNewsUsElectionUs,
+    BreakingNewsUsElectionAu,
+    BreakingNewsUsElectionEurope,
+    BreakingNewsUsElectionInternational,
+  )
 
   def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     val title = trail.topic match {
@@ -83,6 +91,12 @@ object BreakingNewsUpdate {
       case Some("international-sport") => List(BreakingNewsSportInternational)
       case Some(SportGlobalTopicName) => SportBreakingNewsTopics
       case Some("uk-general-election") => List(BreakingNewsElection)
+      case Some("global-us-election") => List(BreakingNewsUsElectionGlobal)
+      case Some("uk-us-election") => List(BreakingNewsUsElectionUk)
+      case Some("us-us-election") => List(BreakingNewsUsElectionUs)
+      case Some("au-us-election") => List(BreakingNewsUsElectionAu)
+      case Some("europe-us-election") => List(BreakingNewsUsElectionEurope)
+      case Some("international-us-election") => List(BreakingNewsUsElectionInternational)
       case Some("") => throw new InvalidParameterException(s"Invalid empty string topic")
       case Some(notYetImplementedTopic) => List(Topic(Breaking, notYetImplementedTopic))
       case None => throw new InvalidParameterException(s"Invalid empty topic")
