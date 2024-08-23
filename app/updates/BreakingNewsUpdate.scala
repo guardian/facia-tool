@@ -33,14 +33,6 @@ object BreakingNewsUpdate {
     BreakingNewsSportInternational,
     BreakingNewsSportEurope
   )
-  val UsElectionBreakingNewsTopics = List(
-    BreakingNewsUsElectionGlobal,
-    BreakingNewsUsElectionUk,
-    BreakingNewsUsElectionUs,
-    BreakingNewsUsElectionAu,
-    BreakingNewsUsElectionEurope,
-    BreakingNewsUsElectionInternational,
-  )
 
   def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     val title = trail.topic match {
