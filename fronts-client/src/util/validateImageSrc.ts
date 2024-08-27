@@ -4,6 +4,7 @@ import urlConstants from 'constants/url';
 import deepGet from 'lodash/get';
 import grid, { recordUsage } from './grid';
 import fetchImage from './fetchImage';
+import { Card } from 'types/Collection';
 import { Crop, Criteria } from 'types/Grid';
 import {
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
@@ -356,6 +357,47 @@ function validateDimensions(
   return { matchesCriteria: true };
 }
 
+const validateSlideshowDimensions = (
+  slideshow: Card['meta']['slideshow'] = [],
+  imageCriteria: Criteria
+): ReturnType<typeof validateDimensions> => {
+  const validationForAllSlidesWithDimensions = slideshow.flatMap((slide) => {
+    const maybeSlideDimensions = getMaybeDimensionsFromWidthAndHeight(
+      slide.width,
+      slide.height
+    );
+    return maybeSlideDimensions
+      ? validateDimensions(maybeSlideDimensions, imageCriteria)
+      : [];
+  });
+
+  const failedSlideValidation = validationForAllSlidesWithDimensions.filter(
+    (result) => !result.matchesCriteria
+  );
+
+  if (failedSlideValidation.length === 0) {
+    return { matchesCriteria: true };
+  }
+
+  const failuresReasons = Array.from(
+    new Set(
+      failedSlideValidation.map(
+        (result) => !result.matchesCriteria && result.reason
+      )
+    )
+  ).join('; ');
+
+  const countString =
+    failedSlideValidation.length == 1
+      ? '1 slide'
+      : `${failedSlideValidation.length} slides`;
+
+  return {
+    matchesCriteria: false,
+    reason: `${countString} did not match criteria: ${failuresReasons}`,
+  };
+};
+
 const imageDropTypes = [
   ...gridDropTypes,
   DRAG_DATA_CARD_IMAGE_OVERRIDE,
@@ -375,4 +417,5 @@ export {
   validateMediaItem,
   validateDimensions,
   getMaybeDimensionsFromWidthAndHeight,
+  validateSlideshowDimensions,
 };

@@ -21,6 +21,7 @@ import {
   getMaybeDimensionsFromWidthAndHeight,
   validateDimensions,
   validateImageEvent,
+  validateSlideshowDimensions,
   ValidationResponse,
 } from 'util/validateImageSrc';
 import {
@@ -468,43 +469,6 @@ class Card extends React.Component<CardContainerProps> {
       : landScapeCardImageCriteria;
   };
 
-  private checkDraggedSlideshow = (
-    slideshow: CardType['meta']['slideshow'] = [],
-    imageCriteria: Criteria
-  ): ReturnType<typeof validateDimensions> => {
-    const validationForAllSlidesWithDimensions = slideshow.flatMap((slide) => {
-      const maybeSlideDimensions = getMaybeDimensionsFromWidthAndHeight(
-        slide.width,
-        slide.height
-      );
-      return maybeSlideDimensions
-        ? validateDimensions(maybeSlideDimensions, imageCriteria)
-        : [];
-    });
-
-    const failedSlideValidation = validationForAllSlidesWithDimensions.filter(
-      (result) => !result.matchesCriteria
-    );
-
-    if (failedSlideValidation.length === 0) {
-      return { matchesCriteria: true };
-    }
-
-    const failuresReasons = Array.from(
-      new Set(failedSlideValidation.map((result) => result.reason))
-    ).join('; ');
-
-    const countString =
-      failedSlideValidation.length == 1
-        ? '1 slide'
-        : `${failedSlideValidation.length} slides`;
-
-    return {
-      matchesCriteria: false,
-      reason: `${countString} did not match criteria: ${failuresReasons}`,
-    };
-  };
-
   private checkDraggedImage = (
     cardUuid: string,
     imageCriteria: Criteria
@@ -514,7 +478,7 @@ class Card extends React.Component<CardContainerProps> {
 
     const { imageSlideshowReplace, slideshow } = cardImageWasDraggedFrom.meta;
     if (imageSlideshowReplace) {
-      return this.checkDraggedSlideshow(slideshow, imageCriteria);
+      return validateSlideshowDimensions(slideshow, imageCriteria);
     }
 
     const draggedImageDims = getMaybeDimensionsFromWidthAndHeight(
