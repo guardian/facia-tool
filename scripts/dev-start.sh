@@ -22,7 +22,17 @@ hasCredentials() {
   fi
 }
 
+runNginx() {
+  if pgrep -f nginx >/dev/null; then
+    echo "nginx is already running"
+  else
+    echo "nginx isn't running, booting now..."
+    dev-nginx restart
+  fi
+}
+
 main() {
+    runNginx
     hasCredentials
 
     printf "\n\rStarting Yarn... \n\r\n\r"
