@@ -2,13 +2,12 @@ package services.editions.db
 
 import java.time._
 import model.editions.internal.PrefillUpdate
-import model.editions.{CapiPrefillQuery, Edition, EditionsArticle, EditionsChef, EditionsCollection, PathType}
+import model.editions.{CapiPrefillQuery, Edition, EditionsArticle, EditionsCard, EditionsChef, EditionsCollection, EditionsFeastCollection, PathType}
 import model.forms.GetCollectionsFilter
 import play.api.libs.json.Json
 import scalikejdbc._
 import services.editions.DbEditionsCard
 import services.editions.prefills.CapiQueryTimeWindow
-import model.editions.EditionsFeastCollection
 import play.api.libs.json.Writes
 import com.gu.pandomainauth.model.User
 import logging.Logging
@@ -141,12 +140,7 @@ trait CollectionsQueries extends Logging {
     """.execute.apply()
 
     collection.items.zipWithIndex.foreach { case (card, index) =>
-      val metadataJson = card match {
-        case EditionsArticle(_, _, metadata) => maybeJson(metadata)
-        case EditionsChef(_, _, metadata) => maybeJson(metadata)
-        case EditionsFeastCollection(_, _, metadata) => maybeJson(metadata)
-        case _ => "{}"
-      }
+      val metadataJson = EditionsCard.getMetadataJson(card)
 
       val addedOn = EditionsDB.dateTimeFromMillis(card.addedOn)
       sql"""

@@ -83,17 +83,22 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       val arts1 = artsCollection.items.head
       arts1.id shouldBe "345678"
 
-      arts1.metadata.showByline.isDefined shouldBe true
-      arts1.metadata.showByline.value shouldBe true
+      val metadata = arts1.metadata match {
+        case Some(metadata@EditionsArticleMetadata(_, _, _, _, _, _, _, _, _, _, _, _, _)) => metadata
+        case _ => fail("Metadata is of incorrect type")
+      }
 
-      arts1.metadata.showQuotedHeadline.isDefined shouldBe true
-      arts1.metadata.showQuotedHeadline.value shouldBe true
+      metadata.showByline.isDefined shouldBe true
+      metadata.showByline.value shouldBe true
 
-      arts1.metadata.mediaType.isDefined shouldBe true
-      arts1.metadata.mediaType.value shouldBe MediaType.Cutout
+      metadata.showQuotedHeadline.isDefined shouldBe true
+      metadata.showQuotedHeadline.value shouldBe true
 
-      arts1.metadata.cutoutImage.isDefined shouldBe true
-      arts1.metadata.cutoutImage.value shouldBe
+      metadata.mediaType.isDefined shouldBe true
+      metadata.mediaType.value shouldBe MediaType.Cutout
+
+      metadata.cutoutImage.isDefined shouldBe true
+      metadata.cutoutImage.value shouldBe
         Image(None, None, "https://media.giphy.com/media/K3PYNk8oh3HGM/source.gif", "https://media.giphy.com/media/K3PYNk8oh3HGM/source.gif")
 
     }
@@ -159,16 +164,21 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       val arts2 = artsCollection.items.tail.head
       arts2.id shouldBe "574893"
 
-      arts2.metadata.showByline.isDefined shouldBe true
-      arts2.metadata.showByline.value shouldBe true
+      val metadata = arts2.metadata match {
+        case Some(metadata@EditionsArticleMetadata(_, _, _, _, _, _, _, _, _, _, _, _, _)) => metadata
+        case _ => fail("Metadata is of incorrect type")
+      }
 
-      arts2.metadata.showQuotedHeadline.isDefined shouldBe true
-      arts2.metadata.showQuotedHeadline.value shouldBe true
+      metadata.showByline.isDefined shouldBe true
+      metadata.showByline.value shouldBe true
 
-      arts2.metadata.mediaType.isDefined shouldBe true
-      arts2.metadata.mediaType.value shouldBe MediaType.UseArticleTrail
+      metadata.showQuotedHeadline.isDefined shouldBe true
+      metadata.showQuotedHeadline.value shouldBe true
 
-      arts2.metadata.cutoutImage shouldBe None
+      metadata.mediaType.isDefined shouldBe true
+      metadata.mediaType.value shouldBe MediaType.UseArticleTrail
+
+      metadata.cutoutImage shouldBe None
 
     }
 
@@ -187,7 +197,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
       val frontPageCollection = issue.fronts.find(_.name == "UK News").value.collections.find(_.name == "Front Page").value
       frontPageCollection.items.size shouldBe 1
       frontPageCollection.items.head.id shouldBe "123456"
-      frontPageCollection.items.head.metadata shouldBe EditionsArticleMetadata.default
+      frontPageCollection.items.head.metadata shouldBe Some(EditionsArticleMetadata.default)
     }
   }
 

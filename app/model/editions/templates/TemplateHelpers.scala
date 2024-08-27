@@ -7,7 +7,6 @@ import play.api.libs.json._
 object TemplateHelpers {
   object Defaults {
     val defaultFrontPresentation = FrontPresentation(model.editions.Swatch.Neutral)
-    val defaultCollectionPresentation = CollectionPresentation()
     val defaultCollectionCardsCap: Int = 200
   }
 
@@ -16,7 +15,6 @@ object TemplateHelpers {
       name,
       maybeOphanPath = None,
       prefill = None,
-      presentation = Defaults.defaultCollectionPresentation
     )
   }
 

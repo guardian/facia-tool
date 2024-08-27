@@ -7,10 +7,10 @@ import io.circe.syntax._
 import logging.Logging
 import logic.EditionsChecker
 import model.editions._
-import model.editions.templates.{CuratedPlatformDefinition, EditionType}
+import model.editions.templates.CuratedPlatformDefinition
 import model.forms._
 import net.logstash.logback.marker.Markers
-import play.api.libs.json.{JsObject, JsValue, Json}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
@@ -25,6 +25,7 @@ import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 import model.editions.client.EditionsFrontendCollectionWrapper
+import play.api.libs.json.Format.GenericFormat
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
@@ -37,9 +38,28 @@ class EditionsController(db: EditionsDB,
 
     val result = for {
       edition <- Either.fromOption[Result, Edition](Edition.withNameOption(name), NotFound(s"Edition $name not found"))
-      genEditionTemplateResult <- templating.generateEditionTemplate(edition, form.issueDate)
-      issueId = db.insertIssue(edition, genEditionTemplateResult, req.user, OffsetDateTime.now())
+      templateResult <- templating.generateEditionTemplate(edition, form.issueDate)
+      issueId = db.insertIssue(edition, templateResult.issueSkeleton, req.user, OffsetDateTime.now())
       issue <- Either.fromOption(db.getIssue(issueId), NotFound("Issue created but could not retrieve it from the database"))
+    } yield issue
+
+    result.fold(identity, issue => Created(Json.toJson(issue)))
+  }
+
+  def createIssueFromPreviousIssue(name: String) = EditEditionsAuthAction(parse.json[CreateIssue]) { req =>
+    val form = req.body
+
+    val result = for {
+      edition <- Edition.withNameOption(name).toRight(NotFound(s"Edition $name not found"))
+      issue <- db.insertIssueFromClosestPreviousIssue(
+        edition = edition,
+        issueDate = form.issueDate,
+        user = req.user,
+        now = OffsetDateTime.now()
+      ).left.map {
+        case EditionsDB.NotFoundError(message) => NotFound(message)
+        case e => InternalServerError(e.getMessage)
+      }
     } yield issue
 
     result.fold(identity, issue => Created(Json.toJson(issue)))
@@ -110,17 +130,28 @@ class EditionsController(db: EditionsDB,
   }
 
   def listIssues(edition: Edition) = EditEditionsAuthAction { req =>
-    Try {
+    val params = Try {
       val dateFrom = req.queryString.get("dateFrom").map(_.head).get
       val dateTo = req.queryString.get("dateTo").map(_.head).get
       (LocalDate.parse(dateFrom), LocalDate.parse(dateTo))
-    }.map {
-      case (localDateFrom, localDateTo) =>
-        db.listIssues(edition, localDateFrom, localDateTo) match {
-          case Right(issues) => Ok(Json.toJson(issues))
-          case Left(errors) => InternalServerError(s"Error listing issues: ${errors.mkString(", ")}")
-        }
-    }.getOrElse(BadRequest("Invalid or missing date"))
+    }.toEither.left.map { e =>
+      BadRequest(s"Error getting dates from query param: ${e.getMessage}")
+    }
+
+    val response = for {
+      dates <- params
+      (localDateFrom, localDateTo) = dates
+      platform <- AllTemplates.templates.get(edition).toRight(BadRequest("No platform for this edition"))
+      issues <- db.listIssues(edition, localDateFrom, localDateTo).left.map(errors => InternalServerError(s"Error listing issues: ${errors.mkString(", ")}"))
+    } yield {
+      val result = Json.obj(
+        "issues" -> Json.toJson(issues),
+        "platform" -> platform.platform.entryName
+      )
+      Ok(Json.toJson(result))
+    }
+
+    response.merge
   }
 
   // Ideally the frontend can be changed so we don't have this bonkers modelling!
