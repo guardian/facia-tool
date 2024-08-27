@@ -43,6 +43,7 @@ const SectionContentMetaContainer = styled.div`
   flex-shrink: 0;
   justify-content: flex-end;
   margin-right: 5px;
+  flex-wrap: wrap;
 `;
 
 const OverviewToggleContainer = styled.div<{ active: boolean }>`
