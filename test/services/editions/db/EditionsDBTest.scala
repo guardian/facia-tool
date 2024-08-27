@@ -436,7 +436,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       testCases.foreach {
         case (newIndex, expectedOrder) =>
           s"moving to index $newIndex" taggedAs UsesDatabase in {
-            val id = insertSkeletonIssue(2019, 9, 30, testFront)
+            val id = insertSkeletonIssueForDaily(2019, 9, 30, testFront)
             val retrievedIssue = editionsDB.getIssue(id).value
             val retrievedFront = retrievedIssue.fronts.head
             val firstCollection = retrievedFront.collections.head
@@ -770,7 +770,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       }
 
       "should default to the top of the front as multiple collections are added" taggedAs UsesDatabase in {
-        val issueId = insertSkeletonIssue(2020, 1, 1,
+        val issueId = insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere,
           front("news/uk", collection("politics", None))
         )
         val issue: EditionsIssue = editionsDB.getIssue(issueId).value
