@@ -99,6 +99,16 @@ const FrontDetailContainer = styled(BaseFrontContentContainer)`
   flex-shrink: 0;
 `;
 
+const ButtonInSectionContentMetaContainer = styled(Button)`
+  margin-right: 10px;
+  margin-bottom: 10px;
+  margin-top: 11px;
+  padding: 0px 5px;
+  font-family: TS3TextSans;
+  font-size: 12px;
+  font-weight: bold;
+`;
+
 interface FrontPropsBeforeState {
   id: string;
   browsingStage: CardSets;
@@ -167,17 +177,11 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
                 </DragToAddContainer>
               )}
               {isFeast && (
-                <Button
-                  style={{
-                    marginTop: '9px',
-                    padding: '5px',
-                    marginRight: '5px',
-                    borderRadius: '12px',
-                  }}
+                <ButtonInSectionContentMetaContainer
                   onClick={() => this.addFrontCollection()}
                 >
                   Add New Collection
-                </Button>
+                </ButtonInSectionContentMetaContainer>
               )}
               <OverviewHeadingButton onClick={this.handleOpenCollections}>
                 <ButtonLabel>Expand all&nbsp;</ButtonLabel>
