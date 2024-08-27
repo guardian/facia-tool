@@ -8,8 +8,8 @@ import {
   stateWithCollection,
   capiArticle,
   stateWithDuplicateArticleIdsInCollection,
-  // stateWithCollectionWithChefs,
-  // stateWithCollectionWithDuplicateChefs,
+  stateWithCollectionWithChefs,
+  stateWithCollectionWithDuplicateChefs,
 } from 'fixtures/shared';
 import {
   getCollectionsApiResponse,
@@ -20,10 +20,10 @@ import {
   actions as externalArticleActions,
   actionNames as externalArticleActionNames,
 } from 'bundles/externalArticlesBundle';
-// import {
-//   actions as chefActions,
-//   actionNames as chefActionNames,
-// } from 'bundles/chefsBundle';
+import {
+  actions as chefActions,
+  actionNames as chefActionNames,
+} from 'bundles/chefsBundle';
 import {
   getCollections,
   fetchCardReferencedEntitiesForCollections,
@@ -517,39 +517,97 @@ describe('Collection actions', () => {
       });
     });
 
-    // it('should dispatch start and success actions for chefs returned from getCollection()', async () => {
-    //   await assertFetchedEntities({
-    //     fixture: stateWithCollectionWithChefs,
-    //     action: fetchCardReferencedEntitiesForCollections(
-    //       ['exampleCollection'],
-    //       'live'
-    //     ),
-    //     mockEndpoint:
-    //       'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein%2Cprofile%2Ffelicity-cloake',
-    //     fetchStartAction: chefActions.fetchStart([
-    //       'profile/yotamottolenghi',
-    //       'profile/rick-stein',
-    //       'profile/felicity-cloake',
-    //     ]),
-    //     fetchCompleteActionType: chefActionNames.fetchSuccess,
-    //   });
-    // });
-    //
-    // it('should deduplicate chef ids', async () => {
-    //   await assertFetchedEntities({
-    //     fixture: stateWithCollectionWithDuplicateChefs,
-    //     action: fetchCardReferencedEntitiesForCollections(
-    //       ['exampleCollection'],
-    //       'live'
-    //     ),
-    //     mockEndpoint:
-    //       'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein',
-    //     fetchStartAction: chefActions.fetchStart([
-    //       'profile/yotamottolenghi',
-    //       'profile/rick-stein',
-    //     ]),
-    //     fetchCompleteActionType: chefActionNames.fetchSuccess,
-    //   });
-    // });
+    const capiChefTagsFixture = {
+      "response": {
+        "status": "ok",
+        "userTier": "internal",
+        "total": 3,
+        "startIndex": 1,
+        "pageSize": 10,
+        "currentPage": 1,
+        "pages": 1,
+        "results": [
+          {
+            "id": "profile/felicity-cloake",
+            "type": "contributor",
+            "webTitle": "Felicity Cloake",
+            "webUrl": "https://www.theguardian.com/profile/felicity-cloake",
+            "apiUrl": "https://content.guardianapis.com/profile/felicity-cloake",
+            "bio": "<p>Award-winning food writer Felicity Cloake has written five cookbooks, two food travelogues and is the author of the Guardian's <a href=\"https://www.theguardian.com/food/series/how-to-cook-the-perfect----\">How to Cook the Perfect ...</a> recipe series</p>",
+            "bylineImageUrl": "https://uploads.guim.co.uk/2018/01/29/Felicity-Cloake.jpg",
+            "bylineLargeImageUrl": "https://uploads.guim.co.uk/2018/01/29/Felicity_Cloake,_L.png",
+            "firstName": "Felicity",
+            "lastName": "Cloake",
+            "r2ContributorId": "32433",
+            "internalName": "Felicity Cloake"
+          },
+          {
+            "id": "profile/rick-stein",
+            "type": "contributor",
+            "webTitle": "Rick Stein",
+            "webUrl": "https://www.theguardian.com/profile/rick-stein",
+            "apiUrl": "https://content.guardianapis.com/profile/rick-stein",
+            "firstName": "stein",
+            "lastName": "rick",
+            "r2ContributorId": "33159",
+            "internalName": "Rick Stein (contributor)"
+          },
+          {
+            "id": "profile/yotamottolenghi",
+            "type": "contributor",
+            "sectionId": "lifeandstyle",
+            "sectionName": "Life and style",
+            "webTitle": "Yotam Ottolenghi",
+            "webUrl": "https://www.theguardian.com/profile/yotamottolenghi",
+            "apiUrl": "https://content.guardianapis.com/profile/yotamottolenghi",
+            "bio": "<p>Yotam Ottolenghi&nbsp;is  chef-patron of the <a href=\"https://ottolenghi.co.uk/\">Ottolenghi</a> delis and the Nopi and Rovi restaurants. He has  published 10 bestselling cookbooks</p>",
+            "bylineImageUrl": "https://uploads.guim.co.uk/2023/10/10/yotam_ottolenghi.jpg",
+            "bylineLargeImageUrl": "https://uploads.guim.co.uk/2023/10/10/yotam_ottolenghi.png",
+            "firstName": "Yotam",
+            "lastName": "Ottolenghi",
+            "twitterHandle": "ottolenghi",
+            "r2ContributorId": "25460",
+            "internalName": "Yotam Ottolenghi"
+          }
+        ]
+      }
+    }
+
+    it('should dispatch start and success actions for chefs returned from getCollection()', async () => {
+      await assertFetchedEntities({
+        fixture: stateWithCollectionWithChefs,
+        action: fetchCardReferencedEntitiesForCollections(
+          ['exampleCollection'],
+          'live'
+        ),
+        mockEndpoint:
+          'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein%2Cprofile%2Ffelicity-cloake',
+        fetchStartAction: chefActions.fetchStart([
+          'profile/yotamottolenghi',
+          'profile/rick-stein',
+          'profile/felicity-cloake',
+        ]),
+        fetchCompleteActionType: chefActionNames.fetchSuccess,
+        fetchMockResponse: capiChefTagsFixture
+      });
+    });
+
+    it('should deduplicate chef ids', async () => {
+      await assertFetchedEntities({
+        fixture: stateWithCollectionWithDuplicateChefs,
+        action: fetchCardReferencedEntitiesForCollections(
+          ['exampleCollection'],
+          'live'
+        ),
+        mockEndpoint:
+          'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein',
+        fetchStartAction: chefActions.fetchStart([
+          'profile/yotamottolenghi',
+          'profile/rick-stein',
+        ]),
+        fetchCompleteActionType: chefActionNames.fetchSuccess,
+        fetchMockResponse: capiChefTagsFixture
+      });
+    });
   });
 });

@@ -41,7 +41,7 @@ export const fetchChefs =
         return;
       }
 
-      dispatch(fetchChefsById(chefsWithTags.map(chef =>chef.nameOrId)));
+      dispatch(fetchChefsById(chefsWithTags.map(chef =>chef.nameOrId), 1,20,true));
     } catch (e) {
       dispatch(actions.fetchError(e));
     }
@@ -50,9 +50,14 @@ export const fetchChefs =
 export const fetchChefsById = (
   tagIds: string[],
   page = 1,
-  pageSize = 20
+  pageSize = 20,
+  alreadyStarted:boolean = false
 ): ThunkResult<void> =>
   async (dispatch) => {
+
+  //we could be called as the second part of a two-stage fetch, OR we could be called directly.
+  //if called directly, indicate that we started a fetch. Otherwise, the first part should
+  if(!alreadyStarted) dispatch(actions.fetchStart(tagIds));
 
   try {
     console.log(`tags to look up: ${tagIds.join(",")}`)
