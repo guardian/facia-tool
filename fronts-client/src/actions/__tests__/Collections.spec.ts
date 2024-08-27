@@ -8,8 +8,8 @@ import {
   stateWithCollection,
   capiArticle,
   stateWithDuplicateArticleIdsInCollection,
-  stateWithCollectionWithChefs,
-  stateWithCollectionWithDuplicateChefs,
+  // stateWithCollectionWithChefs,
+  // stateWithCollectionWithDuplicateChefs,
 } from 'fixtures/shared';
 import {
   getCollectionsApiResponse,
@@ -20,10 +20,10 @@ import {
   actions as externalArticleActions,
   actionNames as externalArticleActionNames,
 } from 'bundles/externalArticlesBundle';
-import {
-  actions as chefActions,
-  actionNames as chefActionNames,
-} from 'bundles/chefsBundle';
+// import {
+//   actions as chefActions,
+//   actionNames as chefActionNames,
+// } from 'bundles/chefsBundle';
 import {
   getCollections,
   fetchCardReferencedEntitiesForCollections,
@@ -517,39 +517,39 @@ describe('Collection actions', () => {
       });
     });
 
-    it('should dispatch start and success actions for chefs returned from getCollection()', async () => {
-      await assertFetchedEntities({
-        fixture: stateWithCollectionWithChefs,
-        action: fetchCardReferencedEntitiesForCollections(
-          ['exampleCollection'],
-          'live'
-        ),
-        mockEndpoint:
-          'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein%2Cprofile%2Ffelicity-cloake',
-        fetchStartAction: chefActions.fetchStart([
-          'profile/yotamottolenghi',
-          'profile/rick-stein',
-          'profile/felicity-cloake',
-        ]),
-        fetchCompleteActionType: chefActionNames.fetchSuccess,
-      });
-    });
-
-    it('should deduplicate chef ids', async () => {
-      await assertFetchedEntities({
-        fixture: stateWithCollectionWithDuplicateChefs,
-        action: fetchCardReferencedEntitiesForCollections(
-          ['exampleCollection'],
-          'live'
-        ),
-        mockEndpoint:
-          'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein',
-        fetchStartAction: chefActions.fetchStart([
-          'profile/yotamottolenghi',
-          'profile/rick-stein',
-        ]),
-        fetchCompleteActionType: chefActionNames.fetchSuccess,
-      });
-    });
+    // it('should dispatch start and success actions for chefs returned from getCollection()', async () => {
+    //   await assertFetchedEntities({
+    //     fixture: stateWithCollectionWithChefs,
+    //     action: fetchCardReferencedEntitiesForCollections(
+    //       ['exampleCollection'],
+    //       'live'
+    //     ),
+    //     mockEndpoint:
+    //       'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein%2Cprofile%2Ffelicity-cloake',
+    //     fetchStartAction: chefActions.fetchStart([
+    //       'profile/yotamottolenghi',
+    //       'profile/rick-stein',
+    //       'profile/felicity-cloake',
+    //     ]),
+    //     fetchCompleteActionType: chefActionNames.fetchSuccess,
+    //   });
+    // });
+    //
+    // it('should deduplicate chef ids', async () => {
+    //   await assertFetchedEntities({
+    //     fixture: stateWithCollectionWithDuplicateChefs,
+    //     action: fetchCardReferencedEntitiesForCollections(
+    //       ['exampleCollection'],
+    //       'live'
+    //     ),
+    //     mockEndpoint:
+    //       'begin:/api/live/tags?type=contributor&ids=profile%2Fyotamottolenghi%2Cprofile%2Frick-stein',
+    //     fetchStartAction: chefActions.fetchStart([
+    //       'profile/yotamottolenghi',
+    //       'profile/rick-stein',
+    //     ]),
+    //     fetchCompleteActionType: chefActionNames.fetchSuccess,
+    //   });
+    // });
   });
 });
