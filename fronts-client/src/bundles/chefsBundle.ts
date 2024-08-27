@@ -33,9 +33,7 @@ export const fetchChefs =
     dispatch(actions.fetchStart(ids));
     try {
       const chefs = await liveRecipes.chefs(params);
-      console.log(`Got a total of ${chefs.results.length} hits`);
       const chefsWithTags = chefs.results.filter(chef=>chef.contributorType==="Profile");
-      console.log(`${chefsWithTags.length} had associated contributor tags`);
       if(chefsWithTags.length==0) {
         dispatch(actions.fetchSuccess([]));
         return;
@@ -60,16 +58,12 @@ export const fetchChefsById = (
   if(!alreadyStarted) dispatch(actions.fetchStart(tagIds));
 
   try {
-    console.log(`tags to look up: ${tagIds.join(",")}`)
     const chefTags = await liveCapi.chefs({
       'ids': tagIds.join(","),
       'show-elements': 'image',
       'show-fields': 'all',
     });
 
-    chefTags.response.results.forEach((t)=>
-      console.log(JSON.stringify(t))
-    );
     const payload: { ignoreOrder?: undefined; pagination?: IPagination; order?: string[] } = {
       pagination: {
         pageSize: chefTags.response.pageSize,
