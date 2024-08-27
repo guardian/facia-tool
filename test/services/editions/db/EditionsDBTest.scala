@@ -653,10 +653,33 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection"), user = user, now = now) match {
           case Right(front) =>
             front.collections.size shouldBe 2
-            front.collections.last.displayName shouldBe "Test Collection"
+            front.collections.head.displayName shouldBe "Test Collection"
           case Left(error) =>
-            Assertions.fail(s"Error adding collection to front: ${error.getMessage()}")
+            Assertions.fail(s"Error adding collection to front: ${error.getMessage}")
         }
+      }
+
+      "should default to the top of the front as multiple collections are added" taggedAs UsesDatabase in {
+        val issueId = insertSkeletonIssue(2020, 1, 1,
+          front("news/uk", collection("politics", None))
+        )
+        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val frontFromIssue = issue.fronts.head
+
+        val result = for {
+          _ <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection"), user = user, now = now)
+          _ <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection 2"), user = user, now = now)
+          front <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection 3"), user = user, now = now)
+        } yield {
+          front.collections.map(_.displayName) shouldBe List (
+            "Test Collection 3",
+            "Test Collection 2",
+            "Test Collection",
+            "politics"
+          )
+        }
+
+        result.left.foreach(e => fail(e.getMessage))
       }
 
       "should add a default name if one is not provided" taggedAs UsesDatabase in {
@@ -668,9 +691,9 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
         editionsDB.addCollectionToFront(frontFromIssue.id, user = user, now = now) match {
           case Right(front) =>
-            front.collections.last.displayName shouldBe "New collection"
+            front.collections.head.displayName shouldBe "New collection"
           case Left(error) =>
-            Assertions.fail(s"Error adding collection to front: ${error.getMessage()}")
+            Assertions.fail(s"Error adding collection to front: ${error.getMessage}")
         }
       }
 
@@ -689,13 +712,13 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         )
         val issue: EditionsIssue = editionsDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
-        val invalidIndex = Some(0)
+        val invalidIndex = Some(16)
 
         editionsDB.addCollectionToFront(frontFromIssue.id, collectionIndex = invalidIndex, user = user, now = now) match {
-          case Right(front) =>
+          case Right(_) =>
             Assertions.fail()
           case Left(error) =>
-            error shouldBe an[EditionsDB.WriteError]
+            error shouldBe an[EditionsDB.InvalidInput]
         }
       }
     }
