@@ -41,6 +41,8 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import { fetchPrefill } from 'bundles/capiFeedBundle';
 import LoadingGif from 'images/icons/loading.gif';
 import OpenFormsWarning from './OpenFormsWarning';
+import { selectors as editionsIssueSelectors } from '../../../bundles/editionsIssueBundle';
+import { removeFrontCollection } from '../../../actions/Editions';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -53,6 +55,7 @@ interface CollectionPropsBeforeState {
   frontId: string;
   browsingStage: CardSets;
   priority: string;
+  isFeast?: boolean;
 }
 
 type CollectionProps = CollectionPropsBeforeState & {
@@ -77,6 +80,7 @@ type CollectionProps = CollectionPropsBeforeState & {
   setHidden: (id: string, isHidden: boolean) => void;
   isHidden: boolean;
   displayName: string;
+  removeFrontCollection: (frontId: string, collectionId: string) => void;
 };
 
 interface CollectionState {
@@ -196,6 +200,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
       isHidden,
       hasContent,
       hasOpenForms,
+      isFeast,
     } = this.props;
 
     const { isPreviouslyOpen, isLaunching } = this.state;
@@ -217,13 +222,24 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
           canPublish && (
             <Fragment>
               <EditModeVisibility visibleMode="editions">
-                <HeadlineContentButton
-                  priority="default"
-                  onClick={() => this.props.setHidden(id, !isHidden)}
-                  title="Toggle the visibility of this container in this issue."
-                >
-                  {isHidden ? 'Unhide' : 'Hide'}
-                </HeadlineContentButton>
+                {!isFeast && (
+                  <HeadlineContentButton
+                    priority="default"
+                    onClick={() => this.props.setHidden(id, !isHidden)}
+                    title="Toggle the visibility of this container in this issue."
+                  >
+                    {isHidden ? 'Unhide' : 'Hide'}
+                  </HeadlineContentButton>
+                )}
+                {isFeast && (
+                  <HeadlineContentButton
+                    priority="default"
+                    onClick={() => this.removeFrontCollection()}
+                    title="Delete the collection for this issue"
+                  >
+                    Delete
+                  </HeadlineContentButton>
+                )}
                 {hasPrefill && (
                   <HeadlineContentButton
                     data-testid="prefill-button"
@@ -318,6 +334,9 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
     this.setState({ showOpenFormsWarning: true });
   private hideOpenFormsWarning = () =>
     this.setState({ showOpenFormsWarning: false });
+  private removeFrontCollection = () => {
+    this.props.removeFrontCollection(this.props.frontId, this.props.id);
+  };
 }
 
 const createMapStateToProps = () => {
@@ -355,6 +374,7 @@ const createMapStateToProps = () => {
     hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
     hasContent: !!selectors.selectById(state, collectionId),
     hasOpenForms: selectHasOpenForms(state, { collectionId, frontId }),
+    isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
   });
 };
 
@@ -383,6 +403,8 @@ const mapDispatchToProps = (
       fetchCardReferencedEntitiesForCollections([id], cardSets.previously)
     );
   },
+  removeFrontCollection: (frontId: string, id: string) =>
+    dispatch(removeFrontCollection(frontId, id)),
 });
 
 export default connect(createMapStateToProps, mapDispatchToProps)(Collection);

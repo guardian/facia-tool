@@ -6,6 +6,7 @@ import {
   putFrontHiddenState,
   putFrontMetadata,
   addCollectionToFront,
+  removeCollectionFromFront,
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
@@ -19,6 +20,8 @@ import { selectors as frontsConfigSelector } from 'bundles/frontsConfigBundle';
 import { editionCollectionToCollection } from '../strategies/fetch-collection';
 import { getCollectionActions } from './Collections';
 import { batchActions } from 'redux-batched-actions';
+import { EditionsFront } from '../types/Edition';
+import { State } from '../types/State';
 
 export const check =
   (id: string): ThunkResult<Promise<void>> =>
@@ -159,35 +162,54 @@ export const setFrontHiddenState =
 export const addFrontCollection =
   (id: string): ThunkResult<Promise<void>> =>
   async (dispatch, getState) => {
-    const state = getState();
     try {
       const newFront = await addCollectionToFront(id);
-      const newFrontsConfig = toFrontsConfig(
-        [newFront],
-        issueSelector.selectAll(state).id
-      );
-      const existingFrontsConfig: FrontsConfig =
-        frontsConfigSelector.selectAll(state);
-
-      const mergedFrontsConfig = {
-        fronts: {
-          ...existingFrontsConfig.fronts,
-          ...newFrontsConfig.fronts,
-        },
-        collections: {
-          ...existingFrontsConfig.collections,
-          ...newFrontsConfig.collections,
-        },
-      };
-
-      dispatch(actions.fetchSuccess(mergedFrontsConfig));
-
-      const collectionActions = newFront.collections.flatMap((c) =>
-        getCollectionActions(editionCollectionToCollection(c), getState)
-      );
-
-      dispatch(batchActions(collectionActions));
+      processNewEditionFrontResponse(newFront, dispatch, getState);
     } catch (error) {
       throw error;
     }
   };
+
+export const removeFrontCollection =
+  (frontId: string, collectionId: string): ThunkResult<Promise<void>> =>
+  async (dispatch, getState) => {
+    try {
+      const newFront = await removeCollectionFromFront(frontId, collectionId);
+      processNewEditionFrontResponse(newFront, dispatch, getState);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+const processNewEditionFrontResponse = (
+  newFront: EditionsFront,
+  dispatch: Dispatch,
+  getState: () => State
+) => {
+  const state = getState();
+  const newFrontsConfig = toFrontsConfig(
+    [newFront],
+    issueSelector.selectAll(state).id
+  );
+  const existingFrontsConfig: FrontsConfig =
+    frontsConfigSelector.selectAll(state);
+
+  const mergedFrontsConfig = {
+    fronts: {
+      ...existingFrontsConfig.fronts,
+      ...newFrontsConfig.fronts,
+    },
+    collections: {
+      ...existingFrontsConfig.collections,
+      ...newFrontsConfig.collections,
+    },
+  };
+
+  dispatch(actions.fetchSuccess(mergedFrontsConfig));
+
+  const collectionActions = newFront.collections.flatMap((c) =>
+    getCollectionActions(editionCollectionToCollection(c), getState)
+  );
+
+  dispatch(batchActions(collectionActions));
+};

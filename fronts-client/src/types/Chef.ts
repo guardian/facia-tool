@@ -3,6 +3,7 @@ export interface Chef {
   type: string;
   sectionId?: string;
   sectionName?: string;
+  internalName: string;
   webTitle: string;
   webUrl: string;
   apiUrl: string;

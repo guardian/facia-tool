@@ -4,9 +4,11 @@ import {
   validateImageSrc,
   validateImageEvent,
   ValidationResponse,
+  validateSlideshowDimensions,
 } from 'util/validateImageSrc';
 import ImageMock from 'util/ImageMock';
 import grid from 'util/grid';
+import { landScapeCardImageCriteria } from 'constants/image';
 
 (global as any).Image = ImageMock;
 
@@ -603,6 +605,107 @@ describe('Validate images', () => {
         })
         .then(() => done())
         .catch((err) => done.fail(err));
+    });
+  });
+
+  describe('- for dimensions of a slideshow ', () => {
+    it('will pass an empty array', () => {
+      expect(
+        validateSlideshowDimensions([], landScapeCardImageCriteria)
+          .matchesCriteria
+      ).toBe(true);
+    });
+    it('will pass an array of slides that fit the criteria', () => {
+      expect(
+        validateSlideshowDimensions(
+          [
+            {
+              width: '500',
+              height: '300',
+              src: 'some-image-url',
+            },
+            {
+              width: '1000',
+              height: '600',
+              src: 'some-other-image-url',
+            },
+          ],
+          landScapeCardImageCriteria
+        ).matchesCriteria
+      ).toBe(true);
+    });
+    it('will pass an slides with unspeciifed dimensions', () => {
+      expect(
+        validateSlideshowDimensions(
+          [
+            {
+              width: '500',
+              height: '300',
+              src: 'some-image-url',
+            },
+            {
+              width: '1000',
+              height: '600',
+              src: 'some-other-image-url',
+            },
+            {
+              src: 'image-without-dimensions',
+            },
+          ],
+          landScapeCardImageCriteria
+        ).matchesCriteria
+      ).toBe(true);
+    });
+    it('will fail an array of slides that include one failing slide and include the reasons in the message', () => {
+      const result = validateSlideshowDimensions(
+        [
+          {
+            width: '500',
+            height: '300',
+            src: 'some-image-url',
+          },
+          {
+            width: '2000',
+            height: '600',
+            src: 'too-wide-image-url',
+          },
+        ],
+        landScapeCardImageCriteria
+      );
+      const reason = result.matchesCriteria ? undefined : result.reason;
+
+      expect(result.matchesCriteria).toBe(false);
+      expect(reason).toBe(
+        '1 slide did not match criteria: Images must have a 5:3 aspect ratio'
+      );
+    });
+    it('will include the number of failing slides in the message and only include each reason once', () => {
+      const result = validateSlideshowDimensions(
+        [
+          {
+            width: '500',
+            height: '300',
+            src: 'some-image-url',
+          },
+          {
+            width: '2000',
+            height: '600',
+            src: 'too-wide-image-url',
+          },
+          {
+            width: '100',
+            height: '600',
+            src: 'too-tall-and-too-narrow-image-url',
+          },
+        ],
+        landScapeCardImageCriteria
+      );
+
+      const reason = result.matchesCriteria ? undefined : result.reason;
+      expect(result.matchesCriteria).toBe(false);
+      expect(reason).toBe(
+        '2 slides did not match criteria: Images must have a 5:3 aspect ratio; Images cannot be less than 400 pixels wide'
+      );
     });
   });
 });
