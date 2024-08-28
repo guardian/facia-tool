@@ -17,6 +17,7 @@ import {
   selectCollectionHasPrefill,
   selectCollectionIsHidden,
   selectCollectionDisplayName,
+  selectCollectionCanMoveToRelativeIndex,
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import type { State } from 'types/State';
@@ -84,6 +85,8 @@ type CollectionProps = CollectionPropsBeforeState & {
   isHidden: boolean;
   displayName: string;
   removeFrontCollection: (frontId: string, collectionId: string) => void;
+  canMoveUp: boolean;
+  canMoveDown: boolean;
   moveFrontCollection: (
     frontId: string,
     id: string,
@@ -251,6 +254,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                       <ButtonCircularCaret
                         small
                         openDir="up"
+                        disabled={!this.props.canMoveUp}
                         onClick={() =>
                           this.props.moveFrontCollection(
                             this.props.frontId,
@@ -261,6 +265,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                       />
                       <ButtonCircularCaret
                         small
+                        disabled={!this.props.canMoveDown}
                         onClick={() =>
                           this.props.moveFrontCollection(
                             this.props.frontId,
@@ -392,6 +397,18 @@ const createMapStateToProps = () => {
       frontId,
     }: CollectionPropsBeforeState
   ) => ({
+    canMoveUp: selectCollectionCanMoveToRelativeIndex(
+      state,
+      frontId,
+      collectionId,
+      -1
+    ),
+    canMoveDown: selectCollectionCanMoveToRelativeIndex(
+      state,
+      frontId,
+      collectionId,
+      1
+    ),
     isHidden: selectCollectionIsHidden(state, collectionId),
     displayName: selectCollectionDisplayName(state, collectionId),
     hasPrefill: selectCollectionHasPrefill(state, collectionId),
