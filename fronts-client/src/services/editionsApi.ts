@@ -13,7 +13,7 @@ export const fetchIssuesForDateRange = async (
   editionName: string,
   start: Moment,
   end: Moment
-): Promise<EditionsIssue[]> => {
+): Promise<{ issues: EditionsIssue[]; platform: string }> => {
   return pandaFetch(
     `/editions-api/editions/${editionName}/issues?dateFrom=${start.format(
       dateFormat
@@ -29,21 +29,8 @@ export const fetchIssueByDate = async (
   editionName: string,
   date: Moment
 ): Promise<EditionsIssue | void> => {
-  return pandaFetch(
-    `/editions-api/editions/${editionName}/issues?dateFrom=${date.format(
-      dateFormat
-    )}&dateTo=${date.format(dateFormat)}`,
-    {
-      method: 'get',
-      credentials: 'same-origin',
-    }
-  )
-    .then((response) => {
-      if (response.status === 200) {
-        return response.json();
-      }
-    })
-    .then((issues) => issues[0])
+  return fetchIssuesForDateRange(editionName, date, date)
+    .then(({ issues }) => issues[0])
     .catch(() => {
       // We catch here to prevent 404s, which are expected, being uncaught.
       // Other errors are possible, of course, and it'd be nice to catch them here,
@@ -53,9 +40,13 @@ export const fetchIssueByDate = async (
 
 export const createIssue = async (
   editionName: string,
-  date: Moment
+  date: Moment,
+  fromPreviousIssue?: boolean
 ): Promise<EditionsIssue> => {
-  return pandaFetch(`/editions-api/editions/${editionName}/issues`, {
+  const path = fromPreviousIssue
+    ? `/editions-api/editions/${editionName}/issues/from-previous-issue`
+    : `/editions-api/editions/${editionName}/issues`;
+  return pandaFetch(path, {
     method: 'post',
     mode: 'cors',
     headers: {
@@ -134,6 +125,18 @@ export const addCollectionToFront = (
   return pandaFetch(`/editions-api/fronts/${frontId}/collection`, {
     method: 'PUT',
   }).then((response) => response.json());
+};
+
+export const removeCollectionFromFront = (
+  frontId: string,
+  collectionId: string
+): Promise<EditionsFront> => {
+  return pandaFetch(
+    `/editions-api/fronts/${frontId}/collection/${collectionId} `,
+    {
+      method: 'DELETE',
+    }
+  ).then((response) => response.json());
 };
 
 export async function getIssueVersions(

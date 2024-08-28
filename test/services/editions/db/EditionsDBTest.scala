@@ -1,9 +1,9 @@
 package services.editions.db
 
 import java.time._
-
 import com.gu.pandomainauth.model.User
 import fixtures.{EditionsDBEvolutions, EditionsDBService, UsesDatabase}
+import model.editions
 import model.editions.internal.PrefillUpdate
 import model.editions.{TimeWindowConfigInDays, _}
 import model.forms.GetCollectionsFilter
@@ -13,6 +13,7 @@ import services.editions.GenerateEditionTemplateResult
 import services.editions.prefills.CapiQueryTimeWindow
 import org.scalatest.Assertions
 import services.editions.db.EditionsDB.NotFoundError
+import editions.{EditionsRecipe, EditionsChef, EditionsFeastCollection}
 
 class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with EditionsDBEvolutions with OptionValues {
 
@@ -42,7 +43,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   private val TestContentPrefillTimeWindowCfg = TimeWindowConfigInDays(-1, 2)
 
-  private def insertSkeletonIssue(year: Int, month: Int, dom: Int, fronts: EditionsFrontSkeleton*): String = {
+  private def insertSkeletonIssueForDaily(year: Int, month: Int, dom: Int, fronts: EditionsFrontSkeleton*): String =
+    insertSkeletonIssue(year, month, dom, Edition.DailyEdition, fronts: _*)
+
+  private def insertSkeletonIssue(year: Int, month: Int, dom: Int, edition: Edition, fronts: EditionsFrontSkeleton*): String = {
     val issueDate = LocalDate.of(year, month, dom)
     val skeleton = EditionsIssueSkeleton(
       issueDate,
@@ -54,8 +58,9 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val end = issueDate.plusDays(endOffset).atStartOfDay().toInstant(ZoneOffset.UTC)
     val timeWindow = CapiQueryTimeWindow(start, end)
     val genTemplateRes = GenerateEditionTemplateResult(skeleton, timeWindow)
-    editionsDB.insertIssue(Edition.DailyEdition,
-      genTemplateRes,
+    editionsDB.insertIssue(
+      edition,
+      genTemplateRes.issueSkeleton,
       user,
       now
     )
@@ -74,13 +79,14 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     def special() = frontSkel.copy(isSpecial = true, hidden = true)
   }
 
-  private def collection(name: String, prefill: Option[CapiPrefillQuery], articles: EditionsArticleSkeleton*): EditionsCollectionSkeleton =
-    EditionsCollectionSkeleton(name, articles.toList, prefill, CollectionPresentation(), capiQueryTimeWindow, hidden = false)
+  private def collection(name: String, prefill: Option[CapiPrefillQuery], cards: EditionsCardSkeleton*): EditionsCollectionSkeleton =
+    EditionsCollectionSkeleton(name, cards.toList, prefill, capiQueryTimeWindow, hidden = false)
 
-  private def article(id: String): EditionsArticleSkeleton = EditionsArticleSkeleton(id, EditionsArticleMetadata.default)
+  private def card(id: String, cardType: Option[CardType] = None, meta: Option[EditionsCardMetadata] = None): EditionsCardSkeleton =
+    EditionsCardSkeleton(id, cardType.getOrElse(CardType.Article), meta.orElse(Some(EditionsArticleMetadata.default)))
 
   "should insert an empty issue" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30)
+    val id = insertSkeletonIssueForDaily(2019, 9, 30)
 
     val retrievedIssue = editionsDB.getIssue(id).value
     retrievedIssue.edition shouldBe Edition.DailyEdition
@@ -95,10 +101,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should list issues" taggedAs UsesDatabase in {
-    insertSkeletonIssue(2019, 9, 28)
-    insertSkeletonIssue(2019, 9, 29)
-    insertSkeletonIssue(2019, 9, 30)
-    insertSkeletonIssue(2019, 10, 10)
+    insertSkeletonIssueForDaily(2019, 9, 28)
+    insertSkeletonIssueForDaily(2019, 9, 29)
+    insertSkeletonIssueForDaily(2019, 9, 30)
+    insertSkeletonIssueForDaily(2019, 10, 10)
 
     val allIssues = editionsDB.listIssues(Edition.DailyEdition, LocalDate.of(2019, 9, 28), LocalDate.of(2019, 10, 10)).toOption.get
     allIssues.length shouldBe 4
@@ -113,30 +119,30 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should insert fronts, collections and cards" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30,
+    val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         ),
         collection("international", None,
-          article("34567"),
-          article("45678"),
-          article("56789")
+          card("34567"),
+          card("45678"),
+          card("56789")
         )
       ),
       front("comment",
         collection("opinion", Some(CapiPrefillQuery("magic-opinion-query", PathType.PrintSent)),
-          article("54321"),
-          article("65432")
+          card("54321"),
+          card("65432")
         ),
         collection("brexshit", None,
-          article("76543"),
-          article("87654")
+          card("76543"),
+          card("87654")
         ),
         collection("sigh", None,
-          article("98765"),
-          article("09876")
+          card("98765"),
+          card("09876")
         )
       )
     )
@@ -179,27 +185,27 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should allow lookup of issue by collection id" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30,
+    val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       )
     )
-    insertSkeletonIssue(2019, 9, 29,
+    insertSkeletonIssueForDaily(2019, 9, 29,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("54321"),
-          article("65432")
+          card("54321"),
+          card("65432")
         )
       )
     )
-    insertSkeletonIssue(2019, 9, 28,
+    insertSkeletonIssueForDaily(2019, 9, 28,
       front("news/uk",
         collection("politics", None,
-          article("14789"),
-          article("32147")
+          card("14789"),
+          card("32147")
         )
       )
     )
@@ -212,29 +218,29 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should allow a set of collections to be fetched individually" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30,
+    val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         ),
-        collection("international", None, article("34567"),
-          article("45678"),
-          article("56789")
+        collection("international", None, card("34567"),
+          card("45678"),
+          card("56789")
         )
       ),
       front("comment",
         collection("opinion", Some(CapiPrefillQuery("magic-opinion-query", PathType.PrintSent)),
-          article("54321"),
-          article("65432")
+          card("54321"),
+          card("65432")
         ),
         collection("brexshit", None,
-          article("76543"),
-          article("87654")
+          card("76543"),
+          card("87654")
         ),
         collection("sigh", None,
-          article("98765"),
-          article("09876")
+          card("98765"),
+          card("09876")
         )
       )
     )
@@ -254,30 +260,30 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should allow collections to be filtered by timestamp" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30,
+    val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         ),
         collection("international", None,
-          article("34567"),
-          article("45678"),
-          article("56789")
+          card("34567"),
+          card("45678"),
+          card("56789")
         )
       ),
       front("comment",
         collection("opinion", Some(CapiPrefillQuery("magic-opinion-query", PathType.PrintSent)),
-          article("54321"),
-          article("65432")
+          card("54321"),
+          card("65432")
         ),
         collection("brexshit", None,
-          article("76543"),
-          article("87654")
+          card("76543"),
+          card("87654")
         ),
         collection("sigh", None,
-          article("98765"),
-          article("09876")
+          card("98765"),
+          card("09876")
         )
       )
     )
@@ -301,16 +307,16 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should allow renaming of a collection" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30,
+    val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         ),
         collection("international", None,
-          article("34567"),
-          article("45678"),
-          article("56789")
+          card("34567"),
+          card("45678"),
+          card("56789")
         )
       )
     )
@@ -339,30 +345,30 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should allow updating of a collection" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30,
+    val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         ),
         collection("international", None,
-          article("34567"),
-          article("45678"),
-          article("56789")
+          card("34567"),
+          card("45678"),
+          card("56789")
         )
       ),
       front("comment",
         collection("opinion", Some(CapiPrefillQuery("magic-opinion-query", PathType.PrintSent)),
-          article("54321"),
-          article("65432")
+          card("54321"),
+          card("65432")
         ),
         collection("brexshit", None,
-          article("76543"),
-          article("87654")
+          card("76543"),
+          card("87654")
         ),
         collection("sigh", None,
-          article("98765"),
-          article("09876")
+          card("98765"),
+          card("09876")
         )
       )
     )
@@ -430,7 +436,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       testCases.foreach {
         case (newIndex, expectedOrder) =>
           s"moving to index $newIndex" taggedAs UsesDatabase in {
-            val id = insertSkeletonIssue(2019, 9, 30, testFront)
+            val id = insertSkeletonIssueForDaily(2019, 9, 30, testFront)
             val retrievedIssue = editionsDB.getIssue(id).value
             val retrievedFront = retrievedIssue.fronts.head
             val firstCollection = retrievedFront.collections.head
@@ -448,10 +454,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should store cards of different types" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30,
+    val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
+          card("12345"),
         )
       )
     )
@@ -470,11 +476,11 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should allow a special front's hidden status to be changed" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30,
+    val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       ).special()
     )
@@ -499,11 +505,11 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should now allow a normal front's hidden status to be changed" taggedAs UsesDatabase in {
-    val id = insertSkeletonIssue(2019, 9, 30,
+    val id = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       )
     )
@@ -521,11 +527,11 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
   }
 
   "should delete an issue and cascade the deletion to related entities" taggedAs UsesDatabase in {
-    val issue = insertSkeletonIssue(2019, 9, 1,
+    val issue = insertSkeletonIssueForDaily(2019, 9, 1,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       )
     )
@@ -579,21 +585,21 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     val prefillFromPrintSent = CapiPrefillQuery("magic-politics-query", PathType.PrintSent)
     val prefillFromSearch = CapiPrefillQuery("crossword", PathType.Search)
 
-    val newsUkIssueId = insertSkeletonIssue(2019, 9, 30,
+    val newsUkIssueId = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("politics", Some(prefillFromPrintSent),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       )
     )
 
-    val internationalIssueId = insertSkeletonIssue(2019, 9, 30,
+    val internationalIssueId = insertSkeletonIssueForDaily(2019, 9, 30,
       front("news/uk",
         collection("international", Some(prefillFromSearch),
-          article("34567"),
-          article("45678"),
-          article("56789")
+          card("34567"),
+          card("45678"),
+          card("56789")
         )
       )
     )
@@ -614,13 +620,15 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
   }
 
+  private def issueDateToUTCStartOfDay(issueDate: LocalDate) = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
+
   "should insert content prefill time-window correctly" taggedAs UsesDatabase in {
 
-    val issueId = insertSkeletonIssue(2020, 1, 1,
+    val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
       front("news/uk",
         collection("politics", Some(CapiPrefillQuery("magic-politics-query", PathType.PrintSent)),
-          article("12345"),
-          article("23456")
+          card("12345"),
+          card("23456")
         )
       )
     )
@@ -639,12 +647,114 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     )
   }
 
-  private def issueDateToUTCStartOfDay(issueDate: LocalDate) = issueDate.atStartOfDay().toInstant(ZoneOffset.UTC)
+  "getIssue" - {
+    "should get an issue by date" taggedAs UsesDatabase in {
+      insertSkeletonIssueForDaily(2020, 1, 1, front("news/uk", collection("politics", None)))
+      val issue = editionsDB.getIssue(Edition.DailyEdition, LocalDate.of(2020, 1, 1)).value
+      issue.fronts.head.displayName shouldBe "news/uk"
+    }
+
+    "should return None when the issue is not found" taggedAs UsesDatabase in {
+      val issue = editionsDB.getIssue(Edition.DailyEdition, LocalDate.of(2020, 1, 1))
+
+      issue shouldBe None
+    }
+  }
+
+  "insertIssueFromClosestPreviousIssue" - {
+    val cards = List(
+      EditionsRecipe("recipe", 0L),
+      EditionsChef("chef", 0L, Some(EditionsChefMetadata(Some("bio"), chefImageOverride = Some(Image(None, None, "origin", "src"))))),
+      EditionsFeastCollection("feast-collection", 0L, Some(EditionsFeastCollectionMetadata(
+        title = Some("Feast collection title"),
+        theme = Some(FeastCollectionTheme(
+          id = "theme",
+          lightPalette = Palette("#333", "#666"),
+          darkPalette = Palette("#333", "#666"),
+          imageURL = None
+        )),
+        collectionItems = List(EditionsRecipe("nested-recipe", 0L))
+      )))
+    )
+
+    val cardsSkeleton = cards.map(_.toSkeleton)
+
+    "should insert an issue that is a copy of the closest issue prior to that issue" taggedAs UsesDatabase in {
+      insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere, front("first", collection("politics", None, cardsSkeleton: _*)))
+      insertSkeletonIssue(2020, 1, 12, Edition.FeastNorthernHemisphere, front("second", collection("politics", None)))
+
+      editionsDB.insertIssueFromClosestPreviousIssue(
+        Edition.FeastNorthernHemisphere,
+        LocalDate.of(2020, 1, 2),
+        user,
+        now
+      ) match {
+        case Right(issue) =>
+          issue.issueDate shouldBe LocalDate.of(2020, 1, 2)
+
+          val front = issue.fronts.head
+          val items = front.collections.head.items
+
+          front.displayName shouldBe "first"
+
+          items.map {
+            case card: EditionsArticle => card.copy(addedOn = 0L)
+            case card: EditionsRecipe => card.copy(addedOn = 0L)
+            case card: EditionsChef => card.copy(addedOn = 0L)
+            case card: EditionsFeastCollection => card.copy(addedOn = 0L)
+          } shouldBe cards
+        case Left(e) => fail(e.getMessage)
+      }
+    }
+
+    "should only copy the fronts, collections and cards related to that issue" taggedAs UsesDatabase in {
+      insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere, front("first", collection("politics", None, cardsSkeleton: _*)))
+      insertSkeletonIssue(2020, 1, 12, Edition.FeastNorthernHemisphere, front("second", collection("politics", None, cardsSkeleton: _*)))
+
+      editionsDB.insertIssueFromClosestPreviousIssue(
+        Edition.FeastNorthernHemisphere,
+        LocalDate.of(2020, 1, 13),
+        user,
+        now
+      ) match {
+        case Right(issue) =>
+          issue.issueDate shouldBe LocalDate.of(2020, 1, 13)
+          issue.fronts.size shouldBe 1
+
+          val front = issue.fronts.head
+          val items = front.collections.head.items
+
+          front.displayName shouldBe "second"
+          front.collections.size shouldBe 1
+
+          items.map {
+            case card: EditionsArticle => card.copy(addedOn = 0L)
+            case card: EditionsRecipe => card.copy(addedOn = 0L)
+            case card: EditionsChef => card.copy(addedOn = 0L)
+            case card: EditionsFeastCollection => card.copy(addedOn = 0L)
+          } shouldBe cards
+        case Left(e) => fail(e.getMessage)
+      }
+    }
+
+
+    "should fail if there is no issue prior that that issue" taggedAs UsesDatabase in {
+      editionsDB.insertIssueFromClosestPreviousIssue(
+        Edition.FeastNorthernHemisphere,
+        LocalDate.of(2020, 1, 2),
+        user,
+        now
+      ) match {
+        case Left(e) => e.getMessage should include("not found")
+        case Right(_) => fail("Issue should not exist")
+      }
+    }
+  }
 
   "Collection operations" - {
     "Add collection" - {
       "should insert a new collection at the specified index" taggedAs UsesDatabase in {
-        val issueId = insertSkeletonIssue(2020, 1, 1,
+        val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
           front("news/uk", collection("politics", None))
         )
         val issue: EditionsIssue = editionsDB.getIssue(issueId).value
@@ -653,14 +763,37 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection"), user = user, now = now) match {
           case Right(front) =>
             front.collections.size shouldBe 2
-            front.collections.last.displayName shouldBe "Test Collection"
+            front.collections.head.displayName shouldBe "Test Collection"
           case Left(error) =>
-            Assertions.fail(s"Error adding collection to front: ${error.getMessage()}")
+            Assertions.fail(s"Error adding collection to front: ${error.getMessage}")
         }
       }
 
+      "should default to the top of the front as multiple collections are added" taggedAs UsesDatabase in {
+        val issueId = insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere,
+          front("news/uk", collection("politics", None))
+        )
+        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val frontFromIssue = issue.fronts.head
+
+        val result = for {
+          _ <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection"), user = user, now = now)
+          _ <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection 2"), user = user, now = now)
+          front <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection 3"), user = user, now = now)
+        } yield {
+          front.collections.map(_.displayName) shouldBe List (
+            "Test Collection 3",
+            "Test Collection 2",
+            "Test Collection",
+            "politics"
+          )
+        }
+
+        result.left.foreach(e => fail(e.getMessage))
+      }
+
       "should add a default name if one is not provided" taggedAs UsesDatabase in {
-        val issueId = insertSkeletonIssue(2020, 1, 1,
+        val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
           front("news/uk", collection("politics", None))
         )
         val issue: EditionsIssue = editionsDB.getIssue(issueId).value
@@ -668,9 +801,9 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
         editionsDB.addCollectionToFront(frontFromIssue.id, user = user, now = now) match {
           case Right(front) =>
-            front.collections.last.displayName shouldBe "New collection"
+            front.collections.head.displayName shouldBe "New collection"
           case Left(error) =>
-            Assertions.fail(s"Error adding collection to front: ${error.getMessage()}")
+            Assertions.fail(s"Error adding collection to front: ${error.getMessage}")
         }
       }
 
@@ -684,25 +817,25 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       }
 
       "should fail with a WriteError when we attempt to write to an invalid index" taggedAs UsesDatabase in {
-        val issueId = insertSkeletonIssue(2020, 1, 1,
+        val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
           front("news/uk", collection("politics", None))
         )
         val issue: EditionsIssue = editionsDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
-        val invalidIndex = Some(0)
+        val invalidIndex = Some(16)
 
         editionsDB.addCollectionToFront(frontFromIssue.id, collectionIndex = invalidIndex, user = user, now = now) match {
-          case Right(front) =>
+          case Right(_) =>
             Assertions.fail()
           case Left(error) =>
-            error shouldBe an[EditionsDB.WriteError]
+            error shouldBe an[EditionsDB.InvalidInput]
         }
       }
     }
 
     "Remove collection" - {
       "should remove a given collection" taggedAs UsesDatabase in {
-        val issueId = insertSkeletonIssue(2020, 1, 1,
+        val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
           front("news/uk", collection("politics", None), collection("sport", None), collection("culture", None)),
         )
         val issue: EditionsIssue = editionsDB.getIssue(issueId).value
@@ -713,19 +846,19 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
           case Right(front) =>
             front.collections.map(_.displayName) shouldBe List("politics", "sport")
           case Left(error) =>
-            Assertions.fail(s"Error removing collection to front: ${error.getMessage()}")
+            Assertions.fail(s"Error removing collection to front: ${error.getMessage}")
         }
 
         editionsDB.removeCollectionFromFront(frontFromIssue.id, frontFromIssue.collections(0).id, user = user, now = now) match {
           case Right(front) =>
             front.collections.map(_.displayName) shouldBe List("sport")
           case Left(error) =>
-            Assertions.fail(s"Error removing collection to front: ${error.getMessage()}")
+            Assertions.fail(s"Error removing collection to front: ${error.getMessage}")
         }
       }
 
       "should fail when the front does not exist" taggedAs UsesDatabase in {
-        val issueId = insertSkeletonIssue(2020, 1, 1,
+        val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
           front("news/uk", collection("politics", None), collection("sport", None), collection("culture", None)),
         )
         val issue: EditionsIssue = editionsDB.getIssue(issueId).value
@@ -741,7 +874,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       }
 
       "should fail when the collection does not exist" taggedAs UsesDatabase in {
-        val issueId = insertSkeletonIssue(2020, 1, 1,
+        val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
           front("news/uk", collection("politics", None), collection("sport", None), collection("culture", None)),
         )
         val issue: EditionsIssue = editionsDB.getIssue(issueId).value

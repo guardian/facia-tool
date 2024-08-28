@@ -1,6 +1,6 @@
 package model.editions
 
-import java.time.LocalDate
+import java.time.{LocalDate, ZoneId}
 import model.editions
 import model.editions.PublishAction.PublishAction
 import play.api.libs.json.{Json, OWrites}
@@ -57,6 +57,12 @@ case class EditionsIssue(
       .filterNot(_.collections.isEmpty), // drop fronts that contain no collections
     EditionsAppTemplates.templates.get(edition).map(_.notificationUTCOffset).getOrElse(defaultOffset),
     EditionsAppTemplates.templates.get(edition).map(_.topic),
+  )
+
+  def toSkeleton = EditionsIssueSkeleton(
+    issueDate,
+    ZoneId.of(timezoneId),
+    fronts.map(_.toSkeleton)
   )
 }
 

@@ -144,8 +144,6 @@ object FrontPresentation {
   implicit def frontPresentationFormat: OFormat[FrontPresentation] = Json.format[FrontPresentation]
 }
 
-case class CollectionPresentation()
-
 case class CapiPrefillQuery(queryString: String, pathType: PathType) {
   def escapedQueryString(): String =
     queryString
@@ -198,15 +196,12 @@ private[editions] case class CollectionTemplate(
                                                  name: String,
                                                  maybeOphanPath: Option[String] = None,
                                                  prefill: Option[CapiPrefillQuery],
-                                                 presentation: CollectionPresentation,
                                                  maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
                                                  hidden: Boolean = false,
                                                  cardCap: Int = Defaults.defaultCollectionCardsCap
 ) {
 
   def hide = copy(hidden = true)
-
-  def withPresentation(presentation: CollectionPresentation) = copy(presentation = presentation)
 
   def printSentPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, PrintSent)))
 
@@ -276,41 +271,4 @@ case class EditionTemplate(
   availability: Periodicity,
   maybeOphanPath: Option[String] = None,
   ophanQueryPrefillParams: Option[OphanQueryPrefillParams]
-)
-
-// Issue skeletons are what is generated when you create a new issue for a given date
-// (Date + Template) => Skeleton
-case class EditionsIssueSkeleton(
-  issueDate: LocalDate,
-  zoneId: ZoneId,
-  fronts: List[EditionsFrontSkeleton]
-)
-
-case class EditionsFrontSkeleton(
-  name: String,
-  collections: List[EditionsCollectionSkeleton],
-  presentation: FrontPresentation,
-  hidden: Boolean,
-  isSpecial: Boolean
-) {
-  def metadata() = {
-    val metadataParam = new PGobject()
-    metadataParam.setType("jsonb")
-    metadataParam.setValue(Json.toJson(EditionsFrontMetadata(None, Some(presentation.swatch))).toString)
-    metadataParam
-  }
-}
-
-case class EditionsCollectionSkeleton(
-  name: String,
-  items: List[EditionsArticleSkeleton],
-  prefill: Option[CapiPrefillQuery],
-  presentation: CollectionPresentation,
-  capiQueryTimeWindow: CapiQueryTimeWindow,
-  hidden: Boolean
-)
-
-case class EditionsArticleSkeleton(
-                                    id: String,
-                                    metadata: EditionsArticleMetadata
 )

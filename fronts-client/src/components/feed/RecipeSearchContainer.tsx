@@ -13,7 +13,7 @@ import { Dispatch } from 'types/Store';
 import { IPagination } from 'lib/createAsyncResourceBundle';
 import Pagination from './Pagination';
 import ScrollContainer from '../ScrollContainer';
-import { RecipeSearchParams } from '../../services/recipeQuery';
+import { ChefSearchParams, RecipeSearchParams } from '../../services/recipeQuery';
 import debounce from 'lodash/debounce';
 
 const InputContainer = styled.div`
@@ -57,7 +57,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
   const [searchText, setSearchText] = useState('');
   const dispatch: Dispatch = useDispatch();
   const searchForChefs = useCallback(
-    (params: Record<string, string[] | string | number>) => {
+    (params: ChefSearchParams) => {
       dispatch(fetchChefs(params));
     },
     [dispatch]
@@ -92,20 +92,12 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
   const hasPages = (chefsPagination?.totalPages ?? 0) > 1;
 
-  const getParams = (query: string) => ({
-    'web-title': query,
-    'page-size': '20',
-    'show-elements': 'image',
-    'show-fields': 'all',
-  });
-
   const runSearch = useCallback(
     (page: number = 1) => {
       switch(selectedOption) {
         case FeedType.chefs:
           searchForChefs({
-            ...getParams(searchText),
-            page
+            query: searchText
           });
           break;
         case FeedType.recipes:

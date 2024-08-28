@@ -15,17 +15,14 @@ import services.editions.{DbEditionsCard, DbEditionsCollection, DbEditionsFront,
 import scala.util.{Failure, Success, Try}
 
 trait IssueQueries extends Logging {
-
   def insertIssue(
                    edition: Edition,
-                   genEditionTemplateResult: GenerateEditionTemplateResult,
+                   issueSkeleton: EditionsIssueSkeleton,
                    user: User,
-                   now: OffsetDateTime
+                   now: OffsetDateTime,
                  ): String = DB localTx { implicit session =>
     val truncatedNow = EditionsDB.truncateDateTime(now)
     val userName = EditionsDB.getUserName(user)
-
-    import genEditionTemplateResult.{issueSkeleton, contentPrefillTimeWindow}
 
     val issueId =
       sql"""
@@ -50,11 +47,9 @@ trait IssueQueries extends Logging {
           is_hidden,
           metadata,
           is_special
-        ) VALUES (${issueId}, ${fIndex}, ${front.name}, ${front.hidden}, ${front.metadata()}, ${front.isSpecial})
+        ) VALUES ($issueId, $fIndex, ${front.name}, ${front.hidden}, ${front.metadata()}, ${front.isSpecial})
         RETURNING id;
       """.map(_.string("id")).single.apply().get
-
-      import contentPrefillTimeWindow.{fromDate, toDate}
 
       front.collections.zipWithIndex.foreach { case (collection, cIndex) =>
         val collectionId =
@@ -94,16 +89,41 @@ trait IssueQueries extends Logging {
                     INSERT INTO cards (
                     collection_id,
                     id,
+                    card_type,
                     index,
                     added_on,
                     metadata
-                    ) VALUES ($collectionId, ${card.id}, $tIndex, $truncatedNow, ${Json.toJson(card.metadata).toString}::JSONB)
+                    ) VALUES ($collectionId, ${card.id}, ${card.cardType.entryName}, $tIndex, $truncatedNow, ${card.metadata.map(Json.toJson(_).toString).getOrElse("{}")}::JSONB)
                  """.execute.apply()
         }
       }
     }
 
     issueId
+  }
+
+  def insertIssueFromClosestPreviousIssue(edition: Edition,
+                                          issueDate: LocalDate,
+                                          user: User,
+                                          now: OffsetDateTime): Either[Error, EditionsIssue] = DB readOnly { implicit session =>
+    for {
+      previousIssue <- getClosestPreviousIssue(issueDate).toRight(EditionsDB.NotFoundError(s"Previous issue not found"))
+      newIssueSkeleton = previousIssue.toSkeleton.copy(issueDate = issueDate)
+      issueId = insertIssue(edition, newIssueSkeleton, user, now)
+      issue <- getIssue(issueId).toRight(EditionsDB.NotFoundError("Issue created but could not retrieve it from the database"))
+    } yield issue
+  }
+
+  private def getClosestPreviousIssue(issueDate: LocalDate)(implicit session: DBSession): Option[EditionsIssue] = {
+    val id =
+      sql"""
+        SELECT id from edition_issues
+        WHERE issue_date < $issueDate
+        ORDER BY issue_date DESC
+        LIMIT 1
+      """.map(_.string("id")).single.apply()
+
+    id.flatMap(getIssue)
   }
 
   def listIssues(edition: Edition, dateFrom: LocalDate, dateTo: LocalDate) = DB readOnly { implicit session =>
@@ -141,7 +161,15 @@ trait IssueQueries extends Logging {
     }.toOption.apply()
   }
 
+  def getIssue(edition: Edition, date: LocalDate): Option[EditionsIssue] = DB readOnly { implicit session =>
+    getIssue(sqls"""WHERE edition_issues.name = ${edition.entryName} AND edition_issues.issue_date = $date""")
+  }
+
   def getIssue(id: String): Option[EditionsIssue] = DB readOnly { implicit session =>
+    getIssue(sqls"""WHERE edition_issues.id = $id""")
+  }
+
+  private def getIssue(whereClause: SQLSyntax)(implicit session: DBSession): Option[EditionsIssue] = {
     val rows: List[(EditionsIssue, FrontAndNestedEntitiesRow)] =
       sql"""
       SELECT
@@ -161,7 +189,7 @@ trait IssueQueries extends Logging {
       LEFT JOIN fronts ON (fronts.issue_id = edition_issues.id)
       LEFT JOIN collections ON (collections.front_id = fronts.id)
       LEFT JOIN cards ON (cards.collection_id = collections.id)
-      WHERE edition_issues.id = $id
+      $whereClause
       """.map { rs =>
         val maybeIssue = EditionsIssue.fromRow(rs).toOption
         val frontRow = FrontAndNestedEntitiesRow(
