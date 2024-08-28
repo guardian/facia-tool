@@ -42,9 +42,10 @@ const SectionContentMetaContainer = styled.div`
   display: flex;
   flex-shrink: 0;
   justify-content: flex-start;
-  margin-right: 5px;
   flex-wrap: wrap;
   align-content: center;
+  gap: 5px;
+  padding: 5px 5px 5px 0px;
 `;
 
 const OverviewToggleContainer = styled.div<{ active: boolean }>`
@@ -62,8 +63,6 @@ const OverviewToggleContainer = styled.div<{ active: boolean }>`
 
 const DragToAddContainer = styled.div`
   margin-right: auto;
-  margin-bottom: 10px;
-  margin-top: 10px;
 `;
 
 const OverviewHeading = styled.label`
@@ -78,9 +77,7 @@ const OverviewHeadingButton = styled(ButtonRoundedWithLabel)`
   :hover {
     background-color: ${theme.base.colors.backgroundColorFocused};
   }
-  margin-right: 10px;
-  margin-bottom: 10px;
-  margin-top: 10px;
+  height: 20px;
 `;
 
 // min-height required here to display scrollbar in Firefox:
@@ -102,9 +99,6 @@ const FrontDetailContainer = styled(BaseFrontContentContainer)`
 `;
 
 const ButtonInSectionContentMetaContainer = styled(Button)`
-  margin-right: 10px;
-  margin-bottom: 10px;
-  margin-top: 10px;
   padding: 0px 5px;
   font-family: TS3TextSans;
   font-size: 12px;
