@@ -237,7 +237,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                     onClick={() => this.removeFrontCollection()}
                     title="Toggle the visibility of this container in this issue."
                   >
-                    {isHidden ? 'Un-delete' : 'Delete'}
+                    Delete
                   </HeadlineContentButton>
                 )}
                 {hasPrefill && (
