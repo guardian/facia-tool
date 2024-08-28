@@ -103,11 +103,12 @@ const FrontDetailContainer = styled(BaseFrontContentContainer)`
 const ButtonInSectionContentMetaContainer = styled(Button)`
   margin-right: 10px;
   margin-bottom: 10px;
-  margin-top: 11px;
+  margin-top: 10px;
   padding: 0px 5px;
   font-family: TS3TextSans;
   font-size: 12px;
   font-weight: bold;
+  height: 20px;
 `;
 
 interface FrontPropsBeforeState {
