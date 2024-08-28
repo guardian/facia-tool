@@ -121,7 +121,7 @@ export const putFrontHiddenState = (id: string, hidden: boolean) => {
 
 export const addCollectionToFront = (
   frontId: string
-): Promise<EditionsFront> => {
+): Promise<EditionsCollection[]> => {
   return pandaFetch(`/editions-api/fronts/${frontId}/collection`, {
     method: 'PUT',
   }).then((response) => response.json());
@@ -130,7 +130,7 @@ export const addCollectionToFront = (
 export const removeCollectionFromFront = (
   frontId: string,
   collectionId: string
-): Promise<EditionsFront> => {
+): Promise<EditionsCollection[]> => {
   return pandaFetch(
     `/editions-api/fronts/${frontId}/collection/${collectionId} `,
     {
@@ -143,7 +143,7 @@ export const moveCollection = (
   frontId: string,
   collectionId: string,
   index: number
-): Promise<EditionsFront> => {
+): Promise<EditionsCollection[]> => {
   return pandaFetch(
     `/editions-api/fronts/${frontId}/collection/${collectionId}/move`,
     {

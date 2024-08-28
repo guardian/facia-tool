@@ -15,15 +15,15 @@ import { EditionsFrontMetadata, FrontsConfig } from 'types/FaciaApi';
 import noop from 'lodash/noop';
 import { startOptionsModal } from './OptionsModal';
 import IssueVersions from 'components/Editions/IssueVersions';
-import { actions, toFrontsConfig } from 'bundles/frontsConfigBundle';
-import { selectors as issueSelector } from 'bundles/editionsIssueBundle';
+import { actions } from 'bundles/frontsConfigBundle';
 import { selectors as frontsConfigSelector } from 'bundles/frontsConfigBundle';
 import { editionCollectionToCollection } from '../strategies/fetch-collection';
 import { getCollectionActions } from './Collections';
 import { batchActions } from 'redux-batched-actions';
-import { EditionsFront } from '../types/Edition';
+import { EditionsCollection } from '../types/Edition';
 import { State } from '../types/State';
 import { selectFront } from 'selectors/frontsSelectors';
+import { groupBy } from 'lodash';
 
 export const check =
   (id: string): ThunkResult<Promise<void>> =>
@@ -162,11 +162,11 @@ export const setFrontHiddenState =
   };
 
 export const addFrontCollection =
-  (id: string): ThunkResult<Promise<void>> =>
+  (frontId: string): ThunkResult<Promise<void>> =>
   async (dispatch, getState) => {
     try {
-      const newFront = await addCollectionToFront(id);
-      processNewEditionFrontResponse(newFront, dispatch, getState);
+      const collections = await addCollectionToFront(frontId);
+      processNewEditionFrontResponse(frontId, collections, dispatch, getState);
     } catch (error) {
       throw error;
     }
@@ -176,8 +176,11 @@ export const removeFrontCollection =
   (frontId: string, collectionId: string): ThunkResult<Promise<void>> =>
   async (dispatch, getState) => {
     try {
-      const newFront = await removeCollectionFromFront(frontId, collectionId);
-      processNewEditionFrontResponse(newFront, dispatch, getState);
+      const collections = await removeCollectionFromFront(
+        frontId,
+        collectionId
+      );
+      processNewEditionFrontResponse(frontId, collections, dispatch, getState);
     } catch (error) {
       throw error;
     }
@@ -215,25 +218,32 @@ export const moveFrontCollection =
         );
       }
 
-      const newFront = await moveCollection(frontId, collectionId, newIndex);
-      processNewEditionFrontResponse(newFront, dispatch, getState);
+      const collections = await moveCollection(frontId, collectionId, newIndex);
+      processNewEditionFrontResponse(frontId, collections, dispatch, getState);
     } catch (error) {
       throw error;
     }
   };
 
 const processNewEditionFrontResponse = (
-  newFront: EditionsFront,
+  frontId: string,
+  collections: EditionsCollection[],
   dispatch: Dispatch,
   getState: () => State
 ) => {
   const state = getState();
-  const newFrontsConfig = toFrontsConfig(
-    [newFront],
-    issueSelector.selectAll(state).id
-  );
   const existingFrontsConfig: FrontsConfig =
     frontsConfigSelector.selectAll(state);
+
+  const newFrontsConfig = {
+    fronts: {
+      ...existingFrontsConfig.fronts,
+      [frontId]: {
+        ...existingFrontsConfig.fronts[frontId],
+        collections: collections.map((col) => col.id),
+      },
+    },
+  };
 
   const mergedFrontsConfig = {
     fronts: {
@@ -242,13 +252,13 @@ const processNewEditionFrontResponse = (
     },
     collections: {
       ...existingFrontsConfig.collections,
-      ...newFrontsConfig.collections,
+      ...groupBy(collections, 'id'),
     },
   };
 
   dispatch(actions.fetchSuccess(mergedFrontsConfig));
 
-  const collectionActions = newFront.collections.flatMap((c) =>
+  const collectionActions = collections.flatMap((c) =>
     getCollectionActions(editionCollectionToCollection(c), getState)
   );
 
