@@ -72,7 +72,7 @@ const EditionPublish = styled.div`
 
 class EditionFeedSectionHeader extends React.Component<ComponentProps> {
   public render() {
-    const { editionsIssue } = this.props;
+    const { editionsIssue, isFeast } = this.props;
 
     return (
       <>
@@ -85,6 +85,18 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
           </EditionIssueInfo>
         </ManageLink>
         &nbsp;
+        {!isFeast && (
+          <Button
+            data-testid="check-edition-button"
+            size="s"
+            priority="primary"
+            onClick={() => this.check()}
+            tabIndex={-1}
+            title="Check Edition"
+          >
+            Check
+          </Button>
+        )}
         <EditionPublish>
           <EditModeVisibility visibleMode="editions">
             {editionsIssue.supportsProofing && (
@@ -177,6 +189,7 @@ function displayTime(lastProofedVersion: string | undefined) {
 const mapStateToProps = () => {
   return (state: State) => ({
     editionsIssue: editionsIssueSelectors.selectAll(state),
+    isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
   });
 };
 
