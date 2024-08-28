@@ -425,11 +425,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     val testCases = List(
       (0, List("politics", "international", "culture", "sport")),
-      (1, List("politics", "international", "culture", "sport")),
-      (2, List("international", "politics", "culture", "sport")),
-      (3, List("international", "culture", "politics", "sport")),
-      (4, List("international", "culture", "sport", "politics")),
-      (5, List("international", "culture", "sport", "politics"))
+      (1, List("international", "politics", "culture", "sport")),
+      (2, List("international", "culture", "politics", "sport")),
+      (3, List("international", "culture", "sport", "politics")),
+      (4, List("international", "culture", "sport", "politics"))
     )
 
     "should update the other collections in the front when the collection index is modified, reordering as needed" - {
