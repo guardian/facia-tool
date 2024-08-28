@@ -3,13 +3,18 @@ import { styled, theme } from 'constants/theme';
 import { FLEXIBLE_CONTAINER_SET } from 'constants/flexibleContainers';
 
 const ArticleMetadataProperties = styled.div`
+  padding: 0 4px 3px 0;
   display: flex;
   flex-direction: row;
+  font-size: 12px;
   flex-wrap: wrap;
 `;
 
 const ArticleMetadataProperty = styled.div`
   background-color: ${theme.colors.whiteDark};
+  padding: 1px 4px;
+  flex: 0 0 auto;
+  margin: 0 2px 1px 0;
 `;
 
 const shouldShowLegacyBoost = (collectionType?: string, isBoosted?: boolean) =>
