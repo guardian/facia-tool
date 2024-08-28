@@ -2,6 +2,16 @@ import React from 'react';
 import { styled, theme } from 'constants/theme';
 import { FLEXIBLE_CONTAINER_SET } from 'constants/flexibleContainers';
 
+const ArticleMetadataProperties = styled.div`
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+`;
+
+const ArticleMetadataProperty = styled.div`
+  background-color: ${theme.colors.whiteDark};
+`;
+
 const shouldShowLegacyBoost = (collectionType?: string, isBoosted?: boolean) =>
   /* don't show old Boost option in flexible containers */
   isBoosted && !FLEXIBLE_CONTAINER_SET.includes(collectionType);
@@ -48,28 +58,28 @@ export default ({
   showQuotedHeadline ||
   showLargeHeadline ||
   isBoosted ? (
-    <div>
+    <ArticleMetadataProperties>
       {isBreaking && (
-        <span data-testid="breaking-news">
+        <ArticleMetadataProperty data-testid="breaking-news">
           Breaking news
-        </span>
+        </ArticleMetadataProperty>
       )}
       {showByline && (
-        <span>Show byline</span>
+        <ArticleMetadataProperty>Show byline</ArticleMetadataProperty>
       )}
       {showQuotedHeadline && (
-        <span>Quote headline</span>
+        <ArticleMetadataProperty>Quote headline</ArticleMetadataProperty>
       )}
       {showLargeHeadline && (
-        <span>Large headline</span>
+        <ArticleMetadataProperty>Large headline</ArticleMetadataProperty>
       )}
       {shouldShowBoostLevel(collectionType, boostLevel) && (
-        <span>
+        <ArticleMetadataProperty>
           {getBoostLevelLabel(boostLevel)}
-        </span>
+        </ArticleMetadataProperty>
       )}
       {shouldShowLegacyBoost(collectionType, isBoosted) && (
-        <span>Boost</span>
+        <ArticleMetadataProperty>Boost</ArticleMetadataProperty>
       )}
-    </div>
+    </ArticleMetadataProperties>
   ) : null;
