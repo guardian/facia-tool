@@ -235,7 +235,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                   <HeadlineContentButton
                     priority="default"
                     onClick={() => this.removeFrontCollection()}
-                    title="Toggle the visibility of this container in this issue."
+                    title="Delete the collection for this issue"
                   >
                     Delete
                   </HeadlineContentButton>
