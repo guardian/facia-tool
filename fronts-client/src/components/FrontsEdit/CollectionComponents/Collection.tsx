@@ -42,7 +42,10 @@ import { fetchPrefill } from 'bundles/capiFeedBundle';
 import LoadingGif from 'images/icons/loading.gif';
 import OpenFormsWarning from './OpenFormsWarning';
 import { selectors as editionsIssueSelectors } from '../../../bundles/editionsIssueBundle';
-import { removeFrontCollection } from '../../../actions/Editions';
+import {
+  moveFrontCollection,
+  removeFrontCollection,
+} from '../../../actions/Editions';
 
 interface CollectionPropsBeforeState {
   id: string;
@@ -81,6 +84,11 @@ type CollectionProps = CollectionPropsBeforeState & {
   isHidden: boolean;
   displayName: string;
   removeFrontCollection: (frontId: string, collectionId: string) => void;
+  moveFrontCollection: (
+    frontId: string,
+    id: string,
+    direction: 'up' | 'down'
+  ) => void;
 };
 
 interface CollectionState {
@@ -142,6 +150,12 @@ const OpenFormsWarningContainer = styled.div`
 
 const ActionButtonsContainer = styled.div`
   display: flex;
+`;
+
+const MoveButtonsContainer = styled.div`
+  margin-right: 8px;
+  display: flex;
+  gap: 3px;
 `;
 
 class Collection extends React.Component<CollectionProps, CollectionState> {
@@ -232,13 +246,38 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                   </HeadlineContentButton>
                 )}
                 {isFeast && (
-                  <HeadlineContentButton
-                    priority="default"
-                    onClick={() => this.removeFrontCollection()}
-                    title="Delete the collection for this issue"
-                  >
-                    Delete
-                  </HeadlineContentButton>
+                  <>
+                    <MoveButtonsContainer>
+                      <ButtonCircularCaret
+                        small
+                        openDir="up"
+                        onClick={() =>
+                          this.props.moveFrontCollection(
+                            this.props.frontId,
+                            this.props.id,
+                            'up'
+                          )
+                        }
+                      />
+                      <ButtonCircularCaret
+                        small
+                        onClick={() =>
+                          this.props.moveFrontCollection(
+                            this.props.frontId,
+                            this.props.id,
+                            'down'
+                          )
+                        }
+                      />
+                    </MoveButtonsContainer>
+                    <HeadlineContentButton
+                      priority="default"
+                      onClick={() => this.removeFrontCollection()}
+                      title="Delete the collection for this issue"
+                    >
+                      Delete
+                    </HeadlineContentButton>
+                  </>
                 )}
                 {hasPrefill && (
                   <HeadlineContentButton
@@ -405,6 +444,11 @@ const mapDispatchToProps = (
   },
   removeFrontCollection: (frontId: string, id: string) =>
     dispatch(removeFrontCollection(frontId, id)),
+  moveFrontCollection: (
+    frontId: string,
+    id: string,
+    direction: 'up' | 'down'
+  ) => dispatch(moveFrontCollection(frontId, id, direction)),
 });
 
 export default connect(createMapStateToProps, mapDispatchToProps)(Collection);

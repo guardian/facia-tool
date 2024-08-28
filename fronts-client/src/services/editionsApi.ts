@@ -139,6 +139,23 @@ export const removeCollectionFromFront = (
   ).then((response) => response.json());
 };
 
+export const moveCollection = (
+  frontId: string,
+  collectionId: string,
+  index: number
+): Promise<EditionsFront> => {
+  return pandaFetch(
+    `/editions-api/fronts/${frontId}/collection/${collectionId}/move`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ newIndex: index }),
+    }
+  ).then((response) => response.json());
+};
+
 export async function getIssueVersions(
   issueId: string
 ): Promise<IssueVersion[]> {

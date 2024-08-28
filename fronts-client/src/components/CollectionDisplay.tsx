@@ -93,6 +93,8 @@ const HeadlineContentContainer = styled.span`
   position: relative;
   margin-right: -11px;
   display: flex;
+  align-items: center;
+  gap: 2px;
 `;
 
 export const HeadlineContentButton = styled(Button).attrs({ size: 's' })`
@@ -100,7 +102,6 @@ export const HeadlineContentButton = styled(Button).attrs({ size: 's' })`
   padding: 0 5px;
   display: flex;
   align-items: center;
-  margin-left: 5px;
 `;
 
 const CollectionDisabledTheme = styled.div`

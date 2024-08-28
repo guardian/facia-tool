@@ -7,6 +7,7 @@ import {
   putFrontMetadata,
   addCollectionToFront,
   removeCollectionFromFront,
+  moveCollection,
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
@@ -22,6 +23,7 @@ import { getCollectionActions } from './Collections';
 import { batchActions } from 'redux-batched-actions';
 import { EditionsFront } from '../types/Edition';
 import { State } from '../types/State';
+import { selectFront } from 'selectors/frontsSelectors';
 
 export const check =
   (id: string): ThunkResult<Promise<void>> =>
@@ -175,6 +177,45 @@ export const removeFrontCollection =
   async (dispatch, getState) => {
     try {
       const newFront = await removeCollectionFromFront(frontId, collectionId);
+      processNewEditionFrontResponse(newFront, dispatch, getState);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+export const moveFrontCollection =
+  (
+    frontId: string,
+    collectionId: string,
+    direction: 'up' | 'down'
+  ): ThunkResult<Promise<void>> =>
+  async (dispatch, getState) => {
+    try {
+      const state = getState();
+      const front = selectFront(state, { frontId });
+      const maybeCollectionIndex = front.collections.findIndex(
+        (id) => collectionId === id
+      );
+
+      if (maybeCollectionIndex === -1) {
+        console.warn(
+          `Could not find collection with id ${maybeCollectionIndex} in front ${frontId}`
+        );
+        return;
+      }
+
+      const offset = direction === 'up' ? -1 : 1;
+      const unclampedIndex = maybeCollectionIndex + offset;
+      const maxIndex = front.collections.length - 1;
+      const newIndex = Math.max(0, Math.min(unclampedIndex, maxIndex));
+
+      if (newIndex === maybeCollectionIndex) {
+        console.warn(
+          `Attempt to move collection ${collectionId} out of bounds to index ${newIndex} (min 0, max ${maxIndex})`
+        );
+      }
+
+      const newFront = await moveCollection(frontId, collectionId, newIndex);
       processNewEditionFrontResponse(newFront, dispatch, getState);
     } catch (error) {
       throw error;
