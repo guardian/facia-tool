@@ -83,16 +83,6 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
           </EditionIssueInfo>
         </ManageLink>
         &nbsp;
-        <Button
-          data-testid="check-edition-button"
-          size="s"
-          priority="primary"
-          onClick={() => this.check()}
-          tabIndex={-1}
-          title="Check Edition"
-        >
-          Check
-        </Button>
         <EditionPublish>
           <EditModeVisibility visibleMode="editions">
             {editionsIssue.supportsProofing && (
