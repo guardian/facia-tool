@@ -72,7 +72,8 @@ const EditionPublish = styled.div`
 
 class EditionFeedSectionHeader extends React.Component<ComponentProps> {
   public render() {
-    const { editionsIssue, isFeast } = this.props;
+    const { editionsIssue } = this.props;
+    const isFeast = editionsIssue?.platform === 'feast';
 
     return (
       <>
@@ -189,7 +190,6 @@ function displayTime(lastProofedVersion: string | undefined) {
 const mapStateToProps = () => {
   return (state: State) => ({
     editionsIssue: editionsIssueSelectors.selectAll(state),
-    isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
   });
 };
 
