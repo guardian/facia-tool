@@ -272,13 +272,6 @@ interface EditionsFrontHiddenStateUpdate {
   };
 }
 
-interface EditionsFrontAddCollectionUpdate {
-  type: 'FETCH_FRONT_ADD_COLLECTION_SUCCESS';
-  payload: {
-    frontId: string;
-  };
-}
-
 interface PageViewDataRequested {
   type: 'PAGE_VIEW_DATA_REQUESTED';
   payload: {
@@ -371,7 +364,6 @@ type Action =
   | ActionSetFeatureValue
   | EditionsFrontMetadataUpdate
   | EditionsFrontHiddenStateUpdate
-  | EditionsFrontAddCollectionUpdate
   | IsPrefillMode
   | SetHidden
   | ChangedBrowsingStage
