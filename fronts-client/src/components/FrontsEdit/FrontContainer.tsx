@@ -41,9 +41,10 @@ const FrontWrapper = styled.div`
 const SectionContentMetaContainer = styled.div`
   display: flex;
   flex-shrink: 0;
-  justify-content: flex-end;
+  justify-content: flex-start;
   margin-right: 5px;
   flex-wrap: wrap;
+  align-content: center;
 `;
 
 const OverviewToggleContainer = styled.div<{ active: boolean }>`
