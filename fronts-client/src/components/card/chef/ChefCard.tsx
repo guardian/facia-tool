@@ -10,7 +10,6 @@ import CardMetaHeading from '../CardMetaHeading';
 import CardMetaContainer from '../CardMetaContainer';
 import CardMetaContent from '../CardMetaContent';
 import CardContent from '../CardContent';
-import CardSettingsDisplay from '../CardSettingsDisplay';
 import CardHeadingContainer from '../CardHeadingContainer';
 import CardHeading from '../CardHeading';
 import ImageAndGraphWrapper from '../../image/ImageAndGraphWrapper';
@@ -70,13 +69,6 @@ export const ChefCard = ({
           </CardMetaContainer>
         )}
         <CardContent textSize={textSize}>
-          <CardSettingsDisplay
-            isBreaking={card.meta?.isBreaking}
-            showByline={card.meta?.showByline}
-            showQuotedHeadline={card.meta?.showQuotedHeadline}
-            showLargeHeadline={card.meta?.showLargeHeadline}
-            isBoosted={card.meta?.isBoosted}
-          />
           <CardHeadingContainer size={size}>
             <CardHeading data-testid="headline" html>
               {chef?.webTitle ?? 'No Chef found'}
