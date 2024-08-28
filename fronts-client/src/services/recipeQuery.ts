@@ -26,8 +26,15 @@ export interface RecipeSearchParams {
   filters?: RecipeSearchFilters;
 }
 
-export interface ChefSearchResponse {
+export interface ChefSearchHit {
+  contributorType: "Profile"|"Byline";
+  nameOrId: string;
+  docCount: number;
+}
 
+export interface ChefSearchResponse {
+  hits: number;
+  results: ChefSearchHit[];
 }
 
 export interface RecipeSearchResponse {
