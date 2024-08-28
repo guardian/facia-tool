@@ -21,6 +21,7 @@ import {
   getMaybeDimensionsFromWidthAndHeight,
   validateDimensions,
   validateImageEvent,
+  validateSlideshowDimensions,
   ValidationResponse,
 } from 'util/validateImageSrc';
 import {
@@ -474,6 +475,11 @@ class Card extends React.Component<CardContainerProps> {
   ): ReturnType<typeof validateDimensions> => {
     // check dragged image matches this card's collection's criteria.
     const cardImageWasDraggedFrom = this.props.selectOtherCard(cardUuid);
+
+    const { imageSlideshowReplace, slideshow } = cardImageWasDraggedFrom.meta;
+    if (imageSlideshowReplace) {
+      return validateSlideshowDimensions(slideshow, imageCriteria);
+    }
 
     const draggedImageDims = getMaybeDimensionsFromWidthAndHeight(
       cardImageWasDraggedFrom?.meta?.imageSrcWidth,
