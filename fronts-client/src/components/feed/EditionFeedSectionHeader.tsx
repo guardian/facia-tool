@@ -64,8 +64,10 @@ const EditionDate = styled.div`
 `;
 
 const EditionPublish = styled.div`
-  float: right;
-  margin: 5px 10px 0 0;
+  margin-left: auto;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
 `;
 
 class EditionFeedSectionHeader extends React.Component<ComponentProps> {

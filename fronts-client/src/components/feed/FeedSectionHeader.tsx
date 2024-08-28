@@ -34,8 +34,12 @@ const FeedbackButton = styled(Button.withComponent('a'))<{
 `;
 
 const SectionHeaderContent = styled.div`
-  position: relative;
-  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-grow: 1;
+  white-space: nowrap;
+  overflow: hidden;
 `;
 
 const LogoContainer = styled.div`
