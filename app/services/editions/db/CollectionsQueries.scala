@@ -106,18 +106,16 @@ trait CollectionsQueries extends Logging {
     for {
       currentCollectionIds <- getCollectionIdsInFrontFromCollectionId(collectionId)
     } yield {
-      logger.info(s"Moving $collectionId to index $newIndex")
       currentCollectionIds.indexOf(collectionId) match {
         case -1 => Left(EditionsDB.NotFoundError(s"Tried to move collection $collectionId to $newIndex, but could not find collection with that ID"))
         case currentIndex if currentIndex == newIndex =>
           logger.info(s"Collection $collectionId is already at index $newIndex")
           Right(()) // No move
         case currentIndex =>
-          val indexOffset = if (newIndex > currentIndex) -1 else 0
+          logger.info(s"Moving $collectionId at $currentIndex to index $newIndex")
           val newCollectionIds = currentCollectionIds
             .filter(_ != collectionId)
-            .patch(newIndex + indexOffset, List(collectionId), 0)
-
+            .patch(newIndex, List(collectionId), 0)
 
           updateCollectionIndices(newCollectionIds)
       }

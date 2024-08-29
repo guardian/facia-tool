@@ -5,8 +5,8 @@ import { Card } from 'types/Collection';
 const preProcessCard = (card: Card): object => ({
   ...card,
   // guard against missing meta from the server
-  meta: card.meta || {},
-  uuid: v4(),
+  meta: card.meta ?? {},
+  uuid: card.uuid ?? v4(),
 });
 
 const postProcessCard = (card: Card): object => {
