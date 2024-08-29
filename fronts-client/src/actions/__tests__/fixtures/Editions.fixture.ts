@@ -1,4 +1,4 @@
-export const newCollectionApiResponse = [
+export const apiResponse = [
   {
     id: '165193d5-3761-466c-af9a-4fc09fd91133',
     displayName: 'Dish of the day',
@@ -34,7 +34,6 @@ export const initialState = {
             index: 1,
             isSpecial: false,
             isHidden: false,
-            metadata: { swatch: 'neutral' },
             collections: ['165193d5-3761-466c-af9a-4fc09fd91133'],
             priority: 'ae2035fa-7864-4c73-aabd-70ab70526bf7',
           },
@@ -751,7 +750,7 @@ export const initialState = {
   },
 };
 
-export const finalState = {
+export const stateWithAddedCollection = {
   fronts: {
     frontsConfig: {
       data: {
@@ -762,7 +761,6 @@ export const finalState = {
             index: 1,
             isSpecial: false,
             isHidden: false,
-            metadata: { swatch: 'neutral' },
             collections: [
               '165193d5-3761-466c-af9a-4fc09fd91133',
               'bf3428ed-4ee8-4321-8099-6590d0b51fd6',

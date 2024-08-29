@@ -12,7 +12,11 @@ import {
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
-import { EditionsFrontMetadata, FrontsConfig } from 'types/FaciaApi';
+import {
+  EditionsFrontMetadata,
+  FrontConfig,
+  FrontsConfig,
+} from 'types/FaciaApi';
 import noop from 'lodash/noop';
 import { startOptionsModal } from './OptionsModal';
 import IssueVersions from 'components/Editions/IssueVersions';
@@ -196,26 +200,14 @@ export const moveFrontCollection =
     try {
       const state = getState();
       const front = selectFront(state, { frontId });
-      const maybeCollectionIndex = front.collections.findIndex(
-        (id) => collectionId === id
+      const newIndex = getNewCollectionIndexForMove(
+        front,
+        collectionId,
+        direction
       );
 
-      if (maybeCollectionIndex === -1) {
-        console.warn(
-          `Could not find collection with id ${maybeCollectionIndex} in front ${frontId}`
-        );
+      if (newIndex === undefined) {
         return;
-      }
-
-      const offset = direction === 'up' ? -1 : 1;
-      const unclampedIndex = maybeCollectionIndex + offset;
-      const maxIndex = front.collections.length - 1;
-      const newIndex = Math.max(0, Math.min(unclampedIndex, maxIndex));
-
-      if (newIndex === maybeCollectionIndex) {
-        console.warn(
-          `Attempt to move collection ${collectionId} out of bounds to index ${newIndex} (min 0, max ${maxIndex})`
-        );
       }
 
       const collections = await moveCollection(frontId, collectionId, newIndex);
@@ -224,6 +216,38 @@ export const moveFrontCollection =
       throw error;
     }
   };
+
+export const getNewCollectionIndexForMove = (
+  front: FrontConfig,
+  collectionId: string,
+  direction: 'up' | 'down'
+): number | undefined => {
+  const maybeCollectionIndex = front.collections.findIndex(
+    (id) => collectionId === id
+  );
+
+  if (maybeCollectionIndex === -1) {
+    console.warn(
+      `Could not find collection with id ${maybeCollectionIndex} in front ${front.id}`
+    );
+    return undefined;
+  }
+
+  const offset = direction === 'up' ? -1 : 1;
+  const unclampedIndex = maybeCollectionIndex + offset;
+  const maxIndex = front.collections.length - 1;
+  const newIndex = Math.max(0, Math.min(unclampedIndex, maxIndex));
+
+  if (newIndex === maybeCollectionIndex) {
+    console.warn(
+      `Attempt to move collection ${collectionId} out of bounds to index ${newIndex} (min 0, max ${maxIndex})`
+    );
+
+    return undefined;
+  }
+
+  return newIndex;
+};
 
 const processNewEditionFrontResponse = (
   frontId: string,
