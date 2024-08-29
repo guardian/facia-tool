@@ -1,4 +1,5 @@
 import React from 'react';
+import keyBy from 'lodash/keyBy';
 import {
   proofIssue,
   publishIssue,
@@ -23,7 +24,6 @@ import { batchActions } from 'redux-batched-actions';
 import { EditionsCollection } from '../types/Edition';
 import { State } from '../types/State';
 import { selectFront } from 'selectors/frontsSelectors';
-import { groupBy } from 'lodash';
 
 export const check =
   (id: string): ThunkResult<Promise<void>> =>
@@ -252,7 +252,7 @@ const processNewEditionFrontResponse = (
     },
     collections: {
       ...existingFrontsConfig.collections,
-      ...groupBy(collections, 'id'),
+      ...keyBy(collections, 'id'),
     },
   };
 

@@ -1,4 +1,4 @@
-import type { EditionsFront, EditionsIssue, IssueVersion } from 'types/Edition';
+import type { EditionsIssue, IssueVersion } from 'types/Edition';
 import type { CAPISearchQueryResponse } from './capiQuery';
 import type { EditionsFrontMetadata } from 'types/FaciaApi';
 import { Moment } from 'moment';

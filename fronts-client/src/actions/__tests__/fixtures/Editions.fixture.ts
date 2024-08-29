@@ -1,37 +1,28 @@
-export const apiResponse = {
-  id: '3b73ae36-1b99-4102-b6cb-51cc66768182',
-  displayName: 'Meat-Free',
-  index: 1,
-  isSpecial: false,
-  isHidden: false,
-  metadata: {
-    swatch: 'neutral',
+export const newCollectionApiResponse = [
+  {
+    id: '165193d5-3761-466c-af9a-4fc09fd91133',
+    displayName: 'Dish of the day',
+    isHidden: false,
+    lastUpdated: 1724241813095,
+    updatedBy: 'Divya Bhatt ',
+    updatedEmail: 'divya.bhatt@guardian.co.uk',
+    contentPrefillTimeWindow: {
+      fromDate: '2024-08-13T00:00:00Z',
+      toDate: '2024-08-13T00:00:00Z',
+    },
+    items: [],
   },
-  collections: [
-    {
-      id: '165193d5-3761-466c-af9a-4fc09fd91133',
-      displayName: 'Dish of the day',
-      isHidden: false,
-      lastUpdated: 1724241813095,
-      updatedBy: 'Divya Bhatt ',
-      updatedEmail: 'divya.bhatt@guardian.co.uk',
-      contentPrefillTimeWindow: {
-        fromDate: '2024-08-13T00:00:00Z',
-        toDate: '2024-08-13T00:00:00Z',
-      },
-      items: [],
-    },
-    {
-      id: 'bf3428ed-4ee8-4321-8099-6590d0b51fd6',
-      displayName: 'New collection',
-      isHidden: false,
-      lastUpdated: 1724241825186,
-      updatedBy: 'Divya Bhatt ',
-      updatedEmail: 'divya.bhatt@guardian.co.uk',
-      items: [],
-    },
-  ],
-};
+  {
+    id: 'bf3428ed-4ee8-4321-8099-6590d0b51fd6',
+    displayName: 'New collection',
+    isHidden: false,
+    lastUpdated: 1724241825186,
+    updatedBy: 'Divya Bhatt ',
+    updatedEmail: 'divya.bhatt@guardian.co.uk',
+    items: [],
+  },
+];
+
 export const initialState = {
   fronts: {
     frontsConfig: {
