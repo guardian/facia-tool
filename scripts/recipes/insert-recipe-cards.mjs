@@ -26,7 +26,7 @@ const frontsIssueId = getArg("--fronts-issue-id");
 const frontName = getArg("--front-name");
 const stage = getArg("--stage");
 const cookie = getArg("--cookie");
-const dryRun = getArg("--dry-run", true) ?? true;
+const dryRun = getArg("--dry-run", true) === "false" ? false : true;
 
 const curationBaseUrl = "https://recipes.guardianapis.com";
 const curationUrl = `${curationBaseUrl}/${curationPath}/curation.json`;
@@ -36,9 +36,7 @@ const frontsBaseUrl =
         : "https://fronts.code.dev-gutools.co.uk";
 
 console.log(
-    `Migrating curation data from ${curationPath} to ${stage} Fronts tool, issue: ${frontsIssueId}, front name: ${frontName}${
-        dryRun ? " - DRY RUN" : ""
-    }.`
+    `Migrating curation data from ${curationPath} to ${stage} Fronts tool, issue: ${frontsIssueId}, front name: ${frontName}, dry run: ${dryRun}.`
 );
 
 if (stage === "PROD") {
