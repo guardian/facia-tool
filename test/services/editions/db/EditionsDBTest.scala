@@ -414,6 +414,31 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     updatedBrexshit.items.find(_.id == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
   }
 
+  "getFront" - {
+    "should get all the card content in a Front" taggedAs UsesDatabase in {
+      val feastFront = front("news/uk",
+        collection(
+          "politics",
+          None,
+          card("recipe", Some(CardType.Recipe)),
+          card("chef", Some(CardType.Chef), Some(EditionsChefMetadata(Some("bio")))),
+          card("feast-collection", Some(CardType.FeastCollection), Some(EditionsFeastCollectionMetadata(Some("title"))))
+        )
+      )
+
+      val id = insertSkeletonIssue(2019, 9, 30, Edition.FeastNorthernHemisphere, feastFront)
+
+      val frontId = editionsDB.getIssue(id).get.fronts.head.id
+
+      DB localTx { implicit session =>
+        val retrievedFront = editionsDB.getFront(frontId).get
+        retrievedFront.collections.head.items.map(_.toSkeleton) shouldBe List(
+          EditionsCardSkeleton("recipe", CardType.Recipe, None),
+          EditionsCardSkeleton("chef", CardType.Chef, Some(EditionsChefMetadata(Some("bio"),None,None))),
+          EditionsCardSkeleton("feast-collection", CardType.FeastCollection, Some(EditionsFeastCollectionMetadata(Some("title"),None,List()))))
+      }
+    }
+  }
 
   "moveCollection" - {
     val testFront = front("news/uk",
@@ -425,11 +450,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     val testCases = List(
       (0, List("politics", "international", "culture", "sport")),
-      (1, List("politics", "international", "culture", "sport")),
-      (2, List("international", "politics", "culture", "sport")),
-      (3, List("international", "culture", "politics", "sport")),
-      (4, List("international", "culture", "sport", "politics")),
-      (5, List("international", "culture", "sport", "politics"))
+      (1, List("international", "politics", "culture", "sport")),
+      (2, List("international", "culture", "politics", "sport")),
+      (3, List("international", "culture", "sport", "politics")),
+      (4, List("international", "culture", "sport", "politics"))
     )
 
     "should update the other collections in the front when the collection index is modified, reordering as needed" - {

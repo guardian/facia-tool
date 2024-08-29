@@ -137,6 +137,23 @@ const selectCollectionIsHidden = (
   return !!collection && !!collection.isHidden;
 };
 
+export const selectCollectionCanMoveToRelativeIndex = (
+  state: State,
+  frontId: string,
+  collectionId: string,
+  relativeIndex: number
+): boolean => {
+  const front = selectFront(state, { frontId });
+  const currentIndex = front.collections.findIndex((id) => id === collectionId);
+  if (currentIndex === -1) {
+    return false;
+  }
+
+  const newIndex = currentIndex + relativeIndex;
+
+  return newIndex >= 0 && newIndex <= front.collections.length - 1;
+};
+
 const selectCollectionDisplayName = (
   state: State,
   collectionId: string
