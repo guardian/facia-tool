@@ -33,7 +33,7 @@ const curationUrl = `${curationBaseUrl}/${curationPath}/curation.json`;
 const frontsBaseUrl =
     stage === "PROD"
         ? "https://fronts.gutools.co.uk"
-        : "https://fronts.local.dev-gutools.co.uk";
+        : "https://fronts.code.dev-gutools.co.uk";
 const frontsHeaders = {
     "Content-Type": "application/json",
     Cookie: cookie,
