@@ -160,7 +160,7 @@ const collectionTitlesMissingInFronts = curation
     .map((col) => col.title);
 
 if (collectionTitlesMissingInFronts.length) {
-     // Collections are added from the top, so we add the last collection first
+    // Collections are added from the top, so we add the last collection first
     for (const title of collectionTitlesMissingInFronts.reverse()) {
         const newCollectionResponse = await fetch(
             `${frontsBaseUrl}/editions-api/fronts/${front.id}/collection?name=${title}`,
@@ -171,7 +171,13 @@ if (collectionTitlesMissingInFronts.length) {
         );
 
         if (newCollectionResponse.status !== 200) {
-            console.error("Error creating new collection");
+            console.error(
+                `Error creating new collection: ${
+                    newCollectionResponse.status
+                } ${
+                    newCollectionResponse.statusText
+                } ${await newCollectionResponse.text()}`
+            );
             process.exit(1);
         } else {
             console.log(
@@ -279,7 +285,6 @@ const updatedCollections = curation.flatMap((collection) => {
                 const { title, image, lightPalette, darkPalette, recipes } =
                     item.collection;
 
-                console.log(recipes);
                 return [
                     {
                         ...cardMeta,
@@ -343,15 +348,18 @@ for (const updatedCollection of updatedCollections) {
         break;
     }
 
+    const body = JSON.stringify({
+        id: updatedCollection.id,
+        collection: updatedCollection,
+    });
+    const bodySize = new Blob([body]).size;
+
     const response = await fetch(
         `${frontsBaseUrl}/editions-api/collections/${updatedCollection.id}`,
         {
             method: "PUT",
             headers: frontsHeaders,
-            body: JSON.stringify({
-                id: updatedCollection.id,
-                collection: updatedCollection,
-            }),
+            body,
         }
     );
 
@@ -370,7 +378,11 @@ for (const updatedCollection of updatedCollections) {
         );
     } else {
         console.log(
-            `Written updated collection with name: ${updatedCollection.displayName}, id: ${updatedCollection.id}`
+            `Written updated collection with name: ${
+                updatedCollection.displayName
+            }, id: ${
+                updatedCollection.id
+            } payload ${new Intl.NumberFormat().format(bodySize)} bytes`
         );
     }
 }
