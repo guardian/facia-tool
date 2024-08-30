@@ -5,7 +5,7 @@ import com.amazonaws.services.sns.model.{MessageAttributeValue, PublishRequest}
 import conf.ApplicationConfiguration
 import model.FeastAppModel.{Chef, ChefContent, ContainerItem, FeastAppContainer, FeastAppCuration, FeastCollection, FeastCollectionContent, Recipe, RecipeContent}
 import model.editions.PublishAction.PublishAction
-import model.editions.{Edition, EditionsArticle, EditionsCard, EditionsChef, EditionsCollection, EditionsFeastCollection, EditionsIssue, EditionsRecipe}
+import model.editions.{Edition, EditionsArticle, EditionsCard, EditionsChef, EditionsCollection, EditionsFeastCollection, EditionsIssue, EditionsRecipe, FeastAppTemplates}
 import play.api.libs.json.{Json, Writes}
 import util.TimestampGenerator
 
@@ -73,9 +73,9 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
     )
 
   def transformContent(source: EditionsIssue, version: String): Either[String, FeastAppCuration] = {
-    editionToBackendEditionMap.get(source.edition) match {
-      case Some(backendEdition) =>
-        val backendEditionName = if (config.isProd) s"$backendEdition-test" else backendEdition
+    FeastAppTemplates.templates.get(source.edition) match {
+      case Some(template) =>
+        val backendEditionName = if (config.isProd) s"${template.backendEditionName}-test" else template.backendEditionName
         Right(FeastAppCuration(
           id = source.id,
           issueDate = source.issueDate,
