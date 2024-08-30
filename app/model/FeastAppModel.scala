@@ -1,6 +1,5 @@
 package model
 
-import model.editions.Edition
 import play.api.libs.json._
 
 import java.time.LocalDate
@@ -39,7 +38,7 @@ object FeastAppModel {
 
   case class FeastAppCuration(
                              id:String,
-                             edition:Edition,
+                             edition:String,
                              issueDate:LocalDate,
                              version:String,
                              fronts:Map[String,IndexedSeq[FeastAppContainer]]

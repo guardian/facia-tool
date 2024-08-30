@@ -180,7 +180,7 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
 
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
-      val result = toTest.transformContent(testIssue, "v1")
+      val result = toTest.transformContent(testIssue, "v1").toOption.get
       result.fronts.contains("all-recipes") shouldBe true
       val allRecipesFront = result.fronts("all-recipes")
       allRecipesFront.length shouldBe 1
@@ -205,13 +205,31 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
         ))
       )
     }
+
+    "should add the suffix -test to fronts published to PROD, for now" in {
+      val mockSNS = mock[AmazonSNSClient]
+      when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
+
+      val prodConf = new ApplicationConfiguration(
+        Configuration.from(Map(
+          "aws.region"->"eu-west-1",
+          "feast_app.publication_topic" -> "fake-publication-topic"
+        )),
+        true
+      )
+
+      val toTest = new FeastPublicationTarget(mockSNS, prodConf, mockTSG)
+
+      val result = toTest.transformContent(testIssue, "v1").toOption.get
+      result.edition shouldBe "northern-test"
+    }
   }
 
   "putIssue" - {
     "should output the transformed version of the content" in {
       val serializedVersion = """{
         |  "id": "123456ABCD",
-        |  "edition": "feast-northern-hemisphere",
+        |  "edition": "northern",
         |  "issueDate": "2024-05-03",
         |  "version": "v1",
         |  "fronts": {
@@ -267,6 +285,18 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
           "type"->new MessageAttributeValue().withDataType("String").withStringValue("Issue")
         ).asJava)
       verify(mockSNS).publish(expectedRequest)
+    }
+
+    "should not permit publishing issues without a suitable entry for the backend name" in {
+      val mockSNS = mock[AmazonSNSClient]
+      val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
+      val issueWithInvalidEdition = testIssue.copy(edition = Edition.DailyEdition)
+      val result = toTest.putIssue(issueWithInvalidEdition, "v1", PublishAction.publish)
+
+      result match {
+        case Left(error) => error should include("No backend edition name found")
+        case Right(_) => fail("should not be able to publish this sort of edition")
+      }
     }
   }
 }

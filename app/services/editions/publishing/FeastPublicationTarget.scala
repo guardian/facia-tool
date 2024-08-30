@@ -5,12 +5,14 @@ import com.amazonaws.services.sns.model.{MessageAttributeValue, PublishRequest}
 import conf.ApplicationConfiguration
 import model.FeastAppModel.{Chef, ChefContent, ContainerItem, FeastAppContainer, FeastAppCuration, FeastCollection, FeastCollectionContent, Recipe, RecipeContent}
 import model.editions.PublishAction.PublishAction
-import model.editions.{EditionsArticle, EditionsCard, EditionsChef, EditionsCollection, EditionsFeastCollection, EditionsIssue, EditionsRecipe}
+import model.editions.{Edition, EditionsArticle, EditionsCard, EditionsChef, EditionsCollection, EditionsFeastCollection, EditionsIssue, EditionsRecipe}
 import play.api.libs.json.{Json, Writes}
 import util.TimestampGenerator
 
 import scala.jdk.CollectionConverters._
 import logging.Logging
+
+import scala.util.{Failure, Success}
 
 object FeastPublicationTarget {
   object MessageType extends Enumeration {
@@ -21,6 +23,11 @@ object FeastPublicationTarget {
 }
 
 class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfiguration, timestamp: TimestampGenerator) extends PublicationTarget with Logging {
+  def editionToBackendEditionMap: Map[Edition, String] = Map(
+    Edition.FeastNorthernHemisphere -> "northern",
+    Edition.FeastSouthernHemisphere -> "southern"
+  )
+
   private def transformCards(source: EditionsCard): ContainerItem = {
     source match {
       case _: EditionsArticle => throw new Error("Article not permitted in a Feast Front")
@@ -65,21 +72,28 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
       items = collection.items.map(transformCards)
     )
 
-  def transformContent(source: EditionsIssue, version: String): FeastAppCuration = {
-    FeastAppCuration(
-      id = source.id,
-      issueDate = source.issueDate,
-      edition = source.edition,
-      version = version,
-      fronts = source.fronts.map(f => {
-        (transformName(f.getName), f.collections.map(transformCollections).toIndexedSeq)
-      }).toMap
-    )
+  def transformContent(source: EditionsIssue, version: String): Either[String, FeastAppCuration] = {
+    editionToBackendEditionMap.get(source.edition) match {
+      case Some(backendEdition) =>
+        val backendEditionName = if (config.isProd) s"$backendEdition-test" else backendEdition
+        Right(FeastAppCuration(
+          id = source.id,
+          issueDate = source.issueDate,
+          edition = backendEditionName,
+          version = version,
+          fronts = source.fronts.map(f => {
+            (transformName(f.getName), f.collections.map(transformCollections).toIndexedSeq)
+          }).toMap
+        ))
+      case None => Left(s"No backend edition name found for issue ${source.edition.entryName}")
+    }
   }
 
-  override def putIssue(issue: EditionsIssue, version: String, action: PublishAction): Unit = {
+  override def putIssue(issue: EditionsIssue, version: String, action: PublishAction): Either[String, Unit] = {
     val outputKey = createKey(issue, version)
-    putIssueJson(transformContent(issue, version), outputKey)
+    for {
+      content <- transformContent(issue, version)
+    } yield putIssueJson(content, outputKey)
   }
 
   private def createPublishRequest(content: String, messageType: FeastPublicationTarget.MessageType): PublishRequest = {

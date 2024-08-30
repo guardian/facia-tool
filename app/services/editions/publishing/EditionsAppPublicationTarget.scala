@@ -34,10 +34,10 @@ object EditionsAppPublicationTarget extends LazyLogging {
 }
 
 class EditionsAppPublicationTarget(s3Client: AmazonS3, bucketName: String) extends PublicationTarget with LazyLogging {
-  override def putIssue(issue: EditionsIssue, version: String, action: PublishAction): Unit = {
+  override def putIssue(issue: EditionsIssue, version: String, action: PublishAction): Either[String, Unit] = {
     val outputKey = createKey(issue, version)
     val publishableIssue = issue.toPublishableIssue(version, action)
-    putIssueJson(publishableIssue, outputKey)
+    Right(putIssueJson(publishableIssue, outputKey))
   }
 
   override def putIssueJson[T: Writes](content: T, key:String): Unit = {
