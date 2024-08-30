@@ -212,7 +212,6 @@ trait CollectionsQueries extends Logging {
     """.map(_.string("id"))
       .list
       .apply() match {
-      case Nil => Left(EditionsDB.NotFoundError(s"No collection found"))
       case collectionIds => Right(collectionIds)
     }
 
