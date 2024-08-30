@@ -1,9 +1,15 @@
 import {
-  apiResponse,
+  apiResponseOnAddNewCollection,
+  apiResponseOnRemoveACollection,
+  finalStateWhenAddNewCollection,
+  finalStateWhenRemoveACollection,
   initialState,
-  stateWithAddedCollection,
 } from './fixtures/Editions.fixture';
-import { addFrontCollection, getNewCollectionIndexForMove } from '../Editions';
+import {
+  addFrontCollection,
+  getNewCollectionIndexForMove,
+  removeFrontCollection,
+} from '../Editions';
 import configureStore from '../../util/configureStore';
 import { Dispatch } from '../../types/Store';
 import fetchMock from 'fetch-mock';
@@ -31,7 +37,7 @@ describe('Editions actions', () => {
 
       fetchMock.once(
         `/editions-api/fronts/${frontId}/collection`,
-        apiResponse,
+        apiResponseOnAddNewCollection,
         {
           method: 'PUT',
         }
@@ -40,13 +46,33 @@ describe('Editions actions', () => {
       await (store.dispatch as Dispatch)(addFrontCollection(frontId));
 
       const state = store.getState();
-      expect(state).toEqual(stateWithAddedCollection);
+      expect(state).toEqual(finalStateWhenAddNewCollection);
+    });
+  });
+
+  describe('removeFrontCollection', () => {
+    it('should remove a collection in the front', async () => {
+      const store = configureStore(
+        initialState,
+        '/v2/issues/ae2035fa-7864-4c73-aabd-70ab70526bf7'
+      );
+      const collectionId = 'bf3428ed-4ee8-4321-8099-6590d0b51fd6';
+      fetchMock.once(
+        `/editions-api/fronts/${frontId}/collection/${collectionId}`,
+        apiResponseOnRemoveACollection,
+        { method: 'DELETE' }
+      );
+      await (store.dispatch as Dispatch)(
+        removeFrontCollection(frontId, collectionId)
+      );
+      const state = store.getState();
+      expect(state).toEqual(finalStateWhenRemoveACollection);
     });
   });
 
   describe('getNewCollectionIndexForMove', () => {
     const front =
-      stateWithAddedCollection.fronts.frontsConfig.data.fronts[frontId];
+      finalStateWhenAddNewCollection.fronts.frontsConfig.data.fronts[frontId];
 
     it('should get the correct index moving a collection up', async () => {
       const newIndex = getNewCollectionIndexForMove(
