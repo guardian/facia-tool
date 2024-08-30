@@ -831,6 +831,21 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         }
       }
 
+      "should permit adding a collection to an empty front" taggedAs UsesDatabase in {
+        val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
+          front("news/uk")
+        )
+        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val frontFromIssue = issue.fronts.head
+
+        editionsDB.addCollectionToFront(frontFromIssue.id, user = user, now = now) match {
+          case Right(front) =>
+            front.collections.head.displayName shouldBe "New collection"
+          case Left(error) =>
+            Assertions.fail(s"Error adding collection to front: ${error.getMessage}")
+        }
+      }
+
       "should fail with a NotFoundError when the specified front does not exist" taggedAs UsesDatabase in {
         editionsDB.addCollectionToFront("does-not-exist", user = user, now = now) match {
           case Right(front) =>
