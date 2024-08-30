@@ -2,11 +2,11 @@ import crypto from "crypto";
 
 const usage = `Example usage is
 
-node ./insert-recipe-cards.mjs \
-    --curation-path "northern/all-recipes" \
-    --fronts-issue-id "b45d7c3a-497f-4230-8aad-923ce5a8cd2f" \
-    --front-name "Meat-Free" \
-    --stage CODE \
+node ./insert-recipe-cards.mjs
+    --curation-path "northern/all-recipes"
+    --fronts-issue-id "b45d7c3a-497f-4230-8aad-923ce5a8cd2f"
+    --front-name "Meat-Free"
+    --stage CODE
     --cookie "<get this from a Fronts client request header for the appropriate stage>"`;
 
 const getArg = (flag, optional = false) => {
@@ -33,7 +33,11 @@ const curationUrl = `${curationBaseUrl}/${curationPath}/curation.json`;
 const frontsBaseUrl =
     stage === "PROD"
         ? "https://fronts.gutools.co.uk"
-        : "https://fronts.code.dev-gutools.co.uk";
+        : "https://fronts.local.dev-gutools.co.uk";
+const frontsHeaders = {
+    "Content-Type": "application/json",
+    Cookie: cookie,
+};
 
 console.log(
     `Migrating curation data from ${curationPath} to ${stage} Fronts tool, issue: ${frontsIssueId}, front name: ${frontName}, dry run: ${dryRun}.`
@@ -43,7 +47,7 @@ if (stage === "PROD") {
     console.warn(
         `This will run in the PROD environment in 5 seconds - Ctrl-C to cancel.`
     );
-    await new Promise((r) => setTimeout(res, 5000));
+    await new Promise((r) => setTimeout(r, 5000));
 }
 
 console.log(`Fetching curation data from ${curationUrl} ...`);
@@ -79,65 +83,104 @@ console.log(
     `Got curation data.\nFetching fronts issue data from ${frontsIssueUrl}...`
 );
 
-const frontsResponse = await fetch(frontsIssueUrl, {
-    method: "GET",
-    headers: { "Content-Type": "application/json", Cookie: cookie },
-});
+const fetchFrontFromIssue = async () => {
+    const frontsResponse = await fetch(frontsIssueUrl, {
+        method: "GET",
+        headers: frontsHeaders,
+    });
 
-if (frontsResponse.status !== 200) {
-    console.error(
-        `Error getting issue data from Fronts tool: ${frontsResponse.status} ${
-            frontsResponse.statusText
-        } ${await frontsResponse.text()}`
+    if (frontsResponse.status !== 200) {
+        console.error(
+            `Error getting issue data from Fronts tool: ${
+                frontsResponse.status
+            } ${frontsResponse.statusText} ${await frontsResponse.text()}`
+        );
+        process.exit(1);
+    }
+
+    /**
+     * @type {{
+     *   id: string;
+     *   edition: string;
+     *   issueDate: string; // YYYY-MM-dd
+     *   createdOn: number;
+     *   createdBy: string;
+     *   createdEmail: string;
+     *   launchedOn?: number;
+     *   launchedBy: string;
+     *   launchedEmail: string;
+     *   fronts: Array<{
+     *       id: string;
+     *       displayName: string;
+     *       isHidden: boolean;
+     *       updatedOn?: number;
+     *       updatedBy?: string;
+     *       updatedEmail?: string;
+     *       collections: Array<{
+     *           id: string;
+     *           displayName: string;
+     *           prefill?: EditionsPrefill;
+     *           isHidden: boolean;
+     *           lastUpdated?: number;
+     *           updatedBy?: string;
+     *           updatedEmail?: string;
+     *           items: any[];
+     *         }>;
+     *     }>;
+     *   supportsProofing: boolean;
+     *   lastProofedVersion?: string;
+     *   platform: string;
+     * }}
+     */
+    const issueJson = await frontsResponse.json();
+
+    console.log("Got Fronts data.");
+
+    const front = issueJson.fronts.find(
+        (front) => front.displayName === frontName
     );
-    process.exit(1);
-}
 
-/**
- * @type {{
- *   id: string;
- *   edition: string;
- *   issueDate: string; // YYYY-MM-dd
- *   createdOn: number;
- *   createdBy: string;
- *   createdEmail: string;
- *   launchedOn?: number;
- *   launchedBy: string;
- *   launchedEmail: string;
- *   fronts: Array<{
- *       id: string;
- *       displayName: string;
- *       isHidden: boolean;
- *       updatedOn?: number;
- *       updatedBy?: string;
- *       updatedEmail?: string;
- *       collections: Array<{
- *           id: string;
- *           displayName: string;
- *           prefill?: EditionsPrefill;
- *           isHidden: boolean;
- *           lastUpdated?: number;
- *           updatedBy?: string;
- *           updatedEmail?: string;
- *           items: any[];
- *         }>;
- *     }>;
- *   supportsProofing: boolean;
- *   lastProofedVersion?: string;
- *   platform: string;
- * }}
- */
-const issueJson = await frontsResponse.json();
+    if (!front) {
+        console.error(
+            `No front found with name ${frontName} in issue ${frontsIssueId}`
+        );
+        process.exit(1);
+    }
 
-console.log("Got Fronts data.");
+    return front;
+};
 
-const front = issueJson.fronts.find((front) => front.displayName === frontName);
+let front = await fetchFrontFromIssue();
 
-if (!front) {
-    console.error(
-        `No front found with name ${frontName} in issue ${frontsIssueId}`
-    );
-    process.exit(1);
+const collectionNamesInFrontsTool = front.collections.map(
+    (col) => col.displayName
+);
+const collectionTitlesMissingInFronts = curation
+    .filter((col) => !collectionNamesInFrontsTool.includes(col.title.trim()))
+    .map((col) => col.title);
+
+if (collectionTitlesMissingInFronts.length) {
+     // Collections are added from the top, so we add the last collection first
+    for (const title of collectionTitlesMissingInFronts.reverse()) {
+        const newCollectionResponse = await fetch(
+            `${frontsBaseUrl}/editions-api/fronts/${front.id}/collection?name=${title}`,
+            {
+                method: "PUT",
+                headers: frontsHeaders,
+            }
+        );
+
+        if (newCollectionResponse.status !== 200) {
+            console.error("Error creating new collection");
+            process.exit(1);
+        } else {
+            console.log(
+                `Collection with title ${title} added to front ${front.id}`
+            );
+        }
+    }
+
+    front = await fetchFrontFromIssue();
 }
 
 const titleMap = Object.values(front.collections).reduce(
@@ -235,14 +278,21 @@ const updatedCollections = curation.flatMap((collection) => {
             case "collection": {
                 const { title, image, lightPalette, darkPalette, recipes } =
                     item.collection;
+
+                console.log(recipes);
                 return [
                     {
                         ...cardMeta,
                         id: crypto.randomUUID(),
-                        frontPublicationDate: Date.now(),
                         cardType: "feast-collection",
                         meta: {
                             title,
+                            supporting: recipes.map((id) => ({
+                                cardType: "recipe",
+                                id,
+                                uuid: crypto.randomUUID(),
+                                frontPublicationDate: Date.now(),
+                            })),
                             ...(lightPalette && darkPalette
                                 ? {
                                       feastCollectionTheme: {
@@ -297,10 +347,7 @@ for (const updatedCollection of updatedCollections) {
         `${frontsBaseUrl}/editions-api/collections/${updatedCollection.id}`,
         {
             method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                Cookie: cookie,
-            },
+            headers: frontsHeaders,
             body: JSON.stringify({
                 id: updatedCollection.id,
                 collection: updatedCollection,
