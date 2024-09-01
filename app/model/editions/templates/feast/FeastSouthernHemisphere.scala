@@ -10,7 +10,7 @@ object FeastSouthernHemisphere extends FeastAppEdition {
   override val edition = Edition.FeastSouthernHemisphere.entryName
   override val locale = Some("en_GB")
   override val notificationUTCOffset = 0
-  override val backendEditionName: String = "southern"
+  override val path: String = "southern"
 
   val MainFront: FrontTemplate = front(
     "All Recipes",

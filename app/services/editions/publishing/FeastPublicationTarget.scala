@@ -42,7 +42,7 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
           darkPalette = metadata.flatMap(_.theme.map(_.darkPalette)),
           lightPalette = metadata.flatMap(_.theme.map(_.lightPalette)),
           image = metadata.flatMap(_.theme.flatMap(_.imageURL)),
-          body = None,
+          body = Some(""), // The apps appear to require this to be present, even if it is empty
           title = metadata.flatMap(_.title).getOrElse("No title"),
           recipes = recipes
         ))
@@ -70,11 +70,12 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
   def transformContent(source: EditionsIssue, version: String): Either[String, FeastAppCuration] = {
     FeastAppTemplates.templates.get(source.edition) match {
       case Some(template) =>
-        val backendEditionName = if (config.environment.stage == "prod") s"${template.backendEditionName}-test" else template.backendEditionName
+        val path = if (config.environment.stage == "prod") s"${template.path}-test" else template.path
         Right(FeastAppCuration(
           id = source.id,
           issueDate = source.issueDate,
-          edition = backendEditionName,
+          edition = source.edition,
+          path = path,
           version = version,
           fronts = source.fronts.map(f => {
             (transformName(f.getName), f.collections.map(transformCollections).toIndexedSeq)

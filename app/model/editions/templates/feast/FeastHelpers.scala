@@ -8,7 +8,7 @@ trait FeastAppEdition extends CuratedPlatformWithTemplate {
   override val subTitle = "Make inspiring mealtimes easy with the Guardian’s Feast app."
   override val platform = CuratedPlatform.Feast
 
-  // The name of the edition as published to the recipe backend
-  val backendEditionName: String
+  // The path of the edition as published to the recipe backend
+  val path: String
 }
 
