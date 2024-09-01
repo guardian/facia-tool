@@ -215,7 +215,8 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
           "aws.region"->"eu-west-1",
           "feast_app.publication_topic" -> "fake-publication-topic"
         )),
-        true
+        true,
+        propertyOverrides = Map("STAGE" -> "PROD")
       )
 
       val toTest = new FeastPublicationTarget(mockSNS, prodConf, mockTSG)

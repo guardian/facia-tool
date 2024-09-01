@@ -23,11 +23,6 @@ object FeastPublicationTarget {
 }
 
 class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfiguration, timestamp: TimestampGenerator) extends PublicationTarget with Logging {
-  def editionToBackendEditionMap: Map[Edition, String] = Map(
-    Edition.FeastNorthernHemisphere -> "northern",
-    Edition.FeastSouthernHemisphere -> "southern"
-  )
-
   private def transformCards(source: EditionsCard): ContainerItem = {
     source match {
       case _: EditionsArticle => throw new Error("Article not permitted in a Feast Front")
@@ -75,7 +70,7 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
   def transformContent(source: EditionsIssue, version: String): Either[String, FeastAppCuration] = {
     FeastAppTemplates.templates.get(source.edition) match {
       case Some(template) =>
-        val backendEditionName = if (config.isProd) s"${template.backendEditionName}-test" else template.backendEditionName
+        val backendEditionName = if (config.environment.stage == "prod") s"${template.backendEditionName}-test" else template.backendEditionName
         Right(FeastAppCuration(
           id = source.id,
           issueDate = source.issueDate,
