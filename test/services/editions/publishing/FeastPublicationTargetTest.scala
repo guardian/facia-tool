@@ -201,7 +201,8 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
           lightPalette = Some(Palette("#FFF", "#333")),
           image = Some("https://example.com/an-image.jpg"),
           title = "Collection title",
-          recipes = List("nested-recipe-id")
+          recipes = List("nested-recipe-id"),
+          body = Some("")
         ))
       )
     }
@@ -222,7 +223,8 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
       val toTest = new FeastPublicationTarget(mockSNS, prodConf, mockTSG)
 
       val result = toTest.transformContent(testIssue, "v1").toOption.get
-      result.edition shouldBe "northern-test"
+      result.edition shouldBe Edition.FeastNorthernHemisphere
+      result.path shouldBe "northern-test"
     }
   }
 
@@ -230,7 +232,8 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
     "should output the transformed version of the content" in {
       val serializedVersion = """{
         |  "id": "123456ABCD",
-        |  "edition": "northern",
+        |  "edition": "feast-northern-hemisphere",
+        |  "path": "northern",
         |  "issueDate": "2024-05-03",
         |  "version": "v1",
         |  "fronts": {
@@ -257,6 +260,7 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
         |                "backgroundHex": "#FFF"
         |              },
         |              "image": "https://example.com/an-image.jpg",
+        |              "body": "",
         |              "title": "Collection title",
         |              "lightPalette": {
         |                "foregroundHex": "#FFF",
