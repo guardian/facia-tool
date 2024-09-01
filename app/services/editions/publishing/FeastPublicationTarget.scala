@@ -70,12 +70,11 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
   def transformContent(source: EditionsIssue, version: String): Either[String, FeastAppCuration] = {
     FeastAppTemplates.templates.get(source.edition) match {
       case Some(template) =>
-        val path = if (config.environment.stage == "prod") s"${template.path}-test" else template.path
         Right(FeastAppCuration(
           id = source.id,
           issueDate = source.issueDate,
           edition = source.edition,
-          path = path,
+          path = template.path,
           version = version,
           fronts = source.fronts.map(f => {
             (transformName(f.getName), f.collections.map(transformCollections).toIndexedSeq)
