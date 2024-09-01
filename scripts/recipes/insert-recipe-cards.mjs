@@ -324,7 +324,7 @@ const updatedCollections = curation.flatMap((collection) => {
     };
 });
 
-if (!dryRun) {
+if (dryRun) {
     console.log(
         `Dry run, stopping. Would have updated ${
             updatedCollections.length
