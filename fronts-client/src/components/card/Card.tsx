@@ -239,7 +239,6 @@ class Card extends React.Component<CardContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onAddToClipboard={this.handleAddToClipboard}
-                onClick={isUneditable ? undefined : () => onSelect(uuid)}
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
@@ -258,7 +257,6 @@ class Card extends React.Component<CardContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onAddToClipboard={this.handleAddToClipboard}
-                onClick={isUneditable ? undefined : () => onSelect(uuid)}
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
@@ -276,7 +274,6 @@ class Card extends React.Component<CardContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onAddToClipboard={this.handleAddToClipboard}
-                onClick={isUneditable ? undefined : () => onSelect(uuid)}
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
