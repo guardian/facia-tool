@@ -26,7 +26,6 @@ const FeedbackButton = styled(Button.withComponent('a'))<{
   href: string;
   target: string;
 }>`
-  margin-left: auto;
   align-self: center;
   padding-right: 10px;
   line-height: 60px;
