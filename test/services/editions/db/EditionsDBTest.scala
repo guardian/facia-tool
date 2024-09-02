@@ -731,6 +731,24 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       }
     }
 
+    "should ignore any issues that don't match the edition type" taggedAs UsesDatabase in {
+      insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere, front("feast", collection("feast", None)))
+      insertSkeletonIssue(2020, 1, 2, Edition.DailyEdition, front("editions-app", collection("not-feast", None)))
+
+      editionsDB.insertIssueFromClosestPreviousIssue(
+        Edition.FeastNorthernHemisphere,
+        LocalDate.of(2020, 1, 3),
+        user,
+        now
+      ) match {
+        case Right(issue) =>
+          issue.issueDate shouldBe LocalDate.of(2020, 1, 3)
+          val front = issue.fronts.head
+          front.displayName shouldBe "feast"
+        case Left(e) => fail(e.getMessage)
+      }
+    }
+
     "should only copy the fronts, collections and cards related to that issue" taggedAs UsesDatabase in {
       insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere, front("first", collection("politics", None, cardsSkeleton: _*)))
       insertSkeletonIssue(2020, 1, 12, Edition.FeastNorthernHemisphere, front("second", collection("politics", None, cardsSkeleton: _*)))
