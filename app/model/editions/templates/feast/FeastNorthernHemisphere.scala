@@ -13,23 +13,12 @@ object FeastNorthernHemisphere extends FeastAppEdition {
 
   val MainFront: FrontTemplate = front(
     "All Recipes",
-    collection("Dish of the day"),
-    collection("Collection 2"),
-    collection("Collection 3"),
-    collection("Collection 4"),
-    collection("Collection 5"),
-    collection("Collection 6"),
-    collection("Collection 7"),
-    collection("Collection 8"),
-    collection("Collection 9")
+    collection("Dish of the day")
   )
 
   val MeatFreeFront: FrontTemplate = front(
     "Meat-Free",
-    collection("Dish of the day"),
-    collection("Collection 2"),
-    collection("Collection 3"),
-    collection("Collection 4"),
+    collection("Dish of the day")
   )
 
   val template: EditionTemplate = EditionTemplate(

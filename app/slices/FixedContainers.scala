@@ -36,8 +36,6 @@ class FixedContainers(val config: ApplicationConfiguration) {
     ("fixed/video/vertical", video),
     ("fixed/thrasher", thrasher),
     ("fixed/showcase", showcase),
-    // TODO - 28/08/24 remove fixed/highlights once downstream uses have been migrated to scrollable/highlights
-    ("fixed/highlights", highlights),
     ("scrollable/highlights", highlights)
   ) ++ (if (config.faciatool.showTestContainers) Map(
     ("all-items/not-for-production", slices(FullMedia100, FullMedia75, FullMedia50, HalfHalf, QuarterThreeQuarter, ThreeQuarterQuarter, Hl4Half, HalfQuarterQl2Ql4, TTTL4, Ql3Ql3Ql3Ql3))

@@ -177,7 +177,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
                 <ButtonInSectionContentMetaContainer
                   onClick={() => this.addFrontCollection()}
                 >
-                  Add New Collection
+                  Add New Container
                 </ButtonInSectionContentMetaContainer>
               )}
               <OverviewHeadingButton onClick={this.handleOpenCollections}>

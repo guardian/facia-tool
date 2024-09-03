@@ -132,7 +132,7 @@ export const removeCollectionFromFront = (
   collectionId: string
 ): Promise<EditionsCollection[]> => {
   return pandaFetch(
-    `/editions-api/fronts/${frontId}/collection/${collectionId} `,
+    `/editions-api/fronts/${frontId}/collection/${collectionId}`,
     {
       method: 'DELETE',
     }
