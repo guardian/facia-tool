@@ -178,5 +178,5 @@ const recipeQuery = (baseUrl:string) => {
   }
 }
 
-const isCode = ()=>window.location.hostname.includes("code") || window.location.hostname.includes("local");
+const isCode = ()=>window.location.hostname.includes("code.") || window.location.hostname.includes("local.");
 export const liveRecipes = recipeQuery( isCode() ? url.codeRecipes : url.recipes);
