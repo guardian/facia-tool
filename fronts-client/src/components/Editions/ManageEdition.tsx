@@ -136,7 +136,7 @@ class ManageEdition extends React.Component<
                 disabled={this.state.isCreatingIssue}
                 onClick={() => this.createEdition(true)}
               >
-                Create issue from previous issue
+                Create issue from last available issue
               </ButtonDefault>
             )}
             <ButtonDefault

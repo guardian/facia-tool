@@ -10,7 +10,7 @@ import model.editions._
 import model.editions.templates.CuratedPlatformDefinition
 import model.forms._
 import net.logstash.logback.marker.Markers
-import play.api.libs.json.{JsObject, Json}
+import play.api.libs.json.{JsObject, Json, OFormat}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
@@ -24,7 +24,7 @@ import util.{SearchResponseUtil, UserUtil}
 import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext
 import scala.util.Try
-import model.editions.client.EditionsFrontendCollectionWrapper
+import model.editions.client.{EditionsClientCollection, EditionsFrontendCollectionWrapper}
 import play.api.libs.json.Format.GenericFormat
 
 class EditionsController(db: EditionsDB,
@@ -223,7 +223,9 @@ class EditionsController(db: EditionsDB,
       logger.info("Updating preview")
       publishing.updatePreview(issue)
 
-      Ok(Json.toJson(updatedFront))
+      val clientCollections = toClientCollections(updatedFront)
+
+      Ok(Json.toJson(clientCollections))
     }
 
     result.merge
@@ -313,9 +315,11 @@ class EditionsController(db: EditionsDB,
       now = OffsetDateTime.now(),
       name = req.queryString.get("name").flatMap(_.headOption)
     ) match {
-      case Right(front) => Ok(Json.toJson(front))
-      case Left(EditionsDB.NotFoundError(message)) => NotFound
-      case Left(error) => InternalServerError(error.getMessage())
+      case Right(front) =>
+        val collections = toClientCollections(front)
+        Ok(Json.toJson(collections))
+      case Left(EditionsDB.NotFoundError(message)) => NotFound(message)
+      case Left(error) => InternalServerError(error.getMessage)
     }
   }
 
@@ -326,11 +330,18 @@ class EditionsController(db: EditionsDB,
       user = req.user,
       now = OffsetDateTime.now()
     ) match {
-      case Right(front) => Ok(Json.toJson(front))
+      case Right(front) =>
+        val clientCollections = toClientCollections(front)
+
+        Ok(Json.toJson(clientCollections))
       case Left(EditionsDB.NotFoundError(message)) => NotFound
       case Left(error) => InternalServerError(error.getMessage())
     }
   }
+
+  private def toClientCollections(front: EditionsFront) = front.collections.map(collection =>
+    EditionsFrontendCollectionWrapper.fromCollection(collection).collection
+  )
 
   private def getAvailableCuratedPlatformEditions: Map[String, List[CuratedPlatformDefinition]] = {
     val feastAppEditions = FeastAppTemplates.getAvailableTemplates

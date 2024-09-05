@@ -10,7 +10,7 @@ import org.scalatest.{FreeSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import play.api.libs.json.Json
-import model.FeastAppModel.{Chef, FeastCollection, FeastAppContainer, Recipe, RecipeIdentifier}
+import model.FeastAppModel.{Chef, ChefContent, FeastAppContainer, FeastCollection, FeastCollectionContent, Recipe, RecipeContent}
 import util.TimestampGenerator
 
 import java.time.LocalDate
@@ -117,8 +117,8 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
 
   "putIssueJson" - {
     val issue = Map(
-      "chefs" -> FeastAppContainer("chefs", "Chefs", None, Seq(Chef("bob-the-pirate", None, Some("Bob is a pirate"), None, None))),
-      "recipes" -> FeastAppContainer("recipes", "Recipes", None, Seq(Recipe(RecipeIdentifier("abcdefg"))))
+      "chefs" -> FeastAppContainer("chefs", "Chefs", None, Seq(Chef(ChefContent("bob-the-pirate", None, Some("Bob is a pirate"), None, None)))),
+      "recipes" -> FeastAppContainer("recipes", "Recipes", None, Seq(Recipe(RecipeContent("abcdefg"))))
     )
 
     "should push the relevant content into SNS" in {
@@ -188,28 +188,70 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
       allRecipesFront.head.body shouldBe Some("") //this is just how the `body` field is currently rendered
       allRecipesFront.head.id shouldBe "98e89761-fdf0-4903-b49d-2af7d66fc930"
       allRecipesFront.head.items shouldBe List(
-        Recipe(RecipeIdentifier("recipe-id")),
-        Chef(
+        Recipe(RecipeContent("recipe-id")),
+        Chef(ChefContent(
           id = "chef-id",
           image = Some("image-src"),
           bio = Some("bio"),
           backgroundHex = Some("#333"),
           foregroundHex = Some("#FFF")
-        ),
-        FeastCollection(
+        )),
+        FeastCollection(FeastCollectionContent(
           darkPalette = Some(Palette("#333", "#FFF")),
           lightPalette = Some(Palette("#FFF", "#333")),
           image = Some("https://example.com/an-image.jpg"),
           title = "Collection title",
           recipes = List("nested-recipe-id")
-        )
+        ))
       )
     }
   }
 
   "putIssue" - {
     "should output the transformed version of the content" in {
-      val serializedVersion = """{"id":"123456ABCD","edition":"feast-northern-hemisphere","issueDate":"2024-05-03","version":"v1","fronts":{"all-recipes":[{"id":"98e89761-fdf0-4903-b49d-2af7d66fc930","title":"Dish of the day","body":"","items":[{"recipe":{"id":"recipe-id"}},{"id":"chef-id","image":"image-src","bio":"bio","backgroundHex":"#333","foregroundHex":"#FFF"},{"darkPalette":{"foregroundHex":"#333","backgroundHex":"#FFF"},"image":"https://example.com/an-image.jpg","title":"Collection title","lightPalette":{"foregroundHex":"#FFF","backgroundHex":"#333"},"recipes":["nested-recipe-id"]}]}]}}"""
+      val serializedVersion = """{
+        |  "id": "123456ABCD",
+        |  "edition": "feast-northern-hemisphere",
+        |  "issueDate": "2024-05-03",
+        |  "version": "v1",
+        |  "fronts": {
+        |    "all-recipes": [
+        |      {
+        |        "id": "98e89761-fdf0-4903-b49d-2af7d66fc930",
+        |        "title": "Dish of the day",
+        |        "body": "",
+        |        "items": [
+        |          { "recipe": { "id": "recipe-id" } },
+        |          {
+        |            "chef": {
+        |              "id": "chef-id",
+        |              "image": "image-src",
+        |              "bio": "bio",
+        |              "backgroundHex": "#333",
+        |              "foregroundHex": "#FFF"
+        |            }
+        |          },
+        |          {
+        |            "collection": {
+        |              "darkPalette": {
+        |                "foregroundHex": "#333",
+        |                "backgroundHex": "#FFF"
+        |              },
+        |              "image": "https://example.com/an-image.jpg",
+        |              "title": "Collection title",
+        |              "lightPalette": {
+        |                "foregroundHex": "#FFF",
+        |                "backgroundHex": "#333"
+        |              },
+        |              "recipes": ["nested-recipe-id"]
+        |            }
+        |          }
+        |        ]
+        |      }
+        |    ]
+        |  }
+        |}
+        |""".stripMargin
 
       val mockSNS = mock[AmazonSNSClient]
       when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
@@ -219,7 +261,7 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
       toTest.putIssue(testIssue, "v1", PublishAction.publish)
       val expectedRequest = new PublishRequest()
         .withTopicArn("fake-publication-topic")
-        .withMessage(serializedVersion)
+        .withMessage(Json.parse(serializedVersion).toString())
         .withMessageAttributes(Map(
           "timestamp"->new MessageAttributeValue().withDataType("Number").withStringValue("12345678"),
           "type"->new MessageAttributeValue().withDataType("String").withStringValue("Issue")

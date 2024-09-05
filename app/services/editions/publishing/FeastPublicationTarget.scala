@@ -3,7 +3,7 @@ package services.editions.publishing
 import com.amazonaws.services.sns.AmazonSNS
 import com.amazonaws.services.sns.model.{MessageAttributeValue, PublishRequest}
 import conf.ApplicationConfiguration
-import model.FeastAppModel.{Chef, ContainerItem, FeastAppContainer, FeastAppCuration, FeastCollection, Recipe, RecipeIdentifier}
+import model.FeastAppModel.{Chef, ChefContent, ContainerItem, FeastAppContainer, FeastAppCuration, FeastCollection, FeastCollectionContent, Recipe, RecipeContent}
 import model.editions.PublishAction.PublishAction
 import model.editions.{EditionsArticle, EditionsCard, EditionsChef, EditionsCollection, EditionsFeastCollection, EditionsIssue, EditionsRecipe}
 import play.api.libs.json.{Json, Writes}
@@ -24,18 +24,18 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
   private def transformCards(source: EditionsCard): ContainerItem = {
     source match {
       case _: EditionsArticle => throw new Error("Article not permitted in a Feast Front")
-      case EditionsRecipe(id, _) => Recipe(RecipeIdentifier(id))
-      case EditionsChef(id, _, metadata) => Chef(id = id,
+      case EditionsRecipe(id, _) => Recipe(RecipeContent(id))
+      case EditionsChef(id, _, metadata) => Chef(ChefContent(id = id,
         image = metadata.flatMap(_.chefImageOverride.map(_.src)),
         bio = metadata.flatMap(_.bio),
         backgroundHex = metadata.flatMap(_.theme.map(_.palette.backgroundHex)),
-        foregroundHex = metadata.flatMap(_.theme.map(_.palette.foregroundHex)))
+        foregroundHex = metadata.flatMap(_.theme.map(_.palette.foregroundHex))))
       case EditionsFeastCollection(_, _, metadata) =>
         val recipes = metadata.map(_.collectionItems.map {
           case EditionsRecipe(id, _) => id
         }).getOrElse(List.empty)
 
-        FeastCollection(
+        FeastCollection(FeastCollectionContent(
           byline = None,
           darkPalette = metadata.flatMap(_.theme.map(_.darkPalette)),
           lightPalette = metadata.flatMap(_.theme.map(_.lightPalette)),
@@ -43,7 +43,7 @@ class FeastPublicationTarget(snsClient: AmazonSNS, config: ApplicationConfigurat
           body = None,
           title = metadata.flatMap(_.title).getOrElse("No title"),
           recipes = recipes
-        )
+        ))
     }
   }
 

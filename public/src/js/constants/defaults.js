@@ -60,8 +60,8 @@ export default {
         { name: 'nav/media-list' },
         { name: 'news/most-popular' },
         { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
-        { 'name': 'fixed/showcase' },
-        { name: 'fixed/highlights' }
+        { name: 'fixed/showcase' },
+        { name: 'scrollable/highlights' }
     ],
 
     emailTypes: [
