@@ -64,19 +64,23 @@ const EditionDate = styled.div`
   font-size: 16px;
 `;
 
-const EditionCheckAndPublish = styled.div`
+const EditionCheckProofAndPublish = styled.div`
   margin-left: 4px;
   display: flex;
   align-items: center;
   float: right;
 `;
 
-const EditionPublish = styled.div`
-  margin-right: 10px;
+const EditionCheck = styled.div`
+  margin-right: 4px;
 `;
 
-const EditionCheck = styled.div`
-  margin-right: 10px;
+const EditionProof = styled.div`
+  margin-right: 4px;
+`;
+
+const EditionPublish = styled.div`
+  margin-right: 4px;
 `;
 
 class EditionFeedSectionHeader extends React.Component<ComponentProps> {
@@ -94,7 +98,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
           </EditionIssueInfo>
         </ManageLink>
         &nbsp;
-        <EditionCheckAndPublish>
+        <EditionCheckProofAndPublish>
           <EditionCheck>
             <Button
               data-testid="check-edition-button"
@@ -107,9 +111,9 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
               Check
             </Button>
           </EditionCheck>
-          <EditionPublish>
-            <EditModeVisibility visibleMode="editions">
-              {editionsIssue.supportsProofing && (
+          <EditModeVisibility visibleMode="editions">
+            {editionsIssue.supportsProofing && (
+              <EditionProof>
                 <Button
                   data-testid="publish-edition-button"
                   size="l"
@@ -120,8 +124,10 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
                 >
                   Proof
                 </Button>
-              )}
-            </EditModeVisibility>
+              </EditionProof>
+            )}
+          </EditModeVisibility>
+          <EditionPublish>
             <Button
               data-testid="publish-edition-button"
               size="l"
@@ -133,7 +139,7 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
               Publish
             </Button>
           </EditionPublish>
-        </EditionCheckAndPublish>
+        </EditionCheckProofAndPublish>
       </>
     );
   }
