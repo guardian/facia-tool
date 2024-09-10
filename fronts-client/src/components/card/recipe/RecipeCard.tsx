@@ -17,12 +17,14 @@ import { upperFirst } from 'lodash';
 import { useSelector } from 'react-redux';
 import { HoverActionsAreaOverlay } from 'components/CollectionHoverItems';
 import { HoverActionsButtonWrapper } from 'components/inputs/HoverActionButtonWrapper';
+
 import {
   HoverAddToClipboardButton,
   HoverDeleteButton,
   HoverViewButton,
 } from 'components/inputs/HoverActionButtons';
 import { getPaths } from 'util/paths';
+import NoContent from 'images/icons/no-content.png';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -77,13 +79,29 @@ export const RecipeCard = ({
         )}
         <CardContent textSize={textSize}>
           <CardHeadingContainer size={size}>
-            <CardHeading data-testid="headline" html>
-              {recipe?.title ?? 'No recipe found'}
-            </CardHeading>
+            {recipe?.title ? (
+              <CardHeading data-testid="headline" html>
+                {recipe?.title}
+              </CardHeading>
+            ) : (
+              <CardHeading
+                data-testid="headline"
+                html={true}
+                style={{ color: 'red' }}
+              >
+                No recipe found
+              </CardHeading>
+            )}
           </CardHeadingContainer>
         </CardContent>
         <ImageAndGraphWrapper size="small">
-          <ThumbnailSmall url={recipe?.previewImage?.url ?? recipe?.featuredImage?.url} />
+          <ThumbnailSmall
+            url={
+              recipe?.previewImage?.url ??
+              recipe?.featuredImage?.url ??
+              NoContent
+            }
+          />
         </ImageAndGraphWrapper>
         <HoverActionsAreaOverlay data-testid="hover-overlay">
           <HoverActionsButtonWrapper
