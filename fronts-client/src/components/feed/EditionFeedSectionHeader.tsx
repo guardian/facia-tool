@@ -44,6 +44,7 @@ interface ComponentProps {
 const ManageLink = styled(Link)`
   color: white;
   text-decoration: none;
+  margin-left: 4px;
 `;
 
 const EditionIssueInfo = styled.div`
@@ -63,9 +64,23 @@ const EditionDate = styled.div`
   font-size: 16px;
 `;
 
-const EditionPublish = styled.div`
+const EditionCheckProofAndPublish = styled.div`
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
   float: right;
-  margin: 5px 10px 0 0;
+`;
+
+const EditionCheck = styled.div`
+  margin-right: 4px;
+`;
+
+const EditionProof = styled.div`
+  margin-right: 4px;
+`;
+
+const EditionPublish = styled.div`
+  margin-right: 4px;
 `;
 
 class EditionFeedSectionHeader extends React.Component<ComponentProps> {
@@ -83,43 +98,48 @@ class EditionFeedSectionHeader extends React.Component<ComponentProps> {
           </EditionIssueInfo>
         </ManageLink>
         &nbsp;
-        <Button
-          data-testid="check-edition-button"
-          size="s"
-          priority="primary"
-          onClick={() => this.check()}
-          tabIndex={-1}
-          title="Check Edition"
-        >
-          Check
-        </Button>
-        <EditionPublish>
+        <EditionCheckProofAndPublish>
+          <EditionCheck>
+            <Button
+              data-testid="check-edition-button"
+              size="l"
+              priority="primary"
+              onClick={() => this.check()}
+              tabIndex={-1}
+              title="Check Edition"
+            >
+              Check
+            </Button>
+          </EditionCheck>
           <EditModeVisibility visibleMode="editions">
             {editionsIssue.supportsProofing && (
-              <Button
-                data-testid="publish-edition-button"
-                size="l"
-                priority="primary"
-                onClick={() => this.confirmProof()}
-                tabIndex={-1}
-                title="Proof Edition"
-              >
-                Proof
-              </Button>
+              <EditionProof>
+                <Button
+                  data-testid="publish-edition-button"
+                  size="l"
+                  priority="primary"
+                  onClick={() => this.confirmProof()}
+                  tabIndex={-1}
+                  title="Proof Edition"
+                >
+                  Proof
+                </Button>
+              </EditionProof>
             )}
           </EditModeVisibility>
-          &nbsp;
-          <Button
-            data-testid="publish-edition-button"
-            size="l"
-            priority="primary"
-            onClick={() => this.confirmPublish()}
-            tabIndex={-1}
-            title="Publish Edition"
-          >
-            Publish
-          </Button>
-        </EditionPublish>
+          <EditionPublish>
+            <Button
+              data-testid="publish-edition-button"
+              size="l"
+              priority="primary"
+              onClick={() => this.confirmPublish()}
+              tabIndex={-1}
+              title="Publish Edition"
+            >
+              Publish
+            </Button>
+          </EditionPublish>
+        </EditionCheckProofAndPublish>
       </>
     );
   }
