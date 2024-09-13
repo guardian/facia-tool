@@ -7,7 +7,7 @@ import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
 import model.editions.templates.TemplateHelpers.Defaults
 import model.editions.templates._
-import model.editions.templates.feast.{FeastNorthernHemisphere, FeastSouthernHemisphere}
+import model.editions.templates.feast.{FeastAppEdition, FeastNorthernHemisphere, FeastSouthernHemisphere}
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Json, OFormat}
 import services.editions.prefills.CapiQueryTimeWindow
@@ -51,7 +51,7 @@ object EditionsAppTemplates {
 }
 
 object FeastAppTemplates {
-  val templates: Map[Edition, CuratedPlatformWithTemplate] = Map(
+  val templates: Map[Edition, FeastAppEdition] = Map(
     Edition.FeastNorthernHemisphere -> FeastNorthernHemisphere,
     Edition.FeastSouthernHemisphere -> FeastSouthernHemisphere
   )

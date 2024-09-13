@@ -1,10 +1,9 @@
 package model
 
-import model.editions.Edition
 import play.api.libs.json._
 
 import java.time.LocalDate
-import model.editions.Palette
+import model.editions.{Edition, Palette}
 
 object FeastAppModel {
   sealed trait ContainerItem
@@ -38,11 +37,12 @@ object FeastAppModel {
   //type FeastAppCuration = Map[String, IndexedSeq[FeastAppContainer]]
 
   case class FeastAppCuration(
-                             id:String,
-                             edition:Edition,
-                             issueDate:LocalDate,
-                             version:String,
-                             fronts:Map[String,IndexedSeq[FeastAppContainer]]
+                               id:String,
+                               edition: Edition,
+                               path:String,
+                               issueDate:LocalDate,
+                               version:String,
+                               fronts:Map[String,IndexedSeq[FeastAppContainer]]
                              )
 
   implicit val recipeIdentifierFormat:Format[RecipeContent] = Json.format[RecipeContent]

@@ -22,7 +22,12 @@ import java.nio.charset.StandardCharsets
 
 class BadConfigurationException(msg: String) extends RuntimeException(msg)
 
-class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isProd: Boolean) extends Logging  {
+class ApplicationConfiguration(
+                                val playConfiguration: PlayConfiguration,
+                                val isProd: Boolean,
+                                // Override properties defined in configuration. Useful for testing.
+                                val propertyOverrides: Map[String, String] = Map.empty
+                              ) extends Logging  {
   private val propertiesFile = "/etc/gu/facia-tool.properties"
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f), "UTF-8")
@@ -31,7 +36,7 @@ class ApplicationConfiguration(val playConfiguration: PlayConfiguration, val isP
       ""
   }
 
-  private val properties = Properties(installVars)
+  private val properties = Properties(installVars) ++ propertyOverrides
   private val stageFromProperties = properties.getOrElse("STAGE", "CODE")
   private val stsRoleToAssumeFromProperties = properties.getOrElse("STS_ROLE", "unknown")
   private val frontPressedDynamoTable = properties.getOrElse("FRONT_PRESSED_TABLE", "unknown")

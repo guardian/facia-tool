@@ -1,6 +1,5 @@
 package model.editions.templates.feast
 
-import com.gu.mobile.notifications.client.models.Editions
 import model.editions.templates.TemplateHelpers.{collection, front}
 import model.editions.{CapiDateQueryParam, CapiTimeWindowConfigInDays, Daily, Edition, EditionTemplate, FrontTemplate}
 
@@ -11,6 +10,7 @@ object FeastSouthernHemisphere extends FeastAppEdition {
   override val edition = Edition.FeastSouthernHemisphere.entryName
   override val locale = Some("en_GB")
   override val notificationUTCOffset = 0
+  override val path: String = "southern"
 
   val MainFront: FrontTemplate = front(
     "All Recipes",

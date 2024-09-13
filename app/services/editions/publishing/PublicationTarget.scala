@@ -5,7 +5,7 @@ import model.editions.PublishAction.PublishAction
 import play.api.libs.json.Writes
 
 trait PublicationTarget extends PublicationTargetHelpers {
-  def putIssue(issue: EditionsIssue, version:String, action: PublishAction): Unit
+  def putIssue(issue: EditionsIssue, version:String, action: PublishAction): Either[String, Unit]
 
   protected def putIssueJson[C: Writes](content: C, key:String): Unit
 

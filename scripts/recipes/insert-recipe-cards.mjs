@@ -7,7 +7,10 @@ node ./insert-recipe-cards.mjs
     --fronts-issue-id "b45d7c3a-497f-4230-8aad-923ce5a8cd2f"
     --front-name "Meat-Free"
     --stage CODE
-    --cookie "<get this from a Fronts client request header for the appropriate stage>"`;
+    --cookie "<get this from a Fronts client request header for the appropriate stage>"
+
+Note that you must specify --dry-run=false in order to populate the collections with content
+`;
 
 const getArg = (flag, optional = false) => {
     const argIdx = process.argv.indexOf(flag);
@@ -21,19 +24,29 @@ const getArg = (flag, optional = false) => {
     return arg;
 };
 
+const getFrontsUri = () => {
+    switch(stage.toLocaleUpperCase()) {
+        case "PROD":
+            return "https://fronts.gutools.co.uk";
+        case "CODE":
+            return "https://fronts.code.dev-gutools.co.uk";
+        case "LOCAL":
+            return "https://fronts.local.dev-gutools.co.uk";
+        default:
+            throw new Error("--stage must be one of PROD, CODE or LOCAL")
+    }
+}
+
 const curationPath = getArg("--curation-path");
 const frontsIssueId = getArg("--fronts-issue-id");
 const frontName = getArg("--front-name");
 const stage = getArg("--stage");
 const cookie = getArg("--cookie");
-const dryRun = getArg("--dry-run", true) === "false" ? false : true;
+const dryRun = getArg("--dry-run", true) !== "false";
 
 const curationBaseUrl = "https://recipes.guardianapis.com";
 const curationUrl = `${curationBaseUrl}/${curationPath}/curation.json`;
-const frontsBaseUrl =
-    stage === "PROD"
-        ? "https://fronts.gutools.co.uk"
-        : "https://fronts.code.dev-gutools.co.uk";
+const frontsBaseUrl = getFrontsUri();
 const frontsHeaders = {
     "Content-Type": "application/json",
     Cookie: cookie,

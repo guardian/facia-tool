@@ -21,7 +21,6 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
-      doNothing().when(feastAppPublicationTarget).putIssue(any,any,any)
       when(db.createIssueVersion(any,any,any)).thenReturn("new-version")
 
       val toTest = new Publishing(editionsAppPublicationBucket, editionsAppPreviewBucket, feastAppPublicationTarget, db)
@@ -54,7 +53,6 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
-      doNothing().when(editionsAppPublicationBucket).putIssue(any,any,any)
       when(db.createIssueVersion(any,any,any)).thenReturn("new-version")
 
       val toTest = new Publishing(editionsAppPublicationBucket, editionsAppPreviewBucket, feastAppPublicationTarget, db)
@@ -89,7 +87,6 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
-      doNothing().when(feastAppPublicationTarget).putIssue(any,any,any)
       when(db.createIssueVersion(any,any,any)).thenReturn("new-version")
 
       val toTest = new Publishing(editionsAppPublicationBucket, editionsAppPreviewBucket, feastAppPublicationTarget, db)
@@ -122,7 +119,6 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
-      doNothing().when(feastAppPublicationTarget).putIssue(any,any,any)
       when(db.createIssueVersion(any,any,any)).thenReturn("new-version")
 
       val toTest = new Publishing(editionsAppPublicationBucket, editionsAppPreviewBucket, feastAppPublicationTarget, db)
