@@ -11,6 +11,19 @@ do
     fi
 done
 
+cleanup() {
+    echo "Cleaning up background processes..."
+    YARN_PID=$(pgrep -f "yarn.*watch")
+    if [ ! -z "$YARN_PID" ]; then
+        echo "Killing yarn watch process (PID: $YARN_PID)"
+        kill $YARN_PID
+    else
+        echo "No yarn watch process found"
+    fi
+}
+
+trap cleanup EXIT
+
 hasCredentials() {
   STATUS=$(aws sts get-caller-identity --profile cmsFronts 2>&1 || true)
   if [[ ${STATUS} =~ (ExpiredToken) ]]; then
