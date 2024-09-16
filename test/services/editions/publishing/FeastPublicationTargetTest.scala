@@ -206,26 +206,6 @@ class FeastPublicationTargetTest extends FreeSpec with Matchers with MockitoSuga
         ))
       )
     }
-
-    "should add the suffix -test to fronts published to PROD, for now" in {
-      val mockSNS = mock[AmazonSNSClient]
-      when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
-
-      val prodConf = new ApplicationConfiguration(
-        Configuration.from(Map(
-          "aws.region"->"eu-west-1",
-          "feast_app.publication_topic" -> "fake-publication-topic"
-        )),
-        true,
-        propertyOverrides = Map("STAGE" -> "PROD")
-      )
-
-      val toTest = new FeastPublicationTarget(mockSNS, prodConf, mockTSG)
-
-      val result = toTest.transformContent(testIssue, "v1").toOption.get
-      result.edition shouldBe Edition.FeastNorthernHemisphere
-      result.path shouldBe "northern-test"
-    }
   }
 
   "putIssue" - {
