@@ -20,7 +20,7 @@ fronts-issue-id - the issue containing the fronts to populate. Get this from the
 front-name - either 'All Recipes' or 'Meat-Free'. Note that it needs to exist already.
 cookie - set of cookies containing authorization. Get this by going into the Network tab, reloading your Front, finding a network request and copying the headers.
 I tend to then set this into an environment variable to make by console buffer more readable
-collection-count - number of collections to generate.
+collection-count - number of collections to generate. Defaults to 1 if not specified.
 `;
 
 const containerNames = [
@@ -190,6 +190,7 @@ const frontsHeaders = {
  * @return {Promise<any>}
  */
 async function findRecipes(searchString, count) {
+    console.debug(`search term is '${searchString}'`)
     const response = await fetch(`${recipeBase}/search?q=${encodeURIComponent(searchString)}&format=Full&limit=${count}`);
     if(response.status !== 200) {
         const content = await response.text();
@@ -278,8 +279,17 @@ async function updateCollectionContents(collectionId, collectionName, cards) {
     return response.json();
 }
 
+function searchTermFromCollectionName(collectionName) {
+    const indexOfColon = collectionName.lastIndexOf(':');
+    if(indexOfColon>0) {
+        return collectionName.substring(indexOfColon+1).trim();
+    } else {
+        return collectionName;
+    }
+}
+
 async function buildCollection(collectionName, frontId, count) {
-    const recipes = await findRecipes(collectionName, count);   //use the collectionName as a search string
+    const recipes = await findRecipes(searchTermFromCollectionName(collectionName), count);   //use the collectionName as a search string
     if(recipes.maxScore < 0.7) {
         throw new ContinueOnError(`No reliable results for '${collectionName} as a search string`);
     }
