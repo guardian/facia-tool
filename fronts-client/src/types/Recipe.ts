@@ -22,3 +22,17 @@ export interface Recipe {
   featuredImage?: RecipeImage; // the latter is an old image format that appears in our test fixtures
   previewImage?: RecipeImage;
 }
+
+export interface RecipeIndexData {
+  checksum: string;
+  recipeUID: string;
+  capiArticleId: string;
+  sponsorshipCount?: number;
+}
+
+export interface RecipePartialIndexContent {
+  status: string;
+  resolved: number;
+  requested: number;
+  results: RecipeIndexData[];
+}

@@ -1,5 +1,5 @@
 import url from '../constants/url';
-import { Recipe } from '../types/Recipe';
+import { Recipe, RecipePartialIndexContent } from '../types/Recipe';
 
 interface KeyAndCount {
   key: string;
@@ -163,14 +163,19 @@ const recipeQuery = (baseUrl:string) => {
       }
     },
     recipesById: async (idList:string[]):Promise<Recipe[]> => {
-      const responses = await Promise.all(
-        idList.map(id=>fetch(`${baseUrl}/search/uid/${id}`,
-          {
-            redirect: "follow"
-          }))
-      );
+      console.log(`Fetching ${idList.length} recipes`);
+      const indexResponse = await fetch(`/recipes/api/content/by-uid?ids=${idList.join(",")}`, {
+        credentials: "include"
+      });
+      if(indexResponse.status != 200) {
+        throw new Error(`Unable to retrieve partial index: server error ${indexResponse.status}`);
+      }
 
-      const successes = responses.filter((_)=>_.status===200);
+      const content = (await indexResponse.json()) as RecipePartialIndexContent;
+      const recipeResponses = await Promise.all(
+        content.results.map(entry=>fetch(`${baseUrl}/content/${entry.checksum}`))
+      );
+      const successes = recipeResponses.filter((_)=>_.status===200);
       return Promise.all(
         successes.map((_)=>_.json())
       ) as Promise<Recipe[]>

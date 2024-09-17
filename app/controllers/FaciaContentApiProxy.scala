@@ -131,8 +131,8 @@ class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(
           .map { response =>
             Cached(300) {
               Result(
-                header = ResponseHeader(response.status, response.headers.map(kv=>(kv._1, kv._2.head))),
-                body = HttpEntity.Strict(ByteString(response.body), Some("utf-8"))
+                header = ResponseHeader(response.status, Map.empty),
+                body = HttpEntity.Strict(ByteString(response.body), Some("application/json"))
               )
             }
           }
