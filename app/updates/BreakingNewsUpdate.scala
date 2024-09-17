@@ -34,10 +34,20 @@ object BreakingNewsUpdate {
     BreakingNewsSportEurope
   )
 
+  val UsElectionsGlobalTopicName = "global-us-election"
+  val UsElectionsBreakingNewsTopics = List(
+    BreakingNewsUsElectionUk,
+    BreakingNewsUsElectionUs,
+    BreakingNewsUsElectionAu,
+    BreakingNewsUsElectionInternational,
+    BreakingNewsUsElectionEurope
+  )
+
   def createPayload(trail: ClientHydratedTrail, email: String): BreakingNewsPayload = {
     val title = trail.topic match {
       case Some("uk-general-election") => Some("UK general election")
       case Some(topic) if (SportBreakingNewsTopics.map(_.name) :+ SportGlobalTopicName).contains(topic) => Some("Sport breaking news")
+      case Some(topic) if (UsElectionsBreakingNewsTopics.map(_.name) :+ UsElectionsGlobalTopicName).contains(topic) => Some("US election")
       case _ => None
     }
 
@@ -83,7 +93,7 @@ object BreakingNewsUpdate {
       case Some("international-sport") => List(BreakingNewsSportInternational)
       case Some(SportGlobalTopicName) => SportBreakingNewsTopics
       case Some("uk-general-election") => List(BreakingNewsElection)
-      case Some("global-us-election") => List(BreakingNewsUsElectionGlobal)
+      case Some(UsElectionsGlobalTopicName) => UsElectionsBreakingNewsTopics
       case Some("uk-us-election") => List(BreakingNewsUsElectionUk)
       case Some("us-us-election") => List(BreakingNewsUsElectionUs)
       case Some("au-us-election") => List(BreakingNewsUsElectionAu)
