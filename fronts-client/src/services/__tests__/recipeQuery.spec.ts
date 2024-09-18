@@ -1,6 +1,7 @@
 import { updateImageScalingParams, liveRecipes } from '../recipeQuery';
 import fetchMock from 'fetch-mock';
 
+jest.mock('')
 describe("updateImageScalingParams", ()=>{
   it("should correctly update a URL with scaling params", ()=>{
     expect(updateImageScalingParams("https://i.guim.co.uk/img/media/8c8aafb89d2467f41d5cf9d1324f815fee71d54c/0_168_4080_5101/master/4080.jpg?width=1600&dpr=1&s=none"))

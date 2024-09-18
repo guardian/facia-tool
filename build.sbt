@@ -75,7 +75,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "3.0.0",
     "com.gu" %% "fapi-client-play30" % "6.0.0",
-    "com.gu" %% "mobile-notifications-api-models" % "1.0.19",
+    "com.gu" %% "mobile-notifications-api-models" % "3.0.0",
     "com.gu" %% "pan-domain-auth-play_3-0" % "4.0.0",
 
     "org.scanamo" %% "scanamo" % "1.1.1" exclude("org.scala-lang.modules", "scala-java8-compat_2.13"),
@@ -118,12 +118,6 @@ excludeDependencies ++= Seq(
 dependencyOverrides ++= Seq(
     // Pinned to resolve transitive dependencies between Play and Scalikejdbc
     "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1",
-)
-
-// Until all dependencies are on scala-java8-compat v1.x, this avoids unnecessary fatal eviction errors
-libraryDependencySchemes ++= Seq(
-    "org.scala-lang.modules" %% "scala-java8-compat" % VersionScheme.Always,
-    "org.scala-lang.modules" %% "scala-xml" % VersionScheme.Always
 )
 
 val UsesDatabaseTest = config("database-int") extend Test

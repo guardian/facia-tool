@@ -74,7 +74,7 @@ trait FrontsQueries extends Logging {
     }
   }
 
-  protected def getFront(frontId: String)(implicit session: DBSession): Option[EditionsFront] = {
+  def getFront(frontId: String)(implicit session: DBSession): Option[EditionsFront] = {
     val rows: List[FrontAndNestedEntitiesRow] =
       sql"""
         SELECT

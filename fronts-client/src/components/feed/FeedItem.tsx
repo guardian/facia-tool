@@ -54,7 +54,7 @@ const Byline = styled.h2`
 `;
 
 const Title = styled.h2`
-  margin: 2px 0 0;
+  margin: 2px 2px 0 0;
   vertical-align: top;
   font-family: TS3TextSans;
   font-size: ${theme.card.fontSizeDefault};

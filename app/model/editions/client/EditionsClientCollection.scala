@@ -80,7 +80,7 @@ object EditionsSupportingClientCard {
     case EditionsRecipe(id, addedOn) => EditionsSupportingClientCard(id, Some(CardType.Recipe), addedOn)
   }
 
-  def toFeastCollectionItem(supportingCard: EditionsSupportingClientCard) = 
+  def toFeastCollectionItem(supportingCard: EditionsSupportingClientCard) =
     EditionsRecipe(supportingCard.id, supportingCard.frontPublicationDate)
 }
 
@@ -95,11 +95,14 @@ case class EditionsClientCollection(
   contentPrefillTimeWindow: Option[CapiQueryTimeWindow],
   items: List[EditionsClientCard]
 )
+
+object EditionsClientCollection {
+  implicit val collectionFormat: OFormat[EditionsClientCollection] = Json.format[EditionsClientCollection]
+}
+
 case class EditionsFrontendCollectionWrapper(id: String, collection: EditionsClientCollection)
 
 object EditionsFrontendCollectionWrapper {
-  implicit def cardFormat: OFormat[EditionsClientCard] = Json.format[EditionsClientCard]
-  implicit def collectionFormat: OFormat[EditionsClientCollection] = Json.format[EditionsClientCollection]
   implicit def collectionWrapperFormat: OFormat[EditionsFrontendCollectionWrapper] = Json.format[EditionsFrontendCollectionWrapper]
 
   def fromCollection(collection: EditionsCollection): EditionsFrontendCollectionWrapper = {

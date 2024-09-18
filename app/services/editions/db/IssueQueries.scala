@@ -107,18 +107,19 @@ trait IssueQueries extends Logging {
                                           user: User,
                                           now: OffsetDateTime): Either[Error, EditionsIssue] = DB readOnly { implicit session =>
     for {
-      previousIssue <- getClosestPreviousIssue(issueDate).toRight(EditionsDB.NotFoundError(s"Previous issue not found"))
+      previousIssue <- getClosestPreviousIssue(issueDate, edition).toRight(EditionsDB.NotFoundError(s"Previous issue not found"))
       newIssueSkeleton = previousIssue.toSkeleton.copy(issueDate = issueDate)
       issueId = insertIssue(edition, newIssueSkeleton, user, now)
       issue <- getIssue(issueId).toRight(EditionsDB.NotFoundError("Issue created but could not retrieve it from the database"))
     } yield issue
   }
 
-  private def getClosestPreviousIssue(issueDate: LocalDate)(implicit session: DBSession): Option[EditionsIssue] = {
+  private def getClosestPreviousIssue(issueDate: LocalDate, edition: Edition)(implicit session: DBSession): Option[EditionsIssue] = {
     val id =
       sql"""
         SELECT id from edition_issues
-        WHERE issue_date < $issueDate
+          WHERE issue_date < $issueDate
+          AND name=${edition.entryName}
         ORDER BY issue_date DESC
         LIMIT 1
       """.map(_.string("id")).single.apply()

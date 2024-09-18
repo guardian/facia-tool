@@ -1,4 +1,5 @@
 import React from 'react';
+import keyBy from 'lodash/keyBy';
 import {
   proofIssue,
   publishIssue,
@@ -6,19 +7,27 @@ import {
   putFrontHiddenState,
   putFrontMetadata,
   addCollectionToFront,
+  removeCollectionFromFront,
+  moveCollection,
 } from 'services/editionsApi';
 import { ThunkResult } from 'types/Store';
 import { Dispatch } from 'redux';
-import { EditionsFrontMetadata, FrontsConfig } from 'types/FaciaApi';
+import {
+  EditionsFrontMetadata,
+  FrontConfig,
+  FrontsConfig,
+} from 'types/FaciaApi';
 import noop from 'lodash/noop';
 import { startOptionsModal } from './OptionsModal';
 import IssueVersions from 'components/Editions/IssueVersions';
-import { actions, toFrontsConfig } from 'bundles/frontsConfigBundle';
-import { selectors as issueSelector } from 'bundles/editionsIssueBundle';
+import { actions } from 'bundles/frontsConfigBundle';
 import { selectors as frontsConfigSelector } from 'bundles/frontsConfigBundle';
 import { editionCollectionToCollection } from '../strategies/fetch-collection';
 import { getCollectionActions } from './Collections';
 import { batchActions } from 'redux-batched-actions';
+import { EditionsCollection } from '../types/Edition';
+import { State } from '../types/State';
+import { selectFront } from 'selectors/frontsSelectors';
 
 export const check =
   (id: string): ThunkResult<Promise<void>> =>
@@ -157,37 +166,125 @@ export const setFrontHiddenState =
   };
 
 export const addFrontCollection =
-  (id: string): ThunkResult<Promise<void>> =>
+  (frontId: string): ThunkResult<Promise<void>> =>
   async (dispatch, getState) => {
-    const state = getState();
     try {
-      const newFront = await addCollectionToFront(id);
-      const newFrontsConfig = toFrontsConfig(
-        [newFront],
-        issueSelector.selectAll(state).id
-      );
-      const existingFrontsConfig: FrontsConfig =
-        frontsConfigSelector.selectAll(state);
-
-      const mergedFrontsConfig = {
-        fronts: {
-          ...existingFrontsConfig.fronts,
-          ...newFrontsConfig.fronts,
-        },
-        collections: {
-          ...existingFrontsConfig.collections,
-          ...newFrontsConfig.collections,
-        },
-      };
-
-      dispatch(actions.fetchSuccess(mergedFrontsConfig));
-
-      const collectionActions = newFront.collections.flatMap((c) =>
-        getCollectionActions(editionCollectionToCollection(c), getState)
-      );
-
-      dispatch(batchActions(collectionActions));
+      const collections = await addCollectionToFront(frontId);
+      processNewEditionFrontResponse(frontId, collections, dispatch, getState);
     } catch (error) {
       throw error;
     }
   };
+
+export const removeFrontCollection =
+  (frontId: string, collectionId: string): ThunkResult<Promise<void>> =>
+  async (dispatch, getState) => {
+    try {
+      const collections = await removeCollectionFromFront(
+        frontId,
+        collectionId
+      );
+      processNewEditionFrontResponse(frontId, collections, dispatch, getState);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+export const moveFrontCollection =
+  (
+    frontId: string,
+    collectionId: string,
+    direction: 'up' | 'down'
+  ): ThunkResult<Promise<void>> =>
+  async (dispatch, getState) => {
+    try {
+      const state = getState();
+      const front = selectFront(state, { frontId });
+      const newIndex = getNewCollectionIndexForMove(
+        front,
+        collectionId,
+        direction
+      );
+
+      if (newIndex === undefined) {
+        return;
+      }
+
+      const collections = await moveCollection(frontId, collectionId, newIndex);
+      processNewEditionFrontResponse(frontId, collections, dispatch, getState);
+    } catch (error) {
+      throw error;
+    }
+  };
+
+export const getNewCollectionIndexForMove = (
+  front: FrontConfig,
+  collectionId: string,
+  direction: 'up' | 'down'
+): number | undefined => {
+  const maybeCollectionIndex = front.collections.findIndex(
+    (id) => collectionId === id
+  );
+
+  if (maybeCollectionIndex === -1) {
+    console.warn(
+      `Could not find collection with id ${maybeCollectionIndex} in front ${front.id}`
+    );
+    return undefined;
+  }
+
+  const offset = direction === 'up' ? -1 : 1;
+  const unclampedIndex = maybeCollectionIndex + offset;
+  const maxIndex = front.collections.length - 1;
+  const newIndex = Math.max(0, Math.min(unclampedIndex, maxIndex));
+
+  if (newIndex === maybeCollectionIndex) {
+    console.warn(
+      `Attempt to move collection ${collectionId} out of bounds to index ${newIndex} (min 0, max ${maxIndex})`
+    );
+
+    return undefined;
+  }
+
+  return newIndex;
+};
+
+const processNewEditionFrontResponse = (
+  frontId: string,
+  collections: EditionsCollection[],
+  dispatch: Dispatch,
+  getState: () => State
+) => {
+  const state = getState();
+  const existingFrontsConfig: FrontsConfig =
+    frontsConfigSelector.selectAll(state);
+
+  const newFrontsConfig = {
+    fronts: {
+      ...existingFrontsConfig.fronts,
+      [frontId]: {
+        ...existingFrontsConfig.fronts[frontId],
+        collections: collections.map((col) => col.id),
+      },
+    },
+  };
+
+  const mergedFrontsConfig = {
+    fronts: {
+      ...existingFrontsConfig.fronts,
+      ...newFrontsConfig.fronts,
+    },
+    collections: {
+      ...existingFrontsConfig.collections,
+      ...keyBy(collections, 'id'),
+    },
+  };
+
+  dispatch(actions.fetchSuccess(mergedFrontsConfig));
+
+  const collectionActions = collections.flatMap((c) =>
+    getCollectionActions(editionCollectionToCollection(c), getState)
+  );
+
+  dispatch(batchActions(collectionActions));
+};

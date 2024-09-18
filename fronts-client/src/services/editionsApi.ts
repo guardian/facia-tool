@@ -1,4 +1,4 @@
-import type { EditionsFront, EditionsIssue, IssueVersion } from 'types/Edition';
+import type { EditionsIssue, IssueVersion } from 'types/Edition';
 import type { CAPISearchQueryResponse } from './capiQuery';
 import type { EditionsFrontMetadata } from 'types/FaciaApi';
 import { Moment } from 'moment';
@@ -121,10 +121,39 @@ export const putFrontHiddenState = (id: string, hidden: boolean) => {
 
 export const addCollectionToFront = (
   frontId: string
-): Promise<EditionsFront> => {
+): Promise<EditionsCollection[]> => {
   return pandaFetch(`/editions-api/fronts/${frontId}/collection`, {
     method: 'PUT',
   }).then((response) => response.json());
+};
+
+export const removeCollectionFromFront = (
+  frontId: string,
+  collectionId: string
+): Promise<EditionsCollection[]> => {
+  return pandaFetch(
+    `/editions-api/fronts/${frontId}/collection/${collectionId}`,
+    {
+      method: 'DELETE',
+    }
+  ).then((response) => response.json());
+};
+
+export const moveCollection = (
+  frontId: string,
+  collectionId: string,
+  index: number
+): Promise<EditionsCollection[]> => {
+  return pandaFetch(
+    `/editions-api/fronts/${frontId}/collection/${collectionId}/move`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ newIndex: index }),
+    }
+  ).then((response) => response.json());
 };
 
 export async function getIssueVersions(

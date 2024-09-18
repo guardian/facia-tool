@@ -414,6 +414,31 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
     updatedBrexshit.items.find(_.id == "76543").value.addedOn shouldBe now.toInstant.toEpochMilli
   }
 
+  "getFront" - {
+    "should get all the card content in a Front" taggedAs UsesDatabase in {
+      val feastFront = front("news/uk",
+        collection(
+          "politics",
+          None,
+          card("recipe", Some(CardType.Recipe)),
+          card("chef", Some(CardType.Chef), Some(EditionsChefMetadata(Some("bio")))),
+          card("feast-collection", Some(CardType.FeastCollection), Some(EditionsFeastCollectionMetadata(Some("title"))))
+        )
+      )
+
+      val id = insertSkeletonIssue(2019, 9, 30, Edition.FeastNorthernHemisphere, feastFront)
+
+      val frontId = editionsDB.getIssue(id).get.fronts.head.id
+
+      DB localTx { implicit session =>
+        val retrievedFront = editionsDB.getFront(frontId).get
+        retrievedFront.collections.head.items.map(_.toSkeleton) shouldBe List(
+          EditionsCardSkeleton("recipe", CardType.Recipe, None),
+          EditionsCardSkeleton("chef", CardType.Chef, Some(EditionsChefMetadata(Some("bio"),None,None))),
+          EditionsCardSkeleton("feast-collection", CardType.FeastCollection, Some(EditionsFeastCollectionMetadata(Some("title"),None,List()))))
+      }
+    }
+  }
 
   "moveCollection" - {
     val testFront = front("news/uk",
@@ -425,11 +450,10 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
 
     val testCases = List(
       (0, List("politics", "international", "culture", "sport")),
-      (1, List("politics", "international", "culture", "sport")),
-      (2, List("international", "politics", "culture", "sport")),
-      (3, List("international", "culture", "politics", "sport")),
-      (4, List("international", "culture", "sport", "politics")),
-      (5, List("international", "culture", "sport", "politics"))
+      (1, List("international", "politics", "culture", "sport")),
+      (2, List("international", "culture", "politics", "sport")),
+      (3, List("international", "culture", "sport", "politics")),
+      (4, List("international", "culture", "sport", "politics"))
     )
 
     "should update the other collections in the front when the collection index is modified, reordering as needed" - {
@@ -707,6 +731,24 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       }
     }
 
+    "should ignore any issues that don't match the edition type" taggedAs UsesDatabase in {
+      insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere, front("feast", collection("feast", None)))
+      insertSkeletonIssue(2020, 1, 2, Edition.DailyEdition, front("editions-app", collection("not-feast", None)))
+
+      editionsDB.insertIssueFromClosestPreviousIssue(
+        Edition.FeastNorthernHemisphere,
+        LocalDate.of(2020, 1, 3),
+        user,
+        now
+      ) match {
+        case Right(issue) =>
+          issue.issueDate shouldBe LocalDate.of(2020, 1, 3)
+          val front = issue.fronts.head
+          front.displayName shouldBe "feast"
+        case Left(e) => fail(e.getMessage)
+      }
+    }
+
     "should only copy the fronts, collections and cards related to that issue" taggedAs UsesDatabase in {
       insertSkeletonIssue(2020, 1, 1, Edition.FeastNorthernHemisphere, front("first", collection("politics", None, cardsSkeleton: _*)))
       insertSkeletonIssue(2020, 1, 12, Edition.FeastNorthernHemisphere, front("second", collection("politics", None, cardsSkeleton: _*)))
@@ -795,6 +837,21 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
       "should add a default name if one is not provided" taggedAs UsesDatabase in {
         val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
           front("news/uk", collection("politics", None))
+        )
+        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val frontFromIssue = issue.fronts.head
+
+        editionsDB.addCollectionToFront(frontFromIssue.id, user = user, now = now) match {
+          case Right(front) =>
+            front.collections.head.displayName shouldBe "New collection"
+          case Left(error) =>
+            Assertions.fail(s"Error adding collection to front: ${error.getMessage}")
+        }
+      }
+
+      "should permit adding a collection to an empty front" taggedAs UsesDatabase in {
+        val issueId = insertSkeletonIssueForDaily(2020, 1, 1,
+          front("news/uk")
         )
         val issue: EditionsIssue = editionsDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
