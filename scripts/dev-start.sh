@@ -11,6 +11,19 @@ do
     fi
 done
 
+cleanup() {
+    echo "Cleaning up background processes..."
+    YARN_PID=$(pgrep -f "yarn.*watch")
+    if [ ! -z "$YARN_PID" ]; then
+        echo "Killing yarn watch process (PID: $YARN_PID)"
+        kill $YARN_PID
+    else
+        echo "No yarn watch process found"
+    fi
+}
+
+trap cleanup EXIT
+
 hasCredentials() {
   STATUS=$(aws sts get-caller-identity --profile cmsFronts 2>&1 || true)
   if [[ ${STATUS} =~ (ExpiredToken) ]]; then
@@ -31,7 +44,19 @@ runNginx() {
   fi
 }
 
+checkJavaVersion() {
+    REQUIRED_JAVA_VERSION="11"
+    MAJOR_JAVA_VERSION=$(java -version 2>&1 | awk -F[\"_] '/version/ {print $2}' | cut -d '.' -f1)
+    if [[ "$MAJOR_JAVA_VERSION" != "$REQUIRED_JAVA_VERSION" ]]; then
+        echo -e "Incorrect Java version: requires Java $REQUIRED_JAVA_VERSION but found Java $MAJOR_JAVA_VERSION."
+        exit 1
+    else
+        echo "Correct Java version ($MAJOR_JAVA_VERSION) is installed."
+    fi
+}
+
 main() {
+    checkJavaVersion
     runNginx
     hasCredentials
 
