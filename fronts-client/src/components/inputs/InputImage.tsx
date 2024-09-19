@@ -24,6 +24,7 @@ import {
   AddImageIcon,
   VideoIcon,
   WarningIcon,
+  CropIcon,
 } from '../icons/Icons';
 import imageDragIcon from 'images/icons/image-drag-icon.svg';
 import {
@@ -49,9 +50,10 @@ const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
       small ? theme.colors.greyVeryLight : '#5e5e5e99'};
   }
   width: 100%;
-  height: 100%;
+  flex-grow: 1;
   padding: 0;
   text-shadow: 0 0 2px black;
+  display: inline-block;
 `;
 
 const ImageComponent = styled.div<{
@@ -92,6 +94,7 @@ const AddImageViaGridModalButton = styled.div`
   justify-content: center;
   align-items: center;
   flex-grow: 1;
+  flex-direction: column;
 `;
 
 const AddImageViaUrlInput = styled(InputContainer)`
@@ -247,6 +250,7 @@ interface ComponentState {
   imageSrc: string;
   confirmDelete: boolean;
   cancelDeleteTimeout: undefined | (() => void);
+  isRecropping: boolean;
 }
 
 const dragImage = new Image();
@@ -280,12 +284,11 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     const {
       small = false,
       input,
-      gridUrl,
+      gridUrl:gridBaseUrl,
       useDefault,
       defaultImageUrl,
       message = 'Replace image',
       hasVideo,
-      editMode,
       disabled,
       isSelected,
       isInvalid,
@@ -294,7 +297,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 
     const imageDims = this.getCurrentImageDimensions();
 
-    if (!gridUrl) {
+    if (!gridBaseUrl) {
       return (
         <div>
           <code>gridUrl</code> config value missing
@@ -302,13 +305,21 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       );
     }
 
-    const gridSearchUrl =
-      editMode === 'editions' ? `${gridUrl}` : this.criteriaToGridUrl();
+
     const hasImage = !useDefault && !!input.value && !!input.value.thumb;
     const imageUrl =
       !useDefault && input.value && input.value.thumb
         ? input.value.thumb
         : defaultImageUrl;
+
+    // e.g. https://media.guim.co.uk/db6bf997dee6d43f8dca1ab9cd2c7402725434b6/0_214_3960_2376/500.jpg
+    const maybeDefaultImagePathParts = defaultImageUrl && new URL(defaultImageUrl).pathname.split("/");
+    const maybeDefaultImageId = maybeDefaultImagePathParts?.[1] // pathname starts with / so index 0 is empty string
+    const maybeDefaultCropId = maybeDefaultImagePathParts?.[2]
+    const gridUrl = this.state.isRecropping && maybeDefaultImageId && maybeDefaultCropId
+      ? `${gridBaseUrl}/images/${maybeDefaultImageId}/crop?seedCropId=${maybeDefaultCropId}&`
+      : `${gridBaseUrl}?`;
+    const gridModalUrl = `${gridUrl}${new URLSearchParams(this.criteriaToGridQueryParams()).toString()}`
 
     const portraitImage = !!(
       !useDefault &&
@@ -327,7 +338,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         confirmDelete={this.state.confirmDelete}
       >
         <GridModal
-          url={gridSearchUrl}
+          url={gridModalUrl}
           isOpen={this.state.modalOpen}
           onClose={this.closeModal}
           onMessage={this.onMessage}
@@ -384,12 +395,21 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
                 <AddImageViaGridModalButton>
                   <AddImageButton
                     type="button"
-                    onClick={this.openModal}
+                    onClick={this.openModal(false)}
                     small={small}
                     disabled={disabled}
                   >
                     <AddImageIcon size="l" />
                     {!!small ? null : <Label size="sm">{message}</Label>}
+                  </AddImageButton>
+                  <AddImageButton
+                    type="button"
+                    onClick={this.openModal(true)}
+                    small={small}
+                    disabled={disabled}
+                  >
+                    <CropIcon size="l" fill={theme.colors.white} />
+                    {!!small ? null : <Label size="sm">Recrop image</Label>}
                   </AddImageButton>
                 </AddImageViaGridModalButton>
               )}
@@ -554,8 +574,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     window.removeEventListener('message', this.onMessage, false);
   };
 
-  private openModal = () => {
-    this.setState({ modalOpen: true });
+  private openModal = (isRecropping: boolean) => () => {
+    this.setState({ modalOpen: true, isRecropping });
     window.addEventListener('message', this.onMessage, false);
   };
 
@@ -566,20 +586,37 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     );
   };
 
-  private criteriaToGridUrl = (): string => {
-    const { criteria, gridUrl } = this.props;
+  private criteriaToGridQueryParams = (): Record<string, string> => {
+    const { criteria, editMode } = this.props;
+
+    if(editMode === "editions"){
+      return {};
+    }
 
     if (!criteria) {
-      return `${gridUrl}?cropType=portrait,landscape`;
+      return {
+        cropType: "portrait,landscape"
+      };
     }
 
     // assumes the only criteria that will be passed as props the defined
     // constants for portrait(4:5), landscape (5:3) and landscape (5:4)
-    if (this.compareAspectRatio(portraitCardImageCriteria, criteria))
-      return `${gridUrl}?cropType=portrait`;
-    else if (this.compareAspectRatio(landscape5To4CardImageCriteria, criteria))
-      return `${gridUrl}?cropType=Landscape&customRatio=Landscape,5,4`;
-    else return `${gridUrl}?cropType=landscape`;
+    if (this.compareAspectRatio(portraitCardImageCriteria, criteria)) {
+      return {
+        cropType: "portrait"
+      };
+    }
+    else if (this.compareAspectRatio(landscape5To4CardImageCriteria, criteria)) {
+      return {
+        cropType: "Landscape",
+        customRatio: "Landscape,5,4"
+      };
+    }
+    else {
+      return {
+        cropType: "landscape"
+      };
+    }
   };
 
   private getCurrentImageDimensions = () => {
