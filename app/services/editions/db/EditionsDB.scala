@@ -2,15 +2,15 @@ package services.editions.db
 
 import java.time.{Instant, OffsetDateTime, ZoneOffset}
 import java.time.temporal.ChronoUnit
-
 import scalikejdbc._
 import com.gu.pandomainauth.model.User
-import model.editions.EditionsFront
+import model.editions.{EditionsFeastCollection, EditionsFeastCollectionMetadata, EditionsFront}
+
+import java.util.UUID
 
 class EditionsDB(url: String, user: String, password: String) extends IssueQueries with FrontsQueries with CollectionsQueries {
   Class.forName("org.postgresql.Driver")
   ConnectionPool.singleton(url, user, password)
-
 
   /**
     * Add a EditionsCollection to an EditionsFront at the specified index.

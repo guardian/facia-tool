@@ -130,3 +130,4 @@ PATCH       /editions-api/collections/:collectionId/name                    cont
 GET         /editions-api/collections/:collectionId/prefill                 controllers.EditionsController.getPrefillForCollection(collectionId)
 
 POST        /editions-api/fronts/:frontId/collections/:collectionId/feastCollectionToContainer/:collectionCardId    controllers.EditionsController.feastCollectionToContainer(frontId, collectionId, collectionCardId)
+POST        /editions-api/collections/:containerId/toFeastCollection/:targetContainerId       controllers.EditionsController.containerToFeastCollection(containerId, targetContainerId)

@@ -2,7 +2,7 @@ package controllers
 
 import cats.data.EitherT
 
-import java.time.{LocalDate, OffsetDateTime}
+import java.time.{Instant, LocalDate, OffsetDateTime}
 import cats.syntax.either._
 import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
@@ -29,6 +29,8 @@ import scala.util.Try
 import model.editions.client.{EditionsClientCollection, EditionsFrontendCollectionWrapper}
 import play.api.libs.json.Format.GenericFormat
 import scalikejdbc.DB
+
+import java.util.UUID
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
@@ -370,11 +372,13 @@ class EditionsController(db: EditionsDB,
     }
   }
 
+  private def lookupCollection(collectionId:String) = db.getCollections(List(GetCollectionsFilter(collectionId, None))).headOption
+
   def feastCollectionToContainer(frontId:String, collectionId: String, collectionCardId: String) = EditEditionsAuthAction { req=>
     //collectionId is the ID of the _container_ where the Feast collection card is.
     // collectionCardId is the ID of the feast collection itself, which is a _card_ in terms of Fronts
 
-    db.getCollections(List(GetCollectionsFilter(collectionId, None))).find(_.id==collectionId) match {
+    lookupCollection(collectionId) match {
      case None=>
        NotFound
      case Some(sourceContainer)=>
@@ -389,7 +393,7 @@ class EditionsController(db: EditionsDB,
          newCollection <- db.getCollections(List(GetCollectionsFilter(updateData._2, None)))
            .find(_.id==updateData._2)
            .toRight(Left(EditionsDB.InvariantError("Could not find created new collection")))
-         updatedNewCollection = db.updateCollection(newCollection.copy(items=feastCollection.collectionItems))
+         _ = db.updateCollection(newCollection.copy(items=feastCollection.collectionItems))
          updatedFront <- DB localTx { implicit session=>
            db.getFront(frontId).toRight(EditionsDB.InvariantError("The front was deleted while processing"))
          }
@@ -408,7 +412,45 @@ class EditionsController(db: EditionsDB,
             Ok(Json.toJson(collections))
         }
     }
+  }
 
+  def containerToFeastCollection(containerId: String, targetContainerId:String) = EditEditionsAuthAction { req=>
+    (lookupCollection(containerId), lookupCollection(targetContainerId)) match {
+      case (Some(sourceContainer), Some(targetContainer))=>
+        val newCollection = EditionsFeastCollection(
+          id = UUID.randomUUID().toString,
+          addedOn = Instant.now().toEpochMilli,
+          metadata = Some(EditionsFeastCollectionMetadata(
+            title = Some(sourceContainer.displayName),
+            collectionItems = sourceContainer.items.collect({
+              case r:EditionsRecipe=>r
+            })
+          ))
+        )
 
+        db.updateCollection(targetContainer.copy(
+          lastUpdated = Some(Instant.now().toEpochMilli),
+          updatedBy = Some(UserUtil.getDisplayName(req.user)),
+          updatedEmail = Some(req.user.email),
+          items = targetContainer.items :+ newCollection
+        ))
+
+        val updatedFront = targetContainer.frontId
+          .flatMap(frontId=>{
+            DB localTx { implicit session =>
+              db.getFront(frontId)
+            }
+          })
+
+        updatedFront match {
+          case None=>
+            Conflict("The front must have been deleted while processing")
+          case Some(updatedFront)=>
+            val collections = toClientCollections(updatedFront)
+            Ok(Json.toJson(collections))
+        }
+      case _=>
+        NotFound
+    }
   }
 }

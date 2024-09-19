@@ -125,6 +125,7 @@ object EditionsFrontendCollectionWrapper {
   def toCollection(frontendCollection: EditionsFrontendCollectionWrapper): EditionsCollection = {
     EditionsCollection(
       frontendCollection.id,
+      None,
       frontendCollection.collection.displayName,
       frontendCollection.collection.isHidden,
       frontendCollection.collection.lastUpdated,

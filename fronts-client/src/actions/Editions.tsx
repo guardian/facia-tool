@@ -29,6 +29,7 @@ import { EditionsCollection } from '../types/Edition';
 import { State } from '../types/State';
 import { selectFront } from 'selectors/frontsSelectors';
 import edit from '../components/FrontsEdit/Edit';
+import { thunkInsertClipboardCard } from './ClipboardThunks';
 
 export const check =
   (id: string): ThunkResult<Promise<void>> =>
@@ -235,6 +236,19 @@ export const feastCollectionToFrontCollection =
         const responseBody = await response.text();
         console.error(`Unable to migrate to container - server said ${response.status} ${responseBody}`);
       }
+    }
+
+export const frontCollectionToFeastCollection =
+  (
+    collectionId: string,
+
+  ): ThunkResult<Promise<void>> =>
+    async (dispatch, getState) => {
+      //const url = `/editions-api/collections/${collectionId}/toFeastCollection`
+
+      // const response = await fetch(url, { method: "POST", credentials: "include" });
+      //
+      // dispatch<any>(thunkInsertClipboardCard('clipboard', 0, uuid));
     }
 
 export const getNewCollectionIndexForMove = (
