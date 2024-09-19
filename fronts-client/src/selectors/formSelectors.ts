@@ -5,6 +5,7 @@ import { hasMainVideo } from 'util/externalArticle';
 import {
   isCollectionConfigDynamic,
   isCollectionConfigFlexible,
+  isScrollableCollectionConfig,
 } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import type { State } from 'types/State';
@@ -102,6 +103,15 @@ export const createSelectFormFieldsForCard = () => {
       }
       if (isCollectionConfigFlexible(parentCollectionConfig)) {
         fields = without(fields, 'showLargeHeadline');
+      }
+      if (isScrollableCollectionConfig(parentCollectionConfig)) {
+        fields = without(
+          fields,
+          'showLargeHeadline',
+          'showLivePlayable',
+          'trailText',
+          'imageSlideshowReplace'
+        );
       }
       if (isCollectionConfigDynamic(parentCollectionConfig)) {
         fields.push('isBoosted');
