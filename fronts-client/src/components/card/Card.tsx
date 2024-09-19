@@ -239,7 +239,7 @@ class Card extends React.Component<CardContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onAddToClipboard={this.handleAddToClipboard}
-                {/* No need for an OnClick here - there are no editable forms */}
+                /* No need for an OnClick here - there are no editable forms */
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
@@ -258,7 +258,7 @@ class Card extends React.Component<CardContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onAddToClipboard={this.handleAddToClipboard}
-                {/* No need for an OnClick here - there are no editable forms */}
+                /* No need for an OnClick here - there are no editable forms */
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
@@ -276,7 +276,7 @@ class Card extends React.Component<CardContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onAddToClipboard={this.handleAddToClipboard}
-                {/* No need for an OnClick here - there are no editable forms */}
+                /* No need for an OnClick here - there are no editable forms */
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
