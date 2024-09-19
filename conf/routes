@@ -128,3 +128,5 @@ GET         /editions-api/collections/:collectionId                         cont
 PUT         /editions-api/collections/:collectionId                         controllers.EditionsController.updateCollection(collectionId)
 PATCH       /editions-api/collections/:collectionId/name                    controllers.EditionsController.renameCollection(collectionId)
 GET         /editions-api/collections/:collectionId/prefill                 controllers.EditionsController.getPrefillForCollection(collectionId)
+
+POST        /editions-api/fronts/:frontId/collections/:collectionId/feastCollectionToContainer/:collectionCardId    controllers.EditionsController.feastCollectionToContainer(frontId, collectionId, collectionCardId)

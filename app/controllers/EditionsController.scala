@@ -1,5 +1,7 @@
 package controllers
 
+import cats.data.EitherT
+
 import java.time.{LocalDate, OffsetDateTime}
 import cats.syntax.either._
 import com.gu.contentapi.json.CirceEncoders._
@@ -26,6 +28,7 @@ import scala.concurrent.ExecutionContext
 import scala.util.Try
 import model.editions.client.{EditionsClientCollection, EditionsFrontendCollectionWrapper}
 import play.api.libs.json.Format.GenericFormat
+import scalikejdbc.DB
 
 class EditionsController(db: EditionsDB,
                          templating: EditionsTemplating,
@@ -315,7 +318,7 @@ class EditionsController(db: EditionsDB,
       now = OffsetDateTime.now(),
       name = req.queryString.get("name").flatMap(_.headOption)
     ) match {
-      case Right(front) =>
+      case Right((front, _)) =>
         val collections = toClientCollections(front)
         Ok(Json.toJson(collections))
       case Left(EditionsDB.NotFoundError(message)) => NotFound(message)
@@ -351,4 +354,61 @@ class EditionsController(db: EditionsDB,
     )
   }
 
+  private def getFeastCollectionContent(containerData: EditionsCollection, cardId: String) = {
+    containerData.items.find(item => item.id == cardId && item.cardType == CardType.FeastCollection) match {
+      case None=>
+        Left(EditionsDB.NotFoundError("No Feast collection found with that ID"))
+      case Some(EditionsFeastCollection(sourceCollectionId, sourceCollectionMTime, sourceCollectionMeta))=>
+        sourceCollectionMeta match {
+          case None=>
+            Left(EditionsDB.InvalidInput("This card is not properly configured"))
+          case Some(meta)=>
+            Right(meta)
+        }
+      case _=>
+        Left(EditionsDB.InvalidInput("This card is not a Feast collection"))
+    }
+  }
+
+  def feastCollectionToContainer(frontId:String, collectionId: String, collectionCardId: String) = EditEditionsAuthAction { req=>
+    //collectionId is the ID of the _container_ where the Feast collection card is.
+    // collectionCardId is the ID of the feast collection itself, which is a _card_ in terms of Fronts
+
+    db.getCollections(List(GetCollectionsFilter(collectionId, None))).find(_.id==collectionId) match {
+     case None=>
+       NotFound
+     case Some(sourceContainer)=>
+       val result = for {
+         feastCollection <- getFeastCollectionContent(sourceContainer, collectionCardId)
+         updateData <- db.addCollectionToFront(
+           frontId = frontId,
+           user = req.user,
+           now = OffsetDateTime.now(),
+           name = feastCollection.title
+         )
+         newCollection <- db.getCollections(List(GetCollectionsFilter(updateData._2, None)))
+           .find(_.id==updateData._2)
+           .toRight(Left(EditionsDB.InvariantError("Could not find created new collection")))
+         updatedNewCollection = db.updateCollection(newCollection.copy(items=feastCollection.collectionItems))
+         updatedFront <- DB localTx { implicit session=>
+           db.getFront(frontId).toRight(EditionsDB.InvariantError("The front was deleted while processing"))
+         }
+       } yield updatedFront
+
+        result match {
+          case Left(EditionsDB.NotFoundError(msg))=>
+            NotFound(msg)
+          case Left(EditionsDB.InvariantError(msg))=>
+            Conflict(msg)
+          case Left(err)=>
+            logger.error(s"Unexpected error when converting a Feast collection into a container: $err")
+            InternalServerError("")
+          case Right(updatedFront)=>
+            val collections = toClientCollections(updatedFront)
+            Ok(Json.toJson(collections))
+        }
+    }
+
+
+  }
 }
