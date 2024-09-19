@@ -1007,3 +1007,89 @@ case object Highlights extends Slice {
     ),
   )
 }
+
+
+/*
+ * The Scrollable small layout is implemented via a carousel.
+ * The implementation on platforms limits the display to 8 cards altogether, and only 2-3 cards at a time.
+ * In the tool, we're satisfied with using a 8 card layout to hint at the maximum number of stories.
+ *
+ * Desktop:
+ * .____________.____________.____________.____________.____________.____________.____________.____________.
+ * |       #####|       #####|       #####|       #####|       #####|       #####|       #####|       #####|
+ * |       #####|       #####|       #####|       #####|       #####|       #####|       #####|       #####|
+ * |       #####|       #####|       #####|       #####|       #####|       #####|       #####|       #####|
+ * '-------------------------------------------------------------------------------------------------------'
+ *
+ * Mobile:
+ * .___________.___________.___________.___________.___________.___________.___________.___________.
+ * |           |           |           |           |           |           |           |           |
+ * |           |           |           |           |           |           |           |           |
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * `-----------------------------------------------------------------------------------------------'
+ */
+case object ScrollableSmall extends Slice {
+  val layout = SliceLayout(
+    cssClassName = "t-t-t-t-t-t-t-t",
+    columns = Seq(
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+        SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+        SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+    ),
+  )
+}
