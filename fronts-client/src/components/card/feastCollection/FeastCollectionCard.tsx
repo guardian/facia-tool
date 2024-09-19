@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, CardSizes } from '../../../types/Collection';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectCard } from '../../../selectors/shared';
 import { State } from '../../../types/State';
 import CardContainer from '../CardContainer';
@@ -18,6 +18,8 @@ import {
 } from '../../inputs/HoverActionButtons';
 import { PaletteItem } from 'components/form/PaletteForm';
 import { CardPaletteContainer } from '../CardPaletteContainer';
+import { HeadlineContentButton } from '../../CollectionDisplay';
+import { feastCollectionToFrontCollection } from '../../../actions/Editions';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -51,7 +53,19 @@ export const FeastCollectionCard = ({
   showMeta = true,
   ...rest
 }: Props) => {
+  const dispatch = useDispatch();
   const card = useSelector<State, Card>((state) => selectCard(state, id));
+
+  const collectionToContainer:React.MouseEventHandler = (evt)=>{
+    evt.preventDefault();
+    evt.stopPropagation();
+
+    if(collectionId) {
+      dispatch<any>(feastCollectionToFrontCollection(frontId, collectionId, card.id));
+    } else {
+      console.error("Can't convert a collection into a container unless it's already in a container :(")
+    }
+  }
 
   return (
     <>
@@ -64,10 +78,20 @@ export const FeastCollectionCard = ({
           )}
           <CardContent textSize={textSize}>
             <CardHeadingContainer size={size}>
-              <CardHeading data-testid="headline" html>
-                {card.meta.title ? card.meta.title : 'No title'}
-              </CardHeading>
+              <div style={{display: "flex", justifyContent: "space-between"}}>
+                <div style={{flex: 0, width: "fit-content", minWidth: "fit-content"}}>
+                    <CardHeading data-testid="headline" html>
+                      {card.meta.title ? card.meta.title : 'No title'}
+                    </CardHeading>
+                </div>
+                { collectionId ? <div style={{flex: 0, width: "fit-content", minWidth: "fit-content"}}>
+                  <HeadlineContentButton onClick={collectionToContainer}>
+                    Convert to Container
+                  </HeadlineContentButton>
+                </div> : undefined}
+              </div>
             </CardHeadingContainer>
+
           </CardContent>
           {card.meta.feastCollectionTheme && (
             <CardPaletteContainer>
