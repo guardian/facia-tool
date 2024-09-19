@@ -1033,63 +1033,14 @@ case object Highlights extends Slice {
 case object ScrollableSmall extends Slice {
   val layout = SliceLayout(
     cssClassName = "t-t-t-t-t-t-t-t",
-    columns = Seq(
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-        SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-        SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-    ),
+    columns = Seq(Rows(
+      colSpan = 1,
+      columns = 8,
+      rows = 1,
+      ItemClasses(
+        mobile = ListItem,
+        tablet = ListItem,
+      )
+    ))
   )
 }
