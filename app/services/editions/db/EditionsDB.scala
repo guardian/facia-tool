@@ -4,7 +4,7 @@ import java.time.{Instant, OffsetDateTime, ZoneOffset}
 import java.time.temporal.ChronoUnit
 import scalikejdbc._
 import com.gu.pandomainauth.model.User
-import model.editions.{EditionsFeastCollection, EditionsFeastCollectionMetadata, EditionsFront}
+import model.editions.{EditionsCard, EditionsFeastCollection, EditionsFeastCollectionMetadata, EditionsFront}
 
 import java.util.UUID
 

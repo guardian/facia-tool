@@ -39,6 +39,8 @@ import {
   SUPPORT_PORTRAIT_CROPS,
 } from 'constants/image';
 import { AspectRatioBadge } from './icons/AspectRatioBadge';
+import { DragToConvertFeastCollection } from './FrontsEdit/CollectionComponents/DragToConvertFeastCollection';
+import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
   `front-${frontId}-collection-${id}`;
@@ -47,6 +49,7 @@ interface ContainerProps {
   id: string;
   browsingStage: CardSets;
   frontId: string;
+  isFeast?: boolean;
 }
 
 type Props = ContainerProps & {
@@ -257,6 +260,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       handleFocus,
       handleBlur,
       isEditions,
+      isFeast
     }: Props = this.props;
     const itemCount = cardIds ? cardIds.length : 0;
     const targetedTerritory = collection ? collection.targetedTerritory : null;
@@ -342,6 +346,9 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
               </HeadlineContentContainer>
             ) : null}
           </CollectionHeadingInner>
+          {
+            isFeast ? <DragToConvertFeastCollection sourceContainerId={id}/> : undefined
+          }
         </CollectionHeadingSticky>
         <DragIntentContainer
           delay={300}
@@ -433,6 +440,7 @@ const createMapStateToProps = () => {
         includeSupportingArticles: false,
       }),
       isEditions: isMode(state, 'editions'),
+      isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
     };
   };
 };

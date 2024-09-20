@@ -135,6 +135,7 @@ export interface FeastCollectionCardMeta {
     darkPalette: Omit<Palette, 'id'>;
     imageURL?: string;
   };
+  collectionItems?: Card[]
 }
 
 interface Card extends CardRootFields {
