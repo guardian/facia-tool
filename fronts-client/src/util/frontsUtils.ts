@@ -86,6 +86,10 @@ const isScrollableCollectionConfig = (
   config: CollectionConfig | undefined
 ): boolean => config?.type === 'scrollable/small';
 
+const suppressedImagesConfig = (
+  config: CollectionConfig | undefined
+): boolean => config?.suppressImages ?? true;
+
 export {
   getFrontCollections,
   combineCollectionWithConfig,
@@ -96,4 +100,5 @@ export {
   isCollectionConfigDynamic,
   isCollectionConfigFlexible,
   isScrollableCollectionConfig,
+  suppressedImagesConfig,
 };

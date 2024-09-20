@@ -537,6 +537,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             groupSizeId &&
             groupSizeId > 0)));
 
+    // const suppressImages = coll
+
     return (
       <FormContainer
         data-testid="edit-form"
@@ -763,7 +765,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       label="Hide media"
                       id={getInputId(cardId, 'hide-media')}
                       type="checkbox"
-                      default={false}
+                      default={true}
                       onChange={() => this.changeImageField('imageHide')}
                     />
                   </InputGroup>
