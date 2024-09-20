@@ -98,6 +98,7 @@ interface CollectionState {
   showOpenFormsWarning: boolean;
   isPreviouslyOpen: boolean;
   isLaunching: boolean;
+  isDeleteClicked?: boolean;
 }
 
 const PreviouslyCollectionContainer = styled.div``;
@@ -166,6 +167,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
     isPreviouslyOpen: false,
     isLaunching: false,
     showOpenFormsWarning: false,
+    isDeleteClicked: false,
   };
 
   // added to prevent setState call on unmounted component
@@ -277,8 +279,11 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
                     </MoveButtonsContainer>
                     <HeadlineContentButton
                       priority="default"
-                      onClick={() => this.removeFrontCollection()}
+                      onClick={this.handleDeleteClick}
                       title="Delete the collection for this issue"
+                      style={{
+                        color: this.state.isDeleteClicked ? 'red' : 'white',
+                      }}
                     >
                       Delete
                     </HeadlineContentButton>
@@ -380,6 +385,17 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
     this.setState({ showOpenFormsWarning: false });
   private removeFrontCollection = () => {
     this.props.removeFrontCollection(this.props.frontId, this.props.id);
+  };
+
+  private handleDeleteClick = () => {
+    this.setState({ isDeleteClicked: true });
+    const isConfirm = window.confirm(
+      `Are you sure you wish to delete collection? This cannot be undone.`
+    );
+    if (isConfirm) {
+      this.removeFrontCollection();
+    }
+    this.setState({ isDeleteClicked: false });
   };
 }
 
