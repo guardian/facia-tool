@@ -28,7 +28,9 @@ export function init (res) {
                 'standard',
                 'snap'
               ]
-            });
+            },
+              {'name': 'scrollable/small'}
+            );
     }
 }
 
