@@ -3,7 +3,7 @@
 //A preset list of containers that we can select from
 import crypto from 'crypto';
 
-const usage = `This script builds kinda sensible-looking fronts based on a set list of titles
+const usage = `This script (aka Kitchen Ipsum Generator :-D) builds kinda sensible-looking fronts based on a set list of titles
 and semantic search.
 
 Example usage is
@@ -154,7 +154,7 @@ const getFrontsUri = () => {
         case "LOCAL":
             return "https://fronts.local.dev-gutools.co.uk";
         default:
-            throw new Error("--stage must be one of PROD, CODE or LOCAL")
+            throw new Error("--stage must be one of CODE or LOCAL")
     }
 }
 
