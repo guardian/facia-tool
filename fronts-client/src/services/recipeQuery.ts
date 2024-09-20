@@ -1,5 +1,5 @@
 import url from '../constants/url';
-import { Recipe } from '../types/Recipe';
+import { Recipe, RecipePartialIndexContent } from '../types/Recipe';
 
 interface KeyAndCount {
   key: string;
@@ -163,17 +163,36 @@ const recipeQuery = (baseUrl:string) => {
       }
     },
     recipesById: async (idList:string[]):Promise<Recipe[]> => {
-      const responses = await Promise.all(
-        idList.map(id=>fetch(`${baseUrl}/search/uid/${id}`,
-          {
-            redirect: "follow"
-          }))
-      );
+      const doTheFetch = async (idsToFind:string[]) => {
 
-      const successes = responses.filter((_)=>_.status===200);
-      return Promise.all(
-        successes.map((_)=>_.json())
-      ) as Promise<Recipe[]>
+        const indexResponse = await fetch(`/recipes/api/content/by-uid?ids=${idsToFind.join(",")}`, {
+          credentials: "include"
+        });
+        if (indexResponse.status != 200) {
+          throw new Error(`Unable to retrieve partial index: server error ${indexResponse.status}`);
+        }
+
+        const content = (await indexResponse.json()) as RecipePartialIndexContent;
+        const recipeResponses = await Promise.all(
+          content.results.map(entry => fetch(`${baseUrl}/content/${entry.checksum}`))
+        );
+        const successes = recipeResponses.filter((_) => _.status === 200);
+        return Promise.all(
+          successes.map((_) => _.json())
+        ) as Promise<Recipe[]>
+      }
+
+      const recurseTheList = async (idsToFind:string[], prevResults:Recipe[]):Promise<Recipe[]> => {
+        const thisBatch = idsToFind.slice(0, 50);  //we need to avoid a 414 URI Too Long error so batch into 50s
+        const results = (await doTheFetch(thisBatch)).concat(prevResults);
+        if(thisBatch.length==idsToFind.length) {  //we finished the list
+          return results;
+        } else {
+          return recurseTheList(idsToFind.slice(50), results);
+        }
+      }
+
+      return recurseTheList(idList, []);
     }
   }
 }

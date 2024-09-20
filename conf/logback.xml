@@ -32,5 +32,4 @@
     </root>
 
     <logger name="com.google.api.client.http" level="WARN" />
-
 </configuration>
