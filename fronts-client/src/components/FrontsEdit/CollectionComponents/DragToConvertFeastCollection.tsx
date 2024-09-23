@@ -45,7 +45,8 @@ export const DragToConvertFeastCollection:React.FC<DragToConvertFeastCollectionP
         id: v4(),
         meta: {
           title: containerInfo?.displayName ?? "New collection",
-          collectionItems: cards
+          collectionItems: cards,
+          supporting: cards.map((_)=>_.uuid)
         },
         uuid: v4(),
         frontPublicationDate: Date.now(),

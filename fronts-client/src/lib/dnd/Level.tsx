@@ -106,6 +106,7 @@ class Level<T> extends React.Component<Props<T>, State> {
       store,
     } = this.props;
     const Container = this.props.containerElement || DefaultContainer;
+    console.log(`<Level> render - nodes=${JSON.stringify(arr)}`)
     return (
       <Container onDragOver={this.onDragOver(null)}>
         {arr.map((node, i) => (

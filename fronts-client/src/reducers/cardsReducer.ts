@@ -33,6 +33,7 @@ const cards = (state: State['cards'] = {}, action: Action) => {
     }
     case CARDS_RECEIVED: {
       const { payload } = action;
+      console.log(`cardsReducer: CARDS_RECEIVED payload=${JSON.stringify(payload)}`)
       return Object.assign({}, state, payload);
     }
     case REMOVE_SUPPORTING_CARD: {

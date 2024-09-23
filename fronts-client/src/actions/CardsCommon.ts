@@ -38,6 +38,7 @@ function cardsReceived(
       }
     | Card[]
 ) {
+  console.log(`cardsReceived: ${JSON.stringify(cards)}`)
   const payload = Array.isArray(cards)
     ? keyBy(cards, ({ uuid }) => uuid)
     : cards;
