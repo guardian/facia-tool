@@ -99,7 +99,7 @@ async function migrateFront(
         // Collections are added from the top, so we add the last collection first
         for (const title of collectionTitlesMissingInFronts.reverse()) {
             const newCollectionResponse = await fetch(
-                `${frontsBaseUrl}/editions-api/fronts/${front.id}/collection?name=${title}`,
+                `${frontsBaseUrl}/editions-api/fronts/${front.id}/collection?name=${encodeURIComponent(title)}`,
                 {
                     method: "PUT",
                     headers: frontsHeaders,

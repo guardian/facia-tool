@@ -4,7 +4,7 @@ import { migrateIssue } from './migrate-issue.mjs';
 const dateFormat = 'YYYY-MM-DD';
 const usage = `Example usage is
 
-node ./insert-recipe-cards.mjs
+node ./insert-backdate-recipes.mjs
     --curation-path "northern"
     --from-date "2024-05-01"
     --to-date "2024-05-05"
