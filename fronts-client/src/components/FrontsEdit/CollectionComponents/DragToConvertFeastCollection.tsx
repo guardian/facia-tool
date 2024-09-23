@@ -31,7 +31,7 @@ export const DragToConvertFeastCollection:React.FC<DragToConvertFeastCollectionP
     collectionId: sourceContainerId,
     collectionSet: "draft",
     includeSupportingArticles: false
-  })) as Card[];
+  })) as string[];
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
     console.log("DragToConvertFeastCollection");
@@ -45,12 +45,13 @@ export const DragToConvertFeastCollection:React.FC<DragToConvertFeastCollectionP
         id: v4(),
         meta: {
           title: containerInfo?.displayName ?? "New collection",
-          collectionItems: cards,
-          supporting: cards.map((_)=>_.uuid)
+          supporting: cards,
         },
         uuid: v4(),
         frontPublicationDate: Date.now(),
       };
+
+      console.log(`newCollection: ${JSON.stringify(feastCollectionCard)}`);
 
       return handleDragStartForCard(
         CardTypesMap.FEAST_COLLECTION,

@@ -447,7 +447,9 @@ export const createArticleEntitiesFromDrop = (
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
     }
     if (maybeCard) {
-      dispatch(cardsReceived([maybeCard]));
+      const supporting = maybeCard.meta?.supporting?.map(uuid=>selectCard(getState(), uuid)) ?? [];
+
+      dispatch(cardsReceived([maybeCard, ...supporting]));
     }
     return maybeCard;
   };
