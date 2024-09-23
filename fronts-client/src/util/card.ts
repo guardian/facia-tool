@@ -163,6 +163,7 @@ const getCardEntitiesFromDrop = async (
   isEdition: boolean,
   dispatch: Dispatch
 ): Promise<TArticleEntities> => {
+  console.log(`getCardEntitiesFromDrop`)
   if (drop.type === 'CAPI') {
     return getArticleEntitiesFromFeedDrop(drop.data, isEdition);
   }
@@ -176,7 +177,7 @@ const getCardEntitiesFromDrop = async (
   }
 
   if (drop.type === 'FEAST_COLLECTION') {
-    return getFeastCollectionFromFeedDrop();
+    return getFeastCollectionFromFeedDrop(drop.data);
   }
 
   const droppedDataURL = drop.data.trim();
@@ -293,8 +294,11 @@ const getRecipeEntityFromFeedDrop = (recipe: Recipe): [Card] => {
   return [card];
 };
 
-const getFeastCollectionFromFeedDrop = (): [Card] => {
-  return [createCard(v4(), false, { cardType: CardTypesMap.FEAST_COLLECTION })];
+const getFeastCollectionFromFeedDrop = (data: Card): [Card] => {
+  console.log(`getFeastCollectionFromFeedDrop: ${JSON.stringify(data)}`);
+
+  //return [createCard(v4(), false, { cardType: CardTypesMap.FEAST_COLLECTION })];
+  return [data];
 };
 
 const getArticleEntitiesFromFeedDrop = (

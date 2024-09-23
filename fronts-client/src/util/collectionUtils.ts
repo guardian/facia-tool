@@ -83,6 +83,7 @@ const insertCardFromDropEvent = (
     if (!dropType) {
       return;
     }
+    console.log(`insertCardFromDropEvent: ${JSON.stringify(dropType)}`)
     dispatch(insertCardWithCreate(to, dropType, persistTo));
   };
 };
