@@ -17,14 +17,6 @@ interface DragToConvertFeastCollectionProps {
 export const DragToConvertFeastCollection:React.FC<DragToConvertFeastCollectionProps> = ({sourceContainerId})=>{
   const ref = useRef<HTMLDivElement>(null);
 
-  /*
-        collection: collectionSelectors.selectById(state, props.id),
-      cardIds: selectCardsInCollection(state, {
-        collectionId: props.id,
-        collectionSet: props.browsingStage,
-        includeSupportingArticles: false,
-      }),
-   */
   const containerInfo = useSelector(state=>collectionSelectors.selectById(state, sourceContainerId));
   const cardSelector = createSelectCardsInCollection();
   const cards = useSelector<State>(state=>cardSelector(state, {

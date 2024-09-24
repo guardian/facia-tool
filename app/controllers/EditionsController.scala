@@ -1,8 +1,6 @@
 package controllers
 
-import cats.data.EitherT
-
-import java.time.{Instant, LocalDate, OffsetDateTime}
+import java.time.{LocalDate, OffsetDateTime}
 import cats.syntax.either._
 import com.gu.contentapi.json.CirceEncoders._
 import io.circe.syntax._
@@ -12,7 +10,7 @@ import model.editions._
 import model.editions.templates.CuratedPlatformDefinition
 import model.forms._
 import net.logstash.logback.marker.Markers
-import play.api.libs.json.{JsObject, Json, OFormat}
+import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
@@ -26,7 +24,7 @@ import util.{SearchResponseUtil, UserUtil}
 import scala.jdk.CollectionConverters._
 import scala.concurrent.ExecutionContext
 import scala.util.Try
-import model.editions.client.{EditionsClientCollection, EditionsFrontendCollectionWrapper}
+import model.editions.client.EditionsFrontendCollectionWrapper
 import play.api.libs.json.Format.GenericFormat
 import scalikejdbc.DB
 
@@ -411,46 +409,6 @@ class EditionsController(db: EditionsDB,
             val collections = toClientCollections(updatedFront)
             Ok(Json.toJson(collections))
         }
-    }
-  }
-
-  def containerToFeastCollection(containerId: String, targetContainerId:String) = EditEditionsAuthAction { req=>
-    (lookupCollection(containerId), lookupCollection(targetContainerId)) match {
-      case (Some(sourceContainer), Some(targetContainer))=>
-        val newCollection = EditionsFeastCollection(
-          id = UUID.randomUUID().toString,
-          addedOn = Instant.now().toEpochMilli,
-          metadata = Some(EditionsFeastCollectionMetadata(
-            title = Some(sourceContainer.displayName),
-            collectionItems = sourceContainer.items.collect({
-              case r:EditionsRecipe=>r
-            })
-          ))
-        )
-
-        db.updateCollection(targetContainer.copy(
-          lastUpdated = Some(Instant.now().toEpochMilli),
-          updatedBy = Some(UserUtil.getDisplayName(req.user)),
-          updatedEmail = Some(req.user.email),
-          items = targetContainer.items :+ newCollection
-        ))
-
-        val updatedFront = targetContainer.frontId
-          .flatMap(frontId=>{
-            DB localTx { implicit session =>
-              db.getFront(frontId)
-            }
-          })
-
-        updatedFront match {
-          case None=>
-            Conflict("The front must have been deleted while processing")
-          case Some(updatedFront)=>
-            val collections = toClientCollections(updatedFront)
-            Ok(Json.toJson(collections))
-        }
-      case _=>
-        NotFound
     }
   }
 }

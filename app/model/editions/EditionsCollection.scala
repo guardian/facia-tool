@@ -7,7 +7,6 @@ import services.editions.prefills.CapiQueryTimeWindow
 
 case class EditionsCollection(
                                id: String,
-                               frontId: Option[String],
                                displayName: String,
                                isHidden: Boolean,
                                lastUpdated: Option[Long],
@@ -44,7 +43,6 @@ object EditionsCollection {
       createMaybeCapiQueryTime(rs.zonedDateTimeOpt("content_prefill_window_start"), rs.zonedDateTimeOpt("content_prefill_window_end"))
     EditionsCollection(
       rs.string(prefix + "id"),
-      Some(rs.string(prefix + "front_id")),
       rs.string(prefix + "name"),
       rs.boolean(prefix + "is_hidden"),
       rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
@@ -84,7 +82,6 @@ object EditionsCollection {
 
       EditionsCollection(
         id,
-        rs.stringOpt(prefix + "front_id"),
         name,
         isHidden,
         rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
