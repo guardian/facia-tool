@@ -66,7 +66,7 @@ const createInsertCardThunk =
     if (removeAction) {
       dispatch(removeAction);
     }
-    console.log(`createInsertCardThunk`)
+
     // This cast seems to be necessary to disambiguate the type fed to Dispatch,
     // whose call signature accepts either an Action or a ThunkResult. I'm not really
     // sure why.
@@ -246,7 +246,6 @@ const insertCardWithCreate =
     cardFactory = createArticleEntitiesFromDrop
   ): ThunkResult<void> =>
   async (dispatch: Dispatch, getState) => {
-  console.log('<thunk> insertCardWithCreate');
     const insertActionCreator = getInsertionActionCreatorFromType(
       to.type,
       persistTo
@@ -264,7 +263,6 @@ const insertCardWithCreate =
     if (toWithRespectToState) {
       try {
         const card = await dispatch(cardFactory(drop));
-        console.log(JSON.stringify(card));
         if (!card) {
           return;
         }
@@ -275,7 +273,7 @@ const insertCardWithCreate =
           card,
           persistTo
         );
-        console.log(JSON.stringify(modifyCardAction));
+
         if (modifyCardAction) dispatch(modifyCardAction);
 
         dispatch(
@@ -442,11 +440,12 @@ export const createArticleEntitiesFromDrop = (
       isEdition,
       dispatch
     );
-    console.log(`createArticleEntriesFromDrop: ${JSON.stringify(maybeCard)}`);
+
     if (maybeExternalArticle) {
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
     }
     if (maybeCard) {
+      //if the card we are dropping has supporting cards, ensure that they travel too
       const supporting = maybeCard.meta?.supporting?.map(uuid=>selectCard(getState(), uuid)) ?? [];
 
       dispatch(cardsReceived([maybeCard, ...supporting]));

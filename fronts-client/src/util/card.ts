@@ -295,9 +295,6 @@ const getRecipeEntityFromFeedDrop = (recipe: Recipe): [Card] => {
 };
 
 const getFeastCollectionFromFeedDrop = (data: Card): [Card] => {
-  console.log(`getFeastCollectionFromFeedDrop: ${JSON.stringify(data)}`);
-
-  //return [createCard(v4(), false, { cardType: CardTypesMap.FEAST_COLLECTION })];
   return [data];
 };
 

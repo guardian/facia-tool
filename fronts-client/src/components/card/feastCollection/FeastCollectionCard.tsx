@@ -63,7 +63,7 @@ export const FeastCollectionCard = ({
     if(collectionId) {
       dispatch<any>(feastCollectionToFrontCollection(frontId, collectionId, card.id));
     } else {
-      console.error("Can't convert a collection into a container unless it's already in a container :(")
+      console.error("Can't convert a collection into a container unless said collection is already in a container :(")
     }
   }
 

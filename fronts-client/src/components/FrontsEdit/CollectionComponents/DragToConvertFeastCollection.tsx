@@ -26,11 +26,6 @@ export const DragToConvertFeastCollection:React.FC<DragToConvertFeastCollectionP
   })) as string[];
 
   const handleDragStart = (event: React.DragEvent<HTMLDivElement>) => {
-    console.log("DragToConvertFeastCollection");
-    console.log(`sourceContainerId = ${sourceContainerId}`);
-    console.log(`cards = ${cards}`);
-    console.log(`containerInfo = ${JSON.stringify(containerInfo)}`);
-
     if(ref.current) {
       const feastCollectionCard: Card = {
         cardType: CardTypesMap.FEAST_COLLECTION,
@@ -42,8 +37,6 @@ export const DragToConvertFeastCollection:React.FC<DragToConvertFeastCollectionP
         uuid: v4(),
         frontPublicationDate: Date.now(),
       };
-
-      console.log(`newCollection: ${JSON.stringify(feastCollectionCard)}`);
 
       return handleDragStartForCard(
         CardTypesMap.FEAST_COLLECTION,
