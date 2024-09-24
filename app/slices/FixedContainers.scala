@@ -16,6 +16,7 @@ class FixedContainers(val config: ApplicationConfiguration) {
   val showcase = slices(ShowcaseSingleStories)
   val thrasher = slices(Fluid).copy(customCssClasses = Set("fc-container--thrasher"))
   val highlights = slices(Highlights)
+  val scrollableSmall = slices(ScrollableSmall)
   val video = slices(TTT).copy(customCssClasses = Set("fc-container--video"))
 
   val all: Map[String, ContainerDefinition] = Map(
@@ -36,7 +37,8 @@ class FixedContainers(val config: ApplicationConfiguration) {
     ("fixed/video/vertical", video),
     ("fixed/thrasher", thrasher),
     ("fixed/showcase", showcase),
-    ("scrollable/highlights", highlights)
+    ("scrollable/highlights", highlights),
+    ("scrollable/small", scrollableSmall)
   ) ++ (if (config.faciatool.showTestContainers) Map(
     ("all-items/not-for-production", slices(FullMedia100, FullMedia75, FullMedia50, HalfHalf, QuarterThreeQuarter, ThreeQuarterQuarter, Hl4Half, HalfQuarterQl2Ql4, TTTL4, Ql3Ql3Ql3Ql3))
   ) else Map.empty)

@@ -117,7 +117,9 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
           <RecipeFeedItem key={id} id={id} />
         ));
       case FeedType.chefs:
-        return chefSearchIds.map((chefId) => (
+        //Fixing https://the-guardian.sentry.io/issues/5820707430/?project=35467&referrer=issue-stream&statsPeriod=90d&stream_index=0&utc=true
+        //It seems that some null values got into the `chefSearchIds` list
+        return chefSearchIds.filter(chefId=>!!chefId).map((chefId) => (
           <ChefFeedItem key={chefId} id={chefId} />
         ));
     }

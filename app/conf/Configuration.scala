@@ -80,6 +80,11 @@ class ApplicationConfiguration(
     lazy val host = getString("ophan.api.host")
   }
 
+  object recipesApi {
+    lazy val key = getString("recipes.api.key")
+    lazy val url = getString("recipes.api.url")
+  }
+
   object analytics {
     lazy val secret = getMandatoryString("analytics.secret")
   }

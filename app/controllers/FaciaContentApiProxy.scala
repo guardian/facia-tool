@@ -9,11 +9,14 @@ import play.api.libs.concurrent.Futures._
 
 import scala.concurrent.duration._
 import logging.Logging
+import org.apache.pekko.util.ByteString
+import play.api.mvc.{ResponseHeader, Result}
+import play.api.http.HttpEntity
 import services.Capi
 import switchboard.SwitchManager
 import util.ContentUpgrade.rewriteBody
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 
 class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) with Logging {
@@ -109,6 +112,34 @@ class FaciaContentApiProxy(capi: Capi, val deps: BaseFaciaControllerComponents)(
         logger.error(s"Request to ophan with url $url timed out")
         GatewayTimeout
       }
+    }
+  }
+
+  def recipesLookup() = AccessAPIAuthAction.async { request =>
+    FaciaToolMetrics.ProxyCount.increment()
+
+    val fixedQueryString = request.queryString.map(kv=>(kv._1, kv._2.head))
+
+    (config.recipesApi.url, config.recipesApi.key) match {
+      case (Some(baseUrl), Some(key))=>
+        wsClient
+          .url(s"$baseUrl/api/content/by-uid")
+          .withQueryStringParameters(fixedQueryString.toList :_*)
+          .withHttpHeaders("X-Api-Key" -> key)
+          .get()
+          .withTimeout(5.seconds)
+          .map { response =>
+            Cached(300) {
+              Result(
+                header = ResponseHeader(response.status, Map.empty),
+                body = HttpEntity.Strict(ByteString(response.body), Some("application/json"))
+              )
+            }
+          }
+      case _=>
+        Future.successful(
+          InternalServerError("""Server is misconfigured, no recipes api config available""").as("application/json")
+        )
     }
   }
 }

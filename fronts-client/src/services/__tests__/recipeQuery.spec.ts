@@ -169,4 +169,92 @@ describe("recipeQueries.recipes", ()=>{
     expect(response.maxScore).toEqual(0.8);
   });
 
+});
+
+describe("recipeQueries.recipesById", ()=>{
+  beforeEach(()=>{
+    fetchMock.restore();
+  });
+
+  it("should load in a batch of recipes", async ()=>{
+    const idList = ['2bf50440adfff3b634fe471dfb778b21a1353787','33a8c9a9609fada8ec28a9be1e068d8d01cae530','72603cd9828849729fd50bc4b3dd6f1b'];
+
+    fetchMock
+      .get("begin:/recipes/api/content/by-uid?ids=", {
+        "status": "ok",
+        "resolved": 40,
+        "requested": 40,
+        "results": [
+          {
+            "checksum": "FCPXAy6wwnLHs6t3oYNk5hu_CpzF2ECgCfdrX_G67AQ",
+            "recipeUID": "2bf50440adfff3b634fe471dfb778b21a1353787",
+            "capiArticleId": "lifeandstyle/2015/oct/10/lentil-recipes-get-ahead-urban-rajah-ivor-peters",
+            "sponsorshipCount": 0
+          },
+          {
+            "checksum": "UBVUs056cPnicu2GbbA479qpZCO2CHJZmnSYglFfTxQ",
+            "recipeUID": "33a8c9a9609fada8ec28a9be1e068d8d01cae530",
+            "capiArticleId": "lifeandstyle/2018/jan/06/egg-recipes-yotam-ottolenghi-harissa-manchego-omelette-scrambled-croque-madame",
+            "sponsorshipCount": 0
+          },
+          {
+            "checksum": "Mi3FUm1TVfCK45Y24ZmFvQbWMZ-NTQHRxBacVgwYUw8",
+            "recipeUID": "72603cd9828849729fd50bc4b3dd6f1b",
+            "capiArticleId": "food/2024/apr/21/sticky-aubergine-tart-sea-bass-pistachio-pesto-baklava-cheesecake-greekish-recipes-georgina-hayden",
+            "sponsorshipCount": 0
+          }
+        ]
+      }).get("https://recipes.guardianapis.com/content/FCPXAy6wwnLHs6t3oYNk5hu_CpzF2ECgCfdrX_G67AQ", {
+        id: '2bf50440adfff3b634fe471dfb778b21a1353787',
+      }).get("https://recipes.guardianapis.com/content/UBVUs056cPnicu2GbbA479qpZCO2CHJZmnSYglFfTxQ", {
+        id: '33a8c9a9609fada8ec28a9be1e068d8d01cae530',
+      }).get("https://recipes.guardianapis.com/content/Mi3FUm1TVfCK45Y24ZmFvQbWMZ-NTQHRxBacVgwYUw8", {
+        id: '72603cd9828849729fd50bc4b3dd6f1b',
+      });
+
+    const results = await liveRecipes.recipesById(idList);
+    expect(results.length).toEqual(3);
+    expect(results.map((_)=>_.id)).toEqual(idList);
+  });
+
+  it("should not panic if a recipe can't be found", async ()=>{
+    const idList = ['2bf50440adfff3b634fe471dfb778b21a1353787','33a8c9a9609fada8ec28a9be1e068d8d01cae530','72603cd9828849729fd50bc4b3dd6f1b'];
+
+    fetchMock
+      .get("begin:/recipes/api/content/by-uid?ids=", {
+        "status": "ok",
+        "resolved": 40,
+        "requested": 40,
+        "results": [
+          {
+            "checksum": "FCPXAy6wwnLHs6t3oYNk5hu_CpzF2ECgCfdrX_G67AQ",
+            "recipeUID": "2bf50440adfff3b634fe471dfb778b21a1353787",
+            "capiArticleId": "lifeandstyle/2015/oct/10/lentil-recipes-get-ahead-urban-rajah-ivor-peters",
+            "sponsorshipCount": 0
+          },
+          {
+            "checksum": "UBVUs056cPnicu2GbbA479qpZCO2CHJZmnSYglFfTxQ",
+            "recipeUID": "33a8c9a9609fada8ec28a9be1e068d8d01cae530",
+            "capiArticleId": "lifeandstyle/2018/jan/06/egg-recipes-yotam-ottolenghi-harissa-manchego-omelette-scrambled-croque-madame",
+            "sponsorshipCount": 0
+          },
+          {
+            "checksum": "Mi3FUm1TVfCK45Y24ZmFvQbWMZ-NTQHRxBacVgwYUw8",
+            "recipeUID": "72603cd9828849729fd50bc4b3dd6f1b",
+            "capiArticleId": "food/2024/apr/21/sticky-aubergine-tart-sea-bass-pistachio-pesto-baklava-cheesecake-greekish-recipes-georgina-hayden",
+            "sponsorshipCount": 0
+          }
+        ]
+      }).get("https://recipes.guardianapis.com/content/FCPXAy6wwnLHs6t3oYNk5hu_CpzF2ECgCfdrX_G67AQ", {
+      id: '2bf50440adfff3b634fe471dfb778b21a1353787',
+    }).get("https://recipes.guardianapis.com/content/UBVUs056cPnicu2GbbA479qpZCO2CHJZmnSYglFfTxQ", {
+      status: 404,
+    }).get("https://recipes.guardianapis.com/content/Mi3FUm1TVfCK45Y24ZmFvQbWMZ-NTQHRxBacVgwYUw8", {
+      id: '72603cd9828849729fd50bc4b3dd6f1b',
+    });
+
+    const results = await liveRecipes.recipesById(idList);
+    expect(results.length).toEqual(2);
+    expect(results.map((_)=>_.id)).toEqual(['2bf50440adfff3b634fe471dfb778b21a1353787','72603cd9828849729fd50bc4b3dd6f1b']);
+  })
 })
