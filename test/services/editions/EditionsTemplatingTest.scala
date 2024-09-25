@@ -321,7 +321,7 @@ class EditionsTemplatingTest extends FreeSpec with Matchers with OptionValues wi
   }
 
   private def prefillWithCapiId(capiId: String): Prefill = {
-    val allFalseMetadata = ResolvedMetaData(false, false, false, false, false, false, false, false, false, false, false, false, false, false)
+    val allFalseMetadata = ResolvedMetaData(false, false, "boostLevel.default", false, false, false, false, false, false, false, false, false, false, false, false)
     Prefill(
       222222,
       None,
