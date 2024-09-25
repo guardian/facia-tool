@@ -163,7 +163,6 @@ const getCardEntitiesFromDrop = async (
   isEdition: boolean,
   dispatch: Dispatch
 ): Promise<TArticleEntities> => {
-  console.log(`getCardEntitiesFromDrop`)
   if (drop.type === 'CAPI') {
     return getArticleEntitiesFromFeedDrop(drop.data, isEdition);
   }

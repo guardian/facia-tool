@@ -259,7 +259,6 @@ const insertCardWithCreate =
       state,
       false
     );
-    console.log(JSON.stringify(toWithRespectToState));
     if (toWithRespectToState) {
       try {
         const card = await dispatch(cardFactory(drop));
