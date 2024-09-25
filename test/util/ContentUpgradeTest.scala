@@ -82,20 +82,24 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+          |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
           |          "showMainVideo":false,
           |          "imageHide":false,
+          |          "boostLevel.default":true,
           |          "showQuotedHeadline":false,
           |          "imageSlideshowReplace":false,
+          |          "boostLevel.boost":false,
           |          "imageReplace":false,
-          |          "showBoostedHeadline":false,
           |          "showKickerCustom":false,
           |          "showByline":false,
           |          "showKickerTag":false,
           |          "showLivePlayable":false,
           |          "imageCutoutReplace":false,
-          |          "showKickerSection":false},
+          |          "showKickerSection":false,
+          |          "boostLevel.megaboost":false,
+          |          "showBoostedHeadline":false},
           |        "tone":"news"
           |      }
           |    }
