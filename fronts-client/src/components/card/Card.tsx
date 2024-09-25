@@ -239,7 +239,7 @@ class Card extends React.Component<CardContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onAddToClipboard={this.handleAddToClipboard}
-                onClick={isUneditable ? undefined : () => onSelect(uuid)}
+                /* No need for an OnClick here - there are no editable forms */
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
@@ -258,7 +258,7 @@ class Card extends React.Component<CardContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onAddToClipboard={this.handleAddToClipboard}
-                onClick={isUneditable ? undefined : () => onSelect(uuid)}
+                /* No need for an OnClick here - there are no editable forms */
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
