@@ -1,5 +1,5 @@
 import React from 'react';
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 
 import ShortVerticalPinline from 'components/layout/ShortVerticalPinline';
 import { media } from 'util/mediaQueries';
@@ -13,6 +13,7 @@ const metaContainerSizeWidthMap = {
 
 interface MetaContainerProps {
   size?: CardSizes;
+  isToShowError?: boolean;
 }
 const MetaContainer = styled.div<MetaContainerProps>`
   position: relative;
@@ -28,16 +29,20 @@ const MetaContainer = styled.div<MetaContainerProps>`
       word-break: break-word;
     `}
   padding: 0 4px;
+  background-color: ${({ isToShowError }) =>
+    isToShowError ? '#959595' : theme.colors.white};
 `;
 
 export default ({
   children,
   size = 'default',
+  isToShowError,
 }: {
   children?: React.ReactNode;
   size?: CardSizes;
+  isToShowError?: boolean;
 }) => (
-  <MetaContainer size={size}>
+  <MetaContainer size={size} isToShowError={isToShowError}>
     {children}
     <ShortVerticalPinline />
   </MetaContainer>
