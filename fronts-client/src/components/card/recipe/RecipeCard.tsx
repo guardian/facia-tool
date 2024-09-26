@@ -83,6 +83,7 @@ export const RecipeCard = ({
                   width: '50%',
                   height: '50%',
                   top: '5%',
+                  left: '25%',
                 }}
               />
             )}
