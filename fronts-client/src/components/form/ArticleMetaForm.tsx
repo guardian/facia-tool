@@ -1094,7 +1094,7 @@ const createMapStateToProps = () => {
       collectionId,
       getLastUpdatedBy,
       snapType: article && article.snapType,
-      initialValues: getInitialValuesForCardForm(article),
+      initialValues: getInitialValuesForCardForm(article, parentCollection),
       articleCapiFieldValues: getCapiValuesForArticleFields(externalArticle),
       editableFields:
         article && selectFormFields(state, article.uuid, isSupporting),
