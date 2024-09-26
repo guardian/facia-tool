@@ -8,9 +8,10 @@ import { CardSizes } from 'types/Collection';
 const Wrapper = styled.span<{
   displaySize?: CardSizes;
   showLargeHeadline?: boolean;
+  isToShowError?: boolean;
 }>`
   font-family: TS3TextSans;
-  font-weight: normal;
+  font-weight: ${({ isToShowError }) => (isToShowError ? 'bold' : 'normal')};
   padding: 2px 0 0;
   font-size: ${theme.card.fontSizeSmall};
   ${media.large`font-size: 13px;`}
@@ -21,6 +22,7 @@ interface CardHeading {
   html?: boolean;
   displaySize?: CardSizes;
   showLargeHeadline?: boolean;
+  isToShowError?: boolean;
 }
 
 const CardHeading = ({

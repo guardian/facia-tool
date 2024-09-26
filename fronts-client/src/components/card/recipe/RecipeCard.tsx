@@ -97,7 +97,11 @@ export const RecipeCard = ({
           isToShowError={recipe?.title ? false : true}
         >
           <CardHeadingContainer size={size}>
-            <CardHeading data-testid="headline" html>
+            <CardHeading
+              data-testid="headline"
+              html
+              isToShowError={recipe?.title ? false : true}
+            >
               {recipe?.title ??
                 'This recipe won’t load in the app, please select an alternative.'}
             </CardHeading>
