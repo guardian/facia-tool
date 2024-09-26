@@ -56,7 +56,6 @@ class TransformationsSpec extends FlatSpec with Matchers {
     None,
     None,
     None,
-    None,
     None
   )
 
