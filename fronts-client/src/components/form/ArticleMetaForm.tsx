@@ -537,8 +537,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
             groupSizeId &&
             groupSizeId > 0)));
 
-    // const suppressImages = coll
-
     return (
       <FormContainer
         data-testid="edit-form"

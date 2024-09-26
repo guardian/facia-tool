@@ -74,7 +74,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "3.0.0",
-    "com.gu" %% "fapi-client-play30" % "11.0.0-PREVIEW.gladd-suppress-images-property.2024-09-25T0940.79973a0d",
+    "com.gu" %% "fapi-client-play30" % "11.0.0-PREVIEW.gladd-suppress-images-property.2024-09-26T1303.d2af9509",
     "com.gu" %% "mobile-notifications-api-models" % "3.0.0",
     "com.gu" %% "pan-domain-auth-play_3-0" % "4.0.0",
 

@@ -46,8 +46,7 @@ export default class ConfigCollection extends DropTarget {
                 'platform',
                 'frontsToolSettings',
                 'userVisibility',
-                'targetedTerritory',
-                'suppressImages'
+                'targetedTerritory'
             ]),
             {
                 displayHints: asObservableProps([
@@ -56,7 +55,8 @@ export default class ConfigCollection extends DropTarget {
             },
             {
                 frontsToolSettings: asObservableProps([
-                    'displayEditWarning'
+                    'displayEditWarning',
+                    'suppressImages'
                 ])
             }
         );

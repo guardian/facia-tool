@@ -88,7 +88,7 @@ const isScrollableCollectionConfig = (
 
 const suppressedImagesConfig = (
   config: CollectionConfig | undefined
-): boolean => config?.suppressImages ?? true;
+): boolean => config?.frontsToolSettings?.suppressImages ?? false;
 
 export {
   getFrontCollections,
