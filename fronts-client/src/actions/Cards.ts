@@ -66,6 +66,7 @@ const createInsertCardThunk =
     if (removeAction) {
       dispatch(removeAction);
     }
+
     // This cast seems to be necessary to disambiguate the type fed to Dispatch,
     // whose call signature accepts either an Action or a ThunkResult. I'm not really
     // sure why.
@@ -271,6 +272,7 @@ const insertCardWithCreate =
           card,
           persistTo
         );
+
         if (modifyCardAction) dispatch(modifyCardAction);
 
         dispatch(
@@ -437,11 +439,15 @@ export const createArticleEntitiesFromDrop = (
       isEdition,
       dispatch
     );
+
     if (maybeExternalArticle) {
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
     }
     if (maybeCard) {
-      dispatch(cardsReceived([maybeCard]));
+      //if the card we are dropping has supporting cards, ensure that they travel too
+      const supporting = maybeCard.meta?.supporting?.map(uuid=>selectCard(getState(), uuid)) ?? [];
+
+      dispatch(cardsReceived([maybeCard, ...supporting]));
     }
     return maybeCard;
   };

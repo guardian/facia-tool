@@ -217,6 +217,25 @@ export const moveFrontCollection =
     }
   };
 
+export const feastCollectionToFrontCollection =
+  (
+    frontId: string,
+    collectionId: string,
+    feastCollectionCardId: string
+  ): ThunkResult<Promise<void>> =>
+    async (dispatch, getState) => {
+      const url = `/editions-api/fronts/${frontId}/collections/${collectionId}/feastCollectionToContainer/${feastCollectionCardId}`;
+      const response = await fetch(url, { method: "POST", credentials: "include" });
+
+      if(response.status===200) {
+        const editionsCollections = ( await response.json() ) as EditionsCollection[];
+        processNewEditionFrontResponse(frontId, editionsCollections, dispatch, getState);
+      } else {
+        const responseBody = await response.text();
+        console.error(`Unable to migrate to container - server said ${response.status} ${responseBody}`);
+      }
+    }
+
 export const getNewCollectionIndexForMove = (
   front: FrontConfig,
   collectionId: string,

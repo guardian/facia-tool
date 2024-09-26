@@ -803,7 +803,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         val frontFromIssue = issue.fronts.head
 
         editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection"), user = user, now = now) match {
-          case Right(front) =>
+          case Right((front, _)) =>
             front.collections.size shouldBe 2
             front.collections.head.displayName shouldBe "Test Collection"
           case Left(error) =>
@@ -823,7 +823,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
           _ <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection 2"), user = user, now = now)
           front <- editionsDB.addCollectionToFront(frontFromIssue.id, name = Some("Test Collection 3"), user = user, now = now)
         } yield {
-          front.collections.map(_.displayName) shouldBe List (
+          front._1.collections.map(_.displayName) shouldBe List (
             "Test Collection 3",
             "Test Collection 2",
             "Test Collection",
@@ -842,7 +842,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         val frontFromIssue = issue.fronts.head
 
         editionsDB.addCollectionToFront(frontFromIssue.id, user = user, now = now) match {
-          case Right(front) =>
+          case Right((front, _)) =>
             front.collections.head.displayName shouldBe "New collection"
           case Left(error) =>
             Assertions.fail(s"Error adding collection to front: ${error.getMessage}")
@@ -857,7 +857,7 @@ class EditionsDBTest extends FreeSpec with Matchers with EditionsDBService with 
         val frontFromIssue = issue.fronts.head
 
         editionsDB.addCollectionToFront(frontFromIssue.id, user = user, now = now) match {
-          case Right(front) =>
+          case Right((front, _)) =>
             front.collections.head.displayName shouldBe "New collection"
           case Left(error) =>
             Assertions.fail(s"Error adding collection to front: ${error.getMessage}")

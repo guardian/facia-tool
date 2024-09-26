@@ -176,7 +176,7 @@ const getCardEntitiesFromDrop = async (
   }
 
   if (drop.type === 'FEAST_COLLECTION') {
-    return getFeastCollectionFromFeedDrop();
+    return getFeastCollectionFromFeedDrop(drop.data);
   }
 
   const droppedDataURL = drop.data.trim();
@@ -293,8 +293,8 @@ const getRecipeEntityFromFeedDrop = (recipe: Recipe): [Card] => {
   return [card];
 };
 
-const getFeastCollectionFromFeedDrop = (): [Card] => {
-  return [createCard(v4(), false, { cardType: CardTypesMap.FEAST_COLLECTION })];
+const getFeastCollectionFromFeedDrop = (data: Card): [Card] => {
+  return [data];
 };
 
 const getArticleEntitiesFromFeedDrop = (

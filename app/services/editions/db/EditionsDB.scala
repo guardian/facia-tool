@@ -2,22 +2,22 @@ package services.editions.db
 
 import java.time.{Instant, OffsetDateTime, ZoneOffset}
 import java.time.temporal.ChronoUnit
-
 import scalikejdbc._
 import com.gu.pandomainauth.model.User
-import model.editions.EditionsFront
+import model.editions.{EditionsCard, EditionsFeastCollection, EditionsFeastCollectionMetadata, EditionsFront}
+
+import java.util.UUID
 
 class EditionsDB(url: String, user: String, password: String) extends IssueQueries with FrontsQueries with CollectionsQueries {
   Class.forName("org.postgresql.Driver")
   ConnectionPool.singleton(url, user, password)
 
-
   /**
     * Add a EditionsCollection to an EditionsFront at the specified index.
     *
-    * @return the ID of the collection.
+    * @return tuple of the updated front and the ID of the collection.
     */
-  def addCollectionToFront(frontId: String, name: Option[String] = None, collectionIndex: Option[Int] = None, user: User, now: OffsetDateTime): Either[Error, EditionsFront] = DB localTx { implicit session =>
+  def addCollectionToFront(frontId: String, name: Option[String] = None, collectionIndex: Option[Int] = None, user: User, now: OffsetDateTime): Either[Error, (EditionsFront, String)] = DB localTx { implicit session =>
     val truncatedNow = EditionsDB.truncateDateTime(now)
 
     for {
@@ -31,7 +31,7 @@ class EditionsDB(url: String, user: String, password: String) extends IssueQueri
       )
       updatedFront <- getFront(frontId).toRight(EditionsDB.InvariantError(s"Updated front $frontId not found in issue"))
       _ <- updatedFront.collections.find(_.id == collectionId).toRight(EditionsDB.InvariantError(s"New collection ${collectionId} not found in updated front ${frontId}"))
-    } yield updatedFront
+    } yield (updatedFront, collectionId)
   }
 
   /**

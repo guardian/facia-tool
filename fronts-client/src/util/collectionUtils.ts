@@ -6,6 +6,7 @@ import { CapiArticle } from 'types/Capi';
 import { Recipe } from '../types/Recipe';
 import { Chef } from '../types/Chef';
 import { CardTypesMap } from 'constants/cardTypes';
+import { Card } from '../types/Collection';
 
 export interface RefDrop {
   type: 'REF';
@@ -28,6 +29,7 @@ export interface ChefDrop {
 
 export interface FeastCollectionDrop {
   type: 'FEAST_COLLECTION';
+  data: Card
 }
 
 export type MappableDropType =
@@ -50,8 +52,9 @@ const dropToCardMap = {
     type: 'CHEF',
     data: JSON.parse(data),
   }),
-  [CardTypesMap.FEAST_COLLECTION]: (): FeastCollectionDrop => ({
+  [CardTypesMap.FEAST_COLLECTION]: (data:string): FeastCollectionDrop => ({
     type: 'FEAST_COLLECTION',
+    data: JSON.parse(data)
   }),
   text: (url: string): RefDrop => ({ type: 'REF', data: url }),
 };
