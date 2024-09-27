@@ -66,6 +66,8 @@ class FaciaPress(val faciaPressTopic: FaciaPressTopic, val configAgent: ConfigAg
         path <- configAgent.getConfigsUsingCollectionId(id)
       } yield path
 
+      val pathToCollectionIdsLookup = configAgent.getConfigCollectionMap
+
       def sendEvents(pressType: PressType) = Future.traverse(
         paths.filter(_ => pressType match {
           case Live => pressCommand.live
@@ -74,7 +76,11 @@ class FaciaPress(val faciaPressTopic: FaciaPressTopic, val configAgent: ConfigAg
       ) { path =>
           val event = PressJob(FrontPath(path), pressType, forceConfigUpdate = pressCommand.forceConfigUpdate)
 
-          val publishResultFuture = faciaPressTopic.publish(event, pressCommand.collectionIds)
+          val collectionIdsRelevantToPath = pressCommand.collectionIds.filter(collectionId => {
+            pathToCollectionIdsLookup.get(path).exists(_.contains(collectionId))
+          })
+
+          val publishResultFuture = faciaPressTopic.publish(event, collectionIdsRelevantToPath)
 
           publishResultFuture.onComplete {
             case Failure(error) =>
