@@ -96,6 +96,7 @@ interface ComponentProps extends ContainerProps {
   size?: string;
   isEmailFronts?: boolean;
   collectionType?: string;
+  suppressImages?: boolean;
 }
 
 type Props = ComponentProps &
@@ -460,7 +461,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       valid,
       collectionType,
       groupSizeId,
+      suppressImages,
     } = this.props;
+
+    if (!imageHide && suppressImages) {
+      change('imageHide', suppressImages);
+    }
 
     const isEditionsMode = editMode === 'editions';
 
@@ -763,7 +769,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
                       label="Hide media"
                       id={getInputId(cardId, 'hide-media')}
                       type="checkbox"
-                      default={true}
+                      default={false}
                       onChange={() => this.changeImageField('imageHide')}
                     />
                   </InputGroup>
@@ -1116,6 +1122,8 @@ const createMapStateToProps = () => {
       coverCardImageReplace: valueSelector(state, 'coverCardImageReplace'),
       coverCardMobileImage: valueSelector(state, 'coverCardMobileImage'),
       coverCardTabletImage: valueSelector(state, 'coverCardTabletImage'),
+      suppressImages:
+        parentCollection?.frontsToolSettings?.suppressImages || false,
       pickedKicker: !!article ? article.pickedKicker : undefined,
       isEmailFronts,
       collectionType: collectionId

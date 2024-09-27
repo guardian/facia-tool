@@ -103,24 +103,6 @@ export const getInitialValuesForCardForm = (
   );
   slideshowBackfill.fill(undefined);
 
-  function getImageHide(
-    article: DerivedArticle,
-    parentCollection: Collection | null | undefined
-  ): boolean {
-    console.log('here', article.title);
-    console.log(
-      'parentCollection',
-      parentCollection?.frontsToolSettings?.suppressImages
-    );
-    if (parentCollection?.frontsToolSettings?.suppressImages) {
-      return true;
-    }
-    if (article.imageHide !== undefined) {
-      return article.imageHide;
-    }
-    return false;
-  }
-
   return article
     ? {
         headline: article.headline || '',
@@ -139,7 +121,7 @@ export const getInitialValuesForCardForm = (
         trailText: article.trailText || '',
         imageCutoutReplace: article.imageCutoutReplace || false,
         imageCutoutSrc: article.imageCutoutSrc || '',
-        imageHide: getImageHide(article, parentCollection),
+        imageHide: article.imageHide || false,
         imageReplace: article.imageReplace || false,
         imageSlideshowReplace: article.imageSlideshowReplace || false,
         primaryImage: {
