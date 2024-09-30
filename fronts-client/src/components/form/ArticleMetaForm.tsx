@@ -75,8 +75,8 @@ import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import InputRadio from 'components/inputs/InputRadio';
 import {
-  FLEXIBLE_GENERAL_NAME,
-  FLEXIBLE_SPECIAL_NAME,
+  FLEXIBLE_GENERAL,
+  FLEXIBLE_SPECIAL,
 } from 'constants/flexibleContainers';
 
 interface ComponentProps extends ContainerProps {
@@ -529,11 +529,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     };
 
     const allowGigaBoost = () =>
-      !collectionType /* clipboard */ ||
+      /* clipboard */
+      !collectionType ||
       (collectionType &&
-        (collectionType === FLEXIBLE_SPECIAL_NAME /* flexible special */ ||
-          (collectionType ===
-            FLEXIBLE_GENERAL_NAME /* splash group in flexible general */ &&
+        /* flexible special */
+        (collectionType === FLEXIBLE_SPECIAL ||
+          /* splash group in flexible general */
+          (collectionType === FLEXIBLE_GENERAL &&
             groupSizeId &&
             groupSizeId > 0)));
 

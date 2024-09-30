@@ -48,7 +48,7 @@ import {
   InsertActionCreator,
   InsertThunkActionCreator,
 } from 'types/Cards';
-import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
+import { FLEXIBLE_GENERAL } from 'constants/flexibleContainers';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -219,7 +219,7 @@ const mayLowerCardBoostLevelForDestinationGroup = (
     const groupId = to.id;
     const { collection } = selectGroupCollection(state, groupId);
     const group = selectGroups(state)[groupId];
-    if (collection?.type === FLEXIBLE_GENERAL_NAME) {
+    if (collection?.type === FLEXIBLE_GENERAL) {
       if (
         group &&
         (!group.id || parseInt(group.id) === 0) &&
@@ -273,7 +273,9 @@ const insertCardWithCreate =
           persistTo
         );
 
-        if (modifyCardAction) dispatch(modifyCardAction);
+        if (modifyCardAction) {
+          dispatch(modifyCardAction);
+        }
 
         dispatch(
           insertActionCreator(
@@ -381,7 +383,9 @@ const moveCard = (
           parent,
           persistTo
         );
-        if (modifyCardAction) dispatch(modifyCardAction);
+        if (modifyCardAction) {
+          dispatch(modifyCardAction);
+        }
 
         dispatch(
           insertActionCreator(
@@ -444,8 +448,11 @@ export const createArticleEntitiesFromDrop = (
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
     }
     if (maybeCard) {
-      //if the card we are dropping has supporting cards, ensure that they travel too
-      const supporting = maybeCard.meta?.supporting?.map(uuid=>selectCard(getState(), uuid)) ?? [];
+      // if the card we are dropping has supporting cards, ensure that they travel too
+      const supporting =
+        maybeCard.meta?.supporting?.map((uuid) =>
+          selectCard(getState(), uuid)
+        ) ?? [];
 
       dispatch(cardsReceived([maybeCard, ...supporting]));
     }

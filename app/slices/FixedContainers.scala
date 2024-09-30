@@ -20,8 +20,8 @@ class FixedContainers(val config: ApplicationConfiguration) {
   val scrollableSmall = slices(ScrollableSmall)
   val scrollableMedium = slices(ScrollableMedium)
   val scrollableFeature = slices(ScrollableFeature)
+  val staticFeature2 = slices(StaticFeature)
   val staticMedium4 = slices(QuarterQuarterQuarterQuarter)
-  val staticFeature2 = slices(StaticFeature2)
 
   val all: Map[String, ContainerDefinition] = Map(
     ("fixed/small/slow-I", slices(FullMedia75)),
