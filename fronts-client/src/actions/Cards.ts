@@ -48,7 +48,7 @@ import {
   InsertActionCreator,
   InsertThunkActionCreator,
 } from 'types/Cards';
-import { FLEXIBLE_GENERAL } from 'constants/flexibleContainers';
+import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -219,7 +219,7 @@ const mayLowerCardBoostLevelForDestinationGroup = (
     const groupId = to.id;
     const { collection } = selectGroupCollection(state, groupId);
     const group = selectGroups(state)[groupId];
-    if (collection?.type === FLEXIBLE_GENERAL) {
+    if (collection?.type === FLEXIBLE_GENERAL_NAME) {
       if (
         group &&
         (!group.id || parseInt(group.id) === 0) &&

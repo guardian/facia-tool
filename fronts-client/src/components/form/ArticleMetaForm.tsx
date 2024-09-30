@@ -75,8 +75,8 @@ import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import InputRadio from 'components/inputs/InputRadio';
 import {
-  FLEXIBLE_GENERAL,
-  FLEXIBLE_SPECIAL,
+  FLEXIBLE_GENERAL_NAME,
+  FLEXIBLE_SPECIAL_NAME,
 } from 'constants/flexibleContainers';
 
 interface ComponentProps extends ContainerProps {
@@ -533,9 +533,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       !collectionType ||
       (collectionType &&
         /* flexible special */
-        (collectionType === FLEXIBLE_SPECIAL ||
+        (collectionType === FLEXIBLE_SPECIAL_NAME ||
           /* splash group in flexible general */
-          (collectionType === FLEXIBLE_GENERAL &&
+          (collectionType === FLEXIBLE_GENERAL_NAME &&
             groupSizeId &&
             groupSizeId > 0)));
 
