@@ -1,13 +1,5 @@
 import pageConfig from 'util/extractConfigFromPage';
-import {
-  FLEXIBLE_GENERAL,
-  FLEXIBLE_SPECIAL,
-  SCROLLABLE_SMALL,
-  SCROLLABLE_MEDIUM,
-  SCROLLABLE_FEATURE,
-  STATIC_MEDIUM_4,
-  STATIC_FEATURE_2,
-} from './flexibleContainers';
+import { FLEXIBLE_GENERAL, FLEXIBLE_SPECIAL } from './flexibleContainers';
 
 export const SUPPORT_PORTRAIT_CROPS =
   pageConfig?.userData?.featureSwitches.find(
@@ -38,11 +30,11 @@ export const COLLECTIONS_USING_PORTRAIT_TRAILS: string[] = [];
 export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [
   FLEXIBLE_GENERAL,
   FLEXIBLE_SPECIAL,
-  SCROLLABLE_SMALL,
-  SCROLLABLE_MEDIUM,
-  SCROLLABLE_FEATURE,
-  STATIC_MEDIUM_4,
-  STATIC_FEATURE_2,
+  'scrollable/small',
+  'scrollable/medium',
+  'scrollable/feature',
+  'static/medium/4',
+  'static/feature/2',
 ];
 
 export const defaultCardTrailImageCriteria = landScapeCardImageCriteria;
