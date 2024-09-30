@@ -960,18 +960,30 @@ case object ShowcaseSingleStories extends Slice {
  */
 case object Highlights extends Slice {
   val layout = SliceLayout(
-    cssClassName = "q-q-q-pkc",
+    cssClassName = "scrollable-t-t-t",
     columns = Seq(
-      Rows(
+      SingleItem(
         colSpan = 1,
-        columns = 6,
-        rows = 1,
         ItemClasses(
-          mobile = MediaList,
+          mobile = Standard,
           tablet = MediaList,
         ),
       ),
-    ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+    )
   )
 }
 
@@ -995,16 +1007,17 @@ case object Highlights extends Slice {
  */
 case object ScrollableSmall extends Slice {
   val layout = SliceLayout(
-    cssClassName = "h-h",
+    cssClassName = "scrollable-h-h",
     columns = Seq(Rows(
       colSpan = 1,
-      columns = 8,
+      columns = 2,
       rows = 1,
       ItemClasses(
-        mobile = MediaList,
-        tablet = MediaList,
-      )
-    ))
+          mobile = MediaList,
+          tablet = MediaList,
+        ),
+      ),
+    )
   )
 }
 
@@ -1031,16 +1044,37 @@ case object ScrollableSmall extends Slice {
  */
 case object ScrollableMedium extends Slice {
   val layout = SliceLayout(
-    cssClassName = "t-t-pkc",
-    columns = Seq(Rows(
-      colSpan = 1,
-      columns = 8,
-      rows = 1,
-      ItemClasses(
-        mobile = Standard,
-        tablet = Standard,
-      )
-    ))
+    cssClassName = "scrollable-q-q-q-q",
+    columns = Seq(
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = Standard,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = Standard,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = Standard,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = Standard,
+        ),
+      ),
+    )
   )
 }
 
@@ -1069,32 +1103,47 @@ case object ScrollableMedium extends Slice {
  */
 case object ScrollableFeature extends Slice {
   val layout = SliceLayout(
-    cssClassName = "t-t-t",
-    columns = Seq(Rows(
-      colSpan = 1,
-      columns = 6,
-      rows = 1,
-      ItemClasses(
-        mobile = cards.FullMedia100,
-        tablet = Third,
-      )
-    ))
+    cssClassName = "scrollable-fm-fm-fm",
+    columns = Seq(
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = cards.FullMedia100,
+          tablet = cards.FullMedia100
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = cards.FullMedia100,
+          tablet = cards.FullMedia100
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = cards.FullMedia100,
+          tablet = cards.FullMedia100
+        ),
+      ),
+    )
   )
 }
 
+
 /*
- * Static Feature 2 layout
+ * The Static Feature container layout has two immersive style cards (full media)
  *
- * Desktop: two feature cards
- * .____________.____________.
- * | ########## | ########## |
- * | ########## | ########## |
- * | ########## | ########## |
- * | ########## | ########## |
- * | ########## | ########## |
- * '------------'------------'
+ * Desktop:
+ * .____________._____________.
+ * | ########## | ##########  |
+ * | ########## | ##########  |
+ * | ########## | ##########  |
+ * | ########## | ##########  |
+ * | ########## | ##########  |
+ * '------------'-------------'
  *
- * Mobile: two feature cards stacked
+ * Mobile:
  * .____________.
  * | ########## |
  * | ########## |
@@ -1109,17 +1158,24 @@ case object ScrollableFeature extends Slice {
  * | ########## |
  * '------------'
  */
-case object StaticFeature2 extends Slice {
+case object StaticFeature extends Slice {
   val layout = SliceLayout(
-    cssClassName = "h-h",
-    columns = Seq(Rows(
-      colSpan = 1,
-      columns = 2,
-      rows = 1,
-      ItemClasses(
-        mobile = cards.FullMedia100,
-        tablet = Half,
-      )
-    ))
+    cssClassName = "hfm-hfm",
+    columns = Seq(
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = cards.FullMedia100,
+          tablet = cards.FullMedia100
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = cards.FullMedia100,
+          tablet = cards.FullMedia100
+        ),
+      ),
+    )
   )
 }
