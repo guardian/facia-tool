@@ -1,5 +1,8 @@
 import pageConfig from 'util/extractConfigFromPage';
-import { FLEXIBLE_GENERAL_NAME, FLEXIBLE_SPECIAL_NAME} from './flexibleContainers';
+import {
+  FLEXIBLE_GENERAL_NAME,
+  FLEXIBLE_SPECIAL_NAME
+} from './flexibleContainers';
 
 export const SUPPORT_PORTRAIT_CROPS =
   pageConfig?.userData?.featureSwitches.find(
@@ -24,8 +27,10 @@ export const landscape5To4CardImageCriteria = {
   heightAspectRatio: 4,
 };
 
-// @todo - add the right collection type when it exists
-export const COLLECTIONS_USING_PORTRAIT_TRAILS: string[] = [];
+export const COLLECTIONS_USING_PORTRAIT_TRAILS: string[] = [
+  'scrollable/feature',
+  'static/feature/2',
+];
 
 export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [
   FLEXIBLE_GENERAL_NAME,
@@ -34,7 +39,6 @@ export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [
   'scrollable/medium',
   'scrollable/feature',
   'static/medium/4',
-  'static/feature/2',
 ];
 
 export const defaultCardTrailImageCriteria = landScapeCardImageCriteria;
