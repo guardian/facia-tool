@@ -61,7 +61,7 @@ const tagLookupResponse = {
     userTier: 'internal',
     total: 2,
     startIndex: 1,
-    pageSize: 100,
+    pageSize: 20,
     currentPage: 1,
     pages: 1,
     results: [
@@ -139,7 +139,7 @@ describe('chefsBundle', () => {
       },
       {
         pattern:
-          '/api/live/tags?type=contributor&ids=profile%2Fanna-jones%2Cprofile%2Fanna-del-conte&show-elements=image&show-fields=all&page-size=100',
+          '/api/live/tags?type=contributor&ids=profile%2Fanna-jones%2Cprofile%2Fanna-del-conte&show-elements=image&show-fields=all&page-size=20',
         response: tagLookupResponse,
       },
     ]);
@@ -154,12 +154,17 @@ describe('chefsBundle', () => {
     const store = createStoreAndFetchMock([
       {
         pattern:
-          '/api/live/tags?type=contributor&ids=profile%2Fanna-jones%2Cprofile%2Fanna-del-conte&show-elements=image&show-fields=all&page-size=100',
+          '/api/live/tags?type=contributor&ids=profile%2Fanna-jones%2Cprofile%2Fanna-del-conte&show-elements=image&show-fields=all&page-size=20',
         response: tagLookupResponse,
       },
     ]);
     await store.dispatch(
-      fetchChefsById(['profile/anna-jones', 'profile/anna-del-conte']) as any
+      fetchChefsById(
+        ['profile/anna-jones', 'profile/anna-del-conte'],
+        1,
+        20,
+        true
+      ) as any
     );
     expect(chefSelectors.selectAll(store.getState())).toEqual(
       expectedResultForLookup
