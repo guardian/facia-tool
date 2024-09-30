@@ -1,6 +1,5 @@
 import styled, { createGlobalStyle } from 'styled-components';
 
-// tslint:disable:no-unused-expression
 export const PlaceholderAnimation = createGlobalStyle`
   @keyframes phAnimation {
     0% {

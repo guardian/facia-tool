@@ -500,7 +500,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			.then(this.props.input.onChange)
 			.catch((err) => {
 				alert(err);
-				// tslint:disable-next-line no-console
 				console.log('@todo:handle error', err);
 			});
 	};
@@ -524,7 +523,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			.then(this.props.input.onChange)
 			.catch((err) => {
 				alert(err);
-				// tslint:disable-next-line no-console
 				console.log('@todo:handle error', err);
 			});
 		this.setState({ imageSrc: '' });
@@ -573,7 +571,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			})
 			.catch((err) => {
 				alert(err);
-				// tslint:disable-next-line no-console
 				console.log('@todo:handle error', err);
 			});
 	};
