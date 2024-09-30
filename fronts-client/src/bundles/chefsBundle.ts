@@ -60,7 +60,7 @@ export const fetchChefsById =
   (
     tagIds: string[],
     page = 1,
-    pageSize = 20,
+    pageSize = 100,
     alreadyStarted: boolean = false
   ): ThunkResult<void> =>
   async (dispatch) => {
@@ -73,7 +73,7 @@ export const fetchChefsById =
         ids: tagIds.join(','),
         'show-elements': 'image',
         'show-fields': 'all',
-        'page-size': 100,
+        'page-size': pageSize,
       });
 
       const payload: {
