@@ -16,6 +16,7 @@
     "run-checks": "yarn test && yarn lint && yarn test-integration"
   },
   "devDependencies": {
+    "@guardian/prettier": "^8.0.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@types/fetch-mock": "^6.0.4",
     "@types/jest": "^29.5.1",
