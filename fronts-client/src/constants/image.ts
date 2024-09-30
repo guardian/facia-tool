@@ -1,7 +1,12 @@
 import pageConfig from 'util/extractConfigFromPage';
 import {
-  FLEXIBLE_GENERAL_NAME,
-  FLEXIBLE_SPECIAL_NAME,
+  FLEXIBLE_GENERAL,
+  FLEXIBLE_SPECIAL,
+  SCROLLABLE_SMALL,
+  SCROLLABLE_MEDIUM,
+  SCROLLABLE_FEATURE,
+  STATIC_MEDIUM_4,
+  STATIC_FEATURE_2,
 } from './flexibleContainers';
 
 export const SUPPORT_PORTRAIT_CROPS =
@@ -31,8 +36,13 @@ export const landscape5To4CardImageCriteria = {
 export const COLLECTIONS_USING_PORTRAIT_TRAILS: string[] = [];
 
 export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [
-  FLEXIBLE_GENERAL_NAME,
-  FLEXIBLE_SPECIAL_NAME,
+  FLEXIBLE_GENERAL,
+  FLEXIBLE_SPECIAL,
+  SCROLLABLE_SMALL,
+  SCROLLABLE_MEDIUM,
+  SCROLLABLE_FEATURE,
+  STATIC_MEDIUM_4,
+  STATIC_FEATURE_2,
 ];
 
 export const defaultCardTrailImageCriteria = landScapeCardImageCriteria;
