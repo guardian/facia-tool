@@ -104,6 +104,8 @@ jobs:
                 cache-dependency-path: fronts-client/yarn.lock
             - run: yarn install --frozen-lockfile
               working-directory: fronts-client
+            - run: yarn lint
+              working-directory: fronts-client
             - run: yarn build
               working-directory: fronts-client
             - uses: actions/upload-artifact@v4
