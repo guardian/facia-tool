@@ -41,7 +41,6 @@ import { PlaceholderAnimation } from 'components/BasePlaceholder';
 import OptionsModal from './modals/OptionsModal';
 import BannerNotification from './notifications/BannerNotification';
 
-// tslint:disable:no-unused-expression
 // NB the properties described in font-face work as matchers, assigning text to the font imported by the source.
 // this is why we have 2 declarations of font-weight in several of these font-faces. Assigning either hits this font.
 const AppFonts = createGlobalStyle`

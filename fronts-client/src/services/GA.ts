@@ -10,7 +10,6 @@ const DIMENSION_MAP = {
 	dimension4: 'version',
 };
 
-// tslint:disable-next-line
 console.info('Google Analytics tracking has been disabled');
 const gtag = (command: string, params1: any, params2?: any) => {};
 
