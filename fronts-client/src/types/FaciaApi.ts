@@ -31,6 +31,7 @@ type Platform = 'Web' | 'Platform';
 
 interface FrontsToolSettings {
   displayEditWarning?: boolean;
+  suppressImages?: boolean;
 }
 
 interface CollectionConfigResponse {
