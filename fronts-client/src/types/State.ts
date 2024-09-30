@@ -12,9 +12,9 @@ import { OptionsModalProps as OptionsModalState } from 'types/Modals';
 import { State as editorState } from 'bundles/frontsUI';
 import { EditionsIssueState } from 'bundles/editionsIssueBundle';
 import {
-  capiLiveFeed,
-  capiPreviewFeed,
-  prefillFeed,
+	capiLiveFeed,
+	capiPreviewFeed,
+	prefillFeed,
 } from 'bundles/capiFeedBundle';
 import { State as staleFrontsState } from 'reducers/staleFrontsReducer';
 import { State as feedStateType } from 'reducers/feedStateReducer';
@@ -28,36 +28,36 @@ import { reducer as notificationsReducer } from 'bundles/notificationsBundle';
 import { reducer } from '../bundles/chefsBundle';
 
 interface FeedState {
-  feedState: feedStateType;
-  capiLiveFeed: ReturnType<typeof capiLiveFeed>;
-  capiPreviewFeed: ReturnType<typeof capiPreviewFeed>;
-  prefillFeed: ReturnType<typeof prefillFeed>;
+	feedState: feedStateType;
+	capiLiveFeed: ReturnType<typeof capiLiveFeed>;
+	capiPreviewFeed: ReturnType<typeof capiPreviewFeed>;
+	prefillFeed: ReturnType<typeof prefillFeed>;
 }
 
 export interface State {
-  fronts: frontsState;
-  config: Config | null;
-  error: ActionError;
-  path: pathState;
-  unpublishedChanges: unpublishedChangesState;
-  clipboard: clipboardState;
-  editor: editorState;
-  staleFronts: staleFrontsState;
-  form: FormStateMap;
-  optionsModal: OptionsModalState | null;
-  feed: FeedState;
-  focus: focusState;
-  editionsIssue: EditionsIssueState;
-  featureSwitches: featureSwitchesState;
-  cards: {
-    [uuid: string]: Card;
-  };
-  groups: {
-    [id: string]: Group;
-  };
-  collections: ReturnType<typeof collections>;
-  externalArticles: ReturnType<typeof externalArticles>;
-  pageViewData: ReturnType<typeof pageViewData>;
-  notifications: ReturnType<typeof notificationsReducer>;
-  chefs: ReturnType<typeof reducer>;
+	fronts: frontsState;
+	config: Config | null;
+	error: ActionError;
+	path: pathState;
+	unpublishedChanges: unpublishedChangesState;
+	clipboard: clipboardState;
+	editor: editorState;
+	staleFronts: staleFrontsState;
+	form: FormStateMap;
+	optionsModal: OptionsModalState | null;
+	feed: FeedState;
+	focus: focusState;
+	editionsIssue: EditionsIssueState;
+	featureSwitches: featureSwitchesState;
+	cards: {
+		[uuid: string]: Card;
+	};
+	groups: {
+		[id: string]: Group;
+	};
+	collections: ReturnType<typeof collections>;
+	externalArticles: ReturnType<typeof externalArticles>;
+	pageViewData: ReturnType<typeof pageViewData>;
+	notifications: ReturnType<typeof notificationsReducer>;
+	chefs: ReturnType<typeof reducer>;
 }

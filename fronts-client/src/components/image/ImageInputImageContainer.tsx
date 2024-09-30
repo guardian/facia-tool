@@ -16,8 +16,8 @@ const smallPortaitStyle = `
 const normalPortraitStyle = `
   width: ${NORMAL_PORTRAIT_WIDTH}px;
   height: ${Math.floor(
-    NORMAL_PORTRAIT_WIDTH * PORTRAIT_RATIO + TEXTINPUT_HEIGHT
-  )}px;
+		NORMAL_PORTRAIT_WIDTH * PORTRAIT_RATIO + TEXTINPUT_HEIGHT,
+	)}px;
   `;
 
 const smallLandscapeStyle = `
@@ -47,32 +47,32 @@ const normalLandscape54Style = `
 `;
 
 const getVariableImageContainerStyle = ({
-  portrait = false,
-  small = false,
-  shouldShowLandscape54: shouldShowLandscape54 = false,
+	portrait = false,
+	small = false,
+	shouldShowLandscape54: shouldShowLandscape54 = false,
 }: {
-  small?: boolean;
-  portrait?: boolean;
-  shouldShowLandscape54?: boolean;
+	small?: boolean;
+	portrait?: boolean;
+	shouldShowLandscape54?: boolean;
 }) => {
-  if (portrait) return small ? smallPortaitStyle : normalPortraitStyle;
-  else if (shouldShowLandscape54)
-    return small ? smallLandscape54Style : normalLandscape54Style;
-  else return small ? smallLandscapeStyle : normalLandscapeStyle;
+	if (portrait) return small ? smallPortaitStyle : normalPortraitStyle;
+	else if (shouldShowLandscape54)
+		return small ? smallLandscape54Style : normalLandscape54Style;
+	else return small ? smallLandscapeStyle : normalLandscapeStyle;
 };
 
 // assuming any portrait image (ie height>width)
 // is in the 4:5 ratio for purposes of styling
 // the image container
 export const ImageInputImageContainer = styled.div<{
-  small?: boolean;
-  portrait?: boolean;
-  shouldShowLandscape54?: boolean;
+	small?: boolean;
+	portrait?: boolean;
+	shouldShowLandscape54?: boolean;
 }>`
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  transition: background-color 0.15s;
-  max-width: 100%;
-  ${getVariableImageContainerStyle}
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	transition: background-color 0.15s;
+	max-width: 100%;
+	${getVariableImageContainerStyle}
 `;

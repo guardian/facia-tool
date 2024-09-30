@@ -1,15 +1,15 @@
 import type { Config } from 'types/Config';
 
 const pageConfig = () => {
-  const configEl = document.getElementById('config');
+	const configEl = document.getElementById('config');
 
-  if (!configEl) {
-    throw new Error('Missing config');
-  }
+	if (!configEl) {
+		throw new Error('Missing config');
+	}
 
-  const config: Config = JSON.parse(configEl.dataset.value || '');
+	const config: Config = JSON.parse(configEl.dataset.value || '');
 
-  return config;
+	return config;
 };
 
 export default pageConfig();

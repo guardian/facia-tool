@@ -5,17 +5,17 @@ const enc = encodeURIComponent;
  * https://github.com/facebook/flow/issues/2221
  */
 const qs = (o: { [key: string]: string | void }) =>
-  `?${Object.keys(o)
-    .map((key) => {
-      const val = o[key];
+	`?${Object.keys(o)
+		.map((key) => {
+			const val = o[key];
 
-      if (!val) {
-        return false;
-      }
+			if (!val) {
+				return false;
+			}
 
-      return `${enc(key)}=${enc(val)}`;
-    })
-    .filter(Boolean)
-    .join('&')}`;
+			return `${enc(key)}=${enc(val)}`;
+		})
+		.filter(Boolean)
+		.join('&')}`;
 
 export { qs };

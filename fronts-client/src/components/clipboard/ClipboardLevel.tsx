@@ -9,56 +9,56 @@ import { styled, theme } from 'constants/theme';
 import { CardTypeLevel } from 'lib/dnd/CardTypeLevel';
 
 interface OuterProps {
-  children: LevelChild<Card>;
-  onMove: MoveHandler<Card>;
-  onDrop: DropHandler;
+	children: LevelChild<Card>;
+	onMove: MoveHandler<Card>;
+	onDrop: DropHandler;
 }
 
 interface InnerProps {
-  cards: Card[];
+	cards: Card[];
 }
 
 type Props = OuterProps & InnerProps;
 
 const ClipboardItemContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  width: 100%;
-  /* Offset to align the start of the cards with the clipboard open tab */
-  margin-top: 7px;
+	display: flex;
+	flex-direction: column;
+	flex: 1;
+	width: 100%;
+	/* Offset to align the start of the cards with the clipboard open tab */
+	margin-top: 7px;
 `;
 
 const ClipboardDropContainer = styled(DefaultDropContainer)<{
-  index: number;
-  length: number;
+	index: number;
+	length: number;
 }>`
-  flex-basis: 8px;
-  flex-grow: ${({ index, length }) => (index === length ? 1 : 0)};
+	flex-basis: 8px;
+	flex-grow: ${({ index, length }) => (index === length ? 1 : 0)};
 `;
 
 const ClipboardLevel = ({ children, cards, onMove, onDrop }: Props) => (
-  <CardTypeLevel
-    containerElement={ClipboardItemContainer}
-    arr={cards}
-    parentType="clipboard"
-    parentId="clipboard"
-    onMove={onMove}
-    onDrop={onDrop}
-    renderDrop={(props) => (
-      <DropZone
-        {...props}
-        dropColor={theme.base.colors.dropZoneActiveStory}
-        dropContainer={ClipboardDropContainer}
-      />
-    )}
-  >
-    {children}
-  </CardTypeLevel>
+	<CardTypeLevel
+		containerElement={ClipboardItemContainer}
+		arr={cards}
+		parentType="clipboard"
+		parentId="clipboard"
+		onMove={onMove}
+		onDrop={onDrop}
+		renderDrop={(props) => (
+			<DropZone
+				{...props}
+				dropColor={theme.base.colors.dropZoneActiveStory}
+				dropContainer={ClipboardDropContainer}
+			/>
+		)}
+	>
+		{children}
+	</CardTypeLevel>
 );
 
 const mapStateToProps = (state: State) => ({
-  cards: selectClipboardArticles(state),
+	cards: selectClipboardArticles(state),
 });
 
 export default connect(mapStateToProps)(ClipboardLevel);
