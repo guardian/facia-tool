@@ -43,20 +43,20 @@ Fronts-Client is a ReactRedux Javascript application hooking into the existing F
 
 You'll need to understand the Redux concepts of Thunks and Selectors.
 
-| Uses                                                       | For                                                                                                     | Config                                                                                                     |
-|------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------|
-| [React](https://jestjs.io/docs/en/getting-started.html)    | Components                                                                                              |                                                                                                            |
-| [Redux](https://redux.js.org/)                             | State management                                                                                        |                                                                                                            |
-| [Redux Thunk](https://github.com/reduxjs/redux-thunk)      | Redux Thunk middleware allows you to write action creators that return a function instead of an action. |                                                                                                            |
-| [Reselect](https://github.com/reduxjs/reselect)            | Selectors can compute derived data, allowing Redux to store the minimal possible state.                 |                                                                                                            |
-| [Redux Forms](https://redux-form.com/7.4.2/)               | Form state management for Redux apps                                                                    |                                                                                                            |
-| [React Router](https://reacttraining.com/react-router/)    | Routing for React apps                                                                                  |                                                                                                            |
-| [Styled Components](https://www.styled-components.com/)    | Styling for components                                                                                  |                                                                                                            |
-| [Typescript](https://www.typescriptlang.org/)              | JS Types                                                                                                | [tsconfig](tsconfig.json), [tslint](tslint.json), [modules.d.ts](modules.d.ts), [global.d.ts](global.d.ts) |
-| [Lodash](https://lodash.com/)                              | JS helper utilities                                                                                     |                                                                                                            |
-| [Date Fns](https://date-fns.org/)                          | JS Date functions                                                                                       |                                                                                                            |
-| [Raven](https://github.com/getsentry/sentry-javascript)    | Sentry error reporting                                                                                  |                                                                                                            |
-| [Panda Session](https://github.com/guardian/panda-session) | Pan Domain (cross-gutools) session management                                                           |                                                                                                            |
+| Uses                                                       | For                                                                                                     | Config                                                                              |
+|------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| [React](https://jestjs.io/docs/en/getting-started.html)    | Components                                                                                              |                                                                                     |
+| [Redux](https://redux.js.org/)                             | State management                                                                                        |                                                                                     |
+| [Redux Thunk](https://github.com/reduxjs/redux-thunk)      | Redux Thunk middleware allows you to write action creators that return a function instead of an action. |                                                                                     |
+| [Reselect](https://github.com/reduxjs/reselect)            | Selectors can compute derived data, allowing Redux to store the minimal possible state.                 |                                                                                     |
+| [Redux Forms](https://redux-form.com/7.4.2/)               | Form state management for Redux apps                                                                    |                                                                                     |
+| [React Router](https://reacttraining.com/react-router/)    | Routing for React apps                                                                                  |                                                                                     |
+| [Styled Components](https://www.styled-components.com/)    | Styling for components                                                                                  |                                                                                     |
+| [Typescript](https://www.typescriptlang.org/)              | JS Types                                                                                                | [tsconfig](tsconfig.json), [modules.d.ts](modules.d.ts), [global.d.ts](global.d.ts) |
+| [Lodash](https://lodash.com/)                              | JS helper utilities                                                                                     |                                                                                     |
+| [Date Fns](https://date-fns.org/)                          | JS Date functions                                                                                       |                                                                                     |
+| [Raven](https://github.com/getsentry/sentry-javascript)    | Sentry error reporting                                                                                  |                                                                                     |
+| [Panda Session](https://github.com/guardian/panda-session) | Pan Domain (cross-gutools) session management                                                           |                                                                                     |
 
 ## Building and Compiling
 
@@ -117,7 +117,8 @@ yarn lint-fix
 |--------------------------------------------------|--------------------------------------|--------------------------------|
 | [Prettier](https://github.com/prettier/prettier) | Anti-bikeshed Auto syntax formatting | [.prettierrc](.prettierrc)     |
 | [.editorconfig](https://editorconfig.org/)       | Standard Editor formatting           | [.editorconfig](.editorconfig) |
-| [TSLint](https://palantir.github.io/tslint/)     | Typescript Linting                   | [tslint](tslint.json)          |
+
+It’s recommended to [set your editor up to run Prettier](https://prettier.io/docs/en/editors), so that your PRs don’t fail in CI due to the formatting check.
 
 ## Typescript
 We are using Typescript for typing in Fronts-Client.
