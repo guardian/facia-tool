@@ -1,6 +1,5 @@
 import { reEstablishSession } from 'panda-session';
 import notifications from './notifications';
-import { isError } from 'tslint/lib/error';
 import Raven from 'raven-js';
 
 const reauthUrl = '/login/status';
@@ -86,5 +85,9 @@ const pandaFetch = (
 			}
 		},
 	);
+
+function isError(possibleError: any): possibleError is Error {
+	return possibleError != undefined && possibleError.message !== undefined;
+}
 
 export default (url: string, body: RequestInit = {}) => pandaFetch(url, body);
