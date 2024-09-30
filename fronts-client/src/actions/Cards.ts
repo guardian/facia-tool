@@ -273,9 +273,7 @@ const insertCardWithCreate =
           persistTo
         );
 
-        if (modifyCardAction) {
-          dispatch(modifyCardAction);
-        }
+        if (modifyCardAction) dispatch(modifyCardAction);
 
         dispatch(
           insertActionCreator(
@@ -383,9 +381,7 @@ const moveCard = (
           parent,
           persistTo
         );
-        if (modifyCardAction) {
-          dispatch(modifyCardAction);
-        }
+        if (modifyCardAction) dispatch(modifyCardAction);
 
         dispatch(
           insertActionCreator(
@@ -448,11 +444,8 @@ export const createArticleEntitiesFromDrop = (
       dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
     }
     if (maybeCard) {
-      // if the card we are dropping has supporting cards, ensure that they travel too
-      const supporting =
-        maybeCard.meta?.supporting?.map((uuid) =>
-          selectCard(getState(), uuid)
-        ) ?? [];
+      //if the card we are dropping has supporting cards, ensure that they travel too
+      const supporting = maybeCard.meta?.supporting?.map(uuid=>selectCard(getState(), uuid)) ?? [];
 
       dispatch(cardsReceived([maybeCard, ...supporting]));
     }
