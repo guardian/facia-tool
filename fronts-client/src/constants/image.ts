@@ -1,5 +1,5 @@
 import pageConfig from 'util/extractConfigFromPage';
-import { FLEXIBLE_GENERAL, FLEXIBLE_SPECIAL } from './flexibleContainers';
+import { FLEXIBLE_GENERAL_NAME, FLEXIBLE_SPECIAL_NAME} from './flexibleContainers';
 
 export const SUPPORT_PORTRAIT_CROPS =
   pageConfig?.userData?.featureSwitches.find(
@@ -28,8 +28,8 @@ export const landscape5To4CardImageCriteria = {
 export const COLLECTIONS_USING_PORTRAIT_TRAILS: string[] = [];
 
 export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [
-  FLEXIBLE_GENERAL,
-  FLEXIBLE_SPECIAL,
+  FLEXIBLE_GENERAL_NAME,
+  FLEXIBLE_SPECIAL_NAME,
   'scrollable/small',
   'scrollable/medium',
   'scrollable/feature',
