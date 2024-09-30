@@ -529,13 +529,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
     };
 
     const allowGigaBoost = () =>
-      /* clipboard */
-      !collectionType ||
+      !collectionType /* clipboard */ ||
       (collectionType &&
-        /* flexible special */
-        (collectionType === FLEXIBLE_SPECIAL_NAME ||
-          /* splash group in flexible general */
-          (collectionType === FLEXIBLE_GENERAL_NAME &&
+        (collectionType === FLEXIBLE_SPECIAL_NAME /* flexible special */ ||
+          (collectionType ===
+            FLEXIBLE_GENERAL_NAME /* splash group in flexible general */ &&
             groupSizeId &&
             groupSizeId > 0)));
 
