@@ -31,7 +31,6 @@ type Platform = 'Web' | 'Platform';
 
 interface FrontsToolSettings {
   displayEditWarning?: boolean;
-  suppressImages?: boolean;
 }
 
 interface CollectionConfigResponse {
@@ -55,6 +54,7 @@ interface CollectionConfigResponse {
   frontsToolSettings?: FrontsToolSettings;
   prefill?: EditionsPrefill;
   targetedTerritory?: string;
+  suppressImages?: boolean;
 }
 
 interface FrontsConfigResponse {
