@@ -10,19 +10,19 @@ type Subscriber = (notification: Notification) => void;
  * circular dependencies.
  */
 class NotificationService {
-  private subscribers = [] as Subscriber[];
+	private subscribers = [] as Subscriber[];
 
-  public subscribe(subscriber: Subscriber) {
-    this.subscribers.push(subscriber);
-  }
+	public subscribe(subscriber: Subscriber) {
+		this.subscribers.push(subscriber);
+	}
 
-  public unsubscribe(subscriber: Subscriber) {
-    this.subscribers = this.subscribers.filter((_) => _ !== subscriber);
-  }
+	public unsubscribe(subscriber: Subscriber) {
+		this.subscribers = this.subscribers.filter((_) => _ !== subscriber);
+	}
 
-  public notify(notification: Notification) {
-    this.subscribers.forEach((sub) => sub(notification));
-  }
+	public notify(notification: Notification) {
+		this.subscribers.forEach((sub) => sub(notification));
+	}
 }
 
 export default new NotificationService();

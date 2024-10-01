@@ -12,40 +12,40 @@ import { State } from 'types/State';
 import { RecipeSearchContainer } from './RecipeSearchContainer';
 
 interface Props {
-  isClipboardOpen: boolean;
-  isFeast: boolean;
+	isClipboardOpen: boolean;
+	isFeast: boolean;
 }
 
 const FeedSectionContainer = styled.div`
-  background-color: ${theme.base.colors.backgroundColor};
+	background-color: ${theme.base.colors.backgroundColor};
 `;
 
 const FeedSectionContent = styled(SectionContent)`
-  padding-right: 0px;
-  padding-top: 10px;
+	padding-right: 0px;
+	padding-top: 10px;
 `;
 
 const FeedWrapper = styled.div<{ isClipboardOpen: boolean }>`
-  width: 409px;
-  ${media.large`width: 335px;`}
-  border-right: ${({ isClipboardOpen }) =>
-    isClipboardOpen ? `solid 1px ${theme.base.colors.borderColor}` : null};
+	width: 409px;
+	${media.large`width: 335px;`}
+	border-right: ${({ isClipboardOpen }) =>
+		isClipboardOpen ? `solid 1px ${theme.base.colors.borderColor}` : null};
 `;
 
 const FeedSection = ({ isClipboardOpen, isFeast }: Props) => (
-  <FeedSectionContainer>
-    <FeedSectionHeader />
-    <FeedSectionContent>
-      <FeedWrapper isClipboardOpen={isClipboardOpen}>
-        {isFeast ? <RecipeSearchContainer /> : <CapiSearchContainer />}
-      </FeedWrapper>
-      <Clipboard />
-    </FeedSectionContent>
-  </FeedSectionContainer>
+	<FeedSectionContainer>
+		<FeedSectionHeader />
+		<FeedSectionContent>
+			<FeedWrapper isClipboardOpen={isClipboardOpen}>
+				{isFeast ? <RecipeSearchContainer /> : <CapiSearchContainer />}
+			</FeedWrapper>
+			<Clipboard />
+		</FeedSectionContent>
+	</FeedSectionContainer>
 );
 
 const mapStateToProps = (state: State) => ({
-  isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
+	isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
 });
 
 export default connect(mapStateToProps)(FeedSection);

@@ -1,5 +1,5 @@
 export interface FeatureSwitch {
-  key: string;
-  title: string;
-  enabled: boolean;
+	key: string;
+	title: string;
+	enabled: boolean;
 }

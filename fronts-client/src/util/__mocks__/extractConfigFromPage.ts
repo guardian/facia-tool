@@ -1,7 +1,7 @@
 import config from 'fixtures/config';
 
 const pageConfig = () => {
-  return config;
+	return config;
 };
 
 export default pageConfig();

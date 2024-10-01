@@ -30,10 +30,10 @@ import FrontsEdit from './FrontsEdit/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
 import {
-  manageEditions,
-  frontsEditPathProps,
-  issuePathProps,
-  frontsFeatureProps,
+	manageEditions,
+	frontsEditPathProps,
+	issuePathProps,
+	frontsFeatureProps,
 } from 'routes/routes';
 import ManageView from './Editions/ManageView';
 import FeaturesView from './Features/FeaturesView';
@@ -41,7 +41,6 @@ import { PlaceholderAnimation } from 'components/BasePlaceholder';
 import OptionsModal from './modals/OptionsModal';
 import BannerNotification from './notifications/BannerNotification';
 
-// tslint:disable:no-unused-expression
 // NB the properties described in font-face work as matchers, assigning text to the font imported by the source.
 // this is why we have 2 declarations of font-weight in several of these font-faces. Assigning either hits this font.
 const AppFonts = createGlobalStyle`
@@ -126,42 +125,42 @@ const AppFonts = createGlobalStyle`
 `;
 
 const AppContainer = styled.div`
-  background-color: ${theme.base.colors.backgroundColorLight};
-  position: relative;
-  color: ${theme.base.colors.textDark};
-  height: 100%;
-  width: 100%;
+	background-color: ${theme.base.colors.backgroundColorLight};
+	position: relative;
+	color: ${theme.base.colors.textDark};
+	height: 100%;
+	width: 100%;
 `;
 
 const BackgroundHeader = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
 `;
 
 const App = () => (
-  <ThemeProvider theme={styleTheme}>
-    <DropDisabler>
-      <BannerNotification />
-      <AppContainer>
-        <BackgroundHeader>
-          <SectionHeaderWithLogo greyHeader={true} />
-        </BackgroundHeader>
-        <Switch>
-          <Route {...frontsEditPathProps} component={FrontsEdit} />
-          <Route {...issuePathProps} component={FrontsEdit} />
-          <Route {...frontsFeatureProps} component={FeaturesView} />
-          <Route exact path="/" component={Home} />
-          <Route exact path={manageEditions} component={ManageView} />
-          <Route component={NotFound} />
-        </Switch>
-      </AppContainer>
-      <PlaceholderAnimation />
-      <AppFonts />
-      <OptionsModal />
-    </DropDisabler>
-  </ThemeProvider>
+	<ThemeProvider theme={styleTheme}>
+		<DropDisabler>
+			<BannerNotification />
+			<AppContainer>
+				<BackgroundHeader>
+					<SectionHeaderWithLogo greyHeader={true} />
+				</BackgroundHeader>
+				<Switch>
+					<Route {...frontsEditPathProps} component={FrontsEdit} />
+					<Route {...issuePathProps} component={FrontsEdit} />
+					<Route {...frontsFeatureProps} component={FeaturesView} />
+					<Route exact path="/" component={Home} />
+					<Route exact path={manageEditions} component={ManageView} />
+					<Route component={NotFound} />
+				</Switch>
+			</AppContainer>
+			<PlaceholderAnimation />
+			<AppFonts />
+			<OptionsModal />
+		</DropDisabler>
+	</ThemeProvider>
 );
 
 export default App;

@@ -1,8 +1,8 @@
 import { CapiArticle } from '../../types/Capi';
 import React from 'react';
 import {
-  dragOffsetX,
-  dragOffsetY,
+	dragOffsetX,
+	dragOffsetY,
 } from '../FrontsEdit/CollectionComponents/ArticleDrag';
 import { getPaths } from '../../util/paths';
 import { getArticleLabel, getThumbnail, isLive } from '../../util/CAPIUtils';
@@ -23,94 +23,94 @@ import { ContentInfo } from './ContentInfo';
 import { CardTypesMap } from 'constants/cardTypes';
 
 const Tone = styled.span`
-  font-weight: normal;
+	font-weight: normal;
 `;
 
 interface ContainerProps {
-  id: string;
+	id: string;
 }
 
 interface ComponentProps extends ContainerProps {
-  article?: CapiArticle;
-  shouldObscureFeed: boolean;
-  onAddToClipboard: (article: CapiArticle) => void;
+	article?: CapiArticle;
+	shouldObscureFeed: boolean;
+	onAddToClipboard: (article: CapiArticle) => void;
 }
 
 const ArticleFeedItemComponent = ({
-  article,
-  id,
-  onAddToClipboard,
+	article,
+	id,
+	onAddToClipboard,
 }: ComponentProps) => {
-  if (!article) {
-    return <p>Article with id {id} not found.</p>;
-  }
+	if (!article) {
+		return <p>Article with id {id} not found.</p>;
+	}
 
-  const handleDragStart = (
-    event: React.DragEvent<HTMLDivElement>,
-    dragNode: HTMLDivElement
-  ) => {
-    event.dataTransfer.setData('capi', JSON.stringify(article));
-    if (dragNode) {
-      event.dataTransfer.setDragImage(dragNode, dragOffsetX, dragOffsetY);
-    }
-  };
+	const handleDragStart = (
+		event: React.DragEvent<HTMLDivElement>,
+		dragNode: HTMLDivElement,
+	) => {
+		event.dataTransfer.setData('capi', JSON.stringify(article));
+		if (dragNode) {
+			event.dataTransfer.setDragImage(dragNode, dragOffsetX, dragOffsetY);
+		}
+	};
 
-  return (
-    <FeedItem
-      type={CardTypesMap.ARTICLE}
-      id={article.id}
-      title={article.webTitle}
-      liveUrl={getPaths(article.id).live}
-      thumbnail={getThumbnail(article.frontsMeta.defaults, article)}
-      scheduledPublicationDate={article.fields.scheduledPublicationDate}
-      firstPublishedDate={article.webPublicationDate}
-      hasVideo={hasMainVideo(article)}
-      isLive={isLive(article)}
-      onAddToClipboard={() => onAddToClipboard(article)}
-      handleDragStart={handleDragStart}
-      metaContent={
-        <>
-          <ContentInfo
-            style={{
-              color:
-                getPillarColor(
-                  article.pillarId,
-                  isLive(article),
-                  article.frontsMeta.tone === liveBlogTones.dead
-                ) || theme.capiInterface.textLight,
-            }}
-          >
-            {getArticleLabel(article)}
-            {article.frontsMeta.tone && (
-              <Tone> / {startCase(article.frontsMeta.tone)}</Tone>
-            )}
-          </ContentInfo>
-          <ArticlePageNumberSection article={article} />
-        </>
-      }
-    />
-  );
+	return (
+		<FeedItem
+			type={CardTypesMap.ARTICLE}
+			id={article.id}
+			title={article.webTitle}
+			liveUrl={getPaths(article.id).live}
+			thumbnail={getThumbnail(article.frontsMeta.defaults, article)}
+			scheduledPublicationDate={article.fields.scheduledPublicationDate}
+			firstPublishedDate={article.webPublicationDate}
+			hasVideo={hasMainVideo(article)}
+			isLive={isLive(article)}
+			onAddToClipboard={() => onAddToClipboard(article)}
+			handleDragStart={handleDragStart}
+			metaContent={
+				<>
+					<ContentInfo
+						style={{
+							color:
+								getPillarColor(
+									article.pillarId,
+									isLive(article),
+									article.frontsMeta.tone === liveBlogTones.dead,
+								) || theme.capiInterface.textLight,
+						}}
+					>
+						{getArticleLabel(article)}
+						{article.frontsMeta.tone && (
+							<Tone> / {startCase(article.frontsMeta.tone)}</Tone>
+						)}
+					</ContentInfo>
+					<ArticlePageNumberSection article={article} />
+				</>
+			}
+		/>
+	);
 };
 
 const mapStateToProps = (state: State, { id }: ContainerProps) => ({
-  shouldObscureFeed: selectFeatureValue(state, 'obscure-feed'),
-  article: selectArticleAcrossResources(state, id),
+	shouldObscureFeed: selectFeatureValue(state, 'obscure-feed'),
+	article: selectArticleAcrossResources(state, id),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
-  return {
-    onAddToClipboard: (article: CapiArticle) =>
-      dispatch(
-        insertCardWithCreate(
-          { type: 'clipboard', id: 'clipboard', index: 0 },
-          { type: 'CAPI', data: article },
-          'clipboard'
-        )
-      ),
-  };
+	return {
+		onAddToClipboard: (article: CapiArticle) =>
+			dispatch(
+				insertCardWithCreate(
+					{ type: 'clipboard', id: 'clipboard', index: 0 },
+					{ type: 'CAPI', data: article },
+					'clipboard',
+				),
+			),
+	};
 };
 
 export const ArticleFeedItem = connect(
-  mapStateToProps,
-  mapDispatchToProps
+	mapStateToProps,
+	mapDispatchToProps,
 )(ArticleFeedItemComponent);

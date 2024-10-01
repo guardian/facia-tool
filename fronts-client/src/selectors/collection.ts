@@ -9,26 +9,26 @@ const selectCardsInCollection = createSelectCardsInCollection();
 // Unmemoized – intended to be used for fetch calls.
 // Will need to be memoized if used in UI.
 export const selectCardsInCollections = (
-  state: State,
-  { collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets }
+	state: State,
+	{ collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets },
 ): Card[] =>
-  collectionIds.flatMap((_) =>
-    selectCardsInCollection(state, {
-      collectionId: _,
-      collectionSet: itemSet,
-    }).map((cardId) => selectCard(state, cardId))
-  );
+	collectionIds.flatMap((_) =>
+		selectCardsInCollection(state, {
+			collectionId: _,
+			collectionSet: itemSet,
+		}).map((cardId) => selectCard(state, cardId)),
+	);
 
 export const selectChefsInCollections = (
-  state: State,
-  { collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets }
+	state: State,
+	{ collectionIds, itemSet }: { collectionIds: string[]; itemSet: CardSets },
 ) => {};
 
 export const createSelectIsArticleInCollection = () => {
-  const selectArticlesInCollection = createSelectCardsInCollection();
-  return createSelector(
-    selectArticlesInCollection,
-    (_: State, { cardId: articleId }: { cardId: string }) => articleId,
-    (articleIds, articleId) => articleIds.indexOf(articleId) !== -1
-  );
+	const selectArticlesInCollection = createSelectCardsInCollection();
+	return createSelector(
+		selectArticlesInCollection,
+		(_: State, { cardId: articleId }: { cardId: string }) => articleId,
+		(articleIds, articleId) => articleIds.indexOf(articleId) !== -1,
+	);
 };
