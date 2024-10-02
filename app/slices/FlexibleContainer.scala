@@ -12,7 +12,8 @@ object FlexibleGeneral extends FlexibleContainer {
             byGroup.getOrElse(1, Seq.empty)
     val numOfSplash = splash.size min 1
     val numOfStandard = stories.size - numOfSplash
-    return numOfSplash + (numOfStandard min 10)
+
+    numOfSplash + (numOfStandard min 8)
   }
 }
 
@@ -23,6 +24,7 @@ object FlexibleSpecial extends FlexibleContainer {
             byGroup.getOrElse(2, Seq.empty) ++
             byGroup.getOrElse(1, Seq.empty)
     val standardCards = byGroup.getOrElse(0, Seq.empty)
-    return snap.size + (standardCards.size min 5)
+
+    snap.size + (standardCards.size min 5)
   }
 }
