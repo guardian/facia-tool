@@ -16,7 +16,7 @@ class ContainerService(val containers: Containers) {
   def getStoriesVisible(containerType: String, stories: Seq[Story]) = {
     val numberOfStories = stories.length
     containers.all.get(containerType) map {
-      case Fixed(container) => {
+      case Fixed(container) =>
         val maxDesktop = container.numItems
         val desktopVisible = maxDesktop min numberOfStories
 
@@ -28,8 +28,15 @@ class ContainerService(val containers: Containers) {
             case RestrictTo(maxMobile) => Some(maxMobile min numberOfStories)
           }
         )
-      }
-      case Dynamic(container) => {
+
+      case Scrollable(container) =>
+        val numberVisible = container.storiesVisible(stories)
+        StoriesVisibleResponse(
+          Some(numberVisible),
+          Some(numberVisible)
+        )
+
+      case Dynamic(container) =>
         val slices = container.slicesFor(stories)
         val maxItems = slices.map(_.map(_.layout.numItems).sum).getOrElse(0)
         val numberVisible = maxItems min numberOfStories
@@ -37,19 +44,20 @@ class ContainerService(val containers: Containers) {
           Some(numberVisible),
           Some(numberVisible)
         )
-      }
-      case Flexible(container) => {
+
+      case Flexible(container) =>
         val numberVisible = container.storiesVisible(stories)
         StoriesVisibleResponse(
           Some(numberVisible),
           Some(numberVisible)
         )
-      }
+
       case MostPopular =>
         StoriesVisibleResponse(
           Some(10 min numberOfStories),
           Some(10 min numberOfStories)
         )
+
       case NavList | NavMediaList => StoriesVisibleResponse(
         None,
         None

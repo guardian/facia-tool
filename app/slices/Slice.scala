@@ -937,30 +937,16 @@ case object ShowcaseSingleStories extends Slice {
   )
 }
 
-/*
- * The Highlights layout is used to display select features in the header for apps and web, notably via a carousel.
- * The implementation on platforms effectively limits the display to 6 cards altogether, and only 2-4 cards at a time.
- * In the tool, we're satisfied with using a 6 card layout to hint at the number of visible stories.
+/** Scrollable slice definitions for thumbnails only!
+ * These layouts are implemented via carousels on all platforms
+ * On smaller screens there is a partial card visible to indicate horizontal scrolling
+ * On larger screens these become chevrons.
  *
- * Desktop:
- * .____________.____________.____________.____________.____________.____________.
- * |       #####|       #####|       #####|       #####|       #####|       #####|
- * |       #####|       #####|       #####|       #####|       #####|       #####|
- * |       #####|       #####|       #####|       #####|       #####|       #####|
- * '-----------------------------------------------------------------------------'
- *
- * Mobile:
- * .___________.___________.___________.___________.___________.___________.
- * |           |           |           |           |           |           |
- * |           |           |           |           |           |           |
- * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
- * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
- * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
- * `-----------------------------------------------------------------------'
- */
-case object Highlights extends Slice {
+ * These thumbnails indicate what the container looks like when viewed on desktop on first load
+ * */
+case object ScrollableHighlightsSlice extends Slice {
   val layout = SliceLayout(
-    cssClassName = "t-t-t-t-t-t",
+    cssClassName = "scrollable-t-t-t",
     columns = Seq(
       SingleItem(
         colSpan = 1,
@@ -968,79 +954,99 @@ case object Highlights extends Slice {
           mobile = Standard,
           tablet = MediaList,
         ),
-      ),
+      )
+    )
+  )
+}
+case object ScrollableSmallSlice extends Slice {
+  val layout = SliceLayout(
+    cssClassName = "scrollable-h-h",
+    columns = Seq.fill(2)(
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = MediaList,
+          tablet = MediaList,
+        ),
+      )
+    )
+  )
+}
+case object ScrollableMediumSlice extends Slice {
+  val layout = SliceLayout(
+    cssClassName = "scrollable-q-q-q-q",
+    columns = Seq.fill(4)(
       SingleItem(
         colSpan = 1,
         ItemClasses(
           mobile = Standard,
-          tablet = MediaList,
+          tablet = Standard,
         ),
-      ),
+      )
+    )
+  )
+}
+case object ScrollableFeatureSlice extends Slice {
+  val layout = SliceLayout(
+    cssClassName = "scrollable-fm-fm-fm",
+    columns = Seq.fill(3)(
       SingleItem(
         colSpan = 1,
         ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
+          mobile = cards.FullMedia100,
+          tablet = cards.FullMedia100
         ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = MediaList,
-        ),
-      ),
-    ),
+      )
+    )
   )
 }
 
 
 /*
- * The Scrollable small layout is implemented via a carousel.
- * The implementation on platforms limits the display to 8 cards altogether, and only 2-3 cards at a time.
- * In the tool, we're satisfied with using a 8 card layout to hint at the maximum number of stories.
+ * The Static Feature container layout has two immersive style cards (full media)
  *
  * Desktop:
- * .____________.____________.____________.____________.____________.____________.____________.____________.
- * |       #####|       #####|       #####|       #####|       #####|       #####|       #####|       #####|
- * |       #####|       #####|       #####|       #####|       #####|       #####|       #####|       #####|
- * |       #####|       #####|       #####|       #####|       #####|       #####|       #####|       #####|
- * '-------------------------------------------------------------------------------------------------------'
+ * .____________._____________.
+ * | ########## | ##########  |
+ * | ########## | ##########  |
+ * | ########## | ##########  |
+ * | ########## | ##########  |
+ * | ########## | ##########  |
+ * '------------'-------------'
  *
  * Mobile:
- * .___________.___________.___________.___________.___________.___________.___________.___________.
- * |           |           |           |           |           |           |           |           |
- * |           |           |           |           |           |           |           |           |
- * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
- * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
- * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
- * `-----------------------------------------------------------------------------------------------'
+ * .____________.
+ * | ########## |
+ * | ########## |
+ * | ########## |
+ * | ########## |
+ * | ########## |
+ * '------------'
+ * | ########## |
+ * | ########## |
+ * | ########## |
+ * | ########## |
+ * | ########## |
+ * '------------'
  */
-case object ScrollableSmall extends Slice {
+case object StaticFeature extends Slice {
   val layout = SliceLayout(
-    cssClassName = "t-t-t-t-t-t-t-t",
-    columns = Seq(Rows(
-      colSpan = 1,
-      columns = 8,
-      rows = 1,
-      ItemClasses(
-        mobile = ListItem,
-        tablet = ListItem,
-      )
-    ))
+    cssClassName = "hfm-hfm",
+    columns = Seq(
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = cards.FullMedia100,
+          tablet = cards.FullMedia100
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = cards.FullMedia100,
+          tablet = cards.FullMedia100
+        ),
+      ),
+    )
   )
 }

@@ -167,6 +167,18 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
       case "flexible/special" =>
         Some(Seq(FullMedia75, QuarterQuarterQuarterQuarter))
 
+      case "scrollable/highlights" =>
+        Some(Seq(ScrollableHighlightsSlice))
+
+      case "scrollable/small" =>
+        Some(Seq(ScrollableSmallSlice))
+
+      case "scrollable/medium" =>
+        Some(Seq(ScrollableMediumSlice))
+
+      case "scrollable/feature" =>
+        Some(Seq(ScrollableFeatureSlice))
+
       case _ =>
         fixedContainers.unapply(Some(id)).map(_.slices)
     }
