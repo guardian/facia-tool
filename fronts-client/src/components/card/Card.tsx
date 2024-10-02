@@ -258,7 +258,8 @@ class Card extends React.Component<CardContainerProps> {
                 {...getNodeProps()}
                 onDelete={this.onDelete}
                 onAddToClipboard={this.handleAddToClipboard}
-                /* No need for an OnClick here - there are no editable forms */
+                // Chef has overrides so we need to edit it
+                onClick={isUneditable ? undefined : () => onSelect(uuid)}
                 size={size}
                 textSize={textSize}
                 showMeta={showMeta}
