@@ -29,11 +29,7 @@ export function init (res) {
                 'snap'
               ]
             },
-            {'name': 'scrollable/small'},
-            {'name': 'scrollable/medium'},
-            {'name': 'scrollable/feature'},
-            {'name': 'static/feature/2'},
-            {'name': 'static/medium/4'}
+              {'name': 'scrollable/small'}
             );
     }
 }
