@@ -942,25 +942,25 @@ case object ShowcaseSingleStories extends Slice {
  * The implementation on platforms effectively limits the display to 6 cards altogether, and only 2-4 cards at a time.
  * In the tool, we're satisfied with using a 6 card layout to hint at the number of visible stories.
  *
- * Desktop (three cards + peeking card):
- * .____________.____________.____________.____.
- * |       #####|       #####|       #####|... |
- * |       #####|       #####|       #####|... |
- * |       #####|       #####|       #####|... |
- * '-------------------------------------------'
+ * Desktop:
+ * .____________.____________.____________.____________.____________.____________.
+ * |       #####|       #####|       #####|       #####|       #####|       #####|
+ * |       #####|       #####|       #####|       #####|       #####|       #####|
+ * |       #####|       #####|       #####|       #####|       #####|       #####|
+ * '-----------------------------------------------------------------------------'
  *
- * Mobile (two cards + peeking card):
- * .___________.___________.___.
- * |           |           |...|
- * |           |           |...|
- * |_#########_|_#########_|...|
- * |_#########_|_#########_|...|
- * |_#########_|_#########_|...|
- * `---------------------------'
+ * Mobile:
+ * .___________.___________.___________.___________.___________.___________.
+ * |           |           |           |           |           |           |
+ * |           |           |           |           |           |           |
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * `-----------------------------------------------------------------------'
  */
 case object Highlights extends Slice {
   val layout = SliceLayout(
-    cssClassName = "scrollable-t-t-t",
+    cssClassName = "t-t-t-t-t-t",
     columns = Seq(
       SingleItem(
         colSpan = 1,
@@ -983,199 +983,64 @@ case object Highlights extends Slice {
           tablet = MediaList,
         ),
       ),
-    )
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+      SingleItem(
+        colSpan = 1,
+        ItemClasses(
+          mobile = Standard,
+          tablet = MediaList,
+        ),
+      ),
+    ),
   )
 }
 
 
 /*
  * The Scrollable small layout is implemented via a carousel.
- * The implementation on platforms limits the display to 8 cards altogether, and only 1-2 cards at a time.
+ * The implementation on platforms limits the display to 8 cards altogether, and only 2-3 cards at a time.
  * In the tool, we're satisfied with using a 8 card layout to hint at the maximum number of stories.
  *
- * Desktop (two cards with carousel arrows, no peeking card):
- * .____________________.____________________.
- * | #######            | #######            |
- * | #######            | #######            |
- * '--------------------'--------------------'
+ * Desktop:
+ * .____________.____________.____________.____________.____________.____________.____________.____________.
+ * |       #####|       #####|       #####|       #####|       #####|       #####|       #####|       #####|
+ * |       #####|       #####|       #####|       #####|       #####|       #####|       #####|       #####|
+ * |       #####|       #####|       #####|       #####|       #####|       #####|       #####|       #####|
+ * '-------------------------------------------------------------------------------------------------------'
  *
- * Mobile (one card + peeking card):
- * .___________________._____.
- * | #######           | ... |
- * | #######           | ... |
- * '-------------------'-----'
+ * Mobile:
+ * .___________.___________.___________.___________.___________.___________.___________.___________.
+ * |           |           |           |           |           |           |           |           |
+ * |           |           |           |           |           |           |           |           |
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * |_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|_#########_|
+ * `-----------------------------------------------------------------------------------------------'
  */
 case object ScrollableSmall extends Slice {
   val layout = SliceLayout(
-    cssClassName = "scrollable-h-h",
+    cssClassName = "t-t-t-t-t-t-t-t",
     columns = Seq(Rows(
       colSpan = 1,
-      columns = 2,
+      columns = 8,
       rows = 1,
       ItemClasses(
-          mobile = MediaList,
-          tablet = MediaList,
-        ),
-      ),
-    )
-  )
-}
-
-/*
- * The Scrollable medium layout is implemented via a carousel.
- * The implementation on platforms limits the display to 8 cards altogether, and only 2-4 cards at a time.
- * In the tool, we're satisfied with using a 8 card layout to hint at the maximum number of stories.
- *
- * Desktop (four cards, no peeking card):
- * .____________._____________.____________._____________.
- * |            |             |            |             |
- * |            |             |            |             |
- * | ########## | ##########  | ########## | ##########  |
- * | ########## | ##########  | ########## | ##########  |
- * '------------'-------------'------------'-------------'
- *
- * Mobile (two cards + peeking card):
- * .____________.__________________.
- * |            |             |... |
- * |            |             |... |
- * | ########## | ##########  |... |
- * | ########## | ##########  |... |
- * '-------------------------------'
- */
-case object ScrollableMedium extends Slice {
-  val layout = SliceLayout(
-    cssClassName = "scrollable-q-q-q-q",
-    columns = Seq(
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = Standard,
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = Standard,
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = Standard,
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = Standard,
-          tablet = Standard,
-        ),
-      ),
-    )
-  )
-}
-
-/*
- * The Scrollable feature layout is implemented via a carousel.
- * The implementation on platforms limits the display to 6 cards altogether, and only 1-3 cards at a time.
- * In the tool, we're satisfied with using a 8 card layout to hint at the maximum number of stories.
- *
- * Desktop (three cards, no peeking card):
- * .____________._____________.____________.
- * | ########## | ##########  | ########## |
- * | ########## | ##########  | ########## |
- * | ########## | ##########  | ########## |
- * | ########## | ##########  | ########## |
- * | ########## | ##########  | ########## |
- * '------------'-------------'------------'
- *
- * Mobile (one card + peeking card):
- * .____________.____.
- * | ########## |... |
- * | ########## |... |
- * | ########## |... |
- * | ########## |... |
- * | ########## |... |
- * '------------'----'
- */
-case object ScrollableFeature extends Slice {
-  val layout = SliceLayout(
-    cssClassName = "scrollable-fm-fm-fm",
-    columns = Seq(
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = cards.FullMedia100,
-          tablet = cards.FullMedia100
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = cards.FullMedia100,
-          tablet = cards.FullMedia100
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = cards.FullMedia100,
-          tablet = cards.FullMedia100
-        ),
-      ),
-    )
-  )
-}
-
-
-/*
- * The Static Feature container layout has two immersive style cards (full media)
- *
- * Desktop:
- * .____________._____________.
- * | ########## | ##########  |
- * | ########## | ##########  |
- * | ########## | ##########  |
- * | ########## | ##########  |
- * | ########## | ##########  |
- * '------------'-------------'
- *
- * Mobile:
- * .____________.
- * | ########## |
- * | ########## |
- * | ########## |
- * | ########## |
- * | ########## |
- * '------------'
- * | ########## |
- * | ########## |
- * | ########## |
- * | ########## |
- * | ########## |
- * '------------'
- */
-case object StaticFeature extends Slice {
-  val layout = SliceLayout(
-    cssClassName = "hfm-hfm",
-    columns = Seq(
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = cards.FullMedia100,
-          tablet = cards.FullMedia100
-        ),
-      ),
-      SingleItem(
-        colSpan = 1,
-        ItemClasses(
-          mobile = cards.FullMedia100,
-          tablet = cards.FullMedia100
-        ),
-      ),
-    )
+        mobile = ListItem,
+        tablet = ListItem,
+      )
+    ))
   )
 }
