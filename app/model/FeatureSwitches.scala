@@ -32,7 +32,7 @@ object TenImageSlideshows extends FeatureSwitch(
 
 object UsePortraitCropsForSomeCollectionTypes extends FeatureSwitch(
   key = "support-portrait-crops",
-  title = "Use portrait crops for the experimental big card containers",
+  title = "Use portrait crops for the experimental feature card containers",
   enabled = false
 )
 
