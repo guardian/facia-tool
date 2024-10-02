@@ -23,6 +23,8 @@ import {
 } from '../../inputs/HoverActionButtons';
 import { CardPaletteContainer } from '../CardPaletteContainer';
 import { PaletteItem } from 'components/form/PaletteForm';
+import noContentIcon from 'images/icons/exclamation-mark.svg';
+import CardHeadingForWarning from '../CardHeadingForWarning';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -60,21 +62,48 @@ export const ChefCard = ({
   const chef = useSelector((state: State) =>
     chefsSelectors.selectChefFromCard(state, card.uuid)
   );
+  const isContentNotFound = chef?.webTitle ? false : true;
   return (
     <CardContainer {...rest}>
       <CardBody data-testid="snap" size={size} fade={fade}>
         {showMeta && (
-          <CardMetaContainer size={size}>
-            <CardMetaHeading>Chef</CardMetaHeading>
+          <CardMetaContainer
+            size={size}
+            showGreyBackgroundOnWarning={isContentNotFound}
+          >
+            {!isContentNotFound ? (
+              <CardMetaHeading>Chef</CardMetaHeading>
+            ) : (
+              <img
+                src={noContentIcon}
+                style={{
+                  position: 'relative',
+                  width: '50%',
+                  height: '50%',
+                  top: '20%',
+                  left: '25%',
+                }}
+              />
+            )}
           </CardMetaContainer>
         )}
-        <CardContent textSize={textSize}>
+        <CardContent
+          textSize={textSize}
+          showGreyBackgroundOnWarning={isContentNotFound}
+        >
           <CardHeadingContainer size={size}>
-            <CardHeading data-testid="headline" html>
-              {chef?.webTitle ?? 'No Chef found'}
-            </CardHeading>
-            <CardMetaContent>{chef?.bio}</CardMetaContent>
+            {!isContentNotFound ? (
+              <CardHeading data-testid="headline" html>
+                {chef?.webTitle}
+              </CardHeading>
+            ) : (
+              <CardHeadingForWarning data-testid="headline">
+                This chef might not load in the app, please select an
+                alternative.
+              </CardHeadingForWarning>
+            )}
           </CardHeadingContainer>
+          <CardMetaContent>{chef?.bio}</CardMetaContent>
         </CardContent>
         {card.meta.chefTheme && (
           <CardPaletteContainer>
