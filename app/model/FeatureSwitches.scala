@@ -36,8 +36,14 @@ object UsePortraitCropsForSomeCollectionTypes extends FeatureSwitch(
   enabled = false
 )
 
+object PinboardIntegration extends FeatureSwitch(
+	key = "pinboard",
+	title = "Enable Pinboard integration",
+	enabled = false
+)
+
 object FeatureSwitches {
-  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, TenImageSlideshows, UsePortraitCropsForSomeCollectionTypes)
+  val all: List[FeatureSwitch] = List(ObscureFeed, PageViewDataVisualisation, TenImageSlideshows, UsePortraitCropsForSomeCollectionTypes, PinboardIntegration)
 
   def updateFeatureSwitchesForUser(userDataSwitches: Option[List[FeatureSwitch]], switch: FeatureSwitch): List[FeatureSwitch] = {
     val newSwitches = userDataSwitches match {
