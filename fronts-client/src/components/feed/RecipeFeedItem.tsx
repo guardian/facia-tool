@@ -35,6 +35,11 @@ export const RecipeFeedItem = ({ id }: ComponentProps) => {
     );
   }, [recipe]);
 
+  const shortenTimestamp = (iso: string) => {
+    const parts = iso.split('T');
+    return parts[0];
+  };
+
   return (
     <FeedItem
       type={CardTypesMap.RECIPE}
@@ -47,12 +52,29 @@ export const RecipeFeedItem = ({ id }: ComponentProps) => {
       handleDragStart={handleDragStartForCard(CardTypesMap.RECIPE, recipe)}
       onAddToClipboard={onAddToClipboard}
       shouldObscureFeed={shouldObscureFeed}
-      metaContent={<>
-        <ContentInfo>Recipe</ContentInfo>
-        <ContentExtra>
-          {recipe?.score && recipe.score<1 ?  `Relevance ${Math.ceil(recipe.score*100)}%` : ""}
-        </ContentExtra>
-      </>}
+      metaContent={
+        <>
+          <ContentInfo>Recipe</ContentInfo>
+          <ContentExtra>
+            {recipe?.score && recipe.score < 1
+              ? `Relevance ${Math.ceil(recipe.score * 100)}%`
+              : ''}
+            <br />
+            {recipe?.lastModifiedDate
+              ? `M ${shortenTimestamp(recipe.lastModifiedDate)}`
+              : undefined}
+            <br />
+            {recipe?.publishedDate
+              ? `P ${shortenTimestamp(recipe.publishedDate)}`
+              : undefined}
+            <br />
+            {recipe?.firstPublishedDate
+              ? `F ${shortenTimestamp(recipe.firstPublishedDate)}`
+              : undefined}
+            <br />
+          </ContentExtra>
+        </>
+      }
     />
   );
 };
