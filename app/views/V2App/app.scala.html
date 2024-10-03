@@ -1,5 +1,12 @@
-@(title: String, jsLocation: String, cssLocation: String, faviconLocation: String, clientConfigJson:
-String, isDev: Boolean)
+@(
+    title: String,
+    jsLocation: String,
+    cssLocation: String,
+    faviconLocation: String,
+    clientConfigJson: String,
+    isDev: Boolean,
+    maybePinboardUrl: Option[String]
+)
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,6 +58,10 @@ String, isDev: Boolean)
     } else {
         <link rel="stylesheet" href="@cssLocation">
         <script type="module" src="@jsLocation" type="application/javascript"></script>
+    }
+
+    @maybePinboardUrl.map { pinboardUrl =>
+        <script async defer src="@pinboardUrl"></script>
     }
 </body>
 
