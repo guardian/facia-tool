@@ -188,6 +188,7 @@ interface Collection {
   frontsToolSettings?: FrontsToolSettings;
   isHidden?: boolean;
   targetedTerritory?: string;
+  suppressImages?: boolean;
 }
 
 interface ArticleTag {
