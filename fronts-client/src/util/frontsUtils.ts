@@ -82,6 +82,14 @@ const isCollectionConfigFlexible = (
   config: CollectionConfig | undefined
 ): boolean => FLEXIBLE_CONTAINER_SET.includes(config?.type);
 
+const isScrollableCollectionConfig = (
+  config: CollectionConfig | undefined
+): boolean => config?.type === 'scrollable/small';
+
+const suppressedImagesConfig = (
+  config: CollectionConfig | undefined
+): boolean => config?.frontsToolSettings?.suppressImages ?? false;
+
 export {
   getFrontCollections,
   combineCollectionWithConfig,
@@ -91,4 +99,6 @@ export {
   getGroupsByStage,
   isCollectionConfigDynamic,
   isCollectionConfigFlexible,
+  isScrollableCollectionConfig,
+  suppressedImagesConfig,
 };

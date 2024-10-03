@@ -96,6 +96,7 @@ interface ComponentProps extends ContainerProps {
   size?: string;
   isEmailFronts?: boolean;
   collectionType?: string;
+  suppressImages?: boolean;
 }
 
 type Props = ComponentProps &
@@ -460,7 +461,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
       valid,
       collectionType,
       groupSizeId,
+      suppressImages,
     } = this.props;
+
+    if (!imageHide && suppressImages) {
+      change('imageHide', suppressImages);
+    }
 
     const isEditionsMode = editMode === 'editions';
 
@@ -1094,7 +1100,7 @@ const createMapStateToProps = () => {
       collectionId,
       getLastUpdatedBy,
       snapType: article && article.snapType,
-      initialValues: getInitialValuesForCardForm(article),
+      initialValues: getInitialValuesForCardForm(article, parentCollection),
       articleCapiFieldValues: getCapiValuesForArticleFields(externalArticle),
       editableFields:
         article && selectFormFields(state, article.uuid, isSupporting),
@@ -1116,6 +1122,8 @@ const createMapStateToProps = () => {
       coverCardImageReplace: valueSelector(state, 'coverCardImageReplace'),
       coverCardMobileImage: valueSelector(state, 'coverCardMobileImage'),
       coverCardTabletImage: valueSelector(state, 'coverCardTabletImage'),
+      suppressImages:
+        parentCollection?.frontsToolSettings?.suppressImages || false,
       pickedKicker: !!article ? article.pickedKicker : undefined,
       isEmailFronts,
       collectionType: collectionId

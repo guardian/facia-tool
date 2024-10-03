@@ -12,6 +12,7 @@ object StoriesVisibleResponse {
   implicit val jsonFormat: OFormat[StoriesVisibleResponse] = Json.format[StoriesVisibleResponse]
 }
 
+//tweak here for number of cards in list?
 class ContainerService(val containers: Containers) {
   def getStoriesVisible(containerType: String, stories: Seq[Story]) = {
     val numberOfStories = stories.length

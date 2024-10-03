@@ -5,11 +5,13 @@ import { hasMainVideo } from 'util/externalArticle';
 import {
   isCollectionConfigDynamic,
   isCollectionConfigFlexible,
+  isScrollableCollectionConfig,
+  suppressedImagesConfig,
 } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import type { State } from 'types/State';
 import { selectEditMode, selectPriority } from './pathSelectors';
-import { FormFields } from 'util/form';
+import { CardFormData, FormFields } from 'util/form';
 import without from 'lodash/without';
 
 export const defaultFields = [
@@ -102,6 +104,32 @@ export const createSelectFormFieldsForCard = () => {
       }
       if (isCollectionConfigFlexible(parentCollectionConfig)) {
         fields = without(fields, 'showLargeHeadline');
+      }
+      if (isScrollableCollectionConfig(parentCollectionConfig)) {
+        console.log(
+          'suppressedImagesConfig',
+          suppressedImagesConfig(parentCollectionConfig)
+        );
+        const fieldsToRemove = [
+          'showLargeHeadline',
+          'showLivePlayable',
+          'trailText',
+          'imageSlideshowReplace',
+        ];
+        if (suppressedImagesConfig(parentCollectionConfig)) {
+          fieldsToRemove.push(
+            'imageHide',
+            'imageCutoutReplace',
+            'coverCardImageReplace',
+            'showMainVideo',
+            'imageReplace',
+            'primaryImage',
+            'cutoutImage'
+          );
+        }
+        console.log('fieldsToRemove', fieldsToRemove);
+        fields = without(fields, ...(fieldsToRemove as (keyof CardFormData)[]));
+        console.log('fields', fields);
       }
       if (isCollectionConfigDynamic(parentCollectionConfig)) {
         fields.push('isBoosted');

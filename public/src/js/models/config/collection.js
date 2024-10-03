@@ -55,7 +55,8 @@ export default class ConfigCollection extends DropTarget {
             },
             {
                 frontsToolSettings: asObservableProps([
-                    'displayEditWarning'
+                    'displayEditWarning',
+                    'suppressImages'
                 ])
             }
         );
