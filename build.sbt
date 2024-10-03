@@ -74,7 +74,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "3.0.0",
-    "com.gu" %% "fapi-client-play30" % "12.0.0-PREVIEW.glmove-suppress-images-prop.2024-10-01T1416.1b3d50f2",
+    "com.gu" %% "fapi-client-play30" % "12.0.0",
     "com.gu" %% "mobile-notifications-api-models" % "3.0.0",
     "com.gu" %% "pan-domain-auth-play_3-0" % "4.0.0",
 
