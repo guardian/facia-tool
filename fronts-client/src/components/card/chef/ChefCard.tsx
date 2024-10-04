@@ -61,14 +61,13 @@ export const ChefCard = ({
 	const chef = useSelector((state: State) =>
 		chefsSelectors.selectChefFromCard(state, card.uuid),
 	);
-
 	return (
 		<CardContainer {...rest}>
 			<CardBody data-testid="snap" size={size} fade={fade}>
 				{showMeta && (
 					<CardMetaContainer size={size} isToShowError={!chef}>
 						{!!chef ? (
-							<CardMetaHeading>Chef</CardMetaHeading>
+						<CardMetaHeading>Chef</CardMetaHeading>
 						) : (
 							<img
 								src={exclamationMarkIcon}
@@ -88,9 +87,9 @@ export const ChefCard = ({
 				<CardContent textSize={textSize} isToShowError={!chef}>
 					<CardHeadingContainer size={size}>
 						{!!chef ? (
-							<CardHeading data-testid="headline" html>
+						<CardHeading data-testid="headline" html>
 								{chef.webTitle}
-							</CardHeading>
+						</CardHeading>
 						) : (
 							<CardHeading data-testid="headline" isToShowError={!chef}>
 								This chef might not load in the app, please select an
@@ -115,6 +114,7 @@ export const ChefCard = ({
 					<HoverActionsButtonWrapper
 						toolTipPosition={'top'}
 						toolTipAlign={'right'}
+						urlPath={undefined}
 						renderButtons={(props) => (
 							<>
 								<HoverViewButton

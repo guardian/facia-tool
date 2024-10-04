@@ -71,7 +71,7 @@ export const RecipeCard = ({
 				{showMeta && (
 					<CardMetaContainer size={size} isToShowError={!recipe}>
 						{!!recipe ? (
-							<CardMetaHeading>Recipe</CardMetaHeading>
+						<CardMetaHeading>Recipe</CardMetaHeading>
 						) : (
 							<img
 								src={exclamationMarkIcon}
@@ -108,6 +108,7 @@ export const RecipeCard = ({
 					<HoverActionsButtonWrapper
 						toolTipPosition={'top'}
 						toolTipAlign={'right'}
+						urlPath={paths?.live}
 						renderButtons={(props) => (
 							<>
 								<HoverViewButton
