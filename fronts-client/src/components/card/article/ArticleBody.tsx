@@ -358,6 +358,7 @@ const articleBodyDefault = React.memo(
 						size={size}
 						toolTipPosition={'top'}
 						toolTipAlign={'right'}
+						urlPath={urlPath}
 						renderButtons={(props) => (
 							<>
 								{urlPath && (

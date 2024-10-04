@@ -43,6 +43,7 @@ interface WrapperProps {
 	size?: CardSizes; // Article Component size
 	toolTipPosition: 'top' | 'left' | 'bottom' | 'right';
 	toolTipAlign: 'left' | 'center' | 'right';
+	urlPath: string | undefined;
 	renderButtons: (renderProps: ButtonProps) => JSX.Element;
 }
 
@@ -50,6 +51,7 @@ export const HoverActionsButtonWrapper = ({
 	toolTipPosition,
 	toolTipAlign,
 	size,
+	urlPath,
 	renderButtons,
 }: WrapperProps) => {
 	const [toolTipText, setToolTipText] = useState<string | undefined>(undefined);
@@ -77,6 +79,12 @@ export const HoverActionsButtonWrapper = ({
 				hideToolTip,
 				size,
 			})}
+			{urlPath && (
+				// the below tag is empty and meaningless to the fronts tool itself, but serves as a handle for
+				// Pinboard to attach itself via, identified/distinguished by the urlPath data attribute
+				// @ts-ignore
+				<pinboard-article-button data-url-path={urlPath} />
+			)}
 		</HoverActionsWrapper>
 	);
 };
