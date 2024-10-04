@@ -132,6 +132,7 @@ export const FeastCollectionCard = ({
 						<HoverActionsButtonWrapper
 							toolTipPosition={'top'}
 							toolTipAlign={'right'}
+							urlPath={undefined}
 							renderButtons={(props) => (
 								<>
 									<HoverAddToClipboardButton

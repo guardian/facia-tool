@@ -220,6 +220,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 					<HoverActionsButtonWrapper
 						toolTipPosition={'top'}
 						toolTipAlign={'right'}
+						urlPath={liveUrl}
 						renderButtons={(props) => (
 							<>
 								<HoverViewButton hoverText="View" href={href} {...props} />

@@ -61,7 +61,6 @@ export const ChefCard = ({
 	const chef = useSelector((state: State) =>
 		chefsSelectors.selectChefFromCard(state, card.uuid),
 	);
-
 	return (
 		<CardContainer {...rest}>
 			<CardBody data-testid="snap" size={size} fade={fade}>
@@ -115,6 +114,7 @@ export const ChefCard = ({
 					<HoverActionsButtonWrapper
 						toolTipPosition={'top'}
 						toolTipAlign={'right'}
+						urlPath={undefined}
 						renderButtons={(props) => (
 							<>
 								<HoverViewButton
