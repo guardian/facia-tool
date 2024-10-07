@@ -86,15 +86,15 @@ export const feastCollectionPalettes: PaletteOption[] = [
     name: 'Autumn',
     palettes: {
       light: {
-        foregroundHex: '#C25400',
+        foregroundHex: '#603D30',
         backgroundHex: '#F9F9F5',
       },
       dark: {
-        foregroundHex: '#F0CDB4',
+        foregroundHex: '#F0C5B5',
         backgroundHex: '#363632',
       },
     },
-    imageURL: 'https://uploads.guim.co.uk/2024/03/21/Autumn.png',
+    imageURL: 'https://uploads.guim.co.uk/2024/10/07/Autumn.png',
   },
   {
     id: 'barbecue',
@@ -605,5 +605,95 @@ export const feastCollectionPalettes: PaletteOption[] = [
       },
     },
     imageURL: 'https://uploads.guim.co.uk/2024/03/01/Vegan-01.png',
+  },
+  {
+    id: 'bowls_darkgreen',
+    name: 'Bowls_darkgreen',
+    palettes: {
+      light: {
+        foregroundHex: '#80191A',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#FDF1F0',
+        backgroundHex: '#363632',
+      },
+    },
+    imageURL: 'https://uploads.guim.co.uk/2024/10/07/Bowls_darkgreen.png',
+  },
+  {
+    id: 'bowls_limegreen',
+    name: 'Bowls_limegreen',
+    palettes: {
+      light: {
+        foregroundHex: '#697431',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#E1E5B8',
+        backgroundHex: '#363632',
+      },
+    },
+    imageURL: 'https://uploads.guim.co.uk/2024/10/07/Bowls_limegreen.png',
+  },
+  {
+    id: 'bowls_orange',
+    name: 'Bowls_orange',
+    palettes: {
+      light: {
+        foregroundHex: '#C15627',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0CDB5',
+        backgroundHex: '#363632',
+      },
+    },
+    imageURL: 'https://uploads.guim.co.uk/2024/10/07/Bowls_orange.png',
+  },
+  {
+    id: 'bowls_purple',
+    name: 'Bowls_purple',
+    palettes: {
+      light: {
+        foregroundHex: '#BB3C81',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#FCF0F6',
+        backgroundHex: '#363632',
+      },
+    },
+    imageURL: 'https://uploads.guim.co.uk/2024/10/07/Bowls_purple.png',
+  },
+  {
+    id: 'bowls_yellow',
+    name: 'Bowls_yellow',
+    palettes: {
+      light: {
+        foregroundHex: '#C15627',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0CDB5',
+        backgroundHex: '#363632',
+      },
+    },
+    imageURL: 'https://uploads.guim.co.uk/2024/10/07/Bowls_yellow.png',
+  },
+  {
+    id: 'mushrooms',
+    name: 'Mushrooms',
+    palettes: {
+      light: {
+        foregroundHex: '#80523E',
+        backgroundHex: '#F9F9F5',
+      },
+      dark: {
+        foregroundHex: '#F0CDB5',
+        backgroundHex: '#363632',
+      },
+    },
+    imageURL: 'https://uploads.guim.co.uk/2024/10/07/Mushrooms.png',
   },
 ];
