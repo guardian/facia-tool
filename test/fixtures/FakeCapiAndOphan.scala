@@ -12,7 +12,7 @@ import scala.concurrent.Future
 
 trait FakeCapiAndOphan {
 
-  private val allFalseMetadata = ResolvedMetaData(false, false, false, false, false, false, false, false, false, false, false, false, false, false)
+  private val allFalseMetadata = ResolvedMetaData(false, false, "boostLevel.default", false, false, false, false, false, false, false, false, false, false, false, false)
 
   private val imageUrl = "https://media.giphy.com/media/K3PYNk8oh3HGM/source.gif"
 

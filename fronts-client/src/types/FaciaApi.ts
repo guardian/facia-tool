@@ -54,6 +54,7 @@ interface CollectionConfigResponse {
   frontsToolSettings?: FrontsToolSettings;
   prefill?: EditionsPrefill;
   targetedTerritory?: string;
+  suppressImages?: boolean;
 }
 
 interface FrontsConfigResponse {

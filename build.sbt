@@ -44,8 +44,8 @@ TwirlKeys.templateImports ++= Seq(
 routesImport += "model.editions._"
 
 val awsVersion = "1.12.470"
-val capiModelsVersion = "23.0.0"
-val capiClientVersion = "26.0.0"
+val capiModelsVersion = "25.0.0"
+val capiClientVersion = "32.0.0"
 val json4sVersion = "4.0.3"
 val circeVersion = "0.13.0"
 
@@ -74,7 +74,7 @@ libraryDependencies ++= Seq(
     "com.gu" %% "content-api-client-aws" % "0.6",
     "com.gu" %% "content-api-client-default" % capiClientVersion,
     "com.gu" %% "editorial-permissions-client" % "3.0.0",
-    "com.gu" %% "fapi-client-play30" % "6.0.0",
+    "com.gu" %% "fapi-client-play30" % "12.0.0",
     "com.gu" %% "mobile-notifications-api-models" % "3.0.0",
     "com.gu" %% "pan-domain-auth-play_3-0" % "4.0.0",
 
