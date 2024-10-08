@@ -608,7 +608,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
   },
   {
     id: 'bowls_darkgreen',
-    name: 'Bowls_darkgreen',
+    name: 'Bowls\n(dark green)',
     palettes: {
       light: {
         foregroundHex: '#80191A',
@@ -623,7 +623,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
   },
   {
     id: 'bowls_limegreen',
-    name: 'Bowls_limegreen',
+    name: 'Bowls\n(lime green)',
     palettes: {
       light: {
         foregroundHex: '#697431',
@@ -638,7 +638,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
   },
   {
     id: 'bowls_orange',
-    name: 'Bowls_orange',
+    name: 'Bowls\n(orange)',
     palettes: {
       light: {
         foregroundHex: '#C15627',
@@ -653,7 +653,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
   },
   {
     id: 'bowls_purple',
-    name: 'Bowls_purple',
+    name: 'Bowls\n(purple)',
     palettes: {
       light: {
         foregroundHex: '#BB3C81',
@@ -668,7 +668,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
   },
   {
     id: 'bowls_yellow',
-    name: 'Bowls_yellow',
+    name: 'Bowls\n(yellow)',
     palettes: {
       light: {
         foregroundHex: '#C15627',
