@@ -199,6 +199,9 @@
                 <!-- ko if: containerThumbnail -->
                 <img onerror="this.style.display='none'" data-bind="attr: {src: containerThumbnail}" />
                 <!-- /ko -->
+                <!-- ko if: thisIsBetaCollection -->
+                <span class="beta-warning-text">Beta</span>
+                <!-- /ko -->
             </div>
 
             <!-- ko if: state.isOpenTypePicker -->
@@ -209,6 +212,18 @@
                         click: $parent.typePicker">
                     <div class="type-option-value" data-bind="text: $data"></div>
                     <img onerror="this.style.display='none'" data-bind="attr: {src: '/thumbnails/' + $data + '.svg'}" />
+                    <!-- ko if: (
+                        $data === 'flexible/general' ||
+                        $data === 'flexible/special' ||
+                        $data === 'scrollable/highlights' ||
+                        $data === 'scrollable/small' ||
+                        $data === 'scrollable/medium' ||
+                        $data === 'scrollable/feature' ||
+                        $data === 'static/medium/4' ||
+                        $data === 'static/feature/2' )
+                        -->
+                    <span class="beta-warning-text">Beta</span>
+                    <!-- /ko -->
                 </div>
             </div>
             <!-- /ko -->
@@ -284,8 +299,8 @@
             <input type="checkbox" data-bind="
                 checked: meta.uneditable" />
 
-            <label for="frontsToolSettings.displayEditWarning">Display edit warning</label>
-            <input id="hideShowMore" type="checkbox" data-bind="checked: meta.frontsToolSettings.displayEditWarning" />
+            <label for="displayEditWarning">Display edit warning</label>
+            <input id="displayEditWarning" type="checkbox" data-bind="checked: meta.frontsToolSettings.displayEditWarning" />
 
             <!-- ko if: meta.type() === 'scrollable/small' -->
             <label for="suppressImages">Suppress images</label>

@@ -56,12 +56,26 @@ export default {
             'big'
           ]
         },
-        { name: 'nav/list' },
-        { name: 'nav/media-list' },
-        { name: 'news/most-popular' },
-        { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
-        { name: 'fixed/showcase' },
-        { name: 'scrollable/highlights' }
+        { 'name': 'nav/list' },
+        { 'name': 'nav/media-list' },
+        { 'name': 'news/most-popular' },
+        { 'name': 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
+        { 'name': 'fixed/showcase' },
+        { 'name': 'scrollable/highlights' },
+        {
+            'name': 'flexible/general',
+            'groups': [
+                'standard',
+                'splash'
+            ]
+        },
+        {
+            'name': 'flexible/special',
+            'groups': [
+                'standard',
+                'snap'
+            ]
+        }
     ],
 
     emailTypes: [
@@ -237,7 +251,6 @@ export default {
         configCollection: 'config-collection'
     },
 
-
     frontendApiBase:       '/frontend',
 
     reauthPath:            '/login/status',
@@ -267,5 +280,16 @@ export default {
         any: 'Any'
     },
 
-    userVisibilities: ['all', 'subscriber', 'non-subscriber']
+    userVisibilities: ['all', 'subscriber', 'non-subscriber'],
+
+    betaCollectionTypes: [
+        'flexible/special',
+        'flexible/general',
+        'scrollable/highlights',
+        'scrollable/small',
+        'scrollable/medium',
+        'scrollable/feature',
+        'static/medium/4',
+        'static/feature/2'
+    ]
 };
