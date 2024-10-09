@@ -5,7 +5,7 @@ import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
 import pageConfig from 'util/extractConfigFromPage';
-import { CardMeta, ImageData } from 'types/Collection';
+import { CardMeta, Collection, ImageData } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
@@ -82,7 +82,8 @@ const tenImagesFeatureSwitch = pageConfig?.userData?.featureSwitches.find(
 export const maxSlideshowImages = tenImagesFeatureSwitch?.enabled ? 10 : 5;
 
 export const getInitialValuesForCardForm = (
-  article: DerivedArticle | void
+  article: DerivedArticle | void,
+  parentCollection: Collection | null | undefined
 ): CardFormData | void => {
   if (!article) {
     return undefined;
@@ -101,6 +102,11 @@ export const getInitialValuesForCardForm = (
     maxSlideshowImages
   );
   slideshowBackfill.fill(undefined);
+
+  const maybeSuppressedImagesInCollection = parentCollection?.suppressImages
+    ? parentCollection.suppressImages
+    : false;
+
   return article
     ? {
         headline: article.headline || '',
@@ -119,7 +125,7 @@ export const getInitialValuesForCardForm = (
         trailText: article.trailText || '',
         imageCutoutReplace: article.imageCutoutReplace || false,
         imageCutoutSrc: article.imageCutoutSrc || '',
-        imageHide: article.imageHide || false,
+        imageHide: article.imageHide || maybeSuppressedImagesInCollection,
         imageReplace: article.imageReplace || false,
         imageSlideshowReplace: article.imageSlideshowReplace || false,
         primaryImage: {
