@@ -74,7 +74,9 @@ const createStateWithChangedFormFields = (
 describe('CardForm transform functions', () => {
   describe('Derive form values from a derived article', () => {
     it('should derive values', () => {
-      expect(getInitialValuesForCardForm(derivedArticle)).toEqual(formValues);
+      expect(getInitialValuesForCardForm(derivedArticle, null)).toEqual(
+        formValues
+      );
     });
     it('should handle existing slideshows of any length', () => {
       const exampleImage = {
@@ -89,42 +91,45 @@ describe('CardForm transform functions', () => {
         ...derivedArticle,
         slideshow,
       };
-      expect(getInitialValuesForCardForm(slideshowArticle)).toEqual({
+      expect(getInitialValuesForCardForm(slideshowArticle, null)).toEqual({
         ...formValues,
         slideshow,
       });
     });
     it('should get number values for all image widths and heights', () => {
       expect(
-        getInitialValuesForCardForm({
-          ...derivedArticle,
-          boostLevel: 'megaboost',
-          imageSrc: 'exampleSrc1',
-          imageSrcHeight: '100',
-          imageSrcWidth: '100',
-          imageSrcOrigin: 'exampleOrigin',
-          imageSrcThumb: 'exampleThumb',
-          imageCutoutSrc: 'exampleSrc2',
-          imageCutoutSrcHeight: '200',
-          imageCutoutSrcWidth: '200',
-          imageCutoutSrcOrigin: 'exampleOrigin',
-          slideshow: [
-            {
-              src: 'exampleSrc3',
-              height: '300',
-              width: '300',
-              thumb: 'exampleThumb',
-              origin: 'exampleOrigin',
-            },
-            {
-              src: 'exampleSrc4',
-              height: '400',
-              width: '400',
-              thumb: 'exampleThumb',
-              origin: 'exampleOrigin',
-            },
-          ],
-        })
+        getInitialValuesForCardForm(
+          {
+            ...derivedArticle,
+            boostLevel: 'megaboost',
+            imageSrc: 'exampleSrc1',
+            imageSrcHeight: '100',
+            imageSrcWidth: '100',
+            imageSrcOrigin: 'exampleOrigin',
+            imageSrcThumb: 'exampleThumb',
+            imageCutoutSrc: 'exampleSrc2',
+            imageCutoutSrcHeight: '200',
+            imageCutoutSrcWidth: '200',
+            imageCutoutSrcOrigin: 'exampleOrigin',
+            slideshow: [
+              {
+                src: 'exampleSrc3',
+                height: '300',
+                width: '300',
+                thumb: 'exampleThumb',
+                origin: 'exampleOrigin',
+              },
+              {
+                src: 'exampleSrc4',
+                height: '400',
+                width: '400',
+                thumb: 'exampleThumb',
+                origin: 'exampleOrigin',
+              },
+            ],
+          },
+          null
+        )
       ).toEqual({
         ...formValues,
         boostLevel: 'megaboost',
