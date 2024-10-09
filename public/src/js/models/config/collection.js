@@ -172,7 +172,7 @@ export default class ConfigCollection extends DropTarget {
     get() {
         return {
             id: this.id,
-            type: vars.CONST.draggableTypes.configCollection,
+            type: vars.CONST.draggableTypes.configCollection
         };
     }
 }
