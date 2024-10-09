@@ -21,13 +21,6 @@ export function init (res) {
             {'name': 'static/feature/2'},
             {'name': 'static/medium/4'}
             );
-        CONST.betaCollectionTypes.push(
-            'scrollable/small',
-            'scrollable/medium',
-            'scrollable/feature',
-            'static/feature/2',
-            'static/medium/4'
-        );
     }
 }
 
