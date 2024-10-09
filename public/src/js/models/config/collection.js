@@ -73,7 +73,7 @@ export default class ConfigCollection extends DropTarget {
         this.containerThumbnail = ko.pureComputed(() => {
             var containerId = this.meta.type();
 
-            if (/^(fixed|dynamic)\//.test(containerId)) {
+            if (/^(fixed|dynamic|flexible|scrollable|static)\//.test(containerId)) {
                 return '/thumbnails/' + containerId + '.svg';
             } else {
                 return null;
@@ -87,7 +87,12 @@ export default class ConfigCollection extends DropTarget {
         this.typePicker = this._typePicker.bind(this);
 
         this.thisIsPlatformSpecificCollection = isPlatformSpecificCollection(this.meta.platform());
+
+        this.thisIsBetaCollection = ko.pureComputed(() => {
+            return isBetaCollection(this.meta.type());
+        });
     }
+
 
     getPlatform() {
         switch (this.meta.platform()) {
@@ -167,7 +172,7 @@ export default class ConfigCollection extends DropTarget {
     get() {
         return {
             id: this.id,
-            type: vars.CONST.draggableTypes.configCollection
+            type: vars.CONST.draggableTypes.configCollection,
         };
     }
 }
@@ -181,4 +186,8 @@ function findParents (collectionId) {
         })
         .filter(Boolean)
         .value();
+}
+
+function isBetaCollection (collectionId) {
+    return vars.CONST.betaCollectionTypes.includes(collectionId);
 }
