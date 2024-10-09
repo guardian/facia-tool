@@ -38,7 +38,6 @@ export default class Collection extends BaseClass {
 
         this.isDynamic = opts.type.indexOf('dynamic/') === 0;
         this.isFlexible = opts.type === ('flexible/general') || opts.type === ('flexible/special');
-        this.isBetaCollection = vars.CONST.betaCollectionTypes.includes(opts.type);
 
         this.dom = undefined;
         var onDomLoadResolve;
