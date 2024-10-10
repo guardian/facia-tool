@@ -24,7 +24,6 @@ import {
 import { CardPaletteContainer } from '../CardPaletteContainer';
 import { PaletteItem } from 'components/form/PaletteForm';
 import noContentIcon from 'images/icons/exclamation-mark.svg';
-import CardHeadingForWarning from '../CardHeadingForWarning';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -67,10 +66,7 @@ export const ChefCard = ({
     <CardContainer {...rest}>
       <CardBody data-testid="snap" size={size} fade={fade}>
         {showMeta && (
-          <CardMetaContainer
-            size={size}
-            showGreyBackgroundOnWarning={isContentNotFound}
-          >
+          <CardMetaContainer size={size} isToShowError={isContentNotFound}>
             {!isContentNotFound ? (
               <CardMetaHeading>Chef</CardMetaHeading>
             ) : (
@@ -87,20 +83,17 @@ export const ChefCard = ({
             )}
           </CardMetaContainer>
         )}
-        <CardContent
-          textSize={textSize}
-          showGreyBackgroundOnWarning={isContentNotFound}
-        >
+        <CardContent textSize={textSize} isToShowError={isContentNotFound}>
           <CardHeadingContainer size={size}>
             {!isContentNotFound ? (
               <CardHeading data-testid="headline" html>
                 {chef?.webTitle}
               </CardHeading>
             ) : (
-              <CardHeadingForWarning data-testid="headline">
+              <CardHeading data-testid="headline">
                 This chef might not load in the app, please select an
                 alternative.
-              </CardHeadingForWarning>
+              </CardHeading>
             )}
           </CardHeadingContainer>
           <CardMetaContent>{chef?.bio}</CardMetaContent>
