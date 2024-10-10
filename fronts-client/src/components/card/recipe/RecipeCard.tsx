@@ -89,6 +89,7 @@ export const RecipeCard = ({
           <HoverActionsButtonWrapper
             toolTipPosition={'top'}
             toolTipAlign={'right'}
+            urlPath={paths?.live}
             renderButtons={(props) => (
               <>
                 <HoverViewButton

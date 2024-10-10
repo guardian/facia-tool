@@ -90,6 +90,7 @@ export const ChefCard = ({
           <HoverActionsButtonWrapper
             toolTipPosition={'top'}
             toolTipAlign={'right'}
+            urlPath={undefined}
             renderButtons={(props) => (
               <>
                 <HoverViewButton
