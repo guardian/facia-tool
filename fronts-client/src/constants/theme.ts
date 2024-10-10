@@ -154,6 +154,11 @@ const thumbnailImage = {
   height: '50px',
 };
 
+const thumbnailImageSquare = {
+  width: '50px',
+  height: '50px',
+};
+
 export const theme = {
   base,
   front,
@@ -167,6 +172,7 @@ export const theme = {
   card,
   collection,
   thumbnailImage,
+  thumbnailImageSquare,
 };
 
 export type Theme = typeof theme;

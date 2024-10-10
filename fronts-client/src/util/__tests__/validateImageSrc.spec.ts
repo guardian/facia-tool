@@ -9,7 +9,6 @@ import {
 import ImageMock from 'util/ImageMock';
 import grid from 'util/grid';
 import { landScapeCardImageCriteria } from 'constants/image';
-
 (global as any).Image = ImageMock;
 
 jest.mock('constants/url', () => ({
@@ -128,6 +127,58 @@ describe('Validate images', () => {
           done();
         }
       );
+    });
+
+    it('fails if the aspect ratio not square(example chef thumbnails)', (done) => {
+      const criteria = {
+        widthAspectRatio: 1,
+        heightAspectRatio: 1,
+      };
+
+      grid.gridInstance.getImage = () =>
+        Promise.resolve({
+          data: {
+            exports: [
+              {
+                id: 'image_crop',
+                assets: [
+                  { dimensions: { width: 1400, height: 1000 } },
+                  {
+                    secureUrl: getPath('notsquare.png'),
+                    dimensions: { width: 140, height: 100 },
+                  },
+                ],
+              },
+            ],
+          },
+        });
+      ImageMock.defaultWidth = 140;
+      ImageMock.defaultHeight = 100;
+
+      validateImageSrc(getPath('notsquare.png'), 'front', criteria).then(
+        (err) => done.fail(err.toString()),
+        (err) => {
+          expect(err.message).toMatch(/aspect ratio/i);
+          done();
+        }
+      );
+    });
+
+    it('matches with square requirement(example chef thumbnails)', (done) => {
+      const squareImageCriteria = {
+        widthAspectRatio: 1,
+        heightAspectRatio: 1,
+      };
+
+      validateImageSrc(
+        getPath('square.png'),
+        'front',
+        squareImageCriteria
+      ).then((image) => {
+        expect((image as ValidationResponse).width).toBe(100);
+        expect((image as ValidationResponse).height).toBe(100);
+        done();
+      });
     });
 
     it('works with no criteria', (done) => {

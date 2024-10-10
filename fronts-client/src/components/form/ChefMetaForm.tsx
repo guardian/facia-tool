@@ -22,7 +22,7 @@ import { Chef } from 'types/Chef';
 import { useSelector } from 'react-redux';
 import InputTextArea from 'components/inputs/InputTextArea';
 import InputImage from 'components/inputs/InputImage';
-import { defaultCardTrailImageCriteria } from 'constants/image';
+import { squareImageCriteria } from 'constants/image';
 import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import Row from 'components/Row';
 import { ImageRowContainer } from './ImageRowContainer';
@@ -118,7 +118,7 @@ const Form = ({
                 <Field
                   name="chefImageOverride"
                   component={InputImage}
-                  criteria={defaultCardTrailImageCriteria}
+                  criteria={squareImageCriteria}
                 />
               </ImageCol>
             </Row>

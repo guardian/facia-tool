@@ -1,7 +1,7 @@
 import pageConfig from 'util/extractConfigFromPage';
 import {
   FLEXIBLE_GENERAL_NAME,
-  FLEXIBLE_SPECIAL_NAME
+  FLEXIBLE_SPECIAL_NAME,
 } from './flexibleContainers';
 
 export const SUPPORT_PORTRAIT_CROPS =
@@ -13,6 +13,12 @@ export const landScapeCardImageCriteria = {
   minWidth: 400,
   widthAspectRatio: 5,
   heightAspectRatio: 3,
+};
+
+export const squareImageCriteria = {
+  minWidth: 400,
+  widthAspectRatio: 1,
+  heightAspectRatio: 1,
 };
 
 export const portraitCardImageCriteria = {
