@@ -31,6 +31,7 @@ import {
   DRAG_DATA_GRID_IMAGE_URL,
   landscape5To4CardImageCriteria,
   portraitCardImageCriteria,
+  squareImageCriteria,
 } from 'constants/image';
 import ImageDragIntentIndicator from 'components/image/ImageDragIntentIndicator';
 import { ImageInputImageContainer as ImageContainer } from 'components/image/ImageInputImageContainer';
@@ -284,7 +285,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     const {
       small = false,
       input,
-      gridUrl:gridBaseUrl,
+      gridUrl: gridBaseUrl,
       useDefault,
       defaultImageUrl,
       message = 'Replace image',
@@ -305,7 +306,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
       );
     }
 
-
     const hasImage = !useDefault && !!input.value && !!input.value.thumb;
     const imageUrl =
       !useDefault && input.value && input.value.thumb
@@ -313,13 +313,17 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
         : defaultImageUrl;
 
     // e.g. https://media.guim.co.uk/db6bf997dee6d43f8dca1ab9cd2c7402725434b6/0_214_3960_2376/500.jpg
-    const maybeDefaultImagePathParts = defaultImageUrl && new URL(defaultImageUrl).pathname.split("/");
-    const maybeDefaultImageId = maybeDefaultImagePathParts?.[1] // pathname starts with / so index 0 is empty string
-    const maybeDefaultCropId = maybeDefaultImagePathParts?.[2]
-    const gridUrl = this.state.isRecropping && maybeDefaultImageId && maybeDefaultCropId
-      ? `${gridBaseUrl}/images/${maybeDefaultImageId}/crop?seedCropId=${maybeDefaultCropId}&`
-      : `${gridBaseUrl}?`;
-    const gridModalUrl = `${gridUrl}${new URLSearchParams(this.criteriaToGridQueryParams()).toString()}`
+    const maybeDefaultImagePathParts =
+      defaultImageUrl && new URL(defaultImageUrl).pathname.split('/');
+    const maybeDefaultImageId = maybeDefaultImagePathParts?.[1]; // pathname starts with / so index 0 is empty string
+    const maybeDefaultCropId = maybeDefaultImagePathParts?.[2];
+    const gridUrl =
+      this.state.isRecropping && maybeDefaultImageId && maybeDefaultCropId
+        ? `${gridBaseUrl}/images/${maybeDefaultImageId}/crop?seedCropId=${maybeDefaultCropId}&`
+        : `${gridBaseUrl}?`;
+    const gridModalUrl = `${gridUrl}${new URLSearchParams(
+      this.criteriaToGridQueryParams()
+    ).toString()}`;
 
     const portraitImage = !!(
       !useDefault &&
@@ -329,6 +333,10 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     const shouldShowLandscape54 =
       criteria != null &&
       this.compareAspectRatio(landscape5To4CardImageCriteria, criteria);
+    const showSquare =
+      criteria != null &&
+      this.compareAspectRatio(squareImageCriteria, criteria);
+
     return (
       <InputImageContainer
         small={small}
@@ -353,6 +361,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
             small={small}
             portrait={portraitImage}
             shouldShowLandscape54={shouldShowLandscape54}
+            showSquare={showSquare}
           >
             <ImageComponent
               style={{
@@ -589,13 +598,13 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
   private criteriaToGridQueryParams = (): Record<string, string> => {
     const { criteria, editMode } = this.props;
 
-    if(editMode === "editions"){
+    if (editMode === 'editions') {
       return {};
     }
 
     if (!criteria) {
       return {
-        cropType: "portrait,landscape"
+        cropType: 'portrait,landscape',
       };
     }
 
@@ -603,18 +612,18 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
     // constants for portrait(4:5), landscape (5:3) and landscape (5:4)
     if (this.compareAspectRatio(portraitCardImageCriteria, criteria)) {
       return {
-        cropType: "portrait"
+        cropType: 'portrait',
       };
-    }
-    else if (this.compareAspectRatio(landscape5To4CardImageCriteria, criteria)) {
+    } else if (
+      this.compareAspectRatio(landscape5To4CardImageCriteria, criteria)
+    ) {
       return {
-        cropType: "Landscape",
-        customRatio: "Landscape,5,4"
+        cropType: 'Landscape',
+        customRatio: 'Landscape,5,4',
       };
-    }
-    else {
+    } else {
       return {
-        cropType: "landscape"
+        cropType: 'landscape',
       };
     }
   };
