@@ -20,7 +20,7 @@ const CardContent = styled.div<{
     margin: 0;
   }
   background-color: ${({ isToShowError }) =>
-    isToShowError ? '#959595' : theme.colors.white};
+    isToShowError ? theme.colors.greyMediumLight : theme.colors.white};
   color: ${({ isToShowError }) =>
     isToShowError ? theme.colors.white : theme.colors.blackLight};
 `;
