@@ -42,7 +42,11 @@ export default ({
   size?: CardSizes;
   isToShowError?: boolean;
 }) => (
-  <MetaContainer size={size} isToShowError={isToShowError}>
+  <MetaContainer
+    size={size}
+    isToShowError={isToShowError}
+    data-testid="meta-container"
+  >
     {children}
     <ShortVerticalPinline />
   </MetaContainer>
