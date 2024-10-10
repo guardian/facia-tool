@@ -75,6 +75,8 @@ export const RecipeCard = ({
             ) : (
               <img
                 src={exclamationMarkIcon}
+                alt="!"
+                data-testid="recipe-not-found-icon"
                 style={{
                   position: 'relative',
                   width: '50%',
