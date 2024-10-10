@@ -61,13 +61,13 @@ export const ChefCard = ({
   const chef = useSelector((state: State) =>
     chefsSelectors.selectChefFromCard(state, card.uuid)
   );
-  const isContentNotFound = chef?.webTitle ? false : true;
+
   return (
     <CardContainer {...rest}>
       <CardBody data-testid="snap" size={size} fade={fade}>
         {showMeta && (
-          <CardMetaContainer size={size} isToShowError={isContentNotFound}>
-            {!isContentNotFound ? (
+          <CardMetaContainer size={size} isToShowError={!chef}>
+            {!!chef ? (
               <CardMetaHeading>Chef</CardMetaHeading>
             ) : (
               <img
@@ -83,11 +83,11 @@ export const ChefCard = ({
             )}
           </CardMetaContainer>
         )}
-        <CardContent textSize={textSize} isToShowError={isContentNotFound}>
+        <CardContent textSize={textSize} isToShowError={!chef}>
           <CardHeadingContainer size={size}>
-            {!isContentNotFound ? (
+            {!!chef ? (
               <CardHeading data-testid="headline" html>
-                {chef?.webTitle}
+                {chef.webTitle}
               </CardHeading>
             ) : (
               <CardHeading data-testid="headline">

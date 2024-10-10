@@ -23,7 +23,7 @@ import {
   HoverViewButton,
 } from 'components/inputs/HoverActionButtons';
 import { getPaths } from 'util/paths';
-import noRecipeIcon from 'images/icons/exclamation-mark.svg';
+import exclamationMarkIcon from 'images/icons/exclamation-mark.svg';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -69,15 +69,12 @@ export const RecipeCard = ({
     <CardContainer {...rest}>
       <CardBody data-testid="snap" size={size} fade={fade}>
         {showMeta && (
-          <CardMetaContainer
-            size={size}
-            isToShowError={recipe?.title ? false : true}
-          >
-            {recipe?.title ? (
+          <CardMetaContainer size={size} isToShowError={!recipe}>
+            {!!recipe ? (
               <CardMetaHeading>Recipe</CardMetaHeading>
             ) : (
               <img
-                src={noRecipeIcon}
+                src={exclamationMarkIcon}
                 style={{
                   position: 'relative',
                   width: '50%',
@@ -92,16 +89,9 @@ export const RecipeCard = ({
             </CardMetaContent>
           </CardMetaContainer>
         )}
-        <CardContent
-          textSize={textSize}
-          isToShowError={recipe?.title ? false : true}
-        >
+        <CardContent textSize={textSize} isToShowError={!recipe}>
           <CardHeadingContainer size={size}>
-            <CardHeading
-              data-testid="headline"
-              html
-              isToShowError={recipe?.title ? false : true}
-            >
+            <CardHeading data-testid="headline" html isToShowError={!recipe}>
               {recipe?.title ??
                 'This recipe won’t load in the app, please select an alternative.'}
             </CardHeading>
