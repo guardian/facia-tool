@@ -329,7 +329,7 @@ describe('RecipeCard', () => {
     const headline = await component.findAllByTestId('headline');
     expect(headline).toHaveLength(1);
     expect(headline[0].textContent).toEqual(
-      'This recipe won’t load in the app, please select an alternative.'
+      'This recipe might not load in the app, please select an alternative.'
     );
 
     const metacontainer = await component.findAllByTestId('meta-container');

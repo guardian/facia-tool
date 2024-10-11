@@ -23,7 +23,7 @@ import {
 } from '../../inputs/HoverActionButtons';
 import { CardPaletteContainer } from '../CardPaletteContainer';
 import { PaletteItem } from 'components/form/PaletteForm';
-import noContentIcon from 'images/icons/exclamation-mark.svg';
+import exclamationMarkIcon from 'images/icons/exclamation-mark.svg';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -71,7 +71,9 @@ export const ChefCard = ({
               <CardMetaHeading>Chef</CardMetaHeading>
             ) : (
               <img
-                src={noContentIcon}
+                src={exclamationMarkIcon}
+                alt="!"
+                data-testid="chef-not-found-icon"
                 style={{
                   position: 'relative',
                   width: '50%',
@@ -90,7 +92,7 @@ export const ChefCard = ({
                 {chef.webTitle}
               </CardHeading>
             ) : (
-              <CardHeading data-testid="headline">
+              <CardHeading data-testid="headline" isToShowError={!chef}>
                 This chef might not load in the app, please select an
                 alternative.
               </CardHeading>

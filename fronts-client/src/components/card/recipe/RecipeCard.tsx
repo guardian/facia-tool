@@ -81,7 +81,7 @@ export const RecipeCard = ({
                   position: 'relative',
                   width: '50%',
                   height: '50%',
-                  top: '5%',
+                  top: '20%',
                   left: '25%',
                 }}
               />
@@ -95,7 +95,7 @@ export const RecipeCard = ({
           <CardHeadingContainer size={size}>
             <CardHeading data-testid="headline" html isToShowError={!recipe}>
               {recipe?.title ??
-                'This recipe won’t load in the app, please select an alternative.'}
+                'This recipe might not load in the app, please select an alternative.'}
             </CardHeading>
           </CardHeadingContainer>
         </CardContent>
