@@ -120,6 +120,8 @@ yarn lint-fix
 
 It’s recommended to [set your editor up to run Prettier](https://prettier.io/docs/en/editors), so that your PRs don’t fail in CI due to the formatting check.
 
+There is also a file [.git-blame-ignore-revs](../.git-blame-ignore-revs) in this repository which contains refs of formatting commits, in order to exclude them from `git blame` using gitʼs `blame.ignoreRevsFile` config option. (For convenience, the [dev setup script](../scripts/setup.sh) sets this value for you.)
+
 ## Typescript
 We are using Typescript for typing in Fronts-Client.
 

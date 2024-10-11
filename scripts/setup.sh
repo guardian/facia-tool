@@ -91,12 +91,19 @@ fetch_config(){
       fi
     fi
 }
+
+configure_git() {
+  echo "Configuring git…"
+  git config --local blame.ignoreRevsFile .git-blame-ignore-revs
+}
+
 main() {
   fetch_config "$@"
   check_yarn_installed
   install_v1_deps
   install_v2_deps_and_build
   setup_nginx
+  configure_git
   printf "\n\rDone.\n\r\n\r"
 }
 
