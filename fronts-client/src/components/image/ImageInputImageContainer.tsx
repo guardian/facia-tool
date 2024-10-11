@@ -62,11 +62,16 @@ const getVariableImageContainerStyle = ({
   shouldShowLandscape54?: boolean;
   showSquare?: boolean;
 }) => {
-  if (showSquare) return squareStyle;
-  else if (portrait) return small ? smallPortaitStyle : normalPortraitStyle;
-  else if (shouldShowLandscape54)
-    return small ? smallLandscape54Style : normalLandscape54Style;
-  else return small ? smallLandscapeStyle : normalLandscapeStyle;
+  switch (true) {
+    case showSquare:
+      return squareStyle;
+    case portrait:
+      return small ? smallPortaitStyle : normalPortraitStyle;
+    case shouldShowLandscape54:
+      return small ? smallLandscape54Style : normalLandscape54Style;
+    default:
+      return small ? smallLandscapeStyle : normalLandscapeStyle;
+  }
 };
 
 // assuming any portrait image (ie height>width)
