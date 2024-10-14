@@ -1,9 +1,11 @@
 import styled from 'styled-components';
 import { CardSizes } from 'types/Collection';
+import { theme } from '../../constants/theme';
 
 const CardContent = styled.div<{
   displaySize?: CardSizes;
   textSize?: CardSizes;
+  isToShowError?: boolean;
 }>`
   position: relative;
   min-width: 0;
@@ -17,6 +19,10 @@ const CardContent = styled.div<{
   p {
     margin: 0;
   }
+  background-color: ${({ isToShowError }) =>
+    isToShowError ? theme.colors.greyMediumLight : theme.colors.white};
+  color: ${({ isToShowError }) =>
+    isToShowError ? theme.colors.white : theme.colors.blackLight};
 `;
 
 export default CardContent;

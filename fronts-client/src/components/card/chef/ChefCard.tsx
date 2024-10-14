@@ -23,6 +23,7 @@ import {
 } from '../../inputs/HoverActionButtons';
 import { CardPaletteContainer } from '../CardPaletteContainer';
 import { PaletteItem } from 'components/form/PaletteForm';
+import exclamationMarkIcon from 'images/icons/exclamation-mark.svg';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -60,21 +61,44 @@ export const ChefCard = ({
   const chef = useSelector((state: State) =>
     chefsSelectors.selectChefFromCard(state, card.uuid)
   );
+
   return (
     <CardContainer {...rest}>
       <CardBody data-testid="snap" size={size} fade={fade}>
         {showMeta && (
-          <CardMetaContainer size={size}>
-            <CardMetaHeading>Chef</CardMetaHeading>
+          <CardMetaContainer size={size} isToShowError={!chef}>
+            {!!chef ? (
+              <CardMetaHeading>Chef</CardMetaHeading>
+            ) : (
+              <img
+                src={exclamationMarkIcon}
+                alt="!"
+                data-testid="chef-not-found-icon"
+                style={{
+                  position: 'relative',
+                  width: '50%',
+                  height: '50%',
+                  top: '20%',
+                  left: '25%',
+                }}
+              />
+            )}
           </CardMetaContainer>
         )}
-        <CardContent textSize={textSize}>
+        <CardContent textSize={textSize} isToShowError={!chef}>
           <CardHeadingContainer size={size}>
-            <CardHeading data-testid="headline" html>
-              {chef?.webTitle ?? 'No Chef found'}
-            </CardHeading>
-            <CardMetaContent>{chef?.bio}</CardMetaContent>
+            {!!chef ? (
+              <CardHeading data-testid="headline" html>
+                {chef.webTitle}
+              </CardHeading>
+            ) : (
+              <CardHeading data-testid="headline" isToShowError={!chef}>
+                This chef might not load in the app, please select an
+                alternative.
+              </CardHeading>
+            )}
           </CardHeadingContainer>
+          <CardMetaContent>{chef?.bio}</CardMetaContent>
         </CardContent>
         {card.meta.chefTheme && (
           <CardPaletteContainer>

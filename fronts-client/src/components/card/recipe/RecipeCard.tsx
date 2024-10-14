@@ -23,6 +23,7 @@ import {
   HoverViewButton,
 } from 'components/inputs/HoverActionButtons';
 import { getPaths } from 'util/paths';
+import exclamationMarkIcon from 'images/icons/exclamation-mark.svg';
 
 interface Props {
   onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -68,22 +69,40 @@ export const RecipeCard = ({
     <CardContainer {...rest}>
       <CardBody data-testid="snap" size={size} fade={fade}>
         {showMeta && (
-          <CardMetaContainer size={size}>
-            <CardMetaHeading>Recipe</CardMetaHeading>
+          <CardMetaContainer size={size} isToShowError={!recipe}>
+            {!!recipe ? (
+              <CardMetaHeading>Recipe</CardMetaHeading>
+            ) : (
+              <img
+                src={exclamationMarkIcon}
+                alt="!"
+                data-testid="recipe-not-found-icon"
+                style={{
+                  position: 'relative',
+                  width: '50%',
+                  height: '50%',
+                  top: '20%',
+                  left: '25%',
+                }}
+              />
+            )}
             <CardMetaContent>
               {upperFirst(recipe?.difficultyLevel)}
             </CardMetaContent>
           </CardMetaContainer>
         )}
-        <CardContent textSize={textSize}>
+        <CardContent textSize={textSize} isToShowError={!recipe}>
           <CardHeadingContainer size={size}>
-            <CardHeading data-testid="headline" html>
-              {recipe?.title ?? 'No recipe found'}
+            <CardHeading data-testid="headline" html isToShowError={!recipe}>
+              {recipe?.title ??
+                'This recipe might not load in the app, please select an alternative.'}
             </CardHeading>
           </CardHeadingContainer>
         </CardContent>
         <ImageAndGraphWrapper size="small">
-          <ThumbnailSmall url={recipe?.previewImage?.url ?? recipe?.featuredImage?.url} />
+          <ThumbnailSmall
+            url={recipe?.previewImage?.url ?? recipe?.featuredImage?.url}
+          />
         </ImageAndGraphWrapper>
         <HoverActionsAreaOverlay data-testid="hover-overlay">
           <HoverActionsButtonWrapper

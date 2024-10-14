@@ -7,5 +7,5 @@ export default styled.div`
   top: 0;
   right: 0;
   height: 20px;
-  border-right: ${({ theme }) => `1px solid ${theme.base.colors.borderColor}`};
+  border-right: ${({ theme }) => `1px solid ${theme.base?.colors.borderColor}`};
 `;
