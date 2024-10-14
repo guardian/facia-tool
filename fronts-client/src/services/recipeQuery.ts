@@ -1,5 +1,6 @@
 import url from '../constants/url';
 import { Recipe, RecipePartialIndexContent } from '../types/Recipe';
+import Raven from 'raven-js';
 
 interface KeyAndCount {
 	key: string;
@@ -85,6 +86,14 @@ const setupRecipeThumbnails = (recep: Recipe) => {
 };
 
 const recipeQuery = (baseUrl: string) => {
+	const captureErrors = (status:number, content:string, url:string) => {
+		const existingContext = Raven.getContext()
+		Raven.setUserContext({...existingContext, recipeSearchResponse: content});
+		Raven.captureMessage(`${url} returned ${status}`)
+		Raven.setUserContext(existingContext);
+		console.error(content);
+	}
+
 	const fetchOne = async (href: string): Promise<Recipe | undefined> => {
 		const response = await fetch(`${baseUrl}${href}`);
 
@@ -135,21 +144,21 @@ const recipeQuery = (baseUrl: string) => {
 			const queryString = args.length > 0 ? '?' + args.join('&') : '';
 			const url = `${baseUrl}/keywords/contributors${queryString}`;
 			const response = await fetch(url);
-			const content = await response.json();
+			const content = await response.text();
 			if (response.status == 200) {
-				return content as ChefSearchResponse;
+				return JSON.parse(content) as ChefSearchResponse;
 			} else {
-				console.error(content);
+				captureErrors(response.status, content, url);
 				throw new Error(`Unable to contact recipe API: ${response.status}`);
 			}
 		},
 		diets: async (): Promise<DietSearchResponse> => {
 			const response = await fetch(`${baseUrl}/keywords/diet-ids`);
-			const content = await response.json();
+			const content = await response.text();
 			if (response.status == 200) {
-				return content as DietSearchResponse;
+				return JSON.parse(content) as DietSearchResponse;
 			} else {
-				console.error(content);
+				captureErrors(response.status, content, `${baseUrl}/keywords/diet-ids`);
 				throw new Error(`Unable to contact recipe API: ${response.status}`);
 			}
 		},
@@ -163,16 +172,17 @@ const recipeQuery = (baseUrl: string) => {
 				mode: 'cors',
 				headers: new Headers({ 'Content-Type': 'application/json' }),
 			});
-			const content = await response.json();
+			const content = await response.text();
 			if (response.status == 200) {
-				const recipes = await fetchAllRecipes(content.results);
+				const searchResponse = JSON.parse(content);
+				const recipes = await fetchAllRecipes(searchResponse.results);
 				return {
-					hits: content.hits,
-					maxScore: content.maxScore,
+					hits: searchResponse.hits,
+					maxScore: searchResponse.maxScore,
 					recipes,
 				};
 			} else {
-				console.error(content);
+				captureErrors(response.status, content, `${baseUrl}/search`);
 				throw new Error(`Unable to contact recipe API: ${response.status}`);
 			}
 		},
@@ -185,6 +195,8 @@ const recipeQuery = (baseUrl: string) => {
 					},
 				);
 				if (indexResponse.status != 200) {
+					const content = await indexResponse.text();
+					captureErrors(indexResponse.status, content, `/recipes/api/content/by-uid?ids=${idsToFind.join(',')}`);
 					throw new Error(
 						`Unable to retrieve partial index: server error ${indexResponse.status}`,
 					);
