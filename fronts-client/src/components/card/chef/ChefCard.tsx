@@ -67,7 +67,7 @@ export const ChefCard = ({
 				{showMeta && (
 					<CardMetaContainer size={size} isToShowError={!chef}>
 						{!!chef ? (
-						<CardMetaHeading>Chef</CardMetaHeading>
+							<CardMetaHeading>Chef</CardMetaHeading>
 						) : (
 							<img
 								src={exclamationMarkIcon}
@@ -87,9 +87,9 @@ export const ChefCard = ({
 				<CardContent textSize={textSize} isToShowError={!chef}>
 					<CardHeadingContainer size={size}>
 						{!!chef ? (
-						<CardHeading data-testid="headline" html>
+							<CardHeading data-testid="headline" html>
 								{chef.webTitle}
-						</CardHeading>
+							</CardHeading>
 						) : (
 							<CardHeading data-testid="headline" isToShowError={!chef}>
 								This chef might not load in the app, please select an

@@ -71,7 +71,7 @@ export const RecipeCard = ({
 				{showMeta && (
 					<CardMetaContainer size={size} isToShowError={!recipe}>
 						{!!recipe ? (
-						<CardMetaHeading>Recipe</CardMetaHeading>
+							<CardMetaHeading>Recipe</CardMetaHeading>
 						) : (
 							<img
 								src={exclamationMarkIcon}
