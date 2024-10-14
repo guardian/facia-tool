@@ -64,7 +64,7 @@
     "@types/uuid": "^3.4.4",
     "@vitejs/plugin-react-swc": "^3.3.0",
     "babel-polyfill": "^6.26.0",
-    "body-parser": "^1.20.2",
+    "body-parser": "^1.20.3",
     "date-fns": "^1.29.0",
     "downshift": "^3.1.7",
     "fetch": "^1.1.0",
