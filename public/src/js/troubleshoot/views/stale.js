@@ -134,7 +134,7 @@ function fetchLastPressed (front) {
 }
 
 function checkPressedState (front, config, container, lastPress) {
-    const priority = config.fronts[front].priority || "editorial";
+    const priority = config.fronts[front].priority || 'editorial';
     if (lastPress) {
         const date = new Date(lastPress.pressedTime);
         const now = new Date();

@@ -17,126 +17,126 @@ import { ThumbnailSmall } from '../../image/Thumbnail';
 import { HoverActionsAreaOverlay } from '../../CollectionHoverItems';
 import { HoverActionsButtonWrapper } from '../../inputs/HoverActionButtonWrapper';
 import {
-  HoverAddToClipboardButton,
-  HoverDeleteButton,
-  HoverViewButton,
+	HoverAddToClipboardButton,
+	HoverDeleteButton,
+	HoverViewButton,
 } from '../../inputs/HoverActionButtons';
 import { CardPaletteContainer } from '../CardPaletteContainer';
 import { PaletteItem } from 'components/form/PaletteForm';
 import exclamationMarkIcon from 'images/icons/exclamation-mark.svg';
 
 interface Props {
-  onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
-  onDrop?: (d: React.DragEvent<HTMLElement>) => void;
-  onDelete: () => void;
-  onAddToClipboard: () => void;
-  onClick?: () => void;
-  id: string;
-  collectionId?: string;
-  frontId: string;
-  draggable?: boolean;
-  size?: CardSizes;
-  textSize?: CardSizes;
-  fade?: boolean;
-  children?: React.ReactNode;
-  isUneditable?: boolean;
-  showMeta?: boolean;
+	onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
+	onDrop?: (d: React.DragEvent<HTMLElement>) => void;
+	onDelete: () => void;
+	onAddToClipboard: () => void;
+	onClick?: () => void;
+	id: string;
+	collectionId?: string;
+	frontId: string;
+	draggable?: boolean;
+	size?: CardSizes;
+	textSize?: CardSizes;
+	fade?: boolean;
+	children?: React.ReactNode;
+	isUneditable?: boolean;
+	showMeta?: boolean;
 }
 
 export const ChefCard = ({
-  id,
-  fade,
-  size = 'default',
-  textSize = 'default',
-  onDelete,
-  onAddToClipboard,
-  children,
-  isUneditable,
-  collectionId,
-  frontId,
-  showMeta = true,
-  ...rest
+	id,
+	fade,
+	size = 'default',
+	textSize = 'default',
+	onDelete,
+	onAddToClipboard,
+	children,
+	isUneditable,
+	collectionId,
+	frontId,
+	showMeta = true,
+	...rest
 }: Props) => {
-  const card = useSelector<State, Card>((state) => selectCard(state, id));
-  const chef = useSelector((state: State) =>
-    chefsSelectors.selectChefFromCard(state, card.uuid)
-  );
+	const card = useSelector<State, Card>((state) => selectCard(state, id));
+	const chef = useSelector((state: State) =>
+		chefsSelectors.selectChefFromCard(state, card.uuid),
+	);
 
-  return (
-    <CardContainer {...rest}>
-      <CardBody data-testid="snap" size={size} fade={fade}>
-        {showMeta && (
-          <CardMetaContainer size={size} isToShowError={!chef}>
-            {!!chef ? (
-              <CardMetaHeading>Chef</CardMetaHeading>
-            ) : (
-              <img
-                src={exclamationMarkIcon}
-                alt="!"
-                data-testid="chef-not-found-icon"
-                style={{
-                  position: 'relative',
-                  width: '50%',
-                  height: '50%',
-                  top: '20%',
-                  left: '25%',
-                }}
-              />
-            )}
-          </CardMetaContainer>
-        )}
-        <CardContent textSize={textSize} isToShowError={!chef}>
-          <CardHeadingContainer size={size}>
-            {!!chef ? (
-              <CardHeading data-testid="headline" html>
-                {chef.webTitle}
-              </CardHeading>
-            ) : (
-              <CardHeading data-testid="headline" isToShowError={!chef}>
-                This chef might not load in the app, please select an
-                alternative.
-              </CardHeading>
-            )}
-          </CardHeadingContainer>
-          <CardMetaContent>{chef?.bio}</CardMetaContent>
-        </CardContent>
-        {card.meta.chefTheme && (
-          <CardPaletteContainer>
-            <PaletteItem size="s" palette={card.meta.chefTheme.palette} />
-          </CardPaletteContainer>
-        )}
-        <ImageAndGraphWrapper size="small">
-          <ThumbnailSmall
-            url={chef?.chefImageOverride?.src ?? chef?.bylineLargeImageUrl}
-            showSquareThumbnail={true}
-          />
-        </ImageAndGraphWrapper>
-        <HoverActionsAreaOverlay data-testid="hover-overlay">
-          <HoverActionsButtonWrapper
-            toolTipPosition={'top'}
-            toolTipAlign={'right'}
-            renderButtons={(props) => (
-              <>
-                <HoverViewButton
-                  hoverText="View"
-                  href={chef?.webUrl}
-                  {...props}
-                />
-                <HoverAddToClipboardButton
-                  hoverText="Clipboard"
-                  onAddToClipboard={onAddToClipboard}
-                  {...props}
-                />
-                <HoverDeleteButton
-                  hoverText="Delete"
-                  onDelete={onDelete}
-                  {...props}
-                />
-              </>
-            )}
-          />
-        </HoverActionsAreaOverlay>
-      </CardBody>
-    </CardContainer>
-  );
+	return (
+		<CardContainer {...rest}>
+			<CardBody data-testid="snap" size={size} fade={fade}>
+				{showMeta && (
+					<CardMetaContainer size={size} isToShowError={!chef}>
+						{!!chef ? (
+							<CardMetaHeading>Chef</CardMetaHeading>
+						) : (
+							<img
+								src={exclamationMarkIcon}
+								alt="!"
+								data-testid="chef-not-found-icon"
+								style={{
+									position: 'relative',
+									width: '50%',
+									height: '50%',
+									top: '20%',
+									left: '25%',
+								}}
+							/>
+						)}
+					</CardMetaContainer>
+				)}
+				<CardContent textSize={textSize} isToShowError={!chef}>
+					<CardHeadingContainer size={size}>
+						{!!chef ? (
+							<CardHeading data-testid="headline" html>
+								{chef.webTitle}
+							</CardHeading>
+						) : (
+							<CardHeading data-testid="headline" isToShowError={!chef}>
+								This chef might not load in the app, please select an
+								alternative.
+							</CardHeading>
+						)}
+					</CardHeadingContainer>
+					<CardMetaContent>{chef?.bio}</CardMetaContent>
+				</CardContent>
+				{card.meta.chefTheme && (
+					<CardPaletteContainer>
+						<PaletteItem size="s" palette={card.meta.chefTheme.palette} />
+					</CardPaletteContainer>
+				)}
+				<ImageAndGraphWrapper size="small">
+					<ThumbnailSmall
+						url={chef?.chefImageOverride?.src ?? chef?.bylineLargeImageUrl}
+						showSquareThumbnail={true}
+					/>
+				</ImageAndGraphWrapper>
+				<HoverActionsAreaOverlay data-testid="hover-overlay">
+					<HoverActionsButtonWrapper
+						toolTipPosition={'top'}
+						toolTipAlign={'right'}
+						renderButtons={(props) => (
+							<>
+								<HoverViewButton
+									hoverText="View"
+									href={chef?.webUrl}
+									{...props}
+								/>
+								<HoverAddToClipboardButton
+									hoverText="Clipboard"
+									onAddToClipboard={onAddToClipboard}
+									{...props}
+								/>
+								<HoverDeleteButton
+									hoverText="Delete"
+									onDelete={onDelete}
+									{...props}
+								/>
+							</>
+						)}
+					/>
+				</HoverActionsAreaOverlay>
+			</CardBody>
+		</CardContainer>
+	);
 };

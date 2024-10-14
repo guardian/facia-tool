@@ -43,36 +43,36 @@ Fronts-Client is a ReactRedux Javascript application hooking into the existing F
 
 You'll need to understand the Redux concepts of Thunks and Selectors.
 
-| Uses        | For         | Config |
-| ------------|------------- |--- |
-| [React](https://jestjs.io/docs/en/getting-started.html)      | Components ||
-| [Redux](https://redux.js.org/)      | State management ||
-| [Redux Thunk](https://github.com/reduxjs/redux-thunk)      | Redux Thunk middleware allows you to write action creators that return a function instead of an action.  ||
-| [Reselect](https://github.com/reduxjs/reselect)      | Selectors can compute derived data, allowing Redux to store the minimal possible state.  ||
-| [Redux Forms](https://redux-form.com/7.4.2/)      | Form state management for Redux apps ||
-| [React Router](https://reacttraining.com/react-router/)      | Routing for React apps ||
-| [Styled Components](https://www.styled-components.com/)      | Styling for components ||
-| [Typescript](https://www.typescriptlang.org/)      | JS Types | [tsconfig](tsconfig.json), [tslint](tslint.json), [modules.d.ts](modules.d.ts), [global.d.ts](global.d.ts)|
-| [Lodash](https://lodash.com/)      | JS helper utilities ||
-| [Date Fns](https://date-fns.org/)      | JS Date functions ||
-| [Raven](https://github.com/getsentry/sentry-javascript)      | Sentry error reporting ||
-| [Panda Session](https://github.com/guardian/panda-session)      | Pan Domain (cross-gutools) session management ||
+| Uses                                                       | For                                                                                                     | Config                                                                              |
+|------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| [React](https://jestjs.io/docs/en/getting-started.html)    | Components                                                                                              |                                                                                     |
+| [Redux](https://redux.js.org/)                             | State management                                                                                        |                                                                                     |
+| [Redux Thunk](https://github.com/reduxjs/redux-thunk)      | Redux Thunk middleware allows you to write action creators that return a function instead of an action. |                                                                                     |
+| [Reselect](https://github.com/reduxjs/reselect)            | Selectors can compute derived data, allowing Redux to store the minimal possible state.                 |                                                                                     |
+| [Redux Forms](https://redux-form.com/7.4.2/)               | Form state management for Redux apps                                                                    |                                                                                     |
+| [React Router](https://reacttraining.com/react-router/)    | Routing for React apps                                                                                  |                                                                                     |
+| [Styled Components](https://www.styled-components.com/)    | Styling for components                                                                                  |                                                                                     |
+| [Typescript](https://www.typescriptlang.org/)              | JS Types                                                                                                | [tsconfig](tsconfig.json), [modules.d.ts](modules.d.ts), [global.d.ts](global.d.ts) |
+| [Lodash](https://lodash.com/)                              | JS helper utilities                                                                                     |                                                                                     |
+| [Date Fns](https://date-fns.org/)                          | JS Date functions                                                                                       |                                                                                     |
+| [Raven](https://github.com/getsentry/sentry-javascript)    | Sentry error reporting                                                                                  |                                                                                     |
+| [Panda Session](https://github.com/guardian/panda-session) | Pan Domain (cross-gutools) session management                                                           |                                                                                     |
 
 ## Building and Compiling
 
-| Uses        | For         |Config |
-| ------------|------------- |---|
-| [Yarn](https://yarnpkg.com/en/)      | Yarning | [package.json](package.json) |
-| [Vite](https://vitejs.dev/)      | Bundle your assests | [vite.config.js](vite.config.ts) |
+| Uses                            | For                 | Config                           |
+|---------------------------------|---------------------|----------------------------------|
+| [Yarn](https://yarnpkg.com/en/) | Yarning             | [package.json](package.json)     |
+| [Vite](https://vitejs.dev/)     | Bundle your assests | [vite.config.js](vite.config.ts) |
 
 ## Testing
 
-| Uses        | For         | Config |
-| ------------|------------- |--- |
-| [Jest](https://jestjs.io/docs/en/getting-started.html)      | Testing library | [jest.config.js](jest.config.js)|
-| [react-testing-library](https://github.com/kentcdodds/react-testing-library)     | JavaScript Testing utilities for React Components |
-| [React Test Renderer](https://reactjs.org/docs/test-renderer.html)      | Render Components to JSON (e.g for Jest Snapshotting) ||
-| [Test Cafe](https://testcafe.devexpress.com/)      | Integration testing - see below ||
+| Uses                                                                         | For                                                   | Config                           |
+|------------------------------------------------------------------------------|-------------------------------------------------------|----------------------------------|
+| [Jest](https://jestjs.io/docs/en/getting-started.html)                       | Testing library                                       | [jest.config.js](jest.config.js) |
+| [react-testing-library](https://github.com/kentcdodds/react-testing-library) | JavaScript Testing utilities for React Components     |                                  |
+| [React Test Renderer](https://reactjs.org/docs/test-renderer.html)           | Render Components to JSON (e.g for Jest Snapshotting) |                                  |
+| [Test Cafe](https://testcafe.devexpress.com/)                                | Integration testing - see below                       |                                  |
 
 Tests are being run with Jest and can be run using:
 
@@ -113,11 +113,14 @@ And to fix any issues that are automatically resolvable by eslint run:
 yarn lint-fix
 ```
 
-| Uses        | For         | Config |
-| ------------|------------- |--- |
-| [Prettier](https://github.com/prettier/prettier)      | Anti-bikeshed Auto syntax formatting | [.prettierrc](.prettierrc)|
-| [.editorconfig](https://editorconfig.org/)      | Standard Editor formatting  |[.editorconfig](.editorconfig)|
-| [TSLint](https://palantir.github.io/tslint/)      | Typescript Linting | [tslint](tslint.json)|
+| Uses                                             | For                                  | Config                         |
+|--------------------------------------------------|--------------------------------------|--------------------------------|
+| [Prettier](https://github.com/prettier/prettier) | Anti-bikeshed Auto syntax formatting | [.prettierrc](.prettierrc)     |
+| [.editorconfig](https://editorconfig.org/)       | Standard Editor formatting           | [.editorconfig](.editorconfig) |
+
+It’s recommended to [set your editor up to run Prettier](https://prettier.io/docs/en/editors), so that your PRs don’t fail in CI due to the formatting check.
+
+There is also a file [.git-blame-ignore-revs](../.git-blame-ignore-revs) in this repository which contains refs of formatting commits, in order to exclude them from `git blame` using gitʼs `blame.ignoreRevsFile` config option. (For convenience, the [dev setup script](../scripts/setup.sh) sets this value for you.)
 
 ## Typescript
 We are using Typescript for typing in Fronts-Client.

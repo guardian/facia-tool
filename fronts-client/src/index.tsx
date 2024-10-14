@@ -12,8 +12,8 @@ import pageConfig from 'util/extractConfigFromPage';
 import App from 'components/App';
 import { configReceived } from 'actions/Config';
 import {
-  editorSetOpenFronts,
-  editorSetFavouriteFronts,
+	editorSetOpenFronts,
+	editorSetFavouriteFronts,
 } from 'bundles/frontsUI';
 import { storeClipboardContent } from 'actions/ClipboardThunks';
 import { Dispatch } from 'types/Store';
@@ -33,7 +33,7 @@ const store = configureStore();
 
 // Wire up our notifications service
 notifications.subscribe((notification) =>
-  store.dispatch(actionAddNotificationBanner(notification))
+	store.dispatch(actionAddNotificationBanner(notification)),
 );
 
 // @ts-ignore -- Unbind is not used yet but can be used for removed all the
@@ -43,36 +43,36 @@ const { unbind, keyboardActionMap } = listenForKeyboardEvents(store);
 
 // Publish uncaught errors to sentry.io
 if (pageConfig.env.toUpperCase() !== 'DEV' && pageConfig.sentryPublicDSN) {
-  const sentryOptions = {
-    tags: {
-      stack: 'cms-fronts',
-      stage: pageConfig.env.toUpperCase(),
-      app: 'facia-tool-v2',
-    },
-  };
+	const sentryOptions = {
+		tags: {
+			stack: 'cms-fronts',
+			stage: pageConfig.env.toUpperCase(),
+			app: 'facia-tool-v2',
+		},
+	};
 
-  Raven.config(pageConfig.sentryPublicDSN, sentryOptions).install();
+	Raven.config(pageConfig.sentryPublicDSN, sentryOptions).install();
 }
 
 store.dispatch(configReceived(pageConfig));
 if (pageConfig.userData) {
-  if (pageConfig.userData.frontIdsByPriority) {
-    store.dispatch(editorSetOpenFronts(pageConfig.userData.frontIdsByPriority));
-  }
-  if (pageConfig.userData.favouriteFrontIdsByPriority) {
-    store.dispatch(
-      editorSetFavouriteFronts(pageConfig.userData.favouriteFrontIdsByPriority)
-    );
-  }
-  if (pageConfig.userData.featureSwitches) {
-    pageConfig.userData.featureSwitches.forEach((featureSwitch) =>
-      store.dispatch(actionSetFeatureValue(featureSwitch))
-    );
-  }
+	if (pageConfig.userData.frontIdsByPriority) {
+		store.dispatch(editorSetOpenFronts(pageConfig.userData.frontIdsByPriority));
+	}
+	if (pageConfig.userData.favouriteFrontIdsByPriority) {
+		store.dispatch(
+			editorSetFavouriteFronts(pageConfig.userData.favouriteFrontIdsByPriority),
+		);
+	}
+	if (pageConfig.userData.featureSwitches) {
+		pageConfig.userData.featureSwitches.forEach((featureSwitch) =>
+			store.dispatch(actionSetFeatureValue(featureSwitch)),
+		);
+	}
 
-  (store.dispatch as Dispatch)(
-    storeClipboardContent(pageConfig.userData.clipboardArticles)
-  );
+	(store.dispatch as Dispatch)(
+		storeClipboardContent(pageConfig.userData.clipboardArticles),
+	);
 }
 
 pollingConfig(store);
@@ -80,14 +80,14 @@ pollingConfig(store);
 const reactMount = document.getElementById('react-mount');
 
 if (reactMount) {
-  Modal.setAppElement(reactMount);
-  render(
-    <Provider store={store}>
-      <BrowserRouter basename={base}>
-        <App />
-      </BrowserRouter>
-    </Provider>,
-    reactMount
-  );
+	Modal.setAppElement(reactMount);
+	render(
+		<Provider store={store}>
+			<BrowserRouter basename={base}>
+				<App />
+			</BrowserRouter>
+		</Provider>,
+		reactMount,
+	);
 }
 (window as any).deleteIssue = deleteIssue;

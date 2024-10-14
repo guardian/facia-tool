@@ -16,8 +16,8 @@ const smallPortaitStyle = `
 const normalPortraitStyle = `
   width: ${NORMAL_PORTRAIT_WIDTH}px;
   height: ${Math.floor(
-    NORMAL_PORTRAIT_WIDTH * PORTRAIT_RATIO + TEXTINPUT_HEIGHT
-  )}px;
+		NORMAL_PORTRAIT_WIDTH * PORTRAIT_RATIO + TEXTINPUT_HEIGHT,
+	)}px;
   `;
 
 const smallLandscapeStyle = `
@@ -52,41 +52,41 @@ const squareStyle = `
   `;
 
 const getVariableImageContainerStyle = ({
-  portrait = false,
-  small = false,
-  shouldShowLandscape54: shouldShowLandscape54 = false,
-  showSquare = false,
+	portrait = false,
+	small = false,
+	shouldShowLandscape54: shouldShowLandscape54 = false,
+	showSquare = false,
 }: {
-  small?: boolean;
-  portrait?: boolean;
-  shouldShowLandscape54?: boolean;
-  showSquare?: boolean;
+	small?: boolean;
+	portrait?: boolean;
+	shouldShowLandscape54?: boolean;
+	showSquare?: boolean;
 }) => {
-  switch (true) {
-    case showSquare:
-      return squareStyle;
-    case portrait:
-      return small ? smallPortaitStyle : normalPortraitStyle;
-    case shouldShowLandscape54:
-      return small ? smallLandscape54Style : normalLandscape54Style;
-    default:
-      return small ? smallLandscapeStyle : normalLandscapeStyle;
-  }
+	switch (true) {
+		case showSquare:
+			return squareStyle;
+		case portrait:
+			return small ? smallPortaitStyle : normalPortraitStyle;
+		case shouldShowLandscape54:
+			return small ? smallLandscape54Style : normalLandscape54Style;
+		default:
+			return small ? smallLandscapeStyle : normalLandscapeStyle;
+	}
 };
 
 // assuming any portrait image (ie height>width)
 // is in the 4:5 ratio for purposes of styling
 // the image container
 export const ImageInputImageContainer = styled.div<{
-  small?: boolean;
-  portrait?: boolean;
-  shouldShowLandscape54?: boolean;
-  showSquare?: boolean;
+	small?: boolean;
+	portrait?: boolean;
+	shouldShowLandscape54?: boolean;
+	showSquare?: boolean;
 }>`
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  transition: background-color 0.15s;
-  max-width: 100%;
-  ${getVariableImageContainerStyle}
+	display: flex;
+	flex-direction: column;
+	position: relative;
+	transition: background-color 0.15s;
+	max-width: 100%;
+	${getVariableImageContainerStyle}
 `;
