@@ -182,7 +182,10 @@ const recipeQuery = (baseUrl: string) => {
 					recipes,
 				};
 			} else {
+				const prevContext = Raven.getContext();
+				Raven.setUserContext({ ...prevContext, query: queryDoc });
 				captureErrors(response.status, content, `${baseUrl}/search`);
+				Raven.setUserContext(prevContext);
 				throw new Error(`Unable to contact recipe API: ${response.status}`);
 			}
 		},
