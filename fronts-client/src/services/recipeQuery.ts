@@ -86,13 +86,13 @@ const setupRecipeThumbnails = (recep: Recipe) => {
 };
 
 const recipeQuery = (baseUrl: string) => {
-	const captureErrors = (status:number, content:string, url:string) => {
-		const existingContext = Raven.getContext()
-		Raven.setUserContext({...existingContext, recipeSearchResponse: content});
-		Raven.captureMessage(`${url} returned ${status}`)
+	const captureErrors = (status: number, content: string, url: string) => {
+		const existingContext = Raven.getContext();
+		Raven.setUserContext({ ...existingContext, recipeSearchResponse: content });
+		Raven.captureMessage(`${url} returned ${status}`);
 		Raven.setUserContext(existingContext);
 		console.error(content);
-	}
+	};
 
 	const fetchOne = async (href: string): Promise<Recipe | undefined> => {
 		const response = await fetch(`${baseUrl}${href}`);
@@ -196,7 +196,11 @@ const recipeQuery = (baseUrl: string) => {
 				);
 				if (indexResponse.status != 200) {
 					const content = await indexResponse.text();
-					captureErrors(indexResponse.status, content, `/recipes/api/content/by-uid?ids=${idsToFind.join(',')}`);
+					captureErrors(
+						indexResponse.status,
+						content,
+						`/recipes/api/content/by-uid?ids=${idsToFind.join(',')}`,
+					);
 					throw new Error(
 						`Unable to retrieve partial index: server error ${indexResponse.status}`,
 					);
