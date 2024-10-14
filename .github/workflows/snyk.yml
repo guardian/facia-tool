@@ -10,8 +10,8 @@ on:
 
 jobs:
   snyk-V2-and-scala:
-    runs-on: ubuntu-22.04
     uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
+    runs-on: ubuntu-22.04
     with:
       ORG: guardian
       JAVA_VERSION: 11
