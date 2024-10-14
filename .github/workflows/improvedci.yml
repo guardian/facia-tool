@@ -10,7 +10,7 @@ on:
 jobs:
     generate_build_number:
         name: Generate build number
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         outputs:
             BUILD_NUMBER: ${{ steps.create-build-number.outputs.BUILD_NUMBER }}
         steps:
@@ -21,7 +21,7 @@ jobs:
                     echo "BUILD_NUMBER=$(( $GITHUB_RUN_NUMBER + $LAST_TEAMCITY_BUILD ))" >> "$GITHUB_OUTPUT"
 
     build_client_v1:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         permissions:
             id-token: write
             contents: read
@@ -60,7 +60,7 @@ jobs:
                   path: public/src/jspm_packages
                   if-no-files-found: error
     test_client_v1:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         permissions:
             id-token: write
             contents: read
@@ -91,7 +91,7 @@ jobs:
                     grunt --stack test
 
     build_client_v2:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         permissions:
             id-token: write
             contents: read
@@ -112,7 +112,7 @@ jobs:
                   path: public/fronts-client-v2
                   if-no-files-found: error
     test_client_v2:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         permissions:
             id-token: write
             contents: read
@@ -129,7 +129,7 @@ jobs:
               working-directory: fronts-client
 
     integrationtest_client_v2:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         permissions:
             id-token: write
             contents: read
@@ -152,7 +152,7 @@ jobs:
               working-directory: fronts-client
 
     test_backend:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         permissions:
             id-token: write
             contents: read
@@ -183,7 +183,7 @@ jobs:
               run: sbt 'test; database-int:test'
 
     build_backend:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         permissions:
             id-token: write
             contents: read
@@ -222,7 +222,7 @@ jobs:
                   if-no-files-found: error
                   compression-level: '0' #no point, it's already compressed
     upload:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-20.04
         permissions:
             id-token: write
             contents: read
