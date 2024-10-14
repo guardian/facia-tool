@@ -11,6 +11,7 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
   imageHide?: boolean;
   isPortrait?: boolean;
   showLandscape54?: boolean;
+  showSquareThumbnail?: boolean;
 }>`
   position: relative;
   width: ${theme.thumbnailImage.width};
@@ -46,6 +47,14 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
         top: 18px;
         left: 9px;
       }`};
+
+  ${({ showSquareThumbnail }) =>
+    showSquareThumbnail &&
+    `width: ${theme.thumbnailImageSquare.width};
+     min-width: ${theme.thumbnailImageSquare.width};
+     height: ${theme.thumbnailImageSquare.height}
+     aspect-ratio: 1/1;
+     `};
 `;
 
 const ThumbnailCutout = styled.img<{

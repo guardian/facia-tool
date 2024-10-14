@@ -46,19 +46,32 @@ const normalLandscape54Style = `
   maxWidth: 180px;
 `;
 
+const squareStyle = `
+  width: ${NORMAL_PORTRAIT_WIDTH}px;
+  height: ${Math.floor(NORMAL_PORTRAIT_WIDTH + TEXTINPUT_HEIGHT)}px;
+  `;
+
 const getVariableImageContainerStyle = ({
   portrait = false,
   small = false,
   shouldShowLandscape54: shouldShowLandscape54 = false,
+  showSquare = false,
 }: {
   small?: boolean;
   portrait?: boolean;
   shouldShowLandscape54?: boolean;
+  showSquare?: boolean;
 }) => {
-  if (portrait) return small ? smallPortaitStyle : normalPortraitStyle;
-  else if (shouldShowLandscape54)
-    return small ? smallLandscape54Style : normalLandscape54Style;
-  else return small ? smallLandscapeStyle : normalLandscapeStyle;
+  switch (true) {
+    case showSquare:
+      return squareStyle;
+    case portrait:
+      return small ? smallPortaitStyle : normalPortraitStyle;
+    case shouldShowLandscape54:
+      return small ? smallLandscape54Style : normalLandscape54Style;
+    default:
+      return small ? smallLandscapeStyle : normalLandscapeStyle;
+  }
 };
 
 // assuming any portrait image (ie height>width)
@@ -68,6 +81,7 @@ export const ImageInputImageContainer = styled.div<{
   small?: boolean;
   portrait?: boolean;
   shouldShowLandscape54?: boolean;
+  showSquare?: boolean;
 }>`
   display: flex;
   flex-direction: column;
