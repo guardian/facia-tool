@@ -437,6 +437,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 										this.state.imageSrc || (input.value && input.value.origin)
 									}
 									onChange={this.handlePasteImgSrcChange}
+									onDrop={this.handleDrop}
 									onFocus={this.handleFocus}
 									ref={this.inputRef}
 									disabled={disabled}
