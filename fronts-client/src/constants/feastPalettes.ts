@@ -139,22 +139,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
 				backgroundHex: '#363632',
 			},
 		},
-		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Baking.png',
-	},
-	{
-		id: 'budget',
-		name: 'Budget',
-		palettes: {
-			light: {
-				foregroundHex: '#9A1E1E',
-				backgroundHex: '#F9F9F5',
-			},
-			dark: {
-				foregroundHex: '#F0BAB4',
-				backgroundHex: '#363632',
-			},
-		},
-		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Budget.png',
+		imageURL: 'https://uploads.guim.co.uk/2024/10/15/Breakfast.png',
 	},
 	{
 		id: 'brunch',
@@ -170,6 +155,21 @@ export const feastCollectionPalettes: PaletteOption[] = [
 			},
 		},
 		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Brunch.png',
+	},
+	{
+		id: 'budget',
+		name: 'Budget',
+		palettes: {
+			light: {
+				foregroundHex: '#9A1E1E',
+				backgroundHex: '#F9F9F5',
+			},
+			dark: {
+				foregroundHex: '#F0BAB4',
+				backgroundHex: '#363632',
+			},
+		},
+		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Budget.png',
 	},
 	{
 		id: 'cakes',
@@ -217,19 +217,19 @@ export const feastCollectionPalettes: PaletteOption[] = [
 		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Celebrationcakes.png',
 	},
 	{
-		id: 'cheese',
-		name: 'Cheese',
+		id: 'cheeses',
+		name: 'Cheeses',
 		palettes: {
 			light: {
-				foregroundHex: '#C25400',
+				foregroundHex: '#80523E',
 				backgroundHex: '#F9F9F5',
 			},
 			dark: {
-				foregroundHex: '#F0CDB4',
+				foregroundHex: '#F0CDB5',
 				backgroundHex: '#363632',
 			},
 		},
-		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Cheese.png',
+		imageURL: 'https://uploads.guim.co.uk/2024/10/15/Cheeses.png',
 	},
 	{
 		id: 'chicken',
@@ -289,7 +289,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
 				backgroundHex: '#363632',
 			},
 		},
-		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Cookies.png',
+		imageURL: 'https://uploads.guim.co.uk/2024/10/15/Curries.png',
 	},
 	{
 		id: 'dessert',
@@ -319,7 +319,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
 				backgroundHex: '#363632',
 			},
 		},
-		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Dessert-01.png',
+		imageURL: 'https://uploads.guim.co.uk/2024/10/15/Dips.png',
 	},
 	{
 		id: 'eggs',
@@ -364,7 +364,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
 				backgroundHex: '#363632',
 			},
 		},
-		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Fruit.png',
+		imageURL: 'https://uploads.guim.co.uk/2024/10/15/Fruits.png',
 	},
 	{
 		id: 'meals for one',
@@ -439,7 +439,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
 				backgroundHex: '#363632',
 			},
 		},
-		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Noodles.png',
+		imageURL: 'https://uploads.guim.co.uk/2024/10/15/Nuts.png',
 	},
 	{
 		id: 'one-pot',
@@ -454,7 +454,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
 				backgroundHex: '#363632',
 			},
 		},
-		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Noodles.png',
+		imageURL: 'https://uploads.guim.co.uk/2024/10/15/One-pot.png',
 	},
 	{
 		id: 'pasta',
@@ -709,7 +709,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
 				backgroundHex: '#363632',
 			},
 		},
-		imageURL: 'https://uploads.guim.co.uk/2024/03/01/Vegan-01.png',
+		imageURL: 'https://uploads.guim.co.uk/2024/10/15/Vegetables.png',
 	},
 	{
 		id: 'bowls_darkgreen',
