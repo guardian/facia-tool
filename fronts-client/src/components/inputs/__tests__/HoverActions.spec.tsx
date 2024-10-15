@@ -23,6 +23,7 @@ const HoverWrapper = (
 		<HoverActionsButtonWrapper
 			toolTipPosition={'top'}
 			toolTipAlign={'center'}
+			urlPath={undefined}
 			renderButtons={(props) => (
 				<>
 					<HoverViewButton hoverText="View" href={'test-string'} {...props} />

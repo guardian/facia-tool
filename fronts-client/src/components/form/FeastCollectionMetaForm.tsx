@@ -78,7 +78,7 @@ const Form = ({
 					{`This collection has been edited since you started editing this article. Your changes have not been saved. Please refresh the page to get the latest data.`}
 				</CollectionEditedError>
 			)}
-			<FormContent size={size}>
+			<FormContent size={size} marginBottom="40px">
 				<TextOptionsInputGroup>
 					<Field
 						name="title"

@@ -49,6 +49,7 @@ export interface CapiFields {
 	trailText: string;
 	byline: string;
 	thumbnail?: string | void;
+	urlPath: string;
 }
 
 export const strToInt = (str: string | void) =>
@@ -65,6 +66,7 @@ export const getCapiValuesForArticleFields = (
 			trailText: '',
 			byline: '',
 			thumbnail: '',
+			urlPath: '',
 		};
 	}
 	return {
@@ -72,6 +74,7 @@ export const getCapiValuesForArticleFields = (
 		trailText: article.fields.trailText || '',
 		byline: article.fields.byline || '',
 		thumbnail: article.fields.thumbnail,
+		urlPath: article.urlPath,
 	};
 };
 
