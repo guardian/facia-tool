@@ -257,6 +257,8 @@ interface ComponentState {
 const dragImage = new Image();
 dragImage.src = imageDragIcon;
 
+const regexToCheckGridImage: RegExp = /^https?:\/\/(www\.)?media\.(?:dev-|)guim\.co\.uk\/([0-9a-fA-F]+)\//;
+
 class InputImage extends React.Component<ComponentProps, ComponentState> {
 	private inputRef = React.createRef<HTMLInputElement>();
 
@@ -305,6 +307,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 				</div>
 			);
 		}
+
+		const isImgFromGrid = defaultImageUrl ? regexToCheckGridImage.test(defaultImageUrl) : false;
 
 		const hasImage = !useDefault && !!input.value && !!input.value.thumb;
 		const imageUrl =
@@ -411,7 +415,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 										<AddImageIcon size="l" />
 										{!!small ? null : <Label size="sm">{message}</Label>}
 									</AddImageButton>
-									<AddImageButton
+									{isImgFromGrid && (<AddImageButton
 										type="button"
 										onClick={this.openModal(true)}
 										small={small}
@@ -419,7 +423,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 									>
 										<CropIcon size="l" fill={theme.colors.white} />
 										{!!small ? null : <Label size="sm">Recrop image</Label>}
-									</AddImageButton>
+									</AddImageButton>)}
 								</AddImageViaGridModalButton>
 							)}
 							{hasVideo && useDefault && (
