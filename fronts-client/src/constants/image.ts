@@ -43,7 +43,6 @@ export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [
 	FLEXIBLE_SPECIAL_NAME,
 	'scrollable/small',
 	'scrollable/medium',
-	'scrollable/feature',
 	'static/medium/4',
 ];
 
