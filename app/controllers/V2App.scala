@@ -101,7 +101,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, db: Edit
       Json.toJson(conf).toString(),
       isDev,
       maybePinboardUrl = pinboardPermission match {
-        case AccessGranted if maybePinboardFeatureSwitch.exists(_.enabled) =>
+        case AccessGranted if config.environment.stage != "prod" || maybePinboardFeatureSwitch.exists(_.enabled) =>
 					Some(s"https://pinboard.${config.environment.correspondingToolsDomainSuffix}/pinboard.loader.js")
         case _ =>
 					None
