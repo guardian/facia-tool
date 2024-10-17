@@ -196,6 +196,7 @@ const SnapLinkCard = ({
 						size={size}
 						toolTipPosition={'top'}
 						toolTipAlign={'right'}
+						urlPath={urlPath}
 						renderButtons={(props) => (
 							<>
 								{urlPath && (

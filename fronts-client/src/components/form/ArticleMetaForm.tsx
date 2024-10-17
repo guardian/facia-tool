@@ -537,6 +537,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						groupSizeId &&
 						groupSizeId > 0)));
 
+		const cardCriteria = this.determineCardCriteria();
+
 		return (
 			<FormContainer
 				data-testid="edit-form"
@@ -735,9 +737,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										component={InputImage}
 										disabled={imageHide || coverCardImageReplace}
 										criteria={
-											isEditionsMode
-												? editionsCardImageCriteria
-												: this.determineCardCriteria()
+											isEditionsMode ? editionsCardImageCriteria : cardCriteria
 										}
 										frontId={frontId}
 										defaultImageUrl={
@@ -847,7 +847,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									frontId={frontId}
 									component={RenderSlideshow}
 									change={change}
-									criteria={this.determineCardCriteria()}
+									criteria={cardCriteria}
 									slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
 								/>
 							</SlideshowRowContainer>
@@ -904,6 +904,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						</RowContainer>
 					)}
 				</FormContent>
+				{articleCapiFieldValues.urlPath && (
+					// the below tag is empty and meaningless to the fronts tool itself, but serves as a handle for
+					// Pinboard to attach itself via, identified/distinguished by the urlPath data attribute
+					// @ts-ignore
+					<pinboard-article-button
+						data-url-path={articleCapiFieldValues.urlPath}
+						data-with-draggable-thumbs-of-ratio={`${cardCriteria.widthAspectRatio}:${cardCriteria.heightAspectRatio}`}
+					/>
+				)}
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
 						Cancel
@@ -988,7 +997,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	private getHeadlineLabel = () =>
 		this.props.snapType === 'html' ? 'Content' : 'Headline';
 
-	private determineCardCriteria = (): Criteria => {
+	private determineCardCriteria = (): Criteria & {
+		widthAspectRatio: number;
+		heightAspectRatio: number;
+	} => {
 		const { collectionType } = this.props;
 		if (!collectionType) {
 			return landScapeCardImageCriteria;
