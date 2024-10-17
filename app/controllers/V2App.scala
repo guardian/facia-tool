@@ -3,7 +3,7 @@ package controllers
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import org.scanamo._
 import org.scanamo.syntax._
-import model.{ClipboardCard, FeatureSwitch, UserData, UserDataForDefaults}
+import model.{ClipboardCard, FeatureSwitch, PinboardIntegration, UserData, UserDataForDefaults}
 
 import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.{Metadata, TargetedTerritory}
@@ -14,7 +14,7 @@ import play.api.libs.json.Json
 import services.editions.db.EditionsDB
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import switchboard.SwitchManager
-import util.{Acl, AclJson}
+import util.{AccessGranted, Acl, AclJson}
 
 class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, db: EditionsDB, val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
 
@@ -39,6 +39,7 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, db: Edit
     val hasBreakingNews = acl.testUser(Permissions.BreakingNewsAlert, "facia-tool-allow-breaking-news-for-all")(req.user.email)
     val hasConfigureFronts = acl.testUser(Permissions.ConfigureFronts, "facia-tool-allow-config-for-all")(req.user.email)
     val hasEditionsPermissions = acl.testUser(Permissions.EditEditions, "facia-tool-allow-edit-editions-for-all")(req.user.email)
+    val pinboardPermission = acl.testUser(Permissions.Pinboard, "facia-tool-allow-pinboard-for-all")(req.user.email)
 
     val acls = AclJson(
       fronts = Map(config.faciatool.breakingNewsFront -> hasBreakingNews),
@@ -51,7 +52,9 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, db: Edit
     val maybeUserData: Option[UserData] = Scanamo(dynamoClient).exec(
       userDataTable.get("email" === userEmail)).flatMap(_.toOption)
 
-    val clipboardCards = if (editingEdition) {
+		val maybePinboardFeatureSwitch = maybeUserData.flatMap(_.featureSwitches.flatMap(_.find(_.key == PinboardIntegration.key)))
+
+		val clipboardCards = if (editingEdition) {
       if(isFeast)
         maybeUserData.map(_.feastEditionsClipboardCards.getOrElse(List()).map(ClipboardCard.apply))
       else
@@ -96,7 +99,13 @@ class V2App(isDev: Boolean, val acl: Acl, dynamoClient: DynamoDbClient, db: Edit
       cssLocation,
       faviconLocation,
       Json.toJson(conf).toString(),
-      isDev
+      isDev,
+      maybePinboardUrl = pinboardPermission match {
+        case AccessGranted if config.environment.stage != "prod" || maybePinboardFeatureSwitch.exists(_.enabled) =>
+					Some(s"https://pinboard.${config.environment.correspondingToolsDomainSuffix}/pinboard.loader.js")
+        case _ =>
+					None
+      }
     ))
   }
 
