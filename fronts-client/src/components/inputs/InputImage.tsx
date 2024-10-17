@@ -39,6 +39,7 @@ import { EditMode } from 'types/EditMode';
 import { selectEditMode } from '../../selectors/pathSelectors';
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { error } from '../../styleConstants';
+import ValidatingSpinnerOverlay from '../image/ValidatingSpinnerOverlay';
 
 const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
 	background-color: ${({ small }) =>
@@ -252,6 +253,7 @@ interface ComponentState {
 	confirmDelete: boolean;
 	cancelDeleteTimeout: undefined | (() => void);
 	isRecropping: boolean;
+	isValidating: boolean;
 }
 
 const dragImage = new Image();
@@ -449,6 +451,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 					</ImageContainer>
 				</DragIntentContainer>
 				{this.state.isDragging && <ImageDragIntentIndicator />}
+				{this.state.isValidating && <ValidatingSpinnerOverlay />}
 			</InputImageContainer>
 		);
 	}
@@ -496,12 +499,14 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 	private handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
 		events.imageAdded(this.props.frontId, 'drop');
 		e.preventDefault();
+		this.setState({ isValidating: true });
 		validateImageEvent(e, this.props.frontId, this.props.criteria)
 			.then(this.props.input.onChange)
 			.catch((err) => {
 				alert(err);
 				console.log('@todo:handle error', err);
-			});
+			})
+			.finally(() => this.setState({ isValidating: false }));
 	};
 
 	private handlePasteImgSrcChange = (e: React.FormEvent<HTMLInputElement>) => {
@@ -509,12 +514,13 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 		e.persist();
 		this.setState(
 			{ imageSrc: e.currentTarget.value },
-			this.validateAndGetImage,
+			this.validateAndGetPastedImage,
 		);
 	};
 
-	private validateAndGetImage = () => {
+	private validateAndGetPastedImage = () => {
 		events.imageAdded(this.props.frontId, 'paste');
+		this.setState({ isValidating: true });
 		validateImageSrc(
 			this.state.imageSrc,
 			this.props.frontId,
@@ -524,7 +530,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			.catch((err) => {
 				alert(err);
 				console.log('@todo:handle error', err);
-			});
+			})
+			.finally(() => this.setState({ isValidating: false }));
 		this.setState({ imageSrc: '' });
 	};
 
