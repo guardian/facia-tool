@@ -119,6 +119,7 @@ const Form = ({
 									name="chefImageOverride"
 									component={InputImage}
 									criteria={squareImageCriteria}
+									defaultImageUrl={chef?.bylineImageUrl}
 								/>
 							</ImageCol>
 						</Row>
