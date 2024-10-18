@@ -70,6 +70,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 	const [showAdvancedRecipes, setShowAdvancedRecipes] = useState(false);
 	const [dateField, setDateField] = useState<DateParamField>(undefined);
 	const [orderingForce, setOrderingForce] = useState<string>('default');
+	const [forceDates, setForceDates] = useState(false);
 
 	const dispatch: Dispatch = useDispatch();
 	const searchForChefs = useCallback(
@@ -148,7 +149,13 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 	const renderTheFeed = () => {
 		switch (selectedOption) {
 			case FeedType.recipes:
-				return recipeSearchIds.map((id) => <RecipeFeedItem key={id} id={id} />);
+				return recipeSearchIds.map((id) => (
+					<RecipeFeedItem
+						key={id}
+						id={id}
+						showTimes={forceDates || !!dateField}
+					/>
+				));
 			case FeedType.chefs:
 				//Fixing https://the-guardian.sentry.io/issues/5820707430/?project=35467&referrer=issue-stream&statsPeriod=90d&stream_index=0&utc=true
 				//It seems that some null values got into the `chefSearchIds` list
@@ -180,16 +187,22 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 				<ClipboardHeader />
 			</InputContainer>
 
-			{showAdvancedRecipes ? (
+			{showAdvancedRecipes && selectedOption === FeedType.recipes ? (
 				<>
 					<TopOptions>
 						<div>
-							<label htmlFor="dateSelector">Ordering priority</label>
+							<label
+								htmlFor="dateSelector"
+								style={{ color: searchText == '' ? 'gray' : 'inherit' }}
+							>
+								Ordering priority
+							</label>
 						</div>
 						<div>
 							<select
 								id="dateSelector"
 								value={dateField}
+								disabled={searchText == ''}
 								onChange={(evt) => {
 									console.log(evt.target);
 									setDateField(
@@ -232,6 +245,18 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 								<option value={'gentle'}>Prefer relevance</option>
 								<option value={'forceful'}>Prefer date</option>
 							</select>
+						</div>
+					</TopOptions>
+					<TopOptions>
+						<div>
+							<label htmlFor="forceDateDisplay">Always show dates</label>
+						</div>
+						<div>
+							<input
+								type="checkbox"
+								checked={forceDates}
+								onChange={(evt) => setForceDates(evt.target.checked)}
+							/>
 						</div>
 					</TopOptions>
 					<TopOptions

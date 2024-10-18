@@ -9,12 +9,15 @@ import { useDispatch } from 'react-redux';
 import { insertCardWithCreate } from 'actions/Cards';
 import { selectors as recipeSelectors } from 'bundles/recipesBundle';
 import { handleDragStartForCard } from 'util/dragAndDrop';
+import { Title as FeedItemTitle } from './FeedItem';
+import format from 'date-fns/format';
 
 interface ComponentProps {
 	id: string;
+	showTimes: boolean;
 }
 
-export const RecipeFeedItem = ({ id }: ComponentProps) => {
+export const RecipeFeedItem = ({ id, showTimes }: ComponentProps) => {
 	const shouldObscureFeed = useSelector<State, boolean>((state) =>
 		selectFeatureValue(state, 'obscure-feed'),
 	);
@@ -33,11 +36,15 @@ export const RecipeFeedItem = ({ id }: ComponentProps) => {
 		);
 	}, [recipe]);
 
-	const shortenTimestamp = (iso: string) => {
-		const parts = iso.split('T');
-		return parts[0];
+	const renderTimestamp = (iso: string) => {
+		try {
+			const date = new Date(iso);
+			return format(date, 'HH:mm on do MMM YYYY');
+		} catch (err) {
+			console.warn(err);
+			return iso;
+		}
 	};
-
 	return (
 		<FeedItem
 			type={CardTypesMap.RECIPE}
@@ -50,6 +57,21 @@ export const RecipeFeedItem = ({ id }: ComponentProps) => {
 			handleDragStart={handleDragStartForCard(CardTypesMap.RECIPE, recipe)}
 			onAddToClipboard={onAddToClipboard}
 			shouldObscureFeed={shouldObscureFeed}
+			bodyContent={
+				<>
+					<FeedItemTitle>{recipe.title}</FeedItemTitle>
+					{recipe?.lastModifiedDate && showTimes ? (
+						<ContentExtra>
+							Modified {renderTimestamp(recipe.lastModifiedDate)}
+						</ContentExtra>
+					) : undefined}
+					{recipe?.publishedDate && showTimes ? (
+						<ContentExtra>
+							First published {renderTimestamp(recipe.publishedDate)}
+						</ContentExtra>
+					) : undefined}
+				</>
+			}
 			metaContent={
 				<>
 					<ContentInfo>Recipe</ContentInfo>
@@ -57,19 +79,6 @@ export const RecipeFeedItem = ({ id }: ComponentProps) => {
 						{recipe?.score && recipe.score < 1
 							? `Relevance ${Math.ceil(recipe.score * 100)}%`
 							: ''}
-						<br />
-						{recipe?.lastModifiedDate
-							? `M ${shortenTimestamp(recipe.lastModifiedDate)}`
-							: undefined}
-						<br />
-						{recipe?.publishedDate
-							? `P ${shortenTimestamp(recipe.publishedDate)}`
-							: undefined}
-						<br />
-						{recipe?.firstPublishedDate
-							? `F ${shortenTimestamp(recipe.firstPublishedDate)}`
-							: undefined}
-						<br />
 					</ContentExtra>
 				</>
 			}

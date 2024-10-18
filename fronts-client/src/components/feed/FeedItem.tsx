@@ -53,7 +53,7 @@ const Byline = styled.h2`
 	font-weight: bold;
 `;
 
-const Title = styled.h2`
+export const Title = styled.h2`
 	margin: 2px 2px 0 0;
 	vertical-align: top;
 	font-family: TS3TextSans;
@@ -111,6 +111,7 @@ interface FeedItemProps {
 	id: string;
 	type: CardTypes;
 	title: string;
+	bodyContent?: JSX.Element;
 	liveUrl?: string;
 	metaContent?: JSX.Element;
 	scheduledPublicationDate?: string;
@@ -138,6 +139,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 			id,
 			type,
 			title,
+			bodyContent,
 			liveUrl,
 			isLive,
 			metaContent,
@@ -199,10 +201,17 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 						<ShortVerticalPinline />
 					</MetaContainer>
 					<Body>
-						<Title data-testid="headline">{title}</Title>
-						{byline ? (
-							<Byline data-testid="byline">{byline}</Byline>
-						) : undefined}
+						{bodyContent ? (
+							bodyContent
+						) : (
+							<>
+								<Title data-testid="headline">{title}</Title>
+								{byline ? (
+									<Byline data-testid="byline">{byline}</Byline>
+								) : undefined}
+								)
+							</>
+						)}
 					</Body>
 					<ArticleThumbnail
 						style={{
