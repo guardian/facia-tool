@@ -33,46 +33,46 @@ export const RecipeFeedItem = ({ id }: ComponentProps) => {
 		);
 	}, [recipe]);
 
-  const shortenTimestamp = (iso: string) => {
-    const parts = iso.split('T');
-    return parts[0];
-  };
+	const shortenTimestamp = (iso: string) => {
+		const parts = iso.split('T');
+		return parts[0];
+	};
 
-  return (
-    <FeedItem
-      type={CardTypesMap.RECIPE}
-      id={recipe.canonicalArticle}
-      title={recipe.title}
-      thumbnail={recipe.previewImage?.url ?? recipe.featuredImage?.url ?? ""}
-      liveUrl={`https://theguardian.com/${recipe.canonicalArticle}`}
-      hasVideo={false}
-      isLive={true} // We do not yet serve preview recipes
-      handleDragStart={handleDragStartForCard(CardTypesMap.RECIPE, recipe)}
-      onAddToClipboard={onAddToClipboard}
-      shouldObscureFeed={shouldObscureFeed}
-      metaContent={
-        <>
-          <ContentInfo>Recipe</ContentInfo>
-          <ContentExtra>
-            {recipe?.score && recipe.score < 1
-              ? `Relevance ${Math.ceil(recipe.score * 100)}%`
-              : ''}
-            <br />
-            {recipe?.lastModifiedDate
-              ? `M ${shortenTimestamp(recipe.lastModifiedDate)}`
-              : undefined}
-            <br />
-            {recipe?.publishedDate
-              ? `P ${shortenTimestamp(recipe.publishedDate)}`
-              : undefined}
-            <br />
-            {recipe?.firstPublishedDate
-              ? `F ${shortenTimestamp(recipe.firstPublishedDate)}`
-              : undefined}
-            <br />
-          </ContentExtra>
-        </>
-      }
-    />
-  );
+	return (
+		<FeedItem
+			type={CardTypesMap.RECIPE}
+			id={recipe.canonicalArticle}
+			title={recipe.title}
+			thumbnail={recipe.previewImage?.url ?? recipe.featuredImage?.url ?? ''}
+			liveUrl={`https://theguardian.com/${recipe.canonicalArticle}`}
+			hasVideo={false}
+			isLive={true} // We do not yet serve preview recipes
+			handleDragStart={handleDragStartForCard(CardTypesMap.RECIPE, recipe)}
+			onAddToClipboard={onAddToClipboard}
+			shouldObscureFeed={shouldObscureFeed}
+			metaContent={
+				<>
+					<ContentInfo>Recipe</ContentInfo>
+					<ContentExtra>
+						{recipe?.score && recipe.score < 1
+							? `Relevance ${Math.ceil(recipe.score * 100)}%`
+							: ''}
+						<br />
+						{recipe?.lastModifiedDate
+							? `M ${shortenTimestamp(recipe.lastModifiedDate)}`
+							: undefined}
+						<br />
+						{recipe?.publishedDate
+							? `P ${shortenTimestamp(recipe.publishedDate)}`
+							: undefined}
+						<br />
+						{recipe?.firstPublishedDate
+							? `F ${shortenTimestamp(recipe.firstPublishedDate)}`
+							: undefined}
+						<br />
+					</ContentExtra>
+				</>
+			}
+		/>
+	);
 };

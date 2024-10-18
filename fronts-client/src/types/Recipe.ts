@@ -15,15 +15,15 @@ export interface RecipeImage {
 // Incomplete – add as we need more properties. Eventually, this would
 // be useful to derive from a package.
 export interface Recipe {
-  id: string;
-  title: string;
-  canonicalArticle: string;
-  difficultyLevel: string;
-  featuredImage?: RecipeImage; // the latter is an old image format that appears in our test fixtures
-  previewImage?: RecipeImage;
-  firstPublishedDate?: string;
-  lastModifiedDate?: string;
-  publishedDate?: string;
+	id: string;
+	title: string;
+	canonicalArticle: string;
+	difficultyLevel: string;
+	featuredImage?: RecipeImage; // the latter is an old image format that appears in our test fixtures
+	previewImage?: RecipeImage;
+	firstPublishedDate?: string;
+	lastModifiedDate?: string;
+	publishedDate?: string;
 }
 
 export interface RecipeIndexData {
