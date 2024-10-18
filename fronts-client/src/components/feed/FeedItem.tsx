@@ -209,7 +209,6 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 								{byline ? (
 									<Byline data-testid="byline">{byline}</Byline>
 								) : undefined}
-								)
 							</>
 						)}
 					</Body>

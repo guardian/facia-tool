@@ -67,7 +67,7 @@ export const RecipeFeedItem = ({ id, showTimes }: ComponentProps) => {
 					) : undefined}
 					{recipe?.publishedDate && showTimes ? (
 						<ContentExtra>
-							First published {renderTimestamp(recipe.publishedDate)}
+							Published {renderTimestamp(recipe.publishedDate)}
 						</ContentExtra>
 					) : undefined}
 				</>
