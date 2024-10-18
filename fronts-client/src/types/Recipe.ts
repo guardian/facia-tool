@@ -21,6 +21,9 @@ export interface Recipe {
 	difficultyLevel: string;
 	featuredImage?: RecipeImage; // the latter is an old image format that appears in our test fixtures
 	previewImage?: RecipeImage;
+	firstPublishedDate?: string;
+	lastModifiedDate?: string;
+	publishedDate?: string;
 }
 
 export interface RecipeIndexData {

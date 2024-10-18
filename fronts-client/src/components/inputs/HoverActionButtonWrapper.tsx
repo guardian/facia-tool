@@ -45,6 +45,7 @@ interface WrapperProps {
 	toolTipAlign: 'left' | 'center' | 'right';
 	urlPath: string | undefined;
 	renderButtons: (renderProps: ButtonProps) => JSX.Element;
+	noPinboard?: boolean;
 }
 
 export const HoverActionsButtonWrapper = ({
@@ -53,6 +54,7 @@ export const HoverActionsButtonWrapper = ({
 	size,
 	urlPath,
 	renderButtons,
+	noPinboard,
 }: WrapperProps) => {
 	const [toolTipText, setToolTipText] = useState<string | undefined>(undefined);
 
@@ -79,7 +81,7 @@ export const HoverActionsButtonWrapper = ({
 				hideToolTip,
 				size,
 			})}
-			{urlPath && (
+			{urlPath && !noPinboard && (
 				// the below tag is empty and meaningless to the fronts tool itself, but serves as a handle for
 				// Pinboard to attach itself via, identified/distinguished by the urlPath data attribute
 				// @ts-ignore
