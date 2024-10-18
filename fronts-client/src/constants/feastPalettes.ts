@@ -82,6 +82,21 @@ export const chefPalettes: PaletteOption[] = [
 
 export const feastCollectionPalettes: PaletteOption[] = [
 	{
+		id: 'apples_pears',
+		name: 'Apples pears',
+		palettes: {
+			light: {
+				foregroundHex: '#697431',
+				backgroundHex: '#F9F9F5',
+			},
+			dark: {
+				foregroundHex: '#E1E5B8',
+				backgroundHex: '#363632',
+			},
+		},
+		imageURL: 'https://uploads.guim.co.uk/2024/10/18/Apples_pears.png',
+	},
+	{
 		id: 'autumn',
 		name: 'Autumn',
 		palettes: {
@@ -232,6 +247,21 @@ export const feastCollectionPalettes: PaletteOption[] = [
 		imageURL: 'https://uploads.guim.co.uk/2024/10/15/Cheeses.png',
 	},
 	{
+		id: 'coffee_donuts',
+		name: 'Coffee donuts',
+		palettes: {
+			light: {
+				foregroundHex: '#BB3C81',
+				backgroundHex: '#F9F9F5',
+			},
+			dark: {
+				foregroundHex: '#FCF0F6',
+				backgroundHex: '#363632',
+			},
+		},
+		imageURL: 'https://uploads.guim.co.uk/2024/10/18/Coffee_donuts.png',
+	},
+	{
 		id: 'chicken',
 		name: 'Chicken',
 		palettes: {
@@ -365,6 +395,36 @@ export const feastCollectionPalettes: PaletteOption[] = [
 			},
 		},
 		imageURL: 'https://uploads.guim.co.uk/2024/10/15/Fruits.png',
+	},
+	{
+		id: 'halloween',
+		name: 'Halloween',
+		palettes: {
+			light: {
+				foregroundHex: '#DA2B27',
+				backgroundHex: '#F9F9F5',
+			},
+			dark: {
+				foregroundHex: '#FDF1F0',
+				backgroundHex: '#363632',
+			},
+		},
+		imageURL: 'https://uploads.guim.co.uk/2024/10/18/Halloween.png',
+	},
+	{
+		id: 'hot_chocolate',
+		name: 'Hot chocolate',
+		palettes: {
+			light: {
+				foregroundHex: '#603D30',
+				backgroundHex: '#F9F9F5',
+			},
+			dark: {
+				foregroundHex: '#F0C5B5',
+				backgroundHex: '#363632',
+			},
+		},
+		imageURL: 'https://uploads.guim.co.uk/2024/10/18/Hot-chocolate.png',
 	},
 	{
 		id: 'meals for one',
@@ -502,6 +562,21 @@ export const feastCollectionPalettes: PaletteOption[] = [
 		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Picnic.png',
 	},
 	{
+		id: 'pizza',
+		name: 'Pizza',
+		palettes: {
+			light: {
+				foregroundHex: '#80191A',
+				backgroundHex: '#F9F9F5',
+			},
+			dark: {
+				foregroundHex: '#FDF1F0',
+				backgroundHex: '#363632',
+			},
+		},
+		imageURL: 'https://uploads.guim.co.uk/2024/10/18/Pizza.png',
+	},
+	{
 		id: 'potatos',
 		name: 'Potatos',
 		palettes: {
@@ -515,6 +590,36 @@ export const feastCollectionPalettes: PaletteOption[] = [
 			},
 		},
 		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Potatos.png',
+	},
+	{
+		id: 'pumpkin_pie',
+		name: 'Pumpkin pie',
+		palettes: {
+			light: {
+				foregroundHex: '#9A2020',
+				backgroundHex: '#F9F9F5',
+			},
+			dark: {
+				foregroundHex: '#EFBAB4',
+				backgroundHex: '#363632',
+			},
+		},
+		imageURL: 'https://uploads.guim.co.uk/2024/10/18/Pumpkin_pie.png',
+	},
+	{
+		id: 'quick meals',
+		name: 'Quick Meals',
+		palettes: {
+			light: {
+				foregroundHex: '#994100',
+				backgroundHex: '#F9F9F5',
+			},
+			dark: {
+				foregroundHex: '#ACD8E5',
+				backgroundHex: '#363632',
+			},
+		},
+		imageURL: 'https://uploads.guim.co.uk/2024/03/21/QuickmealsV2-01.png',
 	},
 	{
 		id: 'rice',
@@ -545,21 +650,6 @@ export const feastCollectionPalettes: PaletteOption[] = [
 			},
 		},
 		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Salads.png',
-	},
-	{
-		id: 'quick meals',
-		name: 'Quick Meals',
-		palettes: {
-			light: {
-				foregroundHex: '#994100',
-				backgroundHex: '#F9F9F5',
-			},
-			dark: {
-				foregroundHex: '#ACD8E5',
-				backgroundHex: '#363632',
-			},
-		},
-		imageURL: 'https://uploads.guim.co.uk/2024/03/21/QuickmealsV2-01.png',
 	},
 	{
 		id: 'soup',
@@ -637,6 +727,21 @@ export const feastCollectionPalettes: PaletteOption[] = [
 		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Tacos.png',
 	},
 	{
+		id: 'thanksgiving',
+		name: 'Thanksgiving',
+		palettes: {
+			light: {
+				foregroundHex: '#C15627',
+				backgroundHex: '#F9F9F5',
+			},
+			dark: {
+				foregroundHex: '#F0CDB5',
+				backgroundHex: '#363632',
+			},
+		},
+		imageURL: 'https://uploads.guim.co.uk/2024/10/18/Thanksgiving.png',
+	},
+	{
 		id: 'tins',
 		name: 'Tins',
 		palettes: {
@@ -665,6 +770,21 @@ export const feastCollectionPalettes: PaletteOption[] = [
 			},
 		},
 		imageURL: 'https://uploads.guim.co.uk/2024/03/21/Traybake.png',
+	},
+	{
+		id: 'Turkey',
+		name: 'Turkey',
+		palettes: {
+			light: {
+				foregroundHex: '#C15627',
+				backgroundHex: '#F9F9F5',
+			},
+			dark: {
+				foregroundHex: '#F0CDB5',
+				backgroundHex: '#363632',
+			},
+		},
+		imageURL: 'https://uploads.guim.co.uk/2024/10/18/Turkey.png',
 	},
 	{
 		id: 'tv snacks',
