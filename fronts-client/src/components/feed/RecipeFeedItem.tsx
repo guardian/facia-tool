@@ -57,6 +57,7 @@ export const RecipeFeedItem = ({ id, showTimes }: ComponentProps) => {
 			handleDragStart={handleDragStartForCard(CardTypesMap.RECIPE, recipe)}
 			onAddToClipboard={onAddToClipboard}
 			shouldObscureFeed={shouldObscureFeed}
+			noPinboard={true}
 			bodyContent={
 				<>
 					<FeedItemTitle>{recipe.title}</FeedItemTitle>
