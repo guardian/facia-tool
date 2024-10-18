@@ -22,7 +22,6 @@ import {
 	RecipeSearchParams,
 } from '../../services/recipeQuery';
 import debounce from 'lodash/debounce';
-import { isNaN } from 'lodash';
 import ButtonDefault from '../inputs/ButtonDefault';
 
 const InputContainer = styled.div`
@@ -46,6 +45,9 @@ const PaginationContainer = styled.div`
 const TopOptions = styled.div`
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
+	margin-right: 1em;
+	margin-bottom: 1em;
 `;
 
 const FeedsContainerWrapper = styled.div`
@@ -67,11 +69,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
 	const [showAdvancedRecipes, setShowAdvancedRecipes] = useState(false);
 	const [dateField, setDateField] = useState<DateParamField>(undefined);
-	const [uprateDropoffScale, setUprateDropoffScale] = useState<
-		number | undefined
-	>(90);
-	const [uprateOffsetDays, setUprateOffsetDays] = useState(7);
-	const [uprateDecay, setUprateDecay] = useState(0.95);
+	const [orderingForce, setOrderingForce] = useState<string>('default');
 
 	const dispatch: Dispatch = useDispatch();
 	const searchForChefs = useCallback(
@@ -96,27 +94,36 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
 	const [page, setPage] = useState(1);
 
-	/*const debouncedRunSearch = debounce(() => runSearch(page), 750); TODO need to check if needed for chef-search? if yes then how to improve implementing it*/
-
 	useEffect(() => {
 		const dbf = debounce(() => runSearch(page), 750);
 		dbf();
 		return () => dbf.cancel();
-	}, [
-		selectedOption,
-		searchText,
-		page,
-		dateField,
-		uprateDecay,
-		uprateDropoffScale,
-		uprateOffsetDays,
-	]);
+	}, [selectedOption, searchText, page, dateField, orderingForce]);
 
 	const chefsPagination: IPagination | null = useSelector((state: State) =>
 		chefSelectors.selectPagination(state),
 	);
 
 	const hasPages = (chefsPagination?.totalPages ?? 0) > 1;
+
+	const getUpdateConfig = () => {
+		switch (orderingForce) {
+			case 'default':
+				return undefined;
+			case 'gentle':
+				return {
+					decay: 0.95,
+					dropoffScaleDays: 90,
+					offsetDays: 7,
+				};
+			case 'forceful':
+				return {
+					decay: 0.7,
+					dropoffScaleDays: 180,
+					offsetDays: 14,
+				};
+		}
+	};
 
 	const runSearch = useCallback(
 		(page: number = 1) => {
@@ -130,24 +137,12 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 					searchForRecipes({
 						queryText: searchText,
 						uprateByDate: dateField,
-						uprateConfig: {
-							decay: uprateDecay,
-							dropoffScaleDays: uprateDropoffScale,
-							offsetDays: uprateOffsetDays,
-						},
+						uprateConfig: getUpdateConfig(),
 					});
 					break;
 			}
 		},
-		[
-			selectedOption,
-			searchText,
-			page,
-			dateField,
-			uprateDecay,
-			uprateDropoffScale,
-			uprateOffsetDays,
-		],
+		[selectedOption, searchText, page, dateField, orderingForce],
 	);
 
 	const renderTheFeed = () => {
@@ -187,52 +182,11 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
 			{showAdvancedRecipes ? (
 				<>
-					<TopOptions style={{ marginBottom: '0.4em' }}>
-						<div style={{ display: 'flex', flexDirection: 'row' }}>
-							<div style={{ flex: 1 }}>
-								<TextInput
-									style={{ padding: 0 }}
-									displaySearchIcon={false}
-									id="uprateDropoffScale"
-									type="number"
-									value={uprateDropoffScale?.toString() ?? ''}
-									onChange={(evt) => {
-										const newVal = parseInt(evt.target.value);
-										if (!isNaN(newVal)) setUprateDropoffScale(newVal);
-									}}
-								/>
-							</div>
-							<div style={{ flex: 1 }}>
-								<TextInput
-									style={{ padding: 0 }}
-									displaySearchIcon={false}
-									id="uprateOffset"
-									type="number"
-									value={uprateOffsetDays?.toString() ?? ''}
-									onChange={(evt) => {
-										const newVal = parseInt(evt.target.value);
-										if (!isNaN(newVal)) setUprateOffsetDays(newVal);
-									}}
-								/>
-							</div>
-							<div style={{ flex: 1 }}>
-								<TextInput
-									style={{ padding: 0 }}
-									displaySearchIcon={false}
-									id="uprateOffset"
-									type="number"
-									value={uprateDecay?.toString() ?? ''}
-									onChange={(evt) => {
-										const newVal = parseFloat(evt.target.value);
-										if (!isNaN(newVal)) setUprateDecay(newVal);
-									}}
-								/>
-							</div>
-						</div>
-					</TopOptions>
 					<TopOptions>
-						<div style={{ display: 'block' }}>
+						<div>
 							<label htmlFor="dateSelector">Ordering priority</label>
+						</div>
+						<div>
 							<select
 								id="dateSelector"
 								value={dateField}
@@ -258,7 +212,35 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 							</select>
 						</div>
 					</TopOptions>
-					<TopOptions style={{ marginBottom: '1.2em' }}>
+					<TopOptions>
+						<div>
+							<label
+								htmlFor="orderingForce"
+								style={{ color: !dateField ? 'gray' : 'inherit' }}
+							>
+								Ordering preference
+							</label>
+						</div>
+						<div>
+							<select
+								id="orderingForce"
+								value={orderingForce}
+								disabled={!dateField}
+								onChange={(evt) => setOrderingForce(evt.target.value)}
+							>
+								<option value={'default'}>Default</option>
+								<option value={'gentle'}>Prefer relevance</option>
+								<option value={'forceful'}>Prefer date</option>
+							</select>
+						</div>
+					</TopOptions>
+					<TopOptions
+						style={{
+							paddingBottom: '0.5em',
+							borderBottom: '1px solid gray',
+							marginBottom: '0.5em',
+						}}
+					>
 						<ButtonDefault onClick={() => setShowAdvancedRecipes(false)}>
 							Close
 						</ButtonDefault>

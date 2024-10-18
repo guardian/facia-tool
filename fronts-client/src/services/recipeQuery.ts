@@ -172,7 +172,10 @@ const recipeQuery = (baseUrl: string) => {
 		recipes: async (
 			params: RecipeSearchParams,
 		): Promise<RecipeSearchResponse> => {
-			const queryDoc = JSON.stringify(params);
+			const queryDoc = JSON.stringify({
+				...params,
+				noStats: true, //we are not reading stats, so no point slowing the query down by retrieving them.
+			});
 			const response = await fetch(`${baseUrl}/search`, {
 				method: 'POST',
 				body: queryDoc,
