@@ -83,7 +83,7 @@ export const chefPalettes: PaletteOption[] = [
 export const feastCollectionPalettes: PaletteOption[] = [
 	{
 		id: 'apples_pears',
-		name: 'Apples pears',
+		name: 'Apples & pears',
 		palettes: {
 			light: {
 				foregroundHex: '#697431',
@@ -248,7 +248,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
 	},
 	{
 		id: 'coffee_donuts',
-		name: 'Coffee donuts',
+		name: 'Coffee & donuts',
 		palettes: {
 			light: {
 				foregroundHex: '#BB3C81',
@@ -577,8 +577,8 @@ export const feastCollectionPalettes: PaletteOption[] = [
 		imageURL: 'https://uploads.guim.co.uk/2024/10/18/Pizza.png',
 	},
 	{
-		id: 'potatos',
-		name: 'Potatos',
+		id: 'potatoes',
+		name: 'Potatoes',
 		palettes: {
 			light: {
 				foregroundHex: '#99614B',
