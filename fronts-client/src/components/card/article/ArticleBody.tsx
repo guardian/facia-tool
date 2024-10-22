@@ -209,6 +209,9 @@ const articleBodyDefault = React.memo(
       imageCriteria.heightAspectRatio ===
         landscape5To4CardImageCriteria.heightAspectRatio;
 
+    const suppressImages = false;
+    const hiddenImage = suppressImages ? suppressImages : imageHide;
+
     return (
       <>
         {showMeta && (
@@ -321,7 +324,7 @@ const articleBodyDefault = React.memo(
             ) : (
               <DraggableArticleImageContainer id={uuid} canDrag={canDragImage}>
                 <ThumbnailSmall
-                  imageHide={imageHide}
+                  imageHide={hiddenImage}
                   url={thumbnail}
                   isDraggingImageOver={isDraggingImageOver}
                   isPortrait={thumbnailIsPortrait}

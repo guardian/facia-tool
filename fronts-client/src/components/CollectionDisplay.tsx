@@ -271,6 +271,8 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
       collection?.type &&
       COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collection?.type);
 
+    console.log("collection", collection);
+
     return (
       <CollectionContainer
         id={collection && createCollectionId(collection, frontId)}
@@ -415,7 +417,8 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 
   private getDisplayName = () => {
     const { collection } = this.props;
-    return !!collection ? collection!.displayName : 'Loading...';
+    // return !!collection ? collection!.displayName : 'Loading...';
+    return 'check...';
   };
 
   private startRenameContainer = () => {
