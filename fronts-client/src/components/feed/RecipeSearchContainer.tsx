@@ -205,9 +205,8 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 								value={dateField}
 								disabled={searchText == ''}
 								onChange={(evt) => {
-									console.log(evt.target);
 									setDateField(
-										evt.target.value === 'Relevance'
+										evt.target.value === 'relevance'
 											? undefined
 											: (evt.target.value as DateParamField),
 									);
