@@ -126,7 +126,7 @@ interface FeedItemProps {
 	) => void;
 	shouldObscureFeed?: boolean;
 	byline?: string;
-	noPinboard?: boolean;
+	showPinboard?: boolean;
 }
 
 export class FeedItem extends React.Component<FeedItemProps, {}> {
@@ -152,7 +152,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 			hasVideo,
 			handleDragStart,
 			byline,
-			noPinboard,
+			showPinboard,
 		} = this.props;
 
 		const { preview, live, ophan } = getPaths(id);
@@ -231,7 +231,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 						toolTipPosition={'top'}
 						toolTipAlign={'right'}
 						urlPath={liveUrl}
-						noPinboard={noPinboard}
+						showPinboard={showPinboard}
 						renderButtons={(props) => (
 							<>
 								<HoverViewButton hoverText="View" href={href} {...props} />

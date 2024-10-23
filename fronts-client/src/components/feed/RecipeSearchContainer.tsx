@@ -109,8 +109,6 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
 	const getUpdateConfig = () => {
 		switch (orderingForce) {
-			case 'default':
-				return undefined;
 			case 'gentle':
 				return {
 					decay: 0.95,
@@ -123,6 +121,9 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 					dropoffScaleDays: 180,
 					offsetDays: 14,
 				};
+			case 'default':
+			default:
+				return undefined;
 		}
 	};
 
@@ -212,7 +213,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 									);
 								}}
 							>
-								<option value={'Relevance'}>
+								<option value={'relevance'}>
 									Most relevant, regardless of time
 								</option>
 								<option value={'publishedDate'}>Most recently published</option>
