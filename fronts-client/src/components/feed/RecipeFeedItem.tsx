@@ -39,7 +39,7 @@ export const RecipeFeedItem = ({ id, showTimes }: ComponentProps) => {
 	const renderTimestamp = (iso: string) => {
 		try {
 			const date = new Date(iso);
-			return format(date, 'HH:mm on do MMM YYYY');
+			return format(date, 'HH:mm on Do MMM YYYY');
 		} catch (err) {
 			console.warn(err);
 			return iso;
