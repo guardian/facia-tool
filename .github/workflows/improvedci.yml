@@ -179,8 +179,8 @@ jobs:
                   java-version: "11"
                   distribution: "corretto"
                   cache: "sbt"
-            - name: Run tests
-              run: sbt 'test; database-int:test'
+            - name: Check formatting and run tests
+              run: sbt 'scalafmtCheck; scalafmtSbtCheck; test; database-int:test'
 
     build_backend:
         runs-on: ubuntu-20.04

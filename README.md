@@ -139,6 +139,8 @@ To audit vulernabilities locally:
 
 ### Linting
 
+#### Eslint
+
 Fronts tool uses `eslint` to ensure consistent style. Run `eslint` with
 
 ```bash
@@ -146,6 +148,12 @@ grunt eslint
 ```
 
 More detailed instructions of how to develop fronts tool available [here](./GUIDE_TO_FRONTS.md)
+
+#### Scalafmt
+
+This project uses [scalafmt](https://scalameta.org/scalafmt/) to format Scala code: the formatter is run in CI, and will fail if any files need formatting. There is also a pre-commit hook in [./git-hooks/pre-commit](./git-hooks/pre-commit) which runs scalafmt and fails if files need formatting, letting you catch them before pushing to CI. This can be enabled by setting the git config option core.hooksPath to `git-hooks` for this repository (or by running [./scripts/git-config.sh](./scripts/git-config.sh), which does it for you.)
+
+For the best experience, we recommend configuring your text editor to run scalafmt, as described in [the scalafmt docs](https://scalameta.org/scalafmt/docs/installation.html).
 
 ## Get Fronts Editors
 
