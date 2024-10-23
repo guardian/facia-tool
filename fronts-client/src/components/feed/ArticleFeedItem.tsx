@@ -60,6 +60,7 @@ const ArticleFeedItemComponent = ({
 			type={CardTypesMap.ARTICLE}
 			id={article.id}
 			title={article.webTitle}
+			urlPath={article.id}
 			liveUrl={getPaths(article.id).live}
 			thumbnail={getThumbnail(article.frontsMeta.defaults, article)}
 			scheduledPublicationDate={article.fields.scheduledPublicationDate}

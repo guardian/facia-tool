@@ -51,6 +51,7 @@ export const RecipeFeedItem = ({ id, showTimes }: ComponentProps) => {
 			id={recipe.canonicalArticle}
 			title={recipe.title}
 			thumbnail={recipe.previewImage?.url ?? recipe.featuredImage?.url ?? ''}
+			urlPath={recipe.canonicalArticle}
 			liveUrl={`https://theguardian.com/${recipe.canonicalArticle}`}
 			hasVideo={false}
 			isLive={true} // We do not yet serve preview recipes
