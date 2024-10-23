@@ -121,7 +121,7 @@ const CollectionOverview = ({
 					el.scrollIntoView({
 						behavior: 'smooth',
 						inline: 'start',
-						block: 'nearest',
+						block: 'start',
 					});
 				}
 				openCollection(collection.id);
