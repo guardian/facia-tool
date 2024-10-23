@@ -1,7 +1,7 @@
 import ClipboardHeader from 'components/ClipboardHeader';
 import TextInput from 'components/inputs/TextInput';
 import { styled } from 'constants/theme';
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	fetchRecipes,
@@ -18,9 +18,11 @@ import Pagination from './Pagination';
 import ScrollContainer from '../ScrollContainer';
 import {
 	ChefSearchParams,
+	DateParamField,
 	RecipeSearchParams,
 } from '../../services/recipeQuery';
 import debounce from 'lodash/debounce';
+import ButtonDefault from '../inputs/ButtonDefault';
 
 const InputContainer = styled.div`
 	margin-bottom: 10px;
@@ -43,6 +45,9 @@ const PaginationContainer = styled.div`
 const TopOptions = styled.div`
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
+	margin-right: 1em;
+	margin-bottom: 1em;
 `;
 
 const FeedsContainerWrapper = styled.div`
@@ -61,6 +66,12 @@ enum FeedType {
 export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 	const [selectedOption, setSelectedOption] = useState(FeedType.recipes);
 	const [searchText, setSearchText] = useState('');
+
+	const [showAdvancedRecipes, setShowAdvancedRecipes] = useState(false);
+	const [dateField, setDateField] = useState<DateParamField>(undefined);
+	const [orderingForce, setOrderingForce] = useState<string>('default');
+	const [forceDates, setForceDates] = useState(false);
+
 	const dispatch: Dispatch = useDispatch();
 	const searchForChefs = useCallback(
 		(params: ChefSearchParams) => {
@@ -84,19 +95,37 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
 	const [page, setPage] = useState(1);
 
-	/*const debouncedRunSearch = debounce(() => runSearch(page), 750); TODO need to check if needed for chef-search? if yes then how to improve implementing it*/
-
 	useEffect(() => {
 		const dbf = debounce(() => runSearch(page), 750);
 		dbf();
 		return () => dbf.cancel();
-	}, [selectedOption, searchText, page]);
+	}, [selectedOption, searchText, page, dateField, orderingForce]);
 
 	const chefsPagination: IPagination | null = useSelector((state: State) =>
 		chefSelectors.selectPagination(state),
 	);
 
 	const hasPages = (chefsPagination?.totalPages ?? 0) > 1;
+
+	const getUpdateConfig = () => {
+		switch (orderingForce) {
+			case 'gentle':
+				return {
+					decay: 0.95,
+					dropoffScaleDays: 90,
+					offsetDays: 7,
+				};
+			case 'forceful':
+				return {
+					decay: 0.7,
+					dropoffScaleDays: 180,
+					offsetDays: 14,
+				};
+			case 'default':
+			default:
+				return undefined;
+		}
+	};
 
 	const runSearch = useCallback(
 		(page: number = 1) => {
@@ -109,17 +138,25 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 				case FeedType.recipes:
 					searchForRecipes({
 						queryText: searchText,
+						uprateByDate: dateField,
+						uprateConfig: getUpdateConfig(),
 					});
 					break;
 			}
 		},
-		[selectedOption, searchText, page],
+		[selectedOption, searchText, page, dateField, orderingForce],
 	);
 
 	const renderTheFeed = () => {
 		switch (selectedOption) {
 			case FeedType.recipes:
-				return recipeSearchIds.map((id) => <RecipeFeedItem key={id} id={id} />);
+				return recipeSearchIds.map((id) => (
+					<RecipeFeedItem
+						key={id}
+						id={id}
+						showTimes={forceDates || !!dateField}
+					/>
+				));
 			case FeedType.chefs:
 				//Fixing https://the-guardian.sentry.io/issues/5820707430/?project=35467&referrer=issue-stream&statsPeriod=90d&stream_index=0&utc=true
 				//It seems that some null values got into the `chefSearchIds` list
@@ -144,11 +181,99 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 							setPage(1);
 							setSearchText(event.target.value);
 						}}
+						onClick={() => setShowAdvancedRecipes(true)}
 						value={searchText}
 					/>
 				</TextInputContainer>
 				<ClipboardHeader />
 			</InputContainer>
+
+			{showAdvancedRecipes && selectedOption === FeedType.recipes ? (
+				<>
+					<TopOptions>
+						<div>
+							<label
+								htmlFor="dateSelector"
+								style={{ color: searchText == '' ? 'gray' : 'inherit' }}
+							>
+								Ordering priority
+							</label>
+						</div>
+						<div>
+							<select
+								id="dateSelector"
+								value={dateField}
+								disabled={searchText == ''}
+								onChange={(evt) => {
+									console.log(evt.target);
+									setDateField(
+										evt.target.value === 'Relevance'
+											? undefined
+											: (evt.target.value as DateParamField),
+									);
+								}}
+							>
+								<option value={'relevance'}>
+									Most relevant, regardless of time
+								</option>
+								<option value={'publishedDate'}>Most recently published</option>
+								<option value={'firstPublishedDate'}>
+									Most recent first publication
+								</option>
+								<option value={'lastModifiedDate'}>
+									Most recently modified
+								</option>
+							</select>
+						</div>
+					</TopOptions>
+					<TopOptions>
+						<div>
+							<label
+								htmlFor="orderingForce"
+								style={{ color: !dateField ? 'gray' : 'inherit' }}
+							>
+								Ordering preference
+							</label>
+						</div>
+						<div>
+							<select
+								id="orderingForce"
+								value={orderingForce}
+								disabled={!dateField}
+								onChange={(evt) => setOrderingForce(evt.target.value)}
+							>
+								<option value={'default'}>Default</option>
+								<option value={'gentle'}>Prefer relevance</option>
+								<option value={'forceful'}>Prefer date</option>
+							</select>
+						</div>
+					</TopOptions>
+					<TopOptions>
+						<div>
+							<label htmlFor="forceDateDisplay">Always show dates</label>
+						</div>
+						<div>
+							<input
+								type="checkbox"
+								checked={forceDates}
+								onChange={(evt) => setForceDates(evt.target.checked)}
+							/>
+						</div>
+					</TopOptions>
+					<TopOptions
+						style={{
+							paddingBottom: '0.5em',
+							borderBottom: '1px solid gray',
+							marginBottom: '0.5em',
+						}}
+					>
+						<ButtonDefault onClick={() => setShowAdvancedRecipes(false)}>
+							Close
+						</ButtonDefault>
+					</TopOptions>
+				</>
+			) : undefined}
+
 			<TopOptions>
 				<RadioGroup>
 					<RadioButton

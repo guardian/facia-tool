@@ -43,7 +43,7 @@ export const fetchRecipesById =
 			const recipes = await liveRecipes.recipesById(idList);
 			dispatch(
 				actions.fetchSuccess(recipes, {
-					order: recipes.map((_) => _.id),
+					ignoreOrder: true,
 				}),
 			);
 		} catch (e) {

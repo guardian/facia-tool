@@ -18,6 +18,12 @@ export interface RecipeSearchFilters {
 	filterType: 'During' | 'Post';
 }
 
+export type DateParamField =
+	| undefined
+	| 'publishedDate'
+	| 'firstPublishedDate'
+	| 'lastModifiedDate';
+
 export interface RecipeSearchParams {
 	queryText: string;
 	searchType?: 'Embedded' | 'Match' | 'Lucene';
@@ -25,6 +31,16 @@ export interface RecipeSearchParams {
 	kfactor?: number;
 	limit?: number;
 	filters?: RecipeSearchFilters;
+	uprateByDate?: DateParamField;
+	uprateConfig?: {
+		originDate?: string; //should be ISO format date, defaults to today
+		//take this and add it to `offsetDays`. Then, weights will be modified so that
+		//at originDate +/- this many days results will be downweighted by `decay`
+		dropoffScaleDays?: number;
+		offsetDays?: number;
+		decay?: number;
+	};
+	format?: 'Full' | 'Titles';
 }
 
 export interface ChefSearchHit {
@@ -165,7 +181,10 @@ const recipeQuery = (baseUrl: string) => {
 		recipes: async (
 			params: RecipeSearchParams,
 		): Promise<RecipeSearchResponse> => {
-			const queryDoc = JSON.stringify(params);
+			const queryDoc = JSON.stringify({
+				...params,
+				noStats: true, //we are not reading stats, so no point slowing the query down by retrieving them.
+			});
 			const response = await fetch(`${baseUrl}/search`, {
 				method: 'POST',
 				body: queryDoc,
