@@ -45,7 +45,14 @@ class FaciaPressTopic(val config: ApplicationConfiguration) {
     maybeTopic match {
       case Some(topic) if collectionIds.nonEmpty =>
         import SNSTopics._
-        val event = Json.toJson(job).as[JsObject] ++ JsObject(Map("collectionIds" -> Json.toJson(collectionIds)))
+        val fanoutPayload = Json.toJson(Map(
+          "collectionIds" -> Json.toJson(collectionIds),
+          "timestamp" -> Json.toJson(System.currentTimeMillis()),
+        )).toString()
+        val event = Json.toJson(job).as[JsObject] ++ JsObject(Map(
+          "collectionIds" -> Json.toJson(collectionIds),
+          "fanoutPayload" -> Json.toJson(fanoutPayload),
+        ))
         topic.client.publishMessageFuture(topic.topicArn, Json.stringify(event))
 
       case Some(topic) =>
