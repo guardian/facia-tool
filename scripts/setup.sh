@@ -95,6 +95,7 @@ fetch_config(){
 configure_git() {
   echo "Configuring git…"
   git config --local blame.ignoreRevsFile .git-blame-ignore-revs
+  git config --local core.hooksPath scripts/git-hooks
 }
 
 main() {
