@@ -42,7 +42,8 @@ import {
 } from 'bundles/frontsUI';
 import { bindActionCreators } from 'redux';
 import ArticleMetaForm from '../form/ArticleMetaForm';
-import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
+import { updateCardMetaWithPersistForCollection as updateCardMetaActionForCollection } from 'actions/Cards';
+import { updateCardMetaWithPersistForClipboard as updateCardMetaActionForClipboard } from 'actions/Cards';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { events } from 'services/GA';
@@ -111,7 +112,8 @@ type CardContainerProps = ContainerProps & {
 	onAddToClipboard: (uuid: string) => void;
 	copyCardImageMeta: (from: string, to: string) => void;
 	addImageToCard: (id: string, response: ValidationResponse) => void;
-	updateCardMeta: (id: string, meta: CardMeta) => void;
+	updateCardMetaForCollection: (id: string, meta: CardMeta) => void;
+	updateCardMetaForClipboard: (id: string, meta: CardMeta) => void;
 	clearCardSelection: (id: string) => void;
 	type?: CardTypes;
 	isSelected: boolean;
@@ -151,7 +153,8 @@ class Card extends React.Component<CardContainerProps> {
 			textSize,
 			isUneditable,
 			numSupportingArticles,
-			updateCardMeta,
+			updateCardMetaForCollection,
+			updateCardMetaForClipboard,
 			clearCardSelection,
 			parentId,
 			showMeta,
@@ -313,7 +316,11 @@ class Card extends React.Component<CardContainerProps> {
 							key={uuid}
 							form={uuid}
 							onSave={(meta) => {
-								updateCardMeta(uuid, meta);
+								updateCardMetaForCollection(uuid, meta);
+								//todo - save data to clipboard as well a workaround to fix have persistent data even on page revisit,
+								// this needs proper testing when making frequent calls to dynamo for setting FeastClipboard field on edit,
+								// might need to check in future how to split these actions for editing meta on collection or editing meta on clipboard
+								updateCardMetaForClipboard(uuid, meta);
 								clearCardSelection(uuid);
 							}}
 							onCancel={() => clearCardSelection(uuid)}
@@ -327,7 +334,8 @@ class Card extends React.Component<CardContainerProps> {
 							key={uuid}
 							form={uuid}
 							onSave={(meta) => {
-								updateCardMeta(uuid, meta);
+								updateCardMetaForCollection(uuid, meta);
+								updateCardMetaForClipboard(uuid, meta);
 								clearCardSelection(uuid);
 							}}
 							onCancel={() => clearCardSelection(uuid)}
@@ -343,7 +351,8 @@ class Card extends React.Component<CardContainerProps> {
 							form={uuid}
 							frontId={frontId}
 							onSave={(meta) => {
-								updateCardMeta(uuid, meta);
+								updateCardMetaForCollection(uuid, meta);
+								updateCardMetaForClipboard(uuid, meta);
 								clearCardSelection(uuid);
 							}}
 							onCancel={() => clearCardSelection(uuid)}
@@ -520,7 +529,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 			onAddToClipboard: addCardToClipboard,
 			copyCardImageMeta: copyCardImageMetaWithPersist,
 			addImageToCard,
-			updateCardMeta: updateCardMetaAction,
+			updateCardMetaForCollection: updateCardMetaActionForCollection,
+			updateCardMetaForClipboard: updateCardMetaActionForClipboard,
 			clearCardSelection: editorClearCardSelection,
 		},
 		dispatch,

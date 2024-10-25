@@ -207,6 +207,13 @@ const updateCardMetaWithPersistForCollection = addPersistMetaToAction(
 	},
 );
 
+const updateCardMetaWithPersistForClipboard = addPersistMetaToAction(
+	updateCardMeta,
+	{
+		persistTo: 'clipboard',
+	},
+);
+
 /** Cards in the standard group of a flexible general container should not be gigaboosted.
  * When moving a card from the splash group to the standard group, this function checks if the card should be modified.
  * If so, it will automatically adjust the boost level from gigaboost to megaboost.
