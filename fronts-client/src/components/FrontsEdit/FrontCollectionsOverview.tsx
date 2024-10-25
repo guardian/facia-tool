@@ -8,7 +8,7 @@ import CollectionOverview from './CollectionOverview';
 import { CardSets } from 'types/Collection';
 import ContainerHeadingPinline from 'components/typography/ContainerHeadingPinline';
 import ContentContainer from 'components/layout/ContentContainer';
-import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
+import { updateCardMetaWithPersistForCollection as updateCardMetaAction } from 'actions/Cards';
 import { editorClearCardSelection } from 'bundles/frontsUI';
 import { bindActionCreators } from 'redux';
 import { Dispatch } from 'types/Store';

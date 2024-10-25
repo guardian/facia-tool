@@ -200,9 +200,12 @@ const getRemoveActionCreatorFromType = (
 		: actionCreator;
 };
 
-const updateCardMetaWithPersist = addPersistMetaToAction(updateCardMeta, {
-	persistTo: 'collection',
-});
+const updateCardMetaWithPersistForCollection = addPersistMetaToAction(
+	updateCardMeta,
+	{
+		persistTo: 'collection',
+	},
+);
 
 /** Cards in the standard group of a flexible general container should not be gigaboosted.
  * When moving a card from the splash group to the standard group, this function checks if the card should be modified.
@@ -414,7 +417,7 @@ const addCardToClipboard = (uuid: string) =>
 	cloneCardToTarget(uuid, 'clipboard');
 
 const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
-	updateCardMetaWithPersist(
+	updateCardMetaWithPersistForCollection(
 		uuid,
 		{
 			...getImageMetaFromValidationResponse(imageData),
@@ -459,7 +462,8 @@ export const createArticleEntitiesFromDrop = (
 export {
 	insertCardWithCreate,
 	moveCard,
-	updateCardMetaWithPersist,
+	updateCardMetaWithPersistForCollection,
+	updateCardMetaWithPersistForClipboard,
 	removeCard,
 	addImageToCard,
 	copyCardImageMetaWithPersist,
