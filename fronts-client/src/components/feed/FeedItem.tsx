@@ -112,6 +112,7 @@ interface FeedItemProps {
 	type: CardTypes;
 	title: string;
 	bodyContent?: JSX.Element;
+	urlPath: string;
 	liveUrl?: string;
 	metaContent?: JSX.Element;
 	scheduledPublicationDate?: string;
@@ -141,6 +142,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 			type,
 			title,
 			bodyContent,
+			urlPath,
 			liveUrl,
 			isLive,
 			metaContent,
@@ -230,7 +232,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 					<HoverActionsButtonWrapper
 						toolTipPosition={'top'}
 						toolTipAlign={'right'}
-						urlPath={liveUrl}
+						urlPath={urlPath}
 						showPinboard={showPinboard}
 						renderButtons={(props) => (
 							<>
