@@ -290,7 +290,7 @@ class Card extends React.Component<CardContainerProps> {
 								toggleShowArticleSublinks={this.toggleShowArticleSublinks}
 								showArticleSublinks={this.state.showCardSublinks}
 								parentId={parentId}
-								sublinkLabel="recipe"
+								sublinkLabel="recipe/chef"
 							/>
 							{/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
 							{numSupportingArticles === 0
@@ -317,9 +317,9 @@ class Card extends React.Component<CardContainerProps> {
 							form={uuid}
 							onSave={(meta) => {
 								updateCardMetaForCollection(uuid, meta);
-								//todo - save data to clipboard as well a workaround to fix have persistent data even on page revisit,
-								// this needs proper testing when making frequent calls to dynamo for setting FeastClipboard field on edit,
-								// might need to check in future how to split these actions for editing meta on collection or editing meta on clipboard
+								//todo - save data to clipboard as well. a workaround to have persistent data even on page revisit/refresh,
+								// this needs proper testing to frequent dynamo calls as we can edit CHEF on either Collection or Clipboard where Clipboard can have indiviual chef card or chef card inside Feast-Collection,
+								// might need to check in future how to split these actions for Collection and Clipboard
 								updateCardMetaForClipboard(uuid, meta);
 								clearCardSelection(uuid);
 							}}
@@ -334,8 +334,11 @@ class Card extends React.Component<CardContainerProps> {
 							key={uuid}
 							form={uuid}
 							onSave={(meta) => {
-								updateCardMetaForCollection(uuid, meta);
-								updateCardMetaForClipboard(uuid, meta);
+								if (parentId === 'clipboard') {
+									updateCardMetaForClipboard(uuid, meta);
+								} else {
+									updateCardMetaForCollection(uuid, meta);
+								}
 								clearCardSelection(uuid);
 							}}
 							onCancel={() => clearCardSelection(uuid)}
@@ -351,8 +354,11 @@ class Card extends React.Component<CardContainerProps> {
 							form={uuid}
 							frontId={frontId}
 							onSave={(meta) => {
-								updateCardMetaForCollection(uuid, meta);
-								updateCardMetaForClipboard(uuid, meta);
+								if (parentId === 'clipboard') {
+									updateCardMetaForClipboard(uuid, meta);
+								} else {
+									updateCardMetaForCollection(uuid, meta);
+								}
 								clearCardSelection(uuid);
 							}}
 							onCancel={() => clearCardSelection(uuid)}
