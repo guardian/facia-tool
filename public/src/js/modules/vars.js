@@ -15,11 +15,8 @@ export function init (res) {
     // They will need to be added to the types list in ../constants/default.js when ready.
     if (res.defaults.env.toLowerCase() !== 'prod') {
         CONST.types.push(
-            {'name': 'scrollable/small'},
-            {'name': 'scrollable/medium'},
             {'name': 'scrollable/feature'},
-            {'name': 'static/feature/2'},
-            {'name': 'static/medium/4'}
+            {'name': 'static/feature/2'}
             );
     }
 }
