@@ -163,8 +163,12 @@ export default class ConfigCollection extends DropTarget {
 				this.meta.metadata([{ type: 'Primary' }]);
 			}
 			if (!this.meta.metadata().some(tag => tag.type === 'Primary') && !this.meta.metadata().some(tag => tag.type === 'Secondary')) {
-				this.meta.metadata().push({ type: 'Primary' });
-		}}
+				this.meta.metadata().push({ type: 'Primary' });}
+			if (this.meta.metadata().some(tag => tag.type === 'Primary') && this.meta.metadata().some(tag => tag.type === 'Secondary')) {
+				const updatedTags = this.meta.metadata().filter(tag => tag.type !== 'Primary');
+				this.meta.metadata(updatedTags);
+			}
+		}
 
         this.meta.href(urlAbsPath(this.meta.href()));
 
