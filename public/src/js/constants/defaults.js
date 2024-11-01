@@ -75,7 +75,10 @@ export default {
                 'standard',
                 'snap'
             ]
-        }
+        },
+		{ 'name': 'scrollable/small' },
+		{ 'name': 'scrollable/medium' },
+		{ 'name': 'static/medium/4' }
     ],
 
     emailTypes: [
