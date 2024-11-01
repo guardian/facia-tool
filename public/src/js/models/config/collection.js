@@ -133,6 +133,7 @@ export default class ConfigCollection extends DropTarget {
     }
 
     save(frontEdited) {
+
         const potentialErrors = [
             {key: 'displayName', errMsg: 'enter a title'},
             {key: 'type', errMsg: 'choose a layout'}
@@ -156,6 +157,14 @@ export default class ConfigCollection extends DropTarget {
             alert('Oops! You must ' + errs.join(', ') + lastErrorJoiner + lastError + '...');
             return;
         }
+
+		if (this.thisIsBetaCollection()) {
+			if (this.meta.metadata() === undefined) {
+				this.meta.metadata([{ type: 'Primary' }]);
+			}
+			if (!this.meta.metadata().some(tag => tag.type === 'Primary') && !this.meta.metadata().some(tag => tag.type === 'Secondary')) {
+				this.meta.metadata().push({ type: 'Primary' });
+		}}
 
         this.meta.href(urlAbsPath(this.meta.href()));
 
