@@ -33,6 +33,8 @@ import {
 import { Recipe } from '../types/Recipe';
 import { CardTypesMap, type CardTypes } from '../constants/cardTypes';
 import { Chef } from '../types/Chef';
+import { State } from '../types/State';
+import { selectCard } from '../selectors/shared';
 
 interface CreateCardOptions {
 	cardType?: CardTypes;
@@ -162,6 +164,7 @@ const getCardEntitiesFromDrop = async (
 	drop: MappableDropType,
 	isEdition: boolean,
 	dispatch: Dispatch,
+	state: State,
 ): Promise<TArticleEntities> => {
 	if (drop.type === 'CAPI') {
 		return getArticleEntitiesFromFeedDrop(drop.data, isEdition);
@@ -176,7 +179,7 @@ const getCardEntitiesFromDrop = async (
 	}
 
 	if (drop.type === 'FEAST_COLLECTION') {
-		return getFeastCollectionFromFeedDrop(drop.data);
+		return getFeastCollectionFromFeedDrop(drop.data, state);
 	}
 
 	const droppedDataURL = drop.data.trim();
@@ -296,8 +299,20 @@ const getRecipeEntityFromFeedDrop = (recipe: Recipe): TArticleEntities => {
 	return { cards: [card] };
 };
 
-const getFeastCollectionFromFeedDrop = (data: Card): TArticleEntities => {
-	return { cards: [data] };
+const getFeastCollectionFromFeedDrop = (
+	card: Card,
+	state: State,
+): TArticleEntities => {
+	//Recreate supporting cards contained in this FeastCollection to be sure their meta data should be independent from the original container
+	const supportingCards = (card.meta.supporting ?? []).map((cardId, index) => {
+		const supportingCard = selectCard(state, cardId);
+		return {
+			...supportingCard,
+			uuid: v4(),
+		};
+	});
+	card.meta.supporting = supportingCards.map((sc) => sc.uuid);
+	return { cards: [card, ...supportingCards] };
 };
 
 const getArticleEntitiesFromFeedDrop = (

@@ -443,21 +443,13 @@ export const createArticleEntitiesFromDrop = (
 			drop,
 			isEdition,
 			dispatch,
+			getState(),
 		);
 
 		if (externalArticle) {
 			dispatch(externalArticleActions.fetchSuccess(externalArticle));
 		}
-		if (cards) {
-			cards.map((card) => {
-				//if the card we are dropping has supporting cards, ensure that they travel too
-				const supporting =
-					card.meta?.supporting?.map((uuid) => selectCard(getState(), uuid)) ??
-					[];
-
-				dispatch(cardsReceived([card, ...supporting]));
-			});
-		}
+		dispatch(cardsReceived(cards));
 		return cards;
 	};
 };
