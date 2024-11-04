@@ -5,7 +5,10 @@ import { ExternalArticle } from './ExternalArticle';
 
 export type RemoveActionCreator = (id: string, cardId: string) => Action;
 
-export type TArticleEntities = [Card?, ExternalArticle?];
+export type TArticleEntities = {
+	cards: Card[];
+	externalArticle?: ExternalArticle;
+};
 
 export type InsertActionCreator = (
 	id: string,

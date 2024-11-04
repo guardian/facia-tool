@@ -62,7 +62,7 @@ const createCard = (
 		customKicker = '',
 		imageCutoutSrc,
 	}: CreateCardOptions = {},
-) => ({
+): Card => ({
 	uuid: v4(),
 	id,
 	frontPublicationDate: Date.now(),
@@ -202,7 +202,7 @@ const getCardEntitiesFromDrop = async (
 				getAbsolutePath(resourceIdOrUrl, false),
 			);
 			const card = await createAtomSnap(resourceIdOrUrl, atom);
-			return [card];
+			return { cards: [card] };
 		} catch (e) {
 			dispatch(
 				startOptionsModal(
@@ -213,13 +213,13 @@ const getCardEntitiesFromDrop = async (
 					true,
 				),
 			);
-			return [];
+			return { cards: [] };
 		}
 	}
 	try {
 		if (isPlainUrl) {
 			const card = await createPlainSnap(resourceIdOrUrl);
-			return [card];
+			return { cards: [card] };
 		}
 	} catch (e) {
 		dispatch(
@@ -232,7 +232,7 @@ const getCardEntitiesFromDrop = async (
 				noop,
 			),
 		);
-		return [];
+		return { cards: [] };
 	}
 
 	try {
@@ -240,17 +240,17 @@ const getCardEntitiesFromDrop = async (
 		if (isGuardianURLWithGuMetaData) {
 			const meta = getCardMetaFromUrlParams(resourceIdOrUrl);
 			const card = await createSnap(id, meta);
-			return [card];
+			return { cards: [card] };
 		}
 		// If it has valid marketing params, should return whole url complete with query params
 		if (isGuardianUrlWithMarketingParams) {
 			const card = await createSnap(resourceIdOrUrl);
-			return [card];
+			return { cards: [card] };
 		}
 
 		// id check confirms id is present (meaning this is in capi), keeping code below typesafe
 		if (!id) {
-			return [];
+			return { cards: [] };
 		}
 		const {
 			articles: [article, ...rest],
@@ -264,11 +264,14 @@ const getCardEntitiesFromDrop = async (
 				dispatch,
 				title,
 			);
-			return [card];
+			return { cards: [card] };
 		}
 		if (article) {
 			// We have a single article from CAPI - create an item as usual.
-			return [createCard(article.id, isEdition), article];
+			return {
+				cards: [createCard(article.id, isEdition)],
+				externalArticle: article,
+			};
 		}
 	} catch (e) {
 		if (isURL) {
@@ -276,44 +279,44 @@ const getCardEntitiesFromDrop = async (
 			// and create a link snap as a fallback. This catches cases like non-tag or
 			// section guardian.co.uk URLs, which aren't in CAPI and are sometimes linked.
 			const card = await createSnap(resourceIdOrUrl);
-			return [card];
+			return { cards: [card] };
 		}
 	}
-	return [];
+	return { cards: [] };
 };
 
-const getChefEntityFromFeedDrop = (chef: Chef): [Card] => {
+const getChefEntityFromFeedDrop = (chef: Chef): TArticleEntities => {
 	const card = createCard(chef.id, false, { cardType: CardTypesMap.CHEF });
-	return [card];
+	return { cards: [card] };
 };
 
-const getRecipeEntityFromFeedDrop = (recipe: Recipe): [Card] => {
+const getRecipeEntityFromFeedDrop = (recipe: Recipe): TArticleEntities => {
 	const card = createCard(recipe.id, false, { cardType: CardTypesMap.RECIPE });
 
-	return [card];
+	return { cards: [card] };
 };
 
-const getFeastCollectionFromFeedDrop = (data: Card): [Card] => {
-	return [data];
+const getFeastCollectionFromFeedDrop = (data: Card): TArticleEntities => {
+	return { cards: [data] };
 };
 
 const getArticleEntitiesFromFeedDrop = (
 	capiArticle: CapiArticle,
 	isEdition: boolean,
 ): TArticleEntities => {
-	const article = transformExternalArticle(capiArticle);
-	const card = createCard(article.id, isEdition, {
+	const externalArticle = transformExternalArticle(capiArticle);
+	const card = createCard(externalArticle.id, isEdition, {
 		cardType: 'article',
-		imageHide: article.frontsMeta.defaults.imageHide,
-		imageReplace: article.frontsMeta.defaults.imageReplace,
-		imageCutoutReplace: article.frontsMeta.defaults.imageCutoutReplace,
-		imageCutoutSrc: article.frontsMeta.cutout,
-		showByline: article.frontsMeta.defaults.showByline,
-		showQuotedHeadline: article.frontsMeta.defaults.showQuotedHeadline,
-		showKickerCustom: article.frontsMeta.defaults.showKickerCustom,
-		customKicker: article.frontsMeta.pickedKicker,
+		imageHide: externalArticle.frontsMeta.defaults.imageHide,
+		imageReplace: externalArticle.frontsMeta.defaults.imageReplace,
+		imageCutoutReplace: externalArticle.frontsMeta.defaults.imageCutoutReplace,
+		imageCutoutSrc: externalArticle.frontsMeta.cutout,
+		showByline: externalArticle.frontsMeta.defaults.showByline,
+		showQuotedHeadline: externalArticle.frontsMeta.defaults.showQuotedHeadline,
+		showKickerCustom: externalArticle.frontsMeta.defaults.showKickerCustom,
+		customKicker: externalArticle.frontsMeta.pickedKicker,
 	});
-	return [card, article];
+	return { cards: [card], externalArticle };
 };
 
 const snapMetaWhitelist = [
