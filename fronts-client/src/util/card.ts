@@ -205,7 +205,7 @@ const getCardEntitiesFromDrop = async (
 				getAbsolutePath(resourceIdOrUrl, false),
 			);
 			const card = await createAtomSnap(resourceIdOrUrl, atom);
-			return { cards: [card] };
+			return { card };
 		} catch (e) {
 			dispatch(
 				startOptionsModal(
@@ -216,13 +216,13 @@ const getCardEntitiesFromDrop = async (
 					true,
 				),
 			);
-			return { cards: [] };
+			return {};
 		}
 	}
 	try {
 		if (isPlainUrl) {
 			const card = await createPlainSnap(resourceIdOrUrl);
-			return { cards: [card] };
+			return { card };
 		}
 	} catch (e) {
 		dispatch(
@@ -235,7 +235,7 @@ const getCardEntitiesFromDrop = async (
 				noop,
 			),
 		);
-		return { cards: [] };
+		return {};
 	}
 
 	try {
@@ -243,17 +243,17 @@ const getCardEntitiesFromDrop = async (
 		if (isGuardianURLWithGuMetaData) {
 			const meta = getCardMetaFromUrlParams(resourceIdOrUrl);
 			const card = await createSnap(id, meta);
-			return { cards: [card] };
+			return { card };
 		}
 		// If it has valid marketing params, should return whole url complete with query params
 		if (isGuardianUrlWithMarketingParams) {
 			const card = await createSnap(resourceIdOrUrl);
-			return { cards: [card] };
+			return { card };
 		}
 
 		// id check confirms id is present (meaning this is in capi), keeping code below typesafe
 		if (!id) {
-			return { cards: [] };
+			return {};
 		}
 		const {
 			articles: [article, ...rest],
@@ -267,12 +267,12 @@ const getCardEntitiesFromDrop = async (
 				dispatch,
 				title,
 			);
-			return { cards: [card] };
+			return { card };
 		}
 		if (article) {
 			// We have a single article from CAPI - create an item as usual.
 			return {
-				cards: [createCard(article.id, isEdition)],
+				card: createCard(article.id, isEdition),
 				externalArticle: article,
 			};
 		}
@@ -282,21 +282,21 @@ const getCardEntitiesFromDrop = async (
 			// and create a link snap as a fallback. This catches cases like non-tag or
 			// section guardian.co.uk URLs, which aren't in CAPI and are sometimes linked.
 			const card = await createSnap(resourceIdOrUrl);
-			return { cards: [card] };
+			return { card };
 		}
 	}
-	return { cards: [] };
+	return {};
 };
 
 const getChefEntityFromFeedDrop = (chef: Chef): TArticleEntities => {
 	const card = createCard(chef.id, false, { cardType: CardTypesMap.CHEF });
-	return { cards: [card] };
+	return { card };
 };
 
 const getRecipeEntityFromFeedDrop = (recipe: Recipe): TArticleEntities => {
 	const card = createCard(recipe.id, false, { cardType: CardTypesMap.RECIPE });
 
-	return { cards: [card] };
+	return { card };
 };
 
 const getFeastCollectionFromFeedDrop = (
@@ -312,7 +312,7 @@ const getFeastCollectionFromFeedDrop = (
 		};
 	});
 	card.meta.supporting = supportingCards.map((sc) => sc.uuid);
-	return { cards: [card, ...supportingCards] };
+	return { card, supportingCards };
 };
 
 const getArticleEntitiesFromFeedDrop = (
@@ -331,7 +331,7 @@ const getArticleEntitiesFromFeedDrop = (
 		showKickerCustom: externalArticle.frontsMeta.defaults.showKickerCustom,
 		customKicker: externalArticle.frontsMeta.pickedKicker,
 	});
-	return { cards: [card], externalArticle };
+	return { card, externalArticle };
 };
 
 const snapMetaWhitelist = [

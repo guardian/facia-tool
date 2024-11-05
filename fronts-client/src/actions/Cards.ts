@@ -261,40 +261,34 @@ const insertCardWithCreate =
 		);
 		if (toWithRespectToState) {
 			try {
-				const cards = await dispatch(cardFactory(drop));
-				if (!cards) {
+				const card = await dispatch(cardFactory(drop));
+				if (!card) {
 					return;
-				} else {
-					const cardsPromises = cards.map(async (card) => {
-						const modifyCardAction = mayLowerCardBoostLevelForDestinationGroup(
-							state,
-							to,
-							card,
-							persistTo,
-						);
+				}
+				const modifyCardAction = mayLowerCardBoostLevelForDestinationGroup(
+					state,
+					to,
+					card,
+					persistTo,
+				);
 
-						if (modifyCardAction) dispatch(modifyCardAction);
+				if (modifyCardAction) dispatch(modifyCardAction);
 
-						dispatch(
-							insertActionCreator(
-								toWithRespectToState.id,
-								toWithRespectToState.index,
-								card.uuid,
-							),
-						);
+				dispatch(
+					insertActionCreator(
+						toWithRespectToState.id,
+						toWithRespectToState.index,
+						card.uuid,
+					),
+				);
 
-						// Fetch ophan data
-						const [frontId, collectionId] = selectOpenParentFrontOfCard(
-							getState(),
-							card.uuid,
-						);
-						if (frontId && collectionId) {
-							await dispatch(
-								getPageViewData(frontId, collectionId, [card.uuid]),
-							);
-						}
-					});
-					await Promise.all(cardsPromises);
+				// Fetch ophan data
+				const [frontId, collectionId] = selectOpenParentFrontOfCard(
+					getState(),
+					card.uuid,
+				);
+				if (frontId && collectionId) {
+					await dispatch(getPageViewData(frontId, collectionId, [card.uuid]));
 				}
 			} catch (e) {
 				// Insert failed -- @todo handle error
@@ -436,21 +430,23 @@ const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
  */
 export const createArticleEntitiesFromDrop = (
 	drop: MappableDropType,
-): ThunkResult<Promise<Card[] | undefined>> => {
+): ThunkResult<Promise<Card | undefined>> => {
 	return async (dispatch, getState) => {
 		const isEdition = selectEditMode(getState()) === 'editions';
-		const { cards, externalArticle } = await getCardEntitiesFromDrop(
-			drop,
-			isEdition,
-			dispatch,
-			getState(),
-		);
+		const { card, supportingCards, externalArticle } =
+			await getCardEntitiesFromDrop(drop, isEdition, dispatch, getState());
 
 		if (externalArticle) {
 			dispatch(externalArticleActions.fetchSuccess(externalArticle));
 		}
-		dispatch(cardsReceived(cards));
-		return cards;
+		let cardsToAddToTheState: Card[] = [];
+		if (card) {
+			if (supportingCards) cardsToAddToTheState = [card, ...supportingCards];
+			else cardsToAddToTheState = [card];
+		}
+
+		dispatch(cardsReceived(cardsToAddToTheState));
+		return card;
 	};
 };
 
