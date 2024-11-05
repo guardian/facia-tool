@@ -157,25 +157,6 @@ export default class ConfigCollection extends DropTarget {
             return;
         }
 
-		// The BetaCollection containers need a Primary or Secondary tag indicating its level.
-		if (this.thisIsBetaCollection()) {
-			const hasPrimaryTag = this.meta.metadata().some(tag => tag.type === 'Primary');
-			const hasSecondaryTag = this.meta.metadata().some(tag => tag.type === 'Secondary');
-
-			// If no tags are set, or if neither Primary nor Secondary tags are set, we default the container to Primary.
-			if (this.meta.metadata() === undefined) {
-				this.meta.metadata([{ type: 'Primary' }]);
-			}
-			if (!hasPrimaryTag && !hasSecondaryTag) {
-				this.meta.metadata().push({ type: 'Primary' });}
-			if (hasPrimaryTag && hasSecondaryTag) {
-				// If both tags are present, we assume the intention was to set the container to Secondary
-				// So we remove the primary tag from the metadata.
-				const updatedTags = this.meta.metadata().filter(tag => tag.type !== 'Primary');
-				this.meta.metadata(updatedTags);
-			}
-		}
-
         this.meta.href(urlAbsPath(this.meta.href()));
 
         this.state.isOpen(false);
