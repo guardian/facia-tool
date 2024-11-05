@@ -6,7 +6,8 @@ import { ExternalArticle } from './ExternalArticle';
 export type RemoveActionCreator = (id: string, cardId: string) => Action;
 
 export type TArticleEntities = {
-	cards: Card[];
+	card?: Card;
+	supportingCards?: Card[];
 	externalArticle?: ExternalArticle;
 };
 
