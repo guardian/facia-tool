@@ -78,7 +78,9 @@ export default {
         },
 		{ 'name': 'scrollable/small' },
 		{ 'name': 'scrollable/medium' },
-		{ 'name': 'static/medium/4' }
+		{ 'name': 'scrollable/feature' },
+		{ 'name': 'static/medium/4' },
+		{ 'name': 'static/feature/2' }
     ],
 
     emailTypes: [
