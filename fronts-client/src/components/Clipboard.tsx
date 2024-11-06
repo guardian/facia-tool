@@ -7,7 +7,7 @@ import { insertCardFromDropEvent } from 'util/collectionUtils';
 import {
 	moveCard,
 	removeCard as removeCardAction,
-	updateCardMetaWithPersistForClipboard as updateCardMeta,
+	updateCardMetaWithPersistForClipboard as updateCardMetaAction,
 } from 'actions/Cards';
 import {
 	editorSelectCard,
@@ -16,7 +16,7 @@ import {
 	createSelectCollectionIdsWithOpenForms,
 } from 'bundles/frontsUI';
 import { clipboardId } from 'constants/fronts';
-import { Card as TCard } from 'types/Collection';
+import { Card as TCard, CardMeta } from 'types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import CardLevel from './clipboard/CardLevel';
 import Card from './card/Card';
@@ -90,6 +90,7 @@ interface ClipboardProps {
 	isClipboardFocused: boolean;
 	clipboardHasOpenForms: boolean;
 	clipboardHasContent: boolean;
+	updateCardMeta: (id: string, meta: CardMeta) => void;
 }
 
 // Styled component typings for ref seem to be broken so any refs
@@ -142,6 +143,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 			selectCard,
 			removeCard,
 			removeSupportingCard,
+			updateCardMeta,
 		} = this.props;
 		return (
 			<React.Fragment>
@@ -199,6 +201,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 														textSize="small"
 														onSelect={selectCard}
 														onDelete={() => removeCard(card.uuid)}
+														updateCardMeta={updateCardMeta}
 													>
 														<CardLevel
 															cardId={card.uuid}
@@ -221,6 +224,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 																			supporting.uuid,
 																		)
 																	}
+																	updateCardMeta={updateCardMeta}
 																/>
 															)}
 														</CardLevel>
@@ -292,7 +296,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	...bindActionCreators(
 		{
 			selectCard: editorSelectCard,
-			updateCardMeta,
+			updateCardMeta: updateCardMetaAction,
 			handleBlur: resetFocusState,
 		},
 		dispatch,
