@@ -13,7 +13,6 @@ import { CardSizes, CardMeta } from 'types/Collection';
 import SnapLink from 'components/card/snapLink/SnapLinkCard';
 import {
 	copyCardImageMetaWithPersist,
-	addImageToCard,
 	addCardToClipboard,
 } from 'actions/Cards';
 import {
@@ -105,6 +104,7 @@ interface ContainerProps {
 	canDragImage?: boolean;
 	canShowPageViewData: boolean;
 	updateCardMeta: (id: string, meta: CardMeta) => void;
+	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
 
 type CardContainerProps = ContainerProps & {
@@ -518,7 +518,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 		{
 			onAddToClipboard: addCardToClipboard,
 			copyCardImageMeta: copyCardImageMetaWithPersist,
-			addImageToCard,
 			clearCardSelection: editorClearCardSelection,
 		},
 		dispatch,

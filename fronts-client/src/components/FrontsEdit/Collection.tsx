@@ -9,14 +9,16 @@ import Card from '../card/Card';
 import CardLevel from 'components/clipboard/CardLevel';
 import { PosSpec, Move } from 'lib/dnd';
 import { Dispatch } from 'types/Store';
-import { removeCard as removeCardAction } from 'actions/Cards';
+import { addImageToCard, removeCard as removeCardAction } from 'actions/Cards';
 import { resetFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import type { State } from 'types/State';
 import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
 import { CardTypes } from 'constants/cardTypes';
-import { updateCardMetaWithPersistForCollection as updateCardMetaAction } from 'actions/Cards';
+import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
+import { ValidationResponse } from '../../util/validateImageSrc';
+import { bindActionCreators } from 'redux';
 
 const getArticleNotifications = (
 	id: string,
@@ -113,6 +115,7 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
 	lastDesktopArticle?: string;
 	lastMobileArticle?: string;
 	updateCardMeta: (id: string, meta: CardMeta) => void;
+	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
 
 class CollectionContext extends React.Component<ConnectedCollectionContextProps> {
@@ -134,6 +137,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 			lastDesktopArticle,
 			lastMobileArticle,
 			updateCardMeta,
+			addImageToCard,
 		} = this.props;
 
 		return (
@@ -184,6 +188,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 												onDelete={() => removeCard(group.uuid, card.uuid)}
 												groupSizeId={group.id ? parseInt(group.id) : 0}
 												updateCardMeta={updateCardMeta}
+												addImageToCard={addImageToCard}
 											>
 												<CardLevel
 													isUneditable={isUneditable}
@@ -213,6 +218,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 															}
 															size="small"
 															updateCardMeta={updateCardMeta}
+															addImageToCard={addImageToCard}
 														/>
 													)}
 												</CardLevel>
@@ -267,7 +273,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 		dispatch(removeCardAction('card', parentId, uuid, 'collection'));
 	},
 	handleBlur: () => dispatch(resetFocusState()),
-	updateCardMeta: updateCardMetaAction,
+	...bindActionCreators(
+		{
+			updateCardMeta: updateCardMetaAction('collection'),
+			addImageToCard: addImageToCard('collection'),
+		},
+		dispatch,
+	),
 });
 
 export default connect(
