@@ -352,7 +352,7 @@ describe('Cards actions', () => {
 
 			const s2 = root(
 				s1,
-				addImageToCard('a', {
+				addImageToCard('collection')('a', {
 					src,
 					thumb,
 					origin,
