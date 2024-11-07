@@ -9,5 +9,5 @@ export const FormContent = styled.div<FormContentProps>`
 	flex: 3;
 	display: flex;
 	flex-direction: ${({ size }) => (size !== 'wide' ? 'column' : 'row')};
-	margin-bottom: ${({ marginBottom }) => marginBottom ?? 0};
+	margin-bottom: ${({ marginBottom }) => marginBottom ?? "60px"};
 `;
