@@ -179,8 +179,20 @@ jobs:
                   java-version: "11"
                   distribution: "corretto"
                   cache: "sbt"
-            - name: Check formatting and run tests
-              run: sbt 'scalafmtCheck; scalafmtSbtCheck; test; database-int:test'
+            - name: Run tests
+              run: sbt 'test; database-int:test'
+
+    lint_backend:
+        runs-on: ubuntu-20.04
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-java@v4
+              with:
+                  java-version: "11"
+                  distribution: "corretto"
+                  cache: "sbt"
+            - name: Check scala formatting
+              run: sbt 'scalafmtCheck; scalafmtSbtCheck;'
 
     build_backend:
         runs-on: ubuntu-20.04
