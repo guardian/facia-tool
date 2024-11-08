@@ -13,7 +13,6 @@ import { CardSizes, CardMeta } from 'types/Collection';
 import SnapLink from 'components/card/snapLink/SnapLinkCard';
 import {
 	copyCardImageMetaWithPersist,
-	addImageToCard,
 	addCardToClipboard,
 } from 'actions/Cards';
 import {
@@ -42,7 +41,6 @@ import {
 } from 'bundles/frontsUI';
 import { bindActionCreators } from 'redux';
 import ArticleMetaForm from '../form/ArticleMetaForm';
-import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
 import { EditMode } from 'types/EditMode';
 import { selectEditMode } from 'selectors/pathSelectors';
 import { events } from 'services/GA';
@@ -105,13 +103,14 @@ interface ContainerProps {
 	isSupporting?: boolean;
 	canDragImage?: boolean;
 	canShowPageViewData: boolean;
+	updateCardMeta: (id: string, meta: CardMeta) => void;
+	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
 
 type CardContainerProps = ContainerProps & {
 	onAddToClipboard: (uuid: string) => void;
 	copyCardImageMeta: (from: string, to: string) => void;
 	addImageToCard: (id: string, response: ValidationResponse) => void;
-	updateCardMeta: (id: string, meta: CardMeta) => void;
 	clearCardSelection: (id: string) => void;
 	type?: CardTypes;
 	isSelected: boolean;
@@ -151,7 +150,6 @@ class Card extends React.Component<CardContainerProps> {
 			textSize,
 			isUneditable,
 			numSupportingArticles,
-			updateCardMeta,
 			clearCardSelection,
 			parentId,
 			showMeta,
@@ -163,6 +161,7 @@ class Card extends React.Component<CardContainerProps> {
 			pillarId,
 			collectionType,
 			groupSizeId,
+			updateCardMeta,
 		} = this.props;
 
 		const getSublinks = (
@@ -287,7 +286,7 @@ class Card extends React.Component<CardContainerProps> {
 								toggleShowArticleSublinks={this.toggleShowArticleSublinks}
 								showArticleSublinks={this.state.showCardSublinks}
 								parentId={parentId}
-								sublinkLabel="recipe"
+								sublinkLabel="recipe/chef"
 							/>
 							{/* If there are no supporting articles, the children still need to be rendered, because the dropzone is a child  */}
 							{numSupportingArticles === 0
@@ -519,8 +518,6 @@ const mapDispatchToProps = (dispatch: Dispatch) => {
 		{
 			onAddToClipboard: addCardToClipboard,
 			copyCardImageMeta: copyCardImageMetaWithPersist,
-			addImageToCard,
-			updateCardMeta: updateCardMetaAction,
 			clearCardSelection: editorClearCardSelection,
 		},
 		dispatch,

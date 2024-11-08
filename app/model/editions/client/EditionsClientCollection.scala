@@ -71,17 +71,20 @@ object EditionsClientCard {
   }
 }
 
-case class EditionsSupportingClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long)
+case class EditionsSupportingClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long, meta: Option[ClientCardMetadata] = None)
 
 object EditionsSupportingClientCard {
   implicit def format: OFormat[EditionsSupportingClientCard] = Json.format[EditionsSupportingClientCard]
 
   def fromFeastCollectionItem(item: EditionsFeastCollectionItem) = item match {
     case EditionsRecipe(id, addedOn) => EditionsSupportingClientCard(id, Some(CardType.Recipe), addedOn)
-  }
+		case EditionsChef(id, addedOn, metadata) => EditionsSupportingClientCard(id, Some(CardType.Chef), addedOn, metadata.map(ClientCardMetadata.fromCardMetadata))
+	}
 
-  def toFeastCollectionItem(supportingCard: EditionsSupportingClientCard) =
-    EditionsRecipe(supportingCard.id, supportingCard.frontPublicationDate)
+  def toFeastCollectionItem(supportingCard: EditionsSupportingClientCard) = supportingCard.cardType match {
+	case Some(CardType.Recipe) => EditionsRecipe (supportingCard.id, supportingCard.frontPublicationDate)
+	case Some(CardType.Chef) => EditionsChef (supportingCard.id, supportingCard.frontPublicationDate, supportingCard.meta.map(_.toChefMetadata))
+	}
 }
 
 case class EditionsClientCollection(

@@ -5,9 +5,10 @@ import { DragAndDropRoot, Move, PosSpec } from 'lib/dnd';
 import type { State } from 'types/State';
 import { insertCardFromDropEvent } from 'util/collectionUtils';
 import {
+	addImageToCard,
 	moveCard,
 	removeCard as removeCardAction,
-	updateCardMetaWithPersist as updateCardMeta,
+	updateCardMetaWithPersist as updateCardMetaAction,
 } from 'actions/Cards';
 import {
 	editorSelectCard,
@@ -16,7 +17,7 @@ import {
 	createSelectCollectionIdsWithOpenForms,
 } from 'bundles/frontsUI';
 import { clipboardId } from 'constants/fronts';
-import { Card as TCard } from 'types/Collection';
+import { Card as TCard, CardMeta } from 'types/Collection';
 import ClipboardLevel from './clipboard/ClipboardLevel';
 import CardLevel from './clipboard/CardLevel';
 import Card from './card/Card';
@@ -34,6 +35,7 @@ import ButtonRoundedWithLabel, {
 } from 'components/inputs/ButtonRoundedWithLabel';
 import { clearClipboardWithPersist } from 'actions/Clipboard';
 import { selectClipboardArticles } from 'selectors/clipboardSelectors';
+import { ValidationResponse } from '../util/validateImageSrc';
 
 const ClipboardWrapper = styled.div.attrs({
 	'data-testid': 'clipboard-wrapper',
@@ -90,6 +92,8 @@ interface ClipboardProps {
 	isClipboardFocused: boolean;
 	clipboardHasOpenForms: boolean;
 	clipboardHasContent: boolean;
+	updateCardMeta: (id: string, meta: CardMeta) => void;
+	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
 
 // Styled component typings for ref seem to be broken so any refs
@@ -142,6 +146,8 @@ class Clipboard extends React.Component<ClipboardProps> {
 			selectCard,
 			removeCard,
 			removeSupportingCard,
+			updateCardMeta,
+			addImageToCard,
 		} = this.props;
 		return (
 			<React.Fragment>
@@ -199,6 +205,8 @@ class Clipboard extends React.Component<ClipboardProps> {
 														textSize="small"
 														onSelect={selectCard}
 														onDelete={() => removeCard(card.uuid)}
+														updateCardMeta={updateCardMeta}
+														addImageToCard={addImageToCard}
 													>
 														<CardLevel
 															cardId={card.uuid}
@@ -221,6 +229,8 @@ class Clipboard extends React.Component<ClipboardProps> {
 																			supporting.uuid,
 																		)
 																	}
+																	updateCardMeta={updateCardMeta}
+																	addImageToCard={addImageToCard}
 																/>
 															)}
 														</CardLevel>
@@ -292,8 +302,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	...bindActionCreators(
 		{
 			selectCard: editorSelectCard,
-			updateCardMeta,
+			updateCardMeta: updateCardMetaAction('clipboard'),
 			handleBlur: resetFocusState,
+			addImageToCard: addImageToCard('clipboard'),
 		},
 		dispatch,
 	),

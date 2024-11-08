@@ -49,6 +49,7 @@ import {
 	InsertThunkActionCreator,
 } from 'types/Cards';
 import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
+import { PersistTo } from '../types/Middleware';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -200,9 +201,10 @@ const getRemoveActionCreatorFromType = (
 		: actionCreator;
 };
 
-const updateCardMetaWithPersist = addPersistMetaToAction(updateCardMeta, {
-	persistTo: 'collection',
-});
+const updateCardMetaWithPersist = (persistTo: PersistTo) =>
+	addPersistMetaToAction(updateCardMeta, {
+		persistTo,
+	});
 
 /** Cards in the standard group of a flexible general container should not be gigaboosted.
  * When moving a card from the splash group to the standard group, this function checks if the card should be modified.
@@ -413,17 +415,18 @@ const cloneCardToTarget = (
 const addCardToClipboard = (uuid: string) =>
 	cloneCardToTarget(uuid, 'clipboard');
 
-const addImageToCard = (uuid: string, imageData: ValidationResponse) =>
-	updateCardMetaWithPersist(
-		uuid,
-		{
-			...getImageMetaFromValidationResponse(imageData),
-			imageReplace: true,
-			imageCutoutReplace: false,
-			imageSlideshowReplace: false,
-		},
-		{ merge: true },
-	);
+const addImageToCard =
+	(persistTo: PersistTo) => (uuid: string, imageData: ValidationResponse) =>
+		updateCardMetaWithPersist(persistTo)(
+			uuid,
+			{
+				...getImageMetaFromValidationResponse(imageData),
+				imageReplace: true,
+				imageCutoutReplace: false,
+				imageSlideshowReplace: false,
+			},
+			{ merge: true },
+		);
 
 /**
  * Create the appropriate article entities from a MappableDropType,

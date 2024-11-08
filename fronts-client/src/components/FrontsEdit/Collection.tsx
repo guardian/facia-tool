@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled, Theme } from 'constants/theme';
 import Collection from './CollectionComponents/Collection';
-import { AlsoOnDetail } from 'types/Collection';
+import { AlsoOnDetail, CardMeta } from 'types/Collection';
 import { CardSets, Card as TCard } from 'types/Collection';
 import GroupDisplayComponent from 'components/GroupDisplay';
 import GroupLevel from 'components/clipboard/GroupLevel';
@@ -9,13 +9,16 @@ import Card from '../card/Card';
 import CardLevel from 'components/clipboard/CardLevel';
 import { PosSpec, Move } from 'lib/dnd';
 import { Dispatch } from 'types/Store';
-import { removeCard as removeCardAction } from 'actions/Cards';
+import { addImageToCard, removeCard as removeCardAction } from 'actions/Cards';
 import { resetFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import type { State } from 'types/State';
 import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
 import { CardTypes } from 'constants/cardTypes';
+import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
+import { ValidationResponse } from '../../util/validateImageSrc';
+import { bindActionCreators } from 'redux';
 
 const getArticleNotifications = (
 	id: string,
@@ -111,6 +114,8 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
 	handleBlur: () => void;
 	lastDesktopArticle?: string;
 	lastMobileArticle?: string;
+	updateCardMeta: (id: string, meta: CardMeta) => void;
+	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
 
 class CollectionContext extends React.Component<ConnectedCollectionContextProps> {
@@ -131,6 +136,8 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 			removeSupportingCard,
 			lastDesktopArticle,
 			lastMobileArticle,
+			updateCardMeta,
+			addImageToCard,
 		} = this.props;
 
 		return (
@@ -180,6 +187,8 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 												onSelect={() => selectCard(card.uuid, id, false)}
 												onDelete={() => removeCard(group.uuid, card.uuid)}
 												groupSizeId={group.id ? parseInt(group.id) : 0}
+												updateCardMeta={updateCardMeta}
+												addImageToCard={addImageToCard}
 											>
 												<CardLevel
 													isUneditable={isUneditable}
@@ -208,6 +217,8 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 																removeSupportingCard(card.uuid, supporting.uuid)
 															}
 															size="small"
+															updateCardMeta={updateCardMeta}
+															addImageToCard={addImageToCard}
 														/>
 													)}
 												</CardLevel>
@@ -233,7 +244,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 	private getPermittedCardTypes = (
 		cardType?: CardTypes,
 	): CardTypes[] | undefined =>
-		cardType === 'feast-collection' ? ['recipe'] : undefined;
+		cardType === 'feast-collection' ? ['recipe'] : undefined; // Todo: Chef also to be checked?
 
 	private getDropMessage = (cardType?: CardTypes) =>
 		cardType === 'feast-collection' ? 'Place recipe here' : 'Sublink';
@@ -262,6 +273,13 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 		dispatch(removeCardAction('card', parentId, uuid, 'collection'));
 	},
 	handleBlur: () => dispatch(resetFocusState()),
+	...bindActionCreators(
+		{
+			updateCardMeta: updateCardMetaAction('collection'),
+			addImageToCard: addImageToCard('collection'),
+		},
+		dispatch,
+	),
 });
 
 export default connect(

@@ -236,7 +236,7 @@ object EditionsChefMetadata {
   implicit val format: OFormat[EditionsChefMetadata] = Json.format[EditionsChefMetadata]
 }
 
-case class EditionsChef(id: String, addedOn: Long, metadata: Option[EditionsChefMetadata]) extends EditionsCard {
+case class EditionsChef(id: String, addedOn: Long, metadata: Option[EditionsChefMetadata]) extends EditionsCard with EditionsFeastCollectionItem {
   val cardType: CardType = CardType.Chef
 }
 
