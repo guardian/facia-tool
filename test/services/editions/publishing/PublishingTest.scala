@@ -21,9 +21,14 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
-      when(db.createIssueVersion(any,any,any)).thenReturn("new-version")
+      when(db.createIssueVersion(any, any, any)).thenReturn("new-version")
 
-      val toTest = new Publishing(editionsAppPublicationBucket, editionsAppPreviewBucket, feastAppPublicationTarget, db)
+      val toTest = new Publishing(
+        editionsAppPublicationBucket,
+        editionsAppPreviewBucket,
+        feastAppPublicationTarget,
+        db
+      )
 
       val iss = EditionsIssue(
         "fake-id",
@@ -40,11 +45,27 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
         supportsProofing = false,
         platform = CuratedPlatform.Feast
       )
-      toTest.publish(iss, User("Frank","Smith","fs@u.com", None),"no-proof-needed")
+      toTest.publish(
+        iss,
+        User("Frank", "Smith", "fs@u.com", None),
+        "no-proof-needed"
+      )
 
-      verify(editionsAppPublicationBucket, never()).putIssue(any[EditionsIssue],any[String],mockEq(PublishAction.proof))
-      verify(editionsAppPreviewBucket, never()).putIssue(any[EditionsIssue],any[String],mockEq(PublishAction.preview))
-      verify(feastAppPublicationTarget, times(1)).putIssue( mockEq(iss),mockEq("new-version"), mockEq(PublishAction.proof))
+      verify(editionsAppPublicationBucket, never()).putIssue(
+        any[EditionsIssue],
+        any[String],
+        mockEq(PublishAction.proof)
+      )
+      verify(editionsAppPreviewBucket, never()).putIssue(
+        any[EditionsIssue],
+        any[String],
+        mockEq(PublishAction.preview)
+      )
+      verify(feastAppPublicationTarget, times(1)).putIssue(
+        mockEq(iss),
+        mockEq("new-version"),
+        mockEq(PublishAction.proof)
+      )
     }
 
     "should send Editorial editions to Editions publication backend" - {
@@ -53,9 +74,14 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
-      when(db.createIssueVersion(any,any,any)).thenReturn("new-version")
+      when(db.createIssueVersion(any, any, any)).thenReturn("new-version")
 
-      val toTest = new Publishing(editionsAppPublicationBucket, editionsAppPreviewBucket, feastAppPublicationTarget, db)
+      val toTest = new Publishing(
+        editionsAppPublicationBucket,
+        editionsAppPreviewBucket,
+        feastAppPublicationTarget,
+        db
+      )
 
       val iss = EditionsIssue(
         "fake-id",
@@ -72,11 +98,27 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
         supportsProofing = true,
         platform = CuratedPlatform.Editions
       )
-      toTest.publish(iss, User("Frank","Smith","fs@u.com", None), "some-version-id")
+      toTest.publish(
+        iss,
+        User("Frank", "Smith", "fs@u.com", None),
+        "some-version-id"
+      )
 
-      verify(editionsAppPublicationBucket, times(1)).putIssue( mockEq(iss),mockEq("some-version-id"), mockEq(PublishAction.publish))
-      verify(editionsAppPreviewBucket, never()).putIssue(any[EditionsIssue],mockEq("some-version-id"),any[PublishAction])
-      verify(feastAppPublicationTarget, never()).putIssue(any[EditionsIssue],mockEq("some-version-id"),any[PublishAction])
+      verify(editionsAppPublicationBucket, times(1)).putIssue(
+        mockEq(iss),
+        mockEq("some-version-id"),
+        mockEq(PublishAction.publish)
+      )
+      verify(editionsAppPreviewBucket, never()).putIssue(
+        any[EditionsIssue],
+        mockEq("some-version-id"),
+        any[PublishAction]
+      )
+      verify(feastAppPublicationTarget, never()).putIssue(
+        any[EditionsIssue],
+        mockEq("some-version-id"),
+        any[PublishAction]
+      )
     }
   }
 
@@ -87,9 +129,14 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
-      when(db.createIssueVersion(any,any,any)).thenReturn("new-version")
+      when(db.createIssueVersion(any, any, any)).thenReturn("new-version")
 
-      val toTest = new Publishing(editionsAppPublicationBucket, editionsAppPreviewBucket, feastAppPublicationTarget, db)
+      val toTest = new Publishing(
+        editionsAppPublicationBucket,
+        editionsAppPreviewBucket,
+        feastAppPublicationTarget,
+        db
+      )
 
       val iss = EditionsIssue(
         "fake-id",
@@ -108,9 +155,21 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       )
       toTest.updatePreview(iss)
 
-      verify(editionsAppPublicationBucket, never()).putIssue(any[EditionsIssue],any[String],any[PublishAction])
-      verify(editionsAppPreviewBucket, times(1)).putIssue( mockEq(iss),mockEq("preview"),any[PublishAction])
-      verify(feastAppPublicationTarget, never()).putIssue(any[EditionsIssue],any[String],any[PublishAction])
+      verify(editionsAppPublicationBucket, never()).putIssue(
+        any[EditionsIssue],
+        any[String],
+        any[PublishAction]
+      )
+      verify(editionsAppPreviewBucket, times(1)).putIssue(
+        mockEq(iss),
+        mockEq("preview"),
+        any[PublishAction]
+      )
+      verify(feastAppPublicationTarget, never()).putIssue(
+        any[EditionsIssue],
+        any[String],
+        any[PublishAction]
+      )
     }
 
     "should do nothing if you pass a Feast edition" - {
@@ -119,9 +178,14 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
       val db = mock[EditionsDB]
 
-      when(db.createIssueVersion(any,any,any)).thenReturn("new-version")
+      when(db.createIssueVersion(any, any, any)).thenReturn("new-version")
 
-      val toTest = new Publishing(editionsAppPublicationBucket, editionsAppPreviewBucket, feastAppPublicationTarget, db)
+      val toTest = new Publishing(
+        editionsAppPublicationBucket,
+        editionsAppPreviewBucket,
+        feastAppPublicationTarget,
+        db
+      )
 
       val iss = EditionsIssue(
         "fake-id",
@@ -142,9 +206,21 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
 
       assert(result.isSuccess)
 
-      verify(editionsAppPublicationBucket, never()).putIssue(any[EditionsIssue],any[String],any[PublishAction])
-      verify(editionsAppPreviewBucket, never()).putIssue(any[EditionsIssue],any[String],any[PublishAction])
-      verify(feastAppPublicationTarget, never()).putIssue(any[EditionsIssue],any[String],any[PublishAction])
+      verify(editionsAppPublicationBucket, never()).putIssue(
+        any[EditionsIssue],
+        any[String],
+        any[PublishAction]
+      )
+      verify(editionsAppPreviewBucket, never()).putIssue(
+        any[EditionsIssue],
+        any[String],
+        any[PublishAction]
+      )
+      verify(feastAppPublicationTarget, never()).putIssue(
+        any[EditionsIssue],
+        any[String],
+        any[PublishAction]
+      )
     }
   }
 }

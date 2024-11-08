@@ -1,19 +1,37 @@
 package services.editions.db
 
 import java.sql.Date
-import java.time.{LocalDate, LocalTime, OffsetDateTime, ZoneId, ZoneOffset, ZonedDateTime}
+import java.time.{
+  LocalDate,
+  LocalTime,
+  OffsetDateTime,
+  ZoneId,
+  ZoneOffset,
+  ZonedDateTime
+}
 
 import com.gu.pandomainauth.model.User
 import fixtures.{EditionsDBService, UsesDatabase}
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
-import play.api.db.evolutions.{Evolution, Evolutions, EvolutionsReader, ThisClassLoaderEvolutionsReader}
+import play.api.db.evolutions.{
+  Evolution,
+  Evolutions,
+  EvolutionsReader,
+  ThisClassLoaderEvolutionsReader
+}
 import scalikejdbc._
 
-class EditionsDBEvolutionsTest extends FreeSpec with Matchers with EditionsDBService with OptionValues {
+class EditionsDBEvolutionsTest
+    extends FreeSpec
+    with Matchers
+    with EditionsDBService
+    with OptionValues {
 
-  private val now: OffsetDateTime = OffsetDateTime.of(2019, 7, 16, 17, 23, 23, 123456, ZoneOffset.ofHours(1))
+  private val now: OffsetDateTime =
+    OffsetDateTime.of(2019, 7, 16, 17, 23, 23, 123456, ZoneOffset.ofHours(1))
 
-  private val user: User = User("Billy", "Bragg", "billy.bragg@justice.example.com", None)
+  private val user: User =
+    User("Billy", "Bragg", "billy.bragg@justice.example.com", None)
 
   private def insertSkeletonIssue(year: Int, month: Int, dom: Int): String = {
     val zoneId = ZoneId.of("Europe/London")
@@ -52,15 +70,19 @@ class EditionsDBEvolutionsTest extends FreeSpec with Matchers with EditionsDBSer
     }
   }
 
-  class FilteredEvolutionsReader(filter: Evolution => Boolean) extends EvolutionsReader {
+  class FilteredEvolutionsReader(filter: Evolution => Boolean)
+      extends EvolutionsReader {
     val baseReader = ThisClassLoaderEvolutionsReader
-    override def evolutions(db: String): Seq[Evolution] = baseReader.evolutions(db).filter(filter)
+    override def evolutions(db: String): Seq[Evolution] =
+      baseReader.evolutions(db).filter(filter)
   }
 
   "The issue_date evolutions (default/6.sql)" - {
     // this is an evolution reader that only returns evolutions up to and including number 5
-    val evolveToNumberFiveEvolutionsReader = new FilteredEvolutionsReader(_.revision <= 5)
-    val evolveToNumberSixEvolutionsReader = new FilteredEvolutionsReader(_.revision <= 6)
+    val evolveToNumberFiveEvolutionsReader =
+      new FilteredEvolutionsReader(_.revision <= 5)
+    val evolveToNumberSixEvolutionsReader =
+      new FilteredEvolutionsReader(_.revision <= 6)
 
     "Show roll forward" taggedAs UsesDatabase in {
       Evolutions.applyEvolutions(database, evolveToNumberFiveEvolutionsReader)

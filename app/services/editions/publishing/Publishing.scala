@@ -11,22 +11,27 @@ import play.api.libs.json.Writes
 
 import scala.jdk.CollectionConverters._
 
-class Publishing(editionsAppPublicationBucket: EditionsAppPublicationTarget,
-                 editionsAppPreviewBucket: EditionsAppPublicationTarget,
-                 feastAppPublicationTarget: FeastPublicationTarget,
-                 db: EditionsDB
-                ) extends Logging {
+class Publishing(
+    editionsAppPublicationBucket: EditionsAppPublicationTarget,
+    editionsAppPreviewBucket: EditionsAppPublicationTarget,
+    feastAppPublicationTarget: FeastPublicationTarget,
+    db: EditionsDB
+) extends Logging {
 
   def updatePreview(issue: EditionsIssue) = {
 
     // Archive a copy
     issue.edition match {
       case FeastNorthernHemisphere | FeastSouthernHemisphere =>
-        //Feast does not currently support previewing, but we don't need to be reminded of that every time someone drag/drops something!
-        //Preview will be implemented, when it exists.
+        // Feast does not currently support previewing, but we don't need to be reminded of that every time someone drag/drops something!
+        // Preview will be implemented, when it exists.
         ()
       case _ =>
-        editionsAppPreviewBucket.putIssue(issue, "preview", PublishAction.preview)
+        editionsAppPreviewBucket.putIssue(
+          issue,
+          "preview",
+          PublishAction.preview
+        )
     }
   }
 
@@ -45,12 +50,14 @@ class Publishing(editionsAppPublicationBucket: EditionsAppPublicationTarget,
       ).asJava
     )
 
-    logger.info(s"Uploading $action request for issue ${issue.id} to S3")(markers)
+    logger.info(s"Uploading $action request for issue ${issue.id} to S3")(
+      markers
+    )
 
     getPublicationTarget(issue).putIssue(issue, versionId, PublishAction.proof)
   }
 
-  def getPublicationTarget(issue:EditionsIssue): PublicationTarget ={
+  def getPublicationTarget(issue: EditionsIssue): PublicationTarget = {
     issue.edition match {
       case FeastNorthernHemisphere | FeastSouthernHemisphere =>
         feastAppPublicationTarget
@@ -77,13 +84,22 @@ class Publishing(editionsAppPublicationBucket: EditionsAppPublicationTarget,
       ).asJava
     )
 
-    logger.info(s"Uploading $action request for issue ${issue.id} to S3")(markers)
+    logger.info(s"Uploading $action request for issue ${issue.id} to S3")(
+      markers
+    )
 
-    val (finalVersion, finalAction) = if(!issue.supportsProofing) {
-      val newVersion = db.createIssueVersion(issue.id, user, OffsetDateTime.now())
-      (newVersion, PublishAction.proof) //Not very self-explanatory; the use of `PublishAction.proof` here means "build the issue afresh".
+    val (finalVersion, finalAction) = if (!issue.supportsProofing) {
+      val newVersion =
+        db.createIssueVersion(issue.id, user, OffsetDateTime.now())
+      (
+        newVersion,
+        PublishAction.proof
+      ) // Not very self-explanatory; the use of `PublishAction.proof` here means "build the issue afresh".
     } else {
-      (version, PublishAction.publish)  //PublishAction.publish here means "only use the previously proofed issue"
+      (
+        version,
+        PublishAction.publish
+      ) // PublishAction.publish here means "only use the previously proofed issue"
     }
 
     getPublicationTarget(issue).putIssue(issue, finalVersion, finalAction)

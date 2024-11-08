@@ -10,7 +10,9 @@ object Story {
 
   def unboosted(n: Int) = Story(n, isBoosted = false)
 
-  private [slices] def segmentByGroup(stories: Seq[Story]): Map[Int, Seq[Story]] = {
+  private[slices] def segmentByGroup(
+      stories: Seq[Story]
+  ): Map[Int, Seq[Story]] = {
     stories.foldLeft(Map.empty[Int, Seq[Story]]) { (acc, story) =>
       insertWith(acc, story.group, Seq(story)) { (a, b) =>
         b ++ a
@@ -20,6 +22,6 @@ object Story {
 }
 
 case class Story(
-  group: Int,
-  isBoosted: Boolean
+    group: Int,
+    isBoosted: Boolean
 )

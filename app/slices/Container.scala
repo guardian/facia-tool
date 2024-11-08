@@ -4,6 +4,7 @@ import com.gu.facia.api.models.CollectionConfig
 import logging.Logging
 
 class Containers(val fixedContainers: FixedContainers) extends Logging {
+
   /** This is THE top level resolver for containers */
   val all: Map[String, Container] = Map(
     ("dynamic/fast", Dynamic(DynamicFast)),
@@ -18,16 +19,20 @@ class Containers(val fixedContainers: FixedContainers) extends Logging {
     ("scrollable/highlights", Scrollable(ScrollableHighlights)),
     ("scrollable/small", Scrollable(ScrollableSmall)),
     ("scrollable/medium", Scrollable(ScrollableMedium)),
-    ("scrollable/feature", Scrollable(ScrollableFeature)),
+    ("scrollable/feature", Scrollable(ScrollableFeature))
   ) ++ fixedContainers.all.view.mapValues(Fixed.apply)
 
   /** So that we don't blow up at runtime, which would SUCK */
   val default = Fixed(fixedContainers.fixedSmallSlowIV)
 
-  def resolve(id: String) = all.getOrElse(id, {
-    logger.error(s"Could not resolve container id $id, using default container")
-    default
-  })
+  def resolve(id: String) = all.getOrElse(
+    id, {
+      logger.error(
+        s"Could not resolve container id $id, using default container"
+      )
+      default
+    }
+  )
 
   def fromConfig(collectionConfig: CollectionConfig) =
     resolve(collectionConfig.collectionType)

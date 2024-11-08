@@ -14,14 +14,18 @@ import services.editions.DbEditionsCard
 import model.editions.EditionsCollection
 
 case class FrontAndNestedEntitiesRow(
-  front: Option[DbEditionsFront],
-  collection: Option[DbEditionsCollection],
-  card: Option[DbEditionsCard]
+    front: Option[DbEditionsFront],
+    collection: Option[DbEditionsCollection],
+    card: Option[DbEditionsCard]
 )
 
 trait FrontsQueries extends Logging {
-  def updateFrontMetadata(id: String, metadata: EditionsFrontMetadata): Option[EditionsFrontMetadata] = DB localTx { implicit session =>
-    val updatedMetadata = metadata.copy(nameOverride = metadata.nameOverride.map(_.trim()))
+  def updateFrontMetadata(
+      id: String,
+      metadata: EditionsFrontMetadata
+  ): Option[EditionsFrontMetadata] = DB localTx { implicit session =>
+    val updatedMetadata =
+      metadata.copy(nameOverride = metadata.nameOverride.map(_.trim()))
     sql"""
           UPDATE fronts
           SET metadata = ${updatedMetadata.toPGobject}
@@ -30,51 +34,67 @@ trait FrontsQueries extends Logging {
 
     sql"""
         SELECT metadata FROM fronts WHERE id = $id
-      """.map { rs =>
-      rs.stringOpt("metadata").map { metadataString =>
-        // Throw if we can't parse the metadata to signal to the user that something is broken
-        Json.parse(metadataString).validate[EditionsFrontMetadata].get
+      """
+      .map { rs =>
+        rs.stringOpt("metadata").map { metadataString =>
+          // Throw if we can't parse the metadata to signal to the user that something is broken
+          Json.parse(metadataString).validate[EditionsFrontMetadata].get
+        }
       }
-    }.single.apply().flatten
+      .single
+      .apply()
+      .flatten
   }
 
-  def getFrontMetadata(id: String): EditionsFrontMetadata = DB localTx { implicit session =>
-    val rawJson =
-      sql"""
+  def getFrontMetadata(id: String): EditionsFrontMetadata = DB localTx {
+    implicit session =>
+      val rawJson =
+        sql"""
           SELECT metadata
           from fronts
           WHERE id = $id
       """.map(rs => {
-        rs.string("metadata") match {
-          case "" => "{}"
-          case s:String => s
-        }
-      }).single.apply().get
-    Json.fromJson[EditionsFrontMetadata](Json.parse(rawJson)).get
+          rs.string("metadata") match {
+            case ""        => "{}"
+            case s: String => s
+          }
+        }).single
+          .apply()
+          .get
+      Json.fromJson[EditionsFrontMetadata](Json.parse(rawJson)).get
   }
 
   // TODO: sihil this should really escalate an error if this is attempted when is_special is false but we don't
   // have a clean way of doing that right now.
-  def updateFrontHiddenState(id: String, isHidden: Boolean): Option[Boolean] = DB localTx { implicit session =>
-    sql"""
+  def updateFrontHiddenState(id: String, isHidden: Boolean): Option[Boolean] =
+    DB localTx { implicit session =>
+      sql"""
          UPDATE fronts
          SET is_hidden = $isHidden
          WHERE id = $id AND is_special = TRUE
        """.execute.apply()
 
-    val newState = sql"""
+      val newState = sql"""
         SELECT is_hidden, is_special FROM fronts WHERE id = $id
-      """.map { rs =>
-        (rs.boolean("is_hidden"), rs.boolean("is_special"))
-      }.single.apply()
+      """
+        .map { rs =>
+          (rs.boolean("is_hidden"), rs.boolean("is_special"))
+        }
+        .single
+        .apply()
 
-    newState.map { case (isHidden, isSpecial) =>
-      if (!isSpecial) logger.warn(s"Tried to update hidden state on front $id which is not a special front")
-      isHidden
+      newState.map { case (isHidden, isSpecial) =>
+        if (!isSpecial)
+          logger.warn(
+            s"Tried to update hidden state on front $id which is not a special front"
+          )
+        isHidden
+      }
     }
-  }
 
-  def getFront(frontId: String)(implicit session: DBSession): Option[EditionsFront] = {
+  def getFront(
+      frontId: String
+  )(implicit session: DBSession): Option[EditionsFront] = {
     val rows: List[FrontAndNestedEntitiesRow] =
       sql"""
         SELECT
@@ -83,13 +103,14 @@ trait FrontsQueries extends Logging {
         LEFT JOIN collections ON (collections.front_id = fronts.id)
         LEFT JOIN cards ON (cards.collection_id = collections.id)
         WHERE fronts.id = $frontId
-      """.map { rs =>
-        FrontAndNestedEntitiesRow(
-          DbEditionsFront.fromRowOpt(rs, "fronts_"),
-          DbEditionsCollection.fromRowOpt(rs, "collections_"),
-          DbEditionsCard.fromRowOpt(rs, "cards_")
-        )
-      }
+      """
+        .map { rs =>
+          FrontAndNestedEntitiesRow(
+            DbEditionsFront.fromRowOpt(rs, "fronts_"),
+            DbEditionsCollection.fromRowOpt(rs, "collections_"),
+            DbEditionsCard.fromRowOpt(rs, "cards_")
+          )
+        }
         .list
         .apply()
 
@@ -97,9 +118,10 @@ trait FrontsQueries extends Logging {
   }
 }
 
-
 object FrontsQueries {
-  def toEditionsFront(rows: List[FrontAndNestedEntitiesRow]): List[EditionsFront] = {
+  def toEditionsFront(
+      rows: List[FrontAndNestedEntitiesRow]
+  ): List[EditionsFront] = {
     rows
       .flatMap(_.front)
       .sortBy(_.index)
@@ -110,7 +132,9 @@ object FrontsQueries {
           .flatMap { _.collection.filter(_.frontId == front.id) }
           .sortBy(_.index)
           .map(_.collection)
-          .foldLeft(List.empty[EditionsCollection]) { (acc, cur) => if (acc.exists(c => c.id == cur.id)) acc else acc :+ cur }
+          .foldLeft(List.empty[EditionsCollection]) { (acc, cur) =>
+            if (acc.exists(c => c.id == cur.id)) acc else acc :+ cur
+          }
           .map { collection =>
             val cards = rows
               .flatMap(_.card.filter(_.collectionId == collection.id))

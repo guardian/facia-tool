@@ -1,7 +1,14 @@
 package model.editions.templates.feast
 
 import model.editions.templates.TemplateHelpers.{collection, front}
-import model.editions.{CapiDateQueryParam, CapiTimeWindowConfigInDays, Daily, Edition, EditionTemplate, FrontTemplate}
+import model.editions.{
+  CapiDateQueryParam,
+  CapiTimeWindowConfigInDays,
+  Daily,
+  Edition,
+  EditionTemplate,
+  FrontTemplate
+}
 
 import java.time.ZoneId
 
@@ -29,7 +36,7 @@ object FeastSouthernHemisphere extends FeastAppEdition {
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
-      endOffset = 0,
+      endOffset = 0
     ),
     capiDateQueryParam = CapiDateQueryParam.Published,
     zoneId = ZoneId.of("Australia/Sydney"),

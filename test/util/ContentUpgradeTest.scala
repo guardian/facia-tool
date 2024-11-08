@@ -26,7 +26,8 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
       newBody shouldBe body
     }
     "plain results gets you plain results" in {
-      val body = """{"response":{"other":"ignoreme","results":"this is the results"}}"""
+      val body =
+        """{"response":{"other":"ignoreme","results":"this is the results"}}"""
       val newBody = ContentUpgrade.rewriteBody(body)
       newBody shouldBe body
     }
@@ -44,7 +45,8 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
     }
 
     "array of object results gets you a single array of object" in {
-      val body = """{"response":{"other":"ignoreme","results":[{"a":"b"}, {"b":"c"}, {"c":"d"}]}}"""
+      val body =
+        """{"response":{"other":"ignoreme","results":[{"a":"b"}, {"b":"c"}, {"c":"d"}]}}"""
       val newBody = ContentUpgrade.rewriteBody(body)
       newBody shouldBe """{"response":{"other":"ignoreme","results":[{"a":"b"},{"b":"c"},{"c":"d"}]}}"""
     }

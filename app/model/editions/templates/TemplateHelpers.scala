@@ -6,7 +6,9 @@ import play.api.libs.json._
 
 object TemplateHelpers {
   object Defaults {
-    val defaultFrontPresentation = FrontPresentation(model.editions.Swatch.Neutral)
+    val defaultFrontPresentation = FrontPresentation(
+      model.editions.Swatch.Neutral
+    )
     val defaultCollectionCardsCap: Int = 200
   }
 
@@ -14,17 +16,36 @@ object TemplateHelpers {
     CollectionTemplate(
       name,
       maybeOphanPath = None,
-      prefill = None,
+      prefill = None
     )
   }
 
-  def front(name: String, ophanPath: Option[String], collections: CollectionTemplate*): FrontTemplate =
-    FrontTemplate(name, collections.toList, Defaults.defaultFrontPresentation, ophanPath)
+  def front(
+      name: String,
+      ophanPath: Option[String],
+      collections: CollectionTemplate*
+  ): FrontTemplate =
+    FrontTemplate(
+      name,
+      collections.toList,
+      Defaults.defaultFrontPresentation,
+      ophanPath
+    )
 
   def front(name: String, collections: CollectionTemplate*): FrontTemplate =
-    FrontTemplate(name, collections.toList, Defaults.defaultFrontPresentation, None)
+    FrontTemplate(
+      name,
+      collections.toList,
+      Defaults.defaultFrontPresentation,
+      None
+    )
 
-  def specialFront(name: String, swatch: Swatch, ophanPath: Option[String] = None, prefill: Option[CapiPrefillQuery] = None): FrontTemplate = front(
+  def specialFront(
+      name: String,
+      swatch: Swatch,
+      ophanPath: Option[String] = None,
+      prefill: Option[CapiPrefillQuery] = None
+  ): FrontTemplate = front(
     name,
     ophanPath,
     collection("Special Container 1").hide.copy(prefill = prefill),
@@ -43,46 +64,60 @@ case object EditionType extends Enumeration() {
   type EditionType = Value
   val Regional, Special, Training = Value
 
-  implicit val readsEditionType: Reads[templates.EditionType.Value] = Reads.enumNameReads(EditionType)
-  implicit val writesEditionType: Writes[templates.EditionType.Value] = Writes.enumNameWrites
+  implicit val readsEditionType: Reads[templates.EditionType.Value] =
+    Reads.enumNameReads(EditionType)
+  implicit val writesEditionType: Writes[templates.EditionType.Value] =
+    Writes.enumNameWrites
 }
 
-case class Header (title: String, subTitle: Option[String] = None)
+case class Header(title: String, subTitle: Option[String] = None)
 object Header {
   implicit val formatHeader: OFormat[Header] = Json.format[Header]
 }
 
-case class SpecialEditionHeaderStyles(backgroundColor: String, textColorPrimary: String, textColorSecondary: String)
+case class SpecialEditionHeaderStyles(
+    backgroundColor: String,
+    textColorPrimary: String,
+    textColorSecondary: String
+)
 object SpecialEditionHeaderStyles {
-  implicit val formatHeader: OFormat[SpecialEditionHeaderStyles] = Json.format[SpecialEditionHeaderStyles]
+  implicit val formatHeader: OFormat[SpecialEditionHeaderStyles] =
+    Json.format[SpecialEditionHeaderStyles]
 }
 
-case class EditionTextFormatting(color: String, font: String, lineHeight: Int, size: Int)
+case class EditionTextFormatting(
+    color: String,
+    font: String,
+    lineHeight: Int,
+    size: Int
+)
 object EditionTextFormatting {
-  implicit val formatEditionTextFormatting : OFormat[EditionTextFormatting] = Json.format[EditionTextFormatting]
+  implicit val formatEditionTextFormatting: OFormat[EditionTextFormatting] =
+    Json.format[EditionTextFormatting]
 }
 
 case class EditionImageStyle(width: Int, height: Int)
 object EditionImageStyle {
-  implicit val formatEditionImageStyle : OFormat[EditionImageStyle] = Json.format[EditionImageStyle]
+  implicit val formatEditionImageStyle: OFormat[EditionImageStyle] =
+    Json.format[EditionImageStyle]
 }
 
 case class SpecialEditionButtonStyles(
-  backgroundColor: String,
-  title: EditionTextFormatting,
-  subTitle: EditionTextFormatting,
-  expiry: EditionTextFormatting,
-  image: EditionImageStyle
+    backgroundColor: String,
+    title: EditionTextFormatting,
+    subTitle: EditionTextFormatting,
+    expiry: EditionTextFormatting,
+    image: EditionImageStyle
 )
 
 object SpecialEditionButtonStyles {
-  implicit val formatSpecialEditionButtonStyles : OFormat[SpecialEditionButtonStyles] = Json.format[SpecialEditionButtonStyles]
+  implicit val formatSpecialEditionButtonStyles
+      : OFormat[SpecialEditionButtonStyles] =
+    Json.format[SpecialEditionButtonStyles]
 }
 
-/**
-  * A curated product that has a push publication model – it
-  * pushes updated content to the world in discrete 'editions' that contain a
-  * list of fronts.
+/** A curated product that has a push publication model – it pushes updated
+  * content to the world in discrete 'editions' that contain a list of fronts.
   *
   * Contrast with e.g. web/app Fronts, which publish their content in real time
   * on a container by container basis.
@@ -97,7 +132,10 @@ trait CuratedPlatformDefinition {
 }
 
 object CuratedPlatformDefinition {
-  implicit def formatCuratedPlatform(implicit editionsWrites: OWrites[EditionsAppDefinition], genericWrites: OWrites[CuratedPlatformWithTemplate]): OWrites[CuratedPlatformDefinition] = {
+  implicit def formatCuratedPlatform(implicit
+      editionsWrites: OWrites[EditionsAppDefinition],
+      genericWrites: OWrites[CuratedPlatformWithTemplate]
+  ): OWrites[CuratedPlatformDefinition] = {
     case editionsApp: EditionsAppDefinition =>
       editionsWrites.writes(editionsApp)
     case genericApp: CuratedPlatformWithTemplate =>
@@ -105,8 +143,7 @@ object CuratedPlatformDefinition {
   }
 }
 
-/**
-  * An Edition definition for the Editions app.
+/** An Edition definition for the Editions app.
   */
 trait EditionsAppDefinition extends CuratedPlatformDefinition {
   val header: Header
@@ -123,20 +160,33 @@ trait TemplatedPlatform {
   val template: EditionTemplate
 }
 
-trait CuratedPlatformWithTemplate extends CuratedPlatformDefinition with TemplatedPlatform
+trait CuratedPlatformWithTemplate
+    extends CuratedPlatformDefinition
+    with TemplatedPlatform
 
 object CuratedPlatformWithTemplate {
   import play.api.libs.functional.syntax._
-  implicit def writes:OWrites[CuratedPlatformWithTemplate] = (
+  implicit def writes: OWrites[CuratedPlatformWithTemplate] = (
     (JsPath \ "title").write[String] and
       (JsPath \ "subTitle").write[String] and
       (JsPath \ "edition").write[String] and
       (JsPath \ "notificationUTCOffset").write[Int] and
       (JsPath \ "locale").writeNullable[String] and
       (JsPath \ "platform").write[CuratedPlatform]
-  )(p => (p.title, p.subTitle, p.edition, p.notificationUTCOffset, p.locale, p.platform))
+  )(p =>
+    (
+      p.title,
+      p.subTitle,
+      p.edition,
+      p.notificationUTCOffset,
+      p.locale,
+      p.platform
+    )
+  )
 }
-trait EditionsAppDefinitionWithTemplate extends EditionsAppDefinition with TemplatedPlatform
+trait EditionsAppDefinitionWithTemplate
+    extends EditionsAppDefinition
+    with TemplatedPlatform
 
 abstract class EditionBase extends EditionsAppDefinitionWithTemplate {
   override val buttonImageUri: Option[String] = None
@@ -146,7 +196,7 @@ abstract class EditionBase extends EditionsAppDefinitionWithTemplate {
 }
 
 abstract class RegionalEdition extends EditionBase {
-  override val editionType: EditionType =  EditionType.Regional
+  override val editionType: EditionType = EditionType.Regional
 }
 
 abstract class InternalEdition extends EditionBase {
@@ -160,46 +210,88 @@ abstract class SpecialEdition extends EditionsAppDefinitionWithTemplate {
 
 object EditionsAppDefinition {
   def apply(
-    title: String,
-    subTitle: String,
-    edition: String,
-    header: Header,
-    editionType: EditionType,
-    notificationUTCOffset: Int,
-    topic: String,
-    locale: Option[String],
-    buttonImageUri: Option[String],
-    expiry: Option[String],
-    buttonStyle: Option[SpecialEditionButtonStyles],
-    headerStyle: Option[SpecialEditionHeaderStyles],
-    platform: CuratedPlatform
-  ): EditionsAppDefinition = EditionDefinitionRecord(title, subTitle, edition, header, editionType, notificationUTCOffset, topic, locale, buttonImageUri, expiry, buttonStyle, headerStyle, platform)
+      title: String,
+      subTitle: String,
+      edition: String,
+      header: Header,
+      editionType: EditionType,
+      notificationUTCOffset: Int,
+      topic: String,
+      locale: Option[String],
+      buttonImageUri: Option[String],
+      expiry: Option[String],
+      buttonStyle: Option[SpecialEditionButtonStyles],
+      headerStyle: Option[SpecialEditionHeaderStyles],
+      platform: CuratedPlatform
+  ): EditionsAppDefinition = EditionDefinitionRecord(
+    title,
+    subTitle,
+    edition,
+    header,
+    editionType,
+    notificationUTCOffset,
+    topic,
+    locale,
+    buttonImageUri,
+    expiry,
+    buttonStyle,
+    headerStyle,
+    platform
+  )
 
-  def unapply(edition: EditionsAppDefinition): Option[(String, String, String, Header, EditionType, Int, String,
-    Option[String], Option[String], Option[String], Option[SpecialEditionButtonStyles], Option[SpecialEditionHeaderStyles], CuratedPlatform)]
-    = Some(edition.title, edition.subTitle, edition.edition, edition.header, edition.editionType,
-    edition.notificationUTCOffset, edition.topic, edition.locale, edition.buttonImageUri, edition.expiry, edition.buttonStyle, edition.headerStyle, edition.platform)
+  def unapply(edition: EditionsAppDefinition): Option[
+    (
+        String,
+        String,
+        String,
+        Header,
+        EditionType,
+        Int,
+        String,
+        Option[String],
+        Option[String],
+        Option[String],
+        Option[SpecialEditionButtonStyles],
+        Option[SpecialEditionHeaderStyles],
+        CuratedPlatform
+    )
+  ] = Some(
+    edition.title,
+    edition.subTitle,
+    edition.edition,
+    edition.header,
+    edition.editionType,
+    edition.notificationUTCOffset,
+    edition.topic,
+    edition.locale,
+    edition.buttonImageUri,
+    edition.expiry,
+    edition.buttonStyle,
+    edition.headerStyle,
+    edition.platform
+  )
 
-  implicit val formatEditionDefinition: OFormat[EditionsAppDefinition] = Json.format[EditionsAppDefinition]
+  implicit val formatEditionDefinition: OFormat[EditionsAppDefinition] =
+    Json.format[EditionsAppDefinition]
 }
 
 case class EditionDefinitionRecord(
-                         override val title: String,
-                         override val subTitle: String,
-                         override val edition: String,
-                         override val header: Header,
-                         override val editionType: EditionType,
-                         override val notificationUTCOffset: Int,
-                         override val topic: String,
-                         override val locale: Option[String],
-                         override val buttonImageUri: Option[String],
-                         override val expiry: Option[String],
-                         override val buttonStyle: Option[SpecialEditionButtonStyles],
-                         override val headerStyle: Option[SpecialEditionHeaderStyles],
-                         override val platform: CuratedPlatform
+    override val title: String,
+    override val subTitle: String,
+    override val edition: String,
+    override val header: Header,
+    override val editionType: EditionType,
+    override val notificationUTCOffset: Int,
+    override val topic: String,
+    override val locale: Option[String],
+    override val buttonImageUri: Option[String],
+    override val expiry: Option[String],
+    override val buttonStyle: Option[SpecialEditionButtonStyles],
+    override val headerStyle: Option[SpecialEditionHeaderStyles],
+    override val platform: CuratedPlatform
 ) extends EditionsAppDefinition {}
 
-
-object EditionDefinitionRecord{
-  implicit val editionDefinitionRecordFormat: OFormat[EditionDefinitionRecord] = Json.format[EditionDefinitionRecord]
+object EditionDefinitionRecord {
+  implicit val editionDefinitionRecordFormat: OFormat[EditionDefinitionRecord] =
+    Json.format[EditionDefinitionRecord]
 }

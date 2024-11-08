@@ -5,7 +5,7 @@ import play.api.db.Database
 import play.api.db.evolutions.{Evolutions, InconsistentDatabase}
 
 trait EditionsDBEvolutions extends BeforeAndAfter { self: Suite =>
-  def  database: Database
+  def database: Database
 
   before {
     try {

@@ -3,7 +3,9 @@ package slices
 import slices.Story._
 
 object DynamicPackage extends DynamicContainer {
-  override protected def optionalFirstSlice(stories: Seq[Story]): Option[(Slice, Seq[Story])] = {
+  override protected def optionalFirstSlice(
+      stories: Seq[Story]
+  ): Option[(Slice, Seq[Story])] = {
     val byGroup = segmentByGroup(stories)
     val snap = byGroup.getOrElse(1, Seq.empty)
 
@@ -14,7 +16,10 @@ object DynamicPackage extends DynamicContainer {
     }
   }
 
-  override protected def standardSlices(stories: Seq[Story], firstSlice: Option[Slice]): Seq[Slice] = {
+  override protected def standardSlices(
+      stories: Seq[Story],
+      firstSlice: Option[Slice]
+  ): Seq[Slice] = {
     val BigsAndStandards(bigs, _) = bigsAndStandards(stories)
 
     if (stories.isEmpty) {

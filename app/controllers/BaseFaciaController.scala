@@ -20,7 +20,12 @@ import util.Acl
 
 import scala.concurrent.ExecutionContext
 
-abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInComponentsFromContext(context) with AhcWSComponents with AssetsComponents with CORSComponents with Logging {
+abstract class BaseFaciaControllerComponents(context: Context)
+    extends BuiltInComponentsFromContext(context)
+    with AhcWSComponents
+    with AssetsComponents
+    with CORSComponents
+    with Logging {
 
   def config: ApplicationConfiguration
 
@@ -33,63 +38,92 @@ abstract class BaseFaciaControllerComponents(context: Context) extends BuiltInCo
       config.aws.s3Client
     )
 
-  lazy val permissions = PermissionsProvider(PermissionsConfig(
-    stage = config.environment.stage.toUpperCase(Locale.UK),
-    region = config.aws.region,
-    awsCredentials = config.aws.cmsFrontsAccountCredentials
-  ))
+  lazy val permissions = PermissionsProvider(
+    PermissionsConfig(
+      stage = config.environment.stage.toUpperCase(Locale.UK),
+      region = config.aws.region,
+      awsCredentials = config.aws.cmsFrontsAccountCredentials
+    )
+  )
 }
 
-abstract class BaseFaciaController(deps: BaseFaciaControllerComponents) extends BaseController with AuthActions with Logging {
+abstract class BaseFaciaController(deps: BaseFaciaControllerComponents)
+    extends BaseController
+    with AuthActions
+    with Logging {
 
   final override def wsClient: WSClient = deps.wsClient
 
-  final override def controllerComponents: ControllerComponents = deps.controllerComponents
+  final override def controllerComponents: ControllerComponents =
+    deps.controllerComponents
 
   final def config: ApplicationConfiguration = deps.config
 
   override def cacheValidation = true
 
-  override def authCallbackUrl: String = config.pandomain.host  + "/oauthCallback"
+  override def authCallbackUrl: String =
+    config.pandomain.host + "/oauthCallback"
 
-  private val accessPermissionCheck = new AccessEditorialFrontsPermissionCheck(deps.permissions)(deps.executionContext)
-  private val editEditionsPermissionCheck = new EditEditionsPermissionCheck(deps.permissions)(deps.executionContext)
+  private val accessPermissionCheck = new AccessEditorialFrontsPermissionCheck(
+    deps.permissions
+  )(deps.executionContext)
+  private val editEditionsPermissionCheck = new EditEditionsPermissionCheck(
+    deps.permissions
+  )(deps.executionContext)
 
   final def AccessAuthAction = AuthAction andThen accessPermissionCheck
   final def AccessAPIAuthAction = APIAuthAction andThen accessPermissionCheck
-  final def EditEditionsAuthAction = APIAuthAction andThen editEditionsPermissionCheck
+  final def EditEditionsAuthAction =
+    APIAuthAction andThen editEditionsPermissionCheck
 
-  def getCollectionPermissionFilterByPriority(priority: String, acl: Acl)(implicit ec: ExecutionContext): ActionBuilder[UserRequest, AnyContent] = {
-    val permissionsPriority = PermissionsPriority.stringToPermissionPriority(priority)
+  def getCollectionPermissionFilterByPriority(priority: String, acl: Acl)(
+      implicit ec: ExecutionContext
+  ): ActionBuilder[UserRequest, AnyContent] = {
+    val permissionsPriority =
+      PermissionsPriority.stringToPermissionPriority(priority)
     permissionsPriority match {
-      case Some(EditorialPermission) => AccessAuthAction andThen new EditEditorialFrontsPermissionCheck(acl)
-      case Some(CommercialPermission) => AccessAuthAction andThen new LaunchCommercialFrontsPermissionCheck(acl)
-      case Some(EmailPermission) => AccessAuthAction andThen new EditEmailFrontsPermissionCheck(acl)
-      case Some(EditionsPermission) => AccessAuthAction andThen new AccessEditionsPermissionCheck(acl)
+      case Some(EditorialPermission) =>
+        AccessAuthAction andThen new EditEditorialFrontsPermissionCheck(acl)
+      case Some(CommercialPermission) =>
+        AccessAuthAction andThen new LaunchCommercialFrontsPermissionCheck(acl)
+      case Some(EmailPermission) =>
+        AccessAuthAction andThen new EditEmailFrontsPermissionCheck(acl)
+      case Some(EditionsPermission) =>
+        AccessAuthAction andThen new AccessEditionsPermissionCheck(acl)
       case _ => AccessAuthAction
     }
   }
 
   private def userInGroups(authedUser: AuthenticatedUser): Boolean = {
-    deps.permissions.hasPermission(Permissions.FrontsAccess, authedUser.user.email)
+    deps.permissions.hasPermission(
+      Permissions.FrontsAccess,
+      authedUser.user.email
+    )
   }
 
-  override def validateUser(authedUser: AuthenticatedUser): Boolean = PanDomain.guardianValidation(authedUser) && userInGroups(authedUser)
+  override def validateUser(authedUser: AuthenticatedUser): Boolean =
+    PanDomain.guardianValidation(authedUser) && userInGroups(authedUser)
 
-  override lazy val panDomainSettings: PanDomainAuthSettingsRefresher = deps.panDomainSettings
+  override lazy val panDomainSettings: PanDomainAuthSettingsRefresher =
+    deps.panDomainSettings
 
-  override def showUnauthedMessage(message: String)(implicit request: RequestHeader): Result = {
+  override def showUnauthedMessage(
+      message: String
+  )(implicit request: RequestHeader): Result = {
     logger.info(message)
     Ok(views.html.auth.login(Some(message)))
   }
 
   override def invalidUserMessage(claimedAuth: AuthenticatedUser): String = {
-    if( (claimedAuth.user.emailDomain == "guardian.co.uk") && !claimedAuth.multiFactor)
+    if (
+      (claimedAuth.user.emailDomain == "guardian.co.uk") && !claimedAuth.multiFactor
+    )
       s"${claimedAuth.user.email} is not valid for use with the Fronts Tool. You need to have two factor authentication enabled and be granted permission." +
         s" Please contact Central Production by emailing central.production@theguardian.com and request access to The Fronts Tool."
-    else if (!userInGroups(claimedAuth)) s"${claimedAuth.user.email} does not have permission to access the Fronts tool. Please contact Central Production by emailing core.central.production@guardian.co.uk"
-
-    else s"${claimedAuth.user.email} is not valid for use with the Fronts Tool. You need to use your Guardian Google account to login. Please sign in with your Guardian Google account first, then retry logging in."
+    else if (!userInGroups(claimedAuth))
+      s"${claimedAuth.user.email} does not have permission to access the Fronts tool. Please contact Central Production by emailing core.central.production@guardian.co.uk"
+    else
+      s"${claimedAuth.user.email} is not valid for use with the Fronts Tool. You need to use your Guardian Google account to login. Please sign in with your Guardian Google account first, then retry logging in."
 
   }
 }

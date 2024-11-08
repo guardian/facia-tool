@@ -35,21 +35,22 @@ object AustralianEdition extends RegionalEdition {
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = -6,
-      endOffset = 0,
+      endOffset = 0
     ),
     capiDateQueryParam = CapiDateQueryParam.Published,
     zoneId = ZoneId.of("Europe/London"),
     availability = WeekDays(List(WeekDay.Sat)),
     maybeOphanPath = Some("au"),
-    ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
-      apiKey = "fronts-editions-au",
-      timeWindowConfig = TimeWindowConfigInDays(
-        startOffset = -6,
-        endOffset = 0,
-      ))
+    ophanQueryPrefillParams = Some(
+      OphanQueryPrefillParams(
+        apiKey = "fronts-editions-au",
+        timeWindowConfig = TimeWindowConfigInDays(
+          startOffset = -6,
+          endOffset = 0
+        )
+      )
     )
   )
-
 
   // Manually curated top stories section
 
@@ -68,7 +69,9 @@ object AustralianEdition extends RegionalEdition {
   def FrontWeekendAu = front(
     "Weekend",
     collection("Weekend")
-      .searchPrefill("?tag=type/article,(tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-pictures-),-tone/minutebyminute")
+      .searchPrefill(
+        "?tag=type/article,(tracking/commissioningdesk/australia-features|tracking/commissioningdesk/australia-pictures-),-tone/minutebyminute"
+      )
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withCardItemsCap(20),
     collection("Weekend"),
@@ -83,16 +86,20 @@ object AustralianEdition extends RegionalEdition {
 
   def FrontSpecial2Au = specialFront("Front Special 2", Lifestyle, None)
 
-  //National - News two containers, maybe split out politics into second container?
+  // National - News two containers, maybe split out politics into second container?
 
   def FrontNationalAu = front(
     "National",
     collection("News Features")
-      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,-tone/news,-tone/comment,-tone/minutebyminute")
+      .searchPrefill(
+        "?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),(tone/features|tone/analysis|tone/explainer),-culture/culture,-lifestyle/lifestyle,-tone/news,-tone/comment,-tone/minutebyminute"
+      )
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withCardItemsCap(40),
     collection("News")
-      .searchPrefill("?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-(tone/features|tone/analysis|tone/explainer),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/comment,-tone/minutebyminute")
+      .searchPrefill(
+        "?tag=type/article,(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-(tone/features|tone/analysis|tone/explainer),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/comment,-tone/minutebyminute"
+      )
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
       .withCardItemsCap(40),
     collection("National").hide,
@@ -100,16 +107,20 @@ object AustralianEdition extends RegionalEdition {
   )
     .swatch(News)
 
-  //World - International news content
+  // World - International news content
 
   def FrontWorldAu = front(
     "World",
     collection("News Features")
-      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
+      .searchPrefill(
+        "?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),(tone/features|tone/analysis|tone/explainer),-(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),-tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute"
+      )
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-5, 0)))
       .withCardItemsCap(40),
     collection("News")
-      .searchPrefill("?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute")
+      .searchPrefill(
+        "?tag=type/article,(world/world|us-news/us-news|uk/uk|world/europe-news|world/africa|world/americas|world/asia-pacific|world/middleeast),-(tone/features|tone/analysis|tone/explainer),-(australia-news/australia-news|australia-news/australian-politics|australia-news/business-australia|media/australia-media),tone/news,-culture/culture,-lifestyle/lifestyle,-tone/minutebyminute"
+      )
       .withTimeWindowConfig(Some(CapiTimeWindowConfigInDays(-3, 0)))
       .withCardItemsCap(40),
     collection("World").hide,
@@ -126,11 +137,15 @@ object AustralianEdition extends RegionalEdition {
   def FrontOpinionAu = front(
     "Opinion",
     collection("Opinion")
-      .searchPrefill("?tag=type/article,tone/comment,(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
+      .searchPrefill(
+        "?tag=type/article,tone/comment,(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute"
+      )
       .withCardItemsCap(40),
     collection("Opinion").hide,
     collection("World Opinion")
-      .searchPrefill("?tag=type/article,tone/comment,-(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute")
+      .searchPrefill(
+        "?tag=type/article,tone/comment,-(australia-news/australia-news|australia-news/australian-politics|media/australia-media),-sport/sport,-tone/minutebyminute"
+      )
       .withCardItemsCap(40),
     collection("World Opinion").hide
   )
@@ -141,43 +156,63 @@ object AustralianEdition extends RegionalEdition {
   def FrontCultureAu = front(
     "Culture",
     collection("Culture")
-      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
+      .searchPrefill(
+        "?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio"
+      )
       .withCardItemsCap(10),
     collection("Culture").hide,
     collection("Film and TV")
-      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,(film/film|culture/television|tv-and-radio/tv-and-radio),-artanddesign/artanddesign")
+      .searchPrefill(
+        "?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,(film/film|culture/television|tv-and-radio/tv-and-radio),-artanddesign/artanddesign"
+      )
       .withCardItemsCap(10),
     collection("Music")
-      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
+      .searchPrefill(
+        "?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio"
+      )
       .withCardItemsCap(10),
     collection("Books")
-      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
+      .searchPrefill(
+        "?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,books/books,-music/music,-film/film,-culture/television,-artanddesign/artanddesign,-tv-and-radio/tv-and-radio"
+      )
       .withCardItemsCap(10),
     collection("Art and design")
-      .searchPrefill("?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,artanddesign/artanddesign,-tv-and-radio/tv-and-radio")
+      .searchPrefill(
+        "?tag=type/article,culture/culture,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-books/books,-music/music,-film/film,-culture/television,artanddesign/artanddesign,-tv-and-radio/tv-and-radio"
+      )
       .withCardItemsCap(10),
     collection("Culture").hide
   )
     .swatch(Culture)
 
-    // Life
+  // Life
 
   def FrontLifeAu = front(
     "Lifestyle",
     collection("Lifestyle")
-      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
+      .searchPrefill(
+        "?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness"
+      )
       .withCardItemsCap(10),
     collection("Food")
-      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,food/food,-lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
+      .searchPrefill(
+        "?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,food/food,-lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness"
+      )
       .withCardItemsCap(10),
     collection("Family")
-      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
+      .searchPrefill(
+        "?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,lifeandstyle/family,-fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness"
+      )
       .withCardItemsCap(10),
     collection("Fashion")
-      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness")
+      .searchPrefill(
+        "?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,fashion/fashion,-lifeandstyle/health-and-wellbeing,-lifeandstyle/fitness"
+      )
       .withCardItemsCap(10),
     collection("Health")
-      .searchPrefill("?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,-fashion/fashion,(lifeandstyle/health-and-wellbeing|lifeandstyle/fitness)")
+      .searchPrefill(
+        "?tag=type/article,lifeandstyle/lifeandstyle,(tone/features|tone/reviews|tone/interview),-tone/news,-tone/minutebyminute,-food/food,-lifeandstyle/family,-fashion/fashion,(lifeandstyle/health-and-wellbeing|lifeandstyle/fitness)"
+      )
       .withCardItemsCap(10),
     collection("Lifestyle").hide,
     collection("Lifestyle").hide
@@ -190,7 +225,9 @@ object AustralianEdition extends RegionalEdition {
   def FrontFeaturedAu = front(
     "Featured",
     collection("Long reads")
-      .searchPrefill("?tag=type/article,news/series/the-long-read,-tone/minutebyminute")
+      .searchPrefill(
+        "?tag=type/article,news/series/the-long-read,-tone/minutebyminute"
+      )
       .withCardItemsCap(40),
     collection("Featured").hide,
     collection("Featured"),
@@ -203,7 +240,9 @@ object AustralianEdition extends RegionalEdition {
   def FrontSportAu = front(
     "Sport",
     collection("Sport")
-      .searchPrefill("?tag=type/article,sport/sport,(tone/comment|tone/features|tone/analysis),-tone/minutebyminute")
+      .searchPrefill(
+        "?tag=type/article,sport/sport,(tone/comment|tone/features|tone/analysis),-tone/minutebyminute"
+      )
       .withCardItemsCap(40),
     collection("Sport").hide,
     collection("Sport").hide
@@ -214,9 +253,11 @@ object AustralianEdition extends RegionalEdition {
 
   def FrontCrosswordsAu = front(
     "Puzzles",
-    collection("Crosswords").searchPrefill("?tag=type/crossword")
+    collection("Crosswords")
+      .searchPrefill("?tag=type/crossword")
       .withCardItemsCap(40),
-    collection("Quizzes").searchPrefill("?tag=tone/quizzes")
+    collection("Quizzes")
+      .searchPrefill("?tag=tone/quizzes")
       .withCardItemsCap(40)
   )
 }

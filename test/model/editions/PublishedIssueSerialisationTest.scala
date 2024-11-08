@@ -23,7 +23,7 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
       launchedBy = None,
       launchedEmail = None,
       fronts = Nil,
-      supportsProofing = true,
+      supportsProofing = true
     )
 
     "test serialisation into a preview issue" in {
@@ -115,24 +115,41 @@ class PublishedIssueSerialisationTest extends FreeSpec with Matchers {
             |  }
             |}""".stripMargin
 
-        val article = PublishedArticle(1234567L, PublishedFurniture(
-          kicker = Some("KickeR!"),
-          headlineOverride = Some("a nice headline"),
-          trailTextOverride = Some("an even lovelier trail for the article"),
-          bylineOverride = Some("Monkey In Charge"),
-          sportScore = Some("Sport Score"),
-          showByline = true,
-          showQuotedHeadline = false,
-          mediaType = PublishedMediaType.Cutout,
-          imageSrcOverride = Some(
-            PublishedImage(height = Some(1280), width = Some(720), "https://media.giphy.com/media/yV5iknckcXcc/source.gif")
-          ),
-          overrideArticleMainMedia = true,
-          coverCardImages = Some(PublishedCardImage(
-            mobile = PublishedImage(height = Some(1337), width = Some(1337), "https://media.giphy.com/media/yV5iknckcXcc/source.gif"),
-            tablet = PublishedImage(height = Some(1337), width = Some(1337), "https://media.giphy.com/media/yV5iknckcXcc/source.gif"))
+        val article = PublishedArticle(
+          1234567L,
+          PublishedFurniture(
+            kicker = Some("KickeR!"),
+            headlineOverride = Some("a nice headline"),
+            trailTextOverride = Some("an even lovelier trail for the article"),
+            bylineOverride = Some("Monkey In Charge"),
+            sportScore = Some("Sport Score"),
+            showByline = true,
+            showQuotedHeadline = false,
+            mediaType = PublishedMediaType.Cutout,
+            imageSrcOverride = Some(
+              PublishedImage(
+                height = Some(1280),
+                width = Some(720),
+                "https://media.giphy.com/media/yV5iknckcXcc/source.gif"
+              )
+            ),
+            overrideArticleMainMedia = true,
+            coverCardImages = Some(
+              PublishedCardImage(
+                mobile = PublishedImage(
+                  height = Some(1337),
+                  width = Some(1337),
+                  "https://media.giphy.com/media/yV5iknckcXcc/source.gif"
+                ),
+                tablet = PublishedImage(
+                  height = Some(1337),
+                  width = Some(1337),
+                  "https://media.giphy.com/media/yV5iknckcXcc/source.gif"
+                )
+              )
+            )
           )
-        ))
+        )
 
         val json = Json.prettyPrint(Json.toJson(article))
 

@@ -3,7 +3,7 @@ package util
 import java.time.Instant
 
 trait TimestampGenerator {
-  def getTimestamp:Long
+  def getTimestamp: Long
 }
 
 class TimestampGeneratorImpl extends TimestampGenerator {

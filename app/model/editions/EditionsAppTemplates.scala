@@ -7,12 +7,14 @@ import enumeratum.{EnumEntry, PlayEnum}
 import model.editions.PathType.{PrintSent, Search}
 import model.editions.templates.TemplateHelpers.Defaults
 import model.editions.templates._
-import model.editions.templates.feast.{FeastAppEdition, FeastNorthernHemisphere, FeastSouthernHemisphere}
+import model.editions.templates.feast.{
+  FeastAppEdition,
+  FeastNorthernHemisphere,
+  FeastSouthernHemisphere
+}
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Json, OFormat}
 import services.editions.prefills.CapiQueryTimeWindow
-
-
 
 object EditionsAppTemplates {
   val templates: Map[Edition, EditionsAppDefinitionWithTemplate] = Map(
@@ -29,23 +31,29 @@ object EditionsAppTemplates {
     Edition.EditionWellbeing -> EditionWellbeing
   )
 
-  val getAvailableTemplates: List[EditionsAppDefinitionWithTemplate] = templates.values.toList
+  val getAvailableTemplates: List[EditionsAppDefinitionWithTemplate] =
+    templates.values.toList
 
-  /**
-   * Returns available Editons app templates as a Map which differentiates the various classes
-   * of edition. This is used for grouping purposes in both the UI and the publication logic
-   * @return a Map relating the edition class to a list of the relevant types.
-   */
-  def getAvailableEditionsAppTemplates: Map[String, List[CuratedPlatformDefinition]] = {
+  /** Returns available Editons app templates as a Map which differentiates the
+    * various classes of edition. This is used for grouping purposes in both the
+    * UI and the publication logic
+    * @return
+    *   a Map relating the edition class to a list of the relevant types.
+    */
+  def getAvailableEditionsAppTemplates
+      : Map[String, List[CuratedPlatformDefinition]] = {
     val allEditions = getAvailableTemplates
-    val regionalEditions = allEditions.filter(e => e.editionType == EditionType.Regional)
-    val specialEditions = allEditions.filter(e => e.editionType == EditionType.Special)
-    val trainingEditions = allEditions.filter(e => e.editionType == EditionType.Training)
+    val regionalEditions =
+      allEditions.filter(e => e.editionType == EditionType.Regional)
+    val specialEditions =
+      allEditions.filter(e => e.editionType == EditionType.Special)
+    val trainingEditions =
+      allEditions.filter(e => e.editionType == EditionType.Training)
 
     Map(
       "regionalEditions" -> regionalEditions,
       "specialEditions" -> specialEditions,
-      "trainingEditions" -> trainingEditions,
+      "trainingEditions" -> trainingEditions
     )
   }
 }
@@ -56,7 +64,8 @@ object FeastAppTemplates {
     Edition.FeastSouthernHemisphere -> FeastSouthernHemisphere
   )
 
-  val getAvailableTemplates: List[CuratedPlatformWithTemplate] = templates.values.toList
+  val getAvailableTemplates: List[CuratedPlatformWithTemplate] =
+    templates.values.toList
 }
 
 object AllTemplates {
@@ -74,7 +83,8 @@ object CuratedPlatform extends PlayEnum[CuratedPlatform] {
 }
 
 case object WeekDay extends Enumeration(1) {
-  implicit lazy val implicitConversions: languageFeature.implicitConversions = scala.language.implicitConversions
+  implicit lazy val implicitConversions: languageFeature.implicitConversions =
+    scala.language.implicitConversions
 
   type WeekDay = Value
   val Mon, Tues, Wed, Thurs, Fri, Sat, Sun = Value
@@ -137,11 +147,13 @@ object Edition extends PlayEnum[Edition] {
 }
 
 case class FrontPresentation(swatch: Swatch) {
-  implicit def frontPresentationFormat: OFormat[FrontPresentation] = Json.format[FrontPresentation]
+  implicit def frontPresentationFormat: OFormat[FrontPresentation] =
+    Json.format[FrontPresentation]
 }
 
 object FrontPresentation {
-  implicit def frontPresentationFormat: OFormat[FrontPresentation] = Json.format[FrontPresentation]
+  implicit def frontPresentationFormat: OFormat[FrontPresentation] =
+    Json.format[FrontPresentation]
 }
 
 case class CapiPrefillQuery(queryString: String, pathType: PathType) {
@@ -177,7 +189,7 @@ case class WeekDays(days: List[WeekDay]) extends Periodicity {
 sealed abstract class PathType extends EnumEntry with Uncapitalised {
   def toPathSegment: String = {
     this match {
-      case PathType.Search => "search"
+      case PathType.Search    => "search"
       case PathType.PrintSent => "content/print-sent"
     }
   }
@@ -193,46 +205,59 @@ object PathType extends PlayEnum[PathType] {
 }
 
 private[editions] case class CollectionTemplate(
-                                                 name: String,
-                                                 maybeOphanPath: Option[String] = None,
-                                                 prefill: Option[CapiPrefillQuery],
-                                                 maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
-                                                 hidden: Boolean = false,
-                                                 cardCap: Int = Defaults.defaultCollectionCardsCap
+    name: String,
+    maybeOphanPath: Option[String] = None,
+    prefill: Option[CapiPrefillQuery],
+    maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
+    hidden: Boolean = false,
+    cardCap: Int = Defaults.defaultCollectionCardsCap
 ) {
 
   def hide = copy(hidden = true)
 
-  def printSentPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, PrintSent)))
+  def printSentPrefill(prefillQuery: String) =
+    copy(prefill = Some(CapiPrefillQuery(prefillQuery, PrintSent)))
 
-  def printSentAnyTag(tags: String*) = printSentPrefill(s"?tag=${tags.mkString("|")}")
+  def printSentAnyTag(tags: String*) = printSentPrefill(
+    s"?tag=${tags.mkString("|")}"
+  )
 
-  def printSentAllTags(tags: String*) = printSentPrefill(s"?tag=${tags.mkString(",")}")
+  def printSentAllTags(tags: String*) = printSentPrefill(
+    s"?tag=${tags.mkString(",")}"
+  )
 
-  def searchPrefill(prefillQuery: String) = copy(prefill = Some(CapiPrefillQuery(prefillQuery, Search)))
+  def searchPrefill(prefillQuery: String) =
+    copy(prefill = Some(CapiPrefillQuery(prefillQuery, Search)))
 
   def withCardItemsCap(articleItemsCap: Int) = copy(cardCap = articleItemsCap)
 
-  def withTimeWindowConfig(maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays]) = copy(maybeTimeWindowConfig = maybeTimeWindowConfig)
+  def withTimeWindowConfig(
+      maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays]
+  ) = copy(maybeTimeWindowConfig = maybeTimeWindowConfig)
 }
 
 case class FrontTemplate(
-  name: String,
-  collections: List[CollectionTemplate],
-  presentation: FrontPresentation,
-  maybeOphanPath: Option[String] = None,
-  maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
-  isSpecial: Boolean = false,
-  hidden: Boolean = false
+    name: String,
+    collections: List[CollectionTemplate],
+    presentation: FrontPresentation,
+    maybeOphanPath: Option[String] = None,
+    maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays] = None,
+    isSpecial: Boolean = false,
+    hidden: Boolean = false
 ) {
   def special = copy(isSpecial = true, hidden = true)
 
   def swatch(swatch: Swatch) = copy(presentation = FrontPresentation(swatch))
 
-  def withTimeWindowConfig(maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays]) = copy(maybeTimeWindowConfig = maybeTimeWindowConfig)
+  def withTimeWindowConfig(
+      maybeTimeWindowConfig: Option[CapiTimeWindowConfigInDays]
+  ) = copy(maybeTimeWindowConfig = maybeTimeWindowConfig)
 }
 
-sealed abstract class CapiDateQueryParam extends EnumEntry with Hyphencase with Uncapitalised
+sealed abstract class CapiDateQueryParam
+    extends EnumEntry
+    with Hyphencase
+    with Uncapitalised
 
 object CapiDateQueryParam extends PlayEnum[CapiDateQueryParam] {
 
@@ -249,26 +274,33 @@ trait BaseTimeWindowConfig {
   def endOffset: Int
 }
 
-case class TimeWindowConfigInDays(startOffset: Int, endOffset: Int) extends BaseTimeWindowConfig
+case class TimeWindowConfigInDays(startOffset: Int, endOffset: Int)
+    extends BaseTimeWindowConfig
 
-case class CapiTimeWindowConfigInDays(startOffset: Int, endOffset: Int) extends BaseTimeWindowConfig {
+case class CapiTimeWindowConfigInDays(startOffset: Int, endOffset: Int)
+    extends BaseTimeWindowConfig {
   def toCapiQueryTimeWindow(issueDate: LocalDate): CapiQueryTimeWindow = {
     val issueDateStart = issueDate.atStartOfDay()
     // Regarding UTC Hack because composer/capi/whoever doesn't worry about timezones in the newspaper-edition date
-    val fromDateUTC = issueDateStart.plusDays(startOffset).toInstant(ZoneOffset.UTC)
-    val toDateAsUTC = issueDateStart.plusDays(endOffset).toInstant(ZoneOffset.UTC)
+    val fromDateUTC =
+      issueDateStart.plusDays(startOffset).toInstant(ZoneOffset.UTC)
+    val toDateAsUTC =
+      issueDateStart.plusDays(endOffset).toInstant(ZoneOffset.UTC)
     CapiQueryTimeWindow(fromDateUTC, toDateAsUTC)
   }
 }
 
-case class OphanQueryPrefillParams(apiKey: String, timeWindowConfig: TimeWindowConfigInDays)
+case class OphanQueryPrefillParams(
+    apiKey: String,
+    timeWindowConfig: TimeWindowConfigInDays
+)
 
 case class EditionTemplate(
-  fronts: List[(FrontTemplate, Periodicity)],
-  timeWindowConfig: CapiTimeWindowConfigInDays,
-  capiDateQueryParam: CapiDateQueryParam,
-  zoneId: ZoneId,
-  availability: Periodicity,
-  maybeOphanPath: Option[String] = None,
-  ophanQueryPrefillParams: Option[OphanQueryPrefillParams]
+    fronts: List[(FrontTemplate, Periodicity)],
+    timeWindowConfig: CapiTimeWindowConfigInDays,
+    capiDateQueryParam: CapiDateQueryParam,
+    zoneId: ZoneId,
+    availability: Periodicity,
+    maybeOphanPath: Option[String] = None,
+    ophanQueryPrefillParams: Option[OphanQueryPrefillParams]
 )

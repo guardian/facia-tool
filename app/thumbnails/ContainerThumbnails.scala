@@ -17,12 +17,13 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
   def sliceHeight(slice: Slice) = {
     slice.layout.columns match {
       case Rows(_, _, rows, _) +: Nil => (rows * (BaseRowHeight + 1)) + 1
-      case _ => SliceHeight
+      case _                          => SliceHeight
     }
   }
 
-  def summing[A](as: Seq[A])(f: A => Double) = as.inits.toSeq.reverse map { xs =>
-    xs.map(f).sum
+  def summing[A](as: Seq[A])(f: A => Double) = as.inits.toSeq.reverse map {
+    xs =>
+      xs.map(f).sum
   }
 
   def drawSlice(slice: Slice, yPos: Double) = {
@@ -34,11 +35,23 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
     val columnLeftSides = summing(columns)(_.colSpan * unitSpanWidth)
 
     ((columns zip columnLeftSides) map { case (column, x) =>
-      drawColumn(column, x, yPos, column.colSpan * unitSpanWidth, sliceHeight(slice))
+      drawColumn(
+        column,
+        x,
+        yPos,
+        column.colSpan * unitSpanWidth,
+        sliceHeight(slice)
+      )
     }).flatten
   }
 
-  def drawImage(x: Double, y: Double, width: Double, height: Double, itemClasses: ItemClasses) = {
+  def drawImage(
+      x: Double,
+      y: Double,
+      width: Double,
+      height: Double,
+      itemClasses: ItemClasses
+  ) = {
     lazy val third = (width - 2) / 3
 
     ((itemClasses.tablet match {
@@ -50,7 +63,7 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
         Some(Rectangle(x + 1, y + 1, third * 2, height - 2))
       case cards.ThreeQuartersTall =>
         Some(Rectangle(x + 1, y + 1, width - 2, height * .8))
-      case cards.Standard  =>
+      case cards.Standard =>
         Some(Rectangle(x + 1, y + 1, width - 2, height * .4))
       case cards.Half =>
         Some(Rectangle(x + 1, y + 1, width - 2, height * .7))
@@ -70,8 +83,16 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
     }).toSeq
   }
 
-  def drawColumn(column: Column, x: Double, y: Double, width: Double, height: Double) = {
-    def box = <rect x={x.toString} y={y.toString} width={width.toString} height={height.toString} style={Style} />
+  def drawColumn(
+      column: Column,
+      x: Double,
+      y: Double,
+      width: Double,
+      height: Double
+  ) = {
+    def box = <rect x={x.toString} y={y.toString} width={
+      width.toString
+    } height={height.toString} style={Style} />
 
     def image(itemClasses: ItemClasses) =
       drawImage(x, y, width, height, itemClasses)
@@ -82,7 +103,6 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
           {box}
           {image(itemClasses)}
         </g>
-
 
       case Rows(_, columns, rows, itemClasses) =>
         val rowWidth = width / columns.toDouble
@@ -138,7 +158,15 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
                 width={width.toString}
                 height={(height / 4).toString}
                 style={Style} />
-          {drawImage(x, centreY + height / 4, width, height / 4, bottomItemClasses)}
+          {
+          drawImage(
+            x,
+            centreY + height / 4,
+            width,
+            height / 4,
+            bottomItemClasses
+          )
+        }
         </g>
 
     }

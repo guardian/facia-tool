@@ -14,23 +14,27 @@ class CardMetadataTest extends FreeSpec with Matchers {
     Some("byline"),
     None,
     Some(MediaType.Hide),
-    Some(Image(
-      Some(1),
-      Some(2),
-      "origin",
-      "src",
-      Some("thumb")
-    )),
-    Some(Image(
-      Some(3),
-      Some(4),
-      "origin2",
-      "src2",
-      Some("thumb2")
-    )),
+    Some(
+      Image(
+        Some(1),
+        Some(2),
+        "origin",
+        "src",
+        Some("thumb")
+      )
+    ),
+    Some(
+      Image(
+        Some(3),
+        Some(4),
+        "origin2",
+        "src2",
+        Some("thumb2")
+      )
+    ),
     Some(true),
     None,
-    None,
+    None
   )
 
   private val cardMetadataAsString =
@@ -57,7 +61,10 @@ class CardMetadataTest extends FreeSpec with Matchers {
       |   "thumb":"thumb2"
       | },
       | "overrideArticleMainMedia":true}
-    """.stripMargin.split('\n').map(_.trim).mkString //remove leading/trailing whitespace and join into a single string
+    """.stripMargin
+      .split('\n')
+      .map(_.trim)
+      .mkString // remove leading/trailing whitespace and join into a single string
 
   "Card Metadata Data to/from Json" - {
 
@@ -66,7 +73,9 @@ class CardMetadataTest extends FreeSpec with Matchers {
     }
 
     "should deserialise correctly" in {
-      Json.fromJson[EditionsArticleMetadata](Json.parse(cardMetadataAsString)).get shouldBe cardMetadata
+      Json
+        .fromJson[EditionsArticleMetadata](Json.parse(cardMetadataAsString))
+        .get shouldBe cardMetadata
     }
 
   }
