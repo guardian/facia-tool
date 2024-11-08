@@ -7,13 +7,21 @@ import slices.Story
 
 import scala.concurrent.{ExecutionContext, Future}
 
-case class StoriesVisibleByStage(live: Option[StoriesVisibleResponse], draft: Option[StoriesVisibleResponse])
+case class StoriesVisibleByStage(
+    live: Option[StoriesVisibleResponse],
+    draft: Option[StoriesVisibleResponse]
+)
 
 object StoriesVisibleByStage {
-  implicit val jsonFormat: OFormat[StoriesVisibleByStage] = Json.format[StoriesVisibleByStage]
+  implicit val jsonFormat: OFormat[StoriesVisibleByStage] =
+    Json.format[StoriesVisibleByStage]
 }
 
-case class CollectionAndStoriesResponse(id: String, collection: CollectionJson, storiesVisibleByStage: Option[StoriesVisibleByStage]) {
+case class CollectionAndStoriesResponse(
+    id: String,
+    collection: CollectionJson,
+    storiesVisibleByStage: Option[StoriesVisibleByStage]
+) {
   // getOrElse ensures that if millis is None
   // this method will return true assuming i.e. that it was updatedAfter no time
   def wasUpdatedAfter(millis: Option[Long]): Boolean =
@@ -21,19 +29,28 @@ case class CollectionAndStoriesResponse(id: String, collection: CollectionJson, 
 }
 
 object CollectionAndStoriesResponse {
-  implicit val jsonFormat: OFormat[CollectionAndStoriesResponse] = Json.format[CollectionAndStoriesResponse]
+  implicit val jsonFormat: OFormat[CollectionAndStoriesResponse] =
+    Json.format[CollectionAndStoriesResponse]
 }
 
-class CollectionService(frontsApi: FrontsApi, containerService: ContainerService)(implicit ec: ExecutionContext) {
+class CollectionService(
+    frontsApi: FrontsApi,
+    containerService: ContainerService
+)(implicit ec: ExecutionContext) {
 
   def fetchCollection(collectionId: String): Future[Option[CollectionJson]] = {
     frontsApi.amazonClient.collection(collectionId)
   }
 
-  def fetchStoriesVisibleForCollection(collectionId: String, collection: CollectionJson): Future[Option[CollectionAndStoriesResponse]] = {
+  def fetchStoriesVisibleForCollection(
+      collectionId: String,
+      collection: CollectionJson
+  ): Future[Option[CollectionAndStoriesResponse]] = {
     FaciaToolMetrics.ApiUsageCount.increment()
     frontsApi.amazonClient.config.flatMap { config =>
-      val collectionAndStoriesResponse = CollectionAndStoriesResponse(collectionId, collection,
+      val collectionAndStoriesResponse = CollectionAndStoriesResponse(
+        collectionId,
+        collection,
         CollectionService.getStoriesVisibleByStage(
           collectionId,
           collection,
@@ -45,12 +62,17 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
     }
   }
 
-  def fetchCollectionsAndStoriesVisible(collectionIds: List[String]): Future[List[Option[CollectionAndStoriesResponse]]] = {
+  def fetchCollectionsAndStoriesVisible(
+      collectionIds: List[String]
+  ): Future[List[Option[CollectionAndStoriesResponse]]] = {
     FaciaToolMetrics.ApiUsageCount.increment()
     frontsApi.amazonClient.config.flatMap { config =>
-      val futures = collectionIds.map { collectionId => fetchCollection(collectionId).flatMap {
+      val futures = collectionIds.map { collectionId =>
+        fetchCollection(collectionId).flatMap {
           case Some(collection) => {
-            val collectionAndStoriesResponse = CollectionAndStoriesResponse(collectionId, collection,
+            val collectionAndStoriesResponse = CollectionAndStoriesResponse(
+              collectionId,
+              collection,
               CollectionService.getStoriesVisibleByStage(
                 collectionId,
                 collection,
@@ -69,23 +91,34 @@ class CollectionService(frontsApi: FrontsApi, containerService: ContainerService
 }
 
 object CollectionService {
-  def getStoriesVisibleByStage(collectionId: String, collection: CollectionJson, config: ConfigJson, containerService: ContainerService): Option[StoriesVisibleByStage] = {
-    val stages = CollectionService.getStoriesForCollectionStages(collectionId, collection)
+  def getStoriesVisibleByStage(
+      collectionId: String,
+      collection: CollectionJson,
+      config: ConfigJson,
+      containerService: ContainerService
+  ): Option[StoriesVisibleByStage] = {
+    val stages =
+      CollectionService.getStoriesForCollectionStages(collectionId, collection)
     config.collections.get(collectionId).flatMap(_.`type`) match {
       case Some(cType) =>
         Some(
-        StoriesVisibleByStage(
-          containerService.getStoriesVisible(cType, stages._1),
-          containerService.getStoriesVisible(cType, stages._2)
+          StoriesVisibleByStage(
+            containerService.getStoriesVisible(cType, stages._1),
+            containerService.getStoriesVisible(cType, stages._2)
+          )
         )
-      )
       case None => None
     }
   }
 
-  def getStoriesForCollectionStages(collectionId: String, collection: CollectionJson): (Seq[Story], Seq[Story]) = {
-    val liveStages = Some(collection.live).map(getStoriesForStage).getOrElse(Seq())
-    val draftStages = collection.draft.map(getStoriesForStage).getOrElse(liveStages)
+  def getStoriesForCollectionStages(
+      collectionId: String,
+      collection: CollectionJson
+  ): (Seq[Story], Seq[Story]) = {
+    val liveStages =
+      Some(collection.live).map(getStoriesForStage).getOrElse(Seq())
+    val draftStages =
+      collection.draft.map(getStoriesForStage).getOrElse(liveStages)
     (
       liveStages,
       draftStages

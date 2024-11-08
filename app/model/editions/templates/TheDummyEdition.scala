@@ -34,18 +34,20 @@ object TheDummyEdition extends InternalEdition {
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = -365,
-      endOffset = 0,
+      endOffset = 0
     ),
     capiDateQueryParam = CapiDateQueryParam.Published,
     zoneId = ZoneId.of("Europe/London"),
     availability = Daily(),
     maybeOphanPath = None,
-    ophanQueryPrefillParams = Some(OphanQueryPrefillParams(
-      apiKey = s"fronts-editions-${this.getClass.toString}",
-      timeWindowConfig = TimeWindowConfigInDays(
-        startOffset = -365,
-        endOffset = 0
-      ))
+    ophanQueryPrefillParams = Some(
+      OphanQueryPrefillParams(
+        apiKey = s"fronts-editions-${this.getClass.toString}",
+        timeWindowConfig = TimeWindowConfigInDays(
+          startOffset = -365,
+          endOffset = 0
+        )
+      )
     )
   )
 
@@ -57,9 +59,8 @@ object TheDummyEdition extends InternalEdition {
     collection("1 Special 4").hide,
     collection("1 Special 5").hide,
     collection("1 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial02 = front(
     "Front Special 2",
@@ -69,9 +70,8 @@ object TheDummyEdition extends InternalEdition {
     collection("2 Special 4").hide,
     collection("2 Special 5").hide,
     collection("2 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial03 = front(
     "Front Special 3",
@@ -81,9 +81,8 @@ object TheDummyEdition extends InternalEdition {
     collection("3 Special 4").hide,
     collection("3 Special 5").hide,
     collection("3 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial04 = front(
     "Front Special 4",
@@ -93,9 +92,8 @@ object TheDummyEdition extends InternalEdition {
     collection("4 Special 4").hide,
     collection("4 Special 5").hide,
     collection("4 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial05 = front(
     "Front Special 5",
@@ -105,9 +103,8 @@ object TheDummyEdition extends InternalEdition {
     collection("5 Special 4").hide,
     collection("5 Special 5").hide,
     collection("5 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial06 = front(
     "Front Special 6",
@@ -117,9 +114,8 @@ object TheDummyEdition extends InternalEdition {
     collection("6 Special 4").hide,
     collection("6 Special 5").hide,
     collection("6 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial07 = front(
     "Front Special 7",
@@ -129,9 +125,8 @@ object TheDummyEdition extends InternalEdition {
     collection("7 Special 4").hide,
     collection("7 Special 5").hide,
     collection("7 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial08 = front(
     "Front Special 8",
@@ -141,9 +136,8 @@ object TheDummyEdition extends InternalEdition {
     collection("8 Special 4").hide,
     collection("8 Special 5").hide,
     collection("8 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial09 = front(
     "Front Special 9",
@@ -153,9 +147,8 @@ object TheDummyEdition extends InternalEdition {
     collection("9 Special 4").hide,
     collection("9 Special 5").hide,
     collection("9 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial10 = front(
     "Front Special 10",
@@ -165,9 +158,8 @@ object TheDummyEdition extends InternalEdition {
     collection("10 Special 4").hide,
     collection("10 Special 5").hide,
     collection("10 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial11 = front(
     "Front Special 11",
@@ -177,9 +169,8 @@ object TheDummyEdition extends InternalEdition {
     collection("11 Special 4").hide,
     collection("11 Special 5").hide,
     collection("11 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial12 = front(
     "Front Special 12",
@@ -189,9 +180,8 @@ object TheDummyEdition extends InternalEdition {
     collection("12 Special 4").hide,
     collection("12 Special 5").hide,
     collection("12 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
   def FrontSpecial13 = front(
     "Front Special 13",
@@ -201,8 +191,7 @@ object TheDummyEdition extends InternalEdition {
     collection("13 Special 4").hide,
     collection("13 Special 5").hide,
     collection("13 Special 6").hide
-  )
-  .special
-  .swatch(Culture)
+  ).special
+    .swatch(Culture)
 
 }

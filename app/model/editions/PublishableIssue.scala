@@ -26,20 +26,23 @@ case class PublishedImage(height: Option[Int], width: Option[Int], src: String)
 case class PublishedCardImage(mobile: PublishedImage, tablet: PublishedImage)
 
 case class PublishedFurniture(
-  kicker: Option[String],
-  headlineOverride: Option[String],
-  trailTextOverride: Option[String],
-  bylineOverride: Option[String],
-  showByline: Boolean,
-  showQuotedHeadline: Boolean,
-  mediaType: PublishedMediaType,
-  imageSrcOverride: Option[PublishedImage],
-  sportScore: Option[String],
-  overrideArticleMainMedia: Boolean,
-  coverCardImages: Option[PublishedCardImage]
+    kicker: Option[String],
+    headlineOverride: Option[String],
+    trailTextOverride: Option[String],
+    bylineOverride: Option[String],
+    showByline: Boolean,
+    showQuotedHeadline: Boolean,
+    mediaType: PublishedMediaType,
+    imageSrcOverride: Option[PublishedImage],
+    sportScore: Option[String],
+    overrideArticleMainMedia: Boolean,
+    coverCardImages: Option[PublishedCardImage]
 )
 
-case class PublishedArticle(internalPageCode: Long, furniture: PublishedFurniture)
+case class PublishedArticle(
+    internalPageCode: Long,
+    furniture: PublishedFurniture
+)
 
 object PublishedArticle {
   val SHOW_BYLINE_DEFAULT = false
@@ -47,18 +50,27 @@ object PublishedArticle {
   val OVERRIDE_ARTICLE_MAIN_MEDIA_DEFAULT = false
 }
 
-case class PublishedCollection(id: String, name: String, items: List[PublishedArticle])
+case class PublishedCollection(
+    id: String,
+    name: String,
+    items: List[PublishedArticle]
+)
 
-case class PublishedFront(id: String, name: String, collections: List[PublishedCollection], swatch: Swatch)
+case class PublishedFront(
+    id: String,
+    name: String,
+    collections: List[PublishedCollection],
+    swatch: Swatch
+)
 
 case class PublishableIssue(
-  action: PublishAction,
-  id: String, // TODO: Not sure we should be leaking our internal ID here...
-  name: Edition, // TODO: remove this once downstream is consuming 'edition'
-  edition: Edition,
-  issueDate: LocalDate,
-  version: String,
-  fronts: List[PublishedFront],
-  notificationUTCOffset: Int,
-  topic: Option[String]
+    action: PublishAction,
+    id: String, // TODO: Not sure we should be leaking our internal ID here...
+    name: Edition, // TODO: remove this once downstream is consuming 'edition'
+    edition: Edition,
+    issueDate: LocalDate,
+    version: String,
+    fronts: List[PublishedFront],
+    notificationUTCOffset: Int,
+    topic: Option[String]
 )

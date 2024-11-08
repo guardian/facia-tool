@@ -14,7 +14,9 @@ class SwatchTest extends FreeSpec with Matchers {
     }
 
     "should deserialise correctly" in {
-      Json.fromJson[Swatch](Json.parse(cultureEnumAsString)).get shouldBe culture
+      Json
+        .fromJson[Swatch](Json.parse(cultureEnumAsString))
+        .get shouldBe culture
     }
   }
 
@@ -27,7 +29,9 @@ class SwatchTest extends FreeSpec with Matchers {
     }
 
     "should deserialise correctly" in {
-      Json.fromJson[Swatch](Json.parse(neutralEnumAsString)).get shouldBe neutral
+      Json
+        .fromJson[Swatch](Json.parse(neutralEnumAsString))
+        .get shouldBe neutral
     }
   }
 
@@ -55,7 +59,9 @@ class SwatchTest extends FreeSpec with Matchers {
     }
 
     "should deserialise correctly" in {
-      Json.fromJson[Swatch](Json.parse(opinionEnumAsString)).get shouldBe opinion
+      Json
+        .fromJson[Swatch](Json.parse(opinionEnumAsString))
+        .get shouldBe opinion
     }
   }
 
@@ -69,7 +75,9 @@ class SwatchTest extends FreeSpec with Matchers {
     }
 
     "should deserialise correctly" in {
-      Json.fromJson[Swatch](Json.parse(lifestyleEnumAsString)).get shouldBe lifestyle
+      Json
+        .fromJson[Swatch](Json.parse(lifestyleEnumAsString))
+        .get shouldBe lifestyle
     }
   }
 

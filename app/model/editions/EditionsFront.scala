@@ -5,10 +5,14 @@ import play.api.libs.json.{Json, OFormat, OWrites}
 import scalikejdbc.WrappedResultSet
 
 object EditionsFrontMetadata {
-  implicit val format: OFormat[EditionsFrontMetadata] = Json.format[EditionsFrontMetadata]
+  implicit val format: OFormat[EditionsFrontMetadata] =
+    Json.format[EditionsFrontMetadata]
 }
 
-case class EditionsFrontMetadata(nameOverride: Option[String], swatch: Option[Swatch]) {
+case class EditionsFrontMetadata(
+    nameOverride: Option[String],
+    swatch: Option[Swatch]
+) {
   def toPGobject: PGobject = {
     val pgo = new PGobject()
     pgo.setType("jsonb")
@@ -31,7 +35,9 @@ case class EditionsFront(
 ) {
   def toPublishedFront: PublishedFront = {
     val name = getName
-    val swatch = metadata.collect { case EditionsFrontMetadata(_, Some(swatch)) => swatch }.getOrElse(Swatch.Neutral)
+    val swatch = metadata
+      .collect { case EditionsFrontMetadata(_, Some(swatch)) => swatch }
+      .getOrElse(Swatch.Neutral)
     PublishedFront(
       id,
       name,
@@ -54,7 +60,11 @@ case class EditionsFront(
     isSpecial = isSpecial
   )
 
-  def getName = metadata.collect { case EditionsFrontMetadata(Some(overrideName), _) => overrideName }.getOrElse(displayName)
+  def getName = metadata
+    .collect { case EditionsFrontMetadata(Some(overrideName), _) =>
+      overrideName
+    }
+    .getOrElse(displayName)
 }
 
 object EditionsFront {
@@ -70,30 +80,34 @@ object EditionsFront {
       rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
       rs.stringOpt(prefix + "updated_by"),
       rs.stringOpt(prefix + "updated_email"),
-      rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[EditionsFrontMetadata].get),
+      rs.stringOpt(prefix + "metadata")
+        .map(s => Json.parse(s).validate[EditionsFrontMetadata].get),
       Nil
     )
   }
 
-  def fromRowOpt(rs: WrappedResultSet, prefix: String = ""): Option[EditionsFront] = {
+  def fromRowOpt(
+      rs: WrappedResultSet,
+      prefix: String = ""
+  ): Option[EditionsFront] = {
     for {
       id <- rs.stringOpt(prefix + "id")
       name <- rs.stringOpt(prefix + "name")
       index <- rs.intOpt(prefix + "index")
       isSpecial <- rs.booleanOpt(prefix + "is_special")
       isHidden <- rs.booleanOpt(prefix + "is_hidden")
-    } yield
-      EditionsFront(
-        id,
-        name,
-        index,
-        isSpecial,
-        isHidden,
-        rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
-        rs.stringOpt(prefix + "updated_by"),
-        rs.stringOpt(prefix + "updated_email"),
-        rs.stringOpt(prefix + "metadata").map(s => Json.parse(s).validate[EditionsFrontMetadata].get),
-        Nil
-      )
+    } yield EditionsFront(
+      id,
+      name,
+      index,
+      isSpecial,
+      isHidden,
+      rs.zonedDateTimeOpt(prefix + "updated_on").map(_.toInstant.toEpochMilli),
+      rs.stringOpt(prefix + "updated_by"),
+      rs.stringOpt(prefix + "updated_email"),
+      rs.stringOpt(prefix + "metadata")
+        .map(s => Json.parse(s).validate[EditionsFrontMetadata].get),
+      Nil
+    )
   }
 }

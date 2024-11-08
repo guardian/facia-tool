@@ -8,4 +8,3 @@ case class CreateIssue(issueDate: LocalDate)
 object CreateIssue {
   implicit val format: OFormat[CreateIssue] = Json.format[CreateIssue]
 }
-

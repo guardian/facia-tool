@@ -1,6 +1,11 @@
 package model.editions.client
 
-import model.editions.{EditionsArticleMetadata, CoverCardImages, Image, MediaType}
+import model.editions.{
+  EditionsArticleMetadata,
+  CoverCardImages,
+  Image,
+  MediaType
+}
 import org.scalatest.{FreeSpec, Matchers}
 
 class ClientCardMetadataTest extends FreeSpec with Matchers {
@@ -24,7 +29,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         Some(1)
       )
       val clientCardMetadata = ClientCardMetadata.fromCardMetadata(cardMetadata)
-      clientCardMetadata.promotionMetric should be (Some(1))
+      clientCardMetadata.promotionMetric should be(Some(1))
     }
 
     "should send promotion metric to a simple CardMetadata" in {
@@ -37,24 +42,19 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         None,
-
-        None,
-
         None,
         None,
         None,
         None,
         None,
         None,
-
         None,
         None,
         None,
         None,
         None,
-
         None,
-
+        None,
         None,
         None,
         None,
@@ -64,7 +64,7 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None
       )
       val cardMetadata = clientCardMetadata.toArticleMetadata
-      cardMetadata.promotionMetric should be (Some(1))
+      cardMetadata.promotionMetric should be(Some(1))
     }
 
     "should serialise from a simple CardMetadata" in {
@@ -111,7 +111,14 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None,
         None,
         Some(MediaType.Hide),
-        Some(Image(Some(100), Some(100), "file://origin-new-pokemon.gif", "file://new-pokemon.gif")),
+        Some(
+          Image(
+            Some(100),
+            Some(100),
+            "file://origin-new-pokemon.gif",
+            "file://new-pokemon.gif"
+          )
+        ),
         None,
         None,
         None,
@@ -126,7 +133,9 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
       clientCardMetadata.imageHide shouldBe Some(true)
 
       clientCardMetadata.imageCutoutReplace shouldBe Some(false)
-      clientCardMetadata.imageCutoutSrcOrigin shouldBe Some("file://origin-new-pokemon.gif")
+      clientCardMetadata.imageCutoutSrcOrigin shouldBe Some(
+        "file://origin-new-pokemon.gif"
+      )
       clientCardMetadata.imageCutoutSrc shouldBe Some("file://new-pokemon.gif")
       clientCardMetadata.imageCutoutSrcHeight shouldBe Some("100")
       clientCardMetadata.imageCutoutSrcWidth shouldBe Some("100")
@@ -146,7 +155,14 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         None,
         Some(MediaType.Image),
         None,
-        Some(Image(Some(100), Some(100), "file://elephant.jpg", "file://elephant.png")),
+        Some(
+          Image(
+            Some(100),
+            Some(100),
+            "file://elephant.jpg",
+            "file://elephant.png"
+          )
+        ),
         None,
         None,
         None
@@ -214,7 +230,34 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
   "ClientCardMetadata to CardMetadata" - {
 
     def getEmptyClientCardMetadata = ClientCardMetadata(
-      None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None, None
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None,
+      None
     )
 
     "should convert into CardMetadata with multiple image overrides" in {
@@ -239,20 +282,24 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
 
       cardMetadata.mediaType.isDefined shouldBe true
       cardMetadata.mediaType.get shouldBe MediaType.Image
-      cardMetadata.replaceImage shouldBe Some(Image(
-        Some(100),
-        Some(100),
-        "file://lightning.gif",
-        "file://lightning.jpg",
-        Some("file://lightning.png")
-      ))
+      cardMetadata.replaceImage shouldBe Some(
+        Image(
+          Some(100),
+          Some(100),
+          "file://lightning.gif",
+          "file://lightning.jpg",
+          Some("file://lightning.png")
+        )
+      )
 
-      cardMetadata.cutoutImage shouldBe Some(Image(
-        Some(100),
-        Some(100),
-        "file://broom.gif",
-        "file://broom.jpg"
-      ))
+      cardMetadata.cutoutImage shouldBe Some(
+        Image(
+          Some(100),
+          Some(100),
+          "file://broom.gif",
+          "file://broom.jpg"
+        )
+      )
 
       cardMetadata.overrideArticleMainMedia shouldBe None
     }
@@ -267,31 +314,73 @@ class ClientCardMetadataTest extends FreeSpec with Matchers {
         .copy(imageSrcThumb = Some("file://lightning.png"))
         .copy(imageCutoutReplace = Some(false))
         .copy(imageCutoutSrc = Some("file://broom.jpg"))
-        .copy(coverCardMobileImage = Some(Image(Some(100), Some(100), "file://origin.png", "file://src.png", Some("file://thumb.png"))))
-        .copy(coverCardTabletImage = Some(Image(Some(100), Some(100), "file://origin.png", "file://src.png", Some("file://thumb.png"))))
+        .copy(coverCardMobileImage =
+          Some(
+            Image(
+              Some(100),
+              Some(100),
+              "file://origin.png",
+              "file://src.png",
+              Some("file://thumb.png")
+            )
+          )
+        )
+        .copy(coverCardTabletImage =
+          Some(
+            Image(
+              Some(100),
+              Some(100),
+              "file://origin.png",
+              "file://src.png",
+              Some("file://thumb.png")
+            )
+          )
+        )
         .toArticleMetadata
 
       cardMetadata.mediaType.isDefined shouldBe true
       cardMetadata.mediaType.get shouldBe MediaType.Image
-      cardMetadata.replaceImage shouldBe Some(Image(
-        Some(100),
-        Some(100),
-        "file://lightning.gif",
-        "file://lightning.jpg",
-        Some("file://lightning.png")
-      ))
+      cardMetadata.replaceImage shouldBe Some(
+        Image(
+          Some(100),
+          Some(100),
+          "file://lightning.gif",
+          "file://lightning.jpg",
+          Some("file://lightning.png")
+        )
+      )
 
-      cardMetadata.cutoutImage shouldBe Some(Image(
-        None,
-        None,
-        "file://broom.jpg",
-        "file://broom.jpg"
-      ))
+      cardMetadata.cutoutImage shouldBe Some(
+        Image(
+          None,
+          None,
+          "file://broom.jpg",
+          "file://broom.jpg"
+        )
+      )
 
-      cardMetadata.coverCardImages shouldBe Some(CoverCardImages(
-        mobile = Some(Image(Some(100), Some(100), "file://origin.png", "file://src.png", Some("file://thumb.png"))),
-        tablet = Some(Image(Some(100), Some(100), "file://origin.png", "file://src.png", Some("file://thumb.png")))
-      ))
+      cardMetadata.coverCardImages shouldBe Some(
+        CoverCardImages(
+          mobile = Some(
+            Image(
+              Some(100),
+              Some(100),
+              "file://origin.png",
+              "file://src.png",
+              Some("file://thumb.png")
+            )
+          ),
+          tablet = Some(
+            Image(
+              Some(100),
+              Some(100),
+              "file://origin.png",
+              "file://src.png",
+              Some("file://thumb.png")
+            )
+          )
+        )
+      )
     }
   }
 

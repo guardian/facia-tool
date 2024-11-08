@@ -10,22 +10,40 @@ import org.joda.time.{DateTime, DateTimeZone}
 //noinspection TypeAnnotation
 object EditionEarth extends SpecialEdition {
   override val title = "Edition Earth"
-  override val subTitle = "Cop26: A special edition of the Guardian's best recent environmental journalism"
+  override val subTitle =
+    "Cop26: A special edition of the Guardian's best recent environmental journalism"
   override val edition = "edition-earth"
-  override val header = Header(title ="Edition", subTitle=Some("Earth"))
+  override val header = Header(title = "Edition", subTitle = Some("Earth"))
   override val notificationUTCOffset = 3
   override val topic = "e-e"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/31aee0e66af047a39063131af0889c87aa66151f/0_0_225_450/225.png?width=80&height=160&quality=85&s=00bd9546e8048abc5705f6e4c19dde91")
+  override val buttonImageUri = Some(
+    "https://i.guim.co.uk/img/media/31aee0e66af047a39063131af0889c87aa66151f/0_0_225_450/225.png?width=80&height=160&quality=85&s=00bd9546e8048abc5705f6e4c19dde91"
+  )
   override val expiry: Option[String] = Some(
-    new DateTime(2021, 12,12,23,59,DateTimeZone.UTC).toString()
+    new DateTime(2021, 12, 12, 23, 59, DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
       backgroundColor = "#0F70B7",
-      title = EditionTextFormatting(color = "#121212", font="GHGuardianHeadline-Medium", lineHeight = 34, size = 32),
-      subTitle = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 20, size = 17),
-      expiry = EditionTextFormatting(color = "#121212", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
-      image = EditionImageStyle(67,134)
+      title = EditionTextFormatting(
+        color = "#121212",
+        font = "GHGuardianHeadline-Medium",
+        lineHeight = 34,
+        size = 32
+      ),
+      subTitle = EditionTextFormatting(
+        color = "#121212",
+        font = "GuardianTextSans-Regular",
+        lineHeight = 20,
+        size = 17
+      ),
+      expiry = EditionTextFormatting(
+        color = "#121212",
+        font = "GuardianTextSans-Regular",
+        lineHeight = 16,
+        size = 15
+      ),
+      image = EditionImageStyle(67, 134)
     )
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
@@ -35,7 +53,6 @@ object EditionEarth extends SpecialEdition {
       textColorSecondary = "#FFFFFF"
     )
   )
-
 
   lazy val template = EditionTemplate(
     List(
@@ -52,7 +69,7 @@ object EditionEarth extends SpecialEdition {
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
-      endOffset = 0,
+      endOffset = 0
     ),
     capiDateQueryParam = CapiDateQueryParam.Published,
     zoneId = ZoneId.of("Europe/London"),
@@ -61,7 +78,9 @@ object EditionEarth extends SpecialEdition {
     ophanQueryPrefillParams = None
   )
 
-  def Special01 = front("Introduction", None,
+  def Special01 = front(
+    "Introduction",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -69,7 +88,9 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Sport)
 
-  def Special02 = front("Science", None,
+  def Special02 = front(
+    "Science",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -77,7 +98,9 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special03 = front("Transport", None,
+  def Special03 = front(
+    "Transport",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -85,7 +108,9 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Sport)
 
-  def Special04 = front("Health", None,
+  def Special04 = front(
+    "Health",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -93,7 +118,9 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special05 = front("Food", None,
+  def Special05 = front(
+    "Food",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -101,7 +128,9 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Sport)
 
-  def Special06 = front("Fashion", None,
+  def Special06 = front(
+    "Fashion",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -109,7 +138,9 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special07 = front("Sport", None,
+  def Special07 = front(
+    "Sport",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -117,7 +148,9 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Sport)
 
-  def Special08 = front("Business", None,
+  def Special08 = front(
+    "Business",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -125,7 +158,9 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special09 = front("Awareness", None,
+  def Special09 = front(
+    "Awareness",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -133,13 +168,14 @@ object EditionEarth extends SpecialEdition {
     collection("Special")
   ).swatch(Sport)
 
-  def Special10 = front("Solutions", None,
+  def Special10 = front(
+    "Solutions",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-
 
 }

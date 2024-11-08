@@ -1,6 +1,12 @@
 package logic
 
-import com.gu.contentapi.client.model.v1.{Content, ContentFields, ContentType, Tag, TagType}
+import com.gu.contentapi.client.model.v1.{
+  Content,
+  ContentFields,
+  ContentType,
+  Tag,
+  TagType
+}
 import org.scalatest.{FreeSpec, Matchers}
 
 class CapiPrefillerTest extends FreeSpec with Matchers {
@@ -14,8 +20,8 @@ class CapiPrefillerTest extends FreeSpec with Matchers {
     "webTitle",
     "webUrl",
     "apiUrl",
-    None, //fields: _root_.scala.Option[com.gu.contentapi.client.model.v1.ContentFields] = _root_.scala.None,
-    Seq(), //tags
+    None, // fields: _root_.scala.Option[com.gu.contentapi.client.model.v1.ContentFields] = _root_.scala.None,
+    Seq(), // tags
     None,
     Seq(),
     None,
@@ -117,23 +123,37 @@ class CapiPrefillerTest extends FreeSpec with Matchers {
 
   "Prefill can find first contributor with a cutout" - {
     "Can handle empty list" in {
-      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq())) shouldBe (None)
+      CapiPrefiller.getFirstContributorWithCutoutOption(
+        emptyContent.copy(tags = Seq())
+      ) shouldBe (None)
     }
 
     "Can handle single list" in {
       val nothingUseful = emptyTag.copy(`type` = TagType.Tone)
-      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq(nothingUseful))) shouldBe (None)
+      CapiPrefiller.getFirstContributorWithCutoutOption(
+        emptyContent.copy(tags = Seq(nothingUseful))
+      ) shouldBe (None)
     }
 
     "Can handle multiple list with single contributor" in {
-      val somethingUseful = emptyTag.copy(`type` = TagType.Contributor).copy(bylineLargeImageUrl = Some("string"))
-      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq(somethingUseful))) shouldBe (Some("string"))
+      val somethingUseful = emptyTag
+        .copy(`type` = TagType.Contributor)
+        .copy(bylineLargeImageUrl = Some("string"))
+      CapiPrefiller.getFirstContributorWithCutoutOption(
+        emptyContent.copy(tags = Seq(somethingUseful))
+      ) shouldBe (Some("string"))
     }
 
     "Can handle multiple list with multiple contributor" in {
-      val somethingUseful = emptyTag.copy(`type` = TagType.Contributor).copy(bylineLargeImageUrl = Some("string1"))
-      val somethingIrrelevant = emptyTag.copy(`type` = TagType.Contributor).copy(bylineLargeImageUrl = Some("string2"))
-      CapiPrefiller.getFirstContributorWithCutoutOption(emptyContent.copy(tags = Seq(somethingUseful, somethingIrrelevant))) shouldBe (Some("string1"))
+      val somethingUseful = emptyTag
+        .copy(`type` = TagType.Contributor)
+        .copy(bylineLargeImageUrl = Some("string1"))
+      val somethingIrrelevant = emptyTag
+        .copy(`type` = TagType.Contributor)
+        .copy(bylineLargeImageUrl = Some("string2"))
+      CapiPrefiller.getFirstContributorWithCutoutOption(
+        emptyContent.copy(tags = Seq(somethingUseful, somethingIrrelevant))
+      ) shouldBe (Some("string1"))
     }
   }
 
@@ -145,7 +165,9 @@ class CapiPrefillerTest extends FreeSpec with Matchers {
       val seriesTag = emptyTag
         .copy(`type` = TagType.Series)
         .copy(webTitle = "this tag!")
-      CapiPrefiller.pickKicker(emptyContent.copy(tags = Seq(seriesTag))) shouldBe Some("this tag!")
+      CapiPrefiller.pickKicker(
+        emptyContent.copy(tags = Seq(seriesTag))
+      ) shouldBe Some("this tag!")
     }
     "Return content from a series tag and a tone tag " in {
       val seriesTag = emptyTag
@@ -154,21 +176,27 @@ class CapiPrefillerTest extends FreeSpec with Matchers {
       val toneTag = emptyTag
         .copy(`type` = TagType.Tone)
         .copy(webTitle = "this tag too!")
-      CapiPrefiller.pickKicker(emptyContent.copy(tags = Seq(toneTag, seriesTag))) shouldBe Some("this tag!")
+      CapiPrefiller.pickKicker(
+        emptyContent.copy(tags = Seq(toneTag, seriesTag))
+      ) shouldBe Some("this tag!")
     }
     "Return content from a 'plural' tone tag " in {
       val toneTag = emptyTag
         .copy(`type` = TagType.Tone)
         .copy(id = "tone/letters")
         .copy(webTitle = "Letters")
-      CapiPrefiller.pickKicker(emptyContent.copy(tags = Seq(toneTag))) shouldBe Some("Letters")
+      CapiPrefiller.pickKicker(
+        emptyContent.copy(tags = Seq(toneTag))
+      ) shouldBe Some("Letters")
     }
     "Return content from a 'single' tone tag " in {
       val toneTag = emptyTag
         .copy(`type` = TagType.Tone)
         .copy(id = "tone/reviews")
         .copy(webTitle = "Reviews")
-      CapiPrefiller.pickKicker(emptyContent.copy(tags = Seq(toneTag))) shouldBe Some("Review")
+      CapiPrefiller.pickKicker(
+        emptyContent.copy(tags = Seq(toneTag))
+      ) shouldBe Some("Review")
     }
     "Return content from a 'byline' tone tag " in {
       val toneTag = emptyTag
@@ -203,7 +231,9 @@ class CapiPrefillerTest extends FreeSpec with Matchers {
       val secondTag = emptyTag
         .copy(webTitle = "second")
       val content = emptyContent
-        .copy(webTitle = "Neil Armstrong and Buzz Aldrin: first and second men on the moon")
+        .copy(webTitle =
+          "Neil Armstrong and Buzz Aldrin: first and second men on the moon"
+        )
         .copy(tags = Seq(firstTag, secondTag))
       CapiPrefiller.pickKicker(content) shouldBe Some("first")
     }

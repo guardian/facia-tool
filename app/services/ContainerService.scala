@@ -4,12 +4,13 @@ import play.api.libs.json.{Json, OFormat}
 import slices._
 
 case class StoriesVisibleResponse(
-                                   desktop: Option[Int],
-                                   mobile: Option[Int]
-                                 )
+    desktop: Option[Int],
+    mobile: Option[Int]
+)
 
 object StoriesVisibleResponse {
-  implicit val jsonFormat: OFormat[StoriesVisibleResponse] = Json.format[StoriesVisibleResponse]
+  implicit val jsonFormat: OFormat[StoriesVisibleResponse] =
+    Json.format[StoriesVisibleResponse]
 }
 
 class ContainerService(val containers: Containers) {
@@ -24,7 +25,8 @@ class ContainerService(val containers: Containers) {
           Some(desktopVisible),
           container.mobileShowMore match {
             case DesktopBehaviour => Some(desktopVisible)
-            case RestrictTo(maxMobile) if maxMobile > desktopVisible => Some(desktopVisible)
+            case RestrictTo(maxMobile) if maxMobile > desktopVisible =>
+              Some(desktopVisible)
             case RestrictTo(maxMobile) => Some(maxMobile min numberOfStories)
           }
         )
@@ -58,10 +60,11 @@ class ContainerService(val containers: Containers) {
           Some(10 min numberOfStories)
         )
 
-      case NavList | NavMediaList => StoriesVisibleResponse(
-        None,
-        None
-      )
+      case NavList | NavMediaList =>
+        StoriesVisibleResponse(
+          None,
+          None
+        )
     }
   }
 }

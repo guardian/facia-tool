@@ -6,5 +6,5 @@ import play.api.libs.json.Json
 case class MoveCollection(newIndex: Int)
 
 object MoveCollection {
-    implicit val formats: OFormat[MoveCollection] = Json.format[MoveCollection]
+  implicit val formats: OFormat[MoveCollection] = Json.format[MoveCollection]
 }

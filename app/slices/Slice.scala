@@ -6,7 +6,6 @@ sealed trait Slice {
   val layout: SliceLayout
 }
 
-
 /* .________.________.________.________.
  * |________|________|________|________|
  * |________|________|________|________|
@@ -143,39 +142,39 @@ case object QuarterQuarterQuarterQl extends Slice {
  * |________|________|________|________|
  */
 case object QuarterQuarterQuarterQuarter extends Slice {
-    val layout = SliceLayout(
-      cssClassName = "q-q-q-q",
-      columns = Seq(
-        SingleItem(
-          1,
-          ItemClasses(
-            mobile = MediaList,
-            tablet = Standard
-          )
-        ),
-        SingleItem(
-          1,
-          ItemClasses(
-            mobile = MediaList,
-            tablet = Standard
-          )
-        ),
-        SingleItem(
-          1,
-          ItemClasses(
-            mobile = MediaList,
-            tablet = Standard
-          )
-        ),
-        SingleItem(
-          1,
-          ItemClasses(
-            mobile = MediaList,
-            tablet = Standard
-          )
+  val layout = SliceLayout(
+    cssClassName = "q-q-q-q",
+    columns = Seq(
+      SingleItem(
+        1,
+        ItemClasses(
+          mobile = MediaList,
+          tablet = Standard
+        )
+      ),
+      SingleItem(
+        1,
+        ItemClasses(
+          mobile = MediaList,
+          tablet = Standard
+        )
+      ),
+      SingleItem(
+        1,
+        ItemClasses(
+          mobile = MediaList,
+          tablet = Standard
+        )
+      ),
+      SingleItem(
+        1,
+        ItemClasses(
+          mobile = MediaList,
+          tablet = Standard
         )
       )
     )
+  )
 }
 
 /* ._________________.________.________.
@@ -286,9 +285,10 @@ case object HalfQuarterQl2Ql4 extends Slice {
   )
 }
 
-/** Basically the same as above but for when there is another slice above that has already degraded from a standard to
-  * a media list item. Editorial have asked that the first item in this slice then gets the media list behaviour as
-  * opposed to being a standard item at mobile.
+/** Basically the same as above but for when there is another slice above that
+  * has already degraded from a standard to a media list item. Editorial have
+  * asked that the first item in this slice then gets the media list behaviour
+  * as opposed to being a standard item at mobile.
   */
 case object HalfQuarterQl2Ql4B extends Slice {
   private val master = HalfQuarterQl2Ql4.layout
@@ -367,9 +367,9 @@ case object QuarterQuarterHl3 extends Slice {
  */
 
 /*
-* The order of this sequence is important.
-* We use flex-direction(row-reverse) to maintain DOM hierarchy whilst having correct visual ordering.
-* */
+ * The order of this sequence is important.
+ * We use flex-direction(row-reverse) to maintain DOM hierarchy whilst having correct visual ordering.
+ * */
 case object Hl4QuarterQuarter extends Slice {
   val layout = SliceLayout(
     cssClassName = "h14-q-q",
@@ -403,9 +403,9 @@ case object Hl4QuarterQuarter extends Slice {
  * |_###_____________|_________________|
  */
 /*
-* The order of this sequence is important.
-* We use flex-direction(row-reverse) to maintain DOM hierarchy whilst having correct visual ordering.
-* */
+ * The order of this sequence is important.
+ * We use flex-direction(row-reverse) to maintain DOM hierarchy whilst having correct visual ordering.
+ * */
 case object Hl4Half extends Slice {
   val layout = SliceLayout(
     cssClassName = "hl4-h",
@@ -436,9 +436,9 @@ case object Hl4Half extends Slice {
  * |_________________|_###_____________|
  */
 /*
-* The order of this sequence is important.
-* We use flex-direction(row-reverse) to maintain DOM hierarchy whilst having correct visual ordering.
-* */
+ * The order of this sequence is important.
+ * We use flex-direction(row-reverse) to maintain DOM hierarchy whilst having correct visual ordering.
+ * */
 case object HalfHl3 extends Slice {
   val layout = SliceLayout(
     cssClassName = "hl3-h",
@@ -463,16 +463,15 @@ case object HalfHl3 extends Slice {
   )
 }
 
-
 /* ._________________._________________.
  * |_###_____________|                 |
  * |_###_____________|     MPU         |
  * |_###_____________|_________________|
  */
 /*
-* The order of this sequence is important.
-* We use flex-direction(row-reverse) to maintain DOM hierarchy whilst having correct visual ordering.
-* */
+ * The order of this sequence is important.
+ * We use flex-direction(row-reverse) to maintain DOM hierarchy whilst having correct visual ordering.
+ * */
 case object Hl3Mpu extends Slice {
   val layout = SliceLayout(
     cssClassName = "hl3-mpu",
@@ -488,20 +487,22 @@ case object Hl3Mpu extends Slice {
       ),
       MPU(
         colSpan = 1
-        )
+      )
     )
   )
 }
 
-/** This is not actually used but is a reflection of Hl4Half, for the thumbnail display in the tool */
+/** This is not actually used but is a reflection of Hl4Half, for the thumbnail
+  * display in the tool
+  */
 object HalfHl4 extends Slice {
   val layout = Hl4Half.layout.copy(
     columns = Hl4Half.layout.columns.reverse
   )
 }
 
-
-/*** VOLUME SLICES ***/
+/** * VOLUME SLICES **
+  */
 
 /* .__________________________.________.
  * |        ##################|########|
@@ -759,8 +760,8 @@ case object Fluid extends Slice {
   )
 }
 
-
-/*** LIST SLICES ***/
+/** * LIST SLICES **
+  */
 
 /* .___________.___________.___________.
  * |___________|___________|           |
@@ -930,20 +931,21 @@ case object ShowcaseSingleStories extends Slice {
         rows = 30,
         ItemClasses(
           mobile = ListItem,
-          tablet = ListItem,
-        ),
-      ),
-    ),
+          tablet = ListItem
+        )
+      )
+    )
   )
 }
 
-/** Scrollable slice definitions for thumbnails only!
- * These layouts are implemented via carousels on all platforms
- * On smaller screens there is a partial card visible to indicate horizontal scrolling
- * On larger screens these become chevrons.
- *
- * These thumbnails indicate what the container looks like when viewed on desktop on first load
- * */
+/** Scrollable slice definitions for thumbnails only! These layouts are
+  * implemented via carousels on all platforms On smaller screens there is a
+  * partial card visible to indicate horizontal scrolling On larger screens
+  * these become chevrons.
+  *
+  * These thumbnails indicate what the container looks like when viewed on
+  * desktop on first load
+  */
 case object ScrollableHighlightsSlice extends Slice {
   val layout = SliceLayout(
     cssClassName = "scrollable-t-t-t",
@@ -952,8 +954,8 @@ case object ScrollableHighlightsSlice extends Slice {
         colSpan = 1,
         ItemClasses(
           mobile = Standard,
-          tablet = MediaList,
-        ),
+          tablet = MediaList
+        )
       )
     )
   )
@@ -966,8 +968,8 @@ case object ScrollableSmallSlice extends Slice {
         colSpan = 1,
         ItemClasses(
           mobile = MediaList,
-          tablet = MediaList,
-        ),
+          tablet = MediaList
+        )
       )
     )
   )
@@ -980,8 +982,8 @@ case object ScrollableMediumSlice extends Slice {
         colSpan = 1,
         ItemClasses(
           mobile = Standard,
-          tablet = Standard,
-        ),
+          tablet = Standard
+        )
       )
     )
   )
@@ -995,12 +997,11 @@ case object ScrollableFeatureSlice extends Slice {
         ItemClasses(
           mobile = cards.FullMedia100,
           tablet = cards.FullMedia100
-        ),
+        )
       )
     )
   )
 }
-
 
 /*
  * The Static Feature container layout has two immersive style cards (full media)
@@ -1038,15 +1039,15 @@ case object StaticFeature extends Slice {
         ItemClasses(
           mobile = cards.FullMedia100,
           tablet = cards.FullMedia100
-        ),
+        )
       ),
       SingleItem(
         colSpan = 1,
         ItemClasses(
           mobile = cards.FullMedia100,
           tablet = cards.FullMedia100
-        ),
-      ),
+        )
+      )
     )
   )
 }

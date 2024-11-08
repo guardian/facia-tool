@@ -4,14 +4,27 @@ import play.api.libs.json.{Json, OFormat}
 import services.editions.prefills.CapiQueryTimeWindow
 import model.editions.EditionsCard
 import model.editions.EditionsArticle
-import model.editions.{CapiPrefillQuery, EditionsCollection, EditionsRecipe, EditionsChef, EditionsFeastCollection, CardType}
+import model.editions.{
+  CapiPrefillQuery,
+  EditionsCollection,
+  EditionsRecipe,
+  EditionsChef,
+  EditionsFeastCollection,
+  CardType
+}
 import model.editions.EditionsFeastCollectionItem
 
 // Ideally the frontend can be changed so we don't have this weird modelling!
-case class EditionsClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long, meta: Option[ClientCardMetadata] = None)
+case class EditionsClientCard(
+    id: String,
+    cardType: Option[CardType],
+    frontPublicationDate: Long,
+    meta: Option[ClientCardMetadata] = None
+)
 
 object EditionsClientCard {
-  implicit val format: OFormat[EditionsClientCard] = Json.format[EditionsClientCard]
+  implicit val format: OFormat[EditionsClientCard] =
+    Json.format[EditionsClientCard]
 
   def fromCard(card: EditionsCard): EditionsClientCard = card match {
     case EditionsArticle(id, addedOn, metadata) =>
@@ -54,7 +67,7 @@ object EditionsClientCard {
     case Some(CardType.Recipe) =>
       EditionsRecipe(
         card.id,
-        card.frontPublicationDate,
+        card.frontPublicationDate
       )
     case Some(CardType.Chef) =>
       EditionsChef(
@@ -71,44 +84,72 @@ object EditionsClientCard {
   }
 }
 
-case class EditionsSupportingClientCard(id: String, cardType: Option[CardType], frontPublicationDate: Long, meta: Option[ClientCardMetadata] = None)
+case class EditionsSupportingClientCard(
+    id: String,
+    cardType: Option[CardType],
+    frontPublicationDate: Long,
+    meta: Option[ClientCardMetadata] = None
+)
 
 object EditionsSupportingClientCard {
-  implicit def format: OFormat[EditionsSupportingClientCard] = Json.format[EditionsSupportingClientCard]
+  implicit def format: OFormat[EditionsSupportingClientCard] =
+    Json.format[EditionsSupportingClientCard]
 
   def fromFeastCollectionItem(item: EditionsFeastCollectionItem) = item match {
-    case EditionsRecipe(id, addedOn) => EditionsSupportingClientCard(id, Some(CardType.Recipe), addedOn)
-		case EditionsChef(id, addedOn, metadata) => EditionsSupportingClientCard(id, Some(CardType.Chef), addedOn, metadata.map(ClientCardMetadata.fromCardMetadata))
-	}
+    case EditionsRecipe(id, addedOn) =>
+      EditionsSupportingClientCard(id, Some(CardType.Recipe), addedOn)
+    case EditionsChef(id, addedOn, metadata) =>
+      EditionsSupportingClientCard(
+        id,
+        Some(CardType.Chef),
+        addedOn,
+        metadata.map(ClientCardMetadata.fromCardMetadata)
+      )
+  }
 
-  def toFeastCollectionItem(supportingCard: EditionsSupportingClientCard) = supportingCard.cardType match {
-	case Some(CardType.Recipe) => EditionsRecipe (supportingCard.id, supportingCard.frontPublicationDate)
-	case Some(CardType.Chef) => EditionsChef (supportingCard.id, supportingCard.frontPublicationDate, supportingCard.meta.map(_.toChefMetadata))
-	}
+  def toFeastCollectionItem(supportingCard: EditionsSupportingClientCard) =
+    supportingCard.cardType match {
+      case Some(CardType.Recipe) =>
+        EditionsRecipe(supportingCard.id, supportingCard.frontPublicationDate)
+      case Some(CardType.Chef) =>
+        EditionsChef(
+          supportingCard.id,
+          supportingCard.frontPublicationDate,
+          supportingCard.meta.map(_.toChefMetadata)
+        )
+    }
 }
 
 case class EditionsClientCollection(
-  id: String,
-  displayName: String,
-  isHidden: Boolean,
-  lastUpdated: Option[Long],
-  updatedBy: Option[String],
-  updatedEmail: Option[String],
-  prefill: Option[CapiPrefillQuery],
-  contentPrefillTimeWindow: Option[CapiQueryTimeWindow],
-  items: List[EditionsClientCard]
+    id: String,
+    displayName: String,
+    isHidden: Boolean,
+    lastUpdated: Option[Long],
+    updatedBy: Option[String],
+    updatedEmail: Option[String],
+    prefill: Option[CapiPrefillQuery],
+    contentPrefillTimeWindow: Option[CapiQueryTimeWindow],
+    items: List[EditionsClientCard]
 )
 
 object EditionsClientCollection {
-  implicit val collectionFormat: OFormat[EditionsClientCollection] = Json.format[EditionsClientCollection]
+  implicit val collectionFormat: OFormat[EditionsClientCollection] =
+    Json.format[EditionsClientCollection]
 }
 
-case class EditionsFrontendCollectionWrapper(id: String, collection: EditionsClientCollection)
+case class EditionsFrontendCollectionWrapper(
+    id: String,
+    collection: EditionsClientCollection
+)
 
 object EditionsFrontendCollectionWrapper {
-  implicit def collectionWrapperFormat: OFormat[EditionsFrontendCollectionWrapper] = Json.format[EditionsFrontendCollectionWrapper]
+  implicit def collectionWrapperFormat
+      : OFormat[EditionsFrontendCollectionWrapper] =
+    Json.format[EditionsFrontendCollectionWrapper]
 
-  def fromCollection(collection: EditionsCollection): EditionsFrontendCollectionWrapper = {
+  def fromCollection(
+      collection: EditionsCollection
+  ): EditionsFrontendCollectionWrapper = {
     EditionsFrontendCollectionWrapper(
       collection.id,
       EditionsClientCollection(
@@ -125,7 +166,9 @@ object EditionsFrontendCollectionWrapper {
     )
   }
 
-  def toCollection(frontendCollection: EditionsFrontendCollectionWrapper): EditionsCollection = {
+  def toCollection(
+      frontendCollection: EditionsFrontendCollectionWrapper
+  ): EditionsCollection = {
     EditionsCollection(
       frontendCollection.id,
       frontendCollection.collection.displayName,

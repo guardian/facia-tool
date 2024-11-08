@@ -3,7 +3,10 @@ package controllers
 import model.Cached
 import thumbnails.ContainerThumbnails
 
-class ThumbnailController(val containerThumbnails: ContainerThumbnails, val deps: BaseFaciaControllerComponents) extends BaseFaciaController(deps) {
+class ThumbnailController(
+    val containerThumbnails: ContainerThumbnails,
+    val deps: BaseFaciaControllerComponents
+) extends BaseFaciaController(deps) {
   def container(id: String) = AccessAPIAuthAction {
     containerThumbnails.fromId(id) match {
       case Some(thumbnail) =>

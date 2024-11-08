@@ -7,13 +7,15 @@ import play.api.libs.functional.syntax._
 
 object ClipboardCard {
   def apply(trail: Trail): ClipboardCard = ClipboardCard(Left(trail))
-  def apply(editionsCard: EditionsClientCard): ClipboardCard = ClipboardCard(Right(editionsCard))
+  def apply(editionsCard: EditionsClientCard): ClipboardCard = ClipboardCard(
+    Right(editionsCard)
+  )
 
   val reads: Reads[ClipboardCard] =
     JsPath.read[EditionsClientCard].map(ClipboardCard.apply) or
       JsPath.read[Trail].map(ClipboardCard.apply)
 
-  val writes =  new Writes[ClipboardCard] {
+  val writes = new Writes[ClipboardCard] {
     override def writes(o: ClipboardCard): JsValue =
       o.card.fold(
         trail => Json.toJson(trail),

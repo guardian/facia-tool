@@ -6,8 +6,7 @@ import model.editions.PublishAction.PublishAction
 import play.api.libs.json.{Json, OWrites}
 import scalikejdbc.WrappedResultSet
 
-object PublishAction extends Enumeration
-{
+object PublishAction extends Enumeration {
   type PublishAction = Value
 
   // Assigning values
@@ -30,7 +29,7 @@ case class EditionsIssue(
     launchedBy: Option[String],
     launchedEmail: Option[String],
     fronts: List[EditionsFront],
-    supportsProofing: Boolean,
+    supportsProofing: Boolean
 ) {
 
   // This is a no-op placeholder which matches the UK Daily Edition value.
@@ -38,9 +37,13 @@ case class EditionsIssue(
   // contain a matching Edition.  It should (TODO) eventually go away.
   private val defaultOffset = 3
 
-  def toPreviewIssue: PublishableIssue = toPublishableIssue("preview", PublishAction.preview)
+  def toPreviewIssue: PublishableIssue =
+    toPublishableIssue("preview", PublishAction.preview)
 
-  def toPublishableIssue(version: String, action: PublishAction): PublishableIssue = PublishableIssue(
+  def toPublishableIssue(
+      version: String,
+      action: PublishAction
+  ): PublishableIssue = PublishableIssue(
     action,
     id,
     edition,
@@ -51,12 +54,18 @@ case class EditionsIssue(
       // publish does not need or want config because by definition we are publishing
       // only the previously provided version. We do not want to be able to change content.
       List()
-    else fronts
-      .filterNot(_.isHidden) // drop hidden fronts
-      .map(_.toPublishedFront) // convert
-      .filterNot(_.collections.isEmpty), // drop fronts that contain no collections
-    EditionsAppTemplates.templates.get(edition).map(_.notificationUTCOffset).getOrElse(defaultOffset),
-    EditionsAppTemplates.templates.get(edition).map(_.topic),
+    else
+      fronts
+        .filterNot(_.isHidden) // drop hidden fronts
+        .map(_.toPublishedFront) // convert
+        .filterNot(
+          _.collections.isEmpty
+        ), // drop fronts that contain no collections
+    EditionsAppTemplates.templates
+      .get(edition)
+      .map(_.notificationUTCOffset)
+      .getOrElse(defaultOffset),
+    EditionsAppTemplates.templates.get(edition).map(_.topic)
   )
 
   def toSkeleton = EditionsIssueSkeleton(
@@ -69,11 +78,14 @@ case class EditionsIssue(
 object EditionsIssue {
   implicit val writes: OWrites[EditionsIssue] = Json.writes[EditionsIssue]
 
-  def fromRow(rs: WrappedResultSet, prefix: String = ""): Either[String, EditionsIssue] = {
+  def fromRow(
+      rs: WrappedResultSet,
+      prefix: String = ""
+  ): Either[String, EditionsIssue] = {
     val edition = Edition.withName(rs.string(prefix + "name"))
     val maybePlatform = AllTemplates.templates.get(edition) match {
       case Some(template) => Right(template.platform)
-      case None => Left(s"No template found for edition $edition")
+      case None           => Left(s"No template found for edition $edition")
     }
 
     maybePlatform.map { platform =>
@@ -83,14 +95,19 @@ object EditionsIssue {
         platform = platform,
         timezoneId = rs.string(prefix + "timezone_id"),
         issueDate = rs.localDate(prefix + "issue_date"),
-        createdOn = rs.zonedDateTime(prefix + "created_on").toInstant.toEpochMilli,
+        createdOn =
+          rs.zonedDateTime(prefix + "created_on").toInstant.toEpochMilli,
         createdBy = rs.string(prefix + "created_by"),
         createdEmail = rs.string(prefix + "created_email"),
-        launchedOn = rs.zonedDateTimeOpt(prefix + "launched_on").map(_.toInstant.toEpochMilli),
+        launchedOn = rs
+          .zonedDateTimeOpt(prefix + "launched_on")
+          .map(_.toInstant.toEpochMilli),
         launchedBy = rs.stringOpt(prefix + "launched_by"),
         launchedEmail = rs.stringOpt(prefix + "launched_email"),
         fronts = Nil,
-        supportsProofing = EditionsAppTemplates.templates.contains(edition) //proofing is supported by Editions but not Feast
+        supportsProofing = EditionsAppTemplates.templates.contains(
+          edition
+        ) // proofing is supported by Editions but not Feast
       )
     }
   }

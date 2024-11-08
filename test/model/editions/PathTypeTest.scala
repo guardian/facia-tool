@@ -12,7 +12,9 @@ class PathTypeTest extends FunSuite with Matchers {
 
   test("should construct correct path segments form enums") {
 
-    PathType.withName("printSent").toPathSegment shouldEqual "content/print-sent"
+    PathType
+      .withName("printSent")
+      .toPathSegment shouldEqual "content/print-sent"
     PathType.withName("search").toPathSegment shouldEqual "search"
   }
 

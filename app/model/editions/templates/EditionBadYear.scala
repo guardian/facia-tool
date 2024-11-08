@@ -10,22 +10,41 @@ import org.joda.time.{DateTime, DateTimeZone}
 //noinspection TypeAnnotation
 object EditionBadYear extends SpecialEdition {
   override val title = "The best of\na bad year"
-  override val subTitle = "A special, one-off Guardian digital supplement for the year we'd rather forget"
+  override val subTitle =
+    "A special, one-off Guardian digital supplement for the year we'd rather forget"
   override val edition = "edition-bad-year"
-  override val header = Header(title ="The best of", subTitle=Some("a bad year"))
+  override val header =
+    Header(title = "The best of", subTitle = Some("a bad year"))
   override val notificationUTCOffset = 3
   override val topic = "e-by"
-  override val buttonImageUri = Some("https://i.guim.co.uk/img/media/9183f03557872759bde51b1ffa52e7952a45cb20/0_0_525_1050/250.png?width=134&quality=100&s=34d3e831560a25f5b7abb164187ab53f")
+  override val buttonImageUri = Some(
+    "https://i.guim.co.uk/img/media/9183f03557872759bde51b1ffa52e7952a45cb20/0_0_525_1050/250.png?width=134&quality=100&s=34d3e831560a25f5b7abb164187ab53f"
+  )
   override val expiry: Option[String] = Some(
-    new DateTime(2021, 1,23,23,59,DateTimeZone.UTC).toString()
+    new DateTime(2021, 1, 23, 23, 59, DateTimeZone.UTC).toString()
   )
   override val buttonStyle: Option[SpecialEditionButtonStyles] = Some(
     SpecialEditionButtonStyles(
       backgroundColor = "#6B5840",
-      title = EditionTextFormatting(color = "#FFFFFF", font="GHGuardianHeadline-Light", lineHeight = 34, size = 34),
-      subTitle = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Bold", lineHeight = 20, size = 17),
-      expiry = EditionTextFormatting(color = "#FFFFFF", font="GuardianTextSans-Regular", lineHeight = 16, size = 15),
-      image = EditionImageStyle(67,134)
+      title = EditionTextFormatting(
+        color = "#FFFFFF",
+        font = "GHGuardianHeadline-Light",
+        lineHeight = 34,
+        size = 34
+      ),
+      subTitle = EditionTextFormatting(
+        color = "#FFFFFF",
+        font = "GuardianTextSans-Bold",
+        lineHeight = 20,
+        size = 17
+      ),
+      expiry = EditionTextFormatting(
+        color = "#FFFFFF",
+        font = "GuardianTextSans-Regular",
+        lineHeight = 16,
+        size = 15
+      ),
+      image = EditionImageStyle(67, 134)
     )
   )
   override val headerStyle: Option[SpecialEditionHeaderStyles] = Some(
@@ -35,7 +54,6 @@ object EditionBadYear extends SpecialEdition {
       textColorSecondary = "#FFFFFF"
     )
   )
-
 
   lazy val template = EditionTemplate(
     List(
@@ -79,11 +97,10 @@ object EditionBadYear extends SpecialEdition {
       Special38 -> Daily(),
       Special39 -> Daily(),
       Special40 -> Daily()
-      
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
-      endOffset = 0,
+      endOffset = 0
     ),
     capiDateQueryParam = CapiDateQueryParam.Published,
     zoneId = ZoneId.of("Europe/London"),
@@ -92,7 +109,9 @@ object EditionBadYear extends SpecialEdition {
     ophanQueryPrefillParams = None
   )
 
-  def Special01 = front("Sp Black 1", None,
+  def Special01 = front(
+    "Sp Black 1",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -100,7 +119,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special02 = front("Sp Black 2", None,
+  def Special02 = front(
+    "Sp Black 2",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -108,7 +129,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special03 = front("Sp Black 3", None,
+  def Special03 = front(
+    "Sp Black 3",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -116,7 +139,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special04 = front("Sp Black 4", None,
+  def Special04 = front(
+    "Sp Black 4",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -124,7 +149,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special05 = front("Sp Black 5", None,
+  def Special05 = front(
+    "Sp Black 5",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -132,7 +159,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
-  def Special06 = front("Sp Red 1", None,
+  def Special06 = front(
+    "Sp Red 1",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -140,7 +169,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special07 = front("Sp Red 2", None,
+  def Special07 = front(
+    "Sp Red 2",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -148,7 +179,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special08 = front("Sp Red 3", None,
+  def Special08 = front(
+    "Sp Red 3",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -156,7 +189,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special09 = front("Sp Red 4", None,
+  def Special09 = front(
+    "Sp Red 4",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -164,7 +199,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special10 = front("Sp Red 5", None,
+  def Special10 = front(
+    "Sp Red 5",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -172,7 +209,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special11 = front("Sp Red 6", None,
+  def Special11 = front(
+    "Sp Red 6",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -180,7 +219,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special12 = front("Sp Red 7", None,
+  def Special12 = front(
+    "Sp Red 7",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -188,7 +229,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special13 = front("Sp Red 8", None,
+  def Special13 = front(
+    "Sp Red 8",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -196,7 +239,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special14 = front("Sp Red 9", None,
+  def Special14 = front(
+    "Sp Red 9",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -204,7 +249,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special15 = front("Sp Red 10", None,
+  def Special15 = front(
+    "Sp Red 10",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -212,7 +259,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(News)
 
-  def Special16 = front("Sp Pink 1", None,
+  def Special16 = front(
+    "Sp Pink 1",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -220,7 +269,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Lifestyle)
 
-  def Special17 = front("Sp Pink 2", None,
+  def Special17 = front(
+    "Sp Pink 2",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -228,7 +279,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Lifestyle)
 
-  def Special18 = front("Sp Pink 3", None,
+  def Special18 = front(
+    "Sp Pink 3",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -236,7 +289,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Lifestyle)
 
-  def Special19 = front("Sp Pink 4", None,
+  def Special19 = front(
+    "Sp Pink 4",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -244,7 +299,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Lifestyle)
 
-  def Special20 = front("Sp Pink 5", None,
+  def Special20 = front(
+    "Sp Pink 5",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -252,7 +309,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Lifestyle)
 
-  def Special21 = front("Sp Pink 6", None,
+  def Special21 = front(
+    "Sp Pink 6",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -260,7 +319,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Lifestyle)
 
-  def Special22 = front("Sp Pink 7", None,
+  def Special22 = front(
+    "Sp Pink 7",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -268,7 +329,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Lifestyle)
 
-  def Special23 = front("Sp Pink 8", None,
+  def Special23 = front(
+    "Sp Pink 8",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -276,7 +339,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Lifestyle)
 
-  def Special24 = front("Sp Pink 9", None,
+  def Special24 = front(
+    "Sp Pink 9",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -284,7 +349,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Lifestyle)
 
-  def Special25 = front("Sp Pink 10", None,
+  def Special25 = front(
+    "Sp Pink 10",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -292,7 +359,9 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Lifestyle)
 
-  def Special26 = front("Sp Brown 1", None,
+  def Special26 = front(
+    "Sp Brown 1",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -300,111 +369,109 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Culture)
 
-  def Special27 = front("Sp Brown 2", None,
+  def Special27 = front(
+    "Sp Brown 2",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
-  def Special28 = front("Sp Brown 3", None,
+
+  def Special28 = front(
+    "Sp Brown 3",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
-  def Special29 = front("Sp Brown 4", None,
+
+  def Special29 = front(
+    "Sp Brown 4",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
-  def Special30 = front("Sp Brown 5", None,
+
+  def Special30 = front(
+    "Sp Brown 5",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
-  def Special31 = front("Sp Brown 6", None,
+
+  def Special31 = front(
+    "Sp Brown 6",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
-  def Special32 = front("Sp Brown 7", None,
+
+  def Special32 = front(
+    "Sp Brown 7",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
-  def Special33 = front("Sp Brown 8", None,
+
+  def Special33 = front(
+    "Sp Brown 8",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
-  def Special34 = front("Sp Brown 9", None,
+
+  def Special34 = front(
+    "Sp Brown 9",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
-  def Special35 = front("Sp Brown 10", None,
+
+  def Special35 = front(
+    "Sp Brown 10",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Culture)
-  
-  def Special36 = front("Sp Black 6", None,
+
+  def Special36 = front(
+    "Sp Black 6",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special"),
     collection("Special")
   ).swatch(Neutral)
-  
-  def Special37 = front("Sp Black 7", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Neutral)
-  
-  def Special38 = front("Sp Black 8", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Neutral)
-  
-  def Special39 = front("Sp Black 9", None,
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special"),
-    collection("Special")
-  ).swatch(Neutral)
-  
-  def Special40 = front("Sp Black 10", None,
+
+  def Special37 = front(
+    "Sp Black 7",
+    None,
     collection("Special"),
     collection("Special"),
     collection("Special"),
@@ -412,5 +479,34 @@ object EditionBadYear extends SpecialEdition {
     collection("Special")
   ).swatch(Neutral)
 
+  def Special38 = front(
+    "Sp Black 8",
+    None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special39 = front(
+    "Sp Black 9",
+    None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
+
+  def Special40 = front(
+    "Sp Black 10",
+    None,
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special"),
+    collection("Special")
+  ).swatch(Neutral)
 
 }
