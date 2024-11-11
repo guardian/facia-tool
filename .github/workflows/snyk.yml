@@ -1,45 +1,29 @@
-# This action runs every day at 6 AM and on every push
-# If the branch it's running on is main then it will run snyk monitor (reports vulnerabilities to snyk.io)
-# Otherwise it will run snyk test
-name: Snyk
+# This action submits a report to snyk on every push
 
+name: Snyk
 on:
-  schedule:
-    - cron: '0 6 * * *'
   push:
     branches:
-        - main
+      - main
   workflow_dispatch:
 
+
 jobs:
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v2
+  snyk-V2-and-scala:
+    uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
+    with:
+      ORG: guardian
+      JAVA_VERSION: 11
+      EXCLUDE: package-lock.json # exclude V1, since it has its own special job below (because of JSPM)
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
-      - name: Run Snyk to check for V1 Node vulnerabilities
-        uses: snyk/actions/node@0.3.0
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --org=guardian --project-name=${{ github.repository }}/V1 --file=./package-lock.json
-          command: monitor
-
-      - name: Run Snyk to check for V2 Node vulnerabilities
-        if: ${{ always() }} # always ensures we run this regardless of failed steps
-        uses: snyk/actions/node@0.3.0
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --org=guardian --project-name=${{ github.repository }}/V2 --file=./fronts-client/yarn.lock
-          command: monitor
-
-      - name: Run Snyk to check for Scala vulnerabilities
-        uses: snyk/actions/scala@0.3.0
-        if: ${{ always() }} # always ensures we run this regardless of failed steps
-        env:
-          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-        with:
-          args: --org=guardian --project-name=${{ github.repository }}/Scala --file=./build.sbt
-          command: monitor
+  snyk-V1-only:
+    uses: guardian/.github/.github/workflows/sbt-node-snyk.yml@main
+    with:
+      ORG: guardian
+      EXCLUDE: fronts-client # exclude V2, since it's captured by the main job above
+      SKIP_SBT: true # exclude scala, since it's captured by the main job above
+      NODE_PACKAGE_JSON_FILES_MISSING_LOCK: v1_jspm_snyk_workaround/package.json v1_jspm_snyk_workaround/result/package.json
+    secrets:
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}

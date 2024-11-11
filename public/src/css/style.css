@@ -2017,6 +2017,14 @@ ol.search_list > li::before {
     flex-wrap: wrap;
 }
 
+.cnf-form .beta-warning-text {
+    color: #f68d12;
+    background: #fffaed;
+    padding: 0 2px;
+    border: 1px solid;
+    border-radius: 4px;
+}
+
 .cnf-form .type-option-chosen {
     color: #2ea3eb;
     position: absolute;

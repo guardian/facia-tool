@@ -6,13 +6,15 @@ import org.joda.time.DateTime
 import org.scalatest.{FreeSpec, Matchers}
 import services.{CollectionAndStoriesResponse}
 
-
 class V2GetCollectionsCommandTest extends FreeSpec with Matchers {
   val now = new DateTime()
   val yesterday = now.minusDays(1)
   val tomorrow = now.plusDays(1)
 
-  private def createCollectionSpec(id: String, lastUpdated: Option[Long] = None) = {
+  private def createCollectionSpec(
+      id: String,
+      lastUpdated: Option[Long] = None
+  ) = {
     CollectionSpec(id, lastUpdated)
   }
 
@@ -31,7 +33,10 @@ class V2GetCollectionsCommandTest extends FreeSpec with Matchers {
     )
   }
 
-  private def createCollectionAndStoriesResponse(id: String, lastUpdated: DateTime): CollectionAndStoriesResponse = {
+  private def createCollectionAndStoriesResponse(
+      id: String,
+      lastUpdated: DateTime
+  ): CollectionAndStoriesResponse = {
     CollectionAndStoriesResponse(id, createCollectionJson(lastUpdated), None)
   }
 
@@ -45,7 +50,10 @@ class V2GetCollectionsCommandTest extends FreeSpec with Matchers {
         Some(createCollectionAndStoriesResponse("id1", now)),
         Some(createCollectionAndStoriesResponse("id2", yesterday))
       )
-      V2GetCollectionsCommand.keepOnlyNewerCollectionData(specs, responses) should be(responses.flatten)
+      V2GetCollectionsCommand.keepOnlyNewerCollectionData(
+        specs,
+        responses
+      ) should be(responses.flatten)
     }
 
     "should return only collection response data when CollectionResponse has more recent lastUpdated data than CollectionSpecs" in {
@@ -59,9 +67,14 @@ class V2GetCollectionsCommandTest extends FreeSpec with Matchers {
         Some(createCollectionAndStoriesResponse("id2", yesterday)),
         Some(createCollectionAndStoriesResponse("id3", tomorrow))
       )
-      V2GetCollectionsCommand.keepOnlyNewerCollectionData(specs, responses) should be(List(
-        createCollectionAndStoriesResponse("id3", tomorrow)
-      ))
+      V2GetCollectionsCommand.keepOnlyNewerCollectionData(
+        specs,
+        responses
+      ) should be(
+        List(
+          createCollectionAndStoriesResponse("id3", tomorrow)
+        )
+      )
     }
 
     "should return an empty list when all CollectionResponse items have older lastUpdated data than CollectionSpecs" in {
@@ -75,7 +88,10 @@ class V2GetCollectionsCommandTest extends FreeSpec with Matchers {
         Some(createCollectionAndStoriesResponse("id2", yesterday)),
         Some(createCollectionAndStoriesResponse("id3", yesterday))
       )
-      V2GetCollectionsCommand.keepOnlyNewerCollectionData(specs, responses) should be(List())
+      V2GetCollectionsCommand.keepOnlyNewerCollectionData(
+        specs,
+        responses
+      ) should be(List())
     }
   }
 

@@ -3,18 +3,23 @@ package slices
 import slices.Story._
 import util.Seqs._
 
-/** Used for calculating the final slice -- any stories that are not standard are considered 'bigs' for the standard
-  * slice
+/** Used for calculating the final slice -- any stories that are not standard
+  * are considered 'bigs' for the standard slice
   */
-private [slices] case class BigsAndStandards(
-  bigs: Seq[Story],
-  standards: Seq[Story]
+private[slices] case class BigsAndStandards(
+    bigs: Seq[Story],
+    standards: Seq[Story]
 )
 
-private [slices] trait DynamicContainer {
-  protected def standardSlices(stories: Seq[Story], firstSlice: Option[Slice]): Seq[Slice]
+private[slices] trait DynamicContainer {
+  protected def standardSlices(
+      stories: Seq[Story],
+      firstSlice: Option[Slice]
+  ): Seq[Slice]
 
-  protected def optionalFirstSlice(stories: Seq[Story]): Option[(Slice, Seq[Story])] = {
+  protected def optionalFirstSlice(
+      stories: Seq[Story]
+  ): Option[(Slice, Seq[Story])] = {
     val byGroup = segmentByGroup(stories)
 
     val huges = byGroup.getOrElse(3, Seq.empty)
@@ -39,7 +44,9 @@ private [slices] trait DynamicContainer {
     }
   }
 
-  protected final def bigsAndStandards(stories: Seq[Story]): BigsAndStandards = {
+  protected final def bigsAndStandards(
+      stories: Seq[Story]
+  ): BigsAndStandards = {
     val byGroup = segmentByGroup(stories)
 
     BigsAndStandards(
@@ -51,7 +58,10 @@ private [slices] trait DynamicContainer {
   }
 
   final def slicesFor(stories: Seq[Story]): Option[Seq[Slice]] = {
-    if (stories.nonEmpty && stories.isDescending && stories.forall(story => story.group >= 0 && story.group <= 3)) {
+    if (
+      stories.nonEmpty && stories.isDescending && stories
+        .forall(story => story.group >= 0 && story.group <= 3)
+    ) {
       optionalFirstSlice(stories) map { case (firstSlice, remaining) =>
         Some(firstSlice +: standardSlices(remaining, Some(firstSlice)))
       } getOrElse {
@@ -62,7 +72,9 @@ private [slices] trait DynamicContainer {
     }
   }
 
-  final def containerDefinitionFor(stories: Seq[Story]): Option[ContainerDefinition] = {
+  final def containerDefinitionFor(
+      stories: Seq[Story]
+  ): Option[ContainerDefinition] = {
     slicesFor(stories) map { slices =>
       ContainerDefinition(slices, mobileShowMore = DesktopBehaviour, Set.empty)
     }

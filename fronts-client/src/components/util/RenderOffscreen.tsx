@@ -6,6 +6,6 @@ import { styled } from 'constants/theme';
  * don't belong on the page as the user sees it.
  */
 export default styled.div`
-  position: absolute;
-  transform: translateX(-9999px);
+	position: absolute;
+	transform: translateX(-9999px);
 `;

@@ -238,7 +238,7 @@ describe('Breaking News', function () {
             expect(regions.front().collection(1).history().trailCount()).toBe(1);
             expect(regions.front().collection(1).group(1).trailCount()).toBe(0);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -328,7 +328,7 @@ describe('Breaking News', function () {
         .then(() => {
             expect(regions.front().collection(1).publishText()).toBe('Send alert');
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

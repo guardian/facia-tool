@@ -23,36 +23,71 @@ object DailyEdition extends RegionalEdition {
       FrontTopStories -> Daily(),
       FrontSpecial2 -> Daily(),
       // News fronts then special
-      FrontNewsUkGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri)),
+      FrontNewsUkGuardian -> WeekDays(
+        List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri)
+      ),
       FrontNewsUkGuardianSaturday -> WeekDays(List(WeekDay.Sat)),
       FrontNewsUkObserver -> WeekDays(List(WeekDay.Sun)),
       FrontNewsSpecial -> Daily(),
       // World News fronts and special
-      FrontNewsWorldGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
+      FrontNewsWorldGuardian -> WeekDays(
+        List(
+          WeekDay.Mon,
+          WeekDay.Tues,
+          WeekDay.Wed,
+          WeekDay.Thurs,
+          WeekDay.Fri,
+          WeekDay.Sat
+        )
+      ),
       FrontNewsWorldObserver -> WeekDays(List(WeekDay.Sun)),
       FrontWorldSpecial -> Daily(),
       // Financial fronts and special
-      FrontBusinessGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
+      FrontBusinessGuardian -> WeekDays(
+        List(
+          WeekDay.Mon,
+          WeekDay.Tues,
+          WeekDay.Wed,
+          WeekDay.Thurs,
+          WeekDay.Fri,
+          WeekDay.Sat
+        )
+      ),
       FrontBusinessObserver -> WeekDays(List(WeekDay.Sun)),
       // Journal, Comment and special
-      FrontJournal -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
+      FrontJournal -> WeekDays(
+        List(
+          WeekDay.Mon,
+          WeekDay.Tues,
+          WeekDay.Wed,
+          WeekDay.Thurs,
+          WeekDay.Fri,
+          WeekDay.Sat
+        )
+      ),
       FrontComment -> WeekDays(List(WeekDay.Sun)),
       FrontOpinionSpecial -> Daily(),
       // Culture fronts and special
-      FrontCulture -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
+      FrontCulture -> WeekDays(
+        List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)
+      ),
       FrontCultureFilmMusic -> WeekDays(List(WeekDay.Fri)),
       // New for Saturday Magazine
       FrontLifeSaturdayMagazineFeatures -> WeekDays(List(WeekDay.Sat)),
       FrontLifeSaturdayMagazineCuttings -> WeekDays(List(WeekDay.Sat)),
       // New for the Saturday Magazine
       FrontCultureSaturdayMagazineCulture -> WeekDays(List(WeekDay.Sat)),
+      // What's on
+      FrontCultureSaturdayMagazineWhatsOn -> WeekDays(List(WeekDay.Sat)),
       FrontCultureSaturdayMagazineBooks -> WeekDays(List(WeekDay.Sat)),
       FrontCultureNewReview -> WeekDays(List(WeekDay.Sun)),
       FrontCriticsNewReview -> WeekDays(List(WeekDay.Sun)),
       FrontBooks -> WeekDays(List(WeekDay.Sun)),
       FrontCultureSpecial -> Daily(),
       // Life fronts and special
-      FrontLife -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)),
+      FrontLife -> WeekDays(
+        List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs)
+      ),
       FrontLifeWeekend -> WeekDays(List(WeekDay.Sat)),
       FrontTravelGuardian -> WeekDays(List(WeekDay.Sat)),
       FrontLifeMagazineObserver -> WeekDays(List(WeekDay.Sun)),
@@ -60,20 +95,38 @@ object DailyEdition extends RegionalEdition {
       FrontFoodObserver -> WeekDays(List(WeekDay.Sun)),
       FrontLifeFashion -> WeekDays(List(WeekDay.Sat)),
       FrontLifeDesign -> WeekDays(List(WeekDay.Sun)),
-      FrontLifeSpecial -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Sat, WeekDay.Sun)),
+      FrontLifeSpecial -> WeekDays(
+        List(
+          WeekDay.Mon,
+          WeekDay.Tues,
+          WeekDay.Wed,
+          WeekDay.Thurs,
+          WeekDay.Sat,
+          WeekDay.Sun
+        )
+      ),
       // Sport fronts and special
-      FrontSportGuardian -> WeekDays(List(WeekDay.Mon, WeekDay.Tues, WeekDay.Wed, WeekDay.Thurs, WeekDay.Fri, WeekDay.Sat)),
+      FrontSportGuardian -> WeekDays(
+        List(
+          WeekDay.Mon,
+          WeekDay.Tues,
+          WeekDay.Wed,
+          WeekDay.Thurs,
+          WeekDay.Fri,
+          WeekDay.Sat
+        )
+      ),
       FrontSportObserver -> WeekDays(List(WeekDay.Sun)),
       FrontSportSpecial -> Daily(),
       // Special Supplements
       FrontSupplementSpecial1 -> Daily(),
       FrontSupplementSpecial2 -> Daily(),
       // Crosswords
-      FrontCrosswords -> Daily(),
+      FrontCrosswords -> Daily()
     ),
     timeWindowConfig = CapiTimeWindowConfigInDays(
       startOffset = 0,
-      endOffset = 0,
+      endOffset = 0
     ),
     capiDateQueryParam = CapiDateQueryParam.NewspaperEdition,
     zoneId = ZoneId.of("Europe/London"),
@@ -93,9 +146,17 @@ object DailyEdition extends RegionalEdition {
 
   def FrontNewsUkGuardian = front(
     "National",
-    collection("National").printSentAnyTag("theguardian/mainsection/topstories"),
+    collection("National").printSentAnyTag(
+      "theguardian/mainsection/topstories"
+    ),
     collection("National").hide,
-    collection("National").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members"),
+    collection("National").printSentAnyTag(
+      "theguardian/mainsection/uknews",
+      "theguardian/mainsection/education",
+      "theguardian/mainsection/society",
+      "theguardian/mainsection/media",
+      "theguardian/guardian-members/guardian-members"
+    ),
     collection("National").printSentAnyTag("theguardian/mainsection/weather2"),
     collection("National").hide,
     collection("National").hide
@@ -104,10 +165,21 @@ object DailyEdition extends RegionalEdition {
 
   def FrontNewsUkGuardianSaturday = front(
     "National",
-    collection("National").printSentAnyTag("theguardian/mainsection/topstories"),
+    collection("National").printSentAnyTag(
+      "theguardian/mainsection/topstories"
+    ),
     collection("National").hide,
-    collection("National").printSentAnyTag("theguardian/mainsection/uknews", "theguardian/mainsection/education", "theguardian/mainsection/society", "theguardian/mainsection/media", "theguardian/guardian-members/guardian-members", "theguardian/mainsection/environmentnews"),
-    collection("Week in Review").printSentAnyTag("theguardian/mainsection/week-in-review"),
+    collection("National").printSentAnyTag(
+      "theguardian/mainsection/uknews",
+      "theguardian/mainsection/education",
+      "theguardian/mainsection/society",
+      "theguardian/mainsection/media",
+      "theguardian/guardian-members/guardian-members",
+      "theguardian/mainsection/environmentnews"
+    ),
+    collection("Week in Review").printSentAnyTag(
+      "theguardian/mainsection/week-in-review"
+    ),
     collection("National").printSentAnyTag("theguardian/mainsection/weather2"),
     collection("National").hide,
     collection("National").hide
@@ -118,7 +190,9 @@ object DailyEdition extends RegionalEdition {
 
   def FrontNewsWorldGuardian = front(
     "World",
-    collection("World").printSentAnyTag("theguardian/mainsection/international"),
+    collection("World").printSentAnyTag(
+      "theguardian/mainsection/international"
+    ),
     collection("World").hide,
     collection("World").hide,
     collection("World").hide,
@@ -131,6 +205,8 @@ object DailyEdition extends RegionalEdition {
     "National",
     collection("National"),
     collection("National").printSentAnyTag("theobserver/news/uknews"),
+    collection("National").hide,
+    collection("National").hide,
     collection("National").hide,
     collection("National").hide,
     collection("National").hide
@@ -154,7 +230,9 @@ object DailyEdition extends RegionalEdition {
 
   def FrontBusinessGuardian = front(
     "Business",
-    collection("Business").printSentAnyTag("theguardian/mainsection/financial3"),
+    collection("Business").printSentAnyTag(
+      "theguardian/mainsection/financial3"
+    ),
     collection("Business"),
     collection("Money").printSentAnyTag("theguardian/mainsection/money"),
     collection("Money")
@@ -174,13 +252,16 @@ object DailyEdition extends RegionalEdition {
 
   def FrontJournal = front(
     "Journal",
-    collection("Features").printSentAnyTag("theguardian/journal/the-long-read", "theguardian/journal/features"),
+    collection("Features").printSentAnyTag(
+      "theguardian/journal/the-long-read",
+      "theguardian/journal/features"
+    ),
     collection("Comment").printSentAnyTag("theguardian/journal/opinion"),
     collection("Comment").hide,
     collection("Letters").printSentAnyTag("theguardian/journal/letters"),
     collection("Journal"),
     collection("Obituaries").printSentAnyTag("theguardian/journal/obituaries"),
-    collection("Journal").hide,
+    collection("Journal").hide
   )
     .swatch(Opinion)
 
@@ -195,10 +276,10 @@ object DailyEdition extends RegionalEdition {
     .swatch(Opinion)
 
   def FrontOpinionSpecial = specialFront("Journal Special", Opinion)
-  
+
   // New for Saturday Life Magazine, we're making temporarily a special to be hidden by default.
-  
-    def FrontLifeSaturdayMagazineFeatures = front(
+
+  def FrontLifeSaturdayMagazineFeatures = front(
     "Features",
     collection("Features").printSentAnyTag("theguardian/saturday/features"),
     collection("Features"),
@@ -207,8 +288,8 @@ object DailyEdition extends RegionalEdition {
     collection("Features").hide
   )
     .swatch(Lifestyle)
-  
-    def FrontLifeSaturdayMagazineCuttings = front(
+
+  def FrontLifeSaturdayMagazineCuttings = front(
     "Cuttings",
     collection("Cuttings").printSentAnyTag("theguardian/saturday/cuttings"),
     collection("Cuttings"),
@@ -227,6 +308,16 @@ object DailyEdition extends RegionalEdition {
   )
     .swatch(Culture)
 
+  def FrontCultureSaturdayMagazineWhatsOn = front(
+    "What's on",
+    collection("What's on").printSentAnyTag("theguardian/whatson/whatson"),
+    collection("What's on"),
+    collection("What's on"),
+    collection("What's on"),
+    collection("What's on").hide
+  )
+    .swatch(Culture)
+
   def FrontCultureFilmMusic = front(
     "Culture",
     collection("Film").printSentAnyTag("theguardian/g2/film"),
@@ -234,23 +325,28 @@ object DailyEdition extends RegionalEdition {
     collection("Arts").printSentAnyTag("theguardian/g2/arts"),
     collection("TV & radio").printSentAnyTag("theguardian/g2/tvandradio"),
     collection("Culture"),
+    collection("Culture").hide,
+    collection("Culture").hide,
     collection("Culture").hide
   )
     .swatch(Culture)
-  
+
   // New for the Saturday Magazine
-  
-    def FrontCultureSaturdayMagazineCulture = front(
+
+  def FrontCultureSaturdayMagazineCulture = front(
     "Culture",
-    collection("Culture").printSentAnyTag("theguardian/saturday/culture", "theguardian/whatson/whatson"),
+    collection("Culture").printSentAnyTag(
+      "theguardian/saturday/culture",
+      "theguardian/whatson/whatson"
+    ),
     collection("Culture"),
     collection("Culture"),
     collection("Culture"),
     collection("Culture").hide
   )
     .swatch(Culture)
-  
-    def FrontCultureSaturdayMagazineBooks = front(
+
+  def FrontCultureSaturdayMagazineBooks = front(
     "Books",
     collection("Books"),
     collection("Books"),
@@ -265,16 +361,16 @@ object DailyEdition extends RegionalEdition {
     collection("Features").printSentAnyTag("theobserver/new-review/features"),
     collection("Agenda").printSentAnyTag("theobserver/new-review/agenda"),
     collection("Discover").printSentAnyTag("theobserver/new-review/discover"),
-    collection("Critics").printSentAnyTag("theobserver/new-review/critics"),
+    collection("Critics"),
     collection("Culture").hide,
     collection("Culture").hide,
     collection("Culture").hide
   )
     .swatch(Culture)
-  
-    def FrontCriticsNewReview = front(
+
+  def FrontCriticsNewReview = front(
     "Critics",
-    collection("Critics"),
+    collection("Critics").printSentAnyTag("theobserver/new-review/critics"),
     collection("Critics"),
     collection("Critics"),
     collection("Critics"),
@@ -283,7 +379,7 @@ object DailyEdition extends RegionalEdition {
     collection("Critics").hide
   )
     .swatch(Culture)
-  
+
   def FrontBooks = front(
     "Books",
     collection("Books").printSentAnyTag("theobserver/new-review/books"),
@@ -308,19 +404,20 @@ object DailyEdition extends RegionalEdition {
 
   def FrontLifeFashion = front(
     "The Fashion",
-    collection("The Fashion").printSentAnyTag("theguardian/the-fashion/the-fashion"),
+    collection("The Fashion").printSentAnyTag(
+      "theguardian/the-fashion/the-fashion"
+    ),
     collection("The Fashion").hide,
     collection("The Fashion").hide,
     collection("The Fashion").hide,
     collection("The Fashion").hide,
     collection("The Fashion").hide
-  )
-    .special
+  ).special
     .swatch(Lifestyle)
 
   // Hidden by default, a front for the irregular 'Design' supplement
 
-    def FrontLifeDesign = front(
+  def FrontLifeDesign = front(
     "Design",
     collection("Design").printSentAnyTag("theobserver/design/design"),
     collection("Design").hide,
@@ -328,8 +425,7 @@ object DailyEdition extends RegionalEdition {
     collection("Design").hide,
     collection("Design").hide,
     collection("Design").hide
-  )
-    .special
+  ).special
     .swatch(Lifestyle)
 
   def FrontLifeWeekend = front(
@@ -355,8 +451,11 @@ object DailyEdition extends RegionalEdition {
   def FrontLifeMagazineObserver = front(
     "Life",
     collection("Features").printSentAnyTag("theobserver/magazine/features2"),
-    collection("Life").printSentAllTags("theobserver/magazine/life-and-style", "-food/food"),
+    collection("Life")
+      .printSentAllTags("theobserver/magazine/life-and-style", "-food/food"),
     collection("Life").printSentAnyTag("theobserver/design/design").hide,
+    collection("Life").hide,
+    collection("Life").hide,
     collection("Life").hide,
     collection("Life").hide
   )
@@ -367,14 +466,22 @@ object DailyEdition extends RegionalEdition {
     collection("Food").printSentAnyTag("theguardian/feast/feast"),
     collection("Food").hide,
     collection("Food").hide,
+    collection("Food").hide,
+    collection("Food").hide,
     collection("Food").hide
   )
     .swatch(Lifestyle)
 
   def FrontFoodObserver = front(
     "Food",
-    collection("Food").printSentAllTags("theobserver/magazine/life-and-style", "food/food"),
-    collection("Monthly").printSentAnyTag("theobserver/foodmonthly/features", "theobserver/foodmonthly").hide,
+    collection("Food")
+      .printSentAllTags("theobserver/magazine/life-and-style", "food/food"),
+    collection("Monthly")
+      .printSentAnyTag(
+        "theobserver/foodmonthly/features",
+        "theobserver/foodmonthly"
+      )
+      .hide,
     collection("Food").hide,
     collection("Food").hide,
     collection("Food").hide
@@ -390,6 +497,8 @@ object DailyEdition extends RegionalEdition {
     collection("Sport"),
     collection("Sport"),
     collection("Sport").hide,
+    collection("Sport").hide,
+    collection("Sport").hide,
     collection("Sport").hide
   )
     .swatch(Sport)
@@ -401,6 +510,8 @@ object DailyEdition extends RegionalEdition {
     collection("Sport"),
     collection("Sport"),
     collection("Sport").hide,
+    collection("Sport").hide,
+    collection("Sport").hide,
     collection("Sport").hide
   )
     .swatch(Sport)
@@ -410,7 +521,12 @@ object DailyEdition extends RegionalEdition {
   def FrontSupplementSpecial1 = specialFront(
     "Supplement",
     swatch = Neutral,
-    prefill = Some(CapiPrefillQuery("?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement", PathType.PrintSent))
+    prefill = Some(
+      CapiPrefillQuery(
+        "?tag=theguardian/special-supplement/special-supplement|theobserver/special-supplement/special-supplement",
+        PathType.PrintSent
+      )
+    )
   )
 
   def FrontSupplementSpecial2 = specialFront("Special Supplement", Neutral)

@@ -1,0 +1,154 @@
+{
+  "bookCredit": "",
+  "canonicalArticle": "lifeandstyle/2015/feb/20/cauliflower-recipes-yotam-ottolenghi",
+  "celebrationIds": [],
+  "composerId": "54d0b9b2e4b00c561b82de60",
+  "contributors": [
+    "profile/yotamottolenghi"
+  ],
+  "cuisineIds": [],
+  "description": "I like to serve this in the centre of the table, for people to share with drinks at the start of a meal. We break the cauliflower apart with our hands (let it cool down a little first), dip the individual florets and crisp green leaves into the creme fraiche sauce and sprinkle with salt",
+  "featuredImage": {
+    "url": "https://i.guim.co.uk/img/media/9428c177111fcaea066fce717cdb74b9779466e7/0_18_3379_4225/master/3379.jpg?width=1600&dpr=1&s=none",
+    "mediaId": "9428c177111fcaea066fce717cdb74b9779466e7",
+    "cropId": "0_18_3379_4225",
+    "source": "The Guardian. Food styling: Katie Giovanni.",
+    "caption": "YOTAM_main_cauliflower_no_cream.tif\nYotam Ottolenghi\nCauliflower recipes for Weekend maagzine",
+    "mediaApiUri": "https://api.media.gutools.co.uk/images/9428c177111fcaea066fce717cdb74b9779466e7",
+    "width": 1600,
+    "height": 2000,
+    "photographer": "Johanna Parkin",
+    "imageType": "Photograph",
+    "displayCredit": true
+  },
+  "id": "c2c9118b7e7b4a4aae48f31d4704dbd1",
+  "ingredients": [
+    {
+      "ingredientsList": [
+        {
+          "amount": {
+            "min": 1,
+            "max": 1
+          },
+          "name": "cauliflower",
+          "optional": false,
+          "prefix": "large",
+          "suffix": "with its leaves intact",
+          "text": "1 large cauliflower with its leaves intact"
+        },
+        {
+          "amount": {
+            "max": 150,
+            "min": 150
+          },
+          "name": "creme fraiche",
+          "optional": false,
+          "text": "150 g creme fraiche",
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "max": 1,
+            "min": 1
+          },
+          "name": "lemon juice",
+          "optional": false,
+          "text": "1 tbsp lemon juice",
+          "unit": "tbsp"
+        },
+        {
+          "amount": {
+            "min": 70,
+            "max": 70
+          },
+          "name": "unsalted butter",
+          "optional": false,
+          "suffix": "softened to room temperature",
+          "text": "70 g unsalted butter, softened to room temperature",
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "max": 3,
+            "min": 3
+          },
+          "name": "olive oil",
+          "optional": false,
+          "text": "3 tbsp olive oil",
+          "unit": "tbsp"
+        },
+        {
+          "amount": {
+            "min": null,
+            "max": null
+          },
+          "name": "Coarse sea salt",
+          "optional": false,
+          "text": "Coarse sea salt"
+        }
+      ],
+      "recipeSection": ""
+    }
+  ],
+  "instructions": [
+    {
+      "description": "Using a pair of scissors, lightly trim the leaves at the top of the cauliflower, so that about 5cm of the cauliflower’s head is exposed."
+    },
+    {
+      "description": "Fill a pan large enough to fit the cauliflower in salty water. Bring to a boil and carefully lower in the cauliflower exposed head down: don’t worry if the base sticks out a little. Bring back to a boil, cook for six minutes, then transfer the cauliflower to a colander, exposed head down. Set aside for 10 minutes, to drain and cool."
+    },
+    {
+      "description": "Heat the oven to 170C/335F/gas mark 3."
+    },
+    {
+      "description": "Mix together the creme fraiche and lemon juice, and set aside in the fridge until required."
+    },
+    {
+      "description": "Mix the butter with the oil."
+    },
+    {
+      "description": "Put the cauliflower stem side down in a medium baking tray and spread the butter mix all over the white flower. Sprinkle over a teaspoon and a quarter of salt, and roast for an hour and a half to two hours, basting the cauliflower with the buttery juices five or six times during cooking. The cauliflower is done when it’s super-tender and a dark golden-brown, and the leaves are crisp and charred."
+    },
+    {
+      "description": "Remove from the oven and serve with the lemony creme fraiche and a little extra salt for sprinkling on top alongside."
+    }
+  ],
+  "isAppReady": false,
+  "mealTypeIds": [
+    "side"
+  ],
+  "serves": [
+    {
+      "amount": {
+        "max": 4,
+        "min": 4
+      },
+      "text": "Serves four as a starter",
+      "unit": "people"
+    }
+  ],
+  "suitableForDietIds": [
+    "meat-free",
+    "vegetarian",
+    "gluten-free",
+    "pescatarian"
+  ],
+  "techniquesUsedIds": [],
+  "timings": [],
+  "title": "Roasted whole cauliflower with creme fraiche",
+  "utensilsAndApplianceIds": [],
+  "byline": [],
+  "previewImage": {
+    "url": "https://i.guim.co.uk/img/media/9428c177111fcaea066fce717cdb74b9779466e7/0_18_3379_4225/master/3379.jpg?width=1600&dpr=1&s=none",
+    "mediaId": "9428c177111fcaea066fce717cdb74b9779466e7",
+    "cropId": "0_18_3379_4225",
+    "source": "The Guardian. Food styling: Katie Giovanni.",
+    "caption": "YOTAM_main_cauliflower_no_cream.tif\nYotam Ottolenghi\nCauliflower recipes for Weekend maagzine",
+    "mediaApiUri": "https://api.media.gutools.co.uk/images/9428c177111fcaea066fce717cdb74b9779466e7",
+    "width": 1600,
+    "height": 2000,
+    "photographer": "Johanna Parkin",
+    "imageType": "Photograph",
+    "displayCredit": true
+  }
+}

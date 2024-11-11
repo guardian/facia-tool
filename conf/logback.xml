@@ -16,6 +16,9 @@
     </appender>
 
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <!--<encoder>
+            <pattern>%date [%thread] %-5level %logger{36} - %msg%n%xException{3}</pattern>
+        </encoder>-->
         <encoder class="net.logstash.logback.encoder.LogstashEncoder" />
     </appender>
 
@@ -29,5 +32,4 @@
     </root>
 
     <logger name="com.google.api.client.http" level="WARN" />
-
 </configuration>

@@ -15,7 +15,9 @@ class FrontPresentationTest extends FreeSpec with Matchers {
     }
 
     "should deserialise correctly" in {
-      Json.fromJson[FrontPresentation](Json.parse(frontPresentationAsString)).get shouldBe presentation
+      Json
+        .fromJson[FrontPresentation](Json.parse(frontPresentationAsString))
+        .get shouldBe presentation
     }
 
   }

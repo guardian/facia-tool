@@ -9,12 +9,12 @@ import scala.jdk.CollectionConverters._
 
 package object events {
   case class PublishEvent(
-    edition: Edition,
-    version: EditionIssueVersionId,
-    issueDate: LocalDate,
-    status: IssueVersionStatus,
-    message: String,
-    timestamp: LocalDateTime
+      edition: Edition,
+      version: EditionIssueVersionId,
+      issueDate: LocalDate,
+      status: IssueVersionStatus,
+      message: String,
+      timestamp: LocalDateTime
   ) {
     def toLogMarker: LogstashMarker = {
       val markers = Map(
@@ -33,6 +33,7 @@ package object events {
   case class PublishEventMessage(receiptHandle: String, event: PublishEvent)
 
   object PublishEventMessageFormatter {
-    implicit val issuePublishedEventFormat: Format[PublishEvent] = Json.format[PublishEvent]
+    implicit val issuePublishedEventFormat: Format[PublishEvent] =
+      Json.format[PublishEvent]
   }
 }

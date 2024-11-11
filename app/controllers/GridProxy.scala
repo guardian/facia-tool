@@ -13,7 +13,12 @@ object FrontUsageData {
 
 case class FrontUsageData(mediaId: String, front: String)
 
-case class GridUsageData(dateAdded: DateTime, addedBy: String, front: String, mediaId: String)
+case class GridUsageData(
+    dateAdded: DateTime,
+    addedBy: String,
+    front: String,
+    mediaId: String
+)
 
 object GridUsageData {
   implicit val jsonFormat: Format[GridUsageData] = Json.format[GridUsageData]
@@ -22,26 +27,37 @@ object GridUsageData {
 case class GridUsageRequest(data: GridUsageData)
 
 object GridUsageRequest {
-  implicit val jsonFormat: Format[GridUsageRequest] = Json.format[GridUsageRequest]
+  implicit val jsonFormat: Format[GridUsageRequest] =
+    Json.format[GridUsageRequest]
 }
 
-class GridProxy(val deps: BaseFaciaControllerComponents)(implicit ec: ExecutionContext) extends BaseFaciaController(deps) {
+class GridProxy(val deps: BaseFaciaControllerComponents)(implicit
+    ec: ExecutionContext
+) extends BaseFaciaController(deps) {
 
   def addUsage() = APIAuthAction.async { request =>
-
-    val usageRequest = request.body.asJson.flatMap(jsValue => jsValue.asOpt[FrontUsageData])
+    val usageRequest =
+      request.body.asJson.flatMap(jsValue => jsValue.asOpt[FrontUsageData])
     usageRequest match {
       case Some(parsedRequest) => {
 
         val gridUrl = s"${config.media.usageUrl}/usages/front"
 
-        val usageRequest = GridUsageRequest(GridUsageData(DateTime.now, request.user.email, parsedRequest.front, parsedRequest.mediaId))
+        val usageRequest = GridUsageRequest(
+          GridUsageData(
+            DateTime.now,
+            request.user.email,
+            parsedRequest.front,
+            parsedRequest.mediaId
+          )
+        )
 
         val usageJson = Json.toJson(usageRequest)
-        wsClient.url(gridUrl)
+        wsClient
+          .url(gridUrl)
           .withHttpHeaders("X-Gu-Media-Key" -> config.media.key)
           .post(usageJson)
-          .map { response => Ok(usageJson).as("application/json")}
+          .map { response => Ok(usageJson).as("application/json") }
       }
       case None => Future.successful(BadRequest)
 
