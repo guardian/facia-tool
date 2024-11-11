@@ -267,7 +267,6 @@ const insertCardWithCreate =
 				if (!card) {
 					return;
 				}
-
 				const modifyCardAction = mayLowerCardBoostLevelForDestinationGroup(
 					state,
 					to,
@@ -437,25 +436,20 @@ export const createArticleEntitiesFromDrop = (
 ): ThunkResult<Promise<Card | undefined>> => {
 	return async (dispatch, getState) => {
 		const isEdition = selectEditMode(getState()) === 'editions';
-		const [maybeCard, maybeExternalArticle] = await getCardEntitiesFromDrop(
-			drop,
-			isEdition,
-			dispatch,
-		);
+		const { card, supportingCards, externalArticle } =
+			await getCardEntitiesFromDrop(drop, isEdition, dispatch, getState());
 
-		if (maybeExternalArticle) {
-			dispatch(externalArticleActions.fetchSuccess(maybeExternalArticle));
+		if (externalArticle) {
+			dispatch(externalArticleActions.fetchSuccess(externalArticle));
 		}
-		if (maybeCard) {
-			//if the card we are dropping has supporting cards, ensure that they travel too
-			const supporting =
-				maybeCard.meta?.supporting?.map((uuid) =>
-					selectCard(getState(), uuid),
-				) ?? [];
+		let cardsToAddToTheState: Card[] = [];
+		if (card) {
+			if (supportingCards) cardsToAddToTheState = [card, ...supportingCards];
+			else cardsToAddToTheState = [card];
+		}
 
-			dispatch(cardsReceived([maybeCard, ...supporting]));
-		}
-		return maybeCard;
+		dispatch(cardsReceived(cardsToAddToTheState));
+		return card;
 	};
 };
 
