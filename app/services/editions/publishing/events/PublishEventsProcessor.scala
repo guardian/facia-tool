@@ -7,15 +7,21 @@ private[events] object PublishEventsProcessor {
     new PublishEventsProcessor(sqsFacade)
 }
 
-private[events] class PublishEventsProcessor(sqsFacade: PublishEventsQueueFacade) extends Logging {
+private[events] class PublishEventsProcessor(
+    sqsFacade: PublishEventsQueueFacade
+) extends Logging {
 
   def processPublishEvent(updateEventInDB: PublishEvent => Boolean): Unit = {
-    sqsFacade.getPublishEventFromQueue.foreach{sqsEvent => {
-      val publishEvent = sqsEvent.event
-      logger.info(s"received publish event from SQS")(publishEvent.toLogMarker)
-      if (updateEventInDB(publishEvent)) {
-        sqsFacade.delete(sqsEvent.receiptHandle)
+    sqsFacade.getPublishEventFromQueue.foreach { sqsEvent =>
+      {
+        val publishEvent = sqsEvent.event
+        logger.info(s"received publish event from SQS")(
+          publishEvent.toLogMarker
+        )
+        if (updateEventInDB(publishEvent)) {
+          sqsFacade.delete(sqsEvent.receiptHandle)
+        }
       }
-    }}
+    }
   }
 }

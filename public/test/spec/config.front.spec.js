@@ -91,7 +91,7 @@ describe('Config Front', function () {
         .then(editMetadata)
         .then(changeImageUrl)
         .then(deleteLastRemainingCollection)
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
 
         function createFrontAndCollection () {
@@ -313,7 +313,7 @@ describe('Config Front', function () {
             expect($('.cnf-front').length).toBe(1);
             expect($('.cnf-front .title--text').text()).toBe('two');
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

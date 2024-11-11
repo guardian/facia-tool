@@ -17,7 +17,7 @@ module.exports = function() {
                     'facia-tool/widgets/sparklines-trails',
                     'facia-tool/widgets/front-article-indicator'
                 ].join(' + ') +
-                ' tmp/bundles/collections.js'
+                ' public/fronts-client-v1/bundles/collections.js'
         },
         config: {
             command:
@@ -32,7 +32,7 @@ module.exports = function() {
                     'facia-tool/widgets/config-card-types',
                     'facia-tool/widgets/config-nav-sections'
                 ].join(' + ') +
-                ' tmp/bundles/config.js'
+                ' public/fronts-client-v1/bundles/config.js'
         }
     };
 };

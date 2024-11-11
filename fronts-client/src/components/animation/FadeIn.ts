@@ -10,5 +10,5 @@ export const fadeIn = keyframes`
 `;
 
 export default styled.div`
-  animation: ${fadeIn} 0.3s;
+	animation: ${fadeIn} 0.3s;
 `;

@@ -6,19 +6,20 @@ import FrontList from './FrontList';
 import { selectEditMode } from 'selectors/pathSelectors';
 
 type Props = {
-  match: match<{ priority: string }>;
+	match: match<{ priority: string }>;
 } & RouteComponentProps<any>;
 
 const mapStateToProps = () => {
-  const selectFrontIdWithOpenAndStarredStates = createSelectFrontIdWithOpenAndStarredStatesByPriority();
-  return (state: State, props: Props) => {
-    return {
-      fronts: selectFrontIdWithOpenAndStarredStates(
-        state,
-        props.match.params.priority || '',
-        selectEditMode(state) === 'editions' ? 'index' : 'id'
-      ),
-    };
-  };
+	const selectFrontIdWithOpenAndStarredStates =
+		createSelectFrontIdWithOpenAndStarredStatesByPriority();
+	return (state: State, props: Props) => {
+		return {
+			fronts: selectFrontIdWithOpenAndStarredStates(
+				state,
+				props.match.params.priority || '',
+				selectEditMode(state) === 'editions' ? 'index' : 'id',
+			),
+		};
+	};
 };
 export default withRouter(connect(mapStateToProps)(FrontList));

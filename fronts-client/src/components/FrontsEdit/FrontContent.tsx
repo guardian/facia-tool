@@ -25,279 +25,283 @@ import Raven from 'raven-js';
 const STALENESS_THRESHOLD_IN_MILLIS = 30_000; // 30 seconds
 
 const CollectionContainer = styled.div`
-  position: relative;
-  & + & {
-    margin-top: 10px;
-  }
+	position: relative;
+	& + & {
+		margin-top: 10px;
+	}
 `;
 
 const FrontCollectionsContainer = styled.div`
-  position: relative;
-  overflow-y: scroll;
-  max-height: calc(100% - 43px);
-  padding-top: 1px;
-  padding-bottom: ${theme.front.paddingForAddFrontButton}px;
+	position: relative;
+	overflow-y: scroll;
+	max-height: calc(100% - 43px);
+	padding-top: 1px;
+	padding-bottom: ${theme.front.paddingForAddFrontButton}px;
 `;
 
 const EditingLockedCollectionsOverlay = styled.div`
-  z-index: 80;
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  background-color: ${theme.colors.blackTransparent60};
-  color: ${theme.base.colors.textLight};
-  text-shadow: 0 0 10px ${theme.base.colors.textDark};
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  user-select: none;
-  text-align: center;
-  padding: 5px;
-  h2 {
-    margin: 0;
-  }
+	z-index: 80;
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	background-color: ${theme.colors.blackTransparent60};
+	color: ${theme.base.colors.textLight};
+	text-shadow: 0 0 10px ${theme.base.colors.textDark};
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	user-select: none;
+	text-align: center;
+	padding: 5px;
+	h2 {
+		margin: 0;
+	}
 `;
 
 const isDropFromCAPIFeed = (e: React.DragEvent) =>
-  e.dataTransfer.types.includes('capi');
+	e.dataTransfer.types.includes('capi');
 
 interface FrontPropsBeforeState {
-  id: string;
-  browsingStage: CardSets;
-  handleArticleFocus: (
-    e: React.FocusEvent<HTMLDivElement>,
-    groupId: string,
-    card: TCard,
-    frontId: string
-  ) => void;
-  onChangeCurrentCollectionId: (id: string) => void;
+	id: string;
+	browsingStage: CardSets;
+	handleArticleFocus: (
+		e: React.FocusEvent<HTMLDivElement>,
+		groupId: string,
+		card: TCard,
+		frontId: string,
+	) => void;
+	onChangeCurrentCollectionId: (id: string) => void;
 }
 
 type FrontProps = FrontPropsBeforeState & {
-  front: FrontConfig;
-  alsoOn: { [id: string]: AlsoOnDetail };
-  initialiseCollectionsForFront: (id: string, set: CardSets) => void;
-  selectCard: (
-    cardId: string,
-    collectionId: string,
-    frontId: string,
-    isSupporting: boolean
-  ) => void;
-  moveCard: typeof moveCard;
-  insertCardFromDropEvent: typeof insertCardFromDropEvent;
-  collectionsError: string | null;
-  collectionsLastSuccessfulFetchTimestamp: number | null;
+	front: FrontConfig;
+	alsoOn: { [id: string]: AlsoOnDetail };
+	initialiseCollectionsForFront: (id: string, set: CardSets) => void;
+	selectCard: (
+		cardId: string,
+		collectionId: string,
+		frontId: string,
+		isSupporting: boolean,
+	) => void;
+	moveCard: typeof moveCard;
+	insertCardFromDropEvent: typeof insertCardFromDropEvent;
+	collectionsError: string | null;
+	collectionsLastSuccessfulFetchTimestamp: number | null;
 };
 
 interface FrontState {
-  currentlyScrolledCollectionId: string | undefined;
-  isCollectionsStale: boolean | undefined;
+	currentlyScrolledCollectionId: string | undefined;
+	isCollectionsStale: boolean | undefined;
 }
 
 class FrontContent extends React.Component<FrontProps, FrontState> {
-  public state = {
-    currentlyScrolledCollectionId: undefined,
-    isCollectionsStale: undefined,
-  };
-  private collectionElements: {
-    [collectionId: string]: HTMLDivElement | null;
-  } = {};
-  private collectionContainerElement: HTMLDivElement | null = null;
+	public state = {
+		currentlyScrolledCollectionId: undefined,
+		isCollectionsStale: undefined,
+	};
+	private collectionElements: {
+		[collectionId: string]: HTMLDivElement | null;
+	} = {};
+	private collectionContainerElement: HTMLDivElement | null = null;
 
-  /**
-   * Handle a scroll event. We debounce this as it's called many times by the
-   * event handler, and triggers an expensive rerender.
-   */
-  private handleScroll = debounce(() => {
-    if (!this.collectionContainerElement) {
-      return;
-    }
-    const scrollTop = this.collectionContainerElement.scrollTop;
-    const currentIdsAndOffsets = Object.entries(this.collectionElements)
-      .filter(
-        ([_, element]) =>
-          // We filter everything that comes before the collection here, as we
-          // know we won't need it. The constant here refers to the height of
-          // the container heading.
-          !!element &&
-          element.offsetTop +
-            element.clientHeight -
-            theme.layout.sectionHeaderHeight >
-            scrollTop
-      )
-      .map(([id, element]) => [id, element!.offsetTop] as [string, number]);
+	/**
+	 * Handle a scroll event. We debounce this as it's called many times by the
+	 * event handler, and triggers an expensive rerender.
+	 */
+	private handleScroll = debounce(() => {
+		if (!this.collectionContainerElement) {
+			return;
+		}
+		const scrollTop = this.collectionContainerElement.scrollTop;
+		const currentIdsAndOffsets = Object.entries(this.collectionElements)
+			.filter(
+				([_, element]) =>
+					// We filter everything that comes before the collection here, as we
+					// know we won't need it. The constant here refers to the height of
+					// the container heading.
+					!!element &&
+					element.offsetTop +
+						element.clientHeight -
+						theme.layout.sectionHeaderHeight >
+						scrollTop,
+			)
+			.map(([id, element]) => [id, element!.offsetTop] as [string, number]);
 
-    const sortedIdsAndOffsets = sortBy(
-      currentIdsAndOffsets,
-      ([_, offset]) => offset
-    );
-    const newCurrentCollectionId = sortedIdsAndOffsets[0][0];
+		const sortedIdsAndOffsets = sortBy(
+			currentIdsAndOffsets,
+			([_, offset]) => offset,
+		);
+		const newCurrentCollectionId = sortedIdsAndOffsets[0][0];
 
-    if (
-      sortedIdsAndOffsets.length &&
-      newCurrentCollectionId !== this.state.currentlyScrolledCollectionId
-    ) {
-      this.props.onChangeCurrentCollectionId(newCurrentCollectionId);
-    }
-  }, 100);
+		if (
+			sortedIdsAndOffsets.length &&
+			newCurrentCollectionId !== this.state.currentlyScrolledCollectionId
+		) {
+			this.props.onChangeCurrentCollectionId(newCurrentCollectionId);
+		}
+	}, 100);
 
-  public componentWillReceiveProps(newProps: FrontProps) {
-    if (this.props.browsingStage !== newProps.browsingStage) {
-      this.props.initialiseCollectionsForFront(
-        this.props.id,
-        this.props.browsingStage
-      );
-    }
-    if (
-      this.props.collectionsLastSuccessfulFetchTimestamp !==
-      newProps.collectionsLastSuccessfulFetchTimestamp
-    ) {
-      this.updateCollectionsStalenessFlag();
-      setTimeout(
-        this.updateCollectionsStalenessFlag,
-        STALENESS_THRESHOLD_IN_MILLIS
-      );
-    }
-    if (newProps.collectionsError && !this.props.collectionsError) {
-      Raven.captureException(
-        `Collections editing OUGHT TO BE locked due to error: ${newProps.collectionsError}`,
-        {
-          extra: {
-            error: newProps.collectionsError,
-          },
-        }
-      );
-    }
-  }
+	public UNSAFE_componentWillReceiveProps(newProps: FrontProps) {
+		if (this.props.browsingStage !== newProps.browsingStage) {
+			this.props.initialiseCollectionsForFront(
+				this.props.id,
+				this.props.browsingStage,
+			);
+		}
+		if (
+			this.props.collectionsLastSuccessfulFetchTimestamp !==
+			newProps.collectionsLastSuccessfulFetchTimestamp
+		) {
+			this.updateCollectionsStalenessFlag();
+			setTimeout(
+				this.updateCollectionsStalenessFlag,
+				STALENESS_THRESHOLD_IN_MILLIS,
+			);
+		}
+		if (newProps.collectionsError && !this.props.collectionsError) {
+			Raven.captureException(
+				`Collections editing OUGHT TO BE locked due to error: ${newProps.collectionsError}`,
+				{
+					extra: {
+						error: newProps.collectionsError,
+					},
+				},
+			);
+		}
+	}
 
-  public componentDidMount() {
-    this.handleScroll();
-    this.props.initialiseCollectionsForFront(
-      this.props.id,
-      this.props.browsingStage
-    );
-  }
+	public componentDidMount() {
+		this.handleScroll();
+		this.props.initialiseCollectionsForFront(
+			this.props.id,
+			this.props.browsingStage,
+		);
+	}
 
-  public handleMove = (move: Move<TCard>) => {
-    events.dropArticle(this.props.id, 'collection');
-    this.props.moveCard(move.to, move.data, move.from || null, 'collection');
-  };
+	public handleMove = (move: Move<TCard>) => {
+		events.dropArticle(this.props.id, 'collection');
+		this.props.moveCard(move.to, move.data, move.from || null, 'collection');
+	};
 
-  public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-    events.dropArticle(this.props.id, isDropFromCAPIFeed(e) ? 'feed' : 'url');
-    this.props.insertCardFromDropEvent(e, to, 'collection');
-  };
+	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
+		events.dropArticle(this.props.id, isDropFromCAPIFeed(e) ? 'feed' : 'url');
+		this.props.insertCardFromDropEvent(e, to, 'collection');
+	};
 
-  public render() {
-    const { front, collectionsError } = this.props;
+	public render() {
+		const { front, collectionsError } = this.props;
 
-    // TODO remove the false bit when we're happy to actually lock users editing
-    const isEditingLocked =
-      false && (this.state.isCollectionsStale || !!collectionsError);
+		// TODO remove the false bit when we're happy to actually lock users editing
+		const isEditingLocked =
+			false && (this.state.isCollectionsStale || !!collectionsError);
 
-    return (
-      <FrontCollectionsContainer
-        onScroll={this.handleScroll}
-        ref={(ref) => (this.collectionContainerElement = ref)}
-      >
-        <WithDimensions>
-          {({ width }) => (
-            <DragAndDropRoot id={this.props.id} data-testid={this.props.id}>
-              {front.collections.map((collectionId) => (
-                <CollectionContainer
-                  key={collectionId}
-                  ref={(ref) => (this.collectionElements[collectionId] = ref)}
-                >
-                  {isEditingLocked && (
-                    <EditingLockedCollectionsOverlay>
-                      <h2>Editing Locked</h2>
-                      <span>
-                        We couldn't refresh this collection. It may be out of
-                        date. Please wait or reload.
-                      </span>
-                    </EditingLockedCollectionsOverlay>
-                  )}
-                  <Collection
-                    id={collectionId}
-                    frontId={this.props.id}
-                    priority={front.priority}
-                    browsingStage={this.props.browsingStage}
-                    alsoOn={this.props.alsoOn}
-                    handleInsert={this.handleInsert}
-                    handleMove={this.handleMove}
-                    size={
-                      width && width > 750
-                        ? 'wide'
-                        : width && width > 500
-                        ? 'default'
-                        : 'medium'
-                    }
-                    selectCard={this.onSelectCard}
-                    handleArticleFocus={this.props.handleArticleFocus}
-                  />
-                </CollectionContainer>
-              ))}
-            </DragAndDropRoot>
-          )}
-        </WithDimensions>
-      </FrontCollectionsContainer>
-    );
-  }
+		return (
+			<FrontCollectionsContainer
+				onScroll={this.handleScroll}
+				ref={(ref: HTMLDivElement | null) =>
+					(this.collectionContainerElement = ref)
+				}
+			>
+				<WithDimensions>
+					{({ width }) => (
+						<DragAndDropRoot id={this.props.id} data-testid={this.props.id}>
+							{front.collections.map((collectionId) => (
+								<CollectionContainer
+									key={collectionId}
+									ref={(ref: HTMLDivElement | null) =>
+										(this.collectionElements[collectionId] = ref)
+									}
+								>
+									{isEditingLocked && (
+										<EditingLockedCollectionsOverlay>
+											<h2>Editing Locked</h2>
+											<span>
+												We couldn't refresh this collection. It may be out of
+												date. Please wait or reload.
+											</span>
+										</EditingLockedCollectionsOverlay>
+									)}
+									<Collection
+										id={collectionId}
+										frontId={this.props.id}
+										priority={front.priority}
+										browsingStage={this.props.browsingStage}
+										alsoOn={this.props.alsoOn}
+										handleInsert={this.handleInsert}
+										handleMove={this.handleMove}
+										size={
+											width && width > 750
+												? 'wide'
+												: width && width > 500
+													? 'default'
+													: 'medium'
+										}
+										selectCard={this.onSelectCard}
+										handleArticleFocus={this.props.handleArticleFocus}
+									/>
+								</CollectionContainer>
+							))}
+						</DragAndDropRoot>
+					)}
+				</WithDimensions>
+			</FrontCollectionsContainer>
+		);
+	}
 
-  private onSelectCard = (
-    cardId: string,
-    collectionId: string,
-    isSupporting: boolean
-  ) => this.props.selectCard(cardId, collectionId, this.props.id, isSupporting);
+	private onSelectCard = (
+		cardId: string,
+		collectionId: string,
+		isSupporting: boolean,
+	) => this.props.selectCard(cardId, collectionId, this.props.id, isSupporting);
 
-  private updateCollectionsStalenessFlag = () => {
-    const collectionsStalenessInMillis =
-      !!this.props.collectionsLastSuccessfulFetchTimestamp &&
-      Date.now() - this.props.collectionsLastSuccessfulFetchTimestamp;
+	private updateCollectionsStalenessFlag = () => {
+		const collectionsStalenessInMillis = !!this.props
+			.collectionsLastSuccessfulFetchTimestamp
+			? Date.now() - this.props.collectionsLastSuccessfulFetchTimestamp
+			: 0;
 
-    const isCollectionsStale =
-      collectionsStalenessInMillis > STALENESS_THRESHOLD_IN_MILLIS;
+		const isCollectionsStale =
+			collectionsStalenessInMillis > STALENESS_THRESHOLD_IN_MILLIS;
 
-    if (!this.state.isCollectionsStale && isCollectionsStale) {
-      Raven.captureMessage(
-        'Collections editing OUGHT TO BE locked due to staleness.',
-        {
-          extra: {
-            collectionsStalenessInMillis,
-          },
-        }
-      );
-    }
+		if (!this.state.isCollectionsStale && isCollectionsStale) {
+			Raven.captureMessage(
+				'Collections editing OUGHT TO BE locked due to staleness.',
+				{
+					extra: {
+						collectionsStalenessInMillis,
+					},
+				},
+			);
+		}
 
-    if (this.state.isCollectionsStale !== isCollectionsStale) {
-      this.setState({ isCollectionsStale });
-    }
-  };
+		if (this.state.isCollectionsStale !== isCollectionsStale) {
+			this.setState({ isCollectionsStale });
+		}
+	};
 }
 
 const mapStateToProps = () => {
-  const selectAlsoOnFronts = createSelectAlsoOnFronts();
-  return (state: State, { id }: FrontPropsBeforeState) => {
-    return {
-      front: selectFront(state, { frontId: id }),
-      alsoOn: selectAlsoOnFronts(state, { frontId: id }),
-      collectionsError: collectionSelectors.selectCurrentError(state),
-      collectionsLastSuccessfulFetchTimestamp: collectionSelectors.selectLastSuccessfulFetchTimestamp(
-        state
-      ),
-    };
-  };
+	const selectAlsoOnFronts = createSelectAlsoOnFronts();
+	return (state: State, { id }: FrontPropsBeforeState) => {
+		return {
+			front: selectFront(state, { frontId: id }),
+			alsoOn: selectAlsoOnFronts(state, { frontId: id }),
+			collectionsError: collectionSelectors.selectCurrentError(state),
+			collectionsLastSuccessfulFetchTimestamp:
+				collectionSelectors.selectLastSuccessfulFetchTimestamp(state),
+		};
+	};
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) =>
-  bindActionCreators(
-    {
-      selectCard: editorSelectCard,
-      initialiseCollectionsForFront,
-      moveCard,
-      insertCardFromDropEvent,
-    },
-    dispatch
-  );
+	bindActionCreators(
+		{
+			selectCard: editorSelectCard,
+			initialiseCollectionsForFront,
+			moveCard,
+			insertCardFromDropEvent,
+		},
+		dispatch,
+	);
 
 export default connect(mapStateToProps, mapDispatchToProps)(FrontContent);

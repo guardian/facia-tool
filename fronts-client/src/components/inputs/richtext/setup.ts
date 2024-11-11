@@ -11,54 +11,54 @@ import OrderedMap from 'orderedmap';
 import { history } from 'prosemirror-history';
 
 const createBasePlugins = (s: Schema) => {
-  const plugins = [
-    keymap(buildKeymap(s, {}, {})),
-    history({ depth: 100, newGroupDelay: 500 }),
-  ];
-  return plugins;
+	const plugins = [
+		keymap(buildKeymap(s, {}, {})),
+		history({ depth: 100, newGroupDelay: 500 }),
+	];
+	return plugins;
 };
 
 const nodeMap = OrderedMap.from({
-  doc: {
-    content: '(text | hard_break)+',
-  },
-  text: nodes.text,
-  hard_break: nodes.hard_break,
+	doc: {
+		content: '(text | hard_break)+',
+	},
+	text: nodes.text,
+	hard_break: nodes.hard_break,
 });
 
 export const basicSchema = new Schema({
-  nodes: addListNodes(nodeMap, 'doc *'),
-  marks: schema.spec.marks,
+	nodes: addListNodes(nodeMap, 'doc *'),
+	marks: schema.spec.marks,
 });
 
 export const createEditorView = (
-  input: WrappedFieldInputProps,
-  editorEl: RefObject<HTMLDivElement>,
-  contentEl: HTMLDivElement
+	input: WrappedFieldInputProps,
+	editorEl: RefObject<HTMLDivElement>,
+	contentEl: HTMLDivElement,
 ) => {
-  if (!editorEl.current) {
-    return;
-  }
-  const ed: EditorView = new EditorView(editorEl.current, {
-    state: EditorState.create({
-      doc: DOMParser.fromSchema(basicSchema).parse(contentEl),
-      plugins: createBasePlugins(basicSchema),
-    }),
-    dispatchTransaction: (transaction: Transaction) => {
-      const { state, transactions } = ed.state.applyTransaction(transaction);
-      ed.updateState(state);
+	if (!editorEl.current) {
+		return;
+	}
+	const ed: EditorView = new EditorView(editorEl.current, {
+		state: EditorState.create({
+			doc: DOMParser.fromSchema(basicSchema).parse(contentEl),
+			plugins: createBasePlugins(basicSchema),
+		}),
+		dispatchTransaction: (transaction: Transaction) => {
+			const { state, transactions } = ed.state.applyTransaction(transaction);
+			ed.updateState(state);
 
-      if (transactions.some((tr: Transaction) => tr.docChanged)) {
-        const serializer = DOMSerializer.fromSchema(basicSchema);
-        const outputHtml = serializer.serializeFragment(state.doc.content);
-        // to format the outputHtml as an html string rather than a document fragment, we are creating a temporary div, adding it as a child, then using innerHTML which returns an html string
-        const tmp = document.createElement('div');
-        tmp.appendChild(outputHtml);
-        if (input.onChange) {
-          input.onChange(tmp.innerHTML);
-        }
-      }
-    },
-  });
-  return ed;
+			if (transactions.some((tr: Transaction) => tr.docChanged)) {
+				const serializer = DOMSerializer.fromSchema(basicSchema);
+				const outputHtml = serializer.serializeFragment(state.doc.content);
+				// to format the outputHtml as an html string rather than a document fragment, we are creating a temporary div, adding it as a child, then using innerHTML which returns an html string
+				const tmp = document.createElement('div');
+				tmp.appendChild(outputHtml);
+				if (input.onChange) {
+					input.onChange(tmp.innerHTML);
+				}
+			}
+		},
+	});
+	return ed;
 };

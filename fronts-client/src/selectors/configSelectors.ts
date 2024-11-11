@@ -5,58 +5,64 @@ import { selectEditMode } from './pathSelectors';
 const selectConfig = (state: State) => state.config;
 
 const selectUserEmail = createSelector(
-  selectConfig,
-  (config) => config && config.email
+	selectConfig,
+	(config) => config && config.email,
 );
 const selectFirstName = createSelector(
-  selectConfig,
-  (config) => config && config.firstName
+	selectConfig,
+	(config) => config && config.firstName,
 );
 const selectLastName = createSelector(
-  selectConfig,
-  (config) => config && config.lastName
+	selectConfig,
+	(config) => config && config.lastName,
 );
 
 const selectCapiLiveURL = createSelector(
-  selectConfig,
-  (config) => config && config.capiLiveUrl
+	selectConfig,
+	(config) => config && config.capiLiveUrl,
 );
 
 const selectCapiPreviewURL = createSelector(
-  selectConfig,
-  (config) => config && config.capiPreviewUrl
+	selectConfig,
+	(config) => config && config.capiPreviewUrl,
 );
 
 const selectCollectionCap = createSelector(
-  selectConfig,
-  selectEditMode,
-  (config, editMode) =>
-    (editMode === 'fronts' && config && config.collectionCap) || Infinity
+	selectConfig,
+	selectEditMode,
+	(config, editMode) =>
+		(editMode === 'fronts' && config && config.collectionCap) || Infinity,
 );
 
 const selectGridUrl = createSelector(
-  selectConfig,
-  (config) => config && config.mediaBaseUrl
+	selectConfig,
+	(config) => config && config.mediaBaseUrl,
 );
 
 const selectAvailableEditions = createSelector(
-  selectConfig,
-  (config) => config && config.availableEditions
+	selectConfig,
+	(config) => config && config.availableTemplates,
 );
 
 const selectShouldUsePreviewCODE = createSelector(
-  selectConfig,
-  (config) => !config || config.env === 'code'
+	selectConfig,
+	(config) => !config || config.env === 'code',
+);
+
+const selectEditionsPermission = createSelector(
+	selectConfig,
+	(config) => config && config.acl.editions,
 );
 
 export {
-  selectCapiLiveURL,
-  selectCapiPreviewURL,
-  selectUserEmail,
-  selectFirstName,
-  selectLastName,
-  selectCollectionCap,
-  selectGridUrl,
-  selectAvailableEditions,
-  selectShouldUsePreviewCODE,
+	selectCapiLiveURL,
+	selectCapiPreviewURL,
+	selectUserEmail,
+	selectFirstName,
+	selectLastName,
+	selectCollectionCap,
+	selectGridUrl,
+	selectAvailableEditions,
+	selectShouldUsePreviewCODE,
+	selectEditionsPermission,
 };

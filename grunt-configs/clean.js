@@ -1,6 +1,6 @@
 'use strict';
 module.exports = function() {
     return {
-        static: ['tmp']
+        static: ['public/fronts-client-v1']
     };
 };

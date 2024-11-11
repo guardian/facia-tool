@@ -3,7 +3,10 @@ package slices
 import cards.Standard
 
 object DynamicFast extends DynamicContainer {
-  protected def standardSlices(stories: Seq[Story], firstSlice: Option[Slice]): Seq[Slice] = {
+  protected def standardSlices(
+      stories: Seq[Story],
+      firstSlice: Option[Slice]
+  ): Seq[Slice] = {
     val isFirstBoosted = stories.headOption.exists(_.isBoosted)
 
     val BigsAndStandards(bigs, _) = bigsAndStandards(stories)
@@ -18,10 +21,13 @@ object DynamicFast extends DynamicContainer {
           bigs.length match {
             case 1 => HalfQl4Ql4
             case _ =>
-              if (firstSlice.exists(_.layout.columns.exists({
-                case SingleItem(_, itemClasses) => itemClasses.mobile != Standard
-                case _ => false
-              }))) {
+              if (
+                firstSlice.exists(_.layout.columns.exists({
+                  case SingleItem(_, itemClasses) =>
+                    itemClasses.mobile != Standard
+                  case _ => false
+                }))
+              ) {
                 HalfQuarterQl2Ql4B
               } else {
                 HalfQuarterQl2Ql4

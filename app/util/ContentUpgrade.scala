@@ -14,7 +14,9 @@ import org.json4s.jackson.JsonMethods
 
 import scala.util.{Failure, Success, Try}
 
-/** Helper for Facia tool - passes over the JSON that is proxied, adding in defaults */
+/** Helper for Facia tool - passes over the JSON that is proxied, adding in
+  * defaults
+  */
 object ContentUpgrade extends Logging {
   val ContentFields = Seq(
     "content",
@@ -26,15 +28,19 @@ object ContentUpgrade extends Logging {
     "leadContent"
   )
 
-  def rewriteBody(body: String) = JsonMethods.compact(JsonMethods.render(upgradeResponse(JsonMethods.parse(body))))
+  def rewriteBody(body: String) = JsonMethods.compact(
+    JsonMethods.render(upgradeResponse(JsonMethods.parse(body)))
+  )
 
   def upgradeResponse(json: JValue) = {
     json \ "response" match {
 
       case JObject(fields) =>
-        val newValues:List[JField] = fields.map {
-          case (key, JArray(items)) if ContentFields.contains(key) => key -> JArray(items.map(upgradeItem))
-          case (key, item: JObject) if ContentFields.contains(key) => key -> upgradeItem(item)
+        val newValues: List[JField] = fields.map {
+          case (key, JArray(items)) if ContentFields.contains(key) =>
+            key -> JArray(items.map(upgradeItem))
+          case (key, item: JObject) if ContentFields.contains(key) =>
+            key -> upgradeItem(item)
           case ignore => ignore
         }
 
@@ -57,7 +63,8 @@ object ContentUpgrade extends Logging {
   private def getUpgradedItem(json: JValue): JValue = {
     val jsonString = JsonMethods.compact(JsonMethods.render(json))
     val maybeParsedJson: Option[Json] = parser.parse(jsonString).toOption
-    val maybeCapiContent: Option[Content] = maybeParsedJson.flatMap(json => json.as[Content].toOption)
+    val maybeCapiContent: Option[Content] =
+      maybeParsedJson.flatMap(json => json.as[Content].toOption)
     (json, maybeCapiContent) match {
       case (jsObject: JObject, Some(content)) => {
 
@@ -65,13 +72,11 @@ object ContentUpgrade extends Logging {
 
         (jsObject
           ~ ("frontsMeta" ->
-              ("defaults" -> ResolvedMetaData.toMap(prefill.metaData))
-              ~ ("tone" -> prefill.tone)
-              ~ ("cutout" -> prefill.cutout.map(_.src))
-              ~ ("pickedKicker" -> prefill.pickedKicker)
-              ~ ("mediaType" -> prefill.mediaType.map(_.toString))
-            )
-          )
+            ("defaults" -> ResolvedMetaData.toMap(prefill.metaData))
+            ~ ("tone" -> prefill.tone)
+            ~ ("cutout" -> prefill.cutout.map(_.src))
+            ~ ("pickedKicker" -> prefill.pickedKicker)
+            ~ ("mediaType" -> prefill.mediaType.map(_.toString))))
       }
       case _ => {
         logger.warn(s"Unable to prefill provided json: ${json}")
@@ -79,6 +84,5 @@ object ContentUpgrade extends Logging {
       }
     }
   }
-
 
 }

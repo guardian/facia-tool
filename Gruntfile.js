@@ -40,10 +40,7 @@ module.exports = function (grunt) {
     /**
      * Compile tasks
      */
-    grunt.registerTask('compile', function () {
-        grunt.task.run(['clean', 'shell:collections', 'shell:config', 'replace', 'cacheBust']);
-    });
     grunt.registerTask('bundle', function () {
-        grunt.task.run(['compile', 'copy:static', 'copy:debian', 'copy:deploy', 'compress:riffraff']);
+        grunt.task.run(['clean', 'shell:collections', 'shell:config', 'replace', 'cacheBust']);
     });
 };

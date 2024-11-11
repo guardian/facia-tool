@@ -1,17 +1,19 @@
 # Facia Tool
 
-The Guardian front pages editor.
+The Guardian front pages editor, known as the Fronts tool.
+
+For information on core Fronts concepts, see the [glossary](./docs/Glossary.md).
 
 ## Fronts Client
 
-You can find the client for the Fronts tool in [fronts-client](/fronts-client).
+You can find the client for the Fronts tool in [fronts-client](./fronts-client).
 
 ### Setup (need to be done once)
 
 1. Install [NVM](https://github.com/creationix/nvm).
 2. Ensure [Docker](https://www.docker.com/products/docker-desktop) is installed
 3. Get credentials from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev) (`cmsFronts`, `capi` & `frontend`).
-4. Grant [code](https://permissions.code.dev-gutools.co.uk/) permissions (used for local builds as well).  You need:
+4. Grant [code](https://permissions.code.dev-gutools.co.uk/) permissions (used for local builds as well).  Any engineer on ed tools should be able to give you access. You need:
     1. fronts_access
     1. launch_commercial_fronts
     1. edit_editorial_fronts
@@ -45,7 +47,7 @@ Run `yarn test` in `fronts-client` folder. See [fronts-client](/fronts-client) f
 
 ### Pressing fronts
 - Before fronts can appear on site, they have to be pressed by Facia-Press which lives on the frontend account.
-- The fronts tool sends events to an sqs queue which Facia-Press listens. You can read more about Facia-Press [here](https://github.com/guardian/frontend/blob/ad74a1da567f047b7b824650e6e1be0f0262952b/docs/02-architecture/01-applications-architecture.md).
+- The fronts tool sends events to an SNS topic, which is subscribed to by a queue (in frontend account) to which Facia-Press listens. You can read more about Facia-Press [here](https://github.com/guardian/frontend/blob/ad74a1da567f047b7b824650e6e1be0f0262952b/docs/02-architecture/01-applications-architecture.md).
 
 - If you are adding a new kind of content to a front or changing the front configuration, you should check that the front can still be pressed.
 
@@ -55,9 +57,8 @@ Run `yarn test` in `fronts-client` folder. See [fronts-client](/fronts-client) f
 - You can remove this property from the front in the fronts config page.
 - Select the front your are trying to view on the config page, click on the edit-metadata link, and deselect the `is hidden`-property.
 
-- If you are developing locally and do not have frontend credentials from janus, the fronts tool won't have permissions to push events to the sqs queue that Facia-Press reads from. To test that a front is pressed, you will have to deploy your changes to code, and test the code from there.
-
-
+- Since the SNS topic lives in the fronts account, CODE fronts should be pressed automatically when running locally.
+-
 ## Different tools in this codebase
 
 ### The Fronts Tool
@@ -81,7 +82,9 @@ Useful things to know:
 
 ### The Editions creator
 
-The Editions interface is used to curate content on the Editions app (currently known as The Daily on iOS and Android). Editions also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
+The Editions creator is used to curate content on both the Editions app (currently known as The Daily on iOS and Android),
+and the Feast recipes app.
+Editions creator also uses the fronts-client front end, and can be accessed from the Manage Editions menu on the [homepage](https://fronts.code.dev-gutools.co.uk/v2).
 
 Curation works in the same way as the main fronts tool. But there are these differences:
 
@@ -91,10 +94,13 @@ Curation works in the same way as the main fronts tool. But there are these diff
 
 * The publication process for Editions is different to the main fronts. We push the json we produce to a lambda - the [backend of the Editions app](https://github.com/guardian/editions), and this combines fronts data with CAPI calls etc to produce the Edition.
 
+For the specific, technical, definitions of the terms `Edition`, `CuratedPlatform` etc. please
+refer to the [Glossary](docs/Glossary.md).
+
+For more information about how specific Editions are built from Templates, see the technical
+docs at [docs/EditionsTemplating.md](docs/EditionsTemplating.md)
+
 Full [Editions codebase and documentation here](https://github.com/guardian/editions).
-
-
-
 
 ### The Config Tool
 
@@ -109,10 +115,20 @@ In CODE the breaking news tool sends notifications to the "debug version" of the
 
 Breaking News is represented by a front called `breaking-news` which is considered to be a special case. It has a `Send Alert` button rather than a `Launch` button. Only one thing can be added to a collection at a given time. You cannot send the same alert twice, and snap links cannot be added / alerted on. Different collections represent different audience groups (eg by location or by subscription to different topics.) To add a new one, just create a container. New breaking news containers need to have the layout `breaking-news/not-for-other-fronts`.
 
+## Client-side vulnerabilities: Synk and JSPM
+
+The older client side tools (those with source code at /public/src - not the [Fronts-tool](#the-fronts-tool)) are bundled using [JSPM](https://jspm.org/). Instead of dependencies for the application being listed in the package.json file in the normal way, they are listed under "jspm" and compiled by JSPM using an import map.
+
+A side effect of this is that the vulnerabilities are not surfaced by Synk. To address this, there is a workaround to construct a "regular" package.json file out real one, and a custom action so that Synk can report on vulnerabilities (see [PR#1521](https://github.com/guardian/facia-tool/pull/1521)).
+
+To audit vulernabilities locally:
+ - `cd v1_jsmp_synk_workaround`
+ - `npm run preinstall` - generates the package.json file in the gitignored '/result' subfolder
+ - `npm run audit` - generates a lockfile in '/result' and runs the npm audit command - note you can append parameters for pn audit - eg `npm run audit --production > ./result/audit.txt`
 
 ## Troubleshooting
 ### Postgres
-- If you wish to delete everything in the database you can use `docker-compose down -v` which will delete the container's persistent volumes.
+- If you wish to delete everything in the database you can use `docker compose down -v` which will delete the container's persistent volumes.
 - If you wish to connect to the local database you can run `./scripts/local-psql.sh` which has the user, database and password preconfigured and ready to go.
 - If you need the master passwords for the production postgres instances they are stored as SSM parameters and can be found at:
   - CODE: `facia-tool/cms-fronts/CODE/db/password`
@@ -123,6 +139,8 @@ Breaking News is represented by a front called `breaking-news` which is consider
 
 ### Linting
 
+#### Eslint
+
 Fronts tool uses `eslint` to ensure consistent style. Run `eslint` with
 
 ```bash
@@ -130,6 +148,12 @@ grunt eslint
 ```
 
 More detailed instructions of how to develop fronts tool available [here](./GUIDE_TO_FRONTS.md)
+
+#### Scalafmt
+
+This project uses [scalafmt](https://scalameta.org/scalafmt/) to format Scala code: the formatter is run in CI, and will fail if any files need formatting. There is also a pre-commit hook in [./git-hooks/pre-commit](./git-hooks/pre-commit) which runs scalafmt and fails if files need formatting, letting you catch them before pushing to CI. This can be enabled by setting the git config option core.hooksPath to `git-hooks` for this repository (or by running [./scripts/git-config.sh](./scripts/git-config.sh), which does it for you.)
+
+For the best experience, we recommend configuring your text editor to run scalafmt, as described in [the scalafmt docs](https://scalameta.org/scalafmt/docs/installation.html).
 
 ## Get Fronts Editors
 

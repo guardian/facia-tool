@@ -15,7 +15,9 @@ object EditionsChecker {
    */
   def checkIssue(issue: EditionsIssue): List[String] =
     if (issue.fronts.isEmpty)
-      List(s"Issue is empty")  // This is actually almost impossible because the templates don't let you!
+      List(
+        s"Issue is empty"
+      ) // This is actually almost impossible because the templates don't let you!
     else if (issue.fronts.forall(_.isHidden))
       List(s"Issue contains no visible fronts")
     else
@@ -24,12 +26,12 @@ object EditionsChecker {
   private def checkFronts(fronts: List[EditionsFront]): List[String] = {
     (
       checkFrontsCollections(fronts)
-      :::
-      visibleEmptyFronts(fronts)
-      :::
-      invisibleNonEmptyFronts(fronts)
-      :::
-      visibleDefaultNameFronts(fronts)
+        :::
+          visibleEmptyFronts(fronts)
+          :::
+          invisibleNonEmptyFronts(fronts)
+          :::
+          visibleDefaultNameFronts(fronts)
     )
   }
 
@@ -44,13 +46,19 @@ object EditionsChecker {
 
   private def visibleEmptyFronts(fronts: List[EditionsFront]) =
     fronts.collect {
-      case front if (!front.isHidden && front.collections.flatMap(c => c.items).isEmpty) =>
+      case front
+          if (!front.isHidden && front.collections
+            .flatMap(c => c.items)
+            .isEmpty) =>
         s"Front '${front.displayName}' is visible and empty"
     }
 
   private def invisibleNonEmptyFronts(fronts: List[EditionsFront]) =
     fronts.collect {
-      case front if (front.isHidden && !front.collections.flatMap(c => c.items).isEmpty) =>
+      case front
+          if (front.isHidden && !front.collections
+            .flatMap(c => c.items)
+            .isEmpty) =>
         s"Front '${front.displayName}' is hidden but has content"
     }
 
@@ -58,45 +66,65 @@ object EditionsChecker {
     fronts
       .filter(front => !front.isHidden)
       .map(front =>
-        front
-          .metadata
+        front.metadata
           .flatMap(m => m.nameOverride)
-          .getOrElse(front.displayName))
+          .getOrElse(front.displayName)
+      )
       .filter(s => s.matches("^Top Special.*"))
       .map(s => {
         s"Front '${s}' is visible and has default name"
       })
   }
 
-  private def checkCollections(front: EditionsFront, collections: List[EditionsCollection]): List[String] = {
+  private def checkCollections(
+      front: EditionsFront,
+      collections: List[EditionsCollection]
+  ): List[String] = {
     (
       visibleEmptyCollections(front, collections)
         :::
-      invisibleNonEmptyCollections(front, collections)
-        :::
-      visibleDefaultNameCollections(front, collections)
+          invisibleNonEmptyCollections(front, collections)
+          :::
+          visibleDefaultNameCollections(front, collections)
     )
   }
 
-  private def visibleDefaultNameCollections(front: EditionsFront, collections: List[EditionsCollection]) = {
+  private def visibleDefaultNameCollections(
+      front: EditionsFront,
+      collections: List[EditionsCollection]
+  ) = {
     collections
-      .filter(collection => collection.displayName.matches("^Special Container.*"))
+      .filter(collection =>
+        collection.displayName.matches("^Special Container.*")
+      )
       .filter(collection => !collection.isHidden)
-      .map(collection => s"Collection '${collection.displayName}' in '${front.displayName}' is visible and has default name")
+      .map(collection =>
+        s"Collection '${collection.displayName}' in '${front.displayName}' is visible and has default name"
+      )
   }
 
-  private def visibleEmptyCollections(front: EditionsFront, collections: List[EditionsCollection]) = {
+  private def visibleEmptyCollections(
+      front: EditionsFront,
+      collections: List[EditionsCollection]
+  ) = {
     collections
       .filter(collection => collection.items.isEmpty)
       .filter(collection => !collection.isHidden)
-      .map(collection => s"Collection '${collection.displayName}' in '${front.displayName}' is visible and empty")
+      .map(collection =>
+        s"Collection '${collection.displayName}' in '${front.displayName}' is visible and empty"
+      )
   }
 
-  private def invisibleNonEmptyCollections(front: EditionsFront, collections: List[EditionsCollection]) = {
+  private def invisibleNonEmptyCollections(
+      front: EditionsFront,
+      collections: List[EditionsCollection]
+  ) = {
     collections
       .filter(collection => !collection.items.isEmpty)
       .filter(collection => collection.isHidden)
-      .map(collection => s"Collection '${collection.displayName}' in '${front.displayName}' is hidden but has content")
+      .map(collection =>
+        s"Collection '${collection.displayName}' in '${front.displayName}' is hidden but has content"
+      )
   }
 
 }

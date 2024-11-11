@@ -1,7 +1,7 @@
 import { frontsConfig } from './fixtures/frontsConfig';
 
 const frontsActions = {
-  getFrontsConfig: () => frontsConfig,
+	getFrontsConfig: () => frontsConfig,
 };
 
 export { frontsActions };

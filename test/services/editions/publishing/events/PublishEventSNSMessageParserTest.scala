@@ -42,7 +42,9 @@ class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
       )
     )
 
-    PublishEventSNSMessageParser.parseToEvent(correctSQSMessagefromSNS) shouldEqual Some(expected)
+    PublishEventSNSMessageParser.parseToEvent(
+      correctSQSMessagefromSNS
+    ) shouldEqual Some(expected)
   }
 
   test("indicate if message format was incorrect") {
@@ -67,7 +69,9 @@ class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
         .withBody(msg)
     }
 
-    PublishEventSNSMessageParser.parseToEvent(incorrectCorrectSQSMessageFromSNS) shouldEqual None
+    PublishEventSNSMessageParser.parseToEvent(
+      incorrectCorrectSQSMessageFromSNS
+    ) shouldEqual None
   }
 
 }

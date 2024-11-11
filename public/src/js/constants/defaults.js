@@ -19,6 +19,7 @@ export default {
         { 'name': 'fixed/medium/slow-XII-mpu' },
         { 'name': 'fixed/thrasher' },
         { 'name': 'fixed/video' },
+        { 'name': 'fixed/video/vertical' },
         { 'name': 'fixed/medium/slow-VII' },
         { 'name': 'fixed/small/fast-VIII' },
         { 'name': 'fixed/small/slow-V-mpu' },
@@ -55,11 +56,31 @@ export default {
             'big'
           ]
         },
-        { name: 'nav/list' },
-        { name: 'nav/media-list' },
-        { name: 'news/most-popular' },
-        { name: 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
-        { 'name': 'fixed/showcase' }
+        { 'name': 'nav/list' },
+        { 'name': 'nav/media-list' },
+        { 'name': 'news/most-popular' },
+        { 'name': 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
+        { 'name': 'fixed/showcase' },
+        { 'name': 'scrollable/highlights' },
+        {
+            'name': 'flexible/general',
+            'groups': [
+                'standard',
+                'splash'
+            ]
+        },
+        {
+            'name': 'flexible/special',
+            'groups': [
+                'standard',
+                'snap'
+            ]
+        },
+		{ 'name': 'scrollable/small' },
+		{ 'name': 'scrollable/medium' },
+		{ 'name': 'scrollable/feature' },
+		{ 'name': 'static/medium/4' },
+		{ 'name': 'static/feature/2' }
     ],
 
     emailTypes: [
@@ -235,7 +256,6 @@ export default {
         configCollection: 'config-collection'
     },
 
-
     frontendApiBase:       '/frontend',
 
     reauthPath:            '/login/status',
@@ -265,5 +285,16 @@ export default {
         any: 'Any'
     },
 
-    userVisibilities: ['all', 'subscriber', 'non-subscriber']
+    userVisibilities: ['all', 'subscriber', 'non-subscriber'],
+
+    betaCollectionTypes: [
+        'flexible/special',
+        'flexible/general',
+        'scrollable/highlights',
+        'scrollable/small',
+        'scrollable/medium',
+        'scrollable/feature',
+        'static/medium/4',
+        'static/feature/2'
+    ]
 };
