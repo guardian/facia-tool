@@ -21,27 +21,38 @@ private[events] object PublishEventsSQSFacade {
     new PublishEventsSQSFacade(config)
 }
 
-private[events] class PublishEventsSQSFacade(val config: ApplicationConfiguration) extends PublishEventsQueueFacade with Logging {
+private[events] class PublishEventsSQSFacade(
+    val config: ApplicationConfiguration
+) extends PublishEventsQueueFacade
+    with Logging {
 
   private val maxNumberOfSQSMessagesPerReceiveReq = 1
   private val sqsClientLongPoolingWaitTimeSec = 15
   private val queueURL = config.faciatool.publishEventsQueue
 
-  private lazy val SQS = AmazonSQSAsyncClientBuilder.standard()
+  private lazy val SQS = AmazonSQSAsyncClientBuilder
+    .standard()
     .withCredentials(config.aws.cmsFrontsAccountCredentials)
-    .withRegion(Regions.EU_WEST_1).build()
+    .withRegion(Regions.EU_WEST_1)
+    .build()
 
-  def getPublishEventFromQueue: Option[PublishEventMessage] = receiveMessage.flatMap(parseToEvent)
+  def getPublishEventFromQueue: Option[PublishEventMessage] =
+    receiveMessage.flatMap(parseToEvent)
 
   def delete(receiptHandle: String): Unit = {
     Try {
       SQS.deleteMessageAsync(queueURL, receiptHandle)
     } match {
       case Success(messages) =>
-        logger.info(s"message with receiptHandle: $receiptHandle deleted successfully from SQS")
+        logger.info(
+          s"message with receiptHandle: $receiptHandle deleted successfully from SQS"
+        )
       case Failure(e) =>
-        logger.error(s"There was an exception while deleting message with receiptHandle: $receiptHandle " +
-          s"from $queueURL SQS: ${e.getMessage}", e)
+        logger.error(
+          s"There was an exception while deleting message with receiptHandle: $receiptHandle " +
+            s"from $queueURL SQS: ${e.getMessage}",
+          e
+        )
     }
   }
 
@@ -63,7 +74,10 @@ private[events] class PublishEventsSQSFacade(val config: ApplicationConfiguratio
           Some(messageList.head)
         }
       case Failure(e) =>
-        logger.error(s"There was an exception while receiving messages from $queueURL SQS: ${e.getMessage} from SQS", e)
+        logger.error(
+          s"There was an exception while receiving messages from $queueURL SQS: ${e.getMessage} from SQS",
+          e
+        )
         None
     }
   }

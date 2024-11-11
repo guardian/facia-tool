@@ -30,7 +30,7 @@ describe('Open Graph', function () {
                 siteName: 'fruit'
             });
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -51,7 +51,7 @@ describe('Open Graph', function () {
                 siteName: 'offsite.com'
             });
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -71,7 +71,7 @@ describe('Open Graph', function () {
                 title: 'the Guardian'
             });
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 

@@ -8,9 +8,12 @@ import services.editions.publishing.events.PublishEventMessageFormatter._
 
 private[events] object PublishEventSNSMessageParser extends Logging {
 
-  def parseToEvent(snsNotificationFromSQS: Message): Option[PublishEventMessage] = {
+  def parseToEvent(
+      snsNotificationFromSQS: Message
+  ): Option[PublishEventMessage] = {
     logger.info("read new publish events")
-    val messageBody = (parse(snsNotificationFromSQS.getBody) \ "Message").validate[String]
+    val messageBody =
+      (parse(snsNotificationFromSQS.getBody) \ "Message").validate[String]
     messageBody match {
       case JsSuccess(value, _) =>
         (parse(value) \ "event").validate[PublishEvent] match {

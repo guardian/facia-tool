@@ -3,7 +3,6 @@ package util
 import com.gu.contentapi.client.model.v1.{Content, SearchResponse}
 import org.scalatest.{FlatSpec, Matchers}
 
-
 class SearchResponseUtilTest extends FlatSpec with Matchers {
 
   behavior of "aggregateResults"
@@ -14,7 +13,7 @@ class SearchResponseUtilTest extends FlatSpec with Matchers {
     id = ignoredStr,
     webTitle = ignoredStr,
     webUrl = ignoredStr,
-    apiUrl = ignoredStr,
+    apiUrl = ignoredStr
   )
 
   private val responseWith3TotalPagesWith2ItemsPerPage = SearchResponse(
@@ -29,7 +28,13 @@ class SearchResponseUtilTest extends FlatSpec with Matchers {
     results = Seq(dummyContent, dummyContent)
   )
 
-  private val emptyResponse = responseWith3TotalPagesWith2ItemsPerPage.copy(total = 0, pageSize = 0, pages = 1, currentPage = 0, results = Nil)
+  private val emptyResponse = responseWith3TotalPagesWith2ItemsPerPage.copy(
+    total = 0,
+    pageSize = 0,
+    pages = 1,
+    currentPage = 0,
+    results = Nil
+  )
 
   private def nextPage = (r: SearchResponse) => {
     val cur = r.currentPage

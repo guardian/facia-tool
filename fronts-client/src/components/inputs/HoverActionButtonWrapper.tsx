@@ -1,116 +1,95 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { styled } from 'constants/theme';
 import ToolTip from './HoverActionToolTip';
 import { CardSizes } from 'types/Collection';
 
 const HoverActionsWrapper = styled.div<{
-  size?: string; // Article Component size
+	size?: string; // Article Component size
 }>`
-  bottom: 0;
-  position: relative;
-  z-index: 10;
-  /* Offset button margin spacing */
-  margin: 0 -2px;
+	bottom: 0;
+	position: relative;
+	z-index: 10;
+	/* Offset button margin spacing */
+	margin: 0 -2px;
 `;
 
 const ToolTipWrapper = styled.div<{
-  size?: string; // Article Component size
-  toolTipPosition: string;
-  toolTipAlign: string;
+	size?: string; // Article Component size
+	toolTipPosition: string;
+	toolTipAlign: string;
 }>`
-  position: absolute;
-  top: ${(props) => (props.toolTipPosition === 'bottom' ? '30px' : null)};
-  left: ${(props) =>
-    props.toolTipPosition === 'left' || props.toolTipAlign === 'left'
-      ? '0px'
-      : null};
-  bottom: ${(props) => (props.toolTipPosition === 'top' ? '30px' : null)};
-  right: ${(props) =>
-    props.toolTipAlign === 'center'
-      ? '-10px'
-      : props.toolTipPosition === 'right' || props.toolTipAlign === 'right'
-      ? '0px'
-      : null};
+	position: absolute;
+	top: ${(props) => (props.toolTipPosition === 'bottom' ? '30px' : null)};
+	left: ${(props) =>
+		props.toolTipPosition === 'left' || props.toolTipAlign === 'left'
+			? '0px'
+			: null};
+	bottom: ${(props) => (props.toolTipPosition === 'top' ? '30px' : null)};
+	right: ${(props) =>
+		props.toolTipAlign === 'center'
+			? '-10px'
+			: props.toolTipPosition === 'right' || props.toolTipAlign === 'right'
+				? '0px'
+				: null};
 `;
 
-interface HoverButtonInterface {
-  text: string;
-  component: React.ComponentType<ButtonPropsFromWrapper>;
-}
-export interface ButtonPropsFromWrapper {
-  showToolTip: () => void;
-  hideToolTip: () => void;
-  isSnapLink?: boolean;
-}
-interface WrapperProps<ButtonProps> {
-  buttons: HoverButtonInterface[];
-  buttonProps: ButtonProps;
-  size?: CardSizes; // Article Component size
-  toolTipPosition: 'top' | 'left' | 'bottom' | 'right';
-  toolTipAlign: 'left' | 'center' | 'right';
+export interface ButtonProps {
+	showToolTip: (text: string) => void;
+	hideToolTip: () => void;
+	size?: CardSizes;
 }
 
-interface WrapperState {
-  isToolTipVisible: boolean;
-  toolTipText: string;
+interface WrapperProps {
+	size?: CardSizes; // Article Component size
+	toolTipPosition: 'top' | 'left' | 'bottom' | 'right';
+	toolTipAlign: 'left' | 'center' | 'right';
+	urlPath: string | undefined;
+	renderButtons: (renderProps: ButtonProps) => JSX.Element;
+	showPinboard?: boolean; //Note- defaults to `true`
 }
 
-class HoverActionsButtonWrapper<ButtonProps> extends React.Component<
-  WrapperProps<ButtonProps>,
-  WrapperState
-> {
-  constructor(props: WrapperProps<ButtonProps>) {
-    super(props);
-    this.state = {
-      isToolTipVisible: false,
-      toolTipText: '',
-    };
-  }
+export const HoverActionsButtonWrapper = ({
+	toolTipPosition,
+	toolTipAlign,
+	size,
+	urlPath,
+	renderButtons,
+	showPinboard,
+}: WrapperProps) => {
+	const [toolTipText, setToolTipText] = useState<string | undefined>(undefined);
 
-  public render() {
-    const { buttons, buttonProps, toolTipPosition, toolTipAlign } = this.props;
-    const { isToolTipVisible, toolTipText } = this.state;
+	const showToolTip = (text: string) => {
+		setToolTipText(text);
+	};
 
-    return (
-      <HoverActionsWrapper
-        size={this.props.size}
-        data-testid="hover-actions-wrapper"
-      >
-        {isToolTipVisible ? (
-          <ToolTipWrapper
-            toolTipPosition={toolTipPosition}
-            toolTipAlign={toolTipAlign}
-          >
-            <ToolTip text={toolTipText} />
-          </ToolTipWrapper>
-        ) : null}
-        {buttons.map((ButtonObj) => (
-          <ButtonObj.component
-            key={ButtonObj.text}
-            {...buttonProps}
-            showToolTip={() => {
-              this.showToolTip(ButtonObj.text);
-            }}
-            hideToolTip={() => {
-              this.hideToolTip();
-            }}
-          />
-        ))}
-      </HoverActionsWrapper>
-    );
-  }
+	const hideToolTip = () => {
+		setToolTipText(undefined);
+	};
 
-  private showToolTip = (text: string) =>
-    this.setState({
-      isToolTipVisible: true,
-      toolTipText: text,
-    });
-
-  private hideToolTip = () => {
-    this.setState({
-      isToolTipVisible: false,
-    });
-  };
-}
-
-export { HoverActionsButtonWrapper, HoverButtonInterface };
+	return (
+		<HoverActionsWrapper size={size} data-testid="hover-actions-wrapper">
+			{toolTipText !== undefined ? (
+				<ToolTipWrapper
+					toolTipPosition={toolTipPosition}
+					toolTipAlign={toolTipAlign}
+				>
+					<ToolTip text={toolTipText} />
+				</ToolTipWrapper>
+			) : null}
+			{renderButtons({
+				showToolTip,
+				hideToolTip,
+				size,
+			})}
+			{urlPath && (showPinboard || showPinboard === undefined) && (
+				// the below tag is empty and meaningless to the fronts tool itself, but serves as a handle for
+				// Pinboard to attach itself via, identified/distinguished by the urlPath data attribute
+				// @ts-ignore
+				<pinboard-article-button
+					style={{ verticalAlign: 'top', marginLeft: '2px' }}
+					data-url-path={urlPath}
+				/>
+			)}
+		</HoverActionsWrapper>
+	);
+};

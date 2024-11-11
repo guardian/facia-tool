@@ -14,8 +14,7 @@ CONFIG_DIR=/etc/gu
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ROOT_DIR=${DIR}/..
 
-printf "\n\rSetting up Fronts Tool V2 dependencies... \n\r\n\r"
-
+printf "\n\rSetting up Fronts Tool dependencies... \n\r\n\r"
 
 fileExists() {
   test -e "$1"
@@ -24,24 +23,28 @@ fileExists() {
 check_yarn_installed() {
   if ! [ -x "$(command -v yarn)" ]; then
     echo -e "\r\n\r\n${red}yarn not found: please install yarn from https://yarnpkg.com/${plain}\r\n"
-    echo -e "Yarn is required to ensure developers use consistent JS dependencies"
+    echo -e "Yarn is required in the fronts-client directory to ensure developers use consistent JS dependencies"
 
     exit 1
   fi
 }
 
 set_node_version() {
+  echo "Attempting to set node version."
+  echo "Trying nvm" && nvm use || echo "Couldn't find nvm. Trying fnm" && fnm use
+
   runningNodeVersion=$(node -v)
-  requiredNodeVersion=$(cat "$ROOT_DIR/.nvmrc")
+  requiredNodeVersion=$(cat .nvmrc)
 
   if [ "$runningNodeVersion" != "$requiredNodeVersion" ]; then
-    echo -e "${red}Using wrong version of Node. Required ${requiredNodeVersion}. Running ${runningNodeVersion}.${plain}"
+    echo -e "${red}Using wrong version of Node. Required ${requiredNodeVersion}. Running ${runningNodeVersion}.${plain}."
     exit 1
   fi
 }
 
 install_v2_deps_and_build() {
   cd fronts-client
+  set_node_version
   yarn install
   printf "\nCompiling Javascript... \n\r\n\r"
   yarn build
@@ -51,6 +54,7 @@ install_v2_deps_and_build() {
 printf "\n\rSetting up Breaking News tool (Fronts Tool V1) dependencies... \n\r\n\r"
 
 install_v1_deps() {
+    set_node_version
     printf "\n\rInstalling NPM modules \n\r\n\r"
     npm install
     printf "\n\rInstalling JSPM modules \n\r\n\r"
@@ -87,13 +91,20 @@ fetch_config(){
       fi
     fi
 }
+
+configure_git() {
+  echo "Configuring git…"
+  git config --local blame.ignoreRevsFile .git-blame-ignore-revs
+  git config --local core.hooksPath scripts/git-hooks
+}
+
 main() {
   fetch_config "$@"
   check_yarn_installed
-  set_node_version
-  install_v2_deps_and_build
   install_v1_deps
+  install_v2_deps_and_build
   setup_nginx
+  configure_git
   printf "\n\rDone.\n\r\n\r"
 }
 

@@ -8,17 +8,17 @@ export type RemoveActionCreator = (id: string, cardId: string) => Action;
 export type TArticleEntities = [Card?, ExternalArticle?];
 
 export type InsertActionCreator = (
-  id: string,
-  index: number,
-  cardId: string,
-  persistTo: 'collection' | 'clipboard'
+	id: string,
+	index: number,
+	cardId: string,
+	persistTo: 'collection' | 'clipboard',
 ) => ThunkResult<void> | Action;
 
 export type InsertThunkActionCreator = (
-  persistTo: 'collection' | 'clipboard'
+	persistTo: 'collection' | 'clipboard',
 ) => (
-  id: string,
-  index: number,
-  cardId: string,
-  removeAction?: Action
+	id: string,
+	index: number,
+	cardId: string,
+	removeAction?: Action,
 ) => ThunkResult<void>;

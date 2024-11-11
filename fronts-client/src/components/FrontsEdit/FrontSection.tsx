@@ -6,9 +6,9 @@ import { Dispatch } from 'types/Store';
 import { fetchLastPressed } from 'actions/Fronts';
 import { updateCollection } from 'actions/Collections';
 import {
-  editorCloseFront,
-  selectIsFrontOverviewOpen,
-  changedBrowsingStage,
+	editorCloseFront,
+	selectIsFrontOverviewOpen,
+	changedBrowsingStage,
 } from 'bundles/frontsUI';
 import Button from 'components/inputs/ButtonDefault';
 import { frontStages } from 'constants/fronts';
@@ -30,322 +30,322 @@ import { isMode } from '../../selectors/pathSelectors';
 import { selectShouldUsePreviewCODE } from '../../selectors/configSelectors';
 
 const FrontHeader = styled(SectionHeader)`
-  display: flex;
-  border-right: 1px solid #767676;
+	display: flex;
+	border-right: 1px solid #767676;
 `;
 
 const FrontHeaderMeta = styled.div`
-  display: flex;
-  position: relative;
-  margin-left: auto;
-  font-family: TS3TextSans;
-  font-size: 14px;
-  white-space: nowrap;
+	display: flex;
+	position: relative;
+	margin-left: auto;
+	font-family: TS3TextSans;
+	font-size: 14px;
+	white-space: nowrap;
 `;
 
 const FrontsHeaderText = styled.span`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: ${theme.colors.blackDark};
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	color: ${theme.colors.blackDark};
 `;
 
 const FrontsHeaderInput = styled.input`
-  font-size: 22px;
-  font-family: GHGuardianHeadline;
-  font-weight: bold;
-  width: 20em;
+	font-size: 22px;
+	font-family: GHGuardianHeadline;
+	font-weight: bold;
+	width: 20em;
 `;
 
 const StageSelectButtons = styled.div`
-  color: ${theme.colors.blackDark};
-  padding: 0px 15px;
+	color: ${theme.colors.blackDark};
+	padding: 0px 15px;
 `;
 
 const SingleFrontContainer = styled.div<{
-  isOverviewOpen: boolean;
+	isOverviewOpen: boolean;
 }>`
-  /**
+	/**
    * We parameterise the min-width of the fronts container to handle the
    * presence of the form and overview content. When containers are at their
    * minimum widths and a form or overview is opened, we increase the min-width
    * of the front container proportionally to keep the collection container the
    * same width.
    */
-  min-width: ${({ isOverviewOpen }) =>
-    isOverviewOpen
-      ? theme.front.minWidth + theme.front.overviewMinWidth + 10
-      : theme.front.minWidth}px;
-  flex: 1 1;
-  height: 100%;
+	min-width: ${({ isOverviewOpen }) =>
+		isOverviewOpen
+			? theme.front.minWidth + theme.front.overviewMinWidth + 10
+			: theme.front.minWidth}px;
+	flex: 1 1;
+	height: 100%;
 `;
 
 const FrontContainer = styled.div`
-  height: 100%;
-  transform: translate3d(0, 0, 0);
+	height: 100%;
+	transform: translate3d(0, 0, 0);
 `;
 
 const FrontSectionContent = styled(SectionContent)`
-  padding-top: 0;
+	padding-top: 0;
 `;
 
 const FrontHeaderButton = styled(Button).attrs({ size: 'l' })`
-  color: #fff;
-  padding: 0 5px;
-  display: flex;
-  align-items: center;
+	color: #fff;
+	padding: 0 5px;
+	display: flex;
+	align-items: center;
 
-  &:not(:last-child) {
-    margin-right: 10px;
-  }
+	&:not(:last-child) {
+		margin-right: 10px;
+	}
 `;
 
 const PreviewButtonText = styled.span`
-  padding: 0 5px;
-  text-decoration: none;
+	padding: 0 5px;
+	text-decoration: none;
 `;
 interface FrontsContainerProps {
-  frontId: string;
+	frontId: string;
 }
 
 type FrontsComponentProps = FrontsContainerProps & {
-  selectedFront: FrontConfig;
-  isOverviewOpen: boolean;
-  shouldUsePreviewCODE: boolean;
-  frontsActions: {
-    fetchLastPressed: (frontId: string) => void;
-    editorCloseFront: (frontId: string) => void;
-    updateCollection: (collection: Collection) => void;
-    changeBrowsingStage: (frontId: string, browsingState: Stages) => void;
-    updateFrontMetadata: (
-      frontId: string,
-      metadata: EditionsFrontMetadata
-    ) => void;
-    setFrontHiddenState: (id: string, hidden: boolean) => void;
-  };
-  isEditions: boolean;
+	selectedFront: FrontConfig;
+	isOverviewOpen: boolean;
+	shouldUsePreviewCODE: boolean;
+	frontsActions: {
+		fetchLastPressed: (frontId: string) => void;
+		editorCloseFront: (frontId: string) => void;
+		updateCollection: (collection: Collection) => void;
+		changeBrowsingStage: (frontId: string, browsingState: Stages) => void;
+		updateFrontMetadata: (
+			frontId: string,
+			metadata: EditionsFrontMetadata,
+		) => void;
+		setFrontHiddenState: (id: string, hidden: boolean) => void;
+	};
+	isEditions: boolean;
 };
 
 interface ComponentState {
-  collectionSet: CardSets;
-  frontNameValue: string;
-  editingFrontName: boolean;
+	collectionSet: CardSets;
+	frontNameValue: string;
+	editingFrontName: boolean;
 }
 
 class FrontSection extends React.Component<
-  FrontsComponentProps,
-  ComponentState
+	FrontsComponentProps,
+	ComponentState
 > {
-  public state = {
-    collectionSet: frontStages.draft,
-    frontNameValue: '',
-    editingFrontName: false,
-  };
+	public state = {
+		collectionSet: frontStages.draft,
+		frontNameValue: '',
+		editingFrontName: false,
+	};
 
-  public handleCollectionSetSelect(key: string) {
-    const browsingStage = frontStages[key];
-    this.setState({
-      collectionSet: browsingStage,
-    });
-    this.props.frontsActions.changeBrowsingStage(
-      this.props.frontId,
-      browsingStage
-    );
-  }
+	public handleCollectionSetSelect(key: string) {
+		const browsingStage = frontStages[key];
+		this.setState({
+			collectionSet: browsingStage,
+		});
+		this.props.frontsActions.changeBrowsingStage(
+			this.props.frontId,
+			browsingStage,
+		);
+	}
 
-  public handleRemoveFront = () => {
-    this.props.frontsActions.editorCloseFront(this.props.frontId);
-  };
+	public handleRemoveFront = () => {
+		this.props.frontsActions.editorCloseFront(this.props.frontId);
+	};
 
-  public render() {
-    const {
-      frontId,
-      isOverviewOpen,
-      isEditions,
-      shouldUsePreviewCODE,
-    } = this.props;
-    const title = this.getTitle();
+	public render() {
+		const { frontId, isOverviewOpen, isEditions, shouldUsePreviewCODE } =
+			this.props;
+		const title = this.getTitle();
 
-    const { frontNameValue, editingFrontName } = this.state;
-    const isSpecial = this.props.selectedFront
-      ? this.props.selectedFront.isSpecial
-      : false;
+		const { frontNameValue, editingFrontName } = this.state;
+		const isSpecial = this.props.selectedFront
+			? this.props.selectedFront.isSpecial
+			: false;
 
-    const isHidden = this.props.selectedFront
-      ? this.props.selectedFront.isHidden
-      : false;
+		const isHidden = this.props.selectedFront
+			? this.props.selectedFront.isHidden
+			: false;
 
-    return (
-      <SingleFrontContainer
-        key={frontId}
-        id={createFrontId(frontId)}
-        isOverviewOpen={isOverviewOpen}
-      >
-        <FrontContainer>
-          <FrontHeader greyHeader={true}>
-            {editingFrontName ? (
-              <FrontsHeaderInput
-                data-testid="rename-front-input"
-                value={frontNameValue}
-                autoFocus
-                onChange={(e) =>
-                  this.setState({ frontNameValue: e.target.value })
-                }
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    this.setName();
-                  }
-                }}
-                onBlur={this.setName}
-              />
-            ) : (
-              <FrontsHeaderText title={title} data-testid="front-name">
-                {title}
-              </FrontsHeaderText>
-            )}
-            <FrontHeaderMeta>
-              <EditModeVisibility visibleMode="fronts">
-                <a
-                  href={`${
-                    shouldUsePreviewCODE
-                      ? urls.previewUrlCODE
-                      : urls.previewUrlPROD
-                  }${this.props.frontId}`}
-                  target="preview"
-                >
-                  <FrontHeaderButton>
-                    <PreviewEyeIcon size="xl" />
-                    <PreviewButtonText>Preview</PreviewButtonText>
-                  </FrontHeaderButton>
-                </a>
-                <StageSelectButtons>
-                  <RadioGroup>
-                    {Object.keys(frontStages).map((key) => (
-                      <RadioButton
-                        inline
-                        key={key}
-                        name={`${this.props.frontId} - frontStages`}
-                        checked={frontStages[key] === this.state.collectionSet}
-                        onChange={() => this.handleCollectionSetSelect(key)}
-                        label={toTitleCase(frontStages[key])}
-                      />
-                    ))}
-                  </RadioGroup>
-                </StageSelectButtons>
-              </EditModeVisibility>
-              {isSpecial && (
-                <>
-                  <FrontHeaderButton
-                    data-testid="toggle-hidden-front-button"
-                    onClick={() => this.setFrontHiddenState(!isHidden)}
-                  >
-                    {isHidden ? 'Unhide' : 'Hide'}
-                  </FrontHeaderButton>
-                </>
-              )}
-              {isEditions && (
-                <FrontHeaderButton
-                  data-testid="rename-front-button"
-                  onClick={this.renameFront}
-                >
-                  Rename
-                </FrontHeaderButton>
-              )}
-              <FrontHeaderButton onClick={this.handleRemoveFront}>
-                <ClearIcon size="xl" />
-              </FrontHeaderButton>
-            </FrontHeaderMeta>
-          </FrontHeader>
-          <FrontSectionContent direction="column">
-            {this.props.selectedFront && (
-              <FrontsContainer
-                id={this.props.frontId}
-                browsingStage={this.state.collectionSet}
-              />
-            )}
-          </FrontSectionContent>
-        </FrontContainer>
-      </SingleFrontContainer>
-    );
-  }
+		return (
+			<SingleFrontContainer
+				key={frontId}
+				id={createFrontId(frontId)}
+				isOverviewOpen={isOverviewOpen}
+			>
+				<FrontContainer>
+					<FrontHeader greyHeader={true}>
+						{editingFrontName ? (
+							<FrontsHeaderInput
+								data-testid="rename-front-input"
+								value={frontNameValue}
+								autoFocus
+								onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+									this.setState({ frontNameValue: e.target.value })
+								}
+								onKeyDown={(e: React.KeyboardEvent) => {
+									if (e.key === 'Enter') {
+										this.setName();
+									}
+								}}
+								onBlur={this.setName}
+							/>
+						) : (
+							<FrontsHeaderText title={title} data-testid="front-name">
+								{title}
+							</FrontsHeaderText>
+						)}
+						<FrontHeaderMeta>
+							<EditModeVisibility visibleMode="fronts">
+								<a
+									href={`${
+										shouldUsePreviewCODE
+											? urls.previewUrlCODE
+											: urls.previewUrlPROD
+									}${this.props.frontId}`}
+									target="preview"
+								>
+									<FrontHeaderButton>
+										<PreviewEyeIcon size="xl" />
+										<PreviewButtonText>Preview</PreviewButtonText>
+									</FrontHeaderButton>
+								</a>
+								<StageSelectButtons>
+									<RadioGroup>
+										{Object.keys(frontStages).map((key) => (
+											<RadioButton
+												inline
+												key={key}
+												name={`${this.props.frontId} - frontStages`}
+												checked={frontStages[key] === this.state.collectionSet}
+												onChange={() => this.handleCollectionSetSelect(key)}
+												label={toTitleCase(frontStages[key])}
+											/>
+										))}
+									</RadioGroup>
+								</StageSelectButtons>
+							</EditModeVisibility>
+							{isSpecial && (
+								<>
+									<FrontHeaderButton
+										data-testid="toggle-hidden-front-button"
+										onClick={() => this.setFrontHiddenState(!isHidden)}
+									>
+										{isHidden ? 'Unhide' : 'Hide'}
+									</FrontHeaderButton>
+								</>
+							)}
+							{isEditions && (
+								<FrontHeaderButton
+									data-testid="rename-front-button"
+									onClick={this.renameFront}
+								>
+									Rename
+								</FrontHeaderButton>
+							)}
+							<FrontHeaderButton onClick={this.handleRemoveFront}>
+								<ClearIcon size="xl" />
+							</FrontHeaderButton>
+						</FrontHeaderMeta>
+					</FrontHeader>
+					<FrontSectionContent direction="column">
+						{this.props.selectedFront && (
+							<FrontsContainer
+								id={this.props.frontId}
+								browsingStage={this.state.collectionSet}
+							/>
+						)}
+					</FrontSectionContent>
+				</FrontContainer>
+			</SingleFrontContainer>
+		);
+	}
 
-  private renameFront = () => {
-    this.setState({
-      frontNameValue: this.getTitle() || '',
-      editingFrontName: true,
-    });
-  };
+	private renameFront = () => {
+		this.setState({
+			frontNameValue: this.getTitle() || '',
+			editingFrontName: true,
+		});
+	};
 
-  private setFrontHiddenState = (hidden: boolean) => {
-    this.props.frontsActions.setFrontHiddenState(
-      this.props.selectedFront.id,
-      hidden
-    );
-  };
+	private setFrontHiddenState = (hidden: boolean) => {
+		this.props.frontsActions.setFrontHiddenState(
+			this.props.selectedFront.id,
+			hidden,
+		);
+	};
 
-  private getTitle = () => {
-    const { selectedFront } = this.props;
+	// private addFrontCollection = () => {
+	//   this.props.frontsActions.addFrontCollection(this.props.selectedFront.id);
+	// };
 
-    if (!selectedFront) {
-      return;
-    }
+	private getTitle = () => {
+		const { selectedFront } = this.props;
 
-    const nameOverride = selectedFront.metadata?.nameOverride;
-    if (nameOverride) {
-      return nameOverride;
-    }
+		if (!selectedFront) {
+			return;
+		}
 
-    const name =
-      this.props.selectedFront.displayName || this.props.selectedFront.id;
-    return this.props.isEditions
-      ? name
-      : // Some fronts are missing a title, and are named by their id. This makes them more legible to editorial staff.
-        startCase(name);
-  };
+		const nameOverride = selectedFront.metadata?.nameOverride;
+		if (nameOverride) {
+			return nameOverride;
+		}
 
-  private setName = () => {
-    const metadata =
-      this.state.frontNameValue !== ''
-        ? {
-            ...this.props.selectedFront.metadata,
-            nameOverride: this.state.frontNameValue,
-          }
-        : {
-            ...this.props.selectedFront.metadata,
-            nameOverride: undefined,
-          };
+		const name =
+			this.props.selectedFront.displayName || this.props.selectedFront.id;
+		return this.props.isEditions
+			? name
+			: // Some fronts are missing a title, and are named by their id. This makes them more legible to editorial staff.
+				startCase(name);
+	};
 
-    this.props.frontsActions.updateFrontMetadata(
-      this.props.selectedFront.id,
-      metadata
-    );
+	private setName = () => {
+		const metadata =
+			this.state.frontNameValue !== ''
+				? {
+						...this.props.selectedFront.metadata,
+						nameOverride: this.state.frontNameValue,
+					}
+				: {
+						...this.props.selectedFront.metadata,
+						nameOverride: undefined,
+					};
 
-    this.setState({ editingFrontName: false });
-  };
+		this.props.frontsActions.updateFrontMetadata(
+			this.props.selectedFront.id,
+			metadata,
+		);
+
+		this.setState({ editingFrontName: false });
+	};
 }
 
 const createMapStateToProps = () => {
-  return (state: State, { frontId }: FrontsContainerProps) => ({
-    selectedFront: selectFront(state, { frontId }),
-    isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
-    isEditions: isMode(state, 'editions'),
-    shouldUsePreviewCODE: selectShouldUsePreviewCODE(state),
-  });
+	return (state: State, { frontId }: FrontsContainerProps) => ({
+		selectedFront: selectFront(state, { frontId }),
+		isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
+		isEditions: isMode(state, 'editions'),
+		shouldUsePreviewCODE: selectShouldUsePreviewCODE(state),
+	});
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  frontsActions: {
-    fetchLastPressed: (id: string) => dispatch(fetchLastPressed(id)),
-    updateCollection: (collection: Collection) =>
-      dispatch(updateCollection(collection)),
-    editorCloseFront: (id: string) => dispatch(editorCloseFront(id)),
-    changeBrowsingStage: (id: string, browsingStage: Stages) =>
-      dispatch(changedBrowsingStage(id, browsingStage)),
-    updateFrontMetadata: (id: string, metadata: EditionsFrontMetadata) =>
-      dispatch(updateFrontMetadata(id, metadata)),
-    setFrontHiddenState: (id: string, hidden: boolean) =>
-      dispatch(setFrontHiddenState(id, hidden)),
-  },
+	frontsActions: {
+		fetchLastPressed: (id: string) => dispatch(fetchLastPressed(id)),
+		updateCollection: (collection: Collection) =>
+			dispatch(updateCollection(collection)),
+		editorCloseFront: (id: string) => dispatch(editorCloseFront(id)),
+		changeBrowsingStage: (id: string, browsingStage: Stages) =>
+			dispatch(changedBrowsingStage(id, browsingStage)),
+		updateFrontMetadata: (id: string, metadata: EditionsFrontMetadata) =>
+			dispatch(updateFrontMetadata(id, metadata)),
+		setFrontHiddenState: (id: string, hidden: boolean) =>
+			dispatch(setFrontHiddenState(id, hidden)),
+	},
 });
 
 export { FrontSection };

@@ -1,9 +1,9 @@
 export { default as DragAndDropRoot } from './Root';
 export {
-  default as Level,
-  Move,
-  PosSpec,
-  LevelChild,
-  MoveHandler,
-  DropHandler,
+	default as Level,
+	type Move,
+	type PosSpec,
+	type LevelChild,
+	type MoveHandler,
+	type DropHandler,
 } from './Level';

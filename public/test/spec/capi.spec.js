@@ -35,7 +35,7 @@ describe('Content API', function () {
             // Just make sure the callback is called for empty arrays
             expect(true).toBe(true);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -72,7 +72,7 @@ describe('Content API', function () {
                 expect(article.addCapiData.called).toBe(true);
             });
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -121,7 +121,7 @@ describe('Content API', function () {
                 expect(article.addCapiData.called).toBe(true);
             });
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 

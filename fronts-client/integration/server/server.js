@@ -124,7 +124,7 @@ module.exports = async () =>
       return res.json([
         {
           id: req.body[0].id,
-          collection,
+          collection: { ...collection, id: req.body[0].id },
           storiesVisibleByStage: {
             live: { desktop: 4, mobile: 4 },
             draft: { desktop: 4, mobile: 4 }
@@ -132,7 +132,7 @@ module.exports = async () =>
         },
         {
           id: req.body[1].id,
-          collection: collectionTwo,
+          collection: { ...collectionTwo, id: req.body[1].id },
           storiesVisibleByStage: {
             live: { desktop: 4, mobile: 4 },
             draft: { desktop: 4, mobile: 4 }
@@ -140,7 +140,7 @@ module.exports = async () =>
         },
         {
           id: req.body[2].id,
-          collection: collectionFour,
+          collection: { ...collectionFour, id: req.body[2].id },
           storiesVisibleByStage: {
             live: { desktop: 4, mobile: 4 },
             draft: { desktop: 4, mobile: 4 }
@@ -161,23 +161,21 @@ module.exports = async () =>
     app.get('/editions-api/collections/:id/prefill', (req, res) => {
       return res.json(prefill);
     });
+
     app.post('/editions-api/collections', (req, res) => {
-      return res.json([
-        {
-          id: req.body[0].id,
+      const collectionStubs = [collection, collectionTwo];
+
+      // Expects a body of `{ id: string }[]`
+      return res.json(
+        req.body.map(({ id }, index) => ({
+          id,
           collection: {
-            ...collection,
-            items: collection.draft
-          }
-        },
-        {
-          id: req.body[1].id,
-          collection: {
-            ...collectionTwo,
-            items: collectionTwo.draft
-          }
-        }
-      ]);
+            id,
+            ...collectionStubs[index],
+            items: collectionStubs[index].draft,
+          },
+        }))
+      );
     });
 
     // catch requests to discard collection endpoint
@@ -185,7 +183,7 @@ module.exports = async () =>
       return res.json({
         id: req.body.collectionId,
         // Collection three is empty, simulating a discard event
-        collection: collectionThree,
+        collection: { ...collectionThree, id: req.body.collectionId },
         storiesVisibleByStage: {
           live: { desktop: 4, mobile: 4 },
           draft: { desktop: 4, mobile: 4 }
@@ -198,6 +196,10 @@ module.exports = async () =>
       return res.json([]);
     });
 
+    app.get('*/last-proofed-version*', (req, res) => {
+      return res.json(null);
+    });
+
     // send the assets from dist
     app.get('*/:file', (req, res) =>
       req.params[0].includes('bbc') // prevents error messages from External Snap Link fixture
@@ -205,7 +207,7 @@ module.exports = async () =>
         : res.sendFile(
             path.join(
               __dirname,
-              '../../../public/fronts-client/dist',
+              '../../../public/fronts-client-v2/dist',
               req.params.file
             )
           )

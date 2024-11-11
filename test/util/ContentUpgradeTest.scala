@@ -26,7 +26,8 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
       newBody shouldBe body
     }
     "plain results gets you plain results" in {
-      val body = """{"response":{"other":"ignoreme","results":"this is the results"}}"""
+      val body =
+        """{"response":{"other":"ignoreme","results":"this is the results"}}"""
       val newBody = ContentUpgrade.rewriteBody(body)
       newBody shouldBe body
     }
@@ -44,7 +45,8 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
     }
 
     "array of object results gets you a single array of object" in {
-      val body = """{"response":{"other":"ignoreme","results":[{"a":"b"}, {"b":"c"}, {"c":"d"}]}}"""
+      val body =
+        """{"response":{"other":"ignoreme","results":[{"a":"b"}, {"b":"c"}, {"c":"d"}]}}"""
       val newBody = ContentUpgrade.rewriteBody(body)
       newBody shouldBe """{"response":{"other":"ignoreme","results":[{"a":"b"},{"b":"c"},{"c":"d"}]}}"""
     }
@@ -82,20 +84,24 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+          |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
           |          "showMainVideo":false,
           |          "imageHide":false,
+          |          "boostLevel.default":true,
           |          "showQuotedHeadline":false,
           |          "imageSlideshowReplace":false,
+          |          "boostLevel.boost":false,
           |          "imageReplace":false,
-          |          "showBoostedHeadline":false,
           |          "showKickerCustom":false,
           |          "showByline":false,
           |          "showKickerTag":false,
           |          "showLivePlayable":false,
           |          "imageCutoutReplace":false,
-          |          "showKickerSection":false},
+          |          "showKickerSection":false,
+          |          "boostLevel.megaboost":false,
+          |          "showBoostedHeadline":false},
           |        "tone":"news"
           |      }
           |    }
@@ -174,20 +180,24 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+          |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
           |          "showMainVideo":false,
           |          "imageHide":false,
+          |          "boostLevel.default":true,
           |          "showQuotedHeadline":true,
           |          "imageSlideshowReplace":false,
+          |          "boostLevel.boost":false,
           |          "imageReplace":false,
-          |          "showBoostedHeadline":false,
           |          "showKickerCustom":false,
           |          "showByline":true,
           |          "showKickerTag":false,
           |          "showLivePlayable":false,
           |          "imageCutoutReplace":true,
-          |          "showKickerSection":false},
+          |          "showKickerSection":false,
+          |          "boostLevel.megaboost":false,
+          |          "showBoostedHeadline":false},
           |        "tone":"comment",
           |        "cutout":"cutout image location",
           |        "mediaType":"Cutout"
@@ -264,20 +274,24 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+          |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
           |          "showMainVideo":false,
           |          "imageHide":false,
+          |          "boostLevel.default":true,
           |          "showQuotedHeadline":true,
           |          "imageSlideshowReplace":false,
+          |          "boostLevel.boost":false,
           |          "imageReplace":false,
-          |          "showBoostedHeadline":false,
           |          "showKickerCustom":false,
           |          "showByline":true,
           |          "showKickerTag":false,
           |          "showLivePlayable":false,
           |          "imageCutoutReplace":false,
-          |          "showKickerSection":false},
+          |          "showKickerSection":false,
+          |          "boostLevel.megaboost":false,
+          |          "showBoostedHeadline":false},
           |        "tone":"comment",
           |        "mediaType":"UseArticleTrail"
           |      }
@@ -337,20 +351,24 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+          |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
           |          "showMainVideo":false,
           |          "imageHide":false,
+          |          "boostLevel.default":true,
           |          "showQuotedHeadline":true,
           |          "imageSlideshowReplace":false,
+          |          "boostLevel.boost":false,
           |          "imageReplace":false,
-          |          "showBoostedHeadline":false,
           |          "showKickerCustom":false,
           |          "showByline":true,
           |          "showKickerTag":false,
           |          "showLivePlayable":false,
           |          "imageCutoutReplace":false,
-          |          "showKickerSection":false},
+          |          "showKickerSection":false,
+          |          "boostLevel.megaboost":false,
+          |          "showBoostedHeadline":false},
           |        "tone":"comment",
           |        "mediaType":"UseArticleTrail"
           |      }
@@ -410,20 +428,24 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+          |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
           |          "showMainVideo":false,
           |          "imageHide":false,
+          |          "boostLevel.default":true,
           |          "showQuotedHeadline":false,
           |          "imageSlideshowReplace":false,
+          |          "boostLevel.boost":false,
           |          "imageReplace":false,
-          |          "showBoostedHeadline":false,
           |          "showKickerCustom":false,
           |          "showByline":false,
           |          "showKickerTag":false,
           |          "showLivePlayable":false,
           |          "imageCutoutReplace":false,
-          |          "showKickerSection":false},
+          |          "showKickerSection":false,
+          |          "boostLevel.megaboost":false,
+          |          "showBoostedHeadline":false},
           |        "tone":"letters",
           |        "pickedKicker":"Letters"
           |      }
@@ -483,20 +505,24 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+          |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
           |          "showMainVideo":false,
           |          "imageHide":false,
+          |          "boostLevel.default":true,
           |          "showQuotedHeadline":false,
           |          "imageSlideshowReplace":false,
+          |          "boostLevel.boost":false,
           |          "imageReplace":false,
-          |          "showBoostedHeadline":false,
           |          "showKickerCustom":false,
           |          "showByline":false,
           |          "showKickerTag":false,
           |          "showLivePlayable":false,
           |          "imageCutoutReplace":false,
-          |          "showKickerSection":false},
+          |          "showKickerSection":false,
+          |          "boostLevel.megaboost":false,
+          |          "showBoostedHeadline":false},
           |        "tone":"editorial",
           |        "pickedKicker":"Editorial"
           |      }

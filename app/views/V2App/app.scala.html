@@ -1,5 +1,12 @@
-@(title: String, jsLocation: String, faviconLocation: String, clientConfigJson:
-String)
+@(
+    title: String,
+    jsLocation: String,
+    cssLocation: String,
+    faviconLocation: String,
+    clientConfigJson: String,
+    isDev: Boolean,
+    maybePinboardUrl: Option[String]
+)
 <!DOCTYPE html>
 <html lang="en">
 
@@ -27,21 +34,35 @@ String)
                 width: 100%;
             }
         </style>
-    <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-78290349-2"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag() { dataLayer.push(arguments); }
-        gtag('js', new Date());
-        gtag('config', 'UA-78290349-2');
-    </script>
-
 </head>
 
 <body>
     <div class="wrap" id="react-mount"></div>
     <div id="config" data-value="@clientConfigJson"></div>
-    <script src="@jsLocation" type="application/javascript"></script>
+    <script type="module">window.global = window</script>
+
+    @if(isDev) {
+        <!-- Connect directly to Vite dev server in development -->
+        <!-- See https://vitejs.dev/guide/backend-integration.html -->
+        <script type="module">
+            import RefreshRuntime from 'http://localhost:5173/assets/fronts-client-v2/@@react-refresh'
+
+            RefreshRuntime.injectIntoGlobalHook(window)
+            window.$RefreshReg$ = () => {
+            }
+            window.$RefreshSig$ = () => (type) => type
+            window.__vite_plugin_react_preamble_installed__ = true
+        </script>
+        <script type="module" src="http://localhost:5173/assets/fronts-client-v2/@@vite/client"></script>
+        <script type="module" src="http://localhost:5173/assets/fronts-client-v2/src/index.tsx"></script>
+    } else {
+        <link rel="stylesheet" href="@cssLocation">
+        <script type="module" src="@jsLocation" type="application/javascript"></script>
+    }
+
+    @maybePinboardUrl.map { pinboardUrl =>
+        <script async defer src="@pinboardUrl"></script>
+    }
 </body>
 
 </html>

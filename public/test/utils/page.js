@@ -29,7 +29,7 @@ export default class Page {
         this.regions = installRegions(this);
 
         this.loaded = this.apply()
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     }
 
@@ -66,7 +66,7 @@ export default class Page {
             this.ko.dispose();
             localStorage.clear();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     }
 }

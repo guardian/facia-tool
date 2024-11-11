@@ -32,7 +32,7 @@ describe('Media Service', function () {
         .then(dragCutoutFromGrid)
         .then(dragInvalidImage)
         .then(saveArticle)
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
 
         function expectArticleOpen (trail) {

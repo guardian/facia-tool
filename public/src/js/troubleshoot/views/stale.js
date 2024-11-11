@@ -134,17 +134,18 @@ function fetchLastPressed (front) {
 }
 
 function checkPressedState (front, config, container, lastPress) {
+    const priority = config.fronts[front].priority || 'editorial';
     if (lastPress) {
         const date = new Date(lastPress.pressedTime);
         const now = new Date();
 
         if (now - date > staleInterval(front, config) || lastPress.statusCode !== 'ok') {
-            return diagnoseStaleFront(container, front, config, humanTime(date, now), lastPress);
+            return diagnoseStaleFront(container, front, priority, config, humanTime(date, now), lastPress);
         } else {
-            return frontNotStale(container, front, humanTime(date, now), lastPress);
+            return frontNotStale(container, front, priority, humanTime(date, now), lastPress);
         }
     } else {
-        return diagnoseStaleFront(container, front, config, null);
+        return diagnoseStaleFront(container, front, priority, config, null);
     }
 }
 
@@ -169,10 +170,11 @@ function inject (container, ...elements) {
     elements.filter(Boolean).forEach(element => placeholder.appendChild(element));
 }
 
-function diagnoseStaleFront (container, front, config, when, status) {
+function diagnoseStaleFront (container, front, priority, config, when, status) {
     const troubleshootResults = clone('staleFront');
     troubleshootResults.querySelector('.lastModifyDate').textContent = when || 'never';
     troubleshootResults.querySelector('.frontName').textContent = front;
+    troubleshootResults.querySelector('.frontPriority').textContent = priority;
 
     diagnoseCapiQueries(troubleshootResults, front, config, createScheduler());
     diagnoseLatestSnaps(troubleshootResults, front, config, createScheduler());
@@ -226,10 +228,11 @@ function diagnoseLatestSnaps(container, front, config, scheduler) {
     });
 }
 
-function frontNotStale (container, front, when, status) {
+function frontNotStale (container, front, priority, when, status) {
     const validMessage = clone('frontNotStale');
     validMessage.querySelector('.lastModifyDate').textContent = when;
     validMessage.querySelector('.frontName').textContent = front;
+    validMessage.querySelector('.frontPriority').textContent = priority;
     populatePressErrorMessage(validMessage, status);
 
     inject(container, validMessage);

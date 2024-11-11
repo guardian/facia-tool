@@ -72,7 +72,7 @@ describe('Latest widget', function () {
         .then(() => {
             expect(capi.fetchLatest.calls.count()).toBe(3);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -159,7 +159,7 @@ describe('Latest widget', function () {
             expect(capi.fetchLatest.calls.argsFor(4)[0].filter).toBe('');
             expect(capi.fetchLatest.calls.argsFor(4)[0].filterType).toBe('section');
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -228,7 +228,7 @@ describe('Latest widget', function () {
             expect(capi.fetchLatest.calls.argsFor(5)[0].page).toBe(1);
             expect(paginationText()).toBe('page 1 next');
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -283,7 +283,7 @@ describe('Latest widget', function () {
             expect($('a.live-mode').hasClass('active')).toBe(true);
             expect($('a.draft-mode').hasClass('active')).toBe(false);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

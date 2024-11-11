@@ -11,7 +11,7 @@ module.exports = function(grunt, options) {
             colors: options.color,
             port: 9876,
             autoWatch: true,
-            browsers: ['PhantomJS'],
+            browsers: ['ChromeHeadless'],
             captureTimeout: 60000
         },
         'static': {

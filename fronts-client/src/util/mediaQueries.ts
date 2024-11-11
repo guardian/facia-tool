@@ -1,7 +1,7 @@
 import {
-  css,
-  ThemedCssFunction,
-  ThemedStyledInterface,
+	css,
+	ThemedCssFunction,
+	ThemedStyledInterface,
 } from 'styled-components';
 
 type Breakpoints = 'large' | 'medium' | 'small';
@@ -9,13 +9,13 @@ type Breakpoints = 'large' | 'medium' | 'small';
 type BreakpointMap = { [Breakpoint in Breakpoints]: number };
 
 const sizes = {
-  large: 1280,
-  medium: 992,
-  small: 768,
+	large: 1280,
+	medium: 992,
+	small: 768,
 } as BreakpointMap;
 
 type MediaQueryMap = {
-  [Key in Breakpoints]: ThemedCssFunction<ThemedStyledInterface<any>>;
+	[Key in Breakpoints]: ThemedCssFunction<ThemedStyledInterface<any>>;
 };
 
 /**
@@ -34,14 +34,13 @@ type MediaQueryMap = {
  * Cribbed and typescriptified from https://www.styled-components.com/docs/advanced.
  */
 export const media = (Object.keys(sizes) as Breakpoints[]).reduce(
-  (acc, label) => {
-    acc[label] = (strings: any, ...interpolations: any[]) =>
-      css`
-        @media (max-width: ${sizes[label]}px) {
-          ${css(strings, ...interpolations)}
-        }
-      `;
-    return acc;
-  },
-  {} as MediaQueryMap
+	(acc, label) => {
+		acc[label] = (strings: any, ...interpolations: any[]) => css`
+			@media (max-width: ${sizes[label]}px) {
+				${css(strings, ...interpolations)}
+			}
+		`;
+		return acc;
+	},
+	{} as MediaQueryMap,
 );

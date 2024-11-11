@@ -33,7 +33,7 @@ describe('Article Persistence', function () {
             clipboard.dispose();
             article.dispose();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -64,7 +64,7 @@ describe('Article Persistence', function () {
                 article.dispose();
             });
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -104,7 +104,7 @@ describe('Article Persistence', function () {
                 article.dispose();
             });
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });
