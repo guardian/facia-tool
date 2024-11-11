@@ -1,0 +1,15 @@
+{
+  "id": "profile/yotamottolenghi",
+  "type": "contributor",
+  "sectionId": "lifeandstyle",
+  "sectionName": "Life and style",
+  "webTitle": "Yotam Ottolenghi",
+  "webUrl": "https://www.theguardian.com/profile/yotamottolenghi",
+  "apiUrl": "https://content.guardianapis.com/profile/yotamottolenghi",
+  "bio": "<p>Yotam Ottolenghi&nbsp;is  chef-patron of the <a href=\"https://ottolenghi.co.uk/\">Ottolenghi</a> delis and the Nopi and Rovi restaurants. He has  published 10 bestselling cookbooks</p>",
+  "bylineImageUrl": "https://uploads.guim.co.uk/2023/10/10/yotam_ottolenghi.jpg",
+  "bylineLargeImageUrl": "https://uploads.guim.co.uk/2023/10/10/yotam_ottolenghi.png",
+  "firstName": "Yotam",
+  "lastName": "Ottolenghi",
+  "twitterHandle": "ottolenghi"
+}

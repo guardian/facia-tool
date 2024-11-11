@@ -11,20 +11,20 @@ const editionsApi = (path: string) => `/editions-api${path}`;
  */
 
 export interface FrontsEditParams {
-  priority: string;
+	priority: string;
 }
 
 const frontsEditPathProps = {
-  exact: true,
-  path: `/:priority(${Object.keys(priorities).join('|')})`,
+	exact: true,
+	path: `/:priority(${Object.keys(priorities).join('|')})`,
 };
 
 const matchFrontsEditPath = (path: string) =>
-  matchPath<FrontsEditParams>(path, frontsEditPathProps);
+	matchPath<FrontsEditParams>(path, frontsEditPathProps);
 
 const frontsFeatureProps = {
-  exact: true,
-  path: '/features',
+	exact: true,
+	path: '/features',
 };
 
 /**
@@ -32,28 +32,28 @@ const frontsFeatureProps = {
  */
 
 const issuePathProps = {
-  exact: true,
-  path: '/issues/:priority',
+	exact: true,
+	path: '/issues/:priority',
 };
 
 // The `priority` in this path is actually the edition issueId, but is mapped to priority
 // so as to perserve things like favourite fronts and open fronts
 const matchIssuePath = (path: string) =>
-  matchPath<FrontsEditParams>(path, issuePathProps);
+	matchPath<FrontsEditParams>(path, issuePathProps);
 
 export const manageEditions = `/manage-editions/:editionName`;
 
 const EditionsRoutes = {
-  issuePath: (issueId: string) => editionsApi(`/issues/${issueId}`),
-  collectionPath: (collectionId: string) =>
-    editionsApi(`/editions/collections/${collectionId}`),
+	issuePath: (issueId: string) => editionsApi(`/issues/${issueId}`),
+	collectionPath: (collectionId: string) =>
+		editionsApi(`/editions/collections/${collectionId}`),
 };
 
 export {
-  matchFrontsEditPath,
-  frontsEditPathProps,
-  matchIssuePath,
-  issuePathProps,
-  frontsFeatureProps,
-  EditionsRoutes,
+	matchFrontsEditPath,
+	frontsEditPathProps,
+	matchIssuePath,
+	issuePathProps,
+	frontsFeatureProps,
+	EditionsRoutes,
 };

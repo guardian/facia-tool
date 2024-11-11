@@ -7,7 +7,6 @@ import internalPageCode from 'utils/internal-page-code';
 import articlePath from 'utils/article-path';
 import urlQuery from 'utils/url-query';
 import isGuardianUrl from 'utils/is-guardian-url';
-import lenientJsonParse from 'utils/lenient-json-parse';
 import mediator from 'utils/mediator';
 import * as snap from 'utils/snap';
 import reportErrors from 'utils/report-errors';
@@ -294,7 +293,7 @@ function fetchLatest (options) {
         return handleFetchLatestResponse(data, propName, term || filter);
     }, function (xhr) {
         if (xhr.status === 200) {
-            const parsed = lenientJsonParse(xhr.responseText);
+            const parsed = JSON.parse(xhr.responseText);
             if (parsed.json) {
                 mediator.emit('capi:error', parsed.errors[0]);
                 return handleFetchLatestResponse(parsed.json, propName, term || filter);

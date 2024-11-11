@@ -1,0 +1,425 @@
+{
+  "bookCredit": "",
+  "canonicalArticle": "food/2022/oct/15/make-your-own-chinese-dumplings-yotam-ottolenghi-recipes-shanghai-buns",
+  "celebrationIds": [],
+  "composerId": "633429038f086841b84c39a5",
+  "contributors": [
+    "profile/yotamottolenghi"
+  ],
+  "cuisineIds": [],
+  "description": "The words “crab” and “butterscotch” aren’t often put together, but trust me on this one. Mixed with egg or mayonnaise, this also makes a great tart or sandwich filling, incidentally.",
+  "difficultyLevel": "easy",
+  "featuredImage": {
+    "url": "https://i.guim.co.uk/img/media/67f51e74f91032bd893349aa3a8c66ad55659bdd/30_111_2949_3201/master/2949.jpg?width=1600&dpr=1&s=none",
+    "mediaId": "67f51e74f91032bd893349aa3a8c66ad55659bdd",
+    "cropId": "30_111_2949_3201",
+    "source": "The Guardian",
+    "photographer": "Louise Hagger",
+    "imageType": "\"Photograph\"",
+    "caption": "Yotam Ottolenghi’s white crab and cabbage buns with brown crab butterscotch.",
+    "width": 2949,
+    "height": 3201,
+    "displayCredit": true
+  },
+  "id": "ae779e4975904ba6a601449e513d88f7",
+  "ingredients": [
+    {
+      "ingredientsList": [
+        {
+          "amount": {
+            "min": 300,
+            "max": 300
+          },
+          "name": "white bread flour",
+          "optional": false,
+          "prefix": "strong",
+          "suffix": "plus 1½ tbsp extra for dusting",
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "min": 1,
+            "max": 1
+          },
+          "name": "dried yeast",
+          "optional": false,
+          "prefix": "fast-action",
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "name": "caster sugar",
+          "optional": false,
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "name": "baking powder",
+          "optional": false,
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 0.25,
+            "max": 0.25
+          },
+          "name": "salt",
+          "optional": false,
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 0.5,
+            "max": 0.5
+          },
+          "name": "sesame oil",
+          "optional": false,
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "min": 175,
+            "max": 175
+          },
+          "name": "water",
+          "optional": false,
+          "prefix": "lukewarm",
+          "unit": "ml"
+        },
+        {
+          "amount": {
+            "min": 350,
+            "max": 400
+          },
+          "name": "filling",
+          "optional": false,
+          "suffix": "see below",
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "min": 3,
+            "max": 3
+          },
+          "name": "vegetable oil",
+          "optional": false,
+          "unit": "tbsp"
+        },
+        {
+          "amount": {
+            "min": 1,
+            "max": 1
+          },
+          "name": "star anise",
+          "optional": false
+        },
+        {
+          "amount": {
+            "min": null,
+            "max": null
+          },
+          "name": "Dipping sauce",
+          "optional": false,
+          "suffix": "or black rice vinegar, to serve"
+        }
+      ],
+      "recipeSection": "For the buns"
+    },
+    {
+      "ingredientsList": [
+        {
+          "amount": {
+            "max": 350,
+            "min": 350
+          },
+          "name": "chinese",
+          "optional": false,
+          "suffix": "(or napa) cabbage, shredded",
+          "text": "350 g chinese (or napa) cabbage, shredded",
+          "unit": "g"
+        },
+        {
+          "name": "Fine sea salt",
+          "optional": false,
+          "suffix": "and black pepper",
+          "text": "Fine sea salt and black pepper"
+        },
+        {
+          "amount": {
+            "max": 200,
+            "min": 200
+          },
+          "name": "white crab meat",
+          "optional": false,
+          "text": "200 g white crab meat",
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "max": 1,
+            "min": 1
+          },
+          "name": "tarragon leaves",
+          "optional": false,
+          "suffix": "roughly chopped",
+          "text": "1 tsp tarragon leaves, roughly chopped",
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "max": 2,
+            "min": 2
+          },
+          "name": "chives",
+          "optional": false,
+          "suffix": "finely chopped",
+          "text": "2 tbsp chives, finely chopped",
+          "unit": "tbsp"
+        },
+        {
+          "amount": {
+            "max": 1,
+            "min": 1
+          },
+          "name": "coriander",
+          "optional": false,
+          "suffix": "finely chopped",
+          "text": "1 tbsp coriander, finely chopped",
+          "unit": "tbsp"
+        },
+        {
+          "amount": {
+            "max": 2,
+            "min": 2
+          },
+          "name": "light soy sauce",
+          "optional": false,
+          "text": "2 tsp light soy sauce",
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "max": 2,
+            "min": 2
+          },
+          "name": "fish sauce",
+          "optional": false,
+          "text": "2 tsp fish sauce",
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "max": 30,
+            "min": 30
+          },
+          "name": "unsalted butter",
+          "optional": false,
+          "suffix": "melted",
+          "text": "30 g unsalted butter, melted",
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "max": 1,
+            "min": 1
+          },
+          "name": "honey",
+          "optional": false,
+          "text": "1 tsp honey",
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "max": 2,
+            "min": 2
+          },
+          "name": "plain flour",
+          "optional": false,
+          "text": "2 tsp plain flour",
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "max": 1,
+            "min": 1
+          },
+          "name": "lime",
+          "optional": false,
+          "suffix": "zest finely grated, to get 1 tsp, then cut into 6 wedges",
+          "text": "1 lime, zest finely grated, to get 1 tsp, then cut into 6 wedges"
+        }
+      ],
+      "recipeSection": "For the filling"
+    },
+    {
+      "ingredientsList": [
+        {
+          "amount": {
+            "max": 40,
+            "min": 40
+          },
+          "name": "unsalted butter",
+          "optional": false,
+          "text": "40 g unsalted butter",
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "max": 2,
+            "min": 2
+          },
+          "name": "demerara sugar",
+          "optional": false,
+          "text": "2 tsp demerara sugar",
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "max": 1,
+            "min": 1
+          },
+          "name": "soy sauce",
+          "optional": false,
+          "text": "1 tsp soy sauce",
+          "unit": "tsp"
+        },
+        {
+          "amount": {
+            "max": 0.5,
+            "min": 0.5
+          },
+          "name": "red chilli",
+          "optional": false,
+          "suffix": "(5g), stem, pith and seeds removed, flesh roughly chopped",
+          "text": "½ red chilli (5 g), stem, pith and seeds removed, flesh roughly chopped"
+        },
+        {
+          "amount": {
+            "max": 50,
+            "min": 50
+          },
+          "name": "brown crab meat",
+          "optional": false,
+          "text": "50 g brown crab meat",
+          "unit": "g"
+        },
+        {
+          "amount": {
+            "max": 0.5,
+            "min": 0.5
+          },
+          "name": "lime juice",
+          "optional": false,
+          "text": "½ tsp lime juice",
+          "unit": "tsp"
+        }
+      ],
+      "recipeSection": "For the crab butterscotch"
+    }
+  ],
+  "instructions": [
+    {
+      "description": "Put the first five ingredients in the bowl of a stand mixer fitted with the dough hook, keeping the yeast and salt separate and on opposite sides. Mix on a medium speed, then beat in the sesame oil and 175ml of lukewarm water until it forms a dough. Turn up the speed to medium-high and mix for 10 minutes more, until smooth and pliable. Shape the dough into a ball, return to the mixer bowl, cover with a damp cloth and put in a warm place for about 50 minutes to an hour, to prove until doubled in size."
+    },
+    {
+      "description": "In the meantime, make the filling. Put the cabbage in a large colander set over a bowl, sprinkle over an eighth of a teaspoon of salt, mix well and leave for 20 minutes. Working one handful at a time, squeeze to extract as much water from the cabbage as possible, then put the shredded cabbage in a large bowl with all the other stuffing ingredients and a good grind of black pepper. Mix well and refrigerate for 20 minutes"
+    },
+    {
+      "description": "Make the crab butterscotch. Put the butter, sugar, soy, chilli and an eighth of a teaspoon of salt in a small saucepan on a medium-high heat. Simmer for 90 seconds, until thick and glossy, then take off the heat. Add the brown crab meat, lime juice and a teaspoon of water, and stir until silky and well mixed in"
+    },
+    {
+      "description": "Take the risen dough out of the bowl and put it on a lightly floured work surface. Knead well to knock out all the air, then roll into a 4cm-wide sausage. Cut this into 15 pieces of about 30g each, then, using a rolling pin, roll each piece into a 3mm-thick, 9cm-diameter disc and flour generously"
+    },
+    {
+      "description": "To shape the buns, put one disc in the palm of your non-dominant hand and put a spoonful of your filling. Use your other hand to lift the edges of the disc up and over the filling, so they meet at the top and enclose it. Use your fingers to twist and seal the top edges together, so it now looks like a money bag. Pinch and twist the peak into a spiral, then tear off and discard the top half-centimetre of dough. Put the dough spiral side down on a lightly floured surface and repeat with the remaining discs of bun dough"
+    },
+    {
+      "description": "To cook the filled buns, put the vegetable oil in a large (28cm), nonstick frying pan for which you have a lid on a medium-high heat. Once it’s hot, take off the heat and carefully arrange the buns seam side down in the pan, so they cover its base; it’s OK if they touch slightly, but you don’t want them to be snug. Return the pan to the heat and fry the buns for two minutes, until golden and starting to crisp up underneath. Taking great care – it might spit! – pour 160ml boiling water around the edges of the pan (ie, not over the buns), add the star anise, cover the pan with its lid and leave to steam for six minutes. Remove the lid and carry on cooking uncovered until all the water has evaporated and the buns are cooked through"
+    },
+    {
+      "description": "Turn off the heat and use tongs carefully to lift each bun fried side up on to a large plate. Serve with your favourite dipping sauce or a small bowl of black rice vinegar"
+    }
+  ],
+  "isAppReady": false,
+  "mealTypeIds": [
+    "lunch",
+    "side",
+    "snack"
+  ],
+  "serves": [
+    {
+      "amount": {
+        "min": 15,
+        "max": 15
+      },
+      "unit": "servings"
+    }
+  ],
+  "suitableForDietIds": [
+    "pescatarian",
+    "meat-free"
+  ],
+  "techniquesUsedIds": [],
+  "timings": [
+    {
+      "durationInMins": {
+        "min": 20,
+        "max": 20
+      },
+      "qualifier": "prep-time",
+      "text": "Prep 10 min"
+    },
+    {
+      "durationInMins": {
+        "min": 50,
+        "max": 50
+      },
+      "qualifier": "prove-time"
+    },
+    {
+      "durationInMins": {
+        "max": 20,
+        "min": 20
+      },
+      "qualifier": "steep-time",
+      "text": "Steep 20 min"
+    },
+    {
+      "durationInMins": {
+        "max": 20,
+        "min": 20
+      },
+      "qualifier": "chill-time",
+      "text": "Chill 20 min"
+    },
+    {
+      "durationInMins": {
+        "min": 90,
+        "max": 90
+      },
+      "qualifier": "cook-time",
+      "text": "Cook 30 min"
+    }
+  ],
+  "title": "White crab and cabbage buns with brown crab butterscotch",
+  "utensilsAndApplianceIds": [],
+  "byline": [],
+  "previewImage": {
+    "url": "https://i.guim.co.uk/img/media/67f51e74f91032bd893349aa3a8c66ad55659bdd/30_111_2949_3201/master/2949.jpg?width=1600&dpr=1&s=none",
+    "mediaId": "67f51e74f91032bd893349aa3a8c66ad55659bdd",
+    "cropId": "30_111_2949_3201",
+    "source": "The Guardian",
+    "photographer": "Louise Hagger",
+    "imageType": "\"Photograph\"",
+    "caption": "Yotam Ottolenghi’s white crab and cabbage buns with brown crab butterscotch.",
+    "width": 2949,
+    "height": 3201,
+    "displayCredit": true
+  }
+}

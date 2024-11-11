@@ -147,6 +147,14 @@ export default Object.freeze([
         type: 'boolean'
     },
     {
+        key: 'boostLevel',
+        editable: true,
+        omitForSupporting: true,
+        ifState: 'inFlexibleCollection',
+        label: 'boost level',
+        type: 'string'
+    },
+    {
         key: 'showLivePlayable',
         editable: true,
         omitForSupporting: true,

@@ -20,7 +20,7 @@ describe('utils/as-observable-props', function () {
 describe('utils/find-first-by-id', function () {
     it('find by id', function () {
         var array = ko.observableArray();
-        expect(firstById(array, 'banana')).toBe(null);
+        expect(firstById(array, 'banana')).toBeFalsy();
 
         array([{
             id: 'some',

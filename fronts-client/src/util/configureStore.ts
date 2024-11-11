@@ -1,52 +1,46 @@
 import { applyMiddleware, compose, createStore } from 'redux';
 import { enableBatching } from 'redux-batched-actions';
 import thunkMiddleware from 'redux-thunk';
-import createBrowserHistory from 'history/createBrowserHistory';
+import { createBrowserHistory } from 'history';
 import { routerMiddleware, push } from 'react-router-redux';
 
 import rootReducer from 'reducers/rootReducer';
 import {
-  updateStateFromUrlChange,
-  persistCollectionOnEdit,
-  persistClipboardOnEdit,
-  persistOpenFrontsOnEdit,
-  persistFavouriteFrontsOnEdit,
+	updateStateFromUrlChange,
+	persistCollectionOnEdit,
+	persistClipboardOnEdit,
+	persistOpenFrontsOnEdit,
+	persistFavouriteFrontsOnEdit,
 } from './storeMiddleware';
 
 export default function configureStore(
-  initialState?: any,
-  initialPath?: string /* only used for tests */
+	initialState?: any,
+	initialPath?: string /* only used for tests */,
 ) {
-  const history = createBrowserHistory();
-  const router = routerMiddleware(history);
-  const reducer = enableBatching(rootReducer);
-  const middleware = compose(
-    applyMiddleware(
-      thunkMiddleware,
-      updateStateFromUrlChange,
-      router,
-      persistCollectionOnEdit(),
-      persistClipboardOnEdit(),
-      persistOpenFrontsOnEdit(),
-      persistFavouriteFrontsOnEdit()
-    ),
-    window.__REDUX_DEVTOOLS_EXTENSION__
-      ? window.__REDUX_DEVTOOLS_EXTENSION__()
-      : (f: unknown) => f
-  );
-  const store = initialState
-    ? createStore(reducer, initialState, middleware)
-    : createStore(reducer, middleware);
+	const history = createBrowserHistory();
+	const router = routerMiddleware(history);
+	const reducer = enableBatching(rootReducer);
+	const middleware = compose(
+		applyMiddleware(
+			thunkMiddleware,
+			updateStateFromUrlChange,
+			router,
+			persistCollectionOnEdit(),
+			persistClipboardOnEdit(),
+			persistOpenFrontsOnEdit(),
+			persistFavouriteFrontsOnEdit(),
+		),
+		window.__REDUX_DEVTOOLS_EXTENSION__
+			? window.__REDUX_DEVTOOLS_EXTENSION__()
+			: (f: unknown) => f,
+	);
+	const store = initialState
+		? createStore(reducer, initialState, middleware)
+		: createStore(reducer, middleware);
 
-  if (module.hot) {
-    module.hot.accept('reducers/rootReducer.js', () => {
-      store.replaceReducer(rootReducer);
-    });
-  }
+	if (initialPath) {
+		store.dispatch(push(initialPath));
+	}
 
-  if (initialPath) {
-    store.dispatch(push(initialPath));
-  }
-
-  return store;
+	return store;
 }

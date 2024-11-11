@@ -1,9 +1,15 @@
 package logic
 
 import java.time.LocalDate
-
 import model.editions.Edition.DailyEdition
-import model.editions.{EditionsArticle, EditionsCollection, EditionsFront, EditionsFrontMetadata, EditionsIssue}
+import model.editions.{
+  CuratedPlatform,
+  EditionsCard,
+  EditionsCollection,
+  EditionsFront,
+  EditionsFrontMetadata,
+  EditionsIssue
+}
 import org.scalatest.{FreeSpec, Matchers}
 
 class EditionsCheckerTest extends FreeSpec with Matchers {
@@ -19,21 +25,27 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
     "empty front" in {
       val front = getFront()
       val issue = getIssue(front)
-      EditionsChecker.checkIssue(issue).head shouldEqual "Front 'displayName' is visible and empty"
+      EditionsChecker
+        .checkIssue(issue)
+        .head shouldEqual "Front 'displayName' is visible and empty"
     }
     "no visible fronts" in {
       val c = getCollection()
       val front = getFront(c)
         .copy(displayName = "First hidden front", isHidden = true)
       val issue = getIssue(front)
-      EditionsChecker.checkIssue(issue).headOption shouldEqual (Some("Issue contains no visible fronts"))
+      EditionsChecker.checkIssue(issue).headOption shouldEqual (Some(
+        "Issue contains no visible fronts"
+      ))
     }
     "non-empty special front" in {
       val c = getCollection()
       val front = getFront(c)
         .copy(displayName = "Top Special Front")
       val issue = getIssue(front)
-      EditionsChecker.checkIssue(issue).head shouldEqual "Collection 'displayName' in 'Top Special Front' is visible and empty"
+      EditionsChecker
+        .checkIssue(issue)
+        .head shouldEqual "Collection 'displayName' in 'Top Special Front' is visible and empty"
     }
   }
 
@@ -43,24 +55,30 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
         .copy(isHidden = true)
       val front = getFront(c)
       val issue = getIssue(front)
-      EditionsChecker.checkIssue(issue).head shouldEqual "Front 'displayName' is visible and empty"
+      EditionsChecker
+        .checkIssue(issue)
+        .head shouldEqual "Front 'displayName' is visible and empty"
     }
     "empty collection" in {
       val c = getCollection()
       val front = getFront(c)
       val issue = getIssue(front)
-      EditionsChecker.checkIssue(issue).head shouldEqual "Collection 'displayName' in 'displayName' is visible and empty"
+      EditionsChecker
+        .checkIssue(issue)
+        .head shouldEqual "Collection 'displayName' in 'displayName' is visible and empty"
     }
     "non-empty special collection" in {
       val c = getCollection()
         .copy(displayName = "Special Collection, oh yes")
       val front = getFront(c)
       val issue = getIssue(front)
-      EditionsChecker.checkIssue(issue).head shouldEqual "Collection 'Special Collection, oh yes' in 'displayName' is visible and empty"
+      EditionsChecker
+        .checkIssue(issue)
+        .head shouldEqual "Collection 'Special Collection, oh yes' in 'displayName' is visible and empty"
     }
   }
 
-  private def getCollection(items: EditionsArticle*) = {
+  private def getCollection(items: EditionsCard*) = {
     EditionsCollection(
       "id",
       "displayName",
@@ -74,8 +92,7 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
     )
   }
 
-  "preflight checks for issues with fronts with collections" - {
-  }
+  "preflight checks for issues with fronts with collections" - {}
 
   private def getFront(collection: EditionsCollection*) = {
     EditionsFront(
@@ -96,6 +113,7 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
     EditionsIssue(
       "id",
       DailyEdition,
+      CuratedPlatform.Editions,
       "timezoneId",
       LocalDate.now(),
       LocalDate.now().toEpochDay,
@@ -104,9 +122,9 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
       None,
       None,
       None,
-      fronts.toList
+      fronts.toList,
+      supportsProofing = true
     )
   }
-
 
 }

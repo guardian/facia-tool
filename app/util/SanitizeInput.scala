@@ -10,12 +10,16 @@ object SanitizeInput {
   def fromString(s: String) = sanitizeRegex.replaceAllIn(s, "")
 
   def fromConfigSeo(config: ConfigJson): ConfigJson = {
-    config.copy(fronts = config.fronts.view.mapValues(sanitizeSeoInputFromFront).toMap)
+    config.copy(fronts =
+      config.fronts.view.mapValues(sanitizeSeoInputFromFront).toMap
+    )
   }
 
-  private def sanitizeSeoInputFromFront(front: FrontJson): FrontJson = front.copy(
+  private def sanitizeSeoInputFromFront(front: FrontJson): FrontJson =
+    front.copy(
       title = front.title.map(fromString),
       webTitle = front.webTitle.map(fromString),
       navSection = front.navSection.map(fromString),
-      description = front.description.map(fromString))
+      description = front.description.map(fromString)
+    )
 }

@@ -1,0 +1,111 @@
+#!/usr/bin/env bash
+
+hookExitCode=0
+
+if command -v fronts-client/node_modules/.bin/prettier > /dev/null; then
+    echo "Checking file formatting with prettier…"
+    echo ""
+    # For files which have staged changes and no unstaged changes, let prettier format them
+    filesWithOnlyStagedChanges=$(
+        comm -1 -3 \
+            <(git diff --name-only --diff-filter=ACMR | grep "\.tsx\?\$" | sort) \
+            <(git diff --cached --name-only --diff-filter=ACMR | grep "\.tsx\?\$" | sort))
+    prettierFormattedOutput=$(
+        comm -1 -3 \
+            <(git diff --name-only --diff-filter=ACMR | grep "\.tsx\?\$" | sort) \
+            <(git diff --cached --name-only --diff-filter=ACMR | grep "\.tsx\?\$" | sort) \
+        | tr "\n" "\0" \
+        | xargs -0 fronts-client/node_modules/.bin/prettier --write --list-different)
+    # For files which have both staged and unstaged changes, check them with prettier but don’t modify them
+    prettierCheckedOutput=$(
+        comm -1 -2 \
+            <(git diff --name-only --diff-filter=ACMR | grep "\.tsx\?\$" | sort) \
+            <(git diff --cached --name-only --diff-filter=ACMR | grep "\.tsx\?\$" | sort) \
+        | tr "\n" "\0" \
+        | xargs -0 fronts-client/node_modules/.bin/prettier --list-different)
+    if test -z "$prettierFormattedOutput" -a -z "$prettierCheckedOutput" ; then
+        echo "All good"
+        echo ""
+    else
+        if test -n "$prettierFormattedOutput" ; then
+            echo "The following staged files needed formatting by prettier! Formatting has been
+applied but the files have not been re-staged: please verify the changes, stage,
+and commit again."
+            echo ""
+            filesWhichHaveBeenFormatted=$(
+                comm -1 -2 \
+                    <(git diff --name-only --diff-filter=ACMR | grep "\.tsx\?\$" | sort) \
+                    <(echo "$filesWithOnlyStagedChanges"))
+            echo "$filesWhichHaveBeenFormatted"
+            echo ""
+        fi
+        if test -n "$prettierCheckedOutput" ; then
+            echo "The following staged files with additional unstaged changes were reported by
+prettier as needing formatting: these files have not been formatted, to avoid
+overwriting unstaged changes. Please format them yourself or bypass this hook
+with --no-verify."
+            echo ""
+            echo "$prettierCheckedOutput"
+            echo ""
+        fi
+        hookExitCode=1
+    fi
+else
+    echo "Note: fronts-client/node_modules/.bin/prettier not found, so skipping formatting check"
+fi
+
+if command -v scalafmt > /dev/null; then
+    echo "Checking file formatting with scalafmt…"
+    echo ""
+    # For files which have staged changes and no unstaged changes, let scalafmt format them
+    scalaFilesWithOnlyStagedChanges=$(
+        comm -1 -3 \
+            <(git diff --name-only --diff-filter=ACMR | grep "\.scala\$" | sort) \
+            <(git diff --cached --name-only --diff-filter=ACMR | grep "\.scala\$" | sort))
+    _scalafmtFormattedOutput=$(
+        comm -1 -3 \
+            <(git diff --name-only --diff-filter=ACMR | grep "\.scala\$" | sort) \
+            <(git diff --cached --name-only --diff-filter=ACMR | grep "\.scala\$" | sort) \
+        | tr "\n" "\0" \
+        | xargs -0 scalafmt --reportError --no-stderr --debug)
+    scalafmtFormattedExit=$?
+    # For files which have both staged and unstaged changes, check them with scalafmt but don’t modify them
+    scalafmtCheckedOutput=$(
+        comm -1 -2 \
+            <(git diff --name-only --diff-filter=ACMR | grep "\.scala\$" | sort) \
+            <(git diff --cached --name-only --diff-filter=ACMR | grep "\.scala\$" | sort) \
+        | tr "\n" "\0" \
+        | xargs -0 scalafmt --list --reportError --no-stderr)
+    scalafmtCheckedExit=$?
+    if test "$scalafmtFormattedExit" -eq 0 -a "$scalafmtCheckedExit" -eq 0 ; then
+        echo "All good"
+        echo ""
+    else
+        if test "$scalafmtFormattedExit" -ne 0; then
+            echo "The following staged files needed formatting by scalafmt! Formatting has been
+applied but the files have not been re-staged: please verify the changes, stage,
+and commit again."
+            echo ""
+            scalaFilesWhichHaveBeenFormatted=$(
+                comm -1 -2 \
+                    <(git diff --name-only --diff-filter=ACMR | grep "\.scala\$" | sort) \
+                    <(echo "$scalaFilesWithOnlyStagedChanges"))
+            echo "$scalaFilesWhichHaveBeenFormatted"
+            echo ""
+        fi
+        if test "$scalafmtCheckedExit" -ne 0; then
+            echo "The following staged files with additional unstaged changes were reported by
+scalafmt as needing formatting: these files have not been formatted, to avoid
+overwriting unstaged changes. Please format them yourself or bypass this hook
+with --no-verify."
+            echo ""
+            echo "$scalafmtCheckedOutput"
+            echo ""
+        fi
+        hookExitCode=1
+    fi
+else
+    echo "Note: scalafmt not found, so skipping formatting check"
+fi
+
+exit $hookExitCode

@@ -5,27 +5,27 @@ import type { State } from 'types/State';
 import { connect } from 'react-redux';
 
 interface EditModeVisibilityProps {
-  currentMode: EditMode;
-  visibleMode: EditMode;
-  children: ReactNode;
+	currentMode: EditMode;
+	visibleMode: EditMode;
+	children: ReactNode;
 }
 
 const EditModeVisibility = ({
-  currentMode,
-  visibleMode,
-  children,
+	currentMode,
+	visibleMode,
+	children,
 }: EditModeVisibilityProps) => {
-  if (currentMode === visibleMode) {
-    return <Fragment>{children}</Fragment>;
-  } else {
-    return null;
-  }
+	if (currentMode === visibleMode) {
+		return <Fragment>{children}</Fragment>;
+	} else {
+		return null;
+	}
 };
 
 const createMapStateToProps = (state: State) => {
-  return {
-    currentMode: selectEditMode(state),
-  };
+	return {
+		currentMode: selectEditMode(state),
+	};
 };
 
 export default connect(createMapStateToProps)(EditModeVisibility);

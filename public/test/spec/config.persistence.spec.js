@@ -76,7 +76,7 @@ describe('Persistence', function () {
             front.dispose();
             collection.dispose();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -123,7 +123,7 @@ describe('Persistence', function () {
             two.dispose();
             front.dispose();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -162,7 +162,7 @@ describe('Persistence', function () {
             front.dispose();
             collection.dispose();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -207,7 +207,7 @@ describe('Persistence', function () {
                 front.dispose();
                 collection.dispose();
             })
-            .then(done)
+            .then(() => done())
             .catch(done.fail);
     });
 
@@ -256,7 +256,7 @@ describe('Persistence', function () {
             two.dispose();
             collection.dispose();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

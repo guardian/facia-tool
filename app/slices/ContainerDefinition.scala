@@ -16,9 +16,9 @@ object ContainerDefinition {
 }
 
 case class ContainerDefinition(
-  slices: Seq[Slice],
-  mobileShowMore: MobileShowMore,
-  customCssClasses: Set[String]
+    slices: Seq[Slice],
+    mobileShowMore: MobileShowMore,
+    customCssClasses: Set[String]
 ) {
   def numItems = slices.map(_.layout.numItems).sum
 }

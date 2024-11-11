@@ -1,14 +1,18 @@
 package fixtures
 
-import com.whisk.docker.impl.dockerjava.DockerKitDockerJava
-import com.whisk.docker.scalatest.DockerTestKit
-import org.scalatest.{BeforeAndAfter, BeforeAndAfterAll, Suite}
+import org.scalatest.{BeforeAndAfterAll, Suite}
 import play.api.db.{Database, Databases}
-import play.api.db.evolutions.Evolutions
 import services.editions.db.EditionsDB
 
-trait EditionsDBService extends DockerTestKit with DockerKitDockerJava with DockerPostgresService
-  with BeforeAndAfterAll  { self: Suite =>
+trait EditionsDBService extends BeforeAndAfterAll { self: Suite =>
+
+  private val port = 4724
+  private val dbUser = "faciatool"
+  private val dbPassword = "faciatool"
+  private val databaseName = "faciatool"
+  private val dbUrl =
+    s"jdbc:postgresql://localhost:$port/$databaseName?autoReconnect=true&useSSL=false"
+  private val driver = "org.postgresql.Driver"
 
   var editionsDB: EditionsDB = _
   var database: Database = _
@@ -16,10 +20,14 @@ trait EditionsDBService extends DockerTestKit with DockerKitDockerJava with Dock
   override def beforeAll(): Unit = {
     super.beforeAll()
 
-    database = Databases(driver, dbUrl, config = Map(
-      "username" -> dbUser,
-      "password" -> dbPassword
-    ))
+    database = Databases(
+      driver,
+      dbUrl,
+      config = Map(
+        "username" -> dbUser,
+        "password" -> dbPassword
+      )
+    )
 
     editionsDB = new EditionsDB(dbUrl, dbUser, dbPassword)
   }

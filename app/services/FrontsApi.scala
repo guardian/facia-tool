@@ -7,12 +7,19 @@ import conf.ApplicationConfiguration
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class FrontsApi(val config: ApplicationConfiguration, val awsEndpoints: AwsEndpoints) {
+class FrontsApi(
+    val config: ApplicationConfiguration,
+    val awsEndpoints: AwsEndpoints
+) {
   val amazonClient: ApiClient = {
 
-    val endpoint = new AwsClientBuilder.EndpointConfiguration(awsEndpoints.s3, config.aws.region)
+    val endpoint = new AwsClientBuilder.EndpointConfiguration(
+      awsEndpoints.s3,
+      config.aws.region
+    )
 
-    val client: AmazonS3 = AmazonS3ClientBuilder.standard()
+    val client: AmazonS3 = AmazonS3ClientBuilder
+      .standard()
       .withCredentials(config.aws.cmsFrontsAccountCredentials)
       .withEndpointConfiguration(endpoint)
       .build()

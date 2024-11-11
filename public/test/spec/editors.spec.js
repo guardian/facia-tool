@@ -12,7 +12,7 @@ import * as wait from 'test/utils/wait';
 import * as mockjax from 'test/utils/mockjax';
 
 describe('Editors', function () {
-    beforeEach(function (done) {
+    beforeEach(function () {
         images.setup();
         this.article = {
             meta: {},
@@ -31,13 +31,13 @@ describe('Editors', function () {
                 <trail-editor-widget params="context: $context"></trail-editor-widget>
             <!-- /ko -->
         `);
-        this.ko.apply({ editors: this.editors }).then(done);
         this.scope = mockjax.scope();
         this.scope({
             url: '/api/usage',
             responseText: {},
             method: 'post'
         });
+        return this.ko.apply({ editors: this.editors });
     });
     afterEach(function () {
         images.dispose();
@@ -82,7 +82,7 @@ describe('Editors', function () {
 
             return wait.ms(150);
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -108,7 +108,7 @@ describe('Editors', function () {
             expect(this.article.meta.imageWidth()).toBeUndefined();
             expect(this.article.meta.imageHeight()).toBeUndefined();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 
@@ -162,7 +162,7 @@ describe('Editors', function () {
             expect(listImages[1].height).toBe(400);
             expect(listImages[2]).toBeUndefined();
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
     });
 });

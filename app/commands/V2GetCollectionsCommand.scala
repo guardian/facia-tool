@@ -7,8 +7,8 @@ import controllers.{CollectionSpec}
 case class V2GetCollectionsCommand(
     collectionService: CollectionService,
     collectionSpecs: List[CollectionSpec]
-)(
-    implicit ec: ExecutionContext
+)(implicit
+    ec: ExecutionContext
 ) {
   import V2GetCollectionsCommand._
   def process(): Future[List[CollectionAndStoriesResponse]] =

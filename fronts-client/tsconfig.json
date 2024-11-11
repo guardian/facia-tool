@@ -1,23 +1,31 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "module": "es6",
-    "moduleResolution": "node",
     "lib": ["dom", "dom.iterable", "es2017"],
+    "module": "ESNext",
+    "moduleResolution": "node",
     "jsx": "react",
     "allowJs": true,
     "noImplicitAny": true,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "noUnusedLocals": true,
+    "isolatedModules": false,
+    "noEmit": true,
     "sourceMap": true,
     "baseUrl": "src",
     "strict": true,
-    "outDir": "../../public/fronts-client/dist",
-    "skipLibCheck": true
+    "outDir": "../../public/fronts-client-v2/dist",
+    "skipLibCheck": true,
+    "resolveJsonModule": true
   },
   "exclude": [
-    "node_modules",
     "config",
     "scripts"
-  ]
+  ],
+  "include": [
+    "react/src",
+    "src"
+  ],
+  "references": [{ "path": "./tsconfig.node.json"}]
 }

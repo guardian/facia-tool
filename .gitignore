@@ -51,12 +51,17 @@ developer.properties
 .cache
 
 ##
-public/fronts-client/dist
+public/fronts-client-v2/dist
+public/fronts-client-v1/
 fronts-client/.vscode
+**/manifest.json
 .vscode
+.vite
 
 metals.sbt
 .metals
 .bloop
 .bsp
 
+v1_jspm_snyk_workaround/package-lock.json
+v1_jspm_snyk_workaround/result

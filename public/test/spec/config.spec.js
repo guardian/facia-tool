@@ -139,7 +139,7 @@ describe('Config', function () {
                 return;
             });
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
 
         function removeTag() {
@@ -257,7 +257,7 @@ describe('Config', function () {
             expect(textInside($('.contentPane:nth(0) .cnf-fronts .droppable .cnf-collection__name')[0])).toEqual('Latest News');
             expect(textInside($('.contentPane:nth(0) .cnf-fronts .droppable .cnf-collection__name')[1])).toEqual('Environment');
         })
-        .then(done)
+        .then(() => done())
         .catch(done.fail);
 
     });

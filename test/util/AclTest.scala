@@ -1,7 +1,12 @@
 package util
 
 import org.scalatest.{FreeSpec, Matchers}
-import permissions.{CommercialPermission, EditorialPermission, EmailPermission, TrainingPermission}
+import permissions.{
+  CommercialPermission,
+  EditorialPermission,
+  EmailPermission,
+  TrainingPermission
+}
 
 class AclTest extends FreeSpec with Matchers {
 
@@ -29,7 +34,7 @@ class AclTest extends FreeSpec with Matchers {
       ) should be(AccessGranted)
     }
 
-    "Allow access to email fronts if editorial permissions"  in {
+    "Allow access to email fronts if editorial permissions" in {
       PermissionsChecker.check(
         hasCommercialPermissions = AccessDenied,
         hasEditorialPermissions = AccessGranted,
@@ -39,7 +44,7 @@ class AclTest extends FreeSpec with Matchers {
       ) should be(AccessGranted)
     }
 
-    "Allow access to email fronts if email permissions"  in {
+    "Allow access to email fronts if email permissions" in {
       PermissionsChecker.check(
         hasCommercialPermissions = AccessDenied,
         hasEditorialPermissions = AccessGranted,
@@ -80,7 +85,7 @@ class AclTest extends FreeSpec with Matchers {
         hasEmailPermissions = AccessDenied,
         Set(EditorialPermission, CommercialPermission)
       ) should be(AccessGranted)
-  }
+    }
 
     "Do not allow access if not access to any of the priorities " in {
 
