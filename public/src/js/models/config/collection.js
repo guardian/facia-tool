@@ -134,8 +134,8 @@ export default class ConfigCollection extends DropTarget {
 
     save(frontEdited) {
         const potentialErrors = [
-            {key: 'displayName', errMsg: 'enter a title'},
-            {key: 'type', errMsg: 'choose a layout'}
+            { key: 'displayName', errMsg: 'enter a title' },
+            { key: 'type', errMsg: 'choose a layout' }
         ];
 
         const errs = _.chain(potentialErrors)
@@ -157,27 +157,8 @@ export default class ConfigCollection extends DropTarget {
             return;
         }
 
-		// The BetaCollection containers need a Primary or Secondary tag indicating its level.
-		if (this.thisIsBetaCollection()) {
-			const hasMetadata = !!this.meta.metadata();
-			let hasPrimaryTag = hasMetadata && this.meta.metadata().some(tag => tag.type === 'Primary');
-			const hasSecondaryTag = hasMetadata && this.meta.metadata().some(tag => tag.type === 'Secondary');
-
-			// If no tags are set, or if neither Primary nor Secondary tags are set, we default the container to Primary.
-			if (this.meta.metadata() === undefined) {
-				this.meta.metadata([{ type: 'Primary' }]);
-				hasPrimaryTag = true;
-			}
-			if (hasMetadata && !hasPrimaryTag && !hasSecondaryTag) {
-				this.meta.metadata().push({ type: 'Primary' });}
-				hasPrimaryTag = true;
-			if (hasPrimaryTag && hasSecondaryTag) {
-				// If both tags are present, we assume the intention was to set the container to Secondary
-				// So we remove the primary tag from the metadata.
-				const updatedTags = this.meta.metadata().filter(tag => tag.type !== 'Primary');
-				this.meta.metadata(updatedTags);
-			}
-		}
+        const resolvedMetadata = decideContainerLevelTags(this.meta.metadata(), isBetaCollection(this.meta.type()));
+        this.meta.metadata(resolvedMetadata);
 
         this.meta.href(urlAbsPath(this.meta.href()));
 
@@ -199,7 +180,7 @@ export default class ConfigCollection extends DropTarget {
     }
 }
 
-function findParents (collectionId) {
+function findParents(collectionId) {
     const frontsMap = vars.model.frontsMap();
     const state = vars.model.state();
     return _.chain(deepGet(state, '.config.fronts'))
@@ -210,6 +191,34 @@ function findParents (collectionId) {
         .value();
 }
 
-function isBetaCollection (collectionId) {
+function isBetaCollection(collectionId) {
     return vars.CONST.betaCollectionTypes.includes(collectionId);
 }
+
+/** Decides which container level (Primary or Secondary) tags should be added to a beta collection */
+export function decideContainerLevelTags(metadata, isBetaCollection = false) {
+    const hasPrimaryTag = (metadata = []) => metadata.some((tag) => tag.type === 'Primary');
+    const hasSecondaryTag = (metadata = []) => metadata.some((tag) => tag.type === 'Secondary');
+
+    // If this is a beta collection, we automatically add a Primary tag if one is not set already
+    if (isBetaCollection) {
+        // Default to Primary if no tags set and it is a beta collection
+        if (!metadata || metadata.length === 0) {
+            return [{ type: 'Primary' }];
+        }
+
+        // Default to Primary if tags set but neither are Primary or Secondary
+        if (!hasPrimaryTag(metadata) && !hasSecondaryTag(metadata)) {
+            return [...metadata, { type: 'Primary' }];
+        }
+    }
+
+    // If both Primary and Secondary tags are present, we strip the Primary tag from the list
+    // since we assume the intention was to set the container to Secondary
+    if (hasPrimaryTag(metadata) && hasSecondaryTag(metadata)) {
+        return metadata.filter(tag => tag.type !== 'Primary');
+    }
+
+    return metadata;
+}
+
