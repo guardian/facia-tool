@@ -205,13 +205,13 @@ export function decideContainerLevelTags(tags, isBetaCollection = false) {
     const hasSecondaryTag = hasTags && tags.some((tag) => tag.type === 'Secondary');
 
     // For beta collections with no Primary or Secondary tags, we add a Primary tag by default
-    if (isBetaCollection &&!hasPrimaryTag(tags) && !hasSecondaryTag(tags)) {
+    if (isBetaCollection &&!hasPrimaryTag && !hasSecondaryTag) {
         return [...(hasTags ? tags : []), { type: 'Primary' }];
     }
 
     // If both Primary and Secondary tags are present, we strip the Primary tag from the list
     // since we assume the intention was to set the container to Secondary
-    if (hasPrimaryTag(tags) && hasSecondaryTag(tags)) {
+    if (hasPrimaryTag && hasSecondaryTag) {
         return tags.filter(tag => tag.type !== 'Primary');
     }
 
