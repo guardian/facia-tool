@@ -195,30 +195,26 @@ function isBetaCollection(collectionId) {
     return vars.CONST.betaCollectionTypes.includes(collectionId);
 }
 
-/** Decides which container level (Primary or Secondary) tags should be added to a beta collection */
-export function decideContainerLevelTags(metadata, isBetaCollection = false) {
-    const hasPrimaryTag = (metadata = []) => metadata.some((tag) => tag.type === 'Primary');
-    const hasSecondaryTag = (metadata = []) => metadata.some((tag) => tag.type === 'Secondary');
+/** Decides whether Primary or Secondary tags should be assigned to the collection,
+ * or if any of these should be removed.
+ * @see /public/test/spec/config.spec.js for test cases
+*/
+export function decideContainerLevelTags(tags, isBetaCollection = false) {
+    const hasTags = !!tags && tags.length > 0;
+    const hasPrimaryTag = hasTags && tags.some((tag) => tag.type === 'Primary');
+    const hasSecondaryTag = hasTags && tags.some((tag) => tag.type === 'Secondary');
 
-    // If this is a beta collection, we automatically add a Primary tag if one is not set already
-    if (isBetaCollection) {
-        // Default to Primary if no tags set and it is a beta collection
-        if (!metadata || metadata.length === 0) {
-            return [{ type: 'Primary' }];
-        }
-
-        // Default to Primary if tags set but neither are Primary or Secondary
-        if (!hasPrimaryTag(metadata) && !hasSecondaryTag(metadata)) {
-            return [...metadata, { type: 'Primary' }];
-        }
+    // For beta collections with no Primary or Secondary tags, we add a Primary tag by default
+    if (isBetaCollection &&!hasPrimaryTag(tags) && !hasSecondaryTag(tags)) {
+        return [...(hasTags ? tags : []), { type: 'Primary' }];
     }
 
     // If both Primary and Secondary tags are present, we strip the Primary tag from the list
     // since we assume the intention was to set the container to Secondary
-    if (hasPrimaryTag(metadata) && hasSecondaryTag(metadata)) {
-        return metadata.filter(tag => tag.type !== 'Primary');
+    if (hasPrimaryTag(tags) && hasSecondaryTag(tags)) {
+        return tags.filter(tag => tag.type !== 'Primary');
     }
 
-    return metadata;
+    return tags;
 }
 
