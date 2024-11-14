@@ -49,7 +49,10 @@ ko.bindingHandlers.tagSelector = {
                     });
                     return parsed;
                 }, []);
-                return parsedData;
+				// The primary tag is the default for specific containers (e.g. scrollable/small).
+				// Because of this, we don't want it as an option in the dropdown menu.
+				const parsedDataWithoutPrimaryTag = parsedData.filter(item => item.text !== 'Primary');
+				return parsedDataWithoutPrimaryTag;
             }
         });
     }
