@@ -52,6 +52,7 @@ const TopOptions = styled.div`
 
 const FeedsContainerWrapper = styled.div`
 	height: 100%;
+	min-height: 0;
 `;
 
 const ResultsContainer = styled.div`
