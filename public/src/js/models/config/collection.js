@@ -134,8 +134,8 @@ export default class ConfigCollection extends DropTarget {
 
     save(frontEdited) {
         const potentialErrors = [
-            { key: 'displayName', errMsg: 'enter a title' },
-            { key: 'type', errMsg: 'choose a layout' }
+            {key: 'displayName', errMsg: 'enter a title'},
+            {key: 'type', errMsg: 'choose a layout'}
         ];
 
         const errs = _.chain(potentialErrors)
@@ -177,7 +177,7 @@ export default class ConfigCollection extends DropTarget {
     }
 }
 
-function findParents(collectionId) {
+function findParents (collectionId) {
     const frontsMap = vars.model.frontsMap();
     const state = vars.model.state();
     return _.chain(deepGet(state, '.config.fronts'))
@@ -188,8 +188,6 @@ function findParents(collectionId) {
         .value();
 }
 
-function isBetaCollection(collectionId) {
+function isBetaCollection (collectionId) {
     return vars.CONST.betaCollectionTypes.includes(collectionId);
 }
-
-
