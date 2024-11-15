@@ -157,9 +157,6 @@ export default class ConfigCollection extends DropTarget {
             return;
         }
 
-        const resolvedMetadata = decideContainerLevelTags(this.meta.metadata(), isBetaCollection(this.meta.type()));
-        this.meta.metadata(resolvedMetadata);
-
         this.meta.href(urlAbsPath(this.meta.href()));
 
         this.state.isOpen(false);
@@ -195,26 +192,4 @@ function isBetaCollection(collectionId) {
     return vars.CONST.betaCollectionTypes.includes(collectionId);
 }
 
-/** Decides whether Primary or Secondary tags should be assigned to the collection,
- * or if any of these should be removed.
- * @see /public/test/spec/config.spec.js for test cases
-*/
-export function decideContainerLevelTags(tags, isBetaCollection = false) {
-    const hasTags = !!tags && tags.length > 0;
-    const hasPrimaryTag = hasTags && tags.some((tag) => tag.type === 'Primary');
-    const hasSecondaryTag = hasTags && tags.some((tag) => tag.type === 'Secondary');
-
-    // For beta collections with no Primary or Secondary tags, we add a Primary tag by default
-    if (isBetaCollection &&!hasPrimaryTag && !hasSecondaryTag) {
-        return [...(hasTags ? tags : []), { type: 'Primary' }];
-    }
-
-    // If both Primary and Secondary tags are present, we strip the Primary tag from the list
-    // since we assume the intention was to set the container to Secondary
-    if (hasPrimaryTag && hasSecondaryTag) {
-        return tags.filter(tag => tag.type !== 'Primary');
-    }
-
-    return tags;
-}
 
