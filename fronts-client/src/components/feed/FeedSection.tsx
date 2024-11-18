@@ -22,10 +22,12 @@ const FeedSectionContainer = styled.div`
 
 const FeedSectionContent = styled(SectionContent)`
 	padding-right: 0px;
-	padding-top: 10px;
+	padding-bottom: 0;
 `;
 
 const FeedWrapper = styled.div<{ isClipboardOpen: boolean }>`
+	display: flex;
+	flex-direction: column;
 	width: 409px;
 	${media.large`width: 335px;`}
 	border-right: ${({ isClipboardOpen }) =>
