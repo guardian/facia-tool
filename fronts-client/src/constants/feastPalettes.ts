@@ -157,8 +157,8 @@ export const feastCollectionPalettes: PaletteOption[] = [
 		imageURL: ' https://uploads.guim.co.uk/2024/11/18/Berries.png',
 	},
 	{
-		id: 'blackeberries_blueberries',
-		name: 'Blackeberries\nBlueberries',
+		id: 'blackberries_blueberries',
+		name: 'Blackberries\nBlueberries',
 		palettes: {
 			light: {
 				foregroundHex: '#BB3C81',
