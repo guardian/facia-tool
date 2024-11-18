@@ -236,7 +236,11 @@
             <input type="text" data-bind="
                 value: meta.href"/>
 
-            <!-- ko if: meta.type() !== 'scrollable/small' -->
+            <!-- ko if: (
+			 meta.type() !== 'scrollable/small' ||
+			 meta.type() !== 'scrollable/medium' ||
+			 meta.type() !== 'static/medium/4')
+			-->
             <label>Description</label>
                 <input type="text" data-bind="
                     value: meta.description"/>
@@ -277,20 +281,32 @@
             <label for="hideKickers" >Suppress tone kickers</label>
             <input id="hideKickers" type="checkbox" data-bind="checked: meta.hideKickers" />
 
-            <!-- ko if: meta.type() !== 'scrollable/small' -->
-            <label for="showDateHeader">Show date in header</label>
+            <!-- ko if: (
+			 meta.type() !== 'scrollable/small' ||
+			 meta.type() !== 'scrollable/medium' ||
+			 meta.type() !== 'static/medium/4')
+			-->
+			<label for="showDateHeader">Show date in header</label>
             <input id="showDateHeader" type="checkbox" data-bind="checked: meta.showDateHeader" />
             <!-- /ko -->
 
-            <!-- ko if: meta.type() !== 'scrollable/small' -->
-            <label for="showLatestUpdate">Show latest update in header</label>
+            <!-- ko if: (
+			 meta.type() !== 'scrollable/small' ||
+			 meta.type() !== 'scrollable/medium' ||
+			 meta.type() !== 'static/medium/4')
+			-->
+			<label for="showLatestUpdate">Show latest update in header</label>
             <input id="showLatestUpdate" type="checkbox" data-bind="checked: meta.showLatestUpdate" />
             <!-- /ko -->
 
             <label for="excludeFromRss">Exclude from RSS</label>
             <input id="excludeFromRss" type="checkbox" data-bind="checked: meta.excludeFromRss" />
 
-            <!-- ko if: meta.type() !== 'scrollable/small' -->
+            <!-- ko if: (
+			 meta.type() !== 'scrollable/small' ||
+			 meta.type() !== 'scrollable/medium' ||
+			 meta.type() !== 'static/medium/4')
+			-->
             <label for="hideShowMore">Hide show more</label>
             <input id="hideShowMore" type="checkbox" data-bind="checked: meta.hideShowMore" />
             <!-- /ko -->
@@ -302,8 +318,12 @@
             <label for="displayEditWarning">Display edit warning</label>
             <input id="displayEditWarning" type="checkbox" data-bind="checked: meta.frontsToolSettings.displayEditWarning" />
 
-            <!-- ko if: meta.type() === 'scrollable/small' -->
-            <label for="suppressImages">Suppress images</label>
+            <!-- ko if: (
+			 meta.type() === 'scrollable/small' ||
+			 meta.type() === 'scrollable/medium' ||
+			 meta.type() === 'static/medium/4')
+			-->
+			<label for="suppressImages">Suppress images</label>
             <input id="suppressImages" type="checkbox" data-bind="checked: meta.suppressImages" />
             <!-- /ko -->
 
