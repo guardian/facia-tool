@@ -4,6 +4,8 @@ import createAsyncResourceBundle, {
 import { ThunkResult } from '../types/Store';
 import { FeastKeywordType } from '../types/FeastKeyword';
 import { liveRecipes } from '../services/recipeQuery';
+import { createSelector } from 'reselect';
+import { State } from '../types/State';
 
 const bundle = createAsyncResourceBundle('feastKeywords', {
 	indexById: false,
@@ -17,7 +19,7 @@ export const fetchKeywords =
 
 		try {
 			const kwdata = await liveRecipes.keywords(forType);
-			console.log(kwdata);
+
 			const payload: {
 				ignoreOrder?: undefined;
 				pagination?: IPagination;
@@ -43,9 +45,19 @@ export const fetchKeywords =
 		}
 	};
 
+const selectAllKeywords = (state: State) => state.feastKeywords.data;
+const selectCelebrationKeywords = createSelector([selectAllKeywords], (kws) => {
+	if (Array.isArray(kws)) {
+		return kws.filter((_) => _.keywordType === 'celebration');
+	} else {
+		return [];
+	}
+});
+
 export const actionNames = bundle.actionNames;
 export const actions = bundle.actions;
 export const reducer = bundle.reducer;
 export const selectors = {
 	...bundle.selectors,
+	selectCelebrationKeywords,
 };
