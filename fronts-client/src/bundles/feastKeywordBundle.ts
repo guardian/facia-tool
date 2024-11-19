@@ -8,7 +8,7 @@ import { createSelector } from 'reselect';
 import { State } from '../types/State';
 
 const bundle = createAsyncResourceBundle('feastKeywords', {
-	indexById: false,
+	indexById: true,
 	selectLocalState: (state) => state.feastKeywords,
 });
 
@@ -46,13 +46,12 @@ export const fetchKeywords =
 	};
 
 const selectAllKeywords = (state: State) => state.feastKeywords.data;
-const selectCelebrationKeywords = createSelector([selectAllKeywords], (kws) => {
-	if (Array.isArray(kws)) {
-		return kws.filter((_) => _.keywordType === 'celebration');
-	} else {
-		return [];
-	}
-});
+const makeKeywordSelector = (kwType: FeastKeywordType) =>
+	createSelector([selectAllKeywords], (kws) => {
+		return Object.keys(kws).filter((_) => kws[_].keywordType === kwType);
+	});
+const selectCelebrationKeywords = makeKeywordSelector('celebration');
+const selectDietKeywords = makeKeywordSelector('diet');
 
 export const actionNames = bundle.actionNames;
 export const actions = bundle.actions;
@@ -60,4 +59,5 @@ export const reducer = bundle.reducer;
 export const selectors = {
 	...bundle.selectors,
 	selectCelebrationKeywords,
+	selectDietKeywords,
 };
