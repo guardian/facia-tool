@@ -764,6 +764,15 @@ export const initialState = {
 		loadingIds: [],
 		updatingIds: [],
 	},
+	feastKeywords: {
+		data: {},
+		pagination: null,
+		lastError: null,
+		error: null,
+		lastSuccessfulFetchTimestamp: null,
+		loadingIds: [],
+		updatingIds: [],
+	},
 };
 
 export const finalStateWhenAddNewCollection = {
@@ -1530,6 +1539,15 @@ export const finalStateWhenAddNewCollection = {
 		loadingIds: [],
 		updatingIds: [],
 	},
+	feastKeywords: {
+		data: {},
+		pagination: null,
+		lastError: null,
+		error: null,
+		lastSuccessfulFetchTimestamp: null,
+		loadingIds: [],
+		updatingIds: [],
+	},
 };
 
 export const finalStateWhenRemoveACollection = {
@@ -2255,6 +2273,15 @@ export const finalStateWhenRemoveACollection = {
 		updatingIds: [],
 	},
 	chefs: {
+		data: {},
+		pagination: null,
+		lastError: null,
+		error: null,
+		lastSuccessfulFetchTimestamp: null,
+		loadingIds: [],
+		updatingIds: [],
+	},
+	feastKeywords: {
 		data: {},
 		pagination: null,
 		lastError: null,
