@@ -278,7 +278,7 @@ const recipeQuery = (baseUrl: string) => {
 			const response = await fetch(url);
 			if (response.status === 200) {
 				const data = (await response.json()) as FeastKeywordResponse;
-				console.log(data);
+
 				const vals = Object.values(data);
 
 				if (vals.length < 1) {
