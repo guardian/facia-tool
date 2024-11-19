@@ -224,13 +224,14 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 						</div>
 						<div>
 							<select
+								style={{ textTransform: 'capitalize' }}
 								id="celebrationSelector"
 								value={celebrationFilter}
 								onChange={(evt) => setCelebrationFilter(evt.target.value)}
 							>
 								<option value={''}>Any</option>
 								{knownCelebrations.map((c) => (
-									<option value={c.id}>{c.id}</option>
+									<option value={c.id}>{c.id.replace(/-/g, ' ')}</option>
 								))}
 							</select>
 						</div>
