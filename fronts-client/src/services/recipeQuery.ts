@@ -1,6 +1,11 @@
 import url from '../constants/url';
 import { Recipe, RecipePartialIndexContent } from '../types/Recipe';
 import Raven from 'raven-js';
+import {
+	FeastKeyword,
+	FeastKeywordResponse,
+	FeastKeywordType,
+} from '../types/FeastKeyword';
 
 interface KeyAndCount {
 	key: string;
@@ -150,6 +155,19 @@ const recipeQuery = (baseUrl: string) => {
 		return results.filter((r) => !!r) as RecipeSearchHit[];
 	};
 
+	const baseUrlForKwType = (kwType: FeastKeywordType) => {
+		switch (kwType) {
+			case 'celebration':
+				return `${baseUrl}/keywords/celebrations`;
+			case 'mealType':
+				return `${baseUrl}/keywords/meal-types`;
+			case 'cuisine':
+				return `${baseUrl}/keywords/cuisines`;
+			case 'diet':
+				return `${baseUrl}/keywords/diet-ids`;
+		}
+	};
+
 	return {
 		chefs: async (params: ChefSearchParams): Promise<ChefSearchResponse> => {
 			const args = [
@@ -254,6 +272,34 @@ const recipeQuery = (baseUrl: string) => {
 			};
 
 			return recurseTheList(idList, []);
+		},
+		keywords: async (kwType: FeastKeywordType): Promise<FeastKeyword[]> => {
+			const url = baseUrlForKwType(kwType);
+			const response = await fetch(url);
+			if (response.status === 200) {
+				const data = (await response.json()) as FeastKeywordResponse;
+				console.log(data);
+				const vals = Object.values(data);
+
+				if (vals.length < 1) {
+					console.error(
+						`Recipe API response was invalid, no data for ${kwType} keyword`,
+					);
+					throw new Error('Invalid API response');
+				}
+
+				return vals[0].map((kw) => ({
+					keywordType: kwType,
+					id: kw.key,
+					doc_count: kw.doc_count,
+				}));
+			} else {
+				const bodyContent = await response.text();
+				console.error(
+					`Unable to communicate with recipe search: ${response.status} ${bodyContent}`,
+				);
+				throw new Error(`Recipe API responded with ${response.status}`);
+			}
 		},
 	};
 };
