@@ -20,6 +20,9 @@ export interface ChefSearchParams {
 export interface RecipeSearchFilters {
 	diets?: string[];
 	contributors?: string[];
+	cuisines?: string[];
+	mealTypes?: string[];
+	celebrations?: string[];
 	filterType: 'During' | 'Post';
 }
 

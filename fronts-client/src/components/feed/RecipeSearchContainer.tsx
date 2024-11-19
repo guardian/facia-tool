@@ -1,7 +1,7 @@
 import ClipboardHeader from 'components/ClipboardHeader';
 import TextInput from 'components/inputs/TextInput';
 import { styled } from 'constants/theme';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	fetchRecipes,
@@ -20,6 +20,7 @@ import ScrollContainer from '../ScrollContainer';
 import {
 	ChefSearchParams,
 	DateParamField,
+	RecipeSearchFilters,
 	RecipeSearchParams,
 } from '../../services/recipeQuery';
 import debounce from 'lodash/debounce';
@@ -108,12 +109,24 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 		dispatch(fetchKeywords('celebration'));
 	}, []);
 
+	const filters: RecipeSearchFilters | undefined = useMemo(() => {
+		if (celebrationFilter) {
+			return {
+				celebrations: [celebrationFilter],
+				filterType: 'Post',
+			};
+		}
+	}, [celebrationFilter]);
+
 	useEffect(() => {
 		const dbf = debounce(() => runSearch(page), 750);
 		dbf();
 		return () => dbf.cancel();
-	}, [selectedOption, searchText, page, dateField, orderingForce]);
+	}, [searchText]);
 
+	useEffect(() => {
+		runSearch(page);
+	}, [page, dateField, orderingForce, filters, selectedOption]);
 	const chefsPagination: IPagination | null = useSelector((state: State) =>
 		chefSelectors.selectPagination(state),
 	);
@@ -152,12 +165,14 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 					searchForRecipes({
 						queryText: searchText,
 						uprateByDate: dateField,
+						filters: filters,
 						uprateConfig: getUpdateConfig(),
+						limit: !!filters ? 300 : 100,
 					});
 					break;
 			}
 		},
-		[selectedOption, searchText, page, dateField, orderingForce],
+		[selectedOption, searchText, page, dateField, orderingForce, filters],
 	);
 
 	const renderTheFeed = () => {
@@ -213,7 +228,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 								value={celebrationFilter}
 								onChange={(evt) => setCelebrationFilter(evt.target.value)}
 							>
-								<option value={''}></option>
+								<option value={''}>Any</option>
 								{knownCelebrations.map((c) => (
 									<option value={c.id}>{c.id}</option>
 								))}
