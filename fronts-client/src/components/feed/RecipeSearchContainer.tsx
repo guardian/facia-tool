@@ -26,7 +26,6 @@ import {
 import debounce from 'lodash/debounce';
 import ButtonDefault from '../inputs/ButtonDefault';
 import { fetchKeywords } from '../../bundles/feastKeywordBundle';
-import { FeastKeyword } from '../../types/FeastKeyword';
 
 const InputContainer = styled.div`
 	margin-bottom: 10px;
@@ -75,6 +74,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 	const [showAdvancedRecipes, setShowAdvancedRecipes] = useState(false);
 	const [dateField, setDateField] = useState<DateParamField>(undefined);
 	const [celebrationFilter, setCelebrationFilter] = useState<string>('');
+	const [dietFilter, setDietFilter] = useState<string>('');
 	const [orderingForce, setOrderingForce] = useState<string>('default');
 	const [forceDates, setForceDates] = useState(false);
 
@@ -101,22 +101,26 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
 	const knownCelebrations = useSelector(
 		feastKeywordsSelectors.selectCelebrationKeywords,
-	) as FeastKeyword[];
+	);
+
+	const knownDiets = useSelector(feastKeywordsSelectors.selectDietKeywords);
 
 	const [page, setPage] = useState(1);
 
 	useEffect(() => {
 		dispatch(fetchKeywords('celebration'));
+		dispatch(fetchKeywords('diet'));
 	}, []);
 
 	const filters: RecipeSearchFilters | undefined = useMemo(() => {
-		if (celebrationFilter) {
+		if (celebrationFilter || dietFilter) {
 			return {
-				celebrations: [celebrationFilter],
+				celebrations: celebrationFilter ? [celebrationFilter] : undefined,
+				diets: dietFilter ? [dietFilter] : undefined,
 				filterType: 'Post',
 			};
 		}
-	}, [celebrationFilter]);
+	}, [celebrationFilter, dietFilter]);
 
 	useEffect(() => {
 		const dbf = debounce(() => runSearch(page), 750);
@@ -231,7 +235,25 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 							>
 								<option value={''}>Any</option>
 								{knownCelebrations.map((c) => (
-									<option value={c.id}>{c.id.replace(/-/g, ' ')}</option>
+									<option value={c}>{c.replace(/-/g, ' ')}</option>
+								))}
+							</select>
+						</div>
+					</TopOptions>
+					<TopOptions>
+						<div>
+							<label htmlFor="dietSelector">Suitable for</label>{' '}
+						</div>
+						<div>
+							<select
+								style={{ textTransform: 'capitalize' }}
+								id="dietSelector"
+								value={dietFilter}
+								onChange={(evt) => setDietFilter(evt.target.value)}
+							>
+								<option value={''}>Any</option>
+								{knownDiets.map((d) => (
+									<option value={d}>{d.replace(/-/g, ' ')}</option>
 								))}
 							</select>
 						</div>
