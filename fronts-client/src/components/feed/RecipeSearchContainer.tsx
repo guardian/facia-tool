@@ -7,6 +7,7 @@ import {
 	fetchRecipes,
 	selectors as recipeSelectors,
 } from 'bundles/recipesBundle';
+import { selectors as feastKeywordsSelectors } from 'bundles/feastKeywordBundle';
 import { fetchChefs, selectors as chefSelectors } from 'bundles/chefsBundle';
 import { State } from 'types/State';
 import { RecipeFeedItem } from './RecipeFeedItem';
@@ -23,6 +24,8 @@ import {
 } from '../../services/recipeQuery';
 import debounce from 'lodash/debounce';
 import ButtonDefault from '../inputs/ButtonDefault';
+import { fetchKeywords } from '../../bundles/feastKeywordBundle';
+import { FeastKeyword } from '../../types/FeastKeyword';
 
 const InputContainer = styled.div`
 	margin-bottom: 10px;
@@ -70,6 +73,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
 	const [showAdvancedRecipes, setShowAdvancedRecipes] = useState(false);
 	const [dateField, setDateField] = useState<DateParamField>(undefined);
+	const [celebrationFilter, setCelebrationFilter] = useState<string>('');
 	const [orderingForce, setOrderingForce] = useState<string>('default');
 	const [forceDates, setForceDates] = useState(false);
 
@@ -94,7 +98,15 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 		chefSelectors.selectLastFetchOrder(state),
 	);
 
+	const knownCelebrations = useSelector(
+		feastKeywordsSelectors.selectCelebrationKeywords,
+	) as FeastKeyword[];
+
 	const [page, setPage] = useState(1);
+
+	useEffect(() => {
+		dispatch(fetchKeywords('celebration'));
+	}, []);
 
 	useEffect(() => {
 		const dbf = debounce(() => runSearch(page), 750);
@@ -191,6 +203,23 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
 			{showAdvancedRecipes && selectedOption === FeedType.recipes ? (
 				<>
+					<TopOptions>
+						<div>
+							<label htmlFor="celebrationSelector">Celebrations</label>
+						</div>
+						<div>
+							<select
+								id="celebrationSelector"
+								value={celebrationFilter}
+								onChange={(evt) => setCelebrationFilter(evt.target.value)}
+							>
+								<option value={''}></option>
+								{knownCelebrations.map((c) => (
+									<option value={c.id}>{c.id}</option>
+								))}
+							</select>
+						</div>
+					</TopOptions>
 					<TopOptions>
 						<div>
 							<label
