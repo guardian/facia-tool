@@ -312,7 +312,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 									isLoading={!collection}
 									title={!!collection ? collection!.displayName : 'Loading …'}
 									isSecondaryLevel={collection?.metadata?.some(
-										(tag) => tag.type === 'SecondaryLevel',
+										(tag) => tag.type === 'Secondary',
 									)}
 								>
 									{!!collection ? collection!.displayName : 'Loading …'}

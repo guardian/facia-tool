@@ -83,7 +83,7 @@ libraryDependencies ++= Seq(
   "com.gu" %% "content-api-client-aws" % "0.7.6",
   "com.gu" %% "content-api-client-default" % capiClientVersion,
   "com.gu" %% "editorial-permissions-client" % "3.0.0",
-  "com.gu" %% "fapi-client-play30" % "13.0.0-PREVIEW.cemms1adapt-container-level-naming.2024-11-18T1218.909815c4",
+  "com.gu" %% "fapi-client-play30" % "13.0.0-PREVIEW.cemms1adapt-container-level-naming.2024-11-19T1212.1a7b9e02",
   "com.gu" %% "mobile-notifications-api-models" % "3.0.0",
   "com.gu" %% "pan-domain-auth-play_3-0" % "4.0.0",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
