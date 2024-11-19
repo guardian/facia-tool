@@ -290,7 +290,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 			>
 				<CollectionHeadingSticky tabIndex={-1}>
 					<CollectionHeadingInner>
-						{usePortrait && <AspectRatioBadge {...portraitCardImageCriteria} />}
 						<CollectionHeadlineWithConfigContainer>
 							{this.state.editingContainerName ? (
 								<CollectionHeaderInput
@@ -347,6 +346,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								</CollectionHeadingText>
 							)}
 						</CollectionHeadlineWithConfigContainer>
+						{usePortrait && <AspectRatioBadge {...portraitCardImageCriteria} />}
 						{isLocked ? (
 							<LockedCollectionFlag>Locked</LockedCollectionFlag>
 						) : headlineContent ? (
