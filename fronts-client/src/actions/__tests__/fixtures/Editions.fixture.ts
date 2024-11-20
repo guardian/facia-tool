@@ -161,7 +161,7 @@ export const initialState = {
 			featureSwitches: [
 				{
 					key: 'support-portrait-crops',
-					title: 'Use portrait crops for the experimental big card containers',
+					title: 'Support portrait crops for feature card containers',
 					enabled: false,
 				},
 				{
@@ -666,7 +666,7 @@ export const initialState = {
 	featureSwitches: {
 		'support-portrait-crops': {
 			key: 'support-portrait-crops',
-			title: 'Use portrait crops for the experimental big card containers',
+			title: 'Support portrait crops for feature card containers',
 			enabled: false,
 		},
 		'obscure-feed': {
@@ -902,7 +902,7 @@ export const finalStateWhenAddNewCollection = {
 			featureSwitches: [
 				{
 					key: 'support-portrait-crops',
-					title: 'Use portrait crops for the experimental big card containers',
+					title: 'Support portrait crops for feature card containers',
 					enabled: false,
 				},
 				{
@@ -1408,7 +1408,7 @@ export const finalStateWhenAddNewCollection = {
 	featureSwitches: {
 		'support-portrait-crops': {
 			key: 'support-portrait-crops',
-			title: 'Use portrait crops for the experimental big card containers',
+			title: 'Support portrait crops for feature card containers',
 			enabled: false,
 		},
 		'obscure-feed': {
@@ -1654,7 +1654,7 @@ export const finalStateWhenRemoveACollection = {
 			featureSwitches: [
 				{
 					key: 'support-portrait-crops',
-					title: 'Use portrait crops for the experimental big card containers',
+					title: 'Support portrait crops for feature card containers',
 					enabled: false,
 				},
 				{
@@ -2159,7 +2159,7 @@ export const finalStateWhenRemoveACollection = {
 	featureSwitches: {
 		'support-portrait-crops': {
 			key: 'support-portrait-crops',
-			title: 'Use portrait crops for the experimental big card containers',
+			title: 'Support portrait crops for feature card containers',
 			enabled: false,
 		},
 		'obscure-feed': {
