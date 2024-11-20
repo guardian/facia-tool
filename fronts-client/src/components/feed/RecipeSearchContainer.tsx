@@ -1,12 +1,13 @@
 import ClipboardHeader from 'components/ClipboardHeader';
 import TextInput from 'components/inputs/TextInput';
 import { styled } from 'constants/theme';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
 	fetchRecipes,
 	selectors as recipeSelectors,
 } from 'bundles/recipesBundle';
+import { selectors as feastKeywordsSelectors } from 'bundles/feastKeywordBundle';
 import { fetchChefs, selectors as chefSelectors } from 'bundles/chefsBundle';
 import { State } from 'types/State';
 import { RecipeFeedItem } from './RecipeFeedItem';
@@ -19,10 +20,12 @@ import ScrollContainer from '../ScrollContainer';
 import {
 	ChefSearchParams,
 	DateParamField,
+	RecipeSearchFilters,
 	RecipeSearchParams,
 } from '../../services/recipeQuery';
 import debounce from 'lodash/debounce';
 import ButtonDefault from '../inputs/ButtonDefault';
+import { fetchKeywords } from '../../bundles/feastKeywordBundle';
 
 const InputContainer = styled.div`
 	margin-bottom: 10px;
@@ -70,6 +73,8 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
 	const [showAdvancedRecipes, setShowAdvancedRecipes] = useState(false);
 	const [dateField, setDateField] = useState<DateParamField>(undefined);
+	const [celebrationFilter, setCelebrationFilter] = useState<string>('');
+	const [dietFilter, setDietFilter] = useState<string>('');
 	const [orderingForce, setOrderingForce] = useState<string>('default');
 	const [forceDates, setForceDates] = useState(false);
 
@@ -94,14 +99,38 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 		chefSelectors.selectLastFetchOrder(state),
 	);
 
+	const knownCelebrations = useSelector(
+		feastKeywordsSelectors.selectCelebrationKeywords,
+	);
+
+	const knownDiets = useSelector(feastKeywordsSelectors.selectDietKeywords);
+
 	const [page, setPage] = useState(1);
+
+	useEffect(() => {
+		dispatch(fetchKeywords('celebration'));
+		dispatch(fetchKeywords('diet'));
+	}, []);
+
+	const filters: RecipeSearchFilters | undefined = useMemo(() => {
+		if (celebrationFilter || dietFilter) {
+			return {
+				celebrations: celebrationFilter ? [celebrationFilter] : undefined,
+				diets: dietFilter ? [dietFilter] : undefined,
+				filterType: 'Post',
+			};
+		}
+	}, [celebrationFilter, dietFilter]);
 
 	useEffect(() => {
 		const dbf = debounce(() => runSearch(page), 750);
 		dbf();
 		return () => dbf.cancel();
-	}, [selectedOption, searchText, page, dateField, orderingForce]);
+	}, [searchText]);
 
+	useEffect(() => {
+		runSearch(page);
+	}, [page, dateField, orderingForce, filters, selectedOption]);
 	const chefsPagination: IPagination | null = useSelector((state: State) =>
 		chefSelectors.selectPagination(state),
 	);
@@ -140,12 +169,14 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 					searchForRecipes({
 						queryText: searchText,
 						uprateByDate: dateField,
+						filters: filters,
 						uprateConfig: getUpdateConfig(),
+						limit: !!filters ? 300 : 100,
 					});
 					break;
 			}
 		},
-		[selectedOption, searchText, page, dateField, orderingForce],
+		[selectedOption, searchText, page, dateField, orderingForce, filters],
 	);
 
 	const renderTheFeed = () => {
@@ -191,6 +222,42 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 
 			{showAdvancedRecipes && selectedOption === FeedType.recipes ? (
 				<>
+					<TopOptions>
+						<div>
+							<label htmlFor="celebrationSelector">Celebrations</label>
+						</div>
+						<div>
+							<select
+								style={{ textTransform: 'capitalize' }}
+								id="celebrationSelector"
+								value={celebrationFilter}
+								onChange={(evt) => setCelebrationFilter(evt.target.value)}
+							>
+								<option value={''}>Any</option>
+								{knownCelebrations.map((c) => (
+									<option value={c}>{c.replace(/-/g, ' ')}</option>
+								))}
+							</select>
+						</div>
+					</TopOptions>
+					<TopOptions>
+						<div>
+							<label htmlFor="dietSelector">Suitable for</label>{' '}
+						</div>
+						<div>
+							<select
+								style={{ textTransform: 'capitalize' }}
+								id="dietSelector"
+								value={dietFilter}
+								onChange={(evt) => setDietFilter(evt.target.value)}
+							>
+								<option value={''}>Any</option>
+								{knownDiets.map((d) => (
+									<option value={d}>{d.replace(/-/g, ' ')}</option>
+								))}
+							</select>
+						</div>
+					</TopOptions>
 					<TopOptions>
 						<div>
 							<label
