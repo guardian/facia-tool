@@ -236,10 +236,10 @@
             <input type="text" data-bind="
                 value: meta.href"/>
 
-            <!-- ko if: (
-			 meta.type() !== 'scrollable/small' ||
-			 meta.type() !== 'scrollable/medium' ||
-			 meta.type() !== 'static/medium/4')
+            <!-- ko if: !(
+			 meta.type() === 'scrollable/small' ||
+			 meta.type() === 'scrollable/medium' ||
+			 meta.type() === 'static/medium/4')
 			-->
             <label>Description</label>
                 <input type="text" data-bind="
@@ -281,19 +281,19 @@
             <label for="hideKickers" >Suppress tone kickers</label>
             <input id="hideKickers" type="checkbox" data-bind="checked: meta.hideKickers" />
 
-            <!-- ko if: (
-			 meta.type() !== 'scrollable/small' ||
-			 meta.type() !== 'scrollable/medium' ||
-			 meta.type() !== 'static/medium/4')
+            <!-- ko if: !(
+			 meta.type() === 'scrollable/small' ||
+			 meta.type() === 'scrollable/medium' ||
+			 meta.type() === 'static/medium/4')
 			-->
 			<label for="showDateHeader">Show date in header</label>
             <input id="showDateHeader" type="checkbox" data-bind="checked: meta.showDateHeader" />
             <!-- /ko -->
 
-            <!-- ko if: (
-			 meta.type() !== 'scrollable/small' ||
-			 meta.type() !== 'scrollable/medium' ||
-			 meta.type() !== 'static/medium/4')
+            <!-- ko if: !(
+			 meta.type() === 'scrollable/small' ||
+			 meta.type() === 'scrollable/medium' ||
+			 meta.type() === 'static/medium/4')
 			-->
 			<label for="showLatestUpdate">Show latest update in header</label>
             <input id="showLatestUpdate" type="checkbox" data-bind="checked: meta.showLatestUpdate" />
@@ -302,10 +302,10 @@
             <label for="excludeFromRss">Exclude from RSS</label>
             <input id="excludeFromRss" type="checkbox" data-bind="checked: meta.excludeFromRss" />
 
-            <!-- ko if: (
-			 meta.type() !== 'scrollable/small' ||
-			 meta.type() !== 'scrollable/medium' ||
-			 meta.type() !== 'static/medium/4')
+            <!-- ko if: !(
+			 meta.type() === 'scrollable/small' ||
+			 meta.type() === 'scrollable/medium' ||
+			 meta.type() === 'static/medium/4')
 			-->
             <label for="hideShowMore">Hide show more</label>
             <input id="hideShowMore" type="checkbox" data-bind="checked: meta.hideShowMore" />
