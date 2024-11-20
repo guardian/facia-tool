@@ -182,6 +182,7 @@ const CaptionLabel = styled(InputLabel)`
 `;
 
 const CaptionInput = styled(InputBase)`
+  margin-bottom: 60px;
   color: ${(props: { invalid: boolean }) =>
 		props.invalid ? error.primary : 'default'}}
   border-color: ${(props: { invalid: boolean }) =>
