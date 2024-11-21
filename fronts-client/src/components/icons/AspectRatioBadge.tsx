@@ -18,8 +18,8 @@ const AspectText = styled.span`
 `;
 
 const Container = styled(CircularIconContainer)`
-	margin-right: 10px;
 	background-color: ${theme.colors.blackLight};
+	margin: 4px;
 `;
 
 const getAspectDescription = (
