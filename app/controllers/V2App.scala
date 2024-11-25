@@ -148,8 +148,7 @@ class V2App(
           isDev,
           maybePinboardUrl = pinboardPermission match {
             case AccessGranted
-                if config.environment.stage != "prod" || maybePinboardFeatureSwitch
-                  .exists(_.enabled) =>
+                if maybePinboardFeatureSwitch.exists(_.enabled) =>
               Some(
                 s"https://pinboard.${config.environment.correspondingToolsDomainSuffix}/pinboard.loader.js"
               )
