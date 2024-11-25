@@ -3,13 +3,7 @@ package controllers
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import org.scanamo._
 import org.scanamo.syntax._
-import model.{
-  ClipboardCard,
-  FeatureSwitch,
-  PinboardIntegration,
-  UserData,
-  UserDataForDefaults
-}
+import model.{ClipboardCard, FeatureSwitch, UserData, UserDataForDefaults}
 
 import scala.concurrent.ExecutionContext
 import com.gu.facia.client.models.{Metadata, TargetedTerritory}
@@ -85,10 +79,6 @@ class V2App(
         .exec(userDataTable.get("email" === userEmail))
         .flatMap(_.toOption)
 
-      val maybePinboardFeatureSwitch = maybeUserData.flatMap(
-        _.featureSwitches.flatMap(_.find(_.key == PinboardIntegration.key))
-      )
-
       val clipboardCards = if (editingEdition) {
         if (isFeast)
           maybeUserData.map(
@@ -147,8 +137,7 @@ class V2App(
           Json.toJson(conf).toString(),
           isDev,
           maybePinboardUrl = pinboardPermission match {
-            case AccessGranted
-                if maybePinboardFeatureSwitch.exists(_.enabled) =>
+            case AccessGranted =>
               Some(
                 s"https://pinboard.${config.environment.correspondingToolsDomainSuffix}/pinboard.loader.js"
               )

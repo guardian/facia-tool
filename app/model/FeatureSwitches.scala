@@ -33,19 +33,11 @@ object TenImageSlideshows
       enabled = false
     )
 
-object PinboardIntegration
-    extends FeatureSwitch(
-      key = "pinboard",
-      title = "Enable Pinboard integration",
-      enabled = true
-    )
-
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
-    TenImageSlideshows,
-    PinboardIntegration
+    TenImageSlideshows
   )
 
   def updateFeatureSwitchesForUser(
