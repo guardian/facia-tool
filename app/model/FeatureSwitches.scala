@@ -44,7 +44,7 @@ object PinboardIntegration
     extends FeatureSwitch(
       key = "pinboard",
       title = "Enable Pinboard integration",
-      enabled = false
+      enabled = true
     )
 
 object FeatureSwitches {
