@@ -50,6 +50,8 @@ import {
 	SUPPORT_PORTRAIT_CROPS,
 	COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS,
 	landscape5To4CardImageCriteria,
+	COLLECTIONS_USING_SQUARE_TRAILS,
+	squareImageCriteria,
 } from 'constants/image';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import { getContributorImage } from 'util/CAPIUtils';
@@ -1008,6 +1010,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		}
 		if (COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS.includes(collectionType)) {
 			return landscape5To4CardImageCriteria;
+		}
+		if (COLLECTIONS_USING_SQUARE_TRAILS.includes(collectionType)) {
+			return squareImageCriteria;
 		}
 		if (!SUPPORT_PORTRAIT_CROPS) {
 			return landScapeCardImageCriteria;
