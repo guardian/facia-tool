@@ -389,6 +389,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 							small={small}
 							portrait={portraitImage}
 							shouldShowLandscape54={shouldShowLandscape54}
+							showSquare={showSquare}
 						>
 							{hasImage ? (
 								<>
