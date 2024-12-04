@@ -63,7 +63,7 @@ const Link = styled.a`
 
 const LinkButtons = styled.div`
 	display: flex;
-	gap: 15px;
+	gap: 10px;
 `
 
 const StageSelectButtons = styled.div`
