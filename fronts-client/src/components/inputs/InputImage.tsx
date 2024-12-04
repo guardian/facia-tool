@@ -92,7 +92,10 @@ const ImageComponent = styled.div<{
 		`aspect-ratio: 1/1;
     background-size: cover;
     background-repeat: no-repeat;
-    background-position: center;`}
+    background-position: center;
+	width: 95%;
+	height: 95%;
+	align-self: center;`}
   flex-grow: 1;
 	cursor: grab;
 `;
