@@ -269,6 +269,20 @@ const PreviewEyeIcon = ({
 	</svg>
 );
 
+const LiveIcon = ({
+							fill = theme.colors.white,
+							size = 'm',
+							title = null,
+						}: IconProps) => (
+	<svg width={mapSize(size)}
+		 height={mapSize(size)}
+		 viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg">
+		<title>{title}</title>
+		<path fill={fill} fill-rule="evenodd" clip-rule="evenodd"
+			  d="M1.57692 7.5C1.57692 4.22878 4.22878 1.57692 7.5 1.57692C10.7712 1.57692 13.4231 4.22878 13.4231 7.5C13.4231 10.7712 10.7712 13.4231 7.5 13.4231C4.22878 13.4231 1.57692 10.7712 1.57692 7.5ZM7.5 0.5C3.63401 0.5 0.5 3.63401 0.5 7.5C0.5 11.366 3.63401 14.5 7.5 14.5C11.366 14.5 14.5 11.366 14.5 7.5C14.5 3.63401 11.366 0.5 7.5 0.5ZM7.5 11.8077C9.87907 11.8077 11.8077 9.87907 11.8077 7.5C11.8077 5.12093 9.87907 3.19231 7.5 3.19231C5.12093 3.19231 3.19231 5.12093 3.19231 7.5C3.19231 9.87907 5.12093 11.8077 7.5 11.8077Z"/>
+	</svg>
+);
+
 const VideoIcon = ({}) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -353,6 +367,7 @@ export {
 	AddImageIcon,
 	StarIcon,
 	PreviewEyeIcon,
+	LiveIcon,
 	VideoIcon,
 	DragHandleIcon as DragIcon,
 	WarningIcon,

@@ -29,4 +29,6 @@ export default {
 	editionsCardBuilder: 'https://editions-card-builder.gutools.co.uk',
 	previewUrlPROD: `https://${previewDomain}/responsive-viewer/https://${previewDomain}/`,
 	previewUrlCODE: 'https://m.code.dev-theguardian.com/',
+	liveUrlPROD: "https://www.theguardian.com/",
+	liveUrlCODE: "https://m.code.dev-theguardian.com/",
 };

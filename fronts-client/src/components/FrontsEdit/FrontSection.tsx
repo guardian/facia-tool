@@ -21,13 +21,13 @@ import SectionContent from '../layout/SectionContent';
 import { CardSets, Collection, Stages } from 'types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
-import { PreviewEyeIcon, ClearIcon } from 'components/icons/Icons';
+import { PreviewEyeIcon, ClearIcon, LiveIcon } from 'components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
 import FrontsContainer from './FrontContainer';
 import { isMode } from '../../selectors/pathSelectors';
-import { selectShouldUsePreviewCODE } from '../../selectors/configSelectors';
+import { selectShouldUseCODELinks } from '../../selectors/configSelectors';
 
 const FrontHeader = styled(SectionHeader)`
 	display: flex;
@@ -56,6 +56,11 @@ const FrontsHeaderInput = styled.input`
 	font-weight: bold;
 	width: 20em;
 `;
+
+const LinkButtons = styled.div`
+	display: flex;
+	gap: 4px;
+`
 
 const StageSelectButtons = styled.div`
 	color: ${theme.colors.blackDark};
@@ -92,6 +97,7 @@ const FrontSectionContent = styled(SectionContent)`
 const FrontHeaderButton = styled(Button).attrs({ size: 'l' })`
 	color: #fff;
 	padding: 0 5px;
+	gap: 5px;
 	display: flex;
 	align-items: center;
 
@@ -100,8 +106,7 @@ const FrontHeaderButton = styled(Button).attrs({ size: 'l' })`
 	}
 `;
 
-const PreviewButtonText = styled.span`
-	padding: 0 5px;
+const LinkButtonText = styled.span`
 	text-decoration: none;
 `;
 interface FrontsContainerProps {
@@ -111,7 +116,7 @@ interface FrontsContainerProps {
 type FrontsComponentProps = FrontsContainerProps & {
 	selectedFront: FrontConfig;
 	isOverviewOpen: boolean;
-	shouldUsePreviewCODE: boolean;
+	shouldUseCODELinks: boolean;
 	frontsActions: {
 		fetchLastPressed: (frontId: string) => void;
 		editorCloseFront: (frontId: string) => void;
@@ -158,7 +163,7 @@ class FrontSection extends React.Component<
 	};
 
 	public render() {
-		const { frontId, isOverviewOpen, isEditions, shouldUsePreviewCODE } =
+		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks } =
 			this.props;
 		const title = this.getTitle();
 
@@ -201,19 +206,34 @@ class FrontSection extends React.Component<
 						)}
 						<FrontHeaderMeta>
 							<EditModeVisibility visibleMode="fronts">
-								<a
-									href={`${
-										shouldUsePreviewCODE
-											? urls.previewUrlCODE
-											: urls.previewUrlPROD
-									}${this.props.frontId}`}
-									target="preview"
-								>
-									<FrontHeaderButton>
-										<PreviewEyeIcon size="xl" />
-										<PreviewButtonText>Preview</PreviewButtonText>
-									</FrontHeaderButton>
-								</a>
+								<LinkButtons>
+									<a
+										href={`${
+											shouldUseCODELinks
+												? urls.previewUrlCODE
+												: urls.previewUrlPROD
+										}${this.props.frontId}`}
+										target="preview"
+									>
+										<FrontHeaderButton>
+											<PreviewEyeIcon size="xl" />
+											<LinkButtonText>Preview</LinkButtonText>
+										</FrontHeaderButton>
+									</a>
+									<a
+										href={`${
+											shouldUseCODELinks
+												? urls.liveUrlCODE
+												: urls.liveUrlPROD
+										}${this.props.frontId}`}
+										target="live"
+									>
+										<FrontHeaderButton>
+											<LiveIcon size="l" />
+											<LinkButtonText>See live</LinkButtonText>
+										</FrontHeaderButton>
+									</a>
+								</LinkButtons>
 								<StageSelectButtons>
 									<RadioGroup>
 										{Object.keys(frontStages).map((key) => (
@@ -329,7 +349,7 @@ const createMapStateToProps = () => {
 		selectedFront: selectFront(state, { frontId }),
 		isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
 		isEditions: isMode(state, 'editions'),
-		shouldUsePreviewCODE: selectShouldUsePreviewCODE(state),
+		shouldUseCODELinks: selectShouldUseCODELinks(state),
 	});
 };
 
