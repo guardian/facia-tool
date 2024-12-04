@@ -633,7 +633,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 		}
 
 		// assumes the only criteria that will be passed as props the defined
-		// constants for portrait(4:5), landscape (5:3), landscape (5:4) or square
+		// constants for portrait(4:5), landscape (5:3), landscape (5:4) or square (1:1)
 		if (this.compareAspectRatio(portraitCardImageCriteria, criteria)) {
 			return {
 				cropType: 'portrait',
@@ -648,7 +648,6 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 		} else if (this.compareAspectRatio(squareImageCriteria, criteria)) {
 			return {
 				cropType: 'square',
-				customRatio: 'Square',
 			};
 		} else {
 			return {
