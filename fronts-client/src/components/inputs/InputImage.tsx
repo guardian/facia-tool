@@ -644,7 +644,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			};
 		} else if (this.compareAspectRatio(squareImageCriteria, criteria)) {
 			return {
-				cropType: 'Square',
+				cropType: 'square',
 				customRatio: 'Square',
 			};
 		} else {
