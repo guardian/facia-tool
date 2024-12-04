@@ -23,6 +23,7 @@ describe('FrontSection component', () => {
 			setFrontHiddenState: jest.fn(),
 		},
 		isEditions: false,
+		showLinkText: false
 	};
 
 	it('should give the correct preview link for DEV', () => {

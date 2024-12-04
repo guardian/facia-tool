@@ -121,6 +121,7 @@ type FrontsComponentProps = FrontsContainerProps & {
 	selectedFront: FrontConfig;
 	isOverviewOpen: boolean;
 	shouldUseCODELinks: boolean;
+	showLinkText: boolean;
 	frontsActions: {
 		fetchLastPressed: (frontId: string) => void;
 		editorCloseFront: (frontId: string) => void;
@@ -167,7 +168,7 @@ class FrontSection extends React.Component<
 	};
 
 	public render() {
-		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks } =
+		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks, showLinkText } =
 			this.props;
 		const title = this.getTitle();
 
@@ -221,7 +222,7 @@ class FrontSection extends React.Component<
 									>
 										<FrontHeaderButton>
 											<PreviewEyeIcon size="xl" />
-											<LinkButtonText>Preview</LinkButtonText>
+											{ showLinkText ? <LinkButtonText>Preview</LinkButtonText> : null}
 										</FrontHeaderButton>
 									</Link>
 									<Link
@@ -234,7 +235,7 @@ class FrontSection extends React.Component<
 									>
 										<FrontHeaderButton priority="transparent">
 											<LiveIcon size="l" />
-											<LinkButtonText>See live</LinkButtonText>
+											{ showLinkText ? <LinkButtonText>See live</LinkButtonText> : null}
 										</FrontHeaderButton>
 									</Link>
 								</LinkButtons>
@@ -354,6 +355,7 @@ const createMapStateToProps = () => {
 		isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
 		isEditions: isMode(state, 'editions'),
 		shouldUseCODELinks: selectShouldUseCODELinks(state),
+		showLinkText: state.editor.frontIdsByPriority.editorial.length <= 1,
 	});
 };
 
