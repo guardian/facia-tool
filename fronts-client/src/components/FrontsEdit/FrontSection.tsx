@@ -57,9 +57,13 @@ const FrontsHeaderInput = styled.input`
 	width: 20em;
 `;
 
+const Link = styled.a`
+	text-decoration: none;
+`
+
 const LinkButtons = styled.div`
 	display: flex;
-	gap: 4px;
+	gap: 15px;
 `
 
 const StageSelectButtons = styled.div`
@@ -96,8 +100,8 @@ const FrontSectionContent = styled(SectionContent)`
 
 const FrontHeaderButton = styled(Button).attrs({ size: 'l' })`
 	color: #fff;
-	padding: 0 5px;
-	gap: 5px;
+	padding: 0 15px;
+	gap: 8px;
 	display: flex;
 	align-items: center;
 
@@ -207,7 +211,7 @@ class FrontSection extends React.Component<
 						<FrontHeaderMeta>
 							<EditModeVisibility visibleMode="fronts">
 								<LinkButtons>
-									<a
+									<Link
 										href={`${
 											shouldUseCODELinks
 												? urls.previewUrlCODE
@@ -219,8 +223,8 @@ class FrontSection extends React.Component<
 											<PreviewEyeIcon size="xl" />
 											<LinkButtonText>Preview</LinkButtonText>
 										</FrontHeaderButton>
-									</a>
-									<a
+									</Link>
+									<Link
 										href={`${
 											shouldUseCODELinks
 												? urls.liveUrlCODE
@@ -228,11 +232,11 @@ class FrontSection extends React.Component<
 										}${this.props.frontId}`}
 										target="live"
 									>
-										<FrontHeaderButton>
+										<FrontHeaderButton priority="transparent">
 											<LiveIcon size="l" />
 											<LinkButtonText>See live</LinkButtonText>
 										</FrontHeaderButton>
-									</a>
+									</Link>
 								</LinkButtons>
 								<StageSelectButtons>
 									<RadioGroup>
