@@ -29,8 +29,8 @@ export default {
 	manageEditions: '/manage-editions/',
 	appRoot: 'v2',
 	editionsCardBuilder: 'https://editions-card-builder.gutools.co.uk',
-	previewUrlPROD: `https://${previewPRODDomain}/responsive-viewer/https://${previewPRODDomain}/`,
 	previewUrlCODE: `https://${previewCODEDomain}/responsive-viewer/https://${previewCODEDomain}/`,
-	liveUrlPROD: "https://www.theguardian.com/",
+	previewUrlPROD: `https://${previewPRODDomain}/responsive-viewer/https://${previewPRODDomain}/`,
 	liveUrlCODE: "https://m.code.dev-theguardian.com/",
+	liveUrlPROD: "https://www.theguardian.com/",
 };
