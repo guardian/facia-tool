@@ -53,7 +53,6 @@ const FrontsHeaderText = styled.span`
 	overflow: hidden;
 	text-overflow: ellipsis;
 	color: ${theme.colors.blackDark};
-	container-name: bar;
 `;
 
 const FrontsHeaderInput = styled.input`
