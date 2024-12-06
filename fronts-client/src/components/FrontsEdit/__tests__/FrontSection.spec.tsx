@@ -7,7 +7,7 @@ import { Provider } from 'react-redux';
 import { getByTestId, getByText, render } from 'react-testing-library';
 import { ThemeProvider } from 'styled-components';
 import configureStore from 'util/configureStore';
-import FrontSection from '../FrontSection';
+import FrontSection from '../FrontSection/FrontSection';
 
 describe('FrontSection component', () => {
 	const defaultProps = {
@@ -22,8 +22,7 @@ describe('FrontSection component', () => {
 			updateFrontMetadata: jest.fn(),
 			setFrontHiddenState: jest.fn(),
 		},
-		isEditions: false,
-		showLinkText: false
+		isEditions: false
 	};
 
 	it('should give the correct preview link for DEV', () => {

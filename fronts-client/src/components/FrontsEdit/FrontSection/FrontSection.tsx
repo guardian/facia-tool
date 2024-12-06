@@ -16,8 +16,8 @@ import urls from 'constants/url';
 import { FrontConfig, EditionsFrontMetadata } from 'types/FaciaApi';
 import type { State } from 'types/State';
 import { selectFront } from 'selectors/frontsSelectors';
-import SectionHeader from '../layout/SectionHeader';
-import SectionContent from '../layout/SectionContent';
+import SectionHeader from '../../layout/SectionHeader';
+import SectionContent from '../../layout/SectionContent';
 import { CardSets, Collection, Stages } from 'types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
@@ -25,9 +25,10 @@ import { PreviewEyeIcon, ClearIcon, LiveIcon } from 'components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
-import FrontsContainer from './FrontContainer';
-import { isMode } from '../../selectors/pathSelectors';
-import { selectShouldUseCODELinks } from '../../selectors/configSelectors';
+import FrontsContainer from '../FrontContainer';
+import { isMode } from '../../../selectors/pathSelectors';
+import { selectShouldUseCODELinks } from '../../../selectors/configSelectors';
+import "./front-section.css"
 
 const FrontHeader = styled(SectionHeader)`
 	display: flex;
@@ -48,6 +49,7 @@ const FrontsHeaderText = styled.span`
 	overflow: hidden;
 	text-overflow: ellipsis;
 	color: ${theme.colors.blackDark};
+	container-name: bar;
 `;
 
 const FrontsHeaderInput = styled.input`
@@ -121,7 +123,6 @@ type FrontsComponentProps = FrontsContainerProps & {
 	selectedFront: FrontConfig;
 	isOverviewOpen: boolean;
 	shouldUseCODELinks: boolean;
-	showLinkText: boolean;
 	frontsActions: {
 		fetchLastPressed: (frontId: string) => void;
 		editorCloseFront: (frontId: string) => void;
@@ -168,7 +169,7 @@ class FrontSection extends React.Component<
 	};
 
 	public render() {
-		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks, showLinkText } =
+		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks  } =
 			this.props;
 		const title = this.getTitle();
 
@@ -188,7 +189,7 @@ class FrontSection extends React.Component<
 				isOverviewOpen={isOverviewOpen}
 			>
 				<FrontContainer>
-					<FrontHeader greyHeader={true}>
+					<FrontHeader greyHeader={true} className="front-header">
 						{editingFrontName ? (
 							<FrontsHeaderInput
 								data-testid="rename-front-input"
@@ -222,7 +223,7 @@ class FrontSection extends React.Component<
 									>
 										<FrontHeaderButton>
 											<PreviewEyeIcon size="xl" />
-											{ showLinkText ? <LinkButtonText>Preview</LinkButtonText> : null}
+											<LinkButtonText className="visible-based-on-front-header-width">Preview</LinkButtonText>
 										</FrontHeaderButton>
 									</Link>
 									<Link
@@ -235,7 +236,7 @@ class FrontSection extends React.Component<
 									>
 										<FrontHeaderButton priority="transparent">
 											<LiveIcon size="l" />
-											{ showLinkText ? <LinkButtonText>See live</LinkButtonText> : null}
+											<LinkButtonText className="visible-based-on-front-header-width">See live</LinkButtonText>
 										</FrontHeaderButton>
 									</Link>
 								</LinkButtons>
@@ -354,8 +355,7 @@ const createMapStateToProps = () => {
 		selectedFront: selectFront(state, { frontId }),
 		isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
 		isEditions: isMode(state, 'editions'),
-		shouldUseCODELinks: selectShouldUseCODELinks(state),
-		showLinkText: state.editor.frontIdsByPriority.editorial.length <= 1,
+		shouldUseCODELinks: selectShouldUseCODELinks(state)
 	});
 };
 
