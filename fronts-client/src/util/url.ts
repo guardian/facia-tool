@@ -44,7 +44,8 @@ function isGuardianUrl(url: string) {
 	return matchHostname(url, [
 		urlConstants.base.mainDomain,
 		urlConstants.base.mainDomainShort,
-		urlConstants.base.previewDomain,
+		urlConstants.base.previewPRODDomain,
+		urlConstants.base.previewCODEDomain,
 		urlConstants.base.frontendDomain,
 		urlConstants.base.shortDomain,
 	]);
