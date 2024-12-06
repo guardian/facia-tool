@@ -21,7 +21,7 @@ import SectionContent from '../../layout/SectionContent';
 import { CardSets, Collection, Stages } from 'types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
-import { PreviewEyeIcon, ClearIcon, LiveIcon } from 'components/icons/Icons';
+import { PreviewEyeIcon, ClearIcon, GuardianRoundel } from 'components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
@@ -235,7 +235,7 @@ class FrontSection extends React.Component<
 										target="live"
 									>
 										<FrontHeaderButton priority="transparent">
-											<LiveIcon size="l" />
+											<GuardianRoundel size="xl" />
 											<LinkButtonText className="visible-based-on-front-header-width">See live</LinkButtonText>
 										</FrontHeaderButton>
 									</Link>

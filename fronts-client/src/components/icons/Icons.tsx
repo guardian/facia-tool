@@ -269,17 +269,10 @@ const PreviewEyeIcon = ({
 	</svg>
 );
 
-const LiveIcon = ({
-							fill = theme.colors.white,
-							size = 'm',
-							title = null,
-						}: IconProps) => (
-	<svg width={mapSize(size)}
-		 height={mapSize(size)}
-		 viewBox="0 0 15 15" xmlns="http://www.w3.org/2000/svg">
-		<title>{title}</title>
-		<path fill={fill} fill-rule="evenodd" clip-rule="evenodd"
-			  d="M1.57692 7.5C1.57692 4.22878 4.22878 1.57692 7.5 1.57692C10.7712 1.57692 13.4231 4.22878 13.4231 7.5C13.4231 10.7712 10.7712 13.4231 7.5 13.4231C4.22878 13.4231 1.57692 10.7712 1.57692 7.5ZM7.5 0.5C3.63401 0.5 0.5 3.63401 0.5 7.5C0.5 11.366 3.63401 14.5 7.5 14.5C11.366 14.5 14.5 11.366 14.5 7.5C14.5 3.63401 11.366 0.5 7.5 0.5ZM7.5 11.8077C9.87907 11.8077 11.8077 9.87907 11.8077 7.5C11.8077 5.12093 9.87907 3.19231 7.5 3.19231C5.12093 3.19231 3.19231 5.12093 3.19231 7.5C3.19231 9.87907 5.12093 11.8077 7.5 11.8077Z"/>
+const GuardianRoundel = ({size = 'm'}: IconProps) => (
+	<svg width={mapSize(size)} height={mapSize(size)} viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path fill-rule="evenodd" clip-rule="evenodd" d="M21.0001 0C9.4022 0 0 9.40185 0 21C0 32.598 9.4022 42 21.0001 42C32.5981 42 42 32.598 42 21C42 9.40185 32.5981 0 21.0001 0Z" fill="white"/>
+		<path fill-rule="evenodd" clip-rule="evenodd" d="M33.6975 22.1508L31.5419 23.1144V33.054C30.3294 34.209 27.2308 36.0091 24.2669 36.6278V35.9057V34.5506V22.8978L21.9766 22.0886V21.4883H33.6975V22.1508ZM22.9534 5.59522C22.9534 5.59522 22.9091 5.59481 22.8873 5.59481C18.0281 5.59481 15.2482 12.1467 15.3883 20.9844C15.2482 29.8541 18.0281 36.4059 22.8873 36.4059C22.9091 36.4059 22.9534 36.4056 22.9534 36.4056V37.0865C15.6684 37.5736 5.72172 32.1464 5.86182 21.0163C5.72172 9.85427 15.6684 4.42706 22.9534 4.91415V5.59522ZM24.4182 4.88354C27.2671 5.31864 30.5229 7.18965 31.7438 8.51795V14.651H31.0423L24.4182 5.56037V4.88354Z" fill="black"/>
 	</svg>
 );
 
@@ -367,7 +360,7 @@ export {
 	AddImageIcon,
 	StarIcon,
 	PreviewEyeIcon,
-	LiveIcon,
+	GuardianRoundel,
 	VideoIcon,
 	DragHandleIcon as DragIcon,
 	WarningIcon,
