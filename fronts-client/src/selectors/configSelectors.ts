@@ -44,7 +44,7 @@ const selectAvailableEditions = createSelector(
 	(config) => config && config.availableTemplates,
 );
 
-const selectShouldUsePreviewCODE = createSelector(
+const selectShouldUseCODELinks = createSelector(
 	selectConfig,
 	(config) => !config || config.env === 'code',
 );
@@ -63,6 +63,6 @@ export {
 	selectCollectionCap,
 	selectGridUrl,
 	selectAvailableEditions,
-	selectShouldUsePreviewCODE,
+	selectShouldUseCODELinks,
 	selectEditionsPermission,
 };
