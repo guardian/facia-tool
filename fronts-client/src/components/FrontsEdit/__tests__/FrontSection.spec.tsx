@@ -22,7 +22,7 @@ describe('FrontSection component', () => {
 			updateFrontMetadata: jest.fn(),
 			setFrontHiddenState: jest.fn(),
 		},
-		isEditions: false
+		isEditions: false,
 	};
 
 	it('should give the correct preview link for DEV', () => {

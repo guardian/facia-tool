@@ -21,14 +21,18 @@ import SectionContent from '../../layout/SectionContent';
 import { CardSets, Collection, Stages } from 'types/Collection';
 import { toTitleCase } from 'util/stringUtils';
 import { RadioButton, RadioGroup } from 'components/inputs/RadioButtons';
-import { PreviewEyeIcon, ClearIcon, GuardianRoundel } from 'components/icons/Icons';
+import {
+	PreviewEyeIcon,
+	ClearIcon,
+	GuardianRoundel,
+} from 'components/icons/Icons';
 import { createFrontId } from 'util/editUtils';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { setFrontHiddenState, updateFrontMetadata } from 'actions/Editions';
 import FrontsContainer from '../FrontContainer';
 import { isMode } from '../../../selectors/pathSelectors';
 import { selectShouldUseCODELinks } from '../../../selectors/configSelectors';
-import "./front-section.css"
+import './front-section.css';
 
 const FrontHeader = styled(SectionHeader)`
 	display: flex;
@@ -61,12 +65,12 @@ const FrontsHeaderInput = styled.input`
 
 const Link = styled.a`
 	text-decoration: none;
-`
+`;
 
 const LinkButtons = styled.div`
 	display: flex;
 	gap: 10px;
-`
+`;
 
 const StageSelectButtons = styled.div`
 	color: ${theme.colors.blackDark};
@@ -169,7 +173,7 @@ class FrontSection extends React.Component<
 	};
 
 	public render() {
-		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks  } =
+		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks } =
 			this.props;
 		const title = this.getTitle();
 
@@ -223,20 +227,22 @@ class FrontSection extends React.Component<
 									>
 										<FrontHeaderButton>
 											<PreviewEyeIcon size="xl" />
-											<LinkButtonText className="visible-based-on-front-header-width">Preview</LinkButtonText>
+											<LinkButtonText className="visible-based-on-front-header-width">
+												Preview
+											</LinkButtonText>
 										</FrontHeaderButton>
 									</Link>
 									<Link
 										href={`${
-											shouldUseCODELinks
-												? urls.liveUrlCODE
-												: urls.liveUrlPROD
+											shouldUseCODELinks ? urls.liveUrlCODE : urls.liveUrlPROD
 										}${this.props.frontId}`}
 										target="live"
 									>
 										<FrontHeaderButton priority="transparent">
 											<GuardianRoundel size="xl" />
-											<LinkButtonText className="visible-based-on-front-header-width">See live</LinkButtonText>
+											<LinkButtonText className="visible-based-on-front-header-width">
+												See live
+											</LinkButtonText>
 										</FrontHeaderButton>
 									</Link>
 								</LinkButtons>
@@ -355,7 +361,7 @@ const createMapStateToProps = () => {
 		selectedFront: selectFront(state, { frontId }),
 		isOverviewOpen: selectIsFrontOverviewOpen(state, frontId),
 		isEditions: isMode(state, 'editions'),
-		shouldUseCODELinks: selectShouldUseCODELinks(state)
+		shouldUseCODELinks: selectShouldUseCODELinks(state),
 	});
 };
 
