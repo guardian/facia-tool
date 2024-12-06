@@ -45,7 +45,7 @@ describe('FrontSection component', () => {
 
 		expect(getByText(container, 'Preview').closest('a')).toHaveAttribute(
 			'href',
-			'https://m.code.dev-theguardian.com/editorialFront',
+			'https://preview.code.dev-gutools.co.uk/responsive-viewer/https://preview.code.dev-gutools.co.uk/editorialFront',
 		);
 	});
 
@@ -69,7 +69,7 @@ describe('FrontSection component', () => {
 
 		expect(getByText(container, 'Preview').closest('a')).toHaveAttribute(
 			'href',
-			'https://m.code.dev-theguardian.com/editorialFront',
+			'https://preview.code.dev-gutools.co.uk/responsive-viewer/https://preview.code.dev-gutools.co.uk/editorialFront',
 		);
 	});
 
@@ -94,6 +94,78 @@ describe('FrontSection component', () => {
 		expect(getByText(container, 'Preview').closest('a')).toHaveAttribute(
 			'href',
 			'https://preview.gutools.co.uk/responsive-viewer/https://preview.gutools.co.uk/editorialFront',
+		);
+	});
+
+	it('should give the correct live link for DEV', () => {
+		const store = configureStore({
+			...state,
+			config: {
+				...state.config,
+				dev: true,
+				env: 'code',
+			},
+		});
+
+		const { container } = render(
+			<Provider store={store}>
+				<ThemeProvider theme={theme}>
+					<FrontSection {...defaultProps} />
+				</ThemeProvider>
+			</Provider>,
+		);
+
+		expect(getByText(container, 'See live').closest('a')).toHaveAttribute(
+			'href',
+			'https://m.code.dev-theguardian.com/editorialFront',
+		);
+	});
+
+	it('should give the correct live link for CODE', () => {
+		const store = configureStore({
+			...state,
+			config: {
+				...state.config,
+				dev: false,
+				env: 'code',
+			},
+		});
+
+		const { container } = render(
+			<Provider store={store}>
+				<ThemeProvider theme={theme}>
+					<FrontSection {...defaultProps} />
+				</ThemeProvider>
+			</Provider>,
+		);
+
+		expect(getByText(container, 'See live').closest('a')).toHaveAttribute(
+			'href',
+			'https://m.code.dev-theguardian.com/editorialFront',
+		);
+	});
+
+	it('should give the correct live link for PROD', () => {
+		const store = configureStore({
+			...state,
+			config: {
+				...state.config,
+				dev: false,
+				env: 'prod',
+			},
+		});
+
+		const { container } = render(
+			<Provider store={store}>
+				<ThemeProvider theme={theme}>
+					<FrontSection {...defaultProps} />
+				</ThemeProvider>
+			</Provider>,
+		);
+
+		expect(getByText(container, 'See live').closest('a')).toHaveAttribute(
+			'href',
+			'https://www.theguardian.com/editorialFront',
 		);
 	});
 
