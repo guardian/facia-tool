@@ -36,7 +36,10 @@ import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { getPaths } from 'util/paths';
 import { getMaybeDimensionsFromWidthAndHeight } from 'util/validateImageSrc';
 import { Criteria } from 'types/Grid';
-import { landscape5To4CardImageCriteria } from 'constants/image';
+import {
+	landscape5To4CardImageCriteria,
+	squareImageCriteria,
+} from 'constants/image';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
 	flex-shrink: 0;
@@ -208,6 +211,10 @@ const articleBodyDefault = React.memo(
 				landscape5To4CardImageCriteria.widthAspectRatio &&
 			imageCriteria.heightAspectRatio ===
 				landscape5To4CardImageCriteria.heightAspectRatio;
+		const showSquareThumbnail =
+			imageCriteria &&
+			imageCriteria.widthAspectRatio === squareImageCriteria.widthAspectRatio &&
+			imageCriteria.heightAspectRatio === squareImageCriteria.heightAspectRatio;
 
 		return (
 			<>
@@ -326,6 +333,7 @@ const articleBodyDefault = React.memo(
 									isDraggingImageOver={isDraggingImageOver}
 									isPortrait={thumbnailIsPortrait}
 									showLandscape54={showThumbnailInLandscape54}
+									showSquareThumbnail={showSquareThumbnail}
 								>
 									{cutoutThumbnail ? (
 										<ThumbnailCutout src={cutoutThumbnail} />

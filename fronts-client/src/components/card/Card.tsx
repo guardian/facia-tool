@@ -33,6 +33,8 @@ import {
 	defaultCardTrailImageCriteria,
 	landscape5To4CardImageCriteria,
 	COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS,
+	squareImageCriteria,
+	COLLECTIONS_USING_SQUARE_TRAILS,
 } from 'constants/image';
 import Sublinks from '../FrontsEdit/CollectionComponents/Sublinks';
 import {
@@ -458,6 +460,10 @@ class Card extends React.Component<CardContainerProps> {
 
 		if (COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS.includes(collectionType)) {
 			return landscape5To4CardImageCriteria;
+		}
+
+		if (COLLECTIONS_USING_SQUARE_TRAILS.includes(collectionType)) {
+			return squareImageCriteria;
 		}
 
 		if (!SUPPORT_PORTRAIT_CROPS) {

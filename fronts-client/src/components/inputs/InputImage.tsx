@@ -62,6 +62,7 @@ const ImageComponent = styled.div<{
 	small: boolean;
 	portrait: boolean;
 	shouldShowLandscape54: boolean;
+	showSquare: boolean;
 }>`
 	${({ small }) =>
 		small
@@ -86,6 +87,15 @@ const ImageComponent = styled.div<{
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;`}
+	${({ showSquare }) =>
+		showSquare &&
+		`aspect-ratio: 1/1;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+	width: 95%;
+	height: 95%;
+	align-self: center;`}
   flex-grow: 1;
 	cursor: grab;
 `;
@@ -382,6 +392,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 							small={small}
 							portrait={portraitImage}
 							shouldShowLandscape54={shouldShowLandscape54}
+							showSquare={showSquare}
 						>
 							{hasImage ? (
 								<>
@@ -622,7 +633,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 		}
 
 		// assumes the only criteria that will be passed as props the defined
-		// constants for portrait(4:5), landscape (5:3) and landscape (5:4)
+		// constants for portrait(4:5), landscape (5:3), landscape (5:4) or square (1:1)
 		if (this.compareAspectRatio(portraitCardImageCriteria, criteria)) {
 			return {
 				cropType: 'portrait',
@@ -633,6 +644,10 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			return {
 				cropType: 'Landscape',
 				customRatio: 'Landscape,5,4',
+			};
+		} else if (this.compareAspectRatio(squareImageCriteria, criteria)) {
+			return {
+				cropType: 'square',
 			};
 		} else {
 			return {

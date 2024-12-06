@@ -46,6 +46,10 @@ export const COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS: string[] = [
 	'static/medium/4',
 ];
 
+export const COLLECTIONS_USING_SQUARE_TRAILS: string[] = [
+	'scrollable/highlights',
+];
+
 export const defaultCardTrailImageCriteria = landScapeCardImageCriteria;
 
 export const editionsCardImageCriteria = {
