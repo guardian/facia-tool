@@ -1,4 +1,7 @@
-/*TODO: Move this logic into FrontSection.tsx when styledComponents is migrated to v6*/
+/*
+	TODO: Move this logic into FrontSection.tsx when styledComponents is migrated to v6
+    styledComponents v6 will support container queries, which will allow us to remove this CSS file
+   */
 .front-header {
 	container-type: inline-size;
 }
