@@ -32,6 +32,8 @@ const normalLandscapeStyle = `
   width: 100%;
   maxWidth: 180px;
   height: 115px;
+  border-color: red;
+  border-solid: 1px;
 `;
 
 const smallLandscape54Style = `
