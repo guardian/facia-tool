@@ -33,12 +33,6 @@ import { theme } from 'constants/theme';
 import Button from 'components/inputs/ButtonDefault';
 import { updateCollection as updateCollectionAction } from '../actions/Collections';
 import { isMode } from '../selectors/pathSelectors';
-import {
-	COLLECTIONS_USING_PORTRAIT_TRAILS,
-	portraitCardImageCriteria,
-	SUPPORT_PORTRAIT_CROPS,
-} from 'constants/image';
-import { AspectRatioBadge } from './icons/AspectRatioBadge';
 import { DragToConvertFeastCollection } from './FrontsEdit/CollectionComponents/DragToConvertFeastCollection';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
 
@@ -275,11 +269,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		const targetedTerritory = collection ? collection.targetedTerritory : null;
 		const { displayName } = this.state;
 
-		const usePortrait =
-			SUPPORT_PORTRAIT_CROPS &&
-			collection?.type &&
-			COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collection?.type);
-
 		return (
 			<CollectionContainer
 				id={collection && createCollectionId(collection, frontId)}
@@ -346,7 +335,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								</CollectionHeadingText>
 							)}
 						</CollectionHeadlineWithConfigContainer>
-						{usePortrait && <AspectRatioBadge {...portraitCardImageCriteria} />}
 						{isLocked ? (
 							<LockedCollectionFlag>Locked</LockedCollectionFlag>
 						) : headlineContent ? (
