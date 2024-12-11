@@ -9,7 +9,7 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
 	url?: string | void;
 	isDraggingImageOver?: boolean;
 	imageHide?: boolean;
-	isPortrait?: boolean;
+	showPortrait?: boolean;
 	showLandscape54?: boolean;
 	showSquareThumbnail?: boolean;
 }>`
@@ -22,12 +22,13 @@ const ThumbnailSmall = styled(ThumbnailBase)<{
 	opacity: ${({ imageHide }) => (imageHide && imageHide ? '0.5' : '1')};
 	background-image: ${({ url }) => `url('${url}')`};
 
-	${({ isPortrait }) =>
-		isPortrait &&
-		`
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position-x: center;
+	${({ showPortrait }) =>
+		showPortrait &&
+		`aspect-ratio: 4/5;
+		background-position-x: center;
+		width: ${theme.thumbnailImagePortrait.width};
+		min-width: ${theme.thumbnailImagePortrait.width};
+		height: ${theme.thumbnailImagePortrait.height}
   `}
 	${({ showLandscape54 }) =>
 		showLandscape54
