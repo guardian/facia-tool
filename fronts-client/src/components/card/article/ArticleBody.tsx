@@ -34,10 +34,10 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import PageViewDataWrapper from '../../PageViewDataWrapper';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { getPaths } from 'util/paths';
-import { getMaybeDimensionsFromWidthAndHeight } from 'util/validateImageSrc';
 import { Criteria } from 'types/Grid';
 import {
 	landscape5To4CardImageCriteria,
+	portraitCardImageCriteria,
 	squareImageCriteria,
 } from 'constants/image';
 
@@ -197,14 +197,6 @@ const articleBodyDefault = React.memo(
 		const now = Date.now();
 		const paths = urlPath ? getPaths(urlPath) : undefined;
 
-		const thumbnailDims = getMaybeDimensionsFromWidthAndHeight(
-			imageSrcWidth,
-			imageSrcHeight,
-		);
-		const thumbnailIsPortrait =
-			!!imageReplace &&
-			thumbnailDims &&
-			thumbnailDims.height > thumbnailDims.width;
 		const showThumbnailInLandscape54 =
 			imageCriteria &&
 			imageCriteria.widthAspectRatio ===
@@ -215,6 +207,12 @@ const articleBodyDefault = React.memo(
 			imageCriteria &&
 			imageCriteria.widthAspectRatio === squareImageCriteria.widthAspectRatio &&
 			imageCriteria.heightAspectRatio === squareImageCriteria.heightAspectRatio;
+		const showPortraitThumbnail =
+			imageCriteria &&
+			imageCriteria.widthAspectRatio ===
+				portraitCardImageCriteria.widthAspectRatio &&
+			imageCriteria.heightAspectRatio ===
+				portraitCardImageCriteria.heightAspectRatio;
 
 		return (
 			<>
@@ -331,7 +329,7 @@ const articleBodyDefault = React.memo(
 									imageHide={imageHide}
 									url={thumbnail}
 									isDraggingImageOver={isDraggingImageOver}
-									isPortrait={thumbnailIsPortrait}
+									showPortrait={showPortraitThumbnail}
 									showLandscape54={showThumbnailInLandscape54}
 									showSquareThumbnail={showSquareThumbnail}
 								>
