@@ -178,7 +178,7 @@ export const theme = {
 	collection,
 	thumbnailImage,
 	thumbnailImageSquare,
-	thumbnailImagePortrait
+	thumbnailImagePortrait,
 };
 
 export type Theme = typeof theme;

@@ -210,11 +210,10 @@ const articleBodyDefault = React.memo(
 			imageCriteria.heightAspectRatio === squareImageCriteria.heightAspectRatio;
 		const showPortraitThumbnail =
 			imageCriteria &&
-				imageCriteria.widthAspectRatio ===
-					portraitCardImageCriteria.widthAspectRatio &&
-				imageCriteria.heightAspectRatio ===
-				portraitCardImageCriteria.heightAspectRatio
-
+			imageCriteria.widthAspectRatio ===
+				portraitCardImageCriteria.widthAspectRatio &&
+			imageCriteria.heightAspectRatio ===
+				portraitCardImageCriteria.heightAspectRatio;
 
 		return (
 			<>
