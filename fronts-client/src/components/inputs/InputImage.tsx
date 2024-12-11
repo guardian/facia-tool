@@ -388,10 +388,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 				>
 					<ImageContainer
 						small={small}
-						portrait={portraitImage}
+						shouldShowPortrait={shouldShowPortrait}
 						shouldShowLandscape54={shouldShowLandscape54}
 						showSquare={showSquare}
-
 					>
 						<ImageComponent
 							style={{
