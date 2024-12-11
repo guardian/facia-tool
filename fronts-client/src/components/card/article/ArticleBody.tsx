@@ -34,7 +34,6 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import PageViewDataWrapper from '../../PageViewDataWrapper';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { getPaths } from 'util/paths';
-import { getMaybeDimensionsFromWidthAndHeight } from 'util/validateImageSrc';
 import { Criteria } from 'types/Grid';
 import {
 	landscape5To4CardImageCriteria,
