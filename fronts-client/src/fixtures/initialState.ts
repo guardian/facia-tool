@@ -708,6 +708,7 @@ const state = {
 	},
 	notifications: { banners: [] },
 	chefs: emptyFeedBundle,
+	feastKeywords: emptyFeedBundle,
 } as State;
 
 export { state };
