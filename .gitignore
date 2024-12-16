@@ -62,6 +62,3 @@ metals.sbt
 .metals
 .bloop
 .bsp
-
-v1_jspm_snyk_workaround/package-lock.json
-v1_jspm_snyk_workaround/result

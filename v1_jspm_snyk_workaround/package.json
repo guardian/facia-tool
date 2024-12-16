@@ -1,6 +1,0 @@
-{
-    "scripts": {
-        "preinstall": "node jspm-snyk-workaround.js",
-        "audit": "cd ./result && npm i --package-lock-only && npm audit"
-    }
-}
