@@ -28,6 +28,7 @@ import { reducer as featureSwitches } from 'reducers/featureSwitchesReducer';
 import { reducer as notificationsReducer } from 'bundles/notificationsBundle';
 import { reducer as recipesReducer } from 'bundles/recipesBundle';
 import { reducer as chefsReducer } from 'bundles/chefsBundle';
+import { reducer as feastKeywordsReducer } from 'bundles/feastKeywordBundle';
 
 const rootReducer = (state: any = { feed: {} }, action: any) => ({
 	fronts: fronts(state.fronts, action),
@@ -57,6 +58,7 @@ const rootReducer = (state: any = { feed: {} }, action: any) => ({
 	notifications: notificationsReducer(state.notifications, action),
 	recipes: recipesReducer(state.recipes, action),
 	chefs: chefsReducer(state.chefs, action),
+	feastKeywords: feastKeywordsReducer(state.feastKeywords, action),
 });
 
 export default rootReducer;
