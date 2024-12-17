@@ -25,7 +25,8 @@ import { reducer as externalArticles } from 'bundles/externalArticlesBundle';
 import { State as focusState } from 'bundles/focusBundle';
 import { State as featureSwitchesState } from 'reducers/featureSwitchesReducer';
 import { reducer as notificationsReducer } from 'bundles/notificationsBundle';
-import { reducer } from '../bundles/chefsBundle';
+import { reducer as chefsReducer } from '../bundles/chefsBundle';
+import { reducer as feastKeywordsReducer } from '../bundles/feastKeywordBundle';
 
 interface FeedState {
 	feedState: feedStateType;
@@ -59,5 +60,6 @@ export interface State {
 	externalArticles: ReturnType<typeof externalArticles>;
 	pageViewData: ReturnType<typeof pageViewData>;
 	notifications: ReturnType<typeof notificationsReducer>;
-	chefs: ReturnType<typeof reducer>;
+	chefs: ReturnType<typeof chefsReducer>;
+	feastKeywords: ReturnType<typeof feastKeywordsReducer>;
 }
