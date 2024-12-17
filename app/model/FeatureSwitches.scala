@@ -40,20 +40,12 @@ object SupportPortraitCrops
       enabled = false
     )
 
-object PinboardIntegration
-    extends FeatureSwitch(
-      key = "pinboard",
-      title = "Enable Pinboard integration",
-      enabled = true
-    )
-
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
     TenImageSlideshows,
-    SupportPortraitCrops,
-    PinboardIntegration
+    SupportPortraitCrops
   )
 
   def updateFeatureSwitchesForUser(
