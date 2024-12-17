@@ -159,6 +159,11 @@ const thumbnailImageSquare = {
 	height: '80px',
 };
 
+const thumbnailImagePortrait = {
+	width: '68px',
+	height: '85px',
+};
+
 export const theme = {
 	base,
 	front,
@@ -173,6 +178,7 @@ export const theme = {
 	collection,
 	thumbnailImage,
 	thumbnailImageSquare,
+	thumbnailImagePortrait,
 };
 
 export type Theme = typeof theme;

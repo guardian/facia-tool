@@ -63,6 +63,7 @@ const ImageComponent = styled.div<{
 	portrait: boolean;
 	shouldShowLandscape54: boolean;
 	showSquare: boolean;
+	shouldShowPortrait: boolean;
 }>`
 	${({ small }) =>
 		small
@@ -96,6 +97,12 @@ const ImageComponent = styled.div<{
 	width: 95%;
 	height: 95%;
 	align-self: center;`}
+	${({ shouldShowPortrait }) =>
+		shouldShowPortrait &&
+		`aspect-ratio: 4/5;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center;`}
   flex-grow: 1;
 	cursor: grab;
 `;
@@ -349,6 +356,9 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			imageDims &&
 			imageDims.height > imageDims.width
 		);
+		const shouldShowPortrait =
+			criteria != null &&
+			this.compareAspectRatio(portraitCardImageCriteria, criteria);
 		const shouldShowLandscape54 =
 			criteria != null &&
 			this.compareAspectRatio(landscape5To4CardImageCriteria, criteria);
@@ -378,7 +388,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 				>
 					<ImageContainer
 						small={small}
-						portrait={portraitImage}
+						shouldShowPortrait={shouldShowPortrait}
 						shouldShowLandscape54={shouldShowLandscape54}
 						showSquare={showSquare}
 					>
@@ -393,6 +403,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 							portrait={portraitImage}
 							shouldShowLandscape54={shouldShowLandscape54}
 							showSquare={showSquare}
+							shouldShowPortrait={shouldShowPortrait}
 						>
 							{hasImage ? (
 								<>
