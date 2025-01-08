@@ -1,10 +1,9 @@
 package controllers
 
 import java.util.Locale
-
 import com.gu.pandomainauth.action.{AuthActions, UserRequest}
 import com.gu.pandomainauth.model.AuthenticatedUser
-import com.gu.pandomainauth.{PanDomain, PanDomainAuthSettingsRefresher}
+import com.gu.pandomainauth.{PanDomain, PanDomainAuthSettingsRefresher, S3BucketLoader}
 import com.gu.permissions.{PermissionsConfig, PermissionsProvider}
 import conf.ApplicationConfiguration
 import logging.Logging
@@ -30,12 +29,10 @@ abstract class BaseFaciaControllerComponents(context: Context)
   def config: ApplicationConfiguration
 
   lazy val panDomainSettings: PanDomainAuthSettingsRefresher =
-    new PanDomainAuthSettingsRefresher(
-      config.pandomain.domain,
-      config.pandomain.service,
-      config.pandomain.bucketName,
-      config.pandomain.settingsFileKey,
-      config.aws.s3Client
+    PanDomainAuthSettingsRefresher(
+      domain = config.pandomain.domain,
+      system = config.pandomain.service,
+			S3BucketLoader.forAwsSdkV1(config.aws.s3Client, "pan-domain-auth-settings")
     )
 
   lazy val permissions = PermissionsProvider(
