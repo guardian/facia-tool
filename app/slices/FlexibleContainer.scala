@@ -2,11 +2,17 @@ package slices
 
 import com.gu.facia.client.models.CollectionConfigJson
 trait FlexibleContainer {
-  def storiesVisible(stories: Seq[Story], collectionConfigJson: CollectionConfigJson): Int
+  def storiesVisible(
+      stories: Seq[Story],
+      collectionConfigJson: CollectionConfigJson
+  ): Int
 }
 
 object FlexibleGeneral extends FlexibleContainer {
-  def storiesVisible(stories: Seq[Story], collectionConfigJson: CollectionConfigJson): Int = {
+  def storiesVisible(
+      stories: Seq[Story],
+      collectionConfigJson: CollectionConfigJson
+  ): Int = {
     val byGroup = Story.segmentByGroup(stories)
     val splash = byGroup.getOrElse(3, Seq.empty) ++
       byGroup.getOrElse(2, Seq.empty) ++
@@ -14,16 +20,21 @@ object FlexibleGeneral extends FlexibleContainer {
     val numOfSplash = splash.size min 1
     val numOfStandard = stories.size - numOfSplash
 
-		val defaultStandardStoryLimit = 8
+    val defaultStandardStoryLimit = 8
 
-		val standardStoryLimit = collectionConfigJson.displayHints.flatMap(_.flexGenStoryAmount).getOrElse(defaultStandardStoryLimit)
+    val standardStoryLimit = collectionConfigJson.displayHints
+      .flatMap(_.flexGenStoryAmount)
+      .getOrElse(defaultStandardStoryLimit)
 
     numOfSplash + (numOfStandard min standardStoryLimit)
   }
 }
 
 object FlexibleSpecial extends FlexibleContainer {
-  def storiesVisible(stories: Seq[Story], collectionConfigJson: CollectionConfigJson): Int = {
+  def storiesVisible(
+      stories: Seq[Story],
+      collectionConfigJson: CollectionConfigJson
+  ): Int = {
     val byGroup = Story.segmentByGroup(stories)
     val snap = byGroup.getOrElse(3, Seq.empty) ++
       byGroup.getOrElse(2, Seq.empty) ++

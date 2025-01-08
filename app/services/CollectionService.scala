@@ -97,7 +97,7 @@ object CollectionService {
       config: ConfigJson,
       containerService: ContainerService
   ): Option[StoriesVisibleByStage] = {
-		val cConfigJson = config.collections.get(collectionId).get
+    val cConfigJson = config.collections.get(collectionId).get
     val stages =
       CollectionService.getStoriesForCollectionStages(collectionId, collection)
     config.collections.get(collectionId).flatMap(_.`type`) match {
