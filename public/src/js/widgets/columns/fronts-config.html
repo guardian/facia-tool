@@ -258,6 +258,12 @@
                 <label>Groups</label>
                 <span class="cnf-form__value" data-bind="text: meta.groups"></span>
             <!-- /ko -->
+
+			<!-- ko if: meta.type() === "flexible/general"-->
+			<label for="flexGenStoryLimit">flexGenStoryAmount</label>
+			<input id="flexGenStoryLimit" type="number" data-bind="value: meta.displayHints.maxItemsToDisplay" placeholder="6">
+			<!-- /ko -->
+
             <label for="userVisibility">User visibility</label>
             <select id="userVisibility" data-bind="
                 optionsCaption: 'Select user visibility',

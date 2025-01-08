@@ -22,7 +22,7 @@ class StoriesVisibleController(
   def storiesVisible(containerType: String) =
     AccessAPIAuthAction(parse.json[StoriesVisibleRequest]) { implicit request =>
       val storiesVisible =
-        containerService.getStoriesVisible(containerType, request.body.stories)
+        containerService.getStoriesVisible(containerType, request.body.stories, collectionConfigJson = null)
 
       logger.info(
         s"got stories-visible=$storiesVisible for containerType=$containerType"
