@@ -97,14 +97,15 @@ object CollectionService {
       config: ConfigJson,
       containerService: ContainerService
   ): Option[StoriesVisibleByStage] = {
+		val cConfigJson = config.collections.get(collectionId).get
     val stages =
       CollectionService.getStoriesForCollectionStages(collectionId, collection)
     config.collections.get(collectionId).flatMap(_.`type`) match {
       case Some(cType) =>
         Some(
           StoriesVisibleByStage(
-            containerService.getStoriesVisible(cType, stages._1),
-            containerService.getStoriesVisible(cType, stages._2)
+            containerService.getStoriesVisible(cType, stages._1, cConfigJson),
+            containerService.getStoriesVisible(cType, stages._2, cConfigJson)
           )
         )
       case None => None

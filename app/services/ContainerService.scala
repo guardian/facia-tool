@@ -1,5 +1,6 @@
 package services
 
+import com.gu.facia.client.models.CollectionConfigJson
 import play.api.libs.json.{Json, OFormat}
 import slices._
 
@@ -14,7 +15,7 @@ object StoriesVisibleResponse {
 }
 
 class ContainerService(val containers: Containers) {
-  def getStoriesVisible(containerType: String, stories: Seq[Story]) = {
+  def getStoriesVisible(containerType: String, stories: Seq[Story], collectionConfigJson: CollectionConfigJson) = {
     val numberOfStories = stories.length
     containers.all.get(containerType) map {
       case Fixed(container) =>
@@ -48,7 +49,7 @@ class ContainerService(val containers: Containers) {
         )
 
       case Flexible(container) =>
-        val numberVisible = container.storiesVisible(stories)
+        val numberVisible = container.storiesVisible(stories, collectionConfigJson)
         StoriesVisibleResponse(
           Some(numberVisible),
           Some(numberVisible)
