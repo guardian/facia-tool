@@ -51,7 +51,8 @@ export default class ConfigCollection extends DropTarget {
             ]),
             {
                 displayHints: asObservableProps([
-                    'maxItemsToDisplay'
+                    'maxItemsToDisplay',
+					'flexGenStoryAmount'
                 ], observableNumeric)
             },
             {
