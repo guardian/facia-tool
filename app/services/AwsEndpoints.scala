@@ -1,7 +1,9 @@
 package services
 
 import com.amazonaws.services.s3.AmazonS3.{ENDPOINT_PREFIX => S3Endpoint}
-import com.amazonaws.services.cloudwatch.AmazonCloudWatch.{ENDPOINT_PREFIX => CloudWatch}
+import com.amazonaws.services.cloudwatch.AmazonCloudWatch.{
+  ENDPOINT_PREFIX => CloudWatch
+}
 import com.amazonaws.regions.RegionUtils
 import conf.ApplicationConfiguration
 
