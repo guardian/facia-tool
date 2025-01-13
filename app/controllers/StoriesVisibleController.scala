@@ -25,7 +25,7 @@ class StoriesVisibleController(
         containerService.getStoriesVisible(
           containerType,
           request.body.stories,
-          collectionConfigJson = null
+          collectionConfigJson = None
         )
 
       logger.info(

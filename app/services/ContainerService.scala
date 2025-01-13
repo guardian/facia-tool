@@ -18,7 +18,7 @@ class ContainerService(val containers: Containers) {
   def getStoriesVisible(
       containerType: String,
       stories: Seq[Story],
-      collectionConfigJson: CollectionConfigJson
+      collectionConfigJson: Option[CollectionConfigJson]
   ) = {
     val numberOfStories = stories.length
     containers.all.get(containerType) map {
@@ -55,7 +55,7 @@ class ContainerService(val containers: Containers) {
       case Flexible(container) =>
         val numberVisible = container.storiesVisible(
           stories,
-          collectionConfigJson: CollectionConfigJson
+          collectionConfigJson
         )
         StoriesVisibleResponse(
           Some(numberVisible),

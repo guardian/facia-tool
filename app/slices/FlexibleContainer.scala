@@ -4,14 +4,14 @@ import com.gu.facia.client.models.CollectionConfigJson
 trait FlexibleContainer {
   def storiesVisible(
       stories: Seq[Story],
-      collectionConfigJson: CollectionConfigJson
+      collectionConfigJson: Option[CollectionConfigJson]
   ): Int
 }
 
 object FlexibleGeneral extends FlexibleContainer {
   def storiesVisible(
       stories: Seq[Story],
-      collectionConfigJson: CollectionConfigJson
+      collectionConfigJson: Option[CollectionConfigJson]
   ): Int = {
     val byGroup = Story.segmentByGroup(stories)
     val splash = byGroup.getOrElse(3, Seq.empty) ++
@@ -21,9 +21,13 @@ object FlexibleGeneral extends FlexibleContainer {
     val numOfStandard = stories.size - numOfSplash
     val defaultStandardStoryLimit = 8
 
-    val standardStoryLimit = collectionConfigJson.displayHints
-      .flatMap(_.maxItemsToDisplay)
-      .getOrElse(defaultStandardStoryLimit)
+    val standardStoryLimit = collectionConfigJson match {
+      case Some(config) =>
+        config.displayHints
+          .flatMap(_.maxItemsToDisplay)
+          .getOrElse(defaultStandardStoryLimit)
+      case None => defaultStandardStoryLimit
+    }
 
     numOfSplash + (numOfStandard min standardStoryLimit)
   }
@@ -32,7 +36,7 @@ object FlexibleGeneral extends FlexibleContainer {
 object FlexibleSpecial extends FlexibleContainer {
   def storiesVisible(
       stories: Seq[Story],
-      collectionConfigJson: CollectionConfigJson
+      collectionConfigJson: Option[CollectionConfigJson]
   ): Int = {
     val byGroup = Story.segmentByGroup(stories)
     val snap = byGroup.getOrElse(3, Seq.empty) ++
