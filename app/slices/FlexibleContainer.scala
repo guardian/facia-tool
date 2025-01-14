@@ -18,15 +18,15 @@ object FlexibleGeneral extends FlexibleContainer {
       byGroup.getOrElse(2, Seq.empty) ++
       byGroup.getOrElse(1, Seq.empty)
     val numOfSplash = splash.size min 1
-		val defaultStoryLimit = 9
-		val standardStoryLimit = collectionConfigJson match {
-			case Some(config) =>
-				config.displayHints
-					.flatMap(_.maxItemsToDisplay)
-					.getOrElse(defaultStoryLimit)
-			case None => defaultStoryLimit
-		}
-		val numOfStandard = standardStoryLimit - numOfSplash
+    val defaultStoryLimit = 9
+    val standardStoryLimit = collectionConfigJson match {
+      case Some(config) =>
+        config.displayHints
+          .flatMap(_.maxItemsToDisplay)
+          .getOrElse(defaultStoryLimit)
+      case None => defaultStoryLimit
+    }
+    val numOfStandard = standardStoryLimit - numOfSplash
     numOfSplash + numOfStandard
   }
 }
