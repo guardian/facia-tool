@@ -89,10 +89,8 @@
     "prosemirror-view": "^1.32.1",
     "raven": "^2.5.0",
     "raven-js": "^3.24.1",
-    "react": "17",
     "react-beautiful-dnd": "^11.0.5",
     "react-dates": "^21.8.0",
-    "react-dom": "^16.13.0",
     "react-icons": "^3.4.0",
     "react-is": "16.8.0",
     "react-modal": "^3.6.1",
@@ -117,7 +115,10 @@
     "url": "^0.11.3",
     "uuid": "^3.2.1",
     "vite": "^5.1.4",
-    "vite-tsconfig-paths": "^4.3.1"
+    "vite-tsconfig-paths": "^4.3.1",
+	"@headlessui/react": "^2.2.0",
+	"react": "^18.3.1",
+	"react-dom": "^18.3.1"
   },
   "resolutions": {
     "chokidar": "^3.4.0",
