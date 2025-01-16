@@ -129,7 +129,9 @@ case class EditionsClientCollection(
     updatedEmail: Option[String],
     prefill: Option[CapiPrefillQuery],
     contentPrefillTimeWindow: Option[CapiQueryTimeWindow],
-    items: List[EditionsClientCard]
+    items: List[EditionsClientCard],
+	targetedRegions: Option[List[String]],
+	excludedRegions: Option[List[String]],
 )
 
 object EditionsClientCollection {
@@ -161,7 +163,9 @@ object EditionsFrontendCollectionWrapper {
         collection.updatedEmail,
         collection.prefill,
         collection.contentPrefillTimeWindow,
-        collection.items.map(EditionsClientCard.fromCard)
+        collection.items.map(EditionsClientCard.fromCard),
+		collection.targetedRegions,
+		collection.excludedRegions,
       )
     )
   }
@@ -178,7 +182,9 @@ object EditionsFrontendCollectionWrapper {
       frontendCollection.collection.updatedEmail,
       frontendCollection.collection.prefill,
       frontendCollection.collection.contentPrefillTimeWindow,
-      frontendCollection.collection.items.map(EditionsClientCard.toCard)
+      frontendCollection.collection.items.map(EditionsClientCard.toCard),
+	  frontendCollection.collection.targetedRegions,
+	  frontendCollection.collection.excludedRegions
     )
   }
 }
