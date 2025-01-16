@@ -35,6 +35,8 @@ import { updateCollection as updateCollectionAction } from '../actions/Collectio
 import { isMode } from '../selectors/pathSelectors';
 import { DragToConvertFeastCollection } from './FrontsEdit/CollectionComponents/DragToConvertFeastCollection';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
+import { Menu } from '@headlessui/react';
+import { removeFrontCollection } from '../actions/Editions';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -65,12 +67,14 @@ type Props = ContainerProps & {
 		renamingCollection: boolean,
 	) => void;
 	isEditions: boolean;
+	removeFrontCollection: (frontId: string, collectionId: string) => void;
 };
 
 interface CollectionState {
 	displayName: string;
 	hasDragOpenIntent: boolean;
 	editingContainerName: boolean;
+	isDeleteClicked: boolean;
 }
 
 const CollectionContainer = styled(ContentContainer)<{
@@ -239,6 +243,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		displayName: 'Loading...',
 		hasDragOpenIntent: false,
 		editingContainerName: false,
+		isDeleteClicked: false,
 	};
 
 	public toggleVisibility = () => {
@@ -246,6 +251,79 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		if (this.props.onChangeOpenState) {
 			this.props.onChangeOpenState(!this.props.isOpen);
 		}
+	};
+
+	public dropDownMenu = () => {
+		return (
+			<div className="relative inline-block text-left">
+				<Menu>
+					{({ active }) => (
+						<>
+							<Menu.Button
+								className={
+									'inline-flex items-center justify-center rounded bg-gray-800 text-white p-2 hover:bg-gray-700 focus:outline-none'
+								}
+								style={{ marginRight: '5px', marginBottom: '12px' }}
+							>
+								{/*  use of "style" here as changes in "classname" for margin didn't work, Can try again later */}
+								Options{' '}
+								{/*TODO - need "ellipsis" instead of "Options"? I tried checking with FontAwesomeIcon but not working..Need to check later*/}
+							</Menu.Button>
+
+							<Menu.Items className="absolute mt-2 w-44 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+								<div className="py-1">
+									<Menu.Item>
+										<HeadlineContentButton
+											priority="default"
+											onClick={this.handleDeleteClick}
+											title="Delete the collection for this issue"
+											style={{
+												color: this.state.isDeleteClicked ? 'red' : 'white',
+											}}
+											className={`${
+												active ? 'bg-gray-100' : ''
+											} group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700`}
+										>
+											Delete
+										</HeadlineContentButton>
+									</Menu.Item>
+
+									<div className="my-1 h-px bg-gray-600" />
+
+									<Menu.Item>
+										<HeadlineContentButton
+											priority="default"
+											onClick={this.startRenameContainer}
+											title="Rename this container in this issue."
+										>
+											Rename
+										</HeadlineContentButton>
+									</Menu.Item>
+
+									<div className="my-1 h-px bg-gray-600" />
+
+									<Menu.Item>
+										<HeadlineContentButton
+											priority="default"
+											onClick={undefined}
+											title="Mark this container for US only"
+											style={{
+												color: this.state.isDeleteClicked ? 'red' : 'white',
+											}}
+											className={`${
+												active ? 'bg-gray-100' : ''
+											} group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700`}
+										>
+											US Only
+										</HeadlineContentButton>
+									</Menu.Item>
+								</div>
+							</Menu.Items>
+						</>
+					)}
+				</Menu>
+			</div>
+		);
 	};
 
 	public render() {
@@ -335,12 +413,13 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								</CollectionHeadingText>
 							)}
 						</CollectionHeadlineWithConfigContainer>
+						{this.dropDownMenu()}
 						{isLocked ? (
 							<LockedCollectionFlag>Locked</LockedCollectionFlag>
 						) : headlineContent ? (
 							<HeadlineContentContainer>
 								{headlineContent}
-								{isEditions && (
+								{isEditions && !isFeast && (
 									<HeadlineContentButton
 										priority="default"
 										onClick={this.startRenameContainer}
@@ -433,6 +512,21 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		});
 		this.props.updateCollection(collection!, true);
 	};
+
+	private removeFrontCollection = () => {
+		this.props.removeFrontCollection(this.props.frontId, this.props.id);
+	};
+
+	private handleDeleteClick = () => {
+		this.setState({ isDeleteClicked: true });
+		const isConfirm = window.confirm(
+			`Are you sure you wish to delete collection? This cannot be undone.`,
+		);
+		if (isConfirm) {
+			this.removeFrontCollection();
+		}
+		this.setState({ isDeleteClicked: false });
+	};
 }
 
 const createMapStateToProps = () => {
@@ -461,6 +555,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	) => {
 		dispatch(updateCollectionAction(collection, renamingCollection));
 	},
+	removeFrontCollection: (frontId: string, id: string) =>
+		dispatch(removeFrontCollection(frontId, id)),
 });
 
 export default connect(
