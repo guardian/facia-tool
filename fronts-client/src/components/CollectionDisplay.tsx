@@ -413,7 +413,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								</CollectionHeadingText>
 							)}
 						</CollectionHeadlineWithConfigContainer>
-						{this.dropDownMenu()}
+						{isFeast ? this.dropDownMenu() : undefined}
 						{isLocked ? (
 							<LockedCollectionFlag>Locked</LockedCollectionFlag>
 						) : headlineContent ? (
