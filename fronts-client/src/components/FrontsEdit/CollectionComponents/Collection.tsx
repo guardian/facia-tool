@@ -43,10 +43,7 @@ import { fetchPrefill } from 'bundles/capiFeedBundle';
 import LoadingGif from 'images/icons/loading.gif';
 import OpenFormsWarning from './OpenFormsWarning';
 import { selectors as editionsIssueSelectors } from '../../../bundles/editionsIssueBundle';
-import {
-	moveFrontCollection,
-	removeFrontCollection,
-} from '../../../actions/Editions';
+import { moveFrontCollection } from '../../../actions/Editions';
 
 interface CollectionPropsBeforeState {
 	id: string;
@@ -84,7 +81,6 @@ type CollectionProps = CollectionPropsBeforeState & {
 	setHidden: (id: string, isHidden: boolean) => void;
 	isHidden: boolean;
 	displayName: string;
-	removeFrontCollection: (frontId: string, collectionId: string) => void;
 	canMoveUp: boolean;
 	canMoveDown: boolean;
 	moveFrontCollection: (
@@ -98,7 +94,6 @@ interface CollectionState {
 	showOpenFormsWarning: boolean;
 	isPreviouslyOpen: boolean;
 	isLaunching: boolean;
-	isDeleteClicked?: boolean;
 }
 
 const PreviouslyCollectionContainer = styled.div``;
@@ -167,7 +162,6 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 		isPreviouslyOpen: false,
 		isLaunching: false,
 		showOpenFormsWarning: false,
-		isDeleteClicked: false,
 	};
 
 	// added to prevent setState call on unmounted component
@@ -227,155 +221,147 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 		const isUneditable = isCollectionLocked || browsingStage !== cardSets.draft;
 
 		return (
-			<CollectionDisplay
-				frontId={frontId}
-				id={id}
-				browsingStage={browsingStage}
-				isUneditable={isUneditable}
-				isLocked={isCollectionLocked}
-				isOpen={isOpen}
-				hasMultipleFrontsOpen={hasMultipleFrontsOpen}
-				onChangeOpenState={() => onChangeOpenState(id, isOpen)}
-				headlineContent={
-					hasUnpublishedChanges &&
-					canPublish && (
-						<Fragment>
-							<EditModeVisibility visibleMode="editions">
-								{!isFeast && (
-									<HeadlineContentButton
-										priority="default"
-										onClick={() => this.props.setHidden(id, !isHidden)}
-										title="Toggle the visibility of this container in this issue."
-									>
-										{isHidden ? 'Unhide' : 'Hide'}
-									</HeadlineContentButton>
-								)}
-								{isFeast && (
-									<>
-										<MoveButtonsContainer>
-											<ButtonCircularCaret
-												small
-												openDir="up"
-												disabled={!this.props.canMoveUp}
-												onClick={() =>
-													this.props.moveFrontCollection(
-														this.props.frontId,
-														this.props.id,
-														'up',
-													)
-												}
-											/>
-											<ButtonCircularCaret
-												small
-												disabled={!this.props.canMoveDown}
-												onClick={() =>
-													this.props.moveFrontCollection(
-														this.props.frontId,
-														this.props.id,
-														'down',
-													)
-												}
-											/>
-										</MoveButtonsContainer>
+			<>
+				<CollectionDisplay
+					frontId={frontId}
+					id={id}
+					browsingStage={browsingStage}
+					isUneditable={isUneditable}
+					isLocked={isCollectionLocked}
+					isOpen={isOpen}
+					hasMultipleFrontsOpen={hasMultipleFrontsOpen}
+					onChangeOpenState={() => onChangeOpenState(id, isOpen)}
+					headlineContent={
+						hasUnpublishedChanges &&
+						canPublish && (
+							<Fragment>
+								<EditModeVisibility visibleMode="editions">
+									{!isFeast && (
 										<HeadlineContentButton
 											priority="default"
-											onClick={this.handleDeleteClick}
-											title="Delete the collection for this issue"
-											style={{
-												color: this.state.isDeleteClicked ? 'red' : 'white',
-											}}
+											onClick={() => this.props.setHidden(id, !isHidden)}
+											title="Toggle the visibility of this container in this issue."
 										>
-											Delete
+											{isHidden ? 'Unhide' : 'Hide'}
 										</HeadlineContentButton>
+									)}
+									{isFeast && (
+										<>
+											<MoveButtonsContainer>
+												<ButtonCircularCaret
+													small
+													openDir="up"
+													disabled={!this.props.canMoveUp}
+													onClick={() =>
+														this.props.moveFrontCollection(
+															this.props.frontId,
+															this.props.id,
+															'up',
+														)
+													}
+												/>
+												<ButtonCircularCaret
+													small
+													disabled={!this.props.canMoveDown}
+													onClick={() =>
+														this.props.moveFrontCollection(
+															this.props.frontId,
+															this.props.id,
+															'down',
+														)
+													}
+												/>
+											</MoveButtonsContainer>
+										</>
+									)}
+									{hasPrefill && (
+										<HeadlineContentButton
+											data-testid="prefill-button"
+											priority="default"
+											onClick={() => this.props.fetchPrefill(id)}
+											title="Get suggested articles for this collection"
+										>
+											Suggest
+										</HeadlineContentButton>
+									)}
+								</EditModeVisibility>
+								<ActionButtonsContainer
+									onMouseEnter={this.showOpenFormsWarning}
+									onMouseLeave={this.hideOpenFormsWarning}
+								>
+									{hasOpenForms && this.state.showOpenFormsWarning && (
+										<OpenFormsWarningContainer>
+											<OpenFormsWarning collectionId={id} frontId={frontId} />
+										</OpenFormsWarningContainer>
+									)}
+									<EditModeVisibility visibleMode="fronts">
+										<Button
+											size="l"
+											priority="default"
+											onClick={() => discardDraftChanges(id)}
+											tabIndex={-1}
+											data-testid="collection-discard-button"
+										>
+											Discard
+										</Button>
+										<Button
+											size="l"
+											priority="primary"
+											onClick={() => this.startPublish(id, frontId)}
+											tabIndex={-1}
+											disabled={isLaunching}
+											data-testid="collection-launch-button"
+										>
+											{isLaunching ? (
+												<LoadingImageBox>
+													<img src={LoadingGif} />
+												</LoadingImageBox>
+											) : (
+												'Launch'
+											)}
+										</Button>
+									</EditModeVisibility>
+								</ActionButtonsContainer>
+							</Fragment>
+						)
+					}
+					metaContent={
+						alsoOn[id].fronts.length || displayEditWarning ? (
+							<CollectionNotification
+								displayEditWarning={displayEditWarning}
+								alsoOn={alsoOn[id]}
+							/>
+						) : null
+					}
+				>
+					{groups.map((group) => children(group, isUneditable, true))}
+					{hasContent && (
+						<EditModeVisibility visibleMode="fronts">
+							<PreviouslyCollectionContainer data-testid="previously">
+								<PreviouslyCollectionToggle
+									onClick={this.togglePreviouslyOpen}
+									data-testid="previously-toggle"
+								>
+									Recently removed from launched front
+									<PreviouslyCircularCaret active={isPreviouslyOpen} />
+								</PreviouslyCollectionToggle>
+								{isPreviouslyOpen && (
+									<>
+										<PreviouslyCollectionInfo>
+											This contains the 5 most recently deleted articles from
+											the live front. If the deleted articles were never
+											launched they will not appear here.
+										</PreviouslyCollectionInfo>
+										<PreviouslyGroupsWrapper>
+											{children(previousGroup, true, false)}
+										</PreviouslyGroupsWrapper>
 									</>
 								)}
-								{hasPrefill && (
-									<HeadlineContentButton
-										data-testid="prefill-button"
-										priority="default"
-										onClick={() => this.props.fetchPrefill(id)}
-										title="Get suggested articles for this collection"
-									>
-										Suggest
-									</HeadlineContentButton>
-								)}
-							</EditModeVisibility>
-							<ActionButtonsContainer
-								onMouseEnter={this.showOpenFormsWarning}
-								onMouseLeave={this.hideOpenFormsWarning}
-							>
-								{hasOpenForms && this.state.showOpenFormsWarning && (
-									<OpenFormsWarningContainer>
-										<OpenFormsWarning collectionId={id} frontId={frontId} />
-									</OpenFormsWarningContainer>
-								)}
-								<EditModeVisibility visibleMode="fronts">
-									<Button
-										size="l"
-										priority="default"
-										onClick={() => discardDraftChanges(id)}
-										tabIndex={-1}
-										data-testid="collection-discard-button"
-									>
-										Discard
-									</Button>
-									<Button
-										size="l"
-										priority="primary"
-										onClick={() => this.startPublish(id, frontId)}
-										tabIndex={-1}
-										disabled={isLaunching}
-										data-testid="collection-launch-button"
-									>
-										{isLaunching ? (
-											<LoadingImageBox>
-												<img src={LoadingGif} />
-											</LoadingImageBox>
-										) : (
-											'Launch'
-										)}
-									</Button>
-								</EditModeVisibility>
-							</ActionButtonsContainer>
-						</Fragment>
-					)
-				}
-				metaContent={
-					alsoOn[id].fronts.length || displayEditWarning ? (
-						<CollectionNotification
-							displayEditWarning={displayEditWarning}
-							alsoOn={alsoOn[id]}
-						/>
-					) : null
-				}
-			>
-				{groups.map((group) => children(group, isUneditable, true))}
-				{hasContent && (
-					<EditModeVisibility visibleMode="fronts">
-						<PreviouslyCollectionContainer data-testid="previously">
-							<PreviouslyCollectionToggle
-								onClick={this.togglePreviouslyOpen}
-								data-testid="previously-toggle"
-							>
-								Recently removed from launched front
-								<PreviouslyCircularCaret active={isPreviouslyOpen} />
-							</PreviouslyCollectionToggle>
-							{isPreviouslyOpen && (
-								<>
-									<PreviouslyCollectionInfo>
-										This contains the 5 most recently deleted articles from the
-										live front. If the deleted articles were never launched they
-										will not appear here.
-									</PreviouslyCollectionInfo>
-									<PreviouslyGroupsWrapper>
-										{children(previousGroup, true, false)}
-									</PreviouslyGroupsWrapper>
-								</>
-							)}
-						</PreviouslyCollectionContainer>
-					</EditModeVisibility>
-				)}
-			</CollectionDisplay>
+							</PreviouslyCollectionContainer>
+						</EditModeVisibility>
+					)}
+				</CollectionDisplay>
+			</>
 		);
 	}
 
@@ -383,20 +369,6 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 		this.setState({ showOpenFormsWarning: true });
 	private hideOpenFormsWarning = () =>
 		this.setState({ showOpenFormsWarning: false });
-	private removeFrontCollection = () => {
-		this.props.removeFrontCollection(this.props.frontId, this.props.id);
-	};
-
-	private handleDeleteClick = () => {
-		this.setState({ isDeleteClicked: true });
-		const isConfirm = window.confirm(
-			`Are you sure you wish to delete collection? This cannot be undone.`,
-		);
-		if (isConfirm) {
-			this.removeFrontCollection();
-		}
-		this.setState({ isDeleteClicked: false });
-	};
 }
 
 const createMapStateToProps = () => {
@@ -475,8 +447,6 @@ const mapDispatchToProps = (
 			fetchCardReferencedEntitiesForCollections([id], cardSets.previously),
 		);
 	},
-	removeFrontCollection: (frontId: string, id: string) =>
-		dispatch(removeFrontCollection(frontId, id)),
 	moveFrontCollection: (
 		frontId: string,
 		id: string,
