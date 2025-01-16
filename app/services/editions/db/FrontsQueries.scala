@@ -174,6 +174,8 @@ object FrontsQueries {
       collections.path_type     AS collections_path_type,
       collections.content_prefill_window_start       AS collections_content_prefill_window_start,
       collections.content_prefill_window_end         AS collections_content_prefill_window_end,
+      collections.targeted_regions   AS collections_targeted_regions,
+      collections.excluded_regions   AS collections_excluded_regions,
 
       cards.collection_id AS cards_collection_id,
       cards.id            AS cards_id,

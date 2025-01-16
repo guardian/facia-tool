@@ -183,7 +183,9 @@ trait CollectionsQueries extends Logging {
       SET is_hidden = ${collection.isHidden},
           updated_on = $lastUpdated,
           updated_by = ${collection.updatedBy},
-          updated_email = ${collection.updatedEmail}
+          updated_email = ${collection.updatedEmail},
+          targeted_regions = ${collection.targetedRegionsPG()},
+          excluded_regions = ${collection.excludedRegionsPG()},
       WHERE id = ${collection.id}
     """.execute.apply()
 
@@ -322,6 +324,8 @@ trait CollectionsQueries extends Logging {
         collections.path_type,
         collections.content_prefill_window_start,
         collections.content_prefill_window_end,
+        collections.targeted_regions,
+        collections.excluded_regions,
         fronts.is_special,
 
         cards.collection_id AS cards_collection_id,
