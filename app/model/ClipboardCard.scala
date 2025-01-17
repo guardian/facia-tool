@@ -23,7 +23,7 @@ object ClipboardCard {
       )
   }
 
-  implicit val format = Format(reads, writes)
+  implicit val format: Format[ClipboardCard] = Format(reads, writes)
 }
 
 case class ClipboardCard(card: Either[Trail, EditionsClientCard])
