@@ -18,6 +18,7 @@ import {
 	selectCollectionIsHidden,
 	selectCollectionDisplayName,
 	selectCollectionCanMoveToRelativeIndex,
+	selectCollectionTargetedRegions,
 } from 'selectors/frontsSelectors';
 import { selectIsCollectionLocked } from 'selectors/collectionSelectors';
 import type { State } from 'types/State';
@@ -81,6 +82,7 @@ type CollectionProps = CollectionPropsBeforeState & {
 	setHidden: (id: string, isHidden: boolean) => void;
 	isHidden: boolean;
 	displayName: string;
+	targetedRegions: string[];
 	canMoveUp: boolean;
 	canMoveDown: boolean;
 	moveFrontCollection: (
@@ -211,6 +213,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 			discardDraftChangesToCollection: discardDraftChanges,
 			hasPrefill,
 			isHidden,
+			targetedRegions,
 			hasContent,
 			hasOpenForms,
 			isFeast,
@@ -247,6 +250,8 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 									)}
 									{isFeast && (
 										<>
+											{targetedRegions?.length > 0 ? 'USSSSSSSSS' : ''}{' '}
+											{/*This will appear on collection headers to show US tagged collections, for testing purpose only.*/}
 											<MoveButtonsContainer>
 												<ButtonCircularCaret
 													small
@@ -399,6 +404,7 @@ const createMapStateToProps = () => {
 		),
 		isHidden: selectCollectionIsHidden(state, collectionId),
 		displayName: selectCollectionDisplayName(state, collectionId),
+		targetedRegions: selectCollectionTargetedRegions(state, collectionId),
 		hasPrefill: selectCollectionHasPrefill(state, collectionId),
 		hasUnpublishedChanges: selectHasUnpublishedChanges(state, {
 			collectionId,
