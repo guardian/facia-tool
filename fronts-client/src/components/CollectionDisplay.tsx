@@ -261,7 +261,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		return (
 			<div className="relative inline-block text-left">
 				<Menu>
-					{({ active }) => (
+					{
 						<>
 							<Menu.Button
 								className={
@@ -277,58 +277,64 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 							<Menu.Items className="absolute mt-2 w-44 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
 								<div className="py-1">
 									<Menu.Item>
-										<HeadlineContentButton
-											priority="default"
-											onClick={this.handleDeleteClick}
-											title="Delete the collection for this issue"
-											style={{
-												color: this.state.isDeleteClicked ? 'red' : 'white',
-											}}
-											className={`${
-												active ? 'bg-gray-100' : ''
-											} group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700`}
-										>
-											Delete
-										</HeadlineContentButton>
+										{({ active }) => (
+											<HeadlineContentButton
+												priority="default"
+												onClick={this.handleDeleteClick}
+												title="Delete the collection for this issue"
+												style={{
+													color: this.state.isDeleteClicked ? 'red' : 'white',
+												}}
+												className={`${
+													active ? 'bg-gray-100' : ''
+												} group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700`}
+											>
+												Delete
+											</HeadlineContentButton>
+										)}
 									</Menu.Item>
 
 									<div className="my-1 h-px bg-gray-600" />
 
 									<Menu.Item>
-										<HeadlineContentButton
-											priority="default"
-											onClick={this.startRenameContainer}
-											title="Rename this container in this issue."
-										>
-											Rename
-										</HeadlineContentButton>
+										{({ active }) => (
+											<HeadlineContentButton
+												priority="default"
+												onClick={this.startRenameContainer}
+												title="Rename this container in this issue."
+											>
+												Rename
+											</HeadlineContentButton>
+										)}
 									</Menu.Item>
 
 									<div className="my-1 h-px bg-gray-600" />
 
 									<Menu.Item>
-										<HeadlineContentButton
-											priority="default"
-											onClick={this.handleUSOnlyOption}
-											title="Mark this container for US only"
-											style={{
-												color:
-													collection?.targetedRegions?.length > 0
-														? 'red'
-														: 'white',
-											}}
-											className={`${
-												active ? 'bg-gray-100' : ''
-											} group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700`}
-										>
-											US Only
-											{this.state.isUSOnly && <h3>&#x2713;</h3>}
-										</HeadlineContentButton>
+										{({ active }) => (
+											<HeadlineContentButton
+												priority="default"
+												onClick={this.handleUSOnlyOption}
+												title="Mark this container for US only"
+												style={{
+													color:
+														collection?.targetedRegions?.length > 0
+															? 'red'
+															: 'white',
+												}}
+												className={`${
+													active ? 'bg-gray-100' : ''
+												} group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700`}
+											>
+												US Only
+												{this.state.isUSOnly && <h3>&#x2713;</h3>}
+											</HeadlineContentButton>
+										)}
 									</Menu.Item>
 								</div>
 							</Menu.Items>
 						</>
-					)}
+					}
 				</Menu>
 			</div>
 		);

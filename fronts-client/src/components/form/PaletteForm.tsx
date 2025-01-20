@@ -204,7 +204,8 @@ const Swatch = styled.div<{
 	padding: 2px 5px;
 	border-radius: 5px;
 	background-color: ${({ backgroundColor }) => backgroundColor};
-	background-image: ${({ imageURL }) => `url(${imageURL})` ?? 'none'};
+	background-image: ${({ imageURL }) =>
+		imageURL ? `url(${imageURL})` : 'none'};
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: bottom;
