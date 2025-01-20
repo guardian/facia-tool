@@ -13,6 +13,8 @@ interface EditionsCollection {
 	updatedBy?: string;
 	updatedEmail?: string;
 	items: EditionsArticle[];
+	targetedRegions: string[];
+	excludedRegions: string[];
 }
 
 interface EditionsFront {
