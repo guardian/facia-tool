@@ -67,8 +67,9 @@ class FeastPublicationTarget(
         )
       case EditionsFeastCollection(_, _, metadata) =>
         val recipes = metadata
-          .map(_.collectionItems.collect { case EditionsRecipe(id, _) =>
-            id
+          .map(_.collectionItems.flatMap {
+            case EditionsRecipe(id, _) => Some(id)
+            case _                     => None
           })
           .getOrElse(List.empty)
 
