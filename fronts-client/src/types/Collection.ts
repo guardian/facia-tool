@@ -163,6 +163,8 @@ interface CollectionFromResponse {
 	metadata?: Array<{ type: string }>;
 	uneditable?: boolean;
 	targetedTerritory?: string;
+	targetedRegions: string[];
+	excludedRegions: string[];
 }
 
 type CollectionWithNestedArticles = CollectionFromResponse & {
@@ -189,6 +191,8 @@ interface Collection {
 	isHidden?: boolean;
 	targetedTerritory?: string;
 	suppressImages?: boolean;
+	targetedRegions: string[];
+	excludedRegions: string[];
 }
 
 interface ArticleTag {

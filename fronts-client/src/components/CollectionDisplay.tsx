@@ -37,6 +37,7 @@ import { DragToConvertFeastCollection } from './FrontsEdit/CollectionComponents/
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
 import { Menu } from '@headlessui/react';
 import { removeFrontCollection } from '../actions/Editions';
+import { EditionsCollection } from '../types/Edition';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -65,6 +66,7 @@ type Props = ContainerProps & {
 	updateCollection: (
 		collection: Collection,
 		renamingCollection: boolean,
+		isMarkedForUSOnly: boolean /*At present for US but in future we can change this name to targetted_regions once more countries gets added in list*/,
 	) => void;
 	isEditions: boolean;
 	removeFrontCollection: (frontId: string, collectionId: string) => void;
@@ -75,6 +77,7 @@ interface CollectionState {
 	hasDragOpenIntent: boolean;
 	editingContainerName: boolean;
 	isDeleteClicked: boolean;
+	isUSOnly: boolean;
 }
 
 const CollectionContainer = styled(ContentContainer)<{
@@ -244,6 +247,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		hasDragOpenIntent: false,
 		editingContainerName: false,
 		isDeleteClicked: false,
+		isUSOnly: false,
 	};
 
 	public toggleVisibility = () => {
@@ -253,7 +257,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		}
 	};
 
-	public dropDownMenu = () => {
+	public dropDownMenu = (collection: EditionsCollection) => {
 		return (
 			<div className="relative inline-block text-left">
 				<Menu>
@@ -305,16 +309,20 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 									<Menu.Item>
 										<HeadlineContentButton
 											priority="default"
-											onClick={undefined}
+											onClick={this.handleUSOnlyOption}
 											title="Mark this container for US only"
 											style={{
-												color: this.state.isDeleteClicked ? 'red' : 'white',
+												color:
+													collection?.targetedRegions?.length > 0
+														? 'red'
+														: 'white',
 											}}
 											className={`${
 												active ? 'bg-gray-100' : ''
 											} group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700`}
 										>
 											US Only
+											{this.state.isUSOnly && <h3>&#x2713;</h3>}
 										</HeadlineContentButton>
 									</Menu.Item>
 								</div>
@@ -413,7 +421,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								</CollectionHeadingText>
 							)}
 						</CollectionHeadlineWithConfigContainer>
-						{isFeast ? this.dropDownMenu() : undefined}
+						{isFeast ? this.dropDownMenu(collection) : undefined}
 						{isLocked ? (
 							<LockedCollectionFlag>Locked</LockedCollectionFlag>
 						) : headlineContent ? (
@@ -510,7 +518,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		this.setState({
 			editingContainerName: false,
 		});
-		this.props.updateCollection(collection!, true);
+		this.props.updateCollection(collection!, true, false);
 	};
 
 	private removeFrontCollection = () => {
@@ -526,6 +534,14 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 			this.removeFrontCollection();
 		}
 		this.setState({ isDeleteClicked: false });
+	};
+
+	private handleUSOnlyOption = () => {
+		const { collection } = this.props;
+		this.state.isUSOnly = !this.state.isUSOnly;
+		if (this.state.isUSOnly) collection.targetedRegions = ['US'];
+		else collection.targetedRegions = [];
+		this.props.updateCollection(collection!, false, true);
 	};
 }
 
@@ -552,8 +568,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	updateCollection: (
 		collection: CollectionType,
 		renamingCollection: boolean,
+		isMarkedForUSOnly: boolean,
 	) => {
-		dispatch(updateCollectionAction(collection, renamingCollection));
+		dispatch(
+			updateCollectionAction(collection, renamingCollection, isMarkedForUSOnly),
+		);
 	},
 	removeFrontCollection: (frontId: string, id: string) =>
 		dispatch(removeFrontCollection(frontId, id)),
