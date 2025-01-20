@@ -245,3 +245,26 @@ export const renameEditionsCollection =
 			);
 		}
 	};
+
+export const markCollectionForUSOnly =
+	(id: string) =>
+	async (collection: EditionsCollection): Promise<void> => {
+		try {
+			const response = await pandaFetch(
+				`editions-api/collections/${id}/targeted_regions`,
+				{
+					method: 'PATCH',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					credentials: 'same-origin',
+					body: JSON.stringify({ id, collection }),
+				},
+			);
+			return await response.json();
+		} catch (e) {
+			throw new Error(
+				`Tried to update collection with id ${id}, but server responded with error: ${attemptFriendlyErrorMessage(e)}`,
+			);
+		}
+	};
