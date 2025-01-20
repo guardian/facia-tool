@@ -291,6 +291,28 @@ class EditionsController(
     }
   }
 
+  def markCollectionForUSOnly(collectionId: String) = EditEditionsAuthAction(
+	parse.json[EditionsFrontendCollectionWrapper]
+  ){
+	req =>
+		  logger.info(s"Mark for US only the collection ${collectionId}")
+
+		  val collection = db.getCollections(List(GetCollectionsFilter(id=collectionId, None)))
+
+		  if(collection.isEmpty) {
+			logger.warn(s"Collection not found ${collectionId}")
+			NotFound(s"Collection ${collectionId} not found")
+		  }else{
+			  val updatingCollection = collection.head.copy(
+				  targetedRegions = req.body.collection.targetedRegions,
+				  updatedBy = Some(UserUtil.getDisplayName(req.user)),
+				  updatedEmail = Some(req.user.email)
+			  )
+			val updatedCollection = db.updateCollectionTargettedRegions(updatingCollection)
+			Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
+		  }
+  }
+
   def moveCollection(frontId: String, collectionId: String) =
     EditEditionsAuthAction(parse.json[MoveCollection]) { req =>
       val form = req.body

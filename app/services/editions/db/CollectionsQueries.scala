@@ -141,6 +141,33 @@ trait CollectionsQueries extends Logging {
       updatedCollections.head
     }
 
+	def updateCollectionTargettedRegions(collection: EditionsCollection): EditionsCollection =
+		DB localTx { implicit session =>
+			val lastUpdated = EditionsDB.truncateDateTime(OffsetDateTime.now())
+			sql"""
+      UPDATE collections
+      SET "targeted_regions" = ${collection.targetedRegionsPG()},
+          updated_on = $lastUpdated,
+          updated_by = ${collection.updatedBy},
+          updated_email = ${collection.updatedEmail}
+      WHERE id = ${collection.id}
+    """.execute.apply()
+
+			val rows = fetchCollectionsSql(where =
+				sqls"collections.id = ${collection.id}"
+			).apply()
+
+			val updatedCollections = convertRowsToCollections(rows)
+
+			// we have filtered on a single id so this list should only contain one collection
+			assert(
+				updatedCollections.size == 1,
+				s"Retrieved ${updatedCollections.size} collections from DB but there should be exactly one. Failing fast."
+			)
+
+			updatedCollections.head
+		}
+
   /** Move the collection to the given index, updating the index values for the
     * other collections in that front to ensure a contiguous range.
     */
@@ -184,7 +211,7 @@ trait CollectionsQueries extends Logging {
           updated_on = $lastUpdated,
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail},
-          targeted_regions = ${collection.targetedRegionsPG()},
+          targeted_regions = ${collection.targetedRegionsPG()},/*TODO - need to revisit here to keep or not, once we are happy with "updateCollectionTargettedRegions" method then we can check here. also need to do for "excludedRegions" as well hence not removing from here */
           excluded_regions = ${collection.excludedRegionsPG()},
       WHERE id = ${collection.id}
     """.execute.apply()
