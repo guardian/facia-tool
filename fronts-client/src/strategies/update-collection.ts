@@ -3,6 +3,7 @@ import { updateCollection } from 'services/faciaApi';
 import {
 	updateEditionsCollection,
 	renameEditionsCollection,
+	markCollectionForUSOnly,
 } from 'services/editionsApi';
 import { runStrategy } from './run-strategy';
 import { CollectionWithNestedArticles } from 'types/Collection';
@@ -24,11 +25,16 @@ const updateCollectionStrategy = (
 	id: string,
 	collection: CollectionWithNestedArticles,
 	renamingCollection: boolean,
+	isMarkedForUSOnly: boolean,
 ) => {
 	const curatedPlatformStrategy = () =>
 		renamingCollection
 			? renameEditionsCollection(id)(collectionToEditionCollection(collection))
-			: updateEditionsCollection(id)(collectionToEditionCollection(collection));
+			: isMarkedForUSOnly
+				? markCollectionForUSOnly(id)(collectionToEditionCollection(collection))
+				: updateEditionsCollection(id)(
+						collectionToEditionCollection(collection),
+					);
 	return runStrategy<void>(state, {
 		front: () => updateCollection(id)(collection),
 		edition: curatedPlatformStrategy,

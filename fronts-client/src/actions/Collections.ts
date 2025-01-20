@@ -262,6 +262,7 @@ function getCollections(
 function updateCollection(
 	collection: Collection,
 	renamingCollection: boolean = false,
+	isMarkedForUSOnly: boolean = false,
 ): ThunkResult<Promise<void>> {
 	return async (dispatch: Dispatch, getState: () => State) => {
 		const state = getState();
@@ -287,6 +288,7 @@ function updateCollection(
 				collection.id,
 				denormalisedCollection,
 				renamingCollection,
+				isMarkedForUSOnly,
 			);
 			dispatch(collectionActions.updateSuccess(collection.id));
 			const visibleArticles = await getVisibleArticles(
