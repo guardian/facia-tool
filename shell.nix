@@ -9,6 +9,6 @@ in pkgs.mkShellNoCC {
   # SBT_JUNIT_OUTPUT = "junit-tests";
 
   nativeBuildInputs = with pkgs;
-    let sbtWithJava11 = sbt.override { jre = corretto11; };
-    in [ sbtWithJava11 metals ];
+    let sbtWithJava21 = sbt.override { jre = corretto21; };
+    in [ sbtWithJava21 metals ];
 }

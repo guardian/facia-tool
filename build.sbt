@@ -125,7 +125,7 @@ dependencyOverrides ++= Seq(
 val UsesDatabaseTest = config("database-int") extend Test
 
 lazy val root = (project in file("."))
-  .enablePlugins(PlayScala, JDebPackaging, SystemdPlugin, BuildInfoPlugin)
+  .enablePlugins(PlayScala, SystemdPlugin, BuildInfoPlugin)
   .configs(UsesDatabaseTest)
   .settings(
     buildInfoPackage := "facia",
@@ -170,3 +170,54 @@ lazy val root = (project in file("."))
       )
     )
   )
+
+ThisBuild / assemblyCacheOutput := false
+ThisBuild / assemblyMergeStrategy := {
+  case PathList("org", "apache", "commons", "logging", "Log.class") =>
+    MergeStrategy.first
+  case PathList("play", "reference-overrides.conf") => MergeStrategy.concat
+  case PathList(
+        "org",
+        "apache",
+        "commons",
+        "logging",
+        "impl",
+        "NoOpLog.class"
+      ) =>
+    MergeStrategy.first
+  case PathList(
+        "org",
+        "apache",
+        "commons",
+        "logging",
+        "LogConfigurationException.class"
+      ) =>
+    MergeStrategy.first
+  case PathList(
+        "org",
+        "apache",
+        "commons",
+        "logging",
+        "impl",
+        "SimpleLog.class"
+      ) =>
+    MergeStrategy.first
+  case PathList(
+        "org",
+        "apache",
+        "commons",
+        "logging",
+        "LogFactory.class"
+      ) =>
+    MergeStrategy.first
+  case "module-info.class" => MergeStrategy.discard
+  case PathList("META-INF", "services", "org.slf4j.spi.SLF4JServiceProvider") =>
+    MergeStrategy.singleOrError
+  case PathList("META-INF", xs @ _*) => MergeStrategy.discard
+  case PathList("mozilla", "public-suffix-list.txt") =>
+    MergeStrategy.filterDistinctLines
+  case "mime.types" => MergeStrategy.filterDistinctLines
+  case f =>
+    val oldStrategy = (assembly / assemblyMergeStrategy).value
+    oldStrategy(f)
+}
