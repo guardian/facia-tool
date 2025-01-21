@@ -251,7 +251,7 @@ export const markCollectionForUSOnly =
 	async (collection: EditionsCollection): Promise<void> => {
 		try {
 			const response = await pandaFetch(
-				`editions-api/collections/${id}/targeted_regions`,
+				`/editions-api/collections/${id}/targeted-regions`,
 				{
 					method: 'PATCH',
 					headers: {

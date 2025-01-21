@@ -127,7 +127,7 @@ POST        /editions-api/collections                                       cont
 GET         /editions-api/collections/:collectionId                         controllers.EditionsController.getCollection(collectionId)
 PUT         /editions-api/collections/:collectionId                         controllers.EditionsController.updateCollection(collectionId)
 PATCH       /editions-api/collections/:collectionId/name                    controllers.EditionsController.renameCollection(collectionId)
-PATCH       /editions-api/collections/:collectionId/targeted_regions        controllers.EditionsController.markCollectionForUSOnly(collectionId)
+PATCH       /editions-api/collections/:collectionId/targeted-regions        controllers.EditionsController.markCollectionForUSOnly(collectionId)
 GET         /editions-api/collections/:collectionId/prefill                 controllers.EditionsController.getPrefillForCollection(collectionId)
 
 POST        /editions-api/fronts/:frontId/collections/:collectionId/feastCollectionToContainer/:collectionCardId    controllers.EditionsController.feastCollectionToContainer(frontId, collectionId, collectionCardId)
