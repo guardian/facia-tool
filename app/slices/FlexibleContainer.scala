@@ -13,12 +13,10 @@ object FlexibleGeneral extends FlexibleContainer {
       stories: Seq[Story],
       collectionConfigJson: Option[CollectionConfigJson]
   ): Int = {
-    val defaultStoryLimit = 9
-    val standardStoryLimit = collectionConfigJson
+    collectionConfigJson
       .flatMap(_.displayHints)
       .flatMap(_.maxItemsToDisplay)
-      .getOrElse(defaultStoryLimit)
-    standardStoryLimit
+      .getOrElse(9)
   }
 }
 
