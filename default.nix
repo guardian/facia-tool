@@ -8,11 +8,11 @@ in pkgs.mkSbtDerivation {
   src = ./.;
   depsSha256 = "dr1ImRZ99J9ZwNfx6l+um/Ls64zQNdHDbFr0N2Gkses=";
   buildPhase = ''
-    sbt "clean; assembly"
+    sbt "clean; debian:packageBin"
   '';
   installPhase = ''
     mkdir -p "$out"/bin
-    cp target/scala-2.13/facia-tool-assembly-1.0.jar $out/bin/
+    cp target/facia-tool_1.0_all.deb $out/bin/
   '';
   nativeBuildInputs = with pkgs; [ coreutils git ];
 }
