@@ -1,7 +1,11 @@
 // Additional information on initialization
 logLevel := Level.Warn
 
-addSbtPlugin("com.eed3si9n" % "sbt-assembly" % "2.3.1")
+libraryDependencies += "org.vafer" % "jdeb" % "1.3" artifacts Artifact(
+  "jdeb",
+  "jar",
+  "jar"
+)
 
 resolvers ++= Resolver.sonatypeOssRepos("releases")
 
