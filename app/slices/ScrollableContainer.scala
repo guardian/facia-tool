@@ -18,7 +18,7 @@ object ScrollableSmall extends ScrollableContainer {
 
 object ScrollableMedium extends ScrollableContainer {
   def storiesVisible(stories: Seq[Story]): Int = {
-    stories.size min 6
+    stories.size min 8
   }
 }
 
