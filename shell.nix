@@ -1,14 +1,15 @@
 { sources ? import ./nix/sources.nix }:
 let pkgs = import sources.nixpkgs { };
 in pkgs.mkShellNoCC {
-  # To run the tests, provide a capi URL and key:
-  # CAPI_URL = "https://content.code.dev-guardianapis.com/";
-  # CAPI_KEY = "<your-key-here>";
-
-  # To capture junit XML output from the tests, set an output folder:
-  # SBT_JUNIT_OUTPUT = "junit-tests";
-
   nativeBuildInputs = with pkgs;
-    let sbtWithJava21 = sbt.override { jre = corretto21; };
-    in [ sbtWithJava21 metals ];
+    let
+      sbtWithJava21 = sbt.override { jre = corretto21; };
+      fronts-client = mkYarnPackage {
+        name = "fronts-client";
+        src = ./fronts-client;
+        packageJSON = ./fronts-client/package.json;
+        yarnLock = ./fronts-client/yarn.lock;
+        yarnNix = ./fronts-client/fronts-client.nix;
+      };
+    in [ sbtWithJava21 metals fronts-client ];
 }
