@@ -3,7 +3,7 @@ import { updateCollection } from 'services/faciaApi';
 import {
 	updateEditionsCollection,
 	renameEditionsCollection,
-	markCollectionForUSOnly,
+	updateCollectionRegions,
 } from 'services/editionsApi';
 import { runStrategy } from './run-strategy';
 import { CollectionWithNestedArticles } from 'types/Collection';
@@ -20,21 +20,43 @@ const collectionToEditionCollection = (
 	};
 };
 
+export type CollectionUpdateMode =
+	| 'overwrite'
+	| 'rename'
+	| 'update-territories';
+
 const updateCollectionStrategy = (
 	state: State,
 	id: string,
 	collection: CollectionWithNestedArticles,
-	renamingCollection: boolean,
-	isMarkedForUSOnly: boolean,
+	mode: CollectionUpdateMode = 'overwrite',
 ) => {
-	const curatedPlatformStrategy = () =>
-		renamingCollection
-			? renameEditionsCollection(id)(collectionToEditionCollection(collection))
-			: isMarkedForUSOnly
-				? markCollectionForUSOnly(id)(collectionToEditionCollection(collection))
-				: updateEditionsCollection(id)(
-						collectionToEditionCollection(collection),
-					);
+	// const curatedPlatformStrategy = () =>
+	// 	renamingCollection
+	// 		? renameEditionsCollection(id)(collectionToEditionCollection(collection))
+	// 		: isMarkedForUSOnly
+	// 			? markCollectionForUSOnly(id)(collectionToEditionCollection(collection))
+	// 			: updateEditionsCollection(id)(
+	// 					collectionToEditionCollection(collection),
+	// 				);
+	const selectStrategy = () => {
+		switch (mode) {
+			case 'rename':
+				return renameEditionsCollection(id)(
+					collectionToEditionCollection(collection),
+				);
+			case 'update-territories':
+				return updateCollectionRegions(id)(
+					collectionToEditionCollection(collection),
+				);
+			case 'overwrite':
+				return updateEditionsCollection(id)(
+					collectionToEditionCollection(collection),
+				);
+		}
+	};
+	const curatedPlatformStrategy = selectStrategy();
+
 	return runStrategy<void>(state, {
 		front: () => updateCollection(id)(collection),
 		edition: curatedPlatformStrategy,

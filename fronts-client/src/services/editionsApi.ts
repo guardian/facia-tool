@@ -246,7 +246,7 @@ export const renameEditionsCollection =
 		}
 	};
 
-export const markCollectionForUSOnly =
+export const updateCollectionRegions =
 	(id: string) =>
 	async (collection: EditionsCollection): Promise<void> => {
 		try {
@@ -264,7 +264,7 @@ export const markCollectionForUSOnly =
 			return await response.json();
 		} catch (e) {
 			throw new Error(
-				`Tried to update collection with id ${id}, but server responded with error: ${attemptFriendlyErrorMessage(e)}`,
+				`Tried to update regions on collection with id ${id}, but server responded with error: ${attemptFriendlyErrorMessage(e)}`,
 			);
 		}
 	};

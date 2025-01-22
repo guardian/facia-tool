@@ -114,6 +114,8 @@ export interface EditionCollectionFromResponse {
 	metadata?: Array<{ type: string }>;
 	uneditable?: boolean;
 	isHidden?: boolean;
+	targetedRegions?: string[];
+	excludedRegions?: string[];
 }
 
 interface EditionCollectionResponse {

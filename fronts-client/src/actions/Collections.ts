@@ -65,7 +65,10 @@ import { frontStages } from 'constants/fronts';
 import { events } from 'services/GA';
 import { selectCollectionParams } from 'selectors/collectionSelectors';
 import { fetchCollectionsStrategy } from 'strategies/fetch-collection';
-import { updateCollectionStrategy } from 'strategies/update-collection';
+import {
+	CollectionUpdateMode,
+	updateCollectionStrategy,
+} from 'strategies/update-collection';
 import { getPageViewDataForCollection } from 'actions/PageViewData';
 import { isMode } from 'selectors/pathSelectors';
 import { groupBy, uniqBy } from 'lodash';
@@ -261,8 +264,7 @@ function getCollections(
 
 function updateCollection(
 	collection: Collection,
-	renamingCollection: boolean = false,
-	isMarkedForUSOnly: boolean = false,
+	mode: CollectionUpdateMode,
 ): ThunkResult<Promise<void>> {
 	return async (dispatch: Dispatch, getState: () => State) => {
 		const state = getState();
@@ -287,8 +289,7 @@ function updateCollection(
 				getState(),
 				collection.id,
 				denormalisedCollection,
-				renamingCollection,
-				isMarkedForUSOnly,
+				mode,
 			);
 			dispatch(collectionActions.updateSuccess(collection.id));
 			const visibleArticles = await getVisibleArticles(

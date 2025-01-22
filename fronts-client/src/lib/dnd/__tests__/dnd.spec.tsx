@@ -62,10 +62,13 @@ describe('Curation', () => {
 		let dropProps;
 		let edit: any;
 
+		let customArr = {
+			id: '1',
+		};
 		setup(
 			<DragAndDropRoot id="@@ROOT">
 				<Level
-					arr={[{ id: '1' }, { id: '2' }]}
+					arr={[customArr]}
 					type="a"
 					parentType="b"
 					parentId="0"

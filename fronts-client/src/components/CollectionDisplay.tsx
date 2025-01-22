@@ -35,9 +35,9 @@ import { updateCollection as updateCollectionAction } from '../actions/Collectio
 import { isMode } from '../selectors/pathSelectors';
 import { DragToConvertFeastCollection } from './FrontsEdit/CollectionComponents/DragToConvertFeastCollection';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
-import { Menu } from '@headlessui/react';
 import { removeFrontCollection } from '../actions/Editions';
-import { EditionsCollection } from '../types/Edition';
+import { FeastCollectionMenu } from './FeastCollectionMenu';
+import type { CollectionUpdateMode } from '../strategies/update-collection';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -65,8 +65,7 @@ type Props = ContainerProps & {
 	handleBlur: () => void;
 	updateCollection: (
 		collection: Collection,
-		renamingCollection: boolean,
-		isMarkedForUSOnly: boolean /*At present for US but in future we can change this name to targetted_regions once more countries gets added in list*/,
+		mode: CollectionUpdateMode,
 	) => void;
 	isEditions: boolean;
 	removeFrontCollection: (frontId: string, collectionId: string) => void;
@@ -255,89 +254,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		if (this.props.onChangeOpenState) {
 			this.props.onChangeOpenState(!this.props.isOpen);
 		}
-	};
-
-	public dropDownMenu = (collection: EditionsCollection) => {
-		return (
-			<div className="relative inline-block text-left">
-				<Menu>
-					{
-						<>
-							<Menu.Button
-								className={
-									'inline-flex items-center justify-center rounded bg-gray-800 text-white p-2 hover:bg-gray-700 focus:outline-none'
-								}
-								style={{ marginRight: '5px', marginBottom: '12px' }}
-							>
-								{/*  use of "style" here as changes in "classname" for margin didn't work, Can try again later */}
-								Options{' '}
-								{/*TODO - need "ellipsis" instead of "Options"? I tried checking with FontAwesomeIcon but not working..Need to check later*/}
-							</Menu.Button>
-
-							<Menu.Items className="absolute mt-2 w-44 rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-								<div className="py-1">
-									<Menu.Item>
-										{({ active }) => (
-											<HeadlineContentButton
-												priority="default"
-												onClick={this.handleDeleteClick}
-												title="Delete the collection for this issue"
-												style={{
-													color: this.state.isDeleteClicked ? 'red' : 'white',
-												}}
-												className={`${
-													active ? 'bg-gray-100' : ''
-												} group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700`}
-											>
-												Delete
-											</HeadlineContentButton>
-										)}
-									</Menu.Item>
-
-									<div className="my-1 h-px bg-gray-600" />
-
-									<Menu.Item>
-										{({ active }) => (
-											<HeadlineContentButton
-												priority="default"
-												onClick={this.startRenameContainer}
-												title="Rename this container in this issue."
-											>
-												Rename
-											</HeadlineContentButton>
-										)}
-									</Menu.Item>
-
-									<div className="my-1 h-px bg-gray-600" />
-
-									<Menu.Item>
-										{({ active }) => (
-											<HeadlineContentButton
-												priority="default"
-												onClick={this.handleUSOnlyOption}
-												title="Mark this container for US only"
-												style={{
-													color:
-														collection?.targetedRegions?.length > 0
-															? 'red'
-															: 'white',
-												}}
-												className={`${
-													active ? 'bg-gray-100' : ''
-												} group flex w-full items-center rounded-md px-4 py-2 text-sm text-gray-700`}
-											>
-												US Only
-												{this.state.isUSOnly && <h3>&#x2713;</h3>}
-											</HeadlineContentButton>
-										)}
-									</Menu.Item>
-								</div>
-							</Menu.Items>
-						</>
-					}
-				</Menu>
-			</div>
-		);
 	};
 
 	public render() {
