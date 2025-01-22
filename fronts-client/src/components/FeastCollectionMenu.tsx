@@ -1,8 +1,5 @@
 import React, { createRef, useEffect, useState } from 'react';
-import styled, { css } from 'styled-components';
-import { useDispatch, useSelector } from 'react-redux';
-import { State } from '../types/State';
-import { createSelector } from 'reselect';
+import styled from 'styled-components';
 
 interface FeastCollectionMenuProps {
 	containerId: string;
@@ -27,7 +24,8 @@ const MenuOuterBody = styled.div`
 `;
 
 const MenuItem = styled.li`
-	padding: 0.4em;
+	list-style: none;
+	padding: 0;
 	border-bottom: 1px gray;
 	:hover {
 		background-color: lightgrey;
@@ -42,6 +40,9 @@ const PartitionedBox = styled.div`
 
 const TextArea = styled.div`
 	flex: 1;
+	font-family: TS3TextSans, sans-serif;
+	font-weight: normal;
+	font-size: 12px;
 	max-width: fit-content;
 `;
 
@@ -50,12 +51,12 @@ const IconArea = styled.div`
 	min-width: 60px;
 	flex: 0;
 `;
+
 export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
-	containerId,
-	// targetedRegions,
-	// excludedRegions,
-	// onExcludedRegionsChange,
-	// onTargetedRegionsChange,
+	targetedRegions,
+	excludedRegions,
+	onExcludedRegionsChange,
+	onTargetedRegionsChange,
 	onRenameClicked,
 	onDeleteClicked,
 }) => {
@@ -65,27 +66,12 @@ export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 
 	const containerRef = createRef<HTMLDivElement>();
 
-	const dispatch = useDispatch<State>();
-	const selectContainer = (state: State) => state.collections.data[containerId];
-
-	const selectTargetedRegions = createSelector(
-		[selectContainer],
-		(container) => container.targetedRegions,
-	);
-
-	const selectExcludedRegions = createSelector(
-		[selectContainer],
-		(container) => container.excludedRegions,
-	);
-	const targetedRegions = useSelector(selectTargetedRegions);
-	const excludedRegions = useSelector(selectExcludedRegions);
-
 	useEffect(() => {
 		if (isMenuOpen && !!containerRef.current) {
 			setMenuTop(
-				containerRef.current.clientTop + containerRef.current.clientHeight,
+				containerRef.current.offsetTop + containerRef.current.offsetHeight,
 			);
-			setMenuLeft(containerRef.current.clientLeft);
+			setMenuLeft(containerRef.current.offsetLeft);
 		} else {
 			setMenuTop(0);
 			setMenuLeft(0);
@@ -110,7 +96,7 @@ export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 			</IconContainer>
 			{isMenuOpen && menuTop > 0 ? (
 				<MenuOuterBody style={{ top: menuTop, left: menuLeft }}>
-					<ul>
+					<ul style={{ padding: '0.2em', margin: '0.2em' }}>
 						<MenuItem onClick={clickedUsOnly}>
 							<PartitionedBox>
 								<TextArea>US Only</TextArea>

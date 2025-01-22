@@ -343,7 +343,22 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								</CollectionHeadingText>
 							)}
 						</CollectionHeadlineWithConfigContainer>
-						{isFeast ? this.dropDownMenu(collection) : undefined}
+						{isFeast && collection ? (
+							<FeastCollectionMenu
+								containerId={collection.id}
+								targetedRegions={collection.targetedRegions ?? []}
+								excludedRegions={collection.excludedRegions ?? []}
+								onTargetedRegionsChange={(newvals) =>
+									alert(JSON.stringify(newvals))
+								}
+								onExcludedRegionsChange={(newvals) =>
+									alert(JSON.stringify(newvals))
+								}
+								onRenameClicked={this.startRenameContainer}
+								onDeleteClicked={this.handleDeleteClick}
+							/>
+						) : undefined}
+
 						{isLocked ? (
 							<LockedCollectionFlag>Locked</LockedCollectionFlag>
 						) : headlineContent ? (
@@ -440,7 +455,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		this.setState({
 			editingContainerName: false,
 		});
-		this.props.updateCollection(collection!, true, false);
+		this.props.updateCollection(collection!, 'rename');
 	};
 
 	private removeFrontCollection = () => {
@@ -458,13 +473,13 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		this.setState({ isDeleteClicked: false });
 	};
 
-	private handleUSOnlyOption = () => {
-		const { collection } = this.props;
-		this.state.isUSOnly = !this.state.isUSOnly;
-		if (this.state.isUSOnly) collection.targetedRegions = ['US'];
-		else collection.targetedRegions = [];
-		this.props.updateCollection(collection!, false, true);
-	};
+	// private handleUSOnlyOption = () => {
+	// 	const { collection } = this.props;
+	// 	this.state.isUSOnly = !this.state.isUSOnly;
+	// 	if (this.state.isUSOnly) collection.targetedRegions = ['US'];
+	// 	else collection.targetedRegions = [];
+	// 	this.props.updateCollection(collection!, false, true);
+	// };
 }
 
 const createMapStateToProps = () => {
@@ -489,12 +504,9 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 		dispatch(setFocusState({ type: 'collection', collectionId })),
 	updateCollection: (
 		collection: CollectionType,
-		renamingCollection: boolean,
-		isMarkedForUSOnly: boolean,
+		mode: CollectionUpdateMode,
 	) => {
-		dispatch(
-			updateCollectionAction(collection, renamingCollection, isMarkedForUSOnly),
-		);
+		dispatch(updateCollectionAction(collection, mode));
 	},
 	removeFrontCollection: (frontId: string, id: string) =>
 		dispatch(removeFrontCollection(frontId, id)),
