@@ -10,6 +10,9 @@ interface PosSpec {
 	type: string;
 	id: string;
 	index: number;
+	groupName: string;
+	numberOfCardsInGroup: number;
+
 }
 
 const isOnSameLevel = (from: PosSpec, to: PosSpec): boolean =>
@@ -56,6 +59,8 @@ export interface LevelProps<T> {
 	children: LevelChild<T>;
 	parentId: string;
 	parentType: string;
+	groupName: string;
+	numberOfCardsInGroup: number;
 	type: string;
 	getDropType?: (item: T) => string;
 	dragImageOffsetX?: number;
@@ -178,6 +183,8 @@ class Level<T> extends React.Component<Props<T>, State> {
 			index: i,
 			type: this.props.parentType,
 			id: this.props.parentId,
+			groupName: this.props.groupName,
+			numberOfCardsInGroup: this.props.numberOfCardsInGroup
 		};
 
 		if (!af) {

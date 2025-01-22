@@ -184,8 +184,47 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	};
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-		events.dropArticle(this.props.id, isDropFromCAPIFeed(e) ? 'feed' : 'url');
-		this.props.insertCardFromDropEvent(e, to, 'collection');
+		console.log('e', e);
+		console.log('to', to);
+
+		console.log('this.props', this.props);
+
+		// if we are inserting an article into any group that is not the splash, then we just insert
+		if (to.groupName !== 'splash') {
+			events.dropArticle(this.props.id, isDropFromCAPIFeed(e) ? 'feed' : 'url');
+			this.props.insertCardFromDropEvent(e, to, 'collection');
+		} else {
+			// if we're in the splash and we insert an article and there's no other article already in the splash, then we just insert
+			if (to.numberOfCardsInGroup === 0) {
+				console.log('inserting article into splash with no other articles');
+				events.dropArticle(
+					this.props.id,
+					isDropFromCAPIFeed(e) ? 'feed' : 'url',
+				);
+				this.props.insertCardFromDropEvent(e, to, 'collection');
+			}
+			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
+			// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
+			else if (to.numberOfCardsInGroup > 0 && to.index === 0) {
+				console.log('inserting article at top of splash group with another article');
+				events.dropArticle(
+					this.props.id,
+					isDropFromCAPIFeed(e) ? 'feed' : 'url',
+				);
+				this.props.insertCardFromDropEvent(e, to, 'collection');
+			}
+
+			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
+			// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
+			else if (to.numberOfCardsInGroup > 0 && to.index > 0) {
+				console.log('inserting article at bottom of splash group with another article');
+				events.dropArticle(
+					this.props.id,
+					isDropFromCAPIFeed(e) ? 'feed' : 'url',
+				);
+				this.props.insertCardFromDropEvent(e, to, 'collection');
+			}
+		}
 	};
 
 	public render() {

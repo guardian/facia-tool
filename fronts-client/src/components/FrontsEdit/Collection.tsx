@@ -160,6 +160,8 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 							<GroupLevel
 								isUneditable={isUneditable}
 								groupId={group.uuid}
+								groupName={group.name ? group.name : ''}
+								numberOfCardsInGroup={group.cards.length}
 								onMove={handleMove}
 								onDrop={handleInsert}
 								cardIds={group.cards}
@@ -180,6 +182,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 												collectionId={id}
 												uuid={card.uuid}
 												parentId={group.uuid}
+
 												isUneditable={isUneditable}
 												size={size}
 												canShowPageViewData={true}
