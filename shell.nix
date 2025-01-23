@@ -31,14 +31,24 @@ in pkgs.mkShellNoCC {
           npm run jspm install
         '';
       };
+      runAllTmux = writeShellApplication {
+        name = "run-all-tmux";
+        runtimeInputs = [ tmux startPlay frontsClient buildV1 ];
+        text = ''
+          tmux new-session "start-play" ";" set-option remain-on-exit on ";" split-window -v "fronts-client" ";" split-window -h "build-v1"
+        '';
+      };
 
     in [
       sbtWithJava11
       metals
       yarnWithNode20
       nodejs_18
+      tmux
+
       frontsClient
       startPlay
       buildV1
+      runAllTmux
     ];
 }
