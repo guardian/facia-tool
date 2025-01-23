@@ -10,8 +10,9 @@ interface PosSpec {
 	type: string;
 	id: string;
 	index: number;
-	groupName: string;
-	numberOfCardsInGroup: number;
+	groupName?: string;
+	numberOfCardsInGroup?: number;
+	groupsIds: string[];
 
 }
 
@@ -61,6 +62,7 @@ export interface LevelProps<T> {
 	parentType: string;
 	groupName: string;
 	numberOfCardsInGroup: number;
+	groupsIds: string[];
 	type: string;
 	getDropType?: (item: T) => string;
 	dragImageOffsetX?: number;
@@ -184,7 +186,8 @@ class Level<T> extends React.Component<Props<T>, State> {
 			type: this.props.parentType,
 			id: this.props.parentId,
 			groupName: this.props.groupName,
-			numberOfCardsInGroup: this.props.numberOfCardsInGroup
+			numberOfCardsInGroup: this.props.numberOfCardsInGroup,
+			groupsIds: this.props.groupsIds
 		};
 
 		if (!af) {
@@ -192,6 +195,7 @@ class Level<T> extends React.Component<Props<T>, State> {
 		}
 
 		const { parents, id, index, type, data, forceClone } = JSON.parse(af);
+
 
 		if (!isInside(this.props.parents, [type, id])) {
 			const [parentType, parentId] = parents[parents.length - 1];

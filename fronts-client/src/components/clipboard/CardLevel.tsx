@@ -20,6 +20,9 @@ interface OuterProps {
 	isUneditable?: boolean;
 	dropMessage?: string;
 	cardTypeAllowList?: CardTypes[];
+	groupName: string;
+	numberOfCardsInGroup: number;
+	groupsIds: string[];
 }
 
 interface InnerProps {
@@ -49,11 +52,17 @@ const CardLevel = ({
 	isUneditable,
 	dropMessage,
 	cardTypeAllowList,
+	groupName,
+	numberOfCardsInGroup,
+	groupsIds,
 }: Props) => (
 	<CardTypeLevel
 		arr={supporting || []}
 		parentType="card"
 		parentId={cardId}
+		groupName={groupName}
+		numberOfCardsInGroup={numberOfCardsInGroup}
+		groupsIds={groupsIds}
 		onMove={onMove}
 		onDrop={onDrop}
 		canDrop={!isUneditable}
