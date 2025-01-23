@@ -179,13 +179,101 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	}
 
 	public handleMove = (move: Move<TCard>) => {
+		// events.dropArticle(this.props.id, 'collection');
+		// this.props.moveCard(move.to, move.data, move.from || null, 'collection');
 
-		events.dropArticle(this.props.id, 'collection');
-		this.props.moveCard(move.to, move.data, move.from || null, 'collection');
+		const numberOfArticlesAlreadyInGroup = move.to.numberOfCardsInGroup;
+
+		// if we are inserting an article into any group that is not the splash, then we just insert
+		if (move.to.groupName !== 'splash') {
+			events.dropArticle(this.props.id, 'collection');
+			this.props.moveCard(move.to, move.data, move.from || null, 'collection');
+		} else {
+			// if we're in the splash and we insert an article and there's no other article already in the splash, then we just insert
+			if (numberOfArticlesAlreadyInGroup === 0 || undefined) {
+				console.log('moving article to splash with no other articles');
+
+				events.dropArticle(this.props.id, 'collection');
+				this.props.moveCard(
+					move.to,
+					move.data,
+					move.from || null,
+					'collection',
+					);
+				}
+				// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
+				// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
+			else if (
+					!!move.to.groupsIds &&
+					!!numberOfArticlesAlreadyInGroup &&
+					numberOfArticlesAlreadyInGroup > 0 &&
+					move.to.index === 0
+				) {
+					console.log(
+						'moving article to top of splash group with another article',
+					);
+
+					// grabbing the pre-existing article is tricky. Either amend the e target or add a function to add the metadata?
+
+					const otherGroup = move.to.groupsIds.filter(
+						(groupId) => groupId !== move.to.id,
+					)[0];
+
+					// this.props.id needs to be the id of the other card
+					const amendedTo = {
+						index: 0,
+						id: otherGroup,
+						type: 'group',
+						groupsIds: move.to.groupsIds,
+					};
+
+					events.dropArticle(this.props.id, 'collection');
+
+					// the "to" needs to be index 0, groupId the id of the other group, and type group
+					this.props.moveCard(
+						amendedTo,
+						move.data,
+						move.from || null,
+						'collection',
+					);
+				}
+
+				// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
+				// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
+				else if (
+					!!move.to.groupsIds &&
+					!!numberOfArticlesAlreadyInGroup &&
+					numberOfArticlesAlreadyInGroup > 0 &&
+					move.to.index > 0
+				) {
+					console.log(
+						'moving article to bottom of splash group with another article',
+					);
+					const otherGroup = move.to.groupsIds.filter(
+						(groupId) => groupId !== move.to.id,
+					)[0];
+
+					const amendedTo = {
+						index: 0,
+						id: otherGroup,
+						type: 'group',
+						groupsIds: move.to.groupsIds,
+					};
+					events.dropArticle(this.props.id, 'collection');
+
+					this.props.moveCard(
+						amendedTo,
+						move.data,
+						move.from || null,
+						'collection',
+					);
+				}
+
+		}
 	};
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-		const numberOfArticlesAlreadyInGroup = to.numberOfCardsInGroup
+		const numberOfArticlesAlreadyInGroup = to.numberOfCardsInGroup;
 
 		// if we are inserting an article into any group that is not the splash, then we just insert
 		if (to.groupName !== 'splash') {
@@ -203,21 +291,29 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			}
 			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
 			// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
-			else if (!!to.groupsIds && !!numberOfArticlesAlreadyInGroup && numberOfArticlesAlreadyInGroup > 0 && to.index === 0) {
-				console.log('inserting article at top of splash group with another article');
-
+			else if (
+				!!to.groupsIds &&
+				!!numberOfArticlesAlreadyInGroup &&
+				numberOfArticlesAlreadyInGroup > 0 &&
+				to.index === 0
+			) {
+				console.log(
+					'inserting article at top of splash group with another article',
+				);
 
 				// grabbing the pre-existing article is tricky. Either amend the e target or add a function to add the metadata?
 
-				const otherGroup = to.groupsIds.filter((groupId) => groupId !== to.id)[0];
+				const otherGroup = to.groupsIds.filter(
+					(groupId) => groupId !== to.id,
+				)[0];
 
 				// this.props.id needs to be the id of the other card
 				const amendedTo = {
 					index: 0,
 					id: otherGroup,
 					type: 'group',
-					groupsIds: to.groupsIds
-				}
+					groupsIds: to.groupsIds,
+				};
 
 				events.dropArticle(
 					this.props.id,
@@ -229,16 +325,25 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
 			// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
-			else if (!!to.groupsIds && !!numberOfArticlesAlreadyInGroup && numberOfArticlesAlreadyInGroup > 0 && to.index > 0) {
-				console.log('inserting article at bottom of splash group with another article');
-				const otherGroup = to.groupsIds.filter((groupId) => groupId !== to.id)[0];
+			else if (
+				!!to.groupsIds &&
+				!!numberOfArticlesAlreadyInGroup &&
+				numberOfArticlesAlreadyInGroup > 0 &&
+				to.index > 0
+			) {
+				console.log(
+					'inserting article at bottom of splash group with another article',
+				);
+				const otherGroup = to.groupsIds.filter(
+					(groupId) => groupId !== to.id,
+				)[0];
 
 				const amendedTo = {
 					index: 0,
 					id: otherGroup,
 					type: 'group',
-					groupsIds: to.groupsIds
-				}
+					groupsIds: to.groupsIds,
+				};
 				events.dropArticle(
 					this.props.id,
 					isDropFromCAPIFeed(e) ? 'feed' : 'url',
