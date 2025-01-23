@@ -64,6 +64,7 @@ export type InsertDropType = keyof typeof dropToCardMap;
 const dropToCard = (e: React.DragEvent): MappableDropType | null => {
 	for (const [type, fn] of Object.entries(dropToCardMap)) {
 		const data = e.dataTransfer.getData(type);
+
 		if (data) {
 			return fn(data);
 		}

@@ -179,16 +179,12 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	}
 
 	public handleMove = (move: Move<TCard>) => {
+
 		events.dropArticle(this.props.id, 'collection');
 		this.props.moveCard(move.to, move.data, move.from || null, 'collection');
 	};
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-		console.log('e', e);
-		console.log('to', to);
-
-		console.log('handle insert .props', this.props);
-
 		const numberOfArticlesAlreadyInGroup = to.numberOfCardsInGroup
 
 		// if we are inserting an article into any group that is not the splash, then we just insert
@@ -207,20 +203,24 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			}
 			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
 			// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
-			else if (!!numberOfArticlesAlreadyInGroup && numberOfArticlesAlreadyInGroup > 0 && to.index === 0) {
+			else if (!!to.groupsIds && !!numberOfArticlesAlreadyInGroup && numberOfArticlesAlreadyInGroup > 0 && to.index === 0) {
 				console.log('inserting article at top of splash group with another article');
 
+
+				// grabbing the pre-existing article is tricky. Either amend the e target or add a function to add the metadata?
+
+				const otherGroup = to.groupsIds.filter((groupId) => groupId !== to.id)[0];
+
 				// this.props.id needs to be the id of the other card
-				const otherCardId = "123"
 				const amendedTo = {
 					index: 0,
-					id: '1234',
+					id: otherGroup,
 					type: 'group',
 					groupsIds: to.groupsIds
 				}
 
 				events.dropArticle(
-					otherCardId,
+					this.props.id,
 					isDropFromCAPIFeed(e) ? 'feed' : 'url',
 				);
 				// the "to" needs to be index 0, groupId the id of the other group, and type group
@@ -229,11 +229,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
 			// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
-			else if (!!numberOfArticlesAlreadyInGroup && numberOfArticlesAlreadyInGroup > 0 && to.index > 0) {
+			else if (!!to.groupsIds && !!numberOfArticlesAlreadyInGroup && numberOfArticlesAlreadyInGroup > 0 && to.index > 0) {
 				console.log('inserting article at bottom of splash group with another article');
 				const otherGroup = to.groupsIds.filter((groupId) => groupId !== to.id)[0];
-				console.log('to.id', to.id);
-				console.log('otherGroup', otherGroup);
 
 				const amendedTo = {
 					index: 0,
@@ -256,9 +254,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		// TODO remove the false bit when we're happy to actually lock users editing
 		const isEditingLocked =
 			false && (this.state.isCollectionsStale || !!collectionsError);
-
-			console.log('front content.props', this.props);
-			console.log('col elements', this.collectionElements)
 
 		return (
 			<FrontCollectionsContainer

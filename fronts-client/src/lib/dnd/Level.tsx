@@ -12,7 +12,7 @@ interface PosSpec {
 	index: number;
 	groupName?: string;
 	numberOfCardsInGroup?: number;
-	groupsIds: string[];
+	groupsIds?: string[];
 
 }
 

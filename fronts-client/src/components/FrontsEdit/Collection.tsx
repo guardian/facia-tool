@@ -143,8 +143,6 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 			addImageToCard,
 		} = this.props;
 
-		console.log('CollectionContextProps', this.props.groupsIds);
-
 		return (
 			<CollectionWrapper data-testid="collection">
 				<Collection
@@ -156,103 +154,97 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 					canPublish={browsingStage !== 'live'}
 					browsingStage={browsingStage}
 				>
-					{(group, isUneditable, showGroupName) => {
-						console.log('CollectionContext group', group);
-						return (
-							<div key={group.uuid}>
-								<GroupDisplayComponent
-									key={group.uuid}
-									groupName={showGroupName ? group.name : null}
-								/>
-								<GroupLevel
-									isUneditable={isUneditable}
-									groupId={group.uuid}
-									groupName={group.name ? group.name : ''}
-									numberOfCardsInGroup={group.cards.length}
-									groupsIds={groupsIds}
-									onMove={handleMove}
-									onDrop={handleInsert}
-									cardIds={group.cards}
-								>
-									{(card, getAfNodeProps) => (
-										<>
-											<FocusWrapper
-												tabIndex={0}
-												area="collection"
-												onBlur={() => handleBlur()}
-												onFocus={(e: React.FocusEvent<HTMLDivElement>) =>
-													handleArticleFocus(e, group.uuid, card, frontId)
-												}
+					{(group, isUneditable, showGroupName) => (
+						<div key={group.uuid}>
+							<GroupDisplayComponent
+								key={group.uuid}
+								groupName={showGroupName ? group.name : null}
+							/>
+							<GroupLevel
+								isUneditable={isUneditable}
+								groupId={group.uuid}
+								groupName={group.name ? group.name : ''}
+								numberOfCardsInGroup={group.cards.length}
+								groupsIds={groupsIds}
+								onMove={handleMove}
+								onDrop={handleInsert}
+								cardIds={group.cards}
+							>
+								{(card, getAfNodeProps) => (
+									<>
+										<FocusWrapper
+											tabIndex={0}
+											area="collection"
+											onBlur={() => handleBlur()}
+											onFocus={(e: React.FocusEvent<HTMLDivElement>) =>
+												handleArticleFocus(e, group.uuid, card, frontId)
+											}
+											uuid={card.uuid}
+										>
+											<Card
+												frontId={frontId}
+												collectionId={id}
 												uuid={card.uuid}
+												parentId={group.uuid}
+												isUneditable={isUneditable}
+												size={size}
+												canShowPageViewData={true}
+												getNodeProps={() => getAfNodeProps(isUneditable)}
+												onSelect={() => selectCard(card.uuid, id, false)}
+												onDelete={() => removeCard(group.uuid, card.uuid)}
+												groupSizeId={group.id ? parseInt(group.id) : 0}
+												updateCardMeta={updateCardMeta}
+												addImageToCard={addImageToCard}
 											>
-												<Card
-													frontId={frontId}
-													collectionId={id}
-													uuid={card.uuid}
-													parentId={group.uuid}
+												<CardLevel
 													isUneditable={isUneditable}
-													size={size}
-													canShowPageViewData={true}
-													getNodeProps={() => getAfNodeProps(isUneditable)}
-													onSelect={() => selectCard(card.uuid, id, false)}
-													onDelete={() => removeCard(group.uuid, card.uuid)}
-													groupSizeId={group.id ? parseInt(group.id) : 0}
-													updateCardMeta={updateCardMeta}
-													addImageToCard={addImageToCard}
+													cardId={card.uuid}
+													groupName={group.name ? group.name : ''}
+													numberOfCardsInGroup={group.cards.length}
+													groupsIds={groupsIds}
+													onMove={handleMove}
+													onDrop={handleInsert}
+													cardTypeAllowList={this.getPermittedCardTypes(
+														card.cardType,
+													)}
+													dropMessage={this.getDropMessage(card.cardType)}
 												>
-													<CardLevel
-														isUneditable={isUneditable}
-														cardId={card.uuid}
-														groupName={group.name ? group.name : ''}
-														numberOfCardsInGroup={group.cards.length}
-														groupsIds={groupsIds}
-														onMove={handleMove}
-														onDrop={handleInsert}
-														cardTypeAllowList={this.getPermittedCardTypes(
-															card.cardType,
-														)}
-														dropMessage={this.getDropMessage(card.cardType)}
-													>
-														{(supporting, getSupportingProps) => (
-															<Card
-																frontId={frontId}
-																uuid={supporting.uuid}
-																parentId={card.uuid}
-																canShowPageViewData={false}
-																onSelect={() =>
-																	selectCard(supporting.uuid, id, true)
-																}
-																isUneditable={isUneditable}
-																getNodeProps={() =>
-																	getSupportingProps(isUneditable)
-																}
-																onDelete={() =>
-																	removeSupportingCard(
-																		card.uuid,
-																		supporting.uuid,
-																	)
-																}
-																size="small"
-																updateCardMeta={updateCardMeta}
-																addImageToCard={addImageToCard}
-															/>
-														)}
-													</CardLevel>
-												</Card>
-											</FocusWrapper>
-											<VisibilityDivider
-												notifications={getArticleNotifications(
-													card.uuid,
-													lastDesktopArticle,
-													lastMobileArticle,
-												)}
-											/>
-										</>
-									)}
-								</GroupLevel>
-							</div>
-						);
-					}}
+													{(supporting, getSupportingProps) => (
+														<Card
+															frontId={frontId}
+															uuid={supporting.uuid}
+															parentId={card.uuid}
+															canShowPageViewData={false}
+															onSelect={() =>
+																selectCard(supporting.uuid, id, true)
+															}
+															isUneditable={isUneditable}
+															getNodeProps={() =>
+																getSupportingProps(isUneditable)
+															}
+															onDelete={() =>
+																removeSupportingCard(card.uuid, supporting.uuid)
+															}
+															size="small"
+															updateCardMeta={updateCardMeta}
+															addImageToCard={addImageToCard}
+														/>
+													)}
+												</CardLevel>
+											</Card>
+										</FocusWrapper>
+										<VisibilityDivider
+											notifications={getArticleNotifications(
+												card.uuid,
+												lastDesktopArticle,
+												lastMobileArticle,
+											)}
+										/>
+									</>
+								)}
+							</GroupLevel>
+						</div>
+					)}
 				</Collection>
 			</CollectionWrapper>
 		);
@@ -274,12 +266,9 @@ const createMapStateToProps = () => {
 			collectionId: props.id,
 			collectionSet: props.browsingStage,
 		});
-		// console.log('state', state);
-		console.log('collections data', state.collections.data[props.id]);
-		console.log('collections data id', props.id);
 
 		const groupsIds = state.collections.data[props.id]?.draft || [];
-		console.log({ groupsIds });
+
 		return {
 			groupsIds: groupsIds,
 			lastDesktopArticle: articleVisibilityDetails.desktop,
