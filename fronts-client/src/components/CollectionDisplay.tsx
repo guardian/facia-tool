@@ -139,11 +139,10 @@ const CollectionMeta = styled(CollectionMetaBase)`
 const ItemCountMeta = CollectionMetaBase;
 
 const CollectionHeadingSticky = styled.div`
-	position: sticky;
+	position: relative;
 	top: 0;
 	background-color: ${theme.collection.background};
 	box-shadow: 0 -1px 0 ${theme.base.colors.text};
-	z-index: 20;
 	margin: 0 -${contentContainerMargin};
 	padding: 0 ${contentContainerMargin};
 `;
@@ -348,17 +347,18 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								containerId={collection.id}
 								targetedRegions={collection.targetedRegions ?? []}
 								excludedRegions={collection.excludedRegions ?? []}
-								onTargetedRegionsChange={(newvals) =>
-									alert(JSON.stringify(newvals))
-								}
-								onExcludedRegionsChange={(newvals) =>
-									alert(JSON.stringify(newvals))
-								}
+								onTargetedRegionsChange={(newvals) => {
+									collection.targetedRegions = [...newvals];
+									alert(JSON.stringify(newvals));
+								}}
+								onExcludedRegionsChange={(newvals) => {
+									collection.excludedRegions = [...newvals];
+									alert(JSON.stringify(newvals));
+								}}
 								onRenameClicked={this.startRenameContainer}
 								onDeleteClicked={this.handleDeleteClick}
 							/>
 						) : undefined}
-
 						{isLocked ? (
 							<LockedCollectionFlag>Locked</LockedCollectionFlag>
 						) : headlineContent ? (
@@ -380,6 +380,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 						<DragToConvertFeastCollection sourceContainerId={id} />
 					) : undefined}
 				</CollectionHeadingSticky>
+
 				<DragIntentContainer
 					delay={300}
 					onIntentConfirm={this.toggleVisibility}
@@ -473,7 +474,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		this.setState({ isDeleteClicked: false });
 	};
 
-	// private handleUSOnlyOption = () => {
+	// private handleUSOnlyOption = (region:string) => {
 	// 	const { collection } = this.props;
 	// 	this.state.isUSOnly = !this.state.isUSOnly;
 	// 	if (this.state.isUSOnly) collection.targetedRegions = ['US'];

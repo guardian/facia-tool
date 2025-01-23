@@ -17,51 +17,41 @@ const IconContainer = styled.div`
 	cursor: pointer;
 `;
 
-const MenuOuterBody = styled.div`
-	float: left;
+const MenuOuter = styled.div`
 	position: absolute;
+	top: 60%; /* Positions below the button */
+	right: 0;
 	background-color: white;
-	opacity: 70%;
-	z-index: 50;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	margin-top: 5px;
+	list-style: none;
+	padding: 0;
+	width: 150px; /* Adjust width as needed */
+	z-index: 1000;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
 
 const MenuItem = styled.li`
-	list-style: none;
-	padding: 0;
+	font-family: TS3TextSans, sans-serif;
+	font-weight: normal;
+	font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 15px;
+	cursor: pointer;
 	border-bottom: 1px gray;
 	:hover {
 		background-color: lightgrey;
 	}
 `;
 
-const PartitionedBox = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-`;
-
-const TextArea = styled.div`
-	flex: 1;
-	font-family: TS3TextSans, sans-serif;
-	font-weight: normal;
-	font-size: 12px;
-	max-width: fit-content;
-`;
-
-const IconArea = styled.div`
-	max-width: 60px;
-	min-width: 60px;
-	flex: 0;
-`;
-
-const InvisibleClickCatcher = styled.div`
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100vw;
-	height: 100vh;
-	opacity: 0;
-	z-index: 40;
+const Icon = styled.span`
+	margin-left: 10px;
+	margin-right: 50px;
+	font-size: 14px;
+	color: #0d3349;
 `;
 
 export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
@@ -73,22 +63,8 @@ export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 	onDeleteClicked,
 }) => {
 	const [isMenuOpen, setMenuOpen] = useState(false);
-	const [menuTop, setMenuTop] = useState(0);
-	const [menuLeft, setMenuLeft] = useState(0);
 
 	const containerRef = createRef<HTMLDivElement>();
-
-	useEffect(() => {
-		if (isMenuOpen && !!containerRef.current) {
-			setMenuTop(
-				containerRef.current.offsetTop + containerRef.current.offsetHeight,
-			);
-			setMenuLeft(containerRef.current.offsetLeft);
-		} else {
-			setMenuTop(0);
-			setMenuLeft(0);
-		}
-	}, [isMenuOpen]);
 
 	const clickedUsOnly = () => {
 		if (targetedRegions.includes('us')) {
@@ -103,25 +79,43 @@ export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 		<>
 			<IconContainer
 				ref={containerRef}
-				onClick={() => setMenuOpen((prev) => !prev)}
+				onClick={() => {
+					setMenuOpen((prev) => !prev);
+				}}
 			>
 				<pre style={{ padding: 0, margin: 0 }}>opts</pre>
 			</IconContainer>
-			{isMenuOpen && menuTop > 0 ? (
+			{isMenuOpen ? (
 				<>
-					<InvisibleClickCatcher onClick={() => setMenuOpen(false)} />
-					<MenuOuterBody style={{ top: menuTop, left: menuLeft }}>
-						<ul style={{ padding: '0.2em', margin: '0.2em' }}>
-							<MenuItem onClick={clickedUsOnly}>
-								<PartitionedBox>
-									<TextArea>US Only</TextArea>
-									<IconArea>
-										{targetedRegions.includes('us') ? <TickIcon /> : undefined}
-									</IconArea>
-								</PartitionedBox>
-							</MenuItem>
-						</ul>
-					</MenuOuterBody>
+					<MenuOuter>
+						<MenuItem
+							onClick={() => {
+								clickedUsOnly();
+								setMenuOpen(false);
+							}}
+						>
+							US Only
+							<Icon>
+								{targetedRegions.includes('us') ? <h2>&#x2713;</h2> : undefined}
+							</Icon>
+						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								onRenameClicked();
+								setMenuOpen(false);
+							}}
+						>
+							Rename <Icon> </Icon>
+						</MenuItem>
+						<MenuItem
+							onClick={() => {
+								onDeleteClicked();
+								setMenuOpen(false);
+							}}
+						>
+							Delete <Icon> </Icon>
+						</MenuItem>
+					</MenuOuter>
 				</>
 			) : undefined}
 		</>
