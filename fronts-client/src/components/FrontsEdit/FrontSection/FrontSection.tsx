@@ -368,7 +368,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	frontsActions: {
 		fetchLastPressed: (id: string) => dispatch(fetchLastPressed(id)),
 		updateCollection: (collection: Collection) =>
-			dispatch(updateCollection(collection)),
+			dispatch(updateCollection(collection, 'overwrite')),
 		editorCloseFront: (id: string) => dispatch(editorCloseFront(id)),
 		changeBrowsingStage: (id: string, browsingStage: Stages) =>
 			dispatch(changedBrowsingStage(id, browsingStage)),

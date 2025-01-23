@@ -74,7 +74,7 @@ const persistCollectionOnEdit =
 				pendingCollectionIds.forEach((id) => {
 					const collection = selectors.selectById(state, id);
 					if (collection) {
-						store.dispatch(updateCollectionAction(collection));
+						store.dispatch(updateCollectionAction(collection, 'overwrite'));
 					}
 				});
 				pendingCollectionIds = [];

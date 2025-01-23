@@ -2252,6 +2252,7 @@ export const finalStateWhenRemoveACollection = {
 		loadingIds: [],
 		updatingIds: [],
 	},
+	optionsModal: undefined,
 	pageViewData: {
 		'3b73ae36-1b99-4102-b6cb-51cc66768182': {
 			frontId: '3b73ae36-1b99-4102-b6cb-51cc66768182',

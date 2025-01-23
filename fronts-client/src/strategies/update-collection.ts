@@ -42,17 +42,20 @@ const updateCollectionStrategy = (
 	const selectStrategy = () => {
 		switch (mode) {
 			case 'rename':
-				return renameEditionsCollection(id)(
-					collectionToEditionCollection(collection),
-				);
+				return () =>
+					renameEditionsCollection(id)(
+						collectionToEditionCollection(collection),
+					);
 			case 'update-territories':
-				return updateCollectionRegions(id)(
-					collectionToEditionCollection(collection),
-				);
+				return () =>
+					updateCollectionRegions(id)(
+						collectionToEditionCollection(collection),
+					);
 			case 'overwrite':
-				return updateEditionsCollection(id)(
-					collectionToEditionCollection(collection),
-				);
+				return () =>
+					updateEditionsCollection(id)(
+						collectionToEditionCollection(collection),
+					);
 		}
 	};
 	const curatedPlatformStrategy = selectStrategy();

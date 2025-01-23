@@ -27,6 +27,8 @@ describe('Front utilities', () => {
 			updatedBy: 'Foo Bar',
 			updatedEmail: 'foo.bar@guardian.co.uk',
 			live: [],
+			targetedRegions: [],
+			excludedRegions: [],
 		};
 		it('should fallback to config displayName by default', () => {
 			const actual = combineCollectionWithConfig(collectionConfig, collection);

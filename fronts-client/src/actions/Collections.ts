@@ -118,6 +118,8 @@ function getCollectionActionForMissingCollection(
 		previously: [],
 		id,
 		displayName: collectionConfig.displayName,
+		targetedRegions: [],
+		excludedRegions: [],
 	});
 	const { normalisedCollection, groups } =
 		normaliseCollectionWithNestedArticles(collection, collectionConfig);

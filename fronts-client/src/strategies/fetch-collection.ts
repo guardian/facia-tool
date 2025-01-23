@@ -18,6 +18,8 @@ export const editionCollectionToCollection = (
 			...restCol,
 			draft: items,
 			live: [],
+			targetedRegions: restCol.targetedRegions ?? [],
+			excludedRegions: restCol.excludedRegions ?? [],
 		},
 		storiesVisibleByStage: {
 			// TODO - remove me once we figure out what to do here!

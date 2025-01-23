@@ -58,7 +58,7 @@ describe('Collection actions', () => {
 				config,
 				...stateWithCollection,
 			});
-			await store.dispatch(updateCollection(collection) as any);
+			await store.dispatch(updateCollection(collection, 'overwrite') as any);
 			const actions = store.getActions();
 			expect(actions[0].payload[0]).toEqual(
 				collectionActions.updateStart({
@@ -98,7 +98,7 @@ describe('Collection actions', () => {
 				...stateWithCollection,
 			});
 
-			await store.dispatch(updateCollection(collection) as any);
+			await store.dispatch(updateCollection(collection, 'overwrite') as any);
 			const actions = store.getActions();
 			expect(actions[2]).toEqual(undefined);
 		});
