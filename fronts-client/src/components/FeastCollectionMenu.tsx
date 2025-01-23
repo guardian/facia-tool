@@ -21,6 +21,8 @@ const MenuOuterBody = styled.div`
 	float: left;
 	position: absolute;
 	background-color: white;
+	opacity: 70%;
+	z-index: 50;
 `;
 
 const MenuItem = styled.li`
@@ -50,6 +52,16 @@ const IconArea = styled.div`
 	max-width: 60px;
 	min-width: 60px;
 	flex: 0;
+`;
+
+const InvisibleClickCatcher = styled.div`
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100vw;
+	height: 100vh;
+	opacity: 0;
+	z-index: 40;
 `;
 
 export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
@@ -84,6 +96,7 @@ export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 		} else {
 			onTargetedRegionsChange(['us', ...targetedRegions]);
 		}
+		setMenuOpen(false);
 	};
 
 	return (
@@ -92,21 +105,24 @@ export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 				ref={containerRef}
 				onClick={() => setMenuOpen((prev) => !prev)}
 			>
-				<pre>opts</pre>
+				<pre style={{ padding: 0, margin: 0 }}>opts</pre>
 			</IconContainer>
 			{isMenuOpen && menuTop > 0 ? (
-				<MenuOuterBody style={{ top: menuTop, left: menuLeft }}>
-					<ul style={{ padding: '0.2em', margin: '0.2em' }}>
-						<MenuItem onClick={clickedUsOnly}>
-							<PartitionedBox>
-								<TextArea>US Only</TextArea>
-								<IconArea>
-									{targetedRegions.includes('us') ? <TickIcon /> : undefined}
-								</IconArea>
-							</PartitionedBox>
-						</MenuItem>
-					</ul>
-				</MenuOuterBody>
+				<>
+					<InvisibleClickCatcher onClick={() => setMenuOpen(false)} />
+					<MenuOuterBody style={{ top: menuTop, left: menuLeft }}>
+						<ul style={{ padding: '0.2em', margin: '0.2em' }}>
+							<MenuItem onClick={clickedUsOnly}>
+								<PartitionedBox>
+									<TextArea>US Only</TextArea>
+									<IconArea>
+										{targetedRegions.includes('us') ? <TickIcon /> : undefined}
+									</IconArea>
+								</PartitionedBox>
+							</MenuItem>
+						</ul>
+					</MenuOuterBody>
+				</>
 			) : undefined}
 		</>
 	);
