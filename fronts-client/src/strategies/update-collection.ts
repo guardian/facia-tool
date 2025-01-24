@@ -20,10 +20,7 @@ const collectionToEditionCollection = (
 	};
 };
 
-export type CollectionUpdateMode =
-	| 'overwrite'
-	| 'rename'
-	| 'update-territories';
+export type CollectionUpdateMode = 'overwrite' | 'rename' | 'regions';
 
 const updateCollectionStrategy = (
 	state: State,
@@ -46,7 +43,7 @@ const updateCollectionStrategy = (
 					renameEditionsCollection(id)(
 						collectionToEditionCollection(collection),
 					);
-			case 'update-territories':
+			case 'regions':
 				return () =>
 					updateCollectionRegions(id)(
 						collectionToEditionCollection(collection),

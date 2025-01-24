@@ -19,7 +19,7 @@ const IconContainer = styled.div`
 
 const MenuOuter = styled.div`
 	position: absolute;
-	top: 60%; /* Positions below the button */
+	top: 60%;
 	right: 0;
 	background-color: white;
 	border: 1px solid #ddd;
@@ -27,7 +27,7 @@ const MenuOuter = styled.div`
 	margin-top: 5px;
 	list-style: none;
 	padding: 0;
-	width: 150px; /* Adjust width as needed */
+	width: 160px;
 	z-index: 1000;
 	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 `;
@@ -83,7 +83,7 @@ export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 					setMenuOpen((prev) => !prev);
 				}}
 			>
-				<pre style={{ padding: 0, margin: 0 }}>opts</pre>
+				<pre style={{ padding: 0, margin: 0 }}>&#x22EE;</pre>
 			</IconContainer>
 			{isMenuOpen ? (
 				<>

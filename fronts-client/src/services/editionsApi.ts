@@ -251,7 +251,7 @@ export const updateCollectionRegions =
 	async (collection: EditionsCollection): Promise<void> => {
 		try {
 			const response = await pandaFetch(
-				`/editions-api/collections/${id}/targeted-regions`,
+				`/editions-api/collections/${id}/update-regions`,
 				{
 					method: 'PATCH',
 					headers: {

@@ -347,14 +347,12 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								containerId={collection.id}
 								targetedRegions={collection.targetedRegions ?? []}
 								excludedRegions={collection.excludedRegions ?? []}
-								onTargetedRegionsChange={(newvals) => {
-									collection.targetedRegions = [...newvals];
-									alert(JSON.stringify(newvals));
-								}}
-								onExcludedRegionsChange={(newvals) => {
-									collection.excludedRegions = [...newvals];
-									alert(JSON.stringify(newvals));
-								}}
+								onTargetedRegionsChange={(newvals) =>
+									this.handleTargetedRegionsClick(newvals)
+								}
+								onExcludedRegionsChange={(newvals) =>
+									this.handleExcludedRegionsClick(newvals)
+								}
 								onRenameClicked={this.startRenameContainer}
 								onDeleteClicked={this.handleDeleteClick}
 							/>
@@ -474,13 +472,28 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		this.setState({ isDeleteClicked: false });
 	};
 
-	// private handleUSOnlyOption = (region:string) => {
-	// 	const { collection } = this.props;
-	// 	this.state.isUSOnly = !this.state.isUSOnly;
-	// 	if (this.state.isUSOnly) collection.targetedRegions = ['US'];
-	// 	else collection.targetedRegions = [];
-	// 	this.props.updateCollection(collection!, false, true);
-	// };
+	private handleTargetedRegionsClick = (region: string[]) => {
+		const { collection } = this.props;
+		if (collection) {
+			collection.targetedRegions = [...region, ...collection.targetedRegions];
+			alert(JSON.stringify(region));
+			this.props.updateCollection(collection!, 'regions');
+		}
+	};
+
+	private handleExcludedRegionsClick = (region: string[]) => {
+		const { collection } = this.props;
+		if (collection) {
+			collection.excludedRegions = [...region, ...collection.excludedRegions];
+			if (collection.targetedRegions.includes('us')) {
+				//only handling "us" for now, todo: will implement for all regions coming as string[]
+				collection.targetedRegions = collection.targetedRegions.filter(
+					(_) => _ != 'us',
+				);
+			}
+			this.props.updateCollection(collection!, 'regions');
+		}
+	};
 }
 
 const createMapStateToProps = () => {

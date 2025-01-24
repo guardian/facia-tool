@@ -141,12 +141,13 @@ trait CollectionsQueries extends Logging {
       updatedCollections.head
     }
 
-	def updateCollectionTargettedRegions(collection: EditionsCollection): EditionsCollection =
+	def updateCollectionRegionsInDB(collection: EditionsCollection): EditionsCollection =
 		DB localTx { implicit session =>
 			val lastUpdated = EditionsDB.truncateDateTime(OffsetDateTime.now())
 			sql"""
       UPDATE collections
       SET "targeted_regions" = ${collection.targetedRegionsPG()},
+          "excluded_regions" = ${collection.excludedRegionsPG()},
           updated_on = $lastUpdated,
           updated_by = ${collection.updatedBy},
           updated_email = ${collection.updatedEmail}

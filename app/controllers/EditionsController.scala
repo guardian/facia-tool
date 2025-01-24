@@ -291,7 +291,7 @@ class EditionsController(
     }
   }
 
-  def markCollectionForUSOnly(collectionId: String) = EditEditionsAuthAction(
+  def updateCollectionRegions(collectionId: String) = EditEditionsAuthAction(
 	parse.json[EditionsFrontendCollectionWrapper]
   ){
 	req =>
@@ -305,10 +305,11 @@ class EditionsController(
 		  }else{
 			  val updatingCollection = collection.head.copy(
 				  targetedRegions = req.body.collection.targetedRegions,
+				  excludedRegions = req.body.collection.excludedRegions,
 				  updatedBy = Some(UserUtil.getDisplayName(req.user)),
 				  updatedEmail = Some(req.user.email)
 			  )
-			val updatedCollection = db.updateCollectionTargettedRegions(updatingCollection)
+			val updatedCollection = db.updateCollectionRegionsInDB(updatingCollection)
 			Ok(Json.toJson(EditionsFrontendCollectionWrapper.fromCollection(updatedCollection)))
 		  }
   }
