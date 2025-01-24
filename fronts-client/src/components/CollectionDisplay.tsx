@@ -183,7 +183,6 @@ const CollectionToggleContainer = styled.div`
 	max-width: 130px;
 	display: flex;
 	justify-content: flex-end;
-	z-index: 2;
 	:hover {
 		${ButtonCircularWithTransition} {
 			background-color: ${theme.button.backgroundColorFocused};
@@ -475,25 +474,15 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 	private handleTargetedRegionsClick = (region: string[]) => {
 		const { collection } = this.props;
 		if (collection) {
-			collection.targetedRegions = [...region, ...collection.targetedRegions];
-			alert(JSON.stringify(region));
-			this.props.updateCollection(collection!, 'regions');
+			const updatedCollections = {
+				...collection,
+				targetedRegions: region,
+			};
+			this.props.updateCollection(updatedCollections, 'regions');
 		}
 	};
 
-	private handleExcludedRegionsClick = (region: string[]) => {
-		const { collection } = this.props;
-		if (collection) {
-			collection.excludedRegions = [...region, ...collection.excludedRegions];
-			if (collection.targetedRegions.includes('us')) {
-				//only handling "us" for now, todo: will implement for all regions coming as string[]
-				collection.targetedRegions = collection.targetedRegions.filter(
-					(_) => _ != 'us',
-				);
-			}
-			this.props.updateCollection(collection!, 'regions');
-		}
-	};
+	private handleExcludedRegionsClick = (region: string[]) => {};
 }
 
 const createMapStateToProps = () => {

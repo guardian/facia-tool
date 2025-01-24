@@ -140,7 +140,9 @@ class FeastPublicationTargetTest
                   )
                 )
               )
-            )
+            ),
+			  None,
+			  None,
           )
         )
       )

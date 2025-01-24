@@ -1,4 +1,4 @@
-import React, { createRef, useEffect, useState } from 'react';
+import React, { createRef, useState } from 'react';
 import styled from 'styled-components';
 
 interface FeastCollectionMenuProps {
@@ -24,7 +24,7 @@ const MenuOuter = styled.div`
 	background-color: white;
 	border: 1px solid #ddd;
 	border-radius: 4px;
-	margin-top: 5px;
+	margin-top: -5px;
 	list-style: none;
 	padding: 0;
 	width: 160px;
@@ -67,11 +67,13 @@ export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 	const containerRef = createRef<HTMLDivElement>();
 
 	const clickedUsOnly = () => {
+		//only handling one value for "regions" which is "US" so more logic is around toggle it
 		if (targetedRegions.includes('us')) {
 			onTargetedRegionsChange(targetedRegions.filter((_) => _ != 'us'));
 		} else {
 			onTargetedRegionsChange(['us', ...targetedRegions]);
 		}
+
 		setMenuOpen(false);
 	};
 

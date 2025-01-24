@@ -1473,6 +1473,8 @@ export const finalStateWhenAddNewCollection = {
 				platform: undefined,
 				targetedTerritory: undefined,
 				type: undefined,
+				targetedRegions: [], //add here to pass the test?
+				excludedRegions: [],
 			},
 			'bf3428ed-4ee8-4321-8099-6590d0b51fd6': {
 				displayName: 'New collection',

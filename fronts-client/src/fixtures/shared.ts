@@ -499,6 +499,8 @@ const collectionWithoutGroups = {
 	id: 'collectionWithoutGroups',
 	displayName: 'Collection Without Groups',
 	type: 'type',
+	targetedRegions: [],
+	excludedRegions: [],
 };
 const collection = {
 	live: [
@@ -519,6 +521,8 @@ const collection = {
 	id: 'exampleCollection',
 	displayName: 'Example Collection',
 	type: 'type',
+	targetedRegions: [], //mandatory, should be added here to compile
+	excludedRegions: [],
 };
 
 const collectionWithPreviously = {
@@ -554,6 +558,8 @@ const collectionWithPreviously = {
 	id: 'exampleCollection',
 	displayName: 'Example Collection',
 	type: 'type',
+	targetedRegions: [],
+	excludedRegions: [],
 };
 
 const normalisedCollectonWithPreviously = {
@@ -581,6 +587,8 @@ const normalisedCollectonWithPreviously = {
 	previously: ['uuid'],
 	previouslyCardIds: [],
 	type: 'type',
+	targetedRegions: [],
+	excludedRegions: [],
 };
 
 const collectionConfig = {
@@ -602,6 +610,8 @@ const collectionWithSupportingArticles = {
 	],
 	id: 'exampleCollection',
 	displayName: 'Example Collection',
+	targetedRegions: [],
+	excludedRegions: [],
 };
 
 const stateWithCollection: any = {
@@ -661,6 +671,8 @@ const stateWithCollection: any = {
 				draft: [],
 				previously: undefined,
 				type: 'type',
+				targetedRegions: [], //add here to pass the test
+				excludedRegions: [],
 			},
 			exampleCollectionTwo: {
 				id: 'exampleCollection',
@@ -740,6 +752,8 @@ const stateWithCollectionAndSupporting: any = {
 				live: ['abc'],
 				draft: [],
 				previously: undefined,
+				targetedRegions: [],
+				excludedRegions: [],
 			},
 		},
 	},

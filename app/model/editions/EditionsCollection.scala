@@ -17,8 +17,8 @@ case class EditionsCollection(
     prefill: Option[CapiPrefillQuery],
     contentPrefillTimeWindow: Option[CapiQueryTimeWindow],
     items: List[EditionsCard],
-	targetedRegions: Option[List[String]],
-	excludedRegions: Option[List[String]],
+    targetedRegions: Option[List[String]],
+    excludedRegions: Option[List[String]]
 ) {
   def toPublishedCollection: PublishedCollection = PublishedCollection(
     id,
@@ -38,16 +38,16 @@ case class EditionsCollection(
     )
   )
 
-	private def listToPgJson (input: List[String]): PGobject = {
-	    val metaDataParam = new PGobject()
-	    metaDataParam.setType("jsonb")
-	    metaDataParam.setValue(Json.toJson(input).toString())
-	    metaDataParam
-	}
+  private def listToPgJson(input: List[String]): PGobject = {
+    val metaDataParam = new PGobject()
+    metaDataParam.setType("jsonb")
+    metaDataParam.setValue(Json.toJson(input).toString())
+    metaDataParam
+  }
 
-	def targetedRegionsPG() = targetedRegions.map(listToPgJson)
+  def targetedRegionsPG() = targetedRegions.map(listToPgJson)
 
-    def excludedRegionsPG() = excludedRegions.map(listToPgJson)
+  def excludedRegionsPG() = excludedRegions.map(listToPgJson)
 
 }
 
@@ -76,8 +76,10 @@ object EditionsCollection {
       capiPrefillQuery,
       contentPrefillTimeWindow,
       Nil,
-	  rs.stringOpt(prefix + "targeted_regions").map(s => Json.parse(s).validate[List[String]].get),
-	  rs.stringOpt(prefix + "excluded_regions").map(s => Json.parse(s).validate[List[String]].get),
+      rs.stringOpt(prefix + "targeted_regions")
+        .map(s => Json.parse(s).validate[List[String]].get),
+      rs.stringOpt(prefix + "excluded_regions")
+        .map(s => Json.parse(s).validate[List[String]].get)
     )
   }
 
@@ -135,8 +137,10 @@ object EditionsCollection {
         capiPrefillQuery,
         contentPrefillTimeWindow,
         Nil,
-		rs.stringOpt(prefix + "targeted_regions").map(s => Json.parse(s).validate[List[String]].get),
-		rs.stringOpt(prefix + "excluded_regions").map(s => Json.parse(s).validate[List[String]].get),
+        rs.stringOpt(prefix + "targeted_regions")
+          .map(s => Json.parse(s).validate[List[String]].get),
+        rs.stringOpt(prefix + "excluded_regions")
+          .map(s => Json.parse(s).validate[List[String]].get)
       )
     }
   }
