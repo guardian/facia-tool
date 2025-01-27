@@ -130,6 +130,8 @@ describe('Collection actions', () => {
 					live: ['abc', 'def'],
 					previously: undefined,
 					type: 'type',
+					targetedRegions: [], //add here to pass the test
+					excludedRegions: [],
 				},
 				exampleCollectionTwo: {
 					displayName: 'Example Collection',
@@ -196,6 +198,8 @@ describe('Collection actions', () => {
 					live: ['abc', 'def'],
 					previously: undefined,
 					type: 'type',
+					targetedRegions: [], //add here to pass the test for Get Collections thunk
+					excludedRegions: [],
 				},
 				exampleCollectionTwo: {
 					displayName: 'Example Collection',

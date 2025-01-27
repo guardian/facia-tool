@@ -1473,7 +1473,7 @@ export const finalStateWhenAddNewCollection = {
 				platform: undefined,
 				targetedTerritory: undefined,
 				type: undefined,
-				targetedRegions: [], //add here to pass the test?
+				targetedRegions: [], //add here to pass the test for add collection
 				excludedRegions: [],
 			},
 			'bf3428ed-4ee8-4321-8099-6590d0b51fd6': {
@@ -1493,6 +1493,8 @@ export const finalStateWhenAddNewCollection = {
 				platform: undefined,
 				targetedTerritory: undefined,
 				type: undefined,
+				targetedRegions: [], //add here to pass the test for add collection
+				excludedRegions: [],
 			},
 		},
 		pagination: null,
@@ -2235,6 +2237,8 @@ export const finalStateWhenRemoveACollection = {
 				platform: undefined,
 				targetedTerritory: undefined,
 				type: undefined,
+				targetedRegions: [], //add here to pass the test for remove collection
+				excludedRegions: [],
 			},
 		},
 		pagination: null,
