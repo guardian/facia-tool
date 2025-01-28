@@ -13,6 +13,7 @@ interface PosSpec {
 	groupName?: string;
 	numberOfCardsInGroup?: number;
 	groupsIds?: string[];
+	cards?: any[];
 
 }
 
@@ -187,7 +188,8 @@ class Level<T> extends React.Component<Props<T>, State> {
 			id: this.props.parentId,
 			groupName: this.props.groupName,
 			numberOfCardsInGroup: this.props.numberOfCardsInGroup,
-			groupsIds: this.props.groupsIds
+			groupsIds: this.props.groupsIds,
+			cards: this.props.arr
 		};
 
 		if (!af) {

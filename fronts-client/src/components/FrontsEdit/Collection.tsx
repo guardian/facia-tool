@@ -164,6 +164,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 								isUneditable={isUneditable}
 								groupId={group.uuid}
 								groupName={group.name ? group.name : ''}
+								//todo: numberOfCards can probably just be got by the card array
 								numberOfCardsInGroup={group.cards.length}
 								groupsIds={groupsIds}
 								onMove={handleMove}

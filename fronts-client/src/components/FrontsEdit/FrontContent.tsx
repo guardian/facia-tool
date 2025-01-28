@@ -179,9 +179,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	}
 
 	public handleMove = (move: Move<TCard>) => {
-		// events.dropArticle(this.props.id, 'collection');
-		// this.props.moveCard(move.to, move.data, move.from || null, 'collection');
-
 		const numberOfArticlesAlreadyInGroup = move.to.numberOfCardsInGroup;
 
 		// if we are inserting an article into any group that is not the splash, then we just insert
@@ -191,84 +188,76 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		} else {
 			// if we're in the splash and we insert an article and there's no other article already in the splash, then we just insert
 			if (numberOfArticlesAlreadyInGroup === 0 || undefined) {
-				console.log('moving article to splash with no other articles');
-
 				events.dropArticle(this.props.id, 'collection');
 				this.props.moveCard(
 					move.to,
 					move.data,
 					move.from || null,
 					'collection',
-					);
-				}
-				// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
-				// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
+				);
+			}
+			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
+			// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
 			else if (
-					!!move.to.groupsIds &&
-					!!numberOfArticlesAlreadyInGroup &&
-					numberOfArticlesAlreadyInGroup > 0 &&
-					move.to.index === 0
-				) {
-					console.log(
-						'moving article to top of splash group with another article',
-					);
+				!!move.to.groupsIds &&
+				move.to.cards !== undefined &&
+				move.to.index === 0
+			) {
+				//we do the regular move steps for the article we're moving to splash
+				events.dropArticle(this.props.id, 'collection');
+				this.props.moveCard(
+					move.to,
+					move.data,
+					move.from || null,
+					'collection',
+				);
 
-					// grabbing the pre-existing article is tricky. Either amend the e target or add a function to add the metadata?
+				//then we need to move the other article to the other group
+				const otherGroup = move.to.groupsIds.filter(
+					(groupId) => groupId !== move.to.id,
+				)[0];
+				const existingCardData = move.to.cards[0];
+				const existingCardTo = {
+					index: 0,
+					id: otherGroup,
+					type: 'group',
+					groupsIds: move.to.groupsIds,
+				};
+				const existingCardMoveData: Move<TCard> = {
+					data: existingCardData,
+					from: false,
+					to: existingCardTo,
+				};
+				this.handleMove(existingCardMoveData);
+			}
 
-					const otherGroup = move.to.groupsIds.filter(
-						(groupId) => groupId !== move.to.id,
-					)[0];
+			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
+			// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
+			else if (
+				!!move.to.groupsIds &&
+				!!numberOfArticlesAlreadyInGroup &&
+				numberOfArticlesAlreadyInGroup > 0 &&
+				move.to.index > 0
+			) {
+				const otherGroup = move.to.groupsIds.filter(
+					(groupId) => groupId !== move.to.id,
+				)[0];
 
-					// this.props.id needs to be the id of the other card
-					const amendedTo = {
-						index: 0,
-						id: otherGroup,
-						type: 'group',
-						groupsIds: move.to.groupsIds,
-					};
+				const amendedTo = {
+					index: 0,
+					id: otherGroup,
+					type: 'group',
+					groupsIds: move.to.groupsIds,
+				};
+				events.dropArticle(this.props.id, 'collection');
 
-					events.dropArticle(this.props.id, 'collection');
-
-					// the "to" needs to be index 0, groupId the id of the other group, and type group
-					this.props.moveCard(
-						amendedTo,
-						move.data,
-						move.from || null,
-						'collection',
-					);
-				}
-
-				// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
-				// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
-				else if (
-					!!move.to.groupsIds &&
-					!!numberOfArticlesAlreadyInGroup &&
-					numberOfArticlesAlreadyInGroup > 0 &&
-					move.to.index > 0
-				) {
-					console.log(
-						'moving article to bottom of splash group with another article',
-					);
-					const otherGroup = move.to.groupsIds.filter(
-						(groupId) => groupId !== move.to.id,
-					)[0];
-
-					const amendedTo = {
-						index: 0,
-						id: otherGroup,
-						type: 'group',
-						groupsIds: move.to.groupsIds,
-					};
-					events.dropArticle(this.props.id, 'collection');
-
-					this.props.moveCard(
-						amendedTo,
-						move.data,
-						move.from || null,
-						'collection',
-					);
-				}
-
+				this.props.moveCard(
+					amendedTo,
+					move.data,
+					move.from || null,
+					'collection',
+				);
+			}
 		}
 	};
 
@@ -282,7 +271,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		} else {
 			// if we're in the splash and we insert an article and there's no other article already in the splash, then we just insert
 			if (numberOfArticlesAlreadyInGroup === 0 || undefined) {
-				console.log('inserting article into splash with no other articles');
 				events.dropArticle(
 					this.props.id,
 					isDropFromCAPIFeed(e) ? 'feed' : 'url',
@@ -291,36 +279,32 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			}
 			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
 			// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
-			else if (
-				!!to.groupsIds &&
-				!!numberOfArticlesAlreadyInGroup &&
-				numberOfArticlesAlreadyInGroup > 0 &&
-				to.index === 0
-			) {
-				console.log(
-					'inserting article at top of splash group with another article',
+			else if (!!to.groupsIds && to.cards !== undefined && to.index === 0) {
+				// we do the regular insert steps for the article we're inserting to splash
+				events.dropArticle(
+					this.props.id,
+					isDropFromCAPIFeed(e) ? 'feed' : 'url',
 				);
+				this.props.insertCardFromDropEvent(e, to, 'collection');
 
-				// grabbing the pre-existing article is tricky. Either amend the e target or add a function to add the metadata?
+				//then we need to move the other article to the other group
 
 				const otherGroup = to.groupsIds.filter(
 					(groupId) => groupId !== to.id,
 				)[0];
-
-				// this.props.id needs to be the id of the other card
-				const amendedTo = {
+				const existingCardData = to.cards[0];
+				const existingCardTo = {
 					index: 0,
 					id: otherGroup,
 					type: 'group',
 					groupsIds: to.groupsIds,
 				};
-
-				events.dropArticle(
-					this.props.id,
-					isDropFromCAPIFeed(e) ? 'feed' : 'url',
-				);
-				// the "to" needs to be index 0, groupId the id of the other group, and type group
-				this.props.insertCardFromDropEvent(e, amendedTo, 'collection');
+				const existingCardMoveData: Move<TCard> = {
+					data: existingCardData,
+					from: false,
+					to: existingCardTo,
+				};
+				this.handleMove(existingCardMoveData);
 			}
 
 			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
@@ -331,9 +315,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				numberOfArticlesAlreadyInGroup > 0 &&
 				to.index > 0
 			) {
-				console.log(
-					'inserting article at bottom of splash group with another article',
-				);
 				const otherGroup = to.groupsIds.filter(
 					(groupId) => groupId !== to.id,
 				)[0];
