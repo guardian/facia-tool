@@ -294,9 +294,7 @@ class EditionsController(
   def updateCollectionRegions(collectionId: String) = EditEditionsAuthAction(
     parse.json[EditionsFrontendCollectionWrapper]
   ) { req =>
-    logger.info(s"Mark for US only the collection ${collectionId}")
-
-    val collection =
+	  val collection =
       db.getCollections(List(GetCollectionsFilter(id = collectionId, None)))
 
     if (collection.isEmpty) {

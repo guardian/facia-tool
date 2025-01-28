@@ -671,7 +671,7 @@ const stateWithCollection: any = {
 				draft: [],
 				previously: undefined,
 				type: 'type',
-				targetedRegions: [], //add here to pass the test
+				targetedRegions: [],
 				excludedRegions: [],
 			},
 			exampleCollectionTwo: {

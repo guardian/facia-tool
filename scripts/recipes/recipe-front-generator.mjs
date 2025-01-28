@@ -14,11 +14,12 @@ Example usage is
     --front-name 'All Recipes'
     --cookie "$AUTH_COOKIE"
     --collection-count 7
-
+    [--filter vegetarian]
 stage - set this to LOCAL or CODE. Don't run against PROD.
 fronts-issue-id - the issue containing the fronts to populate. Get this from the browser address bar in Fronts tool (e.g., https://fronts.local.dev-gutools.co.uk/v2/issues/9d58078c-f9d8-4c27-8949-5c1dc8d2bfe5)
 front-name - either 'All Recipes' or 'Meat-Free'. Note that it needs to exist already.
 cookie - set of cookies containing authorization. Get this by going into the Network tab, reloading your Front, finding a network request and copying the headers.
+filter - can be set to 'veg' or 'vegetarian' to restrict to only vegetarian recipes.
 I tend to then set this into an environment variable to make by console buffer more readable
 collection-count - number of collections to generate. Defaults to 1 if not specified.
 `;
@@ -162,10 +163,11 @@ const stage = getArg("--stage");
 const frontsBaseUrl = getFrontsUri();
 const frontsIssueId = getArg("--fronts-issue-id");
 const collectionCount = parseInt(getArg("--collection-count", true) ?? "1");
-const minRecipes = 4;
-const maxRecipes = 40;
+const minRecipes = 2;
+const maxRecipes = 8;
 const frontName = getArg("--front-name");
 const cookie = getArg("--cookie");
+const filter = getArg("--filter", true);
 const frontsHeaders = {
     "Content-Type": "application/json",
     Cookie: cookie,
@@ -189,9 +191,11 @@ const frontsHeaders = {
  * @param count
  * @return {Promise<any>}
  */
-async function findRecipes(searchString, count) {
-    console.debug(`search term is '${searchString}'`)
-    const response = await fetch(`${recipeBase}/search?q=${encodeURIComponent(searchString)}&format=Full&limit=${count}`);
+async function findRecipes(searchString, count, meatFree) {
+    console.debug(`search term is '${searchString}'`);
+		const baseUrl = `${recipeBase}/search?q=${encodeURIComponent(searchString)}&format=Full&limit=${count}`;
+		const url = meatFree ? baseUrl + '&dietFilter=vegetarian' : baseUrl;
+    const response = await fetch(url);
     if(response.status !== 200) {
         const content = await response.text();
         console.error(`Server error ${response.status}: ${content}`);
@@ -289,7 +293,7 @@ function searchTermFromCollectionName(collectionName) {
 }
 
 async function buildCollection(collectionName, frontId, count) {
-    const recipes = await findRecipes(searchTermFromCollectionName(collectionName), count);   //use the collectionName as a search string
+    const recipes = await findRecipes(searchTermFromCollectionName(collectionName), count, filter==='veg' || filter==='vegetarian');   //use the collectionName as a search string
     if(recipes.maxScore < 0.7) {
         throw new ContinueOnError(`No reliable results for '${collectionName} as a search string`);
     }
@@ -302,7 +306,7 @@ async function buildCollection(collectionName, frontId, count) {
 }
 
 async function frontNameToId(issueId, frontName) {
-    const response = await fetch(
+	const response = await fetch(
         `${frontsBaseUrl}/editions-api/issues/${issueId}`,
         {
             method: "GET",

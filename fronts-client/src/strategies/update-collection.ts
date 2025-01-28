@@ -28,14 +28,6 @@ const updateCollectionStrategy = (
 	collection: CollectionWithNestedArticles,
 	mode: CollectionUpdateMode = 'overwrite',
 ) => {
-	// const curatedPlatformStrategy = () =>
-	// 	renamingCollection
-	// 		? renameEditionsCollection(id)(collectionToEditionCollection(collection))
-	// 		: isMarkedForUSOnly
-	// 			? markCollectionForUSOnly(id)(collectionToEditionCollection(collection))
-	// 			: updateEditionsCollection(id)(
-	// 					collectionToEditionCollection(collection),
-	// 				);
 	const selectStrategy = () => {
 		switch (mode) {
 			case 'rename':
