@@ -116,7 +116,6 @@ describe('Curation', () => {
 				groupsIds: undefined,
 				id: '2',
 				index: 1,
-				numberOfCardsInGroup: undefined,
 				type: 'a',
 			},
 		});
@@ -178,7 +177,6 @@ describe('Curation', () => {
 				groupsIds: undefined,
 				id: '2',
 				index: 0,
-				numberOfCardsInGroup: undefined,
 				type: 'a',
 			},
 		});
@@ -295,7 +293,6 @@ describe('Curation', () => {
 			groupsIds: undefined,
 			id: '2',
 			index: 1,
-			numberOfCardsInGroup: undefined,
 			type: 'a',
 		});
 	});

@@ -21,7 +21,6 @@ interface OuterProps {
 	dropMessage?: string;
 	cardTypeAllowList?: CardTypes[];
 	groupName?: string;
-	numberOfCardsInGroup?: number;
 	groupsIds?: string[];
 }
 
@@ -53,7 +52,6 @@ const CardLevel = ({
 	dropMessage,
 	cardTypeAllowList,
 	groupName,
-	numberOfCardsInGroup,
 	groupsIds,
 }: Props) => (
 	<CardTypeLevel
@@ -61,7 +59,6 @@ const CardLevel = ({
 		parentType="card"
 		parentId={cardId}
 		groupName={groupName}
-		numberOfCardsInGroup={numberOfCardsInGroup}
 		groupsIds={groupsIds}
 		onMove={onMove}
 		onDrop={onDrop}

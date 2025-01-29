@@ -179,7 +179,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	}
 
 	public handleMove = (move: Move<TCard>) => {
-		const numberOfArticlesAlreadyInGroup = move.to.numberOfCardsInGroup;
+		const numberOfArticlesAlreadyInGroup = move.to.cards?.length;
 
 		// if we are inserting an article into any group that is not the splash, then we just insert
 		if (move.to.groupName !== 'splash') {
@@ -262,7 +262,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	};
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-		const numberOfArticlesAlreadyInGroup = to.numberOfCardsInGroup;
+		const numberOfArticlesAlreadyInGroup = to.cards?.length;
 
 		// if we are inserting an article into any group that is not the splash, then we just insert
 		if (to.groupName !== 'splash') {
