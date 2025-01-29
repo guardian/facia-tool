@@ -81,6 +81,12 @@ const Name = styled.span`
 	padding-right: 0.25em;
 `;
 
+const SecondaryContainerHint = styled.span`
+	color: ${theme.base.colors.text};
+	font-size: 12px;
+	padding-right: 0.25em;
+`;
+
 const ItemCount = styled.span`
 	white-space: nowrap;
 `;
@@ -129,7 +135,11 @@ const CollectionOverview = ({
 			isSelected={isSelected}
 		>
 			<TextContainerLeft>
+				{collection?.metadata?.some((tag) => tag.type === 'Secondary') && (
+					<SecondaryContainerHint>Sec.</SecondaryContainerHint>
+				)}
 				<Name>{collection.displayName}</Name>
+
 				<ItemCount>({cardCount})</ItemCount>
 			</TextContainerLeft>
 			<TextContainerRight>
