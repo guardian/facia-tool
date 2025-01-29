@@ -250,8 +250,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 									)}
 									{isFeast && (
 										<>
-											{targetedRegions?.length > 0 ? 'US!' : ''}{' '}
-											{/*The above text will appear on collection to show US tagged collections, for testing purpose only.*/}
+											{targetedRegions?.length > 0 ? '🇺🇸 ' : ''}{' '}
 											<MoveButtonsContainer>
 												<ButtonCircularCaret
 													small

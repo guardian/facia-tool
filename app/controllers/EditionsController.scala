@@ -294,7 +294,7 @@ class EditionsController(
   def updateCollectionRegions(collectionId: String) = EditEditionsAuthAction(
     parse.json[EditionsFrontendCollectionWrapper]
   ) { req =>
-	  val collection =
+    val collection =
       db.getCollections(List(GetCollectionsFilter(id = collectionId, None)))
 
     if (collection.isEmpty) {
