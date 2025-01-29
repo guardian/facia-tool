@@ -14,7 +14,6 @@ interface PosSpec {
 	numberOfCardsInGroup?: number;
 	groupsIds?: string[];
 	cards?: any[];
-
 }
 
 const isOnSameLevel = (from: PosSpec, to: PosSpec): boolean =>
@@ -189,7 +188,7 @@ class Level<T> extends React.Component<Props<T>, State> {
 			groupName: this.props.groupName,
 			numberOfCardsInGroup: this.props.numberOfCardsInGroup,
 			groupsIds: this.props.groupsIds,
-			cards: this.props.arr
+			cards: this.props.arr,
 		};
 
 		if (!af) {
@@ -197,7 +196,6 @@ class Level<T> extends React.Component<Props<T>, State> {
 		}
 
 		const { parents, id, index, type, data, forceClone } = JSON.parse(af);
-
 
 		if (!isInside(this.props.parents, [type, id])) {
 			const [parentType, parentId] = parents[parents.length - 1];

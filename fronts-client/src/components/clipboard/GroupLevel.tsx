@@ -65,7 +65,7 @@ const GroupLevel = ({
 	isUneditable,
 	groupName,
 	numberOfCardsInGroup,
-	groupsIds
+	groupsIds,
 }: Props) => (
 	<CardTypeLevel
 		arr={cards}
