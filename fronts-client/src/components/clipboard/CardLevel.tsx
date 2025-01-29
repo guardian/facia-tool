@@ -20,9 +20,9 @@ interface OuterProps {
 	isUneditable?: boolean;
 	dropMessage?: string;
 	cardTypeAllowList?: CardTypes[];
-	groupName: string;
-	numberOfCardsInGroup: number;
-	groupsIds: string[];
+	groupName?: string;
+	numberOfCardsInGroup?: number;
+	groupsIds?: string[];
 }
 
 interface InnerProps {

@@ -60,9 +60,9 @@ export interface LevelProps<T> {
 	children: LevelChild<T>;
 	parentId: string;
 	parentType: string;
-	groupName: string;
-	numberOfCardsInGroup: number;
-	groupsIds: string[];
+	groupName?: string;
+	numberOfCardsInGroup?: number;
+	groupsIds?: string[];
 	type: string;
 	getDropType?: (item: T) => string;
 	dragImageOffsetX?: number;
