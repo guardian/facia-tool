@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled, Theme } from 'constants/theme';
 import Collection from './CollectionComponents/Collection';
-import { AlsoOnDetail, CardMeta, Group } from 'types/Collection';
+import { AlsoOnDetail, CardMeta } from 'types/Collection';
 import { CardSets, Card as TCard } from 'types/Collection';
 import GroupDisplayComponent from 'components/GroupDisplay';
 import GroupLevel from 'components/clipboard/GroupLevel';
@@ -19,7 +19,6 @@ import { CardTypes } from 'constants/cardTypes';
 import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
 import { ValidationResponse } from '../../util/validateImageSrc';
 import { bindActionCreators } from 'redux';
-import groups from 'reducers/groupsReducer';
 
 const getArticleNotifications = (
 	id: string,
