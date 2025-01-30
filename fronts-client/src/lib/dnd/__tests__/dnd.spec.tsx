@@ -113,7 +113,7 @@ describe('Curation', () => {
 			to: {
 				cards: [{ id: '3' }, { id: '4' }],
 				groupName: undefined,
-				groupsIds: undefined,
+				groupIds: undefined,
 				id: '2',
 				index: 1,
 				type: 'a',
@@ -174,7 +174,7 @@ describe('Curation', () => {
 			to: {
 				cards: [{ id: '3' }, { id: '4' }],
 				groupName: undefined,
-				groupsIds: undefined,
+				groupIds: undefined,
 				id: '2',
 				index: 0,
 				type: 'a',
@@ -290,7 +290,7 @@ describe('Curation', () => {
 		expect(to).toEqual({
 			cards: [{ id: '1' }],
 			groupName: undefined,
-			groupsIds: undefined,
+			groupIds: undefined,
 			id: '2',
 			index: 1,
 			type: 'a',

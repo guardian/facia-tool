@@ -114,7 +114,7 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
 	handleBlur: () => void;
 	lastDesktopArticle?: string;
 	lastMobileArticle?: string;
-	groupsIds: string[];
+	groupIds: string[];
 	updateCardMeta: (id: string, meta: CardMeta) => void;
 	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
@@ -137,7 +137,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 			removeSupportingCard,
 			lastDesktopArticle,
 			lastMobileArticle,
-			groupsIds,
+			groupIds,
 			updateCardMeta,
 			addImageToCard,
 		} = this.props;
@@ -163,7 +163,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 								isUneditable={isUneditable}
 								groupId={group.uuid}
 								groupName={group.name ? group.name : ''}
-								groupsIds={groupsIds}
+								groupIds={groupIds}
 								onMove={handleMove}
 								onDrop={handleInsert}
 								cardIds={group.cards}
@@ -198,7 +198,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 													isUneditable={isUneditable}
 													cardId={card.uuid}
 													groupName={group.name ? group.name : ''}
-													groupsIds={groupsIds}
+													groupIds={groupIds}
 													onMove={handleMove}
 													onDrop={handleInsert}
 													cardTypeAllowList={this.getPermittedCardTypes(
@@ -264,10 +264,10 @@ const createMapStateToProps = () => {
 			collectionSet: props.browsingStage,
 		});
 
-		const groupsIds = state.collections.data[props.id]?.draft || [];
+		const groupIds = state.collections.data[props.id]?.draft || [];
 
 		return {
-			groupsIds: groupsIds,
+			groupIds: groupIds,
 			lastDesktopArticle: articleVisibilityDetails.desktop,
 			lastMobileArticle: articleVisibilityDetails.mobile,
 		};

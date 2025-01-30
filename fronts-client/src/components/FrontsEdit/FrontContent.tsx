@@ -199,7 +199,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
 			// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
 			else if (
-				!!move.to.groupsIds &&
+				!!move.to.groupIds &&
 				move.to.cards !== undefined &&
 				move.to.index === 0
 			) {
@@ -213,7 +213,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				);
 
 				//then we need to move the other article to the other group
-				const otherGroup = move.to.groupsIds.filter(
+				const otherGroup = move.to.groupIds.filter(
 					(groupId) => groupId !== move.to.id,
 				)[0];
 				const existingCardData = move.to.cards[0];
@@ -221,7 +221,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					index: 0,
 					id: otherGroup,
 					type: 'group',
-					groupsIds: move.to.groupsIds,
+					groupIds: move.to.groupIds,
 				};
 				const existingCardMoveData: Move<TCard> = {
 					data: existingCardData,
@@ -234,12 +234,12 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
 			// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
 			else if (
-				!!move.to.groupsIds &&
+				!!move.to.groupIds &&
 				!!numberOfArticlesAlreadyInGroup &&
 				numberOfArticlesAlreadyInGroup > 0 &&
 				move.to.index > 0
 			) {
-				const otherGroup = move.to.groupsIds.filter(
+				const otherGroup = move.to.groupIds.filter(
 					(groupId) => groupId !== move.to.id,
 				)[0];
 
@@ -247,7 +247,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					index: 0,
 					id: otherGroup,
 					type: 'group',
-					groupsIds: move.to.groupsIds,
+					groupIds: move.to.groupIds,
 				};
 				events.dropArticle(this.props.id, 'collection');
 
@@ -279,7 +279,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			}
 			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
 			// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
-			else if (!!to.groupsIds && to.cards !== undefined && to.index === 0) {
+			else if (!!to.groupIds && to.cards !== undefined && to.index === 0) {
 				// we do the regular insert steps for the article we're inserting to splash
 				events.dropArticle(
 					this.props.id,
@@ -289,7 +289,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 				//then we need to move the other article to the other group
 
-				const otherGroup = to.groupsIds.filter(
+				const otherGroup = to.groupIds.filter(
 					(groupId) => groupId !== to.id,
 				)[0];
 				const existingCardData = to.cards[0];
@@ -297,7 +297,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					index: 0,
 					id: otherGroup,
 					type: 'group',
-					groupsIds: to.groupsIds,
+					groupIds: to.groupIds,
 				};
 				const existingCardMoveData: Move<TCard> = {
 					data: existingCardData,
@@ -310,12 +310,12 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
 			// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
 			else if (
-				!!to.groupsIds &&
+				!!to.groupIds &&
 				!!numberOfArticlesAlreadyInGroup &&
 				numberOfArticlesAlreadyInGroup > 0 &&
 				to.index > 0
 			) {
-				const otherGroup = to.groupsIds.filter(
+				const otherGroup = to.groupIds.filter(
 					(groupId) => groupId !== to.id,
 				)[0];
 
@@ -323,7 +323,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					index: 0,
 					id: otherGroup,
 					type: 'group',
-					groupsIds: to.groupsIds,
+					groupIds: to.groupIds,
 				};
 				events.dropArticle(
 					this.props.id,
