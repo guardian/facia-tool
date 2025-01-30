@@ -1473,6 +1473,8 @@ export const finalStateWhenAddNewCollection = {
 				platform: undefined,
 				targetedTerritory: undefined,
 				type: undefined,
+				targetedRegions: [],
+				excludedRegions: [],
 			},
 			'bf3428ed-4ee8-4321-8099-6590d0b51fd6': {
 				displayName: 'New collection',
@@ -1491,6 +1493,8 @@ export const finalStateWhenAddNewCollection = {
 				platform: undefined,
 				targetedTerritory: undefined,
 				type: undefined,
+				targetedRegions: [],
+				excludedRegions: [],
 			},
 		},
 		pagination: null,
@@ -2233,6 +2237,8 @@ export const finalStateWhenRemoveACollection = {
 				platform: undefined,
 				targetedTerritory: undefined,
 				type: undefined,
+				targetedRegions: [],
+				excludedRegions: [],
 			},
 		},
 		pagination: null,
@@ -2252,6 +2258,7 @@ export const finalStateWhenRemoveACollection = {
 		loadingIds: [],
 		updatingIds: [],
 	},
+	optionsModal: undefined,
 	pageViewData: {
 		'3b73ae36-1b99-4102-b6cb-51cc66768182': {
 			frontId: '3b73ae36-1b99-4102-b6cb-51cc66768182',

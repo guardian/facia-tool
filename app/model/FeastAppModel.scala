@@ -39,7 +39,9 @@ object FeastAppModel {
       id: String,
       title: String,
       body: Option[String],
-      items: Seq[ContainerItem]
+      items: Seq[ContainerItem],
+      targetedRegions: Option[List[String]],
+      excludedRegions: Option[List[String]]
   )
   // type FeastAppCuration = Map[String, IndexedSeq[FeastAppContainer]]
 

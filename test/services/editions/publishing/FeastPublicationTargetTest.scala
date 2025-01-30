@@ -140,7 +140,9 @@ class FeastPublicationTargetTest
                   )
                 )
               )
-            )
+            ),
+			  None,
+			  None,
           )
         )
       )
@@ -166,13 +168,17 @@ class FeastPublicationTargetTest
               None
             )
           )
-        )
+        ),
+		None,
+		None
       ),
       "recipes" -> FeastAppContainer(
         "recipes",
         "Recipes",
         None,
-        Seq(Recipe(RecipeContent("abcdefg")))
+        Seq(Recipe(RecipeContent("abcdefg"))),
+		None,
+		None
       )
     )
 

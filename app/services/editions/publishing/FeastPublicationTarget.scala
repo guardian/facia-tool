@@ -106,6 +106,8 @@ class FeastPublicationTarget(
     FeastAppContainer(
       id = collection.id,
       title = collection.displayName,
+      targetedRegions = collection.targetedRegions,
+      excludedRegions = collection.excludedRegions,
       body =
         Some(""), // TBD, this is just how it appears in the data at the moment
       items = collection.items.map(transformCards)

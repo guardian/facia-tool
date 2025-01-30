@@ -62,6 +62,8 @@ describe('Store middleware', () => {
 					draft: [],
 					previously: undefined,
 					type: 'type',
+					targetedRegions: [],
+					excludedRegions: [],
 				}),
 			);
 		});

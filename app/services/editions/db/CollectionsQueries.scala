@@ -141,6 +141,36 @@ trait CollectionsQueries extends Logging {
       updatedCollections.head
     }
 
+  def updateCollectionRegionsInDB(
+      collection: EditionsCollection
+  ): EditionsCollection =
+    DB localTx { implicit session =>
+      val lastUpdated = EditionsDB.truncateDateTime(OffsetDateTime.now())
+      sql"""
+      UPDATE collections
+      SET "targeted_regions" = ${collection.targetedRegionsPG()},
+          "excluded_regions" = ${collection.excludedRegionsPG()},
+          updated_on = $lastUpdated,
+          updated_by = ${collection.updatedBy},
+          updated_email = ${collection.updatedEmail}
+      WHERE id = ${collection.id}
+    """.execute.apply()
+
+      val rows = fetchCollectionsSql(where =
+        sqls"collections.id = ${collection.id}"
+      ).apply()
+
+      val updatedCollections = convertRowsToCollections(rows)
+
+      // we have filtered on a single id so this list should only contain one collection
+      assert(
+        updatedCollections.size == 1,
+        s"Retrieved ${updatedCollections.size} collections from DB but there should be exactly one. Failing fast."
+      )
+
+      updatedCollections.head
+    }
+
   /** Move the collection to the given index, updating the index values for the
     * other collections in that front to ensure a contiguous range.
     */
@@ -322,6 +352,8 @@ trait CollectionsQueries extends Logging {
         collections.path_type,
         collections.content_prefill_window_start,
         collections.content_prefill_window_end,
+        collections.targeted_regions,
+        collections.excluded_regions,
         fronts.is_special,
 
         cards.collection_id AS cards_collection_id,

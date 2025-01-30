@@ -164,6 +164,17 @@ const selectCollectionDisplayName = (
 	return !!collection ? collection.displayName : '';
 };
 
+const selectCollectionTargetedRegions = (
+	state: State,
+	collectionId: string,
+): string[] => {
+	const collection = selectCollection(state, {
+		collectionId,
+	});
+
+	return !!collection ? collection.targetedRegions : [];
+};
+
 const selectCollectionType = (
 	state: State,
 	collectionId: string,
@@ -390,6 +401,7 @@ export {
 	selectCollectionHasPrefill,
 	selectCollectionIsHidden,
 	selectCollectionDisplayName,
+	selectCollectionTargetedRegions,
 	selectCollectionType,
 	selectFrontsConfig,
 	selectCollectionConfigs,

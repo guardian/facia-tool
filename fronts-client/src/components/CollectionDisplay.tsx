@@ -35,6 +35,9 @@ import { updateCollection as updateCollectionAction } from '../actions/Collectio
 import { isMode } from '../selectors/pathSelectors';
 import { DragToConvertFeastCollection } from './FrontsEdit/CollectionComponents/DragToConvertFeastCollection';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
+import { removeFrontCollection } from '../actions/Editions';
+import { FeastCollectionMenu } from './FeastCollectionMenu';
+import type { CollectionUpdateMode } from '../strategies/update-collection';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -62,15 +65,18 @@ type Props = ContainerProps & {
 	handleBlur: () => void;
 	updateCollection: (
 		collection: Collection,
-		renamingCollection: boolean,
+		mode: CollectionUpdateMode,
 	) => void;
 	isEditions: boolean;
+	removeFrontCollection: (frontId: string, collectionId: string) => void;
 };
 
 interface CollectionState {
 	displayName: string;
 	hasDragOpenIntent: boolean;
 	editingContainerName: boolean;
+	isDeleteClicked: boolean;
+	isUSOnly: boolean;
 }
 
 const CollectionContainer = styled(ContentContainer)<{
@@ -133,11 +139,10 @@ const CollectionMeta = styled(CollectionMetaBase)`
 const ItemCountMeta = CollectionMetaBase;
 
 const CollectionHeadingSticky = styled.div`
-	position: sticky;
+	position: relative;
 	top: 0;
 	background-color: ${theme.collection.background};
 	box-shadow: 0 -1px 0 ${theme.base.colors.text};
-	z-index: 20;
 	margin: 0 -${contentContainerMargin};
 	padding: 0 ${contentContainerMargin};
 `;
@@ -178,7 +183,6 @@ const CollectionToggleContainer = styled.div`
 	max-width: 130px;
 	display: flex;
 	justify-content: flex-end;
-	z-index: 2;
 	:hover {
 		${ButtonCircularWithTransition} {
 			background-color: ${theme.button.backgroundColorFocused};
@@ -239,6 +243,8 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		displayName: 'Loading...',
 		hasDragOpenIntent: false,
 		editingContainerName: false,
+		isDeleteClicked: false,
+		isUSOnly: false,
 	};
 
 	public toggleVisibility = () => {
@@ -335,12 +341,27 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								</CollectionHeadingText>
 							)}
 						</CollectionHeadlineWithConfigContainer>
+						{isFeast && collection ? (
+							<FeastCollectionMenu
+								containerId={collection.id}
+								targetedRegions={collection.targetedRegions ?? []}
+								excludedRegions={collection.excludedRegions ?? []}
+								onTargetedRegionsChange={(newvals) =>
+									this.handleTargetedRegionsClick(newvals)
+								}
+								onExcludedRegionsChange={(newvals) =>
+									this.handleExcludedRegionsClick(newvals)
+								}
+								onRenameClicked={this.startRenameContainer}
+								onDeleteClicked={this.handleDeleteClick}
+							/>
+						) : undefined}
 						{isLocked ? (
 							<LockedCollectionFlag>Locked</LockedCollectionFlag>
 						) : headlineContent ? (
 							<HeadlineContentContainer>
 								{headlineContent}
-								{isEditions && (
+								{isEditions && !isFeast && (
 									<HeadlineContentButton
 										priority="default"
 										onClick={this.startRenameContainer}
@@ -356,6 +377,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 						<DragToConvertFeastCollection sourceContainerId={id} />
 					) : undefined}
 				</CollectionHeadingSticky>
+
 				<DragIntentContainer
 					delay={300}
 					onIntentConfirm={this.toggleVisibility}
@@ -431,8 +453,36 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		this.setState({
 			editingContainerName: false,
 		});
-		this.props.updateCollection(collection!, true);
+		this.props.updateCollection(collection!, 'rename');
 	};
+
+	private removeFrontCollection = () => {
+		this.props.removeFrontCollection(this.props.frontId, this.props.id);
+	};
+
+	private handleDeleteClick = () => {
+		this.setState({ isDeleteClicked: true });
+		const isConfirm = window.confirm(
+			`Are you sure you wish to delete collection? This cannot be undone.`,
+		);
+		if (isConfirm) {
+			this.removeFrontCollection();
+		}
+		this.setState({ isDeleteClicked: false });
+	};
+
+	private handleTargetedRegionsClick = (region: string[]) => {
+		const { collection } = this.props;
+		if (collection) {
+			const updatedCollections = {
+				...collection,
+				targetedRegions: region,
+			};
+			this.props.updateCollection(updatedCollections, 'regions');
+		}
+	};
+
+	private handleExcludedRegionsClick = (region: string[]) => {};
 }
 
 const createMapStateToProps = () => {
@@ -457,10 +507,12 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 		dispatch(setFocusState({ type: 'collection', collectionId })),
 	updateCollection: (
 		collection: CollectionType,
-		renamingCollection: boolean,
+		mode: CollectionUpdateMode,
 	) => {
-		dispatch(updateCollectionAction(collection, renamingCollection));
+		dispatch(updateCollectionAction(collection, mode));
 	},
+	removeFrontCollection: (frontId: string, id: string) =>
+		dispatch(removeFrontCollection(frontId, id)),
 });
 
 export default connect(

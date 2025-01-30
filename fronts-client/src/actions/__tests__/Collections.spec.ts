@@ -58,7 +58,7 @@ describe('Collection actions', () => {
 				config,
 				...stateWithCollection,
 			});
-			await store.dispatch(updateCollection(collection) as any);
+			await store.dispatch(updateCollection(collection, 'overwrite') as any);
 			const actions = store.getActions();
 			expect(actions[0].payload[0]).toEqual(
 				collectionActions.updateStart({
@@ -98,7 +98,7 @@ describe('Collection actions', () => {
 				...stateWithCollection,
 			});
 
-			await store.dispatch(updateCollection(collection) as any);
+			await store.dispatch(updateCollection(collection, 'overwrite') as any);
 			const actions = store.getActions();
 			expect(actions[2]).toEqual(undefined);
 		});
@@ -130,6 +130,8 @@ describe('Collection actions', () => {
 					live: ['abc', 'def'],
 					previously: undefined,
 					type: 'type',
+					targetedRegions: [],
+					excludedRegions: [],
 				},
 				exampleCollectionTwo: {
 					displayName: 'Example Collection',
@@ -196,6 +198,8 @@ describe('Collection actions', () => {
 					live: ['abc', 'def'],
 					previously: undefined,
 					type: 'type',
+					targetedRegions: [],
+					excludedRegions: [],
 				},
 				exampleCollectionTwo: {
 					displayName: 'Example Collection',
@@ -217,6 +221,10 @@ describe('Collection actions', () => {
 					previouslyCardIds: [],
 					groups: undefined,
 					frontsToolSettings: undefined,
+					suppressImages: undefined,
+					targetedRegions: [],
+					excludedRegions: [],
+					targetedTerritory: undefined,
 				},
 				testCollection1: {
 					displayName: 'testCollection',
