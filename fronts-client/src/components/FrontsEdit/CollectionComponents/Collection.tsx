@@ -341,7 +341,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 						) : null
 					}
 				>
-					{groups.map((group) => children(group, isUneditable, groupIds, true ))}
+					{groups.map((group) => children(group, isUneditable, groupIds, true))}
 					{hasContent && (
 						<EditModeVisibility visibleMode="fronts">
 							<PreviouslyCollectionContainer data-testid="previously">
