@@ -139,12 +139,13 @@ const CollectionMeta = styled(CollectionMetaBase)`
 const ItemCountMeta = CollectionMetaBase;
 
 const CollectionHeadingSticky = styled.div`
-	position: relative;
+	position: sticky;
 	top: 0;
 	background-color: ${theme.collection.background};
 	box-shadow: 0 -1px 0 ${theme.base.colors.text};
 	margin: 0 -${contentContainerMargin};
 	padding: 0 ${contentContainerMargin};
+	z-index: 20;
 `;
 
 const CollectionHeadingInner = styled(ContainerHeadingPinline)`
