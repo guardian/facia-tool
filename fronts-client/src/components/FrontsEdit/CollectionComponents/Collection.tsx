@@ -51,6 +51,7 @@ interface CollectionPropsBeforeState {
 	children: (
 		group: Group,
 		isUneditable: boolean,
+		groupIds: string[],
 		showGroupName?: boolean,
 	) => React.ReactNode;
 	alsoOn: { [id: string]: AlsoOnDetail };
@@ -223,6 +224,8 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 
 		const isUneditable = isCollectionLocked || browsingStage !== cardSets.draft;
 
+		const groupIds = groups.map((group) => group.uuid);
+
 		return (
 			<>
 				<CollectionDisplay
@@ -338,7 +341,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 						) : null
 					}
 				>
-					{groups.map((group) => children(group, isUneditable, true))}
+					{groups.map((group) => children(group, isUneditable, groupIds, true ))}
 					{hasContent && (
 						<EditModeVisibility visibleMode="fronts">
 							<PreviouslyCollectionContainer data-testid="previously">
@@ -357,7 +360,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 											launched they will not appear here.
 										</PreviouslyCollectionInfo>
 										<PreviouslyGroupsWrapper>
-											{children(previousGroup, true, false)}
+											{children(previousGroup, true, groupIds, false)}
 										</PreviouslyGroupsWrapper>
 									</>
 								)}

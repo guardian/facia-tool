@@ -114,7 +114,6 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
 	handleBlur: () => void;
 	lastDesktopArticle?: string;
 	lastMobileArticle?: string;
-	groupIds: string[];
 	updateCardMeta: (id: string, meta: CardMeta) => void;
 	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
@@ -137,7 +136,6 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 			removeSupportingCard,
 			lastDesktopArticle,
 			lastMobileArticle,
-			groupIds,
 			updateCardMeta,
 			addImageToCard,
 		} = this.props;
@@ -153,7 +151,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 					canPublish={browsingStage !== 'live'}
 					browsingStage={browsingStage}
 				>
-					{(group, isUneditable, showGroupName) => (
+					{(group, isUneditable, groupIds, showGroupName) => (
 						<div key={group.uuid}>
 							<GroupDisplayComponent
 								key={group.uuid}
@@ -264,10 +262,7 @@ const createMapStateToProps = () => {
 			collectionSet: props.browsingStage,
 		});
 
-		const groupIds = state.collections.data[props.id]?.draft || [];
-
 		return {
-			groupIds: groupIds,
 			lastDesktopArticle: articleVisibilityDetails.desktop,
 			lastMobileArticle: articleVisibilityDetails.mobile,
 		};
