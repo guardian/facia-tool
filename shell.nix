@@ -31,11 +31,36 @@ in pkgs.mkShellNoCC {
           npm run jspm install
         '';
       };
+      allCommandsJson = writeTextFile {
+        name = "all-commands.json";
+        text = ''["start-play", "fronts-client", "build-v1"]'';
+      };
+      listCommandsJson = writeShellApplication {
+        name = "list-commands-json";
+        runtimeInputs = [ jq ];
+        text = ''
+          jq . ${allCommandsJson}
+        '';
+      };
+      listCommands = writeShellApplication {
+        name = "list-commands";
+        runtimeInputs = [ jq ];
+        text = "list-commands-json | jq -r 'map([.] | @tsv) | .[]'";
+      };
+
       runAllTmux = writeShellApplication {
         name = "run-all-tmux";
         runtimeInputs = [ tmux startPlay frontsClient buildV1 ];
         text = ''
           tmux new-session "start-play" ";" set-option remain-on-exit on ";" split-window -v "fronts-client" ";" split-window -h "build-v1"
+        '';
+      };
+      runAllEmacs = writeShellApplication {
+        name = "run-all-emacs";
+        runtimeInputs = [ ];
+        text = ''
+          which emacsclient
+          emacsclient --eval "(message \"hello\")"
         '';
       };
 
@@ -49,6 +74,9 @@ in pkgs.mkShellNoCC {
       frontsClient
       startPlay
       buildV1
+      listCommands
+      listCommandsJson
       runAllTmux
+      runAllEmacs
     ];
 }
