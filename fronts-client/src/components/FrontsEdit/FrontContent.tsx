@@ -257,6 +257,8 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
 		const numberOfArticlesAlreadyInGroup = to.cards?.length;
 
+		const dropSource = isDropFromCAPIFeed(e) ? 'feed' : 'url';
+
 		// if we are inserting an article into any group that is not the splash, then we just insert
 		// we also just insert if we're in the splash and there's no other article already in the splash
 		if (
@@ -264,7 +266,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			numberOfArticlesAlreadyInGroup === 0 ||
 			undefined
 		) {
-			events.dropArticle(this.props.id, isDropFromCAPIFeed(e) ? 'feed' : 'url');
+			events.dropArticle(this.props.id, dropSource);
 			this.props.insertCardFromDropEvent(e, to, 'collection');
 			return;
 		}
@@ -273,7 +275,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
 		if (!!to.groupIds && to.cards !== undefined && to.index === 0) {
 			// we do the regular insert steps for the article we're inserting to splash
-			events.dropArticle(this.props.id, isDropFromCAPIFeed(e) ? 'feed' : 'url');
+			events.dropArticle(this.props.id, dropSource);
 			this.props.insertCardFromDropEvent(e, to, 'collection');
 
 			// then we need to move the other article to the other group
@@ -310,7 +312,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				type: 'group',
 				groupIds: to.groupIds,
 			};
-			events.dropArticle(this.props.id, isDropFromCAPIFeed(e) ? 'feed' : 'url');
+			events.dropArticle(this.props.id, dropSource);
 			this.props.insertCardFromDropEvent(e, amendedTo, 'collection');
 			return;
 		}
