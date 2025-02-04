@@ -179,14 +179,13 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	}
 
 	public handleMove = (move: Move<TCard>) => {
-		const numberOfArticlesAlreadyInGroup = move.to.cards?.length;
+		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
 
 		// if we are inserting an article into any group that is not the splash, then we just insert
 		// we also just insert if we're in the splash and there's no other article already in the splash
 		if (
 			move.to.groupName !== 'splash' ||
-			numberOfArticlesAlreadyInGroup === 0 ||
-			undefined
+			numberOfArticlesAlreadyInGroup === 0
 		) {
 			events.dropArticle(this.props.id, 'collection');
 			this.props.moveCard(move.to, move.data, move.from || null, 'collection');
@@ -228,7 +227,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
 		if (
 			!!move.to.groupIds &&
-			!!numberOfArticlesAlreadyInGroup &&
 			numberOfArticlesAlreadyInGroup > 0 &&
 			move.to.index > 0
 		) {
@@ -255,7 +253,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	};
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-		const numberOfArticlesAlreadyInGroup = to.cards?.length;
+		const numberOfArticlesAlreadyInGroup = to.cards?.length ?? 0;
 
 		const dropSource = isDropFromCAPIFeed(e) ? 'feed' : 'url';
 
@@ -263,8 +261,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		// we also just insert if we're in the splash and there's no other article already in the splash
 		if (
 			to.groupName !== 'splash' ||
-			numberOfArticlesAlreadyInGroup === 0 ||
-			undefined
+			numberOfArticlesAlreadyInGroup === 0
 		) {
 			events.dropArticle(this.props.id, dropSource);
 			this.props.insertCardFromDropEvent(e, to, 'collection');
@@ -300,7 +297,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
 		if (
 			!!to.groupIds &&
-			!!numberOfArticlesAlreadyInGroup &&
 			numberOfArticlesAlreadyInGroup > 0 &&
 			to.index > 0
 		) {
