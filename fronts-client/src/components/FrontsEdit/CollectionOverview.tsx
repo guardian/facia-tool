@@ -17,6 +17,7 @@ import {
 } from 'selectors/shared';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
+import { css } from 'styled-components';
 
 interface FrontCollectionOverviewContainerProps {
 	frontId: string;
@@ -33,10 +34,12 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
 	hasOpenForms: boolean;
 };
 
-const Container = styled.div<{ isSelected: boolean }>`
+const Container = styled.div<{
+	isSelected: boolean;
+	isSecondaryContainer: boolean;
+}>`
 	align-items: center;
 	appearance: none;
-	background-color: ${theme.base.colors.backgroundColor};
 	border: solid 1px ${theme.base.colors.borderColor};
 	border-radius: 1.25em;
 	color: inherit;
@@ -50,6 +53,15 @@ const Container = styled.div<{ isSelected: boolean }>`
 	text-align: left;
 	text-decoration: none;
 	transition: background-color 0.3s;
+	${({ isSecondaryContainer }) =>
+		isSecondaryContainer
+			? css`
+					margin-left: 0.75em;
+					background-color: ${theme.base.colors.backgroundColorLight};
+				`
+			: css`
+					background-color: ${theme.base.colors.backgroundColor};
+				`};
 
 	${(props) =>
 		props.isSelected && `background-color: ${props.theme.colors.whiteDark}`}
@@ -75,10 +87,16 @@ const TextContainerRight = styled.div`
 	white-space: nowrap;
 `;
 
-const Name = styled.span`
+const Name = styled.span<{ isSecondaryContainer: boolean }>`
 	color: ${theme.base.colors.text};
 	font-weight: bold;
 	padding-right: 0.25em;
+	${({ isSecondaryContainer }) =>
+		isSecondaryContainer &&
+		css`
+			font-family: TS3TextSans;
+			font-weight: normal;
+		`}
 `;
 
 const ItemCount = styled.span`
@@ -127,9 +145,19 @@ const CollectionOverview = ({
 				openCollection(collection.id);
 			}}
 			isSelected={isSelected}
+			isSecondaryContainer={
+				collection.metadata?.some((tag) => tag.type === 'Secondary') ?? false
+			}
 		>
 			<TextContainerLeft>
-				<Name>{collection.displayName}</Name>
+				<Name
+					isSecondaryContainer={
+						collection.metadata?.some((tag) => tag.type === 'Secondary') ??
+						false
+					}
+				>
+					{collection.displayName}
+				</Name>
 				<ItemCount>({cardCount})</ItemCount>
 			</TextContainerLeft>
 			<TextContainerRight>
