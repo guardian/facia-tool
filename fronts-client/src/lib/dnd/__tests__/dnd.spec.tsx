@@ -110,7 +110,14 @@ describe('Curation', () => {
 		expect(edit).toEqual({
 			data: { id: '1' },
 			from: { type: 'b', id: '0', index: 0 },
-			to: { type: 'a', id: '2', index: 1 },
+			to: {
+				cards: [{ id: '3' }, { id: '4' }],
+				groupName: undefined,
+				groupIds: undefined,
+				id: '2',
+				index: 1,
+				type: 'a',
+			},
 		});
 	});
 
@@ -164,7 +171,14 @@ describe('Curation', () => {
 		expect(edit).toEqual({
 			data: { id: '1' },
 			from: { type: 'b', id: '0', index: 0 },
-			to: { type: 'a', id: '2', index: 0 },
+			to: {
+				cards: [{ id: '3' }, { id: '4' }],
+				groupName: undefined,
+				groupIds: undefined,
+				id: '2',
+				index: 0,
+				type: 'a',
+			},
 		});
 
 		runDrag(nodeProps)(dropProps, false);
@@ -273,7 +287,14 @@ describe('Curation', () => {
 		})(dropProps);
 
 		expect(JSON.parse(event.dataTransfer.getData('text'))).toEqual(data);
-		expect(to).toEqual({ id: '2', index: 1, type: 'a' });
+		expect(to).toEqual({
+			cards: [{ id: '1' }],
+			groupName: undefined,
+			groupIds: undefined,
+			id: '2',
+			index: 1,
+			type: 'a',
+		});
 	});
 
 	it('does not allow moves of a node to a subPath of that node', () => {

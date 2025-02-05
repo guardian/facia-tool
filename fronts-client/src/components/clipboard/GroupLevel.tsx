@@ -15,6 +15,8 @@ interface OuterProps {
 	onMove: MoveHandler<Card>;
 	onDrop: DropHandler;
 	isUneditable?: boolean;
+	groupName: string;
+	groupIds: string[];
 }
 
 interface InnerProps {
@@ -60,11 +62,15 @@ const GroupLevel = ({
 	onMove,
 	onDrop,
 	isUneditable,
+	groupName,
+	groupIds,
 }: Props) => (
 	<CardTypeLevel
 		arr={cards}
 		parentType="group"
 		parentId={groupId}
+		groupName={groupName}
+		groupIds={groupIds}
 		onMove={onMove}
 		onDrop={onDrop}
 		canDrop={!isUneditable}
