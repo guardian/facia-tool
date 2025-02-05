@@ -176,6 +176,8 @@ const CollectionHeadingText = styled.div<{
 		css`
 			font-family: TS3TextSans;
 			font-size: 20px;
+			font-weight: normal;
+			padding-left: 4px;
 		`}
 `;
 
