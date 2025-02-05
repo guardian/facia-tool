@@ -160,7 +160,7 @@ const CollectionHeadlineWithConfigContainer = styled.div`
 
 const CollectionHeadingText = styled.div<{
 	isLoading: boolean;
-	isSecondaryLevel?: boolean;
+	isSecondaryContainer: boolean;
 }>`
 	width: 100%;
 	white-space: nowrap;
@@ -171,8 +171,8 @@ const CollectionHeadingText = styled.div<{
 		`} white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	${({ isSecondaryLevel }) =>
-		isSecondaryLevel &&
+	${({ isSecondaryContainer }) =>
+		isSecondaryContainer &&
 		css`
 			font-family: TS3TextSans;
 			font-size: 20px;
@@ -308,9 +308,11 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								<CollectionHeadingText
 									isLoading={!collection}
 									title={!!collection ? collection!.displayName : 'Loading …'}
-									isSecondaryLevel={collection?.metadata?.some(
-										(tag) => tag.type === 'Secondary',
-									)}
+									isSecondaryContainer={
+										collection?.metadata?.some(
+											(tag) => tag.type === 'Secondary',
+										) ?? false
+									}
 								>
 									{!!collection ? collection!.displayName : 'Loading …'}
 									<CollectionConfigContainer>
