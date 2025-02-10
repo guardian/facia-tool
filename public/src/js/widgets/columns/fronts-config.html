@@ -327,7 +327,8 @@
             <!-- ko if: (
 			 meta.type() === 'scrollable/small' ||
 			 meta.type() === 'scrollable/medium' ||
-			 meta.type() === 'static/medium/4')
+			 meta.type() === 'static/medium/4' ||
+			 meta.type() === 'flexible/general')
 			-->
 			<label for="suppressImages">Suppress images</label>
             <input id="suppressImages" type="checkbox" data-bind="checked: meta.suppressImages" />
