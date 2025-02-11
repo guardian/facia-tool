@@ -1,13 +1,7 @@
-import pageConfig from 'util/extractConfigFromPage';
 import {
 	FLEXIBLE_GENERAL_NAME,
 	FLEXIBLE_SPECIAL_NAME,
 } from './flexibleContainers';
-
-export const SUPPORT_PORTRAIT_CROPS =
-	pageConfig?.userData?.featureSwitches.find(
-		(feature) => feature.key === 'support-portrait-crops',
-	)?.enabled || false;
 
 export const landScapeCardImageCriteria = {
 	minWidth: 400,

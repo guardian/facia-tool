@@ -33,13 +33,6 @@ object TenImageSlideshows
       enabled = false
     )
 
-object SupportPortraitCrops
-    extends FeatureSwitch(
-      key = "support-portrait-crops",
-      title = "Support portrait crops for feature card containers",
-      enabled = false
-    )
-
 object PinboardIntegration
     extends FeatureSwitch(
       key = "pinboard",
@@ -52,7 +45,6 @@ object FeatureSwitches {
     ObscureFeed,
     PageViewDataVisualisation,
     TenImageSlideshows,
-    SupportPortraitCrops,
     PinboardIntegration
   )
 

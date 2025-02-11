@@ -160,11 +160,6 @@ export const initialState = {
 			},
 			featureSwitches: [
 				{
-					key: 'support-portrait-crops',
-					title: 'Support portrait crops for feature card containers',
-					enabled: false,
-				},
-				{
 					key: 'obscure-feed',
 					title: "Obscure the feed -- it's distracting for developers!",
 					enabled: false,
@@ -664,11 +659,6 @@ export const initialState = {
 		lastFetchOrder: [],
 	},
 	featureSwitches: {
-		'support-portrait-crops': {
-			key: 'support-portrait-crops',
-			title: 'Support portrait crops for feature card containers',
-			enabled: false,
-		},
 		'obscure-feed': {
 			key: 'obscure-feed',
 			title: "Obscure the feed -- it's distracting for developers!",
@@ -909,11 +899,6 @@ export const finalStateWhenAddNewCollection = {
 				'08a80ac8-3525-48e2-af88-22e8854aa0d7': [],
 			},
 			featureSwitches: [
-				{
-					key: 'support-portrait-crops',
-					title: 'Support portrait crops for feature card containers',
-					enabled: false,
-				},
 				{
 					key: 'obscure-feed',
 					title: "Obscure the feed -- it's distracting for developers!",
@@ -1415,11 +1400,6 @@ export const finalStateWhenAddNewCollection = {
 		lastFetchOrder: [],
 	},
 	featureSwitches: {
-		'support-portrait-crops': {
-			key: 'support-portrait-crops',
-			title: 'Support portrait crops for feature card containers',
-			enabled: false,
-		},
 		'obscure-feed': {
 			key: 'obscure-feed',
 			title: "Obscure the feed -- it's distracting for developers!",
@@ -1674,11 +1654,6 @@ export const finalStateWhenRemoveACollection = {
 				'08a80ac8-3525-48e2-af88-22e8854aa0d7': [],
 			},
 			featureSwitches: [
-				{
-					key: 'support-portrait-crops',
-					title: 'Support portrait crops for feature card containers',
-					enabled: false,
-				},
 				{
 					key: 'obscure-feed',
 					title: "Obscure the feed -- it's distracting for developers!",
@@ -2179,11 +2154,6 @@ export const finalStateWhenRemoveACollection = {
 		lastFetchOrder: [],
 	},
 	featureSwitches: {
-		'support-portrait-crops': {
-			key: 'support-portrait-crops',
-			title: 'Support portrait crops for feature card containers',
-			enabled: false,
-		},
 		'obscure-feed': {
 			key: 'obscure-feed',
 			title: "Obscure the feed -- it's distracting for developers!",
