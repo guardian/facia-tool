@@ -58,7 +58,7 @@ jobs:
                   path: public/src/jspm_packages
                   if-no-files-found: error
     test_client_v1:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         permissions:
             id-token: write
             contents: read
@@ -129,7 +129,7 @@ jobs:
               working-directory: fronts-client
 
     integrationtest_client_v2:
-        runs-on: ubuntu-latest
+        runs-on: ubuntu-22.04
         permissions:
             id-token: write
             contents: read
