@@ -26,7 +26,6 @@ import {
 import {
 	editionsCardImageCriteria,
 	DRAG_DATA_CARD_IMAGE_OVERRIDE,
-	SUPPORT_PORTRAIT_CROPS,
 	COLLECTIONS_USING_PORTRAIT_TRAILS,
 	landScapeCardImageCriteria,
 	portraitCardImageCriteria,
@@ -464,10 +463,6 @@ class Card extends React.Component<CardContainerProps> {
 
 		if (COLLECTIONS_USING_SQUARE_TRAILS.includes(collectionType)) {
 			return squareImageCriteria;
-		}
-
-		if (!SUPPORT_PORTRAIT_CROPS) {
-			return landScapeCardImageCriteria;
 		}
 
 		return COLLECTIONS_USING_PORTRAIT_TRAILS.includes(collectionType)
