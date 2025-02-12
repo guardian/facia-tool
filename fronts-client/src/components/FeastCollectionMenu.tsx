@@ -39,7 +39,8 @@ const MenuItem = styled.li`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 10px 15px;
+	padding: 1px;
+	height: 30px;
 	cursor: pointer;
 	border-bottom: 1px gray;
 	:hover {
