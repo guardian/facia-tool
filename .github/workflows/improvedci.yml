@@ -8,7 +8,7 @@ on:
 jobs:
     generate_build_number:
         name: Generate build number
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         outputs:
             BUILD_NUMBER: ${{ steps.create-build-number.outputs.BUILD_NUMBER }}
         steps:
@@ -19,7 +19,7 @@ jobs:
                     echo "BUILD_NUMBER=$(( $GITHUB_RUN_NUMBER + $LAST_TEAMCITY_BUILD ))" >> "$GITHUB_OUTPUT"
 
     build_client_v1:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         permissions:
             id-token: write
             contents: read
@@ -58,7 +58,7 @@ jobs:
                   path: public/src/jspm_packages
                   if-no-files-found: error
     test_client_v1:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
         permissions:
             id-token: write
             contents: read
@@ -89,7 +89,7 @@ jobs:
                     grunt --stack test
 
     build_client_v2:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         permissions:
             id-token: write
             contents: read
@@ -112,7 +112,7 @@ jobs:
                   path: public/fronts-client-v2
                   if-no-files-found: error
     test_client_v2:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         permissions:
             id-token: write
             contents: read
@@ -129,7 +129,7 @@ jobs:
               working-directory: fronts-client
 
     integrationtest_client_v2:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-22.04
         permissions:
             id-token: write
             contents: read
@@ -152,7 +152,7 @@ jobs:
               working-directory: fronts-client
 
     test_backend:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         permissions:
             id-token: write
             contents: read
@@ -174,28 +174,20 @@ jobs:
                     - 4724:5432
         steps:
             - uses: actions/checkout@v4
-            - uses: actions/setup-java@v4
-              with:
-                  java-version: "11"
-                  distribution: "corretto"
-                  cache: "sbt"
+            - uses: guardian/setup-scala@v1
             - name: Run tests
               run: sbt 'test; database-int:test'
 
     lint_backend:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         steps:
             - uses: actions/checkout@v4
-            - uses: actions/setup-java@v4
-              with:
-                  java-version: "11"
-                  distribution: "corretto"
-                  cache: "sbt"
+            - uses: guardian/setup-scala@v1
             - name: Check scala formatting
               run: sbt 'scalafmtCheck; scalafmtSbtCheck;'
 
     build_backend:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         permissions:
             id-token: write
             contents: read
@@ -220,11 +212,7 @@ jobs:
             - name: Set GITHUB_RUN_NUMBER environment variable
               run: |
                   echo "GITHUB_RUN_NUMBER=${{ needs.generate_build_number.outputs.BUILD_NUMBER }}" >> $GITHUB_ENV
-            - uses: actions/setup-java@v4
-              with:
-                  java-version: "11"
-                  distribution: "corretto"
-                  cache: "sbt"
+            - uses: guardian/setup-scala@v1
             - name: Bundle
               run: sbt debian:packageBin
             - uses: actions/upload-artifact@v4
@@ -234,7 +222,7 @@ jobs:
                   if-no-files-found: error
                   compression-level: '0' #no point, it's already compressed
     upload:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         permissions:
             id-token: write
             contents: read
