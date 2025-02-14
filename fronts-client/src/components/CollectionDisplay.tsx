@@ -38,6 +38,7 @@ import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBun
 import { removeFrontCollection } from '../actions/Editions';
 import { FeastCollectionMenu } from './FeastCollectionMenu';
 import type { CollectionUpdateMode } from '../strategies/update-collection';
+import ToolTip from "./inputs/HoverActionToolTip";
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -163,6 +164,8 @@ const CollectionHeadingText = styled.div<{
 	isSecondaryContainer: boolean;
 }>`
 	width: 100%;
+	// allow some space for the container type thumbnail (which has absolute positioning)
+	max-width: calc(100% - 42px);
 	white-space: nowrap;
 	${({ isLoading }) =>
 		isLoading &&
@@ -235,6 +238,39 @@ const CollectionHeaderInput = styled.input`
 	font-weight: bold;
 	width: 20em;
 `;
+
+const CollectionTypeContainer = styled.div`
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 4px;
+	position: absolute;
+	right: 10px;
+	z-index: 0;
+`;
+
+const CollectionTypeThumbnail = styled.img`
+	height: 30px;
+	width: 40px;
+`;
+
+const CollectionType = styled.div`
+	font-size: 10px;
+	font-family: TS3TextSans;
+	font-weight: normal;
+	line-height: normal;
+	display: none;
+	// absolute positioning to not affect Discard / Launch buttons etc.
+	position: absolute;
+	top: 5px;
+	right: 45px;
+	width: max-content;
+
+	${CollectionTypeContainer}:hover & {
+		display: unset;
+	}
+`;
+
 
 class CollectionDisplay extends React.Component<Props, CollectionState> {
 	public static defaultProps = {
@@ -377,6 +413,12 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								)}
 							</HeadlineContentContainer>
 						) : null}
+						{collection?.type ?
+							<CollectionTypeContainer>
+								<CollectionTypeThumbnail src={`/thumbnails/${collection.type}.svg`}/>
+								<CollectionType><ToolTip text={collection.type}/></CollectionType>
+							</CollectionTypeContainer>
+							: null}
 					</CollectionHeadingInner>
 					{isFeast ? (
 						<DragToConvertFeastCollection sourceContainerId={id} />

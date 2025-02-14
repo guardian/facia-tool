@@ -152,6 +152,7 @@ const OpenFormsWarningContainer = styled.div`
 
 const ActionButtonsContainer = styled.div`
 	display: flex;
+	z-index: 2;
 `;
 
 const MoveButtonsContainer = styled.div`
