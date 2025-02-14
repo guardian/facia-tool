@@ -165,8 +165,6 @@ const CollectionHeadingText = styled.div<{
 	isSecondaryContainer: boolean;
 }>`
 	width: 100%;
-	// allow some space for the container type thumbnail (which has absolute positioning)
-	max-width: calc(100% - 42px);
 	white-space: nowrap;
 	${({ isLoading }) =>
 		isLoading &&
@@ -260,12 +258,10 @@ const CollectionType = styled.div`
 	font-family: TS3TextSans;
 	font-weight: normal;
 	line-height: normal;
-	// absolute positioning to not affect Discard / Launch buttons etc.
 	position: absolute;
-	top: 5px;
-	right: 45px;
+	top: 6px;
+	right: 44px;
 	width: max-content;
-
 	${CollectionTypeContainer}:hover & {
 		display: unset;
 	}
@@ -417,8 +413,8 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 						) : null}
 						{collection?.type && !canPublishUnpublishedChanges ?
 							<CollectionTypeContainer>
-								<CollectionTypeThumbnail src={`/thumbnails/${collection.type}.svg`}/>
 								<CollectionType className="visible-based-on-collection-container-width"><ToolTip text={collection.type} /></CollectionType>
+								<CollectionTypeThumbnail src={`/thumbnails/${collection.type}.svg`}/>
 							</CollectionTypeContainer>
 							: null}
 					</CollectionHeadingInner>
