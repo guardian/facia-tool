@@ -2,16 +2,22 @@
 	TODO: Move this logic into FrontSection.tsx when styledComponents is migrated to v6
     styledComponents v6 will support container queries, which will allow us to remove this CSS file
    */
-.front-header {
+.front-header, .collection-container {
 	container-type: inline-size;
 }
 
-.visible-based-on-front-header-width {
+.visible-based-on-front-header-width, .visible-based-on-collection-container-width {
 	display: block;
 }
 
 @container (max-width: 600px) {
   .visible-based-on-front-header-width {
+	  display: none;
+  }
+}
+
+@container (max-width: 400px) {
+  .visible-based-on-collection-container-width {
 	  display: none;
   }
 }

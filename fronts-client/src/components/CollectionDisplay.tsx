@@ -260,7 +260,6 @@ const CollectionType = styled.div`
 	font-family: TS3TextSans;
 	font-weight: normal;
 	line-height: normal;
-	display: none;
 	// absolute positioning to not affect Discard / Launch buttons etc.
 	position: absolute;
 	top: 5px;
@@ -323,6 +322,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 				onFocus={() => handleFocus(id)}
 				onBlur={handleBlur}
 				hasMultipleFrontsOpen={hasMultipleFrontsOpen}
+				className="collection-container"
 			>
 				<CollectionHeadingSticky tabIndex={-1}>
 					<CollectionHeadingInner>
@@ -418,7 +418,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 						{collection?.type && !canPublishUnpublishedChanges ?
 							<CollectionTypeContainer>
 								<CollectionTypeThumbnail src={`/thumbnails/${collection.type}.svg`}/>
-								<CollectionType><ToolTip text={collection.type}/></CollectionType>
+								<CollectionType className="visible-based-on-collection-container-width"><ToolTip text={collection.type} /></CollectionType>
 							</CollectionTypeContainer>
 							: null}
 					</CollectionHeadingInner>
