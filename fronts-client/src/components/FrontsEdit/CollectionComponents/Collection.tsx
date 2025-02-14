@@ -227,6 +227,8 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 
 		const groupIds = groups.map((group) => group.uuid);
 
+		const canPublishUnpublishedChanges = hasUnpublishedChanges && canPublish;
+
 		return (
 			<>
 				<CollectionDisplay
@@ -238,9 +240,9 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 					isOpen={isOpen}
 					hasMultipleFrontsOpen={hasMultipleFrontsOpen}
 					onChangeOpenState={() => onChangeOpenState(id, isOpen)}
+					canPublishUnpublishedChanges={canPublishUnpublishedChanges}
 					headlineContent={
-						hasUnpublishedChanges &&
-						canPublish && (
+						canPublishUnpublishedChanges && (
 							<Fragment>
 								<EditModeVisibility visibleMode="editions">
 									{!isFeast && (

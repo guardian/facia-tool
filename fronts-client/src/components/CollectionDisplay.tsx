@@ -70,6 +70,7 @@ type Props = ContainerProps & {
 	) => void;
 	isEditions: boolean;
 	removeFrontCollection: (frontId: string, collectionId: string) => void;
+	canPublishUnpublishedChanges: boolean;
 };
 
 interface CollectionState {
@@ -309,6 +310,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 			handleBlur,
 			isEditions,
 			isFeast,
+			canPublishUnpublishedChanges
 		}: Props = this.props;
 		const itemCount = cardIds ? cardIds.length : 0;
 		const targetedTerritory = collection ? collection.targetedTerritory : null;
@@ -413,7 +415,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								)}
 							</HeadlineContentContainer>
 						) : null}
-						{collection?.type ?
+						{collection?.type && !canPublishUnpublishedChanges ?
 							<CollectionTypeContainer>
 								<CollectionTypeThumbnail src={`/thumbnails/${collection.type}.svg`}/>
 								<CollectionType><ToolTip text={collection.type}/></CollectionType>
