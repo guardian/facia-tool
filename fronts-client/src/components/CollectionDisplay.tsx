@@ -173,12 +173,13 @@ const CollectionHeadingText = styled.div<{
 		css`
 			color: ${theme.base.colors.textMuted};
 		`} white-space: nowrap;
-	overflow-x: scroll;
-	overflow-y: hidden;
+	overflow: hidden;
 	text-overflow: ellipsis;
+	min-height: 40px;
+	height: 100%;
+	justify-content: center;
 	display: flex;
-	justify-content: flex-start;
-	gap: 8px;
+	flex-direction: column;
 	${({ isSecondaryContainer }) =>
 		isSecondaryContainer &&
 		css`
@@ -201,6 +202,11 @@ const CollectionToggleContainer = styled.div`
 	}
 `;
 
+const CollectionDisplayName = styled.span`
+	text-overflow: ellipsis;
+	overflow: hidden;
+`;
+
 const CollectionConfigContainer = styled.div`
 	display: inline-block;
 	font-family: GHGuardianHeadline;
@@ -210,12 +216,14 @@ const CollectionConfigContainer = styled.div`
 	vertical-align: bottom;
 	position: relative;
 	z-index: 2;
+	margin-bottom: 2px;
 `;
 
 const CollectionConfigText = styled.div`
 	display: inline;
 	font-weight: normal;
 	font-style: normal;
+	font-size: 14px;
 `;
 
 const CollectionConfigTextPipe = styled.span`
@@ -372,7 +380,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 											) ?? false
 										}
 									>
-										{!!collection ? collection!.displayName : 'Loading …'}
+										<CollectionDisplayName>{!!collection ? collection!.displayName : 'Loading …'}</CollectionDisplayName>
 										<CollectionConfigContainer>
 											{oc(collection).metadata[0].type() ? (
 												<CollectionConfigText>

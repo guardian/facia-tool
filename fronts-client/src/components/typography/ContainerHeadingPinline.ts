@@ -2,9 +2,8 @@ import { styled } from 'constants/theme';
 import ContainerHeading from './ContainerHeading';
 
 export default styled(ContainerHeading)<{ setBack?: boolean }>`
+	min-height: 40px;
 	align-items: center;
-	height: 40px;
-	line-height: 40px;
 	vertical-align: middle;
 	justify-content: space-between;
 	border-bottom: ${({ theme, setBack }) =>
