@@ -321,6 +321,16 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		const targetedTerritory = collection ? collection.targetedTerritory : null;
 		const { displayName } = this.state;
 
+
+		const getCollectionThumbnailSvgPath = (maybeCollectionType: string | undefined) => {
+			if(!maybeCollectionType) return null;
+			return /^(fixed|dynamic|flexible|scrollable|static)\//.test(maybeCollectionType)
+				? '/thumbnails/' + collection?.type + '.svg'
+				: null;
+		}
+
+		const collectionTypeThumbnail = getCollectionThumbnailSvgPath(collection?.type);
+
 		return (
 			<CollectionContainer
 				id={collection && createCollectionId(collection, frontId)}
@@ -391,8 +401,8 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 							)}
 							{collection?.type && !canPublishUnpublishedChanges ?
 								<CollectionTypeContainer>
-									<CollectionType className="visible-based-on-collection-container-width"><ToolTip text={collection.type} /></CollectionType>
-									<CollectionTypeThumbnail src={`/thumbnails/${collection.type}.svg`}/>
+									<CollectionType className="visible-based-on-collection-container-width"><ToolTip text={collection?.type} /></CollectionType>
+									{collectionTypeThumbnail ? <CollectionTypeThumbnail src={collectionTypeThumbnail}/> : null}
 								</CollectionTypeContainer>
 								: null}
 						</CollectionHeadlineWithConfigContainer>
