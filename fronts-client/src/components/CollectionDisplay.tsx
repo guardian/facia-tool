@@ -340,6 +340,13 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 
 		const collectionTypeThumbnail = getCollectionThumbnailSvgPath(collection?.type);
 
+		const collectionConfigLabels =
+			[
+				oc(collection).metadata[0].type() ? oc(collection).metadata[0].type() : null,
+				collection?.suppressImages ? 'Images suppressed' : null,
+				collection?.platform && collection.platform !== 'Any' ? `${collection.platform} Only` : null
+			].filter(label => label !== null) as string[];
+
 		return (
 			<CollectionContainer
 				id={collection && createCollectionId(collection, frontId)}
@@ -382,26 +389,12 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 									>
 										<CollectionDisplayName>{!!collection ? collection!.displayName : 'Loading …'}</CollectionDisplayName>
 										<CollectionConfigContainer>
-											{oc(collection).metadata[0].type() ? (
+											{collectionConfigLabels.map((label, index) => (
 												<CollectionConfigText>
-													<CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-													{oc(collection).metadata[0].type()}
+													{index !== 0 ? <CollectionConfigTextPipe> | </CollectionConfigTextPipe> : null}
+													{label}
 												</CollectionConfigText>
-											) : null}
-											{collection?.suppressImages ? (
-												<CollectionConfigText>
-													<CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-													Images suppressed
-												</CollectionConfigText>
-											) : null}
-											{collection &&
-											collection.platform &&
-											collection.platform !== 'Any' ? (
-												<CollectionConfigText>
-													<CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-													{`${collection.platform} Only`}
-												</CollectionConfigText>
-											) : null}
+											))}
 											{targetedTerritory && (
 												<TargetedTerritoryBox>
 													{targetedTerritory}
