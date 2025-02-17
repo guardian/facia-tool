@@ -324,9 +324,10 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 
 		const getCollectionThumbnailSvgPath = (maybeCollectionType: string | undefined) => {
 			if(!maybeCollectionType) return null;
+			// Fall back to (blank) thrasher thumbnail if collection type is not recognized
 			return /^(fixed|dynamic|flexible|scrollable|static)\//.test(maybeCollectionType)
 				? '/thumbnails/' + collection?.type + '.svg'
-				: null;
+				: '/thumbnails/fixed/thrasher.svg';
 		}
 
 		const collectionTypeThumbnail = getCollectionThumbnailSvgPath(collection?.type);
