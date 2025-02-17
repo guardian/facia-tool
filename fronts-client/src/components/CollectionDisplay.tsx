@@ -208,7 +208,7 @@ const CollectionDisplayName = styled.span`
 `;
 
 const CollectionConfigContainer = styled.div`
-	display: inline-block;
+	display: flex;
 	font-family: GHGuardianHeadline;
 	font-size: 15px;
 	color: ${theme.base.colors.text};
@@ -216,18 +216,18 @@ const CollectionConfigContainer = styled.div`
 	vertical-align: bottom;
 	position: relative;
 	z-index: 2;
-	margin-bottom: 2px;
+	margin-bottom: 4px;
+	gap: 4px;
 `;
 
 const CollectionConfigText = styled.div`
 	display: inline;
 	font-weight: normal;
 	font-style: normal;
-	font-size: 14px;
-`;
-
-const CollectionConfigTextPipe = styled.span`
-	color: ${theme.base.colors.borderColor};
+	font-size: 12px;
+	background-color: ${theme.colors.white};
+	color: ${theme.colors.blackDark};
+	padding: 2px 3px;
 `;
 
 const CollectionShortVerticalPinline = styled(ShortVerticalPinline)`
@@ -236,10 +236,11 @@ const CollectionShortVerticalPinline = styled(ShortVerticalPinline)`
 `;
 
 const TargetedTerritoryBox = styled.div`
-	background-color: black;
-	color: white;
+	color: ${theme.button.color};
+	background-color: ${theme.base.colors.button};
 	font-size: 15px;
 	padding: 0 5px;
+	width: min-content;
 	span {
 		font-size: 7px;
 		vertical-align: middle;
@@ -277,7 +278,6 @@ const CollectionType = styled.div`
 	font-weight: normal;
 	line-height: normal;
 	position: absolute;
-	top: 10px;
 	right: 44px;
 	width: max-content;
 	${CollectionTypeContainer}:hover & {
@@ -391,7 +391,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 										<CollectionConfigContainer>
 											{collectionConfigLabels.map((label, index) => (
 												<CollectionConfigText>
-													{index !== 0 ? <CollectionConfigTextPipe> | </CollectionConfigTextPipe> : null}
 													{label}
 												</CollectionConfigText>
 											))}
