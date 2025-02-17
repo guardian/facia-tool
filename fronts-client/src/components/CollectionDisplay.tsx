@@ -155,6 +155,8 @@ const CollectionHeadingInner = styled(ContainerHeadingPinline)`
 `;
 
 const CollectionHeadlineWithConfigContainer = styled.div`
+	display: flex;
+	gap: 8px;
 	flex-grow: 1;
 	min-width: 0;
 	flex-basis: 100%;
@@ -171,8 +173,12 @@ const CollectionHeadingText = styled.div<{
 		css`
 			color: ${theme.base.colors.textMuted};
 		`} white-space: nowrap;
-	overflow: hidden;
+	overflow-x: scroll;
+	overflow-y: hidden;
 	text-overflow: ellipsis;
+	display: flex;
+	justify-content: flex-start;
+	gap: 8px;
 	${({ isSecondaryContainer }) =>
 		isSecondaryContainer &&
 		css`
@@ -201,7 +207,6 @@ const CollectionConfigContainer = styled.div`
 	font-size: 15px;
 	color: ${theme.base.colors.text};
 	white-space: nowrap;
-	margin-left: 8px;
 	vertical-align: bottom;
 	position: relative;
 	z-index: 2;
@@ -245,8 +250,7 @@ const CollectionTypeContainer = styled.div`
 	flex-direction: row;
 	align-items: center;
 	gap: 4px;
-	position: absolute;
-	right: 10px;
+	position: relative;
 	z-index: 0;
 
 	:hover {
@@ -265,7 +269,7 @@ const CollectionType = styled.div`
 	font-weight: normal;
 	line-height: normal;
 	position: absolute;
-	top: 6px;
+	top: 10px;
 	right: 44px;
 	width: max-content;
 	${CollectionTypeContainer}:hover & {
@@ -345,46 +349,52 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 									onBlur={() => this.setName()}
 								/>
 							) : (
-								<CollectionHeadingText
-									isLoading={!collection}
-									title={!!collection ? collection!.displayName : 'Loading …'}
-									isSecondaryContainer={
-										collection?.metadata?.some(
-											(tag) => tag.type === 'Secondary',
-										) ?? false
-									}
-								>
-									{!!collection ? collection!.displayName : 'Loading …'}
-									<CollectionConfigContainer>
-										{oc(collection).metadata[0].type() ? (
-											<CollectionConfigText>
-												<CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-												{oc(collection).metadata[0].type()}
-											</CollectionConfigText>
-										) : null}
-										{collection?.suppressImages ? (
-											<CollectionConfigText>
-												<CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-												Images suppressed
-											</CollectionConfigText>
-										) : null}
-										{collection &&
-										collection.platform &&
-										collection.platform !== 'Any' ? (
-											<CollectionConfigText>
-												<CollectionConfigTextPipe> | </CollectionConfigTextPipe>
-												{`${collection.platform} Only`}
-											</CollectionConfigText>
-										) : null}
-										{targetedTerritory && (
-											<TargetedTerritoryBox>
-												{targetedTerritory}
-												<span> &nbsp;ONLY</span>
-											</TargetedTerritoryBox>
-										)}
-									</CollectionConfigContainer>
-								</CollectionHeadingText>
+									<CollectionHeadingText
+										isLoading={!collection}
+										title={!!collection ? collection!.displayName : 'Loading …'}
+										isSecondaryContainer={
+											collection?.metadata?.some(
+												(tag) => tag.type === 'Secondary',
+											) ?? false
+										}
+									>
+										{!!collection ? collection!.displayName : 'Loading …'}
+										<CollectionConfigContainer>
+											{oc(collection).metadata[0].type() ? (
+												<CollectionConfigText>
+													<CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+													{oc(collection).metadata[0].type()}
+												</CollectionConfigText>
+											) : null}
+											{collection?.suppressImages ? (
+												<CollectionConfigText>
+													<CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+													Images suppressed
+												</CollectionConfigText>
+											) : null}
+											{collection &&
+											collection.platform &&
+											collection.platform !== 'Any' ? (
+												<CollectionConfigText>
+													<CollectionConfigTextPipe> | </CollectionConfigTextPipe>
+													{`${collection.platform} Only`}
+												</CollectionConfigText>
+											) : null}
+											{targetedTerritory && (
+												<TargetedTerritoryBox>
+													{targetedTerritory}
+													<span> &nbsp;ONLY</span>
+												</TargetedTerritoryBox>
+											)}
+										</CollectionConfigContainer>
+									</CollectionHeadingText>
 							)}
+							{collection?.type && !canPublishUnpublishedChanges ?
+								<CollectionTypeContainer>
+									<CollectionType className="visible-based-on-collection-container-width"><ToolTip text={collection.type} /></CollectionType>
+									<CollectionTypeThumbnail src={`/thumbnails/${collection.type}.svg`}/>
+								</CollectionTypeContainer>
+								: null}
 						</CollectionHeadlineWithConfigContainer>
 						{isFeast && collection ? (
 							<FeastCollectionMenu
@@ -417,12 +427,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								)}
 							</HeadlineContentContainer>
 						) : null}
-						{collection?.type && !canPublishUnpublishedChanges ?
-							<CollectionTypeContainer>
-								<CollectionType className="visible-based-on-collection-container-width"><ToolTip text={collection.type} /></CollectionType>
-								<CollectionTypeThumbnail src={`/thumbnails/${collection.type}.svg`}/>
-							</CollectionTypeContainer>
-							: null}
 					</CollectionHeadingInner>
 					{isFeast ? (
 						<DragToConvertFeastCollection sourceContainerId={id} />
