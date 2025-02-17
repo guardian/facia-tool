@@ -39,6 +39,7 @@ import { removeFrontCollection } from '../actions/Editions';
 import { FeastCollectionMenu } from './FeastCollectionMenu';
 import type { CollectionUpdateMode } from '../strategies/update-collection';
 import ToolTip from "./inputs/HoverActionToolTip";
+import {LockedPadlockIcon} from "./icons/Icons";
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -121,10 +122,9 @@ const CollectionDisabledTheme = styled.div`
 const LockedCollectionFlag = styled.span`
 	font-family: GHGuardianHeadline;
 	font-size: 22px;
-	color: ${theme.base.colors.text};
+	color: ${theme.base.colors.backgroundColor};
 	height: 40px;
 	line-height: 40px;
-	border-bottom: 1px solid ${theme.base.colors.borderColor};
 `;
 
 const CollectionMetaBase = styled.span`
@@ -344,6 +344,9 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 				<CollectionHeadingSticky tabIndex={-1}>
 					<CollectionHeadingInner>
 						<CollectionHeadlineWithConfigContainer>
+							{isLocked ? <LockedCollectionFlag>
+								<LockedPadlockIcon fill={theme.base.colors.textDark}/>
+							</LockedCollectionFlag> :  null}
 							{this.state.editingContainerName ? (
 								<CollectionHeaderInput
 									data-testid="rename-front-input"
@@ -422,9 +425,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								onDeleteClicked={this.handleDeleteClick}
 							/>
 						) : undefined}
-						{isLocked ? (
-							<LockedCollectionFlag>Locked</LockedCollectionFlag>
-						) : headlineContent ? (
+						{!isLocked && headlineContent ? (
 							<HeadlineContentContainer>
 								{headlineContent}
 								{isEditions && !isFeast && (
