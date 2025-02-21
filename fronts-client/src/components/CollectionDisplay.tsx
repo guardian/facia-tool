@@ -38,6 +38,7 @@ import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBun
 import { removeFrontCollection } from '../actions/Editions';
 import { FeastCollectionMenu } from './FeastCollectionMenu';
 import type { CollectionUpdateMode } from '../strategies/update-collection';
+import ToolTip from "./inputs/HoverActionToolTip";
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -69,6 +70,7 @@ type Props = ContainerProps & {
 	) => void;
 	isEditions: boolean;
 	removeFrontCollection: (frontId: string, collectionId: string) => void;
+	canPublishUnpublishedChanges: boolean;
 };
 
 interface CollectionState {
@@ -199,8 +201,10 @@ const CollectionConfigContainer = styled.div`
 	font-size: 15px;
 	color: ${theme.base.colors.text};
 	white-space: nowrap;
-	margin-left: 3px;
+	margin-left: 8px;
 	vertical-align: bottom;
+	position: relative;
+	z-index: 2;
 `;
 
 const CollectionConfigText = styled.div`
@@ -235,6 +239,40 @@ const CollectionHeaderInput = styled.input`
 	font-weight: bold;
 	width: 20em;
 `;
+
+const CollectionTypeContainer = styled.div`
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 4px;
+	position: absolute;
+	right: 10px;
+	z-index: 0;
+
+	:hover {
+		z-index: 3;
+	}
+`;
+
+const CollectionTypeThumbnail = styled.img`
+	height: 30px;
+	width: 40px;
+`;
+
+const CollectionType = styled.div`
+	font-size: 10px;
+	font-family: TS3TextSans;
+	font-weight: normal;
+	line-height: normal;
+	position: absolute;
+	top: 6px;
+	right: 44px;
+	width: max-content;
+	${CollectionTypeContainer}:hover & {
+		display: unset;
+	}
+`;
+
 
 class CollectionDisplay extends React.Component<Props, CollectionState> {
 	public static defaultProps = {
@@ -273,6 +311,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 			handleBlur,
 			isEditions,
 			isFeast,
+			canPublishUnpublishedChanges
 		}: Props = this.props;
 		const itemCount = cardIds ? cardIds.length : 0;
 		const targetedTerritory = collection ? collection.targetedTerritory : null;
@@ -285,6 +324,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 				onFocus={() => handleFocus(id)}
 				onBlur={handleBlur}
 				hasMultipleFrontsOpen={hasMultipleFrontsOpen}
+				className="collection-container"
 			>
 				<CollectionHeadingSticky tabIndex={-1}>
 					<CollectionHeadingInner>
@@ -377,6 +417,12 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								)}
 							</HeadlineContentContainer>
 						) : null}
+						{collection?.type && !canPublishUnpublishedChanges ?
+							<CollectionTypeContainer>
+								<CollectionType className="visible-based-on-collection-container-width"><ToolTip text={collection.type} /></CollectionType>
+								<CollectionTypeThumbnail src={`/thumbnails/${collection.type}.svg`}/>
+							</CollectionTypeContainer>
+							: null}
 					</CollectionHeadingInner>
 					{isFeast ? (
 						<DragToConvertFeastCollection sourceContainerId={id} />
