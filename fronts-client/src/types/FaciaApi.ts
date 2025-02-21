@@ -33,6 +33,11 @@ interface FrontsToolSettings {
 	displayEditWarning?: boolean;
 }
 
+interface DisplayHints {
+	maxItemsToDisplay?: number;
+	suppressImages?: boolean;
+}
+
 interface CollectionConfigResponse {
 	displayName: string;
 	type?: string;
@@ -54,7 +59,7 @@ interface CollectionConfigResponse {
 	frontsToolSettings?: FrontsToolSettings;
 	prefill?: EditionsPrefill;
 	targetedTerritory?: string;
-	suppressImages?: boolean;
+	displayHints?: DisplayHints;
 }
 
 interface FrontsConfigResponse {
@@ -140,5 +145,6 @@ export {
 	EditionCollectionResponse,
 	VisibleArticlesResponse,
 	FrontsToolSettings,
+	DisplayHints,
 	EditionsFrontMetadata,
 };

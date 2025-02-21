@@ -636,7 +636,6 @@ const stateWithCollection: any = {
 					automatedCollection: {
 						displayName: 'automated',
 						type: 'type',
-						suppressImages: undefined,
 						targetedRegions: [],
 						excludedRegions: [],
 						targetedTerritory: undefined,

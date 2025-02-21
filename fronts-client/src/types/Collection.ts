@@ -1,6 +1,6 @@
 import { CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
-import type { FrontsToolSettings } from 'types/FaciaApi';
+import type { DisplayHints, FrontsToolSettings } from 'types/FaciaApi';
 import { CardTypes } from 'constants/cardTypes';
 
 interface CollectionArticles {
@@ -190,9 +190,9 @@ interface Collection {
 	frontsToolSettings?: FrontsToolSettings;
 	isHidden?: boolean;
 	targetedTerritory?: string;
-	suppressImages?: boolean;
 	targetedRegions: string[];
 	excludedRegions: string[];
+	displayHints?: DisplayHints;
 }
 
 interface ArticleTag {
