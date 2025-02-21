@@ -58,7 +58,19 @@ export default class ConfigCollection extends DropTarget {
                 frontsToolSettings: asObservableProps([
                     'displayEditWarning'
                 ])
-            }
+            },
+          {
+            groupsConfig: ko.observableArray([
+              {
+                name: 'splash',
+                maxItems: 20
+              },
+              {
+                name: 'standard',
+                maxItems: 20
+              }
+            ])
+          }
         );
 
         populateObservables(this.meta, opts);
