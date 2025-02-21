@@ -221,7 +221,6 @@ describe('Collection actions', () => {
 					previouslyCardIds: [],
 					groups: undefined,
 					frontsToolSettings: undefined,
-					suppressImages: undefined,
 					targetedRegions: [],
 					excludedRegions: [],
 					targetedTerritory: undefined,

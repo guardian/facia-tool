@@ -44,7 +44,7 @@ const combineCollectionWithConfig = (
 		platform: collectionConfig.platform,
 		metadata: collectionConfig.metadata,
 		targetedTerritory: collectionConfig.targetedTerritory,
-		suppressImages: collectionConfig.suppressImages,
+		displayHints: collectionConfig.displayHints,
 	});
 };
 

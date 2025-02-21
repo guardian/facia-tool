@@ -322,7 +322,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 												{oc(collection).metadata[0].type()}
 											</CollectionConfigText>
 										) : null}
-										{collection?.suppressImages ? (
+										{collection?.displayHints?.suppressImages ? (
 											<CollectionConfigText>
 												<CollectionConfigTextPipe> | </CollectionConfigTextPipe>
 												Images suppressed
