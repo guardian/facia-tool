@@ -1,12 +1,6 @@
 package services
 
-import com.gu.facia.client.models.{
-  CollectionConfigJson,
-  CollectionJson,
-  ConfigJson,
-  FrontJson,
-  Trail
-}
+import com.gu.facia.client.models.{CollectionConfigJson, CollectionJson, ConfigJson, FrontJson, GroupsConfigJson, Trail}
 import conf.ApplicationConfiguration
 import org.joda.time.DateTime
 import org.scalatest.{FreeSpec, Matchers}
@@ -89,7 +83,11 @@ class CollectionServiceTest extends FreeSpec with Matchers {
       `type` = Some("dynamic/slow"),
       href = None,
       description = None,
-      groups = Some(List("Group 1", "Group 2")),
+      groups = None,
+      groupsConfig = Some(List(
+        GroupsConfigJson(name = "Group 1", maxItems = Some(10)),
+        GroupsConfigJson(name = "Group 2", maxItems = Some(10))
+      )),
       uneditable = None,
       showTags = None,
       showSections = None,

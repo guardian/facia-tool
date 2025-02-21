@@ -53,20 +53,20 @@ const addGroupsForStage = (
 		let name: string | null = null;
 		const groupNumberAsInt = getGroupIndex(group.id);
 		if (
-			collectionConfig.groups &&
-			groupNumberAsInt < collectionConfig.groups.length
+			collectionConfig.groupsConfig &&
+			groupNumberAsInt < collectionConfig.groupsConfig.length
 		) {
-			name = collectionConfig.groups[groupNumberAsInt];
+			name = collectionConfig.groupsConfig[groupNumberAsInt].name;
 		}
 		return { ...group, name };
 	});
 
 	// We may have empty groups in the config which would not show up in the normalised
 	// groups result. We need to add these into the groups array.
-	if (collectionConfig.groups) {
-		collectionConfig.groups.forEach((group, configGroupIndex) => {
-			if (!configGroupIndexExistsInGroups(groupsWithNames, configGroupIndex)) {
-				groupsWithNames.push(createGroup(`${configGroupIndex}`, group));
+	if (collectionConfig.groupsConfig) {
+		collectionConfig.groupsConfig.forEach((groupConfig, groupConfigIndex) => {
+			if (!configGroupIndexExistsInGroups(groupsWithNames, groupConfigIndex)) {
+				groupsWithNames.push(createGroup(`${groupConfigIndex}`, groupConfig.name));
 			}
 		});
 	}
