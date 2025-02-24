@@ -63,11 +63,11 @@ export default class ConfigCollection extends DropTarget {
             groupsConfig: ko.observableArray([
               {
                 name: 'splash',
-                maxItems: 20
+                maxItems: observableNumeric(20)
               },
               {
                 name: 'standard',
-                maxItems: 20
+                maxItems: observableNumeric(20)
               }
             ])
           }
