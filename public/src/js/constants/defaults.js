@@ -104,11 +104,11 @@ export default {
                 maxItems: 1
               },
               {
-                name: 'standard',
+                name: 'large',
                 maxItems: 20
               },
               {
-                name: 'large',
+                name: 'small',
                 maxItems: 20
               }
             ]
