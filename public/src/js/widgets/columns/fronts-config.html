@@ -254,9 +254,11 @@
             </div>
 
             <config-collection-tags params="tags: meta.metadata" class="tags"></config-collection-tags>
-            <!-- ko if: meta.groups -->
+            <!-- ko if: meta.groupsConfig -->
                 <label>Groups</label>
-                <span class="cnf-form__value" data-bind="text: meta.groups"></span>
+                <div data-bind="foreach: meta.groupsConfig">
+                  <span class="cnf-form__value" data-bind="text: name"></span>
+                </div>
             <!-- /ko -->
 
             <!-- ko if: meta.type() === "flexible/general"-->

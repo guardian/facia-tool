@@ -26,48 +26,78 @@ export default {
         { 'name': 'fixed/small/slow-V-half' },
         {
           'name': 'dynamic/fast',
-          'groups': [
-            'standard',
-            'big',
-            'very big',
-            'huge'
+          'groupsConfig': [
+            {
+              name: 'standard'
+            },
+            {
+              name: 'big'
+            },
+            {
+              name: 'very big'
+            },
+            {
+              name: 'huge'
+            }
           ]
         },
         {
           'name': 'dynamic/slow',
-          'groups': [
-            'standard',
-            'big',
-            'very big',
-            'huge'
+          'groupsConfig': [
+            {
+              name: 'standard'
+            },
+            {
+              name: 'big'
+            },
+            {
+              name: 'very big'
+            },
+            {
+              name: 'huge'
+            }
           ]
         },
         {
           'name': 'dynamic/package',
-          'groups': [
-            'standard',
-            'snap'
+          'groupsConfig': [
+            {
+              name: 'standard'
+            },
+            {
+              name: 'snap'
+            }
           ]
         },
         {
           'name': 'dynamic/slow-mpu',
-          'groups': [
-            'standard',
-            'big'
+          'groupsConfig': [
+            {
+              name: 'standard'
+            },
+            {
+              name: 'big'
+            }
           ]
         },
         { 'name': 'nav/list' },
         { 'name': 'nav/media-list' },
         { 'name': 'news/most-popular' },
-        { 'name': 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
+        {
+          'name': 'breaking-news/not-for-other-fronts',
+          groupsConfig: [
+            {
+              name: 'minor'
+            },
+            {
+              name: 'major'
+            }
+          ]
+        },
         { 'name': 'fixed/showcase' },
         { 'name': 'scrollable/highlights' },
         {
             'name': 'flexible/general',
-            'groups': [
-                'standard',
-                'splash'
-            ],
             'groupsConfig': [
               {
                 name: 'splash',
@@ -85,9 +115,13 @@ export default {
         },
         {
             'name': 'flexible/special',
-            'groups': [
-                'standard',
-                'snap'
+            'groupsConfig': [
+              {
+                name: 'standard'
+              },
+              {
+                name: 'snap'
+              }
             ]
         },
 		{ 'name': 'scrollable/small' },
