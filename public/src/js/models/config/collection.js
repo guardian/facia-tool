@@ -25,6 +25,26 @@ export default class ConfigCollection extends DropTarget {
         this.userVisibilities = CONST.userVisibilities;
         this.availableTerritories = (defaults && defaults.availableTerritories) ? defaults.availableTerritories : [];
 
+        const getGroupsConfigMaxItemsValue = (groupsConfig, nameToFind, fallbackValue) => {
+            if(groupsConfig === null || groupsConfig === undefined) return fallbackValue;
+            const groupConfig = groupsConfig.find(groupConfig => groupConfig.name === nameToFind);
+            return groupConfig && groupConfig.maxItems ? groupConfig.maxItems : fallbackValue;
+        }
+
+        const getGroupsConfigDefaultsForType = (typeDefaults, typeName) => {
+            const typeConfig = typeDefaults.find(typeConfig => typeConfig.name === typeName);
+            return typeConfig ? typeConfig.groupsConfig : [];
+        }
+
+        const groupsConfigDefaultsForType = getGroupsConfigDefaultsForType(vars.CONST.types, opts.type) || [];
+
+        const groupsConfig = groupsConfigDefaultsForType.map(groupConfig => {
+            return {
+              name: groupConfig.name,
+              maxItems: observableNumeric(getGroupsConfigMaxItemsValue(opts.groupsConfig, groupConfig.name, groupConfig.maxItems))
+            }
+          });
+
         this.meta = Object.assign(
             asObservableProps([
                 'displayName',
@@ -60,16 +80,7 @@ export default class ConfigCollection extends DropTarget {
                 ])
             },
           {
-            groupsConfig: ko.observableArray([
-              {
-                name: 'splash',
-                maxItems: observableNumeric(20)
-              },
-              {
-                name: 'standard',
-                maxItems: observableNumeric(20)
-              }
-            ])
+            groupsConfig: ko.observableArray(groupsConfig)
           }
         );
 

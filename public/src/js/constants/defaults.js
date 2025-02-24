@@ -67,6 +67,20 @@ export default {
             'groups': [
                 'standard',
                 'splash'
+            ],
+            'groupsConfig': [
+              {
+                name: 'splash',
+                maxItems: 1
+              },
+              {
+                name: 'standard',
+                maxItems: 20
+              },
+              {
+                name: 'large',
+                maxItems: 20
+              }
             ]
         },
         {
