@@ -109,7 +109,7 @@ describe('Shared utilities', () => {
 			expect(result.cards[prevGroup3.cards[0]].id).toBe('article/live/3');
 		});
 		it('should insert a default group for empty collections', () => {
-			const { groups, ...collectionConfigWithoutGroups } = collectionConfig;
+			const { groupsConfig, ...collectionConfigWithoutGroups } = collectionConfig;
 			const result = normaliseCollectionWithNestedArticles(
 				{
 					...collection,
@@ -145,16 +145,16 @@ describe('Shared utilities', () => {
 				collectionWithoutGroups,
 				{
 					...collectionConfig,
-					groups: undefined,
+					groupsConfig: undefined,
 				},
 			);
 			const groupId = result.normalisedCollection.live![0];
 			expect(result.groups[groupId].cards).toHaveLength(3);
 		});
-		it('should create different groups for cards belonging to different groups even if they are not specificied in the config', () => {
+		it('should create different groups for cards belonging to different groups even if they are not specified in the config', () => {
 			const result = normaliseCollectionWithNestedArticles(collection, {
 				...collectionConfig,
-				groups: undefined,
+				groupsConfig: undefined,
 			});
 			const groupId1 = result.normalisedCollection.live![0];
 			expect(result.groups[groupId1].cards).toHaveLength(1);
@@ -168,7 +168,7 @@ describe('Shared utilities', () => {
 			};
 			const result = normaliseCollectionWithNestedArticles(collection, {
 				...configWithExtraGroup,
-				groups: undefined,
+				groupsConfig: undefined,
 			});
 			expect(Object.keys(result.groups)).toHaveLength(4);
 		});

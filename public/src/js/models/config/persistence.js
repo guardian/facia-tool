@@ -53,6 +53,9 @@ function flattenModel (model) {
 
     function flattenValue(value) {
         if (_.isFunction(value)) {
+            if(_.isArray(value())) {
+              return value().map(flattenValue);
+            }
             return value();
         } else if (_.isObject(value)) {
             var flattened = flattenModel(value);

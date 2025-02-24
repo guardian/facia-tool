@@ -21,6 +21,11 @@ interface Group {
 	cards: string[];
 }
 
+interface GroupConfig {
+	name: string;
+	maxItems: number | null;
+}
+
 /** CardSets represent all of the lists of cards available in a collection. */
 type CardSets = 'draft' | 'live' | 'previously';
 /** Stages represent only those lists which are curated by the user.*/
@@ -183,7 +188,7 @@ interface Collection {
 	updatedEmail?: string;
 	platform?: string;
 	displayName: string;
-	groups?: string[];
+	groupsConfig?: GroupConfig[];
 	metadata?: Array<{ type: string }>;
 	uneditable?: boolean;
 	type?: string;
@@ -213,6 +218,7 @@ export {
 	Collection,
 	CardSizes,
 	Group,
+	GroupConfig,
 	Stages,
 	CardSets,
 	ArticleTag,

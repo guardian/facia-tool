@@ -1,10 +1,6 @@
 package config
 
-import com.gu.facia.client.models.{
-  CollectionConfigJson => CollectionConfig,
-  ConfigJson => Config,
-  FrontJson => Front
-}
+import com.gu.facia.client.models.{GroupsConfigJson, CollectionConfigJson => CollectionConfig, ConfigJson => Config, FrontJson => Front}
 import org.scalatest._
 import updates.CreateFront
 
@@ -13,7 +9,7 @@ class TransformationsSpec extends FlatSpec with Matchers {
     displayName = Some("New collection"),
     `type` = Some("???"),
     href = Some("newfront"),
-    groups = Some(List("1", "2")),
+    groupsConfig = Some(List(GroupsConfigJson(name = "1", maxItems = Some(10)), GroupsConfigJson(name = "2", maxItems = Some(10)))),
     uneditable = Some(false),
     showTags = Some(true),
     showSections = Some(false),
@@ -40,6 +36,7 @@ class TransformationsSpec extends FlatSpec with Matchers {
   )
 
   val emptyCollectionFixture = CollectionConfig(
+    None,
     None,
     None,
     None,
