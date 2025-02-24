@@ -260,14 +260,10 @@
             <!-- /ko -->
 
             <!-- ko if: meta.type() === "flexible/general"-->
-              <label for="flexGenStoryLimit">Max stories to display</label>
-              <input id="flexGenStoryLimit" type="number" data-bind="value: meta.displayHints.maxItemsToDisplay" attr: { max: 20, min: 1 } max="20" min="1" placeholder="9">
-
               <div data-bind="foreach: meta.groupsConfig">
-                <label for="flexGenSplashStoryLimit">Max <span data-bind="text: name"></span> stories</label>
+                <label for="flexGenSplashStoryLimit"><span data-bind="text: name" style="text-transform: capitalize;"></span> stories</label>
                 <input id="flexGenSplashStoryLimit" type="number" data-bind="value: maxItems" attr: { max: 20, min: 1 } max="20" min="1" placeholder="9">
               </div>
-
             <!-- /ko -->
 
             <label for="userVisibility">User visibility</label>
