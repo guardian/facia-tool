@@ -4,6 +4,7 @@ import {
 	FrontConfig,
 	CollectionConfig,
 	VisibleArticlesResponse,
+	VisibleArticles,
 } from 'types/FaciaApi';
 import type { State } from 'types/State';
 import { AlsoOnDetail } from 'types/Collection';
@@ -350,10 +351,10 @@ const selectVisibleArticles = createSelector(
 	},
 );
 
-const defaultVisibleFrontArticles = {
+const defaultVisibleFrontArticles = [{
 	desktop: undefined,
 	mobile: undefined,
-};
+}];
 
 const createSelectArticleVisibilityDetails = () => {
 	const selectArticlesInCollection = createSelectCardsInCollection();
@@ -380,16 +381,18 @@ const createSelectArticleVisibilityDetails = () => {
 			if (collectionSet === 'previously') {
 				return defaultVisibleFrontArticles;
 			}
-			const visibilities = collectionVisibilities[collectionSet][collectionId];
+			const visibleArticlesResponse: VisibleArticlesResponse = collectionVisibilities[collectionSet][collectionId];
 
-			if (!visibilities) {
+			if (!visibleArticlesResponse) {
 				return defaultVisibleFrontArticles;
 			}
 
-			return {
-				desktop: articles[visibilities.desktop - 1],
-				mobile: articles[visibilities.mobile - 1],
-			};
+			return visibleArticlesResponse.map((visibleArticles: VisibleArticles) => {
+				return {
+					desktop: articles[visibleArticles.desktop - 1],
+					mobile: articles[visibleArticles.mobile - 1],
+				}
+			})
 		},
 	);
 };

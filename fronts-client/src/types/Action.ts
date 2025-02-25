@@ -235,7 +235,7 @@ interface FetchVisibleArticlesSuccess {
 	type: 'FETCH_VISIBLE_ARTICLES_SUCCESS';
 	payload: {
 		collectionId: string;
-		visibleArticles: VisibleArticlesResponse;
+		visibleArticlesResponse: VisibleArticlesResponse;
 		stage: Stages;
 	};
 }

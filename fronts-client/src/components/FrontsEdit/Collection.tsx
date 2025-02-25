@@ -262,10 +262,10 @@ const createMapStateToProps = () => {
 			collectionSet: props.browsingStage,
 		});
 
-		return {
-			lastDesktopArticle: articleVisibilityDetails.desktop,
-			lastMobileArticle: articleVisibilityDetails.mobile,
-		};
+		return articleVisibilityDetails.map(_ => ({
+			lastDesktopArticle: _.desktop,
+			lastMobileArticle: _.mobile,
+		}));
 	};
 };
 

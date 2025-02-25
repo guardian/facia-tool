@@ -128,9 +128,12 @@ interface EditionCollectionResponse {
 	collection: EditionCollectionFromResponse;
 }
 
-interface VisibleArticlesResponse {
+type VisibleArticlesResponse = VisibleArticles[];
+
+interface VisibleArticles {
 	desktop: number;
 	mobile: number;
+	groupName?: string
 }
 
 export {
@@ -143,6 +146,7 @@ export {
 	ArticleDetails,
 	CollectionResponse,
 	EditionCollectionResponse,
+	VisibleArticles,
 	VisibleArticlesResponse,
 	FrontsToolSettings,
 	DisplayHints,

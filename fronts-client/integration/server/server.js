@@ -126,24 +126,24 @@ module.exports = async () =>
           id: req.body[0].id,
           collection: { ...collection, id: req.body[0].id },
           storiesVisibleByStage: {
-            live: { desktop: 4, mobile: 4 },
-            draft: { desktop: 4, mobile: 4 }
+            live: { response: [{ desktop: 4, mobile: 4 }] },
+            draft: { response: [{desktop: 4, mobile: 4 }] }
           }
         },
         {
           id: req.body[1].id,
           collection: { ...collectionTwo, id: req.body[1].id },
           storiesVisibleByStage: {
-            live: { desktop: 4, mobile: 4 },
-            draft: { desktop: 4, mobile: 4 }
+            live: { response: [{ desktop: 4, mobile: 4 }] },
+            draft: { response: [{desktop: 4, mobile: 4 }] }
           }
         },
         {
           id: req.body[2].id,
           collection: { ...collectionFour, id: req.body[2].id },
           storiesVisibleByStage: {
-            live: { desktop: 4, mobile: 4 },
-            draft: { desktop: 4, mobile: 4 }
+            live: { response: [{ desktop: 4, mobile: 4 }] },
+            draft: { response: [{desktop: 4, mobile: 4 }] }
           }
         }
       ]);
@@ -185,8 +185,8 @@ module.exports = async () =>
         // Collection three is empty, simulating a discard event
         collection: { ...collectionThree, id: req.body.collectionId },
         storiesVisibleByStage: {
-          live: { desktop: 4, mobile: 4 },
-          draft: { desktop: 4, mobile: 4 }
+          live: { response: [{ desktop: 4, mobile: 4 }] },
+          draft: { response: [{desktop: 4, mobile: 4 }] }
         }
       });
     });

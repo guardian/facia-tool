@@ -13,10 +13,14 @@ object FlexibleGeneral extends FlexibleContainer {
       stories: Seq[Story],
       collectionConfigJson: Option[CollectionConfigJson]
   ): Int = {
-    collectionConfigJson
-      .flatMap(_.displayHints)
-      .flatMap(_.maxItemsToDisplay)
-      .getOrElse(9)
+    val maxItems = for {
+      configJson <- collectionConfigJson
+      groupsConfig <- configJson.groupsConfig
+      // TODO: this should be per group
+      group <- groupsConfig.headOption
+      maxItems <- group.maxItems
+    } yield maxItems
+    maxItems.getOrElse(9)
   }
 }
 

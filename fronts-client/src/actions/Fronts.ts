@@ -29,14 +29,14 @@ function recordStaleFronts(frontId: string, frontIsStale: boolean): Action {
 
 function recordVisibleArticles(
 	collectionId: string,
-	visibleArticles: VisibleArticlesResponse,
+	visibleArticlesResponse: VisibleArticlesResponse,
 	stage: Stages,
 ): Action {
 	return {
 		type: 'FETCH_VISIBLE_ARTICLES_SUCCESS',
 		payload: {
 			collectionId,
-			visibleArticles,
+			visibleArticlesResponse,
 			stage,
 		},
 	};

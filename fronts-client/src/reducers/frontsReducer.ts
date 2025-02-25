@@ -64,17 +64,18 @@ const reducer = (
 			);
 		}
 		case 'FETCH_VISIBLE_ARTICLES_SUCCESS': {
-			const { collectionId, visibleArticles, stage } = action.payload;
+			const { collectionId, visibleArticlesResponse, stage } = action.payload;
 
 			const collectionVisibilities = state.collectionVisibility[stage];
 			const prevVisibilities = collectionVisibilities[collectionId] || {};
-			if (
-				visibleArticles.mobile === prevVisibilities.mobile &&
-				visibleArticles.desktop === visibleArticles.desktop
-			) {
+
+			if(visibleArticlesResponse.every((visibleArticles, index) => {
+				return visibleArticles.mobile === prevVisibilities[index].mobile
+					&& visibleArticles.desktop === prevVisibilities[index].desktop;
+			})) {
 				return newState;
 			}
-			const newCollectionVisibility = { [collectionId]: visibleArticles };
+			const newCollectionVisibility = { [collectionId]: visibleArticlesResponse };
 			const newVisibilities = {
 				...collectionVisibilities,
 				...newCollectionVisibility,

@@ -23,8 +23,8 @@ export const editionCollectionToCollection = (
 		},
 		storiesVisibleByStage: {
 			// TODO - remove me once we figure out what to do here!
-			live: { mobile: 0, desktop: 0 },
-			draft: { mobile: 0, desktop: 0 },
+			live: [],
+			draft: [],
 		},
 	};
 };
