@@ -51,6 +51,7 @@ export default class ConfigCollection extends DropTarget {
             {
                 displayHints: asObservableProps([
                     'maxItemsToDisplay',
+                    // TODO: fix suppressImages, not a numeric
                     'suppressImages'
                 ], observableNumeric)
             },
