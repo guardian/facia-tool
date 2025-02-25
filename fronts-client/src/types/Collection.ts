@@ -164,7 +164,7 @@ interface CollectionFromResponse {
 	updatedEmail?: string;
 	platform?: string;
 	displayName: string;
-	groups?: string[];
+	groupsConfig?: GroupConfig[];
 	metadata?: Array<{ type: string }>;
 	uneditable?: boolean;
 	targetedTerritory?: string;
