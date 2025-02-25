@@ -100,17 +100,17 @@ export default {
             'name': 'flexible/general',
             'groupsConfig': [
               {
-                name: 'splash',
-                maxItems: 1
+                name: 'small',
+                maxItems: 20
               },
               {
                 name: 'large',
                 maxItems: 20
               },
               {
-                name: 'small',
-                maxItems: 20
-              }
+                name: 'splash',
+                maxItems: 1
+              },
             ]
         },
         {
