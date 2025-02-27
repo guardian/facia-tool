@@ -2,6 +2,7 @@ import ko from 'knockout';
 import _ from 'underscore';
 import * as vars from 'modules/vars';
 import Extension from 'models/extension';
+import observableNumeric from '../utils/observable-numeric';
 
 export default class extends Extension {
     constructor(baseModel) {
@@ -16,10 +17,21 @@ export default class extends Extension {
         }
 
         baseModel.types = ko.observableArray(_.pluck(types, 'name'));
-        var groups = {};
+        const typesGroups = {};
+        const typesGroupsConfig = {};
         _.each(types, type => {
-            groups[type.name] = type.groups;
+            typesGroups[type.name] = type.groups;
+            typesGroupsConfig[type.name] = type.groupsConfig !== undefined && Array.isArray(type.groupsConfig)
+                ? ko.observableArray(
+                    type.groupsConfig.map((groupConfig) => {
+                      return {
+                        name: groupConfig.name,
+                        maxItems: observableNumeric(groupConfig.maxItems)
+                      };
+                    })
+                ) : undefined;
         });
-        baseModel.typesGroups = groups;
+        baseModel.typesGroups = typesGroups;
+        baseModel.typesGroupsConfig = typesGroupsConfig;
     }
 }

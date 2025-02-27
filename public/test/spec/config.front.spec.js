@@ -10,6 +10,7 @@ import images from 'test/utils/images';
 import configRegion from 'test/utils/regions/config';
 import * as wait from 'test/utils/wait';
 import * as mockjax from 'test/utils/mockjax';
+import observableNumeric from '../../src/js/utils/observable-numeric';
 
 describe('Config Front', function () {
     beforeEach(function () {
@@ -29,6 +30,14 @@ describe('Config Front', function () {
                 types: ko.observableArray(['type-one', 'type-two']),
                 typesGroups: {
                     'type-one': ['group-a', 'group-b']
+                },
+                typesGroupsConfig: {
+                    'type-one': ko.observableArray(
+                      [
+                        {name: 'group-a', maxItems: observableNumeric(10)},
+                        {name: 'group-b', maxItems: observableNumeric(10)}
+                      ]
+                    )
                 }
             }), true);
         };

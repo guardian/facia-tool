@@ -38,6 +38,7 @@ describe('Persistence', function () {
         var collection = new Collection({
             displayName: 'red loop',
             groups: ['one', 'two'],
+            groupsConfig: [{ name: 'one'}, { name: 'two' }],
             showSections: true,
             backfill: {
                 type: 'capi',

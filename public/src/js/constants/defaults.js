@@ -31,6 +31,20 @@ export default {
             'big',
             'very big',
             'huge'
+          ],
+          'groupsConfig': [
+            {
+              name: 'standard'
+            },
+            {
+              name: 'big'
+            },
+            {
+              name: 'very big'
+            },
+            {
+              name: 'huge'
+            }
           ]
         },
         {
@@ -40,6 +54,20 @@ export default {
             'big',
             'very big',
             'huge'
+          ],
+          'groupsConfig': [
+            {
+              name: 'standard'
+            },
+            {
+              name: 'big'
+            },
+            {
+              name: 'very big'
+            },
+            {
+              name: 'huge'
+            }
           ]
         },
         {
@@ -47,6 +75,14 @@ export default {
           'groups': [
             'standard',
             'snap'
+          ],
+          'groupsConfig': [
+            {
+              name: 'standard'
+            },
+            {
+              name: 'snap'
+            }
           ]
         },
         {
@@ -54,26 +90,76 @@ export default {
           'groups': [
             'standard',
             'big'
+          ],
+          'groupsConfig': [
+            {
+              name: 'standard'
+            },
+            {
+              name: 'big'
+            }
           ]
         },
         { 'name': 'nav/list' },
         { 'name': 'nav/media-list' },
         { 'name': 'news/most-popular' },
-        { 'name': 'breaking-news/not-for-other-fronts', groups: ['minor', 'major'] },
+        {
+          'name': 'breaking-news/not-for-other-fronts',
+          groups: [
+            'minor',
+            'major'
+          ],
+          groupsConfig: [
+            {
+              name: 'minor'
+            },
+            {
+              name: 'major'
+            }
+          ]
+        },
         { 'name': 'fixed/showcase' },
         { 'name': 'scrollable/highlights' },
         {
             'name': 'flexible/general',
             'groups': [
-                'standard',
-                'splash'
+              'splash',
+              'very big',
+              'big',
+              'standard'
+            ],
+            'groupsConfig': [
+              {
+                name: 'splash',
+                maxItems: 1
+              },
+              {
+                name: 'very big',
+                maxItems: 0
+              },
+              {
+                name: 'big',
+                maxItems: 0
+              },
+              {
+                name: 'standard',
+                maxItems: 8
+              }
             ]
         },
         {
             'name': 'flexible/special',
             'groups': [
-                'standard',
-                'snap'
+              'standard',
+              'snap'
+            ],
+            'groupsConfig': [
+              {
+                name: 'standard'
+              },
+              {
+                name: 'snap'
+              }
             ]
         },
 		{ 'name': 'scrollable/small' },
