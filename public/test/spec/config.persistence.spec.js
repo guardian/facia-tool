@@ -61,6 +61,7 @@ describe('Persistence', function () {
             initialCollection: {
                 displayName: 'red loop',
                 groups: ['one', 'two'],
+                groupsConfig: [{ name: 'one'}, { name: 'two' }],
                 showSections: true,
                 backfill: {
                     type: 'capi',
@@ -91,12 +92,14 @@ describe('Persistence', function () {
         var one = new Collection({
             displayName: 'monkeys',
             groups: ['bonobo', 'chimp'],
+            groupsConfig: [{ name: 'bonobo'}, { name: 'chimp' }],
             uneditable: true,
             id: 'monkeys-collection'
         });
         var two = new Collection({
             displayName: 'birds',
             groups: ['parrot'],
+            groupsConfig: [{ name: 'parrot'}],
             id: 'birds-collection'
         });
         front.collections.items.push(one, two);
@@ -138,6 +141,7 @@ describe('Persistence', function () {
         var collection = new Collection({
             displayName: 'green apple',
             groups: [],
+            groupsConfig: [],
             uneditable: true
         });
         collection.parents.push(front);
@@ -151,7 +155,8 @@ describe('Persistence', function () {
             collection: {
                 displayName: 'green apple',
                 uneditable: true,
-                groups: []
+                groups: [],
+                groupsConfig: []
             }
         });
         expect(this.events.before).toHaveBeenCalled();
@@ -177,6 +182,7 @@ describe('Persistence', function () {
         var collection = new Collection({
             displayName: 'green apple',
             groups: [],
+            groupsConfig: [],
             uneditable: true,
             displayHints: {
                 maxItemsToDisplay: 3
@@ -194,6 +200,7 @@ describe('Persistence', function () {
                 displayName: 'green apple',
                 uneditable: true,
                 groups: [],
+                groupsConfig: [],
                 displayHints: {
                     maxItemsToDisplay: 3
                 }
@@ -230,6 +237,7 @@ describe('Persistence', function () {
             id: 'apple-collection',
             displayName: 'green apple',
             groups: [],
+            groupsConfig: [],
             uneditable: true
         });
         collection.parents.push(one, two);
@@ -244,7 +252,8 @@ describe('Persistence', function () {
                 id: 'apple-collection',
                 displayName: 'green apple',
                 uneditable: true,
-                groups: []
+                groups: [],
+                groupsConfig: []
             }
         });
         expect(this.events.before).toHaveBeenCalled();

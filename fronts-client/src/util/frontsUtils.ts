@@ -39,6 +39,7 @@ const combineCollectionWithConfig = (
 			? collection.displayName
 			: collectionConfig.displayName,
 		groups: collectionConfig.groups,
+		groupsConfig: collectionConfig.groupsConfig,
 		type: collectionConfig.type,
 		frontsToolSettings: collectionConfig.frontsToolSettings,
 		platform: collectionConfig.platform,

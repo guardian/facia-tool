@@ -1,3 +1,5 @@
+import { CollectionConfig } from '../types/FaciaApi';
+
 const capiArticle = {
 	id: 'world/live/2018/sep/13/florence-hurricane-latest-live-news-updates-weather-path-storm-surge-north-carolina',
 	type: 'liveblog',
@@ -591,11 +593,25 @@ const normalisedCollectonWithPreviously = {
 	excludedRegions: [],
 };
 
-const collectionConfig = {
+const collectionConfig: CollectionConfig = {
 	id: 'exampleCollection',
 	displayName: 'Example Collection',
 	type: 'any',
 	groups: ['large', 'medium', 'small'],
+	groupsConfig: [
+		{
+			name: 'large',
+			maxItems: 10,
+		},
+		{
+			name: 'medium',
+			maxItems: 10,
+		},
+		{
+			name: 'small',
+			maxItems: 10,
+		},
+	],
 };
 
 const collectionWithSupportingArticles = {

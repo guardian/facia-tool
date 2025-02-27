@@ -1,5 +1,9 @@
 import { $Diff } from 'utility-types';
-import { CollectionFromResponse, NestedCard } from 'types/Collection';
+import {
+	CollectionFromResponse,
+	GroupConfig,
+	NestedCard,
+} from 'types/Collection';
 import { EditionsPrefill } from './Edition';
 
 interface FrontConfigResponse {
@@ -44,6 +48,7 @@ interface CollectionConfigResponse {
 	backfill?: unknown;
 	href?: string;
 	groups?: string[];
+	groupsConfig?: GroupConfig[];
 	metadata?: unknown[];
 	uneditable?: boolean;
 	showTags?: boolean;
@@ -116,6 +121,7 @@ export interface EditionCollectionFromResponse {
 	platform?: string;
 	displayName: string;
 	groups?: string[];
+	groupsConfig?: GroupConfig[];
 	metadata?: Array<{ type: string }>;
 	uneditable?: boolean;
 	isHidden?: boolean;
