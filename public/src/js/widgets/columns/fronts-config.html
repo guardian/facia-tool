@@ -261,8 +261,8 @@
 
             <!-- ko if: meta.type() === "flexible/general"-->
               <div data-bind="foreach: meta.groupsConfig">
-                <label for="flexGenSplashStoryLimit"><span data-bind="text: name" class="capitalize-first-letter"></span> stories</label>
-                <input id="flexGenSplashStoryLimit" type="number" data-bind="value: maxItems" attr: { max: 20, min: 0 } max="20" min="0">
+                <label data-bind="attr: { for: 'maxItems-' + $index() }"><span data-bind="text: name" class="capitalize-first-letter"></span> stories</label>
+                <input type="number" data-bind="value: maxItems, attr: { id: 'maxItems-' + $index(), max: 20, min: 0 }" max="20" min="0">
               </div>
             <!-- /ko -->
 
