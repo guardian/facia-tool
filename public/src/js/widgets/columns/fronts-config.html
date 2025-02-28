@@ -256,7 +256,7 @@
             <config-collection-tags params="tags: meta.metadata" class="tags"></config-collection-tags>
             <!-- ko if: meta.groups -->
                 <label>Groups</label>
-                <span class="cnf-form__value" data-bind="text: meta.groups"></span>
+                <span class="cnf-form__value" data-bind="text: meta.groups().slice().reverse()"></span>
             <!-- /ko -->
 
             <!-- ko if: meta.type() === "flexible/general"-->
