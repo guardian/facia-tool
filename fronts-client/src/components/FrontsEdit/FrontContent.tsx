@@ -259,7 +259,11 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 		// if we are inserting an article into any group that is not the splash, then we just insert
 		// we also just insert if we're in the splash and there's no other article already in the splash
-		if (to.groupName !== 'splash' || numberOfArticlesAlreadyInGroup === 0) {
+		if (
+			to.type !== 'group' ||
+			to.groupName !== 'splash' ||
+			numberOfArticlesAlreadyInGroup === 0
+		) {
 			events.dropArticle(this.props.id, dropSource);
 			this.props.insertCardFromDropEvent(e, to, 'collection');
 			return;
