@@ -421,8 +421,8 @@ trait UpdateActionsTrait extends Logging {
       collectionId: String,
       collectionJson: CollectionJson
   ): CollectionJson = {
-    configAgent.getConfig(collectionId).flatMap(_.groups) match {
-      case Some(groups) if groups.groups.nonEmpty => collectionJson
+    configAgent.getConfig(collectionId).flatMap(_.groupsConfig) match {
+      case Some(groupsConfig) if groupsConfig.groups.nonEmpty => collectionJson
       case _ =>
         collectionJson.copy(
           live = collectionJson.live.map(removeGroupsFromTrail),

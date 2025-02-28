@@ -53,6 +53,9 @@ function flattenModel (model) {
 
     function flattenValue(value) {
         if (_.isFunction(value)) {
+            if (_.isArray(value())) {
+              return value().map(flattenValue);
+            }
             return value();
         } else if (_.isObject(value)) {
             var flattened = flattenModel(value);
@@ -65,7 +68,8 @@ function flattenModel (model) {
     return _.reduce(model, function (accumulator, value, key) {
         var x = flattenValue(value);
 
-        if (x) {
+        // We want to drop falsy values, but not 0
+        if (x || x === 0) {
             accumulator[key] = x;
         }
 

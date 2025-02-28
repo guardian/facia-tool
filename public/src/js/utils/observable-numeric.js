@@ -8,7 +8,7 @@ export default function(initialValue) {
         },
         write(newValue) {
             var parsedValue = parseFloat(newValue);
-            actual(isNaN(parsedValue) ? newValue : parsedValue);
+            actual(isNaN(parsedValue) ? newValue : Math.abs(parsedValue));
         }
     });
 }

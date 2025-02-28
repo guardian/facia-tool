@@ -151,7 +151,7 @@ describe('Shared utilities', () => {
 			const groupId = result.normalisedCollection.live![0];
 			expect(result.groups[groupId].cards).toHaveLength(3);
 		});
-		it('should create different groups for cards belonging to different groups even if they are not specificied in the config', () => {
+		it('should create different groups for cards belonging to different groups even if they are not specified in the config', () => {
 			const result = normaliseCollectionWithNestedArticles(collection, {
 				...collectionConfig,
 				groups: undefined,

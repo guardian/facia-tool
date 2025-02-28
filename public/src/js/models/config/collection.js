@@ -58,7 +58,17 @@ export default class ConfigCollection extends DropTarget {
                 frontsToolSettings: asObservableProps([
                     'displayEditWarning'
                 ])
-            }
+            },
+      {
+          groupsConfig: ko.observableArray(
+            opts.groupsConfig !== undefined && Array.isArray(opts.groupsConfig) ?
+              opts.groupsConfig.map((groupConfig) => {
+                return {
+                  name: groupConfig.name,
+                  maxItems: observableNumeric(groupConfig.maxItems)
+                };
+              }) : []
+            )}
         );
 
         populateObservables(this.meta, opts);
@@ -82,6 +92,8 @@ export default class ConfigCollection extends DropTarget {
 
         this.subscribeOn(this.meta.type, type => {
             this.meta.groups(vars.model.typesGroups[type]);
+            const groupsConfig = vars.model.typesGroupsConfig[type];
+            this.meta.groupsConfig(groupsConfig !== undefined ? groupsConfig() : undefined);
         });
 
         this.typePicker = this._typePicker.bind(this);

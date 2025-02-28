@@ -9,6 +9,10 @@ function populateObservables(target, opts) {
             target[key](opts[key]);
         } else if (_.isObject(target[key]) && _.isObject(opts[key])) {
             populateObservables(target[key], opts[key]);
+        } else if (_.isFunction(target[key]) && !_.isUndefined(target[key]()) && _.isArray(target[key]()) && _.isArray(opts[key])) {
+            target[key]().forEach((item) => {
+              populateObservables(item, opts[key]);
+            });
         }
     });
 }

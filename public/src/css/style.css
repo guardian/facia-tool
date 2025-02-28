@@ -1930,6 +1930,15 @@ ol.search_list > li::before {
     height: 50px;
 }
 
+.capitalize-first-letter {
+    /*needed for :first-letter to work*/
+    display: inline-block;
+}
+
+.capitalize-first-letter:first-letter {
+    text-transform: capitalize;
+}
+
 .cnf-form .action-buttons {
     height: 40px;
 }
