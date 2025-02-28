@@ -208,12 +208,14 @@ const CollectionHeadingText = styled.div`
 	flex-direction: column;
 	align-items: flex-start;
 	row-gap: 2px;
+	overflow: hidden;
 `;
 
 const CollectionDisplayName = styled.span`
 	text-overflow: ellipsis;
 	overflow: hidden;
 	font-size: 18px;
+	width: 100%;
 `;
 
 const CollectionConfigContainer = styled.div`
@@ -227,6 +229,7 @@ const CollectionConfigContainer = styled.div`
 	position: relative;
 	z-index: 2;
 	column-gap: 4px;
+	row-gap: 2px;
 `;
 
 const CollectionConfigText = styled.div<{
