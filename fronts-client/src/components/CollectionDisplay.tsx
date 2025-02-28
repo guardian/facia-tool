@@ -371,7 +371,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 				onFocus={() => handleFocus(id)}
 				onBlur={handleBlur}
 				hasMultipleFrontsOpen={hasMultipleFrontsOpen}
-				className="collection-container"
 			>
 				<CollectionHeadingSticky tabIndex={-1}>
 					<CollectionHeadingInner>
