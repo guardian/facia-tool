@@ -121,8 +121,8 @@ const LockedCollectionFlag = styled.span`
 	font-family: GHGuardianHeadline;
 	font-size: 22px;
 	color: ${theme.base.colors.backgroundColor};
-	height: 40px;
-	line-height: 40px;
+	height: 14px;
+	line-height: 14px;
 `;
 
 const CollectionMetaBase = styled.span`
@@ -373,11 +373,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 				<CollectionHeadingSticky tabIndex={-1}>
 					<CollectionHeadingInner>
 						<CollectionHeadlineWithConfigContainer>
-							{isLocked ? (
-								<LockedCollectionFlag>
-									<LockedPadlockIcon fill={theme.base.colors.textDark} />
-								</LockedCollectionFlag>
-							) : null}
 							{this.state.editingContainerName ? (
 								<CollectionHeaderInput
 									data-testid="rename-front-input"
@@ -407,6 +402,14 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 											{!!collection ? collection!.displayName : 'Loading …'}
 										</CollectionDisplayName>
 										<CollectionConfigContainer>
+											{isLocked ? (
+												<LockedCollectionFlag>
+													<LockedPadlockIcon
+														fill={theme.base.colors.textDark}
+														size={'s'}
+													/>
+												</LockedCollectionFlag>
+											) : null}
 											{collection?.type ? (
 												<CollectionConfigText
 													priority={'primary'}
