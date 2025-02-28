@@ -123,27 +123,27 @@ export default {
         {
             'name': 'flexible/general',
             'groups': [
-              'splash',
-              'very big',
+              'standard',
               'big',
-              'standard'
+              'very big',
+              'splash'
             ],
             'groupsConfig': [
               {
-                name: 'splash',
-                maxItems: 1
-              },
-              {
-                name: 'very big',
-                maxItems: 0
+                name: 'standard',
+                maxItems: 8
               },
               {
                 name: 'big',
                 maxItems: 0
               },
               {
-                name: 'standard',
-                maxItems: 8
+                name: 'very big',
+                maxItems: 0
+              },
+              {
+                name: 'splash',
+                maxItems: 1
               }
             ]
         },
