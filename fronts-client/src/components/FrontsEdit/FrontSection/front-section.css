@@ -6,18 +6,12 @@
 	container-type: inline-size;
 }
 
-.visible-based-on-front-header-width, .visible-based-on-collection-container-width {
+.visible-based-on-front-header-width {
 	display: block;
 }
 
 @container (max-width: 600px) {
   .visible-based-on-front-header-width {
-	  display: none;
-  }
-}
-
-@container (max-width: 600px) {
-  .visible-based-on-collection-container-width {
 	  display: none;
   }
 }

@@ -38,7 +38,6 @@ import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBun
 import { removeFrontCollection } from '../actions/Editions';
 import { FeastCollectionMenu } from './FeastCollectionMenu';
 import type { CollectionUpdateMode } from '../strategies/update-collection';
-import ToolTip from "./inputs/HoverActionToolTip";
 import {LockedPadlockIcon} from "./icons/Icons";
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
@@ -97,7 +96,6 @@ const CollectionContainer = styled(ContentContainer)<{
 
 const HeadlineContentContainer = styled.span`
 	position: relative;
-	margin-right: -11px;
 	display: flex;
 	align-items: center;
 	gap: 2px;
@@ -162,7 +160,7 @@ const CollectionHeadlineWithConfigContainer = styled.div`
 	flex-basis: 100%;
 `;
 
-const CollectionHeadingText = styled.div<{
+const CollectionHeading = styled.div<{
 	isLoading: boolean;
 	isSecondaryContainer: boolean;
 }>`
@@ -175,11 +173,14 @@ const CollectionHeadingText = styled.div<{
 		`} white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-	min-height: 40px;
+	min-height: 48px;
 	height: 100%;
-	justify-content: center;
 	display: flex;
-	flex-direction: column;
+	align-items: center;
+	column-gap: 4px;
+	flex-direction: row;
+	justify-content: space-between;
+	font-size: 18px;
 	${({ isSecondaryContainer }) =>
 		isSecondaryContainer &&
 		css`
@@ -202,13 +203,22 @@ const CollectionToggleContainer = styled.div`
 	}
 `;
 
+const CollectionHeadingText = styled.div`
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	row-gap: 2px;
+`;
+
 const CollectionDisplayName = styled.span`
 	text-overflow: ellipsis;
 	overflow: hidden;
+	font-size: 18px;
 `;
 
 const CollectionConfigContainer = styled.div`
 	display: flex;
+	flex-wrap: wrap;
 	font-family: GHGuardianHeadline;
 	font-size: 15px;
 	color: ${theme.base.colors.text};
@@ -216,35 +226,30 @@ const CollectionConfigContainer = styled.div`
 	vertical-align: bottom;
 	position: relative;
 	z-index: 2;
-	margin-bottom: 4px;
-	gap: 4px;
+	column-gap: 4px;
 `;
 
-const CollectionConfigText = styled.div`
+const CollectionConfigText = styled.div<{
+	priority: 'primary' | 'secondary';
+	weight: 'normal' | 'bold'
+}>`
 	display: inline;
-	font-weight: normal;
+	height: min-content;
+	font-weight: ${({weight}) => weight === 'bold' ? 'bold' : 'normal'};
 	font-style: normal;
-	font-size: 12px;
-	background-color: ${theme.colors.white};
-	color: ${theme.colors.blackDark};
+	font-size: 10px;
+	background-color: ${({priority}) => priority === 'primary' ? theme.base.colors.button : theme.colors.white};
+	color: ${({priority}) => priority === 'primary' ? theme.button.color : theme.colors.blackDark};
 	padding: 2px 3px;
+	span {
+		font-size: 7px;
+		vertical-align: middle;
+	}
 `;
 
 const CollectionShortVerticalPinline = styled(ShortVerticalPinline)`
 	right: initial;
 	left: 0;
-`;
-
-const TargetedTerritoryBox = styled.div`
-	color: ${theme.button.color};
-	background-color: ${theme.base.colors.button};
-	font-size: 15px;
-	padding: 0 5px;
-	width: min-content;
-	span {
-		font-size: 7px;
-		vertical-align: middle;
-	}
 `;
 
 const CollectionHeaderInput = styled.input`
@@ -378,37 +383,41 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 									onBlur={() => this.setName()}
 								/>
 							) : (
-									<CollectionHeadingText
+									<CollectionHeading
 										isLoading={!collection}
-										title={!!collection ? collection!.displayName : 'Loading …'}
 										isSecondaryContainer={
 											collection?.metadata?.some(
 												(tag) => tag.type === 'Secondary',
 											) ?? false
 										}
 									>
-										<CollectionDisplayName>{!!collection ? collection!.displayName : 'Loading …'}</CollectionDisplayName>
-										<CollectionConfigContainer>
-											{collectionConfigLabels.map((label, index) => (
-												<CollectionConfigText>
-													{label}
-												</CollectionConfigText>
-											))}
-											{targetedTerritory && (
-												<TargetedTerritoryBox>
-													{targetedTerritory}
-													<span> &nbsp;ONLY</span>
-												</TargetedTerritoryBox>
-											)}
-										</CollectionConfigContainer>
-									</CollectionHeadingText>
+										<CollectionHeadingText>
+											<CollectionDisplayName>
+												{!!collection ? collection!.displayName : 'Loading …'}
+											</CollectionDisplayName>
+											<CollectionConfigContainer>
+												{collection?.type
+													? <CollectionConfigText priority={'primary'} weight={'normal'}>
+														{collection.type}
+													</CollectionConfigText>
+													: null
+												}
+												{targetedTerritory && (
+													<CollectionConfigText priority={'primary'} weight={'bold'}>
+														{targetedTerritory}
+														<span> &nbsp;ONLY</span>
+													</CollectionConfigText>
+												)}
+												{collectionConfigLabels.map((label, index) => (
+													<CollectionConfigText priority={'secondary'} weight={'normal'}>
+														{label}
+													</CollectionConfigText>
+												))}
+											</CollectionConfigContainer>
+										</CollectionHeadingText>
+										{collectionTypeThumbnail && !canPublishUnpublishedChanges ? <CollectionTypeThumbnail src={collectionTypeThumbnail}/> : null}
+									</CollectionHeading>
 							)}
-							{collection?.type && !canPublishUnpublishedChanges ?
-								<CollectionTypeContainer>
-									<CollectionType className="visible-based-on-collection-container-width"><ToolTip text={collection?.type} /></CollectionType>
-									{collectionTypeThumbnail ? <CollectionTypeThumbnail src={collectionTypeThumbnail}/> : null}
-								</CollectionTypeContainer>
-								: null}
 						</CollectionHeadlineWithConfigContainer>
 						{isFeast && collection ? (
 							<FeastCollectionMenu
