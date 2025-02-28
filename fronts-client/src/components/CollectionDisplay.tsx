@@ -439,6 +439,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 											))}
 										</CollectionConfigContainer>
 									</CollectionHeadingText>
+									{/*Hide when Discard / Launch buttons are visible*/}
 									{collectionTypeThumbnail && !canPublishUnpublishedChanges ? (
 										<CollectionTypeThumbnail src={collectionTypeThumbnail} />
 									) : null}
