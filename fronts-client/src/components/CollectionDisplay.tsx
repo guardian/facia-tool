@@ -38,7 +38,7 @@ import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBun
 import { removeFrontCollection } from '../actions/Editions';
 import { FeastCollectionMenu } from './FeastCollectionMenu';
 import type { CollectionUpdateMode } from '../strategies/update-collection';
-import {LockedPadlockIcon} from "./icons/Icons";
+import { LockedPadlockIcon } from './icons/Icons';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -231,15 +231,17 @@ const CollectionConfigContainer = styled.div`
 
 const CollectionConfigText = styled.div<{
 	priority: 'primary' | 'secondary';
-	weight: 'normal' | 'bold'
+	weight: 'normal' | 'bold';
 }>`
 	display: inline;
 	height: min-content;
-	font-weight: ${({weight}) => weight === 'bold' ? 'bold' : 'normal'};
+	font-weight: ${({ weight }) => (weight === 'bold' ? 'bold' : 'normal')};
 	font-style: normal;
 	font-size: 10px;
-	background-color: ${({priority}) => priority === 'primary' ? theme.base.colors.button : theme.colors.white};
-	color: ${({priority}) => priority === 'primary' ? theme.button.color : theme.colors.blackDark};
+	background-color: ${({ priority }) =>
+		priority === 'primary' ? theme.base.colors.button : theme.colors.white};
+	color: ${({ priority }) =>
+		priority === 'primary' ? theme.button.color : theme.colors.blackDark};
 	padding: 2px 3px;
 	span {
 		font-size: 7px;
@@ -290,7 +292,6 @@ const CollectionType = styled.div`
 	}
 `;
 
-
 class CollectionDisplay extends React.Component<Props, CollectionState> {
 	public static defaultProps = {
 		isUneditable: false,
@@ -328,29 +329,37 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 			handleBlur,
 			isEditions,
 			isFeast,
-			canPublishUnpublishedChanges
+			canPublishUnpublishedChanges,
 		}: Props = this.props;
 		const itemCount = cardIds ? cardIds.length : 0;
 		const targetedTerritory = collection ? collection.targetedTerritory : null;
 		const { displayName } = this.state;
 
-
-		const getCollectionThumbnailSvgPath = (maybeCollectionType: string | undefined) => {
-			if(!maybeCollectionType) return null;
+		const getCollectionThumbnailSvgPath = (
+			maybeCollectionType: string | undefined,
+		) => {
+			if (!maybeCollectionType) return null;
 			// Fall back to (blank) thrasher thumbnail if collection type is not recognized
-			return /^(fixed|dynamic|flexible|scrollable|static)\//.test(maybeCollectionType)
+			return /^(fixed|dynamic|flexible|scrollable|static)\//.test(
+				maybeCollectionType,
+			)
 				? '/thumbnails/' + collection?.type + '.svg'
 				: '/thumbnails/fixed/thrasher.svg';
-		}
+		};
 
-		const collectionTypeThumbnail = getCollectionThumbnailSvgPath(collection?.type);
+		const collectionTypeThumbnail = getCollectionThumbnailSvgPath(
+			collection?.type,
+		);
 
-		const collectionConfigLabels =
-			[
-				oc(collection).metadata[0].type() ? oc(collection).metadata[0].type() : null,
-				collection?.suppressImages ? 'Images suppressed' : null,
-				collection?.platform && collection.platform !== 'Any' ? `${collection.platform} Only` : null
-			].filter(label => label !== null) as string[];
+		const collectionConfigLabels = [
+			oc(collection).metadata[0].type()
+				? oc(collection).metadata[0].type()
+				: null,
+			collection?.suppressImages ? 'Images suppressed' : null,
+			collection?.platform && collection.platform !== 'Any'
+				? `${collection.platform} Only`
+				: null,
+		].filter((label) => label !== null) as string[];
 
 		return (
 			<CollectionContainer
@@ -364,9 +373,11 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 				<CollectionHeadingSticky tabIndex={-1}>
 					<CollectionHeadingInner>
 						<CollectionHeadlineWithConfigContainer>
-							{isLocked ? <LockedCollectionFlag>
-								<LockedPadlockIcon fill={theme.base.colors.textDark}/>
-							</LockedCollectionFlag> :  null}
+							{isLocked ? (
+								<LockedCollectionFlag>
+									<LockedPadlockIcon fill={theme.base.colors.textDark} />
+								</LockedCollectionFlag>
+							) : null}
 							{this.state.editingContainerName ? (
 								<CollectionHeaderInput
 									data-testid="rename-front-input"
@@ -383,40 +394,50 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 									onBlur={() => this.setName()}
 								/>
 							) : (
-									<CollectionHeading
-										isLoading={!collection}
-										isSecondaryContainer={
-											collection?.metadata?.some(
-												(tag) => tag.type === 'Secondary',
-											) ?? false
-										}
-									>
-										<CollectionHeadingText>
-											<CollectionDisplayName>
-												{!!collection ? collection!.displayName : 'Loading …'}
-											</CollectionDisplayName>
-											<CollectionConfigContainer>
-												{collection?.type
-													? <CollectionConfigText priority={'primary'} weight={'normal'}>
-														{collection.type}
-													</CollectionConfigText>
-													: null
-												}
-												{targetedTerritory && (
-													<CollectionConfigText priority={'primary'} weight={'bold'}>
-														{targetedTerritory}
-														<span> &nbsp;ONLY</span>
-													</CollectionConfigText>
-												)}
-												{collectionConfigLabels.map((label, index) => (
-													<CollectionConfigText priority={'secondary'} weight={'normal'}>
-														{label}
-													</CollectionConfigText>
-												))}
-											</CollectionConfigContainer>
-										</CollectionHeadingText>
-										{collectionTypeThumbnail && !canPublishUnpublishedChanges ? <CollectionTypeThumbnail src={collectionTypeThumbnail}/> : null}
-									</CollectionHeading>
+								<CollectionHeading
+									isLoading={!collection}
+									isSecondaryContainer={
+										collection?.metadata?.some(
+											(tag) => tag.type === 'Secondary',
+										) ?? false
+									}
+								>
+									<CollectionHeadingText>
+										<CollectionDisplayName>
+											{!!collection ? collection!.displayName : 'Loading …'}
+										</CollectionDisplayName>
+										<CollectionConfigContainer>
+											{collection?.type ? (
+												<CollectionConfigText
+													priority={'primary'}
+													weight={'normal'}
+												>
+													{collection.type}
+												</CollectionConfigText>
+											) : null}
+											{targetedTerritory && (
+												<CollectionConfigText
+													priority={'primary'}
+													weight={'bold'}
+												>
+													{targetedTerritory}
+													<span> &nbsp;ONLY</span>
+												</CollectionConfigText>
+											)}
+											{collectionConfigLabels.map((label, index) => (
+												<CollectionConfigText
+													priority={'secondary'}
+													weight={'normal'}
+												>
+													{label}
+												</CollectionConfigText>
+											))}
+										</CollectionConfigContainer>
+									</CollectionHeadingText>
+									{collectionTypeThumbnail && !canPublishUnpublishedChanges ? (
+										<CollectionTypeThumbnail src={collectionTypeThumbnail} />
+									) : null}
+								</CollectionHeading>
 							)}
 						</CollectionHeadlineWithConfigContainer>
 						{isFeast && collection ? (
