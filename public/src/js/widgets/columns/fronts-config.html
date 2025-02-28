@@ -256,11 +256,11 @@
             <config-collection-tags params="tags: meta.metadata" class="tags"></config-collection-tags>
             <!-- ko if: meta.groups -->
                 <label>Groups</label>
-                <span class="cnf-form__value" data-bind="text: meta.groups"></span>
+                <span class="cnf-form__value" data-bind="text: meta.groups().slice().reverse()"></span>
             <!-- /ko -->
 
             <!-- ko if: meta.type() === "flexible/general"-->
-              <div data-bind="foreach: meta.groupsConfig">
+              <div data-bind="foreach: meta.groupsConfig.slice().reverse()">
                 <label data-bind="attr: { for: 'maxItems-' + $index() }"><span data-bind="text: name" class="capitalize-first-letter"></span> stories</label>
                 <input type="number" data-bind="value: maxItems, attr: { id: 'maxItems-' + $index(), max: 20, min: 0 }" max="20" min="0">
               </div>
