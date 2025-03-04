@@ -173,9 +173,15 @@ const getCardEntitiesFromDrop = async (
 	state: State,
 	to: PosSpec,
 ): Promise<TArticleEntities> => {
-	const collectionType = to.collectionId && selectCollectionType(state, to.collectionId);
+	const collectionType =
+		to.collectionId && selectCollectionType(state, to.collectionId);
 	if (drop.type === 'CAPI') {
-		return getArticleEntitiesFromFeedDrop(drop.data, isEdition, to, collectionType);
+		return getArticleEntitiesFromFeedDrop(
+			drop.data,
+			isEdition,
+			to,
+			collectionType,
+		);
 	}
 
 	if (drop.type === 'RECIPE') {
@@ -330,19 +336,19 @@ const getArticleEntitiesFromFeedDrop = (
 	collectionType?: string,
 ): TArticleEntities => {
 	const externalArticle = transformExternalArticle(capiArticle);
-	function getGroupDefaultBoostLevel(){
+	function getGroupDefaultBoostLevel() {
 		if (collectionType === FLEXIBLE_GENERAL_NAME) {
-		switch (to.groupName) {
-			case 'very big':
-				return 'megaboost';
-			case 'big':
-				return 'boost';
-			case 'splash':
-			case 'standard':
-			default:
-				return 'default';
-		}}
-		else {
+			switch (to.groupName) {
+				case 'very big':
+					return 'megaboost';
+				case 'big':
+					return 'boost';
+				case 'splash':
+				case 'standard':
+				default:
+					return 'default';
+			}
+		} else {
 			return 'default';
 		}
 	}
