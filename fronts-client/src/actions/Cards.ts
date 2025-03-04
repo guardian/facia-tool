@@ -263,7 +263,7 @@ const insertCardWithCreate =
 		);
 		if (toWithRespectToState) {
 			try {
-				const card = await dispatch(cardFactory(drop));
+				const card = await dispatch(cardFactory(drop, to));
 				if (!card) {
 					return;
 				}
@@ -433,11 +433,12 @@ const addImageToCard =
  */
 export const createArticleEntitiesFromDrop = (
 	drop: MappableDropType,
+	to: PosSpec,
 ): ThunkResult<Promise<Card | undefined>> => {
 	return async (dispatch, getState) => {
 		const isEdition = selectEditMode(getState()) === 'editions';
 		const { card, supportingCards, externalArticle } =
-			await getCardEntitiesFromDrop(drop, isEdition, dispatch, getState());
+			await getCardEntitiesFromDrop(drop, isEdition, dispatch, getState(), to);
 
 		if (externalArticle) {
 			dispatch(externalArticleActions.fetchSuccess(externalArticle));

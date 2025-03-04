@@ -35,9 +35,11 @@ import { CardTypesMap, type CardTypes } from '../constants/cardTypes';
 import { Chef } from '../types/Chef';
 import { State } from '../types/State';
 import { selectCard } from '../selectors/shared';
+import { PosSpec } from 'lib/dnd';
 
 interface CreateCardOptions {
 	cardType?: CardTypes;
+	boostLevel?: 'default' | 'boost' | 'megaboost' | 'gigaboost';
 	imageHide?: boolean;
 	imageReplace?: boolean;
 	imageCutoutReplace?: boolean;
@@ -55,6 +57,7 @@ const createCard = (
 	isEditionsApp: boolean,
 	{
 		cardType = 'article',
+		boostLevel = 'megaboost',
 		imageHide = false,
 		imageReplace = false,
 		imageCutoutReplace = false,
@@ -71,6 +74,7 @@ const createCard = (
 	cardType,
 	meta: {
 		...(imageHide ? { imageHide } : {}),
+		...(boostLevel ? { boostLevel } : {}),
 		...(imageReplace ? { imageReplace } : {}),
 		...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : {}),
 		...(showByline ? { showByline } : {}),
@@ -165,9 +169,10 @@ const getCardEntitiesFromDrop = async (
 	isEdition: boolean,
 	dispatch: Dispatch,
 	state: State,
+	to: PosSpec,
 ): Promise<TArticleEntities> => {
 	if (drop.type === 'CAPI') {
-		return getArticleEntitiesFromFeedDrop(drop.data, isEdition);
+		return getArticleEntitiesFromFeedDrop(drop.data, isEdition, to);
 	}
 
 	if (drop.type === 'RECIPE') {
@@ -318,10 +323,24 @@ const getFeastCollectionFromFeedDrop = (
 const getArticleEntitiesFromFeedDrop = (
 	capiArticle: CapiArticle,
 	isEdition: boolean,
+	to: PosSpec,
 ): TArticleEntities => {
 	const externalArticle = transformExternalArticle(capiArticle);
+	const groupDefaultBoostLevel = (() => {
+		switch (to.groupName) {
+			case 'very big':
+				return 'megaboost';
+			case 'big':
+				return 'boost';
+			case 'splash':
+			case 'standard':
+			default:
+				return 'default';
+		}
+	})();
 	const card = createCard(externalArticle.id, isEdition, {
 		cardType: 'article',
+		boostLevel: groupDefaultBoostLevel,
 		imageHide: externalArticle.frontsMeta.defaults.imageHide,
 		imageReplace: externalArticle.frontsMeta.defaults.imageReplace,
 		imageCutoutReplace: externalArticle.frontsMeta.defaults.imageCutoutReplace,
