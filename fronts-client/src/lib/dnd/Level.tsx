@@ -10,6 +10,7 @@ interface PosSpec {
 	type: string;
 	id: string;
 	index: number;
+	collectionId?: string;
 	groupName?: string;
 	groupIds?: string[];
 	cards?: any[];
@@ -59,6 +60,7 @@ export interface LevelProps<T> {
 	children: LevelChild<T>;
 	parentId: string;
 	parentType: string;
+	collectionId: string;
 	groupName?: string;
 	groupIds?: string[];
 	type: string;
@@ -183,6 +185,7 @@ class Level<T> extends React.Component<Props<T>, State> {
 			index: i,
 			type: this.props.parentType,
 			id: this.props.parentId,
+			collectionId: this.props.collectionId,
 			groupName: this.props.groupName,
 			groupIds: this.props.groupIds,
 			cards: this.props.arr,

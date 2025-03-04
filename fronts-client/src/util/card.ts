@@ -36,6 +36,8 @@ import { Chef } from '../types/Chef';
 import { State } from '../types/State';
 import { selectCard } from '../selectors/shared';
 import { PosSpec } from 'lib/dnd';
+import { selectCollectionType } from 'selectors/frontsSelectors';
+import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 
 interface CreateCardOptions {
 	cardType?: CardTypes;
@@ -171,8 +173,9 @@ const getCardEntitiesFromDrop = async (
 	state: State,
 	to: PosSpec,
 ): Promise<TArticleEntities> => {
+	const collectionType = to.collectionId && selectCollectionType(state, to.collectionId);
 	if (drop.type === 'CAPI') {
-		return getArticleEntitiesFromFeedDrop(drop.data, isEdition, to);
+		return getArticleEntitiesFromFeedDrop(drop.data, isEdition, to, collectionType);
 	}
 
 	if (drop.type === 'RECIPE') {
@@ -324,9 +327,11 @@ const getArticleEntitiesFromFeedDrop = (
 	capiArticle: CapiArticle,
 	isEdition: boolean,
 	to: PosSpec,
+	collectionType?: string,
 ): TArticleEntities => {
 	const externalArticle = transformExternalArticle(capiArticle);
-	const groupDefaultBoostLevel = (() => {
+	function getGroupDefaultBoostLevel(){
+		if (collectionType === FLEXIBLE_GENERAL_NAME) {
 		switch (to.groupName) {
 			case 'very big':
 				return 'megaboost';
@@ -336,8 +341,12 @@ const getArticleEntitiesFromFeedDrop = (
 			case 'standard':
 			default:
 				return 'default';
+		}}
+		else {
+			return 'default';
 		}
-	})();
+	}
+	const groupDefaultBoostLevel = getGroupDefaultBoostLevel();
 	const card = createCard(externalArticle.id, isEdition, {
 		cardType: 'article',
 		boostLevel: groupDefaultBoostLevel,
