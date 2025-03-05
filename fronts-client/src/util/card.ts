@@ -171,10 +171,10 @@ const getCardEntitiesFromDrop = async (
 	isEdition: boolean,
 	dispatch: Dispatch,
 	state: State,
-	to: PosSpec,
+	to?: PosSpec,
 ): Promise<TArticleEntities> => {
 	const collectionType =
-		to.collectionId && selectCollectionType(state, to.collectionId);
+		to && to.collectionId && selectCollectionType(state, to.collectionId);
 	if (drop.type === 'CAPI') {
 		return getArticleEntitiesFromFeedDrop(
 			drop.data,
@@ -332,12 +332,12 @@ const getFeastCollectionFromFeedDrop = (
 const getArticleEntitiesFromFeedDrop = (
 	capiArticle: CapiArticle,
 	isEdition: boolean,
-	to: PosSpec,
+	to?: PosSpec,
 	collectionType?: string,
 ): TArticleEntities => {
 	const externalArticle = transformExternalArticle(capiArticle);
 	function getGroupDefaultBoostLevel() {
-		if (collectionType === FLEXIBLE_GENERAL_NAME) {
+		if (to && collectionType === FLEXIBLE_GENERAL_NAME) {
 			switch (to.groupName) {
 				case 'very big':
 					return 'megaboost';

@@ -433,7 +433,7 @@ const addImageToCard =
  */
 export const createArticleEntitiesFromDrop = (
 	drop: MappableDropType,
-	to: PosSpec,
+	to?: PosSpec,
 ): ThunkResult<Promise<Card | undefined>> => {
 	return async (dispatch, getState) => {
 		const isEdition = selectEditMode(getState()) === 'editions';
