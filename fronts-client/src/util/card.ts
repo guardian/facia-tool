@@ -59,7 +59,7 @@ const createCard = (
 	isEditionsApp: boolean,
 	{
 		cardType = 'article',
-		boostLevel = 'megaboost',
+		boostLevel = 'default',
 		imageHide = false,
 		imageReplace = false,
 		imageCutoutReplace = false,

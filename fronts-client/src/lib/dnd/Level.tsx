@@ -60,7 +60,7 @@ export interface LevelProps<T> {
 	children: LevelChild<T>;
 	parentId: string;
 	parentType: string;
-	collectionId: string;
+	collectionId?: string;
 	groupName?: string;
 	groupIds?: string[];
 	type: string;
