@@ -160,6 +160,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 							<GroupLevel
 								isUneditable={isUneditable}
 								groupId={group.uuid}
+								collectionId={id}
 								groupName={group.name ? group.name : ''}
 								groupIds={groupIds}
 								onMove={handleMove}

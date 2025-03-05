@@ -35,9 +35,13 @@ import { CardTypesMap, type CardTypes } from '../constants/cardTypes';
 import { Chef } from '../types/Chef';
 import { State } from '../types/State';
 import { selectCard } from '../selectors/shared';
+import { PosSpec } from 'lib/dnd';
+import { selectCollectionType } from 'selectors/frontsSelectors';
+import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 
 interface CreateCardOptions {
 	cardType?: CardTypes;
+	boostLevel?: 'default' | 'boost' | 'megaboost' | 'gigaboost';
 	imageHide?: boolean;
 	imageReplace?: boolean;
 	imageCutoutReplace?: boolean;
@@ -55,6 +59,7 @@ const createCard = (
 	isEditionsApp: boolean,
 	{
 		cardType = 'article',
+		boostLevel = 'default',
 		imageHide = false,
 		imageReplace = false,
 		imageCutoutReplace = false,
@@ -71,6 +76,7 @@ const createCard = (
 	cardType,
 	meta: {
 		...(imageHide ? { imageHide } : {}),
+		...(boostLevel ? { boostLevel } : {}),
 		...(imageReplace ? { imageReplace } : {}),
 		...(imageCutoutReplace ? { imageCutoutReplace, imageCutoutSrc } : {}),
 		...(showByline ? { showByline } : {}),
@@ -165,9 +171,17 @@ const getCardEntitiesFromDrop = async (
 	isEdition: boolean,
 	dispatch: Dispatch,
 	state: State,
+	to?: PosSpec,
 ): Promise<TArticleEntities> => {
+	const collectionType =
+		to && to.collectionId && selectCollectionType(state, to.collectionId);
 	if (drop.type === 'CAPI') {
-		return getArticleEntitiesFromFeedDrop(drop.data, isEdition);
+		return getArticleEntitiesFromFeedDrop(
+			drop.data,
+			isEdition,
+			to,
+			collectionType,
+		);
 	}
 
 	if (drop.type === 'RECIPE') {
@@ -318,10 +332,30 @@ const getFeastCollectionFromFeedDrop = (
 const getArticleEntitiesFromFeedDrop = (
 	capiArticle: CapiArticle,
 	isEdition: boolean,
+	to?: PosSpec,
+	collectionType?: string,
 ): TArticleEntities => {
 	const externalArticle = transformExternalArticle(capiArticle);
+	function getGroupDefaultBoostLevel() {
+		if (to && collectionType === FLEXIBLE_GENERAL_NAME) {
+			switch (to.groupName) {
+				case 'very big':
+					return 'megaboost';
+				case 'big':
+					return 'boost';
+				case 'splash':
+				case 'standard':
+				default:
+					return 'default';
+			}
+		} else {
+			return 'default';
+		}
+	}
+	const groupDefaultBoostLevel = getGroupDefaultBoostLevel();
 	const card = createCard(externalArticle.id, isEdition, {
 		cardType: 'article',
+		boostLevel: groupDefaultBoostLevel,
 		imageHide: externalArticle.frontsMeta.defaults.imageHide,
 		imageReplace: externalArticle.frontsMeta.defaults.imageReplace,
 		imageCutoutReplace: externalArticle.frontsMeta.defaults.imageCutoutReplace,
