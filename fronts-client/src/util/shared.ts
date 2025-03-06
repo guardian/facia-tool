@@ -77,12 +77,13 @@ const addGroupsForStage = (
 		groupsWithNames.push(createGroup(null, null, getAllCards(groups)));
 	}
 
-	// Finally we need to sort the groups according to their ids.
+	// We need to sort the groups according to their ids.
 	const sortedGroupsWithNames = sortBy(
 		groupsWithNames,
 		(group) => -getGroupIndex(group.id),
 	);
 
+	// Finally, we need to filter out any groups that have maxItems set to 0 (e.g. in flex gen).
 	const sortedNamedGroupsWithoutMaxItemSetToZero =
 		!collectionConfig.groupsConfig
 			? sortedGroupsWithNames
