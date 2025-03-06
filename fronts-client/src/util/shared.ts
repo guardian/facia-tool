@@ -82,9 +82,22 @@ const addGroupsForStage = (
 		groupsWithNames,
 		(group) => -getGroupIndex(group.id),
 	);
+
+	const sortedNamedGroupsWithoutMaxItemSetToZero =
+		!collectionConfig.groupsConfig
+			? sortedGroupsWithNames
+			: sortedGroupsWithNames.filter((group) => {
+					const groupConfig =
+						collectionConfig.groupsConfig &&
+						collectionConfig.groupsConfig.find(
+							(config) => config.name === group.name,
+						);
+					return !(groupConfig && groupConfig.maxItems === 0);
+				});
+
 	return {
-		addedGroups: keyBy(sortedGroupsWithNames, getUUID),
-		groupIds: sortedGroupsWithNames.map(getUUID),
+		addedGroups: keyBy(sortedNamedGroupsWithoutMaxItemSetToZero, getUUID),
+		groupIds: sortedNamedGroupsWithoutMaxItemSetToZero.map(getUUID),
 	};
 };
 
