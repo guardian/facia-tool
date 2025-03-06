@@ -15,6 +15,7 @@ interface OuterProps {
 	onMove: MoveHandler<Card>;
 	onDrop: DropHandler;
 	isUneditable?: boolean;
+	collectionId: string;
 	groupName: string;
 	groupIds: string[];
 }
@@ -62,6 +63,7 @@ const GroupLevel = ({
 	onMove,
 	onDrop,
 	isUneditable,
+	collectionId,
 	groupName,
 	groupIds,
 }: Props) => (
@@ -69,6 +71,7 @@ const GroupLevel = ({
 		arr={cards}
 		parentType="group"
 		parentId={groupId}
+		collectionId={collectionId}
 		groupName={groupName}
 		groupIds={groupIds}
 		onMove={onMove}
