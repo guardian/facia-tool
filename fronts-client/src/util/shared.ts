@@ -88,12 +88,10 @@ const addGroupsForStage = (
 		!collectionConfig.groupsConfig
 			? sortedGroupsWithNames
 			: sortedGroupsWithNames.filter((group) => {
-					const groupConfig =
-						collectionConfig.groupsConfig &&
-						collectionConfig.groupsConfig.find(
-							(config) => config.name === group.name,
-						);
-					return !(groupConfig && groupConfig.maxItems === 0);
+					const groupConfig = collectionConfig.groupsConfig?.find(
+						(config) => config.name === group.name,
+					);
+					return groupConfig?.maxItems !== 0;
 				});
 
 	return {
