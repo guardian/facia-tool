@@ -74,10 +74,7 @@ import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
-import {
-	FLEXIBLE_GENERAL_NAME,
-	FLEXIBLE_SPECIAL_NAME,
-} from 'constants/flexibleContainers';
+
 import { renderBoostToggles } from './ArticleMetaFormBoostToggles';
 
 interface ComponentProps extends ContainerProps {
@@ -460,7 +457,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			coverCardMobileImage,
 			coverCardTabletImage,
 			valid,
-			collectionType,
 			groupSizeId,
 		} = this.props;
 
