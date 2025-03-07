@@ -58,15 +58,7 @@ const addGroupsForStage = (
 		) {
 			name = collectionConfig.groups[groupNumberAsInt];
 		}
-		//todo: check correct name
-		if (collectionConfig.groupsConfig) {
-			const groupConfig = collectionConfig.groupsConfig[groupNumberAsInt];
-			if (name = groupConfig.name) {
-				group.maxItems = groupConfig.maxItems;
 
-			}
-
-		}
 		return { ...group, name };
 	});
 
@@ -76,6 +68,20 @@ const addGroupsForStage = (
 		collectionConfig.groups.forEach((group, configGroupIndex) => {
 			if (!configGroupIndexExistsInGroups(groupsWithNames, configGroupIndex)) {
 				groupsWithNames.push(createGroup(`${configGroupIndex}`, group));
+			}
+		});
+	}
+
+	// Once we have all the groups, we can look at the config and set the maxItems value.
+	if (collectionConfig.groupsConfig) {
+		groupsWithNames.forEach((group) => {
+			const groupConfig =
+				collectionConfig.groupsConfig &&
+				collectionConfig.groupsConfig.find(
+					(config) => config.name === group.name,
+				);
+			if (groupConfig) {
+				group.maxItems = groupConfig.maxItems;
 			}
 		});
 	}
@@ -107,7 +113,6 @@ const addGroupsForStage = (
 		addedGroups: keyBy(sortedNamedGroupsWithoutMaxItemSetToZero, getUUID),
 		groupIds: sortedNamedGroupsWithoutMaxItemSetToZero.map(getUUID),
 	};
-
 };
 
 interface ReduceResult {
