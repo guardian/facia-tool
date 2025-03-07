@@ -11,29 +11,22 @@ enum Groups {
 
 type BoostLevel = 'default' | 'boost' | 'megaBoost' | 'gigaBoost';
 
-const boostTogglesOptions: Record<
-	BoostLevel,
-	{ id: string; name: string; value: string }
-> = {
+const boostTogglesOptions: Record<BoostLevel, { id: string; value: string }> = {
 	default: {
 		id: 'boostlevel-0',
-		name: 'default',
 		value: 'default',
 	},
 	boost: {
 		id: 'boostlevel-1',
-		name: 'boost',
 		value: 'boost',
 	},
 	megaBoost: {
 		id: 'boostlevel-2',
-		name: 'megaBoost',
-		value: 'megaBoost',
+		value: 'megaboost',
 	},
 	gigaBoost: {
 		id: 'boostlevel-3',
-		name: 'gigaBoost',
-		value: 'gigaBoost',
+		value: 'gigaboost',
 	},
 };
 
@@ -46,7 +39,7 @@ const {
 
 const groupTogglesMap: Record<
 	Groups,
-	{ label: string; id: string; value: string; name: string }[]
+	{ label: string; id: string; value: string }[]
 > = {
 	[Groups.Standard]: [
 		{ label: 'Default', ...Default },
@@ -69,15 +62,17 @@ const groupTogglesMap: Record<
 const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
 const isValidGroup = (groupIndex: number): groupIndex is Groups =>
-	Object.values(Groups).includes(groupIndex);
+	groupIndex in Groups;
 
 export const renderBoostToggles = (groupIndex: number = 0, cardId: string) => {
-	const group: Groups = isValidGroup(groupIndex) ? groupIndex : Groups.Standard;
-	const groupToggles = groupTogglesMap[group];
+	const groupId: Groups = isValidGroup(groupIndex)
+		? groupIndex
+		: Groups.Standard;
 
-	return groupToggles.map(({ name, label, id, value }) => (
+	return groupTogglesMap[groupId].map(({ label, id, value }) => (
 		<Field
-			name={name}
+			key={id}
+			name={'boostLevel'}
 			component={InputRadio}
 			label={label}
 			id={getInputId(cardId, id)}
