@@ -58,6 +58,15 @@ const addGroupsForStage = (
 		) {
 			name = collectionConfig.groups[groupNumberAsInt];
 		}
+		//todo: check correct name
+		if (collectionConfig.groupsConfig) {
+			const groupConfig = collectionConfig.groupsConfig[groupNumberAsInt];
+			if (name = groupConfig.name) {
+				group.maxItems = groupConfig.maxItems;
+
+			}
+
+		}
 		return { ...group, name };
 	});
 
@@ -98,6 +107,7 @@ const addGroupsForStage = (
 		addedGroups: keyBy(sortedNamedGroupsWithoutMaxItemSetToZero, getUUID),
 		groupIds: sortedNamedGroupsWithoutMaxItemSetToZero.map(getUUID),
 	};
+
 };
 
 interface ReduceResult {
