@@ -530,15 +530,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			);
 		};
 
-		const allowGigaBoost = () =>
-			!collectionType /* clipboard */ ||
-			(collectionType &&
-				(collectionType === FLEXIBLE_SPECIAL_NAME /* flexible special */ ||
-					(collectionType ===
-						FLEXIBLE_GENERAL_NAME /* splash group in flexible general */ &&
-						groupSizeId &&
-						groupSizeId > 0)));
-
 		const cardCriteria = this.determineCardCriteria();
 
 		return (
