@@ -74,11 +74,11 @@ import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
-import InputRadio from 'components/inputs/InputRadio';
 import {
 	FLEXIBLE_GENERAL_NAME,
 	FLEXIBLE_SPECIAL_NAME,
 } from 'constants/flexibleContainers';
+import { renderBoostToggles } from './ArticleMetaFormBoostToggles';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -172,10 +172,10 @@ const CaptionControls = styled.div`
 `;
 
 const CaptionLength = styled.span`
- font-size: 12px;
- margin-left: 2px;
- color: ${(props: { invalid: boolean }) =>
-		props.invalid ? error.primary : 'default'}}
+	font-size: 12px;
+	margin-left: 2px;
+	color: ${(props: { invalid: boolean }) =>
+		props.invalid ? error.primary : 'default'};
 `;
 
 const CaptionLabel = styled(InputLabel)`
@@ -183,15 +183,15 @@ const CaptionLabel = styled(InputLabel)`
 `;
 
 const CaptionInput = styled(InputBase)`
-  margin-bottom: 60px;
-  color: ${(props: { invalid: boolean }) =>
-		props.invalid ? error.primary : 'default'}}
-  border-color: ${(props: { invalid: boolean }) =>
-		props.invalid ? error.primary : 'default'}
-  :focus {
-    border-color: ${(props: { invalid: boolean }) =>
-			props.invalid ? error.primary : 'default'}
-  }
+	margin-bottom: 60px;
+	color: ${(props: { invalid: boolean }) =>
+		props.invalid ? error.primary : 'default'};
+	border-color: ${(props: { invalid: boolean }) =>
+		props.invalid ? error.primary : 'default'};
+	:focus {
+		border-color: ${(props: { invalid: boolean }) =>
+			props.invalid ? error.primary : 'default'};
+	}
 `;
 
 const FlexContainer = styled.div`
@@ -610,40 +610,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							size={this.props.size}
 							extraBottomMargin="8px"
 						>
-							<Field
-								name="boostLevel"
-								component={InputRadio}
-								label="Default"
-								id={getInputId(cardId, 'boostlevel-0')}
-								value="default"
-								type="radio"
-							/>
-							<Field
-								name="boostLevel"
-								component={InputRadio}
-								label="Boost"
-								id={getInputId(cardId, 'boostlevel-1')}
-								value="boost"
-								type="radio"
-							/>
-							<Field
-								name="boostLevel"
-								component={InputRadio}
-								label="Mega Boost"
-								id={getInputId(cardId, 'boostlevel-2')}
-								value="megaboost"
-								type="radio"
-							/>
-							{allowGigaBoost() ? (
-								<Field
-									name="boostLevel"
-									component={InputRadio}
-									label="Giga Boost"
-									id={getInputId(cardId, 'boostlevel-3')}
-									value="gigaboost"
-									type="radio"
-								/>
-							) : null}
+							{...renderBoostToggles(groupSizeId, cardId)}
 						</CheckboxFieldsContainer>
 						<CheckboxFieldsContainer
 							editableFields={editableFields}
