@@ -179,17 +179,14 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	}
 
 	public handleMove = (move: Move<TCard>) => {
-		console.log('move', move.to.groupMaxItems);
+		console.log("move card id", move.data.id);
 		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
 		const hasMaxItemsAlready =
 			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
 
-		// if we are inserting an article into any group that is not the splash, then we just insert
-		// we also just insert if we're in the splash and there's no other article already in the splash
-		if (
-			numberOfArticlesAlreadyInGroup === 0 ||
-			!hasMaxItemsAlready
-		) {
+		// if we are inserting an article into any group either has no cards or doesn't have the max items already,
+		// then we just insert
+		if (numberOfArticlesAlreadyInGroup === 0 || !hasMaxItemsAlready) {
 			events.dropArticle(this.props.id, 'collection');
 			this.props.moveCard(move.to, move.data, move.from || null, 'collection');
 			return;
@@ -223,20 +220,32 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				);
 
 				//then we need to move the other article to the other group
+				console.log("move.to.cards", move.to.cards);
 				const existingCardData = move.to.cards[move.to.cards.length - 1];
+				console.log("existingCardData id", existingCardData.id);
+				console.log("groupsData", move.to.groupsData);
+				console.log("next group", nextGroup);
+				const nextGroupData = move.to.groupsData && move.to.groupsData.find(
+					(group) =>
+						group.uuid === nextGroup,
+				);
+				console.log("groupMovingToData", nextGroupData);
 				const existingCardTo = {
 					index: 0,
 					id: nextGroup,
 					type: 'group',
 					groupIds: move.to.groupIds,
+					groupMaxItems: nextGroupData?.maxItems,
+					groupsData: move.to.groupsData,
+					cards: nextGroupData?.cards //not the complete data which I think is messing it up
 				};
+				console.log("existingCardTo", existingCardTo);
 				const existingCardMoveData: Move<TCard> = {
 					data: existingCardData,
 					from: false,
 					to: existingCardTo,
 				};
 				this.handleMove(existingCardMoveData);
-				return;
 			}
 			// If we're adding to the last place in the group, then we move the article into the next group
 			else {
@@ -254,13 +263,12 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					move.from || null,
 					'collection',
 				);
-				return;
 			}
+			return;
 		}
 	};
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
-		console.log('to', to);
 		const numberOfArticlesAlreadyInGroup = to.cards?.length ?? 0;
 		const hasMaxItemsAlready =
 			to.groupMaxItems === numberOfArticlesAlreadyInGroup;

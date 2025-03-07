@@ -5,6 +5,7 @@ import { Store } from './store';
 import AddParentInfo, { PathConsumer, Parent } from './AddParentInfo';
 import { TRANSFER_TYPE, NO_STORE_ERROR } from './constants';
 import DropZone from './DropZone';
+import { Group } from 'types/Collection';
 
 interface PosSpec {
 	type: string;
@@ -14,6 +15,7 @@ interface PosSpec {
 	groupName?: string;
 	groupIds?: string[];
 	groupMaxItems?: number;
+	groupsData?: Group[];
 	cards?: any[];
 }
 
@@ -65,6 +67,7 @@ export interface LevelProps<T> {
 	groupName?: string;
 	groupIds?: string[];
 	groupMaxItems?: number;
+	groupsData?: Group[];
 	type: string;
 	getDropType?: (item: T) => string;
 	dragImageOffsetX?: number;
@@ -191,6 +194,7 @@ class Level<T> extends React.Component<Props<T>, State> {
 			groupName: this.props.groupName,
 			groupIds: this.props.groupIds,
 			groupMaxItems: this.props.groupMaxItems,
+			groupsData: this.props.groupsData,
 			cards: this.props.arr,
 		};
 

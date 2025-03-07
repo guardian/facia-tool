@@ -2,7 +2,7 @@ import React from 'react';
 import { LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import type { State } from 'types/State';
 import { connect } from 'react-redux';
-import { Card } from 'types/Collection';
+import { Card, Group } from 'types/Collection';
 import DropZone, {
 	DefaultDropContainer,
 	DefaultDropIndicator,
@@ -22,6 +22,7 @@ interface OuterProps {
 	cardTypeAllowList?: CardTypes[];
 	groupName?: string;
 	groupIds?: string[];
+	groupsData?: Group[]
 }
 
 interface InnerProps {
@@ -53,6 +54,7 @@ const CardLevel = ({
 	cardTypeAllowList,
 	groupName,
 	groupIds,
+	groupsData,
 }: Props) => (
 	<CardTypeLevel
 		arr={supporting || []}
@@ -60,6 +62,7 @@ const CardLevel = ({
 		parentId={cardId}
 		groupName={groupName}
 		groupIds={groupIds}
+		groupsData={groupsData}
 		onMove={onMove}
 		onDrop={onDrop}
 		canDrop={!isUneditable}
