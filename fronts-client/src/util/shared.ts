@@ -77,14 +77,26 @@ const addGroupsForStage = (
 		groupsWithNames.push(createGroup(null, null, getAllCards(groups)));
 	}
 
-	// Finally we need to sort the groups according to their ids.
+	// We need to sort the groups according to their ids.
 	const sortedGroupsWithNames = sortBy(
 		groupsWithNames,
 		(group) => -getGroupIndex(group.id),
 	);
+
+	// Finally, we need to filter out any groups that have maxItems set to 0 (e.g. in flex gen).
+	const sortedNamedGroupsWithoutMaxItemSetToZero =
+		!collectionConfig.groupsConfig
+			? sortedGroupsWithNames
+			: sortedGroupsWithNames.filter((group) => {
+					const groupConfig = collectionConfig.groupsConfig?.find(
+						(config) => config.name === group.name,
+					);
+					return groupConfig?.maxItems !== 0;
+				});
+
 	return {
-		addedGroups: keyBy(sortedGroupsWithNames, getUUID),
-		groupIds: sortedGroupsWithNames.map(getUUID),
+		addedGroups: keyBy(sortedNamedGroupsWithoutMaxItemSetToZero, getUUID),
+		groupIds: sortedNamedGroupsWithoutMaxItemSetToZero.map(getUUID),
 	};
 };
 
