@@ -163,6 +163,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 								collectionId={id}
 								groupName={group.name ? group.name : ''}
 								groupIds={groupIds}
+								groupMaxItems={group.maxItems}
 								onMove={handleMove}
 								onDrop={handleInsert}
 								cardIds={group.cards}

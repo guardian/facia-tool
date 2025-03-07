@@ -179,6 +179,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	}
 
 	public handleMove = (move: Move<TCard>) => {
+		console.log('move', move.to.groupMaxItems);
 		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
 
 		// if we are inserting an article into any group that is not the splash, then we just insert
@@ -253,6 +254,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	};
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
+		console.log("to", to.groupMaxItems);
 		const numberOfArticlesAlreadyInGroup = to.cards?.length ?? 0;
 
 		const dropSource = isDropFromCAPIFeed(e) ? 'feed' : 'url';

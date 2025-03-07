@@ -18,6 +18,7 @@ interface OuterProps {
 	collectionId: string;
 	groupName: string;
 	groupIds: string[];
+	groupMaxItems?: number;
 }
 
 interface InnerProps {
@@ -66,6 +67,7 @@ const GroupLevel = ({
 	collectionId,
 	groupName,
 	groupIds,
+	groupMaxItems,
 }: Props) => (
 	<CardTypeLevel
 		arr={cards}
@@ -74,6 +76,7 @@ const GroupLevel = ({
 		collectionId={collectionId}
 		groupName={groupName}
 		groupIds={groupIds}
+		groupMaxItems={groupMaxItems}
 		onMove={onMove}
 		onDrop={onDrop}
 		canDrop={!isUneditable}
