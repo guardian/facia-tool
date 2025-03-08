@@ -90,7 +90,7 @@ export const renderBoostToggles = (
 		!collectionType ||
 		!['flexible/general', 'flexible/special'].includes(collectionType)
 	) {
-		return [<></>];
+		return [];
 	}
 
 	const toggles = CollectionToggles[collectionType][groupIndex];

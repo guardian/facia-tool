@@ -74,8 +74,7 @@ import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
-
-import { renderBoostToggles } from './ArticleMetaFormBoostToggles';
+import { renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
 
 interface ComponentProps extends ContainerProps {
@@ -610,7 +609,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							size={this.props.size}
 							extraBottomMargin="8px"
 						>
-							{...this.getBoostToggles(groupSizeId, cardId, collectionType)}
+							{this.getBoostToggles(groupSizeId, cardId, collectionType)}
 						</CheckboxFieldsContainer>
 						<CheckboxFieldsContainer
 							editableFields={editableFields}
