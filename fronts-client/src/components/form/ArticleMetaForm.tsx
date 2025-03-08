@@ -76,6 +76,7 @@ import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 
 import { renderBoostToggles } from './ArticleMetaFormBoostToggles';
+import { memoize } from 'lodash';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -429,6 +430,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		lastKnownCollectionId: null,
 	};
 
+	//** we memoize this function to prevent renders of the toggles */
+	private getBoostToggles = memoize(
+		(
+			groupSizeId: number | undefined,
+			cardId: string,
+			collectionType?: string,
+		) => {
+			return renderBoostToggles(groupSizeId, cardId, collectionType);
+		},
+	);
+
 	public render() {
 		const {
 			cardId,
@@ -598,7 +610,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							size={this.props.size}
 							extraBottomMargin="8px"
 						>
-							{...renderBoostToggles(groupSizeId, cardId, collectionType)}
+							{...this.getBoostToggles(groupSizeId, cardId, collectionType)}
 						</CheckboxFieldsContainer>
 						<CheckboxFieldsContainer
 							editableFields={editableFields}
