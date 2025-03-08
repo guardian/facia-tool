@@ -2,6 +2,34 @@ import InputRadio from 'components/inputs/InputRadio';
 import React from 'react';
 import { Field } from 'redux-form';
 
+/**
+ * This function generates a set of radio button toggles for selecting a card's "boost level"
+ * in a flexible collection. Boost levels help establish a visual hierarchy within a collection.
+ *
+ * ## Boost Levels:
+ * - **default**: No boost
+ * - **boost**: Slight emphasis
+ * - **megaBoost**: Stronger emphasis
+ * - **gigaBoost**: Most prominent
+ *
+ * ## Presets:
+ * To simplify the boosting process for editors, we provide preset groups for different collection types.
+ *
+ * ### Flexible General (4 Groups):
+ * - **Group 0 (Standard)**: Default, Boost, MegaBoost
+ * - **Group 1 (Big)**: Boost, MegaBoost
+ * - **Group 2 (Very Big)**: MegaBoost
+ * - **Group 3 (Splash)**: Default, Boost, MegaBoost, GigaBoost
+ *
+ * ### Flexible Special (2 Groups):
+ * - **Group 0 (Standard)**: Default, Boost, MegaBoost
+ * - **Group 1 (Splash)**: Default, Boost, MegaBoost, GigaBoost
+ *
+ * ## Function:
+ * Given a `groupIndex`, `cardId`, and `collectionType`, this function returns the appropriate
+ * boost level radio button options.
+ */
+
 type BoostLevel = 'default' | 'boost' | 'megaBoost' | 'gigaBoost';
 
 const boostTogglesOptions: Record<BoostLevel, { id: string; value: string }> = {
@@ -34,16 +62,20 @@ const flexibleGeneralTogglesMap: Record<
 	number,
 	{ label: string; id: string; value: string }[]
 > = {
+	// Group 0 = standard
 	0: [
 		{ label: 'Default', ...Default },
 		{ label: 'Boost', ...Boost },
 		{ label: 'Mega Boost', ...MegaBoost },
 	],
+	// Group 1 = big
 	1: [
 		{ label: 'Default', ...Boost },
 		{ label: 'Boost', ...MegaBoost },
 	],
+	// Group 2 = very big
 	2: [{ label: 'Default', ...MegaBoost }],
+	// Group 3 = splash
 	3: [
 		{ label: 'Default', ...Default },
 		{ label: 'Boost', ...Boost },
@@ -56,11 +88,13 @@ const flexibleSpecialTogglesMap: Record<
 	number,
 	{ label: string; id: string; value: string }[]
 > = {
+	// Group 0 = standard
 	0: [
 		{ label: 'Default', ...Default },
 		{ label: 'Boost', ...Boost },
 		{ label: 'Mega Boost', ...MegaBoost },
 	],
+	// Group 1 = splash
 	1: [
 		{ label: 'Default', ...Default },
 		{ label: 'Boost', ...Boost },
