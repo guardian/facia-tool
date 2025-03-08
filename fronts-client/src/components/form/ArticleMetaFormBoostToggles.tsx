@@ -110,12 +110,13 @@ export const renderBoostToggles = (
 	cardId: string,
 	collectionType?: string,
 ) => {
-	if (!collectionType) return [<></>];
+	// Only render boost toggles for flexible collections
 	if (
-		collectionType !== 'flexible/general' &&
-		collectionType !== 'flexible/special'
-	)
+		!collectionType ||
+		!['flexible/general', 'flexible/special'].includes(collectionType)
+	) {
 		return [<></>];
+	}
 
 	const toggles =
 		collectionType === 'flexible/general'
