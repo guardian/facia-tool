@@ -2,13 +2,6 @@ import InputRadio from 'components/inputs/InputRadio';
 import React from 'react';
 import { Field } from 'redux-form';
 
-enum Groups {
-	Standard,
-	Big,
-	VeryBig,
-	Splash,
-}
-
 type BoostLevel = 'default' | 'boost' | 'megaBoost' | 'gigaBoost';
 
 const boostTogglesOptions: Record<BoostLevel, { id: string; value: string }> = {
@@ -28,7 +21,7 @@ const boostTogglesOptions: Record<BoostLevel, { id: string; value: string }> = {
 		id: 'boostlevel-3',
 		value: 'gigaboost',
 	},
-};
+} as const;
 
 const {
 	default: Default,
@@ -37,21 +30,38 @@ const {
 	gigaBoost: GigaBoost,
 } = boostTogglesOptions;
 
-const groupTogglesMap: Record<
-	Groups,
+const flexibleGeneralTogglesMap: Record<
+	number,
 	{ label: string; id: string; value: string }[]
 > = {
-	[Groups.Standard]: [
+	0: [
 		{ label: 'Default', ...Default },
 		{ label: 'Boost', ...Boost },
 		{ label: 'Mega Boost', ...MegaBoost },
 	],
-	[Groups.Big]: [
+	1: [
 		{ label: 'Default', ...Boost },
 		{ label: 'Boost', ...MegaBoost },
 	],
-	[Groups.VeryBig]: [{ label: 'Default', ...MegaBoost }],
-	[Groups.Splash]: [
+	2: [{ label: 'Default', ...MegaBoost }],
+	3: [
+		{ label: 'Default', ...Default },
+		{ label: 'Boost', ...Boost },
+		{ label: 'Mega Boost', ...MegaBoost },
+		{ label: 'Giga Boost', ...GigaBoost },
+	],
+};
+
+const flexibleSpecialTogglesMap: Record<
+	number,
+	{ label: string; id: string; value: string }[]
+> = {
+	0: [
+		{ label: 'Default', ...Default },
+		{ label: 'Boost', ...Boost },
+		{ label: 'Mega Boost', ...MegaBoost },
+	],
+	1: [
 		{ label: 'Default', ...Default },
 		{ label: 'Boost', ...Boost },
 		{ label: 'Mega Boost', ...MegaBoost },
@@ -61,15 +71,24 @@ const groupTogglesMap: Record<
 
 const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
-const isValidGroup = (groupIndex: number): groupIndex is Groups =>
-	groupIndex in Groups;
+export const renderBoostToggles = (
+	groupIndex: number = 0,
+	cardId: string,
+	collectionType?: string,
+) => {
+	if (!collectionType) return [<></>];
+	if (
+		collectionType !== 'flexible/general' &&
+		collectionType !== 'flexible/special'
+	)
+		return [<></>];
 
-export const renderBoostToggles = (groupIndex: number = 0, cardId: string) => {
-	const groupId: Groups = isValidGroup(groupIndex)
-		? groupIndex
-		: Groups.Standard;
+	const toggles =
+		collectionType === 'flexible/general'
+			? flexibleGeneralTogglesMap[groupIndex]
+			: flexibleSpecialTogglesMap[groupIndex];
 
-	return groupTogglesMap[groupId].map(({ label, id, value }) => (
+	return toggles.map(({ label, id, value }) => (
 		<Field
 			key={id}
 			name={'boostLevel'}

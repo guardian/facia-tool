@@ -458,6 +458,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			coverCardTabletImage,
 			valid,
 			groupSizeId,
+			collectionType,
 		} = this.props;
 
 		const isEditionsMode = editMode === 'editions';
@@ -597,7 +598,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							size={this.props.size}
 							extraBottomMargin="8px"
 						>
-							{...renderBoostToggles(groupSizeId, cardId)}
+							{...renderBoostToggles(groupSizeId, cardId, collectionType)}
 						</CheckboxFieldsContainer>
 						<CheckboxFieldsContainer
 							editableFields={editableFields}
