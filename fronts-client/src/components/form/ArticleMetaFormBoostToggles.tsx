@@ -1,6 +1,7 @@
 import InputRadio from 'components/inputs/InputRadio';
 import React from 'react';
 import { Field } from 'redux-form';
+import type { BoostLevels } from 'types/Collection';
 
 /**
  * This function generates a set of radio button toggles for selecting a card's "boost level"
@@ -12,8 +13,38 @@ import { Field } from 'redux-form';
  * - **megaBoost**: Stronger emphasis
  * - **gigaBoost**: Most prominent
  *
+ */
+
+type Toggle = { id: string; value: BoostLevels; label: string };
+
+// Define all possible boost levels for toggles
+const TOGGLES: Record<BoostLevels, Toggle> = {
+	default: {
+		id: 'boostlevel-0',
+		value: 'default',
+		label: 'default',
+	},
+	boost: {
+		id: 'boostlevel-1',
+		value: 'boost',
+		label: 'boost',
+	},
+	megaboost: {
+		id: 'boostlevel-2',
+		value: 'megaboost',
+		label: 'megaboost',
+	},
+	gigaboost: {
+		id: 'boostlevel-3',
+		value: 'gigaboost',
+		label: 'gigaboost',
+	},
+};
+
+/**
  * ## Presets:
  * To simplify the boosting process for editors, we provide preset groups for different collection types.
+ * We override the labels in some groups so they make more sense in the context of the collection.
  *
  * ### Flexible General (4 Groups):
  * - **Group 0 (Standard)**: Default, Boost, MegaBoost
@@ -25,86 +56,30 @@ import { Field } from 'redux-form';
  * - **Group 0 (Standard)**: Default, Boost, MegaBoost
  * - **Group 1 (Splash)**: Default, Boost, MegaBoost, GigaBoost
  *
- * ## Function:
- * Given a `groupIndex`, `cardId`, and `collectionType`, this function returns the appropriate
- * boost level radio button options.
- */
-
-type BoostLevel = 'default' | 'boost' | 'megaBoost' | 'gigaBoost';
-
-const boostTogglesOptions: Record<BoostLevel, { id: string; value: string }> = {
-	default: {
-		id: 'boostlevel-0',
-		value: 'default',
+ * */
+const CollectionToggles: Record<string, Record<number, Toggle[]>> = {
+	'flexible/general': {
+		0: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost],
+		1: [
+			{ ...TOGGLES.boost, label: 'default' },
+			{ ...TOGGLES.megaboost, label: 'boost' },
+		],
+		2: [{ ...TOGGLES.megaboost, label: 'default' }],
+		3: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost, TOGGLES.gigaboost],
 	},
-	boost: {
-		id: 'boostlevel-1',
-		value: 'boost',
+	'flexible/special': {
+		0: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost],
+		1: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost, TOGGLES.gigaboost],
 	},
-	megaBoost: {
-		id: 'boostlevel-2',
-		value: 'megaboost',
-	},
-	gigaBoost: {
-		id: 'boostlevel-3',
-		value: 'gigaboost',
-	},
-} as const;
-
-const {
-	default: Default,
-	boost: Boost,
-	megaBoost: MegaBoost,
-	gigaBoost: GigaBoost,
-} = boostTogglesOptions;
-
-const flexibleGeneralTogglesMap: Record<
-	number,
-	{ label: string; id: string; value: string }[]
-> = {
-	// Group 0 = standard
-	0: [
-		{ label: 'Default', ...Default },
-		{ label: 'Boost', ...Boost },
-		{ label: 'Mega Boost', ...MegaBoost },
-	],
-	// Group 1 = big
-	1: [
-		{ label: 'Default', ...Boost },
-		{ label: 'Boost', ...MegaBoost },
-	],
-	// Group 2 = very big
-	2: [{ label: 'Default', ...MegaBoost }],
-	// Group 3 = splash
-	3: [
-		{ label: 'Default', ...Default },
-		{ label: 'Boost', ...Boost },
-		{ label: 'Mega Boost', ...MegaBoost },
-		{ label: 'Giga Boost', ...GigaBoost },
-	],
-};
-
-const flexibleSpecialTogglesMap: Record<
-	number,
-	{ label: string; id: string; value: string }[]
-> = {
-	// Group 0 = standard
-	0: [
-		{ label: 'Default', ...Default },
-		{ label: 'Boost', ...Boost },
-		{ label: 'Mega Boost', ...MegaBoost },
-	],
-	// Group 1 = splash
-	1: [
-		{ label: 'Default', ...Default },
-		{ label: 'Boost', ...Boost },
-		{ label: 'Mega Boost', ...MegaBoost },
-		{ label: 'Giga Boost', ...GigaBoost },
-	],
 };
 
 const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
+/**
+ * ## Function:
+ * Given a `groupIndex`, `cardId`, and `collectionType`, this function returns the appropriate
+ * boost level radio button options.
+ */
 export const renderBoostToggles = (
 	groupIndex: number = 0,
 	cardId: string,
@@ -118,10 +93,7 @@ export const renderBoostToggles = (
 		return [<></>];
 	}
 
-	const toggles =
-		collectionType === 'flexible/general'
-			? flexibleGeneralTogglesMap[groupIndex]
-			: flexibleSpecialTogglesMap[groupIndex];
+	const toggles = CollectionToggles[collectionType][groupIndex];
 
 	return toggles.map(({ label, id, value }) => (
 		<Field
