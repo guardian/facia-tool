@@ -58,7 +58,6 @@ const addGroupsForStage = (
 		) {
 			name = collectionConfig.groups[groupNumberAsInt];
 		}
-
 		return { ...group, name };
 	});
 

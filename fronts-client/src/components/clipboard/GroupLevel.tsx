@@ -24,7 +24,7 @@ interface OuterProps {
 
 interface InnerProps {
 	cards: Card[];
-	groupsWithCardsData: any[];
+	groupsWithCardsData: Group[];
 }
 
 type Props = OuterProps & InnerProps;
@@ -70,10 +70,8 @@ const GroupLevel = ({
 	groupName,
 	groupIds,
 	groupMaxItems,
-	groupsData,
 	groupsWithCardsData,
-}: Props) => {
-	return (
+}: Props) => (
 	<CardTypeLevel
 		arr={cards}
 		parentType="group"
@@ -101,7 +99,7 @@ const GroupLevel = ({
 	>
 		{children}
 	</CardTypeLevel>
-)};
+);
 
 const createMapStateToProps = () => {
 	const selectArticlesFromIds = createSelectArticlesFromIds();

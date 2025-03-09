@@ -265,7 +265,6 @@ const createMapStateToProps = () => {
 			collectionId: props.id,
 			collectionSet: props.browsingStage,
 		});
-		// const CardsData =
 
 		return {
 			lastDesktopArticle: articleVisibilityDetails.desktop,

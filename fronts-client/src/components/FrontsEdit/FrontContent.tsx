@@ -183,8 +183,8 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		const hasMaxItemsAlready =
 			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
 
-		// if we are inserting an article into any group either has no cards or doesn't have the max items already,
-		// then we just insert
+		// if we are moving an article into any group either has no cards or doesn't have the max items already,
+		// then we just move the article to the location
 		if (numberOfArticlesAlreadyInGroup === 0 || !hasMaxItemsAlready) {
 			events.dropArticle(this.props.id, 'collection');
 			this.props.moveCard(move.to, move.data, move.from || null, 'collection');
@@ -192,9 +192,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		}
 
 		// if we're in a group with max items and already has the max number of stories,
-		// and we move an article, then we need to either move the last article to the next group
-		// or insert the article into the next group depending on where were inserting the story
-
+		// and we move an article, then depending on where we're inserting the story
+		// we need to either move the last article to the next group
+		// or move the article into the next group
 		if (
 			!!move.to.groupIds &&
 			move.to.cards !== undefined &&
@@ -268,8 +268,10 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 		const dropSource = isDropFromCAPIFeed(e) ? 'feed' : 'url';
 
-		// if we are inserting an article into any group that doesn't have a max items (e.g. legacy containers), then we just insert
-		// we also just insert if we're in a group that doesn't have any articles in it yet
+		// if we are inserting an article into any group that doesn't have a max items (e.g. legacy containers),
+		// or a group that doesn't have any articles in it yet
+		// or a group that doesn't have the max items already,
+		// then we just insert
 		if (
 			to.type !== 'group' ||
 			to.groupMaxItems === undefined ||
@@ -282,8 +284,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		}
 
 		// if we're in a group with max items and already has the max number of stories,
-		// and we insert an article, then we need to either move the last article to the next group
-		// or insert the article into the next group depending on where were inserting the story
+		// then depending on where we're inserting the story
+		// we need to either move the last article to the next group
+		// or insert the article into the next group
 		if (!!to.groupIds && to.cards !== undefined && hasMaxItemsAlready) {
 			const currentGroupIndex = to.groupIds.findIndex(
 				(groupId) => groupId === to.id,
@@ -302,7 +305,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				events.dropArticle(this.props.id, dropSource);
 				this.props.insertCardFromDropEvent(e, to, 'collection');
 
-				// then we need to move the other article to the other group
+				// then we move the other article to the other group
 				const existingCardData = to.cards[to.cards.length - 1];
 				const existingCardTo = {
 					index: 0,
