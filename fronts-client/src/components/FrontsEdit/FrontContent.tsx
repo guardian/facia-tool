@@ -182,10 +182,16 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
 		const hasMaxItemsAlready =
 			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
+		console.log('move', move);
 
 		// if we are moving an article into any group either has no cards or doesn't have the max items already,
+		// or if we're moving the article within the same group,
 		// then we just move the article to the location
-		if (numberOfArticlesAlreadyInGroup === 0 || !hasMaxItemsAlready) {
+		if (
+			numberOfArticlesAlreadyInGroup === 0 ||
+			!hasMaxItemsAlready ||
+			(move.from && move.to.id === move.from.id)
+		) {
 			events.dropArticle(this.props.id, 'collection');
 			this.props.moveCard(move.to, move.data, move.from || null, 'collection');
 			return;
