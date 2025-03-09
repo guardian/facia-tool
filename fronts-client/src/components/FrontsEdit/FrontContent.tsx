@@ -296,6 +296,10 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				(groupId) => groupId === to.id,
 			);
 			const nextGroup = to.groupIds[currentGroupIndex + 1];
+			const nextGroupData = to.groupsData && to.groupsData.find(
+				(group) =>
+					group.uuid === nextGroup,
+			);
 			const isAddingCardToLastPlaceInGroup = to.index === to.cards.length;
 
 			// if we're not adding the card to the last place in the group, then we need to move the last article to the next group
@@ -307,11 +311,20 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 				// then we need to move the other article to the other group
 				const existingCardData = to.cards[to.cards.length - 1];
+				// const existingCardTo = {
+				// 	index: 0,
+				// 	id: nextGroup,
+				// 	type: 'group',
+				// 	groupIds: to.groupIds,
+				// };
 				const existingCardTo = {
 					index: 0,
 					id: nextGroup,
 					type: 'group',
 					groupIds: to.groupIds,
+					groupMaxItems: nextGroupData?.maxItems,
+					groupsData: to.groupsData,
+					cards: nextGroupData?.cardsData //not the complete data which I think is messing it up
 				};
 				const existingCardMoveData: Move<TCard> = {
 					data: existingCardData,
