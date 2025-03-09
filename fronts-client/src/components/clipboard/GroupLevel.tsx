@@ -19,7 +19,7 @@ interface OuterProps {
 	groupName: string;
 	groupIds: string[];
 	groupMaxItems?: number;
-	groupsData?: Group[]
+	groupsData?: Group[];
 }
 
 interface InnerProps {
@@ -106,20 +106,22 @@ const createMapStateToProps = () => {
 
 	const getCardsForOtherGroups = () => {
 		return (state: State, groupsData: Group[] | undefined) => {
-		  if (!groupsData) {
-			return [];
-		  }
+			if (!groupsData) {
+				return [];
+			}
 
-		  return groupsData.map((group) => {
-			const groupCardIds = group.cards
-			const cardsData = selectArticlesFromIds(state, {cardIds: groupCardIds});
-			return {
-			  ...group,
-			  cardsData,
-			};
-		  });
+			return groupsData.map((group) => {
+				const groupCardIds = group.cards;
+				const cardsData = selectArticlesFromIds(state, {
+					cardIds: groupCardIds,
+				});
+				return {
+					...group,
+					cardsData,
+				};
+			});
 		};
-	  };
+	};
 	return (state: State, { cardIds, groupsData }: OuterProps) => ({
 		cards: selectArticlesFromIds(state, {
 			cardIds,

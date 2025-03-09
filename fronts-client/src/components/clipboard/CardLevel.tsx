@@ -22,7 +22,7 @@ interface OuterProps {
 	cardTypeAllowList?: CardTypes[];
 	groupName?: string;
 	groupIds?: string[];
-	groupsData?: Group[]
+	groupsData?: Group[];
 }
 
 interface InnerProps {
