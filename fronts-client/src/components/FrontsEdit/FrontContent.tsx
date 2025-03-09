@@ -328,6 +328,8 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				this.handleMove(existingCardMoveData);
 			}
 			// If we're adding to the last place in the group, then we insert the article into the next group
+			// we need to check if the next group already has the max number of items,
+			// if it does, then we need to move the last article to the next group
 			else {
 				const amendedTo = {
 					index: 0,
@@ -337,6 +339,31 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				};
 				events.dropArticle(this.props.id, dropSource);
 				this.props.insertCardFromDropEvent(e, amendedTo, 'collection');
+
+				const nextGroupNumberOfArticles = nextGroupData?.cardsData?.length ?? 0;
+				const nextGroupHasMaxItems =
+					nextGroupData?.maxItems === nextGroupNumberOfArticles;
+				if (nextGroupHasMaxItems) {
+					if (!nextGroupData.cardsData) {
+						return;
+					}
+					const existingCardData = nextGroupData.cardsData[to.cards.length - 1];
+					const existingCardTo = {
+						index: 0,
+						id: nextGroup,
+						type: 'group',
+						groupIds: to.groupIds,
+						groupMaxItems: nextGroupData?.maxItems,
+						groupsData: to.groupsData,
+						cards: nextGroupData?.cardsData,
+					};
+					const existingCardMoveData: Move<TCard> = {
+						data: existingCardData,
+						from: false,
+						to: existingCardTo,
+					};
+					this.handleMove(existingCardMoveData);
+				}
 			}
 			return;
 		}
