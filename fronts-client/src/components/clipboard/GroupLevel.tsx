@@ -24,6 +24,7 @@ interface OuterProps {
 
 interface InnerProps {
 	cards: Card[];
+	groupsWithCardsData: any[];
 }
 
 type Props = OuterProps & InnerProps;
@@ -70,7 +71,12 @@ const GroupLevel = ({
 	groupIds,
 	groupMaxItems,
 	groupsData,
-}: Props) => (
+	groupsWithCardsData,
+}: Props) => {
+	// console.log("cards", cards)
+	// console.log('cardsFromOtherGroups', groupsWithCardsData);
+	// console.log("groupsData here", groupsData);
+	return (
 	<CardTypeLevel
 		arr={cards}
 		parentType="group"
@@ -79,7 +85,7 @@ const GroupLevel = ({
 		groupName={groupName}
 		groupIds={groupIds}
 		groupMaxItems={groupMaxItems}
-		groupsData={groupsData}
+		groupsData={groupsWithCardsData}
 		onMove={onMove}
 		onDrop={onDrop}
 		canDrop={!isUneditable}
@@ -98,14 +104,35 @@ const GroupLevel = ({
 	>
 		{children}
 	</CardTypeLevel>
-);
+)};
 
 const createMapStateToProps = () => {
 	const selectArticlesFromIds = createSelectArticlesFromIds();
-	return (state: State, { cardIds }: OuterProps) => ({
+
+	const getCardsFromOtherGroups = () => {
+		return (state: State, groupsData: Group[] | undefined) => {
+		  if (!groupsData) {
+			return [];
+		  }
+
+		//   console.log("groupsData here", groupsData);
+
+		  return groupsData.map((group) => {
+			const groupCardIds = group.cards
+			const cardsData = selectArticlesFromIds(state, {cardIds: groupCardIds});
+			// console.log("articles here", cardsData);
+			return {
+			  ...group,
+			  cardsData,
+			};
+		  });
+		};
+	  };
+	return (state: State, { cardIds, groupsData }: OuterProps) => ({
 		cards: selectArticlesFromIds(state, {
 			cardIds,
 		}),
+		groupsWithCardsData: getCardsFromOtherGroups()(state, groupsData),
 	});
 };
 

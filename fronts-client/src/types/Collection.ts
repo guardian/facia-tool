@@ -20,6 +20,7 @@ interface Group {
 	uuid: string;
 	cards: string[];
 	maxItems?: number;
+	cardsData?: Card[];
 }
 
 interface GroupConfig {

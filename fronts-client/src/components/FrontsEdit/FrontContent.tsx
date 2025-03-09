@@ -237,7 +237,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					groupIds: move.to.groupIds,
 					groupMaxItems: nextGroupData?.maxItems,
 					groupsData: move.to.groupsData,
-					cards: nextGroupData?.cards //not the complete data which I think is messing it up
+					cards: nextGroupData?.cardsData //not the complete data which I think is messing it up
 				};
 				console.log("existingCardTo", existingCardTo);
 				const existingCardMoveData: Move<TCard> = {
