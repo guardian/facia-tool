@@ -246,7 +246,10 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				this.handleMove(existingCardMoveData);
 			}
 			// If we're adding to the last place in the group, then we move the article into the next group
+			// we need to check if the next group already has the max number of items,
+			// if it does, then we need to move the last article to the next group
 			else {
+				// we do the move step for the article we're now moving to the next group
 				const amendedTo = {
 					index: 0,
 					id: nextGroup,
@@ -261,6 +264,37 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					move.from || null,
 					'collection',
 				);
+
+				// then we check if the next group already has the max number of items,
+				// if it does, then we need to move the last article to the next group
+				const nextGroupData =
+					move.to.groupsData &&
+					move.to.groupsData.find((group) => group.uuid === nextGroup);
+				const nextGroupNumberOfArticles = nextGroupData?.cardsData?.length ?? 0;
+				const nextGroupHasMaxItems =
+					nextGroupData?.maxItems === nextGroupNumberOfArticles;
+				if (nextGroupHasMaxItems) {
+					if (!nextGroupData.cardsData) {
+						return;
+					}
+					const existingCardData =
+						nextGroupData.cardsData[nextGroupNumberOfArticles - 1];
+					const existingCardTo = {
+						index: 0,
+						id: nextGroup,
+						type: 'group',
+						groupIds: move.to.groupIds,
+						groupMaxItems: nextGroupData?.maxItems,
+						groupsData: move.to.groupsData,
+						cards: nextGroupData?.cardsData,
+					};
+					const existingCardMoveData: Move<TCard> = {
+						data: existingCardData,
+						from: false,
+						to: existingCardTo,
+					};
+					this.handleMove(existingCardMoveData);
+				}
 			}
 			return;
 		}
