@@ -73,9 +73,6 @@ const GroupLevel = ({
 	groupsData,
 	groupsWithCardsData,
 }: Props) => {
-	// console.log("cards", cards)
-	// console.log('cardsFromOtherGroups', groupsWithCardsData);
-	// console.log("groupsData here", groupsData);
 	return (
 	<CardTypeLevel
 		arr={cards}
@@ -109,18 +106,15 @@ const GroupLevel = ({
 const createMapStateToProps = () => {
 	const selectArticlesFromIds = createSelectArticlesFromIds();
 
-	const getCardsFromOtherGroups = () => {
+	const getCardsForOtherGroups = () => {
 		return (state: State, groupsData: Group[] | undefined) => {
 		  if (!groupsData) {
 			return [];
 		  }
 
-		//   console.log("groupsData here", groupsData);
-
 		  return groupsData.map((group) => {
 			const groupCardIds = group.cards
 			const cardsData = selectArticlesFromIds(state, {cardIds: groupCardIds});
-			// console.log("articles here", cardsData);
 			return {
 			  ...group,
 			  cardsData,
@@ -132,7 +126,7 @@ const createMapStateToProps = () => {
 		cards: selectArticlesFromIds(state, {
 			cardIds,
 		}),
-		groupsWithCardsData: getCardsFromOtherGroups()(state, groupsData),
+		groupsWithCardsData: getCardsForOtherGroups()(state, groupsData),
 	});
 };
 

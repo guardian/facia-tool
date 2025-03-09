@@ -179,7 +179,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	}
 
 	public handleMove = (move: Move<TCard>) => {
-		console.log("move card id", move.data.id);
 		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
 		const hasMaxItemsAlready =
 			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
@@ -220,16 +219,11 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				);
 
 				//then we need to move the other article to the other group
-				console.log("move.to.cards", move.to.cards);
 				const existingCardData = move.to.cards[move.to.cards.length - 1];
-				console.log("existingCardData id", existingCardData.id);
-				console.log("groupsData", move.to.groupsData);
-				console.log("next group", nextGroup);
 				const nextGroupData = move.to.groupsData && move.to.groupsData.find(
 					(group) =>
 						group.uuid === nextGroup,
 				);
-				console.log("groupMovingToData", nextGroupData);
 				const existingCardTo = {
 					index: 0,
 					id: nextGroup,
@@ -237,9 +231,8 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					groupIds: move.to.groupIds,
 					groupMaxItems: nextGroupData?.maxItems,
 					groupsData: move.to.groupsData,
-					cards: nextGroupData?.cardsData //not the complete data which I think is messing it up
+					cards: nextGroupData?.cardsData
 				};
-				console.log("existingCardTo", existingCardTo);
 				const existingCardMoveData: Move<TCard> = {
 					data: existingCardData,
 					from: false,
@@ -311,12 +304,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 				// then we need to move the other article to the other group
 				const existingCardData = to.cards[to.cards.length - 1];
-				// const existingCardTo = {
-				// 	index: 0,
-				// 	id: nextGroup,
-				// 	type: 'group',
-				// 	groupIds: to.groupIds,
-				// };
 				const existingCardTo = {
 					index: 0,
 					id: nextGroup,
@@ -324,7 +311,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					groupIds: to.groupIds,
 					groupMaxItems: nextGroupData?.maxItems,
 					groupsData: to.groupsData,
-					cards: nextGroupData?.cardsData //not the complete data which I think is messing it up
+					cards: nextGroupData?.cardsData
 				};
 				const existingCardMoveData: Move<TCard> = {
 					data: existingCardData,
