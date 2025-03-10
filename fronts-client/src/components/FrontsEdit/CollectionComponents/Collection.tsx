@@ -363,13 +363,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 											launched they will not appear here.
 										</PreviouslyCollectionInfo>
 										<PreviouslyGroupsWrapper>
-											{children(
-												previousGroup,
-												true,
-												groupIds,
-												groups,
-												false,
-											)}
+											{children(previousGroup, true, groupIds, groups, false)}
 										</PreviouslyGroupsWrapper>
 									</>
 								)}

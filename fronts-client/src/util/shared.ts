@@ -74,10 +74,9 @@ const addGroupsForStage = (
 	// Once we have all the groups, we can look at the config and set the maxItems value.
 	if (collectionConfig.groupsConfig) {
 		groupsWithNames.forEach((group) => {
-			const groupConfig =
-				collectionConfig.groupsConfig?.find(
-					(config) => config.name === group.name,
-				);
+			const groupConfig = collectionConfig.groupsConfig?.find(
+				(config) => config.name === group.name,
+			);
 			if (groupConfig) {
 				group.maxItems = groupConfig.maxItems;
 			}
