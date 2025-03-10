@@ -214,7 +214,44 @@ const updateCardMetaWithPersist = (persistTo: PersistTo) =>
  * Group ids remain consistent, even if the group is hidden (when maxItems is set to 0), so we can use the id to determine the group.
  */
 
-const mayLowerCardBoostLevelForDestinationGroup = (
+const boostLevels = ['default', 'boost', 'megaboost', 'gigaboost'] as const;
+
+const minimumGroupBoostLevel = (groupId: number) => {
+	// boost is the smallest boost level for `Big`
+	if (groupId === 1) return 'boost';
+	// megaboost is the smallest boost level for `Very Big`
+	if (groupId === 2) return 'megaboost';
+	return 'default';
+};
+
+/**
+ * If the card is moved to a splash (group 3) group, we always set the boost level to default
+ * If the card already has the minimum boost level for the group it is moving to,
+ * we don't want to go any lower.
+ * Otherwise, we decrease the boost level by 1.
+ */
+const getBoostLevel = (groupId: number, boostIndex: number) => {
+	if (groupId === 3) {
+		return 'default';
+	}
+	const minBoostLevel = minimumGroupBoostLevel(groupId);
+	const minBoostIndex = boostLevels.indexOf(minBoostLevel);
+
+	// If the current boost level is below the minimum required, set it to the minimum
+	if (boostIndex < minBoostIndex) {
+		return minBoostLevel;
+	}
+
+	// If the current boost level is the minimum required, don't change it
+	if (boostIndex === minBoostIndex) {
+		return boostLevels[boostIndex];
+	}
+
+	// Otherwise reduce the boost level by 1
+	return boostLevels[boostIndex - 1];
+};
+
+const mayAdjustCardBoostLevelForDestinationGroup = (
 	state: State,
 	to: PosSpec,
 	card: Card,
@@ -224,44 +261,25 @@ const mayLowerCardBoostLevelForDestinationGroup = (
 		const groupId = to.id;
 		const { collection } = selectGroupCollection(state, groupId);
 		const group = selectGroups(state)[groupId];
+
 		if (collection?.type === FLEXIBLE_GENERAL_NAME) {
-			// if we move a gigaboosted card to a standard group, we set megaboost
-			if (
-				group &&
-				(!group.id || parseInt(group.id) === 0) &&
-				card.meta.boostLevel === 'gigaboost'
-			) {
-				return updateCardMeta(
-					card.uuid,
-					{
-						boostLevel: 'megaboost',
-					},
-					{ merge: true },
-				);
-			}
-			if (!group || group.id === null) {
+			if (!group) {
 				return;
 			}
-			// if we move any card to a very big group, we set megaboost
-			if (parseInt(group.id) === 2) {
-				return updateCardMeta(
-					card.uuid,
-					{
-						boostLevel: 'megaboost',
-					},
-					{ merge: true },
-				);
-			}
-			// if we move any card to a big group, we set boost
-			if (parseInt(group.id) === 1) {
-				return updateCardMeta(
-					card.uuid,
-					{
-						boostLevel: 'boost',
-					},
-					{ merge: true },
-				);
-			}
+			const groupId = parseInt(group.id ?? '0');
+
+			const currentBoostLevel = boostLevels.indexOf(
+				card.meta.boostLevel ?? 'default',
+			);
+
+			const boostLevel = getBoostLevel(groupId, currentBoostLevel);
+			return updateCardMeta(
+				card.uuid,
+				{
+					boostLevel,
+				},
+				{ merge: true },
+			);
 		}
 	}
 };
@@ -294,7 +312,7 @@ const insertCardWithCreate =
 				if (!card) {
 					return;
 				}
-				const modifyCardAction = mayLowerCardBoostLevelForDestinationGroup(
+				const modifyCardAction = mayAdjustCardBoostLevelForDestinationGroup(
 					state,
 					to,
 					card,
@@ -403,7 +421,7 @@ const moveCard = (
 					dispatch(cardsReceived([parent, ...supporting]));
 				}
 
-				const modifyCardAction = mayLowerCardBoostLevelForDestinationGroup(
+				const modifyCardAction = mayAdjustCardBoostLevelForDestinationGroup(
 					state,
 					to,
 					parent,
