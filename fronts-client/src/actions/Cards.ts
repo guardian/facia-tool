@@ -225,12 +225,11 @@ const mayLowerCardBoostLevelForDestinationGroup = (
 		const { collection } = selectGroupCollection(state, groupId);
 		const group = selectGroups(state)[groupId];
 		if (collection?.type === FLEXIBLE_GENERAL_NAME) {
+			if (!group || group.id === null) {
+				return;
+			}
 			// if we move a gigaboosted card to a standard group, we set megaboost
-			if (
-				group &&
-				(!group.id || parseInt(group.id) === 0) &&
-				card.meta.boostLevel === 'gigaboost'
-			) {
+			if (parseInt(group.id) === 0 && card.meta.boostLevel === 'gigaboost') {
 				return updateCardMeta(
 					card.uuid,
 					{
@@ -239,26 +238,26 @@ const mayLowerCardBoostLevelForDestinationGroup = (
 					{ merge: true },
 				);
 			}
-		}
-		// if we move any card to a very big group, we set megaboost
-		if (group && group.id !== null && parseInt(group.id) === 2) {
-			return updateCardMeta(
-				card.uuid,
-				{
-					boostLevel: 'megaboost',
-				},
-				{ merge: true },
-			);
-		}
-		// if we move any card to a big group, we set boost
-		if (group && group.id !== null && parseInt(group.id) === 1) {
-			return updateCardMeta(
-				card.uuid,
-				{
-					boostLevel: 'boost',
-				},
-				{ merge: true },
-			);
+			// if we move any card to a very big group, we set megaboost
+			if (parseInt(group.id) === 2) {
+				return updateCardMeta(
+					card.uuid,
+					{
+						boostLevel: 'megaboost',
+					},
+					{ merge: true },
+				);
+			}
+			// if we move any card to a big group, we set boost
+			if (parseInt(group.id) === 1) {
+				return updateCardMeta(
+					card.uuid,
+					{
+						boostLevel: 'boost',
+					},
+					{ merge: true },
+				);
+			}
 		}
 	}
 };
