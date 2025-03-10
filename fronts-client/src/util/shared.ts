@@ -75,8 +75,7 @@ const addGroupsForStage = (
 	if (collectionConfig.groupsConfig) {
 		groupsWithNames.forEach((group) => {
 			const groupConfig =
-				collectionConfig.groupsConfig &&
-				collectionConfig.groupsConfig.find(
+				collectionConfig.groupsConfig?.find(
 					(config) => config.name === group.name,
 				);
 			if (groupConfig) {

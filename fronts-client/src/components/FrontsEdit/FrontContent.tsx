@@ -184,7 +184,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
 		console.log('move', move);
 
-		// if we are moving an article into any group either has no cards or doesn't have the max items already,
+		// if we are moving an article into any group that is either empty or doesn't have the max items already,
 		// or if we're moving the article within the same group,
 		// then we just move the article to the location
 		if (
@@ -197,7 +197,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			return;
 		}
 
-		// if we're in a group with max items and already has the max number of stories,
+		// if we're in a group with max items that already has the max number of stories,
 		// and we move an article, then depending on where we're inserting the story
 		// we need to either move the last article to the next group
 		// or move the article into the next group
