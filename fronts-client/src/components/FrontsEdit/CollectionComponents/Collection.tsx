@@ -226,7 +226,6 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 		const isUneditable = isCollectionLocked || browsingStage !== cardSets.draft;
 
 		const groupIds = groups.map((group) => group.uuid);
-		const groupsData = groups;
 
 		return (
 			<>
@@ -344,7 +343,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 					}
 				>
 					{groups.map((group) =>
-						children(group, isUneditable, groupIds, groupsData, true),
+						children(group, isUneditable, groupIds, groups, true),
 					)}
 					{hasContent && (
 						<EditModeVisibility visibleMode="fronts">
@@ -368,7 +367,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 												previousGroup,
 												true,
 												groupIds,
-												groupsData,
+												groups,
 												false,
 											)}
 										</PreviouslyGroupsWrapper>

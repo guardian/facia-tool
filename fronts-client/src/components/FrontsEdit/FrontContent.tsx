@@ -182,7 +182,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
 		const hasMaxItemsAlready =
 			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
-		console.log('move', move);
 
 		// if we are moving an article into any group that is either empty or doesn't have the max items already,
 		// or if we're moving the article within the same group,
