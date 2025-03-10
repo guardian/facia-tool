@@ -1,0 +1,195 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renderBoostToggles returns an empty fragment if collectionType is invalid 1`] = `null`;
+
+exports[`renderBoostToggles returns an empty fragment if collectionType is missing 1`] = `null`;
+
+exports[`renderBoostToggles returns the correct toggles for flexible/general group 0 1`] = `
+[
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-0"
+    label="Default"
+    name="boostLevel"
+    type="radio"
+    value="default"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-1"
+    label="Boost"
+    name="boostLevel"
+    type="radio"
+    value="boost"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-2"
+    label="Mega Boost"
+    name="boostLevel"
+    type="radio"
+    value="megaboost"
+  />,
+]
+`;
+
+exports[`renderBoostToggles returns the correct toggles for flexible/general group 1 1`] = `
+[
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-1"
+    label="Default"
+    name="boostLevel"
+    type="radio"
+    value="boost"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-2"
+    label="Boost"
+    name="boostLevel"
+    type="radio"
+    value="megaboost"
+  />,
+]
+`;
+
+exports[`renderBoostToggles returns the correct toggles for flexible/general group 2 1`] = `
+<div
+  component={[Function]}
+  data-testid="mock-field"
+  id="test-card-boostlevel-2"
+  label="Default"
+  name="boostLevel"
+  type="radio"
+  value="megaboost"
+/>
+`;
+
+exports[`renderBoostToggles returns the correct toggles for flexible/general group 3 1`] = `
+[
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-0"
+    label="Default"
+    name="boostLevel"
+    type="radio"
+    value="default"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-1"
+    label="Boost"
+    name="boostLevel"
+    type="radio"
+    value="boost"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-2"
+    label="Mega Boost"
+    name="boostLevel"
+    type="radio"
+    value="megaboost"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-3"
+    label="Giga Boost"
+    name="boostLevel"
+    type="radio"
+    value="gigaboost"
+  />,
+]
+`;
+
+exports[`renderBoostToggles returns the correct toggles for flexible/special group 0 1`] = `
+[
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-0"
+    label="Default"
+    name="boostLevel"
+    type="radio"
+    value="default"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-1"
+    label="Boost"
+    name="boostLevel"
+    type="radio"
+    value="boost"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-2"
+    label="Mega Boost"
+    name="boostLevel"
+    type="radio"
+    value="megaboost"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-3"
+    label="Giga Boost"
+    name="boostLevel"
+    type="radio"
+    value="gigaboost"
+  />,
+]
+`;
+
+exports[`renderBoostToggles returns the correct toggles for flexible/special group 1 1`] = `
+[
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-0"
+    label="Default"
+    name="boostLevel"
+    type="radio"
+    value="default"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-1"
+    label="Boost"
+    name="boostLevel"
+    type="radio"
+    value="boost"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-2"
+    label="Mega Boost"
+    name="boostLevel"
+    type="radio"
+    value="megaboost"
+  />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-3"
+    label="Giga Boost"
+    name="boostLevel"
+    type="radio"
+    value="gigaboost"
+  />,
+]
+`;
