@@ -71,6 +71,18 @@ const addGroupsForStage = (
 		});
 	}
 
+	// Once we have all the groups, we can look at the config and set the maxItems value.
+	if (collectionConfig.groupsConfig) {
+		groupsWithNames.forEach((group) => {
+			const groupConfig = collectionConfig.groupsConfig?.find(
+				(config) => config.name === group.name,
+			);
+			if (groupConfig) {
+				group.maxItems = groupConfig.maxItems;
+			}
+		});
+	}
+
 	// If we have no cards and no groups in a collection we still need to create
 	// and empty group for articles.
 	if (groupsWithNames.length === 0) {

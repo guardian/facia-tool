@@ -2,7 +2,7 @@ import React from 'react';
 import { LevelChild, MoveHandler, DropHandler } from 'lib/dnd';
 import type { State } from 'types/State';
 import { connect } from 'react-redux';
-import { Card } from 'types/Collection';
+import { Card, Group } from 'types/Collection';
 import DropZone, { DefaultDropContainer } from 'components/DropZone';
 import { createSelectArticlesFromIds } from 'selectors/shared';
 import { theme, styled } from 'constants/theme';
@@ -18,10 +18,13 @@ interface OuterProps {
 	collectionId: string;
 	groupName: string;
 	groupIds: string[];
+	groupMaxItems?: number;
+	groups?: Group[];
 }
 
 interface InnerProps {
 	cards: Card[];
+	groupsWithCardsData: Group[];
 }
 
 type Props = OuterProps & InnerProps;
@@ -66,6 +69,8 @@ const GroupLevel = ({
 	collectionId,
 	groupName,
 	groupIds,
+	groupMaxItems,
+	groupsWithCardsData,
 }: Props) => (
 	<CardTypeLevel
 		arr={cards}
@@ -74,6 +79,8 @@ const GroupLevel = ({
 		collectionId={collectionId}
 		groupName={groupName}
 		groupIds={groupIds}
+		groupMaxItems={groupMaxItems}
+		groupsData={groupsWithCardsData}
 		onMove={onMove}
 		onDrop={onDrop}
 		canDrop={!isUneditable}
@@ -96,10 +103,29 @@ const GroupLevel = ({
 
 const createMapStateToProps = () => {
 	const selectArticlesFromIds = createSelectArticlesFromIds();
-	return (state: State, { cardIds }: OuterProps) => ({
+
+	const getCardsForOtherGroups = () => {
+		return (state: State, groups: Group[] | undefined) => {
+			if (!groups) {
+				return [];
+			}
+
+			return groups.map((group) => {
+				const cardsData = selectArticlesFromIds(state, {
+					cardIds: group.cards,
+				});
+				return {
+					...group,
+					cardsData,
+				};
+			});
+		};
+	};
+	return (state: State, { cardIds, groups }: OuterProps) => ({
 		cards: selectArticlesFromIds(state, {
 			cardIds,
 		}),
+		groupsWithCardsData: getCardsForOtherGroups()(state, groups),
 	});
 };
 

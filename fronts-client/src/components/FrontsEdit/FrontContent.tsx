@@ -180,133 +180,226 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 	public handleMove = (move: Move<TCard>) => {
 		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
+		const hasMaxItemsAlready =
+			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
 
-		// if we are inserting an article into any group that is not the splash, then we just insert
-		// we also just insert if we're in the splash and there's no other article already in the splash
+		// if we are moving an article into the standard group,
+		// or any group that is either empty or doesn't have the max items already,
+		// or if we're moving the article within the same group,
+		// then we just move the article to the location
 		if (
-			move.to.groupName !== 'splash' ||
-			numberOfArticlesAlreadyInGroup === 0
+			move.to.groupName === 'standard' ||
+			numberOfArticlesAlreadyInGroup === 0 ||
+			!hasMaxItemsAlready ||
+			(move.from && move.to.id === move.from.id)
 		) {
 			events.dropArticle(this.props.id, 'collection');
 			this.props.moveCard(move.to, move.data, move.from || null, 'collection');
 			return;
 		}
 
-		// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
-		// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
+		// if we're in a group with max items that already has the max number of stories,
+		// and we move an article, then depending on where we're inserting the story
+		// we need to either move the last article to the next group
+		// or move the article into the next group
 		if (
 			!!move.to.groupIds &&
 			move.to.cards !== undefined &&
-			move.to.index === 0
+			hasMaxItemsAlready
 		) {
-			//we do the regular move steps for the article we're moving to splash
-			events.dropArticle(this.props.id, 'collection');
-			this.props.moveCard(move.to, move.data, move.from || null, 'collection');
-
-			//then we need to move the other article to the other group
-			const otherGroup = move.to.groupIds.filter(
-				(groupId) => groupId !== move.to.id,
-			)[0];
-			const existingCardData = move.to.cards[0];
-			const existingCardTo = {
-				index: 0,
-				id: otherGroup,
-				type: 'group',
-				groupIds: move.to.groupIds,
-			};
-			const existingCardMoveData: Move<TCard> = {
-				data: existingCardData,
-				from: false,
-				to: existingCardTo,
-			};
-			this.handleMove(existingCardMoveData);
-			return;
-		}
-
-		// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
-		// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
-		if (
-			!!move.to.groupIds &&
-			numberOfArticlesAlreadyInGroup > 0 &&
-			move.to.index > 0
-		) {
-			const otherGroup = move.to.groupIds.filter(
-				(groupId) => groupId !== move.to.id,
-			)[0];
-
-			const amendedTo = {
-				index: 0,
-				id: otherGroup,
-				type: 'group',
-				groupIds: move.to.groupIds,
-			};
-			events.dropArticle(this.props.id, 'collection');
-
-			this.props.moveCard(
-				amendedTo,
-				move.data,
-				move.from || null,
-				'collection',
+			const currentGroupIndex = move.to.groupIds.findIndex(
+				(groupId) => groupId === move.to.id,
 			);
+			const nextGroup = move.to.groupIds[currentGroupIndex + 1];
+			const isAddingCardToLastPlaceInGroup =
+				move.to.index === move.to.cards.length;
+
+			// if we're not adding the card to the last place in the group, then we need to move the last article to the next group
+			if (!isAddingCardToLastPlaceInGroup) {
+				//we do the regular move steps for the article we're moving to the group
+				events.dropArticle(this.props.id, 'collection');
+				this.props.moveCard(
+					move.to,
+					move.data,
+					move.from || null,
+					'collection',
+				);
+
+				//then we need to move the other article to the other group
+				const existingCardData = move.to.cards[move.to.cards.length - 1];
+				const nextGroupData =
+					move.to.groupsData &&
+					move.to.groupsData.find((group) => group.uuid === nextGroup);
+				const existingCardTo = {
+					index: 0,
+					id: nextGroup,
+					type: 'group',
+					groupIds: move.to.groupIds,
+					groupMaxItems: nextGroupData?.maxItems,
+					groupsData: move.to.groupsData,
+					cards: nextGroupData?.cardsData,
+				};
+				const existingCardMoveData: Move<TCard> = {
+					data: existingCardData,
+					from: false,
+					to: existingCardTo,
+				};
+				this.handleMove(existingCardMoveData);
+			}
+			// If we're adding to the last place in the group, then we move the article into the next group
+			// we need to check if the next group already has the max number of items,
+			// if it does, then we need to move the last article to the next group
+			else {
+				// we do the move step for the article we're now moving to the next group
+				const amendedTo = {
+					index: 0,
+					id: nextGroup,
+					type: 'group',
+					groupIds: move.to.groupIds,
+				};
+				events.dropArticle(this.props.id, 'collection');
+
+				this.props.moveCard(
+					amendedTo,
+					move.data,
+					move.from || null,
+					'collection',
+				);
+
+				// then we check if the next group already has the max number of items,
+				// if it does, then we need to move the last article to the next group
+				const nextGroupData =
+					move.to.groupsData &&
+					move.to.groupsData.find((group) => group.uuid === nextGroup);
+				const nextGroupNumberOfArticles = nextGroupData?.cardsData?.length ?? 0;
+				const nextGroupHasMaxItems =
+					nextGroupData?.maxItems === nextGroupNumberOfArticles;
+				if (nextGroupHasMaxItems) {
+					if (!nextGroupData.cardsData) {
+						return;
+					}
+					const existingCardData =
+						nextGroupData.cardsData[nextGroupNumberOfArticles - 1];
+					const existingCardTo = {
+						index: 0,
+						id: nextGroup,
+						type: 'group',
+						groupIds: move.to.groupIds,
+						groupMaxItems: nextGroupData?.maxItems,
+						groupsData: move.to.groupsData,
+						cards: nextGroupData?.cardsData,
+					};
+					const existingCardMoveData: Move<TCard> = {
+						data: existingCardData,
+						from: false,
+						to: existingCardTo,
+					};
+					this.handleMove(existingCardMoveData);
+				}
+			}
 			return;
 		}
 	};
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
 		const numberOfArticlesAlreadyInGroup = to.cards?.length ?? 0;
+		const hasMaxItemsAlready =
+			to.groupMaxItems === numberOfArticlesAlreadyInGroup;
 
 		const dropSource = isDropFromCAPIFeed(e) ? 'feed' : 'url';
 
-		// if we are inserting an article into any group that is not the splash, then we just insert
-		// we also just insert if we're in the splash and there's no other article already in the splash
+		// if we are inserting an article into any group that doesn't have a max items (e.g. legacy containers),
+		// or a group that doesn't have any articles in it yet
+		// or a group that doesn't have the max items already,
+		// then we just insert
 		if (
 			to.type !== 'group' ||
-			to.groupName !== 'splash' ||
-			numberOfArticlesAlreadyInGroup === 0
+			to.groupMaxItems === undefined ||
+			numberOfArticlesAlreadyInGroup === 0 ||
+			!hasMaxItemsAlready
 		) {
 			events.dropArticle(this.props.id, dropSource);
 			this.props.insertCardFromDropEvent(e, to, 'collection');
 			return;
 		}
 
-		// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
-		// if we're inserting to index 0, i.e. top of the group, then we want to grab the pre-existing article and move it to the other group
-		if (!!to.groupIds && to.cards !== undefined && to.index === 0) {
-			// we do the regular insert steps for the article we're inserting to splash
-			events.dropArticle(this.props.id, dropSource);
-			this.props.insertCardFromDropEvent(e, to, 'collection');
+		// if we're in a group with max items and already has the max number of stories,
+		// then depending on where we're inserting the story
+		// we need to either move the last article to the next group
+		// or insert the article into the next group
+		if (!!to.groupIds && to.cards !== undefined && hasMaxItemsAlready) {
+			const currentGroupIndex = to.groupIds.findIndex(
+				(groupId) => groupId === to.id,
+			);
+			const nextGroup = to.groupIds[currentGroupIndex + 1];
+			const nextGroupData =
+				to.groupsData &&
+				to.groupsData.find((group) => group.uuid === nextGroup);
+			const isAddingCardToLastPlaceInGroup = to.index === to.cards.length;
 
-			// then we need to move the other article to the other group
-			const otherGroup = to.groupIds.filter((groupId) => groupId !== to.id)[0];
-			const existingCardData = to.cards[0];
-			const existingCardTo = {
-				index: 0,
-				id: otherGroup,
-				type: 'group',
-				groupIds: to.groupIds,
-			};
-			const existingCardMoveData: Move<TCard> = {
-				data: existingCardData,
-				from: false,
-				to: existingCardTo,
-			};
-			this.handleMove(existingCardMoveData);
-			return;
-		}
+			// if we're not adding the card to the last place in the group, then we need to move the last article to the next group
+			if (!isAddingCardToLastPlaceInGroup) {
+				// we do the regular insert steps for the article we're inserting to the group
 
-		// if we're in the splash and we insert an article and there's already another article, then we also look at the index we're inserting to
-		// if we're inserting to index 1, i.e. bottom of the group, then we add this story to the other group
-		if (!!to.groupIds && numberOfArticlesAlreadyInGroup > 0 && to.index > 0) {
-			const otherGroup = to.groupIds.filter((groupId) => groupId !== to.id)[0];
+				events.dropArticle(this.props.id, dropSource);
+				this.props.insertCardFromDropEvent(e, to, 'collection');
 
-			const amendedTo = {
-				index: 0,
-				id: otherGroup,
-				type: 'group',
-				groupIds: to.groupIds,
-			};
-			events.dropArticle(this.props.id, dropSource);
-			this.props.insertCardFromDropEvent(e, amendedTo, 'collection');
+				// then we move the other article to the other group
+				const existingCardData = to.cards[to.cards.length - 1];
+				const existingCardTo = {
+					index: 0,
+					id: nextGroup,
+					type: 'group',
+					groupIds: to.groupIds,
+					groupMaxItems: nextGroupData?.maxItems,
+					groupsData: to.groupsData,
+					cards: nextGroupData?.cardsData,
+				};
+				const existingCardMoveData: Move<TCard> = {
+					data: existingCardData,
+					from: false,
+					to: existingCardTo,
+				};
+				this.handleMove(existingCardMoveData);
+			}
+			// If we're adding to the last place in the group, then we insert the article into the next group
+			// we need to check if the next group already has the max number of items,
+			// if it does, then we need to move the last article to the next group
+			else {
+				const amendedTo = {
+					index: 0,
+					id: nextGroup,
+					type: 'group',
+					groupIds: to.groupIds,
+				};
+				events.dropArticle(this.props.id, dropSource);
+				this.props.insertCardFromDropEvent(e, amendedTo, 'collection');
+
+				const nextGroupNumberOfArticles = nextGroupData?.cardsData?.length ?? 0;
+				const nextGroupHasMaxItems =
+					nextGroupData?.maxItems === nextGroupNumberOfArticles;
+				if (nextGroupHasMaxItems) {
+					if (!nextGroupData.cardsData) {
+						return;
+					}
+					const existingCardData = nextGroupData.cardsData[to.cards.length - 1];
+					const existingCardTo = {
+						index: 0,
+						id: nextGroup,
+						type: 'group',
+						groupIds: to.groupIds,
+						groupMaxItems: nextGroupData?.maxItems,
+						groupsData: to.groupsData,
+						cards: nextGroupData?.cardsData,
+					};
+					const existingCardMoveData: Move<TCard> = {
+						data: existingCardData,
+						from: false,
+						to: existingCardTo,
+					};
+					this.handleMove(existingCardMoveData);
+				}
+			}
 			return;
 		}
 	};
