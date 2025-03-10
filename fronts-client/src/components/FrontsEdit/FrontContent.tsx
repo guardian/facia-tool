@@ -187,6 +187,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		// or if we're moving the article within the same group,
 		// then we just move the article to the location
 		if (
+			move.to.groupName === "standard" ||
 			numberOfArticlesAlreadyInGroup === 0 ||
 			!hasMaxItemsAlready ||
 			(move.from && move.to.id === move.from.id)
