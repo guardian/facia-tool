@@ -206,9 +206,12 @@ const updateCardMetaWithPersist = (persistTo: PersistTo) =>
 		persistTo,
 	});
 
-/** Cards in the standard group of a flexible general container should not be gigaboosted.
- * When moving a card from the splash group to the standard group, this function checks if the card should be modified.
- * If so, it will automatically adjust the boost level from gigaboost to megaboost.
+/** Groups in a flexible general container allow different boostlevel options.
+ * When moving a card from the one group to another, this function checks if the card should be modified.
+ * If so, it will automatically adjust the boost level to what is possible or the default in the group.
+ * Very Big defaults to mega, big defaults to boost
+ * Splash allows all levels, and standard does not allow gigaboost.
+ * Group ids remain consistent, even if the group is hidden (when maxItems is set to 0), so we can use the id to determine the group.
  */
 
 const mayLowerCardBoostLevelForDestinationGroup = (
@@ -222,6 +225,7 @@ const mayLowerCardBoostLevelForDestinationGroup = (
 		const { collection } = selectGroupCollection(state, groupId);
 		const group = selectGroups(state)[groupId];
 		if (collection?.type === FLEXIBLE_GENERAL_NAME) {
+			// if we move a gigaboosted card to a standard group, we set megaboost
 			if (
 				group &&
 				(!group.id || parseInt(group.id) === 0) &&
@@ -231,6 +235,29 @@ const mayLowerCardBoostLevelForDestinationGroup = (
 					card.uuid,
 					{
 						boostLevel: 'megaboost',
+					},
+					{ merge: true },
+				);
+			}
+			if (!group || group.id === null) {
+				return;
+			}
+			// if we move any card to a very big group, we set megaboost
+			if (parseInt(group.id) === 2) {
+				return updateCardMeta(
+					card.uuid,
+					{
+						boostLevel: 'megaboost',
+					},
+					{ merge: true },
+				);
+			}
+			// if we move any card to a big group, we set boost
+			if (parseInt(group.id) === 1) {
+				return updateCardMeta(
+					card.uuid,
+					{
+						boostLevel: 'boost',
 					},
 					{ merge: true },
 				);
