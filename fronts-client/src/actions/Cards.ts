@@ -214,6 +214,36 @@ const updateCardMetaWithPersist = (persistTo: PersistTo) =>
  * Group ids remain consistent, even if the group is hidden (when maxItems is set to 0), so we can use the id to determine the group.
  */
 
+const boostLevels = ['default', 'boost', 'megaboost', 'gigaboost'] as const;
+
+const minimumGroupBoostLevel = (groupId: number) => {
+	// boost is the smallest boost level for `Big`
+	if (groupId === 1) return 'boost';
+	// megaboost is the smallest boost level for `Very Big`
+	if (groupId === 2) return 'megaboost';
+	return 'default';
+};
+
+/**
+ * If the card is moved to a splash (group 3) group, we always set the boost level to default
+ * If the card already has the minimum boost level for the group it is moving to,
+ * we don't want to go any lower.
+ * Otherwise, we decrease the boost level by 1.
+ */
+const getBoostLevel = (
+	groupId: number,
+	boostIndex: number,
+	hasMinimumBoostLevel: boolean,
+) => {
+	if (groupId === 3) {
+		return 'default';
+	}
+	if (hasMinimumBoostLevel) {
+		return boostLevels[boostIndex];
+	}
+	return boostLevels[boostIndex - 1];
+};
+
 const mayLowerCardBoostLevelForDestinationGroup = (
 	state: State,
 	to: PosSpec,
@@ -224,44 +254,33 @@ const mayLowerCardBoostLevelForDestinationGroup = (
 		const groupId = to.id;
 		const { collection } = selectGroupCollection(state, groupId);
 		const group = selectGroups(state)[groupId];
+		console.log(card.meta.group);
+
 		if (collection?.type === FLEXIBLE_GENERAL_NAME) {
-			// if we move a gigaboosted card to a standard group, we set megaboost
-			if (
-				group &&
-				(!group.id || parseInt(group.id) === 0) &&
-				card.meta.boostLevel === 'gigaboost'
-			) {
-				return updateCardMeta(
-					card.uuid,
-					{
-						boostLevel: 'megaboost',
-					},
-					{ merge: true },
-				);
-			}
-			if (!group || group.id === null) {
+			if (!group) {
 				return;
 			}
-			// if we move any card to a very big group, we set megaboost
-			if (parseInt(group.id) === 2) {
-				return updateCardMeta(
-					card.uuid,
-					{
-						boostLevel: 'megaboost',
-					},
-					{ merge: true },
-				);
-			}
-			// if we move any card to a big group, we set boost
-			if (parseInt(group.id) === 1) {
-				return updateCardMeta(
-					card.uuid,
-					{
-						boostLevel: 'boost',
-					},
-					{ merge: true },
-				);
-			}
+			const groupId = parseInt(group.id ?? '0');
+
+			const hasMinimumBoostLevel =
+				card.meta?.boostLevel === minimumGroupBoostLevel(groupId);
+
+			const currentBoostLevel = boostLevels.indexOf(
+				card.meta.boostLevel ?? 'default',
+			);
+
+			const boostLevel = getBoostLevel(
+				groupId,
+				currentBoostLevel,
+				hasMinimumBoostLevel,
+			);
+			return updateCardMeta(
+				card.uuid,
+				{
+					boostLevel,
+				},
+				{ merge: true },
+			);
 		}
 	}
 };
