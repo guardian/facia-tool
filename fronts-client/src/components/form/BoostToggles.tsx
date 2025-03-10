@@ -22,22 +22,22 @@ const TOGGLES: Record<BoostLevels, Toggle> = {
 	default: {
 		id: 'boostlevel-0',
 		value: 'default',
-		label: 'default',
+		label: 'Default',
 	},
 	boost: {
 		id: 'boostlevel-1',
 		value: 'boost',
-		label: 'boost',
+		label: 'Boost',
 	},
 	megaboost: {
 		id: 'boostlevel-2',
 		value: 'megaboost',
-		label: 'megaboost',
+		label: 'Mega Boost',
 	},
 	gigaboost: {
 		id: 'boostlevel-3',
 		value: 'gigaboost',
-		label: 'gigaboost',
+		label: 'Giga Boost',
 	},
 };
 
@@ -61,10 +61,10 @@ const CollectionToggles: Record<string, Record<number, Toggle[]>> = {
 	'flexible/general': {
 		0: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost],
 		1: [
-			{ ...TOGGLES.boost, label: 'default' },
-			{ ...TOGGLES.megaboost, label: 'boost' },
+			{ ...TOGGLES.boost, label: 'Default' },
+			{ ...TOGGLES.megaboost, label: 'Boost' },
 		],
-		2: [{ ...TOGGLES.megaboost, label: 'default' }],
+		2: [{ ...TOGGLES.megaboost, label: 'Default' }],
 		3: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost, TOGGLES.gigaboost],
 	},
 	'flexible/special': {
