@@ -15,28 +15,28 @@ const groupToggles = [
 	{
 		group: 0,
 		collectionType: 'flexible/general',
-		expectedLabels: ['default', 'boost', 'megaboost'],
+		expectedLabels: ['Default', 'Boost', 'Mega Boost'],
 	},
 	{
 		group: 1,
 		collectionType: 'flexible/general',
-		expectedLabels: ['default', 'boost'],
+		expectedLabels: ['Default', 'Boost'],
 	},
-	{ group: 2, collectionType: 'flexible/general', expectedLabels: ['default'] },
+	{ group: 2, collectionType: 'flexible/general', expectedLabels: ['Default'] },
 	{
 		group: 3,
 		collectionType: 'flexible/general',
-		expectedLabels: ['default', 'boost', 'megaboost', 'gigaboost'],
+		expectedLabels: ['Default', 'Boost', 'Mega Boost', 'Giga Boost'],
 	},
 	{
 		group: 0,
 		collectionType: 'flexible/special',
-		expectedLabels: ['default', 'boost', 'megaboost'],
+		expectedLabels: ['Default', 'Boost', 'Mega Boost'],
 	},
 	{
 		group: 1,
 		collectionType: 'flexible/special',
-		expectedLabels: ['default', 'boost', 'megaboost', 'gigaboost'],
+		expectedLabels: ['Default', 'Boost', 'Mega Boost', 'Giga Boost'],
 	},
 ];
 

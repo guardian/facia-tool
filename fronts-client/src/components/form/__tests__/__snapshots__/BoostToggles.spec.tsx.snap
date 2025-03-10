@@ -10,7 +10,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-0"
-    label="default"
+    label="Default"
     name="boostLevel"
     type="radio"
     value="default"
@@ -19,7 +19,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-1"
-    label="boost"
+    label="Boost"
     name="boostLevel"
     type="radio"
     value="boost"
@@ -28,7 +28,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-2"
-    label="megaboost"
+    label="Mega Boost"
     name="boostLevel"
     type="radio"
     value="megaboost"
@@ -42,7 +42,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-1"
-    label="default"
+    label="Default"
     name="boostLevel"
     type="radio"
     value="boost"
@@ -51,7 +51,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-2"
-    label="boost"
+    label="Boost"
     name="boostLevel"
     type="radio"
     value="megaboost"
@@ -64,7 +64,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
   component={[Function]}
   data-testid="mock-field"
   id="test-card-boostlevel-2"
-  label="default"
+  label="Default"
   name="boostLevel"
   type="radio"
   value="megaboost"
@@ -77,7 +77,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-0"
-    label="default"
+    label="Default"
     name="boostLevel"
     type="radio"
     value="default"
@@ -86,7 +86,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-1"
-    label="boost"
+    label="Boost"
     name="boostLevel"
     type="radio"
     value="boost"
@@ -95,7 +95,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-2"
-    label="megaboost"
+    label="Mega Boost"
     name="boostLevel"
     type="radio"
     value="megaboost"
@@ -104,7 +104,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-3"
-    label="gigaboost"
+    label="Giga Boost"
     name="boostLevel"
     type="radio"
     value="gigaboost"
@@ -118,7 +118,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-0"
-    label="default"
+    label="Default"
     name="boostLevel"
     type="radio"
     value="default"
@@ -127,7 +127,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-1"
-    label="boost"
+    label="Boost"
     name="boostLevel"
     type="radio"
     value="boost"
@@ -136,7 +136,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-2"
-    label="megaboost"
+    label="Mega Boost"
     name="boostLevel"
     type="radio"
     value="megaboost"
@@ -150,7 +150,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-0"
-    label="default"
+    label="Default"
     name="boostLevel"
     type="radio"
     value="default"
@@ -159,7 +159,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-1"
-    label="boost"
+    label="Boost"
     name="boostLevel"
     type="radio"
     value="boost"
@@ -168,7 +168,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-2"
-    label="megaboost"
+    label="Mega Boost"
     name="boostLevel"
     type="radio"
     value="megaboost"
@@ -177,7 +177,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     component={[Function]}
     data-testid="mock-field"
     id="test-card-boostlevel-3"
-    label="gigaboost"
+    label="Giga Boost"
     name="boostLevel"
     type="radio"
     value="gigaboost"
