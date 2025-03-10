@@ -251,7 +251,7 @@ const getBoostLevel = (groupId: number, boostIndex: number) => {
 	return boostLevels[boostIndex - 1];
 };
 
-const mayLowerCardBoostLevelForDestinationGroup = (
+const mayAdjustCardBoostLevelForDestinationGroup = (
 	state: State,
 	to: PosSpec,
 	card: Card,
@@ -261,7 +261,6 @@ const mayLowerCardBoostLevelForDestinationGroup = (
 		const groupId = to.id;
 		const { collection } = selectGroupCollection(state, groupId);
 		const group = selectGroups(state)[groupId];
-		console.log(card.meta.group);
 
 		if (collection?.type === FLEXIBLE_GENERAL_NAME) {
 			if (!group) {
@@ -313,7 +312,7 @@ const insertCardWithCreate =
 				if (!card) {
 					return;
 				}
-				const modifyCardAction = mayLowerCardBoostLevelForDestinationGroup(
+				const modifyCardAction = mayAdjustCardBoostLevelForDestinationGroup(
 					state,
 					to,
 					card,
@@ -422,7 +421,7 @@ const moveCard = (
 					dispatch(cardsReceived([parent, ...supporting]));
 				}
 
-				const modifyCardAction = mayLowerCardBoostLevelForDestinationGroup(
+				const modifyCardAction = mayAdjustCardBoostLevelForDestinationGroup(
 					state,
 					to,
 					parent,
