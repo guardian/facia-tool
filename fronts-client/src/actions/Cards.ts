@@ -230,17 +230,24 @@ const minimumGroupBoostLevel = (groupId: number) => {
  * we don't want to go any lower.
  * Otherwise, we decrease the boost level by 1.
  */
-const getBoostLevel = (
-	groupId: number,
-	boostIndex: number,
-	hasMinimumBoostLevel: boolean,
-) => {
+const getBoostLevel = (groupId: number, boostIndex: number) => {
 	if (groupId === 3) {
 		return 'default';
 	}
-	if (hasMinimumBoostLevel) {
+	const minBoostLevel = minimumGroupBoostLevel(groupId);
+	const minBoostIndex = boostLevels.indexOf(minBoostLevel);
+
+	// If the current boost level is below the minimum required, set it to the minimum
+	if (boostIndex < minBoostIndex) {
+		return minBoostLevel;
+	}
+
+	// If the current boost level is the minimum required, don't change it
+	if (boostIndex === minBoostIndex) {
 		return boostLevels[boostIndex];
 	}
+
+	// Otherwise reduce the boost level by 1
 	return boostLevels[boostIndex - 1];
 };
 
@@ -262,18 +269,11 @@ const mayLowerCardBoostLevelForDestinationGroup = (
 			}
 			const groupId = parseInt(group.id ?? '0');
 
-			const hasMinimumBoostLevel =
-				card.meta?.boostLevel === minimumGroupBoostLevel(groupId);
-
 			const currentBoostLevel = boostLevels.indexOf(
 				card.meta.boostLevel ?? 'default',
 			);
 
-			const boostLevel = getBoostLevel(
-				groupId,
-				currentBoostLevel,
-				hasMinimumBoostLevel,
-			);
+			const boostLevel = getBoostLevel(groupId, currentBoostLevel);
 			return updateCardMeta(
 				card.uuid,
 				{
