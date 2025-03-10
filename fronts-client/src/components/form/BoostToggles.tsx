@@ -53,7 +53,7 @@ const TOGGLES: Record<BoostLevels, Toggle> = {
  * - **Group 3 (Splash)**: Default, Boost, MegaBoost, GigaBoost
  *
  * ### Flexible Special (2 Groups):
- * - **Group 0 (Standard)**: Default, Boost, MegaBoost
+ * - **Group 0 (Standard)**: Default, Boost, MegaBoost, GigaBoost
  * - **Group 1 (Splash)**: Default, Boost, MegaBoost, GigaBoost
  *
  * */
@@ -68,7 +68,7 @@ const CollectionToggles: Record<string, Record<number, Toggle[]>> = {
 		3: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost, TOGGLES.gigaboost],
 	},
 	'flexible/special': {
-		0: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost],
+		0: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost, TOGGLES.gigaboost],
 		1: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost, TOGGLES.gigaboost],
 	},
 };

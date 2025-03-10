@@ -31,7 +31,7 @@ const groupToggles = [
 	{
 		group: 0,
 		collectionType: 'flexible/special',
-		expectedLabels: ['Default', 'Boost', 'Mega Boost'],
+		expectedLabels: ['Default', 'Boost', 'Mega Boost', 'Giga Boost'],
 	},
 	{
 		group: 1,

@@ -141,6 +141,15 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     type="radio"
     value="megaboost"
   />,
+  <div
+    component={[Function]}
+    data-testid="mock-field"
+    id="test-card-boostlevel-3"
+    label="Giga Boost"
+    name="boostLevel"
+    type="radio"
+    value="gigaboost"
+  />,
 ]
 `;
 
