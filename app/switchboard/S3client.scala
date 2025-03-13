@@ -35,13 +35,20 @@ class S3client(conf: SwitchboardConfiguration, endpoint: String)
         json.validate[Map[String, Boolean]] match {
           case JsSuccess(m, _) => {
             logger.info(
-              "successfully got switches from switchboard at %s - %s" format (bucket, objectKey)
+              "successfully got switches from switchboard at %s - %s" format (
+                bucket,
+                objectKey
+              )
             )
             json.asOpt[Map[String, Boolean]]
           }
           case JsError(_) => {
             logger.error(
-              "invalid json content at %s - %s : %s" format (bucket, objectKey, resultAsString)
+              "invalid json content at %s - %s : %s" format (
+                bucket,
+                objectKey,
+                resultAsString
+              )
             )
             None
           }
