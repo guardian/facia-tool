@@ -9,8 +9,8 @@ import Collection from './Collection';
 import type { State } from 'types/State';
 import WithDimensions from 'components/util/WithDimensions';
 import { selectFront } from 'selectors/frontsSelectors';
-import { Dispatch } from 'types/Store';
-import { Card as TCard, CardSets } from 'types/Collection';
+import { Dispatch, ThunkResult } from 'types/Store';
+import { Card as TCard, CardSets, Group } from 'types/Collection';
 import { FrontConfig } from 'types/FaciaApi';
 import { moveCard } from 'actions/Cards';
 import { insertCardFromDropEvent } from 'util/collectionUtils';
@@ -87,6 +87,7 @@ type FrontProps = FrontPropsBeforeState & {
 	insertCardFromDropEvent: typeof insertCardFromDropEvent;
 	collectionsError: string | null;
 	collectionsLastSuccessfulFetchTimestamp: number | null;
+	groups: { [id: string]: Group };
 };
 
 interface FrontState {
@@ -178,7 +179,11 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		);
 	}
 
+
+
 	public handleMove = (move: Move<TCard>) => {
+		console.log('called handleMove');
+		console.log("move", move);
 		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
 		const hasMaxItemsAlready =
 			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
@@ -207,15 +212,22 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			move.to.cards !== undefined &&
 			hasMaxItemsAlready
 		) {
+			console.log('here');
+			console.log('move', move);
 			const currentGroupIndex = move.to.groupIds.findIndex(
 				(groupId) => groupId === move.to.id,
 			);
 			const nextGroup = move.to.groupIds[currentGroupIndex + 1];
 			const isAddingCardToLastPlaceInGroup =
 				move.to.index === move.to.cards.length;
+			console.log(
+				'isAddingCardToLastPlaceInGroup',
+				isAddingCardToLastPlaceInGroup,
+			);
 
 			// if we're not adding the card to the last place in the group, then we need to move the last article to the next group
 			if (!isAddingCardToLastPlaceInGroup) {
+				console.log('this');
 				//we do the regular move steps for the article we're moving to the group
 				events.dropArticle(this.props.id, 'collection');
 				this.props.moveCard(
@@ -225,11 +237,18 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					'collection',
 				);
 
-				//then we need to move the other article to the other group
+				//then we need to move the other article to the other group,
+				// updating the groupsdata to reflect that our first article has been moved
 				const existingCardData = move.to.cards[move.to.cards.length - 1];
 				const nextGroupData =
 					move.to.groupsData &&
 					move.to.groupsData.find((group) => group.uuid === nextGroup);
+				const moveFromId = move.from !== false && move.from.id;
+				const currentGroup = move.to.groupsData?.find(
+					(group) => group.uuid === moveFromId)
+				console.log('currentGroup', currentGroup);
+				const currentGroupWithoutOriginalCard = currentGroup
+				console.log('nextGroupData', nextGroupData);
 				const existingCardTo = {
 					index: 0,
 					id: nextGroup,
@@ -250,10 +269,11 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			// we need to check if the next group already has the max number of items,
 			// if it does, then we need to move the last article to the next group
 			else {
+				console.log('there');
 				// we do the move step for the article we're now moving to the next group
 				const amendedTo = {
 					index: 0,
-					id: nextGroup,
+					id: move.to.id,
 					type: 'group',
 					groupIds: move.to.groupIds,
 				};
@@ -302,6 +322,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	};
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
+
 		const numberOfArticlesAlreadyInGroup = to.cards?.length ?? 0;
 		const hasMaxItemsAlready =
 			to.groupMaxItems === numberOfArticlesAlreadyInGroup;
@@ -505,6 +526,7 @@ const mapStateToProps = () => {
 			collectionsError: collectionSelectors.selectCurrentError(state),
 			collectionsLastSuccessfulFetchTimestamp:
 				collectionSelectors.selectLastSuccessfulFetchTimestamp(state),
+			groups: state.groups,
 		};
 	};
 };
