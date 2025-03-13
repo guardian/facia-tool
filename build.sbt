@@ -87,7 +87,7 @@ libraryDependencies ++= Seq(
   "com.gu" %% "mobile-notifications-api-models" % "3.0.0",
   "com.gu" %% "pan-domain-auth-play_3-0" % "7.0.0",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
-  "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
+  "com.github.blemale" %% "scaffeine" % "5.3.0" % "compile",
   "com.gu" %% "thrift-serializer" % "4.0.2",
   "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
   "org.julienrf" %% "play-json-derived-codecs" % "11.0.0",
