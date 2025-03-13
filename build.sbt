@@ -108,7 +108,7 @@ libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-text" % "1.13.0",
   "com.beust" % "jcommander" % "1.82",
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-  "org.mockito" % "mockito-core" % "5.11.0" % Test
+  "org.mockito" % "mockito-core" % "5.16.0" % Test
 )
 
 excludeDependencies ++= Seq(
