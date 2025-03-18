@@ -76,6 +76,7 @@ import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import { renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
+import InputRadio from "../inputs/InputRadio";
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -689,7 +690,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 					</TextOptionsInputGroup>
 					<ImageOptionsInputGroup size={this.props.size}>
 						<ImageRowContainer size={this.props.size}>
-							<Row>
+							<Row rowGap={4}>
 								<ImageCol faded={imageHide || !!coverCardImageReplace}>
 									{shouldRenderField(
 										this.getImageFieldName(),
@@ -802,6 +803,44 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										</InputGroup>
 									)}
 								</ToggleCol>
+								<Col flex={2}>
+									<InputLabel htmlFor="media-select">
+										Select Media
+									</InputLabel>
+									<InputGroup>
+										<ConditionalField
+											component={InputRadio}
+											name="media-select"
+											type="radio"
+											label="Trail Image Only"
+											id={getInputId(cardId, "select-trail-image")}
+											value="select-trail-image"
+											onClick={() => this.changeImageField('imageReplace')}
+										/>
+									</InputGroup>
+									<InputGroup>
+										<ConditionalField
+											component={InputRadio}
+											name="media-select"
+											type="radio"
+											label="Video"
+											id={getInputId(cardId, "select-video")}
+											value="select-video"
+											onClick={() => this.changeImageField('showMainVideo')}
+										/>
+									</InputGroup>
+									<InputGroup>
+										<ConditionalField
+											component={InputRadio}
+											name="media-select"
+											type="radio"
+											label="Slideshow"
+											id={getInputId(cardId, "select-slideshow")}
+											value="select-slideshow"
+											onClick={() => this.changeImageField('imageSlideshowReplace')}
+										/>
+									</InputGroup>
+								</Col>
 							</Row>
 							<ConditionalComponent
 								permittedNames={editableFields}
