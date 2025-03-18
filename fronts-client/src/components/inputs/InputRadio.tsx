@@ -9,9 +9,11 @@ import { theme } from 'constants/theme';
 const radioButtonHeight = 17;
 const radioButtonWidth = 17;
 
-const RadioButtonContainer = styled.div`
+const RadioButtonContainer = styled.div<{usesBlockStyling?: boolean}>`
 	display: flex;
 	align-items: flex-start;
+	padding: ${(props) => props.usesBlockStyling ? "8px 6px" : "0"};
+	background-color: ${(props) => props.usesBlockStyling ? "#CCCCCC" : "none"};
 `;
 
 const Label = styled(InputLabel)`
@@ -84,6 +86,7 @@ type Props = {
 	label?: string;
 	id: string;
 	dataTestId?: string;
+	usesBlockStyling?: boolean;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
 		Partial<WrappedFieldInputProps>;
@@ -95,11 +98,12 @@ export default ({
 	id,
 	dataTestId,
 	input: { ...inputRest },
+	usesBlockStyling = false,
 	...rest
 }: Props) => (
 	<>
 		<InputContainer data-testid={dataTestId}>
-			<RadioButtonContainer>
+			<RadioButtonContainer usesBlockStyling={usesBlockStyling}>
 				<Switch>
 					<RadioButton type="radio" {...inputRest} {...rest} id={id} />
 					<RadioButtonLabel htmlFor={id} />
