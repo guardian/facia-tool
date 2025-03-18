@@ -14,12 +14,16 @@ const RadioButtonContainer = styled.div<{usesBlockStyling?: boolean}>`
 	align-items: center;
 	padding: ${(props) => props.usesBlockStyling ? "8px 6px" : "0"};
 	background-color: ${(props) => props.usesBlockStyling ? "#CCCCCC" : "none"};
-	height:  ${(props) => props.usesBlockStyling ? `${radioButtonHeight * 2}px` : "auto"}
+	height: ${(props) => props.usesBlockStyling ? `${radioButtonHeight * 2}px` : "auto"};
+	color: ${(props) => props.theme.input.colorLabel};
+	&:has(input:checked) {
+		color: ${(props) => props.usesBlockStyling ? "white" : "auto"};
+		background-color: ${(props) => props.usesBlockStyling ? "#A9A9A9" : "none"};
+	}
 `;
 
 const Label = styled(InputLabel)`
 	padding-left: 5px;
-	color: ${(props) => props.theme.input.colorLabel};
 	line-height: 15px;
 	flex: 1;
 	cursor: pointer;
