@@ -16,9 +16,14 @@ const RadioButtonContainer = styled.div<{usesBlockStyling?: boolean}>`
 	background-color: ${(props) => props.usesBlockStyling ? "#CCCCCC" : "none"};
 	height: ${(props) => props.usesBlockStyling ? `${radioButtonHeight * 2}px` : "auto"};
 	color: ${(props) => props.theme.input.colorLabel};
+	cursor: pointer;
 	&:has(input:checked) {
 		color: ${(props) => props.usesBlockStyling ? "white" : "auto"};
 		background-color: ${(props) => props.usesBlockStyling ? "#A9A9A9" : "none"};
+	}
+	&:has(input:disabled) {
+		opacity: 0.8;
+		cursor: not-allowed;
 	}
 `;
 
@@ -26,7 +31,7 @@ const Label = styled(InputLabel)`
 	padding-left: 5px;
 	line-height: 15px;
 	flex: 1;
-	cursor: pointer;
+	cursor: inherit;
 `;
 
 const Switch = styled.div`
