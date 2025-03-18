@@ -310,6 +310,22 @@ const VideoIcon = ({}) => (
 	</svg>
 );
 
+const SlideshowIcon = ({}) => (
+	<svg width="20" height="18" viewBox="0 0 20 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<rect x="6.5" y="0.5" width="13" height="11" fill="white" stroke="#898983"/>
+		<rect x="3.5" y="3.5" width="13" height="11" fill="white" stroke="#898983"/>
+		<rect x="0.5" y="6.5" width="13" height="11" fill="white" stroke="#898983"/>
+		<path d="M5 15V12V9L9.5 12L5 15Z" fill="#898983" stroke="#898983"/>
+	</svg>
+);
+
+const SelectVideoIcon = () => (
+	<svg width="20" height="20" viewBox="-2 0 20 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<rect x="0.5" y="0.5" width="13" height="11" fill="white" stroke="#898983"/>
+		<path d="M5 9V6V3L9.5 6L5 9Z" fill="#898983" stroke="#898983"/>
+	</svg>
+);
+
 const DragHandleIcon = ({ fill = theme.colors.greyDark }) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
@@ -378,6 +394,8 @@ export {
 	PreviewEyeIcon,
 	GuardianRoundel,
 	VideoIcon,
+	SelectVideoIcon,
+	SlideshowIcon,
 	DragHandleIcon as DragIcon,
 	WarningIcon,
 	CropIcon,

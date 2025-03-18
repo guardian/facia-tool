@@ -1,6 +1,6 @@
 import { styled } from 'constants/theme';
-import React from 'react';
-import { WrappedFieldMetaProps, WrappedFieldInputProps } from 'redux-form';
+import React, {ReactElement} from 'react';
+import {WrappedFieldMetaProps, WrappedFieldInputProps} from 'redux-form';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
@@ -11,9 +11,10 @@ const radioButtonWidth = 17;
 
 const RadioButtonContainer = styled.div<{usesBlockStyling?: boolean}>`
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	padding: ${(props) => props.usesBlockStyling ? "8px 6px" : "0"};
 	background-color: ${(props) => props.usesBlockStyling ? "#CCCCCC" : "none"};
+	height:  ${(props) => props.usesBlockStyling ? `${radioButtonHeight * 2}px` : "auto"}
 `;
 
 const Label = styled(InputLabel)`
@@ -87,6 +88,7 @@ type Props = {
 	id: string;
 	dataTestId?: string;
 	usesBlockStyling?: boolean;
+	icon?: ReactElement;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
 		Partial<WrappedFieldInputProps>;
@@ -98,6 +100,7 @@ export default ({
 	id,
 	dataTestId,
 	input: { ...inputRest },
+	icon = undefined,
 	usesBlockStyling = false,
 	...rest
 }: Props) => (
@@ -111,6 +114,7 @@ export default ({
 				<Label htmlFor={id} size="sm">
 					{label}
 				</Label>
+				{icon}
 			</RadioButtonContainer>
 		</InputContainer>
 	</>

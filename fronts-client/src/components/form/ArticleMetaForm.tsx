@@ -63,7 +63,7 @@ import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputBase from '../inputs/InputBase';
 import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
 import { error } from '../../styleConstants';
-import { WarningIcon } from '../icons/Icons';
+import {SelectVideoIcon, SlideshowIcon, WarningIcon} from '../icons/Icons';
 import { FormContainer } from 'components/form/FormContainer';
 import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
@@ -822,6 +822,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									<InputGroup>
 										<ConditionalField
 											component={InputRadio}
+											icon={<SlideshowIcon/>}
 											usesBlockStyling={true}
 											name="media-select"
 											type="radio"
@@ -834,6 +835,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									<InputGroup>
 										<ConditionalField
 											component={InputRadio}
+											icon={<SelectVideoIcon/>}
 											usesBlockStyling={true}
 											name="media-select"
 											type="radio"
