@@ -9,15 +9,14 @@ trait FlexibleContainer {
 }
 
 object FlexibleGeneral extends FlexibleContainer {
-  def storiesVisible(
-      stories: Seq[Story],
-      collectionConfigJson: Option[CollectionConfigJson]
-  ): Int = {
-    collectionConfigJson
-      .flatMap(_.displayHints)
-      .flatMap(_.maxItemsToDisplay)
-      .getOrElse(9)
-  }
+	def storiesVisible(
+											stories: Seq[Story],
+											collectionConfigJson: Option[CollectionConfigJson]
+										): Int = {
+		val totalMaxItems = collectionConfigJson.get.groupsConfig
+			.getOrElse(Nil).flatMap(_.maxItems).sum
+		totalMaxItems
+	}
 }
 
 object FlexibleSpecial extends FlexibleContainer {
