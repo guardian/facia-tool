@@ -256,7 +256,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
 
 		//if the target group has free space or is the same group as the card is already in, we just move the card
-		if (!targetGroupIsFull || move.to.cards?.includes(move.data.uuid)) {
+		if (!targetGroupIsFull || move.to.cards?.includes(move.data.uuid) || move.to.groupName === "standard") {
 			return this.props.moveCard(
 				move.to,
 				move.data,
