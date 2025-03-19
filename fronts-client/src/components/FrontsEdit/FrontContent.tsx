@@ -179,30 +179,36 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	}
 
 	public handleMove = (move: Move<TCard>) => {
-		console.log({ move });
 		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
-		const targetGroupHasFreeSpace =
-			move.to.groupMaxItems !== numberOfArticlesAlreadyInGroup;
-		if (targetGroupHasFreeSpace)
+		const targetGroupIsFull =
+			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
+
+		const firstCard = move.data;
+
+		//if the target group has free space or is the same group as the card is already in, we just move the card
+		if (!targetGroupIsFull || move.to.cards?.includes(move.data.uuid)) {
 			return this.props.moveCard(
 				move.to,
 				move.data,
 				move.from || null,
 				'collection',
 			);
+		}
 
-		const indexOfTargetGroup = move.to.groupIds?.indexOf(move.to?.id) ?? 0;
-		const firstCard = move.data;
+		// otherwise we create a move queue to keep track of subsequent card moves
+		const moveQueue = [];
 
-		const result = [];
-
-		result.push({
+		// first we push the first card into the move queue
+		moveQueue.push({
 			to: move.to,
-			data: firstCard,
+			data: move.data,
 			from: move.from || null,
 			type: 'collection',
 		});
 
+		const indexOfTargetGroup = move.to.groupIds?.indexOf(move.to?.id) ?? 0;
+		// the we loop through the remaining groups to see if we how many more cards need to be moved.
+		// we start at the index of the target group so that we dont move cards in full groups that are before the target group
 		for (
 			let index = indexOfTargetGroup;
 			move.to.groupsData && index < move.to.groupsData.length;
@@ -219,6 +225,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			if (group.cardsData && group.cardsData.length < (group?.maxItems ?? 0)) {
 				break;
 			}
+
 			//If we reach a full group that already contains the first card, then it isnt really full and we exit the loop
 			if (group.cards.includes(firstCard.uuid)) {
 				break;
@@ -239,7 +246,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					index: group.cardsData ? group.cardsData.length - 1 : 0,
 				};
 
-				result.push({
+				moveQueue.push({
 					to: {
 						index: 0,
 						id: nextGroup,
@@ -256,9 +263,8 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				continue;
 			}
 		}
-		console.log({ result });
 
-		result.map((move) =>
+		moveQueue.map((move) =>
 			this.props.moveCard(move.to, move.data, move.from, 'collection'),
 		);
 	};
