@@ -180,107 +180,70 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 	public handleMove = (move: Move<TCard>) => {
 		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
-		const hasMaxItemsAlready =
-			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
-
-		// if we are moving an article into the standard group,
-		// or any group that is either empty or doesn't have the max items already,
-		// or if we're moving the article within the same group,
-		// then we just move the article to the location
-		if (
-			move.to.groupName === 'standard' ||
-			numberOfArticlesAlreadyInGroup === 0 ||
-			!hasMaxItemsAlready ||
-			(move.from && move.to.id === move.from.id)
-		) {
-			events.dropArticle(this.props.id, 'collection');
-			this.props.moveCard(move.to, move.data, move.from || null, 'collection');
-			return;
-		}
-
-		// if we're in a group with max items that already has the max number of stories,
-		// and we move an article, then depending on where we're inserting the story
-		// we need to either move the last article to the next group
-		// or move the article into the next group
-		if (
-			!!move.to.groupIds &&
-			move.to.cards !== undefined &&
-			hasMaxItemsAlready
-		) {
-			const currentGroupIndex = move.to.groupIds.findIndex(
-				(groupId) => groupId === move.to.id,
+		const targetGroupHasFreeSpace =
+			move.to.groupMaxItems !== numberOfArticlesAlreadyInGroup;
+		if (targetGroupHasFreeSpace)
+			return this.props.moveCard(
+				move.to,
+				move.data,
+				move.from || null,
+				'collection',
 			);
-			const nextGroup = move.to.groupIds[currentGroupIndex + 1];
-			const isAddingCardToLastPlaceInGroup =
-				move.to.index === move.to.cards.length;
 
-			// if we're not adding the card to the last place in the group, then we need to move the last article to the next group
-			if (!isAddingCardToLastPlaceInGroup) {
-				//we do the regular move steps for the article we're moving to the group
-				events.dropArticle(this.props.id, 'collection');
-				this.props.moveCard(
-					move.to,
-					move.data,
-					move.from || null,
-					'collection',
-				);
+		const indexOfTargetGroup = move.to.groupIds?.indexOf(move.to?.id) ?? 0;
+		const firstCard = move.data;
 
-				//then we need to move the other article to the other group
-				const existingCardData = move.to.cards[move.to.cards.length - 1];
-				const nextGroupData =
-					move.to.groupsData &&
-					move.to.groupsData.find((group) => group.uuid === nextGroup);
-				const existingCardTo = {
-					index: 0,
-					id: nextGroup,
-					type: 'group',
-					groupIds: move.to.groupIds,
-					groupMaxItems: nextGroupData?.maxItems,
-					groupsData: move.to.groupsData,
-					cards: nextGroupData?.cardsData,
-				};
-				const existingCardMoveData: Move<TCard> = {
-					data: existingCardData,
-					from: false,
-					to: existingCardTo,
-				};
-				this.handleMove(existingCardMoveData);
+		const result = [];
+
+		for (
+			let index = indexOfTargetGroup;
+			move.to.groupsData && index < move.to.groupsData.length;
+			index++
+		) {
+			const group = move.to.groupsData?.[index];
+
+			// If we don't have a group, we exit the loop
+			if (!group) {
+				break;
 			}
-			// If we're adding to the last place in the group, then we move the article into the next group
-			// we need to check if the next group already has the max number of items,
-			// if it does, then we need to move the last article to the next group
-			else {
-				// we do the move step for the article we're now moving to the next group
-				const amendedTo = {
-					index: 0,
-					id: nextGroup,
-					type: 'group',
-					groupIds: move.to.groupIds,
-				};
-				events.dropArticle(this.props.id, 'collection');
 
-				this.props.moveCard(
-					amendedTo,
-					move.data,
-					move.from || null,
-					'collection',
-				);
+			// If we reach the target group, we add the first card to the group
+			if (index === indexOfTargetGroup) {
+				result.push({
+					to: {
+						...move.to,
+						id: group.uuid,
+						groupMaxItems: group.maxItems,
+						groupsData: move.to.groupsData,
+						cards: group.cardsData,
+					},
+					data: firstCard,
+					from: move.from || null,
+					type: 'collection',
+				});
+				continue;
+			}
 
-				// then we check if the next group already has the max number of items,
-				// if it does, then we need to move the last article to the next group
-				const nextGroupData =
-					move.to.groupsData &&
-					move.to.groupsData.find((group) => group.uuid === nextGroup);
-				const nextGroupNumberOfArticles = nextGroupData?.cardsData?.length ?? 0;
-				const nextGroupHasMaxItems =
-					nextGroupData?.maxItems === nextGroupNumberOfArticles;
-				if (nextGroupHasMaxItems) {
-					if (!nextGroupData.cardsData) {
-						return;
-					}
-					const existingCardData =
-						nextGroupData.cardsData[nextGroupNumberOfArticles - 1];
-					const existingCardTo = {
+			// If we reach a group with space, we exit the loop
+			if (group.cardsData && group.cardsData.length < (group?.maxItems ?? 0)) {
+				break;
+			}
+			//If we reach a full group that already contains the first card, then it isnt really full and we exit the loop
+			if (group.cards.includes(firstCard.uuid)) {
+				break;
+			}
+
+			// We've reached a group that really is full, we move the last card to the next group
+
+			const lastCard = group.cardsData?.[group.cardsData.length - 1];
+			const nextGroup = move.to.groupIds?.[index + 1];
+			const nextGroupData =
+				move.to.groupsData &&
+				move.to.groupsData.find((group) => group.uuid === nextGroup);
+
+			if (lastCard && nextGroup) {
+				result.push({
+					to: {
 						index: 0,
 						id: nextGroup,
 						type: 'group',
@@ -288,17 +251,18 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 						groupMaxItems: nextGroupData?.maxItems,
 						groupsData: move.to.groupsData,
 						cards: nextGroupData?.cardsData,
-					};
-					const existingCardMoveData: Move<TCard> = {
-						data: existingCardData,
-						from: false,
-						to: existingCardTo,
-					};
-					this.handleMove(existingCardMoveData);
-				}
+					},
+					data: lastCard,
+					from: null,
+					type: 'collection',
+				});
+				continue;
 			}
-			return;
 		}
+
+		result.map((move) =>
+			this.props.moveCard(move.to, move.data, move.from, 'collection'),
+		);
 	};
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
