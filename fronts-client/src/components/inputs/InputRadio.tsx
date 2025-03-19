@@ -97,6 +97,7 @@ type Props = {
 	id: string;
 	dataTestId?: string;
 	usesBlockStyling?: boolean;
+	checked?: boolean;
 	icon?: ReactElement;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
@@ -109,6 +110,7 @@ export default ({
 	id,
 	dataTestId,
 	input: { ...inputRest },
+	checked,
 	icon = undefined,
 	usesBlockStyling = false,
 	...rest
@@ -117,7 +119,7 @@ export default ({
 		<InputContainer data-testid={dataTestId}>
 			<RadioButtonContainer usesBlockStyling={usesBlockStyling}>
 				<Switch>
-					<RadioButton type="radio" {...inputRest} {...rest} id={id} />
+					<RadioButton type="radio" {...inputRest} checked={checked} {...rest} id={id} />
 					<RadioButtonLabel htmlFor={id} />
 				</Switch>
 				<Label htmlFor={id} size="sm">

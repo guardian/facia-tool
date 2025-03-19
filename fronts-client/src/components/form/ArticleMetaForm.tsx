@@ -817,7 +817,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											label="Trail Image"
 											id={getInputId(cardId, "select-trail-image")}
 											value="select-trail-image"
+											initialValues="select-trail-image"
 											onClick={() => this.changeImageField(this.getImageFieldName())}
+											checked={this.props.primaryImage || this.props.imageCutoutReplace}
 										/>
 									</InputGroup>
 									<InputGroup>
@@ -832,6 +834,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											id={getInputId(cardId, "select-video")}
 											value="select-video"
 											onClick={() => this.changeImageField('showMainVideo')}
+											checked={this.props.showMainVideo}
 										/>
 									</InputGroup>
 									<InputGroup>
@@ -846,6 +849,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											id={getInputId(cardId, "select-slideshow")}
 											value="select-slideshow"
 											onClick={() => this.changeImageField('imageSlideshowReplace')}
+											checked={this.props.imageSlideshowReplace}
 										/>
 									</InputGroup>
 								</Col>
@@ -1060,6 +1064,7 @@ interface ContainerProps {
 	getLastUpdatedBy: (collectionId: string) => string | null;
 	slideshow: Array<ImageData | undefined | null> | undefined;
 	imageSlideshowReplace: boolean;
+	showMainVideo: boolean;
 	imageCutoutReplace: boolean;
 	imageHide: boolean;
 	kickerOptions: ArticleTag;
@@ -1127,6 +1132,7 @@ const createMapStateToProps = () => {
 				article && selectFormFields(state, article.uuid, isSupporting),
 			kickerOptions: article ? selectArticleTag(state, cardId) : defaultObject,
 			imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
+			showMainVideo: valueSelector(state, 'showMainVideo'),
 			slideshow: valueSelector(state, 'slideshow'),
 			imageHide: valueSelector(state, 'imageHide'),
 			imageReplace: valueSelector(state, 'imageReplace'),
