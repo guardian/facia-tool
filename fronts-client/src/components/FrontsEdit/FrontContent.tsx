@@ -179,6 +179,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	}
 
 	public handleMove = (move: Move<TCard>) => {
+		console.log({ move });
 		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
 		const targetGroupHasFreeSpace =
 			move.to.groupMaxItems !== numberOfArticlesAlreadyInGroup;
@@ -195,6 +196,13 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 		const result = [];
 
+		result.push({
+			to: move.to,
+			data: firstCard,
+			from: move.from || null,
+			type: 'collection',
+		});
+
 		for (
 			let index = indexOfTargetGroup;
 			move.to.groupsData && index < move.to.groupsData.length;
@@ -205,23 +213,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			// If we don't have a group, we exit the loop
 			if (!group) {
 				break;
-			}
-
-			// If we reach the target group, we add the first card to the group
-			if (index === indexOfTargetGroup) {
-				result.push({
-					to: {
-						...move.to,
-						id: group.uuid,
-						groupMaxItems: group.maxItems,
-						groupsData: move.to.groupsData,
-						cards: group.cardsData,
-					},
-					data: firstCard,
-					from: move.from || null,
-					type: 'collection',
-				});
-				continue;
 			}
 
 			// If we reach a group with space, we exit the loop
@@ -242,6 +233,12 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 				move.to.groupsData.find((group) => group.uuid === nextGroup);
 
 			if (lastCard && nextGroup) {
+				const from = {
+					type: 'group',
+					id: move.to.groupIds?.[index] ?? '',
+					index: group.cardsData ? group.cardsData.length - 1 : 0,
+				};
+
 				result.push({
 					to: {
 						index: 0,
@@ -253,12 +250,13 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 						cards: nextGroupData?.cardsData,
 					},
 					data: lastCard,
-					from: null,
+					from: from,
 					type: 'collection',
 				});
 				continue;
 			}
 		}
+		console.log({ result });
 
 		result.map((move) =>
 			this.props.moveCard(move.to, move.data, move.from, 'collection'),
@@ -307,7 +305,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 				events.dropArticle(this.props.id, dropSource);
 				this.props.insertCardFromDropEvent(e, to, 'collection');
-
 				// then we move the other article to the other group
 				const existingCardData = to.cards[to.cards.length - 1];
 				const existingCardTo = {
