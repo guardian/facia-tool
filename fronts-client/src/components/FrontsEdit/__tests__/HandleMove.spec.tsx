@@ -17,7 +17,7 @@ describe('HandleMove', () => {
 				id: 'group-1',
 				type: 'group',
 				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
-				groupMaxItems:  baseFront.to.groupsData?.[1].maxItems,
+				groupMaxItems: baseFront.to.groupsData?.[1].maxItems,
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[1].cardsData,
 				index: 0,
@@ -171,9 +171,75 @@ describe('HandleMove', () => {
 	});
 	it('if the card is moved to the bottom of a full group, it should move the card into the next group', () => {
 		// TODO - Will Fail
-		const moveQueue = makeMoveQueue(baseFront);
-		expect(moveQueue.length).toBe(3);
+
+		const newFront = {
+			...baseFront,
+			to: {
+				...baseTo,
+				index: 1,
+			},
+		};
+		const moveQueue = makeMoveQueue(newFront);
+
+		const card1 = {
+			to: {
+				id: 'group-1',
+				type: 'group',
+				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
+				groupMaxItems: newFront.to.groupsData[1].maxItems,
+				groupsData: newFront.to.groupsData,
+				cards: newFront.to.groupsData[1].cardsData,
+				index: 0,
+			},
+			data: newFront.data,
+			from: newFront.from || null,
+			type: 'collection',
+		};
+
+		// last card in very big goes to big
+		const card2 = {
+			to: {
+				id: 'group-2',
+				type: 'group',
+				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
+				groupMaxItems: baseFront.to.groupsData?.[2].maxItems,
+				groupsData: baseFront.to.groupsData,
+				cards: baseFront.to.groupsData?.[2].cardsData,
+				index: 0,
+			},
+			data: baseFront.to.groupsData?.[1].cardsData?.[1],
+			from: {
+				type: 'group',
+				id: 'group-1',
+				index: 0,
+			},
+			type: 'collection',
+		};
+
+		const card3 = {
+			to: {
+				id: 'group-3',
+				type: 'group',
+				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
+				groupMaxItems: baseFront.to.groupsData?.[3].maxItems,
+				groupsData: baseFront.to.groupsData,
+				cards: baseFront.to.groupsData?.[3].cardsData,
+				index: 0,
+			},
+			data: baseFront.to.groupsData?.[2].cardsData?.[1],
+			from: {
+				type: 'group',
+				id: 'group-2',
+				index: 0,
+			},
+			type: 'collection',
+		};
+
+		const expectedMoveQueue = [card1, card2, card3];
+
+		expect(moveQueue).toEqual(expectedMoveQueue);
 	});
+
 	// it('should keep its sublinks when a card is moved', () => {
 	// 	// TODO
 	// });
