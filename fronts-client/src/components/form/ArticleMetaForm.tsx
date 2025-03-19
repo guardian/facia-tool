@@ -788,20 +788,23 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											}
 										/>
 									</InputGroup>
-									{primaryImage && !!primaryImage.src && (
-										<InputGroup>
-											<ConditionalField
-												permittedFields={editableFields}
-												name="imageReplace"
-												component={InputCheckboxToggleInline}
-												label="Use replacement image"
-												id={getInputId(cardId, 'image-replace')}
-												type="checkbox"
-												default={false}
-												onChange={() => this.changeImageField('imageReplace')}
-											/>
-										</InputGroup>
-									)}
+									{primaryImage &&
+										!!primaryImage.src &&
+										!this.props.showMainVideo &&
+										!this.props.imageSlideshowReplace && (
+											<InputGroup>
+												<ConditionalField
+													permittedFields={editableFields}
+													name="imageReplace"
+													component={InputCheckboxToggleInline}
+													label="Use replacement image"
+													id={getInputId(cardId, 'image-replace')}
+													type="checkbox"
+													default={false}
+													onChange={() => this.changeImageField('imageReplace')}
+												/>
+											</InputGroup>
+										)}
 								</ToggleCol>
 								<Col flex={2}>
 									<InputLabel htmlFor="media-select">Select Media</InputLabel>
@@ -822,7 +825,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 												this.changeImageField(this.getImageFieldName())
 											}
 											checked={
-												this.props.primaryImage || this.props.imageCutoutReplace
+												!this.props.showMainVideo &&
+												!this.props.imageSlideshowReplace
 											}
 										/>
 									</InputGroup>
