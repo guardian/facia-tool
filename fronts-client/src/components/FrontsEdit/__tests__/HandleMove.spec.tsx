@@ -1,5 +1,6 @@
 import { Move } from 'lib/dnd';
 import { Card as TCard } from 'types/Collection';
+import { makeMoveQueue } from '../FrontContent';
 // This is the card that is being moved,
 const data = {
 	id: 'internal-code/page/15321140',
@@ -162,10 +163,13 @@ describe('HandleMove', () => {
 	it('should move a card within its existing group', () => {
 		// TODO
 	});
-	it('should always move the card into a standard group', () => {});
+	it('should always move the card into a standard group', () => {
+		// TODO
+	});
 
 	it('should move a card into the top of a group that is full and move the last card of that group into the next group', () => {
-		// TODO
+		const moveQueue = makeMoveQueue(mockFronts);
+		expect(moveQueue.length).toBe(4);
 	});
 	it('if the card is moved to the bottom of a full group, it should move the card into the next group', () => {
 		// TODO
