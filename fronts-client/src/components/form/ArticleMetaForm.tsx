@@ -810,19 +810,21 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									<InputGroup>
 										<ConditionalField
 											component={InputRadio}
+											disabled={editableFields.indexOf(this.getImageFieldName()) === -1}
 											usesBlockStyling={true}
 											name="media-select"
 											type="radio"
 											label="Trail Image"
 											id={getInputId(cardId, "select-trail-image")}
 											value="select-trail-image"
-											onClick={() => this.changeImageField('imageReplace')}
+											onClick={() => this.changeImageField('')}
 										/>
 									</InputGroup>
 									<InputGroup>
 										<ConditionalField
 											component={InputRadio}
-											icon={<SlideshowIcon/>}
+											disabled={editableFields.indexOf("showMainVideo") === -1}
+											icon={<SelectVideoIcon/>}
 											usesBlockStyling={true}
 											name="media-select"
 											type="radio"
@@ -835,7 +837,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									<InputGroup>
 										<ConditionalField
 											component={InputRadio}
-											icon={<SelectVideoIcon/>}
+											disabled={editableFields.indexOf("imageSlideshowReplace") === -1}
+											icon={<SlideshowIcon/>}
 											usesBlockStyling={true}
 											name="media-select"
 											type="radio"
