@@ -94,6 +94,78 @@ interface FrontState {
 	isCollectionsStale: boolean | undefined;
 }
 
+export const makeMoveQueue = (move: Move<TCard>) => {
+	// otherwise we create a move queue to keep track of subsequent card moves
+	const moveQueue = [];
+	const firstCard = move.data;
+	// first we push the first card into the move queue
+	moveQueue.push({
+		to: move.to,
+		data: move.data,
+		from: move.from || null,
+		type: 'collection',
+	});
+
+	const indexOfTargetGroup = move.to.groupIds?.indexOf(move.to?.id) ?? 0;
+	// the we loop through the remaining groups to see if we how many more cards need to be moved.
+	// we start at the index of the target group so that we dont move cards in full groups that are before the target group
+	for (
+		let index = indexOfTargetGroup;
+		move.to.groupsData && index < move.to.groupsData.length;
+		index++
+	) {
+		const group = move.to.groupsData?.[index];
+
+		// If we don't have a group, we exit the loop
+		if (!group) {
+			break;
+		}
+
+		// If we reach a group with space, we exit the loop
+		if (group.cardsData && group.cardsData.length < (group?.maxItems ?? 0)) {
+			break;
+		}
+
+		//If we reach a full group that already contains the first card, then it isnt really full and we exit the loop
+		if (group.cards.includes(firstCard.uuid)) {
+			break;
+		}
+
+		// We've reached a group that really is full, we move the last card to the next group
+
+		const lastCard = group.cardsData?.[group.cardsData.length - 1];
+		const nextGroup = move.to.groupIds?.[index + 1];
+		const nextGroupData =
+			move.to.groupsData &&
+			move.to.groupsData.find((group) => group.uuid === nextGroup);
+
+		if (lastCard && nextGroup) {
+			const from = {
+				type: 'group',
+				id: move.to.groupIds?.[index] ?? '',
+				index: group.cardsData ? group.cardsData.length - 1 : 0,
+			};
+
+			moveQueue.push({
+				to: {
+					index: 0,
+					id: nextGroup,
+					type: 'group',
+					groupIds: move.to.groupIds,
+					groupMaxItems: nextGroupData?.maxItems,
+					groupsData: move.to.groupsData,
+					cards: nextGroupData?.cardsData,
+				},
+				data: lastCard,
+				from: from,
+				type: 'collection',
+			});
+			continue;
+		}
+	}
+	return moveQueue;
+};
+
 class FrontContent extends React.Component<FrontProps, FrontState> {
 	public state = {
 		currentlyScrolledCollectionId: undefined,
@@ -183,8 +255,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		const targetGroupIsFull =
 			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
 
-		const firstCard = move.data;
-
 		//if the target group has free space or is the same group as the card is already in, we just move the card
 		if (!targetGroupIsFull || move.to.cards?.includes(move.data.uuid)) {
 			return this.props.moveCard(
@@ -195,74 +265,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			);
 		}
 
-		// otherwise we create a move queue to keep track of subsequent card moves
-		const moveQueue = [];
-
-		// first we push the first card into the move queue
-		moveQueue.push({
-			to: move.to,
-			data: move.data,
-			from: move.from || null,
-			type: 'collection',
-		});
-
-		const indexOfTargetGroup = move.to.groupIds?.indexOf(move.to?.id) ?? 0;
-		// the we loop through the remaining groups to see if we how many more cards need to be moved.
-		// we start at the index of the target group so that we dont move cards in full groups that are before the target group
-		for (
-			let index = indexOfTargetGroup;
-			move.to.groupsData && index < move.to.groupsData.length;
-			index++
-		) {
-			const group = move.to.groupsData?.[index];
-
-			// If we don't have a group, we exit the loop
-			if (!group) {
-				break;
-			}
-
-			// If we reach a group with space, we exit the loop
-			if (group.cardsData && group.cardsData.length < (group?.maxItems ?? 0)) {
-				break;
-			}
-
-			//If we reach a full group that already contains the first card, then it isnt really full and we exit the loop
-			if (group.cards.includes(firstCard.uuid)) {
-				break;
-			}
-
-			// We've reached a group that really is full, we move the last card to the next group
-
-			const lastCard = group.cardsData?.[group.cardsData.length - 1];
-			const nextGroup = move.to.groupIds?.[index + 1];
-			const nextGroupData =
-				move.to.groupsData &&
-				move.to.groupsData.find((group) => group.uuid === nextGroup);
-
-			if (lastCard && nextGroup) {
-				const from = {
-					type: 'group',
-					id: move.to.groupIds?.[index] ?? '',
-					index: group.cardsData ? group.cardsData.length - 1 : 0,
-				};
-
-				moveQueue.push({
-					to: {
-						index: 0,
-						id: nextGroup,
-						type: 'group',
-						groupIds: move.to.groupIds,
-						groupMaxItems: nextGroupData?.maxItems,
-						groupsData: move.to.groupsData,
-						cards: nextGroupData?.cardsData,
-					},
-					data: lastCard,
-					from: from,
-					type: 'collection',
-				});
-				continue;
-			}
-		}
+		const moveQueue = makeMoveQueue(move);
 
 		moveQueue.map((move) =>
 			this.props.moveCard(move.to, move.data, move.from, 'collection'),
