@@ -63,7 +63,7 @@ import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputBase from '../inputs/InputBase';
 import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
 import { error } from '../../styleConstants';
-import {SelectVideoIcon, SlideshowIcon, WarningIcon} from '../icons/Icons';
+import { SelectVideoIcon, SlideshowIcon, WarningIcon } from '../icons/Icons';
 import { FormContainer } from 'components/form/FormContainer';
 import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
@@ -76,7 +76,7 @@ import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import { renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
-import InputRadio from "../inputs/InputRadio";
+import InputRadio from '../inputs/InputRadio';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -804,34 +804,38 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									)}
 								</ToggleCol>
 								<Col flex={2}>
-									<InputLabel htmlFor="media-select">
-										Select Media
-									</InputLabel>
+									<InputLabel htmlFor="media-select">Select Media</InputLabel>
 									<InputGroup>
 										<Field
 											component={InputRadio}
-											disabled={editableFields.indexOf(this.getImageFieldName()) === -1}
+											disabled={
+												editableFields.indexOf(this.getImageFieldName()) === -1
+											}
 											usesBlockStyling={true}
 											name="media-select"
 											type="radio"
 											label="Trail Image"
-											id={getInputId(cardId, "select-trail-image")}
+											id={getInputId(cardId, 'select-trail-image')}
 											value="select-trail-image"
 											initialValues="select-trail-image"
-											onClick={() => this.changeImageField(this.getImageFieldName())}
-											checked={this.props.primaryImage || this.props.imageCutoutReplace}
+											onClick={() =>
+												this.changeImageField(this.getImageFieldName())
+											}
+											checked={
+												this.props.primaryImage || this.props.imageCutoutReplace
+											}
 										/>
 									</InputGroup>
 									<InputGroup>
 										<Field
 											component={InputRadio}
-											disabled={editableFields.indexOf("showMainVideo") === -1}
-											icon={<SelectVideoIcon/>}
+											disabled={editableFields.indexOf('showMainVideo') === -1}
+											icon={<SelectVideoIcon />}
 											usesBlockStyling={true}
 											name="media-select"
 											type="radio"
 											label="Video"
-											id={getInputId(cardId, "select-video")}
+											id={getInputId(cardId, 'select-video')}
 											value="select-video"
 											onClick={() => this.changeImageField('showMainVideo')}
 											checked={this.props.showMainVideo}
@@ -840,15 +844,19 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									<InputGroup>
 										<Field
 											component={InputRadio}
-											disabled={editableFields.indexOf("imageSlideshowReplace") === -1}
-											icon={<SlideshowIcon/>}
+											disabled={
+												editableFields.indexOf('imageSlideshowReplace') === -1
+											}
+											icon={<SlideshowIcon />}
 											usesBlockStyling={true}
 											name="media-select"
 											type="radio"
 											label="Slideshow"
-											id={getInputId(cardId, "select-slideshow")}
+											id={getInputId(cardId, 'select-slideshow')}
 											value="select-slideshow"
-											onClick={() => this.changeImageField('imageSlideshowReplace')}
+											onClick={() =>
+												this.changeImageField('imageSlideshowReplace')
+											}
 											checked={this.props.imageSlideshowReplace}
 										/>
 									</InputGroup>

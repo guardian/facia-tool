@@ -1,6 +1,6 @@
 import { styled } from 'constants/theme';
-import React, {ReactElement} from 'react';
-import {WrappedFieldMetaProps, WrappedFieldInputProps} from 'redux-form';
+import React, { ReactElement } from 'react';
+import { WrappedFieldMetaProps, WrappedFieldInputProps } from 'redux-form';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
@@ -9,17 +9,19 @@ import { theme } from 'constants/theme';
 const radioButtonHeight = 17;
 const radioButtonWidth = 17;
 
-const RadioButtonContainer = styled.div<{usesBlockStyling?: boolean}>`
+const RadioButtonContainer = styled.div<{ usesBlockStyling?: boolean }>`
 	display: flex;
 	align-items: center;
-	padding: ${(props) => props.usesBlockStyling ? "8px 6px" : "0"};
-	background-color: ${(props) => props.usesBlockStyling ? "#CCCCCC" : "none"};
-	height: ${(props) => props.usesBlockStyling ? `${radioButtonHeight * 2}px` : "auto"};
+	padding: ${(props) => (props.usesBlockStyling ? '8px 6px' : '0')};
+	background-color: ${(props) => (props.usesBlockStyling ? '#CCCCCC' : 'none')};
+	height: ${(props) =>
+		props.usesBlockStyling ? `${radioButtonHeight * 2}px` : 'auto'};
 	color: ${(props) => props.theme.input.colorLabel};
 	cursor: pointer;
 	&:has(input:checked) {
-		color: ${(props) => props.usesBlockStyling ? "white" : "auto"};
-		background-color: ${(props) => props.usesBlockStyling ? "#A9A9A9" : "none"};
+		color: ${(props) => (props.usesBlockStyling ? 'white' : 'auto')};
+		background-color: ${(props) =>
+			props.usesBlockStyling ? '#A9A9A9' : 'none'};
 	}
 	&:has(input:disabled) {
 		opacity: 0.8;
@@ -119,7 +121,13 @@ export default ({
 		<InputContainer data-testid={dataTestId}>
 			<RadioButtonContainer usesBlockStyling={usesBlockStyling}>
 				<Switch>
-					<RadioButton type="radio" {...inputRest} checked={checked} {...rest} id={id} />
+					<RadioButton
+						type="radio"
+						{...inputRest}
+						checked={checked}
+						{...rest}
+						id={id}
+					/>
 					<RadioButtonLabel htmlFor={id} />
 				</Switch>
 				<Label htmlFor={id} size="sm">
