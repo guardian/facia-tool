@@ -764,30 +764,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											}
 										/>
 									</InputGroup>
-									<InputGroup>
-										<ConditionalField
-											permittedFields={editableFields}
-											name="showMainVideo"
-											component={InputCheckboxToggleInline}
-											label="Show video"
-											id={getInputId(cardId, 'show-video')}
-											type="checkbox"
-											onChange={() => this.changeImageField('showMainVideo')}
-										/>
-									</InputGroup>
-									<InputGroup>
-										<ConditionalField
-											permittedFields={editableFields}
-											name="imageSlideshowReplace"
-											component={InputCheckboxToggleInline}
-											label="Slideshow"
-											id={getInputId(cardId, 'slideshow')}
-											type="checkbox"
-											onChange={() =>
-												this.changeImageField('imageSlideshowReplace')
-											}
-										/>
-									</InputGroup>
 									{primaryImage &&
 										!!primaryImage.src &&
 										!this.props.showMainVideo &&
