@@ -12,25 +12,17 @@ describe('HandleMove', () => {
 			type: 'collection',
 		};
 
-		const card2GroupMaxItems =
-			baseFront.to.groupsData && baseFront.to.groupsData[1].maxItems;
-		const card2Cards =
-			baseFront.to.groupsData && baseFront.to.groupsData[1].cardsData;
-		const card2Data =
-			baseFront.to.groupsData &&
-			baseFront.to.groupsData[0].cardsData &&
-			baseFront.to.groupsData[0].cardsData[0];
 		const card2 = {
 			to: {
 				id: 'group-1',
 				type: 'group',
 				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
-				groupMaxItems: card2GroupMaxItems,
+				groupMaxItems:  baseFront.to.groupsData?.[1].maxItems,
 				groupsData: baseFront.to.groupsData,
-				cards: card2Cards,
+				cards: baseFront.to.groupsData?.[1].cardsData,
 				index: 0,
 			},
-			data: card2Data,
+			data: baseFront.to.groupsData?.[0].cardsData?.[0],
 			from: {
 				type: 'group',
 				id: 'group-0',
@@ -94,15 +86,8 @@ describe('HandleMove', () => {
 		};
 
 		const expectedMoveQueue = [card1, card2, card3, card4];
-		console.log('here we go', 'em', expectedMoveQueue[0], 'mq', moveQueue[0]);
-		console.log('here we go 2', 'em', expectedMoveQueue[1], 'mq', moveQueue[1]);
-		console.log('here we go 3', 'em', expectedMoveQueue[2], 'mq', moveQueue[2]);
-		console.log('here we go 4', 'em', expectedMoveQueue[3], 'mq', moveQueue[3]);
 
-		expect(expectedMoveQueue[0]).toStrictEqual(moveQueue[0]);
-		expect(expectedMoveQueue[1]).toStrictEqual(moveQueue[1]);
-		expect(expectedMoveQueue[2]).toStrictEqual(moveQueue[2]);
-		expect(expectedMoveQueue[3]).toStrictEqual(moveQueue[3]);
+		expect(moveQueue).toEqual(expectedMoveQueue);
 	});
 	it('if the groups are full empty full, and the card is moved to group 1, it should move the bottom card from group 1 to 2 and then stop', () => {
 		const newFront = {
@@ -181,11 +166,8 @@ describe('HandleMove', () => {
 		};
 
 		const expectedMoveQueue = [card1, card2];
-		console.log('here we go', expectedMoveQueue[0], moveQueue[0]);
-		console.log('here we go 2', expectedMoveQueue[1], moveQueue[1]);
 
-		expect(expectedMoveQueue[0]).toStrictEqual(moveQueue[0]);
-		expect(expectedMoveQueue[1]).toStrictEqual(moveQueue[1]);
+		expect(moveQueue).toEqual(expectedMoveQueue);
 	});
 	it('if the card is moved to the bottom of a full group, it should move the card into the next group', () => {
 		// TODO - Will Fail
