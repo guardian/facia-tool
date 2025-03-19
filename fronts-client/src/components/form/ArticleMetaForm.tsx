@@ -817,7 +817,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											label="Trail Image"
 											id={getInputId(cardId, "select-trail-image")}
 											value="select-trail-image"
-											onClick={() => this.changeImageField('')}
+											onClick={() => this.changeImageField(this.getImageFieldName())}
 										/>
 									</InputGroup>
 									<InputGroup>
