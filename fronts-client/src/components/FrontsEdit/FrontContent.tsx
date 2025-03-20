@@ -95,14 +95,11 @@ interface FrontState {
 }
 
 function makeMoveTo(groupIds: string[], groupsData: Group[], id: string) {
-	const currentGroupIndex = groupIds?.findIndex(
-		(groupId) => groupId === id,
-	) || 0;
+	const currentGroupIndex =
+		groupIds?.findIndex((groupId) => groupId === id) || 0;
 	const nextGroup = groupIds?.[currentGroupIndex + 1];
-	console.log('nextGroup', nextGroup);
 	const nextGroupData =
-		groupsData &&
-		groupsData.find((group) => group.uuid === nextGroup);
+		groupsData && groupsData.find((group) => group.uuid === nextGroup);
 
 	const to = {
 		index: 0,
@@ -120,17 +117,17 @@ export const makeMoveQueue = (move: Move<TCard>) => {
 	// otherwise we create a move queue to keep track of subsequent card moves
 	const moveQueue = [];
 	const firstCard = move.data;
-	// first we push the first card into the move queue
 
+	// first we push the first card into the move queue
 	const isMovingToBottomOfGroup =
 		move.to.index === (move.to.cards?.length || 0);
 
-	console.log('move.to.index', move.to.index);
-	console.log('move.to.cards?.length', move.to.cards?.length);
-	console.log('isMovingToBottomOfGroup', isMovingToBottomOfGroup);
-
 	if (isMovingToBottomOfGroup) {
-		const to = makeMoveTo(move.to.groupIds || [], move.to.groupsData || [], move.to.id);
+		const to = makeMoveTo(
+			move.to.groupIds || [],
+			move.to.groupsData || [],
+			move.to.id,
+		);
 		moveQueue.push({
 			to: to,
 			data: move.data,
@@ -152,7 +149,7 @@ export const makeMoveQueue = (move: Move<TCard>) => {
 	const indexOfTargetGroup = isMovingToBottomOfGroup
 		? baseIndexOfTargetGroup + 1
 		: baseIndexOfTargetGroup;
-	console.log("indexOfTargetGroup", indexOfTargetGroup);
+
 	// the we loop through the remaining groups to see if we how many more cards need to be moved.
 	// we start at the index of the target group so that we dont move cards in full groups that are before the target group
 	for (
@@ -160,7 +157,6 @@ export const makeMoveQueue = (move: Move<TCard>) => {
 		move.to.groupsData && index < move.to.groupsData.length - 1;
 		index++
 	) {
-		console.log("running")
 		const group = move.to.groupsData?.[index];
 
 		// If we don't have a group, we exit the loop
@@ -179,9 +175,12 @@ export const makeMoveQueue = (move: Move<TCard>) => {
 		}
 
 		// We've reached a group that really is full, we move the last card to the next group
-
 		const lastCard = group.cardsData?.[group.cardsData.length - 1];
-		const to = makeMoveTo(move.to.groupIds || [], move.to.groupsData || [], group.uuid);
+		const to = makeMoveTo(
+			move.to.groupIds || [],
+			move.to.groupsData || [],
+			group.uuid,
+		);
 
 		if (lastCard && to) {
 			const from = {

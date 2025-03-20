@@ -87,7 +87,6 @@ describe('HandleMove', () => {
 
 		const expectedMoveQueue = [card1, card2, card3, card4];
 
-
 		expect(moveQueue).toEqual(expectedMoveQueue);
 	});
 	it('if the groups are full empty full, and the card is moved to group 1, it should move the bottom card from group 1 to 2 and then stop', () => {
@@ -182,7 +181,6 @@ describe('HandleMove', () => {
 		};
 		const moveQueue = makeMoveQueue(newFront);
 
-
 		const card1 = {
 			to: {
 				id: 'group-1',
@@ -239,10 +237,28 @@ describe('HandleMove', () => {
 
 		const expectedMoveQueue = [card1, card2, card3];
 		console.log('mq l', moveQueue.length, 'emq l', expectedMoveQueue.length);
-		console.log("queue0", 'moveQueue', moveQueue[0], "expectedMoveQueue", expectedMoveQueue[0]);
-		console.log("queue1", 'moveQueue', moveQueue[1], "expectedMoveQueue", expectedMoveQueue[1]);
-		console.log("queue2", 'moveQueue', moveQueue[2], "expectedMoveQueue", expectedMoveQueue[2]);
-		console.log("queue3", 'moveQueue', moveQueue[3]);
+		console.log(
+			'queue0',
+			'moveQueue',
+			moveQueue[0],
+			'expectedMoveQueue',
+			expectedMoveQueue[0],
+		);
+		console.log(
+			'queue1',
+			'moveQueue',
+			moveQueue[1],
+			'expectedMoveQueue',
+			expectedMoveQueue[1],
+		);
+		console.log(
+			'queue2',
+			'moveQueue',
+			moveQueue[2],
+			'expectedMoveQueue',
+			expectedMoveQueue[2],
+		);
+		console.log('queue3', 'moveQueue', moveQueue[3]);
 
 		expect(moveQueue).toEqual(expectedMoveQueue);
 	});
