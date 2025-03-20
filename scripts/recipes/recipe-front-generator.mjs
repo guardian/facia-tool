@@ -193,9 +193,28 @@ const frontsHeaders = {
  */
 async function findRecipes(searchString, count, meatFree) {
     console.debug(`search term is '${searchString}'`);
-		const baseUrl = `${recipeBase}/search?q=${encodeURIComponent(searchString)}&format=Full&limit=${count}`;
-		const url = meatFree ? baseUrl + '&dietFilter=vegetarian' : baseUrl;
-    const response = await fetch(url);
+		// const baseUrl = `${recipeBase}/search?q=${encodeURIComponent(searchString)}&format=Full&limit=${count}`;
+		// const url = meatFree ? baseUrl + '&dietFilter=vegetarian' : baseUrl;
+		const searchReq = {
+			queryText: searchString,
+			format: "Full",
+			limit: count,
+			searchType: "Embedded"
+		}
+		if(meatFree) {
+			searchReq.filters = {
+				diets: ["vegetarian"],
+				filterType: "Post"
+			}
+		}
+    const response = await fetch(`${recipeBase}/search`, {
+			method: "POST",
+			body: JSON.stringify(searchReq),
+			headers: {
+				...frontsHeaders,
+				"Content-Type": 'application/json'
+			},
+		});
     if(response.status !== 200) {
         const content = await response.text();
         console.error(`Server error ${response.status}: ${content}`);
