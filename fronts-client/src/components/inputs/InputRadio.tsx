@@ -1,5 +1,5 @@
-import { styled } from 'constants/theme';
-import React from 'react';
+import { styled, css } from 'constants/theme';
+import React, { ReactElement } from 'react';
 import { WrappedFieldMetaProps, WrappedFieldInputProps } from 'redux-form';
 
 import InputLabel from './InputLabel';
@@ -9,17 +9,33 @@ import { theme } from 'constants/theme';
 const radioButtonHeight = 17;
 const radioButtonWidth = 17;
 
-const RadioButtonContainer = styled.div`
+const BlockStylingMixin = () => css`
+	padding: 8px 6px;
+	background-color: #cccccc;
+	height: ${radioButtonHeight * 2}px;
+	&:has(input:checked) {
+		color: white;
+		background-color: #a9a9a9;
+	}
+	&:has(input:disabled) {
+		opacity: 0.8;
+		cursor: not-allowed;
+	}
+`;
+
+const RadioButtonContainer = styled.div<{ usesBlockStyling?: boolean }>`
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
+	cursor: pointer;
+	color: ${(props) => props.theme.input.colorLabel};
+	${(props) => props.usesBlockStyling && BlockStylingMixin}
 `;
 
 const Label = styled(InputLabel)`
 	padding-left: 5px;
-	color: ${(props) => props.theme.input.colorLabel};
 	line-height: 15px;
 	flex: 1;
-	cursor: pointer;
+	cursor: inherit;
 `;
 
 const Switch = styled.div`
@@ -80,10 +96,21 @@ const RadioButton = styled.input`
 	}
 `;
 
+const IconContainer = styled.div`
+	width: 20px;
+	margin-left: 8px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
 type Props = {
 	label?: string;
 	id: string;
 	dataTestId?: string;
+	checked?: boolean;
+	icon?: ReactElement;
+	usesBlockStyling?: boolean;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
 		Partial<WrappedFieldInputProps>;
@@ -95,18 +122,28 @@ export default ({
 	id,
 	dataTestId,
 	input: { ...inputRest },
+	checked,
+	icon = undefined,
+	usesBlockStyling = false,
 	...rest
 }: Props) => (
 	<>
 		<InputContainer data-testid={dataTestId}>
-			<RadioButtonContainer>
+			<RadioButtonContainer usesBlockStyling={usesBlockStyling}>
 				<Switch>
-					<RadioButton type="radio" {...inputRest} {...rest} id={id} />
+					<RadioButton
+						type="radio"
+						{...inputRest}
+						checked={checked}
+						{...rest}
+						id={id}
+					/>
 					<RadioButtonLabel htmlFor={id} />
 				</Switch>
 				<Label htmlFor={id} size="sm">
 					{label}
 				</Label>
+				{icon !== undefined ? <IconContainer>{icon}</IconContainer> : null}
 			</RadioButtonContainer>
 		</InputContainer>
 	</>
