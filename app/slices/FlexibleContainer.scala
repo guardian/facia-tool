@@ -13,10 +13,11 @@ object FlexibleGeneral extends FlexibleContainer {
       stories: Seq[Story],
       collectionConfigJson: Option[CollectionConfigJson]
   ): Int = {
-    collectionConfigJson
-      .flatMap(_.displayHints)
-      .flatMap(_.maxItemsToDisplay)
-      .getOrElse(9)
+    val totalMaxItems = collectionConfigJson.get.groupsConfig
+      .getOrElse(Nil)
+      .flatMap(_.maxItems)
+      .sum
+    totalMaxItems
   }
 }
 
