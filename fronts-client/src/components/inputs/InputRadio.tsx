@@ -9,14 +9,13 @@ import { theme } from 'constants/theme';
 const radioButtonHeight = 17;
 const radioButtonWidth = 17;
 
-
 const BlockStylingMixin = () => css`
 	padding: 8px 6px;
-	background-color: #CCCCCC;
+	background-color: #cccccc;
 	height: ${radioButtonHeight * 2}px;
 	&:has(input:checked) {
 		color: white;
-		background-color: #A9A9A9;
+		background-color: #a9a9a9;
 	}
 	&:has(input:disabled) {
 		opacity: 0.8;
@@ -109,9 +108,9 @@ type Props = {
 	label?: string;
 	id: string;
 	dataTestId?: string;
-	usesBlockStyling?: boolean;
 	checked?: boolean;
 	icon?: ReactElement;
+	usesBlockStyling?: boolean;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
 		Partial<WrappedFieldInputProps>;

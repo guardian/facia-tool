@@ -818,7 +818,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											id={getInputId(cardId, 'select-video')}
 											value="select-video"
 											onClick={() => this.changeImageField('showMainVideo')}
-											checked={this.props.showMainVideo !== undefined ? this.props.showMainVideo : false}
+											checked={
+												this.props.showMainVideo !== undefined
+													? this.props.showMainVideo
+													: false
+											}
 										/>
 									</InputGroup>
 									<InputGroup>
@@ -837,7 +841,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											onClick={() =>
 												this.changeImageField('imageSlideshowReplace')
 											}
-											checked={this.props.imageSlideshowReplace !== undefined ? this.props.imageSlideshowReplace : false}
+											checked={
+												this.props.imageSlideshowReplace !== undefined
+													? this.props.imageSlideshowReplace
+													: false
+											}
 										/>
 									</InputGroup>
 								</Col>
