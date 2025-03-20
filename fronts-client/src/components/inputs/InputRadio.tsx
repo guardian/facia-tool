@@ -94,6 +94,14 @@ const RadioButton = styled.input`
 	}
 `;
 
+const IconContainer = styled.div`
+	width: 20px;
+	margin-left: 8px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
 type Props = {
 	label?: string;
 	id: string;
@@ -133,7 +141,7 @@ export default ({
 				<Label htmlFor={id} size="sm">
 					{label}
 				</Label>
-				{icon}
+				{icon !== undefined ? <IconContainer>{icon}</IconContainer> : null}
 			</RadioButtonContainer>
 		</InputContainer>
 	</>
