@@ -94,111 +94,100 @@ interface FrontState {
 	isCollectionsStale: boolean | undefined;
 }
 
-function makeMoveTo(groupIds: string[], groupsData: Group[], id: string) {
-	const currentGroupIndex =
-		groupIds?.findIndex((groupId) => groupId === id) || 0;
-	const nextGroup = groupIds?.[currentGroupIndex + 1];
-	const nextGroupData =
-		groupsData && groupsData.find((group) => group.uuid === nextGroup);
+function getNextGroupTarget(
+	groupIds: string[],
+	groupsData: Group[],
+	currentGroupId: string,
+) {
+	const currentIndex = groupIds.findIndex((id) => id === currentGroupId);
+	const nextGroupId = groupIds[currentIndex + 1]; // double check if nextGroup / groupsids can be undefined
+	const nextGroup = groupsData.find((group) => group.uuid === nextGroupId);
 
-	const to = {
+	return {
 		index: 0,
-		id: nextGroup || '', //double check if nextGroup / groupsids can be undefined
+		id: nextGroupId,
 		type: 'group',
 		groupIds: groupIds,
-		groupMaxItems: nextGroupData?.maxItems,
+		groupMaxItems: nextGroup?.maxItems,
 		groupsData: groupsData,
-		cards: nextGroupData?.cardsData,
+		cards: nextGroup?.cardsData,
 	};
-	return to;
 }
 
-export const makeMoveQueue = (move: Move<TCard>) => {
-	// otherwise we create a move queue to keep track of subsequent card moves
-	const moveQueue = [];
-	const firstCard = move.data;
+/**
+ * The move queue handles cascading card moves triggered when attempting to insert a card into a full group.
+ * It ensures the affected cards are shifted into subsequent groups, maintaining maxItems constraints.
+ */
+export const buildMoveQueue = (move: Move<TCard>) => {
+	const queue = [];
+	const { data: movedCard, to, from } = move;
 
-	// first we push the first card into the move queue
-	const isMovingToBottomOfGroup =
-		move.to.index === (move.to.cards?.length || 0);
+	// Determine if the card is being added to the end of a group.
+	const isBottomInsert = to.index === (to.cards?.length ?? 0);
 
-	if (isMovingToBottomOfGroup) {
-		const to = makeMoveTo(
-			move.to.groupIds || [],
-			move.to.groupsData || [],
-			move.to.id,
-		);
-		moveQueue.push({
-			to: to,
-			data: move.data,
-			from: move.from || null,
-			type: 'collection',
-		});
-	} else {
-		// if moving to bottom of group this will be changed
-		moveQueue.push({
-			to: move.to,
-			data: move.data,
-			from: move.from || null,
-			type: 'collection',
-		});
-	}
+	// If inserting at the bottom of a full group, move the card to the next group instead.
+	const target = isBottomInsert
+		? getNextGroupTarget(to.groupIds || [], to.groupsData || [], to.id)
+		: to;
 
-	// if we're moving to bottom of group, index needs to be bumped by 1
-	const baseIndexOfTargetGroup = move.to.groupIds?.indexOf(move.to?.id) ?? 0;
-	const indexOfTargetGroup = isMovingToBottomOfGroup
-		? baseIndexOfTargetGroup + 1
-		: baseIndexOfTargetGroup;
+	// Add the initial move: either to the original target or the adjusted group.
+	queue.push({
+		to: target,
+		data: movedCard,
+		from: from || null,
+		type: 'collection',
+	});
 
-	// the we loop through the remaining groups to see if we how many more cards need to be moved.
-	// we start at the index of the target group so that we dont move cards in full groups that are before the target group
+	/**
+	 *  Begin cascading shifts for full groups.
+	 *  Start at the target group (or one after, if we adjusted for a bottom insert),
+	 *  and continue shifting the last card of each full group into the next group.
+	 * */
+
+	const startIndex = to.groupIds?.indexOf(to.id) ?? 0;
+
 	for (
-		let index = indexOfTargetGroup;
-		move.to.groupsData && index < move.to.groupsData.length - 1;
+		let index = isBottomInsert ? startIndex + 1 : startIndex;
+		to.groupsData && index < to.groupsData.length - 1;
 		index++
 	) {
-		const group = move.to.groupsData?.[index];
+		const currentGroup = move.to.groupsData?.[index];
+		if (!currentGroup) break;
 
-		// If we don't have a group, we exit the loop
-		if (!group) {
-			break;
-		}
+		const groupIsFull =
+			(currentGroup.cardsData?.length ?? 0) >= (currentGroup.maxItems ?? 0);
+		const cardAlreadyInGroup = currentGroup.cards.includes(movedCard.uuid);
 
-		// If we reach a group with space, we exit the loop
-		if (group.cardsData && group.cardsData.length < (group?.maxItems ?? 0)) {
-			break;
-		}
+		/**
+		 *  Stop cascading if:
+		 * - the group isn't full
+		 * - or it contains the moved card (which is now leaving the group)
+		 **/
+		if (!groupIsFull || cardAlreadyInGroup) break;
 
-		//If we reach a full group that already contains the first card, then it isnt really full and we exit the loop
-		if (group.cards.includes(firstCard.uuid)) {
-			break;
-		}
+		// Otherwise, this group is full and needs to shift its last card.
+		const lastCard = currentGroup.cardsData?.at(-1);
 
-		// We've reached a group that really is full, we move the last card to the next group
-		const lastCard = group.cardsData?.[group.cardsData.length - 1];
-		const to = makeMoveTo(
+		const nextTarget = getNextGroupTarget(
 			move.to.groupIds || [],
 			move.to.groupsData || [],
-			group.uuid,
+			currentGroup.uuid,
 		);
 
-		if (lastCard && to) {
-			const from = {
-				type: 'group',
-				id: move.to.groupIds?.[index] ?? '',
-				index: group.cardsData ? group.cardsData.length - 1 : 0,
-			};
-
-			moveQueue.push({
-				to: to,
+		if (lastCard) {
+			queue.push({
+				to: nextTarget,
 				data: lastCard,
-				from: from,
+				from: {
+					type: 'group',
+					id: move.to.groupIds?.[index] ?? '',
+					index: (currentGroup.cardsData?.length ?? 1) - 1,
+				},
 				type: 'collection',
 			});
-			continue;
 		}
 	}
-	return moveQueue;
+	return queue;
 };
 
 class FrontContent extends React.Component<FrontProps, FrontState> {
@@ -304,7 +293,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			);
 		}
 
-		const moveQueue = makeMoveQueue(move);
+		const moveQueue = buildMoveQueue(move);
 
 		moveQueue.map((move) =>
 			this.props.moveCard(move.to, move.data, move.from, 'collection'),
