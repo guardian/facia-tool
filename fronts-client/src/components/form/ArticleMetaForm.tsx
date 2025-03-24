@@ -77,6 +77,7 @@ import { ImageCol } from './ImageCol';
 import { renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
+import { extractAtomId } from '../../util/extractAtomId';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -809,7 +810,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									<InputGroup>
 										<Field
 											component={InputRadio}
-											disabled={editableFields.indexOf('showMainVideo') === -1 && editableFields.indexOf('videoReplace') === -1}
+											disabled={
+												editableFields.indexOf('showMainVideo') === -1 &&
+												editableFields.indexOf('videoReplace') === -1
+											}
 											icon={<SelectVideoIcon />}
 											usesBlockStyling={true}
 											name="media-select"
@@ -817,7 +821,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											label="Video"
 											id={getInputId(cardId, 'select-video')}
 											value="select-video"
-											onClick={() => this.changeMediaField(this.getVideoFieldName())}
+											onClick={() =>
+												this.changeMediaField(this.getVideoFieldName())
+											}
 											checked={
 												this.props.showMainVideo || this.props.videoReplace
 											}
@@ -829,15 +835,19 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											name="replaceVideoUri"
 											type="text"
 											onChange={(e: any) => {
+												const value = e.currentTarget.value;
+
 												if (
-													e.currentTarget.value !== undefined &&
-													e.currentTarget.value !== null &&
-													e.currentTarget.value !== ''
+													value !== undefined &&
+													value !== null &&
+													value !== ''
 												) {
 													this.changeMediaField('videoReplace');
 												} else {
 													this.changeMediaField('showMainVideo');
 												}
+
+												this.props.change('atomId', extractAtomId(value));
 											}}
 										/>
 									)}
@@ -986,11 +996,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	};
 
 	private getVideoFieldName = () => {
-		if (this.props.replaceVideoUri !== undefined && this.props.replaceVideoUri !== null && this.props.replaceVideoUri !== '') {
+		if (
+			this.props.replaceVideoUri !== undefined &&
+			this.props.replaceVideoUri !== null &&
+			this.props.replaceVideoUri !== ''
+		) {
 			return 'videoReplace';
 		}
 		return 'showMainVideo';
-	}
+	};
 
 	private handleImageChange: EventWithDataHandler<React.ChangeEvent<any>> = (
 		e: unknown,
@@ -1101,6 +1115,7 @@ interface ContainerProps {
 	hasMainVideo: boolean;
 	videoReplace: boolean;
 	replaceVideoUri: string;
+	atomId: string;
 }
 
 interface InterfaceProps {
@@ -1178,6 +1193,7 @@ const createMapStateToProps = () => {
 			collectionType: collectionId
 				? selectCollectionType(state, collectionId)
 				: undefined,
+			atomId: valueSelector(state, 'atomId'),
 		};
 	};
 };
