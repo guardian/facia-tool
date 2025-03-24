@@ -733,7 +733,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											id={getInputId(cardId, 'hide-media')}
 											type="checkbox"
 											default={false}
-											onChange={() => this.changeImageField('imageHide')}
+											onChange={() => this.changeMediaField('imageHide')}
 										/>
 									</InputGroup>
 									<InputGroup>
@@ -746,7 +746,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											type="checkbox"
 											default={false}
 											onChange={() =>
-												this.changeImageField('imageCutoutReplace')
+												this.changeMediaField('imageCutoutReplace')
 											}
 										/>
 									</InputGroup>
@@ -760,7 +760,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											type="checkbox"
 											default={false}
 											onChange={() =>
-												this.changeImageField('coverCardImageReplace')
+												this.changeMediaField('coverCardImageReplace')
 											}
 										/>
 									</InputGroup>
@@ -777,7 +777,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 													id={getInputId(cardId, 'image-replace')}
 													type="checkbox"
 													default={false}
-													onChange={() => this.changeImageField('imageReplace')}
+													onChange={() => this.changeMediaField('imageReplace')}
 												/>
 											</InputGroup>
 										)}
@@ -807,7 +807,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											value="select-trail-image"
 											initialValues="select-trail-image"
 											onClick={() =>
-												this.changeImageField(this.getImageFieldName())
+												this.changeMediaField(this.getImageFieldName())
 											}
 											checked={
 												!this.props.showMainVideo &&
@@ -826,7 +826,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											label="Video"
 											id={getInputId(cardId, 'select-video')}
 											value="select-video"
-											onClick={() => this.changeImageField('showMainVideo')}
+											onClick={() => this.changeMediaField('showMainVideo')}
 											checked={
 												this.props.showMainVideo || this.props.videoReplace
 											}
@@ -843,9 +843,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 													e.currentTarget.value !== null &&
 													e.currentTarget.value !== ''
 												) {
-													this.changeImageField('videoReplace');
+													this.changeMediaField('videoReplace');
 												} else {
-													this.changeImageField('showMainVideo');
+													this.changeMediaField('showMainVideo');
 												}
 											}}
 										/>
@@ -864,7 +864,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											id={getInputId(cardId, 'select-slideshow')}
 											value="select-slideshow"
 											onClick={() =>
-												this.changeImageField('imageSlideshowReplace')
+												this.changeMediaField('imageSlideshowReplace')
 											}
 											checked={
 												this.props.imageSlideshowReplace !== undefined
@@ -992,14 +992,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		// If we don't already have an image override enabled, enable the default imageReplace property.
 		// This saves the user a click; adding an image without enabling would be very unusual.
 		if (!this.props.imageCutoutReplace && !this.props.imageReplace) {
-			this.changeImageField('imageReplace');
+			this.changeMediaField('imageReplace');
 		}
 
 		this.props.change(this.getImageFieldName(), e);
 	};
 
-	private changeImageField = (fieldToSet: string) => {
-		const allImageFields = [
+	private changeMediaField = (fieldToSet: string) => {
+		const allMediaFields = [
 			'imageHide',
 			'imageCutoutReplace',
 			'imageSlideshowReplace',
@@ -1009,7 +1009,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			'videoReplace',
 		];
 
-		allImageFields.forEach((field) => {
+		allMediaFields.forEach((field) => {
 			if (field === fieldToSet) {
 				this.props.change(field, true);
 			} else {
