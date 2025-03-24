@@ -809,7 +809,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									<InputGroup>
 										<Field
 											component={InputRadio}
-											disabled={editableFields.indexOf('showMainVideo') === -1}
+											disabled={editableFields.indexOf('showMainVideo') === -1 && editableFields.indexOf('videoReplace') === -1}
 											icon={<SelectVideoIcon />}
 											usesBlockStyling={true}
 											name="media-select"
@@ -817,7 +817,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											label="Video"
 											id={getInputId(cardId, 'select-video')}
 											value="select-video"
-											onClick={() => this.changeMediaField('showMainVideo')}
+											onClick={() => this.changeMediaField(this.getVideoFieldName())}
 											checked={
 												this.props.showMainVideo || this.props.videoReplace
 											}
@@ -984,6 +984,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		}
 		return 'primaryImage';
 	};
+
+	private getVideoFieldName = () => {
+		if (this.props.replaceVideoUri !== undefined && this.props.replaceVideoUri !== null && this.props.replaceVideoUri !== '') {
+			return 'videoReplace';
+		}
+		return 'showMainVideo';
+	}
 
 	private handleImageChange: EventWithDataHandler<React.ChangeEvent<any>> = (
 		e: unknown,
