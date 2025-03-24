@@ -858,6 +858,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
 												this.props.change('atomId', extractAtomId(value));
 											}}
+											placeholder="Paste video url"
 										/>
 									)}
 									<InputGroup>
