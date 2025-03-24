@@ -49,6 +49,7 @@ export interface RecipeSearchParams {
 		decay?: number;
 	};
 	format?: 'Full' | 'Titles';
+	allSponsors?: boolean;
 }
 
 export interface ChefSearchHit {

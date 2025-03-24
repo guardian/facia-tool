@@ -172,6 +172,7 @@ export const RecipeSearchContainer = ({ rightHandContainer }: Props) => {
 						filters: filters,
 						uprateConfig: getUpdateConfig(),
 						limit: !!filters ? 300 : 100,
+						allSponsors: true,
 					});
 					break;
 			}
