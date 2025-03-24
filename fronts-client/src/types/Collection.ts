@@ -82,6 +82,8 @@ type CardRootMeta = ChefCardMeta &
 		showByline?: boolean;
 		imageCutoutReplace?: boolean;
 		imageReplace?: boolean;
+		videoReplace?: boolean;
+		replaceVideoUri?: string;
 		imageHide?: boolean;
 		showKickerTag?: boolean;
 		showKickerSection?: boolean;

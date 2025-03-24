@@ -77,7 +77,6 @@ import { ImageCol } from './ImageCol';
 import { CollectionToggles, renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
-import Explainer from '../Explainer';
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
 	collectionId: string | null;
@@ -850,14 +849,27 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											value="select-video"
 											onClick={() => this.changeImageField('showMainVideo')}
 											checked={
-												this.props.showMainVideo !== undefined
-													? this.props.showMainVideo
-													: false
+												this.props.showMainVideo || this.props.videoReplace
 											}
 										/>
 									</InputGroup>
-									{!hasMainVideo && (
-										<Explainer>Main media video required</Explainer>
+									{(this.props.showMainVideo || this.props.videoReplace) && (
+										<Field
+											component={InputText}
+											name="replaceVideoUri"
+											type="text"
+											onChange={(e: any) => {
+												if (
+													e.currentTarget.value !== undefined &&
+													e.currentTarget.value !== null &&
+													e.currentTarget.value !== ''
+												) {
+													this.changeImageField('videoReplace');
+												} else {
+													this.changeImageField('showMainVideo');
+												}
+											}}
+										/>
 									)}
 									<InputGroup>
 										<Field
@@ -1015,6 +1027,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			'imageReplace',
 			'showMainVideo',
 			'coverCardImageReplace',
+			'videoReplace',
 		];
 
 		allImageFields.forEach((field) => {
@@ -1123,6 +1136,8 @@ interface ContainerProps {
 	editMode: EditMode;
 	primaryImage: ValidationResponse | null;
 	hasMainVideo: boolean;
+	videoReplace: boolean;
+	replaceVideoUri: string;
 }
 
 interface InterfaceProps {
@@ -1181,6 +1196,8 @@ const createMapStateToProps = () => {
 			imageHide: valueSelector(state, 'imageHide'),
 			imageReplace: valueSelector(state, 'imageReplace'),
 			imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
+			videoReplace: valueSelector(state, 'videoReplace'),
+			replaceVideoUri: valueSelector(state, 'replaceVideoUri'),
 			showByline: valueSelector(state, 'showByline'),
 			showKickerTag: valueSelector(state, 'showKickerTag'),
 			showKickerSection: valueSelector(state, 'showKickerSection'),
