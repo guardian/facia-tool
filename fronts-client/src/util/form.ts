@@ -43,6 +43,7 @@ export interface CardFormData {
 	isImmersive: boolean;
 	videoReplace: boolean;
 	replaceVideoUri: string;
+	atomId: string;
 }
 
 export type FormFields = keyof CardFormData;
@@ -152,6 +153,7 @@ export const getInitialValuesForCardForm = (
 				coverCardMobileImage: article.coverCardMobileImage || {},
 				coverCardTabletImage: article.coverCardTabletImage || {},
 				isImmersive: article.isImmersive || false,
+				atomId: article.atomId || '',
 			}
 		: undefined;
 };
