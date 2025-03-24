@@ -78,6 +78,7 @@ import { CollectionToggles, renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
 import { extractAtomId } from '../../util/extractAtomId';
+import { VideoControls } from '../video/VideoControls';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -860,6 +861,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											}
 										/>
 									</InputGroup>
+									{(this.props.showMainVideo || this.props.videoReplace) && <VideoControls atomId={this.props.atomId} />}
 									{(this.props.showMainVideo || this.props.videoReplace) && (
 										<Field
 											component={InputText}

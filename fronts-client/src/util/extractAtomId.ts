@@ -7,6 +7,8 @@ const stripQueryParams = (url: string): string => {
 };
 
 const extractAtomId = (src: string | undefined): string => {
+	// TODO: Handle CODE / PROD
+	// TODO: Cleaner extraction
 	if (src === undefined) {
 		return '';
 	}
