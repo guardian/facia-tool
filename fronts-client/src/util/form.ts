@@ -40,6 +40,8 @@ export interface CardFormData {
 	coverCardImageReplace: boolean;
 	coverCardMobileImage: ImageData;
 	coverCardTabletImage: ImageData;
+	videoReplace: boolean;
+	replaceVideoUri: string;
 }
 
 export type FormFields = keyof CardFormData;
@@ -125,6 +127,8 @@ export const getInitialValuesForCardForm = (
 				imageHide: article.imageHide || false,
 				imageReplace: article.imageReplace || false,
 				imageSlideshowReplace: article.imageSlideshowReplace || false,
+				videoReplace: article.videoReplace || false,
+				replaceVideoUri: article.replaceVideoUri || '',
 				primaryImage: {
 					src: article.imageSrc,
 					width: strToInt(article.imageSrcWidth),
