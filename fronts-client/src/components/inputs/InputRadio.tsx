@@ -12,6 +12,7 @@ const radioButtonWidth = 17;
 const BlockStylingMixin = () => css`
 	padding: 8px 6px;
 	background-color: #cccccc;
+	width: 170px;
 	&:has(input:checked) {
 		color: white;
 		background-color: #a9a9a9;
