@@ -623,7 +623,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								component={InputCheckboxToggleInline}
 								label="Immersive"
 								id={getInputId(cardId, 'immersive')}
-								type="radio"
+								type="checkbox"
 							/>
 							<Field
 								name="isBoosted"
