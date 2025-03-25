@@ -438,7 +438,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			cardId: string,
 			collectionType?: string,
 		) => {
-			return renderBoostToggles(groupSizeId, cardId, collectionType);
+			return renderBoostToggles(
+				groupSizeId,
+				cardId,
+				this.toggleCardStyleField,
+				collectionType,
+			);
 		},
 	);
 
@@ -624,6 +629,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								label="Immersive"
 								id={getInputId(cardId, 'immersive')}
 								type="checkbox"
+								onChange={() => this.toggleCardStyleField('isImmersive')}
 							/>
 							<Field
 								name="isBoosted"
@@ -1011,6 +1017,21 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 				this.props.change(field, false);
 			}
 		});
+	};
+
+	//*
+	// immersive card styling and boost levels are mutually exclusive.
+	// A card cannot be both immersive and boosted, so we need to toggle the other field when one is set.
+	// This function is called when one of the fields is toggled, and sets the other field to false.
+	// If the field to set is `isImmersive`, we also need to reset the boost level to default.
+	// If the field to set is `isBoosted`, we need to reset the immersive flag to false.
+	// */
+	private toggleCardStyleField = (fieldToSet: string) => {
+		if (fieldToSet === 'isImmersive') {
+			this.props.change('boostLevel', 'default');
+		} else {
+			this.props.change('isImmersive', false);
+		}
 	};
 
 	/**

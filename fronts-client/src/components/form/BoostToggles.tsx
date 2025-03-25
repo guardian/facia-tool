@@ -83,6 +83,7 @@ const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 export const renderBoostToggles = (
 	groupIndex: number = 0,
 	cardId: string,
+	onChange: (value: string) => void,
 	collectionType?: string,
 ) => {
 	// Only render boost toggles for flexible collections
@@ -104,6 +105,7 @@ export const renderBoostToggles = (
 			id={getInputId(cardId, id)}
 			value={value}
 			type="radio"
+			onChange={() => onChange('boostLevel')}
 		/>
 	));
 };
