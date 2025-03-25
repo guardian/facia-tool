@@ -613,10 +613,18 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						>
 							{this.getBoostToggles(groupSizeId, cardId, collectionType)}
 						</CheckboxFieldsContainer>
+
 						<CheckboxFieldsContainer
 							editableFields={editableFields}
 							size={this.props.size}
 						>
+							<Field
+								name="isImmersive"
+								component={InputCheckboxToggleInline}
+								label="Immersive"
+								id={getInputId(cardId, 'immersive')}
+								type="radio"
+							/>
 							<Field
 								name="isBoosted"
 								component={InputCheckboxToggleInline}
