@@ -77,6 +77,7 @@ import { ImageCol } from './ImageCol';
 import { renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
+import Explainer from '../Explainer';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -825,6 +826,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											}
 										/>
 									</InputGroup>
+									{!hasMainVideo && (
+										<Explainer>Main media video required</Explainer>
+									)}
 									<InputGroup>
 										<Field
 											component={InputRadio}
