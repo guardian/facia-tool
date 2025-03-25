@@ -725,7 +725,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										collectionType={this.props.collectionType}
 									/>
 								</ImageCol>
-								<ToggleCol flex={2}>
+								<ToggleCol>
 									<InputGroup>
 										<ConditionalField
 											permittedFields={editableFields}
@@ -816,25 +816,29 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 												editableFields.indexOf('videoReplace') === -1
 											}
 											icon={<SelectVideoIcon />}
-											contents={<VideoControls
-												atomId={this.props.atomId}
-												active={(this.props.showMainVideo || this.props.videoReplace)}
-												onChange={(e: any) => {
-													const value = e.currentTarget.value;
-
-													if (
-														value !== undefined &&
-														value !== null &&
-														value !== ''
-													) {
-														this.changeMediaField('videoReplace');
-													} else {
-														this.changeMediaField('showMainVideo');
+											contents={
+												<VideoControls
+													atomId={this.props.atomId}
+													active={
+														this.props.showMainVideo || this.props.videoReplace
 													}
+													onChange={(e: any) => {
+														const value = e.currentTarget.value;
 
-													this.props.change('atomId', extractAtomId(value));
-												}}
-											/>}
+														if (
+															value !== undefined &&
+															value !== null &&
+															value !== ''
+														) {
+															this.changeMediaField('videoReplace');
+														} else {
+															this.changeMediaField('showMainVideo');
+														}
+
+														this.props.change('atomId', extractAtomId(value));
+													}}
+												/>
+											}
 											usesBlockStyling={true}
 											name="media-select"
 											type="radio"
