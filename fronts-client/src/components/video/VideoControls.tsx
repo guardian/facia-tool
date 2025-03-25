@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import styled from "styled-components";
-import {Field} from "redux-form";
-import InputText from "../inputs/InputText";
+import ButtonDefault from "../inputs/ButtonDefault";
+import InputBase from "../inputs/InputBase";
 
 interface VideoControlsProps {
 	atomId: string;
@@ -38,13 +38,52 @@ const extractVideoTrailImage = (atom: any): string | undefined => {
 	}
 }
 
-const VideoControlsContainer = styled.div`
+const VideoControlsOuterContainer = styled.div`
 	margin-top: 8px;
+	position: relative;
 `
 
-const VideoTrailImage = styled.img`
+const VideoAction = styled(ButtonDefault)<{ small?: boolean }>`
+	background-color: #5e5e5e50;
+	&:hover,
+	&:active,
+	&:hover:enabled,
+	&:active:enabled {
+      background-color: #5e5e5e99;
+    }
+	height: 50%;
 	width: 100%;
-`
+	font-size: 12px;
+	flex-grow: 1;
+	padding: 0;
+	text-shadow: 0 0 2px black;
+	display: inline-block;
+`;
+
+const VideoControlsInnerContainer = styled.div<{url?: string}>`
+	background-image: url(${props => props.url});
+	height: 100%;
+	position: relative;
+	aspect-ratio: 5 / 4;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+	-webkit-box-flex: 1;
+	flex-grow: 1;
+	margin-bottom: 5px;
+	//cursor: grab;
+`;
+
+const VideoUrlInput = styled(InputBase)`
+	border: none;
+	:focus,
+	:active {
+		border: none;
+	}
+	::placeholder {
+		font-size: 12px;
+	}
+`;
 
 export const VideoControls = ({atomId, active, onChange}: VideoControlsProps) => {
 	// TODO: Pipe through article main video
@@ -76,16 +115,34 @@ export const VideoControls = ({atomId, active, onChange}: VideoControlsProps) =>
 	}
 
 	return (
-		<VideoControlsContainer>
-			{trailImageUri ? <VideoTrailImage src={trailImageUri} alt="Video thumbnail" /> : null}
+		<VideoControlsOuterContainer>
+			<VideoControlsInnerContainer url={trailImageUri}>
+				<VideoAction
+					onClick={(e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						console.log('replace video');
+					}}
+				>
+					Replace video
+				</VideoAction>
+				<VideoAction
+					onClick={(e) => {
+						e.preventDefault();
+						e.stopPropagation();
+						console.log('preview video');
+					}}
+				>
+					Preview video
+				</VideoAction>
+			</VideoControlsInnerContainer>
 			{/*{assetId ? <iframe src={`https://www.youtube.com/embed/${assetId}`} allowFullScreen={true}></iframe> : null}*/}
-			<Field
-				component={InputText}
+			<VideoUrlInput
 				name="replaceVideoUri"
 				type="text"
 				onChange={onChange}
 				placeholder="Paste video url"
 			/>
-		</VideoControlsContainer>
+		</VideoControlsOuterContainer>
 	);
 }
