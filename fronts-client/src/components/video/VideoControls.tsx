@@ -9,14 +9,32 @@ interface VideoControlsProps {
 	onChange: (event: any) => void;
 }
 
-const fetchAssetId = async (atomId: string): Promise<string | undefined> => {
+const fetchAtom = async (atomId: string): Promise<any> => {
 	const response = await fetch(`/api/live/atom/video/${atomId}`);
 	const data = await response.json();
-	if(data?.response?.status === "ok") {
-		const assets = data?.response?.media?.data?.media?.assets;
-		return assets && assets.length > 0 && assets[0].id || undefined;
+	if(data?.response?.status !== "ok") {
+		throw new Error(`Failed to fetch atom ${atomId}`);
 	} else {
-		return undefined;
+		return data?.response;
+	}
+}
+
+const extractAssetId = (atom: any): string | undefined => {
+	const assets = atom?.media?.data?.media?.assets;
+	if(assets === undefined || assets.length === 0 || assets[0] === undefined || assets[0].id === undefined) {
+		throw new Error(`No assets found for atom ${atom.id}`);
+	} else {
+		return assets[0].id;
+	}
+}
+
+const extractVideoTrailImage = (atom: any): string | undefined => {
+	const imageAssets = atom?.media?.data?.media?.trailImage?.assets;
+
+	if(imageAssets === undefined || imageAssets.length === 0 || imageAssets[0] === undefined || imageAssets[0].file === undefined) {
+		throw new Error(`No trail image found for atom ${atom.id}`);
+	} else {
+		return imageAssets[0].file;
 	}
 }
 
@@ -24,14 +42,33 @@ const VideoControlsContainer = styled.div`
 	margin-top: 8px;
 `
 
+const VideoTrailImage = styled.img`
+	width: 100%;
+`
+
 export const VideoControls = ({atomId, active, onChange}: VideoControlsProps) => {
 	// TODO: Pipe through article main video
 
-	const [assetId, setAssetId] = React.useState<string | undefined>(undefined);
+	const [_assetId, setAssetId] = React.useState<string | undefined>(undefined);
+	const [trailImageUri, setTrailImageUri] = React.useState<string | undefined>(undefined);
 
 	useEffect( () => {
-		fetchAssetId(atomId)
-			.then(assetId => setAssetId(assetId))
+		// TODO: Fetch on debounce?
+		fetchAtom(atomId)
+			.then((atom) => {
+				const assetId = extractAssetId(atom);
+				if(assetId !== undefined) {
+					setAssetId(assetId);
+				}
+
+				const trailImage = extractVideoTrailImage(atom);
+				if(trailImage !== undefined) {
+					setTrailImageUri(trailImage);
+				}
+			})
+			.catch((error) => {
+				console.error(error);
+			});
 	}, [atomId]);
 
 	if(!active) {
@@ -40,8 +77,8 @@ export const VideoControls = ({atomId, active, onChange}: VideoControlsProps) =>
 
 	return (
 		<VideoControlsContainer>
-			{assetId ? <iframe src={`https://www.youtube.com/embed/${assetId}`} allowFullScreen={true}></iframe> : null}
-
+			{trailImageUri ? <VideoTrailImage src={trailImageUri} alt="Video thumbnail" /> : null}
+			{/*{assetId ? <iframe src={`https://www.youtube.com/embed/${assetId}`} allowFullScreen={true}></iframe> : null}*/}
 			<Field
 				component={InputText}
 				name="replaceVideoUri"
