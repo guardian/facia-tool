@@ -101,6 +101,7 @@ type CardRootMeta = ChefCardMeta &
 		coverCardImageReplace?: boolean;
 		coverCardMobileImage?: ImageData;
 		coverCardTabletImage?: ImageData;
+		isImmersive?: boolean;
 	};
 
 type CardRootFields = NestedCardRootFields & {

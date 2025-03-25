@@ -147,7 +147,7 @@ export const getInitialValuesForCardForm = (
 				coverCardImageReplace: article.coverCardImageReplace || false,
 				coverCardMobileImage: article.coverCardMobileImage || {},
 				coverCardTabletImage: article.coverCardTabletImage || {},
-				isImmersive: false, // TODO - Set this value
+				isImmersive: article.isImmersive || false,
 			}
 		: undefined;
 };
