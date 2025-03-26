@@ -833,6 +833,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 													active={
 														this.props.showMainVideo || this.props.videoReplace
 													}
+													usesReplacementVideo={this.props.videoReplace}
 													changeMediaField={this.changeMediaField}
 													changeAtomIdField={(value: string) => this.props.change('replacementVideoAtomId', value)}
 												/>
