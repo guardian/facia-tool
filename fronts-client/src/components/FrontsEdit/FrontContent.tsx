@@ -274,12 +274,18 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		);
 	}
 
+	/** This function manages the moving of cards between groups. */
 	public handleMove = (move: Move<TCard>) => {
-		const numberOfArticlesAlreadyInGroup = move.to.cards?.length ?? 0;
-		const targetGroupIsFull =
-			move.to.groupMaxItems === numberOfArticlesAlreadyInGroup;
+		const numberOfCardsInGroup = move.to.cards?.length ?? 0;
+		const targetGroupIsFull = move.to.groupMaxItems === numberOfCardsInGroup;
 
-		//if the target group has free space or is the same group as the card is already in, we just move the card
+		/**
+		 *  If:
+		 * - the target group isn't full
+		 * - or the card is already in the target group
+		 * - or it's a standard group
+		 * then we can move the card directly.
+		 **/
 		if (
 			!targetGroupIsFull ||
 			move.to.cards?.includes(move.data.uuid) ||
@@ -293,6 +299,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			);
 		}
 
+		// Otherwise, we need to build a move queue to handle cascading shifts of cards
 		const moveQueue = buildMoveQueue(move);
 
 		moveQueue.map((move) =>
