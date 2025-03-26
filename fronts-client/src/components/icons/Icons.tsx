@@ -418,6 +418,19 @@ const CropIcon = ({
 	</svg>
 );
 
+const PreviewVideoIcon = ({ fill = theme.colors.white }) => (
+	<svg width="20" height="18" viewBox="0 0 16 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M15.421 0.456543H0V13.2885H15.421V0.456543ZM3.6 3.3885L11.7 6.9885L3.6 10.5885V3.3885Z" fill={fill}/>
+	</svg>
+);
+
+const ReplaceVideoIcon = ({ fill = theme.colors.white }) => (
+	<svg width="22" height="21" viewBox="0 0 18 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+		<path d="M18 2.47267H15.5008V0H13.9055V2.47267H11.4062V4.01477H13.9055V6.59379H15.5008V4.01477H18V2.47267Z" fill={fill}/>
+		<path d="M12.9217 8.42835V5.92909H10.4224V3.45642H0V16.2884H15.421V8.42835H12.9217ZM3.6 6.38838L11.7 9.98838L3.6 13.5884V6.38838Z" fill={fill}/>
+	</svg>
+);
+
 export {
 	DownCaretIcon,
 	RubbishBinIcon,
@@ -438,4 +451,6 @@ export {
 	DragHandleIcon as DragIcon,
 	WarningIcon,
 	CropIcon,
+	PreviewVideoIcon,
+	ReplaceVideoIcon
 };
