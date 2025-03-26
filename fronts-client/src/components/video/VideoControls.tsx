@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import ButtonDefault from '../inputs/ButtonDefault';
 import InputBase from '../inputs/InputBase';
 import { createPortal } from 'react-dom';
-import { CloseIcon } from '../icons/Icons';
+import {CloseIcon, PreviewVideoIcon, ReplaceVideoIcon} from '../icons/Icons';
 
 interface VideoControlsProps {
 	atomId: string;
@@ -69,7 +69,10 @@ const VideoAction = styled(ButtonDefault)<{ small?: boolean }>`
 	flex-grow: 1;
 	padding: 0;
 	text-shadow: 0 0 2px black;
-	display: inline-block;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
 `;
 
 const VideoControlsInnerContainer = styled.div<{ url?: string }>`
@@ -187,6 +190,7 @@ export const VideoControls = ({
 							console.log('replace video');
 						}}
 					>
+						<ReplaceVideoIcon/>
 						Replace video
 					</VideoAction>
 					<VideoAction
@@ -196,6 +200,7 @@ export const VideoControls = ({
 							setShowVideoPreviewModal(true);
 						}}
 					>
+						<PreviewVideoIcon/>
 						Preview video
 					</VideoAction>
 				</VideoControlsInnerContainer>
