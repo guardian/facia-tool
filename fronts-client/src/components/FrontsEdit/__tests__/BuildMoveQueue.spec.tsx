@@ -2,7 +2,7 @@ import { card } from 'fixtures/card';
 import { buildMoveQueue } from '../FrontContent';
 import { baseFront, baseTo } from './fixtures/groups.fixture';
 
-describe('HandleMove', () => {
+describe('buildMoveQueue', () => {
 	it('should move a card into the top of a group that is full and move the last card of that group into the next group', () => {
 		const moveQueue = buildMoveQueue(baseFront);
 		const card1 = {
@@ -154,7 +154,7 @@ describe('HandleMove', () => {
 				index: 1,
 			},
 		};
-		const moveQueue = newFront;
+		const moveQueue = buildMoveQueue(newFront);
 
 		const card1 = {
 			to: {
@@ -210,6 +210,7 @@ describe('HandleMove', () => {
 		};
 
 		const expectedMoveQueue = [card1, card2, card3];
+
 		expect(moveQueue).toEqual(expectedMoveQueue);
 	});
 });
