@@ -1,14 +1,12 @@
 import { card } from 'fixtures/card';
-import { makeMoveQueue } from '../FrontContent';
+import { buildMoveQueue } from '../FrontContent';
 import { baseFront, baseTo } from './fixtures/groups.fixture';
 
 describe('HandleMove', () => {
 	it('should move a card into the top of a group that is full and move the last card of that group into the next group', () => {
-		const moveQueue = makeMoveQueue(baseFront);
+		const moveQueue = buildMoveQueue(baseFront);
 		const card1 = {
-			to: baseFront.to,
-			data: baseFront.data,
-			from: baseFront.from || null,
+			...baseFront,
 			type: 'collection',
 		};
 
@@ -31,25 +29,17 @@ describe('HandleMove', () => {
 			type: 'collection',
 		};
 
-		const card3GroupMaxItems =
-			baseFront.to.groupsData && baseFront.to.groupsData[2].maxItems;
-		const card3Cards =
-			baseFront.to.groupsData && baseFront.to.groupsData[2].cardsData;
-		const card3Data =
-			baseFront.to.groupsData &&
-			baseFront.to.groupsData[1].cardsData &&
-			baseFront.to.groupsData[1].cardsData[1];
 		const card3 = {
 			to: {
 				id: 'group-2',
 				type: 'group',
 				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
-				groupMaxItems: card3GroupMaxItems,
+				groupMaxItems: baseFront.to.groupsData?.[2].maxItems,
 				groupsData: baseFront.to.groupsData,
-				cards: card3Cards,
+				cards: baseFront.to.groupsData?.[2].cardsData,
 				index: 0,
 			},
-			data: card3Data,
+			data: baseFront.to.groupsData?.[1].cardsData?.[1],
 			from: {
 				type: 'group',
 				id: 'group-1',
@@ -58,25 +48,17 @@ describe('HandleMove', () => {
 			type: 'collection',
 		};
 
-		const card4GroupMaxItems =
-			baseFront.to.groupsData && baseFront.to.groupsData[3].maxItems;
-		const card4Cards =
-			baseFront.to.groupsData && baseFront.to.groupsData[3].cardsData;
-		const card4Data =
-			baseFront.to.groupsData &&
-			baseFront.to.groupsData[2].cardsData &&
-			baseFront.to.groupsData[2].cardsData[1];
 		const card4 = {
 			to: {
 				id: 'group-3',
 				type: 'group',
 				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
-				groupMaxItems: card4GroupMaxItems,
+				groupMaxItems: baseFront.to.groupsData?.[3].maxItems,
 				groupsData: baseFront.to.groupsData,
-				cards: card4Cards,
+				cards: baseFront.to.groupsData?.[3].cardsData,
 				index: 0,
 			},
-			data: card4Data,
+			data: baseFront.to.groupsData?.[2].cardsData?.[1],
 			from: {
 				type: 'group',
 				id: 'group-2',
@@ -138,13 +120,8 @@ describe('HandleMove', () => {
 			},
 		};
 
-		const moveQueue = makeMoveQueue(newFront);
-		const card1 = {
-			to: newFront.to,
-			data: newFront.data,
-			from: newFront.from || null,
-			type: 'collection',
-		};
+		const moveQueue = buildMoveQueue(newFront);
+		const card1 = { ...newFront, type: 'collection' };
 
 		const card2 = {
 			to: {
@@ -170,8 +147,6 @@ describe('HandleMove', () => {
 		expect(moveQueue).toEqual(expectedMoveQueue);
 	});
 	it('if the card is moved to the bottom of a full group, it should move the card into the next group', () => {
-		// TODO - Will Fail
-
 		const newFront = {
 			...baseFront,
 			to: {
@@ -179,7 +154,7 @@ describe('HandleMove', () => {
 				index: 1,
 			},
 		};
-		const moveQueue = makeMoveQueue(newFront);
+		const moveQueue = newFront;
 
 		const card1 = {
 			to: {
@@ -196,7 +171,6 @@ describe('HandleMove', () => {
 			type: 'collection',
 		};
 
-		// last card in very big goes to big
 		const card2 = {
 			to: {
 				id: 'group-2',
@@ -236,43 +210,6 @@ describe('HandleMove', () => {
 		};
 
 		const expectedMoveQueue = [card1, card2, card3];
-		console.log('mq l', moveQueue.length, 'emq l', expectedMoveQueue.length);
-		console.log(
-			'queue0',
-			'moveQueue',
-			moveQueue[0],
-			'expectedMoveQueue',
-			expectedMoveQueue[0],
-		);
-		console.log(
-			'queue1',
-			'moveQueue',
-			moveQueue[1],
-			'expectedMoveQueue',
-			expectedMoveQueue[1],
-		);
-		console.log(
-			'queue2',
-			'moveQueue',
-			moveQueue[2],
-			'expectedMoveQueue',
-			expectedMoveQueue[2],
-		);
-		console.log('queue3', 'moveQueue', moveQueue[3]);
-
 		expect(moveQueue).toEqual(expectedMoveQueue);
 	});
-
-	// it('should keep its sublinks when a card is moved', () => {
-	// 	// TODO
-	// });
-	// it('should move a card into a group that has space', () => {
-	// 	// TODO
-	// });
-	// it('should move a card within its existing group', () => {
-	// 	// TODO
-	// });
-	// it('should always move the card into a standard group', () => {
-	// 	// TODO
-	// });
 });
