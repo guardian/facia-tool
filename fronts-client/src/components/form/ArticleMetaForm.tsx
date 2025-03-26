@@ -829,12 +829,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											contents={
 												<VideoControls
 													mainMediaVideoAtom={mainMediaVideoAtom}
-													replacementAtomId={this.props.atomId}
+													replacementVideoAtomId={this.props.replacementVideoAtomId}
 													active={
 														this.props.showMainVideo || this.props.videoReplace
 													}
 													changeMediaField={this.changeMediaField}
-													changeAtomIdField={(value: string) => this.props.change('atomId', value)}
+													changeAtomIdField={(value: string) => this.props.change('replacementVideoAtomId', value)}
 												/>
 											}
 											usesBlockStyling={true}
@@ -1109,7 +1109,7 @@ interface ContainerProps {
 	mainMediaVideoAtom: any;
 	videoReplace: boolean;
 	replaceVideoUri: string;
-	atomId: string;
+	replacementVideoAtomId: string;
 }
 
 interface InterfaceProps {
@@ -1189,6 +1189,7 @@ const createMapStateToProps = () => {
 				? selectCollectionType(state, collectionId)
 				: undefined,
 			atomId: valueSelector(state, 'atomId'),
+			replacementVideoAtomId: valueSelector(state, 'replacementVideoAtomId'),
 		};
 	};
 };

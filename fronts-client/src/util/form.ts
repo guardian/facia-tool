@@ -43,6 +43,7 @@ export interface CardFormData {
 	videoReplace: boolean;
 	replaceVideoUri: string;
 	atomId: string;
+	replacementVideoAtomId: string;
 }
 
 export type FormFields = keyof CardFormData;
@@ -152,6 +153,7 @@ export const getInitialValuesForCardForm = (
 				coverCardMobileImage: article.coverCardMobileImage || {},
 				coverCardTabletImage: article.coverCardTabletImage || {},
 				atomId: article.atomId || '',
+				replacementVideoAtomId: article.replacementVideoAtomId || '',
 			}
 		: undefined;
 };

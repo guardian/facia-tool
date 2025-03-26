@@ -10,7 +10,7 @@ import {extractAtomId} from "../../util/extractAtomId";
 
 interface VideoControlsProps {
 	mainMediaVideoAtom: any;
-	replacementAtomId: string;
+	replacementVideoAtomId: string;
 	active: boolean;
 	changeMediaField: (fieldToSet: string) => void;
 	changeAtomIdField: (atomId: string) => void;
@@ -132,13 +132,12 @@ const CloseModalButton = styled(ButtonDefault)`
 
 export const VideoControls = ({
 	mainMediaVideoAtom,
-	replacementAtomId,
+	replacementVideoAtomId,
 	active,
 	changeMediaField,
 	changeAtomIdField,
 }: VideoControlsProps) => {
-	// TODO: Pipe through article main video
-
+	const [replacementAtom, setReplacementAtom] = React.useState<any | undefined>(undefined);
 	const [useReplacementVideo, setUseReplacementVideo] = React.useState<boolean>(false);
 	const [mainMediaVideoAssetId, setMainMediaVideoAssetId] = React.useState<string | undefined>(undefined);
 	const [mainMediaTrailImageUri, setMainMediaTrailImageUri] = React.useState<string | undefined>(undefined);
@@ -151,23 +150,28 @@ export const VideoControls = ({
 
 	useEffect(() => {
 		// TODO: Fetch on debounce?
-		fetchAtom(replacementAtomId)
+		fetchAtom(replacementVideoAtomId)
 			.then((response) => response.media)
-			.then((replacementAtom) => {
-				const assetId = extractAssetId(replacementAtom);
-				if (assetId !== undefined) {
-					setReplacementVideoAssetId(assetId);
-				}
-
-				const trailImage = extractVideoTrailImage(replacementAtom);
-				if (trailImage !== undefined) {
-					setReplacementTrailImageUri(trailImage);
-				}
-			})
+			.then((replacementAtom) => setReplacementAtom(replacementAtom))
 			.catch((error) => {
 				console.error(error);
 			});
-	}, [replacementAtomId]);
+	}, [replacementVideoAtomId]);
+
+	useEffect(() => {
+		if(replacementAtom === undefined) {
+			return;
+		}
+		const assetId = extractAssetId(replacementAtom);
+		if (assetId !== undefined) {
+			setReplacementVideoAssetId(assetId);
+		}
+
+		const trailImage = extractVideoTrailImage(replacementAtom);
+		if (trailImage !== undefined) {
+			setReplacementTrailImageUri(trailImage);
+		}
+	}, [replacementAtom]);
 
 	useEffect(() => {
 		if(!mainMediaVideoAtom) {
@@ -184,6 +188,14 @@ export const VideoControls = ({
 			setMainMediaTrailImageUri(trailImage);
 		}
 	}, [mainMediaVideoAtom]);
+
+	useEffect(() => {
+		if (useReplacementVideo) {
+			changeMediaField('videoReplace');
+		} else {
+			changeMediaField('showMainVideo');
+		}
+	}, [useReplacementVideo]);
 
 	if (!active) {
 		return null;
@@ -202,7 +214,9 @@ export const VideoControls = ({
 					type="checkbox"
 					dataTestId="use-replacement-video"
 					checked={useReplacementVideo}
-					onChange={() => setUseReplacementVideo(!useReplacementVideo)}
+					onChange={() => {
+						setUseReplacementVideo(!useReplacementVideo)
+					}}
 				/>, controlColumn) : null}
 			{(mainMediaVideoAssetId || replacementVideoAssetId) && showVideoPreviewModal
 				? createPortal(
@@ -255,10 +269,9 @@ export const VideoControls = ({
 							value !== null &&
 							value !== ''
 						) {
-							changeMediaField('videoReplace');
 							setUseReplacementVideo(true);
 						} else {
-							changeMediaField('showMainVideo');
+							setUseReplacementVideo(false);
 						}
 
 						changeAtomIdField(extractAtomId(value));
