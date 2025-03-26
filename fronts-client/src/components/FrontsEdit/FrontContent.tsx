@@ -100,7 +100,7 @@ function getNextGroupTarget(
 	currentGroupId: string,
 ) {
 	const currentIndex = groupIds.findIndex((id) => id === currentGroupId);
-	const nextGroupId = groupIds[currentIndex + 1]; // double check if nextGroup / groupsids can be undefined
+	const nextGroupId = groupIds[currentIndex + 1];
 	const nextGroup = groupsData.find((group) => group.uuid === nextGroupId);
 
 	return {
