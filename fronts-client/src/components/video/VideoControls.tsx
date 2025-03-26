@@ -12,6 +12,7 @@ interface VideoControlsProps {
 	mainMediaVideoAtom: any;
 	replacementVideoAtomId: string;
 	active: boolean;
+	usesReplacementVideo: boolean;
 	changeMediaField: (fieldToSet: string) => void;
 	changeAtomIdField: (atomId: string) => void;
 }
@@ -134,11 +135,11 @@ export const VideoControls = ({
 	mainMediaVideoAtom,
 	replacementVideoAtomId,
 	active,
+	usesReplacementVideo,
 	changeMediaField,
 	changeAtomIdField,
 }: VideoControlsProps) => {
 	const [replacementAtom, setReplacementAtom] = React.useState<any | undefined>(undefined);
-	const [useReplacementVideo, setUseReplacementVideo] = React.useState<boolean>(false);
 	const [mainMediaVideoAssetId, setMainMediaVideoAssetId] = React.useState<string | undefined>(undefined);
 	const [mainMediaTrailImageUri, setMainMediaTrailImageUri] = React.useState<string | undefined>(undefined);
 	const [replacementVideoAssetId, setReplacementVideoAssetId] = React.useState<string | undefined>(undefined);
@@ -150,12 +151,13 @@ export const VideoControls = ({
 
 	useEffect(() => {
 		// TODO: Fetch on debounce?
+		if (replacementVideoAtomId === "") {
+			return;
+		}
 		fetchAtom(replacementVideoAtomId)
 			.then((response) => response.media)
 			.then((replacementAtom) => setReplacementAtom(replacementAtom))
-			.catch((error) => {
-				console.error(error);
-			});
+			.catch((error) => console.error(error));
 	}, [replacementVideoAtomId]);
 
 	useEffect(() => {
@@ -189,14 +191,6 @@ export const VideoControls = ({
 		}
 	}, [mainMediaVideoAtom]);
 
-	useEffect(() => {
-		if (useReplacementVideo) {
-			changeMediaField('videoReplace');
-		} else {
-			changeMediaField('showMainVideo');
-		}
-	}, [useReplacementVideo]);
-
 	if (!active) {
 		return null;
 	}
@@ -213,9 +207,13 @@ export const VideoControls = ({
 					id={"useReplacementVideo"}
 					type="checkbox"
 					dataTestId="use-replacement-video"
-					checked={useReplacementVideo}
+					checked={usesReplacementVideo}
 					onChange={() => {
-						setUseReplacementVideo(!useReplacementVideo)
+						if(usesReplacementVideo) {
+							changeMediaField('showMainVideo');
+						} else {
+							changeMediaField('videoReplace')
+						}
 					}}
 				/>, controlColumn) : null}
 			{(mainMediaVideoAssetId || replacementVideoAssetId) && showVideoPreviewModal
@@ -228,7 +226,7 @@ export const VideoControls = ({
 								<CloseIcon />
 							</CloseModalButton>
 							<iframe
-								src={`https://www.youtube.com/embed/${useReplacementVideo ? replacementVideoAssetId : mainMediaVideoAssetId}`}
+								src={`https://www.youtube.com/embed/${usesReplacementVideo ? replacementVideoAssetId : mainMediaVideoAssetId}`}
 								allowFullScreen={true}
 							></iframe>
 						</VideoPreviewModal>,
@@ -236,7 +234,7 @@ export const VideoControls = ({
 					)
 				: null}
 			<VideoControlsOuterContainer>
-				<VideoControlsInnerContainer url={useReplacementVideo ? replacementTrailImageUri : mainMediaTrailImageUri}>
+				<VideoControlsInnerContainer url={usesReplacementVideo ? replacementTrailImageUri : mainMediaTrailImageUri}>
 					<VideoAction
 						onClick={(e) => {
 							e.preventDefault();
@@ -269,13 +267,12 @@ export const VideoControls = ({
 							value !== null &&
 							value !== ''
 						) {
-							setUseReplacementVideo(true);
+							changeMediaField('videoReplace');
 						} else {
-							setUseReplacementVideo(false);
+							changeMediaField('showMainVideo');
 						}
 
 						changeAtomIdField(extractAtomId(value));
-
 					}}
 					placeholder="Paste video url"
 				/>
