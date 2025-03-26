@@ -77,8 +77,8 @@ import { ImageCol } from './ImageCol';
 import { renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
-import { extractAtomId } from '../../util/extractAtomId';
 import { VideoControls } from '../video/VideoControls';
+import {getMainMediaVideoAtom} from "../../util/externalArticle";
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -467,6 +467,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			editMode,
 			primaryImage,
 			hasMainVideo,
+			mainMediaVideoAtom,
 			coverCardImageReplace,
 			coverCardMobileImage,
 			coverCardTabletImage,
@@ -784,7 +785,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											</InputGroup>
 										)}
 								</ToggleCol>
-								<Col flex={2}>
+								<Col flex={1}>
 									<InputLabel htmlFor="media-select">Select Media</InputLabel>
 									<InputGroup>
 										<Field
@@ -818,25 +819,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											icon={<SelectVideoIcon />}
 											contents={
 												<VideoControls
-													atomId={this.props.atomId}
+													mainMediaVideoAtom={mainMediaVideoAtom}
+													replacementAtomId={this.props.atomId}
 													active={
 														this.props.showMainVideo || this.props.videoReplace
 													}
-													onChange={(e: any) => {
-														const value = e.currentTarget.value;
-
-														if (
-															value !== undefined &&
-															value !== null &&
-															value !== ''
-														) {
-															this.changeMediaField('videoReplace');
-														} else {
-															this.changeMediaField('showMainVideo');
-														}
-
-														this.props.change('atomId', extractAtomId(value));
-													}}
+													changeMediaField={this.changeMediaField}
+													changeAtomIdField={(value: string) => this.props.change('atomId', value)}
 												/>
 											}
 											usesBlockStyling={true}
@@ -877,6 +866,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											}
 										/>
 									</InputGroup>
+									<ToggleCol id={'video-control-col'}/>
 								</Col>
 							</Row>
 							<ConditionalComponent
@@ -1116,6 +1106,7 @@ interface ContainerProps {
 	editMode: EditMode;
 	primaryImage: ValidationResponse | null;
 	hasMainVideo: boolean;
+	mainMediaVideoAtom: any;
 	videoReplace: boolean;
 	replaceVideoUri: string;
 	atomId: string;
@@ -1163,6 +1154,7 @@ const createMapStateToProps = () => {
 		return {
 			articleExists: !!article,
 			hasMainVideo: !!article && !!article.hasMainVideo,
+			mainMediaVideoAtom: !!article && !!article.hasMainVideo ? getMainMediaVideoAtom(article) : undefined,
 			collectionId,
 			getLastUpdatedBy,
 			snapType: article && article.snapType,

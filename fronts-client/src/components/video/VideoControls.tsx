@@ -4,11 +4,16 @@ import ButtonDefault from '../inputs/ButtonDefault';
 import InputBase from '../inputs/InputBase';
 import { createPortal } from 'react-dom';
 import {CloseIcon, PreviewVideoIcon, ReplaceVideoIcon} from '../icons/Icons';
+import InputCheckboxToggleInline from "../inputs/InputCheckboxToggleInline";
+import {Field} from "redux-form";
+import {extractAtomId} from "../../util/extractAtomId";
 
 interface VideoControlsProps {
-	atomId: string;
+	mainMediaVideoAtom: any;
+	replacementAtomId: string;
 	active: boolean;
-	onChange: (event: any) => void;
+	changeMediaField: (fieldToSet: string) => void;
+	changeAtomIdField: (atomId: string) => void;
 }
 
 const fetchAtom = async (atomId: string): Promise<any> => {
@@ -22,7 +27,7 @@ const fetchAtom = async (atomId: string): Promise<any> => {
 };
 
 const extractAssetId = (atom: any): string | undefined => {
-	const assets = atom?.media?.data?.media?.assets;
+	const assets = atom?.data?.media?.assets;
 	if (
 		assets === undefined ||
 		assets.length === 0 ||
@@ -36,7 +41,7 @@ const extractAssetId = (atom: any): string | undefined => {
 };
 
 const extractVideoTrailImage = (atom: any): string | undefined => {
-	const imageAssets = atom?.media?.data?.media?.trailImage?.assets;
+	const imageAssets = atom?.data?.media?.trailImage?.assets;
 
 	if (
 		imageAssets === undefined ||
@@ -126,45 +131,80 @@ const CloseModalButton = styled(ButtonDefault)`
 `;
 
 export const VideoControls = ({
-	atomId,
+	mainMediaVideoAtom,
+	replacementAtomId,
 	active,
-	onChange,
+	changeMediaField,
+	changeAtomIdField,
 }: VideoControlsProps) => {
 	// TODO: Pipe through article main video
 
-	const [assetId, setAssetId] = React.useState<string | undefined>(undefined);
+	const [useReplacementVideo, setUseReplacementVideo] = React.useState<boolean>(false);
+	const [mainMediaVideoAssetId, setMainMediaVideoAssetId] = React.useState<string | undefined>(undefined);
+	const [mainMediaTrailImageUri, setMainMediaTrailImageUri] = React.useState<string | undefined>(undefined);
+	const [replacementVideoAssetId, setReplacementVideoAssetId] = React.useState<string | undefined>(undefined);
 	const [showVideoPreviewModal, setShowVideoPreviewModal] =
 		React.useState<boolean>(false);
-	const [trailImageUri, setTrailImageUri] = React.useState<string | undefined>(
+	const [replacementTrailImageUri, setReplacementTrailImageUri] = React.useState<string | undefined>(
 		undefined,
 	);
 
 	useEffect(() => {
 		// TODO: Fetch on debounce?
-		fetchAtom(atomId)
-			.then((atom) => {
-				const assetId = extractAssetId(atom);
+		fetchAtom(replacementAtomId)
+			.then((response) => response.media)
+			.then((replacementAtom) => {
+				const assetId = extractAssetId(replacementAtom);
 				if (assetId !== undefined) {
-					setAssetId(assetId);
+					setReplacementVideoAssetId(assetId);
 				}
 
-				const trailImage = extractVideoTrailImage(atom);
+				const trailImage = extractVideoTrailImage(replacementAtom);
 				if (trailImage !== undefined) {
-					setTrailImageUri(trailImage);
+					setReplacementTrailImageUri(trailImage);
 				}
 			})
 			.catch((error) => {
 				console.error(error);
 			});
-	}, [atomId]);
+	}, [replacementAtomId]);
+
+	useEffect(() => {
+		if(!mainMediaVideoAtom) {
+			return;
+		}
+
+		const assetId = extractAssetId(mainMediaVideoAtom);
+		if (assetId !== undefined) {
+			setMainMediaVideoAssetId(assetId);
+		}
+
+		const trailImage = extractVideoTrailImage(mainMediaVideoAtom);
+		if (trailImage !== undefined) {
+			setMainMediaTrailImageUri(trailImage);
+		}
+	}, [mainMediaVideoAtom]);
 
 	if (!active) {
 		return null;
 	}
 
+	const controlColumn = document.getElementById('video-control-col');
+
 	return (
 		<>
-			{assetId && showVideoPreviewModal
+			{controlColumn !== null ? createPortal(
+				<Field
+					name="useReplacementVideo"
+					component={InputCheckboxToggleInline}
+					label="Use replacement video"
+					id={"useReplacementVideo"}
+					type="checkbox"
+					dataTestId="use-replacement-video"
+					checked={useReplacementVideo}
+					onChange={() => setUseReplacementVideo(!useReplacementVideo)}
+				/>, controlColumn) : null}
+			{(mainMediaVideoAssetId || replacementVideoAssetId) && showVideoPreviewModal
 				? createPortal(
 						<VideoPreviewModal onClick={() => setShowVideoPreviewModal(false)}>
 							<CloseModalButton
@@ -174,7 +214,7 @@ export const VideoControls = ({
 								<CloseIcon />
 							</CloseModalButton>
 							<iframe
-								src={`https://www.youtube.com/embed/${assetId}`}
+								src={`https://www.youtube.com/embed/${useReplacementVideo ? replacementVideoAssetId : mainMediaVideoAssetId}`}
 								allowFullScreen={true}
 							></iframe>
 						</VideoPreviewModal>,
@@ -182,7 +222,7 @@ export const VideoControls = ({
 					)
 				: null}
 			<VideoControlsOuterContainer>
-				<VideoControlsInnerContainer url={trailImageUri}>
+				<VideoControlsInnerContainer url={useReplacementVideo ? replacementTrailImageUri : mainMediaTrailImageUri}>
 					<VideoAction
 						onClick={(e) => {
 							e.preventDefault();
@@ -207,7 +247,23 @@ export const VideoControls = ({
 				<VideoUrlInput
 					name="replaceVideoUri"
 					type="text"
-					onChange={onChange}
+					onChange={(e: any) => {
+						const value = e.currentTarget.value;
+
+						if (
+							value !== undefined &&
+							value !== null &&
+							value !== ''
+						) {
+							changeMediaField('videoReplace');
+							setUseReplacementVideo(true);
+						} else {
+							changeMediaField('showMainVideo');
+						}
+
+						changeAtomIdField(extractAtomId(value));
+
+					}}
 					placeholder="Paste video url"
 				/>
 			</VideoControlsOuterContainer>
