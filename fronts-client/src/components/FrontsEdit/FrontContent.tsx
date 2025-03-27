@@ -95,10 +95,13 @@ interface FrontState {
 }
 
 function getNextGroupTarget(
-	groupIds: string[],
-	groupsData: Group[],
 	currentGroupId: string,
+	groupIds?: string[],
+	groupsData?: Group[],
 ) {
+	if (!groupIds || !groupsData) {
+		return;
+	}
 	const currentIndex = groupIds.findIndex((id) => id === currentGroupId);
 	const nextGroupId = groupIds[currentIndex + 1];
 	const nextGroup = groupsData.find((group) => group.uuid === nextGroupId);
@@ -113,13 +116,20 @@ function getNextGroupTarget(
 		cards: nextGroup?.cardsData,
 	};
 }
+type CollectionMove<T> = {
+	to: PosSpec;
+	data: T;
+	from: null | PosSpec;
+	type: 'collection';
+};
 
 /**
  * The move queue handles cascading card moves triggered when attempting to insert a card into a full group.
  * It ensures the affected cards are shifted into subsequent groups, maintaining maxItems constraints.
  */
 export const buildMoveQueue = (move: Move<TCard>) => {
-	const queue = [];
+	const queue: CollectionMove<TCard>[] = [];
+
 	const { data: movedCard, to, from } = move;
 
 	// Determine if the card is being added to the end of a group.
@@ -127,9 +137,10 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 
 	// If inserting at the bottom of a full group, move the card to the next group instead.
 	const target = isBottomInsert
-		? getNextGroupTarget(to.groupIds || [], to.groupsData || [], to.id)
+		? getNextGroupTarget(to.id, to.groupIds, to.groupsData)
 		: to;
 
+	if (!target) return queue;
 	// Add the initial move: either to the original target or the adjusted group.
 	queue.push({
 		to: target,
@@ -169,12 +180,12 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 		const lastCard = currentGroup.cardsData?.at(-1);
 
 		const nextTarget = getNextGroupTarget(
-			move.to.groupIds || [],
-			move.to.groupsData || [],
 			currentGroup.uuid,
+			move.to.groupIds,
+			move.to.groupsData,
 		);
 
-		if (lastCard) {
+		if (lastCard && nextTarget) {
 			queue.push({
 				to: nextTarget,
 				data: lastCard,
