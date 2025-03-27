@@ -40,6 +40,7 @@ export interface CardFormData {
 	coverCardImageReplace: boolean;
 	coverCardMobileImage: ImageData;
 	coverCardTabletImage: ImageData;
+	isImmersive: boolean;
 }
 
 export type FormFields = keyof CardFormData;
@@ -146,6 +147,7 @@ export const getInitialValuesForCardForm = (
 				coverCardImageReplace: article.coverCardImageReplace || false,
 				coverCardMobileImage: article.coverCardMobileImage || {},
 				coverCardTabletImage: article.coverCardTabletImage || {},
+				isImmersive: article.isImmersive || false,
 			}
 		: undefined;
 };
