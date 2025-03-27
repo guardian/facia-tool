@@ -27,6 +27,7 @@ const formValues = {
 	imageSlideshowReplace: false,
 	isBoosted: false,
 	boostLevel: 'default',
+	isImmersive: false,
 	isBreaking: false,
 	showLivePlayable: false,
 	primaryImage: {
@@ -243,7 +244,6 @@ describe('CardForm transform functions', () => {
 		it('should remove customKicker and showKickerCustom if the kicker is empty', () => {
 			const values = {
 				customKicker: '',
-				showKickerCustom: true,
 			};
 			const state = createStateWithChangedFormFields(
 				initialState,

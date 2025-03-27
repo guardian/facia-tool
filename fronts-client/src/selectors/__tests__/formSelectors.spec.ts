@@ -39,11 +39,24 @@ describe('Form utils', () => {
 				),
 			).toEqual([...defaultFields, 'isBoosted']);
 		});
-		it('should add boostLevel and remove large headline for flexible collection configs', () => {
+		it('should add boostLevel and isImmersive and remove large headline for flexible collection configs', () => {
 			const localState = cloneDeep(state);
 			localState.fronts.frontsConfig.data.collections.exampleCollection.type =
 				'flexible/general';
 			const selectFormFields = createSelectFormFieldsForCard();
+
+			console.log(
+				selectFormFields(
+					localState,
+					'95e2bfc0-8999-4e6e-a359-19960967c1e0',
+					false,
+				),
+			);
+			console.log(
+				[...defaultFields, 'boostLevel', 'isImmersive'].filter(
+					(t) => t !== 'showLargeHeadline',
+				),
+			);
 			expect(
 				selectFormFields(
 					localState,
@@ -51,7 +64,7 @@ describe('Form utils', () => {
 					false,
 				),
 			).toEqual(
-				[...defaultFields, 'boostLevel'].filter(
+				[...defaultFields, 'boostLevel', 'isImmersive'].filter(
 					(t) => t !== 'showLargeHeadline',
 				),
 			);
