@@ -63,7 +63,7 @@ import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputBase from '../inputs/InputBase';
 import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
 import { error } from '../../styleConstants';
-import { WarningIcon } from '../icons/Icons';
+import { SelectVideoIcon, SlideshowIcon, WarningIcon } from '../icons/Icons';
 import { FormContainer } from 'components/form/FormContainer';
 import { FormContent } from 'components/form/FormContent';
 import { TextOptionsInputGroup } from 'components/form/TextOptionsInputGroup';
@@ -76,6 +76,8 @@ import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import { renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
+import InputRadio from '../inputs/InputRadio';
+import Explainer from '../Explainer';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -689,7 +691,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 					</TextOptionsInputGroup>
 					<ImageOptionsInputGroup size={this.props.size}>
 						<ImageRowContainer size={this.props.size}>
-							<Row>
+							<Row rowGap={4}>
 								<ImageCol faded={imageHide || !!coverCardImageReplace}>
 									{shouldRenderField(
 										this.getImageFieldName(),
@@ -763,45 +765,94 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											}
 										/>
 									</InputGroup>
+									{primaryImage &&
+										!!primaryImage.src &&
+										!this.props.showMainVideo &&
+										!this.props.imageSlideshowReplace && (
+											<InputGroup>
+												<ConditionalField
+													permittedFields={editableFields}
+													name="imageReplace"
+													component={InputCheckboxToggleInline}
+													label="Use replacement image"
+													id={getInputId(cardId, 'image-replace')}
+													type="checkbox"
+													default={false}
+													onChange={() => this.changeImageField('imageReplace')}
+												/>
+											</InputGroup>
+										)}
+								</ToggleCol>
+								<Col flex={2}>
+									<InputLabel htmlFor="media-select">Select Media</InputLabel>
 									<InputGroup>
-										<ConditionalField
-											permittedFields={editableFields}
-											name="showMainVideo"
-											component={InputCheckboxToggleInline}
-											label="Show video"
-											id={getInputId(cardId, 'show-video')}
-											type="checkbox"
-											onChange={() => this.changeImageField('showMainVideo')}
-										/>
-									</InputGroup>
-									<InputGroup>
-										<ConditionalField
-											permittedFields={editableFields}
-											name="imageSlideshowReplace"
-											component={InputCheckboxToggleInline}
-											label="Slideshow"
-											id={getInputId(cardId, 'slideshow')}
-											type="checkbox"
-											onChange={() =>
-												this.changeImageField('imageSlideshowReplace')
+										<Field
+											component={InputRadio}
+											disabled={
+												editableFields.indexOf(this.getImageFieldName()) === -1
+											}
+											usesBlockStyling={true}
+											name="media-select"
+											type="radio"
+											label="Trail Image"
+											id={getInputId(cardId, 'select-trail-image')}
+											value="select-trail-image"
+											initialValues="select-trail-image"
+											onClick={() =>
+												this.changeImageField(this.getImageFieldName())
+											}
+											checked={
+												!this.props.showMainVideo &&
+												!this.props.imageSlideshowReplace
 											}
 										/>
 									</InputGroup>
-									{primaryImage && !!primaryImage.src && (
-										<InputGroup>
-											<ConditionalField
-												permittedFields={editableFields}
-												name="imageReplace"
-												component={InputCheckboxToggleInline}
-												label="Use replacement image"
-												id={getInputId(cardId, 'image-replace')}
-												type="checkbox"
-												default={false}
-												onChange={() => this.changeImageField('imageReplace')}
-											/>
-										</InputGroup>
+									<InputGroup>
+										<Field
+											component={InputRadio}
+											disabled={editableFields.indexOf('showMainVideo') === -1}
+											icon={<SelectVideoIcon />}
+											usesBlockStyling={true}
+											name="media-select"
+											type="radio"
+											label="Video"
+											id={getInputId(cardId, 'select-video')}
+											value="select-video"
+											onClick={() => this.changeImageField('showMainVideo')}
+											checked={
+												this.props.showMainVideo !== undefined
+													? this.props.showMainVideo
+													: false
+											}
+										/>
+									</InputGroup>
+									{!hasMainVideo && (
+										<Explainer>Main media video required</Explainer>
 									)}
-								</ToggleCol>
+									<InputGroup>
+										<Field
+											component={InputRadio}
+											disabled={
+												editableFields.indexOf('imageSlideshowReplace') === -1
+											}
+											icon={<SlideshowIcon />}
+											usesBlockStyling={true}
+											name="media-select"
+											type="radio"
+											label="Slideshow"
+											id={getInputId(cardId, 'select-slideshow')}
+											value="select-slideshow"
+											onClick={() =>
+												this.changeImageField('imageSlideshowReplace')
+											}
+											checked={
+												this.props.imageSlideshowReplace !== undefined
+													? this.props.imageSlideshowReplace
+													: false
+											}
+										/>
+									</InputGroup>
+								</Col>
 							</Row>
 							<ConditionalComponent
 								permittedNames={editableFields}
@@ -1013,6 +1064,7 @@ interface ContainerProps {
 	getLastUpdatedBy: (collectionId: string) => string | null;
 	slideshow: Array<ImageData | undefined | null> | undefined;
 	imageSlideshowReplace: boolean;
+	showMainVideo: boolean;
 	imageCutoutReplace: boolean;
 	imageHide: boolean;
 	kickerOptions: ArticleTag;
@@ -1080,6 +1132,7 @@ const createMapStateToProps = () => {
 				article && selectFormFields(state, article.uuid, isSupporting),
 			kickerOptions: article ? selectArticleTag(state, cardId) : defaultObject,
 			imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
+			showMainVideo: valueSelector(state, 'showMainVideo'),
 			slideshow: valueSelector(state, 'slideshow'),
 			imageHide: valueSelector(state, 'imageHide'),
 			imageReplace: valueSelector(state, 'imageReplace'),
