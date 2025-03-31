@@ -724,7 +724,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										collectionType={this.props.collectionType}
 									/>
 								</ImageCol>
-								<ToggleCol flex={2}>
+								<ToggleCol flex={1}>
 									<InputGroup>
 										<ConditionalField
 											permittedFields={editableFields}
@@ -782,6 +782,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 												/>
 											</InputGroup>
 										)}
+									{articleCapiFieldValues.urlPath && (
+										// the below tag is empty and meaningless to the fronts tool itself, but serves as a handle for
+										// Pinboard to attach itself via, identified/distinguished by the urlPath data attribute
+										// @ts-ignore
+										<pinboard-article-button
+											data-url-path={articleCapiFieldValues.urlPath}
+											data-with-draggable-thumbs-of-ratio={`${cardCriteria.widthAspectRatio}:${cardCriteria.heightAspectRatio}`}
+										/>
+									)}
 								</ToggleCol>
 								<Col flex={2}>
 									<InputLabel htmlFor="media-select">Select Media</InputLabel>
@@ -923,15 +932,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						</RowContainer>
 					)}
 				</FormContent>
-				{articleCapiFieldValues.urlPath && (
-					// the below tag is empty and meaningless to the fronts tool itself, but serves as a handle for
-					// Pinboard to attach itself via, identified/distinguished by the urlPath data attribute
-					// @ts-ignore
-					<pinboard-article-button
-						data-url-path={articleCapiFieldValues.urlPath}
-						data-with-draggable-thumbs-of-ratio={`${cardCriteria.widthAspectRatio}:${cardCriteria.heightAspectRatio}`}
-					/>
-				)}
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
 						Cancel
