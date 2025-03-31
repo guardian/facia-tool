@@ -126,25 +126,37 @@ export default ({
 	icon = undefined,
 	usesBlockStyling = false,
 	...rest
-}: Props) => (
-	<>
-		<InputContainer data-testid={dataTestId}>
-			<RadioButtonContainer usesBlockStyling={usesBlockStyling}>
-				<Switch>
-					<RadioButton
-						type="radio"
-						{...inputRest}
-						checked={checked}
-						{...rest}
-						id={id}
-					/>
-					<RadioButtonLabel htmlFor={id} />
-				</Switch>
-				<Label htmlFor={id} size="sm">
-					{label}
-				</Label>
-				{icon !== undefined ? <IconContainer>{icon}</IconContainer> : null}
-			</RadioButtonContainer>
-		</InputContainer>
-	</>
-);
+}: Props) => {
+	const checkedProps: Record<string, boolean> = {};
+	/**
+	 * We use the checked property when we want to manually control the state of the radio button.
+	 * If checked is undefined, it will not be passed to the input element, and the button will
+	 * fall back to its default behaviour.
+	 */
+	if (checked !== undefined) {
+		checkedProps['checked'] = checked;
+	}
+
+	return (
+		<>
+			<InputContainer data-testid={dataTestId}>
+				<RadioButtonContainer usesBlockStyling={usesBlockStyling}>
+					<Switch>
+						<RadioButton
+							type="radio"
+							{...inputRest}
+							{...checkedProps}
+							{...rest}
+							id={id}
+						/>
+						<RadioButtonLabel htmlFor={id} />
+					</Switch>
+					<Label htmlFor={id} size="sm">
+						{label}
+					</Label>
+					{icon !== undefined ? <IconContainer>{icon}</IconContainer> : null}
+				</RadioButtonContainer>
+			</InputContainer>
+		</>
+	);
+};
