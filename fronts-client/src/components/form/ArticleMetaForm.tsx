@@ -629,8 +629,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								label="Immersive"
 								id={getInputId(cardId, 'immersive')}
 								type="checkbox"
-								onChange={() =>
-									this.toggleCardStyleField('isImmersive', groupSizeId)
+								onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+									this.toggleCardStyleField(
+										'isImmersive',
+										event.target.checked,
+										groupSizeId,
+									)
 								}
 							/>
 
@@ -1026,16 +1030,24 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	// immersive card styling and boost levels are mutually exclusive.
 	// A card cannot be both immersive and boosted, so we need to toggle the other field when one is set.
 	// This function is called when one of the fields is toggled, and sets the other field to false.
-	// If the field to set is `isImmersive`, we also need to reset the boost level to default.
+	// If the field to set is `isImmersive` to true, we need to set the boost level to lowest boost level (default).
+	// If the fiels to set is `isImmersive` to false, we need to set the boost level to the default setting for that group.
 	// If the field to set is `isBoosted`, we need to reset the immersive flag to false.
 	// */
-	private toggleCardStyleField = (fieldToSet: string, group: number = 0) => {
+	private toggleCardStyleField = (
+		fieldToSet: string,
+		value?: boolean,
+		group: number = 0,
+	) => {
 		if (fieldToSet === 'isImmersive') {
-			const defaultBoostLevel =
-				CollectionToggles['flexible/general'][group][0].value;
-			this.props.change('boostLevel', defaultBoostLevel);
-		} else {
-			this.props.change('isImmersive', false);
+			if (this.props.isImmersive) {
+				const defaultBoostLevel = !value
+					? CollectionToggles['flexible/general'][group][0].value
+					: 'default';
+				this.props.change('boostLevel', defaultBoostLevel);
+			} else {
+				this.props.change('isImmersive', false);
+			}
 		}
 	};
 
@@ -1113,6 +1125,7 @@ interface ContainerProps {
 	editMode: EditMode;
 	primaryImage: ValidationResponse | null;
 	hasMainVideo: boolean;
+	isImmersive: boolean;
 }
 
 interface InterfaceProps {
