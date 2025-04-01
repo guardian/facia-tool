@@ -44,7 +44,8 @@ object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
-    TenImageSlideshows
+    TenImageSlideshows,
+		SupportImmersiveToggle
   )
 
   def updateFeatureSwitchesForUser(
