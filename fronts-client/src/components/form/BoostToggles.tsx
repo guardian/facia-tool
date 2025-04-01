@@ -57,7 +57,7 @@ const TOGGLES: Record<BoostLevels, Toggle> = {
  * - **Group 1 (Splash)**: Default, Boost, MegaBoost, GigaBoost
  *
  * */
-const CollectionToggles: Record<string, Record<number, Toggle[]>> = {
+export const CollectionToggles: Record<string, Record<number, Toggle[]>> = {
 	'flexible/general': {
 		0: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost],
 		1: [
@@ -83,6 +83,7 @@ const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 export const renderBoostToggles = (
 	groupIndex: number = 0,
 	cardId: string,
+	onChange: (value: string) => void,
 	collectionType?: string,
 ) => {
 	// Only render boost toggles for flexible collections
@@ -104,6 +105,7 @@ export const renderBoostToggles = (
 			id={getInputId(cardId, id)}
 			value={value}
 			type="radio"
+			onChange={() => onChange('boostLevel')}
 		/>
 	));
 };

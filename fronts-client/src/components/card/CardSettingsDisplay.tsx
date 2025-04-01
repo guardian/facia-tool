@@ -47,6 +47,7 @@ export default ({
 	showLargeHeadline,
 	isBoosted,
 	boostLevel,
+	isImmersive,
 }: {
 	collectionType?: string;
 	isBreaking?: boolean;
@@ -55,6 +56,7 @@ export default ({
 	showLargeHeadline?: boolean;
 	isBoosted?: boolean;
 	boostLevel?: string;
+	isImmersive?: boolean;
 }) =>
 	shouldShowBoostLevel(collectionType, boostLevel) ||
 	shouldShowLegacyBoost(collectionType, isBoosted) ||
@@ -62,7 +64,8 @@ export default ({
 	showByline ||
 	showQuotedHeadline ||
 	showLargeHeadline ||
-	isBoosted ? (
+	isBoosted ||
+	isImmersive ? (
 		<ArticleMetadataProperties>
 			{isBreaking && (
 				<ArticleMetadataProperty data-testid="breaking-news">
@@ -74,6 +77,9 @@ export default ({
 			)}
 			{showQuotedHeadline && (
 				<ArticleMetadataProperty>Quote headline</ArticleMetadataProperty>
+			)}
+			{isImmersive && (
+				<ArticleMetadataProperty>Immersive</ArticleMetadataProperty>
 			)}
 			{showLargeHeadline && (
 				<ArticleMetadataProperty>Large headline</ArticleMetadataProperty>

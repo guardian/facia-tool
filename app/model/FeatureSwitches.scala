@@ -33,6 +33,13 @@ object TenImageSlideshows
       enabled = false
     )
 
+object SupportImmersiveToggle
+    extends FeatureSwitch(
+      key = "support-immersive-toggle",
+      title = "Allow users to set a card as an immersive display card",
+      enabled = false
+    )
+
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,

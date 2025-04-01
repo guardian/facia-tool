@@ -155,6 +155,14 @@ export default Object.freeze([
         type: 'string'
     },
     {
+        key: 'isImmersive',
+        editable: true,
+        omitForSupporting: true,
+        ifState: 'inFlexibleGeneralCollection',
+        label: 'immersive',
+        type: 'boolean'
+    },
+    {
         key: 'showLivePlayable',
         editable: true,
         omitForSupporting: true,

@@ -5,6 +5,7 @@ import { hasMainVideo } from 'util/externalArticle';
 import {
 	isCollectionConfigDynamic,
 	isCollectionConfigFlexible,
+	isCollectionConfigFlexibleGeneral,
 } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import type { State } from 'types/State';
@@ -102,6 +103,9 @@ export const createSelectFormFieldsForCard = () => {
 			}
 			if (isCollectionConfigFlexible(parentCollectionConfig)) {
 				fields = without(fields, 'showLargeHeadline');
+			}
+			if (isCollectionConfigFlexibleGeneral(parentCollectionConfig)) {
+				fields.push('isImmersive');
 			}
 			if (isCollectionConfigDynamic(parentCollectionConfig)) {
 				fields.push('isBoosted');

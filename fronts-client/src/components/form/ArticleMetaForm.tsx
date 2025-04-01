@@ -74,11 +74,11 @@ import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
-import { renderBoostToggles } from './BoostToggles';
+import { CollectionToggles, renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
 import Explainer from '../Explainer';
-
+import pageConfig from 'util/extractConfigFromPage';
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
 	collectionId: string | null;
@@ -438,7 +438,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			cardId: string,
 			collectionType?: string,
 		) => {
-			return renderBoostToggles(groupSizeId, cardId, collectionType);
+			return renderBoostToggles(
+				groupSizeId,
+				cardId,
+				this.toggleCardStyleField,
+				collectionType,
+			);
 		},
 	);
 
@@ -541,6 +546,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		};
 
 		const cardCriteria = this.determineCardCriteria();
+		const supportImmersiveToggle = pageConfig?.userData?.featureSwitches.find(
+			(feature) => feature.key === 'support-immersive-toggle',
+		)?.enabled;
 
 		return (
 			<FormContainer
@@ -611,8 +619,27 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							size={this.props.size}
 							extraBottomMargin="8px"
 						>
-							{this.getBoostToggles(groupSizeId, cardId, collectionType)}
+							{[
+								...this.getBoostToggles(groupSizeId, cardId, collectionType),
+								supportImmersiveToggle ? (
+									<Field
+										name="isImmersive"
+										component={InputCheckboxToggleInline}
+										label="Immersive"
+										id={getInputId(cardId, 'immersive')}
+										type="checkbox"
+										onChange={(event: any) =>
+											this.toggleCardStyleField(
+												'isImmersive',
+												event as boolean,
+												groupSizeId,
+											)
+										}
+									/>
+								) : null,
+							]}
 						</CheckboxFieldsContainer>
+
 						<CheckboxFieldsContainer
 							editableFields={editableFields}
 							size={this.props.size}
@@ -1003,6 +1030,29 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 				this.props.change(field, false);
 			}
 		});
+	};
+
+	//*
+	// immersive card styling and boost levels are mutually exclusive.
+	// A card cannot be both immersive and boosted, so we need to toggle the other field when one is set.
+	// This function is called when one of the fields is toggled, and sets the other field to false.
+	// If the field to set is `isImmersive` to true, we need to set the boost level to lowest boost level (default).
+	// If the fiels to set is `isImmersive` to false, we need to set the boost level to the default setting for that group.
+	// If the field to set is `isBoosted`, we need to reset the immersive flag to false.
+	// */
+	private toggleCardStyleField = (
+		fieldToSet: string,
+		value?: boolean,
+		group: number = 0,
+	) => {
+		if (fieldToSet === 'isImmersive') {
+			const defaultBoostLevel = !value
+				? CollectionToggles['flexible/general'][group][0].value
+				: 'default';
+			this.props.change('boostLevel', defaultBoostLevel);
+		} else {
+			this.props.change('isImmersive', false);
+		}
 	};
 
 	/**

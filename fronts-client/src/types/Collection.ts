@@ -74,6 +74,7 @@ type CardRootMeta = ChefCardMeta &
 		isBoosted?: boolean;
 		/** For flexible collections only */
 		boostLevel?: BoostLevels;
+		isImmersive?: boolean;
 		showLivePlayable?: boolean;
 		showMainVideo?: boolean;
 		showLargeHeadline?: boolean;
