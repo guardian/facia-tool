@@ -57,7 +57,7 @@ const TOGGLES: Record<BoostLevels, Toggle> = {
  * - **Group 1 (Splash)**: Default, Boost, MegaBoost, GigaBoost
  *
  * */
-const CollectionToggles: Record<string, Record<number, Toggle[]>> = {
+export const CollectionToggles: Record<string, Record<number, Toggle[]>> = {
 	'flexible/general': {
 		0: [TOGGLES.default, TOGGLES.boost, TOGGLES.megaboost],
 		1: [

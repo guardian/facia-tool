@@ -74,7 +74,7 @@ import { ImageOptionsInputGroup } from './ImageOptionsInputGroup';
 import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
-import { renderBoostToggles } from './BoostToggles';
+import { CollectionToggles, renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
 import Explainer from '../Explainer';
@@ -629,8 +629,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								label="Immersive"
 								id={getInputId(cardId, 'immersive')}
 								type="checkbox"
-								onChange={() => this.toggleCardStyleField('isImmersive')}
+								onChange={() =>
+									this.toggleCardStyleField('isImmersive', groupSizeId)
+								}
 							/>
+
 							<Field
 								name="isBoosted"
 								component={InputCheckboxToggleInline}
@@ -1026,9 +1029,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	// If the field to set is `isImmersive`, we also need to reset the boost level to default.
 	// If the field to set is `isBoosted`, we need to reset the immersive flag to false.
 	// */
-	private toggleCardStyleField = (fieldToSet: string) => {
+	private toggleCardStyleField = (fieldToSet: string, group: number = 0) => {
 		if (fieldToSet === 'isImmersive') {
-			this.props.change('boostLevel', 'default');
+			const defaultBoostLevel =
+				CollectionToggles['flexible/general'][group][0].value;
+			this.props.change('boostLevel', defaultBoostLevel);
 		} else {
 			this.props.change('isImmersive', false);
 		}
