@@ -629,10 +629,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								label="Immersive"
 								id={getInputId(cardId, 'immersive')}
 								type="checkbox"
-								onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+								onChange={(event: any) =>
 									this.toggleCardStyleField(
 										'isImmersive',
-										event.target.checked,
+										event as boolean,
 										groupSizeId,
 									)
 								}
@@ -1040,14 +1040,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		group: number = 0,
 	) => {
 		if (fieldToSet === 'isImmersive') {
-			if (this.props.isImmersive) {
-				const defaultBoostLevel = !value
-					? CollectionToggles['flexible/general'][group][0].value
-					: 'default';
-				this.props.change('boostLevel', defaultBoostLevel);
-			} else {
-				this.props.change('isImmersive', false);
-			}
+			const defaultBoostLevel = !value
+				? CollectionToggles['flexible/general'][group][0].value
+				: 'default';
+			this.props.change('boostLevel', defaultBoostLevel);
+		} else {
+			this.props.change('isImmersive', false);
 		}
 	};
 
@@ -1125,7 +1123,6 @@ interface ContainerProps {
 	editMode: EditMode;
 	primaryImage: ValidationResponse | null;
 	hasMainVideo: boolean;
-	isImmersive: boolean;
 }
 
 interface InterfaceProps {
