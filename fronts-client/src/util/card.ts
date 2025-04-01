@@ -50,6 +50,7 @@ interface CreateCardOptions {
 	showQuotedHeadline?: boolean;
 	showKickerCustom?: boolean;
 	customKicker?: string;
+	isImmersive?: boolean;
 }
 
 // Ideally we will convert this to a type. See
@@ -68,6 +69,7 @@ const createCard = (
 		showKickerCustom = false,
 		customKicker = '',
 		imageCutoutSrc,
+		isImmersive = false,
 	}: CreateCardOptions = {},
 ): Card => ({
 	uuid: v4(),
@@ -75,6 +77,7 @@ const createCard = (
 	frontPublicationDate: Date.now(),
 	cardType,
 	meta: {
+		...(isImmersive ? { isImmersive } : {}),
 		...(imageHide ? { imageHide } : {}),
 		...(boostLevel ? { boostLevel } : {}),
 		...(imageReplace ? { imageReplace } : {}),
@@ -364,6 +367,7 @@ const getArticleEntitiesFromFeedDrop = (
 		showQuotedHeadline: externalArticle.frontsMeta.defaults.showQuotedHeadline,
 		showKickerCustom: externalArticle.frontsMeta.defaults.showKickerCustom,
 		customKicker: externalArticle.frontsMeta.pickedKicker,
+		isImmersive: false,
 	});
 	return { card, externalArticle };
 };
