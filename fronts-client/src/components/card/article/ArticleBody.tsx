@@ -131,6 +131,7 @@ interface ArticleBodyProps {
 	isDraggingImageOver: boolean;
 	isBoosted?: boolean;
 	boostLevel?: string;
+	isImmersive?: boolean;
 	hasMainVideo?: boolean;
 	showMainVideo?: boolean;
 	tone?: string | undefined;
@@ -179,6 +180,7 @@ const articleBodyDefault = React.memo(
 		isDraggingImageOver,
 		isBoosted,
 		boostLevel,
+		isImmersive,
 		tone,
 		featureFlagPageViewData,
 		canShowPageViewData,
@@ -286,6 +288,7 @@ const articleBodyDefault = React.memo(
 						showLargeHeadline={showLargeHeadline}
 						isBoosted={isBoosted}
 						boostLevel={boostLevel}
+						isImmersive={isImmersive}
 					/>
 					<CardHeadingContainer size={size}>
 						{displayPlaceholders && (

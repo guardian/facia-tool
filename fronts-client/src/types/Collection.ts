@@ -74,6 +74,7 @@ type CardRootMeta = ChefCardMeta &
 		isBoosted?: boolean;
 		/** For flexible collections only */
 		boostLevel?: BoostLevels;
+		isImmersive?: boolean;
 		showLivePlayable?: boolean;
 		showMainVideo?: boolean;
 		showLargeHeadline?: boolean;
@@ -101,7 +102,6 @@ type CardRootMeta = ChefCardMeta &
 		coverCardImageReplace?: boolean;
 		coverCardMobileImage?: ImageData;
 		coverCardTabletImage?: ImageData;
-		isImmersive?: boolean;
 	};
 
 type CardRootFields = NestedCardRootFields & {
