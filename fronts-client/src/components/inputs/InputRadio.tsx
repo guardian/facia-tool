@@ -16,10 +16,17 @@ const BlockStylingMixin = () => css`
 	&:has(input:checked) {
 		color: white;
 		background-color: #a9a9a9;
+		box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight};
 	}
 	&:has(input:disabled) {
 		opacity: 0.8;
 		cursor: not-allowed;
+	}
+	&:has(input:disabled):hover {
+		box-shadow: none;
+	}
+	&:hover {
+		box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight};
 	}
 `;
 
