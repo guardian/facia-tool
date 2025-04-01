@@ -39,7 +39,7 @@ describe('Form utils', () => {
 				),
 			).toEqual([...defaultFields, 'isBoosted']);
 		});
-		it('should add boostLevel and remove large headline for flexible collection configs', () => {
+		it('should add boostLevel and isImmersive and remove large headline for flexible collection configs', () => {
 			const localState = cloneDeep(state);
 			localState.fronts.frontsConfig.data.collections.exampleCollection.type =
 				'flexible/general';
@@ -51,7 +51,7 @@ describe('Form utils', () => {
 					false,
 				),
 			).toEqual(
-				[...defaultFields, 'boostLevel'].filter(
+				[...defaultFields, 'boostLevel', 'isImmersive'].filter(
 					(t) => t !== 'showLargeHeadline',
 				),
 			);

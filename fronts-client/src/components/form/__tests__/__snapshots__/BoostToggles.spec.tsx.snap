@@ -12,6 +12,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     id="test-card-boostlevel-0"
     label="Default"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="default"
   />,
@@ -21,6 +22,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     id="test-card-boostlevel-1"
     label="Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="boost"
   />,
@@ -30,6 +32,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     id="test-card-boostlevel-2"
     label="Mega Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="megaboost"
   />,
@@ -44,6 +47,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     id="test-card-boostlevel-1"
     label="Default"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="boost"
   />,
@@ -53,6 +57,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     id="test-card-boostlevel-2"
     label="Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="megaboost"
   />,
@@ -66,6 +71,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
   id="test-card-boostlevel-2"
   label="Default"
   name="boostLevel"
+  onChange={[Function]}
   type="radio"
   value="megaboost"
 />
@@ -79,6 +85,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     id="test-card-boostlevel-0"
     label="Default"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="default"
   />,
@@ -88,6 +95,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     id="test-card-boostlevel-1"
     label="Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="boost"
   />,
@@ -97,6 +105,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     id="test-card-boostlevel-2"
     label="Mega Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="megaboost"
   />,
@@ -106,6 +115,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/general gro
     id="test-card-boostlevel-3"
     label="Giga Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="gigaboost"
   />,
@@ -120,6 +130,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     id="test-card-boostlevel-0"
     label="Default"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="default"
   />,
@@ -129,6 +140,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     id="test-card-boostlevel-1"
     label="Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="boost"
   />,
@@ -138,6 +150,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     id="test-card-boostlevel-2"
     label="Mega Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="megaboost"
   />,
@@ -147,6 +160,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     id="test-card-boostlevel-3"
     label="Giga Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="gigaboost"
   />,
@@ -161,6 +175,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     id="test-card-boostlevel-0"
     label="Default"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="default"
   />,
@@ -170,6 +185,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     id="test-card-boostlevel-1"
     label="Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="boost"
   />,
@@ -179,6 +195,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     id="test-card-boostlevel-2"
     label="Mega Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="megaboost"
   />,
@@ -188,6 +205,7 @@ exports[`renderBoostToggles returns the correct toggles for flexible/special gro
     id="test-card-boostlevel-3"
     label="Giga Boost"
     name="boostLevel"
+    onChange={[Function]}
     type="radio"
     value="gigaboost"
   />,

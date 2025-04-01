@@ -69,6 +69,7 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |  }
           |}""".stripMargin
       val newBody = ContentUpgrade.rewriteBody(body)
+
       newBody shouldBe
         """
           |{"response":
@@ -84,6 +85,7 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+					|          "isImmersive":false,
           |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
@@ -180,6 +182,7 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+					|          "isImmersive":false,
           |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
@@ -274,6 +277,7 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+					|          "isImmersive":false,
           |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
@@ -351,6 +355,7 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+					|          "isImmersive":false,
           |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
@@ -428,6 +433,7 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+					|          "isImmersive":false,
           |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
@@ -505,6 +511,7 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
+					|          "isImmersive":false,
           |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "isBoosted":false,
