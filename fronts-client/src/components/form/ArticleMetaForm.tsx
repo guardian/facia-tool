@@ -548,7 +548,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		const cardCriteria = this.determineCardCriteria();
 		const supportImmersiveToggle = pageConfig?.userData?.featureSwitches.find(
 			(feature) => feature.key === 'support-immersive-toggle',
-		);
+		)?.enabled;
+
 		return (
 			<FormContainer
 				data-testid="edit-form"
@@ -618,30 +619,31 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							size={this.props.size}
 							extraBottomMargin="8px"
 						>
-							{this.getBoostToggles(groupSizeId, cardId, collectionType)}
+							{[
+								...this.getBoostToggles(groupSizeId, cardId, collectionType),
+								supportImmersiveToggle ? (
+									<Field
+										name="isImmersive"
+										component={InputCheckboxToggleInline}
+										label="Immersive"
+										id={getInputId(cardId, 'immersive')}
+										type="checkbox"
+										onChange={(event: any) =>
+											this.toggleCardStyleField(
+												'isImmersive',
+												event as boolean,
+												groupSizeId,
+											)
+										}
+									/>
+								) : null,
+							]}
 						</CheckboxFieldsContainer>
 
 						<CheckboxFieldsContainer
 							editableFields={editableFields}
 							size={this.props.size}
 						>
-							{supportImmersiveToggle ? (
-								<Field
-									name="isImmersive"
-									component={InputCheckboxToggleInline}
-									label="Immersive"
-									id={getInputId(cardId, 'immersive')}
-									type="checkbox"
-									onChange={(event: any) =>
-										this.toggleCardStyleField(
-											'isImmersive',
-											event as boolean,
-											groupSizeId,
-										)
-									}
-								/>
-							) : null}
-
 							<Field
 								name="isBoosted"
 								component={InputCheckboxToggleInline}
