@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import {
 	reduxForm,
 	InjectedFormProps,
@@ -422,6 +422,38 @@ interface FormComponentState {
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
+	componentDidMount() {
+		this.fetchAndSetReplacementVideoAtom(this.props.replacementVideoAtomId)
+			.catch((error) => console.error(error));
+	}
+
+	componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<FormComponentState>, snapshot?: any) {
+		if(prevProps.replacementVideoAtomId === this.props.replacementVideoAtomId) {
+			return;
+		}
+		this.fetchAndSetReplacementVideoAtom(this.props.replacementVideoAtomId)
+			.catch((error) => console.error(error));
+	}
+
+	private fetchAndSetReplacementVideoAtom = async (replacementVideoAtomId: string) => {
+		if (replacementVideoAtomId === "") {
+			this.props.change('replacementVideoAtom', undefined);
+		}
+		this.fetchAtom(replacementVideoAtomId)
+			.then((response) => response.media)
+			.then((replacementAtom) => this.props.change('replacementVideoAtom', replacementAtom))
+	}
+
+	private fetchAtom = async (atomId: string): Promise<any> => {
+		const response = await fetch(`/api/live/atom/video/${atomId}`);
+		const data = await response.json();
+		if (data?.response?.status !== 'ok') {
+			throw new Error(`Failed to fetch atom ${atomId}`);
+		} else {
+			return data?.response;
+		}
+	};
+
 	public static getDerivedStateFromProps(props: Props) {
 		return props.collectionId
 			? { lastKnownCollectionId: props.collectionId }
@@ -472,13 +504,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			editMode,
 			primaryImage,
 			hasMainVideo,
+			showMainVideo,
+			videoReplace,
 			mainMediaVideoAtom,
+			replacementVideoAtom,
 			coverCardImageReplace,
 			coverCardMobileImage,
 			coverCardTabletImage,
 			valid,
 			groupSizeId,
 			collectionType,
+			form
 		} = this.props;
 
 		const isEditionsMode = editMode === 'editions';
@@ -851,13 +887,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											contents={
 												<VideoControls
 													mainMediaVideoAtom={mainMediaVideoAtom}
-													replacementVideoAtomId={this.props.replacementVideoAtomId}
-													active={
-														this.props.showMainVideo || this.props.videoReplace
-													}
-													usesReplacementVideo={this.props.videoReplace}
+													replacementVideoAtom={replacementVideoAtom}
+													showMainVideo={showMainVideo}
+													showReplacementVideo={videoReplace}
+													changeField={change}
 													changeMediaField={this.changeMediaField}
-													changeField={this.props.change}
+													form={form}
 												/>
 											}
 											usesBlockStyling={true}
@@ -1156,6 +1191,7 @@ interface ContainerProps {
 	videoReplace: boolean;
 	replaceVideoUri: string;
 	replacementVideoAtomId: string;
+	replacementVideoAtom: any;
 }
 
 interface InterfaceProps {
@@ -1236,6 +1272,7 @@ const createMapStateToProps = () => {
 				: undefined,
 			atomId: valueSelector(state, 'atomId'),
 			replacementVideoAtomId: valueSelector(state, 'replacementVideoAtomId'),
+			replacementVideoAtom: valueSelector(state, 'replacementVideoAtom'),
 		};
 	};
 };
