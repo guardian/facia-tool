@@ -140,7 +140,7 @@ const Label = styled(InputLabel)`
 	vertical-align: super;
 `;
 
-const ButtonDelete = styled(ButtonDefault)<{
+export const ButtonDelete = styled(ButtonDefault)<{
 	confirmDelete?: boolean;
 }>`
 	position: absolute;
@@ -167,7 +167,7 @@ const ButtonDelete = styled(ButtonDefault)<{
 	}
 `;
 
-const DeleteIconOptions = styled.div`
+export const DeleteIconOptions = styled.div`
 	display: block;
 	position: absolute;
 	height: 14px;
