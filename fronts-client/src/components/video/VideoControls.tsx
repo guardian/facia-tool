@@ -3,18 +3,19 @@ import styled from 'styled-components';
 import ButtonDefault from '../inputs/ButtonDefault';
 import InputBase from '../inputs/InputBase';
 import { createPortal } from 'react-dom';
-import {CloseIcon, PreviewVideoIcon, ReplaceVideoIcon} from '../icons/Icons';
+import {CloseIcon, ConfirmDeleteIcon, PreviewVideoIcon, ReplaceVideoIcon, RubbishBinIcon} from '../icons/Icons';
 import InputCheckboxToggleInline from "../inputs/InputCheckboxToggleInline";
 import {Field} from "redux-form";
 import {extractAtomId} from "../../util/extractAtomId";
+import {ButtonDelete, DeleteIconOptions} from "../inputs/InputImage";
 
 interface VideoControlsProps {
 	mainMediaVideoAtom: any;
 	replacementVideoAtomId: string;
 	active: boolean;
 	usesReplacementVideo: boolean;
+	changeField: (field: string, value: any) => void;
 	changeMediaField: (fieldToSet: string) => void;
-	changeAtomIdField: (atomId: string) => void;
 }
 
 const fetchAtom = async (atomId: string): Promise<any> => {
@@ -136,8 +137,8 @@ export const VideoControls = ({
 	replacementVideoAtomId,
 	active,
 	usesReplacementVideo,
+	changeField,
 	changeMediaField,
-	changeAtomIdField,
 }: VideoControlsProps) => {
 	const [replacementAtom, setReplacementAtom] = React.useState<any | undefined>(undefined);
 	const [mainMediaVideoAssetId, setMainMediaVideoAssetId] = React.useState<string | undefined>(undefined);
@@ -148,6 +149,27 @@ export const VideoControls = ({
 	const [replacementTrailImageUri, setReplacementTrailImageUri] = React.useState<string | undefined>(
 		undefined,
 	);
+	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
+
+	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.stopPropagation();
+
+		if (!confirmDelete) {
+			const resetTimer = setTimeout(
+				() => setConfirmDelete(false),
+				3000,
+			);
+
+			setConfirmDelete(true);
+			clearTimeout(resetTimer);
+			return;
+		}
+
+		changeField('replacementVideoAtomId', "");
+		changeField('replaceVideoUri', "")
+		changeMediaField('showMainVideo');
+		setConfirmDelete(false);
+	};
 
 	useEffect(() => {
 		// TODO: Fetch on debounce?
@@ -255,6 +277,23 @@ export const VideoControls = ({
 						<PreviewVideoIcon/>
 						Preview video
 					</VideoAction>
+					{
+						usesReplacementVideo && replacementAtom && <ButtonDelete
+							type="button"
+							priority="primary"
+							onClick={handleDelete}
+							disabled={false}
+							confirmDelete={confirmDelete}
+						>
+							<DeleteIconOptions>
+								{confirmDelete ? (
+									<ConfirmDeleteIcon size="s"/>
+								) : (
+									<RubbishBinIcon size="s"/>
+								)}
+							</DeleteIconOptions>
+						</ButtonDelete>
+					}
 				</VideoControlsInnerContainer>
 				<VideoUrlInput
 					name="replaceVideoUri"
@@ -272,10 +311,11 @@ export const VideoControls = ({
 							changeMediaField('showMainVideo');
 						}
 
-						changeAtomIdField(extractAtomId(value));
+						changeField('replacementVideoAtomId', extractAtomId(value));
 					}}
 					placeholder="Paste video url"
-				/>
+					/>
+
 			</VideoControlsOuterContainer>
 		</>
 	);
