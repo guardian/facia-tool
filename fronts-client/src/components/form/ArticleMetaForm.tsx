@@ -431,13 +431,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		if(prevProps.replacementVideoAtomId === this.props.replacementVideoAtomId) {
 			return;
 		}
+		// TODO: Add debounce
 		this.fetchAndSetReplacementVideoAtom(this.props.replacementVideoAtomId)
 			.catch((error) => console.error(error));
 	}
 
 	private fetchAndSetReplacementVideoAtom = async (replacementVideoAtomId: string) => {
-		if (replacementVideoAtomId === "") {
+		if (replacementVideoAtomId === undefined) {
 			this.props.change('replacementVideoAtom', undefined);
+			return;
 		}
 		this.fetchAtom(replacementVideoAtomId)
 			.then((response) => response.media)
