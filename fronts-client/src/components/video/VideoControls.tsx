@@ -1,61 +1,25 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import ButtonDefault from '../inputs/ButtonDefault';
-import InputBase from '../inputs/InputBase';
 import { createPortal } from 'react-dom';
 import {CloseIcon, ConfirmDeleteIcon, PreviewVideoIcon, ReplaceVideoIcon, RubbishBinIcon} from '../icons/Icons';
 import InputCheckboxToggleInline from "../inputs/InputCheckboxToggleInline";
-import {Field} from "redux-form";
-import {extractAtomId} from "../../util/extractAtomId";
+import {autofill, change, Field} from "redux-form";
+import {extractAtomId, extractAtomProperties} from "../../util/extractAtomId";
 import {ButtonDelete, DeleteIconOptions} from "../inputs/InputImage";
+import {VideoUriInput} from "../inputs/VideoUriInput";
+import {useDispatch} from "react-redux";
 
 interface VideoControlsProps {
 	mainMediaVideoAtom: any;
-	replacementVideoAtomId: string;
-	active: boolean;
-	usesReplacementVideo: boolean;
+	replacementVideoAtom: any;
+	showMainVideo: boolean;
+	showReplacementVideo: boolean;
 	changeField: (field: string, value: any) => void;
 	changeMediaField: (fieldToSet: string) => void;
+	form: any;
 }
 
-const fetchAtom = async (atomId: string): Promise<any> => {
-	const response = await fetch(`/api/live/atom/video/${atomId}`);
-	const data = await response.json();
-	if (data?.response?.status !== 'ok') {
-		throw new Error(`Failed to fetch atom ${atomId}`);
-	} else {
-		return data?.response;
-	}
-};
-
-const extractAssetId = (atom: any): string | undefined => {
-	const assets = atom?.data?.media?.assets;
-	if (
-		assets === undefined ||
-		assets.length === 0 ||
-		assets[0] === undefined ||
-		assets[0].id === undefined
-	) {
-		throw new Error(`No assets found for atom ${atom.id}`);
-	} else {
-		return assets[0].id;
-	}
-};
-
-const extractVideoTrailImage = (atom: any): string | undefined => {
-	const imageAssets = atom?.data?.media?.trailImage?.assets;
-
-	if (
-		imageAssets === undefined ||
-		imageAssets.length === 0 ||
-		imageAssets[0] === undefined ||
-		imageAssets[0].file === undefined
-	) {
-		throw new Error(`No trail image found for atom ${atom.id}`);
-	} else {
-		return imageAssets[0].file;
-	}
-};
 
 const VideoControlsOuterContainer = styled.div`
 	margin-top: 8px;
@@ -96,17 +60,6 @@ const VideoControlsInnerContainer = styled.div<{ url?: string }>`
 	//cursor: grab;
 `;
 
-const VideoUrlInput = styled(InputBase)`
-	border: none;
-	:focus,
-	:active {
-		border: none;
-	}
-	::placeholder {
-		font-size: 12px;
-	}
-`;
-
 const VideoPreviewModal = styled.div`
 	position: absolute;
 	top: 0;
@@ -134,23 +87,27 @@ const CloseModalButton = styled(ButtonDefault)`
 
 export const VideoControls = ({
 	mainMediaVideoAtom,
-	replacementVideoAtomId,
-	active,
-	usesReplacementVideo,
+	replacementVideoAtom,
+	showMainVideo,
+	showReplacementVideo,
 	changeField,
 	changeMediaField,
+	form
 }: VideoControlsProps) => {
-	const [replacementAtom, setReplacementAtom] = React.useState<any | undefined>(undefined);
+	// Derived from mainMediaVideoAtom
 	const [mainMediaVideoAssetId, setMainMediaVideoAssetId] = React.useState<string | undefined>(undefined);
 	const [mainMediaTrailImageUri, setMainMediaTrailImageUri] = React.useState<string | undefined>(undefined);
+
+	// Derived from replacementVideoAtom
 	const [replacementVideoAssetId, setReplacementVideoAssetId] = React.useState<string | undefined>(undefined);
-	const [showVideoPreviewModal, setShowVideoPreviewModal] =
-		React.useState<boolean>(false);
 	const [replacementTrailImageUri, setReplacementTrailImageUri] = React.useState<string | undefined>(
 		undefined,
 	);
-	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
 
+	const [showVideoPreviewModal, setShowVideoPreviewModal] =
+		React.useState<boolean>(false);
+	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
+	const dispatch = useDispatch();
 	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
 
@@ -165,55 +122,28 @@ export const VideoControls = ({
 			return;
 		}
 
-		changeField('replacementVideoAtomId', "");
-		changeField('replaceVideoUri', "")
+
+		// This exact incantation is needed to clear the form fields...
+		dispatch(autofill(form, 'replaceVideoUri', undefined));
+		dispatch(autofill(form, 'replacementVideoAtomId', undefined));
+		dispatch(change(form, 'replacementVideoAtom', undefined));
 		changeMediaField('showMainVideo');
 		setConfirmDelete(false);
 	};
 
 	useEffect(() => {
-		// TODO: Fetch on debounce?
-		if (replacementVideoAtomId === "") {
-			return;
-		}
-		fetchAtom(replacementVideoAtomId)
-			.then((response) => response.media)
-			.then((replacementAtom) => setReplacementAtom(replacementAtom))
-			.catch((error) => console.error(error));
-	}, [replacementVideoAtomId]);
+		const { assetId, trailImage } = extractAtomProperties(replacementVideoAtom);
+		setReplacementVideoAssetId(assetId);
+		setReplacementTrailImageUri(trailImage);
+	}, [replacementVideoAtom]);
 
 	useEffect(() => {
-		if(replacementAtom === undefined) {
-			return;
-		}
-		const assetId = extractAssetId(replacementAtom);
-		if (assetId !== undefined) {
-			setReplacementVideoAssetId(assetId);
-		}
-
-		const trailImage = extractVideoTrailImage(replacementAtom);
-		if (trailImage !== undefined) {
-			setReplacementTrailImageUri(trailImage);
-		}
-	}, [replacementAtom]);
-
-	useEffect(() => {
-		if(!mainMediaVideoAtom) {
-			return;
-		}
-
-		const assetId = extractAssetId(mainMediaVideoAtom);
-		if (assetId !== undefined) {
-			setMainMediaVideoAssetId(assetId);
-		}
-
-		const trailImage = extractVideoTrailImage(mainMediaVideoAtom);
-		if (trailImage !== undefined) {
-			setMainMediaTrailImageUri(trailImage);
-		}
+		const { assetId, trailImage } = extractAtomProperties(mainMediaVideoAtom);
+		setMainMediaVideoAssetId(assetId);
+		setMainMediaTrailImageUri(trailImage);
 	}, [mainMediaVideoAtom]);
 
-	if (!active) {
+	if (!showMainVideo && !showReplacementVideo) {
 		return null;
 	}
 
@@ -229,9 +159,9 @@ export const VideoControls = ({
 					id={"useReplacementVideo"}
 					type="checkbox"
 					dataTestId="use-replacement-video"
-					checked={usesReplacementVideo}
+					checked={showReplacementVideo}
 					onChange={() => {
-						if(usesReplacementVideo) {
+						if(showReplacementVideo) {
 							changeMediaField('showMainVideo');
 						} else {
 							changeMediaField('videoReplace')
@@ -248,7 +178,7 @@ export const VideoControls = ({
 								<CloseIcon />
 							</CloseModalButton>
 							<iframe
-								src={`https://www.youtube.com/embed/${usesReplacementVideo ? replacementVideoAssetId : mainMediaVideoAssetId}`}
+								src={`https://www.youtube.com/embed/${showReplacementVideo ? replacementVideoAssetId : mainMediaVideoAssetId}`}
 								allowFullScreen={true}
 							></iframe>
 						</VideoPreviewModal>,
@@ -256,7 +186,7 @@ export const VideoControls = ({
 					)
 				: null}
 			<VideoControlsOuterContainer>
-				<VideoControlsInnerContainer url={usesReplacementVideo ? replacementTrailImageUri : mainMediaTrailImageUri}>
+				<VideoControlsInnerContainer url={showReplacementVideo ? replacementTrailImageUri : mainMediaTrailImageUri}>
 					<VideoAction
 						onClick={(e) => {
 							e.preventDefault();
@@ -278,7 +208,7 @@ export const VideoControls = ({
 						Preview video
 					</VideoAction>
 					{
-						usesReplacementVideo && replacementAtom && <ButtonDelete
+						showReplacementVideo && replacementVideoAtom && <ButtonDelete
 							type="button"
 							priority="primary"
 							onClick={handleDelete}
@@ -295,8 +225,9 @@ export const VideoControls = ({
 						</ButtonDelete>
 					}
 				</VideoControlsInnerContainer>
-				<VideoUrlInput
+				<Field
 					name="replaceVideoUri"
+					component={VideoUriInput}
 					type="text"
 					onChange={(e: any) => {
 						const value = e.currentTarget.value;
@@ -313,9 +244,8 @@ export const VideoControls = ({
 
 						changeField('replacementVideoAtomId', extractAtomId(value));
 					}}
-					placeholder="Paste video url"
-					/>
-
+					placeholder="Paste video url">
+				</Field>
 			</VideoControlsOuterContainer>
 		</>
 	);
