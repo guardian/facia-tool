@@ -112,16 +112,13 @@ export const VideoControls = ({
 		e.stopPropagation();
 
 		if (!confirmDelete) {
-			const resetTimer = setTimeout(
+			setConfirmDelete(true);
+			setTimeout(
 				() => setConfirmDelete(false),
 				3000,
 			);
-
-			setConfirmDelete(true);
-			clearTimeout(resetTimer);
 			return;
 		}
-
 
 		// This exact incantation is needed to clear the form fields...
 		dispatch(autofill(form, 'replaceVideoUri', undefined));
