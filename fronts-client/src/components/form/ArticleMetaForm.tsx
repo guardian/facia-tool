@@ -882,10 +882,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										<Field
 											component={InputRadio}
 											// TODO: disable if video option selected, but no atom provided
-											disabled={
-												editableFields.indexOf('showMainVideo') === -1 &&
-												editableFields.indexOf('videoReplace') === -1
-											}
 											icon={<SelectVideoIcon />}
 											contents={
 												<VideoControls
