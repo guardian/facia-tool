@@ -2,13 +2,14 @@ import React, {useEffect} from 'react';
 import styled from 'styled-components';
 import ButtonDefault from '../inputs/ButtonDefault';
 import { createPortal } from 'react-dom';
-import {CloseIcon, ConfirmDeleteIcon, PreviewVideoIcon, ReplaceVideoIcon, RubbishBinIcon} from '../icons/Icons';
+import {ConfirmDeleteIcon, PreviewVideoIcon, ReplaceVideoIcon, RubbishBinIcon} from '../icons/Icons';
 import InputCheckboxToggleInline from "../inputs/InputCheckboxToggleInline";
 import {autofill, change, Field} from "redux-form";
 import {extractAtomId, extractAtomProperties} from "../../util/extractAtomId";
 import {ButtonDelete, DeleteIconOptions} from "../inputs/InputImage";
 import {VideoUriInput} from "../inputs/VideoUriInput";
 import {useDispatch} from "react-redux";
+import {VideoPreviewModal} from "../modals/VIdeoPreviewModal";
 
 interface VideoControlsProps {
 	mainMediaVideoAtom: any;
@@ -60,31 +61,6 @@ const VideoControlsInnerContainer = styled.div<{ url?: string }>`
 	//cursor: grab;
 `;
 
-const VideoPreviewModal = styled.div`
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	background-color: rgba(0, 0, 0, 0.5);
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	z-index: 1000;
-	& > iframe {
-		width: 80%;
-		height: 80%;
-	}
-`;
-
-const CloseModalButton = styled(ButtonDefault)`
-	position: absolute;
-	top: 16px;
-	right: 16px;
-	height: 60px;
-	width: 80px;
-`;
-
 export const VideoControls = ({
 	mainMediaVideoAtom,
 	replacementVideoAtom,
@@ -104,6 +80,7 @@ export const VideoControls = ({
 		undefined,
 	);
 
+	const [currentVideoUri, setCurrentVideoUri] = React.useState<string | undefined>(undefined);
 	const [showVideoPreviewModal, setShowVideoPreviewModal] =
 		React.useState<boolean>(false);
 	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
@@ -140,6 +117,10 @@ export const VideoControls = ({
 		setMainMediaTrailImageUri(trailImage);
 	}, [mainMediaVideoAtom]);
 
+	useEffect(() => {
+		setCurrentVideoUri(showReplacementVideo ? replacementVideoAssetId : mainMediaVideoAssetId);
+	}, [showReplacementVideo, mainMediaVideoAssetId, replacementVideoAssetId]);
+
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;
 	}
@@ -167,19 +148,11 @@ export const VideoControls = ({
 				/>, controlColumn) : null}
 			{(mainMediaVideoAssetId || replacementVideoAssetId) && showVideoPreviewModal
 				? createPortal(
-						<VideoPreviewModal onClick={() => setShowVideoPreviewModal(false)}>
-							<CloseModalButton
-								priority="primary"
-								onClick={() => setShowVideoPreviewModal(false)}
-							>
-								<CloseIcon />
-							</CloseModalButton>
-							<iframe
-								src={`https://www.youtube.com/embed/${showReplacementVideo ? replacementVideoAssetId : mainMediaVideoAssetId}`}
-								allowFullScreen={true}
-							></iframe>
-						</VideoPreviewModal>,
-						document.body,
+					<VideoPreviewModal
+						onClose={() => setShowVideoPreviewModal(false)}
+						isOpen={showVideoPreviewModal}
+						url={currentVideoUri}/>,
+					document.body,
 					)
 				: null}
 			<VideoControlsOuterContainer>
