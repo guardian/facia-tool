@@ -66,7 +66,7 @@ export interface LevelProps<T> {
 	parentType: string;
 	collectionId?: string;
 	groupName?: string;
-	groupIds: string[];
+	groupIds?: string[];
 	groupMaxItems?: number;
 	groupsData?: Group[];
 	type: string;
