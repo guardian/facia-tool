@@ -45,7 +45,7 @@ object FeatureSwitches {
     ObscureFeed,
     PageViewDataVisualisation,
     TenImageSlideshows,
-		SupportImmersiveToggle
+    SupportImmersiveToggle
   )
 
   def updateFeatureSwitchesForUser(
