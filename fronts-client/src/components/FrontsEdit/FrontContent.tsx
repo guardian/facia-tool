@@ -164,7 +164,7 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 
 	for (
 		let index = isBottomInsert ? startIndex + 1 : startIndex;
-		to.groupsData && index < to.groupsData.length - 1;
+		to.groupsData && index < to.groupsData.length;
 		index++
 	) {
 		const currentGroup = move.to.groupsData?.[index];
@@ -173,13 +173,14 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 		const groupIsFull =
 			(currentGroup.cardsData?.length ?? 0) >= (currentGroup.maxItems ?? 0);
 		const cardAlreadyInGroup = currentGroup.cards.includes(movedCard.uuid);
-
+		const lastGroup = to.groupsData.length === index
 		/**
 		 *  Stop cascading if:
 		 * - the group isn't full
 		 * - or it contains the moved card (which is now leaving the group)
+		 * - or it's the last group in the collection.
 		 **/
-		if (!groupIsFull || cardAlreadyInGroup) break;
+		if (!groupIsFull || cardAlreadyInGroup || lastGroup) break;
 
 		// Otherwise, this group is full and needs to shift its last card.
 		const lastCard = currentGroup.cardsData?.at(-1);
@@ -293,7 +294,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	/** This function manages the moving of cards between groups. */
 	public handleMove = (move: Move<TCard>) => {
 		const numberOfCardsInGroup = move.to.cards?.length ?? 0;
-		const targetGroupIsFull = move.to.groupMaxItems === numberOfCardsInGroup;
+		const isTargetGroupFull = move.to.groupMaxItems === numberOfCardsInGroup;
 
 		/**
 		 *  If:
@@ -303,7 +304,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		 * then we can move the card directly.
 		 **/
 		if (
-			!targetGroupIsFull ||
+			!isTargetGroupFull ||
 			move.to.cards?.includes(move.data.uuid) ||
 			move.to.groupName === 'standard'
 		) {
