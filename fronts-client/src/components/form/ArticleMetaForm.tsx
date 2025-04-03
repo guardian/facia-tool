@@ -436,7 +436,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			.catch((error) => console.error(error));
 	}
 
-	private fetchAndSetReplacementVideoAtom = async (replacementVideoAtomId: string) => {
+	private fetchAndSetReplacementVideoAtom = async (replacementVideoAtomId: string | undefined) => {
 		if (replacementVideoAtomId === undefined) {
 			this.props.change('replacementVideoAtom', undefined);
 			return;
@@ -859,6 +859,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									<InputGroup>
 										<Field
 											component={InputRadio}
+											// TODO: disable if video option selected, but no atom provided
 											disabled={
 												editableFields.indexOf('showMainVideo') === -1 &&
 												editableFields.indexOf('videoReplace') === -1

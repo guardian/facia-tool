@@ -50,7 +50,8 @@ const extractVideoTrailImage = (atom: any): string | undefined => {
 		imageAssets[0] === undefined ||
 		imageAssets[0].file === undefined
 	) {
-		throw new Error(`No trail image found for atom ${atom.id}`);
+		console.error(`No trail image found for atom ${atom.id}`);
+		return undefined;
 	} else {
 		return imageAssets[0].file;
 	}
