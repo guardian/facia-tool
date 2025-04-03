@@ -10,6 +10,7 @@ import {ButtonDelete, DeleteIconOptions} from "../inputs/InputImage";
 import {VideoUriInput} from "../inputs/VideoUriInput";
 import {useDispatch} from "react-redux";
 import {VideoPreviewModal} from "../modals/VIdeoPreviewModal";
+import {MediaAtomMakerModal} from "../modals/MediaAtomMakerModal";
 
 interface VideoControlsProps {
 	mainMediaVideoAtom: any;
@@ -83,8 +84,12 @@ export const VideoControls = ({
 	const [currentVideoUri, setCurrentVideoUri] = React.useState<string | undefined>(undefined);
 	const [showVideoPreviewModal, setShowVideoPreviewModal] =
 		React.useState<boolean>(false);
+	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] = React.useState<boolean>(false);
 	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
 	const dispatch = useDispatch();
+
+	const mediaAtomMakerUri = "https://video.code.dev-gutools.co.uk";
+
 	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
 
@@ -104,6 +109,37 @@ export const VideoControls = ({
 		changeMediaField('showMainVideo');
 		setConfirmDelete(false);
 	};
+
+	type AtomData = {
+		atomId: string;
+	}
+
+	const onMessage = (event: MessageEvent) => {
+		if (event.origin !== mediaAtomMakerUri) {
+			return;
+		}
+
+		const data: AtomData = event.data;
+
+		if (!data || !data.atomId) {
+			return;
+		}
+
+		dispatch(change(form, 'replacementVideoAtomId', data.atomId));
+		// TODO: handle failure to fetch atom?
+		dispatch(change(form, 'replaceVideoUri', `${mediaAtomMakerUri}/videos/${data.atomId}`));
+		changeMediaField('videoReplace');
+		handleCloseMediaAtomMakerModal();
+	}
+
+	const handleOpenMediaAtomMakerModal = () => {
+		setShowMediaAtomMakerModal(true);
+		window.addEventListener('message', onMessage, false);
+	}
+	const handleCloseMediaAtomMakerModal = () => {
+		setShowMediaAtomMakerModal(false);
+		window.removeEventListener('message', onMessage, false);
+	}
 
 	useEffect(() => {
 		const { assetId, trailImage } = extractAtomProperties(replacementVideoAtom);
@@ -155,13 +191,22 @@ export const VideoControls = ({
 					document.body,
 					)
 				: null}
+			{showMediaAtomMakerModal
+				? createPortal(
+					<MediaAtomMakerModal
+						onClose={handleCloseMediaAtomMakerModal}
+						isOpen={showMediaAtomMakerModal}
+						url={`${mediaAtomMakerUri}/videos?embeddedMode=live`}/>,
+					document.body,
+				)
+				: null}
 			<VideoControlsOuterContainer>
 				<VideoControlsInnerContainer url={showReplacementVideo ? replacementTrailImageUri : mainMediaTrailImageUri}>
 					<VideoAction
 						onClick={(e) => {
 							e.preventDefault();
 							e.stopPropagation();
-							console.log('replace video');
+							handleOpenMediaAtomMakerModal();
 						}}
 					>
 						<ReplaceVideoIcon/>
