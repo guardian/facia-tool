@@ -103,9 +103,14 @@ function getNextGroupTarget(
 		return;
 	}
 	const currentIndex = groupIds.findIndex((id) => id === currentGroupId);
+	if (currentIndex === -1 || currentIndex + 1 >= groupIds.length) {
+		return;
+	}
 	const nextGroupId = groupIds[currentIndex + 1];
 	const nextGroup = groupsData.find((group) => group.uuid === nextGroupId);
-
+	if (!nextGroup) {
+		return;
+	}
 	return {
 		index: 0,
 		id: nextGroupId,
