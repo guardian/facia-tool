@@ -322,6 +322,7 @@ const RenderSlideshow = ({
 							/>
 						</div>
 
+						{/*TODO: Migrate to warning section at bottom of form*/}
 						<FlexContainer>
 							{isInvalidCaptionLength(slideshowIndex) ? (
 								<WarningIcon size="s" fill={error.warningDark} />
