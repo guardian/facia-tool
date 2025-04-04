@@ -64,7 +64,6 @@ const VideoControlsInnerContainer = styled.div<{ url?: string }>`
 	-webkit-box-flex: 1;
 	flex-grow: 1;
 	margin-bottom: 5px;
-	//cursor: grab;
 `;
 
 export const VideoControls = ({
