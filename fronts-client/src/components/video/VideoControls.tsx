@@ -101,6 +101,7 @@ export const VideoControls = ({
 	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
 	const dispatch = useDispatch();
 
+	// TODO: pass from config
 	const mediaAtomMakerUri = 'https://video.code.dev-gutools.co.uk';
 
 	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
