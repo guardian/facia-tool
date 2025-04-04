@@ -195,6 +195,7 @@ const CaptionInput = styled(InputBase)`
 
 const FlexContainer = styled.div`
 	display: flex;
+	justify-content: flex-end;
 	align-items: center;
 	margin-top: 6px;
 	margin-bottom: 10px;
@@ -1004,11 +1005,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 				{(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ? (
 					<InvalidWarning warning="You need at least two images to make a slideshow"/>
 				) : null}
-				{showMainVideo && !hasMainVideo ? (
-					<InvalidWarning warning="You need to provide a video"/>
-				) : null}
-				{videoReplace && !replacementVideoAtom ? (
-					<InvalidWarning warning="You need to provide a video"/>
+				{(showMainVideo && !hasMainVideo) || (videoReplace && !replacementVideoAtom) ? (
+					<InvalidWarning warning="You need to provide a valid video"/>
 				) : null}
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
