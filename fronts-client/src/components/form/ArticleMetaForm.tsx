@@ -140,7 +140,6 @@ const SlideshowCol = styled(Col)`
 const SlideshowLabel = styled.div`
 	font-size: 12px;
 	color: ${theme.colors.greyMedium};
-	margin-bottom: 12px;
 `;
 
 const CollectionEditedError = styled.div`
@@ -183,7 +182,7 @@ const CaptionLabel = styled(InputLabel)`
 `;
 
 const CaptionInput = styled(InputBase)`
-	margin-bottom: 60px;
+	margin-bottom: 10px;
 	color: ${(props: { invalid: boolean }) =>
 		props.invalid ? error.primary : 'default'};
 	border-color: ${(props: { invalid: boolean }) =>
@@ -197,13 +196,11 @@ const CaptionInput = styled(InputBase)`
 const FlexContainer = styled.div`
 	display: flex;
 	align-items: center;
+	margin-top: 6px;
+	margin-bottom: 10px;
 `;
 
-const InvalidSlideshowWarning = styled(FlexContainer)`
-	margin-top: 4px;
-`;
-
-const InvalidSlideshowText = styled.div`
+const InvalidText = styled.div`
 	color: ${error.primary};
 	font-size: 12px;
 	margin-left: 4px;
@@ -214,13 +211,21 @@ const maxCaptionLength = (max: number) => (value: ImageData) =>
 		? `Must be ${max} characters or less`
 		: undefined;
 
+const InvalidWarning = ({warning}: {warning: string}) => (
+	<FlexContainer>
+		<WarningIcon size="s" fill={error.warningDark} />
+		<InvalidText>
+			{warning}
+		</InvalidText>
+	</FlexContainer>
+);
+
 const maxLength100 = maxCaptionLength(100);
 
 const RenderSlideshow = ({
 	fields,
 	frontId,
 	change,
-	slideshowHasAtLeastTwoImages,
 	criteria,
 }: RenderSlideshowProps) => {
 	const [slideshowIndex, setSlideshowIndex] = React.useState(0);
@@ -335,14 +340,6 @@ const RenderSlideshow = ({
 						}
 					/>
 				</div>
-			) : null}
-			{!slideshowHasAtLeastTwoImages ? (
-				<InvalidSlideshowWarning>
-					<WarningIcon size="s" fill={error.warningDark} />
-					<InvalidSlideshowText>
-						You need at least two images to make a slideshow
-					</InvalidSlideshowText>
-				</InvalidSlideshowWarning>
 			) : null}
 		</>
 	);
@@ -917,19 +914,19 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								permittedNames={editableFields}
 								name={['primaryImage', 'imageHide']}
 							/>
+							{imageSlideshowReplace && (
+								<SlideshowRowContainer size={this.props.size}>
+									<FieldArray
+										name="slideshow"
+										frontId={frontId}
+										component={RenderSlideshow}
+										change={change}
+										criteria={cardCriteria}
+										slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
+									/>
+								</SlideshowRowContainer>
+							)}
 						</ImageRowContainer>
-						{imageSlideshowReplace && (
-							<SlideshowRowContainer size={this.props.size}>
-								<FieldArray
-									name="slideshow"
-									frontId={frontId}
-									component={RenderSlideshow}
-									change={change}
-									criteria={cardCriteria}
-									slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
-								/>
-							</SlideshowRowContainer>
-						)}
 					</ImageOptionsInputGroup>
 					{isEditionsMode && coverCardImageReplace && (
 						<RowContainer>
@@ -982,6 +979,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						</RowContainer>
 					)}
 				</FormContent>
+				{(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ? (
+					<InvalidWarning warning="You need at least two images to make a slideshow"/>
+				) : null}
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
 						Cancel
