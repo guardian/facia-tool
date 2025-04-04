@@ -155,24 +155,24 @@ export default ({
 		<>
 			<InputContainer data-testid={dataTestId}>
 				<RadioButtonOuterContainer usesBlockStyling={usesBlockStyling}>
-				<RadioButtonInnerContainer>
-					<Switch>
-						<RadioButton
-							type="radio"
-							{...inputRest}
-							{...checkedProps}
-							{...rest}
-							id={id}
-						/>
-						<RadioButtonLabel htmlFor={id} />
-					</Switch>
-					<Label htmlFor={id} size="sm">
-						{label}
-					</Label>
-					{icon !== undefined ? <IconContainer>{icon}</IconContainer> : null}
-				</RadioButtonInnerContainer>
-				{contents !== undefined ? contents : null}
-			</RadioButtonOuterContainer>
+					<RadioButtonInnerContainer>
+						<Switch>
+							<RadioButton
+								type="radio"
+								{...inputRest}
+								{...checkedProps}
+								{...rest}
+								id={id}
+							/>
+							<RadioButtonLabel htmlFor={id} />
+						</Switch>
+						<Label htmlFor={id} size="sm">
+							{label}
+						</Label>
+						{icon !== undefined ? <IconContainer>{icon}</IconContainer> : null}
+					</RadioButtonInnerContainer>
+					{contents !== undefined ? contents : null}
+				</RadioButtonOuterContainer>
 			</InputContainer>
 		</>
 	);

@@ -1,5 +1,5 @@
 import React, { SyntheticEvent } from 'react';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import {
 	reduxForm,
 	InjectedFormProps,
@@ -78,7 +78,7 @@ import { CollectionToggles, renderBoostToggles } from './BoostToggles';
 import { memoize } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
 import { VideoControls } from '../video/VideoControls';
-import {getMainMediaVideoAtom} from "../../util/externalArticle";
+import { getMainMediaVideoAtom } from '../../util/externalArticle';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -212,12 +212,10 @@ const maxCaptionLength = (max: number) => (value: ImageData) =>
 		? `Must be ${max} characters or less`
 		: undefined;
 
-const InvalidWarning = ({warning}: {warning: string}) => (
+const InvalidWarning = ({ warning }: { warning: string }) => (
 	<FlexContainer>
 		<WarningIcon size="s" fill={error.warningDark} />
-		<InvalidText>
-			{warning}
-		</InvalidText>
+		<InvalidText>{warning}</InvalidText>
 	</FlexContainer>
 );
 
@@ -422,28 +420,40 @@ interface FormComponentState {
 
 class FormComponent extends React.Component<Props, FormComponentState> {
 	componentDidMount() {
-		this.fetchAndSetReplacementVideoAtom(this.props.replacementVideoAtomId)
-			.catch((error) => console.error(error));
+		this.fetchAndSetReplacementVideoAtom(
+			this.props.replacementVideoAtomId,
+		).catch((error) => console.error(error));
 	}
 
-	componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<FormComponentState>, snapshot?: any) {
-		if(prevProps.replacementVideoAtomId === this.props.replacementVideoAtomId) {
+	componentDidUpdate(
+		prevProps: Readonly<Props>,
+		prevState: Readonly<FormComponentState>,
+		snapshot?: any,
+	) {
+		if (
+			prevProps.replacementVideoAtomId === this.props.replacementVideoAtomId
+		) {
 			return;
 		}
 		// TODO: Add debounce
-		this.fetchAndSetReplacementVideoAtom(this.props.replacementVideoAtomId)
-			.catch((error) => console.error(error));
+		this.fetchAndSetReplacementVideoAtom(
+			this.props.replacementVideoAtomId,
+		).catch((error) => console.error(error));
 	}
 
-	private fetchAndSetReplacementVideoAtom = async (replacementVideoAtomId: string | undefined) => {
+	private fetchAndSetReplacementVideoAtom = async (
+		replacementVideoAtomId: string | undefined,
+	) => {
 		if (replacementVideoAtomId === undefined) {
 			this.props.change('replacementVideoAtom', undefined);
 			return;
 		}
 		this.fetchAtom(replacementVideoAtomId)
 			.then((response) => response.media)
-			.then((replacementAtom) => this.props.change('replacementVideoAtom', replacementAtom))
-	}
+			.then((replacementAtom) =>
+				this.props.change('replacementVideoAtom', replacementAtom),
+			);
+	};
 
 	private fetchAtom = async (atomId: string): Promise<any> => {
 		const response = await fetch(`/api/live/atom/video/${atomId}`);
@@ -515,7 +525,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			valid,
 			groupSizeId,
 			collectionType,
-			form
+			form,
 		} = this.props;
 
 		const isEditionsMode = editMode === 'editions';
@@ -930,7 +940,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											}
 										/>
 									</InputGroup>
-									<ToggleCol id={'video-control-col'}/>
+									<ToggleCol id={'video-control-col'} />
 								</Col>
 							</Row>
 							<ConditionalComponent
@@ -1002,11 +1012,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						</RowContainer>
 					)}
 				</FormContent>
-				{(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ? (
-					<InvalidWarning warning="You need at least two images to make a slideshow"/>
+				{imageSlideshowReplace && !slideshowHasAtLeastTwoImages ? (
+					<InvalidWarning warning="You need at least two images to make a slideshow" />
 				) : null}
-				{(showMainVideo && !hasMainVideo) || (videoReplace && !replacementVideoAtom) ? (
-					<InvalidWarning warning="You need to provide a valid video"/>
+				{(showMainVideo && !hasMainVideo) ||
+				(videoReplace && !replacementVideoAtom) ? (
+					<InvalidWarning warning="You need to provide a valid video" />
 				) : null}
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
@@ -1241,7 +1252,10 @@ const createMapStateToProps = () => {
 		return {
 			articleExists: !!article,
 			hasMainVideo: !!article && !!article.hasMainVideo,
-			mainMediaVideoAtom: !!article && !!article.hasMainVideo ? getMainMediaVideoAtom(article) : undefined,
+			mainMediaVideoAtom:
+				!!article && !!article.hasMainVideo
+					? getMainMediaVideoAtom(article)
+					: undefined,
 			collectionId,
 			getLastUpdatedBy,
 			snapType: article && article.snapType,

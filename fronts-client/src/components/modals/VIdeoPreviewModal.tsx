@@ -1,13 +1,13 @@
-import React from "react";
-import {ImageContainer, ModalButton, StyledModal} from "./StyledModal";
-import {CloseIcon} from "../icons/Icons";
-import {styled} from "../../constants/theme";
+import React from 'react';
+import { ImageContainer, ModalButton, StyledModal } from './StyledModal';
+import { CloseIcon } from '../icons/Icons';
+import { styled } from '../../constants/theme';
 
 type VideoPreviewModalProps = {
 	isOpen: boolean;
 	url: string | undefined;
 	onClose: () => void;
-}
+};
 
 const VideoPreviewIFrame = styled.iframe`
 	height: 100%;
@@ -16,8 +16,12 @@ const VideoPreviewIFrame = styled.iframe`
 	border: 0;
 `;
 
-export const VideoPreviewModal = ({ isOpen, url, onClose }: VideoPreviewModalProps) => {
-	if(!url) return null;
+export const VideoPreviewModal = ({
+	isOpen,
+	url,
+	onClose,
+}: VideoPreviewModalProps) => {
+	if (!url) return null;
 
 	return (
 		<React.Fragment>
@@ -29,11 +33,7 @@ export const VideoPreviewModal = ({ isOpen, url, onClose }: VideoPreviewModalPro
 					},
 				}}
 			>
-				<ModalButton
-					type="button"
-					priority="primary"
-					onClick={onClose}
-				>
+				<ModalButton type="button" priority="primary" onClick={onClose}>
 					<ImageContainer>
 						<CloseIcon />
 					</ImageContainer>
@@ -45,4 +45,4 @@ export const VideoPreviewModal = ({ isOpen, url, onClose }: VideoPreviewModalPro
 			</StyledModal>
 		</React.Fragment>
 	);
-}
+};

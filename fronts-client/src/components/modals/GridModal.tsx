@@ -1,7 +1,7 @@
 import React from 'react';
 import { styled } from 'constants/theme';
 import { CloseIcon } from 'components/icons/Icons';
-import {ImageContainer, ModalButton, StyledModal} from "./StyledModal";
+import { ImageContainer, ModalButton, StyledModal } from './StyledModal';
 
 interface ModalProps {
 	isOpen: boolean;

@@ -13,7 +13,7 @@ const CheckboxContainer = styled.div`
 	display: flex;
 	align-items: flex-start;
 
-	&:has(input:disabled) label{
+	&:has(input:disabled) label {
 		cursor: not-allowed;
 	}
 `;
@@ -72,16 +72,16 @@ const Checkbox = styled.input`
 		border-color: ${theme.input.checkboxColorActive};
 		right: 0px;
 	}
-	:disabled, :disabled + ${CheckboxLabel}, :disabled + ${CheckboxLabel}:before {
+	:disabled,
+	:disabled + ${CheckboxLabel}, :disabled + ${CheckboxLabel}:before {
 		cursor: not-allowed;
 	}
 	:disabled + ${CheckboxLabel}:before {
-		background-color: ${theme.input.checkboxButtonBackgroundDisabled}
+		background-color: ${theme.input.checkboxButtonBackgroundDisabled};
 	}
 	:disabled + ${Label} {
 		cursor: not-allowed;
 	}
-
 `;
 
 type Props = {
