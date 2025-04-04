@@ -856,7 +856,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									<InputGroup>
 										<Field
 											component={InputRadio}
-											// TODO: disable if video option selected, but no atom provided
 											icon={<SelectVideoIcon />}
 											contents={
 												<VideoControls
@@ -982,6 +981,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 				{(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ? (
 					<InvalidWarning warning="You need at least two images to make a slideshow"/>
 				) : null}
+				{showMainVideo && !hasMainVideo ? (
+					<InvalidWarning warning="You need to provide a video"/>
+				) : null}
+				{videoReplace && !replacementVideoAtom ? (
+					<InvalidWarning warning="You need to provide a video"/>
+				) : null}
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
 						Cancel
@@ -994,7 +999,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							!articleExists ||
 							invalidCardReplacement ||
 							!valid ||
-							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages)
+							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
+							(showMainVideo && !hasMainVideo) ||
+							(videoReplace && !replacementVideoAtom)
 						}
 						size="l"
 						data-testid="edit-form-save-button"
