@@ -57,13 +57,11 @@ const extractVideoTrailImage = (atom: any): string | undefined => {
 	}
 };
 
-const extractAtomProperties = (
-	atom: any
-) => {
-	if(atom === undefined) {
+const extractAtomProperties = (atom: any) => {
+	if (atom === undefined) {
 		return {
 			assetId: undefined,
-			trailImage: undefined
+			trailImage: undefined,
 		};
 	}
 
@@ -72,8 +70,8 @@ const extractAtomProperties = (
 
 	return {
 		assetId,
-		trailImage
-	}
-}
+		trailImage,
+	};
+};
 
 export { extractAtomId, extractAtomProperties };

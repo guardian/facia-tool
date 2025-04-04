@@ -1,6 +1,6 @@
-import {styled} from "../../constants/theme";
-import Modal from "react-modal";
-import ButtonDefault from "../inputs/ButtonDefault";
+import { styled } from '../../constants/theme';
+import Modal from 'react-modal';
+import ButtonDefault from '../inputs/ButtonDefault';
 
 export const StyledModal = styled(Modal)`
 	position: absolute;
