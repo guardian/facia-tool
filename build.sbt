@@ -52,7 +52,7 @@ TwirlKeys.templateImports ++= Seq(
 routesImport += "model.editions._"
 
 val awsVersion = "1.12.470"
-val capiModelsVersion = "27.0.0"
+val capiModelsVersion = "27.1.0"
 val capiClientVersion = "34.0.0"
 val json4sVersion = "4.0.3"
 val circeVersion = "0.13.0"
@@ -82,13 +82,13 @@ libraryDependencies ++= Seq(
   "com.gu" %% "content-api-models-json" % capiModelsVersion,
   "com.gu" %% "content-api-client-aws" % "0.7.6",
   "com.gu" %% "content-api-client-default" % capiClientVersion,
-  "com.gu" %% "editorial-permissions-client" % "3.0.0",
+  "com.gu" %% "editorial-permissions-client" % "4.0.0",
   "com.gu" %% "fapi-client-play30" % "18.0.0",
   "com.gu" %% "mobile-notifications-api-models" % "3.0.0",
-  "com.gu" %% "pan-domain-auth-play_3-0" % "7.0.0",
+  "com.gu" %% "pan-domain-auth-play_3-0" % "9.0.2",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
   "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
-  "com.gu" %% "thrift-serializer" % "4.0.2",
+  "com.gu" %% "thrift-serializer" % "4.0.3",
   "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
   "org.julienrf" %% "play-json-derived-codecs" % "11.0.0",
   "org.json4s" %% "json4s-native" % json4sVersion,
