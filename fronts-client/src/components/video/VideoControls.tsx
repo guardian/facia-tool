@@ -1,17 +1,22 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import ButtonDefault from '../inputs/ButtonDefault';
 import { createPortal } from 'react-dom';
-import {ConfirmDeleteIcon, PreviewVideoIcon, ReplaceVideoIcon, RubbishBinIcon} from '../icons/Icons';
-import InputCheckboxToggleInline from "../inputs/InputCheckboxToggleInline";
-import {autofill, change, Field} from "redux-form";
-import {extractAtomId, extractAtomProperties} from "../../util/extractAtomId";
-import {ButtonDelete, DeleteIconOptions} from "../inputs/InputImage";
-import {VideoUriInput} from "../inputs/VideoUriInput";
-import {useDispatch} from "react-redux";
-import {VideoPreviewModal} from "../modals/VIdeoPreviewModal";
-import {MediaAtomMakerModal} from "../modals/MediaAtomMakerModal";
-import Explainer from "../Explainer";
+import {
+	ConfirmDeleteIcon,
+	PreviewVideoIcon,
+	ReplaceVideoIcon,
+	RubbishBinIcon,
+} from '../icons/Icons';
+import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
+import { autofill, change, Field } from 'redux-form';
+import { extractAtomId, extractAtomProperties } from '../../util/extractAtomId';
+import { ButtonDelete, DeleteIconOptions } from '../inputs/InputImage';
+import { VideoUriInput } from '../inputs/VideoUriInput';
+import { useDispatch } from 'react-redux';
+import { VideoPreviewModal } from '../modals/VIdeoPreviewModal';
+import { MediaAtomMakerModal } from '../modals/MediaAtomMakerModal';
+import Explainer from '../Explainer';
 
 interface VideoControlsProps {
 	mainMediaVideoAtom: any;
@@ -22,7 +27,6 @@ interface VideoControlsProps {
 	changeMediaField: (fieldToSet: string) => void;
 	form: any;
 }
-
 
 const VideoControlsOuterContainer = styled.div`
 	margin-top: 8px;
@@ -70,36 +74,41 @@ export const VideoControls = ({
 	showReplacementVideo,
 	changeField,
 	changeMediaField,
-	form
+	form,
 }: VideoControlsProps) => {
 	// Derived from mainMediaVideoAtom
-	const [mainMediaVideoAssetId, setMainMediaVideoAssetId] = React.useState<string | undefined>(undefined);
-	const [mainMediaTrailImageUri, setMainMediaTrailImageUri] = React.useState<string | undefined>(undefined);
+	const [mainMediaVideoAssetId, setMainMediaVideoAssetId] = React.useState<
+		string | undefined
+	>(undefined);
+	const [mainMediaTrailImageUri, setMainMediaTrailImageUri] = React.useState<
+		string | undefined
+	>(undefined);
 
 	// Derived from replacementVideoAtom
-	const [replacementVideoAssetId, setReplacementVideoAssetId] = React.useState<string | undefined>(undefined);
-	const [replacementTrailImageUri, setReplacementTrailImageUri] = React.useState<string | undefined>(
-		undefined,
-	);
+	const [replacementVideoAssetId, setReplacementVideoAssetId] = React.useState<
+		string | undefined
+	>(undefined);
+	const [replacementTrailImageUri, setReplacementTrailImageUri] =
+		React.useState<string | undefined>(undefined);
 
-	const [currentVideoUri, setCurrentVideoUri] = React.useState<string | undefined>(undefined);
+	const [currentVideoUri, setCurrentVideoUri] = React.useState<
+		string | undefined
+	>(undefined);
 	const [showVideoPreviewModal, setShowVideoPreviewModal] =
 		React.useState<boolean>(false);
-	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] = React.useState<boolean>(false);
+	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] =
+		React.useState<boolean>(false);
 	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
 	const dispatch = useDispatch();
 
-	const mediaAtomMakerUri = "https://video.code.dev-gutools.co.uk";
+	const mediaAtomMakerUri = 'https://video.code.dev-gutools.co.uk';
 
 	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
 
 		if (!confirmDelete) {
 			setConfirmDelete(true);
-			setTimeout(
-				() => setConfirmDelete(false),
-				3000,
-			);
+			setTimeout(() => setConfirmDelete(false), 3000);
 			return;
 		}
 
@@ -113,7 +122,7 @@ export const VideoControls = ({
 
 	type AtomData = {
 		atomId: string;
-	}
+	};
 
 	const onMessage = (event: MessageEvent) => {
 		if (event.origin !== mediaAtomMakerUri) {
@@ -128,19 +137,25 @@ export const VideoControls = ({
 
 		dispatch(change(form, 'replacementVideoAtomId', data.atomId));
 		// TODO: handle failure to fetch atom?
-		dispatch(change(form, 'replaceVideoUri', `${mediaAtomMakerUri}/videos/${data.atomId}`));
+		dispatch(
+			change(
+				form,
+				'replaceVideoUri',
+				`${mediaAtomMakerUri}/videos/${data.atomId}`,
+			),
+		);
 		changeMediaField('videoReplace');
 		handleCloseMediaAtomMakerModal();
-	}
+	};
 
 	const handleOpenMediaAtomMakerModal = () => {
 		setShowMediaAtomMakerModal(true);
 		window.addEventListener('message', onMessage, false);
-	}
+	};
 	const handleCloseMediaAtomMakerModal = () => {
 		setShowMediaAtomMakerModal(false);
 		window.removeEventListener('message', onMessage, false);
-	}
+	};
 
 	useEffect(() => {
 		const { assetId, trailImage } = extractAtomProperties(replacementVideoAtom);
@@ -155,7 +170,9 @@ export const VideoControls = ({
 	}, [mainMediaVideoAtom]);
 
 	useEffect(() => {
-		setCurrentVideoUri(showReplacementVideo ? replacementVideoAssetId : mainMediaVideoAssetId);
+		setCurrentVideoUri(
+			showReplacementVideo ? replacementVideoAssetId : mainMediaVideoAssetId,
+		);
 	}, [showReplacementVideo, mainMediaVideoAssetId, replacementVideoAssetId]);
 
 	if (!showMainVideo && !showReplacementVideo) {
@@ -171,50 +188,62 @@ export const VideoControls = ({
 				In this scenario we neither show the 'Use replacement video toggle', nor refer to it as a replacement.
 				Note in the data model we still call this a replacement atom.
 			*/}
-			{controlColumn !== null && mainMediaVideoAtom ? createPortal(
-				<>
-					<Field
-						name="useReplacementVideo"
-						component={InputCheckboxToggleInline}
-						label="Use replacement video"
-						disabled={!replacementVideoAtom}
-						id={"useReplacementVideo"}
-						type="checkbox"
-						dataTestId="use-replacement-video"
-						checked={showReplacementVideo && replacementVideoAtom}
-						onChange={() => {
-							if(showReplacementVideo) {
-								changeMediaField('showMainVideo');
-							} else {
-								changeMediaField('videoReplace')
-							}
-						}}
-					/>
-					{!replacementVideoAtom && (
-						<Explainer>Replacement video required</Explainer>
-					)}
-				</>
-				, controlColumn) : null}
-			{(mainMediaVideoAssetId || replacementVideoAssetId) && showVideoPreviewModal
+			{controlColumn !== null && mainMediaVideoAtom
 				? createPortal(
-					<VideoPreviewModal
-						onClose={() => setShowVideoPreviewModal(false)}
-						isOpen={showVideoPreviewModal}
-						url={currentVideoUri}/>,
-					document.body,
+						<>
+							<Field
+								name="useReplacementVideo"
+								component={InputCheckboxToggleInline}
+								label="Use replacement video"
+								disabled={!replacementVideoAtom}
+								id={'useReplacementVideo'}
+								type="checkbox"
+								dataTestId="use-replacement-video"
+								checked={showReplacementVideo && replacementVideoAtom}
+								onChange={() => {
+									if (showReplacementVideo) {
+										changeMediaField('showMainVideo');
+									} else {
+										changeMediaField('videoReplace');
+									}
+								}}
+							/>
+							{!replacementVideoAtom && (
+								<Explainer>Replacement video required</Explainer>
+							)}
+						</>,
+						controlColumn,
+					)
+				: null}
+			{(mainMediaVideoAssetId || replacementVideoAssetId) &&
+			showVideoPreviewModal
+				? createPortal(
+						<VideoPreviewModal
+							onClose={() => setShowVideoPreviewModal(false)}
+							isOpen={showVideoPreviewModal}
+							url={currentVideoUri}
+						/>,
+						document.body,
 					)
 				: null}
 			{showMediaAtomMakerModal
 				? createPortal(
-					<MediaAtomMakerModal
-						onClose={handleCloseMediaAtomMakerModal}
-						isOpen={showMediaAtomMakerModal}
-						url={`${mediaAtomMakerUri}/videos?embeddedMode=live`}/>,
-					document.body,
-				)
+						<MediaAtomMakerModal
+							onClose={handleCloseMediaAtomMakerModal}
+							isOpen={showMediaAtomMakerModal}
+							url={`${mediaAtomMakerUri}/videos?embeddedMode=live`}
+						/>,
+						document.body,
+					)
 				: null}
 			<VideoControlsOuterContainer>
-				<VideoControlsInnerContainer url={showReplacementVideo ? replacementTrailImageUri : mainMediaTrailImageUri}>
+				<VideoControlsInnerContainer
+					url={
+						showReplacementVideo
+							? replacementTrailImageUri
+							: mainMediaTrailImageUri
+					}
+				>
 					<VideoAction
 						onClick={(e) => {
 							e.preventDefault();
@@ -222,7 +251,7 @@ export const VideoControls = ({
 							handleOpenMediaAtomMakerModal();
 						}}
 					>
-						<ReplaceVideoIcon/>
+						<ReplaceVideoIcon />
 						Replace video
 					</VideoAction>
 					<VideoAction
@@ -232,11 +261,11 @@ export const VideoControls = ({
 							setShowVideoPreviewModal(true);
 						}}
 					>
-						<PreviewVideoIcon/>
+						<PreviewVideoIcon />
 						Preview video
 					</VideoAction>
-					{
-						showReplacementVideo && replacementVideoAtom && <ButtonDelete
+					{showReplacementVideo && replacementVideoAtom && (
+						<ButtonDelete
 							type="button"
 							priority="primary"
 							onClick={handleDelete}
@@ -245,13 +274,13 @@ export const VideoControls = ({
 						>
 							<DeleteIconOptions>
 								{confirmDelete ? (
-									<ConfirmDeleteIcon size="s"/>
+									<ConfirmDeleteIcon size="s" />
 								) : (
-									<RubbishBinIcon size="s"/>
+									<RubbishBinIcon size="s" />
 								)}
 							</DeleteIconOptions>
 						</ButtonDelete>
-					}
+					)}
 				</VideoControlsInnerContainer>
 				<Field
 					name="replaceVideoUri"
@@ -260,11 +289,7 @@ export const VideoControls = ({
 					onChange={(e: any) => {
 						const value = e.currentTarget.value;
 
-						if (
-							value !== undefined &&
-							value !== null &&
-							value !== ''
-						) {
+						if (value !== undefined && value !== null && value !== '') {
 							changeMediaField('videoReplace');
 						} else {
 							changeMediaField('showMainVideo');
@@ -272,8 +297,8 @@ export const VideoControls = ({
 
 						changeField('replacementVideoAtomId', extractAtomId(value));
 					}}
-					placeholder="Paste video url">
-				</Field>
+					placeholder="Paste video url"
+				></Field>
 			</VideoControlsOuterContainer>
 		</>
 	);

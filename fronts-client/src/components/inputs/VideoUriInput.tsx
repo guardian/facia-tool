@@ -1,7 +1,7 @@
-import styled from "styled-components";
-import InputBase from "./InputBase";
-import {WrappedFieldInputProps} from "redux-form";
-import React from "react";
+import styled from 'styled-components';
+import InputBase from './InputBase';
+import { WrappedFieldInputProps } from 'redux-form';
+import React from 'react';
 
 type Props = {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
@@ -19,8 +19,9 @@ const StyledVideoUriInput = styled(InputBase)`
 	}
 `;
 
-
 export const VideoUriInput = ({
-					input: { onChange, ...inputRest },
-				 ...rest
-			 }: Props) => <StyledVideoUriInput onChange={onChange} {...inputRest} {...rest}/>
+	input: { onChange, ...inputRest },
+	...rest
+}: Props) => (
+	<StyledVideoUriInput onChange={onChange} {...inputRest} {...rest} />
+);
