@@ -39,6 +39,7 @@ export const VideoPreviewModal = ({ isOpen, url, onClose }: VideoPreviewModalPro
 					</ImageContainer>
 				</ModalButton>
 				<VideoPreviewIFrame
+					// TODO: handle self-hosted videos
 					src={`https://www.youtube.com/embed/${url}`}
 				></VideoPreviewIFrame>
 			</StyledModal>
