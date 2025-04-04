@@ -11,6 +11,7 @@ import {VideoUriInput} from "../inputs/VideoUriInput";
 import {useDispatch} from "react-redux";
 import {VideoPreviewModal} from "../modals/VIdeoPreviewModal";
 import {MediaAtomMakerModal} from "../modals/MediaAtomMakerModal";
+import Explainer from "../Explainer";
 
 interface VideoControlsProps {
 	mainMediaVideoAtom: any;
@@ -165,25 +166,35 @@ export const VideoControls = ({
 
 	return (
 		<>
-			{controlColumn !== null ? createPortal(
-				<Field
-					name="useReplacementVideo"
-					component={InputCheckboxToggleInline}
-					// TODO: handle this field when there is nothing to 'replace'
-					label="Use replacement video"
-					disabled={!replacementVideoAtom}
-					id={"useReplacementVideo"}
-					type="checkbox"
-					dataTestId="use-replacement-video"
-					checked={showReplacementVideo && replacementVideoAtom}
-					onChange={() => {
-						if(showReplacementVideo) {
-							changeMediaField('showMainVideo');
-						} else {
-							changeMediaField('videoReplace')
-						}
-					}}
-				/>, controlColumn) : null}
+			{/*
+				If there is no main media atom, the replacement atom is the only one we care about.
+				In this scenario we neither show the 'Use replacement video toggle', nor refer to it as a replacement.
+				Note in the data model we still call this a replacement atom.
+			*/}
+			{controlColumn !== null && mainMediaVideoAtom ? createPortal(
+				<>
+					<Field
+						name="useReplacementVideo"
+						component={InputCheckboxToggleInline}
+						label="Use replacement video"
+						disabled={!replacementVideoAtom}
+						id={"useReplacementVideo"}
+						type="checkbox"
+						dataTestId="use-replacement-video"
+						checked={showReplacementVideo && replacementVideoAtom}
+						onChange={() => {
+							if(showReplacementVideo) {
+								changeMediaField('showMainVideo');
+							} else {
+								changeMediaField('videoReplace')
+							}
+						}}
+					/>
+					{!replacementVideoAtom && (
+						<Explainer>Replacement video required</Explainer>
+					)}
+				</>
+				, controlColumn) : null}
 			{(mainMediaVideoAssetId || replacementVideoAssetId) && showVideoPreviewModal
 				? createPortal(
 					<VideoPreviewModal
