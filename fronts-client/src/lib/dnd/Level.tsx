@@ -13,6 +13,7 @@ interface PosSpec {
 	index: number;
 	collectionId?: string;
 	groupName?: string;
+	// todo: groupIds is not necessary, we can refactor to get the desired values from groupsData
 	groupIds?: string[];
 	groupMaxItems?: number;
 	groupsData?: Group[];
