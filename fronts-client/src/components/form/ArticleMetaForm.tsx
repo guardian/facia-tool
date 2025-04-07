@@ -425,13 +425,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		this.debouncedFetchAndSetReplacementVideoAtom = debounce(async () => {
 			await this.fetchAndSetReplacementVideoAtom(
 				this.props.replacementVideoAtomId,
-			).catch((error) => console.error(error));
+			);
 		}, 500);
 	}
 	componentDidMount() {
 		this.fetchAndSetReplacementVideoAtom(
 			this.props.replacementVideoAtomId,
-		).catch((error) => console.error(error));
+		);
 	}
 
 	componentDidUpdate(
@@ -458,7 +458,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			.then((response) => response.media)
 			.then((replacementAtom) =>
 				this.props.change('replacementVideoAtom', replacementAtom),
-			);
+			)
+			.catch((error) => {
+				console.error(error);
+				this.props.change('replacementVideoAtom', undefined);
+			})
 	};
 
 	private fetchAtom = async (atomId: string): Promise<any> => {
