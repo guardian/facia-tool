@@ -10,7 +10,7 @@ import {
 } from '../icons/Icons';
 import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
 import { autofill, change, Field } from 'redux-form';
-import { extractAtomId, extractAtomProperties } from '../../util/extractAtomId';
+import {AtomProperties, extractAtomId, extractAtomProperties, getVideoUri} from '../../util/extractAtomId';
 import { ButtonDelete, DeleteIconOptions } from '../inputs/InputImage';
 import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
@@ -75,20 +75,8 @@ export const VideoControls = ({
 	changeMediaField,
 	form,
 }: VideoControlsProps) => {
-	// Derived from mainMediaVideoAtom
-	const [mainMediaVideoAssetId, setMainMediaVideoAssetId] = React.useState<
-		string | undefined
-	>(undefined);
-	const [mainMediaTrailImageUri, setMainMediaTrailImageUri] = React.useState<
-		string | undefined
-	>(undefined);
-
-	// Derived from replacementVideoAtom
-	const [replacementVideoAssetId, setReplacementVideoAssetId] = React.useState<
-		string | undefined
-	>(undefined);
-	const [replacementTrailImageUri, setReplacementTrailImageUri] =
-		React.useState<string | undefined>(undefined);
+	const [mainMediaVideoAtomProperties, setMainMediaVideoAtomProperties] = React.useState<AtomProperties>()
+	const [replacementVideoAtomProperties, setReplacementVideoAtomProperties] = React.useState<AtomProperties>()
 
 	const [currentVideoUri, setCurrentVideoUri] = React.useState<
 		string | undefined
@@ -158,22 +146,22 @@ export const VideoControls = ({
 	};
 
 	useEffect(() => {
-		const { assetId, trailImage } = extractAtomProperties(replacementVideoAtom);
-		setReplacementVideoAssetId(assetId);
-		setReplacementTrailImageUri(trailImage);
+		const atomProperties = extractAtomProperties(replacementVideoAtom);
+		setReplacementVideoAtomProperties(atomProperties);
 	}, [replacementVideoAtom]);
 
 	useEffect(() => {
-		const { assetId, trailImage } = extractAtomProperties(mainMediaVideoAtom);
-		setMainMediaVideoAssetId(assetId);
-		setMainMediaTrailImageUri(trailImage);
+		const atomProperties = extractAtomProperties(mainMediaVideoAtom);
+		setMainMediaVideoAtomProperties(atomProperties);
 	}, [mainMediaVideoAtom]);
 
 	useEffect(() => {
-		setCurrentVideoUri(
-			showReplacementVideo ? replacementVideoAssetId : mainMediaVideoAssetId,
-		);
-	}, [showReplacementVideo, mainMediaVideoAssetId, replacementVideoAssetId]);
+		const videoUri = showReplacementVideo
+			? getVideoUri(replacementVideoAtomProperties)
+			: getVideoUri(mainMediaVideoAtomProperties);
+
+		setCurrentVideoUri(videoUri);
+	}, [showReplacementVideo, mainMediaVideoAtomProperties, replacementVideoAtomProperties]);
 
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;
@@ -215,9 +203,10 @@ export const VideoControls = ({
 						controlColumn,
 					)
 				: null}
-			{(mainMediaVideoAssetId || replacementVideoAssetId) &&
+			{(mainMediaVideoAtomProperties?.assetId || replacementVideoAtomProperties?.assetId) &&
 			showVideoPreviewModal
 				? createPortal(
+					// TODO: DRY modals further
 						<VideoPreviewModal
 							onClose={() => setShowVideoPreviewModal(false)}
 							isOpen={showVideoPreviewModal}
@@ -240,8 +229,8 @@ export const VideoControls = ({
 				<VideoControlsInnerContainer
 					url={
 						showReplacementVideo
-							? replacementTrailImageUri
-							: mainMediaTrailImageUri
+							? replacementVideoAtomProperties?.trailImage
+							: mainMediaVideoAtomProperties?.trailImage
 					}
 				>
 					<VideoAction
