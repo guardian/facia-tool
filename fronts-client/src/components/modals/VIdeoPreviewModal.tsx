@@ -40,7 +40,7 @@ export const VideoPreviewModal = ({
 				</ModalButton>
 				<VideoPreviewIFrame
 					// TODO: handle self-hosted videos
-					src={`https://www.youtube.com/embed/${url}`}
+					src={url}
 				></VideoPreviewIFrame>
 			</StyledModal>
 		</React.Fragment>
