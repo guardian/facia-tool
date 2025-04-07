@@ -75,7 +75,7 @@ import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import { CollectionToggles, renderBoostToggles } from './BoostToggles';
-import { memoize } from 'lodash';
+import { memoize, debounce } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
 import { VideoControls } from '../video/VideoControls';
 import { getMainMediaVideoAtom } from '../../util/externalArticle';
@@ -419,6 +419,15 @@ interface FormComponentState {
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
+	private debouncedFetchAndSetReplacementVideoAtom: () => void;
+	constructor(props: Props) {
+		super(props);
+		this.debouncedFetchAndSetReplacementVideoAtom = debounce(async () => {
+			await this.fetchAndSetReplacementVideoAtom(
+				this.props.replacementVideoAtomId,
+			).catch((error) => console.error(error));
+		}, 500);
+	}
 	componentDidMount() {
 		this.fetchAndSetReplacementVideoAtom(
 			this.props.replacementVideoAtomId,
@@ -435,10 +444,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		) {
 			return;
 		}
-		// TODO: Add debounce
-		this.fetchAndSetReplacementVideoAtom(
-			this.props.replacementVideoAtomId,
-		).catch((error) => console.error(error));
+		this.debouncedFetchAndSetReplacementVideoAtom();
 	}
 
 	private fetchAndSetReplacementVideoAtom = async (
