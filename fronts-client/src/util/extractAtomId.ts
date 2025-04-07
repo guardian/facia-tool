@@ -57,21 +57,58 @@ const extractVideoTrailImage = (atom: any): string | undefined => {
 	}
 };
 
-const extractAtomProperties = (atom: any) => {
+const extractPlatform = (atom: any): Platform | undefined => {
+	const mediaAssets = atom?.data?.media?.assets;
+
+	if (
+		mediaAssets === undefined ||
+		mediaAssets.length === 0 ||
+		mediaAssets[0] === undefined ||
+		mediaAssets[0].platform === undefined
+	) {
+		console.error(`No media assets found for atom ${atom.id}`);
+		return undefined;
+	} else {
+		return mediaAssets[0].platform;
+	}
+}
+
+export type Platform = "youtube" | "url";
+
+export type AtomProperties = {
+	assetId: string | undefined;
+	trailImage: string | undefined;
+	platform: Platform | undefined;
+}
+
+const getVideoUri = (atomProperties: AtomProperties | undefined) => {
+	if (atomProperties === undefined) {
+		return undefined;
+	}
+
+	return atomProperties?.platform === 'youtube'
+		? `https://www.youtube.com/embed/${atomProperties.assetId}`
+		: atomProperties?.assetId;
+}
+
+const extractAtomProperties = (atom: any): AtomProperties => {
 	if (atom === undefined) {
 		return {
 			assetId: undefined,
 			trailImage: undefined,
+			platform: undefined
 		};
 	}
 
 	const assetId = extractAssetId(atom);
 	const trailImage = extractVideoTrailImage(atom);
+	const platform = extractPlatform(atom);
 
 	return {
 		assetId,
 		trailImage,
+		platform
 	};
 };
 
-export { extractAtomId, extractAtomProperties };
+export { extractAtomId, extractAtomProperties, getVideoUri };
