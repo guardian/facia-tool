@@ -9,7 +9,6 @@ import InputContainer from './InputContainer';
 import InputBase from './InputBase';
 import InputLabel from './InputLabel';
 import DragIntentContainer from '../DragIntentContainer';
-import { GridModal } from 'components/modals/GridModal';
 import {
 	validateImageEvent,
 	validateMediaItem,
@@ -40,6 +39,7 @@ import { selectEditMode } from '../../selectors/pathSelectors';
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { error } from '../../styleConstants';
 import ValidatingSpinnerOverlay from '../image/ValidatingSpinnerOverlay';
+import {OverlayModal} from "../modals/OverlayModal";
 
 const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
 	background-color: ${({ small }) =>
@@ -374,11 +374,10 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 				isInvalid={isInvalid}
 				confirmDelete={this.state.confirmDelete}
 			>
-				<GridModal
+				<OverlayModal
 					url={gridModalUrl}
 					isOpen={this.state.modalOpen}
 					onClose={this.closeModal}
-					onMessage={this.onMessage}
 				/>
 				<DragIntentContainer
 					active
