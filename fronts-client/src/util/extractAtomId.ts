@@ -71,15 +71,15 @@ const extractPlatform = (atom: any): Platform | undefined => {
 	} else {
 		return mediaAssets[0].platform;
 	}
-}
+};
 
-export type Platform = "youtube" | "url";
+export type Platform = 'youtube' | 'url';
 
 export type AtomProperties = {
 	assetId: string | undefined;
 	trailImage: string | undefined;
 	platform: Platform | undefined;
-}
+};
 
 const getVideoUri = (atomProperties: AtomProperties | undefined) => {
 	if (atomProperties === undefined) {
@@ -89,14 +89,14 @@ const getVideoUri = (atomProperties: AtomProperties | undefined) => {
 	return atomProperties?.platform === 'youtube'
 		? `https://www.youtube.com/embed/${atomProperties.assetId}`
 		: atomProperties?.assetId;
-}
+};
 
 const extractAtomProperties = (atom: any): AtomProperties => {
 	if (atom === undefined) {
 		return {
 			assetId: undefined,
 			trailImage: undefined,
-			platform: undefined
+			platform: undefined,
 		};
 	}
 
@@ -107,7 +107,7 @@ const extractAtomProperties = (atom: any): AtomProperties => {
 	return {
 		assetId,
 		trailImage,
-		platform
+		platform,
 	};
 };
 
