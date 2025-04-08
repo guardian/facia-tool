@@ -248,6 +248,7 @@ export const VideoControls = ({
 							e.stopPropagation();
 							setShowVideoPreviewModal(true);
 						}}
+						disabled={currentVideoUri === undefined}
 					>
 						<PreviewVideoIcon />
 						Preview video
