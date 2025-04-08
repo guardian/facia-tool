@@ -14,9 +14,8 @@ import {AtomProperties, extractAtomId, extractAtomProperties, getVideoUri} from 
 import { ButtonDelete, DeleteIconOptions } from '../inputs/InputImage';
 import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
-import { VideoPreviewModal } from '../modals/VIdeoPreviewModal';
-import { MediaAtomMakerModal } from '../modals/MediaAtomMakerModal';
 import Explainer from '../Explainer';
+import {OverlayModal} from "../modals/OverlayModal";
 
 interface VideoControlsProps {
 	videoBaseUrl: string | null;
@@ -202,11 +201,9 @@ export const VideoControls = ({
 						controlColumn,
 					)
 				: null}
-			{(mainMediaVideoAtomProperties?.assetId || replacementVideoAtomProperties?.assetId) &&
-			showVideoPreviewModal
+			{currentVideoUri !== undefined && showVideoPreviewModal
 				? createPortal(
-					// TODO: DRY modals further
-						<VideoPreviewModal
+						<OverlayModal
 							onClose={() => setShowVideoPreviewModal(false)}
 							isOpen={showVideoPreviewModal}
 							url={currentVideoUri}
@@ -216,7 +213,7 @@ export const VideoControls = ({
 				: null}
 			{showMediaAtomMakerModal && videoBaseUrl !== null
 				? createPortal(
-						<MediaAtomMakerModal
+						<OverlayModal
 							onClose={handleCloseMediaAtomMakerModal}
 							isOpen={showMediaAtomMakerModal}
 							url={`${videoBaseUrl}/videos?embeddedMode=live`}
