@@ -27,6 +27,7 @@ interface Config {
 	sentryPublicDSN: string;
 	mediaBaseUrl: string;
 	apiBaseUrl: string;
+	videoBaseUrl: string;
 	switches: { [key: string]: boolean };
 	acl: Acl;
 	collectionCap: number;

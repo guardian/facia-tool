@@ -113,6 +113,7 @@ class V2App(
         config.sentry.publicDSN,
         config.media.baseUrl.get,
         config.media.apiUrl,
+        config.video.baseUrl.get,
         SwitchManager.getSwitchesAsJson(),
         acls,
         config.facia.collectionCap,

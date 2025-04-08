@@ -19,6 +19,7 @@ import { MediaAtomMakerModal } from '../modals/MediaAtomMakerModal';
 import Explainer from '../Explainer';
 
 interface VideoControlsProps {
+	videoBaseUrl: string | null;
 	mainMediaVideoAtom: any;
 	replacementVideoAtom: any;
 	showMainVideo: boolean;
@@ -67,6 +68,7 @@ const VideoControlsInnerContainer = styled.div<{ url?: string }>`
 `;
 
 export const VideoControls = ({
+	videoBaseUrl,
 	mainMediaVideoAtom,
 	replacementVideoAtom,
 	showMainVideo,
@@ -87,9 +89,6 @@ export const VideoControls = ({
 		React.useState<boolean>(false);
 	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
 	const dispatch = useDispatch();
-
-	// TODO: pass from config
-	const mediaAtomMakerUri = 'https://video.code.dev-gutools.co.uk';
 
 	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.stopPropagation();
@@ -113,7 +112,7 @@ export const VideoControls = ({
 	};
 
 	const onMessage = (event: MessageEvent) => {
-		if (event.origin !== mediaAtomMakerUri) {
+		if (videoBaseUrl === null || event.origin !== videoBaseUrl) {
 			return;
 		}
 
@@ -129,7 +128,7 @@ export const VideoControls = ({
 			change(
 				form,
 				'replaceVideoUri',
-				`${mediaAtomMakerUri}/videos/${data.atomId}`,
+				`${videoBaseUrl}/videos/${data.atomId}`,
 			),
 		);
 		changeMediaField('videoReplace');
@@ -215,12 +214,12 @@ export const VideoControls = ({
 						document.body,
 					)
 				: null}
-			{showMediaAtomMakerModal
+			{showMediaAtomMakerModal && videoBaseUrl !== null
 				? createPortal(
 						<MediaAtomMakerModal
 							onClose={handleCloseMediaAtomMakerModal}
 							isOpen={showMediaAtomMakerModal}
-							url={`${mediaAtomMakerUri}/videos?embeddedMode=live`}
+							url={`${videoBaseUrl}/videos?embeddedMode=live`}
 						/>,
 						document.body,
 					)
