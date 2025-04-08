@@ -79,6 +79,7 @@ import { memoize, debounce } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
 import { VideoControls } from '../video/VideoControls';
 import { getMainMediaVideoAtom } from '../../util/externalArticle';
+import { selectVideoBaseUrl } from "../../selectors/configSelectors";
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -529,6 +530,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			videoReplace,
 			mainMediaVideoAtom,
 			replacementVideoAtom,
+			videoBaseUrl,
 			coverCardImageReplace,
 			coverCardMobileImage,
 			coverCardTabletImage,
@@ -903,6 +905,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											icon={<SelectVideoIcon />}
 											contents={
 												<VideoControls
+													videoBaseUrl={videoBaseUrl}
 													mainMediaVideoAtom={mainMediaVideoAtom}
 													replacementVideoAtom={replacementVideoAtom}
 													showMainVideo={showMainVideo}
@@ -1218,6 +1221,7 @@ interface ContainerProps {
 	replaceVideoUri: string;
 	replacementVideoAtomId: string;
 	replacementVideoAtom: any;
+	videoBaseUrl: string | null;
 }
 
 interface InterfaceProps {
@@ -1302,6 +1306,7 @@ const createMapStateToProps = () => {
 			atomId: valueSelector(state, 'atomId'),
 			replacementVideoAtomId: valueSelector(state, 'replacementVideoAtomId'),
 			replacementVideoAtom: valueSelector(state, 'replacementVideoAtom'),
+			videoBaseUrl: selectVideoBaseUrl(state),
 		};
 	};
 };
