@@ -10,12 +10,17 @@ import {
 } from '../icons/Icons';
 import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
 import { autofill, change, Field } from 'redux-form';
-import {AtomProperties, extractAtomId, extractAtomProperties, getVideoUri} from '../../util/extractAtomId';
+import {
+	AtomProperties,
+	extractAtomId,
+	extractAtomProperties,
+	getVideoUri,
+} from '../../util/extractAtomId';
 import { ButtonDelete, DeleteIconOptions } from '../inputs/InputImage';
 import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
-import {OverlayModal} from "../modals/OverlayModal";
+import { OverlayModal } from '../modals/OverlayModal';
 
 interface VideoControlsProps {
 	videoBaseUrl: string | null;
@@ -76,8 +81,10 @@ export const VideoControls = ({
 	changeMediaField,
 	form,
 }: VideoControlsProps) => {
-	const [mainMediaVideoAtomProperties, setMainMediaVideoAtomProperties] = React.useState<AtomProperties>()
-	const [replacementVideoAtomProperties, setReplacementVideoAtomProperties] = React.useState<AtomProperties>()
+	const [mainMediaVideoAtomProperties, setMainMediaVideoAtomProperties] =
+		React.useState<AtomProperties>();
+	const [replacementVideoAtomProperties, setReplacementVideoAtomProperties] =
+		React.useState<AtomProperties>();
 
 	const [currentVideoUri, setCurrentVideoUri] = React.useState<
 		string | undefined
@@ -124,11 +131,7 @@ export const VideoControls = ({
 		dispatch(change(form, 'replacementVideoAtomId', data.atomId));
 		// TODO: handle failure to fetch atom?
 		dispatch(
-			change(
-				form,
-				'replaceVideoUri',
-				`${videoBaseUrl}/videos/${data.atomId}`,
-			),
+			change(form, 'replaceVideoUri', `${videoBaseUrl}/videos/${data.atomId}`),
 		);
 		changeMediaField('videoReplace');
 		handleCloseMediaAtomMakerModal();
@@ -159,7 +162,11 @@ export const VideoControls = ({
 			: getVideoUri(mainMediaVideoAtomProperties);
 
 		setCurrentVideoUri(videoUri);
-	}, [showReplacementVideo, mainMediaVideoAtomProperties, replacementVideoAtomProperties]);
+	}, [
+		showReplacementVideo,
+		mainMediaVideoAtomProperties,
+		replacementVideoAtomProperties,
+	]);
 
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;

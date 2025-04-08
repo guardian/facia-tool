@@ -79,7 +79,7 @@ import { memoize, debounce } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
 import { VideoControls } from '../video/VideoControls';
 import { getMainMediaVideoAtom } from '../../util/externalArticle';
-import { selectVideoBaseUrl } from "../../selectors/configSelectors";
+import { selectVideoBaseUrl } from '../../selectors/configSelectors';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -430,9 +430,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		}, 500);
 	}
 	componentDidMount() {
-		this.fetchAndSetReplacementVideoAtom(
-			this.props.replacementVideoAtomId,
-		);
+		this.fetchAndSetReplacementVideoAtom(this.props.replacementVideoAtomId);
 	}
 
 	componentDidUpdate(
@@ -463,7 +461,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			.catch((error) => {
 				console.error(error);
 				this.props.change('replacementVideoAtom', undefined);
-			})
+			});
 	};
 
 	private fetchAtom = async (atomId: string): Promise<any> => {

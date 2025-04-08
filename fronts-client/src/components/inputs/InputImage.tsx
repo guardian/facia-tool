@@ -39,7 +39,7 @@ import { selectEditMode } from '../../selectors/pathSelectors';
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { error } from '../../styleConstants';
 import ValidatingSpinnerOverlay from '../image/ValidatingSpinnerOverlay';
-import {OverlayModal} from "../modals/OverlayModal";
+import { OverlayModal } from '../modals/OverlayModal';
 
 const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
 	background-color: ${({ small }) =>

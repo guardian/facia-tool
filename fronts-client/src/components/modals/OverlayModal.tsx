@@ -1,8 +1,8 @@
-import {styled} from '../../constants/theme';
+import { styled } from '../../constants/theme';
 import Modal from 'react-modal';
 import ButtonDefault from '../inputs/ButtonDefault';
-import React from "react";
-import {CloseIcon} from "../icons/Icons";
+import React from 'react';
+import { CloseIcon } from '../icons/Icons';
 
 export const StyledModal = styled(Modal)`
 	position: absolute;
@@ -44,7 +44,7 @@ const IFrame = styled.iframe`
 	border: 0;
 `;
 
-export const OverlayModal = ({isOpen, url, onClose}: ModalProps) => (
+export const OverlayModal = ({ isOpen, url, onClose }: ModalProps) => (
 	<React.Fragment>
 		<StyledModal
 			isOpen={isOpen}
@@ -56,11 +56,11 @@ export const OverlayModal = ({isOpen, url, onClose}: ModalProps) => (
 		>
 			<ModalButton type="button" priority="primary" onClick={onClose}>
 				<ImageContainer>
-					<CloseIcon/>
+					<CloseIcon />
 				</ImageContainer>
 			</ModalButton>
 
-			<IFrame src={url}/>
+			<IFrame src={url} />
 		</StyledModal>
 	</React.Fragment>
 );
