@@ -193,12 +193,13 @@ export const VideoControls = ({
 								name="useReplacementVideo"
 								component={InputCheckboxToggleInline}
 								label="Use replacement video"
-								// TODO: this should not be disabled and checked at the same time
 								disabled={!replacementVideoAtom}
 								id={'useReplacementVideo'}
 								type="checkbox"
 								dataTestId="use-replacement-video"
-								checked={showReplacementVideo && replacementVideoAtom}
+								checked={
+									showReplacementVideo && replacementVideoAtom !== undefined
+								}
 								onChange={() => {
 									if (showReplacementVideo) {
 										changeMediaField('showMainVideo');
