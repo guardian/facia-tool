@@ -181,6 +181,7 @@ export const VideoControls = ({
 								name="useReplacementVideo"
 								component={InputCheckboxToggleInline}
 								label="Use replacement video"
+								// TODO: this should not be disabled and checked at the same time
 								disabled={!replacementVideoAtom}
 								id={'useReplacementVideo'}
 								type="checkbox"
@@ -255,7 +256,6 @@ export const VideoControls = ({
 							type="button"
 							priority="primary"
 							onClick={handleDelete}
-							disabled={false}
 							confirmDelete={confirmDelete}
 						>
 							<DeleteIconOptions>

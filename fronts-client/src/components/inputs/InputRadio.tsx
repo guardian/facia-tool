@@ -151,6 +151,7 @@ export default ({
 		checkedProps['checked'] = checked;
 	}
 
+	// TODO: Make checkbox hitbox larger for block styling
 	return (
 		<>
 			<InputContainer data-testid={dataTestId}>
