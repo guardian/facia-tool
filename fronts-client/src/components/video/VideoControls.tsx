@@ -129,7 +129,12 @@ export const VideoControls = ({
 		}
 
 		dispatch(change(form, 'replacementVideoAtomId', data.atomId));
-		// TODO: handle failure to fetch atom?
+		/**
+		 * Even if we can't fetch the replacement atom, it's worth setting the videoReplace and replaceVideoUri fields
+		 * to give some feedback to the user.
+		 *
+		 * Invalid atoms can't be saved, so there should be no risk in setting these fields.
+		 */
 		dispatch(
 			change(form, 'replaceVideoUri', `${videoBaseUrl}/videos/${data.atomId}`),
 		);
