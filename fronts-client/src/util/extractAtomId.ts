@@ -6,25 +6,38 @@ const stripQueryParams = (url: string): string => {
 	return u.toString();
 };
 
-const extractAtomId = (src: string | undefined): string => {
-	// TODO: Handle CODE / PROD
-	// TODO: Cleaner extraction
-	if (src === undefined) {
-		return '';
+const attemptResourceExtract = (
+	fullPath: string,
+	baseUrl: string,
+	resourcePath: string,
+): string | undefined => {
+	if (fullPath.includes(baseUrl) && fullPath.includes(resourcePath)) {
+		const parts = fullPath.split(resourcePath);
+		if (parts.length > 1) return parts[1];
 	}
 
-	if (
-		src.includes(urlConstants.media.videoBaseUrl) &&
-		src.includes('/videos/')
-	) {
-		return src.split('/videos/')[1] || '';
-	}
+	return undefined;
+};
 
-	if (src.includes(urlConstants.base.capi) && src.includes('/atom/video/')) {
-		return stripQueryParams(src).split('/atom/video/')[1] || '';
-	}
+const extractAtomId = (videoUri: string | undefined): string | undefined => {
+	if (videoUri === undefined) return undefined;
+	const cleanVideoUri = stripQueryParams(videoUri);
 
-	return '';
+	const atomMakerAttempt = attemptResourceExtract(
+		cleanVideoUri,
+		urlConstants.video.videoBaseUrl,
+		urlConstants.video.mediaAtomMakerPath,
+	);
+	if (atomMakerAttempt !== undefined) return atomMakerAttempt;
+
+	const capiAttempt = attemptResourceExtract(
+		cleanVideoUri,
+		urlConstants.base.capi,
+		urlConstants.video.capiAtomPath,
+	);
+	if (capiAttempt !== undefined) return capiAttempt;
+
+	return undefined;
 };
 
 const extractAssetId = (atom: any): string | undefined => {

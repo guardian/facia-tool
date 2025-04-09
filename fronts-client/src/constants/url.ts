@@ -15,13 +15,17 @@ export default {
 	},
 	media: {
 		apiBaseUrl: pageConfig.apiBaseUrl,
-		videoBaseUrl: 'https://video',
 		mediaBaseUrl: 'https://media',
 		usageBaseUrl: '/api/usage',
 		imgIXDomainExpr: /^https:\/\/i\.guim\.co\.uk\/img\/static\//,
 		imageCdnDomain: '.guim.co.uk',
 		staticImageCdnDomain: 'https://static.guim.co.uk/',
 		imageCdnDomainExpr: /^https:\/\/(.*)\.guim\.co\.uk\//,
+	},
+	video: {
+		videoBaseUrl: 'https://video',
+		mediaAtomMakerPath: '/videos/',
+		capiAtomPath: '/video/atom/',
 	},
 	capiLiveUrl: '/api/live',
 	capiPreviewUrl: '/api/preview',
