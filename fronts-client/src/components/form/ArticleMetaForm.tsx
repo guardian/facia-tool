@@ -80,6 +80,7 @@ import InputRadio from '../inputs/InputRadio';
 import { VideoControls } from '../video/VideoControls';
 import { getMainMediaVideoAtom } from '../../util/externalArticle';
 import { selectVideoBaseUrl } from '../../selectors/configSelectors';
+import SelectMediaInput from "../inputs/SelectMediaInput";
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -873,9 +874,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										/>
 									)}
 								</ToggleCol>
-								<Col flex={1}>
+								<Col flex={2}>
 									<InputLabel htmlFor="media-select">Select Media</InputLabel>
-									<InputGroup>
+									<SelectMediaInput>
 										<Field
 											component={InputRadio}
 											disabled={
@@ -896,8 +897,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 												!this.props.imageSlideshowReplace
 											}
 										/>
-									</InputGroup>
-									<InputGroup>
+									</SelectMediaInput>
+									<SelectMediaInput>
 										<Field
 											component={InputRadio}
 											icon={<SelectVideoIcon />}
@@ -926,9 +927,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 												this.props.showMainVideo || this.props.videoReplace
 											}
 										/>
-									</InputGroup>
-
-									<InputGroup>
+										<div id={'video-control-col'} />
+									</SelectMediaInput>
+									<SelectMediaInput>
 										<Field
 											component={InputRadio}
 											disabled={
@@ -950,8 +951,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 													: false
 											}
 										/>
-									</InputGroup>
-									<ToggleCol id={'video-control-col'} />
+									</SelectMediaInput>
 								</Col>
 							</Row>
 							<ConditionalComponent

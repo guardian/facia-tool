@@ -71,6 +71,11 @@ const VideoControlsInnerContainer = styled.div<{ url?: string }>`
 	margin-bottom: 5px;
 `;
 
+const MarginWrapper = styled.div`
+	margin-bottom: 8px;
+	margin-top: 8px;
+`;
+
 export const VideoControls = ({
 	videoBaseUrl,
 	mainMediaVideoAtom,
@@ -188,7 +193,7 @@ export const VideoControls = ({
 			*/}
 			{controlColumn !== null && mainMediaVideoAtom
 				? createPortal(
-						<>
+						<MarginWrapper>
 							<Field
 								name="useReplacementVideo"
 								component={InputCheckboxToggleInline}
@@ -211,7 +216,7 @@ export const VideoControls = ({
 							{!replacementVideoAtom && (
 								<Explainer>Replacement video required</Explainer>
 							)}
-						</>,
+						</MarginWrapper>,
 						controlColumn,
 					)
 				: null}
