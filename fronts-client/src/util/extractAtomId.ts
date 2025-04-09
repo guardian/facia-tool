@@ -20,6 +20,12 @@ const attemptResourceExtract = (
 };
 
 const extractAtomId = (videoUri: string | undefined): string | undefined => {
+	/*
+	 * This method works for both PROD and CODE paths, irrespective of the stage of the Fronts Tool.
+	 *
+	 * We could choose to pass a stage parameter, but I think it's better to be flexible, given
+	 * CODE Fronts Tool is currently pointed to PROD CAPI and CODE MaM.
+	 */
 	if (videoUri === undefined) return undefined;
 	const cleanVideoUri = stripQueryParams(videoUri);
 
