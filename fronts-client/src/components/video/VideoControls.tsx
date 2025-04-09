@@ -286,15 +286,19 @@ export const VideoControls = ({
 					component={VideoUriInput}
 					type="text"
 					onChange={(e: any) => {
-						const value = e.currentTarget.value;
+						const videoUri = e.currentTarget.value;
 
-						if (value !== undefined && value !== null && value !== '') {
+						if (
+							videoUri !== undefined &&
+							videoUri !== null &&
+							videoUri !== ''
+						) {
 							changeMediaField('videoReplace');
 						} else {
 							changeMediaField('showMainVideo');
 						}
 
-						changeField('replacementVideoAtomId', extractAtomId(value));
+						changeField('replacementVideoAtomId', extractAtomId(videoUri));
 					}}
 					placeholder="Paste video url"
 				></Field>
