@@ -1,9 +1,8 @@
 import urlConstants from '../constants/url';
 
 const stripQueryParams = (url: string): string => {
-	const u = new URL(url);
-	u.search = '';
-	return u.toString();
+	const parts: string[] = url.split('?');
+	return parts.length > 1 ? parts[1] : url;
 };
 
 const attemptResourceExtract = (
@@ -12,21 +11,21 @@ const attemptResourceExtract = (
 	resourcePath: string,
 ): string | undefined => {
 	if (fullPath.includes(baseUrl) && fullPath.includes(resourcePath)) {
-		const parts = fullPath.split(resourcePath);
+		const parts: string[] = fullPath.split(resourcePath);
 		if (parts.length > 1) return parts[1];
 	}
 
 	return undefined;
 };
 
-const extractAtomId = (videoUri: string | undefined): string | undefined => {
+const extractAtomId = (videoUri: string | undefined): string => {
 	/*
 	 * This method works for both PROD and CODE paths, irrespective of the stage of the Fronts Tool.
 	 *
 	 * We could choose to pass a stage parameter, but I think it's better to be flexible, given
 	 * CODE Fronts Tool is currently pointed to PROD CAPI and CODE MaM.
 	 */
-	if (videoUri === undefined) return undefined;
+	if (videoUri === undefined) return "";
 	const cleanVideoUri = stripQueryParams(videoUri);
 
 	const atomMakerAttempt = attemptResourceExtract(
@@ -43,7 +42,7 @@ const extractAtomId = (videoUri: string | undefined): string | undefined => {
 	);
 	if (capiAttempt !== undefined) return capiAttempt;
 
-	return undefined;
+	return "";
 };
 
 const extractAssetId = (atom: any): string | undefined => {
