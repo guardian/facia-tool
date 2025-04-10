@@ -19,7 +19,7 @@ const Row = styled.div`
 	width: 100%;
 	gap: 4px;
 	align-items: center;
-`
+`;
 const BlockStylingMixin = () => css`
 	width: 170px;
 	display: flex;
@@ -41,9 +41,9 @@ const BlockStylingMixin = () => css`
 	&:hover {
 		box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight};
 	}
-`
+`;
 
-const Label = styled(InputLabel)<{ usesBlockStyling? : boolean}>`
+const Label = styled(InputLabel)<{ usesBlockStyling?: boolean }>`
 	line-height: 15px;
 	flex: 1;
 	cursor: pointer;
@@ -167,7 +167,7 @@ export default ({
 									{...rest}
 									id={id}
 								/>
-								<RadioButtonLabel htmlFor={id}/>
+								<RadioButtonLabel htmlFor={id} />
 							</Switch>
 							{label}
 						</Row>
