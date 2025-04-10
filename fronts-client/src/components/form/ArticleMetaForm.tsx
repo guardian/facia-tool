@@ -81,6 +81,8 @@ import { VideoControls } from '../video/VideoControls';
 import { getMainMediaVideoAtom } from '../../util/externalArticle';
 import { selectVideoBaseUrl } from '../../selectors/configSelectors';
 import SelectMediaInput from '../inputs/SelectMediaInput';
+import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
+import Tooltip from '../modals/Tooltip';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -871,7 +873,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									)}
 								</ToggleCol>
 								<Col flex={2}>
-									<InputLabel htmlFor="media-select">Select Media</InputLabel>
+									<SelectMediaLabelContainer>
+										<InputLabel htmlFor="media-select">Select Media</InputLabel>
+										<Tooltip />
+									</SelectMediaLabelContainer>
 									<SelectMediaInput>
 										<Field
 											component={InputRadio}
