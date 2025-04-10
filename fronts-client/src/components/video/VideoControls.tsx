@@ -31,6 +31,7 @@ interface VideoControlsProps {
 	changeField: (field: string, value: any) => void;
 	changeMediaField: (fieldToSet: string) => void;
 	form: any;
+	replacementVideoControlsId: string;
 }
 
 const VideoControlsOuterContainer = styled.div`
@@ -85,6 +86,7 @@ export const VideoControls = ({
 	changeField,
 	changeMediaField,
 	form,
+	replacementVideoControlsId,
 }: VideoControlsProps) => {
 	const [mainMediaVideoAtomProperties, setMainMediaVideoAtomProperties] =
 		React.useState<AtomProperties>();
@@ -182,7 +184,9 @@ export const VideoControls = ({
 		return null;
 	}
 
-	const controlColumn = document.getElementById('video-control-col');
+	const replacementVideoControls = document.getElementById(
+		replacementVideoControlsId,
+	);
 
 	return (
 		<>
@@ -191,7 +195,7 @@ export const VideoControls = ({
 				In this scenario we neither show the 'Use replacement video toggle', nor refer to it as a replacement.
 				Note in the data model we still call this a replacement atom.
 			*/}
-			{controlColumn !== null && mainMediaVideoAtom
+			{replacementVideoControls !== null && mainMediaVideoAtom
 				? createPortal(
 						<MarginWrapper>
 							<Field
@@ -199,7 +203,7 @@ export const VideoControls = ({
 								component={InputCheckboxToggleInline}
 								label="Use replacement video"
 								disabled={!replacementVideoAtom}
-								id={'useReplacementVideo'}
+								id={`${replacementVideoControlsId}-useReplacementVideo`}
 								type="checkbox"
 								dataTestId="use-replacement-video"
 								checked={
@@ -217,7 +221,7 @@ export const VideoControls = ({
 								<Explainer>Replacement video required</Explainer>
 							)}
 						</MarginWrapper>,
-						controlColumn,
+						replacementVideoControls,
 					)
 				: null}
 			{currentVideoUri !== undefined && showVideoPreviewModal
