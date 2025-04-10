@@ -80,7 +80,7 @@ import InputRadio from '../inputs/InputRadio';
 import { VideoControls } from '../video/VideoControls';
 import { getMainMediaVideoAtom } from '../../util/externalArticle';
 import { selectVideoBaseUrl } from '../../selectors/configSelectors';
-import SelectMediaInput from "../inputs/SelectMediaInput";
+import SelectMediaInput from '../inputs/SelectMediaInput';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;

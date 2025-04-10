@@ -25,7 +25,7 @@ const extractAtomId = (videoUri: string | undefined): string => {
 	 * We could choose to pass a stage parameter, but I think it's better to be flexible, given
 	 * CODE Fronts Tool is currently pointed to PROD CAPI and CODE MaM.
 	 */
-	if (videoUri === undefined) return "";
+	if (videoUri === undefined) return '';
 	const cleanVideoUri = stripQueryParams(videoUri);
 
 	const atomMakerAttempt = attemptResourceExtract(
@@ -42,7 +42,7 @@ const extractAtomId = (videoUri: string | undefined): string => {
 	);
 	if (capiAttempt !== undefined) return capiAttempt;
 
-	return "";
+	return '';
 };
 
 const extractAssetId = (atom: any): string | undefined => {
