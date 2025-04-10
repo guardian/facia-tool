@@ -9,10 +9,23 @@ import { theme } from 'constants/theme';
 const radioButtonHeight = 17;
 const radioButtonWidth = 17;
 
+const InnerContainer = styled.div`
+	display: flex;
+	align-items: center;
+`;
+
+const Row = styled.div`
+	display: flex;
+	width: 100%;
+	gap: 4px;
+	align-items: center;
+`
 const BlockStylingMixin = () => css`
-	padding: 8px 6px;
-	background-color: #cccccc;
 	width: 170px;
+	display: flex;
+	flex-direction: column;
+	padding: 8px 5px;
+	background-color: #cccccc;
 	&:has(input:checked) {
 		color: white;
 		background-color: #a9a9a9;
@@ -28,32 +41,21 @@ const BlockStylingMixin = () => css`
 	&:hover {
 		box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight};
 	}
-`;
+`
 
-const RadioButtonOuterContainer = styled.div<{ usesBlockStyling?: boolean }>`
-	display: flex;
-	flex-direction: column;
-	cursor: pointer;
-	color: ${(props) => props.theme.input.colorLabel};
-	${(props) => props.usesBlockStyling && BlockStylingMixin}
-`;
-
-const RadioButtonInnerContainer = styled.div`
-	display: flex;
-	align-items: center;
-`;
-
-const Label = styled(InputLabel)`
-	padding-left: 5px;
+const Label = styled(InputLabel)<{ usesBlockStyling? : boolean}>`
 	line-height: 15px;
 	flex: 1;
-	cursor: inherit;
+	cursor: pointer;
+	width: min-content;
+	padding: 0;
+	color: ${(props) => props.theme.input.colorLabel};
+	${(props) => props.usesBlockStyling && BlockStylingMixin}
 `;
 
 const Switch = styled.div`
 	position: relative;
 	width: ${radioButtonWidth}px;
-	margin-left: auto;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -63,6 +65,7 @@ const RadioButtonLabel = styled.label`
 	display: block;
 	overflow: hidden;
 	cursor: pointer;
+	width: ${radioButtonWidth}px;
 	height: ${radioButtonHeight}px;
 	padding: 0;
 	line-height: ${radioButtonHeight}px;
@@ -110,7 +113,6 @@ const RadioButton = styled.input`
 
 const IconContainer = styled.div`
 	width: 20px;
-	margin-left: 8px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -151,29 +153,28 @@ export default ({
 		checkedProps['checked'] = checked;
 	}
 
-	// TODO: Make checkbox hitbox larger for block styling
 	return (
 		<>
 			<InputContainer data-testid={dataTestId}>
-				<RadioButtonOuterContainer usesBlockStyling={usesBlockStyling}>
-					<RadioButtonInnerContainer>
-						<Switch>
-							<RadioButton
-								type="radio"
-								{...inputRest}
-								{...checkedProps}
-								{...rest}
-								id={id}
-							/>
-							<RadioButtonLabel htmlFor={id} />
-						</Switch>
-						<Label htmlFor={id} size="sm">
+				<Label htmlFor={id} size="sm" usesBlockStyling={usesBlockStyling}>
+					<InnerContainer>
+						<Row>
+							<Switch>
+								<RadioButton
+									type="radio"
+									{...inputRest}
+									{...checkedProps}
+									{...rest}
+									id={id}
+								/>
+								<RadioButtonLabel htmlFor={id}/>
+							</Switch>
 							{label}
-						</Label>
+						</Row>
 						{icon !== undefined ? <IconContainer>{icon}</IconContainer> : null}
-					</RadioButtonInnerContainer>
+					</InnerContainer>
 					{contents !== undefined ? contents : null}
-				</RadioButtonOuterContainer>
+				</Label>
 			</InputContainer>
 		</>
 	);
