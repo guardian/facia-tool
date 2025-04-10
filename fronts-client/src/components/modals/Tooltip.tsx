@@ -5,9 +5,8 @@ import React from 'react';
 const TooltipModal = styled.div`
 	position: absolute;
 	width: 200px;
-	left: -25px;
 	bottom: 20px;
-	pointer-events: none;
+	transform: translateX(calc(-50% + 7px));
 	background-color: black;
 	color: white;
 	border-radius: 4px;
