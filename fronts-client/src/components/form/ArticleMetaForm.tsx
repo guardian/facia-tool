@@ -604,6 +604,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		};
 
 		const cardCriteria = this.determineCardCriteria();
+		const replacementVideoControlsId = getInputId(
+			cardId,
+			'replacement-video-controls',
+		);
 
 		return (
 			<FormContainer
@@ -913,6 +917,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 													changeField={change}
 													changeMediaField={this.changeMediaField}
 													form={form}
+													replacementVideoControlsId={
+														replacementVideoControlsId
+													}
 												/>
 											}
 											usesBlockStyling={true}
@@ -928,7 +935,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 												this.props.showMainVideo || this.props.videoReplace
 											}
 										/>
-										<div id={'video-control-col'} />
+										<div id={replacementVideoControlsId} />
 									</SelectMediaInput>
 									<SelectMediaInput>
 										<Field
