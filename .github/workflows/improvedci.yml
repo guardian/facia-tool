@@ -100,7 +100,7 @@ jobs:
                 node-version-file: fronts-client/.nvmrc
                 cache: yarn
                 cache-dependency-path: fronts-client/yarn.lock
-            - run: yarn install --frozen-lockfile
+            - run: yarn install --immutable
               working-directory: fronts-client
             - run: yarn lint
               working-directory: fronts-client
@@ -123,7 +123,7 @@ jobs:
                   node-version-file: fronts-client/.nvmrc
                   cache: yarn
                   cache-dependency-path: fronts-client/yarn.lock
-            - run: yarn install --frozen-lockfile
+            - run: yarn install --immutable
               working-directory: fronts-client
             - run: yarn test
               working-directory: fronts-client
@@ -146,7 +146,7 @@ jobs:
                 with:
                     path: public/fronts-client-v2
                     name: fronts-client-v2
-            - run: yarn install --frozen-lockfile
+            - run: yarn install --immutable
               working-directory: fronts-client
             - run: yarn test-integration-ci
               working-directory: fronts-client
