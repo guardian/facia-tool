@@ -386,10 +386,6 @@ const FieldContainer = styled(Col)`
 		props.size === 'wide' ? '0 0 auto' : 1};
 	margin-bottom: 8px;
 	white-space: nowrap;
-	//& label {
-	//	padding-left: 3px;
-	//	padding-right: 5px;
-	//}
 `;
 
 const KickerSuggestionsContainer = styled.div`
