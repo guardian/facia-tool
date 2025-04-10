@@ -129,7 +129,7 @@ jobs:
               working-directory: fronts-client
 
     integrationtest_client_v2:
-        runs-on: ubuntu-22.04
+        runs-on: ubuntu-20.04
         permissions:
             id-token: write
             contents: read
