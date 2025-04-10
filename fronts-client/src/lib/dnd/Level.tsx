@@ -13,8 +13,6 @@ interface PosSpec {
 	index: number;
 	collectionId?: string;
 	groupName?: string;
-	// todo: groupIds is not necessary, we can refactor to get the desired values from groupsData
-	groupIds?: string[];
 	groupMaxItems?: number;
 	groupsData?: Group[];
 	cards?: any[];
@@ -66,7 +64,6 @@ export interface LevelProps<T> {
 	parentType: string;
 	collectionId?: string;
 	groupName?: string;
-	groupIds?: string[];
 	groupMaxItems?: number;
 	groupsData?: Group[];
 	type: string;
@@ -193,7 +190,6 @@ class Level<T> extends React.Component<Props<T>, State> {
 			id: this.props.parentId,
 			collectionId: this.props.collectionId,
 			groupName: this.props.groupName,
-			groupIds: this.props.groupIds,
 			groupMaxItems: this.props.groupMaxItems,
 			groupsData: this.props.groupsData,
 			cards: this.props.arr,

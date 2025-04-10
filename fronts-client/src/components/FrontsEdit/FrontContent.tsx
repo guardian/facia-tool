@@ -96,10 +96,10 @@ interface FrontState {
 
 function getNextGroupTarget(
 	currentGroupId: string,
-	groupIds?: string[],
+	groupIds: string[],
 	groupsData?: Group[],
 ) {
-	if (!groupIds || !groupsData) {
+	if (!groupsData) {
 		return;
 	}
 	const currentIndex = groupIds.findIndex((id) => id === currentGroupId);
@@ -115,7 +115,6 @@ function getNextGroupTarget(
 		index: 0,
 		id: nextGroupId,
 		type: 'group',
-		groupIds: groupIds,
 		groupMaxItems: nextGroup?.maxItems,
 		groupsData: groupsData,
 		cards: nextGroup?.cardsData,
@@ -134,6 +133,7 @@ type CollectionMove<T> = {
  */
 export const buildMoveQueue = (move: Move<TCard>) => {
 	const queue: CollectionMove<TCard>[] = [];
+	const groupIds = move.to.groupsData?.map((group) => group.uuid);
 
 	const { data: movedCard, to, from } = move;
 
@@ -142,7 +142,7 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 
 	// If inserting at the bottom of a full group, move the card to the next group instead.
 	const target = isBottomInsert
-		? getNextGroupTarget(to.id, to.groupIds, to.groupsData)
+		? getNextGroupTarget(to.id, groupIds, to.groupsData)
 		: to;
 
 	if (!target) return queue;
@@ -187,7 +187,7 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 
 		const nextTarget = getNextGroupTarget(
 			currentGroup.uuid,
-			move.to.groupIds,
+			groupIds,
 			move.to.groupsData,
 		);
 
@@ -197,7 +197,7 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 				data: lastCard,
 				from: {
 					type: 'group',
-					id: move.to.groupIds?.[index] ?? '',
+					id: groupIds[index] ?? '',
 					index: (currentGroup.cardsData?.length ?? 1) - 1,
 				},
 				type: 'collection',
@@ -295,11 +295,10 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	public handleMove = (move: Move<TCard>) => {
 		const numberOfCardsInGroup = move.to.cards?.length ?? 0;
 		const isTargetGroupFull = move.to.groupMaxItems === numberOfCardsInGroup;
-		const groupIds = move.to.groupIds;
+		const groupIds = move.to.groupsData?.map((group) => group.uuid);
+
 		const isLastGroup =
-			groupIds &&
-			groupIds.length > 0 &&
-			groupIds[groupIds.length - 1] === move.to.id;
+			groupIds.length > 0 && groupIds[groupIds.length - 1] === move.to.id;
 
 		/**
 		 *  If:
@@ -331,6 +330,8 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
 		const numberOfArticlesAlreadyInGroup = to.cards?.length ?? 0;
+		const groupIds = to.groupsData?.map((group) => group.uuid);
+
 		const hasMaxItemsAlready =
 			to.groupMaxItems === numberOfArticlesAlreadyInGroup;
 
@@ -355,11 +356,11 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		// then depending on where we're inserting the story
 		// we need to either move the last article to the next group
 		// or insert the article into the next group
-		if (!!to.groupIds && to.cards !== undefined && hasMaxItemsAlready) {
-			const currentGroupIndex = to.groupIds.findIndex(
+		if (!!groupIds && to.cards !== undefined && hasMaxItemsAlready) {
+			const currentGroupIndex = groupIds.findIndex(
 				(groupId) => groupId === to.id,
 			);
-			const nextGroup = to.groupIds[currentGroupIndex + 1];
+			const nextGroup = groupIds[currentGroupIndex + 1];
 			const nextGroupData =
 				to.groupsData &&
 				to.groupsData.find((group) => group.uuid === nextGroup);
@@ -377,7 +378,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					index: 0,
 					id: nextGroup,
 					type: 'group',
-					groupIds: to.groupIds,
 					groupMaxItems: nextGroupData?.maxItems,
 					groupsData: to.groupsData,
 					cards: nextGroupData?.cardsData,
@@ -397,7 +397,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 					index: 0,
 					id: nextGroup,
 					type: 'group',
-					groupIds: to.groupIds,
 				};
 				events.dropArticle(this.props.id, dropSource);
 				this.props.insertCardFromDropEvent(e, amendedTo, 'collection');
@@ -414,7 +413,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 						index: 0,
 						id: nextGroup,
 						type: 'group',
-						groupIds: to.groupIds,
 						groupMaxItems: nextGroupData?.maxItems,
 						groupsData: to.groupsData,
 						cards: nextGroupData?.cardsData,

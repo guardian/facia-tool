@@ -84,7 +84,6 @@ export const baseTo = {
 	id: 'group-0',
 	collectionId: 'da9953a2-6116-4e8d-9d62-f245fe65f399',
 	groupName: 'splash',
-	groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
 	groupMaxItems: 1,
 	groupsData: baseGroupsData,
 	cards: [

@@ -151,7 +151,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 					canPublish={browsingStage !== 'live'}
 					browsingStage={browsingStage}
 				>
-					{(group, isUneditable, groupIds, groups, showGroupName) => (
+					{(group, isUneditable, groups, showGroupName) => (
 						<div key={group.uuid}>
 							<GroupDisplayComponent
 								key={group.uuid}
@@ -162,7 +162,6 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 								groupId={group.uuid}
 								collectionId={id}
 								groupName={group.name ? group.name : ''}
-								groupIds={groupIds}
 								groupMaxItems={group.maxItems}
 								groups={groups}
 								onMove={handleMove}
@@ -199,7 +198,6 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 													isUneditable={isUneditable}
 													cardId={card.uuid}
 													groupName={group.name ? group.name : ''}
-													groupIds={groupIds}
 													groups={groups}
 													onMove={handleMove}
 													onDrop={handleInsert}

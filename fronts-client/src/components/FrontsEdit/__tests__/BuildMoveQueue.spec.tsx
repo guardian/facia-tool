@@ -14,7 +14,6 @@ describe('buildMoveQueue', () => {
 			to: {
 				id: 'group-1',
 				type: 'group',
-				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
 				groupMaxItems: baseFront.to.groupsData?.[1].maxItems,
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[1].cardsData,
@@ -33,7 +32,6 @@ describe('buildMoveQueue', () => {
 			to: {
 				id: 'group-2',
 				type: 'group',
-				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
 				groupMaxItems: baseFront.to.groupsData?.[2].maxItems,
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[2].cardsData,
@@ -52,7 +50,6 @@ describe('buildMoveQueue', () => {
 			to: {
 				id: 'group-3',
 				type: 'group',
-				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
 				groupMaxItems: baseFront.to.groupsData?.[3].maxItems,
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[3].cardsData,
@@ -127,7 +124,6 @@ describe('buildMoveQueue', () => {
 			to: {
 				id: 'group-1',
 				type: 'group',
-				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
 				groupMaxItems: newFront.to.groupsData[1].maxItems,
 				groupsData: newFront.to.groupsData,
 				cards: newFront.to.groupsData[1].cardsData,
@@ -160,7 +156,6 @@ describe('buildMoveQueue', () => {
 			to: {
 				id: 'group-1',
 				type: 'group',
-				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
 				groupMaxItems: newFront.to.groupsData[1].maxItems,
 				groupsData: newFront.to.groupsData,
 				cards: newFront.to.groupsData[1].cardsData,
@@ -175,7 +170,6 @@ describe('buildMoveQueue', () => {
 			to: {
 				id: 'group-2',
 				type: 'group',
-				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
 				groupMaxItems: baseFront.to.groupsData?.[2].maxItems,
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[2].cardsData,
@@ -194,7 +188,6 @@ describe('buildMoveQueue', () => {
 			to: {
 				id: 'group-3',
 				type: 'group',
-				groupIds: ['group-0', 'group-1', 'group-2', 'group-3'],
 				groupMaxItems: baseFront.to.groupsData?.[3].maxItems,
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[3].cardsData,

@@ -17,7 +17,6 @@ interface OuterProps {
 	isUneditable?: boolean;
 	collectionId: string;
 	groupName: string;
-	groupIds: string[];
 	groupMaxItems?: number;
 	groups?: Group[];
 }
@@ -68,7 +67,6 @@ const GroupLevel = ({
 	isUneditable,
 	collectionId,
 	groupName,
-	groupIds,
 	groupMaxItems,
 	groupsWithCardsData,
 }: Props) => (
@@ -78,7 +76,6 @@ const GroupLevel = ({
 		parentId={groupId}
 		collectionId={collectionId}
 		groupName={groupName}
-		groupIds={groupIds}
 		groupMaxItems={groupMaxItems}
 		groupsData={groupsWithCardsData}
 		onMove={onMove}
