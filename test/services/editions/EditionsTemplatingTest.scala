@@ -537,7 +537,7 @@ class EditionsTemplatingTest
       false,
       false,
       "boostLevel.default",
-			false,
+      false,
       false,
       false,
       false,

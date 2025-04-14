@@ -131,9 +131,8 @@ type CollectionMove<T> = {
  * The move queue handles cascading card moves triggered when attempting to insert a card into a full group.
  * It ensures the affected cards are shifted into subsequent groups, maintaining maxItems constraints.
  */
-export const buildMoveQueue = (move: Move<TCard>) => {
+export const buildMoveQueue = (move: Move<TCard>, groupIds: string[]) => {
 	const queue: CollectionMove<TCard>[] = [];
-	const groupIds = move.to.groupsData?.map((group) => group.uuid);
 
 	const { data: movedCard, to, from } = move;
 
@@ -290,15 +289,18 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			this.props.browsingStage,
 		);
 	}
+	private getGroupIds = (	groupsData?: Group[]) => {
+		if (!groupsData) return []
+		return groupsData.map((group) => group.uuid);
+	}
 
 	/** This function manages the moving of cards between groups. */
 	public handleMove = (move: Move<TCard>) => {
 		const numberOfCardsInGroup = move.to.cards?.length ?? 0;
 		const isTargetGroupFull = move.to.groupMaxItems === numberOfCardsInGroup;
-		const groupIds = move.to.groupsData?.map((group) => group.uuid);
+		const groupIds = this.getGroupIds(move.to.groupsData);
 
-		const isLastGroup =
-			groupIds.length > 0 && groupIds[groupIds.length - 1] === move.to.id;
+		const isLastGroup = groupIds[groupIds.length - 1] === move.to.id;
 
 		/**
 		 *  If:
@@ -321,7 +323,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		}
 
 		// Otherwise, we need to build a move queue to handle cascading shifts of cards
-		const moveQueue = buildMoveQueue(move);
+		const moveQueue = buildMoveQueue(move, groupIds);
 
 		moveQueue.map((move) =>
 			this.props.moveCard(move.to, move.data, move.from, 'collection'),
@@ -330,7 +332,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 
 	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
 		const numberOfArticlesAlreadyInGroup = to.cards?.length ?? 0;
-		const groupIds = to.groupsData?.map((group) => group.uuid);
+		const groupIds = this.getGroupIds(move.to.groupsData);
 
 		const hasMaxItemsAlready =
 			to.groupMaxItems === numberOfArticlesAlreadyInGroup;
@@ -356,7 +358,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		// then depending on where we're inserting the story
 		// we need to either move the last article to the next group
 		// or insert the article into the next group
-		if (!!groupIds && to.cards !== undefined && hasMaxItemsAlready) {
+		if (groupIds.length > 0 && to.cards !== undefined && hasMaxItemsAlready) {
 			const currentGroupIndex = groupIds.findIndex(
 				(groupId) => groupId === to.id,
 			);

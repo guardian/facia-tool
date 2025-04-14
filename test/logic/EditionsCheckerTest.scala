@@ -89,8 +89,8 @@ class EditionsCheckerTest extends FreeSpec with Matchers {
       None,
       None,
       items.toList,
-	  None,
-	  None
+      None,
+      None
     )
   }
 

@@ -4,7 +4,8 @@ import { baseFront, baseTo } from './fixtures/groups.fixture';
 
 describe('buildMoveQueue', () => {
 	it('should move a card into the top of a group that is full and move the last card of that group into the next group', () => {
-		const moveQueue = buildMoveQueue(baseFront);
+		const groupIds = baseFront.to.groupsData?.map((group) => group.uuid)
+		const moveQueue = buildMoveQueue(baseFront, groupIds);
 		const card1 = {
 			...baseFront,
 			type: 'collection',
