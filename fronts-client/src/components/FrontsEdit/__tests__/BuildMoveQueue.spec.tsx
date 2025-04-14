@@ -3,8 +3,8 @@ import { buildMoveQueue } from '../FrontContent';
 import { baseFront, baseTo } from './fixtures/groups.fixture';
 
 describe('buildMoveQueue', () => {
+	const groupIds = baseFront.to.groupsData?.map((group) => group.uuid) ?? [];
 	it('should move a card into the top of a group that is full and move the last card of that group into the next group', () => {
-		const groupIds = baseFront.to.groupsData?.map((group) => group.uuid)
 		const moveQueue = buildMoveQueue(baseFront, groupIds);
 		const card1 = {
 			...baseFront,
@@ -118,7 +118,7 @@ describe('buildMoveQueue', () => {
 			},
 		};
 
-		const moveQueue = buildMoveQueue(newFront);
+		const moveQueue = buildMoveQueue(newFront, groupIds);
 		const card1 = { ...newFront, type: 'collection' };
 
 		const card2 = {
@@ -151,7 +151,7 @@ describe('buildMoveQueue', () => {
 				index: 1,
 			},
 		};
-		const moveQueue = buildMoveQueue(newFront);
+		const moveQueue = buildMoveQueue(newFront, groupIds);
 
 		const card1 = {
 			to: {

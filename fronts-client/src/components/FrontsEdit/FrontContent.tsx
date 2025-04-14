@@ -289,10 +289,10 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			this.props.browsingStage,
 		);
 	}
-	private getGroupIds = (	groupsData?: Group[]) => {
-		if (!groupsData) return []
+	private getGroupIds = (groupsData?: Group[]) => {
+		if (!groupsData) return [];
 		return groupsData.map((group) => group.uuid);
-	}
+	};
 
 	/** This function manages the moving of cards between groups. */
 	public handleMove = (move: Move<TCard>) => {
