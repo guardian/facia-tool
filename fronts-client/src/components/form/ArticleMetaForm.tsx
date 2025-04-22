@@ -83,6 +83,7 @@ import { selectVideoBaseUrl } from '../../selectors/configSelectors';
 import SelectMediaInput from '../inputs/SelectMediaInput';
 import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import Tooltip from '../modals/Tooltip';
+import pageConfig from "../../util/extractConfigFromPage";
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -544,6 +545,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		const slideshowHasAtLeastTwoImages =
 			(slideshow ?? []).filter((field) => !!field).length >= 2;
 
+		const enableReplacementVideoFeatureSwitch = pageConfig?.userData?.featureSwitches.find(
+			(feature) => feature.key === 'enable-replacement-video',
+		);
+
 		const invalidCardReplacement = coverCardImageReplace
 			? !imageDefined(coverCardMobileImage) ||
 				!imageDefined(coverCardTabletImage)
@@ -879,7 +884,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								<Col flex={2}>
 									<SelectMediaLabelContainer>
 										<InputLabel htmlFor="media-select">Select Media</InputLabel>
-										<Tooltip />
+										{ enableReplacementVideoFeatureSwitch?.enabled ? <Tooltip /> : null }
 									</SelectMediaLabelContainer>
 									<SelectMediaInput>
 										<Field
@@ -907,8 +912,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										<Field
 											component={InputRadio}
 											icon={<SelectVideoIcon />}
+											disabled={!hasMainVideo && enableReplacementVideoFeatureSwitch?.enabled !== true}
 											contents={
-												<VideoControls
+												enableReplacementVideoFeatureSwitch?.enabled ? <VideoControls
 													videoBaseUrl={videoBaseUrl}
 													mainMediaVideoAtom={mainMediaVideoAtom}
 													replacementVideoAtom={replacementVideoAtom}
@@ -920,7 +926,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 													replacementVideoControlsId={
 														replacementVideoControlsId
 													}
-												/>
+												/> : null
 											}
 											usesBlockStyling={true}
 											name="media-select"
@@ -935,7 +941,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 												this.props.showMainVideo || this.props.videoReplace
 											}
 										/>
-										<div id={replacementVideoControlsId} />
+										{ enableReplacementVideoFeatureSwitch?.enabled ? <div id={replacementVideoControlsId} /> : null }
 									</SelectMediaInput>
 									<SelectMediaInput>
 										<Field
