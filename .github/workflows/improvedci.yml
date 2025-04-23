@@ -142,6 +142,8 @@ jobs:
                   node-version-file: fronts-client/.nvmrc
                   cache: yarn
                   cache-dependency-path: fronts-client/yarn.lock
+            - name: Disable AppArmor
+              run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
             -   uses: actions/download-artifact@v4  #integration test requires built frontend (of course!)
                 with:
                     path: public/fronts-client-v2
