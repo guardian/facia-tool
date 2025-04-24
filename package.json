@@ -41,6 +41,7 @@
 		}
 	},
 	"devDependencies": {
+		"@aws-sdk/credential-providers": "^3.787.0",
 		"@types/navigator-permissions": "^0.1.2",
 		"babel": "6.0.0",
 		"eslint-plugin-jasmine": "1.8.1",
