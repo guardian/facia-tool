@@ -163,18 +163,18 @@ async function processConfig() {
 
 async function uploadConfig(config) {
 	try {
-		const s3Client = createS3Client(CONFIG.s3.region, CONFIG.s3.profile);
+		const s3Client = createS3Client(CONFIG.s3.region, profile);
 		const configJson = JSON.stringify(config, null, 2);
 
 		await uploadToS3(
 			s3Client,
 			CONFIG.s3.bucketName,
-			`${CONFIG.s3.stage}${CONFIG.s3.objectPath}`,
+			`${stage}${objectPath}`,
 			configJson,
 		);
 
 		console.log(
-			`✅ Uploaded modified config to S3: ${CONFIG.s3.bucketName}/${CONFIG.s3.objectPath}`,
+			`✅ Uploaded modified config to S3: ${CONFIG.s3.bucketName}/${objectPath}`,
 		);
 	} catch (error) {
 		throw new Error(`Failed to upload config: ${error.message}`);
