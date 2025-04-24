@@ -184,6 +184,8 @@ const SnapLinkCard = ({
 								imageSlideshowReplace={article && article.imageSlideshowReplace}
 								imageReplace={article && article.imageReplace}
 								imageCutoutReplace={article && article.imageCutoutReplace}
+								videoReplace={article && article.videoReplace}
+								hasMainVideo={article && article.hasMainVideo}
 							/>
 						</div>
 					)}
