@@ -94,6 +94,7 @@ type CardRootMeta = ChefCardMeta &
 		atomId?: string;
 		replacementVideoAtomId?: string;
 		imageSlideshowReplace?: boolean;
+		replacementVideoAtom?: any;
 		slideshow?: Array<{
 			src?: string;
 			thumb?: string;
