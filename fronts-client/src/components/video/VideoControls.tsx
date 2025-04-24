@@ -114,7 +114,7 @@ export const VideoControls = ({
 
 		// This exact incantation is needed to clear the form fields...
 		dispatch(autofill(form, 'replaceVideoUri', undefined));
-		dispatch(autofill(form, 'replacementVideoAtomId', undefined));
+		dispatch(autofill(form, 'atomId', undefined));
 		dispatch(change(form, 'replacementVideoAtom', undefined));
 		changeMediaField('showMainVideo');
 		setConfirmDelete(false);
@@ -135,7 +135,7 @@ export const VideoControls = ({
 			return;
 		}
 
-		dispatch(change(form, 'replacementVideoAtomId', data.atomId));
+		dispatch(change(form, 'atomId', data.atomId));
 		/**
 		 * Even if we can't fetch the replacement atom, it's worth setting the videoReplace and replaceVideoUri fields
 		 * to give some feedback to the user.
@@ -307,7 +307,7 @@ export const VideoControls = ({
 							changeMediaField('showMainVideo');
 						}
 
-						changeField('replacementVideoAtomId', extractAtomId(videoUri));
+						changeField('atomId', extractAtomId(videoUri));
 					}}
 					placeholder="Paste video url"
 				></Field>

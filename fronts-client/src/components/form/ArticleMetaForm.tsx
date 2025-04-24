@@ -425,12 +425,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		super(props);
 		this.debouncedFetchAndSetReplacementVideoAtom = debounce(async () => {
 			await this.fetchAndSetReplacementVideoAtom(
-				this.props.replacementVideoAtomId,
+				this.props.atomId,
 			);
 		}, 500);
 	}
 	componentDidMount() {
-		this.fetchAndSetReplacementVideoAtom(this.props.replacementVideoAtomId);
+		this.fetchAndSetReplacementVideoAtom(this.props.atomId);
 	}
 
 	componentDidUpdate(
@@ -439,7 +439,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		snapshot?: any,
 	) {
 		if (
-			prevProps.replacementVideoAtomId === this.props.replacementVideoAtomId
+			prevProps.atomId === this.props.atomId
 		) {
 			return;
 		}
@@ -447,13 +447,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	}
 
 	private fetchAndSetReplacementVideoAtom = async (
-		replacementVideoAtomId: string | undefined,
+		atomId: string | undefined,
 	) => {
-		if (replacementVideoAtomId === undefined) {
+		if (atomId === undefined) {
 			this.props.change('replacementVideoAtom', undefined);
 			return;
 		}
-		this.fetchAtom(replacementVideoAtomId)
+		this.fetchAtom(atomId)
 			.then((response) => response.media)
 			.then((replacementAtom) =>
 				this.props.change('replacementVideoAtom', replacementAtom),
@@ -536,6 +536,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			groupSizeId,
 			collectionType,
 			form,
+			snapType
 		} = this.props;
 
 		const isEditionsMode = editMode === 'editions';
@@ -881,7 +882,16 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										/>
 									)}
 								</ToggleCol>
-								<Col flex={2}>
+								{/*
+									Don't show media controls if the card has a snap type.
+									When a card is a snap, we don't show a trail image, video or slideshow.
+									Instead, we directly inject an atom onto the front.
+
+									Replacement videos would break snap cards, because the snap and video are both
+									competing for the underlying atomId field.
+								*/}
+								{snapType === undefined && (
+									<Col flex={2}>
 									<SelectMediaLabelContainer>
 										<InputLabel htmlFor="media-select">Select Media</InputLabel>
 										{ enableReplacementVideoFeatureSwitch?.enabled ? <Tooltip /> : null }
@@ -967,6 +977,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										/>
 									</SelectMediaInput>
 								</Col>
+								)}
 							</Row>
 							<ConditionalComponent
 								permittedNames={editableFields}
@@ -1231,7 +1242,7 @@ interface ContainerProps {
 	mainMediaVideoAtom: any;
 	videoReplace: boolean;
 	replaceVideoUri: string;
-	replacementVideoAtomId: string;
+	atomId: string;
 	replacementVideoAtom: any;
 	videoBaseUrl: string | null;
 }
@@ -1316,7 +1327,6 @@ const createMapStateToProps = () => {
 				? selectCollectionType(state, collectionId)
 				: undefined,
 			atomId: valueSelector(state, 'atomId'),
-			replacementVideoAtomId: valueSelector(state, 'replacementVideoAtomId'),
 			replacementVideoAtom: valueSelector(state, 'replacementVideoAtom'),
 			videoBaseUrl: selectVideoBaseUrl(state),
 		};
