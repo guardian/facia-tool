@@ -49,8 +49,22 @@ object CapiPrefiller {
         // finally if a cutout is desired but nothing appropriate was found then explicitly set to use article trail
         case (true, None) => (Some(MediaType.UseArticleTrail), None)
       }
+
+    // We want the default for tone/opinion to choose the cutout photo
+    // If there's no cutout, default to hide image rather than show the trail image.
+    val hideImageIfNotCutout = {
+      if (content.sectionName == Some("Opinion")) {
+        !mediaType.contains(MediaType.Cutout)
+      } else {
+        metadata.imageHide
+      }
+    }
+
     val newMetadata =
-      metadata.copy(imageCutoutReplace = mediaType.contains(MediaType.Cutout))
+      metadata.copy(
+        imageCutoutReplace = mediaType.contains(MediaType.Cutout),
+        imageHide = hideImageIfNotCutout
+      )
 
     val pickedKicker = pickKicker(content)
 
