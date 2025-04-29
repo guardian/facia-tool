@@ -39,7 +39,13 @@ class ViewsController(
       val identity = request.user
       Cached(60) {
         Ok(
-          views.html.priority(Option(identity), config.facia.stage, isDev, true)
+          views.html.priority(
+            Option(identity),
+            config.facia.stage,
+            isDev,
+            true,
+            maybeTelemetryUrl = Some(telemetryUrl)
+          )
         )
       }
     }
@@ -59,7 +65,8 @@ class ViewsController(
               overrideIsDev(request, isDev),
               assetsManager.pathForCollections,
               priority != "email",
-              priority
+              priority,
+              maybeTelemetryUrl = Some(telemetryUrl)
             )
           )
         }
@@ -76,7 +83,8 @@ class ViewsController(
             config.facia.stage,
             overrideIsDev(request, isDev),
             assetsManager.pathForConfig,
-            false
+            false,
+            maybeTelemetryUrl = Some(telemetryUrl)
           )
         )
       }

@@ -143,7 +143,8 @@ class V2App(
               )
             case _ =>
               None
-          }
+          },
+          maybeTelemetryUrl = Some(telemetryUrl)
         )
       )
     }
