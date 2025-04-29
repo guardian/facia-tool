@@ -16,6 +16,7 @@ import {
 	insertCardWithCreate,
 	addImageToCard,
 	cloneCardToTarget,
+	getBoostLevel,
 } from 'actions/Cards';
 import {
 	reducer as collectionsReducer,
@@ -371,6 +372,49 @@ describe('Cards actions', () => {
 				imageSlideshowReplace: false,
 				imageCutoutReplace: false,
 			});
+		});
+	});
+
+	describe('gets the correct boost level when moving cards (in relevant container types)', () => {
+		it('retains the boost level if we are moving to the same group type', () => {
+			expect(getBoostLevel(2, 2, 0)).toEqual('default');
+			expect(getBoostLevel(2, 2, 1)).toEqual('boost');
+			expect(getBoostLevel(2, 2, 2)).toEqual('megaboost');
+			expect(getBoostLevel(2, 2, 3)).toEqual('gigaboost');
+
+			expect(getBoostLevel(0, 0, 0)).toEqual('default');
+			expect(getBoostLevel(0, 0, 1)).toEqual('boost');
+			expect(getBoostLevel(0, 0, 2)).toEqual('megaboost');
+			expect(getBoostLevel(0, 0, 3)).toEqual('gigaboost');
+		});
+
+		it('sets the boost level to default if we are moving to a splash', () => {
+			expect(getBoostLevel(null, 3, 0)).toEqual('default');
+			expect(getBoostLevel(null, 3, 1)).toEqual('default');
+			expect(getBoostLevel(null, 3, 2)).toEqual('default');
+			expect(getBoostLevel(null, 3, 3)).toEqual('default');
+		});
+
+		it('sets the boost level to the minimum if the current boost level is below the minimum required', () => {
+			// megaboost is the smallest boost level for `Very Big`
+			expect(getBoostLevel(null, 2, 0)).toEqual('megaboost');
+			// boost is the smallest boost level for `Big`
+			expect(getBoostLevel(null, 1, 0)).toEqual('boost');
+			// otherwise the minimum boost level is default
+			expect(getBoostLevel(null, 0, 0)).toEqual('default');
+		});
+
+		it('retains the boost level if the current boost level is the minimum required', () => {
+			expect(getBoostLevel(null, 2, 2)).toEqual('megaboost');
+			expect(getBoostLevel(null, 1, 1)).toEqual('boost');
+			expect(getBoostLevel(null, 0, 0)).toEqual('default');
+		});
+
+		it('reduces the boost level if the current boost level is above the minimum required', () => {
+			expect(getBoostLevel(null, 2, 3)).toEqual('megaboost');
+			expect(getBoostLevel(null, 1, 2)).toEqual('boost');
+			expect(getBoostLevel(null, 0, 1)).toEqual('default');
+			expect(getBoostLevel(null, 0, 0)).toEqual('default');
 		});
 	});
 });
