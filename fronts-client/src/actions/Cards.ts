@@ -243,16 +243,6 @@ const getBoostLevel = (
 	const minBoostLevel = minimumGroupBoostLevel(toGroupId);
 	const minBoostIndex = boostLevels.indexOf(minBoostLevel);
 
-	// If we are moving within the same group type (e.g. standard -> standard), don't change the boost level
-	if (toGroupId === maybeFromGroupId) {
-		return boostLevels[boostIndex];
-	}
-
-	// If the destination group is a splash group, set the boost level to default
-	if (toGroupId === 3) {
-		return 'default';
-	}
-
 	// If the current boost level is below the minimum required, set it to the minimum
 	if (boostIndex < minBoostIndex) {
 		return minBoostLevel;
@@ -263,8 +253,24 @@ const getBoostLevel = (
 		return boostLevels[boostIndex];
 	}
 
-	// Otherwise reduce the boost level by 1
-	return boostLevels[boostIndex - 1];
+	// If we're not moving from a group (i.e. we are moving from a clipboard), retain the boost level
+	if (maybeFromGroupId === null) {
+		return boostLevels[boostIndex];
+	}
+
+	// If we're moving down a group, reduce the boost level by 1
+	if (toGroupId < maybeFromGroupId) {
+		return boostLevels[boostIndex - 1];
+	}
+
+	// If we're moving up a group, and the destination group is a splash group, set the boost level to default
+	// (Splash groups allow all types of boosting, but we want to reserve these boost types for special occasions)
+	if (toGroupId > maybeFromGroupId && toGroupId === 3) {
+		return 'default';
+	}
+
+	// Retain the boost level if none of the other cases are met
+	return boostLevels[boostIndex];
 };
 
 const mayAdjustCardBoostLevelForDestinationGroup = (
