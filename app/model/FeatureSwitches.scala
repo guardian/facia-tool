@@ -33,7 +33,6 @@ object TenImageSlideshows
       enabled = false
     )
 
-
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
