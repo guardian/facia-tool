@@ -39,12 +39,6 @@
 
         <main class="mainContainer">Have you tried turning it off and on again?</main>
 
-		@maybeTelemetryUrl.map { telemetryUrl => {
-			<script type="module">
-				const image = new Image();
-				image.src = `@Html(telemetryUrl)&path=${window.location.pathname}`;
-			</script>
-			}
-		}
+		@templates.pixel_tracking(maybeTelemetryUrl)
     </body>
 </html>

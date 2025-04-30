@@ -65,13 +65,7 @@
         <script async defer src="@pinboardUrl"></script>
     }
 
-	@maybeTelemetryUrl.map { telemetryUrl => {
-        <script type="module">
-			const image = new Image();
-			image.src = `@Html(telemetryUrl)&path=${window.location.pathname}`;
-		</script>
-		}
-	}
+	@templates.pixel_tracking(maybeTelemetryUrl)
 </body>
 
 </html>
