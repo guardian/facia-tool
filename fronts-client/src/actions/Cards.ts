@@ -47,6 +47,7 @@ import {
 	RemoveActionCreator,
 	InsertActionCreator,
 	InsertThunkActionCreator,
+	BoostLevel,
 } from 'types/Cards';
 import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 import { PersistTo } from '../types/Middleware';
@@ -213,8 +214,12 @@ const updateCardMetaWithPersist = (persistTo: PersistTo) =>
  * Splash allows all levels, and standard does not allow gigaboost.
  * Group ids remain consistent, even if the group is hidden (when maxItems is set to 0), so we can use the id to determine the group.
  */
-
-const boostLevels = ['default', 'boost', 'megaboost', 'gigaboost'] as const;
+const boostLevels: BoostLevel[] = [
+	'default',
+	'boost',
+	'megaboost',
+	'gigaboost',
+] as const;
 
 const minimumGroupBoostLevel = (groupId: number) => {
 	// boost is the smallest boost level for `Big`
@@ -230,11 +235,12 @@ const minimumGroupBoostLevel = (groupId: number) => {
  * we don't want to go any lower.
  * Otherwise, we decrease the boost level by 1.
  */
-const getBoostLevel = (groupId: number, boostIndex: number) => {
-	if (groupId === 3) {
-		return 'default';
-	}
-	const minBoostLevel = minimumGroupBoostLevel(groupId);
+const getBoostLevel = (
+	maybeFromGroupId: number | null,
+	toGroupId: number,
+	boostIndex: number,
+): BoostLevel => {
+	const minBoostLevel = minimumGroupBoostLevel(toGroupId);
 	const minBoostIndex = boostLevels.indexOf(minBoostLevel);
 
 	// If the current boost level is below the minimum required, set it to the minimum
@@ -247,32 +253,59 @@ const getBoostLevel = (groupId: number, boostIndex: number) => {
 		return boostLevels[boostIndex];
 	}
 
-	// Otherwise reduce the boost level by 1
-	return boostLevels[boostIndex - 1];
+	// If we're not moving from a group (i.e. we are moving from a clipboard), retain the boost level
+	if (maybeFromGroupId === null) {
+		return boostLevels[boostIndex];
+	}
+
+	// If we're moving down a group, reduce the boost level by 1
+	if (toGroupId < maybeFromGroupId) {
+		return boostLevels[boostIndex - 1];
+	}
+
+	// If we're moving up a group, and the destination group is a splash group, set the boost level to default
+	// (Splash groups allow all types of boosting, but we want to reserve these boost types for special occasions)
+	if (toGroupId > maybeFromGroupId && toGroupId === 3) {
+		return 'default';
+	}
+
+	// Retain the boost level if none of the other cases are met
+	return boostLevels[boostIndex];
 };
 
 const mayAdjustCardBoostLevelForDestinationGroup = (
 	state: State,
+	maybeFrom: PosSpec | null,
 	to: PosSpec,
 	card: Card,
 	persistTo: 'collection' | 'clipboard',
 ) => {
 	if (to.type === 'group' && persistTo === 'collection') {
-		const groupId = to.id;
-		const { collection } = selectGroupCollection(state, groupId);
-		const group = selectGroups(state)[groupId];
+		const maybeFromGroupId = maybeFrom !== null ? maybeFrom.id : null;
+		const maybeFromGroup =
+			maybeFromGroupId !== null ? selectGroups(state)[maybeFromGroupId] : null;
+
+		const toGroupId = to.id;
+		const { collection } = selectGroupCollection(state, toGroupId);
+		const toGroup = selectGroups(state)[toGroupId];
 
 		if (collection?.type === FLEXIBLE_GENERAL_NAME) {
-			if (!group) {
+			if (!toGroup) {
 				return;
 			}
-			const groupId = parseInt(group.id ?? '0');
+			const maybeFromGroupId =
+				maybeFromGroup !== null ? parseInt(maybeFromGroup.id ?? '0') : null;
+			const toGroupId = parseInt(toGroup.id ?? '0');
 
 			const currentBoostLevel = boostLevels.indexOf(
 				card.meta.boostLevel ?? 'default',
 			);
 
-			const boostLevel = getBoostLevel(groupId, currentBoostLevel);
+			const boostLevel = getBoostLevel(
+				maybeFromGroupId,
+				toGroupId,
+				currentBoostLevel,
+			);
 			return updateCardMeta(
 				card.uuid,
 				{
@@ -314,6 +347,7 @@ const insertCardWithCreate =
 				}
 				const modifyCardAction = mayAdjustCardBoostLevelForDestinationGroup(
 					state,
+					null,
 					to,
 					card,
 					persistTo,
@@ -423,6 +457,7 @@ const moveCard = (
 
 				const modifyCardAction = mayAdjustCardBoostLevelForDestinationGroup(
 					state,
+					from,
 					to,
 					parent,
 					persistTo,
@@ -508,4 +543,5 @@ export {
 	copyCardImageMetaWithPersist,
 	cloneCardToTarget,
 	addCardToClipboard,
+	getBoostLevel,
 };
