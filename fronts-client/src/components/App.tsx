@@ -40,6 +40,8 @@ import FeaturesView from './Features/FeaturesView';
 import { PlaceholderAnimation } from 'components/BasePlaceholder';
 import OptionsModal from './modals/OptionsModal';
 import BannerNotification from './notifications/BannerNotification';
+import { useLocation } from 'react-router';
+import pageConfig from 'util/extractConfigFromPage';
 
 // NB the properties described in font-face work as matchers, assigning text to the font imported by the source.
 // this is why we have 2 declarations of font-weight in several of these font-faces. Assigning either hits this font.
@@ -139,28 +141,44 @@ const BackgroundHeader = styled.div`
 	width: 100%;
 `;
 
-const App = () => (
-	<ThemeProvider theme={styleTheme}>
-		<DropDisabler>
-			<BannerNotification />
-			<AppContainer>
-				<BackgroundHeader>
-					<SectionHeaderWithLogo greyHeader={true} />
-				</BackgroundHeader>
-				<Switch>
-					<Route {...frontsEditPathProps} component={FrontsEdit} />
-					<Route {...issuePathProps} component={FrontsEdit} />
-					<Route {...frontsFeatureProps} component={FeaturesView} />
-					<Route exact path="/" component={Home} />
-					<Route exact path={manageEditions} component={ManageView} />
-					<Route component={NotFound} />
-				</Switch>
-			</AppContainer>
-			<PlaceholderAnimation />
-			<AppFonts />
-			<OptionsModal />
-		</DropDisabler>
-	</ThemeProvider>
-);
+function usePixelTracking() {
+	const location = useLocation();
+	React.useEffect(() => {
+		if (pageConfig.telemetryUrl) {
+			void fetch(`${pageConfig.telemetryUrl}&path=${location.pathname}`).catch(
+				() => {
+					console.error('Fail to send pixel tracking to telemetry service.');
+				},
+			);
+		}
+	}, [location]);
+}
+
+const App = () => {
+	usePixelTracking();
+	return (
+		<ThemeProvider theme={styleTheme}>
+			<DropDisabler>
+				<BannerNotification />
+				<AppContainer>
+					<BackgroundHeader>
+						<SectionHeaderWithLogo greyHeader={true} />
+					</BackgroundHeader>
+					<Switch>
+						<Route {...frontsEditPathProps} component={FrontsEdit} />
+						<Route {...issuePathProps} component={FrontsEdit} />
+						<Route {...frontsFeatureProps} component={FeaturesView} />
+						<Route exact path="/" component={Home} />
+						<Route exact path={manageEditions} component={ManageView} />
+						<Route component={NotFound} />
+					</Switch>
+				</AppContainer>
+				<PlaceholderAnimation />
+				<AppFonts />
+				<OptionsModal />
+			</DropDisabler>
+		</ThemeProvider>
+	);
+};
 
 export default App;
