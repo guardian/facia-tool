@@ -40,8 +40,8 @@ import FeaturesView from './Features/FeaturesView';
 import { PlaceholderAnimation } from 'components/BasePlaceholder';
 import OptionsModal from './modals/OptionsModal';
 import BannerNotification from './notifications/BannerNotification';
-import { useLocation } from 'react-router';
 import pageConfig from 'util/extractConfigFromPage';
+import { useLocation } from 'react-router';
 
 // NB the properties described in font-face work as matchers, assigning text to the font imported by the source.
 // this is why we have 2 declarations of font-weight in several of these font-faces. Assigning either hits this font.
@@ -145,11 +145,8 @@ function usePixelTracking() {
 	const location = useLocation();
 	React.useEffect(() => {
 		if (pageConfig.telemetryUrl) {
-			void fetch(`${pageConfig.telemetryUrl}&path=${location.pathname}`, {
-				credentials: 'include',
-			}).catch(() => {
-				console.error('Fail to send pixel tracking to telemetry service.');
-			});
+			const image = new Image();
+			image.src = `${pageConfig.telemetryUrl}&path=${window.location.pathname}`;
 		}
 	}, [location]);
 }
