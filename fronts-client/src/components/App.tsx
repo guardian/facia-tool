@@ -145,11 +145,11 @@ function usePixelTracking() {
 	const location = useLocation();
 	React.useEffect(() => {
 		if (pageConfig.telemetryUrl) {
-			void fetch(`${pageConfig.telemetryUrl}&path=${location.pathname}`).catch(
-				() => {
-					console.error('Fail to send pixel tracking to telemetry service.');
-				},
-			);
+			void fetch(`${pageConfig.telemetryUrl}&path=${location.pathname}`, {
+				credentials: 'include',
+			}).catch(() => {
+				console.error('Fail to send pixel tracking to telemetry service.');
+			});
 		}
 	}, [location]);
 }
