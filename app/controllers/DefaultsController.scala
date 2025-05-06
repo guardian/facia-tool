@@ -34,7 +34,8 @@ case class Defaults(
     capiLiveUrl: String = "",
     capiPreviewUrl: String = "",
     availableTerritories: Iterable[TargetedTerritory] = Nil,
-    availableTemplates: List[CuratedPlatformDefinition]
+    availableTemplates: List[CuratedPlatformDefinition],
+    telemetryUrl: String
 )
 
 class DefaultsController(
@@ -88,7 +89,8 @@ class DefaultsController(
             None,
             availableTerritories = TargetedTerritory.allTerritories,
             availableTemplates =
-              EditionsAppTemplates.getAvailableTemplates ++ FeastAppTemplates.getAvailableTemplates
+              EditionsAppTemplates.getAvailableTemplates ++ FeastAppTemplates.getAvailableTemplates,
+            telemetryUrl = telemetryUrl
           )
         )
       )

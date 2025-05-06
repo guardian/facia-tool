@@ -125,7 +125,8 @@ class V2App(
         routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
         routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true),
         TargetedTerritory.allTerritories,
-        EditionsAppTemplates.getAvailableTemplates ++ FeastAppTemplates.getAvailableTemplates
+        EditionsAppTemplates.getAvailableTemplates ++ FeastAppTemplates.getAvailableTemplates,
+        telemetryUrl = telemetryUrl
       )
 
       Ok(
@@ -143,7 +144,8 @@ class V2App(
               )
             case _ =>
               None
-          }
+          },
+          maybeTelemetryUrl = Some(telemetryUrl)
         )
       )
     }

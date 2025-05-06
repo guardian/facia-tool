@@ -48,6 +48,7 @@ interface Config {
 		featureSwitches: FeatureSwitch[];
 	};
 	availableTemplates: EditionPriority[];
+	telemetryUrl: string;
 }
 
 export { Config };

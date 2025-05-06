@@ -1,4 +1,4 @@
-@(identity: com.gu.pandomainauth.model.User)
+@(identity: com.gu.pandomainauth.model.User, maybeTelemetryUrl: Option[String] = None)
 <!doctype html>
 <html lang="en">
 <head>
@@ -38,5 +38,7 @@
         </nav>
 
         <main class="mainContainer">Have you tried turning it off and on again?</main>
+
+		@templates.pixel_tracking(maybeTelemetryUrl)
     </body>
 </html>

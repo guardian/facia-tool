@@ -5,7 +5,8 @@
     faviconLocation: String,
     clientConfigJson: String,
     isDev: Boolean,
-    maybePinboardUrl: Option[String]
+    maybePinboardUrl: Option[String],
+	maybeTelemetryUrl: Option[String]
 )
 <!DOCTYPE html>
 <html lang="en">
@@ -52,11 +53,11 @@
             }
             window.$RefreshSig$ = () => (type) => type
             window.__vite_plugin_react_preamble_installed__ = true
-        </script>
+		</script>
         <script type="module" src="http://localhost:5173/assets/fronts-client-v2/@@vite/client"></script>
         <script type="module" src="http://localhost:5173/assets/fronts-client-v2/src/index.tsx"></script>
     } else {
-        <link rel="stylesheet" href="@cssLocation">
+		<link rel="stylesheet" href="@cssLocation">
         <script type="module" src="@jsLocation" type="application/javascript"></script>
     }
 
