@@ -195,6 +195,7 @@ class Card extends React.Component<CardContainerProps> {
 							canShowPageViewData={canShowPageViewData}
 							imageCriteria={this.determineCardCriteria()}
 							collectionType={collectionType}
+							groupIndex={groupSizeId}
 						>
 							<EditModeVisibility visibleMode="fronts">
 								{getSublinks}
