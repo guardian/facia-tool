@@ -22,6 +22,11 @@ export default {
 		staticImageCdnDomain: 'https://static.guim.co.uk/',
 		imageCdnDomainExpr: /^https:\/\/(.*)\.guim\.co\.uk\//,
 	},
+	video: {
+		videoBaseUrl: 'https://video',
+		mediaAtomMakerPath: '/videos/',
+		capiAtomPath: '/video/atom/',
+	},
 	capiLiveUrl: '/api/live',
 	capiPreviewUrl: '/api/preview',
 	recipes: 'https://recipes.guardianapis.com',

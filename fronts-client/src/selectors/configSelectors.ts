@@ -39,6 +39,11 @@ const selectGridUrl = createSelector(
 	(config) => config && config.mediaBaseUrl,
 );
 
+const selectVideoBaseUrl = createSelector(
+	selectConfig,
+	(config) => config && config.videoBaseUrl,
+);
+
 const selectAvailableEditions = createSelector(
 	selectConfig,
 	(config) => config && config.availableTemplates,
@@ -62,6 +67,7 @@ export {
 	selectLastName,
 	selectCollectionCap,
 	selectGridUrl,
+	selectVideoBaseUrl,
 	selectAvailableEditions,
 	selectShouldUseCODELinks,
 	selectEditionsPermission,

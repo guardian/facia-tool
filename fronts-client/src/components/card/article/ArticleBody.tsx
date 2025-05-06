@@ -134,6 +134,7 @@ interface ArticleBodyProps {
 	isImmersive?: boolean;
 	hasMainVideo?: boolean;
 	showMainVideo?: boolean;
+	videoReplace?: boolean;
 	tone?: string | undefined;
 	featureFlagPageViewData?: boolean;
 	canShowPageViewData: boolean;
@@ -186,6 +187,7 @@ const articleBodyDefault = React.memo(
 		canShowPageViewData,
 		hasMainVideo,
 		showMainVideo,
+		videoReplace,
 		frontId,
 		collectionId,
 		newspaperPageNumber,
@@ -339,7 +341,7 @@ const articleBodyDefault = React.memo(
 									{cutoutThumbnail ? (
 										<ThumbnailCutout src={cutoutThumbnail} />
 									) : null}
-									{hasMainVideo && (
+									{(hasMainVideo || videoReplace) && (
 										<VideoIconContainer title="This media has video content.">
 											<VideoIcon />
 										</VideoIconContainer>
@@ -350,6 +352,8 @@ const articleBodyDefault = React.memo(
 									imageReplace={imageReplace}
 									imageCutoutReplace={imageCutoutReplace}
 									showMainVideo={showMainVideo}
+									videoReplace={videoReplace}
+									hasMainVideo={hasMainVideo}
 								/>
 								{!collectionId && firstPublicationDate && (
 									<ClipboardFirstPublished title="The time elapsed since this article was first published.">

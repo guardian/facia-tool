@@ -12,6 +12,10 @@ const checkboxWidth = 28;
 const CheckboxContainer = styled.div`
 	display: flex;
 	align-items: flex-start;
+
+	&:has(input:disabled) label {
+		cursor: not-allowed;
+	}
 `;
 
 const Label = styled(InputLabel)`
@@ -67,6 +71,16 @@ const Checkbox = styled.input`
 	&:checked + ${CheckboxLabel}, &:checked + ${CheckboxLabel}:before {
 		border-color: ${theme.input.checkboxColorActive};
 		right: 0px;
+	}
+	:disabled,
+	:disabled + ${CheckboxLabel}, :disabled + ${CheckboxLabel}:before {
+		cursor: not-allowed;
+	}
+	:disabled + ${CheckboxLabel}:before {
+		background-color: ${theme.input.checkboxButtonBackgroundDisabled};
+	}
+	:disabled + ${Label} {
+		cursor: not-allowed;
 	}
 `;
 
