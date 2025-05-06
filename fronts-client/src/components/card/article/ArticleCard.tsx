@@ -60,6 +60,7 @@ interface ArticleComponentProps {
 	collectionId?: string;
 	imageCriteria?: Criteria;
 	collectionType?: string;
+	groupIndex?: number;
 }
 
 interface ComponentProps extends ArticleComponentProps {
@@ -109,6 +110,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 			collectionId,
 			imageCriteria,
 			collectionType,
+			groupIndex,
 		} = this.props;
 
 		const getArticleData = () =>
@@ -167,6 +169,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 								canShowPageViewData={canShowPageViewData}
 								imageCriteria={imageCriteria}
 								collectionType={collectionType}
+								groupIndex={groupIndex}
 							/>
 						</ArticleBodyContainer>
 					</DragIntentContainer>

@@ -19,7 +19,7 @@ import {
 	HoverAddToClipboardButton,
 } from '../../inputs/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../../CollectionHoverItems';
-import { CardSizes } from 'types/Collection';
+import { BoostLevels, CardSizes } from 'types/Collection';
 import CardMetaContent from '../CardMetaContent';
 import CardDraftMetaContent from '../CardDraftMetaContent';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
@@ -130,7 +130,7 @@ interface ArticleBodyProps {
 	canDragImage?: boolean;
 	isDraggingImageOver: boolean;
 	isBoosted?: boolean;
-	boostLevel?: string;
+	boostLevel?: BoostLevels;
 	isImmersive?: boolean;
 	hasMainVideo?: boolean;
 	showMainVideo?: boolean;
@@ -143,6 +143,7 @@ interface ArticleBodyProps {
 	imageSrcHeight?: string;
 	imageCriteria?: Criteria;
 	collectionType?: string;
+	groupIndex?: number;
 }
 
 const articleBodyDefault = React.memo(
@@ -194,6 +195,7 @@ const articleBodyDefault = React.memo(
 		imageSrcHeight,
 		imageCriteria,
 		collectionType,
+		groupIndex,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -289,6 +291,7 @@ const articleBodyDefault = React.memo(
 						isBoosted={isBoosted}
 						boostLevel={boostLevel}
 						isImmersive={isImmersive}
+						groupIndex={groupIndex}
 					/>
 					<CardHeadingContainer size={size}>
 						{displayPlaceholders && (
