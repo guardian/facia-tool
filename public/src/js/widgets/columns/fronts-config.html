@@ -316,7 +316,10 @@
 			 meta.type() === 'static/medium/4')
 			-->
             <label for="hideShowMore">Hide show more</label>
-            <input id="hideShowMore" type="checkbox" data-bind="checked: meta.hideShowMore" />
+            <input id="hideShowMore" type="checkbox" data-bind="checked: (
+			 meta.type() === 'scrollable/small' ||
+			 meta.type() === 'scrollable/medium' ||
+			 meta.type() === 'static/medium/4') ? true : meta.hideShowMore," />
             <!-- /ko -->
 
             <label>No curation</label>
