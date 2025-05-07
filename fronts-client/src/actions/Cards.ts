@@ -281,7 +281,8 @@ const mayAdjustCardBoostLevelForDestinationGroup = (
 	persistTo: 'collection' | 'clipboard',
 ) => {
 	if (to.type === 'group' && persistTo === 'collection') {
-		const maybeFromGroupId = maybeFrom !== null ? maybeFrom.id : null;
+		const maybeFromGroupId =
+			maybeFrom !== null && maybeFrom.type === 'group' ? maybeFrom.id : null;
 		const maybeFromGroup =
 			maybeFromGroupId !== null ? selectGroups(state)[maybeFromGroupId] : null;
 
