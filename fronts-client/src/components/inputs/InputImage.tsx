@@ -653,8 +653,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			this.compareAspectRatio(landscape5To4CardImageCriteria, criteria)
 		) {
 			return {
-				cropType: 'Landscape',
-				customRatio: 'Landscape,5,4',
+				cropType: 'landscape',
 			};
 		} else if (this.compareAspectRatio(squareImageCriteria, criteria)) {
 			return {
@@ -662,7 +661,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			};
 		} else {
 			return {
-				cropType: 'landscape',
+				cropType: 'Landscape',
+				customRatio: 'Landscape,5,3',
 			};
 		}
 	};
