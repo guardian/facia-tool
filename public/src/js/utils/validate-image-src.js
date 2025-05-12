@@ -118,7 +118,7 @@ function getSuitableAsset (crops, id, desired) {
             return Promise.resolve({
                 path: path,
                 thumb: assets.last().value().secureUrl,
-                origin: vars.model.state().defaults.mediaBaseUrl + '/image/' + id,
+                origin: vars.model.state().defaults.baseUrls.mediaBaseUrl + '/image/' + id,
                 height: height,
                 width: width,
                 ratio: width / height

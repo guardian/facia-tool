@@ -14,7 +14,7 @@ export default {
 		capi: 'content.guardianapis.com',
 	},
 	media: {
-		apiBaseUrl: pageConfig.apiBaseUrl,
+		apiBaseUrl: pageConfig.baseUrls.apiBaseUrl,
 		mediaBaseUrl: 'https://media',
 		usageBaseUrl: '/api/usage',
 		imgIXDomainExpr: /^https:\/\/i\.guim\.co\.uk\/img\/static\//,

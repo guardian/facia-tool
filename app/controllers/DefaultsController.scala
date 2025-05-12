@@ -9,6 +9,16 @@ import play.api.libs.json.{JsValue, Json, OWrites}
 import switchboard.SwitchManager
 import util.{Acl, AclJson}
 
+case class BaseUrls(
+    mediaBaseUrl: String,
+    apiBaseUrl: String,
+    videoBaseUrl: String
+)
+
+object BaseUrls {
+  implicit val jsonFormat: OWrites[BaseUrls] = Json.writes[BaseUrls]
+}
+
 object Defaults {
   implicit val jsonFormat: OWrites[Defaults] = Json.writes[Defaults]
 }
@@ -22,9 +32,6 @@ case class Defaults(
     firstName: String,
     lastName: String,
     sentryPublicDSN: String,
-    mediaBaseUrl: String,
-    apiBaseUrl: String,
-    videoBaseUrl: String,
     switches: JsValue,
     acl: AclJson,
     collectionCap: Int,
@@ -36,7 +43,8 @@ case class Defaults(
     capiPreviewUrl: String = "",
     availableTerritories: Iterable[TargetedTerritory] = Nil,
     availableTemplates: List[CuratedPlatformDefinition],
-    telemetryUrl: String
+    telemetryUrl: String,
+    baseUrls: BaseUrls
 )
 
 class DefaultsController(
@@ -77,9 +85,6 @@ class DefaultsController(
             request.user.firstName,
             request.user.lastName,
             config.sentry.publicDSN,
-            config.media.baseUrl.get,
-            config.media.apiUrl,
-            config.video.baseUrl.get,
             SwitchManager.getSwitchesAsJson(),
             acls,
             config.facia.collectionCap,
@@ -92,7 +97,12 @@ class DefaultsController(
             availableTerritories = TargetedTerritory.allTerritories,
             availableTemplates =
               EditionsAppTemplates.getAvailableTemplates ++ FeastAppTemplates.getAvailableTemplates,
-            telemetryUrl = telemetryUrl
+            telemetryUrl = telemetryUrl,
+            baseUrls = BaseUrls(
+              config.media.baseUrl.get,
+              config.media.apiUrl,
+              config.video.baseUrl.get
+            )
           )
         )
       )
