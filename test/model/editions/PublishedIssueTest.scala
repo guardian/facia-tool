@@ -72,8 +72,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
       prefill,
       None,
       cards.toList,
-	  None,
-	  None,
+      None,
+      None
     )
 
   implicit class RichEditionsCollection(thisCollection: EditionsCollection) {
@@ -404,8 +404,8 @@ class PublishedIssueTest extends FreeSpec with Matchers with OptionValues {
         None,
         None,
         List(card("123")),
-		None,
-		None,
+        None,
+        None
       )
       val testFront =
         front("uk-news", collection("london", None, card("123")), test)

@@ -331,7 +331,7 @@ class ApplicationConfiguration(
   }
 
   object video {
-	lazy val baseUrl = getString("video.base.url")
+    lazy val baseUrl = getString("video.base.url")
   }
 
   object notification {

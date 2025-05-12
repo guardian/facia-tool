@@ -83,7 +83,7 @@ import { selectVideoBaseUrl } from '../../selectors/configSelectors';
 import SelectMediaInput from '../inputs/SelectMediaInput';
 import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import Tooltip from '../modals/Tooltip';
-import pageConfig from "../../util/extractConfigFromPage";
+import pageConfig from '../../util/extractConfigFromPage';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -424,9 +424,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	constructor(props: Props) {
 		super(props);
 		this.debouncedFetchAndSetReplacementVideoAtom = debounce(async () => {
-			await this.fetchAndSetReplacementVideoAtom(
-				this.props.atomId,
-			);
+			await this.fetchAndSetReplacementVideoAtom(this.props.atomId);
 		}, 500);
 	}
 	componentDidMount() {
@@ -438,9 +436,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		prevState: Readonly<FormComponentState>,
 		snapshot?: any,
 	) {
-		if (
-			prevProps.atomId === this.props.atomId
-		) {
+		if (prevProps.atomId === this.props.atomId) {
 			return;
 		}
 		this.debouncedFetchAndSetReplacementVideoAtom();
@@ -536,7 +532,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			groupSizeId,
 			collectionType,
 			form,
-			snapType
+			snapType,
 		} = this.props;
 
 		const isEditionsMode = editMode === 'editions';
@@ -546,9 +542,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		const slideshowHasAtLeastTwoImages =
 			(slideshow ?? []).filter((field) => !!field).length >= 2;
 
-		const enableReplacementVideoFeatureSwitch = pageConfig?.userData?.featureSwitches.find(
-			(feature) => feature.key === 'enable-replacement-video',
-		);
+		const enableReplacementVideoFeatureSwitch =
+			pageConfig?.userData?.featureSwitches.find(
+				(feature) => feature.key === 'enable-replacement-video',
+			);
 
 		const invalidCardReplacement = coverCardImageReplace
 			? !imageDefined(coverCardMobileImage) ||
@@ -892,91 +889,103 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								*/}
 								{snapType === undefined && (
 									<Col flex={2}>
-									<SelectMediaLabelContainer>
-										<InputLabel htmlFor="media-select">Select Media</InputLabel>
-										{ enableReplacementVideoFeatureSwitch?.enabled ? <Tooltip /> : null }
-									</SelectMediaLabelContainer>
-									<SelectMediaInput>
-										<Field
-											component={InputRadio}
-											disabled={
-												editableFields.indexOf(this.getImageFieldName()) === -1
-											}
-											usesBlockStyling={true}
-											name="media-select"
-											type="radio"
-											label="Trail Image"
-											id={getInputId(cardId, 'select-trail-image')}
-											value="select-trail-image"
-											initialValues="select-trail-image"
-											onClick={() =>
-												this.changeMediaField(this.getImageFieldName())
-											}
-											checked={
-												!this.props.showMainVideo &&
-												!this.props.imageSlideshowReplace
-											}
-										/>
-									</SelectMediaInput>
-									<SelectMediaInput>
-										<Field
-											component={InputRadio}
-											icon={<SelectVideoIcon />}
-											disabled={!hasMainVideo && enableReplacementVideoFeatureSwitch?.enabled !== true}
-											contents={
-												enableReplacementVideoFeatureSwitch?.enabled ? <VideoControls
-													videoBaseUrl={videoBaseUrl}
-													mainMediaVideoAtom={mainMediaVideoAtom}
-													replacementVideoAtom={replacementVideoAtom}
-													showMainVideo={showMainVideo}
-													showReplacementVideo={videoReplace}
-													changeField={change}
-													changeMediaField={this.changeMediaField}
-													form={form}
-													replacementVideoControlsId={
-														replacementVideoControlsId
-													}
-												/> : null
-											}
-											usesBlockStyling={true}
-											name="media-select"
-											type="radio"
-											label="Video"
-											id={getInputId(cardId, 'select-video')}
-											value="select-video"
-											onClick={() =>
-												this.changeMediaField(this.getVideoFieldName())
-											}
-											checked={
-												this.props.showMainVideo || this.props.videoReplace
-											}
-										/>
-										{ enableReplacementVideoFeatureSwitch?.enabled ? <div id={replacementVideoControlsId} /> : null }
-									</SelectMediaInput>
-									<SelectMediaInput>
-										<Field
-											component={InputRadio}
-											disabled={
-												editableFields.indexOf('imageSlideshowReplace') === -1
-											}
-											icon={<SlideshowIcon />}
-											usesBlockStyling={true}
-											name="media-select"
-											type="radio"
-											label="Slideshow"
-											id={getInputId(cardId, 'select-slideshow')}
-											value="select-slideshow"
-											onClick={() =>
-												this.changeMediaField('imageSlideshowReplace')
-											}
-											checked={
-												this.props.imageSlideshowReplace !== undefined
-													? this.props.imageSlideshowReplace
-													: false
-											}
-										/>
-									</SelectMediaInput>
-								</Col>
+										<SelectMediaLabelContainer>
+											<InputLabel htmlFor="media-select">
+												Select Media
+											</InputLabel>
+											{enableReplacementVideoFeatureSwitch?.enabled ? (
+												<Tooltip />
+											) : null}
+										</SelectMediaLabelContainer>
+										<SelectMediaInput>
+											<Field
+												component={InputRadio}
+												disabled={
+													editableFields.indexOf(this.getImageFieldName()) ===
+													-1
+												}
+												usesBlockStyling={true}
+												name="media-select"
+												type="radio"
+												label="Trail Image"
+												id={getInputId(cardId, 'select-trail-image')}
+												value="select-trail-image"
+												initialValues="select-trail-image"
+												onClick={() =>
+													this.changeMediaField(this.getImageFieldName())
+												}
+												checked={
+													!this.props.showMainVideo &&
+													!this.props.imageSlideshowReplace
+												}
+											/>
+										</SelectMediaInput>
+										<SelectMediaInput>
+											<Field
+												component={InputRadio}
+												icon={<SelectVideoIcon />}
+												disabled={
+													!hasMainVideo &&
+													enableReplacementVideoFeatureSwitch?.enabled !== true
+												}
+												contents={
+													enableReplacementVideoFeatureSwitch?.enabled ? (
+														<VideoControls
+															videoBaseUrl={videoBaseUrl}
+															mainMediaVideoAtom={mainMediaVideoAtom}
+															replacementVideoAtom={replacementVideoAtom}
+															showMainVideo={showMainVideo}
+															showReplacementVideo={videoReplace}
+															changeField={change}
+															changeMediaField={this.changeMediaField}
+															form={form}
+															replacementVideoControlsId={
+																replacementVideoControlsId
+															}
+														/>
+													) : null
+												}
+												usesBlockStyling={true}
+												name="media-select"
+												type="radio"
+												label="Video"
+												id={getInputId(cardId, 'select-video')}
+												value="select-video"
+												onClick={() =>
+													this.changeMediaField(this.getVideoFieldName())
+												}
+												checked={
+													this.props.showMainVideo || this.props.videoReplace
+												}
+											/>
+											{enableReplacementVideoFeatureSwitch?.enabled ? (
+												<div id={replacementVideoControlsId} />
+											) : null}
+										</SelectMediaInput>
+										<SelectMediaInput>
+											<Field
+												component={InputRadio}
+												disabled={
+													editableFields.indexOf('imageSlideshowReplace') === -1
+												}
+												icon={<SlideshowIcon />}
+												usesBlockStyling={true}
+												name="media-select"
+												type="radio"
+												label="Slideshow"
+												id={getInputId(cardId, 'select-slideshow')}
+												value="select-slideshow"
+												onClick={() =>
+													this.changeMediaField('imageSlideshowReplace')
+												}
+												checked={
+													this.props.imageSlideshowReplace !== undefined
+														? this.props.imageSlideshowReplace
+														: false
+												}
+											/>
+										</SelectMediaInput>
+									</Col>
 								)}
 							</Row>
 							<ConditionalComponent
