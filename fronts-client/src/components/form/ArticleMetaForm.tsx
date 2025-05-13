@@ -217,7 +217,7 @@ const maxCaptionLength = (max: number) => (value: ImageData) =>
 		? `Must be ${max} characters or less`
 		: undefined;
 
-const InvalidWarning = ({ warning }: { warning: string }) => (
+export const InvalidWarning = ({ warning }: { warning: string }) => (
 	<FlexContainer>
 		<WarningIcon size="s" fill={error.warningDark} />
 		<InvalidText>{warning}</InvalidText>
@@ -609,6 +609,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			cardId,
 			'replacement-video-controls',
 		);
+		const warningsContainerId = getInputId(cardId, 'warnings-container');
 
 		return (
 			<FormContainer
@@ -940,6 +941,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 															replacementVideoControlsId={
 																replacementVideoControlsId
 															}
+															warningsContainerId={warningsContainerId}
 														/>
 													) : null
 												}
@@ -1055,14 +1057,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						</RowContainer>
 					)}
 				</FormContent>
-				{imageSlideshowReplace && !slideshowHasAtLeastTwoImages ? (
-					<InvalidWarning warning="You need at least two images to make a slideshow" />
-				) : null}
-				{(showMainVideo && !hasMainVideo) ||
-				(videoReplace && !replacementVideoAtom) ? (
-					<InvalidWarning warning="You need to provide a valid video" />
-				) : null}
-
+				<div id={warningsContainerId}>
+					{imageSlideshowReplace && !slideshowHasAtLeastTwoImages ? (
+						<InvalidWarning warning="You need at least two images to make a slideshow" />
+					) : null}
+					{(showMainVideo && !hasMainVideo) ||
+					(videoReplace && !replacementVideoAtom) ? (
+						<InvalidWarning warning="You need to provide a valid video" />
+					) : null}
+				</div>
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
 						Cancel
