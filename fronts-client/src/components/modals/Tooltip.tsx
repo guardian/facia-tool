@@ -1,5 +1,5 @@
 import { styled } from '../../constants/theme';
-import { InfoIcon } from '../icons/Icons';
+import { InfoIcon, VideoIcon } from '../icons/Icons';
 import React from 'react';
 
 const TooltipModal = styled.div`
@@ -11,10 +11,7 @@ const TooltipModal = styled.div`
 	color: white;
 	border-radius: 4px;
 	z-index: 2;
-	font-size: 12px;
-	display: flex;
-	justify-content: center;
-	align-items: center;
+	font-size: 10px;
 	font-family: TS3TextSans, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	padding: 6px;
 	line-height: 14px;
@@ -52,8 +49,11 @@ export default () => {
 			</InfoIconContainer>
 			{showModal ? (
 				<TooltipModal>
-					If the selected Video or Slideshow cannot be played, the media will
-					fallback to the Trail Image.
+					<div>
+						<VideoIcon fill={'white'} />
+					</div>
+					If a Video can't play, it falls back to the Trail Image. If no Trail
+					Image exists, it falls back to the Video's Poster Image.
 				</TooltipModal>
 			) : null}
 		</Container>
