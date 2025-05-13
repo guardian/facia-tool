@@ -1,4 +1,5 @@
 import urlConstants from '../constants/url';
+import type { Atom, AtomAsset, ImageAsset, Platform } from '../types/Capi';
 
 export const stripQueryParams = (value: string) => {
 	const parts: string[] = value.split('?');
@@ -46,8 +47,8 @@ const extractAtomId = (videoUri: string | undefined): string => {
 	return '';
 };
 
-const extractAssetId = (atom: any): string | undefined => {
-	const assets = atom?.data?.media?.assets;
+const extractAssetId = (atom: Atom): string | undefined => {
+	const assets: AtomAsset[] = atom.data?.media?.assets;
 	if (
 		assets === undefined ||
 		assets.length === 0 ||
@@ -60,8 +61,9 @@ const extractAssetId = (atom: any): string | undefined => {
 	}
 };
 
-const extractVideoTrailImage = (atom: any): string | undefined => {
-	const imageAssets = atom?.data?.media?.trailImage?.assets;
+const extractVideoTrailImage = (atom: Atom): string | undefined => {
+	const imageAssets: ImageAsset[] | undefined =
+		atom.data?.media?.trailImage?.assets;
 
 	if (
 		imageAssets === undefined ||
@@ -76,8 +78,8 @@ const extractVideoTrailImage = (atom: any): string | undefined => {
 	}
 };
 
-const extractPlatform = (atom: any): Platform | undefined => {
-	const mediaAssets = atom?.data?.media?.assets;
+const extractPlatform = (atom: Atom): Platform | undefined => {
+	const mediaAssets: AtomAsset[] = atom.data?.media?.assets;
 
 	if (
 		mediaAssets === undefined ||
@@ -91,8 +93,6 @@ const extractPlatform = (atom: any): Platform | undefined => {
 		return mediaAssets[0].platform;
 	}
 };
-
-export type Platform = 'youtube' | 'url';
 
 export type AtomProperties = {
 	assetId: string | undefined;
@@ -110,7 +110,7 @@ const getVideoUri = (atomProperties: AtomProperties | undefined) => {
 		: atomProperties?.assetId;
 };
 
-const extractAtomProperties = (atom: any): AtomProperties => {
+const extractAtomProperties = (atom: Atom): AtomProperties => {
 	if (atom === undefined) {
 		return {
 			assetId: undefined,

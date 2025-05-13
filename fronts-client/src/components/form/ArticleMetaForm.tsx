@@ -84,6 +84,7 @@ import SelectMediaInput from '../inputs/SelectMediaInput';
 import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import Tooltip from '../modals/Tooltip';
 import pageConfig from '../../util/extractConfigFromPage';
+import type { Atom, AtomResponse } from '../../types/Capi';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -458,7 +459,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			});
 	};
 
-	private fetchAtom = async (atomId: string): Promise<any> => {
+	private fetchAtom = async (atomId: string): Promise<AtomResponse> => {
 		const response = await fetch(`/api/live/atom/video/${atomId}`);
 		const data = await response.json();
 		if (data?.response?.status !== 'ok') {
@@ -1250,11 +1251,11 @@ interface ContainerProps {
 	editMode: EditMode;
 	primaryImage: ValidationResponse | null;
 	hasMainVideo: boolean;
-	mainMediaVideoAtom: any;
+	mainMediaVideoAtom: Atom | undefined;
 	videoReplace: boolean;
 	replaceVideoUri: string;
 	atomId: string;
-	replacementVideoAtom: any;
+	replacementVideoAtom: Atom | undefined;
 	videoBaseUrl: string | null;
 }
 

@@ -48,6 +48,13 @@ interface Atoms {
 	media: Atom[];
 }
 
+interface AtomResponse {
+	media: Atom;
+	status: string;
+	total: number;
+	userTier: string;
+}
+
 interface Atom {
 	id: string;
 	atomType: string;
@@ -58,12 +65,21 @@ interface AtomData {
 	media: MediaAtom;
 }
 
+interface ImageAssets {
+	assets: ImageAsset[];
+}
+
 interface MediaAtom {
 	assets: AtomAsset[];
+	trailImage?: ImageAssets;
 }
+
+type Platform = 'youtube' | 'url';
 
 interface AtomAsset {
 	assetType: 'audio' | 'video';
+	platform?: Platform;
+	id?: string;
 }
 
 interface Blocks {
@@ -153,4 +169,9 @@ export {
 	CapiArticleWithMetadata,
 	Tag,
 	Element,
+	Atom,
+	AtomResponse,
+	AtomAsset,
+	ImageAsset,
+	Platform,
 };

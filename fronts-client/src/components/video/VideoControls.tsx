@@ -23,11 +23,12 @@ import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
 import { OverlayModal } from '../modals/OverlayModal';
 import { InvalidWarning } from '../form/ArticleMetaForm';
+import type { Atom } from '../../types/Capi';
 
 interface VideoControlsProps {
 	videoBaseUrl: string | null;
-	mainMediaVideoAtom: any;
-	replacementVideoAtom: any;
+	mainMediaVideoAtom: Atom | undefined;
+	replacementVideoAtom: Atom | undefined;
 	showMainVideo: boolean;
 	showReplacementVideo: boolean;
 	changeField: (field: string, value: any) => void;
@@ -163,13 +164,17 @@ export const VideoControls = ({
 	};
 
 	useEffect(() => {
-		const atomProperties = extractAtomProperties(replacementVideoAtom);
-		setReplacementVideoAtomProperties(atomProperties);
+		if (replacementVideoAtom !== undefined) {
+			const atomProperties = extractAtomProperties(replacementVideoAtom);
+			setReplacementVideoAtomProperties(atomProperties);
+		}
 	}, [replacementVideoAtom]);
 
 	useEffect(() => {
-		const atomProperties = extractAtomProperties(mainMediaVideoAtom);
-		setMainMediaVideoAtomProperties(atomProperties);
+		if (mainMediaVideoAtom !== undefined) {
+			const atomProperties = extractAtomProperties(mainMediaVideoAtom);
+			setMainMediaVideoAtomProperties(atomProperties);
+		}
 	}, [mainMediaVideoAtom]);
 
 	useEffect(() => {
