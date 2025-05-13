@@ -325,8 +325,6 @@ const RenderSlideshow = ({
 								onClick={handleNavigation(true, true)}
 							/>
 						</div>
-
-						{/*TODO: Migrate to warning section at bottom of form*/}
 						<FlexContainer>
 							{isInvalidCaptionLength(slideshowIndex) ? (
 								<WarningIcon size="s" fill={error.warningDark} />
@@ -1064,6 +1062,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 				(videoReplace && !replacementVideoAtom) ? (
 					<InvalidWarning warning="You need to provide a valid video" />
 				) : null}
+
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
 						Cancel
