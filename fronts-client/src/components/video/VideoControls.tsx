@@ -15,6 +15,7 @@ import {
 	extractAtomId,
 	extractAtomProperties,
 	getVideoUri,
+	stripQueryParams,
 } from '../../util/extractAtomId';
 import { ButtonDelete, DeleteIconOptions } from '../inputs/InputImage';
 import { VideoUriInput } from '../inputs/VideoUriInput';
@@ -188,6 +189,11 @@ export const VideoControls = ({
 		replacementVideoControlsId,
 	);
 
+	const stripQueryParams = (value: string) => {
+		const parts: string[] = value.split('?');
+		return parts[0];
+	};
+
 	return (
 		<>
 			{/*
@@ -310,6 +316,7 @@ export const VideoControls = ({
 						changeField('atomId', extractAtomId(videoUri));
 					}}
 					placeholder="Paste video url"
+					normalize={stripQueryParams}
 				></Field>
 			</VideoControlsOuterContainer>
 		</>

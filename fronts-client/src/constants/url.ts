@@ -25,7 +25,7 @@ export default {
 	video: {
 		videoBaseUrl: 'https://video',
 		mediaAtomMakerPath: '/videos/',
-		capiAtomPath: '/video/atom/',
+		capiAtomPath: '/atom/video/',
 	},
 	capiLiveUrl: '/api/live',
 	capiPreviewUrl: '/api/preview',
