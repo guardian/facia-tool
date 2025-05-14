@@ -444,7 +444,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	private fetchAndSetReplacementVideoAtom = async (
 		atomId: string | undefined,
 	) => {
-		if (atomId === undefined) {
+		if (atomId === undefined || atomId === '') {
 			this.props.change('replacementVideoAtom', undefined);
 			return;
 		}
