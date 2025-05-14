@@ -72,6 +72,7 @@ interface ImageAssets {
 interface MediaAtom {
 	assets: AtomAsset[];
 	trailImage?: ImageAssets;
+	posterImage?: ImageAssets;
 }
 
 type Platform = 'youtube' | 'url';

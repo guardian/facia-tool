@@ -63,7 +63,8 @@ const extractAssetId = (atom: Atom): string | undefined => {
 
 const extractVideoTrailImage = (atom: Atom): string | undefined => {
 	const imageAssets: ImageAsset[] | undefined =
-		atom.data?.media?.trailImage?.assets;
+		atom.data?.media?.trailImage?.assets ||
+		atom.data?.media?.posterImage?.assets;
 
 	if (
 		imageAssets === undefined ||
