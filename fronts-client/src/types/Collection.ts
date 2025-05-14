@@ -82,6 +82,8 @@ type CardRootMeta = ChefCardMeta &
 		showByline?: boolean;
 		imageCutoutReplace?: boolean;
 		imageReplace?: boolean;
+		videoReplace?: boolean;
+		replaceVideoUri?: string;
 		imageHide?: boolean;
 		showKickerTag?: boolean;
 		showKickerSection?: boolean;
@@ -91,6 +93,7 @@ type CardRootMeta = ChefCardMeta &
 		snapCss?: string;
 		atomId?: string;
 		imageSlideshowReplace?: boolean;
+		replacementVideoAtom?: any;
 		slideshow?: Array<{
 			src?: string;
 			thumb?: string;

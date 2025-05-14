@@ -67,7 +67,7 @@ const pandaFetch = (
 				}
 
 				return resolve(response);
-			} catch (error) {
+			} catch (error: any) {
 				// notifications.notify({
 				//   message:
 				//     'Connection issue occurred. Your changes may not be saved. Please wait or reload the page.',

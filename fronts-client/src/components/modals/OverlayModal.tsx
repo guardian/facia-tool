@@ -1,17 +1,10 @@
-import React from 'react';
+import { styled } from '../../constants/theme';
 import Modal from 'react-modal';
-import { styled } from 'constants/theme';
-import ButtonDefault from 'components/inputs/ButtonDefault';
-import { CloseIcon } from 'components/icons/Icons';
+import ButtonDefault from '../inputs/ButtonDefault';
+import React from 'react';
+import { CloseIcon } from '../icons/Icons';
 
-interface ModalProps {
-	isOpen: boolean;
-	url: string;
-	onClose: () => void;
-	onMessage: (message: any) => void;
-}
-
-const StyledModal = styled(Modal)`
+export const StyledModal = styled(Modal)`
 	position: absolute;
 	font-size: 14px;
 	overflow: auto;
@@ -23,7 +16,7 @@ const StyledModal = styled(Modal)`
 	background: rgba(0, 0, 0, 0.8);
 `;
 
-const ModalButton = styled(ButtonDefault)`
+export const ModalButton = styled(ButtonDefault)`
 	position: absolute;
 	right: 17px;
 	top: 15px;
@@ -32,20 +25,26 @@ const ModalButton = styled(ButtonDefault)`
 	width: 27px;
 `;
 
-const GridIFrame = styled.iframe`
+export const ImageContainer = styled.div`
+	position: absolute;
+	top: 5px;
+	left: 6px;
+`;
+
+interface ModalProps {
+	isOpen: boolean;
+	url: string;
+	onClose: () => void;
+}
+
+const IFrame = styled.iframe`
 	height: 100%;
 	width: 96%;
 	margin-left: 2%;
 	border: 0;
 `;
 
-const ImageContainer = styled.div`
-	position: absolute;
-	top: 5px;
-	left: 6px;
-`;
-
-export const GridModal = ({ isOpen, url, onMessage, onClose }: ModalProps) => (
+export const OverlayModal = ({ isOpen, url, onClose }: ModalProps) => (
 	<React.Fragment>
 		<StyledModal
 			isOpen={isOpen}
@@ -61,7 +60,7 @@ export const GridModal = ({ isOpen, url, onMessage, onClose }: ModalProps) => (
 				</ImageContainer>
 			</ModalButton>
 
-			<GridIFrame src={url} />
+			<IFrame src={url} />
 		</StyledModal>
 	</React.Fragment>
 );

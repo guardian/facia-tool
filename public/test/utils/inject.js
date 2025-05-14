@@ -41,7 +41,11 @@ export default function inject (html) {
                     frontsList: ko.observableArray(),
                     frontsMap: ko.observable({}),
                     state: ko.observable({
-                        defaults: { apiBaseUrl: '/api.grid', mediaBaseUrl: 'http://media' }
+                        defaults: {
+							baseUrls: {
+								apiBaseUrl: '/api.grid', mediaBaseUrl: 'http://media'
+							}
+						}
                     }),
                     dispose: () => {}
                 });

@@ -36,7 +36,12 @@ const selectCollectionCap = createSelector(
 
 const selectGridUrl = createSelector(
 	selectConfig,
-	(config) => config && config.mediaBaseUrl,
+	(config) => config && config.baseUrls.mediaBaseUrl,
+);
+
+const selectVideoBaseUrl = createSelector(
+	selectConfig,
+	(config) => config && config.baseUrls.videoBaseUrl,
 );
 
 const selectAvailableEditions = createSelector(
@@ -62,6 +67,7 @@ export {
 	selectLastName,
 	selectCollectionCap,
 	selectGridUrl,
+	selectVideoBaseUrl,
 	selectAvailableEditions,
 	selectShouldUseCODELinks,
 	selectEditionsPermission,

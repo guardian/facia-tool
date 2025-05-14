@@ -292,7 +292,7 @@ const GuardianRoundel = ({ size = 'm' }: IconProps) => (
 	</svg>
 );
 
-const VideoIcon = ({}) => (
+const VideoIcon = ({ fill = '#333' }) => (
 	<svg
 		xmlns="http://www.w3.org/2000/svg"
 		xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -306,7 +306,7 @@ const VideoIcon = ({}) => (
 				d="M1.2 0L0 1.2v6l1.2 1.2h6.9V0H1.2zM12 .5l-3 3v1.8l3 3h.9V.5H12z"
 			/>
 		</defs>
-		<use fill="#333" fillRule="evenodd" xlinkHref="#a" />
+		<use fill={fill} fillRule="evenodd" xlinkHref="#a" />
 	</svg>
 );
 
@@ -418,6 +418,60 @@ const CropIcon = ({
 	</svg>
 );
 
+const PreviewVideoIcon = ({ fill = theme.colors.white }) => (
+	<svg
+		width="20"
+		height="18"
+		viewBox="0 0 16 14"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			d="M15.421 0.456543H0V13.2885H15.421V0.456543ZM3.6 3.3885L11.7 6.9885L3.6 10.5885V3.3885Z"
+			fill={fill}
+		/>
+	</svg>
+);
+
+const ReplaceVideoIcon = ({ fill = theme.colors.white }) => (
+	<svg
+		width="22"
+		height="21"
+		viewBox="0 0 18 17"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			d="M18 2.47267H15.5008V0H13.9055V2.47267H11.4062V4.01477H13.9055V6.59379H15.5008V4.01477H18V2.47267Z"
+			fill={fill}
+		/>
+		<path
+			d="M12.9217 8.42835V5.92909H10.4224V3.45642H0V16.2884H15.421V8.42835H12.9217ZM3.6 6.38838L11.7 9.98838L3.6 13.5884V6.38838Z"
+			fill={fill}
+		/>
+	</svg>
+);
+
+const InfoIcon = ({ fill = theme.colors.white, size = 'm' }: IconProps) => (
+	<svg
+		width={`${mapSize(size)}px`}
+		height={`${mapSize(size)}px`}
+		viewBox="0 0 416.979 416.979"
+		fill={fill}
+	>
+		<g
+			id="SVGRepo_tracerCarrier"
+			strokeLinecap="round"
+			strokeLinejoin="round"
+		></g>
+		<g>
+			<g>
+				<path d="M356.004,61.156c-81.37-81.47-213.377-81.551-294.848-0.182c-81.47,81.371-81.552,213.379-0.181,294.85 c81.369,81.47,213.378,81.551,294.849,0.181C437.293,274.636,437.375,142.626,356.004,61.156z M237.6,340.786 c0,3.217-2.607,5.822-5.822,5.822h-46.576c-3.215,0-5.822-2.605-5.822-5.822V167.885c0-3.217,2.607-5.822,5.822-5.822h46.576 c3.215,0,5.822,2.604,5.822,5.822V340.786z M208.49,137.901c-18.618,0-33.766-15.146-33.766-33.765 c0-18.617,15.147-33.766,33.766-33.766c18.619,0,33.766,15.148,33.766,33.766C242.256,122.755,227.107,137.901,208.49,137.901z"></path>
+			</g>
+		</g>
+	</svg>
+);
+
 export {
 	DownCaretIcon,
 	RubbishBinIcon,
@@ -438,4 +492,7 @@ export {
 	DragHandleIcon as DragIcon,
 	WarningIcon,
 	CropIcon,
+	PreviewVideoIcon,
+	ReplaceVideoIcon,
+	InfoIcon,
 };

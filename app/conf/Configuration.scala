@@ -330,6 +330,10 @@ class ApplicationConfiguration(
     lazy val key = getMandatoryString("media.key")
   }
 
+  object video {
+    lazy val baseUrl = getString("video.base.url")
+  }
+
   object notification {
     lazy val host = getMandatoryString("notification.host")
     lazy val key = getMandatoryString("notification.key")
