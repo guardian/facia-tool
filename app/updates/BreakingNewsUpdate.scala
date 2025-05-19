@@ -282,23 +282,23 @@ class BreakingNewsClientImpl(ws: WSClient, host: String, apiKey: String)
       .post(body)
       .map { response =>
         if (response.status >= 200 && response.status < 300) {
-          logger.info("Breaking news notification sent correctly")
+          logger.info(s"Successfully sent breaking news notification: $body")
           response.body[JsValue] \ "id" match {
             case JsDefined(JsString(id)) => Right(UUID.fromString(id))
             case _ =>
               Left(
                 ApiClientError(
-                  s"Notification sent successfully but unable to parse response. Status: ${response.status}, Body: ${response.body}"
+                  s"Succssfully sent breaking news notification ($body) but unable to parse response. Status: ${response.status}, Body: ${response.body}"
                 )
               )
           }
         } else {
           logger.error(
-            s"Unable to send breaking news notification, Status ${response.status}: ${response.statusText}, Body: ${response.body}"
+            s"Unable to send breaking news notification ($body), Status ${response.status}: ${response.statusText}, Body: ${response.body}"
           )
           Left(
             ApiClientError(
-              "Unable to send breaking news notification, status ${response.status}: ${response.statusText}"
+              s"Unable to send breaking news notification ($body), status ${response.status}: ${response.statusText}"
             )
           )
         }
