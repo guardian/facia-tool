@@ -288,7 +288,7 @@ class BreakingNewsClientImpl(ws: WSClient, host: String, apiKey: String)
             case _ =>
               Left(
                 ApiClientError(
-                  s"Succssfully sent breaking news notification ($body) but unable to parse response. Status: ${response.status}, Body: ${response.body}"
+                  s"Successfully sent breaking news notification ($body) but unable to parse response. Status: ${response.status}, Body: ${response.body}"
                 )
               )
           }
