@@ -2,13 +2,14 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import ButtonDefault from '../inputs/ButtonDefault';
 import { createPortal } from 'react-dom';
-import { ReplaceVideoIcon } from '../icons/Icons';
+import { PreviewVideoIcon, ReplaceVideoIcon } from '../icons/Icons';
 import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
 import { change, Field } from 'redux-form';
 import {
 	AtomProperties,
 	extractAtomId,
 	extractAtomProperties,
+	getVideoUri,
 	stripQueryParams,
 } from '../../util/extractAtomId';
 import { VideoUriInput } from '../inputs/VideoUriInput';
@@ -91,6 +92,11 @@ export const VideoControls = ({
 	const [replacementVideoAtomProperties, setReplacementVideoAtomProperties] =
 		React.useState<AtomProperties>();
 
+	const [currentVideoUri, setCurrentVideoUri] = React.useState<
+		string | undefined
+	>(undefined);
+	const [showVideoPreviewModal, setShowVideoPreviewModal] =
+		React.useState<boolean>(false);
 	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] =
 		React.useState<boolean>(false);
 	const dispatch = useDispatch();
@@ -153,6 +159,18 @@ export const VideoControls = ({
 		}
 	}, [mainMediaVideoAtom]);
 
+	useEffect(() => {
+		const videoUri = showReplacementVideo
+			? getVideoUri(replacementVideoAtomProperties)
+			: getVideoUri(mainMediaVideoAtomProperties);
+
+		setCurrentVideoUri(videoUri);
+	}, [
+		showReplacementVideo,
+		mainMediaVideoAtomProperties,
+		replacementVideoAtomProperties,
+	]);
+
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;
 	}
@@ -197,6 +215,16 @@ export const VideoControls = ({
 						replacementVideoControls,
 					)
 				: null}
+			{currentVideoUri !== undefined && showVideoPreviewModal
+				? createPortal(
+						<OverlayModal
+							onClose={() => setShowVideoPreviewModal(false)}
+							isOpen={showVideoPreviewModal}
+							url={currentVideoUri}
+						/>,
+						document.body,
+					)
+				: null}
 			{showMediaAtomMakerModal && videoBaseUrl !== null
 				? createPortal(
 						<OverlayModal
@@ -224,6 +252,17 @@ export const VideoControls = ({
 					>
 						<ReplaceVideoIcon />
 						Replace video
+					</VideoAction>
+					<VideoAction
+						onClick={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							setShowVideoPreviewModal(true);
+						}}
+						disabled={currentVideoUri === undefined}
+					>
+						<PreviewVideoIcon />
+						Preview video
 					</VideoAction>
 				</VideoControlsInnerContainer>
 				<Field
