@@ -2,9 +2,14 @@ import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import ButtonDefault from '../inputs/ButtonDefault';
 import { createPortal } from 'react-dom';
-import { PreviewVideoIcon, ReplaceVideoIcon } from '../icons/Icons';
+import {
+	ConfirmDeleteIcon,
+	PreviewVideoIcon,
+	ReplaceVideoIcon,
+	RubbishBinIcon,
+} from '../icons/Icons';
 import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
-import { change, Field } from 'redux-form';
+import { autofill, change, Field } from 'redux-form';
 import {
 	AtomProperties,
 	extractAtomId,
@@ -12,6 +17,7 @@ import {
 	getVideoUri,
 	stripQueryParams,
 } from '../../util/extractAtomId';
+import { ButtonDelete, DeleteIconOptions } from '../inputs/InputImage';
 import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
@@ -98,7 +104,25 @@ export const VideoControls = ({
 		React.useState<boolean>(false);
 	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] =
 		React.useState<boolean>(false);
+	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
 	const dispatch = useDispatch();
+
+	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.stopPropagation();
+
+		if (!confirmDelete) {
+			setConfirmDelete(true);
+			setTimeout(() => setConfirmDelete(false), 3000);
+			return;
+		}
+
+		// This exact incantation is needed to clear the form fields...
+		dispatch(autofill(form, 'replaceVideoUri', undefined));
+		dispatch(autofill(form, 'atomId', undefined));
+		dispatch(change(form, 'replacementVideoAtom', undefined));
+		changeMediaField('showMainVideo');
+		setConfirmDelete(false);
+	};
 
 	type AtomData = {
 		atomId: string;
@@ -263,6 +287,22 @@ export const VideoControls = ({
 						<PreviewVideoIcon />
 						Preview video
 					</VideoAction>
+					{showReplacementVideo && replacementVideoAtom && (
+						<ButtonDelete
+							type="button"
+							priority="primary"
+							onClick={handleDelete}
+							confirmDelete={confirmDelete}
+						>
+							<DeleteIconOptions>
+								{confirmDelete ? (
+									<ConfirmDeleteIcon size="s" />
+								) : (
+									<RubbishBinIcon size="s" />
+								)}
+							</DeleteIconOptions>
+						</ButtonDelete>
+					)}
 				</VideoControlsInnerContainer>
 				<Field
 					name="replaceVideoUri"
