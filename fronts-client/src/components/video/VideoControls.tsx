@@ -32,13 +32,16 @@ const MarginWrapper = styled.div`
 `;
 
 export const VideoControls = ({
+	videoBaseUrl,
 	mainMediaVideoAtom,
 	replacementVideoAtom,
 	showMainVideo,
 	showReplacementVideo,
 	changeField,
 	changeMediaField,
+	form,
 	replacementVideoControlsId,
+	warningsContainerId,
 }: VideoControlsProps) => {
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;
