@@ -129,6 +129,7 @@ const input = {
 	checkboxColorActive: base.colors.highlightColor,
 	placeholderText: base.colors.placeholderDark,
 	radioButtonBackgroundDisabled: '#E6E6E6',
+	checkboxButtonBackgroundDisabled: '#E6E6E6',
 };
 
 const collection = {
