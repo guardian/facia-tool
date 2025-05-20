@@ -1,12 +1,22 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
+import ButtonDefault from '../inputs/ButtonDefault';
 import { createPortal } from 'react-dom';
+import { ReplaceVideoIcon } from '../icons/Icons';
 import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
-import { Field } from 'redux-form';
-import { extractAtomId, stripQueryParams } from '../../util/extractAtomId';
+import { change, Field } from 'redux-form';
+import {
+	AtomProperties,
+	extractAtomId,
+	extractAtomProperties,
+	stripQueryParams,
+} from '../../util/extractAtomId';
 import { VideoUriInput } from '../inputs/VideoUriInput';
+import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
+import { OverlayModal } from '../modals/OverlayModal';
 import type { Atom } from '../../types/Capi';
+import urlConstants from '../../constants/url';
 
 interface VideoControlsProps {
 	videoBaseUrl: string | null;
@@ -26,6 +36,39 @@ const VideoControlsOuterContainer = styled.div`
 	position: relative;
 `;
 
+const VideoAction = styled(ButtonDefault)<{ small?: boolean }>`
+	background-color: #5e5e5e50;
+	&:hover,
+	&:active,
+	&:hover:enabled,
+	&:active:enabled {
+		background-color: #5e5e5e99;
+	}
+	height: 50%;
+	width: 100%;
+	font-size: 12px;
+	flex-grow: 1;
+	padding: 0;
+	text-shadow: 0 0 2px black;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	gap: 4px;
+`;
+
+const VideoControlsInnerContainer = styled.div<{ url?: string }>`
+	background-image: url(${(props) => props.url});
+	height: 100%;
+	position: relative;
+	aspect-ratio: 5 / 4;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: center center;
+	-webkit-box-flex: 1;
+	flex-grow: 1;
+	margin-bottom: 5px;
+`;
+
 const MarginWrapper = styled.div`
 	margin-bottom: 8px;
 	margin-top: 8px;
@@ -43,6 +86,73 @@ export const VideoControls = ({
 	replacementVideoControlsId,
 	warningsContainerId,
 }: VideoControlsProps) => {
+	const [mainMediaVideoAtomProperties, setMainMediaVideoAtomProperties] =
+		React.useState<AtomProperties>();
+	const [replacementVideoAtomProperties, setReplacementVideoAtomProperties] =
+		React.useState<AtomProperties>();
+
+	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] =
+		React.useState<boolean>(false);
+	const dispatch = useDispatch();
+
+	type AtomData = {
+		atomId: string;
+	};
+
+	const onMessage = (event: MessageEvent) => {
+		if (videoBaseUrl === null || event.origin !== videoBaseUrl) {
+			return;
+		}
+
+		const data: AtomData = event.data;
+
+		if (!data || !data.atomId) {
+			return;
+		}
+
+		dispatch(
+			change(
+				form,
+				'atomId',
+				`${urlConstants.video.capiMediaAtomPath}${data.atomId}`,
+			),
+		);
+		/**
+		 * Even if we can't fetch the replacement atom, it's worth setting the videoReplace and replaceVideoUri fields
+		 * to give some feedback to the user.
+		 *
+		 * Invalid atoms can't be saved, so there should be no risk in setting these fields.
+		 */
+		dispatch(
+			change(form, 'replaceVideoUri', `${videoBaseUrl}/videos/${data.atomId}`),
+		);
+		changeMediaField('videoReplace');
+		handleCloseMediaAtomMakerModal();
+	};
+
+	const handleOpenMediaAtomMakerModal = () => {
+		setShowMediaAtomMakerModal(true);
+		window.addEventListener('message', onMessage, false);
+	};
+	const handleCloseMediaAtomMakerModal = () => {
+		setShowMediaAtomMakerModal(false);
+		window.removeEventListener('message', onMessage, false);
+	};
+
+	useEffect(() => {
+		if (replacementVideoAtom !== undefined) {
+			const atomProperties = extractAtomProperties(replacementVideoAtom);
+			setReplacementVideoAtomProperties(atomProperties);
+		}
+	}, [replacementVideoAtom]);
+
+	useEffect(() => {
+		if (mainMediaVideoAtom !== undefined) {
+			const atomProperties = extractAtomProperties(mainMediaVideoAtom);
+			setMainMediaVideoAtomProperties(atomProperties);
+		}
+	}, [mainMediaVideoAtom]);
+
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;
 	}
@@ -87,7 +197,35 @@ export const VideoControls = ({
 						replacementVideoControls,
 					)
 				: null}
+			{showMediaAtomMakerModal && videoBaseUrl !== null
+				? createPortal(
+						<OverlayModal
+							onClose={handleCloseMediaAtomMakerModal}
+							isOpen={showMediaAtomMakerModal}
+							url={`${videoBaseUrl}/videos?embeddedMode=live`}
+						/>,
+						document.body,
+					)
+				: null}
 			<VideoControlsOuterContainer>
+				<VideoControlsInnerContainer
+					url={
+						showReplacementVideo
+							? replacementVideoAtomProperties?.videoImage
+							: mainMediaVideoAtomProperties?.videoImage
+					}
+				>
+					<VideoAction
+						onClick={(e) => {
+							e.preventDefault();
+							e.stopPropagation();
+							handleOpenMediaAtomMakerModal();
+						}}
+					>
+						<ReplaceVideoIcon />
+						Replace video
+					</VideoAction>
+				</VideoControlsInnerContainer>
 				<Field
 					name="replaceVideoUri"
 					component={VideoUriInput}
