@@ -12,6 +12,22 @@ export const hasMainVideo = (article: ExternalArticle | DerivedArticle) => {
 	);
 };
 
+export const getMainMediaVideoAtom = (
+	article: ExternalArticle | DerivedArticle,
+) => {
+	const mainBlockElement = oc(article).blocks.main.elements([])[0] || undefined;
+	const atomId: string | undefined =
+		oc(mainBlockElement).contentAtomTypeData.atomId();
+	if (!atomId) {
+		return undefined;
+	}
+	return (
+		oc(article)
+			.atoms.media([])
+			.find((_) => _.id === atomId) || undefined
+	);
+};
+
 // this function probably refers to old-style video pages which have a main element of type video
 export function getArticleMainElementType(
 	article: ExternalArticle | DerivedArticle,

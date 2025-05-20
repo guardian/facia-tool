@@ -51,6 +51,9 @@ const formValues = {
 	coverCardMobileImage: {},
 	coverCardTabletImage: {},
 	pickedKicker: 'kick',
+	videoReplace: false,
+	replaceVideoUri: '',
+	atomId: '',
 };
 
 const createStateWithChangedFormFields = (
