@@ -16,6 +16,12 @@ interface Metadata {
 	type: string;
 }
 
+interface BaseUrls {
+	mediaBaseUrl: string;
+	apiBaseUrl: string;
+	videoBaseUrl: string;
+}
+
 interface Config {
 	dev: boolean;
 	env: string;
@@ -25,8 +31,6 @@ interface Config {
 	firstName: string;
 	lastName: string;
 	sentryPublicDSN: string;
-	mediaBaseUrl: string;
-	apiBaseUrl: string;
 	switches: { [key: string]: boolean };
 	acl: Acl;
 	collectionCap: number;
@@ -49,6 +53,7 @@ interface Config {
 	};
 	availableTemplates: EditionPriority[];
 	telemetryUrl: string;
+	baseUrls: BaseUrls;
 }
 
 export { Config };

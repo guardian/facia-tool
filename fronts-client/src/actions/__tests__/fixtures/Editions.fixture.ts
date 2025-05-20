@@ -99,8 +99,11 @@ export const initialState = {
 		lastName: 'Bhatt ',
 		sentryPublicDSN:
 			'https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467',
-		mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
-		apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+		baseUrls: {
+			mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
+			apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+			videoBaseUrl: 'https://video.code.dev-gutools.co.uk',
+		},
 		switches: {
 			'facia-tool-allow-edit-editorial-fronts-for-all': false,
 			'facia-tool-allow-launch-commercial-fronts-for-all': false,
@@ -839,8 +842,11 @@ export const finalStateWhenAddNewCollection = {
 		lastName: 'Bhatt ',
 		sentryPublicDSN:
 			'https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467',
-		mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
-		apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+		baseUrls: {
+			mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
+			apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+			videoBaseUrl: 'https://video.code.dev-gutools.co.uk',
+		},
 		switches: {
 			'facia-tool-allow-edit-editorial-fronts-for-all': false,
 			'facia-tool-allow-launch-commercial-fronts-for-all': false,
@@ -1594,8 +1600,11 @@ export const finalStateWhenRemoveACollection = {
 		lastName: 'Bhatt ',
 		sentryPublicDSN:
 			'https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467',
-		mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
-		apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+		baseUrls: {
+			mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
+			apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+			videoBaseUrl: 'https://video.code.dev-gutools.co.uk',
+		},
 		switches: {
 			'facia-tool-allow-edit-editorial-fronts-for-all': false,
 			'facia-tool-allow-launch-commercial-fronts-for-all': false,
