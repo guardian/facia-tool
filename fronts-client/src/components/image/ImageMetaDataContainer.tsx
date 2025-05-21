@@ -11,19 +11,44 @@ interface ImageMetadataContainerProps {
 	imageSlideshowReplace?: boolean;
 	imageReplace?: boolean;
 	imageCutoutReplace?: boolean;
+	hasMainVideo?: boolean;
 	showMainVideo?: boolean;
+	videoReplace?: boolean;
 }
+
+const getImageMetadata = (
+	imageSlideshowReplace?: boolean,
+	imageReplace?: boolean,
+	imageCutoutReplace?: boolean,
+	hasMainVideo?: boolean,
+	showMainVideo?: boolean,
+	videoReplace?: boolean,
+) => {
+	if (imageSlideshowReplace) return 'Slideshow';
+	if (imageReplace) return 'Image replaced';
+	if (imageCutoutReplace) return 'Cutout replaced';
+	if (showMainVideo) return 'Main video';
+	if (hasMainVideo && videoReplace) return 'Video replaced';
+	if (videoReplace) return 'Show video';
+	return null;
+};
 
 export const ImageMetadataContainer = ({
 	imageSlideshowReplace,
 	imageReplace,
 	imageCutoutReplace,
+	hasMainVideo,
 	showMainVideo,
+	videoReplace,
 }: ImageMetadataContainerProps) => (
 	<MetadataContainer>
-		{imageSlideshowReplace && 'Slideshow'}
-		{imageReplace && 'Image replaced'}
-		{imageCutoutReplace && 'Cutout replaced'}
-		{showMainVideo && 'Show video'}
+		{getImageMetadata(
+			imageSlideshowReplace,
+			imageReplace,
+			imageCutoutReplace,
+			hasMainVideo,
+			showMainVideo,
+			videoReplace,
+		)}
 	</MetadataContainer>
 );
