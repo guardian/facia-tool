@@ -138,7 +138,6 @@ const SlideshowCol = styled(Col)`
 const SlideshowLabel = styled.div`
 	font-size: 12px;
 	color: ${theme.colors.greyMedium};
-	margin-bottom: 12px;
 `;
 
 const CollectionEditedError = styled.div`
@@ -181,7 +180,7 @@ const CaptionLabel = styled(InputLabel)`
 `;
 
 const CaptionInput = styled(InputBase)`
-	margin-bottom: 60px;
+	margin-bottom: 10px;
 	color: ${(props: { invalid: boolean }) =>
 		props.invalid ? error.primary : 'default'};
 	border-color: ${(props: { invalid: boolean }) =>
@@ -194,7 +193,10 @@ const CaptionInput = styled(InputBase)`
 
 const FlexContainer = styled.div`
 	display: flex;
+	justify-content: flex-end;
 	align-items: center;
+	margin-top: 6px;
+	margin-bottom: 10px;
 `;
 
 const InvalidSlideshowWarning = styled(FlexContainer)`
@@ -385,10 +387,6 @@ const FieldContainer = styled(Col)`
 		props.size === 'wide' ? '0 0 auto' : 1};
 	margin-bottom: 8px;
 	white-space: nowrap;
-	& label {
-		padding-left: 3px;
-		padding-right: 5px;
-	}
 `;
 
 const KickerSuggestionsContainer = styled.div`
