@@ -1,8 +1,11 @@
 import React from 'react';
 import styled from 'styled-components';
+import { createPortal } from 'react-dom';
+import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
 import { Field } from 'redux-form';
 import { extractAtomId, stripQueryParams } from '../../util/extractAtomId';
 import { VideoUriInput } from '../inputs/VideoUriInput';
+import Explainer from '../Explainer';
 import type { Atom } from '../../types/Capi';
 
 interface VideoControlsProps {
@@ -23,24 +26,64 @@ const VideoControlsOuterContainer = styled.div`
 	position: relative;
 `;
 
+const MarginWrapper = styled.div`
+	margin-bottom: 8px;
+	margin-top: 8px;
+`;
+
 export const VideoControls = ({
-	videoBaseUrl,
 	mainMediaVideoAtom,
 	replacementVideoAtom,
 	showMainVideo,
 	showReplacementVideo,
 	changeField,
 	changeMediaField,
-	form,
 	replacementVideoControlsId,
-	warningsContainerId,
 }: VideoControlsProps) => {
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;
 	}
 
+	const replacementVideoControls = document.getElementById(
+		replacementVideoControlsId,
+	);
+
 	return (
 		<>
+			{/*
+				If there is no main media atom, the replacement atom is the only one we care about.
+				In this scenario we neither show the 'Use replacement video toggle', nor refer to it as a replacement.
+				Note in the data model we still call this a replacement atom.
+			*/}
+			{replacementVideoControls !== null && mainMediaVideoAtom
+				? createPortal(
+						<MarginWrapper>
+							<Field
+								name="useReplacementVideo"
+								component={InputCheckboxToggleInline}
+								label="Use replacement video"
+								disabled={!replacementVideoAtom}
+								id={`${replacementVideoControlsId}-useReplacementVideo`}
+								type="checkbox"
+								dataTestId="use-replacement-video"
+								checked={
+									showReplacementVideo && replacementVideoAtom !== undefined
+								}
+								onChange={() => {
+									if (showReplacementVideo) {
+										changeMediaField('showMainVideo');
+									} else {
+										changeMediaField('videoReplace');
+									}
+								}}
+							/>
+							{!replacementVideoAtom && (
+								<Explainer>Replacement video required</Explainer>
+							)}
+						</MarginWrapper>,
+						replacementVideoControls,
+					)
+				: null}
 			<VideoControlsOuterContainer>
 				<Field
 					name="replaceVideoUri"
