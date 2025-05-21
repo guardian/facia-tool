@@ -104,15 +104,21 @@ export default class ConfigCollection extends DropTarget {
             return isBetaCollection(this.meta.type());
         });
 
+		console.log(">>>>> ",this.thisIsBetaCollection)
+
 		this._hideShowMore = this.meta.hideShowMore;
 
 		this.meta.hideShowMore = ko.pureComputed({
-			read: () => {
-				return this.thisIsBetaCollection
-					? true
-					: this._hideShowMore();
-			},
+			read: () => this.thisIsBetaCollection() ? true : this._hideShowMore(),
+			write: (value) => {
+				if (this.thisIsBetaCollection()) {
+					this._hideShowMore(true);
+				} else {
+					this._hideShowMore(value);
+				}
+			}
 		});
+
     }
 
 
