@@ -33,7 +33,11 @@ function setModel () {
     originalModel = vars.model;
     vars.setModel({
         state: ko.observable({
-            defaults: { apiBaseUrl: '/api.grid', mediaBaseUrl: 'http://media' }
+            defaults: {
+                baseUrls: {
+                    apiBaseUrl: '/api.grid', mediaBaseUrl: 'http://media'
+                }
+            }
         })
     });
 }

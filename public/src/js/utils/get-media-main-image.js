@@ -23,7 +23,7 @@ export default function (contentApiArticle) {
             const mediaId = deepGet(mainImage, '.imageTypeData.mediaId');
             let origin;
             if (mediaId && deepGet(mainImage, '.imageTypeData.mediaApiUri')) {
-                origin = vars.model.state().defaults.mediaBaseUrl + '/images/' + mediaId;
+                origin = vars.model.state().defaults.baseUrls.mediaBaseUrl + '/images/' + mediaId;
             }
             return {
                 href: fileAsset.secureUrl,

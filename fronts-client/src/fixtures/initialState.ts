@@ -217,8 +217,6 @@ const config: Config = {
 	lastName: 'Herbert',
 	sentryPublicDSN:
 		'https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467',
-	mediaBaseUrl: 'https://media.gutools.co.uk',
-	apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
 	switches: {
 		'facia-tool-allow-breaking-news-for-all': false,
 		'facia-tool-permissions-access': true,
@@ -261,6 +259,11 @@ const config: Config = {
 	capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/',
 	availableTemplates: [],
 	telemetryUrl: '',
+	baseUrls: {
+		mediaBaseUrl: 'https://media.gutools.co.uk',
+		apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+		videoBaseUrl: 'https://video.code.dev-gutools.co.uk',
+	},
 };
 
 const externalArticles = {
