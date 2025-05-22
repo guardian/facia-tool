@@ -310,8 +310,10 @@
             <label for="excludeFromRss">Exclude from RSS</label>
             <input id="excludeFromRss" type="checkbox" data-bind="checked: meta.excludeFromRss" />
 
-            <label for="hideShowMore">Hide show more</label>
+			<!-- ko if: isNotBetaCollection -->
+			<label for="hideShowMore">Hide show more</label>
             <input id="hideShowMore" type="checkbox" data-bind="checked: meta.hideShowMore" />
+            <!-- /ko -->
 
 
             <label>No curation</label>
