@@ -9,8 +9,11 @@ export default {
 	lastName: 'Herbert',
 	sentryPublicDSN:
 		'https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467',
-	mediaBaseUrl: 'https://media.gutools.co.uk',
-	apiBaseUrl: 'https://api.media.gutools.co.uk',
+	baseUrls: {
+		mediaBaseUrl: 'https://media.gutools.co.uk',
+		apiBaseUrl: 'https://api.media.gutools.co.uk',
+		videoBaseUrl: 'https://video.gutools.co.uk',
+	},
 	switches: {
 		'facia-tool-allow-breaking-news-for-all': false,
 		'story-packages-disable-reindex-endpoint': false,
