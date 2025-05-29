@@ -1,4 +1,4 @@
-import { CapiArticle } from 'types/Capi';
+import { Atom, CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
 import type { DisplayHints, FrontsToolSettings } from 'types/FaciaApi';
 import { CardTypes } from 'constants/cardTypes';
@@ -93,7 +93,7 @@ type CardRootMeta = ChefCardMeta &
 		snapCss?: string;
 		atomId?: string;
 		imageSlideshowReplace?: boolean;
-		replacementVideoAtom?: any;
+		replacementVideoAtom?: Atom;
 		slideshow?: Array<{
 			src?: string;
 			thumb?: string;
