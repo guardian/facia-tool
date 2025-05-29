@@ -16,7 +16,6 @@ trait FakeCapiAndOphan {
     false,
     false,
     "boostLevel.default",
-		false,
     false,
     false,
     false,
@@ -28,7 +27,9 @@ trait FakeCapiAndOphan {
     false,
     false,
     false,
-    false
+    false,
+    false,
+	false
   )
 
   private val imageUrl =
