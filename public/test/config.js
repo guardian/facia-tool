@@ -48,7 +48,7 @@ export default {
             'facia-tool-sparklines': false
         },
 		baseUrls: {
-			mediaBaseUrl: 'https://media.code.dev-gutools.co.uk',
+			mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
 			apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
 			videoBaseUrl: 'https://video.code.dev-gutools.co.uk',
 		},
