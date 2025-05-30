@@ -152,7 +152,7 @@ const card = {
 
 const thumbnailImage = {
 	width: '83px',
-	height: '50px',
+	height: '66.39px',
 };
 
 const thumbnailImageSquare = {
