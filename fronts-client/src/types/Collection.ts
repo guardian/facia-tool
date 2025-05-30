@@ -1,4 +1,4 @@
-import { CapiArticle } from 'types/Capi';
+import { Atom, CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
 import type { DisplayHints, FrontsToolSettings } from 'types/FaciaApi';
 import { CardTypes } from 'constants/cardTypes';
@@ -82,6 +82,8 @@ type CardRootMeta = ChefCardMeta &
 		showByline?: boolean;
 		imageCutoutReplace?: boolean;
 		imageReplace?: boolean;
+		videoReplace?: boolean;
+		replaceVideoUri?: string;
 		imageHide?: boolean;
 		showKickerTag?: boolean;
 		showKickerSection?: boolean;
@@ -91,6 +93,7 @@ type CardRootMeta = ChefCardMeta &
 		snapCss?: string;
 		atomId?: string;
 		imageSlideshowReplace?: boolean;
+		replacementVideoAtom?: Atom;
 		slideshow?: Array<{
 			src?: string;
 			thumb?: string;
