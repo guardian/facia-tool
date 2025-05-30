@@ -84,6 +84,7 @@ import SelectMediaInput from '../inputs/SelectMediaInput';
 import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import pageConfig from '../../util/extractConfigFromPage';
 import type { Atom, AtomResponse } from '../../types/Capi';
+import Tooltip from '../modals/Tooltip';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -892,6 +893,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											<InputLabel htmlFor="media-select">
 												Select Media
 											</InputLabel>
+											{enableReplacementVideoFeatureSwitch?.enabled ? (
+												<Tooltip />
+											) : null}
 										</SelectMediaLabelContainer>
 										<SelectMediaInput>
 											<Field
