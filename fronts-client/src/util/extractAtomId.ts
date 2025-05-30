@@ -1,5 +1,5 @@
 import urlConstants from '../constants/url';
-import type { Atom, AtomAsset, ImageAsset, Platform } from '../types/Capi';
+import type { Atom, Platform } from '../types/Capi';
 
 export const stripQueryParams = (value: string) => {
 	const parts: string[] = value.split('?');
@@ -50,51 +50,36 @@ const extractAtomId = (videoUri: string | undefined): string => {
 };
 
 const extractAssetId = (atom: Atom): string | undefined => {
-	const assets: AtomAsset[] = atom.data?.media?.assets;
-	if (
-		assets === undefined ||
-		assets.length === 0 ||
-		assets[0] === undefined ||
-		assets[0].id === undefined
-	) {
+	const assetId = atom.data?.media?.assets?.[0]?.id;
+	if (!assetId) {
 		console.error(`No assets found for atom ${atom.id}`);
 		return undefined;
-	} else {
-		return assets[0].id;
 	}
+	return assetId;
 };
 
 const extractVideoTrailImage = (atom: Atom): string | undefined => {
-	const imageAssets: ImageAsset[] | undefined =
-		atom.data?.media?.trailImage?.assets ||
-		atom.data?.media?.posterImage?.assets;
+	const imageFile: string | undefined =
+		atom.data?.media?.trailImage?.assets?.[0]?.file ||
+		atom.data?.media?.posterImage?.assets?.[0]?.file;
 
-	if (
-		imageAssets === undefined ||
-		imageAssets.length === 0 ||
-		imageAssets[0] === undefined ||
-		imageAssets[0].file === undefined
-	) {
+	if (!imageFile) {
 		console.error(`No trail image found for atom ${atom.id}`);
 		return undefined;
 	} else {
-		return imageAssets[0].file;
+		return imageFile;
 	}
 };
 
 const extractPlatform = (atom: Atom): Platform | undefined => {
-	const mediaAssets: AtomAsset[] = atom.data?.media?.assets;
+	const mediaAssetPlatform: Platform | undefined =
+		atom.data?.media?.assets?.[0]?.platform;
 
-	if (
-		mediaAssets === undefined ||
-		mediaAssets.length === 0 ||
-		mediaAssets[0] === undefined ||
-		mediaAssets[0].platform === undefined
-	) {
+	if (!mediaAssetPlatform) {
 		console.error(`No media assets found for atom ${atom.id}`);
 		return undefined;
 	} else {
-		return mediaAssets[0].platform;
+		return mediaAssetPlatform;
 	}
 };
 
