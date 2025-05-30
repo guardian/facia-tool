@@ -57,7 +57,8 @@ const extractAssetId = (atom: Atom): string | undefined => {
 		assets[0] === undefined ||
 		assets[0].id === undefined
 	) {
-		throw new Error(`No assets found for atom ${atom.id}`);
+		console.error(`No assets found for atom ${atom.id}`);
+		return undefined;
 	} else {
 		return assets[0].id;
 	}
