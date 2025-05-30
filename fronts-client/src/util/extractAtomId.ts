@@ -58,7 +58,7 @@ const extractAssetId = (atom: Atom): string | undefined => {
 	return assetId;
 };
 
-const extractVideoTrailImage = (atom: Atom): string | undefined => {
+const extractVideoImage = (atom: Atom): string | undefined => {
 	const imageFile: string | undefined =
 		atom.data?.media?.trailImage?.assets?.[0]?.file ||
 		atom.data?.media?.posterImage?.assets?.[0]?.file;
@@ -85,7 +85,7 @@ const extractPlatform = (atom: Atom): Platform | undefined => {
 
 export type AtomProperties = {
 	assetId: string | undefined;
-	trailImage: string | undefined;
+	videoImage: string | undefined;
 	platform: Platform | undefined;
 };
 
@@ -103,18 +103,18 @@ const extractAtomProperties = (atom?: Atom): AtomProperties => {
 	if (atom === undefined) {
 		return {
 			assetId: undefined,
-			trailImage: undefined,
+			videoImage: undefined,
 			platform: undefined,
 		};
 	}
 
 	const assetId = extractAssetId(atom);
-	const trailImage = extractVideoTrailImage(atom);
+	const videoImage = extractVideoImage(atom);
 	const platform = extractPlatform(atom);
 
 	return {
 		assetId,
-		trailImage,
+		videoImage,
 		platform,
 	};
 };

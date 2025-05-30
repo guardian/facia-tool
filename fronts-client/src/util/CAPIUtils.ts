@@ -86,9 +86,9 @@ function getThumbnail(
 		const atomProperties = extractAtomProperties(meta.replacementVideoAtom);
 		if (
 			atomProperties !== undefined &&
-			atomProperties.trailImage !== undefined
+			atomProperties.videoImage !== undefined
 		) {
-			return atomProperties.trailImage;
+			return atomProperties.videoImage;
 		}
 	}
 
