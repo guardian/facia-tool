@@ -52,8 +52,8 @@ export default () => {
 					<div>
 						<VideoIcon fill={'white'} />
 					</div>
-					If a Video can't play, it falls back to the Trail Image. If no Trail
-					Image exists, it falls back to the Video's Poster Image.
+					Before the Video is played, we show its Trail Image. If no Trail Image
+					exists, we show its Poster Image.
 				</TooltipModal>
 			) : null}
 		</Container>
