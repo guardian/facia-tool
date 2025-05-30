@@ -49,11 +49,7 @@ export const VideoControls = ({
 					onChange={(e: any) => {
 						const videoUri = e.currentTarget.value;
 
-						if (
-							videoUri !== undefined &&
-							videoUri !== null &&
-							videoUri !== ''
-						) {
+						if (videoUri) {
 							changeMediaField('videoReplace');
 						} else {
 							changeMediaField('showMainVideo');
