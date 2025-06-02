@@ -1,7 +1,7 @@
 import { styled } from '../../constants/theme';
 import Modal from 'react-modal';
 import ButtonDefault from '../inputs/ButtonDefault';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { CloseIcon } from '../icons/Icons';
 
 export const StyledModal = styled(Modal)`
@@ -44,23 +44,39 @@ const IFrame = styled.iframe`
 	border: 0;
 `;
 
-export const OverlayModal = ({ isOpen, url, onClose }: ModalProps) => (
-	<React.Fragment>
-		<StyledModal
-			isOpen={isOpen}
-			style={{
-				overlay: {
-					zIndex: 900,
-				},
-			}}
-		>
-			<ModalButton type="button" priority="primary" onClick={onClose}>
-				<ImageContainer>
-					<CloseIcon />
-				</ImageContainer>
-			</ModalButton>
+export const OverlayModal = ({ isOpen, url, onClose }: ModalProps) => {
+	useEffect(() => {
+		const handleKeyUp = (e: KeyboardEvent) => {
+			if (e.key === 'Escape' && isOpen) {
+				onClose();
+			}
+		};
+		// For some reason, the keydown event does not always capture the Escape key
+		// Instead, we use keyup event to close the modal
+		window.addEventListener('keyup', handleKeyUp);
+		return () => {
+			window.removeEventListener('keyup', handleKeyUp);
+		};
+	}, [isOpen, onClose]);
 
-			<IFrame src={url} />
-		</StyledModal>
-	</React.Fragment>
-);
+	return (
+		<React.Fragment>
+			<StyledModal
+				isOpen={isOpen}
+				style={{
+					overlay: {
+						zIndex: 900,
+					},
+				}}
+			>
+				<ModalButton type="button" priority="primary" onClick={onClose}>
+					<ImageContainer>
+						<CloseIcon />
+					</ImageContainer>
+				</ModalButton>
+
+				<IFrame src={url} />
+			</StyledModal>
+		</React.Fragment>
+	);
+};
