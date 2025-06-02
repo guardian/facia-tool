@@ -437,6 +437,21 @@ const ReplaceVideoIcon = ({ fill = theme.colors.white }) => (
 	</svg>
 );
 
+const PreviewVideoIcon = ({ fill = theme.colors.white }) => (
+	<svg
+		width="20"
+		height="18"
+		viewBox="0 0 16 14"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			d="M15.421 0.456543H0V13.2885H15.421V0.456543ZM3.6 3.3885L11.7 6.9885L3.6 10.5885V3.3885Z"
+			fill={fill}
+		/>
+	</svg>
+);
+
 export {
 	DownCaretIcon,
 	RubbishBinIcon,
@@ -458,4 +473,5 @@ export {
 	WarningIcon,
 	CropIcon,
 	ReplaceVideoIcon,
+	PreviewVideoIcon,
 };
