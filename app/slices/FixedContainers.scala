@@ -40,7 +40,6 @@ class FixedContainers(val config: ApplicationConfiguration) {
       slices(ThreeQuarterQuarter, QuarterQuarterQuarterQuarter, Ql2Ql2Ql2Ql2)
     ),
     ("fixed/video", video),
-    ("fixed/video/vertical", video),
     ("fixed/thrasher", thrasher),
     ("fixed/showcase", showcase),
     ("static/medium/4", staticMedium4),
