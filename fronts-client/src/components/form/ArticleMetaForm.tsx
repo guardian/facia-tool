@@ -414,6 +414,30 @@ const KickerSuggestionButton = styled(InputButton)`
 
 const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
+const isInitialLoadOfAtomId = (
+	prevPropsAtomId: string | undefined,
+	currentAtomId: string | undefined,
+) => prevPropsAtomId === undefined && currentAtomId !== undefined;
+
+const fetchAtom = async (atomId: string): Promise<AtomResponse | undefined> => {
+	const response = await fetch(`/api/live/${atomId}`);
+	const data = await response.json();
+	if (data?.response?.status !== 'ok') {
+		return undefined;
+	} else {
+		return data?.response;
+	}
+};
+
+const getAtom = async (atomId: string | undefined) => {
+	if (atomId) {
+		const atomResponse = await fetchAtom(atomId);
+		return !atomResponse ? undefined : atomResponse.media;
+	} else {
+		return undefined;
+	}
+};
+
 interface FormComponentState {
 	lastKnownCollectionId: string | null;
 }
@@ -426,9 +450,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			await this.fetchAndSetReplacementVideoAtom(this.props.atomId);
 		}, 500);
 	}
-	componentDidMount() {
-		this.fetchAndSetReplacementVideoAtom(this.props.atomId);
-	}
 
 	componentDidUpdate(
 		prevProps: Readonly<Props>,
@@ -438,34 +459,42 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		if (prevProps.atomId === this.props.atomId) {
 			return;
 		}
+
+		if (
+			isInitialLoadOfAtomId(prevProps.atomId, this.props.initialValues.atomId)
+		) {
+			this.fetchAndSetReplacementVideoAtom(
+				this.props.initialValues.atomId,
+				true,
+			);
+			return;
+		}
+
 		this.debouncedFetchAndSetReplacementVideoAtom();
 	}
 
 	private fetchAndSetReplacementVideoAtom = async (
 		atomId: string | undefined,
+		initialLoad: boolean = false,
 	) => {
 		if (atomId === undefined || atomId === '') {
 			this.props.change('replacementVideoAtom', undefined);
 			return;
 		}
-		this.fetchAtom(atomId)
-			.then((response) => response.media)
-			.then((replacementAtom) =>
-				this.props.change('replacementVideoAtom', replacementAtom),
-			)
-			.catch((error) => {
-				console.error(error);
-				this.props.change('replacementVideoAtom', undefined);
-			});
-	};
 
-	private fetchAtom = async (atomId: string): Promise<AtomResponse> => {
-		const response = await fetch(`/api/live/${atomId}`);
-		const data = await response.json();
-		if (data?.response?.status !== 'ok') {
-			throw new Error(`Failed to fetch atom ${atomId}`);
+		const atom = await getAtom(atomId);
+
+		if (initialLoad) {
+			const initialValues = this.props.initialValues;
+
+			const reinitialisedValues = {
+				...initialValues,
+				replacementVideoAtom: atom,
+			};
+
+			this.props.initialize(reinitialisedValues);
 		} else {
-			return data?.response;
+			this.props.change('replacementVideoAtom', atom);
 		}
 	};
 
@@ -1210,6 +1239,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
 const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 	destroyOnUnmount: true,
+	enableReinitialize: true,
 	onSubmit: (
 		values: CardFormData,
 		dispatch: Dispatch,

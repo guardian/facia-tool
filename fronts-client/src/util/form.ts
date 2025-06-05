@@ -7,7 +7,7 @@ import { isDirty } from 'redux-form';
 import pageConfig from 'util/extractConfigFromPage';
 import { CardMeta, ImageData } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
-import { CapiArticle } from 'types/Capi';
+import { Atom, CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
 
@@ -44,6 +44,7 @@ export interface CardFormData {
 	videoReplace: boolean;
 	replaceVideoUri: string;
 	atomId: string;
+	replacementVideoAtom: Atom | undefined;
 }
 
 export type FormFields = keyof CardFormData;
@@ -154,6 +155,7 @@ export const getInitialValuesForCardForm = (
 				coverCardTabletImage: article.coverCardTabletImage || {},
 				isImmersive: article.isImmersive || false,
 				atomId: article.atomId || '',
+				replacementVideoAtom: undefined,
 			}
 		: undefined;
 };
