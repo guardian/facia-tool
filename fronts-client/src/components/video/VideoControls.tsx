@@ -126,8 +126,9 @@ export const VideoControls = ({
 		setConfirmDelete(false);
 	};
 
-	type AtomData = {
-		atomId: string;
+	type MessageData = {
+		atomId?: string;
+		eventKey?: string;
 	};
 
 	const onMessage = (event: MessageEvent) => {
@@ -135,30 +136,46 @@ export const VideoControls = ({
 			return;
 		}
 
-		const data: AtomData = event.data;
+		const data: MessageData = event.data;
 
-		if (!data || !data.atomId) {
+		if (!data) {
 			return;
 		}
 
-		dispatch(
-			change(
-				form,
-				'atomId',
-				`${urlConstants.video.capiMediaAtomPath}${data.atomId}`,
-			),
-		);
-		/**
-		 * Even if we can't fetch the replacement atom, it's worth setting the videoReplace and replaceVideoUri fields
-		 * to give some feedback to the user.
+		if (data.atomId) {
+			dispatch(
+				change(
+					form,
+					'atomId',
+					`${urlConstants.video.capiMediaAtomPath}${data.atomId}`,
+				),
+			);
+			/**
+			 * Even if we can't fetch the replacement atom, it's worth setting the videoReplace and replaceVideoUri fields
+			 * to give some feedback to the user.
+			 *
+			 * Invalid atoms can't be saved, so there should be no risk in setting these fields.
+			 */
+			dispatch(
+				change(
+					form,
+					'replaceVideoUri',
+					`${videoBaseUrl}/videos/${data.atomId}`,
+				),
+			);
+			changeMediaField('videoReplace');
+			handleCloseMediaAtomMakerModal();
+		}
+
+		/*
+		 * The iFrame swallows keypress events when focussed - so we propagate them
+		 * up through the Message API.
 		 *
-		 * Invalid atoms can't be saved, so there should be no risk in setting these fields.
+		 * This allows us to handle the Escape shortcut.
 		 */
-		dispatch(
-			change(form, 'replaceVideoUri', `${videoBaseUrl}/videos/${data.atomId}`),
-		);
-		changeMediaField('videoReplace');
-		handleCloseMediaAtomMakerModal();
+		if (data.eventKey === 'Escape') {
+			handleCloseMediaAtomMakerModal();
+		}
 	};
 
 	const handleOpenMediaAtomMakerModal = () => {
