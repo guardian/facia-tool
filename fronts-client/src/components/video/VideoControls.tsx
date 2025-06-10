@@ -255,7 +255,7 @@ export const VideoControls = ({
 				In this scenario we neither show the 'Use replacement video toggle', nor refer to it as a replacement.
 				Note in the data model we still call this a replacement atom.
 			*/}
-			{extraVideoControls !== null && mainMediaVideoAtom
+			{extraVideoControls !== null && mainMediaVideoAtom && replacementVideoAtom
 				? createPortal(
 						<MarginWrapper>
 							<Field
@@ -266,9 +266,7 @@ export const VideoControls = ({
 								id={`${extraVideoControlsId}-useReplacementVideo`}
 								type="checkbox"
 								dataTestId="use-replacement-video"
-								checked={
-									showReplacementVideo && replacementVideoAtom !== undefined
-								}
+								checked={showReplacementVideo}
 								onChange={() => {
 									if (showReplacementVideo) {
 										changeMediaField('showMainVideo');
@@ -277,9 +275,6 @@ export const VideoControls = ({
 									}
 								}}
 							/>
-							{!replacementVideoAtom && (
-								<Explainer>Replacement video required</Explainer>
-							)}
 						</MarginWrapper>,
 						extraVideoControls,
 					)
