@@ -256,7 +256,7 @@ export const VideoControls = ({
 				In this scenario we neither show the 'Use replacement video toggle', nor refer to it as a replacement.
 				Note in the data model we still call this a replacement atom.
 			*/}
-			{extraVideoControls !== null && mainMediaVideoAtom
+			{extraVideoControls !== null && mainMediaVideoAtom && replacementVideoAtom
 				? createPortal(
 						<MarginWrapper>
 							<Field
