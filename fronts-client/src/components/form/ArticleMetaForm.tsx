@@ -1193,7 +1193,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		heightAspectRatio: number;
 	} => {
 		const { collectionType } = this.props;
-		if (!collectionType || COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS.includes(collectionType)) {
+		if (
+			!collectionType ||
+			COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS.includes(collectionType)
+		) {
 			return landscape5To4CardImageCriteria;
 		}
 		if (COLLECTIONS_USING_SQUARE_TRAILS.includes(collectionType)) {
