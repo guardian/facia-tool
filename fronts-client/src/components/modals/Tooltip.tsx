@@ -1,5 +1,5 @@
 import { styled } from '../../constants/theme';
-import { InfoIcon, VideoIcon } from '../icons/Icons';
+import { InfoIcon, LoopIcon, VideoIcon } from '../icons/Icons';
 import React from 'react';
 
 const TooltipModal = styled.div`
@@ -15,6 +15,9 @@ const TooltipModal = styled.div`
 	font-family: TS3TextSans, 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	padding: 6px;
 	line-height: 14px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
 `;
 
 const InfoIconContainer = styled.div`
@@ -50,10 +53,19 @@ export default () => {
 			{showModal ? (
 				<TooltipModal>
 					<div>
-						<VideoIcon fill={'white'} />
+						<div>
+							<VideoIcon fill={'white'} />
+						</div>
+						Before a Youtube video is played, we show the card's Trail Image. If
+						no Trail Image exists, we show the Poster Image.
 					</div>
-					Before a Youtube video is played, we show the card's Trail Image. If
-					no Trail Image exists, we show the Poster Image.
+
+					<div>
+						<div>
+							<LoopIcon fill={'white'} size={'s'} />
+						</div>
+						Videos which are self-hosted will loop.
+					</div>
 				</TooltipModal>
 			) : null}
 		</Container>
