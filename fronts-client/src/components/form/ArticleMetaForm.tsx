@@ -216,6 +216,7 @@ const InvalidText = styled.div`
 const ExtraVideoControls = styled.div`
 	display: flex;
 	flex-direction: column;
+	margin-bottom: 8px;
 `;
 
 const maxCaptionLength = (max: number) => (value: ImageData) =>
