@@ -4,6 +4,7 @@ import ButtonDefault from '../inputs/ButtonDefault';
 import { createPortal } from 'react-dom';
 import {
 	ConfirmDeleteIcon,
+	LoopIcon,
 	PreviewVideoIcon,
 	ReplaceVideoIcon,
 	RubbishBinIcon,
@@ -36,7 +37,7 @@ interface VideoControlsProps {
 	changeField: (field: string, value: any) => void;
 	changeMediaField: (fieldToSet: string) => void;
 	form: any;
-	replacementVideoControlsId: string;
+	extraVideoControlsId: string;
 	warningsContainerId: string;
 }
 
@@ -92,7 +93,7 @@ export const VideoControls = ({
 	changeField,
 	changeMediaField,
 	form,
-	replacementVideoControlsId,
+	extraVideoControlsId,
 	warningsContainerId,
 }: VideoControlsProps) => {
 	const [mainMediaVideoAtomProperties, setMainMediaVideoAtomProperties] =
@@ -229,9 +230,7 @@ export const VideoControls = ({
 		return null;
 	}
 
-	const replacementVideoControls = document.getElementById(
-		replacementVideoControlsId,
-	);
+	const extraVideoControls = document.getElementById(extraVideoControlsId);
 
 	const warningsContainer = document.getElementById(warningsContainerId);
 
@@ -247,12 +246,22 @@ export const VideoControls = ({
 
 	return (
 		<>
+			{extraVideoControls !== null &&
+			(mainMediaIsSelfHosted || replacementVideoIsSelfHosted)
+				? createPortal(
+						<Explainer>
+							<LoopIcon />
+							Selected video will loop
+						</Explainer>,
+						extraVideoControls,
+					)
+				: null}
 			{/*
 				If there is no main media atom, the replacement atom is the only one we care about.
 				In this scenario we neither show the 'Use replacement video toggle', nor refer to it as a replacement.
 				Note in the data model we still call this a replacement atom.
 			*/}
-			{replacementVideoControls !== null && mainMediaVideoAtom
+			{extraVideoControls !== null && mainMediaVideoAtom
 				? createPortal(
 						<MarginWrapper>
 							<Field
@@ -260,7 +269,7 @@ export const VideoControls = ({
 								component={InputCheckboxToggleInline}
 								label="Use replacement video"
 								disabled={!isAtom(replacementVideoAtom)}
-								id={`${replacementVideoControlsId}-useReplacementVideo`}
+								id={`${extraVideoControlsId}-useReplacementVideo`}
 								type="checkbox"
 								dataTestId="use-replacement-video"
 								checked={showReplacementVideo && isAtom(replacementVideoAtom)}
@@ -276,7 +285,7 @@ export const VideoControls = ({
 								<Explainer>Replacement video required</Explainer>
 							)}
 						</MarginWrapper>,
-						replacementVideoControls,
+						extraVideoControls,
 					)
 				: null}
 			{currentVideoUri !== undefined && showVideoPreviewModal
