@@ -1,5 +1,5 @@
 import { oc } from 'ts-optchain';
-import { Element } from 'types/Capi';
+import { Atom, Element } from 'types/Capi';
 import { ExternalArticle } from 'types/ExternalArticle';
 import { DerivedArticle } from 'types/Article';
 import isAfter from 'date-fns/is_after';
@@ -14,7 +14,7 @@ export const hasMainVideo = (article: ExternalArticle | DerivedArticle) => {
 
 export const getMainMediaVideoAtom = (
 	article: ExternalArticle | DerivedArticle,
-) => {
+): Atom | undefined => {
 	const mainBlockElement = oc(article).blocks.main.elements([])[0] || undefined;
 	const atomId: string | undefined =
 		oc(mainBlockElement).contentAtomTypeData.atomId();

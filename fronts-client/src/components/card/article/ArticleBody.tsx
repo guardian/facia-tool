@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { styled, theme } from 'constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
@@ -25,7 +25,7 @@ import CardDraftMetaContent from '../CardDraftMetaContent';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'util/mediaQueries';
 import ArticleGraph from './ArticleGraph';
-import { VideoIcon } from '../../icons/Icons';
+import { LoopIcon, VideoIcon } from '../../icons/Icons';
 import CardHeadingContainer from '../CardHeadingContainer';
 import CardSettingsDisplay from '../CardSettingsDisplay';
 import CircularIconContainer from '../../icons/CircularIconContainer';
@@ -40,6 +40,8 @@ import {
 	portraitCardImageCriteria,
 	squareImageCriteria,
 } from 'constants/image';
+import { Atom } from '../../../types/Capi';
+import { extractAtomProperties } from '../../../util/extractAtomId';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
 	flex-shrink: 0;
@@ -135,6 +137,8 @@ interface ArticleBodyProps {
 	hasMainVideo?: boolean;
 	showMainVideo?: boolean;
 	videoReplace?: boolean;
+	mainMediaVideoAtom?: Atom | undefined;
+	replacementVideoAtom?: Atom | undefined;
 	tone?: string | undefined;
 	featureFlagPageViewData?: boolean;
 	canShowPageViewData: boolean;
@@ -198,6 +202,8 @@ const articleBodyDefault = React.memo(
 		imageCriteria,
 		collectionType,
 		groupIndex,
+		mainMediaVideoAtom,
+		replacementVideoAtom,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -219,6 +225,25 @@ const articleBodyDefault = React.memo(
 				portraitCardImageCriteria.widthAspectRatio &&
 			imageCriteria.heightAspectRatio ===
 				portraitCardImageCriteria.heightAspectRatio;
+
+		const [mainMediaIsSelfHosted, setMainMediaIsSelfHosted] =
+			React.useState<boolean>(false);
+		const [replacementVideoIsSelfHosted, setReplacementVideoIsSelfHosted] =
+			React.useState<boolean>(false);
+
+		useEffect(() => {
+			if (replacementVideoAtom && videoReplace) {
+				const { platform } = extractAtomProperties(replacementVideoAtom);
+				if (platform === 'url') setReplacementVideoIsSelfHosted(true);
+			}
+		}, [replacementVideoAtom, videoReplace]);
+
+		useEffect(() => {
+			if (mainMediaVideoAtom && showMainVideo) {
+				const { platform } = extractAtomProperties(mainMediaVideoAtom);
+				if (platform === 'url') setMainMediaIsSelfHosted(true);
+			}
+		}, [mainMediaVideoAtom, showMainVideo]);
 
 		return (
 			<>
@@ -344,9 +369,17 @@ const articleBodyDefault = React.memo(
 									{cutoutThumbnail ? (
 										<ThumbnailCutout src={cutoutThumbnail} />
 									) : null}
-									{(hasMainVideo || videoReplace) && (
-										<VideoIconContainer title="This media has video content.">
-											<VideoIcon />
+									{(hasMainVideo || videoReplace) &&
+										!(
+											mainMediaIsSelfHosted || replacementVideoIsSelfHosted
+										) && (
+											<VideoIconContainer title="This media has video content.">
+												<VideoIcon />
+											</VideoIconContainer>
+										)}
+									{(mainMediaIsSelfHosted || replacementVideoIsSelfHosted) && (
+										<VideoIconContainer title="This media has looping video content.">
+											<LoopIcon />
 										</VideoIconContainer>
 									)}
 								</ThumbnailSmall>
@@ -357,6 +390,8 @@ const articleBodyDefault = React.memo(
 									showMainVideo={showMainVideo}
 									videoReplace={videoReplace}
 									hasMainVideo={hasMainVideo}
+									mainMediaIsSelfHosted={mainMediaIsSelfHosted}
+									replacementVideoIsSelfHosted={replacementVideoIsSelfHosted}
 								/>
 								{!collectionId && firstPublicationDate && (
 									<ClipboardFirstPublished title="The time elapsed since this article was first published.">

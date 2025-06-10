@@ -14,6 +14,8 @@ interface ImageMetadataContainerProps {
 	hasMainVideo?: boolean;
 	showMainVideo?: boolean;
 	videoReplace?: boolean;
+	mainMediaIsSelfHosted?: boolean;
+	replacementVideoIsSelfHosted?: boolean;
 }
 
 const getImageMetadata = (
@@ -23,11 +25,15 @@ const getImageMetadata = (
 	hasMainVideo?: boolean,
 	showMainVideo?: boolean,
 	videoReplace?: boolean,
+	mainMediaIsSelfHosted?: boolean,
+	replacementVideoIsSelfHosted?: boolean,
 ) => {
 	if (imageSlideshowReplace) return 'Slideshow';
 	if (imageReplace) return 'Image replaced';
 	if (imageCutoutReplace) return 'Cutout replaced';
+	if (showMainVideo && mainMediaIsSelfHosted) return 'Looping video';
 	if (showMainVideo) return 'Main video';
+	if (videoReplace && replacementVideoIsSelfHosted) return 'Looping video';
 	if (hasMainVideo && videoReplace) return 'Video replaced';
 	if (videoReplace) return 'Show video';
 	return null;
@@ -40,6 +46,8 @@ export const ImageMetadataContainer = ({
 	hasMainVideo,
 	showMainVideo,
 	videoReplace,
+	mainMediaIsSelfHosted,
+	replacementVideoIsSelfHosted,
 }: ImageMetadataContainerProps) => (
 	<MetadataContainer>
 		{getImageMetadata(
@@ -49,6 +57,8 @@ export const ImageMetadataContainer = ({
 			hasMainVideo,
 			showMainVideo,
 			videoReplace,
+			mainMediaIsSelfHosted,
+			replacementVideoIsSelfHosted,
 		)}
 	</MetadataContainer>
 );
