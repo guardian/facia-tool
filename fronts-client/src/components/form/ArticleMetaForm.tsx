@@ -426,19 +426,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			await this.fetchAndSetReplacementVideoAtom(this.props.atomId);
 		}, 500);
 	}
-	componentDidMount() {
-		this.fetchAndSetReplacementVideoAtom(this.props.atomId);
-	}
 
-	componentDidUpdate(
-		prevProps: Readonly<Props>,
-		prevState: Readonly<FormComponentState>,
-		snapshot?: any,
-	) {
-		if (prevProps.atomId === this.props.atomId) {
-			return;
+	componentDidUpdate(prevProps: Readonly<Props>) {
+		const atomIsAlreadyDefined = this.props.replacementVideoAtom !== undefined;
+		const atomIdChanged = prevProps.atomId !== this.props.atomId;
+
+		if (atomIsAlreadyDefined && atomIdChanged) {
+			this.debouncedFetchAndSetReplacementVideoAtom();
 		}
-		this.debouncedFetchAndSetReplacementVideoAtom();
 	}
 
 	private fetchAndSetReplacementVideoAtom = async (
