@@ -1,6 +1,7 @@
 import { styled } from '../../constants/theme';
 import { InfoIcon, LoopIcon, VideoIcon } from '../icons/Icons';
 import React from 'react';
+import pageConfig from '../../util/extractConfigFromPage';
 
 const TooltipModal = styled.div`
 	position: absolute;
@@ -42,6 +43,11 @@ export default () => {
 		setShowModal(false);
 	};
 
+	const enableLoopingVideoFeatureSwitch =
+		pageConfig?.userData?.featureSwitches.find(
+			(feature) => feature.key === 'enable-looping-video',
+		);
+
 	return (
 		<Container>
 			<InfoIconContainer
@@ -59,13 +65,14 @@ export default () => {
 						Before a Youtube video is played, we show the card's Trail Image. If
 						no Trail Image exists, we show the Poster Image.
 					</div>
-
-					<div>
+					{enableLoopingVideoFeatureSwitch?.enabled === true ? (
 						<div>
-							<LoopIcon fill={'white'} size={'s'} />
+							<div>
+								<LoopIcon fill={'white'} size={'s'} />
+							</div>
+							Videos which are self-hosted will loop.
 						</div>
-						Videos which are self-hosted will loop.
-					</div>
+					) : null}
 				</TooltipModal>
 			) : null}
 		</Container>

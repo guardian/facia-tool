@@ -25,6 +25,7 @@ import Explainer from '../Explainer';
 import { OverlayModal } from '../modals/OverlayModal';
 import type { Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
+import pageConfig from '../../util/extractConfigFromPage';
 import { isAtom } from '../../util/atom';
 
 interface VideoControlsProps {
@@ -239,10 +240,16 @@ export const VideoControls = ({
 		isAtom(replacementVideoAtom) &&
 		replacementVideoAtomProperties?.platform === 'url';
 
+	const enableLoopingVideoFeatureSwitch =
+		pageConfig?.userData?.featureSwitches.find(
+			(feature) => feature.key === 'enable-looping-video',
+		);
+
 	return (
 		<>
 			{extraVideoControls !== null &&
-			(mainMediaIsSelfHosted || replacementVideoIsSelfHosted)
+			(mainMediaIsSelfHosted || replacementVideoIsSelfHosted) &&
+			enableLoopingVideoFeatureSwitch?.enabled === true
 				? createPortal(
 						<Explainer>
 							<LoopIcon />
