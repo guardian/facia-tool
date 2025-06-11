@@ -33,19 +33,11 @@ object TenImageSlideshows
       enabled = false
     )
 
-object EnableReplacementVideo
-    extends FeatureSwitch(
-      key = "enable-replacement-video",
-      title = "Enable replacement video",
-      enabled = false
-    )
-
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
-    TenImageSlideshows,
-    EnableReplacementVideo
+    TenImageSlideshows
   )
 
   def updateFeatureSwitchesForUser(
