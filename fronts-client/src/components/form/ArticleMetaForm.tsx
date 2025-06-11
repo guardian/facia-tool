@@ -440,7 +440,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		atomId: string | undefined,
 	) => {
 		if (atomId === undefined || atomId === '') {
-			this.props.change('replacementVideoAtom', undefined);
+			this.props.change('replacementVideoAtom', '');
 			return;
 		}
 		this.fetchAtom(atomId)
@@ -450,7 +450,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			)
 			.catch((error) => {
 				console.error(error);
-				this.props.change('replacementVideoAtom', undefined);
+				this.props.change('replacementVideoAtom', '');
 			});
 	};
 

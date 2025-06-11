@@ -118,10 +118,9 @@ export const VideoControls = ({
 			return;
 		}
 
-		// This exact incantation is needed to clear the form fields...
-		dispatch(autofill(form, 'replaceVideoUri', undefined));
-		dispatch(autofill(form, 'atomId', undefined));
-		dispatch(change(form, 'replacementVideoAtom', undefined));
+		// Redux Form needs empty strings to clear fields, not null or undefined.
+		dispatch(autofill(form, 'replaceVideoUri', ''));
+		dispatch(autofill(form, 'atomId', ''));
 		changeMediaField('showMainVideo');
 		setConfirmDelete(false);
 	};
@@ -191,6 +190,12 @@ export const VideoControls = ({
 		if (replacementVideoAtom !== undefined) {
 			const atomProperties = extractAtomProperties(replacementVideoAtom);
 			setReplacementVideoAtomProperties(atomProperties);
+		} else {
+			setReplacementVideoAtomProperties({
+				assetId: undefined,
+				videoImage: undefined,
+				platform: undefined,
+			});
 		}
 	}, [replacementVideoAtom]);
 
@@ -198,6 +203,12 @@ export const VideoControls = ({
 		if (mainMediaVideoAtom !== undefined) {
 			const atomProperties = extractAtomProperties(mainMediaVideoAtom);
 			setMainMediaVideoAtomProperties(atomProperties);
+		} else {
+			setMainMediaVideoAtomProperties({
+				assetId: undefined,
+				videoImage: undefined,
+				platform: undefined,
+			});
 		}
 	}, [mainMediaVideoAtom]);
 
