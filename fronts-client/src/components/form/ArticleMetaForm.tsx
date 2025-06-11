@@ -419,6 +419,7 @@ interface FormComponentState {
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
+	private isFirstLoad = true;
 	private debouncedFetchAndSetReplacementVideoAtom: () => void;
 	constructor(props: Props) {
 		super(props);
@@ -427,9 +428,25 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		}, 500);
 	}
 
-	componentDidUpdate(prevProps: Readonly<Props>) {
+	async componentDidUpdate(prevProps: Readonly<Props>) {
 		const atomIsAlreadyDefined = this.props.replacementVideoAtom !== undefined;
 		const atomIdChanged = prevProps.atomId !== this.props.atomId;
+
+		if (this.isFirstLoad) {
+			this.isFirstLoad = false;
+			const atom = await this.getAtom(this.props.atomId);
+			const initialValues = this.props.initialValues;
+
+			const reinitialisedValues = {
+				...initialValues,
+				replacementVideoAtom: atom,
+			};
+
+			// Hydrate the form with the latest atom, and reinitialise the form
+			// so that the form state is 'pristine' and doesn't appear unsaved.
+			this.props.initialize(reinitialisedValues);
+			return;
+		}
 
 		if (atomIsAlreadyDefined && atomIdChanged) {
 			this.debouncedFetchAndSetReplacementVideoAtom();
@@ -462,6 +479,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		} else {
 			return data?.response;
 		}
+	};
+
+	private getAtom = async (
+		atomId: string | undefined,
+	): Promise<Atom | undefined> => {
+		if (atomId === undefined) {
+			return undefined;
+		}
+		return this.fetchAtom(atomId)
+			.then((response) => response.media)
+			.catch(() => undefined);
 	};
 
 	public static getDerivedStateFromProps(props: Props) {
