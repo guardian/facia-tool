@@ -44,7 +44,7 @@ export interface CardFormData {
 	videoReplace: boolean;
 	replaceVideoUri: string;
 	atomId: string;
-	replacementVideoAtom: Atom | undefined;
+	replacementVideoAtom: Atom | string;
 }
 
 export type FormFields = keyof CardFormData;
@@ -155,7 +155,7 @@ export const getInitialValuesForCardForm = (
 				coverCardTabletImage: article.coverCardTabletImage || {},
 				isImmersive: article.isImmersive || false,
 				atomId: article.atomId || '',
-				replacementVideoAtom: article.replacementVideoAtom || undefined,
+				replacementVideoAtom: article.replacementVideoAtom || '',
 			}
 		: undefined;
 };
