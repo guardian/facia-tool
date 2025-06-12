@@ -439,7 +439,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
 			const reinitialisedValues = {
 				...initialValues,
-				replacementVideoAtom: atom,
+				replacementVideoAtom: atom !== undefined ? atom : '',
 			};
 
 			// Hydrate the form with the latest atom, and reinitialise the form

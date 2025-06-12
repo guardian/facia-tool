@@ -54,7 +54,7 @@ const formValues = {
 	videoReplace: false,
 	replaceVideoUri: '',
 	atomId: '',
-	replacementVideoAtom: undefined,
+	replacementVideoAtom: '',
 };
 
 const createStateWithChangedFormFields = (
