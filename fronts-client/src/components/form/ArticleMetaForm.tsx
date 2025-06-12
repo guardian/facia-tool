@@ -419,6 +419,7 @@ interface FormComponentState {
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
+	private isFirstLoad = true;
 	private debouncedFetchAndSetReplacementVideoAtom: () => void;
 	constructor(props: Props) {
 		super(props);
@@ -426,26 +427,37 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			await this.fetchAndSetReplacementVideoAtom(this.props.atomId);
 		}, 500);
 	}
-	componentDidMount() {
-		this.fetchAndSetReplacementVideoAtom(this.props.atomId);
-	}
 
-	componentDidUpdate(
-		prevProps: Readonly<Props>,
-		prevState: Readonly<FormComponentState>,
-		snapshot?: any,
-	) {
-		if (prevProps.atomId === this.props.atomId) {
+	async componentDidUpdate(prevProps: Readonly<Props>) {
+		const atomIsAlreadyDefined = this.props.replacementVideoAtom !== undefined;
+		const atomIdChanged = prevProps.atomId !== this.props.atomId;
+
+		if (this.isFirstLoad) {
+			this.isFirstLoad = false;
+			const atom = await this.getAtom(this.props.atomId);
+			const initialValues = this.props.initialValues;
+
+			const reinitialisedValues = {
+				...initialValues,
+				replacementVideoAtom: atom,
+			};
+
+			// Hydrate the form with the latest atom, and reinitialise the form
+			// so that the form state is 'pristine' and doesn't appear unsaved.
+			this.props.initialize(reinitialisedValues);
 			return;
 		}
-		this.debouncedFetchAndSetReplacementVideoAtom();
+
+		if (atomIsAlreadyDefined && atomIdChanged) {
+			this.debouncedFetchAndSetReplacementVideoAtom();
+		}
 	}
 
 	private fetchAndSetReplacementVideoAtom = async (
 		atomId: string | undefined,
 	) => {
 		if (atomId === undefined || atomId === '') {
-			this.props.change('replacementVideoAtom', undefined);
+			this.props.change('replacementVideoAtom', '');
 			return;
 		}
 		this.fetchAtom(atomId)
@@ -455,7 +467,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			)
 			.catch((error) => {
 				console.error(error);
-				this.props.change('replacementVideoAtom', undefined);
+				this.props.change('replacementVideoAtom', '');
 			});
 	};
 
@@ -467,6 +479,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		} else {
 			return data?.response;
 		}
+	};
+
+	private getAtom = async (
+		atomId: string | undefined,
+	): Promise<Atom | undefined> => {
+		if (atomId === undefined) {
+			return undefined;
+		}
+		return this.fetchAtom(atomId)
+			.then((response) => response.media)
+			.catch(() => undefined);
 	};
 
 	public static getDerivedStateFromProps(props: Props) {
