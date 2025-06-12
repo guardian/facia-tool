@@ -107,6 +107,10 @@ export const VideoControls = ({
 	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] =
 		React.useState<boolean>(false);
 	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
+	const [mainMediaIsSelfHosted, setMainMediaIsSelfHosted] =
+		React.useState<boolean>(false);
+	const [replacementVideoIsSelfHosted, setReplacementVideoIsSelfHosted] =
+		React.useState<boolean>(false);
 	const dispatch = useDispatch();
 
 	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -224,21 +228,31 @@ export const VideoControls = ({
 		replacementVideoAtomProperties,
 	]);
 
+	useEffect(() => {
+		setReplacementVideoIsSelfHosted(
+			showReplacementVideo &&
+			isAtom(replacementVideoAtom) &&
+			replacementVideoAtomProperties?.platform === 'url',
+		);
+	}, [
+		replacementVideoAtom,
+		showReplacementVideo,
+		replacementVideoAtomProperties,
+	]);
+
+	useEffect(() => {
+		setMainMediaIsSelfHosted(
+			showMainVideo &&
+			isAtom(mainMediaVideoAtom) &&
+			mainMediaVideoAtomProperties?.platform === 'url',
+		);
+	}, [showMainVideo, mainMediaVideoAtom, mainMediaVideoAtomProperties]);
+
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;
 	}
 
 	const extraVideoControls = document.getElementById(extraVideoControlsId);
-
-	const mainMediaIsSelfHosted =
-		showMainVideo &&
-		isAtom(mainMediaVideoAtom) &&
-		mainMediaVideoAtomProperties?.platform === 'url';
-
-	const replacementVideoIsSelfHosted =
-		showReplacementVideo &&
-		isAtom(replacementVideoAtom) &&
-		replacementVideoAtomProperties?.platform === 'url';
 
 	const enableLoopingVideoFeatureSwitch =
 		pageConfig?.userData?.featureSwitches.find(

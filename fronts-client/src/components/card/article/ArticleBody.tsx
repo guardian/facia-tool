@@ -241,20 +241,22 @@ const articleBodyDefault = React.memo(
 			if (enableLoopingVideoFeatureSwitch?.enabled === false) {
 				return;
 			}
-			if (replacementVideoAtom && videoReplace) {
-				const { platform } = extractAtomProperties(replacementVideoAtom);
-				if (platform === 'url') setReplacementVideoIsSelfHosted(true);
+			if (replacementVideoAtom === undefined || videoReplace !== true) {
+				return;
 			}
+			const { platform } = extractAtomProperties(replacementVideoAtom);
+			setReplacementVideoIsSelfHosted(platform === 'url');
 		}, [replacementVideoAtom, videoReplace]);
 
 		useEffect(() => {
 			if (enableLoopingVideoFeatureSwitch?.enabled === false) {
 				return;
 			}
-			if (mainMediaVideoAtom && showMainVideo) {
-				const { platform } = extractAtomProperties(mainMediaVideoAtom);
-				if (platform === 'url') setMainMediaIsSelfHosted(true);
+			if (mainMediaVideoAtom === undefined || showMainVideo !== true) {
+				return;
 			}
+			const { platform } = extractAtomProperties(mainMediaVideoAtom);
+			setMainMediaIsSelfHosted(platform === 'url');
 		}, [mainMediaVideoAtom, showMainVideo]);
 
 		return (
