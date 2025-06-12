@@ -52,8 +52,8 @@ export default () => {
 					<div>
 						<VideoIcon fill={'white'} />
 					</div>
-					Before the Video is played, we show its Trail Image. If no Trail Image
-					exists, we show its Poster Image.
+					Before a Youtube video is played, we show the card's Trail Image. If
+					no Trail Image exists, we show the Poster Image.
 				</TooltipModal>
 			) : null}
 		</Container>
