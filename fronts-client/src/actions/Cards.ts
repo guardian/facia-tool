@@ -18,7 +18,6 @@ import {
 	selectCards,
 	selectCard,
 	selectArticleGroup,
-	selectGroupCollection,
 	selectGroups,
 } from 'selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
@@ -47,10 +46,10 @@ import {
 	RemoveActionCreator,
 	InsertActionCreator,
 	InsertThunkActionCreator,
-	BoostLevel,
 } from 'types/Cards';
 import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 import { PersistTo } from '../types/Middleware';
+import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -207,115 +206,41 @@ const updateCardMetaWithPersist = (persistTo: PersistTo) =>
 		persistTo,
 	});
 
-/** Groups in a flexible general container allow different boostlevel options.
- * When moving a card from the one group to another, this function checks if the card should be modified.
- * If so, it will automatically adjust the boost level to what is possible or the default in the group.
- * Very Big defaults to mega, big defaults to boost
- * Splash allows all levels, and standard does not allow gigaboost.
- * Group ids remain consistent, even if the group is hidden (when maxItems is set to 0), so we can use the id to determine the group.
- */
-const boostLevels: BoostLevel[] = [
-	'default',
-	'boost',
-	'megaboost',
-	'gigaboost',
-] as const;
-
-const minimumGroupBoostLevel = (groupId: number) => {
+const minimumGroupBoostLevel = (groupId: string) => {
 	// boost is the smallest boost level for `Big`
-	if (groupId === 1) return 'boost';
+	if (groupId === '1') return 'boost';
 	// megaboost is the smallest boost level for `Very Big`
-	if (groupId === 2) return 'megaboost';
+	if (groupId === '2') return 'megaboost';
 	return 'default';
 };
 
-/**
- * If the card is moved to a splash (group 3) group, we always set the boost level to default
- * If the card already has the minimum boost level for the group it is moving to,
- * we don't want to go any lower.
- * Otherwise, we decrease the boost level by 1.
- */
-const getBoostLevel = (
-	maybeFromGroupId: number | null,
-	toGroupId: number,
-	boostIndex: number,
-): BoostLevel => {
-	const minBoostLevel = minimumGroupBoostLevel(toGroupId);
-	const minBoostIndex = boostLevels.indexOf(minBoostLevel);
-
-	// If the current boost level is below the minimum required, set it to the minimum
-	if (boostIndex < minBoostIndex) {
-		return minBoostLevel;
-	}
-
-	// If the current boost level is the minimum required, don't change it
-	if (boostIndex === minBoostIndex) {
-		return boostLevels[boostIndex];
-	}
-
-	// If we're not moving from a group (i.e. we are moving from a clipboard), retain the boost level
-	if (maybeFromGroupId === null) {
-		return boostLevels[boostIndex];
-	}
-
-	// If we're moving down a group, reduce the boost level by 1
-	if (toGroupId < maybeFromGroupId) {
-		return boostLevels[boostIndex - 1];
-	}
-
-	// If we're moving up a group, and the destination group is a splash group, set the boost level to default
-	// (Splash groups allow all types of boosting, but we want to reserve these boost types for special occasions)
-	if (toGroupId > maybeFromGroupId && toGroupId === 3) {
-		return 'default';
-	}
-
-	// Retain the boost level if none of the other cases are met
-	return boostLevels[boostIndex];
+const isFlexibleGeneralContainer = (state: State, collectionId: string) => {
+	const collection = collectionSelectors.selectById(state, collectionId);
+	return collection?.type === FLEXIBLE_GENERAL_NAME;
 };
-
-const mayAdjustCardBoostLevelForDestinationGroup = (
+/**
+ * When a card moves up or down one or more groups,
+ * it should adopt the minimum boost level
+ * of the group it moves into, regardless of its previous boost level.
+ * */
+const mayResetBoostLevel = (
 	state: State,
-	maybeFrom: PosSpec | null,
 	to: PosSpec,
 	card: Card,
 	persistTo: 'collection' | 'clipboard',
 ) => {
-	if (to.type === 'group' && persistTo === 'collection') {
-		const maybeFromGroupId =
-			maybeFrom !== null && maybeFrom.type === 'group' ? maybeFrom.id : null;
-		const maybeFromGroup =
-			maybeFromGroupId !== null ? selectGroups(state)[maybeFromGroupId] : null;
-
-		const toGroupId = to.id;
-		const { collection } = selectGroupCollection(state, toGroupId);
-		const toGroup = selectGroups(state)[toGroupId];
-
-		if (collection?.type === FLEXIBLE_GENERAL_NAME) {
-			if (!toGroup) {
-				return;
-			}
-			const maybeFromGroupId =
-				maybeFromGroup !== null ? parseInt(maybeFromGroup.id ?? '0') : null;
-			const toGroupId = parseInt(toGroup.id ?? '0');
-
-			const currentBoostLevel = boostLevels.indexOf(
-				card.meta.boostLevel ?? 'default',
-			);
-
-			const boostLevel = getBoostLevel(
-				maybeFromGroupId,
-				toGroupId,
-				currentBoostLevel,
-			);
-			return updateCardMeta(
-				card.uuid,
-				{
-					boostLevel,
-				},
-				{ merge: true },
-			);
-		}
-	}
+	if (to.type !== 'group' || !to.collectionId || persistTo !== 'collection')
+		return;
+	if (!isFlexibleGeneralContainer(state, to.collectionId)) return;
+	const toGroup = selectGroups(state)[to.id];
+	const groupIndex = toGroup?.id ?? '0';
+	return updateCardMeta(
+		card.uuid,
+		{
+			boostLevel: minimumGroupBoostLevel(groupIndex),
+		},
+		{ merge: true },
+	);
 };
 
 const insertCardWithCreate =
@@ -346,13 +271,7 @@ const insertCardWithCreate =
 				if (!card) {
 					return;
 				}
-				const modifyCardAction = mayAdjustCardBoostLevelForDestinationGroup(
-					state,
-					null,
-					to,
-					card,
-					persistTo,
-				);
+				const modifyCardAction = mayResetBoostLevel(state, to, card, persistTo);
 
 				if (modifyCardAction) dispatch(modifyCardAction);
 
@@ -456,9 +375,8 @@ const moveCard = (
 					dispatch(cardsReceived([parent, ...supporting]));
 				}
 
-				const modifyCardAction = mayAdjustCardBoostLevelForDestinationGroup(
+				const modifyCardAction = mayResetBoostLevel(
 					state,
-					from,
 					to,
 					parent,
 					persistTo,
@@ -544,5 +462,4 @@ export {
 	copyCardImageMetaWithPersist,
 	cloneCardToTarget,
 	addCardToClipboard,
-	getBoostLevel,
 };
