@@ -107,9 +107,9 @@ export const VideoControls = ({
 	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] =
 		React.useState<boolean>(false);
 	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
-	const [mainMediaIsSelfHosted, setMainMediaIsSelfHosted] =
+	const [isMainVideoSelfHosted, setIsMainVideoSelfHosted] =
 		React.useState<boolean>(false);
-	const [replacementVideoIsSelfHosted, setReplacementVideoIsSelfHosted] =
+	const [isReplacementVideoSelfHosted, setIsReplacementVideoSelfHosted] =
 		React.useState<boolean>(false);
 	const dispatch = useDispatch();
 
@@ -229,7 +229,7 @@ export const VideoControls = ({
 	]);
 
 	useEffect(() => {
-		setReplacementVideoIsSelfHosted(
+		setIsReplacementVideoSelfHosted(
 			showReplacementVideo &&
 			isAtom(replacementVideoAtom) &&
 			replacementVideoAtomProperties?.platform === 'url',
@@ -241,7 +241,7 @@ export const VideoControls = ({
 	]);
 
 	useEffect(() => {
-		setMainMediaIsSelfHosted(
+		setIsMainVideoSelfHosted(
 			showMainVideo &&
 			isAtom(mainMediaVideoAtom) &&
 			mainMediaVideoAtomProperties?.platform === 'url',
@@ -262,7 +262,7 @@ export const VideoControls = ({
 	return (
 		<>
 			{extraVideoControls !== null &&
-			(mainMediaIsSelfHosted || replacementVideoIsSelfHosted) &&
+			(isMainVideoSelfHosted || isReplacementVideoSelfHosted) &&
 			enableLoopingVideoFeatureSwitch?.enabled === true
 				? createPortal(
 						<Explainer>

@@ -227,9 +227,9 @@ const articleBodyDefault = React.memo(
 			imageCriteria.heightAspectRatio ===
 				portraitCardImageCriteria.heightAspectRatio;
 
-		const [mainMediaIsSelfHosted, setMainMediaIsSelfHosted] =
+		const [isMainVideoSelfHosted, setIsMainVideoSelfHosted] =
 			React.useState<boolean>(false);
-		const [replacementVideoIsSelfHosted, setReplacementVideoIsSelfHosted] =
+		const [isReplacementVideoSelfHosted, setIsReplacementVideoSelfHosted] =
 			React.useState<boolean>(false);
 
 		const enableLoopingVideoFeatureSwitch =
@@ -245,7 +245,7 @@ const articleBodyDefault = React.memo(
 				return;
 			}
 			const { platform } = extractAtomProperties(replacementVideoAtom);
-			setReplacementVideoIsSelfHosted(platform === 'url');
+			setIsReplacementVideoSelfHosted(platform === 'url');
 		}, [replacementVideoAtom, videoReplace]);
 
 		useEffect(() => {
@@ -256,7 +256,7 @@ const articleBodyDefault = React.memo(
 				return;
 			}
 			const { platform } = extractAtomProperties(mainMediaVideoAtom);
-			setMainMediaIsSelfHosted(platform === 'url');
+			setIsMainVideoSelfHosted(platform === 'url');
 		}, [mainMediaVideoAtom, showMainVideo]);
 
 		return (
@@ -385,13 +385,13 @@ const articleBodyDefault = React.memo(
 									) : null}
 									{(hasMainVideo || videoReplace) &&
 										!(
-											mainMediaIsSelfHosted || replacementVideoIsSelfHosted
+											isMainVideoSelfHosted || isReplacementVideoSelfHosted
 										) && (
 											<VideoIconContainer title="This media has video content.">
 												<VideoIcon />
 											</VideoIconContainer>
 										)}
-									{(mainMediaIsSelfHosted || replacementVideoIsSelfHosted) && (
+									{(isMainVideoSelfHosted || isReplacementVideoSelfHosted) && (
 										<VideoIconContainer title="This media has looping video content.">
 											<LoopIcon />
 										</VideoIconContainer>
@@ -404,8 +404,8 @@ const articleBodyDefault = React.memo(
 									showMainVideo={showMainVideo}
 									videoReplace={videoReplace}
 									hasMainVideo={hasMainVideo}
-									mainMediaIsSelfHosted={mainMediaIsSelfHosted}
-									replacementVideoIsSelfHosted={replacementVideoIsSelfHosted}
+									isMainVideoSelfHosted={isMainVideoSelfHosted}
+									isReplacementVideoSelfHosted={isReplacementVideoSelfHosted}
 								/>
 								{!collectionId && firstPublicationDate && (
 									<ClipboardFirstPublished title="The time elapsed since this article was first published.">
