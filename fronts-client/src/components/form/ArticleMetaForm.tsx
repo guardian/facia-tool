@@ -212,6 +212,12 @@ const InvalidText = styled.div`
 	margin-left: 4px;
 `;
 
+const ExtraVideoControls = styled.div`
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 8px;
+`;
+
 const maxCaptionLength = (max: number) => (value: ImageData) =>
 	value && (value.caption?.length ?? 0) > max
 		? `Must be ${max} characters or less`
@@ -623,10 +629,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		};
 
 		const cardCriteria = this.determineCardCriteria();
-		const replacementVideoControlsId = getInputId(
-			cardId,
-			'replacement-video-controls',
-		);
+		const extraVideoControlsId = getInputId(cardId, 'extra-video-controls');
 		const warningsContainerId = getInputId(cardId, 'warnings-container');
 
 		return (
@@ -949,10 +952,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 														changeField={change}
 														changeMediaField={this.changeMediaField}
 														form={form}
-														replacementVideoControlsId={
-															replacementVideoControlsId
-														}
-														warningsContainerId={warningsContainerId}
+														extraVideoControlsId={extraVideoControlsId}
 													/>
 												}
 												usesBlockStyling={true}
@@ -968,7 +968,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 													this.props.showMainVideo || this.props.videoReplace
 												}
 											/>
-											<div id={replacementVideoControlsId} />
+											<ExtraVideoControls id={extraVideoControlsId} />
 										</SelectMediaInput>
 										<SelectMediaInput>
 											<Field

@@ -21,6 +21,7 @@ import { theme } from 'constants/theme';
 import { getPillarColor } from 'util/getPillarColor';
 import { dragEventHasImageData } from 'util/validateImageSrc';
 import { Criteria } from 'types/Grid';
+import { getMainMediaVideoAtom } from '../../../util/externalArticle';
 
 const ArticleBodyContainer = styled(CardBody)<{
 	pillarId: string | undefined;
@@ -170,6 +171,12 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 								imageCriteria={imageCriteria}
 								collectionType={collectionType}
 								groupIndex={groupIndex}
+								// Needs to be passed explicitly as not stored on the Redux form
+								mainMediaVideoAtom={
+									!!article && article.hasMainVideo
+										? getMainMediaVideoAtom(article)
+										: undefined
+								}
 							/>
 						</ArticleBodyContainer>
 					</DragIntentContainer>

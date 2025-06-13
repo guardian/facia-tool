@@ -4,6 +4,7 @@ import ButtonDefault from '../inputs/ButtonDefault';
 import { createPortal } from 'react-dom';
 import {
 	ConfirmDeleteIcon,
+	LoopIcon,
 	PreviewVideoIcon,
 	ReplaceVideoIcon,
 	RubbishBinIcon,
@@ -22,9 +23,9 @@ import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
 import { OverlayModal } from '../modals/OverlayModal';
-import { InvalidWarning } from '../form/ArticleMetaForm';
 import type { Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
+import pageConfig from '../../util/extractConfigFromPage';
 
 interface VideoControlsProps {
 	videoBaseUrl: string | null;
@@ -35,8 +36,7 @@ interface VideoControlsProps {
 	changeField: (field: string, value: any) => void;
 	changeMediaField: (fieldToSet: string) => void;
 	form: any;
-	replacementVideoControlsId: string;
-	warningsContainerId: string;
+	extraVideoControlsId: string;
 }
 
 const VideoControlsOuterContainer = styled.div`
@@ -91,8 +91,7 @@ export const VideoControls = ({
 	changeField,
 	changeMediaField,
 	form,
-	replacementVideoControlsId,
-	warningsContainerId,
+	extraVideoControlsId,
 }: VideoControlsProps) => {
 	const [mainMediaVideoAtomProperties, setMainMediaVideoAtomProperties] =
 		React.useState<AtomProperties>();
@@ -107,6 +106,10 @@ export const VideoControls = ({
 	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] =
 		React.useState<boolean>(false);
 	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
+	const [isMainVideoSelfHosted, setIsMainVideoSelfHosted] =
+		React.useState<boolean>(false);
+	const [isReplacementVideoSelfHosted, setIsReplacementVideoSelfHosted] =
+		React.useState<boolean>(false);
 	const dispatch = useDispatch();
 
 	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -224,34 +227,56 @@ export const VideoControls = ({
 		replacementVideoAtomProperties,
 	]);
 
+	useEffect(() => {
+		setIsReplacementVideoSelfHosted(
+			showReplacementVideo &&
+				replacementVideoAtom !== undefined &&
+				replacementVideoAtomProperties?.platform === 'url',
+		);
+	}, [
+		replacementVideoAtom,
+		showReplacementVideo,
+		replacementVideoAtomProperties,
+	]);
+
+	useEffect(() => {
+		setIsMainVideoSelfHosted(
+			showMainVideo &&
+				mainMediaVideoAtom !== undefined &&
+				mainMediaVideoAtomProperties?.platform === 'url',
+		);
+	}, [showMainVideo, mainMediaVideoAtom, mainMediaVideoAtomProperties]);
+
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;
 	}
 
-	const replacementVideoControls = document.getElementById(
-		replacementVideoControlsId,
-	);
+	const extraVideoControls = document.getElementById(extraVideoControlsId);
 
-	const warningsContainer = document.getElementById(warningsContainerId);
-
-	const mainMediaIsSelfHosted =
-		showMainVideo &&
-		mainMediaVideoAtom !== null &&
-		mainMediaVideoAtomProperties?.platform === 'url';
-
-	const replacementVideoIsSelfHosted =
-		showReplacementVideo &&
-		replacementVideoAtom !== null &&
-		replacementVideoAtomProperties?.platform === 'url';
+	const enableLoopingVideoFeatureSwitch =
+		pageConfig?.userData?.featureSwitches.find(
+			(feature) => feature.key === 'enable-looping-video',
+		);
 
 	return (
 		<>
+			{extraVideoControls !== null &&
+			(isMainVideoSelfHosted || isReplacementVideoSelfHosted) &&
+			enableLoopingVideoFeatureSwitch?.enabled
+				? createPortal(
+						<Explainer>
+							<LoopIcon />
+							Selected video will loop
+						</Explainer>,
+						extraVideoControls,
+					)
+				: null}
 			{/*
 				If there is no main media atom, the replacement atom is the only one we care about.
 				In this scenario we neither show the 'Use replacement video toggle', nor refer to it as a replacement.
 				Note in the data model we still call this a replacement atom.
 			*/}
-			{replacementVideoControls !== null && mainMediaVideoAtom
+			{extraVideoControls !== null && mainMediaVideoAtom && replacementVideoAtom
 				? createPortal(
 						<MarginWrapper>
 							<Field
@@ -259,12 +284,10 @@ export const VideoControls = ({
 								component={InputCheckboxToggleInline}
 								label="Use replacement video"
 								disabled={!replacementVideoAtom}
-								id={`${replacementVideoControlsId}-useReplacementVideo`}
+								id={`${extraVideoControlsId}-useReplacementVideo`}
 								type="checkbox"
 								dataTestId="use-replacement-video"
-								checked={
-									showReplacementVideo && replacementVideoAtom !== undefined
-								}
+								checked={showReplacementVideo}
 								onChange={() => {
 									if (showReplacementVideo) {
 										changeMediaField('showMainVideo');
@@ -273,11 +296,8 @@ export const VideoControls = ({
 									}
 								}}
 							/>
-							{!replacementVideoAtom && (
-								<Explainer>Replacement video required</Explainer>
-							)}
 						</MarginWrapper>,
-						replacementVideoControls,
+						extraVideoControls,
 					)
 				: null}
 			{currentVideoUri !== undefined && showVideoPreviewModal
@@ -365,13 +385,6 @@ export const VideoControls = ({
 					normalize={stripQueryParams}
 				></Field>
 			</VideoControlsOuterContainer>
-			{warningsContainer !== null &&
-			(mainMediaIsSelfHosted || replacementVideoIsSelfHosted)
-				? createPortal(
-						<InvalidWarning warning="Self-hosted videos are not supported" />,
-						warningsContainer,
-					)
-				: null}
 		</>
 	);
 };
