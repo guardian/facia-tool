@@ -262,7 +262,7 @@ export const VideoControls = ({
 		<>
 			{extraVideoControls !== null &&
 			(isMainVideoSelfHosted || isReplacementVideoSelfHosted) &&
-			enableLoopingVideoFeatureSwitch?.enabled === true
+			enableLoopingVideoFeatureSwitch?.enabled
 				? createPortal(
 						<Explainer>
 							<LoopIcon />

@@ -238,7 +238,7 @@ const articleBodyDefault = React.memo(
 			);
 
 		useEffect(() => {
-			if (enableLoopingVideoFeatureSwitch?.enabled === false) {
+			if (!enableLoopingVideoFeatureSwitch?.enabled) {
 				return;
 			}
 			if (replacementVideoAtom === undefined || videoReplace !== true) {
@@ -249,7 +249,7 @@ const articleBodyDefault = React.memo(
 		}, [replacementVideoAtom, videoReplace]);
 
 		useEffect(() => {
-			if (enableLoopingVideoFeatureSwitch?.enabled === false) {
+			if (!enableLoopingVideoFeatureSwitch?.enabled) {
 				return;
 			}
 			if (mainMediaVideoAtom === undefined || showMainVideo !== true) {

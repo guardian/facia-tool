@@ -65,7 +65,7 @@ export default () => {
 						Before a Youtube video is played, we show the card's Trail Image. If
 						no Trail Image exists, we show the Poster Image.
 					</div>
-					{enableLoopingVideoFeatureSwitch?.enabled === true ? (
+					{enableLoopingVideoFeatureSwitch?.enabled ? (
 						<div>
 							<div>
 								<LoopIcon fill={'white'} size={'s'} />
