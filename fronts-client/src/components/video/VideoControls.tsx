@@ -22,7 +22,7 @@ import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
 import { OverlayModal } from '../modals/OverlayModal';
-import { InvalidWarning } from '../form/ArticleMetaForm';
+import { InvalidWarning, isAtom } from '../form/ArticleMetaForm';
 import type { Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
 
@@ -187,10 +187,7 @@ export const VideoControls = ({
 	};
 
 	useEffect(() => {
-		if (
-			typeof replacementVideoAtom !== 'string' &&
-			replacementVideoAtom !== undefined
-		) {
+		if (isAtom(replacementVideoAtom)) {
 			const atomProperties = extractAtomProperties(replacementVideoAtom);
 			setReplacementVideoAtomProperties(atomProperties);
 		} else {
@@ -239,13 +236,12 @@ export const VideoControls = ({
 
 	const mainMediaIsSelfHosted =
 		showMainVideo &&
-		mainMediaVideoAtom !== null &&
+		isAtom(mainMediaVideoAtom) &&
 		mainMediaVideoAtomProperties?.platform === 'url';
 
 	const replacementVideoIsSelfHosted =
 		showReplacementVideo &&
-		replacementVideoAtom !== undefined &&
-		typeof replacementVideoAtom !== 'string' &&
+		isAtom(replacementVideoAtom) &&
 		replacementVideoAtomProperties?.platform === 'url';
 
 	return (
@@ -262,18 +258,11 @@ export const VideoControls = ({
 								name="useReplacementVideo"
 								component={InputCheckboxToggleInline}
 								label="Use replacement video"
-								disabled={
-									replacementVideoAtom === undefined ||
-									typeof replacementVideoAtom === 'string'
-								}
+								disabled={!isAtom(replacementVideoAtom)}
 								id={`${replacementVideoControlsId}-useReplacementVideo`}
 								type="checkbox"
 								dataTestId="use-replacement-video"
-								checked={
-									showReplacementVideo &&
-									typeof replacementVideoAtom !== 'string' &&
-									replacementVideoAtom !== undefined
-								}
+								checked={showReplacementVideo && isAtom(replacementVideoAtom)}
 								onChange={() => {
 									if (showReplacementVideo) {
 										changeMediaField('showMainVideo');
@@ -282,8 +271,7 @@ export const VideoControls = ({
 									}
 								}}
 							/>
-							{(replacementVideoAtom === undefined ||
-								typeof replacementVideoAtom === 'string') && (
+							{!isAtom(replacementVideoAtom) && (
 								<Explainer>Replacement video required</Explainer>
 							)}
 						</MarginWrapper>,
@@ -339,24 +327,22 @@ export const VideoControls = ({
 						<PreviewVideoIcon />
 						Preview video
 					</VideoAction>
-					{showReplacementVideo &&
-						replacementVideoAtom !== undefined &&
-						typeof replacementVideoAtom !== 'string' && (
-							<ButtonDelete
-								type="button"
-								priority="primary"
-								onClick={handleDelete}
-								confirmDelete={confirmDelete}
-							>
-								<DeleteIconOptions>
-									{confirmDelete ? (
-										<ConfirmDeleteIcon size="s" />
-									) : (
-										<RubbishBinIcon size="s" />
-									)}
-								</DeleteIconOptions>
-							</ButtonDelete>
-						)}
+					{showReplacementVideo && isAtom(replacementVideoAtom) && (
+						<ButtonDelete
+							type="button"
+							priority="primary"
+							onClick={handleDelete}
+							confirmDelete={confirmDelete}
+						>
+							<DeleteIconOptions>
+								{confirmDelete ? (
+									<ConfirmDeleteIcon size="s" />
+								) : (
+									<RubbishBinIcon size="s" />
+								)}
+							</DeleteIconOptions>
+						</ButtonDelete>
+					)}
 				</VideoControlsInnerContainer>
 				<Field
 					name="replaceVideoUri"

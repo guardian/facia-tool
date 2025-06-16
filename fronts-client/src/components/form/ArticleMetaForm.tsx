@@ -115,6 +115,15 @@ type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
 	criteria: Criteria;
 };
 
+export const isAtom = (value: unknown): value is Atom => {
+	return (
+		typeof value === 'object' &&
+		typeof (value as Atom).id === 'string' &&
+		typeof (value as Atom).atomType === 'string' &&
+		typeof (value as Atom).data === 'object'
+	);
+};
+
 const SlideshowRowContainer = styled(RowContainer)`
 	flex: 1 1 auto;
 	overflow: visible;
@@ -442,7 +451,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			const reinitialisedValues = {
 				...initialValues,
 				// Redux form prefers empty strings to undefined values
-				replacementVideoAtom: atom !== undefined ? atom : '',
+				replacementVideoAtom: isAtom(atom) ? atom : '',
 			};
 
 			// Hydrate the form with the latest atom, and reinitialise the form
@@ -1069,7 +1078,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						<InvalidWarning warning="You need at least two images to make a slideshow" />
 					) : null}
 					{(showMainVideo && !hasMainVideo) ||
-					(videoReplace && !replacementVideoAtom) ? (
+					(videoReplace && !isAtom(replacementVideoAtom)) ? (
 						<InvalidWarning warning="You need to provide a valid video" />
 					) : null}
 				</div>
@@ -1087,7 +1096,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							!valid ||
 							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
 							(showMainVideo && !hasMainVideo) ||
-							(videoReplace && !replacementVideoAtom)
+							(videoReplace && !isAtom(replacementVideoAtom))
 						}
 						size="l"
 						data-testid="edit-form-save-button"
