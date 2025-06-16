@@ -25,11 +25,12 @@ import { OverlayModal } from '../modals/OverlayModal';
 import { InvalidWarning } from '../form/ArticleMetaForm';
 import type { Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
+import { isAtom } from '../../util/atom';
 
 interface VideoControlsProps {
 	videoBaseUrl: string | null;
 	mainMediaVideoAtom: Atom | undefined;
-	replacementVideoAtom: Atom | undefined;
+	replacementVideoAtom: Atom | undefined | string;
 	showMainVideo: boolean;
 	showReplacementVideo: boolean;
 	changeField: (field: string, value: any) => void;
@@ -187,7 +188,7 @@ export const VideoControls = ({
 	};
 
 	useEffect(() => {
-		if (replacementVideoAtom !== undefined) {
+		if (isAtom(replacementVideoAtom)) {
 			const atomProperties = extractAtomProperties(replacementVideoAtom);
 			setReplacementVideoAtomProperties(atomProperties);
 		} else {
@@ -236,12 +237,12 @@ export const VideoControls = ({
 
 	const mainMediaIsSelfHosted =
 		showMainVideo &&
-		mainMediaVideoAtom !== null &&
+		isAtom(mainMediaVideoAtom) &&
 		mainMediaVideoAtomProperties?.platform === 'url';
 
 	const replacementVideoIsSelfHosted =
 		showReplacementVideo &&
-		replacementVideoAtom !== null &&
+		isAtom(replacementVideoAtom) &&
 		replacementVideoAtomProperties?.platform === 'url';
 
 	return (
@@ -258,13 +259,11 @@ export const VideoControls = ({
 								name="useReplacementVideo"
 								component={InputCheckboxToggleInline}
 								label="Use replacement video"
-								disabled={!replacementVideoAtom}
+								disabled={!isAtom(replacementVideoAtom)}
 								id={`${replacementVideoControlsId}-useReplacementVideo`}
 								type="checkbox"
 								dataTestId="use-replacement-video"
-								checked={
-									showReplacementVideo && replacementVideoAtom !== undefined
-								}
+								checked={showReplacementVideo && isAtom(replacementVideoAtom)}
 								onChange={() => {
 									if (showReplacementVideo) {
 										changeMediaField('showMainVideo');
@@ -273,7 +272,7 @@ export const VideoControls = ({
 									}
 								}}
 							/>
-							{!replacementVideoAtom && (
+							{!isAtom(replacementVideoAtom) && (
 								<Explainer>Replacement video required</Explainer>
 							)}
 						</MarginWrapper>,
@@ -329,7 +328,7 @@ export const VideoControls = ({
 						<PreviewVideoIcon />
 						Preview video
 					</VideoAction>
-					{showReplacementVideo && replacementVideoAtom && (
+					{showReplacementVideo && isAtom(replacementVideoAtom) && (
 						<ButtonDelete
 							type="button"
 							priority="primary"

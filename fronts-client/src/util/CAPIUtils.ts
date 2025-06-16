@@ -4,6 +4,7 @@ import { CardMeta } from '../types/Collection';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import startCase from 'lodash/startCase';
 import { extractAtomProperties } from './extractAtomId';
+import { isAtom } from './atom';
 
 const getIdFromURL = (url: string): string | undefined => {
 	const [, id = null] =
@@ -83,6 +84,9 @@ function getThumbnail(
 	) {
 		return meta.slideshow[0].src;
 	} else if (meta.videoReplace) {
+		if (!isAtom(meta.replacementVideoAtom)) {
+			return undefined;
+		}
 		const atomProperties = extractAtomProperties(meta.replacementVideoAtom);
 		if (
 			atomProperties !== undefined &&

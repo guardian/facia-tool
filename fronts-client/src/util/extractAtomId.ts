@@ -99,15 +99,7 @@ const getVideoUri = (atomProperties: AtomProperties | undefined) => {
 		: atomProperties?.assetId;
 };
 
-const extractAtomProperties = (atom?: Atom): AtomProperties => {
-	if (atom === undefined) {
-		return {
-			assetId: undefined,
-			videoImage: undefined,
-			platform: undefined,
-		};
-	}
-
+const extractAtomProperties = (atom: Atom): AtomProperties => {
 	const assetId = extractAssetId(atom);
 	const videoImage = extractVideoImage(atom);
 	const platform = extractPlatform(atom);

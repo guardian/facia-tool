@@ -84,6 +84,7 @@ import SelectMediaInput from '../inputs/SelectMediaInput';
 import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import type { Atom, AtomResponse } from '../../types/Capi';
 import Tooltip from '../modals/Tooltip';
+import { isAtom } from '../../util/atom';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -428,17 +429,21 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	}
 
 	async componentDidUpdate(prevProps: Readonly<Props>) {
-		const atomIsAlreadyDefined = this.props.replacementVideoAtom !== undefined;
-		const atomIdChanged = prevProps.atomId !== this.props.atomId;
+		const { atomId } = this.props;
+		const atomIdChanged = prevProps.atomId !== atomId;
 
 		if (this.isFirstLoad) {
 			this.isFirstLoad = false;
-			const atom = await this.getAtom(this.props.atomId);
+			if (atomId === '' || atomId === undefined) {
+				return;
+			}
+			const atom = await this.getAtom(atomId);
 			const initialValues = this.props.initialValues;
 
 			const reinitialisedValues = {
 				...initialValues,
-				replacementVideoAtom: atom !== undefined ? atom : '',
+				// Redux form prefers empty strings to undefined values
+				replacementVideoAtom: isAtom(atom) ? atom : '',
 			};
 
 			// Hydrate the form with the latest atom, and reinitialise the form
@@ -447,7 +452,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			return;
 		}
 
-		if (atomIsAlreadyDefined && atomIdChanged) {
+		if (atomIdChanged) {
 			this.debouncedFetchAndSetReplacementVideoAtom();
 		}
 	}
@@ -480,12 +485,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		}
 	};
 
-	private getAtom = async (
-		atomId: string | undefined,
-	): Promise<Atom | undefined> => {
-		if (atomId === undefined) {
-			return undefined;
-		}
+	private getAtom = async (atomId: string): Promise<Atom | undefined> => {
 		return this.fetchAtom(atomId)
 			.then((response) => response.media)
 			.catch(() => undefined);
@@ -1070,7 +1070,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						<InvalidWarning warning="You need at least two images to make a slideshow" />
 					) : null}
 					{(showMainVideo && !hasMainVideo) ||
-					(videoReplace && !replacementVideoAtom) ? (
+					(videoReplace && !isAtom(replacementVideoAtom)) ? (
 						<InvalidWarning warning="You need to provide a valid video" />
 					) : null}
 				</div>
@@ -1088,7 +1088,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							!valid ||
 							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
 							(showMainVideo && !hasMainVideo) ||
-							(videoReplace && !replacementVideoAtom)
+							(videoReplace && !isAtom(replacementVideoAtom))
 						}
 						size="l"
 						data-testid="edit-form-save-button"
@@ -1262,7 +1262,7 @@ interface ContainerProps {
 	videoReplace: boolean;
 	replaceVideoUri: string;
 	atomId: string;
-	replacementVideoAtom: Atom | undefined;
+	replacementVideoAtom: Atom | undefined | string;
 	videoBaseUrl: string | null;
 }
 
