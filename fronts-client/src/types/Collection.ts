@@ -93,7 +93,7 @@ type CardRootMeta = ChefCardMeta &
 		snapCss?: string;
 		atomId?: string;
 		imageSlideshowReplace?: boolean;
-		replacementVideoAtom?: Atom;
+		replacementVideoAtom?: Atom | string;
 		slideshow?: Array<{
 			src?: string;
 			thumb?: string;

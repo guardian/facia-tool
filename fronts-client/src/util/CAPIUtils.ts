@@ -83,6 +83,12 @@ function getThumbnail(
 	) {
 		return meta.slideshow[0].src;
 	} else if (meta.videoReplace) {
+		if (
+			typeof meta.replacementVideoAtom === 'string' ||
+			meta.replacementVideoAtom === undefined
+		) {
+			return undefined;
+		}
 		const atomProperties = extractAtomProperties(meta.replacementVideoAtom);
 		if (
 			atomProperties !== undefined &&

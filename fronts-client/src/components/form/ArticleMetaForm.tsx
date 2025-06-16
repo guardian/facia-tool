@@ -441,6 +441,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
 			const reinitialisedValues = {
 				...initialValues,
+				// Redux form prefers empty strings to undefined values
 				replacementVideoAtom: atom !== undefined ? atom : '',
 			};
 
@@ -1260,7 +1261,7 @@ interface ContainerProps {
 	videoReplace: boolean;
 	replaceVideoUri: string;
 	atomId: string;
-	replacementVideoAtom: Atom | undefined;
+	replacementVideoAtom: Atom | undefined | string;
 	videoBaseUrl: string | null;
 }
 

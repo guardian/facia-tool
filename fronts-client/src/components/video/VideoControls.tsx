@@ -29,7 +29,7 @@ import urlConstants from '../../constants/url';
 interface VideoControlsProps {
 	videoBaseUrl: string | null;
 	mainMediaVideoAtom: Atom | undefined;
-	replacementVideoAtom: Atom | undefined;
+	replacementVideoAtom: Atom | undefined | string;
 	showMainVideo: boolean;
 	showReplacementVideo: boolean;
 	changeField: (field: string, value: any) => void;
@@ -187,7 +187,10 @@ export const VideoControls = ({
 	};
 
 	useEffect(() => {
-		if (replacementVideoAtom !== undefined) {
+		if (
+			typeof replacementVideoAtom !== 'string' &&
+			replacementVideoAtom !== undefined
+		) {
 			const atomProperties = extractAtomProperties(replacementVideoAtom);
 			setReplacementVideoAtomProperties(atomProperties);
 		} else {
@@ -241,7 +244,8 @@ export const VideoControls = ({
 
 	const replacementVideoIsSelfHosted =
 		showReplacementVideo &&
-		replacementVideoAtom !== null &&
+		replacementVideoAtom !== undefined &&
+		typeof replacementVideoAtom !== 'string' &&
 		replacementVideoAtomProperties?.platform === 'url';
 
 	return (
@@ -258,12 +262,17 @@ export const VideoControls = ({
 								name="useReplacementVideo"
 								component={InputCheckboxToggleInline}
 								label="Use replacement video"
-								disabled={!replacementVideoAtom}
+								disabled={
+									replacementVideoAtom === undefined ||
+									typeof replacementVideoAtom === 'string'
+								}
 								id={`${replacementVideoControlsId}-useReplacementVideo`}
 								type="checkbox"
 								dataTestId="use-replacement-video"
 								checked={
-									showReplacementVideo && replacementVideoAtom !== undefined
+									showReplacementVideo &&
+									typeof replacementVideoAtom !== 'string' &&
+									replacementVideoAtom !== undefined
 								}
 								onChange={() => {
 									if (showReplacementVideo) {
@@ -273,7 +282,8 @@ export const VideoControls = ({
 									}
 								}}
 							/>
-							{!replacementVideoAtom && (
+							{(replacementVideoAtom === undefined ||
+								typeof replacementVideoAtom === 'string') && (
 								<Explainer>Replacement video required</Explainer>
 							)}
 						</MarginWrapper>,
@@ -329,22 +339,24 @@ export const VideoControls = ({
 						<PreviewVideoIcon />
 						Preview video
 					</VideoAction>
-					{showReplacementVideo && replacementVideoAtom && (
-						<ButtonDelete
-							type="button"
-							priority="primary"
-							onClick={handleDelete}
-							confirmDelete={confirmDelete}
-						>
-							<DeleteIconOptions>
-								{confirmDelete ? (
-									<ConfirmDeleteIcon size="s" />
-								) : (
-									<RubbishBinIcon size="s" />
-								)}
-							</DeleteIconOptions>
-						</ButtonDelete>
-					)}
+					{showReplacementVideo &&
+						replacementVideoAtom !== undefined &&
+						typeof replacementVideoAtom !== 'string' && (
+							<ButtonDelete
+								type="button"
+								priority="primary"
+								onClick={handleDelete}
+								confirmDelete={confirmDelete}
+							>
+								<DeleteIconOptions>
+									{confirmDelete ? (
+										<ConfirmDeleteIcon size="s" />
+									) : (
+										<RubbishBinIcon size="s" />
+									)}
+								</DeleteIconOptions>
+							</ButtonDelete>
+						)}
 				</VideoControlsInnerContainer>
 				<Field
 					name="replaceVideoUri"
