@@ -22,9 +22,10 @@ import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
 import { OverlayModal } from '../modals/OverlayModal';
-import { InvalidWarning, isAtom } from '../form/ArticleMetaForm';
+import { InvalidWarning } from '../form/ArticleMetaForm';
 import type { Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
+import { isAtom } from '../../util/atom';
 
 interface VideoControlsProps {
 	videoBaseUrl: string | null;

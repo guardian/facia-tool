@@ -84,6 +84,7 @@ import SelectMediaInput from '../inputs/SelectMediaInput';
 import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import type { Atom, AtomResponse } from '../../types/Capi';
 import Tooltip from '../modals/Tooltip';
+import { isAtom } from '../../util/atom';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -113,15 +114,6 @@ type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
 	change: (field: string, value: any) => void;
 	slideshowHasAtLeastTwoImages: boolean;
 	criteria: Criteria;
-};
-
-export const isAtom = (value: unknown): value is Atom => {
-	return (
-		typeof value === 'object' &&
-		typeof (value as Atom).id === 'string' &&
-		typeof (value as Atom).atomType === 'string' &&
-		typeof (value as Atom).data === 'object'
-	);
 };
 
 const SlideshowRowContainer = styled(RowContainer)`

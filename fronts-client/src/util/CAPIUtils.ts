@@ -4,7 +4,7 @@ import { CardMeta } from '../types/Collection';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import startCase from 'lodash/startCase';
 import { extractAtomProperties } from './extractAtomId';
-import { isAtom } from '../components/form/ArticleMetaForm';
+import { isAtom } from './atom';
 
 const getIdFromURL = (url: string): string | undefined => {
 	const [, id = null] =
