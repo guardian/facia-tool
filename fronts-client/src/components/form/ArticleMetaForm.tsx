@@ -428,11 +428,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	}
 
 	async componentDidUpdate(prevProps: Readonly<Props>) {
-		const atomIdChanged = prevProps.atomId !== this.props.atomId;
+		const { atomId } = this.props;
+		const atomIdChanged = prevProps.atomId !== atomId;
 
 		if (this.isFirstLoad) {
 			this.isFirstLoad = false;
-			const atom = await this.getAtom(this.props.atomId);
+			if (atomId === '' || atomId === undefined) {
+				return;
+			}
+			const atom = await this.getAtom(atomId);
 			const initialValues = this.props.initialValues;
 
 			const reinitialisedValues = {
@@ -479,12 +483,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		}
 	};
 
-	private getAtom = async (
-		atomId: string | undefined,
-	): Promise<Atom | undefined> => {
-		if (atomId === undefined) {
-			return undefined;
-		}
+	private getAtom = async (atomId: string): Promise<Atom | undefined> => {
 		return this.fetchAtom(atomId)
 			.then((response) => response.media)
 			.catch(() => undefined);
