@@ -428,7 +428,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	}
 
 	async componentDidUpdate(prevProps: Readonly<Props>) {
-		const atomIsAlreadyDefined = this.props.replacementVideoAtom !== undefined;
 		const atomIdChanged = prevProps.atomId !== this.props.atomId;
 
 		if (this.isFirstLoad) {
@@ -447,7 +446,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			return;
 		}
 
-		if (atomIsAlreadyDefined && atomIdChanged) {
+		if (atomIdChanged) {
 			this.debouncedFetchAndSetReplacementVideoAtom();
 		}
 	}
