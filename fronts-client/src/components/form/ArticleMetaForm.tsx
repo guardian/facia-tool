@@ -705,6 +705,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 									component={InputCheckboxToggleInline}
 									label="Immersive"
 									id={getInputId(cardId, 'immersive')}
+									key={getInputId(cardId, 'immersive')}
 									type="checkbox"
 									onChange={(event: any) =>
 										this.toggleCardStyleField(
