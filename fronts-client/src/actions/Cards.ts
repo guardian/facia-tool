@@ -14,12 +14,7 @@ import {
 	maybeAddFrontPublicationDate,
 	copyCardImageMeta,
 } from 'actions/CardsCommon';
-import {
-	selectCards,
-	selectCard,
-	selectArticleGroup,
-	selectGroups,
-} from 'selectors/shared';
+import { selectCards, selectCard, selectArticleGroup } from 'selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/action';
 import { cloneCard } from 'util/card';
@@ -219,7 +214,8 @@ const minimumGroupBoostLevel = (groupName: string) => {
 	}
 };
 
-const isFlexibleGeneralContainer = (state: State, collectionId: string) => {
+const isFlexibleGeneralContainer = (state: State, collectionId?: string) => {
+	if (!collectionId) return false;
 	const collection = collectionSelectors.selectById(state, collectionId);
 	return collection?.type === FLEXIBLE_GENERAL_NAME;
 };
@@ -228,19 +224,15 @@ const isFlexibleGeneralContainer = (state: State, collectionId: string) => {
  * it should adopt the minimum boost level
  * of the group it moves into, regardless of its previous boost level.
  * */
-const mayResetBoostLevel = (
-	state: State,
+export const mayResetBoostLevel = (
 	from: PosSpec | null,
 	to: PosSpec,
 	card: Card,
 	persistTo: 'collection' | 'clipboard',
 ) => {
-	if (to.type !== 'group' || !to.collectionId || persistTo !== 'collection')
-		return;
+	if (to.type !== 'group' || persistTo !== 'collection') return;
 	if (from?.id === to.id) return;
-	if (!isFlexibleGeneralContainer(state, to.collectionId)) return;
-	const toGroup = selectGroups(state)[to.id];
-	const groupName = toGroup?.name ?? 'standard';
+	const groupName = to.groupName ?? 'standard';
 	return updateCardMeta(
 		card.uuid,
 		{
@@ -279,16 +271,16 @@ const insertCardWithCreate =
 					return;
 				}
 
-				const modifyCardAction = mayResetBoostLevel(
-					state,
-					null,
-					to,
-					card,
-					persistTo,
-				);
+				if (isFlexibleGeneralContainer(state, to.collectionId)) {
+					const modifyCardAction = mayResetBoostLevel(
+						null,
+						to,
+						card,
+						persistTo,
+					);
 
-				if (modifyCardAction) dispatch(modifyCardAction);
-
+					if (modifyCardAction) dispatch(modifyCardAction);
+				}
 				dispatch(
 					insertActionCreator(
 						toWithRespectToState.id,
@@ -389,14 +381,15 @@ const moveCard = (
 					dispatch(cardsReceived([parent, ...supporting]));
 				}
 
-				const modifyCardAction = mayResetBoostLevel(
-					state,
-					from,
-					to,
-					parent,
-					persistTo,
-				);
-				if (modifyCardAction) dispatch(modifyCardAction);
+				if (isFlexibleGeneralContainer(state, to.collectionId)) {
+					const modifyCardAction = mayResetBoostLevel(
+						from,
+						to,
+						parent,
+						persistTo,
+					);
+					if (modifyCardAction) dispatch(modifyCardAction);
+				}
 
 				dispatch(
 					insertActionCreator(
