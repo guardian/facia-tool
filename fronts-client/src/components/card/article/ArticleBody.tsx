@@ -43,6 +43,7 @@ import {
 import { Atom } from '../../../types/Capi';
 import { extractAtomProperties } from '../../../util/extractAtomId';
 import pageConfig from '../../../util/extractConfigFromPage';
+import { isAtom } from '../../../util/atom';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
 	flex-shrink: 0;
@@ -139,7 +140,7 @@ interface ArticleBodyProps {
 	showMainVideo?: boolean;
 	videoReplace?: boolean;
 	mainMediaVideoAtom?: Atom | undefined;
-	replacementVideoAtom?: Atom | undefined;
+	replacementVideoAtom?: string | Atom | undefined;
 	tone?: string | undefined;
 	featureFlagPageViewData?: boolean;
 	canShowPageViewData: boolean;
@@ -241,7 +242,7 @@ const articleBodyDefault = React.memo(
 			if (!enableLoopingVideoFeatureSwitch?.enabled) {
 				return;
 			}
-			if (replacementVideoAtom === undefined || videoReplace !== true) {
+			if (!videoReplace || !isAtom(replacementVideoAtom)) {
 				return;
 			}
 			const { platform } = extractAtomProperties(replacementVideoAtom);

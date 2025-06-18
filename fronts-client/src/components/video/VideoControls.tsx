@@ -231,8 +231,8 @@ export const VideoControls = ({
 	useEffect(() => {
 		setIsReplacementVideoSelfHosted(
 			showReplacementVideo &&
-			isAtom(replacementVideoAtom) &&
-			replacementVideoAtomProperties?.platform === 'url',
+				isAtom(replacementVideoAtom) &&
+				replacementVideoAtomProperties?.platform === 'url',
 		);
 	}, [
 		replacementVideoAtom,
@@ -243,8 +243,8 @@ export const VideoControls = ({
 	useEffect(() => {
 		setIsMainVideoSelfHosted(
 			showMainVideo &&
-			isAtom(mainMediaVideoAtom) &&
-			mainMediaVideoAtomProperties?.platform === 'url',
+				isAtom(mainMediaVideoAtom) &&
+				mainMediaVideoAtomProperties?.platform === 'url',
 		);
 	}, [showMainVideo, mainMediaVideoAtom, mainMediaVideoAtomProperties]);
 
