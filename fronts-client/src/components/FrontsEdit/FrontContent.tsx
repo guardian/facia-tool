@@ -98,7 +98,8 @@ function getNextGroupTarget(
 	currentGroupId: string,
 	groupIds?: string[],
 	groupsData?: Group[],
-) {
+	collectionId?: string,
+): PosSpec | undefined {
 	if (!groupIds || !groupsData) {
 		return;
 	}
@@ -119,6 +120,7 @@ function getNextGroupTarget(
 		groupMaxItems: nextGroup?.maxItems,
 		groupsData: groupsData,
 		cards: nextGroup?.cardsData,
+		collectionId,
 	};
 }
 type CollectionMove<T> = {
@@ -142,7 +144,7 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 
 	// If inserting at the bottom of a full group, move the card to the next group instead.
 	const target = isBottomInsert
-		? getNextGroupTarget(to.id, to.groupIds, to.groupsData)
+		? getNextGroupTarget(to.id, to.groupIds, to.groupsData, to.collectionId)
 		: to;
 
 	if (!target) return queue;
@@ -189,6 +191,7 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 			currentGroup.uuid,
 			move.to.groupIds,
 			move.to.groupsData,
+			move.to.collectionId,
 		);
 
 		if (lastCard && nextTarget) {
