@@ -206,12 +206,17 @@ const updateCardMetaWithPersist = (persistTo: PersistTo) =>
 		persistTo,
 	});
 
-const minimumGroupBoostLevel = (groupId: string) => {
-	// boost is the smallest boost level for `Big`
-	if (groupId === '1') return 'boost';
-	// megaboost is the smallest boost level for `Very Big`
-	if (groupId === '2') return 'megaboost';
-	return 'default';
+const minimumGroupBoostLevel = (groupName: string) => {
+	switch (groupName) {
+		case 'very big':
+			return 'megaboost';
+		case 'big':
+			return 'boost';
+		case 'splash':
+		case 'standard':
+		default:
+			return 'default';
+	}
 };
 
 const isFlexibleGeneralContainer = (state: State, collectionId: string) => {
@@ -225,19 +230,21 @@ const isFlexibleGeneralContainer = (state: State, collectionId: string) => {
  * */
 const mayResetBoostLevel = (
 	state: State,
+	from: PosSpec | null,
 	to: PosSpec,
 	card: Card,
 	persistTo: 'collection' | 'clipboard',
 ) => {
 	if (to.type !== 'group' || !to.collectionId || persistTo !== 'collection')
 		return;
+	if (from?.id === to.id) return;
 	if (!isFlexibleGeneralContainer(state, to.collectionId)) return;
 	const toGroup = selectGroups(state)[to.id];
-	const groupIndex = toGroup?.id ?? '0';
+	const groupName = toGroup?.name ?? 'standard';
 	return updateCardMeta(
 		card.uuid,
 		{
-			boostLevel: minimumGroupBoostLevel(groupIndex),
+			boostLevel: minimumGroupBoostLevel(groupName),
 		},
 		{ merge: true },
 	);
@@ -271,7 +278,14 @@ const insertCardWithCreate =
 				if (!card) {
 					return;
 				}
-				const modifyCardAction = mayResetBoostLevel(state, to, card, persistTo);
+
+				const modifyCardAction = mayResetBoostLevel(
+					state,
+					null,
+					to,
+					card,
+					persistTo,
+				);
 
 				if (modifyCardAction) dispatch(modifyCardAction);
 
@@ -377,6 +391,7 @@ const moveCard = (
 
 				const modifyCardAction = mayResetBoostLevel(
 					state,
+					from,
 					to,
 					parent,
 					persistTo,
