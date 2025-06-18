@@ -954,6 +954,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 														changeMediaField={this.changeMediaField}
 														form={form}
 														extraVideoControlsId={extraVideoControlsId}
+														warningsContainerId={warningsContainerId}
 													/>
 												}
 												usesBlockStyling={true}

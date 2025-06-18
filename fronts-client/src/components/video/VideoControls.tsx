@@ -23,6 +23,7 @@ import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
 import { OverlayModal } from '../modals/OverlayModal';
+import { InvalidWarning } from '../form/ArticleMetaForm';
 import type { Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
 import pageConfig from '../../util/extractConfigFromPage';
@@ -38,6 +39,7 @@ interface VideoControlsProps {
 	changeMediaField: (fieldToSet: string) => void;
 	form: any;
 	extraVideoControlsId: string;
+	warningsContainerId: string;
 }
 
 const VideoControlsOuterContainer = styled.div`
@@ -93,6 +95,7 @@ export const VideoControls = ({
 	changeMediaField,
 	form,
 	extraVideoControlsId,
+	warningsContainerId,
 }: VideoControlsProps) => {
 	const [mainMediaVideoAtomProperties, setMainMediaVideoAtomProperties] =
 		React.useState<AtomProperties>();
@@ -254,6 +257,8 @@ export const VideoControls = ({
 
 	const extraVideoControls = document.getElementById(extraVideoControlsId);
 
+	const warningsContainer = document.getElementById(warningsContainerId);
+
 	const enableLoopingVideoFeatureSwitch =
 		pageConfig?.userData?.featureSwitches.find(
 			(feature) => feature.key === 'enable-looping-video',
@@ -389,6 +394,14 @@ export const VideoControls = ({
 					normalize={stripQueryParams}
 				></Field>
 			</VideoControlsOuterContainer>
+			{warningsContainer !== null &&
+			!enableLoopingVideoFeatureSwitch?.enabled &&
+			(isMainVideoSelfHosted || isReplacementVideoSelfHosted)
+				? createPortal(
+						<InvalidWarning warning="Self-hosted videos are not supported" />,
+						warningsContainer,
+					)
+				: null}
 		</>
 	);
 };
