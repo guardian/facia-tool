@@ -19,6 +19,7 @@ describe('buildMoveQueue', () => {
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[1].cardsData,
 				index: 0,
+				collectionId: baseFront.to.collectionId,
 			},
 			data: baseFront.to.groupsData?.[0].cardsData?.[0],
 			from: {
@@ -38,6 +39,7 @@ describe('buildMoveQueue', () => {
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[2].cardsData,
 				index: 0,
+				collectionId: baseFront.to.collectionId,
 			},
 			data: baseFront.to.groupsData?.[1].cardsData?.[1],
 			from: {
@@ -57,6 +59,7 @@ describe('buildMoveQueue', () => {
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[3].cardsData,
 				index: 0,
+				collectionId: baseFront.to.collectionId,
 			},
 			data: baseFront.to.groupsData?.[2].cardsData?.[1],
 			from: {
@@ -132,6 +135,7 @@ describe('buildMoveQueue', () => {
 				groupsData: newFront.to.groupsData,
 				cards: newFront.to.groupsData[1].cardsData,
 				index: 0,
+				collectionId: baseFront.to.collectionId,
 			},
 			data: newFront.to.groupsData[0].cardsData[0],
 			from: {
@@ -165,6 +169,7 @@ describe('buildMoveQueue', () => {
 				groupsData: newFront.to.groupsData,
 				cards: newFront.to.groupsData[1].cardsData,
 				index: 0,
+				collectionId: baseFront.to.collectionId,
 			},
 			data: newFront.data,
 			from: newFront.from || null,
@@ -180,6 +185,7 @@ describe('buildMoveQueue', () => {
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[2].cardsData,
 				index: 0,
+				collectionId: baseFront.to.collectionId,
 			},
 			data: baseFront.to.groupsData?.[1].cardsData?.[1],
 			from: {
@@ -199,6 +205,7 @@ describe('buildMoveQueue', () => {
 				groupsData: baseFront.to.groupsData,
 				cards: baseFront.to.groupsData?.[3].cardsData,
 				index: 0,
+				collectionId: baseFront.to.collectionId,
 			},
 			data: baseFront.to.groupsData?.[2].cardsData?.[1],
 			from: {
