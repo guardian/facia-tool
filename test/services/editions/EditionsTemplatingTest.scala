@@ -550,7 +550,7 @@ class EditionsTemplatingTest
       false,
       false,
       false,
-	  false,
+      false
     )
     Prefill(
       222222,
