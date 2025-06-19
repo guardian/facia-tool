@@ -441,7 +441,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			return;
 		}
 
-		if (prevProps.atomId !== this.props.atomId) {
+		if (this.props.videoReplace && prevProps.atomId !== this.props.atomId) {
 			this.debouncedFetchAndSetReplacementVideoAtom();
 		}
 	}
@@ -457,7 +457,11 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	};
 
 	private handleFirstLoad = async () => {
-		if (this.props.atomId === '' || this.props.atomId === undefined) {
+		if (
+			!this.props.videoReplace ||
+			this.props.atomId === '' ||
+			this.props.atomId === undefined
+		) {
 			return;
 		}
 		const replacementAtomResponse = await this.getAtom(this.props.atomId);
