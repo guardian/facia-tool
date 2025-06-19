@@ -435,33 +435,51 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 	}
 
 	async componentDidUpdate(prevProps: Readonly<Props>) {
-		const { atomId } = this.props;
-		const atomIdChanged = prevProps.atomId !== atomId;
-
 		if (this.isFirstLoad) {
 			this.isFirstLoad = false;
-			if (atomId === '' || atomId === undefined) {
-				return;
-			}
-			const atom = await this.getAtom(atomId);
-			const initialValues = this.props.initialValues;
-
-			const reinitialisedValues = {
-				...initialValues,
-				// Redux form prefers empty strings to undefined values
-				replacementVideoAtom: isAtom(atom) ? atom : '',
-			};
-
-			// Hydrate the form with the latest atom, and reinitialise the form
-			// so that the form state is 'pristine' and doesn't appear unsaved.
-			this.props.initialize(reinitialisedValues);
+			await this.handleFirstLoad();
 			return;
 		}
 
-		if (atomIdChanged) {
+		if (this.props.videoReplace && prevProps.atomId !== this.props.atomId) {
 			this.debouncedFetchAndSetReplacementVideoAtom();
 		}
 	}
+
+	private reinitialiseWithAtom = (replacementAtom: Atom | '') => {
+		const reinitialisedValues = {
+			...this.props.initialValues,
+			replacementVideoAtom: replacementAtom,
+		};
+
+		this.props.initialize(reinitialisedValues);
+		return;
+	};
+
+	private handleFirstLoad = async () => {
+		if (
+			!this.props.videoReplace ||
+			this.props.atomId === '' ||
+			this.props.atomId === undefined
+		) {
+			return;
+		}
+		const replacementAtomResponse = await this.getAtom(this.props.atomId);
+
+		// Redux form prefers empty strings to undefined values
+		const replacementAtom = isAtom(replacementAtomResponse)
+			? replacementAtomResponse
+			: '';
+
+		if (this.props.pristine) {
+			// If the form has not changed since the initial values, reinitialise the form with the hydrated atom
+			// so that the form state remains 'pristine' and doesn't appear unsaved.
+			this.reinitialiseWithAtom(replacementAtom);
+		} else {
+			// The form is already "dirty" with changes, so we can hydrate the atom without reinitialising.
+			this.props.change('replacementVideoAtom', replacementAtom);
+		}
+	};
 
 	private fetchAndSetReplacementVideoAtom = async (
 		atomId: string | undefined,
