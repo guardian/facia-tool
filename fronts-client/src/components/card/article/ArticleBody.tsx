@@ -42,7 +42,6 @@ import {
 } from 'constants/image';
 import { Atom } from '../../../types/Capi';
 import { extractAtomProperties } from '../../../util/extractAtomId';
-import pageConfig from '../../../util/extractConfigFromPage';
 import { isAtom } from '../../../util/atom';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
@@ -233,15 +232,7 @@ const articleBodyDefault = React.memo(
 		const [isReplacementVideoSelfHosted, setIsReplacementVideoSelfHosted] =
 			React.useState<boolean>(false);
 
-		const enableLoopingVideoFeatureSwitch =
-			pageConfig?.userData?.featureSwitches.find(
-				(feature) => feature.key === 'enable-looping-video',
-			);
-
 		useEffect(() => {
-			if (!enableLoopingVideoFeatureSwitch?.enabled) {
-				return;
-			}
 			if (!videoReplace || !isAtom(replacementVideoAtom)) {
 				return;
 			}
@@ -250,9 +241,6 @@ const articleBodyDefault = React.memo(
 		}, [replacementVideoAtom, videoReplace]);
 
 		useEffect(() => {
-			if (!enableLoopingVideoFeatureSwitch?.enabled) {
-				return;
-			}
 			if (mainMediaVideoAtom === undefined || showMainVideo !== true) {
 				return;
 			}

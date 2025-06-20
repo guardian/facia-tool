@@ -26,7 +26,6 @@ import { OverlayModal } from '../modals/OverlayModal';
 import { InvalidWarning } from '../form/ArticleMetaForm';
 import type { Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
-import pageConfig from '../../util/extractConfigFromPage';
 import { isAtom } from '../../util/atom';
 
 interface VideoControlsProps {
@@ -259,16 +258,10 @@ export const VideoControls = ({
 
 	const warningsContainer = document.getElementById(warningsContainerId);
 
-	const enableLoopingVideoFeatureSwitch =
-		pageConfig?.userData?.featureSwitches.find(
-			(feature) => feature.key === 'enable-looping-video',
-		);
-
 	return (
 		<>
 			{extraVideoControls !== null &&
-			(isMainVideoSelfHosted || isReplacementVideoSelfHosted) &&
-			enableLoopingVideoFeatureSwitch?.enabled
+			(isMainVideoSelfHosted || isReplacementVideoSelfHosted)
 				? createPortal(
 						<Explainer>
 							<LoopIcon />
@@ -395,7 +388,6 @@ export const VideoControls = ({
 				></Field>
 			</VideoControlsOuterContainer>
 			{warningsContainer !== null &&
-			!enableLoopingVideoFeatureSwitch?.enabled &&
 			(isMainVideoSelfHosted || isReplacementVideoSelfHosted)
 				? createPortal(
 						<InvalidWarning warning="Self-hosted videos are not supported" />,
