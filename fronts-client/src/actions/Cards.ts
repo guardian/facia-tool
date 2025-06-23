@@ -42,9 +42,7 @@ import {
 	InsertActionCreator,
 	InsertThunkActionCreator,
 } from 'types/Cards';
-import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 import { PersistTo } from '../types/Middleware';
-import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -214,11 +212,6 @@ const minimumGroupBoostLevel = (groupName: string) => {
 	}
 };
 
-const isFlexibleGeneralContainer = (state: State, collectionId?: string) => {
-	if (!collectionId) return false;
-	const collection = collectionSelectors.selectById(state, collectionId);
-	return collection?.type === FLEXIBLE_GENERAL_NAME;
-};
 /**
  * When a card moves up or down one or more groups,
  * it should adopt the minimum boost level
@@ -271,16 +264,10 @@ const insertCardWithCreate =
 					return;
 				}
 
-				if (isFlexibleGeneralContainer(state, to.collectionId)) {
-					const modifyCardAction = mayResetBoostLevel(
-						null,
-						to,
-						card,
-						persistTo,
-					);
+				const modifyCardAction = mayResetBoostLevel(null, to, card, persistTo);
 
-					if (modifyCardAction) dispatch(modifyCardAction);
-				}
+				if (modifyCardAction) dispatch(modifyCardAction);
+
 				dispatch(
 					insertActionCreator(
 						toWithRespectToState.id,
@@ -381,15 +368,13 @@ const moveCard = (
 					dispatch(cardsReceived([parent, ...supporting]));
 				}
 
-				if (isFlexibleGeneralContainer(state, to.collectionId)) {
-					const modifyCardAction = mayResetBoostLevel(
-						from,
-						to,
-						parent,
-						persistTo,
-					);
-					if (modifyCardAction) dispatch(modifyCardAction);
-				}
+				const modifyCardAction = mayResetBoostLevel(
+					from,
+					to,
+					parent,
+					persistTo,
+				);
+				if (modifyCardAction) dispatch(modifyCardAction);
 
 				dispatch(
 					insertActionCreator(
