@@ -289,7 +289,19 @@ const getCardEntitiesFromDrop = async (
 		if (article) {
 			// We have a single article from CAPI - create an item as usual.
 			return {
-				card: createCard(article.id, isEdition),
+				card: createCard(article.id, isEdition, {
+					cardType: 'article',
+					boostLevel: 'default',
+					imageHide: article.frontsMeta.defaults.imageHide,
+					imageReplace: article.frontsMeta.defaults.imageReplace,
+					imageCutoutReplace: article.frontsMeta.defaults.imageCutoutReplace,
+					imageCutoutSrc: article.frontsMeta.cutout,
+					showByline: article.frontsMeta.defaults.showByline,
+					showQuotedHeadline: article.frontsMeta.defaults.showQuotedHeadline,
+					showKickerCustom: article.frontsMeta.defaults.showKickerCustom,
+					customKicker: article.frontsMeta.pickedKicker,
+					isImmersive: false,
+				}),
 				externalArticle: article,
 			};
 		}
