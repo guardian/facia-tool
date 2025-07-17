@@ -23,7 +23,6 @@ import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
 import { OverlayModal } from '../modals/OverlayModal';
-import { InvalidWarning } from '../form/ArticleMetaForm';
 import type { Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
 import { isAtom } from '../../util/atom';
@@ -38,7 +37,6 @@ interface VideoControlsProps {
 	changeMediaField: (fieldToSet: string) => void;
 	form: any;
 	extraVideoControlsId: string;
-	warningsContainerId: string;
 }
 
 const VideoControlsOuterContainer = styled.div`
@@ -94,7 +92,6 @@ export const VideoControls = ({
 	changeMediaField,
 	form,
 	extraVideoControlsId,
-	warningsContainerId,
 }: VideoControlsProps) => {
 	const [mainMediaVideoAtomProperties, setMainMediaVideoAtomProperties] =
 		React.useState<AtomProperties>();
@@ -256,8 +253,6 @@ export const VideoControls = ({
 
 	const extraVideoControls = document.getElementById(extraVideoControlsId);
 
-	const warningsContainer = document.getElementById(warningsContainerId);
-
 	return (
 		<>
 			{extraVideoControls !== null &&
@@ -387,13 +382,6 @@ export const VideoControls = ({
 					normalize={stripQueryParams}
 				></Field>
 			</VideoControlsOuterContainer>
-			{warningsContainer !== null &&
-			(isMainVideoSelfHosted || isReplacementVideoSelfHosted)
-				? createPortal(
-						<InvalidWarning warning="Self-hosted videos are not supported" />,
-						warningsContainer,
-					)
-				: null}
 		</>
 	);
 };

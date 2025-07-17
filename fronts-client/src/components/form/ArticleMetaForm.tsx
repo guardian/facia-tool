@@ -648,7 +648,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
 		const cardCriteria = this.determineCardCriteria();
 		const extraVideoControlsId = getInputId(cardId, 'extra-video-controls');
-		const warningsContainerId = getInputId(cardId, 'warnings-container');
 
 		return (
 			<FormContainer
@@ -972,7 +971,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 														changeMediaField={this.changeMediaField}
 														form={form}
 														extraVideoControlsId={extraVideoControlsId}
-														warningsContainerId={warningsContainerId}
 													/>
 												}
 												usesBlockStyling={true}
@@ -1085,7 +1083,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						</RowContainer>
 					)}
 				</FormContent>
-				<div id={warningsContainerId}>
+				<div>
 					{imageSlideshowReplace && !slideshowHasAtLeastTwoImages ? (
 						<InvalidWarning warning="You need at least two images to make a slideshow" />
 					) : null}
