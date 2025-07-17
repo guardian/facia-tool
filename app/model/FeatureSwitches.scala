@@ -33,19 +33,11 @@ object TenImageSlideshows
       enabled = false
     )
 
-object EnableLoopingVideo
-    extends FeatureSwitch(
-      key = "enable-looping-video",
-      title = "Enable looping video",
-      enabled = false
-    )
-
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
-    TenImageSlideshows,
-    EnableLoopingVideo
+    TenImageSlideshows
   )
 
   def updateFeatureSwitchesForUser(
