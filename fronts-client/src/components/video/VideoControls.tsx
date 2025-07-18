@@ -145,6 +145,7 @@ export const VideoControls = ({
 		}
 
 		if (data.atomId) {
+			changeMediaField('videoReplace');
 			dispatch(
 				change(
 					form,
@@ -165,7 +166,6 @@ export const VideoControls = ({
 					`${videoBaseUrl}/videos/${data.atomId}`,
 				),
 			);
-			changeMediaField('videoReplace');
 			handleCloseMediaAtomMakerModal();
 		}
 
