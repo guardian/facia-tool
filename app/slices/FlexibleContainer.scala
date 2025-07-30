@@ -11,17 +11,13 @@ trait FlexibleContainer {
 object FlexibleGeneral extends FlexibleContainer {
   def storiesVisible(
       stories: Seq[Story],
-      maybeCollectionConfigJson: Option[CollectionConfigJson]
+      collectionConfigJson: Option[CollectionConfigJson]
   ): Int = {
-    maybeCollectionConfigJson match {
-      case Some(collectionConfigJson) =>
-        collectionConfigJson.groupsConfig
-          .getOrElse(Nil)
-          .flatMap(_.maxItems)
-          .sum
-      case None =>
-        stories.size
-    }
+    val totalMaxItems = collectionConfigJson.get.groupsConfig
+      .getOrElse(Nil)
+      .flatMap(_.maxItems)
+      .sum
+    totalMaxItems
   }
 }
 
