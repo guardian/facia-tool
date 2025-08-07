@@ -18,7 +18,6 @@ export default {
         { 'name': 'fixed/medium/fast-XI' },
         { 'name': 'fixed/medium/slow-XII-mpu' },
         { 'name': 'fixed/thrasher' },
-        { 'name': 'fixed/video' },
         { 'name': 'fixed/medium/slow-VII' },
         { 'name': 'fixed/small/fast-VIII' },
         { 'name': 'fixed/small/slow-V-mpu' },
