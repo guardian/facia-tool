@@ -10,7 +10,6 @@ class Containers(val fixedContainers: FixedContainers) extends Logging {
     ("dynamic/fast", Dynamic(DynamicFast)),
     ("dynamic/slow", Dynamic(DynamicSlow)),
     ("dynamic/package", Dynamic(DynamicPackage)),
-    ("dynamic/slow-mpu", Dynamic(DynamicSlowMPU)),
     ("flexible/general", Flexible(FlexibleGeneral)),
     ("flexible/special", Flexible(FlexibleSpecial)),
     ("nav/list", NavList),
