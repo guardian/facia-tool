@@ -183,9 +183,6 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
       case "dynamic/package" =>
         Some(Seq(ThreeQuarterTallQuarter2))
 
-      case "dynamic/slow-mpu" =>
-        Some(Seq(HalfHalf, Hl3Mpu))
-
       case "fixed/small/slow-V-half" =>
         Some(Seq(HalfHl4))
 
@@ -211,7 +208,7 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
         fixedContainers.unapply(Some(id)).map(_.slices)
     }
 
-    maybeSlices map { slices =>
+    val svgOpt = maybeSlices map { slices =>
       val yPositions = summing(slices)(sliceHeight)
 
       <svg xmlns="http://www.w3.org/2000/svg"
@@ -221,5 +218,15 @@ class ContainerThumbnails(val fixedContainers: FixedContainers) {
         {slices.zip(yPositions).map((drawSlice _).tupled)}
       </svg>
     }
+    // Default placeholder so callers never get None
+    svgOpt.orElse(
+      Some(
+        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="40">
+			  <rect x="0" y="0" width="100" height="40" style="fill:#eee;stroke:#ddd;stroke-width:1"/>
+			  <text x="50" y="22" text-anchor="middle" style="font:10px Arial;">No preview</text>
+		  </svg>
+      )
+    )
+
   }
 }
