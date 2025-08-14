@@ -1051,3 +1051,27 @@ case object StaticFeature extends Slice {
     )
   )
 }
+
+
+/* .________.________.
+ * |________|________|
+ * |________|________|
+ * |________|________|
+ * |________|________|
+ */
+case object NewsMostPopular extends Slice {
+	val layout = SliceLayout(
+		cssClassName = "ql4-ql4",
+		columns = Seq(
+			Rows(
+				colSpan = 2,
+				columns = 2,
+				rows = 4,
+				ItemClasses(
+					mobile = ListItem,
+					tablet = ListItem
+				)
+			)
+		)
+	)
+}
