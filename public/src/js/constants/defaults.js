@@ -83,21 +83,6 @@ export default {
             }
           ]
         },
-        {
-          'name': 'dynamic/slow-mpu',
-          'groups': [
-            'standard',
-            'big'
-          ],
-          'groupsConfig': [
-            {
-              name: 'standard'
-            },
-            {
-              name: 'big'
-            }
-          ]
-        },
         { 'name': 'nav/list' },
         { 'name': 'nav/media-list' },
         { 'name': 'news/most-popular' },
