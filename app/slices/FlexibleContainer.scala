@@ -4,7 +4,7 @@ import com.gu.facia.client.models.CollectionConfigJson
 trait FlexibleContainer {
   def storiesVisible(
       stories: Seq[Story],
-      collectionConfigJson: Option[CollectionConfigJson]
+      maybeCollectionConfigJson: Option[CollectionConfigJson]
   ): Int
 }
 
@@ -28,7 +28,7 @@ object FlexibleGeneral extends FlexibleContainer {
 object FlexibleSpecial extends FlexibleContainer {
   def storiesVisible(
       stories: Seq[Story],
-      collectionConfigJson: Option[CollectionConfigJson]
+      maybeCollectionConfigJson: Option[CollectionConfigJson]
   ): Int = {
     val byGroup = Story.segmentByGroup(stories)
     val snap = byGroup.getOrElse(3, Seq.empty) ++
