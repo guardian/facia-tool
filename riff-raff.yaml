@@ -4,8 +4,6 @@ stacks: [cms-fronts]
 deployments:
   facia-tool:
     type: autoscaling
-    parameters:
-      asgMigrationInProgress: true
     dependencies:
         - facia-tool-ami-update
   facia-tool-ami-update:
