@@ -8,11 +8,12 @@ import slices.Story
 import scala.concurrent.{ExecutionContext, Future}
 
 case class StoriesVisibleByStage(
-    live: Option[StoriesVisibleResponse],
-    draft: Option[StoriesVisibleResponse]
+    live: Future[Option[StoriesVisibleResponse]],
+    draft: Future[Option[StoriesVisibleResponse]]
 )
 
 object StoriesVisibleByStage {
+  // this can't serialise
   implicit val jsonFormat: OFormat[StoriesVisibleByStage] =
     Json.format[StoriesVisibleByStage]
 }
@@ -96,7 +97,7 @@ object CollectionService {
       collection: CollectionJson,
       config: ConfigJson,
       containerService: ContainerService
-  ): Option[StoriesVisibleByStage] = {
+  )(implicit ec: ExecutionContext): Option[StoriesVisibleByStage] = {
     val stages =
       CollectionService.getStoriesForCollectionStages(collectionId, collection)
     for {
@@ -105,11 +106,17 @@ object CollectionService {
     } yield {
       StoriesVisibleByStage(
         containerService
-          .getStoriesVisible(cType, stages._1, Some(cConfigJson)),
-        containerService.getStoriesVisible(
-          cType,
-          stages._2,
-          Some(cConfigJson)
+          .getStoriesVisible(
+            // remove container type?
+            cType,
+            stages._1,
+            collectionId
+          ),
+        containerService
+          .getStoriesVisible(
+            cType,
+            stages._2,
+            collectionId
         )
       )
     }
