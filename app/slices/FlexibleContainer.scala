@@ -13,15 +13,30 @@ object FlexibleGeneral extends FlexibleContainer {
       stories: Seq[Story],
       maybeCollectionConfigJson: Option[CollectionConfigJson]
   ): Int = {
-    maybeCollectionConfigJson match {
-      case Some(collectionConfigJson) =>
-        collectionConfigJson.groupsConfig
-          .getOrElse(Nil)
-          .flatMap(_.maxItems)
-          .sum
-      case None =>
-        stories.size
+
+    val groupNameToIdMap = Map(
+      "splash" -> 3,
+      "very big" -> 2,
+      "big" -> 1,
+      "standard" -> 0
+    )
+
+    val byGroup = Story.segmentByGroup(stories)
+    val numberOfStoriesVisible = for {
+      collectionConfigJson <- maybeCollectionConfigJson
+      groupsConfig <- collectionConfigJson.groupsConfig
+    } yield {
+      groupsConfig.map { group =>
+        val maxItems = group.maxItems
+        val maybeGroupId = groupNameToIdMap.get(group.name.toLowerCase)
+        val currentItemSize = maybeGroupId match {
+          case Some(groupId) => byGroup.getOrElse(groupId, Seq.empty).size
+          case None          => 0
+        }
+        currentItemSize min maxItems.getOrElse(currentItemSize)
+      }.sum
     }
+    numberOfStoriesVisible.getOrElse(stories.size)
   }
 }
 
