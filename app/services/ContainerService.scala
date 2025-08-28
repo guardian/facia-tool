@@ -1,8 +1,8 @@
 package services
 
+import com.gu.facia.client.models.CollectionConfigJson
 import play.api.libs.json.{Json, OFormat}
 import slices._
-import com.gu.facia.client.models.CollectionConfigJson
 
 case class StoriesVisibleResponse(
     desktop: Option[Int],
