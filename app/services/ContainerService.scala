@@ -1,6 +1,6 @@
 package services
 
-import com.gu.facia.client.models.{CollectionConfigJson, ConfigJson}
+import com.gu.facia.client.models.CollectionConfigJson
 import play.api.libs.json.{Json, OFormat}
 import slices._
 
@@ -21,7 +21,6 @@ class ContainerService(val containers: Containers) {
       collectionConfigJson: Option[CollectionConfigJson]
   ) = {
     val numberOfStories = stories.length
-
     containers.all.get(containerType) map {
       case Fixed(container) =>
         val maxDesktop = container.numItems

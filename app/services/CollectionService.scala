@@ -13,7 +13,6 @@ case class StoriesVisibleByStage(
 )
 
 object StoriesVisibleByStage {
-  // this can't serialise
   implicit val jsonFormat: OFormat[StoriesVisibleByStage] =
     Json.format[StoriesVisibleByStage]
 }
