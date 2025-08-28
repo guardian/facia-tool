@@ -19,8 +19,8 @@ case class StoriesVisibleRequest(
 
 class StoriesVisibleController(
     val containerService: ContainerService,
-    val deps: BaseFaciaControllerComponents,
-    val frontsApi: FrontsApi
+    val frontsApi: FrontsApi,
+    val deps: BaseFaciaControllerComponents
 )(implicit ec: ExecutionContext)
     extends BaseFaciaController(deps)
     with Logging {

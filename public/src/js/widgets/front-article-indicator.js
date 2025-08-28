@@ -31,7 +31,8 @@ export default class extends Extension {
             if (!stale || !collection.visibleStories) {
                 collection.visibleStories = fetchVisibleStories(
                     collection.configMeta.type(),
-                    collection.groups
+                    collection.groups,
+					collection.id
                 );
             }
             collection.visibleStories.then(

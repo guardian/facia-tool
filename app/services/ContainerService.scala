@@ -4,8 +4,6 @@ import com.gu.facia.client.models.{CollectionConfigJson, ConfigJson}
 import play.api.libs.json.{Json, OFormat}
 import slices._
 
-import scala.concurrent.ExecutionContext
-
 case class StoriesVisibleResponse(
     desktop: Option[Int],
     mobile: Option[Int]
@@ -16,7 +14,7 @@ object StoriesVisibleResponse {
     Json.format[StoriesVisibleResponse]
 }
 
-class ContainerService(val containers: Containers, val frontsApi: FrontsApi) {
+class ContainerService(val containers: Containers) {
   def getStoriesVisible(
       containerType: String,
       stories: Seq[Story],
