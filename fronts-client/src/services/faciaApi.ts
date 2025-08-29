@@ -94,7 +94,6 @@ async function fetchLastPressed(frontId: string): Promise<string> {
 async function fetchVisibleArticles(
 	collectionType: string,
 	articles: ArticleDetails[],
-	collectionId: string,
 ): Promise<VisibleArticlesResponse> {
 	if (!collectionType || collectionType === '') {
 		throw new Error(`collectionType='${collectionType}' is undefined or empty`);
@@ -107,7 +106,7 @@ async function fetchVisibleArticles(
 				'Content-Type': 'application/json',
 			},
 			credentials: 'same-origin',
-			body: JSON.stringify({ stories: articles, collectionId }),
+			body: JSON.stringify({ stories: articles }),
 		});
 		return await response.json();
 	} catch (e) {

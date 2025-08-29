@@ -105,17 +105,12 @@ object CollectionService {
     } yield {
       StoriesVisibleByStage(
         containerService
-          .getStoriesVisible(
-            cType,
-            stages._1,
-            Some(cConfigJson)
-          ),
-        containerService
-          .getStoriesVisible(
-            cType,
-            stages._2,
-            Some(cConfigJson)
-          )
+          .getStoriesVisible(cType, stages._1, Some(cConfigJson)),
+        containerService.getStoriesVisible(
+          cType,
+          stages._2,
+          Some(cConfigJson)
+        )
       )
     }
   }
