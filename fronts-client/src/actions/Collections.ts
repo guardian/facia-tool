@@ -482,7 +482,7 @@ function getVisibleArticles(
 		return Promise.resolve(undefined);
 	}
 
-	return fetchVisibleArticles(collectionType, articleDetails, collection.id);
+	return fetchVisibleArticles(collectionType, articleDetails);
 }
 
 /**
