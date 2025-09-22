@@ -15,7 +15,6 @@ import {
 	AtomProperties,
 	extractAtomId,
 	extractAtomProperties,
-	getVideoUri,
 	stripQueryParams,
 } from '../../util/extractAtomId';
 import { ButtonDelete, DeleteIconOptions } from '../inputs/InputImage';
@@ -97,10 +96,9 @@ export const VideoControls = ({
 		React.useState<AtomProperties>();
 	const [replacementVideoAtomProperties, setReplacementVideoAtomProperties] =
 		React.useState<AtomProperties>();
+	const [currentVideoAtomProperties, setCurrentVideoAtomProperties] =
+		React.useState<AtomProperties>();
 
-	const [currentVideoUri, setCurrentVideoUri] = React.useState<
-		string | undefined
-	>(undefined);
 	const [showVideoPreviewModal, setShowVideoPreviewModal] =
 		React.useState<boolean>(false);
 	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] =
@@ -216,11 +214,11 @@ export const VideoControls = ({
 	}, [mainMediaVideoAtom]);
 
 	useEffect(() => {
-		const videoUri = showReplacementVideo
-			? getVideoUri(replacementVideoAtomProperties)
-			: getVideoUri(mainMediaVideoAtomProperties);
-
-		setCurrentVideoUri(videoUri);
+		setCurrentVideoAtomProperties(
+			showReplacementVideo
+				? replacementVideoAtomProperties
+				: mainMediaVideoAtomProperties,
+		);
 	}, [
 		showReplacementVideo,
 		mainMediaVideoAtomProperties,
@@ -297,13 +295,28 @@ export const VideoControls = ({
 						extraVideoControls,
 					)
 				: null}
-			{currentVideoUri !== undefined && showVideoPreviewModal
+			{currentVideoAtomProperties?.assetId !== undefined &&
+			showVideoPreviewModal
 				? createPortal(
-						<OverlayModal
-							onClose={() => setShowVideoPreviewModal(false)}
-							isOpen={showVideoPreviewModal}
-							url={currentVideoUri}
-						/>,
+						currentVideoAtomProperties.platform === 'youtube' ? (
+							<OverlayModal
+								onClose={() => setShowVideoPreviewModal(false)}
+								isOpen={showVideoPreviewModal}
+								url={`https://www.youtube.com/embed/${currentVideoAtomProperties.assetId}`}
+							/>
+						) : (
+							<OverlayModal
+								onClose={() => setShowVideoPreviewModal(false)}
+								isOpen={showVideoPreviewModal}
+							>
+								<video controls loop>
+									<source
+										src={currentVideoAtomProperties.assetId}
+										type="video/mp4"
+									/>
+								</video>
+							</OverlayModal>
+						),
 						document.body,
 					)
 				: null}
@@ -341,7 +354,7 @@ export const VideoControls = ({
 							e.stopPropagation();
 							setShowVideoPreviewModal(true);
 						}}
-						disabled={currentVideoUri === undefined}
+						disabled={currentVideoAtomProperties?.assetId === undefined}
 					>
 						<PreviewVideoIcon />
 						Preview video
