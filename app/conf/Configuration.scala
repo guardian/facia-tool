@@ -234,8 +234,8 @@ class ApplicationConfiguration(
       // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
       if (isProd) {
         val dbIdentifier =
-          if (stageFromProperties == "PROD") "facia-prod-db"
-          else "facia-code-db"
+          if (stageFromProperties == "PROD") "facia-prod-db-2025"
+          else "facia-code-db-2025"
         val request = new DescribeDBInstancesRequest().withDBInstanceIdentifier(
           dbIdentifier
         )
