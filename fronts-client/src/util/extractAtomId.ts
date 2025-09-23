@@ -83,32 +83,32 @@ const extractPlatform = (atom: Atom): Platform | undefined => {
 	}
 };
 
-export type AtomProperties = {
+export type MediaAtomActiveAssets = {
 	assetId: string | undefined;
-	videoImage: string | undefined;
 	platform: Platform | undefined;
+	m3u8: string | undefined;
+	mp4: string | undefined;
+	vtt: string | undefined;
+	videoImage: string | undefined;
 };
 
-const getVideoUri = (atomProperties: AtomProperties | undefined) => {
-	if (atomProperties === undefined) {
-		return undefined;
-	}
+const extractCurrentActiveAsset = (atom: Atom) => {};
 
-	return atomProperties?.platform === 'youtube'
-		? `https://www.youtube.com/embed/${atomProperties.assetId}`
-		: atomProperties?.assetId;
-};
+const extractMediaAtomActiveAssets = (atom: Atom): MediaAtomActiveAssets => {
+	//const currentActiveAsset = extractCurrentActiveAsset(atom);
 
-const extractAtomProperties = (atom: Atom): AtomProperties => {
 	const assetId = extractAssetId(atom);
 	const videoImage = extractVideoImage(atom);
 	const platform = extractPlatform(atom);
 
 	return {
 		assetId,
-		videoImage,
 		platform,
+		m3u8: undefined,
+		mp4: undefined,
+		vtt: undefined,
+		videoImage,
 	};
 };
 
-export { extractAtomId, extractAtomProperties, getVideoUri };
+export { extractAtomId, extractMediaAtomActiveAssets };
