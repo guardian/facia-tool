@@ -77,8 +77,11 @@ interface MediaAtom {
 
 type Platform = 'youtube' | 'url';
 
+type AssetType = 'video' | 'subtitles' | 'audio';
+
 interface AtomAsset {
-	assetType: 'audio' | 'video';
+	assetType: AssetType;
+	mimeType?: string;
 	platform?: Platform;
 	id?: string;
 }
@@ -175,4 +178,5 @@ export {
 	AtomAsset,
 	ImageAsset,
 	Platform,
+	AssetType,
 };
