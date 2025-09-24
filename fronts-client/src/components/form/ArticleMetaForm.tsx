@@ -491,7 +491,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		this.fetchAtom(atomId)
 			.then((response) => response.media)
 			.then((replacementAtom) => {
-				console.log(replacementAtom);
 				this.props.change('replacementVideoAtom', replacementAtom);
 			})
 			.catch((error) => {
