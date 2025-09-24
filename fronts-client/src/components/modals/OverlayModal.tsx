@@ -33,8 +33,9 @@ export const ImageContainer = styled.div`
 
 interface ModalProps {
 	isOpen: boolean;
-	url: string;
+	url?: string;
 	onClose: () => void;
+	children?: React.ReactNode;
 }
 
 const IFrame = styled.iframe`
@@ -44,7 +45,22 @@ const IFrame = styled.iframe`
 	border: 0;
 `;
 
-export const OverlayModal = ({ isOpen, url, onClose }: ModalProps) => {
+const Frame = styled.div`
+	height: 100%;
+	width: 96%;
+	margin-left: 2%;
+	border: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+`;
+
+export const OverlayModal = ({
+	isOpen,
+	url,
+	onClose,
+	children,
+}: ModalProps) => {
 	useEffect(() => {
 		const handleKeyUp = (e: KeyboardEvent) => {
 			if (e.key === 'Escape' && isOpen) {
@@ -75,7 +91,7 @@ export const OverlayModal = ({ isOpen, url, onClose }: ModalProps) => {
 					</ImageContainer>
 				</ModalButton>
 
-				<IFrame src={url} />
+				{children ? <Frame>{children}</Frame> : <IFrame src={url} />}
 			</StyledModal>
 		</React.Fragment>
 	);

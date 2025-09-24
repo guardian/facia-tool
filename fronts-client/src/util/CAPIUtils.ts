@@ -3,7 +3,7 @@ import { ExternalArticle } from '../types/ExternalArticle';
 import { CardMeta } from '../types/Collection';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import startCase from 'lodash/startCase';
-import { extractAtomProperties } from './extractAtomId';
+import { getActiveAtomProperties } from './extractAtom';
 import { isAtom } from './atom';
 
 const getIdFromURL = (url: string): string | undefined => {
@@ -87,12 +87,14 @@ function getThumbnail(
 		if (!isAtom(meta.replacementVideoAtom)) {
 			return undefined;
 		}
-		const atomProperties = extractAtomProperties(meta.replacementVideoAtom);
+		const activeAtomProperties = getActiveAtomProperties(
+			meta.replacementVideoAtom,
+		);
 		if (
-			atomProperties !== undefined &&
-			atomProperties.videoImage !== undefined
+			activeAtomProperties !== undefined &&
+			activeAtomProperties.videoImage !== undefined
 		) {
-			return atomProperties.videoImage;
+			return activeAtomProperties.videoImage;
 		}
 	}
 
