@@ -80,6 +80,11 @@ const MarginWrapper = styled.div`
 	margin-top: 8px;
 `;
 
+const Video = styled.video`
+	width: 100%;
+	height: min-content;
+`;
+
 export const VideoControls = ({
 	videoBaseUrl,
 	mainMediaVideoAtom,
@@ -300,12 +305,12 @@ export const VideoControls = ({
 								onClose={() => setShowVideoPreviewModal(false)}
 								isOpen={showVideoPreviewModal}
 							>
-								<video controls loop>
+								<Video controls loop>
 									<source
 										src={selectedVideoAtomProperties.url.mp4?.id}
 										type="video/mp4"
 									/>
-								</video>
+								</Video>
 							</OverlayModal>
 						),
 						document.body,

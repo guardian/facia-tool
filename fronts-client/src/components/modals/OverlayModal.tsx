@@ -52,6 +52,7 @@ const Frame = styled.div`
 	border: 0;
 	display: flex;
 	justify-content: center;
+	align-items: center;
 `;
 
 export const OverlayModal = ({
