@@ -13,16 +13,15 @@ import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
 import { autofill, change, Field } from 'redux-form';
 import {
 	extractAtomId,
-	extractMediaAtomActiveAssets,
-	MediaAtomActiveAssets,
+	getActiveAtomProperties,
 	stripQueryParams,
-} from '../../util/extractAtomId';
+} from '../../util/extractAtom';
 import { ButtonDelete, DeleteIconOptions } from '../inputs/InputImage';
 import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
 import { OverlayModal } from '../modals/OverlayModal';
-import type { Atom } from '../../types/Capi';
+import type { AtomProperties, Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
 import { isAtom } from '../../util/atom';
 
@@ -92,12 +91,12 @@ export const VideoControls = ({
 	form,
 	extraVideoControlsId,
 }: VideoControlsProps) => {
-	const [mainMediaVideoActiveAssets, setMainMediaVideoActiveAssets] =
-		React.useState<MediaAtomActiveAssets>();
-	const [replacementVideoActiveAssets, setReplacementVideoActiveAssets] =
-		React.useState<MediaAtomActiveAssets>();
-	const [currentVideoActiveAssets, setCurrentVideoActiveAssets] =
-		React.useState<MediaAtomActiveAssets>();
+	const [mainMediaVideoAtomProperties, setMainMediaVideoAtomProperties] =
+		React.useState<AtomProperties>();
+	const [replacementVideoAtomProperties, setReplacementVideoAtomProperties] =
+		React.useState<AtomProperties>();
+	const [selectedVideoAtomProperties, setSelectedVideoAtomProperties] =
+		React.useState<AtomProperties>();
 
 	const [showVideoPreviewModal, setShowVideoPreviewModal] =
 		React.useState<boolean>(false);
@@ -189,67 +188,54 @@ export const VideoControls = ({
 
 	useEffect(() => {
 		if (isAtom(replacementVideoAtom)) {
-			const atomProperties = extractMediaAtomActiveAssets(replacementVideoAtom);
-			setReplacementVideoActiveAssets(atomProperties);
+			const activeAtomProperties =
+				getActiveAtomProperties(replacementVideoAtom);
+			setReplacementVideoAtomProperties(activeAtomProperties);
 		} else {
-			setReplacementVideoActiveAssets({
-				assetId: undefined,
-				platform: undefined,
-				mp4: undefined,
-				m3u8: undefined,
-				vtt: undefined,
-				videoImage: undefined,
-			});
+			setReplacementVideoAtomProperties(undefined);
 		}
 	}, [replacementVideoAtom]);
 
 	useEffect(() => {
 		if (mainMediaVideoAtom !== undefined) {
-			const atomProperties = extractMediaAtomActiveAssets(mainMediaVideoAtom);
-			setMainMediaVideoActiveAssets(atomProperties);
+			const activeAtomProperties = getActiveAtomProperties(mainMediaVideoAtom);
+			setMainMediaVideoAtomProperties(activeAtomProperties);
 		} else {
-			setMainMediaVideoActiveAssets({
-				assetId: undefined,
-				platform: undefined,
-				mp4: undefined,
-				m3u8: undefined,
-				vtt: undefined,
-				videoImage: undefined,
-			});
+			setMainMediaVideoAtomProperties(undefined);
 		}
 	}, [mainMediaVideoAtom]);
 
 	useEffect(() => {
-		setCurrentVideoActiveAssets(
+		setSelectedVideoAtomProperties(
 			showReplacementVideo
-				? replacementVideoActiveAssets
-				: mainMediaVideoActiveAssets,
+				? replacementVideoAtomProperties
+				: mainMediaVideoAtomProperties,
 		);
 	}, [
 		showReplacementVideo,
-		mainMediaVideoActiveAssets,
-		replacementVideoActiveAssets,
+		mainMediaVideoAtomProperties,
+		replacementVideoAtomProperties,
 	]);
 
 	useEffect(() => {
 		setIsReplacementVideoSelfHosted(
 			showReplacementVideo &&
 				isAtom(replacementVideoAtom) &&
-				replacementVideoActiveAssets?.platform === 'url',
+				replacementVideoAtomProperties?.platform === 'url',
 		);
 	}, [
 		replacementVideoAtom,
 		showReplacementVideo,
-		replacementVideoActiveAssets,
+		replacementVideoAtomProperties,
 	]);
 
 	useEffect(() => {
 		setIsMainVideoSelfHosted(
 			showMainVideo &&
 				isAtom(mainMediaVideoAtom) &&
-				mainMediaVideoActiveAssets?.platform === 'url',
+				mainMediaVideoAtomProperties?.platform === 'url',
 		);
-	}, [showMainVideo, mainMediaVideoAtom, mainMediaVideoActiveAssets]);
+	}, [showMainVideo, mainMediaVideoAtom, mainMediaVideoAtomProperties]);
 
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;
@@ -301,13 +287,13 @@ export const VideoControls = ({
 						extraVideoControls,
 					)
 				: null}
-			{currentVideoActiveAssets?.assetId !== undefined && showVideoPreviewModal
+			{selectedVideoAtomProperties !== undefined && showVideoPreviewModal
 				? createPortal(
-						currentVideoActiveAssets.platform === 'youtube' ? (
+						selectedVideoAtomProperties.platform === 'youtube' ? (
 							<OverlayModal
 								onClose={() => setShowVideoPreviewModal(false)}
 								isOpen={showVideoPreviewModal}
-								url={`https://www.youtube.com/embed/${currentVideoActiveAssets.assetId}`}
+								url={`https://www.youtube.com/embed/${selectedVideoAtomProperties.youtube.id}`}
 							/>
 						) : (
 							<OverlayModal
@@ -316,7 +302,7 @@ export const VideoControls = ({
 							>
 								<video controls loop>
 									<source
-										src={currentVideoActiveAssets.assetId}
+										src={selectedVideoAtomProperties.url.mp4?.id}
 										type="video/mp4"
 									/>
 								</video>
@@ -339,8 +325,8 @@ export const VideoControls = ({
 				<VideoControlsInnerContainer
 					url={
 						showReplacementVideo
-							? replacementVideoActiveAssets?.videoImage
-							: mainMediaVideoActiveAssets?.videoImage
+							? replacementVideoAtomProperties?.videoImage
+							: mainMediaVideoAtomProperties?.videoImage
 					}
 				>
 					<VideoAction
@@ -359,7 +345,7 @@ export const VideoControls = ({
 							e.stopPropagation();
 							setShowVideoPreviewModal(true);
 						}}
-						disabled={currentVideoActiveAssets?.assetId === undefined}
+						disabled={selectedVideoAtomProperties === undefined}
 					>
 						<PreviewVideoIcon />
 						Preview video
