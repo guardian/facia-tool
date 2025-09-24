@@ -41,7 +41,7 @@ import {
 	squareImageCriteria,
 } from 'constants/image';
 import { Atom } from '../../../types/Capi';
-import { extractMediaAtomActiveAssets } from '../../../util/extractAtomId';
+import { getActiveAtomProperties } from '../../../util/extractAtom';
 import { isAtom } from '../../../util/atom';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
@@ -236,7 +236,7 @@ const articleBodyDefault = React.memo(
 			if (!videoReplace || !isAtom(replacementVideoAtom)) {
 				return;
 			}
-			const { platform } = extractMediaAtomActiveAssets(replacementVideoAtom);
+			const { platform } = getActiveAtomProperties(replacementVideoAtom);
 			setIsReplacementVideoSelfHosted(platform === 'url');
 		}, [replacementVideoAtom, videoReplace]);
 
@@ -244,7 +244,7 @@ const articleBodyDefault = React.memo(
 			if (mainMediaVideoAtom === undefined || showMainVideo !== true) {
 				return;
 			}
-			const { platform } = extractMediaAtomActiveAssets(mainMediaVideoAtom);
+			const { platform } = getActiveAtomProperties(mainMediaVideoAtom);
 			setIsMainVideoSelfHosted(platform === 'url');
 		}, [mainMediaVideoAtom, showMainVideo]);
 
