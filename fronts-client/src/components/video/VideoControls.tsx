@@ -305,11 +305,18 @@ export const VideoControls = ({
 								onClose={() => setShowVideoPreviewModal(false)}
 								isOpen={showVideoPreviewModal}
 							>
-								<Video controls loop>
+								<Video controls loop crossOrigin="anonymous">
 									<source
 										src={selectedVideoAtomProperties.url.mp4?.id}
 										type="video/mp4"
 									/>
+									{selectedVideoAtomProperties.url.vtt && (
+										<track
+											default
+											kind="subtitles"
+											src={selectedVideoAtomProperties.url.vtt?.id}
+										/>
+									)}
 								</Video>
 							</OverlayModal>
 						),
