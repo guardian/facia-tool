@@ -83,6 +83,7 @@ const MarginWrapper = styled.div`
 const Video = styled.video`
 	width: 100%;
 	height: min-content;
+	max-height: 90vh;
 `;
 
 export const VideoControls = ({
