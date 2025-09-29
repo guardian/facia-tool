@@ -77,7 +77,7 @@ const findAssetByMimeType = (atomAssets: AtomAsset[], mimeType: string) => {
 
 const extractAssetsByMimeType = (atomAssets: AtomAsset[]) => {
 	return {
-		m3u8: findAssetByMimeType(atomAssets, 'application/x-mpegURL'),
+		m3u8: findAssetByMimeType(atomAssets, 'application/vnd.apple.mpegurl'),
 		mp4: findAssetByMimeType(atomAssets, 'video/mp4'),
 		vtt: findAssetByMimeType(atomAssets, 'text/vtt'),
 	};
