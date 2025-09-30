@@ -104,7 +104,7 @@ libraryDependencies ++= Seq(
   "io.circe" %% "circe-parser" % circeVersion,
   "com.beachape" %% "enumeratum" % "1.7.6",
   "com.beachape" %% "enumeratum-play" % "1.8.2",
-  "org.playframework" %% "play" % "3.0.2",
+  "org.playframework" %% "play" % "3.0.9",
   "org.apache.commons" % "commons-text" % "1.14.0",
   "com.beust" % "jcommander" % "1.82",
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
