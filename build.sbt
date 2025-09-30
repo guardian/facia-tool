@@ -93,7 +93,7 @@ libraryDependencies ++= Seq(
   "org.julienrf" %% "play-json-derived-codecs" % "11.0.0",
   "org.json4s" %% "json4s-native" % json4sVersion,
   "org.json4s" %% "json4s-jackson" % json4sVersion,
-  "org.playframework" %% "play-json-joda" % "3.0.2",
+  "org.playframework" %% "play-json-joda" % "3.0.5",
   "ai.x" %% "play-json-extensions" % "0.42.0",
   "org.postgresql" % "postgresql" % "42.3.9",
   "org.scalikejdbc" %% "scalikejdbc" % "4.2.0",
