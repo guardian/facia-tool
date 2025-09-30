@@ -89,7 +89,7 @@ libraryDependencies ++= Seq(
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
   "com.github.blemale" %% "scaffeine" % "5.3.0" % "compile",
   "com.gu" %% "thrift-serializer" % "4.0.2",
-  "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
+  "net.logstash.logback" % "logstash-logback-encoder" % "8.1",
   "org.julienrf" %% "play-json-derived-codecs" % "11.0.0",
   "org.json4s" %% "json4s-native" % json4sVersion,
   "org.json4s" %% "json4s-jackson" % json4sVersion,
