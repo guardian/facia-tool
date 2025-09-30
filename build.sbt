@@ -98,7 +98,7 @@ libraryDependencies ++= Seq(
   "org.postgresql" % "postgresql" % "42.3.10",
   "org.scalikejdbc" %% "scalikejdbc" % "4.2.1",
   "org.scalikejdbc" %% "scalikejdbc-config" % "4.3.5",
-  "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "3.0.0-scalikejdbc-4.2",
+  "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "3.0.1-scalikejdbc-4.3",
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
