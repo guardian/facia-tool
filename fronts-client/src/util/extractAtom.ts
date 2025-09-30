@@ -1,5 +1,5 @@
 import urlConstants from '../constants/url';
-import type { Atom, Platform } from '../types/Capi';
+import type { AtomProperties, Atom, AtomAsset } from '../types/Capi';
 
 export const stripQueryParams = (value: string) => {
 	const parts: string[] = value.split('?');
@@ -49,15 +49,6 @@ const extractAtomId = (videoUri: string | undefined): string => {
 	return '';
 };
 
-const extractAssetId = (atom: Atom): string | undefined => {
-	const assetId = atom.data?.media?.assets?.[0]?.id;
-	if (!assetId) {
-		console.error(`No assets found for atom ${atom.id}`);
-		return undefined;
-	}
-	return assetId;
-};
-
 const extractVideoImage = (atom: Atom): string | undefined => {
 	const imageFile: string | undefined =
 		atom.data?.media?.trailImage?.assets?.[0]?.file ||
@@ -71,44 +62,54 @@ const extractVideoImage = (atom: Atom): string | undefined => {
 	}
 };
 
-const extractPlatform = (atom: Atom): Platform | undefined => {
-	const mediaAssetPlatform: Platform | undefined =
-		atom.data?.media?.assets?.[0]?.platform;
-
-	if (!mediaAssetPlatform) {
-		console.error(`No media assets found for atom ${atom.id}`);
-		return undefined;
-	} else {
-		return mediaAssetPlatform;
-	}
+const extractCurrentActiveAssets = (atom: Atom): AtomAsset[] => {
+	const activeVersion = atom.data?.media?.activeVersion;
+	return activeVersion !== undefined
+		? atom.data?.media?.assets?.filter(
+				(asset) => asset.version === activeVersion,
+			)
+		: [];
 };
 
-export type AtomProperties = {
-	assetId: string | undefined;
-	videoImage: string | undefined;
-	platform: Platform | undefined;
+const findAssetByMimeType = (atomAssets: AtomAsset[], mimeType: string) => {
+	return atomAssets.find((asset) => asset.mimeType === mimeType);
 };
 
-const getVideoUri = (atomProperties: AtomProperties | undefined) => {
-	if (atomProperties === undefined) {
-		return undefined;
-	}
-
-	return atomProperties?.platform === 'youtube'
-		? `https://www.youtube.com/embed/${atomProperties.assetId}`
-		: atomProperties?.assetId;
-};
-
-const extractAtomProperties = (atom: Atom): AtomProperties => {
-	const assetId = extractAssetId(atom);
-	const videoImage = extractVideoImage(atom);
-	const platform = extractPlatform(atom);
-
+const extractAssetsByMimeType = (atomAssets: AtomAsset[]) => {
 	return {
-		assetId,
-		videoImage,
-		platform,
+		m3u8: findAssetByMimeType(atomAssets, 'application/vnd.apple.mpegurl'),
+		mp4: findAssetByMimeType(atomAssets, 'video/mp4'),
+		vtt: findAssetByMimeType(atomAssets, 'text/vtt'),
 	};
 };
 
-export { extractAtomId, extractAtomProperties, getVideoUri };
+const getActiveAtomProperties = (atom: Atom): AtomProperties => {
+	const currentActiveAssets = extractCurrentActiveAssets(atom);
+	const firstActiveAsset = currentActiveAssets[0];
+	const platform = firstActiveAsset?.platform;
+	const videoImage = extractVideoImage(atom);
+
+	// Youtube atom
+	if (platform === 'youtube') {
+		return {
+			platform,
+			videoImage,
+			youtube: firstActiveAsset,
+		};
+	}
+
+	// Self-hosted atom
+	const { m3u8, mp4, vtt } = extractAssetsByMimeType(currentActiveAssets);
+
+	return {
+		platform,
+		videoImage,
+		url: {
+			m3u8,
+			mp4,
+			vtt,
+		},
+	};
+};
+
+export { extractAtomId, getActiveAtomProperties };

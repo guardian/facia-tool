@@ -12,18 +12,16 @@ import {
 import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
 import { autofill, change, Field } from 'redux-form';
 import {
-	AtomProperties,
 	extractAtomId,
-	extractAtomProperties,
-	getVideoUri,
+	getActiveAtomProperties,
 	stripQueryParams,
-} from '../../util/extractAtomId';
+} from '../../util/extractAtom';
 import { ButtonDelete, DeleteIconOptions } from '../inputs/InputImage';
 import { VideoUriInput } from '../inputs/VideoUriInput';
 import { useDispatch } from 'react-redux';
 import Explainer from '../Explainer';
 import { OverlayModal } from '../modals/OverlayModal';
-import type { Atom } from '../../types/Capi';
+import type { AtomProperties, Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
 import { isAtom } from '../../util/atom';
 
@@ -82,6 +80,12 @@ const MarginWrapper = styled.div`
 	margin-top: 8px;
 `;
 
+const Video = styled.video`
+	width: 100%;
+	height: min-content;
+	max-height: 90vh;
+`;
+
 export const VideoControls = ({
 	videoBaseUrl,
 	mainMediaVideoAtom,
@@ -97,10 +101,9 @@ export const VideoControls = ({
 		React.useState<AtomProperties>();
 	const [replacementVideoAtomProperties, setReplacementVideoAtomProperties] =
 		React.useState<AtomProperties>();
+	const [selectedVideoAtomProperties, setSelectedVideoAtomProperties] =
+		React.useState<AtomProperties>();
 
-	const [currentVideoUri, setCurrentVideoUri] = React.useState<
-		string | undefined
-	>(undefined);
 	const [showVideoPreviewModal, setShowVideoPreviewModal] =
 		React.useState<boolean>(false);
 	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] =
@@ -191,36 +194,29 @@ export const VideoControls = ({
 
 	useEffect(() => {
 		if (isAtom(replacementVideoAtom)) {
-			const atomProperties = extractAtomProperties(replacementVideoAtom);
-			setReplacementVideoAtomProperties(atomProperties);
+			const activeAtomProperties =
+				getActiveAtomProperties(replacementVideoAtom);
+			setReplacementVideoAtomProperties(activeAtomProperties);
 		} else {
-			setReplacementVideoAtomProperties({
-				assetId: undefined,
-				videoImage: undefined,
-				platform: undefined,
-			});
+			setReplacementVideoAtomProperties(undefined);
 		}
 	}, [replacementVideoAtom]);
 
 	useEffect(() => {
 		if (mainMediaVideoAtom !== undefined) {
-			const atomProperties = extractAtomProperties(mainMediaVideoAtom);
-			setMainMediaVideoAtomProperties(atomProperties);
+			const activeAtomProperties = getActiveAtomProperties(mainMediaVideoAtom);
+			setMainMediaVideoAtomProperties(activeAtomProperties);
 		} else {
-			setMainMediaVideoAtomProperties({
-				assetId: undefined,
-				videoImage: undefined,
-				platform: undefined,
-			});
+			setMainMediaVideoAtomProperties(undefined);
 		}
 	}, [mainMediaVideoAtom]);
 
 	useEffect(() => {
-		const videoUri = showReplacementVideo
-			? getVideoUri(replacementVideoAtomProperties)
-			: getVideoUri(mainMediaVideoAtomProperties);
-
-		setCurrentVideoUri(videoUri);
+		setSelectedVideoAtomProperties(
+			showReplacementVideo
+				? replacementVideoAtomProperties
+				: mainMediaVideoAtomProperties,
+		);
 	}, [
 		showReplacementVideo,
 		mainMediaVideoAtomProperties,
@@ -297,13 +293,34 @@ export const VideoControls = ({
 						extraVideoControls,
 					)
 				: null}
-			{currentVideoUri !== undefined && showVideoPreviewModal
+			{selectedVideoAtomProperties !== undefined && showVideoPreviewModal
 				? createPortal(
-						<OverlayModal
-							onClose={() => setShowVideoPreviewModal(false)}
-							isOpen={showVideoPreviewModal}
-							url={currentVideoUri}
-						/>,
+						selectedVideoAtomProperties.platform === 'youtube' ? (
+							<OverlayModal
+								onClose={() => setShowVideoPreviewModal(false)}
+								isOpen={showVideoPreviewModal}
+								url={`https://www.youtube.com/embed/${selectedVideoAtomProperties.youtube.id}`}
+							/>
+						) : (
+							<OverlayModal
+								onClose={() => setShowVideoPreviewModal(false)}
+								isOpen={showVideoPreviewModal}
+							>
+								<Video controls loop crossOrigin="anonymous">
+									<source
+										src={selectedVideoAtomProperties.url.mp4?.id}
+										type="video/mp4"
+									/>
+									{selectedVideoAtomProperties.url.vtt && (
+										<track
+											default
+											kind="subtitles"
+											src={selectedVideoAtomProperties.url.vtt?.id}
+										/>
+									)}
+								</Video>
+							</OverlayModal>
+						),
 						document.body,
 					)
 				: null}
@@ -341,7 +358,7 @@ export const VideoControls = ({
 							e.stopPropagation();
 							setShowVideoPreviewModal(true);
 						}}
-						disabled={currentVideoUri === undefined}
+						disabled={selectedVideoAtomProperties === undefined}
 					>
 						<PreviewVideoIcon />
 						Preview video
