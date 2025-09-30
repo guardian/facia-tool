@@ -8,7 +8,7 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-ThisBuild / scalaVersion := "2.13.13"
+ThisBuild / scalaVersion := "2.13.16"
 
 import sbt.Resolver
 
@@ -54,8 +54,8 @@ routesImport += "model.editions._"
 val awsVersion = "1.12.470"
 val capiModelsVersion = "31.0.0"
 val capiClientVersion = "37.0.0"
-val json4sVersion = "4.0.3"
-val circeVersion = "0.13.0"
+val json4sVersion = "4.0.7"
+val circeVersion = "0.14.14"
 
 resolvers ++= Seq(
   Resolver.file("Local", file(Path.userHome.absolutePath + "/.ivy2/local"))(
@@ -86,29 +86,29 @@ libraryDependencies ++= Seq(
   "com.gu" %% "fapi-client-play30" % "23.0.0",
   "com.gu" %% "mobile-notifications-api-models" % "3.0.0",
   "com.gu" %% "pan-domain-auth-play_3-0" % "7.0.0",
-  "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
-  "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
+  "org.scanamo" %% "scanamo" % "4.0.0" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
+  "com.github.blemale" %% "scaffeine" % "5.3.0" % "compile",
   "com.gu" %% "thrift-serializer" % "4.0.2",
-  "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
+  "net.logstash.logback" % "logstash-logback-encoder" % "8.1",
   "org.julienrf" %% "play-json-derived-codecs" % "11.0.0",
   "org.json4s" %% "json4s-native" % json4sVersion,
   "org.json4s" %% "json4s-jackson" % json4sVersion,
-  "org.playframework" %% "play-json-joda" % "3.0.2",
-  "ai.x" %% "play-json-extensions" % "0.40.2",
-  "org.postgresql" % "postgresql" % "42.3.9",
-  "org.scalikejdbc" %% "scalikejdbc" % "4.2.0",
-  "org.scalikejdbc" %% "scalikejdbc-config" % "4.2.1",
-  "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "3.0.0-scalikejdbc-4.2",
+  "org.playframework" %% "play-json-joda" % "3.0.5",
+  "ai.x" %% "play-json-extensions" % "0.42.0",
+  "org.postgresql" % "postgresql" % "42.3.10",
+  "org.scalikejdbc" %% "scalikejdbc" % "4.2.1",
+  "org.scalikejdbc" %% "scalikejdbc-config" % "4.3.5",
+  "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "3.0.1-scalikejdbc-4.3",
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
-  "com.beachape" %% "enumeratum" % "1.7.3",
-  "com.beachape" %% "enumeratum-play" % "1.8.0",
-  "org.playframework" %% "play" % "3.0.2",
-  "org.apache.commons" % "commons-text" % "1.10.0",
-  "com.beust" % "jcommander" % "1.75",
-  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-  "org.mockito" % "mockito-core" % "5.11.0" % Test
+  "com.beachape" %% "enumeratum" % "1.7.6",
+  "com.beachape" %% "enumeratum-play" % "1.8.2",
+  "org.playframework" %% "play" % "3.0.9",
+  "org.apache.commons" % "commons-text" % "1.14.0",
+  "com.beust" % "jcommander" % "1.82",
+  "org.scalatest" %% "scalatest" % "3.0.9" % "test",
+  "org.mockito" % "mockito-core" % "5.20.0" % Test
 )
 
 excludeDependencies ++= Seq(
@@ -119,7 +119,7 @@ excludeDependencies ++= Seq(
 
 dependencyOverrides ++= Seq(
   // Pinned to resolve transitive dependencies between Play and Scalikejdbc
-  "org.scala-lang.modules" %% "scala-parser-combinators" % "2.1.1"
+  "org.scala-lang.modules" %% "scala-parser-combinators" % "2.4.0"
 )
 
 val UsesDatabaseTest = config("database-int") extend Test
