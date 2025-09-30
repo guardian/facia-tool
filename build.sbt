@@ -8,7 +8,7 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-ThisBuild / scalaVersion := "2.13.13"
+ThisBuild / scalaVersion := "2.13.16"
 
 import sbt.Resolver
 
