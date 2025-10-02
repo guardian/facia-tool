@@ -33,7 +33,7 @@ jobs:
             - name: Set up grunt
               run: npm i -g grunt-cli
             - name: Install NPM dependencies
-              run: npm install
+              run: npm ci
             - name: Set up JSPM
               env:
                   JSPM_GITHUB_AUTH_SECRET: ${{ secrets.GITHUB_TOKEN }}
@@ -72,7 +72,7 @@ jobs:
             -   name: Set up grunt
                 run: npm i -g grunt-cli
             -   name: Install NPM dependencies
-                run: npm install
+                run: npm ci
             -   name: Set up JSPM
                 env:
                     JSPM_GITHUB_AUTH_SECRET: ${{ secrets.GITHUB_TOKEN }}
