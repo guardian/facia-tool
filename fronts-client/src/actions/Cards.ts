@@ -1,6 +1,6 @@
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
-import type {Card, Collection} from 'types/Collection';
+import type { Card, Collection } from 'types/Collection';
 
 import { actions as externalArticleActions } from 'bundles/externalArticlesBundle';
 import { selectEditMode } from '../selectors/pathSelectors';
@@ -247,19 +247,41 @@ export const mayResetImageReplace = (
 	to: PosSpec,
 	card: Card,
 	persistTo: 'collection' | 'clipboard',
-	state: State
+	state: State,
 ) => {
-	if (to.type === 'group' && from?.type === 'group' && persistTo === 'collection' &&
-		from?.id !== to.id && card.meta.imageReplace) {
-
+	if (
+		to.type === 'group' &&
+		from?.type === 'group' &&
+		persistTo === 'collection' &&
+		from?.id !== to.id &&
+		card.meta.imageReplace
+	) {
 		// find aspect ratio from collection type
-		const fromCollectionId: string | null = selectors.selectParentCollectionOfCard(state, card.uuid);
-		const fromCollection: Collection | undefined = fromCollectionId ? state.collections.data[fromCollectionId] : undefined;
-		const toCollection: Collection | undefined = to.collectionId ? state.collections.data[to.collectionId] : undefined;
-		const from_4_5 = COLLECTIONS_USING_PORTRAIT_TRAILS.includes(fromCollection?.type ?? "");
-		const to_4_5 = COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? "");
+		const fromCollectionId: string | null =
+			selectors.selectParentCollectionOfCard(state, card.uuid);
+		const fromCollection: Collection | undefined = fromCollectionId
+			? state.collections.data[fromCollectionId]
+			: undefined;
+		const toCollection: Collection | undefined = to.collectionId
+			? state.collections.data[to.collectionId]
+			: undefined;
+		const from_4_5 = COLLECTIONS_USING_PORTRAIT_TRAILS.includes(
+			fromCollection?.type ?? '',
+		);
+		const to_4_5 = COLLECTIONS_USING_PORTRAIT_TRAILS.includes(
+			toCollection?.type ?? '',
+		);
 
-		console.log("fromCollection", fromCollection, "from 4:5", from_4_5, "toCollection", toCollection, "to 4:5", to_4_5);
+		console.log(
+			'fromCollection',
+			fromCollection,
+			'from 4:5',
+			from_4_5,
+			'toCollection',
+			toCollection,
+			'to 4:5',
+			to_4_5,
+		);
 
 		if (from_4_5 && !to_4_5) {
 			return updateCardMeta(
@@ -269,7 +291,8 @@ export const mayResetImageReplace = (
 				},
 				{ merge: true },
 			);
-		}	}
+		}
+	}
 };
 
 const insertCardWithCreate =
@@ -413,8 +436,13 @@ const moveCard = (
 				);
 				if (modifyCardAction) dispatch(modifyCardAction);
 
-				const modifyCardAction2 =
-					mayResetImageReplace(from, to, parent, persistTo, state);
+				const modifyCardAction2 = mayResetImageReplace(
+					from,
+					to,
+					parent,
+					persistTo,
+					state,
+				);
 				if (modifyCardAction2) dispatch(modifyCardAction2);
 
 				dispatch(
