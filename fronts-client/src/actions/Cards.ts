@@ -1,6 +1,6 @@
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
-import type { Card } from 'types/Collection';
+import type {Card, Collection} from 'types/Collection';
 
 import { actions as externalArticleActions } from 'bundles/externalArticlesBundle';
 import { selectEditMode } from '../selectors/pathSelectors';
@@ -43,6 +43,8 @@ import {
 	InsertThunkActionCreator,
 } from 'types/Cards';
 import { PersistTo } from '../types/Middleware';
+import { selectors } from 'bundles/collectionsBundle';
+import { COLLECTIONS_USING_PORTRAIT_TRAILS } from 'constants/image';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -235,6 +237,41 @@ export const mayResetBoostLevel = (
 	);
 };
 
+/**
+ * If you move a 4:5 Feature card (with a 4:5 image) to a 5:4 slot,
+ * and the card has a replaced image,
+ * we revert to the trail image and remove that replaced image
+ * */
+export const mayResetImageReplace = (
+	from: PosSpec | null,
+	to: PosSpec,
+	card: Card,
+	persistTo: 'collection' | 'clipboard',
+	state: State
+) => {
+	if (to.type === 'group' && from?.type === 'group' && persistTo === 'collection' &&
+		from?.id !== to.id && card.meta.imageReplace) {
+
+		// find aspect ratio from collection type
+		const fromCollectionId: string | null = selectors.selectParentCollectionOfCard(state, card.uuid);
+		const fromCollection: Collection | undefined = fromCollectionId ? state.collections.data[fromCollectionId] : undefined;
+		const toCollection: Collection | undefined = to.collectionId ? state.collections.data[to.collectionId] : undefined;
+		const from_4_5 = COLLECTIONS_USING_PORTRAIT_TRAILS.includes(fromCollection?.type ?? "");
+		const to_4_5 = COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? "");
+
+		console.log("fromCollection", fromCollection, "from 4:5", from_4_5, "toCollection", toCollection, "to 4:5", to_4_5);
+
+		if (from_4_5 && !to_4_5) {
+			return updateCardMeta(
+				card.uuid,
+				{
+					imageReplace: false,
+				},
+				{ merge: true },
+			);
+		}	}
+};
+
 const insertCardWithCreate =
 	(
 		to: PosSpec,
@@ -375,6 +412,10 @@ const moveCard = (
 					persistTo,
 				);
 				if (modifyCardAction) dispatch(modifyCardAction);
+
+				const modifyCardAction2 =
+					mayResetImageReplace(from, to, parent, persistTo, state);
+				if (modifyCardAction2) dispatch(modifyCardAction2);
 
 				dispatch(
 					insertActionCreator(
