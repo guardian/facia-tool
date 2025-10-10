@@ -252,7 +252,7 @@ export const mayResetImageReplace = (
 		to.type === 'group' &&
 		persistTo === 'collection' &&
 		from?.id !== to.id &&
-		card.meta.imageReplace
+		card.meta?.imageReplace
 	) {
 		const replacementImageAspectRatio: number =
 			card.meta.imageSrcHeight && card.meta.imageSrcWidth
