@@ -9,10 +9,10 @@ describe('mayResetImageReplace', () => {
 		frontPublicationDate: 1741879217277,
 		meta: {
 			imageReplace: true,
-			imageSrcHeight: "1000",
-			imageSrcWidth: "800",
+			imageSrcHeight: '1000',
+			imageSrcWidth: '800',
 		},
-		uuid: "abcd-1234"
+		uuid: 'abcd-1234',
 	};
 
 	const state: any = {
@@ -25,7 +25,7 @@ describe('mayResetImageReplace', () => {
 				['f4c5e687-0fc8-4456-b895-fd6e7237fa02']: {
 					id: 'f4c5e687-0fc8-4456-b895-fd6e7237fa02',
 					type: 'scrollable/feature', // 4:5 container
-				}
+				},
 			},
 		},
 	};
@@ -36,7 +36,7 @@ describe('mayResetImageReplace', () => {
 			{ ...baseTo, type: 'not-a-group' },
 			replacedImage_4_5_Card,
 			'collection',
-			state
+			state,
 		);
 		expect(result).toBe(undefined);
 	});
@@ -46,7 +46,7 @@ describe('mayResetImageReplace', () => {
 			baseTo,
 			replacedImage_4_5_Card,
 			'clipboard',
-			state
+			state,
 		);
 		expect(result).toBe(undefined);
 	});
@@ -56,7 +56,7 @@ describe('mayResetImageReplace', () => {
 			{ ...baseTo, id: 'group-1' },
 			replacedImage_4_5_Card,
 			'collection',
-			state
+			state,
 		);
 		expect(result).toBe(undefined);
 	});
@@ -66,7 +66,7 @@ describe('mayResetImageReplace', () => {
 			{ ...baseTo, collectionId: 'f4c5e687-0fc8-4456-b895-fd6e7237fa02' },
 			replacedImage_4_5_Card,
 			'collection',
-			state
+			state,
 		);
 		expect(result).toBe(undefined);
 	});
@@ -76,7 +76,7 @@ describe('mayResetImageReplace', () => {
 			baseTo,
 			replacedImage_4_5_Card,
 			'collection',
-			state
+			state,
 		);
 		expect(result?.payload.meta.imageReplace).toBe(false);
 	});
@@ -86,7 +86,7 @@ describe('mayResetImageReplace', () => {
 			{ ...baseTo, collectionId: 'f4c5e687-0fc8-4456-b895-fd6e7237fa02' },
 			replacedImage_4_5_Card,
 			'collection',
-			state
+			state,
 		);
 		expect(result).toBe(undefined);
 	});
@@ -96,7 +96,7 @@ describe('mayResetImageReplace', () => {
 			baseTo,
 			replacedImage_4_5_Card,
 			'collection',
-			state
+			state,
 		);
 		expect(result?.payload.meta.imageReplace).toBe(false);
 	});
