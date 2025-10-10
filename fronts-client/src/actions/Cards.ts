@@ -43,7 +43,6 @@ import {
 	InsertThunkActionCreator,
 } from 'types/Cards';
 import { PersistTo } from '../types/Middleware';
-import { selectors } from 'bundles/collectionsBundle';
 import { COLLECTIONS_USING_PORTRAIT_TRAILS } from 'constants/image';
 
 // Creates a thunk action creator from a plain action creator that also allows
@@ -251,39 +250,33 @@ export const mayResetImageReplace = (
 ) => {
 	if (
 		to.type === 'group' &&
-		from?.type === 'group' &&
 		persistTo === 'collection' &&
 		from?.id !== to.id &&
 		card.meta.imageReplace
 	) {
-		// find aspect ratio from collection type
-		const fromCollectionId: string | null =
-			selectors.selectParentCollectionOfCard(state, card.uuid);
-		const fromCollection: Collection | undefined = fromCollectionId
-			? state.collections.data[fromCollectionId]
-			: undefined;
+		const replacementImageAspectRatio: number =
+			card.meta.imageSrcHeight && card.meta.imageSrcWidth
+				? +card.meta.imageSrcWidth / +card.meta.imageSrcHeight
+				: 5 / 4;
+		const replacementImageIsPortrait: boolean = replacementImageAspectRatio < 1;
+
 		const toCollection: Collection | undefined = to.collectionId
 			? state.collections.data[to.collectionId]
 			: undefined;
-		const from_4_5 = COLLECTIONS_USING_PORTRAIT_TRAILS.includes(
-			fromCollection?.type ?? '',
-		);
-		const to_4_5 = COLLECTIONS_USING_PORTRAIT_TRAILS.includes(
-			toCollection?.type ?? '',
-		);
+		const movingToPortraitCollection: boolean =
+			COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? '');
 
 		console.log(
-			'fromCollection',
-			fromCollection,
 			'from 4:5',
-			from_4_5,
+			replacementImageIsPortrait,
 			'toCollection',
 			toCollection,
 			'to 4:5',
-			to_4_5,
+			movingToPortraitCollection,
 		);
 
-		if (from_4_5 && !to_4_5) {
+		if (replacementImageIsPortrait && !movingToPortraitCollection) {
+			// disable replacement image
 			return updateCardMeta(
 				card.uuid,
 				{
