@@ -266,15 +266,6 @@ export const mayResetImageReplace = (
 		const movingToPortraitCollection: boolean =
 			COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? '');
 
-		console.log(
-			'from 4:5',
-			replacementImageIsPortrait,
-			'toCollection',
-			toCollection,
-			'to 4:5',
-			movingToPortraitCollection,
-		);
-
 		if (replacementImageIsPortrait && !movingToPortraitCollection) {
 			// disable replacement image
 			return updateCardMeta(
