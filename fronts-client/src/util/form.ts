@@ -4,7 +4,7 @@ import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
-import pageConfig from 'util/extractConfigFromPage';
+// import pageConfig from 'util/extractConfigFromPage';
 import { CardMeta, ImageData } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { Atom, CapiArticle } from 'types/Capi';
@@ -83,11 +83,14 @@ export const getCapiValuesForArticleFields = (
 	};
 };
 
-const tenImagesFeatureSwitch = pageConfig?.userData?.featureSwitches.find(
-	(feature) => feature.key === 'ten-image-slideshows',
-);
+// const tenImagesFeatureSwitch = pageConfig?.userData?.featureSwitches.find(
+// 	(feature) => feature.key === 'ten-image-slideshows',
+// );
+//
+// export const maxSlideshowImages = tenImagesFeatureSwitch?.enabled ? 10 : 5;
 
-export const maxSlideshowImages = tenImagesFeatureSwitch?.enabled ? 10 : 5;
+//bypasses the feature switch to temporarily ensure anyone can add 10 images to a slideshow
+export const maxSlideshowImages = 10;
 
 export const getInitialValuesForCardForm = (
 	article: DerivedArticle | void,
