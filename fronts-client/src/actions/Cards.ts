@@ -1,6 +1,6 @@
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
-import type { Card } from 'types/Collection';
+import type { Card, Collection } from 'types/Collection';
 
 import { actions as externalArticleActions } from 'bundles/externalArticlesBundle';
 import { selectEditMode } from '../selectors/pathSelectors';
@@ -43,6 +43,7 @@ import {
 	InsertThunkActionCreator,
 } from 'types/Cards';
 import { PersistTo } from '../types/Middleware';
+import { COLLECTIONS_USING_PORTRAIT_TRAILS } from 'constants/image';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -235,6 +236,49 @@ export const mayResetBoostLevel = (
 	);
 };
 
+/**
+ * If you move a 4:5 Feature card (with a 4:5 image) to a 5:4 slot,
+ * and the card has a replaced image,
+ * we revert to the trail image and remove that replaced image
+ * */
+export const mayResetImageReplace = (
+	from: PosSpec | null,
+	to: PosSpec,
+	card: Card,
+	persistTo: 'collection' | 'clipboard',
+	state: State,
+) => {
+	if (
+		to.type === 'group' &&
+		persistTo === 'collection' &&
+		from?.id !== to.id &&
+		card.meta?.imageReplace
+	) {
+		const replacementImageAspectRatio: number =
+			card.meta.imageSrcHeight && card.meta.imageSrcWidth
+				? +card.meta.imageSrcWidth / +card.meta.imageSrcHeight
+				: 5 / 4;
+		const replacementImageIsPortrait: boolean = replacementImageAspectRatio < 1;
+
+		const toCollection: Collection | undefined = to.collectionId
+			? state.collections.data[to.collectionId]
+			: undefined;
+		const movingToPortraitCollection: boolean =
+			COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? '');
+
+		if (replacementImageIsPortrait && !movingToPortraitCollection) {
+			// disable replacement image
+			return updateCardMeta(
+				card.uuid,
+				{
+					imageReplace: false,
+				},
+				{ merge: true },
+			);
+		}
+	}
+};
+
 const insertCardWithCreate =
 	(
 		to: PosSpec,
@@ -375,6 +419,15 @@ const moveCard = (
 					persistTo,
 				);
 				if (modifyCardAction) dispatch(modifyCardAction);
+
+				const modifyCardAction2 = mayResetImageReplace(
+					from,
+					to,
+					parent,
+					persistTo,
+					state,
+				);
+				if (modifyCardAction2) dispatch(modifyCardAction2);
 
 				dispatch(
 					insertActionCreator(
