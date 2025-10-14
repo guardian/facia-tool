@@ -27,86 +27,74 @@ describe('mayResetImmersive', () => {
 			data: {
 				['da9953a2-6116-4e8d-9d62-f245fe65f399']: {
 					id: 'da9953a2-6116-4e8d-9d62-f245fe65f399',
-					type: 'flexible/general', // 5:4 container
+					type: 'flexible/general', // supports immersive flag
 				},
 				['f4c5e687-0fc8-4456-b895-fd6e7237fa02']: {
 					id: 'f4c5e687-0fc8-4456-b895-fd6e7237fa02',
-					type: 'scrollable/feature', // 4:5 container
+					type: 'scrollable/feature', // doesn't support immersive flag
 				},
 			},
 		},
 	};
 
 	it('should early exit if to is not a group', () => {
-		const result = mayResetImmersive(
-			{
-				from: baseFrom,
-				to: { ...baseTo, type: 'not-a-group' },
-				card: immersiveCard,
-				persistTo: 'collection',
-				state
-			}
-		);
+		const result = mayResetImmersive({
+			from: baseFrom,
+			to: { ...baseTo, type: 'not-a-group' },
+			card: immersiveCard,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result).toBe(undefined);
 	});
 	it('should early exit if the card is being persisted to the clipboard', () => {
-		const result = mayResetImmersive(
-			{
-				from: baseFrom,
-				to: baseTo,
-				card: immersiveCard,
-				persistTo: 'clipboard',
-				state,
-			}
-		);
+		const result = mayResetImmersive({
+			from: baseFrom,
+			to: baseTo,
+			card: immersiveCard,
+			persistTo: 'clipboard',
+			state,
+		});
 		expect(result).toBe(undefined);
 	});
 	it('should early exit if the card is being moved within the same group', () => {
-		const result = mayResetImmersive(
-			{
-				from: { ...baseFrom, id: 'group-1' },
-				to: { ...baseTo, id: 'group-1' },
-				card: immersiveCard,
-				persistTo: 'collection',
-				state,
-			}
-		);
+		const result = mayResetImmersive({
+			from: { ...baseFrom, id: 'group-1' },
+			to: { ...baseTo, id: 'group-1' },
+			card: immersiveCard,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result).toBe(undefined);
 	});
 	it('should not reset the immersive flag if card is not immersive', () => {
-		const result = mayResetImmersive(
-			{
-				from: null,
-				to: baseTo,
-				card: nonImmersiveCard,
-				persistTo: 'collection',
-				state,
-			}
-		);
+		const result = mayResetImmersive({
+			from: null,
+			to: baseTo,
+			card: nonImmersiveCard,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result).toBe(undefined);
 	});
 	it('should reset the immersive flag if moving to a scrollable container', () => {
-		const result = mayResetImmersive(
-			{
-				from: null,
-				to: { ...baseTo, collectionId: 'f4c5e687-0fc8-4456-b895-fd6e7237fa02' },
-				card: immersiveCard,
-				persistTo: 'collection',
-				state,
-			}
-		);
+		const result = mayResetImmersive({
+			from: null,
+			to: { ...baseTo, collectionId: 'f4c5e687-0fc8-4456-b895-fd6e7237fa02' },
+			card: immersiveCard,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result?.payload.meta.isImmersive).toBe(false);
 	});
-	it('should not reset the immersive flag if to a flexible/general card', () => {
-		const result = mayResetImmersive(
-			{
-				from: baseFrom,
-				to: { ...baseTo, collectionId: 'da9953a2-6116-4e8d-9d62-f245fe65f399' },
-				card: immersiveCard,
-				persistTo: 'collection',
-				state,
-			}
-		);
+	it('should not reset the immersive flag if moving to a flexible/general card', () => {
+		const result = mayResetImmersive({
+			from: baseFrom,
+			to: { ...baseTo, collectionId: 'da9953a2-6116-4e8d-9d62-f245fe65f399' },
+			card: immersiveCard,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result).toBe(undefined);
 	});
 });

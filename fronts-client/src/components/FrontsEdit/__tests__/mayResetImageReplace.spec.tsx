@@ -31,87 +31,73 @@ describe('mayResetImageReplace', () => {
 	};
 
 	it('should early exit if to is not a group', () => {
-		const result = mayResetImageReplace(
-			{
-				from: baseFrom,
-				to: { ...baseTo, type: 'not-a-group' },
-				card: replacedImage_4_5_Card,
-				persistTo: 'collection',
-				state
-			}
-		);
+		const result = mayResetImageReplace({
+			from: baseFrom,
+			to: { ...baseTo, type: 'not-a-group' },
+			card: replacedImage_4_5_Card,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result).toBe(undefined);
 	});
 	it('should early exit if the card is being persisted to the clipboard', () => {
-		const result = mayResetImageReplace(
-			{
-				from: baseFrom,
-				to: baseTo,
-				card: replacedImage_4_5_Card,
-				persistTo: 'clipboard',
-				state,
-			}
-		);
+		const result = mayResetImageReplace({
+			from: baseFrom,
+			to: baseTo,
+			card: replacedImage_4_5_Card,
+			persistTo: 'clipboard',
+			state,
+		});
 		expect(result).toBe(undefined);
 	});
 	it('should early exit if the card is being moved within the same group', () => {
-		const result = mayResetImageReplace(
-			{
-				from: { ...baseFrom, id: 'group-1' },
-				to: { ...baseTo, id: 'group-1' },
-				card: replacedImage_4_5_Card,
-				persistTo: 'collection',
-				state,
-			}
-		);
+		const result = mayResetImageReplace({
+			from: { ...baseFrom, id: 'group-1' },
+			to: { ...baseTo, id: 'group-1' },
+			card: replacedImage_4_5_Card,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result).toBe(undefined);
 	});
 	it('should not reset the imageReplace flag if moving from clipboard to a 4:5 collection', () => {
-		const result = mayResetImageReplace(
-			{
-				from: null,
-				to: { ...baseTo, collectionId: 'f4c5e687-0fc8-4456-b895-fd6e7237fa02' },
-				card: replacedImage_4_5_Card,
-				persistTo: 'collection',
-				state,
-			}
-		);
+		const result = mayResetImageReplace({
+			from: null,
+			to: { ...baseTo, collectionId: 'f4c5e687-0fc8-4456-b895-fd6e7237fa02' },
+			card: replacedImage_4_5_Card,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result).toBe(undefined);
 	});
 	it('should reset the imageReplace flag if moving from clipboard to a 5:4 collection', () => {
-		const result = mayResetImageReplace(
-			{
-				from: null,
-				to: baseTo,
-				card: replacedImage_4_5_Card,
-				persistTo: 'collection',
-				state,
-			}
-		);
+		const result = mayResetImageReplace({
+			from: null,
+			to: baseTo,
+			card: replacedImage_4_5_Card,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result?.payload.meta.imageReplace).toBe(false);
 	});
 	it('should not reset the imageReplace flag if moving 4:5 card to a 4:5 collection', () => {
-		const result = mayResetImageReplace(
-			{
-				from: baseFrom,
-				to: { ...baseTo, collectionId: 'f4c5e687-0fc8-4456-b895-fd6e7237fa02' },
-				card: replacedImage_4_5_Card,
-				persistTo: 'collection',
-				state,
-			}
-		);
+		const result = mayResetImageReplace({
+			from: baseFrom,
+			to: { ...baseTo, collectionId: 'f4c5e687-0fc8-4456-b895-fd6e7237fa02' },
+			card: replacedImage_4_5_Card,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result).toBe(undefined);
 	});
 	it('should reset the imageReplace flag if moving 4:5 card to a 5:4 collection', () => {
-		const result = mayResetImageReplace(
-			{
-				from: baseFrom,
-				to: baseTo,
-				card: replacedImage_4_5_Card,
-				persistTo: 'collection',
-				state,
-			}
-		);
+		const result = mayResetImageReplace({
+			from: baseFrom,
+			to: baseTo,
+			card: replacedImage_4_5_Card,
+			persistTo: 'collection',
+			state,
+		});
 		expect(result?.payload.meta.imageReplace).toBe(false);
 	});
 });
