@@ -156,10 +156,6 @@ var register = _.once(() => {
         viewModel: { jspm: 'widgets/config-nav-sections' },
         template: '<!-- nav sections -->'
     });
-    ko.components.register('front-article-indicator', {
-        viewModel: { jspm: 'widgets/front-article-indicator' },
-        template: '<!-- indicators -->'
-    });
     ko.bindingHandlers.ownerClass = {
         init: function (element, valueAccessor) {
             var owner = valueAccessor();
