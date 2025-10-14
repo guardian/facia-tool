@@ -279,6 +279,41 @@ export const mayResetImageReplace = (
 	}
 };
 
+export const mayResetImmersive = (
+	from: PosSpec | null,
+	to: PosSpec,
+	card: Card,
+	persistTo: 'collection' | 'clipboard',
+	state: State,
+) => {
+	if (
+		to.type === 'group' &&
+		persistTo === 'collection' &&
+		from?.id !== to.id &&
+		card.meta?.isImmersive
+	) {
+		const toCollection: Collection | undefined = to.collectionId
+			? state.collections.data[to.collectionId]
+			: undefined;
+		const toCollectionSupportsImmersive: boolean = toCollection?.type
+			? // TODO: is this the complete definition of containers that don't support immersive?
+				!toCollection.type.startsWith('scrollable/')
+			: false;
+
+		if (!toCollectionSupportsImmersive) {
+			// turn off immersive
+			// TODO: do we need to set the boost level as well?
+			return updateCardMeta(
+				card.uuid,
+				{
+					isImmersive: false,
+				},
+				{ merge: true },
+			);
+		}
+	}
+};
+
 const insertCardWithCreate =
 	(
 		to: PosSpec,
@@ -370,6 +405,7 @@ const moveCard = (
 	from: PosSpec | null,
 	persistTo: 'collection' | 'clipboard',
 ): ThunkResult<void> => {
+	console.log('card', card, 'to', to, 'from', from);
 	return (dispatch: Dispatch, getState) => {
 		const removeActionCreator =
 			from && getRemoveActionCreatorFromType(from.type, persistTo);
@@ -428,6 +464,15 @@ const moveCard = (
 					state,
 				);
 				if (modifyCardAction2) dispatch(modifyCardAction2);
+
+				const modifyCardAction3 = mayResetImmersive(
+					from,
+					to,
+					parent,
+					persistTo,
+					state,
+				);
+				if (modifyCardAction3) dispatch(modifyCardAction3);
 
 				dispatch(
 					insertActionCreator(
