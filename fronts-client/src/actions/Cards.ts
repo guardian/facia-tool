@@ -44,6 +44,7 @@ import {
 } from 'types/Cards';
 import { PersistTo } from '../types/Middleware';
 import { COLLECTIONS_USING_PORTRAIT_TRAILS } from 'constants/image';
+import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -295,14 +296,12 @@ export const mayResetImmersive = (
 		const toCollection: Collection | undefined = to.collectionId
 			? state.collections.data[to.collectionId]
 			: undefined;
-		const toCollectionSupportsImmersive: boolean = toCollection?.type
-			? // TODO: is this the complete definition of containers that don't support immersive?
-				!toCollection.type.startsWith('scrollable/')
-			: false;
+		const toCollectionSupportsImmersive: boolean =
+			// only flexible/general container supports immersive
+			toCollection?.type === FLEXIBLE_GENERAL_NAME;
 
 		if (!toCollectionSupportsImmersive) {
 			// turn off immersive
-			// TODO: do we need to set the boost level as well?
 			return updateCardMeta(
 				card.uuid,
 				{
