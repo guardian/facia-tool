@@ -30,11 +30,26 @@ check_yarn_installed() {
 }
 
 set_node_version() {
-  echo "Attempting to set node version."
-  echo "Trying nvm" && nvm use || echo "Couldn't find nvm. Trying fnm" && fnm use
+	## Check which Node version manager is available and use it
+	if command -v mise >/dev/null 2>&1; then
+		echo "Using mise"
+		eval "$(mise activate bash)"
+	elif command -v nvm >/dev/null 2>&1; then
+		echo "Using nvm"
+		nvm use
+	elif command -v fnm >/dev/null 2>&1; then
+		echo "Using fnm"
+		fnm use
+	else
+		echo -e "${RED}No Node version manager (mise, nvm, fnm) found.${NOCOLOUR}"
+		exit 1
+	fi
 
   runningNodeVersion=$(node -v)
   requiredNodeVersion=$(cat .nvmrc)
+
+  echo "Running ${runningNodeVersion}"
+  echo "Required ${requiredNodeVersion}"
 
   if [ "$runningNodeVersion" != "$requiredNodeVersion" ]; then
     echo -e "${red}Using wrong version of Node. Required ${requiredNodeVersion}. Running ${runningNodeVersion}.${plain}."
