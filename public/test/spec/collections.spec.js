@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import * as wait from 'test/utils/wait';
 import Page from 'test/utils/page';
 
 describe('Collections', function () {

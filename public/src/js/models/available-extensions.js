@@ -13,5 +13,5 @@ export default {
     },
     'navSections': {
         widget: 'config-nav-sections'
-    },
+    }
 };
