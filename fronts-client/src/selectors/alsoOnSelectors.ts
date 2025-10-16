@@ -9,7 +9,7 @@ import uniq from 'lodash/uniq';
  *
  * For a given front:
  *  (1) Find the collections on that front
- *  (2) For each collection, find _other_ fronts that collection is on
+ *  (2) For each collection, find _other_ fronts that collection might be on
  *
  * 	Through nested reduce functions, return a keyed object:
  * 	{
@@ -23,6 +23,10 @@ import uniq from 'lodash/uniq';
  * 	    fronts: [
  * 	    	{ id: front1; priority: editorial }
  * 	    ]
+ * 	  },
+ * 	  // if the collection is not on another front, return an empty fronts array
+ * 	  collection3: {
+ * 	    fronts: []
  * 	  }
  * 	}
  *
@@ -105,7 +109,7 @@ const selectCollectionsWhichAreAlsoOnOtherFronts = (
  *
  *  For a given collection:
  *  	(1) Find the cards on that collection
- *  	(2) For each card, find _other_ containers that card is on (on the same front)
+ *  	(2) For each card, find _other_ containers that card might be on (on the same front)
  *
  *  Through nested reduce functions, return a keyed object:
  *  {
@@ -119,7 +123,11 @@ const selectCollectionsWhichAreAlsoOnOtherFronts = (
  *      collections: [
  *        { id: collection1; }
  *      ]
- *    }
+ *    },
+ *    // if the card is not on another collection, return an empty collections array
+ * 	  card3: {
+ * 	    collections: []
+ * 	  }
  *  }
  */
 const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
