@@ -30,7 +30,8 @@ import uniq from 'lodash/uniq';
  * 	  }
  * 	}
  *
- * 	Along with some other hydrated data (priorities, meritsWarning).
+ * 	We also return some other data used to display warnings when dealing with a
+ * 	container that might be on a commercial front (priorities, meritsWarning).
  */
 const selectCollectionsWhichAreAlsoOnOtherFronts = (
 	currentFront: FrontConfig | void,
