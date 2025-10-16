@@ -1,11 +1,11 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
 
-import { AlsoOnDetail } from 'types/Collection';
+import { CollectionsWhichAreAlsoOnOtherFronts } from 'types/Collection';
 import ButtonRoundedWithLabel from 'components/inputs/ButtonRoundedWithLabel';
 
 interface CollectionNotificationProps {
-	alsoOn: AlsoOnDetail;
+	collectionsWhichAreAlsoOnOtherFronts: CollectionsWhichAreAlsoOnOtherFronts;
 	displayEditWarning: boolean;
 }
 
@@ -23,7 +23,7 @@ const ToggleDetailsButton = styled(ButtonRoundedWithLabel)`
 	z-index: 5;
 `;
 
-const AlsoOnLinksWrapper = styled.div`
+const CollectionsWhichAreAlsoOnOtherFrontsLinksWrapper = styled.div`
 	position: relative;
 	z-index: 5;
 `;
@@ -37,7 +37,8 @@ class CollectionNotification extends React.Component<
 	};
 
 	public render() {
-		const { alsoOn, displayEditWarning } = this.props;
+		const { collectionsWhichAreAlsoOnOtherFronts, displayEditWarning } =
+			this.props;
 		if (displayEditWarning) {
 			return (
 				<div>
@@ -49,25 +50,31 @@ class CollectionNotification extends React.Component<
 			);
 		}
 
-		if (alsoOn.fronts.length > 0) {
+		if (collectionsWhichAreAlsoOnOtherFronts.fronts.length > 0) {
 			return (
 				<div>
-					{alsoOn.meritsWarning && (
+					{collectionsWhichAreAlsoOnOtherFronts.meritsWarning && (
 						<span>
 							<WarningText>Warning</WarningText>
 							<br />
 							Also on{' '}
-							{alsoOn.priorities.map((priority, index) => (
-								<strong key={priority}>
-									{' '}
-									{priority}
-									{index !== alsoOn.priorities.length - 1 && ','}
-								</strong>
-							))}{' '}
+							{collectionsWhichAreAlsoOnOtherFronts.priorities.map(
+								(priority, index) => (
+									<strong key={priority}>
+										{' '}
+										{priority}
+										{index !==
+											collectionsWhichAreAlsoOnOtherFronts.priorities.length -
+												1 && ','}
+									</strong>
+								),
+							)}{' '}
 							fronts.
 						</span>
 					)}
-					{!alsoOn.meritsWarning && <span>Also on other fronts.</span>}
+					{!collectionsWhichAreAlsoOnOtherFronts.meritsWarning && (
+						<span>Also on other fronts.</span>
+					)}
 					&nbsp;
 					<ToggleDetailsButton
 						tabIndex={-1}
@@ -81,11 +88,11 @@ class CollectionNotification extends React.Component<
 						{this.state.showFrontDetails ? 'Hide Details' : 'Show More'}
 					</ToggleDetailsButton>
 					{this.state.showFrontDetails && (
-						<AlsoOnLinksWrapper>
-							{alsoOn.fronts.map((front) => (
+						<CollectionsWhichAreAlsoOnOtherFrontsLinksWrapper>
+							{collectionsWhichAreAlsoOnOtherFronts.fronts.map((front) => (
 								<div key={front.id}>{front.id}</div>
 							))}
-						</AlsoOnLinksWrapper>
+						</CollectionsWhichAreAlsoOnOtherFrontsLinksWrapper>
 					)}
 				</div>
 			);

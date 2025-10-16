@@ -1,4 +1,3 @@
-import uniq from 'lodash/uniq';
 import { createSelector } from 'reselect';
 import {
 	FrontConfig,
@@ -6,9 +5,9 @@ import {
 	VisibleArticlesResponse,
 } from 'types/FaciaApi';
 import type { State } from 'types/State';
-import { AlsoOnDetail } from 'types/Collection';
 import { breakingNewsFrontId } from 'constants/fronts';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
+import { selectCollectionsWhichAreAlsoOnOtherFronts } from './alsoOnSelectors';
 
 import { CardSets, Stages } from 'types/Collection';
 import {
@@ -264,79 +263,11 @@ const selectHasUnpublishedChanges = createSelector(
 	getUnpublishedChangesStatus,
 );
 
-const selectAlsoOnFront = (
-	currentFront: FrontConfig | void,
-	fronts: FrontConfig[],
-): { [id: string]: AlsoOnDetail } => {
-	if (!currentFront) {
-		return {};
-	}
-	const currentFrontId = currentFront.id;
-	const currentFrontPriority = currentFront.priority;
-	const currentFrontCollections = currentFront.collections;
-	return currentFrontCollections.reduce(
-		(allCollectionAlsoOn, currentFrontCollectionId) => {
-			const collectionAlsoOn = fronts.reduce(
-				(collectionAlsoOnSoFar, front) => {
-					const duplicatesOnFront = front.collections.reduce(
-						(soFar, collectionId) => {
-							if (
-								front.id !== currentFrontId &&
-								collectionId === currentFrontCollectionId
-							) {
-								const meritsWarning =
-									currentFrontPriority !== 'commercial' &&
-									front.priority === 'commercial';
-
-								return {
-									priorities: soFar.priorities.concat([front.priority]),
-									meritsWarning: soFar.meritsWarning || meritsWarning,
-									fronts: soFar.fronts.concat([
-										{ id: front.id, priority: front.priority },
-									]),
-								};
-							}
-							return soFar;
-						},
-						{
-							priorities: [] as string[],
-							meritsWarning: false,
-							fronts: [] as Array<{ id: string; priority: string }>,
-						},
-					);
-
-					return {
-						priorities: uniq(
-							collectionAlsoOnSoFar.priorities.concat(
-								duplicatesOnFront.priorities,
-							),
-						),
-						meritsWarning:
-							collectionAlsoOnSoFar.meritsWarning ||
-							duplicatesOnFront.meritsWarning,
-						fronts: collectionAlsoOnSoFar.fronts.concat(
-							duplicatesOnFront.fronts,
-						),
-					};
-				},
-				{
-					priorities: [] as string[],
-					fronts: [] as Array<{ id: string; priority: string }>,
-					meritsWarning: false,
-				},
-			);
-
-			return {
-				...allCollectionAlsoOn,
-				[currentFrontCollectionId]: collectionAlsoOn,
-			};
-		},
-		{},
+const createSelectCollectionsWhichAreAlsoOnOtherFronts = () =>
+	createSelector(
+		[selectFront, selectFrontsAsArray],
+		selectCollectionsWhichAreAlsoOnOtherFronts,
 	);
-};
-
-const createSelectAlsoOnFronts = () =>
-	createSelector([selectFront, selectFrontsAsArray], selectAlsoOnFront);
 
 const selectClipboard = (state: State) => state.clipboard;
 
@@ -407,8 +338,8 @@ export {
 	selectCollectionConfigs,
 	selectFrontsIds,
 	selectFrontsWithPriority,
-	selectAlsoOnFront,
-	createSelectAlsoOnFronts,
+	selectCollectionsWhichAreAlsoOnOtherFronts,
+	createSelectCollectionsWhichAreAlsoOnOtherFronts,
 	selectHasUnpublishedChanges,
 	selectClipboard,
 	selectVisibleArticles,

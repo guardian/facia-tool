@@ -45,7 +45,6 @@ a:hover,
     box-sizing: border-box;
     color: #232323;
     font-size: 1.2em;
-    background-color: #;
 }
 
 .fstControls {
@@ -2068,7 +2067,7 @@ ol.search_list > li::before {
     color: #555;
 }
 
-span.also a{
+span.collection-is-also-on-other-fronts a{
   color: red;
   font-size: 16px;
 }
@@ -2079,7 +2078,7 @@ span.also a{
   font-size: 14px;
 }
 
-.also {
+.collection-is-also-on-other-fronts {
     margin: 6px;
     line-height: 24px;
 }
@@ -2146,7 +2145,7 @@ span.also a{
 .narrow .article__overrides {
     margin: 0;
 }
-.narrow .dropdown.also > ul {
+.narrow .dropdown.collection-is-also-on-other-fronts > ul {
     left:auto;
     right: 0;
 }

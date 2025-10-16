@@ -42,18 +42,18 @@
             (<span class="non-zero">updating...</span>)
         </span>
 
-        <span class="also" data-bind="if: alsoOn && alsoOn.length && !displayEditWarning">
-            <a class="alsoOnToggle" data-bind="click: alsoOnToggle">
-                <span data-bind="if: !alsoOnHasDifferentPriority">Also on&hellip;</span>
-                <span data-bind="if: alsoOnHasDifferentPriority">
-                    <span data-bind="if: alsoOnMeritsWarning">
+        <span class="collection-is-also-on-other-fronts" data-bind="if: collectionsWhichAreAlsoOnOtherFronts && collectionsWhichAreAlsoOnOtherFronts.length && !displayEditWarning">
+            <a class="collectionsWhichAreAlsoOnOtherFrontsToggle" data-bind="click: collectionsWhichAreAlsoOnOtherFrontsToggle">
+                <span data-bind="if: !collectionsWhichAreAlsoOnOtherFrontsHasDifferentPriority">Also on&hellip;</span>
+                <span data-bind="if: collectionsWhichAreAlsoOnOtherFrontsHasDifferentPriority">
+                    <span data-bind="if: collectionsWhichAreAlsoOnOtherFrontsMeritsWarning">
                         Warning: also on
                     </span>
-                    <span data-bind="if: !alsoOnMeritsWarning">
+                    <span data-bind="if: !collectionsWhichAreAlsoOnOtherFrontsMeritsWarning">
                         Also on
                     </span>
-                    <span data-bind="foreach: alsoOnDedupedPriorities">
-                        <span data-bind="text: $data" /><span data-bind="if: $index() < $parent.alsoOnDedupedPriorities.length - 1">, </span>
+                    <span data-bind="foreach: collectionsWhichAreAlsoOnOtherFrontsDedupedPriorities">
+                        <span data-bind="text: $data" /><span data-bind="if: $index() < $parent.collectionsWhichAreAlsoOnOtherFrontsDedupedPriorities.length - 1">, </span>
                     </span>
                     fronts.
                 </span>
@@ -81,15 +81,15 @@
                 'fa-chevron-up'  :  state.collapsed }"></i></a>
     </div>
 
-    <div class="also dropdown" data-bind="
-        if: alsoOn.length,
-        css: {'dropdown-open': state.alsoOnVisible},
-        slideVisible: state.alsoOnVisible() && !state.collapsed()
+    <div class="collection-is-also-on-other-fronts dropdown" data-bind="
+        if: collectionsWhichAreAlsoOnOtherFronts.length,
+        css: {'dropdown-open': state.collectionsWhichAreAlsoOnOtherFrontsVisible},
+        slideVisible: state.collectionsWhichAreAlsoOnOtherFrontsVisible() && !state.collapsed()
     ">
         <p>
             Warning! This container is shared on other fronts, be careful when editing.
         </p>
-        <ul data-bind="foreach: alsoOn">
+        <ul data-bind="foreach: collectionsWhichAreAlsoOnOtherFronts">
             <li><a class="list-header__also-on" data-bind="
                 click: $parent.front.setFront,
                 text: $data.id"></a>

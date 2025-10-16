@@ -23,13 +23,13 @@ const state = {
 	collections: {
 		...initialState.collections,
 		data: {
-			collection1: {
-				id: 'collection1',
+			collectionUuid1: {
+				id: 'collectionUuid1',
 				draft: ['group1'],
 				live: [],
 			},
-			collection6: {
-				id: 'collection6',
+			collectionUuid6: {
+				id: 'collectionUuid6',
 				draft: [],
 				live: [],
 			},

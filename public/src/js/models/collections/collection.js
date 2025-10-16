@@ -31,11 +31,11 @@ export default class Collection extends BaseClass {
 
         this.groups = this.createGroups(opts.groups);
 
-        this.alsoOn = opts.alsoOn || [];
-        this.alsoOnDedupedPriorities = _.uniq(this.alsoOn.map(front => front.priority));
-        this.alsoOnHasDifferentPriority = this.alsoOn.some(front => front.isDifferentPriority);
-        this.alsoOnMeritsWarning = this.alsoOnHasDifferentPriority
-            && this.alsoOn.some(front => front.priority === 'commercial');
+        this.collectionsWhichAreAlsoOnOtherFronts = opts.collectionsWhichAreAlsoOnOtherFronts || [];
+        this.collectionsWhichAreAlsoOnOtherFrontsDedupedPriorities = _.uniq(this.collectionsWhichAreAlsoOnOtherFronts.map(front => front.priority));
+        this.collectionsWhichAreAlsoOnOtherFrontsHasDifferentPriority = this.collectionsWhichAreAlsoOnOtherFronts.some(front => front.isDifferentPriority);
+        this.collectionsWhichAreAlsoOnOtherFrontsMeritsWarning = this.collectionsWhichAreAlsoOnOtherFrontsHasDifferentPriority
+            && this.collectionsWhichAreAlsoOnOtherFronts.some(front => front.priority === 'commercial');
 
         this.isDynamic = opts.type.indexOf('dynamic/') === 0;
         this.isFlexible = opts.type === ('flexible/general') || opts.type === ('flexible/special');
@@ -82,7 +82,7 @@ export default class Collection extends BaseClass {
             'editingConfig',
             'count',
             'timeAgo',
-            'alsoOnVisible',
+            'collectionsWhichAreAlsoOnOtherFrontsVisible',
             'showIndicators',
             'hasExtraActions',
             'isHistoryOpen',
@@ -464,8 +464,8 @@ export default class Collection extends BaseClass {
         return date ? humanTime(date) : '';
     }
 
-    alsoOnToggle() {
-        this.state.alsoOnVisible(!this.state.alsoOnVisible());
+	collectionsWhichAreAlsoOnOtherFrontsToggle() {
+        this.state.collectionsWhichAreAlsoOnOtherFrontsVisible(!this.state.collectionsWhichAreAlsoOnOtherFrontsVisible());
     }
 
     serializedCollectionWithMeta(sendAlert) {
