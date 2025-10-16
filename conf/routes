@@ -81,10 +81,6 @@ POST        /config/fronts/*path                     controllers.FrontController
 POST        /config/collections                      controllers.CollectionController.create()
 POST        /config/collections/*collectionId        controllers.CollectionController.update(collectionId)
 
-
-# Stories visible
-POST        /stories-visible/*containerType          controllers.StoriesVisibleController.storiesVisible(containerType)
-
 # Vanity URL
 GET         /breaking-news                           controllers.VanityRedirects.breakingnews
 GET         /*path/                                  controllers.VanityRedirects.untrail(path: String)

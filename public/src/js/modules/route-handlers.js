@@ -21,8 +21,7 @@ export default {
     ], [
         extensions.detectPressStale,
         extensions.copyPasteArticles,
-        extensions.sparklinesTrails,
-        extensions.indicators
+        extensions.sparklinesTrails
     ]),
     'config': getLoader([
         columns.frontsConfig,

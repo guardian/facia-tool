@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import * as wait from 'test/utils/wait';
 import Page from 'test/utils/page';
 
 describe('Collections', function () {
@@ -320,38 +319,6 @@ describe('Collections', function () {
             })
             .done;
         }
-    });
-
-    it('stories visible', function (done) {
-        this.testPage.mocks.mockVisibleStories.set({
-            'slow/slower/slowest': {
-                desktop: 1,
-                mobile: 1
-            }
-        });
-
-        this.testPage.actions.edit(() => {
-            return this.testPage.regions.latest().trail(5).dropTo(
-                this.testPage.regions.front().collection(2).group(4)
-            );
-        })
-        .respondWith({
-            sport: {
-                draft: [{
-                    id: 'internal-code/page/5',
-                    meta: {
-                        group: 0
-                    }
-                }]
-            }
-        })
-        .done
-        .then(() => wait.event('visible:stories:fetch'))
-        .then(function () {
-            expect($('.desktop-indicator .indicator')[0].clientHeight > 100).toBe(true);
-        })
-        .then(() => done())
-        .catch(done.fail);
     });
 
     it('copy to clipboard', function (done) {

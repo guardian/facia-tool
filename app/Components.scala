@@ -171,7 +171,6 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     new FrontController(acl, structuredLogger, updateManager, press, this)
   val pandaAuth = new PandaAuthController(this)
   val status = new StatusController(this)
-  val storiesVisible = new StoriesVisibleController(containerService, this)
   val thumbnail = new ThumbnailController(containerThumbnails, this)
   val troubleshoot = new TroubleshootController(this)
   val v1Assets = new V1Assets(assets, this)
@@ -219,7 +218,6 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     thumbnail,
     front,
     collection,
-    storiesVisible,
     vanityRedirects,
     troubleshoot,
     v2App,
