@@ -1,6 +1,6 @@
 import {
 	selectFrontsWithPriority,
-	selectAlsoOnFront,
+	selectCollectionsWhichAreAlsoOnOtherFronts,
 	createSelectArticleVisibilityDetails,
 } from 'selectors/frontsSelectors';
 import { frontsConfig } from 'fixtures/frontsConfig';
@@ -93,10 +93,10 @@ const allFronts = editorialFrontsInConfig
 	.concat(additionalEditorialFronts)
 	.concat(trainingFronts.concat(commercialFronts));
 
-describe('Selecting which front collection is also on correctly', () => {
+describe('Selecting collections which are also on other fronts', () => {
 	it('fills in also details for all collections on a front', () => {
 		expect(
-			selectAlsoOnFront(
+			selectCollectionsWhichAreAlsoOnOtherFronts(
 				additionalEditorialFronts.find(
 					(front) => front.id === 'editorialSharedWithTraining',
 				),
@@ -112,7 +112,7 @@ describe('Selecting which front collection is also on correctly', () => {
 
 	it('returns an empty list of fronts for collection which is not shared', () => {
 		expect(
-			selectAlsoOnFront(
+			selectCollectionsWhichAreAlsoOnOtherFronts(
 				additionalEditorialFronts.find(
 					(front) => front.id === 'editorialNotShared',
 				),
@@ -125,7 +125,7 @@ describe('Selecting which front collection is also on correctly', () => {
 
 	it('returns correct list of shared fronts and priorities for shared collections', () => {
 		expect(
-			selectAlsoOnFront(
+			selectCollectionsWhichAreAlsoOnOtherFronts(
 				trainingFronts.find((front) => front.id === 'trainingFront'),
 				allFronts,
 			),
@@ -140,7 +140,7 @@ describe('Selecting which front collection is also on correctly', () => {
 
 	it('sets merit warning to false if shared collection appears on a commercial front', () => {
 		expect(
-			selectAlsoOnFront(
+			selectCollectionsWhichAreAlsoOnOtherFronts(
 				commercialFronts.find((front) => front.id === 'commercialFront'),
 				allFronts,
 			),
@@ -155,7 +155,7 @@ describe('Selecting which front collection is also on correctly', () => {
 
 	it('sets merits warnign to true if a commercial collection is shared on another priority', () => {
 		expect(
-			selectAlsoOnFront(
+			selectCollectionsWhichAreAlsoOnOtherFronts(
 				editorialFrontsInConfig.find((front) => front.id === 'editorialFront'),
 				allFronts,
 			),

@@ -264,7 +264,33 @@ const selectHasUnpublishedChanges = createSelector(
 	getUnpublishedChangesStatus,
 );
 
-const selectAlsoOnFront = (
+/**
+ *
+ * @param currentFront
+ * @param fronts
+ *
+ * For a given front:
+ *  (1) Find the collections on that front
+ *  (2) For each collection, find _other_ fronts that collection is on
+ *
+ * 	Through nested reduce functions, return a keyed object:
+ * 	{
+ * 	  collection1: {
+ * 			fronts: [
+ * 				{ id: front1; priority: editorial },
+ * 				{ id: front3; priority: editorial },
+ * 			]
+ * 	  },
+ * 	  collection2: {
+ * 	    fronts: [
+ * 	    	{ id: front1; priority: editorial }
+ * 	    ]
+ * 	  }
+ * 	}
+ *
+ * 	Along with some other hydrated data (priorities, meritsWarning).
+ */
+const selectCollectionsWhichAreAlsoOnOtherFronts = (
 	currentFront: FrontConfig | void,
 	fronts: FrontConfig[],
 ): { [id: string]: AlsoOnDetail } => {
@@ -335,8 +361,11 @@ const selectAlsoOnFront = (
 	);
 };
 
-const createSelectAlsoOnFronts = () =>
-	createSelector([selectFront, selectFrontsAsArray], selectAlsoOnFront);
+const createSelectCollectionsWhichAreAlsoOnOtherFronts = () =>
+	createSelector(
+		[selectFront, selectFrontsAsArray],
+		selectCollectionsWhichAreAlsoOnOtherFronts,
+	);
 
 const selectClipboard = (state: State) => state.clipboard;
 
@@ -407,8 +436,8 @@ export {
 	selectCollectionConfigs,
 	selectFrontsIds,
 	selectFrontsWithPriority,
-	selectAlsoOnFront,
-	createSelectAlsoOnFronts,
+	selectCollectionsWhichAreAlsoOnOtherFronts,
+	createSelectCollectionsWhichAreAlsoOnOtherFronts,
 	selectHasUnpublishedChanges,
 	selectClipboard,
 	selectVisibleArticles,

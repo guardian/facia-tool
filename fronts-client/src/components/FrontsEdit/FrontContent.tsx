@@ -17,7 +17,7 @@ import { insertCardFromDropEvent } from 'util/collectionUtils';
 import { bindActionCreators } from 'redux';
 import { editorSelectCard } from 'bundles/frontsUI';
 import { initialiseCollectionsForFront } from 'actions/Collections';
-import { createSelectAlsoOnFronts } from 'selectors/frontsSelectors';
+import { createSelectCollectionsWhichAreAlsoOnOtherFronts } from 'selectors/frontsSelectors';
 import { AlsoOnDetail } from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import Raven from 'raven-js';
@@ -527,11 +527,13 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 }
 
 const mapStateToProps = () => {
-	const selectAlsoOnFronts = createSelectAlsoOnFronts();
+	const selectCollectionsWhichAreAlsoOnOtherFronts =
+		createSelectCollectionsWhichAreAlsoOnOtherFronts();
 	return (state: State, { id }: FrontPropsBeforeState) => {
 		return {
 			front: selectFront(state, { frontId: id }),
-			alsoOn: selectAlsoOnFronts(state, { frontId: id }),
+			collectionsWhichAreAlsoOnOtherFronts:
+				selectCollectionsWhichAreAlsoOnOtherFronts(state, { frontId: id }),
 			collectionsError: collectionSelectors.selectCurrentError(state),
 			collectionsLastSuccessfulFetchTimestamp:
 				collectionSelectors.selectLastSuccessfulFetchTimestamp(state),
