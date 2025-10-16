@@ -10,7 +10,7 @@ describe('Validating Front Collection configuration metadata', () => {
 						frontsConfig,
 					},
 				} as any,
-				'collection1',
+				'collectionUuid1',
 			),
 		).toEqual(true);
 		expect(
@@ -20,7 +20,7 @@ describe('Validating Front Collection configuration metadata', () => {
 						frontsConfig,
 					},
 				} as any,
-				'collection2',
+				'collectionUuid2',
 			),
 		).toEqual(false);
 	});

@@ -1,7 +1,10 @@
 import React from 'react';
 import { styled, Theme } from 'constants/theme';
 import Collection from './CollectionComponents/Collection';
-import { AlsoOnDetail, CardMeta } from 'types/Collection';
+import {
+	CollectionsWhichAreAlsoOnOtherFronts,
+	CardMeta,
+} from 'types/Collection';
 import { CardSets, Card as TCard } from 'types/Collection';
 import GroupDisplayComponent from 'components/GroupDisplay';
 import GroupLevel from 'components/clipboard/GroupLevel';
@@ -92,8 +95,8 @@ interface CollectionContextProps {
 	id: string;
 	frontId: string;
 	priority: string;
-	alsoOn: {
-		[id: string]: AlsoOnDetail;
+	collectionsWhichAreAlsoOnOtherFronts: {
+		[id: string]: CollectionsWhichAreAlsoOnOtherFronts;
 	};
 	browsingStage: CardSets;
 	size?: 'medium' | 'default' | 'wide';
@@ -125,7 +128,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 			frontId,
 			handleBlur,
 			priority,
-			alsoOn,
+			collectionsWhichAreAlsoOnOtherFronts,
 			browsingStage,
 			size = 'default',
 			handleMove,
@@ -147,7 +150,9 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 					id={id}
 					priority={priority}
 					frontId={frontId}
-					alsoOn={alsoOn}
+					collectionsWhichAreAlsoOnOtherFronts={
+						collectionsWhichAreAlsoOnOtherFronts
+					}
 					canPublish={browsingStage !== 'live'}
 					browsingStage={browsingStage}
 				>

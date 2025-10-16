@@ -17,8 +17,8 @@ import { insertCardFromDropEvent } from 'util/collectionUtils';
 import { bindActionCreators } from 'redux';
 import { editorSelectCard } from 'bundles/frontsUI';
 import { initialiseCollectionsForFront } from 'actions/Collections';
-import { createSelectAlsoOnFronts } from 'selectors/frontsSelectors';
-import { AlsoOnDetail } from 'types/Collection';
+import { createSelectCollectionsWhichAreAlsoOnOtherFronts } from 'selectors/frontsSelectors';
+import { CollectionsWhichAreAlsoOnOtherFronts } from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import Raven from 'raven-js';
 
@@ -75,7 +75,9 @@ interface FrontPropsBeforeState {
 
 type FrontProps = FrontPropsBeforeState & {
 	front: FrontConfig;
-	alsoOn: { [id: string]: AlsoOnDetail };
+	collectionsWhichAreAlsoOnOtherFronts: {
+		[id: string]: CollectionsWhichAreAlsoOnOtherFronts;
+	};
 	initialiseCollectionsForFront: (id: string, set: CardSets) => void;
 	selectCard: (
 		cardId: string,
@@ -472,7 +474,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 										frontId={this.props.id}
 										priority={front.priority}
 										browsingStage={this.props.browsingStage}
-										alsoOn={this.props.alsoOn}
+										collectionsWhichAreAlsoOnOtherFronts={
+											this.props.collectionsWhichAreAlsoOnOtherFronts
+										}
 										handleInsert={this.handleInsert}
 										handleMove={this.handleMove}
 										size={
@@ -527,11 +531,13 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 }
 
 const mapStateToProps = () => {
-	const selectAlsoOnFronts = createSelectAlsoOnFronts();
+	const selectCollectionsWhichAreAlsoOnOtherFronts =
+		createSelectCollectionsWhichAreAlsoOnOtherFronts();
 	return (state: State, { id }: FrontPropsBeforeState) => {
 		return {
 			front: selectFront(state, { frontId: id }),
-			alsoOn: selectAlsoOnFronts(state, { frontId: id }),
+			collectionsWhichAreAlsoOnOtherFronts:
+				selectCollectionsWhichAreAlsoOnOtherFronts(state, { frontId: id }),
 			collectionsError: collectionSelectors.selectCurrentError(state),
 			collectionsLastSuccessfulFetchTimestamp:
 				collectionSelectors.selectLastSuccessfulFetchTimestamp(state),

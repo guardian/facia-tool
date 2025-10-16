@@ -57,12 +57,12 @@ describe('frontsUIBundle', () => {
 		describe('selectOpenParentFrontOfCard', () => {
 			const state = set(
 				['editor', 'collectionIds'],
-				['collection1', 'collection6'],
+				['collectionUuid1', 'collectionUuid6'],
 				initialStateForOpenFronts,
 			);
 			it('should select the parent front of an card', () => {
 				const result = selectOpenParentFrontOfCard(state, 'card1');
-				expect(result).toEqual(['editorialFront', 'collection1']);
+				expect(result).toEqual(['editorialFront', 'collectionUuid1']);
 			});
 			it("should return undefined if it does't find anything", () => {
 				const result = selectOpenParentFrontOfCard(state, 'not-a-thing');
@@ -294,7 +294,7 @@ describe('frontsUIBundle', () => {
 			it('should give an array of fronts, with nested collections and articles, when those fronts and collections are open -- single collection', () => {
 				const state = set(
 					['editor', 'collectionIds'],
-					['collection1'],
+					['collectionUuid1'],
 					initialStateForOpenFronts,
 				);
 				const openEntities = selectOpenFrontsCollectionsAndArticles(state);
@@ -310,7 +310,7 @@ describe('frontsUIBundle', () => {
 			it('should give an array of fronts, with nested collections and articles, when those fronts and collections are open -- multiple collections', () => {
 				const state = set(
 					['editor', 'collectionIds'],
-					['collection1', 'collection6'],
+					['collectionUuid1', 'collectionUuid6'],
 					initialStateForOpenFronts,
 				);
 				const openEntities = selectOpenFrontsCollectionsAndArticles(state);
@@ -321,7 +321,7 @@ describe('frontsUIBundle', () => {
 			it('should respect the current browsing stage', () => {
 				let state = set(
 					['editor', 'collectionIds'],
-					['collection1'],
+					['collectionUuid1'],
 					initialStateForOpenFronts,
 				);
 				state = set(
@@ -348,7 +348,7 @@ describe('frontsUIBundle', () => {
 						},
 						path: '/v2/editorial',
 					} as any),
-				).toEqual(['collection1']);
+				).toEqual(['collectionUuid1']);
 			});
 			it('return correct collections for multiple open Fronts', () => {
 				expect(
@@ -363,7 +363,7 @@ describe('frontsUIBundle', () => {
 						},
 						path: '/v2/editorial',
 					} as any),
-				).toEqual(['collection1', 'collection6']);
+				).toEqual(['collectionUuid1', 'collectionUuid6']);
 			});
 			it('return enpty array for no open Fronts', () => {
 				expect(
@@ -703,7 +703,7 @@ describe('frontsUIBundle', () => {
 					},
 					path: '/v2/editorial',
 				} as any),
-			).toEqual(['collection1']);
+			).toEqual(['collectionUuid1']);
 		});
 		it('return correct collections for multiple open Fronts', () => {
 			expect(
@@ -718,7 +718,7 @@ describe('frontsUIBundle', () => {
 					},
 					path: '/v2/editorial',
 				} as any),
-			).toEqual(['collection1', 'collection6']);
+			).toEqual(['collectionUuid1', 'collectionUuid6']);
 		});
 		it('return enpty array for no open Fronts', () => {
 			expect(
@@ -747,7 +747,7 @@ describe('frontsUIBundle', () => {
 		it('should give an array of fronts, with nested collections and articles, when those fronts and collections are open -- single collection', () => {
 			const state = set(
 				['editor', 'collectionIds'],
-				['collection1'],
+				['collectionUuid1'],
 				initialStateForOpenFronts,
 			);
 			const openEntities = selectOpenFrontsCollectionsAndArticles(state);
@@ -763,7 +763,7 @@ describe('frontsUIBundle', () => {
 		it('should give an array of fronts, with nested collections and articles, when those fronts and collections are open -- multiple collections', () => {
 			const state = set(
 				['editor', 'collectionIds'],
-				['collection1', 'collection6'],
+				['collectionUuid1', 'collectionUuid6'],
 				initialStateForOpenFronts,
 			);
 			const openEntities = selectOpenFrontsCollectionsAndArticles(state);
@@ -774,7 +774,7 @@ describe('frontsUIBundle', () => {
 		it('should respect the current browsing stage', () => {
 			let state = set(
 				['editor', 'collectionIds'],
-				['collection1'],
+				['collectionUuid1'],
 				initialStateForOpenFronts,
 			);
 			state = set(
