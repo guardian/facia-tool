@@ -17,14 +17,20 @@ class ViewsController(
 )(implicit ec: ExecutionContext)
     extends BaseFaciaController(deps) {
 
+  private def checkIfBreakingNews(
+      request: UserRequest[AnyContent],
+      priority: Option[String] = None
+  ): Boolean = {
+      priority.getOrElse("") == "breaking-news" || request.queryString
+        .getOrElse("layout", Seq(""))
+        .exists(_.contains("breaking-news"))
+  }
+
   private def shouldRedirectToV2(
       request: UserRequest[AnyContent],
       priority: Option[String] = None
   ): Boolean = {
-    val isBreakingNews =
-      priority.getOrElse("") == "breaking-news" || request.queryString
-        .getOrElse("layout", Seq(""))
-        .exists(_.contains("breaking-news"))
+    val isBreakingNews = checkIfBreakingNews(request, priority)
     if (isBreakingNews) {
       false
     } else {
@@ -56,6 +62,7 @@ class ViewsController(
       if (shouldRedirectToV2(request, Some(priority))) {
         PermanentRedirect(s"/v2/$priority")
       } else {
+        val isBreakingNews = checkIfBreakingNews(request, Some(priority))
         val identity = request.user
         Cached(60) {
           Ok(
@@ -64,7 +71,7 @@ class ViewsController(
               config.facia.stage,
               overrideIsDev(request, isDev),
               assetsManager.pathForCollections,
-              priority != "email",
+              priority != "email" && !isBreakingNews,
               priority,
               maybeTelemetryUrl = Some(telemetryUrl)
             )
