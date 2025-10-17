@@ -1,11 +1,11 @@
 import React from 'react';
 import { styled, theme } from 'constants/theme';
 
-import { AlsoOnDetail } from 'types/Collection';
+import { CollectionsWhichAreAlsoOnOtherFronts } from 'types/Collection';
 import ButtonRoundedWithLabel from 'components/inputs/ButtonRoundedWithLabel';
 
 interface CollectionNotificationProps {
-	alsoOn: AlsoOnDetail;
+	alsoOn: CollectionsWhichAreAlsoOnOtherFronts;
 	displayEditWarning: boolean;
 }
 

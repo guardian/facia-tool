@@ -18,7 +18,7 @@ import { bindActionCreators } from 'redux';
 import { editorSelectCard } from 'bundles/frontsUI';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { createSelectCollectionsWhichAreAlsoOnOtherFronts } from 'selectors/frontsSelectors';
-import { AlsoOnDetail } from 'types/Collection';
+import { CollectionsWhichAreAlsoOnOtherFronts } from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import Raven from 'raven-js';
 
@@ -75,7 +75,7 @@ interface FrontPropsBeforeState {
 
 type FrontProps = FrontPropsBeforeState & {
 	front: FrontConfig;
-	alsoOn: { [id: string]: AlsoOnDetail };
+	alsoOn: { [id: string]: CollectionsWhichAreAlsoOnOtherFronts };
 	initialiseCollectionsForFront: (id: string, set: CardSets) => void;
 	selectCard: (
 		cardId: string,

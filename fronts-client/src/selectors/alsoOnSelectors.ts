@@ -1,11 +1,106 @@
-import { AlsoOnDetail, CollectionWithNestedArticles } from 'types/Collection';
+import {
+	CollectionsWhichAreAlsoOnOtherFronts,
+	CollectionsWhichAreAlsoOnOtherFrontsMap,
+	CollectionWithNestedArticles,
+} from 'types/Collection';
 import { FrontConfig } from '../types/FaciaApi';
 import uniq from 'lodash/uniq';
+
+const collectionsWhichAreAlsoOnOtherFrontsInitialValue: CollectionsWhichAreAlsoOnOtherFronts =
+	{
+		priorities: [] as string[],
+		meritsWarning: false,
+		fronts: [] as Array<{ id: string; priority: string }>,
+	};
+
+const iterateOverCurrentFrontCollections = (
+	currentFront: FrontConfig,
+	otherFronts: FrontConfig[],
+) => {
+	return (
+		accumulator: CollectionsWhichAreAlsoOnOtherFrontsMap,
+		currentFrontCollectionId: string,
+	): CollectionsWhichAreAlsoOnOtherFrontsMap => {
+		const collectionsWhichAreAlsoOnOtherFronts: CollectionsWhichAreAlsoOnOtherFronts =
+			otherFronts.reduce(
+				iterateOverOtherFronts(currentFront, currentFrontCollectionId),
+				collectionsWhichAreAlsoOnOtherFrontsInitialValue,
+			);
+
+		return {
+			...accumulator,
+			[currentFrontCollectionId]: collectionsWhichAreAlsoOnOtherFronts,
+		};
+	};
+};
+
+const iterateOverOtherFronts = (
+	currentFront: FrontConfig,
+	currentFrontCollectionId: string,
+) => {
+	return (
+		accumulator: CollectionsWhichAreAlsoOnOtherFronts,
+		otherFront: FrontConfig,
+	): CollectionsWhichAreAlsoOnOtherFronts => {
+		const collectionsWhichAreAlsoOnOtherFronts: CollectionsWhichAreAlsoOnOtherFronts =
+			otherFront.collections.reduce(
+				iterateOverOtherFrontsCollections(
+					currentFront,
+					currentFrontCollectionId,
+					otherFront,
+				),
+				collectionsWhichAreAlsoOnOtherFrontsInitialValue,
+			);
+
+		return {
+			priorities: uniq(
+				accumulator.priorities.concat(
+					collectionsWhichAreAlsoOnOtherFronts.priorities,
+				),
+			),
+			meritsWarning:
+				accumulator.meritsWarning ||
+				collectionsWhichAreAlsoOnOtherFronts.meritsWarning,
+			fronts: accumulator.fronts.concat(
+				collectionsWhichAreAlsoOnOtherFronts.fronts,
+			),
+		};
+	};
+};
+
+const iterateOverOtherFrontsCollections = (
+	currentFront: FrontConfig,
+	currentFrontCollectionId: string,
+	otherFront: FrontConfig,
+) => {
+	return (
+		accumulator: CollectionsWhichAreAlsoOnOtherFronts,
+		otherFrontCollectionId: string,
+	): CollectionsWhichAreAlsoOnOtherFronts => {
+		if (
+			currentFront.id !== otherFront.id &&
+			currentFrontCollectionId === otherFrontCollectionId
+		) {
+			const meritsWarning =
+				currentFront.priority !== 'commercial' &&
+				otherFront.priority === 'commercial';
+
+			return {
+				priorities: accumulator.priorities.concat([otherFront.priority]),
+				meritsWarning: accumulator.meritsWarning || meritsWarning,
+				fronts: accumulator.fronts.concat([
+					{ id: otherFront.id, priority: otherFront.priority },
+				]),
+			};
+		}
+		return accumulator;
+	};
+};
 
 /**
  *
  * @param currentFront
- * @param fronts
+ * @param otherFronts
  *
  * For a given front:
  *  (1) Find the collections on that front
@@ -35,71 +130,14 @@ import uniq from 'lodash/uniq';
  */
 const selectCollectionsWhichAreAlsoOnOtherFronts = (
 	currentFront: FrontConfig | void,
-	fronts: FrontConfig[],
-): { [id: string]: AlsoOnDetail } => {
+	otherFronts: FrontConfig[],
+): CollectionsWhichAreAlsoOnOtherFrontsMap => {
 	if (!currentFront) {
 		return {};
 	}
-	const currentFrontId = currentFront.id;
-	const currentFrontPriority = currentFront.priority;
 	const currentFrontCollections = currentFront.collections;
 	return currentFrontCollections.reduce(
-		(allCollectionAlsoOn, currentFrontCollectionId) => {
-			const collectionAlsoOn = fronts.reduce(
-				(collectionAlsoOnSoFar, front) => {
-					const duplicatesOnFront = front.collections.reduce(
-						(soFar, collectionId) => {
-							if (
-								front.id !== currentFrontId &&
-								collectionId === currentFrontCollectionId
-							) {
-								const meritsWarning =
-									currentFrontPriority !== 'commercial' &&
-									front.priority === 'commercial';
-
-								return {
-									priorities: soFar.priorities.concat([front.priority]),
-									meritsWarning: soFar.meritsWarning || meritsWarning,
-									fronts: soFar.fronts.concat([
-										{ id: front.id, priority: front.priority },
-									]),
-								};
-							}
-							return soFar;
-						},
-						{
-							priorities: [] as string[],
-							meritsWarning: false,
-							fronts: [] as Array<{ id: string; priority: string }>,
-						},
-					);
-
-					return {
-						priorities: uniq(
-							collectionAlsoOnSoFar.priorities.concat(
-								duplicatesOnFront.priorities,
-							),
-						),
-						meritsWarning:
-							collectionAlsoOnSoFar.meritsWarning ||
-							duplicatesOnFront.meritsWarning,
-						fronts: collectionAlsoOnSoFar.fronts.concat(
-							duplicatesOnFront.fronts,
-						),
-					};
-				},
-				{
-					priorities: [] as string[],
-					fronts: [] as Array<{ id: string; priority: string }>,
-					meritsWarning: false,
-				},
-			);
-
-			return {
-				...allCollectionAlsoOn,
-				[currentFrontCollectionId]: collectionAlsoOn,
-			};
-		},
+		iterateOverCurrentFrontCollections(currentFront, otherFronts),
 		{},
 	);
 };
