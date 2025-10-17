@@ -44,6 +44,7 @@ import {
 } from 'types/Cards';
 import { PersistTo } from '../types/Middleware';
 import { COLLECTIONS_USING_PORTRAIT_TRAILS } from 'constants/image';
+import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -213,17 +214,26 @@ const minimumGroupBoostLevel = (groupName: string) => {
 	}
 };
 
+export type UpdateCardMetaParams = {
+	from: PosSpec | null;
+	to: PosSpec;
+	card: Card;
+	persistTo: 'collection' | 'clipboard';
+	state: State;
+};
+
 /**
  * When a card moves up or down one or more groups,
  * it should adopt the minimum boost level
  * of the group it moves into, regardless of its previous boost level.
  * */
-export const mayResetBoostLevel = (
-	from: PosSpec | null,
-	to: PosSpec,
-	card: Card,
-	persistTo: 'collection' | 'clipboard',
-) => {
+export const mayResetBoostLevel = ({
+	from,
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardMetaParams) => {
 	if (to.type !== 'group' || persistTo !== 'collection') return;
 	if (from?.id === to.id) return;
 	const groupName = to.groupName ?? 'standard';
@@ -241,13 +251,13 @@ export const mayResetBoostLevel = (
  * and the card has a replaced image,
  * we revert to the trail image and remove that replaced image
  * */
-export const mayResetImageReplace = (
-	from: PosSpec | null,
-	to: PosSpec,
-	card: Card,
-	persistTo: 'collection' | 'clipboard',
-	state: State,
-) => {
+export const mayResetImageReplace = ({
+	from,
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardMetaParams) => {
 	if (
 		to.type === 'group' &&
 		persistTo === 'collection' &&
@@ -272,6 +282,39 @@ export const mayResetImageReplace = (
 				card.uuid,
 				{
 					imageReplace: false,
+				},
+				{ merge: true },
+			);
+		}
+	}
+};
+
+export const mayResetImmersive = ({
+	from,
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardMetaParams) => {
+	if (
+		to.type === 'group' &&
+		persistTo === 'collection' &&
+		from?.id !== to.id &&
+		card.meta?.isImmersive
+	) {
+		const toCollection: Collection | undefined = to.collectionId
+			? state.collections.data[to.collectionId]
+			: undefined;
+		const toCollectionSupportsImmersive: boolean =
+			// only flexible/general container supports immersive
+			toCollection?.type === FLEXIBLE_GENERAL_NAME;
+
+		if (!toCollectionSupportsImmersive) {
+			// turn off immersive
+			return updateCardMeta(
+				card.uuid,
+				{
+					isImmersive: false,
 				},
 				{ merge: true },
 			);
@@ -308,8 +351,13 @@ const insertCardWithCreate =
 					return;
 				}
 
-				const modifyCardAction = mayResetBoostLevel(null, to, card, persistTo);
-
+				const modifyCardAction = mayResetBoostLevel({
+					from: null,
+					to,
+					card,
+					persistTo,
+					state,
+				});
 				if (modifyCardAction) dispatch(modifyCardAction);
 
 				dispatch(
@@ -412,22 +460,23 @@ const moveCard = (
 					dispatch(cardsReceived([parent, ...supporting]));
 				}
 
-				const modifyCardAction = mayResetBoostLevel(
+				const actionParams: UpdateCardMetaParams = {
 					from,
 					to,
-					parent,
-					persistTo,
-				);
-				if (modifyCardAction) dispatch(modifyCardAction);
-
-				const modifyCardAction2 = mayResetImageReplace(
-					from,
-					to,
-					parent,
+					card: parent,
 					persistTo,
 					state,
-				);
-				if (modifyCardAction2) dispatch(modifyCardAction2);
+				};
+
+				const modifyCardActions = [
+					mayResetBoostLevel(actionParams),
+					mayResetImageReplace(actionParams),
+					mayResetImmersive(actionParams),
+				];
+
+				modifyCardActions.forEach((action) => {
+					if (action) dispatch(action);
+				});
 
 				dispatch(
 					insertActionCreator(
