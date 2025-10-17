@@ -18,6 +18,14 @@ interface CollectionsWhichAreAlsoOnOtherFrontsMap {
 	[id: string]: CollectionsWhichAreAlsoOnOtherFronts;
 }
 
+interface CardsWhichAreAlsoOnOtherCollectionsOnSameFront {
+	collections: Array<{ id: string }>;
+}
+
+interface CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap {
+	[id: string]: CardsWhichAreAlsoOnOtherCollectionsOnSameFront;
+}
+
 interface Group {
 	id: string | null;
 	name: string | null;
@@ -221,6 +229,8 @@ export {
 	CollectionArticles,
 	CollectionsWhichAreAlsoOnOtherFronts,
 	CollectionsWhichAreAlsoOnOtherFrontsMap,
+	CardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+	CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	NestedCard,
 	Card,
 	CardDenormalised,

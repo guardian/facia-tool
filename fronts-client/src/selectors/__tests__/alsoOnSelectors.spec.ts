@@ -95,7 +95,7 @@ describe('Selecting collections which are also on other fronts', () => {
 	});
 });
 
-describe('Selecting cards which are also on other collections', () => {
+describe('Selecting cards which are also on other collections on the same front', () => {
 	it('return an object with all the cards on the current collection', () => {
 		expect(
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
@@ -111,7 +111,7 @@ describe('Selecting cards which are also on other collections', () => {
 		);
 	});
 
-	it('if a card is NOT on another collection, return an empty list of collections for that cards', () => {
+	it('if a card is NOT on another collection on the same front, return an empty list of collections for that cards', () => {
 		expect(
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
 				collectionObituaries,
@@ -124,7 +124,7 @@ describe('Selecting cards which are also on other collections', () => {
 		});
 	});
 
-	it('if a card IS on another collection, return a list of shared collections for that card', () => {
+	it('if a card IS on another collection on the same front, return a list of shared collections for that card', () => {
 		expect(
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
 				collectionFootball,

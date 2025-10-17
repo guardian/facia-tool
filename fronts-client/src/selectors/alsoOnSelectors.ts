@@ -1,4 +1,6 @@
 import {
+	CardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+	CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	CollectionsWhichAreAlsoOnOtherFronts,
 	CollectionsWhichAreAlsoOnOtherFrontsMap,
 	CollectionWithNestedArticles,
@@ -142,9 +144,94 @@ const selectCollectionsWhichAreAlsoOnOtherFronts = (
 	);
 };
 
+const cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue: CardsWhichAreAlsoOnOtherCollectionsOnSameFront =
+	{
+		collections: [] as Array<{ id: string }>,
+	};
+
+const iterateOverCurrentCollectionCards = (
+	currentCollectionId: string,
+	otherCollectionsOnSameFront: CollectionWithNestedArticles[],
+) => {
+	return (
+		accumulator: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
+		currentCollectionCardId: string,
+	): CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap => {
+		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront: CardsWhichAreAlsoOnOtherCollectionsOnSameFront =
+			otherCollectionsOnSameFront.reduce(
+				iterateOverOtherCollectionsOnSameFront(
+					currentCollectionId,
+					currentCollectionCardId,
+				),
+				cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue,
+			);
+
+		return {
+			...accumulator,
+			[currentCollectionCardId]: cardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+		};
+	};
+};
+
+const iterateOverOtherCollectionsOnSameFront = (
+	currentCollectionId: string,
+	currentCollectionCardId: string,
+) => {
+	return (
+		accumulator: CardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+		otherCollectionOnSameFront: CollectionWithNestedArticles,
+	): CardsWhichAreAlsoOnOtherCollectionsOnSameFront => {
+		if (!otherCollectionOnSameFront.draft) {
+			return accumulator;
+		}
+		// Use Draft cards as these are the ones that show up in the UI
+		// TODO: check this is true!
+		const otherCollectionOnSameFrontCards =
+			otherCollectionOnSameFront.draft.map((draft) => draft.id);
+		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront: CardsWhichAreAlsoOnOtherCollectionsOnSameFront =
+			otherCollectionOnSameFrontCards.reduce(
+				iterateOverOtherCollectionOnSameFrontCards(
+					otherCollectionOnSameFront,
+					currentCollectionId,
+					currentCollectionCardId,
+				),
+				cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue,
+			);
+
+		return {
+			collections: accumulator.collections.concat(
+				cardsWhichAreAlsoOnOtherCollectionsOnSameFront.collections,
+			),
+		};
+	};
+};
+
+const iterateOverOtherCollectionOnSameFrontCards = (
+	otherCollectionOnSameFront: CollectionWithNestedArticles,
+	currentCollectionId: string,
+	currentCollectionCardId: string,
+) => {
+	return (
+		accumulator: CardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+		otherCollectionOnSameFrontCardId: string,
+	): CardsWhichAreAlsoOnOtherCollectionsOnSameFront => {
+		if (
+			currentCollectionId !== otherCollectionOnSameFront.id &&
+			currentCollectionCardId === otherCollectionOnSameFrontCardId
+		) {
+			return {
+				collections: accumulator.collections.concat([
+					{ id: otherCollectionOnSameFront.id },
+				]),
+			};
+		}
+		return accumulator;
+	};
+};
+
 /**
  * @param currentCollection
- * @param collections
+ * @param otherCollectionsOnSameFront
  *
  *  For a given collection:
  *  	(1) Find the cards on that collection
@@ -171,61 +258,24 @@ const selectCollectionsWhichAreAlsoOnOtherFronts = (
  */
 const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 	currentCollection: CollectionWithNestedArticles,
-	collections: CollectionWithNestedArticles[],
+	otherCollectionsOnSameFront: CollectionWithNestedArticles[],
 ) => {
 	const currentCollectionId = currentCollection.id;
 	if (!currentCollection.draft) {
 		return {};
 	}
-	const currentCollectionCardsDraft = currentCollection.draft.map(
+
+	// Use Draft cards as these are the ones that show up in the UI
+	// TODO: check this is true!
+	const currentCollectionCards = currentCollection.draft.map(
 		(draft) => draft.id,
 	);
 
-	return currentCollectionCardsDraft.reduce(
-		(allCardAlsoOn, currentCollectionCardId) => {
-			const cardAlsoOn = collections.reduce(
-				(cardAlsoOnSoFar, collection) => {
-					if (!collection.draft) {
-						return {
-							collections: cardAlsoOnSoFar.collections,
-						};
-					}
-					const collectionCardsDraft = collection.draft.map(
-						(draft) => draft.id,
-					);
-					const duplicatesOnCollection = collectionCardsDraft.reduce(
-						(soFar, cardId) => {
-							if (
-								collection.id !== currentCollectionId &&
-								cardId === currentCollectionCardId
-							) {
-								return {
-									collections: soFar.collections.concat([
-										{ id: collection.id },
-									]),
-								};
-							}
-							return soFar;
-						},
-						{ collections: [] as Array<{ id: string }> },
-					);
-
-					return {
-						collections: cardAlsoOnSoFar.collections.concat(
-							duplicatesOnCollection.collections,
-						),
-					};
-				},
-				{
-					collections: [] as Array<{ id: string }>,
-				},
-			);
-
-			return {
-				...allCardAlsoOn,
-				[currentCollectionCardId]: cardAlsoOn,
-			};
-		},
+	return currentCollectionCards.reduce(
+		iterateOverCurrentCollectionCards(
+			currentCollectionId,
+			otherCollectionsOnSameFront,
+		),
 		{},
 	);
 };
