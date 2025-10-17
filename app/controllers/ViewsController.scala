@@ -21,9 +21,9 @@ class ViewsController(
       request: UserRequest[AnyContent],
       priority: Option[String] = None
   ): Boolean = {
-      priority.getOrElse("") == "breaking-news" || request.queryString
-        .getOrElse("layout", Seq(""))
-        .exists(_.contains("breaking-news"))
+    priority.getOrElse("") == "breaking-news" || request.queryString
+      .getOrElse("layout", Seq(""))
+      .exists(_.contains("breaking-news"))
   }
 
   private def shouldRedirectToV2(
