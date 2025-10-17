@@ -11,7 +11,7 @@ import uniq from 'lodash/uniq';
 /**
  *
  * @param currentFront
- * @param otherFronts
+ * @param allFronts
  *
  * For a given front:
  *  (1) Find the collections on that front
@@ -41,11 +41,12 @@ import uniq from 'lodash/uniq';
  */
 const selectCollectionsWhichAreAlsoOnOtherFronts = (
 	currentFront: FrontConfig | void,
-	otherFronts: FrontConfig[],
+	allFronts: FrontConfig[],
 ): CollectionsWhichAreAlsoOnOtherFrontsMap => {
 	if (!currentFront) {
 		return {};
 	}
+	const otherFronts = allFronts.filter((front) => front.id !== currentFront.id);
 	const currentFrontCollections = currentFront.collections;
 	return currentFrontCollections.reduce(
 		iterateOverCurrentFrontCollections(currentFront, otherFronts),
@@ -124,10 +125,7 @@ const iterateOverOtherFrontCollections = (
 		accumulator: CollectionsWhichAreAlsoOnOtherFronts,
 		otherFrontCollectionId: string,
 	): CollectionsWhichAreAlsoOnOtherFronts => {
-		if (
-			currentFront.id !== otherFront.id &&
-			currentFrontCollectionId === otherFrontCollectionId
-		) {
+		if (currentFrontCollectionId === otherFrontCollectionId) {
 			const meritsWarning =
 				currentFront.priority !== 'commercial' &&
 				otherFront.priority === 'commercial';
@@ -146,7 +144,7 @@ const iterateOverOtherFrontCollections = (
 
 /**
  * @param currentCollection
- * @param otherCollectionsOnSameFront
+ * @param allCollectionsOnSameFront
  *
  *  For a given collection:
  *  	(1) Find the cards on that collection
@@ -173,9 +171,8 @@ const iterateOverOtherFrontCollections = (
  */
 const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 	currentCollection: CollectionWithNestedArticles,
-	otherCollectionsOnSameFront: CollectionWithNestedArticles[],
+	allCollectionsOnSameFront: CollectionWithNestedArticles[],
 ) => {
-	const currentCollectionId = currentCollection.id;
 	if (!currentCollection.draft) {
 		return {};
 	}
@@ -186,11 +183,12 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 		(draft) => draft.id,
 	);
 
+	const otherCollectionsOnSameFront = allCollectionsOnSameFront.filter(
+		(collection) => collection.id !== currentCollection.id,
+	);
+
 	return currentCollectionCards.reduce(
-		iterateOverCurrentCollectionCards(
-			currentCollectionId,
-			otherCollectionsOnSameFront,
-		),
+		iterateOverCurrentCollectionCards(otherCollectionsOnSameFront),
 		{},
 	);
 };
@@ -201,7 +199,6 @@ const cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue: CardsWhichAreA
 	};
 
 const iterateOverCurrentCollectionCards = (
-	currentCollectionId: string,
 	otherCollectionsOnSameFront: CollectionWithNestedArticles[],
 ) => {
 	return (
@@ -210,10 +207,7 @@ const iterateOverCurrentCollectionCards = (
 	): CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap => {
 		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront: CardsWhichAreAlsoOnOtherCollectionsOnSameFront =
 			otherCollectionsOnSameFront.reduce(
-				iterateOverOtherCollectionsOnSameFront(
-					currentCollectionId,
-					currentCollectionCardId,
-				),
+				iterateOverOtherCollectionsOnSameFront(currentCollectionCardId),
 				cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue,
 			);
 
@@ -225,7 +219,6 @@ const iterateOverCurrentCollectionCards = (
 };
 
 const iterateOverOtherCollectionsOnSameFront = (
-	currentCollectionId: string,
 	currentCollectionCardId: string,
 ) => {
 	return (
@@ -243,7 +236,6 @@ const iterateOverOtherCollectionsOnSameFront = (
 			otherCollectionOnSameFrontCards.reduce(
 				iterateOverOtherCollectionOnSameFrontCards(
 					otherCollectionOnSameFront,
-					currentCollectionId,
 					currentCollectionCardId,
 				),
 				cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue,
@@ -259,17 +251,13 @@ const iterateOverOtherCollectionsOnSameFront = (
 
 const iterateOverOtherCollectionOnSameFrontCards = (
 	otherCollectionOnSameFront: CollectionWithNestedArticles,
-	currentCollectionId: string,
 	currentCollectionCardId: string,
 ) => {
 	return (
 		accumulator: CardsWhichAreAlsoOnOtherCollectionsOnSameFront,
 		otherCollectionOnSameFrontCardId: string,
 	): CardsWhichAreAlsoOnOtherCollectionsOnSameFront => {
-		if (
-			currentCollectionId !== otherCollectionOnSameFront.id &&
-			currentCollectionCardId === otherCollectionOnSameFrontCardId
-		) {
+		if (currentCollectionCardId === otherCollectionOnSameFrontCardId) {
 			return {
 				collections: accumulator.collections.concat([
 					{ id: otherCollectionOnSameFront.id },
