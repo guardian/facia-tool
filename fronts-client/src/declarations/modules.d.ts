@@ -130,3 +130,8 @@ declare module 'react-router-redux' {
 		path: string,
 	): (state: { router: RouterState }) => match | null;
 }
+
+declare module 'history' {
+	const createBrowserHistory: { (): any };
+	export { createBrowserHistory };
+}
