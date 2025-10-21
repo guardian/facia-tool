@@ -340,14 +340,10 @@ export const mayResetVideoReplace = ({
 		from?.id !== to.id &&
 		card.meta?.videoReplace
 	) {
-		console.log('mayResetVideoReplace card=', card);
 		const videoAtom: Atom = card.meta.replacementVideoAtom as Atom;
 		// TODO: video atom doesn't have any direct info on aspect ratio
-		//  we can infer something from the poster image (if available)
-		//  but should we:
-		//    a) add some data to the atom to make this easier
-		//    b) query the dimensions from the video files (e.g. m3u8 file has RESOLUTION attribute)
-		//  ?
+		//  we can infer something from the posterImage (if available)
+		//  Ideally we would add some data to the atom to make this easier
 		const dimensions =
 			videoAtom && videoAtom.atomType
 				? videoAtom.data.media.posterImage?.master?.dimensions
@@ -363,15 +359,9 @@ export const mayResetVideoReplace = ({
 		const toCollectionIsPortrait: boolean =
 			COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? '');
 
-		console.log(
-			'replacementVideoIsPortrait',
-			replacementVideoIsPortrait,
-			'toCollectionIsPortrait',
-			toCollectionIsPortrait,
-		);
-
+		// if we found some dimensions and the video doesn't match the target container...
 		if (dimensions && replacementVideoIsPortrait !== toCollectionIsPortrait) {
-			// disable replacement video if target orientation doesn't match video
+			// disable replacement video
 			return updateCardMeta(
 				card.uuid,
 				{
