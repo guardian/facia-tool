@@ -139,7 +139,7 @@ function validateActualImage (image, frontId) {
             reject(new Error('Images cannot be more than ' + maxWidth + ' pixels wide'));
         } else if (minWidth && minWidth > width) {
             reject(new Error('Images cannot be less than ' + minWidth + ' pixels wide'));
-        } else if (criteriaRatio && criteriaRatio - ratio > 0.01) {
+        } else if (criteriaRatio && Math.abs(criteriaRatio - ratio) > 0.01) {
             reject(new Error('Images must have a ' + widthAspectRatio + ':' + heightAspectRatio + ' aspect ratio'));
         } else {
             const resolveWithImage = () => resolve({ path, origin, thumb, width, height });
