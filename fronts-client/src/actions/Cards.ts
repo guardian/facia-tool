@@ -344,10 +344,9 @@ export const mayResetVideoReplace = ({
 		// TODO: video atom doesn't have any direct info on aspect ratio
 		//  we can infer something from the posterImage (if available)
 		//  Ideally we would add some data to the atom to make this easier
-		const dimensions =
-			videoAtom && videoAtom.atomType
-				? videoAtom.data.media.posterImage?.master?.dimensions
-				: undefined;
+		const dimensions = videoAtom?.atomType
+			? videoAtom.data.media.posterImage?.master?.dimensions
+			: undefined;
 		const replacementVideoAspectRatio: number = dimensions
 			? dimensions.width / dimensions.height
 			: 5 / 4;
