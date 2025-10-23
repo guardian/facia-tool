@@ -50,7 +50,7 @@ export default {
 		baseUrls: {
 			mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
 			apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
-			videoBaseUrl: 'https://video.code.dev-gutools.co.uk',
-		},
+			videoBaseUrl: 'https://video.code.dev-gutools.co.uk'
+		}
     }
 };
