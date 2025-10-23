@@ -1,6 +1,7 @@
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
 import type { Card, Collection } from 'types/Collection';
+import type { Atom } from 'types/Capi';
 
 import { actions as externalArticleActions } from 'bundles/externalArticlesBundle';
 import { selectEditMode } from '../selectors/pathSelectors';
@@ -322,6 +323,56 @@ export const mayResetImmersive = ({
 	}
 };
 
+/**
+ * If you move a card with a 4:5 replacement video to a 5:4 slot (or vice versa),
+ * we revert to the trail image and disable the replacement video
+ * */
+export const mayResetVideoReplace = ({
+	from,
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardMetaParams) => {
+	if (
+		to.type === 'group' &&
+		persistTo === 'collection' &&
+		from?.id !== to.id &&
+		card.meta?.videoReplace
+	) {
+		const videoAtom: Atom = card.meta.replacementVideoAtom as Atom;
+		// TODO: video atom doesn't have any direct info on aspect ratio
+		//  we can infer something from the posterImage (if available)
+		//  Ideally we would add some data to the atom to make this easier
+		const dimensions = videoAtom?.atomType
+			? videoAtom.data.media.posterImage?.master?.dimensions
+			: undefined;
+		const replacementVideoAspectRatio: number = dimensions
+			? dimensions.width / dimensions.height
+			: 5 / 4;
+		const replacementVideoIsPortrait: boolean = replacementVideoAspectRatio < 1;
+
+		const toCollection: Collection | undefined = to.collectionId
+			? state.collections.data[to.collectionId]
+			: undefined;
+		const toCollectionIsPortrait: boolean =
+			COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? '');
+
+		// if we found some dimensions and the video doesn't match the target container...
+		if (dimensions && replacementVideoIsPortrait !== toCollectionIsPortrait) {
+			// disable replacement video
+			return updateCardMeta(
+				card.uuid,
+				{
+					videoReplace: false,
+				},
+				{ merge: true },
+			);
+		}
+		return undefined;
+	}
+};
+
 const insertCardWithCreate =
 	(
 		to: PosSpec,
@@ -472,6 +523,7 @@ const moveCard = (
 					mayResetBoostLevel(actionParams),
 					mayResetImageReplace(actionParams),
 					mayResetImmersive(actionParams),
+					mayResetVideoReplace(actionParams),
 				];
 
 				modifyCardActions.forEach((action) => {

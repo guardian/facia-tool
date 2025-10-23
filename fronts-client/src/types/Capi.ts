@@ -6,6 +6,10 @@ interface ImageAsset {
 		width?: string;
 		[id: string]: unknown;
 	};
+	dimensions?: {
+		width: number;
+		height: number;
+	};
 }
 
 interface Element {
@@ -67,6 +71,7 @@ interface AtomData {
 
 interface ImageAssets {
 	assets: ImageAsset[];
+	master?: ImageAsset;
 }
 
 interface MediaAtom {
