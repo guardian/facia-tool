@@ -173,11 +173,6 @@ export const initialState = {
 					enabled: true,
 				},
 				{
-					key: 'ten-image-slideshows',
-					title: 'Allow slideshows to contain 10 images rather than 5',
-					enabled: false,
-				},
-				{
 					key: 'show-firefox-prompt',
 					title: 'Show the prompt to use Firefox if applicable',
 					enabled: false,
@@ -672,11 +667,6 @@ export const initialState = {
 			title: 'Show page view data visualisation (aka spark lines)',
 			enabled: true,
 		},
-		'ten-image-slideshows': {
-			key: 'ten-image-slideshows',
-			title: 'Allow slideshows to contain 10 images rather than 5',
-			enabled: false,
-		},
 		'show-firefox-prompt': {
 			key: 'show-firefox-prompt',
 			title: 'Show the prompt to use Firefox if applicable',
@@ -914,11 +904,6 @@ export const finalStateWhenAddNewCollection = {
 					key: 'page-view-data-visualisation',
 					title: 'Show page view data visualisation (aka spark lines)',
 					enabled: true,
-				},
-				{
-					key: 'ten-image-slideshows',
-					title: 'Allow slideshows to contain 10 images rather than 5',
-					enabled: false,
 				},
 				{
 					key: 'show-firefox-prompt',
@@ -1416,11 +1401,6 @@ export const finalStateWhenAddNewCollection = {
 			title: 'Show page view data visualisation (aka spark lines)',
 			enabled: true,
 		},
-		'ten-image-slideshows': {
-			key: 'ten-image-slideshows',
-			title: 'Allow slideshows to contain 10 images rather than 5',
-			enabled: false,
-		},
 		'show-firefox-prompt': {
 			key: 'show-firefox-prompt',
 			title: 'Show the prompt to use Firefox if applicable',
@@ -1672,11 +1652,6 @@ export const finalStateWhenRemoveACollection = {
 					key: 'page-view-data-visualisation',
 					title: 'Show page view data visualisation (aka spark lines)',
 					enabled: true,
-				},
-				{
-					key: 'ten-image-slideshows',
-					title: 'Allow slideshows to contain 10 images rather than 5',
-					enabled: false,
 				},
 				{
 					key: 'show-firefox-prompt',
@@ -2172,11 +2147,6 @@ export const finalStateWhenRemoveACollection = {
 			key: 'page-view-data-visualisation',
 			title: 'Show page view data visualisation (aka spark lines)',
 			enabled: true,
-		},
-		'ten-image-slideshows': {
-			key: 'ten-image-slideshows',
-			title: 'Allow slideshows to contain 10 images rather than 5',
-			enabled: false,
 		},
 		'show-firefox-prompt': {
 			key: 'show-firefox-prompt',

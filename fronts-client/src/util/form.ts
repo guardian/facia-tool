@@ -83,13 +83,6 @@ export const getCapiValuesForArticleFields = (
 	};
 };
 
-// const tenImagesFeatureSwitch = pageConfig?.userData?.featureSwitches.find(
-// 	(feature) => feature.key === 'ten-image-slideshows',
-// );
-//
-// export const maxSlideshowImages = tenImagesFeatureSwitch?.enabled ? 10 : 5;
-
-//bypasses the feature switch to temporarily ensure anyone can add 10 images to a slideshow
 export const maxSlideshowImages = 10;
 
 export const getInitialValuesForCardForm = (

@@ -26,18 +26,10 @@ object PageViewDataVisualisation
       enabled = true
     )
 
-object TenImageSlideshows
-    extends FeatureSwitch(
-      key = "ten-image-slideshows",
-      title = "Allow slideshows to contain 10 images rather than 5",
-      enabled = false
-    )
-
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
-    PageViewDataVisualisation,
-    TenImageSlideshows
+    PageViewDataVisualisation
   )
 
   def updateFeatureSwitchesForUser(
