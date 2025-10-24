@@ -42,7 +42,7 @@ describe('Media Service', function () {
         function dragFromTheGrid (trail) {
             const sourceImage = new drag.Media([{
                 secureUrl: images.path('fivethree.png'),
-                dimensions: { width: 500, height: 200 }
+                dimensions: { width: 500, height: 400 }
             }], 'testImageOrigin');
             return sourceImage.dropTo(trail.innerDroppable())
             .then(() => {
