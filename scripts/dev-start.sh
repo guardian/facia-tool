@@ -93,6 +93,7 @@ main() {
     cd fronts-client
     set_node_version
     yarn watch &
+    sleep 1
     cd ..
     set_node_version
 

@@ -62,7 +62,7 @@ export default Object.freeze([
                 options: {
                     minWidth: 400,
                     widthAspectRatio: 5,
-                    heightAspectRatio: 3
+                    heightAspectRatio: 4
                 }
             }
         },
