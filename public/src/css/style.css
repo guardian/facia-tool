@@ -1254,7 +1254,7 @@ select {
     color: #DD4B39;
 }
 
-.attention .length--alert textarea.active {
+.length--alert textarea, .length--alert textarea.active {
     background-color: #FFCDD2;
 }
 
@@ -1264,7 +1264,7 @@ select {
     display: none;
 }
 
-.attention .length--alert .editor__alert__message {
+.length--alert .editor__alert__message {
     display: inline;
 }
 
@@ -1272,7 +1272,7 @@ select {
     display: none;
 }
 
-.attention .editor__length {
+.editor__length {
     display: block;
 }
 
