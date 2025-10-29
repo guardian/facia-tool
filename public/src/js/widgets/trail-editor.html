@@ -24,7 +24,11 @@
                     visible: meta() && field(),
                     click: clear"><i class="fa fa-fast-backward"></i></a>
             <!-- /ko -->
-            <span class="editor__alert__message">Text is too long.</span>
+             <div aria-live="polite">
+                <!-- ko if: lengthAlert -->
+                 <span class="editor__alert__message">Text is too long. Maximum <span data-bind="text: opts.maxLength"></span> characters</span>
+                <!--  /ko -->
+            </div>
         </div>
     <!-- /ko -->
 

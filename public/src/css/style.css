@@ -1261,11 +1261,6 @@ select {
 .editor__alert__message {
     margin-left: 4px;
     color: #DD4B39;
-    display: none;
-}
-
-.length--alert .editor__alert__message {
-    display: inline;
 }
 
 .editor__length {
