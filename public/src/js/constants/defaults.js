@@ -278,7 +278,7 @@ export default {
     maxSlideshowImages:    5,
 
     collectionsPollMs:     10000,
-    latestArticlesPollMs:  30000,
+    latestArticlesPollMs:  5000,
     configSettingsPollMs:  30000,
     cacheExpiryMs:         60000,
     sparksRefreshMs:      300000,
