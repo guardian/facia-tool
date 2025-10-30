@@ -2,8 +2,9 @@ import { CONST } from 'modules/vars';
 import metaFields from 'constants/article-meta-fields';
 
 function isPageBreakingNews() {
-    const url = new URL(window.location);
-    return url.pathname.includes('breaking-news') || url.searchParams.get('layout').includes('breaking-news');
+    const url = new URL(this.location);
+    const layout = url.searchParams.get('layout') || '';
+    return url.pathname.includes('breaking-news') || layout.includes('breaking-news');
 }
 
 const metaFieldsForBreakingNews = Object.freeze(
