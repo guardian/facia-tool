@@ -58,8 +58,28 @@ Run `yarn test` in `fronts-client` folder. See [fronts-client](/fronts-client) f
 - Select the front your are trying to view on the config page, click on the edit-metadata link, and deselect the `is hidden`-property.
 
 - Since the SNS topic lives in the fronts account, CODE fronts should be pressed automatically when running locally.
--
+
 ## Different tools in this codebase
+
+``` mermaid
+graph LR
+  breakingNews --- playApp
+  treats --- playApp
+  config --- playApp
+  frontsTool --- playApp
+  editionsCreator --- playApp
+  subgraph clientV1
+    breakingNews
+    treats
+    config
+  end
+  subgraph clientV2
+    frontsTool
+    editionsCreator
+  end
+  playApp --- postgres[(postgres)]
+  playApp --- notificationsAPI
+```
 
 ### The Fronts Tool
 The most important part of this app is the Fronts Tool, used to curate the web and app front pages of the Guardian. Additionally it is used to manually curate emails.
