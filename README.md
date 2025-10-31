@@ -72,10 +72,10 @@ graph LR
     frontsTool
     editionsCreator
   end
-  clientV1 --- playApp
-  clientV2 --- playApp
-  playApp --- postgres[(postgres)]
-  playApp --- notificationsAPI
+  clientV1 <--> playApp
+  clientV2 <--> playApp
+  playApp <--> postgres[(postgres)]
+  playApp --> notificationsAPI
 ```
 
 ### The Fronts Tool
