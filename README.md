@@ -63,11 +63,6 @@ Run `yarn test` in `fronts-client` folder. See [fronts-client](/fronts-client) f
 
 ``` mermaid
 graph LR
-  breakingNews --- playApp
-  treats --- playApp
-  config --- playApp
-  frontsTool --- playApp
-  editionsCreator --- playApp
   subgraph clientV1
     breakingNews
     treats
@@ -77,6 +72,8 @@ graph LR
     frontsTool
     editionsCreator
   end
+  clientV1 --- playApp
+  clientV2 --- playApp
   playApp --- postgres[(postgres)]
   playApp --- notificationsAPI
 ```
