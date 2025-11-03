@@ -50,7 +50,6 @@ describe('Breaking News', function () {
                     id: 'global',
                     item: 'internal-code/page/1',
                     itemMeta: {
-                        imageHide: true,
                         group: '0'
                     },
                     live: false
@@ -63,7 +62,6 @@ describe('Breaking News', function () {
                     draft: [{
                         id: 'internal-code/page/1',
                         meta: {
-                            imageHide: true,
                             group: '0'
                         }
                     }]
@@ -195,7 +193,6 @@ describe('Breaking News', function () {
                     id: 'uk-alerts',
                     item: 'internal-code/page/1',
                     itemMeta: {
-                        imageHide: true,
                         group: '1'
                     },
                     live: false
@@ -206,7 +203,6 @@ describe('Breaking News', function () {
                     draft: [{
                         id: 'internal-code/page/1',
                         meta: {
-                            imageHide: true,
                             group: '1'
                         }
                     }],
@@ -255,7 +251,6 @@ describe('Breaking News', function () {
                     draft: [{
                         id: 'internal-code/page/1',
                         meta: {
-                            imageHide: true,
                             group: '0'
                         }
                     }]
@@ -317,7 +312,6 @@ describe('Breaking News', function () {
                     draft: [{
                         id: 'internal-code/page/1',
                         meta: {
-                            imageHide: true,
                             group: '0'
                         }
                     }]
