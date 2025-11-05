@@ -18,8 +18,11 @@
                 tabbableFormField: true,
                 textInput: updateText"></textarea>
 
+                <span class="editor__length" data-bind="
+                text: length,
+                attr: {title: lengthTitle, 'aria-label': lengthTitle },
+                " aria-label="characters left"></span>
             <!-- ko if: hasFocus -->
-                <span class="editor__length" data-bind="text: length" title="characters left" aria-label="characters left"></span>
                 <a class="editor__revert" title="revert edits" role="button" aria-label="revert edits" data-bind="
                     visible: meta() && field(),
                     click: clear"><i class="fa fa-fast-backward"></i></a>

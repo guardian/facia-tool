@@ -10,7 +10,10 @@ function isPageBreakingNews() {
 const metaFieldsForBreakingNews = Object.freeze(
     metaFields.map(field => {
         if (field.key === 'headline') {
-            return Object.assign({}, field, { maxLength: CONST.restrictedHeadlineLength });
+            return Object.assign({}, field, {
+                maxLength: CONST.restrictedHeadlineLength,
+                showCharacterCountInsteadOfCharactersLeft: true
+            });
         }
         return field;
     })

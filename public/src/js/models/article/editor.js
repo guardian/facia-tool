@@ -51,7 +51,13 @@ export default class Editor extends BaseClass {
 
         this.hasFocus = ko.observable(false).extend({ rateLimit: 150 });
         this.length = ko.pureComputed(() => {
+            if (opts.showCharacterCountInsteadOfCharactersLeft) {
+                return this.value().length;
+            }
             return opts.maxLength ? opts.maxLength - this.value().length : undefined;
+        });
+        this.lengthTitle = ko.pureComputed(() => {
+            return opts.showCharacterCountInsteadOfCharactersLeft ? 'character count' : 'characters left';
         });
         this.lengthAlert = ko.pureComputed(() => {
             return opts.maxLength && this.value().length > opts.maxLength;
