@@ -22,7 +22,7 @@
                 text: length,
                 attr: {title: lengthTitle, 'aria-label': lengthTitle },
                 " aria-label="characters left"></span>
-            <!-- ko if: hasFocus -->
+            <!-- ko if: showRevertButton -->
                 <a class="editor__revert" title="revert edits" role="button" aria-label="revert edits" data-bind="
                     visible: meta() && field(),
                     click: clear"><i class="fa fa-fast-backward"></i></a>

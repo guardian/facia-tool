@@ -12,6 +12,7 @@ const metaFieldsForBreakingNews = Object.freeze(
         if (field.key === 'headline') {
             return Object.assign({}, field, {
                 showCharacterCountInsteadOfCharactersLeft: true,
+                noRevertButton: true,
                 lengthWarningMessages: [
                     [CONST.restrictedHeadlineLength, `${CONST.restrictedHeadlineLength} characters maximum`]
                 ]

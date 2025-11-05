@@ -50,6 +50,9 @@ export default class Editor extends BaseClass {
         }
 
         this.hasFocus = ko.observable(false).extend({ rateLimit: 150 });
+        this.showRevertButton = ko.pureComputed(() => {
+            return !opts.noRevertButton && this.hasFocus();
+        });
         this.length = ko.pureComputed(() => {
             if (opts.showCharacterCountInsteadOfCharactersLeft) {
                 return this.value().length;
