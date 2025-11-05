@@ -62,6 +62,15 @@ export default class Editor extends BaseClass {
         this.lengthAlert = ko.pureComputed(() => {
             return opts.maxLength && this.value().length > opts.maxLength;
         });
+        this.lengthWarningMessage = ko.pureComputed(() => {
+            if (!opts.lengthWarningMessages) {
+                return undefined;
+            }
+            const highestLevelBreached = opts.lengthWarningMessages.find(
+                (entry) => this.value().length > Number(entry[0])
+            );
+            return highestLevelBreached ? highestLevelBreached[1] : undefined;
+        });
         this.displayEditor = ko.pureComputed(this.isVisible, this);
         this.updateText = ko.pureComputed({
             read: this.value,

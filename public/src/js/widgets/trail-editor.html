@@ -28,7 +28,10 @@
                     click: clear"><i class="fa fa-fast-backward"></i></a>
             <!-- /ko -->
              <div aria-live="polite">
-                <!-- ko if: lengthAlert -->
+                <!-- ko if: lengthWarningMessage -->
+                    <span class="editor__alert__message" data-bind="text: lengthWarningMessage"></span>
+                <!--  /ko -->
+                <!-- ko if: lengthAlert && !lengthWarningMessage -->
                  <span class="editor__alert__message">Text is too long. Maximum <span data-bind="text: opts.maxLength"></span> characters</span>
                 <!--  /ko -->
             </div>
