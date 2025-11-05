@@ -1238,7 +1238,7 @@ select {
     top: 3px;
     width: 0px;
     font-size: 12px;
-    color: inherit;
+    color: #333;
 }
 
 .editor__length {
@@ -1261,14 +1261,6 @@ select {
 .editor__alert__message {
     margin-left: 4px;
     color: #DD4B39;
-}
-
-.editor__length {
-    display: none;
-}
-
-.editor__length {
-    display: block;
 }
 
 .editor--boolean {

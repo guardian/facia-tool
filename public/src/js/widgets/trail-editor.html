@@ -18,10 +18,10 @@
                 tabbableFormField: true,
                 textInput: updateText"></textarea>
 
-                <span class="editor__length" data-bind="
+                <div class="editor__length" data-bind="
                 text: length,
                 attr: {title: lengthTitle, 'aria-label': lengthTitle },
-                " aria-label="characters left"></span>
+                " aria-label="characters left"></div>
             <!-- ko if: showRevertButton -->
                 <a class="editor__revert" title="revert edits" role="button" aria-label="revert edits" data-bind="
                     visible: meta() && field(),
