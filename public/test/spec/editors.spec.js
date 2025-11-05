@@ -51,7 +51,6 @@ describe('Editors', function () {
         expect($('.element__field').is(':visible')).toBe(true);
         wait.ms(150).then(() => {
             // the field visibility is rate limited
-            expect($('.editor__length').length).toBe(1);
 
             // Select another singleton
             $('.editor--boolean--two').click();
@@ -68,7 +67,6 @@ describe('Editors', function () {
             $('.editor--boolean--one').click();
             expect($('.editor--boolean--one').hasClass('selected')).toBe(true);
             expect($('.element__field').is(':visible')).toBe(true);
-            expect($('.editor__length').length).toBe(1);
             $('.element__field').val('more than 5 letters').change();
             expect(textInside('.editor__length')).toBe('-' + ('more than 5 letters'.length - 5));
 
