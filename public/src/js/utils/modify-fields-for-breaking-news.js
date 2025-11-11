@@ -14,7 +14,7 @@ const metaFieldsForBreakingNews = Object.freeze(
                 showCharacterCountInsteadOfCharactersLeft: true,
                 noRevertButton: true,
                 lengthWarningMessages: [
-                    [CONST.restrictedHeadlineLength, `${CONST.restrictedHeadlineLength} characters maximum`]
+                    [CONST.restrictedHeadlineLength, `Recommendation: no more than ${CONST.restrictedHeadlineLength} characters.`]
                 ]
             });
         }

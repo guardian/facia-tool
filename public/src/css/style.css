@@ -2374,6 +2374,28 @@ hr {
     padding-left: 1em;
 }
 
+.modalDialog-message .character-count { 
+    margin: 8px 0;
+    padding: 4px;
+    border: 1px solid #2ea3eb;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.modalDialog-message .character-count .fa {
+    color: #2ea3eb;
+    font-size: x-large;
+    align-self: flex-start;
+} 
+
+.modalDialog-message .character-count-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+} 
+
 .modalDialog .button-description {
     font-weight: bold;
 }
