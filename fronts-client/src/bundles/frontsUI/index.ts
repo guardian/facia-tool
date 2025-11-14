@@ -32,10 +32,7 @@ import type {
 import type { State as GlobalState } from 'types/State';
 
 import { events } from 'services/GA';
-import {
-	selectFronts,
-	selectFrontsWithPriority,
-} from 'selectors/frontsSelectors';
+import { selectFrontsWithPriority } from 'selectors/frontsSelectors';
 import { REMOVE_GROUP_CARD, REMOVE_SUPPORTING_CARD } from 'actions/CardsCommon';
 import { Stages } from 'types/Collection';
 import { selectPriority } from 'selectors/pathSelectors';
@@ -43,6 +40,7 @@ import { CollectionWithArticles } from 'types/PageViewData';
 import {
 	createSelectCardsInCollection,
 	createSelectArticleFromCard,
+	selectFronts,
 } from 'selectors/shared';
 
 export const EDITOR_OPEN_CURRENT_FRONTS_MENU =
