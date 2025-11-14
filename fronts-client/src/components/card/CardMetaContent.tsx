@@ -1,6 +1,6 @@
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 
 export default styled.div`
-	font-size: 11px;
+	font-size: ${theme.card.fontSizeMeta};
 	margin: 2px 0;
 `;

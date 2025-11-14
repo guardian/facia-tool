@@ -145,6 +145,7 @@ const label = {
 const card = {
 	fontSizeDefault: '14px',
 	fontSizeSmall: '13px',
+	fontSizeMeta: '11px',
 	dropZone: '#D6D6D6',
 	border: colors.greyLightPinkish,
 	backgroundHover: colors.whiteMedium,
