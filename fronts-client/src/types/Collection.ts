@@ -22,6 +22,7 @@ interface Group {
 	id: string | null;
 	name: string | null;
 	uuid: string;
+	// uuids for cards
 	cards: string[];
 	maxItems?: number;
 	cardsData?: Card[];
@@ -189,10 +190,13 @@ type CollectionWithNestedArticles = CollectionFromResponse & {
 
 // previouslyCardIds is stored in a separate key to avoid losing ordering information during normalisation.
 interface Collection {
-	live?: string[];
 	previously?: string[];
 	previouslyCardIds?: string[]; // this contains ids for deleted articles on a collection
+	// uuids for draft groups
 	draft?: string[];
+	// uuids for live groups
+	live?: string[];
+	// collection uuid
 	id: string;
 	lastUpdated?: number;
 	updatedBy?: string;
@@ -212,6 +216,18 @@ interface Collection {
 	displayHints?: DisplayHints;
 }
 
+interface CollectionMap {
+	[collectionUuid: string]: Collection;
+}
+
+interface GroupMap {
+	[groupUuid: string]: Group;
+}
+
+interface CardMap {
+	[cardUuid: string]: Card;
+}
+
 interface ArticleTag {
 	webTitle?: string;
 	sectionName?: string;
@@ -229,6 +245,9 @@ export {
 	CollectionWithNestedArticles,
 	CollectionFromResponse,
 	Collection,
+	CollectionMap,
+	GroupMap,
+	CardMap,
 	CardSizes,
 	Group,
 	GroupConfig,

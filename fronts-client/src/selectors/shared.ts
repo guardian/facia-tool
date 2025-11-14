@@ -16,6 +16,9 @@ import {
 	CardSets,
 	CardDenormalised,
 	ArticleTag,
+	CollectionMap,
+	GroupMap,
+	CardMap,
 } from '../types/Collection';
 import type { State } from 'types/State';
 import { cardSets } from 'constants/fronts';
@@ -23,12 +26,14 @@ import { createShallowEqualResultSelector } from 'util/selectorUtils';
 import { DerivedArticle } from 'types/Article';
 import { hasMainVideo } from 'util/externalArticle';
 
-const selectGroups = (state: State): { [id: string]: Group } => state.groups;
-const selectCards = (state: State) => state.cards;
+const selectCollectionMap: (state: State) => CollectionMap =
+	collectionSelectors.selectAll;
+const selectGroupMap = (state: State): GroupMap => state.groups;
+const selectCardMap = (state: State): CardMap => state.cards;
 
-const selectCardsFromRootState = (state: State) => selectCards(state);
+const selectCardsFromRootState = (state: State) => selectCardMap(state);
 
-const selectGroupsFromRootState = (state: State) => selectGroups(state);
+const selectGroupsFromRootState = (state: State) => selectGroupMap(state);
 
 const selectCard = (state: State, id: string): Card => state.cards[id];
 
@@ -170,15 +175,16 @@ const createSelectArticleFromCard = () =>
 	);
 
 const selectCollectionId = (
-	_: unknown,
+	_state: State,
 	{ collectionId }: { collectionId: string },
 ) => collectionId;
 
 const createSelectCollection = () =>
 	createSelector(
-		collectionSelectors.selectAll,
+		selectCollectionMap,
 		selectCollectionId,
-		(collections: { [id: string]: Collection }, id: string) => collections[id],
+		(collections: CollectionMap, collectionUuid: string) =>
+			collections[collectionUuid],
 	);
 
 const selectStage = (
@@ -190,7 +196,7 @@ const createSelectCollectionStageGroups = () => {
 	const selectCollection = createSelectCollection();
 	return createShallowEqualResultSelector(
 		selectCollection,
-		selectGroups,
+		selectGroupMap,
 		selectStage,
 		(
 			collection: Collection | void,
@@ -285,7 +291,7 @@ const selectIncludeSupportingArticles = (
 const createSelectCardsInCollectionGroup = () => {
 	const selectCollectionStageGroups = createSelectCollectionStageGroups();
 	return createShallowEqualResultSelector(
-		selectCards,
+		selectCardMap,
 		selectCollectionStageGroups,
 		selectGroupName,
 		selectIncludeSupportingArticles,
@@ -456,7 +462,7 @@ const selectGroupSiblings = (state: State, groupId: string) => {
 	if (!collection) {
 		return [];
 	}
-	return (collection[cardSet] || []).map((id) => selectGroups(state)[id]);
+	return (collection[cardSet] || []).map((id) => selectGroupMap(state)[id]);
 };
 
 const selectArticleGroup = (
@@ -464,7 +470,7 @@ const selectArticleGroup = (
 	groupIdFromAction: string,
 	cardId: string,
 ) => {
-	const groups = selectGroups(state);
+	const groups = selectGroupMap(state);
 	const groupInAction = groups[groupIdFromAction];
 	if (groupInAction && groupInAction.cards.includes(cardId)) {
 		return groupIdFromAction;
@@ -484,7 +490,7 @@ const selectGroupSiblingsArticleCount = (state: State, groupId: string) =>
 	groupsArticleCount(selectGroupSiblings(state, groupId));
 
 const selectIndexInGroup = (state: State, groupId: string, articleId: string) =>
-	selectGroups(state)[groupId].cards.indexOf(articleId);
+	selectGroupMap(state)[groupId].cards.indexOf(articleId);
 
 const selectExternalArticleIdFromCard = (
 	state: State,
@@ -514,13 +520,13 @@ export {
 	createDemornalisedCard,
 	selectCard,
 	createSelectCollectionEditWarning,
-	selectCards,
+	selectCardMap,
 	selectGroupCollection,
 	selectGroupSiblings,
 	selectGroupSiblingsArticleCount,
 	selectArticleTag,
 	selectIndexInGroup,
-	selectGroups,
+	selectGroupMap,
 	selectArticleGroup,
 	groupsArticleCount,
 	selectExternalArticleIdFromCard,
@@ -528,4 +534,5 @@ export {
 	createSelectArticlesFromIds,
 	createSelectIsCardLive,
 	selectSupportingArticleCount,
+	selectCollectionMap,
 };

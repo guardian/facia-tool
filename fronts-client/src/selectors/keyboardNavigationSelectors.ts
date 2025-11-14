@@ -1,6 +1,6 @@
 import {
 	selectIndexInGroup,
-	selectGroups,
+	selectGroupMap,
 	selectGroupCollection,
 	createSelectCollection,
 } from './shared';
@@ -37,7 +37,7 @@ const selectNextIndexAndGroup = (
 	action: 'up' | 'down',
 	frontId: string,
 ) => {
-	const group = selectGroups(state)[groupId];
+	const group = selectGroupMap(state)[groupId];
 	if (!group) {
 		return null;
 	}
@@ -78,7 +78,7 @@ const selectNextIndexAndGroup = (
 			if (action === 'up') {
 				if (groupIndex !== 0) {
 					const nextGroupId = collectionGroups[groupIndex - 1];
-					const nextGroupArticles = selectGroups(state)[nextGroupId].cards;
+					const nextGroupArticles = selectGroupMap(state)[nextGroupId].cards;
 					return { toIndex: nextGroupArticles.length, nextGroupId };
 				}
 			}
@@ -115,7 +115,7 @@ const selectNextIndexAndGroup = (
 				const nextIndex = coll.draft.length;
 				const nextGroupId = coll.draft[nextIndex - 1];
 
-				const nextGroupArticles = selectGroups(state)[nextGroupId].cards;
+				const nextGroupArticles = selectGroupMap(state)[nextGroupId].cards;
 
 				return {
 					toIndex: nextGroupArticles.length,
