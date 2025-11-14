@@ -1,8 +1,8 @@
-import { selectFront } from 'selectors/frontsSelectors';
 import { ThunkResult } from 'types/Store';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 import { CardSets } from 'types/Collection';
 import { editorCloseCollections } from './';
+import { selectFront } from '../../selectors/shared';
 
 export const editorOpenAllCollectionsForFront =
 	(frontId: string, browsingStage: CardSets): ThunkResult<void> =>

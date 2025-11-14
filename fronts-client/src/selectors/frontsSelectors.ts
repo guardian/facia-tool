@@ -13,6 +13,9 @@ import { CardSets, Stages } from 'types/Collection';
 import {
 	createSelectCardsInCollection,
 	createSelectCollection,
+	selectFront,
+	selectFronts,
+	selectFrontId,
 } from 'selectors/shared';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
 
@@ -27,18 +30,6 @@ interface CollectionConfigMap {
 interface FrontsByPriority {
 	[id: string]: FrontConfig[];
 }
-
-const selectFronts = (state: State): FrontConfigMap =>
-	frontsConfigSelectors.selectAll(state).fronts || {};
-
-const selectFrontId = (state: State, { frontId }: { frontId: string }) =>
-	frontId;
-
-const selectFront = createSelector(
-	selectFronts,
-	selectFrontId,
-	(fronts, id) => fronts[id],
-);
 
 const selectUnlockedFrontCollections = (
 	state: State,
@@ -326,8 +317,6 @@ const createSelectArticleVisibilityDetails = () => {
 };
 
 export {
-	selectFront,
-	selectFronts,
 	selectCollectionConfig,
 	selectCollectionHasPrefill,
 	selectCollectionIsHidden,

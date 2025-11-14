@@ -25,6 +25,8 @@ import { cardSets } from 'constants/fronts';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
 import { DerivedArticle } from 'types/Article';
 import { hasMainVideo } from 'util/externalArticle';
+import { selectors as frontsConfigSelectors } from '../bundles/frontsConfigBundle';
+import { FrontConfigMap } from 'types/FaciaApi';
 
 const selectCollectionMap: (state: State) => CollectionMap =
 	collectionSelectors.selectAll;
@@ -505,6 +507,18 @@ const selectExternalArticleIdFromCard = (
 	return externalArticle.id;
 };
 
+const selectFronts = (state: State): FrontConfigMap =>
+	frontsConfigSelectors.selectAll(state).fronts || {};
+
+const selectFrontId = (_state: State, { frontId }: { frontId: string }) =>
+	frontId;
+
+const selectFront = createSelector(
+	selectFronts,
+	selectFrontId,
+	(frontsConfigMap, frontId) => frontsConfigMap[frontId],
+);
+
 export {
 	selectExternalArticleFromCard,
 	createSelectArticleFromCard,
@@ -534,5 +548,8 @@ export {
 	createSelectArticlesFromIds,
 	createSelectIsCardLive,
 	selectSupportingArticleCount,
+	selectFronts,
+	selectFrontId,
+	selectFront,
 	selectCollectionMap,
 };
