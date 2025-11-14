@@ -25,6 +25,7 @@ import { cardSets } from 'constants/fronts';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
 import { DerivedArticle } from 'types/Article';
 import { hasMainVideo } from 'util/externalArticle';
+import { selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from './alsoOnSelectors';
 import { selectors as frontsConfigSelectors } from '../bundles/frontsConfigBundle';
 import { FrontConfigMap } from 'types/FaciaApi';
 
@@ -188,6 +189,20 @@ const createSelectCollection = () =>
 		(collections: CollectionMap, collectionUuid: string) =>
 			collections[collectionUuid],
 	);
+
+const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
+	const selectCollection = createSelectCollection();
+	return createSelector(
+		[
+			selectFront,
+			selectCollection,
+			selectCollectionMap,
+			selectGroupMap,
+			selectCardMap,
+		],
+		selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+	);
+};
 
 const selectStage = (
 	_: unknown,
@@ -548,6 +563,7 @@ export {
 	createSelectArticlesFromIds,
 	createSelectIsCardLive,
 	selectSupportingArticleCount,
+	createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront,
 	selectFronts,
 	selectFrontId,
 	selectFront,
