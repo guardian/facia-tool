@@ -26,12 +26,21 @@ class ViewsController(
       .exists(_.contains("breaking-news"))
   }
 
+  private def checkIfTreatsPage(
+      request: UserRequest[AnyContent]
+  ): Boolean = {
+    request.queryString
+      .getOrElse("treats", Seq(""))
+      .exists(_.contains("please"))
+  }
+
   private def shouldRedirectToV2(
       request: UserRequest[AnyContent],
       priority: Option[String] = None
   ): Boolean = {
     val isBreakingNews = checkIfBreakingNews(request, priority)
-    if (isBreakingNews) {
+    val isTreatsPage = checkIfTreatsPage(request)
+    if (isBreakingNews || isTreatsPage) {
       false
     } else {
       request.queryString.getOrElse("redirect", Seq("true")).contains("true")
@@ -63,6 +72,7 @@ class ViewsController(
         PermanentRedirect(s"/v2/$priority")
       } else {
         val isBreakingNews = checkIfBreakingNews(request, Some(priority))
+        val isTreatsPage = checkIfTreatsPage(request)
         val identity = request.user
         Cached(60) {
           Ok(
@@ -71,7 +81,7 @@ class ViewsController(
               config.facia.stage,
               overrideIsDev(request, isDev),
               assetsManager.pathForCollections,
-              priority != "email" && !isBreakingNews,
+              priority != "email" && !isBreakingNews && !isTreatsPage,
               priority,
               maybeTelemetryUrl = Some(telemetryUrl)
             )
