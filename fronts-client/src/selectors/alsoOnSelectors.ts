@@ -4,6 +4,7 @@ import {
 } from 'types/Collection';
 import { FrontConfig } from '../types/FaciaApi';
 import uniq from 'lodash/uniq';
+import { emptyObject } from '../util/selectorUtils';
 
 /**
  *
@@ -41,7 +42,7 @@ const selectCollectionsWhichAreAlsoOnOtherFronts = (
 	allFronts: FrontConfig[],
 ): CollectionsWhichAreAlsoOnOtherFrontsMap => {
 	if (!selectedFront) {
-		return {};
+		return emptyObject;
 	}
 	const otherFronts = allFronts.filter(
 		(front) => front.id !== selectedFront.id,
@@ -49,7 +50,7 @@ const selectCollectionsWhichAreAlsoOnOtherFronts = (
 	const selectedFrontCollections = selectedFront.collections;
 	return selectedFrontCollections.reduce(
 		iterateOverSelectedFrontCollections(selectedFront, otherFronts),
-		{},
+		emptyObject,
 	);
 };
 
