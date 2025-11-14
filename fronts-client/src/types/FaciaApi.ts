@@ -7,6 +7,7 @@ import {
 import { EditionsPrefill } from './Edition';
 
 interface FrontConfigResponse {
+	// collection uuids
 	collections: string[];
 	priority?: string;
 	displayName?: string;
