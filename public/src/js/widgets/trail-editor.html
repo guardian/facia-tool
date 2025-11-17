@@ -18,13 +18,23 @@
                 tabbableFormField: true,
                 textInput: updateText"></textarea>
 
-            <!-- ko if: hasFocus -->
-                <span class="editor__length" data-bind="text: length"></span>
-                <a class="editor__revert" data-bind="
+                <div class="editor__length" data-bind="
+                text: length,
+                attr: {title: lengthTitle, 'aria-label': lengthTitle }
+                "></div>
+            <!-- ko if: showRevertButton -->
+                <a class="editor__revert" title="revert edits" role="button" aria-label="revert edits" data-bind="
                     visible: meta() && field(),
                     click: clear"><i class="fa fa-fast-backward"></i></a>
-                <span class="editor__alert__message">Text is too long.</span>
             <!-- /ko -->
+             <div aria-live="polite">
+                <!-- ko if: lengthWarningMessage -->
+                    <span class="editor__alert__message" data-bind="text: lengthWarningMessage"></span>
+                <!--  /ko -->
+                <!-- ko if: lengthAlert && !lengthWarningMessage -->
+                 <span class="editor__alert__message">Text is too long. Maximum <span data-bind="text: opts.maxLength"></span> characters</span>
+                <!--  /ko -->
+            </div>
         </div>
     <!-- /ko -->
 

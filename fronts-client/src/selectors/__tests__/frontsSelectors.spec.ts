@@ -153,7 +153,7 @@ describe('Selecting which front collection is also on correctly', () => {
 		});
 	});
 
-	it('sets merits warnign to true if a commercial collection is shared on another priority', () => {
+	it('sets merits warning to true if a commercial collection is shared on another priority', () => {
 		expect(
 			selectAlsoOnFront(
 				editorialFrontsInConfig.find((front) => front.id === 'editorialFront'),

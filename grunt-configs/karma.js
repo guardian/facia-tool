@@ -7,7 +7,7 @@ module.exports = function(grunt, options) {
             browserDisconnectTimeout: 10000,
             browserDisconnectTolerance: 3,
             browserNoActivityTimeout: 400000,
-            reportSlowerThan: 2000,
+            reportSlowerThan: 3000,
             colors: options.color,
             port: 9876,
             autoWatch: true,

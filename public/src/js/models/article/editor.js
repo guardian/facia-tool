@@ -50,11 +50,29 @@ export default class Editor extends BaseClass {
         }
 
         this.hasFocus = ko.observable(false).extend({ rateLimit: 150 });
+        this.showRevertButton = ko.pureComputed(() => {
+            return !opts.noRevertButton && this.hasFocus();
+        });
         this.length = ko.pureComputed(() => {
+            if (opts.showCharacterCountInsteadOfCharactersLeft) {
+                return this.value().length;
+            }
             return opts.maxLength ? opts.maxLength - this.value().length : undefined;
+        });
+        this.lengthTitle = ko.pureComputed(() => {
+            return opts.showCharacterCountInsteadOfCharactersLeft ? 'character count' : 'characters left';
         });
         this.lengthAlert = ko.pureComputed(() => {
             return opts.maxLength && this.value().length > opts.maxLength;
+        });
+        this.lengthWarningMessage = ko.pureComputed(() => {
+            if (!opts.lengthWarningMessages) {
+                return undefined;
+            }
+            const highestLevelBreached = opts.lengthWarningMessages.find(
+                (entry) => this.value().length > Number(entry[0])
+            );
+            return highestLevelBreached ? highestLevelBreached[1] : undefined;
         });
         this.displayEditor = ko.pureComputed(this.isVisible, this);
         this.updateText = ko.pureComputed({

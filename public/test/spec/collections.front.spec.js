@@ -265,13 +265,13 @@ describe('Front', function () {
         .then(() => done())
         .catch(done.fail);
     });
-    it('displays a warnign if front is hidden ', function () {
+    it('displays a warning if front is hidden ', function () {
         return this.loadFront({}, 'au')
         .then(() => {
             return expect($('.front-hidden').is(':visible')).toBe(true);
         });
     });
-    it('does not display a warnign if the front is not hidden ', function () {
+    it('does not display a warning if the front is not hidden ', function () {
         return this.loadFront({}, 'uk')
         .then(() => {
             return expect($('.front-hidden').is(':visible')).toBe(false);

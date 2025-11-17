@@ -190,10 +190,6 @@ export default {
     headlineLength: 200,
     restrictedHeadlineLength: 90,
 
-    restrictHeadlinesOn: [
-        'breaking-news'
-    ],
-
     restrictedLiveMode: [
         'breaking-news'
     ],
