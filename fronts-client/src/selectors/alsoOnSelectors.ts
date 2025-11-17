@@ -12,6 +12,7 @@ import {
 import { FrontConfig } from '../types/FaciaApi';
 import uniq from 'lodash/uniq';
 import { emptyObject } from '../util/selectorUtils';
+import { uniqBy } from 'lodash';
 
 /**
  *
@@ -190,6 +191,7 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 		!selectedFront ||
 		!selectedCollection ||
 		!selectedCollection.draft ||
+		!selectedCollection.live ||
 		!collectionMap ||
 		!groupMap ||
 		!cardMap
@@ -197,14 +199,23 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 		return emptyObject;
 	}
 
-	// Use Draft cards as these are the ones that show up in the UI
-	// TODO: check this is true!
-	const selectedCollectionGroupUuids = selectedCollection.draft;
+	// We want to look at cards on both draft and live versions of the collection
+	// We will want to dedupe these cards, but it's not possible here as UUIDs are unique between draft and live
+	const selectedCollectionGroupUuids = [
+		...selectedCollection.draft,
+		...selectedCollection.live,
+	];
 	const selectedCollectionCards = selectedCollectionGroupUuids.flatMap(
 		(groupUuid) => {
 			const selectedCollectionGroup = groupMap[groupUuid];
 			return selectedCollectionGroup.cards.map((cardUuid) => cardMap[cardUuid]);
 		},
+	);
+
+	// Here we can dedupe the cards which are on both draft and live
+	const selectedCollectionCardsDedupedByStage = uniqBy(
+		selectedCollectionCards,
+		'id',
 	);
 
 	const otherCollectionsOnSameFrontUuids = selectedFront.collections.filter(
@@ -214,7 +225,7 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 		(collectionUuid) => collectionMap[collectionUuid],
 	);
 
-	return selectedCollectionCards.reduce(
+	return selectedCollectionCardsDedupedByStage.reduce(
 		iterateOverSelectedCollectionCards(
 			otherCollectionsOnSameFront,
 			groupMap,
@@ -266,13 +277,19 @@ const iterateOverOtherCollectionsOnSameFront = (
 		accumulator: OtherCollectionsOnSameFrontThisCardIsOn,
 		otherCollectionOnSameFront: Collection,
 	): OtherCollectionsOnSameFrontThisCardIsOn => {
-		if (!otherCollectionOnSameFront || !otherCollectionOnSameFront.draft) {
+		if (
+			!otherCollectionOnSameFront ||
+			!otherCollectionOnSameFront.draft ||
+			!otherCollectionOnSameFront.live
+		) {
 			return accumulator;
 		}
-		// Use Draft cards as these are the ones that show up in the UI
-		// TODO: check this is true!
-		const otherCollectionOnSameFrontGroupUuids =
-			otherCollectionOnSameFront.draft;
+		// We want to look at cards on both draft and live versions of the collection
+		// We will want to dedupe these cards, but it's not possible here as UUIDs are unique between draft and live
+		const otherCollectionOnSameFrontGroupUuids = [
+			...otherCollectionOnSameFront.draft,
+			...otherCollectionOnSameFront.live,
+		];
 		const otherCollectionOnSameFrontCards =
 			otherCollectionOnSameFrontGroupUuids.flatMap((groupUuid) => {
 				const selectedCollectionGroup = groupMap[groupUuid];
@@ -280,11 +297,16 @@ const iterateOverOtherCollectionsOnSameFront = (
 					(cardUuid) => cardMap[cardUuid],
 				);
 			});
-		const otherCollectionOnSameFrontCardIds =
-			otherCollectionOnSameFrontCards.map((card) => card.id);
+		// Here we can dedupe the cards which are on both draft and live
+		const otherCollectionOnSameFrontCardsDedupedByStage = uniqBy(
+			otherCollectionOnSameFrontCards,
+			'id',
+		);
+		const otherCollectionOnSameFrontCardsDedupedByStageIds =
+			otherCollectionOnSameFrontCardsDedupedByStage.map((card) => card.id);
 
 		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront: OtherCollectionsOnSameFrontThisCardIsOn =
-			otherCollectionOnSameFrontCardIds.reduce(
+			otherCollectionOnSameFrontCardsDedupedByStageIds.reduce(
 				iterateOverOtherCollectionOnSameFrontCards(
 					otherCollectionOnSameFront,
 					selectedCollectionCardId,
