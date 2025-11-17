@@ -198,7 +198,6 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 	}
 
 	// Use Draft cards as these are the ones that show up in the UI
-	// TODO: check this is true!
 	const selectedCollectionGroupUuids = selectedCollection.draft;
 	const selectedCollectionCards = selectedCollectionGroupUuids.flatMap(
 		(groupUuid) => {
@@ -270,7 +269,6 @@ const iterateOverOtherCollectionsOnSameFront = (
 			return accumulator;
 		}
 		// Use Draft cards as these are the ones that show up in the UI
-		// TODO: check this is true!
 		const otherCollectionOnSameFrontGroupUuids =
 			otherCollectionOnSameFront.draft;
 		const otherCollectionOnSameFrontCards =
