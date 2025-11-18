@@ -119,7 +119,7 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
 	handleBlur: () => void;
 	lastDesktopArticle?: string;
 	lastMobileArticle?: string;
-	cardsWhichAreAlsoOnOtherCollectionsOnSameFront: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap;
+	cardsWhichAreAlsoOnOtherCollectionsOnSameFront?: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap;
 	updateCardMeta: (id: string, meta: CardMeta) => void;
 	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
@@ -180,7 +180,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 							>
 								{(card, getAfNodeProps) => {
 									const otherCollectionsOnSameFrontThisCardIsOn =
-										cardsWhichAreAlsoOnOtherCollectionsOnSameFront[card.uuid];
+										cardsWhichAreAlsoOnOtherCollectionsOnSameFront?.[card.uuid];
 
 									return (
 										<>
