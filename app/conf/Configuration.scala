@@ -35,7 +35,7 @@ class ApplicationConfiguration(
   private val propertiesFile = "/etc/gu/facia-tool.properties"
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f), "UTF-8")
-    case _ =>
+    case _             =>
       logger.warn("Missing configuration file $propertiesFile")
       ""
   }
