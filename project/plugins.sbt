@@ -9,7 +9,7 @@ libraryDependencies += "org.vafer" % "jdeb" % "1.3" artifacts Artifact(
 
 resolvers ++= Resolver.sonatypeOssRepos("releases")
 
-addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.2")
+addSbtPlugin("org.playframework" % "sbt-plugin" % "3.0.9")
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-git" % "0.9.3")
 
