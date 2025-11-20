@@ -109,9 +109,9 @@ describe('Front', function () {
         })
         .then(() => {
             expect($('collection-widget:nth(0) .title').text()).toBe('Fruits');
-            expect($('collection-widget:nth(0) .alsoOnToggle').length).toBe(0);
+            expect($('collection-widget:nth(0) .collectionsWhichAreAlsoOnOtherFrontsToggle').length).toBe(0);
             expect($('collection-widget:nth(1) .title').text()).toBe('Spices');
-            expect($('collection-widget:nth(1) .alsoOnToggle').length).toBe(1);
+            expect($('collection-widget:nth(1) .collectionsWhichAreAlsoOnOtherFrontsToggle').length).toBe(1);
 
             return wait.event('test:lastmodified');
         })

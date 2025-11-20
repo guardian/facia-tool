@@ -17,7 +17,7 @@ import {
 	selectArticleTag,
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
-import { defaultObject } from 'util/selectorUtils';
+import { emptyObject } from 'util/selectorUtils';
 import { CardMeta, ArticleTag, CardSizes, ImageData } from 'types/Collection';
 import InputText from 'components/inputs/InputText';
 import InputTextArea from 'components/inputs/InputTextArea';
@@ -1337,7 +1337,7 @@ const createMapStateToProps = () => {
 			articleCapiFieldValues: getCapiValuesForArticleFields(externalArticle),
 			editableFields:
 				article && selectFormFields(state, article.uuid, isSupporting),
-			kickerOptions: article ? selectArticleTag(state, cardId) : defaultObject,
+			kickerOptions: article ? selectArticleTag(state, cardId) : emptyObject,
 			imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
 			showMainVideo: valueSelector(state, 'showMainVideo'),
 			slideshow: valueSelector(state, 'slideshow'),

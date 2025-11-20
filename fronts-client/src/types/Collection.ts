@@ -8,7 +8,11 @@ interface CollectionArticles {
 	live: CapiArticle[];
 }
 
-interface AlsoOnDetail {
+interface CollectionsWhichAreAlsoOnOtherFrontsMap {
+	[collectionUuid: string]: CollectionsWhichAreAlsoOnOtherFronts;
+}
+
+interface CollectionsWhichAreAlsoOnOtherFronts {
 	priorities: string[];
 	fronts: Array<{ id: string; priority: string }>;
 	meritsWarning: boolean;
@@ -215,7 +219,8 @@ interface ArticleTag {
 
 export {
 	CollectionArticles,
-	AlsoOnDetail,
+	CollectionsWhichAreAlsoOnOtherFronts,
+	CollectionsWhichAreAlsoOnOtherFrontsMap,
 	NestedCard,
 	Card,
 	CardDenormalised,

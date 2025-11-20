@@ -160,15 +160,15 @@ export default class Front extends ColumnWidget {
                     allCollections[id],
                     {
                         id: id,
-                        alsoOn: _.reduce(this.baseModel.allFrontsList(), (alsoOn, frontFromList) => {
+                        collectionsWhichAreAlsoOnOtherFronts: _.reduce(this.baseModel.allFrontsList(), (collectionsWhichAreAlsoOnOtherFronts, frontFromList) => {
                             if (frontFromList.id !== frontId && (frontFromList.collections || []).indexOf(id) > -1) {
-                                alsoOn.push({
+                                collectionsWhichAreAlsoOnOtherFronts.push({
                                     id: frontFromList.id,
                                     priority: frontFromList.priority || 'editorial',
                                     isDifferentPriority: frontFromList.priority !== front.priority
                                 });
                             }
-                            return alsoOn;
+                            return collectionsWhichAreAlsoOnOtherFronts;
                         }, []),
                         front: this
                     }
