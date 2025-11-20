@@ -63,13 +63,13 @@ object BreakingNewsUpdate {
     BreakingNewsPayload(
       title = title,
       message = Some(StringEscapeUtils.unescapeHtml4(trail.headline)),
-      thumbnailUrl = trail.thumb.map { new URI(_) },
+      thumbnailUrl = trail.imageHide match {
+        case Some(true) => None
+        case _          => trail.thumb.map { new URI(_) }
+      },
       sender = email,
       link = createLinkDetails(trail),
-      imageUrl = trail.imageHide match {
-        case Some(true) => None
-        case _          => trail.image.map { new URI(_) }
-      },
+      imageUrl = None,
       importance = parseImportance(trail.group),
       topic = parseTopic(trail.topic),
       debug = false,

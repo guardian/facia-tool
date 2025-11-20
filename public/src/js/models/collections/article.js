@@ -64,9 +64,6 @@ export default class Article extends DropTarget {
 
         this.meta = asObservableProps(_.pluck(metaFields, 'key'));
         populateObservables(this.meta, opts.meta);
-        if (this.front && this.front.confirmSendingAlert()) {
-            populateObservables(this.meta, { imageHide: true });
-        }
 
         this.metaDefaults = {};
 
