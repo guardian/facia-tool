@@ -1,7 +1,7 @@
 import { insertAndDedupeSiblings } from 'util/insertAndDedupeSiblings';
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
-import { selectCards, selectGroupSiblings } from 'selectors/shared';
+import { selectCardMap, selectGroupSiblings } from 'selectors/shared';
 import { capGroupCards } from 'util/capGroupCards';
 import keyBy from 'lodash/keyBy';
 
@@ -12,7 +12,7 @@ const getUpdatedSiblingGroupsForInsertion = (
 	insertionIndex: number,
 	cardId: string,
 ) => {
-	const cardsMap = selectCards(sharedState);
+	const cardsMap = selectCardMap(sharedState);
 	const groupSiblings = selectGroupSiblings(sharedState, insertionGroupId);
 
 	if (!cardsMap[cardId]) {

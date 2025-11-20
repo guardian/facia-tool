@@ -15,7 +15,11 @@ import {
 	maybeAddFrontPublicationDate,
 	copyCardImageMeta,
 } from 'actions/CardsCommon';
-import { selectCards, selectCard, selectArticleGroup } from 'selectors/shared';
+import {
+	selectCardMap,
+	selectCard,
+	selectArticleGroup,
+} from 'selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/action';
 import { cloneCard } from 'util/card';
@@ -503,7 +507,7 @@ const moveCard = (
 			// if from is not null then assume we're copying a moved card
 			// into this new position
 			const { parent, supporting } = !fromWithRespectToState
-				? cloneCard(card, selectCards(state))
+				? cloneCard(card, selectCardMap(state))
 				: { parent: card, supporting: [] };
 
 			if (toWithRespectToState) {
