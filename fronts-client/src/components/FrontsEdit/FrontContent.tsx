@@ -8,7 +8,6 @@ import { DragAndDropRoot, PosSpec, Move } from 'lib/dnd';
 import Collection from './Collection';
 import type { State } from 'types/State';
 import WithDimensions from 'components/util/WithDimensions';
-import { selectFront } from 'selectors/frontsSelectors';
 import { Dispatch } from 'types/Store';
 import { Card as TCard, CardSets, Group } from 'types/Collection';
 import { FrontConfig } from 'types/FaciaApi';
@@ -21,6 +20,7 @@ import { createSelectCollectionsWhichAreAlsoOnOtherFronts } from 'selectors/fron
 import { CollectionsWhichAreAlsoOnOtherFronts } from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import Raven from 'raven-js';
+import { selectFront } from 'selectors/shared';
 
 const STALENESS_THRESHOLD_IN_MILLIS = 30_000; // 30 seconds
 

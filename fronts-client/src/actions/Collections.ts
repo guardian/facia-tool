@@ -21,6 +21,7 @@ import {
 	createSelectGroupArticles,
 	createSelectAllCardsInCollection,
 	selectCard,
+	selectFront,
 } from 'selectors/shared';
 import {
 	actions as externalArticleActions,
@@ -44,7 +45,7 @@ import {
 	fetchLastPressedSuccess,
 } from 'actions/Fronts';
 import { actions as collectionActions } from 'bundles/collectionsBundle';
-import { selectCollectionConfig, selectFront } from 'selectors/frontsSelectors';
+import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { Dispatch, ThunkResult } from 'types/Store';
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
