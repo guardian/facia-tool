@@ -91,7 +91,8 @@ export default class Editor extends BaseClass {
     }
 
     value() {
-        return this.meta() || this.field() || '';
+		const text = this.meta() === undefined ? this.field() : this.meta();
+        return text || '';
     }
 
     clear() {

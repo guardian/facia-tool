@@ -3,7 +3,8 @@ import {CONST} from 'modules/vars';
 export function headline() {
     const meta = this.meta, fields = this.fields;
     if (this.state.enableContentOverrides()) {
-        return meta.headline() || fields.headline() || (meta.snapType() ? 'No headline!' : 'Loading...');
+		const text = meta.headline() === undefined ? fields.headline() : meta.headline();
+        return text || 'No headline!';
     } else {
         return '{ ' + meta.customKicker() + ' }';
     }
