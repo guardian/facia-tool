@@ -9,7 +9,11 @@ import {
 	selectExternalArticleFromCard,
 	selectSupportingArticleCount,
 } from 'selectors/shared';
-import { CardSizes, CardMeta } from 'types/Collection';
+import {
+	CardSizes,
+	CardMeta,
+	OtherCollectionsOnSameFrontThisCardIsOn,
+} from 'types/Collection';
 import SnapLink from 'components/card/snapLink/SnapLinkCard';
 import {
 	copyCardImageMetaWithPersist,
@@ -122,6 +126,7 @@ type CardContainerProps = ContainerProps & {
 	collectionType?: string;
 	selectOtherCard: { (uuid: string): CardType };
 	groupSizeId?: number;
+	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 };
 
 class Card extends React.Component<CardContainerProps> {
@@ -163,6 +168,7 @@ class Card extends React.Component<CardContainerProps> {
 			collectionType,
 			groupSizeId,
 			updateCardMeta,
+			otherCollectionsOnSameFrontThisCardIsOn,
 		} = this.props;
 
 		const getSublinks = (
@@ -196,6 +202,9 @@ class Card extends React.Component<CardContainerProps> {
 							imageCriteria={this.determineCardCriteria()}
 							collectionType={collectionType}
 							groupIndex={groupSizeId}
+							otherCollectionsOnSameFrontThisCardIsOn={
+								otherCollectionsOnSameFrontThisCardIsOn
+							}
 						>
 							<EditModeVisibility visibleMode="fronts">
 								{getSublinks}

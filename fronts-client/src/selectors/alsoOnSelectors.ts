@@ -1,6 +1,13 @@
 import {
+	CardMap,
+	OtherCollectionsOnSameFrontThisCardIsOn,
+	CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
+	Collection,
+	CollectionMap,
 	CollectionsWhichAreAlsoOnOtherFronts,
 	CollectionsWhichAreAlsoOnOtherFrontsMap,
+	GroupMap,
+	Card,
 } from 'types/Collection';
 import { FrontConfig } from '../types/FaciaApi';
 import uniq from 'lodash/uniq';
@@ -142,4 +149,175 @@ const iterateOverOtherFrontCollections = (
 	};
 };
 
-export { selectCollectionsWhichAreAlsoOnOtherFronts };
+/**
+ * @param selectedFront
+ * @param selectedCollection
+ * @param collectionMap
+ * @param groupMap
+ * @param cardMap
+ *
+ *  For a given collection:
+ *  	(1) Find the cards on that collection
+ *  	(2) For each card, find _other_ containers that card might be on (on the same front)
+ *
+ *  Through nested reduce functions, return a keyed object:
+ *  {
+ *    card1: {
+ *      collections: [
+ *        { id: collection1; },
+ *        { id: collection2; }
+ *      ]
+ *    },
+ *    card2: {
+ *      collections: [
+ *        { id: collection1; }
+ *      ]
+ *    },
+ *    // if the card is not on another collection, return an empty collections array
+ * 	  card3: {
+ * 	    collections: []
+ * 	  }
+ *  }
+ */
+const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
+	selectedFront: FrontConfig | undefined,
+	selectedCollection: Collection | undefined,
+	collectionMap: CollectionMap,
+	groupMap: GroupMap,
+	cardMap: CardMap,
+): CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap => {
+	if (
+		!selectedFront ||
+		!selectedCollection ||
+		!selectedCollection.draft ||
+		!collectionMap ||
+		!groupMap ||
+		!cardMap
+	) {
+		return emptyObject;
+	}
+
+	// Use Draft cards as these are the ones that show up in the UI
+	const selectedCollectionGroupUuids = selectedCollection.draft;
+	const selectedCollectionCards = selectedCollectionGroupUuids.flatMap(
+		(groupUuid) => {
+			const selectedCollectionGroup = groupMap[groupUuid];
+			return selectedCollectionGroup.cards.map((cardUuid) => cardMap[cardUuid]);
+		},
+	);
+
+	const otherCollectionsOnSameFrontUuids = selectedFront.collections.filter(
+		(collectionUuid) => collectionUuid !== selectedCollection.id,
+	);
+	const otherCollectionsOnSameFront = otherCollectionsOnSameFrontUuids.map(
+		(collectionUuid) => collectionMap[collectionUuid],
+	);
+
+	return selectedCollectionCards.reduce(
+		iterateOverSelectedCollectionCards(
+			otherCollectionsOnSameFront,
+			groupMap,
+			cardMap,
+		),
+		emptyObject,
+	);
+};
+
+const cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue: OtherCollectionsOnSameFrontThisCardIsOn =
+	{
+		collections: [] as Array<{ collectionUuid: string }>,
+	};
+
+const iterateOverSelectedCollectionCards = (
+	otherCollectionsOnSameFront: Collection[],
+	groupMap: GroupMap,
+	cardMap: CardMap,
+) => {
+	return (
+		accumulator: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
+		selectedCollectionCard: Card,
+	): CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap => {
+		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront: OtherCollectionsOnSameFrontThisCardIsOn =
+			otherCollectionsOnSameFront.reduce(
+				iterateOverOtherCollectionsOnSameFront(
+					// we need to compare on the card IDs...
+					selectedCollectionCard.id,
+					groupMap,
+					cardMap,
+				),
+				cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue,
+			);
+		return {
+			...accumulator,
+			// ...but we prefer to store with the UUIDs as this is the Redux way
+			[selectedCollectionCard.uuid]:
+				cardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+		};
+	};
+};
+
+const iterateOverOtherCollectionsOnSameFront = (
+	selectedCollectionCardId: string,
+	groupMap: GroupMap,
+	cardMap: CardMap,
+) => {
+	return (
+		accumulator: OtherCollectionsOnSameFrontThisCardIsOn,
+		otherCollectionOnSameFront: Collection,
+	): OtherCollectionsOnSameFrontThisCardIsOn => {
+		if (!otherCollectionOnSameFront || !otherCollectionOnSameFront.draft) {
+			return accumulator;
+		}
+		// Use Draft cards as these are the ones that show up in the UI
+		const otherCollectionOnSameFrontGroupUuids =
+			otherCollectionOnSameFront.draft;
+		const otherCollectionOnSameFrontCards =
+			otherCollectionOnSameFrontGroupUuids.flatMap((groupUuid) => {
+				const selectedCollectionGroup = groupMap[groupUuid];
+				return selectedCollectionGroup.cards.map(
+					(cardUuid) => cardMap[cardUuid],
+				);
+			});
+		const otherCollectionOnSameFrontCardIds =
+			otherCollectionOnSameFrontCards.map((card) => card.id);
+
+		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront: OtherCollectionsOnSameFrontThisCardIsOn =
+			otherCollectionOnSameFrontCardIds.reduce(
+				iterateOverOtherCollectionOnSameFrontCards(
+					otherCollectionOnSameFront,
+					selectedCollectionCardId,
+				),
+				cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue,
+			);
+
+		return {
+			collections: accumulator.collections.concat(
+				cardsWhichAreAlsoOnOtherCollectionsOnSameFront.collections,
+			),
+		};
+	};
+};
+
+const iterateOverOtherCollectionOnSameFrontCards = (
+	otherCollectionOnSameFront: Collection,
+	selectedCollectionCardId: string,
+) => {
+	return (
+		accumulator: OtherCollectionsOnSameFrontThisCardIsOn,
+		otherCollectionOnSameFrontCardId: string,
+	): OtherCollectionsOnSameFrontThisCardIsOn => {
+		if (selectedCollectionCardId === otherCollectionOnSameFrontCardId) {
+			return {
+				collections: accumulator.collections.concat([
+					{ collectionUuid: otherCollectionOnSameFront.id },
+				]),
+			};
+		}
+		return accumulator;
+	};
+};
+
+export {
+	selectCollectionsWhichAreAlsoOnOtherFronts,
+	selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+};

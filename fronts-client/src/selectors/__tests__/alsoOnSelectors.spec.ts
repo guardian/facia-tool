@@ -1,8 +1,20 @@
-import { selectCollectionsWhichAreAlsoOnOtherFronts } from '../alsoOnSelectors';
+import {
+	selectCollectionsWhichAreAlsoOnOtherFronts,
+	selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+} from '../alsoOnSelectors';
 import {
 	additionalEditorialFronts,
+	cardMap,
+	collectionCulture,
+	collectionFootball,
+	collectionObituaries,
+	collectionMap,
+	collectionSport,
+	collectionWhatToWatch,
 	commercialFronts,
 	editorialFrontsInConfig,
+	frontConfig,
+	groupMap,
 	trainingFronts,
 } from './mock-data';
 
@@ -81,6 +93,114 @@ describe('Selecting collections which are also on other fronts', () => {
 				priorities: ['commercial'],
 				meritsWarning: true,
 				fronts: [{ id: 'commercialFront', priority: 'commercial' }],
+			},
+		});
+	});
+});
+
+describe('Selecting cards which are also on other collections on the same front', () => {
+	it('return an object with all the cards on the current collection', () => {
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				frontConfig,
+				collectionCulture,
+				collectionMap,
+				groupMap,
+				cardMap,
+			),
+		).toEqual(
+			expect.objectContaining({
+				cardUuid4: expect.any(Object),
+				cardUuid5: expect.any(Object),
+				cardUuid6: expect.any(Object),
+			}),
+		);
+	});
+
+	it('if a card is NOT on another collection on the same front, return an empty list of collections for that cards', () => {
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				frontConfig,
+				collectionObituaries,
+				collectionMap,
+				groupMap,
+				cardMap,
+			),
+		).toEqual({
+			cardUuid1: {
+				collections: [],
+			},
+		});
+	});
+
+	it('if a card IS on another collection on the same front, return a list of shared collections for that card', () => {
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				frontConfig,
+				collectionFootball,
+				collectionMap,
+				groupMap,
+				cardMap,
+			),
+		).toEqual({
+			cardUuid2: {
+				collections: [{ collectionUuid: 'sportCollectionUuid' }],
+			},
+		});
+
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				frontConfig,
+				collectionSport,
+				collectionMap,
+				groupMap,
+				cardMap,
+			),
+		).toEqual({
+			cardUuid2: {
+				collections: [{ collectionUuid: 'footballCollectionUuid' }],
+			},
+			cardUuid3: {
+				collections: [{ collectionUuid: 'whatToWatchCollectionUuid' }],
+			},
+		});
+
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				frontConfig,
+				collectionWhatToWatch,
+				collectionMap,
+				groupMap,
+				cardMap,
+			),
+		).toEqual({
+			cardUuid3: {
+				collections: [{ collectionUuid: 'sportCollectionUuid' }],
+			},
+			cardUuid4: {
+				collections: [{ collectionUuid: 'cultureCollectionUuid' }],
+			},
+		});
+	});
+
+	it("if some cards are shared, and some aren't, return corresponding lists for each card", () => {
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				frontConfig,
+				collectionCulture,
+				collectionMap,
+				groupMap,
+				cardMap,
+			),
+		).toEqual({
+			cardUuid4: {
+				collections: [{ collectionUuid: 'whatToWatchCollectionUuid' }],
+			},
+			cardUuid5: {
+				collections: [],
+			},
+			cardUuid6: {
+				collections: [],
 			},
 		});
 	});

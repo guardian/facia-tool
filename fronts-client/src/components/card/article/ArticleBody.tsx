@@ -19,7 +19,12 @@ import {
 	HoverAddToClipboardButton,
 } from '../../inputs/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../../CollectionHoverItems';
-import { BoostLevels, CardSizes } from 'types/Collection';
+import {
+	BoostLevels,
+	CardSizes,
+	CollectionMap,
+	OtherCollectionsOnSameFrontThisCardIsOn,
+} from 'types/Collection';
 import CardMetaContent from '../CardMetaContent';
 import CardDraftMetaContent from '../CardDraftMetaContent';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
@@ -43,6 +48,7 @@ import {
 import { Atom } from '../../../types/Capi';
 import { getActiveAtomProperties } from '../../../util/extractAtom';
 import { isAtom } from '../../../util/atom';
+import pageConfig from 'util/extractConfigFromPage';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
 	flex-shrink: 0;
@@ -75,6 +81,26 @@ const ArticleBodyByline = styled.div`
 
 const FirstPublicationDate = styled(CardMetaContent)`
 	color: ${theme.colors.green};
+`;
+
+const AlsoOnOtherCollectionsSection = styled.div`
+	color: ${theme.colors.blackDark};
+	font-size: ${theme.card.fontSizeMeta};
+	border-top: 1px dotted ${theme.colors.blackLight};
+	margin-top: 8px;
+	padding-top: 2px;
+`;
+
+const AlsoOnOtherCollectionsList = styled.ul`
+	padding: 0;
+	margin: 0;
+	width: max-content;
+	position: relative;
+	z-index: 10;
+`;
+
+const AlsoOnOtherCollectionsListItem = styled.li`
+	margin-left: 16px;
 `;
 
 const Tone = styled.span`
@@ -150,6 +176,8 @@ interface ArticleBodyProps {
 	imageCriteria?: Criteria;
 	collectionType?: string;
 	groupIndex?: number;
+	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
+	collectionMap?: CollectionMap;
 }
 
 const articleBodyDefault = React.memo(
@@ -205,7 +233,20 @@ const articleBodyDefault = React.memo(
 		groupIndex,
 		mainMediaVideoAtom,
 		replacementVideoAtom,
+		otherCollectionsOnSameFrontThisCardIsOn,
+		collectionMap,
 	}: ArticleBodyProps) => {
+		const showIfCardsAreAlsoOnOtherCollectionsOnSameFrontFeatureSwitch =
+			pageConfig?.userData?.featureSwitches.find(
+				(feature) =>
+					feature.key ===
+					'show-cards-which-are-also-on-other-collections-on-same-front',
+			);
+		const otherCollectionsOnSameFrontThisCardIsOnUuids =
+			otherCollectionsOnSameFrontThisCardIsOn?.collections.map(
+				(_) => _.collectionUuid,
+			);
+
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
 		const paths = urlPath ? getPaths(urlPath) : undefined;
@@ -309,6 +350,25 @@ const articleBodyDefault = React.memo(
 								{distanceInWordsStrict(new Date(firstPublicationDate), now)}
 							</FirstPublicationDate>
 						)}
+						{!!otherCollectionsOnSameFrontThisCardIsOnUuids &&
+							otherCollectionsOnSameFrontThisCardIsOnUuids.length > 0 &&
+							showIfCardsAreAlsoOnOtherCollectionsOnSameFrontFeatureSwitch?.enabled && (
+								<AlsoOnOtherCollectionsSection>
+									Also on:
+									<AlsoOnOtherCollectionsList>
+										{otherCollectionsOnSameFrontThisCardIsOnUuids?.map(
+											(uuid) => {
+												const collection = collectionMap?.[uuid];
+												return collection !== undefined ? (
+													<AlsoOnOtherCollectionsListItem>
+														{collection.displayName}
+													</AlsoOnOtherCollectionsListItem>
+												) : null;
+											},
+										)}
+									</AlsoOnOtherCollectionsList>
+								</AlsoOnOtherCollectionsSection>
+							)}
 					</CardMetaContainer>
 				)}
 				<CardContent displaySize={size} textSize={textSize}>
