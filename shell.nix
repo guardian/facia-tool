@@ -35,10 +35,15 @@ let
       npm run jspm install
     '';
   };
+  runPostgres = pkgs.writeShellApplication {
+    name = "run-postgres";
+    runtimeInputs = [ pkgs.docker pkgs.docker-credential-helpers ];
+    text = ''
+      docker compose up
+    '';
+  };
 in guardianDev.devEnv {
   name = "facia-tool";
-  commands = [ startPlay frontsClient buildV1 ];
-  # in [
-  #   metals
-  # ];
+  commands = [ startPlay frontsClient buildV1 runPostgres ];
+  extraInputs = [];
 }
