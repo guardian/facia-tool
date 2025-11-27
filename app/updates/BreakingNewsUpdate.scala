@@ -35,7 +35,8 @@ object BlazeAndroidPushPayload {
 case class BlazeAndroidPushPayload(
     alert: String,
     title: String,
-    customUri: String
+    customUri: String,
+    pushIconImageUrl: Option[String] = None
 )
 
 object BlazePlatformMessagePayloads {
@@ -142,7 +143,11 @@ object BreakingNewsUpdate {
         androidPush = BlazeAndroidPushPayload(
           alert = StringEscapeUtils.unescapeHtml4(trail.headline),
           title = title.getOrElse("The Guardian") + " - Hackday",
-          customUri = "braze://home"
+          customUri = "braze://home",
+          pushIconImageUrl = trail.imageHide match {
+            case Some(true) => None
+            case _          => trail.thumb.map { new URI(_).toASCIIString() }
+          }
         )
       )
     )
