@@ -67,6 +67,7 @@ graph LR
     breakingNews
     treats
     config
+    storyPackages
   end
   subgraph clientV2
     frontsTool
