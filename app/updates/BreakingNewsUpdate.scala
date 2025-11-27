@@ -474,7 +474,18 @@ class BlazeClientImpl(ws: WSClient, host: String, apiKey: String)
             s"Successfully sent breaking news notification by Blaze: $body"
           )
           response.body[JsValue] \ "dispatch_id" match {
-            case JsDefined(JsString(id)) => Right(UUID.fromString(id))
+            case JsDefined(JsString(id)) =>
+              Right(
+                UUID.fromString(
+                  Seq(
+                    id.substring(0, 8),
+                    id.substring(8, 12),
+                    id.substring(12, 16),
+                    id.substring(16, 20),
+                    id.substring(20)
+                  ).mkString("-")
+                )
+              )
             case _ =>
               Left(
                 ApiClientError(
