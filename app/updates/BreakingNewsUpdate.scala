@@ -15,6 +15,7 @@ import play.api.libs.json._
 import play.api.libs.ws.WSClient
 import play.api.mvc.Result
 import play.api.mvc.Results.{InternalServerError, Ok}
+import play.api.libs.json.JsonNaming.SnakeCase
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -22,6 +23,45 @@ import scala.util.control.NonFatal
 import scala.util.{Failure, Success, Try}
 
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
+
+object BlazeAndroidPushPayload {
+
+  implicit val config: JsonConfiguration = JsonConfiguration(SnakeCase)
+
+  implicit val blazeAndroidPushPayloadFormat: Format[BlazeAndroidPushPayload] =
+    Json.format[BlazeAndroidPushPayload]
+}
+
+case class BlazeAndroidPushPayload(
+    alert: String,
+    title: String,
+    customUri: String
+)
+
+object BlazePlatformMessagePayloads {
+
+  implicit val config: JsonConfiguration = JsonConfiguration(SnakeCase)
+
+  implicit val blazePlatformMessagePayloadsFormat
+      : Format[BlazePlatformMessagePayloads] =
+    Json.format[BlazePlatformMessagePayloads]
+}
+case class BlazePlatformMessagePayloads(androidPush: BlazeAndroidPushPayload)
+
+object BlazeMessagePayload {
+
+  implicit val config: JsonConfiguration = JsonConfiguration(SnakeCase)
+
+  implicit val blazeMessagePayloadFormat: Format[BlazeMessagePayload] =
+    Json.format[BlazeMessagePayload]
+}
+
+case class BlazeMessagePayload(
+    broadcast: Boolean,
+    segmentId: String,
+    recipientSubscriptionState: String,
+    messages: BlazePlatformMessagePayloads
+)
 
 object BreakingNewsUpdate {
   val SportGlobalTopicName = "global-sport"
@@ -74,6 +114,37 @@ object BreakingNewsUpdate {
       topic = parseTopic(trail.topic),
       debug = false,
       dryRun = None
+    )
+  }
+
+  def createBlazePayload(
+      trail: ClientHydratedTrail,
+      email: String
+  ): BlazeMessagePayload = {
+    val title = trail.topic match {
+      case Some("uk-general-election") => Some("UK general election")
+      case Some(topic)
+          if (SportBreakingNewsTopics.map(_.name) :+ SportGlobalTopicName)
+            .contains(topic) =>
+        Some("Sport breaking news")
+      case Some(topic)
+          if (UsElectionsBreakingNewsTopics.map(
+            _.name
+          ) :+ UsElectionsGlobalTopicName).contains(topic) =>
+        Some("US election")
+      case _ => None
+    }
+    BlazeMessagePayload(
+      broadcast = true,
+      segmentId = "91d697de-c4cd-4ff6-bb5e-340545ab65e5",
+      recipientSubscriptionState = "all",
+      messages = BlazePlatformMessagePayloads(
+        androidPush = BlazeAndroidPushPayload(
+          alert = StringEscapeUtils.unescapeHtml4(trail.headline),
+          title = title.getOrElse("The Guardian") + " - Hackday",
+          customUri = "braze://home"
+        )
+      )
     )
   }
 
@@ -163,6 +234,17 @@ class BreakingNewsUpdate(
     )
   }
 
+  lazy val blazeClient = {
+    logger.info(
+      s"Configuring breaking news Blaze client to send notifications"
+    )
+    new BlazeClientImpl(
+      ws = ws,
+      host = "https://rest.fra-01.braze.eu",
+      apiKey = "44f20e6b-b894-4118-ae8c-cca6db151c2f"
+    )
+  }
+
   def putBreakingNewsUpdate(
       collectionId: String,
       collection: ClientHydratedCollection,
@@ -173,7 +255,7 @@ class BreakingNewsUpdate(
     )
 
     val futurePossibleErrors = Future.traverse(collection.trails)(trail =>
-      sendAlert(trail, email, collectionId).map(trail -> _)
+      sendAlertByBlaze(trail, email, collectionId).map(trail -> _)
     )
     futurePossibleErrors.map { listOfPossibleErrors =>
       {
@@ -253,6 +335,66 @@ class BreakingNewsUpdate(
       )
     }
   }
+
+  private def sendAlertByBlaze(
+      trail: ClientHydratedTrail,
+      email: String,
+      collectionId: String
+  ): Future[Option[String]] = {
+    def handleSuccessfulFuture(result: Either[ApiClientError, UUID]) =
+      result match {
+        case Left(error) =>
+          structuredLogger.putLog(
+            LogUpdate(HandlingBreakingNewsCollection(collectionId), email),
+            "error",
+            Some(new Exception(error.description))
+          )
+          Some(error.description)
+        case Right(_) => None
+      }
+    def withExceptionHandling(
+        block: => Future[Option[String]]
+    ): Future[Option[String]] = {
+      Try(block) match {
+        case Success(futureMaybeError) => futureMaybeError
+        case Failure(t: Throwable) =>
+          val message =
+            s"Exception in breaking news client send for trail ${trail.headline} because ${t.getMessage}"
+          logger.error(message, t)
+          Future.successful(Some(message))
+      }
+    }
+
+    if (trail.alert.getOrElse(false)) {
+      withExceptionHandling({
+        structuredLogger.putLog(
+          LogUpdate(
+            HandlingBreakingNewsTrail(collectionId, trail: ClientHydratedTrail),
+            email
+          )
+        )
+        val payload = BreakingNewsUpdate.createBlazePayload(trail, email)
+        logger.info(
+          s"Sending Blaze breaking news payload: ${Json.toJson(payload).toString()}"
+        )
+        blazeClient
+          .send(payload)
+          .map(handleSuccessfulFuture)
+          .recover { case NonFatal(e) =>
+            Some(e.getMessage)
+          }
+      })
+    } else {
+      logger.error(
+        s"Failed to send a breaking news alert for trail ${trail} because alert was missing"
+      )
+      Future.successful(
+        Some(
+          "There may have been a problem in sending a breaking news alert. Please contact central production for information"
+        )
+      )
+    }
+  }
 }
 
 case class ApiClientError(description: String)
@@ -299,6 +441,54 @@ class BreakingNewsClientImpl(ws: WSClient, host: String, apiKey: String)
           Left(
             ApiClientError(
               s"Unable to send breaking news notification ($body), status ${response.status}: ${response.statusText}"
+            )
+          )
+        }
+      }
+  }
+}
+
+class BlazeClientImpl(ws: WSClient, host: String, apiKey: String)
+    extends Logging {
+
+  private val url = s"$host/messages/send"
+
+  def send(
+      breakingNewsPayload: BlazeMessagePayload
+  ): Future[Either[ApiClientError, UUID]] = {
+    val body: String =
+      Json.stringify(
+        BlazeMessagePayload.blazeMessagePayloadFormat.writes(
+          breakingNewsPayload
+        )
+      )
+    ws.url(url)
+      .withHttpHeaders(
+        "Content-Type" -> "application/json; charset=UTF-8",
+        "Authorization" -> s"Bearer $apiKey"
+      )
+      .post(body)
+      .map { response =>
+        if (response.status >= 200 && response.status < 300) {
+          logger.info(
+            s"Successfully sent breaking news notification by Blaze: $body"
+          )
+          response.body[JsValue] \ "dispatch_id" match {
+            case JsDefined(JsString(id)) => Right(UUID.fromString(id))
+            case _ =>
+              Left(
+                ApiClientError(
+                  s"Successfully sent breaking news notification by Blaze ($body) but unable to parse response. Status: ${response.status}, Body: ${response.body}"
+                )
+              )
+          }
+        } else {
+          logger.error(
+            s"Unable to send breaking news notification by Blaze ($body), Status ${response.status}: ${response.statusText}, Body: ${response.body}"
+          )
+          Left(
+            ApiClientError(
+              s"Unable to send breaking news notification by Blaze ($body), status ${response.status}: ${response.statusText}"
             )
           )
         }
