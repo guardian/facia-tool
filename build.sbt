@@ -106,7 +106,7 @@ libraryDependencies ++= Seq(
   "com.beachape" %% "enumeratum-play" % "1.8.0",
   "org.playframework" %% "play" % "3.0.2",
   "org.apache.commons" % "commons-text" % "1.10.0",
-  "com.beust" % "jcommander" % "1.75",
+  "com.beust" % "jcommander" % "1.82",
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   "org.mockito" % "mockito-core" % "5.11.0" % Test
 )
