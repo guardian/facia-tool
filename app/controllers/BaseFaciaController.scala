@@ -130,4 +130,7 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents)
       s"${claimedAuth.user.email} is not valid for use with the Fronts Tool. You need to use your Guardian Google account to login. Please sign in with your Guardian Google account first, then retry logging in."
 
   }
+
+  val telemetryUrl =
+    s"https://user-telemetry.${config.environment.correspondingToolsDomainSuffix}/guardian-tool-accessed?app=facia-tool&stage=${config.environment.stage.toUpperCase()}"
 }

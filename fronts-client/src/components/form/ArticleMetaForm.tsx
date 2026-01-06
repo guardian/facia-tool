@@ -17,7 +17,7 @@ import {
 	selectArticleTag,
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
-import { defaultObject } from 'util/selectorUtils';
+import { emptyObject } from 'util/selectorUtils';
 import { CardMeta, ArticleTag, CardSizes, ImageData } from 'types/Collection';
 import InputText from 'components/inputs/InputText';
 import InputTextArea from 'components/inputs/InputTextArea';
@@ -75,10 +75,17 @@ import { RowContainer } from './RowContainer';
 import { ImageRowContainer } from './ImageRowContainer';
 import { ImageCol } from './ImageCol';
 import { CollectionToggles, renderBoostToggles } from './BoostToggles';
-import { memoize } from 'lodash';
+import { memoize, debounce } from 'lodash';
 import InputRadio from '../inputs/InputRadio';
-import Explainer from '../Explainer';
-import pageConfig from 'util/extractConfigFromPage';
+import { VideoControls } from '../video/VideoControls';
+import { getMainMediaVideoAtom } from '../../util/externalArticle';
+import { selectVideoBaseUrl } from '../../selectors/configSelectors';
+import SelectMediaInput from '../inputs/SelectMediaInput';
+import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
+import type { Atom, AtomResponse } from '../../types/Capi';
+import Tooltip from '../modals/Tooltip';
+import { isAtom } from '../../util/atom';
+
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
 	collectionId: string | null;
@@ -139,7 +146,6 @@ const SlideshowCol = styled(Col)`
 const SlideshowLabel = styled.div`
 	font-size: 12px;
 	color: ${theme.colors.greyMedium};
-	margin-bottom: 12px;
 `;
 
 const CollectionEditedError = styled.div`
@@ -182,7 +188,7 @@ const CaptionLabel = styled(InputLabel)`
 `;
 
 const CaptionInput = styled(InputBase)`
-	margin-bottom: 60px;
+	margin-bottom: 10px;
 	color: ${(props: { invalid: boolean }) =>
 		props.invalid ? error.primary : 'default'};
 	border-color: ${(props: { invalid: boolean }) =>
@@ -195,17 +201,22 @@ const CaptionInput = styled(InputBase)`
 
 const FlexContainer = styled.div`
 	display: flex;
+	justify-content: flex-end;
 	align-items: center;
+	margin-top: 6px;
+	margin-bottom: 10px;
 `;
 
-const InvalidSlideshowWarning = styled(FlexContainer)`
-	margin-top: 4px;
-`;
-
-const InvalidSlideshowText = styled.div`
+const InvalidText = styled.div`
 	color: ${error.primary};
 	font-size: 12px;
 	margin-left: 4px;
+`;
+
+const ExtraVideoControls = styled.div`
+	display: flex;
+	flex-direction: column;
+	margin-bottom: 8px;
 `;
 
 const maxCaptionLength = (max: number) => (value: ImageData) =>
@@ -213,13 +224,19 @@ const maxCaptionLength = (max: number) => (value: ImageData) =>
 		? `Must be ${max} characters or less`
 		: undefined;
 
+export const InvalidWarning = ({ warning }: { warning: string }) => (
+	<FlexContainer>
+		<WarningIcon size="s" fill={error.warningDark} />
+		<InvalidText>{warning}</InvalidText>
+	</FlexContainer>
+);
+
 const maxLength100 = maxCaptionLength(100);
 
 const RenderSlideshow = ({
 	fields,
 	frontId,
 	change,
-	slideshowHasAtLeastTwoImages,
 	criteria,
 }: RenderSlideshowProps) => {
 	const [slideshowIndex, setSlideshowIndex] = React.useState(0);
@@ -315,7 +332,6 @@ const RenderSlideshow = ({
 								onClick={handleNavigation(true, true)}
 							/>
 						</div>
-
 						<FlexContainer>
 							{isInvalidCaptionLength(slideshowIndex) ? (
 								<WarningIcon size="s" fill={error.warningDark} />
@@ -334,14 +350,6 @@ const RenderSlideshow = ({
 						}
 					/>
 				</div>
-			) : null}
-			{!slideshowHasAtLeastTwoImages ? (
-				<InvalidSlideshowWarning>
-					<WarningIcon size="s" fill={error.warningDark} />
-					<InvalidSlideshowText>
-						You need at least two images to make a slideshow
-					</InvalidSlideshowText>
-				</InvalidSlideshowWarning>
 			) : null}
 		</>
 	);
@@ -386,10 +394,6 @@ const FieldContainer = styled(Col)`
 		props.size === 'wide' ? '0 0 auto' : 1};
 	margin-bottom: 8px;
 	white-space: nowrap;
-	& label {
-		padding-left: 3px;
-		padding-right: 5px;
-	}
 `;
 
 const KickerSuggestionsContainer = styled.div`
@@ -421,6 +425,96 @@ interface FormComponentState {
 }
 
 class FormComponent extends React.Component<Props, FormComponentState> {
+	private isFirstLoad = true;
+	private debouncedFetchAndSetReplacementVideoAtom: () => void;
+	constructor(props: Props) {
+		super(props);
+		this.debouncedFetchAndSetReplacementVideoAtom = debounce(async () => {
+			await this.fetchAndSetReplacementVideoAtom(this.props.atomId);
+		}, 500);
+	}
+
+	async componentDidUpdate(prevProps: Readonly<Props>) {
+		if (this.isFirstLoad) {
+			this.isFirstLoad = false;
+			await this.handleFirstLoad();
+			return;
+		}
+
+		if (this.props.videoReplace && prevProps.atomId !== this.props.atomId) {
+			this.debouncedFetchAndSetReplacementVideoAtom();
+		}
+	}
+
+	private reinitialiseWithAtom = (replacementAtom: Atom | '') => {
+		const reinitialisedValues = {
+			...this.props.initialValues,
+			replacementVideoAtom: replacementAtom,
+		};
+
+		this.props.initialize(reinitialisedValues);
+		return;
+	};
+
+	private handleFirstLoad = async () => {
+		if (
+			!this.props.videoReplace ||
+			this.props.atomId === '' ||
+			this.props.atomId === undefined
+		) {
+			return;
+		}
+		const replacementAtomResponse = await this.getAtom(this.props.atomId);
+
+		// Redux form prefers empty strings to undefined values
+		const replacementAtom = isAtom(replacementAtomResponse)
+			? replacementAtomResponse
+			: '';
+
+		if (this.props.pristine) {
+			// If the form has not changed since the initial values, reinitialise the form with the hydrated atom
+			// so that the form state remains 'pristine' and doesn't appear unsaved.
+			this.reinitialiseWithAtom(replacementAtom);
+		} else {
+			// The form is already "dirty" with changes, so we can hydrate the atom without reinitialising.
+			this.props.change('replacementVideoAtom', replacementAtom);
+		}
+	};
+
+	private fetchAndSetReplacementVideoAtom = async (
+		atomId: string | undefined,
+	) => {
+		if (atomId === undefined || atomId === '') {
+			this.props.change('replacementVideoAtom', '');
+			return;
+		}
+		this.fetchAtom(atomId)
+			.then((response) => response.media)
+			.then((replacementAtom) => {
+				this.props.change('replacementVideoAtom', replacementAtom);
+			})
+			.catch((error) => {
+				console.error(error);
+				this.props.change('replacementVideoAtom', '');
+			});
+	};
+
+	private fetchAtom = async (atomId: string): Promise<AtomResponse> => {
+		const response = await fetch(`/api/live/${atomId}`);
+		const data = await response.json();
+		if (data?.response?.status !== 'ok') {
+			throw new Error(`Failed to fetch atom ${atomId}`);
+		} else {
+			return data?.response;
+		}
+	};
+
+	private getAtom = async (atomId: string): Promise<Atom | undefined> => {
+		return this.fetchAtom(atomId)
+			.then((response) => response.media)
+			.catch(() => undefined);
+	};
+
 	public static getDerivedStateFromProps(props: Props) {
 		return props.collectionId
 			? { lastKnownCollectionId: props.collectionId }
@@ -471,12 +565,19 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			editMode,
 			primaryImage,
 			hasMainVideo,
+			showMainVideo,
+			videoReplace,
+			mainMediaVideoAtom,
+			replacementVideoAtom,
+			videoBaseUrl,
 			coverCardImageReplace,
 			coverCardMobileImage,
 			coverCardTabletImage,
 			valid,
 			groupSizeId,
 			collectionType,
+			form,
+			snapType,
 		} = this.props;
 
 		const isEditionsMode = editMode === 'editions';
@@ -546,9 +647,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		};
 
 		const cardCriteria = this.determineCardCriteria();
-		const supportImmersiveToggle = pageConfig?.userData?.featureSwitches.find(
-			(feature) => feature.key === 'support-immersive-toggle',
-		)?.enabled;
+		const extraVideoControlsId = getInputId(cardId, 'extra-video-controls');
 
 		return (
 			<FormContainer
@@ -621,22 +720,21 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						>
 							{[
 								...this.getBoostToggles(groupSizeId, cardId, collectionType),
-								supportImmersiveToggle ? (
-									<Field
-										name="isImmersive"
-										component={InputCheckboxToggleInline}
-										label="Immersive"
-										id={getInputId(cardId, 'immersive')}
-										type="checkbox"
-										onChange={(event: any) =>
-											this.toggleCardStyleField(
-												'isImmersive',
-												event as boolean,
-												groupSizeId,
-											)
-										}
-									/>
-								) : null,
+								<Field
+									name="isImmersive"
+									component={InputCheckboxToggleInline}
+									label="Immersive"
+									id={getInputId(cardId, 'immersive')}
+									key={getInputId(cardId, 'immersive')}
+									type="checkbox"
+									onChange={(event: any) =>
+										this.toggleCardStyleField(
+											'isImmersive',
+											event as boolean,
+											groupSizeId,
+										)
+									}
+								/>,
 							]}
 						</CheckboxFieldsContainer>
 
@@ -761,7 +859,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											id={getInputId(cardId, 'hide-media')}
 											type="checkbox"
 											default={false}
-											onChange={() => this.changeImageField('imageHide')}
+											onChange={() => this.changeMediaField('imageHide')}
 										/>
 									</InputGroup>
 									<InputGroup>
@@ -774,7 +872,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											type="checkbox"
 											default={false}
 											onChange={() =>
-												this.changeImageField('imageCutoutReplace')
+												this.changeMediaField('imageCutoutReplace')
 											}
 										/>
 									</InputGroup>
@@ -788,7 +886,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 											type="checkbox"
 											default={false}
 											onChange={() =>
-												this.changeImageField('coverCardImageReplace')
+												this.changeMediaField('coverCardImageReplace')
 											}
 										/>
 									</InputGroup>
@@ -805,7 +903,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 													id={getInputId(cardId, 'image-replace')}
 													type="checkbox"
 													default={false}
-													onChange={() => this.changeImageField('imageReplace')}
+													onChange={() => this.changeMediaField('imageReplace')}
 												/>
 											</InputGroup>
 										)}
@@ -819,94 +917,120 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										/>
 									)}
 								</ToggleCol>
-								<Col flex={2}>
-									<InputLabel htmlFor="media-select">Select Media</InputLabel>
-									<InputGroup>
-										<Field
-											component={InputRadio}
-											disabled={
-												editableFields.indexOf(this.getImageFieldName()) === -1
-											}
-											usesBlockStyling={true}
-											name="media-select"
-											type="radio"
-											label="Trail Image"
-											id={getInputId(cardId, 'select-trail-image')}
-											value="select-trail-image"
-											initialValues="select-trail-image"
-											onClick={() =>
-												this.changeImageField(this.getImageFieldName())
-											}
-											checked={
-												!this.props.showMainVideo &&
-												!this.props.imageSlideshowReplace
-											}
-										/>
-									</InputGroup>
-									<InputGroup>
-										<Field
-											component={InputRadio}
-											disabled={editableFields.indexOf('showMainVideo') === -1}
-											icon={<SelectVideoIcon />}
-											usesBlockStyling={true}
-											name="media-select"
-											type="radio"
-											label="Video"
-											id={getInputId(cardId, 'select-video')}
-											value="select-video"
-											onClick={() => this.changeImageField('showMainVideo')}
-											checked={
-												this.props.showMainVideo !== undefined
-													? this.props.showMainVideo
-													: false
-											}
-										/>
-									</InputGroup>
-									{!hasMainVideo && (
-										<Explainer>Main media video required</Explainer>
-									)}
-									<InputGroup>
-										<Field
-											component={InputRadio}
-											disabled={
-												editableFields.indexOf('imageSlideshowReplace') === -1
-											}
-											icon={<SlideshowIcon />}
-											usesBlockStyling={true}
-											name="media-select"
-											type="radio"
-											label="Slideshow"
-											id={getInputId(cardId, 'select-slideshow')}
-											value="select-slideshow"
-											onClick={() =>
-												this.changeImageField('imageSlideshowReplace')
-											}
-											checked={
-												this.props.imageSlideshowReplace !== undefined
-													? this.props.imageSlideshowReplace
-													: false
-											}
-										/>
-									</InputGroup>
-								</Col>
+								{/*
+									Don't show media controls if the card has a snap type.
+									When a card is a snap, we don't show a trail image, video or slideshow.
+									Instead, we directly inject an atom onto the front.
+
+									Replacement videos would break snap cards, because the snap and video are both
+									competing for the underlying atomId field.
+								*/}
+								{snapType === undefined && (
+									<Col flex={2}>
+										<SelectMediaLabelContainer>
+											<InputLabel htmlFor="media-select">
+												Select Media
+											</InputLabel>
+											<Tooltip />
+										</SelectMediaLabelContainer>
+										<SelectMediaInput>
+											<Field
+												component={InputRadio}
+												disabled={
+													editableFields.indexOf(this.getImageFieldName()) ===
+													-1
+												}
+												usesBlockStyling={true}
+												name="media-select"
+												type="radio"
+												label="Trail Image"
+												id={getInputId(cardId, 'select-trail-image')}
+												value="select-trail-image"
+												initialValues="select-trail-image"
+												onClick={() =>
+													this.changeMediaField(this.getImageFieldName())
+												}
+												checked={
+													!this.props.showMainVideo &&
+													!this.props.imageSlideshowReplace
+												}
+											/>
+										</SelectMediaInput>
+										<SelectMediaInput>
+											<Field
+												component={InputRadio}
+												icon={<SelectVideoIcon />}
+												contents={
+													<VideoControls
+														videoBaseUrl={videoBaseUrl}
+														mainMediaVideoAtom={mainMediaVideoAtom}
+														replacementVideoAtom={replacementVideoAtom}
+														showMainVideo={showMainVideo}
+														showReplacementVideo={videoReplace}
+														changeField={change}
+														changeMediaField={this.changeMediaField}
+														form={form}
+														extraVideoControlsId={extraVideoControlsId}
+													/>
+												}
+												usesBlockStyling={true}
+												name="media-select"
+												type="radio"
+												label="Video"
+												id={getInputId(cardId, 'select-video')}
+												value="select-video"
+												onClick={() =>
+													this.changeMediaField(this.getVideoFieldName())
+												}
+												checked={
+													this.props.showMainVideo || this.props.videoReplace
+												}
+											/>
+											<ExtraVideoControls id={extraVideoControlsId} />
+										</SelectMediaInput>
+										<SelectMediaInput>
+											<Field
+												component={InputRadio}
+												disabled={
+													editableFields.indexOf('imageSlideshowReplace') === -1
+												}
+												icon={<SlideshowIcon />}
+												usesBlockStyling={true}
+												name="media-select"
+												type="radio"
+												label="Slideshow"
+												id={getInputId(cardId, 'select-slideshow')}
+												value="select-slideshow"
+												onClick={() =>
+													this.changeMediaField('imageSlideshowReplace')
+												}
+												checked={
+													this.props.imageSlideshowReplace !== undefined
+														? this.props.imageSlideshowReplace
+														: false
+												}
+											/>
+										</SelectMediaInput>
+									</Col>
+								)}
 							</Row>
 							<ConditionalComponent
 								permittedNames={editableFields}
 								name={['primaryImage', 'imageHide']}
 							/>
+							{imageSlideshowReplace && (
+								<SlideshowRowContainer size={this.props.size}>
+									<FieldArray
+										name="slideshow"
+										frontId={frontId}
+										component={RenderSlideshow}
+										change={change}
+										criteria={cardCriteria}
+										slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
+									/>
+								</SlideshowRowContainer>
+							)}
 						</ImageRowContainer>
-						{imageSlideshowReplace && (
-							<SlideshowRowContainer size={this.props.size}>
-								<FieldArray
-									name="slideshow"
-									frontId={frontId}
-									component={RenderSlideshow}
-									change={change}
-									criteria={cardCriteria}
-									slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
-								/>
-							</SlideshowRowContainer>
-						)}
 					</ImageOptionsInputGroup>
 					{isEditionsMode && coverCardImageReplace && (
 						<RowContainer>
@@ -959,6 +1083,15 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						</RowContainer>
 					)}
 				</FormContent>
+				<div>
+					{imageSlideshowReplace && !slideshowHasAtLeastTwoImages ? (
+						<InvalidWarning warning="You need at least two images to make a slideshow" />
+					) : null}
+					{(showMainVideo && !hasMainVideo) ||
+					(videoReplace && !isAtom(replacementVideoAtom)) ? (
+						<InvalidWarning warning="You need to provide a valid video" />
+					) : null}
+				</div>
 				<FormButtonContainer>
 					<Button onClick={this.handleCancel} type="button" size="l">
 						Cancel
@@ -971,7 +1104,9 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							!articleExists ||
 							invalidCardReplacement ||
 							!valid ||
-							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages)
+							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
+							(showMainVideo && !hasMainVideo) ||
+							(videoReplace && !isAtom(replacementVideoAtom))
 						}
 						size="l"
 						data-testid="edit-form-save-button"
@@ -1000,6 +1135,17 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		return 'primaryImage';
 	};
 
+	private getVideoFieldName = () => {
+		if (
+			this.props.replaceVideoUri !== undefined &&
+			this.props.replaceVideoUri !== null &&
+			this.props.replaceVideoUri !== ''
+		) {
+			return 'videoReplace';
+		}
+		return 'showMainVideo';
+	};
+
 	private handleImageChange: EventWithDataHandler<React.ChangeEvent<any>> = (
 		e: unknown,
 		...args: [any?, any?, string?]
@@ -1007,23 +1153,24 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		// If we don't already have an image override enabled, enable the default imageReplace property.
 		// This saves the user a click; adding an image without enabling would be very unusual.
 		if (!this.props.imageCutoutReplace && !this.props.imageReplace) {
-			this.changeImageField('imageReplace');
+			this.changeMediaField('imageReplace');
 		}
 
 		this.props.change(this.getImageFieldName(), e);
 	};
 
-	private changeImageField = (fieldToSet: string) => {
-		const allImageFields = [
+	private changeMediaField = (fieldToSet: string) => {
+		const allMediaFields = [
 			'imageHide',
 			'imageCutoutReplace',
 			'imageSlideshowReplace',
 			'imageReplace',
 			'showMainVideo',
 			'coverCardImageReplace',
+			'videoReplace',
 		];
 
-		allImageFields.forEach((field) => {
+		allMediaFields.forEach((field) => {
 			if (field === fieldToSet) {
 				this.props.change(field, true);
 			} else {
@@ -1071,10 +1218,10 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		heightAspectRatio: number;
 	} => {
 		const { collectionType } = this.props;
-		if (!collectionType) {
-			return landScapeCardImageCriteria;
-		}
-		if (COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS.includes(collectionType)) {
+		if (
+			!collectionType ||
+			COLLECTIONS_USING_LANDSCAPE_5_TO_4_TRAILS.includes(collectionType)
+		) {
 			return landscape5To4CardImageCriteria;
 		}
 		if (COLLECTIONS_USING_SQUARE_TRAILS.includes(collectionType)) {
@@ -1129,6 +1276,12 @@ interface ContainerProps {
 	editMode: EditMode;
 	primaryImage: ValidationResponse | null;
 	hasMainVideo: boolean;
+	mainMediaVideoAtom: Atom | undefined;
+	videoReplace: boolean;
+	replaceVideoUri: string;
+	atomId: string;
+	replacementVideoAtom: Atom | undefined | string;
+	videoBaseUrl: string | null;
 }
 
 interface InterfaceProps {
@@ -1173,6 +1326,10 @@ const createMapStateToProps = () => {
 		return {
 			articleExists: !!article,
 			hasMainVideo: !!article && !!article.hasMainVideo,
+			mainMediaVideoAtom:
+				!!article && !!article.hasMainVideo
+					? getMainMediaVideoAtom(article)
+					: undefined,
 			collectionId,
 			getLastUpdatedBy,
 			snapType: article && article.snapType,
@@ -1180,13 +1337,15 @@ const createMapStateToProps = () => {
 			articleCapiFieldValues: getCapiValuesForArticleFields(externalArticle),
 			editableFields:
 				article && selectFormFields(state, article.uuid, isSupporting),
-			kickerOptions: article ? selectArticleTag(state, cardId) : defaultObject,
+			kickerOptions: article ? selectArticleTag(state, cardId) : emptyObject,
 			imageSlideshowReplace: valueSelector(state, 'imageSlideshowReplace'),
 			showMainVideo: valueSelector(state, 'showMainVideo'),
 			slideshow: valueSelector(state, 'slideshow'),
 			imageHide: valueSelector(state, 'imageHide'),
 			imageReplace: valueSelector(state, 'imageReplace'),
 			imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
+			videoReplace: valueSelector(state, 'videoReplace'),
+			replaceVideoUri: valueSelector(state, 'replaceVideoUri'),
 			showByline: valueSelector(state, 'showByline'),
 			showKickerTag: valueSelector(state, 'showKickerTag'),
 			showKickerSection: valueSelector(state, 'showKickerSection'),
@@ -1204,6 +1363,9 @@ const createMapStateToProps = () => {
 			collectionType: collectionId
 				? selectCollectionType(state, collectionId)
 				: undefined,
+			atomId: valueSelector(state, 'atomId'),
+			replacementVideoAtom: valueSelector(state, 'replacementVideoAtom'),
+			videoBaseUrl: selectVideoBaseUrl(state),
 		};
 	};
 };

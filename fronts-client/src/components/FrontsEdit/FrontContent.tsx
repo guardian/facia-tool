@@ -8,7 +8,6 @@ import { DragAndDropRoot, PosSpec, Move } from 'lib/dnd';
 import Collection from './Collection';
 import type { State } from 'types/State';
 import WithDimensions from 'components/util/WithDimensions';
-import { selectFront } from 'selectors/frontsSelectors';
 import { Dispatch } from 'types/Store';
 import { Card as TCard, CardSets, Group } from 'types/Collection';
 import { FrontConfig } from 'types/FaciaApi';
@@ -17,10 +16,11 @@ import { insertCardFromDropEvent } from 'util/collectionUtils';
 import { bindActionCreators } from 'redux';
 import { editorSelectCard } from 'bundles/frontsUI';
 import { initialiseCollectionsForFront } from 'actions/Collections';
-import { createSelectAlsoOnFronts } from 'selectors/frontsSelectors';
-import { AlsoOnDetail } from 'types/Collection';
+import { createSelectCollectionsWhichAreAlsoOnOtherFronts } from 'selectors/frontsSelectors';
+import { CollectionsWhichAreAlsoOnOtherFronts } from 'types/Collection';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 import Raven from 'raven-js';
+import { selectFront } from 'selectors/shared';
 
 const STALENESS_THRESHOLD_IN_MILLIS = 30_000; // 30 seconds
 
@@ -75,7 +75,9 @@ interface FrontPropsBeforeState {
 
 type FrontProps = FrontPropsBeforeState & {
 	front: FrontConfig;
-	alsoOn: { [id: string]: AlsoOnDetail };
+	collectionsWhichAreAlsoOnOtherFronts: {
+		[id: string]: CollectionsWhichAreAlsoOnOtherFronts;
+	};
 	initialiseCollectionsForFront: (id: string, set: CardSets) => void;
 	selectCard: (
 		cardId: string,
@@ -98,7 +100,8 @@ function getNextGroupTarget(
 	currentGroupId: string,
 	groupIds?: string[],
 	groupsData?: Group[],
-) {
+	collectionId?: string,
+): PosSpec | undefined {
 	if (!groupIds || !groupsData) {
 		return;
 	}
@@ -119,6 +122,7 @@ function getNextGroupTarget(
 		groupMaxItems: nextGroup?.maxItems,
 		groupsData: groupsData,
 		cards: nextGroup?.cardsData,
+		collectionId,
 	};
 }
 type CollectionMove<T> = {
@@ -142,7 +146,7 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 
 	// If inserting at the bottom of a full group, move the card to the next group instead.
 	const target = isBottomInsert
-		? getNextGroupTarget(to.id, to.groupIds, to.groupsData)
+		? getNextGroupTarget(to.id, to.groupIds, to.groupsData, to.collectionId)
 		: to;
 
 	if (!target) return queue;
@@ -189,6 +193,7 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 			currentGroup.uuid,
 			move.to.groupIds,
 			move.to.groupsData,
+			move.to.collectionId,
 		);
 
 		if (lastCard && nextTarget) {
@@ -469,7 +474,9 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 										frontId={this.props.id}
 										priority={front.priority}
 										browsingStage={this.props.browsingStage}
-										alsoOn={this.props.alsoOn}
+										collectionsWhichAreAlsoOnOtherFronts={
+											this.props.collectionsWhichAreAlsoOnOtherFronts
+										}
 										handleInsert={this.handleInsert}
 										handleMove={this.handleMove}
 										size={
@@ -524,11 +531,13 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 }
 
 const mapStateToProps = () => {
-	const selectAlsoOnFronts = createSelectAlsoOnFronts();
+	const selectCollectionsWhichAreAlsoOnOtherFronts =
+		createSelectCollectionsWhichAreAlsoOnOtherFronts();
 	return (state: State, { id }: FrontPropsBeforeState) => {
 		return {
 			front: selectFront(state, { frontId: id }),
-			alsoOn: selectAlsoOnFronts(state, { frontId: id }),
+			collectionsWhichAreAlsoOnOtherFronts:
+				selectCollectionsWhichAreAlsoOnOtherFronts(state, { frontId: id }),
 			collectionsError: collectionSelectors.selectCurrentError(state),
 			collectionsLastSuccessfulFetchTimestamp:
 				collectionSelectors.selectLastSuccessfulFetchTimestamp(state),

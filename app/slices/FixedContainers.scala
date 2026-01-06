@@ -16,7 +16,6 @@ class FixedContainers(val config: ApplicationConfiguration) {
   val showcase = slices(ShowcaseSingleStories)
   val thrasher =
     slices(Fluid).copy(customCssClasses = Set("fc-container--thrasher"))
-  val video = slices(TTT).copy(customCssClasses = Set("fc-container--video"))
 
   // Static containers are very similar to fixed containers
   val staticFeature2 = slices(StaticFeature)
@@ -39,8 +38,6 @@ class FixedContainers(val config: ApplicationConfiguration) {
       "fixed/large/slow-XIV",
       slices(ThreeQuarterQuarter, QuarterQuarterQuarterQuarter, Ql2Ql2Ql2Ql2)
     ),
-    ("fixed/video", video),
-    ("fixed/video/vertical", video),
     ("fixed/thrasher", thrasher),
     ("fixed/showcase", showcase),
     ("static/medium/4", staticMedium4),

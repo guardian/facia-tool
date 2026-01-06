@@ -1,6 +1,8 @@
-import React from 'react';
-import { styled, theme } from 'constants/theme';
 import { FLEXIBLE_CONTAINER_SET } from 'constants/flexibleContainers';
+import { styled, theme } from 'constants/theme';
+import React from 'react';
+import type { BoostLevels } from 'types/Collection';
+import { CollectionToggles as BoostToggles } from '../form/BoostToggles';
 
 const ArticleMetadataProperties = styled.div`
 	padding: 0 4px 3px 0;
@@ -21,22 +23,31 @@ const shouldShowLegacyBoost = (collectionType?: string, isBoosted?: boolean) =>
 	/* don't show old Boost option in flexible containers */
 	isBoosted && !FLEXIBLE_CONTAINER_SET.includes(collectionType);
 
-const shouldShowBoostLevel = (collectionType?: string, boostLevel?: string) =>
+const shouldShowBoostLevel = (
+	collectionType?: string,
+	boostLevel?: BoostLevels,
+) =>
 	boostLevel !== 'default' &&
 	/* show new Boost level in flexible containers or clipboard */
 	(FLEXIBLE_CONTAINER_SET.includes(collectionType) || !collectionType);
 
-const getBoostLevelLabel = (boostLevel?: string): string | undefined => {
-	switch (boostLevel) {
-		case 'gigaboost':
-			return 'Giga boost';
-		case 'megaboost':
-			return 'Mega boost';
-		case 'boost':
-			return 'Boost';
-		default:
-			return undefined;
-	}
+export const getBoostLevelLabel = (
+	boostLevel?: BoostLevels,
+	groupIndex?: number,
+	collectionType?: string,
+): string | undefined => {
+	if (
+		!boostLevel ||
+		groupIndex === undefined ||
+		!collectionType ||
+		!['flexible/general', 'flexible/special'].includes(collectionType)
+	)
+		return undefined;
+
+	const toggles = BoostToggles[collectionType]?.[groupIndex];
+	const label = toggles?.find((toggle) => toggle.value === boostLevel)?.label;
+	// If the label is 'Default', return undefined so that it doesn't appear in the UI
+	return label === 'Default' ? undefined : label;
 };
 
 export default ({
@@ -48,6 +59,7 @@ export default ({
 	isBoosted,
 	boostLevel,
 	isImmersive,
+	groupIndex,
 }: {
 	collectionType?: string;
 	isBreaking?: boolean;
@@ -55,8 +67,9 @@ export default ({
 	showQuotedHeadline?: boolean;
 	showLargeHeadline?: boolean;
 	isBoosted?: boolean;
-	boostLevel?: string;
+	boostLevel?: BoostLevels;
 	isImmersive?: boolean;
+	groupIndex?: number;
 }) =>
 	shouldShowBoostLevel(collectionType, boostLevel) ||
 	shouldShowLegacyBoost(collectionType, isBoosted) ||
@@ -86,7 +99,7 @@ export default ({
 			)}
 			{shouldShowBoostLevel(collectionType, boostLevel) && (
 				<ArticleMetadataProperty>
-					{getBoostLevelLabel(boostLevel)}
+					{getBoostLevelLabel(boostLevel, groupIndex, collectionType)}
 				</ArticleMetadataProperty>
 			)}
 			{shouldShowLegacyBoost(collectionType, isBoosted) && (

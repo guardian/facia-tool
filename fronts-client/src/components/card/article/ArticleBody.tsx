@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { styled, theme } from 'constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
@@ -19,13 +19,18 @@ import {
 	HoverAddToClipboardButton,
 } from '../../inputs/HoverActionButtons';
 import { HoverActionsAreaOverlay } from '../../CollectionHoverItems';
-import { CardSizes } from 'types/Collection';
+import {
+	BoostLevels,
+	CardSizes,
+	CollectionMap,
+	OtherCollectionsOnSameFrontThisCardIsOn,
+} from 'types/Collection';
 import CardMetaContent from '../CardMetaContent';
 import CardDraftMetaContent from '../CardDraftMetaContent';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'util/mediaQueries';
 import ArticleGraph from './ArticleGraph';
-import { VideoIcon } from '../../icons/Icons';
+import { LoopIcon, VideoIcon } from '../../icons/Icons';
 import CardHeadingContainer from '../CardHeadingContainer';
 import CardSettingsDisplay from '../CardSettingsDisplay';
 import CircularIconContainer from '../../icons/CircularIconContainer';
@@ -40,6 +45,10 @@ import {
 	portraitCardImageCriteria,
 	squareImageCriteria,
 } from 'constants/image';
+import { Atom } from '../../../types/Capi';
+import { getActiveAtomProperties } from '../../../util/extractAtom';
+import { isAtom } from '../../../util/atom';
+import pageConfig from 'util/extractConfigFromPage';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
 	flex-shrink: 0;
@@ -72,6 +81,26 @@ const ArticleBodyByline = styled.div`
 
 const FirstPublicationDate = styled(CardMetaContent)`
 	color: ${theme.colors.green};
+`;
+
+const AlsoOnOtherCollectionsSection = styled.div`
+	color: ${theme.colors.blackDark};
+	font-size: ${theme.card.fontSizeMeta};
+	border-top: 1px dotted ${theme.colors.blackLight};
+	margin-top: 8px;
+	padding-top: 2px;
+`;
+
+const AlsoOnOtherCollectionsList = styled.ul`
+	padding: 0;
+	margin: 0;
+	width: max-content;
+	position: relative;
+	z-index: 10;
+`;
+
+const AlsoOnOtherCollectionsListItem = styled.li`
+	margin-left: 16px;
 `;
 
 const Tone = styled.span`
@@ -130,10 +159,13 @@ interface ArticleBodyProps {
 	canDragImage?: boolean;
 	isDraggingImageOver: boolean;
 	isBoosted?: boolean;
-	boostLevel?: string;
+	boostLevel?: BoostLevels;
 	isImmersive?: boolean;
 	hasMainVideo?: boolean;
 	showMainVideo?: boolean;
+	videoReplace?: boolean;
+	mainMediaVideoAtom?: Atom | undefined;
+	replacementVideoAtom?: string | Atom | undefined;
 	tone?: string | undefined;
 	featureFlagPageViewData?: boolean;
 	canShowPageViewData: boolean;
@@ -143,6 +175,9 @@ interface ArticleBodyProps {
 	imageSrcHeight?: string;
 	imageCriteria?: Criteria;
 	collectionType?: string;
+	groupIndex?: number;
+	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
+	collectionMap?: CollectionMap;
 }
 
 const articleBodyDefault = React.memo(
@@ -186,6 +221,7 @@ const articleBodyDefault = React.memo(
 		canShowPageViewData,
 		hasMainVideo,
 		showMainVideo,
+		videoReplace,
 		frontId,
 		collectionId,
 		newspaperPageNumber,
@@ -194,7 +230,23 @@ const articleBodyDefault = React.memo(
 		imageSrcHeight,
 		imageCriteria,
 		collectionType,
+		groupIndex,
+		mainMediaVideoAtom,
+		replacementVideoAtom,
+		otherCollectionsOnSameFrontThisCardIsOn,
+		collectionMap,
 	}: ArticleBodyProps) => {
+		const showIfCardsAreAlsoOnOtherCollectionsOnSameFrontFeatureSwitch =
+			pageConfig?.userData?.featureSwitches.find(
+				(feature) =>
+					feature.key ===
+					'show-cards-which-are-also-on-other-collections-on-same-front',
+			);
+		const otherCollectionsOnSameFrontThisCardIsOnUuids =
+			otherCollectionsOnSameFrontThisCardIsOn?.collections.map(
+				(_) => _.collectionUuid,
+			);
+
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
 		const paths = urlPath ? getPaths(urlPath) : undefined;
@@ -215,6 +267,27 @@ const articleBodyDefault = React.memo(
 				portraitCardImageCriteria.widthAspectRatio &&
 			imageCriteria.heightAspectRatio ===
 				portraitCardImageCriteria.heightAspectRatio;
+
+		const [isMainVideoSelfHosted, setIsMainVideoSelfHosted] =
+			React.useState<boolean>(false);
+		const [isReplacementVideoSelfHosted, setIsReplacementVideoSelfHosted] =
+			React.useState<boolean>(false);
+
+		useEffect(() => {
+			if (!videoReplace || !isAtom(replacementVideoAtom)) {
+				return;
+			}
+			const { platform } = getActiveAtomProperties(replacementVideoAtom);
+			setIsReplacementVideoSelfHosted(platform === 'url');
+		}, [replacementVideoAtom, videoReplace]);
+
+		useEffect(() => {
+			if (mainMediaVideoAtom === undefined || showMainVideo !== true) {
+				return;
+			}
+			const { platform } = getActiveAtomProperties(mainMediaVideoAtom);
+			setIsMainVideoSelfHosted(platform === 'url');
+		}, [mainMediaVideoAtom, showMainVideo]);
 
 		return (
 			<>
@@ -277,6 +350,25 @@ const articleBodyDefault = React.memo(
 								{distanceInWordsStrict(new Date(firstPublicationDate), now)}
 							</FirstPublicationDate>
 						)}
+						{!!otherCollectionsOnSameFrontThisCardIsOnUuids &&
+							otherCollectionsOnSameFrontThisCardIsOnUuids.length > 0 &&
+							showIfCardsAreAlsoOnOtherCollectionsOnSameFrontFeatureSwitch?.enabled && (
+								<AlsoOnOtherCollectionsSection>
+									Also on:
+									<AlsoOnOtherCollectionsList>
+										{otherCollectionsOnSameFrontThisCardIsOnUuids?.map(
+											(uuid) => {
+												const collection = collectionMap?.[uuid];
+												return collection !== undefined ? (
+													<AlsoOnOtherCollectionsListItem>
+														{collection.displayName}
+													</AlsoOnOtherCollectionsListItem>
+												) : null;
+											},
+										)}
+									</AlsoOnOtherCollectionsList>
+								</AlsoOnOtherCollectionsSection>
+							)}
 					</CardMetaContainer>
 				)}
 				<CardContent displaySize={size} textSize={textSize}>
@@ -289,6 +381,7 @@ const articleBodyDefault = React.memo(
 						isBoosted={isBoosted}
 						boostLevel={boostLevel}
 						isImmersive={isImmersive}
+						groupIndex={groupIndex}
 					/>
 					<CardHeadingContainer size={size}>
 						{displayPlaceholders && (
@@ -339,9 +432,17 @@ const articleBodyDefault = React.memo(
 									{cutoutThumbnail ? (
 										<ThumbnailCutout src={cutoutThumbnail} />
 									) : null}
-									{hasMainVideo && (
-										<VideoIconContainer title="This media has video content.">
-											<VideoIcon />
+									{(hasMainVideo || videoReplace) &&
+										!(
+											isMainVideoSelfHosted || isReplacementVideoSelfHosted
+										) && (
+											<VideoIconContainer title="This media has video content.">
+												<VideoIcon />
+											</VideoIconContainer>
+										)}
+									{(isMainVideoSelfHosted || isReplacementVideoSelfHosted) && (
+										<VideoIconContainer title="This media has looping video content.">
+											<LoopIcon />
 										</VideoIconContainer>
 									)}
 								</ThumbnailSmall>
@@ -350,6 +451,10 @@ const articleBodyDefault = React.memo(
 									imageReplace={imageReplace}
 									imageCutoutReplace={imageCutoutReplace}
 									showMainVideo={showMainVideo}
+									videoReplace={videoReplace}
+									hasMainVideo={hasMainVideo}
+									isMainVideoSelfHosted={isMainVideoSelfHosted}
+									isReplacementVideoSelfHosted={isReplacementVideoSelfHosted}
 								/>
 								{!collectionId && firstPublicationDate && (
 									<ClipboardFirstPublished title="The time elapsed since this article was first published.">

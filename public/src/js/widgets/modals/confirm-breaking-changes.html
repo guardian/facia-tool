@@ -5,6 +5,13 @@
             <span data-bind="html: headline"></span>
             <br/>
             <span class="major-alert small-text" data-bind="visible: $parent.alertAlreadySent($data)">* This alert has already been sent once.</span>
+            <aside class="character-count">
+                <i class="fa fa-info-circle" aria-hidden="true"></i>
+                <div class="character-count-text">
+                    <strong><span data-bind="text: headlineLength"></span> characters.</strong> 
+                    <span data-bind="text: $parent.lengthWarning"></span>
+                </div>
+            </aside>
         </li>
     </ul>
     <h4>Target</h4>

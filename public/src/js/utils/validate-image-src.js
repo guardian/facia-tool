@@ -118,7 +118,7 @@ function getSuitableAsset (crops, id, desired) {
             return Promise.resolve({
                 path: path,
                 thumb: assets.last().value().secureUrl,
-                origin: vars.model.state().defaults.mediaBaseUrl + '/image/' + id,
+                origin: vars.model.state().defaults.baseUrls.mediaBaseUrl + '/image/' + id,
                 height: height,
                 width: width,
                 ratio: width / height
@@ -139,7 +139,7 @@ function validateActualImage (image, frontId) {
             reject(new Error('Images cannot be more than ' + maxWidth + ' pixels wide'));
         } else if (minWidth && minWidth > width) {
             reject(new Error('Images cannot be less than ' + minWidth + ' pixels wide'));
-        } else if (criteriaRatio && criteriaRatio - ratio > 0.01) {
+        } else if (criteriaRatio && Math.abs(criteriaRatio - ratio) > 0.01) {
             reject(new Error('Images must have a ' + widthAspectRatio + ':' + heightAspectRatio + ' aspect ratio'));
         } else {
             const resolveWithImage = () => resolve({ path, origin, thumb, width, height });

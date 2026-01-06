@@ -1,7 +1,11 @@
 import React from 'react';
 import { styled, Theme } from 'constants/theme';
 import Collection from './CollectionComponents/Collection';
-import { AlsoOnDetail, CardMeta } from 'types/Collection';
+import {
+	CollectionsWhichAreAlsoOnOtherFronts,
+	CardMeta,
+	CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
+} from 'types/Collection';
 import { CardSets, Card as TCard } from 'types/Collection';
 import GroupDisplayComponent from 'components/GroupDisplay';
 import GroupLevel from 'components/clipboard/GroupLevel';
@@ -19,6 +23,7 @@ import { CardTypes } from 'constants/cardTypes';
 import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
 import { ValidationResponse } from '../../util/validateImageSrc';
 import { bindActionCreators } from 'redux';
+import { createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from '../../selectors/shared';
 
 const getArticleNotifications = (
 	id: string,
@@ -92,8 +97,8 @@ interface CollectionContextProps {
 	id: string;
 	frontId: string;
 	priority: string;
-	alsoOn: {
-		[id: string]: AlsoOnDetail;
+	collectionsWhichAreAlsoOnOtherFronts: {
+		[id: string]: CollectionsWhichAreAlsoOnOtherFronts;
 	};
 	browsingStage: CardSets;
 	size?: 'medium' | 'default' | 'wide';
@@ -114,6 +119,7 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
 	handleBlur: () => void;
 	lastDesktopArticle?: string;
 	lastMobileArticle?: string;
+	cardsWhichAreAlsoOnOtherCollectionsOnSameFront?: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap;
 	updateCardMeta: (id: string, meta: CardMeta) => void;
 	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
@@ -125,7 +131,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 			frontId,
 			handleBlur,
 			priority,
-			alsoOn,
+			collectionsWhichAreAlsoOnOtherFronts,
 			browsingStage,
 			size = 'default',
 			handleMove,
@@ -136,6 +142,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 			removeSupportingCard,
 			lastDesktopArticle,
 			lastMobileArticle,
+			cardsWhichAreAlsoOnOtherCollectionsOnSameFront,
 			updateCardMeta,
 			addImageToCard,
 		} = this.props;
@@ -147,7 +154,9 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 					id={id}
 					priority={priority}
 					frontId={frontId}
-					alsoOn={alsoOn}
+					collectionsWhichAreAlsoOnOtherFronts={
+						collectionsWhichAreAlsoOnOtherFronts
+					}
 					canPublish={browsingStage !== 'live'}
 					browsingStage={browsingStage}
 				>
@@ -169,78 +178,92 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 								onDrop={handleInsert}
 								cardIds={group.cards}
 							>
-								{(card, getAfNodeProps) => (
-									<>
-										<FocusWrapper
-											tabIndex={0}
-											area="collection"
-											onBlur={() => handleBlur()}
-											onFocus={(e: React.FocusEvent<HTMLDivElement>) =>
-												handleArticleFocus(e, group.uuid, card, frontId)
-											}
-											uuid={card.uuid}
-										>
-											<Card
-												frontId={frontId}
-												collectionId={id}
+								{(card, getAfNodeProps) => {
+									const otherCollectionsOnSameFrontThisCardIsOn =
+										cardsWhichAreAlsoOnOtherCollectionsOnSameFront?.[card.uuid];
+
+									return (
+										<>
+											<FocusWrapper
+												tabIndex={0}
+												area="collection"
+												onBlur={() => handleBlur()}
+												onFocus={(e: React.FocusEvent<HTMLDivElement>) =>
+													handleArticleFocus(e, group.uuid, card, frontId)
+												}
 												uuid={card.uuid}
-												parentId={group.uuid}
-												isUneditable={isUneditable}
-												size={size}
-												canShowPageViewData={true}
-												getNodeProps={() => getAfNodeProps(isUneditable)}
-												onSelect={() => selectCard(card.uuid, id, false)}
-												onDelete={() => removeCard(group.uuid, card.uuid)}
-												groupSizeId={group.id ? parseInt(group.id) : 0}
-												updateCardMeta={updateCardMeta}
-												addImageToCard={addImageToCard}
 											>
-												<CardLevel
+												<Card
+													frontId={frontId}
+													collectionId={id}
+													uuid={card.uuid}
+													parentId={group.uuid}
 													isUneditable={isUneditable}
-													cardId={card.uuid}
-													groupName={group.name ? group.name : ''}
-													groupIds={groupIds}
-													groups={groups}
-													onMove={handleMove}
-													onDrop={handleInsert}
-													cardTypeAllowList={this.getPermittedCardTypes(
-														card.cardType,
-													)}
-													dropMessage={this.getDropMessage(card.cardType)}
+													size={size}
+													canShowPageViewData={true}
+													getNodeProps={() => getAfNodeProps(isUneditable)}
+													onSelect={() => selectCard(card.uuid, id, false)}
+													onDelete={() => removeCard(group.uuid, card.uuid)}
+													groupSizeId={group.id ? parseInt(group.id) : 0}
+													updateCardMeta={updateCardMeta}
+													addImageToCard={addImageToCard}
+													otherCollectionsOnSameFrontThisCardIsOn={
+														otherCollectionsOnSameFrontThisCardIsOn
+													}
 												>
-													{(supporting, getSupportingProps) => (
-														<Card
-															frontId={frontId}
-															uuid={supporting.uuid}
-															parentId={card.uuid}
-															canShowPageViewData={false}
-															onSelect={() =>
-																selectCard(supporting.uuid, id, true)
-															}
-															isUneditable={isUneditable}
-															getNodeProps={() =>
-																getSupportingProps(isUneditable)
-															}
-															onDelete={() =>
-																removeSupportingCard(card.uuid, supporting.uuid)
-															}
-															size="small"
-															updateCardMeta={updateCardMeta}
-															addImageToCard={addImageToCard}
-														/>
-													)}
-												</CardLevel>
-											</Card>
-										</FocusWrapper>
-										<VisibilityDivider
-											notifications={getArticleNotifications(
-												card.uuid,
-												lastDesktopArticle,
-												lastMobileArticle,
-											)}
-										/>
-									</>
-								)}
+													<CardLevel
+														isUneditable={isUneditable}
+														cardId={card.uuid}
+														groupName={group.name ? group.name : ''}
+														groupIds={groupIds}
+														groups={groups}
+														onMove={handleMove}
+														onDrop={handleInsert}
+														cardTypeAllowList={this.getPermittedCardTypes(
+															card.cardType,
+														)}
+														dropMessage={this.getDropMessage(card.cardType)}
+													>
+														{(supporting, getSupportingProps) => (
+															<Card
+																frontId={frontId}
+																uuid={supporting.uuid}
+																parentId={card.uuid}
+																canShowPageViewData={false}
+																onSelect={() =>
+																	selectCard(supporting.uuid, id, true)
+																}
+																isUneditable={isUneditable}
+																getNodeProps={() =>
+																	getSupportingProps(isUneditable)
+																}
+																onDelete={() =>
+																	removeSupportingCard(
+																		card.uuid,
+																		supporting.uuid,
+																	)
+																}
+																size="small"
+																updateCardMeta={updateCardMeta}
+																addImageToCard={addImageToCard}
+																otherCollectionsOnSameFrontThisCardIsOn={
+																	otherCollectionsOnSameFrontThisCardIsOn
+																}
+															/>
+														)}
+													</CardLevel>
+												</Card>
+											</FocusWrapper>
+											<VisibilityDivider
+												notifications={getArticleNotifications(
+													card.uuid,
+													lastDesktopArticle,
+													lastMobileArticle,
+												)}
+											/>
+										</>
+									);
+								}}
 							</GroupLevel>
 						</div>
 					)}
@@ -260,15 +283,26 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 
 const createMapStateToProps = () => {
 	const selectArticleVisibilityDetails = createSelectArticleVisibilityDetails();
+
 	return (state: State, props: CollectionContextProps) => {
 		const articleVisibilityDetails = selectArticleVisibilityDetails(state, {
 			collectionId: props.id,
 			collectionSet: props.browsingStage,
 		});
 
+		const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront =
+			createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront();
+
+		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront =
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(state, {
+				collectionId: props.id,
+				frontId: props.frontId,
+			});
+
 		return {
 			lastDesktopArticle: articleVisibilityDetails.desktop,
 			lastMobileArticle: articleVisibilityDetails.mobile,
+			cardsWhichAreAlsoOnOtherCollectionsOnSameFront,
 		};
 	};
 };

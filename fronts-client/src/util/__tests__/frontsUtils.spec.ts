@@ -18,9 +18,9 @@ describe('Front utilities', () => {
 
 	describe('combineCollectionWithConfig', () => {
 		const collectionName = 'collection-name';
-		const collectionConfig = frontsConfig.data.collections.collection1;
+		const collectionConfig = frontsConfig.data.collections.collectionUuid1;
 		const collection: CollectionWithNestedArticles = {
-			id: 'collection1',
+			id: 'collectionUuid1',
 			displayName: collectionName,
 			isHidden: false,
 			lastUpdated: 1583857626481,

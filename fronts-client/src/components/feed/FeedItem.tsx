@@ -219,6 +219,9 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 					<ArticleThumbnail
 						style={{
 							backgroundImage: `url('${thumbnail}')`,
+							aspectRatio: '5/4',
+							backgroundPosition: 'center center',
+							backgroundSize: 'cover',
 						}}
 					>
 						{hasVideo && (

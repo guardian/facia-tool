@@ -25,5 +25,8 @@ export default defineConfig({
     fs: {
       allow: ['../public/fonts', './'],
     },
-  },
+    cors: {
+        origin: "https://fronts.local.dev-gutools.co.uk"
+    },
+  }
 });

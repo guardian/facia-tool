@@ -289,7 +289,10 @@ const getCardEntitiesFromDrop = async (
 		if (article) {
 			// We have a single article from CAPI - create an item as usual.
 			return {
-				card: createCard(article.id, isEdition),
+				card: createCard(article.id, isEdition, {
+					imageHide: article.frontsMeta.defaults.imageHide,
+					imageCutoutReplace: article.frontsMeta.defaults.imageCutoutReplace,
+				}),
 				externalArticle: article,
 			};
 		}

@@ -33,7 +33,7 @@ jobs:
             - name: Set up grunt
               run: npm i -g grunt-cli
             - name: Install NPM dependencies
-              run: npm install
+              run: npm ci
             - name: Set up JSPM
               env:
                   JSPM_GITHUB_AUTH_SECRET: ${{ secrets.GITHUB_TOKEN }}
@@ -72,7 +72,7 @@ jobs:
             -   name: Set up grunt
                 run: npm i -g grunt-cli
             -   name: Install NPM dependencies
-                run: npm install
+                run: npm ci
             -   name: Set up JSPM
                 env:
                     JSPM_GITHUB_AUTH_SECRET: ${{ secrets.GITHUB_TOKEN }}
@@ -129,7 +129,7 @@ jobs:
               working-directory: fronts-client
 
     integrationtest_client_v2:
-        runs-on: ubuntu-20.04
+        runs-on: ubuntu-latest
         permissions:
             id-token: write
             contents: read
@@ -142,6 +142,8 @@ jobs:
                   node-version-file: fronts-client/.nvmrc
                   cache: yarn
                   cache-dependency-path: fronts-client/yarn.lock
+            - name: Disable AppArmor
+              run: echo 0 | sudo tee /proc/sys/kernel/apparmor_restrict_unprivileged_userns
             -   uses: actions/download-artifact@v4  #integration test requires built frontend (of course!)
                 with:
                     path: public/fronts-client-v2

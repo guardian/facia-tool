@@ -10,12 +10,12 @@ import {
 	updateClipboardContent,
 	actionInsertClipboardCardWithPersist,
 } from './Clipboard';
-import { selectCards } from 'selectors/shared';
+import { selectCardMap } from 'selectors/shared';
 
 export const thunkInsertClipboardCard =
 	(id: string, index: number, cardId: string): ThunkResult<void> =>
 	(dispatch, getState) => {
-		const currentCards = selectCards(getState());
+		const currentCards = selectCardMap(getState());
 		dispatch(
 			actionInsertClipboardCardWithPersist(id, index, cardId, currentCards),
 		);

@@ -46,6 +46,11 @@ export default {
             'facia-tool-disable': false,
             'facia-tool-draft-content': true,
             'facia-tool-sparklines': false
-        }
+        },
+		baseUrls: {
+			mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
+			apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+			videoBaseUrl: 'https://video.code.dev-gutools.co.uk'
+		}
     }
 };

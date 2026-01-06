@@ -6,6 +6,10 @@ interface ImageAsset {
 		width?: string;
 		[id: string]: unknown;
 	};
+	dimensions?: {
+		width: number;
+		height: number;
+	};
 }
 
 interface Element {
@@ -48,6 +52,13 @@ interface Atoms {
 	media: Atom[];
 }
 
+interface AtomResponse {
+	media: Atom;
+	status: string;
+	total: number;
+	userTier: string;
+}
+
 interface Atom {
 	id: string;
 	atomType: string;
@@ -58,13 +69,47 @@ interface AtomData {
 	media: MediaAtom;
 }
 
-interface MediaAtom {
-	assets: AtomAsset[];
+interface ImageAssets {
+	assets: ImageAsset[];
+	master?: ImageAsset;
 }
 
-interface AtomAsset {
-	assetType: 'audio' | 'video';
+interface MediaAtom {
+	assets: AtomAsset[];
+	trailImage?: ImageAssets;
+	posterImage?: ImageAssets;
+	activeVersion?: number;
 }
+
+type Platform = 'youtube' | 'url';
+
+type AssetType = 'video' | 'subtitles' | 'audio';
+
+interface AtomAsset {
+	assetType: AssetType;
+	version: number;
+	id: string;
+	platform: Platform;
+	mimeType?: string;
+}
+
+type YoutubeAtomProperties = {
+	platform: 'youtube';
+	videoImage?: string;
+	youtube: AtomAsset;
+};
+
+type SelfHostedAtomProperties = {
+	platform: 'url';
+	videoImage?: string;
+	url: {
+		m3u8?: AtomAsset;
+		mp4?: AtomAsset;
+		vtt?: AtomAsset;
+	};
+};
+
+type AtomProperties = SelfHostedAtomProperties | YoutubeAtomProperties;
 
 interface Blocks {
 	main?: Block;
@@ -153,4 +198,11 @@ export {
 	CapiArticleWithMetadata,
 	Tag,
 	Element,
+	Atom,
+	AtomResponse,
+	AtomAsset,
+	AtomProperties,
+	ImageAsset,
+	Platform,
+	AssetType,
 };

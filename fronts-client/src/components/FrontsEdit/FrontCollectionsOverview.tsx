@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { styled, theme } from 'constants/theme';
 import type { State } from 'types/State';
-import { selectFront } from 'selectors/frontsSelectors';
 import { FrontConfig } from 'types/FaciaApi';
 import CollectionOverview from './CollectionOverview';
 import { CardSets } from 'types/Collection';
@@ -11,6 +10,7 @@ import ContentContainer from 'components/layout/ContentContainer';
 import { editorClearCardSelection } from 'bundles/frontsUI';
 import { bindActionCreators } from 'redux';
 import { Dispatch } from 'types/Store';
+import { selectFront } from '../../selectors/shared';
 
 interface FrontContainerProps {
 	id: string;

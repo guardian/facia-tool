@@ -154,7 +154,7 @@ export const feastCollectionPalettes: PaletteOption[] = [
 				backgroundHex: '#363632',
 			},
 		},
-		imageURL: ' https://uploads.guim.co.uk/2024/11/18/Berries.png',
+		imageURL: 'https://uploads.guim.co.uk/2024/11/18/Berries.png',
 	},
 	{
 		id: 'blackberries_blueberries',

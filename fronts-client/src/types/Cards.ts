@@ -26,3 +26,5 @@ export type InsertThunkActionCreator = (
 	cardId: string,
 	removeAction?: Action,
 ) => ThunkResult<void>;
+
+export type BoostLevel = 'default' | 'boost' | 'megaboost' | 'gigaboost';

@@ -1,6 +1,7 @@
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
-import type { Card } from 'types/Collection';
+import type { Card, Collection } from 'types/Collection';
+import type { Atom } from 'types/Capi';
 
 import { actions as externalArticleActions } from 'bundles/externalArticlesBundle';
 import { selectEditMode } from '../selectors/pathSelectors';
@@ -15,11 +16,9 @@ import {
 	copyCardImageMeta,
 } from 'actions/CardsCommon';
 import {
-	selectCards,
+	selectCardMap,
 	selectCard,
 	selectArticleGroup,
-	selectGroupCollection,
-	selectGroups,
 } from 'selectors/shared';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { addPersistMetaToAction } from 'util/action';
@@ -48,8 +47,9 @@ import {
 	InsertActionCreator,
 	InsertThunkActionCreator,
 } from 'types/Cards';
-import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 import { PersistTo } from '../types/Middleware';
+import { COLLECTIONS_USING_PORTRAIT_TRAILS } from 'constants/image';
+import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -206,81 +206,174 @@ const updateCardMetaWithPersist = (persistTo: PersistTo) =>
 		persistTo,
 	});
 
-/** Groups in a flexible general container allow different boostlevel options.
- * When moving a card from the one group to another, this function checks if the card should be modified.
- * If so, it will automatically adjust the boost level to what is possible or the default in the group.
- * Very Big defaults to mega, big defaults to boost
- * Splash allows all levels, and standard does not allow gigaboost.
- * Group ids remain consistent, even if the group is hidden (when maxItems is set to 0), so we can use the id to determine the group.
- */
+const minimumGroupBoostLevel = (groupName: string) => {
+	switch (groupName) {
+		case 'very big':
+			return 'megaboost';
+		case 'big':
+			return 'boost';
+		case 'splash':
+		case 'standard':
+		default:
+			return 'default';
+	}
+};
 
-const boostLevels = ['default', 'boost', 'megaboost', 'gigaboost'] as const;
-
-const minimumGroupBoostLevel = (groupId: number) => {
-	// boost is the smallest boost level for `Big`
-	if (groupId === 1) return 'boost';
-	// megaboost is the smallest boost level for `Very Big`
-	if (groupId === 2) return 'megaboost';
-	return 'default';
+export type UpdateCardMetaParams = {
+	from: PosSpec | null;
+	to: PosSpec;
+	card: Card;
+	persistTo: 'collection' | 'clipboard';
+	state: State;
 };
 
 /**
- * If the card is moved to a splash (group 3) group, we always set the boost level to default
- * If the card already has the minimum boost level for the group it is moving to,
- * we don't want to go any lower.
- * Otherwise, we decrease the boost level by 1.
- */
-const getBoostLevel = (groupId: number, boostIndex: number) => {
-	if (groupId === 3) {
-		return 'default';
-	}
-	const minBoostLevel = minimumGroupBoostLevel(groupId);
-	const minBoostIndex = boostLevels.indexOf(minBoostLevel);
-
-	// If the current boost level is below the minimum required, set it to the minimum
-	if (boostIndex < minBoostIndex) {
-		return minBoostLevel;
-	}
-
-	// If the current boost level is the minimum required, don't change it
-	if (boostIndex === minBoostIndex) {
-		return boostLevels[boostIndex];
-	}
-
-	// Otherwise reduce the boost level by 1
-	return boostLevels[boostIndex - 1];
+ * When a card moves up or down one or more groups,
+ * it should adopt the minimum boost level
+ * of the group it moves into, regardless of its previous boost level.
+ * */
+export const mayResetBoostLevel = ({
+	from,
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardMetaParams) => {
+	if (to.type !== 'group' || persistTo !== 'collection') return;
+	if (from?.id === to.id) return;
+	const groupName = to.groupName ?? 'standard';
+	return updateCardMeta(
+		card.uuid,
+		{
+			boostLevel: minimumGroupBoostLevel(groupName),
+		},
+		{ merge: true },
+	);
 };
 
-const mayAdjustCardBoostLevelForDestinationGroup = (
-	state: State,
-	to: PosSpec,
-	card: Card,
-	persistTo: 'collection' | 'clipboard',
-) => {
-	if (to.type === 'group' && persistTo === 'collection') {
-		const groupId = to.id;
-		const { collection } = selectGroupCollection(state, groupId);
-		const group = selectGroups(state)[groupId];
+/**
+ * If you move a 4:5 Feature card (with a 4:5 image) to a 5:4 slot,
+ * and the card has a replaced image,
+ * we revert to the trail image and remove that replaced image
+ * */
+export const mayResetImageReplace = ({
+	from,
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardMetaParams) => {
+	if (
+		to.type === 'group' &&
+		persistTo === 'collection' &&
+		from?.id !== to.id &&
+		card.meta?.imageReplace
+	) {
+		const replacementImageAspectRatio: number =
+			card.meta.imageSrcHeight && card.meta.imageSrcWidth
+				? +card.meta.imageSrcWidth / +card.meta.imageSrcHeight
+				: 5 / 4;
+		const replacementImageIsPortrait: boolean = replacementImageAspectRatio < 1;
 
-		if (collection?.type === FLEXIBLE_GENERAL_NAME) {
-			if (!group) {
-				return;
-			}
-			const groupId = parseInt(group.id ?? '0');
+		const toCollection: Collection | undefined = to.collectionId
+			? state.collections.data[to.collectionId]
+			: undefined;
+		const movingToPortraitCollection: boolean =
+			COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? '');
 
-			const currentBoostLevel = boostLevels.indexOf(
-				card.meta.boostLevel ?? 'default',
-			);
-
-			const boostLevel = getBoostLevel(groupId, currentBoostLevel);
+		if (replacementImageIsPortrait && !movingToPortraitCollection) {
+			// disable replacement image
 			return updateCardMeta(
 				card.uuid,
 				{
-					boostLevel,
+					imageReplace: false,
 				},
 				{ merge: true },
 			);
 		}
+	}
+};
+
+export const mayResetImmersive = ({
+	from,
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardMetaParams) => {
+	if (
+		to.type === 'group' &&
+		persistTo === 'collection' &&
+		from?.id !== to.id &&
+		card.meta?.isImmersive
+	) {
+		const toCollection: Collection | undefined = to.collectionId
+			? state.collections.data[to.collectionId]
+			: undefined;
+		const toCollectionSupportsImmersive: boolean =
+			// only flexible/general container supports immersive
+			toCollection?.type === FLEXIBLE_GENERAL_NAME;
+
+		if (!toCollectionSupportsImmersive) {
+			// turn off immersive
+			return updateCardMeta(
+				card.uuid,
+				{
+					isImmersive: false,
+				},
+				{ merge: true },
+			);
+		}
+	}
+};
+
+/**
+ * If you move a card with a 4:5 replacement video to a 5:4 slot (or vice versa),
+ * we revert to the trail image and disable the replacement video
+ * */
+export const mayResetVideoReplace = ({
+	from,
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardMetaParams) => {
+	if (
+		to.type === 'group' &&
+		persistTo === 'collection' &&
+		from?.id !== to.id &&
+		card.meta?.videoReplace
+	) {
+		const videoAtom: Atom = card.meta.replacementVideoAtom as Atom;
+		// TODO: video atom doesn't have any direct info on aspect ratio
+		//  we can infer something from the posterImage (if available)
+		//  Ideally we would add some data to the atom to make this easier
+		const dimensions = videoAtom?.atomType
+			? videoAtom.data.media.posterImage?.master?.dimensions
+			: undefined;
+		const replacementVideoAspectRatio: number = dimensions
+			? dimensions.width / dimensions.height
+			: 5 / 4;
+		const replacementVideoIsPortrait: boolean = replacementVideoAspectRatio < 1;
+
+		const toCollection: Collection | undefined = to.collectionId
+			? state.collections.data[to.collectionId]
+			: undefined;
+		const toCollectionIsPortrait: boolean =
+			COLLECTIONS_USING_PORTRAIT_TRAILS.includes(toCollection?.type ?? '');
+
+		// if we found some dimensions and the video doesn't match the target container...
+		if (dimensions && replacementVideoIsPortrait !== toCollectionIsPortrait) {
+			// disable replacement video
+			return updateCardMeta(
+				card.uuid,
+				{
+					videoReplace: false,
+				},
+				{ merge: true },
+			);
+		}
+		return undefined;
 	}
 };
 
@@ -312,13 +405,14 @@ const insertCardWithCreate =
 				if (!card) {
 					return;
 				}
-				const modifyCardAction = mayAdjustCardBoostLevelForDestinationGroup(
-					state,
+
+				const modifyCardAction = mayResetBoostLevel({
+					from: null,
 					to,
 					card,
 					persistTo,
-				);
-
+					state,
+				});
 				if (modifyCardAction) dispatch(modifyCardAction);
 
 				dispatch(
@@ -413,7 +507,7 @@ const moveCard = (
 			// if from is not null then assume we're copying a moved card
 			// into this new position
 			const { parent, supporting } = !fromWithRespectToState
-				? cloneCard(card, selectCards(state))
+				? cloneCard(card, selectCardMap(state))
 				: { parent: card, supporting: [] };
 
 			if (toWithRespectToState) {
@@ -421,13 +515,24 @@ const moveCard = (
 					dispatch(cardsReceived([parent, ...supporting]));
 				}
 
-				const modifyCardAction = mayAdjustCardBoostLevelForDestinationGroup(
-					state,
+				const actionParams: UpdateCardMetaParams = {
+					from,
 					to,
-					parent,
+					card: parent,
 					persistTo,
-				);
-				if (modifyCardAction) dispatch(modifyCardAction);
+					state,
+				};
+
+				const modifyCardActions = [
+					mayResetBoostLevel(actionParams),
+					mayResetImageReplace(actionParams),
+					mayResetImmersive(actionParams),
+					mayResetVideoReplace(actionParams),
+				];
+
+				modifyCardActions.forEach((action) => {
+					if (action) dispatch(action);
+				});
 
 				dispatch(
 					insertActionCreator(

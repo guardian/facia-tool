@@ -129,6 +129,7 @@ const input = {
 	checkboxColorActive: base.colors.highlightColor,
 	placeholderText: base.colors.placeholderDark,
 	radioButtonBackgroundDisabled: '#E6E6E6',
+	checkboxButtonBackgroundDisabled: '#E6E6E6',
 };
 
 const collection = {
@@ -144,6 +145,7 @@ const label = {
 const card = {
 	fontSizeDefault: '14px',
 	fontSizeSmall: '13px',
+	fontSizeMeta: '11px',
 	dropZone: '#D6D6D6',
 	border: colors.greyLightPinkish,
 	backgroundHover: colors.whiteMedium,
@@ -151,7 +153,7 @@ const card = {
 
 const thumbnailImage = {
 	width: '83px',
-	height: '50px',
+	height: '66.39px',
 };
 
 const thumbnailImageSquare = {

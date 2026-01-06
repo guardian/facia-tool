@@ -111,8 +111,6 @@ class V2App(
         req.user.firstName,
         req.user.lastName,
         config.sentry.publicDSN,
-        config.media.baseUrl.get,
-        config.media.apiUrl,
         SwitchManager.getSwitchesAsJson(),
         acls,
         config.facia.collectionCap,
@@ -125,7 +123,13 @@ class V2App(
         routes.FaciaContentApiProxy.capiLive("").absoluteURL(true),
         routes.FaciaContentApiProxy.capiPreview("").absoluteURL(true),
         TargetedTerritory.allTerritories,
-        EditionsAppTemplates.getAvailableTemplates ++ FeastAppTemplates.getAvailableTemplates
+        EditionsAppTemplates.getAvailableTemplates ++ FeastAppTemplates.getAvailableTemplates,
+        telemetryUrl = telemetryUrl,
+        BaseUrls(
+          config.media.baseUrl.get,
+          config.media.apiUrl,
+          config.video.baseUrl.get
+        )
       )
 
       Ok(
@@ -143,7 +147,8 @@ class V2App(
               )
             case _ =>
               None
-          }
+          },
+          maybeTelemetryUrl = Some(telemetryUrl)
         )
       )
     }

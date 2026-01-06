@@ -32,6 +32,7 @@ import serializeArticleMeta from 'utils/serialize-article-meta';
 import * as snap from 'utils/snap';
 import urlAbsPath from 'utils/url-abs-path';
 import visitedArticleStorage from 'utils/visited-article-storage';
+import { metaFieldsForPage } from '../../utils/modify-fields-for-breaking-news';
 
 const capiProps = [
     'webUrl',
@@ -51,7 +52,6 @@ const capiFields = [
 export default class Article extends DropTarget {
     constructor(opts = {}, withCapiData) {
         super();
-
         this.id = ko.observable(opts.id);
 
         this.group = opts.group;
@@ -64,9 +64,6 @@ export default class Article extends DropTarget {
 
         this.meta = asObservableProps(_.pluck(metaFields, 'key'));
         populateObservables(this.meta, opts.meta);
-        if (this.front && this.front.confirmSendingAlert()) {
-            populateObservables(this.meta, { imageHide: true });
-        }
 
         this.metaDefaults = {};
 
@@ -326,7 +323,8 @@ export default class Article extends DropTarget {
 
         const collection = articleCollection(this);
         if (!this.state.isOpen()) {
-            this.editors(metaFields.map(field => Editor.create(field, this, metaFields)).filter(Boolean));
+            const metaFieldsForEditors = metaFieldsForPage();
+            this.editors(metaFieldsForEditors.map(field => Editor.create(field, this, metaFieldsForEditors)).filter(Boolean));
             this.state.isOpen(true);
             mediator.emit(
                 'ui:open',

@@ -13,8 +13,5 @@ export default {
     },
     'navSections': {
         widget: 'config-nav-sections'
-    },
-    'indicators': {
-        widget: 'front-article-indicator'
     }
 };

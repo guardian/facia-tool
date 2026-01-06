@@ -27,7 +27,7 @@ import { getCollectionActions } from './Collections';
 import { batchActions } from 'redux-batched-actions';
 import { EditionsCollection } from '../types/Edition';
 import { State } from '../types/State';
-import { selectFront } from 'selectors/frontsSelectors';
+import { selectFront } from '../selectors/shared';
 
 export const check =
 	(id: string): ThunkResult<Promise<void>> =>

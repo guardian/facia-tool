@@ -1,4 +1,4 @@
-import { CapiArticle } from 'types/Capi';
+import { Atom, CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
 import type { DisplayHints, FrontsToolSettings } from 'types/FaciaApi';
 import { CardTypes } from 'constants/cardTypes';
@@ -8,16 +8,29 @@ interface CollectionArticles {
 	live: CapiArticle[];
 }
 
-interface AlsoOnDetail {
+interface CollectionsWhichAreAlsoOnOtherFrontsMap {
+	[collectionUuid: string]: CollectionsWhichAreAlsoOnOtherFronts;
+}
+
+interface CollectionsWhichAreAlsoOnOtherFronts {
 	priorities: string[];
 	fronts: Array<{ id: string; priority: string }>;
 	meritsWarning: boolean;
+}
+
+interface OtherCollectionsOnSameFrontThisCardIsOn {
+	collections: Array<{ collectionUuid: string }>;
+}
+
+interface CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap {
+	[cardUuid: string]: OtherCollectionsOnSameFrontThisCardIsOn;
 }
 
 interface Group {
 	id: string | null;
 	name: string | null;
 	uuid: string;
+	// uuids for cards
 	cards: string[];
 	maxItems?: number;
 	cardsData?: Card[];
@@ -82,6 +95,8 @@ type CardRootMeta = ChefCardMeta &
 		showByline?: boolean;
 		imageCutoutReplace?: boolean;
 		imageReplace?: boolean;
+		videoReplace?: boolean;
+		replaceVideoUri?: string;
 		imageHide?: boolean;
 		showKickerTag?: boolean;
 		showKickerSection?: boolean;
@@ -91,6 +106,7 @@ type CardRootMeta = ChefCardMeta &
 		snapCss?: string;
 		atomId?: string;
 		imageSlideshowReplace?: boolean;
+		replacementVideoAtom?: Atom | string;
 		slideshow?: Array<{
 			src?: string;
 			thumb?: string;
@@ -182,10 +198,13 @@ type CollectionWithNestedArticles = CollectionFromResponse & {
 
 // previouslyCardIds is stored in a separate key to avoid losing ordering information during normalisation.
 interface Collection {
-	live?: string[];
 	previously?: string[];
 	previouslyCardIds?: string[]; // this contains ids for deleted articles on a collection
+	// uuids for draft groups
 	draft?: string[];
+	// uuids for live groups
+	live?: string[];
+	// collection uuid
 	id: string;
 	lastUpdated?: number;
 	updatedBy?: string;
@@ -205,6 +224,18 @@ interface Collection {
 	displayHints?: DisplayHints;
 }
 
+interface CollectionMap {
+	[collectionUuid: string]: Collection;
+}
+
+interface GroupMap {
+	[groupUuid: string]: Group;
+}
+
+interface CardMap {
+	[cardUuid: string]: Card;
+}
+
 interface ArticleTag {
 	webTitle?: string;
 	sectionName?: string;
@@ -212,7 +243,10 @@ interface ArticleTag {
 
 export {
 	CollectionArticles,
-	AlsoOnDetail,
+	CollectionsWhichAreAlsoOnOtherFronts,
+	CollectionsWhichAreAlsoOnOtherFrontsMap,
+	OtherCollectionsOnSameFrontThisCardIsOn,
+	CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	NestedCard,
 	Card,
 	CardDenormalised,
@@ -221,6 +255,9 @@ export {
 	CollectionWithNestedArticles,
 	CollectionFromResponse,
 	Collection,
+	CollectionMap,
+	GroupMap,
+	CardMap,
 	CardSizes,
 	Group,
 	GroupConfig,

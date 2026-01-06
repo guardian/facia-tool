@@ -26,17 +26,10 @@ object PageViewDataVisualisation
       enabled = true
     )
 
-object TenImageSlideshows
+object ShowIfCardsAreAlsoOnOtherCollectionsOnSameFront
     extends FeatureSwitch(
-      key = "ten-image-slideshows",
-      title = "Allow slideshows to contain 10 images rather than 5",
-      enabled = false
-    )
-
-object SupportImmersiveToggle
-    extends FeatureSwitch(
-      key = "support-immersive-toggle",
-      title = "Allow users to set a card as an immersive display card",
+      key = "show-cards-which-are-also-on-other-collections-on-same-front",
+      title = "Show if cards are also on other collections on the same front",
       enabled = false
     )
 
@@ -44,8 +37,7 @@ object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
-    TenImageSlideshows,
-    SupportImmersiveToggle
+    ShowIfCardsAreAlsoOnOtherCollectionsOnSameFront
   )
 
   def updateFeatureSwitchesForUser(

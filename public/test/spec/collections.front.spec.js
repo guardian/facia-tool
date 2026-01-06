@@ -109,9 +109,9 @@ describe('Front', function () {
         })
         .then(() => {
             expect($('collection-widget:nth(0) .title').text()).toBe('Fruits');
-            expect($('collection-widget:nth(0) .alsoOnToggle').length).toBe(0);
+            expect($('collection-widget:nth(0) .collectionsWhichAreAlsoOnOtherFrontsToggle').length).toBe(0);
             expect($('collection-widget:nth(1) .title').text()).toBe('Spices');
-            expect($('collection-widget:nth(1) .alsoOnToggle').length).toBe(1);
+            expect($('collection-widget:nth(1) .collectionsWhichAreAlsoOnOtherFrontsToggle').length).toBe(1);
 
             return wait.event('test:lastmodified');
         })
@@ -265,13 +265,13 @@ describe('Front', function () {
         .then(() => done())
         .catch(done.fail);
     });
-    it('displays a warnign if front is hidden ', function () {
+    it('displays a warning if front is hidden ', function () {
         return this.loadFront({}, 'au')
         .then(() => {
             return expect($('.front-hidden').is(':visible')).toBe(true);
         });
     });
-    it('does not display a warnign if the front is not hidden ', function () {
+    it('does not display a warning if the front is not hidden ', function () {
         return this.loadFront({}, 'uk')
         .then(() => {
             return expect($('.front-hidden').is(':visible')).toBe(false);

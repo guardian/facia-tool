@@ -1,8 +1,11 @@
 import { createSelectorCreator } from 'reselect';
 import shallowequal from 'shallowequal';
 
-export const defaultObject = {};
-export const defaultArray = [];
+/***
+ 	React and Redux use object identities to work out what has changed.
+	In JS, empty objects are not equal to one another, so we pass this to ensure a stable identity.
+ ***/
+export const emptyObject = {};
 
 const defaultEqualityCheck = (a: any, b: any) => a === b;
 

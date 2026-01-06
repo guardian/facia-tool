@@ -5,7 +5,7 @@ import { HeadlineContentButton } from 'components/CollectionDisplay';
 import CollectionDisplay from 'components/CollectionDisplay';
 import CollectionNotification from 'components/CollectionNotification';
 import Button from 'components/inputs/ButtonDefault';
-import { AlsoOnDetail } from 'types/Collection';
+import { CollectionsWhichAreAlsoOnOtherFronts } from 'types/Collection';
 import {
 	publishCollection,
 	discardDraftChangesToCollection,
@@ -55,7 +55,9 @@ interface CollectionPropsBeforeState {
 		groupsData: Group[],
 		showGroupName?: boolean,
 	) => React.ReactNode;
-	alsoOn: { [id: string]: AlsoOnDetail };
+	collectionsWhichAreAlsoOnOtherFronts: {
+		[id: string]: CollectionsWhichAreAlsoOnOtherFronts;
+	};
 	frontId: string;
 	browsingStage: CardSets;
 	priority: string;
@@ -201,7 +203,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 			id,
 			frontId,
 			children,
-			alsoOn,
+			collectionsWhichAreAlsoOnOtherFronts,
 			groups,
 			previousGroup: previousGroup,
 			browsingStage,
@@ -334,10 +336,13 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 						)
 					}
 					metaContent={
-						alsoOn[id].fronts.length || displayEditWarning ? (
+						collectionsWhichAreAlsoOnOtherFronts[id].fronts.length ||
+						displayEditWarning ? (
 							<CollectionNotification
 								displayEditWarning={displayEditWarning}
-								alsoOn={alsoOn[id]}
+								collectionsWhichAreAlsoOnOtherFronts={
+									collectionsWhichAreAlsoOnOtherFronts[id]
+								}
 							/>
 						) : null
 					}

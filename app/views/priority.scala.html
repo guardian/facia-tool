@@ -1,4 +1,4 @@
-@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, displayV2Message: Boolean = false, priority: String = "")
+@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, displayV2Message: Boolean = false, priority: String = "", maybeTelemetryUrl: Option[String] = None)
 
 @import switchboard.SwitchManager
 
@@ -36,5 +36,7 @@
             </div>
         </main>
     }
+
+	@templates.pixel_tracking(maybeTelemetryUrl)
     </body>
 </html>

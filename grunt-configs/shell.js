@@ -15,7 +15,6 @@ module.exports = function() {
                     'facia-tool/widgets/presser-detect-stale',
                     'facia-tool/widgets/copy-paste-articles',
                     'facia-tool/widgets/sparklines-trails',
-                    'facia-tool/widgets/front-article-indicator'
                 ].join(' + ') +
                 ' public/fronts-client-v1/bundles/collections.js'
         },

@@ -9,39 +9,53 @@ import { theme } from 'constants/theme';
 const radioButtonHeight = 17;
 const radioButtonWidth = 17;
 
+const InnerContainer = styled.div`
+	display: flex;
+	align-items: center;
+`;
+
+const Row = styled.div`
+	display: flex;
+	width: 100%;
+	gap: 4px;
+	align-items: center;
+`;
 const BlockStylingMixin = () => css`
-	padding: 8px 6px;
+	width: 170px;
+	display: flex;
+	flex-direction: column;
+	padding: 8px 5px;
 	background-color: #cccccc;
-	height: ${radioButtonHeight * 2}px;
 	&:has(input:checked) {
 		color: white;
 		background-color: #a9a9a9;
+		box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight};
 	}
 	&:has(input:disabled) {
 		opacity: 0.8;
 		cursor: not-allowed;
 	}
+	&:has(input:disabled):hover {
+		box-shadow: none;
+	}
+	&:hover {
+		box-shadow: 0px 0px 0 2px ${theme.colors.orangeLight};
+	}
 `;
 
-const RadioButtonContainer = styled.div<{ usesBlockStyling?: boolean }>`
-	display: flex;
-	align-items: center;
-	cursor: pointer;
-	color: ${(props) => props.theme.input.colorLabel};
-	${(props) => props.usesBlockStyling && BlockStylingMixin}
-`;
-
-const Label = styled(InputLabel)`
-	padding-left: 5px;
+const Label = styled(InputLabel)<{ usesBlockStyling?: boolean }>`
 	line-height: 15px;
 	flex: 1;
-	cursor: inherit;
+	cursor: pointer;
+	width: min-content;
+	padding: 0;
+	color: ${(props) => props.theme.input.colorLabel};
+	${(props) => props.usesBlockStyling && BlockStylingMixin}
 `;
 
 const Switch = styled.div`
 	position: relative;
 	width: ${radioButtonWidth}px;
-	margin-left: auto;
 	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
@@ -51,6 +65,7 @@ const RadioButtonLabel = styled.label`
 	display: block;
 	overflow: hidden;
 	cursor: pointer;
+	width: ${radioButtonWidth}px;
 	height: ${radioButtonHeight}px;
 	padding: 0;
 	line-height: ${radioButtonHeight}px;
@@ -98,7 +113,6 @@ const RadioButton = styled.input`
 
 const IconContainer = styled.div`
 	width: 20px;
-	margin-left: 8px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -110,6 +124,7 @@ type Props = {
 	dataTestId?: string;
 	checked?: boolean;
 	icon?: ReactElement;
+	contents?: ReactElement;
 	usesBlockStyling?: boolean;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
@@ -124,6 +139,7 @@ export default ({
 	input: { ...inputRest },
 	checked,
 	icon = undefined,
+	contents = undefined,
 	usesBlockStyling = false,
 	...rest
 }: Props) => {
@@ -140,22 +156,25 @@ export default ({
 	return (
 		<>
 			<InputContainer data-testid={dataTestId}>
-				<RadioButtonContainer usesBlockStyling={usesBlockStyling}>
-					<Switch>
-						<RadioButton
-							type="radio"
-							{...inputRest}
-							{...checkedProps}
-							{...rest}
-							id={id}
-						/>
-						<RadioButtonLabel htmlFor={id} />
-					</Switch>
-					<Label htmlFor={id} size="sm">
-						{label}
-					</Label>
-					{icon !== undefined ? <IconContainer>{icon}</IconContainer> : null}
-				</RadioButtonContainer>
+				<Label htmlFor={id} size="sm" usesBlockStyling={usesBlockStyling}>
+					<InnerContainer>
+						<Row>
+							<Switch>
+								<RadioButton
+									type="radio"
+									{...inputRest}
+									{...checkedProps}
+									{...rest}
+									id={id}
+								/>
+								<RadioButtonLabel htmlFor={id} />
+							</Switch>
+							{label}
+						</Row>
+						{icon !== undefined ? <IconContainer>{icon}</IconContainer> : null}
+					</InnerContainer>
+					{contents !== undefined ? contents : null}
+				</Label>
 			</InputContainer>
 		</>
 	);

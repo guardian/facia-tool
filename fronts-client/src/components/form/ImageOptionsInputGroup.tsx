@@ -6,7 +6,6 @@ export const ImageOptionsInputGroup = styled.div`
 	flex-wrap: wrap;
 	flex: 1;
 	flex-direction: column;
-	min-width: 300px;
 	margin-top: ${(props: { size?: string }) =>
 		props.size !== 'wide' ? 0 : '6px'};
 `;

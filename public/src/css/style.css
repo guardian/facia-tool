@@ -45,7 +45,6 @@ a:hover,
     box-sizing: border-box;
     color: #232323;
     font-size: 1.2em;
-    background-color: #;
 }
 
 .fstControls {
@@ -1238,7 +1237,7 @@ select {
     top: 3px;
     width: 0px;
     font-size: 12px;
-    color: inherit;
+    color: #333;
 }
 
 .editor__length {
@@ -1254,26 +1253,13 @@ select {
     color: #DD4B39;
 }
 
-.attention .length--alert textarea.active {
+.length--alert textarea, .length--alert textarea.active {
     background-color: #FFCDD2;
 }
 
 .editor__alert__message {
     margin-left: 4px;
     color: #DD4B39;
-    display: none;
-}
-
-.attention .length--alert .editor__alert__message {
-    display: inline;
-}
-
-.editor__length {
-    display: none;
-}
-
-.attention .editor__length {
-    display: block;
 }
 
 .editor--boolean {
@@ -2081,7 +2067,7 @@ ol.search_list > li::before {
     color: #555;
 }
 
-span.also a{
+span.collection-is-also-on-other-fronts a{
   color: red;
   font-size: 16px;
 }
@@ -2092,7 +2078,7 @@ span.also a{
   font-size: 14px;
 }
 
-.also {
+.collection-is-also-on-other-fronts {
     margin: 6px;
     line-height: 24px;
 }
@@ -2159,7 +2145,7 @@ span.also a{
 .narrow .article__overrides {
     margin: 0;
 }
-.narrow .dropdown.also > ul {
+.narrow .dropdown.collection-is-also-on-other-fronts > ul {
     left:auto;
     right: 0;
 }
@@ -2386,6 +2372,28 @@ hr {
 .modalDialog-message .target {
     padding-left: 1em;
 }
+
+.modalDialog-message .character-count { 
+    margin: 8px 0;
+    padding: 4px;
+    border: 1px solid #2ea3eb;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.modalDialog-message .character-count .fa {
+    color: #2ea3eb;
+    font-size: x-large;
+    align-self: flex-start;
+} 
+
+.modalDialog-message .character-count-text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+} 
 
 .modalDialog .button-description {
     font-weight: bold;

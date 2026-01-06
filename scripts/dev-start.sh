@@ -55,6 +55,34 @@ checkJavaVersion() {
     fi
 }
 
+set_node_version() {
+	## Check which Node version manager is available and use it
+	if command -v mise >/dev/null 2>&1; then
+		echo "Using mise"
+		eval "$(mise activate bash)"
+	elif command -v nvm >/dev/null 2>&1; then
+		echo "Using nvm"
+		nvm use
+	elif command -v fnm >/dev/null 2>&1; then
+		echo "Using fnm"
+		fnm use
+	else
+		echo -e "${RED}No Node version manager (mise, nvm, fnm) found.${NOCOLOUR}"
+		exit 1
+	fi
+
+  runningNodeVersion=$(node -v)
+  requiredNodeVersion=$(cat .nvmrc)
+
+  echo "Running ${runningNodeVersion}"
+  echo "Required ${requiredNodeVersion}"
+
+  if [ "$runningNodeVersion" != "$requiredNodeVersion" ]; then
+    echo -e "${red}Using wrong version of Node. Required ${requiredNodeVersion}. Running ${runningNodeVersion}.${plain}."
+    exit 1
+  fi
+}
+
 main() {
     checkJavaVersion
     runNginx
@@ -63,8 +91,11 @@ main() {
     printf "\n\rStarting Yarn... \n\r\n\r"
 
     cd fronts-client
+    set_node_version
     yarn watch &
+    sleep 1
     cd ..
+    set_node_version
 
     printf "\n\rStarting Postgres... \n\r\n\r"
     docker compose up -d
@@ -82,3 +113,5 @@ main() {
 
 main
 
+
+}

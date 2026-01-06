@@ -1,6 +1,7 @@
 import ko from 'knockout';
 import _ from 'underscore';
 import $ from 'jquery';
+import { CONST } from 'modules/vars';
 import BaseClass from 'models/base-class';
 import Article from 'models/collections/article';
 import Group from 'models/group';
@@ -30,11 +31,11 @@ export default class Collection extends BaseClass {
 
         this.groups = this.createGroups(opts.groups);
 
-        this.alsoOn = opts.alsoOn || [];
-        this.alsoOnDedupedPriorities = _.uniq(this.alsoOn.map(front => front.priority));
-        this.alsoOnHasDifferentPriority = this.alsoOn.some(front => front.isDifferentPriority);
-        this.alsoOnMeritsWarning = this.alsoOnHasDifferentPriority
-            && this.alsoOn.some(front => front.priority === 'commercial');
+        this.collectionsWhichAreAlsoOnOtherFronts = opts.collectionsWhichAreAlsoOnOtherFronts || [];
+        this.collectionsWhichAreAlsoOnOtherFrontsDedupedPriorities = _.uniq(this.collectionsWhichAreAlsoOnOtherFronts.map(front => front.priority));
+        this.collectionsWhichAreAlsoOnOtherFrontsHasDifferentPriority = this.collectionsWhichAreAlsoOnOtherFronts.some(front => front.isDifferentPriority);
+        this.collectionsWhichAreAlsoOnOtherFrontsMeritsWarning = this.collectionsWhichAreAlsoOnOtherFrontsHasDifferentPriority
+            && this.collectionsWhichAreAlsoOnOtherFronts.some(front => front.priority === 'commercial');
 
         this.isDynamic = opts.type.indexOf('dynamic/') === 0;
         this.isFlexible = opts.type === ('flexible/general') || opts.type === ('flexible/special');
@@ -81,7 +82,7 @@ export default class Collection extends BaseClass {
             'editingConfig',
             'count',
             'timeAgo',
-            'alsoOnVisible',
+            'collectionsWhichAreAlsoOnOtherFrontsVisible',
             'showIndicators',
             'hasExtraActions',
             'isHistoryOpen',
@@ -205,6 +206,14 @@ export default class Collection extends BaseClass {
         if (addedInDraft.length) {
             const isMajorAlert = !!_.find(addedInDraft, article => article.group.index === 1);
 
+            const article = addedInDraft[0];
+            const headlineLength = (article && article.headlineLength()) || 0;
+            const lengthWarning = headlineLength >= 120
+                ? 'This message is long. Some characters might not show, but the notification will still send.'
+                : headlineLength >= CONST.restrictedHeadlineLength
+                    ? `Recommendation: no more than ${CONST.restrictedHeadlineLength} characters. The notification will still send.`
+                    : undefined;
+
             modalDialog.confirm({
                 name: 'confirm_breaking_changes',
                 data: {
@@ -212,15 +221,16 @@ export default class Collection extends BaseClass {
                     target: this.configMeta.displayName(),
                     targetGroup: isMajorAlert ? 'APP & WEB' : 'WEB',
                     targetGroupClass: isMajorAlert ? 'major-alert' : 'minor-alert',
+                    lengthWarning,
                     alertAlreadySent: article =>
                         _.find(this.history(), previously => previously.id() === article.id())
                 }
             })
-            .then(() => {
-                // don't chain the promise
-                this.processDraft(true, { sendAlert: true });
-            })
-            .catch(() => {});
+                .then(() => {
+                    // don't chain the promise
+                    this.processDraft(true, { sendAlert: true });
+                })
+                .catch(() => { });
         } else {
             this.processDraft(true, { sendAlert: false });
         }
@@ -243,7 +253,7 @@ export default class Collection extends BaseClass {
 
         const detectPressFailures = goLive ? () => {
             mediator.emit('presser:detectfailures', this.front.front());
-        } : () => {};
+        } : () => { };
         const requestData = this.serializedCollectionWithMeta(opts.sendAlert);
 
         authedAjax.request({
@@ -251,30 +261,30 @@ export default class Collection extends BaseClass {
             url: `${vars.CONST.apiBase}/collection/${action}/${this.id}`,
             data: requestData ? JSON.stringify(requestData) : undefined
         })
-        .then(() => this.load().then(detectPressFailures))
-        .then(() => {
-            if (opts.sendAlert) {
-                success(requestData);
-            }
-        })
-        .catch(error => {
-            const errorMessages = [];
-            try {
-                errorMessages.push.apply(errorMessages, JSON.parse(error.responseText));
-            } catch (ex) {
-                errorMessages.push(error.responseText || error.message);
-            }
+            .then(() => this.load().then(detectPressFailures))
+            .then(() => {
+                if (opts.sendAlert) {
+                    success(requestData);
+                }
+            })
+            .catch(error => {
+                const errorMessages = [];
+                try {
+                    errorMessages.push.apply(errorMessages, JSON.parse(error.responseText));
+                } catch (ex) {
+                    errorMessages.push(error.responseText || error.message);
+                }
 
-            const message = `Error when ${action}ing the collection: ${errorMessages.join('<br>')}`;
-            reportErrors(new Error(message)); //report to sentry
-        })
-        .catch(() => {
-            const breakingNewsMsg = 'breaking news alert. Please contact Central Production for more information.';
-            const isBreakingNewsAlert = this.front.confirmSendingAlert();
-            const message = `Failed ${action}ing the ${isBreakingNewsAlert ? breakingNewsMsg : 'collection'}`;
-            this.setPending(false);
-            alert(message, 'error');
-        });
+                const message = `Error when ${action}ing the collection: ${errorMessages.join('<br>')}`;
+                reportErrors(new Error(message)); //report to sentry
+            })
+            .catch(() => {
+                const breakingNewsMsg = 'breaking news alert. Please contact Central Production for more information.';
+                const isBreakingNewsAlert = this.front.confirmSendingAlert();
+                const message = `Failed ${action}ing the ${isBreakingNewsAlert ? breakingNewsMsg : 'collection'}`;
+                this.setPending(false);
+                alert(message, 'error');
+            });
     }
 
     drop(item) {
@@ -284,49 +294,49 @@ export default class Collection extends BaseClass {
         this.state.showIndicators(false);
         const detectPressFailures = mode === 'live' ? () => {
             mediator.emit('presser:detectfailures', this.front.front());
-        } : () => {};
+        } : () => { };
         authedAjax.updateCollections({
             remove: {
                 collection: this,
-                item:       item.id(),
-                mode:       mode
+                item: item.id(),
+                mode: mode
             }
         })
-        .then(detectPressFailures)
-        .catch(detectPressFailures);
+            .then(detectPressFailures)
+            .catch(detectPressFailures);
     }
 
     load(opts = {}) {
         return authedAjax.request({
             url: vars.CONST.apiBase + '/collection/' + this.id
         })
-        .then(raw => {
-            if (opts.isRefresh && this.isPending()) { return; }
-            if (!raw) { return; }
+            .then(raw => {
+                if (opts.isRefresh && this.isPending()) { return; }
+                if (!raw) { return; }
 
-            // We need to wait for the populate
-            this.state.hasConcurrentEdits(false);
+                // We need to wait for the populate
+                this.state.hasConcurrentEdits(false);
 
-            const wait = this.populate(raw);
+                const wait = this.populate(raw);
 
-            populateObservables(this.collectionMeta, raw);
+                populateObservables(this.collectionMeta, raw);
 
-            this.collectionMeta.updatedBy(raw.updatedEmail === deepGet(vars, '.model.identity.email') ? 'you' : raw.updatedBy);
+                this.collectionMeta.updatedBy(raw.updatedEmail === deepGet(vars, '.model.identity.email') ? 'you' : raw.updatedBy);
 
-            this.state.timeAgo(this.getTimeAgo(raw.lastUpdated));
-            this.lastAlertSentHuman(this.getLastAlertHuman());
+                this.state.timeAgo(this.getTimeAgo(raw.lastUpdated));
+                this.lastAlertSentHuman(this.getLastAlertHuman());
 
-            return wait;
-        })
-        .catch(ex => {
-            // Network errors should be ignored
-            if (ex instanceof Error) {
-                reportErrors(ex);
-            }
-        })
-        .then(() => {
-            return this.setPending(false);
-        });
+                return wait;
+            })
+            .catch(ex => {
+                // Network errors should be ignored
+                if (ex instanceof Error) {
+                    reportErrors(ex);
+                }
+            })
+            .then(() => {
+                return this.setPending(false);
+            });
     }
 
     hasOpenArticles() {
@@ -394,7 +404,7 @@ export default class Collection extends BaseClass {
         loading.push(this.setPending(false));
         return Promise.all(loading)
             .then(() => mediator.emit('collection:populate', this))
-            .catch(() => {});
+            .catch(() => { });
     }
 
     populateHistory(list) {
@@ -454,8 +464,8 @@ export default class Collection extends BaseClass {
         return date ? humanTime(date) : '';
     }
 
-    alsoOnToggle() {
-        this.state.alsoOnVisible(!this.state.alsoOnVisible());
+	collectionsWhichAreAlsoOnOtherFrontsToggle() {
+        this.state.collectionsWhichAreAlsoOnOtherFrontsVisible(!this.state.collectionsWhichAreAlsoOnOtherFrontsVisible());
     }
 
     serializedCollectionWithMeta(sendAlert) {

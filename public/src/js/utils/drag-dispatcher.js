@@ -192,9 +192,7 @@ function validate (sourceItem, newItems, context) {
     if (sourceItem.type === vars.CONST.draggableTypes.configCollection) {
         return Promise.resolve();
     } else {
-        var maxChars = vars.CONST.restrictedHeadlineLength || 90,
-            restrictHeadlinesOn = vars.CONST.restrictHeadlinesOn || [],
-            restrictedLiveMode = vars.CONST.restrictedLiveMode || [];
+        var restrictedLiveMode = vars.CONST.restrictedLiveMode || [];
 
         return capi.validateItem(newItems[0])
         .then(item => {
@@ -202,9 +200,6 @@ function validate (sourceItem, newItems, context) {
                 err;
 
             if (item.group.parentType === 'Collection') {
-                if (restrictHeadlinesOn.indexOf(front) > -1 && (item.meta.headline() || item.fields.headline()).length > maxChars) {
-                    err = 'Sorry, a ' + front + ' headline must be ' + maxChars + ' characters or less. Edit it first within the clipboard.';
-                }
                 if (restrictedLiveMode.indexOf(front) > -1 && context.mode() === 'live') {
                     err = 'Sorry, ' + front + ' items cannot be added in Live Front mode. Switch to Draft Front then try again.';
                 }

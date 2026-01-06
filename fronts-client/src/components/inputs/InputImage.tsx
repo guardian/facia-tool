@@ -9,7 +9,6 @@ import InputContainer from './InputContainer';
 import InputBase from './InputBase';
 import InputLabel from './InputLabel';
 import DragIntentContainer from '../DragIntentContainer';
-import { GridModal } from 'components/modals/GridModal';
 import {
 	validateImageEvent,
 	validateMediaItem,
@@ -40,6 +39,7 @@ import { selectEditMode } from '../../selectors/pathSelectors';
 import CircularIconContainer from '../icons/CircularIconContainer';
 import { error } from '../../styleConstants';
 import ValidatingSpinnerOverlay from '../image/ValidatingSpinnerOverlay';
+import { OverlayModal } from '../modals/OverlayModal';
 
 const AddImageButton = styled(ButtonDefault)<{ small?: boolean }>`
 	background-color: ${({ small }) =>
@@ -140,7 +140,7 @@ const Label = styled(InputLabel)`
 	vertical-align: super;
 `;
 
-const ButtonDelete = styled(ButtonDefault)<{
+export const ButtonDelete = styled(ButtonDefault)<{
 	confirmDelete?: boolean;
 }>`
 	position: absolute;
@@ -167,7 +167,7 @@ const ButtonDelete = styled(ButtonDefault)<{
 	}
 `;
 
-const DeleteIconOptions = styled.div`
+export const DeleteIconOptions = styled.div`
 	display: block;
 	position: absolute;
 	height: 14px;
@@ -374,11 +374,10 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 				isInvalid={isInvalid}
 				confirmDelete={this.state.confirmDelete}
 			>
-				<GridModal
+				<OverlayModal
 					url={gridModalUrl}
 					isOpen={this.state.modalOpen}
 					onClose={this.closeModal}
-					onMessage={this.onMessage}
 				/>
 				<DragIntentContainer
 					active
@@ -653,8 +652,7 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			this.compareAspectRatio(landscape5To4CardImageCriteria, criteria)
 		) {
 			return {
-				cropType: 'Landscape',
-				customRatio: 'Landscape,5,4',
+				cropType: 'landscape',
 			};
 		} else if (this.compareAspectRatio(squareImageCriteria, criteria)) {
 			return {
@@ -662,7 +660,8 @@ class InputImage extends React.Component<ComponentProps, ComponentState> {
 			};
 		} else {
 			return {
-				cropType: 'landscape',
+				cropType: 'Landscape',
+				customRatio: 'Landscape,5,3',
 			};
 		}
 	};

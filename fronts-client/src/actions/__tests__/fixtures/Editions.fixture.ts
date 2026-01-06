@@ -99,8 +99,11 @@ export const initialState = {
 		lastName: 'Bhatt ',
 		sentryPublicDSN:
 			'https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467',
-		mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
-		apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+		baseUrls: {
+			mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
+			apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+			videoBaseUrl: 'https://video.code.dev-gutools.co.uk',
+		},
 		switches: {
 			'facia-tool-allow-edit-editorial-fronts-for-all': false,
 			'facia-tool-allow-launch-commercial-fronts-for-all': false,
@@ -168,11 +171,6 @@ export const initialState = {
 					key: 'page-view-data-visualisation',
 					title: 'Show page view data visualisation (aka spark lines)',
 					enabled: true,
-				},
-				{
-					key: 'ten-image-slideshows',
-					title: 'Allow slideshows to contain 10 images rather than 5',
-					enabled: false,
 				},
 				{
 					key: 'show-firefox-prompt',
@@ -669,11 +667,6 @@ export const initialState = {
 			title: 'Show page view data visualisation (aka spark lines)',
 			enabled: true,
 		},
-		'ten-image-slideshows': {
-			key: 'ten-image-slideshows',
-			title: 'Allow slideshows to contain 10 images rather than 5',
-			enabled: false,
-		},
 		'show-firefox-prompt': {
 			key: 'show-firefox-prompt',
 			title: 'Show the prompt to use Firefox if applicable',
@@ -839,8 +832,11 @@ export const finalStateWhenAddNewCollection = {
 		lastName: 'Bhatt ',
 		sentryPublicDSN:
 			'https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467',
-		mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
-		apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+		baseUrls: {
+			mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
+			apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+			videoBaseUrl: 'https://video.code.dev-gutools.co.uk',
+		},
 		switches: {
 			'facia-tool-allow-edit-editorial-fronts-for-all': false,
 			'facia-tool-allow-launch-commercial-fronts-for-all': false,
@@ -908,11 +904,6 @@ export const finalStateWhenAddNewCollection = {
 					key: 'page-view-data-visualisation',
 					title: 'Show page view data visualisation (aka spark lines)',
 					enabled: true,
-				},
-				{
-					key: 'ten-image-slideshows',
-					title: 'Allow slideshows to contain 10 images rather than 5',
-					enabled: false,
 				},
 				{
 					key: 'show-firefox-prompt',
@@ -1410,11 +1401,6 @@ export const finalStateWhenAddNewCollection = {
 			title: 'Show page view data visualisation (aka spark lines)',
 			enabled: true,
 		},
-		'ten-image-slideshows': {
-			key: 'ten-image-slideshows',
-			title: 'Allow slideshows to contain 10 images rather than 5',
-			enabled: false,
-		},
 		'show-firefox-prompt': {
 			key: 'show-firefox-prompt',
 			title: 'Show the prompt to use Firefox if applicable',
@@ -1594,8 +1580,11 @@ export const finalStateWhenRemoveACollection = {
 		lastName: 'Bhatt ',
 		sentryPublicDSN:
 			'https://4527e03d554a4962ae99a7481e9278ff@app.getsentry.com/35467',
-		mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
-		apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+		baseUrls: {
+			mediaBaseUrl: 'https://media.test.dev-gutools.co.uk',
+			apiBaseUrl: 'https://api.media.test.dev-gutools.co.uk',
+			videoBaseUrl: 'https://video.code.dev-gutools.co.uk',
+		},
 		switches: {
 			'facia-tool-allow-edit-editorial-fronts-for-all': false,
 			'facia-tool-allow-launch-commercial-fronts-for-all': false,
@@ -1663,11 +1652,6 @@ export const finalStateWhenRemoveACollection = {
 					key: 'page-view-data-visualisation',
 					title: 'Show page view data visualisation (aka spark lines)',
 					enabled: true,
-				},
-				{
-					key: 'ten-image-slideshows',
-					title: 'Allow slideshows to contain 10 images rather than 5',
-					enabled: false,
 				},
 				{
 					key: 'show-firefox-prompt',
@@ -2163,11 +2147,6 @@ export const finalStateWhenRemoveACollection = {
 			key: 'page-view-data-visualisation',
 			title: 'Show page view data visualisation (aka spark lines)',
 			enabled: true,
-		},
-		'ten-image-slideshows': {
-			key: 'ten-image-slideshows',
-			title: 'Allow slideshows to contain 10 images rather than 5',
-			enabled: false,
 		},
 		'show-firefox-prompt': {
 			key: 'show-firefox-prompt',

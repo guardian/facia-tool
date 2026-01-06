@@ -4,10 +4,10 @@ import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
-import pageConfig from 'util/extractConfigFromPage';
+// import pageConfig from 'util/extractConfigFromPage';
 import { CardMeta, ImageData } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
-import { CapiArticle } from 'types/Capi';
+import { Atom, CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
 
@@ -41,6 +41,10 @@ export interface CardFormData {
 	coverCardMobileImage: ImageData;
 	coverCardTabletImage: ImageData;
 	isImmersive: boolean;
+	videoReplace: boolean;
+	replaceVideoUri: string;
+	atomId: string;
+	replacementVideoAtom: Atom | string;
 }
 
 export type FormFields = keyof CardFormData;
@@ -79,11 +83,7 @@ export const getCapiValuesForArticleFields = (
 	};
 };
 
-const tenImagesFeatureSwitch = pageConfig?.userData?.featureSwitches.find(
-	(feature) => feature.key === 'ten-image-slideshows',
-);
-
-export const maxSlideshowImages = tenImagesFeatureSwitch?.enabled ? 10 : 5;
+export const maxSlideshowImages = 10;
 
 export const getInitialValuesForCardForm = (
 	article: DerivedArticle | void,
@@ -126,6 +126,8 @@ export const getInitialValuesForCardForm = (
 				imageHide: article.imageHide || false,
 				imageReplace: article.imageReplace || false,
 				imageSlideshowReplace: article.imageSlideshowReplace || false,
+				videoReplace: article.videoReplace || false,
+				replaceVideoUri: article.replaceVideoUri || '',
 				primaryImage: {
 					src: article.imageSrc,
 					width: strToInt(article.imageSrcWidth),
@@ -148,6 +150,8 @@ export const getInitialValuesForCardForm = (
 				coverCardMobileImage: article.coverCardMobileImage || {},
 				coverCardTabletImage: article.coverCardTabletImage || {},
 				isImmersive: article.isImmersive || false,
+				atomId: article.atomId || '',
+				replacementVideoAtom: article.replacementVideoAtom || '',
 			}
 		: undefined;
 };

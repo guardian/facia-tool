@@ -15,7 +15,6 @@ import { frontStages } from 'constants/fronts';
 import urls from 'constants/url';
 import { FrontConfig, EditionsFrontMetadata } from 'types/FaciaApi';
 import type { State } from 'types/State';
-import { selectFront } from 'selectors/frontsSelectors';
 import SectionHeader from '../../layout/SectionHeader';
 import SectionContent from '../../layout/SectionContent';
 import { CardSets, Collection, Stages } from 'types/Collection';
@@ -33,6 +32,7 @@ import FrontsContainer from '../FrontContainer';
 import { isMode } from '../../../selectors/pathSelectors';
 import { selectShouldUseCODELinks } from '../../../selectors/configSelectors';
 import './front-section.css';
+import { selectFront } from 'selectors/shared';
 
 const FrontHeader = styled(SectionHeader)`
 	display: flex;

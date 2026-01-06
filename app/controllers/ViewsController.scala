@@ -17,15 +17,30 @@ class ViewsController(
 )(implicit ec: ExecutionContext)
     extends BaseFaciaController(deps) {
 
+  private def checkIfBreakingNews(
+      request: UserRequest[AnyContent],
+      priority: Option[String] = None
+  ): Boolean = {
+    priority.getOrElse("") == "breaking-news" || request.queryString
+      .getOrElse("layout", Seq(""))
+      .exists(_.contains("breaking-news"))
+  }
+
+  private def checkIfTreatsPage(
+      request: UserRequest[AnyContent]
+  ): Boolean = {
+    request.queryString
+      .getOrElse("treats", Seq(""))
+      .exists(_.contains("please"))
+  }
+
   private def shouldRedirectToV2(
       request: UserRequest[AnyContent],
       priority: Option[String] = None
   ): Boolean = {
-    val isBreakingNews =
-      priority.getOrElse("") == "breaking-news" || request.queryString
-        .getOrElse("layout", Seq(""))
-        .exists(_.contains("breaking-news"))
-    if (isBreakingNews) {
+    val isBreakingNews = checkIfBreakingNews(request, priority)
+    val isTreatsPage = checkIfTreatsPage(request)
+    if (isBreakingNews || isTreatsPage) {
       false
     } else {
       request.queryString.getOrElse("redirect", Seq("true")).contains("true")
@@ -39,7 +54,13 @@ class ViewsController(
       val identity = request.user
       Cached(60) {
         Ok(
-          views.html.priority(Option(identity), config.facia.stage, isDev, true)
+          views.html.priority(
+            Option(identity),
+            config.facia.stage,
+            isDev,
+            true,
+            maybeTelemetryUrl = Some(telemetryUrl)
+          )
         )
       }
     }
@@ -50,6 +71,8 @@ class ViewsController(
       if (shouldRedirectToV2(request, Some(priority))) {
         PermanentRedirect(s"/v2/$priority")
       } else {
+        val isBreakingNews = checkIfBreakingNews(request, Some(priority))
+        val isTreatsPage = checkIfTreatsPage(request)
         val identity = request.user
         Cached(60) {
           Ok(
@@ -58,8 +81,9 @@ class ViewsController(
               config.facia.stage,
               overrideIsDev(request, isDev),
               assetsManager.pathForCollections,
-              priority != "email",
-              priority
+              priority != "email" && !isBreakingNews && !isTreatsPage,
+              priority,
+              maybeTelemetryUrl = Some(telemetryUrl)
             )
           )
         }
@@ -76,7 +100,8 @@ class ViewsController(
             config.facia.stage,
             overrideIsDev(request, isDev),
             assetsManager.pathForConfig,
-            false
+            false,
+            maybeTelemetryUrl = Some(telemetryUrl)
           )
         )
       }

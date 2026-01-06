@@ -13,11 +13,11 @@ import { updateClipboard } from 'actions/ClipboardThunks';
 import { saveOpenFrontIds, saveFavouriteFrontIds } from 'services/userDataApi';
 import { NestedCard } from 'types/Collection';
 import { denormaliseClipboard } from 'util/clipboardUtils';
-import { selectFront } from 'selectors/frontsSelectors';
 import {
 	selectEditorFrontIds,
 	selectEditorFavouriteFrontIds,
 } from 'bundles/frontsUI';
+import { selectFront } from '../selectors/shared';
 
 const updateStateFromUrlChange: Middleware<{}, State, Dispatch> =
 	({ dispatch, getState }: { dispatch: Dispatch; getState: () => State }) =>

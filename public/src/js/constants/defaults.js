@@ -18,8 +18,6 @@ export default {
         { 'name': 'fixed/medium/fast-XI' },
         { 'name': 'fixed/medium/slow-XII-mpu' },
         { 'name': 'fixed/thrasher' },
-        { 'name': 'fixed/video' },
-        { 'name': 'fixed/video/vertical' },
         { 'name': 'fixed/medium/slow-VII' },
         { 'name': 'fixed/small/fast-VIII' },
         { 'name': 'fixed/small/slow-V-mpu' },
@@ -82,21 +80,6 @@ export default {
             },
             {
               name: 'snap'
-            }
-          ]
-        },
-        {
-          'name': 'dynamic/slow-mpu',
-          'groups': [
-            'standard',
-            'big'
-          ],
-          'groupsConfig': [
-            {
-              name: 'standard'
-            },
-            {
-              name: 'big'
             }
           ]
         },
@@ -207,10 +190,6 @@ export default {
     headlineLength: 200,
     restrictedHeadlineLength: 90,
 
-    restrictHeadlinesOn: [
-        'breaking-news'
-    ],
-
     restrictedLiveMode: [
         'breaking-news'
     ],
@@ -295,7 +274,7 @@ export default {
     maxSlideshowImages:    5,
 
     collectionsPollMs:     10000,
-    latestArticlesPollMs:  30000,
+    latestArticlesPollMs:  5000,
     configSettingsPollMs:  30000,
     cacheExpiryMs:         60000,
     sparksRefreshMs:      300000,

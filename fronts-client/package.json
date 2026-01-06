@@ -99,8 +99,8 @@
 		"react-is": "16.8.0",
 		"react-modal": "^3.6.1",
 		"react-redux": "^8.0.5",
-		"react-router": "4.2.0",
-		"react-router-dom": "4.2.2",
+		"react-router": "5.1.0",
+		"react-router-dom": "5.1.0",
 		"react-router-redux": "^4.0.8",
 		"react-testing-library": "6.1.2",
 		"react-transition-group": "^2.6.0",
@@ -124,6 +124,6 @@
 	"resolutions": {
 		"chokidar": "^3.4.0",
 		"@types/react": "16.14.40",
-		"history": "4.7.2"
+		"history": "^4.7.2"
 	}
 }
