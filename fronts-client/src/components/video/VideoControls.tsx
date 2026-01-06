@@ -3,11 +3,14 @@ import styled from 'styled-components';
 import ButtonDefault from '../inputs/ButtonDefault';
 import { createPortal } from 'react-dom';
 import {
+	CinemagraphIcon,
 	ConfirmDeleteIcon,
 	LoopIcon,
 	PreviewVideoIcon,
 	ReplaceVideoIcon,
 	RubbishBinIcon,
+	VideoIcon,
+	YoutubeIcon,
 } from '../icons/Icons';
 import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
 import { autofill, change, Field } from 'redux-form';
@@ -36,6 +39,16 @@ interface VideoControlsProps {
 	form: any;
 	extraVideoControlsId: string;
 }
+
+const VideoPlayerFormat = styled.div`
+	display: flex;
+	gap: 4px;
+	color: black;
+	margin-top: 10px;
+	margin-left: 2px;
+	justify-content: flex-start;
+	align-items: center;
+`;
 
 const VideoControlsOuterContainer = styled.div`
 	margin-top: 8px;
@@ -109,10 +122,6 @@ export const VideoControls = ({
 	const [showMediaAtomMakerModal, setShowMediaAtomMakerModal] =
 		React.useState<boolean>(false);
 	const [confirmDelete, setConfirmDelete] = React.useState<boolean>(false);
-	const [isMainVideoSelfHosted, setIsMainVideoSelfHosted] =
-		React.useState<boolean>(false);
-	const [isReplacementVideoSelfHosted, setIsReplacementVideoSelfHosted] =
-		React.useState<boolean>(false);
 	const dispatch = useDispatch();
 
 	const handleDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -217,31 +226,12 @@ export const VideoControls = ({
 				? replacementVideoAtomProperties
 				: mainMediaVideoAtomProperties,
 		);
+		console.log(selectedVideoAtomProperties);
 	}, [
 		showReplacementVideo,
 		mainMediaVideoAtomProperties,
 		replacementVideoAtomProperties,
 	]);
-
-	useEffect(() => {
-		setIsReplacementVideoSelfHosted(
-			showReplacementVideo &&
-				isAtom(replacementVideoAtom) &&
-				replacementVideoAtomProperties?.platform === 'url',
-		);
-	}, [
-		replacementVideoAtom,
-		showReplacementVideo,
-		replacementVideoAtomProperties,
-	]);
-
-	useEffect(() => {
-		setIsMainVideoSelfHosted(
-			showMainVideo &&
-				isAtom(mainMediaVideoAtom) &&
-				mainMediaVideoAtomProperties?.platform === 'url',
-		);
-	}, [showMainVideo, mainMediaVideoAtom, mainMediaVideoAtomProperties]);
 
 	if (!showMainVideo && !showReplacementVideo) {
 		return null;
@@ -249,18 +239,27 @@ export const VideoControls = ({
 
 	const extraVideoControls = document.getElementById(extraVideoControlsId);
 
+	const videoPlayerFormatMap = {
+		youtube: {
+			label: 'YouTube',
+			icon: <YoutubeIcon />,
+		},
+		loop: {
+			label: 'Loop',
+			icon: <LoopIcon />,
+		},
+		cinemagraph: {
+			label: 'Cinemagraph',
+			icon: <CinemagraphIcon />,
+		},
+		default: {
+			label: 'Non-YouTube',
+			icon: <VideoIcon />,
+		},
+	};
+
 	return (
 		<>
-			{extraVideoControls !== null &&
-			(isMainVideoSelfHosted || isReplacementVideoSelfHosted)
-				? createPortal(
-						<Explainer>
-							<LoopIcon />
-							Selected video will loop
-						</Explainer>,
-						extraVideoControls,
-					)
-				: null}
 			{/*
 				If there is no main media atom, the replacement atom is the only one we care about.
 				In this scenario we neither show the 'Use replacement video toggle', nor refer to it as a replacement.
@@ -398,6 +397,28 @@ export const VideoControls = ({
 					placeholder="Paste video url"
 					normalize={stripQueryParams}
 				></Field>
+				{selectedVideoAtomProperties !== undefined &&
+					(selectedVideoAtomProperties?.platform === 'url' ? (
+						selectedVideoAtomProperties.videoPlayerFormat && (
+							<VideoPlayerFormat>
+								{
+									videoPlayerFormatMap[
+										selectedVideoAtomProperties.videoPlayerFormat
+									].icon
+								}
+								{
+									videoPlayerFormatMap[
+										selectedVideoAtomProperties.videoPlayerFormat
+									].label
+								}
+							</VideoPlayerFormat>
+						)
+					) : (
+						<VideoPlayerFormat>
+							{videoPlayerFormatMap['youtube'].icon}
+							{videoPlayerFormatMap['youtube'].label}
+						</VideoPlayerFormat>
+					))}
 			</VideoControlsOuterContainer>
 		</>
 	);

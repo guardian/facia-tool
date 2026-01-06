@@ -114,6 +114,7 @@ type YoutubeAtomProperties = {
 type SelfHostedAtomProperties = {
 	platform: 'url';
 	videoImage?: string;
+	videoPlayerFormat?: VideoPlayerFormat;
 	url: {
 		m3u8?: AtomAsset;
 		mp4?: AtomAsset;
