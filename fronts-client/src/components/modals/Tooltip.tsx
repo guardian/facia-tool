@@ -1,5 +1,5 @@
 import { styled } from '../../constants/theme';
-import { InfoIcon, LoopIcon, VideoIcon } from '../icons/Icons';
+import { InfoIcon, LoopIcon, YoutubeIcon } from '../icons/Icons';
 import React from 'react';
 
 const TooltipModal = styled.div`
@@ -54,7 +54,7 @@ export default () => {
 				<TooltipModal>
 					<div>
 						<div>
-							<VideoIcon fill={'white'} />
+							<YoutubeIcon fill={'white'} size={'s'} />
 						</div>
 						Before a Youtube video is played, we show the card's Trail Image. If
 						no Trail Image exists, we show the Poster Image.
