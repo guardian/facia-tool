@@ -74,12 +74,24 @@ interface ImageAssets {
 	master?: ImageAsset;
 }
 
+interface SelfHostData {
+	videoPlayerFormat?: VideoPlayerFormat;
+}
+
+interface MediaAtomMetadata {
+	selfHost?: SelfHostData;
+}
+
 interface MediaAtom {
 	assets: AtomAsset[];
 	trailImage?: ImageAssets;
 	posterImage?: ImageAssets;
 	activeVersion?: number;
+	platform?: Platform;
+	metadata?: MediaAtomMetadata;
 }
+
+type VideoPlayerFormat = 'loop' | 'cinemagraph' | 'default';
 
 type Platform = 'youtube' | 'url';
 
