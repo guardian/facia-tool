@@ -3,14 +3,10 @@ import styled from 'styled-components';
 import ButtonDefault from '../inputs/ButtonDefault';
 import { createPortal } from 'react-dom';
 import {
-	CinemagraphIcon,
 	ConfirmDeleteIcon,
-	LoopIcon,
 	PreviewVideoIcon,
 	ReplaceVideoIcon,
 	RubbishBinIcon,
-	VideoIcon,
-	YoutubeIcon,
 } from '../icons/Icons';
 import InputCheckboxToggleInline from '../inputs/InputCheckboxToggleInline';
 import { autofill, change, Field } from 'redux-form';
@@ -27,6 +23,7 @@ import { OverlayModal } from '../modals/OverlayModal';
 import type { AtomProperties, Atom } from '../../types/Capi';
 import urlConstants from '../../constants/url';
 import { isAtom } from '../../util/atom';
+import { videoPlayerFormatMap } from '../../util/Video';
 
 interface VideoControlsProps {
 	videoBaseUrl: string | null;
@@ -238,25 +235,6 @@ export const VideoControls = ({
 	}
 
 	const extraVideoControls = document.getElementById(extraVideoControlsId);
-
-	const videoPlayerFormatMap = {
-		youtube: {
-			label: 'YouTube',
-			icon: <YoutubeIcon />,
-		},
-		loop: {
-			label: 'Loop',
-			icon: <LoopIcon />,
-		},
-		cinemagraph: {
-			label: 'Cinemagraph',
-			icon: <CinemagraphIcon />,
-		},
-		default: {
-			label: 'Non-YouTube',
-			icon: <VideoIcon />,
-		},
-	};
 
 	return (
 		<>

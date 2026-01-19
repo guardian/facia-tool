@@ -34,7 +34,7 @@ import { LoopIcon, VideoIcon } from '../../icons/Icons';
 import CardHeadingContainer from '../CardHeadingContainer';
 import CardSettingsDisplay from '../CardSettingsDisplay';
 import CircularIconContainer from '../../icons/CircularIconContainer';
-import { ImageMetadataContainer } from 'components/image/ImageMetaDataContainer';
+import { MediaLabelContainer } from 'components/image/MediaLabelContainer';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import PageViewDataWrapper from '../../PageViewDataWrapper';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
@@ -45,10 +45,11 @@ import {
 	portraitCardImageCriteria,
 	squareImageCriteria,
 } from 'constants/image';
-import { Atom } from '../../../types/Capi';
+import { Atom, Platform } from '../../../types/Capi';
 import { getActiveAtomProperties } from '../../../util/extractAtom';
 import { isAtom } from '../../../util/atom';
 import pageConfig from 'util/extractConfigFromPage';
+import { SelfHostedVideoPlayerFormat } from '../../../util/Video';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
 	flex-shrink: 0;
@@ -268,25 +269,40 @@ const articleBodyDefault = React.memo(
 			imageCriteria.heightAspectRatio ===
 				portraitCardImageCriteria.heightAspectRatio;
 
-		const [isMainVideoSelfHosted, setIsMainVideoSelfHosted] =
-			React.useState<boolean>(false);
-		const [isReplacementVideoSelfHosted, setIsReplacementVideoSelfHosted] =
-			React.useState<boolean>(false);
+		const [mainVideoPlatform, setMainVideoPlatform] = React.useState<
+			Platform | undefined
+		>();
+		const [replacementVideoPlatform, setReplacementVideoPlatform] =
+			React.useState<Platform | undefined>();
+		const [
+			mainVideoSelfHostedPlayerFormat,
+			setMainVideoSelfHostedPlayerFormat,
+		] = React.useState<SelfHostedVideoPlayerFormat>();
+		const [
+			replacementVideoSelfHostedPlayerFormat,
+			setReplacementVideoSelfHostedPlayerFormat,
+		] = React.useState<SelfHostedVideoPlayerFormat>();
 
 		useEffect(() => {
 			if (!videoReplace || !isAtom(replacementVideoAtom)) {
 				return;
 			}
-			const { platform } = getActiveAtomProperties(replacementVideoAtom);
-			setIsReplacementVideoSelfHosted(platform === 'url');
+			const properties = getActiveAtomProperties(replacementVideoAtom);
+			if (properties.platform === 'url') {
+				setReplacementVideoSelfHostedPlayerFormat(properties.videoPlayerFormat);
+			}
+			setReplacementVideoPlatform(properties.platform);
 		}, [replacementVideoAtom, videoReplace]);
 
 		useEffect(() => {
 			if (mainMediaVideoAtom === undefined || showMainVideo !== true) {
 				return;
 			}
-			const { platform } = getActiveAtomProperties(mainMediaVideoAtom);
-			setIsMainVideoSelfHosted(platform === 'url');
+			const properties = getActiveAtomProperties(mainMediaVideoAtom);
+			if (properties.platform === 'url') {
+				setMainVideoSelfHostedPlayerFormat(properties.videoPlayerFormat);
+			}
+			setMainVideoPlatform(properties.platform);
 		}, [mainMediaVideoAtom, showMainVideo]);
 
 		return (
@@ -434,27 +450,35 @@ const articleBodyDefault = React.memo(
 									) : null}
 									{(hasMainVideo || videoReplace) &&
 										!(
-											isMainVideoSelfHosted || isReplacementVideoSelfHosted
+											mainVideoPlatform === 'url' ||
+											replacementVideoAtom === 'url'
 										) && (
 											<VideoIconContainer title="This media has video content.">
 												<VideoIcon />
 											</VideoIconContainer>
 										)}
-									{(isMainVideoSelfHosted || isReplacementVideoSelfHosted) && (
+									{(mainVideoPlatform === 'url' ||
+										replacementVideoAtom === 'url') && (
 										<VideoIconContainer title="This media has looping video content.">
 											<LoopIcon />
 										</VideoIconContainer>
 									)}
 								</ThumbnailSmall>
-								<ImageMetadataContainer
+								<MediaLabelContainer
 									imageSlideshowReplace={imageSlideshowReplace}
 									imageReplace={imageReplace}
 									imageCutoutReplace={imageCutoutReplace}
 									showMainVideo={showMainVideo}
 									videoReplace={videoReplace}
 									hasMainVideo={hasMainVideo}
-									isMainVideoSelfHosted={isMainVideoSelfHosted}
-									isReplacementVideoSelfHosted={isReplacementVideoSelfHosted}
+									mainVideoPlatform={mainVideoPlatform}
+									mainVideoSelfHostedPlayerFormat={
+										mainVideoSelfHostedPlayerFormat
+									}
+									replacementVideoPlatform={replacementVideoPlatform}
+									replacementVideoSelfHostedPlayerFormat={
+										replacementVideoSelfHostedPlayerFormat
+									}
 								/>
 								{!collectionId && firstPublicationDate && (
 									<ClipboardFirstPublished title="The time elapsed since this article was first published.">

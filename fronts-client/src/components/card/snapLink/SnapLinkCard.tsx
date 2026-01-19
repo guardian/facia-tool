@@ -30,7 +30,7 @@ import CardHeadingContainer from '../CardHeadingContainer';
 import CardSettingsDisplay from '../CardSettingsDisplay';
 import { distanceInWordsStrict } from 'date-fns';
 import { DerivedArticle } from 'types/Article';
-import { ImageMetadataContainer } from 'components/image/ImageMetaDataContainer';
+import { MediaLabelContainer } from 'components/image/MediaLabelContainer';
 import { theme } from 'constants/theme';
 import ArticleGraph from '../article/ArticleGraph';
 import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
@@ -180,7 +180,7 @@ const SnapLinkCard = ({
 							{article.cutoutThumbnail ? (
 								<ThumbnailCutout src={article.cutoutThumbnail} />
 							) : null}
-							<ImageMetadataContainer
+							<MediaLabelContainer
 								imageSlideshowReplace={article && article.imageSlideshowReplace}
 								imageReplace={article && article.imageReplace}
 								imageCutoutReplace={article && article.imageCutoutReplace}
