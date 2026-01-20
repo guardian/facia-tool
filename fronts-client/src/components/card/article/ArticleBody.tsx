@@ -30,7 +30,12 @@ import CardDraftMetaContent from '../CardDraftMetaContent';
 import DraggableArticleImageContainer from './DraggableArticleImageContainer';
 import { media } from 'util/mediaQueries';
 import ArticleGraph from './ArticleGraph';
-import { LoopIcon, VideoIcon } from '../../icons/Icons';
+import {
+	CinemagraphIcon,
+	LoopIcon,
+	VideoIcon,
+	YoutubeIcon,
+} from '../../icons/Icons';
 import CardHeadingContainer from '../CardHeadingContainer';
 import CardSettingsDisplay from '../CardSettingsDisplay';
 import CircularIconContainer from '../../icons/CircularIconContainer';
@@ -449,18 +454,29 @@ const articleBodyDefault = React.memo(
 										<ThumbnailCutout src={cutoutThumbnail} />
 									) : null}
 									{(hasMainVideo || videoReplace) &&
-										!(
-											mainVideoPlatform === 'url' ||
-											replacementVideoAtom === 'url'
-										) && (
-											<VideoIconContainer title="This media has video content.">
-												<VideoIcon />
+										(mainVideoPlatform === 'youtube' ||
+											replacementVideoPlatform === 'youtube') && (
+											<VideoIconContainer title="This media has a YouTube video.">
+												<YoutubeIcon />
 											</VideoIconContainer>
 										)}
-									{(mainVideoPlatform === 'url' ||
-										replacementVideoAtom === 'url') && (
-										<VideoIconContainer title="This media has looping video content.">
+									{(mainVideoSelfHostedPlayerFormat === 'loop' ||
+										replacementVideoSelfHostedPlayerFormat === 'loop') && (
+										<VideoIconContainer title="This media has a loop.">
 											<LoopIcon />
+										</VideoIconContainer>
+									)}
+									{(mainVideoSelfHostedPlayerFormat === 'cinemagraph' ||
+										replacementVideoSelfHostedPlayerFormat ===
+											'cinemagraph') && (
+										<VideoIconContainer title="This media has a cinemagraph.">
+											<CinemagraphIcon />
+										</VideoIconContainer>
+									)}
+									{(mainVideoSelfHostedPlayerFormat === 'default' ||
+										replacementVideoSelfHostedPlayerFormat === 'default') && (
+										<VideoIconContainer title="This media has a Non-Youtube video.">
+											<VideoIcon />
 										</VideoIconContainer>
 									)}
 								</ThumbnailSmall>
