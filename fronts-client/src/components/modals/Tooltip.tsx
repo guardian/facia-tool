@@ -60,30 +60,34 @@ export default () => {
 				<TooltipModal>
 					<div>
 						<div>
-							<YoutubeIcon fill={'white'} size={'s'} />
-						</div>
-						YouTube videos can be used on any non-feature card, except for XS
-						cards.
-					</div>
-					<div>
-						<div>
 							<LoopIcon fill={'white'} size={'s'} />
 						</div>
-						Loops can be used on any non-feature card which is Large, Boosted or
-						Splash.
+						Loops can be played on any non-feature card which is Large, Boosted
+						or Splash.
 					</div>
 					<div>
 						<div>
 							<CinemagraphIcon fill={'white'} size={'s'} />
 						</div>
-						Cinemagraphs can be used on any card which is Large, Boosted or
+						Cinemagraphs can be played on any card which is Large, Boosted or
 						Splash.
 					</div>
 					<div>
 						<div>
 							<VideoIcon fill={'white'} size={'s'} />
 						</div>
-						Non-YouTube videos cannot be used on Fronts.
+						Non-YouTube videos cannot be played on Fronts.
+					</div>
+					<div>
+						<div>
+							<YoutubeIcon fill={'white'} size={'s'} />
+						</div>
+						YouTube videos can be played on any card which is Large, Boosted or
+						Splash.
+						<br />
+						<br />
+						On apps, YouTube videos can also be played on any Small or Medium
+						card. They cannot be played on Extra Small cards.
 					</div>
 				</TooltipModal>
 			) : null}
