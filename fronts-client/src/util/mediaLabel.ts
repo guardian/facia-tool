@@ -110,13 +110,14 @@ export const getMediaLabel = (
 	placementType: PlacementType,
 	videoFormatType: VideoFormatType | null,
 ) => {
-	if (selectedMediaType === 'cutout' && placementType !== 'replaced')
+	if (
+		(selectedMediaType === 'cutout' && placementType !== 'replaced') ||
+		(selectedMediaType === 'image' && placementType === 'added') ||
+		(selectedMediaType === 'slideshow' && placementType !== 'added') ||
+		(selectedMediaType === 'video' && videoFormatType === null) ||
+		(selectedMediaType !== 'video' && videoFormatType !== null)
+	)
 		return null;
-	if (selectedMediaType === 'image' && placementType === 'added') return null;
-	if (selectedMediaType === 'slideshow' && placementType !== 'added')
-		return null;
-	if (selectedMediaType === 'video' && videoFormatType === null) return null;
-	if (selectedMediaType !== 'video' && videoFormatType !== null) return null;
 
 	const parts: string[] = [];
 	if (placementType === 'main') parts.push(placementType);
