@@ -1,5 +1,11 @@
 import { styled } from '../../constants/theme';
-import { InfoIcon, YoutubeIcon } from '../icons/Icons';
+import {
+	CinemagraphIcon,
+	InfoIcon,
+	LoopIcon,
+	VideoIcon,
+	YoutubeIcon,
+} from '../icons/Icons';
 import React from 'react';
 
 const TooltipModal = styled.div`
@@ -56,8 +62,28 @@ export default () => {
 						<div>
 							<YoutubeIcon fill={'white'} size={'s'} />
 						</div>
-						Before a Youtube video is played, we show the card's Trail Image. If
-						no Trail Image exists, we show the Poster Image.
+						YouTube videos can be used on any non-feature card, except for XS
+						cards.
+					</div>
+					<div>
+						<div>
+							<LoopIcon fill={'white'} size={'s'} />
+						</div>
+						Loops can be used on any non-feature card which is Large, Boosted or
+						Splash.
+					</div>
+					<div>
+						<div>
+							<CinemagraphIcon fill={'white'} size={'s'} />
+						</div>
+						Cinemagraphs can be used on any card which is Large, Boosted or
+						Splash.
+					</div>
+					<div>
+						<div>
+							<VideoIcon fill={'white'} size={'s'} />
+						</div>
+						Non-YouTube videos cannot be used on Fronts.
 					</div>
 				</TooltipModal>
 			) : null}
