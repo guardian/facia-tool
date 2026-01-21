@@ -13,9 +13,9 @@ describe('media label utilities', () => {
 	});
 
 	it('constructs labels correctly for images', () => {
-		expect(getMediaLabel('image', 'main', null)).toEqual('Main image');
+		// Don't show labels for main and added images
+		expect(getMediaLabel('image', 'main', null)).toBeNull();
 
-		// Image can't have a placement type of added
 		expect(getMediaLabel('image', 'added', null)).toBeNull();
 
 		expect(getMediaLabel('image', 'replaced', null)).toEqual('Image replaced');

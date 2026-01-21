@@ -112,7 +112,7 @@ export const getMediaLabel = (
 ) => {
 	if (
 		(selectedMediaType === 'cutout' && placementType !== 'replaced') ||
-		(selectedMediaType === 'image' && placementType === 'added') ||
+		(selectedMediaType === 'image' && placementType !== 'replaced') ||
 		(selectedMediaType === 'slideshow' && placementType !== 'added') ||
 		(selectedMediaType === 'video' && videoFormatType === null) ||
 		(selectedMediaType !== 'video' && videoFormatType !== null)
