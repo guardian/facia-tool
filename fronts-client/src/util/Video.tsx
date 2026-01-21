@@ -8,11 +8,19 @@ import React from 'react';
 
 export type SelfHostedVideoPlayerFormat = 'default' | 'loop' | 'cinemagraph';
 export type VideoFormatType =
-	(typeof videoPlayerFormatMap)[keyof typeof videoPlayerFormatMap]['label'];
+	| 'YouTube'
+	| 'Loop'
+	| 'Cinemagraph'
+	| 'Non-YouTube';
+
+export type VideoPlayerFormatInfo = {
+	label: VideoFormatType;
+	icon: JSX.Element;
+};
 
 export const videoPlayerFormatMap: Record<
 	SelfHostedVideoPlayerFormat | 'youtube',
-	any
+	VideoPlayerFormatInfo
 > = {
 	youtube: {
 		label: 'YouTube',
