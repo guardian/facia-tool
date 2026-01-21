@@ -33,7 +33,7 @@ export const MediaLabelContainer = ({
 	mainVideoSelfHostedPlayerFormat,
 	replacementVideoPlatform,
 	replacementVideoSelfHostedPlayerFormat,
-}: MediaLabelContainerProps) => {
+}: MediaLabelContainerProps): JSX.Element | null => {
 	const { selectedMediaType, placementType, videoFormatType } =
 		getMediaLabelParts(
 			imageSlideshowReplace,
@@ -54,5 +54,7 @@ export const MediaLabelContainer = ({
 		videoFormatType,
 	);
 
-	return mediaLabel && <MetadataContainer>{mediaLabel}</MetadataContainer>;
+	return mediaLabel ? (
+		<MetadataContainer>{mediaLabel}</MetadataContainer>
+	) : null;
 };
