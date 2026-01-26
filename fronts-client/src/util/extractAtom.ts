@@ -88,6 +88,8 @@ const getActiveAtomProperties = (atom: Atom): AtomProperties => {
 	const firstActiveAsset = currentActiveAssets[0];
 	const platform = firstActiveAsset?.platform;
 	const videoImage = extractVideoImage(atom);
+	const videoPlayerFormat =
+		atom.data.media.metadata?.selfHost?.videoPlayerFormat;
 
 	// Youtube atom
 	if (platform === 'youtube') {
@@ -109,6 +111,7 @@ const getActiveAtomProperties = (atom: Atom): AtomProperties => {
 			mp4,
 			vtt,
 		},
+		videoPlayerFormat,
 	};
 };
 
