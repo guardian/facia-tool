@@ -26,7 +26,7 @@ class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 object BreakingNewsUpdate {
 
   val BreakingNewsGlobalTopicName = "global"
-  val BreakingNewsGlobalTopics = List(
+  val BreakingNewsTopics = List(
     BreakingNewsUk,
     BreakingNewsUs,
     BreakingNewsAu,
@@ -44,7 +44,7 @@ object BreakingNewsUpdate {
   )
 
   val EditorsPicksGlobalTopicName = "global-editors-picks"
-  val EditorsPicksGlobalTopics = List(
+  val EditorsPicksTopics = List(
     EditorsPicksUk,
     EditorsPicksUs,
     EditorsPicksAu,
@@ -53,7 +53,7 @@ object BreakingNewsUpdate {
   )
 
   val OneNotToMissGlobalTopicName = "global-editors-picks"
-  val OneNotToMissGlobalTopics = List(
+  val OneNotToMissTopics = List(
     OneNotToMissUk,
     OneNotToMissUs,
     OneNotToMissAu,
@@ -71,6 +71,16 @@ object BreakingNewsUpdate {
           if (SportBreakingNewsTopics.map(_.name) :+ SportGlobalTopicName)
             .contains(topic) =>
         Some("Sport breaking news")
+      case Some(topic)
+          if (EditorsPicksTopics.map(
+            _.name
+          ) :+ EditorsPicksGlobalTopicName).contains(topic) =>
+        Some("Editors' pick")
+      case Some(topic)
+          if (OneNotToMissTopics.map(
+            _.name
+          ) :+ OneNotToMissGlobalTopicName).contains(topic) =>
+        Some("One not to miss")
       case _ => None
     }
 
@@ -108,7 +118,7 @@ object BreakingNewsUpdate {
   private def parseTopic(topic: Option[String]): List[Topic] = {
     topic match {
       // Breaking News
-      case Some(BreakingNewsGlobalTopicName) => BreakingNewsGlobalTopics
+      case Some(BreakingNewsGlobalTopicName) => BreakingNewsTopics
       case Some("au")                        => List(BreakingNewsAu)
       case Some("international")             => List(BreakingNewsInternational)
       case Some("uk")                        => List(BreakingNewsUk)
@@ -127,7 +137,7 @@ object BreakingNewsUpdate {
       case Some("uk-general-election") => List(BreakingNewsElection)
 
       // Editors Picks
-      case Some(EditorsPicksGlobalTopicName) => EditorsPicksGlobalTopics
+      case Some(EditorsPicksGlobalTopicName) => EditorsPicksTopics
       case Some(EditorsPicksUk.name)         => List(EditorsPicksUk)
       case Some(EditorsPicksUs.name)         => List(EditorsPicksUs)
       case Some(EditorsPicksAu.name)         => List(EditorsPicksAu)
@@ -136,7 +146,7 @@ object BreakingNewsUpdate {
         List(EditorsPicksInternational)
 
       // One Not To Miss
-      case Some(OneNotToMissGlobalTopicName) => OneNotToMissGlobalTopics
+      case Some(OneNotToMissGlobalTopicName) => OneNotToMissTopics
       case Some(OneNotToMissUk.name)         => List(OneNotToMissUk)
       case Some(OneNotToMissUs.name)         => List(OneNotToMissUs)
       case Some(OneNotToMissAu.name)         => List(OneNotToMissAu)
