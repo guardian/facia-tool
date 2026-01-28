@@ -43,11 +43,6 @@ object BreakingNewsUpdate {
           if (SportBreakingNewsTopics.map(_.name) :+ SportGlobalTopicName)
             .contains(topic) =>
         Some("Sport breaking news")
-      case Some(topic)
-          if (UsElectionsBreakingNewsTopics.map(
-            _.name
-          ) :+ UsElectionsGlobalTopicName).contains(topic) =>
-        Some("US election")
       case _ => None
     }
 
