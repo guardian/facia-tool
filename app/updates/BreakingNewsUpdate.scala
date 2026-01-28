@@ -52,7 +52,7 @@ object BreakingNewsUpdate {
     EditorsPicksInternational
   )
 
-  val OneNotToMissGlobalTopicName = "global-editors-picks"
+  val OneNotToMissGlobalTopicName = "global-one-not-to-miss"
   val OneNotToMissTopics = List(
     OneNotToMissUk,
     OneNotToMissUs,
