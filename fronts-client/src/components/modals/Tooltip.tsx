@@ -62,8 +62,7 @@ export default () => {
 						<div>
 							<LoopIcon fill={'white'} size={'s'} />
 						</div>
-						Loops can be played on any non-feature card which is Large, Boosted
-						or Splash.
+						Loops can be played on any card which is Large, Boosted or Splash.
 					</div>
 					<div>
 						<div>
