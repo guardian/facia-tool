@@ -80,7 +80,7 @@ libraryDependencies ++= Seq(
   "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
   "com.gu" %% "content-api-models-scala" % capiModelsVersion,
   "com.gu" %% "content-api-models-json" % capiModelsVersion,
-  "com.gu" %% "content-api-client-aws" % "0.7.6",
+  "com.gu" %% "content-api-client-aws" % "1.0.1",
   "com.gu" %% "content-api-client-default" % capiClientVersion,
   "com.gu" %% "editorial-permissions-client" % "3.0.0",
   "com.gu" %% "fapi-client-play30" % "23.0.0",
