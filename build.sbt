@@ -52,7 +52,7 @@ TwirlKeys.templateImports ++= Seq(
 routesImport += "model.editions._"
 
 val awsVersion = "1.12.470"
-val capiModelsVersion = "31.0.0"
+val capiModelsVersion = "31.1.0"
 val capiClientVersion = "37.1.0"
 val json4sVersion = "4.0.3"
 val circeVersion = "0.13.0"
