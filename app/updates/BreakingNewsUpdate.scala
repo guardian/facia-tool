@@ -24,6 +24,16 @@ import scala.util.{Failure, Success, Try}
 class InvalidNotificationContentType(msg: String) extends Throwable(msg) {}
 
 object BreakingNewsUpdate {
+
+  val BreakingNewsGlobalTopicName = "global"
+  val BreakingNewsTopics = List(
+    BreakingNewsUk,
+    BreakingNewsUs,
+    BreakingNewsAu,
+    BreakingNewsInternational,
+    BreakingNewsEurope
+  )
+
   val SportGlobalTopicName = "global-sport"
   val SportBreakingNewsTopics = List(
     BreakingNewsSportUk,
@@ -31,6 +41,24 @@ object BreakingNewsUpdate {
     BreakingNewsSportAu,
     BreakingNewsSportInternational,
     BreakingNewsSportEurope
+  )
+
+  val EditorsPicksGlobalTopicName = "global-editors-picks"
+  val EditorsPicksTopics = List(
+    EditorsPicksUk,
+    EditorsPicksUs,
+    EditorsPicksAu,
+    EditorsPicksEurope,
+    EditorsPicksInternational
+  )
+
+  val OneNotToMissGlobalTopicName = "global-one-not-to-miss"
+  val OneNotToMissTopics = List(
+    OneNotToMissUk,
+    OneNotToMissUs,
+    OneNotToMissAu,
+    OneNotToMissEurope,
+    OneNotToMissInternational
   )
 
   def createPayload(
@@ -43,6 +71,16 @@ object BreakingNewsUpdate {
           if (SportBreakingNewsTopics.map(_.name) :+ SportGlobalTopicName)
             .contains(topic) =>
         Some("Sport breaking news")
+      case Some(topic)
+          if (EditorsPicksTopics.map(
+            _.name
+          ) :+ EditorsPicksGlobalTopicName).contains(topic) =>
+        Some("Editors' pick")
+      case Some(topic)
+          if (OneNotToMissTopics.map(
+            _.name
+          ) :+ OneNotToMissGlobalTopicName).contains(topic) =>
+        Some("One not to miss")
       case _ => None
     }
 
@@ -51,7 +89,10 @@ object BreakingNewsUpdate {
       message = Some(StringEscapeUtils.unescapeHtml4(trail.headline)),
       thumbnailUrl = trail.imageHide match {
         case Some(true) => None
-        case _          => trail.thumb.map { new URI(_) }
+        case _ =>
+          trail.thumb.map {
+            new URI(_)
+          }
       },
       sender = email,
       link = createLinkDetails(trail),
@@ -76,26 +117,44 @@ object BreakingNewsUpdate {
 
   private def parseTopic(topic: Option[String]): List[Topic] = {
     topic match {
-      case Some("global") =>
-        List(
-          BreakingNewsUk,
-          BreakingNewsUs,
-          BreakingNewsAu,
-          BreakingNewsInternational,
-          BreakingNewsEurope
-        )
-      case Some("au")                  => List(BreakingNewsAu)
-      case Some("international")       => List(BreakingNewsInternational)
-      case Some("uk")                  => List(BreakingNewsUk)
-      case Some("us")                  => List(BreakingNewsUs)
-      case Some("europe")              => List(BreakingNewsEurope)
+      // Breaking News
+      case Some(BreakingNewsGlobalTopicName) => BreakingNewsTopics
+      case Some("au")                        => List(BreakingNewsAu)
+      case Some("international")             => List(BreakingNewsInternational)
+      case Some("uk")                        => List(BreakingNewsUk)
+      case Some("us")                        => List(BreakingNewsUs)
+      case Some("europe")                    => List(BreakingNewsEurope)
+
+      // Sports
+      case Some(SportGlobalTopicName)  => SportBreakingNewsTopics
       case Some("uk-sport")            => List(BreakingNewsSportUk)
       case Some("us-sport")            => List(BreakingNewsSportUs)
       case Some("au-sport")            => List(BreakingNewsSportAu)
       case Some("europe-sport")        => List(BreakingNewsSportEurope)
       case Some("international-sport") => List(BreakingNewsSportInternational)
-      case Some(SportGlobalTopicName)  => SportBreakingNewsTopics
+
+      // UK General Election
       case Some("uk-general-election") => List(BreakingNewsElection)
+
+      // Editors Picks
+      case Some(EditorsPicksGlobalTopicName) => EditorsPicksTopics
+      case Some(EditorsPicksUk.name)         => List(EditorsPicksUk)
+      case Some(EditorsPicksUs.name)         => List(EditorsPicksUs)
+      case Some(EditorsPicksAu.name)         => List(EditorsPicksAu)
+      case Some(EditorsPicksEurope.name)     => List(EditorsPicksEurope)
+      case Some(EditorsPicksInternational.name) =>
+        List(EditorsPicksInternational)
+
+      // One Not To Miss
+      case Some(OneNotToMissGlobalTopicName) => OneNotToMissTopics
+      case Some(OneNotToMissUk.name)         => List(OneNotToMissUk)
+      case Some(OneNotToMissUs.name)         => List(OneNotToMissUs)
+      case Some(OneNotToMissAu.name)         => List(OneNotToMissAu)
+      case Some(OneNotToMissEurope.name)     => List(OneNotToMissEurope)
+      case Some(OneNotToMissInternational.name) =>
+        List(OneNotToMissInternational)
+
+      // Invalid values
       case Some("") =>
         throw new InvalidParameterException(s"Invalid empty string topic")
       case Some(notYetImplementedTopic) =>
@@ -192,6 +251,7 @@ class BreakingNewsUpdate(
           Some(error.description)
         case Right(_) => None
       }
+
     def withExceptionHandling(
         block: => Future[Option[String]]
     ): Future[Option[String]] = {
