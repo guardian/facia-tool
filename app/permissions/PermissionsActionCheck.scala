@@ -34,7 +34,7 @@ trait PermissionActionFilter extends ActionFilter[UserRequest] with Logging {
     Future.successful {
       testAccess(request.user.email) match {
         case AccessGranted => None
-        case AccessDenied =>
+        case AccessDenied  =>
           logger.info(
             s"User with e-mail ${request.user.email} not authorized to $restrictedAction"
           )
@@ -135,7 +135,7 @@ class EditEmailFrontsPermissionCheck(val acl: Acl)(implicit
     )(email)
     emailAccess match {
       case AccessGranted => emailAccess
-      case AccessDenied =>
+      case AccessDenied  =>
         new EditEditorialFrontsPermissionCheck(acl)(executionContext)
           .testAccess(email)
     }
@@ -211,7 +211,7 @@ trait BreakingNewsEditCollectionsCheck extends Logging {
 
     testAccess(request.user.email, collectionIds) match {
       case AccessGranted => block
-      case AccessDenied =>
+      case AccessDenied  =>
         logger.info(
           s"User with e-mail ${request.user.email} not authorized to send breaking news alerts"
         )

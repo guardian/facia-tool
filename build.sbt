@@ -86,7 +86,10 @@ libraryDependencies ++= Seq(
   "com.gu" %% "fapi-client-play30" % "23.0.0",
   "com.gu" %% "mobile-notifications-api-models" % "4.0.0",
   "com.gu" %% "pan-domain-auth-play_3-0" % "7.0.0",
-  "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
+  "org.scanamo" %% "scanamo" % "1.1.1" exclude (
+    "org.scala-lang.modules",
+    "scala-java8-compat_2.13"
+  ),
   "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
   "com.gu" %% "thrift-serializer" % "4.0.2",
   "net.logstash.logback" % "logstash-logback-encoder" % "6.6",
