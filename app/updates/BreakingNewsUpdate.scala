@@ -89,7 +89,7 @@ object BreakingNewsUpdate {
       message = Some(StringEscapeUtils.unescapeHtml4(trail.headline)),
       thumbnailUrl = trail.imageHide match {
         case Some(true) => None
-        case _ =>
+        case _          =>
           trail.thumb.map {
             new URI(_)
           }
@@ -106,9 +106,9 @@ object BreakingNewsUpdate {
 
   private def parseImportance(name: Option[String]): Importance = {
     name match {
-      case Some("major") => Importance.Major
-      case Some("minor") => Importance.Minor
-      case Some("")      => Importance.Minor
+      case Some("major")    => Importance.Major
+      case Some("minor")    => Importance.Minor
+      case Some("")         => Importance.Minor
       case Some(importance) =>
         throw new InvalidParameterException(s"Invalid importance $importance")
       case None => Importance.Minor
@@ -137,20 +137,20 @@ object BreakingNewsUpdate {
       case Some("uk-general-election") => List(BreakingNewsElection)
 
       // Editors Picks
-      case Some(EditorsPicksGlobalTopicName) => EditorsPicksTopics
-      case Some(EditorsPicksUk.name)         => List(EditorsPicksUk)
-      case Some(EditorsPicksUs.name)         => List(EditorsPicksUs)
-      case Some(EditorsPicksAu.name)         => List(EditorsPicksAu)
-      case Some(EditorsPicksEurope.name)     => List(EditorsPicksEurope)
+      case Some(EditorsPicksGlobalTopicName)    => EditorsPicksTopics
+      case Some(EditorsPicksUk.name)            => List(EditorsPicksUk)
+      case Some(EditorsPicksUs.name)            => List(EditorsPicksUs)
+      case Some(EditorsPicksAu.name)            => List(EditorsPicksAu)
+      case Some(EditorsPicksEurope.name)        => List(EditorsPicksEurope)
       case Some(EditorsPicksInternational.name) =>
         List(EditorsPicksInternational)
 
       // One Not To Miss
-      case Some(OneNotToMissGlobalTopicName) => OneNotToMissTopics
-      case Some(OneNotToMissUk.name)         => List(OneNotToMissUk)
-      case Some(OneNotToMissUs.name)         => List(OneNotToMissUs)
-      case Some(OneNotToMissAu.name)         => List(OneNotToMissAu)
-      case Some(OneNotToMissEurope.name)     => List(OneNotToMissEurope)
+      case Some(OneNotToMissGlobalTopicName)    => OneNotToMissTopics
+      case Some(OneNotToMissUk.name)            => List(OneNotToMissUk)
+      case Some(OneNotToMissUs.name)            => List(OneNotToMissUs)
+      case Some(OneNotToMissAu.name)            => List(OneNotToMissAu)
+      case Some(OneNotToMissEurope.name)        => List(OneNotToMissEurope)
       case Some(OneNotToMissInternational.name) =>
         List(OneNotToMissInternational)
 
@@ -257,7 +257,7 @@ class BreakingNewsUpdate(
     ): Future[Option[String]] = {
       Try(block) match {
         case Success(futureMaybeError) => futureMaybeError
-        case Failure(t: Throwable) =>
+        case Failure(t: Throwable)     =>
           val message =
             s"Exception in breaking news client send for trail ${trail.headline} because ${t.getMessage}"
           logger.error(message, t)
@@ -324,7 +324,7 @@ class BreakingNewsClientImpl(ws: WSClient, host: String, apiKey: String)
           logger.info(s"Successfully sent breaking news notification: $body")
           response.body[JsValue] \ "id" match {
             case JsDefined(JsString(id)) => Right(UUID.fromString(id))
-            case _ =>
+            case _                       =>
               Left(
                 ApiClientError(
                   s"Successfully sent breaking news notification ($body) but unable to parse response. Status: ${response.status}, Body: ${response.body}"
