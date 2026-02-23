@@ -1,8 +1,13 @@
 import * as readline from "node:readline";
 import { stdin as input, stdout as output } from 'node:process';
 
+const STAGE_CONFIG = {
+	PROD: { baseUrl: "https://fronts.gutools.co.uk"},
+	CODE: { baseUrl: "https://fronts.code.dev-gutools.co.uk" },
+	LOCAL: { baseUrl: "https://fronts.local.dev-gutools.co.uk" },
+};
 
-const PERMITTED_STAGES = ['PROD', 'CODE', 'LOCAL']
+const PERMITTED_STAGES = Object.keys(STAGE_CONFIG);
 
 const usage = `Example usage is
 
@@ -24,7 +29,6 @@ const usage = `Example usage is
 		  export {STAGE}_FRONTS_COOKIE="<paste full cookie header value here>"
 
 `;
-
 const getArg = (flag, optional = false) => {
 	const argIdx = process.argv.indexOf(flag);
 	const arg = argIdx !== -1 ? process.argv[argIdx + 1] : "";
@@ -39,36 +43,29 @@ const getArg = (flag, optional = false) => {
 
 const stage = getArg("--stage").toUpperCase();
 
-const getFrontsUri = () => {
-	switch(stage) {
-		case "PROD":
-			return "https://fronts.gutools.co.uk";
-		case "CODE":
-			return "https://fronts.code.dev-gutools.co.uk";
-		case "LOCAL":
-			return "https://fronts.local.dev-gutools.co.uk";
-		default:
-			throw new Error("--stage must be one of PROD, CODE or LOCAL")
-	}
+if (!STAGE_CONFIG[stage]) {
+	console.error(`--stage must be one of ${PERMITTED_STAGES.join(", ")}\n\n${usage}`);
+	process.exit(1);
 }
 
+const frontsBaseUrl = STAGE_CONFIG[stage].baseUrl;
+
 const getFrontsCookie = () => {
-	if (!PERMITTED_STAGES.includes(stage)) {
-		console.error("--stage must be one of PROD, CODE or LOCAL");
-		process.exit(1);
-	}
-	const cookie = process.env[`${stage}_FRONTS_COOKIE`];
+	const envVarName = `${stage}_FRONTS_COOKIE`;
+	const cookie = process.env[envVarName];
+
 	if (!cookie) {
-		console.error(`Cookie is missing in ${stage}. Ensure this is stored as an environment variable`);
+		console.error(
+			`Cookie is missing. Expected environment variable ${envVarName} to be set.`
+		);
 		process.exit(1);
 	}
+
 	return cookie;
 }
 
-const frontsBaseUrl = getFrontsUri();
 const frontsConfigUrl = `${frontsBaseUrl}/config`;
 const frontsCollectionUrl= `${frontsBaseUrl}/config/collections`
-
 const frontsCookie = getFrontsCookie();
 const frontsHeaders = {
 	"Content-Type": "application/json",
@@ -120,6 +117,11 @@ const postUpdateToCollection = async(collectionId, body) => {
 	console.log("*** Successfully updated ", body.collection.type, body.collection.displayName);
 }
 
+const toStaticMedium4 = (collectionId, collection) => ({
+	...collection,
+	type: "static/medium/4",
+	id: collectionId
+});
 
 const FLEXIBLE_GENERAL_GROUPS_CONFIG = [
 	{"name": "standard",
@@ -131,14 +133,6 @@ const FLEXIBLE_GENERAL_GROUPS_CONFIG = [
 	{"name": "splash",
 		"maxItems": 1}
 ]
-
-const toStaticMedium4 = (collectionId, collection) => ({
-	...collection,
-	type: "static/medium/4",
-	id: collectionId
-});
-
-
 
 const toFlexibleGeneral = (collectionId, collection) => ({
 	...collection,
