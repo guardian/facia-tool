@@ -107,6 +107,21 @@ const fetchFrontsConfig= async () => {
 	return ;
 };
 
+
+const swapCollectionType = () => {
+	return Object.fromEntries(
+		Object.entries(collections).map(([id, collection]) => {
+			console.log("*** ",collection)
+			if (collection.type === "fixed/small/slow-IV") {
+				return [id,   {
+					...collection,
+					type: "static/medium/four",
+				}];
+			}
+		})
+	);
+}
+
 await fetchFrontsConfig();
 process.exit(hasError ? 1 : 0);
 
