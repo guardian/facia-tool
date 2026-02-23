@@ -96,7 +96,15 @@ const fetchFrontsConfig= async () => {
 	console.log("Got Fronts data.");
 	const {fronts, collections} = configJson;
 
+	const swappedCollections = swapCollectionType(collections)
+
+	const finalConfig = {
+		fronts,
+		collections: swappedCollections,
+	};
+
 	console.log(`Original collection count: ${Object.keys(collections).length}`);
+	console.log(`Final collection count: ${Object.keys(swappedCollections).length}`);
 
 	await writeFile(
 		"config.json",
@@ -108,21 +116,23 @@ const fetchFrontsConfig= async () => {
 };
 
 
-const swapCollectionType = () => {
+const swapCollectionType = (collections) => {
 	return Object.fromEntries(
 		Object.entries(collections).map(([id, collection]) => {
-			console.log("*** ",collection)
 			if (collection.type === "fixed/small/slow-IV") {
+				console.log("*** ",collection)
+
 				return [id,   {
 					...collection,
 					type: "static/medium/four",
 				}];
 			}
+			return [id, collection]
 		})
 	);
 }
 
 await fetchFrontsConfig();
-process.exit(hasError ? 1 : 0);
+process.exit(0);
 
 
