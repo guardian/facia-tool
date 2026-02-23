@@ -101,7 +101,7 @@ const findFrontsByCollectionId = (fronts, collectionId) => {
 			Array.isArray(frontConfig.collections) &&
 			frontConfig.collections.includes(collectionId)
 		)
-		.map(([frontName, _]) => frontName);
+		.map(([frontId, _]) => frontId);
 }
 
 
