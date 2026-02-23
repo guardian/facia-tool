@@ -69,6 +69,8 @@ const frontsHeaders = {
 
 const frontsConfigUrl = `${frontsBaseUrl}/config`;
 
+const frontsCollectionUrl= `${frontsBaseUrl}/config/collections/`
+
 if (stage === "PROD") {
 	console.warn(
 		`This will run in the PROD environment in 5 seconds - Ctrl-C to cancel.`
@@ -77,6 +79,65 @@ if (stage === "PROD") {
 }
 
 console.log(`Fetching collection config data from Fronts tool ${stage} at ${frontsBaseUrl} ...`);
+
+
+
+function findFrontsByCollectionId(fronts, collectionId) {
+	if (!fronts || !collectionId) return [];
+
+	return Object.entries(fronts)
+		.filter(([frontName, frontConfig]) =>
+			Array.isArray(frontConfig.collections) &&
+			frontConfig.collections.includes(collectionId)
+		)
+		.map(([frontName, frontConfig]) => frontName);
+}
+
+
+
+const swapCollectionType = (fronts, collections) => {
+	return Object.fromEntries(
+		Object.entries(collections).map(async ([id, collection]) => {
+			if (collection.type === "fixed/small/slow-IV") {
+				console.log("*** ",collection.type, collection.displayName, 'updated');
+				return [id,   {
+					...collection,
+					type: "static/medium/four",
+				}];
+			}
+
+			if (collection.type === "dynamic/fast") {
+				console.log("*** ",collection.id, collection.type, collection.displayName, 'updated');
+
+				const updatedBody =  [ {
+					...collection,
+					"type": "flexible/general",
+					"groupsConfig": [
+						{"name": "standard",
+							"maxItems": 20},
+						{"name": "big",
+							"maxItems": 0},
+						{"name": "very big",
+							"maxItems": 0},
+						{"name": "splash",
+							"maxItems": 1}
+					],
+				}];
+
+
+				const frontIds = findFrontsByCollectionId(fronts,id)
+				console.log("updatedBody", updatedBody, "frontIds", frontIds)
+				// const frontsResponse = await fetch(frontsConfigUrl, {
+				// 	method: "POST",
+				// 	headers: frontsHeaders,
+				// 	body: updatedBody
+				// });
+			}
+			return [id, collection]
+		})
+	);
+}
+
 
 const fetchFrontsConfig= async () => {
 	const frontsResponse = await fetch(frontsConfigUrl, {
@@ -96,7 +157,7 @@ const fetchFrontsConfig= async () => {
 	console.log("Got Fronts data.");
 	const {fronts, collections} = configJson;
 
-	const swappedCollections = swapCollectionType(collections)
+	const swappedCollections = swapCollectionType(fronts, collections)
 
 	const finalConfig = {
 		fronts,
@@ -116,40 +177,6 @@ const fetchFrontsConfig= async () => {
 };
 
 
-const swapCollectionType = (collections) => {
-	return Object.fromEntries(
-		Object.entries(collections).map(([id, collection]) => {
-			if (collection.type === "fixed/small/slow-IV") {
-				console.log("*** ",collection.type, collection.displayName, 'updated');
-
-				return [id,   {
-					...collection,
-					type: "static/medium/four",
-				}];
-			}
-
-			if (collection.type === "dynamic/fast") {
-				console.log("*** ",collection.type, collection.displayName, 'updated');
-
-				return [id,   {
-					...collection,
-					"type": "flexible/general",
-					"groupsConfig": [
-						{"name": "standard",
-							"maxItems": 20},
-						{"name": "big",
-							"maxItems": 0},
-						{"name": "very big",
-							"maxItems": 0},
-						{"name": "splash",
-							"maxItems": 1}
-					],
-				}];
-			}
-			return [id, collection]
-		})
-	);
-}
 
 await fetchFrontsConfig();
 process.exit(0);
