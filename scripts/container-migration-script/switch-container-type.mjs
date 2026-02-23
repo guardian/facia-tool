@@ -1,5 +1,5 @@
-
-
+import * as readline from "node:readline";
+import { stdin as input, stdout as output } from 'node:process';
 
 const usage = `Example usage is
 
@@ -69,18 +69,6 @@ const frontsHeaders = {
 	"Content-Type": "application/json",
 	Cookie: frontsCookie,
 };
-
-
-if (stage === "PROD") {
-	console.warn(
-		`This will run in the PROD environment in 5 seconds - Ctrl-C to cancel.`
-	);
-	await new Promise((r) => setTimeout(r, 5000));
-}
-
-console.log(`Fetching collection config data from Fronts tool ${stage} at ${frontsBaseUrl} ...`);
-
-
 
 const fetchFrontsConfig = async () => {
 	const frontsResponse = await fetch(frontsConfigUrl, {
@@ -216,14 +204,49 @@ const executeUpdates = async (updates, fronts) => {
 };
 
 
-const { fronts, collections } = await fetchFrontsConfig();
+const orchestrateCollectionUpdates = async() => {
+	const {fronts, collections} = await fetchFrontsConfig();
 
-const { updates, skipped } = identifyUpdates(collections);
+	const {updates, skipped} = identifyUpdates(collections);
 
-console.log(`Found ${updates.length} collections to update, ${skipped.length} skipped`);
+	console.log(`Found ${updates.length} collections to update, ${skipped.length} skipped`);
 
-const { succeeded, failed } = await executeUpdates(updates, fronts);
 
-console.log(`Succeeded: ${succeeded.length}, Failed: ${failed.length}`);
-if (failed.length) console.error("Failed collections:", failed);
+	// const { succeeded, failed } = await executeUpdates(updates, fronts);
+//
+// console.log(`Succeeded: ${succeeded.length}, Failed: ${failed.length}`);
+// if (failed.length) console.error("Failed collections:", failed);
 process.exit(0);
+}
+
+
+if (stage === "PROD") {
+
+	const rl = readline.createInterface({ input, output });
+	rl.question('This will run in the PROD environment. Proceed? (y/n): ', (answer) => {
+		const userAnswer = answer.slice(0).toLowerCase()
+
+		if (userAnswer === "y") {
+			console.log(`Environment set to PROD`);
+			console.log(`Fetching collection config data from Fronts tool ${stage} at ${frontsBaseUrl} ...`);
+			orchestrateCollectionUpdates()
+			rl.close();
+		}
+		else {
+			console.log(`Cancelling container migration script...`);
+			process.exit(0);
+			rl.close();
+		}
+
+	});
+} else {
+	console.log(`Fetching collection config data from Fronts tool ${stage} at ${frontsBaseUrl} ...`);
+	orchestrateCollectionUpdates()
+}
+
+
+
+
+
+
+
