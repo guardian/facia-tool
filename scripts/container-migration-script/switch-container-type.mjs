@@ -167,11 +167,21 @@ const identifyUpdates = (collections) => {
 					updatedCollection: toStaticMedium4(collectionId, collection),
 				});
 				 break;
+			case 'fixed/medium/fast-XII':
+			case 'fixed/small/slow-III':
+			case 'fixed/small/slow-V-third':
+			case 'fixed/small/slow-I':
+			case 'fixed/medium/slow-VI':
+			case 'fixed/large/slow-XIV':
+			case 'fixed/medium/fast-XI':
+			case 'fixed/medium/slow-XII-mpu':
+			case 'fixed/medium/slow-VII':
+			case 'fixed/small/fast-VIII':
+			case 'fixed/small/slow-V-mpu':
+			case 'fixed/small/slow-V-half':
 			case 'dynamic/fast':
+			case 'dynamic/slow':
 			case 'dynamic/package':
-				case 'dynamic/slow':
-					case 'dynamic/slow-mpu':
-
 				updates.push({
 					collectionId,
 					updatedCollection: toFlexibleGeneral(collectionId, collection),
@@ -182,6 +192,7 @@ const identifyUpdates = (collections) => {
 				break;
 		}
 	}
+	console.log("counts", count)
 	return { updates, skipped };
 };
 
