@@ -1,26 +1,26 @@
-import {writeFile} from "fs/promises";
+
 
 
 const usage = `Example usage is
 
-node ./switch-container-type
-    --stage CODE
-Note that you must specify --dry-run=false in order to populate the collections with content
+		node ./switch-container-type
+			--stage CODE
+		Note that you must specify --dry-run=false in order to populate the collections with content
 
-Cookie Setup (Required):
+		Cookie Setup (Required):
 
-  This script expects the stage cookie to be provided via an environment variable,
-  NOT as a CLI argument.
+		  This script expects the stage cookie to be provided via an environment variable,
+		  NOT as a CLI argument.
 
-  The cookie must be available as:
+		  The cookie must be available as:
 
-    process.env.{STAGE}_FRONTS_COOKIE
+			process.env.{STAGE}_FRONTS_COOKIE
 
-How to set the cookie:
+		How to set the cookie:
 
-  macOS / Linux (bash/zsh):
+		  macOS / Linux (bash/zsh):
 
-  export {STAGE}_FRONTS_COOKIE="<paste full cookie header value here>"
+		  export {STAGE}_FRONTS_COOKIE="<paste full cookie header value here>"
 
 `;
 
@@ -61,15 +61,15 @@ const getFrontsCookie = () => {
 const stage = getArg("--stage");
 
 const frontsBaseUrl = getFrontsUri();
+const frontsConfigUrl = `${frontsBaseUrl}/config`;
+const frontsCollectionUrl= `${frontsBaseUrl}/config/collections`
+
 const frontsCookie = getFrontsCookie();
 const frontsHeaders = {
 	"Content-Type": "application/json",
 	Cookie: frontsCookie,
 };
 
-const frontsConfigUrl = `${frontsBaseUrl}/config`;
-
-const frontsCollectionUrl= `${frontsBaseUrl}/config/collections/`
 
 if (stage === "PROD") {
 	console.warn(
@@ -82,64 +82,7 @@ console.log(`Fetching collection config data from Fronts tool ${stage} at ${fron
 
 
 
-function findFrontsByCollectionId(fronts, collectionId) {
-	if (!fronts || !collectionId) return [];
-
-	return Object.entries(fronts)
-		.filter(([frontName, frontConfig]) =>
-			Array.isArray(frontConfig.collections) &&
-			frontConfig.collections.includes(collectionId)
-		)
-		.map(([frontName, frontConfig]) => frontName);
-}
-
-
-
-const swapCollectionType = (fronts, collections) => {
-	return Object.fromEntries(
-		Object.entries(collections).map(async ([id, collection]) => {
-			if (collection.type === "fixed/small/slow-IV") {
-				console.log("*** ",collection.type, collection.displayName, 'updated');
-				return [id,   {
-					...collection,
-					type: "static/medium/four",
-				}];
-			}
-
-			if (collection.type === "dynamic/fast") {
-				console.log("*** ",collection.id, collection.type, collection.displayName, 'updated');
-
-				const updatedBody =  [ {
-					...collection,
-					"type": "flexible/general",
-					"groupsConfig": [
-						{"name": "standard",
-							"maxItems": 20},
-						{"name": "big",
-							"maxItems": 0},
-						{"name": "very big",
-							"maxItems": 0},
-						{"name": "splash",
-							"maxItems": 1}
-					],
-				}];
-
-
-				const frontIds = findFrontsByCollectionId(fronts,id)
-				console.log("updatedBody", updatedBody, "frontIds", frontIds)
-				// const frontsResponse = await fetch(frontsConfigUrl, {
-				// 	method: "POST",
-				// 	headers: frontsHeaders,
-				// 	body: updatedBody
-				// });
-			}
-			return [id, collection]
-		})
-	);
-}
-
-
-const fetchFrontsConfig= async () => {
+const fetchFrontsConfig = async () => {
 	const frontsResponse = await fetch(frontsConfigUrl, {
 		method: "GET",
 		headers: frontsHeaders,
@@ -155,30 +98,120 @@ const fetchFrontsConfig= async () => {
 	}
 	const configJson = await frontsResponse.json();
 	console.log("Got Fronts data.");
-	const {fronts, collections} = configJson;
-
-	const swappedCollections = swapCollectionType(fronts, collections)
-
-	const finalConfig = {
-		fronts,
-		collections: swappedCollections,
-	};
-
-	console.log(`Original collection count: ${Object.keys(collections).length}`);
-	console.log(`Final collection count: ${Object.keys(swappedCollections).length}`);
-
-	await writeFile(
-		"config.json",
-		JSON.stringify(finalConfig, null, 2),
-		"utf-8"
-	);
-
-	return ;
+	return {fronts, collections} = configJson;
 };
 
 
+const findFrontsByCollectionId = (fronts, collectionId) => {
+	if (!fronts || !collectionId) return [];
 
-await fetchFrontsConfig();
+	return Object.entries(fronts)
+		.filter(([_, frontConfig]) =>
+			Array.isArray(frontConfig.collections) &&
+			frontConfig.collections.includes(collectionId)
+		)
+		.map(([frontName, _]) => frontName);
+}
+
+
+const postUpdateToCollection = async(collectionId, body) => {
+
+	const updatedResponse = await fetch(`${frontsCollectionUrl}/${collectionId}`, {
+		method: "POST",
+		headers: frontsHeaders,
+		body: JSON.stringify(body)
+	});
+
+	if(updatedResponse.status !== 200) {
+		const content = await updatedResponse.text();
+		console.error(`Server error ${updatedResponse.status}: ${content}`);
+		throw new Error(`Unable to update collection ${collectionId}`)
+	}
+	console.log(updatedResponse.json());
+	console.log("*** Successfully updated ", body.collection.type, body.collection.displayName);
+}
+
+
+const FLEXIBLE_GENERAL_GROUPS_CONFIG = [
+	{"name": "standard",
+		"maxItems": 20},
+	{"name": "big",
+		"maxItems": 0},
+	{"name": "very big",
+		"maxItems": 0},
+	{"name": "splash",
+		"maxItems": 1}
+]
+
+const toStaticMedium4 = (collectionId, collection) => ({
+	...collection,
+	type: "static/medium/4",
+	id: collectionId
+});
+
+
+
+const toFlexibleGeneral = (collectionId, collection) => ({
+	...collection,
+	type: "flexible/general",
+	groupsConfig: FLEXIBLE_GENERAL_GROUPS_CONFIG,
+	id: collectionId
+});
+
+
+const identifyUpdates = (collections) => {
+	const updates = [];
+	const skipped = [];
+
+	for (const [collectionId, collection] of Object.entries(collections)) {
+		switch(collection.type) {
+			case 'fixed/small/slow-IV':
+				 updates.push({
+					collectionId,
+					updatedCollection: toStaticMedium4(collectionId, collection),
+				});
+				 break;
+			case 'dynamic/fast':
+				updates.push({
+					collectionId,
+					updatedCollection: toFlexibleGeneral(collectionId, collection),
+				});
+				break;
+			default:
+				skipped.push(collectionId);
+				break;
+		}
+	}
+	return { updates, skipped };
+};
+
+
+const executeUpdates = async (updates, fronts) => {
+	const results = { succeeded: [], failed: [] };
+
+	for (const { collectionId, updatedCollection } of updates) {
+		const frontIds = findFrontsByCollectionId(fronts, collectionId);
+		const body = { frontIds, collection: updatedCollection };
+
+		try {
+			await postUpdateToCollection(collectionId, body);
+			results.succeeded.push(collectionId);
+		} catch (err) {
+			results.failed.push({ collectionId, error: err.message });
+		}
+	}
+
+	return results;
+};
+
+
+const { fronts, collections } = await fetchFrontsConfig();
+const { updates, skipped } = identifyUpdates(collections);
+
+console.log(`Found ${updates.length} collections to update, ${skipped.length} skipped`);
+
+const { succeeded, failed } = await executeUpdates(updates, fronts);
+
+console.log(`Succeeded: ${succeeded.length}, Failed: ${failed.length}`);
+if (failed.length) console.error("Failed collections:", failed);
 process.exit(0);
-
-
