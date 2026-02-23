@@ -96,9 +96,7 @@ const fetchFrontsConfig = async () => {
 		);
 		process.exit(1);
 	}
-	const configJson = await frontsResponse.json();
-	console.log("Got Fronts data.");
-	return {fronts, collections} = configJson;
+	return await frontsResponse.json()
 };
 
 
@@ -115,7 +113,6 @@ const findFrontsByCollectionId = (fronts, collectionId) => {
 
 
 const postUpdateToCollection = async(collectionId, body) => {
-
 	const updatedResponse = await fetch(`${frontsCollectionUrl}/${collectionId}`, {
 		method: "POST",
 		headers: frontsHeaders,
@@ -127,7 +124,6 @@ const postUpdateToCollection = async(collectionId, body) => {
 		console.error(`Server error ${updatedResponse.status}: ${content}`);
 		throw new Error(`Unable to update collection ${collectionId}`)
 	}
-	console.log(updatedResponse.json());
 	console.log("*** Successfully updated ", body.collection.type, body.collection.displayName);
 }
 
@@ -172,6 +168,10 @@ const identifyUpdates = (collections) => {
 				});
 				 break;
 			case 'dynamic/fast':
+			case 'dynamic/package':
+				case 'dynamic/slow':
+					case 'dynamic/slow-mpu':
+
 				updates.push({
 					collectionId,
 					updatedCollection: toFlexibleGeneral(collectionId, collection),
@@ -206,6 +206,7 @@ const executeUpdates = async (updates, fronts) => {
 
 
 const { fronts, collections } = await fetchFrontsConfig();
+
 const { updates, skipped } = identifyUpdates(collections);
 
 console.log(`Found ${updates.length} collections to update, ${skipped.length} skipped`);
