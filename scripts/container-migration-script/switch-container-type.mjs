@@ -146,6 +146,7 @@ const toFlexibleGeneral = (collectionId, collection) => ({
 const identifyUpdates = (collections) => {
 	const updates = [];
 	const skipped = [];
+	const count = {};
 
 	for (const [collectionId, collection] of Object.entries(collections)) {
 		switch(collection.type) {
@@ -154,6 +155,7 @@ const identifyUpdates = (collections) => {
 					collectionId,
 					updatedCollection: toStaticMedium4(collectionId, collection),
 				});
+				 count[collection.type] = count[collection.type] + 1 || 1;
 				 break;
 			case 'fixed/medium/fast-XII':
 			case 'fixed/small/slow-III':
@@ -174,14 +176,14 @@ const identifyUpdates = (collections) => {
 					collectionId,
 					updatedCollection: toFlexibleGeneral(collectionId, collection),
 				});
+				count[collection.type] = count[collection.type] + 1 || 1;
 				break;
 			default:
 				skipped.push(collectionId);
 				break;
 		}
 	}
-	console.log("counts", count)
-	return { updates, skipped };
+	return { updates, skipped, count };
 };
 
 
@@ -207,9 +209,10 @@ const executeUpdates = async (updates, fronts) => {
 const orchestrateCollectionUpdates = async() => {
 	const {fronts, collections} = await fetchFrontsConfig();
 
-	const {updates, skipped} = identifyUpdates(collections);
+	const {updates, skipped, count} = identifyUpdates(collections);
 
-	console.log(`Found ${updates.length} collections to update, ${skipped.length} skipped`);
+	console.log(`Found ${updates.length} collections to update, ${skipped.length} skipped. \\
+	Breakdown is ${count}`);
 
 
 	// const { succeeded, failed } = await executeUpdates(updates, fronts);
