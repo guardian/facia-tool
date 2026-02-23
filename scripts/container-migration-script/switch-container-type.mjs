@@ -120,11 +120,30 @@ const swapCollectionType = (collections) => {
 	return Object.fromEntries(
 		Object.entries(collections).map(([id, collection]) => {
 			if (collection.type === "fixed/small/slow-IV") {
-				console.log("*** ",collection)
+				console.log("*** ",collection.type, collection.displayName, 'updated');
 
 				return [id,   {
 					...collection,
 					type: "static/medium/four",
+				}];
+			}
+
+			if (collection.type === "dynamic/fast") {
+				console.log("*** ",collection.type, collection.displayName, 'updated');
+
+				return [id,   {
+					...collection,
+					"type": "flexible/general",
+					"groupsConfig": [
+						{"name": "standard",
+							"maxItems": 20},
+						{"name": "big",
+							"maxItems": 0},
+						{"name": "very big",
+							"maxItems": 0},
+						{"name": "splash",
+							"maxItems": 1}
+					],
 				}];
 			}
 			return [id, collection]
