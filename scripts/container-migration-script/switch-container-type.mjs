@@ -3,8 +3,7 @@ import { stdin as input, stdout as output } from 'node:process';
 
 const usage = `Example usage is
 
-		node ./switch-container-type
-			--stage CODE
+		node ./switch-container-type --stage CODE
 
 		Cookie Setup (Required):
 
@@ -210,9 +209,8 @@ const orchestrateCollectionUpdates = async() => {
 
 	const {updates, skipped, count} = identifyUpdates(collections);
 
-	console.log(`Found ${updates.length} collections to update, ${skipped.length} skipped. \\
-	Breakdown is ${count}`);
-
+	console.log(`Found ${updates.length} collections to update, ${skipped.length} skipped.`)
+	console.log(`Breakdown by container type is `, JSON.stringify(count, null, 3));
 
 	// const { succeeded, failed } = await executeUpdates(updates, fronts);
 //
