@@ -1,6 +1,9 @@
 import * as readline from "node:readline";
 import { stdin as input, stdout as output } from 'node:process';
 
+
+const PERMITTED_STAGES = ['PROD', 'CODE', 'LOCAL']
+
 const usage = `Example usage is
 
 		node ./switch-container-type --stage CODE
@@ -34,8 +37,10 @@ const getArg = (flag, optional = false) => {
 	return arg;
 };
 
+const stage = getArg("--stage").toUpperCase();
+
 const getFrontsUri = () => {
-	switch(stage.toLocaleUpperCase()) {
+	switch(stage) {
 		case "PROD":
 			return "https://fronts.gutools.co.uk";
 		case "CODE":
@@ -48,6 +53,10 @@ const getFrontsUri = () => {
 }
 
 const getFrontsCookie = () => {
+	if (!PERMITTED_STAGES.includes(stage)) {
+		console.error("--stage must be one of PROD, CODE or LOCAL");
+		process.exit(1);
+	}
 	const cookie = process.env[`${stage}_FRONTS_COOKIE`];
 	if (!cookie) {
 		console.error(`Cookie is missing in ${stage}. Ensure this is stored as an environment variable`);
@@ -55,8 +64,6 @@ const getFrontsCookie = () => {
 	}
 	return cookie;
 }
-
-const stage = getArg("--stage");
 
 const frontsBaseUrl = getFrontsUri();
 const frontsConfigUrl = `${frontsBaseUrl}/config`;
