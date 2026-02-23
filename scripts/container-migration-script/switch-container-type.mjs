@@ -5,7 +5,6 @@ const usage = `Example usage is
 
 		node ./switch-container-type
 			--stage CODE
-		Note that you must specify --dry-run=false in order to populate the collections with content
 
 		Cookie Setup (Required):
 
