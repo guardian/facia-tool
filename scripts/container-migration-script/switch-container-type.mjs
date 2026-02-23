@@ -80,7 +80,7 @@ const fetchFrontsConfig = async () => {
 
 	if (frontsResponse.status !== 200) {
 		console.error(
-			`Error getting issue data from Fronts tool: ${
+			`Error getting data from Fronts tool: ${
 				frontsResponse.status
 			} ${frontsResponse.statusText} ${await frontsResponse.text()}`
 		);
@@ -205,7 +205,33 @@ const executeUpdates = async (updates, fronts) => {
 };
 
 
-const orchestrateCollectionUpdates = async() => {
+const confirmProd = () =>
+	new Promise((resolve) => {
+		const rl = readline.createInterface({ input, output });
+
+		rl.question(
+			"This will run in the PROD environment. Proceed? (y/n): ",
+			(answer) => {
+				rl.close();
+				resolve(answer.trim().toLowerCase().startsWith("y"));
+			}
+		);
+	});
+
+
+const main = async () => {
+	if (stage === "PROD") {
+		const ok = await confirmProd();
+		if (!ok) {
+			console.log("Cancelling container migration script...");
+			process.exit(0);
+		}
+	}
+
+	console.log(
+		`Fetching collection config data from Fronts tool ${stage} at ${frontsBaseUrl} ...`
+	);
+
 	const {fronts, collections} = await fetchFrontsConfig();
 
 	const {updates, skipped, count} = identifyUpdates(collections);
@@ -214,36 +240,16 @@ const orchestrateCollectionUpdates = async() => {
 	console.log(`Breakdown by container type is `, JSON.stringify(count, null, 3));
 
 	// const { succeeded, failed } = await executeUpdates(updates, fronts);
-//
-// console.log(`Succeeded: ${succeeded.length}, Failed: ${failed.length}`);
-// if (failed.length) console.error("Failed collections:", failed);
-process.exit(0);
-}
+	//
+	// console.log(`Succeeded: ${succeeded.length}, Failed: ${failed.length}`);
+
+};
 
 
-if (stage === "PROD") {
-
-	const rl = readline.createInterface({ input, output });
-	rl.question('This will run in the PROD environment. Proceed? (y/n): ', (answer) => {
-		const userAnswer = answer.slice(0).toLowerCase()
-
-		if (userAnswer === "y") {
-			console.log(`Environment set to PROD`);
-			console.log(`Fetching collection config data from Fronts tool ${stage} at ${frontsBaseUrl} ...`);
-			orchestrateCollectionUpdates()
-			rl.close();
-		}
-		else {
-			console.log(`Cancelling container migration script...`);
-			process.exit(0);
-			rl.close();
-		}
-
-	});
-} else {
-	console.log(`Fetching collection config data from Fronts tool ${stage} at ${frontsBaseUrl} ...`);
-	orchestrateCollectionUpdates()
-}
+main().catch((err) => {
+	console.error("Fatal error:", err);
+	process.exit(1);
+});
 
 
 
