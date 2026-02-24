@@ -1,0 +1,270 @@
+import * as readline from "node:readline";
+import { stdin as input, stdout as output } from 'node:process';
+import {writeFile} from "fs/promises";
+
+const STAGE_CONFIG = {
+	PROD: { baseUrl: "https://fronts.gutools.co.uk"},
+	CODE: { baseUrl: "https://fronts.code.dev-gutools.co.uk" },
+	LOCAL: { baseUrl: "https://fronts.local.dev-gutools.co.uk" },
+};
+
+const PERMITTED_STAGES = Object.keys(STAGE_CONFIG);
+
+const usage = `Example usage is
+
+		node ./switch-container-type --stage CODE
+
+		Cookie Setup (Required):
+
+		  This script expects the stage cookie to be provided via an environment variable,
+		  NOT as a CLI argument.
+
+		  The cookie must be available as:
+
+			process.env.{STAGE}_FRONTS_COOKIE
+
+		How to set the cookie:
+
+		  macOS / Linux (bash/zsh):
+
+		  export {STAGE}_FRONTS_COOKIE="<paste full cookie header value here>"
+
+`;
+const getArg = (flag, optional = false) => {
+	const argIdx = process.argv.indexOf(flag);
+	const arg = argIdx !== -1 ? process.argv[argIdx + 1] : "";
+
+	if (!arg && !optional) {
+		console.error(`No argument for ${flag} given. ${usage}`);
+		process.exit(2);
+	}
+
+	return arg;
+};
+
+const stage = getArg("--stage").toUpperCase();
+
+if (!STAGE_CONFIG[stage]) {
+	console.error(`--stage must be one of ${PERMITTED_STAGES.join(", ")}\n\n${usage}`);
+	process.exit(1);
+}
+
+const frontsBaseUrl = STAGE_CONFIG[stage].baseUrl;
+
+const getFrontsCookie = () => {
+	const envVarName = `${stage}_FRONTS_COOKIE`;
+	const cookie = process.env[envVarName];
+
+	if (!cookie) {
+		console.error(
+			`Cookie is missing. Expected environment variable ${envVarName} to be set.`
+		);
+		process.exit(1);
+	}
+
+	return cookie;
+}
+
+const frontsConfigUrl = `${frontsBaseUrl}/config`;
+const frontsCollectionUrl= `${frontsBaseUrl}/config/collections`
+const frontsCookie = getFrontsCookie();
+const frontsHeaders = {
+	"Content-Type": "application/json",
+	Cookie: frontsCookie,
+};
+
+const fetchFrontsConfig = async () => {
+	const frontsResponse = await fetch(frontsConfigUrl, {
+		method: "GET",
+		headers: frontsHeaders,
+	});
+
+	if (frontsResponse.status !== 200) {
+		console.error(
+			`Error getting data from Fronts tool: ${
+				frontsResponse.status
+			} ${frontsResponse.statusText} ${await frontsResponse.text()}`
+		);
+		process.exit(1);
+	}
+	return await frontsResponse.json()
+};
+
+
+const findFrontsByCollectionId = (fronts, collectionId) => {
+	if (!fronts || !collectionId) return [];
+
+	return Object.entries(fronts)
+		.filter(([_, frontConfig]) =>
+			Array.isArray(frontConfig.collections) &&
+			frontConfig.collections.includes(collectionId)
+		)
+		.map(([frontId, _]) => frontId);
+}
+
+
+const postUpdateToCollection = async(collectionId, body) => {
+	const updatedResponse = await fetch(`${frontsCollectionUrl}/${collectionId}`, {
+		method: "POST",
+		headers: frontsHeaders,
+		body: JSON.stringify(body)
+	});
+
+	if(updatedResponse.status !== 200) {
+		const content = await updatedResponse.text();
+		console.error(`Server error ${updatedResponse.status}: ${content}`);
+		throw new Error(`Unable to update collection ${collectionId}`)
+	}
+	console.log("*** Successfully updated ", body.collection.type, body.collection.displayName);
+}
+
+const toStaticMedium4 = (collectionId, collection) => ({
+	...collection,
+	type: "static/medium/4",
+	id: collectionId
+});
+
+const FLEXIBLE_GENERAL_GROUPS_CONFIG = [
+	{"name": "standard",
+		"maxItems": 20},
+	{"name": "big",
+		"maxItems": 0},
+	{"name": "very big",
+		"maxItems": 0},
+	{"name": "splash",
+		"maxItems": 1}
+]
+
+const toFlexibleGeneral = (collectionId, collection) => ({
+	...collection,
+	type: "flexible/general",
+	groupsConfig: FLEXIBLE_GENERAL_GROUPS_CONFIG,
+	id: collectionId
+});
+
+
+const identifyUpdates = (collections) => {
+	const updates = [];
+	const skipped = [];
+	const count = {};
+
+	for (const [collectionId, collection] of Object.entries(collections)) {
+		switch(collection.type) {
+			case 'fixed/small/slow-IV':
+				 updates.push({
+					collectionId,
+					updatedCollection: toStaticMedium4(collectionId, collection),
+				});
+				 count[collection.type] = count[collection.type] + 1 || 1;
+				 break;
+			case 'fixed/medium/fast-XII':
+			case 'fixed/small/slow-III':
+			case 'fixed/small/slow-V-third':
+			case 'fixed/small/slow-I':
+			case 'fixed/medium/slow-VI':
+			case 'fixed/large/slow-XIV':
+			case 'fixed/medium/fast-XI':
+			case 'fixed/medium/slow-XII-mpu':
+			case 'fixed/medium/slow-VII':
+			case 'fixed/small/fast-VIII':
+			case 'fixed/small/slow-V-mpu':
+			case 'fixed/small/slow-V-half':
+			case 'dynamic/fast':
+			case 'dynamic/slow':
+			case 'dynamic/package':
+				updates.push({
+					collectionId,
+					updatedCollection: toFlexibleGeneral(collectionId, collection),
+				});
+				count[collection.type] = count[collection.type] + 1 || 1;
+				break;
+			default:
+				skipped.push(collectionId);
+				break;
+		}
+	}
+	return { updates, skipped, count };
+};
+
+
+const executeUpdates = async (updates, fronts) => {
+	const results = { succeeded: [], failed: [] };
+
+	for (const { collectionId, updatedCollection } of updates) {
+		const frontIds = findFrontsByCollectionId(fronts, collectionId);
+		const body = { frontIds, collection: updatedCollection };
+
+		try {
+			await postUpdateToCollection(collectionId, body);
+			results.succeeded.push(collectionId);
+		} catch (err) {
+			results.failed.push({ collectionId, error: err.message });
+		}
+	}
+
+	return results;
+};
+
+
+const confirmProd = () =>
+	new Promise((resolve) => {
+		const rl = readline.createInterface({ input, output });
+
+		rl.question(
+			"This will run in the PROD environment. Proceed? (y/n): ",
+			(answer) => {
+				rl.close();
+				resolve(answer.trim().toLowerCase().startsWith("y"));
+			}
+		);
+	});
+
+
+const main = async () => {
+	if (stage === "PROD") {
+		const ok = await confirmProd();
+		if (!ok) {
+			console.log("Cancelling container migration script...");
+			process.exit(0);
+		}
+	}
+
+	console.log(
+		`Fetching collection config data from Fronts tool ${stage} at ${frontsBaseUrl} ...`
+	);
+
+	const {fronts, collections} = await fetchFrontsConfig();
+
+	const {updates, skipped, count} = identifyUpdates(collections);
+
+	console.log(`Found ${updates.length} collections to update, ${skipped.length} skipped.`)
+	console.log(`Breakdown by container type is `, JSON.stringify(count, null, 3));
+
+	const { succeeded, failed } = await executeUpdates(updates, fronts);
+
+	console.log(`Succeeded: ${succeeded.length}, Failed: ${failed.length}`);
+
+	await writeFile(
+		"switch-container-type-log.json",
+		JSON.stringify({
+			updates,
+			skipped,
+			succeeded,
+			failed
+		}, null, 2),
+		"utf-8"
+	);
+};
+
+
+main().catch((err) => {
+	console.error("Fatal error:", err);
+	process.exit(1);
+});
+
+
+
+
+
+
+
