@@ -1,5 +1,6 @@
 import * as readline from "node:readline";
 import { stdin as input, stdout as output } from 'node:process';
+import {writeFile} from "fs/promises";
 
 const STAGE_CONFIG = {
 	PROD: { baseUrl: "https://fronts.gutools.co.uk"},
@@ -239,10 +240,20 @@ const main = async () => {
 	console.log(`Found ${updates.length} collections to update, ${skipped.length} skipped.`)
 	console.log(`Breakdown by container type is `, JSON.stringify(count, null, 3));
 
-	// const { succeeded, failed } = await executeUpdates(updates, fronts);
-	//
-	// console.log(`Succeeded: ${succeeded.length}, Failed: ${failed.length}`);
+	const { succeeded, failed } = await executeUpdates(updates, fronts);
 
+	console.log(`Succeeded: ${succeeded.length}, Failed: ${failed.length}`);
+
+	await writeFile(
+		"switch-container-type-log.json",
+		JSON.stringify({
+			updates,
+			skipped,
+			succeeded,
+			failed
+		}, null, 2),
+		"utf-8"
+	);
 };
 
 
