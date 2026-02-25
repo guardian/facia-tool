@@ -100,7 +100,7 @@ describe('Config', function () {
                     },
                     collections: {
                         'with-tags': {
-                            type: 'fixed/small/slow-IV',
+                            type: 'static/medium/4',
                             displayName: 'with-tags',
                             metadata: [{ type: 'tag'}]
                         }
@@ -126,7 +126,7 @@ describe('Config', function () {
                     },
                     collections: {
                         'with-tags': {
-                            type: 'fixed/small/slow-IV',
+                            type: 'static/medium/4',
                             displayName: 'with-tags',
                             metadata: [{ type: 'tag'}]
                         }
@@ -190,7 +190,7 @@ describe('Config', function () {
                     },
                     collections: {
                         'gossip': {
-                            type: 'fixed/small/slow-IV',
+                            type: 'static/medium/4',
                             displayName: 'gossip'
                         }
                     }

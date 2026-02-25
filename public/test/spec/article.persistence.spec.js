@@ -119,7 +119,7 @@ function loadMockCollection (articleDefinition, mock) {
     });
     const collection = new Collection({
         id: 'fruits',
-        type: 'fixed/slow',
+        type: 'static/medium/4',
         front: {
             getCollectionList: raw => raw.live,
             confirmSendingAlert: () => false,
