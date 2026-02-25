@@ -7,9 +7,6 @@ class Containers(val fixedContainers: FixedContainers) extends Logging {
 
   /** This is THE top level resolver for containers */
   val all: Map[String, Container] = Map(
-    ("dynamic/fast", Dynamic(DynamicFast)),
-    ("dynamic/slow", Dynamic(DynamicSlow)),
-    ("dynamic/package", Dynamic(DynamicPackage)),
     ("flexible/general", Flexible(FlexibleGeneral)),
     ("flexible/special", Flexible(FlexibleSpecial)),
     ("nav/list", NavList),
@@ -32,14 +29,10 @@ class Containers(val fixedContainers: FixedContainers) extends Logging {
       default
     }
   )
-
-  def fromConfig(collectionConfig: CollectionConfig) =
-    resolve(collectionConfig.collectionType)
 }
 
 sealed trait Container
 
-case class Dynamic(get: DynamicContainer) extends Container
 case class Flexible(get: FlexibleContainer) extends Container
 case class Fixed(get: ContainerDefinition) extends Container
 case class Scrollable(get: ScrollableContainer) extends Container

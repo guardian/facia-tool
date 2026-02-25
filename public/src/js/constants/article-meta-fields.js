@@ -139,14 +139,6 @@ export default Object.freeze([
         type: 'boolean'
     },
     {
-        key: 'isBoosted',
-        editable: true,
-        omitForSupporting: true,
-        ifState: 'inDynamicCollection',
-        label: 'boost',
-        type: 'boolean'
-    },
-    {
         key: 'boostLevel',
         editable: true,
         omitForSupporting: true,

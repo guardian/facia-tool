@@ -83,7 +83,7 @@ export default class ConfigCollection extends DropTarget {
         this.containerThumbnail = ko.pureComputed(() => {
             var containerId = this.meta.type();
 
-            if (/^(fixed|dynamic|flexible|scrollable|static)\//.test(containerId)) {
+            if (/^(fixed|flexible|scrollable|static)\//.test(containerId)) {
                 return '/thumbnails/' + containerId + '.svg';
             } else {
                 return null;

@@ -3,7 +3,6 @@ import { createSelectArticleFromCard } from 'selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
 import {
-	isCollectionConfigDynamic,
 	isCollectionConfigFlexible,
 	isCollectionConfigFlexibleGeneral,
 } from '../util/frontsUtils';
@@ -106,9 +105,6 @@ export const createSelectFormFieldsForCard = () => {
 			}
 			if (isCollectionConfigFlexibleGeneral(parentCollectionConfig)) {
 				fields.push('isImmersive');
-			}
-			if (isCollectionConfigDynamic(parentCollectionConfig)) {
-				fields.push('isBoosted');
 			}
 			if (derivedArticle.liveBloggingNow === 'true') {
 				fields.push('showLivePlayable');
