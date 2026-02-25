@@ -13,7 +13,7 @@ export default class extends Extension {
         if (baseModel.priority === 'email') {
             types = vars.CONST.emailTypes;
         } else {
-            types = vars.CONST.types;
+            types = vars.CONST.containerTypes;
         }
 
         baseModel.types = ko.observableArray(_.pluck(types, 'name'));

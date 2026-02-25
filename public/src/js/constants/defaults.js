@@ -7,150 +7,77 @@ export default {
         'code': 'https://m.code.dev-theguardian.com/'
     },
 
-    types: [
-        { 'name': 'fixed/small/slow-IV' },
-        { 'name': 'fixed/medium/fast-XII' },
-        { 'name': 'fixed/small/slow-III' },
-        { 'name': 'fixed/small/slow-V-third' },
-        { 'name': 'fixed/small/slow-I' },
-        { 'name': 'fixed/medium/slow-VI' },
-        { 'name': 'fixed/large/slow-XIV' },
-        { 'name': 'fixed/medium/fast-XI' },
-        { 'name': 'fixed/medium/slow-XII-mpu' },
-        { 'name': 'fixed/thrasher' },
-        { 'name': 'fixed/medium/slow-VII' },
-        { 'name': 'fixed/small/fast-VIII' },
-        { 'name': 'fixed/small/slow-V-mpu' },
-        { 'name': 'fixed/small/slow-V-half' },
-        {
-          'name': 'dynamic/fast',
-          'groups': [
-            'standard',
-            'big',
-            'very big',
-            'huge'
-          ],
-          'groupsConfig': [
-            {
-              name: 'standard'
-            },
-            {
-              name: 'big'
-            },
-            {
-              name: 'very big'
-            },
-            {
-              name: 'huge'
-            }
-          ]
-        },
-        {
-          'name': 'dynamic/slow',
-          'groups': [
-            'standard',
-            'big',
-            'very big',
-            'huge'
-          ],
-          'groupsConfig': [
-            {
-              name: 'standard'
-            },
-            {
-              name: 'big'
-            },
-            {
-              name: 'very big'
-            },
-            {
-              name: 'huge'
-            }
-          ]
-        },
-        {
-          'name': 'dynamic/package',
-          'groups': [
-            'standard',
-            'snap'
-          ],
-          'groupsConfig': [
-            {
-              name: 'standard'
-            },
-            {
-              name: 'snap'
-            }
-          ]
-        },
-        { 'name': 'nav/list' },
-        { 'name': 'nav/media-list' },
-        { 'name': 'news/most-popular' },
-        {
-          'name': 'breaking-news/not-for-other-fronts',
-          groups: [
-            'minor',
-            'major'
-          ],
-          groupsConfig: [
-            {
-              name: 'minor'
-            },
-            {
-              name: 'major'
-            }
-          ]
-        },
-        { 'name': 'fixed/showcase' },
-        { 'name': 'scrollable/highlights' },
-        {
-            'name': 'flexible/general',
-            'groups': [
-              'standard',
-              'big',
-              'very big',
-              'splash'
-            ],
-            'groupsConfig': [
-              {
-                name: 'standard',
-                maxItems: 8
-              },
-              {
-                name: 'big',
-                maxItems: 0
-              },
-              {
-                name: 'very big',
-                maxItems: 0
-              },
-              {
-                name: 'splash',
-                maxItems: 1
-              }
-            ]
-        },
-        {
-            'name': 'flexible/special',
-            'groups': [
-              'standard',
-              'snap'
-            ],
-            'groupsConfig': [
-              {
-                name: 'standard'
-              },
-              {
-                name: 'snap'
-              }
-            ]
-        },
+	containerTypes: [
+		{ 'name': 'scrollable/highlights' },
+		{
+			'name': 'flexible/general',
+			'groups': [
+				'standard',
+				'big',
+				'very big',
+				'splash'
+			],
+			'groupsConfig': [
+				{
+					name: 'standard',
+					maxItems: 8
+				},
+				{
+					name: 'big',
+					maxItems: 0
+				},
+				{
+					name: 'very big',
+					maxItems: 0
+				},
+				{
+					name: 'splash',
+					maxItems: 1
+				}
+			]
+		},
+		{
+			'name': 'flexible/special',
+			'groups': [
+				'standard',
+				'snap'
+			],
+			'groupsConfig': [
+				{
+					name: 'standard'
+				},
+				{
+					name: 'snap'
+				}
+			]
+		},
 		{ 'name': 'scrollable/small' },
 		{ 'name': 'scrollable/medium' },
 		{ 'name': 'scrollable/feature' },
 		{ 'name': 'static/medium/4' },
-		{ 'name': 'static/feature/2' }
-    ],
+		{ 'name': 'static/feature/2' },
+		{ 'name': 'nav/list' },
+		{ 'name': 'nav/media-list' },
+		{ 'name': 'news/most-popular' },
+		{
+			'name': 'breaking-news/not-for-other-fronts',
+			groups: [
+				'minor',
+				'major'
+			],
+			groupsConfig: [
+				{
+					name: 'minor'
+				},
+				{
+					name: 'major'
+				}
+			]
+		},
+		{ 'name': 'fixed/showcase' },
+		{ 'name': 'fixed/thrasher' },
+
+	],
 
     emailTypes: [
         { name: 'fast' },
