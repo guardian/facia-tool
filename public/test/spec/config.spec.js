@@ -47,7 +47,7 @@ describe('Config', function () {
             var data = request.data;
             expect(data.id).toEqual('test/front');
             expect(data.initialCollection.displayName).toEqual('gossip');
-            expect(data.initialCollection.type).toEqual('fixed/small/slow-IV');
+            expect(data.initialCollection.type).toEqual('scrollable/highlights');
             expect(data.priority).toEqual('test');
 
             $('.contentPane:nth(1) .title--text:nth(1)').click();
