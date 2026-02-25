@@ -39,7 +39,6 @@ export default class ConfigCollection extends DropTarget {
                 'showLatestUpdate',
                 'showTimestamps',
                 'excludeFromRss',
-                'hideShowMore',
                 'backfill',
                 'description',
                 'metadata',
@@ -99,26 +98,6 @@ export default class ConfigCollection extends DropTarget {
         this.typePicker = this._typePicker.bind(this);
 
         this.thisIsPlatformSpecificCollection = isPlatformSpecificCollection(this.meta.platform());
-
-        this.thisIsBetaCollection = ko.pureComputed(() => {
-            return isBetaCollection(this.meta.type());
-        });
-
-		this.isNotBetaCollection = ko.pureComputed(() => {
-			return !this.thisIsBetaCollection();
-		});
-		this._hideShowMore = this.meta.hideShowMore;
-
-		this.meta.hideShowMore = ko.pureComputed({
-			read: () => this.thisIsBetaCollection() ? true : this._hideShowMore(),
-			write: (value) => {
-				if (this.thisIsBetaCollection()) {
-					this._hideShowMore(true);
-				} else {
-					this._hideShowMore(value);
-				}
-			}
-		});
 
     }
 
@@ -217,6 +196,3 @@ function findParents (collectionId) {
         .value();
 }
 
-function isBetaCollection (collectionId) {
-    return vars.CONST.betaCollectionTypes.includes(collectionId);
-}

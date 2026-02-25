@@ -56,7 +56,6 @@ export default class Collection extends BaseClass {
         this.configMeta = asObservableProps([
             'type',
             'displayName',
-            'hideShowMore',
             'href',
             'uneditable',
             'metadata',
