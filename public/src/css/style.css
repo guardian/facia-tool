@@ -2012,14 +2012,6 @@ ol.search_list > li::before {
     flex-wrap: wrap;
 }
 
-.cnf-form .beta-warning-text {
-    color: #f68d12;
-    background: #fffaed;
-    padding: 0 2px;
-    border: 1px solid;
-    border-radius: 4px;
-}
-
 .cnf-form .type-option-chosen {
     color: #2ea3eb;
     position: absolute;
@@ -2373,7 +2365,7 @@ hr {
     padding-left: 1em;
 }
 
-.modalDialog-message .character-count { 
+.modalDialog-message .character-count {
     margin: 8px 0;
     padding: 4px;
     border: 1px solid #2ea3eb;
@@ -2386,14 +2378,14 @@ hr {
     color: #2ea3eb;
     font-size: x-large;
     align-self: flex-start;
-} 
+}
 
 .modalDialog-message .character-count-text {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
-} 
+}
 
 .modalDialog .button-description {
     font-weight: bold;

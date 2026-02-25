@@ -276,8 +276,11 @@ describe('Config Pinned Front', function () {
             expect(data.frontIds).toEqual(['one']);
             expect(data.collection).toEqual({
                 displayName: 'Fourth',
-                type: 'fixed/medium/fast-XII'
-            });
+                type: 'flexible/general',
+				groups: [ 'standard', 'big', 'very big', 'splash' ],
+				hideShowMore: true,
+				groupsConfig: [ Object({ name: 'standard', maxItems: 8 }), Object({ name: 'big', maxItems: 0 }), Object({ name: 'very big', maxItems: 0 }), Object({ name: 'splash', maxItems: 1 }) ]
+			});
         }
     });
 });
