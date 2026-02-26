@@ -60,7 +60,6 @@ interface CollectionConfigResponse {
 	showDateHeader?: boolean;
 	showLatestUpdate?: boolean;
 	excludeFromRss?: boolean;
-	hideShowMore?: boolean;
 	platform?: Platform;
 	frontsToolSettings?: FrontsToolSettings;
 	prefill?: EditionsPrefill;

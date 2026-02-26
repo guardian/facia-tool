@@ -279,14 +279,4 @@ export default {
 
     userVisibilities: ['all', 'subscriber', 'non-subscriber'],
 
-    betaCollectionTypes: [
-        'flexible/special',
-        'flexible/general',
-        'scrollable/highlights',
-        'scrollable/small',
-        'scrollable/medium',
-        'scrollable/feature',
-        'static/medium/4',
-        'static/feature/2'
-    ]
 };
