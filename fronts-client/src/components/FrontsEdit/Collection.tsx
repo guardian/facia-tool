@@ -23,7 +23,7 @@ import { CardTypes } from 'constants/cardTypes';
 import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
 import { ValidationResponse } from '../../util/validateImageSrc';
 import { bindActionCreators } from 'redux';
-import { createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from '../../selectors/shared';
+// import { createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from '../../selectors/shared';
 
 const getArticleNotifications = (
 	id: string,
@@ -290,19 +290,19 @@ const createMapStateToProps = () => {
 			collectionSet: props.browsingStage,
 		});
 
-		const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront =
-			createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront();
-
-		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront =
-			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(state, {
-				collectionId: props.id,
-				frontId: props.frontId,
-			});
+		// const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront =
+		// 	createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront();
+		//
+		// const cardsWhichAreAlsoOnOtherCollectionsOnSameFront =
+		// 	selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(state, {
+		// 		collectionId: props.id,
+		// 		frontId: props.frontId,
+		// 	});
 
 		return {
 			lastDesktopArticle: articleVisibilityDetails.desktop,
 			lastMobileArticle: articleVisibilityDetails.mobile,
-			cardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+			cardsWhichAreAlsoOnOtherCollectionsOnSameFront: undefined,
 		};
 	};
 };
