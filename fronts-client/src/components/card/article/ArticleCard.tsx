@@ -6,7 +6,6 @@ import noop from 'lodash/noop';
 import {
 	createSelectArticleFromCard,
 	selectCard,
-	selectCollectionMap,
 } from '../../../selectors/shared';
 import { selectors } from 'bundles/externalArticlesBundle';
 import type { State } from 'types/State';
@@ -15,11 +14,6 @@ import CardBody from '../CardBody';
 import CardContainer from '../CardContainer';
 import CardMetaHeading from '../CardMetaHeading';
 import ArticleBody from './ArticleBody';
-import {
-	CardSizes,
-	CollectionMap,
-	OtherCollectionsOnSameFrontThisCardIsOn,
-} from 'types/Collection';
 import DragIntentContainer from '../../DragIntentContainer';
 import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { theme } from 'constants/theme';
@@ -27,6 +21,7 @@ import { getPillarColor } from 'util/getPillarColor';
 import { dragEventHasImageData } from 'util/validateImageSrc';
 import { Criteria } from 'types/Grid';
 import { getMainMediaVideoAtom } from '../../../util/externalArticle';
+import { CardSizes } from '../../../types/Collection';
 
 const ArticleBodyContainer = styled(CardBody)<{
 	pillarId: string | undefined;
@@ -67,8 +62,6 @@ interface ArticleComponentProps {
 	imageCriteria?: Criteria;
 	collectionType?: string;
 	groupIndex?: number;
-	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
-	collectionMap?: CollectionMap;
 }
 
 interface ComponentProps extends ArticleComponentProps {
@@ -119,8 +112,6 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 			imageCriteria,
 			collectionType,
 			groupIndex,
-			otherCollectionsOnSameFrontThisCardIsOn,
-			collectionMap,
 		} = this.props;
 
 		const getArticleData = () =>
@@ -186,10 +177,6 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 										? getMainMediaVideoAtom(article)
 										: undefined
 								}
-								otherCollectionsOnSameFrontThisCardIsOn={
-									otherCollectionsOnSameFrontThisCardIsOn
-								}
-								collectionMap={collectionMap}
 							/>
 						</ArticleBodyContainer>
 					</DragIntentContainer>
@@ -209,9 +196,7 @@ const createMapStateToProps = () => {
 		article?: DerivedArticle;
 		isLoading: boolean;
 		featureFlagPageViewData: boolean;
-		collectionMap?: CollectionMap;
 	} => {
-		const collectionMap = selectCollectionMap(state);
 		const article = selectArticle(state, props.id);
 		const card = selectCard(state, props.id);
 		const getState = (s: any) => s;
@@ -223,7 +208,6 @@ const createMapStateToProps = () => {
 				getState(state),
 				'page-view-data-visualisation',
 			),
-			collectionMap,
 		};
 	};
 };

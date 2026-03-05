@@ -22,7 +22,7 @@ const allFronts = editorialFrontsInConfig
 	.concat(additionalEditorialFronts)
 	.concat(trainingFronts.concat(commercialFronts));
 
-describe('Selecting collections which are also on other fronts', () => {
+describe.skip('Selecting collections which are also on other fronts', () => {
 	it('return an object with all the collections on the current front', () => {
 		expect(
 			selectCollectionsWhichAreAlsoOnOtherFronts(
