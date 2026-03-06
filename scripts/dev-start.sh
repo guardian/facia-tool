@@ -98,8 +98,23 @@ main() {
     set_node_version
 
     printf "\n\rStarting Postgres... \n\r\n\r"
-    docker compose up -d
-
+    	## Detect which container runtime setup is available and start the stack accordingly.
+    	##
+      ## Some developers run Docker via Colima (common on macOS), which typically uses the
+      ## legacy `docker-compose` command. Others may have standard Docker installed, which
+      ## uses the newer `docker compose` subcommand.
+    	##
+      ## This check ensures we run the correct command depending on the environment. Node version manager is available and use it
+    	if command -v colima >/dev/null 2>&1; then
+    		echo "Using colima"
+    		docker-compose up -d
+    	elif command -v docker >/dev/null 2>&1; then
+       	echo "Using docker"
+       	docker compose up -d
+      else
+        echo -e "${RED}No container runtime (Docker, Colima) found.${NOCOLOUR}"
+        exit 1
+     fi
     printf "\n\rStarting Play App... \n\r\n\r"
 
     export SBT_OPTS="-XX:+CMSClassUnloadingEnabled -Xmx4G -Xss4m"
