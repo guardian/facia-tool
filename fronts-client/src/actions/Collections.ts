@@ -295,20 +295,6 @@ function updateCollection(
 				mode,
 			);
 			dispatch(collectionActions.updateSuccess(collection.id));
-			const visibleArticles = await getVisibleArticles(
-				collection,
-				getState(),
-				frontStages.draft,
-			);
-			if (visibleArticles) {
-				dispatch(
-					recordVisibleArticles(
-						collection.id,
-						visibleArticles,
-						frontStages.draft,
-					),
-				);
-			}
 		} catch (e) {
 			dispatch(collectionActions.updateError(e, collection.id));
 			throw e;
