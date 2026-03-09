@@ -290,6 +290,10 @@ const createMapStateToProps = () => {
 			collectionSet: props.browsingStage,
 		});
 
+		/*
+		 * The also on card feature has been temporarily disabled whilst we investigate slowness on the fronts
+		 * @see https://github.com/guardian/facia-tool/pull/1950
+		 */
 		// const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront =
 		// 	createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront();
 		//
