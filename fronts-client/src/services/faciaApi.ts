@@ -2,8 +2,6 @@ import type {
 	FrontsConfig,
 	FrontsConfigResponse,
 	FrontConfigMap,
-	ArticleDetails,
-	VisibleArticlesResponse,
 	FrontConfig,
 	CollectionConfigMap,
 	CollectionResponse,
@@ -89,33 +87,6 @@ async function fetchLastPressed(frontId: string): Promise<string> {
 				)}`,
 			);
 		});
-}
-
-async function fetchVisibleArticles(
-	collectionType: string,
-	articles: ArticleDetails[],
-): Promise<VisibleArticlesResponse> {
-	if (!collectionType || collectionType === '') {
-		throw new Error(`collectionType='${collectionType}' is undefined or empty`);
-	}
-	// The server does not respond with JSON
-	try {
-		const response = await pandaFetch(`/stories-visible/${collectionType}`, {
-			method: 'post',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			credentials: 'same-origin',
-			body: JSON.stringify({ stories: articles }),
-		});
-		return await response.json();
-	} catch (e) {
-		throw new Error(
-			`Tried to fetch visible stories for collection type '${collectionType}', but the server responded with ${attemptFriendlyErrorMessage(
-				e,
-			)}`,
-		);
-	}
 }
 
 async function discardDraftChangesToCollection(
@@ -419,7 +390,6 @@ export {
 	saveOpenFrontIds,
 	saveFavouriteFrontIds,
 	getCapiUriForContentIds,
-	fetchVisibleArticles,
 	discardDraftChangesToCollection,
 	transformExternalArticle,
 	getAtomFromCapi,

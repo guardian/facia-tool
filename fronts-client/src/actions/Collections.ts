@@ -1,13 +1,9 @@
 import { batchActions } from 'redux-batched-actions';
 
-import type {
-	VisibleArticlesResponse,
-	CollectionResponse,
-} from 'types/FaciaApi';
+import type { CollectionResponse } from 'types/FaciaApi';
 import {
 	getArticlesBatched,
 	discardDraftChangesToCollection as discardDraftChangesToCollectionApi,
-	fetchVisibleArticles,
 	fetchLastPressed as fetchLastPressedApi,
 	publishCollection as publishCollectionApi,
 	getCollection as getCollectionApi,
@@ -18,7 +14,6 @@ import {
 	selectLastName,
 } from 'selectors/configSelectors';
 import {
-	createSelectGroupArticles,
 	createSelectAllCardsInCollection,
 	selectCard,
 	selectFront,
@@ -30,8 +25,6 @@ import {
 import {
 	combineCollectionWithConfig,
 	populateDraftArticles,
-	getVisibilityArticleDetails,
-	getGroupsByStage,
 } from 'util/frontsUtils';
 import {
 	normaliseCollectionWithNestedArticles,
@@ -50,7 +43,7 @@ import { Dispatch, ThunkResult } from 'types/Store';
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
-import { Stages, Collection, CardSets, Card } from 'types/Collection';
+import { Collection, CardSets, Card } from 'types/Collection';
 import difference from 'lodash/difference';
 import { selectCardsInCollections } from 'selectors/collection';
 import {
@@ -451,26 +444,6 @@ const closeCollections = (collectionIds: string[]): ThunkResult<void> => {
 		return dispatch(editorCloseCollections(collectionIds));
 	};
 };
-
-function getVisibleArticles(
-	collection: Collection,
-	state: State,
-	stage: Stages,
-): Promise<VisibleArticlesResponse | undefined> {
-	const collectionType = collection.type;
-	const groups = getGroupsByStage(collection, stage);
-	const selectGroupArticles = createSelectGroupArticles();
-	const groupsWithArticles = groups.map((id) =>
-		selectGroupArticles(state, { groupId: id }),
-	);
-	const articleDetails = getVisibilityArticleDetails(groupsWithArticles);
-
-	if (!collectionType) {
-		return Promise.resolve(undefined);
-	}
-
-	return fetchVisibleArticles(collectionType, articleDetails);
-}
 
 /**
  * Initialise the collections in a front --
