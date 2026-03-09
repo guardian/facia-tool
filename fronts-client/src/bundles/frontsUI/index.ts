@@ -459,11 +459,8 @@ const createSelectCollectionIdsWithOpenForms = () =>
 const createSelectDoesCollectionHaveOpenForms = () =>
 	createSelector(
 		selectOpenCardForms,
-		(
-			_: unknown,
-			{ frontId, collectionId }: { frontId: string; collectionId: string },
-		) => ({ frontId, collectionId }),
-		(forms, { collectionId }) =>
+		(_: unknown, { collectionId }: { collectionId: string }) => collectionId,
+		(forms, collectionId) =>
 			forms.some((form) => form.collectionId === collectionId),
 	);
 
