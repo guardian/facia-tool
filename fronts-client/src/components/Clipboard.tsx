@@ -198,7 +198,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 														uuid={card.uuid}
 														parentId={clipboardId}
 														frontId={clipboardId}
-														getNodeProps={getAfProps}
+														nodeProps={getAfProps()}
 														showMeta={false}
 														canDragImage={false}
 														canShowPageViewData={false}
@@ -220,7 +220,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 																	frontId={clipboardId}
 																	parentId={card.uuid}
 																	canShowPageViewData={false}
-																	getNodeProps={getSProps}
+																	nodeProps={getSProps()}
 																	size="small"
 																	showMeta={false}
 																	isSupporting={true}

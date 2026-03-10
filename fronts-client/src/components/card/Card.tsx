@@ -97,7 +97,7 @@ interface ContainerProps {
 	frontId: string;
 	collectionId?: string;
 	children?: React.ReactNode;
-	getNodeProps: () => object;
+	nodeProps: object;
 	onSelect: (uuid: string, collectionId: string, isSupporting: boolean) => void;
 	onDelete: () => void;
 	parentId: string;
@@ -166,7 +166,7 @@ class Card extends React.Component<CardContainerProps> {
 			isSelected,
 			isSupporting = false,
 			children,
-			getNodeProps,
+			nodeProps,
 			type,
 			size = 'default',
 			textSize,
@@ -205,7 +205,7 @@ class Card extends React.Component<CardContainerProps> {
 							collectionId={collectionId}
 							id={uuid}
 							isUneditable={isUneditable}
-							{...getNodeProps()}
+							{...nodeProps}
 							onDelete={this.onDelete}
 							onAddToClipboard={this.handleAddToClipboard}
 							onClick={this.handleSelect}
@@ -239,7 +239,7 @@ class Card extends React.Component<CardContainerProps> {
 								collectionId={collectionId}
 								id={uuid}
 								isUneditable={isUneditable}
-								{...getNodeProps()}
+								{...nodeProps}
 								onDelete={this.onDelete}
 								onAddToClipboard={this.handleAddToClipboard}
 								onClick={this.handleSelect}
@@ -262,7 +262,7 @@ class Card extends React.Component<CardContainerProps> {
 								collectionId={collectionId}
 								id={uuid}
 								isUneditable={isUneditable}
-								{...getNodeProps()}
+								{...nodeProps}
 								onDelete={this.onDelete}
 								onAddToClipboard={this.handleAddToClipboard}
 								/* No need for an OnClick here - there are no editable forms */
@@ -281,7 +281,7 @@ class Card extends React.Component<CardContainerProps> {
 								collectionId={collectionId}
 								id={uuid}
 								isUneditable={isUneditable}
-								{...getNodeProps()}
+								{...nodeProps}
 								onDelete={this.onDelete}
 								onAddToClipboard={this.handleAddToClipboard}
 								// Chef has overrides so we need to edit it
@@ -300,7 +300,7 @@ class Card extends React.Component<CardContainerProps> {
 								collectionId={collectionId}
 								id={uuid}
 								isUneditable={isUneditable}
-								{...getNodeProps()}
+								{...nodeProps}
 								onDelete={this.onDelete}
 								onAddToClipboard={this.handleAddToClipboard}
 								onClick={this.handleSelect}
