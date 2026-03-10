@@ -509,7 +509,18 @@ class Card extends React.Component<CardContainerProps> {
 
 const createMapStateToProps = () => {
 	const selectType = createSelectCardType();
+	/*
+	* We store the latest Redux state in a closure variable.
+	* This allows helper functions (like selectOtherCard) to access the
+	* most recent state without recreating the function on every render.
+	*/
+	let lastState: State;
+
+	const selectOtherCard = (uuid: string) => selectCard(lastState, uuid);
+
 	return (state: State, { uuid, frontId, collectionId }: ContainerProps) => {
+		/* Last state is updated on each mapStateToProps run */
+		lastState = state;
 		const maybeExternalArticle = selectExternalArticleFromCard(state, uuid);
 		return {
 			type: selectType(state, uuid),
@@ -519,7 +530,7 @@ const createMapStateToProps = () => {
 			numSupportingArticles: selectSupportingArticleCount(state, uuid),
 			editMode: selectEditMode(state),
 			collectionType: collectionId && selectCollectionType(state, collectionId),
-			selectOtherCard: (uuid: string) => selectCard(state, uuid),
+			selectOtherCard,
 		};
 	};
 };
