@@ -98,7 +98,7 @@ interface ContainerProps {
 	collectionId?: string;
 	children?: React.ReactNode;
 	getNodeProps: () => object;
-	onSelect: (uuid: string) => void;
+	onSelect: (uuid: string, collectionId: string, isSupporting: boolean) => void;
 	onDelete: () => void;
 	parentId: string;
 	size?: CardSizes;
@@ -143,6 +143,23 @@ class Card extends React.Component<CardContainerProps> {
 		}
 	};
 
+	private handleSelect = () => {
+		const {
+			uuid,
+			collectionId,
+			isSupporting = false,
+			onSelect,
+			isUneditable,
+			frontId,
+		} = this.props;
+
+		if (isUneditable) return undefined;
+		if (collectionId) {
+			onSelect(uuid, collectionId, isSupporting);
+		}
+		onSelect(uuid, frontId, isSupporting);
+	};
+
 	public render() {
 		const {
 			uuid,
@@ -150,7 +167,6 @@ class Card extends React.Component<CardContainerProps> {
 			isSupporting = false,
 			children,
 			getNodeProps,
-			onSelect,
 			type,
 			size = 'default',
 			textSize,
@@ -192,7 +208,7 @@ class Card extends React.Component<CardContainerProps> {
 							{...getNodeProps()}
 							onDelete={this.onDelete}
 							onAddToClipboard={this.handleAddToClipboard}
-							onClick={isUneditable ? undefined : () => onSelect(uuid)}
+							onClick={this.handleSelect}
 							size={size}
 							textSize={textSize}
 							showMeta={showMeta}
@@ -226,7 +242,7 @@ class Card extends React.Component<CardContainerProps> {
 								{...getNodeProps()}
 								onDelete={this.onDelete}
 								onAddToClipboard={this.handleAddToClipboard}
-								onClick={isUneditable ? undefined : () => onSelect(uuid)}
+								onClick={this.handleSelect}
 								size={size}
 								textSize={textSize}
 								showMeta={showMeta}
@@ -269,7 +285,7 @@ class Card extends React.Component<CardContainerProps> {
 								onDelete={this.onDelete}
 								onAddToClipboard={this.handleAddToClipboard}
 								// Chef has overrides so we need to edit it
-								onClick={isUneditable ? undefined : () => onSelect(uuid)}
+								onClick={this.handleSelect}
 								size={size}
 								textSize={textSize}
 								showMeta={showMeta}
@@ -287,7 +303,7 @@ class Card extends React.Component<CardContainerProps> {
 								{...getNodeProps()}
 								onDelete={this.onDelete}
 								onAddToClipboard={this.handleAddToClipboard}
-								onClick={isUneditable ? undefined : () => onSelect(uuid)}
+								onClick={this.handleSelect}
 								size={size}
 								textSize={textSize}
 								showMeta={showMeta}
@@ -510,10 +526,10 @@ class Card extends React.Component<CardContainerProps> {
 const createMapStateToProps = () => {
 	const selectType = createSelectCardType();
 	/*
-	* We store the latest Redux state in a closure variable.
-	* This allows helper functions (like selectOtherCard) to access the
-	* most recent state without recreating the function on every render.
-	*/
+	 * We store the latest Redux state in a closure variable.
+	 * This allows helper functions (like selectOtherCard) to access the
+	 * most recent state without recreating the function on every render.
+	 */
 	let lastState: State;
 
 	const selectOtherCard = (uuid: string) => selectCard(lastState, uuid);

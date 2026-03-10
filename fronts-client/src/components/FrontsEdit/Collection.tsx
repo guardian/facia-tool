@@ -194,15 +194,16 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 												uuid={card.uuid}
 											>
 												<Card
-													frontId={frontId}
-													collectionId={id}
 													uuid={card.uuid}
+													frontId={frontId}
 													parentId={group.uuid}
+													collectionId={id}
 													isUneditable={isUneditable}
 													size={size}
 													canShowPageViewData={true}
 													getNodeProps={() => getAfNodeProps(isUneditable)}
-													onSelect={() => selectCard(card.uuid, id, false)}
+													isSupporting={false}
+													onSelect={selectCard}
 													onDelete={() => removeCard(group.uuid, card.uuid)}
 													groupSizeId={group.id ? parseInt(group.id) : 0}
 													updateCardMeta={updateCardMeta}
@@ -226,13 +227,13 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 													>
 														{(supporting, getSupportingProps) => (
 															<Card
-																frontId={frontId}
 																uuid={supporting.uuid}
+																frontId={frontId}
 																parentId={card.uuid}
+																collectionId={id}
 																canShowPageViewData={false}
-																onSelect={() =>
-																	selectCard(supporting.uuid, id, true)
-																}
+																isSupporting={true}
+																onSelect={selectCard}
 																isUneditable={isUneditable}
 																getNodeProps={() =>
 																	getSupportingProps(isUneditable)

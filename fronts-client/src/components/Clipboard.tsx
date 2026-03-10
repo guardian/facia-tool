@@ -79,7 +79,7 @@ const ClearClipboardButton = styled(ButtonRoundedWithLabel)`
 `;
 
 interface ClipboardProps {
-	selectCard: (id: string, isSupporting?: boolean) => void;
+	selectCard: (id: string, parentId: string, isSupporting?: boolean) => void;
 	clearCardSelection: () => void;
 	removeCard: (id: string) => void;
 	removeSupportingCard: (parentId: string, id: string) => void;
@@ -143,11 +143,11 @@ class Clipboard extends React.Component<ClipboardProps> {
 			isClipboardOpen,
 			clipboardHasOpenForms,
 			clipboardHasContent,
-			selectCard,
 			removeCard,
 			removeSupportingCard,
 			updateCardMeta,
 			addImageToCard,
+			selectCard,
 		} = this.props;
 		return (
 			<React.Fragment>
@@ -203,6 +203,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 														canDragImage={false}
 														canShowPageViewData={false}
 														textSize="small"
+														isSupporting={false}
 														onSelect={selectCard}
 														onDelete={() => removeCard(card.uuid)}
 														updateCardMeta={updateCardMeta}
@@ -222,7 +223,8 @@ class Clipboard extends React.Component<ClipboardProps> {
 																	getNodeProps={getSProps}
 																	size="small"
 																	showMeta={false}
-																	onSelect={(id) => selectCard(id, true)}
+																	isSupporting={true}
+																	onSelect={selectCard}
 																	onDelete={() =>
 																		removeSupportingCard(
 																			card.uuid,
@@ -320,13 +322,11 @@ const mergeProps = (
 ) => ({
 	...stateProps,
 	...dispatchProps,
-	selectCard: (articleId: string, isSupporting = false) =>
-		dispatchProps.selectCard(
-			articleId,
-			clipboardId, // clipboardId is passed twice here as both the collection ID...
-			clipboardId, // and the front ID
-			isSupporting,
-		),
+	selectCard: (articleId: string, parentId: string, isSupporting = false) =>
+		/*Clipboard doesnt have actually have a collection ID or a FrontID
+		 * so we use the parentId for both which resolves to `CLIPBOARD`
+		 */
+		dispatchProps.selectCard(articleId, parentId, parentId, isSupporting),
 });
 
 export default connect(
