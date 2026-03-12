@@ -80,6 +80,12 @@ function flattenModel (model) {
 function serializeCollection (collection) {
     var model = flattenModel(collection.meta);
 
+
+	// Preserve explicit false values dropped by flattenModel
+	if (collection.meta.hideShowMore && collection.meta.hideShowMore() === false) {
+		model.hideShowMore = false;
+	}
+
     if (collection.id) {
         model.id = collection.id;
     }
