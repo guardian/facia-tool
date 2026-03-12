@@ -278,7 +278,8 @@ describe('Config Pinned Front', function () {
                 displayName: 'Fourth',
                 type: 'flexible/general',
 				groups: [ 'standard', 'big', 'very big', 'splash' ],
-				groupsConfig: [ Object({ name: 'standard', maxItems: 8 }), Object({ name: 'big', maxItems: 0 }), Object({ name: 'very big', maxItems: 0 }), Object({ name: 'splash', maxItems: 1 }) ]
+				groupsConfig: [ Object({ name: 'standard', maxItems: 8 }), Object({ name: 'big', maxItems: 0 }), Object({ name: 'very big', maxItems: 0 }), Object({ name: 'splash', maxItems: 1 }) ],
+				hideShowMore: true,
 			});
         }
     });

@@ -56,8 +56,6 @@ describe('Persistence', function () {
             id: 'fruit/front',
             webTitle: 'fruit loops',
             title: 'cereal',
-            // falsy values are removed
-            // isHidden: false,
             priority: 'food',
             initialCollection: {
                 displayName: 'red loop',
@@ -67,8 +65,9 @@ describe('Persistence', function () {
                 backfill: {
                     type: 'capi',
                     query: 'food?colour=read'
-                }
-            }
+                },
+				hideShowMore: true
+			},
         });
         expect(this.events.before).toHaveBeenCalled();
         expect(this.events.after).not.toHaveBeenCalled();
@@ -95,14 +94,16 @@ describe('Persistence', function () {
             groups: ['bonobo', 'chimp'],
             groupsConfig: [{ name: 'bonobo'}, { name: 'chimp' }],
             uneditable: true,
-            id: 'monkeys-collection'
-        });
+            id: 'monkeys-collection',
+			hideShowMore: true
+	});
         var two = new Collection({
             displayName: 'birds',
             groups: ['parrot'],
             groupsConfig: [{ name: 'parrot'}],
-            id: 'birds-collection'
-        });
+            id: 'birds-collection',
+			hideShowMore: true
+		});
         front.collections.items.push(one, two);
 
         var request = persistence.front.update(front);
@@ -143,8 +144,9 @@ describe('Persistence', function () {
             displayName: 'green apple',
             groups: [],
             groupsConfig: [],
-            uneditable: true
-        });
+            uneditable: true,
+			hideShowMore: true
+		});
         collection.parents.push(front);
 
         var request = persistence.collection.save(collection);
@@ -157,8 +159,9 @@ describe('Persistence', function () {
                 displayName: 'green apple',
                 uneditable: true,
                 groups: [],
-                groupsConfig: []
-            }
+                groupsConfig: [],
+				hideShowMore: true
+			}
         });
         expect(this.events.before).toHaveBeenCalled();
         expect(this.events.after).not.toHaveBeenCalled();
@@ -185,6 +188,7 @@ describe('Persistence', function () {
             groups: [],
             groupsConfig: [],
             uneditable: true,
+			hideShowMore: true,
             displayHints: {
                 maxItemsToDisplay: 3
             }
@@ -204,8 +208,9 @@ describe('Persistence', function () {
                 groupsConfig: [],
                 displayHints: {
                     maxItemsToDisplay: 3
-                }
-            }
+                },
+				hideShowMore: true
+			}
         });
         expect(this.events.before).toHaveBeenCalled();
         expect(this.events.after).not.toHaveBeenCalled();
@@ -225,20 +230,21 @@ describe('Persistence', function () {
             webTitle: 'fruit loops',
             title: 'cereal',
             isHidden: false,
-            priority: 'food'
+			priority: 'food'
         });
         var two = new Front({
             id: 'animal/front',
             webTitle: 'animal',
             title: 'wild animals',
             isHidden: false,
-            priority: 'nature'
+			priority: 'nature'
         });
         var collection = new Collection({
             id: 'apple-collection',
             displayName: 'green apple',
             groups: [],
             groupsConfig: [],
+			hideShowMore: true,
             uneditable: true
         });
         collection.parents.push(one, two);
@@ -254,8 +260,9 @@ describe('Persistence', function () {
                 displayName: 'green apple',
                 uneditable: true,
                 groups: [],
-                groupsConfig: []
-            }
+                groupsConfig: [],
+				hideShowMore: true
+			}
         });
         expect(this.events.before).toHaveBeenCalled();
         expect(this.events.after).not.toHaveBeenCalled();

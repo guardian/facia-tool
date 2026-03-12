@@ -71,6 +71,11 @@ export default class ConfigCollection extends DropTarget {
             )}
         );
 
+		// default hideShowMore to true on container creation
+		if (!('hideShowMore' in opts)) {
+			this.meta.hideShowMore(true);
+		}
+
         populateObservables(this.meta, opts);
 
         this.state = asObservableProps([
