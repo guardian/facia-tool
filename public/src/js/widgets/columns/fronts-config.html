@@ -295,7 +295,13 @@
             <label for="excludeFromRss">Exclude from RSS</label>
             <input id="excludeFromRss" type="checkbox" data-bind="checked: meta.excludeFromRss" />
 
-            <label>No curation</label>
+			<div data-bind="visible: $root.priority == 'email' ">
+				<label for="hideShowMore">Hide show more</label>
+				<input id="hideShowMore" type="checkbox" data-bind="checked: meta.hideShowMore" />
+			</div >
+
+
+			<label>No curation</label>
             <input type="checkbox" data-bind="
                 checked: meta.uneditable" />
 

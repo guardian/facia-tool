@@ -39,6 +39,7 @@ export default class ConfigCollection extends DropTarget {
                 'showLatestUpdate',
                 'showTimestamps',
                 'excludeFromRss',
+				'hideShowMore',
                 'backfill',
                 'description',
                 'metadata',
