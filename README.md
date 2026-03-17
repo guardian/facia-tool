@@ -32,7 +32,8 @@ You can find the client for the Fronts tool in [fronts-client](./fronts-client).
 
 ### Unit tests
 
-- Running server side tests: `sbt test`
+### Server side tests
+- Run: `sbt test`
 
 #### Client side tests for V1
 - Running client side tests: `npm run test` in project root
@@ -41,6 +42,7 @@ You can find the client for the Fronts tool in [fronts-client](./fronts-client).
 
 #### Client side tests for V2
 Run `yarn test` in `fronts-client` folder. See [fronts-client](/fronts-client) for more details.
+
 ### IT tests with Database
 
 `sbt test database-int:test`

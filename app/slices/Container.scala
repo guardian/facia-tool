@@ -22,7 +22,7 @@ class Containers(val fixedContainers: FixedContainers) extends Logging {
   ) ++ fixedContainers.all.view.mapValues(Fixed.apply)
 
   /** So that we don't blow up at runtime, which would SUCK */
-  val default = Fixed(fixedContainers.fixedSmallSlowIV)
+  val default = Fixed(fixedContainers.staticMedium4)
 
   def resolve(id: String) = all.getOrElse(
     id, {

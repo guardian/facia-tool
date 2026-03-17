@@ -126,7 +126,7 @@ describe('nextIndexAndGroupSelector', () => {
 				updatedEmail: 'email@email.co.uk',
 				displayName: 'headlines',
 				id: 'e59785e9-ba82-48d8-b79a-0a80b2f9f808',
-				type: 'fixed/small/slow-IV',
+				type: 'static/medium/4',
 			},
 			'c7f48719-6cbc-4024-ae92-1b5f9f6c0c99': {
 				uneditable: true,
@@ -138,7 +138,7 @@ describe('nextIndexAndGroupSelector', () => {
 				updatedEmail: 'email@email.co.uk',
 				displayName: 'headlines',
 				id: '4ab657ff-c105-4292-af23-cda00457b6b7',
-				type: 'fixed/small/slow-IV',
+				type: 'static/medium/4',
 			},
 		},
 		pagination: null,
