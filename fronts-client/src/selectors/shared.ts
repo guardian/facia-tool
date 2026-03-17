@@ -213,7 +213,6 @@ const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 
 	return createShallowEqualResultSelector(
 		[
-			selectFront,
 			selectCollection,
 			selectOtherCollectionsOnCurrentFront,
 			selectGroupMap,

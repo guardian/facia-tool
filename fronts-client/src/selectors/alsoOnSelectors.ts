@@ -149,7 +149,6 @@ const iterateOverOtherFrontCollections = (
 };
 
 /**
- * @param selectedFront
  * @param selectedCollection
  * @param otherCollectionsOnSameFront
  * @param groupMap
@@ -179,14 +178,12 @@ const iterateOverOtherFrontCollections = (
  *  }
  */
 const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
-	selectedFront: FrontConfig | undefined,
 	selectedCollection: Collection | undefined,
 	otherCollectionsOnSameFront: Collection[],
 	groupMap: GroupMap,
 	cardMap: CardMap,
 ): CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap => {
 	if (
-		!selectedFront ||
 		!selectedCollection ||
 		!selectedCollection.draft ||
 		!otherCollectionsOnSameFront ||
