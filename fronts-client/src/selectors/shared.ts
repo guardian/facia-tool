@@ -192,11 +192,30 @@ const createSelectCollection = () =>
 
 const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 	const selectCollection = createSelectCollection();
+
+	// Derive only the collections relevant to the current front,
+	// avoiding recomputation when unrelated collections change.
+	const selectOtherCollectionsOnCurrentFront = createShallowEqualResultSelector(
+		selectFront,
+		selectCollectionMap,
+		selectCollectionId,
+		(currentFront, collectionMap, currentCollectionId) =>
+			currentFront
+				? (currentFront.collections || [])
+						.filter(
+							(currentFrontCollectionId) =>
+								collectionMap[currentFrontCollectionId] &&
+								currentFrontCollectionId !== currentCollectionId,
+						)
+						.map((collectionId) => collectionMap[collectionId])
+				: [],
+	);
+
 	return createShallowEqualResultSelector(
 		[
 			selectFront,
 			selectCollection,
-			selectCollectionMap,
+			selectOtherCollectionsOnCurrentFront,
 			selectGroupMap,
 			selectCardMap,
 		],

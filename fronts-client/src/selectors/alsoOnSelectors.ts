@@ -3,7 +3,6 @@ import {
 	OtherCollectionsOnSameFrontThisCardIsOn,
 	CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	Collection,
-	CollectionMap,
 	CollectionsWhichAreAlsoOnOtherFronts,
 	CollectionsWhichAreAlsoOnOtherFrontsMap,
 	GroupMap,
@@ -152,7 +151,7 @@ const iterateOverOtherFrontCollections = (
 /**
  * @param selectedFront
  * @param selectedCollection
- * @param collectionMap
+ * @param otherCollectionsOnSameFront
  * @param groupMap
  * @param cardMap
  *
@@ -182,7 +181,7 @@ const iterateOverOtherFrontCollections = (
 const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 	selectedFront: FrontConfig | undefined,
 	selectedCollection: Collection | undefined,
-	collectionMap: CollectionMap,
+	otherCollectionsOnSameFront: Collection[],
 	groupMap: GroupMap,
 	cardMap: CardMap,
 ): CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap => {
@@ -190,7 +189,7 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 		!selectedFront ||
 		!selectedCollection ||
 		!selectedCollection.draft ||
-		!collectionMap ||
+		!otherCollectionsOnSameFront ||
 		!groupMap ||
 		!cardMap
 	) {
@@ -204,13 +203,6 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 			const selectedCollectionGroup = groupMap[groupUuid];
 			return selectedCollectionGroup.cards.map((cardUuid) => cardMap[cardUuid]);
 		},
-	);
-
-	const otherCollectionsOnSameFrontUuids = selectedFront.collections.filter(
-		(collectionUuid) => collectionUuid !== selectedCollection.id,
-	);
-	const otherCollectionsOnSameFront = otherCollectionsOnSameFrontUuids.map(
-		(collectionUuid) => collectionMap[collectionUuid],
 	);
 
 	return selectedCollectionCards.reduce(
