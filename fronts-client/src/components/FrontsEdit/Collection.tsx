@@ -23,7 +23,7 @@ import { CardTypes } from 'constants/cardTypes';
 import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
 import { ValidationResponse } from '../../util/validateImageSrc';
 import { bindActionCreators } from 'redux';
-// import { createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from '../../selectors/shared';
+import { createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from '../../selectors/shared';
 
 const getArticleNotifications = (
 	id: string,
@@ -290,23 +290,19 @@ const createMapStateToProps = () => {
 			collectionSet: props.browsingStage,
 		});
 
-		/*
-		 * The also on card feature has been temporarily disabled whilst we investigate slowness on the fronts
-		 * @see https://github.com/guardian/facia-tool/pull/1950
-		 */
-		// const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront =
-		// 	createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront();
-		//
-		// const cardsWhichAreAlsoOnOtherCollectionsOnSameFront =
-		// 	selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(state, {
-		// 		collectionId: props.id,
-		// 		frontId: props.frontId,
-		// 	});
+		const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront =
+			createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront();
+
+		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront =
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(state, {
+				collectionId: props.id,
+				frontId: props.frontId,
+			});
 
 		return {
 			lastDesktopArticle: articleVisibilityDetails.desktop,
 			lastMobileArticle: articleVisibilityDetails.mobile,
-			cardsWhichAreAlsoOnOtherCollectionsOnSameFront: undefined,
+			cardsWhichAreAlsoOnOtherCollectionsOnSameFront,
 		};
 	};
 };
