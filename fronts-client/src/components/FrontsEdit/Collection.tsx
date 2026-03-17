@@ -283,15 +283,14 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 
 const createMapStateToProps = () => {
 	const selectArticleVisibilityDetails = createSelectArticleVisibilityDetails();
+	const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront =
+		createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront();
 
 	return (state: State, props: CollectionContextProps) => {
 		const articleVisibilityDetails = selectArticleVisibilityDetails(state, {
 			collectionId: props.id,
 			collectionSet: props.browsingStage,
 		});
-
-		const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront =
-			createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront();
 
 		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront =
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(state, {
