@@ -192,7 +192,7 @@ const createSelectCollection = () =>
 
 const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 	const selectCollection = createSelectCollection();
-	return createSelector(
+	return createShallowEqualResultSelector(
 		[
 			selectFront,
 			selectCollection,
