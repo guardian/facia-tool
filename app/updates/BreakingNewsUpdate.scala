@@ -71,7 +71,7 @@ object BreakingNewsUpdate {
           if (BreakingNewsTopics.map(_.name) :+ BreakingNewsGlobalTopicName)
             .contains(topic) =>
         Some("Breaking news")
-      case Some(topic) if (BreakingNewsSportUs == topic) =>
+      case Some(topic) if (BreakingNewsSportUs.name == topic) =>
         Some("Sports news")
       case Some(topic)
           if (SportBreakingNewsTopics.map(_.name) :+ SportGlobalTopicName)
