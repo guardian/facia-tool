@@ -23,9 +23,9 @@ class BreakingNewsUpdateTest extends FreeSpec with Matchers {
 
   "createPayload" - {
     "should not add titles for topics that don't need them" in {
-      val ukTrail = createTrail("FAKE TOPIC")
+      val trail = createTrail("FAKE TOPIC")
       BreakingNewsUpdate
-        .createPayload(ukTrail, exampleEmail)
+        .createPayload(trail, exampleEmail)
         .title shouldBe None
     }
 
