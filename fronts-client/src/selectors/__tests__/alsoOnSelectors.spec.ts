@@ -8,19 +8,24 @@ import {
 	collectionCulture,
 	collectionFootball,
 	collectionObituaries,
-	collectionMap,
+	allCollections,
 	collectionSport,
 	collectionWhatToWatch,
 	commercialFronts,
 	editorialFrontsInConfig,
-	frontConfig,
 	groupMap,
 	trainingFronts,
 } from './mock-data';
+import { Collection } from '../../types/Collection';
 
 const allFronts = editorialFrontsInConfig
 	.concat(additionalEditorialFronts)
 	.concat(trainingFronts.concat(commercialFronts));
+
+const collectionsExcept = (collectionToExclude: Collection) =>
+	allCollections.filter(
+		(collection) => collectionToExclude.id !== collection.id,
+	);
 
 describe('Selecting collections which are also on other fronts', () => {
 	it('return an object with all the collections on the current front', () => {
@@ -102,9 +107,8 @@ describe('Selecting cards which are also on other collections on the same front'
 	it('return an object with all the cards on the current collection', () => {
 		expect(
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
-				frontConfig,
 				collectionCulture,
-				collectionMap,
+				[collectionFootball, collectionSport, collectionWhatToWatch],
 				groupMap,
 				cardMap,
 			),
@@ -120,9 +124,8 @@ describe('Selecting cards which are also on other collections on the same front'
 	it('if a card is NOT on another collection on the same front, return an empty list of collections for that cards', () => {
 		expect(
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
-				frontConfig,
 				collectionObituaries,
-				collectionMap,
+				collectionsExcept(collectionObituaries),
 				groupMap,
 				cardMap,
 			),
@@ -136,9 +139,8 @@ describe('Selecting cards which are also on other collections on the same front'
 	it('if a card IS on another collection on the same front, return a list of shared collections for that card', () => {
 		expect(
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
-				frontConfig,
 				collectionFootball,
-				collectionMap,
+				collectionsExcept(collectionFootball),
 				groupMap,
 				cardMap,
 			),
@@ -150,9 +152,8 @@ describe('Selecting cards which are also on other collections on the same front'
 
 		expect(
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
-				frontConfig,
 				collectionSport,
-				collectionMap,
+				collectionsExcept(collectionSport),
 				groupMap,
 				cardMap,
 			),
@@ -167,9 +168,8 @@ describe('Selecting cards which are also on other collections on the same front'
 
 		expect(
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
-				frontConfig,
 				collectionWhatToWatch,
-				collectionMap,
+				collectionsExcept(collectionWhatToWatch),
 				groupMap,
 				cardMap,
 			),
@@ -186,9 +186,8 @@ describe('Selecting cards which are also on other collections on the same front'
 	it("if some cards are shared, and some aren't, return corresponding lists for each card", () => {
 		expect(
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
-				frontConfig,
 				collectionCulture,
-				collectionMap,
+				collectionsExcept(collectionCulture),
 				groupMap,
 				cardMap,
 			),

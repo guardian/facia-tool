@@ -1,10 +1,5 @@
 import { FrontConfig } from '../../types/FaciaApi';
-import {
-	CardMap,
-	Collection,
-	CollectionMap,
-	GroupMap,
-} from '../../types/Collection';
+import { CardMap, Collection, GroupMap } from '../../types/Collection';
 
 const editorialFrontsInConfig: FrontConfig[] = [
 	{
@@ -105,13 +100,13 @@ const frontConfig: FrontConfig = {
 	],
 };
 
-const collectionMap: CollectionMap = {
-	obituariesCollectionUuid: collectionObituaries,
-	footballCollectionUuid: collectionFootball,
-	sportCollectionUuid: collectionSport,
-	whatToWatchCollectionUuid: collectionWhatToWatch,
-	cultureCollectionUuid: collectionCulture,
-};
+const allCollections = [
+	collectionObituaries,
+	collectionFootball,
+	collectionSport,
+	collectionWhatToWatch,
+	collectionCulture,
+];
 
 const groupMap: GroupMap = {
 	groupUuid1: {
@@ -195,7 +190,7 @@ export {
 	collectionSport,
 	collectionWhatToWatch,
 	collectionCulture,
-	collectionMap,
+	allCollections,
 	frontConfig,
 	groupMap,
 	cardMap,
