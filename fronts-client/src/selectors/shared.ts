@@ -211,12 +211,55 @@ const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 				: [],
 	);
 
+	// Narrow the groupMap to only groups belonging to relevant collections,
+	// so unrelated group changes don't trigger recomputation
+	const selectRelevantGroupMap = createShallowEqualResultSelector(
+		selectOtherCollectionsOnCurrentFront,
+		selectCollection,
+		selectGroupMap,
+		(otherCollections, currentCollection, groupMap) => {
+			const relevantGroupIds = new Set<string>();
+			const allCollections = currentCollection
+				? [...otherCollections, currentCollection]
+				: otherCollections;
+			for (const collection of allCollections) {
+				for (const groupId of collection.draft ?? []) {
+					relevantGroupIds.add(groupId);
+				}
+			}
+			return Object.fromEntries(
+				[...relevantGroupIds]
+					.map((id) => [id, groupMap[id]])
+					.filter(([, v]) => v),
+			);
+		},
+	);
+
+	// Narrow the cardMap to only cards in relevant groups
+	const selectRelevantCardMap = createShallowEqualResultSelector(
+		selectRelevantGroupMap,
+		selectCardMap,
+		(relevantGroupMap, cardMap) => {
+			const relevantCardIds = new Set<string>();
+			for (const group of Object.values(relevantGroupMap)) {
+				for (const cardId of group.cards) {
+					relevantCardIds.add(cardId);
+				}
+			}
+			return Object.fromEntries(
+				[...relevantCardIds]
+					.map((id) => [id, cardMap[id]])
+					.filter(([, v]) => v),
+			);
+		},
+	);
+
 	return createShallowEqualResultSelector(
 		[
 			selectCollection,
 			selectOtherCollectionsOnCurrentFront,
-			selectGroupMap,
-			selectCardMap,
+			selectRelevantGroupMap,
+			selectRelevantCardMap,
 		],
 		selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront,
 	);
