@@ -1,12 +1,10 @@
 import {
 	CardMap,
-	OtherCollectionsOnSameFrontThisCardIsOn,
 	CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	Collection,
 	CollectionsWhichAreAlsoOnOtherFronts,
 	CollectionsWhichAreAlsoOnOtherFrontsMap,
 	GroupMap,
-	Card,
 } from 'types/Collection';
 import { FrontConfig } from '../types/FaciaApi';
 import uniq from 'lodash/uniq';
@@ -158,7 +156,7 @@ const iterateOverOtherFrontCollections = (
  *  	(1) Find the cards on that collection
  *  	(2) For each card, find _other_ containers that card might be on (on the same front)
  *
- *  Through nested reduce functions, return a keyed object:
+ *  Return a keyed object:
  *  {
  *    card1: {
  *      collections: [
@@ -193,117 +191,44 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 		return emptyObject;
 	}
 
-	// Use Draft cards as these are the ones that show up in the UI
-	const selectedCollectionGroupUuids = selectedCollection.draft;
-	const selectedCollectionCards = selectedCollectionGroupUuids.flatMap(
-		(groupUuid) => {
-			const selectedCollectionGroup = groupMap[groupUuid];
-			return selectedCollectionGroup.cards.map((cardUuid) => cardMap[cardUuid]);
-		},
-	);
-
-	return selectedCollectionCards.reduce(
-		iterateOverSelectedCollectionCards(
-			otherCollectionsOnSameFront,
-			groupMap,
-			cardMap,
-		),
-		emptyObject,
-	);
-};
-
-const cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue: OtherCollectionsOnSameFrontThisCardIsOn =
-	{
-		collections: [] as Array<{ collectionUuid: string }>,
-	};
-
-const iterateOverSelectedCollectionCards = (
-	otherCollectionsOnSameFront: Collection[],
-	groupMap: GroupMap,
-	cardMap: CardMap,
-) => {
-	return (
-		accumulator: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
-		selectedCollectionCard: Card,
-	): CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap => {
-		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront: OtherCollectionsOnSameFrontThisCardIsOn =
-			otherCollectionsOnSameFront.reduce(
-				iterateOverOtherCollectionsOnSameFront(
-					// we need to compare on the card IDs...
-					selectedCollectionCard.id,
-					groupMap,
-					cardMap,
-				),
-				cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue,
-			);
-		return {
-			...accumulator,
-			// ...but we prefer to store with the UUIDs as this is the Redux way
-			[selectedCollectionCard.uuid]:
-				cardsWhichAreAlsoOnOtherCollectionsOnSameFront,
-		};
-	};
-};
-
-const iterateOverOtherCollectionsOnSameFront = (
-	selectedCollectionCardId: string,
-	groupMap: GroupMap,
-	cardMap: CardMap,
-) => {
-	return (
-		accumulator: OtherCollectionsOnSameFrontThisCardIsOn,
-		otherCollectionOnSameFront: Collection,
-	): OtherCollectionsOnSameFrontThisCardIsOn => {
-		if (!otherCollectionOnSameFront || !otherCollectionOnSameFront.draft) {
-			return accumulator;
+	// Pre-build a map of cardId -> collectionUuids from other collections,
+	// so we can do O(1) lookups instead of nested iterations per card
+	const cardIdToOtherCollectionUuids = new Map<string, string[]>();
+	for (const otherCollection of otherCollectionsOnSameFront) {
+		if (!otherCollection?.draft) {
+			continue;
 		}
-		// Use Draft cards as these are the ones that show up in the UI
-		const otherCollectionOnSameFrontGroupUuids =
-			otherCollectionOnSameFront.draft;
-		const otherCollectionOnSameFrontCards =
-			otherCollectionOnSameFrontGroupUuids.flatMap((groupUuid) => {
-				const selectedCollectionGroup = groupMap[groupUuid];
-				return selectedCollectionGroup.cards.map(
-					(cardUuid) => cardMap[cardUuid],
-				);
-			});
-		const otherCollectionOnSameFrontCardIds =
-			otherCollectionOnSameFrontCards.map((card) => card.id);
+		for (const groupUuid of otherCollection.draft) {
+			const group = groupMap[groupUuid];
+			for (const cardUuid of group.cards) {
+				const card = cardMap[cardUuid];
+				const existing = cardIdToOtherCollectionUuids.get(card.id);
+				if (existing) {
+					existing.push(otherCollection.id);
+				} else {
+					cardIdToOtherCollectionUuids.set(card.id, [otherCollection.id]);
+				}
+			}
+		}
+	}
 
-		const cardsWhichAreAlsoOnOtherCollectionsOnSameFront: OtherCollectionsOnSameFrontThisCardIsOn =
-			otherCollectionOnSameFrontCardIds.reduce(
-				iterateOverOtherCollectionOnSameFrontCards(
-					otherCollectionOnSameFront,
-					selectedCollectionCardId,
-				),
-				cardsWhichAreAlsoOnOtherCollectionsOnSameFrontInitialValue,
-			);
-
-		return {
-			collections: accumulator.collections.concat(
-				cardsWhichAreAlsoOnOtherCollectionsOnSameFront.collections,
-			),
-		};
-	};
-};
-
-const iterateOverOtherCollectionOnSameFrontCards = (
-	otherCollectionOnSameFront: Collection,
-	selectedCollectionCardId: string,
-) => {
-	return (
-		accumulator: OtherCollectionsOnSameFrontThisCardIsOn,
-		otherCollectionOnSameFrontCardId: string,
-	): OtherCollectionsOnSameFrontThisCardIsOn => {
-		if (selectedCollectionCardId === otherCollectionOnSameFrontCardId) {
-			return {
-				collections: accumulator.collections.concat([
-					{ collectionUuid: otherCollectionOnSameFront.id },
-				]),
+	// Use Draft cards as these are the ones that show up in the UI
+	const result: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = {};
+	for (const groupUuid of selectedCollection.draft) {
+		const group = groupMap[groupUuid];
+		for (const cardUuid of group.cards) {
+			const card = cardMap[cardUuid];
+			const matchingCollectionUuids =
+				cardIdToOtherCollectionUuids.get(card.id) ?? [];
+			result[card.uuid] = {
+				collections: matchingCollectionUuids.map((collectionUuid) => ({
+					collectionUuid,
+				})),
 			};
 		}
-		return accumulator;
-	};
+	}
+
+	return result;
 };
 
 export {
