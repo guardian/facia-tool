@@ -199,16 +199,16 @@ const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 		selectFront,
 		selectCollectionMap,
 		selectCollectionId,
-		(currentFront, collectionMap, currentCollectionId) =>
-			currentFront
-				? (currentFront.collections || [])
-						.filter(
-							(currentFrontCollectionId) =>
-								collectionMap[currentFrontCollectionId] &&
-								currentFrontCollectionId !== currentCollectionId,
-						)
-						.map((collectionId) => collectionMap[collectionId])
-				: [],
+		(currentFront, collectionMap, currentCollectionId) => {
+			if (!currentFront) return [];
+			const result: Collection[] = [];
+			for (const id of currentFront.collections ?? []) {
+				if (id !== currentCollectionId && collectionMap[id]) {
+					result.push(collectionMap[id]);
+				}
+			}
+			return result;
+		},
 	);
 
 	// Narrow the groupMap to only groups belonging to relevant collections,
@@ -218,20 +218,17 @@ const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 		selectCollection,
 		selectGroupMap,
 		(otherCollections, currentCollection, groupMap) => {
-			const relevantGroupIds = new Set<string>();
+			const result: GroupMap = {};
 			const allCollections = currentCollection
 				? [...otherCollections, currentCollection]
 				: otherCollections;
 			for (const collection of allCollections) {
 				for (const groupId of collection.draft ?? []) {
-					relevantGroupIds.add(groupId);
+					const group = groupMap[groupId];
+					if (group) result[groupId] = group;
 				}
 			}
-			return Object.fromEntries(
-				[...relevantGroupIds]
-					.map((id) => [id, groupMap[id]])
-					.filter(([, v]) => v),
-			);
+			return result;
 		},
 	);
 
@@ -240,17 +237,14 @@ const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 		selectRelevantGroupMap,
 		selectCardMap,
 		(relevantGroupMap, cardMap) => {
-			const relevantCardIds = new Set<string>();
+			const result: CardMap = {};
 			for (const group of Object.values(relevantGroupMap)) {
 				for (const cardId of group.cards) {
-					relevantCardIds.add(cardId);
+					const card = cardMap[cardId];
+					if (card) result[cardId] = card;
 				}
 			}
-			return Object.fromEntries(
-				[...relevantCardIds]
-					.map((id) => [id, cardMap[id]])
-					.filter(([, v]) => v),
-			);
+			return result;
 		},
 	);
 
