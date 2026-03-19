@@ -9,13 +9,14 @@ import {
 	getContent,
 	transformExternalArticle,
 } from 'services/faciaApi';
-import { CapiArticle } from 'types/Capi';
+import { CapiArticle, CapiInteractiveAtom } from 'types/Capi';
 import { TArticleEntities } from 'types/Cards';
 import { Dispatch } from 'types/Store';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { MappableDropType } from 'util/collectionUtils';
 import {
 	createAtomSnap,
+	createAtomSnapFromAtom,
 	createLatestSnap,
 	createPlainSnap,
 	createSnap,
@@ -187,6 +188,10 @@ const getCardEntitiesFromDrop = async (
 		);
 	}
 
+	if (drop.type === 'INTERACTIVE_ATOM') {
+		return getInteractiveAtomEntityFromFeedDrop(drop.data);
+	}
+
 	if (drop.type === 'RECIPE') {
 		return getRecipeEntityFromFeedDrop(drop.data);
 	}
@@ -333,6 +338,13 @@ const getFeastCollectionFromFeedDrop = (
 	});
 	card.meta.supporting = supportingCards.map((sc) => sc.uuid);
 	return { card, supportingCards };
+};
+
+const getInteractiveAtomEntityFromFeedDrop = (
+	atom: CapiInteractiveAtom,
+): TArticleEntities => {
+	const card = createAtomSnapFromAtom(atom);
+	return { card };
 };
 
 const getArticleEntitiesFromFeedDrop = (

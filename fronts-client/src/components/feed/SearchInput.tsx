@@ -19,6 +19,7 @@ type SearchInputState = StringArrSearchItems & {
 	query: string;
 	fromDate: null | moment.Moment;
 	toDate: null | moment.Moment;
+	includeAtoms: boolean;
 };
 
 interface SearchInputProps {
@@ -43,6 +44,11 @@ const CloseButton = styled(ButtonDefault)`
 	margin: 10px 0;
 `;
 
+const CheckboxLabel = styled.label`
+	display: block;
+	margin: 10px 0;
+`;
+
 const renderDateAsString = (date: moment.Moment | null) => {
 	if (!date) {
 		return 'Not selected';
@@ -58,6 +64,7 @@ const initState = {
 	query: '',
 	toDate: null,
 	fromDate: null,
+	includeAtoms: false,
 } as SearchInputState;
 
 class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
@@ -212,6 +219,16 @@ class SearchInput extends React.Component<SearchInputProps, SearchInputState> {
 							end={this.state.toDate}
 							onDateChange={this.onDateChange}
 						/>
+						<CheckboxLabel>
+							<input
+								type="checkbox"
+								checked={this.state.includeAtoms}
+								onChange={(e) =>
+									this.setStateInner({ includeAtoms: e.currentTarget.checked })
+								}
+							/>{' '}
+							Include atoms
+						</CheckboxLabel>
 						<CloseButton onClick={this.hideSearchFilters}>Close</CloseButton>
 					</>
 				)}

@@ -79,7 +79,7 @@ export const createSelectIsArticleStale =
 	) =>
 	(state: State, id: string, dateStr: string | undefined): boolean => {
 		const article = selectArticleById(state, id);
-		if (!article || !article.fields.lastModified || !dateStr) {
+		if (!article || !article.fields?.lastModified || !dateStr) {
 			return true;
 		}
 		const articleDate = new Date(article.fields.lastModified);
