@@ -108,7 +108,7 @@ describe('Selecting cards which are also on other collections on the same front'
 		expect(
 			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
 				collectionCulture,
-				[collectionFootball, collectionSport, collectionWhatToWatch],
+				collectionsExcept(collectionCulture),
 				groupMap,
 				cardMap,
 			),
