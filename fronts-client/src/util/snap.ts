@@ -1,5 +1,6 @@
 import type { Card, CardMeta } from 'types/Collection';
 import type { CAPIInteractiveAtomResponse } from 'services/capiQuery';
+import type { CapiInteractiveAtom } from 'types/Capi';
 import { getAbsolutePath, isGuardianUrl, isValidSnapLinkUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import v4 from 'uuid/v4';
@@ -94,6 +95,24 @@ async function createAtomSnap(
 	});
 }
 
+function createAtomSnapFromAtom(atom: CapiInteractiveAtom): Card {
+	const atomId = `atom/interactive/${atom.id}`;
+	const atomUrl = `https://content.guardianapis.com/${atomId}`;
+	return convertToSnap({
+		uuid: v4(),
+		id: atomUrl,
+		frontPublicationDate: Date.now(),
+		meta: {
+			headline: atom.data.interactive.title,
+			byline: 'Guardian Visuals',
+			showByline: false,
+			snapType: 'interactive',
+			snapUri: atomUrl,
+			atomId,
+		},
+	});
+}
+
 function createLatestSnap(url: string, kicker: string) {
 	return convertToSnap({
 		id: url,
@@ -114,5 +133,6 @@ export {
 	createLatestSnap,
 	createSnap,
 	createAtomSnap,
+	createAtomSnapFromAtom,
 	createPlainSnap,
 };

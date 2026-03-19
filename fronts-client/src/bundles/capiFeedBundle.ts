@@ -1,5 +1,9 @@
 import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
-import { CapiArticle } from 'types/Capi';
+import {
+	CapiArticle,
+	CapiInteractiveAtom,
+	isCapiInteractiveAtom,
+} from 'types/Capi';
 import { ThunkResult } from 'types/Store';
 import { previewCapi, liveCapi } from 'services/capiQuery';
 import { checkIsContent } from 'services/capiQuery';
@@ -8,19 +12,29 @@ import { Dispatch } from 'redux';
 import type { State } from 'types/State';
 import { createSelectIsArticleStale } from 'util/externalArticle';
 
-type FeedState = CapiArticle;
+type FeedState = CapiArticle | CapiInteractiveAtom;
+
+export type FeedEntry =
+	| { type: 'article'; id: string }
+	| { type: 'atom'; id: string };
 
 const {
 	actions: liveActions,
 	reducer: capiLiveFeed,
 	selectors: liveSelectors,
-} = createAsyncResourceBundle<FeedState>('capiLiveFeed', {
+} = createAsyncResourceBundle<FeedState, FeedEntry>('capiLiveFeed', {
 	selectLocalState: (state) => state.feed.capiLiveFeed,
 	indexById: true,
 });
 
-const isNonCommercialArticle = (article: CapiArticle | undefined): boolean => {
+const isNonCommercialArticle = (
+	article: CapiArticle | CapiInteractiveAtom | undefined,
+): boolean => {
 	if (!article) {
+		return true;
+	}
+
+	if (isCapiInteractiveAtom(article)) {
 		return true;
 	}
 
@@ -39,24 +53,44 @@ const {
 	actions: previewActions,
 	reducer: capiPreviewFeed,
 	selectors: previewSelectors,
-} = createAsyncResourceBundle<FeedState>('capiPreviewFeed', {
+} = createAsyncResourceBundle<FeedState, FeedEntry>('capiPreviewFeed', {
 	selectLocalState: (state) => state.feed.capiPreviewFeed,
 	indexById: true,
 });
 
 const fetchResourceOrResults = async (
 	capiService: typeof liveCapi,
-	params: object,
+	params: object & { includeAtoms?: boolean },
 	isResource: boolean,
 	fetchFromPreview: boolean = false,
 ) => {
+	const { includeAtoms, ...capiParams } = params as any;
 	const capiEndpoint = fetchFromPreview
 		? capiService.scheduled
 		: capiService.search;
-	const { response } = await capiEndpoint(params, { isResource });
+
+	const mainRequest = capiEndpoint(capiParams, { isResource });
+	const atomsRequest =
+		includeAtoms && !isResource
+			? capiService.atoms({ q: capiParams.q })
+			: Promise.resolve(null);
+
+	const [{ response }, atomsResponse] = await Promise.all([
+		mainRequest,
+		atomsRequest,
+	]);
+
+	const atomResults: CapiArticle[] =
+		atomsResponse &&
+		!checkIsContent(atomsResponse.response) &&
+		(atomsResponse.response as any).results
+			? (atomsResponse.response as any).results
+			: [];
 
 	return {
-		results: checkIsContent(response) ? [response.content] : response.results,
+		results: checkIsContent(response)
+			? [response.content]
+			: [...response.results, ...atomResults],
 		pagination: checkIsContent(response)
 			? undefined
 			: {
@@ -87,17 +121,22 @@ export const createFetch =
 				const nonCommercialResults = resultData.results.filter((article) =>
 					isNonCommercialArticle(article),
 				);
-				const updatedResults = nonCommercialResults.filter((article) =>
-					selectIsArticleStale(
-						getState(),
-						article.id,
-						article.fields.lastModified,
-					),
-				);
-				dispatch(
+				const updatedResults = nonCommercialResults.filter((article) => {
+					const lastModified = isCapiInteractiveAtom(article)
+						? article.contentChangeDetails.lastModified?.date?.toString()
+						: article.fields.lastModified;
+					return selectIsArticleStale(getState(), article.id, lastModified);
+				});
+
+				const taggedOrder: FeedEntry[] = nonCommercialResults.map((item) => ({
+					type: isCapiInteractiveAtom(item) ? 'atom' : 'article',
+					id: item.id,
+				}));
+
+				(dispatch as any)(
 					actions.fetchSuccess(updatedResults, {
 						pagination: resultData.pagination || undefined,
-						order: nonCommercialResults.map((_) => _.id),
+						order: taggedOrder,
 					}),
 				);
 			} else {
@@ -110,11 +149,21 @@ export const createFetch =
 
 export const fetchLive = createFetch(
 	liveActions,
-	createSelectIsArticleStale(liveSelectors.selectById),
+	createSelectIsArticleStale(
+		liveSelectors.selectById as (
+			state: any,
+			id: string,
+		) => CapiArticle | undefined,
+	),
 );
 export const fetchPreview = createFetch(
 	previewActions,
-	createSelectIsArticleStale(liveSelectors.selectById),
+	createSelectIsArticleStale(
+		liveSelectors.selectById as (
+			state: any,
+			id: string,
+		) => CapiArticle | undefined,
+	),
 	true,
 );
 
@@ -122,7 +171,7 @@ const {
 	actions: prefillActions,
 	reducer: prefillFeed,
 	selectors: prefillSelectors,
-} = createAsyncResourceBundle<FeedState>('prefillFeed', {
+} = createAsyncResourceBundle<FeedState, FeedEntry>('prefillFeed', {
 	selectLocalState: (state) => state.feed.prefillFeed,
 	indexById: true,
 });
@@ -139,7 +188,7 @@ export const fetchPrefill =
 		try {
 			const { response } = await getPrefills(id);
 			if (!checkIsContent(response)) {
-				dispatch(
+				(dispatch as any)(
 					prefillActions.fetchSuccess(
 						response.results.filter(isNonCommercialArticle, {
 							totalPages: response.pages,
@@ -164,10 +213,17 @@ export const hidePrefills = () => (dispatch: Dispatch) => {
 export const selectArticleAcrossResources = (
 	state: State,
 	id: string,
-): CapiArticle | undefined =>
+): CapiArticle | CapiInteractiveAtom | undefined =>
 	liveSelectors.selectById(state, id) ||
 	previewSelectors.selectById(state, id) ||
 	prefillSelectors.selectById(state, id);
+
+export const selectLiveFeedOrder = (state: State): FeedEntry[] =>
+	liveSelectors.selectLastFetchOrder(state);
+export const selectPreviewFeedOrder = (state: State): FeedEntry[] =>
+	previewSelectors.selectLastFetchOrder(state);
+export const selectPrefillFeedOrder = (state: State): FeedEntry[] =>
+	prefillSelectors.selectLastFetchOrder(state);
 
 export {
 	liveActions,

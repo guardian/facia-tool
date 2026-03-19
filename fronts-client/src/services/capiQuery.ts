@@ -184,6 +184,15 @@ const capiQuery = (baseURL: string) => {
 				})}`,
 			);
 		},
+		atoms: async (params: { q?: string }): Promise<CAPISearchQueryResponse> => {
+			return fetchCAPIResponse<CAPISearchQueryResponse>(
+				`${baseURL}/atoms${qs({
+					types: 'interactive',
+					searchFields: 'data.interactive.interactive_title',
+					...params,
+				})}`,
+			);
+		},
 	};
 };
 

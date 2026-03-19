@@ -152,6 +152,7 @@ const getParams = (
 		ratings,
 		toDate: to,
 		fromDate: from,
+		includeAtoms,
 	}: SearchInputState,
 	isPreview: boolean,
 	sortByParam: string,
@@ -167,6 +168,7 @@ const getParams = (
 	'show-fields': getCapiFieldsToShow(isPreview),
 	'show-atoms': 'media',
 	'show-blocks': 'main',
+	includeAtoms,
 	...(isPreview
 		? { 'order-by': 'oldest', 'from-date': getTodayDate() }
 		: {

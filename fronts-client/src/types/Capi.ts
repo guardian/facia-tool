@@ -205,10 +205,33 @@ interface CapiArticle {
 
 type CapiArticleWithMetadata = CapiArticle & { group?: number };
 
+interface CapiInteractiveAtom {
+	id: string;
+	atomType: 'interactive';
+	data: {
+		interactive: {
+			title: string;
+		};
+	};
+	contentChangeDetails: {
+		lastModified?: {
+			date: number;
+		};
+	};
+}
+
+function isCapiInteractiveAtom(
+	item: CapiArticle | CapiInteractiveAtom,
+): item is CapiInteractiveAtom {
+	return (item as CapiInteractiveAtom).atomType === 'interactive';
+}
+
 export {
 	CapiArticle,
 	CapiArticleFields,
 	CapiArticleWithMetadata,
+	CapiInteractiveAtom,
+	isCapiInteractiveAtom,
 	Tag,
 	Element,
 	Atom,
