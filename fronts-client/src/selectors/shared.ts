@@ -192,13 +192,68 @@ const createSelectCollection = () =>
 
 const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 	const selectCollection = createSelectCollection();
-	return createSelector(
+
+	// Derive only the collections relevant to the current front,
+	// avoiding recomputation when unrelated collections change.
+	const selectOtherCollectionsOnCurrentFront = createShallowEqualResultSelector(
+		selectFront,
+		selectCollectionMap,
+		selectCollectionId,
+		(currentFront, collectionMap, currentCollectionId) => {
+			if (!currentFront) return [];
+			const result: Collection[] = [];
+			for (const id of currentFront.collections ?? []) {
+				if (id !== currentCollectionId && collectionMap[id]) {
+					result.push(collectionMap[id]);
+				}
+			}
+			return result;
+		},
+	);
+
+	// Narrow the groupMap to only groups belonging to relevant collections,
+	// so unrelated group changes don't trigger recomputation
+	const selectRelevantGroupMap = createShallowEqualResultSelector(
+		selectOtherCollectionsOnCurrentFront,
+		selectCollection,
+		selectGroupMap,
+		(otherCollections, currentCollection, groupMap) => {
+			const result: GroupMap = {};
+			const allCollections = currentCollection
+				? [...otherCollections, currentCollection]
+				: otherCollections;
+			for (const collection of allCollections) {
+				for (const groupId of collection.draft ?? []) {
+					const group = groupMap[groupId];
+					if (group) result[groupId] = group;
+				}
+			}
+			return result;
+		},
+	);
+
+	// Narrow the cardMap to only cards in relevant groups
+	const selectRelevantCardMap = createShallowEqualResultSelector(
+		selectRelevantGroupMap,
+		selectCardMap,
+		(relevantGroupMap, cardMap) => {
+			const result: CardMap = {};
+			for (const group of Object.values(relevantGroupMap)) {
+				for (const cardId of group.cards) {
+					const card = cardMap[cardId];
+					if (card) result[cardId] = card;
+				}
+			}
+			return result;
+		},
+	);
+
+	return createShallowEqualResultSelector(
 		[
-			selectFront,
 			selectCollection,
-			selectCollectionMap,
-			selectGroupMap,
-			selectCardMap,
+			selectOtherCollectionsOnCurrentFront,
+			selectRelevantGroupMap,
+			selectRelevantCardMap,
 		],
 		selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront,
 	);
