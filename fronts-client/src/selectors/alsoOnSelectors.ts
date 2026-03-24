@@ -200,8 +200,10 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 		}
 		for (const groupUuid of otherCollection.draft) {
 			const group = groupMap[groupUuid];
+			if (!group) continue;
 			for (const cardUuid of group.cards) {
 				const card = cardMap[cardUuid];
+				if (!card) continue;
 				const existing = cardIdToOtherCollectionUuids.get(card.id);
 				if (existing) {
 					existing.push(otherCollection.id);
@@ -216,8 +218,10 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 	const result: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = {};
 	for (const groupUuid of selectedCollection.draft) {
 		const group = groupMap[groupUuid];
+		if (!group) continue;
 		for (const cardUuid of group.cards) {
 			const card = cardMap[cardUuid];
+			if (!card) continue;
 			const matchingCollectionUuids =
 				cardIdToOtherCollectionUuids.get(card.id) ?? [];
 			result[card.uuid] = {
