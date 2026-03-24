@@ -224,33 +224,39 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 														)}
 														dropMessage={this.getDropMessage(card.cardType)}
 													>
-														{(supporting, getSupportingProps) => (
-															<Card
-																frontId={frontId}
-																uuid={supporting.uuid}
-																parentId={card.uuid}
-																canShowPageViewData={false}
-																onSelect={() =>
-																	selectCard(supporting.uuid, id, true)
-																}
-																isUneditable={isUneditable}
-																getNodeProps={() =>
-																	getSupportingProps(isUneditable)
-																}
-																onDelete={() =>
-																	removeSupportingCard(
-																		card.uuid,
-																		supporting.uuid,
-																	)
-																}
-																size="small"
-																updateCardMeta={updateCardMeta}
-																addImageToCard={addImageToCard}
-																otherCollectionsOnSameFrontThisCardIsOn={
-																	otherCollectionsOnSameFrontThisCardIsOn
-																}
-															/>
-														)}
+														{(supporting, getSupportingProps) => {
+															const otherCollectionsOnSameFrontThisSublinkIsOn =
+																cardsWhichAreAlsoOnOtherCollectionsOnSameFront?.[
+																	supporting.uuid
+																];
+															return (
+																<Card
+																	frontId={frontId}
+																	uuid={supporting.uuid}
+																	parentId={card.uuid}
+																	canShowPageViewData={false}
+																	onSelect={() =>
+																		selectCard(supporting.uuid, id, true)
+																	}
+																	isUneditable={isUneditable}
+																	getNodeProps={() =>
+																		getSupportingProps(isUneditable)
+																	}
+																	onDelete={() =>
+																		removeSupportingCard(
+																			card.uuid,
+																			supporting.uuid,
+																		)
+																	}
+																	size="small"
+																	updateCardMeta={updateCardMeta}
+																	addImageToCard={addImageToCard}
+																	otherCollectionsOnSameFrontThisCardIsOn={
+																		otherCollectionsOnSameFrontThisSublinkIsOn
+																	}
+																/>
+															);
+														}}
 													</CardLevel>
 												</Card>
 											</FocusWrapper>
