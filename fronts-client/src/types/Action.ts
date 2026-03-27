@@ -33,6 +33,8 @@ import {
 	EDITOR_CLOSE_OVERVIEW,
 	EDITOR_OPEN_ALL_OVERVIEWS,
 	EDITOR_CLOSE_ALL_OVERVIEWS,
+	EDITOR_OPEN_EDIT_METADATA,
+	EDITOR_CLOSE_EDIT_METADATA,
 	CHANGED_BROWSING_STAGE,
 	EditorCloseFormsForCollection,
 } from 'bundles/frontsUI';
@@ -150,6 +152,18 @@ interface EditorOpenOverview {
 }
 interface EditorCloseOverview {
 	type: typeof EDITOR_CLOSE_OVERVIEW;
+	payload: {
+		frontId: string;
+	};
+}
+interface EditorOpenEditMetadata {
+	type: typeof EDITOR_OPEN_EDIT_METADATA;
+	payload: {
+		frontId: string;
+	};
+}
+interface EditorCloseEditMetadata {
+	type: typeof EDITOR_CLOSE_EDIT_METADATA;
 	payload: {
 		frontId: string;
 	};
@@ -354,6 +368,8 @@ type Action =
 	| EditorCloseOverview
 	| EditorOpenAllOverviews
 	| EditorCloseAllOverviews
+	| EditorOpenEditMetadata
+	| EditorCloseEditMetadata
 	| RecordStaleFronts
 	| BatchAction
 	| FetchVisibleArticlesSuccess
@@ -415,6 +431,8 @@ export {
 	EditorCloseOverview,
 	EditorOpenAllOverviews,
 	EditorCloseAllOverviews,
+	EditorOpenEditMetadata,
+	EditorCloseEditMetadata,
 	RecordStaleFronts,
 	IsPrefillMode,
 	ChangedBrowsingStage,

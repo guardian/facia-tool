@@ -536,6 +536,7 @@ const state = {
 		closedOverviews: [],
 		clipboardOpen: true,
 		frontIdsByBrowsingStage: {},
+		editingMetadataFrontIds: [],
 	},
 	staleFronts: {},
 	form: {},
