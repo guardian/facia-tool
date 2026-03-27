@@ -9,6 +9,9 @@ import {
 	editorOpenOverview,
 	editorCloseOverview,
 	selectIsFrontOverviewOpen,
+	editorOpenEditMetadata,
+	editorCloseEditMetadata,
+	selectIsFrontEditingMetadata,
 } from 'bundles/frontsUI';
 import {
 	editorOpenAllCollectionsForFront,
@@ -23,9 +26,10 @@ import ButtonCircularCaret from 'components/inputs/ButtonCircularCaret';
 import ButtonRoundedWithLabel, {
 	ButtonLabel,
 } from 'components/inputs/ButtonRoundedWithLabel';
-import { DownCaretIcon } from 'components/icons/Icons';
+import { DownCaretIcon, PencilIcon } from 'components/icons/Icons';
 import FrontCollectionsOverview from './FrontCollectionsOverview';
 import FrontContent from './FrontContent';
+import FrontMetadataForm from './FrontMetadataForm';
 import DragToAddSnap from './CollectionComponents/DragToAddSnap';
 import { selectPriority } from 'selectors/pathSelectors';
 import { Priorities } from 'types/Priority';
@@ -122,6 +126,8 @@ type FrontProps = FrontPropsBeforeState & {
 	handleArticleFocus: (groupId: string, card: TCard, frontId: string) => void;
 	toggleOverview: (open: boolean) => void;
 	overviewIsOpen: boolean;
+	isEditingMetadata: boolean;
+	toggleEditMetadata: (open: boolean) => void;
 	editorOpenAllCollectionsForFront: typeof editorOpenAllCollectionsForFront;
 	editorCloseAllCollectionsForFront: typeof editorCloseAllCollectionsForFront;
 	isFeast: boolean;
@@ -188,8 +194,13 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 								<ButtonLabel>Collapse all&nbsp;</ButtonLabel>
 								<DownCaretIcon direction="up" fill={theme.base.colors.text} />
 							</OverviewHeadingButton>
+							<OverviewHeadingButton onClick={this.handleEditMetadata}>
+								<PencilIcon size="s" fill={theme.base.colors.text} />
+								<ButtonLabel>&nbsp;Edit metadata</ButtonLabel>
+							</OverviewHeadingButton>
 							{!overviewIsOpen && this.overviewToggle(overviewIsOpen)}
-						</SectionContentMetaContainer>
+						</SectionContentMetaContainer>{' '}
+						{this.props.isEditingMetadata && <FrontMetadataForm frontId={id} />}{' '}
 						<FrontContent
 							id={id}
 							browsingStage={browsingStage}
@@ -252,6 +263,11 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 		this.props.editorCloseAllCollectionsForFront(this.props.id);
 	};
 
+	private handleEditMetadata = (e: React.MouseEvent) => {
+		e.preventDefault();
+		this.props.toggleEditMetadata(!this.props.isEditingMetadata);
+	};
+
 	private handleChangeCurrentCollectionId = (id: string) => {
 		this.setState({ currentlyScrolledCollectionId: id });
 	};
@@ -274,6 +290,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
 	return {
 		overviewIsOpen: selectIsFrontOverviewOpen(state, id),
+		isEditingMetadata: selectIsFrontEditingMetadata(state, id),
 		priority: selectPriority(state),
 		isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
 	};
@@ -298,6 +315,8 @@ const mapDispatchToProps = (
 			),
 		toggleOverview: (open: boolean) =>
 			dispatch(open ? editorOpenOverview(id) : editorCloseOverview(id)),
+		toggleEditMetadata: (open: boolean) =>
+			dispatch(open ? editorOpenEditMetadata(id) : editorCloseEditMetadata(id)),
 		...bindActionCreators(
 			{
 				selectCard: editorSelectCard,

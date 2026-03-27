@@ -521,6 +521,20 @@ const CinemagraphIcon = ({
 	</svg>
 );
 
+const PencilIcon = ({ fill = '#333', size = 'm' }: IconProps) => (
+	<svg
+		width={mapSize(size)}
+		height={mapSize(size)}
+		viewBox="0 0 30 30"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			fill={fill}
+			d="M4 22.5l-1.5 5 5-1.5L24.5 9.5 20.5 5.5 4 22.5zm18-15l-4-4 2.5-2.5c.6-.6 1.5-.6 2.1 0l1.9 1.9c.6.6.6 1.5 0 2.1L22 7.5z"
+		/>
+	</svg>
+);
+
 export {
 	DownCaretIcon,
 	RubbishBinIcon,
@@ -547,4 +561,5 @@ export {
 	LoopIcon,
 	YoutubeIcon,
 	CinemagraphIcon,
+	PencilIcon,
 };
