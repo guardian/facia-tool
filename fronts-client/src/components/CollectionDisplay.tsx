@@ -39,6 +39,7 @@ import { removeFrontCollection } from '../actions/Editions';
 import { FeastCollectionMenu } from './FeastCollectionMenu';
 import type { CollectionUpdateMode } from '../strategies/update-collection';
 import CollectionMetadataForm from './collection/CollectionMetadataForm';
+import { CogIcon } from './icons/Icons';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -79,6 +80,7 @@ interface CollectionState {
 	editingContainerName: boolean;
 	isDeleteClicked: boolean;
 	isUSOnly: boolean;
+	isEditingCollectionMetadata: boolean;
 }
 
 const CollectionContainer = styled(ContentContainer)<{
@@ -188,6 +190,7 @@ const CollectionToggleContainer = styled.div`
 	max-width: 130px;
 	display: flex;
 	justify-content: flex-end;
+	gap: 4px;
 	:hover {
 		${ButtonCircularWithTransition} {
 			background-color: ${theme.button.backgroundColorFocused};
@@ -250,6 +253,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		editingContainerName: false,
 		isDeleteClicked: false,
 		isUSOnly: false,
+		isEditingCollectionMetadata: false,
 	};
 
 	public toggleVisibility = () => {
@@ -396,51 +400,67 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 					}}
 					active={!this.props.isOpen}
 				>
-					{!this.props.isEditingMetadata && (
-						<CollectionMetaContainer onClick={this.toggleVisibility}>
-							<ItemCountMeta>
-								{collection && (
-									<>
-										<strong>{itemCount}</strong>
-										<br />
-										{itemCount === 1 ? 'item' : 'items'}
-									</>
-								)}
-							</ItemCountMeta>
+					<CollectionMetaContainer onClick={this.toggleVisibility}>
+						<ItemCountMeta>
+							{collection && (
+								<>
+									<strong>{itemCount}</strong>
+									<br />
+									{itemCount === 1 ? 'item' : 'items'}
+								</>
+							)}
+						</ItemCountMeta>
+						<CollectionMeta>
+							<div>
+								<strong>
+									{collection &&
+										collection.lastUpdated &&
+										`${upperFirst(
+											distanceFromNow(collection.lastUpdated),
+										)} ago`}
+								</strong>
+							</div>
+							<div>{collection && collection.updatedBy}</div>
+							<CollectionShortVerticalPinline />
+						</CollectionMeta>
+						{metaContent && (
 							<CollectionMeta>
-								<div>
-									<strong>
-										{collection &&
-											collection.lastUpdated &&
-											`${upperFirst(
-												distanceFromNow(collection.lastUpdated),
-											)} ago`}
-									</strong>
-								</div>
-								<div>{collection && collection.updatedBy}</div>
+								{metaContent}
 								<CollectionShortVerticalPinline />
 							</CollectionMeta>
-							{metaContent && (
-								<CollectionMeta>
-									{metaContent}
-									<CollectionShortVerticalPinline />
-								</CollectionMeta>
-							)}
-							<CollectionToggleContainer>
-								<ButtonCircularCaret
-									active={this.props.isOpen!}
-									preActive={this.state.hasDragOpenIntent}
-									tabIndex={-1}
-								/>
-							</CollectionToggleContainer>
-						</CollectionMetaContainer>
-					)}
+						)}
+						<CollectionToggleContainer>
+							<ButtonCircularWithTransition
+								title="Edit collection metadata"
+								onClick={(e) => {
+									e.stopPropagation();
+									if (this.props.isOpen) {
+										this.toggleVisibility();
+									}
+									this.setState((s) => ({
+										isEditingCollectionMetadata: !s.isEditingCollectionMetadata,
+									}));
+								}}
+							>
+								<CogIcon size="s" fill="#fff" />
+							</ButtonCircularWithTransition>
+							<ButtonCircularCaret
+								active={this.props.isOpen!}
+								preActive={this.state.hasDragOpenIntent}
+								tabIndex={-1}
+							/>
+						</CollectionToggleContainer>
+					</CollectionMetaContainer>
 				</DragIntentContainer>
-				{this.props.isOpen && !this.props.isEditingMetadata && (
-					<FadeIn>{children}</FadeIn>
-				)}
-				{this.props.isEditingMetadata && (
-					<CollectionMetadataForm collectionId={id} frontId={frontId} />
+				{this.props.isOpen && <FadeIn>{children}</FadeIn>}
+				{this.state.isEditingCollectionMetadata && (
+					<CollectionMetadataForm
+						collectionId={id}
+						frontId={frontId}
+						onClose={() =>
+							this.setState({ isEditingCollectionMetadata: false })
+						}
+					/>
 				)}
 				{isUneditable ? (
 					<CollectionDisabledTheme className="DisabledTheme" />
