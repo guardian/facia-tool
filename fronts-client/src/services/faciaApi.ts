@@ -402,6 +402,23 @@ async function getArticlesBatched(
 	}
 }
 
+const updateFrontConfig =
+	(id: string) =>
+	async (front: Record<string, unknown>): Promise<void> => {
+		try {
+			await pandaFetch(`/config/fronts/${encodeURIComponent(id)}`, {
+				method: 'post',
+				headers: { 'Content-Type': 'application/json' },
+				credentials: 'same-origin',
+				body: JSON.stringify(front),
+			});
+		} catch (e) {
+			throw new Error(
+				`Tried to update front config with id ${id}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+			);
+		}
+	};
+
 export {
 	fetchFrontsConfig,
 	fetchEditionsIssueAsConfig,
@@ -413,6 +430,7 @@ export {
 	fetchLastPressed,
 	publishCollection,
 	updateCollection,
+	updateFrontConfig,
 	saveClipboard,
 	saveEditionsClipboard,
 	saveFeastClipboard,

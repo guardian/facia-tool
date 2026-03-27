@@ -1,9 +1,15 @@
 import { Dispatch, ThunkResult } from 'types/Store';
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
-import { fetchLastPressed as fetchLastPressedApi } from 'services/faciaApi';
-import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
-import { VisibleArticlesResponse } from 'types/FaciaApi';
+import {
+	fetchLastPressed as fetchLastPressedApi,
+	updateFrontConfig as updateFrontConfigApi,
+} from 'services/faciaApi';
+import {
+	actions as frontsConfigActions,
+	selectors as frontsConfigSelectors,
+} from 'bundles/frontsConfigBundle';
+import { FrontConfigResponse, VisibleArticlesResponse } from 'types/FaciaApi';
 import { Stages } from 'types/Collection';
 import { fetchFrontsConfigStrategy } from 'strategies/fetch-fronts-config';
 
@@ -59,6 +65,25 @@ export {
 	recordVisibleArticles,
 	recordStaleFronts,
 };
+
+export function saveFrontConfig(
+	updatedFront: FrontConfigResponse & { id: string },
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const { id, ...rest } = updatedFront;
+		await updateFrontConfigApi(id)({ id, ...rest });
+		const currentConfig = frontsConfigSelectors.selectAll(getState());
+		dispatch(
+			frontsConfigActions.fetchSuccess({
+				...currentConfig,
+				fronts: {
+					...currentConfig.fronts,
+					[id]: updatedFront,
+				},
+			}),
+		);
+	};
+}
 
 export default function getFrontsConfig(): ThunkResult<
 	Promise<
