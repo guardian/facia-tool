@@ -27,6 +27,8 @@ import type {
 	EditorCloseOverview,
 	EditorOpenAllOverviews,
 	EditorCloseAllOverviews,
+	EditorOpenEditMetadata,
+	EditorCloseEditMetadata,
 	ChangedBrowsingStage,
 } from 'types/Action';
 import type { State as GlobalState } from 'types/State';
@@ -65,6 +67,8 @@ export const EDITOR_OPEN_OVERVIEW = 'EDITOR_OPEN_OVERVIEW';
 export const EDITOR_CLOSE_OVERVIEW = 'EDITOR_CLOSE_OVERVIEW';
 export const EDITOR_OPEN_ALL_OVERVIEWS = 'EDITOR_OPEN_ALL_OVERVIEWS';
 export const EDITOR_CLOSE_ALL_OVERVIEWS = 'EDITOR_CLOSE_ALL_OVERVIEWS';
+export const EDITOR_OPEN_EDIT_METADATA = 'EDITOR_OPEN_EDIT_METADATA';
+export const EDITOR_CLOSE_EDIT_METADATA = 'EDITOR_CLOSE_EDIT_METADATA';
 export const CHANGED_BROWSING_STAGE = 'CHANGED_BROWSING_STAGE';
 export const EDITOR_CLOSE_FORMS_FOR_COLLECTION =
 	'EDITOR_CLOSE_FORMS_FOR_COLLECTION' as const;
@@ -254,6 +258,16 @@ const editorCloseAllOverviews = (): EditorCloseAllOverviews => ({
 	type: EDITOR_CLOSE_ALL_OVERVIEWS,
 });
 
+const editorOpenEditMetadata = (frontId: string): EditorOpenEditMetadata => ({
+	type: EDITOR_OPEN_EDIT_METADATA,
+	payload: { frontId },
+});
+
+const editorCloseEditMetadata = (frontId: string): EditorCloseEditMetadata => ({
+	type: EDITOR_CLOSE_EDIT_METADATA,
+	payload: { frontId },
+});
+
 interface OpenCardData {
 	id: string;
 	isSupporting: boolean;
@@ -271,6 +285,7 @@ interface State {
 	};
 	collectionIds: string[];
 	closedOverviews: string[];
+	editingMetadataFrontIds: string[];
 	clipboardOpen: boolean;
 	selectedCards: {
 		[frontId: string]: OpenCardData[];
@@ -298,6 +313,11 @@ const selectIsFrontOverviewOpen = <T extends { editor: State }>(
 	state: T,
 	frontId: string,
 ) => !state.editor.closedOverviews.includes(frontId);
+
+const selectIsFrontEditingMetadata = <T extends { editor: State }>(
+	state: T,
+	frontId: string,
+) => state.editor.editingMetadataFrontIds.includes(frontId);
 
 const createSelectFrontIdWithOpenAndStarredStatesByPriority = () => {
 	const selectEditorFrontsByPriority = createSelectEditorFrontsByPriority();
@@ -546,6 +566,7 @@ const defaultState = {
 	collectionIds: [],
 	clipboardOpen: true,
 	closedOverviews: [],
+	editingMetadataFrontIds: [],
 	selectedCards: {},
 	frontIdsByBrowsingStage: {},
 };
@@ -823,6 +844,22 @@ const reducer = (state: State = defaultState, action: Action): State => {
 				closedOverviews: [...state.frontIds],
 			};
 		}
+		case EDITOR_OPEN_EDIT_METADATA: {
+			return {
+				...state,
+				editingMetadataFrontIds: state.editingMetadataFrontIds.concat(
+					action.payload.frontId,
+				),
+			};
+		}
+		case EDITOR_CLOSE_EDIT_METADATA: {
+			return {
+				...state,
+				editingMetadataFrontIds: state.editingMetadataFrontIds.filter(
+					(id) => id !== action.payload.frontId,
+				),
+			};
+		}
 		default: {
 			return state;
 		}
@@ -866,8 +903,11 @@ export {
 	editorCloseOverview,
 	editorOpenAllOverviews,
 	editorCloseAllOverviews,
+	editorOpenEditMetadata,
+	editorCloseEditMetadata,
 	selectIsClipboardOpen,
 	selectIsFrontOverviewOpen,
+	selectIsFrontEditingMetadata,
 	selectHasMultipleFrontsOpen,
 	createSelectCollectionIdsWithOpenForms,
 	createSelectOpenCardIdsForCollection,
