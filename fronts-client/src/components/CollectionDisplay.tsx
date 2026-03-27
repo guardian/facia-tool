@@ -38,6 +38,7 @@ import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBun
 import { removeFrontCollection } from '../actions/Editions';
 import { FeastCollectionMenu } from './FeastCollectionMenu';
 import type { CollectionUpdateMode } from '../strategies/update-collection';
+import CollectionMetadataForm from './collection/CollectionMetadataForm';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -69,6 +70,7 @@ type Props = ContainerProps & {
 	) => void;
 	isEditions: boolean;
 	removeFrontCollection: (frontId: string, collectionId: string) => void;
+	isEditingMetadata?: boolean;
 };
 
 interface CollectionState {
@@ -394,45 +396,52 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 					}}
 					active={!this.props.isOpen}
 				>
-					<CollectionMetaContainer onClick={this.toggleVisibility}>
-						<ItemCountMeta>
-							{collection && (
-								<>
-									<strong>{itemCount}</strong>
-									<br />
-									{itemCount === 1 ? 'item' : 'items'}
-								</>
-							)}
-						</ItemCountMeta>
-						<CollectionMeta>
-							<div>
-								<strong>
-									{collection &&
-										collection.lastUpdated &&
-										`${upperFirst(
-											distanceFromNow(collection.lastUpdated),
-										)} ago`}
-								</strong>
-							</div>
-							<div>{collection && collection.updatedBy}</div>
-							<CollectionShortVerticalPinline />
-						</CollectionMeta>
-						{metaContent && (
+					{!this.props.isEditingMetadata && (
+						<CollectionMetaContainer onClick={this.toggleVisibility}>
+							<ItemCountMeta>
+								{collection && (
+									<>
+										<strong>{itemCount}</strong>
+										<br />
+										{itemCount === 1 ? 'item' : 'items'}
+									</>
+								)}
+							</ItemCountMeta>
 							<CollectionMeta>
-								{metaContent}
+								<div>
+									<strong>
+										{collection &&
+											collection.lastUpdated &&
+											`${upperFirst(
+												distanceFromNow(collection.lastUpdated),
+											)} ago`}
+									</strong>
+								</div>
+								<div>{collection && collection.updatedBy}</div>
 								<CollectionShortVerticalPinline />
 							</CollectionMeta>
-						)}
-						<CollectionToggleContainer>
-							<ButtonCircularCaret
-								active={this.props.isOpen!}
-								preActive={this.state.hasDragOpenIntent}
-								tabIndex={-1}
-							/>
-						</CollectionToggleContainer>
-					</CollectionMetaContainer>
+							{metaContent && (
+								<CollectionMeta>
+									{metaContent}
+									<CollectionShortVerticalPinline />
+								</CollectionMeta>
+							)}
+							<CollectionToggleContainer>
+								<ButtonCircularCaret
+									active={this.props.isOpen!}
+									preActive={this.state.hasDragOpenIntent}
+									tabIndex={-1}
+								/>
+							</CollectionToggleContainer>
+						</CollectionMetaContainer>
+					)}
 				</DragIntentContainer>
-				{this.props.isOpen && <FadeIn>{children}</FadeIn>}
+				{this.props.isOpen && !this.props.isEditingMetadata && (
+					<FadeIn>{children}</FadeIn>
+				)}
+				{this.props.isEditingMetadata && (
+					<CollectionMetadataForm collectionId={id} frontId={frontId} />
+				)}
 				{isUneditable ? (
 					<CollectionDisabledTheme className="DisabledTheme" />
 				) : null}

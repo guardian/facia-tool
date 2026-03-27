@@ -33,6 +33,7 @@ import {
 	editorCloseCollections,
 	selectHasMultipleFrontsOpen,
 	createSelectDoesCollectionHaveOpenForms,
+	selectIsFrontEditingMetadata,
 } from 'bundles/frontsUI';
 import { fetchCardReferencedEntitiesForCollections } from 'actions/Collections';
 import { cardSets } from 'constants/fronts';
@@ -62,6 +63,7 @@ interface CollectionPropsBeforeState {
 	browsingStage: CardSets;
 	priority: string;
 	isFeast?: boolean;
+	isEditingMetadata?: boolean;
 }
 
 type CollectionProps = CollectionPropsBeforeState & {
@@ -221,6 +223,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 			hasContent,
 			hasOpenForms,
 			isFeast,
+			isEditingMetadata,
 		} = this.props;
 
 		const { isPreviouslyOpen, isLaunching } = this.state;
@@ -240,6 +243,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 					isOpen={isOpen}
 					hasMultipleFrontsOpen={hasMultipleFrontsOpen}
 					onChangeOpenState={() => onChangeOpenState(id, isOpen)}
+					isEditingMetadata={isEditingMetadata}
 					headlineContent={
 						hasUnpublishedChanges &&
 						canPublish && (
@@ -435,6 +439,7 @@ const createMapStateToProps = () => {
 		hasContent: !!selectors.selectById(state, collectionId),
 		hasOpenForms: selectHasOpenForms(state, { collectionId, frontId }),
 		isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
+		isEditingMetadata: selectIsFrontEditingMetadata(state, frontId),
 	});
 };
 
