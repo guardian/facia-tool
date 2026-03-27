@@ -31,6 +31,67 @@ const SUPPRESS_IMAGES_TYPES = [
 const USER_VISIBILITIES = ['all', 'subscriber', 'non-subscriber'];
 
 // ---------------------------------------------------------------------------
+// Container type constants (mirrors public/src/js/constants/defaults.js)
+// ---------------------------------------------------------------------------
+
+interface ContainerTypeConfig {
+	name: string;
+	groupsConfig?: Array<{ name: string; maxItems?: number }>;
+}
+
+const CONTAINER_TYPES_CONFIG: ContainerTypeConfig[] = [
+	{ name: 'scrollable/highlights' },
+	{
+		name: 'flexible/general',
+		groupsConfig: [
+			{ name: 'standard', maxItems: 8 },
+			{ name: 'big', maxItems: 0 },
+			{ name: 'very big', maxItems: 0 },
+			{ name: 'splash', maxItems: 1 },
+		],
+	},
+	{
+		name: 'flexible/special',
+		groupsConfig: [{ name: 'standard' }, { name: 'snap' }],
+	},
+	{ name: 'scrollable/small' },
+	{ name: 'scrollable/medium' },
+	{ name: 'scrollable/feature' },
+	{ name: 'static/medium/4' },
+	{ name: 'static/feature/2' },
+	{ name: 'nav/list' },
+	{ name: 'nav/media-list' },
+	{ name: 'news/most-popular' },
+	{ name: 'fixed/showcase' },
+	{ name: 'fixed/thrasher' },
+	{
+		name: 'breaking-news/not-for-other-fronts',
+		groupsConfig: [{ name: 'minor' }, { name: 'major' }],
+	},
+];
+
+const EMAIL_TYPES_CONFIG: ContainerTypeConfig[] = [
+	{ name: 'fast' },
+	{ name: 'fast-images' },
+	{ name: 'medium' },
+	{ name: 'slow' },
+	{ name: 'free-text' },
+];
+
+const getTypeConfig = (
+	name: string,
+	isEmail: boolean,
+): ContainerTypeConfig | undefined => {
+	const list = isEmail ? EMAIL_TYPES_CONFIG : CONTAINER_TYPES_CONFIG;
+	return list.find((t) => t.name === name);
+};
+
+interface GroupConfigFormEntry {
+	name: string;
+	maxItems: string;
+}
+
+// ---------------------------------------------------------------------------
 // Styles
 // ---------------------------------------------------------------------------
 
@@ -114,6 +175,7 @@ const CancelButton = styled(Button)`
 interface OwnProps {
 	collectionId: string;
 	frontId: string;
+	onClose?: () => void;
 }
 
 interface StateProps {
@@ -121,6 +183,7 @@ interface StateProps {
 	collectionConfig: CollectionConfig | undefined;
 	displayName: string;
 	priority: string;
+	availableMetadataTypes: string[];
 }
 
 interface DispatchProps {
@@ -134,6 +197,7 @@ interface DispatchProps {
 type Props = OwnProps & StateProps & DispatchProps;
 
 interface FormState {
+	type: string;
 	displayName: string;
 	href: string;
 	description: string;
@@ -150,6 +214,9 @@ interface FormState {
 	displayEditWarning: boolean;
 	suppressImages: boolean;
 	maxItemsToDisplay: string;
+	metadataTags: string[];
+	groupsConfig: GroupConfigFormEntry[];
+	backfillQuery: string;
 }
 
 // ---------------------------------------------------------------------------
@@ -161,36 +228,35 @@ const CollectionMetadataForm = ({
 	collectionConfig,
 	displayName,
 	priority,
+	availableMetadataTypes,
 	closeEditMetadata,
 	updateCollection,
 }: Props) => {
-	const collectionType = collection?.type ?? collectionConfig?.type ?? '';
+	const isEmail = priority === 'email';
 
-	const [form, setForm] = useState<FormState>({
-		displayName: collection?.displayName ?? displayName,
-		href: collectionConfig?.href ?? '',
-		description: collectionConfig?.description ?? '',
-		userVisibility: collectionConfig?.userVisibility ?? '',
-		targetedTerritory: collection?.targetedTerritory ?? '',
-		showTags: collectionConfig?.showTags ?? false,
-		showSections: collectionConfig?.showSections ?? false,
-		hideKickers: collectionConfig?.hideKickers ?? false,
-		showDateHeader: collectionConfig?.showDateHeader ?? false,
-		showLatestUpdate: collectionConfig?.showLatestUpdate ?? false,
-		excludeFromRss: collectionConfig?.excludeFromRss ?? false,
-		hideShowMore: collectionConfig?.hideShowMore ?? false,
-		uneditable: collection?.uneditable ?? false,
-		displayEditWarning:
-			collection?.frontsToolSettings?.displayEditWarning ?? false,
-		suppressImages: collection?.displayHints?.suppressImages ?? false,
-		maxItemsToDisplay: String(
-			collection?.displayHints?.maxItemsToDisplay ?? '',
-		),
-	});
+	const buildGroupsConfigFormState = (
+		typeName: string,
+		existingGroupsConfig?: Array<{ name: string; maxItems?: number }>,
+	): GroupConfigFormEntry[] => {
+		const typeConfig = getTypeConfig(typeName, isEmail);
+		if (!typeConfig?.groupsConfig) return [];
+		return typeConfig.groupsConfig.map((g) => {
+			const existing = existingGroupsConfig?.find((e) => e.name === g.name);
+			return {
+				name: g.name,
+				maxItems: String(existing?.maxItems ?? g.maxItems ?? ''),
+			};
+		});
+	};
 
-	// Re-sync if the collection changes externally
-	useEffect(() => {
-		setForm({
+	const backfillFromConfig = collectionConfig?.backfill as
+		| { type: string; query: string }
+		| undefined;
+
+	const buildInitialState = (): FormState => {
+		const currentType = collection?.type ?? collectionConfig?.type ?? '';
+		return {
+			type: currentType,
 			displayName: collection?.displayName ?? displayName,
 			href: collectionConfig?.href ?? '',
 			description: collectionConfig?.description ?? '',
@@ -210,21 +276,65 @@ const CollectionMetadataForm = ({
 			maxItemsToDisplay: String(
 				collection?.displayHints?.maxItemsToDisplay ?? '',
 			),
-		});
+			metadataTags: (collection?.metadata ?? []).map((m) => m.type),
+			groupsConfig: buildGroupsConfigFormState(
+				currentType,
+				collection?.groupsConfig,
+			),
+			backfillQuery:
+				backfillFromConfig?.type === 'capi' ? backfillFromConfig.query : '',
+		};
+	};
+
+	const [form, setForm] = useState<FormState>(buildInitialState);
+
+	useEffect(() => {
+		setForm(buildInitialState());
 	}, [collection?.id]);
 
 	const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
 		setForm((prev) => ({ ...prev, [key]: value }));
 
+	const handleTypeChange = (newType: string) => {
+		setForm((prev) => ({
+			...prev,
+			type: newType,
+			groupsConfig: buildGroupsConfigFormState(
+				newType,
+				collection?.groupsConfig,
+			),
+		}));
+	};
+
+	const toggleMetadataTag = (tagType: string, checked: boolean) => {
+		setForm((prev) => ({
+			...prev,
+			metadataTags: checked
+				? [...prev.metadataTags, tagType]
+				: prev.metadataTags.filter((t) => t !== tagType),
+		}));
+	};
+
 	const handleSave = () => {
 		if (!collection) return;
 		const maxItems = parseInt(form.maxItemsToDisplay, 10);
+		const parsedGroupsConfig = form.groupsConfig.map((g) => ({
+			name: g.name,
+			...(g.maxItems !== '' ? { maxItems: parseInt(g.maxItems, 10) } : {}),
+		}));
 		updateCollection(
 			{
 				...collection,
+				type: form.type || undefined,
 				displayName: form.displayName.trim() || collection.displayName,
 				uneditable: form.uneditable,
 				targetedTerritory: form.targetedTerritory || undefined,
+				metadata:
+					form.metadataTags.length > 0
+						? form.metadataTags.map((t) => ({ type: t }))
+						: undefined,
+				groupsConfig:
+					parsedGroupsConfig.length > 0 ? parsedGroupsConfig : undefined,
 				frontsToolSettings: {
 					...collection.frontsToolSettings,
 					displayEditWarning: form.displayEditWarning,
@@ -240,14 +350,32 @@ const CollectionMetadataForm = ({
 		closeEditMetadata();
 	};
 
+	const collectionType = form.type;
 	const isScrollableOrStatic =
 		SCROLLABLE_OR_STATIC_TYPES.includes(collectionType);
 	const showSuppressImages = SUPPRESS_IMAGES_TYPES.includes(collectionType);
-	const isEmail = priority === 'email';
+	const availableTypes = isEmail ? EMAIL_TYPES_CONFIG : CONTAINER_TYPES_CONFIG;
+	const currentTypeConfig = getTypeConfig(collectionType, isEmail);
+	const hasGroups = (currentTypeConfig?.groupsConfig?.length ?? 0) > 0;
 
 	return (
 		<FormContainer>
 			<FormGrid>
+				{/* Layout / type */}
+				<FormLabel htmlFor="cmf-type">Layout</FormLabel>
+				<FormSelect
+					id="cmf-type"
+					value={form.type}
+					onChange={(e) => handleTypeChange(e.target.value)}
+				>
+					<option value="">Choose a layout…</option>
+					{availableTypes.map(({ name }) => (
+						<option key={name} value={name}>
+							{name}
+						</option>
+					))}
+				</FormSelect>
+
 				{/* Title */}
 				<FormLabel htmlFor="cmf-title">Title</FormLabel>
 				<FormInput
@@ -297,6 +425,16 @@ const CollectionMetadataForm = ({
 						/>
 					</>
 				)}
+
+				{/* Backfill (CAPI query) */}
+				<FormLabel htmlFor="cmf-backfill">Backfill</FormLabel>
+				<FormInput
+					id="cmf-backfill"
+					type="text"
+					placeholder="CAPI query, e.g. uk/sport"
+					value={form.backfillQuery}
+					onChange={(e) => set('backfillQuery', e.target.value)}
+				/>
 
 				<Divider />
 
@@ -419,6 +557,55 @@ const CollectionMetadataForm = ({
 					</>
 				)}
 
+				{/* Metadata tags */}
+				{availableMetadataTypes.length > 0 && (
+					<>
+						<Divider />
+						{availableMetadataTypes.map((tagType) => (
+							<React.Fragment key={tagType}>
+								<FormLabel htmlFor={`cmf-tag-${tagType}`}>{tagType}</FormLabel>
+								<FormCheckbox
+									id={`cmf-tag-${tagType}`}
+									checked={form.metadataTags.includes(tagType)}
+									onChange={(e) => toggleMetadataTag(tagType, e.target.checked)}
+								/>
+							</React.Fragment>
+						))}
+					</>
+				)}
+
+				{/* Groups config — shown when the selected type has groups */}
+				{hasGroups && (
+					<>
+						<Divider />
+						{form.groupsConfig.map((g, i) => (
+							<React.Fragment key={g.name}>
+								<FormLabel
+									htmlFor={`cmf-group-${g.name}`}
+									style={{ textTransform: 'capitalize' }}
+								>
+									{g.name} stories
+								</FormLabel>
+								<FormInput
+									id={`cmf-group-${g.name}`}
+									type="number"
+									min={0}
+									max={20}
+									value={g.maxItems}
+									onChange={(e) => {
+										const updated = [...form.groupsConfig];
+										updated[i] = {
+											...updated[i],
+											maxItems: e.target.value,
+										};
+										set('groupsConfig', updated);
+									}}
+								/>
+							</React.Fragment>
+						))}
+					</>
+				)}
+
 				<ButtonRow>
 					<CancelButton priority="default" onClick={closeEditMetadata}>
 						Cancel
@@ -444,15 +631,20 @@ const mapStateToProps = (
 	collectionConfig: selectCollectionConfig(state, collectionId),
 	displayName: selectCollectionDisplayName(state, collectionId),
 	priority: selectPriority(state) ?? '',
+	availableMetadataTypes: (state.config?.collectionMetadata ?? []).map(
+		(m) => m.type,
+	),
 });
 
 const mapDispatchToProps = (
 	dispatch: Dispatch,
-	{ frontId }: OwnProps,
+	{ frontId, onClose }: OwnProps,
 ): DispatchProps => ({
 	updateCollection: (collection, mode) =>
 		dispatch(updateCollectionAction(collection, mode)),
-	closeEditMetadata: () => dispatch(editorCloseEditMetadata(frontId)),
+	closeEditMetadata: onClose
+		? onClose
+		: () => dispatch(editorCloseEditMetadata(frontId)),
 });
 
 export default connect(
