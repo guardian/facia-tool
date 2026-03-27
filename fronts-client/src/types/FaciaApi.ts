@@ -61,6 +61,7 @@ interface CollectionConfigResponse {
 	showDateHeader?: boolean;
 	showLatestUpdate?: boolean;
 	excludeFromRss?: boolean;
+	userVisibility?: string;
 	platform?: Platform;
 	frontsToolSettings?: FrontsToolSettings;
 	prefill?: EditionsPrefill;
@@ -142,6 +143,7 @@ interface VisibleArticlesResponse {
 
 export {
 	FrontConfig,
+	FrontConfigResponse,
 	CollectionConfig,
 	FrontsConfig,
 	FrontsConfigResponse,
