@@ -119,6 +119,54 @@ const CancelButton = styled(Button)`
 `;
 
 // ---------------------------------------------------------------------------
+// Placeholder helpers (mirrors KO front.js placeholder computeds)
+// ---------------------------------------------------------------------------
+
+function toTitleCase(str: string): string {
+	return str.replace(
+		/\w\S*/g,
+		(txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase(),
+	);
+}
+
+function asPath(id: string): string[] {
+	return (id + '').split('/');
+}
+
+interface FrontPlaceholders {
+	navSection: string;
+	webTitle: string;
+	title: string;
+	description: string;
+	onPageDescription: string;
+}
+
+function computePlaceholders(frontId: string): FrontPlaceholders {
+	const path = asPath(frontId);
+	// Without access to the editions list we default to treating the first
+	// path segment as the nav section (matches non-editionalised fronts).
+	// For editionalised fronts (e.g. uk/sport) path[1] is correct, but we
+	// can't distinguish that here without a network call.
+	const navSection = path[0] ?? '';
+	const webTitle =
+		toTitleCase(
+			path
+				.slice(path.length > 1 ? 1 : 0)
+				.join(' ')
+				.replace(/-/g, ' '),
+		) || frontId;
+	const title = webTitle + (navSection ? ' | ' + toTitleCase(navSection) : '');
+	const description = `Latest ${webTitle} news, comment and analysis from the Guardian, the world\u2019s leading liberal voice`;
+	return {
+		navSection,
+		webTitle,
+		title,
+		description,
+		onPageDescription: description,
+	};
+}
+
+// ---------------------------------------------------------------------------
 // Types
 // ---------------------------------------------------------------------------
 
@@ -187,6 +235,8 @@ const FrontMetadataForm = ({
 		setForm(buildFormState(front));
 	}, [front?.id]);
 
+	const placeholders = computePlaceholders(front?.id ?? '');
+
 	const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
 		setForm((prev) => ({ ...prev, [key]: value }));
 
@@ -231,6 +281,7 @@ const FrontMetadataForm = ({
 					id="fmf-navSection"
 					type="text"
 					value={form.navSection}
+					placeholder={placeholders.navSection}
 					onChange={(e) => set('navSection', e.target.value)}
 				/>
 
@@ -240,6 +291,7 @@ const FrontMetadataForm = ({
 					id="fmf-webTitle"
 					type="text"
 					value={form.webTitle}
+					placeholder={placeholders.webTitle}
 					onChange={(e) => set('webTitle', e.target.value)}
 				/>
 
@@ -248,6 +300,7 @@ const FrontMetadataForm = ({
 				<FormTextarea
 					id="fmf-title"
 					value={form.title}
+					placeholder={placeholders.title}
 					onChange={(e) => set('title', e.target.value)}
 				/>
 
@@ -256,6 +309,7 @@ const FrontMetadataForm = ({
 				<FormTextarea
 					id="fmf-description"
 					value={form.description}
+					placeholder={placeholders.description}
 					onChange={(e) => set('description', e.target.value)}
 				/>
 
@@ -266,6 +320,7 @@ const FrontMetadataForm = ({
 				<FormTextarea
 					id="fmf-onPageDescription"
 					value={form.onPageDescription}
+					placeholder={placeholders.onPageDescription}
 					onChange={(e) => set('onPageDescription', e.target.value)}
 				/>
 
