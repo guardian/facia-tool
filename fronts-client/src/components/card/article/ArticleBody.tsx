@@ -53,7 +53,6 @@ import {
 import { Atom, Platform } from '../../../types/Capi';
 import { getActiveAtomProperties } from '../../../util/extractAtom';
 import { isAtom } from '../../../util/atom';
-import pageConfig from 'util/extractConfigFromPage';
 import { SelfHostedVideoPlayerFormat } from '../../../util/Video';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
@@ -242,12 +241,6 @@ const articleBodyDefault = React.memo(
 		otherCollectionsOnSameFrontThisCardIsOn,
 		collectionMap,
 	}: ArticleBodyProps) => {
-		const showIfCardsAreAlsoOnOtherCollectionsOnSameFrontFeatureSwitch =
-			pageConfig?.userData?.featureSwitches.find(
-				(feature) =>
-					feature.key ===
-					'show-cards-which-are-also-on-other-collections-on-same-front',
-			);
 		const otherCollectionsOnSameFrontThisCardIsOnUuids =
 			otherCollectionsOnSameFrontThisCardIsOn?.collections.map(
 				(_) => _.collectionUuid,
@@ -372,8 +365,7 @@ const articleBodyDefault = React.memo(
 							</FirstPublicationDate>
 						)}
 						{!!otherCollectionsOnSameFrontThisCardIsOnUuids &&
-							otherCollectionsOnSameFrontThisCardIsOnUuids.length > 0 &&
-							showIfCardsAreAlsoOnOtherCollectionsOnSameFrontFeatureSwitch?.enabled && (
+							otherCollectionsOnSameFrontThisCardIsOnUuids.length > 0 && (
 								<AlsoOnOtherCollectionsSection>
 									Also on:
 									<AlsoOnOtherCollectionsList>
