@@ -88,18 +88,6 @@ const collectionCulture: Collection = {
 	excludedRegions: [],
 };
 
-const frontConfig: FrontConfig = {
-	id: 'front',
-	priority: 'editorial',
-	collections: [
-		'footballCollectionUuid',
-		'sportCollectionUuid',
-		'whatToWatchCollectionUuid',
-		'cultureCollectionUuid',
-		'obituariesCollectionUuid',
-	],
-};
-
 const allCollections = [
 	collectionObituaries,
 	collectionFootball,
@@ -191,7 +179,6 @@ export {
 	collectionWhatToWatch,
 	collectionCulture,
 	allCollections,
-	frontConfig,
 	groupMap,
 	cardMap,
 };
