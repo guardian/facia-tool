@@ -115,6 +115,15 @@ const collectionCulture: Collection = {
 	excludedRegions: [],
 };
 
+const collectionUnpublishedChanges: Collection = {
+	id: 'unpublishedCollectionUuid',
+	displayName: 'unpublished',
+	live: ['groupUuid6'],
+	draft: ['groupUuid2'],
+	targetedRegions: [],
+	excludedRegions: [],
+};
+
 const allCollections = [
 	collectionObituaries,
 	collectionFootball,
@@ -124,6 +133,7 @@ const allCollections = [
 	collectionSport,
 	collectionWhatToWatch,
 	collectionCulture,
+	collectionUnpublishedChanges,
 ];
 
 const groupMap: GroupMap = {
@@ -257,6 +267,7 @@ export {
 	collectionSport,
 	collectionWhatToWatch,
 	collectionCulture,
+	collectionUnpublishedChanges,
 	allCollections,
 	groupMap,
 	cardMap,
