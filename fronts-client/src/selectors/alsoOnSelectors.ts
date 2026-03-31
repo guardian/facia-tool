@@ -170,6 +170,8 @@ const iterateOverCards = (
 		const card = cardMap[cardUuid];
 		if (!card) continue;
 		callback(card);
+
+		// iterate over sublinks (if present)
 		if (card.meta.supporting) {
 			iterateOverCards(cardMap, card.meta.supporting, callback);
 		}
