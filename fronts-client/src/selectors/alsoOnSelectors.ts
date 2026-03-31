@@ -147,33 +147,39 @@ const iterateOverOtherFrontCollections = (
 	};
 };
 
+const walkCards = (
+	cardMap: CardMap,
+	cardUuids: string[],
+	visit: (card: CardMap[string]) => void,
+) => {
+	for (const cardUuid of cardUuids) {
+		const card = cardMap[cardUuid];
+		if (!card) continue;
+		visit(card);
+		if (card.meta.supporting) {
+			walkCards(cardMap, card.meta.supporting, visit);
+		}
+	}
+};
+
 const constructCardIdToOtherCollectionUuidsMap = (
 	cardMap: CardMap,
 	cardIdToOtherCollectionUuidsMap: CardIdToOtherCollectionUuidsMap,
 	otherCollectionId: string,
 	cardUuids: string[],
 ) => {
-	for (const cardUuid of cardUuids) {
-		const card = cardMap[cardUuid];
-		if (!card) continue;
+	walkCards(cardMap, cardUuids, (card) => {
 		const matchingCollectionUuids = cardIdToOtherCollectionUuidsMap.get(
 			card.id,
 		);
 		if (matchingCollectionUuids) {
+			// map entry already exists, add to it
 			matchingCollectionUuids.push(otherCollectionId);
 		} else {
+			// create new map entry
 			cardIdToOtherCollectionUuidsMap.set(card.id, [otherCollectionId]);
 		}
-
-		if (card.meta.supporting) {
-			constructCardIdToOtherCollectionUuidsMap(
-				cardMap,
-				cardIdToOtherCollectionUuidsMap,
-				otherCollectionId,
-				card.meta.supporting,
-			);
-		}
-	}
+	});
 };
 
 const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
@@ -182,33 +188,15 @@ const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
 	cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	cardUuids: string[],
 ) => {
-	for (const cardUuid of cardUuids) {
-		const card = cardMap[cardUuid];
-		if (!card) continue;
-		const matchingCollectionUuids = cardIdToOtherCollectionUuidsMap.get(
-			card.id,
-		);
-		if (matchingCollectionUuids) {
-			cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap[card.uuid] = {
-				collections: matchingCollectionUuids.map((collectionUuid) => ({
-					collectionUuid,
-				})),
-			};
-		} else {
-			cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap[card.uuid] = {
-				collections: [],
-			};
-		}
-
-		if (card.meta.supporting) {
-			constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap(
-				cardMap,
-				cardIdToOtherCollectionUuidsMap,
-				cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
-				card.meta.supporting,
-			);
-		}
-	}
+	walkCards(cardMap, cardUuids, (card) => {
+		const matchingCollectionUuids =
+			cardIdToOtherCollectionUuidsMap.get(card.id) ?? [];
+		cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap[card.uuid] = {
+			collections: matchingCollectionUuids.map((collectionUuid) => ({
+				collectionUuid,
+			})),
+		};
+	});
 };
 
 /**
