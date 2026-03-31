@@ -147,17 +147,31 @@ const iterateOverOtherFrontCollections = (
 	};
 };
 
-const walkCards = (
+const iterateOverCollection = (
+	collection: Collection,
+	groupMap: GroupMap,
+	callback: (cardUuids: string[]) => void,
+) => {
+	if (!collection.draft) return;
+
+	for (const groupUuid of collection.draft) {
+		const group = groupMap[groupUuid];
+		if (!group) continue;
+		callback(group.cards);
+	}
+};
+
+const iterateOverCards = (
 	cardMap: CardMap,
 	cardUuids: string[],
-	visit: (card: CardMap[string]) => void,
+	callback: (card: CardMap[string]) => void,
 ) => {
 	for (const cardUuid of cardUuids) {
 		const card = cardMap[cardUuid];
 		if (!card) continue;
-		visit(card);
+		callback(card);
 		if (card.meta.supporting) {
-			walkCards(cardMap, card.meta.supporting, visit);
+			iterateOverCards(cardMap, card.meta.supporting, callback);
 		}
 	}
 };
@@ -168,7 +182,7 @@ const constructCardIdToOtherCollectionUuidsMap = (
 	otherCollectionId: string,
 	cardUuids: string[],
 ) => {
-	walkCards(cardMap, cardUuids, (card) => {
+	iterateOverCards(cardMap, cardUuids, (card) => {
 		const matchingCollectionUuids = cardIdToOtherCollectionUuidsMap.get(
 			card.id,
 		);
@@ -188,7 +202,7 @@ const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
 	cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	cardUuids: string[],
 ) => {
-	walkCards(cardMap, cardUuids, (card) => {
+	iterateOverCards(cardMap, cardUuids, (card) => {
 		const matchingCollectionUuids =
 			cardIdToOtherCollectionUuidsMap.get(card.id) ?? [];
 		cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap[card.uuid] = {
@@ -197,20 +211,6 @@ const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
 			})),
 		};
 	});
-};
-
-const iterateOverCollection = (
-	collection: Collection,
-	groupMap: GroupMap,
-	callback: (cardUuids: string[]) => void,
-) => {
-	if (!collection.draft) return;
-
-	for (const groupUuid of collection.draft) {
-		const group = groupMap[groupUuid];
-		if (!group) continue;
-		callback(group.cards);
-	}
 };
 
 /**
