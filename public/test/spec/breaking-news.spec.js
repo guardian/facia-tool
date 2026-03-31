@@ -300,10 +300,6 @@ describe('Breaking News', function () {
             expect(regions.front().collection(1).publishText()).toBe('Remove');
             return regions.front().collection(1).publish();
         })
-		.then(() => wait.ms(200)) // wait for publish to complete
-        .then(() => {
-            return regions.latest().trail(0).copy();
-        })
         .then(() => {
             return this.testPage.actions.edit(() => {
               return regions.front().collection(1).group(1).pasteOver();
