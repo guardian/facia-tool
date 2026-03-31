@@ -265,7 +265,7 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 	const cardIdToOtherCollectionUuidsMap: CardIdToOtherCollectionUuidsMap =
 		new Map<string, string[]>();
 	for (const otherCollection of otherCollectionsOnSameFront) {
-		if (!otherCollection?.draft) {
+		if (!otherCollection.draft) {
 			continue;
 		}
 		iterateOverCollection(otherCollection, groupMap, (cardUuids) => {
