@@ -22,6 +22,8 @@ interface OtherCollectionsOnSameFrontThisCardIsOn {
 	collections: Array<{ collectionUuid: string }>;
 }
 
+type CardIdToOtherCollectionUuidsMap = Map<string, string[]>;
+
 interface CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap {
 	[cardUuid: string]: OtherCollectionsOnSameFrontThisCardIsOn;
 }
@@ -246,6 +248,7 @@ export {
 	CollectionsWhichAreAlsoOnOtherFronts,
 	CollectionsWhichAreAlsoOnOtherFrontsMap,
 	OtherCollectionsOnSameFrontThisCardIsOn,
+	CardIdToOtherCollectionUuidsMap,
 	CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	NestedCard,
 	Card,

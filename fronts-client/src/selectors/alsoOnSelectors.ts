@@ -1,4 +1,5 @@
 import {
+	CardIdToOtherCollectionUuidsMap,
 	CardMap,
 	CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	Collection,
@@ -146,6 +147,70 @@ const iterateOverOtherFrontCollections = (
 	};
 };
 
+const constructCardIdToOtherCollectionUuidsMap = (
+	cardMap: CardMap,
+	cardIdToOtherCollectionUuidsMap: CardIdToOtherCollectionUuidsMap,
+	otherCollectionId: string,
+	cardUuids: string[],
+) => {
+	for (const cardUuid of cardUuids) {
+		const card = cardMap[cardUuid];
+		if (!card) continue;
+		const matchingCollectionUuids = cardIdToOtherCollectionUuidsMap.get(
+			card.id,
+		);
+		if (matchingCollectionUuids) {
+			matchingCollectionUuids.push(otherCollectionId);
+		} else {
+			cardIdToOtherCollectionUuidsMap.set(card.id, [otherCollectionId]);
+		}
+
+		if (card.meta.supporting) {
+			constructCardIdToOtherCollectionUuidsMap(
+				cardMap,
+				cardIdToOtherCollectionUuidsMap,
+				otherCollectionId,
+				card.meta.supporting,
+			);
+		}
+	}
+};
+
+const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
+	cardMap: CardMap,
+	cardIdToOtherCollectionUuidsMap: CardIdToOtherCollectionUuidsMap,
+	cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
+	cardUuids: string[],
+) => {
+	for (const cardUuid of cardUuids) {
+		const card = cardMap[cardUuid];
+		if (!card) continue;
+		const matchingCollectionUuids = cardIdToOtherCollectionUuidsMap.get(
+			card.id,
+		);
+		if (matchingCollectionUuids) {
+			cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap[card.uuid] = {
+				collections: matchingCollectionUuids.map((collectionUuid) => ({
+					collectionUuid,
+				})),
+			};
+		} else {
+			cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap[card.uuid] = {
+				collections: [],
+			};
+		}
+
+		if (card.meta.supporting) {
+			constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap(
+				cardMap,
+				cardIdToOtherCollectionUuidsMap,
+				cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
+				card.meta.supporting,
+			);
+		}
+	}
+};
+
 /**
  * @param selectedCollection
  * @param otherCollectionsOnSameFront
@@ -193,7 +258,8 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 
 	// Pre-build a map of cardId -> collectionUuids from other collections,
 	// so we can do O(1) lookups instead of nested iterations per card
-	const cardIdToOtherCollectionUuids = new Map<string, string[]>();
+	const cardIdToOtherCollectionUuidsMap: CardIdToOtherCollectionUuidsMap =
+		new Map<string, string[]>();
 	for (const otherCollection of otherCollectionsOnSameFront) {
 		if (!otherCollection?.draft) {
 			continue;
@@ -201,83 +267,30 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 		for (const groupUuid of otherCollection.draft) {
 			const group = groupMap[groupUuid];
 			if (!group) continue;
-			for (const cardUuid of group.cards) {
-				const card = cardMap[cardUuid];
-				if (!card) continue;
-				const matchingCollectionUuids = cardIdToOtherCollectionUuids.get(
-					card.id,
-				);
-				if (matchingCollectionUuids) {
-					matchingCollectionUuids.push(otherCollection.id);
-				} else {
-					cardIdToOtherCollectionUuids.set(card.id, [otherCollection.id]);
-				}
-				// Also search through sublinks (supporting cards)
-				for (const supportingCardUuid of card.meta.supporting ?? []) {
-					const supportingCard = cardMap[supportingCardUuid];
-					if (!supportingCard) {
-						continue;
-					}
-					const matchingCollectionUuidsForSupporting =
-						cardIdToOtherCollectionUuids.get(supportingCard.id);
-					if (matchingCollectionUuidsForSupporting) {
-						matchingCollectionUuidsForSupporting.push(otherCollection.id);
-					} else {
-						cardIdToOtherCollectionUuids.set(supportingCard.id, [
-							otherCollection.id,
-						]);
-					}
-				}
-			}
+			constructCardIdToOtherCollectionUuidsMap(
+				cardMap,
+				cardIdToOtherCollectionUuidsMap,
+				otherCollection.id,
+				group.cards,
+			);
 		}
 	}
 
 	// Use Draft cards as these are the ones that show up in the UI
-	const result: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = {};
+	const cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap =
+		{};
 	for (const groupUuid of selectedCollection.draft) {
 		const group = groupMap[groupUuid];
 		if (!group) continue;
-		for (const cardUuid of group.cards) {
-			const card = cardMap[cardUuid];
-			if (!card) continue;
-			const matchingCollectionUuids = cardIdToOtherCollectionUuids.get(card.id);
-			if (matchingCollectionUuids) {
-				result[card.uuid] = {
-					collections: matchingCollectionUuids.map((collectionUuid) => ({
-						collectionUuid,
-					})),
-				};
-			} else {
-				result[card.uuid] = {
-					collections: [],
-				};
-			}
-			// Also check sublinks (supporting cards)
-			for (const supportingCardUuid of card.meta.supporting ?? []) {
-				const supportingCard = cardMap[supportingCardUuid];
-				if (!supportingCard) {
-					continue;
-				}
-				const matchingCollectionUuidsForSupporting =
-					cardIdToOtherCollectionUuids.get(supportingCard.id);
-				if (matchingCollectionUuidsForSupporting) {
-					result[supportingCard.uuid] = {
-						collections: matchingCollectionUuidsForSupporting.map(
-							(collectionUuid) => ({
-								collectionUuid,
-							}),
-						),
-					};
-				} else {
-					result[supportingCard.uuid] = {
-						collections: [],
-					};
-				}
-			}
-		}
+		constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap(
+			cardMap,
+			cardIdToOtherCollectionUuidsMap,
+			cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
+			group.cards,
+		);
 	}
 
-	return result;
+	return cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap;
 };
 
 export {
