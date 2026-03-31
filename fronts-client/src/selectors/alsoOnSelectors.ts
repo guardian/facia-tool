@@ -199,6 +199,20 @@ const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
 	});
 };
 
+const iterateOverCollection = (
+	collection: Collection,
+	groupMap: GroupMap,
+	callback: (cardUuids: string[]) => void,
+) => {
+	if (!collection.draft) return;
+
+	for (const groupUuid of collection.draft) {
+		const group = groupMap[groupUuid];
+		if (!group) continue;
+		callback(group.cards);
+	}
+};
+
 /**
  * @param selectedCollection
  * @param otherCollectionsOnSameFront
@@ -252,31 +266,27 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 		if (!otherCollection?.draft) {
 			continue;
 		}
-		for (const groupUuid of otherCollection.draft) {
-			const group = groupMap[groupUuid];
-			if (!group) continue;
+		iterateOverCollection(otherCollection, groupMap, (cardUuids) => {
 			constructCardIdToOtherCollectionUuidsMap(
 				cardMap,
 				cardIdToOtherCollectionUuidsMap,
 				otherCollection.id,
-				group.cards,
+				cardUuids,
 			);
-		}
+		});
 	}
 
 	// Use Draft cards as these are the ones that show up in the UI
 	const cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap =
 		{};
-	for (const groupUuid of selectedCollection.draft) {
-		const group = groupMap[groupUuid];
-		if (!group) continue;
+	iterateOverCollection(selectedCollection, groupMap, (cardUuids) => {
 		constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap(
 			cardMap,
 			cardIdToOtherCollectionUuidsMap,
 			cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
-			group.cards,
+			cardUuids,
 		);
-	}
+	});
 
 	return cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap;
 };
