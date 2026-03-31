@@ -22,3 +22,19 @@ export function ms (time) {
         setTimeout(resolve, time);
     });
 }
+
+export function condition (predicate, timeout = 5000, interval = 50) {
+	return new Promise((resolve, reject) => {
+		const start = Date.now();
+		const check = () => {
+			if (predicate()) {
+				resolve();
+			} else if (Date.now() - start >= timeout) {
+				reject(new Error('Timeout waiting for condition'));
+			} else {
+				setTimeout(check, interval);
+			}
+		};
+		check();
+	});
+}
