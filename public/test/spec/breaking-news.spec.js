@@ -261,7 +261,7 @@ describe('Breaking News', function () {
         .then(() => {
             return regions.front().collection(1).publish()
             // Wait for modal to appear
-            .then(() => wait.ms(100));
+            .then(() => wait.ms(200));
         })
         .then(() => {
             return this.testPage.actions.publish(() => {
@@ -277,7 +277,7 @@ describe('Breaking News', function () {
             })
             .done;
         })
-        .then(() => wait.ms(100))
+        .then(() => wait.ms(200))
         .then(() => {
             return regions.alert().close();
         })
