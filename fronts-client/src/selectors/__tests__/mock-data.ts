@@ -61,6 +61,33 @@ const collectionFootball: Collection = {
 	excludedRegions: [],
 };
 
+const collectionPremierLeague: Collection = {
+	id: 'premierLeagueCollectionUuid',
+	displayName: 'premier-league',
+	live: ['groupUuid6'],
+	draft: ['groupUuid6'],
+	targetedRegions: [],
+	excludedRegions: [],
+};
+
+const collectionChampionship: Collection = {
+	id: 'championshipCollectionUuid',
+	displayName: 'championship',
+	live: ['groupUuid7'],
+	draft: ['groupUuid7'],
+	targetedRegions: [],
+	excludedRegions: [],
+};
+
+const collectionFootballLeague: Collection = {
+	id: 'footballLeagueCollectionUuid',
+	displayName: 'football-league',
+	live: ['groupUuid8'],
+	draft: ['groupUuid8'],
+	targetedRegions: [],
+	excludedRegions: [],
+};
+
 const collectionSport: Collection = {
 	id: 'sportCollectionUuid',
 	displayName: 'sport',
@@ -88,24 +115,25 @@ const collectionCulture: Collection = {
 	excludedRegions: [],
 };
 
-const frontConfig: FrontConfig = {
-	id: 'front',
-	priority: 'editorial',
-	collections: [
-		'footballCollectionUuid',
-		'sportCollectionUuid',
-		'whatToWatchCollectionUuid',
-		'cultureCollectionUuid',
-		'obituariesCollectionUuid',
-	],
+const collectionUnpublishedChanges: Collection = {
+	id: 'unpublishedCollectionUuid',
+	displayName: 'unpublished',
+	live: ['groupUuid6'],
+	draft: ['groupUuid2'],
+	targetedRegions: [],
+	excludedRegions: [],
 };
 
 const allCollections = [
 	collectionObituaries,
 	collectionFootball,
+	collectionPremierLeague,
+	collectionChampionship,
+	collectionFootballLeague,
 	collectionSport,
 	collectionWhatToWatch,
 	collectionCulture,
+	collectionUnpublishedChanges,
 ];
 
 const groupMap: GroupMap = {
@@ -138,6 +166,24 @@ const groupMap: GroupMap = {
 		name: 'Group 5',
 		uuid: 'groupUuid5',
 		cards: ['cardUuid4', 'cardUuid5', 'cardUuid6'],
+	},
+	groupUuid6: {
+		id: 'group-6',
+		name: 'Group 6',
+		uuid: 'groupUuid6',
+		cards: ['cardUuid7'],
+	},
+	groupUuid7: {
+		id: 'group-7',
+		name: 'Group 7',
+		uuid: 'groupUuid7',
+		cards: ['cardUuid8'],
+	},
+	groupUuid8: {
+		id: 'group-8',
+		name: 'Group 8',
+		uuid: 'groupUuid8',
+		cards: ['cardUuid10'],
 	},
 };
 
@@ -178,6 +224,34 @@ const cardMap: CardMap = {
 		frontPublicationDate: 0,
 		meta: {},
 	},
+	cardUuid7: {
+		uuid: 'cardUuid7',
+		id: 'premier-league-roundup',
+		frontPublicationDate: 0,
+		meta: {
+			supporting: ['cardUuid9', 'cardUuid10'],
+		},
+	},
+	cardUuid8: {
+		uuid: 'cardUuid8',
+		id: 'championship-roundup',
+		frontPublicationDate: 0,
+		meta: {
+			supporting: ['cardUuid10'],
+		},
+	},
+	cardUuid9: {
+		uuid: 'cardUuid9',
+		id: 'premier-league-golden-boot',
+		frontPublicationDate: 0,
+		meta: {},
+	},
+	cardUuid10: {
+		uuid: 'cardUuid10',
+		id: 'football-league-roundup',
+		frontPublicationDate: 0,
+		meta: {},
+	},
 };
 
 export {
@@ -187,11 +261,14 @@ export {
 	commercialFronts,
 	collectionObituaries,
 	collectionFootball,
+	collectionPremierLeague,
+	collectionChampionship,
+	collectionFootballLeague,
 	collectionSport,
 	collectionWhatToWatch,
 	collectionCulture,
+	collectionUnpublishedChanges,
 	allCollections,
-	frontConfig,
 	groupMap,
 	cardMap,
 };

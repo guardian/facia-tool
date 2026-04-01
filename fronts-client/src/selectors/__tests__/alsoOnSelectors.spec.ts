@@ -15,6 +15,10 @@ import {
 	editorialFrontsInConfig,
 	groupMap,
 	trainingFronts,
+	collectionPremierLeague,
+	collectionFootballLeague,
+	collectionChampionship,
+	collectionUnpublishedChanges,
 } from './mock-data';
 import { Collection } from '../../types/Collection';
 
@@ -146,7 +150,10 @@ describe('Selecting cards which are also on other collections on the same front'
 			),
 		).toEqual({
 			cardUuid2: {
-				collections: [{ collectionUuid: 'sportCollectionUuid' }],
+				collections: [
+					{ collectionUuid: 'sportCollectionUuid' },
+					{ collectionUuid: 'unpublishedCollectionUuid' },
+				],
 			},
 		});
 
@@ -159,7 +166,10 @@ describe('Selecting cards which are also on other collections on the same front'
 			),
 		).toEqual({
 			cardUuid2: {
-				collections: [{ collectionUuid: 'footballCollectionUuid' }],
+				collections: [
+					{ collectionUuid: 'footballCollectionUuid' },
+					{ collectionUuid: 'unpublishedCollectionUuid' },
+				],
 			},
 			cardUuid3: {
 				collections: [{ collectionUuid: 'whatToWatchCollectionUuid' }],
@@ -202,5 +212,97 @@ describe('Selecting cards which are also on other collections on the same front'
 				collections: [],
 			},
 		});
+	});
+
+	it('returns card which is used as a sublink on another collection', () => {
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				collectionFootballLeague,
+				collectionsExcept(collectionFootballLeague),
+				groupMap,
+				cardMap,
+			),
+		).toEqual(
+			expect.objectContaining({
+				cardUuid10: {
+					collections: expect.arrayContaining([
+						{ collectionUuid: 'championshipCollectionUuid' },
+					]),
+				},
+			}),
+		);
+	});
+
+	it('returns sublink which is used as a card on another collection', () => {
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				collectionPremierLeague,
+				collectionsExcept(collectionPremierLeague),
+				groupMap,
+				cardMap,
+			),
+		).toEqual(
+			expect.objectContaining({
+				cardUuid10: {
+					collections: expect.arrayContaining([
+						{ collectionUuid: 'footballLeagueCollectionUuid' },
+					]),
+				},
+			}),
+		);
+	});
+
+	it('returns sublink which is used as a sublink on another collection', () => {
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				collectionChampionship,
+				collectionsExcept(collectionChampionship),
+				groupMap,
+				cardMap,
+			),
+		).toEqual(
+			expect.objectContaining({
+				cardUuid10: {
+					collections: expect.arrayContaining([
+						{ collectionUuid: 'premierLeagueCollectionUuid' },
+					]),
+				},
+			}),
+		);
+	});
+
+	it('searches over draft collection, not live', () => {
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				collectionUnpublishedChanges,
+				collectionsExcept(collectionUnpublishedChanges),
+				groupMap,
+				cardMap,
+			),
+		).toEqual(
+			expect.objectContaining({
+				cardUuid2: {
+					collections: [
+						{ collectionUuid: 'footballCollectionUuid' },
+						{ collectionUuid: 'sportCollectionUuid' },
+					],
+				},
+			}),
+		);
+
+		expect(
+			selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront(
+				collectionUnpublishedChanges,
+				collectionsExcept(collectionUnpublishedChanges),
+				groupMap,
+				cardMap,
+			),
+		).not.toEqual(
+			expect.objectContaining({
+				cardUuid7: {
+					collections: [{ collectionUuid: 'premierLeagueCollectionUuid' }],
+				},
+			}),
+		);
 	});
 });

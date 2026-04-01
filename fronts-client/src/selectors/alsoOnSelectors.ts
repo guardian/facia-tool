@@ -210,6 +210,23 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 				} else {
 					cardIdToOtherCollectionUuids.set(card.id, [otherCollection.id]);
 				}
+				// Also search through sublinks (supporting cards)
+				for (const supportingCardUuid of card.meta.supporting ?? []) {
+					const supportingCard = cardMap[supportingCardUuid];
+					if (!supportingCard) {
+						continue;
+					}
+					const existingSupporting = cardIdToOtherCollectionUuids.get(
+						supportingCard.id,
+					);
+					if (existingSupporting) {
+						existingSupporting.push(otherCollection.id);
+					} else {
+						cardIdToOtherCollectionUuids.set(supportingCard.id, [
+							otherCollection.id,
+						]);
+					}
+				}
 			}
 		}
 	}
@@ -229,6 +246,22 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 					collectionUuid,
 				})),
 			};
+			// Also check sublinks (supporting cards)
+			for (const supportingCardUuid of card.meta.supporting ?? []) {
+				const supportingCard = cardMap[supportingCardUuid];
+				if (!supportingCard) {
+					continue;
+				}
+				const matchingCollectionUuidsForSupporting =
+					cardIdToOtherCollectionUuids.get(supportingCard.id) ?? [];
+				result[supportingCard.uuid] = {
+					collections: matchingCollectionUuidsForSupporting.map(
+						(collectionUuid) => ({
+							collectionUuid,
+						}),
+					),
+				};
+			}
 		}
 	}
 

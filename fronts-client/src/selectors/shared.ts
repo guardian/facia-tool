@@ -241,7 +241,15 @@ const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 			for (const group of Object.values(relevantGroupMap)) {
 				for (const cardId of group.cards) {
 					const card = cardMap[cardId];
-					if (card) result[cardId] = card;
+
+					if (card) {
+						result[cardId] = card;
+						// also add sublinks to relevant card map
+						for (const supportingCardId of card.meta.supporting ?? []) {
+							const supportingCard = cardMap[supportingCardId];
+							if (supportingCard) result[supportingCardId] = supportingCard;
+						}
+					}
 				}
 			}
 			return result;
