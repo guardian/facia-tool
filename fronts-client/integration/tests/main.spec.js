@@ -189,6 +189,8 @@ test('Drag from clipboard to full collection - accept modal', async (t) => {
   const externalSnap = await externalSnapLink();
   const fullCollectionCount = await allCards(2).count;
 
+	await t.scrollIntoView(collectionDropZone(2, 2));
+
   await t
     .dragToElement(externalSnap, collectionDropZone(2, 2))
     .click(optionsModalChoice('options-modal-confirm'))
@@ -199,6 +201,8 @@ test('Drag from clipboard to full collection - accept modal', async (t) => {
 test('Drag from clipboard to full collection - cancel modal', async (t) => {
   const externalSnap = await externalSnapLink();
   const fullCollectionCount = await allCards(2).count;
+
+	await t.scrollIntoView(collectionDropZone(2, 2));
 
   await t
     .dragToElement(externalSnap, collectionDropZone(2, 2))
