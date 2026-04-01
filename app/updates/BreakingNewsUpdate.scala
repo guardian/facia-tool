@@ -75,7 +75,7 @@ object BreakingNewsUpdate {
           if (EditorsPicksTopics.map(
             _.name
           ) :+ EditorsPicksGlobalTopicName).contains(topic) =>
-        Some("Editors' pick")
+        Some("Editors' picks")
       case Some(topic)
           if (OneNotToMissTopics.map(
             _.name
