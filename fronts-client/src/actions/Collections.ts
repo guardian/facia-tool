@@ -13,6 +13,7 @@ import {
 	publishCollection as publishCollectionApi,
 	getCollection as getCollectionApi,
 	createFrontsCollection as createCollectionApi,
+	updateFrontConfig as updateFrontConfigApi,
 } from 'services/faciaApi';
 import {
 	selectUserEmail,
@@ -647,6 +648,55 @@ function addFrontCollection(frontId: string): ThunkResult<Promise<void>> {
 	};
 }
 
+function moveFrontCollection(
+	frontId: string,
+	collectionId: string,
+	direction?: 'up' | 'down',
+	position?: number,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		if (direction === undefined && position === undefined) {
+			return;
+		}
+		const state = getState();
+		const front = selectFront(state, { frontId });
+		if (!front) {
+			return;
+		}
+
+		const currentIndex = front.collections.findIndex(
+			(id) => id === collectionId,
+		);
+		if (currentIndex === -1) {
+			return;
+		}
+
+		const indexFromOffset = () => {
+			const offset = direction === 'up' ? -1 : 1;
+			const newIndex = Math.max(
+				0,
+				Math.min(currentIndex + offset, front.collections.length - 1),
+			);
+			return newIndex;
+		};
+
+		const newIndex = position !== undefined ? position : indexFromOffset();
+		if (newIndex === currentIndex) {
+			return;
+		}
+
+		const reordered = [...front.collections];
+		reordered.splice(currentIndex, 1);
+		reordered.splice(newIndex, 0, collectionId);
+
+		const updatedFront = { ...front, collections: reordered };
+
+		await updateFrontConfigApi(frontId, updatedFront);
+
+		await dispatch(getFrontsConfig());
+	};
+}
+
 export {
 	getCollections,
 	fetchCardReferencedEntitiesForCollections,
@@ -659,4 +709,5 @@ export {
 	publishCollection,
 	discardDraftChangesToCollection,
 	addFrontCollection,
+	moveFrontCollection,
 };
