@@ -35,7 +35,10 @@ import {
 	createSelectDoesCollectionHaveOpenForms,
 	selectIsFrontEditingMetadata,
 } from 'bundles/frontsUI';
-import { fetchCardReferencedEntitiesForCollections } from 'actions/Collections';
+import {
+	fetchCardReferencedEntitiesForCollections,
+	moveFrontCollection,
+} from 'actions/Collections';
 import { cardSets } from 'constants/fronts';
 import CollectionMetaContainer from 'components/collection/CollectionMetaContainer';
 import ButtonCircularCaret from 'components/inputs/ButtonCircularCaret';
@@ -45,7 +48,7 @@ import { fetchPrefill } from 'bundles/capiFeedBundle';
 import LoadingGif from 'images/icons/loading.gif';
 import OpenFormsWarning from './OpenFormsWarning';
 import { selectors as editionsIssueSelectors } from '../../../bundles/editionsIssueBundle';
-import { moveFrontCollection } from '../../../actions/Editions';
+import { moveFrontCollection as moveEditionsFrontCollection } from '../../../actions/Editions';
 
 interface CollectionPropsBeforeState {
 	id: string;
@@ -91,6 +94,11 @@ type CollectionProps = CollectionPropsBeforeState & {
 	targetedRegions: string[];
 	canMoveUp: boolean;
 	canMoveDown: boolean;
+	moveEditionsFrontCollection: (
+		frontId: string,
+		id: string,
+		direction: 'up' | 'down',
+	) => void;
 	moveFrontCollection: (
 		frontId: string,
 		id: string,
@@ -245,99 +253,127 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 					onChangeOpenState={() => onChangeOpenState(id, isOpen)}
 					isEditingMetadata={isEditingMetadata}
 					headlineContent={
-						hasUnpublishedChanges &&
-						canPublish && (
-							<Fragment>
-								<EditModeVisibility visibleMode="editions">
-									{!isFeast && (
-										<HeadlineContentButton
-											priority="default"
-											onClick={() => this.props.setHidden(id, !isHidden)}
-											title="Toggle the visibility of this container in this issue."
-										>
-											{isHidden ? 'Unhide' : 'Hide'}
-										</HeadlineContentButton>
-									)}
-									{isFeast && (
-										<>
-											{targetedRegions?.length > 0 ? '🇺🇸 ' : ''}{' '}
-											<MoveButtonsContainer>
-												<ButtonCircularCaret
-													small
-													openDir="up"
-													disabled={!this.props.canMoveUp}
-													onClick={() =>
-														this.props.moveFrontCollection(
-															this.props.frontId,
-															this.props.id,
-															'up',
-														)
-													}
-												/>
-												<ButtonCircularCaret
-													small
-													disabled={!this.props.canMoveDown}
-													onClick={() =>
-														this.props.moveFrontCollection(
-															this.props.frontId,
-															this.props.id,
-															'down',
-														)
-													}
-												/>
-											</MoveButtonsContainer>
-										</>
-									)}
-									{hasPrefill && (
-										<HeadlineContentButton
-											data-testid="prefill-button"
-											priority="default"
-											onClick={() => this.props.fetchPrefill(id)}
-											title="Get suggested articles for this collection"
-										>
-											Suggest
-										</HeadlineContentButton>
-									)}
-								</EditModeVisibility>
-								<ActionButtonsContainer
-									onMouseEnter={this.showOpenFormsWarning}
-									onMouseLeave={this.hideOpenFormsWarning}
-								>
-									{hasOpenForms && this.state.showOpenFormsWarning && (
-										<OpenFormsWarningContainer>
-											<OpenFormsWarning collectionId={id} frontId={frontId} />
-										</OpenFormsWarningContainer>
-									)}
-									<EditModeVisibility visibleMode="fronts">
-										<Button
-											size="l"
-											priority="default"
-											onClick={() => discardDraftChanges(id)}
-											tabIndex={-1}
-											data-testid="collection-discard-button"
-										>
-											Discard
-										</Button>
-										<Button
-											size="l"
-											priority="primary"
-											onClick={() => this.startPublish(id, frontId)}
-											tabIndex={-1}
-											disabled={isLaunching}
-											data-testid="collection-launch-button"
-										>
-											{isLaunching ? (
-												<LoadingImageBox>
-													<img src={LoadingGif} />
-												</LoadingImageBox>
-											) : (
-												'Launch'
-											)}
-										</Button>
+						<Fragment>
+							{hasUnpublishedChanges && canPublish && (
+								<Fragment>
+									<EditModeVisibility visibleMode="editions">
+										{!isFeast && (
+											<HeadlineContentButton
+												priority="default"
+												onClick={() => this.props.setHidden(id, !isHidden)}
+												title="Toggle the visibility of this container in this issue."
+											>
+												{isHidden ? 'Unhide' : 'Hide'}
+											</HeadlineContentButton>
+										)}
+										{isFeast && (
+											<>
+												{targetedRegions?.length > 0 ? '🇺🇸 ' : ''}{' '}
+												<MoveButtonsContainer>
+													<ButtonCircularCaret
+														small
+														openDir="up"
+														disabled={!this.props.canMoveUp}
+														onClick={() =>
+															this.props.moveEditionsFrontCollection(
+																this.props.frontId,
+																this.props.id,
+																'up',
+															)
+														}
+													/>
+													<ButtonCircularCaret
+														small
+														disabled={!this.props.canMoveDown}
+														onClick={() =>
+															this.props.moveEditionsFrontCollection(
+																this.props.frontId,
+																this.props.id,
+																'down',
+															)
+														}
+													/>
+												</MoveButtonsContainer>
+											</>
+										)}
+										{hasPrefill && (
+											<HeadlineContentButton
+												data-testid="prefill-button"
+												priority="default"
+												onClick={() => this.props.fetchPrefill(id)}
+												title="Get suggested articles for this collection"
+											>
+												Suggest
+											</HeadlineContentButton>
+										)}
 									</EditModeVisibility>
-								</ActionButtonsContainer>
-							</Fragment>
-						)
+									<ActionButtonsContainer
+										onMouseEnter={this.showOpenFormsWarning}
+										onMouseLeave={this.hideOpenFormsWarning}
+									>
+										{hasOpenForms && this.state.showOpenFormsWarning && (
+											<OpenFormsWarningContainer>
+												<OpenFormsWarning collectionId={id} frontId={frontId} />
+											</OpenFormsWarningContainer>
+										)}
+										<EditModeVisibility visibleMode="fronts">
+											<Button
+												size="l"
+												priority="default"
+												onClick={() => discardDraftChanges(id)}
+												tabIndex={-1}
+												data-testid="collection-discard-button"
+											>
+												Discard
+											</Button>
+											<Button
+												size="l"
+												priority="primary"
+												onClick={() => this.startPublish(id, frontId)}
+												tabIndex={-1}
+												disabled={isLaunching}
+												data-testid="collection-launch-button"
+											>
+												{isLaunching ? (
+													<LoadingImageBox>
+														<img src={LoadingGif} />
+													</LoadingImageBox>
+												) : (
+													'Launch'
+												)}
+											</Button>
+										</EditModeVisibility>
+									</ActionButtonsContainer>
+								</Fragment>
+							)}
+							<EditModeVisibility visibleMode="fronts">
+								<MoveButtonsContainer>
+									<ButtonCircularCaret
+										small
+										openDir="up"
+										disabled={!this.props.canMoveUp}
+										onClick={() =>
+											this.props.moveFrontCollection(
+												this.props.frontId,
+												this.props.id,
+												'up',
+											)
+										}
+									/>
+									<ButtonCircularCaret
+										small
+										disabled={!this.props.canMoveDown}
+										onClick={() =>
+											this.props.moveFrontCollection(
+												this.props.frontId,
+												this.props.id,
+												'down',
+											)
+										}
+									/>
+								</MoveButtonsContainer>
+							</EditModeVisibility>
+						</Fragment>
 					}
 					metaContent={
 						collectionsWhichAreAlsoOnOtherFronts[id].fronts.length ||
@@ -468,6 +504,11 @@ const mapDispatchToProps = (
 			fetchCardReferencedEntitiesForCollections([id], cardSets.previously),
 		);
 	},
+	moveEditionsFrontCollection: (
+		frontId: string,
+		id: string,
+		direction: 'up' | 'down',
+	) => dispatch(moveEditionsFrontCollection(frontId, id, direction)),
 	moveFrontCollection: (
 		frontId: string,
 		id: string,

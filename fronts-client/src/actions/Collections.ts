@@ -38,6 +38,11 @@ import {
 	denormaliseCollection,
 } from 'util/shared';
 import { cardsReceived, clearCards } from 'actions/CardsCommon';
+import {
+	actions as frontsConfigActions,
+	selectors as frontsConfigSelectors,
+} from 'bundles/frontsConfigBundle';
+import { updateFrontConfig as updateFrontConfigApi } from 'services/faciaApi';
 import { groupsReceived } from 'actions/Groups';
 import {
 	recordVisibleArticles,
@@ -606,6 +611,55 @@ function discardDraftChangesToCollection(
 	};
 }
 
+function moveFrontCollection(
+	frontId: string,
+	collectionId: string,
+	direction: 'up' | 'down',
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const state = getState();
+		const front = selectFront(state, { frontId });
+		if (!front) {
+			return;
+		}
+
+		const currentIndex = front.collections.findIndex(
+			(id) => id === collectionId,
+		);
+		if (currentIndex === -1) {
+			return;
+		}
+
+		const offset = direction === 'up' ? -1 : 1;
+		const newIndex = Math.max(
+			0,
+			Math.min(currentIndex + offset, front.collections.length - 1),
+		);
+		if (newIndex === currentIndex) {
+			return;
+		}
+
+		const reordered = [...front.collections];
+		reordered.splice(currentIndex, 1);
+		reordered.splice(newIndex, 0, collectionId);
+
+		const updatedFront = { ...front, collections: reordered };
+
+		await updateFrontConfigApi(frontId)(updatedFront);
+
+		const currentConfig = frontsConfigSelectors.selectAll(getState());
+		dispatch(
+			frontsConfigActions.fetchSuccess({
+				...currentConfig,
+				fronts: {
+					...currentConfig.fronts,
+					[frontId]: updatedFront,
+				},
+			}),
+		);
+	};
+}
+
 export {
 	getCollections,
 	fetchCardReferencedEntitiesForCollections,
@@ -617,4 +671,5 @@ export {
 	initialiseCollectionsForFront,
 	publishCollection,
 	discardDraftChangesToCollection,
+	moveFrontCollection,
 };
