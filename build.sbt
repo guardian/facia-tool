@@ -55,7 +55,7 @@ val awsVersion = "1.12.470"
 val capiModelsVersion = "31.0.0"
 val capiClientVersion = "37.0.0"
 val json4sVersion = "4.0.3"
-val circeVersion = "0.13.0"
+val circeVersion = "0.14.15"
 
 resolvers ++= Seq(
   Resolver.file("Local", file(Path.userHome.absolutePath + "/.ivy2/local"))(
