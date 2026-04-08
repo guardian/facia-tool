@@ -72,18 +72,18 @@ class BreakingNewsUpdateTest extends FreeSpec with Matchers {
       }
     }
 
-    "should set title to 'Editors' pick' for global editors picks topic" in {
+    "should set title to 'Editors' picks' for global editors picks topic" in {
       BreakingNewsUpdate
         .createPayload(createTrail(BreakingNewsUpdate.EditorsPicksGlobalTopicName), exampleEmail)
-        .title shouldBe Some("Editors' pick")
+        .title shouldBe Some("Editors' picks")
     }
 
-    "should set title to 'Editors' pick' for regional editors picks topics" in {
+    "should set title to 'Editors' picks' for regional editors picks topics" in {
       val editorsPicksTopicNames = BreakingNewsUpdate.EditorsPicksTopics.map(_.name)
       editorsPicksTopicNames.foreach { topicName =>
         BreakingNewsUpdate
           .createPayload(createTrail(topicName), exampleEmail)
-          .title shouldBe Some("Editors' pick")
+          .title shouldBe Some("Editors' picks")
       }
     }
 
