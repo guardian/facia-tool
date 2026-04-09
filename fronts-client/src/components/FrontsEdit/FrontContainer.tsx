@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -35,7 +35,8 @@ import { selectPriority } from 'selectors/pathSelectors';
 import { Priorities } from 'types/Priority';
 import { DragToAddFeastCollection } from './CollectionComponents/DragToAddFeastCollection';
 import Button from '../inputs/ButtonDefault';
-import { addFrontCollection } from '../../actions/Editions';
+import { addFrontCollection as addEditionsFrontCollection } from '../../actions/Editions';
+import { addFrontCollection } from 'actions/Collections';
 
 const FrontWrapper = styled.div`
 	height: 100%;
@@ -132,6 +133,7 @@ type FrontProps = FrontPropsBeforeState & {
 	editorCloseAllCollectionsForFront: typeof editorCloseAllCollectionsForFront;
 	isFeast: boolean;
 	addFrontCollection: (frontId: string) => void;
+	addEditionsFrontCollection: (frontId: string) => void;
 };
 
 interface FrontState {
@@ -181,10 +183,25 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 							)}
 							{isFeast && (
 								<ButtonInSectionContentMetaContainer
-									onClick={() => this.addFrontCollection()}
+									onClick={() =>
+										this.props.addEditionsFrontCollection(this.props.id)
+									}
 								>
 									Add New Container
 								</ButtonInSectionContentMetaContainer>
+							)}
+							{!isFeast && (
+								<Fragment>
+									<OverviewHeadingButton onClick={this.handleEditMetadata}>
+										<PencilIcon size="s" fill={theme.base.colors.text} />
+										<ButtonLabel>&nbsp;Edit metadata</ButtonLabel>
+									</OverviewHeadingButton>
+									<ButtonInSectionContentMetaContainer
+										onClick={() => this.addFrontCollection()}
+									>
+										Add Container
+									</ButtonInSectionContentMetaContainer>
+								</Fragment>
 							)}
 							<OverviewHeadingButton onClick={this.handleOpenCollections}>
 								<ButtonLabel>Expand all&nbsp;</ButtonLabel>
@@ -193,10 +210,6 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 							<OverviewHeadingButton onClick={this.handleCloseCollections}>
 								<ButtonLabel>Collapse all&nbsp;</ButtonLabel>
 								<DownCaretIcon direction="up" fill={theme.base.colors.text} />
-							</OverviewHeadingButton>
-							<OverviewHeadingButton onClick={this.handleEditMetadata}>
-								<PencilIcon size="s" fill={theme.base.colors.text} />
-								<ButtonLabel>&nbsp;Edit metadata</ButtonLabel>
 							</OverviewHeadingButton>
 							{!overviewIsOpen && this.overviewToggle(overviewIsOpen)}
 						</SectionContentMetaContainer>{' '}
@@ -304,6 +317,8 @@ const mapDispatchToProps = (
 		initialiseFront: () =>
 			dispatch(initialiseCollectionsForFront(id, browsingStage)),
 		addFrontCollection: (id: string) => dispatch(addFrontCollection(id)),
+		addEditionsFrontCollection: (id: string) =>
+			dispatch(addEditionsFrontCollection(id)),
 		handleArticleFocus: (groupId: string, card: TCard, frontId: string) =>
 			dispatch(
 				setFocusState({

@@ -13,7 +13,10 @@ import {
 	selectCollectionDisplayName,
 } from 'selectors/frontsSelectors';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
-import { updateCollection as updateCollectionAction } from 'actions/Collections';
+import {
+	updateCollection as updateCollectionAction,
+	updateCollectionConfig,
+} from 'actions/Collections';
 import { selectPriority } from 'selectors/pathSelectors';
 import { editorCloseEditMetadata } from 'bundles/frontsUI';
 
@@ -180,17 +183,14 @@ interface OwnProps {
 
 interface StateProps {
 	collection: Collection | undefined;
-	collectionConfig: CollectionConfig | undefined;
+	collectionConfig: CollectionConfig;
 	displayName: string;
 	priority: string;
 	availableMetadataTypes: string[];
 }
 
 interface DispatchProps {
-	updateCollection: (
-		collection: Collection,
-		mode: CollectionUpdateMode,
-	) => void;
+	updateCollectionConfig: (collection: CollectionConfig) => void;
 	closeEditMetadata: () => void;
 }
 
@@ -230,7 +230,7 @@ const CollectionMetadataForm = ({
 	priority,
 	availableMetadataTypes,
 	closeEditMetadata,
-	updateCollection,
+	updateCollectionConfig,
 }: Props) => {
 	const isEmail = priority === 'email';
 
@@ -322,31 +322,41 @@ const CollectionMetadataForm = ({
 			name: g.name,
 			...(g.maxItems !== '' ? { maxItems: parseInt(g.maxItems, 10) } : {}),
 		}));
-		updateCollection(
-			{
-				...collection,
-				type: form.type || undefined,
-				displayName: form.displayName.trim() || collection.displayName,
-				uneditable: form.uneditable,
-				targetedTerritory: form.targetedTerritory || undefined,
-				metadata:
-					form.metadataTags.length > 0
-						? form.metadataTags.map((t) => ({ type: t }))
-						: undefined,
-				groupsConfig:
-					parsedGroupsConfig.length > 0 ? parsedGroupsConfig : undefined,
-				frontsToolSettings: {
-					...collection.frontsToolSettings,
-					displayEditWarning: form.displayEditWarning,
-				},
-				displayHints: {
-					...collection.displayHints,
-					suppressImages: form.suppressImages,
-					maxItemsToDisplay: isNaN(maxItems) ? undefined : maxItems,
-				},
+		updateCollectionConfig({
+			...collectionConfig,
+			type: form.type || undefined,
+			displayName: form.displayName.trim() || collection.displayName,
+			uneditable: form.uneditable,
+			targetedTerritory: form.targetedTerritory || undefined,
+			metadata:
+				form.metadataTags.length > 0
+					? form.metadataTags.map((t) => ({ type: t }))
+					: undefined,
+			groupsConfig:
+				parsedGroupsConfig.length > 0 ? parsedGroupsConfig : undefined,
+			frontsToolSettings: {
+				...collection.frontsToolSettings,
+				displayEditWarning: form.displayEditWarning,
 			},
-			'overwrite',
-		);
+			displayHints: {
+				...collection.displayHints,
+				suppressImages: form.suppressImages,
+				maxItemsToDisplay: isNaN(maxItems) ? undefined : maxItems,
+			},
+			backfill: form.backfillQuery || undefined,
+			href: form.href || undefined,
+			showTags: form.showTags || undefined,
+			hideKickers: form.hideKickers || undefined,
+			showSections: form.showSections || undefined,
+			showDateHeader: form.showDateHeader || undefined,
+			showLatestUpdate: form.showLatestUpdate || undefined,
+			excludedFromRss: form.excludeFromRss || undefined,
+			hideShowMore: form.hideShowMore || undefined,
+			description: form.description || undefined,
+			excludeFromRss: form.excludeFromRss || undefined,
+			userVisibility: form.userVisibility || undefined,
+			//platform: form.platform || undefined,
+		});
 		closeEditMetadata();
 	};
 
@@ -640,8 +650,8 @@ const mapDispatchToProps = (
 	dispatch: Dispatch,
 	{ frontId, onClose }: OwnProps,
 ): DispatchProps => ({
-	updateCollection: (collection, mode) =>
-		dispatch(updateCollectionAction(collection, mode)),
+	updateCollectionConfig: (collection) =>
+		dispatch(updateCollectionConfig(collection)),
 	closeEditMetadata: onClose
 		? onClose
 		: () => dispatch(editorCloseEditMetadata(frontId)),

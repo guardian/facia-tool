@@ -3,6 +3,8 @@ import { batchActions } from 'redux-batched-actions';
 import type {
 	VisibleArticlesResponse,
 	CollectionResponse,
+	CollectionConfig,
+	FrontsConfig,
 } from 'types/FaciaApi';
 import {
 	getArticlesBatched,
@@ -11,6 +13,7 @@ import {
 	fetchLastPressed as fetchLastPressedApi,
 	publishCollection as publishCollectionApi,
 	getCollection as getCollectionApi,
+	createFrontsCollection as createCollectionApi,
 } from 'services/faciaApi';
 import {
 	selectUserEmail,
@@ -43,6 +46,7 @@ import {
 	selectors as frontsConfigSelectors,
 } from 'bundles/frontsConfigBundle';
 import { updateFrontConfig as updateFrontConfigApi } from 'services/faciaApi';
+import { updateFrontsCollectionConfig as updateFrontsCollectionConfigApi } from 'services/faciaApi';
 import { groupsReceived } from 'actions/Groups';
 import {
 	recordVisibleArticles,
@@ -267,6 +271,28 @@ function getCollections(
 			dispatch(collectionActions.fetchError(error, collectionIds));
 			return [];
 		}
+	};
+}
+
+// DF todo - updating collection config currently doesn't work since the AI thought you could just reuse the
+// updateCollectionStrategy which is designed for updating collection content, not config.
+
+export function updateCollectionConfig(
+	updateCollectionConfig: CollectionConfig,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const { id, ...rest } = updateCollectionConfig;
+		await updateFrontsCollectionConfigApi(id, rest);
+		const currentConfig = frontsConfigSelectors.selectAll(getState());
+		dispatch(
+			frontsConfigActions.fetchSuccess({
+				...currentConfig,
+				collections: {
+					...currentConfig.collections,
+					[id]: rest,
+				},
+			}),
+		);
 	};
 }
 
@@ -611,6 +637,43 @@ function discardDraftChangesToCollection(
 	};
 }
 
+function addFrontCollection(frontId: string): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const { id } = await createCollectionApi(frontId, {
+			displayName: 'New collection',
+		});
+
+		const currentConfig = frontsConfigSelectors.selectAll(getState());
+		const front = currentConfig.fronts[frontId];
+
+		// The API, and some of the client side app, expect editorial priority fronts
+		// to not have a priority field at all, so we need to remove it before saving
+		// the front config if it's editorial.
+		const { priority: _priority, ...frontWithoutPriority } = front;
+		const frontWithoutEditorialPriority = {
+			...frontWithoutPriority,
+			...(front.priority !== 'editorial' ? { priority: front.priority } : {}),
+		};
+		dispatch(
+			frontsConfigActions.fetchSuccess({
+				...currentConfig,
+				fronts: {
+					...currentConfig.fronts,
+					[frontId]: {
+						...frontWithoutEditorialPriority,
+						collections: [...front.collections, id],
+					},
+				},
+				collections: {
+					...currentConfig.collections,
+					[id]: { id, displayName: 'New collection' },
+				},
+			}),
+		);
+		dispatch(getCollections([id]));
+	};
+}
+
 function moveFrontCollection(
 	frontId: string,
 	collectionId: string,
@@ -672,4 +735,5 @@ export {
 	publishCollection,
 	discardDraftChangesToCollection,
 	moveFrontCollection,
+	addFrontCollection,
 };
