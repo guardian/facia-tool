@@ -31,7 +31,10 @@ import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
 import Button from 'components/inputs/ButtonDefault';
-import { updateCollection as updateCollectionAction } from '../actions/Collections';
+import {
+	updateCollection as updateCollectionAction,
+	deleteFrontCollection,
+} from '../actions/Collections';
 import { isMode } from '../selectors/pathSelectors';
 import { DragToConvertFeastCollection } from './FrontsEdit/CollectionComponents/DragToConvertFeastCollection';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
@@ -39,7 +42,7 @@ import { removeFrontCollection } from '../actions/Editions';
 import { FeastCollectionMenu } from './FeastCollectionMenu';
 import type { CollectionUpdateMode } from '../strategies/update-collection';
 import CollectionMetadataForm from './collection/CollectionMetadataForm';
-import { CogIcon } from './icons/Icons';
+import { CogIcon, RubbishBinIcon } from './icons/Icons';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -71,6 +74,7 @@ type Props = ContainerProps & {
 	) => void;
 	isEditions: boolean;
 	removeFrontCollection: (frontId: string, collectionId: string) => void;
+	deleteFrontCollection: (collectionId: string) => void;
 	isEditingMetadata?: boolean;
 };
 
@@ -430,6 +434,17 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 							</CollectionMeta>
 						)}
 						<CollectionToggleContainer>
+							{!isEditions && !isFeast && (
+								<ButtonCircularWithTransition
+									title="Delete this collection."
+									onClick={(e) => {
+										e.stopPropagation();
+										this.handleDeleteClick();
+									}}
+								>
+									<RubbishBinIcon size="s" fill="#fff" />
+								</ButtonCircularWithTransition>
+							)}
 							<ButtonCircularWithTransition
 								title="Edit collection metadata"
 								onClick={(e) => {
@@ -500,7 +515,11 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 			`Are you sure you wish to delete collection? This cannot be undone.`,
 		);
 		if (isConfirm) {
-			this.removeFrontCollection();
+			if (this.props.isEditions) {
+				this.removeFrontCollection();
+			} else {
+				this.props.deleteFrontCollection(this.props.id);
+			}
 		}
 		this.setState({ isDeleteClicked: false });
 	};
@@ -547,6 +566,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	},
 	removeFrontCollection: (frontId: string, id: string) =>
 		dispatch(removeFrontCollection(frontId, id)),
+	deleteFrontCollection: (collectionId: string) =>
+		dispatch(deleteFrontCollection(collectionId)),
 });
 
 export default connect(

@@ -422,6 +422,23 @@ const createFrontsCollection = async (
 	}
 };
 
+const deleteFrontsCollection = async (
+	collectionId: string,
+): Promise<{ id: string }> => {
+	try {
+		const response = await pandaFetch(`/config/collections/${collectionId}`, {
+			method: 'delete',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+		});
+		return await response.json();
+	} catch (e) {
+		throw new Error(
+			`Tried to delete collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
 const updateFrontsCollectionConfig = async (
 	collectionId: string,
 	collection: Partial<CollectionConfig>,
@@ -473,6 +490,7 @@ export {
 	publishCollection,
 	updateCollection,
 	createFrontsCollection,
+	deleteFrontsCollection,
 	updateFrontsCollectionConfig,
 	updateFrontConfig,
 	saveClipboard,

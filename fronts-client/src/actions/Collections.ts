@@ -4,7 +4,6 @@ import type {
 	VisibleArticlesResponse,
 	CollectionResponse,
 	CollectionConfig,
-	FrontsConfig,
 } from 'types/FaciaApi';
 import {
 	getArticlesBatched,
@@ -14,6 +13,7 @@ import {
 	publishCollection as publishCollectionApi,
 	getCollection as getCollectionApi,
 	createFrontsCollection as createCollectionApi,
+	deleteFrontsCollection as deleteCollectionApi,
 } from 'services/faciaApi';
 import {
 	selectUserEmail,
@@ -48,7 +48,7 @@ import {
 import { updateFrontConfig as updateFrontConfigApi } from 'services/faciaApi';
 import { updateFrontsCollectionConfig as updateFrontsCollectionConfigApi } from 'services/faciaApi';
 import { groupsReceived } from 'actions/Groups';
-import {
+import getFrontsConfig, {
 	recordVisibleArticles,
 	recordStaleFronts,
 	fetchLastPressedSuccess,
@@ -631,6 +631,15 @@ function discardDraftChangesToCollection(
 				dispatch(batchActions(getCollectionActions(collectionJson, getState)));
 			},
 		);
+	};
+}
+
+export function deleteFrontCollection(
+	collectionId: string,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		await deleteCollectionApi(collectionId);
+		dispatch(getFrontsConfig());
 	};
 }
 
