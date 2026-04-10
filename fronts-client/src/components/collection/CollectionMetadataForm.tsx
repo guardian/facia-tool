@@ -7,16 +7,12 @@ import type { State } from 'types/State';
 import type { Dispatch } from 'types/Store';
 import type { Collection } from 'types/Collection';
 import type { CollectionConfig } from 'types/FaciaApi';
-import type { CollectionUpdateMode } from 'strategies/update-collection';
 import {
 	selectCollectionConfig,
 	selectCollectionDisplayName,
 } from 'selectors/frontsSelectors';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
-import {
-	updateCollection as updateCollectionAction,
-	updateCollectionConfig,
-} from 'actions/Collections';
+import { updateCollectionConfig } from 'actions/Collections';
 import { selectPriority } from 'selectors/pathSelectors';
 import { selectAvailableTerritories } from 'selectors/configSelectors';
 import { editorCloseEditMetadata } from 'bundles/frontsUI';
