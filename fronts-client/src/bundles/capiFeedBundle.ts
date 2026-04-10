@@ -14,9 +14,10 @@ const {
 	actions: liveActions,
 	reducer: capiLiveFeed,
 	selectors: liveSelectors,
-} = createAsyncResourceBundle<FeedState>('capiLiveFeed', {
+} = createAsyncResourceBundle<FeedState, true>('capiLiveFeed', {
 	selectLocalState: (state) => state.feed.capiLiveFeed,
 	indexById: true,
+	initialData: {},
 });
 
 const isNonCommercialArticle = (article: CapiArticle | undefined): boolean => {
@@ -39,9 +40,10 @@ const {
 	actions: previewActions,
 	reducer: capiPreviewFeed,
 	selectors: previewSelectors,
-} = createAsyncResourceBundle<FeedState>('capiPreviewFeed', {
+} = createAsyncResourceBundle<FeedState, true>('capiPreviewFeed', {
 	selectLocalState: (state) => state.feed.capiPreviewFeed,
 	indexById: true,
+	initialData: {},
 });
 
 const fetchResourceOrResults = async (
@@ -122,9 +124,10 @@ const {
 	actions: prefillActions,
 	reducer: prefillFeed,
 	selectors: prefillSelectors,
-} = createAsyncResourceBundle<FeedState>('prefillFeed', {
+} = createAsyncResourceBundle<FeedState, true>('prefillFeed', {
 	selectLocalState: (state) => state.feed.prefillFeed,
 	indexById: true,
+	initialData: {},
 });
 
 export const fetchPrefill =

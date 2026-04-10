@@ -16,9 +16,10 @@ const sanitizeTag = (tag: Tag) => ({
 	bio: stripHtml(tag.bio ?? ''),
 });
 
-const bundle = createAsyncResourceBundle<Chef>('chefs', {
+const bundle = createAsyncResourceBundle<Chef, true>('chefs', {
 	indexById: true,
 	selectLocalState: (state) => state.chefs,
+	initialData: {},
 });
 
 export const fetchChefs =

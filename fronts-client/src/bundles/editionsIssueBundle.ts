@@ -9,12 +9,12 @@ import {
 } from 'services/editionsApi';
 
 export const { actions, actionNames, reducer, selectors, initialState } =
-	createAsyncResourceBundle<EditionsIssue>('editionsIssue', {
+	createAsyncResourceBundle<EditionsIssue | undefined, false>('editionsIssue', {
 		indexById: false,
 		initialData: undefined,
 	});
 
-export type EditionsIssueState = State<EditionsIssue>;
+export type EditionsIssueState = State<EditionsIssue | undefined>;
 
 export default reducer;
 

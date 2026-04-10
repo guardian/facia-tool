@@ -9,7 +9,7 @@ import {
 import { EditionsFront } from '../types/Edition';
 
 export const { actions, actionNames, reducer, selectors, initialState } =
-	createAsyncResourceBundle<FrontsConfig>('frontsConfig', {
+	createAsyncResourceBundle<FrontsConfig, false>('frontsConfig', {
 		indexById: false,
 		selectLocalState: (state) => state.fronts.frontsConfig,
 		initialData: {

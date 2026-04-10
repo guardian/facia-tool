@@ -1,7 +1,9 @@
 import createAsyncResourceBundle, { globalLoadingIndicator } from '../';
 
-const { actions, reducer, selectors, initialState } =
-	createAsyncResourceBundle('books');
+const { actions, reducer, selectors, initialState } = createAsyncResourceBundle(
+	'books',
+	{ indexById: false, initialData: {} },
+);
 
 describe('createAsyncResourceBundle', () => {
 	const { now } = Date;
@@ -15,7 +17,10 @@ describe('createAsyncResourceBundle', () => {
 	});
 	describe('actionNames', () => {
 		it('should provide action names for a given resource name, in upper snake case', () => {
-			const { actionNames } = createAsyncResourceBundle('ExternalArticles');
+			const { actionNames } = createAsyncResourceBundle('ExternalArticles', {
+				indexById: false,
+				initialData: {},
+			});
 			expect(actionNames).toEqual({
 				fetchStart: 'FETCH_START',
 				fetchSuccess: 'FETCH_SUCCESS',
@@ -75,6 +80,7 @@ describe('createAsyncResourceBundle', () => {
 		it('should provide a selector to get the loading state for specific IDs', () => {
 			const bundle = createAsyncResourceBundle('books', {
 				indexById: true,
+				initialData: {},
 			});
 			const state = {
 				books: { ...bundle.initialState, loadingIds: ['1', '2'] },
@@ -86,6 +92,8 @@ describe('createAsyncResourceBundle', () => {
 		it('should accept a state selector to allow selectors to work on non-standard mount points', () => {
 			const bundle = createAsyncResourceBundle('books', {
 				selectLocalState: (state: any) => state.otherBooks,
+				indexById: false,
+				initialData: {},
 			});
 			expect(
 				bundle.selectors.selectIsLoading({
@@ -127,6 +135,7 @@ describe('createAsyncResourceBundle', () => {
 		it('should provide a selector to select data by id, if indexById is true', () => {
 			const bundle = createAsyncResourceBundle('books', {
 				indexById: true,
+				initialData: {},
 			});
 			const state = {
 				books: {
@@ -146,6 +155,7 @@ describe('createAsyncResourceBundle', () => {
 		it('should provide a selector to select whether a resource is loading for the first time', () => {
 			const bundle = createAsyncResourceBundle('books', {
 				indexById: true,
+				initialData: {},
 			});
 			const state = {
 				books: { data: { '1': { id: '1' } }, loadingIds: ['1', '2'] },
@@ -160,6 +170,7 @@ describe('createAsyncResourceBundle', () => {
 		it('should provide a selector to select the current resource order', () => {
 			const bundle = createAsyncResourceBundle('books', {
 				indexById: true,
+				initialData: {},
 			});
 			const state = {
 				books: {
@@ -185,6 +196,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should add loading keys by uuid as strings', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const newState = bundle.reducer(
 						initialState,
@@ -195,6 +207,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should add loading keys by uuid as arrays', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const newState = bundle.reducer(
 						initialState,
@@ -219,6 +232,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should merge data by id if indexById is true', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const newState = bundle.reducer(
 						{ ...initialState, loadingIds: ['uuid'] },
@@ -232,6 +246,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should merge arrays, too', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const newState = bundle.reducer(
 						{ ...initialState },
@@ -251,6 +266,7 @@ describe('createAsyncResourceBundle', () => {
 						'books',
 						{
 							indexById: true,
+							initialData: {},
 						},
 					);
 					const newState = indexedReducer(
@@ -265,6 +281,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should keep order information when merging arrays', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const newState = bundle.reducer(
 						{ ...initialState },
@@ -278,6 +295,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should use a custom order if provided', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const newState = bundle.reducer(
 						{ ...initialState },
@@ -294,6 +312,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should not update the order reference if the order is the same by value comparison', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const firstState = bundle.reducer(
 						{ ...initialState },
@@ -412,6 +431,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should add updating keys by uuid as strings', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const newState = bundle.reducer(
 						initialState,
@@ -424,6 +444,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should add the incoming updated model to the state', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const newState = bundle.reducer(
 						initialState,
@@ -436,6 +457,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should remove the updating id from the state', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const state = bundle.reducer(
 						initialState,
@@ -451,6 +473,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should replace the model data if data is supplied', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const state = bundle.reducer(
 						initialState,
@@ -472,6 +495,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should remove the error message if it exists', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const newState = bundle.reducer(
 						{
@@ -492,6 +516,7 @@ describe('createAsyncResourceBundle', () => {
 				it('should remove the updating id from the state, and add an error message', () => {
 					const bundle = createAsyncResourceBundle('books', {
 						indexById: true,
+						initialData: {},
 					});
 					const state = bundle.reducer(
 						initialState,
