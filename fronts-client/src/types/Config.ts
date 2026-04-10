@@ -51,6 +51,7 @@ interface Config {
 		clipboardArticles: NestedCard[];
 		featureSwitches: FeatureSwitch[];
 	};
+	availableTerritories: string[];
 	availableTemplates: EditionPriority[];
 	telemetryUrl: string;
 	baseUrls: BaseUrls;

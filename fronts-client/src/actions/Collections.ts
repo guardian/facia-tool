@@ -274,14 +274,11 @@ function getCollections(
 	};
 }
 
-// DF todo - updating collection config currently doesn't work since the AI thought you could just reuse the
-// updateCollectionStrategy which is designed for updating collection content, not config.
-
 export function updateCollectionConfig(
-	updateCollectionConfig: CollectionConfig,
+	collectionConfig: CollectionConfig,
 ): ThunkResult<Promise<void>> {
 	return async (dispatch: Dispatch, getState: () => State) => {
-		const { id, ...rest } = updateCollectionConfig;
+		const { id, ...rest } = collectionConfig;
 		await updateFrontsCollectionConfigApi(id, rest);
 		const currentConfig = frontsConfigSelectors.selectAll(getState());
 		dispatch(

@@ -18,6 +18,7 @@ import {
 	updateCollectionConfig,
 } from 'actions/Collections';
 import { selectPriority } from 'selectors/pathSelectors';
+import { selectAvailableTerritories } from 'selectors/configSelectors';
 import { editorCloseEditMetadata } from 'bundles/frontsUI';
 
 const SCROLLABLE_OR_STATIC_TYPES = [
@@ -187,6 +188,7 @@ interface StateProps {
 	displayName: string;
 	priority: string;
 	availableMetadataTypes: string[];
+	availableTerritories: string[];
 }
 
 interface DispatchProps {
@@ -229,6 +231,7 @@ const CollectionMetadataForm = ({
 	displayName,
 	priority,
 	availableMetadataTypes,
+	availableTerritories,
 	closeEditMetadata,
 	updateCollectionConfig,
 }: Props) => {
@@ -322,11 +325,18 @@ const CollectionMetadataForm = ({
 			name: g.name,
 			...(g.maxItems !== '' ? { maxItems: parseInt(g.maxItems, 10) } : {}),
 		}));
+
+		function objectOrUndefined<T>(
+			obj: T extends object ? T : never,
+		): T | undefined {
+			return Object.values(obj).find((x) => x !== undefined) ? obj : undefined;
+		}
+
 		updateCollectionConfig({
 			...collectionConfig,
 			type: form.type || undefined,
 			displayName: form.displayName.trim() || collection.displayName,
-			uneditable: form.uneditable,
+			uneditable: form.uneditable || undefined,
 			targetedTerritory: form.targetedTerritory || undefined,
 			metadata:
 				form.metadataTags.length > 0
@@ -334,16 +344,21 @@ const CollectionMetadataForm = ({
 					: undefined,
 			groupsConfig:
 				parsedGroupsConfig.length > 0 ? parsedGroupsConfig : undefined,
-			frontsToolSettings: {
+			frontsToolSettings: objectOrUndefined({
 				...collection.frontsToolSettings,
-				displayEditWarning: form.displayEditWarning,
-			},
-			displayHints: {
+				displayEditWarning: form.displayEditWarning || undefined,
+			}),
+			displayHints: objectOrUndefined({
 				...collection.displayHints,
-				suppressImages: form.suppressImages,
+				suppressImages: form.suppressImages || undefined,
 				maxItemsToDisplay: isNaN(maxItems) ? undefined : maxItems,
-			},
-			backfill: form.backfillQuery || undefined,
+			}),
+			backfill: form.backfillQuery
+				? {
+						type: 'capi',
+						query: form.backfillQuery,
+					}
+				: undefined,
 			href: form.href || undefined,
 			showTags: form.showTags || undefined,
 			hideKickers: form.hideKickers || undefined,
@@ -465,13 +480,18 @@ const CollectionMetadataForm = ({
 
 				{/* Target territory */}
 				<FormLabel htmlFor="cmf-territory">Target territory</FormLabel>
-				<FormInput
+				<FormSelect
 					id="cmf-territory"
-					type="text"
-					placeholder="e.g. US"
 					value={form.targetedTerritory}
 					onChange={(e) => set('targetedTerritory', e.target.value)}
-				/>
+				>
+					<option value="">Select territory</option>
+					{availableTerritories.map((t) => (
+						<option key={t} value={t}>
+							{t}
+						</option>
+					))}
+				</FormSelect>
 
 				<Divider />
 
@@ -644,6 +664,7 @@ const mapStateToProps = (
 	availableMetadataTypes: (state.config?.collectionMetadata ?? []).map(
 		(m) => m.type,
 	),
+	availableTerritories: selectAvailableTerritories(state),
 });
 
 const mapDispatchToProps = (
