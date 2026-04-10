@@ -81,6 +81,8 @@ POST        /config/fronts/*path                     controllers.FrontController
 POST        /config/collections                      controllers.CollectionController.create()
 POST        /config/collections/*collectionId        controllers.CollectionController.update(collectionId)
 
+DELETE      /config/fronts/*frontId/collections/*collectionId        controllers.CollectionController.remove(collectionId, frontId)
+
 # Vanity URL
 GET         /breaking-news                           controllers.VanityRedirects.breakingnews
 GET         /*path/                                  controllers.VanityRedirects.untrail(path: String)
