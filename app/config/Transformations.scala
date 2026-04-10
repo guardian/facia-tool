@@ -76,4 +76,24 @@ object Transformations {
       collections = config.collections + (collectionId -> collection)
     )
   }
+
+  def deleteCollection(
+      collectionId: String
+  )(config: ConfigJson): ConfigJson = {
+    val fronts = config.fronts.map { case (frontId, front) =>
+      frontId -> front.copy(
+        collections = front.collections.filterNot(_ == collectionId),
+        canonical = front.canonical.filterNot(_ == collectionId)
+      )
+    }
+
+    val collections = config.collections.filterNot { case (key, _) =>
+      key == collectionId
+    }
+
+    config.copy(
+      fronts = fronts,
+      collections = collections
+    )
+  }
 }

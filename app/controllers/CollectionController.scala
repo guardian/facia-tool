@@ -80,4 +80,21 @@ class CollectionController(
         case None => BadRequest
       }
     }
+
+  def delete(collectionId: String) =
+    (AccessAPIAuthAction andThen new ConfigPermissionCheck(acl)) { request =>
+      val identity = request.user
+      updateManager.deleteCollection(
+        collectionId,
+        identity
+      )
+      press.fromSetOfIdsWithForceConfig(Set(collectionId))
+      structuredLogger.putLog(
+        LogUpdate(
+          CollectionDelete(collectionId),
+          identity.email
+        )
+      )
+      Ok
+    }
 }

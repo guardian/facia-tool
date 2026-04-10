@@ -50,6 +50,11 @@ case class CollectionCreate(
 ) extends UpdateMessage {
   def affectedFronts(configAgent: ConfigAgent) = frontIds.toSet[String]
 }
+case class CollectionDelete(
+    collectionId: String
+) extends UpdateMessage {
+  def affectedFronts(configAgent: ConfigAgent) = Set.empty
+}
 case class CollectionUpdate(
     frontIds: List[String],
     collection: CollectionConfigJson,
