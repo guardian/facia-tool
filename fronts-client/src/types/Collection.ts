@@ -221,8 +221,8 @@ interface Collection {
 	frontsToolSettings?: FrontsToolSettings;
 	isHidden?: boolean;
 	targetedTerritory?: string;
-	targetedRegions: string[];
-	excludedRegions: string[];
+	targetedRegions?: string[];
+	excludedRegions?: string[];
 	displayHints?: DisplayHints;
 }
 

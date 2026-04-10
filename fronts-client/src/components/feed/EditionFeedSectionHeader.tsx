@@ -229,7 +229,19 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	checkIssue: (id: string) => dispatch(check(id)),
 });
 
+function EditionFeedSectionHeaderContainer(
+	props: Omit<ComponentProps, 'editionsIssue'> & {
+		editionsIssue: EditionsIssue | undefined;
+	},
+) {
+	const { editionsIssue, ...rest } = props;
+	if (editionsIssue !== undefined) {
+		return <EditionFeedSectionHeader {...rest} editionsIssue={editionsIssue} />;
+	}
+	return <>Missing edition issue data</>;
+}
+
 export default connect(
 	mapStateToProps,
 	mapDispatchToProps,
-)(EditionFeedSectionHeader);
+)(EditionFeedSectionHeaderContainer);

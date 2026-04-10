@@ -113,7 +113,7 @@ const removeStatusIds = (
 		: without<string>(currentIds, incomingIds);
 
 function formatIncomingResourceData<Resource extends BaseResource>(
-	data: { [id: string]: Resource } | {},
+	data: { [id: string]: Resource },
 	newData: Resource | Resource[],
 	resourceName: string,
 ): Resource | { [id: string]: Resource } {
@@ -176,7 +176,7 @@ interface IPagination {
 	currentPage: number;
 }
 interface State<Resource> {
-	data: Resource | { [id: string]: Resource } | any;
+	data: Resource;
 	pagination: IPagination | null;
 	lastError: string | null;
 	error: string | null;
@@ -202,28 +202,38 @@ type RootState = any;
  * Consumers can add add their own actions and selectors, and extend
  * the given reducer, to provide additional functionality.
  */
-function createAsyncResourceBundle<Resource>(
+
+function createAsyncResourceBundle<Resource, T extends boolean>(
 	// The name of the entity for which this reducer is responsible
 	entityName: string,
 	options: {
 		// The key the reducer provided by this bundle is mounted at.
 		// Defaults to entityName if none is given.
-		selectLocalState?: (state: RootState) => State<Resource>;
+		selectLocalState?: (
+			state: RootState,
+		) => State<T extends false ? Resource : Record<string, Resource>>;
 		// Do we index the incoming data by id, or just add it to the state as-is?
-		indexById?: boolean;
+		indexById: T;
 		// Provides a namespace for the created actions, separated by a slash,
 		// e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
 		namespace?: string;
 		// The initial state of the reducer data. Defaults to an empty object.
-		initialData?: unknown;
-	} = {
-		indexById: false,
+		initialData: T extends false ? Resource : Record<string, Resource>;
 	},
 ) {
+	function isResourceMap(
+		data: Resource | Record<string, Resource>,
+	): data is Record<string, Resource> {
+		return options.indexById;
+	}
+
+	type DataType = T extends false ? Resource : Record<string, Resource>;
+	type LocalState = State<DataType>;
+
 	const { indexById } = options;
 	const selectLocalState = options.selectLocalState
 		? options.selectLocalState
-		: (state: any): State<Resource> => state[entityName];
+		: (state: any): LocalState => state[entityName];
 
 	const selectPagination = (state: RootState) =>
 		selectLocalState(state).pagination;
@@ -243,8 +253,10 @@ function createAsyncResourceBundle<Resource>(
 	const selectIsLoadingById = (state: RootState, id: string) =>
 		selectLocalState(state).loadingIds.indexOf(id) !== -1;
 
-	const selectById = (state: RootState, id: string): Resource | undefined =>
-		selectLocalState(state).data[id];
+	const selectById = (state: RootState, id: string): Resource | undefined => {
+		let data = selectLocalState(state).data;
+		return isResourceMap(data) ? data[id] : undefined;
+	};
 
 	const selectIsLoadingInitialDataById = (state: RootState, id: string) =>
 		!selectById(state, id) &&
@@ -253,10 +265,11 @@ function createAsyncResourceBundle<Resource>(
 	const selectLastFetchOrder = (state: RootState): string[] =>
 		selectLocalState(state).lastFetchOrder || defaultArray;
 
-	const selectAll = (state: RootState) => selectLocalState(state)?.data || {};
+	const selectAll = (state: RootState): DataType =>
+		selectLocalState(state)?.data || options.initialData;
 
-	const initialState: State<Resource> = {
-		data: options.initialData || {},
+	const initialState: LocalState = {
+		data: options.initialData,
 		pagination: null,
 		lastError: null,
 		error: null,
@@ -353,9 +366,9 @@ function createAsyncResourceBundle<Resource>(
 	return {
 		initialState,
 		reducer: (
-			state: State<Resource> = initialState,
+			state: LocalState = initialState,
 			action: Actions<Resource> | Action,
-		): State<Resource> => {
+		): LocalState => {
 			if (!isAction(action)) {
 				return state;
 			}
@@ -390,7 +403,7 @@ function createAsyncResourceBundle<Resource>(
 
 					return {
 						...state,
-						data: !indexById
+						data: !isResourceMap(state.data)
 							? action.payload.data
 							: formatIncomingResourceData(
 									state.data,
@@ -444,7 +457,7 @@ function createAsyncResourceBundle<Resource>(
 				case UPDATE_START: {
 					return {
 						...state,
-						data: !indexById
+						data: !isResourceMap(state.data)
 							? action.payload.data
 							: formatIncomingResourceData(
 									state.data,
@@ -460,7 +473,7 @@ function createAsyncResourceBundle<Resource>(
 				case UPDATE_SUCCESS: {
 					let data;
 					if (action.payload.data) {
-						data = !indexById
+						data = !isResourceMap(state.data)
 							? action.payload.data
 							: formatIncomingResourceData(
 									state.data,

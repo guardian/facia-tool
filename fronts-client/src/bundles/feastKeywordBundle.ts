@@ -2,14 +2,15 @@ import createAsyncResourceBundle, {
 	IPagination,
 } from '../lib/createAsyncResourceBundle';
 import { ThunkResult } from '../types/Store';
-import { FeastKeywordType } from '../types/FeastKeyword';
+import { FeastKeyword, FeastKeywordType } from '../types/FeastKeyword';
 import { liveRecipes } from '../services/recipeQuery';
 import { createSelector } from 'reselect';
 import { State } from '../types/State';
 
-const bundle = createAsyncResourceBundle('feastKeywords', {
+const bundle = createAsyncResourceBundle<FeastKeyword, true>('feastKeywords', {
 	indexById: true,
 	selectLocalState: (state) => state.feastKeywords,
+	initialData: {},
 });
 
 export const fetchKeywords =

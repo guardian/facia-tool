@@ -6,11 +6,14 @@ import {
 } from '../services/recipeQuery';
 import { ThunkResult } from '../types/Store';
 
-export const { actions, reducer, selectors } =
-	createAsyncResourceBundle<RecipeSearchHit>('recipes', {
-		indexById: true,
-		selectLocalState: (state) => state.recipes,
-	});
+export const { actions, reducer, selectors } = createAsyncResourceBundle<
+	RecipeSearchHit,
+	true
+>('recipes', {
+	indexById: true,
+	selectLocalState: (state) => state.recipes,
+	initialData: {},
+});
 
 export const fetchRecipes =
 	(params: RecipeSearchParams): ThunkResult<void> =>
