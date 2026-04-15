@@ -6,7 +6,12 @@ import Button from 'components/inputs/ButtonDefault';
 import type { State } from 'types/State';
 import type { Dispatch } from 'types/Store';
 import type { Collection } from 'types/Collection';
-import type { CollectionConfig } from 'types/FaciaApi';
+import {
+	isPlatform,
+	platforms,
+	type CollectionConfig,
+	type Platform,
+} from 'types/FaciaApi';
 import {
 	selectCollectionConfig,
 	selectCollectionDisplayName,
@@ -215,6 +220,7 @@ interface FormState {
 	metadataTags: string[];
 	groupsConfig: GroupConfigFormEntry[];
 	backfillQuery: string;
+	platform: Platform;
 }
 
 // ---------------------------------------------------------------------------
@@ -282,6 +288,7 @@ const CollectionMetadataForm = ({
 			),
 			backfillQuery:
 				backfillFromConfig?.type === 'capi' ? backfillFromConfig.query : '',
+			platform: collection?.platform ?? 'Any',
 		};
 	};
 
@@ -366,7 +373,7 @@ const CollectionMetadataForm = ({
 			description: form.description || undefined,
 			excludeFromRss: form.excludeFromRss || undefined,
 			userVisibility: form.userVisibility || undefined,
-			//platform: form.platform || undefined,
+			platform: form.platform || undefined,
 		});
 		closeEditMetadata();
 	};
@@ -631,6 +638,27 @@ const CollectionMetadataForm = ({
 						))}
 					</>
 				)}
+
+				{/* Platform */}
+				<FormLabel htmlFor="cmf-platform">Platform</FormLabel>
+				<FormSelect
+					id="cmf-platform"
+					value={form.platform}
+					onChange={(e) => {
+						set(
+							'platform',
+							isPlatform(e.target.value) ? e.target.value : 'Any',
+						);
+					}}
+				>
+					{platforms.map((v) => (
+						<option key={v} value={v}>
+							{v}
+						</option>
+					))}
+				</FormSelect>
+
+				<Divider />
 
 				<ButtonRow>
 					<CancelButton priority="default" onClick={closeEditMetadata}>

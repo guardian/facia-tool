@@ -1,6 +1,10 @@
 import { Atom, CapiArticle } from 'types/Capi';
 import { Diff } from 'utility-types';
-import type { DisplayHints, FrontsToolSettings } from 'types/FaciaApi';
+import type {
+	DisplayHints,
+	FrontsToolSettings,
+	Platform,
+} from 'types/FaciaApi';
 import { CardTypes } from 'constants/cardTypes';
 
 interface CollectionArticles {
@@ -209,7 +213,7 @@ interface Collection {
 	lastUpdated?: number;
 	updatedBy?: string;
 	updatedEmail?: string;
-	platform?: string;
+	platform?: Platform;
 	displayName: string;
 	groups?: string[];
 	groupsConfig?: GroupConfig[];
