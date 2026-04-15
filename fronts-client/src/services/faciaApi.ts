@@ -422,16 +422,13 @@ const createFrontsCollection = async (
 	}
 };
 
-const deleteFrontsCollection = async (
-	collectionId: string,
-): Promise<{ id: string }> => {
+const deleteFrontsCollection = async (collectionId: string): Promise<void> => {
 	try {
-		const response = await pandaFetch(`/config/collections/${collectionId}`, {
+		await pandaFetch(`/config/collections/${collectionId}`, {
 			method: 'delete',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'same-origin',
 		});
-		return await response.json();
 	} catch (e) {
 		throw new Error(
 			`Tried to delete collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
