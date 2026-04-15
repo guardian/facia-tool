@@ -701,9 +701,13 @@ function addFrontCollection(frontId: string): ThunkResult<Promise<void>> {
 function moveFrontCollection(
 	frontId: string,
 	collectionId: string,
-	direction: 'up' | 'down',
+	direction?: 'up' | 'down',
+	position?: number,
 ): ThunkResult<Promise<void>> {
 	return async (dispatch: Dispatch, getState: () => State) => {
+		if (direction === undefined && position === undefined) {
+			return;
+		}
 		const state = getState();
 		const front = selectFront(state, { frontId });
 		if (!front) {
@@ -717,11 +721,16 @@ function moveFrontCollection(
 			return;
 		}
 
-		const offset = direction === 'up' ? -1 : 1;
-		const newIndex = Math.max(
-			0,
-			Math.min(currentIndex + offset, front.collections.length - 1),
-		);
+		const indexFromOffset = () => {
+			const offset = direction === 'up' ? -1 : 1;
+			const newIndex = Math.max(
+				0,
+				Math.min(currentIndex + offset, front.collections.length - 1),
+			);
+			return newIndex;
+		};
+
+		const newIndex = position !== undefined ? position : indexFromOffset();
 		if (newIndex === currentIndex) {
 			return;
 		}

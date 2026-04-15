@@ -11,6 +11,13 @@ import { editorClearCardSelection } from 'bundles/frontsUI';
 import { bindActionCreators } from 'redux';
 import { Dispatch } from 'types/Store';
 import { selectFront } from '../../selectors/shared';
+import {
+	DragDropContext,
+	Droppable,
+	Draggable,
+	DropResult,
+} from 'react-beautiful-dnd';
+import { moveFrontCollection } from 'actions/Collections';
 
 interface FrontContainerProps {
 	id: string;
@@ -20,6 +27,12 @@ type FrontCollectionOverviewProps = FrontContainerProps & {
 	front: FrontConfig;
 	browsingStage: CardSets;
 	currentCollection: string | undefined;
+	moveFrontCollection: (
+		frontId: string,
+		collectionId: string,
+		direction: undefined,
+		position: number,
+	) => void;
 };
 
 interface ContainerProps {
@@ -59,22 +72,62 @@ const FrontCollectionsOverview = ({
 	front,
 	browsingStage,
 	currentCollection,
-}: FrontCollectionOverviewProps) => (
-	<Container setBack isClosed={false}>
-		<OverviewContainerHeadingPinline>Overview</OverviewContainerHeadingPinline>
-		<ContainerBody>
-			{front.collections.map((collectionId) => (
-				<CollectionOverview
-					frontId={id}
-					key={collectionId}
-					collectionId={collectionId}
-					isSelected={currentCollection === collectionId}
-					browsingStage={browsingStage}
-				/>
-			))}
-		</ContainerBody>
-	</Container>
-);
+	moveFrontCollection,
+}: FrontCollectionOverviewProps) => {
+	const handleDragEnd = (result: DropResult) => {
+		if (
+			!result.destination ||
+			result.destination.index === result.source.index
+		) {
+			return;
+		}
+		moveFrontCollection(
+			id,
+			result.draggableId,
+			undefined,
+			result.destination.index,
+		);
+	};
+
+	return (
+		<Container setBack isClosed={false}>
+			<OverviewContainerHeadingPinline>
+				Overview
+			</OverviewContainerHeadingPinline>
+			<DragDropContext onDragEnd={handleDragEnd}>
+				<Droppable droppableId="collection-overview">
+					{(provided) => (
+						<ContainerBody ref={provided.innerRef} {...provided.droppableProps}>
+							{front.collections.map((collectionId, index) => (
+								<Draggable
+									key={collectionId}
+									draggableId={collectionId}
+									index={index}
+								>
+									{(provided) => (
+										<div
+											ref={provided.innerRef}
+											{...provided.draggableProps}
+											{...provided.dragHandleProps}
+										>
+											<CollectionOverview
+												frontId={id}
+												collectionId={collectionId}
+												isSelected={currentCollection === collectionId}
+												browsingStage={browsingStage}
+											/>
+										</div>
+									)}
+								</Draggable>
+							))}
+							{provided.placeholder}
+						</ContainerBody>
+					)}
+				</Droppable>
+			</DragDropContext>
+		</Container>
+	);
+};
 
 const mapStateToProps = (state: State, props: FrontContainerProps) => ({
 	front: selectFront(state, { frontId: props.id }),
@@ -84,6 +137,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 	bindActionCreators(
 		{
 			clearCardSelection: editorClearCardSelection,
+			moveFrontCollection,
 		},
 		dispatch,
 	);
