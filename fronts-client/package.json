@@ -93,6 +93,7 @@
 		"raven-js": "^3.24.1",
 		"react": "17",
 		"react-beautiful-dnd": "^11.0.5",
+		"react-aria-components": "^1.17.0",
 		"react-dates": "^21.8.0",
 		"react-dom": "^16.13.0",
 		"react-icons": "^3.4.0",
