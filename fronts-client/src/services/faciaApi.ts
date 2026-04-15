@@ -442,9 +442,9 @@ const deleteFrontsCollection = async (
 const updateFrontsCollectionConfig = async (
 	collectionId: string,
 	collection: Partial<CollectionConfig>,
-): Promise<{ id: string }> => {
+): Promise<void> => {
 	try {
-		const response = await pandaFetch(`/config/collections/${collectionId}`, {
+		await pandaFetch(`/config/collections/${collectionId}`, {
 			method: 'post',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'same-origin',
@@ -453,7 +453,6 @@ const updateFrontsCollectionConfig = async (
 				collection,
 			}),
 		});
-		return await response.json();
 	} catch (e) {
 		throw new Error(
 			`Tried to update collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
