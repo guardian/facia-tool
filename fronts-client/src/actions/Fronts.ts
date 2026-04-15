@@ -72,16 +72,7 @@ export function saveFrontConfig(
 	return async (dispatch: Dispatch, getState: () => State) => {
 		const { id, ...rest } = updatedFront;
 		await updateFrontConfigApi(id)({ id, ...rest });
-		const currentConfig = frontsConfigSelectors.selectAll(getState());
-		dispatch(
-			frontsConfigActions.fetchSuccess({
-				...currentConfig,
-				fronts: {
-					...currentConfig.fronts,
-					[id]: updatedFront,
-				},
-			}),
-		);
+		await dispatch(getFrontsConfig());
 	};
 }
 
