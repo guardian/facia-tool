@@ -17,10 +17,15 @@ import {
 	selectCollectionDisplayName,
 } from 'selectors/frontsSelectors';
 import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
-import { updateCollectionConfig } from 'actions/Collections';
+import {
+	getCollections,
+	updateCollectionConfig,
+	updateCollectionName,
+} from 'actions/Collections';
 import { selectPriority } from 'selectors/pathSelectors';
 import { selectAvailableTerritories } from 'selectors/configSelectors';
 import { editorCloseEditMetadata } from 'bundles/frontsUI';
+import getFrontsConfig from 'actions/Fronts';
 
 const SCROLLABLE_OR_STATIC_TYPES = [
 	'scrollable/small',
@@ -695,8 +700,14 @@ const mapDispatchToProps = (
 	dispatch: Dispatch,
 	{ frontId, onClose }: OwnProps,
 ): DispatchProps => ({
-	updateCollectionConfig: (collection) =>
-		dispatch(updateCollectionConfig(collection)),
+	updateCollectionConfig: async (collection) => {
+		await dispatch(updateCollectionConfig(collection)),
+			await dispatch(
+				updateCollectionName(collection.displayName, collection.id),
+			),
+			await dispatch(getFrontsConfig());
+		await dispatch(getCollections([collection.id]));
+	},
 	closeEditMetadata: onClose
 		? onClose
 		: () => dispatch(editorCloseEditMetadata(frontId)),

@@ -45,6 +45,7 @@ import {
 	actions as frontsConfigActions,
 	selectors as frontsConfigSelectors,
 } from 'bundles/frontsConfigBundle';
+import { selectors as collectionsSelectors } from 'bundles/collectionsBundle';
 import { updateFrontConfig as updateFrontConfigApi } from 'services/faciaApi';
 import { updateFrontsCollectionConfig as updateFrontsCollectionConfigApi } from 'services/faciaApi';
 import { groupsReceived } from 'actions/Groups';
@@ -290,6 +291,23 @@ export function updateCollectionConfig(
 				},
 			}),
 		);
+	};
+}
+
+export function updateCollectionName(
+	displayName: string,
+	collectionId: string,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const state = getState();
+		const collection = collectionsSelectors.selectById(state, collectionId);
+		if (collection) {
+			const renamed = {
+				...collection,
+				displayName,
+			};
+			await dispatch(updateCollection(renamed, 'overwrite'));
+		}
 	};
 }
 
