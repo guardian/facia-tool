@@ -13,7 +13,7 @@ import {
 	publishCollection as publishCollectionApi,
 	getCollection as getCollectionApi,
 	createFrontsCollection as createCollectionApi,
-	deleteFrontsCollection as deleteCollectionApi,
+	removeFrontsCollection as removeCollectionApi,
 } from 'services/faciaApi';
 import {
 	selectUserEmail,
@@ -652,11 +652,12 @@ function discardDraftChangesToCollection(
 	};
 }
 
-export function deleteFrontCollection(
+export function removeFrontCollection(
 	collectionId: string,
+	frontId: string,
 ): ThunkResult<Promise<void>> {
 	return async (dispatch: Dispatch, getState: () => State) => {
-		await deleteCollectionApi(collectionId);
+		await removeCollectionApi(collectionId, frontId);
 		dispatch(getFrontsConfig());
 	};
 }

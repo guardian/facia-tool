@@ -81,17 +81,18 @@ class CollectionController(
       }
     }
 
-  def delete(collectionId: String) =
+  def remove(collectionId: String, frontId: String) =
     (AccessAPIAuthAction andThen new ConfigPermissionCheck(acl)) { request =>
       val identity = request.user
-      updateManager.deleteCollection(
+      updateManager.removeCollection(
         collectionId,
+        frontId,
         identity
       )
       press.fromSetOfIdsWithForceConfig(Set(collectionId))
       structuredLogger.putLog(
         LogUpdate(
-          CollectionDelete(collectionId),
+          CollectionRemove(List(frontId), collectionId),
           identity.email
         )
       )

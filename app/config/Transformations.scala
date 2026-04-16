@@ -77,19 +77,22 @@ object Transformations {
     )
   }
 
-  def deleteCollection(
-      collectionId: String
+  def removeCollection(
+      collectionId: String,
+      frontId: String
   )(config: ConfigJson): ConfigJson = {
-    val fronts = config.fronts.map { case (frontId, front) =>
-      frontId -> front.copy(
-        collections = front.collections.filterNot(_ == collectionId),
-        canonical = front.canonical.filterNot(_ == collectionId)
+    val updatedFront = config.fronts.get(frontId) map { front =>
+      frontId -> front.copy(collections =
+        front.collections.filterNot(_ == collectionId)
       )
     }
-
-    val collections = config.collections.filterNot { case (key, _) =>
-      key == collectionId
+    val fronts = config.fronts ++ updatedFront
+    val collectionFound = fronts.exists { case (_, front) =>
+      front.collections.contains(collectionId)
     }
+    val collections =
+      if (collectionFound) config.collections
+      else config.collections - collectionId
 
     config.copy(
       fronts = fronts,

@@ -87,12 +87,13 @@ class UpdateManager(
     )
   }
 
-  def deleteCollection(
+  def removeCollection(
       id: String,
+      frontId: String,
       identity: User
   ): Unit = {
     transformConfig(
-      Transformations.deleteCollection(id),
+      Transformations.removeCollection(id, frontId),
       identity
     )
   }

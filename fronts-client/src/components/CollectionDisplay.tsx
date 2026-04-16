@@ -33,7 +33,7 @@ import { theme } from 'constants/theme';
 import Button from 'components/inputs/ButtonDefault';
 import {
 	updateCollection as updateCollectionAction,
-	deleteFrontCollection,
+	removeFrontCollection as removeFrontCollectionAction,
 } from '../actions/Collections';
 import { isMode } from '../selectors/pathSelectors';
 import { DragToConvertFeastCollection } from './FrontsEdit/CollectionComponents/DragToConvertFeastCollection';
@@ -74,7 +74,7 @@ type Props = ContainerProps & {
 	) => void;
 	isEditions: boolean;
 	removeFrontCollection: (frontId: string, collectionId: string) => void;
-	deleteFrontCollection: (collectionId: string) => void;
+	removeRegularFrontCollection: (collectionId: string, frontId: string) => void;
 	isEditingMetadata?: boolean;
 };
 
@@ -518,7 +518,10 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 			if (this.props.isEditions) {
 				this.removeFrontCollection();
 			} else {
-				this.props.deleteFrontCollection(this.props.id);
+				this.props.removeRegularFrontCollection(
+					this.props.id,
+					this.props.frontId,
+				);
 			}
 		}
 		this.setState({ isDeleteClicked: false });
@@ -566,8 +569,8 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	},
 	removeFrontCollection: (frontId: string, id: string) =>
 		dispatch(removeFrontCollection(frontId, id)),
-	deleteFrontCollection: (collectionId: string) =>
-		dispatch(deleteFrontCollection(collectionId)),
+	removeRegularFrontCollection: (collectionId: string, frontId: string) =>
+		dispatch(removeFrontCollectionAction(collectionId, frontId)),
 });
 
 export default connect(
