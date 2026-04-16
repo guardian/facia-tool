@@ -464,7 +464,7 @@ const updateFrontConfig =
 	(id: string) =>
 	async (front: Record<string, unknown>): Promise<void> => {
 		try {
-			await pandaFetch(`/config/fronts/${encodeURIComponent(id)}`, {
+			await pandaFetch(`/config/fronts/${id}`, {
 				method: 'post',
 				headers: { 'Content-Type': 'application/json' },
 				credentials: 'same-origin',
