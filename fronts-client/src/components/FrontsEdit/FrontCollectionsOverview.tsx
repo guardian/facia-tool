@@ -11,9 +11,18 @@ import { editorClearCardSelection } from 'bundles/frontsUI';
 import { bindActionCreators } from 'redux';
 import { Dispatch } from 'types/Store';
 import { selectFront } from '../../selectors/shared';
-import { ListBox, ListBoxItem, useDragAndDrop } from 'react-aria-components';
-import { moveFrontCollection } from 'actions/Collections';
+import {
+	ListBox,
+	ListBoxItem,
+	useDragAndDrop,
+	isTextDropItem,
+} from 'react-aria-components';
+import {
+	moveFrontCollection,
+	addExistingFrontCollection,
+} from 'actions/Collections';
 import { reorderIndex } from 'util/reorderIndex';
+import { collection } from 'fixtures/shared';
 
 interface FrontContainerProps {
 	id: string;
@@ -27,6 +36,11 @@ type FrontCollectionOverviewProps = FrontContainerProps & {
 		frontId: string,
 		collectionId: string,
 		direction: undefined,
+		position: number,
+	) => void;
+	addExistingFrontCollection: (
+		frontId: string,
+		collectionId: string,
 		position: number,
 	) => void;
 };
@@ -93,6 +107,7 @@ const FrontCollectionsOverview = ({
 	browsingStage,
 	currentCollection,
 	moveFrontCollection,
+	addExistingFrontCollection,
 }: FrontCollectionOverviewProps) => {
 	const { dragAndDropHooks } = useDragAndDrop({
 		getItems: (keys) => [...keys].map((key) => ({ 'text/plain': String(key) })),
@@ -100,6 +115,19 @@ const FrontCollectionsOverview = ({
 			const draggedId = String([...e.keys][0]);
 			const newIndex = reorderIndex(front.collections, draggedId, e.target);
 			moveFrontCollection(id, draggedId, undefined, newIndex);
+		},
+		async onInsert(e) {
+			const textItem = e.items.find(isTextDropItem);
+			if (!textItem) return;
+			const collectionId = await textItem.getText('text/plain');
+			if (front.collections.includes(collectionId)) return; // collection is already in the front, do not add again
+			const targetIndex = front.collections.indexOf(String(e.target.key));
+			const position =
+				e.target.dropPosition === 'after' ? targetIndex + 1 : targetIndex;
+			console.log(
+				`Adding collection ${collectionId} to front ${id} at position ${position}`,
+			);
+			addExistingFrontCollection(id, collectionId, position);
 		},
 	});
 
@@ -140,6 +168,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 		{
 			clearCardSelection: editorClearCardSelection,
 			moveFrontCollection,
+			addExistingFrontCollection,
 		},
 		dispatch,
 	);
