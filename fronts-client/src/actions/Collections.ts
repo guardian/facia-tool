@@ -43,12 +43,14 @@ import {
 } from 'util/shared';
 import { cardsReceived, clearCards } from 'actions/CardsCommon';
 import { selectors as collectionsSelectors } from 'bundles/collectionsBundle';
+import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 import { updateFrontsCollectionConfig as updateFrontsCollectionConfigApi } from 'services/faciaApi';
 import { groupsReceived } from 'actions/Groups';
 import getFrontsConfig, {
 	recordVisibleArticles,
 	recordStaleFronts,
 	fetchLastPressedSuccess,
+	saveFrontConfig,
 } from 'actions/Fronts';
 import { actions as collectionActions } from 'bundles/collectionsBundle';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
@@ -648,6 +650,45 @@ export function removeFrontCollection(
 		dispatch(getFrontsConfig());
 	};
 }
+function addExistingFrontCollection(
+	frontId: string,
+	collectionId: string,
+	position: number,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const currentConfig = frontsConfigSelectors.selectAll(getState());
+		const front = currentConfig.fronts[frontId];
+		if (front.collections.includes(collectionId)) {
+			// collection is already in the front, do not add again
+			return;
+		}
+		// The API, and some of the client side app, expect editorial priority fronts
+		// to not have a priority field at all, so we need to remove it before saving
+		// the front config if it's editorial.
+
+		const { priority: _priority, ...frontWithoutPriority } = front;
+		const frontWithoutEditorialPriority = {
+			...frontWithoutPriority,
+			...(front.priority !== 'editorial' ? { priority: front.priority } : {}),
+		};
+
+		const clampedPosition = Math.max(
+			0,
+			Math.min(position, front.collections.length),
+		);
+		const collections = [
+			...front.collections.slice(0, clampedPosition),
+			collectionId,
+			...front.collections.slice(clampedPosition),
+		];
+
+		const updatedFront = {
+			...frontWithoutEditorialPriority,
+			collections,
+		};
+		await dispatch(saveFrontConfig(updatedFront));
+	};
+}
 
 function addFrontCollection(frontId: string): ThunkResult<Promise<void>> {
 	return async (dispatch: Dispatch, getState: () => State) => {
@@ -721,4 +762,5 @@ export {
 	discardDraftChangesToCollection,
 	addFrontCollection,
 	moveFrontCollection,
+	addExistingFrontCollection,
 };
