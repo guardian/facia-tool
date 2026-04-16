@@ -12,6 +12,7 @@ import {
 	type CollectionConfig,
 	type Platform,
 } from 'types/FaciaApi';
+import { DropZone, isTextDropItem } from 'react-aria-components';
 import {
 	selectCollectionConfig,
 	selectCollectionDisplayName,
@@ -224,6 +225,7 @@ interface FormState {
 	maxItemsToDisplay: string;
 	metadataTags: string[];
 	groupsConfig: GroupConfigFormEntry[];
+	backfillType: string;
 	backfillQuery: string;
 	platform: Platform;
 }
@@ -291,8 +293,8 @@ const CollectionMetadataForm = ({
 				currentType,
 				collectionConfig?.groupsConfig,
 			),
-			backfillQuery:
-				backfillFromConfig?.type === 'capi' ? backfillFromConfig.query : '',
+			backfillType: backfillFromConfig?.type ?? '',
+			backfillQuery: backfillFromConfig?.query ?? '',
 			platform: collection?.platform ?? 'Any',
 		};
 	};
@@ -363,7 +365,7 @@ const CollectionMetadataForm = ({
 			}),
 			backfill: form.backfillQuery
 				? {
-						type: 'capi',
+						type: form.backfillType,
 						query: form.backfillQuery,
 					}
 				: undefined,
@@ -460,13 +462,36 @@ const CollectionMetadataForm = ({
 
 				{/* Backfill (CAPI query) */}
 				<FormLabel htmlFor="cmf-backfill">Backfill</FormLabel>
-				<FormInput
-					id="cmf-backfill"
-					type="text"
-					placeholder="CAPI query, e.g. uk/sport"
-					value={form.backfillQuery}
-					onChange={(e) => set('backfillQuery', e.target.value)}
-				/>
+				<DropZone
+					style={{ display: 'contents' }}
+					onDrop={async (e) => {
+						const textItem = e.items.find(isTextDropItem);
+						if (!textItem) return;
+						const collectionId = await textItem.getText('text/plain');
+						setForm((prev) => ({
+							...prev,
+							backfillQuery: collectionId,
+							backfillType: 'collection',
+						}));
+					}}
+				>
+					<FormInput
+						id="cmf-backfill"
+						type="text"
+						placeholder="CAPI query, e.g. uk/sport, or drop a collection"
+						value={form.backfillQuery}
+						style={{
+							backgroundColor:
+								form.backfillType === 'collection'
+									? theme.colors.greenDark
+									: undefined,
+						}}
+						onChange={(e) => {
+							set('backfillQuery', e.target.value);
+							set('backfillType', 'capi');
+						}}
+					/>
+				</DropZone>
 
 				<Divider />
 
