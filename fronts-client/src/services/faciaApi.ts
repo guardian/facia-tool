@@ -8,6 +8,7 @@ import type {
 	CollectionConfigMap,
 	CollectionConfig,
 	CollectionResponse,
+	CreateFrontRequest,
 } from 'types/FaciaApi';
 import type {
 	CollectionWithNestedArticles,
@@ -422,6 +423,23 @@ const createFrontsCollection = async (
 	}
 };
 
+const createFront = async (
+	createFrontRequest: CreateFrontRequest,
+): Promise<void> => {
+	try {
+		await pandaFetch('/config/fronts', {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify(createFrontRequest),
+		});
+	} catch (e) {
+		throw new Error(
+			`Tried to create front for ${createFrontRequest.id}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
 const removeFrontsCollection = async (
 	frontId: string,
 	collectionId: string,
@@ -489,6 +507,7 @@ export {
 	fetchLastPressed,
 	publishCollection,
 	updateCollection,
+	createFront,
 	createFrontsCollection,
 	removeFrontsCollection,
 	updateFrontsCollectionConfig,
