@@ -18,7 +18,10 @@ import ButtonCircularCaret, {
 } from './inputs/ButtonCircularCaret';
 import type { State } from 'types/State';
 
-import { createSelectCardsInCollection } from '../selectors/shared';
+import {
+	createSelectCardsInCollection,
+	selectFront,
+} from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer, {
@@ -56,6 +59,7 @@ interface ContainerProps {
 
 type Props = ContainerProps & {
 	collection: Collection | undefined;
+	frontCollectionCount: number;
 	cardIds?: string[];
 	headlineContent: React.ReactNode;
 	metaContent: React.ReactNode;
@@ -511,9 +515,15 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 
 	private handleDeleteClick = () => {
 		this.setState({ isDeleteClicked: true });
-		const isConfirm = window.confirm(
-			`Are you sure you wish to delete collection? This cannot be undone.`,
-		);
+		this.props.frontId;
+		const standardMessage = 'Are you sure you wish to remove this collection?';
+
+		const message =
+			this.props.frontCollectionCount > 1
+				? standardMessage
+				: `This is the last collection on this front. Removing it will also delete the front. ${standardMessage}`;
+
+		const isConfirm = window.confirm(message);
 		if (isConfirm) {
 			if (this.props.isEditions) {
 				this.removeFrontCollection();
@@ -546,6 +556,8 @@ const createMapStateToProps = () => {
 	return (state: State, props: ContainerProps) => {
 		return {
 			collection: collectionSelectors.selectById(state, props.id),
+			frontCollectionCount: selectFront(state, { frontId: props.frontId })
+				.collections.length,
 			cardIds: selectCardsInCollection(state, {
 				collectionId: props.id,
 				collectionSet: props.browsingStage,
