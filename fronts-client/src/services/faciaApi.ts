@@ -426,15 +426,14 @@ const createFrontsCollection = async (
 
 const createFront = async (
 	createFrontRequest: CreateFrontRequest,
-): Promise<{ id: string }> => {
+): Promise<void> => {
 	try {
-		const response = await pandaFetch('/config/fronts', {
+		await pandaFetch('/config/fronts', {
 			method: 'post',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'same-origin',
 			body: JSON.stringify(createFrontRequest),
 		});
-		return await response.json();
 	} catch (e) {
 		throw new Error(
 			`Tried to create front for ${createFrontRequest.id}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
