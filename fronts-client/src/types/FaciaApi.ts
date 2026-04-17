@@ -145,11 +145,28 @@ interface VisibleArticlesResponse {
 	desktop: number;
 	mobile: number;
 }
+interface CreateFrontRequest {
+	id: string;
+	navSection?: string;
+	webTitle?: string;
+	title?: string;
+	imageUrl?: string;
+	imageWidth?: number;
+	imageHeight?: number;
+	isImageDisplayed?: boolean;
+	description?: string;
+	onPageDescription?: string;
+	priority?: string;
+	isHidden?: boolean;
+	initialCollection: CollectionConfigResponse;
+	group?: string;
+}
 
 export {
 	FrontConfig,
 	FrontConfigResponse,
 	CollectionConfig,
+	CollectionConfigResponse,
 	FrontsConfig,
 	FrontsConfigResponse,
 	FrontConfigMap,
@@ -161,4 +178,5 @@ export {
 	FrontsToolSettings,
 	DisplayHints,
 	EditionsFrontMetadata,
+	CreateFrontRequest,
 };

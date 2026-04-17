@@ -4,6 +4,7 @@ import type { State } from 'types/State';
 import {
 	fetchLastPressed as fetchLastPressedApi,
 	updateFrontConfig as updateFrontConfigApi,
+	createFront as createFrontApi,
 } from 'services/faciaApi';
 import {
 	actions as frontsConfigActions,
@@ -72,6 +73,25 @@ export function saveFrontConfig(
 	return async (dispatch: Dispatch, getState: () => State) => {
 		const { id, ...rest } = updatedFront;
 		await updateFrontConfigApi(id)({ id, ...rest });
+		await dispatch(getFrontsConfig());
+	};
+}
+
+export function createFront(
+	frontId: string,
+	priority: string | undefined,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const createFrontRequest = {
+			id: frontId,
+			isHidden: true,
+			initialCollection: {
+				displayName: 'New Collection',
+				type: 'flexible/general',
+			},
+			priority,
+		};
+		await createFrontApi(createFrontRequest);
 		await dispatch(getFrontsConfig());
 	};
 }

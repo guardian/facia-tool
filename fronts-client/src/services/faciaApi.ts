@@ -8,6 +8,7 @@ import type {
 	CollectionConfigMap,
 	CollectionConfig,
 	CollectionResponse,
+	CreateFrontRequest,
 } from 'types/FaciaApi';
 import type {
 	CollectionWithNestedArticles,
@@ -24,6 +25,7 @@ import { CAPISearchQueryResponse, checkIsResults } from './capiQuery';
 import flatMap from 'lodash/flatMap';
 import { attemptFriendlyErrorMessage } from 'util/error';
 import { toFrontsConfig } from '../bundles/frontsConfigBundle';
+import { create } from 'lodash';
 
 function fetchEditionsIssueAsConfig(issueId: string): Promise<FrontsConfig> {
 	return pandaFetch(EditionsRoutes.issuePath(issueId), {
@@ -422,6 +424,24 @@ const createFrontsCollection = async (
 	}
 };
 
+const createFront = async (
+	createFrontRequest: CreateFrontRequest,
+): Promise<{ id: string }> => {
+	try {
+		const response = await pandaFetch('/config/fronts', {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify(createFrontRequest),
+		});
+		return await response.json();
+	} catch (e) {
+		throw new Error(
+			`Tried to create front for ${createFrontRequest.id}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
 const removeFrontsCollection = async (
 	collectionId: string,
 	frontId: string,
@@ -488,6 +508,7 @@ export {
 	fetchLastPressed,
 	publishCollection,
 	updateCollection,
+	createFront,
 	createFrontsCollection,
 	removeFrontsCollection,
 	updateFrontsCollectionConfig,
