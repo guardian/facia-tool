@@ -54,7 +54,7 @@
 		"whatwg-fetch": "^3.0.0"
 	},
 	"dependencies": {
-		"@babel/runtime": "^7.0.0",
+		"@babel/runtime": "^7.26.10",
 		"@types/lodash": "^4.14.117",
 		"@types/lodash.throttle": "^4.1.4",
 		"@types/mousetrap": "^1.6.1",
