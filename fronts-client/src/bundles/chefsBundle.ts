@@ -1,4 +1,5 @@
-import createAsyncResourceBundle, {
+import {
+	createIndexedAsyncResourceBundle,
 	IPagination,
 } from '../lib/createAsyncResourceBundle';
 import { Chef } from '../types/Chef';
@@ -16,10 +17,8 @@ const sanitizeTag = (tag: Tag) => ({
 	bio: stripHtml(tag.bio ?? ''),
 });
 
-const bundle = createAsyncResourceBundle<Chef, true>('chefs', {
-	indexById: true,
+const bundle = createIndexedAsyncResourceBundle<Chef>('chefs', {
 	selectLocalState: (state) => state.chefs,
-	initialData: {},
 });
 
 export const fetchChefs =

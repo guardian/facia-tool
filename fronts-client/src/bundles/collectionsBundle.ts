@@ -1,4 +1,5 @@
-import createAsyncResourceBundle, {
+import {
+	createIndexedAsyncResourceBundle,
 	State as LibState,
 	Actions,
 } from 'lib/createAsyncResourceBundle';
@@ -10,10 +11,7 @@ import set from 'lodash/fp/set';
 const collectionsEntityName = 'collections';
 
 const { actions, actionNames, reducer, selectors, initialState } =
-	createAsyncResourceBundle<Collection, true>(collectionsEntityName, {
-		indexById: true,
-		initialData: {},
-	});
+	createIndexedAsyncResourceBundle<Collection>(collectionsEntityName, {});
 
 const collectionSelectors = {
 	...selectors,

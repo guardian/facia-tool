@@ -1,4 +1,5 @@
-import createAsyncResourceBundle, {
+import {
+	createAsyncResourceBundle,
 	State,
 } from 'lib/createAsyncResourceBundle';
 import { EditionsIssue } from 'types/Edition';
@@ -9,8 +10,7 @@ import {
 } from 'services/editionsApi';
 
 export const { actions, actionNames, reducer, selectors, initialState } =
-	createAsyncResourceBundle<EditionsIssue | undefined, false>('editionsIssue', {
-		indexById: false,
+	createAsyncResourceBundle<EditionsIssue | undefined>('editionsIssue', {
 		initialData: undefined,
 	});
 

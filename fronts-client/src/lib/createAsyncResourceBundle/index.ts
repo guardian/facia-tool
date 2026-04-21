@@ -202,8 +202,46 @@ type RootState = any;
  * Consumers can add add their own actions and selectors, and extend
  * the given reducer, to provide additional functionality.
  */
+const createAsyncResourceBundle = <Resource>(
+	// The name of the entity for which this reducer is responsible
+	entityName: string,
+	options: {
+		// The key the reducer provided by this bundle is mounted at.
+		// Defaults to entityName if none is given.
+		selectLocalState?: (state: RootState) => State<Resource>;
+		// Provides a namespace for the created actions, separated by a slash,
+		// e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
+		namespace?: string;
+		// The initial state of the reducer data. Defaults to an empty object.
+		initialData: Resource;
+	},
+) =>
+	createAsyncResourceBundleCommon<Resource, false>(entityName, {
+		...options,
+		indexById: false,
+	});
 
-function createAsyncResourceBundle<Resource, T extends boolean>(
+const createIndexedAsyncResourceBundle = <Resource>(
+	// The name of the entity for which this reducer is responsible
+	entityName: string,
+	options: {
+		// The key the reducer provided by this bundle is mounted at.
+		// Defaults to entityName if none is given.
+		selectLocalState?: (state: RootState) => State<Record<string, Resource>>;
+		// Provides a namespace for the created actions, separated by a slash,
+		// e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
+		namespace?: string;
+		// The initial state of the reducer data. Defaults to an empty object.
+		initialData?: Record<string, Resource>;
+	},
+) =>
+	createAsyncResourceBundleCommon<Resource, true>(entityName, {
+		...options,
+		indexById: true,
+		initialData: options.initialData || {},
+	});
+
+function createAsyncResourceBundleCommon<Resource, T extends boolean>(
 	// The name of the entity for which this reducer is responsible
 	entityName: string,
 	options: {
@@ -538,5 +576,11 @@ function createAsyncResourceBundle<Resource, T extends boolean>(
 	};
 }
 
-export { Actions, State, IPagination, globalLoadingIndicator };
-export default createAsyncResourceBundle;
+export {
+	Actions,
+	State,
+	IPagination,
+	globalLoadingIndicator,
+	createAsyncResourceBundle,
+	createIndexedAsyncResourceBundle,
+};
