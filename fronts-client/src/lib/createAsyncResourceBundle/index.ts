@@ -241,7 +241,7 @@ const createIndexedAsyncResourceBundle = <Resource>(
 		initialData: options.initialData || {},
 	});
 
-function createAsyncResourceBundleCommon<Resource, T extends boolean>(
+function createAsyncResourceBundleCommon<Resource, IndexById extends boolean>(
 	// The name of the entity for which this reducer is responsible
 	entityName: string,
 	options: {
@@ -249,14 +249,14 @@ function createAsyncResourceBundleCommon<Resource, T extends boolean>(
 		// Defaults to entityName if none is given.
 		selectLocalState?: (
 			state: RootState,
-		) => State<T extends false ? Resource : Record<string, Resource>>;
+		) => State<IndexById extends false ? Resource : Record<string, Resource>>;
 		// Do we index the incoming data by id, or just add it to the state as-is?
-		indexById: T;
+		indexById: IndexById;
 		// Provides a namespace for the created actions, separated by a slash,
 		// e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
 		namespace?: string;
 		// The initial state of the reducer data. Defaults to an empty object.
-		initialData: T extends false ? Resource : Record<string, Resource>;
+		initialData: IndexById extends false ? Resource : Record<string, Resource>;
 	},
 ) {
 	function isResourceMap(
@@ -265,7 +265,7 @@ function createAsyncResourceBundleCommon<Resource, T extends boolean>(
 		return options.indexById;
 	}
 
-	type DataType = T extends false ? Resource : Record<string, Resource>;
+	type DataType = IndexById extends false ? Resource : Record<string, Resource>;
 	type LocalState = State<DataType>;
 
 	const { indexById } = options;
