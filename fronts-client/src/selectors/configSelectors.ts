@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import type { State } from 'types/State';
 import { selectEditMode } from './pathSelectors';
 
-const selectConfig = (state: State) => state.config;
+export const selectConfig = (state: State) => state.config;
 
 const selectUserEmail = createSelector(
 	selectConfig,
