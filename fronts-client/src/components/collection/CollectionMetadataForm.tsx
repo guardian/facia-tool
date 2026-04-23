@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import TomSelect from 'tom-select';
+import 'tom-select/dist/css/tom-select.default.css';
+import { selectConfig } from 'selectors/configSelectors';
 import { connect } from 'react-redux';
 import { styled } from 'constants/theme';
 import { theme } from 'constants/theme';
@@ -27,6 +30,7 @@ import { selectPriority } from 'selectors/pathSelectors';
 import { selectAvailableTerritories } from 'selectors/configSelectors';
 import { editorCloseEditMetadata } from 'bundles/frontsUI';
 import getFrontsConfig from 'actions/Fronts';
+import { createSelector } from 'reselect';
 
 const SCROLLABLE_OR_STATIC_TYPES = [
 	'scrollable/small',
@@ -101,6 +105,63 @@ interface GroupConfigFormEntry {
 	name: string;
 	maxItems: string;
 }
+
+// ---------------------------------------------------------------------------
+// Tom Select wrapper
+// ---------------------------------------------------------------------------
+
+interface MetadataTagSelectProps {
+	availableTypes: string[];
+	selected: string[];
+	onChange: (selected: string[]) => void;
+}
+
+const MetadataTagSelect = ({
+	availableTypes,
+	selected,
+	onChange,
+}: MetadataTagSelectProps) => {
+	const selectRef = useRef<HTMLSelectElement>(null);
+	const tsRef = useRef<TomSelect | null>(null);
+
+	useEffect(() => {
+		if (!selectRef.current) return;
+		tsRef.current = new TomSelect(selectRef.current, {
+			plugins: ['remove_button'],
+			create: false,
+			onChange: (values: string[]) => onChange(values),
+		});
+		return () => {
+			tsRef.current?.destroy();
+			tsRef.current = null;
+		};
+	}, [availableTypes]);
+
+	useEffect(() => {
+		const ts = tsRef.current;
+		if (!ts) return;
+		const current = ts.getValue() as string[];
+		const same =
+			current.length === selected.length &&
+			selected.every((v) => current.includes(v));
+		if (!same) ts.setValue(selected, true);
+	}, [selected]);
+
+	return (
+		<select
+			ref={selectRef}
+			multiple
+			defaultValue={selected}
+			style={{ width: '100%' }}
+		>
+			{availableTypes.map((t) => (
+				<option key={t} value={t}>
+					{t}
+				</option>
+			))}
+		</select>
+	);
+};
 
 // ---------------------------------------------------------------------------
 // Styles
@@ -316,15 +377,6 @@ const CollectionMetadataForm = ({
 				newType,
 				collection?.groupsConfig,
 			),
-		}));
-	};
-
-	const toggleMetadataTag = (tagType: string, checked: boolean) => {
-		setForm((prev) => ({
-			...prev,
-			metadataTags: checked
-				? [...prev.metadataTags, tagType]
-				: prev.metadataTags.filter((t) => t !== tagType),
 		}));
 	};
 
@@ -627,16 +679,12 @@ const CollectionMetadataForm = ({
 				{availableMetadataTypes.length > 0 && (
 					<>
 						<Divider />
-						{availableMetadataTypes.map((tagType) => (
-							<React.Fragment key={tagType}>
-								<FormLabel htmlFor={`cmf-tag-${tagType}`}>{tagType}</FormLabel>
-								<FormCheckbox
-									id={`cmf-tag-${tagType}`}
-									checked={form.metadataTags.includes(tagType)}
-									onChange={(e) => toggleMetadataTag(tagType, e.target.checked)}
-								/>
-							</React.Fragment>
-						))}
+						<FormLabel>Tags</FormLabel>
+						<MetadataTagSelect
+							availableTypes={availableMetadataTypes}
+							selected={form.metadataTags}
+							onChange={(values) => set('metadataTags', values)}
+						/>
 					</>
 				)}
 
@@ -710,6 +758,10 @@ const CollectionMetadataForm = ({
 // Redux
 // ---------------------------------------------------------------------------
 
+const selectCollectionMetadataTypes = createSelector(selectConfig, (config) =>
+	(config?.collectionMetadata ?? []).map((m) => m.type),
+);
+
 const mapStateToProps = (
 	state: State,
 	{ collectionId }: OwnProps,
@@ -718,9 +770,7 @@ const mapStateToProps = (
 	collectionConfig: selectCollectionConfig(state, collectionId),
 	displayName: selectCollectionDisplayName(state, collectionId),
 	priority: selectPriority(state) ?? '',
-	availableMetadataTypes: (state.config?.collectionMetadata ?? []).map(
-		(m) => m.type,
-	),
+	availableMetadataTypes: selectCollectionMetadataTypes(state),
 	availableTerritories: selectAvailableTerritories(state),
 });
 
