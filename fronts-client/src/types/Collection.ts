@@ -19,7 +19,7 @@ interface CollectionsWhichAreAlsoOnOtherFronts {
 }
 
 interface OtherCollectionsOnSameFrontThisCardIsOn {
-	collections: Array<{ collectionUuid: string }>;
+	collections: Array<{ collectionUuid: string; displayName: string }>;
 }
 
 type CardIdToOtherCollectionUuidsMap = Map<string, string[]>;

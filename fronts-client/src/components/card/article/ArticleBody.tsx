@@ -22,7 +22,6 @@ import { HoverActionsAreaOverlay } from '../../CollectionHoverItems';
 import {
 	BoostLevels,
 	CardSizes,
-	CollectionMap,
 	OtherCollectionsOnSameFrontThisCardIsOn,
 } from 'types/Collection';
 import CardMetaContent from '../CardMetaContent';
@@ -182,7 +181,6 @@ interface ArticleBodyProps {
 	collectionType?: string;
 	groupIndex?: number;
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
-	collectionMap?: CollectionMap;
 }
 
 const articleBodyDefault = React.memo(
@@ -239,13 +237,7 @@ const articleBodyDefault = React.memo(
 		mainMediaVideoAtom,
 		replacementVideoAtom,
 		otherCollectionsOnSameFrontThisCardIsOn,
-		collectionMap,
 	}: ArticleBodyProps) => {
-		const otherCollectionsOnSameFrontThisCardIsOnUuids =
-			otherCollectionsOnSameFrontThisCardIsOn?.collections.map(
-				(_) => _.collectionUuid,
-			);
-
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
 		const paths = urlPath ? getPaths(urlPath) : undefined;
@@ -364,19 +356,21 @@ const articleBodyDefault = React.memo(
 								{distanceInWordsStrict(new Date(firstPublicationDate), now)}
 							</FirstPublicationDate>
 						)}
-						{!!otherCollectionsOnSameFrontThisCardIsOnUuids &&
-							otherCollectionsOnSameFrontThisCardIsOnUuids.length > 0 && (
+						{!!otherCollectionsOnSameFrontThisCardIsOn &&
+							otherCollectionsOnSameFrontThisCardIsOn.collections.length >
+								0 && (
 								<AlsoOnOtherCollectionsSection>
 									Also on:
 									<AlsoOnOtherCollectionsList>
-										{otherCollectionsOnSameFrontThisCardIsOnUuids?.map(
-											(uuid) => {
-												const collection = collectionMap?.[uuid];
-												return collection !== undefined ? (
-													<AlsoOnOtherCollectionsListItem>
+										{otherCollectionsOnSameFrontThisCardIsOn.collections.map(
+											(collection) => {
+												return (
+													<AlsoOnOtherCollectionsListItem
+														key={collection.collectionUuid}
+													>
 														{collection.displayName}
 													</AlsoOnOtherCollectionsListItem>
-												) : null;
+												);
 											},
 										)}
 									</AlsoOnOtherCollectionsList>

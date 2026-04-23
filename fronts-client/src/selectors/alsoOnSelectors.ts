@@ -203,6 +203,7 @@ const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
 	cardIdToOtherCollectionUuidsMap: CardIdToOtherCollectionUuidsMap,
 	cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	cardUuids: string[],
+	otherCollectionsOnSameFront: Collection[],
 ) => {
 	iterateOverCards(cardMap, cardUuids, (card) => {
 		const matchingCollectionUuids =
@@ -210,6 +211,10 @@ const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
 		cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap[card.uuid] = {
 			collections: matchingCollectionUuids.map((collectionUuid) => ({
 				collectionUuid,
+				displayName:
+					otherCollectionsOnSameFront.find(
+						(collection) => collection.id === collectionUuid,
+					)?.displayName || '',
 			})),
 		};
 	});
@@ -287,6 +292,7 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 			cardIdToOtherCollectionUuidsMap,
 			cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 			cardUuids,
+			otherCollectionsOnSameFront,
 		);
 	});
 
