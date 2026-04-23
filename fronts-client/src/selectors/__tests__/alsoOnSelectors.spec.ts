@@ -26,10 +26,14 @@ const allFronts = editorialFrontsInConfig
 	.concat(additionalEditorialFronts)
 	.concat(trainingFronts.concat(commercialFronts));
 
-const collectionsExcept = (collectionToExclude: Collection) =>
-	allCollections.filter(
+const collectionsExcept = (collectionToExclude: Collection) => {
+	const filtered = allCollections.filter(
 		(collection) => collectionToExclude.id !== collection.id,
 	);
+	let result: { [uuid: string]: Collection } = {};
+	filtered.forEach((collection) => (result[collection.id] = collection));
+	return result;
+};
 
 describe('Selecting collections which are also on other fronts', () => {
 	it('return an object with all the collections on the current front', () => {

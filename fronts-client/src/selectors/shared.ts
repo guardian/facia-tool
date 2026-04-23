@@ -200,11 +200,11 @@ const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 		selectCollectionMap,
 		selectCollectionId,
 		(currentFront, collectionMap, currentCollectionId) => {
-			if (!currentFront) return [];
-			const result: Collection[] = [];
+			if (!currentFront) return {};
+			let result: { [uuid: string]: Collection } = {};
 			for (const id of currentFront.collections ?? []) {
 				if (id !== currentCollectionId && collectionMap[id]) {
-					result.push(collectionMap[id]);
+					result[id] = collectionMap[id];
 				}
 			}
 			return result;
@@ -220,8 +220,8 @@ const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 		(otherCollections, currentCollection, groupMap) => {
 			const result: GroupMap = {};
 			const allCollections = currentCollection
-				? [...otherCollections, currentCollection]
-				: otherCollections;
+				? [...Object.values(otherCollections), currentCollection]
+				: Object.values(otherCollections);
 			for (const collection of allCollections) {
 				for (const groupId of collection.draft ?? []) {
 					const group = groupMap[groupId];
