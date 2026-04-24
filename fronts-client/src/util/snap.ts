@@ -97,7 +97,7 @@ async function createAtomSnap(
 }
 
 // Used when dragging in an atom returned by a CAPI search
-function createAtomSnapFromAtom(atom: CapiInteractiveAtom): Card {
+function createAtomSnapFromInteractiveAtom(atom: CapiInteractiveAtom): Card {
 	const atomId = `atom/interactive/${atom.id}`;
 	const atomUrl = `https://content.guardianapis.com/${atomId}`;
 	return convertToSnap({
@@ -135,6 +135,6 @@ export {
 	createLatestSnap,
 	createSnap,
 	createAtomSnap,
-	createAtomSnapFromAtom,
+	createAtomSnapFromInteractiveAtom,
 	createPlainSnap,
 };

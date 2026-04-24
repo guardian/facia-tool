@@ -61,6 +61,7 @@ import { ChefCard } from 'components/card/chef/ChefCard';
 import { ChefMetaForm } from '../form/ChefMetaForm';
 import { FeastCollectionCard } from './feastCollection/FeastCollectionCard';
 import { FeastCollectionMetaForm } from 'components/form/FeastCollectionMetaForm';
+import { InteractiveAtomCard } from './interactiveAtom/InteractiveAtomCard';
 import { selectCollectionType } from 'selectors/frontsSelectors';
 import { Criteria } from 'types/Grid';
 import { Card as CardType } from 'types/Collection';
@@ -305,6 +306,23 @@ class Card extends React.Component<CardContainerProps> {
 								: this.state.showCardSublinks && children}
 						</>
 					);
+				case CardTypesMap.INTERACTIVE_ATOM:
+					return (
+						<>
+							<InteractiveAtomCard
+								frontId={frontId}
+								collectionId={collectionId}
+								id={uuid}
+								isUneditable={isUneditable}
+								{...getNodeProps()}
+								onDelete={this.onDelete}
+								onAddToClipboard={this.handleAddToClipboard}
+								size={size}
+								textSize={textSize}
+								showMeta={showMeta}
+							/>
+						</>
+					);
 				default:
 					return (
 						<p>
@@ -364,7 +382,8 @@ class Card extends React.Component<CardContainerProps> {
 			}
 		};
 
-		const supportsForm = type !== 'recipe';
+		const supportsForm =
+			type !== 'recipe' && type !== CardTypesMap.INTERACTIVE_ATOM;
 		const shouldDisplayForm = isSelected && supportsForm;
 
 		return (

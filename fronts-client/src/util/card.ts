@@ -16,7 +16,7 @@ import { getIdFromURL } from 'util/CAPIUtils';
 import { MappableDropType } from 'util/collectionUtils';
 import {
 	createAtomSnap,
-	createAtomSnapFromAtom,
+	createAtomSnapFromInteractiveAtom,
 	createLatestSnap,
 	createPlainSnap,
 	createSnap,
@@ -343,7 +343,7 @@ const getFeastCollectionFromFeedDrop = (
 const getInteractiveAtomEntityFromFeedDrop = (
 	atom: CapiInteractiveAtom,
 ): TArticleEntities => {
-	const card = createAtomSnapFromAtom(atom);
+	const card = createAtomSnapFromInteractiveAtom(atom);
 	return { card };
 };
 
