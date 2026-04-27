@@ -67,13 +67,19 @@ trait S3 extends Logging {
     } catch {
       case e: AmazonS3Exception if e.getStatusCode == 404 => {
         logger.warn(
-          "S3: attempted to get, but not found at %s - %s" format (account.bucket, key)
+          "S3: attempted to get, but not found at %s - %s" format (
+            account.bucket,
+            key
+          )
         )
         None
       }
       case e: Exception => {
         logger.error(
-          "S3: attempted to get, but got an error at %s - %s" format (account.bucket, key),
+          "S3: attempted to get, but got an error at %s - %s" format (
+            account.bucket,
+            key
+          ),
           e
         )
         S3ClientExceptionsMetric.increment()
@@ -144,7 +150,10 @@ trait S3 extends Logging {
     } catch {
       case e: Exception =>
         logger.error(
-          "S3: attempted to put, but got an error at %s - %s" format (account.bucket, key),
+          "S3: attempted to put, but got an error at %s - %s" format (
+            account.bucket,
+            key
+          ),
           e
         )
         S3ClientExceptionsMetric.increment()
