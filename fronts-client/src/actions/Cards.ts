@@ -511,10 +511,6 @@ const moveCard = (
 				: { parent: card, supporting: [] };
 
 			if (toWithRespectToState) {
-				if (!fromWithRespectToState) {
-					dispatch(cardsReceived([parent, ...supporting]));
-				}
-
 				const actionParams: UpdateCardMetaParams = {
 					from,
 					to,
@@ -523,17 +519,33 @@ const moveCard = (
 					state,
 				};
 
-				const modifyCardActions = [
+				performance.mark('moveCard:dispatchStart');
+
+				// Collect all plain actions to dispatch in a single batch:
+				// - cardsReceived (only for clones, where fromWithRespectToState is null)
+				// - any card meta reset actions (boost level, image replace, etc.)
+				// This replaces up to 5 individual dispatches with one, preventing
+				// redundant root reducer runs and React reconciliation passes.
+
+				const isNonNullable = <T>(value: T | null | undefined): value is T =>
+					value != null;
+
+				const plainActions = [
+					!fromWithRespectToState
+						? cardsReceived([parent, ...supporting])
+						: null,
 					mayResetBoostLevel(actionParams),
 					mayResetImageReplace(actionParams),
 					mayResetImmersive(actionParams),
 					mayResetVideoReplace(actionParams),
-				];
+				].filter(isNonNullable);
 
-				modifyCardActions.forEach((action) => {
-					if (action) dispatch(action);
-				});
+				if (plainActions.length > 0) {
+					dispatch(batchActions(plainActions));
+				}
 
+				// The insert action creator always returns a thunk, so it must be
+				// dispatched separately after the batched plain actions above.
 				dispatch(
 					insertActionCreator(
 						toWithRespectToState.id,
@@ -543,6 +555,13 @@ const moveCard = (
 							? removeActionCreator(fromWithRespectToState.id, card.uuid)
 							: undefined,
 					),
+				);
+
+				performance.mark('moveCard:dispatchEnd');
+				performance.measure(
+					'moveCard:dispatch',
+					'moveCard:dispatchStart',
+					'moveCard:dispatchEnd',
 				);
 			}
 		}
