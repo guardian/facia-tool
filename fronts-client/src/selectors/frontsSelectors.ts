@@ -162,7 +162,9 @@ const selectCollectionTargetedRegions = (
 		collectionId,
 	});
 
-	return !!collection ? collection.targetedRegions : [];
+	return !!collection && collection.targetedRegions
+		? collection.targetedRegions
+		: [];
 };
 
 const selectCollectionType = (
