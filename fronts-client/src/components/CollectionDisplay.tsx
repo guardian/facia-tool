@@ -34,15 +34,19 @@ import { resetFocusState, setFocusState } from 'bundles/focusBundle';
 import { Dispatch } from 'types/Store';
 import { theme } from 'constants/theme';
 import Button from 'components/inputs/ButtonDefault';
-import { updateCollection as updateCollectionAction } from '../actions/Collections';
+import {
+	updateCollection as updateCollectionAction,
+	removeFrontCollection as removeFrontCollectionAction,
+} from '../actions/Collections';
 import { isMode } from '../selectors/pathSelectors';
 import { DragToConvertFeastCollection } from './FrontsEdit/CollectionComponents/DragToConvertFeastCollection';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
-import { removeFrontCollection } from '../actions/Editions';
+import { removeFrontCollection as removeEditionsFrontCollection } from '../actions/Editions';
 import { FeastCollectionMenu } from './FeastCollectionMenu';
 import type { CollectionUpdateMode } from '../strategies/update-collection';
 import CollectionMetadataForm from './collection/CollectionMetadataForm';
 import { SvgSettings } from '@guardian/source/react-components';
+import { RubbishBinIcon } from './icons/Icons';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -74,6 +78,10 @@ type Props = ContainerProps & {
 		mode: CollectionUpdateMode,
 	) => void;
 	isEditions: boolean;
+	removeEditionsFrontCollection: (
+		frontId: string,
+		collectionId: string,
+	) => void;
 	removeFrontCollection: (frontId: string, collectionId: string) => void;
 	isEditingMetadata?: boolean;
 };
@@ -434,6 +442,17 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 							</CollectionMeta>
 						)}
 						<CollectionToggleContainer>
+							{!isEditions && !isFeast && (
+								<ButtonCircularWithTransition
+									title="Delete this collection."
+									onClick={(e) => {
+										e.stopPropagation();
+										this.handleDeleteClick();
+									}}
+								>
+									<RubbishBinIcon size="s" fill="#fff" />
+								</ButtonCircularWithTransition>
+							)}
 							<ButtonCircularWithTransition
 								title="Edit collection metadata"
 								onClick={(e) => {
@@ -494,8 +513,8 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		this.props.updateCollection(collection!, 'rename');
 	};
 
-	private removeFrontCollection = () => {
-		this.props.removeFrontCollection(this.props.frontId, this.props.id);
+	private removeEditionsFrontCollection = () => {
+		this.props.removeEditionsFrontCollection(this.props.frontId, this.props.id);
 	};
 
 	private handleDeleteClick = () => {
@@ -509,7 +528,11 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 
 		const isConfirm = window.confirm(message);
 		if (isConfirm) {
-			this.removeFrontCollection();
+			if (this.props.isEditions) {
+				this.removeEditionsFrontCollection();
+			} else {
+				this.props.removeFrontCollection(this.props.frontId, this.props.id);
+			}
 		}
 		this.setState({ isDeleteClicked: false });
 	};
@@ -556,8 +579,10 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	) => {
 		dispatch(updateCollectionAction(collection, mode));
 	},
-	removeFrontCollection: (frontId: string, id: string) =>
-		dispatch(removeFrontCollection(frontId, id)),
+	removeEditionsFrontCollection: (frontId: string, id: string) =>
+		dispatch(removeEditionsFrontCollection(frontId, id)),
+	removeFrontCollection: (frontId: string, collectionId: string) =>
+		dispatch(removeFrontCollectionAction(frontId, collectionId)),
 });
 
 export default connect(

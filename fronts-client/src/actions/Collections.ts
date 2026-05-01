@@ -14,6 +14,7 @@ import {
 	getCollection as getCollectionApi,
 	createFrontsCollection as createCollectionApi,
 	updateFrontConfig as updateFrontConfigApi,
+	removeFrontsCollection as removeCollectionApi,
 } from 'services/faciaApi';
 import {
 	selectUserEmail,
@@ -635,6 +636,16 @@ function discardDraftChangesToCollection(
 				dispatch(batchActions(getCollectionActions(collectionJson, getState)));
 			},
 		);
+	};
+}
+
+export function removeFrontCollection(
+	frontId: string,
+	collectionId: string,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch) => {
+		await removeCollectionApi(frontId, collectionId);
+		dispatch(getFrontsConfig());
 	};
 }
 
