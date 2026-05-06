@@ -203,7 +203,7 @@ const CollectionToggleContainer = styled.div`
 	display: flex;
 	justify-content: flex-end;
 	gap: 4px;
-	:hover {
+	button:hover {
 		${ButtonCircularWithTransition} {
 			background-color: ${theme.button.backgroundColorFocused};
 		}
