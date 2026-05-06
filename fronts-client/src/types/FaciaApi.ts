@@ -55,7 +55,7 @@ interface CollectionConfigResponse {
 	href?: string;
 	groups?: string[];
 	groupsConfig?: GroupConfig[];
-	metadata?: unknown[];
+	metadata?: { type: string }[];
 	uneditable?: boolean;
 	showTags?: boolean;
 	hideKickers?: boolean;
@@ -66,6 +66,7 @@ interface CollectionConfigResponse {
 	showDateHeader?: boolean;
 	showLatestUpdate?: boolean;
 	excludeFromRss?: boolean;
+	userVisibility?: string;
 	platform?: Platform;
 	frontsToolSettings?: FrontsToolSettings;
 	prefill?: EditionsPrefill;
@@ -147,6 +148,7 @@ interface VisibleArticlesResponse {
 
 export {
 	FrontConfig,
+	FrontConfigResponse,
 	CollectionConfig,
 	FrontsConfig,
 	FrontsConfigResponse,

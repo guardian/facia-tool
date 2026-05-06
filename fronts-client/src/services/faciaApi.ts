@@ -6,6 +6,7 @@ import type {
 	VisibleArticlesResponse,
 	FrontConfig,
 	CollectionConfigMap,
+	CollectionConfig,
 	CollectionResponse,
 } from 'types/FaciaApi';
 import type {
@@ -402,6 +403,64 @@ async function getArticlesBatched(
 	}
 }
 
+const createFrontsCollection = async (
+	frontId: string,
+	collection: Partial<CollectionConfig>,
+): Promise<{ id: string }> => {
+	try {
+		const response = await pandaFetch('/config/collections', {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify({ frontIds: [frontId], collection }),
+		});
+		return await response.json();
+	} catch (e) {
+		throw new Error(
+			`Tried to create collection for front ${frontId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
+const updateFrontsCollectionConfig = async (
+	collectionId: string,
+	collection: Partial<CollectionConfig>,
+): Promise<void> => {
+	try {
+		await pandaFetch(`/config/collections/${collectionId}`, {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify({
+				frontIds: [],
+				collection,
+			}),
+		});
+	} catch (e) {
+		throw new Error(
+			`Tried to update collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
+const updateFrontConfig = async (
+	frontId: string,
+	front: Record<string, unknown>,
+): Promise<void> => {
+	try {
+		await pandaFetch(`/config/fronts/${frontId}`, {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify(front),
+		});
+	} catch (e) {
+		throw new Error(
+			`Tried to update front config with id ${frontId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
 export {
 	fetchFrontsConfig,
 	fetchEditionsIssueAsConfig,
@@ -413,6 +472,9 @@ export {
 	fetchLastPressed,
 	publishCollection,
 	updateCollection,
+	createFrontsCollection,
+	updateFrontsCollectionConfig,
+	updateFrontConfig,
 	saveClipboard,
 	saveEditionsClipboard,
 	saveFeastClipboard,

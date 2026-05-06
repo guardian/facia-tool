@@ -3,6 +3,7 @@ import { batchActions } from 'redux-batched-actions';
 import type {
 	VisibleArticlesResponse,
 	CollectionResponse,
+	CollectionConfig,
 } from 'types/FaciaApi';
 import {
 	getArticlesBatched,
@@ -11,6 +12,7 @@ import {
 	fetchLastPressed as fetchLastPressedApi,
 	publishCollection as publishCollectionApi,
 	getCollection as getCollectionApi,
+	createFrontsCollection as createCollectionApi,
 } from 'services/faciaApi';
 import {
 	selectUserEmail,
@@ -38,8 +40,10 @@ import {
 	denormaliseCollection,
 } from 'util/shared';
 import { cardsReceived, clearCards } from 'actions/CardsCommon';
+import { selectors as collectionsSelectors } from 'bundles/collectionsBundle';
+import { updateFrontsCollectionConfig as updateFrontsCollectionConfigApi } from 'services/faciaApi';
 import { groupsReceived } from 'actions/Groups';
-import {
+import getFrontsConfig, {
 	recordVisibleArticles,
 	recordStaleFronts,
 	fetchLastPressedSuccess,
@@ -261,6 +265,33 @@ function getCollections(
 		} catch (error) {
 			dispatch(collectionActions.fetchError(error, collectionIds));
 			return [];
+		}
+	};
+}
+
+export function updateCollectionConfig(
+	collectionConfig: CollectionConfig,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const { id, ...rest } = collectionConfig;
+		await updateFrontsCollectionConfigApi(id, rest);
+		await dispatch(getFrontsConfig());
+	};
+}
+
+export function updateCollectionName(
+	displayName: string,
+	collectionId: string,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const state = getState();
+		const collection = collectionsSelectors.selectById(state, collectionId);
+		if (collection) {
+			const renamed = {
+				...collection,
+				displayName,
+			};
+			await dispatch(updateCollection(renamed, 'overwrite'));
 		}
 	};
 }
@@ -606,6 +637,16 @@ function discardDraftChangesToCollection(
 	};
 }
 
+function addFrontCollection(frontId: string): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const { id } = await createCollectionApi(frontId, {
+			displayName: 'New collection',
+		});
+		await dispatch(getFrontsConfig());
+		await dispatch(getCollections([id])); // todo: is this still needed or does getFrontsConfig above handle this?
+	};
+}
+
 export {
 	getCollections,
 	fetchCardReferencedEntitiesForCollections,
@@ -617,4 +658,5 @@ export {
 	initialiseCollectionsForFront,
 	publishCollection,
 	discardDraftChangesToCollection,
+	addFrontCollection,
 };

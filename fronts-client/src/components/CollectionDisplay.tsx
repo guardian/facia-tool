@@ -18,7 +18,10 @@ import ButtonCircularCaret, {
 } from './inputs/ButtonCircularCaret';
 import type { State } from 'types/State';
 
-import { createSelectCardsInCollection } from '../selectors/shared';
+import {
+	createSelectCardsInCollection,
+	selectFront,
+} from '../selectors/shared';
 import { selectors as collectionSelectors } from '../bundles/collectionsBundle';
 import FadeIn from './animation/FadeIn';
 import ContentContainer, {
@@ -38,6 +41,8 @@ import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBun
 import { removeFrontCollection } from '../actions/Editions';
 import { FeastCollectionMenu } from './FeastCollectionMenu';
 import type { CollectionUpdateMode } from '../strategies/update-collection';
+import CollectionMetadataForm from './collection/CollectionMetadataForm';
+import { SvgSettings } from '@guardian/source/react-components';
 
 export const createCollectionId = ({ id }: Collection, frontId: string) =>
 	`front-${frontId}-collection-${id}`;
@@ -51,6 +56,7 @@ interface ContainerProps {
 
 type Props = ContainerProps & {
 	collection: Collection | undefined;
+	frontCollectionCount: number;
 	cardIds?: string[];
 	headlineContent: React.ReactNode;
 	metaContent: React.ReactNode;
@@ -69,6 +75,7 @@ type Props = ContainerProps & {
 	) => void;
 	isEditions: boolean;
 	removeFrontCollection: (frontId: string, collectionId: string) => void;
+	isEditingMetadata?: boolean;
 };
 
 interface CollectionState {
@@ -77,6 +84,7 @@ interface CollectionState {
 	editingContainerName: boolean;
 	isDeleteClicked: boolean;
 	isUSOnly: boolean;
+	isEditingCollectionMetadata: boolean;
 }
 
 const CollectionContainer = styled(ContentContainer)<{
@@ -186,6 +194,7 @@ const CollectionToggleContainer = styled.div`
 	max-width: 130px;
 	display: flex;
 	justify-content: flex-end;
+	gap: 4px;
 	:hover {
 		${ButtonCircularWithTransition} {
 			background-color: ${theme.button.backgroundColorFocused};
@@ -248,6 +257,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		editingContainerName: false,
 		isDeleteClicked: false,
 		isUSOnly: false,
+		isEditingCollectionMetadata: false,
 	};
 
 	public toggleVisibility = () => {
@@ -424,6 +434,20 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 							</CollectionMeta>
 						)}
 						<CollectionToggleContainer>
+							<ButtonCircularWithTransition
+								title="Edit collection metadata"
+								onClick={(e) => {
+									e.stopPropagation();
+									if (this.props.isOpen) {
+										this.toggleVisibility();
+									}
+									this.setState((s) => ({
+										isEditingCollectionMetadata: !s.isEditingCollectionMetadata,
+									}));
+								}}
+							>
+								<SvgSettings size="xsmall" theme={{ fill: '#fff' }} />
+							</ButtonCircularWithTransition>
 							<ButtonCircularCaret
 								active={this.props.isOpen!}
 								preActive={this.state.hasDragOpenIntent}
@@ -433,6 +457,15 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 					</CollectionMetaContainer>
 				</DragIntentContainer>
 				{this.props.isOpen && <FadeIn>{children}</FadeIn>}
+				{this.state.isEditingCollectionMetadata && (
+					<CollectionMetadataForm
+						collectionId={id}
+						frontId={frontId}
+						onClose={() =>
+							this.setState({ isEditingCollectionMetadata: false })
+						}
+					/>
+				)}
 				{isUneditable ? (
 					<CollectionDisabledTheme className="DisabledTheme" />
 				) : null}
@@ -467,9 +500,14 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 
 	private handleDeleteClick = () => {
 		this.setState({ isDeleteClicked: true });
-		const isConfirm = window.confirm(
-			`Are you sure you wish to delete collection? This cannot be undone.`,
-		);
+		const standardMessage = 'Are you sure you wish to remove this collection?';
+
+		const message =
+			this.props.frontCollectionCount > 1
+				? standardMessage
+				: `This is the last collection on this front. Removing it will also delete the front. ${standardMessage}`;
+
+		const isConfirm = window.confirm(message);
 		if (isConfirm) {
 			this.removeFrontCollection();
 		}
@@ -495,6 +533,8 @@ const createMapStateToProps = () => {
 	return (state: State, props: ContainerProps) => {
 		return {
 			collection: collectionSelectors.selectById(state, props.id),
+			frontCollectionCount: selectFront(state, { frontId: props.frontId })
+				.collections.length,
 			cardIds: selectCardsInCollection(state, {
 				collectionId: props.id,
 				collectionSet: props.browsingStage,

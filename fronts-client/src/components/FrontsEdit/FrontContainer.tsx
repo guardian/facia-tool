@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { styled } from 'constants/theme';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -9,6 +9,9 @@ import {
 	editorOpenOverview,
 	editorCloseOverview,
 	selectIsFrontOverviewOpen,
+	editorOpenEditMetadata,
+	editorCloseEditMetadata,
+	selectIsFrontEditingMetadata,
 } from 'bundles/frontsUI';
 import {
 	editorOpenAllCollectionsForFront,
@@ -26,12 +29,14 @@ import ButtonRoundedWithLabel, {
 import { DownCaretIcon } from 'components/icons/Icons';
 import FrontCollectionsOverview from './FrontCollectionsOverview';
 import FrontContent from './FrontContent';
+import FrontMetadataForm from './FrontMetadataForm';
 import DragToAddSnap from './CollectionComponents/DragToAddSnap';
 import { selectPriority } from 'selectors/pathSelectors';
 import { Priorities } from 'types/Priority';
 import { DragToAddFeastCollection } from './CollectionComponents/DragToAddFeastCollection';
 import Button from '../inputs/ButtonDefault';
-import { addFrontCollection } from '../../actions/Editions';
+import { addFrontCollection as addEditionsFrontCollection } from '../../actions/Editions';
+import { addFrontCollection } from 'actions/Collections';
 
 const FrontWrapper = styled.div`
 	height: 100%;
@@ -122,10 +127,13 @@ type FrontProps = FrontPropsBeforeState & {
 	handleArticleFocus: (groupId: string, card: TCard, frontId: string) => void;
 	toggleOverview: (open: boolean) => void;
 	overviewIsOpen: boolean;
+	isEditingMetadata: boolean;
+	toggleEditMetadata: (open: boolean) => void;
 	editorOpenAllCollectionsForFront: typeof editorOpenAllCollectionsForFront;
 	editorCloseAllCollectionsForFront: typeof editorCloseAllCollectionsForFront;
 	isFeast: boolean;
 	addFrontCollection: (frontId: string) => void;
+	addEditionsFrontCollection: (frontId: string) => void;
 };
 
 interface FrontState {
@@ -175,10 +183,24 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 							)}
 							{isFeast && (
 								<ButtonInSectionContentMetaContainer
-									onClick={() => this.addFrontCollection()}
+									onClick={() =>
+										this.props.addEditionsFrontCollection(this.props.id)
+									}
 								>
 									Add New Container
 								</ButtonInSectionContentMetaContainer>
+							)}
+							{!isFeast && (
+								<Fragment>
+									<OverviewHeadingButton onClick={this.handleEditMetadata}>
+										<ButtonLabel>&nbsp;Edit metadata</ButtonLabel>
+									</OverviewHeadingButton>
+									<ButtonInSectionContentMetaContainer
+										onClick={() => this.addFrontCollection()}
+									>
+										Add Container
+									</ButtonInSectionContentMetaContainer>
+								</Fragment>
 							)}
 							<OverviewHeadingButton onClick={this.handleOpenCollections}>
 								<ButtonLabel>Expand all&nbsp;</ButtonLabel>
@@ -190,6 +212,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 							</OverviewHeadingButton>
 							{!overviewIsOpen && this.overviewToggle(overviewIsOpen)}
 						</SectionContentMetaContainer>
+						{this.props.isEditingMetadata && <FrontMetadataForm frontId={id} />}
 						<FrontContent
 							id={id}
 							browsingStage={browsingStage}
@@ -252,6 +275,11 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 		this.props.editorCloseAllCollectionsForFront(this.props.id);
 	};
 
+	private handleEditMetadata = (e: React.MouseEvent) => {
+		e.preventDefault();
+		this.props.toggleEditMetadata(!this.props.isEditingMetadata);
+	};
+
 	private handleChangeCurrentCollectionId = (id: string) => {
 		this.setState({ currentlyScrolledCollectionId: id });
 	};
@@ -274,6 +302,7 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 const mapStateToProps = (state: State, { id }: FrontPropsBeforeState) => {
 	return {
 		overviewIsOpen: selectIsFrontOverviewOpen(state, id),
+		isEditingMetadata: selectIsFrontEditingMetadata(state, id),
 		priority: selectPriority(state),
 		isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
 	};
@@ -287,6 +316,8 @@ const mapDispatchToProps = (
 		initialiseFront: () =>
 			dispatch(initialiseCollectionsForFront(id, browsingStage)),
 		addFrontCollection: (id: string) => dispatch(addFrontCollection(id)),
+		addEditionsFrontCollection: (id: string) =>
+			dispatch(addEditionsFrontCollection(id)),
 		handleArticleFocus: (groupId: string, card: TCard, frontId: string) =>
 			dispatch(
 				setFocusState({
@@ -298,6 +329,8 @@ const mapDispatchToProps = (
 			),
 		toggleOverview: (open: boolean) =>
 			dispatch(open ? editorOpenOverview(id) : editorCloseOverview(id)),
+		toggleEditMetadata: (open: boolean) =>
+			dispatch(open ? editorOpenEditMetadata(id) : editorCloseEditMetadata(id)),
 		...bindActionCreators(
 			{
 				selectCard: editorSelectCard,
