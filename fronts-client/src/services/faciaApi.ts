@@ -467,7 +467,7 @@ const updateFrontsCollectionConfig = async (
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'same-origin',
 			body: JSON.stringify({
-				frontIds: [],
+				frontIds: [], // todo: why do we need to send an empty list here?
 				collection,
 			}),
 		});
