@@ -364,7 +364,7 @@ const CollectionMetadataForm = ({
 
 	useEffect(() => {
 		setForm(buildInitialState());
-	}, [collection?.id]);
+	}, [collection?.id]); // todo: is the dependency sufficient?
 
 	const set = <K extends keyof FormState>(key: K, value: FormState[K]) =>
 		setForm((prev) => ({ ...prev, [key]: value }));
