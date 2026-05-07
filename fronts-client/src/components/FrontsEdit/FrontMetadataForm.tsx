@@ -233,7 +233,7 @@ const FrontMetadataForm = ({
 
 	useEffect(() => {
 		setForm(buildFormState(front));
-	}, [front?.id]);
+	}, [front?.id]); // todo: is the dependency sufficient?
 
 	const placeholders = computePlaceholders(front?.id ?? '');
 
