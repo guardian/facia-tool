@@ -44,13 +44,12 @@ class FrontsApi(
       .builder()
       .credentialsProviders(
         ProfileCredentialsProvider.create("cmsFronts"),
-		StsAssumeRoleCredentialsProvider
-		  .builder()
-		  .stsClient(stsClient)
-		  .refreshRequest(assumeRoleRequest)
-		  .build(),
-		credentialsProvider
-
+        StsAssumeRoleCredentialsProvider
+          .builder()
+          .stsClient(stsClient)
+          .refreshRequest(assumeRoleRequest)
+          .build(),
+        credentialsProvider
       )
       .build()
 
