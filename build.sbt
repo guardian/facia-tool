@@ -56,6 +56,7 @@ val capiModelsVersion = "38.0.0"
 val capiClientVersion = "42.0.1"
 val json4sVersion = "4.0.3"
 val circeVersion = "0.13.0"
+val awsSdkVersion = "2.43.0"
 
 resolvers ++= Seq(
   Resolver.file("Local", file(Path.userHome.absolutePath + "/.ivy2/local"))(
@@ -108,7 +109,10 @@ libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-text" % "1.10.0",
   "com.beust" % "jcommander" % "1.75",
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-  "org.mockito" % "mockito-core" % "5.11.0" % Test
+  "org.mockito" % "mockito-core" % "5.11.0" % Test,
+	"software.amazon.awssdk" % "sts" % awsSdkVersion,
+	"software.amazon.awssdk" % "s3" % awsSdkVersion,
+	"com.gu.etag-caching" %% "aws-s3-sdk-v2" % "7.0.0"
 )
 
 excludeDependencies ++= Seq(
