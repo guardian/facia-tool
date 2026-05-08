@@ -1,4 +1,4 @@
-import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
+import { createIndexedAsyncResourceBundle } from 'lib/createAsyncResourceBundle';
 import {
 	liveRecipes,
 	RecipeSearchHit,
@@ -7,8 +7,7 @@ import {
 import { ThunkResult } from '../types/Store';
 
 export const { actions, reducer, selectors } =
-	createAsyncResourceBundle<RecipeSearchHit>('recipes', {
-		indexById: true,
+	createIndexedAsyncResourceBundle<RecipeSearchHit>('recipes', {
 		selectLocalState: (state) => state.recipes,
 	});
 

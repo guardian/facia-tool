@@ -61,7 +61,7 @@ interface FetchErrorAction {
 interface UpdateStartAction<Resource> {
 	entity: string;
 	type: 'UPDATE_START';
-	payload: { id?: string | string; data: Resource | any };
+	payload: { id?: string; data: Resource | any };
 }
 
 interface UpdateSuccessAction<Resource> {
@@ -113,12 +113,12 @@ const removeStatusIds = (
 		: without<string>(currentIds, incomingIds);
 
 function formatIncomingResourceData<Resource extends BaseResource>(
-	data: { [id: string]: Resource } | {},
+	data: { [id: string]: Resource },
 	newData: Resource | Resource[],
 	resourceName: string,
 ): Resource | { [id: string]: Resource } {
 	if (newData instanceof Array) {
-		const result: { [id: string]: Resource } = {
+		return {
 			...data,
 			...newData.reduce((acc, model: BaseResource, index) => {
 				if (!model.id) {
@@ -132,7 +132,6 @@ function formatIncomingResourceData<Resource extends BaseResource>(
 				};
 			}, {}),
 		};
-		return result;
 	}
 
 	if (!newData.id) {
@@ -218,11 +217,71 @@ function createAsyncResourceBundle<Resource, Order = string>(
 		// e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
 		namespace?: string;
 		// The initial state of the reducer data. Defaults to an empty object.
-		initialData?: unknown;
-	} = {
-		indexById: false,
+		initialData: Resource;
 	},
 ) {
+	return createAsyncResourceBundleCommon<Resource, false, Order>(entityName, {
+		...options,
+		indexById: false,
+	});
+}
+
+const createIndexedAsyncResourceBundle = <Resource, Order = string>(
+	// The name of the entity for which this reducer is responsible
+	entityName: string,
+	options: {
+		// The key the reducer provided by this bundle is mounted at.
+		// Defaults to entityName if none is given.
+		selectLocalState?: (
+			state: RootState,
+		) => State<Record<string, Resource>, Order>;
+		// Provides a namespace for the created actions, separated by a slash,
+		// e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
+		namespace?: string;
+		// The initial state of the reducer data. Defaults to an empty object.
+		initialData?: Record<string, Resource>;
+	},
+) =>
+	createAsyncResourceBundleCommon<Resource, true, Order>(entityName, {
+		...options,
+		indexById: true,
+		initialData: options.initialData || {},
+	});
+
+function createAsyncResourceBundleCommon<
+	Resource,
+	IndexById extends boolean,
+	Order = string,
+>(
+	// The name of the entity for which this reducer is responsible
+	entityName: string,
+	options: {
+		// The key the reducer provided by this bundle is mounted at.
+		// Defaults to entityName if none is given.
+		selectLocalState?: (
+			state: RootState,
+		) => State<
+			IndexById extends false ? Resource : Record<string, Resource>,
+			Order
+		>;
+		// Do we index the incoming data by id, or just add it to the state as-is?
+		indexById: IndexById;
+		// Provides a namespace for the created actions, separated by a slash,
+		// e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
+		namespace?: string;
+		// The initial state of the reducer data. Defaults to an empty object.
+		initialData: IndexById extends false ? Resource : Record<string, Resource>;
+	},
+) {
+	function isResourceMap(
+		data: Resource | Record<string, Resource>,
+	): data is Record<string, Resource> {
+		return options.indexById;
+	}
+
+	type DataType = IndexById extends false ? Resource : Record<string, Resource>;
+	type LocalState = State<DataType, Order>;
+
 	const { indexById } = options;
 	const selectLocalState = options.selectLocalState
 		? options.selectLocalState
@@ -246,20 +305,24 @@ function createAsyncResourceBundle<Resource, Order = string>(
 	const selectIsLoadingById = (state: RootState, id: string) =>
 		selectLocalState(state).loadingIds.indexOf(id) !== -1;
 
-	const selectById = (state: RootState, id: string): Resource | undefined =>
-		selectLocalState(state).data[id];
+	const selectById = (state: RootState, id: string): Resource | undefined => {
+		let data = selectLocalState(state).data;
+		return isResourceMap(data) ? data[id] : undefined;
+	};
 
 	const selectIsLoadingInitialDataById = (state: RootState, id: string) =>
 		!selectById(state, id) &&
 		selectLocalState(state).loadingIds.indexOf(id) !== -1;
 
 	const selectLastFetchOrder = (state: RootState): Order[] =>
-		selectLocalState(state).lastFetchOrder || (defaultArray as Order[]);
+		(selectLocalState(state).lastFetchOrder as Order[] | undefined) ||
+		(defaultArray as unknown as Order[]);
 
-	const selectAll = (state: RootState) => selectLocalState(state)?.data || {};
+	const selectAll = (state: RootState): DataType =>
+		selectLocalState(state)?.data || options.initialData;
 
-	const initialState: State<Resource, Order> = {
-		data: options.initialData || {},
+	const initialState: LocalState = {
+		data: options.initialData,
 		pagination: null,
 		lastError: null,
 		error: null,
@@ -393,7 +456,7 @@ function createAsyncResourceBundle<Resource, Order = string>(
 
 					return {
 						...state,
-						data: !indexById
+						data: !isResourceMap(state.data)
 							? action.payload.data
 							: formatIncomingResourceData(
 									state.data,
@@ -447,7 +510,7 @@ function createAsyncResourceBundle<Resource, Order = string>(
 				case UPDATE_START: {
 					return {
 						...state,
-						data: !indexById
+						data: !isResourceMap(state.data)
 							? action.payload.data
 							: formatIncomingResourceData(
 									state.data,
@@ -463,7 +526,7 @@ function createAsyncResourceBundle<Resource, Order = string>(
 				case UPDATE_SUCCESS: {
 					let data;
 					if (action.payload.data) {
-						data = !indexById
+						data = !isResourceMap(state.data)
 							? action.payload.data
 							: formatIncomingResourceData(
 									state.data,
@@ -528,5 +591,11 @@ function createAsyncResourceBundle<Resource, Order = string>(
 	};
 }
 
-export { Actions, State, IPagination, globalLoadingIndicator };
-export default createAsyncResourceBundle;
+export {
+	Actions,
+	State,
+	IPagination,
+	globalLoadingIndicator,
+	createAsyncResourceBundle,
+	createIndexedAsyncResourceBundle,
+};

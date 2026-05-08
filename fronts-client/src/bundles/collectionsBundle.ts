@@ -1,4 +1,5 @@
-import createAsyncResourceBundle, {
+import {
+	createIndexedAsyncResourceBundle,
 	State as LibState,
 	Actions,
 } from 'lib/createAsyncResourceBundle';
@@ -10,9 +11,7 @@ import set from 'lodash/fp/set';
 const collectionsEntityName = 'collections';
 
 const { actions, actionNames, reducer, selectors, initialState } =
-	createAsyncResourceBundle<Collection>(collectionsEntityName, {
-		indexById: true,
-	});
+	createIndexedAsyncResourceBundle<Collection>(collectionsEntityName, {});
 
 const collectionSelectors = {
 	...selectors,
@@ -20,9 +19,10 @@ const collectionSelectors = {
 		state: State,
 		cardId: string,
 	): string | null => {
+		const stages = ['live', 'draft', 'previously'] as const;
 		let collectionId: null | string = null;
 		Object.keys(state.collections.data).some((id) =>
-			['live', 'draft', 'previously'].some((stage) => {
+			stages.some((stage) => {
 				const groups = state.collections.data[id][stage] || [];
 
 				return groups.some((gId: string) => {
@@ -78,9 +78,9 @@ const collectionActions = {
 type CollectionActions = Actions<Collection> | SetHidden;
 
 const collectionReducer = (
-	state: LibState<Collection>,
+	state: LibState<Record<string, Collection>>,
 	action: CollectionActions,
-): LibState<Collection> => {
+): LibState<Record<string, Collection>> => {
 	const updatedState = reducer(state, action);
 	switch (action.type) {
 		case SET_HIDDEN: {

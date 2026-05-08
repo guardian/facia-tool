@@ -1,4 +1,4 @@
-import createAsyncResourceBundle from 'lib/createAsyncResourceBundle';
+import { createIndexedAsyncResourceBundle } from 'lib/createAsyncResourceBundle';
 import {
 	CapiArticle,
 	CapiInteractiveAtom,
@@ -22,9 +22,8 @@ const {
 	actions: liveActions,
 	reducer: capiLiveFeed,
 	selectors: liveSelectors,
-} = createAsyncResourceBundle<FeedState, FeedEntry>('capiLiveFeed', {
+} = createIndexedAsyncResourceBundle<FeedState, FeedEntry>('capiLiveFeed', {
 	selectLocalState: (state) => state.feed.capiLiveFeed,
-	indexById: true,
 });
 
 const isNonCommercialArticle = (
@@ -53,9 +52,8 @@ const {
 	actions: previewActions,
 	reducer: capiPreviewFeed,
 	selectors: previewSelectors,
-} = createAsyncResourceBundle<FeedState, FeedEntry>('capiPreviewFeed', {
+} = createIndexedAsyncResourceBundle<FeedState, FeedEntry>('capiPreviewFeed', {
 	selectLocalState: (state) => state.feed.capiPreviewFeed,
-	indexById: true,
 });
 
 const fetchResourceOrResults = async (
@@ -171,9 +169,8 @@ const {
 	actions: prefillActions,
 	reducer: prefillFeed,
 	selectors: prefillSelectors,
-} = createAsyncResourceBundle<FeedState, FeedEntry>('prefillFeed', {
+} = createIndexedAsyncResourceBundle<FeedState, FeedEntry>('prefillFeed', {
 	selectLocalState: (state) => state.feed.prefillFeed,
-	indexById: true,
 });
 
 export const fetchPrefill =

@@ -1,4 +1,5 @@
-import createAsyncResourceBundle, {
+import {
+	createAsyncResourceBundle,
 	State,
 } from 'lib/createAsyncResourceBundle';
 import {
@@ -10,7 +11,6 @@ import { EditionsFront } from '../types/Edition';
 
 export const { actions, actionNames, reducer, selectors, initialState } =
 	createAsyncResourceBundle<FrontsConfig>('frontsConfig', {
-		indexById: false,
 		selectLocalState: (state) => state.fronts.frontsConfig,
 		initialData: {
 			fronts: {},
