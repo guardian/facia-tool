@@ -59,7 +59,6 @@ interface CollectionConfigResponse {
 	uneditable?: boolean;
 	showTags?: boolean;
 	hideKickers?: boolean;
-	excludedFromRss?: boolean;
 	hideShowMore?: boolean;
 	description?: string;
 	showSections?: boolean;
