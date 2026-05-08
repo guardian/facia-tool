@@ -138,12 +138,19 @@ class FrontsMenu extends React.Component<Props, State> {
 		this.props.onUnfavouriteFront(frontId);
 	};
 
+	public onBeforeInput = (event: React.FormEvent<HTMLInputElement>) => {
+		const { data } = event.nativeEvent as InputEvent;
+		if (data && /[^a-z0-9/\-+]/.test(data)) {
+			event.preventDefault();
+		}
+	};
+
 	public onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (!event.target || !(event.target instanceof HTMLInputElement)) {
 			return;
 		}
 		this.setState({
-			searchString: event.target.value,
+			searchString: event.target.value.replace(/[^a-z0-9/\-+]/g, ''),
 		});
 	};
 
@@ -197,6 +204,7 @@ class FrontsMenu extends React.Component<Props, State> {
 										<FrontsMenuSearchInput
 											value={this.state.searchString}
 											onChange={this.onInput}
+											onBeforeInput={this.onBeforeInput}
 											ref={this.inputRef}
 										/>
 										<FrontsMenuSearchImage>
