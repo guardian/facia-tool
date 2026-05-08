@@ -185,14 +185,20 @@ export const fetchPrefill =
 		try {
 			const { response } = await getPrefills(id);
 			if (!checkIsContent(response)) {
+				const filteredResults = response.results.filter(isNonCommercialArticle);
+				const taggedOrder: FeedEntry[] = filteredResults.map((item) => ({
+					type: isCapiInteractiveAtom(item) ? 'atom' : 'article',
+					id: item.id,
+				}));
 				(dispatch as any)(
-					prefillActions.fetchSuccess(
-						response.results.filter(isNonCommercialArticle, {
+					prefillActions.fetchSuccess(filteredResults, {
+						order: taggedOrder,
+						pagination: {
 							totalPages: response.pages,
 							currentPage: response.currentPage,
 							pageSize: response.pageSize,
-						}),
-					),
+						},
+					}),
 				);
 			}
 		} catch (e) {
