@@ -9,8 +9,7 @@ import software.amazon.awssdk.services.s3.S3AsyncClient
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class FrontsApi(
-    val config: ApplicationConfiguration,
-    val awsEndpoints: AwsEndpoints
+    val config: ApplicationConfiguration
 ) {
   val amazonClient: ApiClient = {
 
