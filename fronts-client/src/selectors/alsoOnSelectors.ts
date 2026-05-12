@@ -203,6 +203,7 @@ const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
 	cardIdToOtherCollectionUuidsMap: CardIdToOtherCollectionUuidsMap,
 	cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 	cardUuids: string[],
+	otherCollectionsOnSameFront: { [uuid: string]: Collection },
 ) => {
 	iterateOverCards(cardMap, cardUuids, (card) => {
 		const matchingCollectionUuids =
@@ -210,6 +211,8 @@ const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
 		cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap[card.uuid] = {
 			collections: matchingCollectionUuids.map((collectionUuid) => ({
 				collectionUuid,
+				displayName:
+					otherCollectionsOnSameFront[collectionUuid]?.displayName || '',
 			})),
 		};
 	});
@@ -246,7 +249,7 @@ const constructCardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap = (
  */
 const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 	selectedCollection: Collection | undefined,
-	otherCollectionsOnSameFront: Collection[],
+	otherCollectionsOnSameFront: { [uuid: string]: Collection },
 	groupMap: GroupMap,
 	cardMap: CardMap,
 ): CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap => {
@@ -264,7 +267,7 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 	// so we can do O(1) lookups instead of nested iterations per card
 	const cardIdToOtherCollectionUuidsMap: CardIdToOtherCollectionUuidsMap =
 		new Map<string, string[]>();
-	for (const otherCollection of otherCollectionsOnSameFront) {
+	for (const otherCollection of Object.values(otherCollectionsOnSameFront)) {
 		if (!otherCollection.draft) {
 			continue;
 		}
@@ -287,6 +290,7 @@ const selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = (
 			cardIdToOtherCollectionUuidsMap,
 			cardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap,
 			cardUuids,
+			otherCollectionsOnSameFront,
 		);
 	});
 
