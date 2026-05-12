@@ -24,6 +24,7 @@ import play.api.libs.json.JsObject
 
 case class PressCommand(
     collectionIds: Set[String],
+    frontPath: Option[String] = None,
     live: Boolean = false,
     draft: Boolean = false,
     forceConfigUpdate: Option[Boolean] = Option(false)
@@ -79,10 +80,10 @@ class FaciaPress(
 ) extends Logging {
   def press(pressCommand: PressCommand): Future[List[PublishResult]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
-      val paths: Set[String] = for {
+      val paths: Set[String] = (for {
         id <- pressCommand.collectionIds
         path <- configAgent.getConfigsUsingCollectionId(id)
-      } yield path
+      } yield path) ++ pressCommand.frontPath.toSet
 
       val pathToCollectionIdsLookup = configAgent.getConfigCollectionMap
 

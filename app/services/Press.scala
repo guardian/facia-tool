@@ -21,4 +21,16 @@ class Press(val faciaPress: FaciaPress) {
       )
     )
   }
+
+  def forFrontWithForceConfig(path: String) = {
+    faciaPress.press(
+      PressCommand(
+        Set.empty,
+        frontPath = Some(path),
+        live = true,
+        draft = true,
+        forceConfigUpdate = Option(true)
+      )
+    )
+  }
 }

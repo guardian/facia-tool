@@ -89,7 +89,7 @@ class CollectionController(
         frontId,
         identity
       )
-      press.fromSetOfIdsWithForceConfig(Set(collectionId))
+      press.forFrontWithForceConfig(frontId)
       structuredLogger.putLog(
         LogUpdate(
           CollectionRemove(List(frontId), collectionId),
