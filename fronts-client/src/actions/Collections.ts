@@ -647,7 +647,7 @@ export function removeFrontCollection(
 ): ThunkResult<Promise<void>> {
 	return async (dispatch: Dispatch) => {
 		await removeCollectionApi(frontId, collectionId);
-		dispatch(getFrontsConfig());
+		await dispatch(getFrontsConfig());
 	};
 }
 function addExistingFrontCollection(
