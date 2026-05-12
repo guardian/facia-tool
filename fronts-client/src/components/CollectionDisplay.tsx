@@ -445,6 +445,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 							{!isEditions && !isFeast && (
 								<ButtonCircularWithTransition
 									title="Delete this collection."
+									aria-label="Delete this collection."
 									onClick={(e) => {
 										e.stopPropagation();
 										this.handleDeleteClick();
@@ -455,6 +456,7 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 							)}
 							<ButtonCircularWithTransition
 								title="Edit collection metadata"
+								aria-label="Edit collection metadata"
 								onClick={(e) => {
 									e.stopPropagation();
 									if (this.props.isOpen) {
