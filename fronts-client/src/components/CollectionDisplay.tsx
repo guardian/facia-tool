@@ -556,8 +556,8 @@ const createMapStateToProps = () => {
 	return (state: State, props: ContainerProps) => {
 		return {
 			collection: collectionSelectors.selectById(state, props.id),
-			frontCollectionCount: selectFront(state, { frontId: props.frontId })
-				.collections.length,
+			frontCollectionCount:
+				selectFront(state, { frontId: props.frontId })?.collections.length ?? 0,
 			cardIds: selectCardsInCollection(state, {
 				collectionId: props.id,
 				collectionSet: props.browsingStage,
