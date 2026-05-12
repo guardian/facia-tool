@@ -658,6 +658,10 @@ function addExistingFrontCollection(
 	return async (dispatch: Dispatch, getState: () => State) => {
 		const currentConfig = frontsConfigSelectors.selectAll(getState());
 		const front = currentConfig.fronts[frontId];
+		if (!front) {
+			// front cannot be found, do not attempt to add collection
+			return;
+		}
 		if (front.collections.includes(collectionId)) {
 			// collection is already in the front, do not add again
 			return;
