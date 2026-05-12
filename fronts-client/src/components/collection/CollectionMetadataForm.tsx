@@ -777,7 +777,6 @@ const mapDispatchToProps = (
 	updateCollectionConfig: async (collection) => {
 		await dispatch(updateCollectionConfig(collection));
 		await dispatch(updateCollectionName(collection.displayName, collection.id));
-		await dispatch(getFrontsConfig());
 		await dispatch(getCollections([collection.id]));
 	},
 	closeEditMetadata: onClose
