@@ -108,7 +108,7 @@ libraryDependencies ++= Seq(
   "org.playframework" %% "play" % "3.0.10",
   "org.apache.commons" % "commons-text" % "1.10.0",
   "com.beust" % "jcommander" % "1.75",
-  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.9" % "test",
   "org.mockito" % "mockito-core" % "5.11.0" % Test,
   "software.amazon.awssdk" % "s3" % awsSdkVersion,
   "com.gu.etag-caching" %% "aws-s3-sdk-v2" % "7.0.0"
