@@ -86,7 +86,7 @@ libraryDependencies ++= Seq(
   "com.gu" %% "editorial-permissions-client" % "6.0.3",
   "com.gu" %% "fapi-client-play30" % "30.0.0",
   "com.gu" %% "mobile-notifications-api-models" % "5.0.0",
-  "com.gu" %% "pan-domain-auth-play_3-0" % "7.0.0",
+  "com.gu" %% "pan-domain-auth-play_3-0" % "19.0.0",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
   "com.github.blemale" %% "scaffeine" % "4.1.0" % "compile",
   "com.gu" %% "thrift-serializer" % "4.0.2",
