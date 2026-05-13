@@ -642,7 +642,7 @@ function discardDraftChangesToCollection(
 	};
 }
 
-export function removeFrontCollection(
+function removeFrontCollection(
 	frontId: string,
 	collectionId: string,
 ): ThunkResult<Promise<void>> {
@@ -651,6 +651,7 @@ export function removeFrontCollection(
 		await dispatch(getFrontsConfig());
 	};
 }
+
 function addExistingFrontCollection(
 	frontId: string,
 	collectionId: string,
@@ -757,5 +758,6 @@ export {
 	discardDraftChangesToCollection,
 	addFrontCollection,
 	moveFrontCollection,
+	removeFrontCollection,
 	addExistingFrontCollection,
 };
