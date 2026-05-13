@@ -12,9 +12,9 @@ import {
 	fetchLastPressed as fetchLastPressedApi,
 	publishCollection as publishCollectionApi,
 	getCollection as getCollectionApi,
-	createFrontsCollection as createCollectionApi,
+	createCollectionOnFront as createCollectionApi,
 	updateFrontConfig as updateFrontConfigApi,
-	removeFrontsCollection as removeCollectionApi,
+	removeCollectionFromFront as removeCollectionApi,
 } from 'services/faciaApi';
 import {
 	selectUserEmail,
@@ -44,7 +44,7 @@ import {
 import { cardsReceived, clearCards } from 'actions/CardsCommon';
 import { selectors as collectionsSelectors } from 'bundles/collectionsBundle';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
-import { updateFrontsCollectionConfig as updateFrontsCollectionConfigApi } from 'services/faciaApi';
+import { updateCollectionConfig as updateCollectionConfigApi } from 'services/faciaApi';
 import { groupsReceived } from 'actions/Groups';
 import {
 	getFrontsConfig,
@@ -279,7 +279,7 @@ export function updateCollectionConfig(
 ): ThunkResult<Promise<void>> {
 	return async (dispatch: Dispatch, getState: () => State) => {
 		const { id, ...rest } = collectionConfig;
-		await updateFrontsCollectionConfigApi(id, rest);
+		await updateCollectionConfigApi(id, rest);
 		await dispatch(getFrontsConfig());
 	};
 }

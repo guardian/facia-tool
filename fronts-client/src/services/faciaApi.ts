@@ -405,7 +405,7 @@ async function getArticlesBatched(
 	}
 }
 
-const createFrontsCollection = async (
+const createCollectionOnFront = async (
 	frontId: string,
 	collection: Partial<CollectionConfig>,
 ): Promise<{ id: string }> => {
@@ -441,7 +441,7 @@ const createFront = async (
 	}
 };
 
-const removeFrontsCollection = async (
+const removeCollectionFromFront = async (
 	frontId: string,
 	collectionId: string,
 ): Promise<void> => {
@@ -458,7 +458,7 @@ const removeFrontsCollection = async (
 	}
 };
 
-const updateFrontsCollectionConfig = async (
+const updateCollectionConfig = async (
 	collectionId: string,
 	collection: Partial<CollectionConfig>,
 ): Promise<void> => {
@@ -518,9 +518,9 @@ export {
 	publishCollection,
 	updateCollection,
 	createFront,
-	createFrontsCollection,
-	removeFrontsCollection,
-	updateFrontsCollectionConfig,
+	createCollectionOnFront,
+	removeCollectionFromFront,
+	updateCollectionConfig,
 	updateFrontConfig,
 	saveClipboard,
 	saveEditionsClipboard,
