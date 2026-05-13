@@ -69,7 +69,7 @@ export function saveFrontConfig(
 ): ThunkResult<Promise<void>> {
 	return async (dispatch: Dispatch, getState: () => State) => {
 		const { id, ...rest } = updatedFront;
-		await updateFrontConfigApi(id, { id, ...rest });
+		await updateFrontConfigApi(id, rest);
 		await dispatch(getFrontsConfig());
 	};
 }

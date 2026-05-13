@@ -9,6 +9,7 @@ import type {
 	CollectionConfig,
 	CollectionResponse,
 	CreateFrontRequest,
+	FrontConfigResponse,
 } from 'types/FaciaApi';
 import type {
 	CollectionWithNestedArticles,
@@ -480,14 +481,23 @@ const updateFrontsCollectionConfig = async (
 
 const updateFrontConfig = async (
 	frontId: string,
-	front: Record<string, unknown>,
+	front: FrontConfigResponse,
 ): Promise<void> => {
 	try {
+		// The API, and some of the client side app, expect editorial priority fronts
+		// to not have a priority field at all, so we need to remove it before saving
+		// the front config if it's editorial.
+
+		const { priority: _priority, ...frontWithoutPriority } = front;
+		const frontWithoutEditorialPriority = {
+			...frontWithoutPriority,
+			...(front.priority !== 'editorial' ? { priority: front.priority } : {}),
+		};
 		await pandaFetch(`/config/fronts/${frontId}`, {
 			method: 'post',
 			headers: { 'Content-Type': 'application/json' },
 			credentials: 'same-origin',
-			body: JSON.stringify(front),
+			body: JSON.stringify(frontWithoutEditorialPriority),
 		});
 	} catch (e) {
 		throw new Error(

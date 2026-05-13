@@ -666,16 +666,6 @@ function addExistingFrontCollection(
 			// collection is already in the front, do not add again
 			return;
 		}
-		// The API, and some of the client side app, expect editorial priority fronts
-		// to not have a priority field at all, so we need to remove it before saving
-		// the front config if it's editorial.
-
-		const { priority: _priority, ...frontWithoutPriority } = front;
-		const frontWithoutEditorialPriority = {
-			...frontWithoutPriority,
-			...(front.priority !== 'editorial' ? { priority: front.priority } : {}),
-		};
-
 		const clampedPosition = Math.max(
 			0,
 			Math.min(position, front.collections.length),
@@ -687,7 +677,7 @@ function addExistingFrontCollection(
 		];
 
 		const updatedFront = {
-			...frontWithoutEditorialPriority,
+			...front,
 			collections,
 		};
 		await dispatch(saveFrontConfig(updatedFront));
