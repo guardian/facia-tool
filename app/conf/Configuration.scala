@@ -154,14 +154,32 @@ class ApplicationConfiguration(
           None
       }
     }
-    // NB this does not fail with exception (as the 'old' credentials above).  It is assumed that the code
-    // above would have already failed.
-    // If and when this code is rewritten to remove the 'old' approach, then that behaviour may be duplicated here.
-    def newStyleCmsFrontsAccountCredentials = NewAwsCredentialsProviderChain
-      .builder()
-      .addCredentialsProvider(NewProfileCredentialsProvider.create("cmsFronts"))
-      .addCredentialsProvider(DefaultCredentialsProvider.create())
-      .build()
+
+    def newStyleCmsFrontsAccountCredentials: NewAwsCredentialsProviderChain =
+      newStyleCredentials.getOrElse(
+        throw new BadConfigurationException(
+          "AWS credentials are not configured for CMS Fronts (v2)"
+        )
+      )
+    val newStyleCredentials: Option[NewAwsCredentialsProviderChain] = {
+      val provider = NewAwsCredentialsProviderChain
+        .builder()
+        .addCredentialsProvider(
+          NewProfileCredentialsProvider.create("cmsFronts")
+        )
+        .addCredentialsProvider(DefaultCredentialsProvider.create())
+        .build()
+
+      try {
+        provider.resolveCredentials()
+        Some(provider)
+      } catch {
+        case ex: Exception =>
+          logger.error("amazon client exception (v2 credentials)")
+          if (isProd) throw ex
+          None
+      }
+    }
 
     def frontendAccountCredentials: AWSCredentialsProvider =
       crossAccount.getOrElse(
