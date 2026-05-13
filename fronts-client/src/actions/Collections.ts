@@ -46,7 +46,8 @@ import { selectors as collectionsSelectors } from 'bundles/collectionsBundle';
 import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
 import { updateFrontsCollectionConfig as updateFrontsCollectionConfigApi } from 'services/faciaApi';
 import { groupsReceived } from 'actions/Groups';
-import getFrontsConfig, {
+import {
+	getFrontsConfig,
 	recordVisibleArticles,
 	recordStaleFronts,
 	fetchLastPressedSuccess,

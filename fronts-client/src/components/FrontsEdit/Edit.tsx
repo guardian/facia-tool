@@ -3,7 +3,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { match } from 'react-router-dom';
 import { styled } from 'constants/theme';
-import getFrontsConfig from 'actions/Fronts';
+import { getFrontsConfig } from 'actions/Fronts';
 import {
 	editorOpenFront,
 	editorFavouriteFront,

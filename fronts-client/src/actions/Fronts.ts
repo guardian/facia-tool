@@ -93,7 +93,7 @@ export function createFront(
 	};
 }
 
-export default function getFrontsConfig(): ThunkResult<
+export function getFrontsConfig(): ThunkResult<
 	Promise<
 		| ReturnType<typeof frontsConfigActions.fetchSuccess>
 		| ReturnType<typeof frontsConfigActions.fetchError>
