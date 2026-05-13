@@ -690,7 +690,7 @@ const stateWithCollection: any = {
 				excludedRegions: [],
 			},
 			exampleCollectionTwo: {
-				id: 'exampleCollection',
+				id: 'exampleCollectionTwo',
 				displayName: 'Example Collection',
 				live: ['abc'],
 				draft: ['def'],
@@ -755,6 +755,29 @@ const stateWithCollection: any = {
 		updatingIds: [],
 	},
 	feed: {},
+};
+
+const stateWithFronts = {
+	...stateWithCollection,
+	fronts: {
+		...stateWithCollection.fronts,
+		frontsConfig: {
+			...stateWithCollection.fronts.frontsConfig,
+			data: {
+				...stateWithCollection.fronts.frontsConfig.data,
+				fronts: {
+					'some-front': {
+						id: 'some-front',
+						collections: ['exampleCollection'],
+					},
+					'five-collection-front': {
+						id: 'five-collection-front',
+						collections: ['one', 'two', 'three', 'four', 'five'],
+					},
+				},
+			},
+		},
+	},
 };
 
 const stateWithCollectionAndSupporting: any = {
@@ -1185,6 +1208,7 @@ export {
 	normalisedCollectonWithPreviously,
 	collectionWithSupportingArticles,
 	stateWithCollection,
+	stateWithFronts,
 	stateWithCollectionAndSupporting,
 	stateWithSnaplinksAndArticles,
 	initialState,

@@ -6,6 +6,7 @@ import configureStore from 'util/configureStore';
 import config from 'fixtures/config';
 import {
 	stateWithCollection,
+	stateWithFronts,
 	capiArticle,
 	stateWithDuplicateArticleIdsInCollection,
 	stateWithCollectionWithChefs,
@@ -16,6 +17,7 @@ import {
 	getCollectionsApiResponseWithoutStoriesVisible,
 } from 'fixtures/collectionsEndpointResponse';
 import { actions as collectionActions } from 'bundles/collectionsBundle';
+import { actions as frontsConfigActions } from 'bundles/frontsConfigBundle';
 import {
 	actions as externalArticleActions,
 	actionNames as externalArticleActionNames,
@@ -29,6 +31,9 @@ import {
 	fetchCardReferencedEntitiesForCollections,
 	updateCollection,
 	fetchArticles,
+	removeFrontCollection,
+	addExistingFrontCollection,
+	moveFrontCollection,
 } from '../Collections';
 import { createSelectCollection } from 'selectors/shared';
 
@@ -45,6 +50,347 @@ describe('Collection actions', () => {
 	afterAll(() => {
 		(Date as any).now = now;
 	});
+
+	describe('Remove front collection thunk', () => {
+		it('should issue a DELETE request for the collection', async () => {
+			fetchMock.deleteOnce(
+				'/config/fronts/some-front/collections/exampleCollection',
+				{},
+			);
+			fetchMock.getOnce('/config', {});
+			const store = mockStore({
+				config,
+				...stateWithCollection,
+			});
+
+			await store.dispatch(
+				removeFrontCollection('some-front', 'exampleCollection') as any,
+			);
+
+			expect(
+				fetchMock.called(
+					'/config/fronts/some-front/collections/exampleCollection',
+				),
+			).toEqual(true);
+		});
+
+		it('should issue a front config fetch', async () => {
+			fetchMock.deleteOnce(
+				'/config/fronts/some-front/collections/exampleCollection',
+				{},
+			);
+			fetchMock.getOnce('/config', {});
+			const store = mockStore({
+				config,
+				...stateWithCollection,
+			});
+
+			await store.dispatch(
+				removeFrontCollection('some-front', 'exampleCollection') as any,
+			);
+
+			const actions = store.getActions();
+			expect(actions[0]).toEqual(frontsConfigActions.fetchStart());
+		});
+	});
+
+	describe('Add Existing front collection thunk', () => {
+		it('should insert an existing collection at position zero', async () => {
+			fetchMock.postOnce('/config/fronts/some-front', {});
+			const collection: any =
+				stateWithFronts.collections.data.exampleCollectionTwo;
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				addExistingFrontCollection('some-front', collection.id, 0) as any,
+			);
+
+			const requestBody = JSON.parse(
+				fetchMock.calls('/config/fronts/some-front')[0][1].body as any,
+			);
+			expect(requestBody.collections).toEqual([
+				'exampleCollectionTwo',
+				'exampleCollection',
+			]);
+		});
+
+		it('should re-fetch the front config', async () => {
+			fetchMock.postOnce('/config/fronts/some-front', {});
+			const collection: any =
+				stateWithFronts.collections.data.exampleCollectionTwo;
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				addExistingFrontCollection('some-front', collection.id, 0) as any,
+			);
+
+			const actions = store.getActions();
+			expect(actions[0]).toEqual(frontsConfigActions.fetchStart());
+		});
+
+		it('should insert an existing collection at position one', async () => {
+			fetchMock.postOnce('/config/fronts/some-front', {});
+			const collection: any =
+				stateWithFronts.collections.data.exampleCollectionTwo;
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				addExistingFrontCollection('some-front', collection.id, 1) as any,
+			);
+
+			const requestBody = JSON.parse(
+				fetchMock.calls('/config/fronts/some-front')[0][1].body as any,
+			);
+			expect(requestBody.collections).toEqual([
+				'exampleCollection',
+				'exampleCollectionTwo',
+			]);
+		});
+
+		it('should not insert an existing collection if it already exists in the front', async () => {
+			fetchMock.postOnce('/config/fronts/some-front', {});
+			const collection: any =
+				stateWithFronts.collections.data.exampleCollection;
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				addExistingFrontCollection('some-front', collection.id, 1) as any,
+			);
+
+			expect(fetchMock.called('/config/fronts/some-front')).toEqual(false);
+		});
+
+		it('should do nothing if the requested front does not exist', async () => {
+			fetchMock.postOnce('/config/fronts/missing-front', {});
+			const collection: any =
+				stateWithFronts.collections.data.exampleCollectionTwo;
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				addExistingFrontCollection('missing-front', collection.id, 1) as any,
+			);
+
+			expect(fetchMock.called('/config/fronts/missing-front')).toEqual(false);
+
+			const actions = store.getActions();
+
+			expect(actions[0]).toEqual(undefined);
+		});
+	});
+
+	describe('Move front collection thunk', () => {
+		it('should move a collection up', async () => {
+			fetchMock.postOnce('/config/fronts/five-collection-front', {});
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				moveFrontCollection('five-collection-front', 'two', 'up') as any,
+			);
+
+			const requestBody = JSON.parse(
+				fetchMock.calls('/config/fronts/five-collection-front')[0][1]
+					.body as any,
+			);
+			expect(requestBody.collections).toEqual([
+				'two',
+				'one',
+				'three',
+				'four',
+				'five',
+			]);
+		});
+
+		it('should move a collection down', async () => {
+			fetchMock.postOnce('/config/fronts/five-collection-front', {});
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				moveFrontCollection('five-collection-front', 'two', 'down') as any,
+			);
+
+			const requestBody = JSON.parse(
+				fetchMock.calls('/config/fronts/five-collection-front')[0][1]
+					.body as any,
+			);
+			expect(requestBody.collections).toEqual([
+				'one',
+				'three',
+				'two',
+				'four',
+				'five',
+			]);
+		});
+
+		it('should move a collection to a specific position', async () => {
+			fetchMock.postOnce('/config/fronts/five-collection-front', {});
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				moveFrontCollection(
+					'five-collection-front',
+					'two',
+					undefined,
+					3,
+				) as any,
+			);
+
+			const requestBody = JSON.parse(
+				fetchMock.calls('/config/fronts/five-collection-front')[0][1]
+					.body as any,
+			);
+			expect(requestBody.collections).toEqual([
+				'one',
+				'three',
+				'four',
+				'two',
+				'five',
+			]);
+		});
+
+		it('should move a collection to the first position if requested to move to a number less than zero', async () => {
+			fetchMock.postOnce('/config/fronts/five-collection-front', {});
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				moveFrontCollection(
+					'five-collection-front',
+					'two',
+					undefined,
+					-5,
+				) as any,
+			);
+
+			const requestBody = JSON.parse(
+				fetchMock.calls('/config/fronts/five-collection-front')[0][1]
+					.body as any,
+			);
+			expect(requestBody.collections).toEqual([
+				'two',
+				'one',
+				'three',
+				'four',
+				'five',
+			]);
+		});
+
+		it('should move a collection to the last position if requested to move to a number greater than the number of collections', async () => {
+			fetchMock.postOnce('/config/fronts/five-collection-front', {});
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				moveFrontCollection(
+					'five-collection-front',
+					'two',
+					undefined,
+					10,
+				) as any,
+			);
+
+			const requestBody = JSON.parse(
+				fetchMock.calls('/config/fronts/five-collection-front')[0][1]
+					.body as any,
+			);
+			expect(requestBody.collections).toEqual([
+				'one',
+				'three',
+				'four',
+				'five',
+				'two',
+			]);
+		});
+
+		it('should re-fetch the front config', async () => {
+			fetchMock.postOnce('/config/fronts/five-collection-front', {});
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				moveFrontCollection(
+					'five-collection-front',
+					'two',
+					undefined,
+					10,
+				) as any,
+			);
+
+			const actions = store.getActions();
+			expect(actions[0]).toEqual(frontsConfigActions.fetchStart());
+		});
+
+		it('should do nothing if the requested front does not exist', async () => {
+			fetchMock.postOnce('/config/fronts/missing-front', {});
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				moveFrontCollection('missing-front', 'two', undefined, 10) as any,
+			);
+
+			expect(fetchMock.called('/config/fronts/missing-front')).toEqual(false);
+
+			const actions = store.getActions();
+			expect(actions[0]).toEqual(undefined);
+		});
+
+		it('should do nothing if the collection is not on the front', async () => {
+			fetchMock.postOnce('/config/fronts/five-collection-front', {});
+			const store = mockStore({
+				config,
+				...stateWithFronts,
+			});
+
+			await store.dispatch(
+				moveFrontCollection(
+					'five-collection-front',
+					'other',
+					undefined,
+					10,
+				) as any,
+			);
+
+			expect(fetchMock.called('/config/fronts/five-collection-front')).toEqual(
+				false,
+			);
+
+			const actions = store.getActions();
+			expect(actions[0]).toEqual(undefined);
+		});
+	});
+
 	describe('Update collection thunk', () => {
 		it('should issue a collection update', async () => {
 			const collection: any =
@@ -136,7 +482,7 @@ describe('Collection actions', () => {
 				exampleCollectionTwo: {
 					displayName: 'Example Collection',
 					draft: ['def'],
-					id: 'exampleCollection',
+					id: 'exampleCollectionTwo',
 					live: ['abc'],
 					previously: undefined,
 					type: 'type',
@@ -204,7 +550,7 @@ describe('Collection actions', () => {
 				exampleCollectionTwo: {
 					displayName: 'Example Collection',
 					draft: ['def'],
-					id: 'exampleCollection',
+					id: 'exampleCollectionTwo',
 					live: ['abc'],
 					previously: undefined,
 					type: 'type',

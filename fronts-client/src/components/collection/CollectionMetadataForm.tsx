@@ -29,7 +29,6 @@ import {
 import { selectPriority } from 'selectors/pathSelectors';
 import { selectAvailableTerritories } from 'selectors/configSelectors';
 import { editorCloseEditMetadata } from 'bundles/frontsUI';
-import getFrontsConfig from 'actions/Fronts';
 import { createSelector } from 'reselect';
 
 const SCROLLABLE_OR_STATIC_TYPES = [
