@@ -2,7 +2,8 @@ import pageConfig from 'util/extractConfigFromPage';
 
 const previewPRODDomain = 'preview.gutools.co.uk';
 const previewCODEDomain = 'preview.code.dev-gutools.co.uk';
-const emailLiveUrlCODE = 'https://email-rendering.code.dev-guardianapis.com/fronts/';
+const emailLiveUrlCODE =
+	'https://email-rendering.code.dev-guardianapis.com/fronts/';
 const emailLiveUrlPROD = 'https://email-rendering.guardianapis.com/fronts/';
 
 export default {

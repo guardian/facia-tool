@@ -110,10 +110,7 @@ describe('FrontSection component', () => {
 		const { container } = render(
 			<Provider store={store}>
 				<ThemeProvider theme={theme}>
-					<FrontSection
-						{...defaultProps}
-						frontId="email/morning-briefing"
-					/>
+					<FrontSection {...defaultProps} frontId="email/morning-briefing" />
 				</ThemeProvider>
 			</Provider>,
 		);
@@ -137,10 +134,7 @@ describe('FrontSection component', () => {
 		const { container } = render(
 			<Provider store={store}>
 				<ThemeProvider theme={theme}>
-					<FrontSection
-						{...defaultProps}
-						frontId="email/morning-briefing"
-					/>
+					<FrontSection {...defaultProps} frontId="email/morning-briefing" />
 				</ThemeProvider>
 			</Provider>,
 		);
@@ -164,10 +158,7 @@ describe('FrontSection component', () => {
 		const { container } = render(
 			<Provider store={store}>
 				<ThemeProvider theme={theme}>
-					<FrontSection
-						{...defaultProps}
-						frontId="email/morning-briefing"
-					/>
+					<FrontSection {...defaultProps} frontId="email/morning-briefing" />
 				</ThemeProvider>
 			</Provider>,
 		);
@@ -191,10 +182,7 @@ describe('FrontSection component', () => {
 		const { container } = render(
 			<Provider store={store}>
 				<ThemeProvider theme={theme}>
-					<FrontSection
-						{...defaultProps}
-						frontId="email/morning-briefing"
-					/>
+					<FrontSection {...defaultProps} frontId="email/morning-briefing" />
 				</ThemeProvider>
 			</Provider>,
 		);
