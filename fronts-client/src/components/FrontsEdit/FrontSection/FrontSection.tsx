@@ -179,7 +179,7 @@ class FrontSection extends React.Component<
 		const previewBaseUrl = isEmailFront
 			? shouldUseCODELinks
 				? urls.emailPreviewUrlCODE
-				: urls.emailRPreviewUrlPROD
+				: urls.emailPreviewUrlPROD
 			: shouldUseCODELinks
 				? urls.previewUrlCODE
 				: urls.previewUrlPROD;
