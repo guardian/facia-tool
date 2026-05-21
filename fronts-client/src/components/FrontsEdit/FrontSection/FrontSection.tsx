@@ -310,7 +310,7 @@ class FrontSection extends React.Component<
 				return urls.emailPreviewUrlCODE;
 			}
 
-			return urls.emailRPreviewUrlPROD;
+			return urls.emailPreviewUrlPROD;
 		}
 
 		if (shouldUseCODELinks) {
