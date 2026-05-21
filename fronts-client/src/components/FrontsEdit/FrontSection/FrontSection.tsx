@@ -175,6 +175,8 @@ class FrontSection extends React.Component<
 		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks } =
 			this.props;
 		const title = this.getTitle();
+		const previewBaseUrl = this.getPreviewBaseUrl(frontId, shouldUseCODELinks);
+		const liveBaseUrl = this.getLiveBaseUrl(frontId, shouldUseCODELinks);
 
 		const { frontNameValue, editingFrontName } = this.state;
 		const isSpecial = this.props.selectedFront
@@ -217,11 +219,7 @@ class FrontSection extends React.Component<
 							<EditModeVisibility visibleMode="fronts">
 								<LinkButtons>
 									<Link
-										href={`${
-											shouldUseCODELinks
-												? urls.previewUrlCODE
-												: urls.previewUrlPROD
-										}${this.props.frontId}`}
+										href={`${previewBaseUrl}${this.props.frontId}`}
 										target="preview"
 									>
 										<FrontHeaderButton>
@@ -232,9 +230,7 @@ class FrontSection extends React.Component<
 										</FrontHeaderButton>
 									</Link>
 									<Link
-										href={`${
-											shouldUseCODELinks ? urls.liveUrlCODE : urls.liveUrlPROD
-										}${this.props.frontId}`}
+										href={`${liveBaseUrl}${this.props.frontId}`}
 										target="live"
 									>
 										<FrontHeaderButton priority="transparent">
@@ -301,6 +297,48 @@ class FrontSection extends React.Component<
 			frontNameValue: this.getTitle() || '',
 			editingFrontName: true,
 		});
+	};
+
+	private getPreviewBaseUrl = (
+		frontId: string,
+		shouldUseCODELinks: boolean,
+	): string => {
+		const isEmailFront = frontId.startsWith('email/');
+
+		if (isEmailFront) {
+			if (shouldUseCODELinks) {
+				return urls.emailPreviewUrlCODE;
+			}
+
+			return urls.emailPreviewUrlPROD;
+		}
+
+		if (shouldUseCODELinks) {
+			return urls.previewUrlCODE;
+		}
+
+		return urls.previewUrlPROD;
+	};
+
+	private getLiveBaseUrl = (
+		frontId: string,
+		shouldUseCODELinks: boolean,
+	): string => {
+		const isEmailFront = frontId.startsWith('email/');
+
+		if (isEmailFront) {
+			if (shouldUseCODELinks) {
+				return urls.emailLiveUrlCODE;
+			}
+
+			return urls.emailLiveUrlPROD;
+		}
+
+		if (shouldUseCODELinks) {
+			return urls.liveUrlCODE;
+		}
+
+		return urls.liveUrlPROD;
 	};
 
 	private setFrontHiddenState = (hidden: boolean) => {
