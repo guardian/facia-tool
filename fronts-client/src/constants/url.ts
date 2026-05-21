@@ -40,7 +40,7 @@ export default {
 	previewUrlCODE: `https://${previewCODEDomain}/responsive-viewer/https://${previewCODEDomain}/`,
 	previewUrlPROD: `https://${previewPRODDomain}/responsive-viewer/https://${previewPRODDomain}/`,
 	emailPreviewUrlCODE: `https://${previewCODEDomain}/responsive-viewer/${emailLiveUrlCODE}`,
-	emailRPreviewUrlPROD: `https://${previewPRODDomain}/responsive-viewer/${emailLiveUrlPROD}`,
+	emailPreviewUrlPROD: `https://${previewPRODDomain}/responsive-viewer/${emailLiveUrlPROD}`,
 	liveUrlCODE: 'https://m.code.dev-theguardian.com/',
 	liveUrlPROD: 'https://www.theguardian.com/',
 	emailLiveUrlCODE,
