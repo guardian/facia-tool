@@ -175,21 +175,8 @@ class FrontSection extends React.Component<
 		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks } =
 			this.props;
 		const title = this.getTitle();
-		const isEmailFront = frontId.startsWith('email/');
-		const previewBaseUrl = isEmailFront
-			? shouldUseCODELinks
-				? urls.emailPreviewUrlCODE
-				: urls.emailRPreviewUrlPROD
-			: shouldUseCODELinks
-				? urls.previewUrlCODE
-				: urls.previewUrlPROD;
-		const liveBaseUrl = isEmailFront
-			? shouldUseCODELinks
-				? urls.emailLiveUrlCODE
-				: urls.emailLiveUrlPROD
-			: shouldUseCODELinks
-				? urls.liveUrlCODE
-				: urls.liveUrlPROD;
+		const previewBaseUrl = this.getPreviewBaseUrl(frontId, shouldUseCODELinks);
+		const liveBaseUrl = this.getLiveBaseUrl(frontId, shouldUseCODELinks);
 
 		const { frontNameValue, editingFrontName } = this.state;
 		const isSpecial = this.props.selectedFront
@@ -310,6 +297,48 @@ class FrontSection extends React.Component<
 			frontNameValue: this.getTitle() || '',
 			editingFrontName: true,
 		});
+	};
+
+	private getPreviewBaseUrl = (
+		frontId: string,
+		shouldUseCODELinks: boolean,
+	): string => {
+		const isEmailFront = frontId.startsWith('email/');
+
+		if (isEmailFront) {
+			if (shouldUseCODELinks) {
+				return urls.emailPreviewUrlCODE;
+			}
+
+			return urls.emailRPreviewUrlPROD;
+		}
+
+		if (shouldUseCODELinks) {
+			return urls.previewUrlCODE;
+		}
+
+		return urls.previewUrlPROD;
+	};
+
+	private getLiveBaseUrl = (
+		frontId: string,
+		shouldUseCODELinks: boolean,
+	): string => {
+		const isEmailFront = frontId.startsWith('email/');
+
+		if (isEmailFront) {
+			if (shouldUseCODELinks) {
+				return urls.emailLiveUrlCODE;
+			}
+
+			return urls.emailLiveUrlPROD;
+		}
+
+		if (shouldUseCODELinks) {
+			return urls.liveUrlCODE;
+		}
+
+		return urls.liveUrlPROD;
 	};
 
 	private setFrontHiddenState = (hidden: boolean) => {
