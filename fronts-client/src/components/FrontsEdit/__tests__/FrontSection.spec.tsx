@@ -97,6 +97,114 @@ describe('FrontSection component', () => {
 		);
 	});
 
+	it('should give the correct preview link for CODE email fronts', () => {
+		const store = configureStore({
+			...state,
+			config: {
+				...state.config,
+				dev: false,
+				env: 'code',
+			},
+		});
+
+		const { container } = render(
+			<Provider store={store}>
+				<ThemeProvider theme={theme}>
+					<FrontSection
+						{...defaultProps}
+						frontId="email/morning-briefing"
+					/>
+				</ThemeProvider>
+			</Provider>,
+		);
+
+		expect(getByText(container, 'Preview').closest('a')).toHaveAttribute(
+			'href',
+			'https://preview.code.dev-gutools.co.uk/responsive-viewer/https://email-rendering.code.dev-guardianapis.com/fronts/email/morning-briefing',
+		);
+	});
+
+	it('should give the correct preview link for PROD email fronts', () => {
+		const store = configureStore({
+			...state,
+			config: {
+				...state.config,
+				dev: false,
+				env: 'prod',
+			},
+		});
+
+		const { container } = render(
+			<Provider store={store}>
+				<ThemeProvider theme={theme}>
+					<FrontSection
+						{...defaultProps}
+						frontId="email/morning-briefing"
+					/>
+				</ThemeProvider>
+			</Provider>,
+		);
+
+		expect(getByText(container, 'Preview').closest('a')).toHaveAttribute(
+			'href',
+			'https://preview.gutools.co.uk/responsive-viewer/https://email-rendering.guardianapis.com/fronts/email/morning-briefing',
+		);
+	});
+
+	it('should give the correct live link for CODE email fronts', () => {
+		const store = configureStore({
+			...state,
+			config: {
+				...state.config,
+				dev: false,
+				env: 'code',
+			},
+		});
+
+		const { container } = render(
+			<Provider store={store}>
+				<ThemeProvider theme={theme}>
+					<FrontSection
+						{...defaultProps}
+						frontId="email/morning-briefing"
+					/>
+				</ThemeProvider>
+			</Provider>,
+		);
+
+		expect(getByText(container, 'See live').closest('a')).toHaveAttribute(
+			'href',
+			'https://email-rendering.code.dev-guardianapis.com/fronts/email/morning-briefing',
+		);
+	});
+
+	it('should give the correct live link for PROD email fronts', () => {
+		const store = configureStore({
+			...state,
+			config: {
+				...state.config,
+				dev: false,
+				env: 'prod',
+			},
+		});
+
+		const { container } = render(
+			<Provider store={store}>
+				<ThemeProvider theme={theme}>
+					<FrontSection
+						{...defaultProps}
+						frontId="email/morning-briefing"
+					/>
+				</ThemeProvider>
+			</Provider>,
+		);
+
+		expect(getByText(container, 'See live').closest('a')).toHaveAttribute(
+			'href',
+			'https://email-rendering.guardianapis.com/fronts/email/morning-briefing',
+		);
+	});
+
 	it('should give the correct live link for DEV', () => {
 		const store = configureStore({
 			...state,
