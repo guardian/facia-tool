@@ -1,5 +1,5 @@
 import { qs } from 'util/qs';
-import type { CapiArticle, Tag } from 'types/Capi';
+import type { CapiArticle, CapiInteractiveAtom, Tag } from 'types/Capi';
 import pandaFetch from 'services/pandaFetch';
 import url from 'constants/url';
 import { attemptFriendlyErrorMessage } from 'util/error';
@@ -86,13 +86,27 @@ interface CAPIAtomInteractive {
 	commissioningDesks: [];
 }
 
+interface CAPIAtomsQueryResponse {
+	response: {
+		results: CapiInteractiveAtom[];
+		status: CAPIStatus;
+		currentPage: number;
+		pageSize: number;
+		pages: number;
+		message?: string;
+	};
+}
+
 /**
  * Fetch a CAPI response.
  *
  * @throws If the response fails for any reason.
  */
 const fetchCAPIResponse = async <
-	TCAPIResponse extends CAPISearchQueryResponse | CAPITagQueryReponse,
+	TCAPIResponse extends
+		| CAPISearchQueryResponse
+		| CAPITagQueryReponse
+		| CAPIAtomsQueryResponse,
 >(
 	request: string,
 ) => {
@@ -184,8 +198,8 @@ const capiQuery = (baseURL: string) => {
 				})}`,
 			);
 		},
-		atoms: async (params: { q?: string }): Promise<CAPISearchQueryResponse> => {
-			return fetchCAPIResponse<CAPISearchQueryResponse>(
+		atoms: async (params: { q?: string }): Promise<CAPIAtomsQueryResponse> => {
+			return fetchCAPIResponse<CAPIAtomsQueryResponse>(
 				`${baseURL}/atoms${qs({
 					types: 'interactive',
 					searchFields: 'data.interactive.interactive_title',
@@ -210,6 +224,7 @@ export {
 	CAPITagQueryReponse,
 	CAPIInteractiveAtomResponse,
 	CAPIAtomInteractive,
+	CAPIAtomsQueryResponse,
 };
 
 export default capiQuery;

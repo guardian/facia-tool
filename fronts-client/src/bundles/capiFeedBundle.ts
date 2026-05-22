@@ -78,12 +78,9 @@ const fetchResourceOrResults = async (
 		atomsRequest,
 	]);
 
-	const atomResults: CapiArticle[] =
-		atomsResponse &&
-		!checkIsContent(atomsResponse.response) &&
-		(atomsResponse.response as any).results
-			? (atomsResponse.response as any).results
-			: [];
+	const atomResults: CapiInteractiveAtom[] = atomsResponse
+		? atomsResponse.response.results
+		: [];
 
 	return {
 		results: checkIsContent(response)
