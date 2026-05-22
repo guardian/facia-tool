@@ -97,7 +97,7 @@ fetch_config(){
       if [[ $1 = "--allow-creation" ]]; then
         echo "Creating ${CONFIG_DIR} and making user $(whoami) the owner"
         sudo mkdir -p ${CONFIG_DIR}
-        sudo chown -R $(whoami):admin ${CONFIG_DIR}
+        sudo chown -R $(whoami) ${CONFIG_DIR}
         download_config
         echo -e "${GREEN}Done ${NOCOLOUR}"
       else
