@@ -215,7 +215,7 @@ interface CapiInteractiveAtom {
 	};
 	contentChangeDetails: {
 		lastModified?: {
-			date: number;
+			date: number; // datetime in milliseconds
 		};
 	};
 }

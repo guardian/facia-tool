@@ -147,21 +147,11 @@ export const createFetch =
 
 export const fetchLive = createFetch(
 	liveActions,
-	createSelectIsArticleStale(
-		liveSelectors.selectById as (
-			state: any,
-			id: string,
-		) => CapiArticle | undefined,
-	),
+	createSelectIsArticleStale(liveSelectors.selectById),
 );
 export const fetchPreview = createFetch(
 	previewActions,
-	createSelectIsArticleStale(
-		liveSelectors.selectById as (
-			state: any,
-			id: string,
-		) => CapiArticle | undefined,
-	),
+	createSelectIsArticleStale(liveSelectors.selectById),
 	true,
 );
 
