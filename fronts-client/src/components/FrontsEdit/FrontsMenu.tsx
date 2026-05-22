@@ -245,7 +245,6 @@ class FrontsMenu extends React.Component<Props, State> {
 
 const mapStateToProps = (state: RootState) => ({
 	allFrontIds: Object.keys(frontsConfigSelectors.selectAll(state).fronts ?? {}),
-	priority: selectPriority(state as unknown as { path: string }),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

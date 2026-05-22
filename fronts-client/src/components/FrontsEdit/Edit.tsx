@@ -103,6 +103,7 @@ class FrontsEdit extends React.Component<Props> {
 							this.props.match.params.priority,
 						)
 					}
+					priority={this.props.match.params.priority}
 				/>
 			</FrontsEditContainer>
 		);

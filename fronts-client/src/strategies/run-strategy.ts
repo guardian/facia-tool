@@ -1,6 +1,10 @@
 import type { State } from 'types/State';
 import { selectV2SubPath } from 'selectors/pathSelectors';
-import { matchFrontsEditPath, matchIssuePath } from 'routes/routes';
+import {
+	matchFrontsEditPath,
+	matchFrontsConfigPath,
+	matchIssuePath,
+} from 'routes/routes';
 import { selectors as editionsIssueSelectors } from '../bundles/editionsIssueBundle';
 
 interface StrategyMap<R> {
@@ -14,7 +18,7 @@ const runStrategy = <R>(state: State, strategies: StrategyMap<R>) => {
 	const path = selectV2SubPath(state);
 	const isFeast = editionsIssueSelectors.selectAll(state)?.platform === 'feast';
 
-	const frontsMatch = matchFrontsEditPath(path);
+	const frontsMatch = matchFrontsEditPath(path) || matchFrontsConfigPath(path);
 	if (frontsMatch) {
 		return strategies.front(frontsMatch.params.priority);
 	}

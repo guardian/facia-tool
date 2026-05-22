@@ -27,11 +27,13 @@ import GuardianTextSansBoldItalicTtf from '../fonts/text/GuardianTextSans-BoldIt
 import GuardianTextSansBoldItalicWoff from '../fonts/text/GuardianTextSans-BoldItalic.woff';
 import GuardianTextSansBoldItalicWoff2 from '../fonts/text/GuardianTextSans-BoldItalic.woff2';
 import FrontsEdit from './FrontsEdit/Edit';
+import FrontsConfigEdit from './FrontsConfig/Edit';
 import Home from './Home';
 import NotFound from './NotFound';
 import {
 	manageEditions,
 	frontsEditPathProps,
+	frontsConfigEditPathProps,
 	issuePathProps,
 	frontsFeatureProps,
 } from 'routes/routes';
@@ -163,6 +165,10 @@ const App = () => {
 					</BackgroundHeader>
 					<Switch>
 						<Route {...frontsEditPathProps} component={FrontsEdit} />
+						<Route
+							{...frontsConfigEditPathProps}
+							component={FrontsConfigEdit}
+						/>
 						<Route {...issuePathProps} component={FrontsEdit} />
 						<Route {...frontsFeatureProps} component={FeaturesView} />
 						<Route exact path="/" component={Home} />

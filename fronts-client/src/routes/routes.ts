@@ -19,8 +19,16 @@ const frontsEditPathProps = {
 	path: `/:priority(${Object.keys(priorities).join('|')})`,
 };
 
+const frontsConfigEditPathProps = {
+	exact: true,
+	path: `/config/:priority(${Object.keys(priorities).join('|')})`,
+};
+
 const matchFrontsEditPath = (path: string) =>
 	matchPath<FrontsEditParams>(path, frontsEditPathProps);
+
+const matchFrontsConfigPath = (path: string) =>
+	matchPath<FrontsEditParams>(path, frontsConfigEditPathProps);
 
 const frontsFeatureProps = {
 	exact: true,
@@ -52,6 +60,8 @@ const EditionsRoutes = {
 export {
 	matchFrontsEditPath,
 	frontsEditPathProps,
+	matchFrontsConfigPath,
+	frontsConfigEditPathProps,
 	matchIssuePath,
 	issuePathProps,
 	frontsFeatureProps,

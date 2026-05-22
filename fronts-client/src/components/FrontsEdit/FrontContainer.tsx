@@ -29,7 +29,6 @@ import ButtonRoundedWithLabel, {
 import { DownCaretIcon } from 'components/icons/Icons';
 import FrontCollectionsOverview from './FrontCollectionsOverview';
 import FrontContent from './FrontContent';
-import FrontMetadataForm from './FrontMetadataForm';
 import DragToAddSnap from './CollectionComponents/DragToAddSnap';
 import { selectPriority } from 'selectors/pathSelectors';
 import { Priorities } from 'types/Priority';
@@ -212,7 +211,6 @@ class FrontContainer extends React.Component<FrontProps, FrontState> {
 							</OverviewHeadingButton>
 							{!overviewIsOpen && this.overviewToggle(overviewIsOpen)}
 						</SectionContentMetaContainer>
-						{this.props.isEditingMetadata && <FrontMetadataForm frontId={id} />}
 						<FrontContent
 							id={id}
 							browsingStage={browsingStage}

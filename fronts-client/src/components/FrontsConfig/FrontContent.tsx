@@ -1,0 +1,471 @@
+import React from 'react';
+import { styled, theme } from 'constants/theme';
+import { connect } from 'react-redux';
+import sortBy from 'lodash/sortBy';
+import debounce from 'lodash/debounce';
+import { events } from 'services/GA';
+import { DragAndDropRoot, PosSpec, Move } from 'lib/dnd';
+import Collection from './Collection';
+import type { State } from 'types/State';
+import WithDimensions from 'components/util/WithDimensions';
+import { Dispatch } from 'types/Store';
+import { Card as TCard, CardSets, Group } from 'types/Collection';
+import { FrontConfig } from 'types/FaciaApi';
+import { moveCard } from 'actions/Cards';
+import { insertCardFromDropEvent } from 'util/collectionUtils';
+import { bindActionCreators } from 'redux';
+import { editorSelectCard } from 'bundles/frontsUI';
+import { initialiseCollectionsForFront } from 'actions/Collections';
+import { createSelectCollectionsWhichAreAlsoOnOtherFronts } from 'selectors/frontsSelectors';
+import { CollectionsWhichAreAlsoOnOtherFronts } from 'types/Collection';
+import { selectFront } from 'selectors/shared';
+
+const CollectionContainer = styled.div`
+	position: relative;
+	& + & {
+		margin-top: 10px;
+	}
+`;
+
+const FrontCollectionsContainer = styled.div`
+	position: relative;
+	overflow-y: scroll;
+	max-height: calc(100% - 43px);
+	padding-top: 1px;
+	padding-bottom: ${theme.front.paddingForAddFrontButton}px;
+`;
+
+const isDropFromCAPIFeed = (e: React.DragEvent) =>
+	e.dataTransfer.types.includes('capi');
+
+interface FrontPropsBeforeState {
+	id: string;
+	browsingStage: CardSets;
+	handleArticleFocus: (
+		e: React.FocusEvent<HTMLDivElement>,
+		groupId: string,
+		card: TCard,
+		frontId: string,
+	) => void;
+	onChangeCurrentCollectionId: (id: string) => void;
+}
+
+type FrontProps = FrontPropsBeforeState & {
+	front: FrontConfig;
+	collectionsWhichAreAlsoOnOtherFronts: {
+		[id: string]: CollectionsWhichAreAlsoOnOtherFronts;
+	};
+	initialiseCollectionsForFront: (id: string, set: CardSets) => void;
+	selectCard: (
+		cardId: string,
+		collectionId: string,
+		frontId: string,
+		isSupporting: boolean,
+	) => void;
+	moveCard: typeof moveCard;
+	insertCardFromDropEvent: typeof insertCardFromDropEvent;
+};
+
+interface FrontState {
+	currentlyScrolledCollectionId: string | undefined;
+}
+
+function getNextGroupTarget(
+	currentGroupId: string,
+	groupIds?: string[],
+	groupsData?: Group[],
+	collectionId?: string,
+): PosSpec | undefined {
+	if (!groupIds || !groupsData) {
+		return;
+	}
+	const currentIndex = groupIds.findIndex((id) => id === currentGroupId);
+	if (currentIndex === -1 || currentIndex + 1 >= groupIds.length) {
+		return;
+	}
+	const nextGroupId = groupIds[currentIndex + 1];
+	const nextGroup = groupsData.find((group) => group.uuid === nextGroupId);
+	if (!nextGroup) {
+		return;
+	}
+	return {
+		index: 0,
+		id: nextGroupId,
+		type: 'group',
+		groupIds: groupIds,
+		groupMaxItems: nextGroup?.maxItems,
+		groupsData: groupsData,
+		cards: nextGroup?.cardsData,
+		collectionId,
+	};
+}
+type CollectionMove<T> = {
+	to: PosSpec;
+	data: T;
+	from: null | PosSpec;
+	type: 'collection';
+};
+
+/**
+ * The move queue handles cascading card moves triggered when attempting to insert a card into a full group.
+ * It ensures the affected cards are shifted into subsequent groups, maintaining maxItems constraints.
+ */
+export const buildMoveQueue = (move: Move<TCard>) => {
+	const queue: CollectionMove<TCard>[] = [];
+
+	const { data: movedCard, to, from } = move;
+
+	// Determine if the card is being added to the end of a group.
+	const isBottomInsert = to.index === (to.cards?.length ?? 0);
+
+	// If inserting at the bottom of a full group, move the card to the next group instead.
+	const target = isBottomInsert
+		? getNextGroupTarget(to.id, to.groupIds, to.groupsData, to.collectionId)
+		: to;
+
+	if (!target) return queue;
+	// Add the initial move: either to the original target or the adjusted group.
+	queue.push({
+		to: target,
+		data: movedCard,
+		from: from || null,
+		type: 'collection',
+	});
+
+	/**
+	 *  Begin cascading shifts for full groups.
+	 *  Start at the target group (or one after, if we adjusted for a bottom insert),
+	 *  and continue shifting the last card of each full group into the next group.
+	 * */
+
+	const startIndex = to.groupIds?.indexOf(to.id) ?? 0;
+
+	for (
+		let index = isBottomInsert ? startIndex + 1 : startIndex;
+		to.groupsData && index < to.groupsData.length;
+		index++
+	) {
+		const currentGroup = move.to.groupsData?.[index];
+		if (!currentGroup) break;
+
+		const groupIsFull =
+			(currentGroup.cardsData?.length ?? 0) >= (currentGroup.maxItems ?? 0);
+		const cardAlreadyInGroup = currentGroup.cards.includes(movedCard.uuid);
+		const lastGroup = to.groupsData.length === index;
+		/**
+		 *  Stop cascading if:
+		 * - the group isn't full
+		 * - or it contains the moved card (which is now leaving the group)
+		 * - or it's the last group in the collection.
+		 **/
+		if (!groupIsFull || cardAlreadyInGroup || lastGroup) break;
+
+		// Otherwise, this group is full and needs to shift its last card.
+		const lastCard = currentGroup.cardsData?.at(-1);
+
+		const nextTarget = getNextGroupTarget(
+			currentGroup.uuid,
+			move.to.groupIds,
+			move.to.groupsData,
+			move.to.collectionId,
+		);
+
+		if (lastCard && nextTarget) {
+			queue.push({
+				to: nextTarget,
+				data: lastCard,
+				from: {
+					type: 'group',
+					id: move.to.groupIds?.[index] ?? '',
+					index: (currentGroup.cardsData?.length ?? 1) - 1,
+				},
+				type: 'collection',
+			});
+		}
+	}
+	return queue;
+};
+
+class FrontContent extends React.Component<FrontProps, FrontState> {
+	public state = {
+		currentlyScrolledCollectionId: undefined,
+	};
+	private collectionElements: {
+		[collectionId: string]: HTMLDivElement | null;
+	} = {};
+	private collectionContainerElement: HTMLDivElement | null = null;
+
+	/**
+	 * Handle a scroll event. We debounce this as it's called many times by the
+	 * event handler, and triggers an expensive rerender.
+	 */
+	private handleScroll = debounce(() => {
+		if (!this.collectionContainerElement) {
+			return;
+		}
+		const scrollTop = this.collectionContainerElement.scrollTop;
+		const currentIdsAndOffsets = Object.entries(this.collectionElements)
+			.filter(
+				([_, element]) =>
+					// We filter everything that comes before the collection here, as we
+					// know we won't need it. The constant here refers to the height of
+					// the container heading.
+					!!element &&
+					element.offsetTop +
+						element.clientHeight -
+						theme.layout.sectionHeaderHeight >
+						scrollTop,
+			)
+			.map(([id, element]) => [id, element!.offsetTop] as [string, number]);
+
+		const sortedIdsAndOffsets = sortBy(
+			currentIdsAndOffsets,
+			([_, offset]) => offset,
+		);
+		const newCurrentCollectionId = sortedIdsAndOffsets[0][0];
+
+		if (
+			sortedIdsAndOffsets.length &&
+			newCurrentCollectionId !== this.state.currentlyScrolledCollectionId
+		) {
+			this.props.onChangeCurrentCollectionId(newCurrentCollectionId);
+		}
+	}, 100);
+
+	public UNSAFE_componentWillReceiveProps(newProps: FrontProps) {
+		if (this.props.browsingStage !== newProps.browsingStage) {
+			this.props.initialiseCollectionsForFront(
+				this.props.id,
+				this.props.browsingStage,
+			);
+		}
+	}
+
+	public componentDidMount() {
+		this.handleScroll();
+		this.props.initialiseCollectionsForFront(
+			this.props.id,
+			this.props.browsingStage,
+		);
+	}
+
+	/** This function manages the moving of cards between groups. */
+	public handleMove = (move: Move<TCard>) => {
+		const numberOfCardsInGroup = move.to.cards?.length ?? 0;
+		const isTargetGroupFull = move.to.groupMaxItems === numberOfCardsInGroup;
+		const groupIds = move.to.groupIds;
+		const isLastGroup =
+			groupIds &&
+			groupIds.length > 0 &&
+			groupIds[groupIds.length - 1] === move.to.id;
+
+		/**
+		 *  If:
+		 * - the target group isn't full
+		 * - or the card is moving within the target group
+		 * - or it's the last group in the collection
+		 * then we can move the card directly.
+		 **/
+		if (
+			!isTargetGroupFull ||
+			move.to.cards?.includes(move.data.uuid) ||
+			isLastGroup
+		) {
+			return this.props.moveCard(
+				move.to,
+				move.data,
+				move.from || null,
+				'collection',
+			);
+		}
+
+		// Otherwise, we need to build a move queue to handle cascading shifts of cards
+		const moveQueue = buildMoveQueue(move);
+
+		moveQueue.map((move) =>
+			this.props.moveCard(move.to, move.data, move.from, 'collection'),
+		);
+	};
+
+	public handleInsert = (e: React.DragEvent, to: PosSpec) => {
+		const numberOfArticlesAlreadyInGroup = to.cards?.length ?? 0;
+		const hasMaxItemsAlready =
+			to.groupMaxItems === numberOfArticlesAlreadyInGroup;
+
+		const dropSource = isDropFromCAPIFeed(e) ? 'feed' : 'url';
+
+		// if we are inserting an article into any group that doesn't have a max items (e.g. legacy containers),
+		// or a group that doesn't have any articles in it yet
+		// or a group that doesn't have the max items already,
+		// then we just insert
+		if (
+			to.type !== 'group' ||
+			to.groupMaxItems === undefined ||
+			numberOfArticlesAlreadyInGroup === 0 ||
+			!hasMaxItemsAlready
+		) {
+			events.dropArticle(this.props.id, dropSource);
+			this.props.insertCardFromDropEvent(e, to, 'collection');
+			return;
+		}
+
+		// if we're in a group with max items and already has the max number of stories,
+		// then depending on where we're inserting the story
+		// we need to either move the last article to the next group
+		// or insert the article into the next group
+		if (!!to.groupIds && to.cards !== undefined && hasMaxItemsAlready) {
+			const currentGroupIndex = to.groupIds.findIndex(
+				(groupId) => groupId === to.id,
+			);
+			const nextGroup = to.groupIds[currentGroupIndex + 1];
+			const nextGroupData =
+				to.groupsData &&
+				to.groupsData.find((group) => group.uuid === nextGroup);
+			const isAddingCardToLastPlaceInGroup = to.index === to.cards.length;
+
+			// if we're not adding the card to the last place in the group, then we need to move the last article to the next group
+			if (!isAddingCardToLastPlaceInGroup) {
+				// we do the regular insert steps for the article we're inserting to the group
+
+				events.dropArticle(this.props.id, dropSource);
+				this.props.insertCardFromDropEvent(e, to, 'collection');
+				// then we move the other article to the other group
+				const existingCardData = to.cards[to.cards.length - 1];
+				const existingCardTo = {
+					index: 0,
+					id: nextGroup,
+					type: 'group',
+					groupIds: to.groupIds,
+					groupMaxItems: nextGroupData?.maxItems,
+					groupsData: to.groupsData,
+					cards: nextGroupData?.cardsData,
+				};
+				const existingCardMoveData: Move<TCard> = {
+					data: existingCardData,
+					from: false,
+					to: existingCardTo,
+				};
+				this.handleMove(existingCardMoveData);
+			}
+			// If we're adding to the last place in the group, then we insert the article into the next group
+			// we need to check if the next group already has the max number of items,
+			// if it does, then we need to move the last article to the next group
+			else {
+				const amendedTo = {
+					index: 0,
+					id: nextGroup,
+					type: 'group',
+					groupIds: to.groupIds,
+				};
+				events.dropArticle(this.props.id, dropSource);
+				this.props.insertCardFromDropEvent(e, amendedTo, 'collection');
+
+				const nextGroupNumberOfArticles = nextGroupData?.cardsData?.length ?? 0;
+				const nextGroupHasMaxItems =
+					nextGroupData?.maxItems === nextGroupNumberOfArticles;
+				if (nextGroupHasMaxItems) {
+					if (!nextGroupData.cardsData) {
+						return;
+					}
+					const existingCardData = nextGroupData.cardsData[to.cards.length - 1];
+					const existingCardTo = {
+						index: 0,
+						id: nextGroup,
+						type: 'group',
+						groupIds: to.groupIds,
+						groupMaxItems: nextGroupData?.maxItems,
+						groupsData: to.groupsData,
+						cards: nextGroupData?.cardsData,
+					};
+					const existingCardMoveData: Move<TCard> = {
+						data: existingCardData,
+						from: false,
+						to: existingCardTo,
+					};
+					this.handleMove(existingCardMoveData);
+				}
+			}
+			return;
+		}
+	};
+
+	public render() {
+		const { front } = this.props;
+
+		return (
+			<FrontCollectionsContainer
+				onScroll={this.handleScroll}
+				ref={(ref: HTMLDivElement | null) =>
+					(this.collectionContainerElement = ref)
+				}
+			>
+				<WithDimensions>
+					{({ width }) => (
+						<DragAndDropRoot id={this.props.id} data-testid={this.props.id}>
+							{front.collections.map((collectionId) => (
+								<CollectionContainer
+									key={collectionId}
+									ref={(ref: HTMLDivElement | null) =>
+										(this.collectionElements[collectionId] = ref)
+									}
+								>
+									<Collection
+										id={collectionId}
+										frontId={this.props.id}
+										priority={front.priority}
+										browsingStage={this.props.browsingStage}
+										collectionsWhichAreAlsoOnOtherFronts={
+											this.props.collectionsWhichAreAlsoOnOtherFronts
+										}
+										handleInsert={this.handleInsert}
+										handleMove={this.handleMove}
+										size={
+											width && width > 750
+												? 'wide'
+												: width && width > 500
+													? 'default'
+													: 'medium'
+										}
+										selectCard={this.onSelectCard}
+										handleArticleFocus={this.props.handleArticleFocus}
+									/>
+								</CollectionContainer>
+							))}
+						</DragAndDropRoot>
+					)}
+				</WithDimensions>
+			</FrontCollectionsContainer>
+		);
+	}
+
+	private onSelectCard = (
+		cardId: string,
+		collectionId: string,
+		isSupporting: boolean,
+	) => this.props.selectCard(cardId, collectionId, this.props.id, isSupporting);
+}
+
+const mapStateToProps = () => {
+	const selectCollectionsWhichAreAlsoOnOtherFronts =
+		createSelectCollectionsWhichAreAlsoOnOtherFronts();
+	return (state: State, { id }: FrontPropsBeforeState) => {
+		return {
+			front: selectFront(state, { frontId: id }),
+			collectionsWhichAreAlsoOnOtherFronts:
+				selectCollectionsWhichAreAlsoOnOtherFronts(state, { frontId: id }),
+		};
+	};
+};
+
+const mapDispatchToProps = (dispatch: Dispatch) =>
+	bindActionCreators(
+		{
+			selectCard: editorSelectCard,
+			initialiseCollectionsForFront,
+			moveCard,
+			insertCardFromDropEvent,
+		},
+		dispatch,
+	);
+
+export default connect(mapStateToProps, mapDispatchToProps)(FrontContent);
