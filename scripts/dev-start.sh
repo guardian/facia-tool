@@ -85,7 +85,11 @@ set_node_version() {
 
 main() {
     checkJavaVersion
-    runNginx
+    if [ "$USER" = "vscode" ]; then
+      echo "Running in VS Code dev container, skipping nginx start"
+    else
+      runNginx
+    fi
     hasCredentials
 
     printf "\n\rStarting Yarn... \n\r\n\r"
