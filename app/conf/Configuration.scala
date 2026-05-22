@@ -36,7 +36,7 @@ class ApplicationConfiguration(
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f), "UTF-8")
     case _ =>
-      logger.warn("Missing configuration file $propertiesFile")
+      logger.warn(s"Missing configuration file $propertiesFile")
       ""
   }
 
