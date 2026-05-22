@@ -175,8 +175,16 @@ class FrontSection extends React.Component<
 		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks } =
 			this.props;
 		const title = this.getTitle();
+		const isEmailFront = frontId.startsWith('email/');
+		const emailCacheBust = isEmailFront ? Date.now() : null;
 		const previewBaseUrl = this.getPreviewBaseUrl(frontId, shouldUseCODELinks);
 		const liveBaseUrl = this.getLiveBaseUrl(frontId, shouldUseCODELinks);
+		const previewUrl = this.getFrontUrl(
+			previewBaseUrl,
+			frontId,
+			emailCacheBust,
+		);
+		const liveUrl = this.getFrontUrl(liveBaseUrl, frontId, emailCacheBust);
 
 		const { frontNameValue, editingFrontName } = this.state;
 		const isSpecial = this.props.selectedFront
@@ -218,10 +226,7 @@ class FrontSection extends React.Component<
 						<FrontHeaderMeta>
 							<EditModeVisibility visibleMode="fronts">
 								<LinkButtons>
-									<Link
-										href={`${previewBaseUrl}${this.props.frontId}`}
-										target="preview"
-									>
+									<Link href={previewUrl} target="preview">
 										<FrontHeaderButton>
 											<PreviewEyeIcon size="xl" />
 											<LinkButtonText className="visible-based-on-front-header-width">
@@ -229,10 +234,7 @@ class FrontSection extends React.Component<
 											</LinkButtonText>
 										</FrontHeaderButton>
 									</Link>
-									<Link
-										href={`${liveBaseUrl}${this.props.frontId}`}
-										target="live"
-									>
+									<Link href={liveUrl} target="live">
 										<FrontHeaderButton priority="transparent">
 											<GuardianRoundel size="xl" />
 											<LinkButtonText className="visible-based-on-front-header-width">
@@ -339,6 +341,20 @@ class FrontSection extends React.Component<
 		}
 
 		return urls.liveUrlPROD;
+	};
+
+	private getFrontUrl = (
+		baseUrl: string,
+		frontId: string,
+		emailCacheBust: number | null,
+	): string => {
+		const frontUrl = `${baseUrl}${frontId}`;
+
+		if (emailCacheBust === null) {
+			return frontUrl;
+		}
+
+		return `${frontUrl}?cacheBust=${emailCacheBust}`;
 	};
 
 	private setFrontHiddenState = (hidden: boolean) => {

@@ -117,7 +117,9 @@ describe('FrontSection component', () => {
 
 		expect(getByText(container, 'Preview').closest('a')).toHaveAttribute(
 			'href',
-			'https://preview.code.dev-gutools.co.uk/responsive-viewer/https://email-rendering.code.dev-guardianapis.com/fronts/email/morning-briefing',
+			expect.stringMatching(
+				/^https:\/\/preview\.code\.dev-gutools\.co\.uk\/responsive-viewer\/https:\/\/email-rendering-preview\.code\.dev-gutools\.co\.uk\/fronts\/email\/morning-briefing\?cacheBust=\d+$/,
+			),
 		);
 	});
 
@@ -141,7 +143,9 @@ describe('FrontSection component', () => {
 
 		expect(getByText(container, 'Preview').closest('a')).toHaveAttribute(
 			'href',
-			'https://preview.gutools.co.uk/responsive-viewer/https://email-rendering.guardianapis.com/fronts/email/morning-briefing',
+			expect.stringMatching(
+				/^https:\/\/preview\.gutools\.co\.uk\/responsive-viewer\/https:\/\/email-rendering-preview\.gutools\.co\.uk\/fronts\/email\/morning-briefing\?cacheBust=\d+$/,
+			),
 		);
 	});
 
@@ -165,7 +169,9 @@ describe('FrontSection component', () => {
 
 		expect(getByText(container, 'See live').closest('a')).toHaveAttribute(
 			'href',
-			'https://email-rendering.code.dev-guardianapis.com/fronts/email/morning-briefing',
+			expect.stringMatching(
+				/^https:\/\/email-rendering\.code\.dev-guardianapis\.com\/fronts\/email\/morning-briefing\?cacheBust=\d+$/,
+			),
 		);
 	});
 
@@ -189,7 +195,9 @@ describe('FrontSection component', () => {
 
 		expect(getByText(container, 'See live').closest('a')).toHaveAttribute(
 			'href',
-			'https://email-rendering.guardianapis.com/fronts/email/morning-briefing',
+			expect.stringMatching(
+				/^https:\/\/email-rendering\.guardianapis\.com\/fronts\/email\/morning-briefing\?cacheBust=\d+$/,
+			),
 		);
 	});
 
