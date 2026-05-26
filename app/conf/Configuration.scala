@@ -181,36 +181,6 @@ class ApplicationConfiguration(
       }
     }
 
-    def frontendAccountCredentials: AWSCredentialsProvider =
-      crossAccount.getOrElse(
-        throw new BadConfigurationException(
-          "AWS credentials are not configured for cross account Frontend"
-        )
-      )
-    var crossAccount: Option[AWSCredentialsProvider] = {
-      val provider = new AWSCredentialsProviderChain(
-        new ProfileCredentialsProvider("frontend"),
-        new STSAssumeRoleSessionCredentialsProvider.Builder(
-          faciatool.stsRoleToAssume,
-          "frontend"
-        ).build()
-      )
-
-      // this is a bit of a convoluted way to check whether we actually have credentials.
-      // I guess in an ideal world there would be some sort of isConfigued() method...
-      try {
-        val creds = provider.getCredentials
-        Some(provider)
-      } catch {
-        case ex: AmazonClientException =>
-          logger.error("amazon client cross account exception")
-
-          // We really, really want to ensure that PROD is configured before saying a box is OK
-          if (isProd) throw ex
-          // this means that on dev machines you only need to configure keys if you are actually going to use them
-          None
-      }
-    }
     lazy val rdsClient = AmazonRDSClientBuilder
       .standard()
       .withCredentials(cmsFrontsAccountCredentials)
