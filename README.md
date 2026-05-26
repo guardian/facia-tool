@@ -30,6 +30,9 @@ You can find the client for the Fronts tool in [fronts-client](./fronts-client).
    - From the project root, run without debug `./scripts/dev-start.sh --no-debug`
 3. Open `https://fronts.local.dev-gutools.co.uk`.
 
+You can use localstack for S3 by running `./scripts/setup-local-s3.sh` to create a bucket and populate
+it with the current state of the CODE fronts.
+
 ### Unit tests
 
 ### Server side tests

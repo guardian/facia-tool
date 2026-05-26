@@ -116,6 +116,7 @@ class ApplicationConfiguration(
     lazy val region = getMandatoryString("aws.region")
     lazy val bucket = getMandatoryString("aws.bucket")
     lazy val frontsBucket = getMandatoryString("aws.frontsBucket")
+    lazy val localS3Endpoint: Option[String] = getString("aws.localS3Endpoint")
     lazy val publishedEditionsIssuesBucket = getMandatoryString(
       "aws.publishedEditionsIssuesBucket"
     )
