@@ -25,6 +25,7 @@ import { getPillarColor } from 'util/getPillarColor';
 import { dragEventHasImageData } from 'util/validateImageSrc';
 import { Criteria } from 'types/Grid';
 import { getMainMediaVideoAtom } from '../../../util/externalArticle';
+import { intendedAudienceFromTags } from 'lib/capi/IntendedAudience';
 
 const ArticleBodyContainer = styled(CardBody)<{
 	pillarId: string | undefined;
@@ -184,6 +185,11 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 								}
 								otherCollectionsOnSameFrontThisCardIsOn={
 									otherCollectionsOnSameFrontThisCardIsOn
+								}
+								intendedAudience={
+									article &&
+									article.tags &&
+									intendedAudienceFromTags(article.tags)
 								}
 							/>
 						</ArticleBodyContainer>

@@ -21,6 +21,7 @@ import { connect } from 'react-redux';
 import { FeedItem } from './FeedItem';
 import { ContentInfo } from './ContentInfo';
 import { CardTypesMap } from 'constants/cardTypes';
+import { intendedAudienceFromTags } from 'lib/capi/IntendedAudience';
 
 const Tone = styled.span`
 	font-weight: normal;
@@ -69,6 +70,7 @@ const ArticleFeedItemComponent = ({
 			isLive={isLive(article)}
 			onAddToClipboard={() => onAddToClipboard(article)}
 			handleDragStart={handleDragStart}
+			intendedAudience={article.tags && intendedAudienceFromTags(article.tags)}
 			metaContent={
 				<>
 					<ContentInfo
