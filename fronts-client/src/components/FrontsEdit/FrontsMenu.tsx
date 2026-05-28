@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { styled, theme } from 'constants/theme';
 import FadeIn from 'components/animation/FadeIn';
 import {
@@ -13,6 +14,11 @@ import Overlay from '../layout/Overlay';
 import FrontsList from '../FrontsListContainer';
 import Row from 'components/Row';
 import Col from 'components/Col';
+import { createFront } from 'actions/Fronts';
+import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
+import { selectPriority } from 'selectors/pathSelectors';
+import type { State as RootState } from 'types/State';
+import type { Dispatch } from 'types/Store';
 
 const FrontsMenuContent = styled.div`
 	flex: 1;
@@ -82,10 +88,29 @@ const FrontsMenuSearchImage = styled.div`
 	top: 0;
 `;
 
+const CreateFrontButton = styled.button`
+	width: 100%;
+	padding: 10px 5px;
+	text-align: left;
+	background: none;
+	border: none;
+	border-bottom: solid 1px ${theme.front.frontListBorder};
+	color: ${theme.colors.orangeLight};
+	font-family: TS3TextSans;
+	font-size: 16px;
+	cursor: pointer;
+	:hover {
+		background-color: ${theme.front.frontListButton};
+	}
+`;
+
 interface Props {
 	onSelectFront: (frontId: string) => void;
 	onFavouriteFront: (frontId: string) => void;
 	onUnfavouriteFront: (frontId: string) => void;
+	allFrontIds: string[];
+	priority: string | undefined;
+	createNewFront: (frontId: string, priority: string | undefined) => void;
 }
 
 interface State {
@@ -113,12 +138,19 @@ class FrontsMenu extends React.Component<Props, State> {
 		this.props.onUnfavouriteFront(frontId);
 	};
 
+	public onBeforeInput = (event: React.FormEvent<HTMLInputElement>) => {
+		const { data } = event.nativeEvent as InputEvent;
+		if (data && /[^a-z0-9/\-+]/.test(data)) {
+			event.preventDefault();
+		}
+	};
+
 	public onInput = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (!event.target || !(event.target instanceof HTMLInputElement)) {
 			return;
 		}
 		this.setState({
-			searchString: event.target.value,
+			searchString: event.target.value.replace(/[^a-z0-9/\-+]/g, ''),
 		});
 	};
 
@@ -172,6 +204,7 @@ class FrontsMenu extends React.Component<Props, State> {
 										<FrontsMenuSearchInput
 											value={this.state.searchString}
 											onChange={this.onInput}
+											onBeforeInput={this.onBeforeInput}
 											ref={this.inputRef}
 										/>
 										<FrontsMenuSearchImage>
@@ -186,6 +219,22 @@ class FrontsMenu extends React.Component<Props, State> {
 								onUnfavourite={this.onUnfavouriteFront}
 								searchString={this.state.searchString}
 							/>
+							{this.state.searchString &&
+								!this.props.allFrontIds.includes(this.state.searchString) && (
+									<CreateFrontButton
+										data-testid="create-front-button"
+										onClick={() => {
+											this.props.createNewFront(
+												this.state.searchString,
+												this.props.priority,
+											);
+											this.props.onSelectFront(this.state.searchString);
+											this.toggleFrontsMenu();
+										}}
+									>
+										Create front "{this.state.searchString}"
+									</CreateFrontButton>
+								)}
 						</FrontsMenuContent>
 					</ScrollContainer>
 				</FrontsMenuContainer>
@@ -194,4 +243,14 @@ class FrontsMenu extends React.Component<Props, State> {
 	}
 }
 
-export default FrontsMenu;
+const mapStateToProps = (state: RootState) => ({
+	allFrontIds: Object.keys(frontsConfigSelectors.selectAll(state).fronts ?? {}),
+	priority: selectPriority(state as unknown as { path: string }),
+});
+
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+	createNewFront: (frontId: string, priority: string | undefined) =>
+		dispatch(createFront(frontId, priority)),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(FrontsMenu);

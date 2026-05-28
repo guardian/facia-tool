@@ -86,4 +86,15 @@ class UpdateManager(
       identity
     )
   }
+
+  def removeCollection(
+      id: String,
+      frontId: String,
+      identity: User
+  ): Unit = {
+    transformConfig(
+      Transformations.removeCollection(id, frontId),
+      identity
+    )
+  }
 }

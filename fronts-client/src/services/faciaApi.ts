@@ -6,7 +6,10 @@ import type {
 	VisibleArticlesResponse,
 	FrontConfig,
 	CollectionConfigMap,
+	CollectionConfig,
 	CollectionResponse,
+	CreateFrontRequest,
+	FrontConfigResponse,
 } from 'types/FaciaApi';
 import type {
 	CollectionWithNestedArticles,
@@ -402,6 +405,107 @@ async function getArticlesBatched(
 	}
 }
 
+const createFrontsCollection = async (
+	frontId: string,
+	collection: Partial<CollectionConfig>,
+): Promise<{ id: string }> => {
+	try {
+		const response = await pandaFetch('/config/collections', {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify({ frontIds: [frontId], collection }),
+		});
+		return await response.json();
+	} catch (e) {
+		throw new Error(
+			`Tried to create collection for front ${frontId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
+const createFront = async (
+	createFrontRequest: CreateFrontRequest,
+): Promise<void> => {
+	try {
+		await pandaFetch('/config/fronts', {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify(createFrontRequest),
+		});
+	} catch (e) {
+		throw new Error(
+			`Tried to create front for ${createFrontRequest.id}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
+const removeFrontsCollection = async (
+	frontId: string,
+	collectionId: string,
+): Promise<void> => {
+	try {
+		await pandaFetch(`/config/fronts/${frontId}/collections/${collectionId}`, {
+			method: 'delete',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+		});
+	} catch (e) {
+		throw new Error(
+			`Tried to delete collection with id ${collectionId} from front ${frontId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
+const updateFrontsCollectionConfig = async (
+	collectionId: string,
+	collection: Partial<CollectionConfig>,
+): Promise<void> => {
+	try {
+		await pandaFetch(`/config/collections/${collectionId}`, {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify({
+				frontIds: [], // todo: why do we need to send an empty list here?
+				collection,
+			}),
+		});
+	} catch (e) {
+		throw new Error(
+			`Tried to update collection with id ${collectionId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
+const updateFrontConfig = async (
+	frontId: string,
+	front: FrontConfigResponse,
+): Promise<void> => {
+	try {
+		// The API, and some of the client side app, expect editorial priority fronts
+		// to not have a priority field at all, so we need to remove it before saving
+		// the front config if it's editorial.
+
+		const { priority: _priority, ...frontWithoutPriority } = front;
+		const frontWithoutEditorialPriority = {
+			...frontWithoutPriority,
+			...(front.priority !== 'editorial' ? { priority: front.priority } : {}),
+		};
+		await pandaFetch(`/config/fronts/${frontId}`, {
+			method: 'post',
+			headers: { 'Content-Type': 'application/json' },
+			credentials: 'same-origin',
+			body: JSON.stringify(frontWithoutEditorialPriority),
+		});
+	} catch (e) {
+		throw new Error(
+			`Tried to update front config with id ${frontId}, but the server responded with ${attemptFriendlyErrorMessage(e)}`,
+		);
+	}
+};
+
 export {
 	fetchFrontsConfig,
 	fetchEditionsIssueAsConfig,
@@ -413,6 +517,11 @@ export {
 	fetchLastPressed,
 	publishCollection,
 	updateCollection,
+	createFront,
+	createFrontsCollection,
+	removeFrontsCollection,
+	updateFrontsCollectionConfig,
+	updateFrontConfig,
 	saveClipboard,
 	saveEditionsClipboard,
 	saveFeastClipboard,

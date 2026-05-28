@@ -2,7 +2,7 @@ import { createSelector } from 'reselect';
 import type { State } from 'types/State';
 import { selectEditMode } from './pathSelectors';
 
-const selectConfig = (state: State) => state.config;
+export const selectConfig = (state: State) => state.config;
 
 const selectUserEmail = createSelector(
 	selectConfig,
@@ -49,6 +49,11 @@ const selectAvailableEditions = createSelector(
 	(config) => config && config.availableTemplates,
 );
 
+const selectAvailableTerritories = createSelector(
+	selectConfig,
+	(config) => (config && config.availableTerritories) ?? [],
+);
+
 const selectShouldUseCODELinks = createSelector(
 	selectConfig,
 	(config) => !config || config.env === 'code',
@@ -69,6 +74,7 @@ export {
 	selectGridUrl,
 	selectVideoBaseUrl,
 	selectAvailableEditions,
+	selectAvailableTerritories,
 	selectShouldUseCODELinks,
 	selectEditionsPermission,
 };

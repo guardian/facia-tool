@@ -55,7 +55,7 @@ interface CollectionConfigResponse {
 	href?: string;
 	groups?: string[];
 	groupsConfig?: GroupConfig[];
-	metadata?: unknown[];
+	metadata?: { type: string }[];
 	uneditable?: boolean;
 	showTags?: boolean;
 	hideKickers?: boolean;
@@ -65,6 +65,7 @@ interface CollectionConfigResponse {
 	showDateHeader?: boolean;
 	showLatestUpdate?: boolean;
 	excludeFromRss?: boolean;
+	userVisibility?: string;
 	platform?: Platform;
 	frontsToolSettings?: FrontsToolSettings;
 	prefill?: EditionsPrefill;
@@ -143,9 +144,26 @@ interface VisibleArticlesResponse {
 	desktop: number;
 	mobile: number;
 }
+interface CreateFrontRequest {
+	id: string;
+	navSection?: string;
+	webTitle?: string;
+	title?: string;
+	imageUrl?: string;
+	imageWidth?: number;
+	imageHeight?: number;
+	isImageDisplayed?: boolean;
+	description?: string;
+	onPageDescription?: string;
+	priority?: string;
+	isHidden?: boolean;
+	initialCollection: CollectionConfigResponse;
+	group?: string;
+}
 
 export {
 	FrontConfig,
+	FrontConfigResponse,
 	CollectionConfig,
 	FrontsConfig,
 	FrontsConfigResponse,
@@ -158,4 +176,5 @@ export {
 	FrontsToolSettings,
 	DisplayHints,
 	EditionsFrontMetadata,
+	CreateFrontRequest,
 };

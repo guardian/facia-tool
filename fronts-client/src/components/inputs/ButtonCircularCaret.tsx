@@ -10,9 +10,10 @@ export const ButtonCircularWithTransition = styled(ButtonCircular)<{
 	clear?: boolean;
 }>`
 	transition: transform 0.15s;
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	vertical-align: middle;
-	text-align: center;
 	padding: 0;
 	height: ${({ small }) => (small ? '18px' : undefined)};
 	width: ${({ small }) => (small ? '18px' : undefined)};

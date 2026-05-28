@@ -253,6 +253,7 @@ const config: Config = {
 	},
 	capiLiveUrl: 'https://fronts.local.dev-gutools.co.uk/api/live/',
 	capiPreviewUrl: 'https://fronts.local.dev-gutools.co.uk/api/preview/',
+	availableTerritories: [],
 	availableTemplates: [],
 	telemetryUrl: '',
 	baseUrls: {
@@ -536,6 +537,7 @@ const state = {
 		closedOverviews: [],
 		clipboardOpen: true,
 		frontIdsByBrowsingStage: {},
+		editingMetadataFrontIds: [],
 	},
 	staleFronts: {},
 	form: {},

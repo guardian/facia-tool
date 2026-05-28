@@ -3,6 +3,7 @@ import { batchActions } from 'redux-batched-actions';
 import type {
 	VisibleArticlesResponse,
 	CollectionResponse,
+	CollectionConfig,
 } from 'types/FaciaApi';
 import {
 	getArticlesBatched,
@@ -11,6 +12,9 @@ import {
 	fetchLastPressed as fetchLastPressedApi,
 	publishCollection as publishCollectionApi,
 	getCollection as getCollectionApi,
+	createFrontsCollection as createCollectionApi,
+	updateFrontConfig as updateFrontConfigApi,
+	removeFrontsCollection as removeCollectionApi,
 } from 'services/faciaApi';
 import {
 	selectUserEmail,
@@ -38,11 +42,15 @@ import {
 	denormaliseCollection,
 } from 'util/shared';
 import { cardsReceived, clearCards } from 'actions/CardsCommon';
+import { selectors as collectionsSelectors } from 'bundles/collectionsBundle';
+import { selectors as frontsConfigSelectors } from 'bundles/frontsConfigBundle';
+import { updateFrontsCollectionConfig as updateFrontsCollectionConfigApi } from 'services/faciaApi';
 import { groupsReceived } from 'actions/Groups';
-import {
+import getFrontsConfig, {
 	recordVisibleArticles,
 	recordStaleFronts,
 	fetchLastPressedSuccess,
+	saveFrontConfig,
 } from 'actions/Fronts';
 import { actions as collectionActions } from 'bundles/collectionsBundle';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
@@ -261,6 +269,33 @@ function getCollections(
 		} catch (error) {
 			dispatch(collectionActions.fetchError(error, collectionIds));
 			return [];
+		}
+	};
+}
+
+export function updateCollectionConfig(
+	collectionConfig: CollectionConfig,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const { id, ...rest } = collectionConfig;
+		await updateFrontsCollectionConfigApi(id, rest);
+		await dispatch(getFrontsConfig());
+	};
+}
+
+export function updateCollectionName(
+	displayName: string,
+	collectionId: string,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const state = getState();
+		const collection = collectionsSelectors.selectById(state, collectionId);
+		if (collection) {
+			const renamed = {
+				...collection,
+				displayName,
+			};
+			await dispatch(updateCollection(renamed, 'overwrite'));
 		}
 	};
 }
@@ -606,6 +641,108 @@ function discardDraftChangesToCollection(
 	};
 }
 
+export function removeFrontCollection(
+	frontId: string,
+	collectionId: string,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch) => {
+		await removeCollectionApi(frontId, collectionId);
+		await dispatch(getFrontsConfig());
+	};
+}
+function addExistingFrontCollection(
+	frontId: string,
+	collectionId: string,
+	position: number,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const currentConfig = frontsConfigSelectors.selectAll(getState());
+		const front = currentConfig.fronts[frontId];
+		if (!front) {
+			// front cannot be found, do not attempt to add collection
+			return;
+		}
+		if (front.collections.includes(collectionId)) {
+			// collection is already in the front, do not add again
+			return;
+		}
+		const clampedPosition = Math.max(
+			0,
+			Math.min(position, front.collections.length),
+		);
+		const collections = [
+			...front.collections.slice(0, clampedPosition),
+			collectionId,
+			...front.collections.slice(clampedPosition),
+		];
+
+		const updatedFront = {
+			...front,
+			collections,
+		};
+		await dispatch(saveFrontConfig(updatedFront));
+	};
+}
+
+function addFrontCollection(frontId: string): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		const { id } = await createCollectionApi(frontId, {
+			displayName: 'New collection',
+		});
+		await dispatch(getFrontsConfig());
+		await dispatch(getCollections([id])); // todo: is this still needed or does getFrontsConfig above handle this?
+	};
+}
+
+function moveFrontCollection(
+	frontId: string,
+	collectionId: string,
+	direction?: 'up' | 'down',
+	position?: number,
+): ThunkResult<Promise<void>> {
+	return async (dispatch: Dispatch, getState: () => State) => {
+		if (direction === undefined && position === undefined) {
+			return;
+		}
+		const state = getState();
+		const front = selectFront(state, { frontId });
+		if (!front) {
+			return;
+		}
+
+		const currentIndex = front.collections.findIndex(
+			(id) => id === collectionId,
+		);
+		if (currentIndex === -1) {
+			return;
+		}
+
+		const indexFromOffset = () => {
+			const offset = direction === 'up' ? -1 : 1;
+			const newIndex = Math.max(
+				0,
+				Math.min(currentIndex + offset, front.collections.length - 1),
+			);
+			return newIndex;
+		};
+
+		const newIndex = position !== undefined ? position : indexFromOffset();
+		if (newIndex === currentIndex) {
+			return;
+		}
+
+		const reordered = [...front.collections];
+		reordered.splice(currentIndex, 1);
+		reordered.splice(newIndex, 0, collectionId);
+
+		const updatedFront = { ...front, collections: reordered };
+
+		await updateFrontConfigApi(frontId, updatedFront);
+
+		await dispatch(getFrontsConfig());
+	};
+}
+
 export {
 	getCollections,
 	fetchCardReferencedEntitiesForCollections,
@@ -617,4 +754,7 @@ export {
 	initialiseCollectionsForFront,
 	publishCollection,
 	discardDraftChangesToCollection,
+	addFrontCollection,
+	moveFrontCollection,
+	addExistingFrontCollection,
 };
