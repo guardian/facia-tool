@@ -25,8 +25,16 @@ describe('Latest widget', function () {
         this.ko.dispose();
     });
     function getAutocomplete (host) {
-        return ko.contextFor(host.container.querySelector('autocomplete').firstChild)
-            .$component;
+        return wait.condition(
+            () => {
+                const el = host.container.querySelector('autocomplete');
+                return el && el.firstChild && !!ko.contextFor(el.firstChild);
+            },
+            2000, 10,
+            'getAutocomplete: autocomplete component bound'
+        ).then(() => {
+            return ko.contextFor(host.container.querySelector('autocomplete').firstChild).$component;
+        });
     }
 
     it('toggles draft and live content', function (done) {
@@ -100,7 +108,9 @@ describe('Latest widget', function () {
                 return widget.loaded;
             }),
             wait.event('widget:load').then(() => {
-                autocomplete = getAutocomplete(this.ko);
+                return getAutocomplete(this.ko).then(component => {
+                    autocomplete = component;
+                });
             })
         ]);
 
