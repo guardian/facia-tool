@@ -27,7 +27,14 @@ export function condition (predicate, timeout = 5000, interval = 50, label = '')
 	return new Promise((resolve, reject) => {
 		const start = Date.now();
 		const check = () => {
-			if (predicate()) {
+			let result;
+			try {
+				result = predicate();
+			} catch (e) {
+				reject(e);
+				return;
+			}
+			if (result) {
 				resolve();
 			} else if (Date.now() - start >= timeout) {
 				let msg = label

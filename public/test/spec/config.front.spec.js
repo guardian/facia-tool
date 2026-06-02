@@ -262,8 +262,26 @@ describe('Config Front', function () {
             )
             .then(() => {
                 dom.type('.metadata--provisionalImage', imageUrl);
+                // Verify KO actually received the value before waiting for the async image load
                 return wait.condition(
-                    () => persistence.front.update.calls.any(),
+                    () => frontWidget.pinnedFront().provisionalImageUrl() === imageUrl,
+                    1000, 10,
+                    'changeImageUrl: provisionalImageUrl updated by KO binding'
+                );
+            })
+            .then(() => {
+                return wait.condition(
+                    () => {
+                        // If validateImageSrc rejected, the subscriber resets provisionalImageUrl
+                        // to undefined. Detect this immediately rather than timing out.
+                        const currentUrl = frontWidget.pinnedFront().provisionalImageUrl();
+                        if (currentUrl !== imageUrl) {
+                            throw new Error(
+                                `Image validation failed: provisionalImageUrl was reset to "${currentUrl}"`
+                            );
+                        }
+                        return persistence.front.update.calls.any();
+                    },
                     5000, 50,
                     'changeImageUrl: front.update called after image typed'
                 );
