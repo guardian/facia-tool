@@ -12,7 +12,7 @@ export default class {
 
         this.timeoutID = setTimeout(() => {
             this.firstRequestReject(new Error(this.TIMEOUT_ERROR_MSG || 'action timeout'));
-        }, 2000);
+        }, 5000);
     }
 
     mockSingleRequest(mock) {
@@ -23,6 +23,7 @@ export default class {
                 this.responseText = mock.responseText;
             },
             onAfterComplete: function () {
+                clearTimeout(instance.timeoutID);
                 setTimeout(() => {
                     instance.firstRequestResolve(instance.lastRequest);
                 }, 20);
@@ -41,6 +42,7 @@ export default class {
     }
 
     dispose() {
+        clearTimeout(this.timeoutID);
         mockjax.clear(this.interceptor);
     }
 }

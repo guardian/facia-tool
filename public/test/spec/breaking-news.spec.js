@@ -72,8 +72,7 @@ describe('Breaking News', function () {
         .then(() => {
             expect(regions.front().collection(1).publishText()).toBe('Send alert');
             return regions.front().collection(1).publish()
-            // Wait for modal to appear
-            .then(() => wait.ms(100));
+            .then(() => wait.condition(() => regions.breakingNewsModal().isVisible(), 2000, 10, 'first breaking news modal visible'));
         })
         .then(() => {
             expect(regions.breakingNewsModal().isVisible()).toBe(true);
@@ -82,8 +81,7 @@ describe('Breaking News', function () {
         .then(() => {
             expect(regions.front().collection(1).group(2).trailCount()).toBe(1);
             return regions.front().collection(1).publish()
-            // Wait for modal to appear
-            .then(() => wait.ms(100));
+            .then(() => wait.condition(() => regions.breakingNewsModal().isVisible(), 2000, 10, 'second breaking news modal visible'));
         })
         .then(() => {
             expect(regions.breakingNewsModal().isVisible()).toBe(true);
@@ -105,7 +103,7 @@ describe('Breaking News', function () {
             })
             .done;
         })
-        .then(() => wait.ms(100))
+        .then(() => wait.condition(() => regions.alert().isVisible(), 2000, 10, 'success alert visible'))
         .then(() => {
             // confirmation alert
             expect(regions.alert().message()).toMatch(/sent successfully/i);
@@ -119,8 +117,7 @@ describe('Breaking News', function () {
         })
         .then(() => {
             return regions.front().collection(1).group(1).pasteOver()
-            // wait for modal to appear
-            .then(() => wait.ms(100));
+            .then(() => wait.condition(() => regions.alert().isVisible(), 2000, 10, 'one-article-only alert visible'));
         })
         .then(() => {
             expect(regions.front().collection(1).group(1).trailCount()).toBe(0);

@@ -18,7 +18,7 @@ export class Alert {
 
     close() {
         $('.button-action', this.dom).click();
-        return wait.ms(100).then(() => this);
+        return wait.condition(() => !this.isVisible(), 2000, 10, 'alert closed').then(() => this);
     }
 }
 
