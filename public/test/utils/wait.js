@@ -23,14 +23,17 @@ export function ms (time) {
     });
 }
 
-export function condition (predicate, timeout = 5000, interval = 50) {
+export function condition (predicate, timeout = 5000, interval = 50, label = '') {
 	return new Promise((resolve, reject) => {
 		const start = Date.now();
 		const check = () => {
 			if (predicate()) {
 				resolve();
 			} else if (Date.now() - start >= timeout) {
-				reject(new Error('Timeout waiting for condition'));
+				let msg = label
+					? `Timeout waiting for condition: ${label}`
+					: 'Timeout waiting for condition';
+				reject(new Error(msg));
 			} else {
 				setTimeout(check, interval);
 			}

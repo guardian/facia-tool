@@ -220,11 +220,23 @@ describe('Config Front', function () {
 
         function editMetadata () {
             $('.linky.tool--metadata').click();
-            dom.type('.metadata--title', 'Nicer title');
-            $('.toggle--hidden').click();
-            $('.save-metadata').click();
 
-            return wait.ms(100).then(() => {
+            return wait.condition(
+                () => $('.metadata--title').is(':visible'),
+                2000, 10,
+                'editMetadata: metadata modal visible'
+            )
+            .then(() => {
+                dom.type('.metadata--title', 'Nicer title');
+                $('.toggle--hidden').click();
+                $('.save-metadata').click();
+                return wait.condition(
+                    () => persistence.front.update.calls.any(),
+                    5000, 50,
+                    'editMetadata: front.update called after save'
+                );
+            })
+            .then(() => {
                 var front = frontWidget.pinnedFront();
                 expect(persistence.front.update).toHaveBeenCalledWith(front);
                 expect(front.props.webTitle()).toBe('Nicer title');
@@ -236,9 +248,21 @@ describe('Config Front', function () {
         function changeImageUrl () {
             $('.linky.tool--metadata').click();
             var imageUrl = images.path('square.png');
-            dom.type('.metadata--provisionalImage', imageUrl);
 
-            return wait.condition(() => persistence.front.update.calls.any()).then(() => {
+            return wait.condition(
+                () => $('.metadata--provisionalImage').is(':visible'),
+                2000, 10,
+                'changeImageUrl: metadata modal visible'
+            )
+            .then(() => {
+                dom.type('.metadata--provisionalImage', imageUrl);
+                return wait.condition(
+                    () => persistence.front.update.calls.any(),
+                    5000, 50,
+                    'changeImageUrl: front.update called after image typed'
+                );
+            })
+            .then(() => {
                 var front = frontWidget.pinnedFront();
                 expect(persistence.front.update).toHaveBeenCalledWith(front);
                 expect(front.props.webTitle()).toBe('Nicer title');
