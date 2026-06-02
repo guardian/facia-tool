@@ -222,9 +222,12 @@ describe('Config Front', function () {
             $('.linky.tool--metadata').click();
 
             return wait.condition(
-                () => $('.metadata--title').is(':visible'),
+                () => {
+                    const el = $('.metadata--title')[0];
+                    return el && !!ko.contextFor(el);
+                },
                 2000, 10,
-                'editMetadata: metadata modal visible'
+                'editMetadata: metadata title bound'
             )
             .then(() => {
                 dom.type('.metadata--title', 'Nicer title');
@@ -250,9 +253,12 @@ describe('Config Front', function () {
             var imageUrl = images.path('square.png');
 
             return wait.condition(
-                () => $('.metadata--provisionalImage').is(':visible'),
+                () => {
+                    const el = $('.metadata--provisionalImage')[0];
+                    return el && !!ko.contextFor(el);
+                },
                 2000, 10,
-                'changeImageUrl: metadata modal visible'
+                'changeImageUrl: metadata image field bound'
             )
             .then(() => {
                 dom.type('.metadata--provisionalImage', imageUrl);
