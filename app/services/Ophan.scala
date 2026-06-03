@@ -40,7 +40,7 @@ class GuardianOphan(config: ApplicationConfiguration)(implicit
     )
     val apiKey = maybeOphanQueryPrefillParams match {
       case Some(params) => params.apiKey // template specific key
-      case None =>
+      case None         =>
         config.ophanApi.key match {
           case Some(key) => key // application specific key
           case None => "fronts" // fallback, hopefully mostly for dev purposes
