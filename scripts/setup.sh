@@ -97,7 +97,7 @@ fetch_config(){
       if [[ $1 = "--allow-creation" ]]; then
         echo "Creating ${CONFIG_DIR} and making user $(whoami) the owner"
         sudo mkdir -p ${CONFIG_DIR}
-        sudo chown -R $(whoami):admin ${CONFIG_DIR}
+        sudo chown -R $(whoami) ${CONFIG_DIR}
         download_config
         echo -e "${GREEN}Done ${NOCOLOUR}"
       else
@@ -118,7 +118,11 @@ main() {
   check_yarn_installed
   install_v1_deps
   install_v2_deps_and_build
-  setup_nginx
+  if [ "$USER" = "vscode" ]; then
+    echo "Running in VS Code dev container, skipping nginx setup"
+  else
+    setup_nginx
+  fi
   configure_git
   printf "\n\rDone.\n\r\n\r"
 }

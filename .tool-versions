@@ -1,1 +1,6 @@
 java corretto-11.0.25.9.1
+github:guardian/devenv 20260522-111753
+nodejs v16.20.2
+sbt  1
+yarn 1
+aqua:aws/aws-cli 2

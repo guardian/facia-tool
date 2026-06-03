@@ -36,7 +36,7 @@ class ApplicationConfiguration(
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f), "UTF-8")
     case _ =>
-      logger.warn("Missing configuration file $propertiesFile")
+      logger.warn(s"Missing configuration file $propertiesFile")
       ""
   }
 
@@ -116,6 +116,7 @@ class ApplicationConfiguration(
     lazy val region = getMandatoryString("aws.region")
     lazy val bucket = getMandatoryString("aws.bucket")
     lazy val frontsBucket = getMandatoryString("aws.frontsBucket")
+    lazy val localS3Endpoint: Option[String] = getString("aws.localS3Endpoint")
     lazy val publishedEditionsIssuesBucket = getMandatoryString(
       "aws.publishedEditionsIssuesBucket"
     )

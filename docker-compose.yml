@@ -13,6 +13,19 @@ services:
         volumes:
             - postgres-data:/var/lib/postgresql/data
         command: [ "postgres", "-c", "log_statement=all", "-N", "500" ]
+    localstack:
+        image: localstack/localstack:4.9.2
+        container_name: facia-tool-localstack
+        ports:
+            - "4566:4566"
+        environment:
+            - SERVICES=s3
+            - DEFAULT_REGION=eu-west-1
+            - PERSISTENCE=1
+        volumes:
+            - localstack-data:/var/lib/localstack
 volumes:
     postgres-data:
+        driver: local
+    localstack-data:
         driver: local
