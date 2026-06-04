@@ -10,6 +10,7 @@ import images from 'test/utils/images';
 import configRegion from 'test/utils/regions/config';
 import * as wait from 'test/utils/wait';
 import * as mockjax from 'test/utils/mockjax';
+import * as validateImageSrcUtils from 'utils/validate-image-src';
 import observableNumeric from '../../src/js/utils/observable-numeric';
 
 describe('Config Front', function () {
@@ -71,6 +72,13 @@ describe('Config Front', function () {
                 });
             });
         });
+        spyOn(validateImageSrcUtils, 'validateImageSrc').and.callFake(src => Promise.resolve({
+            src: src,
+            origin: src,
+            thumb: src,
+            width: 140,
+            height: 140
+        }));
         this.scope = mockjax.scope();
         this.scope({
             url: '/api/usage/add',
