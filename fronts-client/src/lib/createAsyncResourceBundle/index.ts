@@ -21,13 +21,13 @@ interface FetchStartAction {
 	payload: { ids?: string[] | string };
 }
 
-interface FetchSuccessAction<Resource, Order = string> {
+interface FetchSuccessAction<Resource> {
 	entity: string;
 	type: 'FETCH_SUCCESS';
 	payload:
 		| {
 				data: Resource | Resource[] | any;
-				order?: Order[];
+				order?: string[];
 				ignoreOrder: false;
 				pagination?: IPagination;
 				time: number;
@@ -80,9 +80,9 @@ interface UpdateErrorAction {
 	};
 }
 
-type Actions<Resource, Order = string> =
+type Actions<Resource> =
 	| FetchStartAction
-	| FetchSuccessAction<Resource, Order>
+	| FetchSuccessAction<Resource>
 	| FetchSuccessIgnoreAction<Resource>
 	| FetchErrorAction
 	| UpdateStartAction<Resource>
@@ -148,18 +148,15 @@ function formatIncomingResourceData<Resource extends BaseResource>(
 	};
 }
 
-function getOrderFromIncomingResourceData<
-	Resource extends BaseResource,
-	Order = string,
->(
+function getOrderFromIncomingResourceData<Resource extends BaseResource>(
 	newData: Resource | Resource[],
 	resourceName: string,
-	currentOrder: Order[] = defaultArray as Order[],
-	newOrder?: Order[],
-): Order[] {
-	const order: Order[] =
+	currentOrder: string[] = defaultArray,
+	newOrder?: string[],
+): string[] {
+	const order: string[] =
 		newOrder ||
-		((newData instanceof Array
+		(newData instanceof Array
 			? (newData as Resource[]).map((model, index) => {
 					if (!model.id) {
 						throw new Error(
@@ -168,7 +165,7 @@ function getOrderFromIncomingResourceData<
 					}
 					return model.id;
 				})
-			: []) as unknown as Order[]);
+			: []);
 	return isEqual(currentOrder, order) ? currentOrder : order;
 }
 
@@ -177,7 +174,7 @@ interface IPagination {
 	totalPages: number;
 	currentPage: number;
 }
-interface State<Resource, Order = string> {
+interface State<Resource> {
 	data: Resource | { [id: string]: Resource } | any;
 	pagination: IPagination | null;
 	lastError: string | null;
@@ -187,7 +184,7 @@ interface State<Resource, Order = string> {
 	updatingIds: string[];
 	// The ids of the resources that were last added to the state, in the order they came in.
 	// Used to store order information when indexById is true --  see the resource creation options.
-	lastFetchOrder?: Order[];
+	lastFetchOrder?: string[];
 }
 
 // @todo -- figure out a way to provide root state definition
@@ -204,13 +201,13 @@ type RootState = any;
  * Consumers can add add their own actions and selectors, and extend
  * the given reducer, to provide additional functionality.
  */
-function createAsyncResourceBundle<Resource, Order = string>(
+function createAsyncResourceBundle<Resource>(
 	// The name of the entity for which this reducer is responsible
 	entityName: string,
 	options: {
 		// The key the reducer provided by this bundle is mounted at.
 		// Defaults to entityName if none is given.
-		selectLocalState?: (state: RootState) => State<Resource, Order>;
+		selectLocalState?: (state: RootState) => State<Resource>;
 		// Do we index the incoming data by id, or just add it to the state as-is?
 		indexById?: boolean;
 		// Provides a namespace for the created actions, separated by a slash,
@@ -220,21 +217,19 @@ function createAsyncResourceBundle<Resource, Order = string>(
 		initialData: Resource;
 	},
 ) {
-	return createAsyncResourceBundleCommon<Resource, false, Order>(entityName, {
+	return createAsyncResourceBundleCommon<Resource, false>(entityName, {
 		...options,
 		indexById: false,
 	});
 }
 
-const createIndexedAsyncResourceBundle = <Resource, Order = string>(
+const createIndexedAsyncResourceBundle = <Resource>(
 	// The name of the entity for which this reducer is responsible
 	entityName: string,
 	options: {
 		// The key the reducer provided by this bundle is mounted at.
 		// Defaults to entityName if none is given.
-		selectLocalState?: (
-			state: RootState,
-		) => State<Record<string, Resource>, Order>;
+		selectLocalState?: (state: RootState) => State<Record<string, Resource>>;
 		// Provides a namespace for the created actions, separated by a slash,
 		// e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
 		namespace?: string;
@@ -242,17 +237,13 @@ const createIndexedAsyncResourceBundle = <Resource, Order = string>(
 		initialData?: Record<string, Resource>;
 	},
 ) =>
-	createAsyncResourceBundleCommon<Resource, true, Order>(entityName, {
+	createAsyncResourceBundleCommon<Resource, true>(entityName, {
 		...options,
 		indexById: true,
 		initialData: options.initialData || {},
 	});
 
-function createAsyncResourceBundleCommon<
-	Resource,
-	IndexById extends boolean,
-	Order = string,
->(
+function createAsyncResourceBundleCommon<Resource, IndexById extends boolean>(
 	// The name of the entity for which this reducer is responsible
 	entityName: string,
 	options: {
@@ -260,10 +251,7 @@ function createAsyncResourceBundleCommon<
 		// Defaults to entityName if none is given.
 		selectLocalState?: (
 			state: RootState,
-		) => State<
-			IndexById extends false ? Resource : Record<string, Resource>,
-			Order
-		>;
+		) => State<IndexById extends false ? Resource : Record<string, Resource>>;
 		// Do we index the incoming data by id, or just add it to the state as-is?
 		indexById: IndexById;
 		// Provides a namespace for the created actions, separated by a slash,
@@ -280,12 +268,12 @@ function createAsyncResourceBundleCommon<
 	}
 
 	type DataType = IndexById extends false ? Resource : Record<string, Resource>;
-	type LocalState = State<DataType, Order>;
+	type LocalState = State<DataType>;
 
 	const { indexById } = options;
 	const selectLocalState = options.selectLocalState
 		? options.selectLocalState
-		: (state: any): State<Resource, Order> => state[entityName];
+		: (state: any): State<Resource> => state[entityName];
 
 	const selectPagination = (state: RootState) =>
 		selectLocalState(state).pagination;
@@ -314,9 +302,8 @@ function createAsyncResourceBundleCommon<
 		!selectById(state, id) &&
 		selectLocalState(state).loadingIds.indexOf(id) !== -1;
 
-	const selectLastFetchOrder = (state: RootState): Order[] =>
-		(selectLocalState(state).lastFetchOrder as Order[] | undefined) ||
-		(defaultArray as unknown as Order[]);
+	const selectLastFetchOrder = (state: RootState): string[] =>
+		selectLocalState(state).lastFetchOrder || defaultArray;
 
 	const selectAll = (state: RootState): DataType =>
 		selectLocalState(state)?.data || options.initialData;
@@ -344,13 +331,13 @@ function createAsyncResourceBundleCommon<
 			order,
 			ignoreOrder,
 		}:
-			| { ignoreOrder?: undefined; pagination?: IPagination; order?: Order[] }
+			| { ignoreOrder?: undefined; pagination?: IPagination; order?: string[] }
 			| {
 					ignoreOrder: boolean;
 					pagination?: undefined;
 					order?: undefined;
 			  } = {},
-	): FetchSuccessAction<Resource, Order> => {
+	): FetchSuccessAction<Resource> => {
 		const time = Date.now();
 		return {
 			entity: entityName,
@@ -411,17 +398,17 @@ function createAsyncResourceBundleCommon<
 	});
 
 	const isAction = (
-		action: Actions<Resource, Order> | Action,
-	): action is Actions<Resource, Order> => {
-		return (action as Actions<Resource, Order>).entity !== undefined;
+		action: Actions<Resource> | Action,
+	): action is Actions<Resource> => {
+		return (action as Actions<Resource>).entity !== undefined;
 	};
 
 	return {
 		initialState,
 		reducer: (
-			state: State<Resource, Order> = initialState,
-			action: Actions<Resource, Order> | Action,
-		): State<Resource, Order> => {
+			state: State<Resource> = initialState,
+			action: Actions<Resource> | Action,
+		): State<Resource> => {
 			if (!isAction(action)) {
 				return state;
 			}
@@ -451,7 +438,7 @@ function createAsyncResourceBundleCommon<
 								action.payload.data,
 								entityName,
 								state.lastFetchOrder,
-								action.payload.order as Order[] | undefined,
+								action.payload.order,
 							);
 
 					return {

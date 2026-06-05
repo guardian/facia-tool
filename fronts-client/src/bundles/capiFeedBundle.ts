@@ -22,7 +22,7 @@ const {
 	actions: liveActions,
 	reducer: capiLiveFeed,
 	selectors: liveSelectors,
-} = createIndexedAsyncResourceBundle<FeedState, FeedEntry>('capiLiveFeed', {
+} = createIndexedAsyncResourceBundle<FeedState>('capiLiveFeed', {
 	selectLocalState: (state) => state.feed.capiLiveFeed,
 });
 
@@ -52,7 +52,7 @@ const {
 	actions: previewActions,
 	reducer: capiPreviewFeed,
 	selectors: previewSelectors,
-} = createIndexedAsyncResourceBundle<FeedState, FeedEntry>('capiPreviewFeed', {
+} = createIndexedAsyncResourceBundle<FeedState>('capiPreviewFeed', {
 	selectLocalState: (state) => state.feed.capiPreviewFeed,
 });
 
@@ -123,15 +123,10 @@ export const createFetch =
 					return selectIsArticleStale(getState(), article.id, lastModified);
 				});
 
-				const taggedOrder: FeedEntry[] = nonCommercialResults.map((item) => ({
-					type: isCapiInteractiveAtom(item) ? 'atom' : 'article',
-					id: item.id,
-				}));
-
-				(dispatch as any)(
+				dispatch(
 					actions.fetchSuccess(updatedResults, {
 						pagination: resultData.pagination || undefined,
-						order: taggedOrder,
+						order: nonCommercialResults.map((item) => item.id),
 					}),
 				);
 			} else {
@@ -156,7 +151,7 @@ const {
 	actions: prefillActions,
 	reducer: prefillFeed,
 	selectors: prefillSelectors,
-} = createIndexedAsyncResourceBundle<FeedState, FeedEntry>('prefillFeed', {
+} = createIndexedAsyncResourceBundle<FeedState>('prefillFeed', {
 	selectLocalState: (state) => state.feed.prefillFeed,
 });
 
@@ -173,13 +168,9 @@ export const fetchPrefill =
 			const { response } = await getPrefills(id);
 			if (!checkIsContent(response)) {
 				const filteredResults = response.results.filter(isNonCommercialArticle);
-				const taggedOrder: FeedEntry[] = filteredResults.map((item) => ({
-					type: isCapiInteractiveAtom(item) ? 'atom' : 'article',
-					id: item.id,
-				}));
-				(dispatch as any)(
+				dispatch(
 					prefillActions.fetchSuccess(filteredResults, {
-						order: taggedOrder,
+						order: filteredResults.map((item) => item.id),
 						pagination: {
 							totalPages: response.pages,
 							currentPage: response.currentPage,
@@ -208,12 +199,36 @@ export const selectArticleAcrossResources = (
 	previewSelectors.selectById(state, id) ||
 	prefillSelectors.selectById(state, id);
 
-export const selectLiveFeedOrder = (state: State): FeedEntry[] =>
-	liveSelectors.selectLastFetchOrder(state);
-export const selectPreviewFeedOrder = (state: State): FeedEntry[] =>
-	previewSelectors.selectLastFetchOrder(state);
-export const selectPrefillFeedOrder = (state: State): FeedEntry[] =>
-	prefillSelectors.selectLastFetchOrder(state);
+/** Derive typed FeedEntry[] from a bundle's ID list by looking up each item's type. */
+const selectFeedEntries =
+	(
+		selectById: (state: State, id: string) => FeedState | undefined,
+		selectIds: (state: State) => string[],
+	) =>
+	(state: State): FeedEntry[] =>
+		selectIds(state).map((id) => {
+			const item = selectById(state, id);
+			return {
+				type:
+					item && isCapiInteractiveAtom(item)
+						? ('atom' as const)
+						: ('article' as const),
+				id,
+			};
+		});
+
+export const selectLiveFeedEntries = selectFeedEntries(
+	liveSelectors.selectById,
+	liveSelectors.selectLastFetchOrder,
+);
+export const selectPreviewFeedEntries = selectFeedEntries(
+	previewSelectors.selectById,
+	previewSelectors.selectLastFetchOrder,
+);
+export const selectPrefillFeedEntries = selectFeedEntries(
+	prefillSelectors.selectById,
+	prefillSelectors.selectLastFetchOrder,
+);
 
 export {
 	liveActions,

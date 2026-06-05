@@ -4,9 +4,9 @@ import {
 	liveSelectors,
 	previewSelectors,
 	prefillSelectors,
-	selectLiveFeedOrder,
-	selectPreviewFeedOrder,
-	selectPrefillFeedOrder,
+	selectLiveFeedEntries,
+	selectPreviewFeedEntries,
+	selectPrefillFeedEntries,
 	FeedEntry,
 } from 'bundles/capiFeedBundle';
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
@@ -22,9 +22,9 @@ interface ErrorDisplayProps {
 
 interface FeedContainerProps {
 	isPrefillMode: boolean;
-	liveFeedOrder: FeedEntry[];
-	previewFeedOrder: FeedEntry[];
-	prefillFeedOrder: FeedEntry[];
+	liveFeedEntries: FeedEntry[];
+	previewFeedEntries: FeedEntry[];
+	prefillFeedEntries: FeedEntry[];
 	liveError: string | null;
 	previewError: string | null;
 	prefillError: string | null;
@@ -42,9 +42,9 @@ const NoResults = styled.div`
 `;
 
 const Feed = ({
-	liveFeedOrder,
-	previewFeedOrder,
-	prefillFeedOrder,
+	liveFeedEntries,
+	previewFeedEntries,
+	prefillFeedEntries,
 	liveError,
 	previewError,
 	prefillError,
@@ -56,16 +56,16 @@ const Feed = ({
 		: isLive
 			? liveError
 			: previewError;
-	const feedOrder = isPrefillMode
-		? prefillFeedOrder
+	const feedEntries = isPrefillMode
+		? prefillFeedEntries
 		: isLive
-			? liveFeedOrder
-			: previewFeedOrder;
+			? liveFeedEntries
+			: previewFeedEntries;
 
 	return (
 		<ErrorDisplay error={error || undefined}>
-			{feedOrder.length ? (
-				feedOrder.map((entry) =>
+			{feedEntries.length ? (
+				feedEntries.map((entry) =>
 					entry.type === 'atom' ? (
 						<AtomFeedItem key={entry.id} id={entry.id} />
 					) : (
@@ -81,9 +81,9 @@ const Feed = ({
 
 const mapStateToProps = (state: State) => ({
 	isPrefillMode: selectIsPrefillMode(state),
-	liveFeedOrder: selectLiveFeedOrder(state),
-	previewFeedOrder: selectPreviewFeedOrder(state),
-	prefillFeedOrder: selectPrefillFeedOrder(state),
+	liveFeedEntries: selectLiveFeedEntries(state),
+	previewFeedEntries: selectPreviewFeedEntries(state),
+	prefillFeedEntries: selectPrefillFeedEntries(state),
 	liveError: liveSelectors.selectCurrentError(state),
 	previewError: previewSelectors.selectCurrentError(state),
 	prefillError: prefillSelectors.selectCurrentError(state),
