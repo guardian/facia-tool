@@ -61,7 +61,7 @@ interface FetchErrorAction {
 interface UpdateStartAction<Resource> {
 	entity: string;
 	type: 'UPDATE_START';
-	payload: { id?: string; data: Resource | any };
+	payload: { id?: string | string; data: Resource | any };
 }
 
 interface UpdateSuccessAction<Resource> {
@@ -118,7 +118,7 @@ function formatIncomingResourceData<Resource extends BaseResource>(
 	resourceName: string,
 ): Resource | { [id: string]: Resource } {
 	if (newData instanceof Array) {
-		return {
+		const result: { [id: string]: Resource } = {
 			...data,
 			...newData.reduce((acc, model: BaseResource, index) => {
 				if (!model.id) {
@@ -132,6 +132,7 @@ function formatIncomingResourceData<Resource extends BaseResource>(
 				};
 			}, {}),
 		};
+		return result;
 	}
 
 	if (!newData.id) {
@@ -154,7 +155,7 @@ function getOrderFromIncomingResourceData<Resource extends BaseResource>(
 	currentOrder: string[] = defaultArray,
 	newOrder?: string[],
 ): string[] {
-	const order: string[] =
+	const order =
 		newOrder ||
 		(newData instanceof Array
 			? (newData as Resource[]).map((model, index) => {
@@ -175,7 +176,7 @@ interface IPagination {
 	currentPage: number;
 }
 interface State<Resource> {
-	data: Resource | { [id: string]: Resource } | any;
+	data: Resource;
 	pagination: IPagination | null;
 	lastError: string | null;
 	error: string | null;
@@ -201,27 +202,24 @@ type RootState = any;
  * Consumers can add add their own actions and selectors, and extend
  * the given reducer, to provide additional functionality.
  */
-function createAsyncResourceBundle<Resource>(
+const createAsyncResourceBundle = <Resource>(
 	// The name of the entity for which this reducer is responsible
 	entityName: string,
 	options: {
 		// The key the reducer provided by this bundle is mounted at.
 		// Defaults to entityName if none is given.
 		selectLocalState?: (state: RootState) => State<Resource>;
-		// Do we index the incoming data by id, or just add it to the state as-is?
-		indexById?: boolean;
 		// Provides a namespace for the created actions, separated by a slash,
 		// e.g.the resource 'books' namespaced with 'shared' becomes SHARED/BOOKS
 		namespace?: string;
 		// The initial state of the reducer data. Defaults to an empty object.
 		initialData: Resource;
 	},
-) {
-	return createAsyncResourceBundleCommon<Resource, false>(entityName, {
+) =>
+	createAsyncResourceBundleCommon<Resource, false>(entityName, {
 		...options,
 		indexById: false,
 	});
-}
 
 const createIndexedAsyncResourceBundle = <Resource>(
 	// The name of the entity for which this reducer is responsible
@@ -273,7 +271,7 @@ function createAsyncResourceBundleCommon<Resource, IndexById extends boolean>(
 	const { indexById } = options;
 	const selectLocalState = options.selectLocalState
 		? options.selectLocalState
-		: (state: any): State<Resource> => state[entityName];
+		: (state: any): LocalState => state[entityName];
 
 	const selectPagination = (state: RootState) =>
 		selectLocalState(state).pagination;
@@ -406,9 +404,9 @@ function createAsyncResourceBundleCommon<Resource, IndexById extends boolean>(
 	return {
 		initialState,
 		reducer: (
-			state: State<Resource> = initialState,
+			state: LocalState = initialState,
 			action: Actions<Resource> | Action,
-		): State<Resource> => {
+		): LocalState => {
 			if (!isAction(action)) {
 				return state;
 			}
