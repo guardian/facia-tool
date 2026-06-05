@@ -35,7 +35,12 @@ describe('Breaking News', function () {
 
         expect(regions.front().frontSelector()).toBeNull();
 
-        regions.latest().trail(1).copy()
+        wait.condition(
+            () => regions.latest().trail(1).dom !== undefined,
+            5000, 50,
+            'latest trail 1 loaded'
+        )
+        .then(() => regions.latest().trail(1).copy())
         .then(() => {
             return this.testPage.actions.edit(() => {
                 return regions.front().collection(1).group(2).pasteOver();
@@ -238,7 +243,12 @@ describe('Breaking News', function () {
     it('Allows the same alert to be sent multiple times', function(done) {
         const regions = this.testPage.regions;
 
-        regions.latest().trail(1).copy()
+        wait.condition(
+            () => regions.latest().trail(1).dom !== undefined,
+            5000, 50,
+            'latest trail 1 loaded'
+        )
+        .then(() => regions.latest().trail(1).copy())
         .then(() => {
             return this.testPage.actions.edit(() => {
                 return regions.front().collection(1).group(2).pasteOver();
