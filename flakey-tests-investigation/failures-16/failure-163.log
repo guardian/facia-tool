@@ -1,0 +1,431 @@
+Running "karma:static" (karma) task
+Chrome Headless 112.0.5614.0 (Mac OS 10.15.7) INFO LOG: [36m'Google Analytics tracking has been disabled'[39m
+
+  Clipboard
+    [32m✓ [39mloads items from the history
+    [32m✓ [39mglobal copy paste events
+
+  utils/is-guardian-url
+    [32m✓ [39mmatches guardian domain
+
+  Bootstrap
+    [32m✓ [39mfails validation
+    [32m✓ [39mfails on network error
+    [32m✓ [39mfails in the every callback
+    [32m✓ [39mloads all endpoints correctly
+
+  utils/front-count
+    [32m✓ [39mcounts fronts without priority
+    [32m✓ [39mcounts fronts with no limits
+    [32m✓ [39mcounts fronts with any priority
+    [32m✓ [39mdefaults to editorial priority
+
+  Priority
+    [32m✓ [39mgets the priority from URL
+
+  Array
+    [32m✓ [39mworks even if first is an empty array
+    [32m✓ [39mworks even if second is an empty array
+    [32m✓ [39mcomputes the difference of two lists
+
+  utils/url-query
+    [32m✓ [39mextract the search query
+
+  utils/as-observable-props
+    [32m✓ [39mgenerates observables
+
+  Front
+    [32m✓ [39mloads from column config and toggle live and draft content
+    [32m✓ [39mdisplays a warning if front is hidden 
+    [32m✓ [39mdoes not display a warning if the front is not hidden 
+    [32m✓ [39mload a front from the select and toggle collection visibility
+
+  Last Modified
+    [32m✓ [39mfetches a stale date
+    [32m✓ [39mfetches the last time
+
+  Breaking News
+    [31m✗ [39m[31mAlerts the user before launch[39m
+	Failed: edit action timeout, endpoint /edits
+	Error: edit action timeout, endpoint /edits
+	    at eval (http://localhost:9876/test/utils/actions/base-action.js!transpiled:34:50)
+
+    [32m✓ [39mAllows the same alert to be sent multiple times
+
+  Presser
+    [32m✓ [39mpresses draft
+    [32m✓ [39mpresses live successfully
+    [32m✓ [39mignores error in press
+
+  utils/layout-from-url
+    [32m✓ [39mgets the default configuration
+    [32m✓ [39mgets an empty configuration
+    [32m✓ [39mgets the configuration form URL
+    [32m✓ [39mgets the default configuration ignoring unknown params
+    [32m✓ [39mgets the default configuration by path
+    [32m✓ [39mrespects the front parameter
+    [32m✓ [39mshows treats if required
+    [32m✓ [39mrespects the front parameter for the path
+    [32m✓ [39mgives priority to layout over front
+    [32m✓ [39mserializes a layout
+    [32m✓ [39mextract from an object
+
+  utils/serialize-query-params
+    [32m✓ [39mserializes the search query
+
+  Local Storage
+    [32m✓ [39mretrieves with defaults
+    [32m✓ [39mremoves some error
+
+  utils/find-first-by-id
+    [32m✓ [39mfind by id
+
+  Cache
+    [32m✓ [39mreturns undefined on error
+    [32m✓ [39mstores until expiry
+
+  Collections
+    [32m✓ [39m/edits
+    [32m✓ [39mcopy to clipboard
+    [32m✓ [39mcloses without saving
+    [32m✓ [39mcopy paste above an article
+    [32m✓ [39mdisplays the correct timing
+
+  Router
+    parse location
+      [32m✓ [39mfrom default
+      [32m✓ [39mwith search parameters
+      [32m✓ [39mwith priority and handler
+      [32m✓ [39mwith priority and wrong handler
+      [32m✓ [39mwith priority
+    load
+      [32m✓ [39mfails
+      [32m✓ [39mcorrectly
+    navigate
+      [32m✓ [39mpopstate
+      [32m✓ [39mdoes not navigate if the url doesn't change
+      [32m✓ [39mkeeping the existing parameters
+      [32m✓ [39mfrom an empty search
+
+  Layout
+    [32m✓ [39mchanges the workspace
+
+  Global listeners
+    [32m✓ [39mhandles global events
+
+  utils/populate-observables
+    [32m✓ [39mpopulate observables
+
+  Content API
+    [32m✓ [39mdecorateItems empty
+    [32m✓ [39mdecorateItems in one batch
+    [32m✓ [39mdecorateItems in multiple batches
+    fetchContent
+      [32m✓ [39mreturns from content
+      [32m✓ [39mreturns from other fields
+      [32m✓ [39mfails if no response
+      [32m✓ [39mfails with empty intersection
+      [32m✓ [39mfails with status error
+    fetchMetaForPath
+      [32m✓ [39mfails if meta no response
+      [32m✓ [39mextract meta from the response
+    validateItem
+      [32m✓ [39mvalidates multiple snap results - latest
+      [32m✓ [39mvalidates a snap that contains a type
+      [32m✓ [39mvalidates multiple snap results - link
+      [32m✓ [39mvalidates empty guardian content
+      [32m✓ [39mfails on links coming from self
+      [32m✓ [39mvalidates multiple snap link
+      [32m✓ [39mresolves a single malformed capi item
+      [32m✓ [39mresolves from cache
+      [32m✓ [39mresolves a snapID
+      [32m✓ [39mfails on snaps not in the clipboard
+      [32m✓ [39mfails on a relative snap
+      [32m✓ [39mresolves a single valid capi item
+
+  Authed Ajax
+    [32m✓ [39msends a successful request
+    tries again for auth
+      [32m✓ [39mfails on second try
+      [32m✓ [39mworks on second try
+      [32m✓ [39mfails while reauth
+    [32m✓ [39msends a successful request override type
+    [32m✓ [39mfails with an un-handled error
+    [32m✓ [39msends a successful request override content type
+    [32m✓ [39mfails with a reload redirect
+
+  Article Persistence
+    [32m✓ [39mupdates the parent collection
+    [32m✓ [39msave the parent article on sublinks
+    [32m✓ [39mignores saving in the clipboard
+
+  Article Path
+    [32m✓ [39mreturns correct path if url is from viewer preview
+    [32m✓ [39mreturns correct path if url is from viewer live
+    [32m✓ [39mreturns correct path if url is from  guardian website
+
+  Visited Article Storage
+    isArticleVisited
+      [32m✓ [39mshoud return false for unvisited articles
+      [32m✓ [39mshoud return true for visited articles
+    addArticleToStorage
+      [32m✓ [39madds an article to storage
+      [32m✓ [39mshould add an article to storage only once
+
+  utils/url-abs-path
+    [32m✓ [39mextracts the path name
+
+  utils/parse-query-params
+    URL Parameters as array
+      [32m✓ [39mparses an url as an array
+    URL Parameters
+      [32m✓ [39mparses an url with hash
+      [32m✓ [39mparses an empty string
+      [32m✓ [39mparses an url with no parameters
+      [32m✓ [39mparses an url with multiple parameters
+      [32m✓ [39mparses an url with duplicate parameters
+
+  Config Pinned Front
+    [32m✓ [39mkeeps editing existing fronts while refreshing
+    [32m✓ [39mkeeps the pinned front while refreshing
+
+  Alert
+    [32m✓ [39mshows an error
+
+  utils/deep-get
+    [32m✓ [39mgets from a deep object
+
+  Ajax Collections update
+    fails
+      [32m✓ [39mupdates a failing collection
+    works
+      [32m✓ [39mremoves a treat
+      [32m✓ [39mupdates a collection
+      [32m✓ [39mupdates and remove
+
+  Sparklines
+    [32m✓ [39mloads sparklines on multiple fronts and polls
+    [32m✓ [39mrefreshes when the collection changes
+    [32m✓ [39mfails nicely when ophan is down
+    [32m✓ [39mhandles changing fronts while loading sparklines
+    [32m✓ [39mhandles changing fronts while loading collections
+    [32m✓ [39mloads sparklines for a front
+
+  Config
+    [32m✓ [39mallows for searching fronts
+    [32m✓ [39m/config/fronts
+
+  Modal Dialog
+    [32m✓ [39mcalls the ok function
+
+  utils/clone-with-key
+    [32m✓ [39mclones and adds a key
+
+  utils/sanitize-html
+    [32m✓ [39mcleans the html
+
+  utils/human-time
+    [32m✓ [39mconverts to a readable time
+
+  Visited articles
+    [32m✓ [39mdisplays article as visited after redrawing data
+    [32m✓ [39mmarks an article visited from clipboard as visited in visited articles list
+    [32m✓ [39mmarks an article visited from visited articles list as visited
+
+  utils/clean-code
+    [32m✓ [39mclones objects
+
+  Open Graph
+    [32m✓ [39mhandles failures
+    [32m✓ [39mfetches data from site - guardian
+    [32m✓ [39mfetches data from innerHTML - off site
+    [32m✓ [39mfetches data from open graph - off site
+
+  OAuth Session
+    [32m✓ [39mredirects on timeout
+    [32m✓ [39mre-authenticate every once in a while
+
+  Autocomplete
+    API
+      [32m✓ [39mreturns expected results
+      [32m✓ [39mhandles missing results
+      [32m✓ [39mrejects malformed response
+      [32m✓ [39mrejects invalid characters
+      [32m✓ [39muses the cache
+      [32m✓ [39mignores empty strings
+    Widget
+      [32m✓ [39mscrolls indefinitely
+      [32m✓ [39msearches debouncing
+      [32m✓ [39mclears the search on empty filter
+
+  Collection Backfill - API query
+    [32m✓ [39mshows list on valid CAPI query
+    [32m✓ [39mshows error message on invalid CAPI query
+    [32m✓ [39mgoes from success to error on CAPI change
+    [32m✓ [39mshows no match list on empty valid CAPI query
+
+  utils/snap
+    [32m✓ [39mvalidate a snap
+    [32m✓ [39mgenerates an id
+
+  Logger
+    [32m✓ [39mlogs an error
+    [32m✓ [39mlogs a message
+
+  Latest articles errors
+    [32m✓ [39mdoesn't stop page load
+    [32m✓ [39mhides some errors when page is already loaded
+
+  Copied articles
+    [32m✓ [39mstores the last copied article
+    [32m✓ [39mhandles snap links
+    [32m✓ [39mdetaches from source
+    [32m✓ [39mhandles field headline
+
+  Collection Backfill - Parent collection
+    [32m✓ [39mshows error message when dragging invalid links
+    [32m✓ [39mremoves a valid collection
+    [32m✓ [39mreverts to the api query
+    [32m✓ [39mdrags a valid collection
+
+  utils/url-host
+    [32m✓ [39mextract the domain
+
+  Validate images
+    - from image CDN
+      [32m✓ [39mfails if the image is too big
+      [32m✓ [39mfails if the image can't be found
+      [32m✓ [39mfails if the image is too small
+      [32m✓ [39mworks with no criteria
+      [32m✓ [39mfails if the aspect ratio is wrong
+      [32m✓ [39mworks with if all criteria are met
+    - from the Grid
+      - link include crop id
+        [32m✓ [39mfails if crop id is invalid
+        [32m✓ [39mgets the specified asset
+        [32m✓ [39mfails if crop doesn't respect criteria
+      - link does not include crop id
+        [32m✓ [39mgets the first asset when no criteria
+        [32m✓ [39mgets the first valid asset
+        [32m✓ [39mfails if crops don't respect criteria
+        [32m✓ [39mfails if there are no crops
+      [32m✓ [39mfails if media is not accessible
+    - from copy paste event
+      [32m✓ [39mfails with invalid item
+      [32m✓ [39mfails when no suitable assets
+      [32m✓ [39mfails when the actual image doesn't validate
+      [32m✓ [39mresolves correctly
+      [32m✓ [39mresolves correctly when it contains a URL
+    - invalid
+      [32m✓ [39mmissing images
+      [32m✓ [39munknown domain
+    - from imgIX
+      [32m✓ [39mstrips unnecessary parameters
+
+  utils/remove-by-id
+    [32m✓ [39mremove elements
+
+  Alternate Drag
+    [32m✓ [39mreplace article and drags sublinks
+
+  Mediator
+    [32m✓ [39mhandles scopes
+
+  utils/sanitize-api-query
+    [32m✓ [39mcleans the query
+
+  Base Widget
+    [32m✓ [39munsubscribes any registered callback
+    [32m✓ [39munsubscribes the correct class
+
+  Serialize Article Meta
+    [32m✓ [39mcleans sparse array
+    [32m✓ [39mignore empty meta data
+    [32m✓ [39mincludes the group index
+    [32m✓ [39mconverts number to strings
+    [32m✓ [39mconverts number to strings in nested structures
+    [32m✓ [39mdrops empty arrays
+    [32m✓ [39mexplicit about values equal to their default
+    [32m✓ [39mserializes supporting links
+    [32m✓ [39mignores values equal to the overridden field
+    [32m✓ [39mtrim and sanitize strings
+
+  Latest widget
+    [32m✓ [39mreacts to switches changes
+    [32m✓ [39mpagination
+    [32m✓ [39msearches articles
+    [32m✓ [39mtoggles draft and live content
+
+  Config Front
+    [32m✓ [39mupdates fronts and collections when config changes
+    [32m✓ [39mcreate fronts and collections
+
+  Extensions
+    [32m✓ [39mnav section
+
+  Draggable element
+    getItem
+      [32m✓ [39mfails if there's no media and no item
+      [32m✓ [39mgets an item from the source item
+      [32m✓ [39mgets a media item if present
+      [32m✓ [39mgets an item from known parameters
+      [32m✓ [39mgets an item from unknown parameters
+    getMediaItem
+      [32m✓ [39mignores non JSON data
+      [32m✓ [39mignore empty items
+      [32m✓ [39mreturns the largest image
+      [32m✓ [39mthrows when there's no crop
+
+  Media Service
+    [32m✓ [39mdrags an image from the grid
+
+  utils/full-trim
+    [32m✓ [39mtrims strings
+
+  Persistence
+    [32m✓ [39mcreates a collection with display hints
+    [32m✓ [39mcreates a collection
+    [32m✓ [39mupdates a front
+    [32m✓ [39mcreates a front
+    [32m✓ [39mupdates a collection
+
+  Debounce
+    [32m✓ [39mdebounces on rejected failures
+    [32m✓ [39mhandles parameters
+    [32m✓ [39mwaits and calls the last bounced method
+    [32m✓ [39mdispose debounce
+
+  Latest articles
+    [32m✓ [39mnetwork fail
+    [32m✓ [39msearches an article
+    [32m✓ [39mfilter out based on a search term
+    [32m✓ [39mall results empty response
+    [32m✓ [39mwhole list should filter out articles
+
+  Editors
+    [32m✓ [39mlist editor with drop in editor
+    [32m✓ [39mvalidates inputs
+    [32m✓ [39mtoggles boolean values
+
+Chrome Headless 112.0.5614.0 (Mac OS 10.15.7): Executed 242 of 242[31m (1 FAILED)[39m (34.168 secs / 34.052 secs)
+[31mTOTAL: 1 FAILED, 241 SUCCESS[39m
+
+
+[31m1) Alerts the user before launch
+[39m[31m     Breaking News
+[39m     [90mFailed: edit action timeout, endpoint /edits
+Error: edit action timeout, endpoint /edits
+    at eval (http://localhost:9876/test/utils/actions/base-action.js!transpiled:34:50)
+[39m
+
+
+
+[33mWarning: Task "karma:static" failed. Use --force to continue.[39m
+
+[31mAborted due to warnings.[39m
+
+
+Execution Time (2026-06-07 13:24:57 UTC)
+karma:static  37.5s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 100%
+Total 37.7s
+

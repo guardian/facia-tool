@@ -1,0 +1,1835 @@
+Running "karma:static" (karma) task
+Chrome Headless 112.0.5614.0 (Mac OS 10.15.7) INFO LOG: [36m'Google Analytics tracking has been disabled'[39m
+
+  Global listeners
+    [32m✓ [39mhandles global events
+
+  utils/parse-query-params
+    URL Parameters
+      [32m✓ [39mparses an url with multiple parameters
+      [32m✓ [39mparses an url with no parameters
+      [32m✓ [39mparses an url with duplicate parameters
+      [32m✓ [39mparses an empty string
+      [32m✓ [39mparses an url with hash
+    URL Parameters as array
+      [32m✓ [39mparses an url as an array
+
+  Sparklines
+    [32m✓ [39mrefreshes when the collection changes
+    [32m✓ [39mfails nicely when ophan is down
+    [32m✓ [39mloads sparklines for a front
+    [32m✓ [39mhandles changing fronts while loading collections
+    [32m✓ [39mloads sparklines on multiple fronts and polls
+    [32m✓ [39mhandles changing fronts while loading sparklines
+
+  utils/human-time
+    [32m✓ [39mconverts to a readable time
+
+  Article Persistence
+    [32m✓ [39mupdates the parent collection
+    [32m✓ [39mignores saving in the clipboard
+    [32m✓ [39msave the parent article on sublinks
+
+  Bootstrap
+    [32m✓ [39mfails validation
+    [32m✓ [39mfails on network error
+    [32m✓ [39mfails in the every callback
+    [32m✓ [39mloads all endpoints correctly
+
+  Validate images
+    - invalid
+      [32m✓ [39munknown domain
+      [32m✓ [39mmissing images
+    - from copy paste event
+      [32m✓ [39mresolves correctly
+LOG LOG: [36m'[trace] fetchImage onload after', 4, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+      [32m✓ [39mresolves correctly when it contains a URL
+      [32m✓ [39mfails when no suitable assets
+      [32m✓ [39mfails when the actual image doesn't validate
+      [32m✓ [39mfails with invalid item
+LOG LOG: [36m'[trace] fetchImage onload after', 0, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+    - from imgIX
+      [32m✓ [39mstrips unnecessary parameters
+LOG LOG: [36m'[trace] fetchImage onerror after', 2, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/this_image_doesnt_exists__promised.png'[39m
+    - from image CDN
+      [32m✓ [39mfails if the image can't be found
+LOG LOG: [36m'[trace] fetchImage onload after', 0, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+      [32m✓ [39mfails if the image is too big
+LOG LOG: [36m'[trace] fetchImage onload after', 0, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+      [32m✓ [39mfails if the image is too small
+LOG LOG: [36m'[trace] fetchImage onload after', 0, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+      [32m✓ [39mworks with if all criteria are met
+LOG LOG: [36m'[trace] fetchImage onload after', 0, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+      [32m✓ [39mworks with no criteria
+LOG LOG: [36m'[trace] fetchImage onload after', 0, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+      [32m✓ [39mfails if the aspect ratio is wrong
+    - from the Grid
+      - link does not include crop id
+        [32m✓ [39mfails if crops don't respect criteria
+        [32m✓ [39mfails if there are no crops
+LOG LOG: [36m'[trace] fetchImage onload after', 0, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+        [32m✓ [39mgets the first valid asset
+LOG LOG: [36m'[trace] fetchImage onload after', 0, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+        [32m✓ [39mgets the first asset when no criteria
+      [32m✓ [39mfails if media is not accessible
+LOG LOG: [36m'[trace] fetchImage onload after', 0, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+      - link include crop id
+        [32m✓ [39mgets the specified asset
+        [32m✓ [39mfails if crop id is invalid
+        [32m✓ [39mfails if crop doesn't respect criteria
+
+  Article Path
+    [32m✓ [39mreturns correct path if url is from viewer live
+    [32m✓ [39mreturns correct path if url is from viewer preview
+    [32m✓ [39mreturns correct path if url is from  guardian website
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: undefined, fullPriority: 'editorial', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'https://theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: undefined, fullPriority: 'editorial', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'https://theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'breaking-news', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 20, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [201, 202], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.alerts@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 209, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] trail.copy - copy buttons found:', 1, 'at', 1780683139964[39m
+LOG LOG: [36m'[trace] group.pasteOver - .pasteOver targets found:', 0[39m
+LOG LOG: [36m'[trace] base-action timeout - interceptor hit:', true, 'lastRequest:', undefined[39m
+
+  Breaking News
+    [31m✗ [39m[31mAlerts the user before launch[39m
+	Failed: edit action timeout, endpoint /edits
+	Error: edit action timeout, endpoint /edits
+	    at eval (http://localhost:9876/test/utils/actions/base-action.js!transpiled:43:55)
+
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: undefined, fullPriority: 'editorial', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'https://theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: undefined, fullPriority: 'editorial', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'https://theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'breaking-news', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 20, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [226, 227], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.alerts@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 233, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] trail.copy - copy buttons found:', 1, 'at', 1780683142394[39m
+LOG LOG: [36m'[trace] group.pasteOver - .pasteOver targets found:', 1[39m
+LOG LOG: [36m'[trace] group.pasteOver - .pasteOver targets found:', 1[39m
+    [32m✓ [39mAllows the same alert to be sent multiple times
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+
+  Collection Backfill - API query
+    [32m✓ [39mshows no match list on empty valid CAPI query
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mshows error message on invalid CAPI query
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mgoes from success to error on CAPI change
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mshows list on valid CAPI query
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Object{config: [object Object], setConfig: function wrap() { ... }, baseModel: undefined, registerMainWidget: function (widget) { ... }}, baseModel: Object{identity: Object{email: ...}, frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], testColumn: Object{config: ..., setConfig: ..., baseModel: ..., registerMainWidget: ...}, switches: [object Object], permissions: [object Object], isPasteActive: [object Object], state: [object Object], title: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Object{textMessage: ..., codeEnvMessage: ...}, extensions: [], registerExtension: function registerExtension() { ... }, dispose: function dispose() { ... }}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [312, 313], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', null[39m
+
+  Front
+    [32m✓ [39mdoes not display a warning if the front is not hidden 
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Object{config: [object Object], setConfig: function wrap() { ... }, baseModel: undefined, registerMainWidget: function (widget) { ... }}, baseModel: Object{identity: Object{email: ...}, frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], testColumn: Object{config: ..., setConfig: ..., baseModel: ..., registerMainWidget: ...}, switches: [object Object], permissions: [object Object], isPasteActive: [object Object], state: [object Object], title: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Object{textMessage: ..., codeEnvMessage: ...}, extensions: [], registerExtension: function registerExtension() { ... }, dispose: function dispose() { ... }}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [324, 325], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mloads from column config and toggle live and draft content
+    [32m✓ [39mdisplays a warning if front is hidden 
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Object{config: [object Object], setConfig: function wrap() { ... }, baseModel: undefined, registerMainWidget: function (widget) { ... }}, baseModel: Object{identity: Object{email: ...}, frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], testColumn: Object{config: ..., setConfig: ..., baseModel: ..., registerMainWidget: ...}, switches: [object Object], permissions: [object Object], isPasteActive: [object Object], state: [object Object], title: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Object{textMessage: ..., codeEnvMessage: ...}, extensions: [], registerExtension: function registerExtension() { ... }, dispose: function dispose() { ... }}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [360, 361], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mload a front from the select and toggle collection visibility
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 383, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 387, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 394, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 398, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', null[39m
+
+  Clipboard
+    [32m✓ [39mloads items from the history
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 404, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mglobal copy paste events
+
+  Authed Ajax
+    [32m✓ [39mfails with an un-handled error
+    [32m✓ [39mfails with a reload redirect
+    tries again for auth
+      [32m✓ [39mworks on second try
+      [32m✓ [39mfails on second try
+      [32m✓ [39mfails while reauth
+    [32m✓ [39msends a successful request
+    [32m✓ [39msends a successful request override type
+    [32m✓ [39msends a successful request override content type
+
+  Copied articles
+    [32m✓ [39mhandles field headline
+    [32m✓ [39mdetaches from source
+    [32m✓ [39mstores the last copied article
+    [32m✓ [39mhandles snap links
+
+  Ajax Collections update
+    fails
+      [32m✓ [39mupdates a failing collection
+    works
+      [32m✓ [39mupdates a collection
+      [32m✓ [39mremoves a treat
+      [32m✓ [39mupdates and remove
+
+  Base Widget
+    [32m✓ [39munsubscribes any registered callback
+    [32m✓ [39munsubscribes the correct class
+
+  Local Storage
+    [32m✓ [39mremoves some error
+    [32m✓ [39mretrieves with defaults
+
+  Presser
+    [32m✓ [39mignores error in press
+    [32m✓ [39mpresses draft
+    [32m✓ [39mpresses live successfully
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+
+  Collection Backfill - Parent collection
+    [32m✓ [39mreverts to the api query
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mremoves a valid collection
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mdrags a valid collection
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mshows error message when dragging invalid links
+
+  utils/layout-from-url
+    [32m✓ [39mrespects the front parameter for the path
+    [32m✓ [39mgives priority to layout over front
+    [32m✓ [39mgets the default configuration
+    [32m✓ [39mserializes a layout
+    [32m✓ [39mextract from an object
+    [32m✓ [39mgets the configuration form URL
+    [32m✓ [39mshows treats if required
+    [32m✓ [39mgets the default configuration by path
+    [32m✓ [39mgets the default configuration ignoring unknown params
+    [32m✓ [39mgets an empty configuration
+    [32m✓ [39mrespects the front parameter
+
+  Logger
+    [32m✓ [39mlogs a message
+    [32m✓ [39mlogs an error
+LOG LOG: [36m'[trace] widget:load emitted by', FrontConfig{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], isconfig: [object Object], issearch: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'training', fullPriority: 'training', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], types: [object Object], typesGroups: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, typesGroupsConfig: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, _events: Object{config:needs:update: ...}}, pinnedFront: [object Object], fronts: [object Object], collections: [object Object], loaded: Promise{}}, 'DOM autocomplete:', null[39m
+
+  Config Pinned Front
+    [32m✓ [39mkeeps editing existing fronts while refreshing
+LOG LOG: [36m'[trace] widget:load emitted by', FrontConfig{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], isconfig: [object Object], issearch: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'training', fullPriority: 'training', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], types: [object Object], typesGroups: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, typesGroupsConfig: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}}, pinnedFront: [object Object], fronts: [object Object], collections: [object Object], loaded: Promise{}}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mkeeps the pinned front while refreshing
+
+  Array
+    [32m✓ [39mworks even if second is an empty array
+    [32m✓ [39mworks even if first is an empty array
+    [32m✓ [39mcomputes the difference of two lists
+
+  Draggable element
+    getItem
+      [32m✓ [39mfails if there's no media and no item
+      [32m✓ [39mgets an item from unknown parameters
+      [32m✓ [39mgets a media item if present
+      [32m✓ [39mgets an item from known parameters
+      [32m✓ [39mgets an item from the source item
+    getMediaItem
+      [32m✓ [39mignores non JSON data
+      [32m✓ [39mthrows when there's no crop
+      [32m✓ [39mreturns the largest image
+      [32m✓ [39mignore empty items
+
+  Layout
+    [32m✓ [39mchanges the workspace
+
+  Mediator
+    [32m✓ [39mhandles scopes
+
+  utils/url-host
+    [32m✓ [39mextract the domain
+
+  utils/sanitize-html
+    [32m✓ [39mcleans the html
+
+  Cache
+    [32m✓ [39mreturns undefined on error
+    [32m✓ [39mstores until expiry
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [650, 651], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 657, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] trail.copy - copy buttons found:', 1, 'at', 1780683151213[39m
+
+  Alternate Drag
+    [32m✓ [39mreplace article and drags sublinks
+
+  Latest articles
+    [32m✓ [39mwhole list should filter out articles
+    [32m✓ [39mnetwork fail
+    [32m✓ [39mfilter out based on a search term
+    [32m✓ [39mall results empty response
+    [32m✓ [39msearches an article
+
+  Debounce
+    [32m✓ [39mwaits and calls the last bounced method
+    [32m✓ [39mdebounces on rejected failures
+    [32m✓ [39mdispose debounce
+    [32m✓ [39mhandles parameters
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [758, 759], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 765, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+
+  Media Service
+    [32m✓ [39mdrags an image from the grid
+
+  Router
+    load
+      [32m✓ [39mcorrectly
+      [32m✓ [39mfails
+    parse location
+      [32m✓ [39mwith priority and wrong handler
+      [32m✓ [39mwith search parameters
+      [32m✓ [39mwith priority
+      [32m✓ [39mfrom default
+      [32m✓ [39mwith priority and handler
+    navigate
+      [32m✓ [39mkeeping the existing parameters
+      [32m✓ [39mfrom an empty search
+      [32m✓ [39mpopstate
+      [32m✓ [39mdoes not navigate if the url doesn't change
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [822, 823], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 829, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] trail.copy - copy buttons found:', 1, 'at', 1780683153830[39m
+
+  Collections
+    [32m✓ [39mcopy paste above an article
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [851, 852], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 858, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] copy to clipboard - latest trail count:', 5, 'expected >= 5; clipboard trail count at start:', 5, 'expected 0; trail(5) headline:', 'Nothing happened for once'[39m
+    [32m✓ [39mcopy to clipboard
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [877, 878], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 884, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+    [32m✓ [39mcloses without saving
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [906, 907], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 913, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+    [32m✓ [39m/edits
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [979, 980], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 986, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+    [32m✓ [39mdisplays the correct timing
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, baseModel: Object{switches: [object Object], title: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Object{textMessage: ..., codeEnvMessage: ...}, extensions: [], permissions: [object Object], registerExtension: function registerExtension() { ... }, testColumn: Object{registerMainWidget: ...}, identity: Object{email: ...}, isPasteActive: [object Object], frontsList: [object Object], frontsMap: [object Object], state: [object Object], dispose: function dispose() { ... }}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 1006, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+
+  Latest widget
+    [32m✓ [39msearches articles
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, baseModel: Object{switches: [object Object], title: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Object{textMessage: ..., codeEnvMessage: ...}, extensions: [], permissions: [object Object], registerExtension: function registerExtension() { ... }, testColumn: Object{registerMainWidget: ...}, identity: Object{email: ...}, isPasteActive: [object Object], frontsList: [object Object], frontsMap: [object Object], state: [object Object], dispose: function dispose() { ... }}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 1029, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+    [32m✓ [39mpagination
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, baseModel: Object{switches: [object Object], title: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Object{textMessage: ..., codeEnvMessage: ...}, extensions: [], permissions: [object Object], registerExtension: function registerExtension() { ... }, testColumn: Object{registerMainWidget: ...}, identity: Object{email: ...}, isPasteActive: [object Object], frontsList: [object Object], frontsMap: [object Object], state: [object Object], dispose: function dispose() { ... }}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 1051, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+    [32m✓ [39mtoggles draft and live content
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, baseModel: Object{switches: [object Object], title: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Object{textMessage: ..., codeEnvMessage: ...}, extensions: [], permissions: [object Object], registerExtension: function registerExtension() { ... }, testColumn: Object{registerMainWidget: ...}, identity: Object{email: ...}, isPasteActive: [object Object], frontsList: [object Object], frontsMap: [object Object], state: [object Object], dispose: function dispose() { ... }}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 1066, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+    [32m✓ [39mreacts to switches changes
+
+  Alert
+    [32m✓ [39mshows an error
+
+  utils/url-abs-path
+    [32m✓ [39mextracts the path name
+
+  utils/as-observable-props
+    [32m✓ [39mgenerates observables
+
+  Priority
+    [32m✓ [39mgets the priority from URL
+LOG LOG: [36m'[trace] widget:load emitted by', FrontConfig{column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, baseModel: Object{state: [object Object], frontsList: [object Object], types: [object Object], typesGroups: Object{type-one: ...}, typesGroupsConfig: Object{type-one: ...}, title: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Object{textMessage: ..., codeEnvMessage: ...}, extensions: [], permissions: [object Object], registerExtension: function registerExtension() { ... }, testColumn: Object{registerMainWidget: ...}, identity: Object{email: ...}, isPasteActive: [object Object], frontsMap: [object Object], dispose: function dispose() { ... }}, pinnedFront: [object Object], fronts: [object Object], collections: [object Object], loaded: Promise{}}, 'DOM autocomplete:', null[39m
+
+  Config Front
+    [32m✓ [39mupdates fronts and collections when config changes
+LOG LOG: [36m'[trace] widget:load emitted by', FrontConfig{column: Object{registerMainWidget: function registerMainWidget(widget) { ... }}, baseModel: Object{state: [object Object], types: [object Object], typesGroups: Object{type-one: ...}, typesGroupsConfig: Object{type-one: ...}, title: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Object{textMessage: ..., codeEnvMessage: ...}, extensions: [], permissions: [object Object], registerExtension: function registerExtension() { ... }, testColumn: Object{registerMainWidget: ...}, identity: Object{email: ...}, isPasteActive: [object Object], frontsList: [object Object], frontsMap: [object Object], dispose: function dispose() { ... }}, pinnedFront: [object Object], fronts: [object Object], collections: [object Object], loaded: Promise{}}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionTags{tags: [object Object], inputTags: [object Object], initialValues: []}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object], _events: Object{check:complete: [...]}}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionTags{tags: [object Object], inputTags: [object Object], initialValues: []}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object], _events: Object{check:complete: [...]}}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionTags{tags: [object Object], inputTags: [object Object], initialValues: []}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] front image validate START src:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'at:', 1780683164928[39m
+LOG LOG: [36m'[trace] fetchImage onload after', 6, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+LOG LOG: [36m'[trace] front image validate SUCCESS src:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'at:', 1780683164935, 'width:', 140[39m
+    [32m✓ [39mcreate fronts and collections
+
+  Modal Dialog
+    [32m✓ [39mcalls the ok function
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [1143, 1144], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 1150, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] visited from clipboard - trailInLatest opacity:', 0.6, 'expected ~0.6 (visited state propagated); detectPendingChangesInClipboard:', 300[39m
+
+  Visited articles
+    [32m✓ [39mmarks an article visited from clipboard as visited in visited articles list
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [1169, 1170], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 1176, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [1193, 1194], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 1200, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+    [32m✓ [39mdisplays article as visited after redrawing data
+LOG LOG: [36m'[trace] widget:load emitted by', Latest{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, showingDrafts: [object Object], loaded: Promise{}, latestArticles: Latest{opts: Object{container: ..., showingDrafts: ..., callback: ...}, articles: [object Object], message: [object Object], term: [object Object], autocompleteValue: [object Object], lastSearch: [object Object], page: [object Object], totalPages: [object Object], title: [object Object], showNext: [object Object], showPrev: [object Object], showTop: [object Object], errorCount: 0, startPoller: function () { ... }, _events: Object{clear: ...}}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Front{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], isSparklinesEnabled: [object Object]}, front: [object Object], previousFront: 'uk', frontAge: [object Object], collections: [object Object], mode: [object Object], flattenGroups: [object Object], maxArticlesInHistory: 5, controlsVisible: [object Object], authorized: [object Object], isHidden: [object Object], frontsList: [object Object], setFront: function (id) { ... }, setModeLive: function () { ... }, setModeDraft: function () { ... }, trackPreviewClick: function () { ... }, frontMode: [object Object], previewUrl: [object Object], isControlsVisible: [object Object], controlsText: [object Object], ophanPerformances: [object Object], alertFrontIsStale: [object Object], uiOpenArticle: [object Object], allExpanded: [object Object], setIntervals: [1217, 1218], setTimeouts: [], presser: Presser{}, sparklinesOptions: [object Object], loaded: Promise{}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', Clipboard{storage: Memory{location: 'gu.front-tools.clipboard.someone@theguardian.com'}, column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isfront: [object Object], istreats: [object Object], islatest: [object Object], isclipboard: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, group: Group{dropTarget: true, items: [object Object], underDrag: [object Object], underControlDrag: [object Object], index: 0, name: '', parent: undefined, parentType: 'Clipboard', keepCopy: true, front: null, opts: Object{parentType: ..., keepCopy: ..., front: ...}}, pollID: 1224, hasCopiedArticle: [object Object], inCopiedArticle: [object Object], dropdownOpen: [object Object]}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object], _events: Object{change: [...]}}, 'DOM autocomplete:', <autocomplete params="parent: $data"><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+    [32m✓ [39mmarks an article visited from visited articles list as visited
+
+  utils/snap
+    [32m✓ [39mvalidate a snap
+    [32m✓ [39mgenerates an id
+
+  utils/sanitize-api-query
+    [32m✓ [39mcleans the query
+
+  utils/remove-by-id
+    [32m✓ [39mremove elements
+
+  utils/serialize-query-params
+    [32m✓ [39mserializes the search query
+
+  utils/deep-get
+    [32m✓ [39mgets from a deep object
+
+  Extensions
+    [32m✓ [39mnav section
+
+  Latest articles errors
+    [32m✓ [39mdoesn't stop page load
+    [32m✓ [39mhides some errors when page is already loaded
+
+  utils/front-count
+    [32m✓ [39mcounts fronts without priority
+    [32m✓ [39mcounts fronts with any priority
+    [32m✓ [39mdefaults to editorial priority
+    [32m✓ [39mcounts fronts with no limits
+
+  utils/clean-code
+    [32m✓ [39mclones objects
+
+  Persistence
+    [32m✓ [39mcreates a front
+    [32m✓ [39mcreates a collection with display hints
+    [32m✓ [39mupdates a collection
+    [32m✓ [39mupdates a front
+    [32m✓ [39mcreates a collection
+
+  OAuth Session
+    [32m✓ [39mre-authenticate every once in a while
+    [32m✓ [39mredirects on timeout
+
+  utils/url-query
+    [32m✓ [39mextract the search query
+
+  utils/find-first-by-id
+    [32m✓ [39mfind by id
+LOG LOG: [36m'[trace] fetchImage onload after', 3, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/square.png', 'size:', '140x140'[39m
+LOG LOG: [36m'[trace] fetchImage onerror after', 3, 'ms path:', 'http://localhost:9876/base/public/test/fixtures/this_image_doesnt_exists__promised.png'[39m
+
+  Editors
+    [32m✓ [39mvalidates inputs
+    [32m✓ [39mtoggles boolean values
+    [32m✓ [39mlist editor with drop in editor
+
+  utils/clone-with-key
+    [32m✓ [39mclones and adds a key
+
+  utils/is-guardian-url
+    [32m✓ [39mmatches guardian domain
+
+  Last Modified
+    [32m✓ [39mfetches the last time
+    [32m✓ [39mfetches a stale date
+
+  utils/populate-observables
+    [32m✓ [39mpopulate observables
+
+  utils/full-trim
+    [32m✓ [39mtrims strings
+
+  Serialize Article Meta
+    [32m✓ [39mconverts number to strings
+    [32m✓ [39mignores values equal to the overridden field
+    [32m✓ [39mignore empty meta data
+    [32m✓ [39mincludes the group index
+    [32m✓ [39mcleans sparse array
+    [32m✓ [39mserializes supporting links
+    [32m✓ [39mconverts number to strings in nested structures
+    [32m✓ [39mdrops empty arrays
+    [32m✓ [39mexplicit about values equal to their default
+    [32m✓ [39mtrim and sanitize strings
+
+  Visited Article Storage
+    isArticleVisited
+      [32m✓ [39mshoud return false for unvisited articles
+      [32m✓ [39mshoud return true for visited articles
+    addArticleToStorage
+      [32m✓ [39madds an article to storage
+      [32m✓ [39mshould add an article to storage only once
+
+  Open Graph
+    [32m✓ [39mhandles failures
+    [32m✓ [39mfetches data from site - guardian
+    [32m✓ [39mfetches data from open graph - off site
+    [32m✓ [39mfetches data from innerHTML - off site
+
+  Content API
+    validateItem
+      [32m✓ [39mvalidates multiple snap results - link
+      [32m✓ [39mfails on a relative snap
+      [32m✓ [39mvalidates multiple snap link
+      [32m✓ [39mresolves a single valid capi item
+      [32m✓ [39mresolves from cache
+      [32m✓ [39mfails on snaps not in the clipboard
+      [32m✓ [39mresolves a snapID
+      [32m✓ [39mvalidates a snap that contains a type
+      [32m✓ [39mvalidates empty guardian content
+      [32m✓ [39mvalidates multiple snap results - latest
+      [32m✓ [39mresolves a single malformed capi item
+      [32m✓ [39mfails on links coming from self
+    [32m✓ [39mdecorateItems empty
+    [32m✓ [39mdecorateItems in one batch
+    [32m✓ [39mdecorateItems in multiple batches
+    fetchContent
+      [32m✓ [39mfails if no response
+      [32m✓ [39mfails with status error
+      [32m✓ [39mreturns from content
+      [32m✓ [39mreturns from other fields
+      [32m✓ [39mfails with empty intersection
+    fetchMetaForPath
+      [32m✓ [39mfails if meta no response
+      [32m✓ [39mextract meta from the response
+LOG LOG: [36m'[trace] widget:load emitted by', FrontConfig{column: Column{opts: Object{type: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isconfig: [object Object], issearch: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], types: [object Object], typesGroups: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, typesGroupsConfig: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, navSections: [object Object]}, pinnedFront: [object Object], fronts: [object Object], collections: [object Object], loaded: Promise{}}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', FrontConfig{column: Column{opts: Object{type: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isconfig: [object Object], issearch: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], types: [object Object], typesGroups: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, typesGroupsConfig: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, navSections: [object Object]}, pinnedFront: [object Object], fronts: [object Object], collections: [object Object], loaded: Promise{}}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionTags{tags: [object Object], inputTags: [object Object], initialValues: []}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionTags{tags: [object Object], inputTags: [object Object], initialValues: [Object{text: ..., value: ...}]}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionTags{tags: [object Object], inputTags: [object Object], initialValues: [Object{text: ..., value: ...}]}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionBackfill{meta: Object{backfill: [object Object], apiQuery: [object Object], parentCollection: [object Object]}, state: Object{queryStatus: [object Object], underDrag: [object Object]}, results: [object Object]}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', CollectionTags{tags: [object Object], inputTags: [object Object], initialValues: [Object{text: ..., value: ...}]}, 'DOM autocomplete:', null[39m
+
+  Config
+    [32m✓ [39m/config/fronts
+LOG LOG: [36m'[trace] widget:load emitted by', FrontConfig{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isconfig: [object Object], issearch: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], types: [object Object], typesGroups: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, typesGroupsConfig: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, navSections: [object Object]}, pinnedFront: [object Object], fronts: [object Object], collections: [object Object], loaded: Promise{}}, 'DOM autocomplete:', null[39m
+LOG LOG: [36m'[trace] widget:load emitted by', SearchConfig{column: Column{opts: Object{type: ..., config: ..., layout: ..., baseModel: ..., title: ..., layoutType: ..., widget: ...}, layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, component: Object{name: ..., params: ..., widget: ...}, config: [object Object], style: Object{width: ..., left: ..., isNarrow: ...}, isconfig: [object Object], issearch: [object Object], onResizeCallback: function() { ... }, _events: Object{widget:registered: ...}, loaded: Promise{}}, baseModel: BaseModel{title: [object Object], layout: Layout{CONST: ..., router: ..., baseModel: ..., allColumns: ..., availableColumns: ..., configVisible: ..., savedState: ..., currentState: ..., savedLayout: ..., loaded: ...}, extensions: [object Object], modalDialog: ModalDialog{isOpen: ..., templateName: ..., templateData: ...}, message: Message{textMessage: ..., codeEnvMessage: ...}, state: [object Object], frontsList: [object Object], allFrontsList: [object Object], frontsMap: [object Object], switches: [object Object], permissions: [object Object], pending: [object Object], isMainActionVisible: [object Object], priority: 'test', fullPriority: 'test', priorities: [object Object], defaultPriority: 'editorial', liveFrontend: 'http://www.theguardian.com/', identity: Object{email: ..., avatarUrl: ...}, registerExtension: function () { ... }, extensionCreated: function () { ... }, loaded: Promise{}, testColumn: Object{registerMainWidget: ...}, isPasteActive: [object Object], types: [object Object], typesGroups: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, typesGroupsConfig: Object{scrollable/highlights: ..., flexible/general: ..., flexible/special: ..., scrollable/small: ..., scrollable/medium: ..., scrollable/feature: ..., static/medium/4: ..., static/feature/2: ..., nav/list: ..., nav/media-list: ..., news/most-popular: ..., breaking-news/not-for-other-fronts: ..., fixed/showcase: ..., fixed/thrasher: ...}, navSections: [object Object]}, searchTerm: [object Object], searchedFronts: [object Object], originalFronts: [Object{id: ..., collections: ...}, Object{id: ..., collections: ...}]}, 'DOM autocomplete:', null[39m
+    [32m✓ [39mallows for searching fronts
+
+  Autocomplete
+    API
+      [32m✓ [39muses the cache
+      [32m✓ [39mignores empty strings
+      [32m✓ [39mrejects invalid characters
+      [32m✓ [39mhandles missing results
+      [32m✓ [39mreturns expected results
+      [32m✓ [39mrejects malformed response
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object]}, 'DOM autocomplete:', <autocomplete><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+    Widget
+      [32m✓ [39msearches debouncing
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object]}, 'DOM autocomplete:', <autocomplete><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+      [32m✓ [39mclears the search on empty filter
+LOG LOG: [36m'[trace] widget:load emitted by', AutoComplete{suggestions: [object Object], filterType: [object Object], filterTypes: [object Object], alertMessage: [object Object], filter: [object Object], placeholder: [object Object], open: [object Object], paginationInProgress: [object Object], currentPage: [object Object], totalPages: [object Object], hasMoreSuggestions: [object Object]}, 'DOM autocomplete:', <autocomplete><div class="autocompleter dropdown" data-bind="css: {
+    'dropdown-open': open
+}">
+    <select class="search--filterType" data-bind="
+        event: { change: clear },
+        options: filterTypes,
+        optionsText: 'display',
+        value: filterType"><option value="">in section:</option><option value="">with tag:</option></select>
+
+    <input type="text" class="search--filter" placeholder="e.g. news" data-bind="
+        attr: { placeholder: placeholder},
+        textInput: filter">
+
+    <ul class="suggestions">
+        <!-- ko if: alertMessage --><!-- /ko -->
+        <!-- ko foreach: suggestions --><!-- /ko -->
+        <!-- ko if: hasMoreSuggestions --><!-- /ko -->
+    </ul>
+</div>
+</autocomplete>[39m
+      [32m✓ [39mscrolls indefinitely
+
+Chrome Headless 112.0.5614.0 (Mac OS 10.15.7): Executed 242 of 242[31m (1 FAILED)[39m (34.701 secs / 34.527 secs)
+[31mTOTAL: 1 FAILED, 241 SUCCESS[39m
+
+
+[31m1) Alerts the user before launch
+[39m[31m     Breaking News
+[39m     [90mFailed: edit action timeout, endpoint /edits
+Error: edit action timeout, endpoint /edits
+    at eval (http://localhost:9876/test/utils/actions/base-action.js!transpiled:43:55)
+[39m
+
+
+
+[33mWarning: Task "karma:static" failed. Use --force to continue.[39m
+
+[31mAborted due to warnings.[39m
+
+
+Execution Time (2026-06-05 18:12:14 UTC)
+karma:static  37.7s  ▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇▇ 100%
+Total 37.8s
+
