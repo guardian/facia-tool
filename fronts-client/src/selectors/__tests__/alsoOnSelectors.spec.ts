@@ -26,10 +26,14 @@ const allFronts = editorialFrontsInConfig
 	.concat(additionalEditorialFronts)
 	.concat(trainingFronts.concat(commercialFronts));
 
-const collectionsExcept = (collectionToExclude: Collection) =>
-	allCollections.filter(
+const collectionsExcept = (collectionToExclude: Collection) => {
+	const filtered = allCollections.filter(
 		(collection) => collectionToExclude.id !== collection.id,
 	);
+	let result: { [uuid: string]: Collection } = {};
+	filtered.forEach((collection) => (result[collection.id] = collection));
+	return result;
+};
 
 describe('Selecting collections which are also on other fronts', () => {
 	it('return an object with all the collections on the current front', () => {
@@ -151,8 +155,11 @@ describe('Selecting cards which are also on other collections on the same front'
 		).toEqual({
 			cardUuid2: {
 				collections: [
-					{ collectionUuid: 'sportCollectionUuid' },
-					{ collectionUuid: 'unpublishedCollectionUuid' },
+					{ collectionUuid: 'sportCollectionUuid', displayName: 'sport' },
+					{
+						collectionUuid: 'unpublishedCollectionUuid',
+						displayName: 'unpublished',
+					},
 				],
 			},
 		});
@@ -167,12 +174,20 @@ describe('Selecting cards which are also on other collections on the same front'
 		).toEqual({
 			cardUuid2: {
 				collections: [
-					{ collectionUuid: 'footballCollectionUuid' },
-					{ collectionUuid: 'unpublishedCollectionUuid' },
+					{ collectionUuid: 'footballCollectionUuid', displayName: 'football' },
+					{
+						collectionUuid: 'unpublishedCollectionUuid',
+						displayName: 'unpublished',
+					},
 				],
 			},
 			cardUuid3: {
-				collections: [{ collectionUuid: 'whatToWatchCollectionUuid' }],
+				collections: [
+					{
+						collectionUuid: 'whatToWatchCollectionUuid',
+						displayName: 'what-to-watch',
+					},
+				],
 			},
 		});
 
@@ -185,10 +200,14 @@ describe('Selecting cards which are also on other collections on the same front'
 			),
 		).toEqual({
 			cardUuid3: {
-				collections: [{ collectionUuid: 'sportCollectionUuid' }],
+				collections: [
+					{ collectionUuid: 'sportCollectionUuid', displayName: 'sport' },
+				],
 			},
 			cardUuid4: {
-				collections: [{ collectionUuid: 'cultureCollectionUuid' }],
+				collections: [
+					{ collectionUuid: 'cultureCollectionUuid', displayName: 'culture' },
+				],
 			},
 		});
 	});
@@ -203,7 +222,12 @@ describe('Selecting cards which are also on other collections on the same front'
 			),
 		).toEqual({
 			cardUuid4: {
-				collections: [{ collectionUuid: 'whatToWatchCollectionUuid' }],
+				collections: [
+					{
+						collectionUuid: 'whatToWatchCollectionUuid',
+						displayName: 'what-to-watch',
+					},
+				],
 			},
 			cardUuid5: {
 				collections: [],
@@ -226,7 +250,10 @@ describe('Selecting cards which are also on other collections on the same front'
 			expect.objectContaining({
 				cardUuid10: {
 					collections: expect.arrayContaining([
-						{ collectionUuid: 'championshipCollectionUuid' },
+						{
+							collectionUuid: 'championshipCollectionUuid',
+							displayName: 'championship',
+						},
 					]),
 				},
 			}),
@@ -245,7 +272,10 @@ describe('Selecting cards which are also on other collections on the same front'
 			expect.objectContaining({
 				cardUuid10: {
 					collections: expect.arrayContaining([
-						{ collectionUuid: 'footballLeagueCollectionUuid' },
+						{
+							collectionUuid: 'footballLeagueCollectionUuid',
+							displayName: 'football-league',
+						},
 					]),
 				},
 			}),
@@ -264,7 +294,10 @@ describe('Selecting cards which are also on other collections on the same front'
 			expect.objectContaining({
 				cardUuid10: {
 					collections: expect.arrayContaining([
-						{ collectionUuid: 'premierLeagueCollectionUuid' },
+						{
+							collectionUuid: 'premierLeagueCollectionUuid',
+							displayName: 'premier-league',
+						},
 					]),
 				},
 			}),
@@ -283,8 +316,11 @@ describe('Selecting cards which are also on other collections on the same front'
 			expect.objectContaining({
 				cardUuid2: {
 					collections: [
-						{ collectionUuid: 'footballCollectionUuid' },
-						{ collectionUuid: 'sportCollectionUuid' },
+						{
+							collectionUuid: 'footballCollectionUuid',
+							displayName: 'football',
+						},
+						{ collectionUuid: 'sportCollectionUuid', displayName: 'sport' },
 					],
 				},
 			}),
@@ -300,7 +336,12 @@ describe('Selecting cards which are also on other collections on the same front'
 		).not.toEqual(
 			expect.objectContaining({
 				cardUuid7: {
-					collections: [{ collectionUuid: 'premierLeagueCollectionUuid' }],
+					collections: [
+						{
+							collectionUuid: 'premierLeagueCollectionUuid',
+							displayName: 'premier-league',
+						},
+					],
 				},
 			}),
 		);

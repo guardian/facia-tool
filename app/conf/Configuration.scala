@@ -36,7 +36,7 @@ class ApplicationConfiguration(
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f), "UTF-8")
     case _ =>
-      logger.warn("Missing configuration file $propertiesFile")
+      logger.warn(s"Missing configuration file $propertiesFile")
       ""
   }
 
@@ -116,6 +116,7 @@ class ApplicationConfiguration(
     lazy val region = getMandatoryString("aws.region")
     lazy val bucket = getMandatoryString("aws.bucket")
     lazy val frontsBucket = getMandatoryString("aws.frontsBucket")
+    lazy val localS3Endpoint: Option[String] = getString("aws.localS3Endpoint")
     lazy val publishedEditionsIssuesBucket = getMandatoryString(
       "aws.publishedEditionsIssuesBucket"
     )
@@ -154,45 +155,33 @@ class ApplicationConfiguration(
           None
       }
     }
-    // NB this does not fail with exception (as the 'old' credentials above).  It is assumed that the code
-    // above would have already failed.
-    // If and when this code is rewritten to remove the 'old' approach, then that behaviour may be duplicated here.
-    def newStyleCmsFrontsAccountCredentials = NewAwsCredentialsProviderChain
-      .builder()
-      .addCredentialsProvider(NewProfileCredentialsProvider.create("cmsFronts"))
-      .addCredentialsProvider(DefaultCredentialsProvider.create())
-      .build()
 
-    def frontendAccountCredentials: AWSCredentialsProvider =
-      crossAccount.getOrElse(
+    def newStyleCmsFrontsAccountCredentials: NewAwsCredentialsProviderChain =
+      newStyleCredentials.getOrElse(
         throw new BadConfigurationException(
-          "AWS credentials are not configured for cross account Frontend"
+          "AWS credentials are not configured for CMS Fronts (v2)"
         )
       )
-    var crossAccount: Option[AWSCredentialsProvider] = {
-      val provider = new AWSCredentialsProviderChain(
-        new ProfileCredentialsProvider("frontend"),
-        new STSAssumeRoleSessionCredentialsProvider.Builder(
-          faciatool.stsRoleToAssume,
-          "frontend"
-        ).build()
-      )
+    val newStyleCredentials: Option[NewAwsCredentialsProviderChain] = {
+      val provider = NewAwsCredentialsProviderChain
+        .builder()
+        .addCredentialsProvider(
+          NewProfileCredentialsProvider.create("cmsFronts")
+        )
+        .addCredentialsProvider(DefaultCredentialsProvider.create())
+        .build()
 
-      // this is a bit of a convoluted way to check whether we actually have credentials.
-      // I guess in an ideal world there would be some sort of isConfigued() method...
       try {
-        val creds = provider.getCredentials
+        provider.resolveCredentials()
         Some(provider)
       } catch {
-        case ex: AmazonClientException =>
-          logger.error("amazon client cross account exception")
-
-          // We really, really want to ensure that PROD is configured before saying a box is OK
+        case ex: Exception =>
+          logger.error("amazon client exception (v2 credentials)")
           if (isProd) throw ex
-          // this means that on dev machines you only need to configure keys if you are actually going to use them
           None
       }
     }
+
     lazy val rdsClient = AmazonRDSClientBuilder
       .standard()
       .withCredentials(cmsFrontsAccountCredentials)

@@ -12,7 +12,7 @@ You can find the client for the Fronts tool in [fronts-client](./fronts-client).
 
 1. Install [NVM](https://github.com/creationix/nvm).
 2. Ensure [Docker](https://www.docker.com/products/docker-desktop) is installed
-3. Get credentials from [Janus](https://janus.gutools.co.uk/multi-credentials?&permissionIds=cmsFronts-dev,capi-api-gateway,frontend-dev) (`cmsFronts`, `capi` & `frontend`).
+3. Get credentials from [Janus](https://janus.gutools.co.uk/credentials?permissionId=cmsFronts-iam-facia-CODE-RunFaciaToolLocally-nL42h4zEgHhf).
 4. Grant [code](https://permissions.code.dev-gutools.co.uk/) permissions (used for local builds as well).  Any engineer on ed tools should be able to give you access. You need:
     1. fronts_access
     1. launch_commercial_fronts
@@ -29,6 +29,9 @@ You can find the client for the Fronts tool in [fronts-client](./fronts-client).
    - From the project root, run `./scripts/dev-start.sh`
    - From the project root, run without debug `./scripts/dev-start.sh --no-debug`
 3. Open `https://fronts.local.dev-gutools.co.uk`.
+
+You can use localstack for S3 by running `./scripts/setup-local-s3.sh` to create a bucket and populate
+it with the current state of the CODE fronts.
 
 ### Unit tests
 

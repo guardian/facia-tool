@@ -4,9 +4,13 @@ import type { State } from 'types/State';
 import { connect } from 'react-redux';
 import { Card, Group } from 'types/Collection';
 import DropZone, { DefaultDropContainer } from 'components/DropZone';
-import { createSelectArticlesFromIds } from 'selectors/shared';
+import {
+	createSelectArticlesFromIds,
+	selectCardsFromRootState,
+} from 'selectors/shared';
 import { theme, styled } from 'constants/theme';
 import { CardTypeLevel } from 'lib/dnd/CardTypeLevel';
+import { createShallowEqualResultSelector } from 'util/selectorUtils';
 
 interface OuterProps {
 	groupId: string;
@@ -103,30 +107,29 @@ const GroupLevel = ({
 
 const createMapStateToProps = () => {
 	const selectArticlesFromIds = createSelectArticlesFromIds();
-
-	const getCardsForOtherGroups = () => {
-		return (state: State, groups: Group[] | undefined) => {
-			if (!groups) {
-				return [];
-			}
-
+	const selectCardsForOtherGroups = createShallowEqualResultSelector(
+		selectCardsFromRootState,
+		(_: any, { groups }: { groups: Group[] }) => groups,
+		(cards, groups) => {
 			return groups.map((group) => {
-				const cardsData = selectArticlesFromIds(state, {
-					cardIds: group.cards,
-				});
 				return {
 					...group,
-					cardsData,
+					cardsData: group.cards.map((afId) => cards[afId]),
 				};
 			});
+		},
+	);
+
+	return (state: State, { cardIds, groups }: OuterProps) => {
+		return {
+			cards: selectArticlesFromIds(state, {
+				cardIds,
+			}),
+			groupsWithCardsData: selectCardsForOtherGroups(state, {
+				groups: groups || [],
+			}),
 		};
 	};
-	return (state: State, { cardIds, groups }: OuterProps) => ({
-		cards: selectArticlesFromIds(state, {
-			cardIds,
-		}),
-		groupsWithCardsData: getCardsForOtherGroups()(state, groups),
-	});
 };
 
 export default connect(createMapStateToProps)(GroupLevel);

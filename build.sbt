@@ -8,7 +8,7 @@ packageSummary := "Facia tool"
 
 packageDescription := "Guardian front pages editor"
 
-ThisBuild / scalaVersion := "2.13.13"
+ThisBuild / scalaVersion := "2.13.18"
 
 import sbt.Resolver
 
@@ -52,10 +52,11 @@ TwirlKeys.templateImports ++= Seq(
 routesImport += "model.editions._"
 
 val awsVersion = "1.12.470"
-val capiModelsVersion = "31.0.0"
-val capiClientVersion = "37.0.0"
+val capiModelsVersion = "38.0.0"
+val capiClientVersion = "42.0.1"
 val json4sVersion = "4.0.3"
 val circeVersion = "0.13.0"
+val awsSdkVersion = "2.43.0"
 
 resolvers ++= Seq(
   Resolver.file("Local", file(Path.userHome.absolutePath + "/.ivy2/local"))(
@@ -83,7 +84,7 @@ libraryDependencies ++= Seq(
   "com.gu" %% "content-api-client-aws" % "0.7.6",
   "com.gu" %% "content-api-client-default" % capiClientVersion,
   "com.gu" %% "editorial-permissions-client" % "3.0.0",
-  "com.gu" %% "fapi-client-play30" % "23.0.0",
+  "com.gu" %% "fapi-client-play30" % "30.0.0",
   "com.gu" %% "mobile-notifications-api-models" % "4.0.0",
   "com.gu" %% "pan-domain-auth-play_3-0" % "7.0.0",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
@@ -108,7 +109,9 @@ libraryDependencies ++= Seq(
   "org.apache.commons" % "commons-text" % "1.10.0",
   "com.beust" % "jcommander" % "1.75",
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
-  "org.mockito" % "mockito-core" % "5.11.0" % Test
+  "org.mockito" % "mockito-core" % "5.11.0" % Test,
+  "software.amazon.awssdk" % "s3" % awsSdkVersion,
+  "com.gu.etag-caching" %% "aws-s3-sdk-v2" % "7.0.0"
 )
 
 excludeDependencies ++= Seq(

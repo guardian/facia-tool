@@ -109,7 +109,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   PublishEventsListener.apply(config, editionsDb).start
 
   // Controllers
-  val frontsApi = new FrontsApi(config, awsEndpoints)
+  val frontsApi = new FrontsApi(config)
   val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
   val configAgent = new ConfigAgent(config, frontsApi)

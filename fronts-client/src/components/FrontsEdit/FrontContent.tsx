@@ -18,11 +18,7 @@ import { editorSelectCard } from 'bundles/frontsUI';
 import { initialiseCollectionsForFront } from 'actions/Collections';
 import { createSelectCollectionsWhichAreAlsoOnOtherFronts } from 'selectors/frontsSelectors';
 import { CollectionsWhichAreAlsoOnOtherFronts } from 'types/Collection';
-import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
-import Raven from 'raven-js';
 import { selectFront } from 'selectors/shared';
-
-const STALENESS_THRESHOLD_IN_MILLIS = 30_000; // 30 seconds
 
 const CollectionContainer = styled.div`
 	position: relative;
@@ -37,25 +33,6 @@ const FrontCollectionsContainer = styled.div`
 	max-height: calc(100% - 43px);
 	padding-top: 1px;
 	padding-bottom: ${theme.front.paddingForAddFrontButton}px;
-`;
-
-const EditingLockedCollectionsOverlay = styled.div`
-	z-index: 80;
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	background-color: ${theme.colors.blackTransparent60};
-	color: ${theme.base.colors.textLight};
-	text-shadow: 0 0 10px ${theme.base.colors.textDark};
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	user-select: none;
-	text-align: center;
-	padding: 5px;
-	h2 {
-		margin: 0;
-	}
 `;
 
 const isDropFromCAPIFeed = (e: React.DragEvent) =>
@@ -87,13 +64,10 @@ type FrontProps = FrontPropsBeforeState & {
 	) => void;
 	moveCard: typeof moveCard;
 	insertCardFromDropEvent: typeof insertCardFromDropEvent;
-	collectionsError: string | null;
-	collectionsLastSuccessfulFetchTimestamp: number | null;
 };
 
 interface FrontState {
 	currentlyScrolledCollectionId: string | undefined;
-	isCollectionsStale: boolean | undefined;
 }
 
 function getNextGroupTarget(
@@ -215,7 +189,6 @@ export const buildMoveQueue = (move: Move<TCard>) => {
 class FrontContent extends React.Component<FrontProps, FrontState> {
 	public state = {
 		currentlyScrolledCollectionId: undefined,
-		isCollectionsStale: undefined,
 	};
 	private collectionElements: {
 		[collectionId: string]: HTMLDivElement | null;
@@ -264,26 +237,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 			this.props.initialiseCollectionsForFront(
 				this.props.id,
 				this.props.browsingStage,
-			);
-		}
-		if (
-			this.props.collectionsLastSuccessfulFetchTimestamp !==
-			newProps.collectionsLastSuccessfulFetchTimestamp
-		) {
-			this.updateCollectionsStalenessFlag();
-			setTimeout(
-				this.updateCollectionsStalenessFlag,
-				STALENESS_THRESHOLD_IN_MILLIS,
-			);
-		}
-		if (newProps.collectionsError && !this.props.collectionsError) {
-			Raven.captureException(
-				`Collections editing OUGHT TO BE locked due to error: ${newProps.collectionsError}`,
-				{
-					extra: {
-						error: newProps.collectionsError,
-					},
-				},
 			);
 		}
 	}
@@ -437,11 +390,7 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 	};
 
 	public render() {
-		const { front, collectionsError } = this.props;
-
-		// TODO remove the false bit when we're happy to actually lock users editing
-		const isEditingLocked =
-			false && (this.state.isCollectionsStale || !!collectionsError);
+		const { front } = this.props;
 
 		return (
 			<FrontCollectionsContainer
@@ -460,15 +409,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 										(this.collectionElements[collectionId] = ref)
 									}
 								>
-									{isEditingLocked && (
-										<EditingLockedCollectionsOverlay>
-											<h2>Editing Locked</h2>
-											<span>
-												We couldn't refresh this collection. It may be out of
-												date. Please wait or reload.
-											</span>
-										</EditingLockedCollectionsOverlay>
-									)}
 									<Collection
 										id={collectionId}
 										frontId={this.props.id}
@@ -503,31 +443,6 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		collectionId: string,
 		isSupporting: boolean,
 	) => this.props.selectCard(cardId, collectionId, this.props.id, isSupporting);
-
-	private updateCollectionsStalenessFlag = () => {
-		const collectionsStalenessInMillis = !!this.props
-			.collectionsLastSuccessfulFetchTimestamp
-			? Date.now() - this.props.collectionsLastSuccessfulFetchTimestamp
-			: 0;
-
-		const isCollectionsStale =
-			collectionsStalenessInMillis > STALENESS_THRESHOLD_IN_MILLIS;
-
-		if (!this.state.isCollectionsStale && isCollectionsStale) {
-			Raven.captureMessage(
-				'Collections editing OUGHT TO BE locked due to staleness.',
-				{
-					extra: {
-						collectionsStalenessInMillis,
-					},
-				},
-			);
-		}
-
-		if (this.state.isCollectionsStale !== isCollectionsStale) {
-			this.setState({ isCollectionsStale });
-		}
-	};
 }
 
 const mapStateToProps = () => {
@@ -538,9 +453,6 @@ const mapStateToProps = () => {
 			front: selectFront(state, { frontId: id }),
 			collectionsWhichAreAlsoOnOtherFronts:
 				selectCollectionsWhichAreAlsoOnOtherFronts(state, { frontId: id }),
-			collectionsError: collectionSelectors.selectCurrentError(state),
-			collectionsLastSuccessfulFetchTimestamp:
-				collectionSelectors.selectLastSuccessfulFetchTimestamp(state),
 		};
 	};
 };

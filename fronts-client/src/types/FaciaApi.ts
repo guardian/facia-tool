@@ -32,7 +32,12 @@ interface EditionsFrontMetadata {
 	nameOverride?: string;
 }
 
-type Platform = 'Web' | 'Platform';
+export const isPlatform = (s: string): s is Platform =>
+	(platforms as readonly string[]).includes(s);
+
+export const platforms = ['Any', 'Web', 'App'] as const;
+
+export type Platform = (typeof platforms)[number];
 
 interface FrontsToolSettings {
 	displayEditWarning?: boolean;
@@ -54,7 +59,6 @@ interface CollectionConfigResponse {
 	uneditable?: boolean;
 	showTags?: boolean;
 	hideKickers?: boolean;
-	excludedFromRss?: boolean;
 	hideShowMore?: boolean;
 	description?: string;
 	showSections?: boolean;

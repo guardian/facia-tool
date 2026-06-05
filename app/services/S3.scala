@@ -1,7 +1,12 @@
 package services
 
 import _root_.metrics.S3Metrics.S3ClientExceptionsMetric
-import com.amazonaws.auth.AWSCredentialsProvider
+import com.amazonaws.auth.{
+  AWSCredentialsProvider,
+  AWSStaticCredentialsProvider,
+  BasicAWSCredentials
+}
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.services.s3.model.CannedAccessControlList.{
   Private,
   PublicRead
@@ -28,18 +33,37 @@ case class CmsFrontsS3Account(
 
   lazy val client: Option[AmazonS3] =
     config.aws.credentials.map(credentials =>
-      S3.client(credentials, config.aws.region)
+      S3.client(credentials, config.aws.region, config.aws.localS3Endpoint)
     )
 }
 
 object S3 {
-  def client(credentials: AWSCredentialsProvider, region: String): AmazonS3 = {
-    AmazonS3ClientBuilder
-      .standard()
-      .withCredentials(credentials)
-      .withRegion(region)
-      .build()
-  }
+  def client(
+      credentials: AWSCredentialsProvider,
+      region: String,
+      localS3Endpoint: Option[String] = None
+  ): AmazonS3 =
+    localS3Endpoint match {
+      case Some(endpoint) =>
+        AmazonS3ClientBuilder
+          .standard()
+          .withCredentials(
+            new AWSStaticCredentialsProvider(
+              new BasicAWSCredentials("test", "test")
+            )
+          )
+          .withEndpointConfiguration(
+            new EndpointConfiguration(endpoint, region)
+          )
+          .withPathStyleAccessEnabled(true)
+          .build()
+      case None =>
+        AmazonS3ClientBuilder
+          .standard()
+          .withCredentials(credentials)
+          .withRegion(region)
+          .build()
+    }
 }
 
 trait S3 extends Logging {

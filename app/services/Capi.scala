@@ -10,6 +10,7 @@ import com.amazonaws.auth.{
   AWSCredentialsProviderChain,
   STSAssumeRoleSessionCredentialsProvider
 }
+import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder
 import com.gu.contentapi.client.model._
 import com.gu.contentapi.client.model.v1.{Content, SearchResponse}
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner, Parameter}
@@ -69,12 +70,19 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit
   }
 
   private val previewSigner = {
+    val stsClient = AWSSecurityTokenServiceClientBuilder
+      .standard()
+      .withCredentials(config.aws.cmsFrontsAccountCredentials)
+      .withRegion(config.aws.region)
+      .build()
+
     val capiPreviewCredentials = new AWSCredentialsProviderChain(
-      new ProfileCredentialsProvider("capi"),
       new STSAssumeRoleSessionCredentialsProvider.Builder(
         config.contentApi.previewRole,
         "capi"
-      ).build()
+      )
+        .withStsClient(stsClient)
+        .build()
     )
     new IAMSigner(
       credentialsProvider = capiPreviewCredentials,

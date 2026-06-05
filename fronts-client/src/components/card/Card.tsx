@@ -5,7 +5,6 @@ import Article from 'components/card/article/ArticleCard';
 import type { State } from 'types/State';
 import { createSelectCardType } from 'selectors/cardSelectors';
 import {
-	selectCard,
 	selectExternalArticleFromCard,
 	selectSupportingArticleCount,
 } from 'selectors/shared';
@@ -125,7 +124,7 @@ type CardContainerProps = ContainerProps & {
 	isLive?: boolean;
 	pillarId?: string;
 	collectionType?: string;
-	selectOtherCard: { (uuid: string): CardType };
+	cards: { [uuid: string]: CardType };
 	groupSizeId?: number;
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 };
@@ -504,7 +503,7 @@ class Card extends React.Component<CardContainerProps> {
 		imageCriteria: Criteria,
 	): ReturnType<typeof validateDimensions> => {
 		// check dragged image matches this card's collection's criteria.
-		const cardImageWasDraggedFrom = this.props.selectOtherCard(cardUuid);
+		const cardImageWasDraggedFrom = this.props.cards[cardUuid];
 
 		const { imageSlideshowReplace, slideshow } = cardImageWasDraggedFrom.meta;
 		if (imageSlideshowReplace) {
@@ -538,7 +537,7 @@ const createMapStateToProps = () => {
 			numSupportingArticles: selectSupportingArticleCount(state, uuid),
 			editMode: selectEditMode(state),
 			collectionType: collectionId && selectCollectionType(state, collectionId),
-			selectOtherCard: (uuid: string) => selectCard(state, uuid),
+			cards: state.cards,
 		};
 	};
 };

@@ -150,6 +150,8 @@ class FrontSection extends React.Component<
 	FrontsComponentProps,
 	ComponentState
 > {
+	private static readonly EMAIL_CACHE_BUST_WINDOW_MS = 5000;
+
 	public state = {
 		collectionSet: frontStages.draft,
 		frontNameValue: '',
@@ -175,6 +177,11 @@ class FrontSection extends React.Component<
 		const { frontId, isOverviewOpen, isEditions, shouldUseCODELinks } =
 			this.props;
 		const title = this.getTitle();
+		const isEmailFront = this.isEmailFront(frontId);
+		const previewBaseUrl = this.getPreviewBaseUrl(frontId, shouldUseCODELinks);
+		const liveBaseUrl = this.getLiveBaseUrl(frontId, shouldUseCODELinks);
+		const previewUrl = this.getFrontUrl(previewBaseUrl, frontId);
+		const liveUrl = this.getFrontUrl(liveBaseUrl, frontId);
 
 		const { frontNameValue, editingFrontName } = this.state;
 		const isSpecial = this.props.selectedFront
@@ -217,12 +224,13 @@ class FrontSection extends React.Component<
 							<EditModeVisibility visibleMode="fronts">
 								<LinkButtons>
 									<Link
-										href={`${
-											shouldUseCODELinks
-												? urls.previewUrlCODE
-												: urls.previewUrlPROD
-										}${this.props.frontId}`}
+										href={previewUrl}
 										target="preview"
+										onClick={
+											isEmailFront
+												? this.handleEmailFrontLinkClick(previewUrl, 'preview')
+												: undefined
+										}
 									>
 										<FrontHeaderButton>
 											<PreviewEyeIcon size="xl" />
@@ -232,10 +240,13 @@ class FrontSection extends React.Component<
 										</FrontHeaderButton>
 									</Link>
 									<Link
-										href={`${
-											shouldUseCODELinks ? urls.liveUrlCODE : urls.liveUrlPROD
-										}${this.props.frontId}`}
+										href={liveUrl}
 										target="live"
+										onClick={
+											isEmailFront
+												? this.handleEmailFrontLinkClick(liveUrl, 'live')
+												: undefined
+										}
 									>
 										<FrontHeaderButton priority="transparent">
 											<GuardianRoundel size="xl" />
@@ -303,16 +314,85 @@ class FrontSection extends React.Component<
 		});
 	};
 
+	private getPreviewBaseUrl = (
+		frontId: string,
+		shouldUseCODELinks: boolean,
+	): string => {
+		const isEmailFront = this.isEmailFront(frontId);
+
+		if (isEmailFront) {
+			if (shouldUseCODELinks) {
+				return urls.emailPreviewUrlCODE;
+			}
+
+			return urls.emailPreviewUrlPROD;
+		}
+
+		if (shouldUseCODELinks) {
+			return urls.previewUrlCODE;
+		}
+
+		return urls.previewUrlPROD;
+	};
+
+	private getLiveBaseUrl = (
+		frontId: string,
+		shouldUseCODELinks: boolean,
+	): string => {
+		const isEmailFront = this.isEmailFront(frontId);
+
+		if (isEmailFront) {
+			if (shouldUseCODELinks) {
+				return urls.emailLiveUrlCODE;
+			}
+
+			return urls.emailLiveUrlPROD;
+		}
+
+		if (shouldUseCODELinks) {
+			return urls.liveUrlCODE;
+		}
+
+		return urls.liveUrlPROD;
+	};
+
+	private isEmailFront(frontId: string): boolean {
+		return frontId.startsWith('email/');
+	}
+
+	private getCurrentEmailCacheBust(): number {
+		return (
+			Math.floor(Date.now() / FrontSection.EMAIL_CACHE_BUST_WINDOW_MS) *
+			FrontSection.EMAIL_CACHE_BUST_WINDOW_MS
+		);
+	}
+
+	private getFrontUrl = (baseUrl: string, frontId: string): string => {
+		return `${baseUrl}${frontId}`;
+	};
+
+	private getEmailFrontUrl(baseUrl: string): string {
+		const url = new URL(baseUrl);
+		url.searchParams.set(
+			'cacheBust',
+			this.getCurrentEmailCacheBust().toString(),
+		);
+		return url.toString();
+	}
+
+	private handleEmailFrontLinkClick = (baseUrl: string, target: string) => {
+		return (event: React.MouseEvent<HTMLAnchorElement>) => {
+			event.preventDefault();
+			window.open(this.getEmailFrontUrl(baseUrl), target);
+		};
+	};
+
 	private setFrontHiddenState = (hidden: boolean) => {
 		this.props.frontsActions.setFrontHiddenState(
 			this.props.selectedFront.id,
 			hidden,
 		);
 	};
-
-	// private addFrontCollection = () => {
-	//   this.props.frontsActions.addFrontCollection(this.props.selectedFront.id);
-	// };
 
 	private getTitle = () => {
 		const { selectedFront } = this.props;

@@ -2,6 +2,9 @@ import pageConfig from 'util/extractConfigFromPage';
 
 const previewPRODDomain = 'preview.gutools.co.uk';
 const previewCODEDomain = 'preview.code.dev-gutools.co.uk';
+const emailLiveUrlCODE =
+	'https://email-rendering.code.dev-guardianapis.com/fronts/';
+const emailLiveUrlPROD = 'https://email-rendering.guardianapis.com/fronts/';
 
 export default {
 	base: {
@@ -36,6 +39,10 @@ export default {
 	editionsCardBuilder: 'https://editions-card-builder.gutools.co.uk',
 	previewUrlCODE: `https://${previewCODEDomain}/responsive-viewer/https://${previewCODEDomain}/`,
 	previewUrlPROD: `https://${previewPRODDomain}/responsive-viewer/https://${previewPRODDomain}/`,
+	emailPreviewUrlCODE: `https://${previewCODEDomain}/responsive-viewer/https://email-rendering-preview.code.dev-gutools.co.uk/fronts/`,
+	emailPreviewUrlPROD: `https://${previewPRODDomain}/responsive-viewer/https://email-rendering-preview.gutools.co.uk/fronts/`,
 	liveUrlCODE: 'https://m.code.dev-theguardian.com/',
 	liveUrlPROD: 'https://www.theguardian.com/',
+	emailLiveUrlCODE,
+	emailLiveUrlPROD,
 };
