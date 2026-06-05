@@ -82,7 +82,7 @@ export const createSelectIsArticleStale =
 			id: string,
 		) => ExternalArticle | CapiInteractiveAtom | undefined,
 	) =>
-	(state: State, id: string, dateStr: string | undefined): boolean => {
+	(state: State, id: string, dateStr: string | number | undefined): boolean => {
 		const article = selectArticleById(state, id);
 		if (!dateStr) {
 			return true;

@@ -118,7 +118,7 @@ export const createFetch =
 				);
 				const updatedResults = nonCommercialResults.filter((article) => {
 					const lastModified = isCapiInteractiveAtom(article)
-						? article.contentChangeDetails.lastModified?.date?.toString()
+						? article.contentChangeDetails.lastModified?.date
 						: article.fields.lastModified;
 					return selectIsArticleStale(getState(), article.id, lastModified);
 				});
