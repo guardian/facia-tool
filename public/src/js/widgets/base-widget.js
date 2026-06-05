@@ -7,6 +7,9 @@ class BaseWidget extends BaseClass {
     constructor() {
         super();
         this[loadSym] = setTimeout(() => {
+            if (window.__debug_trace) {
+                console.log('[trace] widget:load emitted by', this, 'DOM autocomplete:', document.querySelector('autocomplete'));
+            }
             mediator.emit('widget:load', this);
         }, 20);
     }

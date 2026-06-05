@@ -322,7 +322,13 @@ describe('Collections', function () {
     });
 
     it('copy to clipboard', function (done) {
-        this.testPage.regions.latest().trail(5).copyToClipboard()
+        const latest = this.testPage.regions.latest();
+        if (window.__debug_trace) {
+            const latestCount = latest.dom.querySelectorAll('trail-widget').length;
+            const clipboardCount = this.testPage.regions.clipboard().dom.querySelectorAll('trail-widget').length;
+            console.log('[trace] copy to clipboard - latest trail count:', latestCount, 'expected >= 5; clipboard trail count at start:', clipboardCount, 'expected 0; trail(5) headline:', latest.trail(5).fieldText('headline'));
+        }
+        latest.trail(5).copyToClipboard()
         .then(() => {
             expect(this.testPage.regions.clipboard().trail(1).fieldText('headline')).toBe('Nothing happened for once');
         })

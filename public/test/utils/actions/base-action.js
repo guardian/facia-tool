@@ -11,6 +11,9 @@ export default class {
         });
 
         this.timeoutID = setTimeout(() => {
+            if (window.__debug_trace) {
+                console.log('[trace] base-action timeout - interceptor hit:', !!this.interceptor, 'lastRequest:', this.lastRequest);
+            }
             this.firstRequestReject(new Error(this.TIMEOUT_ERROR_MSG || 'action timeout'));
         }, 2000);
     }

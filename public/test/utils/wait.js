@@ -30,6 +30,9 @@ export function condition (predicate, timeout = 5000, interval = 50) {
 			if (predicate()) {
 				resolve();
 			} else if (Date.now() - start >= timeout) {
+				if (window.__debug_trace) {
+					console.log('[trace] condition timeout - elapsed:', Date.now() - start, 'timeout:', timeout, 'predicate result:', predicate());
+				}
 				reject(new Error('Timeout waiting for condition'));
 			} else {
 				setTimeout(check, interval);
