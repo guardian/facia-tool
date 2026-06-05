@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 		dispatch(
 			insertCardWithCreate(
 				{ type: 'clipboard', id: 'clipboard', index: 0 },
-				{ type: 'CAPI', data: atom as any },
+				{ type: 'INTERACTIVE_ATOM', data: atom },
 				'clipboard',
 			),
 		),
