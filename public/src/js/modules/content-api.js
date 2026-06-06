@@ -59,13 +59,6 @@ function validateItem (item) {
             capiId = articlePath(item.id()),
             data = cache.get('contentApi', capiId);
 
-        if (window.__debug_trace) {
-            console.log('[trace] validateItem - id:', item.id(), 'capiId:', capiId,
-                'snapId:', snapId, 'cacheHit:', !!data,
-                'meta.snapType:', item.meta && item.meta.snapType && item.meta.snapType(),
-                'group.parentType:', item.group && item.group.parentType);
-        }
-
         if (snapId) {
             item.id(snapId);
             resolve(item);
@@ -92,12 +85,6 @@ function validateItem (item) {
                     capiItem,
                     pageCode,
                     err;
-
-                if (window.__debug_trace) {
-                    console.log('[trace] validateItem fetch resolved - id:', item.id(),
-                        'results length:', results && results.length,
-                        'meta.snapType:', item.meta && item.meta.snapType && item.meta.snapType());
-                }
 
                 // ContentApi item
                 if (results && results.length === 1) {

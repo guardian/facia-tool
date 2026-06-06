@@ -87,22 +87,13 @@ export default class ConfigFront extends BaseClass {
                 this.props.imageHeight(undefined);
                 this.props.isImageDisplayed(undefined);
             } else if (src !== this.props.imageUrl()) {
-                if (window.__debug_trace) {
-                    console.log('[trace] front image validate START src:', src, 'at:', Date.now());
-                }
                 validateImageSrc(src, {minWidth: 120})
                 .then(img => {
-                    if (window.__debug_trace) {
-                        console.log('[trace] front image validate SUCCESS src:', src, 'at:', Date.now(), 'width:', img.width);
-                    }
                     this.props.imageUrl(img.src);
                     this.props.imageWidth(img.width);
                     this.props.imageHeight(img.height);
                     this.saveProps();
                 }, err => {
-                    if (window.__debug_trace) {
-                        console.log('[trace] front image validate ERROR src:', src, 'at:', Date.now(), 'message:', err && err.message);
-                    }
                     this.provisionalImageUrl(undefined);
                     alert(err.message);
                 });

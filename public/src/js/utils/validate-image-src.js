@@ -59,17 +59,10 @@ function stripImplementationDetails (src, criteria) {
 function fetchImage (description) {
     return new Promise((resolve, reject) => {
         var img = new Image();
-        var started = Date.now();
         img.onerror = function() {
-            if (window.__debug_trace) {
-                console.log('[trace] fetchImage onerror after', Date.now() - started, 'ms path:', description.path);
-            }
             reject(new Error('That image could not be found'));
         };
         img.onload = function() {
-            if (window.__debug_trace) {
-                console.log('[trace] fetchImage onload after', Date.now() - started, 'ms path:', description.path, 'size:', this.width + 'x' + this.height);
-            }
             let size = {
                 width: this.width,
                 height: this.height,

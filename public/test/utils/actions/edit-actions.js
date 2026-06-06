@@ -10,7 +10,7 @@ export default class extends BaseAction {
         super.mockSingleRequest({
             url: '/edits',
             response: function (request) {
-                request.data = typeof request.data === 'string' ? JSON.parse(request.data) : request.data;
+                request.data = JSON.parse(request.data);
                 instance.lastRequest = request;
                 this.responseText = instance.response;
             }

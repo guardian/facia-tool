@@ -3,8 +3,6 @@
 window.__karma__.loaded = function () {};
 jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 
-window.__debug_trace = true;
-
 System.config({
     map: {
         'test': '/test',

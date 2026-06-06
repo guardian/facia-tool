@@ -35,19 +35,8 @@ class Group {
     }
 
     pasteOver() {
-        if (window.__debug_trace) {
-            var sep = $('.group-separator', this.dom)[0];
-            var ctx = sep && ko.contextFor(sep);
-            var root = ctx && ctx.$root;
-            console.log('[trace] group.pasteOver ENTER - separator?', !!sep,
-                '$root.isPasteActive:', root && typeof root.isPasteActive === 'function' ? root.isPasteActive() : '(none)',
-                'clipboard peek:', !!copiedArticle.peek());
-        }
         return wait.condition(() => $('.pasteOver', this.dom).length > 0).then(() => {
             var targets = $('.pasteOver', this.dom);
-            if (window.__debug_trace) {
-                console.log('[trace] group.pasteOver - .pasteOver targets found:', targets.length);
-            }
             targets.click();
             return this;
         });

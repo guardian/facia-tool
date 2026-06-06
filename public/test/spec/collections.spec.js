@@ -322,23 +322,7 @@ describe('Collections', function () {
     });
 
     it('copy to clipboard', function (done) {
-        const latest = this.testPage.regions.latest();
-        if (window.__debug_trace) {
-            const latestCount = latest.dom.querySelectorAll('trail-widget').length;
-            const clipboardWidgets = document.querySelectorAll('clipboard-widget');
-            const clipboardRegion = this.testPage.regions.clipboard();
-            const clipboardCount = clipboardRegion.dom.querySelectorAll('trail-widget').length;
-            const headlines = Array.prototype.map.call(
-                clipboardRegion.dom.querySelectorAll('trail-widget .title, trail-widget [data-bind*="headline"]'),
-                el => (el.textContent || '').trim()
-            );
-            console.log('[trace] copy to clipboard - latest trail count:', latestCount,
-                'expected >= 5; clipboard-widget elements in document:', clipboardWidgets.length,
-                'clipboard trail count at start:', clipboardCount, 'expected 0;',
-                'clipboard headlines:', JSON.stringify(headlines),
-                'trail(5) headline:', latest.trail(5).fieldText('headline'));
-        }
-        latest.trail(5).copyToClipboard()
+        this.testPage.regions.latest().trail(5).copyToClipboard()
         .then(() => {
             expect(this.testPage.regions.clipboard().trail(1).fieldText('headline')).toBe('Nothing happened for once');
         })

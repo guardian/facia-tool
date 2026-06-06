@@ -138,17 +138,12 @@ class Latest extends BaseClass {
     }
 
     setArticleToVisited(articleId) {
-        var matched = _.find(this.articles(), function (article) {
+        _.find(this.articles(), function (article) {
             if (article.id() === articleId) {
                 article.state.visited(true);
                 return true;
             }
         });
-        if (window.__debug_trace) {
-            console.log('[trace] setArticleToVisited - emitted id:', articleId,
-                'matched:', !!matched,
-                'latest ids:', _.map(this.articles(), a => a.id()));
-        }
     }
 
     isTermAnItem() {

@@ -35,10 +35,6 @@ describe('Visited articles', function () {
             const trailInFirstCollection = this.testPage.regions.front().collection(1).group(1).trail(1);
             const trailInLatest = this.testPage.regions.latest().trail(1);
 
-            if (window.__debug_trace) {
-                console.log('[trace] visited from clipboard - trailInLatest opacity:', trailInLatest.opacity(), 'expected ~0.6 (visited state propagated); detectPendingChangesInClipboard:', CONST.detectPendingChangesInClipboard);
-            }
-
             expect(trailInLatest.opacity()).toBeCloseTo(0.6);
             expect(trailInFirstCollection.opacity()).toBeCloseTo(1);
             expect(trailInClipboard.opacity()).toBeCloseTo(1);

@@ -72,11 +72,7 @@ export class Trail {
     }
 
     copy() {
-        var btn = $('.tool--small--copy', this.dom);
-        if (window.__debug_trace) {
-            console.log('[trace] trail.copy - copy buttons found:', btn.length, 'at', Date.now());
-        }
-        btn.click();
+        $('.tool--small--copy', this.dom).click();
         return Promise.resolve(this);
     }
 
@@ -120,11 +116,7 @@ export class Trail {
     }
 
     openLink() {
-        var href = $('.tool--small--href', this.dom);
-        if (window.__debug_trace) {
-            console.log('[trace] trail.openLink - href targets found:', href.length, 'dom?', !!this.dom);
-        }
-        href.click();
+        $('.tool--small--href', this.dom).click();
         return Promise.resolve(this);
     }
 
