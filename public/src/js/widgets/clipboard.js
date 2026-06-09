@@ -76,11 +76,16 @@ class Clipboard extends BaseWidget {
 
     getItemsFromStorage() {
         var group = this.group,
-            items = _.map(this.storage.getItem() || [], function (item) {
+            stored = this.storage.getItem() || [],
+            items = _.map(stored, function (item) {
                 return new Article(_.extend(item, {
                     group: group
                 }));
             });
+        if (window.__debug_trace) {
+            console.log('[trace] clipboard.getItemsFromStorage - key:', this.storage.location,
+                'classCount:', classCount, 'stored count:', stored.length);
+        }
         if (items.length) {
             contentApi.decorateItems(_.filter(items, function (item) {
                 return !item.meta.snapType();

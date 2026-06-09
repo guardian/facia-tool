@@ -1,5 +1,8 @@
 import {default as trail, count as trailCount} from 'test/utils/regions/trail';
 import $ from 'jquery';
+import ko from 'knockout';
+import copiedArticle from 'modules/copied-article';
+import * as wait from 'test/utils/wait';
 
 class Group {
     constructor(dom, parent) {
@@ -32,8 +35,22 @@ class Group {
     }
 
     pasteOver() {
-        $('.pasteOver', this.dom).click();
-        return Promise.resolve(this);
+        if (window.__debug_trace) {
+            var sep = $('.group-separator', this.dom)[0];
+            var ctx = sep && ko.contextFor(sep);
+            var root = ctx && ctx.$root;
+            console.log('[trace] group.pasteOver ENTER - separator?', !!sep,
+                '$root.isPasteActive:', root && typeof root.isPasteActive === 'function' ? root.isPasteActive() : '(none)',
+                'clipboard peek:', !!copiedArticle.peek());
+        }
+        return wait.condition(() => $('.pasteOver', this.dom).length > 0).then(() => {
+            var targets = $('.pasteOver', this.dom);
+            if (window.__debug_trace) {
+                console.log('[trace] group.pasteOver - .pasteOver targets found:', targets.length);
+            }
+            targets.click();
+            return this;
+        });
     }
 }
 

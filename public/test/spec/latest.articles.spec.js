@@ -25,8 +25,14 @@ describe('Latest widget', function () {
         this.ko.dispose();
     });
     function getAutocomplete (host) {
-        return ko.contextFor(host.container.querySelector('autocomplete').firstChild)
-            .$component;
+        return wait.condition(function () {
+            var el = host.container.querySelector('autocomplete');
+            var firstChild = el && el.firstChild;
+            return firstChild && ko.contextFor(firstChild);
+        }).then(function () {
+            var firstChild = host.container.querySelector('autocomplete').firstChild;
+            return ko.contextFor(firstChild).$component;
+        });
     }
 
     it('toggles draft and live content', function (done) {
@@ -99,8 +105,8 @@ describe('Latest widget', function () {
                 latest = widget.latestArticles;
                 return widget.loaded;
             }),
-            wait.event('widget:load').then(() => {
-                autocomplete = getAutocomplete(this.ko);
+            getAutocomplete(this.ko).then(function (component) {
+                autocomplete = component;
             })
         ]);
 

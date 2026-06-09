@@ -9,7 +9,9 @@ export default class {
             this.firstRequestResolve = resolve;
             this.firstRequestReject = reject;
         });
+    }
 
+    startTimeout() {
         this.timeoutID = setTimeout(() => {
             if (window.__debug_trace) {
                 console.log('[trace] base-action timeout - interceptor hit:', !!this.interceptor, 'lastRequest:', this.lastRequest);
@@ -27,6 +29,7 @@ export default class {
             },
             onAfterComplete: function () {
                 setTimeout(() => {
+                    clearTimeout(instance.timeoutID);
                     instance.firstRequestResolve(instance.lastRequest);
                 }, 20);
             }
@@ -38,12 +41,14 @@ export default class {
     }
 
     execute() {
+        this.startTimeout();
         return Promise.resolve(this.testAction)
             .then(fn => fn())
             .then(() => this.waitForRequest);
     }
 
     dispose() {
+        clearTimeout(this.timeoutID);
         mockjax.clear(this.interceptor);
     }
 }

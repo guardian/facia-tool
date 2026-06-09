@@ -325,8 +325,18 @@ describe('Collections', function () {
         const latest = this.testPage.regions.latest();
         if (window.__debug_trace) {
             const latestCount = latest.dom.querySelectorAll('trail-widget').length;
-            const clipboardCount = this.testPage.regions.clipboard().dom.querySelectorAll('trail-widget').length;
-            console.log('[trace] copy to clipboard - latest trail count:', latestCount, 'expected >= 5; clipboard trail count at start:', clipboardCount, 'expected 0; trail(5) headline:', latest.trail(5).fieldText('headline'));
+            const clipboardWidgets = document.querySelectorAll('clipboard-widget');
+            const clipboardRegion = this.testPage.regions.clipboard();
+            const clipboardCount = clipboardRegion.dom.querySelectorAll('trail-widget').length;
+            const headlines = Array.prototype.map.call(
+                clipboardRegion.dom.querySelectorAll('trail-widget .title, trail-widget [data-bind*="headline"]'),
+                el => (el.textContent || '').trim()
+            );
+            console.log('[trace] copy to clipboard - latest trail count:', latestCount,
+                'expected >= 5; clipboard-widget elements in document:', clipboardWidgets.length,
+                'clipboard trail count at start:', clipboardCount, 'expected 0;',
+                'clipboard headlines:', JSON.stringify(headlines),
+                'trail(5) headline:', latest.trail(5).fieldText('headline'));
         }
         latest.trail(5).copyToClipboard()
         .then(() => {
