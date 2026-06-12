@@ -53,6 +53,10 @@ import { Atom, Platform } from '../../../types/Capi';
 import { getActiveAtomProperties } from '../../../util/extractAtom';
 import { isAtom } from '../../../util/atom';
 import { SelfHostedVideoPlayerFormat } from '../../../util/Video';
+import {
+	IntendedAudienceSignifier,
+	IntendedAudienceSignifierProps,
+} from '@guardian/stand/IntendedAudienceSignifier';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
 	flex-shrink: 0;
@@ -181,6 +185,10 @@ interface ArticleBodyProps {
 	collectionType?: string;
 	groupIndex?: number;
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
+	intendedAudience?: {
+		source: IntendedAudienceSignifierProps['source'];
+		target: IntendedAudienceSignifierProps['target'];
+	};
 }
 
 const articleBodyDefault = React.memo(
@@ -237,6 +245,7 @@ const articleBodyDefault = React.memo(
 		mainMediaVideoAtom,
 		replacementVideoAtom,
 		otherCollectionsOnSameFrontThisCardIsOn,
+		intendedAudience,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -355,6 +364,11 @@ const articleBodyDefault = React.memo(
 							<FirstPublicationDate title="The time elapsed since this article was first published.">
 								{distanceInWordsStrict(new Date(firstPublicationDate), now)}
 							</FirstPublicationDate>
+						)}
+						{intendedAudience && (
+							<CardMetaContent title="The intended audience of this article.">
+								<IntendedAudienceSignifier {...intendedAudience} />
+							</CardMetaContent>
 						)}
 						{!!otherCollectionsOnSameFrontThisCardIsOn &&
 							otherCollectionsOnSameFrontThisCardIsOn.collections.length >
