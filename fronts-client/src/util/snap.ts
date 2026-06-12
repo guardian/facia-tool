@@ -1,5 +1,6 @@
 import type { Card, CardMeta } from 'types/Collection';
 import type { CAPIInteractiveAtomResponse } from 'services/capiQuery';
+import type { CapiInteractiveAtom } from 'types/Capi';
 import { getAbsolutePath, isGuardianUrl, isValidSnapLinkUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import v4 from 'uuid/v4';
@@ -70,6 +71,7 @@ async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
 	}
 }
 
+// Used when dragging in a CAPI url as a snap link. This is the old way to add e.g. thrashers
 async function createAtomSnap(
 	url: string,
 	atom: CAPIInteractiveAtomResponse,
@@ -94,6 +96,25 @@ async function createAtomSnap(
 	});
 }
 
+// Used when dragging in an atom returned by a CAPI search
+function createAtomSnapFromInteractiveAtom(atom: CapiInteractiveAtom): Card {
+	const atomId = `atom/interactive/${atom.id}`;
+	const atomUrl = `https://content.guardianapis.com/${atomId}`;
+	return convertToSnap({
+		uuid: v4(),
+		id: atomUrl,
+		frontPublicationDate: Date.now(),
+		meta: {
+			headline: atom.data.interactive.title,
+			byline: 'Guardian Visuals',
+			showByline: false,
+			snapType: 'interactive',
+			snapUri: atomUrl,
+			atomId,
+		},
+	});
+}
+
 function createLatestSnap(url: string, kicker: string) {
 	return convertToSnap({
 		id: url,
@@ -114,5 +135,6 @@ export {
 	createLatestSnap,
 	createSnap,
 	createAtomSnap,
+	createAtomSnapFromInteractiveAtom,
 	createPlainSnap,
 };
