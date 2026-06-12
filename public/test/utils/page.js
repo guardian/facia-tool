@@ -24,6 +24,14 @@ export default class Page {
         this.testConfig = testConfig;
         this.routerParams = extractRouterParamsFromUrl(url);
 
+        // Start every page from a clean slate. A clipboard widget persists its
+        // contents to localStorage via a poller; because that viewModel is
+        // loaded asynchronously (jspm), an instance can be created after the
+        // previous page's nodes were removed and never disposed, writing stale
+        // items back to localStorage after dispose()'s clear(). Clearing here
+        // guarantees each test reads an empty clipboard regardless of that race.
+        localStorage.clear();
+
         this.mocks = installMocks({testConfig, fixCollections, fixArticles});
         this.actions = installActions(this);
         this.regions = installRegions(this);

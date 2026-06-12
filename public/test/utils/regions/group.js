@@ -1,5 +1,8 @@
 import {default as trail, count as trailCount} from 'test/utils/regions/trail';
 import $ from 'jquery';
+import ko from 'knockout';
+import copiedArticle from 'modules/copied-article';
+import * as wait from 'test/utils/wait';
 
 class Group {
     constructor(dom, parent) {
@@ -32,8 +35,11 @@ class Group {
     }
 
     pasteOver() {
-        $('.pasteOver', this.dom).click();
-        return Promise.resolve(this);
+        return wait.condition(() => $('.pasteOver', this.dom).length > 0).then(() => {
+            var targets = $('.pasteOver', this.dom);
+            targets.click();
+            return this;
+        });
     }
 }
 

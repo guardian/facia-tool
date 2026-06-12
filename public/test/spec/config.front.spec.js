@@ -24,7 +24,11 @@ describe('Config Front', function () {
                         }
                     },
                     defaults: {
-                        editions: []
+                        editions: [],
+                        baseUrls: {
+                            apiBaseUrl: '/api.grid',
+                            mediaBaseUrl: 'http://media'
+                        }
                     }
                 }),
                 types: ko.observableArray(['type-one', 'type-two']),

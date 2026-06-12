@@ -2,6 +2,7 @@ import $ from 'jquery';
 import drag from 'test/utils/drag';
 import innerDroppable from 'test/utils/regions/inner-droppable';
 import textInside from 'test/utils/text-inside';
+import * as wait from 'test/utils/wait';
 import 'widgets/trail.html!text';
 import 'widgets/trail-editor.html!text';
 
@@ -77,7 +78,10 @@ export class Trail {
 
     copyToClipboard() {
         $('.tool--small--copy-to-clipboard', this.dom).click();
-        return Promise.resolve(this);
+        return wait.condition(() => {
+            var cw = document.querySelector('clipboard-widget');
+            return !!(cw && cw.parentNode.querySelector('trail-widget .tool--small--href'));
+        }).then(() => this);
     }
 
     paste() {
@@ -86,8 +90,10 @@ export class Trail {
     }
 
     pasteOver() {
-        $('.pasteOver', this.dom).click();
-        return Promise.resolve(this);
+        return wait.condition(() => $('.pasteOver', this.dom).length > 0).then(() => {
+            $('.pasteOver', this.dom).click();
+            return this;
+        });
     }
 
     field(name) {
