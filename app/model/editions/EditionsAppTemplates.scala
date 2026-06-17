@@ -10,7 +10,8 @@ import model.editions.templates._
 import model.editions.templates.feast.{
   FeastAppEdition,
   FeastNorthernHemisphere,
-  FeastSouthernHemisphere
+  FeastSouthernHemisphere,
+  FeastUSRegion
 }
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Json, OFormat}
@@ -61,7 +62,8 @@ object EditionsAppTemplates {
 object FeastAppTemplates {
   val templates: Map[Edition, FeastAppEdition] = Map(
     Edition.FeastNorthernHemisphere -> FeastNorthernHemisphere,
-    Edition.FeastSouthernHemisphere -> FeastSouthernHemisphere
+    Edition.FeastSouthernHemisphere -> FeastSouthernHemisphere,
+    Edition.FeastUSRegion -> FeastUSRegion
   )
 
   val getAvailableTemplates: List[CuratedPlatformWithTemplate] =
@@ -142,6 +144,8 @@ object Edition extends PlayEnum[Edition] {
   case object FeastSouthernHemisphere extends Edition
 
   case object FeastNorthernHemisphere extends Edition
+
+  case object FeastUSRegion extends Edition
 
   override def values = findValues
 }
