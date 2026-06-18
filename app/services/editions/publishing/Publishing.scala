@@ -3,7 +3,11 @@ package services.editions.publishing
 import java.time.OffsetDateTime
 import com.gu.pandomainauth.model.User
 import logging.Logging
-import model.editions.Edition.{FeastNorthernHemisphere, FeastSouthernHemisphere, FeastUSRegion}
+import model.editions.Edition.{
+  FeastNorthernHemisphere,
+  FeastSouthernHemisphere,
+  FeastUSRegion
+}
 import model.editions.{EditionsIssue, PublishAction}
 import net.logstash.logback.marker.Markers
 import services.editions.db.EditionsDB
