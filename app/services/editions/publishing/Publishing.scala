@@ -3,7 +3,7 @@ package services.editions.publishing
 import java.time.OffsetDateTime
 import com.gu.pandomainauth.model.User
 import logging.Logging
-import model.editions.Edition.{FeastNorthernHemisphere, FeastSouthernHemisphere}
+import model.editions.Edition.{FeastNorthernHemisphere, FeastSouthernHemisphere, FeastUSRegion}
 import model.editions.{EditionsIssue, PublishAction}
 import net.logstash.logback.marker.Markers
 import services.editions.db.EditionsDB
@@ -22,7 +22,7 @@ class Publishing(
 
     // Archive a copy
     issue.edition match {
-      case FeastNorthernHemisphere | FeastSouthernHemisphere =>
+      case FeastNorthernHemisphere | FeastSouthernHemisphere | FeastUSRegion =>
         // Feast does not currently support previewing, but we don't need to be reminded of that every time someone drag/drops something!
         // Preview will be implemented, when it exists.
         ()
@@ -59,7 +59,7 @@ class Publishing(
 
   def getPublicationTarget(issue: EditionsIssue): PublicationTarget = {
     issue.edition match {
-      case FeastNorthernHemisphere | FeastSouthernHemisphere =>
+      case FeastNorthernHemisphere | FeastSouthernHemisphere | FeastUSRegion =>
         feastAppPublicationTarget
       case _ =>
         editionsAppPublicationBucket
