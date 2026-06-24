@@ -178,4 +178,14 @@ class CollectionPermissionsTest extends FreeSpec with Matchers {
 
   }
 
+  "Permissions assumed to be not needed" - {
+    "Config is missing" in {
+      val mockConfigAgent: ConfigAgent = mock[ConfigAgent]
+      when(mockConfigAgent.get).thenReturn(None)
+      val s = CollectionPermissions(mockConfigAgent)
+        .getFrontsPermissionsPriorityByCollectionId("x")
+      s shouldBe Set.empty
+    }
+  }
+
 }
