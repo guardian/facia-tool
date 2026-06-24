@@ -1,11 +1,12 @@
 package permissions
 
 import com.gu.facia.client.models.ConfigJson
+import services.ConfigAgent
 
-case class CollectionPermissions(val config: Option[ConfigJson]) {
+case class CollectionPermissions(config: ConfigAgent) {
   def getFrontsPermissionsPriorityByCollectionId(
       id: String
-  ): Set[PermissionsPriority] = config match {
+  ): Set[PermissionsPriority] = config.get match {
     case None =>
       Set.empty[
         PermissionsPriority
