@@ -1,7 +1,10 @@
 package permissions
 
 import com.gu.facia.client.models.{ConfigJson, FrontJson}
+import org.mockito.Mockito.when
 import org.scalatest.{FreeSpec, Matchers}
+import org.scalatestplus.mockito.MockitoSugar.mock
+import services.ConfigAgent
 
 class CollectionPermissionsTest extends FreeSpec with Matchers {
 
@@ -40,21 +43,24 @@ class CollectionPermissionsTest extends FreeSpec with Matchers {
     Map()
   )
 
+  val mockConfigAgent: ConfigAgent = mock[ConfigAgent]
+  when(mockConfigAgent.get).thenReturn(Some(configJson))
+
   "Collection Permission correctly inferred" - {
     "a commercial collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId("a") should contain(
         CommercialPermission
       )
     }
     "a non commercial collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "c"
         ) should not contain (CommercialPermission)
     }
     "a non editions collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "a"
         ) should not contain (EditionsPermission)
@@ -64,19 +70,19 @@ class CollectionPermissionsTest extends FreeSpec with Matchers {
 
   "Editorial Permission correctly inferred" - {
     "an editorial collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId("c") should contain(
         EditorialPermission
       )
     }
     "a non editorial collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "a"
         ) should not contain (EditorialPermission)
     }
     "a non editions collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "c"
         ) should not contain (EditionsPermission)
@@ -86,19 +92,19 @@ class CollectionPermissionsTest extends FreeSpec with Matchers {
 
   "Email Permission correctly inferred" - {
     "an email collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId("e") should contain(
         EmailPermission
       )
     }
     "a non email collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "a"
         ) should not contain (EmailPermission)
     }
     "a non editions collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "e"
         ) should not contain (EditionsPermission)
@@ -108,19 +114,19 @@ class CollectionPermissionsTest extends FreeSpec with Matchers {
 
   "Training Permission correctly inferred" - {
     "an training collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId("g") should contain(
         TrainingPermission
       )
     }
     "a non training collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "a"
         ) should not contain (TrainingPermission)
     }
     "a non editions collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "g"
         ) should not contain (EditionsPermission)
@@ -130,7 +136,7 @@ class CollectionPermissionsTest extends FreeSpec with Matchers {
 
   "Dual Permissions correctly inferred" - {
     "an commercial AND email collection" in {
-      val s = CollectionPermissions(Some(configJson))
+      val s = CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId("x")
       s should contain(CommercialPermission)
       s should contain(EmailPermission)
@@ -140,31 +146,31 @@ class CollectionPermissionsTest extends FreeSpec with Matchers {
 
   "Editions Permission correctly inferred" - {
     "an editions collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId("z") should contain(
         EditionsPermission
       )
     }
     "a non commercial collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "z"
         ) should not contain (CommercialPermission)
     }
     "a non editorial collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "z"
         ) should not contain (EditorialPermission)
     }
     "a non training collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "z"
         ) should not contain (TrainingPermission)
     }
     "a non email collection" in {
-      CollectionPermissions(Some(configJson))
+      CollectionPermissions(mockConfigAgent)
         .getFrontsPermissionsPriorityByCollectionId(
           "z"
         ) should not contain (EmailPermission)
