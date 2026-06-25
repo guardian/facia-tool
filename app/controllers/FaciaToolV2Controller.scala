@@ -35,7 +35,7 @@ class FaciaToolV2Controller(
     with ModifyCollectionsPermissionsCheck
     with Logging {
 
-  private val collectionPermissions = CollectionPermissions(configAgent.get)
+  private val collectionPermissions = CollectionPermissions(configAgent)
 
   def getCollections() =
     AccessAPIAuthAction(parse.json[Seq[CollectionSpec]]).async {

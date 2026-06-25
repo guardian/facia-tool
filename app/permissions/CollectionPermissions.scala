@@ -1,12 +1,17 @@
 package permissions
 
 import com.gu.facia.client.models.ConfigJson
+import logging.Logging
+import services.ConfigAgent
 
-case class CollectionPermissions(val config: Option[ConfigJson]) {
+case class CollectionPermissions(config: ConfigAgent) extends Logging {
   def getFrontsPermissionsPriorityByCollectionId(
       id: String
-  ): Set[PermissionsPriority] = config match {
+  ): Set[PermissionsPriority] = config.get match {
     case None =>
+      logger.warn(
+        "No config found when checking required permissions for a collection"
+      )
       Set.empty[
         PermissionsPriority
       ] // if there are no fronts in config, there can be no permissions....?

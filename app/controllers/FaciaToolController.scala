@@ -39,7 +39,7 @@ class FaciaToolController(
     with ModifyCollectionsPermissionsCheck
     with Logging {
 
-  private val collectionPermissions = CollectionPermissions(configAgent.get)
+  private val collectionPermissions = CollectionPermissions(configAgent)
 
   def getConfig = AccessAPIAuthAction.async { request =>
     FaciaToolMetrics.ApiUsageCount.increment()
