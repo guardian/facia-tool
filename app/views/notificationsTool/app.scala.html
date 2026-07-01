@@ -19,28 +19,19 @@
     <link rel="icon" type="image/png" sizes="16x16" href="@{faviconLocation}favicon-16x16.png" />
     <link rel="shortcut icon" href="@{faviconLocation}favicon.ico" />
     <title>@title</title>
-    <style>
-        *,
-            *:before,
-            *:after {
-                box-sizing: border-box;
-            }
-
-            html,
-            body,
-            .wrap {
-                height: 100%;
-                margin: 0;
-                padding: 0;
-                width: 100%;
-            }
-        </style>
+    <link
+        rel="stylesheet"
+        href="https://assets.guim.co.uk/fonts/material-symbols/MaterialSymbolsOutlined.css"
+    />
 </head>
 
 <body>
     <div class="wrap" id="react-mount"></div>
     <div id="config" data-value="@clientConfigJson"></div>
-    <script type="module">window.global = window</script>
+    <script type="module">
+        window.global = window;
+        window.config = document.getElementById("config").getAttribute("data-value");
+    </script>
 
 
     <link rel="stylesheet" href="@cssLocation">
