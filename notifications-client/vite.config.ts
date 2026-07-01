@@ -9,12 +9,12 @@ export default defineConfig({
     rollupOptions: {
       input: '/src/index.tsx',
       output: {
-        entryFileNames: `dist/[name].js`,
-        chunkFileNames: `dist/[name].js`,
-        assetFileNames: `dist/[name].[ext]`,
+        entryFileNames: `[name].js`,
+        chunkFileNames: `[name].js`,
+        assetFileNames: `[name].[ext]`,
       },
     },
-    outDir: '../public/notifications-client',
+    outDir: '../public/notifications-client/dist',
     sourcemap: true,
     emptyOutDir: true,
   },
