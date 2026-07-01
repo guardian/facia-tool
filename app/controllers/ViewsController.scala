@@ -107,6 +107,26 @@ class ViewsController(
       }
     }
 
+  def notificationsTool() = AccessAuthAction { request =>
+    val identity = request.user
+    Cached(60) {
+      Ok(
+        views.html.notificationsTool
+          .app(
+            "Notifications Tool",
+            "/assets/notifications-client/dist/index.js",
+            "/assets/notifications-client/dist/index.css",
+            "/assets/notifications-client/favicon/",
+            // Json.toJson(conf).toString(),
+            "{}",
+            isDev,
+            maybePinboardUrl = None,
+            maybeTelemetryUrl = Some(telemetryUrl)
+          )
+      )
+    }
+  }
+
   private def overrideIsDev(
       request: UserRequest[AnyContent],
       isDev: Boolean
