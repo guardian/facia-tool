@@ -15,7 +15,8 @@ export default defineConfig({
       },
     },
     outDir: '../public/notifications-client',
-    sourcemap: true
+    sourcemap: true,
+    emptyOutDir: true,
   },
   server: {
     origin: 'http://localhost:5173',

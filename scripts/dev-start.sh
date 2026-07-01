@@ -99,6 +99,7 @@ main() {
     yarn watch &
     sleep 1
     cd ..
+    cd ..
     set_node_version
 
     printf "\n\rStarting Postgres... \n\r\n\r"

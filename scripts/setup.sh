@@ -66,6 +66,15 @@ install_v2_deps_and_build() {
   cd ..
 }
 
+install_notifications-client_deps_and_build() {
+  cd notifications-client
+  set_node_version
+  yarn install
+  printf "\nCompiling Javascript... \n\r\n\r"
+  yarn build
+  cd ..
+}
+
 printf "\n\rSetting up Breaking News tool (Fronts Tool V1) dependencies... \n\r\n\r"
 
 install_v1_deps() {
@@ -118,6 +127,7 @@ main() {
   check_yarn_installed
   install_v1_deps
   install_v2_deps_and_build
+  install_notifications-client_deps_and_build
   if [ "$USER" = "vscode" ]; then
     echo "Running in VS Code dev container, skipping nginx setup"
   else

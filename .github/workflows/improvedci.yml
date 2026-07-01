@@ -153,6 +153,30 @@ jobs:
             - run: yarn test-integration-ci
               working-directory: fronts-client
 
+    build_notifications_client:
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                node-version-file: notifications-client/.nvmrc
+                cache: yarn
+                cache-dependency-path: notifications-client/yarn.lock
+            - run: yarn install --frozen-lockfile
+              working-directory: notifications-client
+            - run: yarn lint
+              working-directory: notifications-client
+            - run: yarn build
+              working-directory: notifications-client
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: notifications-client
+                  path: public/notifications-client
+                  if-no-files-found: error
+
     test_backend:
         runs-on: ubuntu-latest
         permissions:
