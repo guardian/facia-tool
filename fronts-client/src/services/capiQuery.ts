@@ -1,5 +1,6 @@
 import { qs } from 'util/qs';
-import type { CapiArticle, CapiInteractiveAtom, Tag } from 'types/Capi';
+import type { CapiArticle, CapiAtom, Tag } from 'types/Capi';
+import { supportedAtomTypes } from 'types/Capi';
 import pandaFetch from 'services/pandaFetch';
 import url from 'constants/url';
 import { attemptFriendlyErrorMessage } from 'util/error';
@@ -88,7 +89,7 @@ interface CAPIAtomInteractive {
 
 interface CAPIAtomsQueryResponse {
 	response: {
-		results: CapiInteractiveAtom[];
+		results: CapiAtom[];
 		status: CAPIStatus;
 		currentPage: number;
 		pageSize: number;
@@ -199,10 +200,14 @@ const capiQuery = (baseURL: string) => {
 			);
 		},
 		atoms: async (params: { q?: string }): Promise<CAPIAtomsQueryResponse> => {
+			// Search across every supported atom type. Most atom types expose their
+			// title at the top level (`title`), but interactive atoms hold it under
+			// `data.interactive.interactive_title`. We search both fields so the `q`
+			// term matches interactive atoms as well as the other types.
 			return fetchCAPIResponse<CAPIAtomsQueryResponse>(
 				`${baseURL}/atoms${qs({
-					types: 'interactive',
-					searchFields: 'data.interactive.interactive_title',
+					types: supportedAtomTypes.join(','),
+					searchFields: 'title,data.interactive.interactive_title',
 					...params,
 				})}`,
 			);

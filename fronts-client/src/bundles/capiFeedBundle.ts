@@ -1,9 +1,5 @@
 import { createIndexedAsyncResourceBundle } from 'lib/createAsyncResourceBundle';
-import {
-	CapiArticle,
-	CapiInteractiveAtom,
-	isCapiInteractiveAtom,
-} from 'types/Capi';
+import { CapiArticle, CapiAtom, isCapiAtom } from 'types/Capi';
 import { ThunkResult } from 'types/Store';
 import { previewCapi, liveCapi } from 'services/capiQuery';
 import { checkIsContent } from 'services/capiQuery';
@@ -12,7 +8,7 @@ import { Dispatch } from 'redux';
 import type { State } from 'types/State';
 import { createSelectIsArticleStale } from 'util/externalArticle';
 
-type FeedState = CapiArticle | CapiInteractiveAtom;
+type FeedState = CapiArticle | CapiAtom;
 
 export type FeedEntry =
 	| { type: 'article'; id: string }
@@ -27,13 +23,13 @@ const {
 });
 
 const isNonCommercialArticle = (
-	article: CapiArticle | CapiInteractiveAtom | undefined,
+	article: CapiArticle | CapiAtom | undefined,
 ): boolean => {
 	if (!article) {
 		return true;
 	}
 
-	if (isCapiInteractiveAtom(article)) {
+	if (isCapiAtom(article)) {
 		return true;
 	}
 
@@ -78,7 +74,7 @@ const fetchResourceOrResults = async (
 		atomsRequest,
 	]);
 
-	const atomResults: CapiInteractiveAtom[] = atomsResponse
+	const atomResults: CapiAtom[] = atomsResponse
 		? atomsResponse.response.results
 		: [];
 
@@ -117,7 +113,7 @@ export const createFetch =
 					isNonCommercialArticle(article),
 				);
 				const updatedResults = nonCommercialResults.filter((article) => {
-					const lastModified = isCapiInteractiveAtom(article)
+					const lastModified = isCapiAtom(article)
 						? article.contentChangeDetails.lastModified?.date
 						: article.fields.lastModified;
 					return selectIsArticleStale(getState(), article.id, lastModified);
@@ -194,7 +190,7 @@ export const hidePrefills = () => (dispatch: Dispatch) => {
 export const selectArticleAcrossResources = (
 	state: State,
 	id: string,
-): CapiArticle | CapiInteractiveAtom | undefined =>
+): CapiArticle | CapiAtom | undefined =>
 	liveSelectors.selectById(state, id) ||
 	previewSelectors.selectById(state, id) ||
 	prefillSelectors.selectById(state, id);
@@ -210,9 +206,7 @@ const selectFeedEntries =
 			const item = selectById(state, id);
 			return {
 				type:
-					item && isCapiInteractiveAtom(item)
-						? ('atom' as const)
-						: ('article' as const),
+					item && isCapiAtom(item) ? ('atom' as const) : ('article' as const),
 				id,
 			};
 		});

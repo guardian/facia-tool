@@ -4,9 +4,9 @@ import {
 	createLatestSnap,
 	createSnap,
 	createAtomSnap,
-	createAtomSnapFromInteractiveAtom,
+	createAtomSnapFromAtom,
 } from 'util/snap';
-import { CapiInteractiveAtom } from 'types/Capi';
+import { CapiAtom } from 'types/Capi';
 import tagPageHtml from 'fixtures/guardianTagPage';
 import fetchMock from 'fetch-mock';
 import bbcSectionPage from 'fixtures/bbcSectionPage';
@@ -101,15 +101,15 @@ describe('utils/snap', () => {
 		});
 	});
 
-	describe('createAtomSnapFromInteractiveAtom', () => {
-		it("should create a snap of type 'interactive' from a CapiInteractiveAtom", () => {
-			const atom: CapiInteractiveAtom = {
+	describe('createAtomSnapFromAtom', () => {
+		it("should create a snap of type 'interactive' from an interactive atom", () => {
+			const atom: CapiAtom = {
 				id: 'interactives/2017/06/general-election',
 				atomType: 'interactive',
 				data: { interactive: { title: 'General Election 2017' } },
 				contentChangeDetails: {},
 			};
-			const snap = createAtomSnapFromInteractiveAtom(atom);
+			const snap = createAtomSnapFromAtom(atom);
 			expect(snap).toEqual({
 				uuid: 'uuid',
 				frontPublicationDate: 1487076708000,
@@ -123,6 +123,31 @@ describe('utils/snap', () => {
 						'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
 					atomId: 'atom/interactive/interactives/2017/06/general-election',
 					href: 'https://content.guardianapis.com/atom/interactive/interactives/2017/06/general-election',
+				},
+			});
+		});
+
+		it('should create a snap whose type matches the atom type, using the top-level title for non-interactive atoms', () => {
+			const atom: CapiAtom = {
+				id: 'q-and-as/2024/01/example',
+				atomType: 'qanda',
+				title: 'What you need to know',
+				contentChangeDetails: {},
+			};
+			const snap = createAtomSnapFromAtom(atom);
+			expect(snap).toEqual({
+				uuid: 'uuid',
+				frontPublicationDate: 1487076708000,
+				id: 'snap/1487076708000',
+				meta: {
+					headline: 'What you need to know',
+					byline: 'Guardian Visuals',
+					showByline: false,
+					snapType: 'qanda',
+					snapUri:
+						'https://content.guardianapis.com/atom/qanda/q-and-as/2024/01/example',
+					atomId: 'atom/qanda/q-and-as/2024/01/example',
+					href: 'https://content.guardianapis.com/atom/qanda/q-and-as/2024/01/example',
 				},
 			});
 		});

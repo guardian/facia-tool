@@ -1,6 +1,7 @@
 import type { Card, CardMeta } from 'types/Collection';
 import type { CAPIInteractiveAtomResponse } from 'services/capiQuery';
-import type { CapiInteractiveAtom } from 'types/Capi';
+import type { CapiAtom } from 'types/Capi';
+import { getAtomTitle } from 'types/Capi';
 import { getAbsolutePath, isGuardianUrl, isValidSnapLinkUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import v4 from 'uuid/v4';
@@ -96,19 +97,22 @@ async function createAtomSnap(
 	});
 }
 
-// Used when dragging in an atom returned by a CAPI search
-function createAtomSnapFromInteractiveAtom(atom: CapiInteractiveAtom): Card {
-	const atomId = `atom/interactive/${atom.id}`;
+// Used when dragging in an atom returned by a CAPI search. Works for every
+// supported atom type: the snapType and atomId are derived from the atom's type,
+// so a qanda/guide/profile/timeline/audio/explainer/cta atom is handled the same
+// way as an interactive atom.
+function createAtomSnapFromAtom(atom: CapiAtom): Card {
+	const atomId = `atom/${atom.atomType}/${atom.id}`;
 	const atomUrl = `https://content.guardianapis.com/${atomId}`;
 	return convertToSnap({
 		uuid: v4(),
 		id: atomUrl,
 		frontPublicationDate: Date.now(),
 		meta: {
-			headline: atom.data.interactive.title,
+			headline: getAtomTitle(atom),
 			byline: 'Guardian Visuals',
 			showByline: false,
-			snapType: 'interactive',
+			snapType: atom.atomType,
 			snapUri: atomUrl,
 			atomId,
 		},
@@ -135,6 +139,6 @@ export {
 	createLatestSnap,
 	createSnap,
 	createAtomSnap,
-	createAtomSnapFromInteractiveAtom,
+	createAtomSnapFromAtom,
 	createPlainSnap,
 };

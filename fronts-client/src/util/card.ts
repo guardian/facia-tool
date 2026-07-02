@@ -9,14 +9,14 @@ import {
 	getContent,
 	transformExternalArticle,
 } from 'services/faciaApi';
-import { CapiArticle, CapiInteractiveAtom } from 'types/Capi';
+import { CapiArticle, CapiAtom } from 'types/Capi';
 import { TArticleEntities } from 'types/Cards';
 import { Dispatch } from 'types/Store';
 import { getIdFromURL } from 'util/CAPIUtils';
 import { MappableDropType } from 'util/collectionUtils';
 import {
 	createAtomSnap,
-	createAtomSnapFromInteractiveAtom,
+	createAtomSnapFromAtom,
 	createLatestSnap,
 	createPlainSnap,
 	createSnap,
@@ -341,9 +341,9 @@ const getFeastCollectionFromFeedDrop = (
 };
 
 const getInteractiveAtomEntityFromFeedDrop = (
-	atom: CapiInteractiveAtom,
+	atom: CapiAtom,
 ): TArticleEntities => {
-	const card = createAtomSnapFromInteractiveAtom(atom);
+	const card = createAtomSnapFromAtom(atom);
 	return { card };
 };
 
