@@ -99,6 +99,13 @@ main() {
     yarn watch &
     sleep 1
     cd ..
+
+    cd notifications-client
+    set_node_version
+    yarn build-watch &
+    sleep 1
+    cd ..
+
     set_node_version
 
     printf "\n\rStarting Postgres... \n\r\n\r"

@@ -1,0 +1,6 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": ["prettier"],
+  "root": true,
+  "rules": {}
+}

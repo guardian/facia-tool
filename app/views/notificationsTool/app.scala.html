@@ -1,0 +1,45 @@
+@(
+    title: String,
+    jsLocation: String,
+    cssLocation: String,
+    faviconLocation: String,
+    clientConfigJson: String,
+    isDev: Boolean,
+    maybePinboardUrl: Option[String],
+	maybeTelemetryUrl: Option[String]
+)
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="icon" type="image/png" sizes="32x32" href="@{faviconLocation}favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="@{faviconLocation}favicon-16x16.png" />
+    <link rel="shortcut icon" href="@{faviconLocation}favicon.ico" />
+    <title>@title</title>
+    <link
+        rel="stylesheet"
+        href="https://assets.guim.co.uk/fonts/material-symbols/MaterialSymbolsOutlined.css"
+    />
+</head>
+
+<body>
+    <div class="wrap" id="react-mount"></div>
+    <div id="config" data-value="@clientConfigJson"></div>
+    <script type="module">
+        window.global = window;
+        window.config = document.getElementById("config").getAttribute("data-value");
+    </script>
+
+
+    <link rel="stylesheet" href="@cssLocation">
+    <script type="module" src="@jsLocation" type="application/javascript"></script>
+
+    @maybePinboardUrl.map { pinboardUrl =>
+        <script async defer src="@pinboardUrl"></script>
+    }
+</body>
+
+</html>
