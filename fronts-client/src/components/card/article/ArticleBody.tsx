@@ -423,6 +423,11 @@ const articleBodyDefault = React.memo(
 						<CardHeading html data-testid="headline" displaySize={size}>
 							{headline}
 						</CardHeading>
+						{intendedAudience && !showMeta && (
+							<CardMetaContent title="The intended audience of this article.">
+								<IntendedAudienceSignifier {...intendedAudience} />
+							</CardMetaContent>
+						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
 				</CardContent>
