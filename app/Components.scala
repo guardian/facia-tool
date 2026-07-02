@@ -175,8 +175,15 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val troubleshoot = new TroubleshootController(this)
   val v1Assets = new V1Assets(assets, this)
   val v2Assets = new V2Assets(assets)
+  val notificationsToolAssets = new NotificationsToolAssets(assets)
   val vanityRedirects = new VanityRedirects(acl, this)
   val views = new ViewsController(acl, assetsManager, isDev, this)
+  val notificationsApp = new NotificationsApp(
+    isDev,
+    acl,
+    dynamo,
+    this
+  )
   val pressController = new PressController(dynamo, this)
   val v2App = new V2App(isDev, acl, dynamo, editionsDb, this)
   val faciaToolV2 = new FaciaToolV2Controller(
@@ -207,8 +214,10 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     status,
     pandaAuth,
     v2Assets,
+    notificationsToolAssets,
     v1Assets,
     views,
+    notificationsApp,
     faciaTool,
     pressController,
     faciaToolV2,

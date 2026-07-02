@@ -6,7 +6,4 @@ class V2Assets(val assets: Assets)(implicit ec: ExecutionContext) {
   def at(file: String, relativePath: String = "") = model.NoCache {
     assets.at("/public/fronts-client-v2", relativePath + file)
   }
-  def atNotifications(file: String, relativePath: String = "") = model.NoCache {
-    assets.at("/public/notifications-client", relativePath + file)
-  }
 }
