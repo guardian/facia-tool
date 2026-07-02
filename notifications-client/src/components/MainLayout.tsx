@@ -6,14 +6,9 @@ import {
     TopBarToolName
 } from "@guardian/stand/TopBar";
 import { type ReactNode } from "react";
+import type { UserData } from "../model/config";
 
-export type UserData = {
-    firstName?: string;
-    lastName?: string;
-    email: string;
-    avatarUrl?: string;
-    permissions: Record<string,boolean>;
-};
+
 
 interface Props {
     children: ReactNode;
