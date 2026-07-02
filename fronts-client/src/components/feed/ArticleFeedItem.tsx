@@ -1,4 +1,5 @@
 import { CapiArticle } from '../../types/Capi';
+import { isCapiInteractiveAtom } from '../../types/Capi';
 import React from 'react';
 import {
 	dragOffsetX,
@@ -95,10 +96,14 @@ const ArticleFeedItemComponent = ({
 	);
 };
 
-const mapStateToProps = (state: State, { id }: ContainerProps) => ({
-	shouldObscureFeed: selectFeatureValue(state, 'obscure-feed'),
-	article: selectArticleAcrossResources(state, id),
-});
+const mapStateToProps = (state: State, { id }: ContainerProps) => {
+	const resource = selectArticleAcrossResources(state, id);
+	return {
+		shouldObscureFeed: selectFeatureValue(state, 'obscure-feed'),
+		article:
+			resource && !isCapiInteractiveAtom(resource) ? resource : undefined,
+	};
+};
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
 	return {
