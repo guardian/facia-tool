@@ -2,7 +2,7 @@ import React from 'react';
 import { ThunkResult, Dispatch } from 'types/Store';
 import { PosSpec } from 'lib/dnd';
 import { insertCardWithCreate } from 'actions/Cards';
-import { CapiArticle, CapiInteractiveAtom } from 'types/Capi';
+import { CapiArticle, CapiAtom } from 'types/Capi';
 import { Recipe } from '../types/Recipe';
 import { Chef } from '../types/Chef';
 import { CardTypesMap } from 'constants/cardTypes';
@@ -19,7 +19,7 @@ export interface CAPIDrop {
 
 export interface InteractiveAtomDrop {
 	type: 'INTERACTIVE_ATOM';
-	data: CapiInteractiveAtom;
+	data: CapiAtom;
 }
 
 export interface RecipeDrop {

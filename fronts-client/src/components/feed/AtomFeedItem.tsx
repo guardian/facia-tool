@@ -1,6 +1,11 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { CapiInteractiveAtom, isCapiInteractiveAtom } from 'types/Capi';
+import {
+	CapiAtom,
+	getAtomTitle,
+	isCapiAtom,
+	SupportedAtomType,
+} from 'types/Capi';
 import { State } from 'types/State';
 import { Dispatch } from 'types/Store';
 import { selectArticleAcrossResources } from 'bundles/capiFeedBundle';
@@ -18,9 +23,20 @@ interface ContainerProps {
 }
 
 interface ComponentProps extends ContainerProps {
-	atom?: CapiInteractiveAtom;
-	onAddToClipboard: (atom: CapiInteractiveAtom) => void;
+	atom?: CapiAtom;
+	onAddToClipboard: (atom: CapiAtom) => void;
 }
+
+const atomTypeLabels: Record<SupportedAtomType, string> = {
+	interactive: 'Interactive atom',
+	qanda: 'Q&A atom',
+	guide: 'Guide atom',
+	profile: 'Profile atom',
+	timeline: 'Timeline atom',
+	audio: 'Audio atom',
+	explainer: 'Explainer atom',
+	cta: 'CTA atom',
+};
 
 const AtomFeedItemComponent = ({
 	atom,
@@ -47,7 +63,7 @@ const AtomFeedItemComponent = ({
 		<FeedItem
 			type={CardTypesMap.INTERACTIVE_ATOM}
 			id={atom.id}
-			title={atom.data.interactive.title}
+			title={getAtomTitle(atom)}
 			urlPath={atom.id}
 			liveUrl={atomUrl}
 			thumbnail={undefined}
@@ -55,7 +71,7 @@ const AtomFeedItemComponent = ({
 			isLive={true}
 			onAddToClipboard={() => onAddToClipboard(atom)}
 			handleDragStart={handleDragStart}
-			metaContent={<ContentInfo>Interactive atom</ContentInfo>}
+			metaContent={<ContentInfo>{atomTypeLabels[atom.atomType]}</ContentInfo>}
 		/>
 	);
 };
@@ -63,12 +79,12 @@ const AtomFeedItemComponent = ({
 const mapStateToProps = (state: State, { id }: ContainerProps) => {
 	const resource = selectArticleAcrossResources(state, id);
 	return {
-		atom: resource && isCapiInteractiveAtom(resource) ? resource : undefined,
+		atom: resource && isCapiAtom(resource) ? resource : undefined,
 	};
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-	onAddToClipboard: (atom: CapiInteractiveAtom) =>
+	onAddToClipboard: (atom: CapiAtom) =>
 		dispatch(
 			insertCardWithCreate(
 				{ type: 'clipboard', id: 'clipboard', index: 0 },

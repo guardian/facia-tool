@@ -1,10 +1,5 @@
 import { oc } from 'ts-optchain';
-import {
-	Atom,
-	CapiInteractiveAtom,
-	Element,
-	isCapiInteractiveAtom,
-} from 'types/Capi';
+import { Atom, CapiAtom, Element, isCapiAtom } from 'types/Capi';
 import { ExternalArticle } from 'types/ExternalArticle';
 import { DerivedArticle } from 'types/Article';
 import isAfter from 'date-fns/is_after';
@@ -80,7 +75,7 @@ export const createSelectIsArticleStale =
 		selectArticleById: (
 			state: State,
 			id: string,
-		) => ExternalArticle | CapiInteractiveAtom | undefined,
+		) => ExternalArticle | CapiAtom | undefined,
 	) =>
 	(state: State, id: string, dateStr: string | number | undefined): boolean => {
 		const article = selectArticleById(state, id);
@@ -90,7 +85,7 @@ export const createSelectIsArticleStale =
 		let lastModified: string | number | undefined;
 		if (!article) {
 			return true;
-		} else if (isCapiInteractiveAtom(article)) {
+		} else if (isCapiAtom(article)) {
 			lastModified = article.contentChangeDetails.lastModified?.date;
 		} else {
 			lastModified = article.fields?.lastModified;
