@@ -205,10 +205,61 @@ interface CapiArticle {
 
 type CapiArticleWithMetadata = CapiArticle & { group?: number };
 
+// The atom types the feed search supports adding to a front. All of these are
+// stored generically as snaps (the snapType/atomId are derived from the atomType),
+// so they share a single shape here rather than one interface per type.
+const supportedAtomTypes = [
+	'interactive',
+	'qanda',
+	'guide',
+	'profile',
+	'timeline',
+	'audio',
+	'explainer',
+	'cta',
+] as const;
+
+type SupportedAtomType = (typeof supportedAtomTypes)[number];
+
+interface CapiAtom {
+	id: string;
+	atomType: SupportedAtomType;
+	// Some atom types carry their title at the top level of the atom (e.g. qanda,
+	// guide, profile, timeline, cta, audio) while others nest it under
+	// `data.<atomType>.title` (e.g. interactive, explainer). See `getAtomTitle`.
+	title?: string;
+	data?: {
+		[K in SupportedAtomType]?: {
+			title?: string;
+		};
+	};
+	contentChangeDetails: {
+		lastModified?: {
+			date: number; // datetime in milliseconds
+		};
+	};
+}
+
+function isCapiAtom(item: CapiArticle | CapiAtom): item is CapiAtom {
+	return supportedAtomTypes.includes(
+		(item as CapiAtom).atomType as SupportedAtomType,
+	);
+}
+
+// Resolve a display title for an atom regardless of where the title lives.
+function getAtomTitle(atom: CapiAtom): string {
+	return atom.data?.[atom.atomType]?.title ?? atom.title ?? atom.id;
+}
+
 export {
 	CapiArticle,
 	CapiArticleFields,
 	CapiArticleWithMetadata,
+	CapiAtom,
+	SupportedAtomType,
+	supportedAtomTypes,
+	isCapiAtom,
+	getAtomTitle,
 	Tag,
 	Element,
 	Atom,

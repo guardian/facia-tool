@@ -1,5 +1,5 @@
 import { oc } from 'ts-optchain';
-import { Atom, Element } from 'types/Capi';
+import { Atom, CapiAtom, Element, isCapiAtom } from 'types/Capi';
 import { ExternalArticle } from 'types/ExternalArticle';
 import { DerivedArticle } from 'types/Article';
 import isAfter from 'date-fns/is_after';
@@ -75,14 +75,25 @@ export const createSelectIsArticleStale =
 		selectArticleById: (
 			state: State,
 			id: string,
-		) => ExternalArticle | undefined,
+		) => ExternalArticle | CapiAtom | undefined,
 	) =>
-	(state: State, id: string, dateStr: string | undefined): boolean => {
+	(state: State, id: string, dateStr: string | number | undefined): boolean => {
 		const article = selectArticleById(state, id);
-		if (!article || !article.fields.lastModified || !dateStr) {
+		if (!dateStr) {
 			return true;
 		}
-		const articleDate = new Date(article.fields.lastModified);
+		let lastModified: string | number | undefined;
+		if (!article) {
+			return true;
+		} else if (isCapiAtom(article)) {
+			lastModified = article.contentChangeDetails.lastModified?.date;
+		} else {
+			lastModified = article.fields?.lastModified;
+		}
+		if (!lastModified) {
+			return true;
+		}
+		const articleDate = new Date(lastModified);
 		const incomingDate = new Date(dateStr);
 		if (!isValid(articleDate) || !isValid(incomingDate)) {
 			return true;
