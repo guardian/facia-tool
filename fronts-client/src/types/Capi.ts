@@ -217,7 +217,7 @@ const supportedAtomTypes = [
 	'audio',
 	'explainer',
 	'cta',
-	'footballcompetition',
+	'tempfootballcompetition',
 ] as const;
 
 type SupportedAtomType = (typeof supportedAtomTypes)[number];

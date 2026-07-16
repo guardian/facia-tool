@@ -36,7 +36,7 @@ const atomTypeLabels: Record<SupportedAtomType, string> = {
 	audio: 'Audio atom',
 	explainer: 'Explainer atom',
 	cta: 'CTA atom',
-	footballcompetition: 'Football competition atom',
+	tempfootballcompetition: 'Football competition atom',
 };
 
 const AtomFeedItemComponent = ({
