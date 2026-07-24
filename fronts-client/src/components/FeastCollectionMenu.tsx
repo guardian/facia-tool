@@ -3,8 +3,6 @@ import styled from 'styled-components';
 
 interface FeastCollectionMenuProps {
 	containerId: string;
-	containerAlias?: string;
-	onContainerAliasChange: (newValue: string|undefined) => void;
 	onRenameClicked: () => void;
 	onDeleteClicked: () => void;
 }
@@ -56,22 +54,10 @@ const Icon = styled.span`
 export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 	onRenameClicked,
 	onDeleteClicked,
-	containerAlias,
-	onContainerAliasChange
 }) => {
 	const [isMenuOpen, setMenuOpen] = useState(false);
 
 	const containerRef = createRef<HTMLDivElement>();
-
-	const clickedDotd = () => {
-		if(containerAlias=='dotd') {
-			onContainerAliasChange(undefined);
-		} else {
-			onContainerAliasChange('dotd');
-		}
-
-		setMenuOpen(false);
-	}
 
 	return (
 		<>
@@ -86,15 +72,6 @@ export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 			{isMenuOpen ? (
 				<>
 					<MenuOuter>
-						<MenuItem onClick={()=>{
-							clickedDotd();
-							setMenuOpen(false);
-						}}>
-							Dish of the Day
-							<Icon>
-								{containerAlias=='dotd' ? <h2>&#x2713;</h2> : undefined}
-							</Icon>
-						</MenuItem>
 						<MenuItem
 							onClick={() => {
 								onRenameClicked();

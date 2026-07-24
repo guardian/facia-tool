@@ -3,7 +3,7 @@ import { updateCollection } from 'services/faciaApi';
 import {
 	updateEditionsCollection,
 	renameEditionsCollection,
-	updateCollectionRegions, updateCollectionAlias,
+	updateCollectionRegions,
 } from 'services/editionsApi';
 import { runStrategy } from './run-strategy';
 import { CollectionWithNestedArticles } from 'types/Collection';
@@ -20,7 +20,7 @@ const collectionToEditionCollection = (
 	};
 };
 
-export type CollectionUpdateMode = 'overwrite' | 'rename' | 'regions' | 'alias';
+export type CollectionUpdateMode = 'overwrite' | 'rename' | 'regions';
 
 const updateCollectionStrategy = (
 	state: State,
@@ -38,11 +38,6 @@ const updateCollectionStrategy = (
 			case 'regions':
 				return () =>
 					updateCollectionRegions(id)(
-						collectionToEditionCollection(collection),
-					);
-			case 'alias':
-				return () =>
-					updateCollectionAlias(id)(
 						collectionToEditionCollection(collection),
 					);
 			case 'overwrite':

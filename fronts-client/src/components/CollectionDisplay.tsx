@@ -351,7 +351,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 								containerId={collection.id}
 								onRenameClicked={this.startRenameContainer}
 								onDeleteClicked={this.handleDeleteClick}
-								onContainerAliasChange={this.handleAliasChanged}
 							/>
 						) : undefined}
 						{isLocked ? (
@@ -469,31 +468,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		this.setState({ isDeleteClicked: false });
 	};
 
-	private updateMetadataWithAlias:((existing: {type: string}[], newAlias?: string)=>{type: string}[]) = (existing, newAlias)=> {
-		if(newAlias) {
-			const otherKeys = existing.filter(k=>!k.type.startsWith("alias"))
-			return [
-				...otherKeys,
-				{type: `alias=${newAlias}`}
-			];
-		} else {
-			return existing.filter(k=>!k.type.startsWith("alias"))
-		}
-	}
-
-	private handleAliasChanged = (newValue?: string) => {
-		const {collection} = this.props;
-		if(collection) {
-			const metadata = collection.metadata ? this.updateMetadataWithAlias(collection.metadata, newValue) : [{type: `alias=${newValue}`}];
-			const updatedCollections:Collection = {
-				...collection,
-				metadata,
-			};
-			this.props.updateCollection(updatedCollections, 'alias');
-		}
-	}
-
-	private handleExcludedRegionsClick = (region: string[]) => {};
 }
 
 const createMapStateToProps = () => {
