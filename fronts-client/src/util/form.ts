@@ -13,6 +13,9 @@ import { selectCard } from 'selectors/shared';
 
 export interface CardFormData {
 	headline: string;
+	abTestEnabled: boolean;
+	headlineA: string;
+	headlineB: string;
 	isBoosted: boolean;
 	boostLevel: string;
 	showQuotedHeadline: boolean;
@@ -108,6 +111,9 @@ export const getInitialValuesForCardForm = (
 	return article
 		? {
 				headline: article.headline || '',
+				abTestEnabled: article.abTestEnabled || false,
+				headlineA: article.headlineA || '',
+				headlineB: article.headlineB || '',
 				isBoosted: article.isBoosted || false,
 				boostLevel: article.boostLevel || 'default',
 				showQuotedHeadline: article.showQuotedHeadline || false,
@@ -205,6 +211,8 @@ export const getCardMetaFromFormValues = (
 		{
 			...values,
 			headline: getStringField(values.headline),
+			headlineA: getStringField(values.headlineA),
+			headlineB: getStringField(values.headlineB),
 			trailText: getStringField(values.trailText),
 			byline: getStringField(values.byline),
 			sportScore: getStringField(values.sportScore),
@@ -236,6 +244,12 @@ export const getCardMetaFromFormValues = (
 
 	if (!values.customKicker) {
 		newCardMeta = omit(newCardMeta, 'showKickerCustom');
+	}
+
+	// When A/B testing is switched off (and card is saved), clear the variant headlines so the
+	// card reverts cleanly to its single (control) headline.
+	if (!values.abTestEnabled) {
+		newCardMeta = omit(newCardMeta, 'headlineA', 'headlineB');
 	}
 
 	return omitBy(newCardMeta, (value: string | boolean | any[]) => {

@@ -551,6 +551,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			articleCapiFieldValues,
 			pristine,
 			showByline,
+			abTestEnabled,
 			editableFields = [],
 			showKickerTag,
 			showKickerSection,
@@ -785,7 +786,35 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								id={getInputId(cardId, 'show-updates')}
 								type="checkbox"
 							/>
+							<Field
+								name="abTestEnabled"
+								component={InputCheckboxToggleInline}
+								label="A/B test headline"
+								id={getInputId(cardId, 'ab-test-enabled')}
+								type="checkbox"
+								data-testid="edit-form-ab-test-toggle"
+							/>
 						</CheckboxFieldsContainer>
+						{abTestEnabled && (
+							<>
+								<ConditionalField
+									permittedFields={editableFields}
+									name="headlineA"
+									label="Headline A"
+									rows="2"
+									component={InputTextArea}
+									data-testid="edit-form-headline-a-field"
+								/>
+								<ConditionalField
+									permittedFields={editableFields}
+									name="headlineB"
+									label="Headline B"
+									rows="2"
+									component={InputTextArea}
+									data-testid="edit-form-headline-b-field"
+								/>
+							</>
+						)}
 						{showByline && (
 							<ConditionalField
 								permittedFields={editableFields}
@@ -1267,6 +1296,7 @@ interface ContainerProps {
 	kickerOptions: ArticleTag;
 	pickedKicker: string | undefined;
 	showByline: boolean;
+	abTestEnabled: boolean;
 	editableFields?: string[];
 	showKickerTag: boolean;
 	showKickerSection: boolean;
@@ -1347,6 +1377,7 @@ const createMapStateToProps = () => {
 			videoReplace: valueSelector(state, 'videoReplace'),
 			replaceVideoUri: valueSelector(state, 'replaceVideoUri'),
 			showByline: valueSelector(state, 'showByline'),
+			abTestEnabled: valueSelector(state, 'abTestEnabled'),
 			showKickerTag: valueSelector(state, 'showKickerTag'),
 			showKickerSection: valueSelector(state, 'showKickerSection'),
 			isBreaking: valueSelector(state, 'isBreaking'),
