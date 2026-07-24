@@ -111,9 +111,8 @@ trait UpdateActionsTrait extends Logging {
       collectionJson: CollectionJson
   ): CollectionJson =
     if (update.live)
-      collectionJson.copy(live =
-        collectionJson.live.filterNot(_.id == update.item)
-      )
+      collectionJson
+        .copy(live = collectionJson.live.filterNot(_.id == update.item))
     else
       collectionJson
 
@@ -338,9 +337,8 @@ trait UpdateActionsTrait extends Logging {
         val index = update.after
           .filter { _ == true }
           .map { _ =>
-            listWithoutItem.indexWhere(t =>
-              update.position.exists(_ == t.id)
-            ) + 1
+            listWithoutItem
+              .indexWhere(t => update.position.exists(_ == t.id)) + 1
           }
           .getOrElse {
             listWithoutItem.indexWhere(t => update.position.exists(_ == t.id))
@@ -423,7 +421,7 @@ trait UpdateActionsTrait extends Logging {
   ): CollectionJson = {
     configAgent.getConfig(collectionId).flatMap(_.groupsConfig) match {
       case Some(groupsConfig) if groupsConfig.groups.nonEmpty => collectionJson
-      case _ =>
+      case _                                                  =>
         collectionJson.copy(
           live = collectionJson.live.map(removeGroupsFromTrail),
           draft = collectionJson.draft.map(_.map(removeGroupsFromTrail))
