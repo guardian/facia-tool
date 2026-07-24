@@ -467,7 +467,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		}
 		this.setState({ isDeleteClicked: false });
 	};
-
 }
 
 const createMapStateToProps = () => {
