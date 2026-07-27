@@ -246,8 +246,7 @@ export const getCardMetaFromFormValues = (
 		newCardMeta = omit(newCardMeta, 'showKickerCustom');
 	}
 
-	// When A/B testing is switched off (and card is saved), clear the variant headlines so the
-	// card reverts cleanly to its single (control) headline.
+	// When A/B testing is switched off (and card is saved), clear the variant headlines
 	if (!values.abTestEnabled) {
 		newCardMeta = omit(newCardMeta, 'headlineA', 'headlineB');
 	}
