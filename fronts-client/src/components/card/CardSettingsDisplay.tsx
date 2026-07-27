@@ -60,7 +60,6 @@ export default ({
 	boostLevel,
 	isImmersive,
 	groupIndex,
-	abTestEnabled,
 }: {
 	collectionType?: string;
 	isBreaking?: boolean;
@@ -71,7 +70,6 @@ export default ({
 	boostLevel?: BoostLevels;
 	isImmersive?: boolean;
 	groupIndex?: number;
-	abTestEnabled?: boolean;
 }) =>
 	shouldShowBoostLevel(collectionType, boostLevel) ||
 	shouldShowLegacyBoost(collectionType, isBoosted) ||
@@ -80,17 +78,11 @@ export default ({
 	showQuotedHeadline ||
 	showLargeHeadline ||
 	isBoosted ||
-	isImmersive ||
-	abTestEnabled ? (
+	isImmersive ? (
 		<ArticleMetadataProperties>
 			{isBreaking && (
 				<ArticleMetadataProperty data-testid="breaking-news">
 					Breaking news
-				</ArticleMetadataProperty>
-			)}
-			{abTestEnabled && (
-				<ArticleMetadataProperty data-testid="ab-test-enabled">
-					A/B testing
 				</ArticleMetadataProperty>
 			)}
 			{showByline && (

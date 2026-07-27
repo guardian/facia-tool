@@ -156,7 +156,6 @@ interface ArticleBodyProps {
 	byline?: string;
 	showByline?: boolean;
 	showQuotedHeadline?: boolean;
-	abTestEnabled?: boolean;
 	imageHide?: boolean;
 	imageSlideshowReplace?: boolean;
 	imageReplace?: boolean;
@@ -214,7 +213,6 @@ const articleBodyDefault = React.memo(
 		byline,
 		showByline,
 		showQuotedHeadline,
-		abTestEnabled,
 		imageHide,
 		imageSlideshowReplace,
 		imageReplace,
@@ -405,7 +403,6 @@ const articleBodyDefault = React.memo(
 						boostLevel={boostLevel}
 						isImmersive={isImmersive}
 						groupIndex={groupIndex}
-						abTestEnabled={abTestEnabled}
 					/>
 					<CardHeadingContainer size={size}>
 						{displayPlaceholders && (
