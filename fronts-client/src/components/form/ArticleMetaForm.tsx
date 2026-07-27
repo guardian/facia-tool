@@ -712,6 +712,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								}
 								originalValue={articleCapiFieldValues.headline}
 								data-testid="edit-form-headline-field"
+								isHeadline={true}
+								cardId
 							/>
 						)}
 						<CheckboxFieldsContainer
@@ -785,14 +787,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								label="Show updates"
 								id={getInputId(cardId, 'show-updates')}
 								type="checkbox"
-							/>
-							<Field
-								name="abTestEnabled"
-								component={InputCheckboxToggleInline}
-								label="A/B test headline"
-								id={getInputId(cardId, 'ab-test-enabled')}
-								type="checkbox"
-								data-testid="edit-form-ab-test-toggle"
 							/>
 						</CheckboxFieldsContainer>
 						{abTestEnabled && (
