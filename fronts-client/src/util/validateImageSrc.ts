@@ -364,6 +364,10 @@ const validateSlideshowDimensions = (
 	imageCriteria: Criteria,
 ): ReturnType<typeof validateDimensions> => {
 	const validationForAllSlidesWithDimensions = slideshow.flatMap((slide) => {
+		// Video slides hold a media atom, not an image, so skip image dimension checks.
+		if (slide.mediaType === 'video') {
+			return [];
+		}
 		const maybeSlideDimensions = getMaybeDimensionsFromWidthAndHeight(
 			slide.width,
 			slide.height,

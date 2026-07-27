@@ -119,6 +119,12 @@ type CardRootMeta = ChefCardMeta &
 			width?: string;
 			height?: string;
 			origin?: string;
+			caption?: string;
+			// A slideshow slide can hold either an image (default) or a video
+			// (a media atom, referenced by `atomId`). When `mediaType` is 'video'
+			// the `src`/`thumb` hold the poster frame captured from the atom.
+			mediaType?: SlideshowMediaType;
+			atomId?: string;
 		}>;
 		overrideArticleMainMedia?: boolean;
 		coverCardImageReplace?: boolean;
@@ -141,7 +147,14 @@ export interface ImageData {
 	origin?: string;
 	thumb?: string;
 	caption?: string;
+	// When this object represents a slideshow slide it may be a video rather
+	// than an image. In that case `mediaType` is 'video' and `atomId` points at
+	// the media atom; `src`/`thumb` hold the poster frame captured from the atom.
+	mediaType?: SlideshowMediaType;
+	atomId?: string;
 }
+
+export type SlideshowMediaType = 'image' | 'video';
 
 export interface Palette {
 	foregroundHex: string;

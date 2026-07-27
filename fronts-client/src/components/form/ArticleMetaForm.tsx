@@ -85,6 +85,7 @@ import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import type { Atom, AtomResponse } from '../../types/Capi';
 import Tooltip from '../modals/Tooltip';
 import { isAtom } from '../../util/atom';
+import { SlideshowVideoSlide } from './SlideshowVideoSlide';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -114,6 +115,7 @@ type RenderSlideshowProps = WrappedFieldArrayProps<ImageData> & {
 	change: (field: string, value: any) => void;
 	slideshowHasAtLeastTwoImages: boolean;
 	criteria: Criteria;
+	videoBaseUrl: string | null;
 };
 
 const SlideshowRowContainer = styled(RowContainer)`
@@ -146,6 +148,26 @@ const SlideshowCol = styled(Col)`
 const SlideshowLabel = styled.div`
 	font-size: 12px;
 	color: ${theme.colors.greyMedium};
+`;
+
+const SlideTypeToggle = styled.div`
+	display: flex;
+	margin-bottom: 4px;
+`;
+
+const SlideTypeButton = styled.button<{ active: boolean }>`
+	flex: 1;
+	font-size: 11px;
+	padding: 2px 4px;
+	cursor: pointer;
+	border: 1px solid ${theme.colors.greyMediumLight};
+	background-color: ${(props) =>
+		props.active ? theme.colors.orange : theme.colors.white};
+	color: ${(props) =>
+		props.active ? theme.colors.white : theme.colors.blackDark};
+	&:first-child {
+		border-right: none;
+	}
 `;
 
 const CollectionEditedError = styled.div`
@@ -238,6 +260,7 @@ const RenderSlideshow = ({
 	frontId,
 	change,
 	criteria,
+	videoBaseUrl,
 }: RenderSlideshowProps) => {
 	const [slideshowIndex, setSlideshowIndex] = React.useState(0);
 
@@ -249,6 +272,17 @@ const RenderSlideshow = ({
 
 	const isInvalidCaptionLength = (index: number) =>
 		!!maxLength100(fields.get(index));
+
+	const setSlideType = (index: number, mediaType: 'image' | 'video') => {
+		const existing = fields.get(index);
+		// Switching type resets the slide's media but preserves any caption.
+		change(
+			`slideshow[${index}]`,
+			mediaType === 'video'
+				? { mediaType, caption: existing?.caption }
+				: { caption: existing?.caption },
+		);
+	};
 
 	const navigateToNearestIndex = () => {
 		if (handleNavigation(true)()) {
@@ -287,23 +321,58 @@ const RenderSlideshow = ({
 	return (
 		<>
 			<SlideshowRow>
-				{fields.map((name, index) => (
-					<SlideshowCol
-						key={`${name}-${index}`}
-						onClick={() => setSlideshowIndex(index)}
-					>
-						<Field
-							name={name}
-							component={InputImage}
-							small
-							criteria={criteria}
-							frontId={frontId}
-							isSelected={index === slideshowIndex}
-							isInvalid={isInvalidCaptionLength(index)}
-							validate={[maxLength100]}
-						/>
-					</SlideshowCol>
-				))}
+				{fields.map((name, index) => {
+					const slide = fields.get(index);
+					const isVideoSlide = slide?.mediaType === 'video';
+					return (
+						<SlideshowCol
+							key={`${name}-${index}`}
+							onClick={() => setSlideshowIndex(index)}
+						>
+							<SlideTypeToggle>
+								<SlideTypeButton
+									type="button"
+									active={!isVideoSlide}
+									onClick={(e) => {
+										e.stopPropagation();
+										setSlideType(index, 'image');
+									}}
+								>
+									Image
+								</SlideTypeButton>
+								<SlideTypeButton
+									type="button"
+									active={isVideoSlide}
+									onClick={(e) => {
+										e.stopPropagation();
+										setSlideType(index, 'video');
+									}}
+								>
+									Video
+								</SlideTypeButton>
+							</SlideTypeToggle>
+							{isVideoSlide ? (
+								<SlideshowVideoSlide
+									videoBaseUrl={videoBaseUrl}
+									value={slide}
+									isSelected={index === slideshowIndex}
+									onChange={(value) => change(`slideshow[${index}]`, value)}
+								/>
+							) : (
+								<Field
+									name={name}
+									component={InputImage}
+									small
+									criteria={criteria}
+									frontId={frontId}
+									isSelected={index === slideshowIndex}
+									isInvalid={isInvalidCaptionLength(index)}
+									validate={[maxLength100]}
+								/>
+							)}
+						</SlideshowCol>
+					);
+				})}
 			</SlideshowRow>
 			<SlideshowLabel>
 				Drag and drop up to {maxSlideshowImages} images
@@ -1027,6 +1096,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 										change={change}
 										criteria={cardCriteria}
 										slideshowHasAtLeastTwoImages={slideshowHasAtLeastTwoImages}
+										videoBaseUrl={videoBaseUrl}
 									/>
 								</SlideshowRowContainer>
 							)}
