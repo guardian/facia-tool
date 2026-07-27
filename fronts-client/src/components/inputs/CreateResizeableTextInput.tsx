@@ -1,5 +1,5 @@
 import React from 'react';
-import { Field, WrappedFieldProps } from 'redux-form';
+import { WrappedFieldProps } from 'redux-form';
 import { StyledProps } from 'styled-components';
 import clamp from 'lodash/clamp';
 
@@ -7,7 +7,6 @@ import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
 import { RewindIcon } from '../icons/Icons';
 import { styled } from 'constants/theme';
-import InputCheckboxToggleInline from './InputCheckboxToggleInline';
 
 type Props = {
 	label?: string;
@@ -95,17 +94,12 @@ const createResizeableTextInput = (
 			}
 		}
 
-		private getInputId = (cardId: string, label: string) =>
-			`${cardId}-${label}`;
-
 		public render() {
 			const {
 				label,
 				input,
 				originalValue,
 				labelContent: LabelContent,
-				isHeadline,
-				cardId,
 				...rest
 			} = this.props;
 			return (
@@ -119,16 +113,6 @@ const createResizeableTextInput = (
 								</RewindButton>
 							)}
 							{LabelContent}
-							{isHeadline && cardId && (
-								<Field
-									name="abTestEnabled"
-									component={InputCheckboxToggleInline}
-									label="A/B test headline"
-									id={this.getInputId(cardId, 'ab-test-enabled')}
-									type="checkbox"
-									data-testid="edit-form-ab-test-toggle"
-								/>
-							)}
 						</TextInputLabel>
 					)}
 					<InputComponentContainer>

@@ -59,7 +59,6 @@ import { selectEditMode, selectV2SubPath } from 'selectors/pathSelectors';
 import { ValidationResponse } from 'util/validateImageSrc';
 import InputLabel from 'components/inputs/InputLabel';
 import url from 'constants/url';
-import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputBase from '../inputs/InputBase';
 import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
 import { error } from '../../styleConstants';
@@ -85,6 +84,7 @@ import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import type { Atom, AtomResponse } from '../../types/Capi';
 import Tooltip from '../modals/Tooltip';
 import { isAtom } from '../../util/atom';
+import { HeadlineInput } from 'components/inputs/HeadlineInput';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -702,18 +702,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							}}
 						/>
 						{shouldRenderField('headline', editableFields) && (
-							<Field
-								name="headline"
-								label={this.getHeadlineLabel()}
-								rows="2"
-								placeholder={articleCapiFieldValues.headline}
-								component={
-									this.props.snapType === 'html' ? RichTextInput : InputTextArea
-								}
-								originalValue={articleCapiFieldValues.headline}
-								data-testid="edit-form-headline-field"
-								isHeadline={true}
-								cardId
+							<HeadlineInput
+								abTestEnabled
+								capiHeadline={articleCapiFieldValues.headline}
+								cardId={this.props.cardId}
+								editableFields={editableFields}
+								snapType={this.props.snapType}
 							/>
 						)}
 						<CheckboxFieldsContainer
@@ -789,26 +783,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								type="checkbox"
 							/>
 						</CheckboxFieldsContainer>
-						{abTestEnabled && (
-							<>
-								<ConditionalField
-									permittedFields={editableFields}
-									name="headlineA"
-									label="Headline A"
-									rows="2"
-									component={InputTextArea}
-									data-testid="edit-form-headline-a-field"
-								/>
-								<ConditionalField
-									permittedFields={editableFields}
-									name="headlineB"
-									label="Headline B"
-									rows="2"
-									component={InputTextArea}
-									data-testid="edit-form-headline-b-field"
-								/>
-							</>
-						)}
 						{showByline && (
 							<ConditionalField
 								permittedFields={editableFields}
@@ -1224,17 +1198,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			this.props.change('isImmersive', false);
 		}
 	};
-
-	/**
-	 * You may be thinking -- why on earth would we use the `headline` field to contain
-	 * HTML, renaming it in the process so our users are none the wiser? It's because the e-mail
-	 * frontend, which currently consumes snaps of this type, knows what to do with headlines
-	 * (it renders them as HTML). At some point in the future, it will be refactored, at which
-	 * point we'll be able to use another, saner field to do the same job, but in the meantime,
-	 * for snaps of type `html`, the field `headline` is where the html lives.
-	 */
-	private getHeadlineLabel = () =>
-		this.props.snapType === 'html' ? 'Content' : 'Headline';
 
 	private determineCardCriteria = (): Criteria & {
 		widthAspectRatio: number;
