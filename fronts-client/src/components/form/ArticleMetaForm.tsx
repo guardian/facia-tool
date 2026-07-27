@@ -703,7 +703,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						/>
 						{shouldRenderField('headline', editableFields) && (
 							<HeadlineInput
-								abTestEnabled
+								abTestEnabled={abTestEnabled}
 								capiHeadline={articleCapiFieldValues.headline}
 								cardId={this.props.cardId}
 								editableFields={editableFields}

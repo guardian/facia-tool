@@ -4,6 +4,7 @@ import { RichTextInput } from './RichTextInput';
 import InputTextArea from './InputTextArea';
 import InputCheckboxToggleInline from './InputCheckboxToggleInline';
 import ConditionalField from './ConditionalField';
+import styled from 'styled-components';
 
 interface HeadlineInputProps {
 	abTestEnabled: boolean;
@@ -12,6 +13,26 @@ interface HeadlineInputProps {
 	editableFields: string[];
 	snapType: string | undefined;
 }
+
+const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
+	background-color: ${({ abTestEnabled }) =>
+		abTestEnabled ? 'white' : 'transparent'};
+	border-radius: 4px;
+	padding: ${({ abTestEnabled }) => (abTestEnabled ? '20px' : '0px')};
+	position: relative;
+	margin-bottom: 10px;
+`;
+
+const ABTestToggleContainer = styled('div')`
+	position: absolute;
+	right: 20px;
+`;
+
+const HeadlineVariantContainer = styled('div')`
+	display: flex;
+	flex-direction: column;
+	gap: 18px;
+`;
 
 const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 	/**
@@ -28,20 +49,22 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 	const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
 	return (
-		<>
+		<HeadlineInputContainer abTestEnabled={props.abTestEnabled}>
 			{props.cardId && (
-				<Field
-					name="abTestEnabled"
-					component={InputCheckboxToggleInline}
-					label="A/B test headline"
-					id={getInputId(props.cardId, 'ab-test-enabled')}
-					type="checkbox"
-					data-testid="edit-form-ab-test-toggle"
-				/>
+				<ABTestToggleContainer>
+					<Field
+						name="abTestEnabled"
+						component={InputCheckboxToggleInline}
+						label="Headline test"
+						id={getInputId(props.cardId, 'ab-test-enabled')}
+						type="checkbox"
+						data-testid="edit-form-ab-test-toggle"
+					/>
+				</ABTestToggleContainer>
 			)}
 
 			{props.abTestEnabled ? (
-				<>
+				<HeadlineVariantContainer>
 					<ConditionalField
 						permittedFields={props.editableFields}
 						name="headlineA"
@@ -58,7 +81,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						component={InputTextArea}
 						data-testid="edit-form-headline-b-field"
 					/>
-				</>
+				</HeadlineVariantContainer>
 			) : (
 				<Field
 					name="headline"
@@ -68,11 +91,9 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 					component={props.snapType === 'html' ? RichTextInput : InputTextArea}
 					originalValue={props.capiHeadline}
 					data-testid="edit-form-headline-field"
-					isHeadline={true}
-					cardId
 				/>
 			)}
-		</>
+		</HeadlineInputContainer>
 	);
 };
 
