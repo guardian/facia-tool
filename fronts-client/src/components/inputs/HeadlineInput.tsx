@@ -23,9 +23,9 @@ const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
 	margin-bottom: 10px;
 `;
 
-const ABTestToggleContainer = styled('div')`
+const ABTestToggleContainer = styled('div')<{ abTestEnabled: boolean }>`
 	position: absolute;
-	right: 20px;
+	right: ${({ abTestEnabled }) => (abTestEnabled ? '20px' : '0px')};
 `;
 
 const HeadlineVariantContainer = styled('div')`
@@ -51,7 +51,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 	return (
 		<HeadlineInputContainer abTestEnabled={props.abTestEnabled}>
 			{props.cardId && (
-				<ABTestToggleContainer>
+				<ABTestToggleContainer abTestEnabled={props.abTestEnabled}>
 					<Field
 						name="abTestEnabled"
 						component={InputCheckboxToggleInline}
