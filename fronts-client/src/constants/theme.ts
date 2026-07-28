@@ -135,6 +135,7 @@ const input = {
 	radioButtonBackgroundDisabled: '#E6E6E6',
 	checkboxButtonBackgroundDisabled: '#E6E6E6',
 	abTestColorActive: base.colors.abTestActiveColor,
+	abTestSecondaryColor: base.colors.abTestSecondaryColor,
 };
 
 const collection = {
