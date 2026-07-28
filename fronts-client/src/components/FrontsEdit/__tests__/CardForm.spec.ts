@@ -55,6 +55,9 @@ const formValues = {
 	replaceVideoUri: '',
 	atomId: '',
 	replacementVideoAtom: '',
+	multimediaSlideshowReplace: false,
+	multimediaSlideshowUrl: '',
+	multimediaSlideshowAtom: '',
 };
 
 const createStateWithChangedFormFields = (
@@ -80,6 +83,21 @@ describe('CardForm transform functions', () => {
 	describe('Derive form values from a derived article', () => {
 		it('should derive values', () => {
 			expect(getInitialValuesForCardForm(derivedArticle)).toEqual(formValues);
+		});
+		it('should derive multimedia slideshow values from a derived article', () => {
+			expect(
+				getInitialValuesForCardForm({
+					...derivedArticle,
+					multimediaSlideshowReplace: true,
+					multimediaSlideshowUrl: 'https://example.com/atom-id',
+					multimediaSlideshowAtom: 'atom-id',
+				}),
+			).toEqual({
+				...formValues,
+				multimediaSlideshowReplace: true,
+				multimediaSlideshowUrl: 'https://example.com/atom-id',
+				multimediaSlideshowAtom: 'atom-id',
+			});
 		});
 		it('should handle existing slideshows of any length', () => {
 			const exampleImage = {
@@ -243,6 +261,29 @@ describe('CardForm transform functions', () => {
 				imageSrcThumb: 'exampleThumb',
 				imageSrcWidth: '100',
 				headline: 'Bill Shorten',
+			});
+		});
+		it('should persist multimedia slideshow fields when dirtied', () => {
+			const values = {
+				multimediaSlideshowReplace: true,
+				multimediaSlideshowUrl: 'https://example.com/atom-id',
+				multimediaSlideshowAtom: 'atom-id',
+			};
+			const state = createStateWithChangedFormFields(
+				initialState,
+				'exampleId',
+				values,
+			);
+			expect(
+				getCardMetaFromFormValues(state, 'exampleId', {
+					...formValues,
+					...values,
+				}),
+			).toEqual({
+				headline: 'Bill Shorten',
+				multimediaSlideshowReplace: true,
+				multimediaSlideshowUrl: 'https://example.com/atom-id',
+				multimediaSlideshowAtom: 'atom-id',
 			});
 		});
 		it('should remove customKicker and showKickerCustom if the kicker is empty', () => {

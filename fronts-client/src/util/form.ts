@@ -32,6 +32,9 @@ export interface CardFormData {
 	imageCutoutSrc: string;
 	imageSlideshowReplace: boolean;
 	slideshow: Array<ImageData | void> | void;
+	multimediaSlideshowReplace: boolean;
+	multimediaSlideshowUrl: string;
+	multimediaSlideshowAtom: Atom | string;
 	showKickerTag: boolean;
 	showKickerSection: boolean;
 	imageReplace: boolean;
@@ -128,6 +131,9 @@ export const getInitialValuesForCardForm = (
 				imageSlideshowReplace: article.imageSlideshowReplace || false,
 				videoReplace: article.videoReplace || false,
 				replaceVideoUri: article.replaceVideoUri || '',
+				multimediaSlideshowReplace: article.multimediaSlideshowReplace || false,
+				multimediaSlideshowUrl: article.multimediaSlideshowUrl || '',
+				multimediaSlideshowAtom: article.multimediaSlideshowAtom || '',
 				primaryImage: {
 					src: article.imageSrc,
 					width: strToInt(article.imageSrcWidth),
