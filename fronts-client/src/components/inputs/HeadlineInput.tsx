@@ -70,6 +70,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						type="checkbox"
 						data-testid="edit-form-ab-test-toggle"
 						useABTestStyling={true}
+						activeABTest={props.abTestEnabled}
 					/>
 				</ABTestToggleContainer>
 			)}

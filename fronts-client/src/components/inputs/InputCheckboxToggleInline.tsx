@@ -18,9 +18,15 @@ const CheckboxContainer = styled.div`
 	}
 `;
 
-const Label = styled(InputLabel)`
+const Label = styled(InputLabel)<{
+	useABTestStyling?: boolean;
+	activeABTest?: boolean;
+}>`
 	padding-left: 5px;
-	color: ${(props) => props.theme.input.colorLabel};
+	color: ${(props) =>
+		props.useABTestStyling && props.activeABTest
+			? props.theme.input.abTestColorActive
+			: props.theme.input.colorLabel};
 	line-height: 15px;
 	flex: 1;
 	cursor: pointer;
@@ -68,13 +74,13 @@ const Checkbox = styled.input<{ useABTestStyling?: boolean }>`
 	:checked + ${CheckboxLabel} {
 		background-color: ${({ useABTestStyling }) =>
 			useABTestStyling
-				? theme.input.abTestCheckboxColorActive
+				? theme.input.abTestColorActive
 				: theme.input.checkboxColorActive};
 	}
 	&:checked + ${CheckboxLabel}, &:checked + ${CheckboxLabel}:before {
 		border-color: ${({ useABTestStyling }) =>
 			useABTestStyling
-				? theme.input.abTestCheckboxColorActive
+				? theme.input.abTestColorActive
 				: theme.input.checkboxColorActive};
 		right: 0px;
 	}
@@ -95,6 +101,7 @@ type Props = {
 	id: string;
 	dataTestId?: string;
 	useABTestStyling?: boolean;
+	activeABTest?: boolean;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
 		Partial<WrappedFieldInputProps>;
@@ -106,6 +113,7 @@ export default ({
 	id,
 	dataTestId,
 	useABTestStyling,
+	activeABTest,
 	input: { onChange, ...inputRest },
 	...rest
 }: Props) => (
@@ -123,7 +131,12 @@ export default ({
 					/>
 					<CheckboxLabel htmlFor={id} />
 				</Switch>
-				<Label htmlFor={id} size="sm">
+				<Label
+					htmlFor={id}
+					size="sm"
+					useABTestStyling={useABTestStyling}
+					activeABTest={activeABTest}
+				>
 					{label}
 				</Label>
 			</CheckboxContainer>
