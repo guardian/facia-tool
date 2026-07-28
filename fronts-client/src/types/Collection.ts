@@ -112,6 +112,9 @@ type RegularCardMeta = {
 	atomId?: string;
 	imageSlideshowReplace?: boolean;
 	replacementVideoAtom?: Atom | string;
+	multimediaSlideshowReplace?: boolean;
+	multimediaSlideshowUrl?: string;
+	multimediaSlideshowAtom?: Atom | string;
 	slideshow?: Array<{
 		src?: string;
 		thumb?: string;

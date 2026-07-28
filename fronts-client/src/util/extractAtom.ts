@@ -65,9 +65,9 @@ const extractVideoImage = (atom: Atom): string | undefined => {
 const extractCurrentActiveAssets = (atom: Atom): AtomAsset[] => {
 	const activeVersion = atom.data?.media?.activeVersion;
 	return activeVersion !== undefined
-		? atom.data?.media?.assets?.filter(
+		? (atom.data?.media?.assets?.filter(
 				(asset) => asset.version === activeVersion,
-			)
+			) ?? [])
 		: [];
 };
 
@@ -89,7 +89,7 @@ const getActiveAtomProperties = (atom: Atom): AtomProperties => {
 	const platform = firstActiveAsset?.platform;
 	const videoImage = extractVideoImage(atom);
 	const videoPlayerFormat =
-		atom.data.media.metadata?.selfHost?.videoPlayerFormat;
+		atom.data.media?.metadata?.selfHost?.videoPlayerFormat;
 
 	// Youtube atom
 	if (platform === 'youtube') {
@@ -115,4 +115,10 @@ const getActiveAtomProperties = (atom: Atom): AtomProperties => {
 	};
 };
 
-export { extractAtomId, getActiveAtomProperties };
+const extractFirstSlideImage = (atom: Atom): string | undefined => {
+	const firstSlide = atom.data?.multimediaSlideshow?.slides?.[0];
+	const image = firstSlide?.content?.image;
+	return image?.master?.file ?? image?.assets?.[0]?.file;
+};
+
+export { extractAtomId, getActiveAtomProperties, extractFirstSlideImage };
