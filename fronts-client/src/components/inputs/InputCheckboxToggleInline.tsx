@@ -9,9 +9,12 @@ import { theme } from 'constants/theme';
 const checkboxHeight = 17;
 const checkboxWidth = 28;
 
-const CheckboxContainer = styled.div`
+const CheckboxContainer = styled.div<{ useABTestStyling?: boolean }>`
 	display: flex;
 	align-items: flex-start;
+	flex-direction: ${(props) =>
+		props.useABTestStyling ? 'row-reverse' : 'row'};
+	gap: ${(props) => (props.useABTestStyling ? '5px' : '0px')};
 
 	&:has(input:disabled) label {
 		cursor: not-allowed;
@@ -119,7 +122,7 @@ export default ({
 }: Props) => (
 	<>
 		<InputContainer data-testid={dataTestId}>
-			<CheckboxContainer>
+			<CheckboxContainer useABTestStyling={useABTestStyling}>
 				<Switch>
 					<Checkbox
 						type="checkbox"
