@@ -5,6 +5,7 @@ import { WrappedFieldMetaProps, WrappedFieldInputProps } from 'redux-form';
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
 import { theme } from 'constants/theme';
+import { ConicalFlaskIcon } from '../icons/Icons';
 
 const checkboxHeight = 17;
 const checkboxWidth = 28;
@@ -14,7 +15,7 @@ const CheckboxContainer = styled.div<{ useABTestStyling?: boolean }>`
 	align-items: center;
 	flex-direction: ${(props) =>
 		props.useABTestStyling ? 'row-reverse' : 'row'};
-	gap: ${(props) => (props.useABTestStyling ? '5px' : '0px')};
+	gap: 5px;
 
 	&:has(input:disabled) label {
 		cursor: not-allowed;
@@ -25,7 +26,6 @@ const Label = styled(InputLabel)<{
 	useABTestStyling?: boolean;
 	activeABTest?: boolean;
 }>`
-	padding-left: 5px;
 	color: ${(props) =>
 		props.useABTestStyling && props.activeABTest
 			? props.theme.input.abTestColorActive
@@ -33,6 +33,13 @@ const Label = styled(InputLabel)<{
 	line-height: 15px;
 	flex: 1;
 	cursor: pointer;
+`;
+
+const LabelContainer = styled.div`
+	display: flex;
+	gap: 2px;
+	align-items: center;
+	flex: 1 1 0%;
 `;
 
 const Switch = styled.div`
@@ -105,6 +112,7 @@ type Props = {
 	dataTestId?: string;
 	useABTestStyling?: boolean;
 	activeABTest?: boolean;
+	theme: any;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
 		Partial<WrappedFieldInputProps>;
@@ -134,14 +142,26 @@ export default ({
 					/>
 					<CheckboxLabel htmlFor={id} />
 				</Switch>
-				<Label
-					htmlFor={id}
-					size="sm"
-					useABTestStyling={useABTestStyling}
-					activeABTest={activeABTest}
-				>
-					{label}
-				</Label>
+				<LabelContainer>
+					{useABTestStyling && (
+						<ConicalFlaskIcon
+							size={'xs'}
+							fill={
+								activeABTest
+									? theme.input.abTestColorActive
+									: theme.input.colorLabel
+							}
+						/>
+					)}
+					<Label
+						htmlFor={id}
+						size="sm"
+						useABTestStyling={useABTestStyling}
+						activeABTest={activeABTest}
+					>
+						{label}
+					</Label>
+				</LabelContainer>
 			</CheckboxContainer>
 		</InputContainer>
 	</>
