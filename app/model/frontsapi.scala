@@ -10,6 +10,7 @@ import tools.{FaciaApi, FaciaApiIO}
 import updates.{ArchiveUpdate, LogUpdate, StructuredLogger, UpdateList}
 import logging.Logging
 
+import java.util.UUID
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
@@ -315,7 +316,7 @@ trait UpdateActionsTrait extends Logging {
       .find(_.id == update.item)
       .map { currentTrail =>
         val newMeta = for (updateMeta <- update.itemMeta) yield updateMeta
-        currentTrail.copy(meta = newMeta)
+        currentTrail.copy(meta = newMeta, tests = MockTest)
       }
       .getOrElse(
         Trail(
@@ -323,7 +324,7 @@ trait UpdateActionsTrait extends Logging {
           DateTime.now.getMillis,
           Some(getUserName(identity)),
           update.itemMeta,
-          None
+          MockTest
         )
       )
 
@@ -353,6 +354,32 @@ trait UpdateActionsTrait extends Logging {
     splitList._1 ::: (trail +: splitList._2)
   }
 
+  val MockTest = Some(
+    List(
+      Test(
+        testUuid = UUID.randomUUID().toString,
+        variantMeta = List(
+          VariantMeta(
+            id = VariantId.A,
+            meta = TrailMetaData(Map("headline" -> JsString("headline A")))
+          ),
+          VariantMeta(
+            id = VariantId.B,
+            meta = TrailMetaData(Map("headline" -> JsString("headline B")))
+          )
+        ),
+        createdByName = "Anna & Simon",
+        createdByEmail = "test@guardian.com",
+        hasManuallyEndedOnThisTrail = false,
+        startDate = None,
+        expiryDate = None,
+        frontsThisTestCanRunOn = List("US"),
+        manuallyEndedOnThisTrailByName = Some("Anna & Simon"),
+        manuallyEndedOnThisTrailByEmail = Some("test@guardian.com")
+      )
+    )
+  )
+
   def createCollectionJson(
       identity: User,
       update: UpdateList
@@ -366,7 +393,7 @@ trait UpdateActionsTrait extends Logging {
             DateTime.now.getMillis,
             Some(userName),
             update.itemMeta,
-            None
+            MockTest
           )
         ),
         None,
@@ -389,7 +416,7 @@ trait UpdateActionsTrait extends Logging {
               DateTime.now.getMillis,
               Some(userName),
               update.itemMeta,
-              None
+              MockTest
             )
           )
         ),
