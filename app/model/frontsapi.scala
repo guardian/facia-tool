@@ -323,7 +323,7 @@ trait UpdateActionsTrait extends Logging {
           DateTime.now.getMillis,
           Some(getUserName(identity)),
           update.itemMeta,
-					None
+          None
         )
       )
 
@@ -366,7 +366,7 @@ trait UpdateActionsTrait extends Logging {
             DateTime.now.getMillis,
             Some(userName),
             update.itemMeta,
-						None
+            None
           )
         ),
         None,
@@ -389,7 +389,7 @@ trait UpdateActionsTrait extends Logging {
               DateTime.now.getMillis,
               Some(userName),
               update.itemMeta,
-							None
+              None
             )
           )
         ),
@@ -473,7 +473,7 @@ trait UpdateActionsTrait extends Logging {
       DateTime.now.getMillis,
       Some(getUserName(identity)),
       update.itemMeta,
-			None
+      None
     )
     CollectionJson(
       live = Nil,
