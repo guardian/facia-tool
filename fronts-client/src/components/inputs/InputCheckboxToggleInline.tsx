@@ -11,7 +11,7 @@ const checkboxWidth = 28;
 
 const CheckboxContainer = styled.div<{ useABTestStyling?: boolean }>`
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
 	flex-direction: ${(props) =>
 		props.useABTestStyling ? 'row-reverse' : 'row'};
 	gap: ${(props) => (props.useABTestStyling ? '5px' : '0px')};
