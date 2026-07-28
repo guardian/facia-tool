@@ -13,6 +13,8 @@ import baseStyled, {
 const colors = {
 	blackDark: '#121212', // darkest
 	blackLight: '#333',
+	blue: '#3B82F6',
+	blueGrey: '#EEF2F6',
 	greyDark: '#444444',
 	greyMediumDark: '#515151',
 	greyMediumDarkish: '#676767',
@@ -70,6 +72,8 @@ const base = {
 		placeholderDark: colors.greyLight,
 		focusColor: colors.orange,
 		dangerColor: colors.red,
+		abTestActiveColor: colors.blue,
+		abTestSecondaryColor: colors.blueGrey,
 	},
 };
 
@@ -130,6 +134,7 @@ const input = {
 	placeholderText: base.colors.placeholderDark,
 	radioButtonBackgroundDisabled: '#E6E6E6',
 	checkboxButtonBackgroundDisabled: '#E6E6E6',
+	abTestCheckboxColorActive: base.colors.abTestActiveColor,
 };
 
 const collection = {

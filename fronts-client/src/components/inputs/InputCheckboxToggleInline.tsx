@@ -63,13 +63,19 @@ const CheckboxLabel = styled.label`
 	}
 `;
 
-const Checkbox = styled.input`
+const Checkbox = styled.input<{ useABTestStyling?: boolean }>`
 	display: none;
 	:checked + ${CheckboxLabel} {
-		background-color: ${theme.input.checkboxColorActive};
+		background-color: ${({ useABTestStyling }) =>
+			useABTestStyling
+				? theme.input.abTestCheckboxColorActive
+				: theme.input.checkboxColorActive};
 	}
 	&:checked + ${CheckboxLabel}, &:checked + ${CheckboxLabel}:before {
-		border-color: ${theme.input.checkboxColorActive};
+		border-color: ${({ useABTestStyling }) =>
+			useABTestStyling
+				? theme.input.abTestCheckboxColorActive
+				: theme.input.checkboxColorActive};
 		right: 0px;
 	}
 	:disabled,
@@ -88,6 +94,7 @@ type Props = {
 	label?: string;
 	id: string;
 	dataTestId?: string;
+	useABTestStyling?: boolean;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
 		Partial<WrappedFieldInputProps>;
@@ -98,6 +105,7 @@ export default ({
 	label,
 	id,
 	dataTestId,
+	useABTestStyling,
 	input: { onChange, ...inputRest },
 	...rest
 }: Props) => (
@@ -111,6 +119,7 @@ export default ({
 						{...inputRest}
 						{...rest}
 						id={id}
+						useABTestStyling={useABTestStyling}
 					/>
 					<CheckboxLabel htmlFor={id} />
 				</Switch>

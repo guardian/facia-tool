@@ -69,6 +69,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						id={getInputId(props.cardId, 'ab-test-enabled')}
 						type="checkbox"
 						data-testid="edit-form-ab-test-toggle"
+						useABTestStyling={true}
 					/>
 				</ABTestToggleContainer>
 			)}
