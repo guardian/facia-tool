@@ -5,6 +5,7 @@ import InputTextArea from './InputTextArea';
 import InputCheckboxToggleInline from './InputCheckboxToggleInline';
 import ConditionalField from './ConditionalField';
 import styled from 'styled-components';
+import pageConfig from '../../util/extractConfigFromPage';
 
 interface HeadlineInputProps {
 	abTestEnabled: boolean;
@@ -48,9 +49,18 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 
 	const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
+	const headlineABTestingFeatureSwitch =
+		pageConfig?.userData?.featureSwitches.find(
+			(feature) => feature.key === 'headline-ab-testing',
+		);
+
 	return (
-		<HeadlineInputContainer abTestEnabled={props.abTestEnabled}>
-			{props.cardId && (
+		<HeadlineInputContainer
+			abTestEnabled={
+				props.abTestEnabled && headlineABTestingFeatureSwitch?.enabled === true
+			}
+		>
+			{props.cardId && headlineABTestingFeatureSwitch?.enabled === true && (
 				<ABTestToggleContainer abTestEnabled={props.abTestEnabled}>
 					<Field
 						name="abTestEnabled"
@@ -63,7 +73,8 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 				</ABTestToggleContainer>
 			)}
 
-			{props.abTestEnabled ? (
+			{props.abTestEnabled &&
+			headlineABTestingFeatureSwitch?.enabled === true ? (
 				<HeadlineVariantContainer>
 					<ConditionalField
 						permittedFields={props.editableFields}
