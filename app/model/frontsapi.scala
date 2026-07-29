@@ -81,6 +81,7 @@ trait UpdateActionsTrait extends Logging {
   ): CollectionJson =
     if (update.live) {
       val live = updateList(update, identity, collectionJson.live)
+
       collectionJson.copy(
         live = live,
         draft = collectionJson.draft.filter(_ != live)
@@ -251,8 +252,12 @@ trait UpdateActionsTrait extends Logging {
       collection: CollectionJson,
       identity: User
   ): CollectionJson = {
+    val collectionWithMockTests = collection.copy(
+      live = collection.live.map(_.copy(tests = MockTest)),
+      draft = collection.draft.map(_.map(_.copy(tests = MockTest)))
+    )
     val collectionWithGroupsRemoved =
-      removeGroupIfNoLongerGrouped(id, collection)
+      removeGroupIfNoLongerGrouped(id, collectionWithMockTests)
     val prunedCollection = pruneBlock(collectionWithGroupsRemoved)
     putCollectionJson(id, prunedCollection)
     v2ArchiveUpdateBlock(id, prunedCollection, identity)
