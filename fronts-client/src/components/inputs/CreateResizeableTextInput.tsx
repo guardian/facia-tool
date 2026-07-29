@@ -17,8 +17,6 @@ type Props = {
 	>;
 	labelContent?: React.Component<{}>;
 	type?: string;
-	isHeadline?: boolean;
-	cardId?: string;
 } & WrappedFieldProps;
 
 interface State {
