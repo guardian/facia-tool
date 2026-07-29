@@ -13,8 +13,8 @@ const checkboxWidth = 28;
 const CheckboxContainer = styled.div<{ useABTestStyling?: boolean }>`
 	display: flex;
 	align-items: center;
-	flex-direction: ${(props) =>
-		props.useABTestStyling ? 'row-reverse' : 'row'};
+	flex-direction: ${({ useABTestStyling }) =>
+		useABTestStyling ? 'row-reverse' : 'row'};
 	gap: 5px;
 
 	&:has(input:disabled) label {
@@ -26,10 +26,10 @@ const Label = styled(InputLabel)<{
 	useABTestStyling?: boolean;
 	activeABTest?: boolean;
 }>`
-	color: ${(props) =>
-		props.useABTestStyling && props.activeABTest
-			? props.theme.input.abTestActiveColor
-			: props.theme.input.colorLabel};
+	color: ${({ useABTestStyling, activeABTest, theme }) =>
+		useABTestStyling && activeABTest
+			? theme.input.abTestActiveColor
+			: theme.input.colorLabel};
 	line-height: 15px;
 	flex: 1;
 	cursor: pointer;
