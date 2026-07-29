@@ -112,7 +112,6 @@ type Props = {
 	dataTestId?: string;
 	useABTestStyling?: boolean;
 	activeABTest?: boolean;
-	theme: any;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
 		Partial<WrappedFieldInputProps>;
