@@ -19,20 +19,22 @@ const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
 	background-color: ${({ abTestEnabled, theme }) =>
 		abTestEnabled ? theme.input.abTestSecondaryColor : 'transparent'};
 	border-radius: 4px;
-	padding: ${({ abTestEnabled }) => (abTestEnabled ? '20px' : '0px')};
+	padding: ${({ abTestEnabled }) =>
+		abTestEnabled ? '4px 14px 12px' : '4px 0px 0px'};
 	position: relative;
 	margin-bottom: 10px;
 `;
 
-const ABTestToggleContainer = styled('div')<{ abTestEnabled: boolean }>`
+const ABTestToggleContainer = styled('div')`
 	position: absolute;
-	right: ${({ abTestEnabled }) => (abTestEnabled ? '20px' : '0px')};
+	right: 8px;
+	top: 6px;
 `;
 
 const HeadlineVariantContainer = styled('div')`
 	display: flex;
 	flex-direction: column;
-	gap: 18px;
+	gap: 6px;
 `;
 
 const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
@@ -61,7 +63,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 			}
 		>
 			{props.cardId && headlineABTestingFeatureSwitch?.enabled === true && (
-				<ABTestToggleContainer abTestEnabled={props.abTestEnabled}>
+				<ABTestToggleContainer>
 					<Field
 						name="abTestEnabled"
 						component={InputCheckboxToggleInline}
