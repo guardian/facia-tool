@@ -87,6 +87,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						rows="2"
 						component={InputTextArea}
 						data-testid="edit-form-headline-a-field"
+						placeholder={props.capiHeadline}
 					/>
 					<ConditionalField
 						permittedFields={props.editableFields}
