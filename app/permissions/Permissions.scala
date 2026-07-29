@@ -15,6 +15,8 @@ object Permissions {
   val EditEditions = PermissionDefinition("edit_editions", app)
   val LaunchAndEditEmailFronts =
     PermissionDefinition("edit_and_launch_email_fronts", app)
+  val ConfigureCustomSubnavs =
+    PermissionDefinition("configure_custom_subnavs", app)
 
   val Pinboard = PermissionDefinition("pinboard", "pinboard")
 }

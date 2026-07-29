@@ -57,6 +57,10 @@ class V2App(
         Permissions.ConfigureFronts,
         "facia-tool-allow-config-for-all"
       )(req.user.email)
+      val hasConfigureSubnavs = acl.testUser(
+        Permissions.ConfigureCustomSubnavs,
+        "facia-tool-allow-configure-subnavs-for-all"
+      )(req.user.email)
       val hasEditionsPermissions = acl.testUser(
         Permissions.EditEditions,
         "facia-tool-allow-edit-editions-for-all"
@@ -70,7 +74,10 @@ class V2App(
         fronts = Map(config.faciatool.breakingNewsFront -> hasBreakingNews),
         editions =
           Map(config.faciatool.canEditEditions -> hasEditionsPermissions),
-        permissions = Map("configure-config" -> hasConfigureFronts)
+        permissions = Map(
+          "configure-config" -> hasConfigureFronts,
+          "configure-subnavs" -> hasConfigureSubnavs
+        )
       )
 
       val userEmail: String = req.user.email

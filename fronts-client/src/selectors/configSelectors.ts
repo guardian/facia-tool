@@ -59,6 +59,10 @@ const selectEditionsPermission = createSelector(
 	(config) => config && config.acl.editions,
 );
 
+const selectHasSubnavPermission = createSelector(selectConfig, (config) =>
+	Boolean(config && config.acl.permissions['configure-subnavs']),
+);
+
 export {
 	selectCapiLiveURL,
 	selectCapiPreviewURL,
@@ -71,4 +75,5 @@ export {
 	selectAvailableEditions,
 	selectShouldUseCODELinks,
 	selectEditionsPermission,
+	selectHasSubnavPermission,
 };

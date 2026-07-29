@@ -8,6 +8,7 @@ import HomeContainer from './layout/HomeContainer';
 import {
 	selectAvailableEditions,
 	selectEditionsPermission,
+	selectHasSubnavPermission,
 } from 'selectors/configSelectors';
 import type { State } from 'types/State';
 
@@ -26,7 +27,11 @@ const renderEditionPriority = (editionPriority: EditionPriority) => (
 
 type IProps = ReturnType<typeof mapStateToProps>;
 
-const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => {
+const Home = ({
+	availableEditions,
+	editEditionsIsPermitted,
+	subnavIsPermitted,
+}: IProps) => {
 	const { editions, feast } = groupBy(availableEditions || [], 'platform');
 
 	return (
@@ -58,6 +63,16 @@ const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => {
 			</ul>
 			<h3>Manage Feast app</h3>
 			<ul>{feast.map(renderEditionPriority)}</ul>
+			{subnavIsPermitted && (
+				<>
+					<h3>Custom subnavs</h3>
+					<ul>
+						<li>
+							<Link to="/subnavs">Manage custom subnavs</Link>
+						</li>
+					</ul>
+				</>
+			)}
 		</HomeContainer>
 	);
 };
@@ -65,6 +80,7 @@ const Home = ({ availableEditions, editEditionsIsPermitted }: IProps) => {
 const mapStateToProps = (state: State) => ({
 	availableEditions: selectAvailableEditions(state),
 	editEditionsIsPermitted: selectEditionsPermission(state)?.['edit-editions'],
+	subnavIsPermitted: selectHasSubnavPermission(state),
 });
 
 const displayNoPermissionMessage = (onContent: string) => {

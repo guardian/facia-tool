@@ -34,9 +34,11 @@ import {
 	frontsEditPathProps,
 	issuePathProps,
 	frontsFeatureProps,
+	subnavSectionProps,
 } from 'routes/routes';
 import ManageView from './Editions/ManageView';
 import FeaturesView from './Features/FeaturesView';
+import SubnavSection from './Subnav';
 import { PlaceholderAnimation } from 'components/BasePlaceholder';
 import OptionsModal from './modals/OptionsModal';
 import BannerNotification from './notifications/BannerNotification';
@@ -165,6 +167,7 @@ const App = () => {
 						<Route {...frontsEditPathProps} component={FrontsEdit} />
 						<Route {...issuePathProps} component={FrontsEdit} />
 						<Route {...frontsFeatureProps} component={FeaturesView} />
+						<Route {...subnavSectionProps} component={SubnavSection} />
 						<Route exact path="/" component={Home} />
 						<Route exact path={manageEditions} component={ManageView} />
 						<Route component={NotFound} />

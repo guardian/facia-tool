@@ -179,6 +179,18 @@ class ConfigPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext)
   val restrictedAction = "configure fronts"
 }
 
+class ConfigureSubnavsPermissionCheck(val acl: Acl)(implicit
+    ec: ExecutionContext
+) extends PermissionActionFilter {
+  val executionContext = ec
+  val testAccess: String => Authorization =
+    acl.testUser(
+      Permissions.ConfigureCustomSubnavs,
+      "facia-tool-allow-configure-subnavs-for-all"
+    )
+  val restrictedAction = "configure subnavs"
+}
+
 class BreakingNewsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext)
     extends PermissionActionFilter {
   val executionContext = ec
