@@ -3,10 +3,6 @@ import styled from 'styled-components';
 
 interface FeastCollectionMenuProps {
 	containerId: string;
-	targetedRegions: string[];
-	excludedRegions: string[];
-	onTargetedRegionsChange: (updated: string[]) => void;
-	onExcludedRegionsChange: (updated: string[]) => void;
 	onRenameClicked: () => void;
 	onDeleteClicked: () => void;
 }
@@ -56,27 +52,12 @@ const Icon = styled.span`
 `;
 
 export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
-	targetedRegions,
-	excludedRegions,
-	onExcludedRegionsChange,
-	onTargetedRegionsChange,
 	onRenameClicked,
 	onDeleteClicked,
 }) => {
 	const [isMenuOpen, setMenuOpen] = useState(false);
 
 	const containerRef = createRef<HTMLDivElement>();
-
-	const clickedUsOnly = () => {
-		//only handling one value for "regions" which is "US" so more logic is around toggle it
-		if (targetedRegions.includes('us')) {
-			onTargetedRegionsChange(targetedRegions.filter((_) => _ != 'us'));
-		} else {
-			onTargetedRegionsChange(['us', ...targetedRegions]);
-		}
-
-		setMenuOpen(false);
-	};
 
 	return (
 		<>
@@ -91,17 +72,6 @@ export const FeastCollectionMenu: React.FC<FeastCollectionMenuProps> = ({
 			{isMenuOpen ? (
 				<>
 					<MenuOuter>
-						<MenuItem
-							onClick={() => {
-								clickedUsOnly();
-								setMenuOpen(false);
-							}}
-						>
-							US Only
-							<Icon>
-								{targetedRegions.includes('us') ? <h2>&#x2713;</h2> : undefined}
-							</Icon>
-						</MenuItem>
 						<MenuItem
 							onClick={() => {
 								onRenameClicked();
