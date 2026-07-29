@@ -134,7 +134,7 @@ const input = {
 	placeholderText: base.colors.placeholderDark,
 	radioButtonBackgroundDisabled: '#E6E6E6',
 	checkboxButtonBackgroundDisabled: '#E6E6E6',
-	abTestColorActive: base.colors.abTestActiveColor,
+	abTestActiveColor: base.colors.abTestActiveColor,
 	abTestSecondaryColor: base.colors.abTestSecondaryColor,
 };
 
