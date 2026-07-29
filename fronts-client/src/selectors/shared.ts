@@ -149,6 +149,9 @@ const createSelectArticleFromCard = () =>
 				headline:
 					card.meta.headline ||
 					(externalArticle ? externalArticle.fields.headline : undefined),
+				headlineA:
+					card.meta.headlineA ||
+					(externalArticle ? externalArticle.fields.headline : undefined),
 				trailText:
 					card.meta.trailText ||
 					(externalArticle ? externalArticle.fields.trailText : undefined),
