@@ -31,6 +31,7 @@ import { media } from 'util/mediaQueries';
 import ArticleGraph from './ArticleGraph';
 import {
 	CinemagraphIcon,
+	ConicalFlaskIcon,
 	LoopIcon,
 	VideoIcon,
 	YoutubeIcon,
@@ -127,6 +128,21 @@ const ClipboardFirstPublished = styled.div`
 	position: absolute;
 	bottom: 0;
 	right: 0;
+`;
+
+const ABTestStatus = styled.div`
+	background-color: ${theme.base.colors.abTestActiveColor};
+	border-radius: 12px;
+	color: white;
+	font-weight: 700;
+	font-size: 12px;
+	padding: 4px 8px;
+	width: fit-content;
+	margin-top: 6px;
+	display: flex;
+	flex-direction: row;
+	gap: 4px;
+	align-items: center;
 `;
 
 interface ArticleBodyProps {
@@ -434,8 +450,12 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
-					{abTestEnabled && !hasLiveAbTest && 'AB test ready to launch'}
-					{hasLiveAbTest && 'AB test in progress'}
+					{(abTestEnabled || hasLiveAbTest) && (
+						<ABTestStatus>
+							<ConicalFlaskIcon size={'xs'} fill={'white'} />
+							{hasLiveAbTest ? 'Test in progress' : 'Ready to launch'}
+						</ABTestStatus>
+					)}
 				</CardContent>
 				<ImageAndGraphWrapper size={size}>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
