@@ -141,17 +141,18 @@ const createSelectArticleFromCard = () =>
 				? { ...externalArticle.frontsMeta.defaults, ...card.meta }
 				: card.meta;
 
+			const headlineField =
+				card.meta.headline ||
+				(externalArticle ? externalArticle.fields.headline : undefined);
+
 			return {
 				...omit(externalArticle || {}, 'fields', 'frontsMeta'),
 				...(externalArticle ? externalArticle.fields : {}),
 				...omit(card, 'meta'),
 				...articleMeta,
-				headline:
-					card.meta.headline ||
-					(externalArticle ? externalArticle.fields.headline : undefined),
-				headlineA:
-					card.meta.headlineA ||
-					(externalArticle ? externalArticle.fields.headline : undefined),
+				headline: headlineField,
+				// if headlineA is not present, populate it with the headline field
+				headlineA: card.meta.headlineA || headlineField,
 				trailText:
 					card.meta.trailText ||
 					(externalArticle ? externalArticle.fields.trailText : undefined),
