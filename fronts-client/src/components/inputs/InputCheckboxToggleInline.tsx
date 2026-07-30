@@ -5,25 +5,41 @@ import { WrappedFieldMetaProps, WrappedFieldInputProps } from 'redux-form';
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
 import { theme } from 'constants/theme';
+import { ConicalFlaskIcon } from '../icons/Icons';
 
 const checkboxHeight = 17;
 const checkboxWidth = 28;
 
-const CheckboxContainer = styled.div`
+const CheckboxContainer = styled.div<{ useABTestStyling?: boolean }>`
 	display: flex;
-	align-items: flex-start;
+	align-items: center;
+	flex-direction: ${({ useABTestStyling }) =>
+		useABTestStyling ? 'row-reverse' : 'row'};
+	gap: 5px;
 
 	&:has(input:disabled) label {
 		cursor: not-allowed;
 	}
 `;
 
-const Label = styled(InputLabel)`
-	padding-left: 5px;
-	color: ${(props) => props.theme.input.colorLabel};
+const Label = styled(InputLabel)<{
+	useABTestStyling?: boolean;
+	activeABTest?: boolean;
+}>`
+	color: ${({ useABTestStyling, activeABTest, theme }) =>
+		useABTestStyling && activeABTest
+			? theme.input.abTestActiveColor
+			: theme.input.colorLabel};
 	line-height: 15px;
 	flex: 1;
 	cursor: pointer;
+`;
+
+const LabelContainer = styled.div`
+	display: flex;
+	gap: 2px;
+	align-items: center;
+	flex: 1 1 0%;
 `;
 
 const Switch = styled.div`
@@ -63,13 +79,19 @@ const CheckboxLabel = styled.label`
 	}
 `;
 
-const Checkbox = styled.input`
+const Checkbox = styled.input<{ useABTestStyling?: boolean }>`
 	display: none;
 	:checked + ${CheckboxLabel} {
-		background-color: ${theme.input.checkboxColorActive};
+		background-color: ${({ useABTestStyling }) =>
+			useABTestStyling
+				? theme.input.abTestActiveColor
+				: theme.input.checkboxColorActive};
 	}
 	&:checked + ${CheckboxLabel}, &:checked + ${CheckboxLabel}:before {
-		border-color: ${theme.input.checkboxColorActive};
+		border-color: ${({ useABTestStyling }) =>
+			useABTestStyling
+				? theme.input.abTestActiveColor
+				: theme.input.checkboxColorActive};
 		right: 0px;
 	}
 	:disabled,
@@ -88,6 +110,8 @@ type Props = {
 	label?: string;
 	id: string;
 	dataTestId?: string;
+	useABTestStyling?: boolean;
+	activeABTest?: boolean;
 } & {
 	input: Pick<WrappedFieldInputProps, 'onChange'> &
 		Partial<WrappedFieldInputProps>;
@@ -98,12 +122,14 @@ export default ({
 	label,
 	id,
 	dataTestId,
+	useABTestStyling,
+	activeABTest,
 	input: { onChange, ...inputRest },
 	...rest
 }: Props) => (
 	<>
 		<InputContainer data-testid={dataTestId}>
-			<CheckboxContainer>
+			<CheckboxContainer useABTestStyling={useABTestStyling}>
 				<Switch>
 					<Checkbox
 						type="checkbox"
@@ -111,12 +137,30 @@ export default ({
 						{...inputRest}
 						{...rest}
 						id={id}
+						useABTestStyling={useABTestStyling}
 					/>
 					<CheckboxLabel htmlFor={id} />
 				</Switch>
-				<Label htmlFor={id} size="sm">
-					{label}
-				</Label>
+				<LabelContainer>
+					{useABTestStyling && (
+						<ConicalFlaskIcon
+							size={'xs'}
+							fill={
+								activeABTest
+									? theme.input.abTestActiveColor
+									: theme.input.colorLabel
+							}
+						/>
+					)}
+					<Label
+						htmlFor={id}
+						size="sm"
+						useABTestStyling={useABTestStyling}
+						activeABTest={activeABTest}
+					>
+						{label}
+					</Label>
+				</LabelContainer>
 			</CheckboxContainer>
 		</InputContainer>
 	</>
