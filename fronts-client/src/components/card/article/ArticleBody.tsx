@@ -32,6 +32,7 @@ import ArticleGraph from './ArticleGraph';
 import {
 	CinemagraphIcon,
 	ConicalFlaskIcon,
+	EllipsisIcon,
 	LoopIcon,
 	VideoIcon,
 	YoutubeIcon,
@@ -151,6 +152,15 @@ const ABTestStatus = styled.div<{ useSecondaryTheme?: boolean }>`
 	flex-direction: row;
 	gap: 4px;
 	align-items: center;
+`;
+
+const EllipsisIconWrapper = styled.div`
+	border: 1px solid ${theme.base.colors.abTestActiveColor};
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	padding: 1px;
 `;
 
 interface ArticleBodyProps {
@@ -491,6 +501,14 @@ const articleBodyDefault = React.memo(
 								}
 							/>
 							{abTestStatusMessage}
+							{useSecondaryTheme && (
+								<EllipsisIconWrapper>
+									<EllipsisIcon
+										fill={theme.base.colors.abTestActiveColor}
+										size={'xxs'}
+									/>
+								</EllipsisIconWrapper>
+							)}
 						</ABTestStatus>
 					)}
 				</CardContent>
