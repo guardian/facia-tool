@@ -19,7 +19,7 @@ import {
 } from 'selectors/configSelectors';
 import {
 	createSelectGroupArticles,
-	createSelectAllCardsInCollection,
+	createSelectAllCardsInCollections,
 	selectCard,
 	selectFront,
 } from 'selectors/shared';
@@ -76,7 +76,7 @@ import { groupBy, uniqBy } from 'lodash';
 import { fetchChefsById } from 'bundles/chefsBundle';
 import { fetchRecipesById } from '../bundles/recipesBundle';
 
-const selectAllCardsInCollection = createSelectAllCardsInCollection();
+const selectAllCardsInCollections = createSelectAllCardsInCollections();
 
 function fetchStaleCollections(
 	collectionIds: string[],
@@ -86,7 +86,7 @@ function fetchStaleCollections(
 		const fetchedCollectionIds = await dispatch(
 			getCollections(collectionIds, true),
 		);
-		const prevArticleIds = selectAllCardsInCollection(
+		const prevArticleIds = selectAllCardsInCollections(
 			prevState,
 			fetchedCollectionIds,
 		);

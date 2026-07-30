@@ -8,16 +8,18 @@ import { Dispatch } from 'types/Store';
 import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
-import { Collection, CardSets } from 'types/Collection';
+import { Collection, CardSets, Card } from 'types/Collection';
 import { createCollectionId } from 'components/CollectionDisplay';
 import ButtonDefault from 'components/inputs/ButtonCircular';
 import {
 	createSelectCollection,
 	createSelectCardsInCollection,
+	createSelectAllLiveAndDraftCardsInCollection,
 } from 'selectors/shared';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
 import { css } from 'styled-components';
+import { ConicalFlaskIcon } from 'components/icons/Icons';
 
 interface FrontCollectionOverviewContainerProps {
 	frontId: string;
@@ -32,6 +34,7 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
 	openCollection: (id: string) => void;
 	hasUnpublishedChanges: boolean;
 	hasOpenForms: boolean;
+	liveAndDraftCards: Card[];
 };
 
 const Container = styled.div<{
@@ -118,6 +121,22 @@ const StatusWarning = styled(ButtonDefault)`
 	}
 `;
 
+const TestIndicator = styled(ButtonDefault)`
+	outline: transparent;
+	:not(:first-child) {
+		margin-left: 5px;
+	}
+	color: ${theme.button.color};
+	height: 20px;
+	width: 20px;
+	border-radius: 20px;
+	&:hover,
+	&:active {
+		outline: transparent;
+	}
+	background-color: ${theme.base.colors.abTestActiveColor};
+`;
+
 const CollectionOverview = ({
 	collection,
 	cardCount,
@@ -126,6 +145,7 @@ const CollectionOverview = ({
 	hasUnpublishedChanges,
 	isSelected,
 	hasOpenForms,
+	liveAndDraftCards,
 }: FrontCollectionOverviewProps) =>
 	collection ? (
 		<Container
@@ -183,6 +203,13 @@ const CollectionOverview = ({
 							</StatusWarning>
 						</EditModeVisibility>
 					) : null)}
+				{liveAndDraftCards.some((card) => card.meta.abTestEnabled) && (
+					<EditModeVisibility visibleMode="fronts">
+						<TestIndicator priority="primary" size="s" title="Active tests">
+							<ConicalFlaskIcon size={'xs'} fill={'white'} />
+						</TestIndicator>
+					</EditModeVisibility>
+				)}
 			</TextContainerRight>
 		</Container>
 	) : null;
@@ -192,6 +219,9 @@ const mapStateToProps = () => {
 	const selectCardsInCollection = createSelectCardsInCollection();
 	const selectCollectionIdsWithOpenForms =
 		createSelectCollectionIdsWithOpenForms();
+
+	const selectLiveAndDraftCards =
+		createSelectAllLiveAndDraftCardsInCollection();
 	return (
 		state: State,
 		{
@@ -215,6 +245,7 @@ const mapStateToProps = () => {
 			selectCollectionIdsWithOpenForms(state, { frontId }).indexOf(
 				collectionId,
 			) !== -1,
+		liveAndDraftCards: selectLiveAndDraftCards(state, collectionId),
 	});
 };
 
