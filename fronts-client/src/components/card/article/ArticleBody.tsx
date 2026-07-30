@@ -434,6 +434,7 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
+					{abTestEnabled && !hasLiveAbTest && 'AB test ready to launch'}
 					{hasLiveAbTest && 'AB test in progress'}
 				</CardContent>
 				<ImageAndGraphWrapper size={size}>
