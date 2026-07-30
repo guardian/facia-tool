@@ -288,6 +288,21 @@ const articleBodyDefault = React.memo(
 			imageCriteria.heightAspectRatio ===
 				portraitCardImageCriteria.heightAspectRatio;
 
+		const determineABTestStatusMessage = (
+			hasLiveAbTest: boolean | undefined,
+			abTestEnabled: boolean | undefined,
+		) => {
+			if (hasLiveAbTest && abTestEnabled) {
+				return 'Test in progress';
+			}
+			if (hasLiveAbTest && !abTestEnabled) {
+				return 'End test on launch';
+			}
+			if (!hasLiveAbTest && abTestEnabled) {
+				return 'Ready to launch';
+			}
+		};
+
 		const [mainVideoPlatform, setMainVideoPlatform] = React.useState<
 			Platform | undefined
 		>();
@@ -453,7 +468,7 @@ const articleBodyDefault = React.memo(
 					{(abTestEnabled || hasLiveAbTest) && (
 						<ABTestStatus>
 							<ConicalFlaskIcon size={'xs'} fill={'white'} />
-							{hasLiveAbTest ? 'Test in progress' : 'Ready to launch'}
+							{determineABTestStatusMessage(hasLiveAbTest, abTestEnabled)}
 						</ABTestStatus>
 					)}
 				</CardContent>
