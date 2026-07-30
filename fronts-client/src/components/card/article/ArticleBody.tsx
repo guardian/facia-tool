@@ -130,10 +130,18 @@ const ClipboardFirstPublished = styled.div`
 	right: 0;
 `;
 
-const ABTestStatus = styled.div`
-	background-color: ${theme.base.colors.abTestActiveColor};
+const ABTestStatus = styled.div<{ useSecondaryTheme?: boolean }>`
+	background-color: ${({ useSecondaryTheme }) =>
+		useSecondaryTheme
+			? theme.base.colors.abTestSecondaryColor
+			: theme.base.colors.abTestActiveColor};
 	border-radius: 12px;
-	color: white;
+	color: ${({ useSecondaryTheme }) =>
+		useSecondaryTheme ? theme.base.colors.abTestActiveColor : 'white'};
+	border-width: 1px;
+	border-style: solid;
+	border-color: ${({ useSecondaryTheme }) =>
+		useSecondaryTheme ? theme.base.colors.abTestActiveColor : 'transparent'};
 	font-weight: 700;
 	font-size: 12px;
 	padding: 4px 8px;
@@ -339,6 +347,13 @@ const articleBodyDefault = React.memo(
 			setMainVideoPlatform(properties.platform);
 		}, [mainMediaVideoAtom, showMainVideo]);
 
+		const abTestStatusMessage = determineABTestStatusMessage(
+			hasLiveAbTest,
+			abTestEnabled,
+		);
+
+		const useSecondaryTheme = abTestStatusMessage !== 'Test in progress';
+
 		return (
 			<>
 				{showMeta && (
@@ -466,9 +481,16 @@ const articleBodyDefault = React.memo(
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
 					{(abTestEnabled || hasLiveAbTest) && (
-						<ABTestStatus>
-							<ConicalFlaskIcon size={'xs'} fill={'white'} />
-							{determineABTestStatusMessage(hasLiveAbTest, abTestEnabled)}
+						<ABTestStatus useSecondaryTheme={useSecondaryTheme}>
+							<ConicalFlaskIcon
+								size={'xs'}
+								fill={
+									useSecondaryTheme
+										? theme.base.colors.abTestActiveColor
+										: 'white'
+								}
+							/>
+							{abTestStatusMessage}
 						</ABTestStatus>
 					)}
 				</CardContent>
