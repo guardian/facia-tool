@@ -122,19 +122,16 @@ const StatusWarning = styled(ButtonDefault)`
 `;
 
 const TestIndicator = styled(ButtonDefault)`
-	outline: transparent;
 	:not(:first-child) {
 		margin-left: 5px;
 	}
-	color: ${theme.button.color};
 	height: 20px;
 	width: 20px;
-	border-radius: 20px;
-	&:hover,
-	&:active {
-		outline: transparent;
+	&&:hover,
+	&&:active {
+		background: ${theme.base.colors.abTestActiveColor};
 	}
-	background-color: ${theme.base.colors.abTestActiveColor};
+	background: ${theme.base.colors.abTestActiveColor};
 `;
 
 const CollectionOverview = ({
