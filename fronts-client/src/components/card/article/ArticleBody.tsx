@@ -190,6 +190,7 @@ interface ArticleBodyProps {
 		target: IntendedAudienceSignifierProps['target'];
 	};
 	abTestEnabled?: boolean;
+	hasLiveAbTest?: boolean;
 }
 
 const articleBodyDefault = React.memo(
@@ -248,6 +249,7 @@ const articleBodyDefault = React.memo(
 		otherCollectionsOnSameFrontThisCardIsOn,
 		intendedAudience,
 		abTestEnabled,
+		hasLiveAbTest,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -432,7 +434,7 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
-					{abTestEnabled && 'AB test in progress'}
+					{hasLiveAbTest && 'AB test in progress'}
 				</CardContent>
 				<ImageAndGraphWrapper size={size}>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
