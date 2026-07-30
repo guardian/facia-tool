@@ -223,7 +223,7 @@ const createMapStateToProps = () => {
 		const getState = (s: any) => s;
 		const liveCard = selectLiveCardForGivenCardId(
 			state,
-			props.id,
+			card.id,
 			props.collectionId,
 		);
 		const hasLiveAbTest = liveCard?.meta.abTestEnabled;

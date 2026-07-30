@@ -435,12 +435,17 @@ const createSelectLiveCardForGivenCardId = () => {
 	const selectCardsInCollection = createSelectCardsInCollection();
 	return (state: State, cardId: string, collectionId?: string) => {
 		if (!collectionId) return undefined;
-		const liveCards: Card[] = selectCardsInCollection(state, {
+		const liveCardIds = selectCardsInCollection(state, {
 			collectionId: collectionId,
 			collectionSet: 'live',
 			includeSupportingArticles: true,
 		});
-		return liveCards.find((liveCard) => liveCard.id === cardId);
+		const cardMap = selectCardMap(state);
+		const liveCards = liveCardIds.map((liveCardId) => cardMap[liveCardId]);
+		const foundCard = liveCards.find((card) => card.id === cardId);
+		console.log(cardId);
+		console.log(liveCards);
+		return foundCard;
 	};
 };
 
