@@ -189,6 +189,7 @@ interface ArticleBodyProps {
 		source: IntendedAudienceSignifierProps['source'];
 		target: IntendedAudienceSignifierProps['target'];
 	};
+	abTestEnabled?: boolean;
 }
 
 const articleBodyDefault = React.memo(
@@ -246,6 +247,7 @@ const articleBodyDefault = React.memo(
 		replacementVideoAtom,
 		otherCollectionsOnSameFrontThisCardIsOn,
 		intendedAudience,
+		abTestEnabled,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -430,6 +432,7 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
+					{abTestEnabled && 'AB test in progress'}
 				</CardContent>
 				<ImageAndGraphWrapper size={size}>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
