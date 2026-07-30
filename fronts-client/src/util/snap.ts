@@ -1,5 +1,7 @@
 import type { Card, CardMeta } from 'types/Collection';
 import type { CAPIInteractiveAtomResponse } from 'services/capiQuery';
+import type { CapiAtom } from 'types/Capi';
+import { getAtomTitle } from 'types/Capi';
 import { getAbsolutePath, isGuardianUrl, isValidSnapLinkUrl } from './url';
 import fetchOpenGraphData from './openGraph';
 import v4 from 'uuid/v4';
@@ -70,6 +72,7 @@ async function createSnap(url?: string, meta?: CardMeta): Promise<Card> {
 	}
 }
 
+// Used when dragging in a CAPI url as a snap link. This is the old way to add e.g. thrashers
 async function createAtomSnap(
 	url: string,
 	atom: CAPIInteractiveAtomResponse,
@@ -94,6 +97,28 @@ async function createAtomSnap(
 	});
 }
 
+// Used when dragging in an atom returned by a CAPI search. Works for every
+// supported atom type: the snapType and atomId are derived from the atom's type,
+// so a qanda/guide/profile/timeline/audio/explainer/cta atom is handled the same
+// way as an interactive atom.
+function createAtomSnapFromAtom(atom: CapiAtom): Card {
+	const atomId = `atom/${atom.atomType}/${atom.id}`;
+	const atomUrl = `https://content.guardianapis.com/${atomId}`;
+	return convertToSnap({
+		uuid: v4(),
+		id: atomUrl,
+		frontPublicationDate: Date.now(),
+		meta: {
+			headline: getAtomTitle(atom),
+			byline: 'Guardian Visuals',
+			showByline: false,
+			snapType: atom.atomType,
+			snapUri: atomUrl,
+			atomId,
+		},
+	});
+}
+
 function createLatestSnap(url: string, kicker: string) {
 	return convertToSnap({
 		id: url,
@@ -114,5 +139,6 @@ export {
 	createLatestSnap,
 	createSnap,
 	createAtomSnap,
+	createAtomSnapFromAtom,
 	createPlainSnap,
 };

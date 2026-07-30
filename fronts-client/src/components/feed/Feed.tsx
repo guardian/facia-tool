@@ -4,11 +4,16 @@ import {
 	liveSelectors,
 	previewSelectors,
 	prefillSelectors,
+	selectLiveFeedEntries,
+	selectPreviewFeedEntries,
+	selectPrefillFeedEntries,
+	FeedEntry,
 } from 'bundles/capiFeedBundle';
 import { selectIsPrefillMode } from 'selectors/feedStateSelectors';
 import type { State } from 'types/State';
 import { connect } from 'react-redux';
 import { ArticleFeedItem } from './ArticleFeedItem';
+import { AtomFeedItem } from './AtomFeedItem';
 
 interface ErrorDisplayProps {
 	error?: string;
@@ -17,9 +22,9 @@ interface ErrorDisplayProps {
 
 interface FeedContainerProps {
 	isPrefillMode: boolean;
-	liveArticleIds: string[];
-	previewArticleIds: string[];
-	prefillArticleIds: string[];
+	liveFeedEntries: FeedEntry[];
+	previewFeedEntries: FeedEntry[];
+	prefillFeedEntries: FeedEntry[];
 	liveError: string | null;
 	previewError: string | null;
 	prefillError: string | null;
@@ -37,11 +42,11 @@ const NoResults = styled.div`
 `;
 
 const Feed = ({
-	liveArticleIds: liveArticles,
-	previewArticleIds: previewArticles,
+	liveFeedEntries,
+	previewFeedEntries,
+	prefillFeedEntries,
 	liveError,
 	previewError,
-	prefillArticleIds: prefillArticles,
 	prefillError,
 	isPrefillMode,
 	isLive,
@@ -51,16 +56,22 @@ const Feed = ({
 		: isLive
 			? liveError
 			: previewError;
-	const articleIds = isPrefillMode
-		? prefillArticles
+	const feedEntries = isPrefillMode
+		? prefillFeedEntries
 		: isLive
-			? liveArticles
-			: previewArticles;
+			? liveFeedEntries
+			: previewFeedEntries;
 
 	return (
 		<ErrorDisplay error={error || undefined}>
-			{articleIds.length ? (
-				articleIds.map((id) => <ArticleFeedItem key={id} id={id} />)
+			{feedEntries.length ? (
+				feedEntries.map((entry) =>
+					entry.type === 'atom' ? (
+						<AtomFeedItem key={entry.id} id={entry.id} />
+					) : (
+						<ArticleFeedItem key={entry.id} id={entry.id} />
+					),
+				)
 			) : (
 				<NoResults>No results found</NoResults>
 			)}
@@ -70,9 +81,9 @@ const Feed = ({
 
 const mapStateToProps = (state: State) => ({
 	isPrefillMode: selectIsPrefillMode(state),
-	liveArticleIds: liveSelectors.selectLastFetchOrder(state),
-	previewArticleIds: previewSelectors.selectLastFetchOrder(state),
-	prefillArticleIds: prefillSelectors.selectLastFetchOrder(state),
+	liveFeedEntries: selectLiveFeedEntries(state),
+	previewFeedEntries: selectPreviewFeedEntries(state),
+	prefillFeedEntries: selectPrefillFeedEntries(state),
 	liveError: liveSelectors.selectCurrentError(state),
 	previewError: previewSelectors.selectCurrentError(state),
 	prefillError: prefillSelectors.selectCurrentError(state),
