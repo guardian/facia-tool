@@ -442,10 +442,7 @@ const createSelectLiveCardForGivenCardId = () => {
 		});
 		const cardMap = selectCardMap(state);
 		const liveCards = liveCardIds.map((liveCardId) => cardMap[liveCardId]);
-		const foundCard = liveCards.find((card) => card.id === cardId);
-		console.log(cardId);
-		console.log(liveCards);
-		return foundCard;
+		return liveCards.find((card) => card.id === cardId);
 	};
 };
 
