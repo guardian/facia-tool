@@ -15,6 +15,9 @@ import without from 'lodash/without';
 
 export const defaultFields = [
 	'headline',
+	'abTestEnabled',
+	'headlineA',
+	'headlineB',
 	'showQuotedHeadline',
 	'showLargeHeadline',
 	'customKicker',

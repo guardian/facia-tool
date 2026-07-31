@@ -33,6 +33,7 @@ export default class BaseModel extends BaseClass {
         this.permissions = ko.observable();
         this.pending = ko.observable(true);
         this.isMainActionVisible = ko.observable(false);
+        this.isPasteActive = ko.observable(false);
         this.priority = priorityFromUrl(router.location.pathname);
         this.fullPriority = this.priority || CONST.defaultPriority;
         this.priorities = ko.observableArray(Object.keys(CONST.priorities));

@@ -10,12 +10,14 @@ name: "facia-tool"
 # - docker-in-docker: Enable running Docker containers within the devcontainer
 # - scala: Add IDE plugins and jar caching for Scala development
 # - node: Add IDE plugins for Node.js development
+# - github-copilot: Add GitHub Copilot for IDE and CLI use
 # To disable, comment out or remove items from this list
 modules:
   - mise
   - docker-in-docker
   - scala
   - node
+  - github-copilot
 
 # Optional: Ports to forward
 # forwardPorts:

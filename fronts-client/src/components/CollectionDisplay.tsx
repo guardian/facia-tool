@@ -349,14 +349,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 						{isFeast && collection ? (
 							<FeastCollectionMenu
 								containerId={collection.id}
-								targetedRegions={collection.targetedRegions ?? []}
-								excludedRegions={collection.excludedRegions ?? []}
-								onTargetedRegionsChange={(newvals) =>
-									this.handleTargetedRegionsClick(newvals)
-								}
-								onExcludedRegionsChange={(newvals) =>
-									this.handleExcludedRegionsClick(newvals)
-								}
 								onRenameClicked={this.startRenameContainer}
 								onDeleteClicked={this.handleDeleteClick}
 							/>
@@ -475,19 +467,6 @@ class CollectionDisplay extends React.Component<Props, CollectionState> {
 		}
 		this.setState({ isDeleteClicked: false });
 	};
-
-	private handleTargetedRegionsClick = (region: string[]) => {
-		const { collection } = this.props;
-		if (collection) {
-			const updatedCollections = {
-				...collection,
-				targetedRegions: region,
-			};
-			this.props.updateCollection(updatedCollections, 'regions');
-		}
-	};
-
-	private handleExcludedRegionsClick = (region: string[]) => {};
 }
 
 const createMapStateToProps = () => {

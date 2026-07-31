@@ -9,14 +9,26 @@ export class Backfill {
     constructor(dom, parent) {
         this.dom = dom;
         this.parent = parent;
-        this.component = ko.contextFor(dom.firstChild).$component;
+    }
+
+    get component() {
+        return ko.contextFor(this.dom.firstChild).$component;
+    }
+
+    ready() {
+        return wait.condition(() => {
+            const ctx = this.dom.firstChild && ko.contextFor(this.dom.firstChild);
+            return !!(ctx && ctx.$component);
+        });
     }
 
     type(text) {
-        type($('.apiquery--input', this.dom), text);
-        const pendingCheck = wait.event('check:complete', this.component);
-        return wait.ms(10).then(() => {
-            return { check: pendingCheck };
+        return this.ready().then(() => {
+            type($('.apiquery--input', this.dom), text);
+            const pendingCheck = wait.event('check:complete', this.component);
+            return wait.ms(10).then(() => {
+                return { check: pendingCheck };
+            });
         });
     }
 
@@ -35,17 +47,19 @@ export class Backfill {
     }
 
     drop(source) {
-        const droppableContainer = drag.droppable(this.dom);
-        const apiInput = $('.apiquery--input:visible', this.dom);
-        const parentInput = $('.backfilledCollection:visible', this.dom);
-        const pendingCheck = wait.event('check:complete', this.component);
+        return this.ready().then(() => {
+            const droppableContainer = drag.droppable(this.dom);
+            const apiInput = $('.apiquery--input:visible', this.dom);
+            const parentInput = $('.backfilledCollection:visible', this.dom);
+            const pendingCheck = wait.event('check:complete', this.component);
 
-        return Promise.resolve(
-            droppableContainer.dropInBackfill(apiInput[0] || parentInput[0], source)
-        )
-        .then(() => wait.ms(10))
-        .then(() => {
-            return { check: pendingCheck };
+            return Promise.resolve(
+                droppableContainer.dropInBackfill(apiInput[0] || parentInput[0], source)
+            )
+            .then(() => wait.ms(10))
+            .then(() => {
+                return { check: pendingCheck };
+            });
         });
     }
 

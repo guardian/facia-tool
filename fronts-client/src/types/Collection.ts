@@ -74,6 +74,12 @@ type CardRootMeta = ChefCardMeta &
 	FeastCollectionCardMeta & {
 		group?: string;
 		headline?: string;
+		/** Whether this card has A/B headline testing enabled */
+		abTestEnabled?: boolean;
+		/** Text for headline variant A, shown when abTestEnabled is true */
+		headlineA?: string;
+		/** Text for headline variant B, shown when abTestEnabled is true */
+		headlineB?: string;
 		trailText?: string;
 		byline?: string;
 		sportScore?: string;

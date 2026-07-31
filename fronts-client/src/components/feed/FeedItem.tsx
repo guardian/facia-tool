@@ -22,6 +22,10 @@ import { collectionArticlesPollInterval } from 'constants/polling';
 import RenderOffscreen from 'components/util/RenderOffscreen';
 import { getPaths } from 'util/paths';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
+import {
+	IntendedAudienceSignifier,
+	IntendedAudienceSignifierProps,
+} from '@guardian/stand/IntendedAudienceSignifier';
 
 const Container = styled.div`
 	display: flex;
@@ -128,6 +132,10 @@ interface FeedItemProps {
 	shouldObscureFeed?: boolean;
 	byline?: string;
 	showPinboard?: boolean;
+	intendedAudience?: {
+		source: IntendedAudienceSignifierProps['source'];
+		target: IntendedAudienceSignifierProps['target'];
+	};
 }
 
 export class FeedItem extends React.Component<FeedItemProps, {}> {
@@ -202,6 +210,10 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 								</>
 							)}
 						</RefreshPeriodically>
+						{this.props.intendedAudience && (
+							<IntendedAudienceSignifier {...this.props.intendedAudience} />
+						)}
+
 						<ShortVerticalPinline />
 					</MetaContainer>
 					<Body>

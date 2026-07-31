@@ -59,7 +59,6 @@ import { selectEditMode, selectV2SubPath } from 'selectors/pathSelectors';
 import { ValidationResponse } from 'util/validateImageSrc';
 import InputLabel from 'components/inputs/InputLabel';
 import url from 'constants/url';
-import { RichTextInput } from 'components/inputs/RichTextInput';
 import InputBase from '../inputs/InputBase';
 import ButtonCircularCaret from '../inputs/ButtonCircularCaret';
 import { error } from '../../styleConstants';
@@ -85,6 +84,7 @@ import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import type { Atom, AtomResponse } from '../../types/Capi';
 import Tooltip from '../modals/Tooltip';
 import { isAtom } from '../../util/atom';
+import { HeadlineInput } from 'components/inputs/HeadlineInput';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -551,6 +551,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			articleCapiFieldValues,
 			pristine,
 			showByline,
+			abTestEnabled,
 			editableFields = [],
 			showKickerTag,
 			showKickerSection,
@@ -701,16 +702,12 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							}}
 						/>
 						{shouldRenderField('headline', editableFields) && (
-							<Field
-								name="headline"
-								label={this.getHeadlineLabel()}
-								rows="2"
-								placeholder={articleCapiFieldValues.headline}
-								component={
-									this.props.snapType === 'html' ? RichTextInput : InputTextArea
-								}
-								originalValue={articleCapiFieldValues.headline}
-								data-testid="edit-form-headline-field"
+							<HeadlineInput
+								abTestEnabled={abTestEnabled}
+								capiHeadline={articleCapiFieldValues.headline}
+								cardId={this.props.cardId}
+								editableFields={editableFields}
+								snapType={this.props.snapType}
 							/>
 						)}
 						<CheckboxFieldsContainer
@@ -1202,17 +1199,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		}
 	};
 
-	/**
-	 * You may be thinking -- why on earth would we use the `headline` field to contain
-	 * HTML, renaming it in the process so our users are none the wiser? It's because the e-mail
-	 * frontend, which currently consumes snaps of this type, knows what to do with headlines
-	 * (it renders them as HTML). At some point in the future, it will be refactored, at which
-	 * point we'll be able to use another, saner field to do the same job, but in the meantime,
-	 * for snaps of type `html`, the field `headline` is where the html lives.
-	 */
-	private getHeadlineLabel = () =>
-		this.props.snapType === 'html' ? 'Content' : 'Headline';
-
 	private determineCardCriteria = (): Criteria & {
 		widthAspectRatio: number;
 		heightAspectRatio: number;
@@ -1267,6 +1253,7 @@ interface ContainerProps {
 	kickerOptions: ArticleTag;
 	pickedKicker: string | undefined;
 	showByline: boolean;
+	abTestEnabled: boolean;
 	editableFields?: string[];
 	showKickerTag: boolean;
 	showKickerSection: boolean;
@@ -1347,6 +1334,7 @@ const createMapStateToProps = () => {
 			videoReplace: valueSelector(state, 'videoReplace'),
 			replaceVideoUri: valueSelector(state, 'replaceVideoUri'),
 			showByline: valueSelector(state, 'showByline'),
+			abTestEnabled: valueSelector(state, 'abTestEnabled'),
 			showKickerTag: valueSelector(state, 'showKickerTag'),
 			showKickerSection: valueSelector(state, 'showKickerSection'),
 			isBreaking: valueSelector(state, 'isBreaking'),
