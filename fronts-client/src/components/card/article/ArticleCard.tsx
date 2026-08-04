@@ -5,6 +5,7 @@ import noop from 'lodash/noop';
 
 import {
 	createSelectArticleFromCard,
+	createSelectLiveCardForGivenCardId,
 	selectCard,
 } from '../../../selectors/shared';
 import { selectors } from 'bundles/externalArticlesBundle';
@@ -67,6 +68,7 @@ interface ArticleComponentProps {
 	collectionType?: string;
 	groupIndex?: number;
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
+	hasLiveAbTest?: boolean;
 }
 
 interface ComponentProps extends ArticleComponentProps {
@@ -118,6 +120,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 			collectionType,
 			groupIndex,
 			otherCollectionsOnSameFrontThisCardIsOn,
+			hasLiveAbTest,
 		} = this.props;
 
 		const getArticleData = () =>
@@ -191,6 +194,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 									article.tags &&
 									intendedAudienceFromTags(article.tags)
 								}
+								hasLiveAbTest={hasLiveAbTest}
 							/>
 						</ArticleBodyContainer>
 					</DragIntentContainer>
@@ -203,6 +207,8 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 
 const createMapStateToProps = () => {
 	const selectArticle = createSelectArticleFromCard();
+	const selectLiveCardForGivenCardId = createSelectLiveCardForGivenCardId();
+
 	return (
 		state: State,
 		props: ArticleComponentProps,
@@ -210,10 +216,17 @@ const createMapStateToProps = () => {
 		article?: DerivedArticle;
 		isLoading: boolean;
 		featureFlagPageViewData: boolean;
+		hasLiveAbTest?: boolean;
 	} => {
 		const article = selectArticle(state, props.id);
 		const card = selectCard(state, props.id);
 		const getState = (s: any) => s;
+		const liveCard = selectLiveCardForGivenCardId(
+			state,
+			card.id,
+			props.collectionId,
+		);
+		const hasLiveAbTest = liveCard?.meta.abTestEnabled;
 
 		return {
 			article,
@@ -222,6 +235,7 @@ const createMapStateToProps = () => {
 				getState(state),
 				'page-view-data-visualisation',
 			),
+			hasLiveAbTest: hasLiveAbTest,
 		};
 	};
 };

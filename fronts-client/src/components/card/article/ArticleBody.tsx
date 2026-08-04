@@ -31,6 +31,8 @@ import { media } from 'util/mediaQueries';
 import ArticleGraph from './ArticleGraph';
 import {
 	CinemagraphIcon,
+	ConicalFlaskIcon,
+	EllipsisIcon,
 	LoopIcon,
 	VideoIcon,
 	YoutubeIcon,
@@ -129,6 +131,38 @@ const ClipboardFirstPublished = styled.div`
 	right: 0;
 `;
 
+const ABTestStatus = styled.div<{ useSecondaryTheme?: boolean }>`
+	background-color: ${({ useSecondaryTheme }) =>
+		useSecondaryTheme
+			? theme.base.colors.abTestSecondaryColor
+			: theme.base.colors.abTestActiveColor};
+	border-radius: 12px;
+	color: ${({ useSecondaryTheme }) =>
+		useSecondaryTheme ? theme.base.colors.abTestActiveColor : 'white'};
+	border-width: 1px;
+	border-style: solid;
+	border-color: ${({ useSecondaryTheme }) =>
+		useSecondaryTheme ? theme.base.colors.abTestActiveColor : 'transparent'};
+	font-weight: 700;
+	font-size: 12px;
+	padding: 4px 8px;
+	width: max-content;
+	margin-top: 6px;
+	display: flex;
+	flex-direction: row;
+	gap: 4px;
+	align-items: center;
+`;
+
+const EllipsisIconWrapper = styled.div`
+	border: 1px solid ${theme.base.colors.abTestActiveColor};
+	border-radius: 50%;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+	padding: 1px;
+`;
+
 interface ArticleBodyProps {
 	newspaperPageNumber?: number;
 
@@ -189,6 +223,8 @@ interface ArticleBodyProps {
 		source: IntendedAudienceSignifierProps['source'];
 		target: IntendedAudienceSignifierProps['target'];
 	};
+	abTestEnabled?: boolean;
+	hasLiveAbTest?: boolean;
 }
 
 const articleBodyDefault = React.memo(
@@ -246,6 +282,8 @@ const articleBodyDefault = React.memo(
 		replacementVideoAtom,
 		otherCollectionsOnSameFrontThisCardIsOn,
 		intendedAudience,
+		abTestEnabled,
+		hasLiveAbTest,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -267,6 +305,27 @@ const articleBodyDefault = React.memo(
 				portraitCardImageCriteria.widthAspectRatio &&
 			imageCriteria.heightAspectRatio ===
 				portraitCardImageCriteria.heightAspectRatio;
+
+		type ABStatusMessage =
+			| 'Test in progress'
+			| 'End test on launch'
+			| 'Ready to launch';
+
+		const determineABTestStatusMessage = (
+			hasLiveAbTest: boolean | undefined,
+			abTestEnabled: boolean | undefined,
+		): ABStatusMessage | undefined => {
+			if (hasLiveAbTest && abTestEnabled) {
+				return 'Test in progress';
+			}
+			if (hasLiveAbTest && !abTestEnabled) {
+				return 'End test on launch';
+			}
+			if (!hasLiveAbTest && abTestEnabled) {
+				return 'Ready to launch';
+			}
+			return undefined;
+		};
 
 		const [mainVideoPlatform, setMainVideoPlatform] = React.useState<
 			Platform | undefined
@@ -303,6 +362,13 @@ const articleBodyDefault = React.memo(
 			}
 			setMainVideoPlatform(properties.platform);
 		}, [mainMediaVideoAtom, showMainVideo]);
+
+		const abTestStatusMessage = determineABTestStatusMessage(
+			hasLiveAbTest,
+			abTestEnabled,
+		);
+
+		const useSecondaryTheme = abTestStatusMessage !== 'Test in progress';
 
 		return (
 			<>
@@ -430,6 +496,27 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
+					{abTestStatusMessage && (
+						<ABTestStatus useSecondaryTheme={useSecondaryTheme}>
+							<ConicalFlaskIcon
+								size={'xs'}
+								fill={
+									useSecondaryTheme
+										? theme.base.colors.abTestActiveColor
+										: 'white'
+								}
+							/>
+							{abTestStatusMessage}
+							{useSecondaryTheme && (
+								<EllipsisIconWrapper>
+									<EllipsisIcon
+										fill={theme.base.colors.abTestActiveColor}
+										size={'xxs'}
+									/>
+								</EllipsisIconWrapper>
+							)}
+						</ABTestStatus>
+					)}
 				</CardContent>
 				<ImageAndGraphWrapper size={size}>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (

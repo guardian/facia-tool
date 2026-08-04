@@ -431,6 +431,21 @@ const createSelectCardsInCollection = () => {
 		});
 };
 
+const createSelectLiveCardForGivenCardId = () => {
+	const selectCardsInCollection = createSelectCardsInCollection();
+	return (state: State, cardId: string, collectionId?: string) => {
+		if (!collectionId) return undefined;
+		const liveCardIds = selectCardsInCollection(state, {
+			collectionId: collectionId,
+			collectionSet: 'live',
+			includeSupportingArticles: true,
+		});
+		const cardMap = selectCardMap(state);
+		const liveCards = liveCardIds.map((liveCardId) => cardMap[liveCardId]);
+		return liveCards.find((card) => card.id === cardId);
+	};
+};
+
 const createSelectAllCardsInCollection = () => {
 	const selectCardsInCollection = createSelectCardsInCollection();
 
@@ -607,6 +622,7 @@ export {
 	selectCardsFromRootState,
 	createSelectCardsInCollectionGroup,
 	createSelectCardsInCollection,
+	createSelectLiveCardForGivenCardId,
 	createSelectAllCardsInCollection,
 	createSelectGroupArticles,
 	createSelectSupportingArticles,
