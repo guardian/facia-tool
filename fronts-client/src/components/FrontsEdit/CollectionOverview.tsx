@@ -84,10 +84,11 @@ const TextContainerLeft = styled.div`
 `;
 
 const TextContainerRight = styled.div`
-	flex: 0 0 auto;
+	display: flex;
+	flex-wrap: wrap;
 	font-size: 14px;
-	overflow: hidden;
-	white-space: nowrap;
+	justify-content: center;
+	gap: 2px;
 `;
 
 const Name = styled.span<{ isSecondaryContainer: boolean }>`
@@ -108,13 +109,9 @@ const ItemCount = styled.span`
 
 const StatusWarning = styled(ButtonDefault)`
 	outline: transparent;
-	:not(:first-child) {
-		margin-left: 5px;
-	}
 	color: ${theme.button.color};
-	height: 20px;
-	width: 20px;
-	border-radius: 20px;
+	height: 18px;
+	width: 18px;
 	&:hover,
 	&:active {
 		outline: transparent;
@@ -122,11 +119,8 @@ const StatusWarning = styled(ButtonDefault)`
 `;
 
 const TestIndicator = styled(ButtonDefault)`
-	:not(:first-child) {
-		margin-left: 5px;
-	}
-	height: 20px;
-	width: 20px;
+	height: 18px;
+	width: 18px;
 	&&:hover,
 	&&:active {
 		background: ${theme.base.colors.abTestActiveColor};
@@ -203,7 +197,7 @@ const CollectionOverview = ({
 				{liveAndDraftCards.some((card) => card.meta.abTestEnabled) && (
 					<EditModeVisibility visibleMode="fronts">
 						<TestIndicator priority="primary" size="s" title="Active tests">
-							<ConicalFlaskIcon size={'xs'} fill={'white'} />
+							<ConicalFlaskIcon size={'xxs'} fill={'white'} />
 						</TestIndicator>
 					</EditModeVisibility>
 				)}
