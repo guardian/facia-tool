@@ -84,7 +84,7 @@ libraryDependencies ++= Seq(
   "com.gu" %% "content-api-client-aws" % "0.7.6",
   "com.gu" %% "content-api-client-default" % capiClientVersion,
   "com.gu" %% "editorial-permissions-client" % "3.0.0",
-  "com.gu" %% "fapi-client-play30" % "35.0.0",
+  "com.gu" %% "fapi-client-play30" % "35.0.0-PREVIEW.introduce-ab-test-model.2026-07-29T1454.6787c72d",
   "com.gu" %% "mobile-notifications-api-models" % "4.0.0",
   "com.gu" %% "pan-domain-auth-play_3-0" % "7.0.0",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),
@@ -111,7 +111,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   "org.mockito" % "mockito-core" % "5.11.0" % Test,
   "software.amazon.awssdk" % "s3" % awsSdkVersion,
-  "com.gu.etag-caching" %% "aws-s3-sdk-v2" % "18.0.0"
+	"com.gu.etag-caching" %% "aws-s3-sdk-v2" % "18.0.0"
 )
 
 excludeDependencies ++= Seq(
