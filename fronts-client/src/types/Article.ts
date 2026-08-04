@@ -19,6 +19,9 @@ type DerivedArticle = Partial<
 		isLive: boolean;
 		tone: string | undefined;
 		hasMainVideo: boolean;
+		headlineA?: string | undefined;
+		headlineB?: string | undefined;
+		abTestEnabled?: boolean;
 	};
 
 export { DerivedArticle };

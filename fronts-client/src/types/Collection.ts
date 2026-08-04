@@ -168,14 +168,14 @@ export interface FeastCollectionCardMeta {
 	};
 }
 
-type VariantId = 'A' | 'B';
+export type VariantId = 'A' | 'B';
 
 type VariantMeta = {
 	id: VariantId;
 	meta: RegularCardMeta;
 };
 
-type Test = {
+export type Test = {
 	testUuid: string;
 	variantMeta: VariantMeta[];
 	createdByName: string;
