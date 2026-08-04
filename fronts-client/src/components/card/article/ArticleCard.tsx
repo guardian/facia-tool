@@ -27,6 +27,7 @@ import { dragEventHasImageData } from 'util/validateImageSrc';
 import { Criteria } from 'types/Grid';
 import { getMainMediaVideoAtom } from '../../../util/externalArticle';
 import { intendedAudienceFromTags } from 'lib/capi/IntendedAudience';
+import { hasAbTestOnCard } from '../../../util/abTests';
 
 const ArticleBodyContainer = styled(CardBody)<{
 	pillarId: string | undefined;
@@ -226,7 +227,7 @@ const createMapStateToProps = () => {
 			card.id,
 			props.collectionId,
 		);
-		const hasLiveAbTest = liveCard?.meta.abTestEnabled;
+		const hasLiveAbTest = hasAbTestOnCard(liveCard);
 
 		return {
 			article,

@@ -20,6 +20,7 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
 import { css } from 'styled-components';
 import { ConicalFlaskIcon } from 'components/icons/Icons';
+import { hasAbTestOnCard } from '../../util/abTests';
 
 interface FrontCollectionOverviewContainerProps {
 	frontId: string;
@@ -194,7 +195,7 @@ const CollectionOverview = ({
 							</StatusWarning>
 						</EditModeVisibility>
 					) : null)}
-				{liveAndDraftCards.some((card) => card.meta.abTestEnabled) && (
+				{liveAndDraftCards.some((card) => hasAbTestOnCard(card)) && (
 					<EditModeVisibility visibleMode="fronts">
 						<TestIndicator priority="primary" size="s" title="Active tests">
 							<ConicalFlaskIcon size={'xxs'} fill={'white'} />
