@@ -146,7 +146,7 @@ const ABTestStatus = styled.div<{ useSecondaryTheme?: boolean }>`
 	font-weight: 700;
 	font-size: 12px;
 	padding: 4px 8px;
-	width: fit-content;
+	width: max-content;
 	margin-top: 6px;
 	display: flex;
 	flex-direction: row;
