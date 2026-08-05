@@ -12,6 +12,7 @@ import {
 	CardSizes,
 	CardMeta,
 	OtherCollectionsOnSameFrontThisCardIsOn,
+	Test,
 } from 'types/Collection';
 import SnapLink from 'components/card/snapLink/SnapLinkCard';
 import {
@@ -107,7 +108,12 @@ interface ContainerProps {
 	isSupporting?: boolean;
 	canDragImage?: boolean;
 	canShowPageViewData: boolean;
-	updateCardMeta: (id: string, meta: CardMeta) => void;
+	updateCard: (
+		id: string,
+		meta: CardMeta,
+		merge?: boolean,
+		test?: Test,
+	) => void;
 	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
 
@@ -166,7 +172,7 @@ class Card extends React.Component<CardContainerProps> {
 			pillarId,
 			collectionType,
 			groupSizeId,
-			updateCardMeta,
+			updateCard,
 			otherCollectionsOnSameFrontThisCardIsOn,
 		} = this.props;
 
@@ -322,7 +328,7 @@ class Card extends React.Component<CardContainerProps> {
 							key={uuid}
 							form={uuid}
 							onSave={(meta) => {
-								updateCardMeta(uuid, meta);
+								updateCard(uuid, meta);
 								clearCardSelection(uuid);
 							}}
 							onCancel={() => clearCardSelection(uuid)}
@@ -336,7 +342,7 @@ class Card extends React.Component<CardContainerProps> {
 							key={uuid}
 							form={uuid}
 							onSave={(meta) => {
-								updateCardMeta(uuid, meta);
+								updateCard(uuid, meta);
 								clearCardSelection(uuid);
 							}}
 							onCancel={() => clearCardSelection(uuid)}
@@ -351,9 +357,9 @@ class Card extends React.Component<CardContainerProps> {
 							key={uuid}
 							form={uuid}
 							frontId={frontId}
-							onSave={(meta) => {
+							onSave={(meta, test) => {
 								//TODO: check if we need an updateCardTest function here.
-								updateCardMeta(uuid, meta);
+								updateCard(uuid, meta, false, test);
 								clearCardSelection(uuid);
 							}}
 							onCancel={() => clearCardSelection(uuid)}

@@ -1,5 +1,5 @@
 import reducer from 'reducers/cardsReducer';
-import { updateCardMeta } from '../../actions/CardsCommon';
+import { updateCard } from '../../actions/CardsCommon';
 import { stateWithClipboard } from 'fixtures/clipboard';
 
 describe('cardsReducer', () => {
@@ -7,7 +7,7 @@ describe('cardsReducer', () => {
 		expect(
 			reducer(
 				stateWithClipboard.cards as any,
-				updateCardMeta('article', {
+				updateCard('article', {
 					headline: 'headline',
 				}),
 			).article.meta,
@@ -19,7 +19,7 @@ describe('cardsReducer', () => {
 		expect(
 			reducer(
 				stateWithClipboard.cards as any,
-				updateCardMeta('article2', {
+				updateCard('article2', {
 					headline: 'headline',
 				}),
 			).article2.meta,
@@ -31,7 +31,7 @@ describe('cardsReducer', () => {
 		expect(
 			reducer(
 				stateWithClipboard.cards as any,
-				updateCardMeta(
+				updateCard(
 					'article2',
 					{
 						headline: 'headline',

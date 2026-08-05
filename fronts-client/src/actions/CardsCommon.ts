@@ -1,7 +1,7 @@
 import keyBy from 'lodash/keyBy';
-import type { Card, CardMeta } from '../types/Collection';
+import type { Card, CardMeta, Test } from '../types/Collection';
 
-export const UPDATE_CARD_META = 'UPDATE_CARD_META' as const;
+export const UPDATE_CARD = 'UPDATE_CARD' as const;
 export const CARDS_RECEIVED = 'CARDS_RECEIVED' as const;
 export const CLEAR_CARDS = 'CLEAR_CARDS' as const;
 export const REMOVE_GROUP_CARD = 'REMOVE_GROUP_CARD' as const;
@@ -12,22 +12,24 @@ export const COPY_CARD_IMAGE_META = 'COPY_CARD_IMAGE_META' as const;
 export const MAYBE_ADD_FRONT_PUBLICATION =
 	'MAYBE_ADD_FRONT_PUBLICATION' as const;
 
-function updateCardMeta(
+function updateCard(
 	id: string,
 	meta: CardMeta,
 	{ merge }: { merge: boolean } = { merge: false },
+	test?: Test,
 ) {
 	return {
-		type: UPDATE_CARD_META,
+		type: UPDATE_CARD,
 		payload: {
 			id,
 			meta,
 			merge,
+			test,
 		},
 	};
 }
 
-type UpdateCardMeta = ReturnType<typeof updateCardMeta>;
+type UpdateCard = ReturnType<typeof updateCard>;
 
 // This can accept either a map of cards or an array (from which a
 // map will be generated)
@@ -151,10 +153,10 @@ export type CardActions =
 	| RemoveGroupCard
 	| RemoveSupportingCard
 	| ClearCards
-	| UpdateCardMeta;
+	| UpdateCard;
 
 export {
-	updateCardMeta,
+	updateCard,
 	cardsReceived,
 	insertGroupCard,
 	insertSupportingCard,
