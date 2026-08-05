@@ -170,7 +170,7 @@ export interface FeastCollectionCardMeta {
 
 export type VariantId = 'A' | 'B';
 
-type VariantMeta = {
+export type VariantMeta = {
 	id: VariantId;
 	meta: RegularCardMeta;
 };
