@@ -8,7 +8,7 @@ import {
 	addImageToCard,
 	moveCard,
 	removeCard as removeCardAction,
-	updateCardMetaWithPersist as updateCardMetaAction,
+	updateCardWithPersist as updateCardAction,
 } from 'actions/Cards';
 import {
 	editorSelectCard,
@@ -92,7 +92,7 @@ interface ClipboardProps {
 	isClipboardFocused: boolean;
 	clipboardHasOpenForms: boolean;
 	clipboardHasContent: boolean;
-	updateCardMeta: (id: string, meta: CardMeta) => void;
+	updateCard: (id: string, meta: CardMeta) => void;
 	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
 
@@ -146,7 +146,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 			selectCard,
 			removeCard,
 			removeSupportingCard,
-			updateCardMeta,
+			updateCard,
 			addImageToCard,
 		} = this.props;
 		return (
@@ -205,7 +205,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 														textSize="small"
 														onSelect={selectCard}
 														onDelete={() => removeCard(card.uuid)}
-														updateCardMeta={updateCardMeta}
+														updateCard={updateCard}
 														addImageToCard={addImageToCard}
 													>
 														<CardLevel
@@ -229,7 +229,7 @@ class Clipboard extends React.Component<ClipboardProps> {
 																			supporting.uuid,
 																		)
 																	}
-																	updateCardMeta={updateCardMeta}
+																	updateCard={updateCard}
 																	addImageToCard={addImageToCard}
 																/>
 															)}
@@ -302,7 +302,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	...bindActionCreators(
 		{
 			selectCard: editorSelectCard,
-			updateCardMeta: updateCardMetaAction('clipboard'),
+			updateCard: updateCardAction('clipboard'),
 			handleBlur: resetFocusState,
 			addImageToCard: addImageToCard('clipboard'),
 		},

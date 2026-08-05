@@ -20,7 +20,7 @@ import type { State } from 'types/State';
 import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
 import { CardTypes } from 'constants/cardTypes';
-import { updateCardMetaWithPersist as updateCardMetaAction } from 'actions/Cards';
+import { updateCardWithPersist as updateCardAction } from 'actions/Cards';
 import { ValidationResponse } from '../../util/validateImageSrc';
 import { bindActionCreators } from 'redux';
 import { createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from '../../selectors/shared';
@@ -120,7 +120,7 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
 	lastDesktopArticle?: string;
 	lastMobileArticle?: string;
 	cardsWhichAreAlsoOnOtherCollectionsOnSameFront?: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap;
-	updateCardMeta: (id: string, meta: CardMeta) => void;
+	updateCard: (id: string, meta: CardMeta) => void;
 	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
 }
 
@@ -143,7 +143,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 			lastDesktopArticle,
 			lastMobileArticle,
 			cardsWhichAreAlsoOnOtherCollectionsOnSameFront,
-			updateCardMeta,
+			updateCard,
 			addImageToCard,
 		} = this.props;
 
@@ -205,7 +205,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 													onSelect={() => selectCard(card.uuid, id, false)}
 													onDelete={() => removeCard(group.uuid, card.uuid)}
 													groupSizeId={group.id ? parseInt(group.id) : 0}
-													updateCardMeta={updateCardMeta}
+													updateCard={updateCard}
 													addImageToCard={addImageToCard}
 													otherCollectionsOnSameFrontThisCardIsOn={
 														otherCollectionsOnSameFrontThisCardIsOn
@@ -249,7 +249,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 																		)
 																	}
 																	size="small"
-																	updateCardMeta={updateCardMeta}
+																	updateCard={updateCard}
 																	addImageToCard={addImageToCard}
 																	otherCollectionsOnSameFrontThisCardIsOn={
 																		otherCollectionsOnSameFrontThisSublinkIsOn
@@ -322,7 +322,7 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
 	handleBlur: () => dispatch(resetFocusState()),
 	...bindActionCreators(
 		{
-			updateCardMeta: updateCardMetaAction('collection'),
+			updateCard: updateCardAction('collection'),
 			addImageToCard: addImageToCard('collection'),
 		},
 		dispatch,

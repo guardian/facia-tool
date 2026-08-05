@@ -11,7 +11,7 @@ import type {
 	VisibleArticlesResponse,
 	EditionsFrontMetadata,
 } from './FaciaApi';
-import type { Stages, Collection, CardMeta } from 'types/Collection';
+import type { Stages, Collection, CardMeta, Test } from 'types/Collection';
 import {
 	EDITOR_OPEN_CURRENT_FRONTS_MENU,
 	EDITOR_CLOSE_CURRENT_FRONTS_MENU,
@@ -289,12 +289,13 @@ interface PageViewDataReceived {
 	};
 }
 
-interface UpdateCardMeta {
-	type: 'UPDATE_CARD_META';
+interface UpdateCard {
+	type: 'UPDATE_CARD';
 	payload: {
 		id: string;
 		meta: CardMeta;
 		merge: boolean;
+		test?: Test;
 	};
 }
 
@@ -372,7 +373,7 @@ type Action =
 	| EndOptionsModal
 	| Actions<ExternalArticle>
 	| Actions<Collection>
-	| UpdateCardMeta
+	| UpdateCard
 	| MaybeAddFrontPublicationDate
 	| CapGroupSiblings
 	| CopyCardImageMeta
@@ -420,7 +421,7 @@ export {
 	ChangedBrowsingStage,
 	StartOptionsModal,
 	EndOptionsModal,
-	UpdateCardMeta,
+	UpdateCard,
 	InsertCardPayload,
 	CapGroupSiblings,
 	MaybeAddFrontPublicationDate,
