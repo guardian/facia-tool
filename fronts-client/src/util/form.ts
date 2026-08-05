@@ -10,7 +10,6 @@ import { Atom, CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
 import { findActiveOrDraftTest } from './abTests';
-import crypto from 'crypto';
 
 export interface CardFormData {
 	headline: string;
@@ -237,6 +236,7 @@ export const getCardTestFromFormValues = (
 		createdByEmail: 'dummy@guardian.com',
 		//TODO: ensure that an expired test will not reach this point.
 		hasManuallyEndedOnThisTrail: !abTestEnabled,
+		frontsThisTestCanRunOn: [],
 	};
 };
 
@@ -265,8 +265,6 @@ export const getCardMetaFromFormValues = (
 		{
 			...values,
 			headline: getStringField(values.headline),
-			headlineA: getStringField(values.headlineA),
-			headlineB: getStringField(values.headlineB),
 			trailText: getStringField(values.trailText),
 			byline: getStringField(values.byline),
 			sportScore: getStringField(values.sportScore),
@@ -279,6 +277,9 @@ export const getCardMetaFromFormValues = (
 		},
 		'primaryImage',
 		'cutoutImage',
+		'headlineA',
+		'headlineB',
+		'abTestEnabled',
 	);
 
 	// We only return dirtied values.
