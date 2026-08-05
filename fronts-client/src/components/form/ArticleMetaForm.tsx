@@ -18,7 +18,13 @@ import {
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
 import { emptyObject } from 'util/selectorUtils';
-import { CardMeta, ArticleTag, CardSizes, ImageData } from 'types/Collection';
+import {
+	CardMeta,
+	ArticleTag,
+	CardSizes,
+	ImageData,
+	Test,
+} from 'types/Collection';
 import InputText from 'components/inputs/InputText';
 import InputTextArea from 'components/inputs/InputTextArea';
 import InputCheckboxToggleInline from 'components/inputs/InputCheckboxToggleInline';
@@ -37,6 +43,7 @@ import {
 	getCapiValuesForArticleFields,
 	shouldRenderField,
 	maxSlideshowImages,
+	getCardTestFromFormValues,
 } from 'util/form';
 import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
@@ -1235,7 +1242,9 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 				props.cardId,
 				values,
 			);
-			props.onSave(meta);
+			const test = getCardTestFromFormValues(getState(), props.cardId, values);
+
+			props.onSave(meta, test);
 		});
 	},
 })(FormComponent);
@@ -1276,7 +1285,7 @@ interface InterfaceProps {
 	cardId: string;
 	isSupporting?: boolean;
 	onCancel: () => void;
-	onSave: (meta: CardMeta) => void;
+	onSave: (meta: CardMeta, test?: Test) => void;
 	frontId: string;
 	size?: CardSizes;
 	groupSizeId?: number;

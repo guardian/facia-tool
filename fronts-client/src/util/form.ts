@@ -4,12 +4,13 @@ import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
-// import pageConfig from 'util/extractConfigFromPage';
-import { CardMeta, ImageData } from 'types/Collection';
+import { CardMeta, ImageData, Test } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { Atom, CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
+import { findActiveOrDraftTest } from './abTests';
+import crypto from 'crypto';
 
 export interface CardFormData {
 	headline: string;
@@ -185,6 +186,59 @@ export const getImageMetaFromValidationResponse = (image: ImageData) => ({
 	imageSrcHeight: intToStr(image.height),
 	imageSrcOrigin: image.origin,
 });
+
+export const getCardTestFromFormValues = (
+	state: State,
+	id: string,
+	values: CardFormData,
+): Test => {
+	const { headlineA, headlineB, abTestEnabled } = values;
+
+	const existingCard = selectCard(state, id);
+	const maybeTest = findActiveOrDraftTest(existingCard);
+
+	if (maybeTest) {
+		const updatedVariantMeta = maybeTest.variantMeta.map((variant) => {
+			// TODO: Allow for additional variant ids (eg c, d, etc)
+			const headlineVariant = variant.id === 'A' ? headlineA : headlineB;
+			return {
+				...variant,
+				meta: {
+					...variant.meta,
+					headline: headlineVariant,
+				},
+			};
+		});
+
+		return {
+			...maybeTest,
+			variantMeta: updatedVariantMeta,
+		};
+	}
+
+	return {
+		testUuid: crypto.randomUUID(),
+		variantMeta: [
+			{
+				id: 'A',
+				meta: {
+					headline: headlineA,
+				},
+			},
+			{
+				id: 'B',
+				meta: {
+					headline: headlineB,
+				},
+			},
+		],
+		// TODO: Populate createdBy fields
+		createdByName: 'dummy guardian',
+		createdByEmail: 'dummy@guardian.com',
+		//TODO: ensure that an expired test will not reach this point.
+		hasManuallyEndedOnThisTrail: !abTestEnabled,
+	};
+};
 
 export const getCardMetaFromFormValues = (
 	state: State,
