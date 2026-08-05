@@ -146,6 +146,8 @@ const createSelectArticleFromCard = () =>
 				card.meta.headline ||
 				(externalArticle ? externalArticle.fields.headline : undefined);
 
+			const activeOrDraftTest = findActiveOrDraftTest(card);
+
 			return {
 				...omit(externalArticle || {}, 'fields', 'frontsMeta'),
 				...(externalArticle ? externalArticle.fields : {}),
@@ -153,8 +155,9 @@ const createSelectArticleFromCard = () =>
 				...articleMeta,
 				headline: headlineField,
 				// if headlineA is not present, populate it with the headline field
-				headlineA:
-					getVariantHeadline(findActiveOrDraftTest(card), 'A') || headlineField,
+				headlineA: getVariantHeadline(activeOrDraftTest, 'A') || headlineField,
+				headlineB: getVariantHeadline(activeOrDraftTest, 'B'),
+				abTestEnabled: !!activeOrDraftTest,
 				trailText:
 					card.meta.trailText ||
 					(externalArticle ? externalArticle.fields.trailText : undefined),
