@@ -446,7 +446,7 @@ const createSelectLiveCardForGivenCardId = () => {
 	};
 };
 
-const createSelectAllCardsInCollection = () => {
+const createSelectAllCardsInCollections = () => {
 	const selectCardsInCollection = createSelectCardsInCollection();
 
 	return (state: State, collectionIds: string[]) =>
@@ -466,6 +466,26 @@ const createSelectAllCardsInCollection = () => {
 			],
 			[] as string[],
 		);
+};
+
+const createSelectAllLiveAndDraftCardsInCollection = () => {
+	const selectCardsInCollection = createSelectCardsInCollection();
+
+	return (state: State, collectionId: string) => {
+		const liveAndDraftCardIds = (['live', 'draft'] as CardSets[]).reduce(
+			(acc, collectionSet) => [
+				...acc,
+				...selectCardsInCollection(state, {
+					collectionId,
+					collectionSet,
+				}),
+			],
+			[] as string[],
+		);
+
+		const cardMap = selectCardMap(state);
+		return liveAndDraftCardIds.map((cardId) => cardMap[cardId]);
+	};
 };
 
 const selectCardId = (_: unknown, { cardId }: { cardId: string }) => cardId;
@@ -620,10 +640,11 @@ export {
 	selectExternalArticleFromCard,
 	createSelectArticleFromCard,
 	selectCardsFromRootState,
+	createSelectAllLiveAndDraftCardsInCollection,
 	createSelectCardsInCollectionGroup,
 	createSelectCardsInCollection,
 	createSelectLiveCardForGivenCardId,
-	createSelectAllCardsInCollection,
+	createSelectAllCardsInCollections,
 	createSelectGroupArticles,
 	createSelectSupportingArticles,
 	createSelectCollection,

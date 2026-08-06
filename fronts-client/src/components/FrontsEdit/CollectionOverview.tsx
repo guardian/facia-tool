@@ -8,16 +8,18 @@ import { Dispatch } from 'types/Store';
 import { selectHasUnpublishedChanges } from 'selectors/frontsSelectors';
 import { openCollectionsAndFetchTheirArticles } from 'actions/Collections';
 
-import { Collection, CardSets } from 'types/Collection';
+import { Collection, CardSets, Card } from 'types/Collection';
 import { createCollectionId } from 'components/CollectionDisplay';
 import ButtonDefault from 'components/inputs/ButtonCircular';
 import {
 	createSelectCollection,
 	createSelectCardsInCollection,
+	createSelectAllLiveAndDraftCardsInCollection,
 } from 'selectors/shared';
 import EditModeVisibility from 'components/util/EditModeVisibility';
 import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
 import { css } from 'styled-components';
+import { ConicalFlaskIcon } from 'components/icons/Icons';
 
 interface FrontCollectionOverviewContainerProps {
 	frontId: string;
@@ -32,6 +34,7 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
 	openCollection: (id: string) => void;
 	hasUnpublishedChanges: boolean;
 	hasOpenForms: boolean;
+	liveAndDraftCards: Card[];
 };
 
 const Container = styled.div<{
@@ -81,10 +84,11 @@ const TextContainerLeft = styled.div`
 `;
 
 const TextContainerRight = styled.div`
-	flex: 0 0 auto;
+	display: flex;
+	flex-wrap: wrap;
 	font-size: 14px;
-	overflow: hidden;
-	white-space: nowrap;
+	justify-content: center;
+	gap: 2px;
 `;
 
 const Name = styled.span<{ isSecondaryContainer: boolean }>`
@@ -105,17 +109,23 @@ const ItemCount = styled.span`
 
 const StatusWarning = styled(ButtonDefault)`
 	outline: transparent;
-	:not(:first-child) {
-		margin-left: 5px;
-	}
 	color: ${theme.button.color};
-	height: 20px;
-	width: 20px;
-	border-radius: 20px;
+	height: 18px;
+	width: 18px;
 	&:hover,
 	&:active {
 		outline: transparent;
 	}
+`;
+
+const TestIndicator = styled(ButtonDefault)`
+	height: 18px;
+	width: 18px;
+	&&:hover,
+	&&:active {
+		background: ${theme.base.colors.abTestActiveColor};
+	}
+	background: ${theme.base.colors.abTestActiveColor};
 `;
 
 const CollectionOverview = ({
@@ -126,6 +136,7 @@ const CollectionOverview = ({
 	hasUnpublishedChanges,
 	isSelected,
 	hasOpenForms,
+	liveAndDraftCards,
 }: FrontCollectionOverviewProps) =>
 	collection ? (
 		<Container
@@ -183,6 +194,13 @@ const CollectionOverview = ({
 							</StatusWarning>
 						</EditModeVisibility>
 					) : null)}
+				{liveAndDraftCards.some((card) => card.meta.abTestEnabled) && (
+					<EditModeVisibility visibleMode="fronts">
+						<TestIndicator priority="primary" size="s" title="Active tests">
+							<ConicalFlaskIcon size={'xxs'} fill={'white'} />
+						</TestIndicator>
+					</EditModeVisibility>
+				)}
 			</TextContainerRight>
 		</Container>
 	) : null;
@@ -192,6 +210,9 @@ const mapStateToProps = () => {
 	const selectCardsInCollection = createSelectCardsInCollection();
 	const selectCollectionIdsWithOpenForms =
 		createSelectCollectionIdsWithOpenForms();
+
+	const selectLiveAndDraftCards =
+		createSelectAllLiveAndDraftCardsInCollection();
 	return (
 		state: State,
 		{
@@ -215,6 +236,7 @@ const mapStateToProps = () => {
 			selectCollectionIdsWithOpenForms(state, { frontId }).indexOf(
 				collectionId,
 			) !== -1,
+		liveAndDraftCards: selectLiveAndDraftCards(state, collectionId),
 	});
 };
 
