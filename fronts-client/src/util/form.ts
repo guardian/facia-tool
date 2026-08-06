@@ -10,6 +10,7 @@ import { Atom, CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
 import { findActiveOrDraftTest } from './abTests';
+import { selectFrontsWithCollection } from 'selectors/frontsSelectors';
 
 export interface CardFormData {
 	headline: string;
@@ -242,7 +243,7 @@ export const getCardTestFromFormValues = (
 		createdByEmail: 'dummy@guardian.com',
 		//TODO: ensure that an expired test will not reach this point.
 		hasManuallyEndedOnThisTrail: !abTestEnabled,
-		frontsThisTestCanRunOn: [],
+		frontsThisTestCanRunOn: selectFrontsWithCollection(state, existingCard.id),
 	};
 };
 

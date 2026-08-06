@@ -581,6 +581,7 @@ const selectGroupCollectionMap = createSelector(
 		),
 );
 
+// use this too
 const selectGroupCollection = (state: State, groupId: string) => {
 	const { collectionId, cardSet } = selectGroupCollectionMap(state)[groupId];
 	const collection = collectionSelectors.selectById(state, collectionId);
@@ -595,6 +596,7 @@ const selectGroupSiblings = (state: State, groupId: string) => {
 	return (collection[cardSet] || []).map((id) => selectGroupMap(state)[id]);
 };
 
+// use this
 const selectArticleGroup = (
 	state: State,
 	groupIdFromAction: string,

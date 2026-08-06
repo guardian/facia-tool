@@ -18,6 +18,7 @@ import {
 	selectFrontId,
 } from 'selectors/shared';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
+import { selectors as collectionSelectors } from 'bundles/collectionsBundle';
 
 interface FrontConfigMap {
 	[id: string]: FrontConfig;
@@ -105,6 +106,20 @@ const selectFrontsWithPriority = (
 	priority: string,
 ): FrontConfig[] =>
 	getFrontsByPriority(state)[priority] || defaultFrontsWithPriority;
+
+const getFrontsWithCollection = (
+	parentCollectionOfCard: string | null,
+	fronts: FrontConfig[],
+): string[] => {
+	// at the moment we are always returning early as we're getting null for the parentCollection - investigate
+	if (!parentCollectionOfCard) return [];
+
+	const frontsWithCollection = fronts.filter((front) =>
+		front.collections.includes(parentCollectionOfCard),
+	);
+
+	return frontsWithCollection.map((front) => front.id);
+};
 
 const getCollections = (state: State): CollectionConfigMap =>
 	frontsConfigSelectors.selectAll(state).collections || {};
@@ -256,6 +271,11 @@ const selectHasUnpublishedChanges = createSelector(
 	getUnpublishedChangesStatus,
 );
 
+const selectFrontsWithCollection = createSelector(
+	[collectionSelectors.selectParentCollectionOfCard, selectFrontsAsArray],
+	getFrontsWithCollection,
+);
+
 const createSelectCollectionsWhichAreAlsoOnOtherFronts = () =>
 	createSelector(
 		[selectFront, selectFrontsAsArray],
@@ -336,4 +356,5 @@ export {
 	selectVisibleArticles,
 	selectUnlockedFrontCollections,
 	createSelectArticleVisibilityDetails,
+	selectFrontsWithCollection,
 };
