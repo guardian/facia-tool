@@ -472,6 +472,105 @@ const removeCard = (
 	};
 };
 
+/**
+ * Given a single move, compute the plain "prep" actions that must be applied to
+ * state before the card is inserted (adding a cloned card, then any meta
+ * resets), plus a callback that performs the insert itself.
+ *
+ * The insert is returned as a callback rather than dispatched here because the
+ * insert action creator is a thunk (it can contain a modal/cap check), so it
+ * can't be included in a `batchActions` call. Returning the pieces separately
+ * lets callers batch the prep actions across several moves (see `moveCards`).
+ *
+ * Returns `null` if the move can't be applied (e.g. no valid insert target).
+ */
+const planMove = (
+	to: PosSpec,
+	card: Card,
+	from: PosSpec | null,
+	persistTo: 'collection' | 'clipboard',
+	state: State,
+): {
+	preInsertActions: Action[];
+	insert: (dispatch: Dispatch) => void;
+} | null => {
+	const removeActionCreator =
+		from && getRemoveActionCreatorFromType(from.type, persistTo);
+	const insertActionCreator = getInsertionActionCreatorFromType(
+		to.type,
+		persistTo,
+	);
+
+	if (!insertActionCreator) {
+		return null;
+	}
+
+	// If move actions are happening to/from groups which have cards displayed
+	// in them which don't belong to these groups we need to adjust the indices of
+	// the move actions in these groups.
+	const fromDetails: {
+		fromWithRespectToState: PosSpec | null;
+		fromOrphanedGroup: boolean;
+	} = getFromGroupIndicesWithRespectToState(from, state);
+
+	const toWithRespectToState: PosSpec | null =
+		getToGroupIndicesWithRespectToState(
+			to,
+			state,
+			fromDetails.fromOrphanedGroup,
+		);
+
+	if (!toWithRespectToState) {
+		return null;
+	}
+
+	const { fromWithRespectToState } = fromDetails;
+
+	// if from is not null then assume we're copying a moved card into this position
+	const { parent, supporting } = !fromWithRespectToState
+		? cloneCard(card, selectCardMap(state))
+		: { parent: card, supporting: [] };
+
+	const actionParams: UpdateCardMetaParams = {
+		from,
+		to,
+		card: parent,
+		persistTo,
+		state,
+	};
+
+	// Plain actions that prepare the card in state (adding a cloned card, then any
+	// meta resets). Collected so the caller can dispatch them in a single batch -
+	// each separate dispatch triggers its own subscriber notification and render
+	// pass, which is noticeably laggy with several fronts open, and worse still
+	// during cascading moves.
+	const preInsertActions = [
+		// if from is not null we're moving an existing card, so it's already
+		// in state; otherwise we've cloned it and need to add it.
+		...(!fromWithRespectToState
+			? [cardsReceived([parent, ...supporting])]
+			: []),
+		mayResetBoostLevel(actionParams),
+		mayResetImageReplace(actionParams),
+		mayResetImmersive(actionParams),
+		mayResetVideoReplace(actionParams),
+	].filter(Boolean) as Action[];
+
+	const insert = (dispatch: Dispatch) =>
+		dispatch(
+			insertActionCreator(
+				toWithRespectToState.id,
+				toWithRespectToState.index,
+				parent.uuid,
+				fromWithRespectToState && removeActionCreator
+					? removeActionCreator(fromWithRespectToState.id, card.uuid)
+					: undefined,
+			),
+		);
+
+	return { preInsertActions, insert };
+};
+
 const moveCard = (
 	to: PosSpec,
 	card: Card,
@@ -479,86 +578,50 @@ const moveCard = (
 	persistTo: 'collection' | 'clipboard',
 ): ThunkResult<void> => {
 	return (dispatch: Dispatch, getState) => {
-		const removeActionCreator =
-			from && getRemoveActionCreatorFromType(from.type, persistTo);
-		const insertActionCreator = getInsertionActionCreatorFromType(
-			to.type,
-			persistTo,
-		);
-
-		if (!insertActionCreator) {
+		const plan = planMove(to, card, from, persistTo, getState());
+		if (!plan) {
 			return;
 		}
-
-		const state = getState();
-
-		// If move actions are happening to/from groups which have cards displayed
-		// in them which don't belong to these groups we need to adjust the indices of the move
-		// actions in these groups.
-		const fromDetails: {
-			fromWithRespectToState: PosSpec | null;
-			fromOrphanedGroup: boolean;
-		} = getFromGroupIndicesWithRespectToState(from, state);
-
-		const toWithRespectToState: PosSpec | null =
-			getToGroupIndicesWithRespectToState(
-				to,
-				state,
-				fromDetails.fromOrphanedGroup,
-			);
-		if (toWithRespectToState) {
-			const { fromWithRespectToState } = fromDetails;
-
-			// if from is not null then assume we're copying a moved card
-			// into this new position
-			const { parent, supporting } = !fromWithRespectToState
-				? cloneCard(card, selectCardMap(state))
-				: { parent: card, supporting: [] };
-
-			if (toWithRespectToState) {
-				const actionParams: UpdateCardMetaParams = {
-					from,
-					to,
-					card: parent,
-					persistTo,
-					state,
-				};
-
-				// Collect the plain actions that prepare the card in state (adding a
-				// cloned card, then any meta resets) and dispatch them in a single
-				// batch. This avoids multiple separate dispatches - each of which
-				// triggers its own subscriber notification and render pass - which is
-				// noticeably laggy with several fronts open.
-				const preInsertActions = [
-					// if from is not null we're moving an existing card, so it's already
-					// in state; otherwise we've cloned it and need to add it.
-					...(!fromWithRespectToState
-						? [cardsReceived([parent, ...supporting])]
-						: []),
-					mayResetBoostLevel(actionParams),
-					mayResetImageReplace(actionParams),
-					mayResetImmersive(actionParams),
-					mayResetVideoReplace(actionParams),
-				].filter(Boolean) as Action[];
-
-				if (preInsertActions.length) {
-					dispatch(batchActions(preInsertActions));
-				}
-
-				// The insert action creator is a thunk, so it can't be included in the
-				// batch above; it's dispatched separately.
-				dispatch(
-					insertActionCreator(
-						toWithRespectToState.id,
-						toWithRespectToState.index,
-						parent.uuid,
-						fromWithRespectToState && removeActionCreator
-							? removeActionCreator(fromWithRespectToState.id, card.uuid)
-							: undefined,
-					),
-				);
-			}
+		if (plan.preInsertActions.length) {
+			dispatch(batchActions(plan.preInsertActions));
 		}
+		plan.insert(dispatch);
+	};
+};
+
+/**
+ * Move several cards as a single logical operation (e.g. a cascading shift of
+ * cards through full groups).
+ *
+ * Each move's prep actions are collected and dispatched together in one
+ * `batchActions` call, so a cascade of N moves produces a single batch (plus
+ * the N insert thunks) rather than ~2N separate dispatches - drastically
+ * reducing subscriber notifications and render passes.
+ */
+const moveCards = (
+	moves: Array<{ to: PosSpec; card: Card; from: PosSpec | null }>,
+	persistTo: 'collection' | 'clipboard',
+): ThunkResult<void> => {
+	return (dispatch: Dispatch, getState) => {
+		const inserts: Array<(dispatch: Dispatch) => void> = [];
+		const allPreInsertActions: Action[] = [];
+
+		// Each plan is computed against the current state; prep actions are batched,
+		// but the inserts (thunks) still run in order afterwards, preserving
+		// ordering between moves.
+		moves.forEach(({ to, card, from }) => {
+			const plan = planMove(to, card, from, persistTo, getState());
+			if (!plan) {
+				return;
+			}
+			allPreInsertActions.push(...plan.preInsertActions);
+			inserts.push(plan.insert);
+		});
+
+		if (allPreInsertActions.length) {
+			dispatch(batchActions(allPreInsertActions));
+		}
+		inserts.forEach((insert) => insert(dispatch));
 	};
 };
 
@@ -620,6 +683,7 @@ export const createArticleEntitiesFromDrop = (
 export {
 	insertCardWithCreate,
 	moveCard,
+	moveCards,
 	updateCardMetaWithPersist,
 	removeCard,
 	addImageToCard,
