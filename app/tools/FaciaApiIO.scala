@@ -129,6 +129,7 @@ object FaciaApi {
     Some(collectionJson)
       .filter(_.draft.isDefined)
       .map(updatePublicationDateForNew)
+      .map(updateTestDatesForNew)
       .map(CollectionJsonFunctions.updatePreviouslyForPublish)
       .map(collectionJson =>
         collectionJson.copy(live = collectionJson.draft.get, draft = None)
@@ -162,4 +163,33 @@ object FaciaApi {
     collectionJson.copy(draft = Some(draftsWithNewDate))
   }
 
+  def updateTestDatesForNew(
+      collectionJson: CollectionJson
+  ): CollectionJson = {
+    val draftsWithUpdatedTestDates = collectionJson.draft.get.map { draft =>
+      val updatedTests = draft.tests.map(_.map(test => {
+        val now = DateTime.now
+
+        val startDate: Option[Long] = test.startDate match {
+          case None              => Some(now.getMillis)
+          case existingStartDate => existingStartDate
+        }
+
+        val expiryDate: Option[Long] = test.expiryDate match {
+          // expiry date should be 24 hours after the start date
+          case None               => Some(now.plusDays(1).getMillis)
+          case existingExpiryDate => existingExpiryDate
+        }
+
+        test.copy(
+          startDate = startDate,
+          expiryDate = expiryDate
+        )
+      }))
+
+      draft.copy(tests = updatedTests)
+    }
+
+    collectionJson.copy(draft = Some(draftsWithUpdatedTestDates))
+  }
 }
