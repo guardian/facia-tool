@@ -327,9 +327,9 @@ describe('Shared selectors', () => {
 
 	describe('externalArticleFromCardSelector', () => {
 		it('should create a selector that returns an external article referenced by the given card', () => {
-			expect(selectExternalArticleFromCard(state, 'af1')).toEqual(
-				state.externalArticles.data.ea1,
-			);
+			expect(
+				selectExternalArticleFromCard(state, 'af1WithNoRunningTest'),
+			).toEqual(state.externalArticles.data.ea1);
 			expect(selectExternalArticleFromCard(state, 'invalid')).toEqual(
 				undefined,
 			);
@@ -440,7 +440,9 @@ describe('Shared selectors', () => {
 				pillarName: 'external-pillar',
 				uuid: 'af4',
 				headline: 'external-headline',
-				headlineA: 'external-headline',
+				headlineA: undefined,
+				headlineB: undefined,
+				abTestEnabled: false,
 				thumbnail: undefined,
 				trailText: 'external-trailText',
 				byline: 'external-byline',
