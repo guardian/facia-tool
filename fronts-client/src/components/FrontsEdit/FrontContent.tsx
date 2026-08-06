@@ -11,7 +11,7 @@ import WithDimensions from 'components/util/WithDimensions';
 import { Dispatch } from 'types/Store';
 import { Card as TCard, CardSets, Group } from 'types/Collection';
 import { FrontConfig } from 'types/FaciaApi';
-import { moveCard } from 'actions/Cards';
+import { moveCard, moveCards } from 'actions/Cards';
 import { insertCardFromDropEvent } from 'util/collectionUtils';
 import { bindActionCreators } from 'redux';
 import { editorSelectCard } from 'bundles/frontsUI';
@@ -63,6 +63,7 @@ type FrontProps = FrontPropsBeforeState & {
 		isSupporting: boolean,
 	) => void;
 	moveCard: typeof moveCard;
+	moveCards: typeof moveCards;
 	insertCardFromDropEvent: typeof insertCardFromDropEvent;
 };
 
@@ -282,8 +283,16 @@ class FrontContent extends React.Component<FrontProps, FrontState> {
 		// Otherwise, we need to build a move queue to handle cascading shifts of cards
 		const moveQueue = buildMoveQueue(move);
 
-		moveQueue.map((move) =>
-			this.props.moveCard(move.to, move.data, move.from, 'collection'),
+		// Dispatch the whole cascade as a single batched operation, rather than a
+		// separate moveCard dispatch per queued move (which caused a burst of
+		// render passes).
+		this.props.moveCards(
+			moveQueue.map((queuedMove) => ({
+				to: queuedMove.to,
+				card: queuedMove.data,
+				from: queuedMove.from,
+			})),
+			'collection',
 		);
 	};
 
@@ -463,6 +472,7 @@ const mapDispatchToProps = (dispatch: Dispatch) =>
 			selectCard: editorSelectCard,
 			initialiseCollectionsForFront,
 			moveCard,
+			moveCards,
 			insertCardFromDropEvent,
 		},
 		dispatch,
