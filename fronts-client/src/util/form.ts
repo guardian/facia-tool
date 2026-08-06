@@ -243,7 +243,10 @@ export const getCardTestFromFormValues = (
 		createdByEmail: 'dummy@guardian.com',
 		//TODO: ensure that an expired test will not reach this point.
 		hasManuallyEndedOnThisTrail: !abTestEnabled,
-		frontsThisTestCanRunOn: selectFrontsWithCollection(state, existingCard.id),
+		frontsThisTestCanRunOn: selectFrontsWithCollection(
+			state,
+			existingCard.uuid,
+		),
 	};
 };
 
