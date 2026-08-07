@@ -11,6 +11,11 @@ import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
 import { findActiveOrDraftTest } from './abTests';
 import { selectFrontsWithCollection } from 'selectors/frontsSelectors';
+import {
+	selectFirstName,
+	selectLastName,
+	selectUserEmail,
+} from 'selectors/configSelectors';
 
 export interface CardFormData {
 	headline: string;
@@ -238,9 +243,11 @@ export const getCardTestFromFormValues = (
 				},
 			},
 		],
-		// TODO: Populate createdBy fields
-		createdByName: 'dummy guardian',
-		createdByEmail: 'dummy@guardian.com',
+		createdByName: compact([
+			selectFirstName(state),
+			selectLastName(state),
+		]).join(' '),
+		createdByEmail: selectUserEmail(state) || '',
 		//TODO: ensure that an expired test will not reach this point.
 		hasManuallyEndedOnThisTrail: !abTestEnabled,
 		frontsThisTestCanRunOn: selectFrontsWithCollection(
