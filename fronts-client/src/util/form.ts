@@ -221,11 +221,20 @@ export const getCardTestFromFormValues = (
 			};
 		});
 
+		// When the "Headline test" toggle is switched off, end the test on this
+		// trail and record who ended it
+		const hasManuallyEndedOnThisTrail = !abTestEnabled;
+
 		return {
 			...maybeTest,
 			variantMeta: updatedVariantMeta,
-			// When the "Headline test" toggle is switched off, end the test on this trail
-			hasManuallyEndedOnThisTrail: !abTestEnabled,
+			hasManuallyEndedOnThisTrail,
+			manuallyEndedOnThisTrailByName: hasManuallyEndedOnThisTrail
+				? compact([selectFirstName(state), selectLastName(state)]).join(' ')
+				: undefined,
+			manuallyEndedOnThisTrailByEmail: hasManuallyEndedOnThisTrail
+				? selectUserEmail(state) || ''
+				: undefined,
 		};
 	}
 
