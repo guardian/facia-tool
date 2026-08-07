@@ -211,6 +211,18 @@ class S3FrontsApi(
     putPrivate(putLocation, json, "application/json", List(cmsFrontsS3Account))
   }
 
+  val customSubnavKey = s"$location/navigation/custom-subnav.json"
+
+  def getCustomSubnav: Option[String] = get(customSubnavKey)
+
+  def putCustomSubnav(json: String): Unit =
+    putPrivate(
+      customSubnavKey,
+      json,
+      "application/json",
+      List(cmsFrontsS3Account)
+    )
+
   def archiveMasterConfig(json: String, identity: User) = {
     val now = DateTime.now
     val putLocation =

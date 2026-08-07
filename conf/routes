@@ -127,3 +127,11 @@ PATCH       /editions-api/collections/:collectionId/update-regions          cont
 GET         /editions-api/collections/:collectionId/prefill                 controllers.EditionsController.getPrefillForCollection(collectionId)
 
 POST        /editions-api/fronts/:frontId/collections/:collectionId/feastCollectionToContainer/:collectionCardId    controllers.EditionsController.feastCollectionToContainer(frontId, collectionId, collectionCardId)
+
+# Custom subnavs
+GET         /custom-subnav                           controllers.CustomSubnavController.getSubnavConfig
+PUT         /custom-subnav                           controllers.CustomSubnavController.upsertSubnav
+POST        /custom-subnav/publish/:id               controllers.CustomSubnavController.publishSubnav(id)
+POST        /custom-subnav/discard/:id               controllers.CustomSubnavController.discardSubnav(id)
+POST        /custom-subnav/unpublish/:id             controllers.CustomSubnavController.unpublishSubnav(id)
+DELETE      /custom-subnav/:id                        controllers.CustomSubnavController.deleteSubnav(id)
