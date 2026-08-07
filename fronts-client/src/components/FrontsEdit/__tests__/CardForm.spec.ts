@@ -1,6 +1,7 @@
 import { reducer, initialize, change } from 'redux-form';
 import {
 	getCardMetaFromFormValues,
+	getCardTestFromFormValues,
 	getInitialValuesForCardForm,
 	maxSlideshowImages,
 } from 'util/form';
@@ -357,6 +358,100 @@ describe('CardForm transform functions', () => {
 					...values,
 				}),
 			).toEqual({ showQuotedHeadline: false, headline: 'Bill Shorten' });
+		});
+	});
+	describe('Derive card tests from form values', () => {
+		const originalRandomUUID = crypto.randomUUID;
+		beforeAll(() => {
+			// jsdom does not implement crypto.randomUUID
+			crypto.randomUUID = jest
+				.fn()
+				.mockReturnValue('00000000-0000-0000-0000-000000000000');
+		});
+		afterAll(() => {
+			crypto.randomUUID = originalRandomUUID;
+		});
+		it('should set variant headlines from headlineA and headlineB when non-empty', () => {
+			const values = {
+				abTestEnabled: true,
+				headlineA: 'Headline variant A',
+				headlineB: 'Headline variant B',
+			};
+			const state = createStateWithChangedFormFields(
+				initialState,
+				'exampleId',
+				values,
+			);
+			const test = getCardTestFromFormValues(state, 'exampleId', {
+				...formValues,
+				...values,
+			});
+			expect(test.variantMeta).toEqual([
+				{ id: 'A', meta: { headline: 'Headline variant A' } },
+				{ id: 'B', meta: { headline: 'Headline variant B' } },
+			]);
+		});
+
+		it('should set variant headlines to undefined when headlineA and headlineB are empty strings', () => {
+			const values = {
+				abTestEnabled: true,
+				headlineA: '',
+				headlineB: '',
+			};
+			const state = createStateWithChangedFormFields(
+				initialState,
+				'exampleId',
+				values,
+			);
+			const test = getCardTestFromFormValues(state, 'exampleId', {
+				...formValues,
+				...values,
+			});
+			expect(test.variantMeta).toEqual([
+				{ id: 'A', meta: { headline: undefined } },
+				{ id: 'B', meta: { headline: undefined } },
+			]);
+		});
+
+		it('should update an existing test, setting variant headlines to undefined when empty', () => {
+			const existingTest = {
+				testUuid: 'test-uuid',
+				variantMeta: [
+					{ id: 'A' as const, meta: { headline: 'Old A' } },
+					{ id: 'B' as const, meta: { headline: 'Old B' } },
+				],
+				createdByName: 'Someone',
+				createdByEmail: 'someone@example.com',
+				hasManuallyEndedOnThisTrail: false,
+			};
+			const stateWithTest = {
+				...initialState,
+				cards: {
+					...initialState.cards,
+					exampleId: {
+						...initialState.cards.exampleId,
+						tests: [existingTest],
+					},
+				},
+			};
+			const values = {
+				abTestEnabled: true,
+				headlineA: '',
+				headlineB: '',
+			};
+			const state = createStateWithChangedFormFields(
+				stateWithTest,
+				'exampleId',
+				values,
+			);
+			const test = getCardTestFromFormValues(state, 'exampleId', {
+				...formValues,
+				...values,
+			});
+			expect(test.variantMeta).toEqual([
+				{ id: 'A', meta: { headline: undefined } },
+				{ id: 'B', meta: { headline: undefined } },
+			]);
 		});
 	});
 });

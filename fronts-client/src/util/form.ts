@@ -212,7 +212,7 @@ export const getCardTestFromFormValues = (
 				...variant,
 				meta: {
 					...variant.meta,
-					headline: headlineVariant,
+					headline: getStringField(headlineVariant),
 				},
 			};
 		});
@@ -240,13 +240,13 @@ export const getCardTestFromFormValues = (
 			{
 				id: 'A',
 				meta: {
-					headline: headlineA,
+					headline: getStringField(headlineA),
 				},
 			},
 			{
 				id: 'B',
 				meta: {
-					headline: headlineB,
+					headline: getStringField(headlineB),
 				},
 			},
 		],
@@ -259,6 +259,13 @@ export const getCardTestFromFormValues = (
 			existingCard.uuid,
 		),
 	};
+};
+
+const getStringField = (field: string) => {
+	if (field.length === 0) {
+		return undefined;
+	}
+	return field;
 };
 
 export const getCardMetaFromFormValues = (
@@ -275,12 +282,6 @@ export const getCardMetaFromFormValues = (
 			height: intToStr(image.height),
 		}),
 	);
-	const getStringField = (field: string) => {
-		if (field.length === 0) {
-			return undefined;
-		}
-		return field;
-	};
 
 	const completeMeta = omit(
 		{
