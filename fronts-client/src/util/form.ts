@@ -224,6 +224,8 @@ export const getCardTestFromFormValues = (
 		return {
 			...maybeTest,
 			variantMeta: updatedVariantMeta,
+			// When the "Headline test" toggle is switched off, end the test on this trail
+			hasManuallyEndedOnThisTrail: !abTestEnabled,
 		};
 	}
 
