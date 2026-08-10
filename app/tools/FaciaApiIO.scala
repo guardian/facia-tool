@@ -163,8 +163,7 @@ object FaciaApi {
     collectionJson.copy(draft = Some(draftsWithNewDate))
   }
 
-  private def addTestDatesToTrail(trail: Trail): Trail = {
-    val now = DateTime.now
+  private def addTestDatesToTrail(trail: Trail, now: DateTime): Trail = {
     val updatedTests = trail.tests.map(_.map { test =>
       val startDate = test.startDate.orElse(Some(now.getMillis))
       val expiryDate = test.expiryDate.orElse(Some(now.plusDays(1).getMillis))
@@ -173,13 +172,14 @@ object FaciaApi {
     trail.copy(tests = updatedTests)
   }
 
-	def addTestDatesToTrails(
+  def addTestDatesToTrails(
       collectionJson: CollectionJson
   ): CollectionJson = {
     collectionJson.draft match {
       case None => collectionJson
       case Some(drafts) =>
-        val updated = drafts.map(addTestDatesToTrail)
+        val now = DateTime.now
+        val updated = drafts.map(draft => addTestDatesToTrail(draft, now))
         collectionJson.copy(draft = Some(updated))
     }
   }
