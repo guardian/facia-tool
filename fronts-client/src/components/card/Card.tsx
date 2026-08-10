@@ -358,7 +358,6 @@ class Card extends React.Component<CardContainerProps> {
 							form={uuid}
 							frontId={frontId}
 							onSave={(meta, test) => {
-								//TODO: check if we need an updateCardTest function here.
 								updateCard(uuid, meta, false, test);
 								clearCardSelection(uuid);
 							}}
