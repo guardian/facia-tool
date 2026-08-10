@@ -225,6 +225,7 @@ interface ArticleBodyProps {
 	};
 	abTestEnabled?: boolean;
 	hasLiveAbTest?: boolean;
+	headlineABTestingIsEnabled: boolean;
 }
 
 const articleBodyDefault = React.memo(
@@ -284,6 +285,7 @@ const articleBodyDefault = React.memo(
 		intendedAudience,
 		abTestEnabled,
 		hasLiveAbTest,
+		headlineABTestingIsEnabled,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -496,7 +498,7 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
-					{abTestStatusMessage && (
+					{abTestStatusMessage && headlineABTestingIsEnabled && (
 						<ABTestStatus useSecondaryTheme={useSecondaryTheme}>
 							<ConicalFlaskIcon
 								size={'xs'}

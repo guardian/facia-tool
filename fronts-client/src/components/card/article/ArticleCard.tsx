@@ -70,6 +70,7 @@ interface ArticleComponentProps {
 	groupIndex?: number;
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 	hasLiveAbTest?: boolean;
+	headlineABTestingIsEnabled: boolean;
 }
 
 interface ComponentProps extends ArticleComponentProps {
@@ -122,6 +123,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 			groupIndex,
 			otherCollectionsOnSameFrontThisCardIsOn,
 			hasLiveAbTest,
+			headlineABTestingIsEnabled,
 		} = this.props;
 
 		const getArticleData = () =>
@@ -196,6 +198,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 									intendedAudienceFromTags(article.tags)
 								}
 								hasLiveAbTest={hasLiveAbTest}
+								headlineABTestingIsEnabled={headlineABTestingIsEnabled}
 							/>
 						</ArticleBodyContainer>
 					</DragIntentContainer>
@@ -218,6 +221,7 @@ const createMapStateToProps = () => {
 		isLoading: boolean;
 		featureFlagPageViewData: boolean;
 		hasLiveAbTest?: boolean;
+		headlineABTestingIsEnabled: boolean;
 	} => {
 		const article = selectArticle(state, props.id);
 		const card = selectCard(state, props.id);
@@ -237,6 +241,10 @@ const createMapStateToProps = () => {
 				'page-view-data-visualisation',
 			),
 			hasLiveAbTest: hasLiveAbTest,
+			headlineABTestingIsEnabled: selectFeatureValue(
+				state,
+				'headline-ab-testing',
+			),
 		};
 	};
 };
