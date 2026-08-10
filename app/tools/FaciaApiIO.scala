@@ -1,6 +1,6 @@
 package tools
 
-import com.gu.facia.client.models.{CollectionJson, ConfigJson}
+import com.gu.facia.client.models.{CollectionJson, ConfigJson, Trail}
 import com.gu.pandomainauth.model.User
 import frontsapi.model.CollectionJsonFunctions
 import org.joda.time.DateTime
@@ -163,33 +163,27 @@ object FaciaApi {
     collectionJson.copy(draft = Some(draftsWithNewDate))
   }
 
-  def updateTestDatesForNew(
+  // per-trail helper: updates the tests inside a single Trail
+  private def updateTestDatesForTrail(trail: Trail): Trail = {
+    val now = DateTime.now
+    val updatedTests = trail.tests.map(_.map { test =>
+      val startDate = test.startDate.orElse(Some(now.getMillis))
+      val expiryDate = test.expiryDate.orElse(Some(now.plusDays(1).getMillis))
+      test.copy(startDate = startDate, expiryDate = expiryDate)
+    })
+    trail.copy(tests = updatedTests)
+  }
+
+	def updateTestDatesForNew(
       collectionJson: CollectionJson
   ): CollectionJson = {
-    val draftsWithUpdatedTestDates = collectionJson.draft.get.map { draft =>
-      val updatedTests = draft.tests.map(_.map(test => {
-        val now = DateTime.now
 
-        val startDate: Option[Long] = test.startDate match {
-          case None              => Some(now.getMillis)
-          case existingStartDate => existingStartDate
-        }
-
-        val expiryDate: Option[Long] = test.expiryDate match {
-          // expiry date should be 24 hours after the start date
-          case None               => Some(now.plusDays(1).getMillis)
-          case existingExpiryDate => existingExpiryDate
-        }
-
-        test.copy(
-          startDate = startDate,
-          expiryDate = expiryDate
-        )
-      }))
-
-      draft.copy(tests = updatedTests)
+    collectionJson.draft match {
+      case None => collectionJson
+      case Some(drafts) =>
+        val updated = drafts.map(updateTestDatesForTrail)
+        collectionJson.copy(draft = Some(updated))
     }
 
-    collectionJson.copy(draft = Some(draftsWithUpdatedTestDates))
   }
 }
