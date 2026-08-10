@@ -58,6 +58,14 @@ export const ListItemMeta = styled.span`
 	color: ${({ theme }) => theme.base.colors.textMuted};
 `;
 
+export const ListItemActions = styled.div`
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-end;
+	gap: 6px;
+	flex-shrink: 0;
+`;
+
 export const StatusTag = styled.span<{ draft?: boolean }>`
 	display: inline-block;
 	font-size: 11px;
