@@ -1,35 +1,18 @@
 import { Card, VariantId, Test } from '../types/Collection';
 
-// TODO: add unit test
-export const hasAbTestOnCard = (card: Card | undefined) => {
-	if (!card) {
-		return false;
-	}
-	if (!card.tests) {
-		return false;
-	}
+const isActiveTest = (test: Test) =>
+	!test.hasManuallyEndedOnThisTrail &&
+	!!test.expiryDate &&
+	test.expiryDate > Date.now();
 
-	return card.tests.some(
-		(test) =>
-			!test.hasManuallyEndedOnThisTrail &&
-			test.expiryDate &&
-			test.expiryDate > Date.now(),
-	);
-};
+const isDraftTest = (test: Test) =>
+	!test.hasManuallyEndedOnThisTrail && typeof test.expiryDate === 'undefined';
 
-// TODO: add unit test
-export const findActiveOrDraftTest = (card: Card) => {
-	if (!card.tests) {
-		return undefined;
-	}
+export const hasAbTestOnCard = (card: Card | undefined) =>
+	!!card?.tests?.some(isActiveTest);
 
-	return card.tests.find(
-		(test) =>
-			!test.hasManuallyEndedOnThisTrail &&
-			((test.expiryDate && test.expiryDate > Date.now()) ||
-				typeof test.expiryDate === 'undefined'),
-	);
-};
+export const findActiveOrDraftTest = (card: Card) =>
+	card.tests?.find((test) => isActiveTest(test) || isDraftTest(test));
 
 // we can extend this in future to 'getVariantField'
 export const getVariantHeadline = (
