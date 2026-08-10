@@ -129,7 +129,7 @@ object FaciaApi {
     Some(collectionJson)
       .filter(_.draft.isDefined)
       .map(updatePublicationDateForNew)
-      .map(updateTestDatesForNew)
+      .map(addTestDatesToTrails)
       .map(CollectionJsonFunctions.updatePreviouslyForPublish)
       .map(collectionJson =>
         collectionJson.copy(live = collectionJson.draft.get, draft = None)
@@ -163,8 +163,7 @@ object FaciaApi {
     collectionJson.copy(draft = Some(draftsWithNewDate))
   }
 
-  // per-trail helper: updates the tests inside a single Trail
-  private def updateTestDatesForTrail(trail: Trail): Trail = {
+  private def addTestDatesToTrail(trail: Trail): Trail = {
     val now = DateTime.now
     val updatedTests = trail.tests.map(_.map { test =>
       val startDate = test.startDate.orElse(Some(now.getMillis))
@@ -174,16 +173,14 @@ object FaciaApi {
     trail.copy(tests = updatedTests)
   }
 
-	def updateTestDatesForNew(
+	def addTestDatesToTrails(
       collectionJson: CollectionJson
   ): CollectionJson = {
-
     collectionJson.draft match {
       case None => collectionJson
       case Some(drafts) =>
-        val updated = drafts.map(updateTestDatesForTrail)
+        val updated = drafts.map(addTestDatesToTrail)
         collectionJson.copy(draft = Some(updated))
     }
-
   }
 }
