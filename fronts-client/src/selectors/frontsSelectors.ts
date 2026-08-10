@@ -111,7 +111,6 @@ const getFrontsWithCollection = (
 	parentCollectionOfCard: string | null,
 	fronts: FrontConfig[],
 ): string[] => {
-	// at the moment we are always returning early as we're getting null for the parentCollection - investigate
 	if (!parentCollectionOfCard) return [];
 
 	const frontsWithCollection = fronts.filter((front) =>
