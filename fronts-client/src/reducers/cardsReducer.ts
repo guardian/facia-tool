@@ -25,7 +25,6 @@ const cards = (state: State['cards'] = {}, action: Action) => {
 				[id]: {
 					...state[id],
 					meta: merge ? { ...(state[id].meta || {}), ...meta } : meta,
-					// let's revisit merge behaviour here to see if we should handle it
 					tests: updatedTests,
 				},
 			};
