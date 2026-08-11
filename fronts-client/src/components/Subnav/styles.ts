@@ -197,3 +197,94 @@ export const ErrorMessage = styled.p`
 	font-size: 13px;
 	margin: 0;
 `;
+
+/**
+ * Images
+ */
+
+export const ImageRow = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 12px 0;
+	border-top: 1px solid ${({ theme }) => theme.base.colors.borderColor};
+
+	&:first-of-type {
+		border-top: none;
+		padding-top: 0;
+	}
+`;
+
+export const ImageRowHeader = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+`;
+
+export const ImagePicker = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+`;
+
+export const ImageThumb = styled.div`
+	width: 100%;
+	max-width: 320px;
+	aspect-ratio: 5 / 3;
+	background-size: cover;
+	background-position: center;
+	background-repeat: no-repeat;
+	border: 1px solid ${({ theme }) => theme.base.colors.borderColor};
+	border-radius: 3px;
+`;
+
+export const ImageEmpty = styled.div<{ isDragging?: boolean }>`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+	width: 100%;
+	max-width: 320px;
+	aspect-ratio: 5 / 3;
+	padding: 12px;
+	font-size: 12px;
+	color: ${({ theme }) => theme.base.colors.textMuted};
+	border: 2px dashed
+		${({ theme, isDragging }) =>
+			isDragging
+				? theme.base.colors.brandColor
+				: theme.base.colors.borderColor};
+	border-radius: 3px;
+	background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
+`;
+
+export const ImagePickerActions = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 8px;
+`;
+
+/**
+ * Palette
+ */
+
+export const PaletteGrid = styled.div`
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 24px;
+`;
+
+export const PaletteColumn = styled.div`
+	display: flex;
+	flex-direction: column;
+`;
+
+export const PaletteColumnHeading = styled.h4`
+	margin: 0 0 8px;
+	font-size: 12px;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+	color: ${({ theme }) => theme.base.colors.textMuted};
+`;
