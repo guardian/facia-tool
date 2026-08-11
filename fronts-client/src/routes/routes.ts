@@ -49,11 +49,24 @@ const EditionsRoutes = {
 		editionsApi(`/editions/collections/${collectionId}`),
 };
 
+/**
+ * Custom subnavs
+ */
+
+export const subnavRoutes = {
+	base: '/subnavs',
+};
+
+const subnavSectionProps = {
+	path: subnavRoutes.base,
+};
+
 export {
 	matchFrontsEditPath,
 	frontsEditPathProps,
 	matchIssuePath,
 	issuePathProps,
 	frontsFeatureProps,
+	subnavSectionProps,
 	EditionsRoutes,
 };
