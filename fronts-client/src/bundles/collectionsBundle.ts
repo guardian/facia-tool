@@ -43,8 +43,6 @@ const getGroupIdsForCollection = (
  * and cards slices so the full tree is only traversed when one of them changes,
  * rather than on every `selectParentCollectionOfCard` call.
  *
- * A card can appear in more than one collection; we keep the first match to
- * preserve the previous selector's behaviour.
  */
 const selectCardToCollectionMap = createSelector(
 	(state: State) => state.collections.data,
