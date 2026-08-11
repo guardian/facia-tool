@@ -10,9 +10,9 @@ import scala.util.Try
 
 /** Pure, unit-testable transforms over a [[CustomSubnavConfig]].
   *
-  * The stored document (`{stage}/frontsapi/navigation/custom-subnav.json`) holds
-  * two parallel lists of subnavs:
-  *   - `live`  – what dotcom renders in production
+  * The stored document (`{stage}/frontsapi/navigation/custom-subnav.json`)
+  * holds two parallel lists of subnavs:
+  *   - `live` – what dotcom renders in production
   *   - `draft` – previewable, unpublished changes (an overlay on top of live)
   *
   * The lifecycle mirrors fronts/collections but operates per-subnav (matched by
@@ -22,7 +22,9 @@ import scala.util.Try
 object CustomSubnavConfigFunctions {
   val empty: CustomSubnavConfig = CustomSubnavConfig(live = Nil, draft = Nil)
 
-  /** Stamp the audit fields server-side so we never trust client-supplied values. */
+  /** Stamp the audit fields server-side so we never trust client-supplied
+    * values.
+    */
   def stamp(
       subnav: CustomSubnav,
       identity: User,
@@ -34,7 +36,9 @@ object CustomSubnavConfigFunctions {
       updatedEmail = identity.email
     )
 
-  /** Two subnavs are considered content-equal if they only differ by audit fields. */
+  /** Two subnavs are considered content-equal if they only differ by audit
+    * fields.
+    */
   private def contentEquals(a: CustomSubnav, b: CustomSubnav): Boolean =
     a.copy(
       lastUpdated = b.lastUpdated,
@@ -42,9 +46,9 @@ object CustomSubnavConfigFunctions {
       updatedEmail = b.updatedEmail
     ) == b
 
-  /** Upsert the subnav into the draft list (matched by id, preserving position).
-    * If the draft copy is content-identical to its live counterpart, the change
-    * is a no-op and the entry is dropped from draft instead.
+  /** Upsert the subnav into the draft list (matched by id, preserving
+    * position). If the draft copy is content-identical to its live counterpart,
+    * the change is a no-op and the entry is dropped from draft instead.
     */
   def upsertDraft(
       config: CustomSubnavConfig,
@@ -64,9 +68,9 @@ object CustomSubnavConfigFunctions {
     config.copy(draft = newDraft)
   }
 
-  /** Promote the draft subnav with the given id into live (replacing any existing
-    * live entry with the same id), and remove it from draft. No-op if the id is
-    * not present in draft.
+  /** Promote the draft subnav with the given id into live (replacing any
+    * existing live entry with the same id), and remove it from draft. No-op if
+    * the id is not present in draft.
     */
   def publish(config: CustomSubnavConfig, id: String): CustomSubnavConfig =
     config.draft.find(_.id == id) match {
@@ -85,10 +89,10 @@ object CustomSubnavConfigFunctions {
     config.copy(draft = config.draft.filterNot(_.id == id))
 
   /** Take a published subnav off production: move the live entry into draft and
-    * remove it from live, so it stops rendering but stays editable. Any existing
-    * draft edits for that id are overwritten by the live copy (the UI warns the
-    * editor that pending draft changes will be undone). No-op if the id is not
-    * currently live.
+    * remove it from live, so it stops rendering but stays editable. Any
+    * existing draft edits for that id are overwritten by the live copy (the UI
+    * warns the editor that pending draft changes will be undone). No-op if the
+    * id is not currently live.
     */
   def unpublish(config: CustomSubnavConfig, id: String): CustomSubnavConfig =
     config.live.find(_.id == id) match {
@@ -110,8 +114,8 @@ object CustomSubnavConfigFunctions {
     )
 }
 
-/** Reads and writes the custom subnav config directly from S3 (uncached) so that
-  * read-modify-write edits always see the latest persisted state.
+/** Reads and writes the custom subnav config directly from S3 (uncached) so
+  * that read-modify-write edits always see the latest persisted state.
   */
 class CustomSubnavApi(s3FrontsApi: S3FrontsApi) extends Logging {
 
