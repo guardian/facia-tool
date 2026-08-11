@@ -37,7 +37,7 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
 	hasUnpublishedChanges: boolean;
 	hasOpenForms: boolean;
 	liveAndDraftCards: Card[];
-	headlineABTestingIsEnabled: boolean;
+	headlineABTestingIsEnabled?: boolean;
 };
 
 const Container = styled.div<{

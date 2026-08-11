@@ -70,7 +70,7 @@ interface ArticleComponentProps {
 	groupIndex?: number;
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 	hasLiveAbTest?: boolean;
-	headlineABTestingIsEnabled: boolean;
+	headlineABTestingIsEnabled?: boolean;
 }
 
 interface ComponentProps extends ArticleComponentProps {

@@ -225,7 +225,7 @@ interface ArticleBodyProps {
 	};
 	abTestEnabled?: boolean;
 	hasLiveAbTest?: boolean;
-	headlineABTestingIsEnabled: boolean;
+	headlineABTestingIsEnabled?: boolean;
 }
 
 const articleBodyDefault = React.memo(
