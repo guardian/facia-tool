@@ -8,7 +8,7 @@ const isActiveTest = (test: Test) =>
 const isDraftTest = (test: Test) =>
 	!test.hasManuallyEndedOnThisTrail && typeof test.expiryDate === 'undefined';
 
-export const hasAbTestOnCard = (card: Card | undefined) =>
+export const hasActiveAbTestOnCard = (card: Card | undefined) =>
 	!!card?.tests?.some(isActiveTest);
 
 export const findActiveOrDraftTest = (card: Card) =>

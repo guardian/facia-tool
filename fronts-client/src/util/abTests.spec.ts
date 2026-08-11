@@ -1,5 +1,5 @@
 import { Card, Test } from '../types/Collection';
-import { hasAbTestOnCard, findActiveOrDraftTest } from './abTests';
+import { hasActiveAbTestOnCard, findActiveOrDraftTest } from './abTests';
 
 const makeCard = (tests?: Test[]): Card =>
 	({ uuid: 'card-1', id: 'id-1', meta: {}, tests }) as Card;
@@ -17,35 +17,35 @@ const FUTURE = Date.now() + 100_000;
 const PAST = Date.now() - 100_000;
 
 describe('abTests utils', () => {
-	describe('hasAbTestOnCard', () => {
+	describe('hasActiveAbTestOnCard', () => {
 		it('returns false when card is undefined', () => {
-			expect(hasAbTestOnCard(undefined)).toBe(false);
+			expect(hasActiveAbTestOnCard(undefined)).toBe(false);
 		});
 
 		it('returns false when card has no tests', () => {
-			expect(hasAbTestOnCard(makeCard())).toBe(false);
+			expect(hasActiveAbTestOnCard(makeCard())).toBe(false);
 		});
 
 		it('returns true for a running test with a future expiry date', () => {
 			const card = makeCard([makeTest({ expiryDate: FUTURE })]);
-			expect(hasAbTestOnCard(card)).toBe(true);
+			expect(hasActiveAbTestOnCard(card)).toBe(true);
 		});
 
 		it('returns false when the test has expired', () => {
 			const card = makeCard([makeTest({ expiryDate: PAST })]);
-			expect(hasAbTestOnCard(card)).toBe(false);
+			expect(hasActiveAbTestOnCard(card)).toBe(false);
 		});
 
 		it('returns false when the test has no expiry date', () => {
 			const card = makeCard([makeTest({ expiryDate: undefined })]);
-			expect(hasAbTestOnCard(card)).toBe(false);
+			expect(hasActiveAbTestOnCard(card)).toBe(false);
 		});
 
 		it('returns false when the test was manually ended on this trail', () => {
 			const card = makeCard([
 				makeTest({ expiryDate: FUTURE, hasManuallyEndedOnThisTrail: true }),
 			]);
-			expect(hasAbTestOnCard(card)).toBe(false);
+			expect(hasActiveAbTestOnCard(card)).toBe(false);
 		});
 	});
 
