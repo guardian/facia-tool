@@ -361,16 +361,6 @@ describe('CardForm transform functions', () => {
 		});
 	});
 	describe('Derive card tests from form values', () => {
-		const originalRandomUUID = crypto.randomUUID;
-		beforeAll(() => {
-			// jsdom does not implement crypto.randomUUID
-			crypto.randomUUID = jest
-				.fn()
-				.mockReturnValue('00000000-0000-0000-0000-000000000000');
-		});
-		afterAll(() => {
-			crypto.randomUUID = originalRandomUUID;
-		});
 		it('should set variant headlines from headlineA and headlineB when non-empty', () => {
 			const values = {
 				abTestEnabled: true,
