@@ -196,8 +196,9 @@ export const getCardTestFromFormValues = (
 	const existingCard = selectCard(state, id);
 	const maybeTest = findActiveOrDraftTest(existingCard);
 
-	// If there's no existing test and the toggle is off, there's nothing to save
-	if (!maybeTest && !abTestEnabled) {
+	const hasNoTestToSave = !maybeTest && !abTestEnabled;
+
+	if (hasNoTestToSave) {
 		return undefined;
 	}
 
