@@ -241,11 +241,17 @@ export const mayResetBoostLevel = ({
 }: UpdateCardParams) => {
 	if (to.type !== 'group' || persistTo !== 'collection') return;
 	if (from?.id === to.id) return;
+
 	const groupName = to.groupName ?? 'standard';
+	const newBoostLevel = minimumGroupBoostLevel(groupName);
+
+	/* Nothing to do if the card is already at the target boost level. */
+	if (card.meta?.boostLevel === newBoostLevel) return;
+
 	return updateCard(
 		card.uuid,
 		{
-			boostLevel: minimumGroupBoostLevel(groupName),
+			boostLevel: newBoostLevel,
 		},
 		{ merge: true },
 	);
