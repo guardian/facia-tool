@@ -1242,9 +1242,13 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 				props.cardId,
 				values,
 			);
-			const test = getCardTestFromFormValues(getState(), props.cardId, values);
+			const maybeTest = getCardTestFromFormValues(
+				getState(),
+				props.cardId,
+				values,
+			);
 
-			props.onSave(meta, test);
+			props.onSave(meta, maybeTest);
 		});
 	},
 })(FormComponent);

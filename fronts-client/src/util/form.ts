@@ -190,7 +190,7 @@ export const getCardTestFromFormValues = (
 	state: State,
 	id: string,
 	values: CardFormData,
-): Test => {
+): Test | undefined => {
 	const { headlineA, headlineB, abTestEnabled } = values;
 
 	const existingCard = selectCard(state, id);
@@ -199,7 +199,7 @@ export const getCardTestFromFormValues = (
 	// If there's no existing test and the toggle is off, there's nothing to save
 	if (!maybeTest && !abTestEnabled) {
 		return undefined;
-	};
+	}
 
 	if (maybeTest) {
 		const updatedVariantMeta = maybeTest.variantMeta.map((variant) => {
