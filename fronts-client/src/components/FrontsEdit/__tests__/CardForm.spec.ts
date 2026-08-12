@@ -443,5 +443,49 @@ describe('CardForm transform functions', () => {
 				{ id: 'B', meta: { headline: undefined } },
 			]);
 		});
+
+		it('should create a new test with a different UUID when the toggle is re-enabled after a test was manually ended', () => {
+			const existingTest = {
+				testUuid: 'old-test-uuid',
+				variantMeta: [
+					{ id: 'A' as const, meta: { headline: 'Old A' } },
+					{ id: 'B' as const, meta: { headline: 'Old B' } },
+				],
+				createdByName: 'Someone',
+				createdByEmail: 'someone@example.com',
+				hasManuallyEndedOnThisTrail: true,
+			};
+			const stateWithTest = {
+				...initialState,
+				cards: {
+					...initialState.cards,
+					exampleId: {
+						...initialState.cards.exampleId,
+						tests: [existingTest],
+					},
+				},
+			};
+			const values = {
+				abTestEnabled: true,
+				headlineA: 'Headline variant A',
+				headlineB: 'Headline variant B',
+			};
+			const state = createStateWithChangedFormFields(
+				stateWithTest,
+				'exampleId',
+				values,
+			);
+			const test = getCardTestFromFormValues(state, 'exampleId', {
+				...formValues,
+				...values,
+			});
+			expect(test.testUuid).toBeDefined();
+			expect(test.testUuid).not.toEqual('old-test-uuid');
+			expect(test.hasManuallyEndedOnThisTrail).toBe(false);
+			expect(test.variantMeta).toEqual([
+				{ id: 'A', meta: { headline: 'Headline variant A' } },
+				{ id: 'B', meta: { headline: 'Headline variant B' } },
+			]);
+		});
 	});
 });
