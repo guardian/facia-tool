@@ -11,11 +11,7 @@ import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
 import { findActiveOrDraftTest } from './abTests';
 import { selectFrontsWithCollection } from 'selectors/frontsSelectors';
-import {
-	selectFirstName,
-	selectLastName,
-	selectUserEmail,
-} from 'selectors/configSelectors';
+import { selectUserFullName, selectUserEmail } from 'selectors/configSelectors';
 
 export interface CardFormData {
 	headline: string;
@@ -230,7 +226,7 @@ export const getCardTestFromFormValues = (
 			variantMeta: updatedVariantMeta,
 			hasManuallyEndedOnThisTrail,
 			manuallyEndedOnThisTrailByName: hasManuallyEndedOnThisTrail
-				? compact([selectFirstName(state), selectLastName(state)]).join(' ')
+				? selectUserFullName(state)
 				: undefined,
 			manuallyEndedOnThisTrailByEmail: hasManuallyEndedOnThisTrail
 				? selectUserEmail(state) || ''
@@ -254,10 +250,7 @@ export const getCardTestFromFormValues = (
 				},
 			},
 		],
-		createdByName: compact([
-			selectFirstName(state),
-			selectLastName(state),
-		]).join(' '),
+		createdByName: selectUserFullName(state),
 		createdByEmail: selectUserEmail(state) || '',
 		//TODO: ensure that an expired test will not reach this point.
 		hasManuallyEndedOnThisTrail: !abTestEnabled,

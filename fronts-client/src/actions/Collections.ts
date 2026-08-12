@@ -12,11 +12,7 @@ import {
 	publishCollection as publishCollectionApi,
 	getCollection as getCollectionApi,
 } from 'services/faciaApi';
-import {
-	selectUserEmail,
-	selectFirstName,
-	selectLastName,
-} from 'selectors/configSelectors';
+import { selectUserEmail, selectUserFullName } from 'selectors/configSelectors';
 import {
 	createSelectGroupArticles,
 	createSelectAllCardsInCollections,
@@ -277,7 +273,7 @@ function updateCollection(
 					...collection,
 					displayName: collection.displayName && collection.displayName.trim(),
 					updatedEmail: selectUserEmail(getState()) || '',
-					updatedBy: `${selectFirstName(state)} ${selectLastName(state)}`,
+					updatedBy: selectUserFullName(state),
 					lastUpdated: Date.now(),
 				}),
 				recordUnpublishedChanges(collection.id, true),
