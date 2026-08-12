@@ -196,6 +196,11 @@ export const getCardTestFromFormValues = (
 	const existingCard = selectCard(state, id);
 	const maybeTest = findActiveOrDraftTest(existingCard);
 
+	// If there's no existing test and the toggle is off, there's nothing to save
+	if (!maybeTest && !abTestEnabled) {
+		return undefined;
+	};
+
 	if (maybeTest) {
 		const updatedVariantMeta = maybeTest.variantMeta.map((variant) => {
 			// TODO: Allow for additional variant ids (eg c, d, etc)
