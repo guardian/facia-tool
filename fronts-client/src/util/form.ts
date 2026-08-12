@@ -4,12 +4,15 @@ import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
-// import pageConfig from 'util/extractConfigFromPage';
-import { CardMeta, ImageData } from 'types/Collection';
+import { CardMeta, ImageData, Test, VariantId } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { Atom, CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
+import { findActiveOrDraftTest } from './abTests';
+import { selectFrontsWithCollection } from 'selectors/frontsSelectors';
+import { selectUserFullName, selectUserEmail } from 'selectors/configSelectors';
+import v4 from 'uuid/v4';
 
 export interface CardFormData {
 	headline: string;
@@ -186,6 +189,90 @@ export const getImageMetaFromValidationResponse = (image: ImageData) => ({
 	imageSrcOrigin: image.origin,
 });
 
+export const getCardTestFromFormValues = (
+	state: State,
+	id: string,
+	values: CardFormData,
+): Test | undefined => {
+	const { headlineA, headlineB, abTestEnabled } = values;
+
+	const existingCard = selectCard(state, id);
+	const maybeTest = findActiveOrDraftTest(existingCard);
+
+	const hasNoTestToSave = !maybeTest && !abTestEnabled;
+
+	if (hasNoTestToSave) {
+		return undefined;
+	}
+
+	const headlineByVariantId: Record<VariantId, string> = {
+		A: headlineA,
+		B: headlineB,
+	};
+
+	if (maybeTest) {
+		const updatedVariantMeta = maybeTest.variantMeta.map((variant) => {
+			const headlineVariant = headlineByVariantId[variant.id];
+			return {
+				...variant,
+				meta: {
+					...variant.meta,
+					headline: getStringField(headlineVariant),
+				},
+			};
+		});
+
+		// When the "Headline test" toggle is switched off, end the test on this
+		// trail and record who ended it
+		const hasManuallyEndedOnThisTrail = !abTestEnabled;
+
+		return {
+			...maybeTest,
+			variantMeta: updatedVariantMeta,
+			hasManuallyEndedOnThisTrail,
+			manuallyEndedOnThisTrailByName: hasManuallyEndedOnThisTrail
+				? selectUserFullName(state)
+				: undefined,
+			manuallyEndedOnThisTrailByEmail: hasManuallyEndedOnThisTrail
+				? selectUserEmail(state) || ''
+				: undefined,
+		};
+	}
+
+	return {
+		testUuid: v4(),
+		variantMeta: [
+			{
+				id: 'A',
+				meta: {
+					headline: getStringField(headlineByVariantId.A),
+				},
+			},
+			{
+				id: 'B',
+				meta: {
+					headline: getStringField(headlineByVariantId.B),
+				},
+			},
+		],
+		createdByName: selectUserFullName(state),
+		createdByEmail: selectUserEmail(state) || '',
+		//TODO: ensure that an expired test will not reach this point.
+		hasManuallyEndedOnThisTrail: !abTestEnabled,
+		frontsThisTestCanRunOn: selectFrontsWithCollection(
+			state,
+			existingCard.uuid,
+		),
+	};
+};
+
+const getStringField = (field: string) => {
+	if (field.length === 0) {
+		return undefined;
+	}
+	return field;
+};
+
 export const getCardMetaFromFormValues = (
 	state: State,
 	id: string,
@@ -200,19 +287,11 @@ export const getCardMetaFromFormValues = (
 			height: intToStr(image.height),
 		}),
 	);
-	const getStringField = (field: string) => {
-		if (field.length === 0) {
-			return undefined;
-		}
-		return field;
-	};
 
 	const completeMeta = omit(
 		{
 			...values,
 			headline: getStringField(values.headline),
-			headlineA: getStringField(values.headlineA),
-			headlineB: getStringField(values.headlineB),
 			trailText: getStringField(values.trailText),
 			byline: getStringField(values.byline),
 			sportScore: getStringField(values.sportScore),
@@ -225,6 +304,9 @@ export const getCardMetaFromFormValues = (
 		},
 		'primaryImage',
 		'cutoutImage',
+		'headlineA',
+		'headlineB',
+		'abTestEnabled',
 	);
 
 	// We only return dirtied values.

@@ -28,6 +28,7 @@ import { hasMainVideo } from 'util/externalArticle';
 import { selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from './alsoOnSelectors';
 import { selectors as frontsConfigSelectors } from '../bundles/frontsConfigBundle';
 import { FrontConfigMap } from 'types/FaciaApi';
+import { findActiveOrDraftTest, getVariantHeadline } from 'util/abTests';
 
 const selectCollectionMap: (state: State) => CollectionMap =
 	collectionSelectors.selectAll;
@@ -145,6 +146,11 @@ const createSelectArticleFromCard = () =>
 				card.meta.headline ||
 				(externalArticle ? externalArticle.fields.headline : undefined);
 
+			const activeOrDraftTest = findActiveOrDraftTest(card);
+
+			const headlineFieldVariantA = getVariantHeadline(activeOrDraftTest, 'A');
+			const headlineFieldVariantB = getVariantHeadline(activeOrDraftTest, 'B');
+
 			return {
 				...omit(externalArticle || {}, 'fields', 'frontsMeta'),
 				...(externalArticle ? externalArticle.fields : {}),
@@ -152,7 +158,12 @@ const createSelectArticleFromCard = () =>
 				...articleMeta,
 				headline: headlineField,
 				// if headlineA is not present, populate it with the headline field
-				headlineA: card.meta.headlineA || headlineField,
+				// TODO: this is currently broken because the test doesn't exist when you first hit the toggle
+				headlineA: activeOrDraftTest
+					? headlineFieldVariantA || headlineField
+					: undefined,
+				headlineB: activeOrDraftTest ? headlineFieldVariantB : undefined,
+				abTestEnabled: !!activeOrDraftTest,
 				trailText:
 					card.meta.trailText ||
 					(externalArticle ? externalArticle.fields.trailText : undefined),

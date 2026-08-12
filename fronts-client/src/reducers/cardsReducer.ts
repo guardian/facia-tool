@@ -2,7 +2,7 @@ import { insertAndDedupeSiblings } from '../util/insertAndDedupeSiblings';
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
 import {
-	UPDATE_CARD_META,
+	UPDATE_CARD,
 	CARDS_RECEIVED,
 	CLEAR_CARDS,
 	REMOVE_SUPPORTING_CARD,
@@ -13,15 +13,19 @@ import { cloneActiveImageMeta } from 'util/card';
 
 const cards = (state: State['cards'] = {}, action: Action) => {
 	switch (action.type) {
-		case UPDATE_CARD_META: {
-			const { id } = action.payload;
+		case UPDATE_CARD: {
+			const { id, meta, merge, test } = action.payload;
+			const unchangedTests =
+				state[id].tests?.filter(
+					(existingTest) => existingTest.testUuid !== test?.testUuid,
+				) || [];
+			const updatedTests = test ? [...unchangedTests, test] : state[id].tests;
 			return {
 				...state,
 				[id]: {
 					...state[id],
-					meta: action.payload.merge
-						? { ...(state[id].meta || {}), ...action.payload.meta }
-						: action.payload.meta,
+					meta: merge ? { ...(state[id].meta || {}), ...meta } : meta,
+					tests: updatedTests,
 				},
 			};
 		}

@@ -159,26 +159,97 @@ const state: any = {
 		},
 	},
 	cards: {
-		af1: {
+		af1WithNoRunningTest: {
 			uuid: 'af1',
 			id: 'ea1',
 			frontPublicationDate: 1,
 			publishedBy: 'A. N. Author',
 			meta: {},
 		},
-		af1WithOverrides: {
+		af1WithOverridesAndNoRunningTest: {
 			uuid: 'af1',
 			id: 'ea1',
 			frontPublicationDate: 1,
 			publishedBy: 'A. N. Author',
 			meta: {
 				headline: 'card-headline',
-				headlineA: 'card-headline-a',
 				trailText: 'card-trailText',
 				byline: 'card-byline',
 				customKicker: 'card-kicker',
 				showKickerCustom: true,
 			},
+		},
+		af1WithOverridesAndTestOnFirstDraft: {
+			uuid: 'af1',
+			id: 'ea1',
+			frontPublicationDate: 1,
+			publishedBy: 'A. N. Author',
+			meta: {
+				headline: 'card-headline',
+				trailText: 'card-trailText',
+				byline: 'card-byline',
+				customKicker: 'card-kicker',
+				showKickerCustom: true,
+			},
+			tests: [
+				{
+					testUuid: 'testUuid1',
+					variantMeta: [
+						{
+							id: 'A',
+							meta: {
+								headline: undefined,
+							},
+						},
+						{
+							id: 'B',
+							meta: {
+								headline: undefined,
+							},
+						},
+					],
+					createdByName: 'Jane Doe',
+					createdByEmail: 'jane.doe@guardian.co.uk',
+					frontsThisTestCanRunOn: ['uk'],
+					hasManuallyEndedOnThisTrail: false,
+				},
+			],
+		},
+		af1WithOverridesAndRunningTest: {
+			uuid: 'af1',
+			id: 'ea1',
+			frontPublicationDate: 1,
+			publishedBy: 'A. N. Author',
+			meta: {
+				headline: 'card-headline',
+				trailText: 'card-trailText',
+				byline: 'card-byline',
+				customKicker: 'card-kicker',
+				showKickerCustom: true,
+			},
+			tests: [
+				{
+					testUuid: 'testUuid1',
+					variantMeta: [
+						{
+							id: 'A',
+							meta: {
+								headline: 'card-headline-a',
+							},
+						},
+						{
+							id: 'B',
+							meta: {
+								headline: 'card-headline-b',
+							},
+						},
+					],
+					createdByName: 'Jane Doe',
+					createdByEmail: 'jane.doe@guardian.co.uk',
+					frontsThisTestCanRunOn: ['uk'],
+					hasManuallyEndedOnThisTrail: false,
+				},
+			],
 		},
 		afWithInvalidReference: {
 			uuid: 'afWithInvalidReference',
@@ -256,9 +327,9 @@ describe('Shared selectors', () => {
 
 	describe('externalArticleFromCardSelector', () => {
 		it('should create a selector that returns an external article referenced by the given card', () => {
-			expect(selectExternalArticleFromCard(state, 'af1')).toEqual(
-				state.externalArticles.data.ea1,
-			);
+			expect(
+				selectExternalArticleFromCard(state, 'af1WithNoRunningTest'),
+			).toEqual(state.externalArticles.data.ea1);
 			expect(selectExternalArticleFromCard(state, 'invalid')).toEqual(
 				undefined,
 			);
@@ -268,14 +339,15 @@ describe('Shared selectors', () => {
 	describe('createArticleFromCardSelector', () => {
 		it('should create a selector that returns an article (externalArticle + card) referenced by the given card', () => {
 			const selector = createSelectArticleFromCard();
-			expect(selector(state, 'af1')).toMatchObject({
+			expect(selector(state, 'af1WithNoRunningTest')).toMatchObject({
 				id: 'ea1',
 				pillarName: 'external-pillar',
 				frontPublicationDate: 1,
 				publishedBy: 'A. N. Author',
 				uuid: 'af1',
 				headline: 'external-headline',
-				headlineA: 'external-headline',
+				headlineA: undefined,
+				headlineB: undefined,
 				thumbnail: undefined,
 				trailText: 'external-trailText',
 				byline: 'external-byline',
@@ -283,7 +355,31 @@ describe('Shared selectors', () => {
 				firstPublicationDate: '2018-10-19T10:30:39Z',
 			});
 
-			expect(selector(state, 'af1WithOverrides')).toMatchObject({
+			expect(selector(state, 'af1WithOverridesAndNoRunningTest')).toMatchObject(
+				{
+					id: 'ea1',
+					customKicker: 'card-kicker',
+					pillarName: 'external-pillar',
+					frontPublicationDate: 1,
+					publishedBy: 'A. N. Author',
+					uuid: 'af1',
+					headline: 'card-headline',
+					headlineA: undefined,
+					headlineB: undefined,
+					thumbnail: undefined,
+					trailText: 'card-trailText',
+					kicker: 'card-kicker',
+					byline: 'card-byline',
+					isLive: true,
+					firstPublicationDate: '2018-10-19T10:30:39Z',
+					pillarId: undefined,
+					showKickerCustom: true,
+				},
+			);
+
+			expect(
+				selector(state, 'af1WithOverridesAndTestOnFirstDraft'),
+			).toMatchObject({
 				id: 'ea1',
 				customKicker: 'card-kicker',
 				pillarName: 'external-pillar',
@@ -291,7 +387,8 @@ describe('Shared selectors', () => {
 				publishedBy: 'A. N. Author',
 				uuid: 'af1',
 				headline: 'card-headline',
-				headlineA: 'card-headline-a',
+				headlineA: 'card-headline',
+				headlineB: undefined,
 				thumbnail: undefined,
 				trailText: 'card-trailText',
 				kicker: 'card-kicker',
@@ -301,6 +398,27 @@ describe('Shared selectors', () => {
 				pillarId: undefined,
 				showKickerCustom: true,
 			});
+
+			expect(selector(state, 'af1WithOverridesAndRunningTest')).toMatchObject({
+				id: 'ea1',
+				customKicker: 'card-kicker',
+				pillarName: 'external-pillar',
+				frontPublicationDate: 1,
+				publishedBy: 'A. N. Author',
+				uuid: 'af1',
+				headline: 'card-headline',
+				headlineA: 'card-headline-a',
+				headlineB: 'card-headline-b',
+				thumbnail: undefined,
+				trailText: 'card-trailText',
+				kicker: 'card-kicker',
+				byline: 'card-byline',
+				isLive: true,
+				firstPublicationDate: '2018-10-19T10:30:39Z',
+				pillarId: undefined,
+				showKickerCustom: true,
+			});
+
 			expect(selector(state, 'invalid')).toEqual(undefined);
 		});
 		it('should set isLive property to false if article is not live', () => {
@@ -322,7 +440,9 @@ describe('Shared selectors', () => {
 				pillarName: 'external-pillar',
 				uuid: 'af4',
 				headline: 'external-headline',
-				headlineA: 'external-headline',
+				headlineA: undefined,
+				headlineB: undefined,
+				abTestEnabled: false,
 				thumbnail: undefined,
 				trailText: 'external-trailText',
 				byline: 'external-byline',

@@ -70,67 +70,62 @@ type NestedCard = NestedCardRootFields & {
 	};
 };
 
-type CardRootMeta = ChefCardMeta &
-	FeastCollectionCardMeta & {
-		group?: string;
-		headline?: string;
-		/** Whether this card has A/B headline testing enabled */
-		abTestEnabled?: boolean;
-		/** Text for headline variant A, shown when abTestEnabled is true */
-		headlineA?: string;
-		/** Text for headline variant B, shown when abTestEnabled is true */
-		headlineB?: string;
-		trailText?: string;
-		byline?: string;
-		sportScore?: string;
-		customKicker?: string;
-		href?: string;
-		imageSrc?: string;
-		imageSrcThumb?: string;
-		imageSrcWidth?: string;
-		imageSrcHeight?: string;
-		imageSrcOrigin?: string;
-		imageCutoutSrc?: string;
-		imageCutoutSrcWidth?: string;
-		imageCutoutSrcHeight?: string;
-		imageCutoutSrcOrigin?: string;
-		isBreaking?: boolean;
-		/** For dynamic collections only */
-		isBoosted?: boolean;
-		/** For flexible collections only */
-		boostLevel?: BoostLevels;
-		isImmersive?: boolean;
-		showLivePlayable?: boolean;
-		showMainVideo?: boolean;
-		showLargeHeadline?: boolean;
-		showQuotedHeadline?: boolean;
-		showByline?: boolean;
-		imageCutoutReplace?: boolean;
-		imageReplace?: boolean;
-		videoReplace?: boolean;
-		replaceVideoUri?: string;
-		imageHide?: boolean;
-		showKickerTag?: boolean;
-		showKickerSection?: boolean;
-		showKickerCustom?: boolean;
-		snapUri?: string;
-		snapType?: string;
-		snapCss?: string;
-		atomId?: string;
-		imageSlideshowReplace?: boolean;
-		replacementVideoAtom?: Atom | string;
-		slideshow?: Array<{
-			src?: string;
-			thumb?: string;
-			width?: string;
-			height?: string;
-			origin?: string;
-		}>;
-		overrideArticleMainMedia?: boolean;
-		coverCardImageReplace?: boolean;
-		coverCardMobileImage?: ImageData;
-		coverCardTabletImage?: ImageData;
-	};
+type RegularCardMeta = {
+	group?: string;
+	headline?: string;
+	trailText?: string;
+	byline?: string;
+	sportScore?: string;
+	customKicker?: string;
+	href?: string;
+	imageSrc?: string;
+	imageSrcThumb?: string;
+	imageSrcWidth?: string;
+	imageSrcHeight?: string;
+	imageSrcOrigin?: string;
+	imageCutoutSrc?: string;
+	imageCutoutSrcWidth?: string;
+	imageCutoutSrcHeight?: string;
+	imageCutoutSrcOrigin?: string;
+	isBreaking?: boolean;
+	/** For dynamic collections only */
+	isBoosted?: boolean;
+	/** For flexible collections only */
+	boostLevel?: BoostLevels;
+	isImmersive?: boolean;
+	showLivePlayable?: boolean;
+	showMainVideo?: boolean;
+	showLargeHeadline?: boolean;
+	showQuotedHeadline?: boolean;
+	showByline?: boolean;
+	imageCutoutReplace?: boolean;
+	imageReplace?: boolean;
+	videoReplace?: boolean;
+	replaceVideoUri?: string;
+	imageHide?: boolean;
+	showKickerTag?: boolean;
+	showKickerSection?: boolean;
+	showKickerCustom?: boolean;
+	snapUri?: string;
+	snapType?: string;
+	snapCss?: string;
+	atomId?: string;
+	imageSlideshowReplace?: boolean;
+	replacementVideoAtom?: Atom | string;
+	slideshow?: Array<{
+		src?: string;
+		thumb?: string;
+		width?: string;
+		height?: string;
+		origin?: string;
+	}>;
+	overrideArticleMainMedia?: boolean;
+	coverCardImageReplace?: boolean;
+	coverCardMobileImage?: ImageData;
+	coverCardTabletImage?: ImageData;
+};
+
+type CardRootMeta = ChefCardMeta & FeastCollectionCardMeta & RegularCardMeta;
 
 type CardRootFields = NestedCardRootFields & {
 	uuid: string;
@@ -173,8 +168,29 @@ export interface FeastCollectionCardMeta {
 	};
 }
 
+export type VariantId = 'A' | 'B';
+
+export type VariantMeta = {
+	id: VariantId;
+	meta: RegularCardMeta;
+};
+
+export type Test = {
+	testUuid: string;
+	variantMeta: VariantMeta[];
+	createdByName: string;
+	createdByEmail: string;
+	startDate?: number;
+	expiryDate?: number;
+	frontsThisTestCanRunOn?: string[];
+	hasManuallyEndedOnThisTrail: boolean;
+	manuallyEndedOnThisTrailByName?: string;
+	manuallyEndedOnThisTrailByEmail?: string;
+};
+
 interface Card extends CardRootFields {
 	meta: CardMeta;
+	tests?: Test[];
 }
 
 interface CardMetaDenormalised extends CardRootMeta {

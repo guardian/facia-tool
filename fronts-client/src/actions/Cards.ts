@@ -10,7 +10,7 @@ import {
 	insertSupportingCard,
 	removeGroupCard,
 	removeSupportingCard,
-	updateCardMeta,
+	updateCard,
 	cardsReceived,
 	maybeAddFrontPublicationDate,
 	copyCardImageMeta,
@@ -201,8 +201,8 @@ const getRemoveActionCreatorFromType = (
 		: actionCreator;
 };
 
-const updateCardMetaWithPersist = (persistTo: PersistTo) =>
-	addPersistMetaToAction(updateCardMeta, {
+const updateCardWithPersist = (persistTo: PersistTo) =>
+	addPersistMetaToAction(updateCard, {
 		persistTo,
 	});
 
@@ -219,7 +219,7 @@ const minimumGroupBoostLevel = (groupName: string) => {
 	}
 };
 
-export type UpdateCardMetaParams = {
+export type UpdateCardParams = {
 	from: PosSpec | null;
 	to: PosSpec;
 	card: Card;
@@ -238,11 +238,11 @@ export const mayResetBoostLevel = ({
 	card,
 	persistTo,
 	state,
-}: UpdateCardMetaParams) => {
+}: UpdateCardParams) => {
 	if (to.type !== 'group' || persistTo !== 'collection') return;
 	if (from?.id === to.id) return;
 	const groupName = to.groupName ?? 'standard';
-	return updateCardMeta(
+	return updateCard(
 		card.uuid,
 		{
 			boostLevel: minimumGroupBoostLevel(groupName),
@@ -262,7 +262,7 @@ export const mayResetImageReplace = ({
 	card,
 	persistTo,
 	state,
-}: UpdateCardMetaParams) => {
+}: UpdateCardParams) => {
 	if (
 		to.type === 'group' &&
 		persistTo === 'collection' &&
@@ -283,7 +283,7 @@ export const mayResetImageReplace = ({
 
 		if (replacementImageIsPortrait && !movingToPortraitCollection) {
 			// disable replacement image
-			return updateCardMeta(
+			return updateCard(
 				card.uuid,
 				{
 					imageReplace: false,
@@ -300,7 +300,7 @@ export const mayResetImmersive = ({
 	card,
 	persistTo,
 	state,
-}: UpdateCardMetaParams) => {
+}: UpdateCardParams) => {
 	if (
 		to.type === 'group' &&
 		persistTo === 'collection' &&
@@ -316,7 +316,7 @@ export const mayResetImmersive = ({
 
 		if (!toCollectionSupportsImmersive) {
 			// turn off immersive
-			return updateCardMeta(
+			return updateCard(
 				card.uuid,
 				{
 					isImmersive: false,
@@ -337,7 +337,7 @@ export const mayResetVideoReplace = ({
 	card,
 	persistTo,
 	state,
-}: UpdateCardMetaParams) => {
+}: UpdateCardParams) => {
 	if (
 		to.type === 'group' &&
 		persistTo === 'collection' &&
@@ -365,7 +365,7 @@ export const mayResetVideoReplace = ({
 		// if we found some dimensions and the video doesn't match the target container...
 		if (dimensions && replacementVideoIsPortrait !== toCollectionIsPortrait) {
 			// disable replacement video
-			return updateCardMeta(
+			return updateCard(
 				card.uuid,
 				{
 					videoReplace: false,
@@ -515,7 +515,7 @@ const moveCard = (
 					dispatch(cardsReceived([parent, ...supporting]));
 				}
 
-				const actionParams: UpdateCardMetaParams = {
+				const actionParams: UpdateCardParams = {
 					from,
 					to,
 					card: parent,
@@ -566,7 +566,7 @@ const addCardToClipboard = (uuid: string) =>
 
 const addImageToCard =
 	(persistTo: PersistTo) => (uuid: string, imageData: ValidationResponse) =>
-		updateCardMetaWithPersist(persistTo)(
+		updateCardWithPersist(persistTo)(
 			uuid,
 			{
 				...getImageMetaFromValidationResponse(imageData),
@@ -607,7 +607,7 @@ export const createArticleEntitiesFromDrop = (
 export {
 	insertCardWithCreate,
 	moveCard,
-	updateCardMetaWithPersist,
+	updateCardWithPersist,
 	removeCard,
 	addImageToCard,
 	copyCardImageMetaWithPersist,

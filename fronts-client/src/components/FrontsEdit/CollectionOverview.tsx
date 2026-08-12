@@ -20,6 +20,8 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
 import { css } from 'styled-components';
 import { ConicalFlaskIcon } from 'components/icons/Icons';
+import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
+import { hasActiveAbTestOnCard } from '../../util/abTests';
 
 interface FrontCollectionOverviewContainerProps {
 	frontId: string;
@@ -35,6 +37,7 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
 	hasUnpublishedChanges: boolean;
 	hasOpenForms: boolean;
 	liveAndDraftCards: Card[];
+	headlineABTestingIsEnabled?: boolean;
 };
 
 const Container = styled.div<{
@@ -137,6 +140,7 @@ const CollectionOverview = ({
 	isSelected,
 	hasOpenForms,
 	liveAndDraftCards,
+	headlineABTestingIsEnabled,
 }: FrontCollectionOverviewProps) =>
 	collection ? (
 		<Container
@@ -194,7 +198,9 @@ const CollectionOverview = ({
 							</StatusWarning>
 						</EditModeVisibility>
 					) : null)}
-				{liveAndDraftCards.some((card) => card.meta.abTestEnabled) && (
+				{liveAndDraftCards.some(
+					(card) => hasActiveAbTestOnCard(card) && headlineABTestingIsEnabled,
+				) && (
 					<EditModeVisibility visibleMode="fronts">
 						<TestIndicator priority="primary" size="s" title="Active tests">
 							<ConicalFlaskIcon size={'xxs'} fill={'white'} />
@@ -237,6 +243,10 @@ const mapStateToProps = () => {
 				collectionId,
 			) !== -1,
 		liveAndDraftCards: selectLiveAndDraftCards(state, collectionId),
+		headlineABTestingIsEnabled: selectFeatureValue(
+			state,
+			'headline-ab-testing',
+		),
 	});
 };
 

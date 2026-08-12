@@ -26,12 +26,12 @@ class FaciaApiTest extends FreeSpec with Matchers {
     }
     "existing article should have the old date" in {
       newCollectionJson.live.collect {
-        case Trail("existingId", 0, Some(""), _) => true
+        case Trail("existingId", 0, Some(""), _, _) => true
       } should have(Symbol("length")(1))
     }
     "new article should have an updated timestamp" in {
       newCollectionJson.live.collect {
-        case Trail("newId", t, Some(""), _) if t != 0 => true
+        case Trail("newId", t, Some(""), _, _) if t != 0 => true
       } should have(Symbol("length")(1))
     }
 
@@ -56,7 +56,7 @@ class FaciaApiTest extends FreeSpec with Matchers {
     }
     "existing article should have the old date" in {
       newCollectionJson.live.collect {
-        case Trail("existingId", 0, Some(""), _) => true
+        case Trail("existingId", 0, Some(""), _, _) => true
       } should have(Symbol("length")(1))
     }
 
@@ -64,8 +64,8 @@ class FaciaApiTest extends FreeSpec with Matchers {
 
   private def scenarioOneLiveAnotherDraft: (User, CollectionJson) = {
     val identity = User("John", "Duffell", "email@email.com", None)
-    val live = List(Trail("existingId", 0, Some(""), None))
-    val draft = Trail("newId", 0, Some(""), None) :: live
+    val live = List(Trail("existingId", 0, Some(""), None, None))
+    val draft = Trail("newId", 0, Some(""), None, None) :: live
     val collectionJson = CollectionJson(
       live,
       Some(draft),

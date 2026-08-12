@@ -18,7 +18,13 @@ import {
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
 import { emptyObject } from 'util/selectorUtils';
-import { CardMeta, ArticleTag, CardSizes, ImageData } from 'types/Collection';
+import {
+	CardMeta,
+	ArticleTag,
+	CardSizes,
+	ImageData,
+	Test,
+} from 'types/Collection';
 import InputText from 'components/inputs/InputText';
 import InputTextArea from 'components/inputs/InputTextArea';
 import InputCheckboxToggleInline from 'components/inputs/InputCheckboxToggleInline';
@@ -37,6 +43,7 @@ import {
 	getCapiValuesForArticleFields,
 	shouldRenderField,
 	maxSlideshowImages,
+	getCardTestFromFormValues,
 } from 'util/form';
 import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
@@ -552,6 +559,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			pristine,
 			showByline,
 			abTestEnabled,
+			headline,
 			editableFields = [],
 			showKickerTag,
 			showKickerSection,
@@ -602,6 +610,16 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			['showKickerTag', 'showKickerSection'].forEach((field) =>
 				change(field, false),
 			);
+		};
+
+		const handleAbTestToggle: EventWithDataHandler<React.ChangeEvent<any>> = (
+			_event: unknown,
+			abTestEnabled?: boolean,
+		) => {
+			// set variant A with the card's current headline when the test is enabled
+			if (abTestEnabled) {
+				change('headlineA', headline);
+			}
 		};
 
 		const renderKickerSuggestion = (
@@ -708,6 +726,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								cardId={this.props.cardId}
 								editableFields={editableFields}
 								snapType={this.props.snapType}
+								onAbTestToggle={handleAbTestToggle}
 							/>
 						)}
 						<CheckboxFieldsContainer
@@ -1235,7 +1254,13 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 				props.cardId,
 				values,
 			);
-			props.onSave(meta);
+			const maybeTest = getCardTestFromFormValues(
+				getState(),
+				props.cardId,
+				values,
+			);
+
+			props.onSave(meta, maybeTest);
 		});
 	},
 })(FormComponent);
@@ -1254,6 +1279,7 @@ interface ContainerProps {
 	pickedKicker: string | undefined;
 	showByline: boolean;
 	abTestEnabled: boolean;
+	headline: string;
 	editableFields?: string[];
 	showKickerTag: boolean;
 	showKickerSection: boolean;
@@ -1276,7 +1302,7 @@ interface InterfaceProps {
 	cardId: string;
 	isSupporting?: boolean;
 	onCancel: () => void;
-	onSave: (meta: CardMeta) => void;
+	onSave: (meta: CardMeta, test?: Test) => void;
 	frontId: string;
 	size?: CardSizes;
 	groupSizeId?: number;
@@ -1335,6 +1361,7 @@ const createMapStateToProps = () => {
 			replaceVideoUri: valueSelector(state, 'replaceVideoUri'),
 			showByline: valueSelector(state, 'showByline'),
 			abTestEnabled: valueSelector(state, 'abTestEnabled'),
+			headline: valueSelector(state, 'headline'),
 			showKickerTag: valueSelector(state, 'showKickerTag'),
 			showKickerSection: valueSelector(state, 'showKickerSection'),
 			isBreaking: valueSelector(state, 'isBreaking'),

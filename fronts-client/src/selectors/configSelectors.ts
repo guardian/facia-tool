@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect';
+import compact from 'lodash/compact';
 import type { State } from 'types/State';
 import { selectEditMode } from './pathSelectors';
 
@@ -15,6 +16,12 @@ const selectFirstName = createSelector(
 const selectLastName = createSelector(
 	selectConfig,
 	(config) => config && config.lastName,
+);
+
+const selectUserFullName = createSelector(
+	selectFirstName,
+	selectLastName,
+	(firstName, lastName) => compact([firstName, lastName]).join(' '),
 );
 
 const selectCapiLiveURL = createSelector(
@@ -69,6 +76,7 @@ export {
 	selectUserEmail,
 	selectFirstName,
 	selectLastName,
+	selectUserFullName,
 	selectCollectionCap,
 	selectGridUrl,
 	selectVideoBaseUrl,

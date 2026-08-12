@@ -1,6 +1,6 @@
 package tools
 
-import com.gu.facia.client.models.{CollectionJson, ConfigJson}
+import com.gu.facia.client.models.{CollectionJson, ConfigJson, Trail}
 import com.gu.pandomainauth.model.User
 import frontsapi.model.CollectionJsonFunctions
 import org.joda.time.DateTime
@@ -129,6 +129,7 @@ object FaciaApi {
     Some(collectionJson)
       .filter(_.draft.isDefined)
       .map(updatePublicationDateForNew)
+      .map(addTestDatesToTrails)
       .map(CollectionJsonFunctions.updatePreviouslyForPublish)
       .map(collectionJson =>
         collectionJson.copy(live = collectionJson.draft.get, draft = None)
@@ -162,4 +163,24 @@ object FaciaApi {
     collectionJson.copy(draft = Some(draftsWithNewDate))
   }
 
+  private def addTestDatesToTrail(trail: Trail, now: DateTime): Trail = {
+    val updatedTests = trail.tests.map(_.map { test =>
+      val startDate = test.startDate.orElse(Some(now.getMillis))
+      val expiryDate = test.expiryDate.orElse(Some(now.plusDays(1).getMillis))
+      test.copy(startDate = startDate, expiryDate = expiryDate)
+    })
+    trail.copy(tests = updatedTests)
+  }
+
+  def addTestDatesToTrails(
+      collectionJson: CollectionJson
+  ): CollectionJson = {
+    collectionJson.draft match {
+      case None => collectionJson
+      case Some(drafts) =>
+        val now = DateTime.now
+        val updated = drafts.map(draft => addTestDatesToTrail(draft, now))
+        collectionJson.copy(draft = Some(updated))
+    }
+  }
 }

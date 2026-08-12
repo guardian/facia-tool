@@ -1,5 +1,6 @@
 import React from 'react';
 import { Field } from 'redux-form';
+import type { EventWithDataHandler } from 'redux-form';
 import { RichTextInput } from './RichTextInput';
 import InputTextArea from './InputTextArea';
 import InputCheckboxToggleInline from './InputCheckboxToggleInline';
@@ -13,6 +14,7 @@ interface HeadlineInputProps {
 	cardId: string;
 	editableFields: string[];
 	snapType: string | undefined;
+	onAbTestToggle?: EventWithDataHandler<React.ChangeEvent<any>>;
 }
 
 const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
@@ -73,6 +75,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						data-testid="edit-form-ab-test-toggle"
 						useABTestStyling={true}
 						activeABTest={props.abTestEnabled}
+						onChange={props.onAbTestToggle}
 					/>
 				</ABTestToggleContainer>
 			)}
