@@ -12,6 +12,7 @@ import { selectCard } from 'selectors/shared';
 import { findActiveOrDraftTest } from './abTests';
 import { selectFrontsWithCollection } from 'selectors/frontsSelectors';
 import { selectUserFullName, selectUserEmail } from 'selectors/configSelectors';
+import v4 from 'uuid/v4';
 
 export interface CardFormData {
 	headline: string;
@@ -235,7 +236,7 @@ export const getCardTestFromFormValues = (
 	}
 
 	return {
-		testUuid: crypto.randomUUID(),
+		testUuid: v4(),
 		variantMeta: [
 			{
 				id: 'A',
