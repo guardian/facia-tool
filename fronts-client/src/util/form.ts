@@ -4,7 +4,7 @@ import compact from 'lodash/compact';
 import clamp from 'lodash/clamp';
 import pickBy from 'lodash/pickBy';
 import { isDirty } from 'redux-form';
-import { CardMeta, ImageData, Test } from 'types/Collection';
+import { CardMeta, ImageData, Test, VariantId } from 'types/Collection';
 import { DerivedArticle } from 'types/Article';
 import { Atom, CapiArticle } from 'types/Capi';
 import type { State } from 'types/State';
@@ -205,10 +205,14 @@ export const getCardTestFromFormValues = (
 		return undefined;
 	}
 
+	const headlineByVariantId: Record<VariantId, string> = {
+		A: headlineA,
+		B: headlineB,
+	};
+
 	if (maybeTest) {
 		const updatedVariantMeta = maybeTest.variantMeta.map((variant) => {
-			// TODO: Allow for additional variant ids (eg c, d, etc)
-			const headlineVariant = variant.id === 'A' ? headlineA : headlineB;
+			const headlineVariant = headlineByVariantId[variant.id];
 			return {
 				...variant,
 				meta: {
@@ -241,13 +245,13 @@ export const getCardTestFromFormValues = (
 			{
 				id: 'A',
 				meta: {
-					headline: getStringField(headlineA),
+					headline: getStringField(headlineByVariantId.A),
 				},
 			},
 			{
 				id: 'B',
 				meta: {
-					headline: getStringField(headlineB),
+					headline: getStringField(headlineByVariantId.B),
 				},
 			},
 		],
