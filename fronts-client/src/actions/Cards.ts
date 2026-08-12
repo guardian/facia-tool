@@ -517,10 +517,6 @@ const moveCard = (
 				: { parent: card, supporting: [] };
 
 			if (toWithRespectToState) {
-				if (!fromWithRespectToState) {
-					dispatch(cardsReceived([parent, ...supporting]));
-				}
-
 				const actionParams: UpdateCardParams = {
 					from,
 					to,
@@ -529,17 +525,33 @@ const moveCard = (
 					state,
 				};
 
-				const modifyCardActions = [
+				/**
+				 * Collect the plain actions that prepare the card in state (adding a
+				 * cloned card, then any meta resets) and dispatch them in a single
+				 * batch. This avoids multiple separate dispatches - each of which
+				 * triggers its own subscriber notification and render pass - which is
+				 * noticeably laggy with several fronts open.
+				 */
+				const preInsertActions = [
+					// if from is not null we're moving an existing card, so it's already
+					// in state; otherwise we've cloned it and need to add it.
+					...(!fromWithRespectToState
+						? [cardsReceived([parent, ...supporting])]
+						: []),
 					mayResetBoostLevel(actionParams),
 					mayResetImageReplace(actionParams),
 					mayResetImmersive(actionParams),
 					mayResetVideoReplace(actionParams),
-				];
+				].filter(Boolean) as Action[];
 
-				modifyCardActions.forEach((action) => {
-					if (action) dispatch(action);
-				});
+				if (preInsertActions.length) {
+					dispatch(batchActions(preInsertActions));
+				}
 
+				/**
+				 * The insert action creator is a thunk, so it can't be included in the
+				 * batch above; it's dispatched separately.
+				 */
 				dispatch(
 					insertActionCreator(
 						toWithRespectToState.id,
