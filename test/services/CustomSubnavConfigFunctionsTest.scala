@@ -3,9 +3,12 @@ package services
 import com.gu.facia.client.models._
 import com.gu.pandomainauth.model.User
 import org.joda.time.DateTime
-import org.scalatest.{FreeSpec, Matchers}
+import org.scalatest.{FreeSpec, Matchers, OptionValues}
 
-class CustomSubnavConfigFunctionsTest extends FreeSpec with Matchers {
+class CustomSubnavConfigFunctionsTest
+    extends FreeSpec
+    with Matchers
+    with OptionValues {
 
   private val epoch = new DateTime(0)
 
@@ -82,7 +85,7 @@ class CustomSubnavConfigFunctionsTest extends FreeSpec with Matchers {
     "promotes a new draft subnav into live and removes it from draft" in {
       val config =
         CustomSubnavConfig(live = Nil, draft = List(subnav("abc")))
-      val result = publish(config, "abc")
+      val result = publish(config, "abc").value
       result.live.map(_.id) should be(List("abc"))
       result.draft should be(Nil)
     }
@@ -92,7 +95,7 @@ class CustomSubnavConfigFunctionsTest extends FreeSpec with Matchers {
         live = List(subnav("a"), subnav("b", headerText = "Old")),
         draft = List(subnav("b", headerText = "New"))
       )
-      val result = publish(config, "b")
+      val result = publish(config, "b").value
       result.live.map(_.id) should be(List("a", "b"))
       result.live.find(_.id == "b").map(_.header.headerText) should be(
         Some("New")
@@ -100,9 +103,9 @@ class CustomSubnavConfigFunctionsTest extends FreeSpec with Matchers {
       result.draft should be(Nil)
     }
 
-    "is a no-op when the id is not in draft" in {
+    "returns None when the id is not in draft" in {
       val config = CustomSubnavConfig(live = List(subnav("a")), draft = Nil)
-      publish(config, "missing") should be(config)
+      publish(config, "missing") should be(None)
     }
   }
 
@@ -112,9 +115,14 @@ class CustomSubnavConfigFunctionsTest extends FreeSpec with Matchers {
         live = List(subnav("a")),
         draft = List(subnav("a", headerText = "Edited"), subnav("b"))
       )
-      val result = discard(config, "a")
+      val result = discard(config, "a").value
       result.draft.map(_.id) should be(List("b"))
       result.live.map(_.id) should be(List("a"))
+    }
+
+    "returns None when the id has no draft entry" in {
+      val config = CustomSubnavConfig(live = List(subnav("a")), draft = Nil)
+      discard(config, "a") should be(None)
     }
   }
 
@@ -122,7 +130,7 @@ class CustomSubnavConfigFunctionsTest extends FreeSpec with Matchers {
     "moves a published subnav into draft and removes it from live" in {
       val config =
         CustomSubnavConfig(live = List(subnav("abc")), draft = Nil)
-      val result = unpublish(config, "abc")
+      val result = unpublish(config, "abc").value
       result.live should be(Nil)
       result.draft.map(_.id) should be(List("abc"))
     }
@@ -132,7 +140,7 @@ class CustomSubnavConfigFunctionsTest extends FreeSpec with Matchers {
         live = List(subnav("abc", headerText = "Live")),
         draft = List(subnav("abc", headerText = "Pending edit"))
       )
-      val result = unpublish(config, "abc")
+      val result = unpublish(config, "abc").value
       result.live should be(Nil)
       result.draft.map(_.header.headerText) should be(List("Live"))
     }
@@ -142,14 +150,14 @@ class CustomSubnavConfigFunctionsTest extends FreeSpec with Matchers {
         live = List(subnav("abc"), subnav("xyz")),
         draft = Nil
       )
-      val result = unpublish(config, "abc")
+      val result = unpublish(config, "abc").value
       result.live.map(_.id) should be(List("xyz"))
       result.draft.map(_.id) should be(List("abc"))
     }
 
-    "is a no-op when the id is not live" in {
+    "returns None when the id is not live" in {
       val config = CustomSubnavConfig(live = Nil, draft = List(subnav("abc")))
-      unpublish(config, "abc") should be(config)
+      unpublish(config, "abc") should be(None)
     }
   }
 
@@ -159,14 +167,14 @@ class CustomSubnavConfigFunctionsTest extends FreeSpec with Matchers {
         live = List(subnav("abc"), subnav("xyz")),
         draft = List(subnav("abc", headerText = "Edited"))
       )
-      val result = delete(config, "abc")
+      val result = delete(config, "abc").value
       result.live.map(_.id) should be(List("xyz"))
       result.draft should be(Nil)
     }
 
-    "is a no-op when the id is absent" in {
+    "returns None when the id is absent" in {
       val config = CustomSubnavConfig(live = List(subnav("a")), draft = Nil)
-      delete(config, "missing") should be(config)
+      delete(config, "missing") should be(None)
     }
   }
 }

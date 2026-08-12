@@ -130,8 +130,8 @@ POST        /editions-api/fronts/:frontId/collections/:collectionId/feastCollect
 
 # Custom subnavs
 GET         /custom-subnav                           controllers.CustomSubnavController.getSubnavConfig
-PUT         /custom-subnav                           controllers.CustomSubnavController.upsertSubnav
-POST        /custom-subnav/publish/:id               controllers.CustomSubnavController.publishSubnav(id)
-POST        /custom-subnav/discard/:id               controllers.CustomSubnavController.discardSubnav(id)
-POST        /custom-subnav/unpublish/:id             controllers.CustomSubnavController.unpublishSubnav(id)
+PUT         /custom-subnav/:id                        controllers.CustomSubnavController.upsertSubnav(id)
+POST        /custom-subnav/:id/publish               controllers.CustomSubnavController.publishSubnav(id)
+POST        /custom-subnav/:id/discard               controllers.CustomSubnavController.discardSubnav(id)
+POST        /custom-subnav/:id/unpublish             controllers.CustomSubnavController.unpublishSubnav(id)
 DELETE      /custom-subnav/:id                        controllers.CustomSubnavController.deleteSubnav(id)

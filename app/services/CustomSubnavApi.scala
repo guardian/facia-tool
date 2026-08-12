@@ -6,25 +6,12 @@ import org.joda.time.DateTime
 import play.api.libs.json.Json
 import logging.Logging
 
-import scala.util.Try
+import scala.util.{Failure, Success, Try}
 
-/** Pure, unit-testable transforms over a [[CustomSubnavConfig]].
-  *
-  * The stored document (`{stage}/frontsapi/navigation/custom-subnav.json`)
-  * holds two parallel lists of subnavs:
-  *   - `live` – what dotcom renders in production
-  *   - `draft` – previewable, unpublished changes (an overlay on top of live)
-  *
-  * The lifecycle mirrors fronts/collections but operates per-subnav (matched by
-  * `id`): saving upserts into `draft`, publishing promotes a single draft entry
-  * into `live`, and discarding drops a single entry from `draft`.
-  */
 object CustomSubnavConfigFunctions {
   val empty: CustomSubnavConfig = CustomSubnavConfig(live = Nil, draft = Nil)
 
-  /** Stamp the audit fields server-side so we never trust client-supplied
-    * values.
-    */
+  /** Stamp the audit fields server-side */
   def stamp(
       subnav: CustomSubnav,
       identity: User,
@@ -36,9 +23,6 @@ object CustomSubnavConfigFunctions {
       updatedEmail = identity.email
     )
 
-  /** Two subnavs are considered content-equal if they only differ by audit
-    * fields.
-    */
   private def contentEquals(a: CustomSubnav, b: CustomSubnav): Boolean =
     a.copy(
       lastUpdated = b.lastUpdated,
@@ -46,10 +30,6 @@ object CustomSubnavConfigFunctions {
       updatedEmail = b.updatedEmail
     ) == b
 
-  /** Upsert the subnav into the draft list (matched by id, preserving
-    * position). If the draft copy is content-identical to its live counterpart,
-    * the change is a no-op and the entry is dropped from draft instead.
-    */
   def upsertDraft(
       config: CustomSubnavConfig,
       subnav: CustomSubnav
@@ -68,64 +48,83 @@ object CustomSubnavConfigFunctions {
     config.copy(draft = newDraft)
   }
 
-  /** Promote the draft subnav with the given id into live (replacing any
-    * existing live entry with the same id), and remove it from draft. No-op if
-    * the id is not present in draft.
-    */
-  def publish(config: CustomSubnavConfig, id: String): CustomSubnavConfig =
-    config.draft.find(_.id == id) match {
-      case Some(subnav) =>
-        val newLive =
-          if (config.live.exists(_.id == id))
-            config.live.map(s => if (s.id == id) subnav else s)
-          else
-            config.live :+ subnav
-        config.copy(live = newLive, draft = config.draft.filterNot(_.id == id))
-      case None => config
+  def publish(
+      config: CustomSubnavConfig,
+      id: String
+  ): Option[CustomSubnavConfig] =
+    config.draft.find(_.id == id).map { subnav =>
+      val newLive =
+        if (config.live.exists(_.id == id))
+          config.live.map(s => if (s.id == id) subnav else s)
+        else
+          config.live :+ subnav
+      config.copy(live = newLive, draft = config.draft.filterNot(_.id == id))
     }
 
-  /** Discard unpublished changes for the given id (remove from draft only). */
-  def discard(config: CustomSubnavConfig, id: String): CustomSubnavConfig =
-    config.copy(draft = config.draft.filterNot(_.id == id))
+  def discard(
+      config: CustomSubnavConfig,
+      id: String
+  ): Option[CustomSubnavConfig] =
+    if (config.draft.exists(_.id == id))
+      Some(config.copy(draft = config.draft.filterNot(_.id == id)))
+    else None
 
-  /** Take a published subnav off production: move the live entry into draft and
-    * remove it from live, so it stops rendering but stays editable. Any
-    * existing draft edits for that id are overwritten by the live copy (the UI
-    * warns the editor that pending draft changes will be undone). No-op if the
-    * id is not currently live.
+  /** Drops a published subnav from the live entry into draft. Any existing
+    * draft edits for that id are overwritten by the live copy
     */
-  def unpublish(config: CustomSubnavConfig, id: String): CustomSubnavConfig =
-    config.live.find(_.id == id) match {
-      case Some(liveSubnav) =>
-        val newDraft =
-          if (config.draft.exists(_.id == id))
-            config.draft.map(s => if (s.id == id) liveSubnav else s)
-          else
-            config.draft :+ liveSubnav
-        config.copy(live = config.live.filterNot(_.id == id), draft = newDraft)
-      case None => config
+  def unpublish(
+      config: CustomSubnavConfig,
+      id: String
+  ): Option[CustomSubnavConfig] =
+    config.live.find(_.id == id).map { liveSubnav =>
+      val newDraft =
+        if (config.draft.exists(_.id == id))
+          config.draft.map(s => if (s.id == id) liveSubnav else s)
+        else
+          config.draft :+ liveSubnav
+      config.copy(live = config.live.filterNot(_.id == id), draft = newDraft)
     }
 
-  /** Remove the subnav entirely, dropping it from both live and draft. */
-  def delete(config: CustomSubnavConfig, id: String): CustomSubnavConfig =
-    config.copy(
-      live = config.live.filterNot(_.id == id),
-      draft = config.draft.filterNot(_.id == id)
-    )
+  def delete(
+      config: CustomSubnavConfig,
+      id: String
+  ): Option[CustomSubnavConfig] =
+    if (config.live.exists(_.id == id) || config.draft.exists(_.id == id))
+      Some(
+        config.copy(
+          live = config.live.filterNot(_.id == id),
+          draft = config.draft.filterNot(_.id == id)
+        )
+      )
+    else None
 }
 
-/** Reads and writes the custom subnav config directly from S3 (uncached) so
-  * that read-modify-write edits always see the latest persisted state.
-  */
 class CustomSubnavApi(s3FrontsApi: S3FrontsApi) extends Logging {
 
-  def getConfig(): CustomSubnavConfig =
-    s3FrontsApi.getCustomSubnav
-      .flatMap(raw => Json.parse(raw).asOpt[CustomSubnavConfig])
-      .getOrElse(CustomSubnavConfigFunctions.empty)
+  def getConfig(): Either[String, CustomSubnavConfig] =
+    s3FrontsApi.getCustomSubnav match {
+      case None => Right(CustomSubnavConfigFunctions.empty)
+      case Some(raw) =>
+        Try(Json.parse(raw).as[CustomSubnavConfig]) match {
+          case Success(config) => Right(config)
+          case Failure(e) =>
+            logger.error(
+              "Stored custom subnav config could not be parsed; falling back to empty config",
+              e
+            )
+            Left(
+              "Stored custom subnav config could not be parsed and an empty config is being shown."
+            )
+        }
+    }
 
-  def putConfig(config: CustomSubnavConfig): CustomSubnavConfig = {
-    Try(s3FrontsApi.putCustomSubnav(Json.prettyPrint(Json.toJson(config))))
-    config
+  def putConfig(config: CustomSubnavConfig): Try[CustomSubnavConfig] = {
+    val result =
+      Try(s3FrontsApi.putCustomSubnav(Json.prettyPrint(Json.toJson(config))))
+        .map(_ => config)
+    result.failed.foreach(e =>
+      logger.error("Failed to persist custom subnav config to S3", e)
+    )
+    result
   }
 }
