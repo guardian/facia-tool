@@ -386,7 +386,7 @@ describe('CardForm transform functions', () => {
 				...formValues,
 				...values,
 			});
-			expect(test.variantMeta).toEqual([
+			expect(test?.variantMeta).toEqual([
 				{ id: 'A', meta: { headline: 'Headline variant A' } },
 				{ id: 'B', meta: { headline: 'Headline variant B' } },
 			]);
@@ -407,7 +407,7 @@ describe('CardForm transform functions', () => {
 				...formValues,
 				...values,
 			});
-			expect(test.variantMeta).toEqual([
+			expect(test?.variantMeta).toEqual([
 				{ id: 'A', meta: { headline: undefined } },
 				{ id: 'B', meta: { headline: undefined } },
 			]);
@@ -448,7 +448,7 @@ describe('CardForm transform functions', () => {
 				...formValues,
 				...values,
 			});
-			expect(test.variantMeta).toEqual([
+			expect(test?.variantMeta).toEqual([
 				{ id: 'A', meta: { headline: undefined } },
 				{ id: 'B', meta: { headline: undefined } },
 			]);
