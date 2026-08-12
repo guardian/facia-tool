@@ -237,7 +237,6 @@ export const mayResetBoostLevel = ({
 	to,
 	card,
 	persistTo,
-	state,
 }: UpdateCardParams) => {
 	if (to.type !== 'group' || persistTo !== 'collection') return;
 	if (from?.id === to.id) return;
@@ -533,8 +532,10 @@ const moveCard = (
 				 * noticeably laggy with several fronts open.
 				 */
 				const preInsertActions = [
-					// if from is not null we're moving an existing card, so it's already
-					// in state; otherwise we've cloned it and need to add it.
+					/**
+					 * if from is not null we're moving an existing card, so it's already
+					 * in state; otherwise we've cloned it and need to add it.
+					 */
 					...(!fromWithRespectToState
 						? [cardsReceived([parent, ...supporting])]
 						: []),
