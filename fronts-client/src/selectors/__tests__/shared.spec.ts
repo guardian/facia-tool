@@ -387,7 +387,7 @@ describe('Shared selectors', () => {
 				publishedBy: 'A. N. Author',
 				uuid: 'af1',
 				headline: 'card-headline',
-				headlineA: 'card-headline',
+				headlineA: undefined,
 				headlineB: undefined,
 				thumbnail: undefined,
 				trailText: 'card-trailText',

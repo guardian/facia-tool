@@ -157,11 +157,15 @@ const createSelectArticleFromCard = () =>
 				...omit(card, 'meta'),
 				...articleMeta,
 				headline: headlineField,
-				// if headlineA is not present, populate it with the headline field
-				// TODO: this is currently broken because the test doesn't exist when you first hit the toggle
-				headlineA: activeOrDraftTest
-					? headlineFieldVariantA || headlineField
-					: undefined,
+				/**
+				 * Tests (and headline variant fields) are only persisted to the card
+				 * once the card is saved.
+				 *
+				 * So, even though headlineA is set on the form level when the AB test
+				 * switch is toggled on, it won't persist to the card level until the
+				 * card is saved. This is expected behaviour.
+				 **/
+				headlineA: activeOrDraftTest ? headlineFieldVariantA : undefined,
 				headlineB: activeOrDraftTest ? headlineFieldVariantB : undefined,
 				abTestEnabled: !!activeOrDraftTest,
 				trailText:
