@@ -487,5 +487,99 @@ describe('CardForm transform functions', () => {
 				{ id: 'B', meta: { headline: 'Headline variant B' } },
 			]);
 		});
+
+		it('should return undefined when the only existing test is expired and AB test is disabled', () => {
+			const expiredTest = {
+				testUuid: 'expired-test-uuid',
+				variantMeta: [
+					{ id: 'A' as const, meta: { headline: 'Old A' } },
+					{ id: 'B' as const, meta: { headline: 'Old B' } },
+				],
+				createdByName: 'Someone',
+				createdByEmail: 'someone@example.com',
+				hasManuallyEndedOnThisTrail: false,
+				expiryDate: Date.now() - 1000,
+			};
+
+			const stateWithExpiredTest = {
+				...initialState,
+				cards: {
+					...initialState.cards,
+					exampleId: {
+						...initialState.cards.exampleId,
+						tests: [expiredTest],
+					},
+				},
+			};
+
+			const values = {
+				abTestEnabled: false,
+				headlineA: '',
+				headlineB: '',
+			};
+
+			const state = createStateWithChangedFormFields(
+				stateWithExpiredTest,
+				'exampleId',
+				values,
+			);
+
+			expect(
+				getCardTestFromFormValues(state, 'exampleId', {
+					...formValues,
+					...values,
+				}),
+			).toBeUndefined();
+		});
+
+		it('should create a new test when the only existing test is expired and AB test is enabled', () => {
+			const expiredTest = {
+				testUuid: 'expired-test-uuid',
+				variantMeta: [
+					{ id: 'A' as const, meta: { headline: 'Old A' } },
+					{ id: 'B' as const, meta: { headline: 'Old B' } },
+				],
+				createdByName: 'Someone',
+				createdByEmail: 'someone@example.com',
+				hasManuallyEndedOnThisTrail: false,
+				expiryDate: Date.now() - 1000,
+			};
+
+			const stateWithExpiredTest = {
+				...initialState,
+				cards: {
+					...initialState.cards,
+					exampleId: {
+						...initialState.cards.exampleId,
+						tests: [expiredTest],
+					},
+				},
+			};
+
+			const values = {
+				abTestEnabled: true,
+				headlineA: 'Headline variant A',
+				headlineB: 'Headline variant B',
+			};
+
+			const state = createStateWithChangedFormFields(
+				stateWithExpiredTest,
+				'exampleId',
+				values,
+			);
+
+			const test = getCardTestFromFormValues(state, 'exampleId', {
+				...formValues,
+				...values,
+			});
+
+			expect(test?.testUuid).toBeDefined();
+			expect(test?.testUuid).not.toEqual('expired-test-uuid');
+			expect(test?.hasManuallyEndedOnThisTrail).toBe(false);
+			expect(test?.variantMeta).toEqual([
+				{ id: 'A', meta: { headline: 'Headline variant A' } },
+				{ id: 'B', meta: { headline: 'Headline variant B' } },
+			]);
+		});
 	});
 });

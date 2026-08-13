@@ -257,7 +257,6 @@ export const getCardTestFromFormValues = (
 		],
 		createdByName: selectUserFullName(state),
 		createdByEmail: selectUserEmail(state) || '',
-		//TODO: ensure that an expired test will not reach this point.
 		hasManuallyEndedOnThisTrail: !abTestEnabled,
 		frontsThisTestCanRunOn: selectFrontsWithCollection(
 			state,
