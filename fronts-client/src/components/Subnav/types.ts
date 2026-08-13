@@ -62,3 +62,12 @@ export interface CustomSubnavConfig {
 	live: CustomSubnav[];
 	draft: CustomSubnav[];
 }
+
+/**
+ * Shape returned by `GET /custom-subnav`. The server reads the stored document
+ * tolerantly: if it cannot be parsed it returns an empty config plus a
+ * `warning` explaining that the stored data could not be shown.
+ */
+export interface CustomSubnavConfigResponse extends CustomSubnavConfig {
+	warning?: string | null;
+}

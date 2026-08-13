@@ -55,10 +55,27 @@ const EditionsRoutes = {
 
 export const subnavRoutes = {
 	base: '/subnavs',
+	create: '/subnavs/new',
+	edit: (id: string) => `/subnavs/${id}`,
 };
 
 const subnavSectionProps = {
 	path: subnavRoutes.base,
+};
+
+const subnavListProps = {
+	exact: true,
+	path: subnavRoutes.base,
+};
+
+const subnavCreateProps = {
+	exact: true,
+	path: subnavRoutes.create,
+};
+
+const subnavEditProps = {
+	exact: true,
+	path: `${subnavRoutes.base}/:id`,
 };
 
 export {
@@ -68,5 +85,8 @@ export {
 	issuePathProps,
 	frontsFeatureProps,
 	subnavSectionProps,
+	subnavListProps,
+	subnavCreateProps,
+	subnavEditProps,
 	EditionsRoutes,
 };

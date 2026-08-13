@@ -66,6 +66,15 @@ export const ListItemActions = styled.div`
 	flex-shrink: 0;
 `;
 
+export const EditStatusBar = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	gap: 8px;
+	margin-bottom: 16px;
+`;
+
 export const StatusTag = styled.span<{ draft?: boolean }>`
 	display: inline-block;
 	font-size: 11px;

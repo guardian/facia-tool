@@ -1,10 +1,14 @@
 import pandaFetch from 'services/pandaFetch';
 import { attemptFriendlyErrorMessage } from 'util/error';
-import { CustomSubnav, CustomSubnavConfig } from './types';
+import {
+	CustomSubnav,
+	CustomSubnavConfig,
+	CustomSubnavConfigResponse,
+} from './types';
 
 const baseUrl = '/custom-subnav';
 
-export async function fetchSubnavConfig(): Promise<CustomSubnavConfig> {
+export async function fetchSubnavConfig(): Promise<CustomSubnavConfigResponse> {
 	try {
 		const response = await pandaFetch(baseUrl, {
 			method: 'get',
@@ -24,7 +28,7 @@ export async function upsertSubnav(
 	subnav: CustomSubnav,
 ): Promise<CustomSubnavConfig> {
 	try {
-		const response = await pandaFetch(baseUrl, {
+		const response = await pandaFetch(`${baseUrl}/${subnav.id}`, {
 			method: 'put',
 			headers: {
 				'Content-Type': 'application/json',
@@ -43,20 +47,20 @@ export async function upsertSubnav(
 }
 
 export async function publishSubnav(id: string): Promise<CustomSubnavConfig> {
-	return mutateSubnav('post', `${baseUrl}/publish/${id}`, id, 'publish');
+	return mutateSubnav('post', `${baseUrl}/${id}/publish`, id, 'publish');
 }
 
 export async function discardSubnav(id: string): Promise<CustomSubnavConfig> {
 	return mutateSubnav(
 		'post',
-		`${baseUrl}/discard/${id}`,
+		`${baseUrl}/${id}/discard`,
 		id,
 		'discard changes to',
 	);
 }
 
 export async function unpublishSubnav(id: string): Promise<CustomSubnavConfig> {
-	return mutateSubnav('post', `${baseUrl}/unpublish/${id}`, id, 'take down');
+	return mutateSubnav('post', `${baseUrl}/${id}/unpublish`, id, 'take down');
 }
 
 export async function deleteSubnav(id: string): Promise<CustomSubnavConfig> {

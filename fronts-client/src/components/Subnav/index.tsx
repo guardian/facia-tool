@@ -1,6 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { Switch, Route, Redirect } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router';
 import { selectHasSubnavPermission } from 'selectors/configSelectors';
+import {
+	subnavRoutes,
+	subnavListProps,
+	subnavCreateProps,
+	subnavEditProps,
+} from 'routes/routes';
+import { actionAddNotificationBanner } from 'bundles/notificationsBundle';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import {
 	deleteSubnav,
@@ -13,6 +22,7 @@ import {
 import SubnavForm from './SubnavForm';
 import { CustomSubnav, CustomSubnavConfig } from './types';
 import {
+	EditStatusBar,
 	List,
 	ListHeader,
 	ListItem,
@@ -67,32 +77,334 @@ const toListEntries = (config: CustomSubnavConfig): SubnavListEntry[] => {
 	});
 };
 
-// null = list view; 'new' = create form; a subnav = edit form
-type FormMode = CustomSubnav | 'new' | null;
+// The version shown when editing: the draft if present, otherwise the live copy.
+const findSubnav = (
+	config: CustomSubnavConfig,
+	id: string,
+): CustomSubnav | undefined =>
+	config.draft.find((s) => s.id === id) ?? config.live.find((s) => s.id === id);
+
+type RunAction = (
+	id: string,
+	action: (id: string) => Promise<CustomSubnavConfig>,
+	confirmMessage?: string,
+) => void;
+
+interface SubnavStatusActionsProps {
+	id: string;
+	hasLive: boolean;
+	hasDraft: boolean;
+	isBusy: boolean;
+	runAction: RunAction;
+}
+
+/**
+ * Publish / discard / unpublish / delete buttons for a single subnav, shared by
+ * the list rows and the individual edit page. Which buttons show depends on
+ * whether the subnav currently has a live and/or draft version.
+ */
+const SubnavStatusActions = ({
+	id,
+	hasLive,
+	hasDraft,
+	isBusy,
+	runAction,
+}: SubnavStatusActionsProps) => (
+	<>
+		{hasDraft && (
+			<ButtonDefault
+				type="button"
+				size="s"
+				priority="primary"
+				disabled={isBusy}
+				onClick={() =>
+					runAction(
+						id,
+						publishSubnav,
+						'Publish this subnav? It will go live on the targeted pages.',
+					)
+				}
+			>
+				Publish
+			</ButtonDefault>
+		)}
+		{hasDraft && hasLive && (
+			<ButtonDefault
+				type="button"
+				size="s"
+				priority="muted"
+				disabled={isBusy}
+				onClick={() =>
+					runAction(
+						id,
+						discardSubnav,
+						'Discard draft changes and revert to the live version?',
+					)
+				}
+			>
+				Discard changes
+			</ButtonDefault>
+		)}
+		{hasLive && (
+			<ButtonDefault
+				type="button"
+				size="s"
+				priority="muted"
+				disabled={isBusy}
+				onClick={() =>
+					runAction(
+						id,
+						unpublishSubnav,
+						hasDraft
+							? 'Take this subnav down? You have draft changes — taking it down will undo them.'
+							: 'Take this subnav down? It will no longer show on the targeted pages (kept as a draft).',
+					)
+				}
+			>
+				Unpublish
+			</ButtonDefault>
+		)}
+		<ButtonDefault
+			type="button"
+			size="s"
+			priority="muted"
+			disabled={isBusy}
+			onClick={() =>
+				runAction(
+					id,
+					deleteSubnav,
+					'Delete this subnav entirely? This removes both the live and draft versions.',
+				)
+			}
+		>
+			Delete
+		</ButtonDefault>
+	</>
+);
+
+const SubnavStatusTags = ({
+	hasLive,
+	hasDraft,
+}: {
+	hasLive: boolean;
+	hasDraft: boolean;
+}) => (
+	<>
+		{hasLive && <StatusTag>Live</StatusTag>}
+		{hasDraft && (
+			<StatusTag draft>{hasLive ? 'Draft changes' : 'New draft'}</StatusTag>
+		)}
+	</>
+);
+
+interface SubnavListViewProps {
+	entries: SubnavListEntry[];
+	isLoading: boolean;
+	pendingActionId: string | null;
+	onCreate: () => void;
+	onEdit: (id: string) => void;
+	runAction: (
+		id: string,
+		action: (id: string) => Promise<CustomSubnavConfig>,
+		confirmMessage?: string,
+	) => void;
+}
+
+const SubnavListView = ({
+	entries,
+	isLoading,
+	pendingActionId,
+	onCreate,
+	onEdit,
+	runAction,
+}: SubnavListViewProps) => (
+	<SubnavContainer>
+		<SubnavContainerHeading>Custom subnavs</SubnavContainerHeading>
+
+		<ListHeader>
+			<ButtonDefault type="button" priority="primary" onClick={onCreate}>
+				+ Create new subnav
+			</ButtonDefault>
+		</ListHeader>
+
+		{isLoading ? (
+			<Message>Loading…</Message>
+		) : entries.length === 0 ? (
+			<Message>No custom subnavs yet. Create one to get started.</Message>
+		) : (
+			<List>
+				{entries.map(({ id, subnav, hasLive, hasDraft }) => {
+					const isBusy = pendingActionId === id;
+					return (
+						<ListItem key={id}>
+							<div>
+								<ListItemTitle>
+									{subnav.header.headerText || 'Untitled subnav'}
+									<SubnavStatusTags hasLive={hasLive} hasDraft={hasDraft} />
+								</ListItemTitle>
+								<ListItemMeta>
+									{subnav.pages.length} page
+									{subnav.pages.length === 1 ? '' : 's'} · {subnav.links.length}{' '}
+									link
+									{subnav.links.length === 1 ? '' : 's'}
+								</ListItemMeta>
+							</div>
+							<ListItemActions>
+								<ButtonDefault
+									type="button"
+									size="s"
+									disabled={isBusy}
+									onClick={() => onEdit(id)}
+								>
+									Edit
+								</ButtonDefault>
+								<SubnavStatusActions
+									id={id}
+									hasLive={hasLive}
+									hasDraft={hasDraft}
+									isBusy={isBusy}
+									runAction={runAction}
+								/>
+							</ListItemActions>
+						</ListItem>
+					);
+				})}
+			</List>
+		)}
+	</SubnavContainer>
+);
+
+interface SubnavFormViewProps {
+	heading: string;
+	statusBar?: React.ReactNode;
+	initialSubnav?: CustomSubnav;
+	onSave: (subnav: CustomSubnav) => void;
+	onCancel: () => void;
+	saving: boolean;
+}
+
+const SubnavFormView = ({
+	heading,
+	statusBar,
+	initialSubnav,
+	onSave,
+	onCancel,
+	saving,
+}: SubnavFormViewProps) => (
+	<SubnavContainer>
+		<SubnavContainerHeading>{heading}</SubnavContainerHeading>
+		{statusBar}
+		<SubnavForm
+			initialSubnav={initialSubnav}
+			onSave={onSave}
+			onCancel={onCancel}
+			saving={saving}
+		/>
+	</SubnavContainer>
+);
+
+interface SubnavEditRouteProps {
+	config: CustomSubnavConfig | null;
+	isLoading: boolean;
+	pendingActionId: string | null;
+	runAction: RunAction;
+	onSave: (subnav: CustomSubnav) => void;
+	onCancel: () => void;
+	saving: boolean;
+}
+
+/**
+ * Resolves the `:id` route param against the loaded config. While the config is
+ * still loading we show a placeholder; if the id is unknown (e.g. deleted or a
+ * stale link) we send the user back to the list.
+ */
+const SubnavEditRoute = ({
+	config,
+	isLoading,
+	pendingActionId,
+	runAction,
+	onSave,
+	onCancel,
+	saving,
+}: SubnavEditRouteProps) => {
+	const { id } = useParams<{ id: string }>();
+
+	if (isLoading || !config) {
+		return (
+			<SubnavContainer>
+				<SubnavContainerHeading>Edit custom subnav</SubnavContainerHeading>
+				<Message>Loading…</Message>
+			</SubnavContainer>
+		);
+	}
+
+	const subnav = findSubnav(config, id);
+	if (!subnav) {
+		return <Redirect to={subnavRoutes.base} />;
+	}
+
+	const hasLive = config.live.some((s) => s.id === id);
+	const hasDraft = config.draft.some((s) => s.id === id);
+
+	return (
+		<SubnavFormView
+			heading="Edit custom subnav"
+			statusBar={
+				<EditStatusBar>
+					<div>
+						<SubnavStatusTags hasLive={hasLive} hasDraft={hasDraft} />
+					</div>
+					<ListItemActions>
+						<SubnavStatusActions
+							id={id}
+							hasLive={hasLive}
+							hasDraft={hasDraft}
+							isBusy={pendingActionId === id}
+							runAction={runAction}
+						/>
+					</ListItemActions>
+				</EditStatusBar>
+			}
+			initialSubnav={subnav}
+			onSave={onSave}
+			onCancel={onCancel}
+			saving={saving}
+		/>
+	);
+};
 
 const SubnavSection = () => {
 	const hasPermission = useSelector(selectHasSubnavPermission);
+	const dispatch = useDispatch();
+	const history = useHistory();
+
+	const notifyError = useCallback(
+		(message: string) =>
+			dispatch(actionAddNotificationBanner({ message, level: 'error' })),
+		[dispatch],
+	);
 
 	const [subnavConfig, setSubnavConfig] = useState<CustomSubnavConfig | null>(
 		null,
 	);
 	const [isLoading, setIsLoading] = useState(true);
-	const [loadError, setLoadError] = useState<string | null>(null);
-	const [formMode, setFormMode] = useState<FormMode>(null);
 	const [isSaving, setIsSaving] = useState(false);
 	const [pendingActionId, setPendingActionId] = useState<string | null>(null);
 
 	const loadConfig = useCallback(async () => {
 		setIsLoading(true);
-		setLoadError(null);
 		try {
-			setSubnavConfig(await fetchSubnavConfig());
+			const { warning, ...config } = await fetchSubnavConfig();
+			setSubnavConfig(config);
+			if (warning) {
+				notifyError(warning);
+			}
 		} catch (e) {
-			setLoadError(e instanceof Error ? e.message : 'Failed to load subnavs.');
+			notifyError(e instanceof Error ? e.message : 'Failed to load subnavs.');
 		} finally {
 			setIsLoading(false);
 		}
-	}, []);
+	}, [notifyError]);
 
 	useEffect(() => {
 		if (hasPermission) {
@@ -100,14 +412,19 @@ const SubnavSection = () => {
 		}
 	}, [hasPermission, loadConfig]);
 
+	const goToList = useCallback(
+		() => history.push(subnavRoutes.base),
+		[history],
+	);
+
 	const handleSave = async (subnav: CustomSubnav) => {
 		setIsSaving(true);
 		try {
 			const updated = await upsertSubnav(subnav);
 			setSubnavConfig(updated);
-			setFormMode(null);
+			goToList();
 		} catch (e) {
-			setLoadError(e instanceof Error ? e.message : 'Failed to save subnav.');
+			notifyError(e instanceof Error ? e.message : 'Failed to save subnav.');
 		} finally {
 			setIsSaving(false);
 		}
@@ -122,11 +439,10 @@ const SubnavSection = () => {
 			return;
 		}
 		setPendingActionId(id);
-		setLoadError(null);
 		try {
 			setSubnavConfig(await action(id));
 		} catch (e) {
-			setLoadError(e instanceof Error ? e.message : 'Action failed.');
+			notifyError(e instanceof Error ? e.message : 'Action failed.');
 		} finally {
 			setPendingActionId(null);
 		}
@@ -136,151 +452,40 @@ const SubnavSection = () => {
 		return <NoPermission />;
 	}
 
-	if (formMode !== null) {
-		return (
-			<SubnavContainer>
-				<SubnavContainerHeading>
-					{formMode === 'new' ? 'Create custom subnav' : 'Edit custom subnav'}
-				</SubnavContainerHeading>
-				<SubnavForm
-					initialSubnav={formMode === 'new' ? undefined : formMode}
-					onSave={handleSave}
-					onCancel={() => setFormMode(null)}
-					saving={isSaving}
-				/>
-			</SubnavContainer>
-		);
-	}
-
 	const entries = subnavConfig ? toListEntries(subnavConfig) : [];
 
 	return (
-		<SubnavContainer>
-			<SubnavContainerHeading>Custom subnavs</SubnavContainerHeading>
-
-			<ListHeader>
-				<ButtonDefault
-					type="button"
-					priority="primary"
-					onClick={() => setFormMode('new')}
-				>
-					+ Create new subnav
-				</ButtonDefault>
-			</ListHeader>
-
-			{loadError && <Message>{loadError}</Message>}
-
-			{isLoading ? (
-				<Message>Loading…</Message>
-			) : entries.length === 0 ? (
-				<Message>No custom subnavs yet. Create one to get started.</Message>
-			) : (
-				<List>
-					{entries.map(({ id, subnav, hasLive, hasDraft }) => {
-						const isBusy = pendingActionId === id;
-						return (
-							<ListItem key={id}>
-								<div>
-									<ListItemTitle>
-										{subnav.header.headerText || 'Untitled subnav'}
-										{hasLive && <StatusTag>Live</StatusTag>}
-										{hasDraft && (
-											<StatusTag draft>
-												{hasLive ? 'Draft changes' : 'New draft'}
-											</StatusTag>
-										)}
-									</ListItemTitle>
-									<ListItemMeta>
-										{subnav.pages.length} page
-										{subnav.pages.length === 1 ? '' : 's'} ·{' '}
-										{subnav.links.length} link
-										{subnav.links.length === 1 ? '' : 's'}
-									</ListItemMeta>
-								</div>
-								<ListItemActions>
-									<ButtonDefault
-										type="button"
-										size="s"
-										disabled={isBusy}
-										onClick={() => setFormMode(subnav)}
-									>
-										Edit
-									</ButtonDefault>
-									{hasDraft && (
-										<ButtonDefault
-											type="button"
-											size="s"
-											priority="primary"
-											disabled={isBusy}
-											onClick={() =>
-												runAction(
-													id,
-													publishSubnav,
-													'Publish this subnav? It will go live on the targeted pages.',
-												)
-											}
-										>
-											Publish
-										</ButtonDefault>
-									)}
-									{hasDraft && hasLive && (
-										<ButtonDefault
-											type="button"
-											size="s"
-											priority="muted"
-											disabled={isBusy}
-											onClick={() =>
-												runAction(
-													id,
-													discardSubnav,
-													'Discard draft changes and revert to the live version?',
-												)
-											}
-										>
-											Discard changes
-										</ButtonDefault>
-									)}
-									{hasLive && (
-										<ButtonDefault
-											type="button"
-											size="s"
-											priority="muted"
-											disabled={isBusy}
-											onClick={() =>
-												runAction(
-													id,
-													unpublishSubnav,
-													hasDraft
-														? 'Take this subnav down? You have draft changes — taking it down will undo them.'
-														: 'Take this subnav down? It will no longer show on the targeted pages (kept as a draft).',
-												)
-											}
-										>
-											Unpublish
-										</ButtonDefault>
-									)}
-									<ButtonDefault
-										type="button"
-										size="s"
-										priority="muted"
-										disabled={isBusy}
-										onClick={() =>
-											runAction(
-												id,
-												deleteSubnav,
-												'Delete this subnav entirely? This removes both the live and draft versions.',
-											)
-										}
-									>
-										Delete
-									</ButtonDefault>
-								</ListItemActions>
-							</ListItem>
-						);
-					})}
-				</List>
-			)}
-		</SubnavContainer>
+		<Switch>
+			<Route {...subnavCreateProps}>
+				<SubnavFormView
+					heading="Create custom subnav"
+					onSave={handleSave}
+					onCancel={goToList}
+					saving={isSaving}
+				/>
+			</Route>
+			<Route {...subnavEditProps}>
+				<SubnavEditRoute
+					config={subnavConfig}
+					isLoading={isLoading}
+					pendingActionId={pendingActionId}
+					runAction={runAction}
+					onSave={handleSave}
+					onCancel={goToList}
+					saving={isSaving}
+				/>
+			</Route>
+			<Route {...subnavListProps}>
+				<SubnavListView
+					entries={entries}
+					isLoading={isLoading}
+					pendingActionId={pendingActionId}
+					onCreate={() => history.push(subnavRoutes.create)}
+					onEdit={(id) => history.push(subnavRoutes.edit(id))}
+					runAction={runAction}
+				/>
+			</Route>
+		</Switch>
 	);
 };
 
