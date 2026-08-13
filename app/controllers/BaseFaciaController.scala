@@ -36,7 +36,7 @@ abstract class BaseFaciaControllerComponents(context: Context)
     PanDomainAuthSettingsRefresher(
       domain = config.pandomain.domain,
       system = config.pandomain.service,
-      S3BucketLoader.forAwsSdkV1(
+      S3BucketLoader.forAwsSdkV2(
         config.aws.s3Client,
         "pan-domain-auth-settings"
       )

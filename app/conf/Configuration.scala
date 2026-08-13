@@ -13,7 +13,6 @@ import scala.jdk.CollectionConverters._
 import scala.language.reflectiveCalls
 import com.amazonaws.services.rds.model.DescribeDBInstancesRequest
 import com.amazonaws.services.rds.AmazonRDSClientBuilder
-import com.amazonaws.services.s3.AmazonS3ClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
 import software.amazon.awssdk.auth.credentials.{
@@ -21,6 +20,8 @@ import software.amazon.awssdk.auth.credentials.{
   AwsCredentialsProviderChain => NewAwsCredentialsProviderChain,
   ProfileCredentialsProvider => NewProfileCredentialsProvider
 }
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.s3.S3Client
 
 import java.nio.charset.StandardCharsets
 
@@ -192,10 +193,10 @@ class ApplicationConfiguration(
       .withCredentials(cmsFrontsAccountCredentials)
       .withRegion(region)
       .build()
-    lazy val s3Client = AmazonS3ClientBuilder
-      .standard()
-      .withCredentials(cmsFrontsAccountCredentials)
-      .withRegion(region)
+    lazy val s3Client = S3Client
+      .builder()
+      .region(Region.of(region))
+      .credentialsProvider(newStyleCmsFrontsAccountCredentials)
       .build()
   }
 
