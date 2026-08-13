@@ -1,0 +1,2 @@
+# The cdk/ project owns its own formatting via its eslint/prettier config.
+cdk/
