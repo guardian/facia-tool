@@ -179,7 +179,7 @@ object FaciaApi {
       collectionJson: CollectionJson
   ): CollectionJson = {
     collectionJson.draft match {
-      case None => collectionJson
+      case None         => collectionJson
       case Some(drafts) =>
         val now = DateTime.now
         val updated = drafts.map(draft => addTestDatesToTrail(draft, now))
