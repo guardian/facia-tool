@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import v4 from 'uuid/v4';
 import ButtonDefault from 'components/inputs/ButtonDefault';
 import {
@@ -14,6 +14,7 @@ import {
 	FormActions,
 	RepeatableRow,
 	RowFields,
+	SavedMessage,
 	Section,
 	SectionHeading,
 	Select,
@@ -23,7 +24,6 @@ import {
 interface SubnavFormProps {
 	initialSubnav?: CustomSubnav;
 	onSave: (subnav: CustomSubnav) => Promise<void> | void;
-	onCancel: () => void;
 	saving?: boolean;
 }
 
@@ -36,28 +36,67 @@ const pageTypeOptions: { value: TargetedPageType; label: string }[] = [
 const emptyLink = (): SubnavLink => ({ linkText: '', dotcomPath: '' });
 const emptyPage = (): TargetedPage => ({ type: 'front', path: '' });
 
+/**
+ * The form's editable state, derived from the subnav being edited (or blank
+ * defaults when creating). Arrays are cloned so edits never mutate the config
+ * and so this snapshot can be used to detect changes and to reset the form.
+ */
+const toInitialFormState = (subnav?: CustomSubnav) => ({
+	headerText: subnav?.header.headerText ?? '',
+	headerDotcomPath: subnav?.header.dotcomPath ?? '',
+	headerCopy: subnav?.header.copy ?? '',
+	links: subnav?.links.length
+		? subnav.links.map((link) => ({ ...link }))
+		: [emptyLink()],
+	pages: subnav?.pages.length
+		? subnav.pages.map((page) => ({ ...page }))
+		: [emptyPage()],
+});
+
 const SubnavForm = ({
 	initialSubnav,
 	onSave,
-	onCancel,
 	saving = false,
 }: SubnavFormProps) => {
-	const [headerText, setHeaderText] = useState(
-		initialSubnav?.header.headerText ?? '',
+	const mountedRef = useRef(true);
+	useEffect(
+		() => () => {
+			mountedRef.current = false;
+		},
+		[],
 	);
+
+	const [baseline, setBaseline] = useState(() =>
+		toInitialFormState(initialSubnav),
+	);
+
+	const [headerText, setHeaderText] = useState(baseline.headerText);
 	const [headerDotcomPath, setHeaderDotcomPath] = useState(
-		initialSubnav?.header.dotcomPath ?? '',
+		baseline.headerDotcomPath,
 	);
-	const [headerCopy, setHeaderCopy] = useState(
-		initialSubnav?.header.copy ?? '',
-	);
-	const [links, setLinks] = useState<SubnavLink[]>(
-		initialSubnav?.links.length ? initialSubnav.links : [emptyLink()],
-	);
-	const [pages, setPages] = useState<TargetedPage[]>(
-		initialSubnav?.pages.length ? initialSubnav.pages : [emptyPage()],
-	);
+	const [headerCopy, setHeaderCopy] = useState(baseline.headerCopy);
+	const [links, setLinks] = useState<SubnavLink[]>(baseline.links);
+	const [pages, setPages] = useState<TargetedPage[]>(baseline.pages);
 	const [error, setError] = useState<string | null>(null);
+	const [justSaved, setJustSaved] = useState(false);
+
+	const isDirty =
+		JSON.stringify({
+			headerText,
+			headerDotcomPath,
+			headerCopy,
+			links,
+			pages,
+		}) !== JSON.stringify(baseline);
+
+	const handleCancel = () => {
+		setHeaderText(baseline.headerText);
+		setHeaderDotcomPath(baseline.headerDotcomPath);
+		setHeaderCopy(baseline.headerCopy);
+		setLinks(baseline.links.map((link) => ({ ...link })));
+		setPages(baseline.pages.map((page) => ({ ...page })));
+		setError(null);
+	};
 
 	const updateLink = (index: number, patch: Partial<SubnavLink>) =>
 		setLinks((prev) =>
@@ -118,7 +157,28 @@ const SubnavForm = ({
 			updatedEmail: initialSubnav?.updatedEmail ?? '',
 		};
 
-		await onSave(subnav);
+		try {
+			await onSave(subnav);
+		} catch {
+			// The parent surfaces save failures via the global banner; keep the
+			// user's edits in place so they can retry.
+			return;
+		}
+
+		if (!mountedRef.current) {
+			return;
+		}
+
+		// Re-seed the form from what we just persisted so it is no longer "dirty"
+		// and we can confirm the save without navigating away.
+		const savedState = toInitialFormState(subnav);
+		setBaseline(savedState);
+		setHeaderText(savedState.headerText);
+		setHeaderDotcomPath(savedState.headerDotcomPath);
+		setHeaderCopy(savedState.headerCopy);
+		setLinks(savedState.links);
+		setPages(savedState.pages);
+		setJustSaved(true);
 	};
 
 	return (
@@ -230,14 +290,18 @@ const SubnavForm = ({
 
 			{error && <ErrorMessage>{error}</ErrorMessage>}
 
-			<FormActions>
-				<ButtonDefault type="submit" priority="primary" disabled={saving}>
-					{saving ? 'Saving…' : 'Save draft'}
-				</ButtonDefault>
-				<ButtonDefault type="button" onClick={onCancel} disabled={saving}>
-					Cancel
-				</ButtonDefault>
-			</FormActions>
+			{isDirty ? (
+				<FormActions>
+					<ButtonDefault type="submit" priority="primary" disabled={saving}>
+						{saving ? 'Saving…' : 'Save draft'}
+					</ButtonDefault>
+					<ButtonDefault type="button" onClick={handleCancel} disabled={saving}>
+						Cancel
+					</ButtonDefault>
+				</FormActions>
+			) : (
+				justSaved && <SavedMessage>Changes saved</SavedMessage>
+			)}
 		</Form>
 	);
 };

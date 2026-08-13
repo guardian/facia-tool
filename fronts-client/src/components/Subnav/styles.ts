@@ -17,6 +17,29 @@ export const Message = styled.p`
 	font-size: 14px;
 `;
 
+export const SavedMessage = styled.p`
+	font-size: 13px;
+	color: ${({ theme }) => theme.base.colors.textMuted};
+	margin: 0;
+`;
+
+export const BackButton = styled.button`
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	background: none;
+	border: none;
+	padding: 0;
+	margin-bottom: 12px;
+	font-size: 13px;
+	color: ${({ theme }) => theme.base.colors.textDark};
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+`;
+
 /**
  * List
  */

@@ -22,6 +22,7 @@ import {
 import SubnavForm from './SubnavForm';
 import { CustomSubnav, CustomSubnavConfig } from './types';
 import {
+	BackButton,
 	EditStatusBar,
 	List,
 	ListHeader,
@@ -278,7 +279,7 @@ interface SubnavFormViewProps {
 	heading: string;
 	statusBar?: React.ReactNode;
 	initialSubnav?: CustomSubnav;
-	onSave: (subnav: CustomSubnav) => void;
+	onSave: (subnav: CustomSubnav) => Promise<void>;
 	onCancel: () => void;
 	saving: boolean;
 }
@@ -292,14 +293,12 @@ const SubnavFormView = ({
 	saving,
 }: SubnavFormViewProps) => (
 	<SubnavContainer>
+		<BackButton type="button" onClick={onCancel}>
+			← Back to subnavs
+		</BackButton>
 		<SubnavContainerHeading>{heading}</SubnavContainerHeading>
 		{statusBar}
-		<SubnavForm
-			initialSubnav={initialSubnav}
-			onSave={onSave}
-			onCancel={onCancel}
-			saving={saving}
-		/>
+		<SubnavForm initialSubnav={initialSubnav} onSave={onSave} saving={saving} />
 	</SubnavContainer>
 );
 
@@ -308,7 +307,7 @@ interface SubnavEditRouteProps {
 	isLoading: boolean;
 	pendingActionId: string | null;
 	runAction: RunAction;
-	onSave: (subnav: CustomSubnav) => void;
+	onSave: (subnav: CustomSubnav) => Promise<void>;
 	onCancel: () => void;
 	saving: boolean;
 }
@@ -420,14 +419,20 @@ const SubnavSection = () => {
 	const handleSave = async (subnav: CustomSubnav) => {
 		setIsSaving(true);
 		try {
-			const updated = await upsertSubnav(subnav);
-			setSubnavConfig(updated);
-			goToList();
+			setSubnavConfig(await upsertSubnav(subnav));
 		} catch (e) {
 			notifyError(e instanceof Error ? e.message : 'Failed to save subnav.');
+			throw e;
 		} finally {
 			setIsSaving(false);
 		}
+	};
+
+	// New subnavs are created on their own route; once saved we move to that
+	// subnav's edit route so the URL and the publish/take-down actions reflect it.
+	const handleCreate = async (subnav: CustomSubnav) => {
+		await handleSave(subnav);
+		history.push(subnavRoutes.edit(subnav.id));
 	};
 
 	const runAction = async (
@@ -459,7 +464,7 @@ const SubnavSection = () => {
 			<Route {...subnavCreateProps}>
 				<SubnavFormView
 					heading="Create custom subnav"
-					onSave={handleSave}
+					onSave={handleCreate}
 					onCancel={goToList}
 					saving={isSaving}
 				/>
