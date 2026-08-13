@@ -157,11 +157,8 @@ const createSelectArticleFromCard = () =>
 				...omit(card, 'meta'),
 				...articleMeta,
 				headline: headlineField,
-				// if headlineA is not present, populate it with the headline field
 				// TODO: this is currently broken because the test doesn't exist when you first hit the toggle
-				headlineA: activeOrDraftTest
-					? headlineFieldVariantA || headlineField
-					: undefined,
+				headlineA: activeOrDraftTest ? headlineFieldVariantA : undefined,
 				headlineB: activeOrDraftTest ? headlineFieldVariantB : undefined,
 				abTestEnabled: !!activeOrDraftTest,
 				trailText:
