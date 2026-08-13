@@ -479,10 +479,10 @@ describe('CardForm transform functions', () => {
 				...formValues,
 				...values,
 			});
-			expect(test.testUuid).toBeDefined();
-			expect(test.testUuid).not.toEqual('old-test-uuid');
-			expect(test.hasManuallyEndedOnThisTrail).toBe(false);
-			expect(test.variantMeta).toEqual([
+			expect(test?.testUuid).toBeDefined();
+			expect(test?.testUuid).not.toEqual('old-test-uuid');
+			expect(test?.hasManuallyEndedOnThisTrail).toBe(false);
+			expect(test?.variantMeta).toEqual([
 				{ id: 'A', meta: { headline: 'Headline variant A' } },
 				{ id: 'B', meta: { headline: 'Headline variant B' } },
 			]);
