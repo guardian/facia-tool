@@ -1,0 +1,1854 @@
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+
+exports[`The FaciaTool stack matches the snapshot 1`] = `
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Conditions": {
+    "IsCode": {
+      "Fn::Equals": [
+        {
+          "Ref": "Stage",
+        },
+        "CODE",
+      ],
+    },
+  },
+  "Description": "Facia Tool Service",
+  "Mappings": {
+    "CrossResources": {
+      "CODE": {
+        "FrontPressedTable": "front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU",
+      },
+      "PROD": {
+        "FrontPressedTable": "front-pressed-lambda-PROD-DynamoDBTable-M03VC0RYBQ1W",
+      },
+    },
+    "StageMap": {
+      "CODE": {
+        "CloudFrontAliases": [
+          "fronts.code.dev-gutools.co.uk",
+        ],
+        "DesiredCapacity": 1,
+        "InstanceType": "t4g.small",
+        "LowerCaseStage": "code",
+        "MaxSize": 2,
+        "MinSize": 1,
+        "StaticCloudFrontAliases": [
+          "fronts-static.code.dev-gutools.co.uk",
+        ],
+      },
+      "PROD": {
+        "CloudFrontAliases": [
+          "fronts.gutools.co.uk",
+        ],
+        "DesiredCapacity": 3,
+        "InstanceType": "t4g.medium",
+        "LowerCaseStage": "prod",
+        "MaxSize": 6,
+        "MinSize": 3,
+        "StaticCloudFrontAliases": [
+          "fronts-static.gutools.co.uk",
+        ],
+      },
+    },
+  },
+  "Metadata": {
+    "gu:cdk:constructs": [],
+    "gu:cdk:version": "TEST",
+  },
+  "Outputs": {
+    "FaciaLoadBalancerDNS": {
+      "Description": "Load balancer DNS",
+      "Value": {
+        "Fn::GetAtt": [
+          "FaciaLoadBalancerNewVPC",
+          "DNSName",
+        ],
+      },
+    },
+    "FeastPublicationSNSTopic": {
+      "Description": "ARN of the SNS topic",
+      "Export": {
+        "Name": {
+          "Fn::Sub": "\${AWS::StackName}-FeastPublicationSNSTopicARN",
+        },
+      },
+      "Value": {
+        "Ref": "FeastPublicationTopic",
+      },
+    },
+    "FrontsUpdateSNSTopicARN": {
+      "Description": "ARN of the SNS topic",
+      "Export": {
+        "Name": {
+          "Fn::Sub": "\${AWS::StackName}-FrontsUpdateSNSTopicARN",
+        },
+      },
+      "Value": {
+        "Ref": "FrontsUpdateSNSTopic",
+      },
+    },
+    "StorageConsumerRole": {
+      "Description": "Role to be assumed for cross account access to the bucket",
+      "Value": {
+        "Ref": "StorageConsumerRole",
+      },
+    },
+  },
+  "Parameters": {
+    "AMI": {
+      "Description": "ID of the machine image for this service (ami)",
+      "Type": "String",
+    },
+    "AvailabilityZones": {
+      "Default": "eu-west-1a,eu-west-1b,eu-west-1c",
+      "Description": "The availability zone where instances are allowed to run",
+      "Type": "List<AWS::EC2::AvailabilityZone::Name>",
+    },
+    "CapiEndpointSsmKeyNewVPC": {
+      "Default": "/newvpc/endpoint/capi/PROD",
+      "Description": "SSM key containing security group of the CAPI endpoint",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "CapiPreviewRole": {
+      "Description": "ARN of the CAPI preview role",
+      "Type": "String",
+    },
+    "CertificateArn": {
+      "Description": "ARN of the x509 certificate for this service",
+      "Type": "String",
+    },
+    "CloudFrontCertificateArn": {
+      "Description": "x509 certificate ARN for CloudFront - must be in us-east-1",
+      "Type": "String",
+    },
+    "ContentAPIAccountID": {
+      "Description": "AWS account ID of CAPI",
+      "Type": "String",
+    },
+    "DBSecurityGroupId": {
+      "Type": "String",
+    },
+    "DBSecurityGroupIdNewVPC": {
+      "Type": "String",
+    },
+    "ELKKinesisStreamArn": {
+      "Description": "Arn of the kinesis stream for logging to ELK (logs.gutools)",
+      "Type": "String",
+    },
+    "ELKKinesisStreamName": {
+      "Default": "/account/services/logging.stream.name",
+      "Description": "Elk logging stream name",
+      "Type": "AWS::SSM::Parameter::Value<String>",
+    },
+    "FrontendAccountID": {
+      "Description": "AWS account ID of frontend",
+      "Type": "String",
+    },
+    "FrontendRoleToAssume": {
+      "Default": "arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX",
+      "Description": "Frontend Role to assume for cross account policies",
+      "Type": "String",
+    },
+    "MobileAPIAccountID": {
+      "Description": "AWS account ID of MAPI",
+      "Type": "String",
+    },
+    "MobileAPITeamcityAccountID": {
+      "Description": "AWS account ID of MAPI - used for CI",
+      "Type": "String",
+    },
+    "OphanAccountID": {
+      "Description": "AWS account ID of Ophan",
+      "Type": "String",
+    },
+    "PrivateSubnets": {
+      "Description": "The private subnets of the new VPC for the autoscaling group",
+      "Type": "List<AWS::EC2::Subnet::Id>",
+    },
+    "PublicSubnets": {
+      "Description": "The public subnets of the new VPC for the loadbalancer",
+      "Type": "List<AWS::EC2::Subnet::Id>",
+    },
+    "Stage": {
+      "AllowedValues": [
+        "CODE",
+        "PROD",
+      ],
+      "Default": "PROD",
+      "Description": "Environment name",
+      "Type": "String",
+    },
+    "StaticBucketName": {
+      "Description": "Bucket containing static files",
+      "Type": "String",
+    },
+    "SupportAccountID": {
+      "Description": "AWS account ID of Support",
+      "Type": "String",
+    },
+    "SwitchboardBucket": {
+      "Default": "arn:aws:s3:::facia-switches/*",
+      "Description": "Bucket where switchboard writes switches status",
+      "Type": "String",
+    },
+    "UserDataTablePrefix": {
+      "Default": "fronts-user-data-table",
+      "Type": "String",
+    },
+    "VpcId": {
+      "Description": "The new VPC we look to migrate to",
+      "Type": "AWS::EC2::VPC::Id",
+    },
+  },
+  "Resources": {
+    "AppServerSecurityGroupNewVPC": {
+      "Properties": {
+        "GroupDescription": "Application servers",
+        "SecurityGroupIngress": [
+          {
+            "FromPort": 9000,
+            "IpProtocol": "tcp",
+            "SourceSecurityGroupId": {
+              "Ref": "LoadBalancerSecurityGroupNewVPC",
+            },
+            "ToPort": 9000,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "AppToNewDBEgressNewVPC": {
+      "Properties": {
+        "DestinationSecurityGroupId": {
+          "Ref": "DBSecurityGroupIdNewVPC",
+        },
+        "FromPort": 5432,
+        "GroupId": {
+          "Ref": "AppServerSecurityGroupNewVPC",
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 5432,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "AssumeCapiPreviewRolePolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CapiPreviewRole",
+              },
+            },
+          ],
+        },
+        "PolicyName": "assume-capi-preview-role",
+        "Roles": [
+          {
+            "Ref": "DistributionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CloudwatchPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "cloudwatch:GetMetricStatistics",
+                "cloudwatch:ListMetrics",
+                "cloudwatch:PutMetricData",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CloudwatchPolicy",
+        "Roles": [
+          {
+            "Ref": "DistributionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "CrossAccountPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "FrontendRoleToAssume",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "CrossAccountPolicy",
+        "Roles": [
+          {
+            "Ref": "DistributionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "DistributionInstanceProfile": {
+      "Properties": {
+        "Path": "/",
+        "Roles": [
+          {
+            "Ref": "DistributionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::InstanceProfile",
+    },
+    "DistributionRole": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole",
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "ec2.amazonaws.com",
+                ],
+              },
+            },
+          ],
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::ImportValue": {
+              "Fn::Sub": "guardian-ec2-for-ssm-GuardianEC2ForSSMPolicy",
+            },
+          },
+        ],
+        "Path": "/",
+        "Policies": [
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "ssm:GetParameter",
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Fn::Sub": "arn:aws:ssm:\${AWS::Region}:\${AWS::AccountId}:parameter/facia-tool/cms-fronts/\${Stage}/*",
+                  },
+                },
+                {
+                  "Action": "kms:Decrypt",
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+              ],
+            },
+            "PolicyName": "getparameters",
+          },
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": [
+                    "sqs:ReceiveMessage",
+                    "sqs:DeleteMessage",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    {
+                      "Fn::Sub": [
+                        "arn:aws:sqs:\${Region}:\${Account}:publish-events-\${Stage}",
+                        {
+                          "Account": {
+                            "Ref": "AWS::AccountId",
+                          },
+                          "Region": {
+                            "Ref": "AWS::Region",
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  "Action": [
+                    "s3:GetObject",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    "arn:aws:s3:::facia-dist/*",
+                    "arn:aws:s3:::facia-private/*",
+                  ],
+                },
+                {
+                  "Action": [
+                    "dynamodb:GetItem",
+                    "dynamodb:Query",
+                    "dynamodb:PutItem",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:Scan",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    {
+                      "Fn::Sub": [
+                        "arn:aws:dynamodb:\${Region}:\${Account}:table/\${Table}",
+                        {
+                          "Account": {
+                            "Ref": "AWS::AccountId",
+                          },
+                          "Region": {
+                            "Ref": "AWS::Region",
+                          },
+                          "Table": {
+                            "Ref": "FrontsUserDataDynamoTable",
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+                {
+                  "Action": [
+                    "ses:SendEmail",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    "*",
+                  ],
+                },
+                {
+                  "Action": [
+                    "ec2:DescribeTags",
+                    "ec2:DescribeInstances",
+                    "autoscaling:DescribeAutoScalingGroups",
+                    "autoscaling:DescribeAutoScalingInstances",
+                    "rds:DescribeDBInstances",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": "*",
+                },
+                {
+                  "Action": [
+                    "s3:PutObject",
+                  ],
+                  "Effect": "Allow",
+                  "Resource": [
+                    {
+                      "Fn::Sub": [
+                        "arn:aws:s3:::published-editions-\${LowerCaseStage}/*",
+                        {
+                          "LowerCaseStage": {
+                            "Fn::FindInMap": [
+                              "StageMap",
+                              {
+                                "Ref": "Stage",
+                              },
+                              "LowerCaseStage",
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                    {
+                      "Fn::Sub": [
+                        "arn:aws:s3:::preview-editions-\${LowerCaseStage}/*",
+                        {
+                          "LowerCaseStage": {
+                            "Fn::FindInMap": [
+                              "StageMap",
+                              {
+                                "Ref": "Stage",
+                              },
+                              "LowerCaseStage",
+                            ],
+                          },
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+            "PolicyName": "root",
+          },
+          {
+            "PolicyDocument": {
+              "Statement": [
+                {
+                  "Action": "sns:Publish",
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Ref": "FrontsUpdateSNSTopic",
+                  },
+                  "Sid": "AllowPublishToMyTopic",
+                },
+                {
+                  "Action": "sns:Publish",
+                  "Effect": "Allow",
+                  "Resource": {
+                    "Ref": "FeastPublicationTopic",
+                  },
+                },
+              ],
+            },
+            "PolicyName": "publishTopic",
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "DnsRecord": {
+      "Properties": {
+        "Name": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::FindInMap": [
+                "StageMap",
+                {
+                  "Ref": "Stage",
+                },
+                "CloudFrontAliases",
+              ],
+            },
+          ],
+        },
+        "RecordType": "CNAME",
+        "ResourceRecords": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Fn::GetAtt": "FaciaCloudfront.DomainName",
+                },
+                ".",
+              ],
+            ],
+          },
+        ],
+        "Stage": {
+          "Ref": "Stage",
+        },
+        "TTL": 900,
+      },
+      "Type": "Guardian::DNS::RecordSet",
+    },
+    "DynamoPressStatus": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:Query",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:dynamodb:",
+                      {
+                        "Ref": "AWS::Region",
+                      },
+                      ":",
+                      {
+                        "Ref": "AWS::AccountId",
+                      },
+                      ":table/",
+                      {
+                        "Fn::FindInMap": [
+                          "CrossResources",
+                          {
+                            "Ref": "Stage",
+                          },
+                          "FrontPressedTable",
+                        ],
+                      },
+                    ],
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "DynamoPressStatus",
+        "Roles": [
+          {
+            "Ref": "DistributionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "FaciaAutoscalingGroupNewVPC": {
+      "Properties": {
+        "AvailabilityZones": {
+          "Ref": "AvailabilityZones",
+        },
+        "Cooldown": "180",
+        "DesiredCapacity": {
+          "Fn::FindInMap": [
+            "StageMap",
+            {
+              "Ref": "Stage",
+            },
+            "DesiredCapacity",
+          ],
+        },
+        "HealthCheckGracePeriod": 200,
+        "HealthCheckType": "ELB",
+        "LaunchConfigurationName": {
+          "Ref": "FaciaLaunchConfigNewVPC",
+        },
+        "LoadBalancerNames": [
+          {
+            "Ref": "FaciaLoadBalancerNewVPC",
+          },
+        ],
+        "MaxSize": {
+          "Fn::FindInMap": [
+            "StageMap",
+            {
+              "Ref": "Stage",
+            },
+            "MaxSize",
+          ],
+        },
+        "MinSize": {
+          "Fn::FindInMap": [
+            "StageMap",
+            {
+              "Ref": "Stage",
+            },
+            "MinSize",
+          ],
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "PropagateAtLaunch": true,
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "PropagateAtLaunch": true,
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "PropagateAtLaunch": true,
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "gu:riffraff:new-asg",
+            "PropagateAtLaunch": true,
+            "Value": "1",
+          },
+          {
+            "Key": "LogKinesisStreamName",
+            "PropagateAtLaunch": true,
+            "Value": {
+              "Ref": "ELKKinesisStreamName",
+            },
+          },
+          {
+            "Key": "Stack",
+            "PropagateAtLaunch": true,
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "PropagateAtLaunch": true,
+            "Value": "TEST",
+          },
+          {
+            "Key": "SystemdUnit",
+            "PropagateAtLaunch": true,
+            "Value": "facia-tool.service",
+          },
+        ],
+        "VPCZoneIdentifier": {
+          "Ref": "PrivateSubnets",
+        },
+      },
+      "Type": "AWS::AutoScaling::AutoScalingGroup",
+    },
+    "FaciaCloudfront": {
+      "Properties": {
+        "DistributionConfig": {
+          "Aliases": {
+            "Fn::FindInMap": [
+              "StageMap",
+              {
+                "Ref": "Stage",
+              },
+              "CloudFrontAliases",
+            ],
+          },
+          "DefaultCacheBehavior": {
+            "AllowedMethods": [
+              "DELETE",
+              "GET",
+              "HEAD",
+              "OPTIONS",
+              "PATCH",
+              "POST",
+              "PUT",
+            ],
+            "Compress": true,
+            "ForwardedValues": {
+              "Cookies": {
+                "Forward": "all",
+              },
+              "Headers": [
+                "*",
+              ],
+              "QueryString": true,
+            },
+            "TargetOriginId": "facia-tool",
+            "ViewerProtocolPolicy": "redirect-to-https",
+          },
+          "DefaultRootObject": "v2",
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": true,
+          "Origins": [
+            {
+              "CustomOriginConfig": {
+                "HTTPSPort": 443,
+                "OriginProtocolPolicy": "https-only",
+              },
+              "DomainName": {
+                "Fn::GetAtt": [
+                  "FaciaLoadBalancerNewVPC",
+                  "DNSName",
+                ],
+              },
+              "Id": "facia-tool",
+            },
+          ],
+          "PriceClass": "PriceClass_All",
+          "ViewerCertificate": {
+            "AcmCertificateArn": {
+              "Ref": "CloudFrontCertificateArn",
+            },
+            "MinimumProtocolVersion": "TLSv1.2_2021",
+            "SslSupportMethod": "sni-only",
+          },
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::CloudFront::Distribution",
+    },
+    "FaciaLaunchConfigNewVPC": {
+      "Metadata": {
+        "AWS::CloudFormation::Authentication": {
+          "distributionAuthentication": {
+            "buckets": [
+              "facia-dist",
+            ],
+            "roleName": {
+              "Ref": "DistributionRole",
+            },
+            "type": "S3",
+          },
+        },
+        "AWS::CloudFormation::Init": {
+          "config": {
+            "files": {
+              "/etc/gu/facia-tool.application.secrets.conf": {
+                "authentication": "distributionAuthentication",
+                "mode": "000400",
+                "owner": "facia-tool",
+                "source": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      {
+                        "Fn::Sub": "https://s3-eu-west-1.amazonaws.com/facia-private/facia-tool.application.secrets.\${Stage}.conf",
+                      },
+                    ],
+                  ],
+                },
+              },
+              "/etc/gu/facia-tool.properties": {
+                "content": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "STAGE=",
+                      {
+                        "Ref": "Stage",
+                      },
+                      "
+",
+                      "STS_ROLE=",
+                      {
+                        "Ref": "FrontendRoleToAssume",
+                      },
+                      "
+",
+                      "FRONT_PRESSED_TABLE=",
+                      {
+                        "Fn::FindInMap": [
+                          "CrossResources",
+                          {
+                            "Ref": "Stage",
+                          },
+                          "FrontPressedTable",
+                        ],
+                      },
+                      "
+",
+                      "USER_DATA_TABLE=",
+                      {
+                        "Fn::Sub": "\${UserDataTablePrefix}-\${Stage}",
+                      },
+                      "
+",
+                    ],
+                  ],
+                },
+              },
+              "/home/facia-tool/facia-tool.all.deb": {
+                "authentication": "distributionAuthentication",
+                "source": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
+                      {
+                        "Ref": "Stage",
+                      },
+                      "/facia-tool/facia-tool_1.0_all.deb",
+                    ],
+                  ],
+                },
+              },
+            },
+            "users": {
+              "facia-tool": {
+                "homeDir": "/home/facia-tool",
+              },
+            },
+          },
+        },
+      },
+      "Properties": {
+        "IamInstanceProfile": {
+          "Ref": "DistributionInstanceProfile",
+        },
+        "ImageId": {
+          "Ref": "AMI",
+        },
+        "InstanceType": {
+          "Fn::FindInMap": [
+            "StageMap",
+            {
+              "Ref": "Stage",
+            },
+            "InstanceType",
+          ],
+        },
+        "MetadataOptions": {
+          "HttpTokens": "required",
+        },
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": "AppServerSecurityGroupNewVPC.GroupId",
+          },
+          {
+            "Ref": "CapiEndpointSsmKeyNewVPC",
+          },
+        ],
+        "UserData": {
+          "Fn::Base64": {
+            "Fn::Sub": "#!/bin/bash -ev
+cfn-init -s \${AWS::StackId} -r FaciaLaunchConfigNewVPC --region \${AWS::Region} || error_exit 'Failed to run cfn-init'
+dpkg -i /home/facia-tool/facia-tool.all.deb
+",
+          },
+        },
+      },
+      "Type": "AWS::AutoScaling::LaunchConfiguration",
+    },
+    "FaciaLoadBalancerNewVPC": {
+      "Properties": {
+        "CrossZone": true,
+        "HealthCheck": {
+          "HealthyThreshold": "2",
+          "Interval": "60",
+          "Target": "HTTP:9000/_healthcheck",
+          "Timeout": "5",
+          "UnhealthyThreshold": "10",
+        },
+        "Listeners": [
+          {
+            "InstancePort": "9000",
+            "LoadBalancerPort": "80",
+            "Protocol": "HTTP",
+          },
+          {
+            "InstancePort": "9000",
+            "InstanceProtocol": "HTTP",
+            "LoadBalancerPort": "443",
+            "Protocol": "HTTPS",
+            "SSLCertificateId": {
+              "Ref": "CertificateArn",
+            },
+          },
+        ],
+        "SecurityGroups": [
+          {
+            "Fn::GetAtt": [
+              "LoadBalancerSecurityGroupNewVPC",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": {
+          "Ref": "PublicSubnets",
+        },
+        "Tags": [
+          {
+            "Key": "App",
+            "Value": "facia-tool",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
+    },
+    "FeastPublicationTopic": {
+      "Properties": {
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "FrontsUpdateSNSPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sns:Subscribe",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Ref": "MobileAPIAccountID",
+                },
+              },
+              "Resource": {
+                "Ref": "FrontsUpdateSNSTopic",
+              },
+              "Sid": "MobileAccount",
+            },
+            {
+              "Action": "sns:Subscribe",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Ref": "FrontendAccountID",
+                },
+              },
+              "Resource": {
+                "Ref": "FrontsUpdateSNSTopic",
+              },
+              "Sid": "FrontendAccount",
+            },
+            {
+              "Action": "sns:Subscribe",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Ref": "OphanAccountID",
+                },
+              },
+              "Resource": {
+                "Ref": "FrontsUpdateSNSTopic",
+              },
+              "Sid": "OphanAccount",
+            },
+          ],
+        },
+        "Topics": [
+          {
+            "Ref": "FrontsUpdateSNSTopic",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::TopicPolicy",
+    },
+    "FrontsUpdateSNSTopic": {
+      "Properties": {
+        "DisplayName": "SNS Topic for fronts updates (both draft & live)",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::SNS::Topic",
+    },
+    "FrontsUserDataDynamoTable": {
+      "Properties": {
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "email",
+            "AttributeType": "S",
+          },
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "email",
+            "KeyType": "HASH",
+          },
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5,
+        },
+        "TableName": {
+          "Fn::Join": [
+            "-",
+            [
+              {
+                "Ref": "UserDataTablePrefix",
+              },
+              {
+                "Ref": "Stage",
+              },
+            ],
+          ],
+        },
+        "Tags": [
+          {
+            "Key": "devx-backup-enabled",
+            "Value": "true",
+          },
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::DynamoDB::Table",
+    },
+    "LoadBalancerSecurityGroupNewVPC": {
+      "Properties": {
+        "GroupDescription": "Facia application load balancer",
+        "SecurityGroupIngress": [
+          {
+            "CidrIp": "0.0.0.0/0",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+          {
+            "CidrIp": "0.0.0.0/0",
+            "FromPort": 443,
+            "IpProtocol": "tcp",
+            "ToPort": 443,
+          },
+        ],
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+        "VpcId": {
+          "Ref": "VpcId",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LogServerPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "kinesis:PutRecord",
+                "kinesis:PutRecords",
+                "kinesis:DescribeStream",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "ELKKinesisStreamArn",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LogServerPolicy",
+        "Roles": [
+          {
+            "Ref": "DistributionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "NewDBToAppIngressNewVPC": {
+      "Properties": {
+        "FromPort": 5432,
+        "GroupId": {
+          "Ref": "DBSecurityGroupIdNewVPC",
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": {
+          "Ref": "AppServerSecurityGroupNewVPC",
+        },
+        "ToPort": 5432,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "PanDomainPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:s3:::pan-domain-auth-settings/*",
+              ],
+            },
+          ],
+        },
+        "PolicyName": "PanDomainPolicy",
+        "Roles": [
+          {
+            "Ref": "DistributionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "PermissionsPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:s3:::permissions-cache/*",
+              ],
+            },
+          ],
+        },
+        "PolicyName": "PermissionsPolicy",
+        "Roles": [
+          {
+            "Ref": "DistributionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "RunFaciaToolLocally": {
+      "Condition": "IsCode",
+      "Properties": {
+        "Description": "Policy used for running fronts-tool locally",
+        "Path": {
+          "Fn::Sub": "/developer-policy/guardian/facia-tool/cms-fronts/\${Stage}/run-fronts-tool-locally/",
+        },
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "ssm:GetParameter",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Sub": "arn:aws:ssm:\${AWS::Region}:\${AWS::AccountId}:parameter/facia-tool/cms-fronts/\${Stage}/*",
+              },
+            },
+            {
+              "Action": "kms:Decrypt",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:kms:\${AWS::Region}:\${AWS::AccountId}:key/alias/aws/ssm",
+                },
+              ],
+            },
+            {
+              "Action": [
+                "sqs:ReceiveMessage",
+                "sqs:DeleteMessage",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:sqs:\${AWS::Region}:\${AWS::AccountId}:publish-events-\${Stage}",
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:GetObject",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:s3:::facia-dist/\${Stage}/*",
+                },
+                {
+                  "Fn::Sub": "arn:aws:s3:::facia-private/facia-tool.application.secrets.local.conf",
+                },
+                {
+                  "Fn::Sub": "arn:aws:s3:::facia-private/facia-tool.local.properties",
+                },
+              ],
+            },
+            {
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:Query",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:Scan",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:dynamodb:\${AWS::Region}:\${AWS::AccountId}:table/\${FrontsUserDataDynamoTable}",
+                },
+              ],
+            },
+            {
+              "Action": [
+                "ec2:DescribeTags",
+                "ec2:DescribeInstances",
+                "autoscaling:DescribeAutoScalingGroups",
+                "autoscaling:DescribeAutoScalingInstances",
+                "rds:DescribeDBInstances",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            {
+              "Action": [
+                "s3:PutObject",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": [
+                    "arn:aws:s3:::published-editions-\${LowerCaseStage}/*",
+                    {
+                      "LowerCaseStage": {
+                        "Fn::FindInMap": [
+                          "StageMap",
+                          {
+                            "Ref": "Stage",
+                          },
+                          "LowerCaseStage",
+                        ],
+                      },
+                    },
+                  ],
+                },
+                {
+                  "Fn::Sub": [
+                    "arn:aws:s3:::preview-editions-\${LowerCaseStage}/*",
+                    {
+                      "LowerCaseStage": {
+                        "Fn::FindInMap": [
+                          "StageMap",
+                          {
+                            "Ref": "Stage",
+                          },
+                          "LowerCaseStage",
+                        ],
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "FrontsUpdateSNSTopic",
+              },
+              "Sid": "AllowPublishToMyTopic",
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "FeastPublicationTopic",
+              },
+            },
+            {
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:s3:::facia-tool-store/\${Stage}/*",
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:ListBucket",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:s3:::facia-tool-store",
+              ],
+            },
+            {
+              "Action": [
+                "s3:GetObject",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings",
+                "arn:aws:s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings.public",
+                "arn:aws:s3:::pan-domain-auth-settings/*.p12",
+              ],
+            },
+            {
+              "Action": [
+                "s3:GetObject",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": "arn:aws:s3:::permissions-cache/\${Stage}/*",
+                },
+              ],
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CapiPreviewRole",
+              },
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "SwitchboardBucket",
+              },
+            },
+            {
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:Query",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Sub": [
+                    "arn:aws:dynamodb:\${AWS::Region}:\${AWS::AccountId}:table/\${Table}",
+                    {
+                      "Table": {
+                        "Fn::FindInMap": [
+                          "CrossResources",
+                          {
+                            "Ref": "Stage",
+                          },
+                          "FrontPressedTable",
+                        ],
+                      },
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::ManagedPolicy",
+    },
+    "StaticCloudFrontDnsRecord": {
+      "Properties": {
+        "Name": {
+          "Fn::Select": [
+            0,
+            {
+              "Fn::FindInMap": [
+                "StageMap",
+                {
+                  "Ref": "Stage",
+                },
+                "StaticCloudFrontAliases",
+              ],
+            },
+          ],
+        },
+        "RecordType": "CNAME",
+        "ResourceRecords": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Fn::GetAtt": "StaticCloudfront.DomainName",
+                },
+                ".",
+              ],
+            ],
+          },
+        ],
+        "Stage": {
+          "Ref": "Stage",
+        },
+        "TTL": 900,
+      },
+      "Type": "Guardian::DNS::RecordSet",
+    },
+    "StaticCloudfront": {
+      "Properties": {
+        "DistributionConfig": {
+          "Aliases": {
+            "Fn::FindInMap": [
+              "StageMap",
+              {
+                "Ref": "Stage",
+              },
+              "StaticCloudFrontAliases",
+            ],
+          },
+          "DefaultCacheBehavior": {
+            "Compress": true,
+            "ForwardedValues": {
+              "QueryString": false,
+            },
+            "TargetOriginId": "static-facia-tool",
+            "ViewerProtocolPolicy": "redirect-to-https",
+          },
+          "DefaultRootObject": "index.html",
+          "Enabled": true,
+          "HttpVersion": "http2",
+          "IPV6Enabled": true,
+          "Origins": [
+            {
+              "DomainName": {
+                "Fn::Join": [
+                  "",
+                  [
+                    {
+                      "Ref": "StaticBucketName",
+                    },
+                    ".s3.amazonaws.com",
+                  ],
+                ],
+              },
+              "Id": "static-facia-tool",
+              "OriginPath": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "/",
+                    {
+                      "Ref": "Stage",
+                    },
+                    "/static-facia-tool",
+                  ],
+                ],
+              },
+              "S3OriginConfig": {
+                "OriginAccessIdentity": "",
+              },
+            },
+          ],
+          "PriceClass": "PriceClass_All",
+          "ViewerCertificate": {
+            "AcmCertificateArn": {
+              "Ref": "CloudFrontCertificateArn",
+            },
+            "MinimumProtocolVersion": "TLSv1.2_2021",
+            "SslSupportMethod": "sni-only",
+          },
+        },
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::CloudFront::Distribution",
+    },
+    "StorageBucket": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:s3:::facia-tool-store/",
+                      {
+                        "Ref": "Stage",
+                      },
+                      "/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:ListBucket",
+              ],
+              "Effect": "Allow",
+              "Resource": [
+                "arn:aws:s3:::facia-tool-store",
+              ],
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "StorageBucket",
+        "Roles": [
+          {
+            "Ref": "DistributionRole",
+          },
+          {
+            "Ref": "StorageConsumerRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "StorageConsumerRole": {
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "FrontendAccountID",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "MobileAPIAccountID",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "MobileAPITeamcityAccountID",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "OphanAccountID",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "ContentAPIAccountID",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "AWS": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:aws:iam::",
+                      {
+                        "Ref": "SupportAccountID",
+                      },
+                      ":root",
+                    ],
+                  ],
+                },
+              },
+            },
+          ],
+        },
+        "Path": "/",
+        "Tags": [
+          {
+            "Key": "gu:cdk:version",
+            "Value": "TEST",
+          },
+          {
+            "Key": "gu:repo",
+            "Value": "guardian/facia-tool",
+          },
+          {
+            "Key": "Stack",
+            "Value": "cms-fronts",
+          },
+          {
+            "Key": "Stage",
+            "Value": "TEST",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "SwitchesPolicy": {
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "SwitchboardBucket",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "SwitchesPolicy",
+        "Roles": [
+          {
+            "Ref": "DistributionRole",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+  },
+}
+`;

@@ -1,0 +1,931 @@
+---
+AWSTemplateFormatVersion: "2010-09-09"
+Description: Facia Tool Service
+Parameters:
+  Stage:
+    Description: Environment name
+    Type: String
+    AllowedValues:
+      - CODE
+      - PROD
+    Default: PROD
+  FrontendRoleToAssume:
+    Description: Frontend Role to assume for cross account policies
+    Type: String
+    Default: arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX
+  ELKKinesisStreamArn:
+    Type: String
+    Description: Arn of the kinesis stream for logging to ELK (logs.gutools)
+  ELKKinesisStreamName:
+    Description: "Elk logging stream name"
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /account/services/logging.stream.name
+  AvailabilityZones:
+    Description: The availability zone where instances are allowed to run
+    Type: List<AWS::EC2::AvailabilityZone::Name>
+    Default: eu-west-1a,eu-west-1b,eu-west-1c
+  SwitchboardBucket:
+    Description: Bucket where switchboard writes switches status
+    Type: String
+    Default: arn:aws:s3:::facia-switches/*
+  CertificateArn:
+    Description: ARN of the x509 certificate for this service
+    Type: String
+  AMI:
+    Description: ID of the machine image for this service (ami)
+    Type: String
+  FrontendAccountID:
+    Description: AWS account ID of frontend
+    Type: String
+  MobileAPIAccountID:
+    Description: AWS account ID of MAPI
+    Type: String
+  MobileAPITeamcityAccountID:
+    Description: AWS account ID of MAPI - used for CI
+    Type: String
+  OphanAccountID:
+    Description: AWS account ID of Ophan
+    Type: String
+  ContentAPIAccountID:
+    Description: AWS account ID of CAPI
+    Type: String
+  SupportAccountID:
+    Description: AWS account ID of Support
+    Type: String
+  StaticBucketName:
+    Description: Bucket containing static files
+    Type: String
+  CloudFrontCertificateArn:
+    Description: x509 certificate ARN for CloudFront - must be in us-east-1
+    Type: String
+  CapiPreviewRole:
+    Type: String
+    Description: ARN of the CAPI preview role
+  UserDataTablePrefix:
+    Type: String
+    Default: fronts-user-data-table
+  DBSecurityGroupId:
+    Type: String
+  DBSecurityGroupIdNewVPC:
+    Type: String
+  CapiEndpointSsmKeyNewVPC:
+    Type: AWS::SSM::Parameter::Value<String>
+    Default: /newvpc/endpoint/capi/PROD
+    Description: SSM key containing security group of the CAPI endpoint
+  VpcId:
+    Type: AWS::EC2::VPC::Id
+    Description: The new VPC we look to migrate to
+  PublicSubnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: The public subnets of the new VPC for the loadbalancer
+  PrivateSubnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: The private subnets of the new VPC for the autoscaling group
+
+Mappings:
+  StageMap:
+    PROD:
+      MinSize: 3
+      MaxSize: 6
+      DesiredCapacity: 3
+      InstanceType: t4g.medium
+      CloudFrontAliases:
+        - fronts.gutools.co.uk
+      StaticCloudFrontAliases:
+        - fronts-static.gutools.co.uk
+      LowerCaseStage: prod
+    CODE:
+      MinSize: 1
+      MaxSize: 2
+      DesiredCapacity: 1
+      InstanceType: t4g.small
+      CloudFrontAliases:
+        - fronts.code.dev-gutools.co.uk
+      StaticCloudFrontAliases:
+        - fronts-static.code.dev-gutools.co.uk
+      LowerCaseStage: code
+  CrossResources:
+    CODE:
+      FrontPressedTable: front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU
+    PROD:
+      FrontPressedTable: front-pressed-lambda-PROD-DynamoDBTable-M03VC0RYBQ1W
+
+Resources:
+  StaticCloudFrontDnsRecord:
+    Type: Guardian::DNS::RecordSet
+    Properties:
+      Name:
+        Fn::Select:
+          - 0
+          - Fn::FindInMap:
+            - StageMap
+            - Ref: Stage
+            - StaticCloudFrontAliases
+      ResourceRecords:
+      - Fn::Join:
+          - ""
+          - - !GetAtt StaticCloudfront.DomainName
+            - "."
+      TTL: 900
+      RecordType: CNAME
+      Stage: !Ref Stage
+  DnsRecord:
+    Type: Guardian::DNS::RecordSet
+    Properties:
+      Name:
+        Fn::Select:
+          - 0
+          - Fn::FindInMap:
+            - StageMap
+            - Ref: Stage
+            - CloudFrontAliases
+      ResourceRecords:
+      - Fn::Join:
+          - ""
+          - - !GetAtt FaciaCloudfront.DomainName
+            - "."
+      TTL: 900
+      RecordType: CNAME
+      Stage: !Ref Stage
+  DistributionInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      Path: "/"
+      Roles:
+        - Ref: DistributionRole
+  DistributionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - Fn::ImportValue: !Sub "guardian-ec2-for-ssm-GuardianEC2ForSSMPolicy"
+      AssumeRolePolicyDocument:
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - ec2.amazonaws.com
+            Action:
+              - sts:AssumeRole
+      Path: "/"
+      Policies:
+        - PolicyName: getparameters
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action: ssm:GetParameter
+                Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/facia-tool/cms-fronts/${Stage}/*"
+              - Effect: Allow
+                Action: kms:Decrypt
+                Resource: "*"
+        - PolicyName: root
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                - sqs:ReceiveMessage
+                - sqs:DeleteMessage
+                Resource:
+                  - !Sub
+                    - "arn:aws:sqs:${Region}:${Account}:publish-events-${Stage}"
+                    - {
+                        Region: !Ref "AWS::Region",
+                        Account: !Ref "AWS::AccountId",
+                      }
+              - Effect: Allow
+                Action:
+                  - s3:GetObject
+                Resource:
+                  - arn:aws:s3:::facia-dist/*
+                  - arn:aws:s3:::facia-private/*
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:Query
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:Scan
+                Resource:
+                  - !Sub
+                    - "arn:aws:dynamodb:${Region}:${Account}:table/${Table}"
+                    - {
+                        Region: !Ref "AWS::Region",
+                        Account: !Ref "AWS::AccountId",
+                        Table: !Ref "FrontsUserDataDynamoTable",
+                      }
+              - Effect: Allow
+                Action:
+                  - ses:SendEmail
+                Resource:
+                  - "*"
+              - Effect: Allow
+                Resource: "*"
+                Action:
+                  - ec2:DescribeTags
+                  - ec2:DescribeInstances
+                  - autoscaling:DescribeAutoScalingGroups
+                  - autoscaling:DescribeAutoScalingInstances
+                  - rds:DescribeDBInstances
+              - Effect: Allow
+                Action:
+                  - s3:PutObject
+                Resource:
+                  - Fn::Sub:
+                    - arn:aws:s3:::published-editions-${LowerCaseStage}/*
+                    - LowerCaseStage: !FindInMap [ StageMap, Ref: Stage, LowerCaseStage ]
+                  - Fn::Sub:
+                    - arn:aws:s3:::preview-editions-${LowerCaseStage}/*
+                    - LowerCaseStage: !FindInMap [ StageMap, Ref: Stage, LowerCaseStage ]
+        - PolicyName: publishTopic
+          PolicyDocument:
+              Statement:
+                  - Sid: AllowPublishToMyTopic
+                    Effect: Allow
+                    Action: sns:Publish
+                    Resource: !Ref 'FrontsUpdateSNSTopic'
+                  - Effect: Allow
+                    Action: sns:Publish
+                    Resource: !Ref FeastPublicationTopic
+
+  FrontsUpdateSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: SNS Topic for fronts updates (both draft & live)
+
+  FeastPublicationTopic:
+    Type: AWS::SNS::Topic
+
+  FrontsUpdateSNSPolicy:
+    Type: AWS::SNS::TopicPolicy
+    Properties:
+      Topics:
+        - !Ref FrontsUpdateSNSTopic
+      PolicyDocument:
+        Statement:
+          - Sid: MobileAccount
+            Effect: Allow
+            Principal:
+              AWS: !Ref 'MobileAPIAccountID'
+            Action: "sns:Subscribe"
+            Resource: !Ref 'FrontsUpdateSNSTopic'
+          - Sid: FrontendAccount
+            Effect: Allow
+            Principal:
+              AWS: !Ref 'FrontendAccountID'
+            Action: "sns:Subscribe"
+            Resource: !Ref 'FrontsUpdateSNSTopic'
+          - Sid: OphanAccount
+            Effect: Allow
+            Principal:
+              AWS: !Ref 'OphanAccountID'
+            Action: "sns:Subscribe"
+            Resource: !Ref 'FrontsUpdateSNSTopic'
+
+  StorageConsumerRole:
+    Type: AWS::IAM::Role
+    Properties:
+      Path: "/"
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:aws:iam::"
+                    - Ref: FrontendAccountID
+                    - ":root"
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:aws:iam::"
+                    - Ref: MobileAPIAccountID
+                    - ":root"
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:aws:iam::"
+                    - Ref: MobileAPITeamcityAccountID
+                    - ":root"
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:aws:iam::"
+                    - Ref: OphanAccountID
+                    - ":root"
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:aws:iam::"
+                    - Ref: ContentAPIAccountID
+                    - ":root"
+          - Action: sts:AssumeRole
+            Effect: Allow
+            Principal:
+              AWS:
+                Fn::Join:
+                  - ""
+                  - - "arn:aws:iam::"
+                    - Ref: SupportAccountID
+                    - ":root"
+  StorageBucket:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: StorageBucket
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:PutObjectAcl
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - arn:aws:s3:::facia-tool-store/
+                    - Ref: Stage
+                    - "/*"
+          - Effect: Allow
+            Action:
+              - s3:ListBucket
+            Resource:
+              - arn:aws:s3:::facia-tool-store
+      Roles:
+        - Ref: DistributionRole
+        - Ref: StorageConsumerRole
+  FrontsUserDataDynamoTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Join ["-", [Ref: UserDataTablePrefix, Ref: Stage]]
+      AttributeDefinitions:
+        - AttributeName: email
+          AttributeType: S
+      KeySchema:
+        - AttributeName: email
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      Tags:
+        - Key: devx-backup-enabled
+          Value: true
+
+  PanDomainPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: PanDomainPolicy
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource:
+              - arn:aws:s3:::pan-domain-auth-settings/*
+      Roles:
+        - Ref: DistributionRole
+  PermissionsPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: PermissionsPolicy
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource:
+              - arn:aws:s3:::permissions-cache/*
+      Roles:
+        - Ref: DistributionRole
+  CrossAccountPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: CrossAccountPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Resource:
+              Ref: FrontendRoleToAssume
+      Roles:
+        - Ref: DistributionRole
+  LogServerPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: LogServerPolicy
+      PolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - kinesis:PutRecord
+                - kinesis:PutRecords
+                - kinesis:DescribeStream
+              Resource: !Ref ELKKinesisStreamArn
+      Roles:
+        - Ref: DistributionRole
+  SwitchesPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: SwitchesPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: s3:GetObject
+            Resource:
+              Ref: SwitchboardBucket
+      Roles:
+        - Ref: DistributionRole
+  CloudwatchPolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: CloudwatchPolicy
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - cloudwatch:GetMetricStatistics
+              - cloudwatch:ListMetrics
+              - cloudwatch:PutMetricData
+            Resource: "*"
+      Roles:
+        - Ref: DistributionRole
+  DynamoPressStatus:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: DynamoPressStatus
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:Query
+            Resource:
+              - Fn::Join:
+                  - ""
+                  - - "arn:aws:dynamodb:"
+                    - Ref: AWS::Region
+                    - ":"
+                    - Ref: AWS::AccountId
+                    - ":table/"
+                    - Fn::FindInMap:
+                        - CrossResources
+                        - Ref: Stage
+                        - FrontPressedTable
+      Roles:
+        - Ref: DistributionRole
+  FaciaCloudfront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        HttpVersion: http2
+        IPV6Enabled: true
+        Aliases:
+          Fn::FindInMap:
+            - StageMap
+            - Ref: Stage
+            - CloudFrontAliases
+        Origins:
+          - CustomOriginConfig:
+              HTTPSPort: "443"
+              OriginProtocolPolicy: https-only
+            DomainName:
+              Fn::GetAtt:
+                - FaciaLoadBalancerNewVPC
+                - DNSName
+            Id: facia-tool
+        DefaultRootObject: v2
+        DefaultCacheBehavior:
+          AllowedMethods:
+            - DELETE
+            - GET
+            - HEAD
+            - OPTIONS
+            - PATCH
+            - POST
+            - PUT
+          Compress: true
+          ForwardedValues:
+            Headers:
+              - "*"
+            QueryString: true
+            Cookies:
+              Forward: all
+          TargetOriginId: facia-tool
+          ViewerProtocolPolicy: redirect-to-https
+        PriceClass: PriceClass_All
+        Enabled: true
+        ViewerCertificate:
+          AcmCertificateArn:
+            Ref: CloudFrontCertificateArn
+          MinimumProtocolVersion: TLSv1.2_2021
+          SslSupportMethod: sni-only
+  StaticCloudfront:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        HttpVersion: http2
+        IPV6Enabled: true
+        Aliases:
+          Fn::FindInMap:
+            - StageMap
+            - Ref: Stage
+            - StaticCloudFrontAliases
+        Origins:
+          - S3OriginConfig:
+              OriginAccessIdentity: ""
+            DomainName:
+              Fn::Join:
+                - ""
+                - - Ref: StaticBucketName
+                  - .s3.amazonaws.com
+            Id: static-facia-tool
+            OriginPath:
+              Fn::Join:
+                - ""
+                - - /
+                  - Ref: Stage
+                  - /static-facia-tool
+        DefaultRootObject: index.html
+        DefaultCacheBehavior:
+          Compress: true
+          ForwardedValues:
+            QueryString: false
+          TargetOriginId: static-facia-tool
+          ViewerProtocolPolicy: redirect-to-https
+        PriceClass: PriceClass_All
+        Enabled: true
+        ViewerCertificate:
+          AcmCertificateArn:
+            Ref: CloudFrontCertificateArn
+          MinimumProtocolVersion: TLSv1.2_2021
+          SslSupportMethod: sni-only
+
+  ###################
+  # Security Groups #
+  ###################
+
+  AppServerSecurityGroupNewVPC:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Application servers
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 9000
+          ToPort: 9000
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroupNewVPC
+  LoadBalancerSecurityGroupNewVPC:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Facia application load balancer
+      VpcId: !Ref VpcId
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: "443"
+          ToPort: "443"
+          CidrIp: 0.0.0.0/0
+
+  ####################################
+  # Postgres Database Ingress/Egress #
+  ####################################
+
+  AppToNewDBEgressNewVPC:
+    Type: AWS::EC2::SecurityGroupEgress
+    Properties:
+      GroupId: !Ref AppServerSecurityGroupNewVPC
+      IpProtocol: tcp
+      FromPort: 5432
+      ToPort: 5432
+      DestinationSecurityGroupId: !Ref DBSecurityGroupIdNewVPC
+
+  NewDBToAppIngressNewVPC:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref DBSecurityGroupIdNewVPC
+      IpProtocol: tcp
+      FromPort: 5432
+      ToPort: 5432
+      SourceSecurityGroupId: !Ref AppServerSecurityGroupNewVPC
+
+  #################
+  # Load Balancer #
+  #################
+
+  FaciaLoadBalancerNewVPC:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      Subnets: !Ref 'PublicSubnets'
+      CrossZone: true
+      SecurityGroups:
+        - Fn::GetAtt:
+            - LoadBalancerSecurityGroupNewVPC
+            - GroupId
+      Listeners:
+        - LoadBalancerPort: "80"
+          InstancePort: "9000"
+          Protocol: HTTP
+        - LoadBalancerPort: "443"
+          InstancePort: "9000"
+          Protocol: HTTPS
+          InstanceProtocol: HTTP
+          SSLCertificateId:
+            Ref: CertificateArn
+      HealthCheck:
+        Target: HTTP:9000/_healthcheck
+        HealthyThreshold: "2"
+        UnhealthyThreshold: "10"
+        Interval: "60"
+        Timeout: "5"
+      Tags:
+        - Key: Stage
+          Value:
+            Ref: Stage
+        - Key: Stack
+          Value: cms-fronts
+        - Key: App
+          Value: facia-tool
+  FaciaAutoscalingGroupNewVPC:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      VPCZoneIdentifier: !Ref PrivateSubnets
+      AvailabilityZones:
+        Ref: AvailabilityZones
+      LaunchConfigurationName:
+        Ref: FaciaLaunchConfigNewVPC
+      MinSize:
+        Fn::FindInMap:
+          - StageMap
+          - Ref: Stage
+          - MinSize
+      MaxSize:
+        Fn::FindInMap:
+          - StageMap
+          - Ref: Stage
+          - MaxSize
+      DesiredCapacity:
+        Fn::FindInMap:
+          - StageMap
+          - Ref: Stage
+          - DesiredCapacity
+      Cooldown: "180"
+      HealthCheckType: ELB
+      HealthCheckGracePeriod: 200
+      LoadBalancerNames:
+        - Ref: FaciaLoadBalancerNewVPC
+      Tags:
+        - Key: Stage
+          Value:
+            Ref: Stage
+          PropagateAtLaunch: "true"
+        - Key: Stack
+          Value: cms-fronts
+          PropagateAtLaunch: "true"
+        - Key: App
+          Value: facia-tool
+          PropagateAtLaunch: "true"
+        - Key: LogKinesisStreamName
+          Value: !Ref 'ELKKinesisStreamName'
+          PropagateAtLaunch: 'true'
+        - Key: SystemdUnit
+          Value: facia-tool.service
+          PropagateAtLaunch: 'true'
+        - Key: "gu:riffraff:new-asg"
+          Value: 1
+          PropagateAtLaunch: 'true'
+  FaciaLaunchConfigNewVPC:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Metadata:
+      AWS::CloudFormation::Authentication:
+        distributionAuthentication:
+          type: S3
+          roleName:
+            Ref: DistributionRole
+          buckets:
+            - facia-dist
+      AWS::CloudFormation::Init:
+        config:
+          users:
+            facia-tool:
+              homeDir: "/home/facia-tool"
+          files:
+            "/home/facia-tool/facia-tool.all.deb":
+              source:
+                Fn::Join:
+                  - ""
+                  - - https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/
+                    - Ref: Stage
+                    - "/facia-tool/facia-tool_1.0_all.deb"
+              authentication: distributionAuthentication
+            "/etc/gu/facia-tool.application.secrets.conf":
+              source:
+                Fn::Join:
+                  - ""
+                  - - !Sub "https://s3-eu-west-1.amazonaws.com/facia-private/facia-tool.application.secrets.${Stage}.conf"
+              mode: "000400"
+              owner: facia-tool
+              authentication: distributionAuthentication
+            "/etc/gu/facia-tool.properties":
+              content:
+                Fn::Join:
+                  - ""
+                  - - STAGE=
+                    - Ref: Stage
+                    - "\n"
+                    - STS_ROLE=
+                    - Ref: FrontendRoleToAssume
+                    - "\n"
+                    - FRONT_PRESSED_TABLE=
+                    - Fn::FindInMap:
+                        - CrossResources
+                        - Ref: Stage
+                        - FrontPressedTable
+                    - "\n"
+                    - USER_DATA_TABLE=
+                    - !Sub "${UserDataTablePrefix}-${Stage}"
+                    - "\n"
+    Properties:
+      ImageId:
+        Ref: AMI
+      InstanceType:
+        Fn::FindInMap:
+          - StageMap
+          - Ref: Stage
+          - InstanceType
+      SecurityGroups:
+        - !GetAtt AppServerSecurityGroupNewVPC.GroupId
+        - !Ref CapiEndpointSsmKeyNewVPC
+      IamInstanceProfile:
+        Ref: DistributionInstanceProfile
+      MetadataOptions:
+        HttpTokens: required
+      UserData:
+        Fn::Base64:
+          !Sub |
+            #!/bin/bash -ev
+            cfn-init -s ${AWS::StackId} -r FaciaLaunchConfigNewVPC --region ${AWS::Region} || error_exit 'Failed to run cfn-init'
+            dpkg -i /home/facia-tool/facia-tool.all.deb
+
+  AssumeCapiPreviewRolePolicy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: assume-capi-preview-role
+      PolicyDocument:
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Resource:
+              Ref: CapiPreviewRole
+      Roles:
+        - Ref: DistributionRole
+
+  RunFaciaToolLocally:
+    Type: AWS::IAM::ManagedPolicy
+    Condition: IsCode
+    Properties:
+      Description: Policy used for running fronts-tool locally
+      Path: !Sub "/developer-policy/guardian/facia-tool/cms-fronts/${Stage}/run-fronts-tool-locally/"
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action: ssm:GetParameter
+            Resource: !Sub "arn:aws:ssm:${AWS::Region}:${AWS::AccountId}:parameter/facia-tool/cms-fronts/${Stage}/*"
+          - Effect: Allow
+            Action: kms:Decrypt
+            Resource:
+              - !Sub "arn:aws:kms:${AWS::Region}:${AWS::AccountId}:key/alias/aws/ssm"
+          - Effect: Allow
+            Action:
+            - sqs:ReceiveMessage
+            - sqs:DeleteMessage
+            Resource:
+              - !Sub "arn:aws:sqs:${AWS::Region}:${AWS::AccountId}:publish-events-${Stage}"
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource:
+              - !Sub "arn:aws:s3:::facia-dist/${Stage}/*"
+              - !Sub "arn:aws:s3:::facia-private/facia-tool.application.secrets.local.conf"
+              - !Sub "arn:aws:s3:::facia-private/facia-tool.local.properties"
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:Query
+              - dynamodb:PutItem
+              - dynamodb:UpdateItem
+              - dynamodb:Scan
+            Resource:
+              - !Sub "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${FrontsUserDataDynamoTable}"
+          - Effect: Allow
+            Resource: "*"
+            Action:
+              - ec2:DescribeTags
+              - ec2:DescribeInstances
+              - autoscaling:DescribeAutoScalingGroups
+              - autoscaling:DescribeAutoScalingInstances
+              - rds:DescribeDBInstances
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+            Resource:
+              - Fn::Sub:
+                - arn:aws:s3:::published-editions-${LowerCaseStage}/*
+                - LowerCaseStage: !FindInMap [ StageMap, Ref: Stage, LowerCaseStage ]
+              - Fn::Sub:
+                - arn:aws:s3:::preview-editions-${LowerCaseStage}/*
+                - LowerCaseStage: !FindInMap [ StageMap, Ref: Stage, LowerCaseStage ]
+          - Sid: AllowPublishToMyTopic
+            Effect: Allow
+            Action: sns:Publish
+            Resource: !Ref 'FrontsUpdateSNSTopic'
+          - Effect: Allow
+            Action: sns:Publish
+            Resource: !Ref FeastPublicationTopic
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+              - s3:PutObjectAcl
+            Resource:
+              - !Sub "arn:aws:s3:::facia-tool-store/${Stage}/*"
+          - Effect: Allow
+            Action:
+              - s3:ListBucket
+            Resource:
+              - arn:aws:s3:::facia-tool-store
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource:
+              - arn:aws:s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings
+              - arn:aws:s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings.public
+              - arn:aws:s3:::pan-domain-auth-settings/*.p12
+          - Effect: Allow
+            Action:
+              - s3:GetObject
+            Resource:
+              - !Sub "arn:aws:s3:::permissions-cache/${Stage}/*"
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Resource:
+              Ref: CapiPreviewRole
+          - Effect: Allow
+            Action: s3:GetObject
+            Resource:
+              Ref: SwitchboardBucket
+          - Effect: Allow
+            Action:
+              - dynamodb:GetItem
+              - dynamodb:Query
+            Resource:
+              - Fn::Sub:
+                - "arn:aws:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${Table}"
+                - Table: !FindInMap [ CrossResources, !Ref Stage, FrontPressedTable ]
+
+Conditions:
+  IsCode: !Equals [ !Ref Stage, CODE ]
+
+Outputs:
+  FaciaLoadBalancerDNS:
+    Description: Load balancer DNS
+    Value:
+      Fn::GetAtt:
+        - FaciaLoadBalancerNewVPC
+        - DNSName
+  StorageConsumerRole:
+    Description: Role to be assumed for cross account access to the bucket
+    Value:
+      Ref: StorageConsumerRole
+  FrontsUpdateSNSTopicARN:
+    Description: ARN of the SNS topic
+    Value:
+      Ref: FrontsUpdateSNSTopic
+    Export:
+      Name: !Sub "${AWS::StackName}-FrontsUpdateSNSTopicARN"
+  FeastPublicationSNSTopic:
+    Description: ARN of the SNS topic
+    Value:
+      Ref: FeastPublicationTopic
+    Export:
+      Name: !Sub "${AWS::StackName}-FeastPublicationSNSTopicARN"

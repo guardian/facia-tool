@@ -1,20 +1,26 @@
 regions: [eu-west-1]
 stacks: [cms-fronts]
+allowedStages:
+  - CODE
+  - PROD
 
 deployments:
-  facia-tool:
-    type: autoscaling
-    dependencies:
-        - facia-tool-ami-update
-  facia-tool-ami-update:
-    type: ami-cloudformation-parameter
+  cfn-facia-tool:
+    type: cloud-formation
     app: facia-tool
     parameters:
+      templateStagePaths:
+        CODE: FaciaTool-euwest-1-CODE.template.json
+        PROD: FaciaTool-euwest-1-PROD.template.json
+      cloudFormationStackName: facia
+      prependStackToCloudFormationStackName: false
+      amiParameter: AMI
       amiTags:
         Recipe: editorial-tools-jammy-java11
         AmigoStage: PROD
         BuiltBy: amigo
       amiEncrypted: true
-      cloudFormationStackName: facia
-      cloudFormationStackByTags: false
-      prependStackToCloudFormationStackName: false
+  facia-tool:
+    type: autoscaling
+    dependencies:
+        - cfn-facia-tool

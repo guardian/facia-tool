@@ -1,0 +1,43 @@
+{
+  "name": "cdk",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "test": "jest",
+    "test-update": "jest -u",
+    "format": "prettier --write \"{lib,bin}/**/*.ts\"",
+    "lint": "eslint lib/** bin/** --no-error-on-unmatched-pattern",
+    "synth": "cdk synth --path-metadata false --version-reporting false",
+    "diff": "cdk diff --path-metadata false --version-reporting false"
+  },
+  "devDependencies": {
+    "@guardian/cdk": "64.4.0",
+    "@guardian/eslint-config": "14.0.1",
+    "@guardian/prettier": "5.0.0",
+    "@guardian/tsconfig": "^2.0.0",
+    "@types/jest": "^30.0.0",
+    "@types/node": "26.1.1",
+    "aws-cdk": "2.1135.0",
+    "aws-cdk-lib": "2.263.0",
+    "constructs": "10.8.1",
+    "eslint": "^9.39.2",
+    "jest": "30.4.2",
+    "prettier": "^3.8.3",
+    "source-map-support": "^0.5.20",
+    "ts-jest": "^29.4.11",
+    "ts-node": "^10.9.2",
+    "typescript": "5.9.3"
+  },
+  "prettier": "@guardian/prettier",
+  "jest": {
+    "testMatch": [
+      "<rootDir>/lib/**/*.test.ts"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "setupFilesAfterEnv": [
+      "./jest.setup.js"
+    ]
+  }
+}

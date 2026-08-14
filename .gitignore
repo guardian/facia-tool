@@ -24,6 +24,7 @@ old
 target
 .target
 /*/bin/
+!/cdk/bin/
 
 RUNNING_PID
 

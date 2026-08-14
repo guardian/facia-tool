@@ -245,6 +245,19 @@ jobs:
             - name: Set GITHUB_RUN_NUMBER environment variable
               run: |
                   echo "GITHUB_RUN_NUMBER=${{ needs.generate_build_number.outputs.BUILD_NUMBER }}" >> $GITHUB_ENV
+            - name: Setup Node (CDK)
+              uses: actions/setup-node@v4
+              with:
+                  node-version-file: cdk/.nvmrc
+                  cache: npm
+                  cache-dependency-path: cdk/package-lock.json
+            - name: Build and synth CDK
+              working-directory: cdk
+              run: |
+                  npm ci
+                  npm run lint
+                  npm test
+                  npm run synth
             - uses: guardian/actions-riff-raff@v4
               with:
                   app: facia-tool
@@ -255,3 +268,6 @@ jobs:
                   contentDirectories: |
                       facia-tool:
                         - target/facia-tool_1.0_all.deb
+                      cfn-facia-tool:
+                        - cdk/cdk.out/FaciaTool-euwest-1-CODE.template.json
+                        - cdk/cdk.out/FaciaTool-euwest-1-PROD.template.json
