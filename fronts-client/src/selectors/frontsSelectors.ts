@@ -120,6 +120,12 @@ const getFrontsWithCollection = (
 	return frontsWithCollection.map((front) => front.id);
 };
 
+const selectFrontIdsWithCollectionId = (
+	state: State,
+	collectionId: string | undefined,
+): string[] =>
+	getFrontsWithCollection(collectionId ?? null, selectFrontsAsArray(state));
+
 const getCollections = (state: State): CollectionConfigMap =>
 	frontsConfigSelectors.selectAll(state).collections || {};
 
@@ -356,4 +362,5 @@ export {
 	selectUnlockedFrontCollections,
 	createSelectArticleVisibilityDetails,
 	selectFrontsWithCollection,
+	selectFrontIdsWithCollectionId,
 };

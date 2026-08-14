@@ -31,7 +31,13 @@ import { PosSpec } from 'lib/dnd';
 import { removeClipboardCard } from './Clipboard';
 import { thunkInsertClipboardCard } from './ClipboardThunks';
 import { capGroupSiblings } from 'actions/Groups';
-import { selectCollectionCap } from 'selectors/configSelectors';
+import {
+	selectCollectionCap,
+	selectUserFullName,
+	selectUserEmail,
+} from 'selectors/configSelectors';
+import { selectFrontIdsWithCollectionId } from 'selectors/frontsSelectors';
+import { findActiveOrDraftTest } from 'util/abTests';
 import { getImageMetaFromValidationResponse } from 'util/form';
 import { ValidationResponse } from 'util/validateImageSrc';
 import { MappableDropType } from 'util/collectionUtils';
@@ -377,6 +383,68 @@ export const mayResetVideoReplace = ({
 	}
 };
 
+/**
+ * AB tests are designed to run only on the front(s) they were created on
+ * (recorded in `frontsThisTestCanRunOn`). When a card carrying a running test
+ * is moved to a different front, we end the test on that trail by setting
+ * `hasManuallyEndedOnThisTrail` to true.
+ *
+ * The following movements keep a test running (and therefore return no actions):
+ * - moving a card around within a front it can run on
+ * - moving a card to the clipboard, then re-adding it to a front it can run on
+ *
+ * Moving a card to the clipboard (and leaving it there) requires no action -
+ * its absence from the front is enough to imply the test is no longer running.
+ */
+export const mayEndAbTest = ({
+	to,
+	card,
+	persistTo,
+	state,
+}: UpdateCardParams) => {
+	// We only end tests when a card lands on a front (via a collection).
+	// Moves to the clipboard should not end tests, as the card may be re-added.
+	if (persistTo !== 'collection' || to.type === 'clipboard') {
+		return;
+	}
+
+	const runningTest = findActiveOrDraftTest(card);
+	if (!runningTest) {
+		return;
+	}
+
+	const allowedFrontIds = runningTest.frontsThisTestCanRunOn ?? [];
+	// If we don't know which fronts the test is allowed to run on, we can't
+	// tell whether this is a different front, so leave the test untouched.
+	if (allowedFrontIds.length === 0) {
+		return;
+	}
+
+	// The fronts that host the collection the card is being moved into.
+	const destinationFrontIds = selectFrontIdsWithCollectionId(
+		state,
+		to.collectionId,
+	);
+	const isMovingToAllowedFront = destinationFrontIds.some((frontId) =>
+		allowedFrontIds.includes(frontId),
+	);
+	if (isMovingToAllowedFront) {
+		return;
+	}
+
+	return updateCard(
+		card.uuid,
+		{},
+		{ merge: true },
+		{
+			...runningTest,
+			hasManuallyEndedOnThisTrail: true,
+			manuallyEndedOnThisTrailByName: selectUserFullName(state),
+			manuallyEndedOnThisTrailByEmail: selectUserEmail(state) || '',
+		},
+	);
+};
+
 const insertCardWithCreate =
 	(
 		to: PosSpec,
@@ -528,6 +596,7 @@ const moveCard = (
 					mayResetImageReplace(actionParams),
 					mayResetImmersive(actionParams),
 					mayResetVideoReplace(actionParams),
+					mayEndAbTest(actionParams),
 				];
 
 				modifyCardActions.forEach((action) => {
