@@ -148,6 +148,10 @@ class Card extends React.Component<CardContainerProps> {
 		}
 	};
 
+	// Stable handler so memoised card children (e.g. connected ArticleCard) can
+	// bail out of re-rendering instead of seeing a fresh onClick closure.
+	private handleSelect = () => this.props.onSelect(this.props.uuid);
+
 	public render() {
 		const {
 			uuid,
@@ -155,7 +159,6 @@ class Card extends React.Component<CardContainerProps> {
 			isSupporting = false,
 			children,
 			getNodeProps,
-			onSelect,
 			type,
 			size = 'default',
 			textSize,
@@ -197,7 +200,7 @@ class Card extends React.Component<CardContainerProps> {
 							{...getNodeProps()}
 							onDelete={this.onDelete}
 							onAddToClipboard={this.handleAddToClipboard}
-							onClick={isUneditable ? undefined : () => onSelect(uuid)}
+							onClick={isUneditable ? undefined : this.handleSelect}
 							size={size}
 							textSize={textSize}
 							showMeta={showMeta}
@@ -231,7 +234,7 @@ class Card extends React.Component<CardContainerProps> {
 								{...getNodeProps()}
 								onDelete={this.onDelete}
 								onAddToClipboard={this.handleAddToClipboard}
-								onClick={isUneditable ? undefined : () => onSelect(uuid)}
+								onClick={isUneditable ? undefined : this.handleSelect}
 								size={size}
 								textSize={textSize}
 								showMeta={showMeta}
@@ -274,7 +277,7 @@ class Card extends React.Component<CardContainerProps> {
 								onDelete={this.onDelete}
 								onAddToClipboard={this.handleAddToClipboard}
 								// Chef has overrides so we need to edit it
-								onClick={isUneditable ? undefined : () => onSelect(uuid)}
+								onClick={isUneditable ? undefined : this.handleSelect}
 								size={size}
 								textSize={textSize}
 								showMeta={showMeta}
@@ -292,7 +295,7 @@ class Card extends React.Component<CardContainerProps> {
 								{...getNodeProps()}
 								onDelete={this.onDelete}
 								onAddToClipboard={this.handleAddToClipboard}
-								onClick={isUneditable ? undefined : () => onSelect(uuid)}
+								onClick={isUneditable ? undefined : this.handleSelect}
 								size={size}
 								textSize={textSize}
 								showMeta={showMeta}
