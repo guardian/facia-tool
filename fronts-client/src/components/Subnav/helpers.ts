@@ -8,7 +8,6 @@ export type RunAction = (
 
 export interface SubnavListEntry {
 	id: string;
-	/** The version shown/edited: the draft if present, otherwise the live copy. */
 	subnav: CustomSubnav;
 	hasLive: boolean;
 	hasDraft: boolean;

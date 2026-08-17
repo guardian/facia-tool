@@ -54,14 +54,15 @@ const EditionsRoutes = {
  */
 
 const subnavBase = '/subnavs';
+const subnavCreate = `${subnavBase}/new`;
 
 export const subnavRoutes = {
 	base: subnavBase,
-	create: `${subnavBase}/new`,
+	create: subnavCreate,
 	edit: (id: string) => `${subnavBase}/${id}`,
 	sectionProps: { path: subnavBase },
 	listProps: { exact: true, path: subnavBase },
-	createProps: { exact: true, path: `${subnavBase}/new` },
+	createProps: { exact: true, path: subnavCreate },
 	editProps: { exact: true, path: `${subnavBase}/:id` },
 };
 

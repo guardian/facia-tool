@@ -24,11 +24,6 @@ interface SubnavEditRouteProps {
 	saving: boolean;
 }
 
-/**
- * Resolves the `:id` route param against the loaded config. While the config is
- * still loading we show a placeholder; if the id is unknown (e.g. deleted or a
- * stale link) we send the user back to the list.
- */
 export const SubnavEditRoute = ({
 	config,
 	isLoading,

@@ -1,9 +1,6 @@
 /**
  * Types mirroring the CustomSubnav model from facia-scala-client
  * (com.gu.facia.client.models). See app/services/CustomSubnavApi.scala.
- *
- * Phase one only edits the header, links and targeted pages. `images` and
- * `palette` are part of the model but are not yet surfaced in the UI.
  */
 
 export type TargetedPageType = 'front' | 'article' | 'hasTag';
@@ -52,7 +49,6 @@ export interface CustomSubnav {
 	pages: TargetedPage[];
 	images?: SubnavImage[];
 	palette?: Palettes;
-	// Serialised as epoch milliseconds by the server (JodaFormat).
 	lastUpdated: number;
 	updatedBy: string;
 	updatedEmail: string;
@@ -63,11 +59,6 @@ export interface CustomSubnavConfig {
 	draft: CustomSubnav[];
 }
 
-/**
- * Shape returned by `GET /custom-subnav`. The server reads the stored document
- * tolerantly: if it cannot be parsed it returns an empty config plus a
- * `warning` explaining that the stored data could not be shown.
- */
 export interface CustomSubnavConfigResponse extends CustomSubnavConfig {
 	warning?: string | null;
 }

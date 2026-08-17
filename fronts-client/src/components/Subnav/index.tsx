@@ -80,13 +80,12 @@ const SubnavSection = () => {
 		}
 	};
 
-	// New subnavs are created on their own route; once saved we move to that
-	// subnav's edit route so the URL and the publish/take-down actions reflect it.
 	const handleCreate = async (subnav: CustomSubnav) => {
 		await handleSave(subnav);
 		history.push(subnavRoutes.edit(subnav.id));
 	};
 
+	// Likely temporary browser confirmation dialog component
 	const runAction = async (
 		id: string,
 		action: (id: string) => Promise<CustomSubnavConfig>,
