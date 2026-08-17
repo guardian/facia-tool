@@ -86,9 +86,43 @@ interface ComponentState {
 	isDraggingImageOver: boolean;
 }
 
+interface DerivedArticleFields {
+	mainMediaVideoAtom: ReturnType<typeof getMainMediaVideoAtom>;
+	intendedAudience: ReturnType<typeof intendedAudienceFromTags>;
+}
+
 class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 	public state = {
 		isDraggingImageOver: false,
+	};
+
+	// Cache values derived from `article` so their references stay stable while
+	// `article` is unchanged. Without this, `intendedAudienceFromTags` (and the
+	// atom lookup) produced fresh objects every render, defeating the
+	// React.memo on ArticleBody and forcing it to re-render needlessly.
+	private derivedArticleRef?: DerivedArticle;
+	private derivedArticleFields: DerivedArticleFields = {
+		mainMediaVideoAtom: undefined,
+		intendedAudience: undefined,
+	};
+
+	private getDerivedArticleFields = (
+		article?: DerivedArticle,
+	): DerivedArticleFields => {
+		if (this.derivedArticleRef !== article) {
+			this.derivedArticleRef = article;
+			this.derivedArticleFields = {
+				mainMediaVideoAtom:
+					article && article.hasMainVideo
+						? getMainMediaVideoAtom(article)
+						: undefined,
+				intendedAudience:
+					article && article.tags
+						? intendedAudienceFromTags(article.tags)
+						: undefined,
+			};
+		}
+		return this.derivedArticleFields;
 	};
 
 	public setIsImageHovering = (isDraggingImageOver: boolean) =>
@@ -131,6 +165,9 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 				uuid: id,
 				headline: !isLoading ? 'Content not found' : undefined,
 			};
+
+		const { mainMediaVideoAtom, intendedAudience } =
+			this.getDerivedArticleFields(article);
 
 		return (
 			<>
@@ -186,17 +223,13 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 								// Needs to be passed explicitly as not stored on the Redux form
 								mainMediaVideoAtom={
 									!!article && article.hasMainVideo
-										? getMainMediaVideoAtom(article)
+										? mainMediaVideoAtom
 										: undefined
 								}
 								otherCollectionsOnSameFrontThisCardIsOn={
 									otherCollectionsOnSameFrontThisCardIsOn
 								}
-								intendedAudience={
-									article &&
-									article.tags &&
-									intendedAudienceFromTags(article.tags)
-								}
+								intendedAudience={intendedAudience}
 								hasLiveAbTest={hasLiveAbTest}
 								headlineABTestingIsEnabled={headlineABTestingIsEnabled}
 							/>
