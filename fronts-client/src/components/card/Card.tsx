@@ -122,6 +122,7 @@ type CardContainerProps = ContainerProps & {
 	copyCardImageMeta: (from: string, to: string) => void;
 	addImageToCard: (id: string, response: ValidationResponse) => void;
 	clearCardSelection: (id: string) => void;
+	getCard: (id: string) => CardType | undefined;
 	type?: CardTypes;
 	isSelected: boolean;
 	numSupportingArticles: number;
@@ -129,7 +130,6 @@ type CardContainerProps = ContainerProps & {
 	isLive?: boolean;
 	pillarId?: string;
 	collectionType?: string;
-	cards: { [uuid: string]: CardType };
 	groupSizeId?: number;
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 };
@@ -490,7 +490,14 @@ class Card extends React.Component<CardContainerProps> {
 		imageCriteria: Criteria,
 	): ReturnType<typeof validateDimensions> => {
 		// check dragged image matches this card's collection's criteria.
-		const cardImageWasDraggedFrom = this.props.cards[cardUuid];
+		const cardImageWasDraggedFrom = this.props.getCard(cardUuid);
+
+		if (!cardImageWasDraggedFrom) {
+			return {
+				matchesCriteria: false,
+				reason: 'no replacement image found',
+			};
+		}
 
 		const { imageSlideshowReplace, slideshow } = cardImageWasDraggedFrom.meta;
 		if (imageSlideshowReplace) {
@@ -524,20 +531,26 @@ const createMapStateToProps = () => {
 			numSupportingArticles: selectSupportingArticleCount(state, uuid),
 			editMode: selectEditMode(state),
 			collectionType: collectionId && selectCollectionType(state, collectionId),
-			cards: state.cards,
 		};
 	};
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => {
-	return bindActionCreators(
-		{
-			onAddToClipboard: addCardToClipboard,
-			copyCardImageMeta: copyCardImageMetaWithPersist,
-			clearCardSelection: editorClearCardSelection,
-		},
-		dispatch,
-	);
+	return {
+		...bindActionCreators(
+			{
+				onAddToClipboard: addCardToClipboard,
+				copyCardImageMeta: copyCardImageMetaWithPersist,
+				clearCardSelection: editorClearCardSelection,
+			},
+			dispatch,
+		),
+		// Reads a single card lazily at drop time instead of subscribing every
+		// card to the entire `state.cards` map (which re-rendered all cards on
+		// any card change).
+		getCard: (id: string): CardType | undefined =>
+			dispatch((_dispatch, getState) => getState().cards[id]),
+	};
 };
 
 export default connect(createMapStateToProps, mapDispatchToProps)(Card);
