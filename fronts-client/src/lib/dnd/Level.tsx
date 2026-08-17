@@ -101,9 +101,45 @@ const DefaultContainer: React.SFC<ContainerDragTypes> = ({
 }) => <div {...rest}>{children}</div>;
 
 class Level<T> extends React.Component<Props<T>, State> {
+	/**
+	 * Handlers are cached per-index so that they keep a stable reference
+	 * across renders. Without this, a new function was allocated for every
+	 * drop target on every render, defeating memoisation in child components
+	 * and showing up as constant "changed props" in the React Profiler.
+	 * The cached handlers read from `this.props` at call time, so they remain
+	 * correct even though their identity is stable.
+	 */
+	private onDragOverHandlers = new Map<
+		number | null,
+		(e: React.DragEvent) => void
+	>();
+	private onDropHandlers = new Map<number, (e: React.DragEvent) => void>();
+
 	get key() {
 		return `${this.props.parentId}:${this.props.parentType}`;
 	}
+
+	private getOnDragOver = (
+		i: number | null,
+	): ((e: React.DragEvent) => void) => {
+		const existing = this.onDragOverHandlers.get(i);
+		if (existing) {
+			return existing;
+		}
+		const handler = this.onDragOver(i);
+		this.onDragOverHandlers.set(i, handler);
+		return handler;
+	};
+
+	private getOnDrop = (i: number): ((e: React.DragEvent) => void) => {
+		const existing = this.onDropHandlers.get(i);
+		if (existing) {
+			return existing;
+		}
+		const handler = this.onDrop(i);
+		this.onDropHandlers.set(i, handler);
+		return handler;
+	};
 
 	public render() {
 		const {
@@ -120,7 +156,7 @@ class Level<T> extends React.Component<Props<T>, State> {
 		} = this.props;
 		const Container = this.props.containerElement || DefaultContainer;
 		return (
-			<Container onDragOver={this.onDragOver(null)}>
+			<Container onDragOver={this.getOnDragOver(null)}>
 				{arr.map((node, i) => (
 					<React.Fragment key={getId(node)}>
 						<DropZone store={store} parentKey={this.key} index={i}>
@@ -224,8 +260,8 @@ class Level<T> extends React.Component<Props<T>, State> {
 
 	private getDropProps(arr: T[], index: number, isTarget: boolean): DropProps {
 		return {
-			onDragOver: this.onDragOver(index),
-			onDrop: this.onDrop(index),
+			onDragOver: this.getOnDragOver(index),
+			onDrop: this.getOnDrop(index),
 			isTarget,
 			index,
 			length: arr.length,
@@ -240,7 +276,7 @@ class Level<T> extends React.Component<Props<T>, State> {
 		return (forceClone = false) => ({
 			...getNodeDragProps(forceClone),
 			...(canDrop
-				? { onDragOver: this.onDragOver(i), onDrop: this.onDrop(i) }
+				? { onDragOver: this.getOnDragOver(i), onDrop: this.getOnDrop(i) }
 				: {}),
 		});
 	}

@@ -30,6 +30,11 @@ type Props<T> = OuterProps<T> & ConextProps;
 class Node<T> extends React.Component<Props<T>> {
 	public dragImage: HTMLDivElement | null = null;
 
+	// Cache the two possible drag-start handlers so their identity is stable
+	// across renders, allowing memoised children to bail out of re-rendering.
+	private onDragStartClone?: (e: React.DragEvent) => void;
+	private onDragStartNoClone?: (e: React.DragEvent) => void;
+
 	public render() {
 		const { renderDrag, data } = this.props;
 		return (
@@ -49,11 +54,26 @@ class Node<T> extends React.Component<Props<T>> {
 				)}
 				{this.props.children((forceClone) => ({
 					draggable: true,
-					onDragStart: this.onDragStart(forceClone),
+					onDragStart: this.getOnDragStart(forceClone),
 				}))}
 			</>
 		);
 	}
+
+	private getOnDragStart = (
+		forceClone: boolean,
+	): ((e: React.DragEvent) => void) => {
+		if (forceClone) {
+			if (!this.onDragStartClone) {
+				this.onDragStartClone = this.onDragStart(true);
+			}
+			return this.onDragStartClone;
+		}
+		if (!this.onDragStartNoClone) {
+			this.onDragStartNoClone = this.onDragStart(false);
+		}
+		return this.onDragStartNoClone;
+	};
 
 	private onDragStart = (forceClone: boolean) => (e: React.DragEvent) => {
 		if (e.dataTransfer.getData(TRANSFER_TYPE)) {

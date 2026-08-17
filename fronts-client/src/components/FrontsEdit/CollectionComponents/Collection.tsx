@@ -173,6 +173,21 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 	// added to prevent setState call on unmounted component
 	public isComponentMounted = false;
 
+	// Cache the derived groupIds array so it keeps a stable reference while the
+	// (memoised) `groups` selector output is unchanged. This array is threaded
+	// deep into the drag-and-drop tree, so recreating it every render forced
+	// needless downstream re-renders.
+	private memoGroupsRef?: Group[];
+	private memoGroupIds: string[] = [];
+
+	private getGroupIds = (groups: Group[]): string[] => {
+		if (this.memoGroupsRef !== groups) {
+			this.memoGroupsRef = groups;
+			this.memoGroupIds = groups.map((group) => group.uuid);
+		}
+		return this.memoGroupIds;
+	};
+
 	public componentDidMount() {
 		this.isComponentMounted = true;
 	}
@@ -227,7 +242,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 
 		const isUneditable = isCollectionLocked || browsingStage !== cardSets.draft;
 
-		const groupIds = groups.map((group) => group.uuid);
+		const groupIds = this.getGroupIds(groups);
 
 		return (
 			<>
