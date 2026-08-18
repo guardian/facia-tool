@@ -48,7 +48,11 @@ import type { State } from 'types/State';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
 import { Stages, Collection, CardSets, Card } from 'types/Collection';
 import difference from 'lodash/difference';
-import { selectCardsInCollections } from 'selectors/collection';
+import {
+	selectCardsInCollections,
+	createSelectActiveAbTestHeadlineErrorsForCollection,
+} from 'selectors/collection';
+import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import {
 	editorOpenCollections,
 	editorCloseCollections,
@@ -518,6 +522,9 @@ function initialiseCollectionsForFront(
 	};
 }
 
+const selectActiveAbTestHeadlineErrorsForCollection =
+	createSelectActiveAbTestHeadlineErrorsForCollection();
+
 function publishCollection(
 	collectionId: string,
 	frontId: string,
@@ -525,6 +532,19 @@ function publishCollection(
 	events.collectionPublished(frontId, collectionId);
 
 	return (dispatch: Dispatch, getState: () => State) => {
+		const state = getState();
+
+		// Safety net: never publish a collection whose active headline A/B test
+		// has invalid variant headlines. The Launch button is also disabled in
+		// this case, but guard here in case that is bypassed.
+		if (
+			selectFeatureValue(state, 'headline-ab-testing') &&
+			selectActiveAbTestHeadlineErrorsForCollection(state, { collectionId })
+				.length > 0
+		) {
+			return Promise.resolve();
+		}
+
 		return publishCollectionApi(collectionId)
 			.then(() => {
 				const batchedActions = [
