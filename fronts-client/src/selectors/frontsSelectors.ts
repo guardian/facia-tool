@@ -108,7 +108,7 @@ const selectFrontsWithPriority = (
 	getFrontsByPriority(state)[priority] || defaultFrontsWithPriority;
 
 const getFrontsWithCollection = (
-	parentCollectionOfCard: string | null,
+	parentCollectionOfCard: string | null | undefined,
 	fronts: FrontConfig[],
 ): string[] => {
 	if (!parentCollectionOfCard) return [];
@@ -124,7 +124,7 @@ const selectFrontIdsWithCollectionId = (
 	state: State,
 	collectionId: string | undefined,
 ): string[] =>
-	getFrontsWithCollection(collectionId ?? null, selectFrontsAsArray(state));
+	getFrontsWithCollection(collectionId, selectFrontsAsArray(state));
 
 const getCollections = (state: State): CollectionConfigMap =>
 	frontsConfigSelectors.selectAll(state).collections || {};
