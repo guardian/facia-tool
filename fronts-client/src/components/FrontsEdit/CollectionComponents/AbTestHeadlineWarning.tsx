@@ -31,7 +31,8 @@ const errorMessage = (error: AbTestHeadlineError['error']): string =>
 const AbTestHeadlineWarning = ({ abTestHeadlineErrors }: ComponentProps) => (
 	<div>
 		<strong>
-			This collection cannot be launched because of an active headline test:
+			This collection cannot be launched because of an incomplete active
+			headline test:
 		</strong>
 		<FlatUl>
 			{abTestHeadlineErrors.map(({ cardId, title, error }) => (
