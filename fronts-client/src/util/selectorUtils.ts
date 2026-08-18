@@ -1,5 +1,6 @@
 import { createSelectorCreator } from 'reselect';
 import shallowequal from 'shallowequal';
+import isEqual from 'lodash/isEqual';
 
 /***
  	React and Redux use object identities to work out what has changed.
@@ -10,6 +11,13 @@ export const emptyObject = {};
 const defaultEqualityCheck = (a: any, b: any) => a === b;
 
 function resultCheckMemoize<A extends any[], R>(func: (...args: A) => R) {
+	return resultCheckMemoizeWithEquality(func, shallowequal);
+}
+
+function resultCheckMemoizeWithEquality<A extends any[], R>(
+	func: (...args: A) => R,
+	resultsAreEqual: (a: R, b: R) => boolean,
+) {
 	let last: [A, R] | null = null;
 	return (...args: A): R => {
 		if (!last) {
@@ -29,7 +37,7 @@ function resultCheckMemoize<A extends any[], R>(func: (...args: A) => R) {
 
 		const result = func(...args);
 
-		if (shallowequal(lastResult, result)) {
+		if (resultsAreEqual(lastResult, result)) {
 			last = [args, lastResult];
 			return lastResult;
 		} else {
@@ -37,6 +45,12 @@ function resultCheckMemoize<A extends any[], R>(func: (...args: A) => R) {
 			return result;
 		}
 	};
+}
+
+function deepEqualResultCheckMemoize<A extends any[], R>(
+	func: (...args: A) => R,
+) {
+	return resultCheckMemoizeWithEquality(func, isEqual);
 }
 
 const createShallowEqualResultSelector = createSelectorCreator(
@@ -48,4 +62,18 @@ const createShallowEqualResultSelector = createSelectorCreator(
 	shallowequal,
 );
 
-export { createShallowEqualResultSelector };
+/**
+ * Like createShallowEqualResultSelector, but keeps the previous result
+ * reference when the newly computed result is *deeply* equal. Use this for
+ * selectors whose result is a nested structure (e.g. a map of objects) that is
+ * rebuilt from scratch on each recompute: a shallow result check would see the
+ * fresh nested objects as changed and return a new reference, needlessly
+ * re-rendering connected components even when the content is identical.
+ */
+const createDeepEqualResultSelector = createSelectorCreator(
+	deepEqualResultCheckMemoize as any,
+	defaultEqualityCheck,
+	shallowequal,
+);
+
+export { createShallowEqualResultSelector, createDeepEqualResultSelector };

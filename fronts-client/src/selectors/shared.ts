@@ -22,7 +22,10 @@ import {
 } from '../types/Collection';
 import type { State } from 'types/State';
 import { cardSets } from 'constants/fronts';
-import { createShallowEqualResultSelector } from 'util/selectorUtils';
+import {
+	createShallowEqualResultSelector,
+	createDeepEqualResultSelector,
+} from 'util/selectorUtils';
 import { DerivedArticle } from 'types/Article';
 import { hasMainVideo } from 'util/externalArticle';
 import { selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from './alsoOnSelectors';
@@ -275,7 +278,7 @@ const createSelectCardsWhichAreAlsoOnOtherCollectionsOnSameFront = () => {
 		},
 	);
 
-	return createShallowEqualResultSelector(
+	return createDeepEqualResultSelector(
 		[
 			selectCollection,
 			selectOtherCollectionsOnCurrentFront,
