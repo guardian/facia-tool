@@ -18,7 +18,8 @@ export type AbTestHeadlineErrorType = 'duplicate' | 'incomplete';
 
 /**
  * Validates the active headline A/B test (if any) on a card. Returns:
- *  - 'incomplete' when either variant headline is missing/empty
+ *  - 'incomplete' when either variant headline is missing, empty or
+ *    whitespace-only
  *  - 'duplicate' when both variant headlines are identical
  *  - null when there is no active test or the test is valid
  */
@@ -30,8 +31,8 @@ export const getActiveAbTestHeadlineError = (
 		return null;
 	}
 
-	const headlineA = getVariantHeadline(activeTest, 'A');
-	const headlineB = getVariantHeadline(activeTest, 'B');
+	const headlineA = getVariantHeadline(activeTest, 'A')?.trim();
+	const headlineB = getVariantHeadline(activeTest, 'B')?.trim();
 
 	if (!headlineA || !headlineB) {
 		return 'incomplete';
