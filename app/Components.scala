@@ -191,6 +191,8 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   )
   val userDataController = new UserDataController(frontsApi, dynamo, this)
   val gridProxy = new GridProxy(this)
+  val customSubnavApi = new CustomSubnavApi(s3FrontsApi)
+  val customSubnav = new CustomSubnavController(acl, customSubnavApi, this)
   val loggingFilter = new LoggingFilter
 
   final override lazy val corsConfig: CORSConfig = CORSConfig
@@ -222,7 +224,8 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     troubleshoot,
     v2App,
     gridProxy,
-    editions
+    editions,
+    customSubnav
   )
 
   override lazy val httpFilters = Seq(
