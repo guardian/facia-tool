@@ -309,11 +309,12 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 											<OpenFormsWarning collectionId={id} frontId={frontId} />
 										</OpenFormsWarningContainer>
 									)}
-									{hasAbTestHeadlineErrors && (
-										<OpenFormsWarningContainer>
-											<AbTestHeadlineWarning collectionId={id} />
-										</OpenFormsWarningContainer>
-									)}
+									{hasAbTestHeadlineErrors &&
+										this.state.showOpenFormsWarning && (
+											<OpenFormsWarningContainer>
+												<AbTestHeadlineWarning collectionId={id} />
+											</OpenFormsWarningContainer>
+										)}
 									<EditModeVisibility visibleMode="fronts">
 										<Button
 											size="l"

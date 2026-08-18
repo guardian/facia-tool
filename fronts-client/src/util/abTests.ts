@@ -15,24 +15,24 @@ export const findActiveOrDraftTest = (card: Card) =>
 	card.tests?.find((test) => isActiveTest(test) || isDraftTest(test));
 
 export type AbTestHeadlineErrorType = 'duplicate' | 'incomplete';
-
 /**
- * Validates the active headline A/B test (if any) on a card. Returns:
+ * Validates the headline A/B test (if any) on a card. Returns:
  *  - 'incomplete' when either variant headline is missing, empty or
  *    whitespace-only
  *  - 'duplicate' when both variant headlines are identical
- *  - null when there is no active test or the test is valid
+ *  - null when there is no active or draft test or the test is valid
  */
-export const getActiveAbTestHeadlineError = (
+export const getCurrentAbTestHeadlineError = (
 	card: Card,
 ): AbTestHeadlineErrorType | null => {
-	const activeTest = card.tests?.find(isActiveTest);
-	if (!activeTest) {
+	const currentTest =
+		card.tests?.find(isActiveTest) || card.tests?.find(isDraftTest);
+	if (!currentTest) {
 		return null;
 	}
 
-	const headlineA = getVariantHeadline(activeTest, 'A')?.trim();
-	const headlineB = getVariantHeadline(activeTest, 'B')?.trim();
+	const headlineA = getVariantHeadline(currentTest, 'A')?.trim();
+	const headlineB = getVariantHeadline(currentTest, 'B')?.trim();
 
 	if (!headlineA || !headlineB) {
 		return 'incomplete';

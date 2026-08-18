@@ -9,7 +9,7 @@ import { selectCard } from '../selectors/shared';
 import { frontStages } from 'constants/fronts';
 import {
 	AbTestHeadlineErrorType,
-	getActiveAbTestHeadlineError,
+	getCurrentAbTestHeadlineError,
 } from 'util/abTests';
 
 const selectCardsInCollection = createSelectCardsInCollection();
@@ -69,7 +69,7 @@ export const createSelectActiveAbTestHeadlineErrorsForCollection = () => {
 			if (!card) {
 				return errors;
 			}
-			const error = getActiveAbTestHeadlineError(card);
+			const error = getCurrentAbTestHeadlineError(card);
 			if (!error) {
 				return errors;
 			}
