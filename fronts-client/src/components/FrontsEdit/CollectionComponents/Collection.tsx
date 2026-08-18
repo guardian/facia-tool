@@ -43,6 +43,9 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import { fetchPrefill } from 'bundles/capiFeedBundle';
 import LoadingGif from 'images/icons/loading.gif';
 import OpenFormsWarning from './OpenFormsWarning';
+import AbTestHeadlineWarning from './AbTestHeadlineWarning';
+import { createSelectActiveAbTestHeadlineErrorsForCollection } from 'selectors/collection';
+import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { selectors as editionsIssueSelectors } from '../../../bundles/editionsIssueBundle';
 import { moveFrontCollection } from '../../../actions/Editions';
 
@@ -77,6 +80,7 @@ type CollectionProps = CollectionPropsBeforeState & {
 	isCollectionLocked: boolean;
 	isOpen: boolean;
 	hasOpenForms: boolean;
+	hasAbTestHeadlineErrors: boolean;
 	hasContent: boolean;
 	hasMultipleFrontsOpen: boolean;
 	onChangeOpenState: (id: string, isOpen: boolean) => void;
@@ -220,6 +224,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 			targetedRegions,
 			hasContent,
 			hasOpenForms,
+			hasAbTestHeadlineErrors,
 			isFeast,
 		} = this.props;
 
@@ -304,6 +309,11 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 											<OpenFormsWarning collectionId={id} frontId={frontId} />
 										</OpenFormsWarningContainer>
 									)}
+									{hasAbTestHeadlineErrors && (
+										<OpenFormsWarningContainer>
+											<AbTestHeadlineWarning collectionId={id} />
+										</OpenFormsWarningContainer>
+									)}
 									<EditModeVisibility visibleMode="fronts">
 										<Button
 											size="l"
@@ -319,7 +329,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 											priority="primary"
 											onClick={() => this.startPublish(id, frontId)}
 											tabIndex={-1}
-											disabled={isLaunching}
+											disabled={isLaunching || hasAbTestHeadlineErrors}
 											data-testid="collection-launch-button"
 										>
 											{isLaunching ? (
@@ -391,6 +401,8 @@ const createMapStateToProps = () => {
 	const selectEditWarning = createSelectCollectionEditWarning();
 	const selectPreviously = createSelectPreviouslyLiveArticlesInCollection();
 	const selectHasOpenForms = createSelectDoesCollectionHaveOpenForms();
+	const selectActiveAbTestHeadlineErrorsForCollection =
+		createSelectActiveAbTestHeadlineErrorsForCollection();
 	return (
 		state: State,
 		{
@@ -434,6 +446,10 @@ const createMapStateToProps = () => {
 		hasMultipleFrontsOpen: selectHasMultipleFrontsOpen(state, priority),
 		hasContent: !!selectors.selectById(state, collectionId),
 		hasOpenForms: selectHasOpenForms(state, { collectionId, frontId }),
+		hasAbTestHeadlineErrors:
+			selectFeatureValue(state, 'headline-ab-testing') &&
+			selectActiveAbTestHeadlineErrorsForCollection(state, { collectionId })
+				.length > 0,
 		isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',
 	});
 };
