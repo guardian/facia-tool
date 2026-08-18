@@ -34,7 +34,7 @@ import {
 	frontsEditPathProps,
 	issuePathProps,
 	frontsFeatureProps,
-	subnavSectionProps,
+	subnavRoutes,
 } from 'routes/routes';
 import ManageView from './Editions/ManageView';
 import FeaturesView from './Features/FeaturesView';
@@ -167,7 +167,7 @@ const App = () => {
 						<Route {...frontsEditPathProps} component={FrontsEdit} />
 						<Route {...issuePathProps} component={FrontsEdit} />
 						<Route {...frontsFeatureProps} component={FeaturesView} />
-						<Route {...subnavSectionProps} component={SubnavSection} />
+						<Route {...subnavRoutes.sectionProps} component={SubnavSection} />
 						<Route exact path="/" component={Home} />
 						<Route exact path={manageEditions} component={ManageView} />
 						<Route component={NotFound} />
