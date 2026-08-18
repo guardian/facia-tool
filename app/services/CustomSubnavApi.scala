@@ -8,7 +8,7 @@ import logging.Logging
 
 import scala.util.{Failure, Success, Try}
 
-object CustomSubnavConfigFunctions {
+object CustomSubnavConfigFunctions extends Logging {
   val empty: CustomSubnavConfig = CustomSubnavConfig(live = Nil, draft = Nil)
 
   /** Stamp the audit fields server-side */
@@ -40,9 +40,10 @@ object CustomSubnavConfigFunctions {
     val newDraft =
       if (collapsesIntoLive)
         config.draft.filterNot(_.id == subnav.id)
-      else if (config.draft.exists(_.id == subnav.id))
+      else if (config.draft.exists(_.id == subnav.id)) {
+        logger.info(s"Updating existing draft subnav with id ${subnav.id}")
         config.draft.map(s => if (s.id == subnav.id) subnav else s)
-      else
+      } else
         config.draft :+ subnav
 
     config.copy(draft = newDraft)
