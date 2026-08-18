@@ -1,5 +1,9 @@
 import { Card, Test } from '../types/Collection';
-import { hasActiveAbTestOnCard, findActiveOrDraftTest } from './abTests';
+import {
+	hasActiveAbTestOnCard,
+	findActiveOrDraftTest,
+	getCurrentAbTestHeadlineError,
+} from './abTests';
 
 const makeCard = (tests?: Test[]): Card =>
 	({ uuid: 'card-1', id: 'id-1', meta: {}, tests }) as Card;
@@ -12,6 +16,14 @@ const makeTest = (test: Partial<Test> = {}): Test => ({
 	hasManuallyEndedOnThisTrail: false,
 	...test,
 });
+
+const makeVariantMeta = (
+	headlineA: string | undefined,
+	headlineB: string | undefined,
+): Test['variantMeta'] => [
+	{ id: 'A', meta: { headline: headlineA } },
+	{ id: 'B', meta: { headline: headlineB } },
+];
 
 const FUTURE = Date.now() + 100_000;
 const PAST = Date.now() - 100_000;
@@ -74,6 +86,92 @@ describe('abTests utils', () => {
 				makeTest({ expiryDate: FUTURE, hasManuallyEndedOnThisTrail: true }),
 			]);
 			expect(findActiveOrDraftTest(card)).toBeUndefined();
+		});
+	});
+
+	describe('getActiveAbTestHeadlineError', () => {
+		it('returns null when the card has no active test', () => {
+			expect(getCurrentAbTestHeadlineError(makeCard())).toBeNull();
+		});
+
+		it('returns null for a draft (non-active) test with invalid headlines', () => {
+			const card = makeCard([
+				makeTest({
+					expiryDate: undefined,
+					variantMeta: makeVariantMeta('same', 'same'),
+				}),
+			]);
+			expect(getCurrentAbTestHeadlineError(card)).toBeNull();
+		});
+
+		it('returns "duplicate" when both variant headlines are the same', () => {
+			const card = makeCard([
+				makeTest({
+					expiryDate: FUTURE,
+					variantMeta: makeVariantMeta('Same headline', 'Same headline'),
+				}),
+			]);
+			expect(getCurrentAbTestHeadlineError(card)).toBe('duplicate');
+		});
+
+		it('returns "incomplete" when variant A headline is missing', () => {
+			const card = makeCard([
+				makeTest({
+					expiryDate: FUTURE,
+					variantMeta: makeVariantMeta(undefined, 'Headline B'),
+				}),
+			]);
+			expect(getCurrentAbTestHeadlineError(card)).toBe('incomplete');
+		});
+
+		it('returns "incomplete" when variant B headline is empty', () => {
+			const card = makeCard([
+				makeTest({
+					expiryDate: FUTURE,
+					variantMeta: makeVariantMeta('Headline A', ''),
+				}),
+			]);
+			expect(getCurrentAbTestHeadlineError(card)).toBe('incomplete');
+		});
+
+		it('returns "incomplete" when a variant headline is whitespace-only', () => {
+			const card = makeCard([
+				makeTest({
+					expiryDate: FUTURE,
+					variantMeta: makeVariantMeta('Headline A', '   '),
+				}),
+			]);
+			expect(getCurrentAbTestHeadlineError(card)).toBe('incomplete');
+		});
+
+		it('returns "duplicate" when variant headlines differ only by surrounding whitespace', () => {
+			const card = makeCard([
+				makeTest({
+					expiryDate: FUTURE,
+					variantMeta: makeVariantMeta('Same ', ' Same'),
+				}),
+			]);
+			expect(getCurrentAbTestHeadlineError(card)).toBe('duplicate');
+		});
+
+		it('returns "incomplete" when both variant headlines are missing', () => {
+			const card = makeCard([
+				makeTest({
+					expiryDate: FUTURE,
+					variantMeta: makeVariantMeta(undefined, undefined),
+				}),
+			]);
+			expect(getCurrentAbTestHeadlineError(card)).toBe('incomplete');
+		});
+
+		it('returns null when variant headlines are distinct and populated', () => {
+			const card = makeCard([
+				makeTest({
+					expiryDate: FUTURE,
+					variantMeta: makeVariantMeta('Headline A', 'Headline B'),
+				}),
+			]);
+			expect(getCurrentAbTestHeadlineError(card)).toBeNull();
 		});
 	});
 });
