@@ -39,6 +39,20 @@ const HeadlineVariantContainer = styled('div')`
 	gap: 6px;
 `;
 
+const normaliseHeadline = (value?: string) => (value ?? '').trim();
+
+const warnIfEmpty = (value: string | undefined) => {
+	return normaliseHeadline(value) === '' ? 'Headline missing' : undefined;
+};
+const warnIfDuplicate = (
+	value: string | undefined,
+	allValues: { headlineA?: string },
+) => {
+	return normaliseHeadline(value) === normaliseHeadline(allValues.headlineA)
+		? 'Headline is duplicated'
+		: undefined;
+};
+
 const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 	/**
 	 * You may be thinking -- why on earth would we use the `headline` field to contain
@@ -58,13 +72,12 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 			(feature) => feature.key === 'headline-ab-testing',
 		);
 
+	const abTestFeatureEnabled = headlineABTestingFeatureSwitch?.enabled === true;
 	return (
 		<HeadlineInputContainer
-			abTestEnabled={
-				props.abTestEnabled && headlineABTestingFeatureSwitch?.enabled === true
-			}
+			abTestEnabled={props.abTestEnabled && abTestFeatureEnabled}
 		>
-			{props.cardId && headlineABTestingFeatureSwitch?.enabled === true && (
+			{props.cardId && abTestFeatureEnabled && (
 				<ABTestToggleContainer>
 					<Field
 						name="abTestEnabled"
@@ -80,8 +93,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 				</ABTestToggleContainer>
 			)}
 
-			{props.abTestEnabled &&
-			headlineABTestingFeatureSwitch?.enabled === true ? (
+			{props.abTestEnabled && abTestFeatureEnabled ? (
 				<HeadlineVariantContainer>
 					<ConditionalField
 						permittedFields={props.editableFields}
@@ -91,6 +103,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						component={InputTextArea}
 						data-testid="edit-form-headline-a-field"
 						placeholder={props.capiHeadline}
+						warn={warnIfEmpty}
 					/>
 					<ConditionalField
 						permittedFields={props.editableFields}
@@ -99,6 +112,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						rows="2"
 						component={InputTextArea}
 						data-testid="edit-form-headline-b-field"
+						warn={[warnIfEmpty, warnIfDuplicate]}
 					/>
 				</HeadlineVariantContainer>
 			) : (
