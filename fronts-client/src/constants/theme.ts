@@ -14,6 +14,7 @@ const colors = {
 	blackDark: '#121212', // darkest
 	blackLight: '#333',
 	blue: '#3B82F6',
+	blueDark: '#1B67E2',
 	blueGrey: '#EEF2F6',
 	greyDark: '#444444',
 	greyMediumDark: '#515151',
@@ -72,10 +73,11 @@ const base = {
 		placeholderDark: colors.greyLight,
 		focusColor: colors.orange,
 		dangerColor: colors.red,
-		abTestActiveColor: colors.blue,
+		abTestActiveColor: colors.blueDark,
 		abTestSecondaryColor: colors.blueGrey,
 		abTestErrorColor: colors.orange,
 		abTestErrorBackgroundColor: colors.white,
+		abTestErrorForegroundColor: colors.blackDark,
 	},
 };
 
