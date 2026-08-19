@@ -61,4 +61,42 @@ describe('ArticleMetaForm - headline AB testing', () => {
 		) as HTMLTextAreaElement;
 		expect(headlineAField.value).toBe('Bill Shorten');
 	});
+
+	it('shows a red warning next to an empty variant headline and hides it once populated', () => {
+		const store = configureStore(initialState);
+		const cardId = 'exampleId';
+
+		const warningText =
+			'Add a headline or turn the test off to save this container';
+
+		const { getByTestId, queryAllByText } = render(
+			<Provider store={store}>
+				<ThemeProvider theme={theme}>
+					<ArticleMetaForm
+						cardId={cardId}
+						form={cardId}
+						frontId="frontId"
+						onSave={jest.fn()}
+						onCancel={jest.fn()}
+					/>
+				</ThemeProvider>
+			</Provider>,
+		);
+
+		const abTestToggle = getByTestId(
+			'edit-form-ab-test-toggle',
+		) as HTMLInputElement;
+		fireEvent.click(abTestToggle);
+
+		// Headline A is populated from the card headline, Headline B is empty,
+		// so only one warning should be shown.
+		expect(queryAllByText(warningText)).toHaveLength(1);
+
+		const headlineBField = getByTestId(
+			'edit-form-headline-b-field',
+		) as HTMLTextAreaElement;
+		fireEvent.change(headlineBField, { target: { value: 'Headline B' } });
+
+		expect(queryAllByText(warningText)).toHaveLength(0);
+	});
 });

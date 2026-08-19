@@ -560,6 +560,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			showByline,
 			abTestEnabled,
 			headline,
+			headlineA,
+			headlineB,
 			editableFields = [],
 			showKickerTag,
 			showKickerSection,
@@ -727,6 +729,8 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								editableFields={editableFields}
 								snapType={this.props.snapType}
 								onAbTestToggle={handleAbTestToggle}
+								headlineA={headlineA}
+								headlineB={headlineB}
 							/>
 						)}
 						<CheckboxFieldsContainer
@@ -1280,6 +1284,8 @@ interface ContainerProps {
 	showByline: boolean;
 	abTestEnabled: boolean;
 	headline: string;
+	headlineA: string;
+	headlineB: string;
 	editableFields?: string[];
 	showKickerTag: boolean;
 	showKickerSection: boolean;
@@ -1362,6 +1368,8 @@ const createMapStateToProps = () => {
 			showByline: valueSelector(state, 'showByline'),
 			abTestEnabled: valueSelector(state, 'abTestEnabled'),
 			headline: valueSelector(state, 'headline'),
+			headlineA: valueSelector(state, 'headlineA'),
+			headlineB: valueSelector(state, 'headlineB'),
 			showKickerTag: valueSelector(state, 'showKickerTag'),
 			showKickerSection: valueSelector(state, 'showKickerSection'),
 			isBreaking: valueSelector(state, 'isBreaking'),

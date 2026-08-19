@@ -7,6 +7,8 @@ import InputCheckboxToggleInline from './InputCheckboxToggleInline';
 import ConditionalField from './ConditionalField';
 import styled from 'styled-components';
 import pageConfig from '../../util/extractConfigFromPage';
+import { WarningIcon } from '../icons/Icons';
+import { theme } from '../../constants/theme';
 
 interface HeadlineInputProps {
 	abTestEnabled: boolean;
@@ -15,6 +17,8 @@ interface HeadlineInputProps {
 	editableFields: string[];
 	snapType: string | undefined;
 	onAbTestToggle?: EventWithDataHandler<React.ChangeEvent<any>>;
+	headlineA: string;
+	headlineB: string;
 }
 
 const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
@@ -38,6 +42,23 @@ const HeadlineVariantContainer = styled('div')`
 	flex-direction: column;
 	gap: 6px;
 `;
+
+const HeadlineWarning = styled('span')`
+	margin-left: 8px;
+	font-size: 12px;
+	color: ${theme.base.colors.dangerColor};
+	display: flex;
+	align-items: center;
+	gap: 4px;
+`;
+
+const emptyHeadlineWarning = (value: string | undefined) =>
+	(value ?? '').trim() === '' ? (
+		<HeadlineWarning>
+			<WarningIcon fill={theme.base.colors.dangerColor} size={'s'} /> Add a
+			headline or turn the test off to save this container
+		</HeadlineWarning>
+	) : undefined;
 
 const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 	/**
@@ -91,6 +112,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						component={InputTextArea}
 						data-testid="edit-form-headline-a-field"
 						placeholder={props.capiHeadline}
+						labelContent={emptyHeadlineWarning(props.headlineA)}
 					/>
 					<ConditionalField
 						permittedFields={props.editableFields}
@@ -99,7 +121,14 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						rows="2"
 						component={InputTextArea}
 						data-testid="edit-form-headline-b-field"
+						labelContent={emptyHeadlineWarning(props.headlineB)}
 					/>
+					{props.headlineA === props.headlineB && (
+						<HeadlineWarning>
+							Headlines are duplicated. Please change one headline to launch the
+							container
+						</HeadlineWarning>
+					)}
 				</HeadlineVariantContainer>
 			) : (
 				<Field
