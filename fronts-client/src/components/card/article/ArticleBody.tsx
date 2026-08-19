@@ -62,6 +62,26 @@ import {
 } from '@guardian/stand/IntendedAudienceSignifier';
 import { AbTestHeadlineErrorType } from '../../../util/abTests';
 
+type ABStatusMessage =
+	| 'Test in progress'
+	| 'End test on launch'
+	| 'Test set up incomplete'
+	| 'Ready to launch';
+
+type ABTestTheme = 'active' | 'secondary' | 'error';
+
+type ABTestPalette = {
+	background: string;
+	text: string;
+	border: string;
+	icon: string;
+};
+type ABTestStatus = {
+	message: ABStatusMessage;
+	theme: ABTestTheme;
+	palette: ABTestPalette;
+};
+
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
 	flex-shrink: 0;
 	width: 83px;
@@ -132,14 +152,6 @@ const ClipboardFirstPublished = styled.div`
 	bottom: 0;
 	right: 0;
 `;
-
-type ABTestTheme = 'active' | 'secondary' | 'error';
-type ABTestPalette = {
-	background: string;
-	text: string;
-	border: string;
-	icon: string;
-};
 
 const getABTestThemeColors = (abTestTheme: ABTestTheme): ABTestPalette => {
 	switch (abTestTheme) {
@@ -260,7 +272,7 @@ interface ArticleBodyProps {
 	abTestEnabled?: boolean;
 	hasLiveAbTest?: boolean;
 	headlineABTestingIsEnabled?: boolean;
-	headlineTestError: AbTestHeadlineErrorType | null;
+	headlineTestError?: AbTestHeadlineErrorType | null;
 }
 
 const articleBodyDefault = React.memo(
@@ -344,23 +356,10 @@ const articleBodyDefault = React.memo(
 			imageCriteria.heightAspectRatio ===
 				portraitCardImageCriteria.heightAspectRatio;
 
-		type ABStatusMessage =
-			| 'Test in progress'
-			| 'End test on launch'
-			| 'Test set up incomplete'
-			| 'Ready to launch';
-
-		type ABTestTheme = 'active' | 'secondary' | 'error';
-
-		type ABTestStatus = {
-			message: ABStatusMessage;
-			theme: ABTestTheme;
-			palette: ABTestPalette;
-		};
 		const determineABTestStatus = (
 			hasLiveAbTest: boolean | undefined,
 			abTestEnabled: boolean | undefined,
-			headlineTestError: AbTestHeadlineErrorType | null,
+			headlineTestError: AbTestHeadlineErrorType | null | undefined,
 		): ABTestStatus | undefined => {
 			if (hasLiveAbTest && abTestEnabled) {
 				return {
