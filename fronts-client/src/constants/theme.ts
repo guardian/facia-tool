@@ -73,11 +73,6 @@ const base = {
 		placeholderDark: colors.greyLight,
 		focusColor: colors.orange,
 		dangerColor: colors.red,
-		abTestActiveColor: colors.blueDark,
-		abTestSecondaryColor: colors.blueGrey,
-		abTestErrorColor: colors.orange,
-		abTestErrorBackgroundColor: colors.white,
-		abTestErrorForegroundColor: colors.blackDark,
 	},
 };
 
@@ -120,6 +115,17 @@ const button = {
 	backgroundColorHighlightFocused: base.colors.highlightColorFocused,
 };
 
+const abTest = {
+	activePrimaryColor: colors.blueDark,
+	activeAccentColor: colors.white,
+	activeBorderColor: 'transparent',
+	secondaryPrimaryColor: colors.blueGrey,
+	secondaryAccentColor: colors.blueDark,
+	errorPrimaryColor: colors.white,
+	errorTextColor: colors.blackDark,
+	errorAccentColor: colors.orange,
+};
+
 const input = {
 	height: '30px',
 	paddingY: '3px',
@@ -138,10 +144,8 @@ const input = {
 	placeholderText: base.colors.placeholderDark,
 	radioButtonBackgroundDisabled: '#E6E6E6',
 	checkboxButtonBackgroundDisabled: '#E6E6E6',
-	abTestActiveColor: base.colors.abTestActiveColor,
-	abTestSecondaryColor: base.colors.abTestSecondaryColor,
-	abTestErrorColor: base.colors.abTestErrorColor,
-	abTestErrorBackgroundColor: base.colors.abTestErrorBackgroundColor,
+	abTestActiveColor: abTest.activePrimaryColor,
+	abTestSecondaryColor: abTest.secondaryPrimaryColor,
 };
 
 const collection = {
@@ -193,6 +197,7 @@ export const theme = {
 	thumbnailImage,
 	thumbnailImageSquare,
 	thumbnailImagePortrait,
+	abTest,
 };
 
 export type Theme = typeof theme;

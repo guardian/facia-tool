@@ -33,6 +33,7 @@ import {
 	CinemagraphIcon,
 	ConicalFlaskIcon,
 	EllipsisIcon,
+	ExclamationIcon,
 	LoopIcon,
 	VideoIcon,
 	YoutubeIcon,
@@ -135,30 +136,34 @@ const ClipboardFirstPublished = styled.div`
 type ABTestTheme = 'active' | 'secondary' | 'error';
 type ABTestPalette = {
 	background: string;
-	foreground: string;
+	text: string;
 	border: string;
+	icon: string;
 };
 
 const getABTestThemeColors = (abTestTheme: ABTestTheme): ABTestPalette => {
 	switch (abTestTheme) {
 		case 'error':
 			return {
-				background: theme.base.colors.abTestErrorBackgroundColor,
-				foreground: theme.base.colors.abTestErrorColor,
-				border: theme.base.colors.abTestErrorColor,
+				background: theme.abTest.errorPrimaryColor,
+				text: theme.abTest.errorTextColor,
+				border: theme.abTest.errorAccentColor,
+				icon: theme.abTest.errorAccentColor,
 			};
 		case 'secondary':
 			return {
-				background: theme.base.colors.abTestSecondaryColor,
-				foreground: theme.base.colors.abTestActiveColor,
-				border: theme.base.colors.abTestActiveColor,
+				background: theme.abTest.secondaryPrimaryColor,
+				text: theme.abTest.secondaryAccentColor,
+				border: theme.abTest.secondaryAccentColor,
+				icon: theme.abTest.secondaryAccentColor,
 			};
 		case 'active':
 		default:
 			return {
-				background: theme.base.colors.abTestActiveColor,
-				foreground: 'white',
-				border: 'transparent',
+				background: theme.abTest.activePrimaryColor,
+				text: theme.abTest.activeAccentColor,
+				border: theme.abTest.activeBorderColor,
+				icon: theme.abTest.activeAccentColor,
 			};
 	}
 };
@@ -167,7 +172,7 @@ const ABTestStatus = styled.div<{ abTestTheme: ABTestTheme }>`
 	background-color: ${({ abTestTheme }) =>
 		getABTestThemeColors(abTestTheme).background};
 	border-radius: 12px;
-	color: ${({ abTestTheme }) => getABTestThemeColors(abTestTheme).foreground};
+	color: ${({ abTestTheme }) => getABTestThemeColors(abTestTheme).text};
 	border-width: 1px;
 	border-style: solid;
 	border-color: ${({ abTestTheme }) =>
@@ -558,17 +563,19 @@ const articleBodyDefault = React.memo(
 					</CardHeadingContainer>
 					{abTestStatus && headlineABTestingIsEnabled && (
 						<ABTestStatus abTestTheme={abTestStatus.theme}>
-							<ConicalFlaskIcon
-								size={'xs'}
-								fill={abTestStatus.palette.foreground}
-							/>
+							{abTestStatus.theme === 'error' ? (
+								<ExclamationIcon fill={abTestStatus.palette.icon} size={'s'} />
+							) : (
+								<ConicalFlaskIcon
+									size={'xs'}
+									fill={abTestStatus.palette.icon}
+								/>
+							)}
+
 							{abTestStatus.message}
 							{abTestStatus.theme !== 'active' && (
-								<EllipsisIconWrapper color={abTestStatus.palette.foreground}>
-									<EllipsisIcon
-										fill={abTestStatus.palette.foreground}
-										size={'xxs'}
-									/>
+								<EllipsisIconWrapper color={abTestStatus.palette.icon}>
+									<EllipsisIcon fill={abTestStatus.palette.icon} size={'xxs'} />
 								</EllipsisIconWrapper>
 							)}
 						</ABTestStatus>
