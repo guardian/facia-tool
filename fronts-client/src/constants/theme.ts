@@ -74,6 +74,8 @@ const base = {
 		dangerColor: colors.red,
 		abTestActiveColor: colors.blue,
 		abTestSecondaryColor: colors.blueGrey,
+		abTestErrorColor: colors.orange,
+		abTestErrorBackgroundColor: colors.white,
 	},
 };
 
@@ -136,6 +138,8 @@ const input = {
 	checkboxButtonBackgroundDisabled: '#E6E6E6',
 	abTestActiveColor: base.colors.abTestActiveColor,
 	abTestSecondaryColor: base.colors.abTestSecondaryColor,
+	abTestErrorColor: base.colors.abTestErrorColor,
+	abTestErrorBackgroundColor: base.colors.abTestErrorBackgroundColor,
 };
 
 const collection = {

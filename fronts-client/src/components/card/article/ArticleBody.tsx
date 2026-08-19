@@ -132,18 +132,46 @@ const ClipboardFirstPublished = styled.div`
 	right: 0;
 `;
 
-const ABTestStatus = styled.div<{ useSecondaryTheme?: boolean }>`
-	background-color: ${({ useSecondaryTheme }) =>
-		useSecondaryTheme
-			? theme.base.colors.abTestSecondaryColor
-			: theme.base.colors.abTestActiveColor};
+type ABTestTheme = 'active' | 'secondary' | 'error';
+type ABTestPalette = {
+	background: string;
+	foreground: string;
+	border: string;
+};
+
+const getABTestThemeColors = (abTestTheme: ABTestTheme): ABTestPalette => {
+	switch (abTestTheme) {
+		case 'error':
+			return {
+				background: theme.base.colors.abTestErrorBackgroundColor,
+				foreground: theme.base.colors.abTestErrorColor,
+				border: theme.base.colors.abTestErrorColor,
+			};
+		case 'secondary':
+			return {
+				background: theme.base.colors.abTestSecondaryColor,
+				foreground: theme.base.colors.abTestActiveColor,
+				border: theme.base.colors.abTestActiveColor,
+			};
+		case 'active':
+		default:
+			return {
+				background: theme.base.colors.abTestActiveColor,
+				foreground: 'white',
+				border: 'transparent',
+			};
+	}
+};
+
+const ABTestStatus = styled.div<{ abTestTheme: ABTestTheme }>`
+	background-color: ${({ abTestTheme }) =>
+		getABTestThemeColors(abTestTheme).background};
 	border-radius: 12px;
-	color: ${({ useSecondaryTheme }) =>
-		useSecondaryTheme ? theme.base.colors.abTestActiveColor : 'white'};
+	color: ${({ abTestTheme }) => getABTestThemeColors(abTestTheme).foreground};
 	border-width: 1px;
 	border-style: solid;
-	border-color: ${({ useSecondaryTheme }) =>
-		useSecondaryTheme ? theme.base.colors.abTestActiveColor : 'transparent'};
+	border-color: ${({ abTestTheme }) =>
+		getABTestThemeColors(abTestTheme).border};
 	font-weight: 700;
 	font-size: 12px;
 	padding: 4px 8px;
@@ -155,8 +183,8 @@ const ABTestStatus = styled.div<{ useSecondaryTheme?: boolean }>`
 	align-items: center;
 `;
 
-const EllipsisIconWrapper = styled.div`
-	border: 1px solid ${theme.base.colors.abTestActiveColor};
+const EllipsisIconWrapper = styled.div<{ color: string }>`
+	border: 1px solid ${({ color }) => color};
 	border-radius: 50%;
 	display: flex;
 	justify-content: center;
@@ -317,22 +345,45 @@ const articleBodyDefault = React.memo(
 			| 'Test set up incomplete'
 			| 'Ready to launch';
 
-		const determineABTestStatusMessage = (
+		type ABTestTheme = 'active' | 'secondary' | 'error';
+
+		type ABTestStatus = {
+			message: ABStatusMessage;
+			theme: ABTestTheme;
+			palette: ABTestPalette;
+		};
+		const determineABTestStatus = (
 			hasLiveAbTest: boolean | undefined,
 			abTestEnabled: boolean | undefined,
 			headlineTestError: AbTestHeadlineErrorType | null,
-		): ABStatusMessage | undefined => {
+		): ABTestStatus | undefined => {
 			if (hasLiveAbTest && abTestEnabled) {
-				return 'Test in progress';
+				return {
+					message: 'Test in progress',
+					theme: 'active',
+					palette: getABTestThemeColors('active'),
+				};
 			}
 			if (hasLiveAbTest && !abTestEnabled) {
-				return 'End test on launch';
+				return {
+					message: 'End test on launch',
+					theme: 'secondary',
+					palette: getABTestThemeColors('secondary'),
+				};
 			}
 			if (!hasLiveAbTest && abTestEnabled && headlineTestError) {
-				return 'Test set up incomplete';
+				return {
+					message: 'Test set up incomplete',
+					theme: 'error',
+					palette: getABTestThemeColors('error'),
+				};
 			}
 			if (!hasLiveAbTest && abTestEnabled && !headlineTestError) {
-				return 'Ready to launch';
+				return {
+					message: 'Ready to launch',
+					theme: 'secondary',
+					palette: getABTestThemeColors('secondary'),
+				};
 			}
 			return undefined;
 		};
@@ -373,13 +424,11 @@ const articleBodyDefault = React.memo(
 			setMainVideoPlatform(properties.platform);
 		}, [mainMediaVideoAtom, showMainVideo]);
 
-		const abTestStatusMessage = determineABTestStatusMessage(
+		const abTestStatus = determineABTestStatus(
 			hasLiveAbTest,
 			abTestEnabled,
 			headlineTestError,
 		);
-
-		const useSecondaryTheme = abTestStatusMessage !== 'Test in progress';
 
 		return (
 			<>
@@ -507,21 +556,17 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
-					{abTestStatusMessage && headlineABTestingIsEnabled && (
-						<ABTestStatus useSecondaryTheme={useSecondaryTheme}>
+					{abTestStatus && headlineABTestingIsEnabled && (
+						<ABTestStatus abTestTheme={abTestStatus.theme}>
 							<ConicalFlaskIcon
 								size={'xs'}
-								fill={
-									useSecondaryTheme
-										? theme.base.colors.abTestActiveColor
-										: 'white'
-								}
+								fill={abTestStatus.palette.foreground}
 							/>
-							{abTestStatusMessage}
-							{useSecondaryTheme && (
-								<EllipsisIconWrapper>
+							{abTestStatus.message}
+							{abTestStatus.theme === 'secondary' && (
+								<EllipsisIconWrapper color={abTestStatus.palette.foreground}>
 									<EllipsisIcon
-										fill={theme.base.colors.abTestActiveColor}
+										fill={abTestStatus.palette.foreground}
 										size={'xxs'}
 									/>
 								</EllipsisIconWrapper>
