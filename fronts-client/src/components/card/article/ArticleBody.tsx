@@ -563,7 +563,7 @@ const articleBodyDefault = React.memo(
 								fill={abTestStatus.palette.foreground}
 							/>
 							{abTestStatus.message}
-							{abTestStatus.theme === 'secondary' && (
+							{abTestStatus.theme !== 'active' && (
 								<EllipsisIconWrapper color={abTestStatus.palette.foreground}>
 									<EllipsisIcon
 										fill={abTestStatus.palette.foreground}
