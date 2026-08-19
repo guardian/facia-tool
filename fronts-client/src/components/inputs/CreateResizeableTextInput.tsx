@@ -98,6 +98,7 @@ const createResizeableTextInput = (
 				input,
 				originalValue,
 				labelContent: LabelContent,
+				meta,
 				...rest
 			} = this.props;
 			return (
@@ -111,6 +112,7 @@ const createResizeableTextInput = (
 								</RewindButton>
 							)}
 							{LabelContent}
+							{meta?.warning && <span className="warning">{meta.warning}</span>}
 						</TextInputLabel>
 					)}
 					<InputComponentContainer>
