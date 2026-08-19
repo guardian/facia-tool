@@ -1,20 +1,5 @@
-import { Card, Test } from '../types/Collection';
 import { hasActiveAbTestOnCard, findActiveOrDraftTest } from './abTests';
-
-const makeCard = (tests?: Test[]): Card =>
-	({ uuid: 'card-1', id: 'id-1', meta: {}, tests }) as Card;
-
-const makeTest = (test: Partial<Test> = {}): Test => ({
-	testUuid: 'test-1',
-	variantMeta: [],
-	createdByName: 'Jane Doe',
-	createdByEmail: 'jane.doe@guardian.co.uk',
-	hasManuallyEndedOnThisTrail: false,
-	...test,
-});
-
-const FUTURE = Date.now() + 100_000;
-const PAST = Date.now() - 100_000;
+import { FUTURE, PAST, makeCard, makeTest } from '../fixtures/abTests';
 
 describe('abTests utils', () => {
 	describe('hasActiveAbTestOnCard', () => {
