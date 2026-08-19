@@ -92,6 +92,9 @@ const toInitialFormState = (subnav?: CustomSubnav) => ({
 	pages: subnav?.pages.length
 		? subnav.pages.map((page) => ({ ...page }))
 		: [emptyPage()],
+	images: subnav?.images?.map((image) => ({ ...image })) ?? [],
+	lightPalette: toPaletteFields(subnav?.palette?.light),
+	darkPalette: toPaletteFields(subnav?.palette?.dark),
 });
 
 const SubnavForm = ({
@@ -99,7 +102,6 @@ const SubnavForm = ({
 	onSave,
 	saving = false,
 }: SubnavFormProps) => {
-
 	const mountedRef = useRef(true);
 	useEffect(
 		() => () => {
@@ -119,14 +121,12 @@ const SubnavForm = ({
 	const [links, setLinks] = useState<SubnavLink[]>(baseline.links);
 	const [pages, setPages] = useState<TargetedPage[]>(baseline.pages);
 
-	const [images, setImages] = useState<SubnavImage[]>(
-		initialSubnav?.images ?? [],
-	);
+	const [images, setImages] = useState<SubnavImage[]>(baseline.images);
 	const [lightPalette, setLightPalette] = useState<PaletteFields>(
-		toPaletteFields(initialSubnav?.palette?.light),
+		baseline.lightPalette,
 	);
 	const [darkPalette, setDarkPalette] = useState<PaletteFields>(
-		toPaletteFields(initialSubnav?.palette?.dark),
+		baseline.darkPalette,
 	);
 	const [error, setError] = useState<string | null>(null);
 	const [justSaved, setJustSaved] = useState(false);
@@ -138,6 +138,9 @@ const SubnavForm = ({
 			headerCopy,
 			links,
 			pages,
+			images,
+			lightPalette,
+			darkPalette,
 		}) !== JSON.stringify(baseline);
 
 	const handleCancel = () => {
@@ -146,6 +149,9 @@ const SubnavForm = ({
 		setHeaderCopy(baseline.headerCopy);
 		setLinks(baseline.links.map((link) => ({ ...link })));
 		setPages(baseline.pages.map((page) => ({ ...page })));
+		setImages(baseline.images.map((image) => ({ ...image })));
+		setLightPalette({ ...baseline.lightPalette });
+		setDarkPalette({ ...baseline.darkPalette });
 		setError(null);
 	};
 
@@ -249,6 +255,9 @@ const SubnavForm = ({
 		setHeaderCopy(savedState.headerCopy);
 		setLinks(savedState.links);
 		setPages(savedState.pages);
+		setImages(savedState.images);
+		setLightPalette(savedState.lightPalette);
+		setDarkPalette(savedState.darkPalette);
 		setJustSaved(true);
 	};
 
