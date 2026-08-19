@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
 import v4 from 'uuid/v4';
 import ButtonDefault from 'components/inputs/ButtonDefault';
+import SubnavImageInput from './SubnavImageInput';
 import {
 	CustomSubnav,
+	ImageBreakpoint,
+	Palette,
+	SubnavImage,
 	SubnavLink,
 	TargetedPage,
 	TargetedPageType,
@@ -12,6 +16,11 @@ import {
 	Field,
 	Form,
 	FormActions,
+	ImageRow,
+	ImageRowHeader,
+	PaletteColumn,
+	PaletteColumnHeading,
+	PaletteGrid,
 	RepeatableRow,
 	RowFields,
 	SavedMessage,
@@ -33,8 +42,40 @@ const pageTypeOptions: { value: TargetedPageType; label: string }[] = [
 	{ value: 'hasTag', label: 'Tag' },
 ];
 
+const breakpointOptions: { value: ImageBreakpoint; label: string }[] = [
+	{ value: 'mobile', label: 'Mobile' },
+	{ value: 'tablet', label: 'Tablet' },
+	{ value: 'web', label: 'Web' },
+];
+
 const emptyLink = (): SubnavLink => ({ linkText: '', dotcomPath: '' });
 const emptyPage = (): TargetedPage => ({ type: 'front', path: '' });
+const emptyImage = (): SubnavImage => ({ imageSrc: '', breakpoint: 'web' });
+
+// Palette hex fields are held as plain strings; '' means "not set" (omitted).
+interface PaletteFields {
+	text: string;
+	header: string;
+	link: string;
+}
+
+const toPaletteFields = (palette?: Palette): PaletteFields => ({
+	text: palette?.text ?? '',
+	header: palette?.header ?? '',
+	link: palette?.link ?? '',
+});
+
+const toOptional = (value: string): string | undefined =>
+	value.trim() || undefined;
+
+const buildPalette = (fields: PaletteFields): Palette => ({
+	text: toOptional(fields.text),
+	header: toOptional(fields.header),
+	link: toOptional(fields.link),
+});
+
+const isPaletteEmpty = (palette: Palette): boolean =>
+	!palette.text && !palette.header && !palette.link;
 
 /**
  * The form's editable state, derived from the subnav being edited (or blank
@@ -51,6 +92,9 @@ const toInitialFormState = (subnav?: CustomSubnav) => ({
 	pages: subnav?.pages.length
 		? subnav.pages.map((page) => ({ ...page }))
 		: [emptyPage()],
+	images: subnav?.images?.map((image) => ({ ...image })) ?? [],
+	lightPalette: toPaletteFields(subnav?.palette?.light),
+	darkPalette: toPaletteFields(subnav?.palette?.dark),
 });
 
 const SubnavForm = ({
@@ -65,7 +109,6 @@ const SubnavForm = ({
 		},
 		[],
 	);
-
 	const [baseline, setBaseline] = useState(() =>
 		toInitialFormState(initialSubnav),
 	);
@@ -77,6 +120,14 @@ const SubnavForm = ({
 	const [headerCopy, setHeaderCopy] = useState(baseline.headerCopy);
 	const [links, setLinks] = useState<SubnavLink[]>(baseline.links);
 	const [pages, setPages] = useState<TargetedPage[]>(baseline.pages);
+
+	const [images, setImages] = useState<SubnavImage[]>(baseline.images);
+	const [lightPalette, setLightPalette] = useState<PaletteFields>(
+		baseline.lightPalette,
+	);
+	const [darkPalette, setDarkPalette] = useState<PaletteFields>(
+		baseline.darkPalette,
+	);
 	const [error, setError] = useState<string | null>(null);
 	const [justSaved, setJustSaved] = useState(false);
 
@@ -87,6 +138,9 @@ const SubnavForm = ({
 			headerCopy,
 			links,
 			pages,
+			images,
+			lightPalette,
+			darkPalette,
 		}) !== JSON.stringify(baseline);
 
 	const handleCancel = () => {
@@ -95,6 +149,9 @@ const SubnavForm = ({
 		setHeaderCopy(baseline.headerCopy);
 		setLinks(baseline.links.map((link) => ({ ...link })));
 		setPages(baseline.pages.map((page) => ({ ...page })));
+		setImages(baseline.images.map((image) => ({ ...image })));
+		setLightPalette({ ...baseline.lightPalette });
+		setDarkPalette({ ...baseline.darkPalette });
 		setError(null);
 	};
 
@@ -113,6 +170,21 @@ const SubnavForm = ({
 	const addPage = () => setPages((prev) => [...prev, emptyPage()]);
 	const removePage = (index: number) =>
 		setPages((prev) => prev.filter((_, i) => i !== index));
+
+	const updateImage = (index: number, patch: Partial<SubnavImage>) =>
+		setImages((prev) =>
+			prev.map((image, i) => (i === index ? { ...image, ...patch } : image)),
+		);
+	const addImage = () => setImages((prev) => [...prev, emptyImage()]);
+	const removeImage = (index: number) =>
+		setImages((prev) => prev.filter((_, i) => i !== index));
+	// Read the value eagerly (see call sites): react-dom 16 pools synthetic
+	// events, so the event is nulled before a functional state updater runs.
+	const updatePaletteField = (
+		setPalette: React.Dispatch<React.SetStateAction<PaletteFields>>,
+		key: keyof PaletteFields,
+		value: string,
+	) => setPalette((prev) => ({ ...prev, [key]: value }));
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
@@ -134,6 +206,11 @@ const SubnavForm = ({
 
 		setError(null);
 
+		const cleanedImages = images.filter((image) => image.imageSrc.trim());
+		const light = buildPalette(lightPalette);
+		const dark = buildPalette(darkPalette);
+		const paletteIsEmpty = isPaletteEmpty(light) && isPaletteEmpty(dark);
+
 		const subnav: CustomSubnav = {
 			id: initialSubnav?.id ?? v4(),
 			header: {
@@ -150,8 +227,8 @@ const SubnavForm = ({
 				type: page.type,
 				path: page.path.trim(),
 			})),
-			images: initialSubnav?.images,
-			palette: initialSubnav?.palette,
+			images: cleanedImages.length ? cleanedImages : undefined,
+			palette: paletteIsEmpty ? undefined : { light, dark },
 			lastUpdated: Date.now(),
 			updatedBy: initialSubnav?.updatedBy ?? '',
 			updatedEmail: initialSubnav?.updatedEmail ?? '',
@@ -178,6 +255,9 @@ const SubnavForm = ({
 		setHeaderCopy(savedState.headerCopy);
 		setLinks(savedState.links);
 		setPages(savedState.pages);
+		setImages(savedState.images);
+		setLightPalette(savedState.lightPalette);
+		setDarkPalette(savedState.darkPalette);
 		setJustSaved(true);
 	};
 
@@ -286,6 +366,121 @@ const SubnavForm = ({
 				<ButtonDefault type="button" size="s" onClick={addPage}>
 					+ Add page
 				</ButtonDefault>
+			</Section>
+
+			<Section>
+				<SectionHeading>Images</SectionHeading>
+				{images.length === 0 ? (
+					<Field as="p">No images added.</Field>
+				) : (
+					images.map((image, index) => (
+						<ImageRow key={index}>
+							<ImageRowHeader>
+								<Select
+									value={image.breakpoint}
+									onChange={(e) =>
+										updateImage(index, {
+											breakpoint: e.target.value as ImageBreakpoint,
+										})
+									}
+								>
+									{breakpointOptions.map((option) => (
+										<option key={option.value} value={option.value}>
+											{option.label}
+										</option>
+									))}
+								</Select>
+								<ButtonDefault
+									type="button"
+									size="s"
+									priority="muted"
+									onClick={() => removeImage(index)}
+								>
+									Remove
+								</ButtonDefault>
+							</ImageRowHeader>
+							<SubnavImageInput
+								value={image.imageSrc || undefined}
+								onChange={(src) => updateImage(index, { imageSrc: src ?? '' })}
+							/>
+						</ImageRow>
+					))
+				)}
+				<ButtonDefault type="button" size="s" onClick={addImage}>
+					+ Add image
+				</ButtonDefault>
+			</Section>
+
+			<Section>
+				<SectionHeading>Palette</SectionHeading>
+				<PaletteGrid>
+					<PaletteColumn>
+						<PaletteColumnHeading>Light</PaletteColumnHeading>
+						<Field>
+							Text colour (hex)
+							<TextInput
+								value={lightPalette.text}
+								onChange={(e) =>
+									updatePaletteField(setLightPalette, 'text', e.target.value)
+								}
+								placeholder="#121212"
+							/>
+						</Field>
+						<Field>
+							Header colour (hex)
+							<TextInput
+								value={lightPalette.header}
+								onChange={(e) =>
+									updatePaletteField(setLightPalette, 'header', e.target.value)
+								}
+								placeholder="#121212"
+							/>
+						</Field>
+						<Field>
+							Link colour (hex)
+							<TextInput
+								value={lightPalette.link}
+								onChange={(e) =>
+									updatePaletteField(setLightPalette, 'link', e.target.value)
+								}
+								placeholder="#c70000"
+							/>
+						</Field>
+					</PaletteColumn>
+					<PaletteColumn>
+						<PaletteColumnHeading>Dark</PaletteColumnHeading>
+						<Field>
+							Text colour (hex)
+							<TextInput
+								value={darkPalette.text}
+								onChange={(e) =>
+									updatePaletteField(setDarkPalette, 'text', e.target.value)
+								}
+								placeholder="#ffffff"
+							/>
+						</Field>
+						<Field>
+							Header colour (hex)
+							<TextInput
+								value={darkPalette.header}
+								onChange={(e) =>
+									updatePaletteField(setDarkPalette, 'header', e.target.value)
+								}
+								placeholder="#ffffff"
+							/>
+						</Field>
+						<Field>
+							Link colour (hex)
+							<TextInput
+								value={darkPalette.link}
+								onChange={(e) =>
+									updatePaletteField(setDarkPalette, 'link', e.target.value)
+								}
+								placeholder="#ff5943"
+							/>
+						</Field>
+					</PaletteColumn>
+				</PaletteGrid>
 			</Section>
 
 			{error && <ErrorMessage>{error}</ErrorMessage>}
