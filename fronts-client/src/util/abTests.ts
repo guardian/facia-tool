@@ -1,6 +1,6 @@
 import { Card, VariantId, Test } from '../types/Collection';
 
-const isActiveTest = (test: Test) =>
+export const isActiveTest = (test: Test) =>
 	!test.hasManuallyEndedOnThisTrail &&
 	!!test.expiryDate &&
 	test.expiryDate > Date.now();
