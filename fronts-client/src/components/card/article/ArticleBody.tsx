@@ -59,6 +59,7 @@ import {
 	IntendedAudienceSignifier,
 	IntendedAudienceSignifierProps,
 } from '@guardian/stand/IntendedAudienceSignifier';
+import { AbTestHeadlineErrorType } from '../../../util/abTests';
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
 	flex-shrink: 0;
@@ -226,6 +227,7 @@ interface ArticleBodyProps {
 	abTestEnabled?: boolean;
 	hasLiveAbTest?: boolean;
 	headlineABTestingIsEnabled?: boolean;
+	headlineTestError: AbTestHeadlineErrorType | null;
 }
 
 const articleBodyDefault = React.memo(
@@ -286,6 +288,7 @@ const articleBodyDefault = React.memo(
 		abTestEnabled,
 		hasLiveAbTest,
 		headlineABTestingIsEnabled,
+		headlineTestError,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
 		const now = Date.now();
@@ -311,11 +314,13 @@ const articleBodyDefault = React.memo(
 		type ABStatusMessage =
 			| 'Test in progress'
 			| 'End test on launch'
+			| 'Test set up incomplete'
 			| 'Ready to launch';
 
 		const determineABTestStatusMessage = (
 			hasLiveAbTest: boolean | undefined,
 			abTestEnabled: boolean | undefined,
+			headlineTestError: AbTestHeadlineErrorType | null,
 		): ABStatusMessage | undefined => {
 			if (hasLiveAbTest && abTestEnabled) {
 				return 'Test in progress';
@@ -323,7 +328,10 @@ const articleBodyDefault = React.memo(
 			if (hasLiveAbTest && !abTestEnabled) {
 				return 'End test on launch';
 			}
-			if (!hasLiveAbTest && abTestEnabled) {
+			if (!hasLiveAbTest && abTestEnabled && headlineTestError) {
+				return 'Test set up incomplete';
+			}
+			if (!hasLiveAbTest && abTestEnabled && !headlineTestError) {
 				return 'Ready to launch';
 			}
 			return undefined;
@@ -368,6 +376,7 @@ const articleBodyDefault = React.memo(
 		const abTestStatusMessage = determineABTestStatusMessage(
 			hasLiveAbTest,
 			abTestEnabled,
+			headlineTestError,
 		);
 
 		const useSecondaryTheme = abTestStatusMessage !== 'Test in progress';
