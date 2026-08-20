@@ -1,32 +1,23 @@
-import type { Card, Test } from 'types/Collection';
+import type { Test } from 'types/Collection';
 
 import { mayEndAbTest } from '../../../actions/Cards';
 import { baseTo, baseFrom } from './fixtures/groups.fixture';
-
-const FUTURE = Date.now() + 100_000;
-const PAST = Date.now() - 100_000;
+import {
+	FUTURE,
+	PAST,
+	makeCard,
+	makeTest as makeBaseTest,
+} from '../../../fixtures/abTests';
 
 const UK_COLLECTION = 'collection-uk';
 const US_COLLECTION = 'collection-us';
 
-const makeTest = (overrides: Partial<Test> = {}): Test => ({
-	testUuid: 'test-1',
-	variantMeta: [],
-	createdByName: 'Jane Doe',
-	createdByEmail: 'jane.doe@guardian.co.uk',
-	expiryDate: FUTURE,
-	frontsThisTestCanRunOn: ['uk'],
-	hasManuallyEndedOnThisTrail: false,
-	...overrides,
-});
-
-const makeCard = (...tests: Test[]): Card => ({
-	id: 'internal-code/page/15334368',
-	frontPublicationDate: 1741879217277,
-	meta: {},
-	uuid: 'card-1',
-	tests: tests.length ? tests : undefined,
-});
+const makeTest = (overrides: Partial<Test> = {}): Test =>
+	makeBaseTest({
+		expiryDate: FUTURE,
+		frontsThisTestCanRunOn: ['uk'],
+		...overrides,
+	});
 
 // The test was created on the `uk` front, which hosts UK_COLLECTION.
 const state: any = {
@@ -56,7 +47,7 @@ describe('mayEndAbTest', () => {
 		const result = mayEndAbTest({
 			from: baseFrom,
 			to: toUsFront,
-			card: makeCard(makeTest()),
+			card: makeCard([makeTest()]),
 			persistTo: 'collection',
 			state,
 		});
@@ -75,7 +66,7 @@ describe('mayEndAbTest', () => {
 		const result = mayEndAbTest({
 			from: baseFrom,
 			to: toUkFront,
-			card: makeCard(makeTest()),
+			card: makeCard([makeTest()]),
 			persistTo: 'collection',
 			state,
 		});
@@ -87,7 +78,7 @@ describe('mayEndAbTest', () => {
 		const result = mayEndAbTest({
 			from: baseFrom,
 			to: { ...baseTo, type: 'clipboard', collectionId: undefined },
-			card: makeCard(makeTest()),
+			card: makeCard([makeTest()]),
 			persistTo: 'clipboard',
 			state,
 		});
@@ -111,7 +102,7 @@ describe('mayEndAbTest', () => {
 		const result = mayEndAbTest({
 			from: baseFrom,
 			to: toUsFront,
-			card: makeCard(makeTest({ hasManuallyEndedOnThisTrail: true })),
+			card: makeCard([makeTest({ hasManuallyEndedOnThisTrail: true })]),
 			persistTo: 'collection',
 			state,
 		});
@@ -123,7 +114,7 @@ describe('mayEndAbTest', () => {
 		const result = mayEndAbTest({
 			from: baseFrom,
 			to: toUsFront,
-			card: makeCard(makeTest({ expiryDate: PAST })),
+			card: makeCard([makeTest({ expiryDate: PAST })]),
 			persistTo: 'collection',
 			state,
 		});
@@ -135,7 +126,7 @@ describe('mayEndAbTest', () => {
 		const result = mayEndAbTest({
 			from: baseFrom,
 			to: toUsFront,
-			card: makeCard(makeTest({ frontsThisTestCanRunOn: undefined })),
+			card: makeCard([makeTest({ frontsThisTestCanRunOn: undefined })]),
 			persistTo: 'collection',
 			state,
 		});
@@ -147,7 +138,7 @@ describe('mayEndAbTest', () => {
 		const result = mayEndAbTest({
 			from: baseFrom,
 			to: toUsFront,
-			card: makeCard(makeTest({ expiryDate: undefined })),
+			card: makeCard([makeTest({ expiryDate: undefined })]),
 			persistTo: 'collection',
 			state,
 		});
