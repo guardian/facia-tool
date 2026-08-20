@@ -68,7 +68,7 @@ type ABStatusMessage =
 	| 'Test set up incomplete'
 	| 'Ready to launch';
 
-type ABTestTheme = 'active' | 'secondary' | 'error';
+type ABTestTheme = 'active' | 'draft' | 'error';
 
 type ABTestPalette = {
 	background: string;
@@ -153,32 +153,8 @@ const ClipboardFirstPublished = styled.div`
 	right: 0;
 `;
 
-const getABTestThemeColors = (abTestTheme: ABTestTheme): ABTestPalette => {
-	switch (abTestTheme) {
-		case 'error':
-			return {
-				background: theme.abTest.errorPrimaryColor,
-				text: theme.abTest.errorTextColor,
-				border: theme.abTest.errorAccentColor,
-				icon: theme.abTest.errorAccentColor,
-			};
-		case 'secondary':
-			return {
-				background: theme.abTest.secondaryPrimaryColor,
-				text: theme.abTest.secondaryAccentColor,
-				border: theme.abTest.secondaryAccentColor,
-				icon: theme.abTest.secondaryAccentColor,
-			};
-		case 'active':
-		default:
-			return {
-				background: theme.abTest.activePrimaryColor,
-				text: theme.abTest.activeAccentColor,
-				border: theme.abTest.activeBorderColor,
-				icon: theme.abTest.activeAccentColor,
-			};
-	}
-};
+const getABTestThemeColors = (abTestTheme: ABTestTheme): ABTestPalette =>
+	theme.abTest[abTestTheme];
 
 const ABTestStatus = styled.div<{ abTestTheme: ABTestTheme }>`
 	background-color: ${({ abTestTheme }) =>
@@ -371,8 +347,8 @@ const articleBodyDefault = React.memo(
 			if (hasLiveAbTest && !abTestEnabled) {
 				return {
 					message: 'End test on launch',
-					theme: 'secondary',
-					palette: getABTestThemeColors('secondary'),
+					theme: 'draft',
+					palette: getABTestThemeColors('draft'),
 				};
 			}
 			if (!hasLiveAbTest && abTestEnabled && headlineTestError) {
@@ -385,8 +361,8 @@ const articleBodyDefault = React.memo(
 			if (!hasLiveAbTest && abTestEnabled && !headlineTestError) {
 				return {
 					message: 'Ready to launch',
-					theme: 'secondary',
-					palette: getABTestThemeColors('secondary'),
+					theme: 'draft',
+					palette: getABTestThemeColors('draft'),
 				};
 			}
 			return undefined;

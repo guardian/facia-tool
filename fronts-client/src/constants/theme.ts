@@ -116,14 +116,24 @@ const button = {
 };
 
 const abTest = {
-	activePrimaryColor: colors.blueDark,
-	activeAccentColor: colors.white,
-	activeBorderColor: 'transparent',
-	secondaryPrimaryColor: colors.blueGrey,
-	secondaryAccentColor: colors.blueDark,
-	errorPrimaryColor: colors.white,
-	errorTextColor: colors.blackDark,
-	errorAccentColor: colors.orange,
+	active: {
+		background: colors.blueDark,
+		text: colors.white,
+		border: 'transparent',
+		icon: colors.white,
+	},
+	draft: {
+		background: colors.blueGrey,
+		text: colors.blueDark,
+		border: colors.blueDark,
+		icon: colors.blueDark,
+	},
+	error: {
+		background: colors.white,
+		text: colors.blackDark,
+		border: colors.orange,
+		icon: colors.orange,
+	},
 };
 
 const input = {
@@ -144,8 +154,6 @@ const input = {
 	placeholderText: base.colors.placeholderDark,
 	radioButtonBackgroundDisabled: '#E6E6E6',
 	checkboxButtonBackgroundDisabled: '#E6E6E6',
-	abTestActiveColor: abTest.activePrimaryColor,
-	abTestSecondaryColor: abTest.secondaryPrimaryColor,
 };
 
 const collection = {

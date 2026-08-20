@@ -19,7 +19,7 @@ interface HeadlineInputProps {
 
 const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
 	background-color: ${({ abTestEnabled, theme }) =>
-		abTestEnabled ? theme.input.abTestSecondaryColor : 'transparent'};
+		abTestEnabled ? theme.abTest.draft.background : 'transparent'};
 	border-radius: 4px;
 	padding: ${({ abTestEnabled }) =>
 		abTestEnabled ? '4px 14px 12px' : '4px 0px 0px'};
