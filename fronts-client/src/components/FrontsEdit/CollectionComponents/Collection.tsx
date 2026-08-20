@@ -101,7 +101,7 @@ type CollectionProps = CollectionPropsBeforeState & {
 };
 
 interface CollectionState {
-	showOpenFormsWarning: boolean;
+	showFormWarnings: boolean;
 	isPreviouslyOpen: boolean;
 	isLaunching: boolean;
 }
@@ -171,7 +171,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 	public state = {
 		isPreviouslyOpen: false,
 		isLaunching: false,
-		showOpenFormsWarning: false,
+		showFormWarnings: false,
 	};
 
 	// added to prevent setState call on unmounted component
@@ -301,20 +301,19 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 									)}
 								</EditModeVisibility>
 								<ActionButtonsContainer
-									onMouseEnter={this.showOpenFormsWarning}
-									onMouseLeave={this.hideOpenFormsWarning}
+									onMouseEnter={this.showFormWarnings}
+									onMouseLeave={this.hideFormWarnings}
 								>
-									{hasOpenForms && this.state.showOpenFormsWarning && (
+									{hasOpenForms && this.state.showFormWarnings && (
 										<OpenFormsWarningContainer>
 											<OpenFormsWarning collectionId={id} frontId={frontId} />
 										</OpenFormsWarningContainer>
 									)}
-									{hasAbTestHeadlineErrors &&
-										this.state.showOpenFormsWarning && (
-											<OpenFormsWarningContainer>
-												<AbTestHeadlineWarning collectionId={id} />
-											</OpenFormsWarningContainer>
-										)}
+									{hasAbTestHeadlineErrors && this.state.showFormWarnings && (
+										<OpenFormsWarningContainer>
+											<AbTestHeadlineWarning collectionId={id} />
+										</OpenFormsWarningContainer>
+									)}
 									<EditModeVisibility visibleMode="fronts">
 										<Button
 											size="l"
@@ -391,10 +390,8 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 		);
 	}
 
-	private showOpenFormsWarning = () =>
-		this.setState({ showOpenFormsWarning: true });
-	private hideOpenFormsWarning = () =>
-		this.setState({ showOpenFormsWarning: false });
+	private showFormWarnings = () => this.setState({ showFormWarnings: true });
+	private hideFormWarnings = () => this.setState({ showFormWarnings: false });
 }
 
 const createMapStateToProps = () => {
