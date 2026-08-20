@@ -10,6 +10,7 @@ import pageConfig from '../../util/extractConfigFromPage';
 
 interface HeadlineInputProps {
 	abTestEnabled: boolean;
+	hasActiveABTest: boolean;
 	capiHeadline: string;
 	cardId: string;
 	editableFields: string[];
@@ -91,6 +92,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						component={InputTextArea}
 						data-testid="edit-form-headline-a-field"
 						placeholder={props.capiHeadline}
+						disabled={props.hasActiveABTest}
 					/>
 					<ConditionalField
 						permittedFields={props.editableFields}
@@ -99,6 +101,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						rows="2"
 						component={InputTextArea}
 						data-testid="edit-form-headline-b-field"
+						disabled={props.hasActiveABTest}
 					/>
 				</HeadlineVariantContainer>
 			) : (
