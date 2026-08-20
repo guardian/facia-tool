@@ -7,6 +7,7 @@ import InputCheckboxToggleInline from './InputCheckboxToggleInline';
 import ConditionalField from './ConditionalField';
 import styled from 'styled-components';
 import pageConfig from '../../util/extractConfigFromPage';
+import { normaliseHeadline } from '../../util/abTests';
 
 interface HeadlineInputProps {
 	abTestEnabled: boolean;
@@ -38,8 +39,6 @@ const HeadlineVariantContainer = styled('div')`
 	flex-direction: column;
 	gap: 6px;
 `;
-
-const normaliseHeadline = (value?: string) => (value ?? '').trim();
 
 const warnIfEmpty = (value: string | undefined) => {
 	return normaliseHeadline(value) === '' ? 'Headline missing' : undefined;

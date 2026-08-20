@@ -31,8 +31,8 @@ export const getCurrentAbTestHeadlineError = (
 		return null;
 	}
 
-	const headlineA = getVariantHeadline(currentTest, 'A')?.toLowerCase().trim();
-	const headlineB = getVariantHeadline(currentTest, 'B')?.toLowerCase().trim();
+	const headlineA = normaliseHeadline(getVariantHeadline(currentTest, 'A'));
+	const headlineB = normaliseHeadline(getVariantHeadline(currentTest, 'B'));
 
 	if (!headlineA || !headlineB) {
 		return 'incomplete';
@@ -53,3 +53,6 @@ export const getVariantHeadline = (
 	return test?.variantMeta.find((variant) => variant.id === variantId)?.meta
 		.headline;
 };
+
+export const normaliseHeadline = (value?: string) =>
+	value?.toLowerCase().trim();
