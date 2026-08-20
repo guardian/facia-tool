@@ -559,6 +559,27 @@ const EllipsisIcon = ({
 	</svg>
 );
 
+// (!)
+const ExclamationIcon = ({
+	fill = theme.colors.blackDark,
+	size = 's',
+}: IconProps) => (
+	<svg
+		width={`${mapSize(size)}px`}
+		height={`${mapSize(size)}px`}
+		viewBox="0 0 11 11"
+		fill="none"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<path
+			fill-rule="evenodd"
+			clip-rule="evenodd"
+			d="M5.5 0C8.53757 0 11 2.46243 11 5.5C11 8.53757 8.53757 11 5.5 11C2.46243 11 0 8.53757 0 5.5C0 2.46243 2.46243 0 5.5 0ZM4.78906 7.53906V8.99902H6.31934V7.53906H4.78906ZM4.68945 1.78906L4.92969 6.45898H6.15918L6.39941 1.78906H4.68945Z"
+			fill={fill}
+		/>
+	</svg>
+);
+
 export {
 	DownCaretIcon,
 	RubbishBinIcon,
@@ -587,4 +608,5 @@ export {
 	CinemagraphIcon,
 	ConicalFlaskIcon,
 	EllipsisIcon,
+	ExclamationIcon,
 };
