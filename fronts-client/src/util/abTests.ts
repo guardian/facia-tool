@@ -31,8 +31,8 @@ export const getCurrentAbTestHeadlineError = (
 		return null;
 	}
 
-	const headlineA = getVariantHeadline(currentTest, 'A')?.trim();
-	const headlineB = getVariantHeadline(currentTest, 'B')?.trim();
+	const headlineA = getVariantHeadline(currentTest, 'A')?.toLowerCase().trim();
+	const headlineB = getVariantHeadline(currentTest, 'B')?.toLowerCase().trim();
 
 	if (!headlineA || !headlineB) {
 		return 'incomplete';

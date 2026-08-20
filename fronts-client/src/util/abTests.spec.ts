@@ -87,6 +87,16 @@ describe('abTests utils', () => {
 			expect(getCurrentAbTestHeadlineError(card)).toBe('duplicate');
 		});
 
+		it('returns "duplicate" when both variant headlines are the same but cased differently', () => {
+			const card = makeCard([
+				makeTest({
+					expiryDate: FUTURE,
+					variantMeta: makeVariantMeta('SAME headline', 'Same headline'),
+				}),
+			]);
+			expect(getCurrentAbTestHeadlineError(card)).toBe('duplicate');
+		});
+
 		it('returns "incomplete" when variant A headline is missing', () => {
 			const card = makeCard([
 				makeTest({
