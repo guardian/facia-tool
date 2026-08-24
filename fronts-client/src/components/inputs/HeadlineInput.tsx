@@ -8,6 +8,8 @@ import ConditionalField from './ConditionalField';
 import styled from 'styled-components';
 import pageConfig from '../../util/extractConfigFromPage';
 import { normaliseHeadline } from '../../util/abTests';
+import { ConicalFlaskIcon } from '../icons/Icons';
+import url from '../../constants/url';
 
 interface HeadlineInputProps {
 	abTestEnabled: boolean;
@@ -39,6 +41,27 @@ const HeadlineVariantContainer = styled('div')`
 	display: flex;
 	flex-direction: column;
 	gap: 6px;
+`;
+
+const OphanBannerContainer = styled('div')`
+	display: flex;
+	background: ${({ theme }) => theme.abTest.active.background};
+	color: ${({ theme }) => theme.abTest.active.text};
+	flex-direction: row;
+	align-items: center;
+	gap: 6px;
+	border-bottom-left-radius: 4px;
+	border-bottom-right-radius: 4px;
+	padding: 10px 18px;
+	margin: 10px -14px -12px -14px;
+	font-size: 14px;
+`;
+
+const OphanBannerTitle = styled('span')`
+	font-weight: 600;
+`;
+const OphanBannerLink = styled('a')`
+	color: ${({ theme }) => theme.abTest.active.text};
 `;
 
 const warnIfEmpty = (value: string | undefined) => {
@@ -128,6 +151,18 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 					data-testid="edit-form-headline-field"
 				/>
 			)}
+			<OphanBannerContainer>
+				<ConicalFlaskIcon size={'xs'} fill={'white'} />{' '}
+				<OphanBannerTitle>Headline Test In Progress :</OphanBannerTitle> View
+				results in{' '}
+				<OphanBannerLink
+					href={url.ophan}
+					target="_blank"
+					rel="noreferrer noopener"
+				>
+					Ophan
+				</OphanBannerLink>
+			</OphanBannerContainer>
 		</HeadlineInputContainer>
 	);
 };
