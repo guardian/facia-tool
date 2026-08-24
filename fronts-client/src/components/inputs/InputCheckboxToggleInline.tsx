@@ -28,7 +28,7 @@ const Label = styled(InputLabel)<{
 }>`
 	color: ${({ useABTestStyling, activeABTest, theme }) =>
 		useABTestStyling && activeABTest
-			? theme.input.abTestActiveColor
+			? theme.abTest.active.background
 			: theme.input.colorLabel};
 	line-height: 15px;
 	flex: 1;
@@ -84,13 +84,13 @@ const Checkbox = styled.input<{ useABTestStyling?: boolean }>`
 	:checked + ${CheckboxLabel} {
 		background-color: ${({ useABTestStyling }) =>
 			useABTestStyling
-				? theme.input.abTestActiveColor
+				? theme.abTest.active.background
 				: theme.input.checkboxColorActive};
 	}
 	&:checked + ${CheckboxLabel}, &:checked + ${CheckboxLabel}:before {
 		border-color: ${({ useABTestStyling }) =>
 			useABTestStyling
-				? theme.input.abTestActiveColor
+				? theme.abTest.active.background
 				: theme.input.checkboxColorActive};
 		right: 0px;
 	}
@@ -147,7 +147,7 @@ export default ({
 							size={'xs'}
 							fill={
 								activeABTest
-									? theme.input.abTestActiveColor
+									? theme.abTest.active.background
 									: theme.input.colorLabel
 							}
 						/>

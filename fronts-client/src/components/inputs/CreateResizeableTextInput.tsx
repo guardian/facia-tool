@@ -5,8 +5,8 @@ import clamp from 'lodash/clamp';
 
 import InputLabel from './InputLabel';
 import InputContainer from './InputContainer';
-import { RewindIcon } from '../icons/Icons';
-import { styled } from 'constants/theme';
+import { RewindIcon, WarningIcon } from '../icons/Icons';
+import { styled, theme } from 'constants/theme';
 
 type Props = {
 	label?: string;
@@ -54,6 +54,15 @@ const InputComponentContainer = styled.div`
 	}
 `;
 
+const Warning = styled('span')`
+	margin-left: 8px;
+	font-size: 12px;
+	color: ${theme.base.colors.dangerColor};
+	display: flex;
+	align-items: center;
+	gap: 4px;
+`;
+
 const createResizeableTextInput = (
 	Component: React.ComponentType<any>,
 	type?: string,
@@ -98,6 +107,7 @@ const createResizeableTextInput = (
 				input,
 				originalValue,
 				labelContent: LabelContent,
+				meta,
 				...rest
 			} = this.props;
 			return (
@@ -111,6 +121,15 @@ const createResizeableTextInput = (
 								</RewindButton>
 							)}
 							{LabelContent}
+							{meta?.warning && (
+								<Warning>
+									<WarningIcon
+										fill={theme.base.colors.dangerColor}
+										size={'s'}
+									/>{' '}
+									{meta.warning}
+								</Warning>
+							)}
 						</TextInputLabel>
 					)}
 					<InputComponentContainer>
