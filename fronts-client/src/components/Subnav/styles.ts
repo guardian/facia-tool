@@ -264,27 +264,3 @@ export const ImagePickerActions = styled.div`
 	align-items: center;
 	gap: 8px;
 `;
-
-/**
- * Palette
- */
-
-export const PaletteGrid = styled.div`
-	display: grid;
-	grid-template-columns: 1fr 1fr;
-	gap: 24px;
-`;
-
-export const PaletteColumn = styled.div`
-	display: flex;
-	flex-direction: column;
-`;
-
-export const PaletteColumnHeading = styled.h4`
-	margin: 0 0 8px;
-	font-size: 12px;
-	font-weight: 600;
-	text-transform: uppercase;
-	letter-spacing: 0.04em;
-	color: ${({ theme }) => theme.base.colors.textMuted};
-`;

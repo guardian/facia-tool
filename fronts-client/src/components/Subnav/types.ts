@@ -30,17 +30,6 @@ export interface SubnavImage {
 	breakpoint: ImageBreakpoint;
 }
 
-export interface Palette {
-	text?: string;
-	header?: string;
-	link?: string;
-}
-
-export interface Palettes {
-	light: Palette;
-	dark: Palette;
-}
-
 export interface CustomSubnav {
 	id: string;
 	header: CustomSubnavHeader;
@@ -48,7 +37,6 @@ export interface CustomSubnav {
 	links: SubnavLink[];
 	pages: TargetedPage[];
 	images?: SubnavImage[];
-	palette?: Palettes;
 	lastUpdated: number;
 	updatedBy: string;
 	updatedEmail: string;
