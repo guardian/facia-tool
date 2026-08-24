@@ -11,6 +11,7 @@ import { normaliseHeadline } from '../../util/abTests';
 
 interface HeadlineInputProps {
 	abTestEnabled: boolean;
+	hasActiveABTest: boolean;
 	capiHeadline: string;
 	cardId: string;
 	editableFields: string[];
@@ -102,6 +103,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						component={InputTextArea}
 						data-testid="edit-form-headline-a-field"
 						placeholder={props.capiHeadline}
+						disabled={props.hasActiveABTest}
 						warn={warnIfEmpty}
 					/>
 					<ConditionalField
@@ -111,6 +113,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						rows="2"
 						component={InputTextArea}
 						data-testid="edit-form-headline-b-field"
+						disabled={props.hasActiveABTest}
 						warn={[warnIfEmpty, warnIfDuplicate]}
 					/>
 				</HeadlineVariantContainer>
