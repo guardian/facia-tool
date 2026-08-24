@@ -126,9 +126,9 @@ const TestIndicator = styled(ButtonDefault)`
 	width: 18px;
 	&&:hover,
 	&&:active {
-		background: ${theme.base.colors.abTestActiveColor};
+		background: ${theme.abTest.active.background};
 	}
-	background: ${theme.base.colors.abTestActiveColor};
+	background: ${theme.abTest.active.background};
 `;
 
 const CollectionOverview = ({

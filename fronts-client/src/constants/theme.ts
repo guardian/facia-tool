@@ -14,6 +14,7 @@ const colors = {
 	blackDark: '#121212', // darkest
 	blackLight: '#333',
 	blue: '#3B82F6',
+	blueDark: '#1B67E2',
 	blueGrey: '#EEF2F6',
 	greyDark: '#444444',
 	greyMediumDark: '#515151',
@@ -72,8 +73,6 @@ const base = {
 		placeholderDark: colors.greyLight,
 		focusColor: colors.orange,
 		dangerColor: colors.red,
-		abTestActiveColor: colors.blue,
-		abTestSecondaryColor: colors.blueGrey,
 	},
 };
 
@@ -116,6 +115,27 @@ const button = {
 	backgroundColorHighlightFocused: base.colors.highlightColorFocused,
 };
 
+const abTest = {
+	active: {
+		background: colors.blueDark,
+		text: colors.white,
+		border: 'transparent',
+		icon: colors.white,
+	},
+	draft: {
+		background: colors.blueGrey,
+		text: colors.blueDark,
+		border: colors.blueDark,
+		icon: colors.blueDark,
+	},
+	error: {
+		background: colors.white,
+		text: colors.blackDark,
+		border: colors.orange,
+		icon: colors.orange,
+	},
+};
+
 const input = {
 	height: '30px',
 	paddingY: '3px',
@@ -134,8 +154,6 @@ const input = {
 	placeholderText: base.colors.placeholderDark,
 	radioButtonBackgroundDisabled: '#E6E6E6',
 	checkboxButtonBackgroundDisabled: '#E6E6E6',
-	abTestActiveColor: base.colors.abTestActiveColor,
-	abTestSecondaryColor: base.colors.abTestSecondaryColor,
 };
 
 const collection = {
@@ -187,6 +205,7 @@ export const theme = {
 	thumbnailImage,
 	thumbnailImageSquare,
 	thumbnailImagePortrait,
+	abTest,
 };
 
 export type Theme = typeof theme;

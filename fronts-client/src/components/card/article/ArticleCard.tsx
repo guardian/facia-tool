@@ -27,7 +27,11 @@ import { dragEventHasImageData } from 'util/validateImageSrc';
 import { Criteria } from 'types/Grid';
 import { getMainMediaVideoAtom } from '../../../util/externalArticle';
 import { intendedAudienceFromTags } from 'lib/capi/IntendedAudience';
-import { hasActiveAbTestOnCard } from '../../../util/abTests';
+import {
+	AbTestHeadlineErrorType,
+	getCurrentAbTestHeadlineError,
+	hasActiveAbTestOnCard,
+} from '../../../util/abTests';
 
 const ArticleBodyContainer = styled(CardBody)<{
 	pillarId: string | undefined;
@@ -71,6 +75,7 @@ interface ArticleComponentProps {
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 	hasLiveAbTest?: boolean;
 	headlineABTestingIsEnabled?: boolean;
+	headlineTestError?: AbTestHeadlineErrorType | null;
 }
 
 interface ComponentProps extends ArticleComponentProps {
@@ -124,6 +129,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 			otherCollectionsOnSameFrontThisCardIsOn,
 			hasLiveAbTest,
 			headlineABTestingIsEnabled,
+			headlineTestError,
 		} = this.props;
 
 		const getArticleData = () =>
@@ -199,6 +205,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 								}
 								hasLiveAbTest={hasLiveAbTest}
 								headlineABTestingIsEnabled={headlineABTestingIsEnabled}
+								headlineTestError={headlineTestError}
 							/>
 						</ArticleBodyContainer>
 					</DragIntentContainer>
@@ -222,6 +229,7 @@ const createMapStateToProps = () => {
 		featureFlagPageViewData: boolean;
 		hasLiveAbTest?: boolean;
 		headlineABTestingIsEnabled: boolean;
+		headlineTestError: AbTestHeadlineErrorType | null;
 	} => {
 		const article = selectArticle(state, props.id);
 		const card = selectCard(state, props.id);
@@ -232,6 +240,7 @@ const createMapStateToProps = () => {
 			props.collectionId,
 		);
 		const hasLiveAbTest = hasActiveAbTestOnCard(liveCard);
+		const headlineTestError = getCurrentAbTestHeadlineError(card);
 
 		return {
 			article,
@@ -245,6 +254,7 @@ const createMapStateToProps = () => {
 				state,
 				'headline-ab-testing',
 			),
+			headlineTestError: headlineTestError,
 		};
 	};
 };

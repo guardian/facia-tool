@@ -1,8 +1,33 @@
 import {
 	selectCardsInCollections,
 	createSelectIsArticleInCollection,
+	createSelectActiveAbTestHeadlineErrorsForCollection,
 } from '../collection';
 import { stateWithCollection } from '../../fixtures/shared';
+import { Test } from '../../types/Collection';
+import { FUTURE, makeTest, makeVariantMeta } from '../../fixtures/abTests';
+
+const makeActiveTest = (
+	headlineA: string | undefined,
+	headlineB: string | undefined,
+): Test =>
+	makeTest({
+		expiryDate: FUTURE,
+		variantMeta: makeVariantMeta(headlineA, headlineB),
+	});
+
+const DRAFT_CARD_A = '4bc11359-bb3e-45e7-a0a9-86c0ee52653d';
+const DRAFT_CARD_B = '12e1d70d-bad5-4c8d-b53c-cf38d01bc11d';
+
+const stateWithTests = (
+	tests: Record<string, Test | undefined>,
+): typeof stateWithCollection => {
+	const state = JSON.parse(JSON.stringify(stateWithCollection));
+	Object.entries(tests).forEach(([cardId, test]) => {
+		state.cards[cardId].tests = test ? [test] : undefined;
+	});
+	return state;
+};
 
 describe('Collection selectors', () => {
 	describe('selectCardsInCollections', () => {
@@ -54,6 +79,54 @@ describe('Collection selectors', () => {
 					cardId: 'not-a-thing',
 				}),
 			).toEqual(false);
+		});
+	});
+	describe('createSelectActiveAbTestHeadlineErrorsForCollection', () => {
+		const selectErrors = createSelectActiveAbTestHeadlineErrorsForCollection();
+
+		it('returns no errors when no draft card has an invalid active test', () => {
+			expect(
+				selectErrors(stateWithCollection, {
+					collectionId: 'exampleCollectionTwo',
+				}),
+			).toEqual([]);
+		});
+
+		it('flags a draft card whose active test has duplicate headlines', () => {
+			const state = stateWithTests({
+				[DRAFT_CARD_A]: makeActiveTest('Same', 'Same'),
+			});
+			expect(
+				selectErrors(state, { collectionId: 'exampleCollectionTwo' }),
+			).toEqual([
+				expect.objectContaining({
+					cardId: DRAFT_CARD_A,
+					error: 'duplicate',
+				}),
+			]);
+		});
+
+		it('flags a draft card whose active test has incomplete headlines', () => {
+			const state = stateWithTests({
+				[DRAFT_CARD_B]: makeActiveTest('Headline A', undefined),
+			});
+			expect(
+				selectErrors(state, { collectionId: 'exampleCollectionTwo' }),
+			).toEqual([
+				expect.objectContaining({
+					cardId: DRAFT_CARD_B,
+					error: 'incomplete',
+				}),
+			]);
+		});
+
+		it('does not flag a draft card with a valid active test', () => {
+			const state = stateWithTests({
+				[DRAFT_CARD_A]: makeActiveTest('Headline A', 'Headline B'),
+			});
+			expect(
+				selectErrors(state, { collectionId: 'exampleCollectionTwo' }),
+			).toEqual([]);
 		});
 	});
 });

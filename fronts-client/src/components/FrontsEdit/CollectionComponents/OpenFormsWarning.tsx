@@ -1,63 +1,29 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useMemo } from 'react';
+import { useSelector } from 'react-redux';
 import type { State } from 'types/State';
-import FlatUl from 'components/layout/FlatUl';
 import { createSelectOpenCardTitlesForCollection } from 'bundles/frontsUI';
-import { createCardId } from '../../card/Card';
-import styled from 'styled-components';
+import CollectionWarningList from './CollectionWarningList';
 
-interface ContainerProps {
+interface Props {
 	collectionId: string;
 	frontId: string;
 }
 
-interface ComponentProps extends ContainerProps {
-	openArticleTitles: Array<{ uuid: string; title?: string }>;
-}
+const OpenFormsWarning = ({ collectionId, frontId }: Props) => {
+	const selectOpenCardTitlesForCollection = useMemo(
+		() => createSelectOpenCardTitlesForCollection(),
+		[],
+	);
+	const items = useSelector((state: State) =>
+		selectOpenCardTitlesForCollection(state, { collectionId, frontId }),
+	).map(({ uuid, title }) => ({ id: uuid, title }));
 
-const OpenArticleLi = styled.li`
-	& + & {
-		margin-top: 10px;
-	}
-`;
-
-const OpenFormsWarning = ({ openArticleTitles }: ComponentProps) => (
-	<div>
-		<strong>There are open forms in this collection:</strong>
-		<FlatUl>
-			{openArticleTitles.map(({ uuid, title }) => (
-				<OpenArticleLi key={title}>
-					<a
-						href={`#${uuid}`}
-						onClick={() => {
-							const id = createCardId(uuid);
-							const element = document.getElementById(id);
-							if (element) {
-								element.scrollIntoView({
-									behavior: 'smooth',
-									inline: 'start',
-									block: 'end',
-								});
-							}
-						}}
-					>
-						{title || 'No title'}
-					</a>
-				</OpenArticleLi>
-			))}
-		</FlatUl>
-	</div>
-);
-
-const mapStateToProps = () => {
-	const selectOpenCardTitlesForCollection =
-		createSelectOpenCardTitlesForCollection();
-	return (state: State, { collectionId, frontId }: ContainerProps) => ({
-		openArticleTitles: selectOpenCardTitlesForCollection(state, {
-			collectionId,
-			frontId,
-		}),
-	});
+	return (
+		<CollectionWarningList
+			heading="There are open forms in this collection:"
+			items={items}
+		/>
+	);
 };
 
-export default connect(mapStateToProps)(OpenFormsWarning);
+export default OpenFormsWarning;
