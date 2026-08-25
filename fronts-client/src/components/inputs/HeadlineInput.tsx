@@ -129,7 +129,9 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 					data-testid="edit-form-headline-field"
 				/>
 			)}
-			{props.abTestEnabled && props.hasActiveABTest && <OphanBanner />}
+			{abTestFeatureEnabled && props.abTestEnabled && props.hasActiveABTest && (
+				<OphanBanner />
+			)}
 		</HeadlineInputContainer>
 	);
 };
