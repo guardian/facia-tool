@@ -18,6 +18,7 @@ interface HeadlineInputProps {
 	editableFields: string[];
 	snapType: string | undefined;
 	onAbTestToggle?: EventWithDataHandler<React.ChangeEvent<any>>;
+	frontId: string;
 }
 
 const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
@@ -73,7 +74,13 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 			(feature) => feature.key === 'headline-ab-testing',
 		);
 
-	const abTestFeatureEnabled = headlineABTestingFeatureSwitch?.enabled === true;
+	/*
+	 * Initial rollout of Editorial AB testing will be limited to the US front only.
+	 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
+	 */
+	const isUSNetworkFront = props.frontId === 'us';
+	const abTestFeatureEnabled =
+		isUSNetworkFront && headlineABTestingFeatureSwitch?.enabled === true;
 	return (
 		<HeadlineInputContainer
 			abTestEnabled={props.abTestEnabled && abTestFeatureEnabled}
