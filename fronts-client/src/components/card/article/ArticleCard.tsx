@@ -241,7 +241,13 @@ const createMapStateToProps = () => {
 		);
 		const hasLiveAbTest = hasActiveAbTestOnCard(liveCard);
 		const headlineTestError = getCurrentAbTestHeadlineError(card);
-
+		/*
+		 * Initial rollout of Editorial AB testing will be limited to the US front only.
+		 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
+		 */
+		const isUSNetworkFront = props.frontId === 'us';
+		const headlineABTestingIsEnabled =
+			isUSNetworkFront && selectFeatureValue(state, 'headline-ab-testing');
 		return {
 			article,
 			isLoading: selectors.selectIsLoadingInitialDataById(state, card.id),
@@ -250,10 +256,7 @@ const createMapStateToProps = () => {
 				'page-view-data-visualisation',
 			),
 			hasLiveAbTest: hasLiveAbTest,
-			headlineABTestingIsEnabled: selectFeatureValue(
-				state,
-				'headline-ab-testing',
-			),
+			headlineABTestingIsEnabled: headlineABTestingIsEnabled,
 			headlineTestError: headlineTestError,
 		};
 	};
