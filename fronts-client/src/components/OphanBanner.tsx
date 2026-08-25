@@ -31,7 +31,7 @@ const OphanBanner = () => {
 	return (
 		<OphanBannerContainer role="status">
 			<ConicalFlaskIcon size="xs" fill={theme.abTest.active.icon} />
-			<OphanBannerTitle>Headline Test In Progress:</OphanBannerTitle>
+			<OphanBannerTitle>Headline Test In Progress :</OphanBannerTitle>
 			<span>
 				View results in{' '}
 				<OphanBannerLink
