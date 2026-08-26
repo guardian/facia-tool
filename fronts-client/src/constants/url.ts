@@ -45,4 +45,6 @@ export default {
 	liveUrlPROD: 'https://www.theguardian.com/',
 	emailLiveUrlCODE,
 	emailLiveUrlPROD,
+	//TODO: update to the correct url
+	ophan: 'https://dashboard.ophan.co.uk/',
 };

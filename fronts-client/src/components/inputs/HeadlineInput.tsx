@@ -5,6 +5,7 @@ import { RichTextInput } from './RichTextInput';
 import InputTextArea from './InputTextArea';
 import InputCheckboxToggleInline from './InputCheckboxToggleInline';
 import ConditionalField from './ConditionalField';
+import { OphanBanner } from '../OphanBanner';
 import styled from 'styled-components';
 import pageConfig from '../../util/extractConfigFromPage';
 import { normaliseHeadline } from '../../util/abTests';
@@ -127,6 +128,9 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 					originalValue={props.capiHeadline}
 					data-testid="edit-form-headline-field"
 				/>
+			)}
+			{abTestFeatureEnabled && props.abTestEnabled && props.hasActiveABTest && (
+				<OphanBanner />
 			)}
 		</HeadlineInputContainer>
 	);
