@@ -54,7 +54,7 @@ const renderForm = (state: State) => {
 					<ArticleMetaForm
 						cardId={cardId}
 						form={cardId}
-						frontId="frontId"
+						frontId="us"
 						onSave={jest.fn()}
 						onCancel={jest.fn()}
 					/>
@@ -74,7 +74,7 @@ describe('ArticleMetaForm - headline AB testing', () => {
 					<ArticleMetaForm
 						cardId={cardId}
 						form={cardId}
-						frontId="frontId"
+						frontId="us"
 						onSave={jest.fn()}
 						onCancel={jest.fn()}
 					/>
