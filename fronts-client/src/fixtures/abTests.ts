@@ -14,3 +14,11 @@ export const makeTest = (overrides: Partial<Test> = {}): Test => ({
 
 export const makeCard = (tests?: Test[]): Card =>
 	({ uuid: 'card-1', id: 'card-1', meta: {}, tests }) as Card;
+
+export const makeVariantMeta = (
+	headlineA?: string,
+	headlineB?: string,
+): Test['variantMeta'] => [
+	{ id: 'A', meta: { headline: headlineA } },
+	{ id: 'B', meta: { headline: headlineB } },
+];

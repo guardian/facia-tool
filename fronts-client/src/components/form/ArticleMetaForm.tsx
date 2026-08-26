@@ -15,9 +15,11 @@ import {
 	createSelectArticleFromCard,
 	selectExternalArticleFromCard,
 	selectArticleTag,
+	selectCard,
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
 import { emptyObject } from 'util/selectorUtils';
+import { hasActiveAbTestOnCard } from 'util/abTests';
 import {
 	CardMeta,
 	ArticleTag,
@@ -559,6 +561,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			pristine,
 			showByline,
 			abTestEnabled,
+			hasActiveABTest,
 			headline,
 			editableFields = [],
 			showKickerTag,
@@ -722,6 +725,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 						{shouldRenderField('headline', editableFields) && (
 							<HeadlineInput
 								abTestEnabled={abTestEnabled}
+								hasActiveABTest={hasActiveABTest}
 								capiHeadline={articleCapiFieldValues.headline}
 								cardId={this.props.cardId}
 								editableFields={editableFields}
@@ -1279,6 +1283,7 @@ interface ContainerProps {
 	pickedKicker: string | undefined;
 	showByline: boolean;
 	abTestEnabled: boolean;
+	hasActiveABTest: boolean;
 	headline: string;
 	editableFields?: string[];
 	showKickerTag: boolean;
@@ -1361,6 +1366,7 @@ const createMapStateToProps = () => {
 			replaceVideoUri: valueSelector(state, 'replaceVideoUri'),
 			showByline: valueSelector(state, 'showByline'),
 			abTestEnabled: valueSelector(state, 'abTestEnabled'),
+			hasActiveABTest: hasActiveAbTestOnCard(selectCard(state, cardId)),
 			headline: valueSelector(state, 'headline'),
 			showKickerTag: valueSelector(state, 'showKickerTag'),
 			showKickerSection: valueSelector(state, 'showKickerSection'),

@@ -5,11 +5,14 @@ import { RichTextInput } from './RichTextInput';
 import InputTextArea from './InputTextArea';
 import InputCheckboxToggleInline from './InputCheckboxToggleInline';
 import ConditionalField from './ConditionalField';
+import { OphanBanner } from '../OphanBanner';
 import styled from 'styled-components';
 import pageConfig from '../../util/extractConfigFromPage';
+import { normaliseHeadline } from '../../util/abTests';
 
 interface HeadlineInputProps {
 	abTestEnabled: boolean;
+	hasActiveABTest: boolean;
 	capiHeadline: string;
 	cardId: string;
 	editableFields: string[];
@@ -19,7 +22,7 @@ interface HeadlineInputProps {
 
 const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
 	background-color: ${({ abTestEnabled, theme }) =>
-		abTestEnabled ? theme.input.abTestSecondaryColor : 'transparent'};
+		abTestEnabled ? theme.abTest.draft.background : 'transparent'};
 	border-radius: 4px;
 	padding: ${({ abTestEnabled }) =>
 		abTestEnabled ? '4px 14px 12px' : '4px 0px 0px'};
@@ -38,6 +41,18 @@ const HeadlineVariantContainer = styled('div')`
 	flex-direction: column;
 	gap: 6px;
 `;
+
+const warnIfEmpty = (value: string | undefined) => {
+	return normaliseHeadline(value) === '' ? 'Headline missing' : undefined;
+};
+const warnIfDuplicate = (
+	value: string | undefined,
+	allValues: { headlineA?: string },
+) => {
+	return normaliseHeadline(value) === normaliseHeadline(allValues.headlineA)
+		? 'Headline is duplicated'
+		: undefined;
+};
 
 const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 	/**
@@ -58,13 +73,12 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 			(feature) => feature.key === 'headline-ab-testing',
 		);
 
+	const abTestFeatureEnabled = headlineABTestingFeatureSwitch?.enabled === true;
 	return (
 		<HeadlineInputContainer
-			abTestEnabled={
-				props.abTestEnabled && headlineABTestingFeatureSwitch?.enabled === true
-			}
+			abTestEnabled={props.abTestEnabled && abTestFeatureEnabled}
 		>
-			{props.cardId && headlineABTestingFeatureSwitch?.enabled === true && (
+			{props.cardId && abTestFeatureEnabled && (
 				<ABTestToggleContainer>
 					<Field
 						name="abTestEnabled"
@@ -80,8 +94,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 				</ABTestToggleContainer>
 			)}
 
-			{props.abTestEnabled &&
-			headlineABTestingFeatureSwitch?.enabled === true ? (
+			{props.abTestEnabled && abTestFeatureEnabled ? (
 				<HeadlineVariantContainer>
 					<ConditionalField
 						permittedFields={props.editableFields}
@@ -91,6 +104,8 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						component={InputTextArea}
 						data-testid="edit-form-headline-a-field"
 						placeholder={props.capiHeadline}
+						disabled={props.hasActiveABTest}
+						warn={warnIfEmpty}
 					/>
 					<ConditionalField
 						permittedFields={props.editableFields}
@@ -99,6 +114,8 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 						rows="2"
 						component={InputTextArea}
 						data-testid="edit-form-headline-b-field"
+						disabled={props.hasActiveABTest}
+						warn={[warnIfEmpty, warnIfDuplicate]}
 					/>
 				</HeadlineVariantContainer>
 			) : (
@@ -111,6 +128,9 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 					originalValue={props.capiHeadline}
 					data-testid="edit-form-headline-field"
 				/>
+			)}
+			{abTestFeatureEnabled && props.abTestEnabled && props.hasActiveABTest && (
+				<OphanBanner />
 			)}
 		</HeadlineInputContainer>
 	);
