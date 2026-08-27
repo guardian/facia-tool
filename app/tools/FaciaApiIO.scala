@@ -166,11 +166,9 @@ object FaciaApi {
   private def addTestDatesToTrail(trail: Trail, now: DateTime): Trail = {
     val updatedTests = trail.tests.map(_.map { test =>
       if (test.hasManuallyEndedOnThisTrail) {
-        test.manuallyEndedOnThisTrailDate match {
-          case Some(endedDate) => test
-          case _ =>
-            test.copy(manuallyEndedOnThisTrailDate = Some(now.getMillis))
-        }
+        test.copy(manuallyEndedOnThisTrailDate =
+          test.manuallyEndedOnThisTrailDate.orElse(Some(now.getMillis))
+        )
       } else {
         val startDate = test.startDate.orElse(Some(now.getMillis))
         val expiryDate = test.expiryDate.orElse(Some(now.plusDays(1).getMillis))
