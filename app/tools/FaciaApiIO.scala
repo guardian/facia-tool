@@ -1,6 +1,13 @@
 package tools
 
-import com.gu.facia.client.models.{CollectionJson, ConfigJson, Trail}
+import com.gu.facia.client.models.{
+  CollectionJson,
+  ConfigJson,
+  SupportingItem,
+  Test,
+  Trail,
+  TrailMetaData
+}
 import com.gu.pandomainauth.model.User
 import frontsapi.model.CollectionJsonFunctions
 import org.joda.time.DateTime
@@ -163,8 +170,11 @@ object FaciaApi {
     collectionJson.copy(draft = Some(draftsWithNewDate))
   }
 
-  private def addTestDatesToTrail(trail: Trail, now: DateTime): Trail = {
-    val updatedTests = trail.tests.map(_.map { test =>
+  private def addTestDates(
+      tests: Option[List[Test]],
+      now: DateTime
+  ): Option[List[Test]] =
+    tests.map(_.map { test =>
       if (test.hasManuallyEndedOnThisTrail) {
         test.copy(manuallyEndedOnThisTrailDate =
           test.manuallyEndedOnThisTrailDate.orElse(Some(now.getMillis))
@@ -175,7 +185,31 @@ object FaciaApi {
         test.copy(startDate = startDate, expiryDate = expiryDate)
       }
     })
-    trail.copy(tests = updatedTests)
+
+  private def addTestDatesToSupportingItem(
+      item: SupportingItem,
+      now: DateTime
+  ): SupportingItem =
+    item.copy(tests = addTestDates(item.tests, now))
+
+  private def addTestDatesToTrail(trail: Trail, now: DateTime): Trail = {
+    val updatedTests = addTestDates(trail.tests, now)
+
+    // Sublinks (supporting items) can carry their own tests, so we also need to
+    // set dates on those
+    val updatedMeta = trail.meta.map { meta =>
+      meta.supporting match {
+        case None => meta
+        case Some(supporting) =>
+          val updatedSupporting =
+            supporting.map(item => addTestDatesToSupportingItem(item, now))
+          TrailMetaData(
+            meta.json + ("supporting" -> Json.toJson(updatedSupporting))
+          )
+      }
+    }
+
+    trail.copy(tests = updatedTests, meta = updatedMeta)
   }
 
   def addTestDatesToTrails(
