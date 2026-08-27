@@ -20,6 +20,7 @@ interface OuterProps {
 	isUneditable?: boolean;
 	dropMessage?: string;
 	cardTypeAllowList?: CardTypes[];
+	collectionId?: string;
 	groupName?: string;
 	groupIds?: string[];
 	groups?: Group[];
@@ -52,6 +53,7 @@ const CardLevel = ({
 	isUneditable,
 	dropMessage,
 	cardTypeAllowList,
+	collectionId,
 	groupName,
 	groupIds,
 	groups,
@@ -60,6 +62,7 @@ const CardLevel = ({
 		arr={supporting || []}
 		parentType="card"
 		parentId={cardId}
+		collectionId={collectionId}
 		groupName={groupName}
 		groupIds={groupIds}
 		groupsData={groups}
