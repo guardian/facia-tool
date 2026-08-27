@@ -116,7 +116,8 @@ class FaciaApiTest extends FreeSpec with Matchers {
     frontsThisTestCanRunOn = Nil,
     hasManuallyEndedOnThisTrail = hasManuallyEndedOnThisTrail,
     manuallyEndedOnThisTrailByName = None,
-    manuallyEndedOnThisTrailByEmail = None
+    manuallyEndedOnThisTrailByEmail = None,
+    manuallyEndedOnThisTrailDate = None
   )
 
   private def scenarioWithTests: (User, CollectionJson) = {
