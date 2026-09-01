@@ -80,15 +80,14 @@ CloudFront `FaciaCloudfront` + `StaticCloudfront`, `DnsRecord` +
 
 ## Phases
 
-- [x] **Phase 1 (implemented locally)** — wrap template with GuCDK via
+- [x] **Phase 1** — wrap template with GuCDK via
   `CfnInclude` (verified **tags-only** `cdk diff` vs live `facia-CODE`). Done:
   template at `cloudformation/facia-tool.cfn.yaml`; `cdk/` scaffolded; per-stage
   `cloudFormationStackName` = `facia-CODE`/`facia-PROD`; `cdk/.nvmrc` node 24;
   service-repo CI builds+synths CDK and uploads templates; `riff-raff.yaml` now a
   `cloud-formation` deploy (`cfn-facia-tool`) with `autoscaling` depending on it;
   platform-repo facia deployer + orphaned template removed; `access.ts` permission
-  removed. **Pending user action:** create branches/commits in each repo, push,
-  open the 3 PRs in merge order, deploy CODE then PROD.
+  removed.
 - [ ] **Phase 2** — `GuEc2App` (ALB) in parallel with legacy ELB (dual-stack);
   remove leftover `gu:riffraff:new-asg` from legacy ASG; `asgMigrationInProgress`.
 - [ ] **Phase 3** — repoint CloudFront origin ELB → ALB (revertible).
