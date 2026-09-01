@@ -7,7 +7,6 @@ import InputCheckboxToggleInline from './InputCheckboxToggleInline';
 import ConditionalField from './ConditionalField';
 import { OphanBanner } from '../OphanBanner';
 import styled from 'styled-components';
-import pageConfig from '../../util/extractConfigFromPage';
 import { normaliseHeadline } from '../../util/abTests';
 
 interface HeadlineInputProps {
@@ -69,23 +68,16 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 
 	const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
-	const headlineABTestingFeatureSwitch =
-		pageConfig?.userData?.featureSwitches.find(
-			(feature) => feature.key === 'headline-ab-testing',
-		);
-
 	/*
 	 * Initial rollout of Editorial AB testing will be limited to the US front only.
 	 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
 	 */
 	const isUSNetworkFront = props.frontId === 'us';
-	const abTestFeatureEnabled =
-		isUSNetworkFront && headlineABTestingFeatureSwitch?.enabled === true;
 	return (
 		<HeadlineInputContainer
-			abTestEnabled={props.abTestEnabled && abTestFeatureEnabled}
+			abTestEnabled={props.abTestEnabled && isUSNetworkFront}
 		>
-			{props.cardId && abTestFeatureEnabled && (
+			{props.cardId && isUSNetworkFront && (
 				<ABTestToggleContainer>
 					<Field
 						name="abTestEnabled"
@@ -101,7 +93,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 				</ABTestToggleContainer>
 			)}
 
-			{props.abTestEnabled && abTestFeatureEnabled ? (
+			{props.abTestEnabled && isUSNetworkFront ? (
 				<HeadlineVariantContainer>
 					<ConditionalField
 						permittedFields={props.editableFields}
@@ -136,7 +128,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 					data-testid="edit-form-headline-field"
 				/>
 			)}
-			{abTestFeatureEnabled && props.abTestEnabled && props.hasActiveABTest && (
+			{isUSNetworkFront && props.abTestEnabled && props.hasActiveABTest && (
 				<OphanBanner />
 			)}
 		</HeadlineInputContainer>
