@@ -89,6 +89,7 @@ CloudFront `FaciaCloudfront` + `StaticCloudfront`, `DnsRecord` +
   platform-repo facia deployer + orphaned template removed; `access.ts` permission
   removed.
 - [x] **Phase 2** — `GuEc2App` (ALB) in parallel with legacy ELB (dual-stack).
+  PR [#2061](https://github.com/guardian/facia-tool/pull/2061).
   Done: `GuEc2App` in [cdk/lib/facia-tool.ts](cdk/lib/facia-tool.ts) with per-stage
   `domainName`/`instanceType`/`minimumInstances`/`maximumInstances` supplied from
   [cdk/bin/cdk.ts](cdk/bin/cdk.ts); network + KMS/DB/CAPI params reused from the
