@@ -74,7 +74,6 @@ interface ArticleComponentProps {
 	groupIndex?: number;
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 	hasLiveAbTest?: boolean;
-	headlineABTestingIsEnabled?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
 }
 
@@ -128,7 +127,6 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 			groupIndex,
 			otherCollectionsOnSameFrontThisCardIsOn,
 			hasLiveAbTest,
-			headlineABTestingIsEnabled,
 			headlineTestError,
 		} = this.props;
 
@@ -204,7 +202,6 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 									intendedAudienceFromTags(article.tags)
 								}
 								hasLiveAbTest={hasLiveAbTest}
-								headlineABTestingIsEnabled={headlineABTestingIsEnabled}
 								headlineTestError={headlineTestError}
 							/>
 						</ArticleBodyContainer>
@@ -228,7 +225,6 @@ const createMapStateToProps = () => {
 		isLoading: boolean;
 		featureFlagPageViewData: boolean;
 		hasLiveAbTest?: boolean;
-		headlineABTestingIsEnabled: boolean;
 		headlineTestError: AbTestHeadlineErrorType | null;
 	} => {
 		const article = selectArticle(state, props.id);
@@ -241,13 +237,7 @@ const createMapStateToProps = () => {
 		);
 		const hasLiveAbTest = hasActiveAbTestOnCard(liveCard);
 		const headlineTestError = getCurrentAbTestHeadlineError(card);
-		/*
-		 * Initial rollout of Editorial AB testing will be limited to the US front only.
-		 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
-		 */
-		const isUSNetworkFront = props.frontId === 'us';
-		const headlineABTestingIsEnabled =
-			isUSNetworkFront && selectFeatureValue(state, 'headline-ab-testing');
+
 		return {
 			article,
 			isLoading: selectors.selectIsLoadingInitialDataById(state, card.id),
@@ -256,7 +246,6 @@ const createMapStateToProps = () => {
 				'page-view-data-visualisation',
 			),
 			hasLiveAbTest: hasLiveAbTest,
-			headlineABTestingIsEnabled: headlineABTestingIsEnabled,
 			headlineTestError: headlineTestError,
 		};
 	};

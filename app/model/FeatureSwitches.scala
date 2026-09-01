@@ -26,13 +26,6 @@ object PageViewDataVisualisation
       enabled = true
     )
 
-object HeadlineABTesting
-    extends FeatureSwitch(
-      key = "headline-ab-testing",
-      title = "Enable toggle switch for AB testing headlines",
-      enabled = false
-    )
-
 object EventGraphics
     extends FeatureSwitch(
       key = "event-graphics",
@@ -44,7 +37,6 @@ object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
-    HeadlineABTesting,
     EventGraphics
   )
 
