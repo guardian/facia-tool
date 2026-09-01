@@ -731,7 +731,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								editableFields={editableFields}
 								snapType={this.props.snapType}
 								onAbTestToggle={handleAbTestToggle}
-								frontId={this.props.frontId}
 							/>
 						)}
 						<CheckboxFieldsContainer
