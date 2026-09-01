@@ -14,13 +14,20 @@ deployments:
         PROD: FaciaTool-euwest-1-PROD.template.json
       cloudFormationStackName: facia
       prependStackToCloudFormationStackName: false
-      amiParameter: AMI
-      amiTags:
-        Recipe: editorial-tools-jammy-java11
-        AmigoStage: PROD
-        BuiltBy: amigo
+      amiParametersToTags:
+        AMI:
+          Recipe: editorial-tools-jammy-java11
+          AmigoStage: PROD
+          BuiltBy: amigo
+        AMIFaciatool:
+          Recipe: editorial-tools-jammy-java11
+          AmigoStage: PROD
+          BuiltBy: amigo
       amiEncrypted: true
   facia-tool:
     type: autoscaling
+    parameters:
+      # Dual-stack migration: rotate both the legacy ASG and the new (GuEc2App) one.
+      asgMigrationInProgress: true
     dependencies:
         - cfn-facia-tool

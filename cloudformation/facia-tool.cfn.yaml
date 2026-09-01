@@ -710,9 +710,6 @@ Resources:
         - Key: SystemdUnit
           Value: facia-tool.service
           PropagateAtLaunch: 'true'
-        - Key: "gu:riffraff:new-asg"
-          Value: 1
-          PropagateAtLaunch: 'true'
   FaciaLaunchConfigNewVPC:
     Type: AWS::AutoScaling::LaunchConfiguration
     Metadata:
