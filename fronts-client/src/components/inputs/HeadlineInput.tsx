@@ -17,7 +17,6 @@ interface HeadlineInputProps {
 	editableFields: string[];
 	snapType: string | undefined;
 	onAbTestToggle?: EventWithDataHandler<React.ChangeEvent<any>>;
-	frontId: string;
 }
 
 const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
@@ -68,16 +67,9 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 
 	const getInputId = (cardId: string, label: string) => `${cardId}-${label}`;
 
-	/*
-	 * Initial rollout of Editorial AB testing will be limited to the US front only.
-	 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
-	 */
-	const isUSNetworkFront = props.frontId === 'us';
 	return (
-		<HeadlineInputContainer
-			abTestEnabled={props.abTestEnabled && isUSNetworkFront}
-		>
-			{props.cardId && isUSNetworkFront && (
+		<HeadlineInputContainer abTestEnabled={props.abTestEnabled}>
+			{props.cardId && (
 				<ABTestToggleContainer>
 					<Field
 						name="abTestEnabled"
@@ -93,7 +85,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 				</ABTestToggleContainer>
 			)}
 
-			{props.abTestEnabled && isUSNetworkFront ? (
+			{props.abTestEnabled ? (
 				<HeadlineVariantContainer>
 					<ConditionalField
 						permittedFields={props.editableFields}
@@ -128,9 +120,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 					data-testid="edit-form-headline-field"
 				/>
 			)}
-			{isUSNetworkFront && props.abTestEnabled && props.hasActiveABTest && (
-				<OphanBanner />
-			)}
+			{props.abTestEnabled && props.hasActiveABTest && <OphanBanner />}
 		</HeadlineInputContainer>
 	);
 };
