@@ -32,6 +32,7 @@ import {
 	getCurrentAbTestHeadlineError,
 	hasActiveAbTestOnCard,
 } from '../../../util/abTests';
+import { clipboardId } from 'constants/fronts';
 
 const ArticleBodyContainer = styled(CardBody)<{
 	pillarId: string | undefined;
@@ -239,7 +240,11 @@ const createMapStateToProps = () => {
 			card.id,
 			props.collectionId,
 		);
-		const hasLiveAbTest = hasActiveAbTestOnCard(liveCard);
+		// cards on the clipboard will have an undefined liveCard, because the clipboard collection won't exist
+		// on live collections. Just use the card itself here so that test status displays as expected
+		const hasLiveAbTest = hasActiveAbTestOnCard(
+			props.frontId === clipboardId ? card : liveCard,
+		);
 		const headlineTestError = getCurrentAbTestHeadlineError(card);
 
 		return {
