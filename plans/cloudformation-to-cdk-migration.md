@@ -80,21 +80,64 @@ CloudFront `FaciaCloudfront` + `StaticCloudfront`, `DnsRecord` +
 
 ## Phases
 
-- [x] **Phase 1 (implemented locally)** — wrap template with GuCDK via
+- [x] **Phase 1** — wrap template with GuCDK via
   `CfnInclude` (verified **tags-only** `cdk diff` vs live `facia-CODE`). Done:
   template at `cloudformation/facia-tool.cfn.yaml`; `cdk/` scaffolded; per-stage
   `cloudFormationStackName` = `facia-CODE`/`facia-PROD`; `cdk/.nvmrc` node 24;
   service-repo CI builds+synths CDK and uploads templates; `riff-raff.yaml` now a
   `cloud-formation` deploy (`cfn-facia-tool`) with `autoscaling` depending on it;
   platform-repo facia deployer + orphaned template removed; `access.ts` permission
-  removed. **Pending user action:** create branches/commits in each repo, push,
-  open the 3 PRs in merge order, deploy CODE then PROD.
-- [ ] **Phase 2** — `GuEc2App` (ALB) in parallel with legacy ELB (dual-stack);
-  remove leftover `gu:riffraff:new-asg` from legacy ASG; `asgMigrationInProgress`.
+  removed.
+- [x] **Phase 2** — `GuEc2App` (ALB) in parallel with legacy ELB (dual-stack).
+  PR [#2061](https://github.com/guardian/facia-tool/pull/2061).
+  Done: `GuEc2App` in [cdk/lib/facia-tool.ts](cdk/lib/facia-tool.ts) with per-stage
+  `domainName`/`instanceType`/`minimumInstances`/`maximumInstances` supplied from
+  [cdk/bin/cdk.ts](cdk/bin/cdk.ts); network + KMS/DB/CAPI params reused from the
+  wrapped template via `getParameter`; leftover `gu:riffraff:new-asg` removed from
+  the legacy ASG and added to the new one; `riff-raff.yaml` switched to
+  `amiParametersToTags` (`AMI` + `AMIFaciatool`) with
+  `asgMigrationInProgress: true`. CODE + PROD `cdk diff` verified purely additive
+  apart from the intended legacy-ASG tag removal.
 - [ ] **Phase 3** — repoint CloudFront origin ELB → ALB (revertible).
 - [ ] **Phase 4** — delete legacy compute (ELB/ASG/LC/SGs/role); template keeps
   the non-compute resources (mixed stack end-state `CDK(cfn.yaml) -> cfn.json`).
 - [ ] **Phase 5** — follow-ups: CloudFront into GuCDK, alarms, stateful resources.
+
+## Phase 2 decisions
+
+- `imageRecipe` kept verbatim as the legacy `editorial-tools-jammy-java11`.
+- Certificate: a new per-stage `GuCertificate` for the CloudFront alias domain
+  (`fronts.gutools.co.uk` / `fronts.code.dev-gutools.co.uk`) — that is the `Host`
+  header CloudFront forwards to the origin. Validation records are created
+  automatically; no manual DNS step.
+- `GuUserData` not used: the app reads config from `/etc/gu/`, and the private
+  config lives in `facia-private` (not the distribution bucket). Raw
+  `UserData.forLinux()` replicates the legacy `cfn-init` order — user + config
+  first, `.deb` install last (installing it starts the service).
+- IAM: one policy per concern. Deliberately **not** ported (already granted by
+  `GuInstanceRole`): ec2/autoscaling `Describe*`, Kinesis log shipping, artifact
+  bucket `s3:GetObject`, SSM/SSH. `rds:DescribeDBInstances` **is** ported. The
+  legacy SSM path (`/facia-tool/cms-fronts/<stage>/*`) differs from GuCDK's
+  (`/<stage>/cms-fronts/facia-tool/*`) so both are present.
+- Postgres access uses a **dedicated** `DatabaseAccessSecurityGroup` rather than
+  the ASG's own connections, so the 5432 rule can't be replayed onto the shared
+  CAPI endpoint group. Instance SG count is 3 (well under the limit of 5).
+- Benign diff artefacts: ALB SG egress on 9000 to the DB-access and CAPI endpoint
+  groups (connections-model side effect; the LB never uses them), and a cfn-lint
+  `W9007` "duplicate Subnets" false positive (the three `Fn::Select` indices are
+  distinct).
+
+## Phase 2 deploy notes
+
+- This is a **new-ASG ("dangerous") deploy**. Riff-Raff rotates both ASGs because
+  of `asgMigrationInProgress`.
+- Synthesized template is ~58KiB, above CloudFormation's 51,200-byte inline
+  limit; Riff-Raff uploads templates that size to S3 automatically.
+- Smoke-test via the new ALB DNS name (stack output `LoadBalancerFaciatoolDnsName`)
+  sending the real `Host` header, e.g.
+  `curl -sk -H 'Host: fronts.code.dev-gutools.co.uk' https://<alb-dns>/_healthcheck`.
+- The new instance SG allows egress on 443 only (GuCDK default) versus the legacy
+  allow-all. Confirm no outbound dependency on another port during the soak.
 
 ## Node / tooling
 
