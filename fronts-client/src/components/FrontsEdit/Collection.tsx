@@ -233,6 +233,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 															return (
 																<Card
 																	frontId={frontId}
+																	collectionId={id}
 																	uuid={supporting.uuid}
 																	parentId={card.uuid}
 																	canShowPageViewData={false}
