@@ -491,13 +491,19 @@ const insertCardWithCreate =
 					),
 				);
 
-				// Fetch ophan data
+				/*
+				 * Fetch ophan data, used to populate the sparkline. This is non-critical page-view data (and is also
+				 * refreshed by polling), so we deliberately don't `await` it here to improve performance.
+				 * Blocking the drop flow on this network request makes newly dropped
+				 * cards feel slow to appear.
+				 * */
+
 				const [frontId, collectionId] = selectOpenParentFrontOfCard(
 					getState(),
 					card.uuid,
 				);
 				if (frontId && collectionId) {
-					await dispatch(getPageViewData(frontId, collectionId, [card.uuid]));
+					void dispatch(getPageViewData(frontId, collectionId, [card.uuid]));
 				}
 			} catch (e) {
 				// Insert failed -- @todo handle error
