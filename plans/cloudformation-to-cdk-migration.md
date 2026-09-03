@@ -98,7 +98,8 @@ CloudFront `FaciaCloudfront` + `StaticCloudfront`, `DnsRecord` +
   `amiParametersToTags` (`AMI` + `AMIFaciatool`) with
   `asgMigrationInProgress: true`. CODE + PROD `cdk diff` verified purely additive
   apart from the intended legacy-ASG tag removal.
-- [ ] **Phase 3** — repoint CloudFront origin ELB → ALB (revertible). Code done:
+- [ ] **Phase 3** — repoint CloudFront origin ELB → ALB (revertible).
+  PR [#2064](https://github.com/guardian/facia-tool/pull/2064). Code done:
   a single `addPropertyOverride` on the included `FaciaCloudfront` resource sets
   `DistributionConfig.Origins.0.DomainName` to the new ALB. `cdk diff` against
   both live stacks shows **only** that one property change. Awaiting CODE then
