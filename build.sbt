@@ -54,7 +54,7 @@ routesImport += "model.editions._"
 val awsVersion = "1.12.470"
 val capiModelsVersion = "46.0.0"
 val capiClientVersion = "47.0.0"
-val json4sVersion = "4.0.3"
+val json4sVersion = "4.0.7"
 val circeVersion = "0.14.10"
 val awsSdkVersion = "2.49.6"
 
@@ -94,21 +94,21 @@ libraryDependencies ++= Seq(
   "org.julienrf" %% "play-json-derived-codecs" % "11.0.0",
   "org.json4s" %% "json4s-native" % json4sVersion,
   "org.json4s" %% "json4s-jackson" % json4sVersion,
-  "org.playframework" %% "play-json-joda" % "3.0.2",
+  "org.playframework" %% "play-json-joda" % "3.0.6",
   "ai.x" %% "play-json-extensions" % "0.40.2",
-  "org.postgresql" % "postgresql" % "42.3.9",
-  "org.scalikejdbc" %% "scalikejdbc" % "4.2.0",
+  "org.postgresql" % "postgresql" % "42.3.10",
+  "org.scalikejdbc" %% "scalikejdbc" % "4.2.1",
   "org.scalikejdbc" %% "scalikejdbc-config" % "4.2.1",
   "org.scalikejdbc" %% "scalikejdbc-play-initializer" % "3.0.0-scalikejdbc-4.2",
   "io.circe" %% "circe-core" % circeVersion,
   "io.circe" %% "circe-generic" % circeVersion,
   "io.circe" %% "circe-parser" % circeVersion,
-  "com.beachape" %% "enumeratum" % "1.7.3",
-  "com.beachape" %% "enumeratum-play" % "1.8.0",
+  "com.beachape" %% "enumeratum" % "1.7.6",
+  "com.beachape" %% "enumeratum-play" % "1.8.2",
   "org.playframework" %% "play" % "3.0.2",
   "org.apache.commons" % "commons-text" % "1.10.0",
   "com.beust" % "jcommander" % "1.75",
-  "org.scalatest" %% "scalatest" % "3.0.8" % "test",
+  "org.scalatest" %% "scalatest" % "3.0.9" % "test",
   "org.mockito" % "mockito-core" % "5.11.0" % Test,
   "software.amazon.awssdk" % "s3" % awsSdkVersion,
   "com.gu.etag-caching" %% "aws-s3-sdk-v2" % "18.0.0"
