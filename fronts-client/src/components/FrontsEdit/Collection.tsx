@@ -214,6 +214,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 													<CardLevel
 														isUneditable={isUneditable}
 														cardId={card.uuid}
+														collectionId={id}
 														groupName={group.name ? group.name : ''}
 														groupIds={groupIds}
 														groups={groups}
@@ -232,6 +233,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 															return (
 																<Card
 																	frontId={frontId}
+																	collectionId={id}
 																	uuid={supporting.uuid}
 																	parentId={card.uuid}
 																	canShowPageViewData={false}
