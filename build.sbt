@@ -51,7 +51,7 @@ TwirlKeys.templateImports ++= Seq(
 // include the enum path bindables
 routesImport += "model.editions._"
 
-val awsVersion = "1.12.470"
+val awsVersion = "1.12.797"
 val capiModelsVersion = "46.0.0"
 val capiClientVersion = "47.0.0"
 val json4sVersion = "4.0.3"
