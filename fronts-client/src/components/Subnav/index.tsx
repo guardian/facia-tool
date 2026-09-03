@@ -111,37 +111,39 @@ const SubnavSection = () => {
 	const entries = subnavConfig ? toListEntries(subnavConfig) : [];
 
 	return (
-		<Switch>
-			<Route {...subnavRoutes.createProps}>
-				<SubnavFormView
-					heading="Create custom subnav"
-					onSave={handleCreate}
-					onCancel={goToList}
-					saving={isSaving}
-				/>
-			</Route>
-			<Route {...subnavRoutes.editProps}>
-				<SubnavEditRoute
-					config={subnavConfig}
-					isLoading={isLoading}
-					pendingActionId={pendingActionId}
-					runAction={runAction}
-					onSave={handleSave}
-					onCancel={goToList}
-					saving={isSaving}
-				/>
-			</Route>
-			<Route {...subnavRoutes.listProps}>
-				<SubnavListView
-					entries={entries}
-					isLoading={isLoading}
-					pendingActionId={pendingActionId}
-					onCreate={() => history.push(subnavRoutes.create)}
-					onEdit={(id) => history.push(subnavRoutes.edit(id))}
-					runAction={runAction}
-				/>
-			</Route>
-		</Switch>
+		<>
+			<Switch>
+				<Route {...subnavRoutes.createProps}>
+					<SubnavFormView
+						heading="Create custom subnav"
+						onSave={handleCreate}
+						onCancel={goToList}
+						saving={isSaving}
+					/>
+				</Route>
+				<Route {...subnavRoutes.editProps}>
+					<SubnavEditRoute
+						config={subnavConfig}
+						isLoading={isLoading}
+						pendingActionId={pendingActionId}
+						runAction={runAction}
+						onSave={handleSave}
+						onCancel={goToList}
+						saving={isSaving}
+					/>
+				</Route>
+				<Route {...subnavRoutes.listProps}>
+					<SubnavListView
+						entries={entries}
+						isLoading={isLoading}
+						pendingActionId={pendingActionId}
+						onCreate={() => history.push(subnavRoutes.create)}
+						onEdit={(id) => history.push(subnavRoutes.edit(id))}
+						runAction={runAction}
+					/>
+				</Route>
+			</Switch>
+		</>
 	);
 };
 

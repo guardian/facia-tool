@@ -1,7 +1,16 @@
 import React from 'react';
+import { css } from '@emotion/react';
 import { styled, theme } from 'constants/theme';
 import { SectionHeaderUnpadded } from './SectionHeader';
 import { Link } from 'react-router-dom';
+import { useRouteMatch } from 'react-router';
+import { subnavRoutes } from 'routes/routes';
+import {
+	TopBar,
+	TopBarContainerLeft,
+	TopBarNavigation,
+} from '@guardian/stand/TopBar';
+import { TopBarToolName } from '@guardian/stand/TopBar';
 
 const SectionHeader = styled(SectionHeaderUnpadded)`
 	display: flex;
@@ -18,6 +27,10 @@ const LogoTypeContainer = styled(Link)`
 	text-decoration: none;
 `;
 
+const customNaviStyles = css`
+	height: 60px;
+`;
+
 export default ({
 	children,
 	includeBorder,
@@ -26,9 +39,25 @@ export default ({
 	children?: React.ReactNode;
 	includeBorder?: boolean;
 	greyHeader?: boolean;
-}) => (
-	<SectionHeader greyHeader={greyHeader} includeBorder={includeBorder}>
-		<LogoTypeContainer to="/">F</LogoTypeContainer>
-		{children}
-	</SectionHeader>
-);
+}) => {
+	const isSubnavPath = useRouteMatch(subnavRoutes.sectionProps);
+	return (
+		<SectionHeader greyHeader={greyHeader} includeBorder={includeBorder}>
+			<LogoTypeContainer to="/">F</LogoTypeContainer>
+			{isSubnavPath && (
+				<TopBar cssOverrides={customNaviStyles}>
+					<TopBarToolName
+						name="Navi"
+						favicon={{ letter: 'N' }}
+						href="/v2/subnavs"
+					></TopBarToolName>
+					<TopBarContainerLeft>
+						<TopBarNavigation text="All subnavs" href="/v2/subnavs" />
+						<TopBarNavigation text="Create subnav" href="/v2/subnavs/new" />
+					</TopBarContainerLeft>
+				</TopBar>
+			)}
+			{children}
+		</SectionHeader>
+	);
+};
