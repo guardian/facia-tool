@@ -98,7 +98,11 @@ CloudFront `FaciaCloudfront` + `StaticCloudfront`, `DnsRecord` +
   `amiParametersToTags` (`AMI` + `AMIFaciatool`) with
   `asgMigrationInProgress: true`. CODE + PROD `cdk diff` verified purely additive
   apart from the intended legacy-ASG tag removal.
-- [ ] **Phase 3** — repoint CloudFront origin ELB → ALB (revertible).
+- [ ] **Phase 3** — repoint CloudFront origin ELB → ALB (revertible). Code done:
+  a single `addPropertyOverride` on the included `FaciaCloudfront` resource sets
+  `DistributionConfig.Origins.0.DomainName` to the new ALB. `cdk diff` against
+  both live stacks shows **only** that one property change. Awaiting CODE then
+  PROD deploy + soak.
 - [ ] **Phase 4** — delete legacy compute (ELB/ASG/LC/SGs/role); template keeps
   the non-compute resources (mixed stack end-state `CDK(cfn.yaml) -> cfn.json`).
 - [ ] **Phase 5** — follow-ups: CloudFront into GuCDK, alarms, stateful resources.
@@ -138,6 +142,37 @@ CloudFront `FaciaCloudfront` + `StaticCloudfront`, `DnsRecord` +
   `curl -sk -H 'Host: fronts.code.dev-gutools.co.uk' https://<alb-dns>/_healthcheck`.
 - The new instance SG allows egress on 443 only (GuCDK default) versus the legacy
   allow-all. Confirm no outbound dependency on another port during the soak.
+
+## Phase 3 decisions
+
+- The distribution stays in the wrapped template; CDK only overrides the origin
+  domain via `cfnInclude.getResource('FaciaCloudfront').addPropertyOverride(...)`.
+  Nothing else about CloudFront (aliases, cache behaviour, viewer certificate) or
+  its DNS records changes, so the blast radius is one property.
+- **Rollback = revert that override and redeploy** (the legacy ELB and ASG are
+  still running untouched throughout Phase 3).
+- Origin id `facia-tool` and `TargetOriginId` are unchanged, so the cache
+  behaviour keeps pointing at the same origin entry.
+- CloudFront forwards all headers (`ForwardedValues.Headers: ["*"]`), so it
+  reaches the origin with `Host: fronts[.code.dev]-gutools.co.uk` and
+  `OriginProtocolPolicy: https-only`. The Phase 2 `GuCertificate` covers exactly
+  that name — verified with a real SNI/hostname-validated request.
+
+### Pre-cutover verification (done)
+
+- Phase 2 is deployed to both stages; new ALB target groups healthy (CODE 1
+  instance, PROD 3).
+- Smoke tests against the new ALBs with the real `Host` header:
+  `/_healthcheck` → 200, `/` → 303 (pan-domain auth redirect), in both stages,
+  with full TLS verification via `curl --resolve`.
+
+### Cutover steps
+
+1. Deploy CODE, confirm `fronts.code.dev-gutools.co.uk` works end-to-end
+   (auth + core flows), and check the CODE ALB metrics show the traffic.
+2. Deploy PROD, repeat.
+3. Soak. CloudFront origin changes propagate in minutes; rollback is a revert.
+4. Only once the old ELBs show **0 requests** does Phase 4 delete them.
 
 ## Node / tooling
 
