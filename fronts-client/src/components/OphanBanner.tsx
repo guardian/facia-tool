@@ -27,13 +27,21 @@ const OphanBannerLink = styled.a`
 	color: ${({ theme }) => theme.abTest.active.text};
 `;
 
-const OphanBanner = () => {
+interface OphanBannerProps {
+	isTestLive: boolean;
+}
+
+const OphanBanner = ({ ...props }: OphanBannerProps) => {
 	return (
 		<OphanBannerContainer role="status">
 			<ConicalFlaskIcon size="xs" fill={theme.abTest.active.icon} />
-			<OphanBannerTitle>Headline Test In Progress :</OphanBannerTitle>
+			<OphanBannerTitle>
+				{props.isTestLive
+					? 'Headline test in progress:'
+					: 'Test ready to launch on this card:'}
+			</OphanBannerTitle>
 			<span>
-				View results in{' '}
+				View results {!props.isTestLive && 'from other cards with this test'} in{' '}
 				<OphanBannerLink
 					href={url.ophan}
 					target="_blank"
