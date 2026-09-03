@@ -107,9 +107,105 @@ export const StatusTag = styled.span<{ draft?: boolean }>`
 	padding: 2px 6px;
 	margin-left: 8px;
 	border-radius: 3px;
-	color: ${({ theme }) => theme.base.colors.textLight};
+	color: ${({ theme, draft }) =>
+		draft ? theme.base.colors.textLight : theme.base.colors.textDark};
 	background-color: ${({ theme, draft }) =>
-		draft ? theme.base.colors.brandColor : theme.base.colors.button};
+		draft ? theme.base.colors.brandColor : '#AED2A6'};
+`;
+
+/**
+ * Side-by-side draft / live panels
+ */
+
+export const Panel = styled.section`
+	height: 100%;
+	/* width: 50%; */
+	border: 1px solid ${({ theme }) => theme.base.colors.borderColor};
+	border-radius: 4px;
+	overflow: hidden;
+`;
+
+export const PanelTopBar = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 12px;
+	padding: 8px 12px;
+	background-color: ${({ theme }) => theme.base.colors.formBackground};
+	border-bottom: 1px solid ${({ theme }) => theme.base.colors.borderColor};
+`;
+
+export const PanelTopBarMeta = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 12px;
+`;
+
+export const PanelList = styled.ul`
+	list-style: none;
+	margin: 0;
+	padding: 0;
+`;
+
+export const PanelListItem = styled.li`
+	display: flex;
+	gap: 12px;
+	padding: 12px;
+	border-bottom: 1px solid ${({ theme }) => theme.base.colors.borderColor};
+
+	&:last-child {
+		border-bottom: none;
+	}
+`;
+
+export const PanelThumb = styled.div<{ url: string }>`
+	flex: 0 0 auto;
+	width: 40px;
+	height: 40px;
+	border-radius: 3px;
+	background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
+	background-image: url(${({ url }) => url});
+	background-size: cover;
+	background-position: center;
+`;
+
+export const PanelThumbButton = styled.button`
+	flex: 0 0 auto;
+	display: block;
+	padding: 0;
+	border: none;
+	border-radius: 3px;
+	background: none;
+	line-height: 0;
+	cursor: pointer;
+`;
+
+export const PanelTitleButton = styled.button`
+	flex: 1;
+	min-width: 0;
+	display: block;
+	padding: 0;
+	border: none;
+	background: none;
+	color: inherit;
+	text-align: left;
+	text-decoration: underline;
+	cursor: pointer;
+`;
+
+export const PanelEntryBody = styled.div`
+	flex: 1;
+	min-width: 0;
+`;
+
+export const PanelEntryRow = styled.div`
+	display: flex;
+	align-items: baseline;
+	gap: 8px;
+`;
+
+export const PanelEntryStatus = styled.div`
+	flex: 0 0 auto;
 `;
 
 /**
