@@ -19,6 +19,14 @@ const OphanBannerContainer = styled.div`
 	font-size: 14px;
 `;
 
+const FixedSizeIcon = styled.span`
+	flex: none;
+`;
+
+const OphanBannerText = styled.p`
+	margin: 0;
+`;
+
 const OphanBannerTitle = styled.span`
 	font-weight: 600;
 `;
@@ -34,23 +42,25 @@ interface OphanBannerProps {
 const OphanBanner = ({ ...props }: OphanBannerProps) => {
 	return (
 		<OphanBannerContainer role="status">
-			<ConicalFlaskIcon size="xs" fill={theme.abTest.active.icon} />
-			<OphanBannerTitle>
-				{props.isTestLive
-					? 'Headline test in progress:'
-					: 'Test ready to launch:'}
-			</OphanBannerTitle>
-			<span>
-				View results {!props.isTestLive && 'from other cards with this test'} in{' '}
+			<FixedSizeIcon>
+				<ConicalFlaskIcon size="xs" fill={theme.abTest.active.icon} />
+			</FixedSizeIcon>
+			<OphanBannerText>
+				<OphanBannerTitle>
+					{props.isTestLive
+						? 'Headline test in progress: '
+						: 'Test ready to launch: '}
+				</OphanBannerTitle>
+				view results {!props.isTestLive && 'from other cards with this test'} in{' '}
 				<OphanBannerLink
 					href={url.ophan}
 					target="_blank"
 					rel="noreferrer noopener"
-					aria-label="View results in Ophan (opens in a new tab)"
+					aria-label="view results in Ophan (opens in a new tab)"
 				>
 					Ophan
 				</OphanBannerLink>
-			</span>
+			</OphanBannerText>
 		</OphanBannerContainer>
 	);
 };
