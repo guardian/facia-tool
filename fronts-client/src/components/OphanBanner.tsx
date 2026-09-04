@@ -38,7 +38,7 @@ const OphanBanner = ({ ...props }: OphanBannerProps) => {
 			<OphanBannerTitle>
 				{props.isTestLive
 					? 'Headline test in progress:'
-					: 'Test ready to launch on this card:'}
+					: 'Test ready to launch:'}
 			</OphanBannerTitle>
 			<span>
 				View results {!props.isTestLive && 'from other cards with this test'} in{' '}
