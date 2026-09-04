@@ -7,7 +7,7 @@ import BasePlaceholder from '../../BasePlaceholder';
 import { getPillarColor } from 'util/getPillarColor';
 import CardMetaContainer from '../CardMetaContainer';
 import CardContent from '../CardContent';
-import { notLiveLabels, liveBlogTones } from 'constants/fronts';
+import { notLiveLabels, liveBlogTones, clipboardId } from 'constants/fronts';
 import TextPlaceholder from 'components/TextPlaceholder';
 import { ThumbnailSmall, ThumbnailCutout } from 'components/image/Thumbnail';
 import CardMetaHeading from '../CardMetaHeading';
@@ -66,7 +66,8 @@ type ABStatusMessage =
 	| 'Test in progress'
 	| 'End test on launch'
 	| 'Test set up incomplete'
-	| 'Ready to launch';
+	| 'Ready to launch'
+	| 'Test staged';
 
 type ABTestTheme = 'active' | 'draft' | 'error';
 
@@ -336,7 +337,15 @@ const articleBodyDefault = React.memo(
 			hasLiveAbTest: boolean | undefined,
 			abTestEnabled: boolean | undefined,
 			headlineTestError: AbTestHeadlineErrorType | null | undefined,
+			frontId: string,
 		): ABTestStatus | undefined => {
+			if (frontId === clipboardId && abTestEnabled) {
+				return {
+					message: 'Test staged',
+					theme: 'draft',
+					palette: getABTestThemeColors('draft'),
+				};
+			}
 			if (hasLiveAbTest && abTestEnabled) {
 				return {
 					message: 'Test in progress',
@@ -408,6 +417,7 @@ const articleBodyDefault = React.memo(
 			hasLiveAbTest,
 			abTestEnabled,
 			headlineTestError,
+			frontId,
 		);
 
 		return (
