@@ -37,9 +37,12 @@ import {
 	CreateFormActions,
 	SubnavCreateFormPage,
 	CreateFormSidebar,
+<<<<<<< HEAD
 	ColumnHeaders,
 	ColumnHeadersSpacer,
 	ColumnHeaderLabel,
+=======
+>>>>>>> 162cb8b37b (Style create subnav form)
 } from './styles';
 
 interface SubnavCreateFormProps {
@@ -306,6 +309,7 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 							onFocus={() => setCurrentStepId('links')}
 						>
 							<SubnavContainerHeading>Nav items</SubnavContainerHeading>
+<<<<<<< HEAD
 							<ColumnHeaders>
 								<ColumnHeadersSpacer width={18} aria-hidden />
 								<RowFields>
@@ -314,6 +318,8 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 								</RowFields>
 								<ColumnHeadersSpacer width={24} aria-hidden />
 							</ColumnHeaders>
+=======
+>>>>>>> 162cb8b37b (Style create subnav form)
 							<DragDropContext onDragEnd={moveLink}>
 								<Droppable droppableId="subnav-nav-items">
 									{(dropProvided) => (
@@ -341,6 +347,10 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 															</DragHandle>
 															<RowFields>
 																<TextInput
+<<<<<<< HEAD
+=======
+																	label={index === 0 ? 'Link text' : undefined}
+>>>>>>> 162cb8b37b (Style create subnav form)
 																	aria-label="Link text"
 																	fluid
 																	value={link.linkText}
@@ -349,6 +359,12 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 																	}
 																/>
 																<TextInput
+<<<<<<< HEAD
+=======
+																	label={
+																		index === 0 ? 'Dotcom path' : undefined
+																	}
+>>>>>>> 162cb8b37b (Style create subnav form)
 																	aria-label="Dotcom path"
 																	fluid
 																	value={link.dotcomPath}
