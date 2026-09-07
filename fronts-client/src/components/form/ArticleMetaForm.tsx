@@ -16,6 +16,7 @@ import {
 	selectExternalArticleFromCard,
 	selectArticleTag,
 	selectCard,
+	createSelectLiveCardForGivenCardId,
 } from 'selectors/shared';
 import { createSelectFormFieldsForCard } from 'selectors/formSelectors';
 import { emptyObject } from 'util/selectorUtils';
@@ -562,6 +563,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			showByline,
 			abTestEnabled,
 			hasActiveABTest,
+			hasActiveABTestOnLiveCard,
 			headline,
 			editableFields = [],
 			showKickerTag,
@@ -726,6 +728,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 							<HeadlineInput
 								abTestEnabled={abTestEnabled}
 								hasActiveABTest={hasActiveABTest}
+								hasActiveABTestOnLiveCard={hasActiveABTestOnLiveCard}
 								capiHeadline={articleCapiFieldValues.headline}
 								cardId={this.props.cardId}
 								editableFields={editableFields}
@@ -1284,6 +1287,7 @@ interface ContainerProps {
 	showByline: boolean;
 	abTestEnabled: boolean;
 	hasActiveABTest: boolean;
+	hasActiveABTestOnLiveCard: boolean;
 	headline: string;
 	editableFields?: string[];
 	showKickerTag: boolean;
@@ -1320,6 +1324,8 @@ const formContainer: React.SFC<ContainerProps & InterfaceProps> = (props) => (
 const createMapStateToProps = () => {
 	const selectArticle = createSelectArticleFromCard();
 	const selectFormFields = createSelectFormFieldsForCard();
+	const selectLiveCardForGivenCardId = createSelectLiveCardForGivenCardId();
+
 	return (state: State, { cardId, isSupporting = false }: InterfaceProps) => {
 		const externalArticle = selectExternalArticleFromCard(state, cardId);
 		const valueSelector = formValueSelector(cardId);
@@ -1340,6 +1346,12 @@ const createMapStateToProps = () => {
 
 		const isEmailFronts = selectV2SubPath(state) === '/email';
 		const collectionId = (parentCollection && parentCollection.id) || null;
+
+		const liveCard = selectLiveCardForGivenCardId(
+			state,
+			article?.id ?? '',
+			collectionId ?? undefined,
+		);
 
 		return {
 			articleExists: !!article,
@@ -1367,6 +1379,7 @@ const createMapStateToProps = () => {
 			showByline: valueSelector(state, 'showByline'),
 			abTestEnabled: valueSelector(state, 'abTestEnabled'),
 			hasActiveABTest: hasActiveAbTestOnCard(selectCard(state, cardId)),
+			hasActiveABTestOnLiveCard: hasActiveAbTestOnCard(liveCard),
 			headline: valueSelector(state, 'headline'),
 			showKickerTag: valueSelector(state, 'showKickerTag'),
 			showKickerSection: valueSelector(state, 'showKickerSection'),

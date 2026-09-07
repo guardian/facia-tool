@@ -13,6 +13,7 @@ import { normaliseHeadline } from '../../util/abTests';
 interface HeadlineInputProps {
 	abTestEnabled: boolean;
 	hasActiveABTest: boolean;
+	hasActiveABTestOnLiveCard: boolean;
 	capiHeadline: string;
 	cardId: string;
 	editableFields: string[];
@@ -130,7 +131,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 				/>
 			)}
 			{abTestFeatureEnabled && props.abTestEnabled && props.hasActiveABTest && (
-				<OphanBanner />
+				<OphanBanner isTestLive={props.hasActiveABTestOnLiveCard} />
 			)}
 		</HeadlineInputContainer>
 	);
