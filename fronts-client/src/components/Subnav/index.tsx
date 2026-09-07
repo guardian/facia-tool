@@ -6,22 +6,31 @@ import { selectHasSubnavPermission } from 'selectors/configSelectors';
 import { subnavRoutes } from 'routes/routes';
 import { actionAddNotificationBanner } from 'bundles/notificationsBundle';
 import { fetchSubnavConfig, upsertSubnav } from './subnavApi';
-import { SubnavFormView } from './SubnavFormView';
+import SubnavCreateForm from './SubnavCreateForm';
 import { SubnavEditRoute } from './SubnavEditRoute';
 import { SubnavListView } from './SubnavListView';
 import { toListEntries } from './helpers';
 import { CustomSubnav, CustomSubnavConfig } from './types';
-import { Message, SubnavContainer, SubnavContainerHeading } from './styles';
+import {
+	Message,
+	SubnavContainer,
+	SubnavContainerHeading,
+	SubnavRoot,
+} from './styles';
 
 const NoPermission = () => (
-	<SubnavContainer>
-		<SubnavContainerHeading>Custom subnavs</SubnavContainerHeading>
-		<Message>
-			You do not have permission to configure subnavs. Please contact{' '}
-			<a href="mailto:central.production@guardian.co.uk">Central Production</a>{' '}
-			to request access.
-		</Message>
-	</SubnavContainer>
+	<SubnavRoot>
+		<SubnavContainer>
+			<SubnavContainerHeading>Custom subnavs</SubnavContainerHeading>
+			<Message>
+				You do not have permission to configure subnavs. Please contact{' '}
+				<a href="mailto:central.production@guardian.co.uk">
+					Central Production
+				</a>{' '}
+				to request access.
+			</Message>
+		</SubnavContainer>
+	</SubnavRoot>
 );
 
 const SubnavSection = () => {
@@ -111,15 +120,10 @@ const SubnavSection = () => {
 	const entries = subnavConfig ? toListEntries(subnavConfig) : [];
 
 	return (
-		<>
+		<SubnavRoot>
 			<Switch>
 				<Route {...subnavRoutes.createProps}>
-					<SubnavFormView
-						heading="Create custom subnav"
-						onSave={handleCreate}
-						onCancel={goToList}
-						saving={isSaving}
-					/>
+					<SubnavCreateForm onCreate={handleCreate} saving={isSaving} />
 				</Route>
 				<Route {...subnavRoutes.editProps}>
 					<SubnavEditRoute
@@ -143,7 +147,7 @@ const SubnavSection = () => {
 					/>
 				</Route>
 			</Switch>
-		</>
+		</SubnavRoot>
 	);
 };
 
