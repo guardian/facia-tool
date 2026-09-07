@@ -42,6 +42,19 @@ const state: any = {
 const toUkFront = { ...baseTo, collectionId: UK_COLLECTION };
 const toUsFront = { ...baseTo, collectionId: US_COLLECTION };
 
+const toUkSublink = {
+	...baseTo,
+	type: 'card',
+	id: 'parent-uk',
+	collectionId: UK_COLLECTION,
+};
+const toUsSublink = {
+	...baseTo,
+	type: 'card',
+	id: 'parent-us',
+	collectionId: US_COLLECTION,
+};
+
 describe('mayEndAbTest', () => {
 	it('ends a running test when a card is moved to a different front', () => {
 		const result = mayEndAbTest({
@@ -72,6 +85,31 @@ describe('mayEndAbTest', () => {
 		});
 
 		expect(result).toBeUndefined();
+	});
+
+	it('keeps the test running when a card is moved into a sublink on its own front', () => {
+		const result = mayEndAbTest({
+			from: baseFrom,
+			to: toUkSublink,
+			card: makeCard([makeTest()]),
+			persistTo: 'collection',
+			state,
+		});
+
+		expect(result).toBeUndefined();
+	});
+
+	it('ends a running test when a card is moved into a sublink on a different front', () => {
+		const result = mayEndAbTest({
+			from: baseFrom,
+			to: toUsSublink,
+			card: makeCard([makeTest()]),
+			persistTo: 'collection',
+			state,
+		});
+
+		expect(result?.payload.id).toBe('card-1');
+		expect(result?.payload.test?.hasManuallyEndedOnThisTrail).toBe(true);
 	});
 
 	it('does not end a test when a card is moved to the clipboard', () => {

@@ -391,6 +391,7 @@ export const mayResetVideoReplace = ({
  *
  * The following movements keep a test running (and therefore return no actions):
  * - moving a card around within a front it can run on
+ * - moving a card between a trail and a sublink on a front it can run on
  * - moving a card to the clipboard, then re-adding it to a front it can run on
  *
  * Moving a card to the clipboard (and leaving it there) requires no action -

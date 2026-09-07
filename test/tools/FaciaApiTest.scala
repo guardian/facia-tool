@@ -1,9 +1,16 @@
 package tools
 
-import com.gu.facia.client.models.{CollectionJson, Test, Trail}
+import com.gu.facia.client.models.{
+  CollectionJson,
+  SupportingItem,
+  Test,
+  Trail,
+  TrailMetaData
+}
 import com.gu.pandomainauth.model.User
 import org.joda.time.DateTime
 import org.scalatest.{FreeSpec, Matchers}
+import play.api.libs.json.Json
 
 class FaciaApiTest extends FreeSpec with Matchers {
 
@@ -102,6 +109,61 @@ class FaciaApiTest extends FreeSpec with Matchers {
     }
   }
 
+  "set AB test start/expiry dates on sublinks (supporting items) on publish" - {
+
+    def sublinkTestFor(
+        trailId: String,
+        sublinkId: String,
+        collectionJson: CollectionJson
+    ): Test =
+      collectionJson.live
+        .find(_.id == trailId)
+        .flatMap(_.meta)
+        .flatMap(_.supporting)
+        .flatMap(_.find(_.id == sublinkId))
+        .flatMap(_.tests)
+        .flatMap(_.headOption)
+        .getOrElse(
+          fail(s"expected a test on sublink <$sublinkId> of trail <$trailId>")
+        )
+
+    "sets dates on an active (not manually ended) test that has none" in {
+      val (identity, collectionJson) = scenarioWithSublinkTests
+      val newCollectionJson =
+        FaciaApi.preparePublishCollectionJson(identity)(collectionJson).get
+
+      val test =
+        sublinkTestFor("trailWithSublinks", "activeSublinkTestId", newCollectionJson)
+      test.startDate should be(Symbol("defined"))
+      test.expiryDate should be(Symbol("defined"))
+    }
+
+    "does NOT set dates on a manually ended test" in {
+      val (identity, collectionJson) = scenarioWithSublinkTests
+      val newCollectionJson =
+        FaciaApi.preparePublishCollectionJson(identity)(collectionJson).get
+
+      val test =
+        sublinkTestFor("trailWithSublinks", "endedSublinkTestId", newCollectionJson)
+      test.startDate should be(None)
+      test.expiryDate should be(None)
+    }
+
+    "does not overwrite existing dates on an active test" in {
+      val (identity, collectionJson) = scenarioWithSublinkTests
+      val newCollectionJson =
+        FaciaApi.preparePublishCollectionJson(identity)(collectionJson).get
+
+      val test = sublinkTestFor(
+        "trailWithSublinks",
+        "existingDatesSublinkTestId",
+        newCollectionJson
+      )
+      test.startDate should be(Some(1000L))
+      test.expiryDate should be(Some(2000L))
+    }
+  }
+
   private def makeTest(
       hasManuallyEndedOnThisTrail: Boolean,
       startDate: Option[Long] = None,
@@ -144,6 +206,67 @@ class FaciaApiTest extends FreeSpec with Matchers {
         None,
         Some(
           List(
+            makeTest(
+              hasManuallyEndedOnThisTrail = false,
+              startDate = Some(1000L),
+              expiryDate = Some(2000L)
+            )
+          )
+        )
+      )
+    )
+    val collectionJson = CollectionJson(
+      Nil,
+      Some(draft),
+      None,
+      new DateTime(0),
+      "oldUpdatedBy",
+      "oldUpdatedEmail",
+      None,
+      None,
+      None,
+      None
+    )
+    (identity, collectionJson)
+  }
+
+  private def makeSublink(id: String, test: Test): SupportingItem =
+    SupportingItem(
+      id = id,
+      frontPublicationDate = None,
+      publishedBy = None,
+      meta = None,
+      tests = Some(List(test))
+    )
+
+  private def trailWithSublinks(
+      id: String,
+      sublinks: List[SupportingItem]
+  ): Trail =
+    Trail(
+      id,
+      0,
+      Some(""),
+      Some(TrailMetaData(Map("supporting" -> Json.toJson(sublinks)))),
+      None
+    )
+
+  private def scenarioWithSublinkTests: (User, CollectionJson) = {
+    val identity = User("John", "Duffell", "email@email.com", None)
+    val draft = List(
+      trailWithSublinks(
+        "trailWithSublinks",
+        List(
+          makeSublink(
+            "activeSublinkTestId",
+            makeTest(hasManuallyEndedOnThisTrail = false)
+          ),
+          makeSublink(
+            "endedSublinkTestId",
+            makeTest(hasManuallyEndedOnThisTrail = true)
+          ),
+          makeSublink(
+            "existingDatesSublinkTestId",
             makeTest(
               hasManuallyEndedOnThisTrail = false,
               startDate = Some(1000L),
