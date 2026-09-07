@@ -4,6 +4,9 @@ import 'vite/modulepreload-polyfill';
 // Material Symbols font used by @guardian/stand icons
 import '@guardian/stand/fonts/MaterialSymbolsOutlined.css';
 
+// Open Sans @font-face used by @guardian/stand; only applied within subnav components
+import '@guardian/stand/fonts/OpenSans.css';
+
 import './util/tti';
 import React from 'react';
 import { render } from 'react-dom';

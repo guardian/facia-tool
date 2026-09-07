@@ -29,6 +29,7 @@ const LogoTypeContainer = styled(Link)`
 
 const customNaviStyles = css`
 	height: 60px;
+	z-index: 1;
 `;
 
 export default ({
@@ -41,6 +42,8 @@ export default ({
 	greyHeader?: boolean;
 }) => {
 	const isSubnavPath = useRouteMatch(subnavRoutes.sectionProps);
+	const isSubnavListPath = useRouteMatch(subnavRoutes.listProps);
+	const isSubnavCreatePath = useRouteMatch(subnavRoutes.createProps);
 	return (
 		<SectionHeader greyHeader={greyHeader} includeBorder={includeBorder}>
 			<LogoTypeContainer to="/">F</LogoTypeContainer>
@@ -52,8 +55,16 @@ export default ({
 						href="/v2/subnavs"
 					></TopBarToolName>
 					<TopBarContainerLeft>
-						<TopBarNavigation text="All subnavs" href="/v2/subnavs" />
-						<TopBarNavigation text="Create subnav" href="/v2/subnavs/new" />
+						<TopBarNavigation
+							text="All subnavs"
+							href="/v2/subnavs"
+							isSelected={!!isSubnavListPath}
+						/>
+						<TopBarNavigation
+							text="Create subnav"
+							href="/v2/subnavs/new"
+							isSelected={!!isSubnavCreatePath}
+						/>
 					</TopBarContainerLeft>
 				</TopBar>
 			)}
