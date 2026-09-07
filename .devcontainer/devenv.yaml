@@ -20,8 +20,8 @@ modules:
   - github-copilot
 
 # Optional: Ports to forward
-# forwardPorts:
-#   - 8080  # same port on host and container
+forwardPorts:
+  - 9000  # same port on host and container
 #   - "8000:9000"  # hostPort:containerPort
 
 # Optional: Mount directories from host to container
@@ -36,11 +36,10 @@ modules:
 # Optional: Commands to run after container creation
 # Each command has a 'cmd' field and a 'workingDirectory' field
 # e.g.
-# postCreateCommand:
-#   - cmd: "npm install"
-#     workingDirectory: "."
-#   - cmd: "make setup"
-#     workingDirectory: "/workspaces/project"
+postCreateCommand:
+  - cmd: "sudo mkdir /etc/gu && sudo chown vscode /etc/gu"
+    workingDirectory: "."
+  
 # postStartCommand:
 #   - cmd: "echo 'Container started successfully'"
 #     workingDirectory: "."

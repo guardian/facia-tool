@@ -1,6 +1,6 @@
 {
   "eslint.enable": true,
   "files.watcherExclude": {
-    "**/target": true
+    "**/target/**": true
   }
 }
