@@ -8,30 +8,84 @@ For information on core Fronts concepts, see the [glossary](./docs/Glossary.md).
 
 You can find the client for the Fronts tool in [fronts-client](./fronts-client).
 
-### Setup (need to be done once)
+This project is now set up to use Dev Containers, a safer system in these days of rampant supply chain attacks.
 
-1. Install [NVM](https://github.com/creationix/nvm).
-2. Ensure [Docker](https://www.docker.com/products/docker-desktop) is installed
-3. Get credentials from [Janus](https://janus.gutools.co.uk/credentials?permissionId=cmsFronts-iam-facia-CODE-RunFaciaToolLocally-nL42h4zEgHhf).
-4. Grant [code](https://permissions.code.dev-gutools.co.uk/) permissions (used for local builds as well).  Any engineer on ed tools should be able to give you access. You need:
-    1. fronts_access
-    1. launch_commercial_fronts
-    1. edit_editorial_fronts
-    1. edit_editions
-    1. launch_editorial_fronts
-    1. configure_fronts
-5. From the project root, run `./scripts/setup.sh`.
+### Before you begin
 
-### Dev Start
+Get credentials from [Janus](https://janus.gutools.co.uk/credentials?permissionId=cmsFronts-iam-facia-CODE-RunFaciaToolLocally-nL42h4zEgHhf).
+You need the CMS Fronts "RunFaciaToolLocally" permission set - contact F&C if you don't have
+access to this.
 
-1. Run Docker locally
-2. To run the application:
-   - From the project root, run `./scripts/dev-start.sh`
-   - From the project root, run without debug `./scripts/dev-start.sh --no-debug`
-3. Open `https://fronts.local.dev-gutools.co.uk`.
+### On your host system
 
-You can use localstack for S3 by running `./scripts/setup-local-s3.sh` to create a bucket and populate
-it with the current state of the CODE fronts.
+1. Make sure you have dev-nginx and Docker Desktop installed (should be done when you first set your laptop up)
+2. Set up Fronts tool:
+
+```bash
+dev-nginx setup-app nginx/nginx-mapping.yml
+```
+
+This will allow you to access your locally running copy via https://fronts.local.dev-gutools.co.uk
+
+### In your editor [VSCode]
+
+1. Open the repository
+2. Go to the command palette - the box in the middle at the top of the window
+3. Type `> re` to open the commands and filter the menu. Select `Dev containers: Reopen in dev container`
+4. Wait a while as it builds. Open the logs if you're feeling bored :)
+
+### In your editor [Intellij]
+
+TBD
+
+### App setup
+
+1. Open a terminal in your editor
+2. You should have the `aws` command, the `sbt` command, the java JDK commands, Node etc. You should also have `psql`, `pg_dump` etc.
+3. Get credentials from [Janus](https://janus.gutools.co.uk/credentials?permissionId=cmsFronts-iam-facia-CODE-RunFaciaToolLocally-nL42h4zEgHhf). Paste them into the terminal.  This is very important as they are needed to fetch the config files for initial setup
+4. Run:
+
+```bash
+./scripts/setup.sh
+```
+
+5. When this completes, you should be set up. Check that there are two config files in `/etc/gu`.
+6. Run
+
+```bash
+./scripts/dev-start.sh
+```
+
+or 
+
+```bash
+./scripts/dev-start.sh --no-debug
+```
+
+7. In your browser, go to https://fronts.local.dev-gutools.co.uk
+
+>! [NOTE]
+> The logs you see in the terminal are JSON formatted and therefore quite illegible.
+> If you open another terminal and run `tail -f logs/frontend-facia-tool.log` you get a more
+> readable version of the same data
+
+>! [NOTE]
+> You can use localstack for S3 by running `./scripts/setup-local-s3.sh` to create a bucket and populate
+> it with the current state of the CODE fronts.
+
+## Troubleshooting
+
+If your browser is timing out when accessing fronts.local.dev-gutools.co.uk, try running
+
+```bash
+curl http://localhost:9000
+```
+
+in your editor terminal (dev container).  If this works, but the same command doesn't work (or
+gives a different output) when run on your host sytem, then it's likely that something else has
+port 9000 open on the host system.  Docker forwards ports on startup.  The simplest way to fix this
+is to shut down _all_ dev containers you have running (don't delete, just shut down) then just start
+this one up again.
 
 ### Unit tests
 
