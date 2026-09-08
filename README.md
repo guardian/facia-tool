@@ -75,12 +75,12 @@ or
 
 7. In your browser, go to https://fronts.local.dev-gutools.co.uk
 
->! [NOTE]
+> [!NOTE]
 > The logs you see in the terminal are JSON formatted and therefore quite illegible.
 > If you open another terminal and run `tail -f logs/frontend-facia-tool.log` you get a more
 > readable version of the same data
 
->! [NOTE]
+> [!NOTE]
 > You can use localstack for S3 by running `./scripts/setup-local-s3.sh` to create a bucket and populate
 > it with the current state of the CODE fronts.
 
