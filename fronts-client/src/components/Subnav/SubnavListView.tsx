@@ -43,7 +43,7 @@ const panelsGridTheme = {
 
 const tableColumns = {
 	sm: 'minmax(0, 1fr)',
-	lg: 'minmax(0, 2.4fr) minmax(96px, 1fr) auto',
+	lg: 'minmax(0, 2.4fr) 130px 135px',
 };
 
 const subnavCellStyles = css`
