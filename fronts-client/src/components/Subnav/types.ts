@@ -7,7 +7,17 @@ export type TargetedPageType = 'front' | 'article' | 'hasTag';
 
 export type CustomSubnavFormat = 'large' | 'compact';
 
-export type ImageBreakpoint = 'mobile' | 'tablet' | 'web';
+export type ImageBreakpoint =
+	| 'mobile'
+	| 'mobileMedium'
+	| 'mobileLandscape'
+	| 'phablet'
+	| 'tablet'
+	| 'desktop'
+	| 'leftCol'
+	| 'wide';
+
+export type SubnavImagePlatform = 'ios' | 'web' | 'android';
 
 export interface SubnavLink {
 	linkText: string;
@@ -28,6 +38,7 @@ export interface CustomSubnavHeader {
 export interface SubnavImage {
 	imageSrc: string;
 	breakpoint: ImageBreakpoint;
+	platforms: SubnavImagePlatform[];
 }
 
 export interface Palette {
