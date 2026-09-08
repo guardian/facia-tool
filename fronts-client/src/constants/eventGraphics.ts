@@ -14,8 +14,6 @@
  * against yet, and we currently only need to support the US midterms.
  */
 
-import { FLEXIBLE_SPECIAL_NAME } from 'constants/flexibleContainers';
-
 export const EVENT_GRAPHIC_ID_PREFIX = 'event-graphic/';
 
 export interface EventGraphic {
@@ -36,20 +34,6 @@ export const eventGraphics: EventGraphic[] = [
 
 export const isEventGraphicId = (id: string): boolean =>
 	id.startsWith(EVENT_GRAPHIC_ID_PREFIX);
-
-/**
- * Event graphics can only be placed in the "snap" slot of a flexible/special
- * container -- group 1 -- which is the same slot facia-scala-client treats as
- * the snap card when rendering.
- */
-export const EVENT_GRAPHIC_GROUP_ID = '1';
-
-export const isEventGraphicSlot = (
-	collectionType?: string,
-	groupId?: string | null,
-): boolean =>
-	collectionType === FLEXIBLE_SPECIAL_NAME &&
-	groupId === EVENT_GRAPHIC_GROUP_ID;
 
 export const getEventGraphicById = (id: string): EventGraphic | undefined =>
 	eventGraphics.find((eventGraphic) => eventGraphic.id === id);

@@ -1,6 +1,7 @@
-import { denyDragEvent } from '../CardTypeLevel';
+import { denyDragEvent, getCardDropType } from '../CardTypeLevel';
 import { CardTypesMap } from 'constants/cardTypes';
 import { CARD_TYPE } from 'lib/dnd/constants';
+import { Card } from 'types/Collection';
 
 const dragEventWithCardType = (cardType: string, types: string[] = []) =>
 	({
@@ -52,5 +53,32 @@ describe('denyDragEvent', () => {
 				dragEventWithCardType(CardTypesMap.RECIPE),
 			),
 		).toBe(false);
+	});
+});
+
+describe('getCardDropType', () => {
+	it('should use the card type when it is set', () => {
+		expect(
+			getCardDropType({
+				uuid: 'uuid',
+				id: 'some/article',
+				cardType: CardTypesMap.RECIPE,
+			} as Card),
+		).toBe(CardTypesMap.RECIPE);
+	});
+
+	it('should derive the event graphic type from the id when the card type is missing', () => {
+		expect(
+			getCardDropType({
+				uuid: 'uuid',
+				id: 'event-graphic/election-tracker/us-midterm-2026',
+			} as Card),
+		).toBe(CardTypesMap.EVENT_GRAPHIC);
+	});
+
+	it('should default to an article', () => {
+		expect(getCardDropType({ uuid: 'uuid', id: 'some/article' } as Card)).toBe(
+			CardTypesMap.ARTICLE,
+		);
 	});
 });

@@ -43,12 +43,32 @@ const FeedWrapper = styled.div<{ isClipboardOpen: boolean }>`
 `;
 
 const FeedSourceSelectorContainer = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 8px;
 	margin-bottom: 10px;
 	margin-right: 10px;
 `;
 
+const FeedSourceLabel = styled.label`
+	font-size: 14px;
+	white-space: nowrap;
+`;
+
 const FeedSourceSelect = styled.select`
-	width: 100%;
+	flex: 1;
+	height: 36px;
+	padding: 0 8px;
+	font-size: 16px;
+	color: ${theme.base.colors.text};
+	background-color: ${theme.base.colors.backgroundColorLight};
+	border: 1px solid ${theme.base.colors.borderColor};
+	border-radius: 3px;
+
+	&:focus {
+		outline: none;
+		border-color: ${theme.base.colors.borderColorFocus};
+	}
 `;
 
 /**
@@ -61,9 +81,9 @@ const FrontsFeed = () => {
 	return (
 		<>
 			<FeedSourceSelectorContainer>
-				<label htmlFor="feedSourceSelector" hidden>
-					Feed source
-				</label>
+				<FeedSourceLabel htmlFor="feedSourceSelector">
+					Filter by type:
+				</FeedSourceLabel>
 				<FeedSourceSelect
 					id="feedSourceSelector"
 					data-testid="feed-source-selector"

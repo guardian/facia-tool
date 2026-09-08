@@ -4,9 +4,7 @@ import {
 	getEventGraphicById,
 	getEventGraphicTitle,
 	isEventGraphicId,
-	isEventGraphicSlot,
 } from 'constants/eventGraphics';
-import { FLEXIBLE_SPECIAL_NAME } from 'constants/flexibleContainers';
 
 describe('event graphics', () => {
 	it('should give every event graphic an id with the shared prefix', () => {
@@ -52,22 +50,6 @@ describe('event graphics', () => {
 	describe('getEventGraphicById', () => {
 		it('should return undefined for an unknown id', () => {
 			expect(getEventGraphicById('event-graphic/unknown')).toBeUndefined();
-		});
-	});
-
-	describe('isEventGraphicSlot', () => {
-		it('should accept group 1 of a flexible/special container', () => {
-			expect(isEventGraphicSlot(FLEXIBLE_SPECIAL_NAME, '1')).toBe(true);
-		});
-
-		it('should reject other groups of a flexible/special container', () => {
-			expect(isEventGraphicSlot(FLEXIBLE_SPECIAL_NAME, '0')).toBe(false);
-			expect(isEventGraphicSlot(FLEXIBLE_SPECIAL_NAME, null)).toBe(false);
-		});
-
-		it('should reject group 1 of other container types', () => {
-			expect(isEventGraphicSlot('flexible/general', '1')).toBe(false);
-			expect(isEventGraphicSlot(undefined, '1')).toBe(false);
 		});
 	});
 });

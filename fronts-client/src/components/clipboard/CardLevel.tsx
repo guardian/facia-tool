@@ -10,7 +10,13 @@ import DropZone, {
 import { createSelectSupportingArticles } from 'selectors/shared';
 import { theme, styled } from 'constants/theme';
 import { CardTypeLevel } from 'lib/dnd/CardTypeLevel';
-import { CardTypes } from 'constants/cardTypes';
+import { CardTypes, CardTypesMap } from 'constants/cardTypes';
+
+/**
+ * Event graphics are placed as cards in their own right; they are never
+ * sublinks of another card.
+ */
+const sublinkCardTypeDenyList: CardTypes[] = [CardTypesMap.EVENT_GRAPHIC];
 
 interface OuterProps {
 	cardId: string;
@@ -70,6 +76,7 @@ const CardLevel = ({
 		onDrop={onDrop}
 		canDrop={!isUneditable}
 		cardTypeAllowList={cardTypeAllowList}
+		cardTypeDenyList={sublinkCardTypeDenyList}
 		renderDrop={
 			isUneditable
 				? undefined

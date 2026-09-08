@@ -3,6 +3,7 @@ import { Card } from 'types/Collection';
 import Level, { LevelProps } from './Level';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 import { collectionDropTypeDenylist } from 'constants/fronts';
+import { isEventGraphicId } from 'constants/eventGraphics';
 import { CARD_TYPE } from './constants';
 import ArticleDrag, {
 	dragOffsetX,
@@ -53,6 +54,18 @@ export const denyDragEvent =
 	};
 
 /**
+ * The type advertised when a card already on a front or the clipboard is
+ * dragged. `cardType` is not persisted, so for cards restored from a saved
+ * collection the type has to be derived from the id -- otherwise a saved event
+ * graphic would look like an article and could be dropped as a sublink.
+ */
+export const getCardDropType = (card: Card): CardTypes =>
+	card.cardType ??
+	(isEventGraphicId(card.id)
+		? CardTypesMap.EVENT_GRAPHIC
+		: CardTypesMap.ARTICLE);
+
+/**
  * A Level that only accepts a Card type. Useful for providing common drag and
  * behaviour for Card components.
  */
@@ -63,7 +76,7 @@ export const CardTypeLevel: React.FC<Props> = (props: Props) => (
 			props.cardTypeAllowList,
 			props.cardTypeDenyList,
 		)}
-		getDropType={(card) => card.cardType || CardTypesMap.ARTICLE}
+		getDropType={getCardDropType}
 		dragImageOffsetX={dragOffsetX}
 		dragImageOffsetY={dragOffsetY}
 		renderDrag={(af) => <ArticleDrag id={af.uuid} />}
