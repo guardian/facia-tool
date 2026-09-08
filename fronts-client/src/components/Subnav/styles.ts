@@ -270,3 +270,95 @@ export const CreateFormActions = styled.div`
 	justify-content: flex-start;
 	gap: 8px;
 `;
+
+export const CreateFormPreview = styled.div`
+	position: sticky;
+	top: 80px;
+	align-self: flex-start;
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	min-width: 0;
+	height: calc(100vh - 100px);
+	margin: 8px;
+	padding: 8px;
+	background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
+	border-radius: 4px;
+`;
+
+export const CreateFormPreviewHeader = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+`;
+
+export const CreateFormPreviewTitleRow = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+`;
+
+export const CreateFormPreviewTitle = styled.h2`
+	margin: 0;
+	font-size: 20px;
+	font-weight: 700;
+	color: ${({ theme }) => theme.base.colors.textDark};
+`;
+
+export const CreateFormPreviewToolbar = styled.div`
+	display: flex;
+	gap: 4px;
+`;
+
+export const CreateFormPreviewButton = styled.button<{ active?: boolean }>`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 6px;
+	padding: 6px 12px;
+	font-size: 13px;
+	font-weight: 600;
+	border: 1px solid ${({ theme }) => theme.base.colors.borderColor};
+	border-radius: 4px;
+	cursor: pointer;
+	color: ${({ active, theme }) =>
+		active
+			? theme.base.colors.backgroundColorLight
+			: theme.base.colors.textDark};
+	background-color: ${({ active, theme }) =>
+		active
+			? theme.base.colors.textDark
+			: theme.base.colors.backgroundColorLight};
+`;
+
+// Centres the scaled preview device; the frame is scaled to fit via JS.
+export const CreateFormPreviewViewport = styled.div`
+	flex: 1;
+	display: flex;
+	justify-content: center;
+	align-items: flex-start;
+	overflow: hidden;
+	background-color: ${({ theme }) => theme.base.colors.backgroundColorLight};
+	border-radius: 4px;
+`;
+
+// Occupies the scaled footprint so the centred device stays in flow.
+export const CreateFormPreviewScaler = styled.div`
+	flex-shrink: 0;
+	overflow: hidden;
+`;
+
+export const CreateFormPreviewPlaceholder = styled.div`
+	margin: auto;
+	padding: 24px;
+	text-align: center;
+	font-size: 14px;
+	color: ${({ theme }) => theme.base.colors.textMuted};
+`;
+
+export const CreateFormPreviewFrame = styled.iframe`
+	border: 0;
+	background: #fff;
+	transform-origin: top left;
+`;
