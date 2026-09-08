@@ -8,7 +8,7 @@ final case class PackageCard(
 		id: String,
 		packageId: String,
 		state: String,
-		pageCode: String,
+		pageCode: String, //CAPI internalPageCode of an article. Either the recipe ID, the chef ID or the subcollection ID if this is a Feast card.  
 		index: Int,
 		metadata: Option[JsValue],
 		addedOn: Long,
