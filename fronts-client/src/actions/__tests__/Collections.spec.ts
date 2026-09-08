@@ -407,6 +407,29 @@ describe('Collection actions', () => {
 				externalArticleActions.fetchStart(['internal-code/page/5029528']),
 			);
 		});
+		it('should remove event graphics', async () => {
+			fetchMock.once('begin:/api/preview/internal-code/page/5029528', {
+				response: { results: [capiArticle] },
+			});
+			await store.dispatch(
+				fetchArticles([
+					'internal-code/page/5029528',
+					'event-graphic/election-tracker/us-midterm-2026',
+				]) as any,
+			);
+			const actions = store.getActions();
+			expect(actions[0]).toEqual(
+				externalArticleActions.fetchStart(['internal-code/page/5029528']),
+			);
+		});
+		it('should not issue a request when only event graphics are given', async () => {
+			await store.dispatch(
+				fetchArticles([
+					'event-graphic/election-tracker/us-midterm-2026',
+				]) as any,
+			);
+			expect(store.getActions()).toEqual([]);
+		});
 		it("should dispatch errors when the CAPI result count doesn't match the requested articles", async () => {
 			fetchMock.once('begin:/api/preview/search', {
 				response: { results: [capiArticle] },

@@ -4,6 +4,7 @@ export const CardTypesMap = {
 	RECIPE: 'recipe',
 	CHEF: 'chef',
 	FEAST_COLLECTION: 'feast-collection',
+	EVENT_GRAPHIC: 'event-graphic',
 } as const;
 
 export type CardTypes = (typeof CardTypesMap)[keyof typeof CardTypesMap];

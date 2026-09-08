@@ -17,9 +17,13 @@ import { addImageToCard, removeCard as removeCardAction } from 'actions/Cards';
 import { resetFocusState } from 'bundles/focusBundle';
 import { connect } from 'react-redux';
 import type { State } from 'types/State';
-import { createSelectArticleVisibilityDetails } from 'selectors/frontsSelectors';
+import {
+	createSelectArticleVisibilityDetails,
+	selectCollectionType,
+} from 'selectors/frontsSelectors';
 import FocusWrapper from 'components/FocusWrapper';
-import { CardTypes } from 'constants/cardTypes';
+import { CardTypes, CardTypesMap } from 'constants/cardTypes';
+import { isEventGraphicId, isEventGraphicSlot } from 'constants/eventGraphics';
 import { updateCardWithPersist as updateCardAction } from 'actions/Cards';
 import { ValidationResponse } from '../../util/validateImageSrc';
 import { bindActionCreators } from 'redux';
@@ -122,6 +126,7 @@ interface ConnectedCollectionContextProps extends CollectionContextProps {
 	cardsWhichAreAlsoOnOtherCollectionsOnSameFront?: CardsWhichAreAlsoOnOtherCollectionsOnSameFrontMap;
 	updateCard: (id: string, meta: CardMeta) => void;
 	addImageToCard: (uuid: string, imageData: ValidationResponse) => void;
+	collectionType?: string;
 }
 
 class CollectionContext extends React.Component<ConnectedCollectionContextProps> {
@@ -145,6 +150,7 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 			cardsWhichAreAlsoOnOtherCollectionsOnSameFront,
 			updateCard,
 			addImageToCard,
+			collectionType,
 		} = this.props;
 
 		return (
@@ -177,6 +183,11 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 								onMove={handleMove}
 								onDrop={handleInsert}
 								cardIds={group.cards}
+								cardTypeDenyList={
+									isEventGraphicSlot(collectionType, group.id)
+										? undefined
+										: [CardTypesMap.EVENT_GRAPHIC]
+								}
 							>
 								{(card, getAfNodeProps) => {
 									const otherCollectionsOnSameFrontThisCardIsOn =
@@ -220,10 +231,8 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 														groups={groups}
 														onMove={handleMove}
 														onDrop={handleInsert}
-														cardTypeAllowList={this.getPermittedCardTypes(
-															card.cardType,
-														)}
-														dropMessage={this.getDropMessage(card.cardType)}
+														cardTypeAllowList={this.getPermittedCardTypes(card)}
+														dropMessage={this.getDropMessage(card)}
 													>
 														{(supporting, getSupportingProps) => {
 															const otherCollectionsOnSameFrontThisSublinkIsOn =
@@ -280,13 +289,21 @@ class CollectionContext extends React.Component<ConnectedCollectionContextProps>
 		);
 	}
 
-	private getPermittedCardTypes = (
-		cardType?: CardTypes,
-	): CardTypes[] | undefined =>
-		cardType === 'feast-collection' ? ['recipe'] : undefined; // Todo: Chef also to be checked?
+	private getPermittedCardTypes = (card: TCard): CardTypes[] | undefined => {
+		if (card.cardType === CardTypesMap.FEAST_COLLECTION) {
+			return ['recipe']; // Todo: Chef also to be checked?
+		}
+		// An event graphic can't have sublinks.
+		if (isEventGraphicId(card.id)) {
+			return [];
+		}
+		return undefined;
+	};
 
-	private getDropMessage = (cardType?: CardTypes) =>
-		cardType === 'feast-collection' ? 'Place recipe here' : 'Sublink';
+	private getDropMessage = (card: TCard) =>
+		card.cardType === CardTypesMap.FEAST_COLLECTION
+			? 'Place recipe here'
+			: 'Sublink';
 }
 
 const createMapStateToProps = () => {
@@ -310,6 +327,7 @@ const createMapStateToProps = () => {
 			lastDesktopArticle: articleVisibilityDetails.desktop,
 			lastMobileArticle: articleVisibilityDetails.mobile,
 			cardsWhichAreAlsoOnOtherCollectionsOnSameFront,
+			collectionType: selectCollectionType(state, props.id),
 		};
 	};
 };

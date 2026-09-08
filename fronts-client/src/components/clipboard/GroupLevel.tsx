@@ -10,6 +10,7 @@ import {
 } from 'selectors/shared';
 import { theme, styled } from 'constants/theme';
 import { CardTypeLevel } from 'lib/dnd/CardTypeLevel';
+import { CardTypes } from 'constants/cardTypes';
 import { createShallowEqualResultSelector } from 'util/selectorUtils';
 
 interface OuterProps {
@@ -24,6 +25,7 @@ interface OuterProps {
 	groupIds: string[];
 	groupMaxItems?: number;
 	groups?: Group[];
+	cardTypeDenyList?: CardTypes[];
 }
 
 interface InnerProps {
@@ -75,6 +77,7 @@ const GroupLevel = ({
 	groupIds,
 	groupMaxItems,
 	groupsWithCardsData,
+	cardTypeDenyList,
 }: Props) => (
 	<CardTypeLevel
 		arr={cards}
@@ -85,6 +88,7 @@ const GroupLevel = ({
 		groupIds={groupIds}
 		groupMaxItems={groupMaxItems}
 		groupsData={groupsWithCardsData}
+		cardTypeDenyList={cardTypeDenyList}
 		onMove={onMove}
 		onDrop={onDrop}
 		canDrop={!isUneditable}

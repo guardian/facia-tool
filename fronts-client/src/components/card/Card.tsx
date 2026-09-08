@@ -60,6 +60,7 @@ import { RecipeCard } from 'components/card/recipe/RecipeCard';
 import { ChefCard } from 'components/card/chef/ChefCard';
 import { ChefMetaForm } from '../form/ChefMetaForm';
 import { FeastCollectionCard } from './feastCollection/FeastCollectionCard';
+import { EventGraphicCard } from './eventGraphic/EventGraphicCard';
 import { FeastCollectionMetaForm } from 'components/form/FeastCollectionMetaForm';
 import { selectCollectionType } from 'selectors/frontsSelectors';
 import { Criteria } from 'types/Grid';
@@ -310,6 +311,22 @@ class Card extends React.Component<CardContainerProps> {
 								: this.state.showCardSublinks && children}
 						</>
 					);
+				case CardTypesMap.EVENT_GRAPHIC:
+					return (
+						<EventGraphicCard
+							frontId={frontId}
+							collectionId={collectionId}
+							id={uuid}
+							isUneditable={isUneditable}
+							{...getNodeProps()}
+							onDelete={this.onDelete}
+							onAddToClipboard={this.handleAddToClipboard}
+							/* No onClick here - there are no editable fields */
+							size={size}
+							textSize={textSize}
+							showMeta={showMeta}
+						/>
+					);
 				default:
 					return (
 						<p>
@@ -369,7 +386,10 @@ class Card extends React.Component<CardContainerProps> {
 			}
 		};
 
-		const supportsForm = type !== 'recipe';
+		// Neither recipes nor event graphics have editable fields, so there is no
+		// form to open when they are selected.
+		const supportsForm =
+			type !== CardTypesMap.RECIPE && type !== CardTypesMap.EVENT_GRAPHIC;
 		const shouldDisplayForm = isSelected && supportsForm;
 
 		return (

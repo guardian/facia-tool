@@ -20,20 +20,36 @@ type Props = Omit<
 	| 'getId'
 > & {
 	cardTypeAllowList?: CardTypes[];
+	cardTypeDenyList?: CardTypes[];
 };
 
 export const denyDragEvent =
-	(cardTypeAllowList?: string[] | undefined) => (e: React.DragEvent) => {
+	(
+		cardTypeAllowList?: string[] | undefined,
+		cardTypeDenyList?: string[] | undefined,
+	) =>
+	(e: React.DragEvent) => {
 		const dropEventIsNotPermitted = e.dataTransfer.types.some((type) =>
 			collectionDropTypeDenylist.includes(type),
 		);
 
+		const cardTypeBeingDropped = e.dataTransfer.getData(CARD_TYPE);
+
 		const cardTypeBeingDroppedIsNotPermitted =
 			!!cardTypeAllowList &&
-			!!e.dataTransfer.getData(CARD_TYPE) &&
-			!cardTypeAllowList.includes(e.dataTransfer.getData(CARD_TYPE));
+			!!cardTypeBeingDropped &&
+			!cardTypeAllowList.includes(cardTypeBeingDropped);
 
-		return dropEventIsNotPermitted || cardTypeBeingDroppedIsNotPermitted;
+		const cardTypeBeingDroppedIsDenied =
+			!!cardTypeDenyList &&
+			!!cardTypeBeingDropped &&
+			cardTypeDenyList.includes(cardTypeBeingDropped);
+
+		return (
+			dropEventIsNotPermitted ||
+			cardTypeBeingDroppedIsNotPermitted ||
+			cardTypeBeingDroppedIsDenied
+		);
 	};
 
 /**
@@ -43,7 +59,10 @@ export const denyDragEvent =
 export const CardTypeLevel: React.FC<Props> = (props: Props) => (
 	<Level
 		{...props}
-		denyDragEvent={denyDragEvent(props.cardTypeAllowList)}
+		denyDragEvent={denyDragEvent(
+			props.cardTypeAllowList,
+			props.cardTypeDenyList,
+		)}
 		getDropType={(card) => card.cardType || CardTypesMap.ARTICLE}
 		dragImageOffsetX={dragOffsetX}
 		dragImageOffsetY={dragOffsetY}

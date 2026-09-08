@@ -32,6 +32,7 @@ import {
 } from 'util/url';
 import { Recipe } from '../types/Recipe';
 import { CardTypesMap, type CardTypes } from '../constants/cardTypes';
+import { EventGraphic } from '../constants/eventGraphics';
 import { Chef } from '../types/Chef';
 import { State } from '../types/State';
 import { selectCard } from '../selectors/shared';
@@ -199,6 +200,10 @@ const getCardEntitiesFromDrop = async (
 		return getFeastCollectionFromFeedDrop(drop.data, state);
 	}
 
+	if (drop.type === 'EVENT_GRAPHIC') {
+		return getEventGraphicEntityFromFeedDrop(drop.data);
+	}
+
 	const droppedDataURL = drop.data.trim();
 	const resourceIdOrUrl = isGoogleRedirectUrl(droppedDataURL)
 		? getRelevantURLFromGoogleRedirectURL(droppedDataURL)
@@ -315,6 +320,22 @@ const getChefEntityFromFeedDrop = (chef: Chef): TArticleEntities => {
 
 const getRecipeEntityFromFeedDrop = (recipe: Recipe): TArticleEntities => {
 	const card = createCard(recipe.id, false, { cardType: CardTypesMap.RECIPE });
+
+	return { card };
+};
+
+/**
+ * Event graphics aren't CAPI content and aren't snaps: the card is built
+ * entirely from the hard-coded entry, and its id -- including the
+ * `event-graphic/` prefix, which is what identifies it downstream -- is stored
+ * as-is.
+ */
+const getEventGraphicEntityFromFeedDrop = (
+	eventGraphic: EventGraphic,
+): TArticleEntities => {
+	const card = createCard(eventGraphic.id, false, {
+		cardType: CardTypesMap.EVENT_GRAPHIC,
+	});
 
 	return { card };
 };

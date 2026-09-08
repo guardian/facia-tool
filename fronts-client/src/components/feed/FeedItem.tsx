@@ -132,6 +132,11 @@ interface FeedItemProps {
 	shouldObscureFeed?: boolean;
 	byline?: string;
 	showPinboard?: boolean;
+	/**
+	 * Some feed items -- event graphics, for example -- don't correspond to a
+	 * page on the site, so there is nothing to link to.
+	 */
+	showViewButton?: boolean;
 	intendedAudience?: {
 		source: IntendedAudienceSignifierProps['source'];
 		target: IntendedAudienceSignifierProps['target'];
@@ -163,6 +168,7 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 			handleDragStart,
 			byline,
 			showPinboard,
+			showViewButton = true,
 		} = this.props;
 
 		const { preview, live, ophan } = getPaths(id);
@@ -251,7 +257,9 @@ export class FeedItem extends React.Component<FeedItemProps, {}> {
 						showPinboard={showPinboard}
 						renderButtons={(props) => (
 							<>
-								<HoverViewButton hoverText="View" href={href} {...props} />
+								{showViewButton && (
+									<HoverViewButton hoverText="View" href={href} {...props} />
+								)}
 								{displayOphanLink && (
 									<HoverOphanButton {...props} href={ophan} hoverText="Ophan" />
 								)}
