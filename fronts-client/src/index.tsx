@@ -1,6 +1,9 @@
 // For development mode with Vite
 import 'vite/modulepreload-polyfill';
 
+// Material Symbols font used by @guardian/stand icons
+import '@guardian/stand/fonts/MaterialSymbolsOutlined.css';
+
 import './util/tti';
 import React from 'react';
 import { render } from 'react-dom';
