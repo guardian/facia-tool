@@ -27,7 +27,6 @@ interface SubnavListViewProps {
 	runAction: RunAction;
 }
 
-// Two panels side by side, each capped at 40% of the page width (2 of 5 columns).
 const panelsGridTheme = {
 	shared: {
 		direction: 'row',
@@ -42,7 +41,6 @@ const panelsGridTheme = {
 	},
 };
 
-// Three columns at desktop; collapses to a single stacked column below `lg`.
 const tableColumns = {
 	sm: 'minmax(0, 1fr)',
 	lg: 'minmax(0, 2.4fr) minmax(96px, 1fr) auto',
@@ -103,6 +101,12 @@ const createHeaderCellStyle: React.CSSProperties = {
 	width: '100%',
 };
 
+const tableHeaderStyles = css`
+	& > tr {
+		align-items: center;
+	}
+`;
+
 const formatUpdated = (lastUpdated: number) =>
 	format(lastUpdated, 'ddd D MMM YYYY');
 
@@ -144,7 +148,7 @@ const SubnavListPanel = ({
 	return (
 		<Panel>
 			<Table aria-label={heading} columns={tableColumns} headerVisibleFrom="lg">
-				<TableHeader>
+				<TableHeader cssOverrides={tableHeaderStyles}>
 					<TableColumnHeader isRowHeader>
 						<Typography element="h2" variant="headingSm">
 							{heading}
@@ -158,7 +162,7 @@ const SubnavListPanel = ({
 										<Button
 											variant="tertiary"
 											size="sm"
-											icon="+"
+											icon="add"
 											onPress={onCreate}
 										>
 											Create new
