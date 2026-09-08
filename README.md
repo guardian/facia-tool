@@ -36,12 +36,23 @@ This will allow you to access your locally running copy via https://fronts.local
 
 ### In your editor [Intellij]
 
-TBD
+1. Open Intellij just to the welcome screen (with the Projects list). If you've already got a local project open, close that window with the red X button (not Command-Q) to get back there.
+2. Under 'Remote Development', select 'Dev Containers'
+3. Click 'New dev container'
+4. Select 'From local project'
+5. Click the folder icon in the box labelled 'Path to devcontainer.json'
+6. Navigate to this folder where you have facia-client checked out
+7. At this point the Mac user interface gives you a problem because it hides the `.devcontainer` folder
+8. Type `/` to open an input where you can type the folder name. Enter `.devcontainer` and click it
+9. Open the `shared` folder and select `devcontainer.json`. Alternatively, if you have personal customisations, regenerate on your host system with `devenv generate` and open the `user` version.
+10. Click 'Build container' and continue
+11. Wait a while as it builds
 
 ### App setup
 
 1. Open a terminal in your editor
 2. You should have the `aws` command, the `sbt` command, the java JDK commands, Node etc. You should also have `psql`, `pg_dump` etc.
+  - If you don't - Intellij doesn't always run the mise setup - run `mise install` to get the tools. Use `mise doctor` and reach out to DevX if it's still not working.
 3. Get credentials from [Janus](https://janus.gutools.co.uk/credentials?permissionId=cmsFronts-iam-facia-CODE-RunFaciaToolLocally-nL42h4zEgHhf). Paste them into the terminal.  This is very important as they are needed to fetch the config files for initial setup
 4. Run:
 
@@ -86,6 +97,22 @@ gives a different output) when run on your host sytem, then it's likely that som
 port 9000 open on the host system.  Docker forwards ports on startup.  The simplest way to fix this
 is to shut down _all_ dev containers you have running (don't delete, just shut down) then just start
 this one up again.
+
+## Connecting to the local database
+
+The devcontainer setup includes a GUI postgres client for VS code; intellij has a database
+client built in.
+
+Once you've run `./scripts/dev-start.sh` once there should be a database existing.
+
+Simply set up:
+- host: `localhost`
+- port: 4724
+- user: faciatool
+- database: faciatool
+- password: faciatool
+
+and you should be able to connect to the local dev database.
 
 ### Unit tests
 
