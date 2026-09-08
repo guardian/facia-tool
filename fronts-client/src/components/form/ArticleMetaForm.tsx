@@ -95,6 +95,7 @@ import type { Atom, AtomResponse } from '../../types/Capi';
 import Tooltip from '../modals/Tooltip';
 import { isAtom } from '../../util/atom';
 import { HeadlineInput } from 'components/inputs/HeadlineInput';
+import { clipboardId } from 'constants/fronts';
 
 interface ComponentProps extends ContainerProps {
 	articleExists: boolean;
@@ -734,6 +735,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								editableFields={editableFields}
 								snapType={this.props.snapType}
 								onAbTestToggle={handleAbTestToggle}
+								isClipboard={frontId === clipboardId}
 							/>
 						)}
 						<CheckboxFieldsContainer
