@@ -16,7 +16,8 @@ import java.util.UUID
 class FaciaDB(url: String, user: String, password: String)
     extends IssueQueries
     with FrontsQueries
-    with CollectionsQueries {
+    with CollectionsQueries
+    with PackageQueries {
   Class.forName("org.postgresql.Driver")
   ConnectionPool.singleton(url, user, password)
 
