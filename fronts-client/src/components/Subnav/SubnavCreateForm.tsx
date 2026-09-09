@@ -30,10 +30,12 @@ import { Typography } from '@guardian/stand/Typography';
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
 import {
 	CustomSubnav,
+	SubnavImage,
 	SubnavLink,
 	TargetedPage,
 	TargetedPageType,
 } from './types';
+import SubnavImagesSection from './SubnavImagesSection';
 import {
 	AddRow,
 	DragHandle,
@@ -65,17 +67,18 @@ interface SubnavCreateFormProps {
 	saving: boolean;
 }
 
-type StepId = 'header' | 'links' | 'pages' | 'review';
+type StepId = 'header' | 'links' | 'pages' | 'images' | 'review';
 
 // Local nav-item row carries a stable id for drag-and-drop reordering.
 type LinkRow = SubnavLink & { id: string };
 
-const stepOrder: StepId[] = ['header', 'links', 'pages', 'review'];
+const stepOrder: StepId[] = ['header', 'links', 'pages', 'images', 'review'];
 
 const stepLabels: Record<StepId, string> = {
 	header: 'Header',
 	links: 'Nav items',
 	pages: 'Assign to pages',
+	images: 'Images',
 	review: 'Publish',
 };
 
@@ -132,6 +135,7 @@ const SubnavCreateForm = ({
 	const [headerDotcomPath, setHeaderDotcomPath] = useState('');
 	const [links, setLinks] = useState<LinkRow[]>([emptyLink()]);
 	const [pages, setPages] = useState<TargetedPage[]>([emptyPage()]);
+	const [images, setImages] = useState<SubnavImage[]>([]);
 	const [error, setError] = useState<string | null>(null);
 	const [breakpoint, setBreakpoint] = useState<Breakpoint>('desktop');
 	// Bumped to force the preview iframe to reload once DCR has polled the draft.
@@ -222,6 +226,8 @@ const SubnavCreateForm = ({
 				return hasPage ? 'complete' : 'incomplete';
 			case 'links':
 				return hasLink ? 'complete' : 'incomplete';
+			case 'images':
+				return images.length > 0 ? 'complete' : 'optional';
 			default:
 				return 'no-fields';
 		}
@@ -289,7 +295,7 @@ const SubnavCreateForm = ({
 				type: page.type,
 				path: page.path.trim(),
 			})),
-			images: undefined,
+			images: images.length > 0 ? images : undefined,
 			palette: undefined,
 			lastUpdated: Date.now(),
 			updatedBy: '',
@@ -534,6 +540,16 @@ const SubnavCreateForm = ({
 									Add page
 								</Button>
 							</AddRow>
+						</CreateFormSection>
+
+						<CreateFormSection
+							ref={setSectionRef('images')}
+							data-step-id="images"
+							active={currentStepId === 'images'}
+							onFocus={() => setCurrentStepId('images')}
+						>
+							<SubnavContainerHeading>Images</SubnavContainerHeading>
+							<SubnavImagesSection images={images} onChange={setImages} />
 						</CreateFormSection>
 
 						<CreateFormSection
