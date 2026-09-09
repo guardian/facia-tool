@@ -56,7 +56,7 @@
 	"dependencies": {
 		"@babel/runtime": "^7.0.0",
 		"@emotion/react": "^11.14.0",
-		"@guardian/stand": "0.0.50",
+		"@guardian/stand": "0.0.73",
 		"@types/lodash": "^4.14.117",
 		"@types/lodash.throttle": "^4.1.4",
 		"@types/mousetrap": "^1.6.1",
@@ -94,6 +94,7 @@
 		"raven": "^2.5.0",
 		"raven-js": "^3.24.1",
 		"react": "17",
+		"react-aria-components": "1.20.0",
 		"react-beautiful-dnd": "^11.0.5",
 		"react-dates": "^21.8.0",
 		"react-dom": "^16.13.0",
