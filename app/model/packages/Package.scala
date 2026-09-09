@@ -4,11 +4,10 @@ import org.postgresql.util.PGobject
 import play.api.libs.json.{JsValue, Json, OFormat}
 import scalikejdbc.WrappedResultSet
 
-/**
-  * A Package is a lot like a collection, in that it represents an ordered set of Cards.
-  * The difference to a Collection is that a Collection must belong to a Front; a Package is
-  * a top-level object that exists independently of any Front, Issue or Edition
-  *
+/** A Package is a lot like a collection, in that it represents an ordered set
+  * of Cards. The difference to a Collection is that a Collection must belong to
+  * a Front; a Package is a top-level object that exists independently of any
+  * Front, Issue or Edition
   */
 final case class Package(
     id: String,

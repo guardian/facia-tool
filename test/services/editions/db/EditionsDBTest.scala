@@ -2,7 +2,7 @@ package services.editions.db
 
 import java.time._
 import com.gu.pandomainauth.model.User
-import fixtures.{EditionsDBEvolutions, EditionsDBService, UsesDatabase}
+import fixtures.{FaciaDBEvolutions, FaciaDBService, UsesDatabase}
 import model.editions
 import model.editions.internal.PrefillUpdate
 import model.editions.{TimeWindowConfigInDays, _}
@@ -12,14 +12,14 @@ import scalikejdbc._
 import services.editions.GenerateEditionTemplateResult
 import services.editions.prefills.CapiQueryTimeWindow
 import org.scalatest.Assertions
-import services.editions.db.EditionsDB.NotFoundError
+import services.editions.db.FaciaDB.NotFoundError
 import editions.{EditionsRecipe, EditionsChef, EditionsFeastCollection}
 
 class EditionsDBTest
     extends FreeSpec
     with Matchers
-    with EditionsDBService
-    with EditionsDBEvolutions
+    with FaciaDBService
+    with FaciaDBEvolutions
     with OptionValues {
 
   private val now: OffsetDateTime =
@@ -1208,7 +1208,7 @@ class EditionsDBTest
           case Right(front) =>
             Assertions.fail()
           case Left(error) =>
-            error shouldBe an[EditionsDB.NotFoundError]
+            error shouldBe an[FaciaDB.NotFoundError]
         }
       }
 
@@ -1232,7 +1232,7 @@ class EditionsDBTest
           case Right(_) =>
             Assertions.fail()
           case Left(error) =>
-            error shouldBe an[EditionsDB.InvalidInput]
+            error shouldBe an[FaciaDB.InvalidInput]
         }
       }
     }

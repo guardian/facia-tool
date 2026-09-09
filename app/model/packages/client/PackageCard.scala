@@ -16,7 +16,8 @@ final case class ClientPackageCard(
 )
 
 object ClientPackageCard {
-  implicit val format: OFormat[ClientPackageCard] = Json.format[ClientPackageCard]
+  implicit val format: OFormat[ClientPackageCard] =
+    Json.format[ClientPackageCard]
 
   def fromPackageCard(domainCard: DomainPackageCard): ClientPackageCard =
     ClientPackageCard(

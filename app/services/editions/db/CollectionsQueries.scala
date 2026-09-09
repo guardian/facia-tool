@@ -116,7 +116,7 @@ trait CollectionsQueries extends Logging {
 
   def updateCollectionName(collection: EditionsCollection): EditionsCollection =
     DB localTx { implicit session =>
-      val lastUpdated = EditionsDB.truncateDateTime(OffsetDateTime.now())
+      val lastUpdated = FaciaDB.truncateDateTime(OffsetDateTime.now())
       sql"""
       UPDATE collections
       SET "name" = ${collection.displayName.trim()},
@@ -145,7 +145,7 @@ trait CollectionsQueries extends Logging {
       collection: EditionsCollection
   ): EditionsCollection =
     DB localTx { implicit session =>
-      val lastUpdated = EditionsDB.truncateDateTime(OffsetDateTime.now())
+      val lastUpdated = FaciaDB.truncateDateTime(OffsetDateTime.now())
       sql"""
       UPDATE collections
       SET "targeted_regions" = ${collection.targetedRegionsPG()},
@@ -185,7 +185,7 @@ trait CollectionsQueries extends Logging {
       currentCollectionIds.indexOf(collectionId) match {
         case -1 =>
           Left(
-            EditionsDB.NotFoundError(
+            FaciaDB.NotFoundError(
               s"Tried to move collection $collectionId to $newIndex, but could not find collection with that ID"
             )
           )
@@ -207,7 +207,7 @@ trait CollectionsQueries extends Logging {
   def updateCollection(collection: EditionsCollection): EditionsCollection =
     DB localTx { implicit session =>
       val lastUpdated =
-        collection.lastUpdated.map(EditionsDB.dateTimeFromMillis)
+        collection.lastUpdated.map(FaciaDB.dateTimeFromMillis)
       sql"""
       UPDATE collections
       SET is_hidden = ${collection.isHidden},
@@ -225,7 +225,7 @@ trait CollectionsQueries extends Logging {
       collection.items.zipWithIndex.foreach { case (card, index) =>
         val metadataJson = EditionsCard.getMetadataJson(card)
 
-        val addedOn = EditionsDB.dateTimeFromMillis(card.addedOn)
+        val addedOn = FaciaDB.dateTimeFromMillis(card.addedOn)
         sql"""
           INSERT INTO cards (
           collection_id,
@@ -292,7 +292,7 @@ trait CollectionsQueries extends Logging {
     }.toEither match {
       case Left(error) =>
         Left(
-          EditionsDB.WriteError(
+          FaciaDB.WriteError(
             s"Could not update collection indices: ${error.getMessage}"
           )
         )
@@ -411,7 +411,7 @@ trait CollectionsQueries extends Logging {
       _ <-
         if (collectionIndex > maxCollectionIndex) {
           Left(
-            EditionsDB.InvalidInput(
+            FaciaDB.InvalidInput(
               s"Cannot add a collection at index $collectionIndex (min: 0, max: $maxCollectionIndex"
             )
           )
@@ -437,7 +437,7 @@ trait CollectionsQueries extends Logging {
           , $name
           , FALSE
           , $now
-        , ${EditionsDB.getUserName(user)}
+        , ${FaciaDB.getUserName(user)}
           , ${user.email}
         )
         RETURNING id;
@@ -445,10 +445,10 @@ trait CollectionsQueries extends Logging {
           .single
           .apply()
           .toRight(
-            EditionsDB.WriteError("Could not write new collection to database")
+            FaciaDB.WriteError("Could not write new collection to database")
           )
       }.toEither.left.map { error =>
-        EditionsDB.WriteError(error.getMessage)
+        FaciaDB.WriteError(error.getMessage)
       }.flatten
     } yield id
   }
@@ -469,8 +469,8 @@ trait CollectionsQueries extends Logging {
       case Right(1) => Right(())
       case Right(_) =>
         Left(
-          EditionsDB.NotFoundError(s"Collection ${collectionId} was not found")
+          FaciaDB.NotFoundError(s"Collection ${collectionId} was not found")
         )
-      case Left(error) => Left(EditionsDB.WriteError(error.getMessage()))
+      case Left(error) => Left(FaciaDB.WriteError(error.getMessage()))
     }
 }
