@@ -408,14 +408,6 @@ const articleBodyDefault = React.memo(
 			headlineTestError,
 		);
 
-		/*
-		 * Initial rollout of Editorial AB testing will be limited to the US front only.
-		 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
-		 */
-		const isUSNetworkFront = frontId === 'us';
-
-		const shouldShowAbTestStatus = !!abTestStatus && isUSNetworkFront;
-
 		return (
 			<>
 				{showMeta && (
@@ -542,7 +534,7 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
-					{shouldShowAbTestStatus && (
+					{!!abTestStatus && (
 						<ABTestStatus abTestTheme={abTestStatus.theme}>
 							{abTestStatus.theme === 'error' ? (
 								<ExclamationIcon fill={abTestStatus.palette.icon} size={'s'} />
