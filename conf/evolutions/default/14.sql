@@ -32,7 +32,7 @@ CREATE TABLE package_cards (
 
     added_on       TIMESTAMPTZ NOT NULL,
     added_by       TEXT        NOT NULL,
-    added_email    TEXT        NOT NULL,
+    added_email    TEXT        NOT NULL
 );
 
 CREATE INDEX idxPackageCards ON package_cards (package_id);
