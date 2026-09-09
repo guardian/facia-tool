@@ -80,7 +80,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val acl = new Acl(permissions)
 
   // Editions services
-  val editionsDb = new FaciaDB(
+  val faciaDb = new FaciaDB(
     config.postgres.url,
     config.postgres.user,
     config.postgres.password
@@ -104,9 +104,9 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     publishingBucket,
     previewBucket,
     feastPublicationTarget,
-    editionsDb
+	  faciaDb
   )
-  PublishEventsListener.apply(config, editionsDb).start
+  PublishEventsListener.apply(config, faciaDb).start
 
   // Controllers
   val frontsApi = new FrontsApi(config)
@@ -143,12 +143,19 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
 
 //  Controllers
   val editions = new EditionsController(
-    editionsDb,
+    faciaDb,
     templating,
     editionsPublishing,
     capi,
     this
   )
+  val packages = new PackageController(
+	faciaDb,
+	  editionsPublishing,
+	  capi,
+	  this
+  )
+
   val collection =
     new CollectionController(acl, structuredLogger, updateManager, press, this)
   val defaults = new DefaultsController(acl, isDev, this)
@@ -178,7 +185,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val vanityRedirects = new VanityRedirects(acl, this)
   val views = new ViewsController(acl, assetsManager, isDev, this)
   val pressController = new PressController(dynamo, this)
-  val v2App = new V2App(isDev, acl, dynamo, editionsDb, this)
+  val v2App = new V2App(isDev, acl, dynamo, faciaDb, this)
   val faciaToolV2 = new FaciaToolV2Controller(
     acl,
     structuredLogger,
@@ -225,6 +232,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     v2App,
     gridProxy,
     editions,
+	packages,
     customSubnav
   )
 

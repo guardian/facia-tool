@@ -4,31 +4,36 @@ import scalikejdbc._
 import logging.Logging
 import model.forms.GetPackagesFilter
 import model.packages._
+import model.packages.client.CreatePackageRequest
 import play.api.libs.json._
 
 import java.time.OffsetDateTime
+import java.time.temporal.ChronoUnit
 import java.util.UUID
 
 trait PackageQueries extends Logging {
 
   /** Gets a list of package objects matching the given filters
-    * @param filters
-    *   filters to match
+    * @param packageIds
+    *   an optional list of package IDs to return
+    * @param lastModified
+    *   an optional timestamp for last modified
+    * @param strictTimestamp
+    *   if true, then only select packages from the given day. If false, then
+    *   select anything that has been modified on or before that timestamp
     * @return
     *   a list of matching packages
     */
-  def getPackages(filters: List[GetPackagesFilter]): Seq[Package] =
+  def getPackages(
+      packageIds: Option[Seq[UUID]],
+      lastModified: Option[OffsetDateTime],
+      strictTimestamp: Boolean
+  ): Seq[Package] =
     DB readOnly { implicit session =>
       {
-        val idList =
-          filters.map(_.id).collect({ case Some(id) => id }).map(_.toString)
+        val idList = packageIds.getOrElse(Seq.empty).map(_.toString)
 
-        val timestampF = filters
-          .filter(_.lastModified.isDefined)
-          .sortBy(_.lastModified.get)
-          .headOption
-
-        if (idList.isEmpty && timestampF.isEmpty) {
+        if (idList.isEmpty && lastModified.isEmpty) {
           // No filters present
           Seq.empty
         } else {
@@ -37,7 +42,16 @@ trait PackageQueries extends Logging {
           if (idList.nonEmpty) {
             whereSql += sqls"""id IN (${idList.mkString(",")})"""
           }
-          // TODO - date filtering
+          if (lastModified.nonEmpty) {
+            if (strictTimestamp) {
+              val startOfDay = lastModified.get.truncatedTo(ChronoUnit.DAYS)
+              val endOfDay = startOfDay.plusDays(1L)
+
+              whereSql += sqls"updated_on >= ${startOfDay.toInstant.toEpochMilli} AND updated_on < ${endOfDay.toInstant.toEpochMilli}"
+            } else {
+              whereSql += sqls"updated_on < ${lastModified.get.toInstant.toEpochMilli}"
+            }
+          }
 
           fetchPackageMetaSql(
             where = whereSql,
@@ -124,6 +138,44 @@ trait PackageQueries extends Logging {
    		WHERE id=${packageMeta.id}
      """.update.apply()
     }
+
+  def createPackage(metadata: CreatePackageRequest) = DB localTx {
+    implicit session =>
+      sql"""INSERT INTO packages (
+        id,
+        name,
+        is_hidden,
+        web_metadata,
+        feast_metadata,
+        prefill,
+        created_on,
+        created_by,
+        created_email,
+        updated_on,
+        updated_by,
+        updated_email
+	) VALUES (
+ 	   ${metadata.id},
+     ${metadata.name},
+     ${metadata.isHidden},
+     ${metadata.webMetadata},
+     ${metadata.feastMetadata},
+     ${metadata.prefill},
+     ${metadata.createdOn},
+     ${metadata.createdBy},
+     ${metadata.createdEmail},
+     ${metadata.createdOn},
+     ${metadata.createdBy},
+     ${metadata.createdEmail}
+	)
+     """.execute.apply()
+  }
+
+  def updateHidden(packageId: UUID, newValue: Boolean) = DB localTx {
+    implicit session =>
+      sql"""UPDATE packages SET is_hidden=$newValue WHERE id=${packageId.toString}""".update
+        .apply()
+  }
 
   private def fetchPackageMetaSql(
       where: SQLSyntax,
