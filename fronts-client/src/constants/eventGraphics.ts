@@ -1,17 +1,11 @@
 /**
- * Event graphics are live, self-updating graphics -- for example an election
- * results tracker or an olympics medal table -- which editors can place onto a
- * front.
+ * Event graphics are live, self-updating graphics (e.g. an election tracker)
+ * which editors can place onto a front. They aren't CAPI content: the id
+ * prefix is the only thing identifying them, both to the rendering layer (see
+ * `Trail.eventGraphicPrefix` in facia-scala-client) and to us, since `cardType`
+ * isn't persisted. So it must never be stripped from the id we save.
  *
- * They are not content-api content. A card pointing at one is identified purely
- * by its id, which must start with `EVENT_GRAPHIC_ID_PREFIX`. This mirrors
- * `Trail.eventGraphicPrefix` in facia-scala-client, which is what the rendering
- * layer keys off. Because the prefix is the only marker that survives a round
- * trip to S3 (the card's `cardType` is not part of the stored trail), it must
- * not be stripped from the id we persist.
- *
- * The list below is deliberately hard-coded: there is no service to search
- * against yet, and we currently only need to support the US midterms.
+ * The list is hard-coded because there's no service to search against yet.
  */
 
 export const EVENT_GRAPHIC_ID_PREFIX = 'event-graphic/';
@@ -19,7 +13,6 @@ export const EVENT_GRAPHIC_ID_PREFIX = 'event-graphic/';
 export interface EventGraphic {
 	/** The full id, including the `event-graphic/` prefix. */
 	id: string;
-	/** Displayed in the feed and on the card. */
 	title: string;
 	description?: string;
 }
@@ -38,10 +31,6 @@ export const isEventGraphicId = (id: string): boolean =>
 export const getEventGraphicById = (id: string): EventGraphic | undefined =>
 	eventGraphics.find((eventGraphic) => eventGraphic.id === id);
 
-/**
- * The title to show for a given event graphic id. Falls back to the id itself,
- * so that a card which was added before an entry was removed from the list
- * above still renders something meaningful.
- */
+/** Falls back to the id, so cards for removed entries still render. */
 export const getEventGraphicTitle = (id: string): string =>
 	getEventGraphicById(id)?.title ?? id;

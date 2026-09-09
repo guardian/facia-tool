@@ -7,8 +7,7 @@ const stateWithEventGraphic = {
 	cards: {
 		...stateWithSnaplinksAndArticles.cards,
 		'2f0b1e1c-2f52-4a4a-9a6f-8a1b8b4a6b3d': {
-			// No cardType: this is what a card looks like when it has been read
-			// back from a saved collection, because cardType isn't persisted.
+			// No cardType: cards read back from a saved collection don't have one.
 			id: 'event-graphic/election-tracker/us-midterm-2026',
 			frontPublicationDate: 4,
 			publishedBy: 'Computers',

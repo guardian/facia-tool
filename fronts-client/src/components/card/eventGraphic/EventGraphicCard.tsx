@@ -42,8 +42,7 @@ export const EventGraphicCard = ({
 	onDelete,
 	onAddToClipboard,
 	showMeta = true,
-	// These are part of the common card interface but aren't needed here, so
-	// they're kept out of the props spread onto the container.
+	// Part of the common card interface, but unused here: kept out of the spread.
 	collectionId,
 	frontId,
 	isUneditable,

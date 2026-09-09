@@ -386,8 +386,7 @@ class Card extends React.Component<CardContainerProps> {
 			}
 		};
 
-		// Neither recipes nor event graphics have editable fields, so there is no
-		// form to open when they are selected.
+		// Recipes and event graphics have no editable fields, so no form to open.
 		const supportsForm =
 			type !== CardTypesMap.RECIPE && type !== CardTypesMap.EVENT_GRAPHIC;
 		const shouldDisplayForm = isSelected && supportsForm;

@@ -37,7 +37,7 @@ export const EventGraphicFeedItem = ({ eventGraphic }: Props) => {
 				CardTypesMap.EVENT_GRAPHIC,
 				eventGraphic,
 			)}
-			// An event graphic has no page of its own to view.
+			// No page of its own to view.
 			showViewButton={false}
 			metaContent={
 				<>

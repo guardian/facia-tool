@@ -31,8 +31,7 @@ const NoResults = styled.div`
 
 /**
  * Event graphics come from a hard-coded list rather than a search service, so
- * this container filters that list in memory -- there is no redux state and no
- * request to make.
+ * filtering happens in memory: no redux state, no request.
  */
 export const EventGraphicsSearchContainer = () => {
 	const [searchText, setSearchText] = useState('');

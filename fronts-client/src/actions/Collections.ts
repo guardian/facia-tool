@@ -319,7 +319,7 @@ function updateCollection(
 const fetchArticles =
 	(articleIds: string[]): ThunkResult<Promise<void>> =>
 	async (dispatch, getState) => {
-		// Neither snaps nor event graphics exist in CAPI, so asking for them would
+		// Neither snaps nor event graphics exist in CAPI, so requesting them would
 		// only produce spurious "not returned by CAPI" errors.
 		const idsToFetch = articleIds.filter(
 			(id) => !id.match(/^snap/) && !isEventGraphicId(id),

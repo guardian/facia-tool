@@ -325,10 +325,8 @@ const getRecipeEntityFromFeedDrop = (recipe: Recipe): TArticleEntities => {
 };
 
 /**
- * Event graphics aren't CAPI content and aren't snaps: the card is built
- * entirely from the hard-coded entry, and its id -- including the
- * `event-graphic/` prefix, which is what identifies it downstream -- is stored
- * as-is.
+ * Event graphics aren't CAPI content and aren't snaps, so the card is built
+ * from the hard-coded entry, keeping the id (prefix included) as-is.
  */
 const getEventGraphicEntityFromFeedDrop = (
 	eventGraphic: EventGraphic,

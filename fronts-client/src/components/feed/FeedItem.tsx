@@ -132,10 +132,7 @@ interface FeedItemProps {
 	shouldObscureFeed?: boolean;
 	byline?: string;
 	showPinboard?: boolean;
-	/**
-	 * Some feed items -- event graphics, for example -- don't correspond to a
-	 * page on the site, so there is nothing to link to.
-	 */
+	/** Some feed items, such as event graphics, have no page to link to. */
 	showViewButton?: boolean;
 	intendedAudience?: {
 		source: IntendedAudienceSignifierProps['source'];

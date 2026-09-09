@@ -15,9 +15,8 @@ const createSelectCardType = () =>
 			return card.cardType;
 		}
 
-		// `cardType` is not persisted -- it isn't a field on the trail we send to
-		// the backend -- so for cards restored from a saved collection the type
-		// must be derived from the id.
+		// `cardType` isn't persisted, so cards restored from a saved collection
+		// have to be typed from their id. See constants/eventGraphics.
 		if (isEventGraphicId(card.id)) {
 			return CardTypesMap.EVENT_GRAPHIC;
 		}

@@ -137,8 +137,7 @@ describe('card utils', () => {
 			);
 
 			expect(card).toBeDefined();
-			// The prefixed id is the only marker that survives a round trip to S3,
-			// so it must be persisted verbatim.
+			// The prefixed id is the only marker that's persisted.
 			expect(card?.id).toBe(eventGraphic.id);
 			expect(card?.cardType).toBe(CardTypesMap.EVENT_GRAPHIC);
 			expect(card?.uuid).toBeDefined();

@@ -55,9 +55,9 @@ export const denyDragEvent =
 
 /**
  * The type advertised when a card already on a front or the clipboard is
- * dragged. `cardType` is not persisted, so for cards restored from a saved
- * collection the type has to be derived from the id -- otherwise a saved event
- * graphic would look like an article and could be dropped as a sublink.
+ * dragged. `cardType` isn't persisted, so saved event graphics have to be typed
+ * from their id -- otherwise they'd look like articles and could be dropped as
+ * sublinks.
  */
 export const getCardDropType = (card: Card): CardTypes =>
 	card.cardType ??

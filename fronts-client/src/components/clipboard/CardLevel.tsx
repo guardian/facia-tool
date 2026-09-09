@@ -12,10 +12,7 @@ import { theme, styled } from 'constants/theme';
 import { CardTypeLevel } from 'lib/dnd/CardTypeLevel';
 import { CardTypes, CardTypesMap } from 'constants/cardTypes';
 
-/**
- * Event graphics are placed as cards in their own right; they are never
- * sublinks of another card.
- */
+/** Event graphics are placed as cards in their own right, never as sublinks. */
 const sublinkCardTypeDenyList: CardTypes[] = [CardTypesMap.EVENT_GRAPHIC];
 
 interface OuterProps {

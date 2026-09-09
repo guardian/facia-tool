@@ -72,8 +72,8 @@ const FeedSourceSelect = styled.select`
 `;
 
 /**
- * The feed for regular (non-feast) fronts, which can show either CAPI content
- * or the list of available event graphics.
+ * The feed for regular (non-feast) fronts: either CAPI content or the list of
+ * available event graphics.
  */
 const FrontsFeed = () => {
 	const [source, setSource] = useState(FeedSource.articles);
