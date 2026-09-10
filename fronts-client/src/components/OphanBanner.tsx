@@ -36,6 +36,7 @@ const OphanBannerLink = styled.a`
 `;
 
 interface OphanBannerProps {
+	isClipboard: boolean;
 	isTestLive: boolean;
 }
 
@@ -47,9 +48,11 @@ const OphanBanner = ({ ...props }: OphanBannerProps) => {
 			</FixedSizeIcon>
 			<OphanBannerText>
 				<OphanBannerTitle>
-					{props.isTestLive
-						? 'Headline test in progress: '
-						: 'Test ready to launch: '}
+					{props.isClipboard
+						? 'Test staged: '
+						: props.isTestLive
+							? 'Headline test in progress: '
+							: 'Test ready to launch: '}
 				</OphanBannerTitle>
 				view results {!props.isTestLive && 'from other cards with this test'} in{' '}
 				<OphanBannerLink

@@ -19,6 +19,7 @@ interface HeadlineInputProps {
 	editableFields: string[];
 	snapType: string | undefined;
 	onAbTestToggle?: EventWithDataHandler<React.ChangeEvent<any>>;
+	isClipboard: boolean;
 }
 
 const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
@@ -131,7 +132,10 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 				/>
 			)}
 			{abTestFeatureEnabled && props.abTestEnabled && props.hasActiveABTest && (
-				<OphanBanner isTestLive={props.hasActiveABTestOnLiveCard} />
+				<OphanBanner
+					isClipboard={props.isClipboard}
+					isTestLive={props.hasActiveABTestOnLiveCard}
+				/>
 			)}
 		</HeadlineInputContainer>
 	);
