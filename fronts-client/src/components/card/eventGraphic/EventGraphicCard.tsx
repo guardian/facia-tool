@@ -3,7 +3,10 @@ import { useSelector } from 'react-redux';
 import { Card, CardSizes } from 'types/Collection';
 import { State } from 'types/State';
 import { selectCard } from 'selectors/shared';
-import { getEventGraphicTitle } from 'constants/eventGraphics';
+import {
+	eventGraphicKind,
+	getEventGraphicTitle,
+} from 'constants/eventGraphics';
 import CardContainer from '../CardContainer';
 import CardBody from '../CardBody';
 import CardContent from '../CardContent';
@@ -55,7 +58,7 @@ export const EventGraphicCard = ({
 			<CardBody data-testid="event-graphic" size={size} fade={fade}>
 				{showMeta && (
 					<CardMetaContainer size={size}>
-						<CardMetaHeading>Event graphic</CardMetaHeading>
+						<CardMetaHeading>{eventGraphicKind(card.id)}</CardMetaHeading>
 					</CardMetaContainer>
 				)}
 				<CardContent textSize={textSize}>

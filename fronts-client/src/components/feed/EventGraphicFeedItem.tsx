@@ -5,7 +5,7 @@ import { EventGraphic } from 'constants/eventGraphics';
 import { handleDragStartForCard } from 'util/dragAndDrop';
 import { insertCardWithCreate } from 'actions/Cards';
 import { FeedItem } from './FeedItem';
-import { ContentInfo, ContentExtra } from './ContentInfo';
+import { ContentInfo } from './ContentInfo';
 
 interface Props {
 	eventGraphic: EventGraphic;
@@ -41,10 +41,7 @@ export const EventGraphicFeedItem = ({ eventGraphic }: Props) => {
 			showViewButton={false}
 			metaContent={
 				<>
-					<ContentInfo>Event graphic</ContentInfo>
-					{eventGraphic.description && (
-						<ContentExtra>{eventGraphic.description}</ContentExtra>
-					)}
+					<ContentInfo>{eventGraphic.kind}</ContentInfo>
 				</>
 			}
 		/>

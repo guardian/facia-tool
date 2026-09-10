@@ -52,9 +52,9 @@ describe('EventGraphicCard', () => {
 		expect(getByTestId('headline').textContent).toBe(eventGraphic.title);
 	});
 
-	it('should label the card as an event graphic', () => {
+	it('should label the card as an Election Tracker', () => {
 		const { getByText } = renderCard(cardFixture);
-		expect(getByText('Event graphic')).toBeTruthy();
+		expect(getByText('Election Tracker')).toBeTruthy();
 	});
 
 	it('should fall back to the id when the event graphic is unknown', () => {

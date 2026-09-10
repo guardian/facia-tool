@@ -41,10 +41,8 @@ export const EventGraphicsSearchContainer = () => {
 		if (!query) {
 			return eventGraphics;
 		}
-		return eventGraphics.filter(({ title, description, id }) =>
-			[title, description, id].some((field) =>
-				field?.toLowerCase().includes(query),
-			),
+		return eventGraphics.filter(({ title, kind, id }) =>
+			[title, kind, id].some((field) => field?.toLowerCase().includes(query)),
 		);
 	}, [searchText]);
 
