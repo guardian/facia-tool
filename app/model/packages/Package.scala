@@ -4,6 +4,8 @@ import org.postgresql.util.PGobject
 import play.api.libs.json.{JsValue, Json, OFormat}
 import scalikejdbc.WrappedResultSet
 
+import java.time.OffsetDateTime
+
 /** A Package is a lot like a collection, in that it represents an ordered set
   * of Cards. The difference to a Collection is that a Collection must belong to
   * a Front; a Package is a top-level object that exists independently of any
@@ -16,10 +18,10 @@ final case class Package(
     webMetadata: Option[JsValue],
     feastMetadata: Option[JsValue],
     prefill: Option[String],
-    createdOn: Option[Long],
+    createdOn: Option[OffsetDateTime],
     createdBy: Option[String],
     createdEmail: Option[String],
-    updatedOn: Option[Long],
+    updatedOn: Option[OffsetDateTime],
     updatedBy: Option[String],
     updatedEmail: Option[String]
 ) {
@@ -46,14 +48,10 @@ object Package {
       webMetadata = rs.stringOpt("web_metadata").map(Json.parse),
       feastMetadata = rs.stringOpt("feast_metadata").map(Json.parse),
       prefill = rs.stringOpt("prefill"),
-      createdOn = rs
-        .zonedDateTimeOpt("created_on")
-        .map(_.toInstant.toEpochMilli),
+      createdOn = rs.zonedDateTimeOpt("created_on").map(_.toOffsetDateTime),
       createdBy = rs.stringOpt("created_by"),
       createdEmail = rs.stringOpt("created_email"),
-      updatedOn = rs
-        .zonedDateTimeOpt("updated_on")
-        .map(_.toInstant.toEpochMilli),
+      updatedOn = rs.zonedDateTimeOpt("updated_on").map(_.toOffsetDateTime),
       updatedBy = rs.stringOpt("updated_by"),
       updatedEmail = rs.stringOpt("updated_email")
     )

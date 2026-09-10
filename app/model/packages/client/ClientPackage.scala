@@ -2,6 +2,7 @@ package model.packages.client
 
 import model.packages.{Package => DomainPackage}
 import play.api.libs.json.{JsValue, Json, OFormat}
+import services.editions.db.FaciaDB
 
 final case class ClientPackage(
     id: String,
@@ -22,7 +23,10 @@ final case class ClientPackage(
 object ClientPackage {
   implicit val format: OFormat[ClientPackage] = Json.format[ClientPackage]
 
-  def fromPackage(domainPackage: DomainPackage, cards: List[ClientPackageCard] = List.empty): ClientPackage =
+  def fromPackage(
+      domainPackage: DomainPackage,
+      cards: List[ClientPackageCard] = List.empty
+  ): ClientPackage =
     ClientPackage(
       id = domainPackage.id,
       name = domainPackage.name,
@@ -30,10 +34,10 @@ object ClientPackage {
       webMetadata = domainPackage.webMetadata,
       feastMetadata = domainPackage.feastMetadata,
       prefill = domainPackage.prefill,
-      createdOn = domainPackage.createdOn,
+      createdOn = domainPackage.createdOn.map(_.toInstant.toEpochMilli),
       createdBy = domainPackage.createdBy,
       createdEmail = domainPackage.createdEmail,
-      updatedOn = domainPackage.updatedOn,
+      updatedOn = domainPackage.updatedOn.map(_.toInstant.toEpochMilli),
       updatedBy = domainPackage.updatedBy,
       updatedEmail = domainPackage.updatedEmail,
       items = cards
@@ -47,10 +51,10 @@ object ClientPackage {
       webMetadata = clientPackage.webMetadata,
       feastMetadata = clientPackage.feastMetadata,
       prefill = clientPackage.prefill,
-      createdOn = clientPackage.createdOn,
+      createdOn = clientPackage.createdOn.map(FaciaDB.dateTimeFromMillis),
       createdBy = clientPackage.createdBy,
       createdEmail = clientPackage.createdEmail,
-      updatedOn = clientPackage.updatedOn,
+      updatedOn = clientPackage.updatedOn.map(FaciaDB.dateTimeFromMillis),
       updatedBy = clientPackage.updatedBy,
       updatedEmail = clientPackage.updatedEmail
     )

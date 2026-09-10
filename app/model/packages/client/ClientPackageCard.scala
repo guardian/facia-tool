@@ -18,7 +18,7 @@ object ClientPackageCard {
     ClientPackageCard(
       id = domainCard.pageCode,
       cardType = Some(domainCard.cardType),
-      addedOn = domainCard.addedOn,
+      addedOn = domainCard.addedOn.toInstant.toEpochMilli,
       metadata = domainCard.metadata
     )
 }

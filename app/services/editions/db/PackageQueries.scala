@@ -33,27 +33,24 @@ trait PackageQueries extends Logging {
       {
         val idList = packageIds.getOrElse(Seq.empty).map(_.toString)
 
-        val whereSql = if (idList.isEmpty && lastModified.isEmpty) {
-          // No filters present
-          sqls""
-        } else {
-          var whereSql = sqls"""WHERE """
+        val maybeIdCondition =
+          if (idList.nonEmpty) Some(sqls.in(sqls"id", idList)) else None
 
-          if (idList.nonEmpty) {
-            whereSql += sqls"""id IN (${idList.mkString(",")})"""
+        val maybeDateCondition = lastModified.map { modifiedSince =>
+          if (strictTimestamp) {
+            val startOfDay = modifiedSince.truncatedTo(ChronoUnit.DAYS)
+            val endOfDay = startOfDay.plusDays(1L)
+            sqls"updated_on >= ${startOfDay.toInstant} AND updated_on < ${endOfDay.toInstant}"
+          } else {
+            sqls"updated_on < ${modifiedSince.toInstant}"
           }
-          if (lastModified.nonEmpty) {
-            if (strictTimestamp) {
-              val startOfDay = lastModified.get.truncatedTo(ChronoUnit.DAYS)
-              val endOfDay = startOfDay.plusDays(1L)
-
-              whereSql += sqls"updated_on >= ${startOfDay.toInstant.toEpochMilli} AND updated_on < ${endOfDay.toInstant.toEpochMilli}"
-            } else {
-              whereSql += sqls"updated_on < ${lastModified.get.toInstant.toEpochMilli}"
-            }
-          }
-          whereSql
         }
+
+        val whereSql =
+          sqls.toAndConditionOpt(maybeIdCondition, maybeDateCondition) match {
+            case Some(condition) => sqls"WHERE $condition"
+            case None            => sqls""
+          }
 
         fetchPackageMetaSql(
           where = whereSql,
@@ -80,7 +77,7 @@ trait PackageQueries extends Logging {
              updated_email=${p.updatedEmail}
 		  WHERE id=${p.id}""".execute.apply()
     val updatedPackages =
-      fetchPackageMetaSql(where = sqls"id = ${p.id}").apply()
+      fetchPackageMetaSql(where = sqls"WHERE id = ${p.id}").apply()
 
     assert(
       updatedPackages.size == 1,
@@ -114,26 +111,26 @@ trait PackageQueries extends Logging {
       // 4. Update modified cards in place
       toUpdate.foreach { card =>
         sql"""UPDATE package_cards
-	  SET state = ${card.state}, page_code = ${card.pageCode}, index = ${card.index}, metadata = ${card.metadata}
+	  SET state = ${card.state}, page_code = ${card.pageCode}, index = ${card.index}, metadata = ${card.metadataPG}
 	  WHERE id = ${card.id}""".update.apply()
       }
 
       // 5. Insert new cards
       toAdd.foreach { card =>
-        sql"""INSERT INTO package_cards (package_id, state, page_code, index, metadata, added_on, added_by, added_email)
-	  VALUES (${packageMeta.id}, ${card.state}, ${card.pageCode}, ${card.index}, ${card.metadata}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
+        sql"""INSERT INTO package_cards (id, package_id, card_type, state, page_code, index, metadata, added_on, added_by, added_email)
+	  VALUES (${card.id}, ${packageMeta.id}, ${card.cardType.toString}, ${card.state}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
           .apply()
       }
 
       // 6. Update package metadata
-      sql"""UPDATE package
+      sql"""UPDATE packages
         SET
    			name=${packageMeta.name},
    			is_hidden=${packageMeta.isHidden},
    			web_metadata=${packageMeta.webMetadataPG},
    			feast_metadata=${packageMeta.feastMetadataPG},
    			prefill=${packageMeta.prefill},
-   			updated_on=${packageMeta.updatedOn},
+      updated_on=${packageMeta.updatedOn},
    			updated_by=${packageMeta.updatedBy},
    			updated_email=${packageMeta.updatedEmail}
    		WHERE id=${packageMeta.id}
@@ -212,10 +209,10 @@ trait PackageQueries extends Logging {
           webMetadata = webMeta,
           feastMetadata = feastMeta,
           prefill = rs.stringOpt("prefill"),
-          createdOn = rs.timestampOpt("created_on").map(_.getTime),
+          createdOn = rs.offsetDateTimeOpt("created_on"),
           createdBy = rs.stringOpt("created_by"),
           createdEmail = rs.stringOpt("created_email"),
-          updatedOn = rs.timestampOpt("updated_on").map(_.getTime),
+          updatedOn = rs.offsetDateTimeOpt("updated_on"),
           updatedBy = rs.stringOpt("updated_by"),
           updatedEmail = rs.stringOpt("updated_email")
         )
@@ -223,7 +220,7 @@ trait PackageQueries extends Logging {
       .list
   }
 
-   private def fetchPackageContentSql(
+  private def fetchPackageContentSql(
        where: SQLSyntax,
        orderBy: SQLSyntax = sqls""
    ): SQLToList[PackageCardRow, HasExtractor] = {
@@ -261,7 +258,7 @@ trait PackageQueries extends Logging {
            pageCode = rs.string("page_code"),
            index = rs.int("index"),
            metadata = metadata,
-           addedOn = rs.timestamp("added_on").getTime,
+            addedOn = rs.offsetDateTime("added_on"),
            addedBy = rs.string("added_by"),
            addedEmail = rs.string("added_email")
          )

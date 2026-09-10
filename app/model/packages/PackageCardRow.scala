@@ -4,6 +4,8 @@ import org.postgresql.util.PGobject
 import play.api.libs.json.{JsValue, Json, OFormat}
 import scalikejdbc.WrappedResultSet
 
+import java.time.OffsetDateTime
+
 final case class PackageCardRow(
     id: String,
     packageId: String,
@@ -12,7 +14,7 @@ final case class PackageCardRow(
     pageCode: String, // CAPI internalPageCode of an article. Either the recipe ID, the chef ID or the subcollection ID if this is a Feast card.
     index: Int,
     metadata: Option[JsValue],
-    addedOn: Long,
+    addedOn: OffsetDateTime,
     addedBy: String,
     addedEmail: String
 ) {
@@ -44,7 +46,7 @@ object PackageCardRow {
       pageCode = rs.string("page_code"),
       index = rs.int("index"),
       metadata = rs.stringOpt("metadata").map(Json.parse),
-      addedOn = rs.zonedDateTime("added_on").toInstant.toEpochMilli,
+      addedOn = rs.zonedDateTime("added_on").toOffsetDateTime,
       addedBy = rs.string("added_by"),
       addedEmail = rs.string("added_email")
     )
