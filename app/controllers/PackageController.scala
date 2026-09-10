@@ -69,6 +69,16 @@ class PackageController(
 
     result match {
       case Success(_) => Created
+      case Failure(JsResultException(errs)) =>
+        logger.error(
+          s"Could not create package due to JSON parsing errors: ${errs.mkString(", ")}"
+        )
+        BadRequest(
+          Json.obj(
+            "status" -> JsString("bad_request"),
+            "detail" -> JsArray(errs.map(e => JsString(e.toString)))
+          )
+        )
       case Failure(err) =>
         logger.error(s"Could not create package: ${err.getMessage}", err)
         InternalServerError(

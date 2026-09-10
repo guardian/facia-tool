@@ -104,7 +104,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     publishingBucket,
     previewBucket,
     feastPublicationTarget,
-	  faciaDb
+    faciaDb
   )
   PublishEventsListener.apply(config, faciaDb).start
 
@@ -150,10 +150,10 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     this
   )
   val packages = new PackageController(
-	faciaDb,
-	  editionsPublishing,
-	  capi,
-	  this
+    faciaDb,
+    editionsPublishing,
+    capi,
+    this
   )
 
   val collection =
@@ -232,7 +232,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     v2App,
     gridProxy,
     editions,
-	packages,
+    packages,
     customSubnav
   )
 

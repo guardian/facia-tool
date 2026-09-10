@@ -7,7 +7,7 @@ import model.packages._
 import model.packages.client.CreatePackageRequest
 import play.api.libs.json._
 
-import java.time.OffsetDateTime
+import java.time.{OffsetDateTime, Instant}
 import java.time.temporal.ChronoUnit
 import java.util.UUID
 
@@ -33,9 +33,9 @@ trait PackageQueries extends Logging {
       {
         val idList = packageIds.getOrElse(Seq.empty).map(_.toString)
 
-        if (idList.isEmpty && lastModified.isEmpty) {
+        val whereSql = if (idList.isEmpty && lastModified.isEmpty) {
           // No filters present
-          Seq.empty
+          sqls""
         } else {
           var whereSql = sqls"""WHERE """
 
@@ -52,12 +52,13 @@ trait PackageQueries extends Logging {
               whereSql += sqls"updated_on < ${lastModified.get.toInstant.toEpochMilli}"
             }
           }
-
-          fetchPackageMetaSql(
-            where = whereSql,
-            orderBy = sqls"""ORDER BY created_on DESC"""
-          ).apply()
+          whereSql
         }
+
+        fetchPackageMetaSql(
+          where = whereSql,
+          orderBy = sqls"""ORDER BY created_on DESC LIMIT 200"""
+        ).apply()
       }
     }
 
@@ -158,13 +159,13 @@ trait PackageQueries extends Logging {
  	   ${metadata.id},
      ${metadata.name},
      ${metadata.isHidden},
-     ${metadata.webMetadata},
-     ${metadata.feastMetadata},
+     ${metadata.webMetadataPG},
+     ${metadata.feastMetadataPG},
      ${metadata.prefill},
-     ${metadata.createdOn},
+     ${Instant.ofEpochMilli(metadata.createdOn)},
      ${metadata.createdBy},
      ${metadata.createdEmail},
-     ${metadata.createdOn},
+     ${Instant.ofEpochMilli(metadata.createdOn)},
      ${metadata.createdBy},
      ${metadata.createdEmail}
 	)
