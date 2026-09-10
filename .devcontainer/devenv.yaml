@@ -23,6 +23,7 @@ modules:
 forwardPorts:
   - 9000  # main app, frontend and backend
   - 9876  # karma tests for breaking news tool
+  - 5173
 #   - "8000:9000"  # hostPort:containerPort
 
 # Optional: Mount directories from host to container
