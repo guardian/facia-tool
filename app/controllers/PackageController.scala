@@ -28,7 +28,7 @@ class PackageController(
 
   private def dateFormatter = DateTimeFormatter.BASIC_ISO_DATE
 
-  def getPackages = EditEditionsAuthAction { req =>
+  def listPackages = EditEditionsAuthAction { req =>
     val idList = req
       .getQueryString("id")
       .map(_.split(",").toSeq)
@@ -81,6 +81,42 @@ class PackageController(
         )
       case Failure(err) =>
         logger.error(s"Could not create package: ${err.getMessage}", err)
+        InternalServerError(
+          Json.obj(
+            "status" -> JsString("error"),
+            "detail" -> JsString(
+              err.getMessage
+            ) // TODO - tighten this up when we are done testing
+          )
+        )
+    }
+  }
+
+  def getPackage(id: java.util.UUID) = EditEditionsAuthAction { req =>
+    try {
+      val pkg =
+        db.getPackages(Some(Seq(id)), None, strictTimestamp = false).headOption
+      pkg match {
+        case Some(p) =>
+          Ok(
+            Json.obj(
+              "status" -> JsString("ok"),
+              "metadata" -> ClientPackage.format.writes(
+                ClientPackage.fromPackage(p)
+              )
+            )
+          )
+        case None =>
+          NotFound(
+            Json.obj(
+              "status" -> JsString("error"),
+              "detail" -> JsString(s"Package with id $id not found")
+            )
+          )
+      }
+    } catch {
+      case err: Throwable =>
+        logger.error(s"Could not get package: ${err.getMessage}", err)
         InternalServerError(
           Json.obj(
             "status" -> JsString("error"),

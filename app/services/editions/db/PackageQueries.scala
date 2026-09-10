@@ -62,7 +62,7 @@ trait PackageQueries extends Logging {
       }
     }
 
-  def getPackageCards(packageId: UUID): Seq[PackageCard] = DB readOnly {
+  def getPackageCards(packageId: UUID): Seq[PackageCardRow] = DB readOnly {
     implicit session =>
       fetchPackageContentSql(
         where = sqls"""WHERE package_id=${packageId.toString}""",
@@ -89,13 +89,13 @@ trait PackageQueries extends Logging {
     updatedPackages.head
   }
 
-  def updatePackage(packageMeta: Package, packageContent: Seq[PackageCard]) =
+  def updatePackage(packageMeta: Package, packageContent: Seq[PackageCardRow]) =
     DB localTx { implicit session =>
       // FOR UPDATE locks the selected rows for the duration of this transaction, allowing us to safely update without a race condition
       val existingContent = fetchPackageContentSql(where =
         sqls"WHERE package_id=${packageMeta.id} FOR UPDATE"
       ).apply()
-      val existingMap: Map[String, PackageCard] =
+      val existingMap: Map[String, PackageCardRow] =
         existingContent.map(c => c.id -> c).toMap
 
       // 2. Separate into remove, add, and update by ID
@@ -156,7 +156,7 @@ trait PackageQueries extends Logging {
         updated_by,
         updated_email
 	) VALUES (
- 	   ${metadata.id},
+ 	   ${metadata.id.toLowerCase},
      ${metadata.name},
      ${metadata.isHidden},
      ${metadata.webMetadataPG},
@@ -226,7 +226,7 @@ trait PackageQueries extends Logging {
   private def fetchPackageContentSql(
       where: SQLSyntax,
       orderBy: SQLSyntax = sqls""
-  ): SQLToList[PackageCard, HasExtractor] = {
+  ): SQLToList[PackageCardRow, HasExtractor] = {
     val sql =
       sql"""
 			SELECT
@@ -246,7 +246,7 @@ trait PackageQueries extends Logging {
     sql
       .map(rs => {
         val metadata = rs.stringOpt("metadata").map(Json.parse)
-        PackageCard(
+        PackageCardRow(
           id = rs.string("id"),
           packageId = rs.string("package_id"),
           state = rs.string("state"),

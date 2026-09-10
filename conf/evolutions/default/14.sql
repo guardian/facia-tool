@@ -24,6 +24,7 @@ CREATE TABLE package_cards (
     id            TEXT    PRIMARY KEY DEFAULT uuid_generate_v4()::TEXT,
     package_id    TEXT   REFERENCES packages(id) ON DELETE CASCADE NOT NULL,
 
+	card_type	   TEXT 	  NOT NULL, -- 'article','recipe','chef', etc.
     state          TEXT        NOT NULL, -- 'live' or 'draft'
     page_code      TEXT        NOT NULL,
     index          INT         NOT NULL,

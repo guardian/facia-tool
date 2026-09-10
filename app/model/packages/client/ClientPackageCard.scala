@@ -1,6 +1,6 @@
 package model.packages.client
 
-import model.packages.{PackageCard => DomainPackageCard}
+import model.packages.{PackageCardRow => DomainPackageCard}
 import play.api.libs.json.{JsValue, Json, OFormat}
 
 final case class ClientPackageCard(
@@ -33,7 +33,7 @@ object ClientPackageCard {
     )
 
   def toPackageCard(clientCard: ClientPackageCard): DomainPackageCard =
-    DomainPackageCard(
+    PackageCardRow(
       id = clientCard.id,
       packageId = clientCard.packageId,
       state = clientCard.state,

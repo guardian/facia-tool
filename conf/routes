@@ -129,7 +129,8 @@ GET         /editions-api/collections/:collectionId/prefill                 cont
 POST        /editions-api/fronts/:frontId/collections/:collectionId/feastCollectionToContainer/:collectionCardId    controllers.EditionsController.feastCollectionToContainer(frontId, collectionId, collectionCardId)
 
 # Packages
-GET			/packages														controllers.PackageController.getPackages
+GET         /packages/:id                                                   controllers.PackageController.getPackage(id: java.util.UUID)
+GET			/packages														controllers.PackageController.listPackages
 POST		/packages														controllers.PackageController.createPackage
 
 # Custom subnavs

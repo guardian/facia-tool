@@ -1,43 +1,79 @@
 package model.packages
 
-import org.postgresql.util.PGobject
-import play.api.libs.json.{JsValue, Json, OFormat}
+import model.editions.{EditionsChefMetadata, EditionsFeastCollectionMetadata}
+import model.packages.PackageCardType
+import model.packages.PackageCardType.Recipe
+import play.api.libs.json._
 import scalikejdbc.WrappedResultSet
 
-final case class PackageCard(
-    id: String,
-    packageId: String,
-    state: String,
-    pageCode: String, // CAPI internalPageCode of an article. Either the recipe ID, the chef ID or the subcollection ID if this is a Feast card.
-    index: Int,
-    metadata: Option[JsValue],
-    addedOn: Long,
-    addedBy: String,
-    addedEmail: String
-) {
-  def metadataPG: Option[PGobject] = metadata.map(toPGobject)
+import java.time.Instant
 
-  private def toPGobject(value: JsValue): PGobject = {
-    val pgObject = new PGobject()
-    pgObject.setType("jsonb")
-    pgObject.setValue(Json.stringify(value))
-    pgObject
-  }
+sealed trait PackageCard {
+  val id: String
+  val addedOn: Instant
+  val cardType: PackageCardType
+}
+
+case class PackageRecipeCard(
+    id: String,
+    addedOn: Instant
+) extends PackageCard {
+  override val cardType: PackageCardType = PackageCardType.Recipe
+}
+
+case class PackageChefCard(
+    id: String,
+    metadata: Option[EditionsChefMetadata],
+    addedOn: Instant
+) extends PackageCard {
+  override val cardType: PackageCardType = PackageCardType.Chef
+}
+
+case class PackageSubcollectionCard(
+    id: String,
+    metadata: Option[EditionsFeastCollectionMetadata],
+    addedOn: Instant
+) extends PackageCard {
+  override val cardType: PackageCardType = PackageCardType.Subcollection
 }
 
 object PackageCard {
   implicit val format: OFormat[PackageCard] = Json.format[PackageCard]
 
-  def fromRow(rs: WrappedResultSet): PackageCard =
-    PackageCard(
-      id = rs.string("id"),
-      packageId = rs.string("package_id"),
-      state = rs.string("state"),
-      pageCode = rs.string("page_code"),
-      index = rs.int("index"),
-      metadata = rs.stringOpt("metadata").map(Json.parse),
-      addedOn = rs.zonedDateTime("added_on").toInstant.toEpochMilli,
-      addedBy = rs.string("added_by"),
-      addedEmail = rs.string("added_email")
-    )
+  def fromRowOpt(rs: WrappedResultSet): Option[PackageCard] = {
+    for {
+      id <- rs.stringOpt("id")
+      cardTypeStr <- rs.stringOpt("card_type")
+      cardType <- PackageCardType.fromString(cardTypeStr)
+      addedOn <- rs.zonedDateTimeOpt("added_on").map(_.toInstant)
+    } yield cardType match {
+      case Recipe =>
+        val recipeId = rs.string("page_code")
+        PackageRecipeCard(
+          id = recipeId,
+          addedOn = addedOn
+        )
+      case PackageCardType.Chef =>
+        val metadata = rs
+          .stringOpt("feast_metadata")
+          .map(Json.parse)
+          .map(_.as[EditionsChefMetadata])
+        val chefId = rs.string("page_code")
+        PackageChefCard(
+          id = chefId,
+          metadata = metadata,
+          addedOn = addedOn
+        )
+      case PackageCardType.Subcollection =>
+        val metadata = rs
+          .stringOpt("feast_metadata")
+          .map(Json.parse)
+          .map(_.as[EditionsFeastCollectionMetadata])
+        PackageSubcollectionCard(
+          id = id,
+          metadata = metadata,
+          addedOn = addedOn
+        )
+    }
+  }
 }
