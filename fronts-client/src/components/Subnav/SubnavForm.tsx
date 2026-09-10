@@ -1,8 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import v4 from 'uuid/v4';
 import ButtonDefault from 'components/inputs/ButtonDefault';
+import SubnavImageInput from './SubnavImageInput';
 import {
 	CustomSubnav,
+	ImageBreakpoint,
+	SubnavImage,
 	SubnavLink,
 	TargetedPage,
 	TargetedPageType,
@@ -12,6 +15,8 @@ import {
 	Field,
 	Form,
 	FormActions,
+	ImageRow,
+	ImageRowHeader,
 	RepeatableRow,
 	RowFields,
 	SavedMessage,
@@ -33,8 +38,15 @@ const pageTypeOptions: { value: TargetedPageType; label: string }[] = [
 	{ value: 'hasTag', label: 'Tag' },
 ];
 
+const breakpointOptions: { value: ImageBreakpoint; label: string }[] = [
+	{ value: 'mobile', label: 'Mobile' },
+	{ value: 'tablet', label: 'Tablet' },
+	{ value: 'web', label: 'Web' },
+];
+
 const emptyLink = (): SubnavLink => ({ linkText: '', dotcomPath: '' });
 const emptyPage = (): TargetedPage => ({ type: 'front', path: '' });
+const emptyImage = (): SubnavImage => ({ imageSrc: '', breakpoint: 'web' });
 
 /**
  * The form's editable state, derived from the subnav being edited (or blank
@@ -51,6 +63,7 @@ const toInitialFormState = (subnav?: CustomSubnav) => ({
 	pages: subnav?.pages.length
 		? subnav.pages.map((page) => ({ ...page }))
 		: [emptyPage()],
+	images: subnav?.images?.map((image) => ({ ...image })) ?? [],
 });
 
 const SubnavForm = ({
@@ -65,7 +78,6 @@ const SubnavForm = ({
 		},
 		[],
 	);
-
 	const [baseline, setBaseline] = useState(() =>
 		toInitialFormState(initialSubnav),
 	);
@@ -77,6 +89,8 @@ const SubnavForm = ({
 	const [headerCopy, setHeaderCopy] = useState(baseline.headerCopy);
 	const [links, setLinks] = useState<SubnavLink[]>(baseline.links);
 	const [pages, setPages] = useState<TargetedPage[]>(baseline.pages);
+
+	const [images, setImages] = useState<SubnavImage[]>(baseline.images);
 	const [error, setError] = useState<string | null>(null);
 	const [justSaved, setJustSaved] = useState(false);
 
@@ -87,6 +101,7 @@ const SubnavForm = ({
 			headerCopy,
 			links,
 			pages,
+			images,
 		}) !== JSON.stringify(baseline);
 
 	const handleCancel = () => {
@@ -95,6 +110,7 @@ const SubnavForm = ({
 		setHeaderCopy(baseline.headerCopy);
 		setLinks(baseline.links.map((link) => ({ ...link })));
 		setPages(baseline.pages.map((page) => ({ ...page })));
+		setImages(baseline.images.map((image) => ({ ...image })));
 		setError(null);
 	};
 
@@ -113,6 +129,14 @@ const SubnavForm = ({
 	const addPage = () => setPages((prev) => [...prev, emptyPage()]);
 	const removePage = (index: number) =>
 		setPages((prev) => prev.filter((_, i) => i !== index));
+
+	const updateImage = (index: number, patch: Partial<SubnavImage>) =>
+		setImages((prev) =>
+			prev.map((image, i) => (i === index ? { ...image, ...patch } : image)),
+		);
+	const addImage = () => setImages((prev) => [...prev, emptyImage()]);
+	const removeImage = (index: number) =>
+		setImages((prev) => prev.filter((_, i) => i !== index));
 
 	const handleSubmit = async (event: React.FormEvent) => {
 		event.preventDefault();
@@ -134,6 +158,8 @@ const SubnavForm = ({
 
 		setError(null);
 
+		const cleanedImages = images.filter((image) => image.imageSrc.trim());
+
 		const subnav: CustomSubnav = {
 			id: initialSubnav?.id ?? v4(),
 			header: {
@@ -150,8 +176,7 @@ const SubnavForm = ({
 				type: page.type,
 				path: page.path.trim(),
 			})),
-			images: initialSubnav?.images,
-			palette: initialSubnav?.palette,
+			images: cleanedImages.length ? cleanedImages : undefined,
 			lastUpdated: Date.now(),
 			updatedBy: initialSubnav?.updatedBy ?? '',
 			updatedEmail: initialSubnav?.updatedEmail ?? '',
@@ -178,6 +203,7 @@ const SubnavForm = ({
 		setHeaderCopy(savedState.headerCopy);
 		setLinks(savedState.links);
 		setPages(savedState.pages);
+		setImages(savedState.images);
 		setJustSaved(true);
 	};
 
@@ -285,6 +311,49 @@ const SubnavForm = ({
 				))}
 				<ButtonDefault type="button" size="s" onClick={addPage}>
 					+ Add page
+				</ButtonDefault>
+			</Section>
+
+			<Section>
+				<SectionHeading>Images</SectionHeading>
+				{images.length === 0 ? (
+					<Field as="p">No images added.</Field>
+				) : (
+					images.map((image, index) => (
+						<ImageRow key={index}>
+							<ImageRowHeader>
+								<Select
+									value={image.breakpoint}
+									onChange={(e) =>
+										updateImage(index, {
+											breakpoint: e.target.value as ImageBreakpoint,
+										})
+									}
+								>
+									{breakpointOptions.map((option) => (
+										<option key={option.value} value={option.value}>
+											{option.label}
+										</option>
+									))}
+								</Select>
+								<ButtonDefault
+									type="button"
+									size="s"
+									priority="muted"
+									onClick={() => removeImage(index)}
+								>
+									Remove
+								</ButtonDefault>
+							</ImageRowHeader>
+							<SubnavImageInput
+								value={image.imageSrc || undefined}
+								onChange={(src) => updateImage(index, { imageSrc: src ?? '' })}
+							/>
+						</ImageRow>
+					))
+				)}
+				<ButtonDefault type="button" size="s" onClick={addImage}>
+					+ Add image
 				</ButtonDefault>
 			</Section>
 
