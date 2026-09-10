@@ -55,7 +55,7 @@ val awsVersion = "1.12.470"
 val capiModelsVersion = "46.0.0"
 val capiClientVersion = "47.0.0"
 val json4sVersion = "4.0.3"
-val circeVersion = "0.14.10"
+val circeVersion = "0.14.16"
 val awsSdkVersion = "2.49.6"
 
 resolvers ++= Seq(
