@@ -1,7 +1,7 @@
 // Additional information on initialization
 logLevel := Level.Warn
 
-libraryDependencies += "org.vafer" % "jdeb" % "1.3" artifacts Artifact(
+libraryDependencies += "org.vafer" % "jdeb" % "1.14" artifacts Artifact(
   "jdeb",
   "jar",
   "jar"
