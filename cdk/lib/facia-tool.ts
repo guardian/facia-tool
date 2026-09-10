@@ -111,6 +111,15 @@ export class FaciaTool extends GuStack {
 		// Tells Riff-Raff which of the two ASGs is the new one while the migration is in progress.
 		Tags.of(ec2App.autoScalingGroup).add('gu:riffraff:new-asg', 'true');
 
+		// Traffic cutover: serve CloudFront from the new ALB instead of the legacy ELB.
+		// Reverting this override is the rollback.
+		cfnInclude
+			.getResource('FaciaCloudfront')
+			.addPropertyOverride(
+				'DistributionConfig.Origins.0.DomainName',
+				ec2App.loadBalancer.loadBalancerDnsName,
+			);
+
 		const databaseSecurityGroup = SecurityGroup.fromSecurityGroupId(
 			this,
 			'DatabaseSecurityGroup',

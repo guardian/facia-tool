@@ -1238,7 +1238,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               },
               "DomainName": {
                 "Fn::GetAtt": [
-                  "FaciaLoadBalancerNewVPC",
+                  "LoadBalancerFaciatool65BDBE55",
                   "DNSName",
                 ],
               },
@@ -4658,7 +4658,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
               },
               "DomainName": {
                 "Fn::GetAtt": [
-                  "FaciaLoadBalancerNewVPC",
+                  "LoadBalancerFaciatool65BDBE55",
                   "DNSName",
                 ],
               },
