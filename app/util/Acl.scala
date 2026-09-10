@@ -84,7 +84,7 @@ class Acl(permissions: PermissionsProvider) extends Logging {
       priorities
     ) match {
       case AccessGranted => AccessGranted
-      case AccessDenied => {
+      case AccessDenied  => {
         logger.warn(
           s"User with e-mail ${email} and with the following permissions commercial: $hasCommercialPermissions, " +
             s"editorial: $hasEditorialPermissions and training: $hasTrainingPermissions is not authorized to modify " +
