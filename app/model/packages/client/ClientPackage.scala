@@ -15,13 +15,14 @@ final case class ClientPackage(
     createdEmail: Option[String],
     updatedOn: Option[Long],
     updatedBy: Option[String],
-    updatedEmail: Option[String]
+    updatedEmail: Option[String],
+    items: List[ClientPackageCard] = List.empty
 )
 
 object ClientPackage {
   implicit val format: OFormat[ClientPackage] = Json.format[ClientPackage]
 
-  def fromPackage(domainPackage: DomainPackage): ClientPackage =
+  def fromPackage(domainPackage: DomainPackage, cards: List[ClientPackageCard] = List.empty): ClientPackage =
     ClientPackage(
       id = domainPackage.id,
       name = domainPackage.name,
@@ -34,7 +35,8 @@ object ClientPackage {
       createdEmail = domainPackage.createdEmail,
       updatedOn = domainPackage.updatedOn,
       updatedBy = domainPackage.updatedBy,
-      updatedEmail = domainPackage.updatedEmail
+      updatedEmail = domainPackage.updatedEmail,
+      items = cards
     )
 
   def toPackage(clientPackage: ClientPackage): DomainPackage =

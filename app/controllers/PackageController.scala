@@ -39,7 +39,12 @@ class PackageController(
 
     try {
       val pkgs = db.getPackages(idList, maybeDate, strictDate)
-      val clientPkgs = pkgs.map(ClientPackage.fromPackage)
+      val clientPkgs = pkgs.map { pkg =>
+        val cards = db.getPackageCards(java.util.UUID.fromString(pkg.id))
+          .map(model.packages.client.ClientPackageCard.fromPackageCard)
+          .toList
+        ClientPackage.fromPackage(pkg, cards)
+      }
 
       Ok(
         Json.obj(
@@ -98,12 +103,14 @@ class PackageController(
         db.getPackages(Some(Seq(id)), None, strictTimestamp = false).headOption
       pkg match {
         case Some(p) =>
+          val cards = db.getPackageCards(id)
+            .map(model.packages.client.ClientPackageCard.fromPackageCard)
+            .toList
+          val clientPkg = ClientPackage.fromPackage(p, cards)
           Ok(
             Json.obj(
               "status" -> JsString("ok"),
-              "metadata" -> ClientPackage.format.writes(
-                ClientPackage.fromPackage(p)
-              )
+              "metadata" -> ClientPackage.format.writes(clientPkg)
             )
           )
         case None =>

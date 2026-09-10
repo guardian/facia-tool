@@ -223,41 +223,49 @@ trait PackageQueries extends Logging {
       .list
   }
 
-  private def fetchPackageContentSql(
-      where: SQLSyntax,
-      orderBy: SQLSyntax = sqls""
-  ): SQLToList[PackageCardRow, HasExtractor] = {
-    val sql =
-      sql"""
-			SELECT
-   				id,
-       			package_id,
-				state,
-				page_code,
-    			index,
-    			metadata,
-       			added_on,
-          		added_by,
-            	added_email
-			FROM package_cards
-   			$where
-      		$orderBy
-			"""
-    sql
-      .map(rs => {
-        val metadata = rs.stringOpt("metadata").map(Json.parse)
-        PackageCardRow(
-          id = rs.string("id"),
-          packageId = rs.string("package_id"),
-          state = rs.string("state"),
-          pageCode = rs.string("page_code"),
-          index = rs.int("index"),
-          metadata = metadata,
-          addedOn = rs.timestamp("added_on").getTime,
-          addedBy = rs.string("added_by"),
-          addedEmail = rs.string("added_email")
-        )
-      })
-      .list
-  }
+   private def fetchPackageContentSql(
+       where: SQLSyntax,
+       orderBy: SQLSyntax = sqls""
+   ): SQLToList[PackageCardRow, HasExtractor] = {
+     val sql =
+       sql"""
+ 			SELECT
+    				id,
+        			package_id,
+ 				card_type,
+ 				state,
+ 				page_code,
+     			index,
+     			metadata,
+        			added_on,
+           		added_by,
+             	added_email
+ 			FROM package_cards
+    			$where
+       		$orderBy
+ 			"""
+     sql
+       .map(rs => {
+         val metadata = rs.stringOpt("metadata").map(Json.parse)
+         PackageCardRow(
+           id = rs.string("id"),
+           packageId = rs.string("package_id"),
+           cardType = PackageCardType
+             .fromString(rs.string("card_type"))
+             .getOrElse(
+               throw new IllegalArgumentException(
+                 s"Invalid card type: ${rs.string("card_type")}"
+               )
+             ),
+           state = rs.string("state"),
+           pageCode = rs.string("page_code"),
+           index = rs.int("index"),
+           metadata = metadata,
+           addedOn = rs.timestamp("added_on").getTime,
+           addedBy = rs.string("added_by"),
+           addedEmail = rs.string("added_email")
+         )
+       })
+       .list
+   }
 }

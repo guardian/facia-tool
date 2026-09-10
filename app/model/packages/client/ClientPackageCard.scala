@@ -1,47 +1,24 @@
 package model.packages.client
 
-import model.packages.{PackageCardRow => DomainPackageCard}
+import model.packages.{PackageCardRow, PackageCardType}
 import play.api.libs.json.{JsValue, Json, OFormat}
 
 final case class ClientPackageCard(
     id: String,
-    packageId: String,
-    state: String,
-    pageCode: String,
-    index: Int,
-    metadata: Option[JsValue],
+    cardType: Option[PackageCardType],
     addedOn: Long,
-    addedBy: String,
-    addedEmail: String
+    metadata: Option[JsValue] = None
 )
 
 object ClientPackageCard {
   implicit val format: OFormat[ClientPackageCard] =
     Json.format[ClientPackageCard]
 
-  def fromPackageCard(domainCard: DomainPackageCard): ClientPackageCard =
+  def fromPackageCard(domainCard: PackageCardRow): ClientPackageCard =
     ClientPackageCard(
-      id = domainCard.id,
-      packageId = domainCard.packageId,
-      state = domainCard.state,
-      pageCode = domainCard.pageCode,
-      index = domainCard.index,
-      metadata = domainCard.metadata,
+      id = domainCard.pageCode,
+      cardType = Some(domainCard.cardType),
       addedOn = domainCard.addedOn,
-      addedBy = domainCard.addedBy,
-      addedEmail = domainCard.addedEmail
-    )
-
-  def toPackageCard(clientCard: ClientPackageCard): DomainPackageCard =
-    PackageCardRow(
-      id = clientCard.id,
-      packageId = clientCard.packageId,
-      state = clientCard.state,
-      pageCode = clientCard.pageCode,
-      index = clientCard.index,
-      metadata = clientCard.metadata,
-      addedOn = clientCard.addedOn,
-      addedBy = clientCard.addedBy,
-      addedEmail = clientCard.addedEmail
+      metadata = domainCard.metadata
     )
 }

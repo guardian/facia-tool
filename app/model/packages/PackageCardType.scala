@@ -1,5 +1,7 @@
 package model.packages
 
+import play.api.libs.json.{Reads, Writes}
+
 sealed trait PackageCardType {
   def toString: String
 }
@@ -25,5 +27,16 @@ object PackageCardType {
     case _               => None
   }
 
-  def apply(value: String) = fromString(value)
+  def apply(value: String): Option[PackageCardType] = fromString(value)
+
+  implicit val reads: Reads[PackageCardType] = Reads { json =>
+    json.asOpt[String].flatMap(fromString) match {
+      case Some(value) => play.api.libs.json.JsSuccess(value)
+      case None        => play.api.libs.json.JsError("Invalid PackageCardType")
+    }
+  }
+
+  implicit val writes: Writes[PackageCardType] = Writes { cardType =>
+    play.api.libs.json.JsString(cardType.toString)
+  }
 }

@@ -38,7 +38,53 @@ case class PackageSubcollectionCard(
 }
 
 object PackageCard {
-  implicit val format: OFormat[PackageCard] = Json.format[PackageCard]
+  implicit val format: OFormat[PackageCard] = new OFormat[PackageCard] {
+    override def reads(json: JsValue): JsResult[PackageCard] = {
+      (json \ "cardType").as[String] match {
+        case "recipe" =>
+          for {
+            id <- (json \ "id").validate[String]
+            addedOn <- (json \ "addedOn").validate[Long]
+          } yield PackageRecipeCard(id, Instant.ofEpochMilli(addedOn))
+        case "chef" =>
+          for {
+            id <- (json \ "id").validate[String]
+            addedOn <- (json \ "addedOn").validate[Long]
+            metadata <- (json \ "metadata").validateOpt[EditionsChefMetadata]
+          } yield PackageChefCard(id, metadata, Instant.ofEpochMilli(addedOn))
+        case "subcollection" =>
+          for {
+            id <- (json \ "id").validate[String]
+            addedOn <- (json \ "addedOn").validate[Long]
+            metadata <- (json \ "metadata").validateOpt[EditionsFeastCollectionMetadata]
+          } yield PackageSubcollectionCard(id, metadata, Instant.ofEpochMilli(addedOn))
+        case other => JsError(s"Unknown cardType: $other")
+      }
+    }
+
+    override def writes(card: PackageCard): JsObject = card match {
+      case PackageRecipeCard(id, addedOn) =>
+        Json.obj(
+          "id" -> id,
+          "cardType" -> "recipe",
+          "addedOn" -> addedOn.toEpochMilli
+        )
+      case PackageChefCard(id, metadata, addedOn) =>
+        Json.obj(
+          "id" -> id,
+          "cardType" -> "chef",
+          "metadata" -> metadata,
+          "addedOn" -> addedOn.toEpochMilli
+        )
+      case PackageSubcollectionCard(id, metadata, addedOn) =>
+        Json.obj(
+          "id" -> id,
+          "cardType" -> "subcollection",
+          "metadata" -> metadata,
+          "addedOn" -> addedOn.toEpochMilli
+        )
+    }
+  }
 
   def fromRowOpt(rs: WrappedResultSet): Option[PackageCard] = {
     for {
