@@ -44,7 +44,7 @@ Fronts-Client is a ReactRedux Javascript application hooking into the existing F
 You'll need to understand the Redux concepts of Thunks and Selectors.
 
 | Uses                                                       | For                                                                                                     | Config                                                                              |
-|------------------------------------------------------------|---------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------|
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | [React](https://jestjs.io/docs/en/getting-started.html)    | Components                                                                                              |                                                                                     |
 | [Redux](https://redux.js.org/)                             | State management                                                                                        |                                                                                     |
 | [Redux Thunk](https://github.com/reduxjs/redux-thunk)      | Redux Thunk middleware allows you to write action creators that return a function instead of an action. |                                                                                     |
@@ -58,17 +58,19 @@ You'll need to understand the Redux concepts of Thunks and Selectors.
 | [Raven](https://github.com/getsentry/sentry-javascript)    | Sentry error reporting                                                                                  |                                                                                     |
 | [Panda Session](https://github.com/guardian/panda-session) | Pan Domain (cross-gutools) session management                                                           |                                                                                     |
 
+Increasingly, we are trying to use the Guardian [Stand component library](https://github.com/guardian/stand).
+
 ## Building and Compiling
 
 | Uses                            | For                 | Config                           |
-|---------------------------------|---------------------|----------------------------------|
+| ------------------------------- | ------------------- | -------------------------------- |
 | [Yarn](https://yarnpkg.com/en/) | Yarning             | [package.json](package.json)     |
 | [Vite](https://vitejs.dev/)     | Bundle your assests | [vite.config.js](vite.config.ts) |
 
 ## Testing
 
 | Uses                                                                         | For                                                   | Config                           |
-|------------------------------------------------------------------------------|-------------------------------------------------------|----------------------------------|
+| ---------------------------------------------------------------------------- | ----------------------------------------------------- | -------------------------------- |
 | [Jest](https://jestjs.io/docs/en/getting-started.html)                       | Testing library                                       | [jest.config.js](jest.config.js) |
 | [react-testing-library](https://github.com/kentcdodds/react-testing-library) | JavaScript Testing utilities for React Components     |                                  |
 | [React Test Renderer](https://reactjs.org/docs/test-renderer.html)           | Render Components to JSON (e.g for Jest Snapshotting) |                                  |
@@ -99,6 +101,7 @@ Calling the helper like `select('clipboard', 'drop-zone')` will create a TestCaf
 It's also encouraged to abstract these selectors (and their strings) into one place where possible so that they are easier to refactor if they need to change in future.
 
 ## Linting
+
 For the time being we're being pretty aggressive regarding linting / style
 (vite will fail the build). If this proves to get in the way of people's
 workflow then we can discuss / remove as needs be. To lint manually run:
@@ -114,7 +117,7 @@ yarn lint-fix
 ```
 
 | Uses                                             | For                                  | Config                         |
-|--------------------------------------------------|--------------------------------------|--------------------------------|
+| ------------------------------------------------ | ------------------------------------ | ------------------------------ |
 | [Prettier](https://github.com/prettier/prettier) | Anti-bikeshed Auto syntax formatting | [.prettierrc](.prettierrc)     |
 | [.editorconfig](https://editorconfig.org/)       | Standard Editor formatting           | [.editorconfig](.editorconfig) |
 
@@ -123,15 +126,16 @@ It’s recommended to [set your editor up to run Prettier](https://prettier.io/d
 There is also a file [.git-blame-ignore-revs](../.git-blame-ignore-revs) in this repository which contains refs of formatting commits, in order to exclude them from `git blame` using gitʼs `blame.ignoreRevsFile` config option. (For convenience, the [dev setup script](../scripts/setup.sh) sets this value for you.)
 
 ## Typescript
+
 We are using Typescript for typing in Fronts-Client.
 
 ## File Structure
 
 - Components, Actions, Reducers and Selectors are top level.
-    - The [App component](src/components/App.tsx) is the application entry point
-    - All reducers are combined in the [Root Reducer](src/reducers/rootReducer.ts) as per standard convention
+  - The [App component](src/components/App.tsx) is the application entry point
+  - All reducers are combined in the [Root Reducer](src/reducers/rootReducer.ts) as per standard convention
 - `bundles`
-    - A bundle exports a reducer and all of the related things a reducer needs to function in an app - selectors, actions and action names. It's a bit like an index.ts for a single redux module. This is especially useful when you're generating the actions, reducer and selectors rather than writing them manually, for example with the `createAsyncResourceBundle` utility in shared/util. This is one way of storing Redux code and is [explained here](https://reduxbundler.com/).
+  - A bundle exports a reducer and all of the related things a reducer needs to function in an app - selectors, actions and action names. It's a bit like an index.ts for a single redux module. This is especially useful when you're generating the actions, reducer and selectors rather than writing them manually, for example with the `createAsyncResourceBundle` utility in shared/util. This is one way of storing Redux code and is [explained here](https://reduxbundler.com/).
 - `constants` store high-level application constants such as theme styles and image paths
 - `services` contains the modules for requests to APIs such as CAPI and FaciaAPI
 - `lib` contains modules designed to be reusable such as the Drag N' Drop (dnd) module
@@ -153,9 +157,9 @@ There are a few areas that we'd like to address in the medium to long term for t
 There are plenty of inconsistencies with the way we name things. This is a little manifesto for cleaning some of them up.
 
 - We confuse terminology for actions, selectors and API calls -- terms like `get`, `select` and `fetch` are easily confused, and prefixes and suffixes are used interchangably, when they're used at all. For precision's sake, we should rely on the following -
- - Actions should be prefixed with `action`.
- - Selectors be prefixed with `select`. Selector factories should use `createSelect`
- - Service functions that make HTTP calls should be prefixed with `fetch`. Thunks that use these functions can make that clear with the prefix `actionFetch` where it's appropriate.
+- Actions should be prefixed with `action`.
+- Selectors be prefixed with `select`. Selector factories should use `createSelect`
+- Service functions that make HTTP calls should be prefixed with `fetch`. Thunks that use these functions can make that clear with the prefix `actionFetch` where it's appropriate.
 
 ### Persistent UUIDs
 
@@ -187,5 +191,3 @@ We already handle all of our persistence calls for collections in one place -- t
 At the moment, we normalise on the client. This introduces a degree of complexity to the client-side code that, although well encapsulated, seems an unnecessary concern for the client domain -- better to have the server pass data in an ideal format and handle the details of modelling for the persistence domain.
 
 In normalising on the server, we have an additional advantage -- if the persistence model changes, for example if in the future we move to an RDS to store collection data, we can swap out the models without disturbing the client, avoiding concerns with overlapping versions etc.
-
-

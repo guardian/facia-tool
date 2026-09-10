@@ -44,43 +44,6 @@ export const BackButton = styled.button`
  * List
  */
 
-export const ListHeader = styled.div`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	margin-bottom: 16px;
-`;
-
-export const List = styled.ul`
-	list-style: none;
-	margin: 0;
-	padding: 0;
-`;
-
-export const ListItem = styled.li`
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	gap: 12px;
-	padding: 12px 16px;
-	margin-bottom: 8px;
-	background-color: ${({ theme }) => theme.base.colors.backgroundColorLight};
-	border: 1px solid ${({ theme }) => theme.base.colors.borderColor};
-	border-radius: 4px;
-`;
-
-export const ListItemTitle = styled.span`
-	font-size: 15px;
-	font-weight: 500;
-	color: ${({ theme }) => theme.base.colors.textDark};
-`;
-
-export const ListItemMeta = styled.span`
-	display: block;
-	font-size: 12px;
-	color: ${({ theme }) => theme.base.colors.textMuted};
-`;
-
 export const ListItemActions = styled.div`
 	display: flex;
 	flex-wrap: wrap;
@@ -107,9 +70,28 @@ export const StatusTag = styled.span<{ draft?: boolean }>`
 	padding: 2px 6px;
 	margin-left: 8px;
 	border-radius: 3px;
-	color: ${({ theme }) => theme.base.colors.textLight};
+	color: ${({ theme, draft }) =>
+		draft ? theme.base.colors.textLight : theme.base.colors.textDark};
 	background-color: ${({ theme, draft }) =>
-		draft ? theme.base.colors.brandColor : theme.base.colors.button};
+		draft ? theme.base.colors.brandColor : '#AED2A6'};
+`;
+
+export const Panel = styled.section`
+	height: 100%;
+	border: 1px solid ${({ theme }) => theme.base.colors.borderColor};
+	border-radius: 4px;
+	overflow: hidden;
+`;
+
+export const PanelThumb = styled.div<{ url: string }>`
+	flex: 0 0 auto;
+	width: 40px;
+	height: 40px;
+	border-radius: 3px;
+	background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
+	background-image: url(${({ url }) => url});
+	background-size: cover;
+	background-position: center;
 `;
 
 /**
