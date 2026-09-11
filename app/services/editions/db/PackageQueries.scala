@@ -221,11 +221,11 @@ trait PackageQueries extends Logging {
   }
 
   private def fetchPackageContentSql(
-       where: SQLSyntax,
-       orderBy: SQLSyntax = sqls""
-   ): SQLToList[PackageCardRow, HasExtractor] = {
-     val sql =
-       sql"""
+      where: SQLSyntax,
+      orderBy: SQLSyntax = sqls""
+  ): SQLToList[PackageCardRow, HasExtractor] = {
+    val sql =
+      sql"""
  			SELECT
     				id,
         			package_id,
@@ -241,28 +241,28 @@ trait PackageQueries extends Logging {
     			$where
        		$orderBy
  			"""
-     sql
-       .map(rs => {
-         val metadata = rs.stringOpt("metadata").map(Json.parse)
-         PackageCardRow(
-           id = rs.string("id"),
-           packageId = rs.string("package_id"),
-           cardType = PackageCardType
-             .fromString(rs.string("card_type"))
-             .getOrElse(
-               throw new IllegalArgumentException(
-                 s"Invalid card type: ${rs.string("card_type")}"
-               )
-             ),
-           state = rs.string("state"),
-           pageCode = rs.string("page_code"),
-           index = rs.int("index"),
-           metadata = metadata,
-            addedOn = rs.offsetDateTime("added_on"),
-           addedBy = rs.string("added_by"),
-           addedEmail = rs.string("added_email")
-         )
-       })
-       .list
-   }
+    sql
+      .map(rs => {
+        val metadata = rs.stringOpt("metadata").map(Json.parse)
+        PackageCardRow(
+          id = rs.string("id"),
+          packageId = rs.string("package_id"),
+          cardType = PackageCardType
+            .fromString(rs.string("card_type"))
+            .getOrElse(
+              throw new IllegalArgumentException(
+                s"Invalid card type: ${rs.string("card_type")}"
+              )
+            ),
+          state = rs.string("state"),
+          pageCode = rs.string("page_code"),
+          index = rs.int("index"),
+          metadata = metadata,
+          addedOn = rs.offsetDateTime("added_on"),
+          addedBy = rs.string("added_by"),
+          addedEmail = rs.string("added_email")
+        )
+      })
+      .list
+  }
 }

@@ -56,8 +56,13 @@ object PackageCard {
           for {
             id <- (json \ "id").validate[String]
             addedOn <- (json \ "addedOn").validate[Long]
-            metadata <- (json \ "metadata").validateOpt[EditionsFeastCollectionMetadata]
-          } yield PackageSubcollectionCard(id, metadata, Instant.ofEpochMilli(addedOn))
+            metadata <- (json \ "metadata")
+              .validateOpt[EditionsFeastCollectionMetadata]
+          } yield PackageSubcollectionCard(
+            id,
+            metadata,
+            Instant.ofEpochMilli(addedOn)
+          )
         case other => JsError(s"Unknown cardType: $other")
       }
     }
