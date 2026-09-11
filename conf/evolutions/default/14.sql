@@ -21,11 +21,9 @@ CREATE TABLE packages (
 CREATE INDEX idxPackageName on packages(name);
 
 CREATE TABLE package_cards (
-    id            TEXT    PRIMARY KEY DEFAULT uuid_generate_v4()::TEXT,
     package_id    TEXT   REFERENCES packages(id) ON DELETE CASCADE NOT NULL,
 
 	card_type	   TEXT 	  NOT NULL, -- 'article','recipe','chef', etc.
-    state          TEXT        NOT NULL, -- 'live' or 'draft'
     page_code      TEXT        NOT NULL,
     index          INT         NOT NULL,
 
@@ -33,7 +31,8 @@ CREATE TABLE package_cards (
 
     added_on       TIMESTAMPTZ NOT NULL,
     added_by       TEXT        NOT NULL,
-    added_email    TEXT        NOT NULL
+    added_email    TEXT        NOT NULL,
+	PRIMARY KEY (package_id, page_code)
 );
 
 CREATE INDEX idxPackageCards ON package_cards (package_id);
@@ -41,4 +40,4 @@ CREATE INDEX idxPackageCards ON package_cards (package_id);
 -- !Downs
 
 DROP TABLE package_cards;
-DROP TABLE packages ON CONFLICT CASCADE;
+DROP TABLE packages CASCADE;

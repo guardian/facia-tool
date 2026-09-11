@@ -21,4 +21,8 @@ object ClientPackageCard {
       addedOn = domainCard.addedOn.toInstant.toEpochMilli,
       metadata = domainCard.metadata
     )
+
+//  def toPackageCard(client: ClientPackageCard, packageId: String, ) = PackageCardRow(
+//	id =
+//  )
 }

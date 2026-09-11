@@ -69,17 +69,34 @@ trait PackageQueries extends MetadataHelpers with Logging {
       ).apply()
   }
 
-  def updatePackageName(p: Package) = DB localTx { implicit session =>
+  /** Updates the "name" field of the given package, and audits the update
+    * @param packageId
+    *   package ID to update
+    * @param newName
+    *   new name to set
+    * @param userName
+    *   name of the user performing the operation
+    * @param userEmail
+    *   email of the user performing the operation
+    * @return
+    *   the updated Package object
+    */
+  def updatePackageName(
+      packageId: UUID,
+      newName: String,
+      userName: String,
+      userEmail: String
+  ) = DB localTx { implicit session =>
     val lastUpdated = FaciaDB.truncateDateTime(OffsetDateTime.now())
     sql"""UPDATE packages
           SET
-			 name=${p.name},
-    		 updated_on=${lastUpdated},
-      	     updated_by=${p.updatedBy},
-             updated_email=${p.updatedEmail}
-		  WHERE id=${p.id}""".execute.apply()
+			 name=$newName,
+    		 updated_on=$lastUpdated,
+      	     updated_by=$userName,
+             updated_email=$userEmail
+		  WHERE id=$packageId""".execute.apply()
     val updatedPackages =
-      fetchPackageMetaSql(where = sqls"WHERE id = ${p.id}").apply()
+      fetchPackageMetaSql(where = sqls"WHERE id = $packageId").apply()
 
     assert(
       updatedPackages.size == 1,
@@ -88,6 +105,86 @@ trait PackageQueries extends MetadataHelpers with Logging {
     updatedPackages.head
   }
 
+  /** Inserts a card into the given package. If a card with the same page_code
+    * already exists, throws a PSQLException indicating a conflict. The
+    * controller catches this with `psqlErrorHandler` and returns a 410 Conflict
+    * to the client
+    * @param packageId
+    *   package ID to update
+    * @param card
+    *   PackageCardRow record representing the information to store
+    * @return
+    *   count of affected rows
+    */
+  def insertCard(packageId: UUID, card: PackageCardRow) = DB localTx {
+    implicit session =>
+      sql"""INSERT INTO package_cards (package_id, card_type, page_code, index, metadata, added_on, added_by, added_email) VALUES (${packageId.toString}, ${card.cardType.toString}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
+        .apply()
+  }
+
+  /** Removes the card with the given pageCode from the given package. Since the
+    * primary key is (packageId, pageCode) this is sufficient to uniquely
+    * identify a package
+    * @param packageId
+    *   package ID to update
+    * @param pageCode
+    *   pageCode of the card to remove
+    * @return
+    *   count of affected rows
+    */
+  def removeCard(packageId: UUID, pageCode: String) = DB localTx {
+    implicit session =>
+      sql"""DELETE FROM package_cards WHERE package_id=${packageId.toString} AND page_code=${pageCode}""".update
+        .apply()
+  }
+
+  /** Updates the metadata field of the package. This can be either
+    * `feast_metadata` or `web_metadata`; depending on the type of the `newMeta`
+    * argument the right field is selected.
+    * @param packageId
+    *   ID of the package to update
+    * @param newMeta
+    *   PackageMetadata object to write
+    * @param userName
+    *   name of the user performing the update
+    * @param userEmail
+    *   email of the user performing the update
+    * @return
+    *   count of affected rows
+    */
+  def updatePackageMeta(
+      packageId: UUID,
+      newMeta: PackageMetadata,
+      userName: String,
+      userEmail: String
+  ) = {
+    val metaPg = toPGobject(PackageMetadata.format.writes(newMeta))
+    val fieldName = newMeta match {
+      case _: FeastPackageMetadata => "feast_metadata"
+      case _: WebPackageMetadata   => "web_metadata"
+    }
+    val nowTime = Instant.now().toEpochMilli
+    DB localTx { implicit session =>
+      sql"""UPDATE packages SET
+     	$fieldName = $metaPg,
+      	updated_on = $nowTime,
+        updated_by = $userName,
+        updated_email = $userEmail
+    	WHERE id=${packageId.toString}""".update
+        .apply()
+    }
+  }
+
+  /** Writes an entire package in one go, synchronising the database state of
+    * the package cards transactionally
+    * @param packageMeta
+    *   Package object to write
+    * @param packageContent
+    *   set of cards to belong to the package. Any cards not in this list will
+    *   be removed.
+    * @return
+    *   count of affected packages
+    */
   def updatePackage(packageMeta: Package, packageContent: Seq[PackageCardRow]) =
     DB localTx { implicit session =>
       // FOR UPDATE locks the selected rows for the duration of this transaction, allowing us to safely update without a race condition
@@ -95,14 +192,16 @@ trait PackageQueries extends MetadataHelpers with Logging {
         sqls"WHERE package_id=${packageMeta.id} FOR UPDATE"
       ).apply()
       val existingMap: Map[String, PackageCardRow] =
-        existingContent.map(c => c.id -> c).toMap
+        existingContent
+          .map(c => c.pageCode -> c)
+          .toMap // the PK is (package_id, page_code); since package_id is constant, pageCode is a unique identifer
 
       // 2. Separate into remove, add, and update by ID
-      val incomingIds = packageContent.map(_.id).toSet
+      val incomingIds = packageContent.map(_.pageCode).toSet
       val idsToRemove = existingMap.keySet -- incomingIds
 
       val (toUpdate, toAdd) =
-        packageContent.partition(card => existingMap.contains(card.id))
+        packageContent.partition(card => existingMap.contains(card.pageCode))
 
       // 3. Delete removed cards safely
       if (idsToRemove.nonEmpty) {
@@ -113,14 +212,15 @@ trait PackageQueries extends MetadataHelpers with Logging {
       // 4. Update modified cards in place
       toUpdate.foreach { card =>
         sql"""UPDATE package_cards
-	  SET state = ${card.state}, page_code = ${card.pageCode}, index = ${card.index}, metadata = ${card.metadataPG}
-	  WHERE id = ${card.id}""".update.apply()
+	  SET index = ${card.index}, metadata = ${card.metadataPG}
+	  WHERE package_id = ${packageMeta.id} AND pageCode = ${card.pageCode}"""".update
+          .apply()
       }
 
       // 5. Insert new cards
       toAdd.foreach { card =>
-        sql"""INSERT INTO package_cards (id, package_id, card_type, state, page_code, index, metadata, added_on, added_by, added_email)
-	  VALUES (${card.id}, ${packageMeta.id}, ${card.cardType.toString}, ${card.state}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
+        sql"""INSERT INTO package_cards (package_id, card_type, page_code, index, metadata, added_on, added_by, added_email)
+	  VALUES (${packageMeta.id}, ${card.cardType.toString}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
           .apply()
       }
 
@@ -132,13 +232,19 @@ trait PackageQueries extends MetadataHelpers with Logging {
    			web_metadata=${packageMeta.webMetadataPG},
    			feast_metadata=${packageMeta.feastMetadataPG},
    			prefill=${packageMeta.prefill},
-      updated_on=${packageMeta.updatedOn},
+      		updated_on=${packageMeta.updatedOn},
    			updated_by=${packageMeta.updatedBy},
    			updated_email=${packageMeta.updatedEmail}
    		WHERE id=${packageMeta.id}
      """.update.apply()
     }
 
+  /** Creates a new, empty, package
+    * @param metadata
+    *   CreatePackageRequest representing the package to create
+    * @return
+    *   number of rows set
+    */
   def createPackage(metadata: CreatePackageRequest) = DB localTx {
     implicit session =>
       sql"""INSERT INTO packages (
@@ -168,13 +274,34 @@ trait PackageQueries extends MetadataHelpers with Logging {
      ${metadata.createdBy},
      ${metadata.createdEmail}
 	)
-     """.execute.apply()
+     """.update.apply()
   }
 
-  def updateHidden(packageId: UUID, newValue: Boolean) = DB localTx {
-    implicit session =>
-      sql"""UPDATE packages SET is_hidden=$newValue WHERE id=${packageId.toString}""".update
-        .apply()
+  /** Updates the 'hidden' flag on a package
+    * @param packageId
+    *   ID of the package to update
+    * @param newValue
+    *   new value of the 'hidden' flag
+    * @param userName
+    *   name of the user performing the update
+    * @param userEmail
+    *   email of the user performing the update
+    * @return
+    */
+  def updateHidden(
+      packageId: UUID,
+      newValue: Boolean,
+      userName: String,
+      userEmail: String
+  ) = DB localTx { implicit session =>
+    val now = Instant.now().toEpochMilli
+    sql"""UPDATE packages SET
+    	 is_hidden=$newValue ,
+		 updated_at=$now,
+		 updated_by=$userName,
+		 updated_email=$userEmail
+       WHERE id=${packageId.toString}""".update
+      .apply()
   }
 
   private def fetchPackageMetaSql(
@@ -230,14 +357,14 @@ trait PackageQueries extends MetadataHelpers with Logging {
     val sql =
       sql"""
  			SELECT
-    				id,
-        			package_id,
+    			id,
+        		package_id,
  				card_type,
  				state,
  				page_code,
      			index,
      			metadata,
-        			added_on,
+        		added_on,
            		added_by,
              	added_email
  			FROM package_cards
@@ -248,7 +375,6 @@ trait PackageQueries extends MetadataHelpers with Logging {
       .map(rs => {
         val metadata = rs.stringOpt("metadata").map(Json.parse)
         PackageCardRow(
-          id = rs.string("id"),
           packageId = rs.string("package_id"),
           cardType = PackageCardType
             .fromString(rs.string("card_type"))
@@ -257,7 +383,6 @@ trait PackageQueries extends MetadataHelpers with Logging {
                 s"Invalid card type: ${rs.string("card_type")}"
               )
             ),
-          state = rs.string("state"),
           pageCode = rs.string("page_code"),
           index = rs.int("index"),
           metadata = metadata,

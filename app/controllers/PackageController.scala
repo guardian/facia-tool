@@ -1,11 +1,19 @@
 package controllers
 
 import logging.Logging
-import model.forms.GetPackagesFilter
+import model.packages.PackageMetadata._
+import model.packages.client.ClientPackage.toPackage
+import model.packages.client.UpdateRegionsRequest._
+import model.packages.{
+  FeastPackageMetadata,
+  PackageMetadata,
+  WebPackageMetadata
+}
 import model.packages.client.{
   ClientPackage,
   ClientPackageHeader,
-  CreatePackageRequest
+  CreatePackageRequest,
+  UpdateRegionsRequest
 }
 import org.postgresql.util.PSQLException
 import services.Capi
@@ -13,6 +21,12 @@ import services.editions.db.FaciaDB
 import services.editions.publishing.Publishing
 import play.api.libs.json._
 
+import java.nio.charset.{
+  CharacterCodingException,
+  CodingErrorAction,
+  MalformedInputException,
+  StandardCharsets
+}
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import java.util.UUID
@@ -179,4 +193,175 @@ class PackageController(
         )
     }
   }
+
+  def putMetadata(id: UUID) =
+    EditEditionsAuthAction(parse.json[PackageMetadata]) { req =>
+      try {
+        db.updatePackageMeta(id, req.body, req.user.username, req.user.email)
+        NoContent
+      } catch {
+        case err: PSQLException =>
+          psqlErrorHandler(err)
+        case err: Throwable =>
+          logger.error(
+            s"Could not update package metadata: ${err.getMessage}",
+            err
+          )
+          InternalServerError(
+            Json.obj(
+              "status" -> JsString("error"),
+              "detail" -> JsString(
+                err.getMessage
+              ) // TODO - tighten this up when we are done testing
+            )
+          )
+      }
+    }
+
+  def putPackageHiddenState(id: UUID, newState: Boolean) =
+    EditEditionsAuthAction { req =>
+      try {
+        val count =
+          db.updateHidden(id, newState, req.user.username, req.user.email)
+        if (count == 0) {
+          NotFound(
+            Json.obj(
+              "status" -> "not_found",
+              "detail" -> "that package does not exist"
+            )
+          )
+        } else {
+          NoContent
+        }
+      } catch {
+        case err: PSQLException =>
+          psqlErrorHandler(err)
+        case err: Throwable =>
+          logger.error(
+            s"Could not update package metadata: ${err.getMessage}",
+            err
+          )
+          InternalServerError(
+            Json.obj(
+              "status" -> JsString("error"),
+              "detail" -> JsString(
+                err.getMessage
+              ) // TODO - tighten this up when we are done testing
+            )
+          )
+      }
+    }
+
+  def updateName(id: UUID) = EditEditionsAuthAction(parse.byteString) { req =>
+    val decoder = StandardCharsets.UTF_8
+      .newDecoder()
+      .onMalformedInput(CodingErrorAction.REPORT)
+      .onUnmappableCharacter(CodingErrorAction.REPORT)
+
+    try {
+      db.updatePackageName(
+        id,
+        decoder.decode(req.body.asByteBuffer).toString,
+        req.user.username,
+        req.user.email
+      )
+      NoContent
+    } catch {
+      case err: PSQLException =>
+        psqlErrorHandler(err)
+      case err: CharacterCodingException =>
+        logger.error(s"CharacterCodingException: ${err.getMessage}", err)
+        BadRequest(
+          Json.obj(
+            "status" -> JsString("error"),
+            "detail" -> JsString("Name was not valid utf-8")
+          )
+        )
+      case err: MalformedInputException =>
+        logger.error(s"MalformedInputException: ${err.getMessage}", err)
+        BadRequest(
+          Json.obj(
+            "status" -> JsString("error"),
+            "detail" -> JsString("Name was not valid utf-8")
+          )
+        )
+      case err: Throwable =>
+        logger.error(
+          s"Could not update package metadata: ${err.getMessage}",
+          err
+        )
+        InternalServerError(
+          Json.obj(
+            "status" -> JsString("error"),
+            "detail" -> JsString(
+              err.getMessage
+            ) // TODO - tighten this up when we are done testing
+          )
+        )
+    }
+
+  }
+
+  def updateRegions(id: UUID) =
+    EditEditionsAuthAction(parse.json[UpdateRegionsRequest]) { req =>
+      val maybeUpdate = for {
+        pkg <- db
+          .getPackages(Some(Seq(id)), None, strictTimestamp = false)
+          .headOption
+        oldMeta <- pkg.feastMetadata
+      } yield oldMeta.copy(
+        excludedRegions = req.body.excludedRegions,
+        targetedRegions = req.body.targetedRegions
+      )
+
+      try {
+        val updatedRows = db.updatePackageMeta(
+          id,
+          newMeta = maybeUpdate.getOrElse(
+            FeastPackageMetadata(
+              excludedRegions = req.body.excludedRegions,
+              targetedRegions = req.body.targetedRegions
+            )
+          ),
+          userName = req.user.username,
+          userEmail = req.user.email
+        )
+        if (updatedRows == 0) {
+          NotFound(
+            Json.obj(
+              "status" -> "not found",
+              "detail" -> "package id is not valid"
+            )
+          )
+        } else {
+          NoContent
+        }
+      } catch {
+        case err: PSQLException =>
+          psqlErrorHandler(err)
+        case err: Throwable =>
+          logger.error(
+            s"Could not update package metadata: ${err.getMessage}",
+            err
+          )
+          InternalServerError(
+            Json.obj(
+              "status" -> JsString("error"),
+              "detail" -> JsString(
+                err.getMessage
+              ) // TODO - tighten this up when we are done testing
+            )
+          )
+      }
+    }
+
+  def writePackage(id: UUID) =
+    EditEditionsAuthAction(parse.json[ClientPackage]) { req =>
+      val dataToWrite = req.body.copy(id = id.toString)
+//      val cardRows = req.body.items.
+//      db.updatePackage(
+//        toPackage(dataToWrite)
+//      )
+      InternalServerError("not implemented")
+    }
 }

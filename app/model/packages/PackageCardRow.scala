@@ -7,10 +7,8 @@ import scalikejdbc.WrappedResultSet
 import java.time.OffsetDateTime
 
 final case class PackageCardRow(
-    id: String,
     packageId: String,
     cardType: PackageCardType,
-    state: String,
     pageCode: String, // CAPI internalPageCode of an article. Either the recipe ID, the chef ID or the subcollection ID if this is a Feast card.
     index: Int,
     metadata: Option[JsValue],
@@ -33,7 +31,6 @@ object PackageCardRow {
 
   def fromRow(rs: WrappedResultSet): PackageCardRow =
     PackageCardRow(
-      id = rs.string("id"),
       packageId = rs.string("package_id"),
       cardType = PackageCardType
         .fromString(rs.string("card_type"))
@@ -42,7 +39,6 @@ object PackageCardRow {
             s"Invalid card type: ${rs.string("card_type")}"
           )
         ),
-      state = rs.string("state"),
       pageCode = rs.string("page_code"),
       index = rs.int("index"),
       metadata = rs.stringOpt("metadata").map(Json.parse),
