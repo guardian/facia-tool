@@ -1,5 +1,8 @@
-import { cloneActiveImageMeta } from 'util/card';
+import { cloneActiveImageMeta, getCardEntitiesFromDrop } from 'util/card';
 import { CardMeta } from 'types/Collection';
+import { CardTypesMap } from 'constants/cardTypes';
+import { eventGraphics } from 'constants/eventGraphics';
+import { State } from 'types/State';
 
 const createCard = (meta: CardMeta = {}) => ({
 	id: 'id',
@@ -120,6 +123,24 @@ describe('card utils', () => {
 				imageSrcHeight: 'image',
 				imageSrcOrigin: 'image',
 			});
+		});
+	});
+
+	describe('getCardEntitiesFromDrop', () => {
+		it('should create a card from an event graphic drop', async () => {
+			const [eventGraphic] = eventGraphics;
+			const { card } = await getCardEntitiesFromDrop(
+				{ type: 'EVENT_GRAPHIC', data: eventGraphic },
+				false,
+				jest.fn(),
+				{} as State,
+			);
+
+			expect(card).toBeDefined();
+			// The prefixed id is the only marker that's persisted.
+			expect(card?.id).toBe(eventGraphic.id);
+			expect(card?.cardType).toBe(CardTypesMap.EVENT_GRAPHIC);
+			expect(card?.uuid).toBeDefined();
 		});
 	});
 });

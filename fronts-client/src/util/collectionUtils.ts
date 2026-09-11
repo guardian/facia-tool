@@ -6,6 +6,7 @@ import { CapiArticle } from 'types/Capi';
 import { Recipe } from '../types/Recipe';
 import { Chef } from '../types/Chef';
 import { CardTypesMap } from 'constants/cardTypes';
+import { EventGraphic } from 'constants/eventGraphics';
 import { Card } from '../types/Collection';
 
 export interface RefDrop {
@@ -32,12 +33,18 @@ export interface FeastCollectionDrop {
 	data: Card;
 }
 
+export interface EventGraphicDrop {
+	type: 'EVENT_GRAPHIC';
+	data: EventGraphic;
+}
+
 export type MappableDropType =
 	| RefDrop
 	| CAPIDrop
 	| RecipeDrop
 	| ChefDrop
-	| FeastCollectionDrop;
+	| FeastCollectionDrop
+	| EventGraphicDrop;
 
 const dropToCardMap = {
 	capi: (data: string): CAPIDrop => ({
@@ -54,6 +61,10 @@ const dropToCardMap = {
 	}),
 	[CardTypesMap.FEAST_COLLECTION]: (data: string): FeastCollectionDrop => ({
 		type: 'FEAST_COLLECTION',
+		data: JSON.parse(data),
+	}),
+	[CardTypesMap.EVENT_GRAPHIC]: (data: string): EventGraphicDrop => ({
+		type: 'EVENT_GRAPHIC',
 		data: JSON.parse(data),
 	}),
 	text: (url: string): RefDrop => ({ type: 'REF', data: url }),

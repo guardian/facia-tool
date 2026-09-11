@@ -33,11 +33,19 @@ object HeadlineABTesting
       enabled = false
     )
 
+object EventGraphics
+    extends FeatureSwitch(
+      key = "event-graphics",
+      title = "Enable event graphics (e.g. election trackers) in the feed",
+      enabled = false
+    )
+
 object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
-    HeadlineABTesting
+    HeadlineABTesting,
+    EventGraphics
   )
 
   def updateFeatureSwitchesForUser(

@@ -46,6 +46,7 @@ import { Dispatch, ThunkResult } from 'types/Store';
 import type { Action } from 'types/Action';
 import type { State } from 'types/State';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
+import { isEventGraphicId } from 'constants/eventGraphics';
 import { Stages, Collection, CardSets, Card } from 'types/Collection';
 import difference from 'lodash/difference';
 import { selectCardsInCollections } from 'selectors/collection';
@@ -318,16 +319,18 @@ function updateCollection(
 const fetchArticles =
 	(articleIds: string[]): ThunkResult<Promise<void>> =>
 	async (dispatch, getState) => {
-		const uniqueArticleIdsWithoutSnaps = articleIds.filter(
-			(id) => !id.match(/^snap/),
+		// Neither snaps nor event graphics exist in CAPI, so requesting them would
+		// only produce spurious "not returned by CAPI" errors.
+		const idsToFetch = articleIds.filter(
+			(id) => !id.match(/^snap/) && !isEventGraphicId(id),
 		);
 
-		if (!uniqueArticleIdsWithoutSnaps.length) {
+		if (!idsToFetch.length) {
 			return;
 		}
-		dispatch(externalArticleActions.fetchStart(uniqueArticleIdsWithoutSnaps));
+		dispatch(externalArticleActions.fetchStart(idsToFetch));
 		try {
-			const articles = await getArticlesBatched(uniqueArticleIdsWithoutSnaps);
+			const articles = await getArticlesBatched(idsToFetch);
 			const freshArticles = articles.filter((article) =>
 				selectIsExternalArticleStale(
 					getState(),
@@ -340,7 +343,7 @@ const fetchArticles =
 				dispatch(externalArticleActions.fetchSuccess(freshArticles));
 			}
 			const remainingArticles = difference(
-				uniqueArticleIdsWithoutSnaps,
+				idsToFetch,
 				articles.map((_) => _.id),
 			);
 			if (remainingArticles.length) {
