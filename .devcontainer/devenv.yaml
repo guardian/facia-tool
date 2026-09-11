@@ -20,8 +20,10 @@ modules:
   - github-copilot
 
 # Optional: Ports to forward
-# forwardPorts:
-#   - 8080  # same port on host and container
+forwardPorts:
+  - 9000  # main app, frontend and backend
+  - 9876  # karma tests for breaking news tool
+  - 5173
 #   - "8000:9000"  # hostPort:containerPort
 
 # Optional: Mount directories from host to container
@@ -29,18 +31,17 @@ modules:
 #   - "source=${localEnv:HOME}/.gu/example,target=/home/vscode/.gu/example,readonly,type=bind,consistency=cached"
 
 # Optional: IDE plugins - shared project plugins like language support
-# plugins:
-#   vscode: []
-#   intellij: []
+plugins:
+  vscode: ['cweijan.vscode-postgresql-client2']
+  intellij: []
 
 # Optional: Commands to run after container creation
 # Each command has a 'cmd' field and a 'workingDirectory' field
 # e.g.
-# postCreateCommand:
-#   - cmd: "npm install"
-#     workingDirectory: "."
-#   - cmd: "make setup"
-#     workingDirectory: "/workspaces/project"
+postCreateCommand:
+  - cmd: "sudo apt-get update && sudo apt-get -y install postgresql && sudo mkdir /etc/gu && sudo chown vscode /etc/gu"
+    workingDirectory: "."
+  
 # postStartCommand:
 #   - cmd: "echo 'Container started successfully'"
 #     workingDirectory: "."
