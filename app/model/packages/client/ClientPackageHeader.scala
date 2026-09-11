@@ -1,5 +1,6 @@
 package model.packages.client
 
+import model.packages.FeastPackageMetadata
 import play.api.libs.json._
 import model.packages.Package
 
@@ -7,7 +8,7 @@ case class ClientPackageHeader(
     id: String,
     name: String,
     webMetadata: Option[JsValue],
-    feastMetadata: Option[JsValue],
+    feastMetadata: Option[FeastPackageMetadata],
     createdOn: Option[Long],
     createdBy: Option[String],
     createdEmail: Option[String],

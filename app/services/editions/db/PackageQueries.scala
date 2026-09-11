@@ -2,16 +2,18 @@ package services.editions.db
 
 import scalikejdbc._
 import logging.Logging
+import model.editions.EditionsFeastCollectionMetadata
 import model.forms.GetPackagesFilter
 import model.packages._
 import model.packages.client.CreatePackageRequest
 import play.api.libs.json._
 
-import java.time.{OffsetDateTime, Instant}
+import java.time.{Instant, OffsetDateTime}
 import java.time.temporal.ChronoUnit
 import java.util.UUID
+import scala.util.Try
 
-trait PackageQueries extends Logging {
+trait PackageQueries extends MetadataHelpers with Logging {
 
   /** Gets a list of package objects matching the given filters
     * @param packageIds
@@ -200,7 +202,8 @@ trait PackageQueries extends Logging {
 
     sql
       .map(rs => {
-        val feastMeta = rs.stringOpt("feast_metadata").map(Json.parse)
+        val feastMeta =
+          rs.stringOpt("feast_metadata").flatMap(getFeastCollectionMetadata)
         val webMeta = rs.stringOpt("web_metadata").map(Json.parse)
         Package(
           id = rs.string("id"),

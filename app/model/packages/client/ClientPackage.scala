@@ -1,5 +1,6 @@
 package model.packages.client
 
+import model.packages.FeastPackageMetadata
 import model.packages.{Package => DomainPackage}
 import play.api.libs.json.{JsValue, Json, OFormat}
 import services.editions.db.FaciaDB
@@ -9,7 +10,7 @@ final case class ClientPackage(
     name: String,
     isHidden: Boolean,
     webMetadata: Option[JsValue],
-    feastMetadata: Option[JsValue],
+    feastMetadata: Option[FeastPackageMetadata],
     prefill: Option[String],
     createdOn: Option[Long],
     createdBy: Option[String],

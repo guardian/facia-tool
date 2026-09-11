@@ -99,7 +99,7 @@ class PackageController(
             "detail" -> "Cannot overwrite existing object"
           )
         )
-      case "23505" => // foreign key violation
+      case "23503" => // foreign key violation
         Conflict(
           Json.obj("status" -> "conflict", "detail" -> "Sub-object conflict")
         )

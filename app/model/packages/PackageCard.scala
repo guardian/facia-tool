@@ -1,6 +1,7 @@
 package model.packages
 
-import model.editions.{EditionsChefMetadata, EditionsFeastCollectionMetadata}
+import model.editions.EditionsChefMetadata
+import model.editions.EditionsFeastCollectionMetadata
 import model.packages.PackageCardType
 import model.packages.PackageCardType.Recipe
 import play.api.libs.json._
