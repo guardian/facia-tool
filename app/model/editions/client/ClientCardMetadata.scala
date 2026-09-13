@@ -110,7 +110,7 @@ case class ClientCardMetadata(
 
     val coverCardImages = (coverCardMobileImage, coverCardTabletImage) match {
       case (None, None) => None
-      case _ =>
+      case _            =>
         Some(CoverCardImages(coverCardMobileImage, coverCardTabletImage))
     }
 
