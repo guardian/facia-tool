@@ -151,7 +151,7 @@ interface FeastCollectionTheme {
 	id: string;
 	lightPalette: Palette;
 	darkPalette: Palette;
-	imageUrl?: string;
+	imageURL?: string;
 }
 
 interface FeastPackageMetadata {
@@ -161,12 +161,28 @@ interface FeastPackageMetadata {
 	excludedRegions?: string[];
 }
 
-interface ClientPackageCard {
+interface ClientPackageCardBase {
 	id: string;
-	cardType: 'recipe' | 'chef' | 'subcollection';
 	addedOn: number; //millis since epoch
-	metadata?: ChefCardMeta | FeastCollectionCardMeta; //TODO
 }
+
+interface ClientPackageRecipeCard extends ClientPackageCardBase {
+	cardType: 'recipe';
+}
+
+interface ClientPackageChefCard extends ClientPackageCardBase {
+	cardType: 'chef';
+	metadata?: ChefCardMeta;
+}
+interface ClientPackageSubcollectionCard extends ClientPackageCardBase {
+	cardType: 'subcollection';
+	metadata?: FeastCollectionCardMeta;
+}
+
+type ClientPackageCard =
+	| ClientPackageRecipeCard
+	| ClientPackageChefCard
+	| ClientPackageSubcollectionCard;
 
 interface ClientPackage {
 	id: string;
