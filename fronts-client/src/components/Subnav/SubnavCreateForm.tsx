@@ -52,7 +52,6 @@ import {
 	CreateFormPreviewTitleRow,
 	CreateFormPreviewTitle,
 	CreateFormPreviewToolbar,
-	CreateFormPreviewButton,
 	CreateFormPreviewViewport,
 	CreateFormPreviewScaler,
 	CreateFormPreviewPlaceholder,
@@ -612,19 +611,19 @@ const SubnavCreateForm = ({
 						<CreateFormPreviewHeader>
 							<CreateFormPreviewTitleRow>
 								<CreateFormPreviewTitle>Preview</CreateFormPreviewTitle>
-								<CreateFormPreviewButton
-									type="button"
+								<Button
+									variant="secondary"
+									size="sm"
+									icon={<FiRefreshCw />}
 									aria-label="Refresh preview"
-									title="Refresh preview"
-									onClick={() => {
+									onPress={() => {
 										setPreviewNonce((n) => n + 1);
 										setPreviewCountdown(null);
 									}}
-									disabled={!previewUrl}
+									isDisabled={!previewUrl}
 								>
-									<FiRefreshCw />
 									Refresh
-								</CreateFormPreviewButton>
+								</Button>
 							</CreateFormPreviewTitleRow>
 							{previewCountdown !== null && (
 								<CreateFormPreviewNotice>
@@ -637,18 +636,16 @@ const SubnavCreateForm = ({
 							)}
 							<CreateFormPreviewToolbar>
 								{breakpointOptions.map((option) => (
-									<CreateFormPreviewButton
+									<Button
 										key={option.id}
-										type="button"
-										active={breakpoint === option.id}
-										aria-pressed={breakpoint === option.id}
+										variant={breakpoint === option.id ? 'primary' : 'secondary'}
+										size="sm"
+										icon={option.icon}
 										aria-label={option.label}
-										title={option.label}
-										onClick={() => setBreakpoint(option.id)}
+										onPress={() => setBreakpoint(option.id)}
 									>
-										{option.icon}
 										{option.label}
-									</CreateFormPreviewButton>
+									</Button>
 								))}
 							</CreateFormPreviewToolbar>
 						</CreateFormPreviewHeader>

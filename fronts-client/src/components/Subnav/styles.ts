@@ -330,27 +330,6 @@ export const CreateFormPreviewToolbar = styled.div`
 	gap: 4px;
 `;
 
-export const CreateFormPreviewButton = styled.button<{ active?: boolean }>`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	gap: 6px;
-	padding: 6px 12px;
-	font-size: 13px;
-	font-weight: 600;
-	border: 1px solid ${({ theme }) => theme.base.colors.borderColor};
-	border-radius: 4px;
-	cursor: pointer;
-	color: ${({ active, theme }) =>
-		active
-			? theme.base.colors.backgroundColorLight
-			: theme.base.colors.textDark};
-	background-color: ${({ active, theme }) =>
-		active
-			? theme.base.colors.textDark
-			: theme.base.colors.backgroundColorLight};
-`;
-
 // Centres the scaled preview device; the frame is scaled to fit via JS.
 export const CreateFormPreviewViewport = styled.div`
 	flex: 1;
