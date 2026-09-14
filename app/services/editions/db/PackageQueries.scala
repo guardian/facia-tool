@@ -5,7 +5,12 @@ import logging.Logging
 import model.editions.EditionsFeastCollectionMetadata
 import model.forms.GetPackagesFilter
 import model.packages._
-import model.packages.client.CreatePackageRequest
+import model.packages.client.{
+  AddContentItem,
+  ClientPackageCard,
+  CreatePackageRequest,
+  RemoveContentItem
+}
 import play.api.libs.json._
 import services.editions.db.PackageQueries.OrderingField
 
@@ -321,6 +326,37 @@ trait PackageQueries extends MetadataHelpers with Logging {
 		 updated_by=$userName,
 		 updated_email=$userEmail
        WHERE id=${packageId.toString}""".update
+      .apply()
+  }
+
+  def updatePackageContent(
+      packageId: UUID,
+      adds: Seq[AddContentItem],
+      removes: Seq[RemoveContentItem],
+      userName: String,
+      userEmail: String
+  ) = DB localTx { implicit session =>
+    val nowTS = Timestamp.from(Instant.now())
+    removes.foreach(rem =>
+      sql"DELETE from package_cards WHERE page_code=${rem.itemId} AND package_id=${packageId.toString}".update
+        .apply()
+    )
+    val packageCards = adds.map(a =>
+      ClientPackageCard.toPackageCard(
+        a.item,
+        packageId,
+        a.atIndex,
+        userName,
+        userEmail
+      )
+    )
+    packageCards.foreach(card => {
+      sql"""INSERT INTO package_cards (package_id, card_type, page_code, index, metadata, added_on, added_by, added_email)
+	  VALUES (${packageId.toString}, ${card.cardType.toString}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
+        .apply()
+    })
+
+    sql"UPDATE packages SET updated_on=${nowTS}, updated_by=$userName, updated_email=$userEmail WHERE id=${packageId.toString}".update
       .apply()
   }
 

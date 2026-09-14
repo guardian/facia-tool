@@ -10,10 +10,14 @@ import model.packages.{
   WebPackageMetadata
 }
 import model.packages.client.{
+  AddContentItem,
   ClientPackage,
   ClientPackageCard,
   ClientPackageHeader,
   CreatePackageRequest,
+  PatchContentItem,
+  PatchContentRequest,
+  RemoveContentItem,
   UpdateRegionsRequest
 }
 import org.postgresql.util.PSQLException
@@ -393,6 +397,55 @@ class PackageController(
               )
           }
         }
+      } catch {
+        case err: PSQLException =>
+          psqlErrorHandler(err)
+        case err: Throwable =>
+          genericErrorHandler(err)
+      }
+    }
+
+  def updatePackageContent(packageId: UUID) =
+    EditEditionsAuthAction(parse.json[PatchContentRequest]) { req =>
+      val deduplicatedOps =
+        req.body.ops.foldLeft[Map[String, PatchContentItem]](Map.empty)(
+          (acc, elem) => {
+            elem.opType match {
+              case "Add" => // multiple adds stack
+                val addRequest = elem.asInstanceOf[AddContentItem]
+                acc ++ Map(addRequest.item.id -> addRequest)
+              case "Remove" => // a Remove following an Add removes. An Add following a Remove adds;
+                val removeRequest = elem.asInstanceOf[RemoveContentItem]
+                acc.removed(removeRequest.itemId)
+            }
+          }
+        )
+
+      val adds = deduplicatedOps.valuesIterator
+        .collect({ case add: AddContentItem =>
+          add
+        })
+        .toSeq
+      val removes = deduplicatedOps.valuesIterator
+        .collect({ case remove: RemoveContentItem =>
+          remove
+        })
+        .toSeq
+      try {
+        db.updatePackageContent(
+          packageId,
+          adds,
+          removes,
+          req.user.username,
+          req.user.email
+        )
+        Ok(
+          Json.obj(
+            "status" -> "ok",
+            "added" -> adds.length,
+            "removed" -> removes.length
+          )
+        )
       } catch {
         case err: PSQLException =>
           psqlErrorHandler(err)

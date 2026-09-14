@@ -49,3 +49,5 @@ to make it easier for users to manage a large set of packages that don't live wi
 `CreatePackageRequest` and creates a new package with that information.  There is a crucial difference, though -
 it expects to receive a UUID for the new package from the frontend and will return 409 Conflict if that UUID already
 exists on another package
+- `PATCH /packages/:id/content` is a new endpoint which allows you to submit a PatchContentRequest. This is a list
+of add/remove operations for a package's content, applied in order (so Add then Remove is a no-op, Remove then Add is an Add)
