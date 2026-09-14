@@ -7,6 +7,7 @@ sealed trait PackageMetadata
 
 case class FeastPackageMetadata(
     theme: Option[FeastCollectionTheme] = None,
+    bodyText: Option[String] = None,
     targetedRegions: Option[Seq[String]] = None,
     excludedRegions: Option[Seq[String]] = None
 ) extends PackageMetadata
