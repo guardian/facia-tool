@@ -9,6 +9,7 @@ import model.packages.client.CreatePackageRequest
 import play.api.libs.json._
 import services.editions.db.PackageQueries.OrderingField
 
+import java.sql.Timestamp
 import java.time.{Instant, OffsetDateTime}
 import java.time.temporal.ChronoUnit
 import java.util.UUID
@@ -53,7 +54,8 @@ trait PackageQueries extends MetadataHelpers with Logging {
         }
 
         val maybeTitleCondition = searchByTitle.map { titleSearch =>
-          sqls"title like %$titleSearch%"
+          val param = s"%$titleSearch%"
+          sqls"name like $param"
         }
 
         val whereSql =
@@ -109,9 +111,10 @@ trait PackageQueries extends MetadataHelpers with Logging {
     		 updated_on=$lastUpdated,
       	     updated_by=$userName,
              updated_email=$userEmail
-		  WHERE id=$packageId""".execute.apply()
+		  WHERE id=${packageId.toString}""".execute.apply()
     val updatedPackages =
-      fetchPackageMetaSql(where = sqls"WHERE id = $packageId").apply()
+      fetchPackageMetaSql(where = sqls"WHERE id = ${packageId.toString}")
+        .apply()
 
     assert(
       updatedPackages.size == 1,
@@ -175,10 +178,11 @@ trait PackageQueries extends MetadataHelpers with Logging {
   ) = {
     val metaPg = toPGobject(PackageMetadata.format.writes(newMeta))
     val fieldName = newMeta match {
-      case _: FeastPackageMetadata => "feast_metadata"
-      case _: WebPackageMetadata   => "web_metadata"
+      // sqls is needed to inject the column names by value into the sql rather than as parameterised value
+      case _: FeastPackageMetadata => sqls"feast_metadata"
+      case _: WebPackageMetadata   => sqls"web_metadata"
     }
-    val nowTime = Instant.now().toEpochMilli
+    val nowTime = Timestamp.from(Instant.now())
     DB localTx { implicit session =>
       sql"""UPDATE packages SET
      	$fieldName = $metaPg,
@@ -220,7 +224,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
 
       // 3. Delete removed cards safely
       if (idsToRemove.nonEmpty) {
-        sql"DELETE FROM package_cards WHERE page_code IN (${idsToRemove.toSeq})".update
+        sql"DELETE FROM package_cards WHERE page_code IN (${idsToRemove.toSeq}) AND package_id=${packageMeta.id}".update
           .apply()
       }
 
@@ -228,7 +232,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
       toUpdate.foreach { card =>
         sql"""UPDATE package_cards
 	  SET index = ${card.index}, metadata = ${card.metadataPG}
-	  WHERE package_id = ${packageMeta.id} AND pageCode = ${card.pageCode}"""".update
+	  WHERE package_id = ${packageMeta.id} AND page_code = ${card.pageCode}"""".update
           .apply()
       }
 
@@ -309,10 +313,11 @@ trait PackageQueries extends MetadataHelpers with Logging {
       userName: String,
       userEmail: String
   ) = DB localTx { implicit session =>
-    val now = Instant.now().toEpochMilli
+    val now = Instant.now()
+    val nowTS = Timestamp.from(now)
     sql"""UPDATE packages SET
     	 is_hidden=$newValue ,
-		 updated_at=$now,
+		 updated_on=$nowTS,
 		 updated_by=$userName,
 		 updated_email=$userEmail
        WHERE id=${packageId.toString}""".update
@@ -372,10 +377,8 @@ trait PackageQueries extends MetadataHelpers with Logging {
     val sql =
       sql"""
  			SELECT
-    			id,
         		package_id,
  				card_type,
- 				state,
  				page_code,
      			index,
      			metadata,
@@ -426,7 +429,7 @@ object PackageQueries {
     def fromString(str: String): Option[OrderingField] = str match {
       case "created" | "created_on" => Some(CreatedOn)
       case "updated" | "updated_on" => Some(UpdatedOn)
-      case "title"                  => Some(Title)
+      case "name"                   => Some(Title)
       case _                        => None
     }
   }
