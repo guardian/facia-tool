@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { css } from '@emotion/react';
 import v4 from 'uuid/v4';
 import {
@@ -7,7 +8,14 @@ import {
 	DropResult,
 	Droppable,
 } from 'react-beautiful-dnd';
-import { FiMinusCircle, FiPlusCircle } from 'react-icons/fi';
+import {
+	FiMinusCircle,
+	FiMonitor,
+	FiPlusCircle,
+	FiRefreshCw,
+	FiSmartphone,
+	FiTablet,
+} from 'react-icons/fi';
 import { FaGripVertical } from 'react-icons/fa';
 import {
 	SidebarStepperNavigation,
@@ -18,6 +26,8 @@ import { TextArea } from '@guardian/stand/TextArea';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
 import { Grid, Item } from '@guardian/stand/Grid';
+import { Typography } from '@guardian/stand/Typography';
+import { selectShouldUseCODELinks } from 'selectors/configSelectors';
 import {
 	CustomSubnav,
 	SubnavLink,
@@ -37,13 +47,25 @@ import {
 	CreateFormActions,
 	SubnavCreateFormPage,
 	CreateFormSidebar,
+	CreateFormPreview,
+	CreateFormPreviewHeader,
+	CreateFormPreviewTitleRow,
+	CreateFormPreviewTitle,
+	CreateFormPreviewToolbar,
+	CreateFormPreviewViewport,
+	CreateFormPreviewScaler,
+	CreateFormPreviewPlaceholder,
+	CreateFormPreviewFrame,
+	CreateFormPreviewNotice,
+	CreateFormPreviewSpinner,
 	ColumnHeaders,
 	ColumnHeadersSpacer,
 	ColumnHeaderLabel,
 } from './styles';
 
 interface SubnavCreateFormProps {
-	onCreate: (subnav: CustomSubnav) => Promise<void> | void;
+	onSaveDraft: (subnav: CustomSubnav) => Promise<void>;
+	onPublish: (id: string) => Promise<void>;
 	saving: boolean;
 }
 
@@ -70,6 +92,22 @@ const pageTypeOptions: { value: TargetedPageType; label: string }[] = [
 const emptyLink = (): LinkRow => ({ id: v4(), linkText: '', dotcomPath: '' });
 const emptyPage = (): TargetedPage => ({ type: 'front', path: '' });
 
+// The preview origin can take up to ~a minute to pick up a saved draft.
+const PREVIEW_PROPAGATION_SECONDS = 60;
+
+type Breakpoint = 'mobile' | 'tablet' | 'desktop';
+
+const breakpointOptions: {
+	id: Breakpoint;
+	label: string;
+	width: number;
+	icon: React.ReactNode;
+}[] = [
+	{ id: 'mobile', label: 'Mobile', width: 375, icon: <FiSmartphone /> },
+	{ id: 'tablet', label: 'Tablet', width: 740, icon: <FiTablet /> },
+	{ id: 'desktop', label: 'Desktop', width: 1300, icon: <FiMonitor /> },
+];
+
 const gridTheme = {
 	shared: {
 		display: 'flex',
@@ -90,7 +128,11 @@ const stepperOverrides = css`
 	}
 `;
 
-const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
+const SubnavCreateForm = ({
+	onSaveDraft,
+	onPublish,
+	saving,
+}: SubnavCreateFormProps) => {
 	const [currentStepId, setCurrentStepId] = useState<StepId>('header');
 	const [headerText, setHeaderText] = useState('');
 	const [headerCopy, setHeaderCopy] = useState('');
@@ -98,6 +140,48 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 	const [links, setLinks] = useState<LinkRow[]>([emptyLink()]);
 	const [pages, setPages] = useState<TargetedPage[]>([emptyPage()]);
 	const [error, setError] = useState<string | null>(null);
+	const [breakpoint, setBreakpoint] = useState<Breakpoint>('desktop');
+	// Bumped to force the preview iframe to reload once DCR has polled the draft.
+	const [previewNonce, setPreviewNonce] = useState(0);
+	// Seconds left in the post-save propagation window; null when not waiting.
+	const [previewCountdown, setPreviewCountdown] = useState<number | null>(null);
+
+	// Stable id so repeated saves update the same draft and publish targets it.
+	const subnavId = useRef(v4());
+	const [savedSubnav, setSavedSubnav] = useState<CustomSubnav | null>(null);
+	const useCODELinks = useSelector(selectShouldUseCODELinks);
+
+	const previewViewportRef = useRef<HTMLDivElement>(null);
+	const [previewViewport, setPreviewViewport] = useState({
+		width: 0,
+		height: 0,
+	});
+
+	// Track the available preview area so the device can be scaled to fit it.
+	useEffect(() => {
+		const el = previewViewportRef.current;
+		if (!el) {
+			return;
+		}
+		const observer = new ResizeObserver(([entry]) => {
+			setPreviewViewport({
+				width: entry.contentRect.width,
+				height: entry.contentRect.height,
+			});
+		});
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, []);
+
+	const previewWidth =
+		breakpointOptions.find((o) => o.id === breakpoint)?.width ?? 1300;
+	// Shrink oversized devices to fit; never enlarge past 1:1.
+	const previewScale =
+		previewViewport.width > 0
+			? Math.min(1, previewViewport.width / previewWidth)
+			: 1;
+	const previewHeight =
+		previewScale > 0 ? previewViewport.height / previewScale : 0;
 
 	const sectionRefs = useRef<Partial<Record<StepId, HTMLElement | null>>>({});
 	const setSectionRef = (id: StepId) => (el: HTMLElement | null) => {
@@ -192,34 +276,14 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 	const removePage = (index: number) =>
 		setPages((prev) => prev.filter((_, i) => i !== index));
 
-	const handleCreate = async () => {
-		if (!hasHeader) {
-			setError('Header text is required.');
-			scrollToStep('header');
-			return;
-		}
-
-		if (!hasLink) {
-			setError('Add at least one nav item.');
-			scrollToStep('links');
-			return;
-		}
-
-		const cleanedPages = pages.filter((page) => page.path.trim());
-		if (cleanedPages.length === 0) {
-			setError('Add at least one targeted page where the subnav will show.');
-			scrollToStep('pages');
-			return;
-		}
-
-		setError(null);
-
+	const buildSubnav = (): CustomSubnav => {
 		const cleanedLinks = links.filter(
 			(link) => link.linkText.trim() || link.dotcomPath.trim(),
 		);
+		const cleanedPages = pages.filter((page) => page.path.trim());
 
-		const subnav: CustomSubnav = {
-			id: v4(),
+		return {
+			id: subnavId.current,
 			header: {
 				headerText: headerText.trim(),
 				dotcomPath: headerDotcomPath.trim() || undefined,
@@ -240,11 +304,73 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 			updatedBy: '',
 			updatedEmail: '',
 		};
+	};
 
+	// Content-only signature so dirty checks ignore audit/timestamp fields.
+	const signature = (subnav: CustomSubnav) =>
+		JSON.stringify({
+			header: subnav.header,
+			format: subnav.format,
+			links: subnav.links,
+			pages: subnav.pages,
+			images: subnav.images,
+			palette: subnav.palette,
+		});
+
+	const currentSubnav = buildSubnav();
+	const hasDraft = savedSubnav !== null;
+	const isDirty =
+		!savedSubnav || signature(currentSubnav) !== signature(savedSubnav);
+	const requiredComplete = hasHeader && hasLink && hasPage;
+	const canSaveDraft = hasHeader && isDirty && !saving;
+	const canPublish = hasDraft && !isDirty && requiredComplete && !saving;
+
+	const previewDomain = useCODELinks
+		? 'preview.code.dev-gutools.co.uk'
+		: 'preview.gutools.co.uk';
+	const savedFirstPagePath = savedSubnav?.pages[0]?.path;
+	const previewUrl = savedFirstPagePath
+		? `https://${previewDomain}/${savedFirstPagePath.replace(/^\//, '')}?cacheBust=${previewNonce}`
+		: null;
+	const savedPagesSummary = savedSubnav?.pages
+		.map((page) => page.path)
+		.join(', ');
+
+	const handleSaveDraft = async () => {
+		setError(null);
+		const subnav = currentSubnav;
 		try {
-			await onCreate(subnav);
+			await onSaveDraft(subnav);
+			setSavedSubnav(subnav);
+			setPreviewCountdown(PREVIEW_PROPAGATION_SECONDS);
 		} catch (e) {
-			console.error('Failed to create subnav', e);
+			console.error('Failed to save subnav draft', e);
+		}
+	};
+
+	// The web platform should pick up on subnav changes after a minute or so. Count down the propagation window, then auto-reload the frame once.
+	useEffect(() => {
+		if (previewCountdown === null) {
+			return;
+		}
+		if (previewCountdown <= 0) {
+			setPreviewNonce((n) => n + 1);
+			setPreviewCountdown(null);
+			return;
+		}
+		const timer = setTimeout(
+			() => setPreviewCountdown((s) => (s === null ? null : s - 1)),
+			1000,
+		);
+		return () => clearTimeout(timer);
+	}, [previewCountdown]);
+
+	const handlePublish = async () => {
+		setError(null);
+		try {
+			await onPublish(subnavId.current);
+		} catch (e) {
+			console.error('Failed to publish subnav', e);
 		}
 	};
 
@@ -448,19 +574,110 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 							onFocus={() => setCurrentStepId('review')}
 						>
 							<SubnavContainerHeading>Publish</SubnavContainerHeading>
+							<Typography element="p" variant="bodySm">
+								Save a draft to preview the subnav in the panel on the right,
+								then publish when you are ready.
+							</Typography>
 							{error && <ErrorMessage>{error}</ErrorMessage>}
+							{hasDraft && (
+								<Typography element="p" variant="bodySm">
+									Publishing will make this subnav live on its assigned pages
+									{savedPagesSummary ? `: ${savedPagesSummary}` : ''}.
+								</Typography>
+							)}
 							<CreateFormActions>
+								<Button
+									variant="secondary"
+									size="sm"
+									onPress={handleSaveDraft}
+									isDisabled={!canSaveDraft}
+								>
+									{saving ? 'Saving…' : 'Save draft'}
+								</Button>
 								<Button
 									variant="primary"
 									size="sm"
-									onPress={handleCreate}
-									isDisabled={saving}
+									onPress={handlePublish}
+									isDisabled={!canPublish}
 								>
-									{saving ? 'Creating…' : 'Create subnav'}
+									{saving ? 'Publishing…' : 'Publish subnav'}
 								</Button>
 							</CreateFormActions>
 						</CreateFormSection>
 					</CreateFormMain>
+				</Item>
+				<Item size={{ sm: 12, lg: 'grow' }}>
+					<CreateFormPreview>
+						<CreateFormPreviewHeader>
+							<CreateFormPreviewTitleRow>
+								<CreateFormPreviewTitle>Preview</CreateFormPreviewTitle>
+								<Button
+									variant="secondary"
+									size="sm"
+									icon={<FiRefreshCw />}
+									aria-label="Refresh preview"
+									onPress={() => {
+										setPreviewNonce((n) => n + 1);
+										setPreviewCountdown(null);
+									}}
+									isDisabled={!previewUrl}
+								>
+									Refresh
+								</Button>
+							</CreateFormPreviewTitleRow>
+							{previewCountdown !== null && (
+								<CreateFormPreviewNotice>
+									<CreateFormPreviewSpinner>
+										<FiRefreshCw />
+									</CreateFormPreviewSpinner>
+									Draft saved. The preview can take up to a minute to update —
+									refreshing in {previewCountdown}s.
+								</CreateFormPreviewNotice>
+							)}
+							<CreateFormPreviewToolbar>
+								{breakpointOptions.map((option) => (
+									<Button
+										key={option.id}
+										variant={breakpoint === option.id ? 'primary' : 'secondary'}
+										size="sm"
+										icon={option.icon}
+										aria-label={option.label}
+										onPress={() => setBreakpoint(option.id)}
+									>
+										{option.label}
+									</Button>
+								))}
+							</CreateFormPreviewToolbar>
+						</CreateFormPreviewHeader>
+						<CreateFormPreviewViewport ref={previewViewportRef}>
+							{previewUrl ? (
+								<CreateFormPreviewScaler
+									style={{
+										width: previewWidth * previewScale,
+										height: previewViewport.height,
+									}}
+								>
+									<CreateFormPreviewFrame
+										title="Subnav preview"
+										src={previewUrl}
+										// Trusted Guardian preview origin, but sandboxed for defence-in-depth;
+										// allow-same-origin is kept so pan-domain auth cookies/storage still work.
+										sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+										referrerPolicy="no-referrer"
+										style={{
+											width: previewWidth,
+											height: previewHeight,
+											transform: `scale(${previewScale})`,
+										}}
+									/>
+								</CreateFormPreviewScaler>
+							) : (
+								<CreateFormPreviewPlaceholder>
+									No draft subnav to display
+								</CreateFormPreviewPlaceholder>
+							)}
+						</CreateFormPreviewViewport>
+					</CreateFormPreview>
 				</Item>
 			</Grid>
 		</SubnavCreateFormPage>
