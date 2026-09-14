@@ -7,6 +7,7 @@ import model.forms.GetPackagesFilter
 import model.packages._
 import model.packages.client.CreatePackageRequest
 import play.api.libs.json._
+import services.editions.db.PackageQueries.OrderingField
 
 import java.time.{Instant, OffsetDateTime}
 import java.time.temporal.ChronoUnit
@@ -28,8 +29,11 @@ trait PackageQueries extends MetadataHelpers with Logging {
     */
   def getPackages(
       packageIds: Option[Seq[UUID]],
-      lastModified: Option[OffsetDateTime],
-      strictTimestamp: Boolean
+      lastModified: Option[OffsetDateTime] = None,
+      strictTimestamp: Boolean = false,
+      searchByTitle: Option[String] = None,
+      orderBy: OrderingField = PackageQueries.CreatedOn,
+      limit: Int = 200
   ): Seq[Package] =
     DB readOnly { implicit session =>
       {
@@ -48,18 +52,29 @@ trait PackageQueries extends MetadataHelpers with Logging {
           }
         }
 
+        val maybeTitleCondition = searchByTitle.map { titleSearch =>
+          sqls"title like %$titleSearch%"
+        }
+
         val whereSql =
-          sqls.toAndConditionOpt(maybeIdCondition, maybeDateCondition) match {
+          sqls.toAndConditionOpt(
+            maybeIdCondition,
+            maybeDateCondition,
+            maybeTitleCondition
+          ) match {
             case Some(condition) => sqls"WHERE $condition"
             case None            => sqls""
           }
 
         fetchPackageMetaSql(
           where = whereSql,
-          orderBy = sqls"""ORDER BY created_on DESC LIMIT 200"""
+          orderBy = sqls"""ORDER BY ${orderBy.toString} DESC LIMIT $limit"""
         ).apply()
       }
     }
+
+  def getPackageById(packageId: UUID): Option[Package] =
+    getPackages(Some(Seq(packageId)), None).headOption
 
   def getPackageCards(packageId: UUID): Seq[PackageCardRow] = DB readOnly {
     implicit session =>
@@ -392,5 +407,27 @@ trait PackageQueries extends MetadataHelpers with Logging {
         )
       })
       .list
+  }
+}
+
+object PackageQueries {
+  sealed trait OrderingField
+  case object CreatedOn extends OrderingField {
+    override def toString = "created_on"
+  }
+  case object UpdatedOn extends OrderingField {
+    override def toString = "updated_on"
+  }
+  case object Title extends OrderingField {
+    override def toString = "title"
+  }
+
+  object OrderingField {
+    def fromString(str: String): Option[OrderingField] = str match {
+      case "created" | "created_on" => Some(CreatedOn)
+      case "updated" | "updated_on" => Some(UpdatedOn)
+      case "title"                  => Some(Title)
+      case _                        => None
+    }
   }
 }

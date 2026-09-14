@@ -18,7 +18,7 @@ import model.packages.client.{
 }
 import org.postgresql.util.PSQLException
 import services.Capi
-import services.editions.db.FaciaDB
+import services.editions.db.{FaciaDB, PackageQueries}
 import services.editions.publishing.Publishing
 import play.api.libs.json._
 
@@ -58,49 +58,69 @@ class PackageController(
     val maybeDate =
       req.getQueryString("date").map(OffsetDateTime.parse(_, dateFormatter))
     val strictDate = req.getQueryString("strict").isDefined
+    val maybeTitleSearch = req.getQueryString("title")
+    val limit = req.getQueryString("limit").map(_.toInt).getOrElse(200)
 
-    try {
-      val pkgs = db.getPackages(idList, maybeDate, strictDate)
-      if (full) {
-        val clientPkgs = pkgs.map { pkg =>
-          val cards = db
-            .getPackageCards(java.util.UUID.fromString(pkg.id))
-            .map(model.packages.client.ClientPackageCard.fromPackageCard)
-            .toList
-          ClientPackage.fromPackage(pkg, cards)
-        }
+    val orderBy = req
+      .getQueryString("order")
+      .flatMap(PackageQueries.OrderingField.fromString)
+      .getOrElse(PackageQueries.CreatedOn)
 
-        Ok(
-          Json.obj(
-            "status" -> JsString("ok"),
-            "packages" -> JsArray(clientPkgs.map(ClientPackage.format.writes))
-          )
+    if (limit > 500) {
+      BadRequest(
+        Json.obj("status" -> "error", "detail" -> "limit is too large")
+      )
+    } else {
+      try {
+        val pkgs = db.getPackages(
+          idList,
+          maybeDate,
+          strictDate,
+          maybeTitleSearch,
+          orderBy,
+          limit
         )
-      } else {
-        val clientPkgs = pkgs.map(ClientPackageHeader.fromPackage)
-        Ok(
-          Json.obj(
-            "status" -> JsString("ok"),
-            "packages" -> JsArray(
-              clientPkgs.map(ClientPackageHeader.format.writes)
+        if (full) {
+          val clientPkgs = pkgs.map { pkg =>
+            val cards = db
+              .getPackageCards(java.util.UUID.fromString(pkg.id))
+              .map(model.packages.client.ClientPackageCard.fromPackageCard)
+              .toList
+            ClientPackage.fromPackage(pkg, cards)
+          }
+
+          Ok(
+            Json.obj(
+              "status" -> JsString("ok"),
+              "packages" -> JsArray(clientPkgs.map(ClientPackage.format.writes))
             )
           )
-        )
-      }
-    } catch {
-      case err: PSQLException =>
-        logger.error(s"Could not list packages: ${err.getMessage}", err)
-        psqlErrorHandler(err)
-      case err: Throwable =>
-        logger.error(s"Could not list packages: ${err.getMessage}", err)
-        InternalServerError(
-          Json.obj(
-            "status" -> JsString("error"),
-            "detail" -> JsString(
-              err.getMessage
-            ) // TODO - tighten this up when we are done testing
+        } else {
+          val clientPkgs = pkgs.map(ClientPackageHeader.fromPackage)
+          Ok(
+            Json.obj(
+              "status" -> JsString("ok"),
+              "packages" -> JsArray(
+                clientPkgs.map(ClientPackageHeader.format.writes)
+              )
+            )
           )
-        )
+        }
+      } catch {
+        case err: PSQLException =>
+          logger.error(s"Could not list packages: ${err.getMessage}", err)
+          psqlErrorHandler(err)
+        case err: Throwable =>
+          logger.error(s"Could not list packages: ${err.getMessage}", err)
+          InternalServerError(
+            Json.obj(
+              "status" -> JsString("error"),
+              "detail" -> JsString(
+                err.getMessage
+              ) // TODO - tighten this up when we are done testing
+            )
+          )
+      }
     }
   }
 
@@ -189,8 +209,7 @@ class PackageController(
 
   def getPackage(id: java.util.UUID) = EditEditionsAuthAction { req =>
     try {
-      val pkg =
-        db.getPackages(Some(Seq(id)), None, strictTimestamp = false).headOption
+      val pkg = db.getPackageById(id)
       pkg match {
         case Some(p) =>
           val cards = db
@@ -354,7 +373,7 @@ class PackageController(
             )
           )
         } else {
-          db.getPackages(Some(Seq(id)), None, true).headOption match {
+          db.getPackageById(id) match {
             case Some(updatedPkg) =>
               val updatedCards = db.getPackageCards(id)
               val clientPackage = ClientPackage.fromPackage(
