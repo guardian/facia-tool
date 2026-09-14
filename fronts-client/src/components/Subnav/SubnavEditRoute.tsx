@@ -2,17 +2,11 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { useParams } from 'react-router';
 import { subnavRoutes } from 'routes/routes';
-import { SubnavFormView } from './SubnavFormView';
-import { SubnavStatusActions, SubnavStatusTags } from './SubnavStatusActions';
+import SubnavForm from './SubnavForm';
+import { deleteSubnav, discardSubnav, unpublishSubnav } from './subnavApi';
 import { findSubnav, RunAction } from './helpers';
 import { CustomSubnav, CustomSubnavConfig } from './types';
-import {
-	EditStatusBar,
-	ListItemActions,
-	Message,
-	SubnavContainer,
-	SubnavContainerHeading,
-} from './styles';
+import { Message, SubnavContainer, SubnavContainerHeading } from './styles';
 
 interface SubnavEditRouteProps {
 	config: CustomSubnavConfig | null;
@@ -20,7 +14,7 @@ interface SubnavEditRouteProps {
 	pendingActionId: string | null;
 	runAction: RunAction;
 	onSave: (subnav: CustomSubnav) => Promise<void>;
-	onCancel: () => void;
+	onPublish: (id: string) => Promise<void>;
 	saving: boolean;
 }
 
@@ -30,7 +24,7 @@ export const SubnavEditRoute = ({
 	pendingActionId,
 	runAction,
 	onSave,
-	onCancel,
+	onPublish,
 	saving,
 }: SubnavEditRouteProps) => {
 	const { id } = useParams<{ id: string }>();
@@ -53,28 +47,40 @@ export const SubnavEditRoute = ({
 	const hasDraft = config.draft.some((s) => s.id === id);
 
 	return (
-		<SubnavFormView
-			heading="Edit custom subnav"
-			statusBar={
-				<EditStatusBar>
-					<div>
-						<SubnavStatusTags hasLive={hasLive} hasDraft={hasDraft} />
-					</div>
-					<ListItemActions>
-						<SubnavStatusActions
-							id={id}
-							hasLive={hasLive}
-							hasDraft={hasDraft}
-							isBusy={pendingActionId === id}
-							runAction={runAction}
-						/>
-					</ListItemActions>
-				</EditStatusBar>
-			}
+		<SubnavForm
+			// Re-seed the form whenever the server version changes (save, publish,
+			// discard, unpublish) so it always reflects the persisted subnav.
+			key={`${id}:${subnav.lastUpdated}:${hasLive ? 1 : 0}:${hasDraft ? 1 : 0}`}
 			initialSubnav={subnav}
-			onSave={onSave}
-			onCancel={onCancel}
+			onSaveDraft={onSave}
+			onPublish={onPublish}
 			saving={saving}
+			hasLive={hasLive}
+			hasDraft={hasDraft}
+			actionPending={pendingActionId === id}
+			onDiscard={(subnavId) =>
+				runAction(
+					subnavId,
+					discardSubnav,
+					'Discard draft changes and revert to the live version?',
+				)
+			}
+			onUnpublish={(subnavId) =>
+				runAction(
+					subnavId,
+					unpublishSubnav,
+					hasDraft
+						? 'Take this subnav down? You have draft changes — taking it down will undo them.'
+						: 'Take this subnav down? It will no longer show on the targeted pages (kept as a draft).',
+				)
+			}
+			onDelete={(subnavId) =>
+				runAction(
+					subnavId,
+					deleteSubnav,
+					'Delete this subnav entirely? This removes both the live and draft versions.',
+				)
+			}
 		/>
 	);
 };

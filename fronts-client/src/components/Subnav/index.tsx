@@ -6,7 +6,7 @@ import { selectHasSubnavPermission } from 'selectors/configSelectors';
 import { subnavRoutes } from 'routes/routes';
 import { actionAddNotificationBanner } from 'bundles/notificationsBundle';
 import { fetchSubnavConfig, publishSubnav, upsertSubnav } from './subnavApi';
-import SubnavCreateForm from './SubnavCreateForm';
+import SubnavForm from './SubnavForm';
 import { SubnavEditRoute } from './SubnavEditRoute';
 import { SubnavListView } from './SubnavListView';
 import { toListEntries } from './helpers';
@@ -89,7 +89,7 @@ const SubnavSection = () => {
 		}
 	};
 
-	const handlePublishNew = async (id: string) => {
+	const handlePublish = async (id: string) => {
 		setIsSaving(true);
 		try {
 			setSubnavConfig(await publishSubnav(id));
@@ -131,9 +131,9 @@ const SubnavSection = () => {
 		<SubnavRoot>
 			<Switch>
 				<Route {...subnavRoutes.createProps}>
-					<SubnavCreateForm
+					<SubnavForm
 						onSaveDraft={handleSave}
-						onPublish={handlePublishNew}
+						onPublish={handlePublish}
 						saving={isSaving}
 					/>
 				</Route>
@@ -144,7 +144,7 @@ const SubnavSection = () => {
 						pendingActionId={pendingActionId}
 						runAction={runAction}
 						onSave={handleSave}
-						onCancel={goToList}
+						onPublish={handlePublish}
 						saving={isSaving}
 					/>
 				</Route>
