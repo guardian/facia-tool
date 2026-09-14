@@ -57,6 +57,9 @@ import {
 	CreateFormPreviewScaler,
 	CreateFormPreviewPlaceholder,
 	CreateFormPreviewFrame,
+	ColumnHeaders,
+	ColumnHeadersSpacer,
+	ColumnHeaderLabel,
 } from './styles';
 
 interface SubnavCreateFormProps {
@@ -405,7 +408,6 @@ const SubnavCreateForm = ({
 							onFocus={() => setCurrentStepId('links')}
 						>
 							<SubnavContainerHeading>Nav items</SubnavContainerHeading>
-<<<<<<< HEAD
 							<ColumnHeaders>
 								<ColumnHeadersSpacer width={18} aria-hidden />
 								<RowFields>
@@ -414,8 +416,6 @@ const SubnavCreateForm = ({
 								</RowFields>
 								<ColumnHeadersSpacer width={24} aria-hidden />
 							</ColumnHeaders>
-=======
->>>>>>> 162cb8b37b (Style create subnav form)
 							<DragDropContext onDragEnd={moveLink}>
 								<Droppable droppableId="subnav-nav-items">
 									{(dropProvided) => (
@@ -443,10 +443,6 @@ const SubnavCreateForm = ({
 															</DragHandle>
 															<RowFields>
 																<TextInput
-<<<<<<< HEAD
-=======
-																	label={index === 0 ? 'Link text' : undefined}
->>>>>>> 162cb8b37b (Style create subnav form)
 																	aria-label="Link text"
 																	fluid
 																	value={link.linkText}
@@ -455,12 +451,6 @@ const SubnavCreateForm = ({
 																	}
 																/>
 																<TextInput
-<<<<<<< HEAD
-=======
-																	label={
-																		index === 0 ? 'Dotcom path' : undefined
-																	}
->>>>>>> 162cb8b37b (Style create subnav form)
 																	aria-label="Dotcom path"
 																	fluid
 																	value={link.dotcomPath}
