@@ -3,8 +3,10 @@ package model.packages.client
 import play.api.libs.json.{
   Format,
   JsError,
+  JsNumber,
   JsResult,
   JsString,
+  JsSuccess,
   JsValue,
   Json,
   OFormat
@@ -30,7 +32,17 @@ object PatchContentItem {
     override def reads(json: JsValue): JsResult[PatchContentItem] = {
       (json \ opTypeField).validate[String].flatMap {
         case "Add" =>
-          (json \ "item").validate[ClientPackageCard].map(AddContentItem.apply)
+          (
+            (json \ "atIndex").validate[Int],
+            (json \ "item").validate[ClientPackageCard]
+          ) match {
+            case (JsSuccess(atIndex, _), JsSuccess(item, _)) =>
+              JsSuccess(AddContentItem(item, atIndex))
+            case (_, JsError(err)) => // show error for item first
+              JsError(err)
+            case (JsError(err), _) =>
+              JsError(err)
+          }
         case "Remove" =>
           (json \ "itemId").validate[String].map(RemoveContentItem.apply)
         case other => JsError(s"Unknown opType: $other")
@@ -38,9 +50,10 @@ object PatchContentItem {
     }
 
     override def writes(item: PatchContentItem): JsValue = item match {
-      case AddContentItem(contentItem) =>
+      case AddContentItem(contentItem, atIndex) =>
         Json.obj(
           opTypeField -> JsString("Add"),
+          "atIndex" -> JsNumber(atIndex),
           "item" -> Json.toJson(contentItem)
         )
       case RemoveContentItem(itemId) =>

@@ -69,10 +69,8 @@ class PackageDBTest
   private def insertCard(card: PackageCardRow): Unit = {
     DB localTx { implicit session =>
       sql"""INSERT INTO package_cards (
-            id,
             package_id,
             card_type,
-            state,
             page_code,
             index,
             metadata,
@@ -80,10 +78,8 @@ class PackageDBTest
             added_by,
             added_email
           ) VALUES (
-            ${card.id},
             ${card.packageId},
             ${card.cardType.toString},
-            ${card.state},
             ${card.pageCode},
             ${card.index},
             ${card.metadataPG},
@@ -213,16 +209,14 @@ class PackageDBTest
     val packageId = UUID.randomUUID()
     insertPackage(packageId, "Starter package", now.toInstant.toEpochMilli)
 
-    val existingCardId = UUID.randomUUID().toString
-    val removableCardId = UUID.randomUUID().toString
+    val existingPageCode = "recipe-original"
+    val removablePageCode = "chef-remove"
 
     insertCard(
       PackageCardRow(
-        id = existingCardId,
         packageId = packageId.toString,
         cardType = PackageCardType.Recipe,
-        state = "live",
-        pageCode = "recipe-original",
+        pageCode = existingPageCode,
         index = 0,
         metadata = Some(Json.obj("origin" -> "existing")),
         addedOn = now.minusDays(1),
@@ -233,11 +227,9 @@ class PackageDBTest
 
     insertCard(
       PackageCardRow(
-        id = removableCardId,
         packageId = packageId.toString,
         cardType = PackageCardType.Chef,
-        state = "live",
-        pageCode = "chef-remove",
+        pageCode = removablePageCode,
         index = 1,
         metadata = Some(Json.obj("origin" -> "remove")),
         addedOn = now.minusDays(1),
@@ -262,10 +254,8 @@ class PackageDBTest
     )
 
     val updatedExistingCard = PackageCardRow(
-      id = existingCardId,
       packageId = packageId.toString,
       cardType = PackageCardType.Recipe,
-      state = "draft",
       pageCode = "recipe-updated",
       index = 2,
       metadata = Some(Json.obj("origin" -> "updated")),
@@ -275,10 +265,8 @@ class PackageDBTest
     )
 
     val newCard = PackageCardRow(
-      id = UUID.randomUUID().toString,
       packageId = packageId.toString,
       cardType = PackageCardType.Subcollection,
-      state = "live",
       pageCode = "subcollection-new",
       index = 0,
       metadata = Some(Json.obj("origin" -> "new")),
@@ -298,18 +286,19 @@ class PackageDBTest
     loadedPackage.prefill shouldBe Some("updated-prefill")
 
     val loadedCards = editionsDB.getPackageCards(packageId)
-    loadedCards.map(_.id) should contain(existingCardId)
-    loadedCards.map(_.id) should contain(newCard.id)
-    loadedCards.map(_.id) should not contain removableCardId
+    loadedCards.map(_.pageCode) should contain("recipe-updated")
+    loadedCards.map(_.pageCode) should contain(newCard.pageCode)
+    loadedCards.map(_.pageCode) should not contain(removablePageCode)
 
     loadedCards.map(_.index) shouldBe loadedCards.map(_.index).sorted
     loadedCards
-      .find(_.id == existingCardId)
+      .find(_.pageCode == "recipe-updated")
       .value
       .pageCode shouldBe "recipe-updated"
     loadedCards
-      .find(_.id == newCard.id)
+      .find(_.pageCode == newCard.pageCode)
       .value
       .cardType shouldBe PackageCardType.Subcollection
   }
 }
+
