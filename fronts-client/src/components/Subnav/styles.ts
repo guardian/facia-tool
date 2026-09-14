@@ -418,6 +418,36 @@ export const ImagePreviewEmpty = styled.div`
 	border-radius: 4px;
 `;
 
+export const ImageBreakpointCollapsible = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+`;
+
+export const ImageBreakpointToggle = styled.button`
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	align-self: flex-start;
+	background: none;
+	border: none;
+	padding: 0;
+	font-size: 13px;
+	font-weight: 600;
+	color: ${({ theme }) => theme.base.colors.textDark};
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+`;
+
+export const ImageBreakpointToggleIcon = styled.span<{ expanded: boolean }>`
+	display: inline-block;
+	transition: transform 0.15s ease;
+	transform: rotate(${({ expanded }) => (expanded ? '90deg' : '0deg')});
+`;
+
 const spin = keyframes`
 	from { transform: rotate(0deg); }
 	to { transform: rotate(360deg); }

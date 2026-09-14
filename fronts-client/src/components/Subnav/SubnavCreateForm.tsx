@@ -579,7 +579,7 @@ const SubnavCreateForm = ({
 							active={currentStepId === 'images'}
 							onFocus={() => setCurrentStepId('images')}
 						>
-							<SubnavContainerHeading>Images</SubnavContainerHeading>
+							<SubnavContainerHeading>Image (Optional)</SubnavContainerHeading>
 							<SubnavImagesSection images={images} onChange={setImages} />
 						</CreateFormSection>
 
