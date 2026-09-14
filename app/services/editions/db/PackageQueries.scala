@@ -55,7 +55,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
 
         val maybeTitleCondition = searchByTitle.map { titleSearch =>
           val param = s"%$titleSearch%"
-          sqls"name like $param"
+          sqls"name ilike $param"
         }
 
         val whereSql =
