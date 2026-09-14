@@ -205,7 +205,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
 
       // 3. Delete removed cards safely
       if (idsToRemove.nonEmpty) {
-        sql"DELETE FROM package_cards WHERE id IN (${idsToRemove.toSeq})".update
+        sql"DELETE FROM package_cards WHERE page_code IN (${idsToRemove.toSeq})".update
           .apply()
       }
 

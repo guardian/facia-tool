@@ -1,8 +1,11 @@
 import { $Diff } from 'utility-types';
 import {
+	ChefCardMeta,
 	CollectionFromResponse,
+	FeastCollectionCardMeta,
 	GroupConfig,
 	NestedCard,
+	Palette,
 } from 'types/Collection';
 import { EditionsPrefill } from './Edition';
 
@@ -142,6 +145,43 @@ interface EditionCollectionResponse {
 interface VisibleArticlesResponse {
 	desktop: number;
 	mobile: number;
+}
+
+interface FeastCollectionTheme {
+	id: string;
+	lightPalette: Palette;
+	darkPalette: Palette;
+	imageUrl?: string;
+}
+
+interface FeastPackageMetadata {
+	theme?: FeastCollectionTheme;
+	bodyText?: string;
+	targetedRegions?: string[];
+	excludedRegions?: string[];
+}
+
+interface ClientPackageCard {
+	id: string;
+	cardType: 'recipe' | 'chef' | 'subcollection';
+	addedOn: number; //millis since epoch
+	metadata?: ChefCardMeta | FeastCollectionCardMeta; //TODO
+}
+
+interface ClientPackage {
+	id: string;
+	name: string;
+	isHidden: boolean;
+	webMetadata?: unknown; //Stub for future development of Story Packages
+	feastMetadata?: FeastPackageMetadata;
+	prefill?: string;
+	createdOn?: number; //millis since epoch
+	createdBy?: string;
+	createdEmail?: string;
+	updatedOn?: number; //millis since epoch
+	updatedBy?: string;
+	updatedEmail?: string;
+	items: ClientPackageCard[];
 }
 
 export {

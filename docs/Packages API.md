@@ -40,7 +40,7 @@ JSON blob of `UpdateRegionsRequest` and overwrites the region-targeting part of 
 Packages and effectively a no-op for Story Packages, since they do not have the relevant targetting fields
 - `GET /packages/:id` mirrors `GET /editions-api/issues/:id` - it retrieves the metadata and content of the package. Note
 that the payload format is quite different, because a package is similar to a single container rather than an entire issue
-composed of fronts and containrs
+composed of fronts and containers
 - `PUT /packages/:id` mirrors `PUT /editions-api/collections/:collectionId` - it accepts a JSON blob of
 `ClientPackage` and overwrites the entire package with the new data.
 - `GET /packages` works like `GET /editions-api/editions/:edition/issues` but accepts more query parameters in order
