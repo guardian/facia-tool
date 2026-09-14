@@ -1,4 +1,5 @@
 import { styled } from 'constants/theme';
+import { keyframes } from 'styled-components';
 
 // Scopes the @guardian/stand Open Sans font to subnav components only
 export const SubnavRoot = styled.div`
@@ -379,4 +380,27 @@ export const CreateFormPreviewFrame = styled.iframe`
 	border: 0;
 	background: #fff;
 	transform-origin: top left;
+`;
+
+const spin = keyframes`
+	from { transform: rotate(0deg); }
+	to { transform: rotate(360deg); }
+`;
+
+export const CreateFormPreviewNotice = styled.div`
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 8px 12px;
+	font-size: 13px;
+	color: ${({ theme }) => theme.base.colors.textDark};
+	background-color: ${({ theme }) => theme.base.colors.backgroundColorLight};
+	border: 1px solid ${({ theme }) => theme.base.colors.borderColor};
+	border-radius: 4px;
+`;
+
+export const CreateFormPreviewSpinner = styled.span`
+	display: inline-flex;
+	flex-shrink: 0;
+	animation: ${spin} 1s linear infinite;
 `;

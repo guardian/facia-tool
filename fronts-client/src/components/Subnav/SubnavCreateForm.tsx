@@ -57,6 +57,8 @@ import {
 	CreateFormPreviewScaler,
 	CreateFormPreviewPlaceholder,
 	CreateFormPreviewFrame,
+	CreateFormPreviewNotice,
+	CreateFormPreviewSpinner,
 	ColumnHeaders,
 	ColumnHeadersSpacer,
 	ColumnHeaderLabel,
@@ -90,6 +92,9 @@ const pageTypeOptions: { value: TargetedPageType; label: string }[] = [
 
 const emptyLink = (): LinkRow => ({ id: v4(), linkText: '', dotcomPath: '' });
 const emptyPage = (): TargetedPage => ({ type: 'front', path: '' });
+
+// The preview origin can take up to ~a minute to pick up a saved draft.
+const PREVIEW_PROPAGATION_SECONDS = 60;
 
 type Breakpoint = 'mobile' | 'tablet' | 'desktop';
 
@@ -139,6 +144,8 @@ const SubnavCreateForm = ({
 	const [breakpoint, setBreakpoint] = useState<Breakpoint>('desktop');
 	// Bumped to force the preview iframe to reload once DCR has polled the draft.
 	const [previewNonce, setPreviewNonce] = useState(0);
+	// Seconds left in the post-save propagation window; null when not waiting.
+	const [previewCountdown, setPreviewCountdown] = useState<number | null>(null);
 
 	// Stable id so repeated saves update the same draft and publish targets it.
 	const subnavId = useRef(v4());
@@ -336,10 +343,28 @@ const SubnavCreateForm = ({
 		try {
 			await onSaveDraft(subnav);
 			setSavedSubnav(subnav);
+			setPreviewCountdown(PREVIEW_PROPAGATION_SECONDS);
 		} catch (e) {
 			console.error('Failed to save subnav draft', e);
 		}
 	};
+
+	// The web platform should pick up on subnav changes after a minute or so. Count down the propagation window, then auto-reload the frame once.
+	useEffect(() => {
+		if (previewCountdown === null) {
+			return;
+		}
+		if (previewCountdown <= 0) {
+			setPreviewNonce((n) => n + 1);
+			setPreviewCountdown(null);
+			return;
+		}
+		const timer = setTimeout(
+			() => setPreviewCountdown((s) => (s === null ? null : s - 1)),
+			1000,
+		);
+		return () => clearTimeout(timer);
+	}, [previewCountdown]);
 
 	const handlePublish = async () => {
 		setError(null);
@@ -591,13 +616,25 @@ const SubnavCreateForm = ({
 									type="button"
 									aria-label="Refresh preview"
 									title="Refresh preview"
-									onClick={() => setPreviewNonce((n) => n + 1)}
+									onClick={() => {
+										setPreviewNonce((n) => n + 1);
+										setPreviewCountdown(null);
+									}}
 									disabled={!previewUrl}
 								>
 									<FiRefreshCw />
 									Refresh
 								</CreateFormPreviewButton>
 							</CreateFormPreviewTitleRow>
+							{previewCountdown !== null && (
+								<CreateFormPreviewNotice>
+									<CreateFormPreviewSpinner>
+										<FiRefreshCw />
+									</CreateFormPreviewSpinner>
+									Draft saved. The preview can take up to a minute to update —
+									refreshing in {previewCountdown}s.
+								</CreateFormPreviewNotice>
+							)}
 							<CreateFormPreviewToolbar>
 								{breakpointOptions.map((option) => (
 									<CreateFormPreviewButton
