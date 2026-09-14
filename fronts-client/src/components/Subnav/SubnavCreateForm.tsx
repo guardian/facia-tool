@@ -626,6 +626,10 @@ const SubnavCreateForm = ({
 									<CreateFormPreviewFrame
 										title="Subnav preview"
 										src={previewUrl}
+										// Trusted Guardian preview origin, but sandboxed for defence-in-depth;
+										// allow-same-origin is kept so pan-domain auth cookies/storage still work.
+										sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+										referrerPolicy="no-referrer"
 										style={{
 											width: previewWidth,
 											height: previewHeight,
