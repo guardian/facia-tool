@@ -36,8 +36,8 @@ this means that the package should not be shown on any fronts.
 - `PATCH /packages/:id/name` mirrors `PATCH /editions-api/collections/:collectionId/name` - it takes a UTF-8 string of
 the new package name and updates just this field
 - `PATCH /packages/:id/update-regions` mirrors `PATCH /editions-api/collections/:collectionId/update-regions` - it accepts a
-JSON blob of `UpdateRegionsRequest` and overwrites the region-targeting part of the Feast metadata. Effectively a no-op for
-Story Packages.
+JSON blob of `UpdateRegionsRequest` and overwrites the region-targeting part of the Feast metadata. Only valid for Recipe
+Packages and effectively a no-op for Story Packages, since they do not have the relevant targetting fields
 - `GET /packages/:id` mirrors `GET /editions-api/issues/:id` - it retrieves the metadata and content of the package. Note
 that the payload format is quite different, because a package is similar to a single container rather than an entire issue
 composed of fronts and containrs

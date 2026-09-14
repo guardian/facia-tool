@@ -11,6 +11,7 @@ import model.packages.{
 }
 import model.packages.client.{
   ClientPackage,
+  ClientPackageCard,
   ClientPackageHeader,
   CreatePackageRequest,
   UpdateRegionsRequest
@@ -27,7 +28,7 @@ import java.nio.charset.{
   MalformedInputException,
   StandardCharsets
 }
-import java.time.OffsetDateTime
+import java.time.{OffsetDateTime, ZoneId, ZoneOffset}
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 import scala.concurrent.ExecutionContext
@@ -103,6 +104,21 @@ class PackageController(
     }
   }
 
+  private def genericErrorHandler(err: Throwable) = {
+    logger.error(
+      s"Could not update package metadata: ${err.getMessage}",
+      err
+    )
+    InternalServerError(
+      Json.obj(
+        "status" -> JsString("error"),
+        "detail" -> JsString(
+          err.getMessage
+        ) // TODO - tighten this up when we are done testing
+      )
+    )
+  }
+
   private def psqlErrorHandler(err: PSQLException) =
     err.getSQLState match {
       // See https://www.postgresql.org/docs/current/errcodes-appendix.html for a list of codes
@@ -130,6 +146,9 @@ class PackageController(
   def createPackage = EditEditionsAuthAction(parse.json(32768L)) { req =>
     val result = for {
       packageInfo <- Try { req.body.as[CreatePackageRequest] }
+      _ <- Try {
+        UUID.fromString(packageInfo.id)
+      } // validate that the ID is a real UUID
       response <- Try { db.createPackage(packageInfo) }
     } yield response
 
@@ -147,6 +166,14 @@ class PackageController(
         )
       case Failure(err: PSQLException) =>
         psqlErrorHandler(err)
+      case Failure(err: IllegalArgumentException) =>
+        logger.error(s"Invalid UUID when creating package: ${err.getMessage}")
+        BadRequest(
+          Json.obj(
+            "status" -> JsString("bad_request"),
+            "detail" -> JsArray(Seq(JsString("Invalid package ID")))
+          )
+        )
       case Failure(err) =>
         logger.error(s"Could not create package: ${err.getMessage}", err)
         InternalServerError(
@@ -182,15 +209,7 @@ class PackageController(
       }
     } catch {
       case err: Throwable =>
-        logger.error(s"Could not get package: ${err.getMessage}", err)
-        InternalServerError(
-          Json.obj(
-            "status" -> JsString("error"),
-            "detail" -> JsString(
-              err.getMessage
-            ) // TODO - tighten this up when we are done testing
-          )
-        )
+        genericErrorHandler(err)
     }
   }
 
@@ -203,18 +222,7 @@ class PackageController(
         case err: PSQLException =>
           psqlErrorHandler(err)
         case err: Throwable =>
-          logger.error(
-            s"Could not update package metadata: ${err.getMessage}",
-            err
-          )
-          InternalServerError(
-            Json.obj(
-              "status" -> JsString("error"),
-              "detail" -> JsString(
-                err.getMessage
-              ) // TODO - tighten this up when we are done testing
-            )
-          )
+          genericErrorHandler(err)
       }
     }
 
@@ -237,18 +245,7 @@ class PackageController(
         case err: PSQLException =>
           psqlErrorHandler(err)
         case err: Throwable =>
-          logger.error(
-            s"Could not update package metadata: ${err.getMessage}",
-            err
-          )
-          InternalServerError(
-            Json.obj(
-              "status" -> JsString("error"),
-              "detail" -> JsString(
-                err.getMessage
-              ) // TODO - tighten this up when we are done testing
-            )
-          )
+          genericErrorHandler(err)
       }
     }
 
@@ -286,18 +283,7 @@ class PackageController(
           )
         )
       case err: Throwable =>
-        logger.error(
-          s"Could not update package metadata: ${err.getMessage}",
-          err
-        )
-        InternalServerError(
-          Json.obj(
-            "status" -> JsString("error"),
-            "detail" -> JsString(
-              err.getMessage
-            ) // TODO - tighten this up when we are done testing
-          )
-        )
+        genericErrorHandler(err)
     }
 
   }
@@ -340,28 +326,59 @@ class PackageController(
         case err: PSQLException =>
           psqlErrorHandler(err)
         case err: Throwable =>
-          logger.error(
-            s"Could not update package metadata: ${err.getMessage}",
-            err
-          )
-          InternalServerError(
-            Json.obj(
-              "status" -> JsString("error"),
-              "detail" -> JsString(
-                err.getMessage
-              ) // TODO - tighten this up when we are done testing
-            )
-          )
+          genericErrorHandler(err)
       }
     }
 
   def writePackage(id: UUID) =
     EditEditionsAuthAction(parse.json[ClientPackage]) { req =>
-      val dataToWrite = req.body.copy(id = id.toString)
-//      val cardRows = req.body.items.
-//      db.updatePackage(
-//        toPackage(dataToWrite)
-//      )
-      InternalServerError("not implemented")
+      val newMeta = toPackage(req.body.copy(id = id.toString))
+      val cards = req.body.items.zipWithIndex.map({ case (clientCard, idx) =>
+        ClientPackageCard.toPackageCard(
+          clientCard,
+          id,
+          idx,
+          req.user.username,
+          req.user.email,
+          zoneId = Some(ZoneOffset.UTC)
+        )
+      })
+      try {
+        val updated = db.updatePackage(newMeta, cards)
+        if (updated == 0) {
+          logger.logger.info(s"Request to update non-existent package $id")
+          NotFound(
+            Json.obj(
+              "status" -> "not_found",
+              "detail" -> "package ID is not valid"
+            )
+          )
+        } else {
+          db.getPackages(Some(Seq(id)), None, true).headOption match {
+            case Some(updatedPkg) =>
+              val updatedCards = db.getPackageCards(id)
+              val clientPackage = ClientPackage.fromPackage(
+                updatedPkg,
+                updatedCards.map(ClientPackageCard.fromPackageCard).toList
+              )
+              Ok(ClientPackage.format.writes(clientPackage))
+            case None =>
+              logger.error(
+                s"Package $id was deleted immediately after update, this should not happen"
+              )
+              NotFound(
+                Json.obj(
+                  "status" -> "not_found",
+                  "detail" -> "package ID is not valid"
+                )
+              )
+          }
+        }
+      } catch {
+        case err: PSQLException =>
+          psqlErrorHandler(err)
+        case err: Throwable =>
+          genericErrorHandler(err)
+      }
     }
 }
