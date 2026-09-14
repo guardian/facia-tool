@@ -37,6 +37,9 @@ import {
 	CreateFormActions,
 	SubnavCreateFormPage,
 	CreateFormSidebar,
+	ColumnHeaders,
+	ColumnHeadersSpacer,
+	ColumnHeaderLabel,
 } from './styles';
 
 interface SubnavCreateFormProps {
@@ -303,6 +306,14 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 							onFocus={() => setCurrentStepId('links')}
 						>
 							<SubnavContainerHeading>Nav items</SubnavContainerHeading>
+							<ColumnHeaders>
+								<ColumnHeadersSpacer width={18} aria-hidden />
+								<RowFields>
+									<ColumnHeaderLabel>Link text</ColumnHeaderLabel>
+									<ColumnHeaderLabel>Dotcom path</ColumnHeaderLabel>
+								</RowFields>
+								<ColumnHeadersSpacer width={24} aria-hidden />
+							</ColumnHeaders>
 							<DragDropContext onDragEnd={moveLink}>
 								<Droppable droppableId="subnav-nav-items">
 									{(dropProvided) => (
@@ -330,7 +341,6 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 															</DragHandle>
 															<RowFields>
 																<TextInput
-																	label={index === 0 ? 'Link text' : undefined}
 																	aria-label="Link text"
 																	fluid
 																	value={link.linkText}
@@ -339,9 +349,6 @@ const SubnavCreateForm = ({ onCreate, saving }: SubnavCreateFormProps) => {
 																	}
 																/>
 																<TextInput
-																	label={
-																		index === 0 ? 'Dotcom path' : undefined
-																	}
 																	aria-label="Dotcom path"
 																	fluid
 																	value={link.dotcomPath}

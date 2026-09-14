@@ -174,6 +174,24 @@ export const RowFields = styled.div`
 	}
 `;
 
+export const ColumnHeaders = styled.div`
+	display: flex;
+	align-items: flex-end;
+	gap: 8px;
+`;
+
+export const ColumnHeadersSpacer = styled.div<{ width: number }>`
+	flex: 0 0 auto;
+	width: ${({ width }) => width}px;
+`;
+
+export const ColumnHeaderLabel = styled.span`
+	flex: 1;
+	font-size: 14px;
+	font-weight: 700;
+	color: ${({ theme }) => theme.base.colors.textDark};
+`;
+
 export const DragHandle = styled.div`
 	display: flex;
 	align-items: center;
