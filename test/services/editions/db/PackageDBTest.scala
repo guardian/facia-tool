@@ -3,7 +3,12 @@ package services.editions.db
 import com.gu.pandomainauth.model.User
 import fixtures.{FaciaDBService, UsesDatabase}
 import model.packages.client.CreatePackageRequest
-import model.packages.{Package, PackageCardRow, PackageCardType}
+import model.packages.{
+  FeastPackageMetadata,
+  Package,
+  PackageCardRow,
+  PackageCardType
+}
 import org.scalatest.{BeforeAndAfter, FreeSpec, Matchers, OptionValues}
 import play.api.libs.json.Json
 import play.api.db.evolutions.Evolutions
@@ -48,7 +53,8 @@ class PackageDBTest
       name = name,
       isHidden = hidden,
       webMetadata = Some(Json.obj("source" -> "test")),
-      feastMetadata = Some(Json.obj("theme" -> "feast")),
+      feastMetadata =
+        Some(FeastPackageMetadata(bodyText = Some("text goes here"))),
       prefill = Some("recipes"),
       createdOn = createdOnMillis,
       createdBy = s"${user.firstName} ${user.lastName}",
@@ -164,20 +170,10 @@ class PackageDBTest
     insertPackage(packageId, "Original name", createdOn)
 
     val updated = editionsDB.updatePackageName(
-      Package(
-        id = packageId.toString,
-        name = "Renamed package",
-        isHidden = false,
-        webMetadata = Some(Json.obj("source" -> "test")),
-        feastMetadata = Some(Json.obj("theme" -> "feast")),
-        prefill = Some("recipes"),
-        createdOn = Some(FaciaDB.dateTimeFromMillis(createdOn)),
-        createdBy = Some(s"${user.firstName} ${user.lastName}"),
-        createdEmail = Some(user.email),
-        updatedOn = Some(now),
-        updatedBy = Some("New Name"),
-        updatedEmail = Some("new.name@guardian.co.uk")
-      )
+      packageId,
+      "Renamed package",
+      userName = "New name",
+      userEmail = "new.name@guardian.co.uk"
     )
 
     updated.name shouldBe "Renamed package"
@@ -190,19 +186,24 @@ class PackageDBTest
     insertPackage(
       packageId,
       "Hidden toggle",
-      now.toInstant.toEpochMilli,
-      hidden = false
+      now.toInstant.toEpochMilli
     )
 
-    editionsDB.updateHidden(packageId, newValue = true)
+    editionsDB.updateHidden(
+      packageId,
+      newValue = true,
+      userName = "New name",
+      userEmail = "new.name@guardian.co.uk"
+    )
 
     val loaded = editionsDB.getPackages(
       Some(Seq(packageId)),
-      None,
-      strictTimestamp = false
+      None
     )
     loaded should have size 1
     loaded.head.isHidden shouldBe true
+    loaded.head.updatedBy shouldEqual Some("New name")
+    loaded.head.updatedEmail shouldEqual Some("new.name@guardian.co.uk")
   }
 
   "should update package metadata and package cards" taggedAs UsesDatabase in {
@@ -243,7 +244,8 @@ class PackageDBTest
       name = "Updated package",
       isHidden = true,
       webMetadata = Some(Json.obj("source" -> "update")),
-      feastMetadata = Some(Json.obj("theme" -> "updated-feast")),
+      feastMetadata =
+        Some(FeastPackageMetadata(bodyText = Some("text goes here"))),
       prefill = Some("updated-prefill"),
       createdOn = Some(now),
       createdBy = Some("Billie Holiday"),
@@ -288,7 +290,7 @@ class PackageDBTest
     val loadedCards = editionsDB.getPackageCards(packageId)
     loadedCards.map(_.pageCode) should contain("recipe-updated")
     loadedCards.map(_.pageCode) should contain(newCard.pageCode)
-    loadedCards.map(_.pageCode) should not contain(removablePageCode)
+    loadedCards.map(_.pageCode) should not contain (removablePageCode)
 
     loadedCards.map(_.index) shouldBe loadedCards.map(_.index).sorted
     loadedCards
@@ -301,4 +303,3 @@ class PackageDBTest
       .cardType shouldBe PackageCardType.Subcollection
   }
 }
-

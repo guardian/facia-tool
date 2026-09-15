@@ -84,7 +84,10 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
       ) {
 
     override val config: ApplicationConfiguration =
-      new ApplicationConfiguration(this.context.initialConfiguration, isProd = false)
+      new ApplicationConfiguration(
+        this.context.initialConfiguration,
+        isProd = false
+      )
 
     override lazy val permissions: PermissionsProvider = testPermissions
 
@@ -109,7 +112,9 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
 
   private val permissionsProvider = {
     val permissions = mock(classOf[PermissionsProvider])
-    when(permissions.hasPermission(any(classOf[PermissionDefinition]), anyString()))
+    when(
+      permissions.hasPermission(any(classOf[PermissionDefinition]), anyString())
+    )
       .thenReturn(true)
     permissions
   }
@@ -139,7 +144,9 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
   private def emptyAuthedRequest(method: String, path: String) =
     authed(FakeRequest(method, path).withBody(""))
 
-  private def jsonBody(result: scala.concurrent.Future[play.api.mvc.Result]): JsObject =
+  private def jsonBody(
+      result: scala.concurrent.Future[play.api.mvc.Result]
+  ): JsObject =
     contentAsJson(result).as[JsObject]
 
   private def prefillPackage(
@@ -176,8 +183,8 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
           pageCode = s"recipe-$idx",
           index = idx,
           metadata = Some(Json.obj("slot" -> idx)),
-          addedOn =
-            OffsetDateTime.ofInstant(Instant.ofEpochMilli(createdOnMillis), ZoneOffset.UTC),
+          addedOn = OffsetDateTime
+            .ofInstant(Instant.ofEpochMilli(createdOnMillis), ZoneOffset.UTC),
           addedBy = "Test Editor",
           addedEmail = "test.editor@guardian.co.uk"
         )
@@ -230,7 +237,9 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
           )
       )
 
-      status(call(components.packageController.createPackage, createRequest)) shouldBe CREATED
+      status(
+        call(components.packageController.createPackage, createRequest)
+      ) shouldBe CREATED
 
       val fetched =
         call(
@@ -270,7 +279,12 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         Instant.now().minusSeconds(90).toEpochMilli,
         cards = 0
       )
-      prefillPackage(UUID.randomUUID(), "Two", Instant.now().toEpochMilli, cards = 0)
+      prefillPackage(
+        UUID.randomUUID(),
+        "Two",
+        Instant.now().toEpochMilli,
+        cards = 0
+      )
 
       val result = call(
         components.packageController.listPackages,
@@ -291,7 +305,12 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         cards = 0
       )
       val newestId = UUID.randomUUID()
-      prefillPackage(newestId, "Bravo lunch", Instant.now().toEpochMilli, cards = 0)
+      prefillPackage(
+        newestId,
+        "Bravo lunch",
+        Instant.now().toEpochMilli,
+        cards = 0
+      )
       prefillPackage(
         UUID.randomUUID(),
         "Charlie supper",
@@ -304,8 +323,11 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         emptyAuthedRequest(HttpVerbs.GET, "/packages?order=created")
       )
       status(createdSorted) shouldBe OK
-      val createdPackages = (jsonBody(createdSorted) \\ "packages").head.as[JsArray].value
-      createdPackages.map(_.as[JsObject].value("id").as[String]) should contain(newestId.toString)
+      val createdPackages =
+        (jsonBody(createdSorted) \\ "packages").head.as[JsArray].value
+      createdPackages.map(_.as[JsObject].value("id").as[String]) should contain(
+        newestId.toString
+      )
 
       val updatedSorted = call(
         components.packageController.listPackages,
@@ -368,7 +390,8 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
           )
       )
 
-      val result = call(components.packageController.writePackage(packageId), putRequest)
+      val result =
+        call(components.packageController.writePackage(packageId), putRequest)
       status(result) shouldBe OK
       val body = jsonBody(result)
       (body \\ "name").head.as[String] shouldBe "After overwrite"
@@ -383,7 +406,12 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
 
     "patch only package name" taggedAs UsesDatabase in {
       val packageId = UUID.randomUUID()
-      prefillPackage(packageId, "Before name patch", Instant.now().toEpochMilli, cards = 0)
+      prefillPackage(
+        packageId,
+        "Before name patch",
+        Instant.now().toEpochMilli,
+        cards = 0
+      )
 
       val request = authed(
         FakeRequest(HttpVerbs.PATCH, s"/packages/$packageId/name")
@@ -391,18 +419,26 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
           .withBody(ByteString("Renamed with patch"))
       )
 
-      status(call(components.packageController.updateName(packageId), request)) shouldBe NO_CONTENT
+      status(
+        call(components.packageController.updateName(packageId), request)
+      ) shouldBe NO_CONTENT
 
       val fetched = call(
         components.packageController.getPackage(packageId),
         emptyAuthedRequest(HttpVerbs.GET, s"/packages/$packageId")
       )
-      (jsonBody(fetched) \\ "name").head.as[String] shouldBe "Renamed with patch"
+      (jsonBody(fetched) \\ "name").head
+        .as[String] shouldBe "Renamed with patch"
     }
 
     "patch only feast metadata regions" taggedAs UsesDatabase in {
       val packageId = UUID.randomUUID()
-      prefillPackage(packageId, "Region package", Instant.now().toEpochMilli, cards = 0)
+      prefillPackage(
+        packageId,
+        "Region package",
+        Instant.now().toEpochMilli,
+        cards = 0
+      )
 
       val request = authed(
         FakeRequest(HttpVerbs.PATCH, s"/packages/$packageId/update-regions")
@@ -415,14 +451,20 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
           )
       )
 
-      status(call(components.packageController.updateRegions(packageId), request)) shouldBe NO_CONTENT
+      status(
+        call(components.packageController.updateRegions(packageId), request)
+      ) shouldBe NO_CONTENT
 
       val fetched = call(
         components.packageController.getPackage(packageId),
         emptyAuthedRequest(HttpVerbs.GET, s"/packages/$packageId")
       )
       val feastMeta = (jsonBody(fetched) \\ "feastMetadata").head.as[JsObject]
-      feastMeta.value("targetedRegions").as[JsArray].value.map(_.as[String]) should contain allOf (
+      feastMeta
+        .value("targetedRegions")
+        .as[JsArray]
+        .value
+        .map(_.as[String]) should contain allOf (
         "au",
         "uk"
       )
@@ -430,12 +472,21 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
 
     "toggle hidden flag with PUT /is-hidden" taggedAs UsesDatabase in {
       val packageId = UUID.randomUUID()
-      prefillPackage(packageId, "Hidden package", Instant.now().toEpochMilli, cards = 0)
+      prefillPackage(
+        packageId,
+        "Hidden package",
+        Instant.now().toEpochMilli,
+        cards = 0
+      )
 
       status(
         call(
-          components.packageController.putPackageHiddenState(packageId, newState = true),
-          emptyAuthedRequest(HttpVerbs.PUT, s"/packages/$packageId/is-hidden/true")
+          components.packageController
+            .putPackageHiddenState(packageId, newState = true),
+          emptyAuthedRequest(
+            HttpVerbs.PUT,
+            s"/packages/$packageId/is-hidden/true"
+          )
         )
       ) shouldBe NO_CONTENT
 
@@ -448,7 +499,12 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
 
     "update metadata only with PUT /metadata" taggedAs UsesDatabase in {
       val packageId = UUID.randomUUID()
-      prefillPackage(packageId, "Metadata package", Instant.now().toEpochMilli, cards = 0)
+      prefillPackage(
+        packageId,
+        "Metadata package",
+        Instant.now().toEpochMilli,
+        cards = 0
+      )
 
       val request = authed(
         FakeRequest(HttpVerbs.PUT, s"/packages/$packageId/metadata")
@@ -461,17 +517,21 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
           )
       )
 
-      status(call(components.packageController.putMetadata(packageId), request)) shouldBe NO_CONTENT
+      status(
+        call(components.packageController.putMetadata(packageId), request)
+      ) shouldBe NO_CONTENT
 
       val fetched = call(
         components.packageController.getPackage(packageId),
         emptyAuthedRequest(HttpVerbs.GET, s"/packages/$packageId")
       )
       val feastMeta = (jsonBody(fetched) \\ "feastMetadata").head.as[JsObject]
-      feastMeta.value("targetedRegions").as[JsArray].value.map(_.as[String]) should contain only "eu"
+      feastMeta
+        .value("targetedRegions")
+        .as[JsArray]
+        .value
+        .map(_.as[String]) should contain only "eu"
       (jsonBody(fetched) \\ "name").head.as[String] shouldBe "Metadata package"
     }
   }
 }
-
-
