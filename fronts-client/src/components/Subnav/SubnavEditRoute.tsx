@@ -2,25 +2,19 @@ import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { useParams } from 'react-router';
 import { subnavRoutes } from 'routes/routes';
-import { SubnavFormView } from './SubnavFormView';
-import { SubnavStatusActions, SubnavStatusTags } from './SubnavStatusActions';
+import SubnavForm from './SubnavForm';
+import { deleteSubnav, discardSubnav, unpublishSubnav } from './subnavApi';
 import { findSubnav, RunAction } from './helpers';
 import { CustomSubnav, CustomSubnavConfig } from './types';
-import {
-	EditStatusBar,
-	ListItemActions,
-	Message,
-	SubnavContainer,
-	SubnavContainerHeading,
-} from './styles';
+import { Message, SubnavContainer, SubnavContainerHeading } from './styles';
 
 interface SubnavEditRouteProps {
 	config: CustomSubnavConfig | null;
 	isLoading: boolean;
 	pendingActionId: string | null;
 	runAction: RunAction;
-	onSave: (subnav: CustomSubnav) => Promise<void>;
-	onCancel: () => void;
+	onSaveDraft: (subnav: CustomSubnav) => Promise<void>;
+	onPublish: (id: string) => Promise<void>;
 	saving: boolean;
 }
 
@@ -29,8 +23,8 @@ export const SubnavEditRoute = ({
 	isLoading,
 	pendingActionId,
 	runAction,
-	onSave,
-	onCancel,
+	onSaveDraft,
+	onPublish,
 	saving,
 }: SubnavEditRouteProps) => {
 	const { id } = useParams<{ id: string }>();
@@ -52,28 +46,42 @@ export const SubnavEditRoute = ({
 	const hasLive = config.live.some((s) => s.id === id);
 	const hasDraft = config.draft.some((s) => s.id === id);
 
+	// Re-seed the form whenever the server version changes (after a save,
+	// discard, or unpublish) so its state stays in sync with the config.
+	const formKey = `${id}:${subnav.lastUpdated}:${hasLive}:${hasDraft}`;
+
 	return (
-		<SubnavFormView
-			heading="Edit custom subnav"
-			statusBar={
-				<EditStatusBar>
-					<div>
-						<SubnavStatusTags hasLive={hasLive} hasDraft={hasDraft} />
-					</div>
-					<ListItemActions>
-						<SubnavStatusActions
-							id={id}
-							hasLive={hasLive}
-							hasDraft={hasDraft}
-							isBusy={pendingActionId === id}
-							runAction={runAction}
-						/>
-					</ListItemActions>
-				</EditStatusBar>
-			}
+		<SubnavForm
+			key={formKey}
 			initialSubnav={subnav}
-			onSave={onSave}
-			onCancel={onCancel}
+			hasLive={hasLive}
+			hasDraft={hasDraft}
+			actionPending={pendingActionId === id}
+			onSaveDraft={onSaveDraft}
+			onPublish={onPublish}
+			onDiscard={() =>
+				runAction(
+					id,
+					discardSubnav,
+					'Discard draft changes and revert to the live version?',
+				)
+			}
+			onUnpublish={() =>
+				runAction(
+					id,
+					unpublishSubnav,
+					hasDraft
+						? 'Take this subnav down? You have draft changes — taking it down will undo them.'
+						: 'Take this subnav down? It will no longer show on the targeted pages (kept as a draft).',
+				)
+			}
+			onDelete={() =>
+				runAction(
+					id,
+					deleteSubnav,
+					'Delete this subnav entirely? This removes both the live and draft versions.',
+				)
+			}
 			saving={saving}
 		/>
 	);
