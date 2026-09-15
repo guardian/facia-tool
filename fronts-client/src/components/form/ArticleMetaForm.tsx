@@ -89,6 +89,7 @@ import InputRadio from '../inputs/InputRadio';
 import { VideoControls } from '../video/VideoControls';
 import { getMainMediaVideoAtom } from '../../util/externalArticle';
 import { selectVideoBaseUrl } from '../../selectors/configSelectors';
+import { selectShouldUseCODELinks } from '../../selectors/configSelectors';
 import SelectMediaInput from '../inputs/SelectMediaInput';
 import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import type { Atom, AtomResponse } from '../../types/Capi';
@@ -154,6 +155,10 @@ const MultimediaSlideshowPreviewImage = styled.img`
 	display: block;
 	max-width: 100%;
 	height: auto;
+`;
+
+const MultimediaSlideshowLink = styled.a`
+	font-size: 12px;
 `;
 
 const slideshowGutter = 5;
@@ -602,6 +607,14 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		this.props.change('multimediaSlideshowAtom', isAtom(atom) ? atom : '');
 	};
 
+	private getAtomWorkshopUrl = (atom: Atom): string => {
+		const base = this.props.shouldUseCODELinks
+			? url.atomWorkshopUrlCODE
+			: url.atomWorkshopUrlPROD;
+		const atomUuid = atom.id.split('/').pop() ?? atom.id;
+		return `${base}/atoms/multimediaslideshow/${atomUuid}/edit`;
+	};
+
 	private getMultimediaSlideshowAtom = async (
 		url: string,
 	): Promise<Atom | undefined> => {
@@ -694,7 +707,6 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			multimediaSlideshowReplace,
 			multimediaSlideshowAtom,
 		} = this.props;
-
 		const isEditionsMode = editMode === 'editions';
 
 		const imageDefined = (img: ImageData | undefined) => img && img.src;
@@ -1198,6 +1210,13 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 													image.
 												</span>
 											)}
+											<MultimediaSlideshowLink
+												href={this.getAtomWorkshopUrl(multimediaSlideshowAtom)}
+												target="_blank"
+												rel="noopener noreferrer"
+											>
+												Edit this slideshow in Atom Workshop
+											</MultimediaSlideshowLink>
 										</MultimediaSlideshowPreview>
 									) : null}
 								</MultimediaSlideshowContainer>
@@ -1462,6 +1481,7 @@ interface ContainerProps {
 	multimediaSlideshowReplace: boolean;
 	multimediaSlideshowUrl: string;
 	multimediaSlideshowAtom: Atom | undefined | string;
+	shouldUseCODELinks: boolean;
 }
 
 interface InterfaceProps {
@@ -1568,6 +1588,7 @@ const createMapStateToProps = () => {
 			),
 			multimediaSlideshowUrl: valueSelector(state, 'multimediaSlideshowUrl'),
 			multimediaSlideshowAtom: valueSelector(state, 'multimediaSlideshowAtom'),
+			shouldUseCODELinks: selectShouldUseCODELinks(state),
 		};
 	};
 };
