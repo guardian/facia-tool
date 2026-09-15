@@ -184,6 +184,7 @@ type ClientPackageCard =
 	| ClientPackageChefCard
 	| ClientPackageSubcollectionCard;
 
+// @ts-ignore -- this is not used _yet_ but is included to help frontend work. Remove this comment when it is used
 interface ClientPackage {
 	id: string;
 	name: string;

@@ -172,7 +172,7 @@ class PackageDBTest
     val updated = editionsDB.updatePackageName(
       packageId,
       "Renamed package",
-      userName = "New name",
+      userName = "New Name",
       userEmail = "new.name@guardian.co.uk"
     )
 
