@@ -93,7 +93,7 @@ import SelectMediaInput from '../inputs/SelectMediaInput';
 import SelectMediaLabelContainer from '../inputs/SelectMediaLabelContainer';
 import type { Atom, AtomResponse } from '../../types/Capi';
 import Tooltip from '../modals/Tooltip';
-import { isAtom } from '../../util/atom';
+import { getAtom, isAtom } from '../../util/atom';
 import { HeadlineInput } from 'components/inputs/HeadlineInput';
 import { clipboardId } from 'constants/fronts';
 
@@ -573,6 +573,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			articleExists,
 			imageReplace,
 			imageCutoutReplace,
+			isImmersive,
 			cutoutImage,
 			imageSlideshowReplace,
 			slideshow,
@@ -673,6 +674,16 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 
 		const cardCriteria = this.determineCardCriteria();
 		const extraVideoControlsId = getInputId(cardId, 'extra-video-controls');
+
+		const hasYoutubeVideo =
+			mainMediaVideoAtom?.data.media.platform === 'youtube' ||
+			getAtom(replacementVideoAtom)?.data.media.platform === 'youtube';
+		const isFeatureCollection =
+			!!collectionType &&
+			['static/feature/2', 'scrollable/feature'].includes(collectionType);
+
+		const isABTestUnsupported =
+			abTestEnabled && hasYoutubeVideo && (isFeatureCollection || isImmersive);
 
 		return (
 			<FormContainer
@@ -1121,23 +1132,32 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 					<Button onClick={this.handleCancel} type="button" size="l">
 						Cancel
 					</Button>
-					<Button
-						priority="primary"
-						onClick={this.handleSubmit}
-						disabled={
-							pristine ||
-							!articleExists ||
-							invalidCardReplacement ||
-							!valid ||
-							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
-							(showMainVideo && !hasMainVideo) ||
-							(videoReplace && !isAtom(replacementVideoAtom))
+					<span
+						title={
+							isABTestUnsupported
+								? 'AB tests cannot run on feature or immersive cards with a YouTube atom, as they are not supported downstream. Please remove either the ab test or the youtube atom to save the card.'
+								: undefined
 						}
-						size="l"
-						data-testid="edit-form-save-button"
 					>
-						Save
-					</Button>
+						<Button
+							priority="primary"
+							onClick={this.handleSubmit}
+							disabled={
+								pristine ||
+								!articleExists ||
+								invalidCardReplacement ||
+								!valid ||
+								(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
+								(showMainVideo && !hasMainVideo) ||
+								(videoReplace && !isAtom(replacementVideoAtom)) ||
+								isABTestUnsupported
+							}
+							size="l"
+							data-testid="edit-form-save-button"
+						>
+							Save
+						</Button>
+					</span>
 				</FormButtonContainer>
 			</FormContainer>
 		);
@@ -1296,6 +1316,7 @@ interface ContainerProps {
 	showKickerSection: boolean;
 	articleCapiFieldValues: CapiFields;
 	imageReplace: boolean;
+	isImmersive: boolean;
 	isBreaking: boolean;
 	editMode: EditMode;
 	primaryImage: ValidationResponse | null;
@@ -1375,6 +1396,7 @@ const createMapStateToProps = () => {
 			slideshow: valueSelector(state, 'slideshow'),
 			imageHide: valueSelector(state, 'imageHide'),
 			imageReplace: valueSelector(state, 'imageReplace'),
+			isImmersive: valueSelector(state, 'isImmersive'),
 			imageCutoutReplace: valueSelector(state, 'imageCutoutReplace'),
 			videoReplace: valueSelector(state, 'videoReplace'),
 			replaceVideoUri: valueSelector(state, 'replaceVideoUri'),
