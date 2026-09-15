@@ -1,8 +1,11 @@
 import { $Diff } from 'utility-types';
 import {
+	ChefCardMeta,
 	CollectionFromResponse,
+	FeastCollectionCardMeta,
 	GroupConfig,
 	NestedCard,
+	Palette,
 } from 'types/Collection';
 import { EditionsPrefill } from './Edition';
 
@@ -142,6 +145,60 @@ interface EditionCollectionResponse {
 interface VisibleArticlesResponse {
 	desktop: number;
 	mobile: number;
+}
+
+interface FeastCollectionTheme {
+	id: string;
+	lightPalette: Palette;
+	darkPalette: Palette;
+	imageURL?: string;
+}
+
+interface FeastPackageMetadata {
+	theme?: FeastCollectionTheme;
+	bodyText?: string;
+	targetedRegions?: string[];
+	excludedRegions?: string[];
+}
+
+interface ClientPackageCardBase {
+	id: string;
+	addedOn: number; //millis since epoch
+}
+
+interface ClientPackageRecipeCard extends ClientPackageCardBase {
+	cardType: 'recipe';
+}
+
+interface ClientPackageChefCard extends ClientPackageCardBase {
+	cardType: 'chef';
+	metadata?: ChefCardMeta;
+}
+interface ClientPackageSubcollectionCard extends ClientPackageCardBase {
+	cardType: 'subcollection';
+	metadata?: FeastCollectionCardMeta;
+}
+
+type ClientPackageCard =
+	| ClientPackageRecipeCard
+	| ClientPackageChefCard
+	| ClientPackageSubcollectionCard;
+
+// @ts-ignore -- this is not used _yet_ but is included to help frontend work. Remove this comment when it is used
+interface ClientPackage {
+	id: string;
+	name: string;
+	isHidden: boolean;
+	webMetadata?: unknown; //Stub for future development of Story Packages
+	feastMetadata?: FeastPackageMetadata;
+	prefill?: string;
+	createdOn?: number; //millis since epoch
+	createdBy?: string;
+	createdEmail?: string;
+	updatedOn?: number; //millis since epoch
+	updatedBy?: string;
+	updatedEmail?: string;
+	items: ClientPackageCard[];
 }
 
 export {

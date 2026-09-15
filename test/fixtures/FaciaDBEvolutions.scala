@@ -4,7 +4,7 @@ import org.scalatest.{BeforeAndAfter, Suite}
 import play.api.db.Database
 import play.api.db.evolutions.{Evolutions, InconsistentDatabase}
 
-trait EditionsDBEvolutions extends BeforeAndAfter { self: Suite =>
+trait FaciaDBEvolutions extends BeforeAndAfter { self: Suite =>
   def database: Database
 
   before {

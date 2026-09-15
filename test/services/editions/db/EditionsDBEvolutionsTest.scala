@@ -11,7 +11,7 @@ import java.time.{
 }
 
 import com.gu.pandomainauth.model.User
-import fixtures.{EditionsDBService, UsesDatabase}
+import fixtures.{FaciaDBService, UsesDatabase}
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
 import play.api.db.evolutions.{
   Evolution,
@@ -24,7 +24,7 @@ import scalikejdbc._
 class EditionsDBEvolutionsTest
     extends FreeSpec
     with Matchers
-    with EditionsDBService
+    with FaciaDBService
     with OptionValues {
 
   private val now: OffsetDateTime =
@@ -37,7 +37,7 @@ class EditionsDBEvolutionsTest
     val zoneId = ZoneId.of("Europe/London")
     val localDate = LocalDate.of(year, month, dom)
     val issueDate = ZonedDateTime.of(localDate, LocalTime.MIDNIGHT, zoneId)
-    val truncatedNow = EditionsDB.truncateDateTime(now)
+    val truncatedNow = FaciaDB.truncateDateTime(now)
 
     DB localTx { implicit session =>
       sql"""

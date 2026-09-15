@@ -2,9 +2,9 @@ package fixtures
 
 import org.scalatest.{BeforeAndAfterAll, Suite}
 import play.api.db.{Database, Databases}
-import services.editions.db.EditionsDB
+import services.editions.db.FaciaDB
 
-trait EditionsDBService extends BeforeAndAfterAll { self: Suite =>
+trait FaciaDBService extends BeforeAndAfterAll { self: Suite =>
 
   private val port = 4724
   private val dbUser = "faciatool"
@@ -14,7 +14,7 @@ trait EditionsDBService extends BeforeAndAfterAll { self: Suite =>
     s"jdbc:postgresql://localhost:$port/$databaseName?autoReconnect=true&useSSL=false"
   private val driver = "org.postgresql.Driver"
 
-  var editionsDB: EditionsDB = _
+  var editionsDB: FaciaDB = _
   var database: Database = _
 
   override def beforeAll(): Unit = {
@@ -29,6 +29,6 @@ trait EditionsDBService extends BeforeAndAfterAll { self: Suite =>
       )
     )
 
-    editionsDB = new EditionsDB(dbUrl, dbUser, dbPassword)
+    editionsDB = new FaciaDB(dbUrl, dbUser, dbPassword)
   }
 }
