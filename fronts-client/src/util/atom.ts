@@ -8,3 +8,9 @@ export const isAtom = (value: unknown): value is Atom => {
 		typeof (value as Atom).data === 'object'
 	);
 };
+
+export const getAtom = (value: unknown): Atom | undefined => {
+	if (isAtom(value)) {
+		return value;
+	}
+};
