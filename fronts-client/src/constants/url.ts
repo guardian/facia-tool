@@ -37,6 +37,8 @@ export default {
 	manageEditions: '/manage-editions/',
 	appRoot: 'v2',
 	editionsCardBuilder: 'https://editions-card-builder.gutools.co.uk',
+	atomWorkshopUrlCODE: 'https://atomworkshop.code.dev-gutools.co.uk',
+	atomWorkshopUrlPROD: 'https://atomworkshop.gutools.co.uk',
 	previewUrlCODE: `https://${previewCODEDomain}/responsive-viewer/https://${previewCODEDomain}/`,
 	previewUrlPROD: `https://${previewPRODDomain}/responsive-viewer/https://${previewPRODDomain}/`,
 	emailPreviewUrlCODE: `https://${previewCODEDomain}/responsive-viewer/https://email-rendering-preview.code.dev-gutools.co.uk/fronts/`,

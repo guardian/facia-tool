@@ -3,7 +3,7 @@ import { ExternalArticle } from '../types/ExternalArticle';
 import { CardMeta } from '../types/Collection';
 import { notLiveLabels, liveBlogTones } from 'constants/fronts';
 import startCase from 'lodash/startCase';
-import { getActiveAtomProperties } from './extractAtom';
+import { getActiveAtomProperties, extractFirstSlideImage } from './extractAtom';
 import { isAtom } from './atom';
 
 const getIdFromURL = (url: string): string | undefined => {
@@ -96,6 +96,11 @@ function getThumbnail(
 		) {
 			return activeAtomProperties.videoImage;
 		}
+	} else if (meta.multimediaSlideshowReplace) {
+		if (!isAtom(meta.multimediaSlideshowAtom)) {
+			return undefined;
+		}
+		return extractFirstSlideImage(meta.multimediaSlideshowAtom);
 	}
 
 	return (
