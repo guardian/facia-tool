@@ -1132,24 +1132,32 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 					<Button onClick={this.handleCancel} type="button" size="l">
 						Cancel
 					</Button>
-					<Button
-						priority="primary"
-						onClick={this.handleSubmit}
-						disabled={
-							pristine ||
-							!articleExists ||
-							invalidCardReplacement ||
-							!valid ||
-							(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
-							(showMainVideo && !hasMainVideo) ||
-							(videoReplace && !isAtom(replacementVideoAtom)) ||
+					<span
+						title={
 							isABTestUnsupported
+								? 'AB tests cannot run on feature or immersive cards with a YouTube atom, as they are not supported downstream. Please remove either the ab test or the youtube atom to save the card.'
+								: undefined
 						}
-						size="l"
-						data-testid="edit-form-save-button"
 					>
-						Save
-					</Button>
+						<Button
+							priority="primary"
+							onClick={this.handleSubmit}
+							disabled={
+								pristine ||
+								!articleExists ||
+								invalidCardReplacement ||
+								!valid ||
+								(imageSlideshowReplace && !slideshowHasAtLeastTwoImages) ||
+								(showMainVideo && !hasMainVideo) ||
+								(videoReplace && !isAtom(replacementVideoAtom)) ||
+								isABTestUnsupported
+							}
+							size="l"
+							data-testid="edit-form-save-button"
+						>
+							Save
+						</Button>
+					</span>
 				</FormButtonContainer>
 			</FormContainer>
 		);
