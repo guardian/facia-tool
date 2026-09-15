@@ -26,6 +26,13 @@ object PageViewDataVisualisation
       enabled = true
     )
 
+object MultimediaSlideshow
+    extends FeatureSwitch(
+      key = "multimedia-slideshow",
+      title = "Enable multimedia slideshow atoms on cards",
+      enabled = false
+    )
+
 object HeadlineABTesting
     extends FeatureSwitch(
       key = "headline-ab-testing",
@@ -45,7 +52,8 @@ object FeatureSwitches {
     ObscureFeed,
     PageViewDataVisualisation,
     HeadlineABTesting,
-    EventGraphics
+    EventGraphics,
+    MultimediaSlideshow
   )
 
   def updateFeatureSwitchesForUser(
