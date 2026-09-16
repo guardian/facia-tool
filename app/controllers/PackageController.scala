@@ -57,13 +57,22 @@ class PackageController(
       .getQueryString("id")
       .map(_.split(",").toSeq)
       .map(_.map(toUuid).collect({ case Some(uuid) => uuid }))
+
     val full = req.getQueryString("full").isDefined
 
     val maybeDate =
-      req.getQueryString("date").map(OffsetDateTime.parse(_, dateFormatter))
+      req
+        .getQueryString("date")
+        .map(date =>
+          java.time.LocalDate
+            .parse(date, dateFormatter)
+            .atStartOfDay(ZoneOffset.UTC)
+            .toOffsetDateTime
+        )
     val strictDate = req.getQueryString("strict").isDefined
     val maybeTitleSearch = req.getQueryString("title")
-    val limit = req.getQueryString("limit").map(_.toInt).getOrElse(200)
+    val limit =
+      req.getQueryString("limit").flatMap(_.toIntOption).getOrElse(200)
 
     val orderBy = req
       .getQueryString("order")
@@ -73,6 +82,17 @@ class PackageController(
     if (limit > 500) {
       BadRequest(
         Json.obj("status" -> "error", "detail" -> "limit is too large")
+      )
+    } else if (limit < 1) {
+      BadRequest(
+        Json.obj(
+          "status" -> "error",
+          "detail" -> "limit must be a positive integer"
+        )
+      )
+    } else if (idList.isEmpty && req.getQueryString("id").isDefined) {
+      BadRequest(
+        Json.obj("status" -> "error", "detail" -> "no valid ids were supplied")
       )
     } else {
       try {
@@ -369,7 +389,7 @@ class PackageController(
       try {
         val updated = db.updatePackage(newMeta, cards)
         if (updated == 0) {
-          logger.logger.info(s"Request to update non-existent package $id")
+          logger.info(s"Request to update non-existent package $id")
           NotFound(
             Json.obj(
               "status" -> "not_found",
@@ -416,7 +436,9 @@ class PackageController(
                 acc ++ Map(addRequest.item.id -> addRequest)
               case "Remove" => // a Remove following an Add removes. An Add following a Remove adds;
                 val removeRequest = elem.asInstanceOf[RemoveContentItem]
-                acc.removed(removeRequest.itemId)
+
+                // This will override any pre-existing add request with a remove request
+                acc ++ Map(removeRequest.itemId -> removeRequest)
             }
           }
         )

@@ -6,7 +6,7 @@ A package is simply a curated list of content.  A "story package" contains artic
 contains references to recipes, chefs or subcollections and is intended for the Feast recipe app.
 
 A package differs from a container, in that a container must live in a front and that front must either live
-in S3 or in an Edition.  A package simply lives in the database and is referenced by it's ID.
+in S3 or in an Edition.  A package simply lives in the database and is referenced by its ID.
 
 ### Story packages
 
@@ -37,7 +37,7 @@ this means that the package should not be shown on any fronts.
 the new package name and updates just this field
 - `PATCH /packages/:id/update-regions` mirrors `PATCH /editions-api/collections/:collectionId/update-regions` - it accepts a
 JSON blob of `UpdateRegionsRequest` and overwrites the region-targeting part of the Feast metadata. Only valid for Recipe
-Packages and effectively a no-op for Story Packages, since they do not have the relevant targetting fields
+Packages and effectively a no-op for Story Packages, since they do not have the relevant targeting fields.
 - `GET /packages/:id` mirrors `GET /editions-api/issues/:id` - it retrieves the metadata and content of the package. Note
 that the payload format is quite different, because a package is similar to a single container rather than an entire issue
 composed of fronts and containers

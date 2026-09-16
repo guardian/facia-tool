@@ -137,6 +137,7 @@ GET         /packages/:id                                                   cont
 PUT			/packages/:id													controllers.PackageController.writePackage(id: java.util.UUID)
 GET			/packages														controllers.PackageController.listPackages
 POST		/packages														controllers.PackageController.createPackage
+PATCH		/packages/:packageId/content									controllers.PackageController.updatePackageContent(packageId: java.util.UUID)
 
 # Custom subnavs
 GET         /custom-subnav                           controllers.CustomSubnavController.getSubnavConfig

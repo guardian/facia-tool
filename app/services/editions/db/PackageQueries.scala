@@ -54,7 +54,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
             val endOfDay = startOfDay.plusDays(1L)
             sqls"updated_on >= ${startOfDay.toInstant} AND updated_on < ${endOfDay.toInstant}"
           } else {
-            sqls"updated_on < ${modifiedSince.toInstant}"
+            sqls"updated_on <= ${modifiedSince.toInstant}"
           }
         }
 
@@ -218,7 +218,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
       val existingMap: Map[String, PackageCardRow] =
         existingContent
           .map(c => c.pageCode -> c)
-          .toMap // the PK is (package_id, page_code); since package_id is constant, pageCode is a unique identifer
+          .toMap // the PK is (package_id, page_code); since package_id is constant, pageCode is a unique identifier
 
       // 2. Separate into remove, add, and update by ID
       val incomingIds = packageContent.map(_.pageCode).toSet
@@ -237,7 +237,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
       toUpdate.foreach { card =>
         sql"""UPDATE package_cards
 	  SET index = ${card.index}, metadata = ${card.metadataPG}
-	  WHERE package_id = ${packageMeta.id} AND page_code = ${card.pageCode}"""".update
+	  WHERE package_id = ${packageMeta.id} AND page_code = ${card.pageCode}""".update
           .apply()
       }
 
@@ -458,7 +458,7 @@ object PackageQueries {
     override def toString = "updated_on"
   }
   case object Title extends OrderingField {
-    override def toString = "title"
+    override def toString = "name"
   }
 
   object OrderingField {

@@ -1,4 +1,4 @@
--- !Ups
+# --- !Ups
 
 CREATE TABLE packages (
     id            TEXT    PRIMARY KEY DEFAULT uuid_generate_v4()::TEXT,
@@ -37,7 +37,7 @@ CREATE TABLE package_cards (
 
 CREATE INDEX idxPackageCards ON package_cards (package_id);
 
--- !Downs
+# --- !Downs
 
 DROP TABLE package_cards;
 DROP TABLE packages CASCADE;
