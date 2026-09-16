@@ -1,9 +1,9 @@
 package model.packages
 
 import logging.Logging
-import model.packages.FeastPackageMetadata
+import model.packages.Package.PackageType
 import org.postgresql.util.PGobject
-import play.api.libs.json.{JsResult, JsValue, Json, OFormat}
+import play.api.libs.json.{Format, Json, OFormat}
 import scalikejdbc.WrappedResultSet
 
 import java.time.OffsetDateTime
@@ -18,9 +18,8 @@ final case class Package(
     id: String,
     name: String,
     isHidden: Boolean,
-    webMetadata: Option[JsValue],
-    feastMetadata: Option[FeastPackageMetadata],
-    prefill: Option[String],
+    packageType: PackageType.Value,
+    metadata: Option[PackageMetadata],
     createdOn: Option[OffsetDateTime],
     createdBy: Option[String],
     createdEmail: Option[String],
@@ -28,24 +27,56 @@ final case class Package(
     updatedBy: Option[String],
     updatedEmail: Option[String]
 ) {
-  import Package.toPGobject
-  def webMetadataPG: Option[PGobject] = webMetadata.map(toPGobject)
+  import Package.{toPGobject, feastMetadataPG}
 
-  def feastMetadataPG: Option[PGobject] = Package.feastMetadataPG(feastMetadata)
+  def metadataPG: Option[PGobject] = metadata flatMap {
+    case f: FeastPackageMetadata =>
+      feastMetadataPG(Some(f))
+    case w: WebPackageMetadata =>
+      Try { Json.toJson(w) }.toOption.map(toPGobject)
+  }
 }
 
 object Package extends MetadataHelpers with Logging {
+  object PackageType extends Enumeration {
+    val Web, Feast = Value
+  }
+  implicit val packageTypeFormat: Format[PackageType.Value] =
+    Json.formatEnum(PackageType)
   implicit val format: OFormat[Package] = Json.format[Package]
 
-  def fromRow(rs: WrappedResultSet): Package =
+  private def getMetadata(
+      rs: WrappedResultSet,
+      id: String,
+      packageType: PackageType.Value
+  ): Option[FeastPackageMetadata] = packageType match {
+    case PackageType.Feast =>
+      try {
+        rs.stringOpt("metadata")
+          .map(Json.parse)
+          .map(_.as[FeastPackageMetadata])
+      } catch {
+        case err: Throwable =>
+          logger.error(
+            s"Invalid $packageType metadata for package $id: ${err.getMessage}",
+            err
+          )
+          None
+      }
+    case PackageType.Web =>
+      // Not implemented yet
+      None
+  }
+
+  def fromRow(rs: WrappedResultSet): Package = {
+    val packageId = rs.string("id")
+    val packageType = PackageType.withName(rs.string("package_type"))
     Package(
-      id = rs.string("id"),
+      id = packageId,
       name = rs.string("name"),
       isHidden = rs.boolean("is_hidden"),
-      webMetadata = rs.stringOpt("web_metadata").map(Json.parse),
-      feastMetadata =
-        rs.stringOpt("feast_metadata").flatMap(getFeastCollectionMetadata),
-      prefill = rs.stringOpt("prefill"),
+      packageType = packageType,
+      metadata = getMetadata(rs, packageId, packageType),
       createdOn = rs.zonedDateTimeOpt("created_on").map(_.toOffsetDateTime),
       createdBy = rs.stringOpt("created_by"),
       createdEmail = rs.stringOpt("created_email"),
@@ -53,4 +84,5 @@ object Package extends MetadataHelpers with Logging {
       updatedBy = rs.stringOpt("updated_by"),
       updatedEmail = rs.stringOpt("updated_email")
     )
+  }
 }

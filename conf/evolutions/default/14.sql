@@ -5,9 +5,7 @@ CREATE TABLE packages (
 
     name          TEXT    NOT NULL,
     is_hidden     BOOLEAN NOT NULL,
-    web_metadata      JSONB,
-    feast_metadata JSONB,
-    prefill       TEXT,
+    package_type  TEXT,
 
     created_on    TIMESTAMPTZ    DEFAULT now(),
     created_by    TEXT,
