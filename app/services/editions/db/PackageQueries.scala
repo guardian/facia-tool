@@ -329,6 +329,31 @@ trait PackageQueries extends MetadataHelpers with Logging {
       .apply()
   }
 
+  /** When performing partial updates, we need to re-index the cards in the
+    * sequence to take account of any insertions or deletions. This is done by
+    * getting, and locking, the rows post-deletion; updating our local list to
+    * take account of insertion; re-indexing the list in memory, then finally
+    * removing any unchanged items from the original list. We are left with a
+    * set of index changes which must be committed
+    */
+  protected def findCardsToReindex(
+      existingIndices: List[(String, Int)],
+      packageCards: Seq[PackageCardRow]
+  ) = {
+
+    val intermediateIndices =
+      scala.collection.mutable.ListBuffer.from(existingIndices)
+    packageCards.foreach(card =>
+      intermediateIndices.insert(card.index, (card.pageCode, card.index))
+    )
+
+    val updatedIndices = Set.from(intermediateIndices.zipWithIndex.map({
+      case ((pageCode, _), index) => (pageCode, index)
+    }))
+
+    updatedIndices.diff(Set.from(existingIndices)).toList
+  }
+
   def updatePackageContent(
       packageId: UUID,
       adds: Seq[AddContentItem],
@@ -350,9 +375,25 @@ trait PackageQueries extends MetadataHelpers with Logging {
         userEmail
       )
     )
+
+    val existingIndices =
+      sql"SELECT page_code, index PACKAGE_CARDS where package_id=${packageId.toString} ORDER BY index ASC FOR UPDATE"
+        .map({ rs =>
+          (rs.string(0), rs.int(1))
+        })
+        .list
+        .apply()
+
+    val indicesToUpdate = findCardsToReindex(existingIndices, packageCards)
+
     packageCards.foreach(card => {
       sql"""INSERT INTO package_cards (package_id, card_type, page_code, index, metadata, added_on, added_by, added_email)
 	  VALUES (${packageId.toString}, ${card.cardType.toString}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
+        .apply()
+    })
+
+    indicesToUpdate.foreach({ case (pageCode, index) =>
+      sql"UPDATE package_cards SET index=$index WHERE page_code=$pageCode AND package_id=${packageId.toString}".update
         .apply()
     })
 
