@@ -53,6 +53,10 @@ class PackageController(
   private def dateFormatter = DateTimeFormatter.BASIC_ISO_DATE
 
   def listPackages = EditPackagesAuthAction { req =>
+    import cats.syntax.traverse._ // Provides the .sequence extension method
+    import cats.instances.try_._ // Provides Applicative[Try]
+    import cats.instances.option._ // Provides Traverse[Option]
+
     val idList = req
       .getQueryString("id")
       .map(_.split(",").toSeq)
@@ -64,11 +68,14 @@ class PackageController(
       req
         .getQueryString("date")
         .map(date =>
-          java.time.LocalDate
-            .parse(date, dateFormatter)
-            .atStartOfDay(ZoneOffset.UTC)
-            .toOffsetDateTime
+          Try {
+            java.time.LocalDate
+              .parse(date, dateFormatter)
+              .atStartOfDay(ZoneOffset.UTC)
+              .toOffsetDateTime
+          }
         )
+        .sequence // 'sequence' is a piece of magic from `cats`, which here converts Option[Try[T]] into Try[Option[T]]
     val strictDate = req.getQueryString("strict").isDefined
     val maybeTitleSearch = req.getQueryString("title")
     val limit =
@@ -94,11 +101,22 @@ class PackageController(
       BadRequest(
         Json.obj("status" -> "error", "detail" -> "no valid ids were supplied")
       )
+    } else if (maybeDate.isFailure) {
+      logger.error(
+        s"invalid date format in ${req.getQueryString("date")}: ${maybeDate.failed.get.getMessage}"
+        // deliberately don't bother with the whole stack trace as we don't need it for debugging this particular error
+      )
+      BadRequest(
+        Json.obj(
+          "status" -> "error",
+          "detail" -> "invalid date format"
+        )
+      )
     } else {
       try {
         val pkgs = db.getPackages(
           idList,
-          maybeDate,
+          maybeDate.get, // safe because the failure case is already handled above
           strictDate,
           maybeTitleSearch,
           orderBy,
