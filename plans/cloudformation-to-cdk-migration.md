@@ -103,9 +103,10 @@ CloudFront `FaciaCloudfront` + `StaticCloudfront`, `DnsRecord` +
   deployed to both stages. A single `addPropertyOverride` on the included
   `FaciaCloudfront` resource sets `DistributionConfig.Origins.0.DomainName` to
   the new ALB; `cdk diff` against both live stacks showed **only** that change.
-- [ ] **Phase 4** — delete legacy compute. Branch `gucdk-migration-phase-4`.
-  Code done (see "Phase 4 changes" below); **awaiting the 0-requests check on the
-  old ELBs, a `cdk diff` against both live stacks, then CODE → PROD deploy.**
+- [ ] **Phase 4** — delete legacy compute. Branch `gucdk-migration-phase-4`,
+  PR [#2081](https://github.com/guardian/facia-tool/pull/2081) (draft).
+  Code done and verified (see "Phase 4 changes" below); **awaiting CODE then PROD
+  deploy.**
 - [ ] **Phase 5** — follow-ups: CloudFront into GuCDK, alarms, stateful resources.
 
 ## Phase 4 changes
