@@ -448,13 +448,10 @@ class PackageController(
       val deduplicatedOps =
         req.body.ops.foldLeft[Map[String, PatchContentItem]](Map.empty)(
           (acc, elem) => {
-            elem.opType match {
-              case "Add" => // multiple adds stack
-                val addRequest = elem.asInstanceOf[AddContentItem]
+            elem match {
+              case addRequest:  AddContentItem => // multiple adds stack
                 acc ++ Map(addRequest.item.id -> addRequest)
-              case "Remove" => // a Remove following an Add removes. An Add following a Remove adds;
-                val removeRequest = elem.asInstanceOf[RemoveContentItem]
-
+              case removeRequest: RemoveContentItem => // a Remove following an Add removes. An Add following a Remove adds;
                 // This will override any pre-existing add request with a remove request
                 acc ++ Map(removeRequest.itemId -> removeRequest)
             }
