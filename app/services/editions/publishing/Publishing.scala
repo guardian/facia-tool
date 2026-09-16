@@ -11,7 +11,7 @@ import model.editions.Edition.{
 import model.editions.{EditionsIssue, PublishAction}
 import net.logstash.logback.marker.Markers
 import services.editions.db.FaciaDB
-import play.api.libs.json.Writes
+import model.packages.{Package, PackageCard}
 
 import scala.jdk.CollectionConverters._
 
@@ -109,4 +109,18 @@ class Publishing(
     getPublicationTarget(issue).putIssue(issue, finalVersion, finalAction)
   }
 
+  def publishPackage(pkg: Package, cards: Seq[PackageCard], user: User) = {
+    val action = PublishAction.publish
+
+    val markers = Markers.appendEntries(
+      Map(
+        "package-action" -> action.toString,
+        "package-id" -> pkg.id,
+        "user" -> user.email
+      ).asJava
+    )
+    logger.info(s"Uploading $action request for package ${pkg.id}")(markers)
+
+    feastAppPublicationTarget.putPackage(pkg, cards)
+  }
 }
