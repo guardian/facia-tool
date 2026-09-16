@@ -377,7 +377,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
     )
 
     val existingIndices =
-      sql"SELECT page_code, index PACKAGE_CARDS where package_id=${packageId.toString} ORDER BY index ASC FOR UPDATE"
+      sql"SELECT page_code, index FROM package_cards WHERE package_id=${packageId.toString} ORDER BY index ASC FOR UPDATE"
         .map({ rs =>
           (rs.string(0), rs.int(1))
         })
