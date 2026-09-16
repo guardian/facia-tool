@@ -2,8 +2,6 @@ package services.editions.db
 
 import scalikejdbc._
 import logging.Logging
-import model.editions.EditionsFeastCollectionMetadata
-import model.forms.GetPackagesFilter
 import model.packages._
 import model.packages.client.{
   AddContentItem,
@@ -18,7 +16,6 @@ import java.sql.Timestamp
 import java.time.{Instant, OffsetDateTime}
 import java.time.temporal.ChronoUnit
 import java.util.UUID
-import scala.util.Try
 
 trait PackageQueries extends MetadataHelpers with Logging {
 

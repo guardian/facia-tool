@@ -301,5 +301,7 @@ class PackageDBTest
       .find(_.pageCode == newCard.pageCode)
       .value
       .cardType shouldBe PackageCardType.Subcollection
+
+    loadedCards.length shouldEqual 2
   }
 }
