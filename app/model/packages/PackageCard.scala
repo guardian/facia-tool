@@ -38,57 +38,33 @@ case class PackageSubcollectionCard(
   override val cardType: PackageCardType = PackageCardType.Subcollection
 }
 
+object PackageRecipeCard {
+	implicit val format: OFormat[PackageRecipeCard] = Json.format[PackageRecipeCard]
+}
+
+object PackageChefCard {
+	implicit val format: OFormat[PackageChefCard] = Json.format[PackageChefCard]
+}
+
+object PackageSubcollectionCard {
+	implicit val format: OFormat[PackageSubcollectionCard] = Json.format[PackageSubcollectionCard]
+}
+
 object PackageCard {
   implicit val format: OFormat[PackageCard] = new OFormat[PackageCard] {
     override def reads(json: JsValue): JsResult[PackageCard] = {
-      (json \ "cardType").as[String] match {
-        case "recipe" =>
-          for {
-            id <- (json \ "id").validate[String]
-            addedOn <- (json \ "addedOn").validate[Long]
-          } yield PackageRecipeCard(id, Instant.ofEpochMilli(addedOn))
-        case "chef" =>
-          for {
-            id <- (json \ "id").validate[String]
-            addedOn <- (json \ "addedOn").validate[Long]
-            metadata <- (json \ "metadata").validateOpt[EditionsChefMetadata]
-          } yield PackageChefCard(id, metadata, Instant.ofEpochMilli(addedOn))
-        case "subcollection" =>
-          for {
-            id <- (json \ "id").validate[String]
-            addedOn <- (json \ "addedOn").validate[Long]
-            metadata <- (json \ "metadata")
-              .validateOpt[EditionsFeastCollectionMetadata]
-          } yield PackageSubcollectionCard(
-            id,
-            metadata,
-            Instant.ofEpochMilli(addedOn)
-          )
+      (json \ "cardType").validate[String].flatMap {
+        case "recipe" => PackageRecipeCard.format.reads(json)
+        case "chef" => PackageChefCard.format.reads(json)
+        case "subcollection" => PackageSubcollectionCard.format.reads(json)
         case other => JsError(s"Unknown cardType: $other")
       }
     }
 
     override def writes(card: PackageCard): JsObject = card match {
-      case PackageRecipeCard(id, addedOn) =>
-        Json.obj(
-          "id" -> id,
-          "cardType" -> "recipe",
-          "addedOn" -> addedOn.toEpochMilli
-        )
-      case PackageChefCard(id, metadata, addedOn) =>
-        Json.obj(
-          "id" -> id,
-          "cardType" -> "chef",
-          "metadata" -> metadata,
-          "addedOn" -> addedOn.toEpochMilli
-        )
-      case PackageSubcollectionCard(id, metadata, addedOn) =>
-        Json.obj(
-          "id" -> id,
-          "cardType" -> "subcollection",
-          "metadata" -> metadata,
-          "addedOn" -> addedOn.toEpochMilli
-        )
+      case c : PackageRecipeCard => PackageRecipeCard.format.writes(c) ++ Json.obj("cardType" -> "recipe")
+      case c: PackageChefCard => PackageChefCard.format.writes(c) ++ Json.obj("cardType" -> "chef")
+	  case c: PackageSubcollectionCard => PackageSubcollectionCard.format.writes(c) ++ Json.obj("cardType" -> "subcollection")
     }
   }
 
