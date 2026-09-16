@@ -52,7 +52,7 @@ class PackageController(
 
   private def dateFormatter = DateTimeFormatter.BASIC_ISO_DATE
 
-  def listPackages = EditEditionsAuthAction { req =>
+  def listPackages = EditPackagesAuthAction { req =>
     val idList = req
       .getQueryString("id")
       .map(_.split(",").toSeq)
@@ -167,7 +167,7 @@ class PackageController(
         )
     }
 
-  def createPackage = EditEditionsAuthAction(parse.json(32768L)) { req =>
+  def createPackage = EditPackagesAuthAction(parse.json(32768L)) { req =>
     val result = for {
       packageInfo <- Try { req.body.as[CreatePackageRequest] }
       _ <- Try {
@@ -211,7 +211,7 @@ class PackageController(
     }
   }
 
-  def getPackage(id: java.util.UUID) = EditEditionsAuthAction { req =>
+  def getPackage(id: java.util.UUID) = EditPackagesAuthAction { req =>
     try {
       val pkg = db.getPackageById(id)
       pkg match {
@@ -237,7 +237,7 @@ class PackageController(
   }
 
   def putMetadata(id: UUID) =
-    EditEditionsAuthAction(parse.json[PackageMetadata]) { req =>
+    EditPackagesAuthAction(parse.json[PackageMetadata]) { req =>
       try {
         db.updatePackageMeta(id, req.body, req.user.username, req.user.email)
         NoContent
@@ -250,7 +250,7 @@ class PackageController(
     }
 
   def putPackageHiddenState(id: UUID, newState: Boolean) =
-    EditEditionsAuthAction { req =>
+    EditPackagesAuthAction { req =>
       try {
         val count =
           db.updateHidden(id, newState, req.user.username, req.user.email)
@@ -272,7 +272,7 @@ class PackageController(
       }
     }
 
-  def updateName(id: UUID) = EditEditionsAuthAction(parse.byteString) { req =>
+  def updateName(id: UUID) = EditPackagesAuthAction(parse.byteString) { req =>
     val decoder = StandardCharsets.UTF_8
       .newDecoder()
       .onMalformedInput(CodingErrorAction.REPORT)
@@ -312,7 +312,7 @@ class PackageController(
   }
 
   def updateRegions(id: UUID) =
-    EditEditionsAuthAction(parse.json[UpdateRegionsRequest]) { req =>
+    EditPackagesAuthAction(parse.json[UpdateRegionsRequest]) { req =>
       val maybeUpdate = for {
         pkg <- db
           .getPackages(Some(Seq(id)), None, strictTimestamp = false)
@@ -354,7 +354,7 @@ class PackageController(
     }
 
   def writePackage(id: UUID) =
-    EditEditionsAuthAction(parse.json[ClientPackage]) { req =>
+    EditPackagesAuthAction(parse.json[ClientPackage]) { req =>
       val newMeta = toPackage(req.body.copy(id = id.toString))
       val cards = req.body.items.zipWithIndex.map({ case (clientCard, idx) =>
         ClientPackageCard.toPackageCard(
@@ -406,7 +406,7 @@ class PackageController(
     }
 
   def updatePackageContent(packageId: UUID) =
-    EditEditionsAuthAction(parse.json[PatchContentRequest]) { req =>
+    EditPackagesAuthAction(parse.json[PatchContentRequest]) { req =>
       val deduplicatedOps =
         req.body.ops.foldLeft[Map[String, PatchContentItem]](Map.empty)(
           (acc, elem) => {

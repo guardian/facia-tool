@@ -171,6 +171,14 @@ class EditEditionsPermissionCheck(client: PermissionsProvider)(implicit
     testUserPermission(client, Permissions.EditEditions)
 }
 
+class EditPackagesPermissionCheck(client: PermissionsProvider)(implicit
+    ec: ExecutionContext
+) extends PermissionActionFilter {
+  val executionContext = ec
+  val restrictedAction = "edit packages"
+  val testAccess: String => Authorization =
+    testUserPermission(client, Permissions.EditFrontsPackages)
+}
 class ConfigPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext)
     extends PermissionActionFilter {
   val executionContext = ec
