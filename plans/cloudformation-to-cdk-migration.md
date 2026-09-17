@@ -98,15 +98,86 @@ CloudFront `FaciaCloudfront` + `StaticCloudfront`, `DnsRecord` +
   `amiParametersToTags` (`AMI` + `AMIFaciatool`) with
   `asgMigrationInProgress: true`. CODE + PROD `cdk diff` verified purely additive
   apart from the intended legacy-ASG tag removal.
-- [ ] **Phase 3** — repoint CloudFront origin ELB → ALB (revertible).
-  PR [#2064](https://github.com/guardian/facia-tool/pull/2064). Code done:
-  a single `addPropertyOverride` on the included `FaciaCloudfront` resource sets
-  `DistributionConfig.Origins.0.DomainName` to the new ALB. `cdk diff` against
-  both live stacks shows **only** that one property change. Awaiting CODE then
-  PROD deploy + soak.
-- [ ] **Phase 4** — delete legacy compute (ELB/ASG/LC/SGs/role); template keeps
-  the non-compute resources (mixed stack end-state `CDK(cfn.yaml) -> cfn.json`).
+- [x] **Phase 3** — repoint CloudFront origin ELB → ALB (revertible).
+  PR [#2064](https://github.com/guardian/facia-tool/pull/2064), merged and
+  deployed to both stages. A single `addPropertyOverride` on the included
+  `FaciaCloudfront` resource sets `DistributionConfig.Origins.0.DomainName` to
+  the new ALB; `cdk diff` against both live stacks showed **only** that change.
+- [ ] **Phase 4** — delete legacy compute. Branch `gucdk-migration-phase-4`,
+  PR [#2081](https://github.com/guardian/facia-tool/pull/2081) (draft).
+  Code done and verified (see "Phase 4 changes" below); **awaiting CODE then PROD
+  deploy.**
 - [ ] **Phase 5** — follow-ups: CloudFront into GuCDK, alarms, stateful resources.
+
+## Phase 4 changes
+
+Removed from [cloudformation/facia-tool.cfn.yaml](cloudformation/facia-tool.cfn.yaml):
+
+- Compute: `FaciaLoadBalancerNewVPC` (classic ELB), `FaciaAutoscalingGroupNewVPC`,
+  `FaciaLaunchConfigNewVPC`.
+- Security: `AppServerSecurityGroupNewVPC`, `LoadBalancerSecurityGroupNewVPC`,
+  `AppToNewDBEgressNewVPC`, `NewDBToAppIngressNewVPC` (GuCDK's
+  `DatabaseAccessSecurityGroup` already carries the 5432 rule).
+- IAM: `DistributionRole`, `DistributionInstanceProfile` and the policies that
+  existed only to attach to that role — `PanDomainPolicy`, `PermissionsPolicy`,
+  `CrossAccountPolicy`, `LogServerPolicy`, `SwitchesPolicy`, `CloudwatchPolicy`,
+  `DynamoPressStatus`, `AssumeCapiPreviewRolePolicy`. All are reproduced on the
+  `GuEc2App` instance role.
+- Parameters that only the deleted resources used: `AMI`, `CertificateArn`,
+  `AvailabilityZones`, `ELKKinesisStreamArn`, `ELKKinesisStreamName`, and the
+  already-dead `DBSecurityGroupId` (old VPC).
+- `StageMap` sizing keys (`MinSize`/`MaxSize`/`DesiredCapacity`/`InstanceType`) —
+  those values now live solely in [cdk/bin/cdk.ts](cdk/bin/cdk.ts).
+- Output `FaciaLoadBalancerDNS` (not exported, so nothing can import it).
+
+Kept deliberately:
+
+- `StorageBucket` policy, re-pointed at **only** `StorageConsumerRole` (it was
+  attached to both it and `DistributionRole`).
+- `RunFaciaToolLocally` — a CODE-only developer managed policy, not compute.
+- All non-compute resources (CloudFront ×2, DNS records, DynamoDB, SNS,
+  `StorageConsumerRole`), so the end-state stays `CDK(cfn.yaml) -> cfn.json`.
+
+Other changes:
+
+- The `FaciaCloudfront` origin `DomainName` can no longer `Fn::GetAtt` the
+  deleted ELB, so the YAML now holds the placeholder `overridden-by-cdk.invalid`
+  and the CDK `addPropertyOverride` (unchanged since Phase 3) supplies the real
+  ALB DNS name at synth. Verified absent from the synthesized templates.
+  Migrating the distribution into GuCDK properly is Phase 5.
+- Dropped `Tags.of(ec2App.autoScalingGroup).add('gu:riffraff:new-asg', …)`.
+- `riff-raff.yaml`: removed `asgMigrationInProgress` and the legacy `AMI` entry
+  from `amiParametersToTags`, leaving only `AMIFaciatool`.
+
+Verified locally: lint, both snapshots and synth green; the synthesized PROD
+template has one ASG, no `gu:riffraff:new-asg` tag, no legacy logical IDs, and no
+`AMI` parameter. `git diff --stat` is deletions-only apart from comments.
+
+### Pre-deploy verification (done)
+
+1. **Legacy ELBs serve no real traffic.** Over the 24h after the Phase 3 deploy
+   (stacks last updated 15 Sep), both classic ELBs returned **zero 2XX**:
+   - CODE `facia-COD-FaciaLoa-1452723LAHNWK`: 126×3XX, 262×4XX.
+   - PROD `facia-PRO-FaciaLoa-1HML78SI0GSNH`: 238×3XX, 862×4XX.
+
+   The residual is unauthenticated noise hitting the public ELB DNS/IPs directly
+   (pan-domain auth redirects + not-founds), i.e. scanners — not users, and it
+   disappears with the ELB. No CloudFront distribution in the account still lists
+   a legacy-ELB origin.
+2. **New ALBs carry everything.** Last 24h: PROD `facia--LoadB-z9QHdT4FQLLm`
+   289,288 requests (256,581×2XX, 2×5XX); CODE `facia--LoadB-Uhr93xNahT6k`
+   15,142 requests (11,301×2XX) — matching the legacy PROD ELB's previous
+   ~250–330k/day.
+3. **`cdk diff --profile cmsFronts` against both live stacks is identical and
+   removals-only**: the 17 legacy resources destroyed, 6 parameters and the
+   `StageMap` sizing keys dropped, `StorageBucket.Roles` losing
+   `DistributionRole`, the ASG losing `gu:riffraff:new-asg`, and the
+   `FaciaLoadBalancerDNS` output removed. **No CloudFront change appears**,
+   confirming the YAML placeholder is a synth-time no-op.
+
+### Still to do
+
+Deploy CODE, verify end-to-end, then PROD.
 
 ## Phase 2 decisions
 

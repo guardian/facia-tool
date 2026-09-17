@@ -28,11 +28,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         "CloudFrontAliases": [
           "fronts.code.dev-gutools.co.uk",
         ],
-        "DesiredCapacity": 1,
-        "InstanceType": "t4g.small",
         "LowerCaseStage": "code",
-        "MaxSize": 2,
-        "MinSize": 1,
         "StaticCloudFrontAliases": [
           "fronts-static.code.dev-gutools.co.uk",
         ],
@@ -41,11 +37,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         "CloudFrontAliases": [
           "fronts.gutools.co.uk",
         ],
-        "DesiredCapacity": 3,
-        "InstanceType": "t4g.medium",
         "LowerCaseStage": "prod",
-        "MaxSize": 6,
-        "MinSize": 3,
         "StaticCloudFrontAliases": [
           "fronts-static.gutools.co.uk",
         ],
@@ -92,15 +84,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
     "gu:cdk:version": "TEST",
   },
   "Outputs": {
-    "FaciaLoadBalancerDNS": {
-      "Description": "Load balancer DNS",
-      "Value": {
-        "Fn::GetAtt": [
-          "FaciaLoadBalancerNewVPC",
-          "DNSName",
-        ],
-      },
-    },
     "FeastPublicationSNSTopic": {
       "Description": "ARN of the SNS topic",
       "Export": {
@@ -140,10 +123,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
     },
   },
   "Parameters": {
-    "AMI": {
-      "Description": "ID of the machine image for this service (ami)",
-      "Type": "String",
-    },
     "AMIFaciatool": {
       "Description": "Amazon Machine Image ID for the app facia-tool. Use this in conjunction with AMIgo to keep AMIs up to date.",
       "Type": "AWS::EC2::Image::Id",
@@ -152,11 +131,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Default": "/account/services/access-logging/bucket",
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "AvailabilityZones": {
-      "Default": "eu-west-1a,eu-west-1b,eu-west-1c",
-      "Description": "The availability zone where instances are allowed to run",
-      "Type": "List<AWS::EC2::AvailabilityZone::Name>",
     },
     "CapiEndpointSsmKeyNewVPC": {
       "Default": "/newvpc/endpoint/capi/PROD",
@@ -167,10 +141,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "ARN of the CAPI preview role",
       "Type": "String",
     },
-    "CertificateArn": {
-      "Description": "ARN of the x509 certificate for this service",
-      "Type": "String",
-    },
     "CloudFrontCertificateArn": {
       "Description": "x509 certificate ARN for CloudFront - must be in us-east-1",
       "Type": "String",
@@ -179,24 +149,12 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "AWS account ID of CAPI",
       "Type": "String",
     },
-    "DBSecurityGroupId": {
-      "Type": "String",
-    },
     "DBSecurityGroupIdNewVPC": {
       "Type": "String",
     },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "ELKKinesisStreamArn": {
-      "Description": "Arn of the kinesis stream for logging to ELK (logs.gutools)",
-      "Type": "String",
-    },
-    "ELKKinesisStreamName": {
-      "Default": "/account/services/logging.stream.name",
-      "Description": "Elk logging stream name",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "FrontendAccountID": {
@@ -265,79 +223,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
     },
   },
   "Resources": {
-    "AppServerSecurityGroupNewVPC": {
-      "Properties": {
-        "GroupDescription": "Application servers",
-        "SecurityGroupIngress": [
-          {
-            "FromPort": 9000,
-            "IpProtocol": "tcp",
-            "SourceSecurityGroupId": {
-              "Ref": "LoadBalancerSecurityGroupNewVPC",
-            },
-            "ToPort": 9000,
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "Stack",
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "VpcId": {
-          "Ref": "VpcId",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "AppToNewDBEgressNewVPC": {
-      "Properties": {
-        "DestinationSecurityGroupId": {
-          "Ref": "DBSecurityGroupIdNewVPC",
-        },
-        "FromPort": 5432,
-        "GroupId": {
-          "Ref": "AppServerSecurityGroupNewVPC",
-        },
-        "IpProtocol": "tcp",
-        "ToPort": 5432,
-      },
-      "Type": "AWS::EC2::SecurityGroupEgress",
-    },
-    "AssumeCapiPreviewRolePolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "CapiPreviewRole",
-              },
-            },
-          ],
-        },
-        "PolicyName": "assume-capi-preview-role",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "AssumeCapiPreviewRolePolicyBDA58B0F": {
       "Properties": {
         "PolicyDocument": {
@@ -421,11 +306,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             "Key": "gu:repo",
             "PropagateAtLaunch": true,
             "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "gu:riffraff:new-asg",
-            "PropagateAtLaunch": true,
-            "Value": "true",
           },
           {
             "Key": "LogKinesisStreamName",
@@ -519,31 +399,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
-    "CloudwatchPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "cloudwatch:GetMetricStatistics",
-                "cloudwatch:ListMetrics",
-                "cloudwatch:PutMetricData",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CloudwatchPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "CloudwatchPolicyFEF3FFD1": {
       "Properties": {
         "PolicyDocument": {
@@ -564,29 +419,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         "Roles": [
           {
             "Ref": "InstanceRoleFaciatoolBF15D06F",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CrossAccountPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "FrontendRoleToAssume",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CrossAccountPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
           },
         ],
       },
@@ -727,233 +559,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DistributionInstanceProfile": {
-      "Properties": {
-        "Path": "/",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::InstanceProfile",
-    },
-    "DistributionRole": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "Service": [
-                  "ec2.amazonaws.com",
-                ],
-              },
-            },
-          ],
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::ImportValue": {
-              "Fn::Sub": "guardian-ec2-for-ssm-GuardianEC2ForSSMPolicy",
-            },
-          },
-        ],
-        "Path": "/",
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": "ssm:GetParameter",
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Sub": "arn:aws:ssm:\${AWS::Region}:\${AWS::AccountId}:parameter/facia-tool/cms-fronts/\${Stage}/*",
-                  },
-                },
-                {
-                  "Action": "kms:Decrypt",
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-              ],
-            },
-            "PolicyName": "getparameters",
-          },
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": [
-                    "sqs:ReceiveMessage",
-                    "sqs:DeleteMessage",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    {
-                      "Fn::Sub": [
-                        "arn:aws:sqs:\${Region}:\${Account}:publish-events-\${Stage}",
-                        {
-                          "Account": {
-                            "Ref": "AWS::AccountId",
-                          },
-                          "Region": {
-                            "Ref": "AWS::Region",
-                          },
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  "Action": [
-                    "s3:GetObject",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    "arn:aws:s3:::facia-dist/*",
-                    "arn:aws:s3:::facia-private/*",
-                  ],
-                },
-                {
-                  "Action": [
-                    "dynamodb:GetItem",
-                    "dynamodb:Query",
-                    "dynamodb:PutItem",
-                    "dynamodb:UpdateItem",
-                    "dynamodb:Scan",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    {
-                      "Fn::Sub": [
-                        "arn:aws:dynamodb:\${Region}:\${Account}:table/\${Table}",
-                        {
-                          "Account": {
-                            "Ref": "AWS::AccountId",
-                          },
-                          "Region": {
-                            "Ref": "AWS::Region",
-                          },
-                          "Table": {
-                            "Ref": "FrontsUserDataDynamoTable",
-                          },
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  "Action": [
-                    "ses:SendEmail",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    "*",
-                  ],
-                },
-                {
-                  "Action": [
-                    "ec2:DescribeTags",
-                    "ec2:DescribeInstances",
-                    "autoscaling:DescribeAutoScalingGroups",
-                    "autoscaling:DescribeAutoScalingInstances",
-                    "rds:DescribeDBInstances",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                {
-                  "Action": [
-                    "s3:PutObject",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    {
-                      "Fn::Sub": [
-                        "arn:aws:s3:::published-editions-\${LowerCaseStage}/*",
-                        {
-                          "LowerCaseStage": {
-                            "Fn::FindInMap": [
-                              "StageMap",
-                              {
-                                "Ref": "Stage",
-                              },
-                              "LowerCaseStage",
-                            ],
-                          },
-                        },
-                      ],
-                    },
-                    {
-                      "Fn::Sub": [
-                        "arn:aws:s3:::preview-editions-\${LowerCaseStage}/*",
-                        {
-                          "LowerCaseStage": {
-                            "Fn::FindInMap": [
-                              "StageMap",
-                              {
-                                "Ref": "Stage",
-                              },
-                              "LowerCaseStage",
-                            ],
-                          },
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-            "PolicyName": "root",
-          },
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": "sns:Publish",
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Ref": "FrontsUpdateSNSTopic",
-                  },
-                  "Sid": "AllowPublishToMyTopic",
-                },
-                {
-                  "Action": "sns:Publish",
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Ref": "FeastPublicationTopic",
-                  },
-                },
-              ],
-            },
-            "PolicyName": "publishTopic",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "Stack",
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
     "DnsRecord": {
       "Properties": {
         "Name": {
@@ -990,56 +595,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         "TTL": 900,
       },
       "Type": "Guardian::DNS::RecordSet",
-    },
-    "DynamoPressStatus": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":table/",
-                      {
-                        "Fn::FindInMap": [
-                          "CrossResources",
-                          {
-                            "Ref": "Stage",
-                          },
-                          "FrontPressedTable",
-                        ],
-                      },
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "DynamoPressStatus",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "EditionsBucketsPolicy20C5B98E": {
       "Properties": {
@@ -1102,94 +657,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "FaciaAutoscalingGroupNewVPC": {
-      "Properties": {
-        "AvailabilityZones": {
-          "Ref": "AvailabilityZones",
-        },
-        "Cooldown": "180",
-        "DesiredCapacity": {
-          "Fn::FindInMap": [
-            "StageMap",
-            {
-              "Ref": "Stage",
-            },
-            "DesiredCapacity",
-          ],
-        },
-        "HealthCheckGracePeriod": 200,
-        "HealthCheckType": "ELB",
-        "LaunchConfigurationName": {
-          "Ref": "FaciaLaunchConfigNewVPC",
-        },
-        "LoadBalancerNames": [
-          {
-            "Ref": "FaciaLoadBalancerNewVPC",
-          },
-        ],
-        "MaxSize": {
-          "Fn::FindInMap": [
-            "StageMap",
-            {
-              "Ref": "Stage",
-            },
-            "MaxSize",
-          ],
-        },
-        "MinSize": {
-          "Fn::FindInMap": [
-            "StageMap",
-            {
-              "Ref": "Stage",
-            },
-            "MinSize",
-          ],
-        },
-        "Tags": [
-          {
-            "Key": "App",
-            "PropagateAtLaunch": true,
-            "Value": "facia-tool",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "PropagateAtLaunch": true,
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "PropagateAtLaunch": true,
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "LogKinesisStreamName",
-            "PropagateAtLaunch": true,
-            "Value": {
-              "Ref": "ELKKinesisStreamName",
-            },
-          },
-          {
-            "Key": "Stack",
-            "PropagateAtLaunch": true,
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "PropagateAtLaunch": true,
-            "Value": "CODE",
-          },
-          {
-            "Key": "SystemdUnit",
-            "PropagateAtLaunch": true,
-            "Value": "facia-tool.service",
-          },
-        ],
-        "VPCZoneIdentifier": {
-          "Ref": "PrivateSubnets",
-        },
-      },
-      "Type": "AWS::AutoScaling::AutoScalingGroup",
     },
     "FaciaCloudfront": {
       "Properties": {
@@ -1274,200 +741,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         ],
       },
       "Type": "AWS::CloudFront::Distribution",
-    },
-    "FaciaLaunchConfigNewVPC": {
-      "Metadata": {
-        "AWS::CloudFormation::Authentication": {
-          "distributionAuthentication": {
-            "buckets": [
-              "facia-dist",
-            ],
-            "roleName": {
-              "Ref": "DistributionRole",
-            },
-            "type": "S3",
-          },
-        },
-        "AWS::CloudFormation::Init": {
-          "config": {
-            "files": {
-              "/etc/gu/facia-tool.application.secrets.conf": {
-                "authentication": "distributionAuthentication",
-                "mode": "000400",
-                "owner": "facia-tool",
-                "source": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::Sub": "https://s3-eu-west-1.amazonaws.com/facia-private/facia-tool.application.secrets.\${Stage}.conf",
-                      },
-                    ],
-                  ],
-                },
-              },
-              "/etc/gu/facia-tool.properties": {
-                "content": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "STAGE=",
-                      {
-                        "Ref": "Stage",
-                      },
-                      "
-",
-                      "STS_ROLE=",
-                      {
-                        "Ref": "FrontendRoleToAssume",
-                      },
-                      "
-",
-                      "FRONT_PRESSED_TABLE=",
-                      {
-                        "Fn::FindInMap": [
-                          "CrossResources",
-                          {
-                            "Ref": "Stage",
-                          },
-                          "FrontPressedTable",
-                        ],
-                      },
-                      "
-",
-                      "USER_DATA_TABLE=",
-                      {
-                        "Fn::Sub": "\${UserDataTablePrefix}-\${Stage}",
-                      },
-                      "
-",
-                    ],
-                  ],
-                },
-              },
-              "/home/facia-tool/facia-tool.all.deb": {
-                "authentication": "distributionAuthentication",
-                "source": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
-                      {
-                        "Ref": "Stage",
-                      },
-                      "/facia-tool/facia-tool_1.0_all.deb",
-                    ],
-                  ],
-                },
-              },
-            },
-            "users": {
-              "facia-tool": {
-                "homeDir": "/home/facia-tool",
-              },
-            },
-          },
-        },
-      },
-      "Properties": {
-        "IamInstanceProfile": {
-          "Ref": "DistributionInstanceProfile",
-        },
-        "ImageId": {
-          "Ref": "AMI",
-        },
-        "InstanceType": {
-          "Fn::FindInMap": [
-            "StageMap",
-            {
-              "Ref": "Stage",
-            },
-            "InstanceType",
-          ],
-        },
-        "MetadataOptions": {
-          "HttpTokens": "required",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": "AppServerSecurityGroupNewVPC.GroupId",
-          },
-          {
-            "Ref": "CapiEndpointSsmKeyNewVPC",
-          },
-        ],
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Sub": "#!/bin/bash -ev
-cfn-init -s \${AWS::StackId} -r FaciaLaunchConfigNewVPC --region \${AWS::Region} || error_exit 'Failed to run cfn-init'
-dpkg -i /home/facia-tool/facia-tool.all.deb
-",
-          },
-        },
-      },
-      "Type": "AWS::AutoScaling::LaunchConfiguration",
-    },
-    "FaciaLoadBalancerNewVPC": {
-      "Properties": {
-        "CrossZone": true,
-        "HealthCheck": {
-          "HealthyThreshold": "2",
-          "Interval": "60",
-          "Target": "HTTP:9000/_healthcheck",
-          "Timeout": "5",
-          "UnhealthyThreshold": "10",
-        },
-        "Listeners": [
-          {
-            "InstancePort": "9000",
-            "LoadBalancerPort": "80",
-            "Protocol": "HTTP",
-          },
-          {
-            "InstancePort": "9000",
-            "InstanceProtocol": "HTTP",
-            "LoadBalancerPort": "443",
-            "Protocol": "HTTPS",
-            "SSLCertificateId": {
-              "Ref": "CertificateArn",
-            },
-          },
-        ],
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "LoadBalancerSecurityGroupNewVPC",
-              "GroupId",
-            ],
-          },
-        ],
-        "Subnets": {
-          "Ref": "PublicSubnets",
-        },
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "facia-tool",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "Stack",
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
     },
     "FeastPublicationTopic": {
       "Properties": {
@@ -2013,112 +1286,6 @@ dpkg -i /home/facia-tool/facia-tool.all.deb
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "LoadBalancerSecurityGroupNewVPC": {
-      "Properties": {
-        "GroupDescription": "Facia application load balancer",
-        "SecurityGroupIngress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "FromPort": 80,
-            "IpProtocol": "tcp",
-            "ToPort": 80,
-          },
-          {
-            "CidrIp": "0.0.0.0/0",
-            "FromPort": 443,
-            "IpProtocol": "tcp",
-            "ToPort": 443,
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "Stack",
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-        "VpcId": {
-          "Ref": "VpcId",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "LogServerPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "kinesis:PutRecord",
-                "kinesis:PutRecords",
-                "kinesis:DescribeStream",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "ELKKinesisStreamArn",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "LogServerPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "NewDBToAppIngressNewVPC": {
-      "Properties": {
-        "FromPort": 5432,
-        "GroupId": {
-          "Ref": "DBSecurityGroupIdNewVPC",
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Ref": "AppServerSecurityGroupNewVPC",
-        },
-        "ToPort": 5432,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
-    "PanDomainPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:GetObject",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::pan-domain-auth-settings/*",
-              ],
-            },
-          ],
-        },
-        "PolicyName": "PanDomainPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "PanDomainPolicyB981546E": {
       "Properties": {
         "PolicyDocument": {
@@ -2238,30 +1405,6 @@ dpkg -i /home/facia-tool/facia-tool.all.deb
         "Roles": [
           {
             "Ref": "InstanceRoleFaciatoolBF15D06F",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "PermissionsPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:GetObject",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::permissions-cache/*",
-              ],
-            },
-          ],
-        },
-        "PolicyName": "PermissionsPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
           },
         ],
       },
@@ -2888,9 +2031,6 @@ dpkg -i /home/facia-tool/facia-tool.all.deb
         "PolicyName": "StorageBucket",
         "Roles": [
           {
-            "Ref": "DistributionRole",
-          },
-          {
             "Ref": "StorageConsumerRole",
           },
         ],
@@ -3084,29 +2224,6 @@ dpkg -i /home/facia-tool/facia-tool.all.deb
         ],
       },
       "Type": "AWS::IAM::Role",
-    },
-    "SwitchesPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "SwitchboardBucket",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "SwitchesPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "SwitchesPolicyDD0F07D1": {
       "Properties": {
@@ -3448,11 +2565,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         "CloudFrontAliases": [
           "fronts.code.dev-gutools.co.uk",
         ],
-        "DesiredCapacity": 1,
-        "InstanceType": "t4g.small",
         "LowerCaseStage": "code",
-        "MaxSize": 2,
-        "MinSize": 1,
         "StaticCloudFrontAliases": [
           "fronts-static.code.dev-gutools.co.uk",
         ],
@@ -3461,11 +2574,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         "CloudFrontAliases": [
           "fronts.gutools.co.uk",
         ],
-        "DesiredCapacity": 3,
-        "InstanceType": "t4g.medium",
         "LowerCaseStage": "prod",
-        "MaxSize": 6,
-        "MinSize": 3,
         "StaticCloudFrontAliases": [
           "fronts-static.gutools.co.uk",
         ],
@@ -3512,15 +2621,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
     "gu:cdk:version": "TEST",
   },
   "Outputs": {
-    "FaciaLoadBalancerDNS": {
-      "Description": "Load balancer DNS",
-      "Value": {
-        "Fn::GetAtt": [
-          "FaciaLoadBalancerNewVPC",
-          "DNSName",
-        ],
-      },
-    },
     "FeastPublicationSNSTopic": {
       "Description": "ARN of the SNS topic",
       "Export": {
@@ -3560,10 +2660,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
     },
   },
   "Parameters": {
-    "AMI": {
-      "Description": "ID of the machine image for this service (ami)",
-      "Type": "String",
-    },
     "AMIFaciatool": {
       "Description": "Amazon Machine Image ID for the app facia-tool. Use this in conjunction with AMIgo to keep AMIs up to date.",
       "Type": "AWS::EC2::Image::Id",
@@ -3572,11 +2668,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Default": "/account/services/access-logging/bucket",
       "Description": "S3 bucket to store your access logs",
       "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "AvailabilityZones": {
-      "Default": "eu-west-1a,eu-west-1b,eu-west-1c",
-      "Description": "The availability zone where instances are allowed to run",
-      "Type": "List<AWS::EC2::AvailabilityZone::Name>",
     },
     "CapiEndpointSsmKeyNewVPC": {
       "Default": "/newvpc/endpoint/capi/PROD",
@@ -3587,10 +2678,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Description": "ARN of the CAPI preview role",
       "Type": "String",
     },
-    "CertificateArn": {
-      "Description": "ARN of the x509 certificate for this service",
-      "Type": "String",
-    },
     "CloudFrontCertificateArn": {
       "Description": "x509 certificate ARN for CloudFront - must be in us-east-1",
       "Type": "String",
@@ -3599,24 +2686,12 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Description": "AWS account ID of CAPI",
       "Type": "String",
     },
-    "DBSecurityGroupId": {
-      "Type": "String",
-    },
     "DBSecurityGroupIdNewVPC": {
       "Type": "String",
     },
     "DistributionBucketName": {
       "Default": "/account/services/artifact.bucket",
       "Description": "SSM parameter containing the S3 bucket name holding distribution artifacts",
-      "Type": "AWS::SSM::Parameter::Value<String>",
-    },
-    "ELKKinesisStreamArn": {
-      "Description": "Arn of the kinesis stream for logging to ELK (logs.gutools)",
-      "Type": "String",
-    },
-    "ELKKinesisStreamName": {
-      "Default": "/account/services/logging.stream.name",
-      "Description": "Elk logging stream name",
       "Type": "AWS::SSM::Parameter::Value<String>",
     },
     "FrontendAccountID": {
@@ -3685,79 +2760,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
     },
   },
   "Resources": {
-    "AppServerSecurityGroupNewVPC": {
-      "Properties": {
-        "GroupDescription": "Application servers",
-        "SecurityGroupIngress": [
-          {
-            "FromPort": 9000,
-            "IpProtocol": "tcp",
-            "SourceSecurityGroupId": {
-              "Ref": "LoadBalancerSecurityGroupNewVPC",
-            },
-            "ToPort": 9000,
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "Stack",
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-        "VpcId": {
-          "Ref": "VpcId",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "AppToNewDBEgressNewVPC": {
-      "Properties": {
-        "DestinationSecurityGroupId": {
-          "Ref": "DBSecurityGroupIdNewVPC",
-        },
-        "FromPort": 5432,
-        "GroupId": {
-          "Ref": "AppServerSecurityGroupNewVPC",
-        },
-        "IpProtocol": "tcp",
-        "ToPort": 5432,
-      },
-      "Type": "AWS::EC2::SecurityGroupEgress",
-    },
-    "AssumeCapiPreviewRolePolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "CapiPreviewRole",
-              },
-            },
-          ],
-        },
-        "PolicyName": "assume-capi-preview-role",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "AssumeCapiPreviewRolePolicyBDA58B0F": {
       "Properties": {
         "PolicyDocument": {
@@ -3841,11 +2843,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             "Key": "gu:repo",
             "PropagateAtLaunch": true,
             "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "gu:riffraff:new-asg",
-            "PropagateAtLaunch": true,
-            "Value": "true",
           },
           {
             "Key": "LogKinesisStreamName",
@@ -3939,31 +2936,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Type": "AWS::CertificateManager::Certificate",
       "UpdateReplacePolicy": "Retain",
     },
-    "CloudwatchPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "cloudwatch:GetMetricStatistics",
-                "cloudwatch:ListMetrics",
-                "cloudwatch:PutMetricData",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CloudwatchPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "CloudwatchPolicyFEF3FFD1": {
       "Properties": {
         "PolicyDocument": {
@@ -3984,29 +2956,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         "Roles": [
           {
             "Ref": "InstanceRoleFaciatoolBF15D06F",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "CrossAccountPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "FrontendRoleToAssume",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "CrossAccountPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
           },
         ],
       },
@@ -4147,233 +3096,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "DistributionInstanceProfile": {
-      "Properties": {
-        "Path": "/",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::InstanceProfile",
-    },
-    "DistributionRole": {
-      "Properties": {
-        "AssumeRolePolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "sts:AssumeRole",
-              ],
-              "Effect": "Allow",
-              "Principal": {
-                "Service": [
-                  "ec2.amazonaws.com",
-                ],
-              },
-            },
-          ],
-        },
-        "ManagedPolicyArns": [
-          {
-            "Fn::ImportValue": {
-              "Fn::Sub": "guardian-ec2-for-ssm-GuardianEC2ForSSMPolicy",
-            },
-          },
-        ],
-        "Path": "/",
-        "Policies": [
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": "ssm:GetParameter",
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Fn::Sub": "arn:aws:ssm:\${AWS::Region}:\${AWS::AccountId}:parameter/facia-tool/cms-fronts/\${Stage}/*",
-                  },
-                },
-                {
-                  "Action": "kms:Decrypt",
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-              ],
-            },
-            "PolicyName": "getparameters",
-          },
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": [
-                    "sqs:ReceiveMessage",
-                    "sqs:DeleteMessage",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    {
-                      "Fn::Sub": [
-                        "arn:aws:sqs:\${Region}:\${Account}:publish-events-\${Stage}",
-                        {
-                          "Account": {
-                            "Ref": "AWS::AccountId",
-                          },
-                          "Region": {
-                            "Ref": "AWS::Region",
-                          },
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  "Action": [
-                    "s3:GetObject",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    "arn:aws:s3:::facia-dist/*",
-                    "arn:aws:s3:::facia-private/*",
-                  ],
-                },
-                {
-                  "Action": [
-                    "dynamodb:GetItem",
-                    "dynamodb:Query",
-                    "dynamodb:PutItem",
-                    "dynamodb:UpdateItem",
-                    "dynamodb:Scan",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    {
-                      "Fn::Sub": [
-                        "arn:aws:dynamodb:\${Region}:\${Account}:table/\${Table}",
-                        {
-                          "Account": {
-                            "Ref": "AWS::AccountId",
-                          },
-                          "Region": {
-                            "Ref": "AWS::Region",
-                          },
-                          "Table": {
-                            "Ref": "FrontsUserDataDynamoTable",
-                          },
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  "Action": [
-                    "ses:SendEmail",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    "*",
-                  ],
-                },
-                {
-                  "Action": [
-                    "ec2:DescribeTags",
-                    "ec2:DescribeInstances",
-                    "autoscaling:DescribeAutoScalingGroups",
-                    "autoscaling:DescribeAutoScalingInstances",
-                    "rds:DescribeDBInstances",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": "*",
-                },
-                {
-                  "Action": [
-                    "s3:PutObject",
-                  ],
-                  "Effect": "Allow",
-                  "Resource": [
-                    {
-                      "Fn::Sub": [
-                        "arn:aws:s3:::published-editions-\${LowerCaseStage}/*",
-                        {
-                          "LowerCaseStage": {
-                            "Fn::FindInMap": [
-                              "StageMap",
-                              {
-                                "Ref": "Stage",
-                              },
-                              "LowerCaseStage",
-                            ],
-                          },
-                        },
-                      ],
-                    },
-                    {
-                      "Fn::Sub": [
-                        "arn:aws:s3:::preview-editions-\${LowerCaseStage}/*",
-                        {
-                          "LowerCaseStage": {
-                            "Fn::FindInMap": [
-                              "StageMap",
-                              {
-                                "Ref": "Stage",
-                              },
-                              "LowerCaseStage",
-                            ],
-                          },
-                        },
-                      ],
-                    },
-                  ],
-                },
-              ],
-            },
-            "PolicyName": "root",
-          },
-          {
-            "PolicyDocument": {
-              "Statement": [
-                {
-                  "Action": "sns:Publish",
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Ref": "FrontsUpdateSNSTopic",
-                  },
-                  "Sid": "AllowPublishToMyTopic",
-                },
-                {
-                  "Action": "sns:Publish",
-                  "Effect": "Allow",
-                  "Resource": {
-                    "Ref": "FeastPublicationTopic",
-                  },
-                },
-              ],
-            },
-            "PolicyName": "publishTopic",
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "Stack",
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Role",
-    },
     "DnsRecord": {
       "Properties": {
         "Name": {
@@ -4410,56 +3132,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         "TTL": 900,
       },
       "Type": "Guardian::DNS::RecordSet",
-    },
-    "DynamoPressStatus": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:dynamodb:",
-                      {
-                        "Ref": "AWS::Region",
-                      },
-                      ":",
-                      {
-                        "Ref": "AWS::AccountId",
-                      },
-                      ":table/",
-                      {
-                        "Fn::FindInMap": [
-                          "CrossResources",
-                          {
-                            "Ref": "Stage",
-                          },
-                          "FrontPressedTable",
-                        ],
-                      },
-                    ],
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "DynamoPressStatus",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "EditionsBucketsPolicy20C5B98E": {
       "Properties": {
@@ -4522,94 +3194,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "FaciaAutoscalingGroupNewVPC": {
-      "Properties": {
-        "AvailabilityZones": {
-          "Ref": "AvailabilityZones",
-        },
-        "Cooldown": "180",
-        "DesiredCapacity": {
-          "Fn::FindInMap": [
-            "StageMap",
-            {
-              "Ref": "Stage",
-            },
-            "DesiredCapacity",
-          ],
-        },
-        "HealthCheckGracePeriod": 200,
-        "HealthCheckType": "ELB",
-        "LaunchConfigurationName": {
-          "Ref": "FaciaLaunchConfigNewVPC",
-        },
-        "LoadBalancerNames": [
-          {
-            "Ref": "FaciaLoadBalancerNewVPC",
-          },
-        ],
-        "MaxSize": {
-          "Fn::FindInMap": [
-            "StageMap",
-            {
-              "Ref": "Stage",
-            },
-            "MaxSize",
-          ],
-        },
-        "MinSize": {
-          "Fn::FindInMap": [
-            "StageMap",
-            {
-              "Ref": "Stage",
-            },
-            "MinSize",
-          ],
-        },
-        "Tags": [
-          {
-            "Key": "App",
-            "PropagateAtLaunch": true,
-            "Value": "facia-tool",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "PropagateAtLaunch": true,
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "PropagateAtLaunch": true,
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "LogKinesisStreamName",
-            "PropagateAtLaunch": true,
-            "Value": {
-              "Ref": "ELKKinesisStreamName",
-            },
-          },
-          {
-            "Key": "Stack",
-            "PropagateAtLaunch": true,
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "PropagateAtLaunch": true,
-            "Value": "PROD",
-          },
-          {
-            "Key": "SystemdUnit",
-            "PropagateAtLaunch": true,
-            "Value": "facia-tool.service",
-          },
-        ],
-        "VPCZoneIdentifier": {
-          "Ref": "PrivateSubnets",
-        },
-      },
-      "Type": "AWS::AutoScaling::AutoScalingGroup",
     },
     "FaciaCloudfront": {
       "Properties": {
@@ -4694,200 +3278,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         ],
       },
       "Type": "AWS::CloudFront::Distribution",
-    },
-    "FaciaLaunchConfigNewVPC": {
-      "Metadata": {
-        "AWS::CloudFormation::Authentication": {
-          "distributionAuthentication": {
-            "buckets": [
-              "facia-dist",
-            ],
-            "roleName": {
-              "Ref": "DistributionRole",
-            },
-            "type": "S3",
-          },
-        },
-        "AWS::CloudFormation::Init": {
-          "config": {
-            "files": {
-              "/etc/gu/facia-tool.application.secrets.conf": {
-                "authentication": "distributionAuthentication",
-                "mode": "000400",
-                "owner": "facia-tool",
-                "source": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      {
-                        "Fn::Sub": "https://s3-eu-west-1.amazonaws.com/facia-private/facia-tool.application.secrets.\${Stage}.conf",
-                      },
-                    ],
-                  ],
-                },
-              },
-              "/etc/gu/facia-tool.properties": {
-                "content": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "STAGE=",
-                      {
-                        "Ref": "Stage",
-                      },
-                      "
-",
-                      "STS_ROLE=",
-                      {
-                        "Ref": "FrontendRoleToAssume",
-                      },
-                      "
-",
-                      "FRONT_PRESSED_TABLE=",
-                      {
-                        "Fn::FindInMap": [
-                          "CrossResources",
-                          {
-                            "Ref": "Stage",
-                          },
-                          "FrontPressedTable",
-                        ],
-                      },
-                      "
-",
-                      "USER_DATA_TABLE=",
-                      {
-                        "Fn::Sub": "\${UserDataTablePrefix}-\${Stage}",
-                      },
-                      "
-",
-                    ],
-                  ],
-                },
-              },
-              "/home/facia-tool/facia-tool.all.deb": {
-                "authentication": "distributionAuthentication",
-                "source": {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "https://s3-eu-west-1.amazonaws.com/facia-dist/cms-fronts/",
-                      {
-                        "Ref": "Stage",
-                      },
-                      "/facia-tool/facia-tool_1.0_all.deb",
-                    ],
-                  ],
-                },
-              },
-            },
-            "users": {
-              "facia-tool": {
-                "homeDir": "/home/facia-tool",
-              },
-            },
-          },
-        },
-      },
-      "Properties": {
-        "IamInstanceProfile": {
-          "Ref": "DistributionInstanceProfile",
-        },
-        "ImageId": {
-          "Ref": "AMI",
-        },
-        "InstanceType": {
-          "Fn::FindInMap": [
-            "StageMap",
-            {
-              "Ref": "Stage",
-            },
-            "InstanceType",
-          ],
-        },
-        "MetadataOptions": {
-          "HttpTokens": "required",
-        },
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": "AppServerSecurityGroupNewVPC.GroupId",
-          },
-          {
-            "Ref": "CapiEndpointSsmKeyNewVPC",
-          },
-        ],
-        "UserData": {
-          "Fn::Base64": {
-            "Fn::Sub": "#!/bin/bash -ev
-cfn-init -s \${AWS::StackId} -r FaciaLaunchConfigNewVPC --region \${AWS::Region} || error_exit 'Failed to run cfn-init'
-dpkg -i /home/facia-tool/facia-tool.all.deb
-",
-          },
-        },
-      },
-      "Type": "AWS::AutoScaling::LaunchConfiguration",
-    },
-    "FaciaLoadBalancerNewVPC": {
-      "Properties": {
-        "CrossZone": true,
-        "HealthCheck": {
-          "HealthyThreshold": "2",
-          "Interval": "60",
-          "Target": "HTTP:9000/_healthcheck",
-          "Timeout": "5",
-          "UnhealthyThreshold": "10",
-        },
-        "Listeners": [
-          {
-            "InstancePort": "9000",
-            "LoadBalancerPort": "80",
-            "Protocol": "HTTP",
-          },
-          {
-            "InstancePort": "9000",
-            "InstanceProtocol": "HTTP",
-            "LoadBalancerPort": "443",
-            "Protocol": "HTTPS",
-            "SSLCertificateId": {
-              "Ref": "CertificateArn",
-            },
-          },
-        ],
-        "SecurityGroups": [
-          {
-            "Fn::GetAtt": [
-              "LoadBalancerSecurityGroupNewVPC",
-              "GroupId",
-            ],
-          },
-        ],
-        "Subnets": {
-          "Ref": "PublicSubnets",
-        },
-        "Tags": [
-          {
-            "Key": "App",
-            "Value": "facia-tool",
-          },
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "Stack",
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-      },
-      "Type": "AWS::ElasticLoadBalancing::LoadBalancer",
     },
     "FeastPublicationTopic": {
       "Properties": {
@@ -5433,112 +3823,6 @@ dpkg -i /home/facia-tool/facia-tool.all.deb
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
-    "LoadBalancerSecurityGroupNewVPC": {
-      "Properties": {
-        "GroupDescription": "Facia application load balancer",
-        "SecurityGroupIngress": [
-          {
-            "CidrIp": "0.0.0.0/0",
-            "FromPort": 80,
-            "IpProtocol": "tcp",
-            "ToPort": 80,
-          },
-          {
-            "CidrIp": "0.0.0.0/0",
-            "FromPort": 443,
-            "IpProtocol": "tcp",
-            "ToPort": 443,
-          },
-        ],
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "Stack",
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-        "VpcId": {
-          "Ref": "VpcId",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "LogServerPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "kinesis:PutRecord",
-                "kinesis:PutRecords",
-                "kinesis:DescribeStream",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "ELKKinesisStreamArn",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "LogServerPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "NewDBToAppIngressNewVPC": {
-      "Properties": {
-        "FromPort": 5432,
-        "GroupId": {
-          "Ref": "DBSecurityGroupIdNewVPC",
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": {
-          "Ref": "AppServerSecurityGroupNewVPC",
-        },
-        "ToPort": 5432,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
-    "PanDomainPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:GetObject",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::pan-domain-auth-settings/*",
-              ],
-            },
-          ],
-        },
-        "PolicyName": "PanDomainPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
     "PanDomainPolicyB981546E": {
       "Properties": {
         "PolicyDocument": {
@@ -5658,30 +3942,6 @@ dpkg -i /home/facia-tool/facia-tool.all.deb
         "Roles": [
           {
             "Ref": "InstanceRoleFaciatoolBF15D06F",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
-    },
-    "PermissionsPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": [
-                "s3:GetObject",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::permissions-cache/*",
-              ],
-            },
-          ],
-        },
-        "PolicyName": "PermissionsPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
           },
         ],
       },
@@ -6308,9 +4568,6 @@ dpkg -i /home/facia-tool/facia-tool.all.deb
         "PolicyName": "StorageBucket",
         "Roles": [
           {
-            "Ref": "DistributionRole",
-          },
-          {
             "Ref": "StorageConsumerRole",
           },
         ],
@@ -6504,29 +4761,6 @@ dpkg -i /home/facia-tool/facia-tool.all.deb
         ],
       },
       "Type": "AWS::IAM::Role",
-    },
-    "SwitchesPolicy": {
-      "Properties": {
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "SwitchboardBucket",
-              },
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-        "PolicyName": "SwitchesPolicy",
-        "Roles": [
-          {
-            "Ref": "DistributionRole",
-          },
-        ],
-      },
-      "Type": "AWS::IAM::Policy",
     },
     "SwitchesPolicyDD0F07D1": {
       "Properties": {

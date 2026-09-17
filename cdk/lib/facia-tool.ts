@@ -9,7 +9,7 @@ import {
 import { GuSecurityGroup, GuVpc } from '@guardian/cdk/lib/constructs/ec2';
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
 import type { App } from 'aws-cdk-lib';
-import { Fn, Tags } from 'aws-cdk-lib';
+import { Fn } from 'aws-cdk-lib';
 import type { ISubnet } from 'aws-cdk-lib/aws-ec2';
 import {
 	InstanceType,
@@ -108,11 +108,7 @@ export class FaciaTool extends GuStack {
 			publicSubnets: subnets('PublicSubnets'),
 		});
 
-		// Tells Riff-Raff which of the two ASGs is the new one while the migration is in progress.
-		Tags.of(ec2App.autoScalingGroup).add('gu:riffraff:new-asg', 'true');
-
-		// Traffic cutover: serve CloudFront from the new ALB instead of the legacy ELB.
-		// Reverting this override is the rollback.
+		// Serve CloudFront from the ALB; the included template only carries a placeholder origin.
 		cfnInclude
 			.getResource('FaciaCloudfront')
 			.addPropertyOverride(
