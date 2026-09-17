@@ -675,15 +675,20 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 		const cardCriteria = this.determineCardCriteria();
 		const extraVideoControlsId = getInputId(cardId, 'extra-video-controls');
 
-		const hasYoutubeVideo =
-			mainMediaVideoAtom?.data.media.platform === 'youtube' ||
-			getAtom(replacementVideoAtom)?.data.media.platform === 'youtube';
-		const isFeatureCollection =
-			!!collectionType &&
-			['static/feature/2', 'scrollable/feature'].includes(collectionType);
+		const hasActiveYoutubeMainMediaVideo =
+			mainMediaVideoAtom?.data.media.platform === 'youtube' && showMainVideo;
+		const hasActiveYoutubeReplacementVideo =
+			getAtom(replacementVideoAtom)?.data.media.platform === 'youtube' &&
+			videoReplace;
+		const isFeatureCollection = [
+			'static/feature/2',
+			'scrollable/feature',
+		].includes(collectionType ?? '');
 
 		const isABTestUnsupported =
-			abTestEnabled && hasYoutubeVideo && (isFeatureCollection || isImmersive);
+			abTestEnabled &&
+			(hasActiveYoutubeMainMediaVideo || hasActiveYoutubeReplacementVideo) &&
+			(isFeatureCollection || isImmersive);
 
 		return (
 			<FormContainer
