@@ -2,6 +2,7 @@ package services.editions.db
 
 import scalikejdbc._
 import logging.Logging
+import model.packages.Package.PackageType
 import model.packages._
 import model.packages.client.{
   AddContentItem,
@@ -16,6 +17,7 @@ import java.sql.Timestamp
 import java.time.{Instant, OffsetDateTime}
 import java.time.temporal.ChronoUnit
 import java.util.UUID
+import scala.util.Try
 
 trait PackageQueries extends MetadataHelpers with Logging {
 
@@ -250,9 +252,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
         SET
    			name=${packageMeta.name},
    			is_hidden=${packageMeta.isHidden},
-   			web_metadata=${packageMeta.webMetadataPG},
-   			feast_metadata=${packageMeta.feastMetadataPG},
-   			prefill=${packageMeta.prefill},
+   			metadata=${packageMeta.metadataPG},
       		updated_on=${packageMeta.updatedOn},
    			updated_by=${packageMeta.updatedBy},
    			updated_email=${packageMeta.updatedEmail}
@@ -271,10 +271,9 @@ trait PackageQueries extends MetadataHelpers with Logging {
       sql"""INSERT INTO packages (
         id,
         name,
+        package_type,
         is_hidden,
-        web_metadata,
-        feast_metadata,
-        prefill,
+        metadata,
         created_on,
         created_by,
         created_email,
@@ -284,10 +283,9 @@ trait PackageQueries extends MetadataHelpers with Logging {
 	) VALUES (
  	   ${metadata.id.toLowerCase},
      ${metadata.name},
+     ${metadata.packageType.toString},
      ${metadata.isHidden},
-     ${metadata.webMetadataPG},
-     ${metadata.feastMetadataPG},
-     ${metadata.prefill},
+     ${metadata.metadata},
      ${Instant.ofEpochMilli(metadata.createdOn)},
      ${metadata.createdBy},
      ${metadata.createdEmail},
@@ -407,9 +405,8 @@ trait PackageQueries extends MetadataHelpers with Logging {
         id,
         name,
         is_hidden,
-        web_metadata,
-        feast_metadata,
-        prefill,
+        metadata,
+        package_type,
         created_on,
         created_by,
         created_email,
@@ -423,16 +420,17 @@ trait PackageQueries extends MetadataHelpers with Logging {
 
     sql
       .map(rs => {
-        val feastMeta =
-          rs.stringOpt("feast_metadata").flatMap(getFeastCollectionMetadata)
-        val webMeta = rs.stringOpt("web_metadata").map(Json.parse)
+        val metadata =
+          rs.stringOpt("feast_metadata").flatMap(getPackageMetadata)
+        val packageType = Try {
+          Package.PackageType.withName("package_type")
+        }.getOrElse(PackageType.Invalid)
         Package(
           id = rs.string("id"),
           name = rs.string("name"),
           isHidden = rs.boolean("is_hidden"),
-          webMetadata = webMeta,
-          feastMetadata = feastMeta,
-          prefill = rs.stringOpt("prefill"),
+          packageType = packageType,
+          metadata = metadata,
           createdOn = rs.offsetDateTimeOpt("created_on"),
           createdBy = rs.stringOpt("created_by"),
           createdEmail = rs.stringOpt("created_email"),

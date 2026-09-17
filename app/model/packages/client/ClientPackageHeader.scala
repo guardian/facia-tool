@@ -1,14 +1,12 @@
 package model.packages.client
 
-import model.packages.FeastPackageMetadata
+import model.packages.{Package, PackageMetadata}
 import play.api.libs.json._
-import model.packages.Package
 
 case class ClientPackageHeader(
     id: String,
     name: String,
-    webMetadata: Option[JsValue],
-    feastMetadata: Option[FeastPackageMetadata],
+    metadata: Option[PackageMetadata],
     createdOn: Option[Long],
     createdBy: Option[String],
     createdEmail: Option[String],
@@ -24,8 +22,7 @@ object ClientPackageHeader {
   def fromPackage(domainPackage: Package) = ClientPackageHeader(
     id = domainPackage.id,
     name = domainPackage.name,
-    webMetadata = domainPackage.webMetadata,
-    feastMetadata = domainPackage.feastMetadata,
+    metadata = domainPackage.metadata,
     createdOn = domainPackage.createdOn.map(_.toInstant.toEpochMilli),
     createdBy = domainPackage.createdBy,
     createdEmail = domainPackage.createdEmail,

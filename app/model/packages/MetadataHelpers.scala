@@ -25,12 +25,12 @@ trait MetadataHelpers extends Logging {
     })
   }
 
-  protected def getFeastCollectionMetadata(
+  protected def getPackageMetadata(
       jsContent: String
-  ): Option[FeastPackageMetadata] = {
+  ): Option[PackageMetadata] = {
     val maybeObject = for {
       js <- Try { Json.parse(jsContent) }.toEither.left.map(_.toString)
-      meta <- formatJsResult(FeastPackageMetadata.format.reads(js))
+      meta <- formatJsResult(PackageMetadata.format.reads(js))
     } yield meta
     maybeObject match {
       case Left(err) =>

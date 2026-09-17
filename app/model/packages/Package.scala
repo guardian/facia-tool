@@ -39,7 +39,8 @@ final case class Package(
 
 object Package extends MetadataHelpers with Logging {
   object PackageType extends Enumeration {
-    val Web, Feast = Value
+    val Invalid, Web, Feast =
+      Value // packages which do not have a valid type are tagged as Invalid in the software
   }
   implicit val packageTypeFormat: Format[PackageType.Value] =
     Json.formatEnum(PackageType)

@@ -5,8 +5,12 @@ import com.gu.pandomainauth.{PanDomainAuthSettingsRefresher, S3BucketLoader}
 import com.gu.pandomainauth.model.{AuthenticatedUser, User}
 import conf.ApplicationConfiguration
 import fixtures.{FaciaDBService, UsesDatabase}
-import model.packages.FeastPackageMetadata
-import model.packages.{PackageCardRow, PackageCardType}
+import model.packages.{
+  FeastPackageMetadata,
+  Package,
+  PackageCardRow,
+  PackageCardType
+}
 import model.packages.client.CreatePackageRequest
 import org.mockito.ArgumentMatchers.{any, anyString}
 import org.mockito.Mockito.{mock, when}
@@ -160,14 +164,13 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         id = packageId.toString,
         name = name,
         isHidden = false,
-        webMetadata = Some(Json.obj("source" -> "prefill")),
-        feastMetadata = Some(
+        packageType = Package.PackageType.Feast,
+        metadata = Some(
           FeastPackageMetadata(
             targetedRegions = Some(Seq("uk")),
             excludedRegions = Some(Seq("us"))
           )
         ),
-        prefill = Some("recipes"),
         createdOn = createdOnMillis,
         createdBy = "Test Editor",
         createdEmail = "test.editor@guardian.co.uk"
@@ -224,12 +227,11 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
               "id" -> packageId.toString,
               "name" -> "Created package",
               "isHidden" -> false,
-              "webMetadata" -> Json.obj("source" -> "post"),
-              "feastMetadata" -> Json.obj(
+              "packageType" -> "Feast",
+              "metadata" -> Json.obj(
                 "targetedRegions" -> Json.arr("uk"),
                 "excludedRegions" -> Json.arr("us")
               ),
-              "prefill" -> "recipes",
               "createdOn" -> createdOn,
               "createdBy" -> "Test Editor",
               "createdEmail" -> "test.editor@guardian.co.uk"
@@ -360,12 +362,11 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
               "id" -> packageId.toString,
               "name" -> "After overwrite",
               "isHidden" -> false,
-              "webMetadata" -> Json.obj("headline" -> "Updated by PUT"),
-              "feastMetadata" -> Json.obj(
+              "packageType" -> "Feast",
+              "metadata" -> Json.obj(
                 "targetedRegions" -> Json.arr("gb"),
                 "excludedRegions" -> Json.arr("us")
               ),
-              "prefill" -> "recipes",
               "createdOn" -> createdOn,
               "createdBy" -> "Test Editor",
               "createdEmail" -> "test.editor@guardian.co.uk",
@@ -459,8 +460,8 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         components.packageController.getPackage(packageId),
         emptyAuthedRequest(HttpVerbs.GET, s"/packages/$packageId")
       )
-      val feastMeta = (jsonBody(fetched) \\ "feastMetadata").head.as[JsObject]
-      feastMeta
+      val meta = (jsonBody(fetched) \\ "metadata").head.as[JsObject]
+      meta
         .value("targetedRegions")
         .as[JsArray]
         .value
@@ -525,8 +526,8 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         components.packageController.getPackage(packageId),
         emptyAuthedRequest(HttpVerbs.GET, s"/packages/$packageId")
       )
-      val feastMeta = (jsonBody(fetched) \\ "feastMetadata").head.as[JsObject]
-      feastMeta
+      val meta = (jsonBody(fetched) \\ "metadata").head.as[JsObject]
+      meta
         .value("targetedRegions")
         .as[JsArray]
         .value

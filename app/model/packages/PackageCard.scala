@@ -39,32 +39,39 @@ case class PackageSubcollectionCard(
 }
 
 object PackageRecipeCard {
-	implicit val format: OFormat[PackageRecipeCard] = Json.format[PackageRecipeCard]
+  implicit val format: OFormat[PackageRecipeCard] =
+    Json.format[PackageRecipeCard]
 }
 
 object PackageChefCard {
-	implicit val format: OFormat[PackageChefCard] = Json.format[PackageChefCard]
+  implicit val format: OFormat[PackageChefCard] = Json.format[PackageChefCard]
 }
 
 object PackageSubcollectionCard {
-	implicit val format: OFormat[PackageSubcollectionCard] = Json.format[PackageSubcollectionCard]
+  implicit val format: OFormat[PackageSubcollectionCard] =
+    Json.format[PackageSubcollectionCard]
 }
 
 object PackageCard {
   implicit val format: OFormat[PackageCard] = new OFormat[PackageCard] {
     override def reads(json: JsValue): JsResult[PackageCard] = {
       (json \ "cardType").validate[String].flatMap {
-        case "recipe" => PackageRecipeCard.format.reads(json)
-        case "chef" => PackageChefCard.format.reads(json)
+        case "recipe"        => PackageRecipeCard.format.reads(json)
+        case "chef"          => PackageChefCard.format.reads(json)
         case "subcollection" => PackageSubcollectionCard.format.reads(json)
-        case other => JsError(s"Unknown cardType: $other")
+        case other           => JsError(s"Unknown cardType: $other")
       }
     }
 
     override def writes(card: PackageCard): JsObject = card match {
-      case c : PackageRecipeCard => PackageRecipeCard.format.writes(c) ++ Json.obj("cardType" -> "recipe")
-      case c: PackageChefCard => PackageChefCard.format.writes(c) ++ Json.obj("cardType" -> "chef")
-	  case c: PackageSubcollectionCard => PackageSubcollectionCard.format.writes(c) ++ Json.obj("cardType" -> "subcollection")
+      case c: PackageRecipeCard =>
+        PackageRecipeCard.format.writes(c) ++ Json.obj("cardType" -> "recipe")
+      case c: PackageChefCard =>
+        PackageChefCard.format.writes(c) ++ Json.obj("cardType" -> "chef")
+      case c: PackageSubcollectionCard =>
+        PackageSubcollectionCard.format.writes(c) ++ Json.obj(
+          "cardType" -> "subcollection"
+        )
     }
   }
 

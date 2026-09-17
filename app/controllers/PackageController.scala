@@ -351,43 +351,56 @@ class PackageController(
 
   def updateRegions(id: UUID) =
     EditPackagesAuthAction(parse.json[UpdateRegionsRequest]) { req =>
-      val maybeUpdate = for {
+      val updateOrErr = for {
         pkg <- db
           .getPackages(Some(Seq(id)), None, strictTimestamp = false)
           .headOption
-        oldMeta <- pkg.feastMetadata
-      } yield oldMeta.copy(
-        excludedRegions = req.body.excludedRegions,
-        targetedRegions = req.body.targetedRegions
-      )
-
-      try {
-        val updatedRows = db.updatePackageMeta(
-          id,
-          newMeta = maybeUpdate.getOrElse(
-            FeastPackageMetadata(
+        oldMeta <- pkg.metadata
+      } yield oldMeta match {
+        case f: FeastPackageMetadata =>
+          Right(
+            f.copy(
               excludedRegions = req.body.excludedRegions,
               targetedRegions = req.body.targetedRegions
             )
-          ),
-          userName = req.user.username,
-          userEmail = req.user.email
-        )
-        if (updatedRows == 0) {
-          NotFound(
-            Json.obj(
-              "status" -> "not found",
-              "detail" -> "package id is not valid"
-            )
           )
-        } else {
-          NoContent
-        }
-      } catch {
-        case err: PSQLException =>
-          psqlErrorHandler(err)
-        case err: Throwable =>
-          genericErrorHandler(err)
+        case _: WebPackageMetadata =>
+          Left("Regions only apply to Feast collections")
+      }
+
+      updateOrErr match {
+        case Some(Left(err)) =>
+          BadRequest(Json.obj("status" -> "error", "detail" -> err))
+        case _ =>
+          val maybeUpdate = updateOrErr.flatMap(_.toOption)
+          try {
+            val updatedRows = db.updatePackageMeta(
+              id,
+              newMeta = maybeUpdate.getOrElse(
+                FeastPackageMetadata(
+                  excludedRegions = req.body.excludedRegions,
+                  targetedRegions = req.body.targetedRegions
+                )
+              ),
+              userName = req.user.username,
+              userEmail = req.user.email
+            )
+            if (updatedRows == 0) {
+              NotFound(
+                Json.obj(
+                  "status" -> "not found",
+                  "detail" -> "package id is not valid"
+                )
+              )
+            } else {
+              NoContent
+            }
+          } catch {
+            case err: PSQLException =>
+              psqlErrorHandler(err)
+            case err: Throwable =>
+              genericErrorHandler(err)
+          }
       }
     }
 
@@ -449,7 +462,7 @@ class PackageController(
         req.body.ops.foldLeft[Map[String, PatchContentItem]](Map.empty)(
           (acc, elem) => {
             elem match {
-              case addRequest:  AddContentItem => // multiple adds stack
+              case addRequest: AddContentItem => // multiple adds stack
                 acc ++ Map(addRequest.item.id -> addRequest)
               case removeRequest: RemoveContentItem => // a Remove following an Add removes. An Add following a Remove adds;
                 // This will override any pre-existing add request with a remove request

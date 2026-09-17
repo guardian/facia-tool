@@ -46,16 +46,15 @@ class PackageDBTest
       id: UUID,
       name: String,
       createdOnMillis: Long,
-      hidden: Boolean = false
+      hidden: Boolean = false,
+      packageType: Package.PackageType.Value = Package.PackageType.Feast
   ): CreatePackageRequest =
     CreatePackageRequest(
       id = id.toString,
       name = name,
       isHidden = hidden,
-      webMetadata = Some(Json.obj("source" -> "test")),
-      feastMetadata =
-        Some(FeastPackageMetadata(bodyText = Some("text goes here"))),
-      prefill = Some("recipes"),
+      packageType = packageType,
+      metadata = Some(FeastPackageMetadata(bodyText = Some("text goes here"))),
       createdOn = createdOnMillis,
       createdBy = s"${user.firstName} ${user.lastName}",
       createdEmail = user.email
@@ -113,7 +112,10 @@ class PackageDBTest
     loaded.head.id shouldBe packageId.toString
     loaded.head.name shouldBe "Weekend recipes"
     loaded.head.isHidden shouldBe false
-    loaded.head.prefill shouldBe Some("recipes")
+    loaded.head.packageType shouldBe Package.PackageType.Feast
+    loaded.head.metadata shouldBe Some(
+      FeastPackageMetadata(bodyText = Some("text goes here"))
+    )
     loaded.head.createdEmail shouldBe Some(user.email)
   }
 
@@ -243,10 +245,8 @@ class PackageDBTest
       id = packageId.toString,
       name = "Updated package",
       isHidden = true,
-      webMetadata = Some(Json.obj("source" -> "update")),
-      feastMetadata =
-        Some(FeastPackageMetadata(bodyText = Some("text goes here"))),
-      prefill = Some("updated-prefill"),
+      packageType = Package.PackageType.Feast,
+      metadata = Some(FeastPackageMetadata(bodyText = Some("text goes here"))),
       createdOn = Some(now),
       createdBy = Some("Billie Holiday"),
       createdEmail = Some("billie.holiday@justice.example.com"),
@@ -285,7 +285,10 @@ class PackageDBTest
         .head
     loadedPackage.name shouldBe "Updated package"
     loadedPackage.isHidden shouldBe true
-    loadedPackage.prefill shouldBe Some("updated-prefill")
+    loadedPackage.packageType shouldBe Package.PackageType.Feast
+    loadedPackage.metadata shouldBe Some(
+      FeastPackageMetadata(bodyText = Some("text goes here"))
+    )
 
     val loadedCards = editionsDB.getPackageCards(packageId)
     loadedCards.map(_.pageCode) should contain("recipe-updated")
@@ -303,5 +306,85 @@ class PackageDBTest
       .cardType shouldBe PackageCardType.Subcollection
 
     loadedCards.length shouldEqual 2
+  }
+
+  "should handle invalid package_type gracefully" taggedAs UsesDatabase in {
+    val packageId = UUID.randomUUID()
+    val createdOn = now.toInstant.toEpochMilli
+
+    DB localTx { implicit session =>
+      sql"""INSERT INTO packages (
+            id,
+            name,
+            is_hidden,
+            package_type,
+            metadata,
+            created_on,
+            created_by,
+            created_email
+          ) VALUES (
+            ${packageId.toString},
+            'Invalid Type Package',
+            false,
+            'UnknownType',
+            null,
+            ${createdOn},
+            'Test Editor',
+            'test@example.com'
+          )""".update.apply()
+    }
+
+    val loaded =
+      editionsDB.getPackages(
+        Some(Seq(packageId)),
+        None,
+        strictTimestamp = false
+      )
+
+    loaded should have size 1
+    loaded.head.id shouldBe packageId.toString
+    loaded.head.name shouldBe "Invalid Type Package"
+    loaded.head.packageType shouldBe Package.PackageType.Invalid
+    loaded.head.metadata shouldBe None
+  }
+
+  "should handle invalid metadata JSON gracefully" taggedAs UsesDatabase in {
+    val packageId = UUID.randomUUID()
+    val createdOn = now.toInstant.toEpochMilli
+
+    DB localTx { implicit session =>
+      sql"""INSERT INTO packages (
+            id,
+            name,
+            is_hidden,
+            package_type,
+            metadata,
+            created_on,
+            created_by,
+            created_email
+          ) VALUES (
+            ${packageId.toString},
+            'Invalid Metadata Package',
+            false,
+            'Feast',
+            '{"invalid": "json that does not match schema"}'::jsonb,
+            ${createdOn},
+            'Test Editor',
+            'test@example.com'
+          )""".update.apply()
+    }
+
+    val loaded =
+      editionsDB.getPackages(
+        Some(Seq(packageId)),
+        None,
+        strictTimestamp = false
+      )
+
+    loaded should have size 1
+    loaded.head.id shouldBe packageId.toString
+    loaded.head.name shouldBe "Invalid Metadata Package"
+    loaded.head.packageType shouldBe Package.PackageType.Feast
+    loaded.head.metadata shouldBe None
   }
 }

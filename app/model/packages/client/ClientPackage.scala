@@ -1,7 +1,6 @@
 package model.packages.client
 
-import model.packages.FeastPackageMetadata
-import model.packages.{Package => DomainPackage}
+import model.packages.{PackageMetadata, Package => DomainPackage}
 import play.api.libs.json.{JsValue, Json, OFormat}
 import services.editions.db.FaciaDB
 
@@ -9,9 +8,8 @@ final case class ClientPackage(
     id: String,
     name: String,
     isHidden: Boolean,
-    webMetadata: Option[JsValue],
-    feastMetadata: Option[FeastPackageMetadata],
-    prefill: Option[String],
+    packageType: DomainPackage.PackageType.Value,
+    metadata: Option[PackageMetadata],
     createdOn: Option[Long],
     createdBy: Option[String],
     createdEmail: Option[String],
@@ -32,9 +30,8 @@ object ClientPackage {
       id = domainPackage.id,
       name = domainPackage.name,
       isHidden = domainPackage.isHidden,
-      webMetadata = domainPackage.webMetadata,
-      feastMetadata = domainPackage.feastMetadata,
-      prefill = domainPackage.prefill,
+      packageType = domainPackage.packageType,
+      metadata = domainPackage.metadata,
       createdOn = domainPackage.createdOn.map(_.toInstant.toEpochMilli),
       createdBy = domainPackage.createdBy,
       createdEmail = domainPackage.createdEmail,
@@ -48,10 +45,9 @@ object ClientPackage {
     DomainPackage(
       id = clientPackage.id,
       name = clientPackage.name,
+      packageType = clientPackage.packageType,
       isHidden = clientPackage.isHidden,
-      webMetadata = clientPackage.webMetadata,
-      feastMetadata = clientPackage.feastMetadata,
-      prefill = clientPackage.prefill,
+      metadata = clientPackage.metadata,
       createdOn = clientPackage.createdOn.map(FaciaDB.dateTimeFromMillis),
       createdBy = clientPackage.createdBy,
       createdEmail = clientPackage.createdEmail,
