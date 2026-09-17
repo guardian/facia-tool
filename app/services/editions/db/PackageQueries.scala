@@ -115,16 +115,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
     		 updated_on=$lastUpdated,
       	     updated_by=$userName,
              updated_email=$userEmail
-		  WHERE id=${packageId.toString}""".execute.apply()
-    val updatedPackages =
-      fetchPackageMetaSql(where = sqls"WHERE id = ${packageId.toString}")
-        .apply()
-
-    assert(
-      updatedPackages.size == 1,
-      s"Retrieved ${updatedPackages.size} collections from DB but there should be exactly one. Failing fast."
-    )
-    updatedPackages.head
+		  WHERE id=${packageId.toString}""".update.apply()
   }
 
   /** Inserts a card into the given package. If a card with the same page_code

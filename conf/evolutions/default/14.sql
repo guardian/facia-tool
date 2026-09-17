@@ -6,7 +6,8 @@ CREATE TABLE packages (
     name          TEXT    NOT NULL,
     is_hidden     BOOLEAN NOT NULL,
     package_type  TEXT,
-
+	metadata       JSONB,
+	
     created_on    TIMESTAMPTZ    DEFAULT now(),
     created_by    TEXT,
     created_email TEXT,

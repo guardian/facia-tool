@@ -15,12 +15,13 @@ import model.packages.client.{
   ClientPackageCard,
   ClientPackageHeader,
   CreatePackageRequest,
+  ErrorResponse,
   PatchContentItem,
   PatchContentRequest,
   RemoveContentItem,
   UpdateRegionsRequest
 }
-import org.postgresql.util.PSQLException
+import org.postgresql.util.{PSQLException, PSQLState}
 import services.Capi
 import services.editions.db.{FaciaDB, PackageQueries}
 import services.editions.publishing.Publishing
@@ -37,6 +38,7 @@ import java.time.format.DateTimeFormatter
 import java.util.UUID
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
+import model.packages.client.ErrorResponse._
 
 class PackageController(
     db: FaciaDB,
@@ -184,16 +186,15 @@ class PackageController(
   private def psqlErrorHandler(err: PSQLException) =
     err.getSQLState match {
       // See https://www.postgresql.org/docs/current/errcodes-appendix.html for a list of codes
-      case "23505" => // unique constraint violation
+      case s
+          if s == PSQLState.UNIQUE_VIOLATION.getState => // unique constraint violation
         Conflict(
-          Json.obj(
-            "status" -> "conflict",
-            "detail" -> "Cannot overwrite existing object"
-          )
+          ErrorResponse.conflict("Cannot overwrite existing object")
         )
-      case "23503" => // foreign key violation
+      case s
+          if s == PSQLState.FOREIGN_KEY_VIOLATION.getState => // foreign key violation
         Conflict(
-          Json.obj("status" -> "conflict", "detail" -> "Sub-object conflict")
+          ErrorResponse.conflict("Sub-object conflict")
         )
       case _ =>
         logger.error(
@@ -201,7 +202,7 @@ class PackageController(
           err
         )
         InternalServerError(
-          Json.obj("status" -> "error", "detail" -> "Database error, see logs")
+          ErrorResponse("Database error, see logs")
         )
     }
 
@@ -221,30 +222,19 @@ class PackageController(
           s"Could not create package due to JSON parsing errors: ${errs.mkString(", ")}"
         )
         BadRequest(
-          Json.obj(
-            "status" -> JsString("bad_request"),
-            "detail" -> JsArray(errs.map(e => JsString(e.toString)))
-          )
+          ErrorResponse.badRequest(errs.mkString(";"))
         )
       case Failure(err: PSQLException) =>
         psqlErrorHandler(err)
       case Failure(err: IllegalArgumentException) =>
         logger.error(s"Invalid UUID when creating package: ${err.getMessage}")
         BadRequest(
-          Json.obj(
-            "status" -> JsString("bad_request"),
-            "detail" -> JsArray(Seq(JsString("Invalid package ID")))
-          )
+          ErrorResponse.badRequest("Invalid package ID")
         )
       case Failure(err) =>
         logger.error(s"Could not create package: ${err.getMessage}", err)
         InternalServerError(
-          Json.obj(
-            "status" -> JsString("error"),
-            "detail" -> JsString(
-              err.getMessage
-            ) // TODO - tighten this up when we are done testing
-          )
+          ErrorResponse.apply(err.getMessage)
         )
     }
   }
@@ -262,10 +252,7 @@ class PackageController(
           Ok(ClientPackage.format.writes(clientPkg))
         case None =>
           NotFound(
-            Json.obj(
-              "status" -> JsString("error"),
-              "detail" -> JsString(s"Package with id $id not found")
-            )
+            ErrorResponse.notFound(s"Package with id $id not found")
           )
       }
     } catch {
@@ -294,10 +281,7 @@ class PackageController(
           db.updateHidden(id, newState, req.user.username, req.user.email)
         if (count == 0) {
           NotFound(
-            Json.obj(
-              "status" -> "not_found",
-              "detail" -> "that package does not exist"
-            )
+            ErrorResponse.notFound("that package does not exist")
           )
         } else {
           NoContent
@@ -317,36 +301,35 @@ class PackageController(
       .onUnmappableCharacter(CodingErrorAction.REPORT)
 
     try {
-      db.updatePackageName(
+      val count = db.updatePackageName(
         id,
         decoder.decode(req.body.asByteBuffer).toString,
         req.user.username,
         req.user.email
       )
-      NoContent
+      if (count == 0) {
+        NotFound(
+          ErrorResponse.notFound("that package does not exist")
+        )
+      } else {
+        NoContent
+      }
     } catch {
       case err: PSQLException =>
         psqlErrorHandler(err)
-      case err: CharacterCodingException =>
-        logger.error(s"CharacterCodingException: ${err.getMessage}", err)
-        BadRequest(
-          Json.obj(
-            "status" -> JsString("error"),
-            "detail" -> JsString("Name was not valid utf-8")
-          )
-        )
       case err: MalformedInputException =>
         logger.error(s"MalformedInputException: ${err.getMessage}", err)
         BadRequest(
-          Json.obj(
-            "status" -> JsString("error"),
-            "detail" -> JsString("Name was not valid utf-8")
-          )
+          ErrorResponse.badRequest("Name was not valid utf-8")
+        )
+      case err: CharacterCodingException =>
+        logger.error(s"CharacterCodingException: ${err.getMessage}", err)
+        BadRequest(
+          ErrorResponse.badRequest("Name was not valid utf-8")
         )
       case err: Throwable =>
         genericErrorHandler(err)
     }
-
   }
 
   def updateRegions(id: UUID) =
@@ -370,7 +353,7 @@ class PackageController(
 
       updateOrErr match {
         case Some(Left(err)) =>
-          BadRequest(Json.obj("status" -> "error", "detail" -> err))
+          BadRequest(ErrorResponse.badRequest(err))
         case _ =>
           val maybeUpdate = updateOrErr.flatMap(_.toOption)
           try {
@@ -387,10 +370,7 @@ class PackageController(
             )
             if (updatedRows == 0) {
               NotFound(
-                Json.obj(
-                  "status" -> "not found",
-                  "detail" -> "package id is not valid"
-                )
+                ErrorResponse.notFound("package id is not valid")
               )
             } else {
               NoContent
@@ -422,10 +402,7 @@ class PackageController(
         if (updated == 0) {
           logger.info(s"Request to update non-existent package $id")
           NotFound(
-            Json.obj(
-              "status" -> "not_found",
-              "detail" -> "package ID is not valid"
-            )
+            ErrorResponse.notFound("package ID is not valid")
           )
         } else {
           db.getPackageById(id) match {
@@ -441,10 +418,7 @@ class PackageController(
                 s"Package $id was deleted immediately after update, this should not happen"
               )
               NotFound(
-                Json.obj(
-                  "status" -> "not_found",
-                  "detail" -> "package ID is not valid"
-                )
+                ErrorResponse.notFound("package ID is not valid")
               )
           }
         }
