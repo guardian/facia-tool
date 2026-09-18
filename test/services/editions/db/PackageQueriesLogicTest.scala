@@ -5,6 +5,7 @@ import model.packages.{PackageCard, PackageCardRow}
 import org.scalatest.{FreeSpec, Matchers}
 
 import java.time.OffsetDateTime
+import scala.language.reflectiveCalls //stop compiler warning about using the override to call into a protected method
 
 class PackageQueriesLogicTest extends FreeSpec with Matchers {
   private val packageQueries = new PackageQueries {

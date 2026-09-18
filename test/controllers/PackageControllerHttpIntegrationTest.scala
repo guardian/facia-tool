@@ -289,8 +289,16 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
       )
 
       val result = call(
-        components.packageController.listPackages,
-        emptyAuthedRequest(HttpVerbs.GET, "/packages")
+        components.packageController.listPackages(
+          id = None,
+          full = None,
+          date = None,
+          strict = None,
+          title = None,
+          limit = None,
+          order = Some("created")
+        ),
+        emptyAuthedRequest(HttpVerbs.GET, "/packages?order=created")
       )
       status(result) shouldBe OK
 
@@ -321,7 +329,15 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
       )
 
       val createdSorted = call(
-        components.packageController.listPackages,
+        components.packageController.listPackages(
+          id = None,
+          full = None,
+          date = None,
+          strict = None,
+          title = None,
+          limit = None,
+          order = Some("created")
+        ),
         emptyAuthedRequest(HttpVerbs.GET, "/packages?order=created")
       )
       status(createdSorted) shouldBe OK
@@ -332,13 +348,29 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
       )
 
       val updatedSorted = call(
-        components.packageController.listPackages,
+        components.packageController.listPackages(
+          id = None,
+          full = None,
+          date = None,
+          strict = None,
+          title = None,
+          limit = None,
+          order = Some("updated")
+        ),
         emptyAuthedRequest(HttpVerbs.GET, "/packages?order=updated")
       )
       status(updatedSorted) shouldBe OK
 
       val titleSearch = call(
-        components.packageController.listPackages,
+        components.packageController.listPackages(
+          id = None,
+          full = None,
+          date = None,
+          strict = None,
+          title = Some("Bravo"),
+          limit = None,
+          order = Some("title")
+        ),
         emptyAuthedRequest(HttpVerbs.GET, "/packages?order=title&title=Bravo")
       )
       status(titleSearch) shouldBe OK
