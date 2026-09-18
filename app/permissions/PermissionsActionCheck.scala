@@ -153,6 +153,15 @@ class AccessEditionsPermissionCheck(val acl: Acl)(implicit ec: ExecutionContext)
   override val restrictedAction: String = "Edit editions fronts."
 }
 
+class EditPackagesPermissionCheck(client: PermissionsProvider)(implicit
+    ec: ExecutionContext
+) extends PermissionActionFilter {
+  val executionContext = ec
+  val restrictedAction = "edit packages"
+  val testAccess: String => Authorization =
+    testUserPermission(client, Permissions.EditFrontsPackages)
+}
+
 class AccessEditorialFrontsPermissionCheck(client: PermissionsProvider)(implicit
     ec: ExecutionContext
 ) extends PermissionActionFilter {
