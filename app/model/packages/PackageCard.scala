@@ -40,16 +40,38 @@ case class PackageSubcollectionCard(
 
 object PackageRecipeCard {
   implicit val format: OFormat[PackageRecipeCard] =
-    Json.format[PackageRecipeCard]
+    new OFormat[PackageRecipeCard] {
+      override def writes(o: PackageRecipeCard): JsObject = Json
+        .writes[PackageRecipeCard]
+        .writes(o) ++ Json.obj("cardType" -> "recipe")
+
+      override def reads(json: JsValue): JsResult[PackageRecipeCard] =
+        Json.reads[PackageRecipeCard].reads(json)
+    }
 }
 
 object PackageChefCard {
-  implicit val format: OFormat[PackageChefCard] = Json.format[PackageChefCard]
+  implicit val format: OFormat[PackageChefCard] =
+    new OFormat[PackageChefCard] {
+      override def writes(o: PackageChefCard): JsObject = Json
+        .writes[PackageChefCard]
+        .writes(o) ++ Json.obj("cardType" -> "chef")
+
+      override def reads(json: JsValue): JsResult[PackageChefCard] =
+        Json.reads[PackageChefCard].reads(json)
+    }
 }
 
 object PackageSubcollectionCard {
   implicit val format: OFormat[PackageSubcollectionCard] =
-    Json.format[PackageSubcollectionCard]
+    new OFormat[PackageSubcollectionCard] {
+      override def writes(o: PackageSubcollectionCard): JsObject = Json
+        .writes[PackageSubcollectionCard]
+        .writes(o) ++ Json.obj("cardType" -> "subcollection")
+
+      override def reads(json: JsValue): JsResult[PackageSubcollectionCard] =
+        Json.reads[PackageSubcollectionCard].reads(json)
+    }
 }
 
 object PackageCard {
@@ -65,13 +87,11 @@ object PackageCard {
 
     override def writes(card: PackageCard): JsObject = card match {
       case c: PackageRecipeCard =>
-        PackageRecipeCard.format.writes(c) ++ Json.obj("cardType" -> "recipe")
+        PackageRecipeCard.format.writes(c)
       case c: PackageChefCard =>
-        PackageChefCard.format.writes(c) ++ Json.obj("cardType" -> "chef")
+        PackageChefCard.format.writes(c)
       case c: PackageSubcollectionCard =>
-        PackageSubcollectionCard.format.writes(c) ++ Json.obj(
-          "cardType" -> "subcollection"
-        )
+        PackageSubcollectionCard.format.writes(c)
     }
   }
 

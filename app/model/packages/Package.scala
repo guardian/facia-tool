@@ -26,21 +26,17 @@ final case class Package(
     updatedOn: Option[OffsetDateTime],
     updatedBy: Option[String],
     updatedEmail: Option[String]
-) {
-  import Package.{toPGobject, feastMetadataPG}
+) extends MetadataHelpers {
 
-  def metadataPG: Option[PGobject] = metadata flatMap {
-    case f: FeastPackageMetadata =>
-      feastMetadataPG(Some(f))
-    case w: WebPackageMetadata =>
-      Try { Json.toJson(w) }.toOption.map(toPGobject)
+  def metadataPG: Option[PGobject] = metadata flatMap { meta =>
+    Try { Json.toJson(meta) }.toOption.map(toPGobject)
   }
 }
 
 object Package extends MetadataHelpers with Logging {
   object PackageType extends Enumeration {
     val Invalid, Web, Feast =
-      Value // packages which do not have a valid type are tagged as Invalid in the software
+      Value // packages which do not have a valid type string are tagged as Invalid when retrieving to avoid exceptions
   }
   implicit val packageTypeFormat: Format[PackageType.Value] =
     Json.formatEnum(PackageType)
@@ -50,7 +46,7 @@ object Package extends MetadataHelpers with Logging {
       rs: WrappedResultSet,
       id: String,
       packageType: PackageType.Value
-  ): Option[FeastPackageMetadata] = packageType match {
+  ): Option[PackageMetadata] = packageType match {
     case PackageType.Feast =>
       try {
         rs.stringOpt("metadata")
