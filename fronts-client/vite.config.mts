@@ -31,7 +31,13 @@ export default defineConfig({
 			allow: ['../public/fonts', './'],
 		},
 		cors: {
-			origin: 'https://fronts.local.dev-gutools.co.uk',
+			origin: process.env.FACIA_TOOL_E2E
+				? [
+						'https://fronts.local.dev-gutools.co.uk',
+						'http://localhost:9000',
+						'http://localhost:9090',
+					]
+				: 'https://fronts.local.dev-gutools.co.uk',
 		},
 	},
 });

@@ -1,0 +1,42 @@
+{
+  "priority": 10,
+  "request": { "method": "ANY", "urlPattern": "/.*" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "jsonBody": {
+      "response": {
+        "status": "ok",
+        "userTier": "internal",
+        "total": 1,
+        "startIndex": 1,
+        "pageSize": 50,
+        "currentPage": 1,
+        "pages": 1,
+        "orderBy": "newest",
+        "results": [
+          {
+            "id": "world/2026/sep/18/seeded-e2e-story",
+            "type": "article",
+            "sectionId": "world",
+            "sectionName": "World news",
+            "webPublicationDate": "2026-09-18T09:00:00Z",
+            "webTitle": "Seeded E2E story",
+            "webUrl": "https://www.theguardian.com/world/2026/sep/18/seeded-e2e-story",
+            "apiUrl": "http://capi.mock/world/2026/sep/18/seeded-e2e-story",
+            "fields": {
+              "headline": "Seeded E2E story",
+              "trailText": "A synthetic story used to verify the local Facia stack.",
+              "byline": "E2E Test Author",
+              "firstPublicationDate": "2026-09-18T09:00:00Z",
+              "internalPageCode": "1001",
+              "shortUrl": "https://gu.com/p/e2etest",
+              "isLive": "true"
+            },
+            "tags": []
+          }
+        ]
+      }
+    }
+  }
+}

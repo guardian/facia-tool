@@ -42,13 +42,22 @@ abstract class BaseFaciaControllerComponents(context: Context)
       )
     )
 
-  lazy val permissions = PermissionsProvider(
-    PermissionsConfig(
-      stage = config.environment.stage.toUpperCase(Locale.UK),
-      region = config.aws.region,
-      awsCredentials = config.aws.cmsFrontsAccountCredentials
-    )
-  )
+  lazy val permissions: PermissionsProvider =
+    if (sys.env.get("FACIA_TOOL_E2E").contains("true"))
+      E2EPermissionsProvider.fromFile(
+        sys.env.getOrElse(
+          "FACIA_TOOL_E2E_PERMISSIONS_FILE",
+          "/etc/gu/e2e-permissions.json"
+        )
+      )
+    else
+      PermissionsProvider(
+        PermissionsConfig(
+          stage = config.environment.stage.toUpperCase(Locale.UK),
+          region = config.aws.region,
+          awsCredentials = config.aws.cmsFrontsAccountCredentials
+        )
+      )
 }
 
 abstract class BaseFaciaController(deps: BaseFaciaControllerComponents)

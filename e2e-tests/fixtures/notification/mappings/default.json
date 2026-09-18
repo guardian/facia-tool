@@ -1,0 +1,9 @@
+{
+  "priority": 10,
+  "request": { "method": "ANY", "urlPattern": "/.*" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "jsonBody": { "id": "00000000-0000-0000-0000-000000000001" }
+  }
+}
