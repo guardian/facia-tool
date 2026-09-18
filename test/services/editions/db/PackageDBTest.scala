@@ -313,7 +313,7 @@ class PackageDBTest
 
   "should handle invalid package_type gracefully" taggedAs UsesDatabase in {
     val packageId = UUID.randomUUID()
-    val createdOn = now.toInstant.toEpochMilli
+    val createdOn = OffsetDateTime.now()
 
     DB localTx { implicit session =>
       sql"""INSERT INTO packages (
@@ -353,7 +353,7 @@ class PackageDBTest
 
   "should handle invalid metadata JSON gracefully" taggedAs UsesDatabase in {
     val packageId = UUID.randomUUID()
-    val createdOn = now.toInstant.toEpochMilli
+    val createdOn = OffsetDateTime.now()
 
     DB localTx { implicit session =>
       sql"""INSERT INTO packages (

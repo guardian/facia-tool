@@ -14,7 +14,24 @@ case class FeastPackageMetadata(
 
 object FeastPackageMetadata {
   implicit val format: OFormat[FeastPackageMetadata] =
-    Json.format[FeastPackageMetadata]
+    new OFormat[FeastPackageMetadata] {
+      private val allowedKeys =
+        Set("theme", "bodyText", "targetedRegions", "excludedRegions")
+      override def writes(o: FeastPackageMetadata): JsObject =
+        Json.writes[FeastPackageMetadata].writes(o)
+
+      override def reads(json: JsValue): JsResult[FeastPackageMetadata] =
+        json match {
+          case obj: JsObject =>
+            val extraKeys = obj.keys.diff(allowedKeys)
+            if (extraKeys.nonEmpty) {
+              JsError(s"Unexpected field(s): ${extraKeys.mkString(", ")}")
+            } else {
+              Json.reads[FeastPackageMetadata].reads(obj)
+            }
+          case _ => JsError("Expected a JSON object")
+        }
+    }
 }
 
 case class WebPackageMetadata(
@@ -25,7 +42,23 @@ case class WebPackageMetadata(
 
 object WebPackageMetadata {
   implicit val format: OFormat[WebPackageMetadata] =
-    Json.format[WebPackageMetadata]
+    new OFormat[WebPackageMetadata] {
+      private val allowedKeys = Set("headline", "customKicker")
+      override def writes(o: WebPackageMetadata): JsObject =
+        Json.writes[WebPackageMetadata].writes(o)
+
+      override def reads(json: JsValue): JsResult[WebPackageMetadata] =
+        json match {
+          case obj: JsObject =>
+            val extraKeys = obj.keys.diff(allowedKeys)
+            if (extraKeys.nonEmpty) {
+              JsError(s"Unexpected field(s): ${extraKeys.mkString(", ")}")
+            } else {
+              Json.reads[WebPackageMetadata].reads(obj)
+            }
+          case _ => JsError("Expected a JSON object")
+        }
+    }
 }
 
 object PackageMetadata {
