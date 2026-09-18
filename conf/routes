@@ -128,6 +128,16 @@ GET         /editions-api/collections/:collectionId/prefill                 cont
 
 POST        /editions-api/fronts/:frontId/collections/:collectionId/feastCollectionToContainer/:collectionCardId    controllers.EditionsController.feastCollectionToContainer(frontId, collectionId, collectionCardId)
 
+# Packages
+PUT			/packages/:id/metadata											controllers.PackageController.putMetadata(id: java.util.UUID)
+PUT			/packages/:id/is-hidden/:state									controllers.PackageController.putPackageHiddenState(id: java.util.UUID, state:Boolean)
+PATCH		/packages/:id/name												controllers.PackageController.updateName(id: java.util.UUID)
+PATCH		/packages/:id/regions											controllers.PackageController.updateRegions(id: java.util.UUID)
+GET         /packages/:id                                                   controllers.PackageController.getPackage(id: java.util.UUID)
+PUT			/packages/:id													controllers.PackageController.writePackage(id: java.util.UUID)
+GET			/packages														controllers.PackageController.listPackages(id: Option[String], full:Option[Boolean], date:Option[String],strict:Option[Boolean],title:Option[String],limit:Option[Int],order:Option[String])
+POST		/packages														controllers.PackageController.createPackage
+
 # Custom subnavs
 GET         /custom-subnav                           controllers.CustomSubnavController.getSubnavConfig
 PUT         /custom-subnav/:id                        controllers.CustomSubnavController.upsertSubnav(id)
