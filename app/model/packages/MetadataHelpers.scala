@@ -40,15 +40,6 @@ trait MetadataHelpers extends Logging {
     }
   }
 
-  def feastMetadataPG(
-      feastMetadata: Option[FeastPackageMetadata]
-  ): Option[PGobject] = for {
-    meta <- feastMetadata
-    jsValue <- Try {
-      FeastPackageMetadata.format.writes(meta)
-    }.toOption
-  } yield toPGobject(jsValue)
-
   def toPGobject(value: JsValue): PGobject = {
     val pgObject = new PGobject()
     pgObject.setType("jsonb")
