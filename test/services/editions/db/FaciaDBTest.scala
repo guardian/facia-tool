@@ -2,7 +2,7 @@ package services.editions.db
 
 import java.time._
 import com.gu.pandomainauth.model.User
-import fixtures.{EditionsDBEvolutions, EditionsDBService, UsesDatabase}
+import fixtures.{FaciaDBEvolutions, FaciaDBService, UsesDatabase}
 import model.editions
 import model.editions.internal.PrefillUpdate
 import model.editions._
@@ -18,8 +18,8 @@ import editions.{EditionsRecipe, EditionsChef, EditionsFeastCollection}
 class FaciaDBTest
     extends FreeSpec
     with Matchers
-    with EditionsDBService
-    with EditionsDBEvolutions
+    with FaciaDBService
+    with FaciaDBEvolutions
     with OptionValues {
 
   private val now: OffsetDateTime =
