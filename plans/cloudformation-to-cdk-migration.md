@@ -439,6 +439,24 @@ configuration, giving the service the alarms the legacy stack never had:
 `cdk diff` on top of 5b is **purely additive**: two new
 `AWS::CloudWatch::Alarm` resources and nothing else.
 
+### The phase 5 change set
+
+All three pieces were validated in **one change set** against live `facia-CODE`,
+created from a scratch branch carrying 5a + 5b + 5c together. Results:
+
+- **Every resource is `Modify` with `Replacement: False`**, or `Conditional` for
+  the dynamic reasons described under 5a. **No `Remove` actions at all.**
+- The only `Add`s are the two alarms and `CDKMetadata`.
+- The template CloudFormation validated is **identical** to what these branches
+  now synthesize — confirmed by fetching it with
+  `aws cloudformation get-template --change-set-name <arn>` and diffing against
+  `cdk.out`. The only difference is the `CDKMetadata` resource, which
+  `npm run synth` omits via `--version-reporting false` but `cdk deploy` adds.
+
+Note `cdk deploy` does **not** pass `--path-metadata false`, so its template also
+carries `aws:cdk:path` metadata that ours does not. That is informational only —
+strip it before comparing or every resource appears to differ.
+
 ## Node / tooling
 
 Root pins node 16.20.2 via **both** `.nvmrc` and `.tool-versions` (mise). Prefix
