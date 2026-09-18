@@ -6,6 +6,8 @@ import play.api.libs.json._
 case class ClientPackageHeader(
     id: String,
     name: String,
+    packageType: Package.PackageType.Value,
+    isHidden: Boolean,
     metadata: Option[PackageMetadata],
     createdOn: Option[Long],
     createdBy: Option[String],
@@ -22,6 +24,8 @@ object ClientPackageHeader {
   def fromPackage(domainPackage: Package) = ClientPackageHeader(
     id = domainPackage.id,
     name = domainPackage.name,
+    packageType = domainPackage.packageType,
+    isHidden = domainPackage.isHidden,
     metadata = domainPackage.metadata,
     createdOn = domainPackage.createdOn.map(_.toInstant.toEpochMilli),
     createdBy = domainPackage.createdBy,

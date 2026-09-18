@@ -276,7 +276,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
      ${metadata.name},
      ${metadata.packageType.toString},
      ${metadata.isHidden},
-     ${metadata.metadata},
+     ${metadata.metadataPG},
      ${Instant.ofEpochMilli(metadata.createdOn)},
      ${metadata.createdBy},
      ${metadata.createdEmail},
@@ -412,9 +412,10 @@ trait PackageQueries extends MetadataHelpers with Logging {
     sql
       .map(rs => {
         val metadata =
-          rs.stringOpt("feast_metadata").flatMap(getPackageMetadata)
+          rs.stringOpt("metadata").flatMap(getPackageMetadata)
         val packageType = Try {
-          Package.PackageType.withName("package_type")
+          val pt = rs.string("package_type")
+          Package.PackageType.withName(pt)
         }.getOrElse(PackageType.Invalid)
         Package(
           id = rs.string("id"),

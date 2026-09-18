@@ -171,13 +171,16 @@ class PackageDBTest
     val createdOn = now.toInstant.toEpochMilli
     insertPackage(packageId, "Original name", createdOn)
 
-    val updated = editionsDB.updatePackageName(
+    val count = editionsDB.updatePackageName(
       packageId,
       "Renamed package",
       userName = "New Name",
       userEmail = "new.name@guardian.co.uk"
     )
 
+    count shouldEqual 1
+
+    val updated = editionsDB.getPackages(Some(Seq(packageId))).head
     updated.name shouldBe "Renamed package"
     updated.updatedBy shouldBe Some("New Name")
     updated.updatedEmail shouldBe Some("new.name@guardian.co.uk")

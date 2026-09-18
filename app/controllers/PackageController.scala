@@ -54,17 +54,22 @@ class PackageController(
 
   private def dateFormatter = DateTimeFormatter.BASIC_ISO_DATE
 
-  def listPackages = EditPackagesAuthAction { req =>
+  def listPackages(
+      id: Option[String],
+      full: Option[Boolean],
+      date: Option[String],
+      strict: Option[Boolean],
+      title: Option[String],
+      limit: Option[Int],
+      order: Option[String]
+  ) = EditPackagesAuthAction { req =>
     import cats.syntax.traverse._ // Provides the .sequence extension method
     import cats.instances.try_._ // Provides Applicative[Try]
     import cats.instances.option._ // Provides Traverse[Option]
 
-    val idList = req
-      .getQueryString("id")
+    val idList = id
       .map(_.split(",").toSeq)
       .map(_.map(toUuid).collect({ case Some(uuid) => uuid }))
-
-    val full = req.getQueryString("full").isDefined
 
     val maybeDate =
       req
@@ -78,93 +83,83 @@ class PackageController(
           }
         )
         .sequence // 'sequence' is a piece of magic from `cats`, which here converts Option[Try[T]] into Try[Option[T]]
-    val strictDate = req.getQueryString("strict").isDefined
-    val maybeTitleSearch = req.getQueryString("title")
-    val limit =
-      req.getQueryString("limit").flatMap(_.toIntOption).getOrElse(200)
-
-    val orderBy = req
-      .getQueryString("order")
+    val strictDate = strict.getOrElse(false)
+    val queryLimit = limit.getOrElse(200)
+    val orderBy = order
       .flatMap(PackageQueries.OrderingField.fromString)
       .getOrElse(PackageQueries.CreatedOn)
 
-    if (limit > 500) {
-      BadRequest(
-        Json.obj("status" -> "error", "detail" -> "limit is too large")
-      )
-    } else if (limit < 1) {
-      BadRequest(
-        Json.obj(
-          "status" -> "error",
-          "detail" -> "limit must be a positive integer"
+    maybeDate match {
+      case Failure(err) =>
+        logger.error(
+          s"invalid date format in ${req.getQueryString("date")}: ${err.getMessage}"
+          // deliberately don't bother with the whole stack trace as we don't need it for debugging this particular error
         )
-      )
-    } else if (idList.isEmpty && req.getQueryString("id").isDefined) {
-      BadRequest(
-        Json.obj("status" -> "error", "detail" -> "no valid ids were supplied")
-      )
-    } else if (maybeDate.isFailure) {
-      logger.error(
-        s"invalid date format in ${req.getQueryString("date")}: ${maybeDate.failed.get.getMessage}"
-        // deliberately don't bother with the whole stack trace as we don't need it for debugging this particular error
-      )
-      BadRequest(
-        Json.obj(
-          "status" -> "error",
-          "detail" -> "invalid date format"
+        BadRequest(
+          ErrorResponse.badRequest("invalid date format")
         )
-      )
-    } else {
-      try {
-        val pkgs = db.getPackages(
-          idList,
-          maybeDate.get, // safe because the failure case is already handled above
-          strictDate,
-          maybeTitleSearch,
-          orderBy,
-          limit
-        )
-        if (full) {
-          val clientPkgs = pkgs.map { pkg =>
-            val cards = db
-              .getPackageCards(java.util.UUID.fromString(pkg.id))
-              .map(model.packages.client.ClientPackageCard.fromPackageCard)
-              .toList
-            ClientPackage.fromPackage(pkg, cards)
-          }
-
-          Ok(
-            Json.obj(
-              "status" -> JsString("ok"),
-              "packages" -> JsArray(clientPkgs.map(ClientPackage.format.writes))
-            )
+      case Success(dateValue) =>
+        if (queryLimit > 500) {
+          BadRequest(
+            ErrorResponse.badRequest("limit is too large")
+          )
+        } else if (queryLimit < 1) {
+          BadRequest(
+            ErrorResponse.badRequest("limit must be a positive integer")
+          )
+        } else if (idList.isEmpty && req.getQueryString("id").isDefined) {
+          BadRequest(
+            ErrorResponse.badRequest("no valid ids were supplied")
           )
         } else {
-          val clientPkgs = pkgs.map(ClientPackageHeader.fromPackage)
-          Ok(
-            Json.obj(
-              "status" -> JsString("ok"),
-              "packages" -> JsArray(
-                clientPkgs.map(ClientPackageHeader.format.writes)
+          try {
+            val pkgs = db.getPackages(
+              idList,
+              dateValue,
+              strictDate,
+              title,
+              orderBy,
+              queryLimit
+            )
+            if (full.getOrElse(false)) {
+              val clientPkgs = pkgs.map { pkg =>
+                val cards = db
+                  .getPackageCards(java.util.UUID.fromString(pkg.id))
+                  .map(model.packages.client.ClientPackageCard.fromPackageCard)
+                  .toList
+                ClientPackage.fromPackage(pkg, cards)
+              }
+
+              Ok(
+                Json.obj(
+                  "status" -> JsString("ok"),
+                  "packages" -> JsArray(
+                    clientPkgs.map(ClientPackage.format.writes)
+                  )
+                )
               )
-            )
-          )
+            } else {
+              val clientPkgs = pkgs.map(ClientPackageHeader.fromPackage)
+              Ok(
+                Json.obj(
+                  "status" -> JsString("ok"),
+                  "packages" -> JsArray(
+                    clientPkgs.map(ClientPackageHeader.format.writes)
+                  )
+                )
+              )
+            }
+          } catch {
+            case err: PSQLException =>
+              logger.error(s"Could not list packages: ${err.getMessage}", err)
+              psqlErrorHandler(err)
+            case err: Throwable =>
+              logger.error(s"Could not list packages: ${err.getMessage}", err)
+              InternalServerError(
+                ErrorResponse(err.getMessage)
+              )
+          }
         }
-      } catch {
-        case err: PSQLException =>
-          logger.error(s"Could not list packages: ${err.getMessage}", err)
-          psqlErrorHandler(err)
-        case err: Throwable =>
-          logger.error(s"Could not list packages: ${err.getMessage}", err)
-          InternalServerError(
-            Json.obj(
-              "status" -> JsString("error"),
-              "detail" -> JsString(
-                err.getMessage
-              ) // TODO - tighten this up when we are done testing
-            )
-          )
-      }
     }
   }
 
@@ -174,12 +169,7 @@ class PackageController(
       err
     )
     InternalServerError(
-      Json.obj(
-        "status" -> JsString("error"),
-        "detail" -> JsString(
-          err.getMessage
-        ) // TODO - tighten this up when we are done testing
-      )
+      ErrorResponse(err.getMessage)
     )
   }
 

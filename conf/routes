@@ -136,7 +136,7 @@ PATCH		/packages/:id/regions											controllers.PackageController.updateRegio
 PATCH		/packages/:packageId/content									controllers.PackageController.updatePackageContent(packageId: java.util.UUID)
 GET         /packages/:id                                                   controllers.PackageController.getPackage(id: java.util.UUID)
 PUT			/packages/:id													controllers.PackageController.writePackage(id: java.util.UUID)
-GET			/packages														controllers.PackageController.listPackages
+GET			/packages														controllers.PackageController.listPackages(id: Option[String], full:Option[Boolean], date:Option[String],strict:Option[Boolean],title:Option[String],limit:Option[Int],order:Option[String])
 POST		/packages														controllers.PackageController.createPackage
 
 # Custom subnavs
