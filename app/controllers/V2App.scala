@@ -11,7 +11,7 @@ import model.editions.{CuratedPlatform, EditionsAppTemplates, FeastAppTemplates}
 import org.apache.hc.core5.reactor.Command.Priority
 import permissions.Permissions
 import play.api.libs.json.Json
-import services.editions.db.EditionsDB
+import services.editions.db.FaciaDB
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
 import switchboard.SwitchManager
 import util.{AccessGranted, Acl, AclJson}
@@ -20,7 +20,7 @@ class V2App(
     isDev: Boolean,
     val acl: Acl,
     dynamoClient: DynamoDbClient,
-    db: EditionsDB,
+    db: FaciaDB,
     val deps: BaseFaciaControllerComponents
 )(implicit ec: ExecutionContext)
     extends BaseFaciaController(deps) {
