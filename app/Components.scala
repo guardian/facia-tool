@@ -25,7 +25,7 @@ import model.editions.{EditionsAppTemplates, FeastAppTemplates}
 import router.Routes
 import services._
 import services.editions.EditionsTemplating
-import services.editions.db.EditionsDB
+import services.editions.db.FaciaDB
 import services.editions.publishing.events.PublishEventsListener
 import services.editions.publishing.{
   EditionsAppPublicationTarget,
@@ -80,7 +80,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val acl = new Acl(permissions)
 
   // Editions services
-  val editionsDb = new EditionsDB(
+  val editionsDb = new FaciaDB(
     config.postgres.url,
     config.postgres.user,
     config.postgres.password
