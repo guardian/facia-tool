@@ -1,4 +1,3 @@
-import { join } from 'path';
 import { GuEc2App } from '@guardian/cdk';
 import { AccessScope } from '@guardian/cdk/lib/constants';
 import type { GuStackProps } from '@guardian/cdk/lib/constructs/core';
@@ -6,10 +5,12 @@ import {
 	GuDistributionBucketParameter,
 	GuStack,
 } from '@guardian/cdk/lib/constructs/core';
+import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuSecurityGroup, GuVpc } from '@guardian/cdk/lib/constructs/ec2';
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
-import type { App } from 'aws-cdk-lib';
-import { CfnOutput, Fn, Tags } from 'aws-cdk-lib';
+import type { App, CfnParameterProps } from 'aws-cdk-lib';
+import { CfnOutput, CfnParameter, Duration, Fn, Tags } from 'aws-cdk-lib';
+import { CfnDistribution } from 'aws-cdk-lib/aws-cloudfront';
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import type { ISubnet } from 'aws-cdk-lib/aws-ec2';
 import {
@@ -28,7 +29,6 @@ import {
 	Role,
 } from 'aws-cdk-lib/aws-iam';
 import { CfnTopicPolicy, Topic } from 'aws-cdk-lib/aws-sns';
-import { CfnInclude } from 'aws-cdk-lib/cloudformation-include';
 
 const app = 'facia-tool';
 const applicationPort = 9000;
@@ -36,6 +36,10 @@ const applicationPort = 9000;
 export interface FaciaToolProps extends GuStackProps {
 	/** Must match the `Host` header CloudFront forwards to the origin. */
 	domainName: string;
+	/** CloudFront alias for the static assets distribution. */
+	staticDomainName: string;
+	/** The front-pressed lambda's DynamoDB table, owned by another stack. */
+	frontPressedTable: string;
 	instanceType: string;
 	minimumInstances: number;
 	maximumInstances: number;
@@ -43,21 +47,12 @@ export interface FaciaToolProps extends GuStackProps {
 
 export class FaciaTool extends GuStack {
 	constructor(scope: App, id: string, props: FaciaToolProps) {
-		super(scope, id, props);
+		super(scope, id, { description: 'Facia Tool Service', ...props });
 
-		const yamlTemplateFilePath = join(
-			__dirname,
-			'../..',
-			'cloudformation/facia-tool.cfn.yaml',
-		);
-		const cfnInclude = new CfnInclude(this, 'YamlTemplate', {
-			templateFile: yamlTemplateFilePath,
-		});
-
-		const parameter = (name: string) =>
-			cfnInclude.getParameter(name).valueAsString;
+		const parameters = this.templateParameters();
+		const parameter = (name: string) => parameters(name).valueAsString;
 		const subnets = (name: string): ISubnet[] => {
-			const subnetIds = cfnInclude.getParameter(name).valueAsList;
+			const subnetIds = parameters(name).valueAsList;
 			return GuVpc.subnets(
 				this,
 				[0, 1, 2].map((index) => Fn.select(index, subnetIds)),
@@ -67,16 +62,8 @@ export class FaciaTool extends GuStack {
 		const vpc = GuVpc.fromId(this, 'Vpc', { vpcId: parameter('VpcId') });
 
 		const frontendRoleToAssume = parameter('FrontendRoleToAssume');
-		const frontPressedTable = Fn.findInMap(
-			'CrossResources',
-			this.stage,
-			'FrontPressedTable',
-		);
-		const lowerCaseStage = Fn.findInMap(
-			'StageMap',
-			this.stage,
-			'LowerCaseStage',
-		);
+		const { frontPressedTable } = props;
+		const lowerCaseStage = this.stage.toLowerCase();
 
 		const { frontsUpdateTopic, feastPublicationTopic, userDataTable } =
 			this.sharedResources(parameter);
@@ -116,13 +103,12 @@ export class FaciaTool extends GuStack {
 			publicSubnets: subnets('PublicSubnets'),
 		});
 
-		// Serve CloudFront from the ALB; the included template only carries a placeholder origin.
-		cfnInclude
-			.getResource('FaciaCloudfront')
-			.addPropertyOverride(
-				'DistributionConfig.Origins.0.DomainName',
-				ec2App.loadBalancer.loadBalancerDnsName,
-			);
+		this.cloudFront({
+			parameter,
+			domainName: props.domainName,
+			staticDomainName: props.staticDomainName,
+			originDomainName: ec2App.loadBalancer.loadBalancerDnsName,
+		});
 
 		const databaseSecurityGroup = SecurityGroup.fromSecurityGroupId(
 			this,
@@ -172,6 +158,233 @@ export class FaciaTool extends GuStack {
 				switchboardBucket: parameter('SwitchboardBucket'),
 			});
 		}
+	}
+
+	/**
+	 * Parameters inherited from the YAML template this stack replaced. Riff-Raff carries the
+	 * previous value over for the ones without a default, so they keep the values they already have.
+	 */
+	private templateParameters(): (name: string) => CfnParameter {
+		const definitions: Array<
+			Omit<CfnParameterProps, 'type'> & { name: string; type: string }
+		> = [
+			{
+				name: 'Stage',
+				type: 'String',
+				description: 'Environment name',
+				allowedValues: ['CODE', 'PROD'],
+				default: 'PROD',
+			},
+			{
+				name: 'FrontendRoleToAssume',
+				type: 'String',
+				description: 'Frontend Role to assume for cross account policies',
+				default:
+					'arn:aws:iam::642631414762:role/CmsFrontsRole-FaciaToolRole-1U44IWRZDIWAX',
+			},
+			{
+				name: 'SwitchboardBucket',
+				type: 'String',
+				description: 'Bucket where switchboard writes switches status',
+				default: 'arn:aws:s3:::facia-switches/*',
+			},
+			{
+				name: 'FrontendAccountID',
+				type: 'String',
+				description: 'AWS account ID of frontend',
+			},
+			{
+				name: 'MobileAPIAccountID',
+				type: 'String',
+				description: 'AWS account ID of MAPI',
+			},
+			{
+				name: 'MobileAPITeamcityAccountID',
+				type: 'String',
+				description: 'AWS account ID of MAPI - used for CI',
+			},
+			{
+				name: 'OphanAccountID',
+				type: 'String',
+				description: 'AWS account ID of Ophan',
+			},
+			{
+				name: 'ContentAPIAccountID',
+				type: 'String',
+				description: 'AWS account ID of CAPI',
+			},
+			{
+				name: 'SupportAccountID',
+				type: 'String',
+				description: 'AWS account ID of Support',
+			},
+			{
+				name: 'StaticBucketName',
+				type: 'String',
+				description: 'Bucket containing static files',
+			},
+			{
+				name: 'CloudFrontCertificateArn',
+				type: 'String',
+				description:
+					'x509 certificate ARN for CloudFront - must be in us-east-1',
+			},
+			{
+				name: 'CapiPreviewRole',
+				type: 'String',
+				description: 'ARN of the CAPI preview role',
+			},
+			{
+				name: 'UserDataTablePrefix',
+				type: 'String',
+				default: 'fronts-user-data-table',
+			},
+			{ name: 'DBSecurityGroupIdNewVPC', type: 'String' },
+			{
+				name: 'CapiEndpointSsmKeyNewVPC',
+				type: 'AWS::SSM::Parameter::Value<String>',
+				description: 'SSM key containing security group of the CAPI endpoint',
+				default: '/newvpc/endpoint/capi/PROD',
+			},
+			{
+				name: 'VpcId',
+				type: 'AWS::EC2::VPC::Id',
+				description: 'The new VPC we look to migrate to',
+			},
+			{
+				name: 'PublicSubnets',
+				type: 'List<AWS::EC2::Subnet::Id>',
+				description: 'The public subnets of the new VPC for the loadbalancer',
+			},
+			{
+				name: 'PrivateSubnets',
+				type: 'List<AWS::EC2::Subnet::Id>',
+				description:
+					'The private subnets of the new VPC for the autoscaling group',
+			},
+		];
+
+		const parameters = new Map<string, CfnParameter>(
+			definitions.map(({ name, ...props }) => {
+				const parameter = new CfnParameter(this, name, props);
+				parameter.overrideLogicalId(name);
+				return [name, parameter];
+			}),
+		);
+
+		return (name) => {
+			const parameter = parameters.get(name);
+			if (!parameter) {
+				throw new Error(`No such template parameter: ${name}`);
+			}
+			return parameter;
+		};
+	}
+
+	/**
+	 * The two distributions are defined as L1 constructs so they keep the legacy `ForwardedValues`
+	 * cache settings, which the L2 `Distribution` construct cannot express. Moving them to cache
+	 * policies would change caching behaviour, so it is deliberately not part of this migration.
+	 */
+	private cloudFront({
+		parameter,
+		domainName,
+		staticDomainName,
+		originDomainName,
+	}: {
+		parameter: (name: string) => string;
+		domainName: string;
+		staticDomainName: string;
+		originDomainName: string;
+	}): void {
+		const viewerCertificate = {
+			acmCertificateArn: parameter('CloudFrontCertificateArn'),
+			minimumProtocolVersion: 'TLSv1.2_2021',
+			sslSupportMethod: 'sni-only',
+		};
+
+		const distribution = new CfnDistribution(this, 'FaciaCloudfront', {
+			distributionConfig: {
+				httpVersion: 'http2',
+				ipv6Enabled: true,
+				aliases: [domainName],
+				origins: [
+					{
+						customOriginConfig: {
+							httpsPort: 443,
+							originProtocolPolicy: 'https-only',
+						},
+						domainName: originDomainName,
+						id: app,
+					},
+				],
+				defaultRootObject: 'v2',
+				defaultCacheBehavior: {
+					allowedMethods: [
+						'DELETE',
+						'GET',
+						'HEAD',
+						'OPTIONS',
+						'PATCH',
+						'POST',
+						'PUT',
+					],
+					compress: true,
+					forwardedValues: {
+						headers: ['*'],
+						queryString: true,
+						cookies: { forward: 'all' },
+					},
+					targetOriginId: app,
+					viewerProtocolPolicy: 'redirect-to-https',
+				},
+				priceClass: 'PriceClass_All',
+				enabled: true,
+				viewerCertificate,
+			},
+		});
+		distribution.overrideLogicalId('FaciaCloudfront');
+
+		const staticDistribution = new CfnDistribution(this, 'StaticCloudfront', {
+			distributionConfig: {
+				httpVersion: 'http2',
+				ipv6Enabled: true,
+				aliases: [staticDomainName],
+				origins: [
+					{
+						s3OriginConfig: { originAccessIdentity: '' },
+						domainName: `${parameter('StaticBucketName')}.s3.amazonaws.com`,
+						id: `static-${app}`,
+						originPath: `/${this.stage}/static-${app}`,
+					},
+				],
+				defaultRootObject: 'index.html',
+				defaultCacheBehavior: {
+					compress: true,
+					forwardedValues: { queryString: false },
+					targetOriginId: `static-${app}`,
+					viewerProtocolPolicy: 'redirect-to-https',
+				},
+				priceClass: 'PriceClass_All',
+				enabled: true,
+				viewerCertificate,
+			},
+		});
+		staticDistribution.overrideLogicalId('StaticCloudfront');
+
+		new GuCname(this, 'DnsRecord', {
+			app,
+			domainName,
+			resourceRecord: `${distribution.attrDomainName}.`,
+			ttl: Duration.seconds(900),
+		});
+
+		new GuCname(this, 'StaticCloudFrontDnsRecord', {
+			app,
+			domainName: staticDomainName,
+			resourceRecord: `${staticDistribution.attrDomainName}.`,
+			ttl: Duration.seconds(900),
+		});
 	}
 
 	private bucketArn(bucketName: string, key?: string): string {
