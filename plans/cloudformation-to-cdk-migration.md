@@ -266,9 +266,10 @@ Three independent, separately deployable pieces of work, ordered by risk.
 - [ ] **5a — stateful/shared resources into CDK.** Branch
   `gucdk-migration-phase-5a-stateful`. Code done and verified (see below);
   awaiting CODE then PROD deploy.
-- [ ] **5b — CloudFront + DNS into CDK.** Removes the
-  `overridden-by-cdk.invalid` placeholder and its `addPropertyOverride`, and
-  empties the wrapped template.
+- [ ] **5b — CloudFront + DNS into CDK.** Branch
+  `gucdk-migration-phase-5b-cloudfront`, **depends on 5a** (same files). Code done
+  and verified (see below); awaiting CODE then PROD deploy. This is the change
+  that reaches the `CDK -> cfn.json` end-state.
 - [ ] **5c — alarms.** `monitoringConfiguration` is still `{ noMonitoring: true }`,
   matching the legacy stack. Needs a team decision on which SNS topic alarms
   notify (candidates in the account: `pagerduty-notification-topic`,
@@ -367,6 +368,54 @@ template's `LatestVersionNumber`.
   all **match exactly**, as do the table name and both export names, in both
   stages.
 - lint, snapshots and synth green.
+
+### 5b — CloudFront + DNS into CDK
+
+The last of the YAML. [cloudformation/facia-tool.cfn.yaml](cloudformation/facia-tool.cfn.yaml)
+and the `CfnInclude` are **deleted**, so the end-state is now `CDK -> cfn.json`
+after all — the stack turned out not to be irreducibly mixed.
+
+- `FaciaCloudfront` and `StaticCloudfront` become **L1 `CfnDistribution`s**, not
+  the L2 `Distribution`. The legacy config uses `ForwardedValues`, which the L2
+  construct cannot express at all — it requires cache policies. Converting would
+  change caching behaviour, which must not ride along in a migration PR.
+- The `overridden-by-cdk.invalid` placeholder and the Phase 3
+  `addPropertyOverride` are gone: the origin now takes
+  `ec2App.loadBalancer.loadBalancerDnsName` directly.
+- Both DNS records become `GuCname`. `GuDnsRecordSet` uses the construct id as
+  the logical ID, so `DnsRecord` and `StaticCloudFrontDnsRecord` are preserved by
+  naming alone.
+- All 18 template parameters are recreated as `CfnParameter`s with the same
+  logical IDs, types and defaults, so Riff-Raff carries over the previous values
+  of the ones with no default (the account IDs, VPC, subnets, certificate…).
+  `Stage` is kept purely so the DynamoDB table name keeps its exact expression.
+- `Mappings` are gone: `CloudFrontAliases`/`StaticCloudFrontAliases` become the
+  `domainName`/`staticDomainName` props, `LowerCaseStage` becomes
+  `this.stage.toLowerCase()`, and `CrossResources.FrontPressedTable` becomes a
+  `frontPressedTable` prop — all supplied per-stage from
+  [cdk/bin/cdk.ts](cdk/bin/cdk.ts), per the skill's "stack describes shape,
+  entrypoint supplies values" rule.
+- `description: 'Facia Tool Service'` is set on the stack so the template
+  `Description` does not churn.
+
+#### Verification
+
+- `cdk diff` against both live stacks: **no replacements, no resource
+  deletions.** Every change is `Fn::FindInMap`/`Ref` collapsing to the literal it
+  already resolved to, plus the now-unused `Mappings`, `Conditions` and
+  `AWSTemplateFormatVersion` being dropped.
+- The resolver script was extended to compare **fully-resolved properties of
+  every migrated resource**. In both stages, all of `FaciaCloudfront`,
+  `StaticCloudfront`, `DnsRecord`, `StaticCloudFrontDnsRecord`,
+  `FrontsUpdateSNSTopic`, `FeastPublicationTopic`, `FrontsUpdateSNSPolicy`,
+  `StorageBucket`, `FrontsUserDataDynamoTable` and `RunFaciaToolLocally` resolve
+  **identically**, as do all 22 parameters and both exports.
+- The single reported difference is `StorageConsumerRole`'s
+  `AssumeRolePolicyDocument` gaining an explicit `"Version": "2012-10-17"` (CDK
+  always sets it). The statements themselves match, and the trust policy uses no
+  policy variables, so the version has no behavioural effect.
+- lint, snapshots and synth green. Nothing outside the plan files referenced
+  `cloudformation/`; CI only uploads `cdk/cdk.out/*.template.json`.
 
 ## Node / tooling
 
