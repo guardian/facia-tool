@@ -270,11 +270,8 @@ Three independent, separately deployable pieces of work, ordered by risk.
   `gucdk-migration-phase-5b-cloudfront`, **depends on 5a** (same files). Code done
   and verified (see below); awaiting CODE then PROD deploy. This is the change
   that reaches the `CDK -> cfn.json` end-state.
-- [ ] **5c — alarms.** `monitoringConfiguration` is still `{ noMonitoring: true }`,
-  matching the legacy stack. Needs a team decision on which SNS topic alarms
-  notify (candidates in the account: `pagerduty-notification-topic`,
-  `CMSFrontsLambda_pagerduty`, `devx-reliability`, `Cloudwatch-Alerts`) and
-  whether CODE should notify at all.
+- [ ] **5c — alarms.** Branch `gucdk-migration-phase-5c-alarms`, **depends on
+  5b**. Code done and verified (see below); awaiting CODE then PROD deploy.
 
 Also noted, no action for now:
 
@@ -389,6 +386,22 @@ after all — the stack turned out not to be irreducibly mixed.
   policy variables, so the version has no behavioural effect.
 - lint, snapshots and synth green. Nothing outside the plan files referenced
   `cloudformation/`; CI only uploads `cdk/cdk.out/*.template.json`.
+
+### 5c — alarms
+
+`monitoringConfiguration` changes from `{ noMonitoring: true }` to a real
+configuration, giving the service the alarms the legacy stack never had:
+
+- **Target topic `pagerduty-notification-topic`**, and **both stages alarm**
+  (`ActionsEnabled: true` in CODE as well as PROD) — a team decision, not a
+  default.
+- `http5xxAlarm` at `tolerated5xxPercentage: 1` over 5 minutes. PROD serves
+  ~290k requests a day with a low single-digit number of 5xx (see the Phase 4
+  figures), so 1% sits a long way above the noise floor.
+- `unhealthyInstancesAlarm` on the ALB target group.
+
+`cdk diff` on top of 5b is **purely additive**: two new
+`AWS::CloudWatch::Alarm` resources and nothing else.
 
 ## Node / tooling
 
