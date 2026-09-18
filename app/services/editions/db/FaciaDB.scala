@@ -13,7 +13,7 @@ import model.editions.{
 
 import java.util.UUID
 
-class EditionsDB(url: String, user: String, password: String)
+class FaciaDB(url: String, user: String, password: String)
     extends IssueQueries
     with FrontsQueries
     with CollectionsQueries {
@@ -32,11 +32,11 @@ class EditionsDB(url: String, user: String, password: String)
       user: User,
       now: OffsetDateTime
   ): Either[Error, (EditionsFront, String)] = DB localTx { implicit session =>
-    val truncatedNow = EditionsDB.truncateDateTime(now)
+    val truncatedNow = FaciaDB.truncateDateTime(now)
 
     for {
       currentFront <- getFront(frontId).toRight(
-        EditionsDB.NotFoundError(s"Front $frontId not found")
+        FaciaDB.NotFoundError(s"Front $frontId not found")
       )
       collectionId <- insertCollection(
         frontId = currentFront.id,
@@ -46,12 +46,12 @@ class EditionsDB(url: String, user: String, password: String)
         now = truncatedNow
       )
       updatedFront <- getFront(frontId).toRight(
-        EditionsDB.InvariantError(s"Updated front $frontId not found in issue")
+        FaciaDB.InvariantError(s"Updated front $frontId not found in issue")
       )
       _ <- updatedFront.collections
         .find(_.id == collectionId)
         .toRight(
-          EditionsDB.InvariantError(
+          FaciaDB.InvariantError(
             s"New collection ${collectionId} not found in updated front ${frontId}"
           )
         )
@@ -66,11 +66,11 @@ class EditionsDB(url: String, user: String, password: String)
       user: User,
       now: OffsetDateTime
   ): Either[Error, EditionsFront] = DB localTx { implicit session =>
-    val truncatedNow = EditionsDB.truncateDateTime(now)
+    val truncatedNow = FaciaDB.truncateDateTime(now)
 
     for {
       _ <- getFront(frontId).toRight(
-        EditionsDB.NotFoundError(s"Front ${frontId} not found")
+        FaciaDB.NotFoundError(s"Front ${frontId} not found")
       )
       _ <- deleteCollection(
         collectionId,
@@ -88,11 +88,11 @@ class EditionsDB(url: String, user: String, password: String)
   ): Either[Error, EditionsFront] = DB localTx { implicit session =>
     for {
       _ <- getFront(frontId).toRight(
-        EditionsDB.NotFoundError(s"Front $frontId not found")
+        FaciaDB.NotFoundError(s"Front $frontId not found")
       )
       _ <- moveCollectionToIndex(collectionId, newIndex)
       updatedFront <- getFront(frontId).toRight(
-        EditionsDB.InvariantError(
+        FaciaDB.InvariantError(
           s"Front $frontId not found after collection index was updated"
         )
       )
@@ -104,18 +104,18 @@ class EditionsDB(url: String, user: String, password: String)
   )(implicit session: DBSession): Either[Error, EditionsFront] =
     for {
       front <- getFront(frontId).toRight(
-        EditionsDB.InvariantError("Could not find front to reindex")
+        FaciaDB.InvariantError("Could not find front to reindex")
       )
       _ <- updateCollectionIndices(front.collections.map(_.id))
       updatedFront <- getFront(frontId).toRight(
-        EditionsDB.InvariantError(
+        FaciaDB.InvariantError(
           "Could not find front with reindexed collections"
         )
       )
     } yield updatedFront
 }
 
-object EditionsDB {
+object FaciaDB {
   def dateTimeFromMillis(millis: Long): OffsetDateTime =
     Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC)
   def truncateDateTime(odt: OffsetDateTime): OffsetDateTime =

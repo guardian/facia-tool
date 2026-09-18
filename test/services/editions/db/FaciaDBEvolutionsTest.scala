@@ -21,7 +21,7 @@ import play.api.db.evolutions.{
 }
 import scalikejdbc._
 
-class EditionsDBEvolutionsTest
+class FaciaDBEvolutionsTest
     extends FreeSpec
     with Matchers
     with EditionsDBService
@@ -37,7 +37,7 @@ class EditionsDBEvolutionsTest
     val zoneId = ZoneId.of("Europe/London")
     val localDate = LocalDate.of(year, month, dom)
     val issueDate = ZonedDateTime.of(localDate, LocalTime.MIDNIGHT, zoneId)
-    val truncatedNow = EditionsDB.truncateDateTime(now)
+    val truncatedNow = FaciaDB.truncateDateTime(now)
 
     DB localTx { implicit session =>
       sql"""
