@@ -313,34 +313,61 @@ original logical ID** via `GuStack.overrideLogicalId` (`CfnTopicPolicy` and
 CloudFormation refuses to alter an export that is in use.
 `facia-<stage>-FeastPublicationSNSTopicARN` is exported but unused.
 
-#### Three near-misses the diff caught
+#### `cdk diff` over-reports replacement — check with a change set
 
-`cdk diff` initially reported **`requires replacement`** on two resources. In
-each case the *resolved* value was unchanged but the *expression* differed, and
-CDK's template-only diff (the profile can't `CreateChangeSet`) can't tell. Rather
-than reason about whether CloudFormation would really replace them, the CDK now
-emits the identical intrinsic:
+`cdk diff` initially reported **`requires replacement`** on
+`FrontsUserDataDynamoTable` (`TableName`) and `RunFaciaToolLocally` (`Path`). In
+both cases the *resolved* value was unchanged and only the *expression* differed
+(a template literal instead of the YAML's `Fn::Join`/`Fn::Sub`).
 
-| Resource | Wrong | Right |
-| --- | --- | --- |
-| `FrontsUserDataDynamoTable.TableName` | `` `${prefix}-${this.stage}` `` | `Fn.join('-', [prefix, stageParam])` |
-| `RunFaciaToolLocally.Path` | template literal with `this.stage` | `Fn.sub('…${Stage}…')` |
-| both `Export.Name`s | `` `${Aws.STACK_NAME}-…` `` (→ `Fn::Join`) | `Fn.sub('${AWS::StackName}-…')` |
+The `cmsFronts` profile is read-only and cannot `CreateChangeSet`, so `cdk diff`
+had fallen back to a **template-only** diff. In that mode it flags any textual
+change to a property the resource spec marks "update requires replacement",
+without resolving intrinsics — so an equivalent-but-differently-spelled
+expression looks destructive.
 
-Lesson for 5b: **for any property where replacement is destructive, match the
-live template's intrinsic exactly rather than producing an equivalent one.**
+**A real change set settled it.** CloudFormation resolves intrinsics *before*
+comparing, so it reported `Replacement: False` for both, and the change set
+contained **no `Remove` actions at all**. The workarounds that matched the YAML's
+intrinsics were therefore unnecessary and have been reverted — the CDK uses plain
+template literals.
+
+**The rule:** when `cdk diff` claims a stateful resource requires replacement,
+don't reason about it and don't contort the CDK to match the old expression —
+get someone with `cloudformation:CreateChangeSet` to run
+`npx cdk deploy --no-execute <stack-id>` and read the `Replacement` column:
+
+```shell
+aws cloudformation describe-change-set --stack-name <stack> \
+  --change-set-name cdk-deploy-change-set \
+  --query "Changes[].ResourceChange.[LogicalResourceId,Action,Replacement]" --output table
+```
+
+`Replacement: Conditional` is normal and usually benign: it means
+`Evaluation: Dynamic`, i.e. the property derives from a `Ref`/`GetAtt` on another
+resource that CloudFormation can't resolve at planning time. Check the *parent*
+resource — if it is `Replacement: False`, the dependant will not be recreated
+either. In this stack the security-group rules and the ASG were all `Conditional`
+purely because they reference a security group's `GroupId` or the launch
+template's `LatestVersionNumber`.
 
 #### Verification
 
-- `cdk diff` against both live stacks: **no replacements and no real deletions.**
-  Remaining changes are `Fn::Sub`→`Fn::Join`/partition-token rewrites of IAM
-  documents (in-place updates), the DynamoDB table gaining
-  `DeletionPolicy`/`UpdateReplacePolicy: Retain` (a CDK default, and an
-  improvement), the launch template's `USER_DATA_TABLE` now resolving via
-  `Ref: FrontsUserDataDynamoTable`, and the `IsCode` condition being dropped.
+- **A CloudFormation change set against live `facia-CODE` confirms no resource is
+  replaced or removed.** Every change is `Modify` with `Replacement: False`, or
+  `Conditional` for the dynamic reasons described above. In particular
+  `FrontsUserDataDynamoTable` and `RunFaciaToolLocally` are both
+  `Replacement: False`.
+- `cdk diff` against both live stacks: no real deletions. The changes are
+  `Fn::Sub`→`Fn::Join`/partition-token rewrites of IAM documents (in-place
+  updates), the DynamoDB table gaining `DeletionPolicy`/`UpdateReplacePolicy:
+  Retain` (a CDK default, and an improvement), the launch template's
+  `USER_DATA_TABLE` now resolving via `Ref: FrontsUserDataDynamoTable`, and the
+  `IsCode` condition being dropped.
 - PROD additionally shows `[-] RunFaciaToolLocally destroy`. This is the known
   condition-gated false positive — `cdk diff` does not evaluate `Conditions`, and
   `describe-stack-resources` confirms the policy **has never existed in PROD**.
+  The CODE change set lists it as `Modify`, not `Remove`.
 - A script resolved the intrinsics in the live and synthesized templates and
   compared the effective statements: `RunFaciaToolLocally` (16),
   `StorageBucket` (2), `StorageConsumerRole` (6) and `FrontsUpdateSNSPolicy` (3)

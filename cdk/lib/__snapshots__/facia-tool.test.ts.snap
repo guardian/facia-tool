@@ -51,7 +51,15 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "ARN of the SNS topic",
       "Export": {
         "Name": {
-          "Fn::Sub": "\${AWS::StackName}-FeastPublicationSNSTopicARN",
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::StackName",
+              },
+              "-FeastPublicationSNSTopicARN",
+            ],
+          ],
         },
       },
       "Value": {
@@ -62,7 +70,15 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "ARN of the SNS topic",
       "Export": {
         "Name": {
-          "Fn::Sub": "\${AWS::StackName}-FrontsUpdateSNSTopicARN",
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::StackName",
+              },
+              "-FrontsUpdateSNSTopicARN",
+            ],
+          ],
         },
       },
       "Value": {
@@ -792,14 +808,12 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         },
         "TableName": {
           "Fn::Join": [
-            "-",
+            "",
             [
               {
                 "Ref": "UserDataTablePrefix",
               },
-              {
-                "Ref": "Stage",
-              },
+              "-CODE",
             ],
           ],
         },
@@ -1635,9 +1649,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
     "RunFaciaToolLocally": {
       "Properties": {
         "Description": "Policy used for running fronts-tool locally",
-        "Path": {
-          "Fn::Sub": "/developer-policy/guardian/facia-tool/cms-fronts/\${Stage}/run-fronts-tool-locally/",
-        },
+        "Path": "/developer-policy/guardian/facia-tool/cms-fronts/CODE/run-fronts-tool-locally/",
         "PolicyDocument": {
           "Statement": [
             {
@@ -2852,7 +2864,15 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Description": "ARN of the SNS topic",
       "Export": {
         "Name": {
-          "Fn::Sub": "\${AWS::StackName}-FeastPublicationSNSTopicARN",
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::StackName",
+              },
+              "-FeastPublicationSNSTopicARN",
+            ],
+          ],
         },
       },
       "Value": {
@@ -2863,7 +2883,15 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Description": "ARN of the SNS topic",
       "Export": {
         "Name": {
-          "Fn::Sub": "\${AWS::StackName}-FrontsUpdateSNSTopicARN",
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::StackName",
+              },
+              "-FrontsUpdateSNSTopicARN",
+            ],
+          ],
         },
       },
       "Value": {
@@ -3593,14 +3621,12 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         },
         "TableName": {
           "Fn::Join": [
-            "-",
+            "",
             [
               {
                 "Ref": "UserDataTablePrefix",
               },
-              {
-                "Ref": "Stage",
-              },
+              "-PROD",
             ],
           ],
         },

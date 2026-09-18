@@ -9,7 +9,7 @@ import { GuCname } from '@guardian/cdk/lib/constructs/dns';
 import { GuSecurityGroup, GuVpc } from '@guardian/cdk/lib/constructs/ec2';
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
 import type { App, CfnParameterProps } from 'aws-cdk-lib';
-import { CfnOutput, CfnParameter, Duration, Fn, Tags } from 'aws-cdk-lib';
+import { Aws, CfnOutput, CfnParameter, Duration, Fn, Tags } from 'aws-cdk-lib';
 import { CfnDistribution } from 'aws-cdk-lib/aws-cloudfront';
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import type { ISubnet } from 'aws-cdk-lib/aws-ec2';
@@ -177,6 +177,8 @@ export class FaciaTool extends GuStack {
 		const definitions: Array<
 			Omit<CfnParameterProps, 'type'> & { name: string; type: string }
 		> = [
+			// Nothing references this any more, but Riff-Raff supplies a Stage parameter when the
+			// template declares one, so it stays.
 			{
 				name: 'Stage',
 				type: 'String',
@@ -496,12 +498,7 @@ export class FaciaTool extends GuStack {
 		this.overrideLogicalId(storageBucketPolicy, retained('StorageBucket'));
 
 		const userDataTable = new Table(this, 'UserDataTable', {
-			// Built with the same intrinsic as the YAML template: a different expression for the
-			// same name still reads as "requires replacement" on a DynamoDB table.
-			tableName: Fn.join('-', [
-				parameter('UserDataTablePrefix'),
-				parameter('Stage'),
-			]),
+			tableName: `${parameter('UserDataTablePrefix')}-${this.stage}`,
 			partitionKey: { name: 'email', type: AttributeType.STRING },
 			readCapacity: 5,
 			writeCapacity: 5,
@@ -530,7 +527,7 @@ export class FaciaTool extends GuStack {
 			{
 				description: 'ARN of the SNS topic',
 				value: frontsUpdateTopic.topicArn,
-				exportName: Fn.sub('${AWS::StackName}-FrontsUpdateSNSTopicARN'),
+				exportName: `${Aws.STACK_NAME}-FrontsUpdateSNSTopicARN`,
 			},
 		);
 		frontsUpdateTopicOutput.overrideLogicalId('FrontsUpdateSNSTopicARN');
@@ -541,7 +538,7 @@ export class FaciaTool extends GuStack {
 			{
 				description: 'ARN of the SNS topic',
 				value: feastPublicationTopic.topicArn,
-				exportName: Fn.sub('${AWS::StackName}-FeastPublicationSNSTopicARN'),
+				exportName: `${Aws.STACK_NAME}-FeastPublicationSNSTopicARN`,
 			},
 		);
 		feastPublicationTopicOutput.overrideLogicalId('FeastPublicationSNSTopic');
@@ -577,10 +574,7 @@ export class FaciaTool extends GuStack {
 
 		const policy = new ManagedPolicy(this, 'RunFaciaToolLocally', {
 			description: 'Policy used for running fronts-tool locally',
-			// As with the table name, a resolved-but-different Path reads as "requires replacement".
-			path: Fn.sub(
-				'/developer-policy/guardian/facia-tool/cms-fronts/${Stage}/run-fronts-tool-locally/',
-			),
+			path: `/developer-policy/guardian/facia-tool/cms-fronts/${this.stage}/run-fronts-tool-locally/`,
 			statements: [
 				allow(
 					['ssm:GetParameter'],
