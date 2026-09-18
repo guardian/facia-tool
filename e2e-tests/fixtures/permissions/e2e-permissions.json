@@ -1,0 +1,11 @@
+{
+  "fronts_access": ["fronts.e2e.test@guardian.co.uk"],
+  "configure_fronts": ["fronts.e2e.test@guardian.co.uk"],
+  "edit_editorial_fronts": ["fronts.e2e.test@guardian.co.uk"],
+  "launch_editorial_fronts": ["fronts.e2e.test@guardian.co.uk"],
+  "launch_commercial_fronts": ["fronts.e2e.test@guardian.co.uk"],
+  "edit_and_launch_email_fronts": ["fronts.e2e.test@guardian.co.uk"],
+  "edit_editions": ["fronts.e2e.test@guardian.co.uk"],
+  "breaking_news_alert": ["fronts.e2e.test@guardian.co.uk"],
+  "configure_custom_subnavs": ["fronts.e2e.test@guardian.co.uk"]
+}

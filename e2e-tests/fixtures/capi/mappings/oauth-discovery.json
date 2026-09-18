@@ -1,0 +1,15 @@
+{
+  "priority": 1,
+  "request": { "method": "GET", "urlPath": "/e2e-oauth-discovery" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "jsonBody": {
+      "issuer": "http://localhost:9101",
+      "authorization_endpoint": "http://localhost:9101/authorize",
+      "token_endpoint": "http://localhost:9101/token",
+      "userinfo_endpoint": "http://localhost:9101/userinfo",
+      "jwks_uri": "http://localhost:9101/keys"
+    }
+  }
+}

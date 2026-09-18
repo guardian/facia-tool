@@ -1,0 +1,17 @@
+{
+  "live": [
+    {
+      "id": "internal-code/page/1001",
+      "frontPublicationDate": 1789722000000,
+      "meta": {
+        "headline": "Seeded E2E story",
+        "trailText": "A synthetic story used to verify the local Facia stack.",
+        "byline": "E2E Test Author",
+        "supporting": []
+      }
+    }
+  ],
+  "lastUpdated": "2026-09-18T09:00:00.000Z",
+  "updatedBy": "Fronts Tester",
+  "updatedEmail": "fronts.e2e.test@guardian.co.uk"
+}
