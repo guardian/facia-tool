@@ -73,7 +73,16 @@ export class FaciaTool extends GuStack {
 			access: { scope: AccessScope.PUBLIC },
 			applicationPort,
 			instanceType: new InstanceType(props.instanceType),
-			monitoringConfiguration: { noMonitoring: true },
+			monitoringConfiguration: {
+				snsTopicName: 'pagerduty-notification-topic',
+				// PROD serves ~290k requests a day with a handful of 5xx, so 1% is a long way
+				// above the noise floor.
+				http5xxAlarm: {
+					tolerated5xxPercentage: 1,
+					numberOfMinutesAboveThresholdBeforeAlarm: 5,
+				},
+				unhealthyInstancesAlarm: true,
+			},
 			applicationLogging: { enabled: true },
 			instanceMetricGranularity: '5Minute',
 			imageRecipe: 'editorial-tools-jammy-java11',
