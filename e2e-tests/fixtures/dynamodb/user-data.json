@@ -1,0 +1,20 @@
+{
+  "user-data-CODE": [
+    {
+      "PutRequest": {
+        "Item": {
+          "email": { "S": "fronts.e2e.test@guardian.co.uk" },
+          "frontIdsByPriority": {
+            "M": {
+              "editorial": {
+                "L": [{ "S": "editorial-test-front" }]
+              }
+            }
+          },
+          "favouriteFrontIdsByPriority": { "M": {} },
+          "featureSwitches": { "L": [] }
+        }
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 package conf
 
 import java.io.{File, FileInputStream, InputStream}
-import java.net.URL
+import java.net.{URI, URL}
 import com.amazonaws.AmazonClientException
 import com.amazonaws.auth._
 import com.amazonaws.auth.profile.ProfileCredentialsProvider
@@ -33,7 +33,10 @@ class ApplicationConfiguration(
     // Override properties defined in configuration. Useful for testing.
     val propertyOverrides: Map[String, String] = Map.empty
 ) extends Logging {
-  private val propertiesFile = "/etc/gu/facia-tool.properties"
+  private val propertiesFile = sys.env.getOrElse(
+    "FACIA_TOOL_PROPERTIES_FILE",
+    "/etc/gu/facia-tool.properties"
+  )
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f), "UTF-8")
     case _ =>
@@ -118,6 +121,18 @@ class ApplicationConfiguration(
     lazy val bucket = getMandatoryString("aws.bucket")
     lazy val frontsBucket = getMandatoryString("aws.frontsBucket")
     lazy val localS3Endpoint: Option[String] = getString("aws.localS3Endpoint")
+    lazy val localDynamoEndpoint: Option[String] = getString(
+      "aws.localDynamoEndpoint"
+    )
+    lazy val localSnsEndpoint: Option[String] = getString(
+      "aws.localSnsEndpoint"
+    )
+    lazy val localSqsEndpoint: Option[String] = getString(
+      "aws.localSqsEndpoint"
+    )
+    lazy val localStsEndpoint: Option[String] = getString(
+      "aws.localStsEndpoint"
+    )
     lazy val publishedEditionsIssuesBucket = getMandatoryString(
       "aws.publishedEditionsIssuesBucket"
     )
@@ -193,11 +208,22 @@ class ApplicationConfiguration(
       .withCredentials(cmsFrontsAccountCredentials)
       .withRegion(region)
       .build()
-    lazy val s3Client = S3Client
-      .builder()
-      .region(Region.of(region))
-      .credentialsProvider(newStyleCmsFrontsAccountCredentials)
-      .build()
+    lazy val s3Client = localS3Endpoint match {
+      case Some(endpoint) =>
+        S3Client
+          .builder()
+          .region(Region.of(region))
+          .credentialsProvider(newStyleCmsFrontsAccountCredentials)
+          .endpointOverride(URI.create(endpoint))
+          .forcePathStyle(true)
+          .build()
+      case None =>
+        S3Client
+          .builder()
+          .region(Region.of(region))
+          .credentialsProvider(newStyleCmsFrontsAccountCredentials)
+          .build()
+    }
   }
 
   object postgres {

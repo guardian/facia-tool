@@ -1,0 +1,38 @@
+[
+  {
+    "permission": { "name": "fronts_access", "app": "fronts", "defaultValue": false },
+    "overrides": [{ "userId": "fronts.e2e.test@guardian.co.uk", "active": true, "isCasualNotOnShift": false }]
+  },
+  {
+    "permission": { "name": "configure_fronts", "app": "fronts", "defaultValue": false },
+    "overrides": [{ "userId": "fronts.e2e.test@guardian.co.uk", "active": true, "isCasualNotOnShift": false }]
+  },
+  {
+    "permission": { "name": "edit_editorial_fronts", "app": "fronts", "defaultValue": false },
+    "overrides": [{ "userId": "fronts.e2e.test@guardian.co.uk", "active": true, "isCasualNotOnShift": false }]
+  },
+  {
+    "permission": { "name": "launch_editorial_fronts", "app": "fronts", "defaultValue": false },
+    "overrides": [{ "userId": "fronts.e2e.test@guardian.co.uk", "active": true, "isCasualNotOnShift": false }]
+  },
+  {
+    "permission": { "name": "launch_commercial_fronts", "app": "fronts", "defaultValue": false },
+    "overrides": [{ "userId": "fronts.e2e.test@guardian.co.uk", "active": true, "isCasualNotOnShift": false }]
+  },
+  {
+    "permission": { "name": "edit_and_launch_email_fronts", "app": "fronts", "defaultValue": false },
+    "overrides": [{ "userId": "fronts.e2e.test@guardian.co.uk", "active": true, "isCasualNotOnShift": false }]
+  },
+  {
+    "permission": { "name": "edit_editions", "app": "fronts", "defaultValue": false },
+    "overrides": [{ "userId": "fronts.e2e.test@guardian.co.uk", "active": true, "isCasualNotOnShift": false }]
+  },
+  {
+    "permission": { "name": "breaking_news_alert", "app": "fronts", "defaultValue": false },
+    "overrides": [{ "userId": "fronts.e2e.test@guardian.co.uk", "active": true, "isCasualNotOnShift": false }]
+  },
+  {
+    "permission": { "name": "configure_custom_subnavs", "app": "fronts", "defaultValue": false },
+    "overrides": [{ "userId": "fronts.e2e.test@guardian.co.uk", "active": true, "isCasualNotOnShift": false }]
+  }
+]

@@ -1,0 +1,5 @@
+cookieName=gutoolsAuth
+assymCookieName=gutoolsAuth-assym
+clientId=e2e-client-id
+clientSecret=e2e-client-secret
+discoveryDocumentUrl=http://localhost:9101/e2e-oauth-discovery

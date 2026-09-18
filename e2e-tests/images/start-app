@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# shellcheck disable=SC1091
+source /etc/profile.d/mise-tools.sh
+
+export SBT_OPTS="${SBT_OPTS:-} -Xmx4G -Xss4m -Dsbt.color=false -Dsbt.log.noformat=true"
+
+( cd /app/fronts-client && yarn watch --host 0.0.0.0 ) &
+
+cd /app
+exec sbt -Dconfig.file="${FACIA_TOOL_E2E_CONFIG}" "run 9000"

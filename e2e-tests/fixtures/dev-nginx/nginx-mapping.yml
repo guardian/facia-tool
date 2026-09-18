@@ -1,0 +1,11 @@
+name: fronts-e2e
+mappings:
+  - prefix: fronts
+    port: 9000
+    path:
+  - prefix: user-telemetry
+    port: 9106
+    path:
+  - prefix: grid
+    port: 9103
+    path:
