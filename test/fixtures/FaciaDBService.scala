@@ -4,7 +4,7 @@ import org.scalatest.{BeforeAndAfterAll, Suite}
 import play.api.db.{Database, Databases}
 import services.editions.db.FaciaDB
 
-trait EditionsDBService extends BeforeAndAfterAll { self: Suite =>
+trait FaciaDBService extends BeforeAndAfterAll { self: Suite =>
 
   private val port = 4724
   private val dbUser = "faciatool"

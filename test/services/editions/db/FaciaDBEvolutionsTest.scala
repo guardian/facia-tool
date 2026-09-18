@@ -11,7 +11,7 @@ import java.time.{
 }
 
 import com.gu.pandomainauth.model.User
-import fixtures.{EditionsDBService, UsesDatabase}
+import fixtures.{FaciaDBService, UsesDatabase}
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
 import play.api.db.evolutions.{
   Evolution,
@@ -24,7 +24,7 @@ import scalikejdbc._
 class FaciaDBEvolutionsTest
     extends FreeSpec
     with Matchers
-    with EditionsDBService
+    with FaciaDBService
     with OptionValues {
 
   private val now: OffsetDateTime =
