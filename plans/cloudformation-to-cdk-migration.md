@@ -103,10 +103,9 @@ CloudFront `FaciaCloudfront` + `StaticCloudfront`, `DnsRecord` +
   deployed to both stages. A single `addPropertyOverride` on the included
   `FaciaCloudfront` resource sets `DistributionConfig.Origins.0.DomainName` to
   the new ALB; `cdk diff` against both live stacks showed **only** that change.
-- [ ] **Phase 4** — delete legacy compute. Branch `gucdk-migration-phase-4`,
-  PR [#2081](https://github.com/guardian/facia-tool/pull/2081) (draft).
-  Code done and verified (see "Phase 4 changes" below); **awaiting CODE then PROD
-  deploy.**
+- [x] **Phase 4** — delete legacy compute. PR
+  [#2081](https://github.com/guardian/facia-tool/pull/2081), merged and deployed
+  to both stages (see "Phase 4 changes" and "Post-deploy verification" below).
 - [ ] **Phase 5** — follow-ups: CloudFront into GuCDK, alarms, stateful resources.
 
 ## Phase 4 changes
@@ -175,9 +174,23 @@ template has one ASG, no `gu:riffraff:new-asg` tag, no legacy logical IDs, and n
    `FaciaLoadBalancerDNS` output removed. **No CloudFront change appears**,
    confirming the YAML placeholder is a synth-time no-op.
 
-### Still to do
+### Post-deploy verification (done)
 
-Deploy CODE, verify end-to-end, then PROD.
+Deployed CODE then PROD; both stacks `UPDATE_COMPLETE`. Confirmed against the
+live account with the read-only `cmsFronts` profile:
+
+- `cdk diff` for **both** `FaciaTool-euwest-1-CODE` and `FaciaTool-euwest-1-PROD`
+  reports "There were no differences" — repo and live stacks are in sync.
+- **No classic ELBs remain** in the account.
+- Two ALBs, both `active`; target groups all healthy (CODE 1 target, PROD 3).
+- Two ASGs (CODE 1/2/1, PROD 3/6/3) — one per stage, i.e. the legacy pair is
+  gone — and **no `gu:riffraff:new-asg` tag** on either.
+- End-to-end through CloudFront: `/_healthcheck` → 200 and `/` → 303 (pan-domain
+  auth redirect) on both `fronts.gutools.co.uk` and
+  `fronts.code.dev-gutools.co.uk`.
+
+Phase 4 is complete. The migration's compute is now fully GuCDK-owned; the
+`CfnInclude` persists only for the non-compute resources listed above.
 
 ## Phase 2 decisions
 
@@ -245,6 +258,88 @@ Deploy CODE, verify end-to-end, then PROD.
 2. Deploy PROD, repeat.
 3. Soak. CloudFront origin changes propagate in minutes; rollback is a revert.
 4. Only once the old ELBs show **0 requests** does Phase 4 delete them.
+
+## Phase 5 — follow-ups
+
+Three independent, separately deployable pieces of work, ordered by risk.
+
+- [ ] **5a — stateful/shared resources into CDK.** Branch
+  `gucdk-migration-phase-5a-stateful`. Code done and verified (see below);
+  awaiting CODE then PROD deploy.
+- [ ] **5b — CloudFront + DNS into CDK.** Removes the
+  `overridden-by-cdk.invalid` placeholder and its `addPropertyOverride`, and
+  empties the wrapped template.
+- [ ] **5c — alarms.** `monitoringConfiguration` is still `{ noMonitoring: true }`,
+  matching the legacy stack. Needs a team decision on which SNS topic alarms
+  notify (candidates in the account: `pagerduty-notification-topic`,
+  `CMSFrontsLambda_pagerduty`, `devx-reliability`, `Cloudwatch-Alerts`) and
+  whether CODE should notify at all.
+
+Also noted, no action for now:
+
+- **Instance egress.** The GuCDK instance SG allows egress on 443 only, versus
+  the legacy allow-all. Nothing has broken across the soak — just remember it
+  when adding an outbound dependency on another port.
+- **cfn-lint `W9007`** ("duplicate Subnets") on the ALB is a false positive —
+  the three `Fn::Select` indices are distinct.
+
+### 5a — stateful/shared resources into CDK
+
+Moved out of [cloudformation/facia-tool.cfn.yaml](cloudformation/facia-tool.cfn.yaml)
+and into [cdk/lib/facia-tool.ts](cdk/lib/facia-tool.ts), **every one keeping its
+original logical ID** via `GuStack.overrideLogicalId` (`CfnTopicPolicy` and
+`CfnOutput` are L1s with no `defaultChild`, so they call
+`overrideLogicalId` directly):
+
+- `FrontsUpdateSNSTopic`, `FeastPublicationTopic`, `FrontsUpdateSNSPolicy`
+- `StorageConsumerRole` + its `StorageBucket` policy
+- `FrontsUserDataDynamoTable`
+- `RunFaciaToolLocally` — the CODE-only developer policy. Migrated because it
+  references the topics and the table, whose ARNs are not reconstructable once
+  those resources leave the template. The CFN `Condition: IsCode` becomes a
+  `this.stage === 'CODE'` guard in CDK, so the `IsCode` condition is gone.
+- The three `Outputs`, including both `Export`s.
+
+**The `FrontsUpdateSNSTopicARN` export is imported by
+`cms-fronts-<stage>-eventbridge-to-fanout`** (confirmed with
+`aws cloudformation list-imports`), so its name and value must not change —
+CloudFormation refuses to alter an export that is in use.
+`facia-<stage>-FeastPublicationSNSTopicARN` is exported but unused.
+
+#### Three near-misses the diff caught
+
+`cdk diff` initially reported **`requires replacement`** on two resources. In
+each case the *resolved* value was unchanged but the *expression* differed, and
+CDK's template-only diff (the profile can't `CreateChangeSet`) can't tell. Rather
+than reason about whether CloudFormation would really replace them, the CDK now
+emits the identical intrinsic:
+
+| Resource | Wrong | Right |
+| --- | --- | --- |
+| `FrontsUserDataDynamoTable.TableName` | `` `${prefix}-${this.stage}` `` | `Fn.join('-', [prefix, stageParam])` |
+| `RunFaciaToolLocally.Path` | template literal with `this.stage` | `Fn.sub('…${Stage}…')` |
+| both `Export.Name`s | `` `${Aws.STACK_NAME}-…` `` (→ `Fn::Join`) | `Fn.sub('${AWS::StackName}-…')` |
+
+Lesson for 5b: **for any property where replacement is destructive, match the
+live template's intrinsic exactly rather than producing an equivalent one.**
+
+#### Verification
+
+- `cdk diff` against both live stacks: **no replacements and no real deletions.**
+  Remaining changes are `Fn::Sub`→`Fn::Join`/partition-token rewrites of IAM
+  documents (in-place updates), the DynamoDB table gaining
+  `DeletionPolicy`/`UpdateReplacePolicy: Retain` (a CDK default, and an
+  improvement), the launch template's `USER_DATA_TABLE` now resolving via
+  `Ref: FrontsUserDataDynamoTable`, and the `IsCode` condition being dropped.
+- PROD additionally shows `[-] RunFaciaToolLocally destroy`. This is the known
+  condition-gated false positive — `cdk diff` does not evaluate `Conditions`, and
+  `describe-stack-resources` confirms the policy **has never existed in PROD**.
+- A script resolved the intrinsics in the live and synthesized templates and
+  compared the effective statements: `RunFaciaToolLocally` (16),
+  `StorageBucket` (2), `StorageConsumerRole` (6) and `FrontsUpdateSNSPolicy` (3)
+  all **match exactly**, as do the table name and both export names, in both
+  stages.
+- lint, snapshots and synth green.
 
 ## Node / tooling
 
