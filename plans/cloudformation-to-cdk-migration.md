@@ -264,14 +264,23 @@ Phase 4 is complete. The migration's compute is now fully GuCDK-owned; the
 Three independent, separately deployable pieces of work, ordered by risk.
 
 - [ ] **5a — stateful/shared resources into CDK.** Branch
-  `gucdk-migration-phase-5a-stateful`. Code done and verified (see below);
-  awaiting CODE then PROD deploy.
+  `gucdk-migration-phase-5a-stateful`,
+  PR [#2083](https://github.com/guardian/facia-tool/pull/2083) (draft). Code done
+  and verified (see below); awaiting CODE then PROD deploy.
 - [ ] **5b — CloudFront + DNS into CDK.** Branch
-  `gucdk-migration-phase-5b-cloudfront`, **depends on 5a** (same files). Code done
-  and verified (see below); awaiting CODE then PROD deploy. This is the change
-  that reaches the `CDK -> cfn.json` end-state.
-- [ ] **5c — alarms.** Branch `gucdk-migration-phase-5c-alarms`, **depends on
-  5b**. Code done and verified (see below); awaiting CODE then PROD deploy.
+  `gucdk-migration-phase-5b-cloudfront`,
+  PR [#2084](https://github.com/guardian/facia-tool/pull/2084) (draft),
+  **depends on 5a** (same files). Code done and verified (see below); awaiting
+  CODE then PROD deploy. This is the change that reaches the `CDK -> cfn.json`
+  end-state.
+- [ ] **5c — alarms.** Branch `gucdk-migration-phase-5c-alarms`,
+  PR [#2085](https://github.com/guardian/facia-tool/pull/2085) (draft),
+  **depends on 5b**. Code done and verified (see below); awaiting CODE then PROD
+  deploy.
+
+Merge and deploy order is strictly **5a → 5b → 5c**, each deployed to CODE and
+then PROD before the next is merged. The branches are stacked, so only the 5c
+branch carries these PR numbers.
 
 Also noted, no action for now:
 
