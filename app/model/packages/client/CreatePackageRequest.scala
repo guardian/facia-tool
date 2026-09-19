@@ -1,16 +1,18 @@
 package model.packages.client
 
-import model.packages.{MetadataHelpers, PackageMetadata, Package}
+import model.packages.{MetadataHelpers, Package, PackageMetadata}
 import org.postgresql.util.PGobject
 import play.api.libs.json.{Json, OFormat}
 
+import java.util.UUID
+
 case class CreatePackageRequest(
-    id: String,
+    id: UUID,
     name: String,
     isHidden: Boolean,
     packageType: Package.PackageType.Value,
     metadata: Option[PackageMetadata],
-    createdOn: Long,
+    createdOn: Long, // timestamp in epoch millis
     createdBy: String,
     createdEmail: String
 ) {

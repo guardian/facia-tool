@@ -29,21 +29,19 @@ final case class PackageCardRow(
 object PackageCardRow {
   implicit val format: OFormat[PackageCardRow] = Json.format[PackageCardRow]
 
-  def fromRow(rs: WrappedResultSet): PackageCardRow =
-    PackageCardRow(
-      packageId = rs.string("package_id"),
-      cardType = PackageCardType
-        .fromString(rs.string("card_type"))
-        .getOrElse(
-          throw new IllegalArgumentException(
-            s"Invalid card type: ${rs.string("card_type")}"
-          )
-        ),
-      pageCode = rs.string("page_code"),
-      index = rs.int("index"),
-      metadata = rs.stringOpt("metadata").map(Json.parse),
-      addedOn = rs.zonedDateTime("added_on").toOffsetDateTime,
-      addedBy = rs.string("added_by"),
-      addedEmail = rs.string("added_email")
-    )
+  def fromRow(rs: WrappedResultSet): Option[PackageCardRow] =
+    for {
+      cardType <- PackageCardType.fromString(rs.string("card_type"))
+    } yield {
+      PackageCardRow(
+        packageId = rs.string("package_id"),
+        cardType = cardType,
+        pageCode = rs.string("page_code"),
+        index = rs.int("index"),
+        metadata = rs.stringOpt("metadata").map(Json.parse),
+        addedOn = rs.offsetDateTime("added_on"),
+        addedBy = rs.string("added_by"),
+        addedEmail = rs.string("added_email")
+      )
+    }
 }

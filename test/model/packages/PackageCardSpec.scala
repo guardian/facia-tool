@@ -2,13 +2,14 @@ package model.packages
 
 import model.editions.{EditionsChefMetadata, EditionsFeastCollectionMetadata}
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
-import play.api.libs.json.{Json, JsObject, Writes}
+import play.api.libs.json.{JsObject, Json, Writes}
 
-import java.time.Instant
+import java.time.{Instant, OffsetDateTime}
 
 class PackageCardSpec extends FreeSpec with Matchers with OptionValues {
 
-  private val testInstant: Instant = Instant.parse("2024-11-14T09:30:00Z")
+  private val testInstant: OffsetDateTime =
+    OffsetDateTime.parse("2024-11-14T09:30:00Z")
 
   "PackageCard JSON serialization" - {
 
@@ -309,7 +310,7 @@ class PackageCardSpec extends FreeSpec with Matchers with OptionValues {
       }
 
       "should serialize Instant correctly" in {
-        val instant = Instant.parse("2025-01-15T14:45:30Z")
+        val instant = OffsetDateTime.parse("2025-01-15T14:45:30Z")
         val card = PackageRecipeCard(id = "recipe-time", addedOn = instant)
 
         val json = PackageCard.format.writes(card)

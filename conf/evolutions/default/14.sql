@@ -5,14 +5,14 @@ CREATE TABLE packages (
 
 						  name          TEXT    NOT NULL,
 						  is_hidden     BOOLEAN NOT NULL,
-						  package_type  TEXT,
+						  package_type  TEXT,	-- 'Feast' or 'Web'
 						  metadata       JSONB,
 
 						  created_on    TIMESTAMPTZ    DEFAULT now(),
 						  created_by    TEXT,
 						  created_email TEXT,
 
-						  updated_on    TIMESTAMPTZ,
+						  updated_on    TIMESTAMPTZ default now(),
 						  updated_by    TEXT,
 						  updated_email TEXT
 );
@@ -31,7 +31,7 @@ CREATE TABLE package_cards (
 							   added_on       TIMESTAMPTZ NOT NULL,
 							   added_by       TEXT        NOT NULL,
 							   added_email    TEXT        NOT NULL,
-							   PRIMARY KEY (package_id, page_code)
+							   PRIMARY KEY (package_id, card_type, page_code)
 );
 
 CREATE INDEX idxPackageCards ON package_cards (package_id);

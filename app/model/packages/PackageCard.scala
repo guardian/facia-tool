@@ -1,23 +1,21 @@
 package model.packages
 
+import logging.Logging
 import model.editions.EditionsChefMetadata
 import model.editions.EditionsFeastCollectionMetadata
-import model.packages.PackageCardType
-import model.packages.PackageCardType.Recipe
 import play.api.libs.json._
-import scalikejdbc.WrappedResultSet
 
-import java.time.Instant
+import java.time.OffsetDateTime
 
 sealed trait PackageCard {
   val id: String
-  val addedOn: Instant
+  val addedOn: OffsetDateTime
   val cardType: PackageCardType
 }
 
 case class PackageRecipeCard(
     id: String,
-    addedOn: Instant
+    addedOn: OffsetDateTime
 ) extends PackageCard {
   override val cardType: PackageCardType = PackageCardType.Recipe
 }
@@ -25,7 +23,7 @@ case class PackageRecipeCard(
 case class PackageChefCard(
     id: String,
     metadata: Option[EditionsChefMetadata],
-    addedOn: Instant
+    addedOn: OffsetDateTime
 ) extends PackageCard {
   override val cardType: PackageCardType = PackageCardType.Chef
 }
@@ -33,7 +31,7 @@ case class PackageChefCard(
 case class PackageSubcollectionCard(
     id: String,
     metadata: Option[EditionsFeastCollectionMetadata],
-    addedOn: Instant
+    addedOn: OffsetDateTime
 ) extends PackageCard {
   override val cardType: PackageCardType = PackageCardType.Subcollection
 }
@@ -74,7 +72,7 @@ object PackageSubcollectionCard {
     }
 }
 
-object PackageCard {
+object PackageCard extends Logging {
   implicit val format: OFormat[PackageCard] = new OFormat[PackageCard] {
     override def reads(json: JsValue): JsResult[PackageCard] = {
       (json \ "cardType").validate[String].flatMap {
@@ -92,43 +90,6 @@ object PackageCard {
         PackageChefCard.format.writes(c)
       case c: PackageSubcollectionCard =>
         PackageSubcollectionCard.format.writes(c)
-    }
-  }
-
-  def fromRowOpt(rs: WrappedResultSet): Option[PackageCard] = {
-    for {
-      id <- rs.stringOpt("id")
-      cardTypeStr <- rs.stringOpt("card_type")
-      cardType <- PackageCardType.fromString(cardTypeStr)
-      addedOn <- rs.zonedDateTimeOpt("added_on").map(_.toInstant)
-    } yield cardType match {
-      case Recipe =>
-        val recipeId = rs.string("page_code")
-        PackageRecipeCard(
-          id = recipeId,
-          addedOn = addedOn
-        )
-      case PackageCardType.Chef =>
-        val metadata = rs
-          .stringOpt("feast_metadata")
-          .map(Json.parse)
-          .map(_.as[EditionsChefMetadata])
-        val chefId = rs.string("page_code")
-        PackageChefCard(
-          id = chefId,
-          metadata = metadata,
-          addedOn = addedOn
-        )
-      case PackageCardType.Subcollection =>
-        val metadata = rs
-          .stringOpt("feast_metadata")
-          .map(Json.parse)
-          .map(_.as[EditionsFeastCollectionMetadata])
-        PackageSubcollectionCard(
-          id = id,
-          metadata = metadata,
-          addedOn = addedOn
-        )
     }
   }
 }

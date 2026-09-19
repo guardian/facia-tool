@@ -3,11 +3,11 @@ package model.packages
 import logging.Logging
 import model.packages.Package.PackageType
 import org.postgresql.util.PGobject
-import play.api.libs.json.{Format, Json, OFormat}
+import play.api.libs.json.{Format, JsError, JsSuccess, Json, OFormat}
 import scalikejdbc.WrappedResultSet
 
 import java.time.OffsetDateTime
-import scala.util.Try
+import java.util.UUID
 
 /** A Package is a lot like a collection, in that it represents an ordered set
   * of Cards. The difference to a Collection is that a Collection must belong to
@@ -15,7 +15,7 @@ import scala.util.Try
   * Front, Issue or Edition
   */
 final case class Package(
-    id: String,
+    id: UUID,
     name: String,
     isHidden: Boolean,
     packageType: PackageType.Value,
@@ -28,9 +28,8 @@ final case class Package(
     updatedEmail: Option[String]
 ) extends MetadataHelpers {
 
-  def metadataPG: Option[PGobject] = metadata flatMap { meta =>
-    Try { Json.toJson(meta) }.toOption.map(toPGobject)
-  }
+  def metadataPG: Option[PGobject] =
+    metadata.map(PackageMetadata.format.writes).map(toPGobject)
 }
 
 object Package extends MetadataHelpers with Logging {
@@ -44,42 +43,50 @@ object Package extends MetadataHelpers with Logging {
 
   private def getMetadata(
       rs: WrappedResultSet,
-      id: String,
+      id: UUID,
       packageType: PackageType.Value
   ): Option[PackageMetadata] = packageType match {
     case PackageType.Feast =>
-      try {
-        rs.stringOpt("metadata")
-          .map(Json.parse)
-          .map(_.as[FeastPackageMetadata])
-      } catch {
-        case err: Throwable =>
-          logger.error(
-            s"Invalid $packageType metadata for package $id: ${err.getMessage}",
-            err
-          )
-          None
-      }
+      rs.stringOpt("metadata")
+        .map(Json.parse)
+        .flatMap(_.validate[FeastPackageMetadata] match {
+          case JsSuccess(meta, _) => Some(meta)
+          case JsError(err) =>
+            logger.error(
+              s"Invalid $packageType metadata for package $id: $err"
+            )
+            None
+        })
     case PackageType.Web =>
       // Not implemented yet
       None
   }
 
-  def fromRow(rs: WrappedResultSet): Package = {
-    val packageId = rs.string("id")
-    val packageType = PackageType.withName(rs.string("package_type"))
-    Package(
-      id = packageId,
-      name = rs.string("name"),
-      isHidden = rs.boolean("is_hidden"),
-      packageType = packageType,
-      metadata = getMetadata(rs, packageId, packageType),
-      createdOn = rs.zonedDateTimeOpt("created_on").map(_.toOffsetDateTime),
-      createdBy = rs.stringOpt("created_by"),
-      createdEmail = rs.stringOpt("created_email"),
-      updatedOn = rs.zonedDateTimeOpt("updated_on").map(_.toOffsetDateTime),
-      updatedBy = rs.stringOpt("updated_by"),
-      updatedEmail = rs.stringOpt("updated_email")
-    )
+  def fromRow(rs: WrappedResultSet): Option[Package] = {
+    try {
+      val packageId = UUID.fromString(rs.string("id"))
+      val packageType = PackageType.withName(rs.string("package_type"))
+      Some(
+        Package(
+          id = packageId,
+          name = rs.string("name"),
+          isHidden = rs.boolean("is_hidden"),
+          packageType = packageType,
+          metadata = getMetadata(rs, packageId, packageType),
+          createdOn = rs.zonedDateTimeOpt("created_on").map(_.toOffsetDateTime),
+          createdBy = rs.stringOpt("created_by"),
+          createdEmail = rs.stringOpt("created_email"),
+          updatedOn = rs.zonedDateTimeOpt("updated_on").map(_.toOffsetDateTime),
+          updatedBy = rs.stringOpt("updated_by"),
+          updatedEmail = rs.stringOpt("updated_email")
+        )
+      )
+    } catch {
+      case _: IllegalArgumentException =>
+        logger.error(
+          s"Package with ID ${rs.string("id")} is not valid, the ID did not parse as a UUID"
+        )
+        None
+    }
   }
 }

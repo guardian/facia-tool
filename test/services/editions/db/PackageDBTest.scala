@@ -50,7 +50,7 @@ class PackageDBTest
       packageType: Package.PackageType.Value = Package.PackageType.Feast
   ): CreatePackageRequest =
     CreatePackageRequest(
-      id = id.toString,
+      id = id,
       name = name,
       isHidden = hidden,
       packageType = packageType,
@@ -105,11 +105,11 @@ class PackageDBTest
       faciaDB.getPackages(
         Some(Seq(packageId)),
         None,
-        strictTimestamp = false
+        thisDayOnly = false
       )
 
     loaded should have size 1
-    loaded.head.id shouldBe packageId.toString
+    loaded.head.id shouldBe packageId
     loaded.head.name shouldBe "Weekend recipes"
     loaded.head.isHidden shouldBe false
     loaded.head.packageType shouldBe Package.PackageType.Feast
@@ -132,14 +132,14 @@ class PackageDBTest
     val filtered = faciaDB.getPackages(
       None,
       Some(now),
-      strictTimestamp = false
+      thisDayOnly = false
     )
 
-    filtered.map(_.id) should contain(olderPackageId.toString)
-    filtered.map(_.id) should not contain newerPackageId.toString
+    filtered.map(_.id) should contain(olderPackageId)
+    filtered.map(_.id) should not contain newerPackageId
   }
 
-  "should filter packages by day when strictTimestamp is enabled" taggedAs UsesDatabase in {
+  "should filter packages by day when thisDayOnly is enabled" taggedAs UsesDatabase in {
     val dayStart = now.withHour(0).withMinute(0).withSecond(0).withNano(0)
 
     val inDayPackage = UUID.randomUUID()
@@ -159,11 +159,11 @@ class PackageDBTest
     val strict = faciaDB.getPackages(
       None,
       Some(dayStart),
-      strictTimestamp = true
+      thisDayOnly = true
     )
 
-    strict.map(_.id) should contain(inDayPackage.toString)
-    strict.map(_.id) should not contain previousDayPackage.toString
+    strict.map(_.id) should contain(inDayPackage)
+    strict.map(_.id) should not contain previousDayPackage
   }
 
   "should update package name" taggedAs UsesDatabase in {
@@ -245,7 +245,7 @@ class PackageDBTest
     )
 
     val updatedMetadata = Package(
-      id = packageId.toString,
+      id = packageId,
       name = "Updated package",
       isHidden = true,
       packageType = Package.PackageType.Feast,
@@ -284,7 +284,7 @@ class PackageDBTest
 
     val loadedPackage =
       faciaDB
-        .getPackages(Some(Seq(packageId)), None, strictTimestamp = false)
+        .getPackages(Some(Seq(packageId)), None, thisDayOnly = false)
         .head
     loadedPackage.name shouldBe "Updated package"
     loadedPackage.isHidden shouldBe true
@@ -341,11 +341,11 @@ class PackageDBTest
       faciaDB.getPackages(
         Some(Seq(packageId)),
         None,
-        strictTimestamp = false
+        thisDayOnly = false
       )
 
     loaded should have size 1
-    loaded.head.id shouldBe packageId.toString
+    loaded.head.id shouldBe packageId
     loaded.head.name shouldBe "Invalid Type Package"
     loaded.head.packageType shouldBe Package.PackageType.Invalid
     loaded.head.metadata shouldBe None
@@ -381,11 +381,11 @@ class PackageDBTest
       faciaDB.getPackages(
         Some(Seq(packageId)),
         None,
-        strictTimestamp = false
+        thisDayOnly = false
       )
 
     loaded should have size 1
-    loaded.head.id shouldBe packageId.toString
+    loaded.head.id shouldBe packageId
     loaded.head.name shouldBe "Invalid Metadata Package"
     loaded.head.packageType shouldBe Package.PackageType.Feast
     loaded.head.metadata shouldBe None

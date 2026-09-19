@@ -22,7 +22,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
     *   an optional list of package IDs to return
     * @param lastModified
     *   an optional timestamp for last modified
-    * @param strictTimestamp
+    * @param thisDayOnly
     *   if true, then only select packages from the given day. If false, then
     *   select anything that has been modified on or before that timestamp
     * @return
@@ -31,7 +31,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
   def getPackages(
       packageIds: Option[Seq[UUID]],
       lastModified: Option[OffsetDateTime] = None,
-      strictTimestamp: Boolean = false,
+      thisDayOnly: Boolean = false,
       searchByTitle: Option[String] = None,
       orderBy: OrderingField = PackageQueries.CreatedOn,
       limit: Int = 200
@@ -44,7 +44,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
           if (idList.nonEmpty) Some(sqls.in(sqls"id", idList)) else None
 
         val maybeDateCondition = lastModified.map { modifiedSince =>
-          if (strictTimestamp) {
+          if (thisDayOnly) {
             val startOfDay = modifiedSince.truncatedTo(ChronoUnit.DAYS)
             val endOfDay = startOfDay.plusDays(1L)
             sqls"updated_on >= ${startOfDay.toInstant} AND updated_on < ${endOfDay.toInstant}"
@@ -71,7 +71,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
         fetchPackageMetaSql(
           where = whereSql,
           orderBy = sqls"""ORDER BY ${orderBy.toSql} DESC LIMIT $limit"""
-        ).apply()
+        ).apply().collect({ case Some(pkg) => pkg })
       }
     }
 
@@ -147,44 +147,6 @@ trait PackageQueries extends MetadataHelpers with Logging {
         .apply()
   }
 
-  /** Updates the metadata field of the package. This can be either
-    * `feast_metadata` or `web_metadata`; depending on the type of the `newMeta`
-    * argument the right field is selected.
-    * @param packageId
-    *   ID of the package to update
-    * @param newMeta
-    *   PackageMetadata object to write
-    * @param userName
-    *   name of the user performing the update
-    * @param userEmail
-    *   email of the user performing the update
-    * @return
-    *   count of affected rows
-    */
-  def updatePackageMeta(
-      packageId: UUID,
-      newMeta: PackageMetadata,
-      userName: String,
-      userEmail: String
-  ) = {
-    val metaPg = toPGobject(PackageMetadata.format.writes(newMeta))
-    val fieldName = newMeta match {
-      // sqls is needed to inject the column names by value into the sql rather than as parameterised value
-      case _: FeastPackageMetadata => sqls"feast_metadata"
-      case _: WebPackageMetadata   => sqls"web_metadata"
-    }
-    val nowTime = Timestamp.from(Instant.now())
-    DB localTx { implicit session =>
-      sql"""UPDATE packages SET
-     	$fieldName = $metaPg,
-      	updated_on = $nowTime,
-        updated_by = $userName,
-        updated_email = $userEmail
-    	WHERE id=${packageId.toString}""".update
-        .apply()
-    }
-  }
-
   /** Writes an entire package in one go, synchronising the database state of
     * the package cards transactionally
     * @param packageMeta
@@ -199,7 +161,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
     DB localTx { implicit session =>
       // FOR UPDATE locks the selected rows for the duration of this transaction, allowing us to safely update without a race condition
       val existingContent = fetchPackageContentSql(where =
-        sqls"WHERE package_id=${packageMeta.id} FOR UPDATE"
+        sqls"WHERE package_id=${packageMeta.id.toString} FOR UPDATE"
       ).apply()
       val existingMap: Map[String, PackageCardRow] =
         existingContent
@@ -215,7 +177,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
 
       // 3. Delete removed cards safely
       if (idsToRemove.nonEmpty) {
-        sql"DELETE FROM package_cards WHERE page_code IN (${idsToRemove.toSeq}) AND package_id=${packageMeta.id}".update
+        sql"DELETE FROM package_cards WHERE page_code IN (${idsToRemove.toSeq}) AND package_id=${packageMeta.id.toString}".update
           .apply()
       }
 
@@ -223,14 +185,14 @@ trait PackageQueries extends MetadataHelpers with Logging {
       toUpdate.foreach { card =>
         sql"""UPDATE package_cards
 	  SET index = ${card.index}, metadata = ${card.metadataPG}
-	  WHERE package_id = ${packageMeta.id} AND page_code = ${card.pageCode}""".update
+	  WHERE package_id = ${packageMeta.id.toString} AND page_code = ${card.pageCode}""".update
           .apply()
       }
 
       // 5. Insert new cards
       toAdd.foreach { card =>
         sql"""INSERT INTO package_cards (package_id, card_type, page_code, index, metadata, added_on, added_by, added_email)
-	  VALUES (${packageMeta.id}, ${card.cardType.toString}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
+	  VALUES (${packageMeta.id.toString}, ${card.cardType.toString}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
           .apply()
       }
 
@@ -243,7 +205,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
       		updated_on=${packageMeta.updatedOn},
    			updated_by=${packageMeta.updatedBy},
    			updated_email=${packageMeta.updatedEmail}
-   		WHERE id=${packageMeta.id}
+   		WHERE id=${packageMeta.id.toString}
      """.update.apply()
     }
 
@@ -268,7 +230,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
         updated_by,
         updated_email
 	) VALUES (
- 	   ${metadata.id.toLowerCase},
+ 	   ${metadata.id.toString},
      ${metadata.name},
      ${metadata.packageType.toString},
      ${metadata.isHidden},
@@ -314,7 +276,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
   private def fetchPackageMetaSql(
       where: SQLSyntax,
       orderBy: SQLSyntax = sqls""
-  ): SQLToList[Package, HasExtractor] = {
+  ): SQLToList[Option[Package], HasExtractor] = {
     val sql = sql"""
     SELECT
         id,
@@ -341,19 +303,30 @@ trait PackageQueries extends MetadataHelpers with Logging {
           val pt = rs.string("package_type")
           Package.PackageType.withName(pt)
         }.getOrElse(PackageType.Invalid)
-        Package(
-          id = rs.string("id"),
-          name = rs.string("name"),
-          isHidden = rs.boolean("is_hidden"),
-          packageType = packageType,
-          metadata = metadata,
-          createdOn = rs.offsetDateTimeOpt("created_on"),
-          createdBy = rs.stringOpt("created_by"),
-          createdEmail = rs.stringOpt("created_email"),
-          updatedOn = rs.offsetDateTimeOpt("updated_on"),
-          updatedBy = rs.stringOpt("updated_by"),
-          updatedEmail = rs.stringOpt("updated_email")
-        )
+        try {
+          val packageId = UUID.fromString(rs.string("id"))
+          Some(
+            Package(
+              id = packageId,
+              name = rs.string("name"),
+              isHidden = rs.boolean("is_hidden"),
+              packageType = packageType,
+              metadata = metadata,
+              createdOn = rs.offsetDateTimeOpt("created_on"),
+              createdBy = rs.stringOpt("created_by"),
+              createdEmail = rs.stringOpt("created_email"),
+              updatedOn = rs.offsetDateTimeOpt("updated_on"),
+              updatedBy = rs.stringOpt("updated_by"),
+              updatedEmail = rs.stringOpt("updated_email")
+            )
+          )
+        } catch {
+          case _: IllegalArgumentException =>
+            logger.error(
+              s"Package with ID ${rs.string("id")} is not valid, the ID is not a proper UUID"
+            )
+            None
+        }
       })
       .list
   }
@@ -385,9 +358,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
           cardType = PackageCardType
             .fromString(rs.string("card_type"))
             .getOrElse(
-              throw new IllegalArgumentException(
-                s"Invalid card type: ${rs.string("card_type")}"
-              )
+              PackageCardType.Invalid
             ),
           pageCode = rs.string("page_code"),
           index = rs.int("index"),

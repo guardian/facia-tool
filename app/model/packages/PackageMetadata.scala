@@ -35,10 +35,9 @@ object FeastPackageMetadata {
 }
 
 case class WebPackageMetadata(
-    // just examples at the moment
-    headline: Option[String],
-    customKicker: Option[String]
-) extends PackageMetadata //TBD
+    headline: Option[String]
+    // Fill this in when we know what they are! We need to have at least one field to satisfy the compiler
+) extends PackageMetadata
 
 object WebPackageMetadata {
   implicit val format: OFormat[WebPackageMetadata] =
