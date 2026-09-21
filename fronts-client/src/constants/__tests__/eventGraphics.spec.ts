@@ -22,7 +22,9 @@ describe('event graphics', () => {
 	describe('isEventGraphicId', () => {
 		it('should identify event graphic ids', () => {
 			expect(
-				isEventGraphicId('event-graphic/election-tracker/us-general-2024/congress'),
+				isEventGraphicId(
+					'event-graphic/election-tracker/us-general-2024/congress',
+				),
 			).toBe(true);
 		});
 
