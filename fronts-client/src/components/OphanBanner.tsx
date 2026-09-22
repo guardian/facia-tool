@@ -56,7 +56,7 @@ const OphanBanner = ({ ...props }: OphanBannerProps) => {
 				</OphanBannerTitle>
 				view results {!props.isTestLive && 'from other cards with this test'} in{' '}
 				<OphanBannerLink
-					href={url.ophan}
+					href={url.ophanFrontsTests}
 					target="_blank"
 					rel="noreferrer noopener"
 					aria-label="view results in Ophan (opens in a new tab)"
