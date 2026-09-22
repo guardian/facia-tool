@@ -15,20 +15,6 @@ const variantMeta: VariantMeta[] = [
 	{ id: 'B', meta: { headline: 'Headline B variant' } },
 ];
 
-// TODO: Remove when no longer gated behind feature switch
-jest.mock('util/extractConfigFromPage', () => {
-	const baseConfig = jest.requireActual('fixtures/config').default;
-	return {
-		__esModule: true,
-		default: {
-			...baseConfig,
-			userData: {
-				featureSwitches: [{ key: 'headline-ab-testing', enabled: true }],
-			},
-		},
-	};
-});
-
 afterEach(cleanup);
 
 const cardId = 'exampleId';
@@ -54,7 +40,7 @@ const renderForm = (state: State) => {
 					<ArticleMetaForm
 						cardId={cardId}
 						form={cardId}
-						frontId="frontId"
+						frontId="us"
 						onSave={jest.fn()}
 						onCancel={jest.fn()}
 					/>
@@ -74,7 +60,7 @@ describe('ArticleMetaForm - headline AB testing', () => {
 					<ArticleMetaForm
 						cardId={cardId}
 						form={cardId}
-						frontId="frontId"
+						frontId="us"
 						onSave={jest.fn()}
 						onCancel={jest.fn()}
 					/>

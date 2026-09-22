@@ -248,7 +248,6 @@ interface ArticleBodyProps {
 	};
 	abTestEnabled?: boolean;
 	hasLiveAbTest?: boolean;
-	headlineABTestingIsEnabled?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
 }
 
@@ -309,7 +308,6 @@ const articleBodyDefault = React.memo(
 		intendedAudience,
 		abTestEnabled,
 		hasLiveAbTest,
-		headlineABTestingIsEnabled,
 		headlineTestError,
 	}: ArticleBodyProps) => {
 		const displayByline = size === 'default' && showByline && byline;
@@ -419,6 +417,14 @@ const articleBodyDefault = React.memo(
 			headlineTestError,
 			frontId,
 		);
+
+		/*
+		 * Initial rollout of Editorial AB testing will be limited to the US front only.
+		 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
+		 */
+		const isUSNetworkFront = frontId === 'us';
+
+		const shouldShowAbTestStatus = !!abTestStatus && isUSNetworkFront;
 
 		return (
 			<>
@@ -546,7 +552,7 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
-					{abTestStatus && headlineABTestingIsEnabled && (
+					{shouldShowAbTestStatus && (
 						<ABTestStatus abTestTheme={abTestStatus.theme}>
 							{abTestStatus.theme === 'error' ? (
 								<ExclamationIcon fill={abTestStatus.palette.icon} size={'s'} />
