@@ -2,12 +2,14 @@ package services.editions.db
 
 import com.gu.pandomainauth.model.User
 import fixtures.{FaciaDBService, UsesDatabase}
-import model.packages.client.CreatePackageRequest
+import model.packages.client.{CreateFeastPackageRequest, CreatePackageRequest}
 import model.packages.{
+  FeastPackage,
   FeastPackageMetadata,
   Package,
   PackageCardRow,
-  PackageCardType
+  PackageCardType,
+  StoryPackage
 }
 import org.scalatest.{BeforeAndAfter, FreeSpec, Matchers, OptionValues}
 import play.api.libs.json.Json
@@ -48,12 +50,11 @@ class PackageDBTest
       createdOnMillis: Long,
       hidden: Boolean = false,
       packageType: Package.PackageType.Value = Package.PackageType.Feast
-  ): CreatePackageRequest =
-    CreatePackageRequest(
+  ): CreateFeastPackageRequest =
+    CreateFeastPackageRequest(
       id = id,
       name = name,
       isHidden = hidden,
-      packageType = packageType,
       metadata = Some(FeastPackageMetadata(bodyText = Some("text goes here"))),
       createdOn = createdOnMillis,
       createdBy = s"${user.firstName} ${user.lastName}",
@@ -109,14 +110,24 @@ class PackageDBTest
       )
 
     loaded should have size 1
-    loaded.head.id shouldBe packageId
-    loaded.head.name shouldBe "Weekend recipes"
-    loaded.head.isHidden shouldBe false
     loaded.head.packageType shouldBe Package.PackageType.Feast
-    loaded.head.metadata shouldBe Some(
-      FeastPackageMetadata(bodyText = Some("text goes here"))
-    )
-    loaded.head.createdEmail shouldBe Some(user.email)
+
+    loaded.head match {
+      case pkg: FeastPackage =>
+        pkg.id shouldBe packageId
+        pkg.name shouldBe "Weekend recipes"
+        pkg.isHidden shouldBe false
+
+        pkg.metadata shouldBe Some(
+          FeastPackageMetadata(bodyText = Some("text goes here"))
+        )
+        pkg.createdEmail shouldBe Some(user.email)
+      case other: Package =>
+        fail(
+          s"Package should have been a FeastPackage, but got ${other.getClass.getCanonicalName}"
+        )
+    }
+
   }
 
   "should filter packages by updated timestamp" taggedAs UsesDatabase in {
@@ -244,11 +255,10 @@ class PackageDBTest
       )
     )
 
-    val updatedMetadata = Package(
+    val updatedMetadata = FeastPackage(
       id = packageId,
       name = "Updated package",
       isHidden = true,
-      packageType = Package.PackageType.Feast,
       metadata = Some(FeastPackageMetadata(bodyText = Some("text goes here"))),
       createdOn = Some(now),
       createdBy = Some("Billie Holiday"),
@@ -289,9 +299,16 @@ class PackageDBTest
     loadedPackage.name shouldBe "Updated package"
     loadedPackage.isHidden shouldBe true
     loadedPackage.packageType shouldBe Package.PackageType.Feast
-    loadedPackage.metadata shouldBe Some(
-      FeastPackageMetadata(bodyText = Some("text goes here"))
-    )
+    loadedPackage match {
+      case pkg: FeastPackage =>
+        pkg.metadata shouldBe Some(
+          FeastPackageMetadata(bodyText = Some("text goes here"))
+        )
+      case other: Package =>
+        fail(
+          s"Expected to be returned a FeastPackage, but got ${other.getClass.getCanonicalName}"
+        )
+    }
 
     val loadedCards = faciaDB.getPackageCards(packageId)
     loadedCards.map(_.pageCode) should contain("recipe-updated")
@@ -344,11 +361,53 @@ class PackageDBTest
         thisDayOnly = false
       )
 
+    loaded should have size 0
+  }
+
+  "should handle story package type gracefully" taggedAs UsesDatabase in {
+    val packageId = UUID.randomUUID()
+    val createdOn = OffsetDateTime.now()
+
+    DB localTx { implicit session =>
+      sql"""INSERT INTO packages (
+            id,
+            name,
+            is_hidden,
+            package_type,
+            created_on,
+            created_by,
+            created_email
+          ) VALUES (
+            ${packageId.toString},
+            'Story Package',
+            false,
+            'Story',
+            ${createdOn},
+            'Test Editor',
+            'test@example.com'
+          )""".update.apply()
+    }
+
+    val loaded =
+      faciaDB.getPackages(
+        Some(Seq(packageId)),
+        None,
+        thisDayOnly = false
+      )
+
     loaded should have size 1
-    loaded.head.id shouldBe packageId
-    loaded.head.name shouldBe "Invalid Type Package"
-    loaded.head.packageType shouldBe Package.PackageType.Invalid
-    loaded.head.metadata shouldBe None
+
+    loaded.head.packageType shouldBe Package.PackageType.Story
+    loaded.head match {
+      case pkg: StoryPackage =>
+        pkg.id shouldBe packageId
+        pkg.name shouldBe "Story Package"
+        pkg.metadata shouldBe None
+      case other: Package =>
+        fail(
+          s"Expected to be returned a FeastPackage, but got ${other.getClass.getCanonicalName}"
+        )
+    }
   }
 
   "should handle invalid metadata JSON gracefully" taggedAs UsesDatabase in {
@@ -385,9 +444,19 @@ class PackageDBTest
       )
 
     loaded should have size 1
-    loaded.head.id shouldBe packageId
-    loaded.head.name shouldBe "Invalid Metadata Package"
+
     loaded.head.packageType shouldBe Package.PackageType.Feast
-    loaded.head.metadata shouldBe None
+    loaded.head match {
+      case pkg: FeastPackage =>
+        pkg.id shouldBe packageId
+        pkg.name shouldBe "Invalid Metadata Package"
+        pkg.metadata shouldBe Some(
+          FeastPackageMetadata()
+        )
+      case other: Package =>
+        fail(
+          s"Expected to be returned a FeastPackage, but got ${other.getClass.getCanonicalName}"
+        )
+    }
   }
 }

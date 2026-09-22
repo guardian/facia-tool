@@ -1,5 +1,6 @@
 package model.packages
 
+import logging.Logging
 import model.editions.{CoverCardImages, FeastCollectionTheme, Image, MediaType}
 import play.api.libs.json._
 
@@ -12,64 +13,23 @@ case class FeastPackageMetadata(
     excludedRegions: Option[Seq[String]] = None
 ) extends PackageMetadata
 
-object FeastPackageMetadata {
+object FeastPackageMetadata extends Logging {
   implicit val format: OFormat[FeastPackageMetadata] =
-    new OFormat[FeastPackageMetadata] {
-      private val allowedKeys =
-        Set("theme", "bodyText", "targetedRegions", "excludedRegions")
-      override def writes(o: FeastPackageMetadata): JsObject =
-        Json.writes[FeastPackageMetadata].writes(o)
+    Json.format[FeastPackageMetadata]
 
-      override def reads(json: JsValue): JsResult[FeastPackageMetadata] =
-        json match {
-          case obj: JsObject =>
-            val extraKeys = obj.keys.diff(allowedKeys)
-            if (extraKeys.nonEmpty) {
-              JsError(s"Unexpected field(s): ${extraKeys.mkString(", ")}")
-            } else {
-              Json.reads[FeastPackageMetadata].reads(obj)
-            }
-          case _ => JsError("Expected a JSON object")
-        }
-    }
+  def fromJson(str: Option[String]) =
+    str.map(Json.parse).map(_.validate[FeastPackageMetadata])
 }
 
-case class WebPackageMetadata(
+case class StoryPackageMetadata(
     headline: Option[String]
     // Fill this in when we know what they are! We need to have at least one field to satisfy the compiler
 ) extends PackageMetadata
 
-object WebPackageMetadata {
-  implicit val format: OFormat[WebPackageMetadata] =
-    new OFormat[WebPackageMetadata] {
-      private val allowedKeys = Set("headline", "customKicker")
-      override def writes(o: WebPackageMetadata): JsObject =
-        Json.writes[WebPackageMetadata].writes(o)
+object StoryPackageMetadata {
+  implicit val format: OFormat[StoryPackageMetadata] =
+    Json.format[StoryPackageMetadata]
 
-      override def reads(json: JsValue): JsResult[WebPackageMetadata] =
-        json match {
-          case obj: JsObject =>
-            val extraKeys = obj.keys.diff(allowedKeys)
-            if (extraKeys.nonEmpty) {
-              JsError(s"Unexpected field(s): ${extraKeys.mkString(", ")}")
-            } else {
-              Json.reads[WebPackageMetadata].reads(obj)
-            }
-          case _ => JsError("Expected a JSON object")
-        }
-    }
-}
-
-object PackageMetadata {
-  implicit val format: OFormat[PackageMetadata] = new OFormat[PackageMetadata] {
-    override def writes(o: PackageMetadata): JsObject = o match {
-      case f: FeastPackageMetadata => FeastPackageMetadata.format.writes(f)
-      case w: WebPackageMetadata   => WebPackageMetadata.format.writes(w)
-    }
-
-    override def reads(json: JsValue): JsResult[PackageMetadata] = {
-      FeastPackageMetadata.format.reads(json) orElse WebPackageMetadata.format
-        .reads(json)
-    }
-  }
+  def fromJson(str: Option[String]) =
+    str.map(Json.parse).map(_.validate[StoryPackageMetadata])
 }

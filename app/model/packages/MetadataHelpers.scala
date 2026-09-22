@@ -25,20 +25,20 @@ trait MetadataHelpers extends Logging {
     })
   }
 
-  protected def getPackageMetadata(
-      jsContent: String
-  ): Option[PackageMetadata] = {
-    val maybeObject = for {
-      js <- Try { Json.parse(jsContent) }.toEither.left.map(_.toString)
-      meta <- formatJsResult(PackageMetadata.format.reads(js))
-    } yield meta
-    maybeObject match {
-      case Left(err) =>
-        logger.error(s"Invalid Feast collection metadata: $err")
-        None
-      case Right(meta) => Some(meta)
-    }
-  }
+//  protected def getPackageMetadata(
+//      jsContent: String
+//  ): Option[PackageMetadata] = {
+//    val maybeObject = for {
+//      js <- Try { Json.parse(jsContent) }.toEither.left.map(_.toString)
+//      meta <- formatJsResult(PackageMetadata.format.reads(js))
+//    } yield meta
+//    maybeObject match {
+//      case Left(err) =>
+//        logger.error(s"Invalid Feast collection metadata: $err")
+//        None
+//      case Right(meta) => Some(meta)
+//    }
+//  }
 
   def toPGobject(value: JsValue): PGobject = {
     val pgObject = new PGobject()

@@ -295,40 +295,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
     $orderBy
     """
 
-    sql
-      .map(rs => {
-        val metadata =
-          rs.stringOpt("metadata").flatMap(getPackageMetadata)
-        val packageType = Try {
-          val pt = rs.string("package_type")
-          Package.PackageType.withName(pt)
-        }.getOrElse(PackageType.Invalid)
-        try {
-          val packageId = UUID.fromString(rs.string("id"))
-          Some(
-            Package(
-              id = packageId,
-              name = rs.string("name"),
-              isHidden = rs.boolean("is_hidden"),
-              packageType = packageType,
-              metadata = metadata,
-              createdOn = rs.offsetDateTimeOpt("created_on"),
-              createdBy = rs.stringOpt("created_by"),
-              createdEmail = rs.stringOpt("created_email"),
-              updatedOn = rs.offsetDateTimeOpt("updated_on"),
-              updatedBy = rs.stringOpt("updated_by"),
-              updatedEmail = rs.stringOpt("updated_email")
-            )
-          )
-        } catch {
-          case _: IllegalArgumentException =>
-            logger.error(
-              s"Package with ID ${rs.string("id")} is not valid, the ID is not a proper UUID"
-            )
-            None
-        }
-      })
-      .list
+    sql.map(Package.fromRow).list
   }
 
   private def fetchPackageContentSql(
