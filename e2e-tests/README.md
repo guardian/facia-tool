@@ -109,6 +109,17 @@ Playwright output, traces, screenshots, videos, generated tests, build contexts,
 and downloaded intermediate files live under `e2e-tests/target/` or other
 gitignored generated paths.
 
+## Continuous integration
+
+The pinned GitHub Actions workflow at `.github/workflows/e2e-tests.yml` runs for
+pull requests, pushes to `main`, and manual dispatches. It installs the V2 and
+e2e Yarn workspaces, installs only Playwright's Chromium headless shell, and
+runs `yarn test:ci` on `ubuntu-22.04` with Docker supplied by the runner.
+
+No private repository token or application secret is required because every
+Guardian service dependency is mocked. Failed runs upload traces, screenshots,
+and videos from `e2e-tests/target/test-results` for seven days.
+
 ## Folder structure
 
 ```text

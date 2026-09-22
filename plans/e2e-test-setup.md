@@ -6,8 +6,9 @@ and keeps this file current as each phase is completed.
 
 ## Confirmed scope and decisions
 
-- Implement phases 1-5 now: scaffold, stack, fixtures and mocks, validating
-  feature tests, and documentation. CI is out of scope.
+- Phases 0-6 are implemented: discovery, scaffold, stack, fixtures and mocks,
+  validating feature tests, documentation, and CI. Phase 7 remains iterative
+  and starts only after the setup is user-verified.
 - Use Yarn for `e2e-tests/`, matching the V2 React client. The top-level npm
   lockfile belongs to the legacy V1 client.
 - Run Play and Vite natively for `dev` and `dev:local`. Containerise the app only
@@ -81,8 +82,7 @@ fixtures only when a later scenario exercises them.
 ### Environment
 
 - Docker client and daemon 29.7.2 are available in the dev container.
-- Existing GitHub Actions jobs use Docker-capable Ubuntu runners, but adding an
-  e2e workflow is deferred.
+- The e2e GitHub Actions workflow uses a Docker-capable `ubuntu-22.04` runner.
 
 ## Feature overview
 
@@ -146,7 +146,8 @@ executable coverage.
 - [x] Phase 4: landing redirect and seeded editorial-front feature tests with
   step definitions.
 - [x] Phase 5: `e2e-tests/README.md` describing the implemented suite.
-- [ ] Phase 6: GitHub Actions workflow. Out of scope.
+- [x] Phase 6: pinned GitHub Actions workflow running `yarn test:ci` and
+  uploading Playwright artifacts on failure.
 - [ ] Phase 7: iterative coverage expansion. Start only after phases 0-6 are
   verified by the user.
 
@@ -171,9 +172,15 @@ executable coverage.
   runs it when explicitly requested.
 - Phase 5: README written from the implemented commands, ports, routing, and
   fixture layout.
+- Phase 6: `.github/workflows/e2e-tests.yml` installs the V2 and e2e Yarn
+  workspaces, installs the Chromium headless shell only, runs `yarn test:ci`,
+  and uploads `target/test-results` on failure. No private dependency checkout
+  or GitHub App token is required. Actionlint passes, both frozen Yarn installs
+  succeed locally, setup-node v4.4.0 supports the selected `.tool-versions`
+  file, and Playwright supports `--only-shell`.
 
 ## Open follow-ups
 
-- Add the CI workflow when phase 6 is requested.
+- Confirm the first pull-request workflow run passes on GitHub-hosted amd64.
 - After the setup is user-verified, choose the next Phase 7 feature from the
   generation order above.
