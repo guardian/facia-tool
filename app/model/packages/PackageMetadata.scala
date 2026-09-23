@@ -4,14 +4,18 @@ import logging.Logging
 import model.editions.{CoverCardImages, FeastCollectionTheme, Image, MediaType}
 import play.api.libs.json._
 
-sealed trait PackageMetadata
+sealed trait PackageMetadata {
+  def toJson: JsObject
+}
 
 case class FeastPackageMetadata(
     theme: Option[FeastCollectionTheme] = None,
     bodyText: Option[String] = None,
     targetedRegions: Option[Seq[String]] = None,
     excludedRegions: Option[Seq[String]] = None
-) extends PackageMetadata
+) extends PackageMetadata {
+  def toJson = FeastPackageMetadata.format.writes(this)
+}
 
 object FeastPackageMetadata extends Logging {
   implicit val format: OFormat[FeastPackageMetadata] =
@@ -24,7 +28,9 @@ object FeastPackageMetadata extends Logging {
 case class StoryPackageMetadata(
     headline: Option[String]
     // Fill this in when we know what they are! We need to have at least one field to satisfy the compiler
-) extends PackageMetadata
+) extends PackageMetadata {
+  def toJson = StoryPackageMetadata.format.writes(this)
+}
 
 object StoryPackageMetadata {
   implicit val format: OFormat[StoryPackageMetadata] =
