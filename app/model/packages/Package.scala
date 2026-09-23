@@ -5,13 +5,17 @@ import model.packages.Package.PackageType
 import org.postgresql.util.PGobject
 import play.api.libs.json.{
   Format,
+  JsDefined,
   JsError,
   JsObject,
   JsResult,
+  JsString,
   JsSuccess,
   JsValue,
   Json,
-  OFormat
+  OFormat,
+  OWrites,
+  Reads
 }
 import scalikejdbc.WrappedResultSet
 
@@ -23,7 +27,7 @@ sealed trait Package {
   val id: UUID
   val name: String
   val isHidden: Boolean
-  val packageType: PackageType.Value
+  val packageType: PackageType
   val createdOn: Option[OffsetDateTime]
   val createdBy: Option[String]
   val createdEmail: Option[String]
@@ -53,7 +57,7 @@ final case class FeastPackage(
 ) extends Package
     with MetadataHelpers {
 
-  override val packageType: Package.PackageType.Value = PackageType.Feast
+  override val packageType: Package.PackageType = PackageType.Feast
   override def metadataPG: Option[PGobject] =
     metadata.map(FeastPackageMetadata.format.writes).map(toPGobject)
 }
@@ -72,42 +76,85 @@ final case class StoryPackage(
 ) extends Package
     with MetadataHelpers {
 
-  override val packageType: Package.PackageType.Value = PackageType.Story
+  override val packageType: Package.PackageType = PackageType.Story
   override def metadataPG: Option[PGobject] =
     metadata.map(StoryPackageMetadata.format.writes).map(toPGobject)
 }
 
 object Package extends MetadataHelpers with Logging {
-  object PackageType extends Enumeration {
-    val Story, Feast =
-      Value
+  sealed trait PackageType {
+    val value: String
   }
-  implicit val storyPackageFormat: OFormat[StoryPackage] =
-    Json.format[StoryPackage]
-  implicit val feastPackageFormat: OFormat[FeastPackage] =
-    Json.format[FeastPackage]
+  object PackageType {
+    case object Feast extends PackageType {
+      val value = "Feast"
+      override def toString = value
+    }
+    case object Story extends PackageType {
+      val value = "Story"
+      override def toString = value
+    }
 
-  implicit val packageTypeFormat: Format[PackageType.Value] =
-    Json.formatEnum(PackageType)
+    def withName(str: String): Option[PackageType] = str match {
+      case "Feast" => Some(Feast)
+      case "Story" => Some(Story)
+      case _       => None
+    }
+  }
+
+  implicit val storyPackageWrites: OWrites[StoryPackage] =
+    Json
+      .format[StoryPackage]
+      .transform((obj: JsObject) => {
+        obj ++ JsObject(
+          Seq("packageType" -> JsString(PackageType.Story.value))
+        )
+      })
+  implicit val storyPackageReads: Reads[StoryPackage] = Json.reads[StoryPackage]
+
+  implicit val feastPackageWrites: OWrites[FeastPackage] =
+    Json
+      .format[FeastPackage]
+      .transform((obj: JsObject) => {
+        obj ++ JsObject(
+          Seq("packageType" -> JsString(PackageType.Feast.value))
+        )
+      })
+  implicit val feastPackageReads: Reads[FeastPackage] = Json.reads[FeastPackage]
+
+  implicit val packageTypeFormat: Format[PackageType] =
+    new Format[PackageType] {
+      override def writes(o: PackageType): JsValue = JsString(o.value)
+
+      override def reads(json: JsValue): JsResult[PackageType] =
+        json
+          .validate[String]
+          .flatMap(str =>
+            PackageType.withName(str) match {
+              case Some(value) => JsSuccess(value)
+              case None => JsError(s"$str is not a recognised package type")
+            }
+          )
+    }
   implicit val format: OFormat[Package] = new OFormat[Package] {
     override def writes(o: Package): JsObject = o match {
-      case st: StoryPackage => storyPackageFormat.writes(st)
-      case f: FeastPackage  => feastPackageFormat.writes(f)
+      case st: StoryPackage => storyPackageWrites.writes(st)
+      case f: FeastPackage  => feastPackageWrites.writes(f)
     }
 
-    override def reads(json: JsValue): JsResult[Package] = {
-      feastPackageFormat.reads(json) orElse storyPackageFormat.reads(json)
-    }
+    override def reads(json: JsValue): JsResult[Package] =
+      selectByPackageType(json \ "packageType") {
+        case PackageType.Story => storyPackageReads.reads(json)
+        case PackageType.Feast => feastPackageReads.reads(json)
+      }
   }
 
   def fromRow(rs: WrappedResultSet): Option[Package] = {
     val maybePackageId = Try { UUID.fromString(rs.string("id")) }
-    val maybePackageType = Try {
-      PackageType.withName(rs.string("package_type"))
-    }
+    val maybePackageType = PackageType.withName(rs.string("package_type"))
 
     (maybePackageType, maybePackageId) match {
-      case (Success(PackageType.Feast), Success(packageId)) =>
+      case (Some(PackageType.Feast), Success(packageId)) =>
         Some(
           FeastPackage(
             id = packageId,
@@ -134,7 +181,7 @@ object Package extends MetadataHelpers with Logging {
             updatedEmail = rs.stringOpt("updated_email")
           )
         )
-      case (Success(PackageType.Story), Success(packageId)) =>
+      case (Some(PackageType.Story), Success(packageId)) =>
         Some(
           StoryPackage(
             id = packageId,
@@ -161,19 +208,14 @@ object Package extends MetadataHelpers with Logging {
             updatedEmail = rs.stringOpt("updated_email")
           )
         )
-      case (Success(other), packageId) =>
-        logger.error(
-          s"Package with ID $packageId ID had unexpected package type $other - this must be implemented"
-        )
-        None
       case (_, Failure(_)) =>
         logger.error(
           s"Package with ID ${rs.string("id")} is not valid, the ID did not parse as a UUID"
         )
         None
-      case (Failure(err), packageId) =>
+      case (None, packageId) =>
         logger.error(
-          s"Package with ID $packageId is not valid, unexpected package type ${err.getMessage}"
+          s"Package with ID $packageId is not valid,no package type provided"
         )
         None
     }

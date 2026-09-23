@@ -24,7 +24,7 @@ import java.util.UUID
 sealed trait ClientPackage {
   val id: UUID
   val name: String
-  val packageType: DomainPackage.PackageType.Value
+  val packageType: DomainPackage.PackageType
   val isHidden: Boolean
   val createdOn: Option[Long]
   val createdBy: Option[String]
@@ -86,8 +86,16 @@ final case class StoryClientPackage(
 }
 
 object StoryClientPackage {
-  implicit val format: OFormat[StoryClientPackage] =
-    Json.format[StoryClientPackage]
+  implicit val writes: OWrites[StoryClientPackage] =
+    Json
+      .format[StoryClientPackage]
+      .transform((obj: JsObject) => {
+        obj ++ JsObject(
+          Seq("packageType" -> JsString(PackageType.Story.toString))
+        )
+      })
+
+  implicit val reads: Reads[StoryClientPackage] = Json.reads[StoryClientPackage]
 }
 
 object ClientPackage {
