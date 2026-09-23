@@ -159,6 +159,8 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
       createdOnMillis: Long,
       cards: Int
   ): Unit = {
+    val instant = Instant.ofEpochMilli(createdOnMillis)
+    val createdOn = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC)
     faciaDB.createPackage(
       CreateFeastPackageRequest(
         id = packageId,
@@ -169,11 +171,11 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
             targetedRegions = Some(Seq("uk")),
             excludedRegions = Some(Seq("us"))
           )
-        ),
-        createdOn = createdOnMillis,
-        createdBy = "Test Editor",
-        createdEmail = "test.editor@guardian.co.uk"
-      )
+        )
+      ),
+      createdOn = createdOn,
+      createdBy = "Test Editor",
+      createdEmail = "test.editor@guardian.co.uk"
     )
 
     (0 until cards).foreach { idx =>
@@ -291,6 +293,7 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         components.packageController.listPackages(
           id = None,
           full = None,
+          `type` = None,
           date = None,
           strict = None,
           title = None,
@@ -331,6 +334,7 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         components.packageController.listPackages(
           id = None,
           full = None,
+          `type` = None,
           date = None,
           strict = None,
           title = None,
@@ -351,6 +355,7 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
           id = None,
           full = None,
           date = None,
+          `type` = None,
           strict = None,
           title = None,
           limit = None,
@@ -365,6 +370,7 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
           id = None,
           full = None,
           date = None,
+          `type` = None,
           strict = None,
           title = Some("Bravo"),
           limit = None,

@@ -32,6 +32,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
       lastModified: Option[OffsetDateTime] = None,
       thisDayOnly: Boolean = false,
       searchByTitle: Option[String] = None,
+      typeFilter: Option[PackageType] = None,
       orderBy: OrderingField = PackageQueries.CreatedOn,
       limit: Int = 200
   ): Seq[Package] =
@@ -52,6 +53,10 @@ trait PackageQueries extends MetadataHelpers with Logging {
           }
         }
 
+        val maybeTypeCondition = typeFilter.map { t =>
+          sqls"package_type = ${t.value}"
+        }
+
         val maybeTitleCondition = searchByTitle.map { titleSearch =>
           val param = s"%$titleSearch%"
           sqls"name ilike $param"
@@ -61,6 +66,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
           sqls.toAndConditionOpt(
             maybeIdCondition,
             maybeDateCondition,
+            maybeTypeCondition,
             maybeTitleCondition
           ) match {
             case Some(condition) => sqls"WHERE $condition"
@@ -262,9 +268,13 @@ trait PackageQueries extends MetadataHelpers with Logging {
     * @return
     *   number of rows set
     */
-  def createPackage(metadata: CreatePackageRequest) = DB localTx {
-    implicit session =>
-      sql"""INSERT INTO packages (
+  def createPackage(
+      metadata: CreatePackageRequest,
+      createdOn: OffsetDateTime,
+      createdBy: String,
+      createdEmail: String
+  ) = DB localTx { implicit session =>
+    sql"""INSERT INTO packages (
         id,
         name,
         package_type,
@@ -282,12 +292,12 @@ trait PackageQueries extends MetadataHelpers with Logging {
      ${metadata.packageType.toString},
      ${metadata.isHidden},
      ${metadata.metadataPG},
-     ${Instant.ofEpochMilli(metadata.createdOn)},
-     ${metadata.createdBy},
-     ${metadata.createdEmail},
-     ${Instant.ofEpochMilli(metadata.createdOn)},
-     ${metadata.createdBy},
-     ${metadata.createdEmail}
+     ${createdOn},
+     ${createdBy},
+     ${createdEmail},
+     ${createdOn},
+     ${createdBy},
+     ${createdEmail}
 	)
      """.update.apply()
   }
