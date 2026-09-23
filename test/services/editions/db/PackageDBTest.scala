@@ -16,7 +16,7 @@ import play.api.libs.json.Json
 import play.api.db.evolutions.Evolutions
 import scalikejdbc._
 
-import java.time.{OffsetDateTime, ZoneOffset}
+import java.time.{Instant, OffsetDateTime, ZoneOffset}
 import java.util.UUID
 
 class PackageDBTest
@@ -47,27 +47,30 @@ class PackageDBTest
   private def makeCreateRequest(
       id: UUID,
       name: String,
-      createdOnMillis: Long,
       hidden: Boolean = false
   ): CreateFeastPackageRequest =
     CreateFeastPackageRequest(
       id = id,
       name = name,
       isHidden = hidden,
-      metadata = Some(FeastPackageMetadata(bodyText = Some("text goes here"))),
-      createdOn = createdOnMillis,
-      createdBy = s"${user.firstName} ${user.lastName}",
-      createdEmail = user.email
+      metadata = Some(FeastPackageMetadata(bodyText = Some("text goes here")))
     )
 
   private def insertPackage(
       id: UUID,
       name: String,
       createdOnMillis: Long,
+      createdBy: String = s"${user.firstName} ${user.lastName}",
+      createdEmail: String = user.email,
       hidden: Boolean = false
   ): Unit = {
+    val instant = Instant.ofEpochMilli(createdOnMillis)
+    val createdOn = OffsetDateTime.ofInstant(instant, ZoneOffset.UTC)
     faciaDB.createPackage(
-      makeCreateRequest(id, name, createdOnMillis, hidden)
+      makeCreateRequest(id, name, hidden),
+      createdOn,
+      createdBy,
+      createdEmail
     )
   }
 

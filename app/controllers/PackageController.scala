@@ -1,6 +1,7 @@
 package controllers
 
 import logging.Logging
+import model.packages.Package.PackageType
 import model.packages.client.UpdateRegionsRequest._
 import model.packages.{
   FeastPackage,
@@ -52,6 +53,7 @@ class PackageController(
   def listPackages(
       id: Option[String],
       full: Option[Boolean],
+      `type`: Option[String],
       date: Option[String],
       strict: Option[Boolean],
       title: Option[String],
@@ -82,6 +84,8 @@ class PackageController(
       .flatMap(PackageQueries.OrderingField.fromString)
       .getOrElse(PackageQueries.CreatedOn)
 
+    val typefilter = `type`.flatMap(PackageType.withName)
+
     maybeDate match {
       case Failure(err) =>
         logger.error(
@@ -111,6 +115,7 @@ class PackageController(
               dateValue,
               strictDate,
               title,
+              typefilter,
               orderBy,
               queryLimit
             )
@@ -191,7 +196,14 @@ class PackageController(
   def createPackage = EditPackagesAuthAction(parse.json(32768L)) { req =>
     val result = for {
       packageInfo <- Try { req.body.as[CreatePackageRequest] }
-      response <- Try { db.createPackage(packageInfo) }
+      response <- Try {
+        db.createPackage(
+          packageInfo,
+          OffsetDateTime.now(),
+          s"${req.user.firstName} ${req.user.lastName}",
+          req.user.email
+        )
+      }
     } yield response
 
     result match {
