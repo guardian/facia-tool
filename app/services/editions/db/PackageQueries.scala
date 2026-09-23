@@ -122,7 +122,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
     val lastUpdated = FaciaDB.truncateDateTime(OffsetDateTime.now())
     val packageTypeStr =
       sql"SELECT package_type FROM packages WHERE id=${packageId.toString} FOR UPDATE"
-        .map { rs => rs.get[String](0) }
+        .map { rs => rs.get[String](1) }
         .single
         .apply()
 
