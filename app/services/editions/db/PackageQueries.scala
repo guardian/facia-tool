@@ -75,7 +75,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
 
         fetchPackageMetaSql(
           where = whereSql,
-          orderBy = sqls"""ORDER BY ${orderBy.toSql} DESC LIMIT $limit"""
+          orderBy = sqls"""ORDER BY ${orderBy.toSql} LIMIT $limit"""
         ).apply().collect({ case Some(pkg) => pkg })
       }
     }
@@ -403,15 +403,15 @@ object PackageQueries {
 
   case object CreatedOn extends OrderingField {
     override def toString = "created_on"
-    override def toSql = sqls"created_on"
+    override def toSql = sqls"created_on DESC"
   }
   case object UpdatedOn extends OrderingField {
     override def toString = "updated_on"
-    override def toSql = sqls"updated_on"
+    override def toSql = sqls"updated_on DESC"
   }
   case object Title extends OrderingField {
     override def toString = "name"
-    override def toSql = sqls"name"
+    override def toSql = sqls"name ASC"
   }
 
   object OrderingField {
