@@ -48,8 +48,7 @@ class PackageDBTest
       id: UUID,
       name: String,
       createdOnMillis: Long,
-      hidden: Boolean = false,
-      packageType: Package.PackageType.Value = Package.PackageType.Feast
+      hidden: Boolean = false
   ): CreateFeastPackageRequest =
     CreateFeastPackageRequest(
       id = id,

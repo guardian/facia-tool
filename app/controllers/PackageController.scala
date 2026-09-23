@@ -13,7 +13,8 @@ import model.packages.client.{
   ClientPackageCard,
   CreatePackageRequest,
   ErrorResponse,
-  UpdateRegionsRequest
+  UpdateRegionsRequest,
+  WritePackageRequest
 }
 import org.postgresql.util.{PSQLException, PSQLState}
 import services.Capi
@@ -27,7 +28,7 @@ import java.nio.charset.{
   MalformedInputException,
   StandardCharsets
 }
-import java.time.ZoneOffset
+import java.time.{OffsetDateTime, ZoneOffset}
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 import scala.concurrent.ExecutionContext
@@ -376,10 +377,13 @@ class PackageController(
     }
 
   def writePackage(id: UUID) =
-    EditPackagesAuthAction(parse.json[ClientPackage]) { req =>
-      val newMeta = ClientPackage.toPackage(
-        req.body.withId(newId = id)
-      ) // we must ignore the ID in the request and write to the ID that is given in the params
+    EditPackagesAuthAction(parse.json[WritePackageRequest]) { req =>
+      val newMeta = req.body.toPackage(
+        id,
+        OffsetDateTime.now(),
+        updatedBy = req.user.username,
+        updatedEmail = req.user.email
+      )
       val cards = req.body.items.zipWithIndex.map({ case (clientCard, idx) =>
         ClientPackageCard.toPackageCard(
           clientCard,
