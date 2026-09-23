@@ -28,9 +28,6 @@ sealed trait CreatePackageRequest {
   val name: String
   val isHidden: Boolean
   val packageType: Package.PackageType
-  val createdOn: Long // timestamp in epoch millis
-  val createdBy: String
-  val createdEmail: String
 
   def metadataPG: Option[PGobject]
 }
@@ -39,10 +36,7 @@ case class CreateFeastPackageRequest(
     id: UUID,
     name: String,
     isHidden: Boolean,
-    metadata: Option[FeastPackageMetadata],
-    createdOn: Long, // timestamp in epoch millis
-    createdBy: String,
-    createdEmail: String
+    metadata: Option[FeastPackageMetadata]
 ) extends CreatePackageRequest
     with MetadataHelpers {
   override val packageType: Package.PackageType = PackageType.Feast
@@ -60,10 +54,7 @@ case class CreateStoryPackageRequest(
     id: UUID,
     name: String,
     isHidden: Boolean,
-    metadata: Option[StoryPackageMetadata],
-    createdOn: Long, // timestamp in epoch millis
-    createdBy: String,
-    createdEmail: String
+    metadata: Option[StoryPackageMetadata]
 ) extends CreatePackageRequest
     with MetadataHelpers {
   override val packageType: Package.PackageType = PackageType.Story
