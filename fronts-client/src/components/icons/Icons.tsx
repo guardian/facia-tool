@@ -539,47 +539,6 @@ const ConicalFlaskIcon = ({
 	</svg>
 );
 
-const EllipsisIcon = ({
-	fill = theme.colors.blackDark,
-	size = 's',
-}: IconProps) => (
-	<svg
-		width={`${mapSize(size)}px`}
-		height={`${mapSize(size)}px`}
-		viewBox="0 0 24 24"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-	>
-		<path
-			fill-rule="evenodd"
-			clip-rule="evenodd"
-			d="M7.05051 10.2071L6.34343 9.5H2.70707L2 10.2071V13.8434L2.70707 14.5505H6.34343L7.05051 13.8434V10.2071ZM14.5251 10.2071L13.818 9.5H10.1817L9.47461 10.2071V13.8434L10.1817 14.5505H13.818L14.5251 13.8434V10.2071ZM22 10.2071L21.2929 9.5H17.6565L16.9495 10.2071V13.8434L17.6565 14.5505H21.2929L22 13.8434V10.2071Z"
-			fill={fill}
-		/>
-	</svg>
-);
-
-// (!)
-const ExclamationIcon = ({
-	fill = theme.colors.blackDark,
-	size = 's',
-}: IconProps) => (
-	<svg
-		width={`${mapSize(size)}px`}
-		height={`${mapSize(size)}px`}
-		viewBox="0 0 11 11"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-	>
-		<path
-			fill-rule="evenodd"
-			clip-rule="evenodd"
-			d="M5.5 0C8.53757 0 11 2.46243 11 5.5C11 8.53757 8.53757 11 5.5 11C2.46243 11 0 8.53757 0 5.5C0 2.46243 2.46243 0 5.5 0ZM4.78906 7.53906V8.99902H6.31934V7.53906H4.78906ZM4.68945 1.78906L4.92969 6.45898H6.15918L6.39941 1.78906H4.68945Z"
-			fill={fill}
-		/>
-	</svg>
-);
-
 const ConicalFlaskCircleIcon = ({
 	fill = theme.colors.blueDark,
 	size = 's',
@@ -625,7 +584,5 @@ export {
 	YoutubeIcon,
 	CinemagraphIcon,
 	ConicalFlaskIcon,
-	EllipsisIcon,
-	ExclamationIcon,
 	ConicalFlaskCircleIcon,
 };
