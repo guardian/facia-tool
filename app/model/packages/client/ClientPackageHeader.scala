@@ -3,8 +3,10 @@ package model.packages.client
 import model.packages.{Package, PackageMetadata}
 import play.api.libs.json._
 
+import java.util.UUID
+
 case class ClientPackageHeader(
-    id: String,
+    id: UUID,
     name: String,
     packageType: Package.PackageType.Value,
     isHidden: Boolean,

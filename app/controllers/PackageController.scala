@@ -5,8 +5,11 @@ import model.packages.PackageMetadata._
 import model.packages.client.ClientPackage.toPackage
 import model.packages.client.UpdateRegionsRequest._
 import model.packages.{
+  FeastPackage,
   FeastPackageMetadata,
   PackageMetadata,
+  StoryPackage,
+  StoryPackageMetadata,
   WebPackageMetadata
 }
 import model.packages.client.{
@@ -120,7 +123,7 @@ class PackageController(
             if (full.getOrElse(false)) {
               val clientPkgs = pkgs.map { pkg =>
                 val cards = db
-                  .getPackageCards(java.util.UUID.fromString(pkg.id))
+                  .getPackageCards(pkg.id)
                   .map(model.packages.client.ClientPackageCard.fromPackageCard)
                   .toList
                 ClientPackage.fromPackage(pkg, cards)
@@ -195,9 +198,6 @@ class PackageController(
   def createPackage = EditPackagesAuthAction(parse.json(32768L)) { req =>
     val result = for {
       packageInfo <- Try { req.body.as[CreatePackageRequest] }
-      _ <- Try {
-        UUID.fromString(packageInfo.id)
-      } // validate that the ID is a real UUID
       response <- Try { db.createPackage(packageInfo) }
     } yield response
 
@@ -247,11 +247,22 @@ class PackageController(
     }
   }
 
-  def putMetadata(id: UUID) =
-    EditPackagesAuthAction(parse.json[PackageMetadata]) { req =>
+  def putFeastMetadata(id: UUID) =
+    EditPackagesAuthAction(parse.json[FeastPackageMetadata]) { req =>
       try {
-        db.updatePackageMeta(id, req.body, req.user.username, req.user.email)
-        NoContent
+        db.updatePackageMeta(
+          id,
+          req.body,
+          req.user.username,
+          req.user.email
+        ) match {
+          case Right(n) if n > 0 =>
+            NoContent
+          case Right(0) =>
+            NotFound
+          case Left(err) =>
+            BadRequest(ErrorResponse.badRequest(err))
+        }
       } catch {
         case err: PSQLException =>
           psqlErrorHandler(err)
@@ -322,18 +333,19 @@ class PackageController(
     EditPackagesAuthAction(parse.json[UpdateRegionsRequest]) { req =>
       val updateOrErr = for {
         pkg <- db
-          .getPackages(Some(Seq(id)), None, strictTimestamp = false)
+          .getPackages(Some(Seq(id)), None)
           .headOption
-        oldMeta <- pkg.metadata
-      } yield oldMeta match {
-        case f: FeastPackageMetadata =>
+      } yield pkg match {
+        case f: FeastPackage =>
           Right(
-            f.copy(
-              excludedRegions = req.body.excludedRegions,
-              targetedRegions = req.body.targetedRegions
-            )
+            f.metadata
+              .getOrElse(FeastPackageMetadata())
+              .copy(
+                excludedRegions = req.body.excludedRegions,
+                targetedRegions = req.body.targetedRegions
+              )
           )
-        case _: WebPackageMetadata =>
+        case _: StoryPackage =>
           Left("Regions only apply to Feast collections")
       }
 
@@ -343,7 +355,7 @@ class PackageController(
         case _ =>
           val maybeUpdate = updateOrErr.flatMap(_.toOption)
           try {
-            val updatedRows = db.updatePackageMeta(
+            db.updatePackageMeta(
               id,
               newMeta = maybeUpdate.getOrElse(
                 FeastPackageMetadata(
@@ -353,13 +365,14 @@ class PackageController(
               ),
               userName = req.user.username,
               userEmail = req.user.email
-            )
-            if (updatedRows == 0) {
-              NotFound(
-                ErrorResponse.notFound("package id is not valid")
-              )
-            } else {
-              NoContent
+            ) match {
+              case Right(updatedRows) if (updatedRows == 0) =>
+                NotFound(
+                  ErrorResponse.notFound("package id is not valid")
+                )
+              case Right(_) =>
+                NoContent
+              case Left(err) => BadRequest(badRequest(err))
             }
           } catch {
             case err: PSQLException =>

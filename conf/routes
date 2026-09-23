@@ -129,7 +129,7 @@ GET         /editions-api/collections/:collectionId/prefill                 cont
 POST        /editions-api/fronts/:frontId/collections/:collectionId/feastCollectionToContainer/:collectionCardId    controllers.EditionsController.feastCollectionToContainer(frontId, collectionId, collectionCardId)
 
 # Packages
-PUT			/packages/:id/metadata											controllers.PackageController.putMetadata(id: java.util.UUID)
+PUT			/packages/:id/metadata/feast									controllers.PackageController.putFeastMetadata(id: java.util.UUID)
 PUT			/packages/:id/is-hidden/:state									controllers.PackageController.putPackageHiddenState(id: java.util.UUID, state:Boolean)
 PATCH		/packages/:id/name												controllers.PackageController.updateName(id: java.util.UUID)
 PATCH		/packages/:id/regions											controllers.PackageController.updateRegions(id: java.util.UUID)

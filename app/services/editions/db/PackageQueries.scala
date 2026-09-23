@@ -5,14 +5,13 @@ import logging.Logging
 import model.packages.Package.PackageType
 import model.packages._
 import model.packages.client.CreatePackageRequest
-
 import play.api.libs.json._
 import services.editions.db.PackageQueries.OrderingField
 
 import java.sql.Timestamp
 import java.time.{Instant, OffsetDateTime}
 import java.time.temporal.ChronoUnit
-import java.util.UUID
+import java.util.{NoSuchElementException, UUID}
 import scala.util.Try
 
 trait PackageQueries extends MetadataHelpers with Logging {
@@ -112,6 +111,54 @@ trait PackageQueries extends MetadataHelpers with Logging {
       	     updated_by=$userName,
              updated_email=$userEmail
 		  WHERE id=${packageId.toString}""".update.apply()
+  }
+
+  def updatePackageMeta(
+      packageId: UUID,
+      newMeta: PackageMetadata,
+      userName: String,
+      userEmail: String
+  ) = DB localTx { implicit session =>
+    val lastUpdated = FaciaDB.truncateDateTime(OffsetDateTime.now())
+    val packageTypeStr =
+      sql"SELECT package_type FROM packages WHERE id=${packageId.toString} FOR UPDATE"
+        .map { rs => rs.get[String](0) }
+        .single
+        .apply()
+
+    try {
+      val newMetaPG = toPGobject(newMeta.toJson)
+      packageTypeStr.map(Package.PackageType.withName) match {
+        case None =>
+          Right(0)
+        case Some(PackageType.Feast) =>
+          if (newMeta.isInstanceOf[FeastPackageMetadata]) {
+            Right(sql"""UPDATE packages
+     			SET
+     				metadata=$newMetaPG,
+     				updated_on=$lastUpdated,
+     				updated_by=$userName,
+     				updated_email=$userEmail
+     			WHERE id=${packageId.toString}""".update.apply())
+          } else {
+            Left("Selected package does not support this metadata")
+          }
+        case Some(PackageType.Story) =>
+          if (newMeta.isInstanceOf[StoryPackageMetadata]) {
+            Right(sql"""UPDATE packages
+     			SET
+     				metadata=$newMetaPG,
+     				updated_on=$lastUpdated,
+     				updated_by=$userName,
+     				updated_email=$userEmail
+     			WHERE id=${packageId.toString}""".update.apply())
+          } else {
+            Left("Selected package does not support this metadata")
+          }
+      }
+    } catch {
+      case _: NoSuchElementException => Right(0)
+    }
   }
 
   /** Inserts a card into the given package. If a card with the same page_code
