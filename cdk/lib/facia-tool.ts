@@ -9,7 +9,8 @@ import {
 import { GuSecurityGroup, GuVpc } from '@guardian/cdk/lib/constructs/ec2';
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
 import type { App } from 'aws-cdk-lib';
-import { Fn } from 'aws-cdk-lib';
+import { Aws, CfnOutput, Fn, Tags } from 'aws-cdk-lib';
+import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import type { ISubnet } from 'aws-cdk-lib/aws-ec2';
 import {
 	InstanceType,
@@ -17,7 +18,16 @@ import {
 	SecurityGroup,
 	UserData,
 } from 'aws-cdk-lib/aws-ec2';
-import { Effect, PolicyStatement } from 'aws-cdk-lib/aws-iam';
+import {
+	AccountPrincipal,
+	CompositePrincipal,
+	Effect,
+	ManagedPolicy,
+	Policy,
+	PolicyStatement,
+	Role,
+} from 'aws-cdk-lib/aws-iam';
+import { CfnTopicPolicy, Topic } from 'aws-cdk-lib/aws-sns';
 import { CfnInclude } from 'aws-cdk-lib/cloudformation-include';
 
 const app = 'facia-tool';
@@ -67,7 +77,9 @@ export class FaciaTool extends GuStack {
 			this.stage,
 			'LowerCaseStage',
 		);
-		const userDataTable = `${parameter('UserDataTablePrefix')}-${this.stage}`;
+
+		const { frontsUpdateTopic, feastPublicationTopic, userDataTable } =
+			this.sharedResources(parameter);
 
 		const ec2App = new GuEc2App(this, {
 			app,
@@ -81,7 +93,7 @@ export class FaciaTool extends GuStack {
 			userData: this.buildUserData({
 				frontendRoleToAssume,
 				frontPressedTable,
-				userDataTable,
+				userDataTable: userDataTable.tableName,
 			}),
 			certificateProps: { domainName: props.domainName },
 			scaling: {
@@ -93,13 +105,9 @@ export class FaciaTool extends GuStack {
 				frontendRoleToAssume,
 				frontPressedTable,
 				lowerCaseStage,
-				userDataTableArn: cfnInclude.getResource('FrontsUserDataDynamoTable')
-					.ref,
-				frontsUpdateTopicArn: cfnInclude.getResource('FrontsUpdateSNSTopic')
-					.ref,
-				feastPublicationTopicArn: cfnInclude.getResource(
-					'FeastPublicationTopic',
-				).ref,
+				userDataTableName: userDataTable.tableName,
+				frontsUpdateTopicArn: frontsUpdateTopic.topicArn,
+				feastPublicationTopicArn: feastPublicationTopic.topicArn,
 				capiPreviewRole: parameter('CapiPreviewRole'),
 				switchboardBucket: parameter('SwitchboardBucket'),
 			}),
@@ -152,6 +160,302 @@ export class FaciaTool extends GuStack {
 			databaseAccessSecurityGroup,
 			capiEndpointSecurityGroup,
 		);
+
+		if (this.stage === 'CODE') {
+			this.developerPolicy({
+				lowerCaseStage,
+				frontPressedTable,
+				userDataTableName: userDataTable.tableName,
+				frontsUpdateTopicArn: frontsUpdateTopic.topicArn,
+				feastPublicationTopicArn: feastPublicationTopic.topicArn,
+				capiPreviewRole: parameter('CapiPreviewRole'),
+				switchboardBucket: parameter('SwitchboardBucket'),
+			});
+		}
+	}
+
+	private bucketArn(bucketName: string, key?: string): string {
+		return this.formatArn({
+			service: 's3',
+			region: '',
+			account: '',
+			resource: bucketName,
+			resourceName: key,
+		});
+	}
+
+	private dynamoTableArn(tableName: string): string {
+		return this.formatArn({
+			service: 'dynamodb',
+			resource: 'table',
+			resourceName: tableName,
+		});
+	}
+
+	/** Resources that outlive the compute, so they keep the logical IDs they had in the YAML template. */
+	private sharedResources(parameter: (name: string) => string): {
+		frontsUpdateTopic: Topic;
+		feastPublicationTopic: Topic;
+		userDataTable: Table;
+	} {
+		const retained = (logicalId: string) => ({
+			logicalId,
+			reason: 'Stateful resource previously defined in the YAML template',
+		});
+
+		const frontsUpdateTopic = new Topic(this, 'FrontsUpdateSNSTopic', {
+			displayName: 'SNS Topic for fronts updates (both draft & live)',
+		});
+		this.overrideLogicalId(frontsUpdateTopic, retained('FrontsUpdateSNSTopic'));
+
+		const feastPublicationTopic = new Topic(this, 'FeastPublicationTopic');
+		this.overrideLogicalId(
+			feastPublicationTopic,
+			retained('FeastPublicationTopic'),
+		);
+
+		const subscribers = {
+			MobileAccount: 'MobileAPIAccountID',
+			FrontendAccount: 'FrontendAccountID',
+			OphanAccount: 'OphanAccountID',
+		};
+		const frontsUpdateTopicPolicy = new CfnTopicPolicy(
+			this,
+			'FrontsUpdateSNSPolicy',
+			{
+				topics: [frontsUpdateTopic.topicArn],
+				policyDocument: {
+					Statement: Object.entries(subscribers).map(
+						([sid, accountIdParameter]) => ({
+							Sid: sid,
+							Effect: 'Allow',
+							Principal: { AWS: parameter(accountIdParameter) },
+							Action: 'sns:Subscribe',
+							Resource: frontsUpdateTopic.topicArn,
+						}),
+					),
+				},
+			},
+		);
+		// An L1 construct, so it has no defaultChild for GuStack.overrideLogicalId to reach.
+		frontsUpdateTopicPolicy.overrideLogicalId('FrontsUpdateSNSPolicy');
+
+		const storageConsumerRole = new Role(this, 'StorageConsumerRole', {
+			path: '/',
+			assumedBy: new CompositePrincipal(
+				...[
+					'FrontendAccountID',
+					'MobileAPIAccountID',
+					'MobileAPITeamcityAccountID',
+					'OphanAccountID',
+					'ContentAPIAccountID',
+					'SupportAccountID',
+				].map((name) => new AccountPrincipal(parameter(name))),
+			),
+		});
+		this.overrideLogicalId(storageConsumerRole, retained('StorageConsumerRole'));
+
+		const storageBucketPolicy = new Policy(this, 'StorageConsumerBucketPolicy', {
+			policyName: 'StorageBucket',
+			roles: [storageConsumerRole],
+			statements: [
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['s3:GetObject', 's3:PutObject', 's3:PutObjectAcl'],
+					resources: [this.bucketArn('facia-tool-store', `${this.stage}/*`)],
+				}),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['s3:ListBucket'],
+					resources: [this.bucketArn('facia-tool-store')],
+				}),
+			],
+		});
+		this.overrideLogicalId(storageBucketPolicy, retained('StorageBucket'));
+
+		const userDataTable = new Table(this, 'UserDataTable', {
+			tableName: `${parameter('UserDataTablePrefix')}-${this.stage}`,
+			partitionKey: { name: 'email', type: AttributeType.STRING },
+			readCapacity: 5,
+			writeCapacity: 5,
+		});
+		Tags.of(userDataTable).add('devx-backup-enabled', 'true');
+		this.overrideLogicalId(
+			userDataTable,
+			retained('FrontsUserDataDynamoTable'),
+		);
+
+		const storageConsumerRoleOutput = new CfnOutput(
+			this,
+			'StorageConsumerRoleOutput',
+			{
+				description:
+					'Role to be assumed for cross account access to the bucket',
+				value: storageConsumerRole.roleName,
+			},
+		);
+		storageConsumerRoleOutput.overrideLogicalId('StorageConsumerRole');
+
+		// cms-fronts-<stage>-eventbridge-to-fanout imports this export, so its name and value must not change.
+		const frontsUpdateTopicOutput = new CfnOutput(
+			this,
+			'FrontsUpdateSNSTopicARNOutput',
+			{
+				description: 'ARN of the SNS topic',
+				value: frontsUpdateTopic.topicArn,
+				exportName: `${Aws.STACK_NAME}-FrontsUpdateSNSTopicARN`,
+			},
+		);
+		frontsUpdateTopicOutput.overrideLogicalId('FrontsUpdateSNSTopicARN');
+
+		const feastPublicationTopicOutput = new CfnOutput(
+			this,
+			'FeastPublicationSNSTopicOutput',
+			{
+				description: 'ARN of the SNS topic',
+				value: feastPublicationTopic.topicArn,
+				exportName: `${Aws.STACK_NAME}-FeastPublicationSNSTopicARN`,
+			},
+		);
+		feastPublicationTopicOutput.overrideLogicalId('FeastPublicationSNSTopic');
+
+		return { frontsUpdateTopic, feastPublicationTopic, userDataTable };
+	}
+
+	/** CODE-only: lets a developer run facia-tool on their own machine against CODE resources. */
+	private developerPolicy({
+		lowerCaseStage,
+		frontPressedTable,
+		userDataTableName,
+		frontsUpdateTopicArn,
+		feastPublicationTopicArn,
+		capiPreviewRole,
+		switchboardBucket,
+	}: {
+		lowerCaseStage: string;
+		frontPressedTable: string;
+		userDataTableName: string;
+		frontsUpdateTopicArn: string;
+		feastPublicationTopicArn: string;
+		capiPreviewRole: string;
+		switchboardBucket: string;
+	}): void {
+		const allow = (actions: string[], resources: string[], sid?: string) =>
+			new PolicyStatement({
+				sid,
+				effect: Effect.ALLOW,
+				actions,
+				resources,
+			});
+
+		const policy = new ManagedPolicy(this, 'RunFaciaToolLocally', {
+			description: 'Policy used for running fronts-tool locally',
+			path: `/developer-policy/guardian/facia-tool/cms-fronts/${this.stage}/run-fronts-tool-locally/`,
+			statements: [
+				allow(
+					['ssm:GetParameter'],
+					[
+						this.formatArn({
+							service: 'ssm',
+							resource: 'parameter',
+							resourceName: `${app}/${this.stack}/${this.stage}/*`,
+						}),
+					],
+				),
+				allow(
+					['kms:Decrypt'],
+					[
+						this.formatArn({
+							service: 'kms',
+							resource: 'key',
+							resourceName: 'alias/aws/ssm',
+						}),
+					],
+				),
+				allow(
+					['sqs:ReceiveMessage', 'sqs:DeleteMessage'],
+					[
+						this.formatArn({
+							service: 'sqs',
+							resource: `publish-events-${this.stage}`,
+						}),
+					],
+				),
+				allow(
+					['s3:GetObject'],
+					[
+						this.bucketArn('facia-dist', `${this.stage}/*`),
+						this.bucketArn(
+							'facia-private',
+							`${app}.application.secrets.local.conf`,
+						),
+						this.bucketArn('facia-private', `${app}.local.properties`),
+					],
+				),
+				allow(
+					[
+						'dynamodb:GetItem',
+						'dynamodb:Query',
+						'dynamodb:PutItem',
+						'dynamodb:UpdateItem',
+						'dynamodb:Scan',
+					],
+					[this.dynamoTableArn(userDataTableName)],
+				),
+				allow(
+					[
+						'ec2:DescribeTags',
+						'ec2:DescribeInstances',
+						'autoscaling:DescribeAutoScalingGroups',
+						'autoscaling:DescribeAutoScalingInstances',
+						'rds:DescribeDBInstances',
+					],
+					['*'],
+				),
+				allow(
+					['s3:PutObject'],
+					[
+						this.bucketArn(`published-editions-${lowerCaseStage}`, '*'),
+						this.bucketArn(`preview-editions-${lowerCaseStage}`, '*'),
+					],
+				),
+				allow(['sns:Publish'], [frontsUpdateTopicArn], 'AllowPublishToMyTopic'),
+				allow(['sns:Publish'], [feastPublicationTopicArn]),
+				allow(
+					['s3:GetObject', 's3:PutObject', 's3:PutObjectAcl'],
+					[this.bucketArn('facia-tool-store', `${this.stage}/*`)],
+				),
+				allow(['s3:ListBucket'], [this.bucketArn('facia-tool-store')]),
+				allow(
+					['s3:GetObject'],
+					[
+						this.bucketArn(
+							'pan-domain-auth-settings',
+							'local.dev-gutools.co.uk.settings',
+						),
+						this.bucketArn(
+							'pan-domain-auth-settings',
+							'local.dev-gutools.co.uk.settings.public',
+						),
+						this.bucketArn('pan-domain-auth-settings', '*.p12'),
+					],
+				),
+				allow(
+					['s3:GetObject'],
+					[this.bucketArn('permissions-cache', `${this.stage}/*`)],
+				),
+				allow(['sts:AssumeRole'], [capiPreviewRole]),
+				allow(['s3:GetObject'], [switchboardBucket]),
+				allow(
+					['dynamodb:GetItem', 'dynamodb:Query'],
+					[this.dynamoTableArn(frontPressedTable)],
+				),
+			],
+		});
+		this.overrideLogicalId(policy, {
+			logicalId: 'RunFaciaToolLocally',
+			reason: 'Developer policy previously defined in the YAML template',
+		});
 	}
 
 	private buildUserData({
@@ -192,7 +496,7 @@ EOF`,
 		frontendRoleToAssume,
 		frontPressedTable,
 		lowerCaseStage,
-		userDataTableArn,
+		userDataTableName,
 		frontsUpdateTopicArn,
 		feastPublicationTopicArn,
 		capiPreviewRole,
@@ -201,27 +505,16 @@ EOF`,
 		frontendRoleToAssume: string;
 		frontPressedTable: string;
 		lowerCaseStage: string;
-		userDataTableArn: string;
+		userDataTableName: string;
 		frontsUpdateTopicArn: string;
 		feastPublicationTopicArn: string;
 		capiPreviewRole: string;
 		switchboardBucket: string;
 	}): GuPolicy[] {
 		const bucketArn = (bucketName: string, key?: string) =>
-			this.formatArn({
-				service: 's3',
-				region: '',
-				account: '',
-				resource: bucketName,
-				resourceName: key,
-			});
-
+			this.bucketArn(bucketName, key);
 		const dynamoTableArn = (tableName: string) =>
-			this.formatArn({
-				service: 'dynamodb',
-				resource: 'table',
-				resourceName: tableName,
-			});
+			this.dynamoTableArn(tableName);
 
 		return [
 			new GuPolicy(this, 'ParameterStorePolicy', {
@@ -268,7 +561,7 @@ EOF`,
 					'dynamodb:UpdateItem',
 					'dynamodb:Scan',
 				],
-				resources: [dynamoTableArn(userDataTableArn)],
+				resources: [dynamoTableArn(userDataTableName)],
 			}),
 
 			new GuAllowPolicy(this, 'PressedFrontsStatusPolicy', {

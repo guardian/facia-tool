@@ -3,16 +3,6 @@
 exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Conditions": {
-    "IsCode": {
-      "Fn::Equals": [
-        {
-          "Ref": "Stage",
-        },
-        "CODE",
-      ],
-    },
-  },
   "Description": "Facia Tool Service",
   "Mappings": {
     "CrossResources": {
@@ -88,7 +78,15 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "ARN of the SNS topic",
       "Export": {
         "Name": {
-          "Fn::Sub": "\${AWS::StackName}-FeastPublicationSNSTopicARN",
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::StackName",
+              },
+              "-FeastPublicationSNSTopicARN",
+            ],
+          ],
         },
       },
       "Value": {
@@ -99,7 +97,15 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "ARN of the SNS topic",
       "Export": {
         "Name": {
-          "Fn::Sub": "\${AWS::StackName}-FrontsUpdateSNSTopicARN",
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::StackName",
+              },
+              "-FrontsUpdateSNSTopicARN",
+            ],
+          ],
         },
       },
       "Value": {
@@ -843,6 +849,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Type": "AWS::SNS::Topic",
     },
     "FrontsUserDataDynamoTable": {
+      "DeletionPolicy": "Retain",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -862,14 +869,12 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         },
         "TableName": {
           "Fn::Join": [
-            "-",
+            "",
             [
               {
                 "Ref": "UserDataTablePrefix",
               },
-              {
-                "Ref": "Stage",
-              },
+              "-CODE",
             ],
           ],
         },
@@ -897,6 +902,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
         ],
       },
       "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
     },
     "GetDistributablePolicyFaciatool090C933A": {
       "Properties": {
@@ -1588,29 +1594,50 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Type": "AWS::IAM::Policy",
     },
     "RunFaciaToolLocally": {
-      "Condition": "IsCode",
       "Properties": {
         "Description": "Policy used for running fronts-tool locally",
-        "Path": {
-          "Fn::Sub": "/developer-policy/guardian/facia-tool/cms-fronts/\${Stage}/run-fronts-tool-locally/",
-        },
+        "Path": "/developer-policy/guardian/facia-tool/cms-fronts/CODE/run-fronts-tool-locally/",
         "PolicyDocument": {
           "Statement": [
             {
               "Action": "ssm:GetParameter",
               "Effect": "Allow",
               "Resource": {
-                "Fn::Sub": "arn:aws:ssm:\${AWS::Region}:\${AWS::AccountId}:parameter/facia-tool/cms-fronts/\${Stage}/*",
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ssm:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":parameter/facia-tool/cms-fronts/CODE/*",
+                  ],
+                ],
               },
             },
             {
               "Action": "kms:Decrypt",
               "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:kms:\${AWS::Region}:\${AWS::AccountId}:key/alias/aws/ssm",
-                },
-              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":kms:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":key/alias/aws/ssm",
+                  ],
+                ],
+              },
             },
             {
               "Action": [
@@ -1618,26 +1645,62 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                 "sqs:DeleteMessage",
               ],
               "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:sqs:\${AWS::Region}:\${AWS::AccountId}:publish-events-\${Stage}",
-                },
-              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":sqs:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":publish-events-CODE",
+                  ],
+                ],
+              },
             },
             {
-              "Action": [
-                "s3:GetObject",
-              ],
+              "Action": "s3:GetObject",
               "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::Sub": "arn:aws:s3:::facia-dist/\${Stage}/*",
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::facia-dist/CODE/*",
+                    ],
+                  ],
                 },
                 {
-                  "Fn::Sub": "arn:aws:s3:::facia-private/facia-tool.application.secrets.local.conf",
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::facia-private/facia-tool.application.secrets.local.conf",
+                    ],
+                  ],
                 },
                 {
-                  "Fn::Sub": "arn:aws:s3:::facia-private/facia-tool.local.properties",
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::facia-private/facia-tool.local.properties",
+                    ],
+                  ],
                 },
               ],
             },
@@ -1650,11 +1713,25 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                 "dynamodb:Scan",
               ],
               "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:dynamodb:\${AWS::Region}:\${AWS::AccountId}:table/\${FrontsUserDataDynamoTable}",
-                },
-              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":dynamodb:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":table/",
+                    {
+                      "Ref": "FrontsUserDataDynamoTable",
+                    },
+                  ],
+                ],
+              },
             },
             {
               "Action": [
@@ -1668,41 +1745,47 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               "Resource": "*",
             },
             {
-              "Action": [
-                "s3:PutObject",
-              ],
+              "Action": "s3:PutObject",
               "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::Sub": [
-                    "arn:aws:s3:::published-editions-\${LowerCaseStage}/*",
-                    {
-                      "LowerCaseStage": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::published-editions-",
+                      {
                         "Fn::FindInMap": [
                           "StageMap",
-                          {
-                            "Ref": "Stage",
-                          },
+                          "CODE",
                           "LowerCaseStage",
                         ],
                       },
-                    },
+                      "/*",
+                    ],
                   ],
                 },
                 {
-                  "Fn::Sub": [
-                    "arn:aws:s3:::preview-editions-\${LowerCaseStage}/*",
-                    {
-                      "LowerCaseStage": {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::preview-editions-",
+                      {
                         "Fn::FindInMap": [
                           "StageMap",
-                          {
-                            "Ref": "Stage",
-                          },
+                          "CODE",
                           "LowerCaseStage",
                         ],
                       },
-                    },
+                      "/*",
+                    ],
                   ],
                 },
               ],
@@ -1729,42 +1812,92 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                 "s3:PutObjectAcl",
               ],
               "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store/CODE/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
               "Resource": [
                 {
-                  "Fn::Sub": "arn:aws:s3:::facia-tool-store/\${Stage}/*",
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings.public",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::pan-domain-auth-settings/*.p12",
+                    ],
+                  ],
                 },
               ],
             },
             {
-              "Action": [
-                "s3:ListBucket",
-              ],
+              "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::facia-tool-store",
-              ],
-            },
-            {
-              "Action": [
-                "s3:GetObject",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings",
-                "arn:aws:s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings.public",
-                "arn:aws:s3:::pan-domain-auth-settings/*.p12",
-              ],
-            },
-            {
-              "Action": [
-                "s3:GetObject",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:s3:::permissions-cache/\${Stage}/*",
-                },
-              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::permissions-cache/CODE/*",
+                  ],
+                ],
+              },
             },
             {
               "Action": "sts:AssumeRole",
@@ -1786,24 +1919,29 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                 "dynamodb:Query",
               ],
               "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": [
-                    "arn:aws:dynamodb:\${AWS::Region}:\${AWS::AccountId}:table/\${Table}",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
                     {
-                      "Table": {
-                        "Fn::FindInMap": [
-                          "CrossResources",
-                          {
-                            "Ref": "Stage",
-                          },
-                          "FrontPressedTable",
-                        ],
-                      },
+                      "Ref": "AWS::Partition",
+                    },
+                    ":dynamodb:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":table/",
+                    {
+                      "Fn::FindInMap": [
+                        "CrossResources",
+                        "CODE",
+                        "FrontPressedTable",
+                      ],
                     },
                   ],
-                },
-              ],
+                ],
+              },
             },
           ],
           "Version": "2012-10-17",
@@ -2001,29 +2139,34 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                 "s3:PutObjectAcl",
               ],
               "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::facia-tool-store/",
-                      {
-                        "Ref": "Stage",
-                      },
-                      "/*",
-                    ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store/CODE/*",
                   ],
-                },
-              ],
+                ],
+              },
             },
             {
-              "Action": [
-                "s3:ListBucket",
-              ],
+              "Action": "s3:ListBucket",
               "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::facia-tool-store",
-              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store",
+                  ],
+                ],
+              },
             },
           ],
           "Version": "2012-10-17",
@@ -2101,7 +2244,11 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "FrontendAccountID",
                       },
@@ -2119,7 +2266,11 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "MobileAPIAccountID",
                       },
@@ -2137,7 +2288,11 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "MobileAPITeamcityAccountID",
                       },
@@ -2155,7 +2310,11 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "OphanAccountID",
                       },
@@ -2173,7 +2332,11 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "ContentAPIAccountID",
                       },
@@ -2191,7 +2354,11 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "SupportAccountID",
                       },
@@ -2202,6 +2369,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               },
             },
           ],
+          "Version": "2012-10-17",
         },
         "Path": "/",
         "Tags": [
@@ -2474,9 +2642,9 @@ FRONT_PRESSED_TABLE=",
                   "
 USER_DATA_TABLE=",
                   {
-                    "Ref": "UserDataTablePrefix",
+                    "Ref": "FrontsUserDataDynamoTable",
                   },
-                  "-CODE
+                  "
 EOF
 aws s3 cp s3://",
                   {
@@ -2540,16 +2708,6 @@ dpkg -i /home/facia-tool/facia-tool.all.deb",
 exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
 {
   "AWSTemplateFormatVersion": "2010-09-09",
-  "Conditions": {
-    "IsCode": {
-      "Fn::Equals": [
-        {
-          "Ref": "Stage",
-        },
-        "CODE",
-      ],
-    },
-  },
   "Description": "Facia Tool Service",
   "Mappings": {
     "CrossResources": {
@@ -2625,7 +2783,15 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Description": "ARN of the SNS topic",
       "Export": {
         "Name": {
-          "Fn::Sub": "\${AWS::StackName}-FeastPublicationSNSTopicARN",
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::StackName",
+              },
+              "-FeastPublicationSNSTopicARN",
+            ],
+          ],
         },
       },
       "Value": {
@@ -2636,7 +2802,15 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Description": "ARN of the SNS topic",
       "Export": {
         "Name": {
-          "Fn::Sub": "\${AWS::StackName}-FrontsUpdateSNSTopicARN",
+          "Fn::Join": [
+            "",
+            [
+              {
+                "Ref": "AWS::StackName",
+              },
+              "-FrontsUpdateSNSTopicARN",
+            ],
+          ],
         },
       },
       "Value": {
@@ -3380,6 +3554,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Type": "AWS::SNS::Topic",
     },
     "FrontsUserDataDynamoTable": {
+      "DeletionPolicy": "Retain",
       "Properties": {
         "AttributeDefinitions": [
           {
@@ -3399,14 +3574,12 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         },
         "TableName": {
           "Fn::Join": [
-            "-",
+            "",
             [
               {
                 "Ref": "UserDataTablePrefix",
               },
-              {
-                "Ref": "Stage",
-              },
+              "-PROD",
             ],
           ],
         },
@@ -3434,6 +3607,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         ],
       },
       "Type": "AWS::DynamoDB::Table",
+      "UpdateReplacePolicy": "Retain",
     },
     "GetDistributablePolicyFaciatool090C933A": {
       "Properties": {
@@ -4124,230 +4298,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "RunFaciaToolLocally": {
-      "Condition": "IsCode",
-      "Properties": {
-        "Description": "Policy used for running fronts-tool locally",
-        "Path": {
-          "Fn::Sub": "/developer-policy/guardian/facia-tool/cms-fronts/\${Stage}/run-fronts-tool-locally/",
-        },
-        "PolicyDocument": {
-          "Statement": [
-            {
-              "Action": "ssm:GetParameter",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Sub": "arn:aws:ssm:\${AWS::Region}:\${AWS::AccountId}:parameter/facia-tool/cms-fronts/\${Stage}/*",
-              },
-            },
-            {
-              "Action": "kms:Decrypt",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:kms:\${AWS::Region}:\${AWS::AccountId}:key/alias/aws/ssm",
-                },
-              ],
-            },
-            {
-              "Action": [
-                "sqs:ReceiveMessage",
-                "sqs:DeleteMessage",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:sqs:\${AWS::Region}:\${AWS::AccountId}:publish-events-\${Stage}",
-                },
-              ],
-            },
-            {
-              "Action": [
-                "s3:GetObject",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:s3:::facia-dist/\${Stage}/*",
-                },
-                {
-                  "Fn::Sub": "arn:aws:s3:::facia-private/facia-tool.application.secrets.local.conf",
-                },
-                {
-                  "Fn::Sub": "arn:aws:s3:::facia-private/facia-tool.local.properties",
-                },
-              ],
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:Scan",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:dynamodb:\${AWS::Region}:\${AWS::AccountId}:table/\${FrontsUserDataDynamoTable}",
-                },
-              ],
-            },
-            {
-              "Action": [
-                "ec2:DescribeTags",
-                "ec2:DescribeInstances",
-                "autoscaling:DescribeAutoScalingGroups",
-                "autoscaling:DescribeAutoScalingInstances",
-                "rds:DescribeDBInstances",
-              ],
-              "Effect": "Allow",
-              "Resource": "*",
-            },
-            {
-              "Action": [
-                "s3:PutObject",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": [
-                    "arn:aws:s3:::published-editions-\${LowerCaseStage}/*",
-                    {
-                      "LowerCaseStage": {
-                        "Fn::FindInMap": [
-                          "StageMap",
-                          {
-                            "Ref": "Stage",
-                          },
-                          "LowerCaseStage",
-                        ],
-                      },
-                    },
-                  ],
-                },
-                {
-                  "Fn::Sub": [
-                    "arn:aws:s3:::preview-editions-\${LowerCaseStage}/*",
-                    {
-                      "LowerCaseStage": {
-                        "Fn::FindInMap": [
-                          "StageMap",
-                          {
-                            "Ref": "Stage",
-                          },
-                          "LowerCaseStage",
-                        ],
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": "sns:Publish",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "FrontsUpdateSNSTopic",
-              },
-              "Sid": "AllowPublishToMyTopic",
-            },
-            {
-              "Action": "sns:Publish",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "FeastPublicationTopic",
-              },
-            },
-            {
-              "Action": [
-                "s3:GetObject",
-                "s3:PutObject",
-                "s3:PutObjectAcl",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:s3:::facia-tool-store/\${Stage}/*",
-                },
-              ],
-            },
-            {
-              "Action": [
-                "s3:ListBucket",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::facia-tool-store",
-              ],
-            },
-            {
-              "Action": [
-                "s3:GetObject",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings",
-                "arn:aws:s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings.public",
-                "arn:aws:s3:::pan-domain-auth-settings/*.p12",
-              ],
-            },
-            {
-              "Action": [
-                "s3:GetObject",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": "arn:aws:s3:::permissions-cache/\${Stage}/*",
-                },
-              ],
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "CapiPreviewRole",
-              },
-            },
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "SwitchboardBucket",
-              },
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-              ],
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Sub": [
-                    "arn:aws:dynamodb:\${AWS::Region}:\${AWS::AccountId}:table/\${Table}",
-                    {
-                      "Table": {
-                        "Fn::FindInMap": [
-                          "CrossResources",
-                          {
-                            "Ref": "Stage",
-                          },
-                          "FrontPressedTable",
-                        ],
-                      },
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-          "Version": "2012-10-17",
-        },
-      },
-      "Type": "AWS::IAM::ManagedPolicy",
-    },
     "SendEmailPolicyE4FDC241": {
       "Properties": {
         "PolicyDocument": {
@@ -4538,29 +4488,34 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                 "s3:PutObjectAcl",
               ],
               "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:aws:s3:::facia-tool-store/",
-                      {
-                        "Ref": "Stage",
-                      },
-                      "/*",
-                    ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store/PROD/*",
                   ],
-                },
-              ],
+                ],
+              },
             },
             {
-              "Action": [
-                "s3:ListBucket",
-              ],
+              "Action": "s3:ListBucket",
               "Effect": "Allow",
-              "Resource": [
-                "arn:aws:s3:::facia-tool-store",
-              ],
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store",
+                  ],
+                ],
+              },
             },
           ],
           "Version": "2012-10-17",
@@ -4638,7 +4593,11 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "FrontendAccountID",
                       },
@@ -4656,7 +4615,11 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "MobileAPIAccountID",
                       },
@@ -4674,7 +4637,11 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "MobileAPITeamcityAccountID",
                       },
@@ -4692,7 +4659,11 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "OphanAccountID",
                       },
@@ -4710,7 +4681,11 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "ContentAPIAccountID",
                       },
@@ -4728,7 +4703,11 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                   "Fn::Join": [
                     "",
                     [
-                      "arn:aws:iam::",
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":iam::",
                       {
                         "Ref": "SupportAccountID",
                       },
@@ -4739,6 +4718,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
               },
             },
           ],
+          "Version": "2012-10-17",
         },
         "Path": "/",
         "Tags": [
@@ -5011,9 +4991,9 @@ FRONT_PRESSED_TABLE=",
                   "
 USER_DATA_TABLE=",
                   {
-                    "Ref": "UserDataTablePrefix",
+                    "Ref": "FrontsUserDataDynamoTable",
                   },
-                  "-PROD
+                  "
 EOF
 aws s3 cp s3://",
                   {

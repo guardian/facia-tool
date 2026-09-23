@@ -103,10 +103,9 @@ CloudFront `FaciaCloudfront` + `StaticCloudfront`, `DnsRecord` +
   deployed to both stages. A single `addPropertyOverride` on the included
   `FaciaCloudfront` resource sets `DistributionConfig.Origins.0.DomainName` to
   the new ALB; `cdk diff` against both live stacks showed **only** that change.
-- [ ] **Phase 4** — delete legacy compute. Branch `gucdk-migration-phase-4`,
-  PR [#2081](https://github.com/guardian/facia-tool/pull/2081) (draft).
-  Code done and verified (see "Phase 4 changes" below); **awaiting CODE then PROD
-  deploy.**
+- [x] **Phase 4** — delete legacy compute. PR
+  [#2081](https://github.com/guardian/facia-tool/pull/2081), merged and deployed
+  to both stages (see "Phase 4 changes" and "Post-deploy verification" below).
 - [ ] **Phase 5** — follow-ups: CloudFront into GuCDK, alarms, stateful resources.
 
 ## Phase 4 changes
@@ -175,9 +174,23 @@ template has one ASG, no `gu:riffraff:new-asg` tag, no legacy logical IDs, and n
    `FaciaLoadBalancerDNS` output removed. **No CloudFront change appears**,
    confirming the YAML placeholder is a synth-time no-op.
 
-### Still to do
+### Post-deploy verification (done)
 
-Deploy CODE, verify end-to-end, then PROD.
+Deployed CODE then PROD; both stacks `UPDATE_COMPLETE`. Confirmed against the
+live account with the read-only `cmsFronts` profile:
+
+- `cdk diff` for **both** `FaciaTool-euwest-1-CODE` and `FaciaTool-euwest-1-PROD`
+  reports "There were no differences" — repo and live stacks are in sync.
+- **No classic ELBs remain** in the account.
+- Two ALBs, both `active`; target groups all healthy (CODE 1 target, PROD 3).
+- Two ASGs (CODE 1/2/1, PROD 3/6/3) — one per stage, i.e. the legacy pair is
+  gone — and **no `gu:riffraff:new-asg` tag** on either.
+- End-to-end through CloudFront: `/_healthcheck` → 200 and `/` → 303 (pan-domain
+  auth redirect) on both `fronts.gutools.co.uk` and
+  `fronts.code.dev-gutools.co.uk`.
+
+Phase 4 is complete. The migration's compute is now fully GuCDK-owned; the
+`CfnInclude` persists only for the non-compute resources listed above.
 
 ## Phase 2 decisions
 
@@ -245,6 +258,115 @@ Deploy CODE, verify end-to-end, then PROD.
 2. Deploy PROD, repeat.
 3. Soak. CloudFront origin changes propagate in minutes; rollback is a revert.
 4. Only once the old ELBs show **0 requests** does Phase 4 delete them.
+
+## Phase 5 — follow-ups
+
+Three independent, separately deployable pieces of work, ordered by risk.
+
+- [ ] **5a — stateful/shared resources into CDK.** Branch
+  `gucdk-migration-phase-5a-stateful`. Code done and verified (see below);
+  awaiting CODE then PROD deploy.
+- [ ] **5b — CloudFront + DNS into CDK.** Removes the
+  `overridden-by-cdk.invalid` placeholder and its `addPropertyOverride`, and
+  empties the wrapped template.
+- [ ] **5c — alarms.** `monitoringConfiguration` is still `{ noMonitoring: true }`,
+  matching the legacy stack. Needs a team decision on which SNS topic alarms
+  notify (candidates in the account: `pagerduty-notification-topic`,
+  `CMSFrontsLambda_pagerduty`, `devx-reliability`, `Cloudwatch-Alerts`) and
+  whether CODE should notify at all.
+
+Also noted, no action for now:
+
+- **Instance egress.** The GuCDK instance SG allows egress on 443 only, versus
+  the legacy allow-all. Nothing has broken across the soak — just remember it
+  when adding an outbound dependency on another port.
+- **cfn-lint `W9007`** ("duplicate Subnets") on the ALB is a false positive —
+  the three `Fn::Select` indices are distinct.
+
+### 5a — stateful/shared resources into CDK
+
+Moved out of [cloudformation/facia-tool.cfn.yaml](cloudformation/facia-tool.cfn.yaml)
+and into [cdk/lib/facia-tool.ts](cdk/lib/facia-tool.ts), **every one keeping its
+original logical ID** via `GuStack.overrideLogicalId` (`CfnTopicPolicy` and
+`CfnOutput` are L1s with no `defaultChild`, so they call
+`overrideLogicalId` directly):
+
+- `FrontsUpdateSNSTopic`, `FeastPublicationTopic`, `FrontsUpdateSNSPolicy`
+- `StorageConsumerRole` + its `StorageBucket` policy
+- `FrontsUserDataDynamoTable`
+- `RunFaciaToolLocally` — the CODE-only developer policy. Migrated because it
+  references the topics and the table, whose ARNs are not reconstructable once
+  those resources leave the template. The CFN `Condition: IsCode` becomes a
+  `this.stage === 'CODE'` guard in CDK, so the `IsCode` condition is gone.
+- The three `Outputs`, including both `Export`s.
+
+**The `FrontsUpdateSNSTopicARN` export is imported by
+`cms-fronts-<stage>-eventbridge-to-fanout`** (confirmed with
+`aws cloudformation list-imports`), so its name and value must not change —
+CloudFormation refuses to alter an export that is in use.
+`facia-<stage>-FeastPublicationSNSTopicARN` is exported but unused.
+
+#### `cdk diff` over-reports replacement — check with a change set
+
+`cdk diff` initially reported **`requires replacement`** on
+`FrontsUserDataDynamoTable` (`TableName`) and `RunFaciaToolLocally` (`Path`). In
+both cases the *resolved* value was unchanged and only the *expression* differed
+(a template literal instead of the YAML's `Fn::Join`/`Fn::Sub`).
+
+The `cmsFronts` profile is read-only and cannot `CreateChangeSet`, so `cdk diff`
+had fallen back to a **template-only** diff. In that mode it flags any textual
+change to a property the resource spec marks "update requires replacement",
+without resolving intrinsics — so an equivalent-but-differently-spelled
+expression looks destructive.
+
+**A real change set settled it.** CloudFormation resolves intrinsics *before*
+comparing, so it reported `Replacement: False` for both, and the change set
+contained **no `Remove` actions at all**. The workarounds that matched the YAML's
+intrinsics were therefore unnecessary and have been reverted — the CDK uses plain
+template literals.
+
+**The rule:** when `cdk diff` claims a stateful resource requires replacement,
+don't reason about it and don't contort the CDK to match the old expression —
+get someone with `cloudformation:CreateChangeSet` to run
+`npx cdk deploy --no-execute <stack-id>` and read the `Replacement` column:
+
+```shell
+aws cloudformation describe-change-set --stack-name <stack> \
+  --change-set-name cdk-deploy-change-set \
+  --query "Changes[].ResourceChange.[LogicalResourceId,Action,Replacement]" --output table
+```
+
+`Replacement: Conditional` is normal and usually benign: it means
+`Evaluation: Dynamic`, i.e. the property derives from a `Ref`/`GetAtt` on another
+resource that CloudFormation can't resolve at planning time. Check the *parent*
+resource — if it is `Replacement: False`, the dependant will not be recreated
+either. In this stack the security-group rules and the ASG were all `Conditional`
+purely because they reference a security group's `GroupId` or the launch
+template's `LatestVersionNumber`.
+
+#### Verification
+
+- **A CloudFormation change set against live `facia-CODE` confirms no resource is
+  replaced or removed.** Every change is `Modify` with `Replacement: False`, or
+  `Conditional` for the dynamic reasons described above. In particular
+  `FrontsUserDataDynamoTable` and `RunFaciaToolLocally` are both
+  `Replacement: False`.
+- `cdk diff` against both live stacks: no real deletions. The changes are
+  `Fn::Sub`→`Fn::Join`/partition-token rewrites of IAM documents (in-place
+  updates), the DynamoDB table gaining `DeletionPolicy`/`UpdateReplacePolicy:
+  Retain` (a CDK default, and an improvement), the launch template's
+  `USER_DATA_TABLE` now resolving via `Ref: FrontsUserDataDynamoTable`, and the
+  `IsCode` condition being dropped.
+- PROD additionally shows `[-] RunFaciaToolLocally destroy`. This is the known
+  condition-gated false positive — `cdk diff` does not evaluate `Conditions`, and
+  `describe-stack-resources` confirms the policy **has never existed in PROD**.
+  The CODE change set lists it as `Modify`, not `Remove`.
+- A script resolved the intrinsics in the live and synthesized templates and
+  compared the effective statements: `RunFaciaToolLocally` (16),
+  `StorageBucket` (2), `StorageConsumerRole` (6) and `FrontsUpdateSNSPolicy` (3)
+  all **match exactly**, as do the table name and both export names, in both
+  stages.
+- lint, snapshots and synth green.
 
 ## Node / tooling
 
