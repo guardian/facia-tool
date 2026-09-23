@@ -6,7 +6,7 @@ import org.mockito.ArgumentMatchers.{any, eq => mockEq}
 import org.mockito.Mockito.{doNothing, never, times, verify, when}
 import org.scalatest.{FreeSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
-import services.editions.db.EditionsDB
+import services.editions.db.FaciaDB
 
 import java.time.LocalDate
 import scala.util.Try
@@ -19,7 +19,7 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val editionsAppPublicationBucket = mock[EditionsAppPublicationTarget]
       val editionsAppPreviewBucket = mock[EditionsAppPublicationTarget]
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
-      val db = mock[EditionsDB]
+      val db = mock[FaciaDB]
 
       when(db.createIssueVersion(any, any, any)).thenReturn("new-version")
 
@@ -72,7 +72,7 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val editionsAppPublicationBucket = mock[EditionsAppPublicationTarget]
       val editionsAppPreviewBucket = mock[EditionsAppPublicationTarget]
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
-      val db = mock[EditionsDB]
+      val db = mock[FaciaDB]
 
       when(db.createIssueVersion(any, any, any)).thenReturn("new-version")
 
@@ -127,7 +127,7 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val editionsAppPublicationBucket = mock[EditionsAppPublicationTarget]
       val editionsAppPreviewBucket = mock[EditionsAppPublicationTarget]
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
-      val db = mock[EditionsDB]
+      val db = mock[FaciaDB]
 
       when(db.createIssueVersion(any, any, any)).thenReturn("new-version")
 
@@ -176,7 +176,7 @@ class PublishingTest extends FreeSpec with Matchers with MockitoSugar {
       val editionsAppPublicationBucket = mock[EditionsAppPublicationTarget]
       val editionsAppPreviewBucket = mock[EditionsAppPublicationTarget]
       val feastAppPublicationTarget = mock[FeastPublicationTarget]
-      val db = mock[EditionsDB]
+      val db = mock[FaciaDB]
 
       when(db.createIssueVersion(any, any, any)).thenReturn("new-version")
 

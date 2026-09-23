@@ -26,8 +26,8 @@ trait IssueQueries extends Logging {
       user: User,
       now: OffsetDateTime
   ): String = DB localTx { implicit session =>
-    val truncatedNow = EditionsDB.truncateDateTime(now)
-    val userName = EditionsDB.getUserName(user)
+    val truncatedNow = FaciaDB.truncateDateTime(now)
+    val userName = FaciaDB.getUserName(user)
 
     val issueId =
       sql"""
@@ -118,12 +118,12 @@ trait IssueQueries extends Logging {
   ): Either[Error, EditionsIssue] = DB readOnly { implicit session =>
     for {
       previousIssue <- getClosestPreviousIssue(issueDate, edition).toRight(
-        EditionsDB.NotFoundError(s"Previous issue not found")
+        FaciaDB.NotFoundError(s"Previous issue not found")
       )
       newIssueSkeleton = previousIssue.toSkeleton.copy(issueDate = issueDate)
       issueId = insertIssue(edition, newIssueSkeleton, user, now)
       issue <- getIssue(issueId).toRight(
-        EditionsDB.NotFoundError(
+        FaciaDB.NotFoundError(
           "Issue created but could not retrieve it from the database"
         )
       )
@@ -266,7 +266,7 @@ trait IssueQueries extends Logging {
       now: OffsetDateTime
   ): EditionIssueVersionId = DB localTx { implicit session =>
     val userName = user.firstName + " " + user.lastName
-    val truncatedNow = EditionsDB.truncateDateTime(now)
+    val truncatedNow = FaciaDB.truncateDateTime(now)
 
     // versionId is a date string but everything downstream treats it as a string
     // until we get back to the fronts tool

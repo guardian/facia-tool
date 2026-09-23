@@ -14,7 +14,7 @@ import play.api.libs.json.{JsObject, Json}
 import play.api.mvc.Result
 import services.Capi
 import services.editions.EditionsTemplating
-import services.editions.db.EditionsDB
+import services.editions.db.FaciaDB
 import services.editions.prefills.{
   CapiPrefillTimeParams,
   MetadataForLogging,
@@ -35,7 +35,7 @@ import scalikejdbc.DB
 import java.util.UUID
 
 class EditionsController(
-    db: EditionsDB,
+    db: FaciaDB,
     templating: EditionsTemplating,
     publishing: Publishing,
     capi: Capi,
@@ -89,7 +89,7 @@ class EditionsController(
           )
           .left
           .map {
-            case EditionsDB.NotFoundError(message) => NotFound(message)
+            case FaciaDB.NotFoundError(message) => NotFound(message)
             case e => InternalServerError(e.getMessage)
           }
       } yield issue
@@ -325,7 +325,7 @@ class EditionsController(
           .moveCollection(frontId, collectionId, form.newIndex)
           .left
           .map {
-            case EditionsDB.NotFoundError(message) => NotFound(message)
+            case FaciaDB.NotFoundError(message) => NotFound(message)
             case error => InternalServerError(error.getMessage)
           }
         issueId <- db.getIssueIdFromCollectionId(collectionId).toRight {
@@ -461,7 +461,7 @@ class EditionsController(
       case Right((front, _)) =>
         val collections = toClientCollections(front)
         Ok(Json.toJson(collections))
-      case Left(EditionsDB.NotFoundError(message)) => NotFound(message)
+      case Left(FaciaDB.NotFoundError(message)) => NotFound(message)
       case Left(error) => InternalServerError(error.getMessage)
     }
   }
@@ -478,7 +478,7 @@ class EditionsController(
           val clientCollections = toClientCollections(front)
 
           Ok(Json.toJson(clientCollections))
-        case Left(EditionsDB.NotFoundError(message)) => NotFound
+        case Left(FaciaDB.NotFoundError(message)) => NotFound
         case Left(error) => InternalServerError(error.getMessage())
       }
     }
@@ -505,7 +505,7 @@ class EditionsController(
       item.id == cardId && item.cardType == CardType.FeastCollection
     ) match {
       case None =>
-        Left(EditionsDB.NotFoundError("No Feast collection found with that ID"))
+        Left(FaciaDB.NotFoundError("No Feast collection found with that ID"))
       case Some(
             EditionsFeastCollection(
               sourceCollectionId,
@@ -516,13 +516,13 @@ class EditionsController(
         sourceCollectionMeta match {
           case None =>
             Left(
-              EditionsDB.InvalidInput("This card is not properly configured")
+              FaciaDB.InvalidInput("This card is not properly configured")
             )
           case Some(meta) =>
             Right(meta)
         }
       case _ =>
-        Left(EditionsDB.InvalidInput("This card is not a Feast collection"))
+        Left(FaciaDB.InvalidInput("This card is not a Feast collection"))
     }
   }
 
@@ -557,7 +557,7 @@ class EditionsController(
             .find(_.id == updateData._2)
             .toRight(
               Left(
-                EditionsDB
+                FaciaDB
                   .InvariantError("Could not find created new collection")
               )
             )
@@ -567,7 +567,7 @@ class EditionsController(
           updatedFront <- DB localTx { implicit session =>
             db.getFront(frontId)
               .toRight(
-                EditionsDB.InvariantError(
+                FaciaDB.InvariantError(
                   "The front was deleted while processing"
                 )
               )
@@ -575,9 +575,9 @@ class EditionsController(
         } yield updatedFront
 
         result match {
-          case Left(EditionsDB.NotFoundError(msg)) =>
+          case Left(FaciaDB.NotFoundError(msg)) =>
             NotFound(msg)
-          case Left(EditionsDB.InvariantError(msg)) =>
+          case Left(FaciaDB.InvariantError(msg)) =>
             Conflict(msg)
           case Left(err) =>
             logger.error(

@@ -10,7 +10,7 @@ import model.editions.Edition.{
 }
 import model.editions.{EditionsIssue, PublishAction}
 import net.logstash.logback.marker.Markers
-import services.editions.db.EditionsDB
+import services.editions.db.FaciaDB
 import play.api.libs.json.Writes
 
 import scala.jdk.CollectionConverters._
@@ -19,7 +19,7 @@ class Publishing(
     editionsAppPublicationBucket: EditionsAppPublicationTarget,
     editionsAppPreviewBucket: EditionsAppPublicationTarget,
     feastAppPublicationTarget: FeastPublicationTarget,
-    db: EditionsDB
+    db: FaciaDB
 ) extends Logging {
 
   def updatePreview(issue: EditionsIssue) = {
