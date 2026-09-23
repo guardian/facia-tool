@@ -128,7 +128,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
 
     try {
       val newMetaPG = toPGobject(newMeta.toJson)
-      packageTypeStr.map(Package.PackageType.withName) match {
+      packageTypeStr.flatMap(Package.PackageType.withName) match {
         case None =>
           Right(0)
         case Some(PackageType.Feast) =>
@@ -155,7 +155,6 @@ trait PackageQueries extends MetadataHelpers with Logging {
           } else {
             Left("Selected package does not support this metadata")
           }
-        case Some(other) => Left(s"Package type $other is not supported")
       }
     } catch {
       case _: NoSuchElementException => Right(0)
