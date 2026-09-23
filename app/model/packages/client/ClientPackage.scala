@@ -1,15 +1,46 @@
 package model.packages.client
 
-import model.packages.{PackageMetadata, Package => DomainPackage}
-import play.api.libs.json.{JsValue, Json, OFormat}
+import model.packages.Package.PackageType
+import model.packages.{
+  FeastPackage,
+  FeastPackageMetadata,
+  StoryPackage,
+  StoryPackageMetadata,
+  Package => DomainPackage
+}
+import play.api.libs.json.{
+  JsObject,
+  JsString,
+  JsValue,
+  Json,
+  OFormat,
+  OWrites,
+  Reads
+}
 import services.editions.db.FaciaDB
 
-final case class ClientPackage(
-    id: String,
+import java.util.UUID
+
+sealed trait ClientPackage {
+  val id: UUID
+  val name: String
+  val packageType: DomainPackage.PackageType.Value
+  val isHidden: Boolean
+  val createdOn: Option[Long]
+  val createdBy: Option[String]
+  val createdEmail: Option[String]
+  val updatedOn: Option[Long]
+  val updatedBy: Option[String]
+  val updatedEmail: Option[String]
+  val items: List[ClientPackageCard]
+  def withId(newId: UUID): ClientPackage
+}
+
+final case class FeastClientPackage(
+    id: UUID,
     name: String,
     isHidden: Boolean,
-    packageType: DomainPackage.PackageType.Value,
-    metadata: Option[PackageMetadata],
+    metadata: Option[FeastPackageMetadata],
     createdOn: Option[Long],
     createdBy: Option[String],
     createdEmail: Option[String],
@@ -17,42 +48,120 @@ final case class ClientPackage(
     updatedBy: Option[String],
     updatedEmail: Option[String],
     items: List[ClientPackageCard] = List.empty
-)
+) extends ClientPackage {
+  override val packageType = PackageType.Feast
+
+  override def withId(newId: UUID): ClientPackage = copy(id = newId)
+}
+
+object FeastClientPackage {
+  implicit val writes: OWrites[FeastClientPackage] =
+    Json
+      .format[FeastClientPackage]
+      .transform((obj: JsObject) => {
+        obj ++ JsObject(
+          Seq("packageType" -> JsString(PackageType.Feast.toString))
+        )
+      })
+
+  implicit val reads: Reads[FeastClientPackage] = Json.reads[FeastClientPackage]
+}
+
+final case class StoryClientPackage(
+    id: UUID,
+    name: String,
+    isHidden: Boolean,
+    metadata: Option[StoryPackageMetadata],
+    createdOn: Option[Long],
+    createdBy: Option[String],
+    createdEmail: Option[String],
+    updatedOn: Option[Long],
+    updatedBy: Option[String],
+    updatedEmail: Option[String],
+    items: List[ClientPackageCard] = List.empty
+) extends ClientPackage {
+  override val packageType = PackageType.Story
+
+  override def withId(newId: UUID): ClientPackage = copy(id = newId)
+}
+
+object StoryClientPackage {
+  implicit val format: OFormat[StoryClientPackage] =
+    Json.format[StoryClientPackage]
+}
 
 object ClientPackage {
-  implicit val format: OFormat[ClientPackage] = Json.format[ClientPackage]
+  implicit val writes: OWrites[ClientPackage] =
+    Json
+      .format[ClientPackage]
+      .transform((obj: JsObject) =>
+        JsObject(
+          obj.fields.filterNot(_._1 == "_type")
+        )
+      )
+  implicit val reads: Reads[ClientPackage] = Json.reads[ClientPackage]
 
   def fromPackage(
       domainPackage: DomainPackage,
       cards: List[ClientPackageCard] = List.empty
-  ): ClientPackage =
-    ClientPackage(
-      id = domainPackage.id,
-      name = domainPackage.name,
-      isHidden = domainPackage.isHidden,
-      packageType = domainPackage.packageType,
-      metadata = domainPackage.metadata,
-      createdOn = domainPackage.createdOn.map(_.toInstant.toEpochMilli),
-      createdBy = domainPackage.createdBy,
-      createdEmail = domainPackage.createdEmail,
-      updatedOn = domainPackage.updatedOn.map(_.toInstant.toEpochMilli),
-      updatedBy = domainPackage.updatedBy,
-      updatedEmail = domainPackage.updatedEmail,
-      items = cards
-    )
+  ): ClientPackage = domainPackage match {
+    case f: FeastPackage =>
+      FeastClientPackage(
+        id = domainPackage.id,
+        name = domainPackage.name,
+        isHidden = domainPackage.isHidden,
+        metadata = f.metadata,
+        createdOn = domainPackage.createdOn.map(_.toInstant.toEpochMilli),
+        createdBy = domainPackage.createdBy,
+        createdEmail = domainPackage.createdEmail,
+        updatedOn = domainPackage.updatedOn.map(_.toInstant.toEpochMilli),
+        updatedBy = domainPackage.updatedBy,
+        updatedEmail = domainPackage.updatedEmail,
+        items = cards
+      )
+    case s: StoryPackage =>
+      StoryClientPackage(
+        id = domainPackage.id,
+        name = domainPackage.name,
+        isHidden = domainPackage.isHidden,
+        metadata = s.metadata,
+        createdOn = domainPackage.createdOn.map(_.toInstant.toEpochMilli),
+        createdBy = domainPackage.createdBy,
+        createdEmail = domainPackage.createdEmail,
+        updatedOn = domainPackage.updatedOn.map(_.toInstant.toEpochMilli),
+        updatedBy = domainPackage.updatedBy,
+        updatedEmail = domainPackage.updatedEmail,
+        items = cards
+      )
+  }
 
   def toPackage(clientPackage: ClientPackage): DomainPackage =
-    DomainPackage(
-      id = clientPackage.id,
-      name = clientPackage.name,
-      packageType = clientPackage.packageType,
-      isHidden = clientPackage.isHidden,
-      metadata = clientPackage.metadata,
-      createdOn = clientPackage.createdOn.map(FaciaDB.dateTimeFromMillis),
-      createdBy = clientPackage.createdBy,
-      createdEmail = clientPackage.createdEmail,
-      updatedOn = clientPackage.updatedOn.map(FaciaDB.dateTimeFromMillis),
-      updatedBy = clientPackage.updatedBy,
-      updatedEmail = clientPackage.updatedEmail
-    )
+    clientPackage match {
+      case f: FeastClientPackage =>
+        FeastPackage(
+          id = f.id,
+          name = f.name,
+          isHidden = f.isHidden,
+          metadata = f.metadata,
+          createdOn = f.createdOn.map(FaciaDB.dateTimeFromMillis),
+          createdBy = f.createdBy,
+          createdEmail = f.createdEmail,
+          updatedOn = f.updatedOn.map(FaciaDB.dateTimeFromMillis),
+          updatedBy = f.updatedBy,
+          updatedEmail = f.updatedEmail
+        )
+      case s: StoryClientPackage =>
+        StoryPackage(
+          id = s.id,
+          name = s.name,
+          isHidden = s.isHidden,
+          metadata = s.metadata,
+          createdOn = s.createdOn.map(FaciaDB.dateTimeFromMillis),
+          createdBy = s.createdBy,
+          createdEmail = s.createdEmail,
+          updatedOn = s.updatedOn.map(FaciaDB.dateTimeFromMillis),
+          updatedBy = s.updatedBy,
+          updatedEmail = s.updatedEmail
+        )
+    }
 }

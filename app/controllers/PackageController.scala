@@ -1,21 +1,16 @@
 package controllers
 
 import logging.Logging
-import model.packages.PackageMetadata._
-import model.packages.client.ClientPackage.toPackage
 import model.packages.client.UpdateRegionsRequest._
 import model.packages.{
   FeastPackage,
   FeastPackageMetadata,
-  PackageMetadata,
   StoryPackage,
-  StoryPackageMetadata,
-  WebPackageMetadata
+  Package => DomainPackage
 }
 import model.packages.client.{
   ClientPackage,
   ClientPackageCard,
-  ClientPackageHeader,
   CreatePackageRequest,
   ErrorResponse,
   UpdateRegionsRequest
@@ -32,7 +27,7 @@ import java.nio.charset.{
   MalformedInputException,
   StandardCharsets
 }
-import java.time.{OffsetDateTime, ZoneId, ZoneOffset}
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
 import java.util.UUID
 import scala.concurrent.ExecutionContext
@@ -70,18 +65,16 @@ class PackageController(
       .map(_.split(",").toSeq)
       .map(_.map(toUuid).collect({ case Some(uuid) => uuid }))
 
-    val maybeDate =
-      req
-        .getQueryString("date")
-        .map(date =>
-          Try {
-            java.time.LocalDate
-              .parse(date, dateFormatter)
-              .atStartOfDay(ZoneOffset.UTC)
-              .toOffsetDateTime
-          }
-        )
-        .sequence // 'sequence' is a piece of magic from `cats`, which here converts Option[Try[T]] into Try[Option[T]]
+    val maybeDate = date
+      .map(date =>
+        Try {
+          java.time.LocalDate
+            .parse(date, dateFormatter)
+            .atStartOfDay(ZoneOffset.UTC)
+            .toOffsetDateTime
+        }
+      )
+      .sequence // 'sequence' is a piece of magic from `cats`, which here converts Option[Try[T]] into Try[Option[T]]
     val strictDate = strict.getOrElse(false)
     val queryLimit = limit.getOrElse(200)
     val orderBy = order
@@ -133,17 +126,16 @@ class PackageController(
                 Json.obj(
                   "status" -> JsString("ok"),
                   "packages" -> JsArray(
-                    clientPkgs.map(ClientPackage.format.writes)
+                    clientPkgs.map(ClientPackage.writes.writes)
                   )
                 )
               )
             } else {
-              val clientPkgs = pkgs.map(ClientPackageHeader.fromPackage)
               Ok(
                 Json.obj(
                   "status" -> JsString("ok"),
                   "packages" -> JsArray(
-                    clientPkgs.map(ClientPackageHeader.format.writes)
+                    pkgs.map(DomainPackage.format.writes)
                   )
                 )
               )
@@ -235,7 +227,7 @@ class PackageController(
             .map(model.packages.client.ClientPackageCard.fromPackageCard)
             .toList
           val clientPkg = ClientPackage.fromPackage(p, cards)
-          Ok(ClientPackage.format.writes(clientPkg))
+          Ok(ClientPackage.writes.writes(clientPkg))
         case None =>
           NotFound(
             ErrorResponse.notFound(s"Package with id $id not found")
@@ -258,7 +250,7 @@ class PackageController(
         ) match {
           case Right(n) if n > 0 =>
             NoContent
-          case Right(0) =>
+          case Right(_) =>
             NotFound
           case Left(err) =>
             BadRequest(ErrorResponse.badRequest(err))
@@ -385,7 +377,9 @@ class PackageController(
 
   def writePackage(id: UUID) =
     EditPackagesAuthAction(parse.json[ClientPackage]) { req =>
-      val newMeta = toPackage(req.body.copy(id = id.toString))
+      val newMeta = ClientPackage.toPackage(
+        req.body.withId(newId = id)
+      ) // we must ignore the ID in the request and write to the ID that is given in the params
       val cards = req.body.items.zipWithIndex.map({ case (clientCard, idx) =>
         ClientPackageCard.toPackageCard(
           clientCard,
@@ -411,7 +405,7 @@ class PackageController(
                 updatedPkg,
                 updatedCards.map(ClientPackageCard.fromPackageCard).toList
               )
-              Ok(ClientPackage.format.writes(clientPackage))
+              Ok(ClientPackage.writes.writes(clientPackage))
             case None =>
               logger.error(
                 s"Package $id was deleted immediately after update, this should not happen"

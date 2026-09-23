@@ -49,7 +49,6 @@ case class CreateFeastPackageRequest(
 
   def metadataPG: Option[PGobject] =
     metadata.map(FeastPackageMetadata.format.writes).map(toPGobject)
-
 }
 
 object CreateFeastPackageRequest {

@@ -155,6 +155,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
           } else {
             Left("Selected package does not support this metadata")
           }
+        case Some(other) => Left(s"Package type $other is not supported")
       }
     } catch {
       case _: NoSuchElementException => Right(0)
