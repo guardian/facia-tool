@@ -21,8 +21,8 @@ export interface EventGraphic {
 
 export const eventGraphics: EventGraphic[] = [
 	{
-		id: 'event-graphic/election-tracker/us-midterm-2026',
-		title: 'US midterms 2026 — election tracker',
+		id: 'event-graphic/election-tracker/us-general-2024/congress',
+		title: 'US general 2024 — congress',
 		kind: 'Election Tracker',
 	},
 ];

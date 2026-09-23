@@ -414,7 +414,7 @@ describe('Collection actions', () => {
 			await store.dispatch(
 				fetchArticles([
 					'internal-code/page/5029528',
-					'event-graphic/election-tracker/us-midterm-2026',
+					'event-graphic/election-tracker/us-general-2024/congress',
 				]) as any,
 			);
 			const actions = store.getActions();
@@ -425,7 +425,7 @@ describe('Collection actions', () => {
 		it('should not issue a request when only event graphics are given', async () => {
 			await store.dispatch(
 				fetchArticles([
-					'event-graphic/election-tracker/us-midterm-2026',
+					'event-graphic/election-tracker/us-general-2024/congress',
 				]) as any,
 			);
 			expect(store.getActions()).toEqual([]);

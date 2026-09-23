@@ -71,7 +71,7 @@ describe('getCardDropType', () => {
 		expect(
 			getCardDropType({
 				uuid: 'uuid',
-				id: 'event-graphic/election-tracker/us-midterm-2026',
+				id: 'event-graphic/election-tracker/us-general-2024/congress',
 			} as Card),
 		).toBe(CardTypesMap.EVENT_GRAPHIC);
 	});
