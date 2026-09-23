@@ -156,10 +156,23 @@ const getABTestThemeColors = (abTestTheme: ABTestTheme): ABTestPalette =>
 	theme.abTestBadge[abTestTheme];
 
 const getABTestBadgeStyles = (palette: ABTestPalette) => css`
+	position: absolute;
+	bottom: 1px;
+	right: 1px;
 	gap: 4px;
-	margin-top: 6px;
+	flex-shrink: 0;
+	white-space: nowrap;
 	background: ${palette.background};
 	color: ${palette.text};
+`;
+
+// Reserve space below the thumbnail so the absolutely-positioned AB test
+// status badge (pinned to the card's bottom-right) doesn't overlap it
+const ThumbnailArea = styled(ImageAndGraphWrapper)<{
+	$reserveBadgeSpace: boolean;
+}>`
+	padding-bottom: ${({ $reserveBadgeSpace }) =>
+		$reserveBadgeSpace ? '28px' : '0'};
 `;
 
 interface ArticleBodyProps {
@@ -523,23 +536,8 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
-					{shouldShowAbTestStatus && (
-						<Badge
-							size="sm"
-							weight="strong"
-							cssOverrides={getABTestBadgeStyles(abTestStatus.palette)}
-							data-testid="ab-test-status"
-						>
-							<ConicalFlaskCircleIcon
-								size={'s'}
-								fill={abTestStatus.palette.icon}
-							/>
-
-							{abTestStatus.message}
-						</Badge>
-					)}
 				</CardContent>
-				<ImageAndGraphWrapper size={size}>
+				<ThumbnailArea size={size} $reserveBadgeSpace={shouldShowAbTestStatus}>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
 						<PageViewDataWrapper data-testid="page-view-graph">
 							<ArticleGraph
@@ -619,7 +617,22 @@ const articleBodyDefault = React.memo(
 								)}
 							</DraggableArticleImageContainer>
 						))}
-				</ImageAndGraphWrapper>
+				</ThumbnailArea>
+				{shouldShowAbTestStatus && (
+					<Badge
+						size="sm"
+						weight="strong"
+						cssOverrides={getABTestBadgeStyles(abTestStatus.palette)}
+						data-testid="ab-test-status"
+					>
+						<ConicalFlaskCircleIcon
+							size={'s'}
+							fill={abTestStatus.palette.icon}
+						/>
+
+						{abTestStatus.message}
+					</Badge>
+				)}
 				<HoverActionsAreaOverlay disabled={isUneditable}>
 					<HoverActionsButtonWrapper
 						size={size}
