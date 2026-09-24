@@ -13,6 +13,7 @@ object Permissions {
     PermissionDefinition("launch_editorial_fronts", app)
   val EditEditorialFronts = PermissionDefinition("edit_editorial_fronts", app)
   val EditEditions = PermissionDefinition("edit_editions", app)
+  val EditFrontsPackages = PermissionDefinition("edit_fronts_packages", app)
   val LaunchAndEditEmailFronts =
     PermissionDefinition("edit_and_launch_email_fronts", app)
   val ConfigureCustomSubnavs =

@@ -5,14 +5,13 @@ import logging.Logging
 import model.packages.Package.PackageType
 import model.packages._
 import model.packages.client.CreatePackageRequest
-
 import play.api.libs.json._
 import services.editions.db.PackageQueries.OrderingField
 
 import java.sql.Timestamp
 import java.time.{Instant, OffsetDateTime}
 import java.time.temporal.ChronoUnit
-import java.util.UUID
+import java.util.{NoSuchElementException, UUID}
 import scala.util.Try
 
 trait PackageQueries extends MetadataHelpers with Logging {
@@ -33,6 +32,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
       lastModified: Option[OffsetDateTime] = None,
       thisDayOnly: Boolean = false,
       searchByTitle: Option[String] = None,
+      typeFilter: Option[PackageType] = None,
       orderBy: OrderingField = PackageQueries.CreatedOn,
       limit: Int = 200
   ): Seq[Package] =
@@ -53,6 +53,10 @@ trait PackageQueries extends MetadataHelpers with Logging {
           }
         }
 
+        val maybeTypeCondition = typeFilter.map { t =>
+          sqls"package_type = ${t.value}"
+        }
+
         val maybeTitleCondition = searchByTitle.map { titleSearch =>
           val param = s"%$titleSearch%"
           sqls"name ilike $param"
@@ -62,6 +66,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
           sqls.toAndConditionOpt(
             maybeIdCondition,
             maybeDateCondition,
+            maybeTypeCondition,
             maybeTitleCondition
           ) match {
             case Some(condition) => sqls"WHERE $condition"
@@ -70,7 +75,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
 
         fetchPackageMetaSql(
           where = whereSql,
-          orderBy = sqls"""ORDER BY ${orderBy.toSql} DESC LIMIT $limit"""
+          orderBy = sqls"""ORDER BY ${orderBy.toSql} LIMIT $limit"""
         ).apply().collect({ case Some(pkg) => pkg })
       }
     }
@@ -112,6 +117,54 @@ trait PackageQueries extends MetadataHelpers with Logging {
       	     updated_by=$userName,
              updated_email=$userEmail
 		  WHERE id=${packageId.toString}""".update.apply()
+  }
+
+  def updatePackageMeta(
+      packageId: UUID,
+      newMeta: PackageMetadata,
+      userName: String,
+      userEmail: String
+  ) = DB localTx { implicit session =>
+    val lastUpdated = FaciaDB.truncateDateTime(OffsetDateTime.now())
+    val packageTypeStr =
+      sql"SELECT package_type FROM packages WHERE id=${packageId.toString} FOR UPDATE"
+        .map { rs => rs.get[String](1) }
+        .single
+        .apply()
+
+    try {
+      val newMetaPG = toPGobject(newMeta.toJson)
+      packageTypeStr.flatMap(Package.PackageType.withName) match {
+        case None =>
+          Left("Selected package does not have a valid package type")
+        case Some(PackageType.Feast) =>
+          if (newMeta.isInstanceOf[FeastPackageMetadata]) {
+            Right(sql"""UPDATE packages
+     			SET
+     				metadata=$newMetaPG,
+     				updated_on=$lastUpdated,
+     				updated_by=$userName,
+     				updated_email=$userEmail
+     			WHERE id=${packageId.toString}""".update.apply())
+          } else {
+            Left("Selected package does not support this metadata")
+          }
+        case Some(PackageType.Story) =>
+          if (newMeta.isInstanceOf[StoryPackageMetadata]) {
+            Right(sql"""UPDATE packages
+     			SET
+     				metadata=$newMetaPG,
+     				updated_on=$lastUpdated,
+     				updated_by=$userName,
+     				updated_email=$userEmail
+     			WHERE id=${packageId.toString}""".update.apply())
+          } else {
+            Left("Selected package does not support this metadata")
+          }
+      }
+    } catch {
+      case _: NoSuchElementException => Right(0)
+    }
   }
 
   /** Inserts a card into the given package. If a card with the same page_code
@@ -215,9 +268,13 @@ trait PackageQueries extends MetadataHelpers with Logging {
     * @return
     *   number of rows set
     */
-  def createPackage(metadata: CreatePackageRequest) = DB localTx {
-    implicit session =>
-      sql"""INSERT INTO packages (
+  def createPackage(
+      metadata: CreatePackageRequest,
+      createdOn: OffsetDateTime,
+      createdBy: String,
+      createdEmail: String
+  ) = DB localTx { implicit session =>
+    sql"""INSERT INTO packages (
         id,
         name,
         package_type,
@@ -235,12 +292,12 @@ trait PackageQueries extends MetadataHelpers with Logging {
      ${metadata.packageType.toString},
      ${metadata.isHidden},
      ${metadata.metadataPG},
-     ${Instant.ofEpochMilli(metadata.createdOn)},
-     ${metadata.createdBy},
-     ${metadata.createdEmail},
-     ${Instant.ofEpochMilli(metadata.createdOn)},
-     ${metadata.createdBy},
-     ${metadata.createdEmail}
+     ${createdOn},
+     ${createdBy},
+     ${createdEmail},
+     ${createdOn},
+     ${createdBy},
+     ${createdEmail}
 	)
      """.update.apply()
   }
@@ -346,15 +403,15 @@ object PackageQueries {
 
   case object CreatedOn extends OrderingField {
     override def toString = "created_on"
-    override def toSql = sqls"created_on"
+    override def toSql = sqls"created_on DESC"
   }
   case object UpdatedOn extends OrderingField {
     override def toString = "updated_on"
-    override def toSql = sqls"updated_on"
+    override def toSql = sqls"updated_on DESC"
   }
   case object Title extends OrderingField {
     override def toString = "name"
-    override def toSql = sqls"name"
+    override def toSql = sqls"name ASC"
   }
 
   object OrderingField {
