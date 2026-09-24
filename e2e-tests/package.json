@@ -1,0 +1,33 @@
+{
+  "name": "facia-tool-e2e",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "packageManager": "yarn@1.22.22",
+  "description": "Self-contained Playwright and Cucumber end-to-end tests for Facia Tool.",
+  "scripts": {
+    "bddgen": "bddgen",
+    "typecheck": "tsc --noEmit",
+    "test": "bddgen && playwright test",
+    "test:ci": "bddgen && E2E_START_STACK=true playwright test",
+    "test:ui": "bddgen && playwright test --ui-port=9099",
+    "test:report": "playwright show-report target/playwright-report --port=9098",
+    "dev:local": "tsx setup/run-dev-local.ts",
+    "dev:debug": "DEBUG=testcontainers* tsx setup/run-dev-local.ts",
+    "dev": "../scripts/dev-start.sh"
+  },
+  "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.679.0",
+    "@aws-sdk/client-s3": "^3.679.0",
+    "@aws-sdk/client-sns": "^3.679.0",
+    "@aws-sdk/client-sqs": "^3.679.0",
+    "@guardian/pan-domain-node": "^1.2.5",
+    "@playwright/test": "^1.48.2",
+    "@types/node": "^22.10.0",
+    "playwright": "^1.48.2",
+    "playwright-bdd": "^9.2.1",
+    "testcontainers": "^10.13.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  }
+}

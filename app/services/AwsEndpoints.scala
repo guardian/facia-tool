@@ -12,5 +12,7 @@ class AwsEndpoints(val config: ApplicationConfiguration) {
     RegionUtils.getRegion(config.aws.region)
 
   lazy val monitoring: String = region.getServiceEndpoint(CloudWatch)
-  lazy val s3: String = region.getServiceEndpoint(S3Endpoint)
+  lazy val s3: String = config.aws.localS3Endpoint.getOrElse(
+    region.getServiceEndpoint(S3Endpoint)
+  )
 }
