@@ -21,7 +21,7 @@ import org.apache.pekko.stream.Materializer
 import play.api.ApplicationLoader
 import play.api.db.evolutions.Evolutions
 import play.api.http.HttpVerbs
-import play.api.libs.json.{JsArray, JsObject, Json}
+import play.api.libs.json.{JsArray, JsObject, JsString, Json}
 import play.api.mvc.Cookie
 import play.api.routing.Router
 import play.api.test.FakeRequest
@@ -32,6 +32,7 @@ import play.api.test.Helpers.{
   OK,
   call,
   contentAsJson,
+  contentAsString,
   status
 }
 import scalikejdbc._
@@ -108,7 +109,7 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
       )
 
     val packageController =
-      new PackageController(db, publishing, capi, this)
+      new PackageController(db, publishing, this)
 
     override lazy val router: Router = Router.empty
     override lazy val httpFilters = Seq.empty
@@ -469,45 +470,6 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         .as[String] shouldBe "Renamed with patch"
     }
 
-    "patch only feast metadata regions" taggedAs UsesDatabase in {
-      val packageId = UUID.randomUUID()
-      prefillPackage(
-        packageId,
-        "Region package",
-        Instant.now().toEpochMilli,
-        cards = 0
-      )
-
-      val request = authed(
-        FakeRequest(HttpVerbs.PATCH, s"/packages/$packageId/update-regions")
-          .withHeaders(CONTENT_TYPE -> "application/json")
-          .withBody(
-            Json.obj(
-              "targetedRegions" -> Json.arr("au", "uk"),
-              "excludedRegions" -> Json.arr("us")
-            )
-          )
-      )
-
-      status(
-        call(components.packageController.updateRegions(packageId), request)
-      ) shouldBe NO_CONTENT
-
-      val fetched = call(
-        components.packageController.getPackage(packageId),
-        emptyAuthedRequest(HttpVerbs.GET, s"/packages/$packageId")
-      )
-      val meta = (jsonBody(fetched) \\ "metadata").head.as[JsObject]
-      meta
-        .value("targetedRegions")
-        .as[JsArray]
-        .value
-        .map(_.as[String]) should contain allOf (
-        "au",
-        "uk"
-      )
-    }
-
     "toggle hidden flag with PUT /is-hidden" taggedAs UsesDatabase in {
       val packageId = UUID.randomUUID()
       prefillPackage(
@@ -534,42 +496,45 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
       )
       (jsonBody(fetched) \\ "isHidden").head.as[Boolean] shouldBe true
     }
-//
-//    "update metadata only with PUT /metadata" taggedAs UsesDatabase in {
-//      val packageId = UUID.randomUUID()
-//      prefillPackage(
-//        packageId,
-//        "Metadata package",
-//        Instant.now().toEpochMilli,
-//        cards = 0
-//      )
-//
-//      val request = authed(
-//        FakeRequest(HttpVerbs.PUT, s"/packages/$packageId/metadata")
-//          .withHeaders(CONTENT_TYPE -> "application/json")
-//          .withBody(
-//            Json.obj(
-//              "targetedRegions" -> Json.arr("eu"),
-//              "excludedRegions" -> Json.arr("us")
-//            )
-//          )
-//      )
-//
-//      status(
-//        call(components.packageController.putMetadata(packageId), request)
-//      ) shouldBe NO_CONTENT
-//
-//      val fetched = call(
-//        components.packageController.getPackage(packageId),
-//        emptyAuthedRequest(HttpVerbs.GET, s"/packages/$packageId")
-//      )
-//      val meta = (jsonBody(fetched) \\ "metadata").head.as[JsObject]
-//      meta
-//        .value("targetedRegions")
-//        .as[JsArray]
-//        .value
-//        .map(_.as[String]) should contain only "eu"
-//      (jsonBody(fetched) \\ "name").head.as[String] shouldBe "Metadata package"
-//    }
+
+    "update metadata only with PUT /metadata" taggedAs UsesDatabase in {
+      val packageId = UUID.randomUUID()
+      prefillPackage(
+        packageId,
+        "Metadata package",
+        Instant.now().toEpochMilli,
+        cards = 0
+      )
+
+      val request = authed(
+        FakeRequest(HttpVerbs.PUT, s"/packages/$packageId/metadata")
+          .withHeaders(CONTENT_TYPE -> "application/json")
+          .withBody(
+            Json.obj(
+              "packageType" -> JsString("Feast"),
+              "targetedRegions" -> Json.arr("eu"),
+              "excludedRegions" -> Json.arr("us")
+            )
+          )
+      )
+
+      val response =
+        call(components.packageController.putMetadata(packageId), request)
+      status(
+        response
+      ) shouldBe NO_CONTENT
+
+      val fetched = call(
+        components.packageController.getPackage(packageId),
+        emptyAuthedRequest(HttpVerbs.GET, s"/packages/$packageId")
+      )
+      val meta = (jsonBody(fetched) \\ "metadata").head.as[JsObject]
+      meta
+        .value("targetedRegions")
+        .as[JsArray]
+        .value
+        .map(_.as[String]) should contain only "eu"
+      (jsonBody(fetched) \\ "name").head.as[String] shouldBe "Metadata package"
+    }
   }
 }
