@@ -2,38 +2,7 @@
 
 exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
 {
-  "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Facia Tool Service",
-  "Mappings": {
-    "CrossResources": {
-      "CODE": {
-        "FrontPressedTable": "front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU",
-      },
-      "PROD": {
-        "FrontPressedTable": "front-pressed-lambda-PROD-DynamoDBTable-M03VC0RYBQ1W",
-      },
-    },
-    "StageMap": {
-      "CODE": {
-        "CloudFrontAliases": [
-          "fronts.code.dev-gutools.co.uk",
-        ],
-        "LowerCaseStage": "code",
-        "StaticCloudFrontAliases": [
-          "fronts-static.code.dev-gutools.co.uk",
-        ],
-      },
-      "PROD": {
-        "CloudFrontAliases": [
-          "fronts.gutools.co.uk",
-        ],
-        "LowerCaseStage": "prod",
-        "StaticCloudFrontAliases": [
-          "fronts-static.gutools.co.uk",
-        ],
-      },
-    },
-  },
   "Metadata": {
     "gu:cdk:constructs": [
       "GuDistributionBucketParameter",
@@ -69,6 +38,8 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "GuAccessLoggingBucketParameter",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
+      "GuCname",
+      "GuCname",
       "GuSecurityGroup",
     ],
     "gu:cdk:version": "TEST",
@@ -567,20 +538,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
     },
     "DnsRecord": {
       "Properties": {
-        "Name": {
-          "Fn::Select": [
-            0,
-            {
-              "Fn::FindInMap": [
-                "StageMap",
-                {
-                  "Ref": "Stage",
-                },
-                "CloudFrontAliases",
-              ],
-            },
-          ],
-        },
+        "Name": "fronts.code.dev-gutools.co.uk",
         "RecordType": "CNAME",
         "ResourceRecords": [
           {
@@ -588,16 +546,17 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               "",
               [
                 {
-                  "Fn::GetAtt": "FaciaCloudfront.DomainName",
+                  "Fn::GetAtt": [
+                    "FaciaCloudfront",
+                    "DomainName",
+                  ],
                 },
                 ".",
               ],
             ],
           },
         ],
-        "Stage": {
-          "Ref": "Stage",
-        },
+        "Stage": "CODE",
         "TTL": 900,
       },
       "Type": "Guardian::DNS::RecordSet",
@@ -618,15 +577,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::published-editions-",
-                      {
-                        "Fn::FindInMap": [
-                          "StageMap",
-                          "CODE",
-                          "LowerCaseStage",
-                        ],
-                      },
-                      "/*",
+                      ":s3:::published-editions-code/*",
                     ],
                   ],
                 },
@@ -638,15 +589,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::preview-editions-",
-                      {
-                        "Fn::FindInMap": [
-                          "StageMap",
-                          "CODE",
-                          "LowerCaseStage",
-                        ],
-                      },
-                      "/*",
+                      ":s3:::preview-editions-code/*",
                     ],
                   ],
                 },
@@ -667,15 +610,9 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
     "FaciaCloudfront": {
       "Properties": {
         "DistributionConfig": {
-          "Aliases": {
-            "Fn::FindInMap": [
-              "StageMap",
-              {
-                "Ref": "Stage",
-              },
-              "CloudFrontAliases",
-            ],
-          },
+          "Aliases": [
+            "fronts.code.dev-gutools.co.uk",
+          ],
           "DefaultCacheBehavior": {
             "AllowedMethods": [
               "DELETE",
@@ -1470,14 +1407,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":table/",
-                    {
-                      "Fn::FindInMap": [
-                        "CrossResources",
-                        "CODE",
-                        "FrontPressedTable",
-                      ],
-                    },
+                    ":table/front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU",
                   ],
                 ],
               },
@@ -1756,15 +1686,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::published-editions-",
-                      {
-                        "Fn::FindInMap": [
-                          "StageMap",
-                          "CODE",
-                          "LowerCaseStage",
-                        ],
-                      },
-                      "/*",
+                      ":s3:::published-editions-code/*",
                     ],
                   ],
                 },
@@ -1776,15 +1698,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::preview-editions-",
-                      {
-                        "Fn::FindInMap": [
-                          "StageMap",
-                          "CODE",
-                          "LowerCaseStage",
-                        ],
-                      },
-                      "/*",
+                      ":s3:::preview-editions-code/*",
                     ],
                   ],
                 },
@@ -1931,14 +1845,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":table/",
-                    {
-                      "Fn::FindInMap": [
-                        "CrossResources",
-                        "CODE",
-                        "FrontPressedTable",
-                      ],
-                    },
+                    ":table/front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU",
                   ],
                 ],
               },
@@ -2008,20 +1915,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
     },
     "StaticCloudFrontDnsRecord": {
       "Properties": {
-        "Name": {
-          "Fn::Select": [
-            0,
-            {
-              "Fn::FindInMap": [
-                "StageMap",
-                {
-                  "Ref": "Stage",
-                },
-                "StaticCloudFrontAliases",
-              ],
-            },
-          ],
-        },
+        "Name": "fronts-static.code.dev-gutools.co.uk",
         "RecordType": "CNAME",
         "ResourceRecords": [
           {
@@ -2029,16 +1923,17 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               "",
               [
                 {
-                  "Fn::GetAtt": "StaticCloudfront.DomainName",
+                  "Fn::GetAtt": [
+                    "StaticCloudfront",
+                    "DomainName",
+                  ],
                 },
                 ".",
               ],
             ],
           },
         ],
-        "Stage": {
-          "Ref": "Stage",
-        },
+        "Stage": "CODE",
         "TTL": 900,
       },
       "Type": "Guardian::DNS::RecordSet",
@@ -2046,15 +1941,9 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
     "StaticCloudfront": {
       "Properties": {
         "DistributionConfig": {
-          "Aliases": {
-            "Fn::FindInMap": [
-              "StageMap",
-              {
-                "Ref": "Stage",
-              },
-              "StaticCloudFrontAliases",
-            ],
-          },
+          "Aliases": [
+            "fronts-static.code.dev-gutools.co.uk",
+          ],
           "DefaultCacheBehavior": {
             "Compress": true,
             "ForwardedValues": {
@@ -2081,18 +1970,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                 ],
               },
               "Id": "static-facia-tool",
-              "OriginPath": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "/",
-                    {
-                      "Ref": "Stage",
-                    },
-                    "/static-facia-tool",
-                  ],
-                ],
-              },
+              "OriginPath": "/CODE/static-facia-tool",
               "S3OriginConfig": {
                 "OriginAccessIdentity": "",
               },
@@ -2631,15 +2509,7 @@ STS_ROLE=",
                     "Ref": "FrontendRoleToAssume",
                   },
                   "
-FRONT_PRESSED_TABLE=",
-                  {
-                    "Fn::FindInMap": [
-                      "CrossResources",
-                      "CODE",
-                      "FrontPressedTable",
-                    ],
-                  },
-                  "
+FRONT_PRESSED_TABLE=front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU
 USER_DATA_TABLE=",
                   {
                     "Ref": "FrontsUserDataDynamoTable",
@@ -2707,38 +2577,7 @@ dpkg -i /home/facia-tool/facia-tool.all.deb",
 
 exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
 {
-  "AWSTemplateFormatVersion": "2010-09-09",
   "Description": "Facia Tool Service",
-  "Mappings": {
-    "CrossResources": {
-      "CODE": {
-        "FrontPressedTable": "front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU",
-      },
-      "PROD": {
-        "FrontPressedTable": "front-pressed-lambda-PROD-DynamoDBTable-M03VC0RYBQ1W",
-      },
-    },
-    "StageMap": {
-      "CODE": {
-        "CloudFrontAliases": [
-          "fronts.code.dev-gutools.co.uk",
-        ],
-        "LowerCaseStage": "code",
-        "StaticCloudFrontAliases": [
-          "fronts-static.code.dev-gutools.co.uk",
-        ],
-      },
-      "PROD": {
-        "CloudFrontAliases": [
-          "fronts.gutools.co.uk",
-        ],
-        "LowerCaseStage": "prod",
-        "StaticCloudFrontAliases": [
-          "fronts-static.gutools.co.uk",
-        ],
-      },
-    },
-  },
   "Metadata": {
     "gu:cdk:constructs": [
       "GuDistributionBucketParameter",
@@ -2774,6 +2613,8 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "GuAccessLoggingBucketParameter",
       "GuApplicationTargetGroup",
       "GuHttpsApplicationListener",
+      "GuCname",
+      "GuCname",
       "GuSecurityGroup",
     ],
     "gu:cdk:version": "TEST",
@@ -3272,20 +3113,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
     },
     "DnsRecord": {
       "Properties": {
-        "Name": {
-          "Fn::Select": [
-            0,
-            {
-              "Fn::FindInMap": [
-                "StageMap",
-                {
-                  "Ref": "Stage",
-                },
-                "CloudFrontAliases",
-              ],
-            },
-          ],
-        },
+        "Name": "fronts.gutools.co.uk",
         "RecordType": "CNAME",
         "ResourceRecords": [
           {
@@ -3293,16 +3121,17 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
               "",
               [
                 {
-                  "Fn::GetAtt": "FaciaCloudfront.DomainName",
+                  "Fn::GetAtt": [
+                    "FaciaCloudfront",
+                    "DomainName",
+                  ],
                 },
                 ".",
               ],
             ],
           },
         ],
-        "Stage": {
-          "Ref": "Stage",
-        },
+        "Stage": "PROD",
         "TTL": 900,
       },
       "Type": "Guardian::DNS::RecordSet",
@@ -3323,15 +3152,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::published-editions-",
-                      {
-                        "Fn::FindInMap": [
-                          "StageMap",
-                          "PROD",
-                          "LowerCaseStage",
-                        ],
-                      },
-                      "/*",
+                      ":s3:::published-editions-prod/*",
                     ],
                   ],
                 },
@@ -3343,15 +3164,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::preview-editions-",
-                      {
-                        "Fn::FindInMap": [
-                          "StageMap",
-                          "PROD",
-                          "LowerCaseStage",
-                        ],
-                      },
-                      "/*",
+                      ":s3:::preview-editions-prod/*",
                     ],
                   ],
                 },
@@ -3372,15 +3185,9 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
     "FaciaCloudfront": {
       "Properties": {
         "DistributionConfig": {
-          "Aliases": {
-            "Fn::FindInMap": [
-              "StageMap",
-              {
-                "Ref": "Stage",
-              },
-              "CloudFrontAliases",
-            ],
-          },
+          "Aliases": [
+            "fronts.gutools.co.uk",
+          ],
           "DefaultCacheBehavior": {
             "AllowedMethods": [
               "DELETE",
@@ -4175,14 +3982,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                     {
                       "Ref": "AWS::AccountId",
                     },
-                    ":table/",
-                    {
-                      "Fn::FindInMap": [
-                        "CrossResources",
-                        "PROD",
-                        "FrontPressedTable",
-                      ],
-                    },
+                    ":table/front-pressed-lambda-PROD-DynamoDBTable-M03VC0RYBQ1W",
                   ],
                 ],
               },
@@ -4357,20 +4157,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
     },
     "StaticCloudFrontDnsRecord": {
       "Properties": {
-        "Name": {
-          "Fn::Select": [
-            0,
-            {
-              "Fn::FindInMap": [
-                "StageMap",
-                {
-                  "Ref": "Stage",
-                },
-                "StaticCloudFrontAliases",
-              ],
-            },
-          ],
-        },
+        "Name": "fronts-static.gutools.co.uk",
         "RecordType": "CNAME",
         "ResourceRecords": [
           {
@@ -4378,16 +4165,17 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
               "",
               [
                 {
-                  "Fn::GetAtt": "StaticCloudfront.DomainName",
+                  "Fn::GetAtt": [
+                    "StaticCloudfront",
+                    "DomainName",
+                  ],
                 },
                 ".",
               ],
             ],
           },
         ],
-        "Stage": {
-          "Ref": "Stage",
-        },
+        "Stage": "PROD",
         "TTL": 900,
       },
       "Type": "Guardian::DNS::RecordSet",
@@ -4395,15 +4183,9 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
     "StaticCloudfront": {
       "Properties": {
         "DistributionConfig": {
-          "Aliases": {
-            "Fn::FindInMap": [
-              "StageMap",
-              {
-                "Ref": "Stage",
-              },
-              "StaticCloudFrontAliases",
-            ],
-          },
+          "Aliases": [
+            "fronts-static.gutools.co.uk",
+          ],
           "DefaultCacheBehavior": {
             "Compress": true,
             "ForwardedValues": {
@@ -4430,18 +4212,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                 ],
               },
               "Id": "static-facia-tool",
-              "OriginPath": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "/",
-                    {
-                      "Ref": "Stage",
-                    },
-                    "/static-facia-tool",
-                  ],
-                ],
-              },
+              "OriginPath": "/PROD/static-facia-tool",
               "S3OriginConfig": {
                 "OriginAccessIdentity": "",
               },
@@ -4980,15 +4751,7 @@ STS_ROLE=",
                     "Ref": "FrontendRoleToAssume",
                   },
                   "
-FRONT_PRESSED_TABLE=",
-                  {
-                    "Fn::FindInMap": [
-                      "CrossResources",
-                      "PROD",
-                      "FrontPressedTable",
-                    ],
-                  },
-                  "
+FRONT_PRESSED_TABLE=front-pressed-lambda-PROD-DynamoDBTable-M03VC0RYBQ1W
 USER_DATA_TABLE=",
                   {
                     "Ref": "FrontsUserDataDynamoTable",
