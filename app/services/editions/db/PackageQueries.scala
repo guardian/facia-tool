@@ -136,7 +136,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
       val newMetaPG = toPGobject(newMeta.toJson)
       packageTypeStr.flatMap(Package.PackageType.withName) match {
         case None =>
-          Right(0)
+          Left("Selected package does not have a valid package type")
         case Some(PackageType.Feast) =>
           if (newMeta.isInstanceOf[FeastPackageMetadata]) {
             Right(sql"""UPDATE packages

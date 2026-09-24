@@ -8,15 +8,7 @@ import model.packages.{
   StoryPackageMetadata,
   Package => DomainPackage
 }
-import play.api.libs.json.{
-  JsObject,
-  JsString,
-  JsValue,
-  Json,
-  OFormat,
-  OWrites,
-  Reads
-}
+import play.api.libs.json.{JsObject, JsString, Json, OWrites, Reads}
 import services.editions.db.FaciaDB
 
 import java.util.UUID
@@ -33,7 +25,6 @@ sealed trait ClientPackage {
   val updatedBy: Option[String]
   val updatedEmail: Option[String]
   val items: List[ClientPackageCard]
-  def withId(newId: UUID): ClientPackage
 }
 
 final case class FeastClientPackage(
@@ -49,9 +40,7 @@ final case class FeastClientPackage(
     updatedEmail: Option[String],
     items: List[ClientPackageCard] = List.empty
 ) extends ClientPackage {
-  override val packageType = PackageType.Feast
-
-  override def withId(newId: UUID): ClientPackage = copy(id = newId)
+  override val packageType: PackageType = PackageType.Feast
 }
 
 object FeastClientPackage {
@@ -60,6 +49,7 @@ object FeastClientPackage {
       .format[FeastClientPackage]
       .transform((obj: JsObject) => {
         obj ++ JsObject(
+          // packageType is not a regular case class field so we must force it into written json object here
           Seq("packageType" -> JsString(PackageType.Feast.toString))
         )
       })
@@ -80,9 +70,7 @@ final case class StoryClientPackage(
     updatedEmail: Option[String],
     items: List[ClientPackageCard] = List.empty
 ) extends ClientPackage {
-  override val packageType = PackageType.Story
-
-  override def withId(newId: UUID): ClientPackage = copy(id = newId)
+  override val packageType: PackageType = PackageType.Story
 }
 
 object StoryClientPackage {
@@ -91,6 +79,7 @@ object StoryClientPackage {
       .format[StoryClientPackage]
       .transform((obj: JsObject) => {
         obj ++ JsObject(
+          // packageType is not a regular case class field so we must force it into written json object here
           Seq("packageType" -> JsString(PackageType.Story.toString))
         )
       })

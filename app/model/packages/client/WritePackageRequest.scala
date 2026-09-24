@@ -45,6 +45,7 @@ case class WriteFeastPackageRequest(
       name,
       isHidden,
       metadata,
+      // the created* fields are not used when doing a package update so we can safely use None here
       createdOn = None,
       createdBy = None,
       createdEmail = None,

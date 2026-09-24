@@ -2,23 +2,15 @@ package controllers
 
 import logging.Logging
 import model.packages.Package.PackageType
-import model.packages.client.UpdateRegionsRequest._
-import model.packages.{
-  FeastPackage,
-  FeastPackageMetadata,
-  StoryPackage,
-  Package => DomainPackage
-}
+import model.packages.{PackageMetadata, Package => DomainPackage}
 import model.packages.client.{
   ClientPackage,
   ClientPackageCard,
   CreatePackageRequest,
   ErrorResponse,
-  UpdateRegionsRequest,
   WritePackageRequest
 }
 import org.postgresql.util.{PSQLException, PSQLState}
-import services.Capi
 import services.editions.db.{FaciaDB, PackageQueries}
 import services.editions.publishing.Publishing
 import play.api.libs.json._
@@ -39,14 +31,47 @@ import model.packages.client.ErrorResponse._
 class PackageController(
     db: FaciaDB,
     publishing: Publishing,
-    capi: Capi,
     val deps: BaseFaciaControllerComponents
 )(implicit ec: ExecutionContext)
     extends BaseFaciaController(deps)
     with Logging {
+
   private def toUuid(str: String): Option[UUID] = Try {
     UUID.fromString(str)
   }.toOption
+
+  private def genericErrorHandler(err: Throwable) = {
+    logger.error(
+      s"Could not update package metadata: ${err.getMessage}",
+      err
+    )
+    InternalServerError(
+      ErrorResponse(err.getMessage)
+    )
+  }
+
+  private def psqlErrorHandler(err: PSQLException) =
+    err.getSQLState match {
+      // See https://www.postgresql.org/docs/current/errcodes-appendix.html for a list of codes
+      case s
+          if s == PSQLState.UNIQUE_VIOLATION.getState => // unique constraint violation
+        Conflict(
+          ErrorResponse.conflict("Cannot overwrite existing object")
+        )
+      case s
+          if s == PSQLState.FOREIGN_KEY_VIOLATION.getState => // foreign key violation
+        Conflict(
+          ErrorResponse.conflict("Sub-object conflict")
+        )
+      case _ =>
+        logger.error(
+          s"An uncaught database error occurred: ${err.getMessage}",
+          err
+        )
+        InternalServerError(
+          ErrorResponse("Database error, see logs")
+        )
+    }
 
   private def dateFormatter = DateTimeFormatter.BASIC_ISO_DATE
 
@@ -60,9 +85,9 @@ class PackageController(
       limit: Option[Int],
       order: Option[String]
   ) = EditPackagesAuthAction { req =>
-    import cats.syntax.traverse._ // Provides the .sequence extension method
-    import cats.instances.try_._ // Provides Applicative[Try]
-    import cats.instances.option._ // Provides Traverse[Option]
+    import cats.syntax.traverse._ // Provides the .sequence extension method for date handling
+    import cats.instances.try_._ // Provides Applicative[Try] for date handling
+    import cats.instances.option._ // Provides Traverse[Option] for date handling
 
     val idList = id
       .map(_.split(",").toSeq)
@@ -160,39 +185,6 @@ class PackageController(
     }
   }
 
-  private def genericErrorHandler(err: Throwable) = {
-    logger.error(
-      s"Could not update package metadata: ${err.getMessage}",
-      err
-    )
-    InternalServerError(
-      ErrorResponse(err.getMessage)
-    )
-  }
-
-  private def psqlErrorHandler(err: PSQLException) =
-    err.getSQLState match {
-      // See https://www.postgresql.org/docs/current/errcodes-appendix.html for a list of codes
-      case s
-          if s == PSQLState.UNIQUE_VIOLATION.getState => // unique constraint violation
-        Conflict(
-          ErrorResponse.conflict("Cannot overwrite existing object")
-        )
-      case s
-          if s == PSQLState.FOREIGN_KEY_VIOLATION.getState => // foreign key violation
-        Conflict(
-          ErrorResponse.conflict("Sub-object conflict")
-        )
-      case _ =>
-        logger.error(
-          s"An uncaught database error occurred: ${err.getMessage}",
-          err
-        )
-        InternalServerError(
-          ErrorResponse("Database error, see logs")
-        )
-    }
-
   def createPackage = EditPackagesAuthAction(parse.json(32768L)) { req =>
     val result = for {
       packageInfo <- Try { req.body.as[CreatePackageRequest] }
@@ -232,14 +224,13 @@ class PackageController(
 
   def getPackage(id: java.util.UUID) = EditPackagesAuthAction { req =>
     try {
-      val pkg = db.getPackageById(id)
-      pkg match {
-        case Some(p) =>
+      db.getPackageById(id) match {
+        case Some(pkg) =>
           val cards = db
             .getPackageCards(id)
             .map(model.packages.client.ClientPackageCard.fromPackageCard)
             .toList
-          val clientPkg = ClientPackage.fromPackage(p, cards)
+          val clientPkg = ClientPackage.fromPackage(pkg, cards)
           Ok(ClientPackage.writes.writes(clientPkg))
         case None =>
           NotFound(
@@ -252,8 +243,8 @@ class PackageController(
     }
   }
 
-  def putFeastMetadata(id: UUID) =
-    EditPackagesAuthAction(parse.json[FeastPackageMetadata]) { req =>
+  def putMetadata(id: UUID) =
+    EditPackagesAuthAction(parse.json[PackageMetadata]) { req =>
       try {
         db.updatePackageMeta(
           id,
@@ -333,60 +324,6 @@ class PackageController(
         genericErrorHandler(err)
     }
   }
-
-  def updateRegions(id: UUID) =
-    EditPackagesAuthAction(parse.json[UpdateRegionsRequest]) { req =>
-      val updateOrErr = for {
-        pkg <- db
-          .getPackages(Some(Seq(id)), None)
-          .headOption
-      } yield pkg match {
-        case f: FeastPackage =>
-          Right(
-            f.metadata
-              .getOrElse(FeastPackageMetadata())
-              .copy(
-                excludedRegions = req.body.excludedRegions,
-                targetedRegions = req.body.targetedRegions
-              )
-          )
-        case _: StoryPackage =>
-          Left("Regions only apply to Feast collections")
-      }
-
-      updateOrErr match {
-        case Some(Left(err)) =>
-          BadRequest(ErrorResponse.badRequest(err))
-        case _ =>
-          val maybeUpdate = updateOrErr.flatMap(_.toOption)
-          try {
-            db.updatePackageMeta(
-              id,
-              newMeta = maybeUpdate.getOrElse(
-                FeastPackageMetadata(
-                  excludedRegions = req.body.excludedRegions,
-                  targetedRegions = req.body.targetedRegions
-                )
-              ),
-              userName = req.user.username,
-              userEmail = req.user.email
-            ) match {
-              case Right(updatedRows) if (updatedRows == 0) =>
-                NotFound(
-                  ErrorResponse.notFound("package id is not valid")
-                )
-              case Right(_) =>
-                NoContent
-              case Left(err) => BadRequest(badRequest(err))
-            }
-          } catch {
-            case err: PSQLException =>
-              psqlErrorHandler(err)
-            case err: Throwable =>
-              genericErrorHandler(err)
-          }
-      }
-    }
 
   def writePackage(id: UUID) =
     EditPackagesAuthAction(parse.json[WritePackageRequest]) { req =>

@@ -152,7 +152,6 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val packages = new PackageController(
     faciaDb,
     editionsPublishing,
-    capi,
     this
   )
 
