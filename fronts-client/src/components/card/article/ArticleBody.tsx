@@ -64,8 +64,8 @@ import { AbTestHeadlineErrorType } from '../../../util/abTests';
 
 type ABStatusMessage =
 	| 'Test in progress'
-	| 'End test on launch'
-	| 'Test set up incomplete'
+	| 'Test ends on launch'
+	| 'Test setup incomplete'
 	| 'Ready to launch'
 	| 'Test staged';
 
@@ -260,13 +260,13 @@ const determineABTestStatus = (
 	}
 	if (hasLiveAbTest && !abTestEnabled) {
 		return {
-			message: 'End test on launch',
+			message: 'Test ends on launch',
 			palette: getABTestThemeColors('draft'),
 		};
 	}
 	if (!hasLiveAbTest && abTestEnabled && headlineTestError) {
 		return {
-			message: 'Test set up incomplete',
+			message: 'Test setup incomplete',
 			palette: getABTestThemeColors('error'),
 		};
 	}
