@@ -131,7 +131,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     structuredLogger
   )
   val updateManager = new UpdateManager(updateActions, configAgent, s3FrontsApi)
-  val cloudwatch = new CloudWatch(config, awsEndpoints)
+  val cloudwatch = new CloudWatch(config)
   val press = new Press(faciaPress)
   val assetsManager = new AssetsManager(config, isDev)
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(
