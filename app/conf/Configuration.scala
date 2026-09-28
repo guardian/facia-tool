@@ -1,7 +1,7 @@
 package conf
 
 import java.io.{File, FileInputStream, InputStream}
-import java.net.URL
+import java.net.{URI, URL}
 import org.apache.commons.io.IOUtils
 import play.api.{Configuration => PlayConfiguration}
 import logging.Logging
@@ -30,7 +30,10 @@ class ApplicationConfiguration(
     // Override properties defined in configuration. Useful for testing.
     val propertyOverrides: Map[String, String] = Map.empty
 ) extends Logging {
-  private val propertiesFile = "/etc/gu/facia-tool.properties"
+  private val propertiesFile = sys.env.getOrElse(
+    "FACIA_PROPERTIES_FILE",
+    "/etc/gu/facia-tool.properties"
+  )
   private val installVars = new File(propertiesFile) match {
     case f if f.exists => IOUtils.toString(new FileInputStream(f), "UTF-8")
     case _ =>
@@ -162,11 +165,19 @@ class ApplicationConfiguration(
       .region(Region.of(region))
       .credentialsProvider(cmsFrontsAccountCredentials)
       .build()
-    lazy val s3Client = S3Client
+    private lazy val s3ClientBuilder = S3Client
       .builder()
       .region(Region.of(region))
       .credentialsProvider(cmsFrontsAccountCredentials)
-      .build()
+
+    lazy val s3Client = {
+      localS3Endpoint.foreach(endpoint =>
+        s3ClientBuilder
+          .endpointOverride(URI.create(endpoint))
+          .forcePathStyle(true)
+      )
+      s3ClientBuilder.build()
+    }
   }
 
   object postgres {
