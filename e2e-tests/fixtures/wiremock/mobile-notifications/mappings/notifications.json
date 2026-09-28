@@ -1,0 +1,8 @@
+{
+  "request": { "method": "POST", "urlPath": "/notifications" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "bodyFileName": "notification.json"
+  }
+}

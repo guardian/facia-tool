@@ -1,0 +1,8 @@
+{
+  "request": { "method": "GET", "urlPath": "/api/histogram" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "bodyFileName": "histogram.json"
+  }
+}
