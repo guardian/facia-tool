@@ -1,8 +1,11 @@
 package services.editions.publishing
 
-import com.amazonaws.services.sns.AmazonSNS
-import com.amazonaws.services.sns.model.{MessageAttributeValue, PublishRequest}
 import conf.ApplicationConfiguration
+import software.amazon.awssdk.services.sns.SnsClient
+import software.amazon.awssdk.services.sns.model.{
+  MessageAttributeValue,
+  PublishRequest
+}
 import model.FeastAppModel.{
   Chef,
   ChefContent,
@@ -43,7 +46,7 @@ object FeastPublicationTarget {
 }
 
 class FeastPublicationTarget(
-    snsClient: AmazonSNS,
+    snsClient: SnsClient,
     config: ApplicationConfiguration,
     timestamp: TimestampGenerator
 ) extends PublicationTarget
@@ -158,19 +161,25 @@ class FeastPublicationTarget(
       content: String,
       messageType: FeastPublicationTarget.MessageType
   ): PublishRequest = {
-    new PublishRequest()
-      .withMessage(content)
-      .withTopicArn(config.aws.feastAppPublicationTopic)
-      .withMessageAttributes(
+    PublishRequest
+      .builder()
+      .message(content)
+      .topicArn(config.aws.feastAppPublicationTopic)
+      .messageAttributes(
         Map(
-          "timestamp" -> new MessageAttributeValue()
-            .withDataType("Number")
-            .withStringValue(timestamp.getTimestamp.toString),
-          "type" -> new MessageAttributeValue()
-            .withDataType("String")
-            .withStringValue(messageType.toString)
+          "timestamp" -> MessageAttributeValue
+            .builder()
+            .dataType("Number")
+            .stringValue(timestamp.getTimestamp.toString)
+            .build(),
+          "type" -> MessageAttributeValue
+            .builder()
+            .dataType("String")
+            .stringValue(messageType.toString)
+            .build()
         ).asJava
       )
+      .build()
   }
 
   override def putIssueJson[T: Writes](issue: T, key: String): Unit = {

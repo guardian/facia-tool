@@ -1,13 +1,6 @@
 import com.amazonaws.auth.AWSCredentialsProvider
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
 import software.amazon.awssdk.regions.{Region => WeirdRegion}
-import com.amazonaws.services.sns.AmazonSNSClient
-import software.amazon.awssdk.auth.credentials.{
-  AwsCredentials,
-  AwsCredentialsProvider,
-  AwsCredentialsProviderChain,
-  DefaultCredentialsProvider,
-  ProfileCredentialsProvider
-}
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
@@ -34,6 +27,7 @@ import services.editions.publishing.{
 }
 import slices.{Containers, FixedContainers}
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import software.amazon.awssdk.services.sns.SnsClient
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
@@ -72,10 +66,10 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     .region(WeirdRegion.of(config.aws.region))
     .build()
   val s3Client = S3.client(oldAwsCredentials, config.aws.region)
-  val snsClient = AmazonSNSClient
+  val snsClient = SnsClient
     .builder()
-    .withCredentials(oldAwsCredentials)
-    .withRegion(config.aws.region)
+    .credentialsProvider(newAwsCredentials)
+    .region(WeirdRegion.of(config.aws.region))
     .build()
   val acl = new Acl(permissions)
 
