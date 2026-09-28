@@ -1,4 +1,4 @@
-@(stage: String, identity: Option[com.gu.pandomainauth.model.User] = None, isDev: Boolean, displayV2Message: Boolean, priority: String)
+@(stage: String, identity: Option[com.gu.pandomainauth.model.User] = None, isDev: Boolean, displayV2Message: Boolean, isbreakingNews: Boolean, priority: String)
 
 <header>
     <div class="header__group header__logo">
@@ -15,6 +15,13 @@
          <div class="header__group v2-popup">
              <div class="v2-popup_logo"><img src="/assets/images/logo-v2.svg" /></div>
              <div class="v2-popup_text"><span>There's a new version of the fronts tool. Please&nbsp;<a href="/v2/@priority">try it by clicking here</a>.</span></div>
+         </div>
+     }
+
+     @if(isbreakingNews) {
+         <div class="header__group v2-popup">
+             <div class="v2-popup_logo"><img src="/assets/images/logo-v2.svg" /></div>
+             <div class="v2-popup_text"><span>This tool will soon be switched off and replaced by a new one. Contact <a href="mailto:central.production@@guardian.co.uk">Central Production</a> if you have any questions</span></div>
          </div>
      }
 

@@ -1,4 +1,4 @@
-@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, bundlePath: String, displayV2Message: Boolean = false, priority: String = "", maybeTelemetryUrl: Option[String] = None)
+@(identity: Option[com.gu.pandomainauth.model.User] = None, stage: String, isDev: Boolean, bundlePath: String, displayV2Message: Boolean = false, isbreakingNews: Boolean = false, priority: String = "", maybeTelemetryUrl: Option[String] = None)
 
 @import switchboard.SwitchManager
 
@@ -22,7 +22,7 @@
     @if(SwitchManager.getStatus("facia-tool-disable")) {
         <span class="message message--important">Temporarily disabled. Please try again shortly.</span>
     } else {
-        @templates.header(stage, identity, isDev, displayV2Message, priority)
+        @templates.header(stage, identity, isDev, displayV2Message, isbreakingNews, priority)
         @templates.vertical_layout()
         @templates.main()
     }
