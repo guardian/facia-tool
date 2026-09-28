@@ -75,7 +75,7 @@ libraryDependencies ++= Seq(
   "software.amazon.awssdk" % "cloudwatch" % awsSdkVersion,
   "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
   "software.amazon.awssdk" % "sns" % awsSdkVersion,
-  "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
+  "software.amazon.awssdk" % "sqs" % awsSdkVersion,
   "software.amazon.awssdk" % "ssm" % awsSdkVersion,
   "software.amazon.awssdk" % "sts" % awsSdkVersion,
   "com.gu" %% "content-api-models-scala" % capiModelsVersion,
