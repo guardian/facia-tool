@@ -4,6 +4,7 @@ import java.time.{LocalDate, LocalDateTime}
 
 import model.editions.{Edition, IssueVersionStatus}
 import org.scalatest.{FunSuite, Matchers}
+import software.amazon.awssdk.services.sqs.model.Message
 
 class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
 
@@ -25,9 +26,11 @@ class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
           |}
           |""".stripMargin
 
-      new com.amazonaws.services.sqs.model.Message()
-        .withBody(msg)
-        .withReceiptHandle("ReceiptHandle1")
+      Message
+        .builder()
+        .body(msg)
+        .receiptHandle("ReceiptHandle1")
+        .build()
     }
 
     val expected = PublishEventMessage(
@@ -65,8 +68,10 @@ class PublishEventSNSMessageParserTest extends FunSuite with Matchers {
           |}
           |""".stripMargin
 
-      new com.amazonaws.services.sqs.model.Message()
-        .withBody(msg)
+      Message
+        .builder()
+        .body(msg)
+        .build()
     }
 
     PublishEventSNSMessageParser.parseToEvent(

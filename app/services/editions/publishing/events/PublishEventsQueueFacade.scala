@@ -1,11 +1,15 @@
 package services.editions.publishing.events
 
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
-import com.amazonaws.services.sqs.model.{Message, ReceiveMessageRequest}
 import conf.ApplicationConfiguration
 import logging.Logging
 import services.editions.publishing.events.PublishEventSNSMessageParser.parseToEvent
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.sqs.SqsClient
+import software.amazon.awssdk.services.sqs.model.{
+  DeleteMessageRequest,
+  Message,
+  ReceiveMessageRequest
+}
 
 import scala.jdk.CollectionConverters._
 import scala.util.{Failure, Success, Try}
@@ -30,10 +34,10 @@ private[events] class PublishEventsSQSFacade(
   private val sqsClientLongPoolingWaitTimeSec = 15
   private val queueURL = config.faciatool.publishEventsQueue
 
-  private lazy val SQS = AmazonSQSAsyncClientBuilder
-    .standard()
-    .withCredentials(config.aws.cmsFrontsAccountCredentials)
-    .withRegion(Regions.EU_WEST_1)
+  private lazy val SQS = SqsClient
+    .builder()
+    .credentialsProvider(config.aws.newStyleCmsFrontsAccountCredentials)
+    .region(Region.EU_WEST_1)
     .build()
 
   def getPublishEventFromQueue: Option[PublishEventMessage] =
@@ -41,7 +45,13 @@ private[events] class PublishEventsSQSFacade(
 
   def delete(receiptHandle: String): Unit = {
     Try {
-      SQS.deleteMessageAsync(queueURL, receiptHandle)
+      SQS.deleteMessage(
+        DeleteMessageRequest
+          .builder()
+          .queueUrl(queueURL)
+          .receiptHandle(receiptHandle)
+          .build()
+      )
     } match {
       case Success(messages) =>
         logger.info(
@@ -58,12 +68,14 @@ private[events] class PublishEventsSQSFacade(
 
   private def receiveMessage: Option[Message] = {
     Try {
-      val receiveRequest = new ReceiveMessageRequest()
-        .withQueueUrl(queueURL)
-        .withMaxNumberOfMessages(maxNumberOfSQSMessagesPerReceiveReq)
-        .withWaitTimeSeconds(sqsClientLongPoolingWaitTimeSec)
+      val receiveRequest = ReceiveMessageRequest
+        .builder()
+        .queueUrl(queueURL)
+        .maxNumberOfMessages(maxNumberOfSQSMessagesPerReceiveReq)
+        .waitTimeSeconds(sqsClientLongPoolingWaitTimeSec)
+        .build()
 
-      SQS.receiveMessage(receiveRequest).getMessages.asScala.toList
+      SQS.receiveMessage(receiveRequest).messages.asScala.toList
     } match {
       case Success(messageList) =>
         if (messageList.isEmpty) {
