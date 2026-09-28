@@ -4,12 +4,14 @@ import {
   type StartedNetwork,
   type StartedTestContainer,
 } from "testcontainers";
+import { join } from "node:path";
 import { stackLabel } from "./infrastructure.js";
 import type { StartedMock } from "./types.js";
 
 interface MockConfig {
   name: string;
   aliases: string[];
+  httpsHostPort?: number;
 }
 
 const mockConfigs: MockConfig[] = [
@@ -35,32 +37,64 @@ const mockConfigs: MockConfig[] = [
     name: "video",
     aliases: ["video.local.dev-gutools.co.uk"],
   },
+  {
+    name: "telemetry",
+    aliases: ["user-telemetry.local.dev-gutools.co.uk"],
+    httpsHostPort: 3133,
+  },
+  {
+    name: "pinboard",
+    aliases: ["pinboard.local.dev-gutools.co.uk"],
+  },
 ];
 
 async function startMock(
   config: MockConfig,
+  e2eRoot: string,
   network: StartedNetwork,
   runId: string,
 ): Promise<StartedTestContainer> {
-  return new GenericContainer("wiremock/wiremock:3.13.1")
+  const container = new GenericContainer("wiremock/wiremock:3.13.1")
     .withLabels({ [stackLabel]: runId, "facia-tool-e2e.mock": config.name })
     .withNetwork(network)
     .withNetworkAliases(...config.aliases)
-    .withExposedPorts(8080)
-    .withCommand(["--disable-banner", "--verbose"])
+    .withBindMounts([
+      {
+        source: join(e2eRoot, "fixtures", "wiremock", config.name),
+        target: "/fixtures",
+        mode: "ro",
+      },
+    ])
+    .withCommand([
+      "--root-dir",
+      "/fixtures",
+      "--disable-banner",
+      "--verbose",
+      ...(config.httpsHostPort ? ["--https-port", "8443"] : []),
+    ])
     .withWaitStrategy(Wait.forHttp("/__admin/health", 8080))
-    .withStartupTimeout(120_000)
-    .start();
+    .withStartupTimeout(120_000);
+
+  if (config.httpsHostPort) {
+    container.withExposedPorts(8080, {
+      container: 8443,
+      host: config.httpsHostPort,
+    });
+  } else {
+    container.withExposedPorts(8080);
+  }
+  return container.start();
 }
 
 export async function startMocks(
+  e2eRoot: string,
   network: StartedNetwork,
   runId: string,
 ): Promise<StartedMock[]> {
   const results = await Promise.allSettled(
     mockConfigs.map(async (config) => ({
       name: config.name,
-      container: await startMock(config, network, runId),
+      container: await startMock(config, e2eRoot, network, runId),
     })),
   );
   const started = results

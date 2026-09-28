@@ -312,6 +312,12 @@ class ApplicationConfiguration(
     lazy val publicDSN = getString("sentry.publicDSN").getOrElse("")
   }
 
+  object e2e {
+    lazy val authCookie = getString("e2e.authCookie")
+    lazy val authCookieSecure =
+      getBoolean("e2e.authCookieSecure").getOrElse(true)
+  }
+
   object switchBoard {
     val bucket = getMandatoryString("switchboard.bucket")
     val objectKey = getMandatoryString("switchboard.object")

@@ -9,6 +9,8 @@ export type AppMode = "container" | "native";
 export interface StackConnection {
   baseUrl: string;
   localStackEndpoint: string;
+  authCookieName: string;
+  panDomainPrivateKey: string;
 }
 
 export interface StackInfrastructure {

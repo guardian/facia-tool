@@ -9,6 +9,7 @@ GET         /authError                               controllers.PandaAuthContro
 GET         /oauthCallback                           controllers.PandaAuthController.oauthCallback
 GET         /logout                                  controllers.PandaAuthController.logout
 GET         /login/status                            controllers.PandaAuthController.status
+GET         /cookie                                  controllers.PandaAuthController.localCookie
 
 # static files
 GET         /assets/fronts-client-v2/*file           controllers.V2Assets.at(file)

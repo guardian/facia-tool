@@ -45,12 +45,15 @@ export async function startAppContainer({
   runtimeConfig,
 }: StartAppOptions): Promise<StartedTestContainer> {
   const image = await buildAppImage(e2eRoot, repoRoot, runId);
+  const appTarget = join(e2eRoot, "target", "app-sbt-target");
+  mkdirSync(appTarget, { recursive: true });
   return image
     .withLabels({ [stackLabel]: runId })
     .withNetwork(network)
     .withNetworkAliases("facia-tool")
     .withBindMounts([
       { source: repoRoot, target: "/workspace", mode: "rw" },
+      { source: appTarget, target: "/workspace/target", mode: "rw" },
       ...sbtCacheBindMounts(),
     ])
     .withEnvironment(runtimeConfig.environment)

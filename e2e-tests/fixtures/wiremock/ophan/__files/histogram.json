@@ -1,0 +1,7 @@
+[
+  {
+    "path": "/e2e/article",
+    "totalHits": 42,
+    "series": [{ "name": "pageviews", "data": [[1789992000000, 42]] }]
+  }
+]

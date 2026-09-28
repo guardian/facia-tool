@@ -12,6 +12,7 @@ interface RuntimeConfigOptions {
   postgres: StartedTestContainer;
   localstack: StartedTestContainer;
   mocks: StartedMock[];
+  authCookie: string;
 }
 
 function quote(value: string): string {
@@ -25,6 +26,7 @@ export function writeRuntimeConfig({
   postgres,
   localstack,
   mocks,
+  authCookie,
 }: RuntimeConfigOptions): RuntimeConfig {
   const runtimeDirectory = join(e2eRoot, "target", "runtime", mode);
   mkdirSync(runtimeDirectory, { recursive: true });
@@ -139,6 +141,10 @@ faciatool.sns.tool_topic_arn = "arn:aws:sns:eu-west-1:000000000000:facia-e2e"
 feast_app.publication_topic = "arn:aws:sns:eu-west-1:000000000000:feast-e2e"
 analytics.secret = "e2e"
 sentry.publicDSN = ""
+e2e {
+  authCookie = ${quote(authCookie)}
+  authCookieSecure = ${mode === "native"}
+}
 `,
   );
 
