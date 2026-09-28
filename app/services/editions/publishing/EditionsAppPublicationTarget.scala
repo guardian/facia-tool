@@ -1,8 +1,5 @@
 package services.editions.publishing
 
-import com.amazonaws.services.s3.AmazonS3
-import com.amazonaws.services.s3.model.{ObjectMetadata, PutObjectRequest}
-import com.amazonaws.util.StringInputStream
 import model.editions.EditionsIssue
 import play.api.libs.json.{Json, Writes}
 import PublishedIssueFormatters._
@@ -12,40 +9,34 @@ import org.apache.commons.lang3.builder.{
   ReflectionToStringBuilder,
   ToStringStyle
 }
+import software.amazon.awssdk.core.sync.RequestBody
+import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.s3.model.PutObjectRequest
 
 import java.nio.charset.StandardCharsets
 
 object EditionsAppPublicationTarget extends LazyLogging {
 
-  val baseMetadata: ObjectMetadata = {
-    val metadata = new ObjectMetadata()
-    metadata.setContentType("application/json")
-    metadata
-  }
-
   def createPutObjectRequest[T: Writes](
       bucketName: String,
       key: String,
       issue: T
-  ): PutObjectRequest = {
+  ): (PutObjectRequest, RequestBody) = {
     val issueJson = Json.stringify(Json.toJson(issue))
-
-    // Why do we do this? Well, because if we are sending a streaming PutObjectRequest then S3 requires the length of the stream
-    // If it's not explicitly set in ObjectMetadata, then the AWS SDK will consume the entire string into memory just to measure the length.
-    // This is pointless as we already _have_ it in memory here (and it creates un-necessary log noise).  So we need to put the BYTE length into the header.
-    // Note that the byte length of a UTF-8 string can easily be greater than the character length, which is why we need to use getBytes here.
-    val metadata = baseMetadata
-    metadata.setContentLength(issueJson.getBytes(StandardCharsets.UTF_8).length)
-    new PutObjectRequest(
-      bucketName,
-      key,
-      new StringInputStream(issueJson),
-      metadata
-    )
+    // The byte length of a UTF-8 string can exceed its character length, so measure the encoded bytes.
+    val bytes = issueJson.getBytes(StandardCharsets.UTF_8)
+    val request = PutObjectRequest
+      .builder()
+      .bucket(bucketName)
+      .key(key)
+      .contentType("application/json")
+      .contentLength(bytes.length.toLong)
+      .build()
+    (request, RequestBody.fromBytes(bytes))
   }
 }
 
-class EditionsAppPublicationTarget(s3Client: AmazonS3, bucketName: String)
+class EditionsAppPublicationTarget(s3Client: S3Client, bucketName: String)
     extends PublicationTarget
     with LazyLogging {
   override def putIssue(
@@ -59,7 +50,7 @@ class EditionsAppPublicationTarget(s3Client: AmazonS3, bucketName: String)
   }
 
   override def putIssueJson[T: Writes](content: T, key: String): Unit = {
-    val request = EditionsAppPublicationTarget.createPutObjectRequest(
+    val (request, body) = EditionsAppPublicationTarget.createPutObjectRequest(
       bucketName,
       key,
       content
@@ -70,18 +61,18 @@ class EditionsAppPublicationTarget(s3Client: AmazonS3, bucketName: String)
         ToStringStyle.MULTI_LINE_STYLE
       )
     )
-    s3Client.putObject(request)
+    s3Client.putObject(request, body)
   }
 
   def putEditionsList(rawJson: String): Unit = {
-    val metadata = EditionsAppPublicationTarget.baseMetadata
-    metadata.setContentLength(rawJson.getBytes(StandardCharsets.UTF_8).length)
-    val request = new PutObjectRequest(
-      bucketName,
-      "editionsList",
-      new StringInputStream(rawJson),
-      metadata
-    )
-    s3Client.putObject(request)
+    val bytes = rawJson.getBytes(StandardCharsets.UTF_8)
+    val request = PutObjectRequest
+      .builder()
+      .bucket(bucketName)
+      .key("editionsList")
+      .contentType("application/json")
+      .contentLength(bytes.length.toLong)
+      .build()
+    s3Client.putObject(request, RequestBody.fromBytes(bytes))
   }
 }
