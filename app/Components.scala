@@ -1,4 +1,3 @@
-import com.amazonaws.auth.AWSCredentialsProvider
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
 import software.amazon.awssdk.regions.{Region => WeirdRegion}
 import conf.ApplicationConfiguration
@@ -47,25 +46,18 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val isProd: Boolean = context.environment.mode == Mode.Prod
 
   // Services
-  val awsEndpoints = new AwsEndpoints(config)
   val capi = new GuardianCapi(config)
   val ophan = new GuardianOphan(config)
 
-  val oldAwsCredentials: AWSCredentialsProvider =
-    config.aws.cmsFrontsAccountCredentials
   val newAwsCredentials: AwsCredentialsProvider =
     config.aws.newStyleCmsFrontsAccountCredentials
 
-  // Scala 2.13 requires a version of Scanamo which requires the 'new' Amazon AWS SDK.
-  // This means we have two different SDKs for AWS in the build, which is unideal
-  // but should not lead to problems.
-  // TODO Upversion the rest of the AWS SDK code!
   val dynamo: DynamoDbClient = DynamoDbClient
     .builder()
     .credentialsProvider(newAwsCredentials)
     .region(WeirdRegion.of(config.aws.region))
     .build()
-  val s3Client = S3.client(oldAwsCredentials, config.aws.region)
+  val s3Client = S3.client(newAwsCredentials, config.aws.region)
   val snsClient = SnsClient
     .builder()
     .credentialsProvider(newAwsCredentials)
@@ -104,7 +96,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
 
   // Controllers
   val frontsApi = new FrontsApi(config)
-  val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
+  val s3FrontsApi = new S3FrontsApi(config, isTest)
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
   val configAgent = new ConfigAgent(config, frontsApi)
   val structuredLogger = new StructuredLogger(config, configAgent)

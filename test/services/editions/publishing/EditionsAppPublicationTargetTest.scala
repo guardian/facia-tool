@@ -34,20 +34,22 @@ class EditionsAppPublicationTargetTest
 
     "publication is preview" - {
       val key = PublicationTarget.createKey(issue, "preview")
-      val putObjectRequest = EditionsAppPublicationTarget
+      val (putObjectRequest, requestBody) = EditionsAppPublicationTarget
         .createPutObjectRequest("test-bucket", key, previewIssue)
 
       "key is correct" in {
-        putObjectRequest.getKey shouldBe "daily-edition/2019-09-30/preview.json"
+        putObjectRequest.key shouldBe "daily-edition/2019-09-30/preview.json"
       }
 
       "bucket is correct" in {
-        putObjectRequest.getBucketName shouldBe "test-bucket"
+        putObjectRequest.bucket shouldBe "test-bucket"
       }
 
       "data is correct" in {
         val actual =
-          Source.fromInputStream(putObjectRequest.getInputStream).mkString
+          Source
+            .fromInputStream(requestBody.contentStreamProvider().newStream())
+            .mkString
         val expectedJson = Json.stringify(Json.toJson(previewIssue))
         actual shouldBe expectedJson
       }
@@ -57,20 +59,22 @@ class EditionsAppPublicationTargetTest
       val publishedIssue =
         issue.toPublishableIssue("banana", PublishAction.proof)
       val key = PublicationTarget.createKey(issue, "banana")
-      val putObjectRequest = EditionsAppPublicationTarget
+      val (putObjectRequest, requestBody) = EditionsAppPublicationTarget
         .createPutObjectRequest("test-bucket", key, publishedIssue)
 
       "key is correct" in {
-        putObjectRequest.getKey shouldBe "daily-edition/2019-09-30/banana.json"
+        putObjectRequest.key shouldBe "daily-edition/2019-09-30/banana.json"
       }
 
       "bucket is correct" in {
-        putObjectRequest.getBucketName shouldBe "test-bucket"
+        putObjectRequest.bucket shouldBe "test-bucket"
       }
 
       "data is correct" in {
         val actual =
-          Source.fromInputStream(putObjectRequest.getInputStream).mkString
+          Source
+            .fromInputStream(requestBody.contentStreamProvider().newStream())
+            .mkString
         val expectedJson = Json.stringify(Json.toJson(publishedIssue))
         actual shouldBe expectedJson
       }

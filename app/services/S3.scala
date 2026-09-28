@@ -1,67 +1,70 @@
 package services
 
 import _root_.metrics.S3Metrics.S3ClientExceptionsMetric
-import com.amazonaws.auth.{
-  AWSCredentialsProvider,
-  AWSStaticCredentialsProvider,
-  BasicAWSCredentials
-}
-import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
-import com.amazonaws.services.s3.model.CannedAccessControlList.{
-  Private,
-  PublicRead
-}
-import com.amazonaws.services.s3.model._
-import com.amazonaws.services.s3.{AmazonS3, AmazonS3ClientBuilder}
-import com.amazonaws.util.StringInputStream
 import com.gu.pandomainauth.model.User
 import conf.ApplicationConfiguration
 import org.joda.time.DateTime
 import logging.Logging
+import software.amazon.awssdk.auth.credentials.{
+  AwsBasicCredentials,
+  AwsCredentialsProvider,
+  StaticCredentialsProvider
+}
+import software.amazon.awssdk.core.ResponseInputStream
+import software.amazon.awssdk.core.sync.RequestBody
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.s3.model.{
+  GetObjectRequest,
+  GetObjectResponse,
+  ObjectCannedACL,
+  PutObjectRequest,
+  PutObjectResponse,
+  S3Exception
+}
 
+import java.net.URI
 import scala.io.{Codec, Source}
 
 sealed trait S3Accounts {
   def bucket: String
-  def client: Option[AmazonS3]
+  def client: Option[S3Client]
 }
 case class CmsFrontsS3Account(
-    config: ApplicationConfiguration,
-    awsEndpoints: AwsEndpoints
+    config: ApplicationConfiguration
 ) extends S3Accounts {
   lazy val bucket = config.aws.frontsBucket
 
-  lazy val client: Option[AmazonS3] =
-    config.aws.credentials.map(credentials =>
+  lazy val client: Option[S3Client] =
+    config.aws.newStyleCredentials.map(credentials =>
       S3.client(credentials, config.aws.region, config.aws.localS3Endpoint)
     )
 }
 
 object S3 {
   def client(
-      credentials: AWSCredentialsProvider,
+      credentials: AwsCredentialsProvider,
       region: String,
       localS3Endpoint: Option[String] = None
-  ): AmazonS3 =
+  ): S3Client =
     localS3Endpoint match {
       case Some(endpoint) =>
-        AmazonS3ClientBuilder
-          .standard()
-          .withCredentials(
-            new AWSStaticCredentialsProvider(
-              new BasicAWSCredentials("test", "test")
+        S3Client
+          .builder()
+          .credentialsProvider(
+            StaticCredentialsProvider.create(
+              AwsBasicCredentials.create("test", "test")
             )
           )
-          .withEndpointConfiguration(
-            new EndpointConfiguration(endpoint, region)
-          )
-          .withPathStyleAccessEnabled(true)
+          .region(Region.of(region))
+          .endpointOverride(URI.create(endpoint))
+          .forcePathStyle(true)
           .build()
       case None =>
-        AmazonS3ClientBuilder
-          .standard()
-          .withCredentials(credentials)
-          .withRegion(region)
+        S3Client
+          .builder()
+          .credentialsProvider(credentials)
+          .region(Region.of(region))
           .build()
     }
 }
@@ -72,10 +75,13 @@ trait S3 extends Logging {
   private def withS3Result[T](
       account: S3Accounts,
       key: String
-  )(action: S3Object => T): Option[T] = account.client.flatMap { client =>
+  )(
+      action: ResponseInputStream[GetObjectResponse] => T
+  ): Option[T] = account.client.flatMap { client =>
     try {
 
-      val request = new GetObjectRequest(account.bucket, key)
+      val request =
+        GetObjectRequest.builder().bucket(account.bucket).key(key).build()
       val result = client.getObject(request)
 
       // http://stackoverflow.com/questions/17782937/connectionpooltimeoutexception-when-iterating-objects-in-s3
@@ -89,7 +95,7 @@ trait S3 extends Logging {
         result.close()
       }
     } catch {
-      case e: AmazonS3Exception if e.getStatusCode == 404 => {
+      case e: S3Exception if e.statusCode == 404 => {
         logger.warn(
           "S3: attempted to get, but not found at %s - %s" format (account.bucket, key)
         )
@@ -108,12 +114,12 @@ trait S3 extends Logging {
 
   def get(key: String)(implicit codec: Codec): Option[String] =
     withS3Result(cmsFrontsS3Account, key) { result =>
-      Source.fromInputStream(result.getObjectContent).mkString
+      Source.fromInputStream(result).mkString
     }
 
   def getLastModified(key: String): Option[DateTime] =
     withS3Result(cmsFrontsS3Account, key) { result =>
-      new DateTime(result.getObjectMetadata.getLastModified)
+      new DateTime(result.response().lastModified().toEpochMilli)
     }
 
   def putPublic(
@@ -122,7 +128,7 @@ trait S3 extends Logging {
       contentType: String,
       accounts: List[S3Accounts]
   ): Unit = {
-    put(key: String, value: String, contentType: String, PublicRead, accounts)
+    put(key, value, contentType, ObjectCannedACL.PUBLIC_READ, accounts)
   }
 
   def putPrivate(
@@ -131,40 +137,39 @@ trait S3 extends Logging {
       contentType: String,
       accounts: List[S3Accounts]
   ): Unit = {
-    put(key: String, value: String, contentType: String, Private, accounts)
+    put(key, value, contentType, ObjectCannedACL.PRIVATE, accounts)
   }
 
   private def put(
       key: String,
       value: String,
       contentType: String,
-      accessControlList: CannedAccessControlList,
+      accessControlList: ObjectCannedACL,
       accounts: List[S3Accounts]
   ): Unit = {
-    val metadata = new ObjectMetadata()
-    metadata.setCacheControl("no-cache,no-store")
-    metadata.setContentType(contentType)
-    metadata.setContentLength(value.getBytes("UTF-8").length)
-
-    accounts.map(putRequest(_, key, value, metadata, accessControlList))
+    val bytes = value.getBytes("UTF-8")
+    accounts.map(putRequest(_, key, bytes, contentType, accessControlList))
   }
 
   private def putRequest(
       account: S3Accounts,
       key: String,
-      value: String,
-      metadata: ObjectMetadata,
-      accessControlList: CannedAccessControlList
-  ): Option[PutObjectResult] = {
-    val request = new PutObjectRequest(
-      account.bucket,
-      key,
-      new StringInputStream(value),
-      metadata
-    ).withCannedAcl(accessControlList)
+      bytes: Array[Byte],
+      contentType: String,
+      accessControlList: ObjectCannedACL
+  ): Option[PutObjectResponse] = {
+    val request = PutObjectRequest
+      .builder()
+      .bucket(account.bucket)
+      .key(key)
+      .contentType(contentType)
+      .contentLength(bytes.length.toLong)
+      .cacheControl("no-cache,no-store")
+      .acl(accessControlList)
+      .build()
 
     try {
-      account.client.map(_.putObject(request))
+      account.client.map(_.putObject(request, RequestBody.fromBytes(bytes)))
     } catch {
       case e: Exception =>
         logger.error(
@@ -179,14 +184,13 @@ trait S3 extends Logging {
 
 class S3FrontsApi(
     val config: ApplicationConfiguration,
-    val isTest: Boolean,
-    val awsEndpoints: AwsEndpoints
+    val isTest: Boolean
 ) extends S3 {
 
   lazy val stage = if (isTest) "TEST" else config.facia.stage.toUpperCase
   val namespace = "frontsapi"
   lazy val location = s"$stage/$namespace"
-  val cmsFrontsS3Account = new CmsFrontsS3Account(config, awsEndpoints)
+  val cmsFrontsS3Account = new CmsFrontsS3Account(config)
 
   def getLiveFapiPressedKeyForPath(path: String): String =
     s"$location/pressed/live/$path/fapi/pressed.json"
