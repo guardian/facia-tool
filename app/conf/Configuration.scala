@@ -2,9 +2,6 @@ package conf
 
 import java.io.{File, FileInputStream, InputStream}
 import java.net.URL
-import com.amazonaws.AmazonClientException
-import com.amazonaws.auth._
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import org.apache.commons.io.IOUtils
 import play.api.{Configuration => PlayConfiguration}
 import logging.Logging
@@ -12,9 +9,9 @@ import logging.Logging
 import scala.jdk.CollectionConverters._
 import scala.language.reflectiveCalls
 import software.amazon.awssdk.auth.credentials.{
+  AwsCredentialsProviderChain,
   DefaultCredentialsProvider,
-  AwsCredentialsProviderChain => NewAwsCredentialsProviderChain,
-  ProfileCredentialsProvider => NewProfileCredentialsProvider
+  ProfileCredentialsProvider
 }
 import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.rds.RdsClient
@@ -129,45 +126,17 @@ class ApplicationConfiguration(
       "feast_app.publication_topic"
     )
 
-    def cmsFrontsAccountCredentials: AWSCredentialsProvider =
-      credentials.getOrElse(
+    def newStyleCmsFrontsAccountCredentials: AwsCredentialsProviderChain =
+      newStyleCredentials.getOrElse(
         throw new BadConfigurationException(
           "AWS credentials are not configured for CMS Fronts"
         )
       )
-    val credentials: Option[AWSCredentialsProvider] = {
-      val provider = new AWSCredentialsProviderChain(
-        new ProfileCredentialsProvider("cmsFronts"),
-        new DefaultAWSCredentialsProviderChain()
-      )
-
-      // this is a bit of a convoluted way to check whether we actually have credentials.
-      // I guess in an ideal world there would be some sort of isConfigued() method...
-      try {
-        val creds = provider.getCredentials
-        Some(provider)
-      } catch {
-        case ex: AmazonClientException =>
-          logger.error("amazon client exception")
-
-          // We really, really want to ensure that PROD is configured before saying a box is OK
-          if (isProd) throw ex
-          // this means that on dev machines you only need to configure keys if you are actually going to use them
-          None
-      }
-    }
-
-    def newStyleCmsFrontsAccountCredentials: NewAwsCredentialsProviderChain =
-      newStyleCredentials.getOrElse(
-        throw new BadConfigurationException(
-          "AWS credentials are not configured for CMS Fronts (v2)"
-        )
-      )
-    val newStyleCredentials: Option[NewAwsCredentialsProviderChain] = {
-      val provider = NewAwsCredentialsProviderChain
+    val newStyleCredentials: Option[AwsCredentialsProviderChain] = {
+      val provider = AwsCredentialsProviderChain
         .builder()
         .addCredentialsProvider(
-          NewProfileCredentialsProvider.create("cmsFronts")
+          ProfileCredentialsProvider.create("cmsFronts")
         )
         .addCredentialsProvider(DefaultCredentialsProvider.create())
         .build()
@@ -253,26 +222,6 @@ class ApplicationConfiguration(
         val port = getMandatoryString("db.default.port")
         (host, port)
       }
-    }
-
-    def credentialsProviderChain(
-        accessKey: Option[String] = None,
-        secretKey: Option[String] = None
-    ): AWSCredentialsProviderChain = {
-      new AWSCredentialsProviderChain(
-        new AWSCredentialsProvider {
-          override def getCredentials: AWSCredentials = (for {
-            key <- accessKey
-            secret <- secretKey
-          } yield new BasicAWSCredentials(key, secret)).orNull
-
-          override def refresh(): Unit = {}
-        },
-        new EnvironmentVariableCredentialsProvider,
-        new SystemPropertiesCredentialsProvider,
-        new ProfileCredentialsProvider("cmsFronts"),
-        InstanceProfileCredentialsProvider.getInstance()
-      )
     }
   }
 

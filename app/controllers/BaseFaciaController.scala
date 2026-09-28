@@ -46,7 +46,7 @@ abstract class BaseFaciaControllerComponents(context: Context)
     PermissionsConfig(
       stage = config.environment.stage.toUpperCase(Locale.UK),
       region = config.aws.region,
-      awsCredentials = config.aws.cmsFrontsAccountCredentials
+      awsCredentials = config.aws.newStyleCmsFrontsAccountCredentials
     )
   )
 }
