@@ -1,0 +1,1 @@
+throw new Error("The local Testcontainers stack is added in Phase 2.");
