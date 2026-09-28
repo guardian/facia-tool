@@ -11,8 +11,6 @@ import logging.Logging
 
 import scala.jdk.CollectionConverters._
 import scala.language.reflectiveCalls
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
 import software.amazon.awssdk.auth.credentials.{
   DefaultCredentialsProvider,
   AwsCredentialsProviderChain => NewAwsCredentialsProviderChain,
@@ -22,6 +20,8 @@ import software.amazon.awssdk.regions.Region
 import software.amazon.awssdk.services.rds.RdsClient
 import software.amazon.awssdk.services.rds.model.DescribeDbInstancesRequest
 import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.ssm.SsmClient
+import software.amazon.awssdk.services.ssm.model.GetParameterRequest
 
 import java.nio.charset.StandardCharsets
 
@@ -188,10 +188,10 @@ class ApplicationConfiguration(
       .region(Region.of(region))
       .credentialsProvider(newStyleCmsFrontsAccountCredentials)
       .build()
-    lazy val ssmClient = AWSSimpleSystemsManagementClientBuilder
-      .standard()
-      .withCredentials(cmsFrontsAccountCredentials)
-      .withRegion(region)
+    lazy val ssmClient = SsmClient
+      .builder()
+      .region(Region.of(region))
+      .credentialsProvider(newStyleCmsFrontsAccountCredentials)
       .build()
     lazy val s3Client = S3Client
       .builder()
@@ -209,12 +209,14 @@ class ApplicationConfiguration(
     private def getPassword: String = {
       // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
       if (isProd) {
-        val request = new GetParameterRequest()
-          .withName(s"/facia-tool/cms-fronts/$stageFromProperties/db/password")
-          .withWithDecryption(true)
+        val request = GetParameterRequest
+          .builder()
+          .name(s"/facia-tool/cms-fronts/$stageFromProperties/db/password")
+          .withDecryption(true)
+          .build()
 
         val response = aws.ssmClient.getParameter(request)
-        response.getParameter.getValue
+        response.parameter.value
       } else {
         getMandatoryString("db.default.password")
       }
