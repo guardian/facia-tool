@@ -1,6 +1,5 @@
 package controllers
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import org.scanamo._
 import org.scanamo.syntax._
 import model.{ClipboardCard, FeatureSwitch, UserData, UserDataForDefaults}
