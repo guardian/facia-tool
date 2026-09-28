@@ -70,7 +70,7 @@ libraryDependencies ++= Seq(
   filters,
   evolutions,
   jdbc,
-  "com.amazonaws" % "aws-java-sdk-rds" % awsVersion,
+  "software.amazon.awssdk" % "rds" % awsSdkVersion,
   "com.amazonaws" % "aws-java-sdk-core" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion,
   "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,

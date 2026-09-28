@@ -11,8 +11,6 @@ import logging.Logging
 
 import scala.jdk.CollectionConverters._
 import scala.language.reflectiveCalls
-import com.amazonaws.services.rds.model.DescribeDBInstancesRequest
-import com.amazonaws.services.rds.AmazonRDSClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
 import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
 import software.amazon.awssdk.auth.credentials.{
@@ -21,6 +19,8 @@ import software.amazon.awssdk.auth.credentials.{
   ProfileCredentialsProvider => NewProfileCredentialsProvider
 }
 import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.rds.RdsClient
+import software.amazon.awssdk.services.rds.model.DescribeDbInstancesRequest
 import software.amazon.awssdk.services.s3.S3Client
 
 import java.nio.charset.StandardCharsets
@@ -183,10 +183,10 @@ class ApplicationConfiguration(
       }
     }
 
-    lazy val rdsClient = AmazonRDSClientBuilder
-      .standard()
-      .withCredentials(cmsFrontsAccountCredentials)
-      .withRegion(region)
+    lazy val rdsClient = RdsClient
+      .builder()
+      .region(Region.of(region))
+      .credentialsProvider(newStyleCmsFrontsAccountCredentials)
       .build()
     lazy val ssmClient = AWSSimpleSystemsManagementClientBuilder
       .standard()
@@ -226,12 +226,13 @@ class ApplicationConfiguration(
         val dbIdentifier =
           if (stageFromProperties == "PROD") "facia-prod-db-2025"
           else "facia-code-db-2025"
-        val request = new DescribeDBInstancesRequest().withDBInstanceIdentifier(
-          dbIdentifier
-        )
+        val request = DescribeDbInstancesRequest
+          .builder()
+          .dbInstanceIdentifier(dbIdentifier)
+          .build()
         val instances = aws.rdsClient
           .describeDBInstances(request)
-          .getDBInstances
+          .dbInstances
           .asScala
           .toList
 
@@ -242,8 +243,8 @@ class ApplicationConfiguration(
         }
 
         val instance = instances.head
-        val awsHost = instance.getEndpoint.getAddress
-        val awsPort = instance.getEndpoint.getPort.toString
+        val awsHost = instance.endpoint.address
+        val awsPort = instance.endpoint.port.toString
         (awsHost, awsPort)
       } else {
         val host = getMandatoryString("db.default.hostname")
