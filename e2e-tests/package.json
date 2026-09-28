@@ -1,0 +1,30 @@
+{
+  "name": "facia-tool-e2e-tests",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "yarn@1.22.22",
+  "engines": {
+    "node": ">=22.9.0"
+  },
+  "scripts": {
+    "bddgen": "bddgen",
+    "dev": "../scripts/dev-start.sh",
+    "dev:local": "tsx setup/run-dev-local.ts",
+    "test": "tsx scripts/run-tests.ts",
+    "test:ci": "tsx scripts/run-tests.ts",
+    "test:ui": "tsx scripts/run-tests.ts --ui",
+    "test:report": "playwright show-report target/playwright-report --port 9098",
+    "typecheck": "tsc --noEmit",
+    "validate:scaffold": "tsx scripts/validate-scaffold.ts"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.55.0",
+    "@types/node": "^22.18.0",
+    "playwright": "^1.55.0",
+    "playwright-bdd": "^8.3.0",
+    "testcontainers": "^11.6.0",
+    "tsx": "^4.20.5",
+    "typescript": "^5.9.2"
+  }
+}
