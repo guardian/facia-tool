@@ -68,25 +68,29 @@ class ViewsController(
 
   def collectionEditor(priority: String) =
     getCollectionPermissionFilterByPriority(priority, acl)(ec) { request =>
-      if (shouldRedirectToV2(request, Some(priority))) {
-        PermanentRedirect(s"/v2/$priority")
-      } else {
+      {
         val isBreakingNews = checkIfBreakingNews(request, Some(priority))
-        val isTreatsPage = checkIfTreatsPage(request)
-        val identity = request.user
-        Cached(60) {
-          Ok(
-            views.html.admin_main(
-              Option(identity),
-              config.facia.stage,
-              overrideIsDev(request, isDev),
-              assetsManager.pathForCollections,
-              priority != "email" && !isBreakingNews && !isTreatsPage,
-              isBreakingNews,
-              priority,
-              maybeTelemetryUrl = Some(telemetryUrl)
+        if (shouldRedirectToV2(request, Some(priority))) {
+          PermanentRedirect(s"/v2/$priority")
+        } else if (isBreakingNews && config.redirectToDispatch) {
+          PermanentRedirect(config.environment.dispatchToolUrl)
+        } else {
+          val isTreatsPage = checkIfTreatsPage(request)
+          val identity = request.user
+          Cached(60) {
+            Ok(
+              views.html.admin_main(
+                Option(identity),
+                config.facia.stage,
+                overrideIsDev(request, isDev),
+                assetsManager.pathForCollections,
+                priority != "email" && !isBreakingNews && !isTreatsPage,
+                isBreakingNews,
+                priority,
+                maybeTelemetryUrl = Some(telemetryUrl)
+              )
             )
-          )
+          }
         }
       }
     }

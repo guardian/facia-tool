@@ -97,7 +97,13 @@ class ApplicationConfiguration(
       else "local.dev-gutools.co.uk"
 
     val applicationUrl = s"https://fronts.${correspondingToolsDomainSuffix}"
+
+    val dispatchToolUrl = s"https://dispatch.${correspondingToolsDomainSuffix}"
   }
+
+  val redirectToDispatch = getString("redirectToDispatch")
+    .getOrElse("")
+    .toLowerCase() == "true"
 
   object ophanApi {
     lazy val key = getString("ophan.api.key")
