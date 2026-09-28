@@ -45,6 +45,8 @@ export async function startAppContainer({
   runtimeConfig,
 }: StartAppOptions): Promise<StartedTestContainer> {
   const image = await buildAppImage(e2eRoot, repoRoot, runId);
+  const appTarget = join(e2eRoot, "target", "app-sbt-target");
+  mkdirSync(appTarget, { recursive: true });
   return image
     .withLabels({ [stackLabel]: runId })
     .withNetwork(network)
@@ -56,6 +58,7 @@ export async function startAppContainer({
         target: "/etc/gu/facia-tool.properties",
         mode: "ro",
       },
+      { source: appTarget, target: "/workspace/target", mode: "rw" },
       ...sbtCacheBindMounts(),
     ])
     .withEnvironment(runtimeConfig.environment)

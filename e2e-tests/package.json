@@ -16,10 +16,13 @@
     "test:ui": "E2E_START_STACK=true E2E_APP_MODE=native tsx scripts/run-tests.ts --ui",
     "test:report": "playwright show-report target/playwright-report --port 9098",
     "typecheck": "tsc --noEmit",
+    "validate:auth": "tsx scripts/validate-auth-redirect.ts",
+    "validate:fixtures": "tsx scripts/validate-fixtures.ts",
     "validate:scaffold": "tsx scripts/validate-scaffold.ts",
     "validate:stack": "tsx scripts/validate-stack.ts"
   },
   "devDependencies": {
+    "@guardian/pan-domain-node": "1.2.5",
     "@aws-sdk/client-dynamodb": "^3.890.0",
     "@aws-sdk/client-s3": "^3.890.0",
     "@aws-sdk/client-sns": "^3.890.0",

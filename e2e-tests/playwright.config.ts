@@ -23,6 +23,11 @@ export default defineConfig({
     video: "on-first-retry",
     screenshot: "only-on-failure",
     ignoreHTTPSErrors: true,
+    launchOptions: {
+      args: [
+        "--host-resolver-rules=MAP user-telemetry.local.dev-gutools.co.uk 127.0.0.1:3133",
+      ],
+    },
   },
   reporter: process.env.CI
     ? [["github"]]

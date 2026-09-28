@@ -1,0 +1,17 @@
+{
+  "fronts": {
+    "e2e/editorial": {
+      "id": "e2e/editorial",
+      "collections": ["e2e-collection"],
+      "priority": "editorial"
+    }
+  },
+  "collections": {
+    "e2e-collection": {
+      "id": "e2e-collection",
+      "displayName": "E2E Editorial Collection",
+      "type": "fixed/medium/slow-IV",
+      "uneditable": false
+    }
+  }
+}

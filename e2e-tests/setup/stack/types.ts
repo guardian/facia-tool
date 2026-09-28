@@ -1,14 +1,13 @@
 import type { ChildProcess } from "node:child_process";
-import type {
-  StartedNetwork,
-  StartedTestContainer,
-} from "testcontainers";
+import type { StartedNetwork, StartedTestContainer } from "testcontainers";
 
 export type AppMode = "container" | "native";
 
 export interface StackConnection {
   baseUrl: string;
   localStackEndpoint: string;
+  authCookieName: string;
+  panDomainPrivateKey: string;
 }
 
 export interface StackInfrastructure {
@@ -33,6 +32,7 @@ export interface NativeApp {
 }
 
 export interface LocalStack extends StackInfrastructure {
+  authRedirect: StartedTestContainer;
   app?: StartedTestContainer;
   nativeApp?: NativeApp;
   mocks: StartedMock[];
