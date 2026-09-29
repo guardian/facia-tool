@@ -5,7 +5,10 @@ import java.lang.management.{GarbageCollectorMXBean, ManagementFactory}
 import java.util.concurrent.atomic.AtomicLong
 
 import org.apache.pekko.actor.Scheduler
-import software.amazon.awssdk.services.cloudwatch.model.{Dimension, StandardUnit}
+import software.amazon.awssdk.services.cloudwatch.model.{
+  Dimension,
+  StandardUnit
+}
 import logging.Logging
 
 import scala.jdk.CollectionConverters._
@@ -231,7 +234,8 @@ class CloudWatchApplicationMetrics(
     val allMetrics: List[FrontendMetric] =
       this.systemMetrics ::: this.applicationMetrics
     if (!isDev) {
-      val stageDimension = Dimension.builder().name("Stage").value(stage).build()
+      val stageDimension =
+        Dimension.builder().name("Stage").value(stage).build()
       cloudWatch.putMetricsWithStage(
         allMetrics,
         applicationDimension,
