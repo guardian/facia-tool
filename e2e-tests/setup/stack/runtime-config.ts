@@ -168,6 +168,7 @@ e2e {
       AWS_REGION: region,
       AWS_ENDPOINT_URL_S3: permissionsS3Endpoint,
       FACIA_PROPERTIES_FILE: propertiesPath,
+      ...(inContainer ? { E2E_VITE_ALLOW_ALL_ORIGINS: "true" } : {}),
     },
   };
 }

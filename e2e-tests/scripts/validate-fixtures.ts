@@ -116,7 +116,10 @@ async function validateSeededAws(endpoint: string): Promise<void> {
       ),
     ]);
 
-  if (!config.includes("e2e/editorial") || !collection.includes("e2e/article")) {
+  if (
+    !config.includes("test-editorial-front") ||
+    !collection.includes("e2e/article")
+  ) {
     throw new Error("Seeded front or collection fixture is missing");
   }
   if (!permissions.includes("edit_editorial_fronts")) {
@@ -160,7 +163,7 @@ try {
     headers: { Cookie: cookieHeader },
   });
   const configBody = await configResponse.text();
-  if (!configResponse.ok || !configBody.includes("e2e/editorial")) {
+  if (!configResponse.ok || !configBody.includes("test-editorial-front")) {
     throw new Error("The app did not expose the seeded editorial front");
   }
   const collectionsResponse = await fetch(
