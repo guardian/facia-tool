@@ -112,6 +112,20 @@ videos, traces, and other Playwright output are written to
 `target/test-results/`. Traces and videos are retained on the first retry, and
 screenshots are retained on failure.
 
+## Continuous integration
+
+`.github/workflows/e2e-tests.yml` runs the complete suite for pull requests,
+pushes to `main`, and manual dispatches. The job uses `ubuntu-22.04`, caches the
+Yarn dependencies, installs only Playwright's Chromium headless shell, and runs
+`yarn test:ci`. Testcontainers builds the app image and owns the isolated stack;
+the workflow does not use service containers, remote Guardian services, AWS
+credentials, or private repository credentials.
+
+If the job fails, GitHub Actions uploads `target/test-results/` as the
+`playwright-failure-artifacts` artifact and retains it for seven days. This
+directory contains any screenshots, traces, and videos retained by Playwright.
+All third-party actions in the workflow are pinned to immutable commit SHAs.
+
 ## Folder structure
 
 ```text
