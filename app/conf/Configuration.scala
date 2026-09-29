@@ -126,7 +126,7 @@ class ApplicationConfiguration(
       "feast_app.publication_topic"
     )
 
-    def newStyleCmsFrontsAccountCredentials: AwsCredentialsProviderChain =
+    def cmsFrontsAccountCredentials: AwsCredentialsProviderChain =
       newStyleCredentials.getOrElse(
         throw new BadConfigurationException(
           "AWS credentials are not configured for CMS Fronts"
@@ -155,17 +155,17 @@ class ApplicationConfiguration(
     lazy val rdsClient = RdsClient
       .builder()
       .region(Region.of(region))
-      .credentialsProvider(newStyleCmsFrontsAccountCredentials)
+      .credentialsProvider(cmsFrontsAccountCredentials)
       .build()
     lazy val ssmClient = SsmClient
       .builder()
       .region(Region.of(region))
-      .credentialsProvider(newStyleCmsFrontsAccountCredentials)
+      .credentialsProvider(cmsFrontsAccountCredentials)
       .build()
     lazy val s3Client = S3Client
       .builder()
       .region(Region.of(region))
-      .credentialsProvider(newStyleCmsFrontsAccountCredentials)
+      .credentialsProvider(cmsFrontsAccountCredentials)
       .build()
   }
 

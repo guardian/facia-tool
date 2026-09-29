@@ -50,7 +50,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val ophan = new GuardianOphan(config)
 
   val newAwsCredentials: AwsCredentialsProvider =
-    config.aws.newStyleCmsFrontsAccountCredentials
+    config.aws.cmsFrontsAccountCredentials
 
   val dynamo: DynamoDbClient = DynamoDbClient
     .builder()

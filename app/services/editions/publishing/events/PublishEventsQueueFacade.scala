@@ -36,7 +36,7 @@ private[events] class PublishEventsSQSFacade(
 
   private lazy val SQS = SqsClient
     .builder()
-    .credentialsProvider(config.aws.newStyleCmsFrontsAccountCredentials)
+    .credentialsProvider(config.aws.cmsFrontsAccountCredentials)
     .region(Region.EU_WEST_1)
     .build()
 
