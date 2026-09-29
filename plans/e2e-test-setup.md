@@ -133,12 +133,12 @@ Each numbered phase is a separate branch, commit and pull request. A later phase
 may be stacked on its unmerged predecessor, with the dependency and merge order
 stated in the PR body.
 
-- [ ] Phase 0 - this discovery plan
-- [ ] Phase 1 - Playwright/Cucumber BDD scaffold only
-- [ ] Phase 2 - Testcontainers stack and native-development/CI execution modes
-- [ ] Phase 3 - deterministic fixtures and WireMock mappings
-- [ ] Phase 4 - starter feature tests only
-- [ ] Phase 5 - `e2e-tests/README.md`
+- [x] Phase 0 - this discovery plan
+- [x] Phase 1 - Playwright/Cucumber BDD scaffold only
+- [x] Phase 2 - Testcontainers stack and native-development/CI execution modes
+- [x] Phase 3 - deterministic fixtures and WireMock mappings
+- [x] Phase 4 - starter feature tests only
+- [x] Phase 5 - `e2e-tests/README.md` (source and local-link audit completed 29 September 2026)
 - [ ] Phase 6 - GitHub Actions workflow and failure artifacts
 - [ ] Phase 7 - later coverage increments, one reviewed PR per feature
 
