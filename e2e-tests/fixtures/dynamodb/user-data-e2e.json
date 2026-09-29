@@ -3,14 +3,14 @@
   "frontIdsByPriority": {
     "M": {
       "editorial": {
-        "L": [{ "S": "e2e/editorial" }]
+        "L": [{ "S": "test-editorial-front" }]
       }
     }
   },
   "favouriteFrontIdsByPriority": {
     "M": {
       "editorial": {
-        "L": [{ "S": "e2e/editorial" }]
+        "L": [{ "S": "test-editorial-front" }]
       }
     }
   }

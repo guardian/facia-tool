@@ -154,6 +154,7 @@ sentry.publicDSN = ""
       AWS_DEFAULT_REGION: region,
       AWS_REGION: region,
       AWS_ENDPOINT_URL_S3: permissionsS3Endpoint,
+      ...(inContainer ? { E2E_VITE_ALLOW_ALL_ORIGINS: "true" } : {}),
     },
   };
 }
