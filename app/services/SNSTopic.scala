@@ -2,7 +2,10 @@ package services
 
 import play.api.libs.json.{Json, Writes}
 import software.amazon.awssdk.services.sns.SnsAsyncClient
-import software.amazon.awssdk.services.sns.model.{PublishRequest, PublishResponse}
+import software.amazon.awssdk.services.sns.model.{
+  PublishRequest,
+  PublishResponse
+}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.jdk.FutureConverters._
