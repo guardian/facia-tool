@@ -1,6 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
 import { defineBddConfig } from "playwright-bdd";
 
+const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
+
 const testDir = defineBddConfig({
   features: "features/**/*.feature",
   steps: "steps/**/*.ts",
@@ -24,6 +26,9 @@ export default defineConfig({
     screenshot: "only-on-failure",
     ignoreHTTPSErrors: true,
     launchOptions: {
+      ...(chromiumExecutablePath
+        ? { executablePath: chromiumExecutablePath }
+        : {}),
       args: [
         "--host-resolver-rules=MAP user-telemetry.local.dev-gutools.co.uk 127.0.0.1:3133",
       ],
