@@ -70,7 +70,7 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit
   private val previewSigner = {
     val stsClient = StsClient
       .builder()
-      .credentialsProvider(config.aws.newStyleCmsFrontsAccountCredentials)
+      .credentialsProvider(config.aws.cmsFrontsAccountCredentials)
       .region(Region.of(config.aws.region))
       .build()
 

@@ -38,7 +38,7 @@ object PressCommand {
 
 class FaciaPressTopic(val config: ApplicationConfiguration) {
   val maybeTopic = config.faciatool.frontPressToolTopic map { topicArn =>
-    val credentials = config.aws.newStyleCmsFrontsAccountCredentials
+    val credentials = config.aws.cmsFrontsAccountCredentials
     JsonMessageTopic[PressJob](
       SnsAsyncClient
         .builder()
