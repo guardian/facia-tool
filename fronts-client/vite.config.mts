@@ -31,7 +31,10 @@ export default defineConfig({
 			allow: ['../public/fonts', './'],
 		},
 		cors: {
-			origin: 'https://fronts.local.dev-gutools.co.uk',
+			origin:
+				process.env.E2E_VITE_ALLOW_ALL_ORIGINS === 'true'
+					? true
+					: 'https://fronts.local.dev-gutools.co.uk',
 		},
 	},
 });
