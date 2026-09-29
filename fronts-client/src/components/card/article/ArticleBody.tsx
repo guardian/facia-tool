@@ -408,7 +408,9 @@ const articleBodyDefault = React.memo(
 		 */
 		const isUSNetworkFront = frontId === 'us';
 
-		const shouldShowAbTestStatus = !!abTestStatus && isUSNetworkFront;
+		const isClipboard = frontId === clipboardId;
+		const shouldShowAbTestStatus =
+			!!abTestStatus && (isUSNetworkFront || isClipboard);
 
 		return (
 			<>
