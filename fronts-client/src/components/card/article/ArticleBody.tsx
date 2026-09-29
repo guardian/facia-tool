@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { css } from '@emotion/react';
 import { styled, theme } from 'constants/theme';
 import startCase from 'lodash/startCase';
 import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
@@ -31,9 +32,7 @@ import { media } from 'util/mediaQueries';
 import ArticleGraph from './ArticleGraph';
 import {
 	CinemagraphIcon,
-	ConicalFlaskIcon,
-	EllipsisIcon,
-	ExclamationIcon,
+	ConicalFlaskCircleIcon,
 	LoopIcon,
 	VideoIcon,
 	YoutubeIcon,
@@ -60,12 +59,13 @@ import {
 	IntendedAudienceSignifier,
 	IntendedAudienceSignifierProps,
 } from '@guardian/stand/IntendedAudienceSignifier';
+import { Badge } from '@guardian/stand/Badge';
 import { AbTestHeadlineErrorType } from '../../../util/abTests';
 
 type ABStatusMessage =
 	| 'Test in progress'
-	| 'End test on launch'
-	| 'Test set up incomplete'
+	| 'Test ends on launch'
+	| 'Test setup incomplete'
 	| 'Ready to launch'
 	| 'Test staged';
 
@@ -74,12 +74,10 @@ type ABTestTheme = 'active' | 'draft' | 'error';
 type ABTestPalette = {
 	background: string;
 	text: string;
-	border: string;
 	icon: string;
 };
 type ABTestStatus = {
 	message: ABStatusMessage;
-	theme: ABTestTheme;
 	palette: ABTestPalette;
 };
 
@@ -155,35 +153,26 @@ const ClipboardFirstPublished = styled.div`
 `;
 
 const getABTestThemeColors = (abTestTheme: ABTestTheme): ABTestPalette =>
-	theme.abTest[abTestTheme];
+	theme.abTestBadge[abTestTheme];
 
-const ABTestStatus = styled.div<{ abTestTheme: ABTestTheme }>`
-	background-color: ${({ abTestTheme }) =>
-		getABTestThemeColors(abTestTheme).background};
-	border-radius: 12px;
-	color: ${({ abTestTheme }) => getABTestThemeColors(abTestTheme).text};
-	border-width: 1px;
-	border-style: solid;
-	border-color: ${({ abTestTheme }) =>
-		getABTestThemeColors(abTestTheme).border};
-	font-weight: 700;
-	font-size: 12px;
-	padding: 4px 8px;
-	width: max-content;
-	margin-top: 6px;
-	display: flex;
-	flex-direction: row;
+const getABTestBadgeStyles = (palette: ABTestPalette) => css`
+	position: absolute;
+	bottom: 1px;
+	right: 1px;
 	gap: 4px;
-	align-items: center;
+	flex-shrink: 0;
+	white-space: nowrap;
+	background: ${palette.background};
+	color: ${palette.text};
 `;
 
-const EllipsisIconWrapper = styled.div<{ color: string }>`
-	border: 1px solid ${({ color }) => color};
-	border-radius: 50%;
-	display: flex;
-	justify-content: center;
-	align-content: center;
-	padding: 1px;
+// Reserve space below the thumbnail so the absolutely-positioned AB test
+// status badge (pinned to the card's bottom-right) doesn't overlap it
+const ThumbnailArea = styled(ImageAndGraphWrapper)<{
+	$reserveBadgeSpace: boolean;
+}>`
+	padding-bottom: ${({ $reserveBadgeSpace }) =>
+		$reserveBadgeSpace ? '28px' : '0'};
 `;
 
 interface ArticleBodyProps {
@@ -250,6 +239,45 @@ interface ArticleBodyProps {
 	hasLiveAbTest?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
 }
+
+const determineABTestStatus = (
+	hasLiveAbTest: boolean | undefined,
+	abTestEnabled: boolean | undefined,
+	headlineTestError: AbTestHeadlineErrorType | null | undefined,
+	frontId: string,
+): ABTestStatus | undefined => {
+	if (frontId === clipboardId && abTestEnabled) {
+		return {
+			message: 'Test staged',
+			palette: getABTestThemeColors('draft'),
+		};
+	}
+	if (hasLiveAbTest && abTestEnabled) {
+		return {
+			message: 'Test in progress',
+			palette: getABTestThemeColors('active'),
+		};
+	}
+	if (hasLiveAbTest && !abTestEnabled) {
+		return {
+			message: 'Test ends on launch',
+			palette: getABTestThemeColors('draft'),
+		};
+	}
+	if (!hasLiveAbTest && abTestEnabled && headlineTestError) {
+		return {
+			message: 'Test setup incomplete',
+			palette: getABTestThemeColors('error'),
+		};
+	}
+	if (!hasLiveAbTest && abTestEnabled && !headlineTestError) {
+		return {
+			message: 'Ready to launch',
+			palette: getABTestThemeColors('draft'),
+		};
+	}
+	return undefined;
+};
 
 const articleBodyDefault = React.memo(
 	({
@@ -330,50 +358,6 @@ const articleBodyDefault = React.memo(
 				portraitCardImageCriteria.widthAspectRatio &&
 			imageCriteria.heightAspectRatio ===
 				portraitCardImageCriteria.heightAspectRatio;
-
-		const determineABTestStatus = (
-			hasLiveAbTest: boolean | undefined,
-			abTestEnabled: boolean | undefined,
-			headlineTestError: AbTestHeadlineErrorType | null | undefined,
-			frontId: string,
-		): ABTestStatus | undefined => {
-			if (frontId === clipboardId && abTestEnabled) {
-				return {
-					message: 'Test staged',
-					theme: 'draft',
-					palette: getABTestThemeColors('draft'),
-				};
-			}
-			if (hasLiveAbTest && abTestEnabled) {
-				return {
-					message: 'Test in progress',
-					theme: 'active',
-					palette: getABTestThemeColors('active'),
-				};
-			}
-			if (hasLiveAbTest && !abTestEnabled) {
-				return {
-					message: 'End test on launch',
-					theme: 'draft',
-					palette: getABTestThemeColors('draft'),
-				};
-			}
-			if (!hasLiveAbTest && abTestEnabled && headlineTestError) {
-				return {
-					message: 'Test set up incomplete',
-					theme: 'error',
-					palette: getABTestThemeColors('error'),
-				};
-			}
-			if (!hasLiveAbTest && abTestEnabled && !headlineTestError) {
-				return {
-					message: 'Ready to launch',
-					theme: 'draft',
-					palette: getABTestThemeColors('draft'),
-				};
-			}
-			return undefined;
-		};
 
 		const [mainVideoPlatform, setMainVideoPlatform] = React.useState<
 			Platform | undefined
@@ -552,27 +536,8 @@ const articleBodyDefault = React.memo(
 						)}
 						{displayByline && <ArticleBodyByline>{byline}</ArticleBodyByline>}
 					</CardHeadingContainer>
-					{shouldShowAbTestStatus && (
-						<ABTestStatus abTestTheme={abTestStatus.theme}>
-							{abTestStatus.theme === 'error' ? (
-								<ExclamationIcon fill={abTestStatus.palette.icon} size={'s'} />
-							) : (
-								<ConicalFlaskIcon
-									size={'xs'}
-									fill={abTestStatus.palette.icon}
-								/>
-							)}
-
-							{abTestStatus.message}
-							{abTestStatus.theme !== 'active' && (
-								<EllipsisIconWrapper color={abTestStatus.palette.icon}>
-									<EllipsisIcon fill={abTestStatus.palette.icon} size={'xxs'} />
-								</EllipsisIconWrapper>
-							)}
-						</ABTestStatus>
-					)}
 				</CardContent>
-				<ImageAndGraphWrapper size={size}>
+				<ThumbnailArea size={size} $reserveBadgeSpace={shouldShowAbTestStatus}>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
 						<PageViewDataWrapper data-testid="page-view-graph">
 							<ArticleGraph
@@ -652,7 +617,22 @@ const articleBodyDefault = React.memo(
 								)}
 							</DraggableArticleImageContainer>
 						))}
-				</ImageAndGraphWrapper>
+				</ThumbnailArea>
+				{shouldShowAbTestStatus && (
+					<Badge
+						size="sm"
+						weight="strong"
+						cssOverrides={getABTestBadgeStyles(abTestStatus.palette)}
+						data-testid="ab-test-status"
+					>
+						<ConicalFlaskCircleIcon
+							size={'s'}
+							fill={abTestStatus.palette.icon}
+						/>
+
+						{abTestStatus.message}
+					</Badge>
+				)}
 				<HoverActionsAreaOverlay disabled={isUneditable}>
 					<HoverActionsButtonWrapper
 						size={size}
