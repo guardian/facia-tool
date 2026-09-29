@@ -233,7 +233,7 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 
 		const groupIds = groups.map((group) => group.uuid);
 
-		const isUSNetworkFront = frontId === 'us';
+		const isUSNetworkFront = true;
 
 		return (
 			<>

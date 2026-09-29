@@ -406,7 +406,7 @@ const articleBodyDefault = React.memo(
 		 * Initial rollout of Editorial AB testing will be limited to the US front only.
 		 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
 		 */
-		const isUSNetworkFront = frontId === 'us';
+		const isUSNetworkFront = true;
 
 		const shouldShowAbTestStatus = !!abTestStatus && isUSNetworkFront;
 
