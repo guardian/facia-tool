@@ -139,7 +139,7 @@ stated in the PR body.
 - [x] Phase 3 - deterministic fixtures and WireMock mappings
 - [x] Phase 4 - starter feature tests only
 - [x] Phase 5 - `e2e-tests/README.md` (source and local-link audit completed 29 September 2026)
-- [ ] Phase 6 - GitHub Actions workflow and failure artifacts
+- [x] Phase 6 - GitHub Actions workflow and failure artifacts (PR workflow run 36582683149 passed 29 September 2026)
 - [ ] Phase 7 - later coverage increments, one reviewed PR per feature
 
 Build-speed measures belong in Phase 2: one shared WireMock image, one LocalStack
