@@ -11,6 +11,7 @@ import com.amazonaws.auth.{
   STSAssumeRoleSessionCredentialsProvider
 }
 import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.gu.contentapi.client.model._
 import com.gu.contentapi.client.model.v1.{Content, SearchResponse}
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner, Parameter}
@@ -70,11 +71,18 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit
   }
 
   private val previewSigner = {
-    val stsClient = AWSSecurityTokenServiceClientBuilder
+    val builder = AWSSecurityTokenServiceClientBuilder
       .standard()
       .withCredentials(config.aws.cmsFrontsAccountCredentials)
-      .withRegion(config.aws.region)
-      .build()
+    val stsClient = config.aws.localStsEndpoint match {
+      case Some(endpoint) =>
+        builder
+          .withEndpointConfiguration(
+            new EndpointConfiguration(endpoint, config.aws.region)
+          )
+          .build()
+      case None => builder.withRegion(config.aws.region).build()
+    }
 
     val capiPreviewCredentials = new AWSCredentialsProviderChain(
       new STSAssumeRoleSessionCredentialsProvider.Builder(

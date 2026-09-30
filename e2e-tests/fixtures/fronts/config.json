@@ -1,0 +1,16 @@
+{
+  "fronts": {
+    "editorial-test-front": {
+      "collections": ["e2e-editorial"],
+      "description": "Synthetic editorial front for end-to-end tests",
+      "priority": "editorial",
+      "isHidden": false
+    }
+  },
+  "collections": {
+    "e2e-editorial": {
+      "displayName": "Top stories",
+      "type": "static/medium/4"
+    }
+  }
+}

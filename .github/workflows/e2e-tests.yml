@@ -1,0 +1,60 @@
+name: Playwright Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  playwright-tests:
+    name: Playwright end-to-end tests
+    runs-on: ubuntu-22.04
+    timeout-minutes: 30
+    defaults:
+      run:
+        working-directory: e2e-tests
+
+    steps:
+      - name: Check out Facia Tool
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version-file: e2e-tests/.tool-versions
+          cache: yarn
+          cache-dependency-path: |
+            fronts-client/yarn.lock
+            e2e-tests/yarn.lock
+
+      - name: Enable Yarn
+        run: |
+          corepack enable
+          corepack prepare yarn@1.22.22 --activate
+
+      - name: Install V2 client dependencies
+        working-directory: fronts-client
+        run: yarn install --frozen-lockfile
+
+      - name: Install end-to-end test dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install Playwright headless shell
+        run: yarn playwright install --with-deps chromium --only-shell
+
+      - name: Run end-to-end tests
+        run: yarn test:ci
+
+      - name: Upload Playwright traces on failure
+        if: failure()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: playwright-traces
+          path: e2e-tests/target/test-results
+          if-no-files-found: warn
+          retention-days: 7

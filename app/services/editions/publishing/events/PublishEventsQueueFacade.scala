@@ -1,6 +1,7 @@
 package services.editions.publishing.events
 
 import com.amazonaws.regions.Regions
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
 import com.amazonaws.services.sqs.model.{Message, ReceiveMessageRequest}
 import conf.ApplicationConfiguration
@@ -30,11 +31,22 @@ private[events] class PublishEventsSQSFacade(
   private val sqsClientLongPoolingWaitTimeSec = 15
   private val queueURL = config.faciatool.publishEventsQueue
 
-  private lazy val SQS = AmazonSQSAsyncClientBuilder
-    .standard()
-    .withCredentials(config.aws.cmsFrontsAccountCredentials)
-    .withRegion(Regions.EU_WEST_1)
-    .build()
+  private lazy val SQS = config.aws.localSqsEndpoint match {
+    case Some(endpoint) =>
+      AmazonSQSAsyncClientBuilder
+        .standard()
+        .withCredentials(config.aws.cmsFrontsAccountCredentials)
+        .withEndpointConfiguration(
+          new EndpointConfiguration(endpoint, config.aws.region)
+        )
+        .build()
+    case None =>
+      AmazonSQSAsyncClientBuilder
+        .standard()
+        .withCredentials(config.aws.cmsFrontsAccountCredentials)
+        .withRegion(Regions.EU_WEST_1)
+        .build()
+  }
 
   def getPublishEventFromQueue: Option[PublishEventMessage] =
     receiveMessage.flatMap(parseToEvent)

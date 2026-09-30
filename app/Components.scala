@@ -1,6 +1,7 @@
 import com.amazonaws.auth.AWSCredentialsProvider
 import software.amazon.awssdk.regions.{Region => WeirdRegion}
 import com.amazonaws.services.sns.AmazonSNSClient
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import software.amazon.awssdk.auth.credentials.{
   AwsCredentials,
   AwsCredentialsProvider,
@@ -40,6 +41,8 @@ import updates.{BreakingNewsUpdate, StructuredLogger}
 import util.{Acl, TimestampGenerator}
 import services.editions.publishing.PublishedIssueFormatters._
 
+import java.net.URI
+
 class AppComponents(context: Context, val config: ApplicationConfiguration)
     extends BaseFaciaControllerComponents(context)
     with EvolutionsComponents
@@ -66,17 +69,42 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   // This means we have two different SDKs for AWS in the build, which is unideal
   // but should not lead to problems.
   // TODO Upversion the rest of the AWS SDK code!
-  val dynamo: DynamoDbClient = DynamoDbClient
-    .builder()
-    .credentialsProvider(newAwsCredentials)
-    .region(WeirdRegion.of(config.aws.region))
-    .build()
-  val s3Client = S3.client(oldAwsCredentials, config.aws.region)
-  val snsClient = AmazonSNSClient
-    .builder()
-    .withCredentials(oldAwsCredentials)
-    .withRegion(config.aws.region)
-    .build()
+  val dynamo: DynamoDbClient = config.aws.localDynamoEndpoint match {
+    case Some(endpoint) =>
+      DynamoDbClient
+        .builder()
+        .credentialsProvider(newAwsCredentials)
+        .region(WeirdRegion.of(config.aws.region))
+        .endpointOverride(URI.create(endpoint))
+        .build()
+    case None =>
+      DynamoDbClient
+        .builder()
+        .credentialsProvider(newAwsCredentials)
+        .region(WeirdRegion.of(config.aws.region))
+        .build()
+  }
+  val s3Client = S3.client(
+    oldAwsCredentials,
+    config.aws.region,
+    config.aws.localS3Endpoint
+  )
+  val snsClient = config.aws.localSnsEndpoint match {
+    case Some(endpoint) =>
+      AmazonSNSClient
+        .builder()
+        .withCredentials(oldAwsCredentials)
+        .withEndpointConfiguration(
+          new EndpointConfiguration(endpoint, config.aws.region)
+        )
+        .build()
+    case None =>
+      AmazonSNSClient
+        .builder()
+        .withCredentials(oldAwsCredentials)
+        .withRegion(config.aws.region)
+        .build()
+  }
   val acl = new Acl(permissions)
 
   // Editions services

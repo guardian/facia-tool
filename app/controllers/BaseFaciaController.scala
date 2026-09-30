@@ -42,13 +42,14 @@ abstract class BaseFaciaControllerComponents(context: Context)
       )
     )
 
-  lazy val permissions = PermissionsProvider(
-    PermissionsConfig(
-      stage = config.environment.stage.toUpperCase(Locale.UK),
-      region = config.aws.region,
-      awsCredentials = config.aws.cmsFrontsAccountCredentials
+  lazy val permissions: PermissionsProvider =
+    PermissionsProvider(
+      PermissionsConfig(
+        stage = config.environment.stage.toUpperCase(Locale.UK),
+        region = config.aws.region,
+        awsCredentials = config.aws.newStyleCmsFrontsAccountCredentials
+      )
     )
-  )
 }
 
 abstract class BaseFaciaController(deps: BaseFaciaControllerComponents)

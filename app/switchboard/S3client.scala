@@ -18,11 +18,12 @@ class S3client(conf: SwitchboardConfiguration, endpoint: String)
   lazy val client: AmazonS3 = {
     val endpointConf =
       new AwsClientBuilder.EndpointConfiguration(endpoint, conf.region)
-    AmazonS3ClientBuilder
+    val builder = AmazonS3ClientBuilder
       .standard()
       .withCredentials(conf.credentials)
       .withEndpointConfiguration(endpointConf)
-      .build()
+    if (conf.pathStyleAccess) builder.withPathStyleAccessEnabled(true)
+    builder.build()
   }
 
   def getSwitches(): Option[Map[String, Boolean]] = {

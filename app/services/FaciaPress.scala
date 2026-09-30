@@ -1,6 +1,7 @@
 package services
 
 import com.amazonaws.regions.Regions
+import com.amazonaws.client.builder.AwsClientBuilder.EndpointConfiguration
 import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder
 import com.amazonaws.services.sns.model.PublishResult
 import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
@@ -41,12 +42,20 @@ object PressCommand {
 class FaciaPressTopic(val config: ApplicationConfiguration) {
   val maybeTopic = config.faciatool.frontPressToolTopic map { topicArn =>
     val credentials = config.aws.cmsFrontsAccountCredentials
+    val builder = AmazonSNSAsyncClientBuilder
+      .standard()
+      .withCredentials(credentials)
+    val client = config.aws.localSnsEndpoint match {
+      case Some(endpoint) =>
+        builder
+          .withEndpointConfiguration(
+            new EndpointConfiguration(endpoint, config.aws.region)
+          )
+          .build()
+      case None => builder.withRegion(Regions.EU_WEST_1).build()
+    }
     JsonMessageTopic[PressJob](
-      AmazonSNSAsyncClientBuilder
-        .standard()
-        .withCredentials(credentials)
-        .withRegion(Regions.EU_WEST_1)
-        .build(),
+      client,
       topicArn
     )
   }
