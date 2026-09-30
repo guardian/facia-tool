@@ -40,7 +40,7 @@ class PackageController(
     UUID.fromString(str)
   }.toOption
 
-  private def genericErrorHandler(err: Throwable) = {
+  private def updateFailureExceptionHandler(err: Throwable) = {
     logger.error(
       s"Could not update package metadata: ${err.getMessage}",
       err
@@ -144,18 +144,17 @@ class PackageController(
               orderBy,
               queryLimit
             )
-            if (full.getOrElse(false)) {
+            if (full.contains(true)) {
               val clientPkgs = pkgs.map { pkg =>
                 val cards = db
                   .getPackageCards(pkg.id)
-                  .map(model.packages.client.ClientPackageCard.fromPackageCard)
+                  .map(ClientPackageCard.fromPackageCard)
                   .toList
                 ClientPackage.fromPackage(pkg, cards)
               }
 
               Ok(
                 Json.obj(
-                  "status" -> JsString("ok"),
                   "packages" -> JsArray(
                     clientPkgs.map(ClientPackage.writes.writes)
                   )
@@ -164,7 +163,6 @@ class PackageController(
             } else {
               Ok(
                 Json.obj(
-                  "status" -> JsString("ok"),
                   "packages" -> JsArray(
                     pkgs.map(DomainPackage.format.writes)
                   )
@@ -185,41 +183,20 @@ class PackageController(
     }
   }
 
-  def createPackage = EditPackagesAuthAction(parse.json(32768L)) { req =>
-    val result = for {
-      packageInfo <- Try { req.body.as[CreatePackageRequest] }
-      response <- Try {
+  def createPackage = EditPackagesAuthAction(parse.json[CreatePackageRequest]) {
+    req =>
+      try {
         db.createPackage(
-          packageInfo,
+          req.body,
           OffsetDateTime.now(),
           s"${req.user.firstName} ${req.user.lastName}",
           req.user.email
         )
+        Created
+      } catch {
+        case err: PSQLException => psqlErrorHandler(err)
+        case err: Throwable     => updateFailureExceptionHandler(err)
       }
-    } yield response
-
-    result match {
-      case Success(_) => Created
-      case Failure(JsResultException(errs)) =>
-        logger.error(
-          s"Could not create package due to JSON parsing errors: ${errs.mkString(", ")}"
-        )
-        BadRequest(
-          ErrorResponse.badRequest(errs.mkString(";"))
-        )
-      case Failure(err: PSQLException) =>
-        psqlErrorHandler(err)
-      case Failure(err: IllegalArgumentException) =>
-        logger.error(s"Invalid UUID when creating package: ${err.getMessage}")
-        BadRequest(
-          ErrorResponse.badRequest("Invalid package ID")
-        )
-      case Failure(err) =>
-        logger.error(s"Could not create package: ${err.getMessage}", err)
-        InternalServerError(
-          ErrorResponse.apply(err.getMessage)
-        )
-    }
   }
 
   def getPackage(id: java.util.UUID) = EditPackagesAuthAction { req =>
@@ -231,7 +208,7 @@ class PackageController(
             .map(model.packages.client.ClientPackageCard.fromPackageCard)
             .toList
           val clientPkg = ClientPackage.fromPackage(pkg, cards)
-          Ok(ClientPackage.writes.writes(clientPkg))
+          Ok(Json.toJson(clientPkg))
         case None =>
           NotFound(
             ErrorResponse.notFound(s"Package with id $id not found")
@@ -239,7 +216,7 @@ class PackageController(
       }
     } catch {
       case err: Throwable =>
-        genericErrorHandler(err)
+        updateFailureExceptionHandler(err)
     }
   }
 
@@ -255,7 +232,9 @@ class PackageController(
           case Right(n) if n > 0 =>
             NoContent
           case Right(_) =>
-            NotFound
+            NotFound(
+              ErrorResponse.notFound("that package does not exist")
+            )
           case Left(err) =>
             BadRequest(ErrorResponse.badRequest(err))
         }
@@ -263,7 +242,7 @@ class PackageController(
         case err: PSQLException =>
           psqlErrorHandler(err)
         case err: Throwable =>
-          genericErrorHandler(err)
+          updateFailureExceptionHandler(err)
       }
     }
 
@@ -283,7 +262,7 @@ class PackageController(
         case err: PSQLException =>
           psqlErrorHandler(err)
         case err: Throwable =>
-          genericErrorHandler(err)
+          updateFailureExceptionHandler(err)
       }
     }
 
@@ -321,7 +300,7 @@ class PackageController(
           ErrorResponse.badRequest("Name was not valid utf-8")
         )
       case err: Throwable =>
-        genericErrorHandler(err)
+        updateFailureExceptionHandler(err)
     }
   }
 
@@ -358,7 +337,7 @@ class PackageController(
                 updatedPkg,
                 updatedCards.map(ClientPackageCard.fromPackageCard).toList
               )
-              Ok(ClientPackage.writes.writes(clientPackage))
+              Ok(Json.toJson(clientPackage))
             case None =>
               logger.error(
                 s"Package $id was deleted immediately after update, this should not happen"
@@ -372,7 +351,7 @@ class PackageController(
         case err: PSQLException =>
           psqlErrorHandler(err)
         case err: Throwable =>
-          genericErrorHandler(err)
+          updateFailureExceptionHandler(err)
       }
     }
 }
