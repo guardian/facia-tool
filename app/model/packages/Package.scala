@@ -106,9 +106,7 @@ object Package extends MetadataHelpers with Logging {
     Json
       .format[StoryPackage]
       .transform((obj: JsObject) => {
-        obj ++ JsObject(
-          Seq("packageType" -> JsString(PackageType.Story.value))
-        )
+        obj + ("packageType" -> JsString(PackageType.Story.value))
       })
   implicit val storyPackageReads: Reads[StoryPackage] = Json.reads[StoryPackage]
 
@@ -116,9 +114,7 @@ object Package extends MetadataHelpers with Logging {
     Json
       .format[FeastPackage]
       .transform((obj: JsObject) => {
-        obj ++ JsObject(
-          Seq("packageType" -> JsString(PackageType.Feast.value))
-        )
+        obj + ("packageType" -> JsString(PackageType.Feast.value))
       })
   implicit val feastPackageReads: Reads[FeastPackage] = Json.reads[FeastPackage]
 
@@ -215,7 +211,7 @@ object Package extends MetadataHelpers with Logging {
         None
       case (None, packageId) =>
         logger.error(
-          s"Package with ID $packageId is not valid,no package type provided"
+          s"Package with ID $packageId is not valid, no package type provided"
         )
         None
     }

@@ -1,14 +1,24 @@
 package model.packages.client
 
 import model.packages.Package.PackageType
+import model.packages.Package.PackageType.{Feast, Story}
 import model.packages.{
   FeastPackage,
   FeastPackageMetadata,
+  MetadataHelpers,
   StoryPackage,
   StoryPackageMetadata,
   Package => DomainPackage
 }
-import play.api.libs.json.{JsObject, JsString, Json, OWrites, Reads}
+import play.api.libs.json.{
+  JsObject,
+  JsResult,
+  JsString,
+  JsValue,
+  Json,
+  OWrites,
+  Reads
+}
 import services.editions.db.FaciaDB
 
 import java.util.UUID
@@ -87,7 +97,7 @@ object StoryClientPackage {
   implicit val reads: Reads[StoryClientPackage] = Json.reads[StoryClientPackage]
 }
 
-object ClientPackage {
+object ClientPackage extends MetadataHelpers {
   implicit val writes: OWrites[ClientPackage] =
     Json
       .format[ClientPackage]
@@ -96,7 +106,13 @@ object ClientPackage {
           obj.fields.filterNot(_._1 == "_type")
         )
       )
-  implicit val reads: Reads[ClientPackage] = Json.reads[ClientPackage]
+  implicit val reads: Reads[ClientPackage] = new Reads[ClientPackage] {
+    override def reads(json: JsValue): JsResult[ClientPackage] =
+      selectByPackageType(json \ "packageType") {
+        case Feast => json.validate[FeastClientPackage]
+        case Story => json.validate[StoryClientPackage]
+      }
+  }
 
   def fromPackage(
       domainPackage: DomainPackage,
