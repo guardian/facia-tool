@@ -133,34 +133,20 @@ trait PackageQueries extends MetadataHelpers with Logging {
         .apply()
 
     try {
-      val newMetaPG = toPGobject(newMeta.toJson)
-      packageTypeStr.flatMap(Package.PackageType.withName) match {
-        case None =>
+      (packageTypeStr.flatMap(Package.PackageType.withName), newMeta) match {
+        case (Some(PackageType.Feast), _: FeastPackageMetadata) | (Some(PackageType.Story), _: StoryPackageMetadata) =>
+          val newMetaPG = toPGobject(newMeta.toJson)
+          Right(sql"""UPDATE packages
+              SET
+                  metadata=$newMetaPG,
+                  updated_on=$lastUpdated,
+                  updated_by=$userName,
+                  updated_email=$userEmail
+              WHERE id=${packageId.toString}""".update.apply())
+        case (Some(_), _) =>
+          Left("Selected package does not support this metadata")
+        case (None, _) =>
           Left("Selected package does not have a valid package type")
-        case Some(PackageType.Feast) =>
-          if (newMeta.isInstanceOf[FeastPackageMetadata]) {
-            Right(sql"""UPDATE packages
-     			SET
-     				metadata=$newMetaPG,
-     				updated_on=$lastUpdated,
-     				updated_by=$userName,
-     				updated_email=$userEmail
-     			WHERE id=${packageId.toString}""".update.apply())
-          } else {
-            Left("Selected package does not support this metadata")
-          }
-        case Some(PackageType.Story) =>
-          if (newMeta.isInstanceOf[StoryPackageMetadata]) {
-            Right(sql"""UPDATE packages
-     			SET
-     				metadata=$newMetaPG,
-     				updated_on=$lastUpdated,
-     				updated_by=$userName,
-     				updated_email=$userEmail
-     			WHERE id=${packageId.toString}""".update.apply())
-          } else {
-            Left("Selected package does not support this metadata")
-          }
       }
     } catch {
       case _: NoSuchElementException => Right(0)
