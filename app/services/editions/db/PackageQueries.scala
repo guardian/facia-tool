@@ -134,7 +134,8 @@ trait PackageQueries extends MetadataHelpers with Logging {
 
     try {
       (packageTypeStr.flatMap(Package.PackageType.withName), newMeta) match {
-        case (Some(PackageType.Feast), _: FeastPackageMetadata) | (Some(PackageType.Story), _: StoryPackageMetadata) =>
+        case (Some(PackageType.Feast), _: FeastPackageMetadata) |
+            (Some(PackageType.Story), _: StoryPackageMetadata) =>
           val newMetaPG = toPGobject(newMeta.toJson)
           Right(sql"""UPDATE packages
               SET
