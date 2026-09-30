@@ -60,7 +60,7 @@ case class CreateStoryPackageRequest(
   override val packageType: Package.PackageType = PackageType.Story
 
   def metadataPG: Option[PGobject] =
-    metadata.map(StoryPackageMetadata.format.writes).map(toPGobject)
+    metadata.map(Json.toJson[StoryPackageMetadata]).map(toPGobject)
 }
 
 object CreateStoryPackageRequest {
@@ -74,12 +74,14 @@ object CreatePackageRequest extends MetadataHelpers {
       override def writes(o: CreatePackageRequest): JsObject = o match {
         case f: CreateFeastPackageRequest =>
           CreateFeastPackageRequest.format.writes(f)
+        case s: CreateStoryPackageRequest =>
+          CreateStoryPackageRequest.format.writes(s)
       }
 
       override def reads(json: JsValue): JsResult[CreatePackageRequest] =
         selectByPackageType(json \ "packageType") {
-          case PackageType.Feast => CreateFeastPackageRequest.format.reads(json)
-          case PackageType.Story => CreateStoryPackageRequest.format.reads(json)
+          case PackageType.Feast => json.validate[CreateFeastPackageRequest]
+          case PackageType.Story => json.validate[CreateStoryPackageRequest]
         }
     }
 }
