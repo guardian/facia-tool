@@ -8,6 +8,7 @@ import model.packages.client.{
   ClientPackageCard,
   CreatePackageRequest,
   ErrorResponse,
+  UpdateNameRequest,
   WritePackageRequest
 }
 import org.postgresql.util.{PSQLException, PSQLState}
@@ -27,6 +28,7 @@ import java.util.UUID
 import scala.concurrent.ExecutionContext
 import scala.util.{Failure, Success, Try}
 import model.packages.client.ErrorResponse._
+import play.api.mvc.Result
 
 class PackageController(
     db: FaciaDB,
@@ -74,6 +76,17 @@ class PackageController(
     }
 
   private def dateFormatter = DateTimeFormatter.BASIC_ISO_DATE
+
+  private def withErrorHandling(blk: => Result) = {
+    try {
+      blk
+    } catch {
+      case err: PSQLException =>
+        psqlErrorHandler(err)
+      case err: Throwable =>
+        updateFailureExceptionHandler(err)
+    }
+  }
 
   def listPackages(
       id: Option[String],
@@ -185,7 +198,7 @@ class PackageController(
 
   def createPackage = EditPackagesAuthAction(parse.json[CreatePackageRequest]) {
     req =>
-      try {
+      withErrorHandling {
         db.createPackage(
           req.body,
           OffsetDateTime.now(),
@@ -193,14 +206,11 @@ class PackageController(
           req.user.email
         )
         Created
-      } catch {
-        case err: PSQLException => psqlErrorHandler(err)
-        case err: Throwable     => updateFailureExceptionHandler(err)
       }
   }
 
   def getPackage(id: java.util.UUID) = EditPackagesAuthAction { req =>
-    try {
+    withErrorHandling {
       db.getPackageById(id) match {
         case Some(pkg) =>
           val cards = db
@@ -214,15 +224,12 @@ class PackageController(
             ErrorResponse.notFound(s"Package with id $id not found")
           )
       }
-    } catch {
-      case err: Throwable =>
-        updateFailureExceptionHandler(err)
     }
   }
 
   def putMetadata(id: UUID) =
     EditPackagesAuthAction(parse.json[PackageMetadata]) { req =>
-      try {
+      withErrorHandling {
         db.updatePackageMeta(
           id,
           req.body,
@@ -238,17 +245,12 @@ class PackageController(
           case Left(err) =>
             BadRequest(ErrorResponse.badRequest(err))
         }
-      } catch {
-        case err: PSQLException =>
-          psqlErrorHandler(err)
-        case err: Throwable =>
-          updateFailureExceptionHandler(err)
       }
     }
 
   def putPackageHiddenState(id: UUID, newState: Boolean) =
     EditPackagesAuthAction { req =>
-      try {
+      withErrorHandling {
         val count =
           db.updateHidden(id, newState, req.user.username, req.user.email)
         if (count == 0) {
@@ -258,51 +260,27 @@ class PackageController(
         } else {
           NoContent
         }
-      } catch {
-        case err: PSQLException =>
-          psqlErrorHandler(err)
-        case err: Throwable =>
-          updateFailureExceptionHandler(err)
       }
     }
 
-  def updateName(id: UUID) = EditPackagesAuthAction(parse.byteString) { req =>
-    val decoder = StandardCharsets.UTF_8
-      .newDecoder()
-      .onMalformedInput(CodingErrorAction.REPORT)
-      .onUnmappableCharacter(CodingErrorAction.REPORT)
-
-    try {
-      val count = db.updatePackageName(
-        id,
-        decoder.decode(req.body.asByteBuffer).toString,
-        req.user.username,
-        req.user.email
-      )
-      if (count == 0) {
-        NotFound(
-          ErrorResponse.notFound("that package does not exist")
+  def updateName(id: UUID) =
+    EditPackagesAuthAction(parse.json[UpdateNameRequest]) { req =>
+      withErrorHandling {
+        val count = db.updatePackageName(
+          id,
+          req.body.name,
+          req.user.username,
+          req.user.email
         )
-      } else {
-        NoContent
+        if (count == 0) {
+          NotFound(
+            ErrorResponse.notFound("that package does not exist")
+          )
+        } else {
+          NoContent
+        }
       }
-    } catch {
-      case err: PSQLException =>
-        psqlErrorHandler(err)
-      case err: MalformedInputException =>
-        logger.error(s"MalformedInputException: ${err.getMessage}", err)
-        BadRequest(
-          ErrorResponse.badRequest("Name was not valid utf-8")
-        )
-      case err: CharacterCodingException =>
-        logger.error(s"CharacterCodingException: ${err.getMessage}", err)
-        BadRequest(
-          ErrorResponse.badRequest("Name was not valid utf-8")
-        )
-      case err: Throwable =>
-        updateFailureExceptionHandler(err)
     }
-  }
 
   def writePackage(id: UUID) =
     EditPackagesAuthAction(parse.json[WritePackageRequest]) { req =>
@@ -322,7 +300,7 @@ class PackageController(
           zoneId = Some(ZoneOffset.UTC)
         )
       })
-      try {
+      withErrorHandling {
         val updated = db.updatePackage(newMeta, cards)
         if (updated == 0) {
           logger.info(s"Request to update non-existent package $id")
@@ -347,11 +325,6 @@ class PackageController(
               )
           }
         }
-      } catch {
-        case err: PSQLException =>
-          psqlErrorHandler(err)
-        case err: Throwable =>
-          updateFailureExceptionHandler(err)
       }
     }
 }
