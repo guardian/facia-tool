@@ -83,7 +83,7 @@ trait PackageQueries extends MetadataHelpers with Logging {
   def getPackageById(packageId: UUID): Option[Package] =
     getPackages(Some(Seq(packageId)), None).headOption
 
-  def getPackageCards(packageId: UUID): Seq[PackageCardRow] = DB readOnly {
+  def getPackageCards(packageId: UUID): Seq[PackageCard] = DB readOnly {
     implicit session =>
       fetchPackageContentSql(
         where = sqls"""WHERE package_id=${packageId.toString}""",
@@ -161,11 +161,11 @@ trait PackageQueries extends MetadataHelpers with Logging {
     * @param packageId
     *   package ID to update
     * @param card
-    *   PackageCardRow record representing the information to store
+    *   PackageCard record representing the information to store
     * @return
     *   count of affected rows
     */
-  def insertCard(packageId: UUID, card: PackageCardRow) = DB localTx {
+  def insertCard(packageId: UUID, card: PackageCard) = DB localTx {
     implicit session =>
       sql"""INSERT INTO package_cards (package_id, card_type, page_code, index, metadata, added_on, added_by, added_email) VALUES (${packageId.toString}, ${card.cardType.toString}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
         .apply()
@@ -197,13 +197,13 @@ trait PackageQueries extends MetadataHelpers with Logging {
     * @return
     *   count of affected packages
     */
-  def updatePackage(packageMeta: Package, packageContent: Seq[PackageCardRow]) =
+  def updatePackage(packageMeta: Package, packageContent: Seq[PackageCard]) =
     DB localTx { implicit session =>
       // FOR UPDATE locks the selected rows for the duration of this transaction, allowing us to safely update without a race condition
       val existingContent = fetchPackageContentSql(where =
         sqls"WHERE package_id=${packageMeta.id.toString} FOR UPDATE"
       ).apply()
-      val existingMap: Map[String, PackageCardRow] =
+      val existingMap: Map[String, PackageCard] =
         existingContent
           .map(c => c.pageCode -> c)
           .toMap // the PK is (package_id, page_code); since package_id is constant, pageCode is a unique identifier
@@ -224,28 +224,28 @@ trait PackageQueries extends MetadataHelpers with Logging {
       // 4. Update modified cards in place
       toUpdate.foreach { card =>
         sql"""UPDATE package_cards
-	  SET index = ${card.index}, metadata = ${card.metadataPG}
-	  WHERE package_id = ${packageMeta.id.toString} AND page_code = ${card.pageCode}""".update
+ 	  SET index = ${card.index}, metadata = ${card.metadataPG}
+ 	  WHERE package_id = ${packageMeta.id.toString} AND page_code = ${card.pageCode}""".update
           .apply()
       }
 
       // 5. Insert new cards
       toAdd.foreach { card =>
         sql"""INSERT INTO package_cards (package_id, card_type, page_code, index, metadata, added_on, added_by, added_email)
-	  VALUES (${packageMeta.id.toString}, ${card.cardType.toString}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
+ 	  VALUES (${packageMeta.id.toString}, ${card.cardType.toString}, ${card.pageCode}, ${card.index}, ${card.metadataPG}, ${card.addedOn}, ${card.addedBy}, ${card.addedEmail})""".update
           .apply()
       }
 
       // 6. Update package metadata
       sql"""UPDATE packages
         SET
-   			name=${packageMeta.name},
-   			is_hidden=${packageMeta.isHidden},
-   			metadata=${packageMeta.metadataPG},
-      		updated_on=${packageMeta.updatedOn},
-   			updated_by=${packageMeta.updatedBy},
-   			updated_email=${packageMeta.updatedEmail}
-   		WHERE id=${packageMeta.id.toString}
+    			name=${packageMeta.name},
+    			is_hidden=${packageMeta.isHidden},
+    			metadata=${packageMeta.metadataPG},
+       		updated_on=${packageMeta.updatedOn},
+    			updated_by=${packageMeta.updatedBy},
+    			updated_email=${packageMeta.updatedEmail}
+    		WHERE id=${packageMeta.id.toString}
      """.update.apply()
     }
 
@@ -345,38 +345,26 @@ trait PackageQueries extends MetadataHelpers with Logging {
   private def fetchPackageContentSql(
       where: SQLSyntax,
       orderBy: SQLSyntax = sqls""
-  ): SQLToList[PackageCardRow, HasExtractor] = {
+  ): SQLToList[PackageCard, HasExtractor] = {
     val sql =
       sql"""
- 			SELECT
+			SELECT
         		package_id,
- 				card_type,
- 				page_code,
-     			index,
-     			metadata,
+				card_type,
+				page_code,
+    			index,
+    			metadata,
         		added_on,
-           		added_by,
-             	added_email
- 			FROM package_cards
+            		added_by,
+            		added_email
+			FROM package_cards
     			$where
-       		$orderBy
- 			"""
+        		$orderBy
+			"""
     sql
-      .map(rs => {
-        val metadata = rs.stringOpt("metadata").map(Json.parse)
-        PackageCardRow(
-          packageId = rs.string("package_id"),
-          cardType = PackageCardType
-            .fromString(rs.string("card_type"))
-            .getOrElse(
-              PackageCardType.Invalid
-            ),
-          pageCode = rs.string("page_code"),
-          index = rs.int("index"),
-          metadata = metadata,
-          addedOn = rs.offsetDateTime("added_on"),
-          addedBy = rs.string("added_by"),
-          addedEmail = rs.string("added_email")
+      .map(rs => PackageCard.fromRow(rs).getOrElse {
+        throw new IllegalArgumentException(
+          s"Failed to deserialize package card for package_id=${rs.stringOpt("package_id").getOrElse("unknown")}, card_type=${rs.stringOpt("card_type").getOrElse("unknown")}"
         )
       })
       .list

@@ -6,6 +6,14 @@ import scalikejdbc.WrappedResultSet
 
 import java.time.OffsetDateTime
 
+/**
+ * DEPRECATED: Use PackageCard instead.
+ *
+ * This class has been superseded by PackageCard, which now handles both
+ * the persistence layer (database row) and domain model concerns.
+ * This class is retained for backward compatibility only.
+ */
+@deprecated("Use PackageCard instead", "2026-09-30")
 final case class PackageCardRow(
     packageId: String,
     cardType: PackageCardType,

@@ -1,6 +1,13 @@
 package model.packages.client
 
-import model.packages.{PackageCardRow, PackageCardType}
+import model.editions.{EditionsChefMetadata, EditionsFeastCollectionMetadata}
+import model.packages.{
+  PackageCard,
+  PackageCardType,
+  PackageChefCard,
+  PackageRecipeCard,
+  PackageSubcollectionCard
+}
 import play.api.libs.json.{JsValue, Json, OFormat}
 
 import java.time.{Instant, OffsetDateTime, ZoneId}
@@ -17,12 +24,12 @@ object ClientPackageCard {
   implicit val format: OFormat[ClientPackageCard] =
     Json.format[ClientPackageCard]
 
-  def fromPackageCard(domainCard: PackageCardRow): ClientPackageCard =
+  def fromPackageCard(domainCard: PackageCard): ClientPackageCard =
     ClientPackageCard(
       id = domainCard.pageCode,
       cardType = domainCard.cardType,
       addedOn = domainCard.addedOn.toInstant.toEpochMilli,
-      metadata = domainCard.metadata
+      metadata = domainCard.metadataJson
     )
 
   def toPackageCard(
@@ -32,18 +39,51 @@ object ClientPackageCard {
       userName: String,
       userEmail: String,
       zoneId: Option[ZoneId] = None
-  ) = {
-    val addedOn = Instant.ofEpochMilli(client.addedOn)
-    PackageCardRow(
-      packageId = packageId.toString,
-      cardType = client.cardType,
-      pageCode = client.id,
-      index = index,
-      metadata = client.metadata,
-      addedOn = OffsetDateTime
-        .ofInstant(addedOn, zoneId.getOrElse(ZoneId.systemDefault())),
-      addedBy = userName,
-      addedEmail = userEmail
+  ): PackageCard = {
+    val addedOn = OffsetDateTime.ofInstant(
+      Instant.ofEpochMilli(client.addedOn),
+      zoneId.getOrElse(ZoneId.systemDefault())
     )
+
+    client.cardType match {
+      case PackageCardType.Recipe =>
+        PackageRecipeCard(
+          id = client.id,
+          addedOn = addedOn,
+          packageId = packageId.toString,
+          pageCode = client.id,
+          index = index,
+          addedBy = userName,
+          addedEmail = userEmail
+        )
+      case PackageCardType.Chef =>
+        PackageChefCard(
+          id = client.id,
+          metadata = client.metadata.flatMap(Json.fromJson[EditionsChefMetadata](_).asOpt),
+          addedOn = addedOn,
+          packageId = packageId.toString,
+          pageCode = client.id,
+          index = index,
+          addedBy = userName,
+          addedEmail = userEmail
+        )
+      case PackageCardType.Subcollection =>
+        PackageSubcollectionCard(
+          id = client.id,
+          metadata = client.metadata.flatMap(
+            Json.fromJson[EditionsFeastCollectionMetadata](_).asOpt
+          ),
+          addedOn = addedOn,
+          packageId = packageId.toString,
+          pageCode = client.id,
+          index = index,
+          addedBy = userName,
+          addedEmail = userEmail
+        )
+      case PackageCardType.Invalid =>
+        throw new IllegalArgumentException(
+          s"Cannot convert invalid package card type: ${client.cardType}"
+        )
+    }
   }
 }

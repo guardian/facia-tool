@@ -7,8 +7,11 @@ import model.packages.{
   FeastPackage,
   FeastPackageMetadata,
   Package,
-  PackageCardRow,
+  PackageCard,
   PackageCardType,
+  PackageChefCard,
+  PackageRecipeCard,
+  PackageSubcollectionCard,
   StoryPackage
 }
 import org.scalatest.{BeforeAndAfter, FreeSpec, Matchers, OptionValues}
@@ -74,7 +77,7 @@ class PackageDBTest
     )
   }
 
-  private def insertCard(card: PackageCardRow): Unit = {
+  private def insertCard(card: PackageCard): Unit = {
     DB localTx { implicit session =>
       sql"""INSERT INTO package_cards (
             package_id,
@@ -232,7 +235,7 @@ class PackageDBTest
     val removablePageCode = "chef-remove"
 
     insertCard(
-      PackageCardRow(
+      PackageCard(
         packageId = packageId.toString,
         cardType = PackageCardType.Recipe,
         pageCode = existingPageCode,
@@ -245,7 +248,7 @@ class PackageDBTest
     )
 
     insertCard(
-      PackageCardRow(
+      PackageCard(
         packageId = packageId.toString,
         cardType = PackageCardType.Chef,
         pageCode = removablePageCode,
@@ -270,7 +273,7 @@ class PackageDBTest
       updatedEmail = Some("package.editor@guardian.co.uk")
     )
 
-    val updatedExistingCard = PackageCardRow(
+    val updatedExistingCard = PackageCard(
       packageId = packageId.toString,
       cardType = PackageCardType.Recipe,
       pageCode = "recipe-updated",
@@ -281,7 +284,7 @@ class PackageDBTest
       addedEmail = "alice@example.com"
     )
 
-    val newCard = PackageCardRow(
+    val newCard = PackageCard(
       packageId = packageId.toString,
       cardType = PackageCardType.Subcollection,
       pageCode = "subcollection-new",

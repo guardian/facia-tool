@@ -8,7 +8,7 @@ import fixtures.{FaciaDBService, UsesDatabase}
 import model.packages.{
   FeastPackageMetadata,
   Package,
-  PackageCardRow,
+  PackageCard,
   PackageCardType
 }
 import model.packages.client.{CreateFeastPackageRequest, CreatePackageRequest}
@@ -182,7 +182,7 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
     (0 until cards).foreach { idx =>
       faciaDB.insertCard(
         packageId,
-        PackageCardRow(
+        PackageCard(
           packageId = packageId.toString,
           cardType = PackageCardType.Recipe,
           pageCode = s"recipe-$idx",
@@ -276,38 +276,38 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
       (body \\ "items").head.as[JsArray].value.size shouldBe 3
     }
 
-    "list packages with GET /packages" taggedAs UsesDatabase in {
-      prefillPackage(
-        UUID.randomUUID(),
-        "One",
-        Instant.now().minusSeconds(90).toEpochMilli,
-        cards = 0
-      )
-      prefillPackage(
-        UUID.randomUUID(),
-        "Two",
-        Instant.now().toEpochMilli,
-        cards = 0
-      )
+     "list packages with GET /packages" taggedAs UsesDatabase in {
+       prefillPackage(
+         UUID.randomUUID(),
+         "One",
+         Instant.now().minusSeconds(90).toEpochMilli,
+         cards = 0
+       )
+       prefillPackage(
+         UUID.randomUUID(),
+         "Two",
+         Instant.now().toEpochMilli,
+         cards = 0
+       )
 
-      val result = call(
-        components.packageController.listPackages(
-          id = None,
-          full = None,
-          `type` = None,
-          date = None,
-          strict = None,
-          title = None,
-          limit = None,
-          order = Some("created")
-        ),
-        emptyAuthedRequest(HttpVerbs.GET, "/packages?order=created")
-      )
-      status(result) shouldBe OK
+       val result = call(
+         components.packageController.listPackages(
+           id = None,
+           full = None,
+           `type` = None,
+           date = None,
+           strict = None,
+           title = None,
+           limit = None,
+           order = Some("created")
+         ),
+         emptyAuthedRequest(HttpVerbs.GET, "/packages?order=created")
+       )
+       status(result) shouldBe OK
 
-      val body = jsonBody(result)
-      (body \\ "packages").head.as[JsArray].value.size shouldBe 2
-    }
+       val body = jsonBody(result)
+       (body \ "packages").as[JsArray].value.size shouldBe 2
+     }
 
     "support sort order params and title search" taggedAs UsesDatabase in {
       prefillPackage(
@@ -442,32 +442,34 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
       )
     }
 
-    "patch only package name" taggedAs UsesDatabase in {
-      val packageId = UUID.randomUUID()
-      prefillPackage(
-        packageId,
-        "Before name patch",
-        Instant.now().toEpochMilli,
-        cards = 0
-      )
+     "patch only package name" taggedAs UsesDatabase in {
+       val packageId = UUID.randomUUID()
+       prefillPackage(
+         packageId,
+         "Before name patch",
+         Instant.now().toEpochMilli,
+         cards = 0
+       )
 
-      val request = authed(
-        FakeRequest(HttpVerbs.PATCH, s"/packages/$packageId/name")
-          .withHeaders(CONTENT_TYPE -> "text/plain; charset=utf-8")
-          .withBody(ByteString("Renamed with patch"))
-      )
+       val request = authed(
+         FakeRequest(HttpVerbs.PATCH, s"/packages/$packageId/name")
+           .withHeaders(CONTENT_TYPE -> "application/json")
+           .withBody(
+             Json.obj("name" -> "Renamed with patch")
+           )
+       )
 
-      status(
-        call(components.packageController.updateName(packageId), request)
-      ) shouldBe NO_CONTENT
+       status(
+         call(components.packageController.updateName(packageId), request)
+       ) shouldBe NO_CONTENT
 
-      val fetched = call(
-        components.packageController.getPackage(packageId),
-        emptyAuthedRequest(HttpVerbs.GET, s"/packages/$packageId")
-      )
-      (jsonBody(fetched) \\ "name").head
-        .as[String] shouldBe "Renamed with patch"
-    }
+       val fetched = call(
+         components.packageController.getPackage(packageId),
+         emptyAuthedRequest(HttpVerbs.GET, s"/packages/$packageId")
+       )
+       (jsonBody(fetched) \\ "name").head
+         .as[String] shouldBe "Renamed with patch"
+     }
 
     "toggle hidden flag with PUT /is-hidden" taggedAs UsesDatabase in {
       val packageId = UUID.randomUUID()
