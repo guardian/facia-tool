@@ -2,7 +2,7 @@ package controllers
 
 import logging.Logging
 import model.packages.Package.PackageType
-import model.packages.{PackageMetadata, Package => DomainPackage}
+import model.packages.{PackageCard, PackageMetadata, Package => DomainPackage}
 import model.packages.client.{
   ClientPackage,
   ClientPackageCard,
@@ -327,4 +327,43 @@ class PackageController(
         }
       }
     }
+
+  def publish(id: UUID) = EditPackagesAuthAction { req =>
+    try {
+      db.getPackageById(id) match {
+        case Some(pkg) =>
+          val cards =
+            db.getPackageCards(id)
+              .map(_.toPackageCard)
+              .collect({ case Some(card) => card })
+          publishing.publishPackage(pkg, cards, req.user) match {
+            case Left(err) =>
+              logger.error(s"Unable to publish package with ID $id: $err")
+              InternalServerError(
+                ErrorResponse(
+                  "Unable to publish this package, see the server logs for details"
+                )
+              )
+            case Right(_) =>
+              logger.info(s"Successfully published package with ID $id")
+              NoContent
+          }
+        case None =>
+          NotFound(ErrorResponse.notFound("package ID is not valid"))
+      }
+    } catch {
+      case err: PSQLException =>
+        psqlErrorHandler(err)
+      case err: Throwable =>
+        logger.error(
+          s"Unexpected error when publishing package with id $id: ${err.getMessage}",
+          err
+        )
+        InternalServerError(
+          ErrorResponse(
+            "Unexpected error, please see the server logs for more details"
+          )
+        )
+    }
+  }
 }

@@ -11,7 +11,7 @@ import model.editions.Edition.{
 import model.editions.{EditionsIssue, PublishAction}
 import net.logstash.logback.marker.Markers
 import services.editions.db.FaciaDB
-import model.packages.{Package, PackageCard}
+import model.packages.{FeastPackage, Package, PackageCard}
 
 import scala.jdk.CollectionConverters._
 
@@ -121,6 +121,14 @@ class Publishing(
     )
     logger.info(s"Uploading $action request for package ${pkg.id}")(markers)
 
-    feastAppPublicationTarget.putPackage(pkg, cards)
+    pkg match {
+      case _: FeastPackage =>
+        feastAppPublicationTarget.putPackage(pkg, cards)
+      case _ =>
+        logger.error(
+          s"Cannot publish package of type ${pkg.getClass.getSimpleName}, this is not implemented yet"
+        )
+        Left("Publication of this package type is not yet implemented")
+    }
   }
 }

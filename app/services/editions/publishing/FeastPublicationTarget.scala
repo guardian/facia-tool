@@ -31,12 +31,14 @@ import util.TimestampGenerator
 import scala.jdk.CollectionConverters._
 import logging.Logging
 import model.packages.{
+  FeastPackage,
   Package,
   PackageCard,
   PackageChefCard,
   PackageRecipeCard,
   PackageSubcollectionCard
 }
+import scala.util.Try
 
 object FeastPublicationTarget {
   object MessageType extends Enumeration {
@@ -51,6 +53,7 @@ class FeastPublicationTarget(
     config: ApplicationConfiguration,
     timestamp: TimestampGenerator
 ) extends PublicationTarget
+    with PackagePublicationTarget
     with Logging {
   private def transformCards(source: EditionsCard): ContainerItem = {
     source match {
@@ -185,24 +188,36 @@ class FeastPublicationTarget(
   }
 
   private def transformPackageContent(
-      source: Package,
+      source: FeastPackage,
       cards: Seq[PackageCard]
-  ): FeastAppContainer = FeastAppContainer(
-    id = source.id,
-    title = source.name,
-    targetedRegions = source.feastMetadata.flatMap(_.targetedRegions),
-    excludedRegions = source.feastMetadata.flatMap(_.excludedRegions),
-    body = source.feastMetadata.flatMap(_.bodyText),
-    items = cards.map(transformPackageCard)
-  )
-
-  def putPackage(pkg: Package, cards: Seq[PackageCard]) = {
-    val content =
-      Json.stringify(Json.toJson(transformPackageContent(pkg, cards)))
-
-    snsClient.publish(
-      createPublishRequest(content, FeastPublicationTarget.MessageType.Package)
+  ): FeastAppContainer =
+    FeastAppContainer(
+      id = source.id.toString,
+      title = source.name,
+      targetedRegions = source.metadata.flatMap(_.targetedRegions),
+      excludedRegions = source.metadata.flatMap(_.excludedRegions),
+      body = source.metadata.flatMap(_.bodyText),
+      items = cards.map(transformPackageCard)
     )
+
+  def putPackage(
+      pkg: Package,
+      cards: Seq[PackageCard]
+  ): Either[String, Unit] = pkg match {
+    case f: FeastPackage =>
+      val content =
+        Json.stringify(Json.toJson(transformPackageContent(f, cards)))
+
+      Try {
+        snsClient.publish(
+          createPublishRequest(
+            content,
+            FeastPublicationTarget.MessageType.Package
+          )
+        )
+        ()
+      }.toEither.left.map(_.getMessage)
+    case _ => Left("This publication target can only publish Feast packages")
   }
 
   override def putIssue(
