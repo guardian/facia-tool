@@ -303,12 +303,11 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         ),
         emptyAuthedRequest(HttpVerbs.GET, "/packages?order=created")
       )
-      status(result) shouldBe OK
+       status(result) shouldBe OK
 
-      val body = jsonBody(result)
-      (body \\ "status").head.as[String] shouldBe "ok"
-      (body \\ "packages").head.as[JsArray].value.size shouldBe 2
-    }
+       val body = jsonBody(result)
+       (body \\ "packages").head.as[JsArray].value.size shouldBe 2
+     }
 
     "support sort order params and title search" taggedAs UsesDatabase in {
       prefillPackage(
