@@ -453,8 +453,8 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
 
       val request = authed(
         FakeRequest(HttpVerbs.PATCH, s"/packages/$packageId/name")
-          .withHeaders(CONTENT_TYPE -> "text/plain; charset=utf-8")
-          .withBody(ByteString("Renamed with patch"))
+          .withHeaders(CONTENT_TYPE -> "application/json")
+          .withBody(Json.obj("name" -> "Renamed with patch"))
       )
 
       status(
