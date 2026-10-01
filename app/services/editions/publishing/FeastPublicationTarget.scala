@@ -197,7 +197,11 @@ class FeastPublicationTarget(
       targetedRegions = source.metadata.flatMap(_.targetedRegions),
       excludedRegions = source.metadata.flatMap(_.excludedRegions),
       body = source.metadata.flatMap(_.bodyText),
-      items = cards.map(transformPackageCard)
+      items = cards.map(transformPackageCard),
+      hideFromFront = Some(source.isHidden),
+      lightPalette = source.metadata.flatMap(_.theme.map(_.lightPalette)),
+      darkPalette = source.metadata.flatMap(_.theme.map(_.darkPalette)),
+      image = source.metadata.flatMap(_.theme.flatMap(_.imageURL))
     )
 
   def putPackage(
