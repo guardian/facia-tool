@@ -15,6 +15,7 @@ import {
 	FiRefreshCw,
 	FiSmartphone,
 	FiTablet,
+	FiTrash2,
 } from 'react-icons/fi';
 import { FaGripVertical } from 'react-icons/fa';
 import {
@@ -25,6 +26,7 @@ import { TextInput } from '@guardian/stand/TextInput';
 import { TextArea } from '@guardian/stand/TextArea';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
+import { Modal, Dialog } from '@guardian/stand/Modal';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
@@ -47,6 +49,7 @@ import {
 	CreateFormSection,
 	CreateFormMain,
 	CreateFormActions,
+	CreateFormTopBar,
 	SubnavCreateFormPage,
 	CreateFormSidebar,
 	CreateFormPreview,
@@ -190,6 +193,8 @@ const SubnavForm = ({
 		initialSubnav?.images ?? [],
 	);
 	const [error, setError] = useState<string | null>(null);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [showUnpublishModal, setShowUnpublishModal] = useState(false);
 	const [breakpoint, setBreakpoint] = useState<Breakpoint>('desktop');
 	// Bumped to force the preview iframe to reload once DCR has polled the draft.
 	const [previewNonce, setPreviewNonce] = useState(0);
@@ -456,6 +461,33 @@ const SubnavForm = ({
 							active={currentStepId === 'header'}
 							onFocus={() => setCurrentStepId('header')}
 						>
+							{isEditMode && (onUnpublish || onDelete) && (
+								<CreateFormTopBar>
+									{hasLive && onUnpublish && (
+										<Button
+											variant="secondary"
+											size="sm"
+											icon={<FiMinusCircle />}
+											onPress={() => setShowUnpublishModal(true)}
+											isDisabled={saving || actionPending}
+										>
+											Unpublish
+										</Button>
+									)}
+									{onDelete && (
+										<Button
+											variant="tertiary"
+											size="sm"
+											icon={<FiTrash2 />}
+											onPress={() => setShowDeleteModal(true)}
+											isDisabled={saving || actionPending || hasLive}
+											cssOverrides={deleteButtonStyle}
+										>
+											Delete
+										</Button>
+									)}
+								</CreateFormTopBar>
+							)}
 							<SubnavContainerHeading>Header</SubnavContainerHeading>
 							<TextArea
 								label="Description"
@@ -682,27 +714,6 @@ const SubnavForm = ({
 										Discard changes
 									</Button>
 								)}
-								{isEditMode && hasLive && onUnpublish && (
-									<Button
-										variant="secondary"
-										size="sm"
-										onPress={onUnpublish}
-										isDisabled={saving || actionPending}
-									>
-										Take down
-									</Button>
-								)}
-								{isEditMode && onDelete && (
-									<Button
-										variant="tertiary"
-										size="sm"
-										onPress={onDelete}
-										isDisabled={saving || actionPending}
-										cssOverrides={deleteButtonStyle}
-									>
-										Delete
-									</Button>
-								)}
 							</CreateFormActions>
 						</CreateFormSection>
 					</CreateFormMain>
@@ -781,6 +792,69 @@ const SubnavForm = ({
 					</CreateFormPreview>
 				</Item>
 			</Grid>
+			<Modal
+				isDismissable
+				isOpen={showUnpublishModal}
+				onOpenChange={setShowUnpublishModal}
+			>
+				<Dialog>
+					<Dialog.Header>Unpublish this {headerText} subnav</Dialog.Header>
+					<Dialog.Content>
+						This subnav will no longer be visible on web and app
+					</Dialog.Content>
+					<Dialog.Buttons>
+						<Button
+							variant="secondary"
+							size="sm"
+							onPress={() => setShowUnpublishModal(false)}
+						>
+							Cancel
+						</Button>
+						<Button
+							variant="primary"
+							size="sm"
+							onPress={() => {
+								setShowUnpublishModal(false);
+								onUnpublish?.();
+							}}
+						>
+							Unpublish
+						</Button>
+					</Dialog.Buttons>
+				</Dialog>
+			</Modal>
+			<Modal
+				isDismissable
+				isOpen={showDeleteModal}
+				onOpenChange={setShowDeleteModal}
+			>
+				<Dialog>
+					<Dialog.Header>Delete this {headerText} subnav</Dialog.Header>
+					<Dialog.Content>
+						Deleting this subnav will remove it completely
+					</Dialog.Content>
+					<Dialog.Buttons>
+						<Button
+							variant="secondary"
+							size="sm"
+							onPress={() => setShowDeleteModal(false)}
+						>
+							Cancel
+						</Button>
+						<Button
+							variant="primary"
+							size="sm"
+							cssOverrides={deleteButtonStyle}
+							onPress={() => {
+								setShowDeleteModal(false);
+								onDelete?.();
+							}}
+						>
+							Confirm delete
+						</Button>
+					</Dialog.Buttons>
+				</Dialog>
+			</Modal>
 		</SubnavCreateFormPage>
 	);
 };

@@ -248,6 +248,13 @@ export const SubnavCreateFormPage = styled.div`
 	z-index: 0;
 `;
 
+export const CreateFormTopBar = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 8px;
+`;
+
 export const CreateFormSidebar = styled.div`
 	position: sticky;
 	top: 80px;
