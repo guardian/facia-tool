@@ -66,7 +66,7 @@ class CloudWatch(
         .metricData(metricsAsDatums.asJavaCollection)
         .build()
 
-     cloudwatch.foreach { client =>
+      cloudwatch.foreach { client =>
         client.putMetricData(request).asScala.failed.foreach { exception =>
           logger.warn(
             s"Failed to put ${metricsAsStatistics.size} metrics: $exception"
