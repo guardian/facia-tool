@@ -127,18 +127,18 @@ class ApplicationConfiguration(
     )
 
     def cmsFrontsAccountCredentials: AwsCredentialsProviderChain =
-      newStyleCredentials.getOrElse(
+      credentialsProviderChain.getOrElse(
         throw new BadConfigurationException(
           "AWS credentials are not configured for CMS Fronts"
         )
       )
-    val newStyleCredentials: Option[AwsCredentialsProviderChain] = {
+    val credentialsProviderChain: Option[AwsCredentialsProviderChain] = {
       val provider = AwsCredentialsProviderChain
         .builder()
         .addCredentialsProvider(
           ProfileCredentialsProvider.create("cmsFronts")
         )
-        .addCredentialsProvider(DefaultCredentialsProvider.create())
+        .addCredentialsProvider(DefaultCredentialsProvider.builder().build())
         .build()
 
       try {

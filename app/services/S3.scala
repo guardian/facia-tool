@@ -36,7 +36,7 @@ case class CmsFrontsS3Account(
   lazy val bucket = config.aws.frontsBucket
 
   lazy val client: Option[S3Client] =
-    config.aws.newStyleCredentials.map(credentials =>
+    config.aws.credentialsProviderChain.map(credentials =>
       S3.client(credentials, config.aws.region, config.aws.localS3Endpoint)
     )
 }

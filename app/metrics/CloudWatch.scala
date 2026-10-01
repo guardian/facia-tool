@@ -20,7 +20,7 @@ class CloudWatch(
 ) extends Logging {
 
   lazy val cloudwatch: Option[CloudWatchAsyncClient] =
-    config.aws.newStyleCredentials.map(credentials =>
+    config.aws.credentialsProviderChain.map(credentials =>
       CloudWatchAsyncClient
         .builder()
         .credentialsProvider(credentials)

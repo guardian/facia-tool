@@ -17,23 +17,16 @@ import java.nio.charset.StandardCharsets
 
 object EditionsAppPublicationTarget extends LazyLogging {
 
-  def createPutObjectRequest[T: Writes](
+  def createPutObjectRequest(
       bucketName: String,
-      key: String,
-      issue: T
-  ): (PutObjectRequest, RequestBody) = {
-    val issueJson = Json.stringify(Json.toJson(issue))
-    // The byte length of a UTF-8 string can exceed its character length, so measure the encoded bytes.
-    val bytes = issueJson.getBytes(StandardCharsets.UTF_8)
-    val request = PutObjectRequest
+      key: String
+  ): PutObjectRequest =
+    PutObjectRequest
       .builder()
       .bucket(bucketName)
       .key(key)
       .contentType("application/json")
-      .contentLength(bytes.length.toLong)
       .build()
-    (request, RequestBody.fromBytes(bytes))
-  }
 }
 
 class EditionsAppPublicationTarget(s3Client: S3Client, bucketName: String)
@@ -50,10 +43,11 @@ class EditionsAppPublicationTarget(s3Client: S3Client, bucketName: String)
   }
 
   override def putIssueJson[T: Writes](content: T, key: String): Unit = {
-    val (request, body) = EditionsAppPublicationTarget.createPutObjectRequest(
+    val issueJson = Json.stringify(Json.toJson(content))
+    val bytes = issueJson.getBytes(StandardCharsets.UTF_8)
+    val request = EditionsAppPublicationTarget.createPutObjectRequest(
       bucketName,
-      key,
-      content
+      key
     )
     logger.info(
       ReflectionToStringBuilder.toString(
@@ -61,7 +55,7 @@ class EditionsAppPublicationTarget(s3Client: S3Client, bucketName: String)
         ToStringStyle.MULTI_LINE_STYLE
       )
     )
-    s3Client.putObject(request, body)
+    s3Client.putObject(request, RequestBody.fromBytes(bytes))
   }
 
   def putEditionsList(rawJson: String): Unit = {
