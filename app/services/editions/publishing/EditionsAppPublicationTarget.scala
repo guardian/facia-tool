@@ -65,7 +65,6 @@ class EditionsAppPublicationTarget(s3Client: S3Client, bucketName: String)
       .bucket(bucketName)
       .key("editionsList")
       .contentType("application/json")
-      .contentLength(bytes.length.toLong)
       .build()
     s3Client.putObject(request, RequestBody.fromBytes(bytes))
   }
