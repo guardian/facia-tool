@@ -26,10 +26,10 @@ import { TextInput } from '@guardian/stand/TextInput';
 import { TextArea } from '@guardian/stand/TextArea';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
-import { Modal, Dialog } from '@guardian/stand/Modal';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
+import { DeleteSubnavModal, UnpublishSubnavModal } from './SubnavActionModals';
 import {
 	CustomSubnav,
 	SubnavImage,
@@ -152,11 +152,6 @@ const stepperOverrides = css`
 	li button > div:first-of-type {
 		border-right: 1px solid #dcdcdc;
 	}
-`;
-
-// Stand's Button has no danger variant, so tint the tertiary delete action red.
-const deleteButtonStyle = css`
-	color: #c70000;
 `;
 
 const SubnavForm = ({
@@ -481,7 +476,6 @@ const SubnavForm = ({
 											icon={<FiTrash2 />}
 											onPress={() => setShowDeleteModal(true)}
 											isDisabled={saving || actionPending || hasLive}
-											cssOverrides={deleteButtonStyle}
 										>
 											Delete
 										</Button>
@@ -792,69 +786,18 @@ const SubnavForm = ({
 					</CreateFormPreview>
 				</Item>
 			</Grid>
-			<Modal
-				isDismissable
+			<UnpublishSubnavModal
 				isOpen={showUnpublishModal}
 				onOpenChange={setShowUnpublishModal}
-			>
-				<Dialog>
-					<Dialog.Header>Unpublish this {headerText} subnav</Dialog.Header>
-					<Dialog.Content>
-						This subnav will no longer be visible on web and app
-					</Dialog.Content>
-					<Dialog.Buttons>
-						<Button
-							variant="secondary"
-							size="sm"
-							onPress={() => setShowUnpublishModal(false)}
-						>
-							Cancel
-						</Button>
-						<Button
-							variant="primary"
-							size="sm"
-							onPress={() => {
-								setShowUnpublishModal(false);
-								onUnpublish?.();
-							}}
-						>
-							Unpublish
-						</Button>
-					</Dialog.Buttons>
-				</Dialog>
-			</Modal>
-			<Modal
-				isDismissable
+				headerText={headerText}
+				onConfirm={() => onUnpublish?.()}
+			/>
+			<DeleteSubnavModal
 				isOpen={showDeleteModal}
 				onOpenChange={setShowDeleteModal}
-			>
-				<Dialog>
-					<Dialog.Header>Delete this {headerText} subnav</Dialog.Header>
-					<Dialog.Content>
-						Deleting this subnav will remove it completely
-					</Dialog.Content>
-					<Dialog.Buttons>
-						<Button
-							variant="secondary"
-							size="sm"
-							onPress={() => setShowDeleteModal(false)}
-						>
-							Cancel
-						</Button>
-						<Button
-							variant="primary"
-							size="sm"
-							cssOverrides={deleteButtonStyle}
-							onPress={() => {
-								setShowDeleteModal(false);
-								onDelete?.();
-							}}
-						>
-							Confirm delete
-						</Button>
-					</Dialog.Buttons>
-				</Dialog>
-			</Modal>
+				headerText={headerText}
+				onConfirm={() => onDelete?.()}
+			/>
 		</SubnavCreateFormPage>
 	);
 };
