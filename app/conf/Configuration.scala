@@ -2,26 +2,23 @@ package conf
 
 import java.io.{File, FileInputStream, InputStream}
 import java.net.URL
-import com.amazonaws.AmazonClientException
-import com.amazonaws.auth._
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
 import org.apache.commons.io.IOUtils
 import play.api.{Configuration => PlayConfiguration}
 import logging.Logging
 
 import scala.jdk.CollectionConverters._
 import scala.language.reflectiveCalls
-import com.amazonaws.services.rds.model.DescribeDBInstancesRequest
-import com.amazonaws.services.rds.AmazonRDSClientBuilder
-import com.amazonaws.services.simplesystemsmanagement.AWSSimpleSystemsManagementClientBuilder
-import com.amazonaws.services.simplesystemsmanagement.model.GetParameterRequest
 import software.amazon.awssdk.auth.credentials.{
+  AwsCredentialsProviderChain,
   DefaultCredentialsProvider,
-  AwsCredentialsProviderChain => NewAwsCredentialsProviderChain,
-  ProfileCredentialsProvider => NewProfileCredentialsProvider
+  ProfileCredentialsProvider
 }
 import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.rds.RdsClient
+import software.amazon.awssdk.services.rds.model.DescribeDbInstancesRequest
 import software.amazon.awssdk.services.s3.S3Client
+import software.amazon.awssdk.services.ssm.SsmClient
+import software.amazon.awssdk.services.ssm.model.GetParameterRequest
 
 import java.nio.charset.StandardCharsets
 
@@ -129,47 +126,19 @@ class ApplicationConfiguration(
       "feast_app.publication_topic"
     )
 
-    def cmsFrontsAccountCredentials: AWSCredentialsProvider =
-      credentials.getOrElse(
+    def cmsFrontsAccountCredentials: AwsCredentialsProviderChain =
+      credentialsProviderChain.getOrElse(
         throw new BadConfigurationException(
           "AWS credentials are not configured for CMS Fronts"
         )
       )
-    val credentials: Option[AWSCredentialsProvider] = {
-      val provider = new AWSCredentialsProviderChain(
-        new ProfileCredentialsProvider("cmsFronts"),
-        new DefaultAWSCredentialsProviderChain()
-      )
-
-      // this is a bit of a convoluted way to check whether we actually have credentials.
-      // I guess in an ideal world there would be some sort of isConfigued() method...
-      try {
-        val creds = provider.getCredentials
-        Some(provider)
-      } catch {
-        case ex: AmazonClientException =>
-          logger.error("amazon client exception")
-
-          // We really, really want to ensure that PROD is configured before saying a box is OK
-          if (isProd) throw ex
-          // this means that on dev machines you only need to configure keys if you are actually going to use them
-          None
-      }
-    }
-
-    def newStyleCmsFrontsAccountCredentials: NewAwsCredentialsProviderChain =
-      newStyleCredentials.getOrElse(
-        throw new BadConfigurationException(
-          "AWS credentials are not configured for CMS Fronts (v2)"
-        )
-      )
-    val newStyleCredentials: Option[NewAwsCredentialsProviderChain] = {
-      val provider = NewAwsCredentialsProviderChain
+    val credentialsProviderChain: Option[AwsCredentialsProviderChain] = {
+      val provider = AwsCredentialsProviderChain
         .builder()
         .addCredentialsProvider(
-          NewProfileCredentialsProvider.create("cmsFronts")
+          ProfileCredentialsProvider.create("cmsFronts")
         )
-        .addCredentialsProvider(DefaultCredentialsProvider.create())
+        .addCredentialsProvider(DefaultCredentialsProvider.builder().build())
         .build()
 
       try {
@@ -183,20 +152,20 @@ class ApplicationConfiguration(
       }
     }
 
-    lazy val rdsClient = AmazonRDSClientBuilder
-      .standard()
-      .withCredentials(cmsFrontsAccountCredentials)
-      .withRegion(region)
+    lazy val rdsClient = RdsClient
+      .builder()
+      .region(Region.of(region))
+      .credentialsProvider(cmsFrontsAccountCredentials)
       .build()
-    lazy val ssmClient = AWSSimpleSystemsManagementClientBuilder
-      .standard()
-      .withCredentials(cmsFrontsAccountCredentials)
-      .withRegion(region)
+    lazy val ssmClient = SsmClient
+      .builder()
+      .region(Region.of(region))
+      .credentialsProvider(cmsFrontsAccountCredentials)
       .build()
     lazy val s3Client = S3Client
       .builder()
       .region(Region.of(region))
-      .credentialsProvider(newStyleCmsFrontsAccountCredentials)
+      .credentialsProvider(cmsFrontsAccountCredentials)
       .build()
   }
 
@@ -209,12 +178,14 @@ class ApplicationConfiguration(
     private def getPassword: String = {
       // In fronts tool 'isProd' means is CODE or PROD because fuck it why not
       if (isProd) {
-        val request = new GetParameterRequest()
-          .withName(s"/facia-tool/cms-fronts/$stageFromProperties/db/password")
-          .withWithDecryption(true)
+        val request = GetParameterRequest
+          .builder()
+          .name(s"/facia-tool/cms-fronts/$stageFromProperties/db/password")
+          .withDecryption(true)
+          .build()
 
         val response = aws.ssmClient.getParameter(request)
-        response.getParameter.getValue
+        response.parameter.value
       } else {
         getMandatoryString("db.default.password")
       }
@@ -226,12 +197,13 @@ class ApplicationConfiguration(
         val dbIdentifier =
           if (stageFromProperties == "PROD") "facia-prod-db-2025"
           else "facia-code-db-2025"
-        val request = new DescribeDBInstancesRequest().withDBInstanceIdentifier(
-          dbIdentifier
-        )
+        val request = DescribeDbInstancesRequest
+          .builder()
+          .dbInstanceIdentifier(dbIdentifier)
+          .build()
         val instances = aws.rdsClient
           .describeDBInstances(request)
-          .getDBInstances
+          .dbInstances
           .asScala
           .toList
 
@@ -242,34 +214,14 @@ class ApplicationConfiguration(
         }
 
         val instance = instances.head
-        val awsHost = instance.getEndpoint.getAddress
-        val awsPort = instance.getEndpoint.getPort.toString
+        val awsHost = instance.endpoint.address
+        val awsPort = instance.endpoint.port.toString
         (awsHost, awsPort)
       } else {
         val host = getMandatoryString("db.default.hostname")
         val port = getMandatoryString("db.default.port")
         (host, port)
       }
-    }
-
-    def credentialsProviderChain(
-        accessKey: Option[String] = None,
-        secretKey: Option[String] = None
-    ): AWSCredentialsProviderChain = {
-      new AWSCredentialsProviderChain(
-        new AWSCredentialsProvider {
-          override def getCredentials: AWSCredentials = (for {
-            key <- accessKey
-            secret <- secretKey
-          } yield new BasicAWSCredentials(key, secret)).orNull
-
-          override def refresh(): Unit = {}
-        },
-        new EnvironmentVariableCredentialsProvider,
-        new SystemPropertiesCredentialsProvider,
-        new ProfileCredentialsProvider("cmsFronts"),
-        InstanceProfileCredentialsProvider.getInstance()
-      )
     }
   }
 
