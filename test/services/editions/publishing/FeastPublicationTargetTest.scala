@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers._
 import org.scalatest.{FreeSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
-import play.api.libs.json.{JsNull, Json}
+import play.api.libs.json.{JsValue, Json}
 import model.FeastAppModel.{
   Chef,
   ChefContent,
@@ -489,36 +489,37 @@ class FeastPublicationTargetTest
       )
       (messageJson \ "targetedRegions")
         .as[Seq[String]] should contain allElementsOf Seq("UK", "US")
-      (messageJson \ "items") should equal(
-        Json.arr(
-          Json.obj("recipe" -> Json.obj("id" -> "recipe-123")),
-          Json.obj(
-            "chef" -> Json.obj(
-              "id" -> "chef-456",
-              "image" -> "https://example.com/chef.jpg",
-              "bio" -> "A great chef",
-              "backgroundHex" -> "#000000",
-              "foregroundHex" -> "#FFFFFF"
-            )
-          ),
-          Json.obj(
-            "collection" -> Json.obj(
-              "byline" -> JsNull,
-              "darkPalette" -> Json.obj(
-                "foregroundHex" -> "#FFFFFF",
-                "backgroundHex" -> "#222222"
-              ),
-              "image" -> "https://example.com/collection.jpg",
-              "body" -> "",
-              "title" -> "Sunday recipes",
-              "lightPalette" -> Json.obj(
-                "foregroundHex" -> "#111111",
-                "backgroundHex" -> "#EEEEEE"
-              ),
-              "recipes" -> Json.arr("recipe-456")
+      (messageJson \ "items").as[Seq[JsValue]] should equal(
+        Json
+          .arr(
+            Json.obj("recipe" -> Json.obj("id" -> "recipe-123")),
+            Json.obj(
+              "chef" -> Json.obj(
+                "id" -> "chef-456",
+                "image" -> "https://example.com/chef.jpg",
+                "bio" -> "A great chef",
+                "backgroundHex" -> "#000000",
+                "foregroundHex" -> "#FFFFFF"
+              )
+            ),
+            Json.obj(
+              "collection" -> Json.obj(
+                "darkPalette" -> Json.obj(
+                  "foregroundHex" -> "#FFFFFF",
+                  "backgroundHex" -> "#222222"
+                ),
+                "image" -> "https://example.com/collection.jpg",
+                "body" -> "",
+                "title" -> "Sunday recipes",
+                "lightPalette" -> Json.obj(
+                  "foregroundHex" -> "#111111",
+                  "backgroundHex" -> "#EEEEEE"
+                ),
+                "recipes" -> Json.arr("recipe-456")
+              )
             )
           )
-        )
+          .as[Seq[JsValue]]
       )
     }
 
