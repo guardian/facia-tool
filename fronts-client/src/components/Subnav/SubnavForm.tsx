@@ -27,6 +27,7 @@ import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
+import { UserFeedbackSummary } from '@guardian/stand/UserFeedbackSummary';
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
 import {
 	CustomSubnav,
@@ -570,6 +571,14 @@ const SubnavForm = ({
 									Add nav item
 								</Button>
 							</AddRow>
+							{links.length >= 15 && (
+								<UserFeedbackSummary
+									level="warning"
+									title="Recommended limit reached"
+								>
+									You have reached the maximum recommended number of nav items
+								</UserFeedbackSummary>
+							)}
 						</CreateFormSection>
 
 						<CreateFormSection
