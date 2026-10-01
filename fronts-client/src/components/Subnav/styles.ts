@@ -193,6 +193,19 @@ export const ColumnHeaderLabel = styled.span`
 	color: ${({ theme }) => theme.base.colors.textDark};
 `;
 
+export const CharacterCountRow = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 8px;
+	margin-top: 4px;
+`;
+
+export const CharacterCount = styled.span`
+	font-size: 13px;
+	color: ${({ theme }) => theme.base.colors.textMuted};
+`;
+
 export const DragHandle = styled.div`
 	display: flex;
 	align-items: center;

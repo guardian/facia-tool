@@ -27,6 +27,7 @@ import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
+import { Badge } from '@guardian/stand/Badge';
 import { UserFeedbackSummary } from '@guardian/stand/UserFeedbackSummary';
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
 import {
@@ -64,6 +65,8 @@ import {
 	ColumnHeaders,
 	ColumnHeadersSpacer,
 	ColumnHeaderLabel,
+	CharacterCountRow,
+	CharacterCount,
 } from './styles';
 
 interface SubnavFormProps {
@@ -87,6 +90,9 @@ type StepId = 'header' | 'links' | 'pages' | 'images' | 'review';
 type LinkRow = SubnavLink & { id: string };
 
 const stepOrder: StepId[] = ['header', 'links', 'pages', 'images', 'review'];
+
+// Soft limit for the header text; exceeding it warns but does not block saving.
+const HEADER_TEXT_RECOMMENDED_LIMIT = 20;
 
 const stepLabels: Record<StepId, string> = {
 	header: 'Header',
@@ -278,6 +284,7 @@ const SubnavForm = ({
 	}, []);
 
 	const hasHeader = headerText.trim().length > 0;
+	const headerTextOverLimit = headerText.length > HEADER_TEXT_RECOMMENDED_LIMIT;
 	const hasLink = links.some((link) => link.linkText.trim().length > 0);
 	const hasPage = pages.some((page) => page.path.trim().length > 0);
 
@@ -466,15 +473,29 @@ const SubnavForm = ({
 								fluid
 							/>
 							<RowFields>
-								<TextInput
-									label="Header text"
-									description="Contextual text for the subnav header"
-									isRequired
-									fluid
-									value={headerText}
-									onChange={setHeaderText}
-									placeholder="e.g. UK election 2024"
-								/>
+								<div>
+									<TextInput
+										label="Header text"
+										description="Contextual text for the subnav header"
+										isRequired
+										fluid
+										value={headerText}
+										onChange={setHeaderText}
+										placeholder="e.g. UK election 2024"
+									/>
+									<CharacterCountRow>
+										<Badge
+											color={headerTextOverLimit ? 'yellow' : 'green'}
+											size="sm"
+											weight="light"
+										>
+											{headerTextOverLimit ? 'Warning' : 'Recommended'}
+										</Badge>
+										<CharacterCount>
+											{headerText.length}/{HEADER_TEXT_RECOMMENDED_LIMIT}
+										</CharacterCount>
+									</CharacterCountRow>
+								</div>
 								<TextInput
 									label="URL (Dotcom path)"
 									description="Where the header links to (optional)"
