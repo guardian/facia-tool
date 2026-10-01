@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers._
 import org.scalatest.{FreeSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
-import play.api.libs.json.Json
+import play.api.libs.json.{JsNull, Json}
 import model.FeastAppModel.{
   Chef,
   ChefContent,
@@ -48,7 +48,8 @@ import model.packages.{
   FeastPackage,
   FeastPackageMetadata,
   PackageRecipeCard,
-  PackageChefCard
+  PackageChefCard,
+  PackageSubcollectionCard
 }
 
 import java.time.OffsetDateTime
@@ -432,6 +433,24 @@ class FeastPublicationTargetTest
           )
         ),
         addedOn = OffsetDateTime.now()
+      ),
+      PackageSubcollectionCard(
+        id = "subcollection-789",
+        metadata = Some(
+          EditionsFeastCollectionMetadata(
+            title = Some("Sunday recipes"),
+            theme = Some(
+              FeastCollectionTheme(
+                id = "theme-002",
+                lightPalette = Palette("#111111", "#EEEEEE"),
+                darkPalette = Palette("#FFFFFF", "#222222"),
+                imageURL = Some("https://example.com/collection.jpg")
+              )
+            ),
+            collectionItems = List(EditionsRecipe("recipe-456", 0L))
+          )
+        ),
+        addedOn = OffsetDateTime.now()
       )
     )
 
@@ -470,6 +489,37 @@ class FeastPublicationTargetTest
       )
       (messageJson \ "targetedRegions")
         .as[Seq[String]] should contain allElementsOf Seq("UK", "US")
+      (messageJson \ "items") should equal(
+        Json.arr(
+          Json.obj("recipe" -> Json.obj("id" -> "recipe-123")),
+          Json.obj(
+            "chef" -> Json.obj(
+              "id" -> "chef-456",
+              "image" -> "https://example.com/chef.jpg",
+              "bio" -> "A great chef",
+              "backgroundHex" -> "#000000",
+              "foregroundHex" -> "#FFFFFF"
+            )
+          ),
+          Json.obj(
+            "collection" -> Json.obj(
+              "byline" -> JsNull,
+              "darkPalette" -> Json.obj(
+                "foregroundHex" -> "#FFFFFF",
+                "backgroundHex" -> "#222222"
+              ),
+              "image" -> "https://example.com/collection.jpg",
+              "body" -> "",
+              "title" -> "Sunday recipes",
+              "lightPalette" -> Json.obj(
+                "foregroundHex" -> "#111111",
+                "backgroundHex" -> "#EEEEEE"
+              ),
+              "recipes" -> Json.arr("recipe-456")
+            )
+          )
+        )
+      )
     }
 
     "should not catch an SNS exception" in {
