@@ -1,0 +1,1 @@
+window.guardianPinboardE2E = true;

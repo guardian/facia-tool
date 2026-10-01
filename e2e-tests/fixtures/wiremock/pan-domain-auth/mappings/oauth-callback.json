@@ -1,0 +1,8 @@
+{
+  "request": { "method": "GET", "urlPath": "/oauthCallback" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "bodyFileName": "oauth-callback.json"
+  }
+}

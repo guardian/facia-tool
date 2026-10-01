@@ -1,5 +1,10 @@
 import { randomUUID } from "node:crypto";
 import { resolve } from "node:path";
+import {
+  authCookieName,
+  createE2eAuthCookie,
+  generatePanDomainKeys,
+} from "./panDomain.js";
 import { bootstrapAws } from "./stack/bootstrap.js";
 import { startAppContainer } from "./stack/app-container.js";
 import { startInfrastructure } from "./stack/infrastructure.js";
@@ -25,6 +30,8 @@ export async function startLocalStack(
   const e2eRoot = resolve(import.meta.dirname, "..");
   const repoRoot = resolve(e2eRoot, "..");
   const runId = randomUUID();
+  const panDomainKeys = generatePanDomainKeys();
+  const authCookie = createE2eAuthCookie(panDomainKeys.privateKeyPem);
   const infrastructure = await startInfrastructure(runId);
   let mocks: StartedMock[] = [];
   let app: StartedTestContainer | undefined;
@@ -32,7 +39,7 @@ export async function startLocalStack(
 
   try {
     const hostAwsEndpoint = `http://${infrastructure.localstack.getHost()}:${infrastructure.localstack.getMappedPort(4566)}`;
-    await bootstrapAws(hostAwsEndpoint);
+    await bootstrapAws(hostAwsEndpoint, e2eRoot, panDomainKeys);
     if (appMode === "container") {
       const runtimeConfig = writeRuntimeConfig({
         e2eRoot,
@@ -41,9 +48,10 @@ export async function startLocalStack(
         postgres: infrastructure.postgres,
         localstack: infrastructure.localstack,
         mocks: [],
+        authCookie,
       });
       const [mocksResult, appResult] = await Promise.allSettled([
-        startMocks(infrastructure.network, runId),
+        startMocks(e2eRoot, infrastructure.network, runId),
         startAppContainer({
           e2eRoot,
           repoRoot,
@@ -66,7 +74,7 @@ export async function startLocalStack(
         throw failure.reason;
       }
     } else {
-      mocks = await startMocks(infrastructure.network, runId);
+      mocks = await startMocks(e2eRoot, infrastructure.network, runId);
       const runtimeConfig = writeRuntimeConfig({
         e2eRoot,
         repoRoot,
@@ -74,6 +82,7 @@ export async function startLocalStack(
         postgres: infrastructure.postgres,
         localstack: infrastructure.localstack,
         mocks,
+        authCookie,
       });
       nativeApp = await startNativeApp({ repoRoot, runtimeConfig });
     }
@@ -88,6 +97,8 @@ export async function startLocalStack(
           ? `http://${app.getHost()}:${app.getMappedPort(9000)}`
           : "http://localhost:9000",
         localStackEndpoint: hostAwsEndpoint,
+        authCookieName,
+        panDomainPrivateKey: panDomainKeys.privateKeyPem,
       },
       runId,
     };
