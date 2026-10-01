@@ -12,6 +12,8 @@ import software.amazon.awssdk.services.cloudwatch.model.{
 }
 
 import scala.jdk.CollectionConverters._
+import scala.jdk.FutureConverters.CompletionStageOps
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CloudWatch(
     val config: ApplicationConfiguration
@@ -64,17 +66,15 @@ class CloudWatch(
         .metricData(metricsAsDatums.asJavaCollection)
         .build()
 
-      cloudwatch.foreach { client =>
-        client.putMetricData(request).whenComplete { (_, exception) =>
-          if (exception != null) {
-            logger.warn(
-              s"Failed to put ${metricsAsStatistics.size} metrics: $exception"
-            )
-            logger.warn(
-              s"Failed to put ${metricsAsStatistics.map(_.metric.name).mkString(",")}"
-            )
-            metricsAsStatistics.foreach(_.reset())
-          }
+     cloudwatch.foreach { client =>
+        client.putMetricData(request).asScala.failed.foreach { exception =>
+          logger.warn(
+            s"Failed to put ${metricsAsStatistics.size} metrics: $exception"
+          )
+          logger.warn(
+            s"Failed to put ${metricsAsStatistics.map(_.metric.name).mkString(",")}"
+          )
+          metricsAsStatistics.foreach(_.reset())
         }
       }
     }
