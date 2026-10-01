@@ -91,8 +91,8 @@ type LinkRow = SubnavLink & { id: string };
 
 const stepOrder: StepId[] = ['header', 'links', 'pages', 'images', 'review'];
 
-// Soft limit for the header text; exceeding it warns but does not block saving.
-const HEADER_TEXT_RECOMMENDED_LIMIT = 20;
+// Soft limit for subnav header and nav item text; exceeding it warns but does not block saving.
+const RECOMMENDED_TEXT_LIMIT = 20;
 
 const stepLabels: Record<StepId, string> = {
 	header: 'Header',
@@ -284,7 +284,7 @@ const SubnavForm = ({
 	}, []);
 
 	const hasHeader = headerText.trim().length > 0;
-	const headerTextOverLimit = headerText.length > HEADER_TEXT_RECOMMENDED_LIMIT;
+	const headerTextOverLimit = headerText.length > RECOMMENDED_TEXT_LIMIT;
 	const hasLink = links.some((link) => link.linkText.trim().length > 0);
 	const hasPage = pages.some((page) => page.path.trim().length > 0);
 
@@ -492,7 +492,7 @@ const SubnavForm = ({
 											{headerTextOverLimit ? 'Warning' : 'Recommended'}
 										</Badge>
 										<CharacterCount>
-											{headerText.length}/{HEADER_TEXT_RECOMMENDED_LIMIT}
+											{headerText.length}/{RECOMMENDED_TEXT_LIMIT}
 										</CharacterCount>
 									</CharacterCountRow>
 								</div>
@@ -548,14 +548,37 @@ const SubnavForm = ({
 																<FaGripVertical />
 															</DragHandle>
 															<RowFields>
-																<TextInput
-																	aria-label="Link text"
-																	fluid
-																	value={link.linkText}
-																	onChange={(value) =>
-																		updateLink(index, { linkText: value })
-																	}
-																/>
+																<div>
+																	<TextInput
+																		aria-label="Link text"
+																		fluid
+																		value={link.linkText}
+																		onChange={(value) =>
+																			updateLink(index, { linkText: value })
+																		}
+																	/>
+																	<CharacterCountRow>
+																		<Badge
+																			color={
+																				link.linkText.length >
+																				RECOMMENDED_TEXT_LIMIT
+																					? 'yellow'
+																					: 'green'
+																			}
+																			size="sm"
+																			weight="light"
+																		>
+																			{link.linkText.length >
+																			RECOMMENDED_TEXT_LIMIT
+																				? 'Warning'
+																				: 'Recommended'}
+																		</Badge>
+																		<CharacterCount>
+																			{link.linkText.length}/
+																			{RECOMMENDED_TEXT_LIMIT}
+																		</CharacterCount>
+																	</CharacterCountRow>
+																</div>
 																<TextInput
 																	aria-label="Dotcom path"
 																	fluid
