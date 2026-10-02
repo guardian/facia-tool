@@ -9,9 +9,9 @@ import {
 	Droppable,
 } from 'react-beautiful-dnd';
 import {
-	FiMinusCircle,
+	FiMinus,
 	FiMonitor,
-	FiPlusCircle,
+	FiPlus,
 	FiRefreshCw,
 	FiSmartphone,
 	FiTablet,
@@ -22,7 +22,6 @@ import {
 	type StepNavConfig,
 } from '@guardian/stand/SidebarStepperNavigation';
 import { TextInput } from '@guardian/stand/TextInput';
-import { TextArea } from '@guardian/stand/TextArea';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
 import { Grid, Item } from '@guardian/stand/Grid';
@@ -147,8 +146,32 @@ const gridTheme = {
 
 const stepperOverrides = css`
 	li button > div:first-of-type {
-		border-right: 1px solid #dcdcdc;
+		border-right: 1px solid #cccccc;
 	}
+`;
+
+// Blend the step buttons into the raised sidebar column instead of white.
+const stepperTheme = {
+	navigation: {
+		shared: {
+			border: '0.0625rem solid #cccccc',
+		},
+	},
+	step: {
+		shared: {
+			backgroundColor: '#ededed',
+			currentBackgroundColor: '#ededed',
+		},
+	},
+};
+
+// Stretch the sidebar column to the row height so its sticky nav can travel,
+// and give the whole column the raised background.
+const sidebarItemStyle = css`
+	align-self: stretch;
+	border-radius: 4px;
+	/* stand semantic colour bg.raisedLevel2 */
+	background-color: #ededed;
 `;
 
 // Stand's Button has no danger variant, so tint the tertiary delete action red.
@@ -173,9 +196,6 @@ const SubnavForm = ({
 	const [currentStepId, setCurrentStepId] = useState<StepId>('header');
 	const [headerText, setHeaderText] = useState(
 		initialSubnav?.header.headerText ?? '',
-	);
-	const [headerCopy, setHeaderCopy] = useState(
-		initialSubnav?.header.copy ?? '',
 	);
 	const [headerDotcomPath, setHeaderDotcomPath] = useState(
 		initialSubnav?.header.dotcomPath ?? '',
@@ -346,7 +366,7 @@ const SubnavForm = ({
 			header: {
 				headerText: headerText.trim(),
 				dotcomPath: headerDotcomPath.trim() || undefined,
-				copy: headerCopy.trim(),
+				copy: initialSubnav?.header.copy ?? '',
 			},
 			format: initialSubnav?.format ?? 'large',
 			links: cleanedLinks.map((link) => ({
@@ -437,13 +457,14 @@ const SubnavForm = ({
 	return (
 		<SubnavCreateFormPage>
 			<Grid theme={gridTheme}>
-				<Item size={{ sm: 12, lg: 'auto' }}>
+				<Item size={{ sm: 12, lg: 'auto' }} cssOverrides={sidebarItemStyle}>
 					<CreateFormSidebar>
 						<SidebarStepperNavigation
 							stepNavTitle="Steps"
 							currentStepId={currentStepId}
 							stepNavConfig={stepNavConfig}
 							onPress={(stepId) => scrollToStep(stepId as StepId)}
+							theme={stepperTheme}
 							cssOverrides={stepperOverrides}
 						/>
 					</CreateFormSidebar>
@@ -457,13 +478,6 @@ const SubnavForm = ({
 							onFocus={() => setCurrentStepId('header')}
 						>
 							<SubnavContainerHeading>Header</SubnavContainerHeading>
-							<TextArea
-								label="Description"
-								value={headerCopy}
-								onChange={setHeaderCopy}
-								placeholder="Add description"
-								fluid
-							/>
 							<RowFields>
 								<TextInput
 									label="Header text"
@@ -475,8 +489,8 @@ const SubnavForm = ({
 									placeholder="e.g. UK election 2024"
 								/>
 								<TextInput
-									label="URL (Dotcom path)"
-									description="Where the header links to (optional)"
+									label="URL (Dotcom path) (optional)"
+									description="Where the header links to"
 									fluid
 									value={headerDotcomPath}
 									onChange={setHeaderDotcomPath}
@@ -549,7 +563,7 @@ const SubnavForm = ({
 																disabled={links.length === 1}
 																aria-label="Remove nav item"
 															>
-																<FiMinusCircle />
+																<FiMinus />
 															</IconButton>
 														</RepeatableRow>
 													)}
@@ -564,7 +578,7 @@ const SubnavForm = ({
 								<Button
 									variant="secondary"
 									size="sm"
-									icon={<FiPlusCircle />}
+									icon={<FiPlus />}
 									onPress={addLink}
 								>
 									Add nav item
@@ -611,7 +625,7 @@ const SubnavForm = ({
 										disabled={pages.length === 1}
 										aria-label="Remove page"
 									>
-										<FiMinusCircle />
+										<FiMinus />
 									</IconButton>
 								</RepeatableRow>
 							))}
@@ -619,7 +633,7 @@ const SubnavForm = ({
 								<Button
 									variant="secondary"
 									size="sm"
-									icon={<FiPlusCircle />}
+									icon={<FiPlus />}
 									onPress={addPage}
 								>
 									Add page
