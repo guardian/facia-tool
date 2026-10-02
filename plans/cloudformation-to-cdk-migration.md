@@ -264,17 +264,23 @@ Phase 4 is complete. The migration's compute is now fully GuCDK-owned; the
 Three independent, separately deployable pieces of work, ordered by risk.
 
 - [ ] **5a — stateful/shared resources into CDK.** Branch
-  `gucdk-migration-phase-5a-stateful`. Code done and verified (see below);
-  awaiting CODE then PROD deploy.
+  `gucdk-migration-phase-5a-stateful`,
+  PR [#2083](https://github.com/guardian/facia-tool/pull/2083) (draft). Code done
+  and verified (see below); awaiting CODE then PROD deploy.
 - [ ] **5b — CloudFront + DNS into CDK.** Branch
-  `gucdk-migration-phase-5b-cloudfront`, **depends on 5a** (same files). Code done
-  and verified (see below); awaiting CODE then PROD deploy. This is the change
-  that reaches the `CDK -> cfn.json` end-state.
-- [ ] **5c — alarms.** `monitoringConfiguration` is still `{ noMonitoring: true }`,
-  matching the legacy stack. Needs a team decision on which SNS topic alarms
-  notify (candidates in the account: `pagerduty-notification-topic`,
-  `CMSFrontsLambda_pagerduty`, `devx-reliability`, `Cloudwatch-Alerts`) and
-  whether CODE should notify at all.
+  `gucdk-migration-phase-5b-cloudfront`,
+  PR [#2084](https://github.com/guardian/facia-tool/pull/2084) (draft),
+  **depends on 5a** (same files). Code done and verified (see below); awaiting
+  CODE then PROD deploy. This is the change that reaches the `CDK -> cfn.json`
+  end-state.
+- [ ] **5c — alarms.** Branch `gucdk-migration-phase-5c-alarms`,
+  PR [#2085](https://github.com/guardian/facia-tool/pull/2085) (draft),
+  **depends on 5b**. Code done and verified (see below); awaiting CODE then PROD
+  deploy.
+
+Merge and deploy order is strictly **5a → 5b → 5c**, each deployed to CODE and
+then PROD before the next is merged. The branches are stacked, so only the 5c
+branch carries these PR numbers.
 
 Also noted, no action for now:
 
@@ -416,6 +422,40 @@ after all — the stack turned out not to be irreducibly mixed.
   policy variables, so the version has no behavioural effect.
 - lint, snapshots and synth green. Nothing outside the plan files referenced
   `cloudformation/`; CI only uploads `cdk/cdk.out/*.template.json`.
+
+### 5c — alarms
+
+`monitoringConfiguration` changes from `{ noMonitoring: true }` to a real
+configuration, giving the service the alarms the legacy stack never had:
+
+- **Target topic `pagerduty-notification-topic`**, and **both stages alarm**
+  (`ActionsEnabled: true` in CODE as well as PROD) — a team decision, not a
+  default.
+- `http5xxAlarm` at `tolerated5xxPercentage: 1` over 5 minutes. PROD serves
+  ~290k requests a day with a low single-digit number of 5xx (see the Phase 4
+  figures), so 1% sits a long way above the noise floor.
+- `unhealthyInstancesAlarm` on the ALB target group.
+
+`cdk diff` on top of 5b is **purely additive**: two new
+`AWS::CloudWatch::Alarm` resources and nothing else.
+
+### The phase 5 change set
+
+All three pieces were validated in **one change set** against live `facia-CODE`,
+created from a scratch branch carrying 5a + 5b + 5c together. Results:
+
+- **Every resource is `Modify` with `Replacement: False`**, or `Conditional` for
+  the dynamic reasons described under 5a. **No `Remove` actions at all.**
+- The only `Add`s are the two alarms and `CDKMetadata`.
+- The template CloudFormation validated is **identical** to what these branches
+  now synthesize — confirmed by fetching it with
+  `aws cloudformation get-template --change-set-name <arn>` and diffing against
+  `cdk.out`. The only difference is the `CDKMetadata` resource, which
+  `npm run synth` omits via `--version-reporting false` but `cdk deploy` adds.
+
+Note `cdk deploy` does **not** pass `--path-metadata false`, so its template also
+carries `aws:cdk:path` metadata that ours does not. That is informational only —
+strip it before comparing or every resource appears to differ.
 
 ## Node / tooling
 
