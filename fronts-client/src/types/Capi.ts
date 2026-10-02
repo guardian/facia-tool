@@ -54,7 +54,7 @@ interface Atoms {
 
 interface AtomResponse {
 	media: Atom;
-	multimediaSlideshow?: Atom;
+	multimediaslideshow?: Atom;
 	status: string;
 	total: number;
 	userTier: string;
