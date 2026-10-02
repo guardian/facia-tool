@@ -135,3 +135,12 @@ POST        /custom-subnav/:id/publish               controllers.CustomSubnavCon
 POST        /custom-subnav/:id/discard               controllers.CustomSubnavController.discardSubnav(id)
 POST        /custom-subnav/:id/unpublish             controllers.CustomSubnavController.unpublishSubnav(id)
 DELETE      /custom-subnav/:id                        controllers.CustomSubnavController.deleteSubnav(id)
+
+
+#GET    /api/packages                    - List/search packages
+#GET    /api/packages/:id                - Get single package
+#POST   /api/packages                    - Create package
+#PUT    /api/packages/:id                - Update package
+#POST   /api/packages/:id/publish        - Publish package
+#POST   /api/packages/:id/unpublish      - Unpublish package
+#DELETE /api/packages/:id                - Delete package
