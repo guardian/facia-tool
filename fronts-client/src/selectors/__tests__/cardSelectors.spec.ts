@@ -8,7 +8,7 @@ const stateWithEventGraphic = {
 		...stateWithSnaplinksAndArticles.cards,
 		'2f0b1e1c-2f52-4a4a-9a6f-8a1b8b4a6b3d': {
 			// No cardType: cards read back from a saved collection don't have one.
-			id: 'event-graphic/election-tracker/us-midterm-2026',
+			id: 'event-graphic/election-tracker/us-general-2024/congress',
 			frontPublicationDate: 4,
 			publishedBy: 'Computers',
 			meta: {},

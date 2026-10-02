@@ -20,7 +20,6 @@ import EditModeVisibility from 'components/util/EditModeVisibility';
 import { createSelectCollectionIdsWithOpenForms } from 'bundles/frontsUI';
 import { css } from 'styled-components';
 import { ConicalFlaskIcon } from 'components/icons/Icons';
-import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { hasActiveAbTestOnCard } from '../../util/abTests';
 
 interface FrontCollectionOverviewContainerProps {
@@ -37,7 +36,6 @@ type FrontCollectionOverviewProps = FrontCollectionOverviewContainerProps & {
 	hasUnpublishedChanges: boolean;
 	hasOpenForms: boolean;
 	liveAndDraftCards: Card[];
-	headlineABTestingIsEnabled?: boolean;
 };
 
 const Container = styled.div<{
@@ -140,9 +138,14 @@ const CollectionOverview = ({
 	isSelected,
 	hasOpenForms,
 	liveAndDraftCards,
-	headlineABTestingIsEnabled,
-}: FrontCollectionOverviewProps) =>
-	collection ? (
+}: FrontCollectionOverviewProps) => {
+	/*
+	 * Initial rollout of Editorial AB testing will be limited to the US front only.
+	 * Removal of this front restriction will be covered by https://github.com/guardian/frontend/issues/29129
+	 */
+	const isUSNetworkFront = frontId === 'us';
+
+	return collection ? (
 		<Container
 			onClick={(e: React.MouseEvent) => {
 				e.preventDefault();
@@ -199,7 +202,7 @@ const CollectionOverview = ({
 						</EditModeVisibility>
 					) : null)}
 				{liveAndDraftCards.some(
-					(card) => hasActiveAbTestOnCard(card) && headlineABTestingIsEnabled,
+					(card) => hasActiveAbTestOnCard(card) && isUSNetworkFront,
 				) && (
 					<EditModeVisibility visibleMode="fronts">
 						<TestIndicator priority="primary" size="s" title="Active tests">
@@ -210,7 +213,7 @@ const CollectionOverview = ({
 			</TextContainerRight>
 		</Container>
 	) : null;
-
+};
 const mapStateToProps = () => {
 	const selectCollection = createSelectCollection();
 	const selectCardsInCollection = createSelectCardsInCollection();
@@ -243,10 +246,6 @@ const mapStateToProps = () => {
 				collectionId,
 			) !== -1,
 		liveAndDraftCards: selectLiveAndDraftCards(state, collectionId),
-		headlineABTestingIsEnabled: selectFeatureValue(
-			state,
-			'headline-ab-testing',
-		),
 	});
 };
 

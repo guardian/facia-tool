@@ -1,31 +1,99 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { css } from '@emotion/react';
 import v4 from 'uuid/v4';
-import ButtonDefault from 'components/inputs/ButtonDefault';
+import {
+	DragDropContext,
+	Draggable,
+	DropResult,
+	Droppable,
+} from 'react-beautiful-dnd';
+import {
+	FiMinusCircle,
+	FiMonitor,
+	FiPlusCircle,
+	FiRefreshCw,
+	FiSmartphone,
+	FiTablet,
+} from 'react-icons/fi';
+import { FaGripVertical } from 'react-icons/fa';
+import {
+	SidebarStepperNavigation,
+	type StepNavConfig,
+} from '@guardian/stand/SidebarStepperNavigation';
+import { TextInput } from '@guardian/stand/TextInput';
+import { TextArea } from '@guardian/stand/TextArea';
+import { Option, Select } from '@guardian/stand/Select';
+import { Button } from '@guardian/stand/Button';
+import { Grid, Item } from '@guardian/stand/Grid';
+import { Typography } from '@guardian/stand/Typography';
+import { selectShouldUseCODELinks } from 'selectors/configSelectors';
 import {
 	CustomSubnav,
+	SubnavImage,
 	SubnavLink,
 	TargetedPage,
 	TargetedPageType,
 } from './types';
+import SubnavImagesSection from './SubnavImagesSection';
 import {
+	AddRow,
+	DragHandle,
 	ErrorMessage,
-	Field,
-	Form,
-	FormActions,
+	IconButton,
 	RepeatableRow,
 	RowFields,
-	SavedMessage,
-	Section,
-	SectionHeading,
-	Select,
-	TextInput,
+	SubnavContainerHeading,
+	CreateFormSection,
+	CreateFormMain,
+	CreateFormActions,
+	SubnavCreateFormPage,
+	CreateFormSidebar,
+	CreateFormPreview,
+	CreateFormPreviewHeader,
+	CreateFormPreviewTitleRow,
+	CreateFormPreviewTitle,
+	CreateFormPreviewToolbar,
+	CreateFormPreviewViewport,
+	CreateFormPreviewScaler,
+	CreateFormPreviewPlaceholder,
+	CreateFormPreviewFrame,
+	CreateFormPreviewNotice,
+	CreateFormPreviewSpinner,
+	ColumnHeaders,
+	ColumnHeadersSpacer,
+	ColumnHeaderLabel,
 } from './styles';
 
 interface SubnavFormProps {
+	onSaveDraft: (subnav: CustomSubnav) => Promise<void>;
+	onPublish: (id: string) => Promise<void>;
+	saving: boolean;
+	// When present the form is in edit mode: fields are seeded from this subnav,
+	// and the extra publish actions below are shown.
 	initialSubnav?: CustomSubnav;
-	onSave: (subnav: CustomSubnav) => Promise<void> | void;
-	saving?: boolean;
+	hasLive?: boolean;
+	hasDraft?: boolean;
+	actionPending?: boolean;
+	onDiscard?: () => void;
+	onUnpublish?: () => void;
+	onDelete?: () => void;
 }
+
+type StepId = 'header' | 'links' | 'pages' | 'images' | 'review';
+
+// Local nav-item row carries a stable id for drag-and-drop reordering.
+type LinkRow = SubnavLink & { id: string };
+
+const stepOrder: StepId[] = ['header', 'links', 'pages', 'images', 'review'];
+
+const stepLabels: Record<StepId, string> = {
+	header: 'Header',
+	links: 'Nav items',
+	pages: 'Assign to pages',
+	images: 'Images',
+	review: 'Publish',
+};
 
 const pageTypeOptions: { value: TargetedPageType; label: string }[] = [
 	{ value: 'front', label: 'Front' },
@@ -33,69 +101,209 @@ const pageTypeOptions: { value: TargetedPageType; label: string }[] = [
 	{ value: 'hasTag', label: 'Tag' },
 ];
 
-const emptyLink = (): SubnavLink => ({ linkText: '', dotcomPath: '' });
+const emptyLink = (): LinkRow => ({ id: v4(), linkText: '', dotcomPath: '' });
 const emptyPage = (): TargetedPage => ({ type: 'front', path: '' });
 
-/**
- * The form's editable state, derived from the subnav being edited (or blank
- * defaults when creating). Arrays are cloned so edits never mutate the config
- * and so this snapshot can be used to detect changes and to reset the form.
- */
-const toInitialFormState = (subnav?: CustomSubnav) => ({
-	headerText: subnav?.header.headerText ?? '',
-	headerDotcomPath: subnav?.header.dotcomPath ?? '',
-	headerCopy: subnav?.header.copy ?? '',
-	links: subnav?.links.length
-		? subnav.links.map((link) => ({ ...link }))
-		: [emptyLink()],
-	pages: subnav?.pages.length
+// Seed the editable link rows from a subnav, giving each a stable drag id.
+const toLinkRows = (subnav?: CustomSubnav): LinkRow[] =>
+	subnav?.links.length
+		? subnav.links.map((link) => ({ id: v4(), ...link }))
+		: [emptyLink()];
+
+const toPageRows = (subnav?: CustomSubnav): TargetedPage[] =>
+	subnav?.pages.length
 		? subnav.pages.map((page) => ({ ...page }))
-		: [emptyPage()],
-});
+		: [emptyPage()];
+
+// The preview origin can take up to ~a minute to pick up a saved draft.
+const PREVIEW_PROPAGATION_SECONDS = 60;
+
+type Breakpoint = 'mobile' | 'tablet' | 'desktop';
+
+const breakpointOptions: {
+	id: Breakpoint;
+	label: string;
+	width: number;
+	icon: React.ReactNode;
+}[] = [
+	{ id: 'mobile', label: 'Mobile', width: 375, icon: <FiSmartphone /> },
+	{ id: 'tablet', label: 'Tablet', width: 740, icon: <FiTablet /> },
+	{ id: 'desktop', label: 'Desktop', width: 1300, icon: <FiMonitor /> },
+];
+
+const gridTheme = {
+	shared: {
+		display: 'flex',
+		width: '100%',
+		direction: 'row',
+		wrap: 'wrap',
+		justifyContent: 'flex-start',
+		alignItems: 'flex-start',
+	},
+	sm: { columns: 12, gap: '0', padding: '0' },
+	md: { columns: 12, gap: '0', padding: '0' },
+	lg: { columns: 12, gap: '0', padding: '0' },
+};
+
+const stepperOverrides = css`
+	li button > div:first-of-type {
+		border-right: 1px solid #dcdcdc;
+	}
+`;
+
+// Stand's Button has no danger variant, so tint the tertiary delete action red.
+const deleteButtonStyle = css`
+	color: #c70000;
+`;
 
 const SubnavForm = ({
+	onSaveDraft,
+	onPublish,
+	saving,
 	initialSubnav,
-	onSave,
-	saving = false,
+	hasLive = false,
+	hasDraft = false,
+	actionPending = false,
+	onDiscard,
+	onUnpublish,
+	onDelete,
 }: SubnavFormProps) => {
-	const mountedRef = useRef(true);
-	useEffect(
-		() => () => {
-			mountedRef.current = false;
-		},
-		[],
-	);
+	const isEditMode = initialSubnav !== undefined;
 
-	const [baseline, setBaseline] = useState(() =>
-		toInitialFormState(initialSubnav),
+	const [currentStepId, setCurrentStepId] = useState<StepId>('header');
+	const [headerText, setHeaderText] = useState(
+		initialSubnav?.header.headerText ?? '',
 	);
-
-	const [headerText, setHeaderText] = useState(baseline.headerText);
+	const [headerCopy, setHeaderCopy] = useState(
+		initialSubnav?.header.copy ?? '',
+	);
 	const [headerDotcomPath, setHeaderDotcomPath] = useState(
-		baseline.headerDotcomPath,
+		initialSubnav?.header.dotcomPath ?? '',
 	);
-	const [headerCopy, setHeaderCopy] = useState(baseline.headerCopy);
-	const [links, setLinks] = useState<SubnavLink[]>(baseline.links);
-	const [pages, setPages] = useState<TargetedPage[]>(baseline.pages);
+	const [links, setLinks] = useState<LinkRow[]>(() =>
+		toLinkRows(initialSubnav),
+	);
+	const [pages, setPages] = useState<TargetedPage[]>(() =>
+		toPageRows(initialSubnav),
+	);
+	const [images, setImages] = useState<SubnavImage[]>(
+		initialSubnav?.images ?? [],
+	);
 	const [error, setError] = useState<string | null>(null);
-	const [justSaved, setJustSaved] = useState(false);
+	const [breakpoint, setBreakpoint] = useState<Breakpoint>('desktop');
+	// Bumped to force the preview iframe to reload once DCR has polled the draft.
+	const [previewNonce, setPreviewNonce] = useState(0);
+	// Seconds left in the post-save propagation window; null when not waiting.
+	const [previewCountdown, setPreviewCountdown] = useState<number | null>(null);
 
-	const isDirty =
-		JSON.stringify({
-			headerText,
-			headerDotcomPath,
-			headerCopy,
-			links,
-			pages,
-		}) !== JSON.stringify(baseline);
+	// Stable id so repeated saves update the same draft and publish targets it.
+	const subnavId = useRef(initialSubnav?.id ?? v4());
+	// Seeded from the loaded subnav in edit mode so the preview and dirty check
+	// have a baseline; set after each save in both modes.
+	const [savedSubnav, setSavedSubnav] = useState<CustomSubnav | null>(
+		initialSubnav ?? null,
+	);
+	// Gates publishing and the "will go live" warning: true when a draft exists
+	// on the server (edit mode) or has been saved this session.
+	const [draftSaved, setDraftSaved] = useState(hasDraft);
+	const useCODELinks = useSelector(selectShouldUseCODELinks);
 
-	const handleCancel = () => {
-		setHeaderText(baseline.headerText);
-		setHeaderDotcomPath(baseline.headerDotcomPath);
-		setHeaderCopy(baseline.headerCopy);
-		setLinks(baseline.links.map((link) => ({ ...link })));
-		setPages(baseline.pages.map((page) => ({ ...page })));
-		setError(null);
+	const previewViewportRef = useRef<HTMLDivElement>(null);
+	const [previewViewport, setPreviewViewport] = useState({
+		width: 0,
+		height: 0,
+	});
+
+	// Track the available preview area so the device can be scaled to fit it.
+	useEffect(() => {
+		const el = previewViewportRef.current;
+		if (!el) {
+			return;
+		}
+		const observer = new ResizeObserver(([entry]) => {
+			setPreviewViewport({
+				width: entry.contentRect.width,
+				height: entry.contentRect.height,
+			});
+		});
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, []);
+
+	const previewWidth =
+		breakpointOptions.find((o) => o.id === breakpoint)?.width ?? 1300;
+	// Shrink oversized devices to fit; never enlarge past 1:1.
+	const previewScale =
+		previewViewport.width > 0
+			? Math.min(1, previewViewport.width / previewWidth)
+			: 1;
+	const previewHeight =
+		previewScale > 0 ? previewViewport.height / previewScale : 0;
+
+	const sectionRefs = useRef<Partial<Record<StepId, HTMLElement | null>>>({});
+	const setSectionRef = (id: StepId) => (el: HTMLElement | null) => {
+		sectionRefs.current[id] = el;
+	};
+
+	const scrollToStep = (id: StepId) => {
+		setCurrentStepId(id);
+		sectionRefs.current[id]?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'start',
+		});
+	};
+
+	// Keep the sidebar highlight in sync with the section scrolled into view.
+	useEffect(() => {
+		const observer = new IntersectionObserver(
+			(entries) => {
+				const visible = entries
+					.filter((entry) => entry.isIntersecting)
+					.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+				const stepId = visible[0]?.target.getAttribute('data-step-id');
+				if (stepId) {
+					setCurrentStepId(stepId as StepId);
+				}
+			},
+			{ rootMargin: '-20% 0px -70% 0px' },
+		);
+		stepOrder.forEach((id) => {
+			const el = sectionRefs.current[id];
+			if (el) {
+				observer.observe(el);
+			}
+		});
+		return () => observer.disconnect();
+	}, []);
+
+	const hasHeader = headerText.trim().length > 0;
+	const hasLink = links.some((link) => link.linkText.trim().length > 0);
+	const hasPage = pages.some((page) => page.path.trim().length > 0);
+
+	const stepStatus = (id: StepId) => {
+		switch (id) {
+			case 'header':
+				return hasHeader ? 'complete' : 'incomplete';
+			case 'pages':
+				return hasPage ? 'complete' : 'incomplete';
+			case 'links':
+				return hasLink ? 'complete' : 'incomplete';
+			case 'images':
+				return images.length > 0 ? 'complete' : 'optional';
+			default:
+				return 'no-fields';
+		}
+	};
+
+	const stepNavConfig: StepNavConfig = {
+		isNonLinear: true,
+		steps: stepOrder.map((id) => ({
+			id,
+			label: stepLabels[id],
+			stepStatus: stepStatus(id),
+			canSkipTo: true,
+			canSkipFrom: true,
+		})),
 	};
 
 	const updateLink = (index: number, patch: Partial<SubnavLink>) =>
@@ -105,6 +313,19 @@ const SubnavForm = ({
 	const addLink = () => setLinks((prev) => [...prev, emptyLink()]);
 	const removeLink = (index: number) =>
 		setLinks((prev) => prev.filter((_, i) => i !== index));
+	const moveLink = (result: DropResult) => {
+		if (!result.destination) {
+			return;
+		}
+		const from = result.source.index;
+		const to = result.destination.index;
+		setLinks((prev) => {
+			const next = Array.from(prev);
+			const [moved] = next.splice(from, 1);
+			next.splice(to, 0, moved);
+			return next;
+		});
+	};
 
 	const updatePage = (index: number, patch: Partial<TargetedPage>) =>
 		setPages((prev) =>
@@ -114,28 +335,14 @@ const SubnavForm = ({
 	const removePage = (index: number) =>
 		setPages((prev) => prev.filter((_, i) => i !== index));
 
-	const handleSubmit = async (event: React.FormEvent) => {
-		event.preventDefault();
-
-		if (!headerText.trim()) {
-			setError('Header text is required.');
-			return;
-		}
-
+	const buildSubnav = (): CustomSubnav => {
 		const cleanedLinks = links.filter(
 			(link) => link.linkText.trim() || link.dotcomPath.trim(),
 		);
 		const cleanedPages = pages.filter((page) => page.path.trim());
 
-		if (cleanedPages.length === 0) {
-			setError('Add at least one targeted page where the subnav will show.');
-			return;
-		}
-
-		setError(null);
-
-		const subnav: CustomSubnav = {
-			id: initialSubnav?.id ?? v4(),
+		return {
+			id: subnavId.current,
 			header: {
 				headerText: headerText.trim(),
 				dotcomPath: headerDotcomPath.trim() || undefined,
@@ -150,159 +357,431 @@ const SubnavForm = ({
 				type: page.type,
 				path: page.path.trim(),
 			})),
-			images: initialSubnav?.images,
+			images: images.length > 0 ? images : undefined,
 			palette: initialSubnav?.palette,
 			lastUpdated: Date.now(),
 			updatedBy: initialSubnav?.updatedBy ?? '',
 			updatedEmail: initialSubnav?.updatedEmail ?? '',
 		};
+	};
 
+	// Content-only signature so dirty checks ignore audit/timestamp fields.
+	const signature = (subnav: CustomSubnav) =>
+		JSON.stringify({
+			header: subnav.header,
+			format: subnav.format,
+			links: subnav.links,
+			pages: subnav.pages,
+			images: subnav.images,
+			palette: subnav.palette,
+		});
+
+	const currentSubnav = buildSubnav();
+	const isDirty =
+		!savedSubnav || signature(currentSubnav) !== signature(savedSubnav);
+	const requiredComplete = hasHeader && hasLink && hasPage;
+	const canSaveDraft = hasHeader && isDirty && !saving && !actionPending;
+	const canPublish =
+		draftSaved && !isDirty && requiredComplete && !saving && !actionPending;
+
+	const previewDomain = useCODELinks
+		? 'preview.code.dev-gutools.co.uk'
+		: 'preview.gutools.co.uk';
+	const savedFirstPagePath = savedSubnav?.pages[0]?.path;
+	const previewUrl = savedFirstPagePath
+		? `https://${previewDomain}/${savedFirstPagePath.replace(/^\//, '')}?cacheBust=${previewNonce}`
+		: null;
+	const savedPagesSummary = savedSubnav?.pages
+		.map((page) => page.path)
+		.join(', ');
+
+	const handleSaveDraft = async () => {
+		setError(null);
+		const subnav = currentSubnav;
 		try {
-			await onSave(subnav);
-		} catch {
-			// The parent surfaces save failures via the global banner; keep the
-			// user's edits in place so they can retry.
+			await onSaveDraft(subnav);
+			setSavedSubnav(subnav);
+			setDraftSaved(true);
+			setPreviewCountdown(PREVIEW_PROPAGATION_SECONDS);
+		} catch (e) {
+			console.error('Failed to save subnav draft', e);
+		}
+	};
+
+	// The web platform should pick up on subnav changes after a minute or so. Count down the propagation window, then auto-reload the frame once.
+	useEffect(() => {
+		if (previewCountdown === null) {
 			return;
 		}
-
-		if (!mountedRef.current) {
+		if (previewCountdown <= 0) {
+			setPreviewNonce((n) => n + 1);
+			setPreviewCountdown(null);
 			return;
 		}
+		const timer = setTimeout(
+			() => setPreviewCountdown((s) => (s === null ? null : s - 1)),
+			1000,
+		);
+		return () => clearTimeout(timer);
+	}, [previewCountdown]);
 
-		// Re-seed the form from what we just persisted so it is no longer "dirty"
-		// and we can confirm the save without navigating away.
-		const savedState = toInitialFormState(subnav);
-		setBaseline(savedState);
-		setHeaderText(savedState.headerText);
-		setHeaderDotcomPath(savedState.headerDotcomPath);
-		setHeaderCopy(savedState.headerCopy);
-		setLinks(savedState.links);
-		setPages(savedState.pages);
-		setJustSaved(true);
+	const handlePublish = async () => {
+		setError(null);
+		try {
+			await onPublish(subnavId.current);
+		} catch (e) {
+			console.error('Failed to publish subnav', e);
+		}
 	};
 
 	return (
-		<Form onSubmit={handleSubmit}>
-			<Section>
-				<SectionHeading>Header</SectionHeading>
-				<Field>
-					Header text
-					<TextInput
-						value={headerText}
-						onChange={(e) => setHeaderText(e.target.value)}
-						placeholder="e.g. UK election 2024"
-					/>
-				</Field>
-				<Field>
-					Header copy (optional)
-					<TextInput
-						value={headerCopy}
-						onChange={(e) => setHeaderCopy(e.target.value)}
-						placeholder="Supporting copy shown alongside the header"
-					/>
-				</Field>
-				<Field>
-					Header dotcom path (optional)
-					<TextInput
-						value={headerDotcomPath}
-						onChange={(e) => setHeaderDotcomPath(e.target.value)}
-						placeholder="e.g. politics/uk-election-2024"
-					/>
-				</Field>
-			</Section>
-
-			<Section>
-				<SectionHeading>Links</SectionHeading>
-				{links.map((link, index) => (
-					<RepeatableRow key={index}>
-						<RowFields>
-							<TextInput
-								value={link.linkText}
-								onChange={(e) =>
-									updateLink(index, { linkText: e.target.value })
-								}
-								placeholder="Link text"
-							/>
-							<TextInput
-								value={link.dotcomPath}
-								onChange={(e) =>
-									updateLink(index, { dotcomPath: e.target.value })
-								}
-								placeholder="Dotcom path"
-							/>
-						</RowFields>
-						<ButtonDefault
-							type="button"
-							size="s"
-							priority="muted"
-							onClick={() => removeLink(index)}
-							disabled={links.length === 1}
+		<SubnavCreateFormPage>
+			<Grid theme={gridTheme}>
+				<Item size={{ sm: 12, lg: 'auto' }}>
+					<CreateFormSidebar>
+						<SidebarStepperNavigation
+							stepNavTitle="Steps"
+							currentStepId={currentStepId}
+							stepNavConfig={stepNavConfig}
+							onPress={(stepId) => scrollToStep(stepId as StepId)}
+							cssOverrides={stepperOverrides}
+						/>
+					</CreateFormSidebar>
+				</Item>
+				<Item size={{ sm: 12, lg: 'grow' }}>
+					<CreateFormMain>
+						<CreateFormSection
+							ref={setSectionRef('header')}
+							data-step-id="header"
+							active={currentStepId === 'header'}
+							onFocus={() => setCurrentStepId('header')}
 						>
-							Remove
-						</ButtonDefault>
-					</RepeatableRow>
-				))}
-				<ButtonDefault type="button" size="s" onClick={addLink}>
-					+ Add link
-				</ButtonDefault>
-			</Section>
+							<SubnavContainerHeading>Header</SubnavContainerHeading>
+							<TextArea
+								label="Description"
+								value={headerCopy}
+								onChange={setHeaderCopy}
+								placeholder="Add description"
+								fluid
+							/>
+							<RowFields>
+								<TextInput
+									label="Header text"
+									description="Contextual text for the subnav header"
+									isRequired
+									fluid
+									value={headerText}
+									onChange={setHeaderText}
+									placeholder="e.g. UK election 2024"
+								/>
+								<TextInput
+									label="URL (Dotcom path)"
+									description="Where the header links to (optional)"
+									fluid
+									value={headerDotcomPath}
+									onChange={setHeaderDotcomPath}
+									placeholder="e.g. politics/uk-election-2024"
+								/>
+							</RowFields>
+						</CreateFormSection>
 
-			<Section>
-				<SectionHeading>Targeted pages</SectionHeading>
-				{pages.map((page, index) => (
-					<RepeatableRow key={index}>
-						<RowFields>
-							<Select
-								value={page.type}
-								onChange={(e) =>
-									updatePage(index, {
-										type: e.target.value as TargetedPageType,
-									})
-								}
-							>
-								{pageTypeOptions.map((option) => (
-									<option key={option.value} value={option.value}>
+						<CreateFormSection
+							ref={setSectionRef('links')}
+							data-step-id="links"
+							active={currentStepId === 'links'}
+							onFocus={() => setCurrentStepId('links')}
+						>
+							<SubnavContainerHeading>Nav items</SubnavContainerHeading>
+							<ColumnHeaders>
+								<ColumnHeadersSpacer width={18} aria-hidden />
+								<RowFields>
+									<ColumnHeaderLabel>Link text</ColumnHeaderLabel>
+									<ColumnHeaderLabel>Dotcom path</ColumnHeaderLabel>
+								</RowFields>
+								<ColumnHeadersSpacer width={24} aria-hidden />
+							</ColumnHeaders>
+							<DragDropContext onDragEnd={moveLink}>
+								<Droppable droppableId="subnav-nav-items">
+									{(dropProvided) => (
+										<div
+											ref={dropProvided.innerRef}
+											{...dropProvided.droppableProps}
+										>
+											{links.map((link, index) => (
+												<Draggable
+													key={link.id}
+													draggableId={link.id}
+													index={index}
+												>
+													{(provided) => (
+														<RepeatableRow
+															ref={provided.innerRef}
+															{...provided.draggableProps}
+															style={provided.draggableProps.style}
+														>
+															<DragHandle
+																{...provided.dragHandleProps}
+																aria-label="Reorder nav item"
+															>
+																<FaGripVertical />
+															</DragHandle>
+															<RowFields>
+																<TextInput
+																	aria-label="Link text"
+																	fluid
+																	value={link.linkText}
+																	onChange={(value) =>
+																		updateLink(index, { linkText: value })
+																	}
+																/>
+																<TextInput
+																	aria-label="Dotcom path"
+																	fluid
+																	value={link.dotcomPath}
+																	onChange={(value) =>
+																		updateLink(index, { dotcomPath: value })
+																	}
+																/>
+															</RowFields>
+															<IconButton
+																type="button"
+																onClick={() => removeLink(index)}
+																disabled={links.length === 1}
+																aria-label="Remove nav item"
+															>
+																<FiMinusCircle />
+															</IconButton>
+														</RepeatableRow>
+													)}
+												</Draggable>
+											))}
+											{dropProvided.placeholder}
+										</div>
+									)}
+								</Droppable>
+							</DragDropContext>
+							<AddRow>
+								<Button
+									variant="secondary"
+									size="sm"
+									icon={<FiPlusCircle />}
+									onPress={addLink}
+								>
+									Add nav item
+								</Button>
+							</AddRow>
+						</CreateFormSection>
+
+						<CreateFormSection
+							ref={setSectionRef('pages')}
+							data-step-id="pages"
+							active={currentStepId === 'pages'}
+							onFocus={() => setCurrentStepId('pages')}
+						>
+							<SubnavContainerHeading>Assign to pages</SubnavContainerHeading>
+							{pages.map((page, index) => (
+								<RepeatableRow key={index}>
+									<RowFields>
+										<Select
+											label={index === 0 ? 'Page type' : undefined}
+											aria-label="Page type"
+											selectedKey={page.type}
+											onSelectionChange={(key) =>
+												updatePage(index, { type: key as TargetedPageType })
+											}
+										>
+											{pageTypeOptions.map((option) => (
+												<Option key={option.value} id={option.value}>
+													{option.label}
+												</Option>
+											))}
+										</Select>
+										<TextInput
+											label={index === 0 ? 'Path' : undefined}
+											aria-label="Path"
+											fluid
+											value={page.path}
+											onChange={(value) => updatePage(index, { path: value })}
+											placeholder="e.g. politics/uk-election-2024"
+										/>
+									</RowFields>
+									<IconButton
+										type="button"
+										onClick={() => removePage(index)}
+										disabled={pages.length === 1}
+										aria-label="Remove page"
+									>
+										<FiMinusCircle />
+									</IconButton>
+								</RepeatableRow>
+							))}
+							<AddRow>
+								<Button
+									variant="secondary"
+									size="sm"
+									icon={<FiPlusCircle />}
+									onPress={addPage}
+								>
+									Add page
+								</Button>
+							</AddRow>
+						</CreateFormSection>
+
+						<CreateFormSection
+							ref={setSectionRef('images')}
+							data-step-id="images"
+							active={currentStepId === 'images'}
+							onFocus={() => setCurrentStepId('images')}
+						>
+							<SubnavContainerHeading>Image (Optional)</SubnavContainerHeading>
+							<SubnavImagesSection images={images} onChange={setImages} />
+						</CreateFormSection>
+
+						<CreateFormSection
+							ref={setSectionRef('review')}
+							data-step-id="review"
+							active={currentStepId === 'review'}
+							onFocus={() => setCurrentStepId('review')}
+						>
+							<SubnavContainerHeading>Publish</SubnavContainerHeading>
+							<Typography element="p" variant="bodySm">
+								Save a draft to preview the subnav in the panel on the right,
+								then publish when you are ready.
+							</Typography>
+							{error && <ErrorMessage>{error}</ErrorMessage>}
+							{draftSaved && (
+								<Typography element="p" variant="bodySm">
+									Publishing will make this subnav live on its assigned pages
+									{savedPagesSummary ? `: ${savedPagesSummary}` : ''}.
+								</Typography>
+							)}
+							<CreateFormActions>
+								<Button
+									variant="secondary"
+									size="sm"
+									onPress={handleSaveDraft}
+									isDisabled={!canSaveDraft}
+								>
+									{saving ? 'Saving…' : 'Save draft'}
+								</Button>
+								<Button
+									variant="primary"
+									size="sm"
+									onPress={handlePublish}
+									isDisabled={!canPublish}
+								>
+									{saving ? 'Publishing…' : 'Publish subnav'}
+								</Button>
+								{isEditMode && hasLive && hasDraft && onDiscard && (
+									<Button
+										variant="secondary"
+										size="sm"
+										onPress={onDiscard}
+										isDisabled={saving || actionPending}
+									>
+										Discard changes
+									</Button>
+								)}
+								{isEditMode && hasLive && onUnpublish && (
+									<Button
+										variant="secondary"
+										size="sm"
+										onPress={onUnpublish}
+										isDisabled={saving || actionPending}
+									>
+										Take down
+									</Button>
+								)}
+								{isEditMode && onDelete && (
+									<Button
+										variant="tertiary"
+										size="sm"
+										onPress={onDelete}
+										isDisabled={saving || actionPending}
+										cssOverrides={deleteButtonStyle}
+									>
+										Delete
+									</Button>
+								)}
+							</CreateFormActions>
+						</CreateFormSection>
+					</CreateFormMain>
+				</Item>
+				<Item size={{ sm: 12, lg: 'grow' }}>
+					<CreateFormPreview>
+						<CreateFormPreviewHeader>
+							<CreateFormPreviewTitleRow>
+								<CreateFormPreviewTitle>Preview</CreateFormPreviewTitle>
+								<Button
+									variant="secondary"
+									size="sm"
+									icon={<FiRefreshCw />}
+									aria-label="Refresh preview"
+									onPress={() => {
+										setPreviewNonce((n) => n + 1);
+										setPreviewCountdown(null);
+									}}
+									isDisabled={!previewUrl}
+								>
+									Refresh
+								</Button>
+							</CreateFormPreviewTitleRow>
+							{previewCountdown !== null && (
+								<CreateFormPreviewNotice>
+									<CreateFormPreviewSpinner>
+										<FiRefreshCw />
+									</CreateFormPreviewSpinner>
+									Draft saved. The preview can take up to a minute to update —
+									refreshing in {previewCountdown}s.
+								</CreateFormPreviewNotice>
+							)}
+							<CreateFormPreviewToolbar>
+								{breakpointOptions.map((option) => (
+									<Button
+										key={option.id}
+										variant={breakpoint === option.id ? 'primary' : 'secondary'}
+										size="sm"
+										icon={option.icon}
+										aria-label={option.label}
+										onPress={() => setBreakpoint(option.id)}
+									>
 										{option.label}
-									</option>
+									</Button>
 								))}
-							</Select>
-							<TextInput
-								value={page.path}
-								onChange={(e) => updatePage(index, { path: e.target.value })}
-								placeholder="Path (e.g. politics/uk-election-2024)"
-							/>
-						</RowFields>
-						<ButtonDefault
-							type="button"
-							size="s"
-							priority="muted"
-							onClick={() => removePage(index)}
-							disabled={pages.length === 1}
-						>
-							Remove
-						</ButtonDefault>
-					</RepeatableRow>
-				))}
-				<ButtonDefault type="button" size="s" onClick={addPage}>
-					+ Add page
-				</ButtonDefault>
-			</Section>
-
-			{error && <ErrorMessage>{error}</ErrorMessage>}
-
-			{isDirty ? (
-				<FormActions>
-					<ButtonDefault type="submit" priority="primary" disabled={saving}>
-						{saving ? 'Saving…' : 'Save draft'}
-					</ButtonDefault>
-					<ButtonDefault type="button" onClick={handleCancel} disabled={saving}>
-						Cancel
-					</ButtonDefault>
-				</FormActions>
-			) : (
-				justSaved && <SavedMessage>Changes saved</SavedMessage>
-			)}
-		</Form>
+							</CreateFormPreviewToolbar>
+						</CreateFormPreviewHeader>
+						<CreateFormPreviewViewport ref={previewViewportRef}>
+							{previewUrl ? (
+								<CreateFormPreviewScaler
+									style={{
+										width: previewWidth * previewScale,
+										height: previewViewport.height,
+									}}
+								>
+									<CreateFormPreviewFrame
+										title="Subnav preview"
+										src={previewUrl}
+										// Trusted Guardian preview origin, but sandboxed for defence-in-depth;
+										// allow-same-origin is kept so pan-domain auth cookies/storage still work.
+										sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
+										referrerPolicy="no-referrer"
+										style={{
+											width: previewWidth,
+											height: previewHeight,
+											transform: `scale(${previewScale})`,
+										}}
+									/>
+								</CreateFormPreviewScaler>
+							) : (
+								<CreateFormPreviewPlaceholder>
+									No draft subnav to display
+								</CreateFormPreviewPlaceholder>
+							)}
+						</CreateFormPreviewViewport>
+					</CreateFormPreview>
+				</Item>
+			</Grid>
+		</SubnavCreateFormPage>
 	);
 };
 

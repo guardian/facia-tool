@@ -4,7 +4,7 @@ import java.util.concurrent.Executors
 
 import conf.ApplicationConfiguration
 import logging.Logging
-import services.editions.db.EditionsDB
+import services.editions.db.FaciaDB
 
 import scala.concurrent._
 import scala.concurrent.duration._
@@ -13,14 +13,14 @@ import scala.util.{Failure, Success, Try}
 object PublishEventsListener {
   def apply(
       config: ApplicationConfiguration,
-      db: EditionsDB
+      db: FaciaDB
   ): PublishEventsListener =
-    new PublishEventsListener(config, db: EditionsDB)
+    new PublishEventsListener(config, db: FaciaDB)
 }
 
 private[events] class PublishEventsListener(
     val config: ApplicationConfiguration,
-    db: EditionsDB
+    db: FaciaDB
 ) extends Logging {
 
   private val sqsFacade = PublishEventsSQSFacade(config)

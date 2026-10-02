@@ -2,24 +2,24 @@ package services.editions.db
 
 import java.time._
 import com.gu.pandomainauth.model.User
-import fixtures.{EditionsDBEvolutions, EditionsDBService, UsesDatabase}
+import fixtures.{FaciaDBEvolutions, FaciaDBService, UsesDatabase}
 import model.editions
 import model.editions.internal.PrefillUpdate
-import model.editions.{TimeWindowConfigInDays, _}
+import model.editions._
 import model.forms.GetCollectionsFilter
 import org.scalatest.{FreeSpec, Matchers, OptionValues}
 import scalikejdbc._
 import services.editions.GenerateEditionTemplateResult
 import services.editions.prefills.CapiQueryTimeWindow
 import org.scalatest.Assertions
-import services.editions.db.EditionsDB.NotFoundError
+import services.editions.db.FaciaDB.NotFoundError
 import editions.{EditionsRecipe, EditionsChef, EditionsFeastCollection}
 
-class EditionsDBTest
+class FaciaDBTest
     extends FreeSpec
     with Matchers
-    with EditionsDBService
-    with EditionsDBEvolutions
+    with FaciaDBService
+    with FaciaDBEvolutions
     with OptionValues {
 
   private val now: OffsetDateTime =
@@ -78,7 +78,7 @@ class EditionsDBTest
       issueDate.plusDays(endOffset).atStartOfDay().toInstant(ZoneOffset.UTC)
     val timeWindow = CapiQueryTimeWindow(start, end)
     val genTemplateRes = GenerateEditionTemplateResult(skeleton, timeWindow)
-    editionsDB.insertIssue(
+    faciaDB.insertIssue(
       edition,
       genTemplateRes.issueSkeleton,
       user,
@@ -135,7 +135,7 @@ class EditionsDBTest
   "should insert an empty issue" taggedAs UsesDatabase in {
     val id = insertSkeletonIssueForDaily(2019, 9, 30)
 
-    val retrievedIssue = editionsDB.getIssue(id).value
+    val retrievedIssue = faciaDB.getIssue(id).value
     retrievedIssue.edition shouldBe Edition.DailyEdition
     retrievedIssue.createdEmail shouldBe "billy.bragg@justice.example.com"
     retrievedIssue.createdOn shouldBe now.toInstant.toEpochMilli
@@ -153,7 +153,7 @@ class EditionsDBTest
     insertSkeletonIssueForDaily(2019, 9, 30)
     insertSkeletonIssueForDaily(2019, 10, 10)
 
-    val allIssues = editionsDB
+    val allIssues = faciaDB
       .listIssues(
         Edition.DailyEdition,
         LocalDate.of(2019, 9, 28),
@@ -164,7 +164,7 @@ class EditionsDBTest
     allIssues.length shouldBe 4
     allIssues.head.createdEmail shouldBe "billy.bragg@justice.example.com"
 
-    val someIssues = editionsDB
+    val someIssues = faciaDB
       .listIssues(
         Edition.DailyEdition,
         LocalDate.of(2019, 9, 28),
@@ -174,7 +174,7 @@ class EditionsDBTest
       .get
     someIssues.length shouldBe 3
 
-    val singleIssue = editionsDB
+    val singleIssue = faciaDB
       .listIssues(
         Edition.DailyEdition,
         LocalDate.of(2019, 9, 29),
@@ -220,7 +220,7 @@ class EditionsDBTest
       )
     )
 
-    val retrievedIssue = editionsDB.getIssue(id).value
+    val retrievedIssue = faciaDB.getIssue(id).value
     retrievedIssue.edition shouldBe Edition.DailyEdition
     retrievedIssue.fronts.length shouldBe 2
 
@@ -299,10 +299,10 @@ class EditionsDBTest
       )
     )
 
-    val retrievedIssue = editionsDB.getIssue(id).value
+    val retrievedIssue = faciaDB.getIssue(id).value
     val collectionsId = retrievedIssue.fronts.head.collections.head.id
 
-    val maybeIssueId = editionsDB.getIssueIdFromCollectionId(collectionsId)
+    val maybeIssueId = faciaDB.getIssueIdFromCollectionId(collectionsId)
     maybeIssueId.value shouldBe id
   }
 
@@ -340,12 +340,12 @@ class EditionsDBTest
       )
     )
 
-    val retrievedIssue = editionsDB.getIssue(id).value
+    val retrievedIssue = faciaDB.getIssue(id).value
     val collectionIds = retrievedIssue.fronts.flatMap(_.collections.map(_.id))
 
     collectionIds.size shouldBe 5
 
-    val collections = editionsDB.getCollections(
+    val collections = faciaDB.getCollections(
       collectionIds.map(GetCollectionsFilter(_, None))
     )
 
@@ -388,19 +388,19 @@ class EditionsDBTest
       )
     )
 
-    val retrievedIssue = editionsDB.getIssue(id).value
+    val retrievedIssue = faciaDB.getIssue(id).value
     val collectionIds = retrievedIssue.fronts.flatMap(_.collections.map(_.id))
 
     collectionIds.size shouldBe 5
 
     // pretend we are a client asking for updates since a time that is older than the creation time
-    val newerCollections = editionsDB.getCollections(
+    val newerCollections = faciaDB.getCollections(
       collectionIds.map(GetCollectionsFilter(_, Some(olderThenCreationTime)))
     )
     newerCollections.size shouldBe 5
 
     // pretend we are a client asking for updates since a time that is more recent than the creation time
-    val olderCollections = editionsDB.getCollections(
+    val olderCollections = faciaDB.getCollections(
       collectionIds.map(
         GetCollectionsFilter(_, Some(moreRecentThenCreationTime))
       )
@@ -431,7 +431,7 @@ class EditionsDBTest
       )
     )
 
-    val retrievedIssue = editionsDB.getIssue(id).value
+    val retrievedIssue = faciaDB.getIssue(id).value
     val brexshit = retrievedIssue.fronts.head.collections.head
 
     val newName = "Say My Name, Say My Name..."
@@ -442,10 +442,10 @@ class EditionsDBTest
       updatedEmail = Some("bojo@piffle.paffle")
     )
 
-    editionsDB.updateCollectionName(evenMoreBrexshit)
+    faciaDB.updateCollectionName(evenMoreBrexshit)
 
     val collections =
-      editionsDB.getCollections(List(GetCollectionsFilter(brexshit.id, None)))
+      faciaDB.getCollections(List(GetCollectionsFilter(brexshit.id, None)))
     collections.size shouldBe 1
     val updatedBrexshit = collections.head
 
@@ -489,7 +489,7 @@ class EditionsDBTest
       )
     )
 
-    val retrievedIssue = editionsDB.getIssue(id).value
+    val retrievedIssue = faciaDB.getIssue(id).value
     val brexshit = retrievedIssue.fronts.tail.head.collections.tail.head
 
     val future = now.plusMinutes(20)
@@ -509,10 +509,10 @@ class EditionsDBTest
       items = items
     )
 
-    editionsDB.updateCollection(evenMoreBrexshit)
+    faciaDB.updateCollection(evenMoreBrexshit)
 
     val collections =
-      editionsDB.getCollections(List(GetCollectionsFilter(brexshit.id, None)))
+      faciaDB.getCollections(List(GetCollectionsFilter(brexshit.id, None)))
     collections.size shouldBe 1
     val updatedBrexshit = collections.head
     updatedBrexshit.items.size shouldBe 3
@@ -570,10 +570,10 @@ class EditionsDBTest
         feastFront
       )
 
-      val frontId = editionsDB.getIssue(id).get.fronts.head.id
+      val frontId = faciaDB.getIssue(id).get.fronts.head.id
 
       DB localTx { implicit session =>
-        val retrievedFront = editionsDB.getFront(frontId).get
+        val retrievedFront = faciaDB.getFront(frontId).get
         retrievedFront.collections.head.items.map(_.toSkeleton) shouldBe List(
           EditionsCardSkeleton("recipe", CardType.Recipe, None),
           EditionsCardSkeleton(
@@ -612,12 +612,12 @@ class EditionsDBTest
       testCases.foreach { case (newIndex, expectedOrder) =>
         s"moving to index $newIndex" taggedAs UsesDatabase in {
           val id = insertSkeletonIssueForDaily(2019, 9, 30, testFront)
-          val retrievedIssue = editionsDB.getIssue(id).value
+          val retrievedIssue = faciaDB.getIssue(id).value
           val retrievedFront = retrievedIssue.fronts.head
           val firstCollection = retrievedFront.collections.head
           firstCollection.displayName shouldBe "politics"
 
-          editionsDB.moveCollection(
+          faciaDB.moveCollection(
             retrievedFront.id,
             firstCollection.id,
             newIndex
@@ -648,15 +648,15 @@ class EditionsDBTest
       )
     )
 
-    val retrievedIssue = editionsDB.getIssue(id).value
+    val retrievedIssue = faciaDB.getIssue(id).value
     val retrievedCollection = retrievedIssue.fronts.head.collections.head
 
     val recipeCard = EditionsRecipe("654789", now.toInstant.toEpochMilli)
     val items =
       retrievedCollection.copy(items = retrievedCollection.items :+ recipeCard)
-    editionsDB.updateCollection(items)
+    faciaDB.updateCollection(items)
 
-    val collections = editionsDB.getCollections(
+    val collections = faciaDB.getCollections(
       List(GetCollectionsFilter(retrievedCollection.id, None))
     )
     collections.size shouldBe 1
@@ -679,21 +679,21 @@ class EditionsDBTest
         )
       ).special()
     )
-    val retrievedIssue = editionsDB.getIssue(id).value
+    val retrievedIssue = faciaDB.getIssue(id).value
     val specialFront = retrievedIssue.fronts.head
     specialFront.isSpecial shouldBe true
     specialFront.isHidden shouldBe true
 
-    editionsDB.updateFrontHiddenState(specialFront.id, isHidden = false)
+    faciaDB.updateFrontHiddenState(specialFront.id, isHidden = false)
 
-    val retrievedIssue2 = editionsDB.getIssue(id).value
+    val retrievedIssue2 = faciaDB.getIssue(id).value
     val specialFront2 = retrievedIssue2.fronts.head
     specialFront2.isSpecial shouldBe true
     specialFront2.isHidden shouldBe false
 
-    editionsDB.updateFrontHiddenState(specialFront.id, isHidden = true)
+    faciaDB.updateFrontHiddenState(specialFront.id, isHidden = true)
 
-    val retrievedIssue3 = editionsDB.getIssue(id).value
+    val retrievedIssue3 = faciaDB.getIssue(id).value
     val specialFront3 = retrievedIssue3.fronts.head
     specialFront3.isSpecial shouldBe true
     specialFront3.isHidden shouldBe true
@@ -714,14 +714,14 @@ class EditionsDBTest
         )
       )
     )
-    val retrievedIssue = editionsDB.getIssue(id).value
+    val retrievedIssue = faciaDB.getIssue(id).value
     val specialFront = retrievedIssue.fronts.head
     specialFront.isSpecial shouldBe false
     specialFront.isHidden shouldBe false
 
-    editionsDB.updateFrontHiddenState(specialFront.id, isHidden = true)
+    faciaDB.updateFrontHiddenState(specialFront.id, isHidden = true)
 
-    val retrievedIssue2 = editionsDB.getIssue(id).value
+    val retrievedIssue2 = faciaDB.getIssue(id).value
     val specialFront2 = retrievedIssue2.fronts.head
     specialFront2.isSpecial shouldBe false
     specialFront2.isHidden shouldBe false
@@ -743,7 +743,7 @@ class EditionsDBTest
       )
     )
 
-    val dbIssue: EditionsIssue = editionsDB.getIssue(issue).value
+    val dbIssue: EditionsIssue = faciaDB.getIssue(issue).value
 
     val frontIds = dbIssue.fronts.map(_.id)
     frontIds.length shouldBe 1
@@ -774,8 +774,8 @@ class EditionsDBTest
         .apply()
     }).length shouldBe 2
 
-    editionsDB.deleteIssue(dbIssue.id)
-    editionsDB.getIssue(issue) should be
+    faciaDB.deleteIssue(dbIssue.id)
+    faciaDB.getIssue(issue) should be
 
     // ensure an issue deletion performs a cascading delete
     (DB localTx { implicit session =>
@@ -801,7 +801,7 @@ class EditionsDBTest
   }
 
   "should not error when trying to delete an issue that doesn't exist" taggedAs UsesDatabase in {
-    editionsDB.deleteIssue("i.do.not.exist") shouldBe false
+    faciaDB.deleteIssue("i.do.not.exist") shouldBe false
   }
 
   "should insert path_type and prefill correctly" taggedAs UsesDatabase in {
@@ -841,24 +841,24 @@ class EditionsDBTest
       )
     )
 
-    val ukIssue: EditionsIssue = editionsDB.getIssue(newsUkIssueId).value
+    val ukIssue: EditionsIssue = faciaDB.getIssue(newsUkIssueId).value
     val ukIssueColFilters: List[GetCollectionsFilter] = ukIssue.fronts
       .flatMap(_.collections.map(_.id))
       .map(GetCollectionsFilter(_, Some(olderThenCreationTime)))
     val collectionFromUKIssue =
-      editionsDB.getCollections(ukIssueColFilters).head
+      faciaDB.getCollections(ukIssueColFilters).head
 
     collectionFromUKIssue.prefill should be
     collectionFromUKIssue.prefill.get shouldEqual prefillFromPrintSent
 
     val internationalIssue: EditionsIssue =
-      editionsDB.getIssue(internationalIssueId).value
+      faciaDB.getIssue(internationalIssueId).value
     val internationalIssueColFilters: List[GetCollectionsFilter] =
       internationalIssue.fronts
         .flatMap(_.collections.map(_.id))
         .map(GetCollectionsFilter(_, Some(olderThenCreationTime)))
     val collectionFromInternationalIssue =
-      editionsDB.getCollections(internationalIssueColFilters).head
+      faciaDB.getCollections(internationalIssueColFilters).head
 
     collectionFromInternationalIssue.prefill should be
     collectionFromInternationalIssue.prefill.get shouldEqual prefillFromSearch
@@ -885,12 +885,12 @@ class EditionsDBTest
       )
     )
 
-    val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+    val issue: EditionsIssue = faciaDB.getIssue(issueId).value
     val issueDate = issue.issueDate
     val collectionFromIssue = issue.fronts.head.collections.head
 
     val maybePrefillUpdate: Option[PrefillUpdate] =
-      editionsDB.getCollectionPrefill(collectionFromIssue.id)
+      faciaDB.getCollectionPrefill(collectionFromIssue.id)
 
     maybePrefillUpdate.isDefined shouldBe true
     val prefillFromDB = maybePrefillUpdate.value
@@ -912,7 +912,7 @@ class EditionsDBTest
         1,
         front("news/uk", collection("politics", None))
       )
-      val issue = editionsDB
+      val issue = faciaDB
         .getIssue(Edition.DailyEdition, LocalDate.of(2020, 1, 1))
         .value
       issue.fronts.head.displayName shouldBe "news/uk"
@@ -920,7 +920,7 @@ class EditionsDBTest
 
     "should return None when the issue is not found" taggedAs UsesDatabase in {
       val issue =
-        editionsDB.getIssue(Edition.DailyEdition, LocalDate.of(2020, 1, 1))
+        faciaDB.getIssue(Edition.DailyEdition, LocalDate.of(2020, 1, 1))
 
       issue shouldBe None
     }
@@ -977,7 +977,7 @@ class EditionsDBTest
         front("second", collection("politics", None))
       )
 
-      editionsDB.insertIssueFromClosestPreviousIssue(
+      faciaDB.insertIssueFromClosestPreviousIssue(
         Edition.FeastNorthernHemisphere,
         LocalDate.of(2020, 1, 2),
         user,
@@ -1017,7 +1017,7 @@ class EditionsDBTest
         front("editions-app", collection("not-feast", None))
       )
 
-      editionsDB.insertIssueFromClosestPreviousIssue(
+      faciaDB.insertIssueFromClosestPreviousIssue(
         Edition.FeastNorthernHemisphere,
         LocalDate.of(2020, 1, 3),
         user,
@@ -1047,7 +1047,7 @@ class EditionsDBTest
         front("second", collection("politics", None, cardsSkeleton: _*))
       )
 
-      editionsDB.insertIssueFromClosestPreviousIssue(
+      faciaDB.insertIssueFromClosestPreviousIssue(
         Edition.FeastNorthernHemisphere,
         LocalDate.of(2020, 1, 13),
         user,
@@ -1074,7 +1074,7 @@ class EditionsDBTest
     }
 
     "should fail if there is no issue prior that that issue" taggedAs UsesDatabase in {
-      editionsDB.insertIssueFromClosestPreviousIssue(
+      faciaDB.insertIssueFromClosestPreviousIssue(
         Edition.FeastNorthernHemisphere,
         LocalDate.of(2020, 1, 2),
         user,
@@ -1095,10 +1095,10 @@ class EditionsDBTest
           1,
           front("news/uk", collection("politics", None))
         )
-        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val issue: EditionsIssue = faciaDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
 
-        editionsDB.addCollectionToFront(
+        faciaDB.addCollectionToFront(
           frontFromIssue.id,
           name = Some("Test Collection"),
           user = user,
@@ -1122,23 +1122,23 @@ class EditionsDBTest
           Edition.FeastNorthernHemisphere,
           front("news/uk", collection("politics", None))
         )
-        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val issue: EditionsIssue = faciaDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
 
         val result = for {
-          _ <- editionsDB.addCollectionToFront(
+          _ <- faciaDB.addCollectionToFront(
             frontFromIssue.id,
             name = Some("Test Collection"),
             user = user,
             now = now
           )
-          _ <- editionsDB.addCollectionToFront(
+          _ <- faciaDB.addCollectionToFront(
             frontFromIssue.id,
             name = Some("Test Collection 2"),
             user = user,
             now = now
           )
-          front <- editionsDB.addCollectionToFront(
+          front <- faciaDB.addCollectionToFront(
             frontFromIssue.id,
             name = Some("Test Collection 3"),
             user = user,
@@ -1163,10 +1163,10 @@ class EditionsDBTest
           1,
           front("news/uk", collection("politics", None))
         )
-        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val issue: EditionsIssue = faciaDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
 
-        editionsDB.addCollectionToFront(
+        faciaDB.addCollectionToFront(
           frontFromIssue.id,
           user = user,
           now = now
@@ -1182,10 +1182,10 @@ class EditionsDBTest
 
       "should permit adding a collection to an empty front" taggedAs UsesDatabase in {
         val issueId = insertSkeletonIssueForDaily(2020, 1, 1, front("news/uk"))
-        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val issue: EditionsIssue = faciaDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
 
-        editionsDB.addCollectionToFront(
+        faciaDB.addCollectionToFront(
           frontFromIssue.id,
           user = user,
           now = now
@@ -1200,7 +1200,7 @@ class EditionsDBTest
       }
 
       "should fail with a NotFoundError when the specified front does not exist" taggedAs UsesDatabase in {
-        editionsDB.addCollectionToFront(
+        faciaDB.addCollectionToFront(
           "does-not-exist",
           user = user,
           now = now
@@ -1208,7 +1208,7 @@ class EditionsDBTest
           case Right(front) =>
             Assertions.fail()
           case Left(error) =>
-            error shouldBe an[EditionsDB.NotFoundError]
+            error shouldBe an[FaciaDB.NotFoundError]
         }
       }
 
@@ -1219,11 +1219,11 @@ class EditionsDBTest
           1,
           front("news/uk", collection("politics", None))
         )
-        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val issue: EditionsIssue = faciaDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
         val invalidIndex = Some(16)
 
-        editionsDB.addCollectionToFront(
+        faciaDB.addCollectionToFront(
           frontFromIssue.id,
           collectionIndex = invalidIndex,
           user = user,
@@ -1232,7 +1232,7 @@ class EditionsDBTest
           case Right(_) =>
             Assertions.fail()
           case Left(error) =>
-            error shouldBe an[EditionsDB.InvalidInput]
+            error shouldBe an[FaciaDB.InvalidInput]
         }
       }
     }
@@ -1250,11 +1250,11 @@ class EditionsDBTest
             collection("culture", None)
           )
         )
-        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val issue: EditionsIssue = faciaDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
         frontFromIssue.collections.size shouldBe 3
 
-        editionsDB.removeCollectionFromFront(
+        faciaDB.removeCollectionFromFront(
           frontFromIssue.id,
           frontFromIssue.collections(2).id,
           user = user,
@@ -1271,7 +1271,7 @@ class EditionsDBTest
             )
         }
 
-        editionsDB.removeCollectionFromFront(
+        faciaDB.removeCollectionFromFront(
           frontFromIssue.id,
           frontFromIssue.collections(0).id,
           user = user,
@@ -1298,11 +1298,11 @@ class EditionsDBTest
             collection("culture", None)
           )
         )
-        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val issue: EditionsIssue = faciaDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
         frontFromIssue.collections.size shouldBe 3
 
-        editionsDB.removeCollectionFromFront(
+        faciaDB.removeCollectionFromFront(
           "does-not-exist",
           frontFromIssue.collections(2).id,
           user = user,
@@ -1329,11 +1329,11 @@ class EditionsDBTest
             collection("culture", None)
           )
         )
-        val issue: EditionsIssue = editionsDB.getIssue(issueId).value
+        val issue: EditionsIssue = faciaDB.getIssue(issueId).value
         val frontFromIssue = issue.fronts.head
         frontFromIssue.collections.size shouldBe 3
 
-        editionsDB.removeCollectionFromFront(
+        faciaDB.removeCollectionFromFront(
           frontFromIssue.id,
           "does-not-exist",
           user = user,

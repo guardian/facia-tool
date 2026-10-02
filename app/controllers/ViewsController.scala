@@ -82,6 +82,7 @@ class ViewsController(
               overrideIsDev(request, isDev),
               assetsManager.pathForCollections,
               priority != "email" && !isBreakingNews && !isTreatsPage,
+              isBreakingNews,
               priority,
               maybeTelemetryUrl = Some(telemetryUrl)
             )
@@ -100,6 +101,7 @@ class ViewsController(
             config.facia.stage,
             overrideIsDev(request, isDev),
             assetsManager.pathForConfig,
+            false,
             false,
             maybeTelemetryUrl = Some(telemetryUrl)
           )

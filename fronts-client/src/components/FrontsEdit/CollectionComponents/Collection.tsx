@@ -45,7 +45,6 @@ import LoadingGif from 'images/icons/loading.gif';
 import OpenFormsWarning from './OpenFormsWarning';
 import AbTestHeadlineWarning from './AbTestHeadlineWarning';
 import { createSelectActiveAbTestHeadlineErrorsForCollection } from 'selectors/collection';
-import { selectFeatureValue } from 'selectors/featureSwitchesSelectors';
 import { selectors as editionsIssueSelectors } from '../../../bundles/editionsIssueBundle';
 import { moveFrontCollection } from '../../../actions/Editions';
 
@@ -234,6 +233,8 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 
 		const groupIds = groups.map((group) => group.uuid);
 
+		const isUSNetworkFront = frontId === 'us';
+
 		return (
 			<>
 				<CollectionDisplay
@@ -309,11 +310,13 @@ class Collection extends React.Component<CollectionProps, CollectionState> {
 											<OpenFormsWarning collectionId={id} frontId={frontId} />
 										</OpenFormsWarningContainer>
 									)}
-									{hasAbTestHeadlineErrors && this.state.showFormWarnings && (
-										<OpenFormsWarningContainer>
-											<AbTestHeadlineWarning collectionId={id} />
-										</OpenFormsWarningContainer>
-									)}
+									{hasAbTestHeadlineErrors &&
+										isUSNetworkFront &&
+										this.state.showFormWarnings && (
+											<OpenFormsWarningContainer>
+												<AbTestHeadlineWarning collectionId={id} />
+											</OpenFormsWarningContainer>
+										)}
 									<EditModeVisibility visibleMode="fronts">
 										<Button
 											size="l"
@@ -445,7 +448,6 @@ const createMapStateToProps = () => {
 		hasContent: !!selectors.selectById(state, collectionId),
 		hasOpenForms: selectHasOpenForms(state, { collectionId, frontId }),
 		hasAbTestHeadlineErrors:
-			selectFeatureValue(state, 'headline-ab-testing') &&
 			selectActiveAbTestHeadlineErrorsForCollection(state, { collectionId })
 				.length > 0,
 		isFeast: editionsIssueSelectors.selectAll(state)?.platform === 'feast',

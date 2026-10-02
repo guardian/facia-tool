@@ -74,11 +74,16 @@ abstract class BaseFaciaController(deps: BaseFaciaControllerComponents)
   private val editEditionsPermissionCheck = new EditEditionsPermissionCheck(
     deps.permissions
   )(deps.executionContext)
+  private val editPackagesPermissionCheck = new EditPackagesPermissionCheck(
+    deps.permissions
+  )(deps.executionContext)
 
   final def AccessAuthAction = AuthAction andThen accessPermissionCheck
   final def AccessAPIAuthAction = APIAuthAction andThen accessPermissionCheck
   final def EditEditionsAuthAction =
     APIAuthAction andThen editEditionsPermissionCheck
+  final def EditPackagesAuthAction =
+    APIAuthAction andThen editPackagesPermissionCheck
 
   def getCollectionPermissionFilterByPriority(priority: String, acl: Acl)(
       implicit ec: ExecutionContext

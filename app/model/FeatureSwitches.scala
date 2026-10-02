@@ -53,7 +53,8 @@ object FeatureSwitches {
     PageViewDataVisualisation,
     HeadlineABTesting,
     EventGraphics,
-    MultimediaSlideshow
+    MultimediaSlideshow,
+    EventGraphics
   )
 
   def updateFeatureSwitchesForUser(

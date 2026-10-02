@@ -361,6 +361,93 @@ export const CreateFormPreviewFrame = styled.iframe`
 	transform-origin: top left;
 `;
 
+/**
+ * Images section
+ */
+
+export const ImagePlatformGroup = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+`;
+
+export const ImagePlatformGroupHeading = styled.h2`
+	margin: 0;
+	font-size: 15px;
+	font-weight: 700;
+	color: ${({ theme }) => theme.base.colors.textDark};
+`;
+
+export const ImageBreakpointGrid = styled.div`
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+	gap: 16px;
+`;
+
+export const ImageBreakpointCard = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+`;
+
+export const ImageBreakpointLabel = styled.span`
+	font-size: 12px;
+	font-weight: 600;
+	color: ${({ theme }) => theme.base.colors.textMuted};
+`;
+
+export const ImagePreview = styled.img`
+	width: 100%;
+	height: 90px;
+	object-fit: contain;
+	background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
+	border: 1px solid ${({ theme }) => theme.base.colors.borderColor};
+	border-radius: 4px;
+`;
+
+export const ImagePreviewEmpty = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	height: 90px;
+	font-size: 12px;
+	color: ${({ theme }) => theme.base.colors.textMuted};
+	background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
+	border: 1px dashed ${({ theme }) => theme.base.colors.borderColor};
+	border-radius: 4px;
+`;
+
+export const ImageBreakpointCollapsible = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+`;
+
+export const ImageBreakpointToggle = styled.button`
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+	align-self: flex-start;
+	background: none;
+	border: none;
+	padding: 0;
+	font-size: 13px;
+	font-weight: 600;
+	color: ${({ theme }) => theme.base.colors.textDark};
+	cursor: pointer;
+
+	&:hover {
+		text-decoration: underline;
+	}
+`;
+
+export const ImageBreakpointToggleIcon = styled.span<{ expanded: boolean }>`
+	display: inline-block;
+	transition: transform 0.15s ease;
+	transform: rotate(${({ expanded }) => (expanded ? '90deg' : '0deg')});
+`;
+
 const spin = keyframes`
 	from { transform: rotate(0deg); }
 	to { transform: rotate(360deg); }

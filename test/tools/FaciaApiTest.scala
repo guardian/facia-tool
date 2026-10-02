@@ -133,7 +133,11 @@ class FaciaApiTest extends FreeSpec with Matchers {
         FaciaApi.preparePublishCollectionJson(identity)(collectionJson).get
 
       val test =
-        sublinkTestFor("trailWithSublinks", "activeSublinkTestId", newCollectionJson)
+        sublinkTestFor(
+          "trailWithSublinks",
+          "activeSublinkTestId",
+          newCollectionJson
+        )
       test.startDate should be(Symbol("defined"))
       test.expiryDate should be(Symbol("defined"))
     }
@@ -144,7 +148,11 @@ class FaciaApiTest extends FreeSpec with Matchers {
         FaciaApi.preparePublishCollectionJson(identity)(collectionJson).get
 
       val test =
-        sublinkTestFor("trailWithSublinks", "endedSublinkTestId", newCollectionJson)
+        sublinkTestFor(
+          "trailWithSublinks",
+          "endedSublinkTestId",
+          newCollectionJson
+        )
       test.startDate should be(None)
       test.expiryDate should be(None)
     }

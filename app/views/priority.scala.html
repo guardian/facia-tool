@@ -14,7 +14,7 @@
     @if(SwitchManager.getStatus("facia-tool-disable")) {
         <span class="message message--important">Temporarily disabled. Please try again shortly.</span>
     } else {
-        @templates.header(stage, identity, isDev, displayV2Message, priority)
+        @templates.header(stage, identity, isDev, displayV2Message, false, priority)
         <main class="front-priorities">
             <div class="front-priorities--priority">
                 <a href="/editorial?redirect=false">Editorial Fronts</a>

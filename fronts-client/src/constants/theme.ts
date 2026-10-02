@@ -38,6 +38,12 @@ const colors = {
 	greenDark: '#36842A',
 	greenLight: '#ddead9',
 	red: '#d01d00',
+	blueBadge: '#C5D9F4',
+	blueBadgeTint: '#F7FAFF',
+	blueBadgeTransparent: 'rgba(197, 217, 244, 0.6)',
+	blueBadgeText: '#092F62',
+	orangeBadge: '#FCDDC6',
+	orangeBadgeText: '#693C16',
 	blackTransparent20: 'rgba(0,0,0,0.2)',
 	blackTransparent40: 'rgba(0,0,0,0.4)',
 	blackTransparent60: 'rgba(0,0,0,0.6)',
@@ -136,6 +142,24 @@ const abTest = {
 	},
 };
 
+const abTestBadge = {
+	active: {
+		background: `linear-gradient(90deg, ${colors.blueBadge} 0%, ${colors.blueBadgeTint} 84.13%, ${colors.blueBadgeTransparent} 100%)`,
+		text: colors.blueBadgeText,
+		icon: colors.blueDark,
+	},
+	draft: {
+		background: colors.blueBadge,
+		text: colors.blueBadgeText,
+		icon: colors.blueDark,
+	},
+	error: {
+		background: colors.orangeBadge,
+		text: colors.orangeBadgeText,
+		icon: colors.orangeBadgeText,
+	},
+};
+
 const input = {
 	height: '30px',
 	paddingY: '3px',
@@ -206,6 +230,7 @@ export const theme = {
 	thumbnailImageSquare,
 	thumbnailImagePortrait,
 	abTest,
+	abTestBadge,
 };
 
 export type Theme = typeof theme;
