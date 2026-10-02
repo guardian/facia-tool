@@ -36,6 +36,7 @@ import {
 	TargetedPageType,
 } from './types';
 import SubnavImagesSection from './SubnavImagesSection';
+import FrontPathPicker from './FrontPathPicker';
 import {
 	AddRow,
 	DragHandle,
@@ -534,9 +535,8 @@ const SubnavForm = ({
 																		updateLink(index, { linkText: value })
 																	}
 																/>
-																<TextInput
-																	aria-label="Dotcom path"
-																	fluid
+																<FrontPathPicker
+																	label="Dotcom path"
 																	value={link.dotcomPath}
 																	onChange={(value) =>
 																		updateLink(index, { dotcomPath: value })
