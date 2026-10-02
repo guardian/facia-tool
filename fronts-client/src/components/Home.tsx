@@ -63,6 +63,12 @@ const Home = ({
 			</ul>
 			<h3>Manage Feast app</h3>
 			<ul>{feast.map(renderEditionPriority)}</ul>
+			<h3>Manage Selection Packages</h3>
+			<ul>
+				<li>
+					<Link to="/packages/manage">Manage Feast Packages</Link>
+				</li>
+			</ul>
 			{subnavIsPermitted && (
 				<>
 					<h3>Custom subnavs</h3>
