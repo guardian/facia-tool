@@ -16,7 +16,6 @@ import model.FeastAppModel.{
 }
 import model.editions.PublishAction.PublishAction
 import model.editions.{
-  Edition,
   EditionsArticle,
   EditionsCard,
   EditionsChef,
@@ -31,12 +30,19 @@ import util.TimestampGenerator
 
 import scala.jdk.CollectionConverters._
 import logging.Logging
-
-import scala.util.{Failure, Success}
+import model.packages.{
+  FeastPackage,
+  Package,
+  PackageCard,
+  PackageChefCard,
+  PackageRecipeCard,
+  PackageSubcollectionCard
+}
+import scala.util.Try
 
 object FeastPublicationTarget {
   object MessageType extends Enumeration {
-    val Issue, EditionsList = Value
+    val Issue, Package, EditionsList = Value
   }
 
   type MessageType = MessageType.Value
@@ -47,6 +53,7 @@ class FeastPublicationTarget(
     config: ApplicationConfiguration,
     timestamp: TimestampGenerator
 ) extends PublicationTarget
+    with PackagePublicationTarget
     with Logging {
   private def transformCards(source: EditionsCard): ContainerItem = {
     source match {
@@ -87,6 +94,43 @@ class FeastPublicationTarget(
         )
     }
   }
+
+  private def transformPackageCard(source: PackageCard): ContainerItem =
+    source match {
+      case PackageRecipeCard(id, _) => Recipe(RecipeContent(id))
+      case PackageChefCard(id, metadata, _) =>
+        Chef(
+          ChefContent(
+            id = id,
+            image = metadata.flatMap(_.chefImageOverride.map(_.src)),
+            bio = metadata.flatMap(_.bio),
+            backgroundHex =
+              metadata.flatMap(_.theme.map(_.palette.backgroundHex)),
+            foregroundHex =
+              metadata.flatMap(_.theme.map(_.palette.foregroundHex))
+          )
+        )
+      case PackageSubcollectionCard(id, metadata, _) =>
+        val recipes = metadata
+          .map(_.collectionItems.collect { case EditionsRecipe(id, _) =>
+            id
+          })
+          .getOrElse(List.empty)
+
+        FeastCollection(
+          FeastCollectionContent(
+            byline = None,
+            darkPalette = metadata.flatMap(_.theme.map(_.darkPalette)),
+            lightPalette = metadata.flatMap(_.theme.map(_.lightPalette)),
+            image = metadata.flatMap(_.theme.flatMap(_.imageURL)),
+            body = Some(
+              ""
+            ), // The apps appear to require this to be present, even if it is empty
+            title = metadata.flatMap(_.title).getOrElse("No title"),
+            recipes = recipes
+          )
+        )
+    }
 
   private val findSpace = "\\s+".r
 
@@ -141,6 +185,43 @@ class FeastPublicationTarget(
           s"No backend edition name found for issue ${source.edition.entryName}"
         )
     }
+  }
+
+  private def transformPackageContent(
+      source: FeastPackage,
+      cards: Seq[PackageCard]
+  ): FeastAppContainer =
+    FeastAppContainer(
+      id = source.id.toString,
+      title = source.name,
+      targetedRegions = source.metadata.flatMap(_.targetedRegions),
+      excludedRegions = source.metadata.flatMap(_.excludedRegions),
+      body = source.metadata.flatMap(_.bodyText),
+      items = cards.map(transformPackageCard),
+      hideFromFront = Some(source.isHidden),
+      lightPalette = source.metadata.flatMap(_.theme.map(_.lightPalette)),
+      darkPalette = source.metadata.flatMap(_.theme.map(_.darkPalette)),
+      image = source.metadata.flatMap(_.theme.flatMap(_.imageURL))
+    )
+
+  def putPackage(
+      pkg: Package,
+      cards: Seq[PackageCard]
+  ): Either[String, Unit] = pkg match {
+    case f: FeastPackage =>
+      val content =
+        Json.stringify(Json.toJson(transformPackageContent(f, cards)))
+
+      Try {
+        snsClient.publish(
+          createPublishRequest(
+            content,
+            FeastPublicationTarget.MessageType.Package
+          )
+        )
+        ()
+      }.toEither.left.map(_.getMessage)
+    case _ => Left("This publication target can only publish Feast packages")
   }
 
   override def putIssue(

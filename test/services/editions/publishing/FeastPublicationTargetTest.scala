@@ -21,7 +21,7 @@ import org.mockito.ArgumentMatchers._
 import org.scalatest.{FreeSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
-import play.api.libs.json.Json
+import play.api.libs.json.{JsValue, Json}
 import model.FeastAppModel.{
   Chef,
   ChefContent,
@@ -44,6 +44,16 @@ import model.editions.EditionsChef
 import model.editions.EditionsChefMetadata
 import model.editions.ChefTheme
 import model.editions.Image
+import model.packages.{
+  FeastPackage,
+  FeastPackageMetadata,
+  PackageRecipeCard,
+  PackageChefCard,
+  PackageSubcollectionCard
+}
+
+import java.time.OffsetDateTime
+import java.util.UUID
 
 class FeastPublicationTargetTest
     extends FreeSpec
@@ -370,6 +380,189 @@ class FeastPublicationTargetTest
           error should include("No backend edition name found")
         case Right(_) =>
           fail("should not be able to publish this sort of edition")
+      }
+    }
+  }
+
+  "putPackage" - {
+    val packageId = UUID.fromString("550e8400-e29b-41d4-a716-446655440000")
+    val testPackage = FeastPackage(
+      id = packageId,
+      name = "Amazing Recipes",
+      isHidden = false,
+      metadata = Some(
+        FeastPackageMetadata(
+          theme = None,
+          bodyText = Some("A collection of amazing recipes"),
+          targetedRegions = Some(Seq("UK", "US")),
+          excludedRegions = None
+        )
+      ),
+      createdOn = None,
+      createdBy = None,
+      createdEmail = None,
+      updatedOn = None,
+      updatedBy = None,
+      updatedEmail = None
+    )
+
+    val testCards = Seq(
+      PackageRecipeCard(
+        id = "recipe-123",
+        addedOn = OffsetDateTime.now()
+      ),
+      PackageChefCard(
+        id = "chef-456",
+        metadata = Some(
+          EditionsChefMetadata(
+            bio = Some("A great chef"),
+            theme = Some(
+              ChefTheme(
+                id = "theme-001",
+                palette = Palette("#FFFFFF", "#000000")
+              )
+            ),
+            chefImageOverride = Some(
+              Image(
+                width = None,
+                height = None,
+                origin = "test-origin",
+                src = "https://example.com/chef.jpg"
+              )
+            )
+          )
+        ),
+        addedOn = OffsetDateTime.now()
+      ),
+      PackageSubcollectionCard(
+        id = "subcollection-789",
+        metadata = Some(
+          EditionsFeastCollectionMetadata(
+            title = Some("Sunday recipes"),
+            theme = Some(
+              FeastCollectionTheme(
+                id = "theme-002",
+                lightPalette = Palette("#111111", "#EEEEEE"),
+                darkPalette = Palette("#FFFFFF", "#222222"),
+                imageURL = Some("https://example.com/collection.jpg")
+              )
+            ),
+            collectionItems = List(EditionsRecipe("recipe-456", 0L))
+          )
+        ),
+        addedOn = OffsetDateTime.now()
+      )
+    )
+
+    "should push the relevant content into SNS" in {
+      val mockSNS = mock[AmazonSNSClient]
+      when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
+
+      val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
+
+      val result = toTest.putPackage(testPackage, testCards)
+
+      result should equal(Right(()))
+
+      val captor = org.mockito.ArgumentCaptor.forClass(classOf[PublishRequest])
+      verify(mockSNS, times(1)).publish(captor.capture())
+
+      val publishedRequest = captor.getValue
+      publishedRequest.getTopicArn should equal("fake-publication-topic")
+      publishedRequest.getMessageAttributes
+        .get("type")
+        .getStringValue should equal(
+        "Package"
+      )
+      publishedRequest.getMessageAttributes
+        .get("timestamp")
+        .getStringValue should equal(
+        "12345678"
+      )
+
+      // Verify the message contains the package content
+      val messageJson = Json.parse(publishedRequest.getMessage)
+      (messageJson \ "id").as[String] should equal(packageId.toString)
+      (messageJson \ "title").as[String] should equal("Amazing Recipes")
+      (messageJson \ "body").as[String] should equal(
+        "A collection of amazing recipes"
+      )
+      (messageJson \ "targetedRegions")
+        .as[Seq[String]] should contain allElementsOf Seq("UK", "US")
+      (messageJson \ "items").as[Seq[JsValue]] should equal(
+        Json
+          .arr(
+            Json.obj("recipe" -> Json.obj("id" -> "recipe-123")),
+            Json.obj(
+              "chef" -> Json.obj(
+                "id" -> "chef-456",
+                "image" -> "https://example.com/chef.jpg",
+                "bio" -> "A great chef",
+                "backgroundHex" -> "#000000",
+                "foregroundHex" -> "#FFFFFF"
+              )
+            ),
+            Json.obj(
+              "collection" -> Json.obj(
+                "darkPalette" -> Json.obj(
+                  "foregroundHex" -> "#FFFFFF",
+                  "backgroundHex" -> "#222222"
+                ),
+                "image" -> "https://example.com/collection.jpg",
+                "body" -> "",
+                "title" -> "Sunday recipes",
+                "lightPalette" -> Json.obj(
+                  "foregroundHex" -> "#111111",
+                  "backgroundHex" -> "#EEEEEE"
+                ),
+                "recipes" -> Json.arr("recipe-456")
+              )
+            )
+          )
+          .as[Seq[JsValue]]
+      )
+    }
+
+    "should not catch an SNS exception" in {
+      val mockSNS = mock[AmazonSNSClient]
+      val except = new RuntimeException("Connection failed")
+      when(mockSNS.publish(any[PublishRequest])).thenThrow(except)
+
+      val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
+
+      val result = toTest.putPackage(testPackage, testCards)
+      result match {
+        case Left(error) =>
+          error should equal("Connection failed")
+        case Right(_) =>
+          fail("should have returned an error when SNS fails")
+      }
+    }
+
+    "should return error when publishing a non-Feast package" in {
+      val mockSNS = mock[AmazonSNSClient]
+      val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
+
+      val storyPackage = model.packages.StoryPackage(
+        id = packageId,
+        name = "Story Package",
+        isHidden = false,
+        metadata = Some(model.packages.StoryPackageMetadata(headline = None)),
+        createdOn = None,
+        createdBy = None,
+        createdEmail = None,
+        updatedOn = None,
+        updatedBy = None,
+        updatedEmail = None
+      )
+
+      val result = toTest.putPackage(storyPackage, testCards)
+
+      result match {
+        case Left(error) =>
+          error should include("can only publish Feast packages")
+        case Right(_) =>
+          fail("should not be able to publish a Story package")
       }
     }
   }
