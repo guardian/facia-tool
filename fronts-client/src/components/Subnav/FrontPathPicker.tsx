@@ -1,5 +1,6 @@
 import React, { useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
+import { css } from '@emotion/react';
 import { Autocomplete } from '@guardian/stand/TagPicker';
 import { selectFronts } from 'selectors/shared';
 
@@ -19,6 +20,17 @@ interface FrontPathPickerProps {
 
 // Keep the dropdown to a sensible length when nothing has been typed yet.
 const MAX_OPTIONS = 100;
+
+const inputStyles = css`
+	align-self: flex-end;
+
+	input {
+		height: 2.5rem;
+		padding-top: 0;
+		padding-bottom: 0;
+		font-size: 16px;
+	}
+`;
 
 const FrontPathPicker = ({
 	value,
@@ -80,6 +92,7 @@ const FrontPathPicker = ({
 			addSelection={(option) => {
 				pendingSelection.current = option.id;
 			}}
+			cssOverrides={inputStyles}
 		/>
 	);
 };

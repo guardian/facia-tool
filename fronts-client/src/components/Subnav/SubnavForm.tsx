@@ -596,14 +596,22 @@ const SubnavForm = ({
 												</Option>
 											))}
 										</Select>
-										<TextInput
-											label={index === 0 ? 'Path' : undefined}
-											aria-label="Path"
-											fluid
-											value={page.path}
-											onChange={(value) => updatePage(index, { path: value })}
-											placeholder="e.g. politics/uk-election-2024"
-										/>
+										{page.type === 'front' ? (
+											<FrontPathPicker
+												label="Path"
+												value={page.path}
+												onChange={(value) => updatePage(index, { path: value })}
+											/>
+										) : (
+											<TextInput
+												label={index === 0 ? 'Path' : undefined}
+												aria-label="Path"
+												fluid
+												value={page.path}
+												onChange={(value) => updatePage(index, { path: value })}
+												placeholder="e.g. politics/uk-election-2024"
+											/>
+										)}
 									</RowFields>
 									<IconButton
 										type="button"
