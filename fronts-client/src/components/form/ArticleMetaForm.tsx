@@ -623,7 +623,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			return undefined;
 		}
 		return this.fetchAtom(atomId)
-			.then((response) => response.multimediaSlideshow)
+			.then((response) => response.multimediaslideshow)
 			.catch((error) => {
 				console.error(error);
 				return undefined;
