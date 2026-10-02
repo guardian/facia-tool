@@ -15,6 +15,7 @@ import {
 	FiRefreshCw,
 	FiSmartphone,
 	FiTablet,
+	FiTrash2,
 } from 'react-icons/fi';
 import { FaGripVertical } from 'react-icons/fa';
 import {
@@ -28,6 +29,7 @@ import { Button } from '@guardian/stand/Button';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
+import { DeleteSubnavModal, UnpublishSubnavModal } from './SubnavActionModals';
 import {
 	CustomSubnav,
 	SubnavImage,
@@ -47,6 +49,7 @@ import {
 	CreateFormSection,
 	CreateFormMain,
 	CreateFormActions,
+	CreateFormTopBar,
 	SubnavCreateFormPage,
 	CreateFormSidebar,
 	CreateFormPreview,
@@ -151,11 +154,6 @@ const stepperOverrides = css`
 	}
 `;
 
-// Stand's Button has no danger variant, so tint the tertiary delete action red.
-const deleteButtonStyle = css`
-	color: #c70000;
-`;
-
 const SubnavForm = ({
 	onSaveDraft,
 	onPublish,
@@ -190,6 +188,8 @@ const SubnavForm = ({
 		initialSubnav?.images ?? [],
 	);
 	const [error, setError] = useState<string | null>(null);
+	const [showDeleteModal, setShowDeleteModal] = useState(false);
+	const [showUnpublishModal, setShowUnpublishModal] = useState(false);
 	const [breakpoint, setBreakpoint] = useState<Breakpoint>('desktop');
 	// Bumped to force the preview iframe to reload once DCR has polled the draft.
 	const [previewNonce, setPreviewNonce] = useState(0);
@@ -456,6 +456,32 @@ const SubnavForm = ({
 							active={currentStepId === 'header'}
 							onFocus={() => setCurrentStepId('header')}
 						>
+							{isEditMode && (onUnpublish || onDelete) && (
+								<CreateFormTopBar>
+									{hasLive && onUnpublish && (
+										<Button
+											variant="secondary"
+											size="sm"
+											icon={<FiMinusCircle />}
+											onPress={() => setShowUnpublishModal(true)}
+											isDisabled={saving || actionPending}
+										>
+											Unpublish
+										</Button>
+									)}
+									{onDelete && (
+										<Button
+											variant="tertiary"
+											size="sm"
+											icon={<FiTrash2 />}
+											onPress={() => setShowDeleteModal(true)}
+											isDisabled={saving || actionPending || hasLive}
+										>
+											Delete
+										</Button>
+									)}
+								</CreateFormTopBar>
+							)}
 							<SubnavContainerHeading>Header</SubnavContainerHeading>
 							<TextArea
 								label="Description"
@@ -682,27 +708,6 @@ const SubnavForm = ({
 										Discard changes
 									</Button>
 								)}
-								{isEditMode && hasLive && onUnpublish && (
-									<Button
-										variant="secondary"
-										size="sm"
-										onPress={onUnpublish}
-										isDisabled={saving || actionPending}
-									>
-										Take down
-									</Button>
-								)}
-								{isEditMode && onDelete && (
-									<Button
-										variant="tertiary"
-										size="sm"
-										onPress={onDelete}
-										isDisabled={saving || actionPending}
-										cssOverrides={deleteButtonStyle}
-									>
-										Delete
-									</Button>
-								)}
 							</CreateFormActions>
 						</CreateFormSection>
 					</CreateFormMain>
@@ -781,6 +786,18 @@ const SubnavForm = ({
 					</CreateFormPreview>
 				</Item>
 			</Grid>
+			<UnpublishSubnavModal
+				isOpen={showUnpublishModal}
+				onOpenChange={setShowUnpublishModal}
+				headerText={headerText}
+				onConfirm={() => onUnpublish?.()}
+			/>
+			<DeleteSubnavModal
+				isOpen={showDeleteModal}
+				onOpenChange={setShowDeleteModal}
+				headerText={headerText}
+				onConfirm={() => onDelete?.()}
+			/>
 		</SubnavCreateFormPage>
 	);
 };
