@@ -26,6 +26,20 @@ object PageViewDataVisualisation
       enabled = true
     )
 
+object MultimediaSlideshow
+    extends FeatureSwitch(
+      key = "multimedia-slideshow",
+      title = "Enable multimedia slideshow atoms on cards",
+      enabled = false
+    )
+
+object HeadlineABTesting
+    extends FeatureSwitch(
+      key = "headline-ab-testing",
+      title = "Enable toggle switch for AB testing headlines",
+      enabled = false
+    )
+
 object EventGraphics
     extends FeatureSwitch(
       key = "event-graphics",
@@ -37,6 +51,9 @@ object FeatureSwitches {
   val all: List[FeatureSwitch] = List(
     ObscureFeed,
     PageViewDataVisualisation,
+    HeadlineABTesting,
+    EventGraphics,
+    MultimediaSlideshow,
     EventGraphics
   )
 
