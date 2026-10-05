@@ -10,6 +10,7 @@ import {
 	fetchPackage,
 	fetchPackages,
 	packageErrorMessage,
+	publishPackage,
 	writePackage,
 } from 'services/packagesApi';
 import type {
@@ -62,6 +63,7 @@ const ManageFeastPackages: React.FC = () => {
 	const [refreshVersion, setRefreshVersion] = useState(0);
 
 	const busyRef = useRef(false);
+	const [publishMessage, setPublishMessage] = useState<string | null>(null);
 
 	useEffect(() => {
 		let active = true;
@@ -103,7 +105,7 @@ const ManageFeastPackages: React.FC = () => {
 	}, [query, refreshVersion]);
 
 	useEffect(() => {
-		if (!editor?.isModified) {
+		if (!editor?.isModified && !busy) {
 			return;
 		}
 
@@ -117,7 +119,7 @@ const ManageFeastPackages: React.FC = () => {
 		return () => {
 			window.removeEventListener('beforeunload', beforeUnload);
 		};
-	}, [editor?.isModified]);
+	}, [editor?.isModified, busy]);
 
 	const filteredPackages = useMemo(
 		() =>
@@ -151,6 +153,8 @@ const ManageFeastPackages: React.FC = () => {
 			return;
 		}
 
+		setPublishMessage(null);
+
 		busyRef.current = true;
 		setBusy(true);
 		setError(null);
@@ -176,6 +180,8 @@ const ManageFeastPackages: React.FC = () => {
 			return;
 		}
 
+		setPublishMessage(null);
+
 		setError(null);
 		setEditor({
 			value: {
@@ -192,16 +198,21 @@ const ManageFeastPackages: React.FC = () => {
 	};
 
 	const handleClosePackage = () => {
-		if (canLeaveEditor()) {
-			setEditor(null);
-			setError(null);
+		if (!canLeaveEditor()) {
+			return;
 		}
+
+		setPublishMessage(null);
+		setEditor(null);
+		setError(null);
 	};
 
 	const handlePackageChange = (value: FeastPackage) => {
 		if (busyRef.current) {
 			return;
 		}
+
+		setPublishMessage(null);
 
 		setEditor((current) =>
 			current
@@ -223,6 +234,8 @@ const ManageFeastPackages: React.FC = () => {
 			setError('Enter a package name before saving.');
 			return;
 		}
+
+		setPublishMessage(null);
 
 		busyRef.current = true;
 		setBusy(true);
@@ -272,6 +285,50 @@ const ManageFeastPackages: React.FC = () => {
 		}
 	};
 
+	const handlePublish = async () => {
+		if (!editor || busyRef.current) {
+			return;
+		}
+
+		if (!editor.isPersisted || editor.isModified) {
+			setError('Save the package before publishing.');
+			return;
+		}
+
+		if (!editor.value.name.trim()) {
+			setError('Enter and save a package name before publishing.');
+			return;
+		}
+
+		const confirmed = window.confirm(
+			editor.value.isHidden
+				? 'Submit this saved package for publication? It will remain hidden from fronts.'
+				: 'Submit this saved package for publication?',
+		);
+
+		if (!confirmed) {
+			return;
+		}
+
+		busyRef.current = true;
+		setBusy(true);
+		setError(null);
+		setPublishMessage(null);
+
+		try {
+			await publishPackage(editor.value.id);
+
+			setPublishMessage(
+				'Publication submitted. Feast may take time to process the update.',
+			);
+		} catch (requestError) {
+			await reportError(requestError);
+		} finally {
+			busyRef.current = false;
+			setBusy(false);
+		}
+	};
+
 	return (
 		<PageContainer>
 			<Prompt
@@ -309,17 +366,24 @@ const ManageFeastPackages: React.FC = () => {
 					/>
 
 					{error && <p role="alert">{error}</p>}
-					{busy && <p role="status">Updating package...</p>}
+
+					{publishMessage && <p role="status">{publishMessage}</p>}
+
+					{busy && <p role="status">Package request in progress...</p>}
 
 					{editor ? (
 						<PackageCollectionBuilder
 							key={editor.value.id}
 							package={editor.value}
+							isPersisted={editor.isPersisted}
 							isModified={editor.isModified}
 							disabled={busy}
 							onPackageChange={handlePackageChange}
 							onSave={() => {
 								void handleSave();
+							}}
+							onPublish={() => {
+								void handlePublish();
 							}}
 							onClose={handleClosePackage}
 						/>

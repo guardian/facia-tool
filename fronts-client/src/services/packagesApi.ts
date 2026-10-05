@@ -178,3 +178,9 @@ export async function packageErrorMessage(error: unknown): Promise<string> {
 
 	return attemptFriendlyErrorMessage(error);
 }
+
+export async function publishPackage(id: string): Promise<void> {
+	await pandaFetch(`/packages/${encodeURIComponent(id)}/publish`, {
+		method: 'POST',
+	});
+}

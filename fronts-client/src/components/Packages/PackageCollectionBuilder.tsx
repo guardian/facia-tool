@@ -230,10 +230,12 @@ const SlotItem = styled.div`
 
 interface PackageCollectionBuilderProps {
 	package: FeastPackage;
+	isPersisted: boolean;
 	isModified: boolean;
 	disabled: boolean;
 	onPackageChange: (pkg: FeastPackage) => void;
 	onSave: () => void;
+	onPublish: () => void;
 	onClose: () => void;
 }
 
@@ -254,12 +256,15 @@ function parseRegions(value: string): string[] {
 
 const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	package: pkg,
+	isPersisted,
 	isModified,
 	disabled,
 	onPackageChange,
 	onSave,
+	onPublish,
 	onClose,
 }) => {
+	// Existing builder implementation.
 	const [dragIntentActive, setDragIntentActive] = useState(false);
 	const [displays, setDisplays] = useState<Record<string, PackageItemDisplay>>(
 		{},
@@ -624,22 +629,42 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 				</SlotsContainer>
 
 				<Section>
-					<SectionTitle>Save package</SectionTitle>
+					<SectionTitle>Save & Publish</SectionTitle>
 
 					<PublishActions>
 						<Button
-							variant="primary"
+							variant="secondary"
 							size="md"
 							isDisabled={disabled || !isModified || !pkg.name.trim()}
 							onPress={onSave}
 						>
 							Save
 						</Button>
+
+						<Button
+							variant="primary"
+							size="md"
+							isDisabled={
+								disabled || !isPersisted || isModified || !pkg.name.trim()
+							}
+							onPress={onPublish}
+						>
+							Publish
+						</Button>
 					</PublishActions>
 
+					{(!isPersisted || isModified) && (
+						<p>Save your changes to enable Publish.</p>
+					)}
+
 					<p>
-						Saving updates the stored package. Visibility controls whether it is
-						shown on fronts; it is not a publication status.
+						Save updates the stored package. Publish submits the saved package
+						to Feast for processing.
+					</p>
+
+					<p>
+						Visibility controls whether the package is shown on fronts.
+						Publishing does not change its visibility.
 					</p>
 				</Section>
 			</BuilderContent>
