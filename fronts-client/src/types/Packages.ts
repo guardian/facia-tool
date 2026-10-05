@@ -1,32 +1,61 @@
+import type { FeastCollectionCardMeta } from './Collection';
+
+export type PackageCardType = 'recipe' | 'chef' | 'subcollection';
+
+export interface PackageItem {
+	id: string;
+	cardType: PackageCardType;
+	addedOn: number;
+	metadata?: unknown;
+}
+
+export interface FeastPackageMetadata {
+	theme?: FeastCollectionCardMeta['feastCollectionTheme'];
+	bodyText?: string;
+	targetedRegions?: string[];
+	excludedRegions?: string[];
+}
+
 export interface FeastPackage {
 	id: string;
-	displayName: string;
-	status: 'LIVE' | 'DRAFT' | 'ARCHIVED';
-	isModified?: boolean;
-	standfirst: string;
-	metadata?: {
-		v1MetadataGap?: string;
-		prefillToggle?: boolean;
-	};
-	slots: PackageRecipe[];
-	deepLinkUrl?: string;
-	createdAt?: number;
-	updatedAt?: number;
+	name: string;
+	packageType: 'Feast';
+	isHidden: boolean;
+	metadata?: FeastPackageMetadata;
+	items: PackageItem[];
+	createdOn?: number;
+	createdBy?: string;
+	createdEmail?: string;
+	updatedOn?: number;
+	updatedBy?: string;
+	updatedEmail?: string;
 }
 
-export interface PackageRecipe {
-	id: string;
-	title: string;
-	imageUrl?: string;
-	position: number;
-}
-
-// Chef objects might look like:
-export interface PackageChef {
+export interface CreatePackageRequest {
 	id: string;
 	name: string;
-	image?: string;
-	bio?: string;
+	packageType: 'Feast';
+	isHidden: boolean;
+	metadata?: FeastPackageMetadata;
 }
 
-export type PackageStatus = 'All' | 'Draft' | 'Live' | 'Archived';
+export interface WritePackageRequest {
+	name: string;
+	packageType: 'Feast';
+	isHidden: boolean;
+	metadata?: FeastPackageMetadata;
+	items: PackageItem[];
+}
+
+export interface PackageEditorState {
+	value: FeastPackage;
+	isPersisted: boolean;
+	isModified: boolean;
+}
+
+export interface PackageItemDisplay {
+	title: string;
+	imageUrl?: string;
+}
+
+export type PackageVisibility = 'All' | 'Visible' | 'Hidden';

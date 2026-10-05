@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from 'constants/theme';
 import { Button } from '@guardian/stand/Button';
 import { Typography } from '@guardian/stand/Typography';
-import { FeastPackage, PackageStatus } from 'types/Packages';
+import type { FeastPackage, PackageVisibility } from 'types/Packages';
 
 const ListContainer = styled.div`
 	display: flex;
@@ -61,36 +61,13 @@ const PackageMeta = styled.div`
 	color: #666;
 `;
 
-const StatusBadge = styled.span<{ status: string }>`
+const StatusBadge = styled.span`
 	padding: 4px 8px;
 	border-radius: 3px;
 	font-size: 11px;
 	font-weight: 600;
-	text-transform: uppercase;
-	background-color: ${(props) => {
-		switch (props.status) {
-			case 'LIVE':
-				return '#e8f5e9';
-			case 'DRAFT':
-				return '#fff3e0';
-			case 'ARCHIVED':
-				return '#f5f5f5';
-			default:
-				return '#f5f5f5';
-		}
-	}};
-	color: ${(props) => {
-		switch (props.status) {
-			case 'LIVE':
-				return '#2e7d32';
-			case 'DRAFT':
-				return '#e65100';
-			case 'ARCHIVED':
-				return '#666';
-			default:
-				return '#666';
-		}
-	}};
+	background-color: #f5f5f5;
+	color: #333;
 `;
 
 const ActionButton = styled(Button)`
@@ -110,84 +87,73 @@ const EmptyState = styled.div`
 
 interface PackageListViewProps {
 	packages: FeastPackage[];
-	statusFilter: PackageStatus;
-	onSelectPackage: (pkg: FeastPackage) => void;
+	visibility: PackageVisibility;
+	disabled: boolean;
+	onSelectPackage: (id: string) => void;
 	onCreateNew: () => void;
 }
 
 const PackageListView: React.FC<PackageListViewProps> = ({
 	packages,
-	statusFilter,
+	visibility,
+	disabled,
 	onSelectPackage,
 	onCreateNew,
-}) => {
-	const filteredPackages = packages.filter((pkg) => {
-		if (statusFilter === 'All') return true;
-		return pkg.status === statusFilter.toUpperCase();
-	});
+}) => (
+	<ListContainer>
+		<ListHeader>
+			<Typography element="h3" variant="headingSm">
+				Packages ({packages.length})
+			</Typography>
+			<p>
+				Visibility: {visibility}. Showing up to 200 matching packages; search by
+				name to narrow the results.
+			</p>
+		</ListHeader>
 
-	return (
-		<ListContainer>
-			<ListHeader>
-				<Typography element="h3" variant="headingSm">
-					All Packages ({filteredPackages.length})
+		{packages.length === 0 ? (
+			<EmptyState>
+				<Typography element="p" variant="bodySm">
+					No matching packages.
 				</Typography>
-				<div style={{ marginTop: '10px', fontSize: '12px', color: '#666' }}>
-					Filter: {statusFilter}
-				</div>
-			</ListHeader>
+				<Button
+					size="md"
+					variant="primary"
+					isDisabled={disabled}
+					onPress={onCreateNew}
+				>
+					+ Create New Package
+				</Button>
+			</EmptyState>
+		) : (
+			<PackagesGrid>
+				{packages.map((pkg) => (
+					<PackageCard key={pkg.id}>
+						<PackageInfo>
+							<PackageName>{pkg.name}</PackageName>
 
-			{filteredPackages.length === 0 ? (
-				<EmptyState>
-					<Typography element="p" variant="bodySm">
-						No packages found for "{statusFilter}" status
-					</Typography>
-					<Button
-						onPress={onCreateNew}
-						size="md"
-						variant="primary"
-						style={{ marginTop: '15px' }}
-					>
-						+ Create New Package
-					</Button>
-				</EmptyState>
-			) : (
-				<PackagesGrid>
-					{filteredPackages.map((pkg) => (
-						<PackageCard key={pkg.id} onClick={() => onSelectPackage(pkg)}>
-							<PackageInfo>
-								<PackageName>{pkg.displayName}</PackageName>
-								<PackageMeta>
-									<span>ID: {pkg.id}</span>
-									<span>{pkg.slots.length} recipes</span>
-									<StatusBadge status={pkg.status}>{pkg.status}</StatusBadge>
-								</PackageMeta>
-								{pkg.standfirst && (
-									<div
-										style={{
-											fontSize: '12px',
-											color: '#999',
-											marginTop: '5px',
-										}}
-									>
-										{pkg.standfirst.substring(0, 100)}
-										{pkg.standfirst.length > 100 ? '...' : ''}
-									</div>
-								)}
-							</PackageInfo>
-							<ActionButton
-								onPress={() => onSelectPackage(pkg)}
-								size="sm"
-								variant="primary"
-							>
-								Edit
-							</ActionButton>
-						</PackageCard>
-					))}
-				</PackagesGrid>
-			)}
-		</ListContainer>
-	);
-};
+							<PackageMeta>
+								<span>ID: {pkg.id}</span>
+								<span>{pkg.items.length} items</span>
+								<StatusBadge>{pkg.isHidden ? 'Hidden' : 'Visible'}</StatusBadge>
+							</PackageMeta>
+
+							{pkg.metadata?.bodyText && <p>{pkg.metadata.bodyText}</p>}
+						</PackageInfo>
+
+						<ActionButton
+							size="sm"
+							variant="primary"
+							isDisabled={disabled}
+							onPress={() => onSelectPackage(pkg.id)}
+						>
+							Edit
+						</ActionButton>
+					</PackageCard>
+				))}
+			</PackagesGrid>
+		)}
+	</ListContainer>
+);
 
 export default PackageListView;

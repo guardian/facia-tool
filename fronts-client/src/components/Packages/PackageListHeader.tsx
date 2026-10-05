@@ -1,9 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState } from 'react';
 import { TextInput } from '@guardian/stand/TextInput';
 import { Button } from '@guardian/stand/Button';
 import { styled } from 'constants/theme';
-import { PackageStatus, FeastPackage } from 'types/Packages';
-import debounce from 'lodash/debounce';
+import type { FeastPackage, PackageVisibility } from 'types/Packages';
 
 const HeaderContainer = styled.div`
 	display: grid;
@@ -13,6 +12,7 @@ const HeaderContainer = styled.div`
 	background: white;
 	border-bottom: 1px solid #ddd;
 	justify-content: space-between;
+	flex-shrink: 0;
 `;
 
 const Title = styled.h1`
@@ -82,98 +82,36 @@ const ButtonGroup = styled.div`
 	gap: 5px;
 `;
 
-// Mock packages - replace with API call
-const mockPackages: FeastPackage[] = [
-	{
-		id: '15001',
-		displayName: "Chef Yottam's Mediterranean Summer Picks",
-		status: 'LIVE',
-		standfirst: 'Summer package...',
-		slots: [],
-	},
-	{
-		id: '15002',
-		displayName: 'Vegan Mediterranean Dinner Feast',
-		status: 'DRAFT',
-		standfirst: 'Vegan package...',
-		slots: [],
-	},
-	{
-		id: '15003',
-		displayName: 'Family Mediterranean Picnic',
-		status: 'LIVE',
-		standfirst: 'Family package...',
-		slots: [],
-	},
-	{
-		id: '15004',
-		displayName: 'Mediterranean Tapas Package',
-		status: 'DRAFT',
-		standfirst: 'Tapas package...',
-		slots: [],
-	},
-];
-
 interface PackageListHeaderProps {
-	statusFilter: PackageStatus;
-	onStatusChange: (status: PackageStatus) => void;
+	query: string;
+	onQueryChange: (query: string) => void;
+	searchResults: FeastPackage[];
+	loading: boolean;
+	visibility: PackageVisibility;
+	onVisibilityChange: (visibility: PackageVisibility) => void;
 	hasUnsavedChanges: boolean;
-	onPackageSelected: (pkg: FeastPackage) => void;
-	onCreateNewPackage?: () => void;
-	onClose?: () => void;
+	disabled: boolean;
+	onPackageSelected: (id: string) => void;
+	onCreateNewPackage: () => void;
+	onClose: () => void;
 }
 
+const visibilityOptions: PackageVisibility[] = ['All', 'Visible', 'Hidden'];
+
 const PackageListHeader: React.FC<PackageListHeaderProps> = ({
-	statusFilter,
-	onStatusChange,
+	query,
+	onQueryChange,
+	searchResults,
+	loading,
+	visibility,
+	onVisibilityChange,
 	hasUnsavedChanges,
+	disabled,
 	onPackageSelected,
 	onCreateNewPackage,
 	onClose,
 }) => {
-	const statuses: PackageStatus[] = ['All', 'Draft', 'Live', 'Archived'];
-	const [searchQuery, setSearchQuery] = useState('');
 	const [showDropdown, setShowDropdown] = useState(false);
-	const [searchResults, setSearchResults] = useState<FeastPackage[]>([]);
-
-	const debouncedSearch = useMemo(
-		() =>
-			debounce((query: string) => {
-				if (query.trim()) {
-					// Filter 1: Search by display name
-					let filtered = mockPackages.filter((pkg) =>
-						pkg.displayName.toLowerCase().includes(query.toLowerCase()),
-					);
-
-					// Filter 2: Apply status filter (NEW!)
-					if (statusFilter !== 'All') {
-						const normalizedStatus = statusFilter.toUpperCase();
-						filtered = filtered.filter(
-							(pkg) => pkg.status === normalizedStatus,
-						);
-					}
-
-					// Update results
-					setSearchResults(filtered);
-					setShowDropdown(filtered.length > 0);
-				} else {
-					// No search text - clear results
-					setSearchResults([]);
-					setShowDropdown(false);
-				}
-			}, 300),
-		[statusFilter], // Re-create when statusFilter changes
-	);
-
-	useEffect(() => {
-		debouncedSearch(searchQuery);
-	}, [searchQuery, debouncedSearch]);
-
-	const handleSelectPackage = (pkg: FeastPackage) => {
-		onPackageSelected(pkg);
-		setSearchQuery('');
-		setShowDropdown(false);
-	};
 
 	return (
 		<HeaderContainer>
@@ -187,72 +125,74 @@ const PackageListHeader: React.FC<PackageListHeaderProps> = ({
 			<ControlsContainer>
 				<SearchDropdownContainer>
 					<TextInput
-						label=""
-						placeholder="Search / Find Package"
-						value={searchQuery}
-						onChange={(value) => setSearchQuery(value)}
-						onFocus={() => searchQuery && setShowDropdown(true)}
+						label="Find package"
+						placeholder="Search package names"
+						value={query}
+						onChange={(value) => {
+							onQueryChange(value);
+							setShowDropdown(true);
+						}}
+						onFocus={() => setShowDropdown(true)}
+						isDisabled={disabled}
 					/>
-					{showDropdown && searchResults.length > 0 && (
+
+					{showDropdown && query.trim() && (
 						<DropdownMenu>
-							{searchResults.map((pkg) => (
-								<DropdownItem
-									key={pkg.id}
-									onClick={() => handleSelectPackage(pkg)}
-								>
-									<div
-										style={{
-											display: 'flex',
-											justifyContent: 'space-between',
-											alignItems: 'center',
-										}}
-									>
-										<span>{pkg.displayName}</span>
-										<span style={{ fontSize: '11px', color: '#999' }}>
-											({pkg.status})
-										</span>
-									</div>
-								</DropdownItem>
-							))}
+							{loading ? (
+								<p role="status">Searching...</p>
+							) : searchResults.length === 0 ? (
+								<p>No matching packages.</p>
+							) : (
+								searchResults.map((pkg) => (
+									<DropdownItem key={pkg.id}>
+										<Button
+											size="sm"
+											variant="secondary"
+											isDisabled={disabled}
+											onPress={() => {
+												setShowDropdown(false);
+												onPackageSelected(pkg.id);
+											}}
+										>
+											{pkg.name} ({pkg.isHidden ? 'Hidden' : 'Visible'})
+										</Button>
+									</DropdownItem>
+								))
+							)}
 						</DropdownMenu>
 					)}
 				</SearchDropdownContainer>
 
 				<ButtonGroup>
-					{statuses.map((status) => (
+					{visibilityOptions.map((option) => (
 						<Button
-							key={status}
-							onPress={() => onStatusChange(status)}
+							key={option}
 							size="sm"
-							variant={statusFilter === status ? 'primary' : 'secondary'}
+							variant={visibility === option ? 'primary' : 'secondary'}
+							isDisabled={disabled}
+							onPress={() => onVisibilityChange(option)}
 						>
-							{status}
+							{option}
 						</Button>
 					))}
 				</ButtonGroup>
 
 				<Button
-					onPress={() => {
-						if (onCreateNewPackage) {
-							onCreateNewPackage();
-						}
-					}}
 					size="md"
 					variant="primary"
+					isDisabled={disabled}
+					onPress={onCreateNewPackage}
 				>
 					+ New Package
 				</Button>
 
 				<Button
-					onPress={() => {
-						if (onClose) {
-							onClose();
-						}
-					}}
 					size="sm"
 					variant="secondary"
+					isDisabled={disabled}
+					onPress={onClose}
 				>
-					[Close]
+					Close
 				</Button>
 			</ControlsContainer>
 		</HeaderContainer>
