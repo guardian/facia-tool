@@ -187,6 +187,9 @@ const SubnavForm = ({
 	const [headerDotcomPath, setHeaderDotcomPath] = useState(
 		initialSubnav?.header.dotcomPath ?? '',
 	);
+	// Character limit hints only show while the relevant field has focus.
+	const [headerTextFocused, setHeaderTextFocused] = useState(false);
+	const [focusedLinkIndex, setFocusedLinkIndex] = useState<number | null>(null);
 	const [links, setLinks] = useState<LinkRow[]>(() =>
 		toLinkRows(initialSubnav),
 	);
@@ -473,7 +476,10 @@ const SubnavForm = ({
 								fluid
 							/>
 							<RowFields>
-								<div>
+								<div
+									onFocus={() => setHeaderTextFocused(true)}
+									onBlur={() => setHeaderTextFocused(false)}
+								>
 									<TextInput
 										label="Header text"
 										description="Contextual text for the subnav header"
@@ -483,18 +489,20 @@ const SubnavForm = ({
 										onChange={setHeaderText}
 										placeholder="e.g. UK election 2024"
 									/>
-									<CharacterCountRow>
-										<Badge
-											color={headerTextOverLimit ? 'yellow' : 'green'}
-											size="sm"
-											weight="light"
-										>
-											{headerTextOverLimit ? 'Warning' : 'Recommended'}
-										</Badge>
-										<CharacterCount>
-											{headerText.length}/{RECOMMENDED_TEXT_LIMIT}
-										</CharacterCount>
-									</CharacterCountRow>
+									{headerTextFocused && (
+										<CharacterCountRow>
+											<Badge
+												color={headerTextOverLimit ? 'yellow' : 'green'}
+												size="sm"
+												weight="light"
+											>
+												{headerTextOverLimit ? 'Warning' : 'Recommended'}
+											</Badge>
+											<CharacterCount>
+												{headerText.length}/{RECOMMENDED_TEXT_LIMIT}
+											</CharacterCount>
+										</CharacterCountRow>
+									)}
 								</div>
 								<TextInput
 									label="URL (Dotcom path)"
@@ -548,7 +556,10 @@ const SubnavForm = ({
 																<FaGripVertical />
 															</DragHandle>
 															<RowFields>
-																<div>
+																<div
+																	onFocus={() => setFocusedLinkIndex(index)}
+																	onBlur={() => setFocusedLinkIndex(null)}
+																>
 																	<TextInput
 																		aria-label="Link text"
 																		fluid
@@ -557,27 +568,29 @@ const SubnavForm = ({
 																			updateLink(index, { linkText: value })
 																		}
 																	/>
-																	<CharacterCountRow>
-																		<Badge
-																			color={
-																				link.linkText.length >
+																	{focusedLinkIndex === index && (
+																		<CharacterCountRow>
+																			<Badge
+																				color={
+																					link.linkText.length >
+																					RECOMMENDED_TEXT_LIMIT
+																						? 'yellow'
+																						: 'green'
+																				}
+																				size="sm"
+																				weight="light"
+																			>
+																				{link.linkText.length >
 																				RECOMMENDED_TEXT_LIMIT
-																					? 'yellow'
-																					: 'green'
-																			}
-																			size="sm"
-																			weight="light"
-																		>
-																			{link.linkText.length >
-																			RECOMMENDED_TEXT_LIMIT
-																				? 'Warning'
-																				: 'Recommended'}
-																		</Badge>
-																		<CharacterCount>
-																			{link.linkText.length}/
-																			{RECOMMENDED_TEXT_LIMIT}
-																		</CharacterCount>
-																	</CharacterCountRow>
+																					? 'Warning'
+																					: 'Recommended'}
+																			</Badge>
+																			<CharacterCount>
+																				{link.linkText.length}/
+																				{RECOMMENDED_TEXT_LIMIT}
+																			</CharacterCount>
+																		</CharacterCountRow>
+																	)}
 																</div>
 																<TextInput
 																	aria-label="Dotcom path"

@@ -160,7 +160,7 @@ export const Select = styled.select`
 
 export const RepeatableRow = styled.div`
 	display: flex;
-	align-items: flex-end;
+	align-items: flex-start;
 	gap: 8px;
 	margin-bottom: 12px;
 `;
@@ -209,7 +209,8 @@ export const CharacterCount = styled.span`
 export const DragHandle = styled.div`
 	display: flex;
 	align-items: center;
-	align-self: flex-end;
+	align-self: flex-start;
+	margin-top: 4px;
 	height: 2.5rem;
 	color: ${({ theme }) => theme.base.colors.textMuted};
 	cursor: grab;
@@ -220,7 +221,8 @@ export const IconButton = styled.button`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	align-self: flex-end;
+	align-self: flex-start;
+	margin-top: 4px;
 	height: 2.5rem;
 	padding: 0;
 	background: none;
@@ -288,7 +290,7 @@ export const CreateFormSection = styled.section<{ active?: boolean }>`
 	padding-left: 24px;
 	border-left: 2px solid
 		${({ active, theme }) =>
-			active ? theme.base.colors.textDark : theme.base.colors.borderColor};
+		active ? theme.base.colors.textDark : theme.base.colors.borderColor};
 	transition: border-color 0.15s ease;
 
 	/* Keep the indicator bar aligned to the heading text, not its top margin. */
