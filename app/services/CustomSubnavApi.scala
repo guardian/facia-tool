@@ -104,11 +104,11 @@ class CustomSubnavApi(s3FrontsApi: S3FrontsApi) extends Logging {
 
   def getConfig(): Either[String, CustomSubnavConfig] =
     s3FrontsApi.getCustomSubnav match {
-      case None => Right(CustomSubnavConfigFunctions.empty)
+      case None      => Right(CustomSubnavConfigFunctions.empty)
       case Some(raw) =>
         Try(Json.parse(raw).as[CustomSubnavConfig]) match {
           case Success(config) => Right(config)
-          case Failure(e) =>
+          case Failure(e)      =>
             logger.error(
               "Stored custom subnav config could not be parsed; falling back to empty config",
               e

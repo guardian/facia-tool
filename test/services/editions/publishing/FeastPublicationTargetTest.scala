@@ -435,25 +435,26 @@ class FeastPublicationTargetTest
       ),
       PackageChefCard(
         id = "chef-456",
-        metadata = Some(
-          EditionsChefMetadata(
-            bio = Some("A great chef"),
-            theme = Some(
-              ChefTheme(
-                id = "theme-001",
-                palette = Palette("#FFFFFF", "#000000")
-              )
-            ),
-            chefImageOverride = Some(
-              Image(
-                width = None,
-                height = None,
-                origin = "test-origin",
-                src = "https://example.com/chef.jpg"
+        metadata =
+          Some(
+            EditionsChefMetadata(
+              bio = Some("A great chef"),
+              theme = Some(
+                ChefTheme(
+                  id = "theme-001",
+                  palette = Palette("#FFFFFF", "#000000")
+                )
+              ),
+              chefImageOverride = Some(
+                Image(
+                  width = None,
+                  height = None,
+                  origin = "test-origin",
+                  src = "https://example.com/chef.jpg"
+                )
               )
             )
-          )
-        ),
+          ),
         addedOn = OffsetDateTime.now()
       ),
       PackageSubcollectionCard(
@@ -478,7 +479,8 @@ class FeastPublicationTargetTest
 
     "should push the relevant content into SNS" in {
       val mockSNS = mock[SnsClient]
-      when(mockSNS.publish(any[PublishRequest])).thenReturn(PublishResponse.builder().build())
+      when(mockSNS.publish(any[PublishRequest]))
+        .thenReturn(PublishResponse.builder().build())
 
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
@@ -491,12 +493,14 @@ class FeastPublicationTargetTest
 
       val publishedRequest = captor.getValue
       publishedRequest.topicArn() should equal("fake-publication-topic")
-      publishedRequest.messageAttributes()
+      publishedRequest
+        .messageAttributes()
         .get("type")
         .stringValue() should equal(
         "Package"
       )
-      publishedRequest.messageAttributes()
+      publishedRequest
+        .messageAttributes()
         .get("timestamp")
         .stringValue() should equal(
         "12345678"
