@@ -477,8 +477,8 @@ class FeastPublicationTargetTest
     )
 
     "should push the relevant content into SNS" in {
-      val mockSNS = mock[AmazonSNSClient]
-      when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
+      val mockSNS = mock[SnsClient]
+      when(mockSNS.publish(any[PublishRequest])).thenReturn(PublishResponse.builder().build())
 
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
@@ -490,20 +490,20 @@ class FeastPublicationTargetTest
       verify(mockSNS, times(1)).publish(captor.capture())
 
       val publishedRequest = captor.getValue
-      publishedRequest.getTopicArn should equal("fake-publication-topic")
-      publishedRequest.getMessageAttributes
+      publishedRequest.topicArn() should equal("fake-publication-topic")
+      publishedRequest.messageAttributes()
         .get("type")
-        .getStringValue should equal(
+        .stringValue() should equal(
         "Package"
       )
-      publishedRequest.getMessageAttributes
+      publishedRequest.messageAttributes()
         .get("timestamp")
-        .getStringValue should equal(
+        .stringValue() should equal(
         "12345678"
       )
 
       // Verify the message contains the package content
-      val messageJson = Json.parse(publishedRequest.getMessage)
+      val messageJson = Json.parse(publishedRequest.message())
       (messageJson \ "id").as[String] should equal(packageId.toString)
       (messageJson \ "title").as[String] should equal("Amazing Recipes")
       (messageJson \ "body").as[String] should equal(
@@ -546,7 +546,7 @@ class FeastPublicationTargetTest
     }
 
     "should not catch an SNS exception" in {
-      val mockSNS = mock[AmazonSNSClient]
+      val mockSNS = mock[SnsClient]
       val except = new RuntimeException("Connection failed")
       when(mockSNS.publish(any[PublishRequest])).thenThrow(except)
 
@@ -562,7 +562,7 @@ class FeastPublicationTargetTest
     }
 
     "should return error when publishing a non-Feast package" in {
-      val mockSNS = mock[AmazonSNSClient]
+      val mockSNS = mock[SnsClient]
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
       val storyPackage = model.packages.StoryPackage(
