@@ -23,8 +23,7 @@ Universal / javaOptions ++= Seq(
   "-J-XX:MaxRAMFraction=2",
   "-J-XX:InitialRAMFraction=2",
   "-J-XX:MaxMetaspaceSize=500m",
-  s"-J-Xloggc:/var/log/${packageName.value}/gc.log",
-  "-Dcom.amazonaws.sdk.disableCbor"
+  s"-J-Xloggc:/var/log/${packageName.value}/gc.log"
 )
 
 routesGenerator := InjectedRoutesGenerator
@@ -51,7 +50,6 @@ TwirlKeys.templateImports ++= Seq(
 // include the enum path bindables
 routesImport += "model.editions._"
 
-val awsVersion = "1.12.470"
 val capiModelsVersion = "50.0.0"
 val capiClientVersion = "49.0.0"
 val json4sVersion = "4.0.3"
@@ -70,20 +68,17 @@ libraryDependencies ++= Seq(
   filters,
   evolutions,
   jdbc,
-  "com.amazonaws" % "aws-java-sdk-rds" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-core" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-cloudwatch" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-s3" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-sns" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-sqs" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-ssm" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-sts" % awsVersion,
-  "com.amazonaws" % "aws-java-sdk-dynamodb" % awsVersion,
+  "software.amazon.awssdk" % "rds" % awsSdkVersion,
+  "software.amazon.awssdk" % "cloudwatch" % awsSdkVersion,
+  "software.amazon.awssdk" % "sns" % awsSdkVersion,
+  "software.amazon.awssdk" % "sqs" % awsSdkVersion,
+  "software.amazon.awssdk" % "ssm" % awsSdkVersion,
+  "software.amazon.awssdk" % "sts" % awsSdkVersion,
   "com.gu" %% "content-api-models-scala" % capiModelsVersion,
   "com.gu" %% "content-api-models-json" % capiModelsVersion,
-  "com.gu" %% "content-api-client-aws" % "0.7.6",
+  "com.gu" %% "content-api-client-aws" % "1.0.1",
   "com.gu" %% "content-api-client-default" % capiClientVersion,
-  "com.gu" %% "editorial-permissions-client" % "3.0.0",
+  "com.gu" %% "editorial-permissions-client" % "5.0.0",
   "com.gu" %% "fapi-client-play30" % "41.0.0",
   "com.gu" %% "mobile-notifications-api-models" % "4.0.0",
   "com.gu" %% "pan-domain-auth-play_3-0" % "21.0.0",

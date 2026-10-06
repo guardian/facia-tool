@@ -1,11 +1,5 @@
 package services.editions.publishing
 
-import com.amazonaws.services.sns.AmazonSNSClient
-import com.amazonaws.services.sns.model.{
-  MessageAttributeValue,
-  PublishRequest,
-  PublishResult
-}
 import conf.ApplicationConfiguration
 import model.editions.{
   CuratedPlatform,
@@ -22,6 +16,12 @@ import org.scalatest.{FreeSpec, Matchers}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.Configuration
 import play.api.libs.json.{JsValue, Json}
+import software.amazon.awssdk.services.sns.SnsClient
+import software.amazon.awssdk.services.sns.model.{
+  MessageAttributeValue,
+  PublishRequest,
+  PublishResponse
+}
 import model.FeastAppModel.{
   Chef,
   ChefContent,
@@ -193,32 +193,39 @@ class FeastPublicationTargetTest
     )
 
     "should push the relevant content into SNS" in {
-      val mockSNS = mock[AmazonSNSClient]
-      when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
+      val mockSNS = mock[SnsClient]
+      when(mockSNS.publish(any[PublishRequest]))
+        .thenReturn(PublishResponse.builder().build())
 
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
       val expectedBody = Json.toJson(issue)
       toTest.putIssueJson(issue, "test-key")
 
-      val expectedRequest = new PublishRequest()
-        .withTopicArn("fake-publication-topic")
-        .withMessage(expectedBody.toString())
-        .withMessageAttributes(
+      val expectedRequest = PublishRequest
+        .builder()
+        .topicArn("fake-publication-topic")
+        .message(expectedBody.toString())
+        .messageAttributes(
           Map(
-            "type" -> new MessageAttributeValue()
-              .withDataType("String")
-              .withStringValue("Issue"),
-            "timestamp" -> new MessageAttributeValue()
-              .withDataType("Number")
-              .withStringValue("12345678")
+            "type" -> MessageAttributeValue
+              .builder()
+              .dataType("String")
+              .stringValue("Issue")
+              .build(),
+            "timestamp" -> MessageAttributeValue
+              .builder()
+              .dataType("Number")
+              .stringValue("12345678")
+              .build()
           ).asJava
         )
+        .build()
       verify(mockSNS, times(1)).publish(expectedRequest)
     }
 
     "should not catch an SNS exception" in {
-      val mockSNS = mock[AmazonSNSClient]
+      val mockSNS = mock[SnsClient]
       val except = new RuntimeException("My hovercraft is full of eels")
       when(mockSNS.publish(any[PublishRequest])).thenThrow(except)
 
@@ -231,26 +238,33 @@ class FeastPublicationTargetTest
 
   "putEditionsList" - {
     "should push the relevant content into SNS" in {
-      val mockSNS = mock[AmazonSNSClient]
-      when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
+      val mockSNS = mock[SnsClient]
+      when(mockSNS.publish(any[PublishRequest]))
+        .thenReturn(PublishResponse.builder().build())
 
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
       toTest.putEditionsList("blahblahblah")
 
-      val expectedRequest = new PublishRequest()
-        .withTopicArn("fake-publication-topic")
-        .withMessage("blahblahblah")
-        .withMessageAttributes(
+      val expectedRequest = PublishRequest
+        .builder()
+        .topicArn("fake-publication-topic")
+        .message("blahblahblah")
+        .messageAttributes(
           Map(
-            "type" -> new MessageAttributeValue()
-              .withDataType("String")
-              .withStringValue("EditionsList"),
-            "timestamp" -> new MessageAttributeValue()
-              .withDataType("Number")
-              .withStringValue("12345678")
+            "type" -> MessageAttributeValue
+              .builder()
+              .dataType("String")
+              .stringValue("EditionsList")
+              .build(),
+            "timestamp" -> MessageAttributeValue
+              .builder()
+              .dataType("Number")
+              .stringValue("12345678")
+              .build()
           ).asJava
         )
+        .build()
 
       verify(mockSNS, times(1)).publish(expectedRequest)
     }
@@ -258,8 +272,9 @@ class FeastPublicationTargetTest
 
   "transformContent" - {
     "should transform the Editions content" in {
-      val mockSNS = mock[AmazonSNSClient]
-      when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
+      val mockSNS = mock[SnsClient]
+      when(mockSNS.publish(any[PublishRequest]))
+        .thenReturn(PublishResponse.builder().build())
 
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
@@ -345,30 +360,37 @@ class FeastPublicationTargetTest
         |}
         |""".stripMargin
 
-      val mockSNS = mock[AmazonSNSClient]
-      when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
+      val mockSNS = mock[SnsClient]
+      when(mockSNS.publish(any[PublishRequest]))
+        .thenReturn(PublishResponse.builder().build())
 
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
       toTest.putIssue(testIssue, "v1", PublishAction.publish)
-      val expectedRequest = new PublishRequest()
-        .withTopicArn("fake-publication-topic")
-        .withMessage(Json.parse(serializedVersion).toString())
-        .withMessageAttributes(
+      val expectedRequest = PublishRequest
+        .builder()
+        .topicArn("fake-publication-topic")
+        .message(Json.parse(serializedVersion).toString())
+        .messageAttributes(
           Map(
-            "timestamp" -> new MessageAttributeValue()
-              .withDataType("Number")
-              .withStringValue("12345678"),
-            "type" -> new MessageAttributeValue()
-              .withDataType("String")
-              .withStringValue("Issue")
+            "timestamp" -> MessageAttributeValue
+              .builder()
+              .dataType("Number")
+              .stringValue("12345678")
+              .build(),
+            "type" -> MessageAttributeValue
+              .builder()
+              .dataType("String")
+              .stringValue("Issue")
+              .build()
           ).asJava
         )
+        .build()
       verify(mockSNS).publish(expectedRequest)
     }
 
     "should not permit publishing issues without a suitable entry for the backend name" in {
-      val mockSNS = mock[AmazonSNSClient]
+      val mockSNS = mock[SnsClient]
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
       val issueWithInvalidEdition =
         testIssue.copy(edition = Edition.DailyEdition)
@@ -455,8 +477,8 @@ class FeastPublicationTargetTest
     )
 
     "should push the relevant content into SNS" in {
-      val mockSNS = mock[AmazonSNSClient]
-      when(mockSNS.publish(any[PublishRequest])).thenReturn(new PublishResult())
+      val mockSNS = mock[SnsClient]
+      when(mockSNS.publish(any[PublishRequest])).thenReturn(PublishResponse.builder().build())
 
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
@@ -468,20 +490,20 @@ class FeastPublicationTargetTest
       verify(mockSNS, times(1)).publish(captor.capture())
 
       val publishedRequest = captor.getValue
-      publishedRequest.getTopicArn should equal("fake-publication-topic")
-      publishedRequest.getMessageAttributes
+      publishedRequest.topicArn() should equal("fake-publication-topic")
+      publishedRequest.messageAttributes()
         .get("type")
-        .getStringValue should equal(
+        .stringValue() should equal(
         "Package"
       )
-      publishedRequest.getMessageAttributes
+      publishedRequest.messageAttributes()
         .get("timestamp")
-        .getStringValue should equal(
+        .stringValue() should equal(
         "12345678"
       )
 
       // Verify the message contains the package content
-      val messageJson = Json.parse(publishedRequest.getMessage)
+      val messageJson = Json.parse(publishedRequest.message())
       (messageJson \ "id").as[String] should equal(packageId.toString)
       (messageJson \ "title").as[String] should equal("Amazing Recipes")
       (messageJson \ "body").as[String] should equal(
@@ -524,7 +546,7 @@ class FeastPublicationTargetTest
     }
 
     "should not catch an SNS exception" in {
-      val mockSNS = mock[AmazonSNSClient]
+      val mockSNS = mock[SnsClient]
       val except = new RuntimeException("Connection failed")
       when(mockSNS.publish(any[PublishRequest])).thenThrow(except)
 
@@ -540,7 +562,7 @@ class FeastPublicationTargetTest
     }
 
     "should return error when publishing a non-Feast package" in {
-      val mockSNS = mock[AmazonSNSClient]
+      val mockSNS = mock[SnsClient]
       val toTest = new FeastPublicationTarget(mockSNS, conf, mockTSG)
 
       val storyPackage = model.packages.StoryPackage(

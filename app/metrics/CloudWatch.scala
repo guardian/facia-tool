@@ -1,69 +1,32 @@
 package metrics
 
-import com.amazonaws.client.builder.AwsClientBuilder
-import com.amazonaws.handlers.AsyncHandler
-import com.amazonaws.services.cloudwatch.model._
-import com.amazonaws.services.cloudwatch.{
-  AmazonCloudWatchAsync,
-  AmazonCloudWatchAsyncClientBuilder
-}
 import conf.ApplicationConfiguration
 import logging.Logging
-import services.AwsEndpoints
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient
+import software.amazon.awssdk.services.cloudwatch.model.{
+  Dimension,
+  MetricDatum,
+  PutMetricDataRequest,
+  StatisticSet
+}
 
 import scala.jdk.CollectionConverters._
+import scala.jdk.FutureConverters.CompletionStageOps
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class CloudWatch(
-    val config: ApplicationConfiguration,
-    val awsEndpoints: AwsEndpoints
+    val config: ApplicationConfiguration
 ) extends Logging {
 
-  lazy val cloudwatch: Option[AmazonCloudWatchAsync] =
-    config.aws.credentials.map(credentials => {
-      val endpoint = new AwsClientBuilder.EndpointConfiguration(
-        awsEndpoints.monitoring,
-        config.aws.region
-      )
-      AmazonCloudWatchAsyncClientBuilder
-        .standard()
-        .withCredentials(credentials)
-        .withEndpointConfiguration(endpoint)
+  lazy val cloudwatch: Option[CloudWatchAsyncClient] =
+    config.aws.credentialsProviderChain.map(credentials =>
+      CloudWatchAsyncClient
+        .builder()
+        .credentialsProvider(credentials)
+        .region(Region.of(config.aws.region))
         .build()
-    })
-
-  trait LoggingAsyncHandler
-      extends AsyncHandler[PutMetricDataRequest, PutMetricDataResult] {
-    def onError(exception: Exception): Unit = {
-      logger.warn(
-        s"CloudWatch PutMetricDataRequest error: ${exception.getMessage}}"
-      )
-    }
-    def onSuccess(
-        request: PutMetricDataRequest,
-        result: PutMetricDataResult
-    ): Unit = {}
-  }
-
-  case class AsyncHandlerForMetric(
-      frontendStatisticSets: List[FrontendStatisticSet]
-  ) extends LoggingAsyncHandler {
-    override def onError(exception: Exception) = {
-      logger.warn(
-        s"Failed to put ${frontendStatisticSets.size} metrics: $exception"
-      )
-      logger.warn(
-        s"Failed to put ${frontendStatisticSets.map(_.metric.name).mkString(",")}"
-      )
-      frontendStatisticSets.foreach { _.reset() }
-      super.onError(exception)
-    }
-    override def onSuccess(
-        request: PutMetricDataRequest,
-        result: PutMetricDataResult
-    ) = {
-      super.onSuccess(request, result)
-    }
-  }
+    )
 
   def putMetricsWithStage(
       metrics: List[FrontendMetric],
@@ -89,32 +52,43 @@ class CloudWatch(
           FrontendStatisticSet(metric, metric.getAndResetDataPoints)
         )
       val metricsAsDatums = metricsAsStatistics.map(metricStatistic =>
-        new MetricDatum()
-          .withStatisticValues(frontendMetricToStatisticSet(metricStatistic))
-          .withUnit(metricStatistic.metric.metricUnit)
-          .withMetricName(metricStatistic.metric.name)
-          .withDimensions(dimensions.asJavaCollection)
+        MetricDatum
+          .builder()
+          .statisticValues(frontendMetricToStatisticSet(metricStatistic))
+          .unit(metricStatistic.metric.metricUnit)
+          .metricName(metricStatistic.metric.name)
+          .dimensions(dimensions.asJavaCollection)
+          .build()
       )
-      val request = new PutMetricDataRequest()
-        .withNamespace(metricNamespace)
-        .withMetricData(metricsAsDatums.asJavaCollection)
+      val request = PutMetricDataRequest
+        .builder()
+        .namespace(metricNamespace)
+        .metricData(metricsAsDatums.asJavaCollection)
+        .build()
 
-      cloudwatch.foreach(
-        _.putMetricDataAsync(
-          request,
-          AsyncHandlerForMetric(metricsAsStatistics)
-        )
-      )
+      cloudwatch.foreach { client =>
+        client.putMetricData(request).asScala.failed.foreach { exception =>
+          logger.warn(
+            s"Failed to put ${metricsAsStatistics.size} metrics: $exception"
+          )
+          logger.warn(
+            s"Failed to put ${metricsAsStatistics.map(_.metric.name).mkString(",")}"
+          )
+          metricsAsStatistics.foreach(_.reset())
+        }
+      }
     }
   }
 
   private def frontendMetricToStatisticSet(
       metricStatistics: FrontendStatisticSet
   ): StatisticSet =
-    new StatisticSet()
-      .withMaximum(metricStatistics.maximum)
-      .withMinimum(metricStatistics.minimum)
-      .withSampleCount(metricStatistics.sampleCount)
-      .withSum(metricStatistics.sum)
+    StatisticSet
+      .builder()
+      .maximum(metricStatistics.maximum)
+      .minimum(metricStatistics.minimum)
+      .sampleCount(metricStatistics.sampleCount)
+      .sum(metricStatistics.sum)
+      .build()
 
 }

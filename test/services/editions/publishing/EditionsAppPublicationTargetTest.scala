@@ -35,44 +35,28 @@ class EditionsAppPublicationTargetTest
     "publication is preview" - {
       val key = PublicationTarget.createKey(issue, "preview")
       val putObjectRequest = EditionsAppPublicationTarget
-        .createPutObjectRequest("test-bucket", key, previewIssue)
+        .createPutObjectRequest("test-bucket", key)
 
       "key is correct" in {
-        putObjectRequest.getKey shouldBe "daily-edition/2019-09-30/preview.json"
+        putObjectRequest.key shouldBe "daily-edition/2019-09-30/preview.json"
       }
 
       "bucket is correct" in {
-        putObjectRequest.getBucketName shouldBe "test-bucket"
-      }
-
-      "data is correct" in {
-        val actual =
-          Source.fromInputStream(putObjectRequest.getInputStream).mkString
-        val expectedJson = Json.stringify(Json.toJson(previewIssue))
-        actual shouldBe expectedJson
+        putObjectRequest.bucket shouldBe "test-bucket"
       }
     }
 
     "publication is version called banana" - {
-      val publishedIssue =
-        issue.toPublishableIssue("banana", PublishAction.proof)
       val key = PublicationTarget.createKey(issue, "banana")
       val putObjectRequest = EditionsAppPublicationTarget
-        .createPutObjectRequest("test-bucket", key, publishedIssue)
+        .createPutObjectRequest("test-bucket", key)
 
       "key is correct" in {
-        putObjectRequest.getKey shouldBe "daily-edition/2019-09-30/banana.json"
+        putObjectRequest.key shouldBe "daily-edition/2019-09-30/banana.json"
       }
 
       "bucket is correct" in {
-        putObjectRequest.getBucketName shouldBe "test-bucket"
-      }
-
-      "data is correct" in {
-        val actual =
-          Source.fromInputStream(putObjectRequest.getInputStream).mkString
-        val expectedJson = Json.stringify(Json.toJson(publishedIssue))
-        actual shouldBe expectedJson
+        putObjectRequest.bucket shouldBe "test-bucket"
       }
     }
   }

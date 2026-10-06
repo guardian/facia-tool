@@ -5,12 +5,6 @@ import java.net.URI
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
-import com.amazonaws.auth.profile.ProfileCredentialsProvider
-import com.amazonaws.auth.{
-  AWSCredentialsProviderChain,
-  STSAssumeRoleSessionCredentialsProvider
-}
-import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder
 import com.gu.contentapi.client.model._
 import com.gu.contentapi.client.model.v1.{Content, SearchResponse}
 import com.gu.contentapi.client.{GuardianContentClient, IAMSigner, Parameter}
@@ -21,6 +15,10 @@ import model.editions._
 import okhttp3.{Call, Callback, Request, Response}
 import org.apache.http.client.utils.URLEncodedUtils
 import services.editions.prefills.{Prefill, PrefillParamsAdapter}
+import software.amazon.awssdk.regions.Region
+import software.amazon.awssdk.services.sts.StsClient
+import software.amazon.awssdk.services.sts.auth.StsAssumeRoleCredentialsProvider
+import software.amazon.awssdk.services.sts.model.AssumeRoleRequest
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContext, Future, Promise}
@@ -70,20 +68,24 @@ class GuardianCapi(config: ApplicationConfiguration)(implicit
   }
 
   private val previewSigner = {
-    val stsClient = AWSSecurityTokenServiceClientBuilder
-      .standard()
-      .withCredentials(config.aws.cmsFrontsAccountCredentials)
-      .withRegion(config.aws.region)
+    val stsClient = StsClient
+      .builder()
+      .credentialsProvider(config.aws.cmsFrontsAccountCredentials)
+      .region(Region.of(config.aws.region))
       .build()
 
-    val capiPreviewCredentials = new AWSCredentialsProviderChain(
-      new STSAssumeRoleSessionCredentialsProvider.Builder(
-        config.contentApi.previewRole,
-        "capi"
+    val capiPreviewCredentials = StsAssumeRoleCredentialsProvider
+      .builder()
+      .stsClient(stsClient)
+      .refreshRequest(
+        AssumeRoleRequest
+          .builder()
+          .roleArn(config.contentApi.previewRole)
+          .roleSessionName("capi")
+          .build()
       )
-        .withStsClient(stsClient)
-        .build()
-    )
+      .build()
+
     new IAMSigner(
       credentialsProvider = capiPreviewCredentials,
       awsRegion = config.aws.region
