@@ -106,7 +106,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.8" % "test",
   "org.mockito" % "mockito-core" % "5.11.0" % Test,
   "software.amazon.awssdk" % "s3" % awsSdkVersion,
-  "com.gu.etag-caching" %% "aws-s3-sdk-v2" % "18.0.0"
+  "com.gu.etag-caching" %% "aws-s3-sdk-v2" % "18.1.1"
 )
 
 excludeDependencies ++= Seq(
