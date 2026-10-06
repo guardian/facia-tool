@@ -50,7 +50,7 @@ TwirlKeys.templateImports ++= Seq(
 // include the enum path bindables
 routesImport += "model.editions._"
 
-val capiModelsVersion = "50.0.0"
+val capiModelsVersion = "52.0.0"
 val capiClientVersion = "49.0.1"
 val json4sVersion = "4.0.3"
 val circeVersion = "0.14.10"
