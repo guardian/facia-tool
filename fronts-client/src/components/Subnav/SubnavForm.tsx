@@ -8,24 +8,20 @@ import {
 	DropResult,
 	Droppable,
 } from 'react-beautiful-dnd';
-import {
-	FiMinus,
-	FiMonitor,
-	FiPlus,
-	FiRefreshCw,
-	FiSmartphone,
-	FiTablet,
-} from 'react-icons/fi';
-import { FaGripVertical } from 'react-icons/fa';
+import { FiMinus, FiPlus, FiRefreshCw } from 'react-icons/fi';
 import {
 	SidebarStepperNavigation,
 	type StepNavConfig,
 } from '@guardian/stand/SidebarStepperNavigation';
+import { UserFeedbackSummary } from '@guardian/stand/UserFeedbackSummary';
 import { TextInput } from '@guardian/stand/TextInput';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
+import { Tabs } from '@guardian/stand/Tabs';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
+import { Icon, type IconProps } from '@guardian/stand/Icon';
+
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
 import {
 	CustomSubnav,
@@ -39,7 +35,6 @@ import {
 	AddRow,
 	DragHandle,
 	ErrorMessage,
-	IconButton,
 	RepeatableRow,
 	RowFields,
 	SubnavContainerHeading,
@@ -51,18 +46,16 @@ import {
 	CreateFormPreview,
 	CreateFormPreviewHeader,
 	CreateFormPreviewTitleRow,
-	CreateFormPreviewTitle,
 	CreateFormPreviewToolbar,
 	CreateFormPreviewViewport,
 	CreateFormPreviewScaler,
 	CreateFormPreviewPlaceholder,
 	CreateFormPreviewFrame,
-	CreateFormPreviewNotice,
-	CreateFormPreviewSpinner,
 	ColumnHeaders,
 	ColumnHeadersSpacer,
-	ColumnHeaderLabel,
 } from './styles';
+import { theme } from 'constants/theme';
+import { DragIcon } from 'components/icons/Icons';
 
 interface SubnavFormProps {
 	onSaveDraft: (subnav: CustomSubnav) => Promise<void>;
@@ -123,11 +116,11 @@ const breakpointOptions: {
 	id: Breakpoint;
 	label: string;
 	width: number;
-	icon: React.ReactNode;
+	icon: NonNullable<IconProps['symbol']>;
 }[] = [
-	{ id: 'mobile', label: 'Mobile', width: 375, icon: <FiSmartphone /> },
-	{ id: 'tablet', label: 'Tablet', width: 740, icon: <FiTablet /> },
-	{ id: 'desktop', label: 'Desktop', width: 1300, icon: <FiMonitor /> },
+	{ id: 'desktop', label: 'Desktop', width: 1300, icon: 'computer' },
+	{ id: 'tablet', label: 'Tablet', width: 740, icon: 'tablet_android' },
+	{ id: 'mobile', label: 'Mobile', width: 375, icon: 'mobile' },
 ];
 
 const gridTheme = {
@@ -155,12 +148,22 @@ const stepperTheme = {
 	navigation: {
 		shared: {
 			border: '0.0625rem solid #cccccc',
+			currentBackgroundColor: `${theme.colors.orange}`,
 		},
 	},
 	step: {
 		shared: {
 			backgroundColor: '#ededed',
 			currentBackgroundColor: '#ededed',
+			text: {
+				inverseColor: `${theme.colors.blackDark}`,
+			},
+		},
+	},
+	stepNumber: {
+		shared: {
+			backgroundColor: `${theme.colors.orange}`,
+			color: `${theme.colors.blackDark}`,
 		},
 	},
 };
@@ -477,11 +480,30 @@ const SubnavForm = ({
 							active={currentStepId === 'header'}
 							onFocus={() => setCurrentStepId('header')}
 						>
-							<SubnavContainerHeading>Header</SubnavContainerHeading>
+							<Typography
+								element="h2"
+								variant="heading2Xl"
+								cssOverrides={css({
+									paddingBottom: '0px',
+									marginBottom: '0px',
+								})}
+							>
+								Header
+							</Typography>
+							<Typography
+								element="body"
+								variant="bodyMd"
+								cssOverrides={css({
+									marginBottom: '16px',
+									color: theme.base.colors.textMuted,
+								})}
+							>
+								Add a header text and paste an optional URL link
+							</Typography>
 							<RowFields>
 								<TextInput
 									label="Header text"
-									description="Contextual text for the subnav header"
+									description=""
 									isRequired
 									fluid
 									value={headerText}
@@ -490,7 +512,7 @@ const SubnavForm = ({
 								/>
 								<TextInput
 									label="URL (Dotcom path) (optional)"
-									description="Where the header links to"
+									description=""
 									fluid
 									value={headerDotcomPath}
 									onChange={setHeaderDotcomPath}
@@ -505,12 +527,43 @@ const SubnavForm = ({
 							active={currentStepId === 'links'}
 							onFocus={() => setCurrentStepId('links')}
 						>
-							<SubnavContainerHeading>Nav items</SubnavContainerHeading>
+							<Typography
+								element="h2"
+								variant="heading2Xl"
+								cssOverrides={css({
+									paddingBottom: '0px',
+									marginBottom: '0px',
+								})}
+							>
+								Nav Items
+							</Typography>
+							<Typography
+								element="body"
+								variant="bodyMd"
+								cssOverrides={css({
+									marginBottom: '16px',
+									color: theme.base.colors.textMuted,
+								})}
+							>
+								Add navigational menu items and their URLs
+							</Typography>
 							<ColumnHeaders>
-								<ColumnHeadersSpacer width={18} aria-hidden />
+								<ColumnHeadersSpacer width={24} aria-hidden />
 								<RowFields>
-									<ColumnHeaderLabel>Link text</ColumnHeaderLabel>
-									<ColumnHeaderLabel>Dotcom path</ColumnHeaderLabel>
+									<Typography
+										element="bold"
+										variant="bodyBoldMd"
+										cssOverrides={css({ letterSpacing: '-0.05px' })}
+									>
+										Item name
+									</Typography>
+									<Typography
+										element="bold"
+										variant="bodyBoldMd"
+										cssOverrides={css({ letterSpacing: '-0.05px' })}
+									>
+										Dotcom path
+									</Typography>
 								</RowFields>
 								<ColumnHeadersSpacer width={24} aria-hidden />
 							</ColumnHeaders>
@@ -537,7 +590,7 @@ const SubnavForm = ({
 																{...provided.dragHandleProps}
 																aria-label="Reorder nav item"
 															>
-																<FaGripVertical />
+																<DragIcon size="l" />
 															</DragHandle>
 															<RowFields>
 																<TextInput
@@ -557,14 +610,17 @@ const SubnavForm = ({
 																	}
 																/>
 															</RowFields>
-															<IconButton
-																type="button"
-																onClick={() => removeLink(index)}
-																disabled={links.length === 1}
+															<Button
+																variant="tertiary"
+																size="md"
+																icon={<FiMinus />}
+																onPress={() => removeLink(index)}
+																isDisabled={links.length === 1}
 																aria-label="Remove nav item"
-															>
-																<FiMinus />
-															</IconButton>
+																cssOverrides={css({
+																	padding: '0.25em 0.45em 0.25em 0.5em',
+																})}
+															/>
 														</RepeatableRow>
 													)}
 												</Draggable>
@@ -580,6 +636,7 @@ const SubnavForm = ({
 									size="sm"
 									icon={<FiPlus />}
 									onPress={addLink}
+									cssOverrides={css({ marginLeft: '26px' })}
 								>
 									Add nav item
 								</Button>
@@ -592,7 +649,27 @@ const SubnavForm = ({
 							active={currentStepId === 'pages'}
 							onFocus={() => setCurrentStepId('pages')}
 						>
-							<SubnavContainerHeading>Assign to pages</SubnavContainerHeading>
+							<Typography
+								element="h2"
+								variant="heading2Xl"
+								cssOverrides={css({
+									paddingBottom: '0px',
+									marginBottom: '0px',
+								})}
+							>
+								Assign to pages
+							</Typography>
+							<Typography
+								element="body"
+								variant="bodyMd"
+								cssOverrides={css({
+									marginBottom: '16px',
+									color: theme.base.colors.textMuted,
+								})}
+							>
+								Assign the subnav to specific front, tag or article you’d like
+								it to be displayed
+							</Typography>
 							{pages.map((page, index) => (
 								<RepeatableRow key={index}>
 									<RowFields>
@@ -619,14 +696,17 @@ const SubnavForm = ({
 											placeholder="e.g. politics/uk-election-2024"
 										/>
 									</RowFields>
-									<IconButton
-										type="button"
-										onClick={() => removePage(index)}
-										disabled={pages.length === 1}
+									<Button
+										variant="tertiary"
+										size="md"
+										icon={<FiMinus />}
+										onPress={() => removePage(index)}
+										isDisabled={pages.length === 1}
 										aria-label="Remove page"
-									>
-										<FiMinus />
-									</IconButton>
+										cssOverrides={css({
+											padding: '0.25em 0.45em 0.25em 0.5em',
+										})}
+									/>
 								</RepeatableRow>
 							))}
 							<AddRow>
@@ -647,7 +727,27 @@ const SubnavForm = ({
 							active={currentStepId === 'images'}
 							onFocus={() => setCurrentStepId('images')}
 						>
-							<SubnavContainerHeading>Image (Optional)</SubnavContainerHeading>
+							<Typography
+								element="h2"
+								variant="heading2Xl"
+								cssOverrides={css({
+									paddingBottom: '0px',
+									marginBottom: '0px',
+								})}
+							>
+								Banner Image (optional){' '}
+							</Typography>
+							<Typography
+								element="body"
+								variant="bodyMd"
+								cssOverrides={css({
+									marginBottom: '16px',
+									color: theme.base.colors.textMuted,
+								})}
+							>
+								Add images to the Subnav header, you can also add multiple
+								images for different breakpoints
+							</Typography>
 							<SubnavImagesSection images={images} onChange={setImages} />
 						</CreateFormSection>
 
@@ -721,13 +821,36 @@ const SubnavForm = ({
 						</CreateFormSection>
 					</CreateFormMain>
 				</Item>
-				<Item size={{ sm: 12, lg: 'grow' }}>
+				<Item size={{ sm: 12, lg: 'grow' }} cssOverrides={sidebarItemStyle}>
 					<CreateFormPreview>
 						<CreateFormPreviewHeader>
 							<CreateFormPreviewTitleRow>
-								<CreateFormPreviewTitle>Preview</CreateFormPreviewTitle>
+								{/* <CreateFormPreviewTitle cssOverrides={}>Preview</CreateFormPreviewTitle> */}
+								<p
+									style={{
+										display: 'flex',
+										alignItems: 'flex-start',
+										gap: '6px',
+										margin: 0,
+									}}
+								>
+									<Icon
+										size="lg"
+										symbol="preview"
+										cssOverrides={css`
+											align-self: center;
+										`}
+									/>
+									<Typography
+										element="h3"
+										variant="headingMd"
+										cssOverrides={css({ fontSize: '18px' })}
+									>
+										Preview
+									</Typography>
+								</p>
 								<Button
-									variant="secondary"
+									variant="tertiary"
 									size="sm"
 									icon={<FiRefreshCw />}
 									aria-label="Refresh preview"
@@ -740,28 +863,36 @@ const SubnavForm = ({
 									Refresh
 								</Button>
 							</CreateFormPreviewTitleRow>
-							{previewCountdown !== null && (
-								<CreateFormPreviewNotice>
-									<CreateFormPreviewSpinner>
-										<FiRefreshCw />
-									</CreateFormPreviewSpinner>
-									Draft saved. The preview can take up to a minute to update —
-									refreshing in {previewCountdown}s.
-								</CreateFormPreviewNotice>
-							)}
+							<UserFeedbackSummary
+								level="information"
+								title="Latest preview will refresh every 60 seconds."
+								cssOverrides={css({
+									maxWidth: '100%',
+									backgroundColor: 'white',
+								})}
+							>
+								{previewCountdown !== null && (
+									<>Refreshing in {previewCountdown}s.</>
+								)}
+							</UserFeedbackSummary>
+
 							<CreateFormPreviewToolbar>
-								{breakpointOptions.map((option) => (
-									<Button
-										key={option.id}
-										variant={breakpoint === option.id ? 'primary' : 'secondary'}
-										size="sm"
-										icon={option.icon}
-										aria-label={option.label}
-										onPress={() => setBreakpoint(option.id)}
-									>
-										{option.label}
-									</Button>
-								))}
+								<Tabs
+									selectedKey={breakpoint}
+									onSelectionChange={(key) => setBreakpoint(key as Breakpoint)}
+								>
+									<Tabs.TabList aria-label="Preview breakpoint">
+										{breakpointOptions.map((option) => (
+											<Tabs.Tab
+												key={option.id}
+												id={option.id}
+												icon={<Icon symbol={option.icon} fill="grey" />}
+											>
+												{option.label}
+											</Tabs.Tab>
+										))}
+									</Tabs.TabList>
+								</Tabs>
 							</CreateFormPreviewToolbar>
 						</CreateFormPreviewHeader>
 						<CreateFormPreviewViewport ref={previewViewportRef}>

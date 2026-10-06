@@ -13,10 +13,11 @@ import {
 	TableRow,
 } from '@guardian/stand/Table';
 import { Badge } from '@guardian/stand/Badge';
-import { Link } from '@guardian/stand/Link';
+import { Icon } from '@guardian/stand/Icon';
 import { theme } from 'constants/theme';
 import { RunAction, SubnavListEntry } from './helpers';
-import { Panel, PanelThumb } from './styles';
+import { CustomSubnav } from './types';
+import { Panel, PanelThumb, PanelThumbEmpty } from './styles';
 
 interface SubnavListViewProps {
 	entries: SubnavListEntry[];
@@ -43,7 +44,7 @@ const panelsGridTheme = {
 
 const tableColumns = {
 	sm: 'minmax(0, 1fr)',
-	lg: 'minmax(0, 2.4fr) 130px 135px',
+	lg: 'minmax(0, 2.4fr) 130px 141px',
 };
 
 const subnavCellStyles = css`
@@ -53,10 +54,10 @@ const subnavCellStyles = css`
 	min-width: 0;
 `;
 
-const thumbLinkStyles = css`
-	flex: 0 0 auto;
-	line-height: 0;
-`;
+const thumbWrapStyles: React.CSSProperties = {
+	flex: '0 0 auto',
+	lineHeight: 0,
+};
 
 const subnavTextStyle: React.CSSProperties = {
 	display: 'flex',
@@ -70,6 +71,10 @@ const titleLinkStyles = css`
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
+`;
+
+const rowStyles = css`
+	cursor: pointer;
 `;
 
 const metaStyles = css`
@@ -97,7 +102,6 @@ const badgeGroupStyle: React.CSSProperties = {
 
 const createHeaderCellStyle: React.CSSProperties = {
 	display: 'flex',
-	justifyContent: 'flex-end',
 	width: '100%',
 };
 
@@ -130,6 +134,32 @@ const StatusBadges = ({
 		)}
 	</span>
 );
+
+// Completion across the three required sections, mapped to a 0/33/66/100 scale.
+const requiredProgress = (subnav: CustomSubnav) => {
+	const hasHeader = subnav.header.headerText.trim().length > 0;
+	const hasLink = subnav.links.some((link) => link.linkText.trim().length > 0);
+	const hasPage = subnav.pages.some((page) => page.path.trim().length > 0);
+	return [hasHeader, hasLink, hasPage].filter(Boolean).length;
+};
+
+const progressPercent = [0, 33, 66, 100];
+
+const DraftStatusBadge = ({ subnav }: { subnav: CustomSubnav }) => {
+	const completed = requiredProgress(subnav);
+	if (completed === 3) {
+		return (
+			<Badge color="warmPurple" size="sm" weight="light">
+				Ready to launch
+			</Badge>
+		);
+	}
+	return (
+		<Badge color="yellow" size="sm" weight="strong">
+			Draft • {progressPercent[completed]}%
+		</Badge>
+	);
+};
 
 const SubnavListPanel = ({
 	status,
@@ -189,28 +219,37 @@ const SubnavListPanel = ({
 							.filter(Boolean)
 							.join(' · ');
 						return (
-							<TableRow key={id} id={id}>
+							<TableRow
+								key={id}
+								id={id}
+								onAction={() => onEdit(id)}
+								aria-label={`Edit ${title}`}
+								cssOverrides={rowStyles}
+							>
 								<TableCell
 									gridColumn={{ lg: '1' }}
 									cssOverrides={subnavCellStyles}
 								>
-									{imageSrc && (
-										<Link
-											onPress={() => onEdit(id)}
-											aria-label={`Edit ${title}`}
-											cssOverrides={thumbLinkStyles}
-										>
+									{imageSrc ? (
+										<span style={thumbWrapStyles}>
 											<PanelThumb url={imageSrc} />
-										</Link>
+										</span>
+									) : (
+										<span style={thumbWrapStyles}>
+											<PanelThumbEmpty>
+												<Icon symbol="image" size="sm" alt="" />
+												No image
+											</PanelThumbEmpty>
+										</span>
 									)}
 									<span style={subnavTextStyle}>
-										<Link
-											onPress={() => onEdit(id)}
-											typography="bodyBoldSm"
+										<Typography
+											element="span"
+											variant="bodyBoldSm"
 											cssOverrides={titleLinkStyles}
 										>
 											{title}
-										</Link>
+										</Typography>
 										{meta && (
 											<Typography
 												element="span"
@@ -234,7 +273,9 @@ const SubnavListPanel = ({
 										<StatusBadges hasLive={hasLive} hasDraft={hasDraft} />
 									</TableCell>
 								) : (
-									<TableCell gridColumn={{ lg: '3' }}>{null}</TableCell>
+									<TableCell compactLabel="Status: " gridColumn={{ lg: '3' }}>
+										<DraftStatusBadge subnav={subnav} />
+									</TableCell>
 								)}
 							</TableRow>
 						);

@@ -101,6 +101,23 @@ export const PanelThumb = styled.div<{ url: string }>`
 	background-position: center;
 `;
 
+export const PanelThumbEmpty = styled.div`
+	flex: 0 0 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 1px;
+	width: 40px;
+	height: 40px;
+	border-radius: 3px;
+	background-color: ${({ theme }) => theme.base.colors.backgroundColorFocused};
+	color: ${({ theme }) => theme.base.colors.textMuted};
+	font-size: 7px;
+	line-height: 1;
+	text-align: center;
+`;
+
 /**
  * Form
  */
@@ -270,7 +287,7 @@ export const CreateFormMain = styled.div`
 export const CreateFormSection = styled.section<{ active?: boolean }>`
 	display: flex;
 	flex-direction: column;
-	gap: 16px;
+	gap: 8px;
 	margin-top: 16px;
 	scroll-margin-top: 16px;
 	padding-left: 24px;
@@ -293,11 +310,9 @@ export const CreateFormActions = styled.div`
 
 export const CreateFormPreview = styled.div`
 	position: sticky;
-	top: 80px;
-	align-self: flex-start;
+	top: 0;
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
 	min-width: 0;
 	height: calc(100vh - 100px);
 	margin: 8px;
@@ -320,8 +335,8 @@ export const CreateFormPreviewTitleRow = styled.div`
 `;
 
 export const CreateFormPreviewTitle = styled(Typography).attrs({
-	element: 'h2',
-	variant: 'headingXl',
+	element: 'h3',
+	variant: 'headingMd',
 })`
 	margin: 0;
 `;
@@ -392,6 +407,10 @@ export const ImageBreakpointCard = styled.div`
 `;
 
 export const ImageBreakpointLabel = styled.span`
+	display: flex;
+	justify-content: space-between;
+	align-items: baseline;
+	gap: 8px;
 	font-size: 12px;
 	font-weight: 600;
 	color: ${({ theme }) => theme.base.colors.textMuted};
@@ -408,8 +427,10 @@ export const ImagePreview = styled.img`
 
 export const ImagePreviewEmpty = styled.div`
 	display: flex;
+	flex-direction: column;
 	align-items: center;
 	justify-content: center;
+	gap: 4px;
 	width: 100%;
 	height: 90px;
 	font-size: 12px;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { TextInput } from '@guardian/stand/TextInput';
+import { Icon } from '@guardian/stand/Icon';
 import { ImageBreakpoint, SubnavImage, SubnavImagePlatform } from './types';
 import {
 	ImageBreakpointCard,
@@ -57,6 +58,10 @@ const secondaryBreakpointSpecs = breakpointSpecs.filter(
 	(spec) => !primaryBreakpointIds.includes(spec.id),
 );
 
+// Turn a camelCase breakpoint id (e.g. mobileMedium) into a readable name.
+const formatBreakpointName = (id: string) =>
+	id.replace(/([A-Z])/g, ' $1').replace(/^./, (char) => char.toUpperCase());
+
 const samePlatforms = (a: SubnavImagePlatform[], b: SubnavImagePlatform[]) =>
 	a.length === b.length && a.every((platform) => b.includes(platform));
 
@@ -89,18 +94,24 @@ const PlatformGroupImages = ({
 		const src = index === -1 ? '' : images[index].imageSrc;
 		return (
 			<ImageBreakpointCard key={spec.id}>
-				<ImageBreakpointLabel>{spec.label}</ImageBreakpointLabel>
+				<ImageBreakpointLabel>
+					<span>{formatBreakpointName(spec.id)}</span>
+					<span>{spec.label}</span>
+				</ImageBreakpointLabel>
 				{src ? (
 					<ImagePreview src={src} alt={`${group.label} ${spec.label}`} />
 				) : (
-					<ImagePreviewEmpty>No image</ImagePreviewEmpty>
+					<ImagePreviewEmpty>
+						<Icon symbol="image" size="lg" alt="" />
+						No image
+					</ImagePreviewEmpty>
 				)}
 				<TextInput
 					aria-label={`${group.label} ${spec.label} image URL`}
+					description="Paste image URL"
 					fluid
 					value={src}
 					onChange={(nextValue) => setImageSrc(group, spec.id, nextValue)}
-					placeholder="Paste image URL"
 				/>
 			</ImageBreakpointCard>
 		);
