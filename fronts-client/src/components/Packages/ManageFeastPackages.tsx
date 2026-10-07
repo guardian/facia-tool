@@ -9,7 +9,6 @@ import {
 	createPackage,
 	fetchPackage,
 	fetchPackages,
-	getHttpStatus,
 	packageErrorMessage,
 	publishPackage,
 	writePackage,
@@ -259,66 +258,28 @@ const ManageFeastPackages: React.FC = () => {
 		};
 
 		try {
-			//let saved: FeastPackage;
+			if (!editor.isPersisted) {
+				await createPackage({
+					id: value.id,
+					name: request.name,
+					packageType: 'Feast',
+					isHidden: request.isHidden,
+					metadata: request.metadata,
+				});
 
-			let saved: FeastPackage | undefined;
-
-			try {
-				//saved = await writePackage(value.id, request);
-				saved = (await writePackage(value.id, request)) ?? {
-					...value,
-					...request,
-				};
-			} catch (writeError) {
-				if (getHttpStatus(writeError) !== 404) {
-					throw writeError;
-				}
-
-				try {
-					await createPackage({
-						id: value.id,
-						name: request.name,
-						packageType: 'Feast',
-						isHidden: request.isHidden,
-						metadata: request.metadata,
-					});
-				} catch (createError) {
-					if (getHttpStatus(createError) !== 409) {
-						throw createError;
-					}
-
-					const newId = v4();
-					setEditor((current) =>
-						current?.value.id === value.id
-							? {
-									...current,
-									value: { ...current.value, id: newId },
-									isPersisted: false,
-									isModified: true,
-								}
-							: current,
-					);
-
-					const message =
-						'This package ID was created in another session. A new ID has been assigned; save again.';
-					setError(message);
-					notifications.notify({ message, level: 'error' });
-					return;
-				}
-
-				// If this PUT fails, the next save retries the update rather
-				// than trying to create the UUID again.
+				// A failed PUT must retry the update, not recreate this UUID.
 				setEditor((current) =>
-					current?.value.id === value.id
-						? { ...current, isPersisted: true }
-						: current,
+					current ? { ...current, isPersisted: true } : current,
 				);
 
-				//saved = await writePackage(value.id, request);
-				saved = (await writePackage(value.id, request)) ?? {
-					...value,
-					...request,
-				};
+				setRefreshVersion((version) => version + 1);
+			}
+
+			const saved = await writePackage(value.id, request);
+
+			if (saved === undefined) {
+				setError('Package not found.');
+				return;
 			}
 
 			setEditor({
