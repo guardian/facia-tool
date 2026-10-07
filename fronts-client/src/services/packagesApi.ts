@@ -15,6 +15,23 @@ const jsonHeaders = {
 	'Content-Type': 'application/json',
 };
 
+export const getHttpStatus = (error: unknown): number | undefined => {
+	if (typeof error !== 'object' || error === null) {
+		return undefined;
+	}
+
+	const candidate = error as {
+		status?: unknown;
+		statusCode?: unknown;
+		response?: { status?: unknown };
+	};
+
+	const status =
+		candidate.status ?? candidate.statusCode ?? candidate.response?.status;
+
+	return typeof status === 'number' ? status : undefined;
+};
+
 export async function fetchPackages(
 	title: string,
 	signal?: AbortSignal,
@@ -22,7 +39,7 @@ export async function fetchPackages(
 	const params = new URLSearchParams({
 		type: 'Feast',
 		full: 'true',
-		limit: '200',
+		limit: '20',
 		order: 'updated',
 	});
 
@@ -39,70 +56,141 @@ export async function fetchPackages(
 	return body.packages;
 }
 
-export async function fetchPackage(id: string): Promise<FeastPackage> {
-	const response = await pandaFetch(`/packages/${encodeURIComponent(id)}`, {
-		method: 'GET',
-	});
+export async function fetchPackage(
+	id: string,
+): Promise<FeastPackage | undefined> {
+	try {
+		const response = await pandaFetch(`/packages/${encodeURIComponent(id)}`, {
+			method: 'GET',
+		});
 
-	return response.json();
+		if (response.status === 404) {
+			return undefined;
+		}
+
+		return await response.json();
+	} catch (error: unknown) {
+		if (getHttpStatus(error) === 404) {
+			return undefined;
+		}
+
+		throw error;
+	}
 }
 
 export async function createPackage(
 	request: CreatePackageRequest,
 ): Promise<void> {
-	await pandaFetch('/packages', {
-		method: 'POST',
-		headers: jsonHeaders,
-		body: JSON.stringify(request),
-	});
+	try {
+		const response = await pandaFetch('/packages', {
+			method: 'POST',
+			headers: jsonHeaders,
+			body: JSON.stringify(request),
+		});
+
+		if (response.status === 409) {
+			throw response;
+		}
+	} catch (error: unknown) {
+		if (getHttpStatus(error) === 409) {
+			throw Object.assign(
+				new Error('The package could not be created because of a conflict.'),
+				{ status: 409 },
+			);
+		}
+
+		throw error;
+	}
 }
 
 export async function writePackage(
 	id: string,
 	request: WritePackageRequest,
-): Promise<FeastPackage> {
-	const response = await pandaFetch(`/packages/${encodeURIComponent(id)}`, {
-		method: 'PUT',
-		headers: jsonHeaders,
-		body: JSON.stringify(request),
-	});
+): Promise<FeastPackage | undefined> {
+	try {
+		const response = await pandaFetch(`/packages/${encodeURIComponent(id)}`, {
+			method: 'PUT',
+			headers: jsonHeaders,
+			body: JSON.stringify(request),
+		});
 
-	return response.json();
+		if (response.status === 404) {
+			return undefined;
+		}
+
+		return await response.json();
+	} catch (error: unknown) {
+		if (getHttpStatus(error) === 404) {
+			return undefined;
+		}
+
+		throw error;
+	}
 }
 
 export async function updatePackageName(
 	id: string,
 	name: string,
 ): Promise<void> {
-	await pandaFetch(`/packages/${encodeURIComponent(id)}/name`, {
-		method: 'PATCH',
-		headers: jsonHeaders,
-		body: JSON.stringify({ name }),
-	});
+	try {
+		await pandaFetch(`/packages/${encodeURIComponent(id)}/name`, {
+			method: 'PATCH',
+			headers: jsonHeaders,
+			body: JSON.stringify({ name }),
+		});
+	} catch (error: unknown) {
+		if (getHttpStatus(error) === 404) {
+			throw Object.assign(new Error('The package could not be found.'), {
+				status: 404,
+			});
+		}
+
+		throw error;
+	}
 }
 
 export async function updatePackageMetadata(
 	id: string,
 	metadata: FeastPackageMetadata,
 ): Promise<void> {
-	await pandaFetch(`/packages/${encodeURIComponent(id)}/metadata`, {
-		method: 'PUT',
-		headers: jsonHeaders,
-		body: JSON.stringify({
-			...metadata,
-			packageType: 'Feast',
-		}),
-	});
+	try {
+		await pandaFetch(`/packages/${encodeURIComponent(id)}/metadata`, {
+			method: 'PUT',
+			headers: jsonHeaders,
+			body: JSON.stringify({
+				...metadata,
+				packageType: 'Feast',
+			}),
+		});
+	} catch (error: unknown) {
+		if (getHttpStatus(error) === 404) {
+			throw Object.assign(new Error('The package could not be found.'), {
+				status: 404,
+			});
+		}
+
+		throw error;
+	}
 }
 
 export async function updatePackageHiddenState(
 	id: string,
 	isHidden: boolean,
 ): Promise<void> {
-	await pandaFetch(
-		`/packages/${encodeURIComponent(id)}/is-hidden/${isHidden}`,
-		{ method: 'PUT' },
-	);
+	try {
+		await pandaFetch(
+			`/packages/${encodeURIComponent(id)}/is-hidden/${isHidden}`,
+			{ method: 'PUT' },
+		);
+	} catch (error: unknown) {
+		if (getHttpStatus(error) === 404) {
+			throw Object.assign(new Error('The package could not be found.'), {
+				status: 404,
+			});
+		}
+
+		throw error;
+	}
 }
 
 export function packageItemKey(
@@ -112,7 +200,7 @@ export function packageItemKey(
 }
 
 export async function fetchPackageItemDisplays(
-	items: PackageItem[],
+	items: PackageItem[], //items: Array<Pick<PackageItem, "id" | "cardType">>,
 ): Promise<Record<string, PackageItemDisplay>> {
 	const recipeIds = Array.from(
 		new Set(

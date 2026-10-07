@@ -9,6 +9,7 @@ import {
 	createPackage,
 	fetchPackage,
 	fetchPackages,
+	getHttpStatus,
 	packageErrorMessage,
 	publishPackage,
 	writePackage,
@@ -63,6 +64,10 @@ const ManageFeastPackages: React.FC = () => {
 	const [refreshVersion, setRefreshVersion] = useState(0);
 
 	const busyRef = useRef(false);
+	const updateBusy = (value: boolean) => {
+		busyRef.current = value;
+		setBusy(value);
+	};
 	const [publishMessage, setPublishMessage] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -155,12 +160,16 @@ const ManageFeastPackages: React.FC = () => {
 
 		setPublishMessage(null);
 
-		busyRef.current = true;
-		setBusy(true);
+		updateBusy(true);
 		setError(null);
 
 		try {
 			const value = await fetchPackage(id);
+
+			if (value === undefined) {
+				setError('Package not found.');
+				return;
+			}
 
 			setEditor({
 				value,
@@ -170,8 +179,7 @@ const ManageFeastPackages: React.FC = () => {
 		} catch (requestError) {
 			await reportError(requestError);
 		} finally {
-			busyRef.current = false;
-			setBusy(false);
+			updateBusy(false);
 		}
 	};
 
@@ -237,8 +245,7 @@ const ManageFeastPackages: React.FC = () => {
 
 		setPublishMessage(null);
 
-		busyRef.current = true;
-		setBusy(true);
+		updateBusy(true);
 		setError(null);
 
 		const value = editor.value;
@@ -252,24 +259,67 @@ const ManageFeastPackages: React.FC = () => {
 		};
 
 		try {
-			if (!editor.isPersisted) {
-				await createPackage({
-					id: value.id,
-					name: request.name,
-					packageType: 'Feast',
-					isHidden: request.isHidden,
-					metadata: request.metadata,
-				});
+			//let saved: FeastPackage;
 
-				// A failed PUT must retry the update, not recreate this UUID.
+			let saved: FeastPackage | undefined;
+
+			try {
+				//saved = await writePackage(value.id, request);
+				saved = (await writePackage(value.id, request)) ?? {
+					...value,
+					...request,
+				};
+			} catch (writeError) {
+				if (getHttpStatus(writeError) !== 404) {
+					throw writeError;
+				}
+
+				try {
+					await createPackage({
+						id: value.id,
+						name: request.name,
+						packageType: 'Feast',
+						isHidden: request.isHidden,
+						metadata: request.metadata,
+					});
+				} catch (createError) {
+					if (getHttpStatus(createError) !== 409) {
+						throw createError;
+					}
+
+					const newId = v4();
+					setEditor((current) =>
+						current?.value.id === value.id
+							? {
+									...current,
+									value: { ...current.value, id: newId },
+									isPersisted: false,
+									isModified: true,
+								}
+							: current,
+					);
+
+					const message =
+						'This package ID was created in another session. A new ID has been assigned; save again.';
+					setError(message);
+					notifications.notify({ message, level: 'error' });
+					return;
+				}
+
+				// If this PUT fails, the next save retries the update rather
+				// than trying to create the UUID again.
 				setEditor((current) =>
-					current ? { ...current, isPersisted: true } : current,
+					current?.value.id === value.id
+						? { ...current, isPersisted: true }
+						: current,
 				);
 
-				setRefreshVersion((version) => version + 1);
+				//saved = await writePackage(value.id, request);
+				saved = (await writePackage(value.id, request)) ?? {
+					...value,
+					...request,
+				};
 			}
-
-			const saved = await writePackage(value.id, request);
 
 			setEditor({
 				value: saved,
@@ -280,8 +330,7 @@ const ManageFeastPackages: React.FC = () => {
 		} catch (requestError) {
 			await reportError(requestError);
 		} finally {
-			busyRef.current = false;
-			setBusy(false);
+			updateBusy(false);
 		}
 	};
 
@@ -310,8 +359,7 @@ const ManageFeastPackages: React.FC = () => {
 			return;
 		}
 
-		busyRef.current = true;
-		setBusy(true);
+		updateBusy(true);
 		setError(null);
 		setPublishMessage(null);
 
@@ -324,8 +372,7 @@ const ManageFeastPackages: React.FC = () => {
 		} catch (requestError) {
 			await reportError(requestError);
 		} finally {
-			busyRef.current = false;
-			setBusy(false);
+			updateBusy(false);
 		}
 	};
 

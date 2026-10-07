@@ -106,7 +106,7 @@ const PackageListView: React.FC<PackageListViewProps> = ({
 				Packages ({packages.length})
 			</Typography>
 			<p>
-				Visibility: {visibility}. Showing up to 200 matching packages; search by
+				Visibility: {visibility}. Showing up to 20 matching packages; search by
 				name to narrow the results.
 			</p>
 		</ListHeader>

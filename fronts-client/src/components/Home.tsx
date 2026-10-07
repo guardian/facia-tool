@@ -63,7 +63,7 @@ const Home = ({
 			</ul>
 			<h3>Manage Feast app</h3>
 			<ul>{feast.map(renderEditionPriority)}</ul>
-			<h3>Manage Selection Packages</h3>
+			<h3>Manage Packages</h3>
 			<ul>
 				<li>
 					<Link to="/packages/manage">Manage Feast Packages</Link>

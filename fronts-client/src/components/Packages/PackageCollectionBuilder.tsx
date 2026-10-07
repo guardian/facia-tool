@@ -23,6 +23,7 @@ import type {
 	PackageItem,
 	PackageItemDisplay,
 } from 'types/Packages';
+import { TextArea } from '@guardian/stand/TextArea';
 
 const BuilderContainer = styled.div`
 	display: flex;
@@ -156,26 +157,11 @@ const PublishActions = styled.div`
 	margin-bottom: 20px;
 `;
 
-// const DeepLinkContainer = styled.div`
-// 	display: flex;
-// 	gap: 10px;
-// 	align-items: flex-end;
-//
-// 	> input {
-// 		flex: 1;
-// 		padding: 8px;
-// 		border: 1px solid #ddd;
-// 		border-radius: 3px;
-// 		font-size: 14px;
-// 		background-color: #f9f9f9;
-// 	}
-// `;
-
 const CheckboxLabel = styled.label`
 	display: flex;
 	align-items: center;
 	gap: 8px;
-	font-size: 12px;
+	font-size: 16px;
 	cursor: pointer;
 
 	input {
@@ -228,6 +214,10 @@ const SlotItem = styled.div`
 	}
 `;
 
+const ThemeFormContainer = styled.div`
+	margin-top: 12px;
+`;
+
 interface PackageCollectionBuilderProps {
 	package: FeastPackage;
 	isPersisted: boolean;
@@ -243,16 +233,16 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null;
 }
 
-function parseRegions(value: string): string[] {
-	return Array.from(
-		new Set(
-			value
-				.split(',')
-				.map((region) => region.trim())
-				.filter((region) => region.length > 0),
-		),
-	);
-}
+// function parseRegions(value: string): string[] {
+// 	return Array.from(
+// 		new Set(
+// 			value
+// 				.split(',')
+// 				.map((region) => region.trim())
+// 				.filter((region) => region.length > 0),
+// 		),
+// 	);
+// }
 
 const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	package: pkg,
@@ -272,13 +262,14 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	const [loadingDisplays, setLoadingDisplays] = useState(true);
 	const [displayError, setDisplayError] = useState<string | null>(null);
 	const [displayRefresh, setDisplayRefresh] = useState(0);
+	const [deepLink, setDeepLink] = useState('');
 
-	const [targetedRegions, setTargetedRegions] = useState(
-		pkg.metadata?.targetedRegions?.join(', ') ?? '',
-	);
-	const [excludedRegions, setExcludedRegions] = useState(
-		pkg.metadata?.excludedRegions?.join(', ') ?? '',
-	);
+	// const [targetedRegions, setTargetedRegions] = useState(
+	// 	pkg.metadata?.targetedRegions?.join(', ') ?? '',
+	// );
+	// const [excludedRegions, setExcludedRegions] = useState(
+	// 	pkg.metadata?.excludedRegions?.join(', ') ?? '',
+	// );
 
 	const itemSignature = JSON.stringify(
 		pkg.items.map(({ id, cardType }) => ({ id, cardType })),
@@ -301,6 +292,8 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 						addedOn: 0,
 					})),
 				);
+
+				//const result1 = await fetchPackageItemDisplays(references);
 
 				if (active) {
 					setDisplays(result);
@@ -460,7 +453,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 							isDisabled={disabled}
 						/>
 
-						<TextInput
+						<TextArea
 							label="Description"
 							value={pkg.metadata?.bodyText ?? ''}
 							onChange={(bodyText) => changeMetadata({ bodyText })}
@@ -486,57 +479,66 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 					<RightColumn>
 						<SectionTitle>Metadata</SectionTitle>
 
-						<TextInput
-							label="Targeted regions (comma separated)"
-							value={targetedRegions}
-							isDisabled={disabled}
-							onChange={(value) => {
-								setTargetedRegions(value);
-								changeMetadata({
-									targetedRegions: parseRegions(value),
-								});
-							}}
-						/>
+						{/*Dropping these controls for the time being, as they are not respected by the backend and are not user friendly. We'll implement them in a follow-up*/}
+						{/*<TextInput*/}
+						{/*	label="Targeted regions (comma separated)"*/}
+						{/*	value={targetedRegions}*/}
+						{/*	isDisabled={disabled}*/}
+						{/*	onChange={(value) => {*/}
+						{/*		setTargetedRegions(value);*/}
+						{/*		changeMetadata({*/}
+						{/*			targetedRegions: parseRegions(value),*/}
+						{/*		});*/}
+						{/*	}}*/}
+						{/*/>*/}
 
-						<TextInput
-							label="Excluded regions (comma separated)"
-							value={excludedRegions}
-							isDisabled={disabled}
-							onChange={(value) => {
-								setExcludedRegions(value);
-								changeMetadata({
-									excludedRegions: parseRegions(value),
-								});
-							}}
-						/>
+						{/*<TextInput*/}
+						{/*	label="Excluded regions (comma separated)"*/}
+						{/*	value={excludedRegions}*/}
+						{/*	isDisabled={disabled}*/}
+						{/*	onChange={(value) => {*/}
+						{/*		setExcludedRegions(value);*/}
+						{/*		changeMetadata({*/}
+						{/*			excludedRegions: parseRegions(value),*/}
+						{/*		});*/}
+						{/*	}}*/}
+						{/*/>*/}
 
 						<MetadataBox>
-							<PaletteForm
-								currentPaletteOption={currentPaletteOption}
-								defaultCustomPaletteOption={DefaultCustomPaletteFeastCollection}
-								paletteOptions={feastCollectionPalettes}
-								onChange={(option) => {
-									if (!disabled) {
-										changeMetadata({
-											theme: {
-												id: option.id,
-												lightPalette: option.palettes.light,
-												darkPalette: option.palettes.dark,
-												imageURL: option.imageURL,
-											},
-										});
-									}
-								}}
-							/>
+							<details>
+								<summary style={{ cursor: 'pointer' }}>Select theme</summary>
 
-							<Button
-								size="sm"
-								variant="secondary"
-								isDisabled={disabled || !theme}
-								onPress={() => changeMetadata({ theme: undefined })}
-							>
-								Clear theme
-							</Button>
+								<ThemeFormContainer>
+									<PaletteForm
+										currentPaletteOption={currentPaletteOption}
+										defaultCustomPaletteOption={
+											DefaultCustomPaletteFeastCollection
+										}
+										paletteOptions={feastCollectionPalettes}
+										onChange={(option) => {
+											if (!disabled) {
+												changeMetadata({
+													theme: {
+														id: option.id,
+														lightPalette: option.palettes.light,
+														darkPalette: option.palettes.dark,
+														imageURL: option.imageURL,
+													},
+												});
+											}
+										}}
+									/>
+
+									<Button
+										size="sm"
+										variant="secondary"
+										isDisabled={disabled || !theme}
+										onPress={() => changeMetadata({ theme: undefined })}
+									>
+										Clear theme
+									</Button>
+								</ThemeFormContainer>
+							</details>
 						</MetadataBox>
 					</RightColumn>
 				</FirstSection>
@@ -666,6 +668,13 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 						Visibility controls whether the package is shown on fronts.
 						Publishing does not change its visibility.
 					</p>
+
+					<TextInput
+						label="DeepLink"
+						value={deepLink}
+						onChange={setDeepLink}
+						isDisabled={disabled}
+					/>
 				</Section>
 			</BuilderContent>
 		</BuilderContainer>
