@@ -15,7 +15,6 @@ import {
 	AllowedMethods,
 	CachedMethods,
 	CachePolicy,
-	CfnDistribution,
 	Distribution,
 	HttpVersion,
 	OriginProtocolPolicy,
@@ -70,8 +69,6 @@ export interface FaciaToolProps extends GuStackProps {
 	 * object the instance is allowed to read.
 	 */
 	authDomain: string;
-	/** CloudFront alias for the static assets distribution. */
-	staticDomainName: string;
 	/** The front-pressed lambda's DynamoDB table, owned by another stack. */
 	frontPressedTable: string;
 	instanceType: string;
@@ -147,7 +144,6 @@ export class FaciaTool extends GuStack {
 		this.cloudFront({
 			parameter,
 			domainName: props.domainName,
-			staticDomainName: props.staticDomainName,
 			originDomainName: ec2App.loadBalancer.loadBalancerDnsName,
 		});
 
@@ -253,11 +249,6 @@ export class FaciaTool extends GuStack {
 				description: 'AWS account ID of Support',
 			},
 			{
-				name: 'StaticBucketName',
-				type: 'String',
-				description: 'Bucket containing static files',
-			},
-			{
 				name: 'CloudFrontCertificateArn',
 				type: 'String',
 				description:
@@ -306,20 +297,13 @@ export class FaciaTool extends GuStack {
 	private cloudFront({
 		parameter,
 		domainName,
-		staticDomainName,
 		originDomainName,
 	}: {
 		parameter: (name: string) => string;
 		domainName: string;
-		staticDomainName: string;
 		originDomainName: string;
 	}): void {
 		const certificateArn = parameter('CloudFrontCertificateArn');
-		const viewerCertificate = {
-			acmCertificateArn: certificateArn,
-			minimumProtocolVersion: 'TLSv1.2_2021',
-			sslSupportMethod: 'sni-only',
-		};
 
 		const distribution = new Distribution(this, 'FaciaCloudfront', {
 			domainNames: [domainName],
@@ -356,44 +340,10 @@ export class FaciaTool extends GuStack {
 			reason: 'Distribution previously defined in the YAML template',
 		});
 
-		const staticDistribution = new CfnDistribution(this, 'StaticCloudfront', {
-			distributionConfig: {
-				httpVersion: 'http2',
-				ipv6Enabled: true,
-				aliases: [staticDomainName],
-				origins: [
-					{
-						s3OriginConfig: { originAccessIdentity: '' },
-						domainName: `${parameter('StaticBucketName')}.s3.amazonaws.com`,
-						id: `static-${app}`,
-						originPath: `/${this.stage}/static-${app}`,
-					},
-				],
-				defaultRootObject: 'index.html',
-				defaultCacheBehavior: {
-					compress: true,
-					forwardedValues: { queryString: false },
-					targetOriginId: `static-${app}`,
-					viewerProtocolPolicy: 'redirect-to-https',
-				},
-				priceClass: 'PriceClass_All',
-				enabled: true,
-				viewerCertificate,
-			},
-		});
-		staticDistribution.overrideLogicalId('StaticCloudfront');
-
 		new GuCname(this, 'DnsRecord', {
 			app,
 			domainName,
 			resourceRecord: `${distribution.distributionDomainName}.`,
-			ttl: Duration.seconds(900),
-		});
-
-		new GuCname(this, 'StaticCloudFrontDnsRecord', {
-			app,
-			domainName: staticDomainName,
-			resourceRecord: `${staticDistribution.attrDomainName}.`,
 			ttl: Duration.seconds(900),
 		});
 	}
