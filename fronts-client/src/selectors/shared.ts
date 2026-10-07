@@ -146,6 +146,13 @@ const createSelectArticleFromCard = () =>
 				card.meta.headline ||
 				(externalArticle ? externalArticle.fields.headline : undefined);
 
+			const capiHeadlineField =
+				card.meta.capiHeadline ||
+				(externalArticle ? externalArticle.fields.headline : undefined);
+			const hasCapiHeadlineChanged = capiHeadlineField
+				? capiHeadlineField !== externalArticle?.fields.headline
+				: false;
+
 			const activeOrDraftTest = findActiveOrDraftTest(card);
 
 			const headlineFieldVariantA = getVariantHeadline(activeOrDraftTest, 'A');
@@ -157,6 +164,8 @@ const createSelectArticleFromCard = () =>
 				...omit(card, 'meta'),
 				...articleMeta,
 				headline: headlineField,
+				capiHeadline: capiHeadlineField,
+				hasCapiHeadlineChanged: hasCapiHeadlineChanged,
 				/**
 				 * Tests (and headline variant fields) are only persisted to the card
 				 * once the card is saved.
