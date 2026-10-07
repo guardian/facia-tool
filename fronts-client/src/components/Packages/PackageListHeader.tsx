@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { TextInput } from '@guardian/stand/TextInput';
 import { Button } from '@guardian/stand/Button';
 import { styled } from 'constants/theme';
-import type { FeastPackage, PackageVisibility } from 'types/Packages';
+import type { FeastPackageHeader, PackageVisibility } from 'types/Packages';
 
 const HeaderContainer = styled.div`
 	display: grid;
@@ -85,7 +85,7 @@ const ButtonGroup = styled.div`
 interface PackageListHeaderProps {
 	query: string;
 	onQueryChange: (query: string) => void;
-	searchResults: FeastPackage[];
+	searchResults: FeastPackageHeader[];
 	loading: boolean;
 	visibility: PackageVisibility;
 	onVisibilityChange: (visibility: PackageVisibility) => void;

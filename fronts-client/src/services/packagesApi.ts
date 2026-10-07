@@ -5,6 +5,7 @@ import { attemptFriendlyErrorMessage } from 'util/error';
 import type {
 	CreatePackageRequest,
 	FeastPackage,
+	FeastPackageHeader,
 	FeastPackageMetadata,
 	PackageItem,
 	PackageItemDisplay,
@@ -35,10 +36,9 @@ export const getHttpStatus = (error: unknown): number | undefined => {
 export async function fetchPackages(
 	title: string,
 	signal?: AbortSignal,
-): Promise<FeastPackage[]> {
+): Promise<FeastPackageHeader[]> {
 	const params = new URLSearchParams({
 		type: 'Feast',
-		full: 'true',
 		limit: '20',
 		order: 'updated',
 	});
@@ -52,7 +52,7 @@ export async function fetchPackages(
 		signal,
 	});
 
-	const body: { packages: FeastPackage[] } = await response.json();
+	const body: { packages: FeastPackageHeader[] } = await response.json();
 	return body.packages;
 }
 

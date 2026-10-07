@@ -15,6 +15,7 @@ import {
 } from 'services/packagesApi';
 import type {
 	FeastPackage,
+	FeastPackageHeader,
 	PackageEditorState,
 	PackageVisibility,
 	WritePackageRequest,
@@ -53,7 +54,7 @@ const RightPanel = styled.div`
 `;
 
 const ManageFeastPackages: React.FC = () => {
-	const [packages, setPackages] = useState<FeastPackage[]>([]);
+	const [packages, setPackages] = useState<FeastPackageHeader[]>([]);
 	const [editor, setEditor] = useState<PackageEditorState | null>(null);
 	const [visibility, setVisibility] = useState<PackageVisibility>('All');
 	const [query, setQuery] = useState('');
