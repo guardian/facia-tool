@@ -35,11 +35,23 @@ export class PackageNotFound extends PackageApiError {
 }
 
 export class PackageUnknownError extends PackageApiError {
-	readonly originalError: unknown;
+	readonly originalError?: Response;
+	readonly statusCode: number;
+	serverResponse?: string;
 
 	constructor(msg: string, originalError: unknown) {
 		super(msg);
-		this.originalError = originalError;
+		if (originalError instanceof Response) {
+			this.originalError = originalError;
+			this.statusCode = originalError.status;
+			this.serverResponse = undefined;
+			originalError.text().then((text) => {
+				this.serverResponse = text;
+			});
+		} else {
+			this.statusCode = 0;
+			this.serverResponse = String(originalError); //try to cast to STring if we don;'t know what it is
+		}
 	}
 }
 
@@ -268,7 +280,13 @@ export async function fetchPackageItemDisplays(
 }
 
 export async function packageErrorMessage(error: unknown): Promise<string> {
-	if (error instanceof Response) {
+	if (error instanceof PackageNotFound) {
+		return 'That package does not exist any more. It may have been removed by another user.';
+	} else if (error instanceof PackageCreateConflict) {
+		return 'A package with that ID was created by another session';
+	} else if (error instanceof PackageUnknownError) {
+		return `An unexpected error occurred; the server returned ${error.statusCode} ${error.serverResponse ?? 'nothing'}`;
+	} else if (error instanceof Response) {
 		const body = await error.text();
 
 		if (body) {
