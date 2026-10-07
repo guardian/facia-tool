@@ -3,9 +3,9 @@ import { styled } from '../../constants/theme';
 import { Button } from '@guardian/stand/Button';
 import { FeastPackageHeader } from '../../types/Packages';
 import { Typography } from '@guardian/stand/Typography';
-import { Badge } from '@guardian/stand/Badge';
 import { Avatar } from '@guardian/stand/Avatar';
 import { format as formatDate } from 'date-fns';
+import { VisibilityBadge } from './VisibilityBadge';
 
 const PackageCardStyle = styled.div`
 	border: 1px solid #ddd;
@@ -98,10 +98,9 @@ export const PackageCard: React.FC<PackageCardProps> = ({
 					)}
 
 					<li style={{ marginTop: '0.4em', marginBottom: '0.4em' }}>
-						<Badge size="sm" color={pkg.isHidden ? 'grey' : 'green'}>
-							{pkg.isHidden ? 'Hidden' : 'Visible'}
-						</Badge>
+						<VisibilityBadge isHidden={pkg.isHidden} />
 					</li>
+
 					<li>
 						{pkg.createdBy &&
 						(!pkg.updatedOn || pkg.updatedOn == pkg.createdOn) ? (
