@@ -3,7 +3,6 @@ import { Prompt } from 'react-router-dom';
 import v4 from 'uuid/v4';
 import { styled } from 'constants/theme';
 import { RecipeSearchContainer } from 'components/feed/RecipeSearchContainer';
-import { Typography } from '@guardian/stand/Typography';
 import notifications from 'services/notifications';
 import {
 	createPackage,
@@ -24,11 +23,14 @@ import type {
 import PackageCollectionBuilder from './PackageCollectionBuilder';
 import PackageListHeader from './PackageListHeader';
 import PackageListView from './PackageListView';
+import { Button } from '@guardian/stand/Button';
 
 const PageContainer = styled.div`
 	display: flex;
 	flex-direction: column;
-	height: calc(100vh - 80px);
+	position: relative;
+	top: 60px;
+	height: calc(100vh - 60px);
 	background-color: #f5f5f5;
 `;
 
@@ -349,9 +351,6 @@ const ManageFeastPackages: React.FC = () => {
 
 			<ContentWrapper>
 				<LeftPanel>
-					<Typography element="h3" variant="headingSm">
-						SEARCH LIBRARY
-					</Typography>
 					<RecipeSearchContainer />
 				</LeftPanel>
 
@@ -397,12 +396,9 @@ const ManageFeastPackages: React.FC = () => {
 					) : loading ? (
 						<p role="status">Loading packages...</p>
 					) : error ? (
-						<button
-							type="button"
-							onClick={() => setRefreshVersion((version) => version + 1)}
-						>
+						<Button onClick={() => setRefreshVersion((version) => version + 1)}>
 							Retry
-						</button>
+						</Button>
 					) : (
 						<PackageListView
 							packages={filteredPackages}

@@ -4,38 +4,14 @@ import { Button } from '@guardian/stand/Button';
 import { styled } from 'constants/theme';
 import type { FeastPackageHeader, PackageVisibility } from 'types/Packages';
 
-const HeaderContainer = styled.div`
-	display: grid;
-	align-items: center;
-	gap: 15px;
-	padding: 15px 20px;
-	background: white;
-	border-bottom: 1px solid #ddd;
-	justify-content: space-between;
-	flex-shrink: 0;
-`;
-
-const Title = styled.h1`
-	margin: 0;
-	font-size: 24px;
-	display: inline-flex;
-	align-items: center;
-	gap: 10px;
-	white-space: nowrap;
-`;
-
-const StatusIndicator = styled.span`
-	color: #d00;
-	font-size: 14px;
-	font-weight: normal;
-`;
-
 const ControlsContainer = styled.div`
 	display: inline-flex;
 	align-items: center;
 	gap: 10px;
-	flex: 1;
-	margin-left: 20px;
+	justify-content: space-between;
+	padding: 1em;
+	background: white;
+	border-bottom: 1px solid #ddd;
 	flex-wrap: wrap;
 `;
 
@@ -114,88 +90,69 @@ const PackageListHeader: React.FC<PackageListHeaderProps> = ({
 	const [showDropdown, setShowDropdown] = useState(false);
 
 	return (
-		<HeaderContainer>
-			<Title>
-				Manage Feast Packages
-				{hasUnsavedChanges && (
-					<StatusIndicator>(Unsaved changes)</StatusIndicator>
+		<ControlsContainer>
+			<SearchDropdownContainer>
+				<TextInput
+					placeholder="Search package names"
+					value={query}
+					onChange={(value) => {
+						onQueryChange(value);
+						setShowDropdown(true);
+					}}
+					onFocus={() => setShowDropdown(true)}
+					isDisabled={disabled}
+				/>
+
+				{showDropdown && query.trim() && (
+					<DropdownMenu>
+						{loading ? (
+							<p role="status">Searching...</p>
+						) : searchResults.length === 0 ? (
+							<p>No matching packages.</p>
+						) : (
+							searchResults.map((pkg) => (
+								<DropdownItem key={pkg.id}>
+									<Button
+										size="sm"
+										variant="secondary"
+										isDisabled={disabled}
+										onPress={() => {
+											setShowDropdown(false);
+											onPackageSelected(pkg.id);
+										}}
+									>
+										{pkg.name} ({pkg.isHidden ? 'Hidden' : 'Visible'})
+									</Button>
+								</DropdownItem>
+							))
+						)}
+					</DropdownMenu>
 				)}
-			</Title>
+			</SearchDropdownContainer>
 
-			<ControlsContainer>
-				<SearchDropdownContainer>
-					<TextInput
-						label="Find package"
-						placeholder="Search package names"
-						value={query}
-						onChange={(value) => {
-							onQueryChange(value);
-							setShowDropdown(true);
-						}}
-						onFocus={() => setShowDropdown(true)}
+			<ButtonGroup>
+				{visibilityOptions.map((option) => (
+					<Button
+						key={option}
+						size="sm"
+						variant={visibility === option ? 'primary' : 'secondary'}
 						isDisabled={disabled}
-					/>
+						onPress={() => onVisibilityChange(option)}
+					>
+						{option}
+					</Button>
+				))}
+			</ButtonGroup>
 
-					{showDropdown && query.trim() && (
-						<DropdownMenu>
-							{loading ? (
-								<p role="status">Searching...</p>
-							) : searchResults.length === 0 ? (
-								<p>No matching packages.</p>
-							) : (
-								searchResults.map((pkg) => (
-									<DropdownItem key={pkg.id}>
-										<Button
-											size="sm"
-											variant="secondary"
-											isDisabled={disabled}
-											onPress={() => {
-												setShowDropdown(false);
-												onPackageSelected(pkg.id);
-											}}
-										>
-											{pkg.name} ({pkg.isHidden ? 'Hidden' : 'Visible'})
-										</Button>
-									</DropdownItem>
-								))
-							)}
-						</DropdownMenu>
-					)}
-				</SearchDropdownContainer>
-
-				<ButtonGroup>
-					{visibilityOptions.map((option) => (
-						<Button
-							key={option}
-							size="sm"
-							variant={visibility === option ? 'primary' : 'secondary'}
-							isDisabled={disabled}
-							onPress={() => onVisibilityChange(option)}
-						>
-							{option}
-						</Button>
-					))}
-				</ButtonGroup>
-
-				<Button
-					size="md"
-					variant="primary"
-					isDisabled={disabled}
-					onPress={onCreateNewPackage}
-				>
-					+ New Package
-				</Button>
-
-				<Button
-					size="sm"
-					variant="secondary"
-					isDisabled={disabled}
-					onPress={onClose}
-				>
-					Close
-				</Button>
-			</ControlsContainer>
-		</HeaderContainer>
+			<Button
+				size="md"
+				variant="primary"
+				isDisabled={disabled}
+				onPress={onCreateNewPackage}
+			>
+				+ New Package
+			</Button>
+		</ControlsContainer>
 	);
 };
 
