@@ -31,6 +31,7 @@ export interface TargetedPage {
 
 export interface CustomSubnavHeader {
 	headerText: string;
+	hideHeader: boolean;
 	dotcomPath?: string;
 	copy: string;
 }
