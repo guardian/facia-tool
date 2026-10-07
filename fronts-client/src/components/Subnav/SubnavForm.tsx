@@ -25,7 +25,7 @@ import { TextInput } from '@guardian/stand/TextInput';
 import { TextArea } from '@guardian/stand/TextArea';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
-import { Checkbox } from '@guardian/stand/Checkbox';
+import { ToggleSwitch } from '@guardian/stand/ToggleSwitch';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
@@ -175,8 +175,8 @@ const SubnavForm = ({
 	const [headerText, setHeaderText] = useState(
 		initialSubnav?.header.headerText ?? '',
 	);
-	const [hideHeader, setHideHeader] = useState(
-		initialSubnav?.header.hideHeader ?? false,
+	const [showHeaderText, setShowHeaderText] = useState(
+		initialSubnav?.header.showHeaderText !== false,
 	);
 	const [headerCopy, setHeaderCopy] = useState(
 		initialSubnav?.header.copy ?? '',
@@ -349,7 +349,7 @@ const SubnavForm = ({
 			id: subnavId.current,
 			header: {
 				headerText: headerText.trim(),
-				hideHeader: hideHeader,
+				showHeaderText,
 				dotcomPath: headerDotcomPath.trim() || undefined,
 				copy: headerCopy.trim(),
 			},
@@ -487,10 +487,11 @@ const SubnavForm = ({
 									onChange={setHeaderDotcomPath}
 									placeholder="e.g. politics/uk-election-2024"
 								/>
-								<Checkbox
-									name="Hide Header"
-									isSelected={hideHeader}
-									onChange={setHideHeader}
+								<ToggleSwitch
+									children="Header text display"
+									description="Show header text"
+									isSelected={showHeaderText}
+									onChange={setShowHeaderText}
 								/>
 							</RowFields>
 						</CreateFormSection>
