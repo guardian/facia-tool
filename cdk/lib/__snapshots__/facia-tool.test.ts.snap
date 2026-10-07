@@ -7,15 +7,15 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
     "gu:cdk:constructs": [
       "GuDistributionBucketParameter",
       "GuPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
       "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuAllowPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
@@ -1711,6 +1711,150 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               },
             },
             {
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:Query",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:Scan",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":dynamodb:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":table/",
+                    {
+                      "Ref": "FrontsUserDataDynamoTable",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:Query",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":dynamodb:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":table/front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::published-editions-code/*",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::preview-editions-code/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Ref": "FrontsUpdateSNSTopic",
+                },
+                {
+                  "Ref": "FeastPublicationTopic",
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store/CODE/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "SwitchboardBucket",
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CapiPreviewRole",
+              },
+            },
+            {
               "Action": "s3:GetObject",
               "Effect": "Allow",
               "Resource": [
@@ -1754,35 +1898,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             },
             {
               "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:Scan",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":dynamodb:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":table/",
-                    {
-                      "Ref": "FrontsUserDataDynamoTable",
-                    },
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
                 "ec2:DescribeTags",
                 "ec2:DescribeInstances",
                 "autoscaling:DescribeAutoScalingGroups",
@@ -1791,87 +1906,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               ],
               "Effect": "Allow",
               "Resource": "*",
-            },
-            {
-              "Action": "s3:PutObject",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::published-editions-code/*",
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::preview-editions-code/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": "sns:Publish",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "FrontsUpdateSNSTopic",
-              },
-              "Sid": "AllowPublishToMyTopic",
-            },
-            {
-              "Action": "sns:Publish",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "FeastPublicationTopic",
-              },
-            },
-            {
-              "Action": [
-                "s3:GetObject",
-                "s3:PutObject",
-                "s3:PutObjectAcl",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":s3:::facia-tool-store/CODE/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": "s3:ListBucket",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":s3:::facia-tool-store",
-                  ],
-                ],
-              },
             },
             {
               "Action": "s3:GetObject",
@@ -1927,43 +1961,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       "Ref": "AWS::Partition",
                     },
                     ":s3:::permissions-cache/CODE/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "CapiPreviewRole",
-              },
-            },
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "SwitchboardBucket",
-              },
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":dynamodb:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":table/front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU",
                   ],
                 ],
               },
@@ -2815,15 +2812,15 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
     "gu:cdk:constructs": [
       "GuDistributionBucketParameter",
       "GuPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
       "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuAllowPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
