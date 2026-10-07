@@ -16,6 +16,33 @@ const jsonHeaders = {
 	'Content-Type': 'application/json',
 };
 
+export class PackageApiError extends Error {
+	constructor(msg: string) {
+		super(msg);
+	}
+}
+
+export class PackageCreateConflict extends PackageApiError {
+	constructor(msg: string) {
+		super(msg);
+	}
+}
+
+export class PackageNotFound extends PackageApiError {
+	constructor(msg: string) {
+		super(msg);
+	}
+}
+
+export class PackageUnknownError extends PackageApiError {
+	readonly originalError: unknown;
+
+	constructor(msg: string, originalError: unknown) {
+		super(msg);
+		this.originalError = originalError;
+	}
+}
+
 export const getHttpStatus = (error: unknown): number | undefined => {
 	if (typeof error !== 'object' || error === null) {
 		return undefined;
@@ -71,10 +98,10 @@ export async function fetchPackage(
 		return await response.json();
 	} catch (error: unknown) {
 		if (getHttpStatus(error) === 404) {
-			return undefined;
+			throw new PackageNotFound(`No package exists with id ${id}`);
 		}
 
-		throw error;
+		throw new PackageUnknownError('An unexpected error occurred', error);
 	}
 }
 
@@ -82,31 +109,26 @@ export async function createPackage(
 	request: CreatePackageRequest,
 ): Promise<void> {
 	try {
-		const response = await pandaFetch('/packages', {
+		await pandaFetch('/packages', {
 			method: 'POST',
 			headers: jsonHeaders,
 			body: JSON.stringify(request),
 		});
-
-		if (response.status === 409) {
-			throw response;
-		}
-	} catch (error: unknown) {
+	} catch (error) {
 		if (getHttpStatus(error) === 409) {
-			throw Object.assign(
-				new Error('The package could not be created because of a conflict.'),
-				{ status: 409 },
+			throw new PackageCreateConflict(
+				`A package with id ${request.id} already exists`,
 			);
 		}
 
-		throw error;
+		throw new PackageUnknownError('An unexpected error occurred', error);
 	}
 }
 
 export async function writePackage(
 	id: string,
 	request: WritePackageRequest,
-): Promise<FeastPackage | undefined> {
+): Promise<FeastPackage> {
 	try {
 		const response = await pandaFetch(`/packages/${encodeURIComponent(id)}`, {
 			method: 'PUT',
@@ -114,17 +136,13 @@ export async function writePackage(
 			body: JSON.stringify(request),
 		});
 
-		if (response.status === 404) {
-			return undefined;
-		}
-
 		return await response.json();
 	} catch (error: unknown) {
 		if (getHttpStatus(error) === 404) {
-			return undefined;
+			throw new PackageNotFound(`Package with id ${id} does not exist`);
 		}
 
-		throw error;
+		throw new PackageUnknownError('An unexpected error occurred', error);
 	}
 }
 
@@ -140,12 +158,10 @@ export async function updatePackageName(
 		});
 	} catch (error: unknown) {
 		if (getHttpStatus(error) === 404) {
-			throw Object.assign(new Error('The package could not be found.'), {
-				status: 404,
-			});
+			throw new PackageNotFound(`Package with id ${id} does not exist`);
 		}
 
-		throw error;
+		throw new PackageUnknownError('An unexpected error occurred', error);
 	}
 }
 
@@ -164,12 +180,10 @@ export async function updatePackageMetadata(
 		});
 	} catch (error: unknown) {
 		if (getHttpStatus(error) === 404) {
-			throw Object.assign(new Error('The package could not be found.'), {
-				status: 404,
-			});
+			throw new PackageNotFound(`Package with id ${id} does not exist`);
 		}
 
-		throw error;
+		throw new PackageUnknownError('An unexpected error occurred', error);
 	}
 }
 
@@ -184,12 +198,10 @@ export async function updatePackageHiddenState(
 		);
 	} catch (error: unknown) {
 		if (getHttpStatus(error) === 404) {
-			throw Object.assign(new Error('The package could not be found.'), {
-				status: 404,
-			});
+			throw new PackageNotFound(`Package with id ${id} does not exist`);
 		}
 
-		throw error;
+		throw new PackageUnknownError('An unexpected error occurred', error);
 	}
 }
 

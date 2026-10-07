@@ -10,6 +10,8 @@ import {
 	fetchPackage,
 	fetchPackages,
 	packageErrorMessage,
+	PackageNotFound,
+	PackageUnknownError,
 	publishPackage,
 	writePackage,
 } from 'services/packagesApi';
@@ -18,7 +20,6 @@ import type {
 	FeastPackageHeader,
 	PackageEditorState,
 	PackageVisibility,
-	WritePackageRequest,
 } from 'types/Packages';
 import PackageCollectionBuilder from './PackageCollectionBuilder';
 import PackageListHeader from './PackageListHeader';
@@ -233,6 +234,35 @@ const ManageFeastPackages: React.FC = () => {
 		);
 	};
 
+	const robustWrite = async (value: FeastPackage, attempt: number = 0) => {
+		if (attempt > 3) {
+			console.error('Could not write after 3 attempts, giving up');
+			throw new PackageUnknownError('Could not write after 3 attempts', null);
+		}
+
+		try {
+			return await writePackage(value.id, {
+				name: value.name.trim(),
+				packageType: 'Feast',
+				isHidden: value.isHidden,
+				metadata: value.metadata,
+				items: value.items,
+			});
+		} catch (err) {
+			if (err instanceof PackageNotFound) {
+				// The package does not exist yet, so create it
+				await createPackage({
+					id: value.id,
+					name: value.name.trim(),
+					packageType: 'Feast',
+					isHidden: value.isHidden,
+				});
+				return await robustWrite(value, attempt + 1);
+			} else {
+				throw err;
+			}
+		}
+	};
 	const handleSave = async () => {
 		if (!editor || busyRef.current) {
 			return;
@@ -248,40 +278,8 @@ const ManageFeastPackages: React.FC = () => {
 		updateBusy(true);
 		setError(null);
 
-		const value = editor.value;
-
-		const request: WritePackageRequest = {
-			name: value.name.trim(),
-			packageType: 'Feast',
-			isHidden: value.isHidden,
-			metadata: value.metadata,
-			items: value.items,
-		};
-
 		try {
-			if (!editor.isPersisted) {
-				await createPackage({
-					id: value.id,
-					name: request.name,
-					packageType: 'Feast',
-					isHidden: request.isHidden,
-					metadata: request.metadata,
-				});
-
-				// A failed PUT must retry the update, not recreate this UUID.
-				setEditor((current) =>
-					current ? { ...current, isPersisted: true } : current,
-				);
-
-				setRefreshVersion((version) => version + 1);
-			}
-
-			const saved = await writePackage(value.id, request);
-
-			if (saved === undefined) {
-				setError('Package not found.');
-				return;
-			}
+			const saved = await robustWrite(editor.value);
 
 			setEditor({
 				value: saved,
@@ -329,7 +327,7 @@ const ManageFeastPackages: React.FC = () => {
 			await publishPackage(editor.value.id);
 
 			setPublishMessage(
-				'Publication submitted. Feast may take time to process the update.',
+				'Publication submitted. It may take up to 30mins to show in the app.',
 			);
 		} catch (requestError) {
 			await reportError(requestError);

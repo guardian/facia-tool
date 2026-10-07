@@ -103,9 +103,17 @@ export const PackageCard: React.FC<PackageCardProps> = ({
 						</Badge>
 					</li>
 					<li>
-						<Typography variant="bodyItalicSm">
-							Created by {pkg.createdBy} at {createdOn}
-						</Typography>
+						{pkg.createdBy &&
+						(!pkg.updatedOn || pkg.updatedOn == pkg.createdOn) ? (
+							<Typography variant="bodyItalicSm">
+								Created by {pkg.createdBy} at {createdOn}
+							</Typography>
+						) : undefined}
+						{pkg.updatedOn && pkg.updatedOn != pkg.createdOn ? (
+							<Typography variant="bodyItalicSm">
+								Last updated by {pkg.createdBy} at {createdOn}
+							</Typography>
+						) : undefined}
 					</li>
 				</ul>
 			</PackageInfo>
