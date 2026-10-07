@@ -5,6 +5,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
   "Description": "Facia Tool Service",
   "Metadata": {
     "gu:cdk:constructs": [
+      "GuVpcParameter",
       "GuDistributionBucketParameter",
       "GuPolicy",
       "GuPolicy",
@@ -22,6 +23,8 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "GuAllowPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
+      "GuSubnetListParameter",
+      "GuSubnetListParameter",
       "GuEc2App",
       "GuCertificate",
       "GuInstanceRole",
@@ -163,12 +166,14 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Type": "String",
     },
     "PrivateSubnets": {
-      "Description": "The private subnets of the new VPC for the autoscaling group",
-      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "PublicSubnets": {
-      "Description": "The public subnets of the new VPC for the loadbalancer",
-      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Default": "/account/vpc/primary/subnets/public",
+      "Description": "A list of public subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "StaticBucketName": {
       "Description": "Bucket containing static files",
@@ -188,8 +193,9 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Type": "String",
     },
     "VpcId": {
-      "Description": "The new VPC we look to migrate to",
-      "Type": "AWS::EC2::VPC::Id",
+      "Default": "/account/vpc/primary/id",
+      "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
   },
   "Resources": {
@@ -305,32 +311,9 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             "Ref": "TargetGroupFaciatool7B903AE5",
           },
         ],
-        "VPCZoneIdentifier": [
-          {
-            "Fn::Select": [
-              0,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              1,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              2,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-        ],
+        "VPCZoneIdentifier": {
+          "Ref": "PrivateSubnets",
+        },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
     },
@@ -1191,32 +1174,9 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             ],
           },
         ],
-        "Subnets": [
-          {
-            "Fn::Select": [
-              0,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              1,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              2,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-        ],
+        "Subnets": {
+          "Ref": "PublicSubnets",
+        },
         "Tags": [
           {
             "Key": "App",
@@ -2803,6 +2763,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
   "Description": "Facia Tool Service",
   "Metadata": {
     "gu:cdk:constructs": [
+      "GuVpcParameter",
       "GuDistributionBucketParameter",
       "GuPolicy",
       "GuPolicy",
@@ -2820,6 +2781,8 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "GuAllowPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
+      "GuSubnetListParameter",
+      "GuSubnetListParameter",
       "GuEc2App",
       "GuCertificate",
       "GuInstanceRole",
@@ -2961,12 +2924,14 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Type": "String",
     },
     "PrivateSubnets": {
-      "Description": "The private subnets of the new VPC for the autoscaling group",
-      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "PublicSubnets": {
-      "Description": "The public subnets of the new VPC for the loadbalancer",
-      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Default": "/account/vpc/primary/subnets/public",
+      "Description": "A list of public subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "StaticBucketName": {
       "Description": "Bucket containing static files",
@@ -2986,8 +2951,9 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Type": "String",
     },
     "VpcId": {
-      "Description": "The new VPC we look to migrate to",
-      "Type": "AWS::EC2::VPC::Id",
+      "Default": "/account/vpc/primary/id",
+      "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
   },
   "Resources": {
@@ -3103,32 +3069,9 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             "Ref": "TargetGroupFaciatool7B903AE5",
           },
         ],
-        "VPCZoneIdentifier": [
-          {
-            "Fn::Select": [
-              0,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              1,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              2,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-        ],
+        "VPCZoneIdentifier": {
+          "Ref": "PrivateSubnets",
+        },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
     },
@@ -3989,32 +3932,9 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             ],
           },
         ],
-        "Subnets": [
-          {
-            "Fn::Select": [
-              0,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              1,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              2,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-        ],
+        "Subnets": {
+          "Ref": "PublicSubnets",
+        },
         "Tags": [
           {
             "Key": "App",
