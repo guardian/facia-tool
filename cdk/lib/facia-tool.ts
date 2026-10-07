@@ -50,6 +50,12 @@ interface SharedAccessTargets {
 export interface FaciaToolProps extends GuStackProps {
 	/** Must match the `Host` header CloudFront forwards to the origin. */
 	domainName: string;
+	/**
+	 * The pan-domain the tool authenticates against — `domainName` without the `fronts.` prefix.
+	 * Must match `pandomain.domain` in the application secrets, because it names the settings
+	 * object the instance is allowed to read.
+	 */
+	authDomain: string;
 	/** CloudFront alias for the static assets distribution. */
 	staticDomainName: string;
 	/** The front-pressed lambda's DynamoDB table, owned by another stack. */
@@ -115,6 +121,7 @@ export class FaciaTool extends GuStack {
 				frontendRoleToAssume,
 				frontPressedTable,
 				lowerCaseStage,
+				authDomain: props.authDomain,
 				userDataTableName: userDataTable.tableName,
 				frontsUpdateTopicArn: frontsUpdateTopic.topicArn,
 				feastPublicationTopicArn: feastPublicationTopic.topicArn,
@@ -607,10 +614,6 @@ export class FaciaTool extends GuStack {
 						this.bucketArn('pan-domain-auth-settings', '*.p12'),
 					],
 				),
-				allow(
-					['s3:GetObject'],
-					[this.bucketArn('permissions-cache', `${this.stage}/*`)],
-				),
 			],
 		});
 		this.overrideLogicalId(policy, {
@@ -743,6 +746,13 @@ EOF`,
 
 			SwitchesPolicy: [allow(['s3:GetObject'], [switchboardBucket])],
 
+			PermissionsPolicy: [
+				allow(
+					['s3:GetObject'],
+					[this.bucketArn('permissions-cache', `${this.stage}/*`)],
+				),
+			],
+
 			AssumeCapiPreviewRolePolicy: [
 				allow(['sts:AssumeRole'], [capiPreviewRole]),
 			],
@@ -750,16 +760,26 @@ EOF`,
 	}
 
 	private applicationPolicies(
-		targets: SharedAccessTargets & { frontendRoleToAssume: string },
+		targets: SharedAccessTargets & {
+			frontendRoleToAssume: string;
+			authDomain: string;
+		},
 	): GuPolicy[] {
 		return [
 			...Object.entries(this.sharedAccess(targets)).map(
 				([id, statements]) => new GuPolicy(this, id, { statements }),
 			),
 
+			// The one object user data copies at boot. The bucket also holds other applications'
+			// secrets, which facia-tool has no business reading.
 			new GuAllowPolicy(this, 'PrivateConfigPolicy', {
 				actions: ['s3:GetObject'],
-				resources: [this.bucketArn('facia-private', '*')],
+				resources: [
+					this.bucketArn(
+						'facia-private',
+						`${app}.application.secrets.${this.stage}.conf`,
+					),
+				],
 			}),
 
 			new GuAllowPolicy(this, 'SendEmailPolicy', {
@@ -773,14 +793,15 @@ EOF`,
 				resources: ['*'],
 			}),
 
+			// PanDomainAuthSettingsRefresher reads `<domain>.settings` and nothing else.
 			new GuAllowPolicy(this, 'PanDomainPolicy', {
 				actions: ['s3:GetObject'],
-				resources: [this.bucketArn('pan-domain-auth-settings', '*')],
-			}),
-
-			new GuAllowPolicy(this, 'PermissionsPolicy', {
-				actions: ['s3:GetObject'],
-				resources: [this.bucketArn('permissions-cache', '*')],
+				resources: [
+					this.bucketArn(
+						'pan-domain-auth-settings',
+						`${targets.authDomain}.settings`,
+					),
+				],
 			}),
 
 			new GuAllowPolicy(this, 'CloudwatchPolicy', {

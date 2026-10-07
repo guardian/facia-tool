@@ -15,7 +15,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "GuPolicy",
       "GuPolicy",
       "GuPolicy",
-      "GuAllowPolicy",
+      "GuPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
@@ -1358,7 +1358,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":s3:::pan-domain-auth-settings/*",
+                    ":s3:::pan-domain-auth-settings/code.dev-gutools.co.uk.settings",
                   ],
                 ],
               },
@@ -1487,7 +1487,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":s3:::permissions-cache/*",
+                    ":s3:::permissions-cache/CODE/*",
                   ],
                 ],
               },
@@ -1558,7 +1558,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":s3:::facia-private/*",
+                    ":s3:::facia-private/facia-tool.application.secrets.CODE.conf",
                   ],
                 ],
               },
@@ -1839,6 +1839,22 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               },
             },
             {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::permissions-cache/CODE/*",
+                  ],
+                ],
+              },
+            },
+            {
               "Action": "sts:AssumeRole",
               "Effect": "Allow",
               "Resource": {
@@ -1939,22 +1955,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                   ],
                 },
               ],
-            },
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":s3:::permissions-cache/CODE/*",
-                  ],
-                ],
-              },
             },
           ],
           "Version": "2012-10-17",
@@ -2811,7 +2811,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "GuPolicy",
       "GuPolicy",
       "GuPolicy",
-      "GuAllowPolicy",
+      "GuPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
@@ -4154,7 +4154,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":s3:::pan-domain-auth-settings/*",
+                    ":s3:::pan-domain-auth-settings/gutools.co.uk.settings",
                   ],
                 ],
               },
@@ -4283,7 +4283,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":s3:::permissions-cache/*",
+                    ":s3:::permissions-cache/PROD/*",
                   ],
                 ],
               },
@@ -4354,7 +4354,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":s3:::facia-private/*",
+                    ":s3:::facia-private/facia-tool.application.secrets.PROD.conf",
                   ],
                 ],
               },
