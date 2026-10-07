@@ -491,7 +491,7 @@ const SubnavForm = ({
 									children="Header text display"
 									description="Show header text"
 									isSelected={showHeaderText}
-									onChange={setShowHeaderText}
+									onChange={(isSelected) => setShowHeaderText(isSelected)}
 								/>
 							</RowFields>
 						</CreateFormSection>
