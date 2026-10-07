@@ -233,16 +233,18 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 	return typeof value === 'object' && value !== null;
 }
 
-// function parseRegions(value: string): string[] {
-// 	return Array.from(
-// 		new Set(
-// 			value
-// 				.split(',')
-// 				.map((region) => region.trim())
-// 				.filter((region) => region.length > 0),
-// 		),
-// 	);
-// }
+/*Dropping these controls for the time being, as they are not respected by the backend and are not user friendly. We'll implement them in a follow-up
+function parseRegions(value: string): string[] {
+	return Array.from(
+		new Set(
+			value
+				.split(',')
+				.map((region) => region.trim())
+				.filter((region) => region.length > 0),
+		),
+	);
+}
+ */
 
 const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	package: pkg,
@@ -264,7 +266,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	const [displayRefresh, setDisplayRefresh] = useState(0);
 	const [deepLink, setDeepLink] = useState('');
 
-	// const [targetedRegions, setTargetedRegions] = useState(
+	// const [targetedRegions, setTargetedRegions] = useState( //Will implement in a follow-up, as the backend does not considering these fields yet
 	// 	pkg.metadata?.targetedRegions?.join(', ') ?? '',
 	// );
 	// const [excludedRegions, setExcludedRegions] = useState(
@@ -286,14 +288,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 				const references: Array<Pick<PackageItem, 'id' | 'cardType'>> =
 					JSON.parse(itemSignature);
 
-				const result = await fetchPackageItemDisplays(
-					references.map((item) => ({
-						...item,
-						addedOn: 0,
-					})),
-				);
-
-				//const result1 = await fetchPackageItemDisplays(references);
+				const result = await fetchPackageItemDisplays(references);
 
 				if (active) {
 					setDisplays(result);

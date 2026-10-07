@@ -200,7 +200,7 @@ export function packageItemKey(
 }
 
 export async function fetchPackageItemDisplays(
-	items: PackageItem[], //items: Array<Pick<PackageItem, "id" | "cardType">>,
+	items: Array<Pick<PackageItem, 'id' | 'cardType'>>, //items: Array<Pick<PackageItem, "id" | "cardType">>,
 ): Promise<Record<string, PackageItemDisplay>> {
 	const recipeIds = Array.from(
 		new Set(
