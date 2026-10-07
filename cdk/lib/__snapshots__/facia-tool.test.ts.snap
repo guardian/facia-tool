@@ -608,24 +608,21 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
           ],
           "DefaultCacheBehavior": {
             "AllowedMethods": [
-              "DELETE",
               "GET",
               "HEAD",
               "OPTIONS",
+              "PUT",
               "PATCH",
               "POST",
-              "PUT",
+              "DELETE",
+            ],
+            "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+            "CachedMethods": [
+              "GET",
+              "HEAD",
             ],
             "Compress": true,
-            "ForwardedValues": {
-              "Cookies": {
-                "Forward": "all",
-              },
-              "Headers": [
-                "*",
-              ],
-              "QueryString": true,
-            },
+            "OriginRequestPolicyId": "216adef6-5c7f-47e4-b989-5492eafa07d3",
             "TargetOriginId": "facia-tool",
             "ViewerProtocolPolicy": "redirect-to-https",
           },
@@ -638,6 +635,10 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               "CustomOriginConfig": {
                 "HTTPSPort": 443,
                 "OriginProtocolPolicy": "https-only",
+                "OriginSSLProtocols": [
+                  "SSLv3",
+                  "TLSv1",
+                ],
               },
               "DomainName": {
                 "Fn::GetAtt": [
@@ -3412,24 +3413,21 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
           ],
           "DefaultCacheBehavior": {
             "AllowedMethods": [
-              "DELETE",
               "GET",
               "HEAD",
               "OPTIONS",
+              "PUT",
               "PATCH",
               "POST",
-              "PUT",
+              "DELETE",
+            ],
+            "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+            "CachedMethods": [
+              "GET",
+              "HEAD",
             ],
             "Compress": true,
-            "ForwardedValues": {
-              "Cookies": {
-                "Forward": "all",
-              },
-              "Headers": [
-                "*",
-              ],
-              "QueryString": true,
-            },
+            "OriginRequestPolicyId": "216adef6-5c7f-47e4-b989-5492eafa07d3",
             "TargetOriginId": "facia-tool",
             "ViewerProtocolPolicy": "redirect-to-https",
           },
@@ -3442,6 +3440,10 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
               "CustomOriginConfig": {
                 "HTTPSPort": 443,
                 "OriginProtocolPolicy": "https-only",
+                "OriginSSLProtocols": [
+                  "SSLv3",
+                  "TLSv1",
+                ],
               },
               "DomainName": {
                 "Fn::GetAtt": [

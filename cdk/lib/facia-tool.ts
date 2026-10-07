@@ -10,7 +10,23 @@ import { GuSecurityGroup, GuVpc } from '@guardian/cdk/lib/constructs/ec2';
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
 import type { App, CfnParameterProps } from 'aws-cdk-lib';
 import { Aws, CfnOutput, CfnParameter, Duration, Fn, Tags } from 'aws-cdk-lib';
-import { CfnDistribution } from 'aws-cdk-lib/aws-cloudfront';
+import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
+import {
+	AllowedMethods,
+	CachedMethods,
+	CachePolicy,
+	CfnDistribution,
+	Distribution,
+	HttpVersion,
+	OriginProtocolPolicy,
+	OriginRequestPolicy,
+	OriginSslPolicy,
+	PriceClass,
+	SecurityPolicyProtocol,
+	SSLMethod,
+	ViewerProtocolPolicy,
+} from 'aws-cdk-lib/aws-cloudfront';
+import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import type { ISubnet } from 'aws-cdk-lib/aws-ec2';
 import {
@@ -284,9 +300,10 @@ export class FaciaTool extends GuStack {
 	}
 
 	/**
-	 * The two distributions are defined as L1 constructs so they keep the legacy `ForwardedValues`
-	 * cache settings, which the L2 `Distribution` construct cannot express. Moving them to cache
-	 * policies would change caching behaviour, so it is deliberately not part of this migration.
+	 * `FaciaCloudfront` is a pass-through, not a cache: the legacy `ForwardedValues` spelling of
+	 * `headers: ['*']` tells CloudFront not to cache at all. `StaticCloudfront` stays an L1 for
+	 * now — converting it is entangled with putting its bucket behind Origin Access Control,
+	 * which changes the origin anyway.
 	 */
 	private cloudFront({
 		parameter,
@@ -299,53 +316,49 @@ export class FaciaTool extends GuStack {
 		staticDomainName: string;
 		originDomainName: string;
 	}): void {
+		const certificateArn = parameter('CloudFrontCertificateArn');
 		const viewerCertificate = {
-			acmCertificateArn: parameter('CloudFrontCertificateArn'),
+			acmCertificateArn: certificateArn,
 			minimumProtocolVersion: 'TLSv1.2_2021',
 			sslSupportMethod: 'sni-only',
 		};
 
-		const distribution = new CfnDistribution(this, 'FaciaCloudfront', {
-			distributionConfig: {
-				httpVersion: 'http2',
-				ipv6Enabled: true,
-				aliases: [domainName],
-				origins: [
-					{
-						customOriginConfig: {
-							httpsPort: 443,
-							originProtocolPolicy: 'https-only',
-						},
-						domainName: originDomainName,
-						id: app,
-					},
-				],
-				defaultRootObject: 'v2',
-				defaultCacheBehavior: {
-					allowedMethods: [
-						'DELETE',
-						'GET',
-						'HEAD',
-						'OPTIONS',
-						'PATCH',
-						'POST',
-						'PUT',
-					],
-					compress: true,
-					forwardedValues: {
-						headers: ['*'],
-						queryString: true,
-						cookies: { forward: 'all' },
-					},
-					targetOriginId: app,
-					viewerProtocolPolicy: 'redirect-to-https',
-				},
-				priceClass: 'PriceClass_All',
-				enabled: true,
-				viewerCertificate,
+		const distribution = new Distribution(this, 'FaciaCloudfront', {
+			domainNames: [domainName],
+			certificate: Certificate.fromCertificateArn(
+				this,
+				'CloudFrontCertificate',
+				certificateArn,
+			),
+			minimumProtocolVersion: SecurityPolicyProtocol.TLS_V1_2_2021,
+			sslSupportMethod: SSLMethod.SNI,
+			defaultRootObject: 'v2',
+			httpVersion: HttpVersion.HTTP2,
+			enableIpv6: true,
+			priceClass: PriceClass.PRICE_CLASS_ALL,
+			enabled: true,
+			defaultBehavior: {
+				origin: new HttpOrigin(originDomainName, {
+					originId: app,
+					protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
+					httpsPort: 443,
+					// The live distribution's values. Tightening these is a separate change.
+					originSslProtocols: [OriginSslPolicy.SSL_V3, OriginSslPolicy.TLS_V1],
+				}),
+				allowedMethods: AllowedMethods.ALLOW_ALL,
+				cachedMethods: CachedMethods.CACHE_GET_HEAD,
+				compress: true,
+				viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
+				cachePolicy: CachePolicy.CACHING_DISABLED,
+				// ALL_VIEWER, not ALL_VIEWER_EXCEPT_HOST_HEADER: the ALB certificate and
+				// pan-domain auth both depend on the origin receiving the viewer's Host header.
+				originRequestPolicy: OriginRequestPolicy.ALL_VIEWER,
 			},
 		});
-		distribution.overrideLogicalId('FaciaCloudfront');
+		this.overrideLogicalId(distribution, {
+			logicalId: 'FaciaCloudfront',
+			reason: 'Distribution previously defined in the YAML template',
+		});
 
 		const staticDistribution = new CfnDistribution(this, 'StaticCloudfront', {
 			distributionConfig: {
@@ -377,7 +390,7 @@ export class FaciaTool extends GuStack {
 		new GuCname(this, 'DnsRecord', {
 			app,
 			domainName,
-			resourceRecord: `${distribution.attrDomainName}.`,
+			resourceRecord: `${distribution.distributionDomainName}.`,
 			ttl: Duration.seconds(900),
 		});
 
