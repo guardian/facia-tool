@@ -399,6 +399,17 @@ export class FaciaTool extends GuStack {
 		});
 	}
 
+	/**
+	 * Scopes `kms:Decrypt` to decryption performed on our behalf by Parameter Store. The only
+	 * thing we decrypt is the SecureString holding the database password, and it uses the
+	 * AWS-managed `aws/ssm` key, which has no stable ARN to name in a `Resource` element.
+	 */
+	private get viaSsmOnly(): Record<string, Record<string, string>> {
+		return {
+			StringEquals: { 'kms:ViaService': `ssm.${this.region}.amazonaws.com` },
+		};
+	}
+
 	private dynamoTableArn(tableName: string): string {
 		return this.formatArn({
 			service: 'dynamodb',
@@ -577,16 +588,12 @@ export class FaciaTool extends GuStack {
 						}),
 					],
 				),
-				allow(
-					['kms:Decrypt'],
-					[
-						this.formatArn({
-							service: 'kms',
-							resource: 'key',
-							resourceName: 'alias/aws/ssm',
-						}),
-					],
-				),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['kms:Decrypt'],
+					resources: ['*'],
+					conditions: this.viaSsmOnly,
+				}),
 				allow(
 					['sqs:ReceiveMessage', 'sqs:DeleteMessage'],
 					[
@@ -749,6 +756,7 @@ EOF`,
 						effect: Effect.ALLOW,
 						actions: ['kms:Decrypt'],
 						resources: ['*'],
+						conditions: this.viaSsmOnly,
 					}),
 				],
 			}),
