@@ -178,13 +178,6 @@ export class FaciaTool extends GuStack {
 			Omit<CfnParameterProps, 'type'> & { name: string; type: string }
 		> = [
 			{
-				name: 'Stage',
-				type: 'String',
-				description: 'Environment name',
-				allowedValues: ['CODE', 'PROD'],
-				default: 'PROD',
-			},
-			{
 				name: 'FrontendRoleToAssume',
 				type: 'String',
 				description: 'Frontend Role to assume for cross account policies',

@@ -170,15 +170,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Description": "The public subnets of the new VPC for the loadbalancer",
       "Type": "List<AWS::EC2::Subnet::Id>",
     },
-    "Stage": {
-      "AllowedValues": [
-        "CODE",
-        "PROD",
-      ],
-      "Default": "PROD",
-      "Description": "Environment name",
-      "Type": "String",
-    },
     "StaticBucketName": {
       "Description": "Bucket containing static files",
       "Type": "String",
@@ -2982,15 +2973,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
     "PublicSubnets": {
       "Description": "The public subnets of the new VPC for the loadbalancer",
       "Type": "List<AWS::EC2::Subnet::Id>",
-    },
-    "Stage": {
-      "AllowedValues": [
-        "CODE",
-        "PROD",
-      ],
-      "Default": "PROD",
-      "Description": "Environment name",
-      "Type": "String",
     },
     "StaticBucketName": {
       "Description": "Bucket containing static files",
