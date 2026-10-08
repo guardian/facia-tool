@@ -50,7 +50,9 @@ export const PackageCard: React.FC<PackageCardProps> = ({
 	onSelectPackage,
 }) => {
 	const createdByInitials: string = useMemo(() => {
-		const words = pkg.createdBy?.split(/\s+/);
+		const words = pkg.createdBy
+			?.split(/[\s.]+/)
+			.filter((w) => !!w && w.length > 0);
 		return words?.map((word) => word[0].toLocaleUpperCase()).join('') ?? '';
 	}, [pkg]);
 
@@ -65,7 +67,9 @@ export const PackageCard: React.FC<PackageCardProps> = ({
 	}, [pkg]);
 
 	const lastModifiedInitials: string = useMemo(() => {
-		const words = pkg.createdBy?.split(/\s+/);
+		const words = pkg.updatedBy
+			?.split(/[\s.]+/)
+			.filter((w) => !!w && w.length > 0);
 		return words?.map((word) => word[0].toLocaleUpperCase()).join('') ?? '';
 	}, [pkg]);
 
