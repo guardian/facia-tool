@@ -193,6 +193,13 @@ export const ColumnHeaderLabel = styled.span`
 	color: ${({ theme }) => theme.base.colors.textDark};
 `;
 
+export const ColumnText = styled.span`
+	flex: 1;
+	font-size: 13px;
+	font-weight: 600;
+	color: ${({ theme }) => theme.base.colors.textDark};
+`;
+
 export const DragHandle = styled.div`
 	display: flex;
 	align-items: center;

@@ -64,6 +64,8 @@ import {
 	ColumnHeaders,
 	ColumnHeadersSpacer,
 	ColumnHeaderLabel,
+	Field,
+	ColumnText,
 } from './styles';
 
 interface SubnavFormProps {
@@ -487,12 +489,14 @@ const SubnavForm = ({
 									onChange={setHeaderDotcomPath}
 									placeholder="e.g. politics/uk-election-2024"
 								/>
-								<ToggleSwitch
-									children="Header text display"
-									description="Show header text"
-									isSelected={showHeaderText}
-									onChange={(isSelected) => setShowHeaderText(isSelected)}
-								/>
+								<Field>
+									<ColumnHeaderLabel>Header text display</ColumnHeaderLabel>
+									<ColumnText>Show header text</ColumnText>
+									<ToggleSwitch
+										isSelected={showHeaderText}
+										onChange={(isSelected) => setShowHeaderText(isSelected)}
+									/>
+								</Field>
 							</RowFields>
 						</CreateFormSection>
 						<CreateFormSection
