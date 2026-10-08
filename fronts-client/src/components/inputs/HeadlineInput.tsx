@@ -20,6 +20,7 @@ interface HeadlineInputProps {
 	onAbTestToggle?: EventWithDataHandler<React.ChangeEvent<any>>;
 	isClipboard: boolean;
 	frontId: string;
+	hasCapiHeadlineChanged: boolean;
 }
 
 const HeadlineInputContainer = styled('div')<{ abTestEnabled: boolean }>`
@@ -36,6 +37,13 @@ const ABTestToggleContainer = styled('div')`
 	position: absolute;
 	right: 8px;
 	top: 6px;
+`;
+
+const ChangedDot = styled('div')`
+	height: 20px;
+	width: 20px;
+	border-radius: 10px;
+	background-color: hotpink;
 `;
 
 const HeadlineVariantContainer = styled('div')`
@@ -79,6 +87,7 @@ const HeadlineInput = ({ ...props }: HeadlineInputProps) => {
 		<HeadlineInputContainer
 			abTestEnabled={props.abTestEnabled && isUSNetworkFront}
 		>
+			{props.hasCapiHeadlineChanged && <ChangedDot />}
 			{props.cardId && isUSNetworkFront && (
 				<ABTestToggleContainer>
 					<Field

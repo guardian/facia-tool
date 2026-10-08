@@ -593,6 +593,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 			collectionType,
 			form,
 			snapType,
+			hasCapiHeadlineChanged,
 		} = this.props;
 
 		const isEditionsMode = editMode === 'editions';
@@ -737,6 +738,7 @@ class FormComponent extends React.Component<Props, FormComponentState> {
 								onAbTestToggle={handleAbTestToggle}
 								isClipboard={frontId === clipboardId}
 								frontId={this.props.frontId}
+								hasCapiHeadlineChanged={hasCapiHeadlineChanged}
 							/>
 						)}
 						<CheckboxFieldsContainer
@@ -1307,6 +1309,7 @@ interface ContainerProps {
 	atomId: string;
 	replacementVideoAtom: Atom | undefined | string;
 	videoBaseUrl: string | null;
+	hasCapiHeadlineChanged: boolean;
 }
 
 interface InterfaceProps {
@@ -1403,6 +1406,7 @@ const createMapStateToProps = () => {
 			atomId: valueSelector(state, 'atomId'),
 			replacementVideoAtom: valueSelector(state, 'replacementVideoAtom'),
 			videoBaseUrl: selectVideoBaseUrl(state),
+			hasCapiHeadlineChanged: !!article && article.hasCapiHeadlineChanged,
 		};
 	};
 };
