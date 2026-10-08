@@ -50,19 +50,29 @@ export const PackageCard: React.FC<PackageCardProps> = ({
 	onSelectPackage,
 }) => {
 	const createdByInitials: string = useMemo(() => {
-		const words = pkg.createdBy
-			?.split(/[\s.]+/)
-			.filter((w) => !!w && w.length > 0);
-		return words?.map((word) => word[0].toLocaleUpperCase()).join('') ?? '';
+		try {
+			const words = pkg.createdBy
+				?.split(/[\s.]+/)
+				.filter((w) => !!w && w.length > 0);
+			return words?.map((word) => word[0].toLocaleUpperCase()).join('') ?? '';
+		} catch (err) {
+			console.error(`could not get created by initials: ${err}`);
+			return '';
+		}
 	}, [pkg]);
 
 	const createdOn: string = useMemo(() => {
-		if (!pkg.updatedOn) {
-			return pkg.createdOn
-				? formatDate(pkg.createdOn, 'HH:mm on ddd Do MMM YYYY')
-				: '';
-		} else {
-			return formatDate(pkg.updatedOn, 'HH:mm on ddd Do MMM YYYY');
+		try {
+			if (!pkg.updatedOn) {
+				return pkg.createdOn
+					? formatDate(pkg.createdOn, 'HH:mm on ddd Do MMM YYYY')
+					: '';
+			} else {
+				return formatDate(pkg.updatedOn, 'HH:mm on ddd Do MMM YYYY');
+			}
+		} catch (err) {
+			console.error(`could not get created by initials: ${err}`);
+			return '';
 		}
 	}, [pkg]);
 
