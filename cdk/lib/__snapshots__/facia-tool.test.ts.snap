@@ -1952,18 +1952,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings.public",
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
                       ":s3:::pan-domain-auth-settings/*.p12",
                     ],
                   ],

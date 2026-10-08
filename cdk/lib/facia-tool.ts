@@ -607,10 +607,6 @@ export class FaciaTool extends GuStack {
 							'pan-domain-auth-settings',
 							'local.dev-gutools.co.uk.settings',
 						),
-						this.bucketArn(
-							'pan-domain-auth-settings',
-							'local.dev-gutools.co.uk.settings.public',
-						),
 						this.bucketArn('pan-domain-auth-settings', '*.p12'),
 					],
 				),
