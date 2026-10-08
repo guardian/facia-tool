@@ -41,7 +41,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "GuAlb5xxPercentageAlarm",
       "GuUnhealthyInstancesAlarm",
       "GuCname",
-      "GuCname",
       "GuSecurityGroup",
     ],
     "gu:cdk:version": "TEST",
@@ -169,10 +168,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
     "PublicSubnets": {
       "Description": "The public subnets of the new VPC for the loadbalancer",
       "Type": "List<AWS::EC2::Subnet::Id>",
-    },
-    "StaticBucketName": {
-      "Description": "Bucket containing static files",
-      "Type": "String",
     },
     "SupportAccountID": {
       "Description": "AWS account ID of Support",
@@ -2027,99 +2022,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       },
       "Type": "AWS::IAM::Policy",
     },
-    "StaticCloudFrontDnsRecord": {
-      "Properties": {
-        "Name": "fronts-static.code.dev-gutools.co.uk",
-        "RecordType": "CNAME",
-        "ResourceRecords": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Fn::GetAtt": [
-                    "StaticCloudfront",
-                    "DomainName",
-                  ],
-                },
-                ".",
-              ],
-            ],
-          },
-        ],
-        "Stage": "CODE",
-        "TTL": 900,
-      },
-      "Type": "Guardian::DNS::RecordSet",
-    },
-    "StaticCloudfront": {
-      "Properties": {
-        "DistributionConfig": {
-          "Aliases": [
-            "fronts-static.code.dev-gutools.co.uk",
-          ],
-          "DefaultCacheBehavior": {
-            "Compress": true,
-            "ForwardedValues": {
-              "QueryString": false,
-            },
-            "TargetOriginId": "static-facia-tool",
-            "ViewerProtocolPolicy": "redirect-to-https",
-          },
-          "DefaultRootObject": "index.html",
-          "Enabled": true,
-          "HttpVersion": "http2",
-          "IPV6Enabled": true,
-          "Origins": [
-            {
-              "DomainName": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Ref": "StaticBucketName",
-                    },
-                    ".s3.amazonaws.com",
-                  ],
-                ],
-              },
-              "Id": "static-facia-tool",
-              "OriginPath": "/CODE/static-facia-tool",
-              "S3OriginConfig": {
-                "OriginAccessIdentity": "",
-              },
-            },
-          ],
-          "PriceClass": "PriceClass_All",
-          "ViewerCertificate": {
-            "AcmCertificateArn": {
-              "Ref": "CloudFrontCertificateArn",
-            },
-            "MinimumProtocolVersion": "TLSv1.2_2021",
-            "SslSupportMethod": "sni-only",
-          },
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "Stack",
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "Value": "CODE",
-          },
-        ],
-      },
-      "Type": "AWS::CloudFront::Distribution",
-    },
     "StorageBucket": {
       "Properties": {
         "PolicyDocument": {
@@ -2845,7 +2747,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "GuAlb5xxPercentageAlarm",
       "GuUnhealthyInstancesAlarm",
       "GuCname",
-      "GuCname",
       "GuSecurityGroup",
     ],
     "gu:cdk:version": "TEST",
@@ -2973,10 +2874,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
     "PublicSubnets": {
       "Description": "The public subnets of the new VPC for the loadbalancer",
       "Type": "List<AWS::EC2::Subnet::Id>",
-    },
-    "StaticBucketName": {
-      "Description": "Bucket containing static files",
-      "Type": "String",
     },
     "SupportAccountID": {
       "Description": "AWS account ID of Support",
@@ -4497,99 +4394,6 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
         ],
       },
       "Type": "AWS::IAM::Policy",
-    },
-    "StaticCloudFrontDnsRecord": {
-      "Properties": {
-        "Name": "fronts-static.gutools.co.uk",
-        "RecordType": "CNAME",
-        "ResourceRecords": [
-          {
-            "Fn::Join": [
-              "",
-              [
-                {
-                  "Fn::GetAtt": [
-                    "StaticCloudfront",
-                    "DomainName",
-                  ],
-                },
-                ".",
-              ],
-            ],
-          },
-        ],
-        "Stage": "PROD",
-        "TTL": 900,
-      },
-      "Type": "Guardian::DNS::RecordSet",
-    },
-    "StaticCloudfront": {
-      "Properties": {
-        "DistributionConfig": {
-          "Aliases": [
-            "fronts-static.gutools.co.uk",
-          ],
-          "DefaultCacheBehavior": {
-            "Compress": true,
-            "ForwardedValues": {
-              "QueryString": false,
-            },
-            "TargetOriginId": "static-facia-tool",
-            "ViewerProtocolPolicy": "redirect-to-https",
-          },
-          "DefaultRootObject": "index.html",
-          "Enabled": true,
-          "HttpVersion": "http2",
-          "IPV6Enabled": true,
-          "Origins": [
-            {
-              "DomainName": {
-                "Fn::Join": [
-                  "",
-                  [
-                    {
-                      "Ref": "StaticBucketName",
-                    },
-                    ".s3.amazonaws.com",
-                  ],
-                ],
-              },
-              "Id": "static-facia-tool",
-              "OriginPath": "/PROD/static-facia-tool",
-              "S3OriginConfig": {
-                "OriginAccessIdentity": "",
-              },
-            },
-          ],
-          "PriceClass": "PriceClass_All",
-          "ViewerCertificate": {
-            "AcmCertificateArn": {
-              "Ref": "CloudFrontCertificateArn",
-            },
-            "MinimumProtocolVersion": "TLSv1.2_2021",
-            "SslSupportMethod": "sni-only",
-          },
-        },
-        "Tags": [
-          {
-            "Key": "gu:cdk:version",
-            "Value": "TEST",
-          },
-          {
-            "Key": "gu:repo",
-            "Value": "guardian/facia-tool",
-          },
-          {
-            "Key": "Stack",
-            "Value": "cms-fronts",
-          },
-          {
-            "Key": "Stage",
-            "Value": "PROD",
-          },
-        ],
-      },
-      "Type": "AWS::CloudFront::Distribution",
     },
     "StorageBucket": {
       "Properties": {
