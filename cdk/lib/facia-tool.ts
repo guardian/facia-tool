@@ -20,7 +20,6 @@ import {
 	HttpVersion,
 	OriginProtocolPolicy,
 	OriginRequestPolicy,
-	OriginSslPolicy,
 	PriceClass,
 	SecurityPolicyProtocol,
 	SSLMethod,
@@ -301,9 +300,7 @@ export class FaciaTool extends GuStack {
 
 	/**
 	 * `FaciaCloudfront` is a pass-through, not a cache: the legacy `ForwardedValues` spelling of
-	 * `headers: ['*']` tells CloudFront not to cache at all. `StaticCloudfront` stays an L1 for
-	 * now — converting it is entangled with putting its bucket behind Origin Access Control,
-	 * which changes the origin anyway.
+	 * `headers: ['*']` tells CloudFront not to cache at all.
 	 */
 	private cloudFront({
 		parameter,
@@ -342,8 +339,6 @@ export class FaciaTool extends GuStack {
 					originId: app,
 					protocolPolicy: OriginProtocolPolicy.HTTPS_ONLY,
 					httpsPort: 443,
-					// The live distribution's values. Tightening these is a separate change.
-					originSslProtocols: [OriginSslPolicy.SSL_V3, OriginSslPolicy.TLS_V1],
 				}),
 				allowedMethods: AllowedMethods.ALLOW_ALL,
 				cachedMethods: CachedMethods.CACHE_GET_HEAD,
