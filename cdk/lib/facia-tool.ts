@@ -793,7 +793,9 @@ EOF`,
 				resources: ['*'],
 			}),
 
-			// PanDomainAuthSettingsRefresher reads `<domain>.settings` and nothing else.
+			// `<domain>.settings` is what PanDomainAuthSettingsRefresher loads; the `.p12` is the
+			// Google service account key named by that file, which Google2FAGroupChecker reads from
+			// the same bucket on every login. The key's name is only known at runtime, hence `*.p12`.
 			new GuAllowPolicy(this, 'PanDomainPolicy', {
 				actions: ['s3:GetObject'],
 				resources: [
@@ -801,6 +803,7 @@ EOF`,
 						'pan-domain-auth-settings',
 						`${targets.authDomain}.settings`,
 					),
+					this.bucketArn('pan-domain-auth-settings', '*.p12'),
 				],
 			}),
 
