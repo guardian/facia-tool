@@ -16,13 +16,12 @@ export interface FeastPackageMetadata {
 	excludedRegions?: string[];
 }
 
-export interface FeastPackage {
+export interface FeastPackageHeader {
 	id: string;
 	name: string;
 	packageType: 'Feast';
 	isHidden: boolean;
 	metadata?: FeastPackageMetadata;
-	items: PackageItem[];
 	createdOn?: number;
 	createdBy?: string;
 	createdEmail?: string;
@@ -30,6 +29,8 @@ export interface FeastPackage {
 	updatedBy?: string;
 	updatedEmail?: string;
 }
+
+export type FeastPackage = FeastPackageHeader & { items: PackageItem[] };
 
 export interface CreatePackageRequest {
 	id: string;
