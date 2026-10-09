@@ -6,13 +6,12 @@ import {
 	GuStack,
 } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
-import { GuSecurityGroup, GuVpc } from '@guardian/cdk/lib/constructs/ec2';
+import { GuSecurityGroup, GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
 import type { App, CfnParameterProps } from 'aws-cdk-lib';
-import { Aws, CfnOutput, CfnParameter, Duration, Fn, Tags } from 'aws-cdk-lib';
+import { Aws, CfnOutput, CfnParameter, Duration, Tags } from 'aws-cdk-lib';
 import { CfnDistribution } from 'aws-cdk-lib/aws-cloudfront';
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
-import type { ISubnet } from 'aws-cdk-lib/aws-ec2';
 import {
 	InstanceType,
 	Port,
@@ -71,15 +70,8 @@ export class FaciaTool extends GuStack {
 
 		const parameters = this.templateParameters();
 		const parameter = (name: string) => parameters(name).valueAsString;
-		const subnets = (name: string): ISubnet[] => {
-			const subnetIds = parameters(name).valueAsList;
-			return GuVpc.subnets(
-				this,
-				[0, 1, 2].map((index) => Fn.select(index, subnetIds)),
-			);
-		};
 
-		const vpc = GuVpc.fromId(this, 'Vpc', { vpcId: parameter('VpcId') });
+		const vpc = GuVpc.fromIdParameter(this, 'Vpc');
 
 		const frontendRoleToAssume = parameter('FrontendRoleToAssume');
 		const { frontPressedTable } = props;
@@ -129,8 +121,12 @@ export class FaciaTool extends GuStack {
 				switchboardBucket: parameter('SwitchboardBucket'),
 			}),
 			vpc,
-			privateSubnets: subnets('PrivateSubnets'),
-			publicSubnets: subnets('PublicSubnets'),
+			privateSubnets: GuVpc.subnetsFromParameter(this, {
+				type: SubnetType.PRIVATE,
+			}),
+			publicSubnets: GuVpc.subnetsFromParameter(this, {
+				type: SubnetType.PUBLIC,
+			}),
 		});
 
 		this.cloudFront({
@@ -268,22 +264,6 @@ export class FaciaTool extends GuStack {
 				type: 'AWS::SSM::Parameter::Value<String>',
 				description: 'SSM key containing security group of the CAPI endpoint',
 				default: '/newvpc/endpoint/capi/PROD',
-			},
-			{
-				name: 'VpcId',
-				type: 'AWS::EC2::VPC::Id',
-				description: 'The new VPC we look to migrate to',
-			},
-			{
-				name: 'PublicSubnets',
-				type: 'List<AWS::EC2::Subnet::Id>',
-				description: 'The public subnets of the new VPC for the loadbalancer',
-			},
-			{
-				name: 'PrivateSubnets',
-				type: 'List<AWS::EC2::Subnet::Id>',
-				description:
-					'The private subnets of the new VPC for the autoscaling group',
 			},
 		];
 
