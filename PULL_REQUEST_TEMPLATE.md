@@ -4,6 +4,8 @@
 ## Implementation notes
 <!-- Include any specific areas you want to highlight for review that you feel might be worthy of discussion (i.e. any non-obvious decisions you've made) -->
 
+## How to test
+
 ## Checklist
 
 ### General
