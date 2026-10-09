@@ -1,0 +1,8 @@
+{
+  "request": { "method": "GET", "urlPath": "/images/e2e-image" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "bodyFileName": "image.json"
+  }
+}

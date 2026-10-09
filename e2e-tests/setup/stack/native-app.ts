@@ -1,5 +1,6 @@
 import { spawn, type ChildProcess } from "node:child_process";
 import { join } from "node:path";
+import { nativeAppPort } from "./auth-redirect.js";
 import type { NativeApp, RuntimeConfig } from "./types.js";
 
 interface StartNativeAppOptions {
@@ -20,8 +21,12 @@ function startProcess(
     env: { ...process.env, ...environment },
     stdio: ["ignore", "pipe", "pipe"],
   });
-  child.stdout?.on("data", (chunk) => process.stdout.write(`[${name}] ${chunk}`));
-  child.stderr?.on("data", (chunk) => process.stderr.write(`[${name}] ${chunk}`));
+  child.stdout?.on("data", (chunk) =>
+    process.stdout.write(`[${name}] ${chunk}`),
+  );
+  child.stderr?.on("data", (chunk) =>
+    process.stderr.write(`[${name}] ${chunk}`),
+  );
   return child;
 }
 
@@ -60,14 +65,21 @@ export async function startNativeApp({
   const app = startProcess(
     "app",
     "sbt",
-    [`-Dconfig.file=${runtimeConfig.applicationConfigPath}`, "run 9000"],
+    [
+      `-Dconfig.file=${runtimeConfig.applicationConfigPath}`,
+      `run ${nativeAppPort}`,
+    ],
     repoRoot,
     runtimeConfig.environment,
   );
   const nativeApp = { processes: [app, vite] };
 
   try {
-    await waitForHealth("http://localhost:9000/_healthcheck", app, 300_000);
+    await waitForHealth(
+      `http://localhost:${nativeAppPort}/_healthcheck`,
+      app,
+      300_000,
+    );
     return nativeApp;
   } catch (error) {
     await stopNativeApp(nativeApp);

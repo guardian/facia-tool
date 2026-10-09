@@ -1,0 +1,8 @@
+{
+  "request": { "method": "GET", "urlPath": "/e2e/article" },
+  "response": {
+    "status": 200,
+    "headers": { "Content-Type": "application/json" },
+    "bodyFileName": "article.json"
+  }
+}

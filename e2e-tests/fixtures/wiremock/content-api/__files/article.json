@@ -1,0 +1,24 @@
+{
+  "response": {
+    "status": "ok",
+    "userTier": "internal",
+    "content": {
+      "id": "e2e/article",
+      "type": "article",
+      "sectionId": "news",
+      "sectionName": "News",
+      "webPublicationDate": "2026-09-28T12:00:00Z",
+      "webTitle": "Synthetic E2E article",
+      "webUrl": "https://www.theguardian.com/e2e/article",
+      "apiUrl": "https://content.guardianapis.com/e2e/article",
+      "fields": {
+        "headline": "Synthetic E2E article",
+        "trailText": "Synthetic content used only by the local test stack",
+        "lastModified": "2026-09-28T12:00:00Z"
+      },
+      "tags": [],
+      "blocks": [],
+      "elements": []
+    }
+  }
+}
