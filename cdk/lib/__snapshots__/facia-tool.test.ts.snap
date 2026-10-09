@@ -5,16 +5,17 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
   "Description": "Facia Tool Service",
   "Metadata": {
     "gu:cdk:constructs": [
+      "GuVpcParameter",
       "GuDistributionBucketParameter",
       "GuPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
       "GuPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
@@ -22,6 +23,8 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "GuAllowPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
+      "GuSubnetListParameter",
+      "GuSubnetListParameter",
       "GuEc2App",
       "GuCertificate",
       "GuInstanceRole",
@@ -163,12 +166,14 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Type": "String",
     },
     "PrivateSubnets": {
-      "Description": "The private subnets of the new VPC for the autoscaling group",
-      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "PublicSubnets": {
-      "Description": "The public subnets of the new VPC for the loadbalancer",
-      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Default": "/account/vpc/primary/subnets/public",
+      "Description": "A list of public subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "StaticBucketName": {
       "Description": "Bucket containing static files",
@@ -188,8 +193,9 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
       "Type": "String",
     },
     "VpcId": {
-      "Description": "The new VPC we look to migrate to",
-      "Type": "AWS::EC2::VPC::Id",
+      "Default": "/account/vpc/primary/id",
+      "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
   },
   "Resources": {
@@ -305,32 +311,9 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             "Ref": "TargetGroupFaciatool7B903AE5",
           },
         ],
-        "VPCZoneIdentifier": [
-          {
-            "Fn::Select": [
-              0,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              1,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              2,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-        ],
+        "VPCZoneIdentifier": {
+          "Ref": "PrivateSubnets",
+        },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
     },
@@ -1191,32 +1174,9 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             ],
           },
         ],
-        "Subnets": [
-          {
-            "Fn::Select": [
-              0,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              1,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              2,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-        ],
+        "Subnets": {
+          "Ref": "PublicSubnets",
+        },
         "Tags": [
           {
             "Key": "App",
@@ -1350,18 +1310,32 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":s3:::pan-domain-auth-settings/*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::pan-domain-auth-settings/code.dev-gutools.co.uk.settings",
+                    ],
                   ],
-                ],
-              },
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::pan-domain-auth-settings/*.p12",
+                    ],
+                  ],
+                },
+              ],
             },
           ],
           "Version": "2012-10-17",
@@ -1401,6 +1375,11 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             },
             {
               "Action": "kms:Decrypt",
+              "Condition": {
+                "StringEquals": {
+                  "kms:ViaService": "ssm.eu-west-1.amazonaws.com",
+                },
+              },
               "Effect": "Allow",
               "Resource": "*",
             },
@@ -1482,7 +1461,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":s3:::permissions-cache/*",
+                    ":s3:::permissions-cache/CODE/*",
                   ],
                 ],
               },
@@ -1553,7 +1532,7 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":s3:::facia-private/*",
+                    ":s3:::facia-private/facia-tool.application.secrets.CODE.conf",
                   ],
                 ],
               },
@@ -1665,23 +1644,13 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             },
             {
               "Action": "kms:Decrypt",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":kms:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":key/alias/aws/ssm",
-                  ],
-                ],
+              "Condition": {
+                "StringEquals": {
+                  "kms:ViaService": "ssm.eu-west-1.amazonaws.com",
+                },
               },
+              "Effect": "Allow",
+              "Resource": "*",
             },
             {
               "Action": [
@@ -1704,6 +1673,166 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                     ":publish-events-CODE",
                   ],
                 ],
+              },
+            },
+            {
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:Query",
+                "dynamodb:PutItem",
+                "dynamodb:UpdateItem",
+                "dynamodb:Scan",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":dynamodb:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":table/",
+                    {
+                      "Ref": "FrontsUserDataDynamoTable",
+                    },
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": [
+                "dynamodb:GetItem",
+                "dynamodb:Query",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":dynamodb:eu-west-1:",
+                    {
+                      "Ref": "AWS::AccountId",
+                    },
+                    ":table/front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:PutObject",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::published-editions-code/*",
+                    ],
+                  ],
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::preview-editions-code/*",
+                    ],
+                  ],
+                },
+              ],
+            },
+            {
+              "Action": "sns:Publish",
+              "Effect": "Allow",
+              "Resource": [
+                {
+                  "Ref": "FrontsUpdateSNSTopic",
+                },
+                {
+                  "Ref": "FeastPublicationTopic",
+                },
+              ],
+            },
+            {
+              "Action": [
+                "s3:GetObject",
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store/CODE/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:ListBucket",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::facia-tool-store",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "SwitchboardBucket",
+              },
+            },
+            {
+              "Action": "s3:GetObject",
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::Join": [
+                  "",
+                  [
+                    "arn:",
+                    {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":s3:::permissions-cache/CODE/*",
+                  ],
+                ],
+              },
+            },
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Resource": {
+                "Ref": "CapiPreviewRole",
               },
             },
             {
@@ -1750,35 +1879,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
             },
             {
               "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-                "dynamodb:PutItem",
-                "dynamodb:UpdateItem",
-                "dynamodb:Scan",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":dynamodb:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":table/",
-                    {
-                      "Ref": "FrontsUserDataDynamoTable",
-                    },
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": [
                 "ec2:DescribeTags",
                 "ec2:DescribeInstances",
                 "autoscaling:DescribeAutoScalingGroups",
@@ -1787,87 +1887,6 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
               ],
               "Effect": "Allow",
               "Resource": "*",
-            },
-            {
-              "Action": "s3:PutObject",
-              "Effect": "Allow",
-              "Resource": [
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::published-editions-code/*",
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
-                      ":s3:::preview-editions-code/*",
-                    ],
-                  ],
-                },
-              ],
-            },
-            {
-              "Action": "sns:Publish",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "FrontsUpdateSNSTopic",
-              },
-              "Sid": "AllowPublishToMyTopic",
-            },
-            {
-              "Action": "sns:Publish",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "FeastPublicationTopic",
-              },
-            },
-            {
-              "Action": [
-                "s3:GetObject",
-                "s3:PutObject",
-                "s3:PutObjectAcl",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":s3:::facia-tool-store/CODE/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": "s3:ListBucket",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":s3:::facia-tool-store",
-                  ],
-                ],
-              },
             },
             {
               "Action": "s3:GetObject",
@@ -1893,76 +1912,11 @@ exports[`The FaciaTool stack matches the CODE snapshot 1`] = `
                       {
                         "Ref": "AWS::Partition",
                       },
-                      ":s3:::pan-domain-auth-settings/local.dev-gutools.co.uk.settings.public",
-                    ],
-                  ],
-                },
-                {
-                  "Fn::Join": [
-                    "",
-                    [
-                      "arn:",
-                      {
-                        "Ref": "AWS::Partition",
-                      },
                       ":s3:::pan-domain-auth-settings/*.p12",
                     ],
                   ],
                 },
               ],
-            },
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":s3:::permissions-cache/CODE/*",
-                  ],
-                ],
-              },
-            },
-            {
-              "Action": "sts:AssumeRole",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "CapiPreviewRole",
-              },
-            },
-            {
-              "Action": "s3:GetObject",
-              "Effect": "Allow",
-              "Resource": {
-                "Ref": "SwitchboardBucket",
-              },
-            },
-            {
-              "Action": [
-                "dynamodb:GetItem",
-                "dynamodb:Query",
-              ],
-              "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":dynamodb:eu-west-1:",
-                    {
-                      "Ref": "AWS::AccountId",
-                    },
-                    ":table/front-pressed-lambda-CODE-DynamoDBTable-1CY26GZDUP0OU",
-                  ],
-                ],
-              },
             },
           ],
           "Version": "2012-10-17",
@@ -2809,16 +2763,17 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
   "Description": "Facia Tool Service",
   "Metadata": {
     "gu:cdk:constructs": [
+      "GuVpcParameter",
       "GuDistributionBucketParameter",
       "GuPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
-      "GuAllowPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
+      "GuPolicy",
       "GuPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
@@ -2826,6 +2781,8 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "GuAllowPolicy",
       "GuAllowPolicy",
       "GuAllowPolicy",
+      "GuSubnetListParameter",
+      "GuSubnetListParameter",
       "GuEc2App",
       "GuCertificate",
       "GuInstanceRole",
@@ -2967,12 +2924,14 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Type": "String",
     },
     "PrivateSubnets": {
-      "Description": "The private subnets of the new VPC for the autoscaling group",
-      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Default": "/account/vpc/primary/subnets/private",
+      "Description": "A list of private subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "PublicSubnets": {
-      "Description": "The public subnets of the new VPC for the loadbalancer",
-      "Type": "List<AWS::EC2::Subnet::Id>",
+      "Default": "/account/vpc/primary/subnets/public",
+      "Description": "A list of public subnets",
+      "Type": "AWS::SSM::Parameter::Value<List<AWS::EC2::Subnet::Id>>",
     },
     "StaticBucketName": {
       "Description": "Bucket containing static files",
@@ -2992,8 +2951,9 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
       "Type": "String",
     },
     "VpcId": {
-      "Description": "The new VPC we look to migrate to",
-      "Type": "AWS::EC2::VPC::Id",
+      "Default": "/account/vpc/primary/id",
+      "Description": "Virtual Private Cloud to run EC2 instances within. Should NOT be the account default VPC.",
+      "Type": "AWS::SSM::Parameter::Value<AWS::EC2::VPC::Id>",
     },
   },
   "Resources": {
@@ -3109,32 +3069,9 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             "Ref": "TargetGroupFaciatool7B903AE5",
           },
         ],
-        "VPCZoneIdentifier": [
-          {
-            "Fn::Select": [
-              0,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              1,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              2,
-              {
-                "Ref": "PrivateSubnets",
-              },
-            ],
-          },
-        ],
+        "VPCZoneIdentifier": {
+          "Ref": "PrivateSubnets",
+        },
       },
       "Type": "AWS::AutoScaling::AutoScalingGroup",
     },
@@ -3995,32 +3932,9 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             ],
           },
         ],
-        "Subnets": [
-          {
-            "Fn::Select": [
-              0,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              1,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-          {
-            "Fn::Select": [
-              2,
-              {
-                "Ref": "PublicSubnets",
-              },
-            ],
-          },
-        ],
+        "Subnets": {
+          "Ref": "PublicSubnets",
+        },
         "Tags": [
           {
             "Key": "App",
@@ -4154,18 +4068,32 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             {
               "Action": "s3:GetObject",
               "Effect": "Allow",
-              "Resource": {
-                "Fn::Join": [
-                  "",
-                  [
-                    "arn:",
-                    {
-                      "Ref": "AWS::Partition",
-                    },
-                    ":s3:::pan-domain-auth-settings/*",
+              "Resource": [
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::pan-domain-auth-settings/gutools.co.uk.settings",
+                    ],
                   ],
-                ],
-              },
+                },
+                {
+                  "Fn::Join": [
+                    "",
+                    [
+                      "arn:",
+                      {
+                        "Ref": "AWS::Partition",
+                      },
+                      ":s3:::pan-domain-auth-settings/*.p12",
+                    ],
+                  ],
+                },
+              ],
             },
           ],
           "Version": "2012-10-17",
@@ -4205,6 +4133,11 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
             },
             {
               "Action": "kms:Decrypt",
+              "Condition": {
+                "StringEquals": {
+                  "kms:ViaService": "ssm.eu-west-1.amazonaws.com",
+                },
+              },
               "Effect": "Allow",
               "Resource": "*",
             },
@@ -4286,7 +4219,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":s3:::permissions-cache/*",
+                    ":s3:::permissions-cache/PROD/*",
                   ],
                 ],
               },
@@ -4357,7 +4290,7 @@ exports[`The FaciaTool stack matches the PROD snapshot 1`] = `
                     {
                       "Ref": "AWS::Partition",
                     },
-                    ":s3:::facia-private/*",
+                    ":s3:::facia-private/facia-tool.application.secrets.PROD.conf",
                   ],
                 ],
               },

@@ -6,10 +6,10 @@ import {
 	GuStack,
 } from '@guardian/cdk/lib/constructs/core';
 import { GuCname } from '@guardian/cdk/lib/constructs/dns';
-import { GuSecurityGroup, GuVpc } from '@guardian/cdk/lib/constructs/ec2';
+import { GuSecurityGroup, GuVpc, SubnetType } from '@guardian/cdk/lib/constructs/ec2';
 import { GuAllowPolicy, GuPolicy } from '@guardian/cdk/lib/constructs/iam';
 import type { App, CfnParameterProps } from 'aws-cdk-lib';
-import { Aws, CfnOutput, CfnParameter, Duration, Fn, Tags } from 'aws-cdk-lib';
+import { Aws, CfnOutput, CfnParameter, Duration, Tags } from 'aws-cdk-lib';
 import { Certificate } from 'aws-cdk-lib/aws-certificatemanager';
 import {
 	AllowedMethods,
@@ -27,7 +27,6 @@ import {
 } from 'aws-cdk-lib/aws-cloudfront';
 import { HttpOrigin } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
-import type { ISubnet } from 'aws-cdk-lib/aws-ec2';
 import {
 	InstanceType,
 	Port,
@@ -48,9 +47,29 @@ import { CfnTopicPolicy, Topic } from 'aws-cdk-lib/aws-sns';
 const app = 'facia-tool';
 const applicationPort = 9000;
 
+const allow = (actions: string[], resources: string[]) =>
+	new PolicyStatement({ effect: Effect.ALLOW, actions, resources });
+
+/** The resources an access grant has to be told about, because they are not fixed by stage alone. */
+interface SharedAccessTargets {
+	lowerCaseStage: string;
+	frontPressedTable: string;
+	userDataTableName: string;
+	frontsUpdateTopicArn: string;
+	feastPublicationTopicArn: string;
+	capiPreviewRole: string;
+	switchboardBucket: string;
+}
+
 export interface FaciaToolProps extends GuStackProps {
 	/** Must match the `Host` header CloudFront forwards to the origin. */
 	domainName: string;
+	/**
+	 * The pan-domain the tool authenticates against — `domainName` without the `fronts.` prefix.
+	 * Must match `pandomain.domain` in the application secrets, because it names the settings
+	 * object the instance is allowed to read.
+	 */
+	authDomain: string;
 	/** CloudFront alias for the static assets distribution. */
 	staticDomainName: string;
 	/** The front-pressed lambda's DynamoDB table, owned by another stack. */
@@ -66,15 +85,8 @@ export class FaciaTool extends GuStack {
 
 		const parameters = this.templateParameters();
 		const parameter = (name: string) => parameters(name).valueAsString;
-		const subnets = (name: string): ISubnet[] => {
-			const subnetIds = parameters(name).valueAsList;
-			return GuVpc.subnets(
-				this,
-				[0, 1, 2].map((index) => Fn.select(index, subnetIds)),
-			);
-		};
 
-		const vpc = GuVpc.fromId(this, 'Vpc', { vpcId: parameter('VpcId') });
+		const vpc = GuVpc.fromIdParameter(this, 'Vpc');
 
 		const frontendRoleToAssume = parameter('FrontendRoleToAssume');
 		const { frontPressedTable } = props;
@@ -116,6 +128,7 @@ export class FaciaTool extends GuStack {
 				frontendRoleToAssume,
 				frontPressedTable,
 				lowerCaseStage,
+				authDomain: props.authDomain,
 				userDataTableName: userDataTable.tableName,
 				frontsUpdateTopicArn: frontsUpdateTopic.topicArn,
 				feastPublicationTopicArn: feastPublicationTopic.topicArn,
@@ -123,8 +136,12 @@ export class FaciaTool extends GuStack {
 				switchboardBucket: parameter('SwitchboardBucket'),
 			}),
 			vpc,
-			privateSubnets: subnets('PrivateSubnets'),
-			publicSubnets: subnets('PublicSubnets'),
+			privateSubnets: GuVpc.subnetsFromParameter(this, {
+				type: SubnetType.PRIVATE,
+			}),
+			publicSubnets: GuVpc.subnetsFromParameter(this, {
+				type: SubnetType.PUBLIC,
+			}),
 		});
 
 		this.cloudFront({
@@ -263,22 +280,6 @@ export class FaciaTool extends GuStack {
 				description: 'SSM key containing security group of the CAPI endpoint',
 				default: '/newvpc/endpoint/capi/PROD',
 			},
-			{
-				name: 'VpcId',
-				type: 'AWS::EC2::VPC::Id',
-				description: 'The new VPC we look to migrate to',
-			},
-			{
-				name: 'PublicSubnets',
-				type: 'List<AWS::EC2::Subnet::Id>',
-				description: 'The public subnets of the new VPC for the loadbalancer',
-			},
-			{
-				name: 'PrivateSubnets',
-				type: 'List<AWS::EC2::Subnet::Id>',
-				description:
-					'The private subnets of the new VPC for the autoscaling group',
-			},
 		];
 
 		const parameters = new Map<string, CfnParameter>(
@@ -405,6 +406,17 @@ export class FaciaTool extends GuStack {
 			resource: bucketName,
 			resourceName: key,
 		});
+	}
+
+	/**
+	 * Scopes `kms:Decrypt` to decryption performed on our behalf by Parameter Store. The only
+	 * thing we decrypt is the SecureString holding the database password, and it uses the
+	 * AWS-managed `aws/ssm` key, which has no stable ARN to name in a `Resource` element.
+	 */
+	private get viaSsmOnly(): Record<string, Record<string, string>> {
+		return {
+			StringEquals: { 'kms:ViaService': `ssm.${this.region}.amazonaws.com` },
+		};
 	}
 
 	private dynamoTableArn(tableName: string): string {
@@ -546,64 +558,15 @@ export class FaciaTool extends GuStack {
 	}
 
 	/** CODE-only: lets a developer run facia-tool on their own machine against CODE resources. */
-	private developerPolicy({
-		lowerCaseStage,
-		frontPressedTable,
-		userDataTableName,
-		frontsUpdateTopicArn,
-		feastPublicationTopicArn,
-		capiPreviewRole,
-		switchboardBucket,
-	}: {
-		lowerCaseStage: string;
-		frontPressedTable: string;
-		userDataTableName: string;
-		frontsUpdateTopicArn: string;
-		feastPublicationTopicArn: string;
-		capiPreviewRole: string;
-		switchboardBucket: string;
-	}): void {
-		const allow = (actions: string[], resources: string[], sid?: string) =>
-			new PolicyStatement({
-				sid,
-				effect: Effect.ALLOW,
-				actions,
-				resources,
-			});
-
+	private developerPolicy(targets: SharedAccessTargets): void {
 		const policy = new ManagedPolicy(this, 'RunFaciaToolLocally', {
 			description: 'Policy used for running fronts-tool locally',
 			path: `/developer-policy/guardian/facia-tool/cms-fronts/${this.stage}/run-fronts-tool-locally/`,
 			statements: [
-				allow(
-					['ssm:GetParameter'],
-					[
-						this.formatArn({
-							service: 'ssm',
-							resource: 'parameter',
-							resourceName: `${app}/${this.stack}/${this.stage}/*`,
-						}),
-					],
-				),
-				allow(
-					['kms:Decrypt'],
-					[
-						this.formatArn({
-							service: 'kms',
-							resource: 'key',
-							resourceName: 'alias/aws/ssm',
-						}),
-					],
-				),
-				allow(
-					['sqs:ReceiveMessage', 'sqs:DeleteMessage'],
-					[
-						this.formatArn({
-							service: 'sqs',
-							resource: `publish-events-${this.stage}`,
-						}),
-					],
-				),
+				...Object.values(this.sharedAccess(targets)).flat(),
+
+				// Developer-only below here: the instance gets these from GuInstanceRole, reads
+				// different objects, or does not need them at all.
 				allow(
 					['s3:GetObject'],
 					[
@@ -617,16 +580,6 @@ export class FaciaTool extends GuStack {
 				),
 				allow(
 					[
-						'dynamodb:GetItem',
-						'dynamodb:Query',
-						'dynamodb:PutItem',
-						'dynamodb:UpdateItem',
-						'dynamodb:Scan',
-					],
-					[this.dynamoTableArn(userDataTableName)],
-				),
-				allow(
-					[
 						'ec2:DescribeTags',
 						'ec2:DescribeInstances',
 						'autoscaling:DescribeAutoScalingGroups',
@@ -636,42 +589,14 @@ export class FaciaTool extends GuStack {
 					['*'],
 				),
 				allow(
-					['s3:PutObject'],
-					[
-						this.bucketArn(`published-editions-${lowerCaseStage}`, '*'),
-						this.bucketArn(`preview-editions-${lowerCaseStage}`, '*'),
-					],
-				),
-				allow(['sns:Publish'], [frontsUpdateTopicArn], 'AllowPublishToMyTopic'),
-				allow(['sns:Publish'], [feastPublicationTopicArn]),
-				allow(
-					['s3:GetObject', 's3:PutObject', 's3:PutObjectAcl'],
-					[this.bucketArn('facia-tool-store', `${this.stage}/*`)],
-				),
-				allow(['s3:ListBucket'], [this.bucketArn('facia-tool-store')]),
-				allow(
 					['s3:GetObject'],
 					[
 						this.bucketArn(
 							'pan-domain-auth-settings',
 							'local.dev-gutools.co.uk.settings',
 						),
-						this.bucketArn(
-							'pan-domain-auth-settings',
-							'local.dev-gutools.co.uk.settings.public',
-						),
 						this.bucketArn('pan-domain-auth-settings', '*.p12'),
 					],
-				),
-				allow(
-					['s3:GetObject'],
-					[this.bucketArn('permissions-cache', `${this.stage}/*`)],
-				),
-				allow(['sts:AssumeRole'], [capiPreviewRole]),
-				allow(['s3:GetObject'], [switchboardBucket]),
-				allow(
-					['dynamodb:GetItem', 'dynamodb:Query'],
-					[this.dynamoTableArn(frontPressedTable)],
 				),
 			],
 		});
@@ -715,81 +640,130 @@ EOF`,
 		return userData;
 	}
 
-	private applicationPolicies({
-		frontendRoleToAssume,
-		frontPressedTable,
+	/**
+	 * Access that the instance and a developer running the tool locally both need, keyed by the
+	 * instance-role policy resource that carries it. Those keys are the logical IDs of live
+	 * `AWS::IAM::Policy` resources, so they must not change.
+	 */
+	private sharedAccess({
 		lowerCaseStage,
+		frontPressedTable,
 		userDataTableName,
 		frontsUpdateTopicArn,
 		feastPublicationTopicArn,
 		capiPreviewRole,
 		switchboardBucket,
-	}: {
-		frontendRoleToAssume: string;
-		frontPressedTable: string;
-		lowerCaseStage: string;
-		userDataTableName: string;
-		frontsUpdateTopicArn: string;
-		feastPublicationTopicArn: string;
-		capiPreviewRole: string;
-		switchboardBucket: string;
-	}): GuPolicy[] {
-		const bucketArn = (bucketName: string, key?: string) =>
-			this.bucketArn(bucketName, key);
-		const dynamoTableArn = (tableName: string) =>
-			this.dynamoTableArn(tableName);
+	}: SharedAccessTargets): Record<string, PolicyStatement[]> {
+		return {
+			ParameterStorePolicy: [
+				allow(
+					['ssm:GetParameter'],
+					[
+						this.formatArn({
+							service: 'ssm',
+							resource: 'parameter',
+							resourceName: `${app}/${this.stack}/${this.stage}/*`,
+						}),
+					],
+				),
+				new PolicyStatement({
+					effect: Effect.ALLOW,
+					actions: ['kms:Decrypt'],
+					resources: ['*'],
+					conditions: this.viaSsmOnly,
+				}),
+			],
 
+			PublishEventsQueuePolicy: [
+				allow(
+					['sqs:ReceiveMessage', 'sqs:DeleteMessage'],
+					[
+						this.formatArn({
+							service: 'sqs',
+							resource: `publish-events-${this.stage}`,
+						}),
+					],
+				),
+			],
+
+			UserDataTablePolicy: [
+				allow(
+					[
+						'dynamodb:GetItem',
+						'dynamodb:Query',
+						'dynamodb:PutItem',
+						'dynamodb:UpdateItem',
+						'dynamodb:Scan',
+					],
+					[this.dynamoTableArn(userDataTableName)],
+				),
+			],
+
+			PressedFrontsStatusPolicy: [
+				allow(
+					['dynamodb:GetItem', 'dynamodb:Query'],
+					[this.dynamoTableArn(frontPressedTable)],
+				),
+			],
+
+			EditionsBucketsPolicy: [
+				allow(
+					['s3:PutObject'],
+					[
+						this.bucketArn(`published-editions-${lowerCaseStage}`, '*'),
+						this.bucketArn(`preview-editions-${lowerCaseStage}`, '*'),
+					],
+				),
+			],
+
+			PublishTopicPolicy: [
+				allow(['sns:Publish'], [frontsUpdateTopicArn, feastPublicationTopicArn]),
+			],
+
+			StorageBucketPolicy: [
+				allow(
+					['s3:GetObject', 's3:PutObject', 's3:PutObjectAcl'],
+					[this.bucketArn('facia-tool-store', `${this.stage}/*`)],
+				),
+				allow(['s3:ListBucket'], [this.bucketArn('facia-tool-store')]),
+			],
+
+			SwitchesPolicy: [allow(['s3:GetObject'], [switchboardBucket])],
+
+			PermissionsPolicy: [
+				allow(
+					['s3:GetObject'],
+					[this.bucketArn('permissions-cache', `${this.stage}/*`)],
+				),
+			],
+
+			AssumeCapiPreviewRolePolicy: [
+				allow(['sts:AssumeRole'], [capiPreviewRole]),
+			],
+		};
+	}
+
+	private applicationPolicies(
+		targets: SharedAccessTargets & {
+			frontendRoleToAssume: string;
+			authDomain: string;
+		},
+	): GuPolicy[] {
 		return [
-			new GuPolicy(this, 'ParameterStorePolicy', {
-				statements: [
-					new PolicyStatement({
-						effect: Effect.ALLOW,
-						actions: ['ssm:GetParameter'],
-						resources: [
-							this.formatArn({
-								service: 'ssm',
-								resource: 'parameter',
-								resourceName: `${app}/${this.stack}/${this.stage}/*`,
-							}),
-						],
-					}),
-					new PolicyStatement({
-						effect: Effect.ALLOW,
-						actions: ['kms:Decrypt'],
-						resources: ['*'],
-					}),
-				],
-			}),
+			...Object.entries(this.sharedAccess(targets)).map(
+				([id, statements]) => new GuPolicy(this, id, { statements }),
+			),
 
+			// The one object user data copies at boot. The bucket also holds other applications'
+			// secrets, which facia-tool has no business reading.
 			new GuAllowPolicy(this, 'PrivateConfigPolicy', {
 				actions: ['s3:GetObject'],
-				resources: [bucketArn('facia-private', '*')],
-			}),
-
-			new GuAllowPolicy(this, 'PublishEventsQueuePolicy', {
-				actions: ['sqs:ReceiveMessage', 'sqs:DeleteMessage'],
 				resources: [
-					this.formatArn({
-						service: 'sqs',
-						resource: `publish-events-${this.stage}`,
-					}),
+					this.bucketArn(
+						'facia-private',
+						`${app}.application.secrets.${this.stage}.conf`,
+					),
 				],
-			}),
-
-			new GuAllowPolicy(this, 'UserDataTablePolicy', {
-				actions: [
-					'dynamodb:GetItem',
-					'dynamodb:Query',
-					'dynamodb:PutItem',
-					'dynamodb:UpdateItem',
-					'dynamodb:Scan',
-				],
-				resources: [dynamoTableArn(userDataTableName)],
-			}),
-
-			new GuAllowPolicy(this, 'PressedFrontsStatusPolicy', {
-				actions: ['dynamodb:GetItem', 'dynamodb:Query'],
-				resources: [dynamoTableArn(frontPressedTable)],
 			}),
 
 			new GuAllowPolicy(this, 'SendEmailPolicy', {
@@ -803,47 +777,18 @@ EOF`,
 				resources: ['*'],
 			}),
 
-			new GuAllowPolicy(this, 'EditionsBucketsPolicy', {
-				actions: ['s3:PutObject'],
-				resources: [
-					bucketArn(`published-editions-${lowerCaseStage}`, '*'),
-					bucketArn(`preview-editions-${lowerCaseStage}`, '*'),
-				],
-			}),
-
-			new GuAllowPolicy(this, 'PublishTopicPolicy', {
-				actions: ['sns:Publish'],
-				resources: [frontsUpdateTopicArn, feastPublicationTopicArn],
-			}),
-
-			new GuPolicy(this, 'StorageBucketPolicy', {
-				statements: [
-					new PolicyStatement({
-						effect: Effect.ALLOW,
-						actions: ['s3:GetObject', 's3:PutObject', 's3:PutObjectAcl'],
-						resources: [bucketArn('facia-tool-store', `${this.stage}/*`)],
-					}),
-					new PolicyStatement({
-						effect: Effect.ALLOW,
-						actions: ['s3:ListBucket'],
-						resources: [bucketArn('facia-tool-store')],
-					}),
-				],
-			}),
-
+			// `<domain>.settings` is what PanDomainAuthSettingsRefresher loads; the `.p12` is the
+			// Google service account key named by that file, which Google2FAGroupChecker reads from
+			// the same bucket on every login. The key's name is only known at runtime, hence `*.p12`.
 			new GuAllowPolicy(this, 'PanDomainPolicy', {
 				actions: ['s3:GetObject'],
-				resources: [bucketArn('pan-domain-auth-settings', '*')],
-			}),
-
-			new GuAllowPolicy(this, 'PermissionsPolicy', {
-				actions: ['s3:GetObject'],
-				resources: [bucketArn('permissions-cache', '*')],
-			}),
-
-			new GuAllowPolicy(this, 'SwitchesPolicy', {
-				actions: ['s3:GetObject'],
-				resources: [switchboardBucket],
+				resources: [
+					this.bucketArn(
+						'pan-domain-auth-settings',
+						`${targets.authDomain}.settings`,
+					),
+					this.bucketArn('pan-domain-auth-settings', '*.p12'),
+				],
 			}),
 
 			new GuAllowPolicy(this, 'CloudwatchPolicy', {
@@ -857,12 +802,7 @@ EOF`,
 
 			new GuAllowPolicy(this, 'AssumeFrontendRolePolicy', {
 				actions: ['sts:AssumeRole'],
-				resources: [frontendRoleToAssume],
-			}),
-
-			new GuAllowPolicy(this, 'AssumeCapiPreviewRolePolicy', {
-				actions: ['sts:AssumeRole'],
-				resources: [capiPreviewRole],
+				resources: [targets.frontendRoleToAssume],
 			}),
 		];
 	}
