@@ -66,22 +66,8 @@ export const SubnavEditRoute = ({
 					'Discard draft changes and revert to the live version?',
 				)
 			}
-			onUnpublish={() =>
-				runAction(
-					id,
-					unpublishSubnav,
-					hasDraft
-						? 'Take this subnav down? You have draft changes — taking it down will undo them.'
-						: 'Take this subnav down? It will no longer show on the targeted pages (kept as a draft).',
-				)
-			}
-			onDelete={() =>
-				runAction(
-					id,
-					deleteSubnav,
-					'Delete this subnav entirely? This removes both the live and draft versions.',
-				)
-			}
+			onUnpublish={() => runAction(id, unpublishSubnav)}
+			onDelete={() => runAction(id, deleteSubnav)}
 			saving={saving}
 		/>
 	);
