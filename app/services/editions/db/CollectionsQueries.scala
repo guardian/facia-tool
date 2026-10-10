@@ -272,7 +272,7 @@ trait CollectionsQueries extends Logging {
     Try {
       collectionIds match {
         case Nil => Right(())
-        case _ =>
+        case _   =>
           sql"""
           UPDATE collections
           SET index=CASE

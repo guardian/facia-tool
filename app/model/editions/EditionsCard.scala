@@ -124,7 +124,7 @@ sealed trait EditionsCard {
   def toSkeleton: EditionsCardSkeleton = this match {
     case EditionsArticle(id, _, metadata) =>
       EditionsCardSkeleton(id, cardType, metadata)
-    case EditionsRecipe(id, _) => EditionsCardSkeleton(id, cardType)
+    case EditionsRecipe(id, _)         => EditionsCardSkeleton(id, cardType)
     case EditionsChef(id, _, metadata) =>
       EditionsCardSkeleton(id, cardType, metadata)
     case EditionsFeastCollection(id, _, metadata) =>
@@ -168,7 +168,7 @@ object EditionsCard {
             EditionsChefMetadata()
           )
         )
-      case CardType.Recipe => EditionsRecipe(id, addedOn)
+      case CardType.Recipe          => EditionsRecipe(id, addedOn)
       case CardType.FeastCollection =>
         EditionsFeastCollection(
           id,
