@@ -1,5 +1,6 @@
 import { styled } from 'constants/theme';
 import { keyframes } from 'styled-components';
+import { Typography } from '@guardian/stand/Typography';
 
 // Scopes the @guardian/stand Open Sans font to subnav components only
 export const SubnavRoot = styled.div`
@@ -11,10 +12,10 @@ export const SubnavContainer = styled.div`
 	max-width: 720px;
 `;
 
-export const SubnavContainerHeading = styled.h1`
-	font-family: GHGuardianHeadline, Georgia, serif;
-	font-size: 24px;
-	font-weight: 500;
+export const SubnavContainerHeading = styled(Typography).attrs({
+	element: 'h1',
+	variant: 'titleLg',
+})`
 	margin-bottom: 16px;
 `;
 
@@ -224,7 +225,7 @@ export const IconButton = styled.button`
 
 export const AddRow = styled.div`
 	display: flex;
-	justify-content: flex-end;
+	justify-content: flex-start;
 `;
 
 export const FormActions = styled.div`
@@ -250,7 +251,7 @@ export const SubnavCreateFormPage = styled.div`
 
 export const CreateFormSidebar = styled.div`
 	position: sticky;
-	top: 80px;
+	top: 0;
 	align-self: flex-start;
 	width: 221px;
 	margin: 0;
@@ -275,7 +276,7 @@ export const CreateFormSection = styled.section<{ active?: boolean }>`
 	padding-left: 24px;
 	border-left: 2px solid
 		${({ active, theme }) =>
-			active ? theme.base.colors.textDark : theme.base.colors.borderColor};
+			active ? theme.base.colors.textDark : 'transparent'};
 	transition: border-color 0.15s ease;
 
 	/* Keep the indicator bar aligned to the heading text, not its top margin. */
@@ -318,11 +319,11 @@ export const CreateFormPreviewTitleRow = styled.div`
 	gap: 8px;
 `;
 
-export const CreateFormPreviewTitle = styled.h2`
+export const CreateFormPreviewTitle = styled(Typography).attrs({
+	element: 'h2',
+	variant: 'headingXl',
+})`
 	margin: 0;
-	font-size: 20px;
-	font-weight: 700;
-	color: ${({ theme }) => theme.base.colors.textDark};
 `;
 
 export const CreateFormPreviewToolbar = styled.div`
@@ -371,11 +372,11 @@ export const ImagePlatformGroup = styled.div`
 	gap: 12px;
 `;
 
-export const ImagePlatformGroupHeading = styled.h2`
+export const ImagePlatformGroupHeading = styled(Typography).attrs({
+	element: 'h2',
+	variant: 'headingMd',
+})`
 	margin: 0;
-	font-size: 15px;
-	font-weight: 700;
-	color: ${({ theme }) => theme.base.colors.textDark};
 `;
 
 export const ImageBreakpointGrid = styled.div`
