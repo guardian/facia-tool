@@ -27,6 +27,8 @@ import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
+import { Badge } from '@guardian/stand/Badge';
+import { UserFeedbackSummary } from '@guardian/stand/UserFeedbackSummary';
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
 import {
 	CustomSubnav,
@@ -63,6 +65,8 @@ import {
 	ColumnHeaders,
 	ColumnHeadersSpacer,
 	ColumnHeaderLabel,
+	CharacterCountRow,
+	CharacterCount,
 } from './styles';
 
 interface SubnavFormProps {
@@ -86,6 +90,9 @@ type StepId = 'header' | 'links' | 'pages' | 'images' | 'review';
 type LinkRow = SubnavLink & { id: string };
 
 const stepOrder: StepId[] = ['header', 'links', 'pages', 'images', 'review'];
+
+// Soft limit for subnav header and nav item text; exceeding it warns but does not block saving.
+const RECOMMENDED_TEXT_LIMIT = 20;
 
 const stepLabels: Record<StepId, string> = {
 	header: 'Header',
@@ -277,6 +284,7 @@ const SubnavForm = ({
 	}, []);
 
 	const hasHeader = headerText.trim().length > 0;
+	const headerTextOverLimit = headerText.length > RECOMMENDED_TEXT_LIMIT;
 	const hasLink = links.some((link) => link.linkText.trim().length > 0);
 	const hasPage = pages.some((page) => page.path.trim().length > 0);
 
@@ -465,15 +473,29 @@ const SubnavForm = ({
 								fluid
 							/>
 							<RowFields>
-								<TextInput
-									label="Header text"
-									description="Contextual text for the subnav header"
-									isRequired
-									fluid
-									value={headerText}
-									onChange={setHeaderText}
-									placeholder="e.g. UK election 2024"
-								/>
+								<div>
+									<TextInput
+										label="Header text"
+										description="Contextual text for the subnav header"
+										isRequired
+										fluid
+										value={headerText}
+										onChange={setHeaderText}
+										placeholder="e.g. UK election 2024"
+									/>
+									<CharacterCountRow>
+										<Badge
+											color={headerTextOverLimit ? 'yellow' : 'green'}
+											size="sm"
+											weight="light"
+										>
+											{headerTextOverLimit ? 'Warning' : 'Recommended'}
+										</Badge>
+										<CharacterCount>
+											{headerText.length}/{RECOMMENDED_TEXT_LIMIT}
+										</CharacterCount>
+									</CharacterCountRow>
+								</div>
 								<TextInput
 									label="URL (Dotcom path)"
 									description="Where the header links to (optional)"
@@ -526,14 +548,37 @@ const SubnavForm = ({
 																<FaGripVertical />
 															</DragHandle>
 															<RowFields>
-																<TextInput
-																	aria-label="Link text"
-																	fluid
-																	value={link.linkText}
-																	onChange={(value) =>
-																		updateLink(index, { linkText: value })
-																	}
-																/>
+																<div>
+																	<TextInput
+																		aria-label="Link text"
+																		fluid
+																		value={link.linkText}
+																		onChange={(value) =>
+																			updateLink(index, { linkText: value })
+																		}
+																	/>
+																	<CharacterCountRow>
+																		<Badge
+																			color={
+																				link.linkText.length >
+																				RECOMMENDED_TEXT_LIMIT
+																					? 'yellow'
+																					: 'green'
+																			}
+																			size="sm"
+																			weight="light"
+																		>
+																			{link.linkText.length >
+																			RECOMMENDED_TEXT_LIMIT
+																				? 'Warning'
+																				: 'Recommended'}
+																		</Badge>
+																		<CharacterCount>
+																			{link.linkText.length}/
+																			{RECOMMENDED_TEXT_LIMIT}
+																		</CharacterCount>
+																	</CharacterCountRow>
+																</div>
 																<TextInput
 																	aria-label="Dotcom path"
 																	fluid
@@ -570,6 +615,14 @@ const SubnavForm = ({
 									Add nav item
 								</Button>
 							</AddRow>
+							{links.length >= 15 && (
+								<UserFeedbackSummary
+									level="warning"
+									title="Recommended limit reached"
+								>
+									You have reached the maximum recommended number of nav items
+								</UserFeedbackSummary>
+							)}
 						</CreateFormSection>
 
 						<CreateFormSection
