@@ -53,7 +53,7 @@ routesImport += "model.editions._"
 val capiModelsVersion = "50.0.0"
 val capiClientVersion = "49.0.0"
 val json4sVersion = "4.0.3"
-val circeVersion = "0.14.10"
+val circeVersion = "0.14.16"
 val awsSdkVersion = "2.49.6"
 
 resolvers ++= Seq(
