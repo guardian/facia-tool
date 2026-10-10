@@ -50,8 +50,8 @@ TwirlKeys.templateImports ++= Seq(
 // include the enum path bindables
 routesImport += "model.editions._"
 
-val capiModelsVersion = "50.0.0"
-val capiClientVersion = "49.0.0"
+val capiModelsVersion = "52.0.0"
+val capiClientVersion = "50.0.0"
 val json4sVersion = "4.0.3"
 val circeVersion = "0.14.10"
 val awsSdkVersion = "2.49.6"
@@ -79,7 +79,7 @@ libraryDependencies ++= Seq(
   "com.gu" %% "content-api-client-aws" % "1.0.1",
   "com.gu" %% "content-api-client-default" % capiClientVersion,
   "com.gu" %% "editorial-permissions-client" % "5.0.0",
-  "com.gu" %% "fapi-client-play30" % "41.0.0",
+  "com.gu" %% "fapi-client-play30" % "43.0.1-SNAPSHOT",
   "com.gu" %% "mobile-notifications-api-models" % "4.0.0",
   "com.gu" %% "pan-domain-auth-play_3-0" % "21.0.0",
   "org.scanamo" %% "scanamo" % "1.1.1" exclude ("org.scala-lang.modules", "scala-java8-compat_2.13"),

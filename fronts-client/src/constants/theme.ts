@@ -18,6 +18,8 @@ const colors = {
 	blueGrey: '#EEF2F6',
 	greyDark: '#444444',
 	greyMediumDark: '#515151',
+	//used by some imported components
+	greyMediumDarker: '#545454',
 	greyMediumDarkish: '#676767',
 	greyMedium: '#767676',
 	greyMediumLight: '#999999',
