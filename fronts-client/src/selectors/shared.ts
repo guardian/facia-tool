@@ -128,20 +128,21 @@ const createSelectIsCardLive = () =>
 		(externalArticle) => !!externalArticle && isLive(externalArticle),
 	);
 
-const shouldDisplayUpdateFlag = (
-	storedCapiHeadline: string | undefined,
-	externalArticleHeadline: string | undefined,
-	cardHeadline: string | undefined,
-) => {
-	console.log({ storedCapiHeadline, externalArticleHeadline, cardHeadline });
-	if (
-		externalArticleHeadline !== cardHeadline &&
-		externalArticleHeadline !== storedCapiHeadline
-	) {
-		return true;
-	}
-	return false;
-};
+// const shouldDisplayUpdateFlag = (
+// 	storedCapiHeadline: string | undefined,
+// 	externalArticleHeadline: string | undefined,
+// 	cardHeadline: string | undefined,
+//
+// ) => {
+//
+// 	if (
+// 		externalArticleHeadline !== cardHeadline &&
+// 		externalArticleHeadline !== storedCapiHeadline
+// 	) {
+// 		return true;
+// 	}
+// 	return false;
+// };
 
 const decideCapiHeadline = (
 	storedCapiHeadline: string | undefined,
@@ -152,13 +153,13 @@ const decideCapiHeadline = (
 	// (or the capi headline wasnt previously available)
 	// so store the external article headline
 	if (!storedCapiHeadline) {
-		console.log('1. no storedcapheadline');
+		// console.log('1. no storedcapheadline');
 		return externalArticleHeadline;
 	}
 
 	// if there is no external article headline, return the storedCapiHeadline
 	if (!externalArticleHeadline) {
-		console.log('2. no externalArticleHeadline', storedCapiHeadline);
+		// console.log('2. no externalArticleHeadline', storedCapiHeadline);
 
 		return storedCapiHeadline;
 	}
@@ -168,17 +169,17 @@ const decideCapiHeadline = (
 		externalArticleHeadline === cardHeadline &&
 		externalArticleHeadline !== storedCapiHeadline
 	) {
-		console.log(
-			'3. external and card match but not stored capi headline',
-			externalArticleHeadline,
-		);
+		// console.log(
+		// 	'3. external and card match but not stored capi headline',
+		// 	externalArticleHeadline,
+		// );
 		return externalArticleHeadline;
 	}
-	console.log('4. something else', {
-		storedCapiHeadline,
-		externalArticleHeadline,
-		cardHeadline,
-	});
+	// console.log('4. something else', {
+	// 	storedCapiHeadline,
+	// 	externalArticleHeadline,
+	// 	cardHeadline,
+	// });
 	return storedCapiHeadline;
 };
 
@@ -205,19 +206,12 @@ const createSelectArticleFromCard = () =>
 				externalArticle?.fields.headline,
 				headlineField,
 			);
-			const hasCapiHeadlineChanged = shouldDisplayUpdateFlag(
-				capiHeadlineField,
-				externalArticle?.fields.headline,
-				headlineField,
-			);
+			// const hasCapiHeadlineChanged = shouldDisplayUpdateFlag(
+			// 	capiHeadlineField,
+			// 	externalArticle?.fields.headline,
+			// 	headlineField,
+			// );
 
-			console.log('card.meta.capiHeadline:::', card.meta.capiHeadline);
-			console.log('capiHeadlineField:::', capiHeadlineField);
-			console.log(
-				'externalArticle?.fields.headline',
-				externalArticle?.fields.headline,
-			);
-			console.log('hasCapiHeadlineChanged:::', hasCapiHeadlineChanged);
 			const activeOrDraftTest = findActiveOrDraftTest(card);
 
 			const headlineFieldVariantA = getVariantHeadline(activeOrDraftTest, 'A');
@@ -230,7 +224,7 @@ const createSelectArticleFromCard = () =>
 				...articleMeta,
 				headline: headlineField,
 				capiHeadline: capiHeadlineField,
-				hasCapiHeadlineChanged: hasCapiHeadlineChanged,
+				hasCapiHeadlineChanged: card.meta.showHeadlineUpdate ?? false,
 				/**
 				 * Tests (and headline variant fields) are only persisted to the card
 				 * once the card is saved.
@@ -726,6 +720,7 @@ const selectFront = createSelector(
 );
 
 export {
+	decideCapiHeadline,
 	selectExternalArticleFromCard,
 	createSelectArticleFromCard,
 	selectCardsFromRootState,

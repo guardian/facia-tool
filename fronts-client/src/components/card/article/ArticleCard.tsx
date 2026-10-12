@@ -75,6 +75,7 @@ interface ArticleComponentProps {
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 	hasLiveAbTest?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
+	hasCapiHeadlineChanged: boolean;
 }
 
 interface ComponentProps extends ArticleComponentProps {
@@ -128,6 +129,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 			otherCollectionsOnSameFrontThisCardIsOn,
 			hasLiveAbTest,
 			headlineTestError,
+			hasCapiHeadlineChanged,
 		} = this.props;
 
 		const getArticleData = () =>
@@ -203,6 +205,7 @@ class ArticleCard extends React.Component<ComponentProps, ComponentState> {
 								}
 								hasLiveAbTest={hasLiveAbTest}
 								headlineTestError={headlineTestError}
+								hasCapiHeadlineChanged={hasCapiHeadlineChanged}
 							/>
 						</ArticleBodyContainer>
 					</DragIntentContainer>
@@ -226,6 +229,7 @@ const createMapStateToProps = () => {
 		featureFlagPageViewData: boolean;
 		hasLiveAbTest?: boolean;
 		headlineTestError: AbTestHeadlineErrorType | null;
+		hasCapiHeadlineChanged: boolean;
 	} => {
 		const article = selectArticle(state, props.id);
 		const card = selectCard(state, props.id);
@@ -237,7 +241,6 @@ const createMapStateToProps = () => {
 		);
 		const hasLiveAbTest = hasActiveAbTestOnCard(liveCard);
 		const headlineTestError = getCurrentAbTestHeadlineError(card);
-
 		return {
 			article,
 			isLoading: selectors.selectIsLoadingInitialDataById(state, card.id),
@@ -247,6 +250,7 @@ const createMapStateToProps = () => {
 			),
 			hasLiveAbTest: hasLiveAbTest,
 			headlineTestError: headlineTestError,
+			hasCapiHeadlineChanged: card.meta.showHeadlineUpdate ?? false,
 		};
 	};
 };

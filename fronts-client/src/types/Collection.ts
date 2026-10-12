@@ -124,6 +124,7 @@ type RegularCardMeta = {
 	coverCardMobileImage?: ImageData;
 	coverCardTabletImage?: ImageData;
 	capiHeadline?: string | undefined;
+	showHeadlineUpdate?: boolean;
 };
 
 type CardRootMeta = ChefCardMeta & FeastCollectionCardMeta & RegularCardMeta;
