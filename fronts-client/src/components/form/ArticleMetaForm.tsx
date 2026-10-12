@@ -47,6 +47,7 @@ import {
 	shouldRenderField,
 	maxSlideshowImages,
 	getCardTestFromFormValues,
+	getHeadlineUpdateState,
 } from 'util/form';
 import { CapiFields } from 'util/form';
 import { Dispatch } from 'types/Store';
@@ -1261,16 +1262,36 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 		// mergeProps, or thread state through the component, to achieve the same
 		// result -- this seemed to be the most concise way.
 		dispatch((_, getState) => {
+			const state = getState();
 			const meta: CardMeta = getCardMetaFromFormValues(
-				getState(),
+				state,
 				props.cardId,
 				values,
 			);
-			const maybeTest = getCardTestFromFormValues(
-				getState(),
-				props.cardId,
-				values,
-			);
+			const maybeTest = getCardTestFromFormValues(state, props.cardId, values);
+
+			// Turning off an active A/B test must re-evaluate the "headline changed"
+			// flag, which is force-enabled while a test is active. This normally only
+			// happens during the CAPI poll, which isn't triggered by a local save.
+			const card = selectCard(state, props.cardId);
+			const isTurningOffActiveTest =
+				hasActiveAbTestOnCard(card) && !!maybeTest?.hasManuallyEndedOnThisTrail;
+
+			if (isTurningOffActiveTest) {
+				const externalArticle = selectExternalArticleFromCard(
+					state,
+					props.cardId,
+				);
+				Object.assign(
+					meta,
+					getHeadlineUpdateState(
+						false,
+						meta.capiHeadline,
+						externalArticle?.fields.headline,
+						meta.headline,
+					),
+				);
+			}
 
 			props.onSave(meta, maybeTest);
 		});

@@ -74,6 +74,7 @@ import { groupBy, uniqBy, keyBy } from 'lodash';
 import { fetchChefsById } from 'bundles/chefsBundle';
 import { fetchRecipesById } from '../bundles/recipesBundle';
 import { hasActiveAbTestOnCard } from '../util/abTests';
+import { getHeadlineUpdateState } from 'util/form';
 
 const selectAllCardsInCollections = createSelectAllCardsInCollections();
 
@@ -315,100 +316,6 @@ function updateCollection(
 	};
 }
 
-const getHeadlineUpdateState = (
-	hasActiveAbTest: boolean,
-	storedCapiHeadline?: string,
-	articleHeadline?: string,
-	cardHeadline?: string,
-) => {
-	// if there is no capi headline set, its probably a first pass so set it
-	if (!storedCapiHeadline) {
-		return {
-			capiHeadline: articleHeadline,
-			showHeadlineUpdate: false,
-		};
-	}
-	const storedCapiheadlineMatchesCardHeadline =
-		storedCapiHeadline === cardHeadline;
-
-	const externalHeadlineMatchesCardHeadline = articleHeadline === cardHeadline;
-	const externalHeadlineMatchesStoredCapiHeadline =
-		articleHeadline === storedCapiHeadline;
-
-	console.log(' article.fields.headline::: ', articleHeadline);
-	console.log(' card.meta.headline::: ', cardHeadline);
-	console.log('card.meta.capiHeadline::: ', storedCapiHeadline);
-
-	if (!hasActiveAbTest) {
-		if (cardHeadline === undefined) {
-			console.log('1.5 no card headline set - it will be the same', {
-				capiHeadline: articleHeadline,
-				showHeadlineUpdate: false,
-			});
-			return {
-				capiHeadline: articleHeadline,
-				showHeadlineUpdate: false,
-			};
-		}
-
-		if (
-			storedCapiheadlineMatchesCardHeadline &&
-			!externalHeadlineMatchesCardHeadline
-		) {
-			console.log(
-				'2. storedCapiheadlineMatchesCardHeadline && !externalHeadlineMatchesCardHeadline',
-				{
-					capiHeadline: articleHeadline,
-					showHeadlineUpdate: false,
-				},
-			);
-			return {
-				capiHeadline: articleHeadline,
-				showHeadlineUpdate: false,
-			};
-		}
-		if (
-			!externalHeadlineMatchesCardHeadline &&
-			!externalHeadlineMatchesStoredCapiHeadline
-		) {
-			console.log(
-				'3. !externalHeadlineMatchesCardHeadline && !externalHeadlineMatchesStoredCapiHeadline',
-				{ showHeadlineUpdate: true },
-			);
-			return { showHeadlineUpdate: true };
-		}
-		if (
-			externalHeadlineMatchesCardHeadline &&
-			!externalHeadlineMatchesStoredCapiHeadline
-		) {
-			console.log(
-				'4. externalHeadlineMatchesCardHeadline && !externalHeadlineMatchesStoredCapiHeadline',
-				{
-					capiHeadline: articleHeadline,
-					showHeadlineUpdate: false,
-				},
-			);
-			return {
-				capiHeadline: articleHeadline,
-				showHeadlineUpdate: false,
-			};
-		}
-		console.log('5. default case', { showHeadlineUpdate: false });
-		return { showHeadlineUpdate: false };
-	} else {
-		if (externalHeadlineMatchesStoredCapiHeadline) {
-			console.log('6. externalHeadlineMatchesStoredCapiHeadline', {
-				showHeadlineUpdate: false,
-			});
-			return { showHeadlineUpdate: false };
-		}
-		console.log('7. default case for active AB test', {
-			showHeadlineUpdate: true,
-		});
-		return { showHeadlineUpdate: true };
-	}
-};
-
 /**
  * Fetch articles from CAPI and add them to the store.
  */
@@ -458,7 +365,6 @@ const fetchArticles =
 						article.fields.headline,
 						card.meta.headline,
 					);
-
 					return [updateCard(card.uuid, headlineUpdate, { merge: true })];
 				});
 				if (capiHeadlineUpdates.length) {

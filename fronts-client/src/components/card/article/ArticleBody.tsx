@@ -555,7 +555,8 @@ const articleBodyDefault = React.memo(
 				</CardContent>
 				<ThumbnailArea
 					size={size}
-					$reserveBadgeSpace={shouldShowAbTestStatus || hasCapiHeadlineChanged}
+					$reserveBadgeSpace={true}
+					// $reserveBadgeSpace={shouldShowAbTestStatus || hasCapiHeadlineChanged}
 				>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
 						<PageViewDataWrapper data-testid="page-view-graph">
