@@ -3,30 +3,34 @@ import { Prompt } from 'react-router-dom';
 import v4 from 'uuid/v4';
 import { styled } from 'constants/theme';
 import { RecipeSearchContainer } from 'components/feed/RecipeSearchContainer';
-import { Typography } from '@guardian/stand/Typography';
 import notifications from 'services/notifications';
 import {
 	createPackage,
 	fetchPackage,
 	fetchPackages,
 	packageErrorMessage,
+	PackageNotFound,
+	PackageUnknownError,
 	publishPackage,
 	writePackage,
 } from 'services/packagesApi';
 import type {
 	FeastPackage,
+	FeastPackageHeader,
 	PackageEditorState,
 	PackageVisibility,
-	WritePackageRequest,
 } from 'types/Packages';
 import PackageCollectionBuilder from './PackageCollectionBuilder';
 import PackageListHeader from './PackageListHeader';
 import PackageListView from './PackageListView';
+import { Button } from '@guardian/stand/Button';
 
 const PageContainer = styled.div`
 	display: flex;
 	flex-direction: column;
-	height: calc(100vh - 80px);
+	position: relative;
+	top: 60px;
+	height: calc(100vh - 60px);
 	background-color: #f5f5f5;
 `;
 
@@ -53,7 +57,7 @@ const RightPanel = styled.div`
 `;
 
 const ManageFeastPackages: React.FC = () => {
-	const [packages, setPackages] = useState<FeastPackage[]>([]);
+	const [packages, setPackages] = useState<FeastPackageHeader[]>([]);
 	const [editor, setEditor] = useState<PackageEditorState | null>(null);
 	const [visibility, setVisibility] = useState<PackageVisibility>('All');
 	const [query, setQuery] = useState('');
@@ -232,6 +236,35 @@ const ManageFeastPackages: React.FC = () => {
 		);
 	};
 
+	const robustWrite = async (value: FeastPackage, attempt: number = 0) => {
+		if (attempt > 3) {
+			console.error('Could not write after 3 attempts, giving up');
+			throw new PackageUnknownError('Could not write after 3 attempts', null);
+		}
+
+		try {
+			return await writePackage(value.id, {
+				name: value.name.trim(),
+				packageType: 'Feast',
+				isHidden: value.isHidden,
+				metadata: value.metadata,
+				items: value.items,
+			});
+		} catch (err) {
+			if (err instanceof PackageNotFound) {
+				// The package does not exist yet, so create it
+				await createPackage({
+					id: value.id,
+					name: value.name.trim(),
+					packageType: 'Feast',
+					isHidden: value.isHidden,
+				});
+				return await robustWrite(value, attempt + 1);
+			} else {
+				throw err;
+			}
+		}
+	};
 	const handleSave = async () => {
 		if (!editor || busyRef.current) {
 			return;
@@ -247,40 +280,8 @@ const ManageFeastPackages: React.FC = () => {
 		updateBusy(true);
 		setError(null);
 
-		const value = editor.value;
-
-		const request: WritePackageRequest = {
-			name: value.name.trim(),
-			packageType: 'Feast',
-			isHidden: value.isHidden,
-			metadata: value.metadata,
-			items: value.items,
-		};
-
 		try {
-			if (!editor.isPersisted) {
-				await createPackage({
-					id: value.id,
-					name: request.name,
-					packageType: 'Feast',
-					isHidden: request.isHidden,
-					metadata: request.metadata,
-				});
-
-				// A failed PUT must retry the update, not recreate this UUID.
-				setEditor((current) =>
-					current ? { ...current, isPersisted: true } : current,
-				);
-
-				setRefreshVersion((version) => version + 1);
-			}
-
-			const saved = await writePackage(value.id, request);
-
-			if (saved === undefined) {
-				setError('Package not found.');
-				return;
-			}
+			const saved = await robustWrite(editor.value);
 
 			setEditor({
 				value: saved,
@@ -328,7 +329,7 @@ const ManageFeastPackages: React.FC = () => {
 			await publishPackage(editor.value.id);
 
 			setPublishMessage(
-				'Publication submitted. Feast may take time to process the update.',
+				'Publication submitted. It may take up to 30mins to show in the app.',
 			);
 		} catch (requestError) {
 			await reportError(requestError);
@@ -350,9 +351,6 @@ const ManageFeastPackages: React.FC = () => {
 
 			<ContentWrapper>
 				<LeftPanel>
-					<Typography element="h3" variant="headingSm">
-						SEARCH LIBRARY
-					</Typography>
 					<RecipeSearchContainer />
 				</LeftPanel>
 
@@ -398,12 +396,9 @@ const ManageFeastPackages: React.FC = () => {
 					) : loading ? (
 						<p role="status">Loading packages...</p>
 					) : error ? (
-						<button
-							type="button"
-							onClick={() => setRefreshVersion((version) => version + 1)}
-						>
+						<Button onClick={() => setRefreshVersion((version) => version + 1)}>
 							Retry
-						</button>
+						</Button>
 					) : (
 						<PackageListView
 							packages={filteredPackages}
