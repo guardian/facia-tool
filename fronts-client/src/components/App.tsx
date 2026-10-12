@@ -35,6 +35,7 @@ import {
 	issuePathProps,
 	frontsFeatureProps,
 	subnavRoutes,
+	packagesRoutes,
 } from 'routes/routes';
 import ManageView from './Editions/ManageView';
 import FeaturesView from './Features/FeaturesView';
@@ -44,6 +45,7 @@ import OptionsModal from './modals/OptionsModal';
 import BannerNotification from './notifications/BannerNotification';
 import pageConfig from 'util/extractConfigFromPage';
 import { useLocation } from 'react-router';
+import ManageFeastPackages from './Packages/ManageFeastPackages';
 
 // NB the properties described in font-face work as matchers, assigning text to the font imported by the source.
 // this is why we have 2 declarations of font-weight in several of these font-faces. Assigning either hits this font.
@@ -170,6 +172,16 @@ const App = () => {
 						<Route {...subnavRoutes.sectionProps} component={SubnavSection} />
 						<Route exact path="/" component={Home} />
 						<Route exact path={manageEditions} component={ManageView} />
+						<Route
+							path={packagesRoutes.manageProps.path}
+							exact={packagesRoutes.manageProps.exact}
+							component={ManageFeastPackages}
+						/>
+						<Route
+							path="/packages/manage"
+							exact={true}
+							component={ManageFeastPackages}
+						/>
 						<Route component={NotFound} />
 					</Switch>
 				</AppContainer>
