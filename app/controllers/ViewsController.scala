@@ -87,7 +87,8 @@ class ViewsController(
                 priority != "email" && !isBreakingNews && !isTreatsPage,
                 isBreakingNews,
                 priority,
-                maybeTelemetryUrl = Some(telemetryUrl)
+                maybeTelemetryUrl = Some(telemetryUrl),
+                dispatchUrl = config.environment.dispatchToolUrl
               )
             )
           }
@@ -107,7 +108,8 @@ class ViewsController(
             assetsManager.pathForConfig,
             false,
             false,
-            maybeTelemetryUrl = Some(telemetryUrl)
+            maybeTelemetryUrl = Some(telemetryUrl),
+            dispatchUrl = config.environment.dispatchToolUrl
           )
         )
       }
