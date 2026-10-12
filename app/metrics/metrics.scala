@@ -5,7 +5,10 @@ import java.lang.management.{GarbageCollectorMXBean, ManagementFactory}
 import java.util.concurrent.atomic.AtomicLong
 
 import org.apache.pekko.actor.Scheduler
-import com.amazonaws.services.cloudwatch.model.{Dimension, StandardUnit}
+import software.amazon.awssdk.services.cloudwatch.model.{
+  Dimension,
+  StandardUnit
+}
 import logging.Logging
 
 import scala.jdk.CollectionConverters._
@@ -190,7 +193,7 @@ class CloudWatchApplicationMetrics(
 ) extends Logging {
   val applicationMetricsNamespace: String = "Application"
   val applicationDimension: Dimension =
-    new Dimension().withName("ApplicationName").withValue(appName)
+    Dimension.builder().name("ApplicationName").value(appName).build()
   def applicationMetrics: List[FrontendMetric] = List(
     FaciaToolMetrics.ApiUsageCount,
     FaciaToolMetrics.ProxyCount,
@@ -216,13 +219,13 @@ class CloudWatchApplicationMetrics(
         s"${gc.name}-gc-count-per-min",
         "Used heap memory (MB)",
         () => gc.gcCount.toLong,
-        StandardUnit.Count
+        StandardUnit.COUNT
       ),
       GaugeMetric(
         s"${gc.name}-gc-time-per-min",
         "Used heap memory (MB)",
         () => gc.gcTime.toLong,
-        StandardUnit.Count
+        StandardUnit.COUNT
       )
     )
   }
@@ -231,7 +234,8 @@ class CloudWatchApplicationMetrics(
     val allMetrics: List[FrontendMetric] =
       this.systemMetrics ::: this.applicationMetrics
     if (!isDev) {
-      val stageDimension = new Dimension().withName("Stage").withValue(stage)
+      val stageDimension =
+        Dimension.builder().name("Stage").value(stage).build()
       cloudWatch.putMetricsWithStage(
         allMetrics,
         applicationDimension,

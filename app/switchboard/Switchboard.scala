@@ -1,7 +1,7 @@
 package switchboard
 
 import org.apache.pekko.actor.Scheduler
-import com.amazonaws.auth.AWSCredentialsProvider
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
 import logging.Logging
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -10,14 +10,13 @@ import scala.concurrent.duration._
 case class SwitchboardConfiguration(
     bucket: String,
     objectKey: String,
-    credentials: AWSCredentialsProvider,
-    endpoint: String,
+    credentials: AwsCredentialsProvider,
     region: String
 )
 
 class Lifecycle(conf: SwitchboardConfiguration, scheduler: Scheduler)
     extends Logging {
-  lazy val client: S3client = new S3client(conf, conf.endpoint)
+  lazy val client: S3client = new S3client(conf)
 
   logger.info("Starting switchboard cache")
   scheduler.scheduleWithFixedDelay(0.seconds, 1.minute) { () =>

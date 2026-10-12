@@ -1,10 +1,5 @@
 package services
 
-import com.amazonaws.regions.Regions
-import com.amazonaws.services.sns.AmazonSNSAsyncClientBuilder
-import com.amazonaws.services.sns.model.PublishResult
-import com.amazonaws.services.sqs.AmazonSQSAsyncClientBuilder
-import com.amazonaws.services.sqs.model.SendMessageResult
 import com.gu.facia.api.models.faciapress.{
   Draft,
   FrontPath,
@@ -15,6 +10,9 @@ import com.gu.facia.api.models.faciapress.{
 import conf.ApplicationConfiguration
 import logging.Logging
 import metrics.FaciaToolMetrics.{EnqueuePressFailure, EnqueuePressSuccess}
+import software.amazon.awssdk.regions.Region.EU_WEST_1
+import software.amazon.awssdk.services.sns.SnsAsyncClient
+import software.amazon.awssdk.services.sns.model.PublishResponse
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
@@ -42,10 +40,10 @@ class FaciaPressTopic(val config: ApplicationConfiguration) {
   val maybeTopic = config.faciatool.frontPressToolTopic map { topicArn =>
     val credentials = config.aws.cmsFrontsAccountCredentials
     JsonMessageTopic[PressJob](
-      AmazonSNSAsyncClientBuilder
-        .standard()
-        .withCredentials(credentials)
-        .withRegion(Regions.EU_WEST_1)
+      SnsAsyncClient
+        .builder()
+        .credentialsProvider(credentials)
+        .region(EU_WEST_1)
         .build(),
       topicArn
     )
@@ -54,7 +52,7 @@ class FaciaPressTopic(val config: ApplicationConfiguration) {
   def publish(
       job: PressJob,
       collectionIds: Set[String] = Set()
-  ): Future[PublishResult] = {
+  ): Future[PublishResponse] = {
     maybeTopic match {
       case Some(topic) if collectionIds.nonEmpty =>
         import SNSTopics._
@@ -77,7 +75,7 @@ class FaciaPress(
     val faciaPressTopic: FaciaPressTopic,
     val configAgent: ConfigAgent
 ) extends Logging {
-  def press(pressCommand: PressCommand): Future[List[PublishResult]] = {
+  def press(pressCommand: PressCommand): Future[List[PublishResponse]] = {
     configAgent.refreshAndReturn() flatMap { _ =>
       val paths: Set[String] = for {
         id <- pressCommand.collectionIds

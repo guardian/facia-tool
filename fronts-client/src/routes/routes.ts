@@ -74,3 +74,18 @@ export {
 	frontsFeatureProps,
 	EditionsRoutes,
 };
+
+const selectionsBase = '/selections';
+const selectionsCreate = `${selectionsBase}/new`;
+
+export const packagesRoutes = {
+	base: selectionsBase,
+	create: selectionsCreate,
+	edit: (id: string) => `${selectionsBase}/${id}`,
+	manage: `${selectionsBase}/manage`,
+	sectionProps: { path: selectionsBase },
+	listProps: { exact: true, path: selectionsBase },
+	createProps: { exact: true, path: selectionsCreate },
+	editProps: { exact: true, path: `${selectionsBase}/:id` },
+	manageProps: { exact: true, path: `${selectionsBase}/manage` },
+};

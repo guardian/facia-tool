@@ -1,13 +1,5 @@
-import com.amazonaws.auth.AWSCredentialsProvider
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider
 import software.amazon.awssdk.regions.{Region => WeirdRegion}
-import com.amazonaws.services.sns.AmazonSNSClient
-import software.amazon.awssdk.auth.credentials.{
-  AwsCredentials,
-  AwsCredentialsProvider,
-  AwsCredentialsProviderChain,
-  DefaultCredentialsProvider,
-  ProfileCredentialsProvider
-}
 import conf.ApplicationConfiguration
 import config.{CustomGzipFilter, UpdateManager}
 import controllers._
@@ -34,6 +26,7 @@ import services.editions.publishing.{
 }
 import slices.{Containers, FixedContainers}
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient
+import software.amazon.awssdk.services.sns.SnsClient
 import thumbnails.ContainerThumbnails
 import tools.FaciaApiIO
 import updates.{BreakingNewsUpdate, StructuredLogger}
@@ -53,34 +46,27 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val isProd: Boolean = context.environment.mode == Mode.Prod
 
   // Services
-  val awsEndpoints = new AwsEndpoints(config)
   val capi = new GuardianCapi(config)
   val ophan = new GuardianOphan(config)
 
-  val oldAwsCredentials: AWSCredentialsProvider =
-    config.aws.cmsFrontsAccountCredentials
   val newAwsCredentials: AwsCredentialsProvider =
-    config.aws.newStyleCmsFrontsAccountCredentials
+    config.aws.cmsFrontsAccountCredentials
 
-  // Scala 2.13 requires a version of Scanamo which requires the 'new' Amazon AWS SDK.
-  // This means we have two different SDKs for AWS in the build, which is unideal
-  // but should not lead to problems.
-  // TODO Upversion the rest of the AWS SDK code!
   val dynamo: DynamoDbClient = DynamoDbClient
     .builder()
     .credentialsProvider(newAwsCredentials)
     .region(WeirdRegion.of(config.aws.region))
     .build()
-  val s3Client = S3.client(oldAwsCredentials, config.aws.region)
-  val snsClient = AmazonSNSClient
+  val s3Client = S3.client(newAwsCredentials, config.aws.region)
+  val snsClient = SnsClient
     .builder()
-    .withCredentials(oldAwsCredentials)
-    .withRegion(config.aws.region)
+    .credentialsProvider(newAwsCredentials)
+    .region(WeirdRegion.of(config.aws.region))
     .build()
   val acl = new Acl(permissions)
 
   // Editions services
-  val editionsDb = new FaciaDB(
+  val faciaDb = new FaciaDB(
     config.postgres.url,
     config.postgres.user,
     config.postgres.password
@@ -104,13 +90,13 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     publishingBucket,
     previewBucket,
     feastPublicationTarget,
-    editionsDb
+    faciaDb
   )
-  PublishEventsListener.apply(config, editionsDb).start
+  PublishEventsListener.apply(config, faciaDb).start
 
   // Controllers
   val frontsApi = new FrontsApi(config)
-  val s3FrontsApi = new S3FrontsApi(config, isTest, awsEndpoints)
+  val s3FrontsApi = new S3FrontsApi(config, isTest)
   val faciaApiIO = new FaciaApiIO(frontsApi, s3FrontsApi)
   val configAgent = new ConfigAgent(config, frontsApi)
   val structuredLogger = new StructuredLogger(config, configAgent)
@@ -131,7 +117,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     structuredLogger
   )
   val updateManager = new UpdateManager(updateActions, configAgent, s3FrontsApi)
-  val cloudwatch = new CloudWatch(config, awsEndpoints)
+  val cloudwatch = new CloudWatch(config)
   val press = new Press(faciaPress)
   val assetsManager = new AssetsManager(config, isDev)
   override lazy val httpErrorHandler = new LoggingHttpErrorHandler(
@@ -141,14 +127,20 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     Some(router)
   )
 
-//  Controllers
+  //  Controllers
   val editions = new EditionsController(
-    editionsDb,
+    faciaDb,
     templating,
     editionsPublishing,
     capi,
     this
   )
+  val packages = new PackageController(
+    faciaDb,
+    editionsPublishing,
+    this
+  )
+
   val collection =
     new CollectionController(acl, structuredLogger, updateManager, press, this)
   val defaults = new DefaultsController(acl, isDev, this)
@@ -178,7 +170,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
   val vanityRedirects = new VanityRedirects(acl, this)
   val views = new ViewsController(acl, assetsManager, isDev, this)
   val pressController = new PressController(dynamo, this)
-  val v2App = new V2App(isDev, acl, dynamo, editionsDb, this)
+  val v2App = new V2App(isDev, acl, dynamo, faciaDb, this)
   val faciaToolV2 = new FaciaToolV2Controller(
     acl,
     structuredLogger,
@@ -225,6 +217,7 @@ class AppComponents(context: Context, val config: ApplicationConfiguration)
     v2App,
     gridProxy,
     editions,
+    packages,
     customSubnav
   )
 
