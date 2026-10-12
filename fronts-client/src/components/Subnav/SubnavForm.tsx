@@ -25,6 +25,7 @@ import { TextInput } from '@guardian/stand/TextInput';
 import { TextArea } from '@guardian/stand/TextArea';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
+import { ToggleSwitch } from '@guardian/stand/ToggleSwitch';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
 import { selectShouldUseCODELinks } from 'selectors/configSelectors';
@@ -63,6 +64,9 @@ import {
 	ColumnHeaders,
 	ColumnHeadersSpacer,
 	ColumnHeaderLabel,
+	Field,
+	ItemHeader,
+	ItemText,
 } from './styles';
 
 interface SubnavFormProps {
@@ -173,6 +177,9 @@ const SubnavForm = ({
 	const [currentStepId, setCurrentStepId] = useState<StepId>('header');
 	const [headerText, setHeaderText] = useState(
 		initialSubnav?.header.headerText ?? '',
+	);
+	const [showHeaderText, setShowHeaderText] = useState(
+		initialSubnav?.header.showHeaderText !== false,
 	);
 	const [headerCopy, setHeaderCopy] = useState(
 		initialSubnav?.header.copy ?? '',
@@ -345,6 +352,7 @@ const SubnavForm = ({
 			id: subnavId.current,
 			header: {
 				headerText: headerText.trim(),
+				showHeaderText,
 				dotcomPath: headerDotcomPath.trim() || undefined,
 				copy: headerCopy.trim(),
 			},
@@ -482,9 +490,16 @@ const SubnavForm = ({
 									onChange={setHeaderDotcomPath}
 									placeholder="e.g. politics/uk-election-2024"
 								/>
+								<Field>
+									<ItemHeader>Header text display</ItemHeader>
+									<ItemText>Show header text</ItemText>
+									<ToggleSwitch
+										isSelected={showHeaderText}
+										onChange={(isSelected) => setShowHeaderText(isSelected)}
+									/>
+								</Field>
 							</RowFields>
 						</CreateFormSection>
-
 						<CreateFormSection
 							ref={setSectionRef('links')}
 							data-step-id="links"
