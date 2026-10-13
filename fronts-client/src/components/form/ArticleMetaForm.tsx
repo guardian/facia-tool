@@ -1270,24 +1270,34 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 			);
 			const maybeTest = getCardTestFromFormValues(state, props.cardId, values);
 
+			const card = selectCard(state, props.cardId);
+			const externalArticle = selectExternalArticleFromCard(
+				state,
+				props.cardId,
+			);
+			const currentCapiHeadline = externalArticle?.fields.headline;
+
 			// Turning off an active A/B test must re-evaluate the "headline changed"
 			// flag, which is force-enabled while a test is active. This normally only
 			// happens during the CAPI poll, which isn't triggered by a local save.
-			const card = selectCard(state, props.cardId);
 			const isTurningOffActiveTest =
 				hasActiveAbTestOnCard(card) && !!maybeTest?.hasManuallyEndedOnThisTrail;
 
-			if (isTurningOffActiveTest) {
-				const externalArticle = selectExternalArticleFromCard(
-					state,
-					props.cardId,
-				);
+			// Reverting the headline to the latest CAPI headline (e.g. via the rewind
+			// button) means the user has adopted the updated headline, so acknowledge
+			// the change and clear the "headline changed" flag.
+			const hasAdoptedCapiHeadline =
+				!!card?.meta.showHeadlineUpdate &&
+				meta.headline !== undefined &&
+				meta.headline === currentCapiHeadline;
+
+			if (isTurningOffActiveTest || hasAdoptedCapiHeadline) {
 				Object.assign(
 					meta,
 					getHeadlineUpdateState(
 						false,
 						meta.capiHeadline,
-						externalArticle?.fields.headline,
+						currentCapiHeadline,
 						meta.headline,
 					),
 				);
