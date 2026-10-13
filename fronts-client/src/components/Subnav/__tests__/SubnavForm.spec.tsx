@@ -9,177 +9,6 @@ import { theme } from 'constants/theme';
 import SubnavForm from '../SubnavForm';
 import { CustomSubnav, CustomSubnavHeader } from '../types';
 
-// Stand ships untransformed ESM. These adapters keep its value/selection/press
-// contracts while letting the tests interact with native, labelled controls.
-type InputProps = {
-	label?: string;
-	'aria-label'?: string;
-	value: string;
-	onChange: (value: string) => void;
-	isRequired?: boolean;
-};
-
-jest.mock('@guardian/stand/TextInput', () => ({
-	TextInput: (props: InputProps) => (
-		<label>
-			{props.label}
-			<input
-				aria-label={props['aria-label'] || props.label}
-				value={props.value}
-				required={props.isRequired}
-				onChange={(event) => props.onChange(event.target.value)}
-			/>
-		</label>
-	),
-}));
-jest.mock('@guardian/stand/TextArea', () => ({
-	TextArea: (props: InputProps) => (
-		<label>
-			{props.label}
-			<textarea
-				aria-label={props.label}
-				value={props.value}
-				onChange={(event) => props.onChange(event.target.value)}
-			/>
-		</label>
-	),
-}));
-jest.mock('@guardian/stand/Button', () => ({
-	Button: (props: {
-		children: React.ReactNode;
-		onPress: () => void;
-		isDisabled?: boolean;
-		'aria-label'?: string;
-		variant?: string;
-	}) => (
-		<button
-			aria-label={props['aria-label']}
-			disabled={props.isDisabled}
-			data-variant={props.variant}
-			onClick={props.onPress}
-		>
-			{props.children}
-		</button>
-	),
-}));
-jest.mock('@guardian/stand/ToggleSwitch', () => ({
-	ToggleSwitch: (props: {
-		isSelected: boolean;
-		onChange: (selected: boolean) => void;
-	}) => (
-		<input
-			type="checkbox"
-			aria-label="Show header text"
-			checked={props.isSelected}
-			onChange={(event) => props.onChange(event.target.checked)}
-		/>
-	),
-}));
-jest.mock('@guardian/stand/Select', () => ({
-	Select: (props: {
-		children: React.ReactNode;
-		selectedKey: string;
-		onSelectionChange: (key: string) => void;
-		'aria-label': string;
-	}) => (
-		<select
-			aria-label={props['aria-label']}
-			value={props.selectedKey}
-			onChange={(event) => props.onSelectionChange(event.target.value)}
-		>
-			{props.children}
-		</select>
-	),
-	Option: (props: { id: string; children: React.ReactNode }) => (
-		<option value={props.id}>{props.children}</option>
-	),
-}));
-jest.mock('@guardian/stand/Grid', () => ({
-	Grid: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-	Item: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-}));
-jest.mock('@guardian/stand/Typography', () => ({
-	Typography: ({ children }: { children: React.ReactNode }) => (
-		<p>{children}</p>
-	),
-}));
-jest.mock('@guardian/stand/SidebarStepperNavigation', () => ({
-	SidebarStepperNavigation: (props: {
-		currentStepId: string;
-		onPress: (id: string) => void;
-		stepNavConfig: {
-			steps: { id: string; label: string; stepStatus: string }[];
-		};
-	}) => (
-		<nav aria-label="Steps">
-			{props.stepNavConfig.steps.map((step) => (
-				<button
-					key={step.id}
-					aria-label={`Step: ${step.label}`}
-					aria-current={props.currentStepId === step.id ? 'step' : undefined}
-					data-status={step.stepStatus}
-					onClick={() => props.onPress(step.id)}
-				>
-					{step.label}
-				</button>
-			))}
-		</nav>
-	),
-}));
-
-// Exercise the DnD callback contract without testing the library's geometry.
-jest.mock('react-beautiful-dnd', () => ({
-	DragDropContext: (props: {
-		children: React.ReactNode;
-		onDragEnd: (result: {
-			source: { index: number };
-			destination: { index: number } | null;
-		}) => void;
-	}) => (
-		<div>
-			{props.children}
-			<button
-				onClick={() =>
-					props.onDragEnd({ source: { index: 0 }, destination: { index: 1 } })
-				}
-			>
-				Move first nav item down
-			</button>
-			<button
-				onClick={() =>
-					props.onDragEnd({ source: { index: 0 }, destination: null })
-				}
-			>
-				Cancel nav item drag
-			</button>
-		</div>
-	),
-	Droppable: (props: {
-		children: (provided: {
-			innerRef: () => void;
-			droppableProps: object;
-			placeholder: null;
-		}) => React.ReactNode;
-	}) =>
-		props.children({
-			innerRef: () => {},
-			droppableProps: {},
-			placeholder: null,
-		}),
-	Draggable: (props: {
-		children: (provided: {
-			innerRef: () => void;
-			draggableProps: object;
-			dragHandleProps: object;
-		}) => React.ReactNode;
-	}) =>
-		props.children({
-			innerRef: () => {},
-			draggableProps: {},
-			dragHandleProps: {},
-		}),
-}));
-
 const loadedSubnav = (): CustomSubnav => ({
 	id: 'existing-subnav',
 	header: {
@@ -231,8 +60,27 @@ const setup = (
 			result.rerender(tree(updates)),
 		save: () => result.getByText('Save draft'),
 		publish: () => result.getByText('Publish subnav'),
-		change: (label: string, value: string) =>
-			fireEvent.change(result.getByLabelText(label), { target: { value } }),
+		headerSwitch: () => result.getByRole('switch'),
+		step: (label: string) => result.getByLabelText(new RegExp(`^${label},`)),
+		change: (label: string, value: string) => {
+			if (label === 'Page type') {
+				fireEvent.click(result.getByLabelText(label));
+				const optionLabels: Record<string, string> = {
+					front: 'Front',
+					article: 'Article',
+					hasTag: 'Tag',
+				};
+				fireEvent.click(
+					result
+						.getAllByRole('option')
+						.find((option) => option.textContent === optionLabels[value])!,
+				);
+			} else {
+				fireEvent.change(result.getByLabelText(label), {
+					target: { value },
+				});
+			}
+		},
 	};
 };
 
@@ -242,11 +90,29 @@ const clickAsync = async (element: HTMLElement) => {
 	});
 };
 
-const originalResizeObserver = global.ResizeObserver;
-const originalIntersectionObserver = global.IntersectionObserver;
-const originalScrollIntoView = HTMLElement.prototype.scrollIntoView;
+const originalResizeObserver = Object.getOwnPropertyDescriptor(
+	global,
+	'ResizeObserver',
+);
+const originalIntersectionObserver = Object.getOwnPropertyDescriptor(
+	global,
+	'IntersectionObserver',
+);
+const originalScrollIntoView = Object.getOwnPropertyDescriptor(
+	HTMLElement.prototype,
+	'scrollIntoView',
+);
 let intersectionCallback: IntersectionObserverCallback;
 const scrollIntoView = jest.fn();
+
+const restoreProperty = (
+	target: object,
+	key: string,
+	descriptor: PropertyDescriptor | undefined,
+) => {
+	if (descriptor) Object.defineProperty(target, key, descriptor);
+	else Reflect.deleteProperty(target, key);
+};
 
 beforeAll(() => {
 	global.ResizeObserver = class {
@@ -279,16 +145,20 @@ afterEach(() => {
 });
 
 afterAll(() => {
-	global.ResizeObserver = originalResizeObserver;
-	global.IntersectionObserver = originalIntersectionObserver;
-	HTMLElement.prototype.scrollIntoView = originalScrollIntoView;
+	restoreProperty(global, 'ResizeObserver', originalResizeObserver);
+	restoreProperty(global, 'IntersectionObserver', originalIntersectionObserver);
+	restoreProperty(
+		HTMLElement.prototype,
+		'scrollIntoView',
+		originalScrollIntoView,
+	);
 });
 
 describe('SubnavForm draft state', () => {
 	it('loads a clean draft with publishing available and no save required', () => {
 		const form = setup();
 		expect(form.getByLabelText('Header text')).toHaveValue('Election');
-		expect(form.getByLabelText('Show header text')).toBeChecked();
+		expect(form.headerSwitch()).toBeChecked();
 		expect(form.save()).toBeDisabled();
 		expect(form.publish()).toBeEnabled();
 		expect(
@@ -342,12 +212,12 @@ describe('SubnavForm draft state', () => {
 		const subnav = loadedSubnav();
 		subnav.header.showHeaderText = false;
 		const form = setup({ initialSubnav: subnav });
-		expect(form.getByLabelText('Show header text')).not.toBeChecked();
+		expect(form.headerSwitch()).not.toBeChecked();
 		expect(form.save()).toBeDisabled();
-		fireEvent.click(form.getByLabelText('Show header text'));
+		fireEvent.click(form.headerSwitch());
 		expect(form.save()).toBeEnabled();
 		expect(form.publish()).toBeDisabled();
-		fireEvent.click(form.getByLabelText('Show header text'));
+		fireEvent.click(form.headerSwitch());
 		expect(form.save()).toBeDisabled();
 		expect(form.publish()).toBeEnabled();
 	});
@@ -372,7 +242,7 @@ describe('SubnavForm draft state', () => {
 			header: legacyHeader as CustomSubnavHeader,
 		};
 		const form = setup({ initialSubnav: legacySubnav });
-		expect(form.getByLabelText('Show header text')).toBeChecked();
+		expect(form.headerSwitch()).toBeChecked();
 		expect(form.save()).toBeEnabled();
 		expect(form.publish()).toBeDisabled();
 		await clickAsync(form.save());
@@ -396,7 +266,7 @@ describe('SubnavForm saving and publishing', () => {
 		form.change('Dotcom path', '  new/link  ');
 		form.change('Path', '  /new/page  ');
 		form.change('Page type', 'hasTag');
-		fireEvent.click(form.getByLabelText('Show header text'));
+		fireEvent.click(form.headerSwitch());
 		fireEvent.click(form.getByText('Add nav item'));
 		fireEvent.click(form.getByText('Add page'));
 		await clickAsync(form.save());
@@ -476,13 +346,15 @@ describe('SubnavForm saving and publishing', () => {
 	});
 
 	it('does not establish a saved draft or preview after the first save fails', async () => {
-		jest.spyOn(console, 'error').mockImplementation(() => {});
+		const log = jest.spyOn(console, 'error');
 		const form = setup({ initialSubnav: undefined, hasDraft: false });
-		form.onSaveDraft.mockRejectedValueOnce(new Error('Save failed'));
+		const error = new Error('Save failed');
+		form.onSaveDraft.mockRejectedValueOnce(error);
 		form.change('Header text', 'New');
 		form.change('Link text', 'News');
 		form.change('Path', 'news');
 		await clickAsync(form.save());
+		expect(log).toHaveBeenCalledWith('Failed to save subnav draft', error);
 		expect(form.save()).toBeEnabled();
 		expect(form.publish()).toBeDisabled();
 		expect(form.getByText('No draft subnav to display')).toBeInTheDocument();
@@ -492,7 +364,7 @@ describe('SubnavForm saving and publishing', () => {
 
 	it('keeps unsaved edits dirty and publishing unavailable when saving fails', async () => {
 		const error = new Error('Save failed');
-		const log = jest.spyOn(console, 'error').mockImplementation(() => {});
+		const log = jest.spyOn(console, 'error');
 		const form = setup();
 		form.onSaveDraft.mockRejectedValueOnce(error);
 		form.change('Path', 'unsaved/page');
@@ -512,7 +384,7 @@ describe('SubnavForm saving and publishing', () => {
 	it.each([false, true])(
 		'publishes the loaded ID and leaves the clean draft usable (failure: %s)',
 		async (failure) => {
-			const log = jest.spyOn(console, 'error').mockImplementation(() => {});
+			const log = jest.spyOn(console, 'error');
 			const form = setup();
 			const error = new Error('Publish failed');
 			if (failure) form.onPublish.mockRejectedValueOnce(error);
@@ -630,15 +502,82 @@ describe('SubnavForm repeatable content', () => {
 	);
 
 	it('reorders nav items, ignores a cancelled drop and saves the displayed order', async () => {
+		jest.useFakeTimers();
 		const subnav = loadedSubnav();
 		subnav.links.push({ linkText: 'Analysis', dotcomPath: 'analysis' });
 		const form = setup({ initialSubnav: subnav });
-		fireEvent.click(form.getByText('Cancel nav item drag'));
+		const rows = Array.from(
+			form.container.querySelectorAll<HTMLElement>(
+				'[data-react-beautiful-dnd-draggable]',
+			),
+		);
+		const droppable = form.container.querySelector<HTMLElement>(
+			'[data-react-beautiful-dnd-droppable]',
+		)!;
+		const rect = (top: number, height: number): DOMRect => ({
+			top,
+			bottom: top + height,
+			left: 0,
+			right: 600,
+			x: 0,
+			y: top,
+			width: 600,
+			height,
+			toJSON: () => ({}),
+		});
+		// JSDOM has no layout. Give the real DnD sensor a visible list and rows.
+		jest
+			.spyOn(document.documentElement, 'clientWidth', 'get')
+			.mockReturnValue(1024);
+		jest
+			.spyOn(document.documentElement, 'clientHeight', 'get')
+			.mockReturnValue(768);
+		jest
+			.spyOn(droppable, 'getBoundingClientRect')
+			.mockReturnValue(rect(0, 224));
+		rows.forEach((row) =>
+			jest
+				.spyOn(row, 'getBoundingClientRect')
+				.mockImplementation(() =>
+					rect(
+						Array.from(
+							droppable.querySelectorAll(
+								'[data-react-beautiful-dnd-draggable]',
+							),
+						).indexOf(row) * 112,
+						100,
+					),
+				),
+		);
+		const press = async (key: ' ' | 'Escape' | 'ArrowDown') => {
+			const keyCodes = { ' ': 32, Escape: 27, ArrowDown: 40 };
+			fireEvent.keyDown(form.getAllByLabelText('Reorder nav item')[0], {
+				key,
+				keyCode: keyCodes[key],
+			});
+			await act(async () => {
+				// Flush the keyboard sensor's requestAnimationFrame, not wall-clock time.
+				await jest.advanceTimersByTimeAsync(16);
+			});
+			if (key === ' ' || key === 'Escape') {
+				rows.forEach((row) => {
+					// JSDOM does not run CSS transitions or implement TransitionEvent.
+					const event = new Event('transitionend', { bubbles: true });
+					Object.defineProperty(event, 'propertyName', { value: 'transform' });
+					fireEvent(row, event);
+				});
+			}
+		};
+		await press(' ');
+		await press('Escape');
 		expect(form.save()).toBeDisabled();
-		fireEvent.click(form.getByText('Move first nav item down'));
+		await press(' ');
+		await press('ArrowDown');
+		await press(' ');
 		expect(form.getAllByLabelText('Link text')[0]).toHaveValue('Analysis');
 		expect(form.save()).toBeEnabled();
-		fireEvent.click(form.getByText('Cancel nav item drag'));
+		await press(' ');
+		await press('Escape');
 		expect(form.getAllByLabelText('Link text')[0]).toHaveValue('Analysis');
 		await clickAsync(form.save());
 		expect(form.onSaveDraft.mock.calls[0][0].links).toEqual([
@@ -646,7 +585,9 @@ describe('SubnavForm repeatable content', () => {
 			subnav.links[0],
 		]);
 		expect(form.save()).toBeDisabled();
-		fireEvent.click(form.getByText('Move first nav item down'));
+		await press(' ');
+		await press('ArrowDown');
+		await press(' ');
 		expect(form.save()).toBeEnabled();
 	});
 
@@ -700,10 +641,7 @@ describe('SubnavForm repeatable content', () => {
 		await clickAsync(form.save());
 		expect(form.onSaveDraft.mock.calls[1][0].images).toBeUndefined();
 		expect(form.save()).toBeDisabled();
-		expect(form.getByLabelText('Step: Images')).toHaveAttribute(
-			'data-status',
-			'optional',
-		);
+		expect(form.step('Images')).toHaveTextContent('Optional');
 	});
 });
 
@@ -857,25 +795,18 @@ describe('SubnavForm preview and navigation', () => {
 		fireEvent.click(form.getByLabelText('Mobile'));
 		fireEvent.click(form.getByLabelText(label));
 		expect(form.getByTitle('Subnav preview')).toHaveStyle(`width: ${width}`);
-		expect(form.getByLabelText(label)).toHaveAttribute(
-			'data-variant',
-			'primary',
-		);
 	});
 
 	it('navigates to sidebar sections and tracks focused and visible sections', () => {
 		const form = setup();
-		fireEvent.click(form.getByLabelText('Step: Images'));
+		fireEvent.click(form.step('Images'));
 		expect(scrollIntoView).toHaveBeenCalledWith({
 			behavior: 'smooth',
 			block: 'start',
 		});
-		expect(form.getByLabelText('Step: Images')).toHaveAttribute(
-			'aria-current',
-			'step',
-		);
+		expect(form.step('Images')).toHaveAttribute('aria-current', 'step');
 		fireEvent.focus(form.getByLabelText('Path'));
-		expect(form.getByLabelText('Step: Assign to pages')).toHaveAttribute(
+		expect(form.step('Assign to pages')).toHaveAttribute(
 			'aria-current',
 			'step',
 		);
@@ -892,18 +823,9 @@ describe('SubnavForm preview and navigation', () => {
 				{} as IntersectionObserver,
 			);
 		});
-		expect(form.getByLabelText('Step: Header')).toHaveAttribute(
-			'aria-current',
-			'step',
-		);
-		expect(form.getByLabelText('Step: Header')).toHaveAttribute(
-			'data-status',
-			'complete',
-		);
+		expect(form.step('Header')).toHaveAttribute('aria-current', 'step');
+		expect(form.step('Header')).toHaveTextContent('Complete');
 		form.change('Header text', '');
-		expect(form.getByLabelText('Step: Header')).toHaveAttribute(
-			'data-status',
-			'incomplete',
-		);
+		expect(form.step('Header')).toHaveTextContent('Incomplete');
 	});
 });
