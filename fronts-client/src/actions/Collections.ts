@@ -342,7 +342,6 @@ const fetchArticles =
 			if (freshArticles.length) {
 				dispatch(externalArticleActions.fetchSuccess(freshArticles));
 			}
-
 			const remainingArticles = difference(
 				idsToFetch,
 				articles.map((_) => _.id),
