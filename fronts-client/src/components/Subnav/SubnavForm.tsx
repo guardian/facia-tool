@@ -18,6 +18,7 @@ import { TextInput } from '@guardian/stand/TextInput';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
 import { Tabs, type TabTheme } from '@guardian/stand/Tabs';
+import { ToggleSwitch } from '@guardian/stand/ToggleSwitch';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
 import { Icon, type IconProps } from '@guardian/stand/Icon';
@@ -53,6 +54,10 @@ import {
 	CreateFormPreviewFrame,
 	ColumnHeaders,
 	ColumnHeadersSpacer,
+	ColumnHeaderLabel,
+	Field,
+	ItemHeader,
+	ItemText,
 } from './styles';
 import { theme } from 'constants/theme';
 import { DragIcon } from 'components/icons/Icons';
@@ -211,6 +216,12 @@ const SubnavForm = ({
 	const [currentStepId, setCurrentStepId] = useState<StepId>('header');
 	const [headerText, setHeaderText] = useState(
 		initialSubnav?.header.headerText ?? '',
+	);
+	const [showHeaderText, setShowHeaderText] = useState(
+		initialSubnav?.header.showHeaderText !== false,
+	);
+	const [headerCopy, setHeaderCopy] = useState(
+		initialSubnav?.header.copy ?? '',
 	);
 	const [headerDotcomPath, setHeaderDotcomPath] = useState(
 		initialSubnav?.header.dotcomPath ?? '',
@@ -380,6 +391,7 @@ const SubnavForm = ({
 			id: subnavId.current,
 			header: {
 				headerText: headerText.trim(),
+				showHeaderText,
 				dotcomPath: headerDotcomPath.trim() || undefined,
 				copy: initialSubnav?.header.copy ?? '',
 			},
@@ -530,9 +542,16 @@ const SubnavForm = ({
 									onChange={setHeaderDotcomPath}
 									placeholder="e.g. politics/uk-election-2024"
 								/>
+								<Field>
+									<ItemHeader>Header text display</ItemHeader>
+									<ItemText>Show header text</ItemText>
+									<ToggleSwitch
+										isSelected={showHeaderText}
+										onChange={(isSelected) => setShowHeaderText(isSelected)}
+									/>
+								</Field>
 							</RowFields>
 						</CreateFormSection>
-
 						<CreateFormSection
 							ref={setSectionRef('links')}
 							data-step-id="links"

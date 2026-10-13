@@ -8,6 +8,7 @@ import fixtures.{FaciaDBService, UsesDatabase}
 import model.packages.{
   FeastPackageMetadata,
   Package,
+  PackageCard,
   PackageCardRow,
   PackageCardType
 }
@@ -18,6 +19,8 @@ import org.scalatest.{BeforeAndAfter, FreeSpec, Matchers}
 import org.apache.pekko.util.ByteString
 import org.apache.pekko.util.Timeout
 import org.apache.pekko.stream.Materializer
+import org.mockito.{ArgumentMatchers, Mockito}
+import org.scalatestplus.mockito.MockitoSugar
 import play.api.ApplicationLoader
 import play.api.db.evolutions.Evolutions
 import play.api.http.HttpVerbs
@@ -50,6 +53,7 @@ import scala.concurrent.duration._
 class PackageControllerHttpIntegrationTest
     extends FreeSpec
     with Matchers
+    with MockitoSugar
     with FaciaDBService
     with BeforeAndAfter {
 
@@ -116,7 +120,7 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
   }
 
   private val permissionsProvider = {
-    val permissions = mock(classOf[PermissionsProvider])
+    val permissions = mock[PermissionsProvider]
     when(
       permissions.hasPermission(any(classOf[PermissionDefinition]), anyString())
     )
@@ -124,11 +128,13 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
     permissions
   }
 
+  private lazy val publishingMock = mock[Publishing]
+
   private lazy val components =
     new TestComponents(
       faciaDB,
-      mock(classOf[Publishing]),
-      mock(classOf[Capi]),
+      publishingMock,
+      mock[Capi],
       permissionsProvider
     )
 
@@ -209,6 +215,7 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
   }
 
   before {
+    Mockito.reset(publishingMock)
     DB localTx { implicit session =>
       sql"DELETE FROM package_cards".update.apply()
       sql"DELETE FROM packages".update.apply()
@@ -534,6 +541,42 @@ discoveryDocumentUrl=https://example.test/.well-known/openid-configuration
         .value
         .map(_.as[String]) should contain only "eu"
       (jsonBody(fetched) \\ "name").head.as[String] shouldBe "Metadata package"
+    }
+
+    "publish a package via Publishing" taggedAs UsesDatabase in {
+      val packageId = UUID.randomUUID()
+      prefillPackage(
+        packageId,
+        "Metadata package",
+        Instant.now().toEpochMilli,
+        cards = 3
+      )
+
+      Mockito
+        .when(
+          publishingMock.publishPackage(
+            ArgumentMatchers.any,
+            ArgumentMatchers.any,
+            ArgumentMatchers.any
+          )
+        )
+        .thenReturn(Right(()))
+      val response = call(
+        components.packageController.publish(packageId),
+        emptyAuthedRequest(HttpVerbs.POST, s"/packages/$packageId/publish")
+      )
+      status(response) shouldEqual NO_CONTENT // Expect no content
+
+      Mockito
+        .verify(publishingMock, Mockito.times(1))
+        .publishPackage(
+          ArgumentMatchers.argThat((arg: Package) =>
+            arg.id == packageId && arg.name == "Metadata package"
+          ),
+          ArgumentMatchers
+            .argThat((cards: Seq[PackageCard]) => cards.length == 3),
+          ArgumentMatchers.any
+        )
     }
   }
 }
