@@ -39,3 +39,16 @@ export interface RecipePartialIndexContent {
 	requested: number;
 	results: RecipeIndexData[];
 }
+
+// ----- New models for use with graphql interface
+
+export interface RecipeSearchHitNew {
+	score: number;
+	id: string;
+	title: string;
+	byline: string[];
+	firstPublishedDate: string;
+	publishedDate: string;
+	lastModifiedDate: string;
+	imageTemplateUrl?: string;
+}

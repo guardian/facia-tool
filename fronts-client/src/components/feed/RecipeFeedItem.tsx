@@ -45,12 +45,17 @@ export const RecipeFeedItem = ({ id, showTimes }: ComponentProps) => {
 			return iso;
 		}
 	};
+	const thumbnail = recipe.imageTemplateUrl
+		? recipe.imageTemplateUrl
+				.replace('#{width}', '420')
+				.replace('#{quality}', '80')
+		: undefined;
 	return (
 		<FeedItem
 			type={CardTypesMap.RECIPE}
 			id={recipe.canonicalArticle}
 			title={recipe.title}
-			thumbnail={recipe.previewImage?.url ?? recipe.featuredImage?.url ?? ''}
+			thumbnail={thumbnail}
 			urlPath={recipe.canonicalArticle}
 			liveUrl={`https://theguardian.com/${recipe.canonicalArticle}`}
 			hasVideo={false}
