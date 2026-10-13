@@ -55,7 +55,7 @@ import {
 } from 'types/Cards';
 import { PersistTo } from '../types/Middleware';
 import { COLLECTIONS_USING_PORTRAIT_TRAILS } from 'constants/image';
-import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
+import { isFlexibleGeneral } from '../util/frontsUtils';
 
 // Creates a thunk action creator from a plain action creator that also allows
 // passing a persistence location
@@ -318,7 +318,7 @@ export const mayResetImmersive = ({
 			: undefined;
 		const toCollectionSupportsImmersive: boolean =
 			// only flexible/general container supports immersive
-			toCollection?.type === FLEXIBLE_GENERAL_NAME;
+			isFlexibleGeneral(toCollection?.type);
 
 		if (!toCollectionSupportsImmersive) {
 			// turn off immersive

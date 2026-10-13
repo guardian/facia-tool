@@ -3,8 +3,7 @@ import { createSelectArticleFromCard } from 'selectors/shared';
 import { selectCollectionConfig } from 'selectors/frontsSelectors';
 import { hasMainVideo } from 'util/externalArticle';
 import {
-	isCollectionConfigFlexible,
-	isCollectionConfigFlexibleGeneral,
+	isFlexibleGeneral,
 } from '../util/frontsUtils';
 import { createSelector } from 'reselect';
 import type { State } from 'types/State';
@@ -100,17 +99,15 @@ export const createSelectFormFieldsForCard = () => {
 
 			// Flexible collections have various boost levels options.
 			if (
-				isCollectionConfigFlexible(parentCollectionConfig) ||
+				isFlexibleGeneral(parentCollectionConfig?.type) ||
 				(derivedArticle.boostLevel &&
 					derivedArticle.boostLevel !== 'default' &&
 					!parentCollectionConfig) /* show in clipboard if it is boosted */
 			) {
 				fields.push('boostLevel');
 			}
-			if (isCollectionConfigFlexible(parentCollectionConfig)) {
+			if (isFlexibleGeneral(parentCollectionConfig?.type)) {
 				fields = without(fields, 'showLargeHeadline');
-			}
-			if (isCollectionConfigFlexibleGeneral(parentCollectionConfig)) {
 				fields.push('isImmersive');
 				if (isMiniNavEnabled) {
 					fields.push('showMiniNav', 'miniNavUrl');
