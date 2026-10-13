@@ -11,7 +11,7 @@ import {
 	TopBarNavigation,
 	TopBarNavigationTheme,
 } from '@guardian/stand/TopBar';
-import { TopBarToolName } from '@guardian/stand/TopBar';
+import { TopBarToolName, TopBarToolNameTheme } from '@guardian/stand/TopBar';
 import { marketingParamsWhiteList } from 'util/card';
 
 const SectionHeader = styled(SectionHeaderUnpadded)`
@@ -32,6 +32,7 @@ const LogoTypeContainer = styled(Link)`
 const customNaviStyles = css`
 	height: 62px;
 	z-index: 1;
+	width: 100%;
 `;
 
 const topBarColors = (isSelected: boolean) => css`
@@ -44,6 +45,21 @@ const faviconCustomTheme = {
 	color: {
 		background: theme.colors.greyDark,
 		text: 'white',
+	},
+};
+
+// Override the default blue hover/pressed overlay with a plain black background.
+const toolNameTheme: TopBarToolNameTheme = {
+	hoverLink: {
+		backgroundColor: theme.colors.blackDark,
+		pressed: { backgroundColor: theme.colors.blackDark },
+	},
+};
+
+// Make the selected/hover underline orange instead of the default blue.
+const navigationTheme: TopBarNavigationTheme = {
+	selected: {
+		borderBottom: `0.5rem solid ${theme.colors.orange}`,
 	},
 };
 
@@ -63,36 +79,34 @@ export default ({
 		<SectionHeader greyHeader={greyHeader} includeBorder={includeBorder}>
 			{!isSubnavPath && <LogoTypeContainer to="/">F</LogoTypeContainer>}
 			{isSubnavPath && (
-				<TopBar cssOverrides={[customNaviStyles, topBarColors(true)]}>
+				<TopBar cssOverrides={[customNaviStyles, topBarColors(false)]}>
 					<TopBarToolName
 						name="Fronts"
 						favicon={{
 							letter: 'F',
 							theme: faviconCustomTheme,
 						}}
-						href="/v2/subnavs"
+						href="/v2"
+						hoverText="Back to Fronts"
+						collapsedHoverText="Back"
 						subsection="Navi"
 						subsectionIcon={'explore'}
-						cssOverrides={[customNaviStyles, topBarColors(false)]}
+						cssOverrides={[topBarColors(false)]}
 					></TopBarToolName>
 					<TopBarContainerLeft>
 						<TopBarNavigation
 							text="All subnavs"
 							href="/v2/subnavs"
 							isSelected={!!isSubnavListPath}
-							cssOverrides={[
-								customNaviStyles,
-								topBarColors(!!isSubnavListPath),
-							]}
+							theme={navigationTheme}
+							cssOverrides={[topBarColors(!!isSubnavListPath)]}
 						/>
 						<TopBarNavigation
 							text="Create subnav"
 							href="/v2/subnavs/new"
 							isSelected={!!isSubnavCreatePath}
-							cssOverrides={[
-								customNaviStyles,
-								topBarColors(!!isSubnavCreatePath),
-							]}
+							theme={navigationTheme}
+							cssOverrides={[topBarColors(!!isSubnavCreatePath)]}
 						/>
 					</TopBarContainerLeft>
 				</TopBar>

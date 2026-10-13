@@ -3,7 +3,6 @@ import { css } from '@emotion/react';
 import format from 'date-fns/format';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
-import { Button } from '@guardian/stand/Button';
 import {
 	Table,
 	TableBody,
@@ -15,17 +14,14 @@ import {
 import { Badge } from '@guardian/stand/Badge';
 import { Icon } from '@guardian/stand/Icon';
 import { theme } from 'constants/theme';
-import { RunAction, SubnavListEntry } from './helpers';
+import { SubnavListEntry } from './helpers';
 import { CustomSubnav } from './types';
-import { Panel, PanelThumb, PanelThumbEmpty } from './styles';
+import { ListViewSidebar, Panel, PanelThumb, PanelThumbEmpty } from './styles';
 
 interface SubnavListViewProps {
 	entries: SubnavListEntry[];
 	isLoading: boolean;
-	pendingActionId: string | null;
-	onCreate: () => void;
 	onEdit: (id: string) => void;
-	runAction: RunAction;
 }
 
 const panelsGridTheme = {
@@ -37,8 +33,8 @@ const panelsGridTheme = {
 	},
 	lg: {
 		columns: 2,
-		gap: '12px',
-		padding: '60px',
+		gap: '16px',
+		paddingRight: '60px',
 	},
 };
 
@@ -67,7 +63,7 @@ const subnavTextStyle: React.CSSProperties = {
 };
 
 const titleLinkStyles = css`
-	text-decoration: underline;
+	text-decoration: none;
 	overflow: hidden;
 	white-space: nowrap;
 	text-overflow: ellipsis;
@@ -100,15 +96,14 @@ const badgeGroupStyle: React.CSSProperties = {
 	flexWrap: 'wrap',
 };
 
-const createHeaderCellStyle: React.CSSProperties = {
-	display: 'flex',
-	width: '100%',
-};
-
 const tableHeaderStyles = css`
 	& > tr {
 		align-items: center;
 	}
+`;
+
+const columnHeaderText = css`
+	font-size: 14px;
 `;
 
 const formatUpdated = (lastUpdated: number) =>
@@ -123,12 +118,12 @@ const StatusBadges = ({
 }) => (
 	<span style={badgeGroupStyle}>
 		{hasLive && (
-			<Badge color="green" size="sm" weight="light">
+			<Badge color="green" size="sm" weight="strong">
 				Live
 			</Badge>
 		)}
 		{hasDraft && (
-			<Badge color="orange" size="sm" weight="light">
+			<Badge color="orange" size="sm" weight="strong">
 				{hasLive ? 'Draft changes' : 'New draft'}
 			</Badge>
 		)}
@@ -155,7 +150,7 @@ const DraftStatusBadge = ({ subnav }: { subnav: CustomSubnav }) => {
 		);
 	}
 	return (
-		<Badge color="yellow" size="sm" weight="strong">
+		<Badge color="yellow" size="sm" weight="light">
 			Draft • {progressPercent[completed]}%
 		</Badge>
 	);
@@ -165,12 +160,10 @@ const SubnavListPanel = ({
 	status,
 	entries,
 	onEdit,
-	onCreate,
 }: {
 	status: 'live' | 'draft';
 	entries: SubnavListEntry[];
 	onEdit: (id: string) => void;
-	onCreate?: () => void;
 }) => {
 	const heading = status === 'live' ? 'Launched subnavs' : 'Draft subnavs';
 	const emptyMessage =
@@ -184,22 +177,11 @@ const SubnavListPanel = ({
 							{heading}
 						</Typography>
 					</TableColumnHeader>
-					<TableColumnHeader>Last updated</TableColumnHeader>
-					<TableColumnHeader>
-						{status === 'draft'
-							? onCreate && (
-									<span style={createHeaderCellStyle}>
-										<Button
-											variant="tertiary"
-											size="sm"
-											icon="add"
-											onPress={onCreate}
-										>
-											Create new
-										</Button>
-									</span>
-								)
-							: 'Status'}
+					<TableColumnHeader cssOverrides={columnHeaderText}>
+						Last updated
+					</TableColumnHeader>
+					<TableColumnHeader cssOverrides={columnHeaderText}>
+						Status
 					</TableColumnHeader>
 				</TableHeader>
 				<TableBody
@@ -212,12 +194,11 @@ const SubnavListPanel = ({
 					{entries.map(({ id, subnav, hasLive, hasDraft }) => {
 						const imageSrc = subnav.images?.[0]?.imageSrc;
 						const title = subnav.header.headerText || 'Untitled subnav';
-						const meta = [
-							...subnav.links.map((link) => link.linkText),
-							...subnav.pages.map((page) => page.path),
-						]
+						const meta = [...subnav.links.map((link) => link.linkText)]
 							.filter(Boolean)
+							.slice(0, 2)
 							.join(' · ');
+						const metaLength = subnav.links.length;
 						return (
 							<TableRow
 								key={id}
@@ -257,6 +238,8 @@ const SubnavListPanel = ({
 												cssOverrides={metaStyles}
 											>
 												{meta}
+
+												{metaLength > 2 && ` and ${metaLength - 2} more`}
 											</Typography>
 										)}
 									</span>
@@ -289,7 +272,6 @@ const SubnavListPanel = ({
 export const SubnavListView = ({
 	entries,
 	isLoading,
-	onCreate,
 	onEdit,
 }: SubnavListViewProps) => {
 	const draftEntries = entries.filter((entry) => entry.hasDraft);
@@ -300,30 +282,45 @@ export const SubnavListView = ({
 
 	return (
 		<>
-			<div style={{ paddingTop: '80px' }} />
-			{isLoading ? (
-				<Typography element="p" variant="bodySm" cssOverrides={emptyStyle}>
-					Loading…
-				</Typography>
-			) : (
-				<Grid theme={panelsGridTheme}>
-					<Item>
-						<SubnavListPanel
-							status="draft"
-							entries={draftEntries}
-							onEdit={onEdit}
-							onCreate={onCreate}
-						/>
-					</Item>
-					<Item>
-						<SubnavListPanel
-							status="live"
-							entries={publishedEntries}
-							onEdit={onEdit}
-						/>
-					</Item>
-				</Grid>
-			)}
+			<div style={{ flexDirection: 'row', display: 'flex' }}>
+				<ListViewSidebar />
+				<div
+					style={{
+						paddingTop: '80px',
+						paddingLeft: '20px',
+						paddingRight: '60px',
+						display: 'flex',
+						flexDirection: 'row',
+						justifyContent: 'center',
+						width: '100%',
+					}}
+				>
+					{isLoading ? (
+						<Typography element="p" variant="bodySm" cssOverrides={emptyStyle}>
+							Loading…
+						</Typography>
+					) : (
+						<>
+							<Grid theme={panelsGridTheme}>
+								<Item>
+									<SubnavListPanel
+										status="draft"
+										entries={draftEntries}
+										onEdit={onEdit}
+									/>
+								</Item>
+								<Item>
+									<SubnavListPanel
+										status="live"
+										entries={publishedEntries}
+										onEdit={onEdit}
+									/>
+								</Item>
+							</Grid>
+						</>
+					)}
+				</div>
+			</div>
 		</>
 	);
 };

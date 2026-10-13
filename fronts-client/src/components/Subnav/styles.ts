@@ -1,4 +1,4 @@
-import { styled } from 'constants/theme';
+import { styled, theme } from 'constants/theme';
 import { keyframes } from 'styled-components';
 import { Typography } from '@guardian/stand/Typography';
 
@@ -81,6 +81,15 @@ export const StatusTag = styled.span<{ draft?: boolean }>`
 		draft ? theme.base.colors.textLight : theme.base.colors.textDark};
 	background-color: ${({ theme, draft }) =>
 		draft ? theme.base.colors.brandColor : '#AED2A6'};
+`;
+
+export const ListViewSidebar = styled.div`
+	align-self: stretch;
+	flex: 0 0 130px;
+	min-height: 100vh;
+	height: 100%;
+	background: ${theme.colors.whiteMedium};
+	border-radius: 4px;
 `;
 
 export const Panel = styled.section`
@@ -392,6 +401,7 @@ export const ImagePlatformGroupHeading = styled(Typography).attrs({
 	variant: 'headingMd',
 })`
 	margin: 0;
+	margin-top: 28px;
 `;
 
 export const ImageBreakpointGrid = styled.div`
@@ -443,7 +453,8 @@ export const ImagePreviewEmpty = styled.div`
 export const ImageBreakpointCollapsible = styled.div`
 	display: flex;
 	flex-direction: column;
-	gap: 12px;
+	gap: 16px;
+	margin-bottom: 16px;
 `;
 
 export const ImageBreakpointToggle = styled.button`
@@ -454,20 +465,26 @@ export const ImageBreakpointToggle = styled.button`
 	background: none;
 	border: none;
 	padding: 0;
-	font-size: 13px;
+	font-size: 14px;
+	line-height: 115%;
+	letter-spacing: -0.5px;
 	font-weight: 600;
 	color: ${({ theme }) => theme.base.colors.textDark};
 	cursor: pointer;
 
-	&:hover {
-		text-decoration: underline;
+	&:hover span:first-of-type {
+		text-decoration: none;
 	}
 `;
 
+export const ImageBreakpointToggleLabel = styled.span``;
+
 export const ImageBreakpointToggleIcon = styled.span<{ expanded: boolean }>`
-	display: inline-block;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 	transition: transform 0.15s ease;
-	transform: rotate(${({ expanded }) => (expanded ? '90deg' : '0deg')});
+	transform: rotate(${({ expanded }) => (expanded ? '180deg' : '0deg')});
 `;
 
 const spin = keyframes`

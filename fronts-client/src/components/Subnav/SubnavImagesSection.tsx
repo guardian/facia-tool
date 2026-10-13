@@ -9,6 +9,7 @@ import {
 	ImageBreakpointLabel,
 	ImageBreakpointToggle,
 	ImageBreakpointToggleIcon,
+	ImageBreakpointToggleLabel,
 	ImagePlatformGroup,
 	ImagePlatformGroupHeading,
 	ImagePreview,
@@ -129,10 +130,12 @@ const PlatformGroupImages = ({
 					aria-expanded={expanded}
 					onClick={() => setExpanded((prev) => !prev)}
 				>
+					<ImageBreakpointToggleLabel>
+						{expanded ? 'Hide' : 'Show'} additional breakpoints
+					</ImageBreakpointToggleLabel>
 					<ImageBreakpointToggleIcon expanded={expanded} aria-hidden>
-						▸
+						<Icon symbol="keyboard_arrow_down" size="sm" />
 					</ImageBreakpointToggleIcon>
-					{expanded ? 'Hide' : 'Show'} additional breakpoints
 				</ImageBreakpointToggle>
 				{expanded && (
 					<ImageBreakpointGrid>

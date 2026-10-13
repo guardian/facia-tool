@@ -161,7 +161,7 @@ const App = () => {
 				<BannerNotification />
 				<AppContainer>
 					<BackgroundHeader>
-						<SectionHeaderWithLogo greyHeader={false} />
+						<SectionHeaderWithLogo greyHeader={true} />
 					</BackgroundHeader>
 					<Switch>
 						<Route {...frontsEditPathProps} component={FrontsEdit} />

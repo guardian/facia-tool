@@ -17,7 +17,7 @@ import { UserFeedbackSummary } from '@guardian/stand/UserFeedbackSummary';
 import { TextInput } from '@guardian/stand/TextInput';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
-import { Tabs } from '@guardian/stand/Tabs';
+import { Tabs, type TabTheme } from '@guardian/stand/Tabs';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
 import { Icon, type IconProps } from '@guardian/stand/Icon';
@@ -76,6 +76,18 @@ type StepId = 'header' | 'links' | 'pages' | 'images' | 'review';
 
 // Local nav-item row carries a stable id for drag-and-drop reordering.
 type LinkRow = SubnavLink & { id: string };
+
+// Use the brand orange for the selected/hover tab underline instead of the default blue.
+const previewTabTheme: TabTheme = {
+	shared: {
+		selected: {
+			border: {
+				border: `0.5rem solid ${theme.colors.orange}`,
+				background: theme.colors.orange,
+			},
+		},
+	},
+};
 
 const stepOrder: StepId[] = ['header', 'links', 'pages', 'images', 'review'];
 
@@ -610,17 +622,18 @@ const SubnavForm = ({
 																	}
 																/>
 															</RowFields>
-															<Button
-																variant="tertiary"
-																size="md"
-																icon={<FiMinus />}
-																onPress={() => removeLink(index)}
-																isDisabled={links.length === 1}
-																aria-label="Remove nav item"
-																cssOverrides={css({
-																	padding: '0.25em 0.45em 0.25em 0.5em',
-																})}
-															/>
+															{links.length > 1 && (
+																<Button
+																	variant="tertiary"
+																	size="md"
+																	icon={<FiMinus />}
+																	onPress={() => removeLink(index)}
+																	aria-label="Remove nav item"
+																	cssOverrides={css({
+																		padding: '0.25em 0.45em 0.25em 0.5em',
+																	})}
+																/>
+															)}
 														</RepeatableRow>
 													)}
 												</Draggable>
@@ -632,7 +645,7 @@ const SubnavForm = ({
 							</DragDropContext>
 							<AddRow>
 								<Button
-									variant="secondary"
+									variant="tertiary"
 									size="sm"
 									icon={<FiPlus />}
 									onPress={addLink}
@@ -696,22 +709,23 @@ const SubnavForm = ({
 											placeholder="e.g. politics/uk-election-2024"
 										/>
 									</RowFields>
-									<Button
-										variant="tertiary"
-										size="md"
-										icon={<FiMinus />}
-										onPress={() => removePage(index)}
-										isDisabled={pages.length === 1}
-										aria-label="Remove page"
-										cssOverrides={css({
-											padding: '0.25em 0.45em 0.25em 0.5em',
-										})}
-									/>
+									{pages.length > 1 && (
+										<Button
+											variant="tertiary"
+											size="md"
+											icon={<FiMinus />}
+											onPress={() => removePage(index)}
+											aria-label="Remove page"
+											cssOverrides={css({
+												padding: '0.25em 0.45em 0.25em 0.5em',
+											})}
+										/>
+									)}
 								</RepeatableRow>
 							))}
 							<AddRow>
 								<Button
-									variant="secondary"
+									variant="tertiary"
 									size="sm"
 									icon={<FiPlus />}
 									onPress={addPage}
@@ -757,11 +771,28 @@ const SubnavForm = ({
 							active={currentStepId === 'review'}
 							onFocus={() => setCurrentStepId('review')}
 						>
-							<SubnavContainerHeading>Publish</SubnavContainerHeading>
-							<Typography element="p" variant="bodySm">
-								Save a draft to preview the subnav in the panel on the right,
-								then publish when you are ready.
+							<Typography
+								element="h2"
+								variant="heading2Xl"
+								cssOverrides={css({
+									paddingBottom: '0px',
+									marginBottom: '0px',
+								})}
+							>
+								Save & Publish
 							</Typography>
+							<Typography
+								element="body"
+								variant="bodyMd"
+								cssOverrides={css({
+									marginBottom: '16px',
+									color: theme.base.colors.textMuted,
+								})}
+							>
+								Review the subnav in the panel on the right, then publish when
+								you are ready.{' '}
+							</Typography>
+
 							{error && <ErrorMessage>{error}</ErrorMessage>}
 							{draftSaved && (
 								<Typography element="p" variant="bodySm">
@@ -886,6 +917,7 @@ const SubnavForm = ({
 											<Tabs.Tab
 												key={option.id}
 												id={option.id}
+												theme={previewTabTheme}
 												icon={<Icon symbol={option.icon} fill="grey" />}
 											>
 												{option.label}
