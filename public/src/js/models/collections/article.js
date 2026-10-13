@@ -82,7 +82,6 @@ export default class Article extends DropTarget {
             'isLoaded',
             'isEmpty',
             'visited',
-            'inFlexibleCollection',
 			'inFlexibleGeneralCollection',
             'tone',
             'primaryTag',
@@ -98,8 +97,7 @@ export default class Article extends DropTarget {
             'premium']);
 
         this.state.enableContentOverrides(this.meta.snapType() !== 'latest');
-        this.state.inFlexibleCollection(deepGet(opts, '.group.parent.isFlexible'));
-		this.state.inFlexibleGeneralCollection(deepGet(opts, '.group.parent.isFlexibleGeneral'));
+		this.state.isFlexibleGeneralCollection(deepGet(opts, '.group.parent.isFlexibleGeneral'));
         this.state.visited(opts.visited);
         this.frontPublicationDate = opts.frontPublicationDate;
         this.publishedBy = opts.publishedBy;
