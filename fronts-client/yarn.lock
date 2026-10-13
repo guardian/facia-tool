@@ -4389,7 +4389,7 @@ fd-slicer@~1.1.0:
 "feast-multiplatform-backend-api@file:../feast-multiplatform-backend-api-2.0.1.tgz":
   version "2.0.1"
   resolved "file:../feast-multiplatform-backend-api-2.0.1.tgz"
-  integrity sha512-822CLJGn23MfawhxZaO23AIO8JSEOAV7ahC7sF4YBwYZtpDK52/xK6J7j5RxIEOvFuweqLhsAQ/IXrEN9K4ESA==
+  integrity sha512-AWWW51fZiqeolxKBVYw2X1ZeOScG4+J+3hDSTbzdX7Eml4ofvc2U3z3dVwX5FMzGRymS6Hlnhr6Q8P4s5fmFzg==
   dependencies:
     ws "8.18.0"
 

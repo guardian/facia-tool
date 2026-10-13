@@ -51,4 +51,5 @@ export interface RecipeSearchHitNew {
 	publishedDate: string;
 	lastModifiedDate: string;
 	imageTemplateUrl?: string;
+	canonicalArticle: string;
 }
