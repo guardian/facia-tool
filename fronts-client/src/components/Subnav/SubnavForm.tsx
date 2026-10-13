@@ -89,6 +89,9 @@ const toggleSwitchTheme: ToggleSwitchTheme = {
 		track: {
 			selected: { backgroundColor: theme.colors.orange200 },
 		},
+		thumb: {
+			color: theme.colors.orange,
+		},
 	},
 };
 

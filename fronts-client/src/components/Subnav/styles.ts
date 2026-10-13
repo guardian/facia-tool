@@ -221,15 +221,18 @@ export const ColumnHeaderLabel = styled.span`
 `;
 
 export const ItemHeader = styled.span`
+	margin-top: 16px;
 	font-size: 16px;
+	letter-spacing: -0.5px;
 	font-weight: 700;
 	color: ${({ theme }) => theme.base.colors.textDark};
 `;
 
 export const ItemText = styled.span`
 	font-size: 14px;
-	font-weight: 460;
-	color: ${({ theme }) => theme.colors.greyMediumDarker};
+	font-weight: 500;
+	letter-spacing: -0.5px;
+	color: ${({ theme }) => theme.base.colors.textMuted};
 `;
 
 export const DragHandle = styled.div`

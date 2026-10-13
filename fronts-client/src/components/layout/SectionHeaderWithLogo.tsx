@@ -9,7 +9,6 @@ import {
 	TopBar,
 	TopBarContainerLeft,
 	TopBarNavigation,
-	TopBarNavigationTheme,
 } from '@guardian/stand/TopBar';
 import { TopBarToolName } from '@guardian/stand/TopBar';
 
@@ -38,9 +37,6 @@ const topBarColors = (isSelected: boolean) => css`
 	color: white;
 	background: ${theme.colors.blackDark};
 	${isSelected ? `border-bottom-color: ${theme.colors.orange};` : ''}
-	&:hover {
-		border-bottom-color: ${theme.colors.orange};
-	}
 `;
 
 const faviconCustomTheme = {
@@ -50,12 +46,11 @@ const faviconCustomTheme = {
 	},
 };
 
-// Make the selected/hover underline orange instead of the default blue.
-const navigationTheme: TopBarNavigationTheme = {
-	selected: {
-		borderBottom: `0.5rem solid ${theme.colors.orange}`,
-	},
-};
+const navHoverBorder = css`
+	&:hover {
+		border-bottom-color: ${theme.colors.orange};
+	}
+`;
 
 export default ({
 	children,
@@ -92,15 +87,16 @@ export default ({
 							text="All subnavs"
 							href="/v2/subnavs"
 							isSelected={!!isSubnavListPath}
-							theme={navigationTheme}
-							cssOverrides={[topBarColors(!!isSubnavListPath)]}
+							cssOverrides={[topBarColors(!!isSubnavListPath), navHoverBorder]}
 						/>
 						<TopBarNavigation
 							text="Create subnav"
 							href="/v2/subnavs/new"
 							isSelected={!!isSubnavCreatePath}
-							theme={navigationTheme}
-							cssOverrides={[topBarColors(!!isSubnavCreatePath)]}
+							cssOverrides={[
+								topBarColors(!!isSubnavCreatePath),
+								navHoverBorder,
+							]}
 						/>
 					</TopBarContainerLeft>
 				</TopBar>
