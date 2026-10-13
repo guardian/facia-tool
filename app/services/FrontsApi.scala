@@ -38,7 +38,7 @@ class FrontsApi(
         S3AsyncClient
           .builder()
           .region(EU_WEST_1)
-          .credentialsProvider(config.aws.newStyleCmsFrontsAccountCredentials)
+          .credentialsProvider(config.aws.cmsFrontsAccountCredentials)
           .build()
     }
 

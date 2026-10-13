@@ -1,8 +1,17 @@
 package model.packages
 
 import logging.Logging
+import model.packages.Package.PackageType
 import org.postgresql.util.PGobject
-import play.api.libs.json.{JsResult, JsValue, Json}
+import play.api.libs.json.{
+  JsDefined,
+  JsError,
+  JsLookupResult,
+  JsResult,
+  JsString,
+  JsValue,
+  Json
+}
 
 import scala.util.Try
 
@@ -23,6 +32,16 @@ trait MetadataHelpers extends Logging {
       })
       errors.mkString("\n")
     })
+  }
+
+  def selectByPackageType[T](
+      selector: JsLookupResult
+  )(f: Package.PackageType => JsResult[T]): JsResult[T] = selector match {
+    case JsDefined(JsString(PackageType.Feast.value)) =>
+      f(PackageType.Feast)
+    case JsDefined(JsString(PackageType.Story.value)) =>
+      f(PackageType.Story)
+    case _ => JsError("package type must be Feast or Story")
   }
 
   def toPGobject(value: JsValue): PGobject = {

@@ -204,6 +204,16 @@ export const CharacterCountRow = styled.div`
 export const CharacterCount = styled.span`
 	font-size: 13px;
 	color: ${({ theme }) => theme.base.colors.textMuted};
+export const ItemHeader = styled.span`
+	font-size: 16px;
+	font-weight: 700;
+	color: ${({ theme }) => theme.base.colors.textDark};
+`;
+
+export const ItemText = styled.span`
+	font-size: 14px;
+	font-weight: 460;
+	color: ${({ theme }) => theme.colors.greyMediumDarker};
 `;
 
 export const DragHandle = styled.div`

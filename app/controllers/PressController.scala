@@ -1,6 +1,5 @@
 package controllers
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import org.scanamo.generic.auto.genericDerivedFormat
 import org.scanamo.{Scanamo, Table}
 import play.api.libs.json.{Json, OFormat}

@@ -25,6 +25,7 @@ import { TextInput } from '@guardian/stand/TextInput';
 import { TextArea } from '@guardian/stand/TextArea';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
+import { ToggleSwitch } from '@guardian/stand/ToggleSwitch';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
 import { Badge } from '@guardian/stand/Badge';
@@ -67,6 +68,9 @@ import {
 	ColumnHeaderLabel,
 	CharacterCountRow,
 	CharacterCount,
+	Field,
+	ItemHeader,
+	ItemText,
 } from './styles';
 
 interface SubnavFormProps {
@@ -181,6 +185,9 @@ const SubnavForm = ({
 	const [headerText, setHeaderText] = useState(
 		initialSubnav?.header.headerText ?? '',
 	);
+	const [showHeaderText, setShowHeaderText] = useState(
+		initialSubnav?.header.showHeaderText !== false,
+	);
 	const [headerCopy, setHeaderCopy] = useState(
 		initialSubnav?.header.copy ?? '',
 	);
@@ -223,6 +230,17 @@ const SubnavForm = ({
 		width: 0,
 		height: 0,
 	});
+
+	// Saving re-seeds the form via a key change in the parent, which unmounts
+	// this instance; track mounted state so the post-save updates below don't
+	// fire on an unmounted component.
+	const isMounted = useRef(true);
+	useEffect(() => {
+		isMounted.current = true;
+		return () => {
+			isMounted.current = false;
+		};
+	}, []);
 
 	// Track the available preview area so the device can be scaled to fit it.
 	useEffect(() => {
@@ -356,6 +374,7 @@ const SubnavForm = ({
 			id: subnavId.current,
 			header: {
 				headerText: headerText.trim(),
+				showHeaderText,
 				dotcomPath: headerDotcomPath.trim() || undefined,
 				copy: headerCopy.trim(),
 			},
@@ -376,15 +395,34 @@ const SubnavForm = ({
 		};
 	};
 
-	// Content-only signature so dirty checks ignore audit/timestamp fields.
+	// Canonical content-only signature so dirty checks ignore audit/timestamp
+	// fields and normalise shape differences between the server response and the
+	// form-built subnav (key order, trimming, missing vs empty), otherwise a
+	// freshly saved subnav looks perpetually dirty and publishing stays blocked.
 	const signature = (subnav: CustomSubnav) =>
 		JSON.stringify({
-			header: subnav.header,
-			format: subnav.format,
-			links: subnav.links,
-			pages: subnav.pages,
-			images: subnav.images,
-			palette: subnav.palette,
+			header: {
+				headerText: subnav.header.headerText.trim(),
+				showHeaderText: subnav.header.showHeaderText,
+				dotcomPath: subnav.header.dotcomPath?.trim() || '',
+				copy: subnav.header.copy ?? '',
+			},
+			format: subnav.format ?? 'large',
+			links: subnav.links
+				.filter((link) => link.linkText.trim() || link.dotcomPath.trim())
+				.map((link) => ({
+					linkText: link.linkText.trim(),
+					dotcomPath: link.dotcomPath.trim(),
+				})),
+			pages: subnav.pages
+				.filter((page) => page.path.trim())
+				.map((page) => ({ type: page.type, path: page.path.trim() })),
+			images: (subnav.images ?? []).map((image) => ({
+				imageSrc: image.imageSrc,
+				breakpoint: image.breakpoint,
+				platforms: image.platforms,
+			})),
+			palette: subnav.palette ?? null,
 		});
 
 	const currentSubnav = buildSubnav();
@@ -411,6 +449,9 @@ const SubnavForm = ({
 		const subnav = currentSubnav;
 		try {
 			await onSaveDraft(subnav);
+			if (!isMounted.current) {
+				return;
+			}
 			setSavedSubnav(subnav);
 			setDraftSaved(true);
 			setPreviewCountdown(PREVIEW_PROPAGATION_SECONDS);
@@ -512,9 +553,16 @@ const SubnavForm = ({
 									onChange={setHeaderDotcomPath}
 									placeholder="e.g. politics/uk-election-2024"
 								/>
+								<Field>
+									<ItemHeader>Header text display</ItemHeader>
+									<ItemText>Show header text</ItemText>
+									<ToggleSwitch
+										isSelected={showHeaderText}
+										onChange={(isSelected) => setShowHeaderText(isSelected)}
+									/>
+								</Field>
 							</RowFields>
 						</CreateFormSection>
-
 						<CreateFormSection
 							ref={setSectionRef('links')}
 							data-step-id="links"
