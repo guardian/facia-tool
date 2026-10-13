@@ -236,13 +236,27 @@ export const ItemText = styled.span`
 `;
 
 export const DragHandle = styled.div`
+	flex: 0 0 auto;
+	width: 24px;
 	display: flex;
 	align-items: center;
+	justify-content: center;
 	align-self: flex-end;
 	height: 2.5rem;
 	color: ${({ theme }) => theme.base.colors.textMuted};
 	cursor: grab;
 	font-size: 18px;
+`;
+
+// Reserves a consistent column for the per-row remove button so the field
+// columns keep the same width (and stay aligned with the header labels)
+// whether or not the button is rendered.
+export const RemoveButtonSlot = styled.div`
+	flex: 0 0 auto;
+	width: 40px;
+	display: flex;
+	align-items: flex-end;
+	justify-content: flex-start;
 `;
 
 export const IconButton = styled.button`

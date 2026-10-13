@@ -32,17 +32,19 @@ interface BreakpointSpec {
 	id: ImageBreakpoint;
 	// Dimension hint shown to editors; widths are the standard breakpoints.
 	label: string;
+	// iOS shares the widths but uses taller heights.
+	iosLabel: string;
 }
 
 const breakpointSpecs: BreakpointSpec[] = [
-	{ id: 'mobile', label: '320 x 210' },
-	{ id: 'mobileMedium', label: '375 x 210' },
-	{ id: 'mobileLandscape', label: '480 x 210' },
-	{ id: 'phablet', label: '660 x 210' },
-	{ id: 'tablet', label: '740 x 140' },
-	{ id: 'desktop', label: '980 x 140' },
-	{ id: 'leftCol', label: '1140 x 140' },
-	{ id: 'wide', label: '1300 x 140' },
+	{ id: 'mobile', label: '320 x 210', iosLabel: '320 x 300' },
+	{ id: 'mobileMedium', label: '375 x 210', iosLabel: '375 x 340' },
+	{ id: 'mobileLandscape', label: '480 x 210', iosLabel: '480 x 384' },
+	{ id: 'phablet', label: '660 x 210', iosLabel: '660 x 400' },
+	{ id: 'tablet', label: '740 x 140', iosLabel: '740 x 400' },
+	{ id: 'desktop', label: '980 x 140', iosLabel: '980 x 400' },
+	{ id: 'leftCol', label: '1140 x 140', iosLabel: '1140 x 400' },
+	{ id: 'wide', label: '1300 x 140', iosLabel: '1300 x 400' },
 ];
 
 const primaryBreakpointIds: ImageBreakpoint[] = [
@@ -93,14 +95,15 @@ const PlatformGroupImages = ({
 	const renderCard = (spec: BreakpointSpec) => {
 		const index = findIndex(group, spec.id);
 		const src = index === -1 ? '' : images[index].imageSrc;
+		const label = group.id === 'ios' ? spec.iosLabel : spec.label;
 		return (
 			<ImageBreakpointCard key={spec.id}>
 				<ImageBreakpointLabel>
 					<span>{formatBreakpointName(spec.id)}</span>
-					<span>{spec.label}</span>
+					<span>{label}</span>
 				</ImageBreakpointLabel>
 				{src ? (
-					<ImagePreview src={src} alt={`${group.label} ${spec.label}`} />
+					<ImagePreview src={src} alt={`${group.label} ${label}`} />
 				) : (
 					<ImagePreviewEmpty>
 						<Icon symbol="image" size="lg" alt="" />
@@ -108,7 +111,7 @@ const PlatformGroupImages = ({
 					</ImagePreviewEmpty>
 				)}
 				<TextInput
-					aria-label={`${group.label} ${spec.label} image URL`}
+					aria-label={`${group.label} ${label} image URL`}
 					description="Paste image URL"
 					fluid
 					value={src}

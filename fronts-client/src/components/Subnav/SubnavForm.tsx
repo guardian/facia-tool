@@ -40,6 +40,7 @@ import {
 	DragHandle,
 	ErrorMessage,
 	RepeatableRow,
+	RemoveButtonSlot,
 	RowFields,
 	CreateFormSection,
 	CreateFormMain,
@@ -90,7 +91,7 @@ const toggleSwitchTheme: ToggleSwitchTheme = {
 			selected: { backgroundColor: theme.colors.orange200 },
 		},
 		thumb: {
-			color: theme.colors.orange,
+			color: theme.colors.orangeDark,
 		},
 	},
 };
@@ -640,7 +641,7 @@ const SubnavForm = ({
 										Dotcom path
 									</Typography>
 								</RowFields>
-								<ColumnHeadersSpacer width={24} aria-hidden />
+								<ColumnHeadersSpacer width={40} aria-hidden />
 							</ColumnHeaders>
 							<DragDropContext onDragEnd={moveLink}>
 								<Droppable droppableId="subnav-nav-items">
@@ -685,18 +686,20 @@ const SubnavForm = ({
 																	}
 																/>
 															</RowFields>
-															{links.length > 1 && (
-																<Button
-																	variant="tertiary"
-																	size="md"
-																	icon={<FiMinus />}
-																	onPress={() => removeLink(index)}
-																	aria-label="Remove nav item"
-																	cssOverrides={css({
-																		padding: '0.25em 0.45em 0.25em 0.5em',
-																	})}
-																/>
-															)}
+															<RemoveButtonSlot>
+																{links.length > 1 && (
+																	<Button
+																		variant="tertiary"
+																		size="md"
+																		icon={<FiMinus />}
+																		onPress={() => removeLink(index)}
+																		aria-label="Remove nav item"
+																		cssOverrides={css({
+																			padding: '0.25em 0.45em 0.25em 0.5em',
+																		})}
+																	/>
+																)}
+															</RemoveButtonSlot>
 														</RepeatableRow>
 													)}
 												</Draggable>
