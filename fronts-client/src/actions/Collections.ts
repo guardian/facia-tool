@@ -48,7 +48,7 @@ import type { Action } from 'types/Action';
 import type { State } from 'types/State';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
 import { isEventGraphicId } from 'constants/eventGraphics';
-import { Stages, Collection, CardSets, Card } from 'types/Collection';
+import { Stages, Collection, CardSets, Card, CardMeta } from 'types/Collection';
 import difference from 'lodash/difference';
 import { selectCardsInCollections } from 'selectors/collection';
 import {
@@ -350,16 +350,21 @@ const fetchArticles =
 				// separate re-render per card.
 				const cardsByArticleId = selectCardsByArticleId(getState());
 				const capiHeadlineUpdates = freshArticles.flatMap((article) =>
-					(cardsByArticleId[article.id] ?? []).map((card) => {
-						const hasActiveAbTest = hasActiveAbTestOnCard(card);
-
+					(cardsByArticleId[article.id] ?? []).flatMap((card) => {
 						const headlineUpdate = getHeadlineUpdateState(
-							hasActiveAbTest,
+							hasActiveAbTestOnCard(card),
 							card.meta.capiHeadline,
 							article.fields.headline,
 							card.meta.headline,
 						);
-						return updateCard(card.uuid, headlineUpdate, { merge: true });
+						// Skip no-op merges, which would still dispatch and can trigger a
+						// re-render.
+						const isNoOp = Object.entries(headlineUpdate).every(
+							([key, value]) => card.meta[key as keyof CardMeta] === value,
+						);
+						return isNoOp
+							? []
+							: [updateCard(card.uuid, headlineUpdate, { merge: true })];
 					}),
 				);
 				if (capiHeadlineUpdates.length) {
