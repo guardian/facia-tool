@@ -255,6 +255,17 @@ const SubnavForm = ({
 		height: 0,
 	});
 
+	// Saving re-seeds the form via a key change in the parent, which unmounts
+	// this instance; track mounted state so the post-save updates below don't
+	// fire on an unmounted component.
+	const isMounted = useRef(true);
+	useEffect(() => {
+		isMounted.current = true;
+		return () => {
+			isMounted.current = false;
+		};
+	}, []);
+
 	// Track the available preview area so the device can be scaled to fit it.
 	useEffect(() => {
 		const el = previewViewportRef.current;
@@ -407,15 +418,34 @@ const SubnavForm = ({
 		};
 	};
 
-	// Content-only signature so dirty checks ignore audit/timestamp fields.
+	// Canonical content-only signature so dirty checks ignore audit/timestamp
+	// fields and normalise shape differences between the server response and the
+	// form-built subnav (key order, trimming, missing vs empty), otherwise a
+	// freshly saved subnav looks perpetually dirty and publishing stays blocked.
 	const signature = (subnav: CustomSubnav) =>
 		JSON.stringify({
-			header: subnav.header,
-			format: subnav.format,
-			links: subnav.links,
-			pages: subnav.pages,
-			images: subnav.images,
-			palette: subnav.palette,
+			header: {
+				headerText: subnav.header.headerText.trim(),
+				showHeaderText: subnav.header.showHeaderText,
+				dotcomPath: subnav.header.dotcomPath?.trim() || '',
+				copy: subnav.header.copy ?? '',
+			},
+			format: subnav.format ?? 'large',
+			links: subnav.links
+				.filter((link) => link.linkText.trim() || link.dotcomPath.trim())
+				.map((link) => ({
+					linkText: link.linkText.trim(),
+					dotcomPath: link.dotcomPath.trim(),
+				})),
+			pages: subnav.pages
+				.filter((page) => page.path.trim())
+				.map((page) => ({ type: page.type, path: page.path.trim() })),
+			images: (subnav.images ?? []).map((image) => ({
+				imageSrc: image.imageSrc,
+				breakpoint: image.breakpoint,
+				platforms: image.platforms,
+			})),
+			palette: subnav.palette ?? null,
 		});
 
 	const currentSubnav = buildSubnav();
@@ -425,11 +455,6 @@ const SubnavForm = ({
 	const canSaveDraft = hasHeader && isDirty && !saving && !actionPending;
 	const canPublish =
 		draftSaved && !isDirty && requiredComplete && !saving && !actionPending;
-	console.log('canSaveDraft', canSaveDraft, 'canPublish', canPublish);
-	console.log('requiredComplete', requiredComplete);
-	console.log('hasHeader', hasHeader, 'hasLink', hasLink, 'hasPage', hasPage);
-	console.log('isDirty', isDirty);
-	console.log('draftSaved', draftSaved);
 
 	const previewDomain = useCODELinks
 		? 'preview.code.dev-gutools.co.uk'
@@ -447,6 +472,9 @@ const SubnavForm = ({
 		const subnav = currentSubnav;
 		try {
 			await onSaveDraft(subnav);
+			if (!isMounted.current) {
+				return;
+			}
 			setSavedSubnav(subnav);
 			setDraftSaved(true);
 			setPreviewCountdown(PREVIEW_PROPAGATION_SECONDS);
