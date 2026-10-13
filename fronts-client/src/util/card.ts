@@ -38,7 +38,7 @@ import { State } from '../types/State';
 import { selectCard } from '../selectors/shared';
 import { PosSpec } from 'lib/dnd';
 import { selectCollectionType } from 'selectors/frontsSelectors';
-import { FLEXIBLE_GENERAL_NAME } from 'constants/flexibleContainers';
+import { isFlexibleGeneral } from './frontsUtils';
 
 interface CreateCardOptions {
 	cardType?: CardTypes;
@@ -362,7 +362,7 @@ const getArticleEntitiesFromFeedDrop = (
 ): TArticleEntities => {
 	const externalArticle = transformExternalArticle(capiArticle);
 	function getGroupDefaultBoostLevel() {
-		if (to && collectionType === FLEXIBLE_GENERAL_NAME) {
+		if (to && isFlexibleGeneral(collectionType)) {
 			switch (to.groupName) {
 				case 'very big':
 					return 'megaboost';

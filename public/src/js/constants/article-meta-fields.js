@@ -150,7 +150,7 @@ export default Object.freeze([
         key: 'boostLevel',
         editable: true,
         omitForSupporting: true,
-        ifState: 'inFlexibleCollection',
+        ifState: 'isFlexibleGeneralCollection',
         label: 'boost level',
         type: 'string'
     },
@@ -158,7 +158,7 @@ export default Object.freeze([
         key: 'isImmersive',
         editable: true,
         omitForSupporting: true,
-        ifState: 'inFlexibleGeneralCollection',
+        ifState: 'isFlexibleGeneralCollection',
         label: 'immersive',
         type: 'boolean'
     },
