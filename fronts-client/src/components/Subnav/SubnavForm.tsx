@@ -18,7 +18,10 @@ import { TextInput } from '@guardian/stand/TextInput';
 import { Option, Select } from '@guardian/stand/Select';
 import { Button } from '@guardian/stand/Button';
 import { Tabs, type TabTheme } from '@guardian/stand/Tabs';
-import { ToggleSwitch } from '@guardian/stand/ToggleSwitch';
+import {
+	ToggleSwitch,
+	type ToggleSwitchTheme,
+} from '@guardian/stand/ToggleSwitch';
 import { Grid, Item } from '@guardian/stand/Grid';
 import { Typography } from '@guardian/stand/Typography';
 import { Icon, type IconProps } from '@guardian/stand/Icon';
@@ -79,6 +82,15 @@ type StepId = 'header' | 'links' | 'pages' | 'images' | 'review';
 
 // Local nav-item row carries a stable id for drag-and-drop reordering.
 type LinkRow = SubnavLink & { id: string };
+
+// Use a darker brand orange for the toggle's selected track instead of the default blue.
+const toggleSwitchTheme: ToggleSwitchTheme = {
+	shared: {
+		track: {
+			selected: { backgroundColor: theme.colors.orange200 },
+		},
+	},
+};
 
 // Use the brand orange for the selected/hover tab underline instead of the default blue.
 const previewTabTheme: TabTheme = {
@@ -570,15 +582,16 @@ const SubnavForm = ({
 									onChange={setHeaderDotcomPath}
 									placeholder="e.g. politics/uk-election-2024"
 								/>
-								<Field>
-									<ItemHeader>Header text display</ItemHeader>
-									<ItemText>Show header text</ItemText>
-									<ToggleSwitch
-										isSelected={showHeaderText}
-										onChange={(isSelected) => setShowHeaderText(isSelected)}
-									/>
-								</Field>
 							</RowFields>
+							<Field>
+								<ItemHeader>Header text display</ItemHeader>
+								<ItemText>Show header text</ItemText>
+								<ToggleSwitch
+									isSelected={showHeaderText}
+									onChange={(isSelected) => setShowHeaderText(isSelected)}
+									theme={toggleSwitchTheme}
+								/>
+							</Field>
 						</CreateFormSection>
 						<CreateFormSection
 							ref={setSectionRef('links')}

@@ -38,6 +38,9 @@ const topBarColors = (isSelected: boolean) => css`
 	color: white;
 	background: ${theme.colors.blackDark};
 	${isSelected ? `border-bottom-color: ${theme.colors.orange};` : ''}
+	&:hover {
+		border-bottom-color: ${theme.colors.orange};
+	}
 `;
 
 const faviconCustomTheme = {
