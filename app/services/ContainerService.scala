@@ -43,15 +43,6 @@ class ContainerService(val containers: Containers) {
           Some(numberVisible)
         )
 
-      case Dynamic(container) =>
-        val slices = container.slicesFor(stories)
-        val maxItems = slices.map(_.map(_.layout.numItems).sum).getOrElse(0)
-        val numberVisible = maxItems min numberOfStories
-        StoriesVisibleResponse(
-          Some(numberVisible),
-          Some(numberVisible)
-        )
-
       case Flexible(container) =>
         val numberVisible = container.storiesVisible(
           stories,
