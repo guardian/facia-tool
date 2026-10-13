@@ -1408,10 +1408,10 @@
   resolved "https://registry.yarnpkg.com/@guardian/prettier/-/prettier-8.0.1.tgz#3c7ce5f6b2d35fe19540a7c5b70807aec619bb1a"
   integrity sha512-mELIji0FezEj5YTyHkylB6VNeCN1+/jsHW/iZ0RItDMn/GjU6gbaPP5D2m+BZwrTYNrxYhCoFqCE/ObkEghtdg==
 
-"@guardian/stand@0.0.73":
-  version "0.0.73"
-  resolved "https://registry.yarnpkg.com/@guardian/stand/-/stand-0.0.73.tgz#847fd6187ce017350606099d99bf7aa669d78ed4"
-  integrity sha512-Mqjja5TkEmpoZQDAYrz4Yg8pyeGZI1T0bZ1JkXKxQgjTnkC2WUW2IXFTK4udZBgDhAEVpUhWklWGaf/AWzOTeQ==
+"@guardian/stand@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@guardian/stand/-/stand-1.0.0.tgz#20de2504ef7476cd6bffc6fbd0081cec2e2f7a04"
+  integrity sha512-KwNHoe6lp6UaRum8esQT8JMrBdal+WrIQJd/r6fJP+HNGvJbSSbSN/M1QN2WDCckGC4M0/21vmDGKqKQ6s2lPg==
 
 "@humanwhocodes/config-array@^0.13.0":
   version "0.13.0"
