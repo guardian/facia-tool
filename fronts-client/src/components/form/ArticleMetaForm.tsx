@@ -47,9 +47,9 @@ import {
 	shouldRenderField,
 	maxSlideshowImages,
 	getCardTestFromFormValues,
-	getHeadlineUpdateState,
 } from 'util/form';
 import { CapiFields } from 'util/form';
+import { shouldRebaselineCapiHeadline } from 'util/headlineUpdate';
 import { Dispatch } from 'types/Store';
 import {
 	landScapeCardImageCriteria,
@@ -1270,37 +1270,34 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 			);
 			const maybeTest = getCardTestFromFormValues(state, props.cardId, values);
 
-			const card = selectCard(state, props.cardId);
-			const externalArticle = selectExternalArticleFromCard(
+			const preSaveCard = selectCard(state, props.cardId);
+			const currentCapiHeadline = selectExternalArticleFromCard(
 				state,
 				props.cardId,
-			);
-			const currentCapiHeadline = externalArticle?.fields.headline;
+			)?.fields.headline;
 
-			// Turning off an active A/B test must re-evaluate the "headline changed"
-			// flag, which is force-enabled while a test is active. This normally only
-			// happens during the CAPI poll, which isn't triggered by a local save.
+			// Ending a headline A/B test reverts the card headline back to the
+			// current CAPI headline, discarding the experiment's custom headline.
 			const isTurningOffActiveTest =
-				hasActiveAbTestOnCard(card) && !!maybeTest?.hasManuallyEndedOnThisTrail;
+				hasActiveAbTestOnCard(preSaveCard) &&
+				!!maybeTest?.hasManuallyEndedOnThisTrail;
+			if (isTurningOffActiveTest && currentCapiHeadline !== undefined) {
+				meta.headline = currentCapiHeadline;
+			}
 
-			// Reverting the headline to the latest CAPI headline (e.g. via the rewind
-			// button) means the user has adopted the updated headline, so acknowledge
-			// the change and clear the "headline changed" flag.
-			const hasAdoptedCapiHeadline =
-				!!card?.meta.showHeadlineUpdate &&
-				meta.headline !== undefined &&
-				meta.headline === currentCapiHeadline;
-
-			if (isTurningOffActiveTest || hasAdoptedCapiHeadline) {
-				Object.assign(
-					meta,
-					getHeadlineUpdateState(
-						false,
-						meta.capiHeadline,
-						currentCapiHeadline,
-						meta.headline,
-					),
-				);
+			// Maintain the adopted CAPI headline baseline. When the card is in sync
+			// with CAPI (at creation, when adopting an updated headline, or when
+			// adding a custom headline while mirroring CAPI) we re-baseline to the
+			// current CAPI headline so the "headline changed" indicator - which is
+			// derived from this baseline - stays correct.
+			if (
+				shouldRebaselineCapiHeadline(
+					preSaveCard?.meta.headline,
+					meta.headline,
+					currentCapiHeadline,
+				)
+			) {
+				meta.capiHeadline = currentCapiHeadline;
 			}
 
 			props.onSave(meta, maybeTest);

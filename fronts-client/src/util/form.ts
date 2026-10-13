@@ -272,67 +272,6 @@ const getStringField = (field: string) => {
 	return field;
 };
 
-export const getHeadlineUpdateState = (
-	hasActiveAbTest: boolean,
-	storedCapiHeadline?: string,
-	articleHeadline?: string,
-	cardHeadline?: string,
-): Pick<CardMeta, 'capiHeadline' | 'showHeadlineUpdate'> => {
-	// if there is no capi headline set, its probably a first pass so set it
-	if (!storedCapiHeadline) {
-		return {
-			capiHeadline: articleHeadline,
-			showHeadlineUpdate: false,
-		};
-	}
-	const storedCapiheadlineMatchesCardHeadline =
-		storedCapiHeadline === cardHeadline;
-
-	const externalHeadlineMatchesCardHeadline = articleHeadline === cardHeadline;
-	const externalHeadlineMatchesStoredCapiHeadline =
-		articleHeadline === storedCapiHeadline;
-
-	if (!hasActiveAbTest) {
-		if (cardHeadline === undefined) {
-			return {
-				capiHeadline: articleHeadline,
-				showHeadlineUpdate: false,
-			};
-		}
-
-		if (
-			storedCapiheadlineMatchesCardHeadline &&
-			!externalHeadlineMatchesCardHeadline
-		) {
-			return {
-				capiHeadline: articleHeadline,
-				showHeadlineUpdate: false,
-			};
-		}
-		if (
-			!externalHeadlineMatchesCardHeadline &&
-			!externalHeadlineMatchesStoredCapiHeadline
-		) {
-			return { showHeadlineUpdate: true };
-		}
-		if (
-			externalHeadlineMatchesCardHeadline &&
-			!externalHeadlineMatchesStoredCapiHeadline
-		) {
-			return {
-				capiHeadline: articleHeadline,
-				showHeadlineUpdate: false,
-			};
-		}
-		return { showHeadlineUpdate: false };
-	} else {
-		if (externalHeadlineMatchesStoredCapiHeadline) {
-			return { showHeadlineUpdate: false };
-		}
-		return { showHeadlineUpdate: true };
-	}
-};
-
 export const getCardMetaFromFormValues = (
 	state: State,
 	id: string,

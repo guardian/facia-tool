@@ -75,7 +75,7 @@ interface ArticleComponentProps {
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 	hasLiveAbTest?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
-	hasCapiHeadlineChanged: boolean;
+	hasCapiHeadlineChanged?: boolean;
 }
 
 interface ComponentProps extends ArticleComponentProps {
@@ -250,7 +250,7 @@ const createMapStateToProps = () => {
 			),
 			hasLiveAbTest: hasLiveAbTest,
 			headlineTestError: headlineTestError,
-			hasCapiHeadlineChanged: card.meta.showHeadlineUpdate ?? false,
+			hasCapiHeadlineChanged: article?.hasCapiHeadlineChanged ?? false,
 		};
 	};
 };

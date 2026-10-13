@@ -1,5 +1,4 @@
 import omit from 'lodash/omit';
-import groupBy from 'lodash/groupBy';
 import { createSelector } from 'reselect';
 import {
 	getThumbnail,
@@ -29,20 +28,17 @@ import { hasMainVideo } from 'util/externalArticle';
 import { selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from './alsoOnSelectors';
 import { selectors as frontsConfigSelectors } from '../bundles/frontsConfigBundle';
 import { FrontConfigMap } from 'types/FaciaApi';
-import { findActiveOrDraftTest, getVariantHeadline } from 'util/abTests';
+import {
+	findActiveOrDraftTest,
+	getVariantHeadline,
+	hasActiveAbTestOnCard,
+} from 'util/abTests';
+import { hasCapiHeadlineChanged } from 'util/headlineUpdate';
 
 const selectCollectionMap: (state: State) => CollectionMap =
 	collectionSelectors.selectAll;
 const selectGroupMap = (state: State): GroupMap => state.groups;
 const selectCardMap = (state: State): CardMap => state.cards;
-
-// A card's `id` is the article id it references; multiple cards (each with a
-// unique `uuid`) can reference the same article. This index is memoised on the
-// card map, so it is only rebuilt when cards actually change - not on every
-// CAPI poll.
-const selectCardsByArticleId = createSelector(selectCardMap, (cardMap) =>
-	groupBy(Object.values(cardMap), (card) => card.id),
-);
 
 const selectCardsFromRootState = (state: State) => selectCardMap(state);
 
@@ -137,61 +133,6 @@ const createSelectIsCardLive = () =>
 		(externalArticle) => !!externalArticle && isLive(externalArticle),
 	);
 
-// const shouldDisplayUpdateFlag = (
-// 	storedCapiHeadline: string | undefined,
-// 	externalArticleHeadline: string | undefined,
-// 	cardHeadline: string | undefined,
-//
-// ) => {
-//
-// 	if (
-// 		externalArticleHeadline !== cardHeadline &&
-// 		externalArticleHeadline !== storedCapiHeadline
-// 	) {
-// 		return true;
-// 	}
-// 	return false;
-// };
-
-const decideCapiHeadline = (
-	storedCapiHeadline: string | undefined,
-	externalArticleHeadline: string | undefined,
-	cardHeadline: string | undefined,
-) => {
-	// if we dont have a capi headline stored, this is a first create of the card
-	// (or the capi headline wasnt previously available)
-	// so store the external article headline
-	if (!storedCapiHeadline) {
-		// console.log('1. no storedcapheadline');
-		return externalArticleHeadline;
-	}
-
-	// if there is no external article headline, return the storedCapiHeadline
-	if (!externalArticleHeadline) {
-		// console.log('2. no externalArticleHeadline', storedCapiHeadline);
-
-		return storedCapiHeadline;
-	}
-
-	// if the external article headline matches the card headline but differs from the storedCapiHeadline, return the external article headline
-	if (
-		externalArticleHeadline === cardHeadline &&
-		externalArticleHeadline !== storedCapiHeadline
-	) {
-		// console.log(
-		// 	'3. external and card match but not stored capi headline',
-		// 	externalArticleHeadline,
-		// );
-		return externalArticleHeadline;
-	}
-	// console.log('4. something else', {
-	// 	storedCapiHeadline,
-	// 	externalArticleHeadline,
-	// 	cardHeadline,
-	// });
-	return storedCapiHeadline;
-};
-
 const createSelectArticleFromCard = () =>
 	createSelector(
 		selectExternalArticleFromCard,
@@ -206,20 +147,16 @@ const createSelectArticleFromCard = () =>
 				? { ...externalArticle.frontsMeta.defaults, ...card.meta }
 				: card.meta;
 
-			const headlineField =
-				card.meta.headline ||
-				(externalArticle ? externalArticle.fields.headline : undefined);
+			const hasActiveTest = hasActiveAbTestOnCard(card);
 
-			const capiHeadlineField = decideCapiHeadline(
-				card.meta.capiHeadline,
-				externalArticle?.fields.headline,
-				headlineField,
-			);
-			// const hasCapiHeadlineChanged = shouldDisplayUpdateFlag(
-			// 	capiHeadlineField,
-			// 	externalArticle?.fields.headline,
-			// 	headlineField,
-			// );
+			// While a headline A/B test is active the control headline tracks the
+			// current CAPI headline, so the card shows CAPI updates live rather than a
+			// stale stored headline. When the test ends the headline is re-baselined
+			// to CAPI on save (see ArticleMetaForm).
+			const headlineField = hasActiveTest
+				? (externalArticle?.fields.headline ?? card.meta.headline)
+				: card.meta.headline ||
+					(externalArticle ? externalArticle.fields.headline : undefined);
 
 			const activeOrDraftTest = findActiveOrDraftTest(card);
 
@@ -232,8 +169,12 @@ const createSelectArticleFromCard = () =>
 				...omit(card, 'meta'),
 				...articleMeta,
 				headline: headlineField,
-				capiHeadline: capiHeadlineField,
-				hasCapiHeadlineChanged: card.meta.showHeadlineUpdate ?? false,
+				hasCapiHeadlineChanged: hasCapiHeadlineChanged(
+					hasActiveTest,
+					card.meta.capiHeadline,
+					externalArticle?.fields.headline,
+					card.meta.headline,
+				),
 				/**
 				 * Tests (and headline variant fields) are only persisted to the card
 				 * once the card is saved.
@@ -729,8 +670,6 @@ const selectFront = createSelector(
 );
 
 export {
-	decideCapiHeadline,
-	selectCardsByArticleId,
 	selectExternalArticleFromCard,
 	createSelectArticleFromCard,
 	selectCardsFromRootState,

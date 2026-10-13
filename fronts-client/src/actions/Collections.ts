@@ -17,7 +17,6 @@ import {
 	createSelectGroupArticles,
 	createSelectAllCardsInCollections,
 	selectCard,
-	selectCardsByArticleId,
 	selectFront,
 } from 'selectors/shared';
 import {
@@ -34,7 +33,7 @@ import {
 	normaliseCollectionWithNestedArticles,
 	denormaliseCollection,
 } from 'util/shared';
-import { cardsReceived, clearCards, updateCard } from 'actions/CardsCommon';
+import { cardsReceived, clearCards } from 'actions/CardsCommon';
 import { groupsReceived } from 'actions/Groups';
 import {
 	recordVisibleArticles,
@@ -48,7 +47,7 @@ import type { Action } from 'types/Action';
 import type { State } from 'types/State';
 import { cardSets, noOfOpenCollectionsOnFirstLoad } from 'constants/fronts';
 import { isEventGraphicId } from 'constants/eventGraphics';
-import { Stages, Collection, CardSets, Card, CardMeta } from 'types/Collection';
+import { Stages, Collection, CardSets, Card } from 'types/Collection';
 import difference from 'lodash/difference';
 import { selectCardsInCollections } from 'selectors/collection';
 import {
@@ -73,8 +72,6 @@ import { isMode } from 'selectors/pathSelectors';
 import { groupBy, uniqBy } from 'lodash';
 import { fetchChefsById } from 'bundles/chefsBundle';
 import { fetchRecipesById } from '../bundles/recipesBundle';
-import { hasActiveAbTestOnCard } from '../util/abTests';
-import { getHeadlineUpdateState } from 'util/form';
 
 const selectAllCardsInCollections = createSelectAllCardsInCollections();
 
@@ -344,32 +341,6 @@ const fetchArticles =
 
 			if (freshArticles.length) {
 				dispatch(externalArticleActions.fetchSuccess(freshArticles));
-				// Persist the capiHeadline on cards referencing an article whose
-				// headline changed. We iterate only the fresh articles (not the whole
-				// card map) and dispatch all updates in a single batch to avoid a
-				// separate re-render per card.
-				const cardsByArticleId = selectCardsByArticleId(getState());
-				const capiHeadlineUpdates = freshArticles.flatMap((article) =>
-					(cardsByArticleId[article.id] ?? []).flatMap((card) => {
-						const headlineUpdate = getHeadlineUpdateState(
-							hasActiveAbTestOnCard(card),
-							card.meta.capiHeadline,
-							article.fields.headline,
-							card.meta.headline,
-						);
-						// Skip no-op merges, which would still dispatch and can trigger a
-						// re-render.
-						const isNoOp = Object.entries(headlineUpdate).every(
-							([key, value]) => card.meta[key as keyof CardMeta] === value,
-						);
-						return isNoOp
-							? []
-							: [updateCard(card.uuid, headlineUpdate, { merge: true })];
-					}),
-				);
-				if (capiHeadlineUpdates.length) {
-					dispatch(batchActions(capiHeadlineUpdates));
-				}
 			}
 
 			const remainingArticles = difference(
