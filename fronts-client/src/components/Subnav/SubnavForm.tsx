@@ -38,7 +38,6 @@ import {
 	ErrorMessage,
 	RepeatableRow,
 	RowFields,
-	SubnavContainerHeading,
 	CreateFormSection,
 	CreateFormMain,
 	CreateFormActions,
@@ -54,7 +53,6 @@ import {
 	CreateFormPreviewFrame,
 	ColumnHeaders,
 	ColumnHeadersSpacer,
-	ColumnHeaderLabel,
 	Field,
 	ItemHeader,
 	ItemText,
@@ -219,9 +217,6 @@ const SubnavForm = ({
 	);
 	const [showHeaderText, setShowHeaderText] = useState(
 		initialSubnav?.header.showHeaderText !== false,
-	);
-	const [headerCopy, setHeaderCopy] = useState(
-		initialSubnav?.header.copy ?? '',
 	);
 	const [headerDotcomPath, setHeaderDotcomPath] = useState(
 		initialSubnav?.header.dotcomPath ?? '',
@@ -430,6 +425,11 @@ const SubnavForm = ({
 	const canSaveDraft = hasHeader && isDirty && !saving && !actionPending;
 	const canPublish =
 		draftSaved && !isDirty && requiredComplete && !saving && !actionPending;
+	console.log('canSaveDraft', canSaveDraft, 'canPublish', canPublish);
+	console.log('requiredComplete', requiredComplete);
+	console.log('hasHeader', hasHeader, 'hasLink', hasLink, 'hasPage', hasPage);
+	console.log('isDirty', isDirty);
+	console.log('draftSaved', draftSaved);
 
 	const previewDomain = useCODELinks
 		? 'preview.code.dev-gutools.co.uk'

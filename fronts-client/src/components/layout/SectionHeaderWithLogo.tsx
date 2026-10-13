@@ -11,8 +11,7 @@ import {
 	TopBarNavigation,
 	TopBarNavigationTheme,
 } from '@guardian/stand/TopBar';
-import { TopBarToolName, TopBarToolNameTheme } from '@guardian/stand/TopBar';
-import { marketingParamsWhiteList } from 'util/card';
+import { TopBarToolName } from '@guardian/stand/TopBar';
 
 const SectionHeader = styled(SectionHeaderUnpadded)`
 	display: flex;
@@ -45,14 +44,6 @@ const faviconCustomTheme = {
 	color: {
 		background: theme.colors.greyDark,
 		text: 'white',
-	},
-};
-
-// Override the default blue hover/pressed overlay with a plain black background.
-const toolNameTheme: TopBarToolNameTheme = {
-	hoverLink: {
-		backgroundColor: theme.colors.blackDark,
-		pressed: { backgroundColor: theme.colors.blackDark },
 	},
 };
 
