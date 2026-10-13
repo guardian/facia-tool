@@ -1,4 +1,5 @@
 import omit from 'lodash/omit';
+import groupBy from 'lodash/groupBy';
 import { createSelector } from 'reselect';
 import {
 	getThumbnail,
@@ -34,6 +35,14 @@ const selectCollectionMap: (state: State) => CollectionMap =
 	collectionSelectors.selectAll;
 const selectGroupMap = (state: State): GroupMap => state.groups;
 const selectCardMap = (state: State): CardMap => state.cards;
+
+// A card's `id` is the article id it references; multiple cards (each with a
+// unique `uuid`) can reference the same article. This index is memoised on the
+// card map, so it is only rebuilt when cards actually change - not on every
+// CAPI poll.
+const selectCardsByArticleId = createSelector(selectCardMap, (cardMap) =>
+	groupBy(Object.values(cardMap), (card) => card.id),
+);
 
 const selectCardsFromRootState = (state: State) => selectCardMap(state);
 
@@ -721,6 +730,7 @@ const selectFront = createSelector(
 
 export {
 	decideCapiHeadline,
+	selectCardsByArticleId,
 	selectExternalArticleFromCard,
 	createSelectArticleFromCard,
 	selectCardsFromRootState,

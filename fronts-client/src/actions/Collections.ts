@@ -17,7 +17,7 @@ import {
 	createSelectGroupArticles,
 	createSelectAllCardsInCollections,
 	selectCard,
-	selectCardMap,
+	selectCardsByArticleId,
 	selectFront,
 } from 'selectors/shared';
 import {
@@ -70,7 +70,7 @@ import {
 } from 'strategies/update-collection';
 import { getPageViewDataForCollection } from 'actions/PageViewData';
 import { isMode } from 'selectors/pathSelectors';
-import { groupBy, uniqBy, keyBy } from 'lodash';
+import { groupBy, uniqBy } from 'lodash';
 import { fetchChefsById } from 'bundles/chefsBundle';
 import { fetchRecipesById } from '../bundles/recipesBundle';
 import { hasActiveAbTestOnCard } from '../util/abTests';
@@ -344,29 +344,24 @@ const fetchArticles =
 
 			if (freshArticles.length) {
 				dispatch(externalArticleActions.fetchSuccess(freshArticles));
-				console.log('Fetched fresh articles:', freshArticles);
-				// Persist the capiHeadline on affected cards.
-				// We only look at cards referencing an article whose headline actually
-				// changed (freshArticles), skip cards whose stored value is already
-				// correct, and dispatch all updates in a single batch to avoid
-				// triggering a separate re-render per card.
-				const freshArticlesById = keyBy(freshArticles, (_) => _.id);
-				const cardMap = selectCardMap(getState());
-				const capiHeadlineUpdates = Object.values(cardMap).flatMap((card) => {
-					const article = freshArticlesById[card.id];
-					if (!article) {
-						return [];
-					}
-					const hasActiveAbTest = hasActiveAbTestOnCard(card);
+				// Persist the capiHeadline on cards referencing an article whose
+				// headline changed. We iterate only the fresh articles (not the whole
+				// card map) and dispatch all updates in a single batch to avoid a
+				// separate re-render per card.
+				const cardsByArticleId = selectCardsByArticleId(getState());
+				const capiHeadlineUpdates = freshArticles.flatMap((article) =>
+					(cardsByArticleId[article.id] ?? []).map((card) => {
+						const hasActiveAbTest = hasActiveAbTestOnCard(card);
 
-					const headlineUpdate = getHeadlineUpdateState(
-						hasActiveAbTest,
-						card.meta.capiHeadline,
-						article.fields.headline,
-						card.meta.headline,
-					);
-					return [updateCard(card.uuid, headlineUpdate, { merge: true })];
-				});
+						const headlineUpdate = getHeadlineUpdateState(
+							hasActiveAbTest,
+							card.meta.capiHeadline,
+							article.fields.headline,
+							card.meta.headline,
+						);
+						return updateCard(card.uuid, headlineUpdate, { merge: true });
+					}),
+				);
 				if (capiHeadlineUpdates.length) {
 					dispatch(batchActions(capiHeadlineUpdates));
 				}
