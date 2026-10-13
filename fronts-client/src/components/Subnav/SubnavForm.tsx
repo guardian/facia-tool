@@ -91,7 +91,7 @@ const toggleSwitchTheme: ToggleSwitchTheme = {
 			selected: { backgroundColor: theme.colors.orange200 },
 		},
 		thumb: {
-			color: theme.colors.orangeDark,
+			color: theme.colors.orange200,
 		},
 	},
 };

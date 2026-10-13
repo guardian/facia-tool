@@ -330,8 +330,7 @@ export const CreateFormSection = styled.section<{ active?: boolean }>`
 	scroll-margin-top: 16px;
 	padding-left: 24px;
 	border-left: 2px solid
-		${({ active, theme }) =>
-			active ? theme.base.colors.textDark : 'transparent'};
+		${({ active, theme }) => (active ? theme.colors.orange200 : 'transparent')};
 	transition: border-color 0.15s ease;
 
 	/* Keep the indicator bar aligned to the heading text, not its top margin. */
