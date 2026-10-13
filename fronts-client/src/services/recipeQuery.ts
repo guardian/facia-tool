@@ -186,6 +186,7 @@ const recipeQuery = (baseUrl: string) => {
 									id: r.recipe.id,
 									title: r.recipe.title ?? '',
 									byline: r.recipe.contributors.map((c) => c.webTitle),
+									canonicalArticle: r.recipe.canonicalArticle ?? '',
 									firstPublishedDate: r.recipe.firstPublishedDate ?? '',
 									publishedDate: r.recipe.publishedDate ?? '',
 									lastModifiedDate: r.recipe.lastModifiedDate ?? '',
