@@ -5,10 +5,6 @@ import { ArticleDetails } from 'types/FaciaApi';
 import { Stages, Collection } from 'types/Collection';
 import { frontStages } from 'constants/fronts';
 import { DYNAMIC_CONTAINER_SET } from 'constants/dynamicContainers';
-import {
-	FLEXIBLE_CONTAINER_SET,
-	FLEXIBLE_GENERAL_NAME,
-} from 'constants/flexibleContainers';
 
 const getFrontCollections = (
 	frontId: string | void,
@@ -83,13 +79,8 @@ const isCollectionConfigDynamic = (
 	config: CollectionConfig | undefined,
 ): boolean => DYNAMIC_CONTAINER_SET.includes(config?.type);
 
-const isCollectionConfigFlexible = (
-	config: CollectionConfig | undefined,
-): boolean => FLEXIBLE_CONTAINER_SET.includes(config?.type);
-
-const isCollectionConfigFlexibleGeneral = (
-	config: CollectionConfig | undefined,
-): boolean => FLEXIBLE_GENERAL_NAME === config?.type;
+const isFlexibleGeneral = (collectionType?: string): boolean =>
+	!!collectionType && collectionType === 'flexible/general';
 
 export {
 	getFrontCollections,
@@ -99,6 +90,5 @@ export {
 	getVisibilityArticleDetails,
 	getGroupsByStage,
 	isCollectionConfigDynamic,
-	isCollectionConfigFlexible,
-	isCollectionConfigFlexibleGeneral,
+	isFlexibleGeneral,
 };

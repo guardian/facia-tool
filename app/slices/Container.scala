@@ -11,7 +11,6 @@ class Containers(val fixedContainers: FixedContainers) extends Logging {
     ("dynamic/slow", Dynamic(DynamicSlow)),
     ("dynamic/package", Dynamic(DynamicPackage)),
     ("flexible/general", Flexible(FlexibleGeneral)),
-    ("flexible/special", Flexible(FlexibleSpecial)),
     ("nav/list", NavList),
     ("nav/media-list", NavMediaList),
     ("news/most-popular", MostPopular),
