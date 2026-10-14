@@ -28,11 +28,7 @@ import { hasMainVideo } from 'util/externalArticle';
 import { selectCardsWhichAreAlsoOnOtherCollectionsOnSameFront } from './alsoOnSelectors';
 import { selectors as frontsConfigSelectors } from '../bundles/frontsConfigBundle';
 import { FrontConfigMap } from 'types/FaciaApi';
-import {
-	findActiveOrDraftTest,
-	getVariantHeadline,
-	hasActiveAbTestOnCard,
-} from 'util/abTests';
+import { findActiveOrDraftTest, getVariantHeadline } from 'util/abTests';
 import { hasCapiHeadlineChanged } from 'util/headlineUpdate';
 
 const selectCollectionMap: (state: State) => CollectionMap =
@@ -147,16 +143,9 @@ const createSelectArticleFromCard = () =>
 				? { ...externalArticle.frontsMeta.defaults, ...card.meta }
 				: card.meta;
 
-			const hasActiveTest = hasActiveAbTestOnCard(card);
-
-			// While a headline A/B test is active the control headline tracks the
-			// current CAPI headline, so the card shows CAPI updates live rather than a
-			// stale stored headline. When the test ends the headline is re-baselined
-			// to CAPI on save (see ArticleMetaForm).
-			const headlineField = hasActiveTest
-				? (externalArticle?.fields.headline ?? card.meta.headline)
-				: card.meta.headline ||
-					(externalArticle ? externalArticle.fields.headline : undefined);
+			const headlineField =
+				card.meta.headline ||
+				(externalArticle ? externalArticle.fields.headline : undefined);
 
 			const activeOrDraftTest = findActiveOrDraftTest(card);
 
@@ -170,7 +159,7 @@ const createSelectArticleFromCard = () =>
 				...articleMeta,
 				headline: headlineField,
 				hasCapiHeadlineChanged: hasCapiHeadlineChanged(
-					hasActiveTest,
+					!!activeOrDraftTest,
 					card.meta.capiHeadline,
 					externalArticle?.fields.headline,
 					card.meta.headline,

@@ -8,7 +8,7 @@
  */
 
 export const hasCapiHeadlineChanged = (
-	hasActiveAbTest: boolean,
+	hasAbTest: boolean,
 	capiHeadline?: string,
 	articleHeadline?: string,
 	cardHeadline?: string,
@@ -22,9 +22,9 @@ export const hasCapiHeadlineChanged = (
 	if (articleHeadline === capiHeadline) {
 		return false;
 	}
-	// During an active A/B test the variant headlines drive what's displayed, so
+	// When the card has a draft or live A/B test the variant headlines drive what's displayed, so
 	// flag purely on CAPI having moved since the baseline was adopted.
-	if (hasActiveAbTest) {
+	if (hasAbTest) {
 		return true;
 	}
 	// Otherwise only flag when the editor has a custom headline that diverges from
