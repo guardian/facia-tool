@@ -161,6 +161,7 @@ const BadgeWrapper = styled.div`
 	right: 1px;
 	gap: 4px;
 	display: flex;
+	flex-direction: column;
 `;
 const getBadgeStyles = (palette: Palette) => css`
 	flex-shrink: 0;
