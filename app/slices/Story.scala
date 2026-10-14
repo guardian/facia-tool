@@ -20,5 +20,5 @@ object Story {
 }
 
 case class Story(
-    group: Int,
+    group: Int
 )

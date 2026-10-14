@@ -140,7 +140,7 @@ object CollectionService {
       val group = maybeGroup.getOrElse(0)
       Story(
         group
-	  )
+      )
     }
   }
 }
