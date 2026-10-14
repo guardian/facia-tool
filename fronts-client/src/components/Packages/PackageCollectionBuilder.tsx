@@ -159,11 +159,6 @@ const DragDropZone = styled.div`
 	}
 `;
 
-// const PublishActions = styled.div`
-// 	display: flex;
-// 	gap: 10px;
-// `;
-
 const CheckboxLabel = styled.label`
 	display: flex;
 	align-items: center;
