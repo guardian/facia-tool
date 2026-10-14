@@ -233,6 +233,8 @@ interface PackageCollectionBuilderProps {
 	onSave: () => void;
 	onPublish: () => void;
 	onClose: () => void;
+	isPublished: boolean;
+	deepLink: string; // Full Feast deep link, including the package ID.
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -261,6 +263,8 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	onSave,
 	onPublish,
 	onClose,
+	isPublished,
+	deepLink,
 }) => {
 	// Existing builder implementation.
 	const [dragIntentActive, setDragIntentActive] = useState(false);
@@ -270,6 +274,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	const [loadingDisplays, setLoadingDisplays] = useState(true);
 	const [displayError, setDisplayError] = useState<string | null>(null);
 	const [displayRefresh, setDisplayRefresh] = useState(0);
+	const [copyMessage, setCopyMessage] = useState('');
 
 	// const [targetedRegions, setTargetedRegions] = useState( //Will implement in a follow-up, as the backend does not considering these fields yet
 	// 	pkg.metadata?.targetedRegions?.join(', ') ?? '',
@@ -319,6 +324,14 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 			active = false;
 		};
 	}, [itemSignature, displayRefresh]);
+
+	useEffect(() => {
+		//notification message to appear for 10 seconds
+		if (!copyMessage) return;
+
+		const timeout = window.setTimeout(() => setCopyMessage(''), 10_000);
+		return () => window.clearTimeout(timeout);
+	}, [copyMessage]);
 
 	const changeMetadata = (patch: Partial<FeastPackageMetadata>) => {
 		onPackageChange({
@@ -419,6 +432,17 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 				imageURL: theme.imageURL,
 			}
 		: undefined;
+
+	const copyDeepLink = async () => {
+		if (disabled || !isPublished || !deepLink) return;
+
+		try {
+			await navigator.clipboard.writeText(deepLink);
+			setCopyMessage('App link copied.');
+		} catch {
+			setCopyMessage('Unable to copy the deep link to the clipboard.');
+		}
+	};
 
 	return (
 		<BuilderContainer>
@@ -554,16 +578,28 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 							Save
 						</Button>
 
-						<Button
-							variant="primary"
-							size="md"
-							isDisabled={
-								disabled || !isPersisted || isModified || !pkg.name.trim()
-							}
-							onPress={onPublish}
-						>
-							Publish
-						</Button>
+						<div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+							<Button
+								variant="primary"
+								size="md"
+								isDisabled={
+									disabled || !isPersisted || isModified || !pkg.name.trim()
+								}
+								onPress={onPublish}
+							>
+								Publish
+							</Button>
+
+							<Button
+								variant="secondary"
+								size="md"
+								isDisabled={disabled || !isPublished || !deepLink}
+								onPress={() => void copyDeepLink()}
+							>
+								Copy deep link
+							</Button>
+							{copyMessage && <p role="status">{copyMessage}</p>}
+						</div>
 					</PublishActions>
 
 					{(!isPersisted || isModified) && (
