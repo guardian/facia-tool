@@ -71,14 +71,14 @@ type ABStatusMessage =
 
 type ABTestTheme = 'active' | 'draft' | 'error';
 
-type ABTestPalette = {
+type Palette = {
 	background: string;
 	text: string;
 	icon: string;
 };
 type ABTestStatus = {
 	message: ABStatusMessage;
-	palette: ABTestPalette;
+	palette: Palette;
 };
 
 const ThumbnailPlaceholder = styled(BasePlaceholder)`
@@ -152,7 +152,7 @@ const ClipboardFirstPublished = styled.div`
 	right: 0;
 `;
 
-const getABTestThemeColors = (abTestTheme: ABTestTheme): ABTestPalette =>
+const getABTestThemeColors = (abTestTheme: ABTestTheme): Palette =>
 	theme.abTestBadge[abTestTheme];
 
 const BadgeWrapper = styled.div`
@@ -162,22 +162,11 @@ const BadgeWrapper = styled.div`
 	gap: 4px;
 	display: flex;
 `;
-const getABTestBadgeStyles = (palette: ABTestPalette) => css`
-	//position: absolute;
-	//bottom: 1px;
-	//right: 1px;
-	//gap: 4px;
-	//flex-shrink: 0;
-	//white-space: nowrap;
-	background: ${palette.background};
-	color: ${palette.text};
-`;
-
-const headlineUpdatedBadge = css`
+const getBadgeStyles = (palette: Palette) => css`
 	flex-shrink: 0;
 	white-space: nowrap;
-	background: hotpink;
-	color: black;
+	background: ${palette.background};
+	color: ${palette.text};
 `;
 
 // Reserve space below the thumbnail so the absolutely-positioned AB test
@@ -250,7 +239,7 @@ interface ArticleBodyProps {
 	abTestEnabled?: boolean;
 	hasLiveAbTest?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
-	hasCapiHeadlineChanged?: boolean;
+	hasCapiHeadlineChanged: boolean;
 }
 
 const determineABTestStatus = (
@@ -555,8 +544,7 @@ const articleBodyDefault = React.memo(
 				</CardContent>
 				<ThumbnailArea
 					size={size}
-					$reserveBadgeSpace={true}
-					// $reserveBadgeSpace={shouldShowAbTestStatus || hasCapiHeadlineChanged}
+					$reserveBadgeSpace={shouldShowAbTestStatus || hasCapiHeadlineChanged}
 				>
 					{featureFlagPageViewData && canShowPageViewData && collectionId && (
 						<PageViewDataWrapper data-testid="page-view-graph">
@@ -644,7 +632,7 @@ const articleBodyDefault = React.memo(
 						<Badge
 							size="sm"
 							weight="strong"
-							cssOverrides={headlineUpdatedBadge}
+							cssOverrides={getBadgeStyles(theme.headlineUpdateBadge)}
 						>
 							Headline has been updated
 						</Badge>
@@ -653,7 +641,7 @@ const articleBodyDefault = React.memo(
 						<Badge
 							size="sm"
 							weight="strong"
-							cssOverrides={getABTestBadgeStyles(abTestStatus.palette)}
+							cssOverrides={getBadgeStyles(abTestStatus.palette)}
 							data-testid="ab-test-status"
 						>
 							<ConicalFlaskCircleIcon
