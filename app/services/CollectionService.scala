@@ -139,9 +139,8 @@ object CollectionService {
       }
       val group = maybeGroup.getOrElse(0)
       Story(
-        group,
-        article.meta.flatMap(_.isBoosted).getOrElse(false)
-      )
+        group
+	  )
     }
   }
 }

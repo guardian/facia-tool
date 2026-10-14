@@ -64,9 +64,8 @@ const isFrontStale = (lastUpdated?: number, lastPressed?: number) => {
 const getVisibilityArticleDetails = (groupsWithArticles: Card[][]) =>
 	groupsWithArticles.reduce((articles, articlesInGroup, index) => {
 		const numberOfGroups = groupsWithArticles.length;
-		const groupArticles = articlesInGroup.map((story) => ({
+		const groupArticles = articlesInGroup.map(() => ({
 			group: numberOfGroups - index - 1,
-			isBoosted: !!story.meta.isBoosted,
 		}));
 		return articles.concat(groupArticles);
 	}, [] as ArticleDetails[]);

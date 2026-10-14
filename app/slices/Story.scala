@@ -8,8 +8,6 @@ object Story {
 
   implicit val ordering: Ordering[Story] = Ordering.by[Story, Int](_.group)
 
-  def unboosted(n: Int) = Story(n, isBoosted = false)
-
   private[slices] def segmentByGroup(
       stories: Seq[Story]
   ): Map[Int, Seq[Story]] = {
@@ -23,5 +21,4 @@ object Story {
 
 case class Story(
     group: Int,
-    isBoosted: Boolean
 )

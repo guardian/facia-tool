@@ -61,7 +61,6 @@ export default ({
 	showByline?: boolean;
 	showQuotedHeadline?: boolean;
 	showLargeHeadline?: boolean;
-	isBoosted?: boolean;
 	boostLevel?: BoostLevels;
 	isImmersive?: boolean;
 	groupIndex?: number;
