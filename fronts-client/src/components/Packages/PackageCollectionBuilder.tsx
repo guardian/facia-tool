@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { styled } from 'constants/theme';
 import { TextInput } from '@guardian/stand/TextInput';
 import { Button } from '@guardian/stand/Button';
@@ -243,7 +243,6 @@ interface PackageCollectionBuilderProps {
 	onPublish: () => void;
 	onClose: () => void;
 	isPublished: boolean;
-	deepLink: string; // Full Feast deep link, including the package ID.
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -273,7 +272,6 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	onPublish,
 	onClose,
 	isPublished,
-	deepLink,
 }) => {
 	// Existing builder implementation.
 	const [dragIntentActive, setDragIntentActive] = useState(false);
@@ -291,6 +289,16 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	// const [excludedRegions, setExcludedRegions] = useState(
 	// 	pkg.metadata?.excludedRegions?.join(', ') ?? '',
 	// );
+
+	const appLink = useMemo(
+		() => `feastbraze://recipecollection/${pkg.id}`,
+		[pkg],
+	);
+	const emailLink = useMemo(
+		() =>
+			`https://guardian-feast.go.link/recipecollection/${pkg.id}?adj_t=1csm4hw1&adj_fallback%3Dhttps%253A%252F%252Fapps.apple.com%252Fgy%252Fapp%252Fguardian-feast%252Fid6468674686%26adj_redirect_macos%3Dhttps%253A%252F%252Fapps.apple.com%252Fgy%252Fapp%252Fguardian-feast%252Fid6468674686`,
+		[pkg],
+	);
 
 	const itemSignature = JSON.stringify(
 		pkg.items.map(({ id, cardType }) => ({ id, cardType })),
@@ -604,10 +612,16 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 							</ActionButtons>
 
 							<AppLinkControls
-								deepLink={deepLink}
-								title={pkg.name}
+								deepLink={emailLink}
+								title="Recipe link"
 								isPublished={isPublished}
-								isDisabled={disabled || !isPublished || !deepLink}
+								isDisabled={disabled || !isPublished || !emailLink}
+							/>
+							<AppLinkControls
+								deepLink={appLink}
+								title="Push notification link"
+								isPublished={isPublished}
+								isDisabled={disabled || !isPublished || !appLink}
 							/>
 						</PublishActions>
 					</PublishActions>
