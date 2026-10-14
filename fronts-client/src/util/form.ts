@@ -19,7 +19,6 @@ export interface CardFormData {
 	abTestEnabled: boolean;
 	headlineA: string;
 	headlineB: string;
-	isBoosted: boolean;
 	boostLevel: string;
 	showQuotedHeadline: boolean;
 	showLargeHeadline: boolean;
@@ -117,7 +116,6 @@ export const getInitialValuesForCardForm = (
 				abTestEnabled: article.abTestEnabled || false,
 				headlineA: article.headlineA || '',
 				headlineB: article.headlineB || '',
-				isBoosted: article.isBoosted || false,
 				boostLevel: article.boostLevel || 'default',
 				showQuotedHeadline: article.showQuotedHeadline || false,
 				showLargeHeadline: article.showLargeHeadline || false,

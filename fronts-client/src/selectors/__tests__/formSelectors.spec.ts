@@ -26,19 +26,6 @@ describe('Form utils', () => {
 				selectFormFields(state, '95e2bfc0-8999-4e6e-a359-19960967c1e0', true),
 			).toEqual(supportingFields);
 		});
-		it('should add isBoosted for dynamic collection configs', () => {
-			const localState = cloneDeep(state);
-			localState.fronts.frontsConfig.data.collections.exampleCollection.type =
-				'dynamic/slow';
-			const selectFormFields = createSelectFormFieldsForCard();
-			expect(
-				selectFormFields(
-					localState,
-					'95e2bfc0-8999-4e6e-a359-19960967c1e0',
-					false,
-				),
-			).toEqual([...defaultFields, 'isBoosted']);
-		});
 		it('should add boostLevel and isImmersive and remove large headline for flexible collection configs', () => {
 			const localState = cloneDeep(state);
 			localState.fronts.frontsConfig.data.collections.exampleCollection.type =
