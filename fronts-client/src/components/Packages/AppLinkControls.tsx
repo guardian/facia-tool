@@ -58,7 +58,7 @@ export function AppLinkControls({
 			<InlineWrap>
 				<QRCodeSVG
 					value={deepLink}
-					size={160}
+					size={100}
 					marginSize={4}
 					title={title}
 					role="img"
