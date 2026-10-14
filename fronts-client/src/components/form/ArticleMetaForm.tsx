@@ -1274,18 +1274,8 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 				props.cardId,
 			)?.fields.headline;
 
-			// Ending a headline A/B test reverts the card headline back to the
-			// current CAPI headline, discarding the experiment's custom headline.
-			const isTurningOffActiveTest =
-				hasActiveAbTestOnCard(preSaveCard) &&
-				!!maybeTest?.hasManuallyEndedOnThisTrail;
-			if (isTurningOffActiveTest && currentCapiHeadline !== undefined) {
-				meta.headline = currentCapiHeadline;
-			}
-
-			// Maintain the adopted CAPI headline baseline. When the card is in sync
-			// with CAPI (at creation, when adopting an updated headline, or when
-			// adding a custom headline while mirroring CAPI) we re-baseline to the
+			// When the card is in sync with CAPI (at creation, while the custom headline is mirroring CAPI,
+			// or when adopting an updated headline) we re-baseline to the
 			// current CAPI headline so the "headline changed" indicator - which is
 			// derived from this baseline - stays correct.
 			if (
