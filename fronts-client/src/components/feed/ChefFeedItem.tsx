@@ -38,12 +38,11 @@ export const ChefFeedItemComponent = ({
 		<FeedItem
 			id={chef.id}
 			type={CardTypesMap.CHEF}
-			title={chef.internalName}
+			title={chef.webTitle}
 			hasVideo={false}
 			isLive={true}
-			urlPath={chef.apiUrl}
-			liveUrl={`https://theguardian.com/${chef.apiUrl}`}
-			thumbnail={chef.bylineLargeImageUrl}
+			urlPath={''}
+			thumbnail={chef.bylineImageUrl}
 			onAddToClipboard={onAddToClipboard}
 			handleDragStart={handleDragStartForCard(CardTypesMap.CHEF, chef)}
 			shouldObscureFeed={shouldObscureFeed}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Card, CardSizes } from 'types/Collection';
 import CardContainer from '../CardContainer';
 import CardContent from '../CardContent';
@@ -12,8 +12,6 @@ import CardBody from '../CardBody';
 import CardMetaContainer from '../CardMetaContainer';
 import ImageAndGraphWrapper from 'components/image/ImageAndGraphWrapper';
 import { ThumbnailSmall } from 'components/image/Thumbnail';
-import CardMetaContent from '../CardMetaContent';
-import { upperFirst } from 'lodash';
 import { useSelector } from 'react-redux';
 import { HoverActionsAreaOverlay } from 'components/CollectionHoverItems';
 import { HoverActionsButtonWrapper } from 'components/inputs/HoverActionButtonWrapper';
@@ -24,6 +22,7 @@ import {
 } from 'components/inputs/HoverActionButtons';
 import { getPaths } from 'util/paths';
 import exclamationMarkIcon from 'images/icons/exclamation-mark.svg';
+import CardMetaContent from '../CardMetaContent';
 
 interface Props {
 	onDragStart?: (d: React.DragEvent<HTMLElement>) => void;
@@ -65,6 +64,16 @@ export const RecipeCard = ({
 		? getPaths(recipe.canonicalArticle)
 		: undefined;
 
+	const thumbnail = useMemo(
+		() =>
+			recipe?.imageTemplateUrl
+				? recipe.imageTemplateUrl
+						.replace('#{width}', '420')
+						.replace('#{quality}', '80')
+				: undefined,
+		[recipe],
+	);
+
 	return (
 		<CardContainer {...rest}>
 			<CardBody data-testid="snap" size={size} fade={fade}>
@@ -86,9 +95,7 @@ export const RecipeCard = ({
 								}}
 							/>
 						)}
-						<CardMetaContent>
-							{upperFirst(recipe?.difficultyLevel)}
-						</CardMetaContent>
+						<CardMetaContent>{recipe?.byline.join(', ') ?? ''}</CardMetaContent>
 					</CardMetaContainer>
 				)}
 				<CardContent textSize={textSize} isToShowError={!recipe}>
@@ -100,9 +107,7 @@ export const RecipeCard = ({
 					</CardHeadingContainer>
 				</CardContent>
 				<ImageAndGraphWrapper size="small">
-					<ThumbnailSmall
-						url={recipe?.previewImage?.url ?? recipe?.featuredImage?.url}
-					/>
+					<ThumbnailSmall url={thumbnail} />
 				</ImageAndGraphWrapper>
 				<HoverActionsAreaOverlay data-testid="hover-overlay">
 					<HoverActionsButtonWrapper
