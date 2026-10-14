@@ -75,7 +75,7 @@ interface ArticleComponentProps {
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 	hasLiveAbTest?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
-	hasCapiHeadlineChanged?: boolean;
+	hasCapiHeadlineChanged: boolean;
 }
 
 interface ComponentProps extends ArticleComponentProps {
