@@ -16,6 +16,7 @@ export interface FeastPackageMetadata {
 	excludedRegions?: string[];
 }
 
+export type PublicationStatus = 'Draft' | 'Published' | 'Failed' | 'Pending';
 export interface FeastPackageHeader {
 	id: string;
 	name: string;
@@ -28,6 +29,7 @@ export interface FeastPackageHeader {
 	updatedOn?: number;
 	updatedBy?: string;
 	updatedEmail?: string;
+	publicationStatus?: PublicationStatus;
 }
 
 export type FeastPackage = FeastPackageHeader & { items: PackageItem[] };

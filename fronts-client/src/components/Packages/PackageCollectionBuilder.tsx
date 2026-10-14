@@ -27,6 +27,7 @@ import { TextArea } from '@guardian/stand/TextArea';
 import { VisibilityBadge } from './VisibilityBadge';
 import { Tooltip } from '@guardian/stand/Tooltip';
 import { Typography } from '@guardian/stand/Typography';
+import { AppLinkControls } from './AppLinkControls';
 
 const BuilderContainer = styled.div`
 	display: flex;
@@ -158,11 +159,6 @@ const DragDropZone = styled.div`
 	}
 `;
 
-const PublishActions = styled.div`
-	display: flex;
-	gap: 10px;
-`;
-
 const CheckboxLabel = styled.label`
 	display: flex;
 	align-items: center;
@@ -224,6 +220,19 @@ const ThemeFormContainer = styled.div`
 	margin-top: 12px;
 `;
 
+const PublishActions = styled.div`
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+`;
+
+const ActionButtons = styled.div`
+	display: flex;
+	gap: 10px;
+`;
+
 interface PackageCollectionBuilderProps {
 	package: FeastPackage;
 	isPersisted: boolean;
@@ -233,6 +242,8 @@ interface PackageCollectionBuilderProps {
 	onSave: () => void;
 	onPublish: () => void;
 	onClose: () => void;
+	isPublished: boolean;
+	deepLink: string; // Full Feast deep link, including the package ID.
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -261,6 +272,8 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	onSave,
 	onPublish,
 	onClose,
+	isPublished,
+	deepLink,
 }) => {
 	// Existing builder implementation.
 	const [dragIntentActive, setDragIntentActive] = useState(false);
@@ -270,6 +283,7 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 	const [loadingDisplays, setLoadingDisplays] = useState(true);
 	const [displayError, setDisplayError] = useState<string | null>(null);
 	const [displayRefresh, setDisplayRefresh] = useState(0);
+	const [copyMessage, setCopyMessage] = useState('');
 
 	// const [targetedRegions, setTargetedRegions] = useState( //Will implement in a follow-up, as the backend does not considering these fields yet
 	// 	pkg.metadata?.targetedRegions?.join(', ') ?? '',
@@ -319,6 +333,14 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 			active = false;
 		};
 	}, [itemSignature, displayRefresh]);
+
+	useEffect(() => {
+		//notification message to appear for 10 seconds
+		if (!copyMessage) return;
+
+		const timeout = window.setTimeout(() => setCopyMessage(''), 10_000);
+		return () => window.clearTimeout(timeout);
+	}, [copyMessage]);
 
 	const changeMetadata = (patch: Partial<FeastPackageMetadata>) => {
 		onPackageChange({
@@ -545,39 +567,50 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 				</FirstSection>
 				<Section>
 					<PublishActions>
-						<Button
-							variant="secondary"
-							size="md"
-							isDisabled={disabled || !isModified || !pkg.name.trim()}
-							onPress={onSave}
-						>
-							Save
-						</Button>
+						<PublishActions>
+							<ActionButtons>
+								<Button
+									variant="secondary"
+									size="md"
+									isDisabled={disabled || !isModified || !pkg.name.trim()}
+									onPress={onSave}
+								>
+									Save
+								</Button>
 
-						<Button
-							variant="primary"
-							size="md"
-							isDisabled={
-								disabled || !isPersisted || isModified || !pkg.name.trim()
-							}
-							onPress={onPublish}
-						>
-							Publish
-						</Button>
+								<Button
+									variant="primary"
+									size="md"
+									isDisabled={
+										disabled || !isPersisted || isModified || !pkg.name.trim()
+									}
+									onPress={onPublish}
+								>
+									Publish
+								</Button>
+
+								{(!isPersisted || isModified) && (
+									<Typography variant="bodyCompactItalicSm">
+										Save your changes before publishing
+									</Typography>
+								)}
+
+								<Tooltip placement="start">
+									<Typography variant="bodyCompactSm">
+										Save updates the stored package. Publish sends the saved
+										package to the Feast app
+									</Typography>
+								</Tooltip>
+							</ActionButtons>
+
+							<AppLinkControls
+								deepLink={deepLink}
+								title={pkg.name}
+								isPublished={isPublished}
+								isDisabled={disabled || !isPublished || !deepLink}
+							/>
+						</PublishActions>
 					</PublishActions>
-
-					{(!isPersisted || isModified) && (
-						<Typography variant="bodyCompactItalicSm">
-							Save your changes before publishing
-						</Typography>
-					)}
-
-					<Tooltip placement="start">
-						<Typography variant="bodyCompactSm">
-							Save updates the stored package. Publish sends the saved package
-							to the Feast app
-						</Typography>
-					</Tooltip>
 				</Section>
 
 				<SlotsContainer>
