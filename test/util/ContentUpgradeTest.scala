@@ -85,7 +85,7 @@ class ContentUpgradeTest extends FreeSpec with Matchers {
           |      "isHosted":true,
           |      "frontsMeta":{
           |        "defaults":{
-					|          "isImmersive":false,
+		  |          "isImmersive":false,
           |          "boostLevel.gigaBoost":false,
           |          "isBreaking":false,
           |          "imageHide":false,
