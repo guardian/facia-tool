@@ -75,7 +75,6 @@ interface ArticleComponentProps {
 	otherCollectionsOnSameFrontThisCardIsOn?: OtherCollectionsOnSameFrontThisCardIsOn;
 	hasLiveAbTest?: boolean;
 	headlineTestError?: AbTestHeadlineErrorType | null;
-	hasCapiHeadlineChanged: boolean;
 }
 
 interface ComponentProps extends ArticleComponentProps {
@@ -85,6 +84,7 @@ interface ComponentProps extends ArticleComponentProps {
 	textSize?: CardSizes;
 	children: React.ReactNode;
 	onImageDrop?: (e: React.DragEvent<HTMLElement>) => void;
+	hasCapiHeadlineChanged: boolean;
 }
 
 interface ComponentState {
