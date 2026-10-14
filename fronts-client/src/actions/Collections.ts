@@ -414,12 +414,13 @@ export const fetchCardReferencedEntitiesForCards =
 			promises.push(articlesPromise);
 		}
 
-		if (cardsByCardType.chef) {
-			const chefsPromise = dispatch(
-				fetchChefsById(cardsByCardType.chef.map((chef) => chef.id)),
-			);
-			promises.push(chefsPromise);
-		}
+		//FIXME - needs replacing
+		// if (cardsByCardType.chef) {
+		// 	const chefsPromise = dispatch(
+		// 		fetchChefsById(cardsByCardType.chef.map((chef) => chef.id)),
+		// 	);
+		// 	promises.push(chefsPromise);
+		// }
 
 		if (cardsByCardType.recipe) {
 			const recipesPromise = dispatch(
