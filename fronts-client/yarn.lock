@@ -1403,10 +1403,9 @@
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.57.1.tgz"
   integrity sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==
 
-"@guardian/feast-multiplatform-backend-api@2.1.0-PREVIEW.agnode-typescript-build.2026-10-14T1459.b28c9c88":
-  version "2.1.0-PREVIEW.agnode-typescript-build.2026-10-14T1459.b28c9c88"
-  resolved "https://registry.yarnpkg.com/@guardian/feast-multiplatform-backend-api/-/feast-multiplatform-backend-api-2.1.0-PREVIEW.agnode-typescript-build.2026-10-14T1459.b28c9c88.tgz#814d116554890948919ec10eb5d424e31f141165"
-  integrity sha512-CxzJBwxGUIDZq8O1p8A0XAqYKYZj/gvy7JLLzq8FmJMMeb5oE/Y6U+PPzHiuGECRKicichcwt9lDdwEoHYnSqw==
+"@guardian/feast-multiplatform-backend-api@../feast-multiplatform-backend-api-2.0.1.tgz":
+  version "2.0.1"
+  resolved "../feast-multiplatform-backend-api-2.0.1.tgz#1be0090ec06ba5b27bc84f284e2f580642d3f921"
   dependencies:
     ws "8.18.0"
 
@@ -4603,6 +4602,12 @@ fd-slicer@~1.1.0:
   integrity sha512-cE1qsB/VwyQozZ+q1dGxR8LBYNZeofhEdUNGSMbQD3Gw2lAzX9Zb3uIU6Ebc/Fmyjo9AWWfnn0AUCHqtevs/8g==
   dependencies:
     pend "~1.2.0"
+
+"feast-multiplatform-backend-api@file:../feast-multiplatform-backend-api-2.0.1.tgz":
+  version "2.0.1"
+  resolved "file:../feast-multiplatform-backend-api-2.0.1.tgz#1be0090ec06ba5b27bc84f284e2f580642d3f921"
+  dependencies:
+    ws "8.18.0"
 
 fetch-mock@^6.4.2:
   version "6.5.2"

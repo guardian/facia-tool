@@ -55,8 +55,9 @@ export interface RecipeSearchParams {
 
 export interface ChefSearchHit {
 	contributorType: 'Profile' | 'Byline';
-	nameOrId: string;
-	docCount: number;
+	displayName: string;
+	profileId: string;
+	bylineImageUrl?: string;
 }
 
 export interface ChefSearchResponse {
@@ -77,6 +78,9 @@ export interface DietSearchResponse {
 const widthParam = /width=(\d+)/;
 export const updateImageScalingParams = (url: string) => {
 	return url.replace(widthParam, 'width=83');
+};
+const normaliseByline = (str: string) => {
+	return str.replace(/[^\\w]+/, '-');
 };
 
 const recipeQuery = (baseUrl: string) => {
@@ -117,14 +121,15 @@ const recipeQuery = (baseUrl: string) => {
 						if ('contributorId' in chefOrByline) {
 							return {
 								contributorType: 'Profile',
-								nameOrId: chefOrByline.contributorId,
-								docCount: 0,
+								profileId: chefOrByline.contributorId,
+								displayName: chefOrByline.webTitle,
+								bylineImageUrl: chefOrByline.bylineImageUrl ?? undefined,
 							};
 						} else {
 							return {
 								contributorType: 'Byline',
-								nameOrId: chefOrByline.webTitle,
-								docCount: 0,
+								profileId: normaliseByline(chefOrByline.webTitle),
+								displayName: chefOrByline.webTitle,
 							};
 						}
 					}),
