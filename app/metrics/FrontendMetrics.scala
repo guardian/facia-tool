@@ -2,7 +2,7 @@ package metrics
 
 import java.util.concurrent.atomic.AtomicLong
 
-import com.amazonaws.services.cloudwatch.model.StandardUnit
+import software.amazon.awssdk.services.cloudwatch.model.StandardUnit
 import org.joda.time.DateTime
 
 import scala.util.Try
@@ -51,7 +51,7 @@ case class GaugeMetric(
     name: String,
     description: String,
     get: () => Long,
-    metricUnit: StandardUnit = StandardUnit.Megabytes
+    metricUnit: StandardUnit = StandardUnit.MEGABYTES
 ) extends FrontendMetric {
   def getAndResetDataPoints: List[DataPoint] = List(GaugeDataPoint(get()))
   def putDataPoints(points: List[DataPoint]): Unit = ()
@@ -61,7 +61,7 @@ case class GaugeMetric(
 case class CountMetric(name: String, description: String)
     extends FrontendMetric {
   private val count: AtomicLong = new AtomicLong(0L)
-  val metricUnit = StandardUnit.Count
+  val metricUnit = StandardUnit.COUNT
 
   def getAndResetDataPoints: List[DataPoint] = List(
     CountDataPoint(count.getAndSet(0L))

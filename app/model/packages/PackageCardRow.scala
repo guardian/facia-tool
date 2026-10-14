@@ -1,5 +1,7 @@
 package model.packages
 
+import com.typesafe.scalalogging.LazyLogging
+import model.editions.{EditionsChefMetadata, EditionsFeastCollectionMetadata}
 import org.postgresql.util.PGobject
 import play.api.libs.json.{JsValue, Json, OFormat}
 import scalikejdbc.WrappedResultSet
@@ -15,7 +17,7 @@ final case class PackageCardRow(
     addedOn: OffsetDateTime,
     addedBy: String,
     addedEmail: String
-) {
+) extends LazyLogging {
   def metadataPG: Option[PGobject] = metadata.map(toPGobject)
 
   private def toPGobject(value: JsValue): PGobject = {
@@ -23,6 +25,25 @@ final case class PackageCardRow(
     pgObject.setType("jsonb")
     pgObject.setValue(Json.stringify(value))
     pgObject
+  }
+
+  def toPackageCard: Option[PackageCard] = cardType match {
+    case PackageCardType.Recipe =>
+      Some(PackageRecipeCard(pageCode, addedOn))
+    case PackageCardType.Chef =>
+      val chefMeta =
+        metadata.flatMap(_.validateOpt[EditionsChefMetadata].asOpt.flatten)
+      Some(PackageChefCard(pageCode, chefMeta, addedOn))
+    case PackageCardType.Subcollection =>
+      val collectionMeta = metadata.flatMap(
+        _.validateOpt[EditionsFeastCollectionMetadata].asOpt.flatten
+      )
+      Some(PackageSubcollectionCard(pageCode, collectionMeta, addedOn))
+    case PackageCardType.Invalid =>
+      logger.warn(
+        s"Package $packageId has an invalid card with pageCode $pageCode"
+      )
+      None
   }
 }
 

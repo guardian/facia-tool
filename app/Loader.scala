@@ -46,7 +46,6 @@ class Loader extends ApplicationLoader {
         objectKey = components.config.switchBoard.objectKey,
         bucket = components.config.switchBoard.bucket,
         credentials = components.config.aws.cmsFrontsAccountCredentials,
-        endpoint = components.awsEndpoints.s3,
         region = components.config.aws.region
       ),
       components.actorSystem.scheduler
