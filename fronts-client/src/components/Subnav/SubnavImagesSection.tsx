@@ -61,7 +61,6 @@ const secondaryBreakpointSpecs = breakpointSpecs.filter(
 	(spec) => !primaryBreakpointIds.includes(spec.id),
 );
 
-// Turn a camelCase breakpoint id (e.g. mobileMedium) into a readable name.
 const formatBreakpointName = (id: string) =>
 	id.replace(/([A-Z])/g, ' $1').replace(/^./, (char) => char.toUpperCase());
 

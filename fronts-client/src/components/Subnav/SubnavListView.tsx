@@ -130,7 +130,7 @@ const StatusBadges = ({
 	</span>
 );
 
-// Completion across the three required sections, mapped to a 0/33/66/100 scale.
+// Completion across the three required sections, mapped to a 0/33/66/100 scale for each of the required sections.
 const requiredProgress = (subnav: CustomSubnav) => {
 	const hasHeader = subnav.header.headerText.trim().length > 0;
 	const hasLink = subnav.links.some((link) => link.linkText.trim().length > 0);

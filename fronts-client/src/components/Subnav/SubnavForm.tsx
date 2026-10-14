@@ -84,7 +84,6 @@ type StepId = 'header' | 'links' | 'pages' | 'images' | 'review';
 // Local nav-item row carries a stable id for drag-and-drop reordering.
 type LinkRow = SubnavLink & { id: string };
 
-// Use a darker brand orange for the toggle's selected track instead of the default blue.
 const toggleSwitchTheme: ToggleSwitchTheme = {
 	shared: {
 		track: {
@@ -96,7 +95,6 @@ const toggleSwitchTheme: ToggleSwitchTheme = {
 	},
 };
 
-// Use the brand orange for the selected/hover tab underline instead of the default blue.
 const previewTabTheme: TabTheme = {
 	shared: {
 		selected: {
@@ -174,7 +172,6 @@ const stepperOverrides = css`
 	}
 `;
 
-// Blend the step buttons into the raised sidebar column instead of white.
 const stepperTheme = {
 	navigation: {
 		shared: {
@@ -199,16 +196,12 @@ const stepperTheme = {
 	},
 };
 
-// Stretch the sidebar column to the row height so its sticky nav can travel,
-// and give the whole column the raised background.
 const sidebarItemStyle = css`
 	align-self: stretch;
 	border-radius: 4px;
-	/* stand semantic colour bg.raisedLevel2 */
 	background-color: #ededed;
 `;
 
-// Stand's Button has no danger variant, so tint the tertiary delete action red.
 const deleteButtonStyle = css`
 	color: #c70000;
 `;
