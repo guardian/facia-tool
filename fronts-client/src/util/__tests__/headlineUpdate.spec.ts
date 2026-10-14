@@ -17,7 +17,7 @@ describe('headlineUpdate', () => {
 			).toBe(false);
 		});
 
-		it('is false when CAPI has not moved since adoption', () => {
+		it('is false when CAPI has not changed since adoption', () => {
 			expect(hasCapiHeadlineChanged(false, 'Same', 'Same', 'Custom')).toBe(
 				false,
 			);
@@ -40,8 +40,14 @@ describe('headlineUpdate', () => {
 		});
 
 		describe('with an active A/B test', () => {
-			it('flags purely on CAPI moving, ignoring the custom headline', () => {
-				expect(hasCapiHeadlineChanged(true, 'Old', 'New', 'New')).toBe(true);
+			it('is true when CAPI has updated and the custom headline has diverged from the changed CAPI headline', () => {
+				expect(hasCapiHeadlineChanged(true, 'Old', 'New', 'Custom')).toBe(true);
+			});
+
+			it('is true when CAPI has updated, even if the the card headline matches the CAPI headline', () => {
+				// even though the underlying card headline might be the same, we always want to
+				// indicate to users that the CAPI headline has been updated when the card has test on it.
+				expect(hasCapiHeadlineChanged(true, 'Old', 'New', 'Custom')).toBe(true);
 			});
 
 			it('is false when CAPI matches the adopted baseline', () => {
@@ -60,7 +66,6 @@ describe('headlineUpdate', () => {
 		});
 
 		it('re-baselines when the card had no custom headline before the save', () => {
-			// mirror -> custom while CAPI has moved: adopt current CAPI as baseline.
 			expect(shouldRebaselineCapiHeadline(undefined, 'Custom', 'New')).toBe(
 				true,
 			);
