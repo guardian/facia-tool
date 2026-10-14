@@ -35,6 +35,7 @@ describe('Article component ', () => {
 						id="ea1"
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
+						hasCapiHeadlineChanged={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -56,6 +57,7 @@ describe('Article component ', () => {
 						id="ea1"
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
+						hasCapiHeadlineChanged={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -75,6 +77,7 @@ describe('Article component ', () => {
 						id="ea1"
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
+						hasCapiHeadlineChanged={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -95,6 +98,7 @@ describe('Article component ', () => {
 						isLoading={true}
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
+						hasCapiHeadlineChanged={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -114,6 +118,7 @@ describe('Article component ', () => {
 						isLoading={true}
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
+						hasCapiHeadlineChanged={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -133,6 +138,7 @@ describe('Article component ', () => {
 						isLoading={false}
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
+						hasCapiHeadlineChanged={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -150,6 +156,7 @@ describe('Article component ', () => {
 						id="ea1"
 						featureFlagPageViewData={false}
 						canShowPageViewData={false}
+						hasCapiHeadlineChanged={false}
 					/>
 				</ThemeProvider>
 			</Provider>,
@@ -172,6 +179,7 @@ it('should show the page view data graph if 3 conditions are true: canShowPageVi
 					id="ea1"
 					featureFlagPageViewData={true}
 					canShowPageViewData={true}
+					hasCapiHeadlineChanged={false}
 				/>
 			</ThemeProvider>
 		</Provider>,
@@ -192,6 +200,7 @@ it('should NOT show the page view data graph if any of these conditions are fals
 					isLoading={true}
 					featureFlagPageViewData={false}
 					canShowPageViewData={true}
+					hasCapiHeadlineChanged={false}
 				/>
 			</ThemeProvider>
 		</Provider>,
