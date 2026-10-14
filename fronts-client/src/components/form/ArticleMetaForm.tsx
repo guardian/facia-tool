@@ -1285,7 +1285,7 @@ const CardForm = reduxForm<CardFormData, ComponentProps & InterfaceProps, {}>({
 					currentCapiHeadline,
 				)
 			) {
-				meta.capiHeadline = currentCapiHeadline;
+				meta.baselineCapiHeadline = currentCapiHeadline;
 			}
 
 			props.onSave(meta, maybeTest);
