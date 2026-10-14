@@ -27,6 +27,7 @@ import { TextArea } from '@guardian/stand/TextArea';
 import { VisibilityBadge } from './VisibilityBadge';
 import { Tooltip } from '@guardian/stand/Tooltip';
 import { Typography } from '@guardian/stand/Typography';
+import { AppLinkControls } from './AppLinkControls';
 
 const BuilderContainer = styled.div`
 	display: flex;
@@ -158,10 +159,10 @@ const DragDropZone = styled.div`
 	}
 `;
 
-const PublishActions = styled.div`
-	display: flex;
-	gap: 10px;
-`;
+// const PublishActions = styled.div`
+// 	display: flex;
+// 	gap: 10px;
+// `;
 
 const CheckboxLabel = styled.label`
 	display: flex;
@@ -222,6 +223,19 @@ const SlotItem = styled.div`
 
 const ThemeFormContainer = styled.div`
 	margin-top: 12px;
+`;
+
+const PublishActions = styled.div`
+	display: flex;
+	flex: 1;
+	align-items: center;
+	justify-content: space-between;
+	gap: 10px;
+`;
+
+const ActionButtons = styled.div`
+	display: flex;
+	gap: 10px;
 `;
 
 interface PackageCollectionBuilderProps {
@@ -433,17 +447,6 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 			}
 		: undefined;
 
-	const copyDeepLink = async () => {
-		if (disabled || !isPublished || !deepLink) return;
-
-		try {
-			await navigator.clipboard.writeText(deepLink);
-			setCopyMessage('App link copied.');
-		} catch {
-			setCopyMessage('Unable to copy the deep link to the clipboard.');
-		}
-	};
-
 	return (
 		<BuilderContainer>
 			<BuilderHeader>
@@ -569,51 +572,50 @@ const PackageCollectionBuilder: React.FC<PackageCollectionBuilderProps> = ({
 				</FirstSection>
 				<Section>
 					<PublishActions>
-						<Button
-							variant="secondary"
-							size="md"
-							isDisabled={disabled || !isModified || !pkg.name.trim()}
-							onPress={onSave}
-						>
-							Save
-						</Button>
+						<PublishActions>
+							<ActionButtons>
+								<Button
+									variant="secondary"
+									size="md"
+									isDisabled={disabled || !isModified || !pkg.name.trim()}
+									onPress={onSave}
+								>
+									Save
+								</Button>
 
-						<div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-							<Button
-								variant="primary"
-								size="md"
-								isDisabled={
-									disabled || !isPersisted || isModified || !pkg.name.trim()
-								}
-								onPress={onPublish}
-							>
-								Publish
-							</Button>
+								<Button
+									variant="primary"
+									size="md"
+									isDisabled={
+										disabled || !isPersisted || isModified || !pkg.name.trim()
+									}
+									onPress={onPublish}
+								>
+									Publish
+								</Button>
 
-							<Button
-								variant="secondary"
-								size="md"
+								{(!isPersisted || isModified) && (
+									<Typography variant="bodyCompactItalicSm">
+										Save your changes before publishing
+									</Typography>
+								)}
+
+								<Tooltip placement="start">
+									<Typography variant="bodyCompactSm">
+										Save updates the stored package. Publish sends the saved
+										package to the Feast app
+									</Typography>
+								</Tooltip>
+							</ActionButtons>
+
+							<AppLinkControls
+								deepLink={deepLink}
+								title={pkg.name}
+								isPublished={isPublished}
 								isDisabled={disabled || !isPublished || !deepLink}
-								onPress={() => void copyDeepLink()}
-							>
-								Copy deep link
-							</Button>
-							{copyMessage && <p role="status">{copyMessage}</p>}
-						</div>
+							/>
+						</PublishActions>
 					</PublishActions>
-
-					{(!isPersisted || isModified) && (
-						<Typography variant="bodyCompactItalicSm">
-							Save your changes before publishing
-						</Typography>
-					)}
-
-					<Tooltip placement="start">
-						<Typography variant="bodyCompactSm">
-							Save updates the stored package. Publish sends the saved package
-							to the Feast app
-						</Typography>
-					</Tooltip>
 				</Section>
 
 				<SlotsContainer>
