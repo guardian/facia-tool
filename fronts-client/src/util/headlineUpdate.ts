@@ -1,29 +1,30 @@
 /**
- * Pure logic for the "CAPI headline has changed" indicator.
+ * Pure logic for the "headline updated in article" indicator.
  *
- * The only durable state we keep is `card.meta.capiHeadline`: the CAPI headline
+ * The only durable state we keep is `card.meta.baselineCapiHeadline`: the CAPI headline
  * the editor last adopted (set on card creation and re-baselined on save). The
- * badge/dot is then derived - never persisted - by comparing that baseline with
+ * "headline updated in article" badge is then derived by comparing that baseline with
  * the current CAPI headline and the card's custom headline.
  */
 
 export const hasCapiHeadlineChanged = (
 	hasAbTest: boolean,
-	capiHeadline?: string,
+	baselineCapiHeadline?: string,
 	articleHeadline?: string,
 	cardHeadline?: string,
 ): boolean => {
 	// We can only detect a change once we have both an adopted baseline
-	// (capiHeadline) and a current CAPI headline to compare it against.
-	if (capiHeadline === undefined || articleHeadline === undefined) {
+	// (baselineCapiHeadline) and a current CAPI headline to compare it against.
+	if (baselineCapiHeadline === undefined || articleHeadline === undefined) {
 		return false;
 	}
-	// CAPI hasn't moved since the editor last adopted a headline.
-	if (articleHeadline === capiHeadline) {
+	// CAPI hasn't changed since the editor last adopted a headline.
+	if (articleHeadline === baselineCapiHeadline) {
 		return false;
 	}
-	// When the card has a draft or live A/B test the variant headlines drive what's displayed, so
-	// flag purely on CAPI having moved since the baseline was adopted.
+	// When the card has an A/B test, the variant headlines drive what's displayed,
+	// so we can ignore the card headline and flag purely on CAPI having changed
+	// since the baseline was adopted.
 	if (hasAbTest) {
 		return true;
 	}
@@ -41,16 +42,16 @@ export const hasCapiHeadlineChanged = (
  * so an outstanding "headline changed" flag is preserved.
  */
 export const shouldRebaselineCapiHeadline = (
-	preSaveCardHeadline: string | undefined,
-	newCardHeadline: string | undefined,
+	cardHeadlineBeforeSave: string | undefined,
+	cardHeadlineAfterSave: string | undefined,
 	externalHeadline: string | undefined,
 ): boolean => {
 	if (externalHeadline === undefined) {
 		return false;
 	}
-	const preSaveInSync =
-		preSaveCardHeadline === undefined ||
-		preSaveCardHeadline === externalHeadline;
-	const newInSync = newCardHeadline === externalHeadline;
-	return preSaveInSync || newInSync;
+	const cardMatchedCapiBeforeSave =
+		cardHeadlineBeforeSave === undefined ||
+		cardHeadlineBeforeSave === externalHeadline;
+	const cardMatchesCapiAfterSave = cardHeadlineAfterSave === externalHeadline;
+	return cardMatchedCapiBeforeSave || cardMatchesCapiAfterSave;
 };

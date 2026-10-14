@@ -160,7 +160,7 @@ const createSelectArticleFromCard = () =>
 				headline: headlineField,
 				hasCapiHeadlineChanged: hasCapiHeadlineChanged(
 					!!activeOrDraftTest,
-					card.meta.capiHeadline,
+					card.meta.baselineCapiHeadline,
 					externalArticle?.fields.headline,
 					card.meta.headline,
 				),
