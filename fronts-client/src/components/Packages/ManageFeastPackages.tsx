@@ -394,7 +394,7 @@ const ManageFeastPackages: React.FC = () => {
 							onClose={handleClosePackage}
 							isPublished={true}
 							// {editor.value.publicationStatus === 'Published'} Need to check how to align with server response
-							deepLink={`feastbraze://package/${editor.value.id}`}
+							deepLink={`feastbraze://recipecollection/${editor.value.id}`}
 						/>
 					) : loading ? (
 						<p role="status">Loading packages...</p>
