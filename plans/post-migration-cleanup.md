@@ -24,7 +24,7 @@ task 5, the rest of task 6, and task 9 are open.
 | 5 — SSM path (step 2) | [#2132](https://github.com/guardian/facia-tool/pull/2132) | Merged |
 | 5 — SSM path (steps 4–6) | — | Not started; must follow #2132 being deployed to both stages |
 | 6a — network parameters | [#2117](https://github.com/guardian/facia-tool/pull/2117) | Merged (needed a manual `update-stack` first — see below) |
-| 6b, 6f — account IDs | — | **Blocked** on a CI deploy key for `aws-account-setup`; approach settled, see 6b |
+| 6b, 6f — account IDs | [#2134](https://github.com/guardian/facia-tool/pull/2134) | Draft. Seven parameters removed via `@guardian/aws-account-setup`; CI green |
 | 6c — `CapiPreviewRole` | — | **Closed, no change.** A documented operator knob; see 6c |
 | 6c — `DBSecurityGroupIdNewVPC` | — | Deferred to task 9 |
 | 6d, 6e — `StaticBucketName`, `AMIFaciatool` | — | No action needed; see below |
@@ -649,8 +649,7 @@ from the library.
    `internal`, not public, and is consumed as a git dependency:
    `"@guardian/aws-account-setup": "github:guardian/aws-account-setup#shared@2.2.0"`
    (a git tag; `dist/` is committed at release tags, so no build step is needed
-   on install — verified by installing it). service-catalogue's CI adds, before
-   `npm ci`:
+   on install — verified by installing it). Add, before `npm ci`:
 
    ```yaml
    - uses: guardian/actions-read-private-repos@v1.0.1
@@ -658,8 +657,8 @@ from the library.
        private-ssh-keys: ${{ secrets.AWS_ACCOUNT_SETUP_DEPLOY_KEY }}
    ```
 
-   **That secret does not exist in facia-tool yet** and needs someone with admin
-   on both repos. *(Ask the user — this is the blocker.)*
+   **Not a blocker after all** — `AWS_ACCOUNT_SETUP_DEPLOY_KEY` exists at the
+   **organisation** level, so no per-repo setup was needed.
 2. **The snapshot tests must mock the library, or the IDs get committed anyway**
    — straight into `cdk/lib/__snapshots__/`, defeating the point. The package
    ships a `__mocks__` directory of `000000000000`-style placeholders for exactly
@@ -675,6 +674,25 @@ from the library.
 inline instead of behind a `Ref`. Use the resolve-and-compare technique from the
 top of this document, and confirm the change set shows only `Modify` on the IAM
 resources and the parameters removed.
+
+> **Done — [#2134](https://github.com/guardian/facia-tool/pull/2134)**, draft,
+> covering 6b and 6f together. Seven parameters removed; resolved
+> `FrontsUpdateSNSPolicy`, `StorageConsumerRole`, `AssumeFrontendRolePolicy` and
+> instance user data are identical to both live stacks.
+>
+> **Two things made the comparison lie before it told the truth**, worth knowing
+> if you repeat it: pseudo-parameters (`AWS::Partition` and friends) have to be
+> resolved too, and `Fn::Join` fragments **re-split** when a `Ref` becomes a
+> literal. Both show up as spurious differences until each side is flattened to a
+> plain string. `StorageConsumerRole` and the user data both reported `DIFFERS`
+> for these reasons alone.
+>
+> The deploy key was **not** a blocker — it is an org-level secret, and CI passed
+> first time including the `upload` job.
+>
+> The real account ID previously committed in
+> `cdk/lib/__snapshots__/facia-tool.test.ts.snap` is now gone from the working
+> tree, but **remains in git history**. No rewrite attempted.
 
 ### 6c — `CapiPreviewRole` and `DBSecurityGroupIdNewVPC`
 
@@ -769,12 +787,13 @@ declared in `templateParameters()` at all; `GuEc2App` creates it. The name only
 
 ### 6f — the hardcoded account ID
 
-`FrontendRoleToAssume` has a **default containing an AWS account ID**, committed
+`FrontendRoleToAssume` had a **default containing an AWS account ID**, committed
 in [cdk/lib/facia-tool.ts](../cdk/lib/facia-tool.ts). It arrived with the legacy
-template so it was out of scope for the migration, but it should not stay. It is
-the same in both stages, so one account-scoped SSM parameter, same as 6b. Note
-it will remain in git history — flag that to the user rather than attempting a
-history rewrite.
+template so it was out of scope for the migration. **Folded into 6b** — same
+mechanism, same PR: the parameter is removed and the ARN is built from
+`GuardianAwsAccounts.Frontend`. The live value was identical to the committed
+default in both stages, so nothing had been overridden on the stack. The ID
+remains in git history.
 
 ### 6g — `CloudFrontCertificateArn` → create the certificate in CDK
 
